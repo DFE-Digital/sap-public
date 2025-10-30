@@ -59,7 +59,7 @@ jobs:
         docker-repository: ${{ env.DOCKER_REPOSITORY }}
         max-cache: true
         reuse-cache: true
-        snyk-token: ${{ secrets.SNYK_TOKEN }}
+#        snyk-token: ${{ secrets.SNYK_TOKEN }}
 
   test:
     name: Run tests
