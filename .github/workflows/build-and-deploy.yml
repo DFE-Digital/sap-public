@@ -105,7 +105,7 @@ jobs:
         sha: ${{ needs.build.outputs.docker-image-tag }}
         terraform-base: ${{ env.TERRAFORM_BASE }}
         healthcheck: ${{ env.HEALTHCHECK_CMD }}
-        db-seed: true
+        db-seed: false
         smoke-test: true
 #        gcp-wip: ${{ vars.GCP_WIP }}
 #        gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
