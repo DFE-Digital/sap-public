@@ -31,7 +31,7 @@ on:
 
 env:
   TERRAFORM_BASE: terraform/application
-  HEALTHCHECK_CMD: 'healthcheck/all'
+  HEALTHCHECK_CMD: 'healthcheck'
 
 jobs:
   build:
