@@ -23,7 +23,7 @@ on:
         type: string
   push:
    branches:
-    - 2492-onboard-sap-public
+    - main
   pull_request:
     branches:
     - main
@@ -106,7 +106,7 @@ jobs:
         terraform-base: ${{ env.TERRAFORM_BASE }}
         healthcheck: ${{ env.HEALTHCHECK_CMD }}
         db-seed: false
-        smoke-test: true
+        smoke-test: false
 #        gcp-wip: ${{ vars.GCP_WIP }}
 #        gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
 
@@ -173,47 +173,47 @@ jobs:
         #gcp-wip: ${{ vars.GCP_WIP }}
         #gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
 
-#  deploy_domains_infra:
-#    name: Deploy Domains Infrastructure
-#    runs-on: ubuntu-latest
-#    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-#    concurrency: deploy_domains_infra
-#    needs: [deploy]
-#    environment:
-#      name: production
-#    permissions:
-#      id-token: write
+  deploy_domains_infra:
+    name: Deploy Domains Infrastructure
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    concurrency: deploy_domains_infra
+    needs: [deploy]
+    environment:
+      name: production
+    permissions:
+      id-token: write
 
-#    steps:
-#    - name: Deploy Domains Infrastructure
-#      uses: DFE-Digital/github-actions/deploy-domains-infra@master
-#      with:
-#        azure-client-id:  ${{ secrets.AZURE_CLIENT_ID  }}
-#        azure-tenant-id:  ${{ secrets.AZURE_TENANT_ID   }}
-#        azure-subscription-id:  ${{ secrets.AZURE_SUBSCRIPTION_ID   }}
-#        slack-webhook: ${{ secrets.SLACK_WEBHOOK }}
+    steps:
+    - name: Deploy Domains Infrastructure
+      uses: DFE-Digital/github-actions/deploy-domains-infra@master
+      with:
+        azure-client-id:  ${{ secrets.AZURE_CLIENT_ID  }}
+        azure-tenant-id:  ${{ secrets.AZURE_TENANT_ID   }}
+        azure-subscription-id:  ${{ secrets.AZURE_SUBSCRIPTION_ID   }}
+        slack-webhook: ${{ secrets.SLACK_WEBHOOK }}
 
-#  deploy_domains_env:
-#    name: Deploy Domains to ${{ matrix.domain_environment }} environment
-#    runs-on: ubuntu-latest
-#    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-#    concurrency: deploy_domains_${{ matrix.domain_environment }}
-#    needs: [deploy_domains_infra]
-#    strategy:
-#      max-parallel: 1
-#      matrix:
-#        domain_environment: [test, production]
-#    environment:
-#      name: production
-#    permissions:
-#      id-token: write
+  deploy_domains_env:
+    name: Deploy Domains to ${{ matrix.domain_environment }} environment
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    concurrency: deploy_domains_${{ matrix.domain_environment }}
+    needs: [deploy_domains_infra]
+    strategy:
+      max-parallel: 1
+      matrix:
+        domain_environment: [test, production]
+    environment:
+      name: production
+    permissions:
+      id-token: write
 
-#    steps:
-#    - name: Deploy Domains Environment
-#      uses: DFE-Digital/github-actions/deploy-domains-env@master
-#      with:
-#        azure-client-id:  ${{ secrets.AZURE_CLIENT_ID  }}
-#        azure-tenant-id:  ${{ secrets.AZURE_TENANT_ID   }}
-#        azure-subscription-id:  ${{ secrets.AZURE_SUBSCRIPTION_ID   }}
-#        environment: ${{ matrix.domain_environment }}
-#        healthcheck: healthcheck
+    steps:
+    - name: Deploy Domains Environment
+      uses: DFE-Digital/github-actions/deploy-domains-env@master
+      with:
+        azure-client-id:  ${{ secrets.AZURE_CLIENT_ID  }}
+        azure-tenant-id:  ${{ secrets.AZURE_TENANT_ID   }}
+        azure-subscription-id:  ${{ secrets.AZURE_SUBSCRIPTION_ID   }}
+        environment: ${{ matrix.domain_environment }}
+        healthcheck: healthcheck
