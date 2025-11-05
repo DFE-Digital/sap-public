@@ -60,11 +60,14 @@ RUN dotnet publish "./SAPPub.Web.csproj" -c $BUILD_CONFIGURATION -o /app/publish
 # =====================================================
 # Stage 3: Runtime image
 # =====================================================
-FROM mcr.microsoft.com/dotnet/aspnet:${DOTNET_VERSION} AS final
+#FROM mcr.microsoft.com/dotnet/aspnet:${DOTNET_VERSION} AS final
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-noble-chiseled AS final
+
 WORKDIR /app
 
 # Create a writable folder for Data Protection keys
-RUN mkdir -p /keys && chmod -R 777 /keys
+#RUN mkdir -p /keys && chmod -R 777 /keys
+RUN mkdir -p /keys && chown -R app:app /keys
 
 # Environment configuration
 ENV ASPNETCORE_URLS=http://+:3000
@@ -87,7 +90,7 @@ RUN echo "=== Final wwwroot contents ===" && \
 EXPOSE 3000
 
 # Important: switch to non-root user *after* permissions are set
-USER $APP_UID
+#USER $APP_UID
 
 # Entry point
 ENTRYPOINT ["dotnet", "SAPPub.Web.dll"]
