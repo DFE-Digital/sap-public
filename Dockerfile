@@ -66,8 +66,8 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0-noble-chiseled AS final
 WORKDIR /app
 
 # Create a writable folder for Data Protection keys
-#RUN mkdir -p /keys && chmod -R 777 /keys
-RUN mkdir -p /keys && chown -R app:app /keys
+RUN mkdir -p /keys && chmod -R 777 /keys
+#RUN mkdir -p /keys && chown -R app:app /keys
 
 # Environment configuration
 ENV ASPNETCORE_URLS=http://+:3000
