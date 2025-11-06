@@ -1,53 +1,88 @@
 ﻿using SAPPub.Web.Helpers;
 
-namespace SAPPub.Web.Middleware;
-
-public class SecurityHeadersMiddleware
+namespace SAPPub.Web.Middleware
 {
-    private readonly RequestDelegate _next;
-
-    public SecurityHeadersMiddleware(RequestDelegate next)
+    public class SecurityHeadersMiddleware
     {
-        _next = next;
+        private readonly RequestDelegate _next;
+
+        public SecurityHeadersMiddleware(RequestDelegate next)
+        {
+            _next = next;
+        }
+
+        public async Task InvokeAsync(HttpContext context)
+        {
+            // Generate a per-request nonce and make it available to views
+            var nonce = CSPHelper.RandomCharacters;
+            context.Items["ScriptNonce"] = nonce;
+
+            var env = context.RequestServices.GetService(typeof(IHostEnvironment)) as IHostEnvironment;
+
+            // Build CSP using the existing concatenation style
+            // Additions:
+            //  - img-src allows OpenStreetMap tiles
+            //  - style-src allows unpkg (Leaflet CSS)
+            //  - script-src retains nonce and allows unpkg
+            //  - connect-src in Development allows localhost & websockets for Browser Link
+            var csp =
+                  "default-src 'self';"
+                + "base-uri 'self';"
+                + "frame-ancestors 'self';"
+                + "img-src 'self' data: https://*.tile.openstreetmap.org;"
+                + "style-src 'self' 'unsafe-inline' https://unpkg.com;"
+                + "font-src 'self' data:;"
+                + $"script-src 'self' 'nonce-{nonce}' https://unpkg.com;"
+                + "connect-src 'self' "
+                    + "*.google-analytics.com "
+                    + "*.analytics.google.com "
+                    + "https://www.compare-school-performance.service.gov.uk "
+                    + "https://api.postcodes.io "
+                    + "https://*.doubleclick.net "
+                    + "https://*.clarity.ms "
+                    + "https://c.bing.com "
+                    + "https://*.applicationinsights.azure.com/ "
+                    + "https://*.visualstudio.com/;";
+
+            // In Development, allow Browser Link / local dev tools over HTTP/HTTPS and WS/WSS
+            if (env?.IsDevelopment() == true)
+            {
+                csp =
+                      "default-src 'self';"
+                    + "base-uri 'self';"
+                    + "frame-ancestors 'self';"
+                    + "img-src 'self' data: https://*.tile.openstreetmap.org;"
+                    + "style-src 'self' 'unsafe-inline' https://unpkg.com;"
+                    + "font-src 'self' data:;"
+                    + $"script-src 'self' 'nonce-{nonce}' https://unpkg.com;"
+                    + "connect-src 'self' "
+                        + "*.google-analytics.com "
+                        + "*.analytics.google.com "
+                        + "https://www.compare-school-performance.service.gov.uk "
+                        + "https://api.postcodes.io "
+                        + "https://*.doubleclick.net "
+                        + "https://*.clarity.ms "
+                        + "https://c.bing.com "
+                        + "https://*.applicationinsights.azure.com/ "
+                        + "https://*.visualstudio.com/ "
+                        + "http://localhost:* https://localhost:* ws://localhost:* wss://localhost:*;";
+            }
+
+            // Apply headers
+            context.Response.Headers["Content-Security-Policy"] = csp;
+            context.Response.Headers["Referrer-Policy"] = "no-referrer";
+            context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+            context.Response.Headers["X-Frame-Options"] = "DENY";
+
+            await _next(context);
+        }
     }
 
-    public async Task InvokeAsync(HttpContext context)
+    public static class SecurityHeadersMiddlewareExtensions
     {
-        // Set script nonce early
-        var nonce = CSPHelper.RandomCharacters;
-        context.Items["ScriptNonce"] = nonce;
-
-        // Set all security headers before processing the request
-        context.Response.Headers.Append("Expect-CT", "max-age=86400, enforce");
-        context.Response.Headers.Append("Referrer-Policy", "same-origin");
-        context.Response.Headers.Append("Arr-Disable-Session-Affinity", "true");
-        context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
-        context.Response.Headers.Append("X-Frame-Options", "DENY");
-        context.Response.Headers.Append("X-Permitted-Cross-Domain-Policies", "none");
-        context.Response.Headers.Append("X-XSS-Protection", "0");
-        context.Response.Headers.Append("Strict-Transport-Security", "max-age=31536000;includeSubDomains; preload");
-        context.Response.Headers.Append(
-            "Content-Security-Policy",
-            "base-uri 'self';"
-            + "object-src 'none';"
-            + "default-src 'self';"
-            + "frame-ancestors 'none';"
-            + "connect-src 'self' *.google-analytics.com *.analytics.google.com https://www.compare-school-performance.service.gov.uk https://api.postcodes.io https://*.doubleclick.net https://*.clarity.ms https://c.bing.com https://*.applicationinsights.azure.com/ https://*.visualstudio.com/; child-src 'none';"
-            + "frame-src 'none';"
-            + "img-src 'self' data: https://www.googletagmanager.com/ https://*.google-analytics.com https://atlas.microsoft.com https://*.clarity.ms https://c.bing.com https://js.monitor.azure.com/;"
-            + "style-src 'self';"
-            + "font-src 'self' data:;"
-            + $"script-src 'self' 'nonce-{nonce}' https://www.googletagmanager.com *.google-analytics.com https://*.clarity.ms https://c.bing.com https://js.monitor.azure.com/;"
-        );
-
-        await _next(context);
-    }
-}
-
-public static class SecurityHeadersMiddlewareExtensions
-{
-    public static IApplicationBuilder UseSecurityHeaders(this IApplicationBuilder builder)
-    {
-        return builder.UseMiddleware<SecurityHeadersMiddleware>();
+        public static IApplicationBuilder UseSecurityHeaders(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<SecurityHeadersMiddleware>();
+        }
     }
 }

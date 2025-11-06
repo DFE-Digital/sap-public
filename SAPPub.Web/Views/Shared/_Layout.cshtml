@@ -20,6 +20,10 @@
     @Html.GovUkFrontendStyleImports()
     @Html.GovUkFrontendScriptImports()
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin />
 </head>
 
 <body class="govuk-template__body app-body-class">
@@ -41,6 +45,9 @@
 
     <govuk-service-navigation service-name="@ViewBag.ServiceName" service-url="#">
         <govuk-service-navigation-nav>
+            <govuk-service-navigation-nav-item href="@Url.Action("Map", "Home")">
+                View map
+            </govuk-service-navigation-nav-item>
         </govuk-service-navigation-nav>
     </govuk-service-navigation>
 
@@ -61,6 +68,9 @@
     </govuk-footer>
 
     @Html.GovUkFrontendScriptImports(Html.ScriptNonce().ToString())
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -58,36 +58,28 @@ RUN dotnet publish "./SAPPub.Web.csproj" -c $BUILD_CONFIGURATION -o /app/publish
 
 
 # =====================================================
-# Stage 3: Runtime image
+# Stage 3: Runtime image (chiseled)
 # =====================================================
-FROM mcr.microsoft.com/dotnet/aspnet:${DOTNET_VERSION} AS final
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-noble-chiseled AS final
 WORKDIR /app
 
-# Create a writable folder for Data Protection keys
-RUN mkdir -p /keys && chmod -R 777 /keys
+# Copy app & assets with correct ownership; no shell, so no RUN here
+COPY --from=publish --chown=app:app /app/publish .
+COPY --from=assets  --chown=app:app /app/wwwroot ./wwwroot
 
-# Environment configuration
+# Option A: let the app create /app/keys at runtime (if your code does this)
+#   just set the location:
+ENV ASPNETCORE_DataProtection__Directory=/app/keys
+
+# Option B (safe): materialise an empty /app/keys now so it's writable
+#   Create a tiny placeholder in the repo, e.g. SAPPub.Web/keys/.gitkeep
+#   then:
+# COPY --chown=app:app SAPPub.Web/keys /app/keys
+
 ENV ASPNETCORE_URLS=http://+:3000
 
-# Copy published .NET app
-COPY --from=publish /app/publish .
+# chiseled already defaults to non-root `app`, but you can be explicit:
+USER app
 
-# Copy frontend assets from the assets stage (will merge with published wwwroot)
-COPY --from=assets /app/wwwroot ./wwwroot
-
-# Debug: Verify files are present
-RUN echo "=== Final wwwroot contents ===" && \
-    ls -la /app/wwwroot/ && \
-    echo "=== Checking for frontend libraries ===" && \
-    ls -la /app/wwwroot/lib/ 2>/dev/null || echo "No lib directory" && \
-    echo "=== Checking for DfE frontend ===" && \
-    ls -la /app/wwwroot/lib/dfe-frontend/ 2>/dev/null || echo "DfE not found"
-
-# Expose port
 EXPOSE 3000
-
-# Important: switch to non-root user *after* permissions are set
-USER $APP_UID
-
-# Entry point
 ENTRYPOINT ["dotnet", "SAPPub.Web.dll"]
