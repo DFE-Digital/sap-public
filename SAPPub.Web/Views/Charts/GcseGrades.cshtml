@@ -1,0 +1,132 @@
+﻿@using System.Text.Json
+
+@model SAPPub.Web.Models.Charts.GcseGradesViewModel
+
+
+@{
+    ViewData["Title"] = "Results by pupil types for Grade 5 and above in English and maths GCSEs";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <h1 class="govuk-heading-l">@ViewBag.Title</h1>
+
+        <canvas id="chart" width="500" height="200"></canvas>
+
+        <p class="govuk-body govuk-!-padding-top-5">
+            To view results by data over time <a asp-action="GcseGradesOverTime" class="govuk-link">click here</a>
+        </p>
+    </div>
+</div>
+
+<style>
+    canvas {
+        width: 100% !important;
+        height: 100% !important;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+<script>
+
+    const labels = ['Girls', 'Boys', 'SEN Support'];
+    const chartTitle = 'Results by pupil type';
+
+    const chartCtx = document.getElementById('chart').getContext('2d');
+
+    const gcseChart = new Chart(chartCtx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets:[
+                {
+                    label: 'School',
+                    data: [@Model.SchoolGirls, @Model.SchoolBoys, @Model.SchoolSen],
+                    backgroundColor: ['#4e79a7'],
+                },
+                {
+                    label: 'Sheffield Average',
+                    data: [@Model.SheffieldGirls, @Model.SheffieldBoys, @Model.SheffieldSen],
+                    backgroundColor: ['#f28e2b'],
+                },
+                {
+                    label: 'England Average',
+                    data: [@Model.EnglandGirls, @Model.EnglandBoys, @Model.EnglandSen],
+                    backgroundColor: ['#76b7b2'],
+                },
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspecRatio: false,
+            indexAxis: 'y',
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    max: 80,
+                    grid: {
+                        display: true,
+                        drawBorder: false,
+                        color: (context) => {
+                            return context.tick.value === 0 ? '#000' : '#ccc';
+                        },
+                        lineWidth: (context) => {
+                            return context.tick.value === 0 ? 2 : 1;
+                        }
+                    },
+                    border: {
+                        display: false
+                    },
+                    ticks: {
+                        stepSize: 20,
+                        callback: (value) => value + '%'
+                    }
+                },
+                y: {
+                    grid: {
+                        display: false,
+                        drawBorder: false
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    enabled: true
+                },
+                legend: {
+                    display: true,
+                    position: 'left',
+                    align: 'start',
+                    labels: {
+                        boxWidth:20,
+                        padding: 15
+                    },
+                },
+                title: {
+                    display: true,
+                    text: chartTitle,
+                    font: { size: 18, weight: 'bold' }
+                },
+                datalabels: {
+                    anchor: 'end',
+                    align: 'start',
+                    offset: 10,
+                    color: '#000',
+                    font: {
+                        weight: 'bold',
+                        size: 14
+                    },
+                    formatter: function(value) {
+                        return value + '%';
+                    },
+                    clamp: true,
+                    clip: true
+                }
+            }
+        },
+        plugins: [ChartDataLabels]
+    });
+
+</script>
