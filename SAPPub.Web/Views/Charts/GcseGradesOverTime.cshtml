@@ -1,0 +1,149 @@
+﻿@using System.Text.Json
+
+@model SAPPub.Web.Models.Charts.GcseGradesOverTimeViewModel
+
+
+@{
+    ViewData["Title"] = "Grade 5 and above in English and maths GCSEs - Data over time";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <h1 class="govuk-heading-l">@ViewBag.Title</h1>
+
+        <canvas id="chart" width="500" height="200"></canvas>
+
+        <p class="govuk-body govuk-!-padding-top-5">
+            To view results by gcse grades <a asp-action="Index" class="govuk-link">click here</a>
+        </p>
+    </div>
+</div>
+
+<style>
+    canvas {
+        width: 100% !important;
+        height: 100% !important;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+<script>
+
+    //Chart.register(ChartDataLabels);
+
+    const labels = @Html.Raw(JsonSerializer.Serialize(Model.Years));
+
+    const schoolData = @Html.Raw(JsonSerializer.Serialize(Model.School));
+
+    const sheffieldData = @Html.Raw(JsonSerializer.Serialize(Model.Sheffield));
+
+    const englandData = @Html.Raw(JsonSerializer.Serialize(Model.England));
+
+    const chartTitle = 'Results over times';
+
+    const chartCtx = document.getElementById('chart').getContext('2d');
+
+    const gcseChart = new Chart(chartCtx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets:[
+                {
+                    label: 'School',
+                    data: schoolData,
+                    borderColor: ['#4e79a7'],
+                    fill: false,
+                    tension: 0.2,
+                    pointRadius: 0
+                },
+                {
+                    label: 'Sheffield',
+                    data: sheffieldData,
+                    borderColor: ['#f28e2b'],
+                    fill: false,
+                    tension: 0.2,
+                    pointRadius: 0
+                },
+                {
+                    label: 'England',
+                    data: englandData,
+                    borderColor: ['#76b7b2'],
+                    fill: false,
+                    tension: 0.2,
+                    pointRadius: 0
+                },
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspecRatio: false,
+            layout: {
+                padding: { right: 100 },
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    grid: {
+                        display: true,
+                        drawBorder: false,
+                        color: (context) => {
+                            return context.tick.value === 0 ? '#000' : '#ccc';
+                        },
+                        lineWidth: (context) => {
+                            return context.tick.value === 0 ? 2 : 1;
+                        }
+                    },
+                    border: {
+                        display: false
+                    },
+                    ticks: {
+                        stepSize: 20,
+                        callback: (value) => value + '%',
+                    }
+                },
+                x: {
+                    title: { display: false, text: 'Academic Year' },
+                    ticks: { display: true },
+                    grid: {
+                        display: false
+                    }
+
+                }
+            },
+            plugins: {
+                tooltip: {
+                    enabled: true
+                },
+                legend: { display: false },
+                title: {
+                    display: true,
+                    text: chartTitle,
+                    font: { size: 18, weight: 'bold' }
+                },
+                datalabels: {
+                    align: 'right',
+                    anchor: 'end',
+                    offset: 0,
+                    color: '#000',
+                    font: {
+                        weight: 'bold',
+                        size: 14
+                    },
+                    display: function(ctx) {
+                        return ctx.dataIndex === ctx.dataset.data.length - 1;
+                    },
+                    formatter: function(value, context) {
+                        return context.dataset.label; //value + '%';
+                    },
+                    //clamp: false,
+                    clip: false
+                }
+            }
+        },
+        plugins: [ChartDataLabels]
+    });
+
+</script>
