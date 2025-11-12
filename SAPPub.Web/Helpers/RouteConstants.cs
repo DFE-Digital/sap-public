@@ -6,4 +6,5 @@ public static class RouteConstants
 
     public const string SecondaryAboutSchool = "SecondaryAboutSchool";
     public const string SecondaryAdmissions = "Admissions";
+    public const string SecondaryAttendance = "Attendance";
 }
