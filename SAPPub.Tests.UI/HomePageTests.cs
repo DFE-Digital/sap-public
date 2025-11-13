@@ -92,13 +92,13 @@ public class HomePageTests : IAsyncLifetime
         var header = page.Locator("header.govuk-header");
         var isVisible = await header.IsVisibleAsync();
 
-        // Optionally, also verify the DfE logo or link exists inside the header
-        var logo = page.Locator("header.govuk-header img[alt='Department for Education']");
-        var logoVisible = await logo.IsVisibleAsync();
+        // Locate the GOV.UK logotype SVG 
+        var govUkLogo = page.Locator("header.govuk-header svg[aria-label='GOV.UK']");
+        var logoVisible = await govUkLogo.IsVisibleAsync();
 
         // Assert
         Assert.True(isVisible, "GOV.UK header should be visible");
-        Assert.True(logoVisible, "DfE logo should be visible in the GOV.UK header");
+        Assert.True(logoVisible, "GOV.UK SVG logo should be visible in the header");
 
         await page.CloseAsync();
     }

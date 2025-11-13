@@ -39,5 +39,12 @@ namespace SAPPub.Web.Controllers
         {
             return View();
         }
+
+        [HttpGet]
+        [Route("school/{urn}/{schoolName}/secondary/destinations", Name = RouteConstants.SecondaryDestinations)]
+        public IActionResult Destinations(int urn, string schoolName)
+        {
+            return View();
+        }
     }
 }

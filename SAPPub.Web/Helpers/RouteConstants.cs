@@ -8,4 +8,5 @@ public static class RouteConstants
     public const string SecondaryAdmissions = "Admissions";
     public const string SecondaryAttendance = "Attendance";
     public const string SecondaryCurriculumAndExtraCurricularActivities = "CurriculumAndExtraCurricularActivities";
+    public const string SecondaryDestinations = "Destinations";
 }
