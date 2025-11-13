@@ -67,14 +67,11 @@ WORKDIR /app
 COPY --from=publish --chown=app:app /app/publish .
 COPY --from=assets  --chown=app:app /app/wwwroot ./wwwroot
 
-# Option A: let the app create /app/keys at runtime (if your code does this)
-#   just set the location:
+#  Set location for keys folder:
 ENV ASPNETCORE_DataProtection__Directory=/app/keys
 
-# Option B (safe): materialise an empty /app/keys now so it's writable
-#   Create a tiny placeholder in the repo, e.g. SAPPub.Web/keys/.gitkeep
-#   then:
-# COPY --chown=app:app SAPPub.Web/keys /app/keys
+#   Placeholder created in repo at SAPPub.Web/keys/.gitkeep
+COPY --chown=app:app SAPPub.Web/keys /app/keys
 
 ENV ASPNETCORE_URLS=http://+:3000
 

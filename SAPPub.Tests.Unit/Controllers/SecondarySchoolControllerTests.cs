@@ -48,4 +48,18 @@ public class SecondarySchoolControllerTests
         Assert.NotNull(result);
         Assert.IsType<ViewResult>(result);
     }
+
+    [Fact]
+    public void Get_Attendance_Info_ReturnsOk()
+    {
+        // Arrange
+        int urn = 1;
+        string schoolName = "School Name";
+        // Act
+        var result = _controller.Attendance(urn, schoolName);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.IsType<ViewResult>(result);
+    }
 }
