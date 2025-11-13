@@ -503,3 +503,7 @@ wwwroot/**/*.min.css
 wwwroot/**/*.min.js
 **/wwwroot/lib/
 /TestCoverageReport
+
+# Data Protection key ring (allow only the placeholder)
+SAPPub.Web/keys/*
+!SAPPub.Web/keys/.gitkeep

@@ -27,6 +27,13 @@ namespace SAPPub.Web.Controllers
         }
 
         [HttpGet]
+        [Route("school/{urn}/{schoolName}/secondary/attendance", Name = RouteConstants.SecondaryAttendance)]
+        public IActionResult Attendance(int urn, string schoolName)
+        {
+            return View();
+        }
+
+        [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/curriculum-and-extra-curricular-activities", Name = RouteConstants.SecondaryCurriculumAndExtraCurricularActivities)]
         public IActionResult CurriculumAndExtraCurricularActivities(int urn, string schoolName)
         {
