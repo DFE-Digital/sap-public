@@ -62,4 +62,18 @@ public class SecondarySchoolControllerTests
         Assert.NotNull(result);
         Assert.IsType<ViewResult>(result);
     }
+
+    [Fact]
+    public void Get_CurriculumAndExtraCurricularActivities_Info_ReturnsOk()
+    {
+        // Arrange
+        int urn = 1;
+        string schoolName = "School Name";
+        // Act
+        var result = _controller.Admissions(urn, schoolName);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.IsType<ViewResult>(result);
+    }    
 }

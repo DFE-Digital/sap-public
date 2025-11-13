@@ -32,5 +32,12 @@ namespace SAPPub.Web.Controllers
         {
             return View();
         }
+
+        [HttpGet]
+        [Route("school/{urn}/{schoolName}/secondary/curriculum-and-extra-curricular-activities", Name = RouteConstants.SecondaryCurriculumAndExtraCurricularActivities)]
+        public IActionResult CurriculumAndExtraCurricularActivities(int urn, string schoolName)
+        {
+            return View();
+        }
     }
 }
