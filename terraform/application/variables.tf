@@ -82,5 +82,14 @@ locals {
 
 variable "enable_logit" { default = true }
 
+variable "azure_patch_schedule" {
+  type = list(object({
+    day_of_week        = string,
+    start_hour_utc     = optional(number),
+    maintenance_window = optional(string)
+  }))
+  nullable = false
+  default  = []
+}
 
 
