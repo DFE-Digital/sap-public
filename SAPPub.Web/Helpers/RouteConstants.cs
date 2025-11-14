@@ -5,8 +5,9 @@ public static class RouteConstants
     // Secondary School
 
     public const string SecondaryAboutSchool = "SecondaryAboutSchool";
-    public const string SecondaryAdmissions = "Admissions";
-    public const string SecondaryAttendance = "Attendance";
-    public const string SecondaryCurriculumAndExtraCurricularActivities = "CurriculumAndExtraCurricularActivities";
-    public const string SecondaryDestinations = "Destinations";
+    public const string SecondaryAdmissions = "SecondaryAdmissions";
+    public const string SecondaryAttendance = "SecondaryAttendance";
+    public const string SecondaryCurriculumAndExtraCurricularActivities = "SecondaryCurriculumAndExtraCurricularActivities";
+    public const string SecondaryAcademicPerformance = "SecondaryAcademicPerformance";    
+    public const string SecondaryDestinations = "SecondaryDestinations";
 }

@@ -27,6 +27,7 @@ public class SecondarySchoolControllerTests
         // Arrange
         int urn = 1;
         string schoolName = "School Name";
+
         // Act
         var result = _controller.AboutSchool(urn, schoolName);
 
@@ -41,6 +42,7 @@ public class SecondarySchoolControllerTests
         // Arrange
         int urn = 1;
         string schoolName = "School Name";
+
         // Act
         var result = _controller.Admissions(urn, schoolName);
 
@@ -55,6 +57,7 @@ public class SecondarySchoolControllerTests
         // Arrange
         int urn = 1;
         string schoolName = "School Name";
+
         // Act
         var result = _controller.Attendance(urn, schoolName);
 
@@ -69,8 +72,24 @@ public class SecondarySchoolControllerTests
         // Arrange
         int urn = 1;
         string schoolName = "School Name";
+
         // Act
         var result = _controller.Admissions(urn, schoolName);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.IsType<ViewResult>(result);
+    }
+
+    [Fact]
+    public void Get_AcademicPerformance_Info_ReturnsOk()
+    {
+        // Arrange
+        int urn = 1;
+        string schoolName = "School Name";
+
+        // Act
+        var result = _controller.AcademicPerformance(urn, schoolName);
 
         // Assert
         Assert.NotNull(result);
@@ -83,8 +102,9 @@ public class SecondarySchoolControllerTests
         // Arrange
         int urn = 1;
         string schoolName = "School Name";
+
         // Act
-        var result = _controller.Attendance(urn, schoolName);//
+        var result = _controller.Attendance(urn, schoolName);
 
         // Assert
         Assert.NotNull(result);
