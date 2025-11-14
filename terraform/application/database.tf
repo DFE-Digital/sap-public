@@ -27,6 +27,6 @@ module "redis-cache" {
   cluster_configuration_map = module.cluster_data.configuration_map
   use_azure                 = var.deploy_azure_backing_services
   azure_enable_monitoring   = var.enable_monitoring
-  azure_patch_schedule      = [{ "day_of_week" : "Sunday", "start_hour_utc" : 01 }]
+  azure_patch_schedule      = var.azure_patch_schedule
   server_version            = "6"
 }

@@ -76,7 +76,7 @@ COPY --chown=app:app SAPPub.Web/keys /app/keys
 ENV ASPNETCORE_URLS=http://+:3000
 
 # chiseled already defaults to non-root `app`, but you can be explicit:
-USER app
+USER $APP_UID
 
 EXPOSE 3000
 ENTRYPOINT ["dotnet", "SAPPub.Web.dll"]
