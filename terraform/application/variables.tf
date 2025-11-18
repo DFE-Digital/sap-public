@@ -82,5 +82,24 @@ locals {
 
 variable "enable_logit" { default = true }
 
+variable "postgres_flexible_server_sku" {
+  type        = string
+  default     = "B_Standard_B1ms"
+  description = "SKU for the PostgreSQL flexible server. Use 'GP_Standard_D2ds_v4' for production"
+}
+variable "enable_postgres_high_availability" {
+  type        = bool
+  default     = false
+  description = "Enable high availability for PostgreSQL (doubles cost)"
+}
+variable "azure_maintenance_window" {
+  type = object({
+    day_of_week  = number
+    start_hour   = number
+    start_minute = number
+  })
+  default = null
+  description = "Maintenance window for PostgreSQL. Day 0 = Sunday, 1 = Monday, etc."
+}
 
 
