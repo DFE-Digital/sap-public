@@ -13,6 +13,10 @@ module "application_configuration" {
     ENVIRONMENT_NAME = var.environment
   }
 
+  secret_variables = {
+    DATABASE_URL = module.postgres.url
+  }
+
 }
 
 module "web_application" {
