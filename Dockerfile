@@ -56,6 +56,7 @@ FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./SAPPub.Web.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
+RUN mkdir -p /keys && chmod -R 777 /keys
 
 # =====================================================
 # Stage 3: Runtime image (chiseled)
@@ -68,15 +69,16 @@ COPY --from=publish --chown=app:app /app/publish .
 COPY --from=assets  --chown=app:app /app/wwwroot ./wwwroot
 
 #  Set location for keys folder:
-ENV ASPNETCORE_DataProtection__Directory=/app/keys
+ENV ASPNETCORE_DataProtection__Directory=/keys
 
 #   Placeholder created in repo at SAPPub.Web/keys/.gitkeep
-COPY --chown=app:app SAPPub.Web/keys /app/keys
+COPY --chown=app:app SAPPub.Web/keys /keys
+
 
 ENV ASPNETCORE_URLS=http://+:3000
 
 # chiseled already defaults to non-root `app`, but you can be explicit:
-USER app
+USER $APP_UID
 
 EXPOSE 3000
 ENTRYPOINT ["dotnet", "SAPPub.Web.dll"]
