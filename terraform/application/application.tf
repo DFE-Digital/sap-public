@@ -9,11 +9,12 @@ module "application_configuration" {
   secret_key_vault_short = "app"
   config_variables_path  = "${path.module}/config/${var.config}.yml"
 
-  # Delete for non rails apps
-  is_rails_application = true
-
   config_variables = {
     ENVIRONMENT_NAME = var.environment
+  }
+
+  secret_variables = {
+    DATABASE_URL = module.postgres.url
   }
 
 }
@@ -23,9 +24,10 @@ module "web_application" {
 
   is_web = true
 
-  namespace    = var.namespace
-  environment  = var.environment
-  service_name = var.service_name
+  namespace       = var.namespace
+  environment     = var.environment
+  service_name    = var.service_name
+  run_as_non_root = true
 
   cluster_configuration_map  = module.cluster_data.configuration_map
   kubernetes_config_map_name = module.application_configuration.kubernetes_config_map_name

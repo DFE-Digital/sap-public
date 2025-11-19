@@ -12,7 +12,7 @@ on:
         options:
         - review
         - test
-#        - production
+        - production
       docker-image-tag:
         description: "Docker image tag to deploy (optional)"
         required: true
@@ -124,8 +124,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        environment: [test]
-#        environment: [test,production]
+        environment: [test,production]
 
     steps:
     - name: Deploy app to ${{ matrix.environment }}
