@@ -102,4 +102,15 @@ variable "azure_maintenance_window" {
   description = "Maintenance window for PostgreSQL. Day 0 = Sunday, 1 = Monday, etc."
 }
 
+variable "probe_path" {
+  type        = string
+  default     = "/healthcheck"
+  description = "Path for the liveness and startup probe. The probe can be disabled by setting this to null."
+}
+
+variable "redis_eviction_policy" {
+  type     = string
+  nullable = false
+  default  = "allkeys-lru"
+}
 
