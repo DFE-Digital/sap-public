@@ -1,106 +1,65 @@
-﻿using Microsoft.Playwright;
-using Xunit;
+﻿using FluentAssertions;
+using SAPPub.Tests.UI.Infrastructure;
 
 namespace SAPPub.Tests.UI;
 
-public class HomePageTests : IAsyncLifetime
+public class HomePageTests : BasePageTest
 {
-    private IPlaywright? _playwright;
-    private IBrowser? _browser;
-    private readonly string _baseUrl;
-    public HomePageTests()
-    {
-        _baseUrl = Environment.GetEnvironmentVariable("BASE_URL")
-                   ?? "https://localhost:3000";
-    }
-    public async Task InitializeAsync()
-    {
-        _playwright = await Playwright.CreateAsync();
-        _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
-        {
-            Headless = true
-        });
-    }
-
-    public async Task DisposeAsync()
-    {
-        if (_browser != null)
-        {
-            await _browser.CloseAsync();
-        }
-        _playwright?.Dispose();
-    }
-
     [Fact]
     public async Task HomePage_LoadsSuccessfully()
     {
-        // Arrange
-        var page = await _browser!.NewPageAsync();
-
-        // Act
-        var response = await page.GotoAsync(_baseUrl);
+        // Arrange & Act
+        var response = await GoToPageAysnc(string.Empty);
 
         // Assert
-        Assert.NotNull(response);
-        Assert.Equal(200, response.Status);
-
-        await page.CloseAsync();
+        response.Should().NotBeNull();
+        response.Status.Should().Be(200);
     }
 
     [Fact]
     public async Task HomePage_HasCorrectTitle()
     {
         // Arrange
-        var page = await _browser!.NewPageAsync();
-        await page.GotoAsync(_baseUrl);
+        await GoToPageAysnc(string.Empty);
 
         // Act
-        var title = await page.TitleAsync();
+        var title = await Page.TitleAsync();
 
         // Assert
-        Assert.Contains("School Profile", title);
-
-        await page.CloseAsync();
+        title.Should().Match("School Profile*");
     }
 
     [Fact]
     public async Task HomePage_DisplaysMainHeading()
     {
         // Arrange
-        var page = await _browser!.NewPageAsync();
-        await page.GotoAsync(_baseUrl);
+        await GoToPageAysnc(string.Empty);
 
         // Act
-        var heading = await page.Locator("h1").TextContentAsync();
+        var heading = await Page.Locator("h1").TextContentAsync();
 
         // Assert
-        Assert.NotNull(heading);
-        Assert.NotEmpty(heading);
-
-        await page.CloseAsync();
+        heading.Should().NotBeNullOrWhiteSpace();
     }
 
     [Fact]
     public async Task HomePage_DisplaysGovUkHeader()
     {
         // Arrange
-        var page = await _browser!.NewPageAsync();
-        await page.GotoAsync(_baseUrl);
+        await GoToPageAysnc(string.Empty);
 
         // Act
         // Locate the GOV.UK header element
-        var header = page.Locator("header.govuk-header");
+        var header = Page.Locator("header.govuk-header");
         var isVisible = await header.IsVisibleAsync();
 
         // Locate the GOV.UK logotype SVG 
-        var govUkLogo = page.Locator("header.govuk-header svg[aria-label='GOV.UK']");
+        var govUkLogo = Page.Locator("header.govuk-header svg[aria-label='GOV.UK']");
         var logoVisible = await govUkLogo.IsVisibleAsync();
 
         // Assert
-        Assert.True(isVisible, "GOV.UK header should be visible");
-        Assert.True(logoVisible, "GOV.UK SVG logo should be visible in the header");
-
-        await page.CloseAsync();
+        isVisible.Should().BeTrue("GOV.UK header should be visible");
+        logoVisible.Should().BeTrue("GOV.UK SVG logo should be visible in the header");
     }
 
 
@@ -110,18 +69,15 @@ public class HomePageTests : IAsyncLifetime
     [InlineData(375, 667)]   // Mobile
     public async Task HomePage_IsResponsive(int width, int height)
     {
-        // Arrange
-        var page = await _browser!.NewPageAsync();
-        await page.SetViewportSizeAsync(width, height);
+        // Arrange        
+        await Page.SetViewportSizeAsync(width, height);
 
         // Act
-        await page.GotoAsync(_baseUrl);
-        var heading = page.Locator("h1");
+        await GoToPageAysnc(string.Empty);
+        var heading = Page.Locator("h1");
         var isVisible = await heading.IsVisibleAsync();
 
         // Assert
-        Assert.True(isVisible, $"Heading should be visible at {width}x{height}");
-
-        await page.CloseAsync();
+        isVisible.Should().BeTrue($"Heading should be visible at {width}x{height}");
     }
 }

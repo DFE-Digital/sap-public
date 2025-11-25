@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using SAPPub.Web.Controllers;
+using SAPPub.Web.Models.SecondarySchool;
 
 namespace SAPPub.Tests.Unit.Controllers;
 
@@ -29,11 +31,16 @@ public class SecondarySchoolControllerTests
         string schoolName = "School Name";
 
         // Act
-        var result = _controller.AboutSchool(urn, schoolName);
+        var result = _controller.AboutSchool(urn, schoolName) as ViewResult;
 
         // Assert
-        Assert.NotNull(result);
-        Assert.IsType<ViewResult>(result);
+        result.Should().NotBeNull();
+        result.Model.Should().NotBeNull();
+
+        var model = result.Model as AboutSchoolViewModel;
+        model.Should().NotBeNull();
+        model.Urn.Should().Be(urn);
+        model.SchoolName.Should().Be(schoolName);
     }
 
     [Fact]
@@ -44,11 +51,16 @@ public class SecondarySchoolControllerTests
         string schoolName = "School Name";
 
         // Act
-        var result = _controller.Admissions(urn, schoolName);
+        var result = _controller.Admissions(urn, schoolName) as ViewResult;
 
         // Assert
-        Assert.NotNull(result);
-        Assert.IsType<ViewResult>(result);
+        result.Should().NotBeNull();
+        result.Model.Should().NotBeNull();
+
+        var model = result.Model as AdmissionsViewModel;
+        model.Should().NotBeNull();
+        model.Urn.Should().Be(urn);
+        model.SchoolName.Should().Be(schoolName);
     }
 
     [Fact]
@@ -59,11 +71,16 @@ public class SecondarySchoolControllerTests
         string schoolName = "School Name";
 
         // Act
-        var result = _controller.Attendance(urn, schoolName);
+        var result = _controller.Attendance(urn, schoolName) as ViewResult;
 
         // Assert
-        Assert.NotNull(result);
-        Assert.IsType<ViewResult>(result);
+        result.Should().NotBeNull();
+        result.Model.Should().NotBeNull();
+
+        var model = result.Model as AttendanceViewModel;
+        model.Should().NotBeNull();
+        model.Urn.Should().Be(urn);
+        model.SchoolName.Should().Be(schoolName);
     }
 
     [Fact]
@@ -74,11 +91,16 @@ public class SecondarySchoolControllerTests
         string schoolName = "School Name";
 
         // Act
-        var result = _controller.Admissions(urn, schoolName);
+        var result = _controller.CurriculumAndExtraCurricularActivities(urn, schoolName) as ViewResult;
 
         // Assert
-        Assert.NotNull(result);
-        Assert.IsType<ViewResult>(result);
+        result.Should().NotBeNull();
+        result.Model.Should().NotBeNull();
+
+        var model = result.Model as CurriculumAndExtraCurricularActivitiesViewModel;
+        model.Should().NotBeNull();
+        model.Urn.Should().Be(urn);
+        model.SchoolName.Should().Be(schoolName);
     }
 
     [Fact]
@@ -89,11 +111,16 @@ public class SecondarySchoolControllerTests
         string schoolName = "School Name";
 
         // Act
-        var result = _controller.AcademicPerformance(urn, schoolName);
+        var result = _controller.AcademicPerformance(urn, schoolName) as ViewResult;
 
         // Assert
-        Assert.NotNull(result);
-        Assert.IsType<ViewResult>(result);
+        result.Should().NotBeNull();
+        result.Model.Should().NotBeNull();
+
+        var model = result.Model as AcademicPerformanceViewModel;
+        model.Should().NotBeNull();
+        model.Urn.Should().Be(urn);
+        model.SchoolName.Should().Be(schoolName);
     }
 
     [Fact]
@@ -104,10 +131,15 @@ public class SecondarySchoolControllerTests
         string schoolName = "School Name";
 
         // Act
-        var result = _controller.Attendance(urn, schoolName);
+        var result = _controller.Destinations(urn, schoolName) as ViewResult;
 
         // Assert
-        Assert.NotNull(result);
-        Assert.IsType<ViewResult>(result);
+        result.Should().NotBeNull();
+        result.Model.Should().NotBeNull();
+
+        var model = result.Model as DestinationsViewModel;
+        model.Should().NotBeNull();
+        model.Urn.Should().Be(urn);
+        model.SchoolName.Should().Be(schoolName);
     }
 }

@@ -10,4 +10,9 @@ public static class RouteConstants
     public const string SecondaryCurriculumAndExtraCurricularActivities = "SecondaryCurriculumAndExtraCurricularActivities";
     public const string SecondaryAcademicPerformance = "SecondaryAcademicPerformance";    
     public const string SecondaryDestinations = "SecondaryDestinations";
+
+
+    // Route Attributes
+    public const string Urn = "urn";
+    public const string SchoolName = "schoolName";
 }

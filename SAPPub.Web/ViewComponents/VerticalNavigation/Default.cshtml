@@ -1,0 +1,33 @@
+﻿@model SAPPub.Web.ViewComponents.VerticalNavigation.VerticalNavigationModel
+@using SAPPub.Web.Helpers
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@if (Model != null)
+{
+    var routeAttributes = new Dictionary<string, string> { { RouteConstants.Urn, Model.Urn.ToString() }, { RouteConstants.SchoolName, Model.SchoolName } };
+
+    <div class="govuk-grid-column-one-quarter">
+        <nav class="dfe-vertical-nav" aria-label="Side navigation">
+            <ul class="dfe-vertical-nav__section">
+                <li class="dfe-vertical-nav__section-item  @(Model.ActivePage == RouteConstants.SecondaryAboutSchool ? "dfe-vertical-nav__section-item--current" : "")">
+                    <a class="dfe-vertical-nav__link" asp-route="@RouteConstants.SecondaryAboutSchool" asp-all-route-data="routeAttributes">About the school</a>
+                </li>
+                <li class="dfe-vertical-nav__section-item  @(Model.ActivePage == RouteConstants.SecondaryAdmissions ? "dfe-vertical-nav__section-item--current" : "")">
+                    <a class="dfe-vertical-nav__link" asp-route="@RouteConstants.SecondaryAdmissions" asp-all-route-data="routeAttributes">Admissions</a>
+                </li>
+                <li class="dfe-vertical-nav__section-item  @(Model.ActivePage == RouteConstants.SecondaryCurriculumAndExtraCurricularActivities ? "dfe-vertical-nav__section-item--current" : "")">
+                    <a class="dfe-vertical-nav__link" asp-route="@RouteConstants.SecondaryCurriculumAndExtraCurricularActivities" asp-all-route-data="routeAttributes">Curriculum and extra-curricular activities</a>
+                </li>
+                <li class="dfe-vertical-nav__section-item  @(Model.ActivePage == RouteConstants.SecondaryAttendance ? "dfe-vertical-nav__section-item--current" : "")">
+                    <a class="dfe-vertical-nav__link" asp-route="@RouteConstants.SecondaryAttendance" asp-all-route-data="routeAttributes">Attendance</a>
+                </li>
+                <li class="dfe-vertical-nav__section-item  @(Model.ActivePage == RouteConstants.SecondaryAcademicPerformance ? "dfe-vertical-nav__section-item--current" : "")">
+                    <a class="dfe-vertical-nav__link" asp-route="@RouteConstants.SecondaryAcademicPerformance" asp-all-route-data="routeAttributes">Academic performance</a>
+                </li>
+                <li class="dfe-vertical-nav__section-item  @(Model.ActivePage == RouteConstants.SecondaryDestinations ? "dfe-vertical-nav__section-item--current" : "")">
+                    <a class="dfe-vertical-nav__link" asp-route="@RouteConstants.SecondaryDestinations" asp-all-route-data="routeAttributes">Destinations</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+}

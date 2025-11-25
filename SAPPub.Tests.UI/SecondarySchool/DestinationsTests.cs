@@ -1,85 +1,59 @@
-﻿using Microsoft.Playwright;
+﻿using FluentAssertions;
+using SAPPub.Tests.UI.Helpers;
+using SAPPub.Tests.UI.Infrastructure;
 
 namespace SAPPub.Tests.UI.SecondarySchool;
 
-public class DestinationsPageTests : IAsyncLifetime
+public class DestinationsPageTests : BasePageTest
 {
-    private IPlaywright? _playwright;
-    private IBrowser? _browser;
-    private readonly string _baseUrl;
-    private string _pageUrl = null!;
+    private string _pageUrl = "school/1/kes/secondary/destinations";
 
-    public DestinationsPageTests()
+    [Fact]
+    public async Task AcademicPerformancePage_LoadsSuccessfully()
     {
-        _baseUrl = Environment.GetEnvironmentVariable("BASE_URL")
-                   ?? "https://localhost:3000";
-    }
-    public async Task InitializeAsync()
-    {
-        _playwright = await Playwright.CreateAsync();
-        _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
-        {
-            Headless = true
-        });
+        // Arrange && Act
+        var response = await GoToPageAysnc(_pageUrl);
 
-        _pageUrl = $"{_baseUrl}/school/1/kes/secondary/destinations";
-    }
-
-    public async Task DisposeAsync()
-    {
-        if (_browser != null)
-        {
-            await _browser.CloseAsync();
-        }
-        _playwright?.Dispose();
+        // Assert
+        response.Should().NotBeNull();
+        response.Status.Should().Be(200);
     }
 
     [Fact]
-    public async Task DestinationsPage_LoadsSuccessfully()
+    public async Task AcademicPerformancePage_HasCorrectTitle()
     {
         // Arrange
-        var page = await _browser!.NewPageAsync();
+        await GoToPageAysnc(_pageUrl);
 
         // Act
-        var response = await page.GotoAsync(_pageUrl);
+        var title = await Page.TitleAsync();
 
         // Assert
-        Assert.NotNull(response);
-        Assert.Equal(200, response.Status);
-
-        await page.CloseAsync();
+        title.Should().Match("Destinations*");
     }
 
     [Fact]
-    public async Task DestinationsPage_HasCorrectTitle()
+    public async Task AcademicPerformancePage_DisplaysMainHeading()
     {
         // Arrange
-        var page = await _browser!.NewPageAsync();
-        await page.GotoAsync(_pageUrl);
+        await GoToPageAysnc(_pageUrl);
 
         // Act
-        var title = await page.TitleAsync();
+        var heading = await Page.Locator("h1").TextContentAsync();
 
         // Assert
-        Assert.Contains("Destinations", title);
-
-        await page.CloseAsync();
+        heading.Should().NotBeNullOrWhiteSpace();
     }
 
     [Fact]
-    public async Task Destinations_DisplaysMainHeading()
+    public async Task AcademicPerformancePage_Displays_VerticalNavigation()
     {
-        // Arrange
-        var page = await _browser!.NewPageAsync();
-        await page.GotoAsync(_pageUrl);
+        var nav = new VerticalNavigationHelper(Page);
+        await GoToPageAysnc(_pageUrl);
 
-        // Act
-        var heading = await page.Locator("h1").TextContentAsync();
-
-        // Assert
-        Assert.NotNull(heading);
-        Assert.NotEmpty(heading);
-
-        await page.CloseAsync();
+        await nav.ShouldBeVisibleAsync();
+        await nav.ShouldHaveItemsCountAsync(6);
+        await nav.ShouldHaveOneActiveItemAsync();
+        await nav.ShouldHaveActiveHrefAsync(_pageUrl);
     }
 }
