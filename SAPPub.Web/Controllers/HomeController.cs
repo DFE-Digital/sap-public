@@ -53,6 +53,11 @@ public class HomeController : Controller
         return Json(data);
     }
 
+    public IActionResult Accordion()
+    {
+        return View("~/Views/Accordion/Index.cshtml");
+    }
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
