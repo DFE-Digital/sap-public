@@ -1,25 +1,26 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
+
 .govuk-header__link .govuk-header__logotype {
     height: 30px;
 }
@@ -28,6 +29,7 @@ body {
     content: url(/public/images/department-for-education_black.png);
     height: 30px;
 }
+
 #map {
     position: relative;
     height: 60vh;
@@ -67,4 +69,68 @@ body {
 .marker-focus:focus {
     outline: 2px solid #2563eb;
     outline-offset: 2px;
+}
+
+/* Vertical Navigation */
+
+.dfe-vertical-nav {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 400;
+    font-size: 0.875rem;
+    line-height: 1.14286;
+    padding-left: 15px;
+    margin-left: -15px;
+}
+
+
+/* Vertical Navigation Section */
+
+.dfe-vertical-nav__section {
+    margin: 0 0 20px;
+    padding: 0;
+    list-style-type: none;
+}
+
+.dfe-vertical-nav__section-item {
+    border-left: 4px solid #b1b4b6;
+    font-size: 1rem;
+    line-height: 1.25;
+}
+
+    .dfe-vertical-nav__section-item:hover {
+        border-left: 4px solid #347ca9;
+    }
+
+.dfe-vertical-nav__section-item--current {
+    border-left: 4px solid #003a69;
+    font-weight: 700;
+    background: #f3f2f1;
+}
+
+
+/* Vertical Navigation Links */
+
+.dfe-vertical-nav__link {
+    display: block;
+    padding: 7px 30px 8px 10px;
+    text-decoration: none;
+    margin-bottom: 5px;
+    color: #003a69;
+}
+
+.dfe-vertical-nav__link:hover,
+.dfe-vertical-nav__link:active {
+    color: #1d70b8;
+    border-left-color: #347ca9;
+    text-decoration: none;
+    box-shadow: none;
+}
+
+.dfe-vertical-nav__link:focus {
+    background: #fd0;
+    color: #0b0c0c;
+    text-decoration: none;
+    box-shadow: none;
+    outline: 0;
 }

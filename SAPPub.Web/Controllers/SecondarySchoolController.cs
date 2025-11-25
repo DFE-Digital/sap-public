@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SAPPub.Web.Helpers;
+using SAPPub.Web.Models.SecondarySchool;
 
 namespace SAPPub.Web.Controllers
 {
@@ -16,42 +17,48 @@ namespace SAPPub.Web.Controllers
         [Route("school/{urn}/{schoolName}/secondary/about", Name = RouteConstants.SecondaryAboutSchool)]
         public IActionResult AboutSchool(int urn, string schoolName)
         {
-            return View();
+            var model = new AboutSchoolViewModel { Urn = urn, SchoolName = schoolName };
+            return View(model);
         }
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/admissions", Name = RouteConstants.SecondaryAdmissions)]
         public IActionResult Admissions(int urn, string schoolName)
         {
-            return View();
+            var model = new AdmissionsViewModel { Urn = urn, SchoolName = schoolName };
+            return View(model);
         }
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/attendance", Name = RouteConstants.SecondaryAttendance)]
         public IActionResult Attendance(int urn, string schoolName)
         {
-            return View();
+            var model = new AttendanceViewModel { Urn = urn, SchoolName = schoolName };
+            return View(model);
         }
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/curriculum-and-extra-curricular-activities", Name = RouteConstants.SecondaryCurriculumAndExtraCurricularActivities)]
         public IActionResult CurriculumAndExtraCurricularActivities(int urn, string schoolName)
         {
-            return View();
+            var model = new CurriculumAndExtraCurricularActivitiesViewModel { Urn = urn, SchoolName = schoolName };
+            return View(model);
         }
 
         [HttpGet]
-        [Route("school/{urn}/{schoolName}/secondary/academicperformance", Name = RouteConstants.SecondaryAcademicPerformance)]
+        [Route("school/{urn}/{schoolName}/secondary/academic-performance", Name = RouteConstants.SecondaryAcademicPerformance)]
         public IActionResult AcademicPerformance(int urn, string schoolName)
         {
-            return View();
+            var model = new AcademicPerformanceViewModel { Urn = urn, SchoolName = schoolName };
+            return View(model);
         }
         
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/destinations", Name = RouteConstants.SecondaryDestinations)]
         public IActionResult Destinations(int urn, string schoolName)
         {
-            return View();
+            var model = new DestinationsViewModel { Urn = urn, SchoolName = schoolName };
+            return View(model);
         }
     }
 }

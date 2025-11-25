@@ -1,85 +1,59 @@
-﻿using Microsoft.Playwright;
+﻿using FluentAssertions;
+using SAPPub.Tests.UI.Helpers;
+using SAPPub.Tests.UI.Infrastructure;
 
 namespace SAPPub.Tests.UI.SecondarySchool;
 
-public class AboutSchoolPageTests : IAsyncLifetime
+public class AboutSchoolPageTests : BasePageTest
 {
-    private IPlaywright? _playwright;
-    private IBrowser? _browser;
-    private readonly string _baseUrl;
-    private string _pageUrl = null!;
-
-    public AboutSchoolPageTests()
-    {
-        _baseUrl = Environment.GetEnvironmentVariable("BASE_URL")
-                   ?? "https://localhost:3000";
-    }
-    public async Task InitializeAsync()
-    {
-        _playwright = await Playwright.CreateAsync();
-        _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
-        {
-            Headless = true
-        });
-
-        _pageUrl = $"{_baseUrl}/school/1/kes/secondary/about";
-    }
-
-    public async Task DisposeAsync()
-    {
-        if (_browser != null)
-        {
-            await _browser.CloseAsync();
-        }
-        _playwright?.Dispose();
-    }
+    private string _pageUrl = "school/1/kes/secondary/about";
 
     [Fact]
     public async Task AboutSchoolPage_LoadsSuccessfully()
     {
-        // Arrange
-        var page = await _browser!.NewPageAsync();
-
-        // Act
-        var response = await page.GotoAsync(_pageUrl);
+        // Arrange && Act
+        var response = await GoToPageAysnc(_pageUrl);
 
         // Assert
-        Assert.NotNull(response);
-        Assert.Equal(200, response.Status);
-
-        await page.CloseAsync();
+        response.Should().NotBeNull();
+        response.Status.Should().Be(200);
     }
 
     [Fact]
     public async Task AboutSchoolPage_HasCorrectTitle()
     {
         // Arrange
-        var page = await _browser!.NewPageAsync();
-        await page.GotoAsync(_pageUrl);
+        await GoToPageAysnc(_pageUrl);
 
         // Act
-        var title = await page.TitleAsync();
+        var title = await Page.TitleAsync();
 
         // Assert
-        Assert.Contains("About the school", title);
-
-        await page.CloseAsync();
+        title.Should().Match("About the school*");
     }
 
     [Fact]
     public async Task AboutSchoolPage_DisplaysMainHeading()
     {
         // Arrange
-        var page = await _browser!.NewPageAsync();
-        await page.GotoAsync(_pageUrl);
+        await GoToPageAysnc(_pageUrl);
 
         // Act
-        var heading = await page.Locator("h1").TextContentAsync();
+        var heading = await Page.Locator("h1").TextContentAsync();
 
         // Assert
-        Assert.NotNull(heading);
-        Assert.NotEmpty(heading);
+        heading.Should().NotBeNullOrWhiteSpace();
+    }
 
-        await page.CloseAsync();
+    [Fact]
+    public async Task AboutSchoolPage_Displays_VerticalNavigation()
+    {
+        var nav = new VerticalNavigationHelper(Page);
+        await GoToPageAysnc(_pageUrl);
+
+        await nav.ShouldBeVisibleAsync();
+        await nav.ShouldHaveItemsCountAsync(6);
+        await nav.ShouldHaveOneActiveItemAsync();
+        await nav.ShouldHaveActiveHrefAsync(_pageUrl);
     }
 }
