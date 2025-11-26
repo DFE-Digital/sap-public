@@ -55,5 +55,18 @@ public class AcademicPerformanceTests : BasePageTest
         await nav.ShouldHaveItemsCountAsync(6);
         await nav.ShouldHaveOneActiveItemAsync();
         await nav.ShouldHaveActiveHrefAsync(_pageUrl);
-    }    
+    }
+
+    [Fact]
+    public async Task AcademicPerformancePage_DisplaysWhatDoTheQualificationsMean()
+    {
+        // Arrange
+        await GoToPageAysnc(_pageUrl);
+
+        // Act
+        var isVisible = await Page.Locator("#details-academic-performance").IsVisibleAsync();
+
+        // Assert
+        isVisible.Should().BeTrue();
+    }
 }
