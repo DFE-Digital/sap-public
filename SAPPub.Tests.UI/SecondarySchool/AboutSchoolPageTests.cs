@@ -56,4 +56,17 @@ public class AboutSchoolPageTests : BasePageTest
         await nav.ShouldHaveOneActiveItemAsync();
         await nav.ShouldHaveActiveHrefAsync(_pageUrl);
     }
+
+    [Fact]
+    public async Task AboutSchoolPage_DisplaysSpecialistUnit()
+    {
+        // Arrange
+        await GoToPageAysnc(_pageUrl);
+
+        // Act
+        var isVisible = await Page.Locator("#details-sen").IsVisibleAsync();
+
+        // Assert
+        isVisible.Should().BeTrue();
+    }
 }
