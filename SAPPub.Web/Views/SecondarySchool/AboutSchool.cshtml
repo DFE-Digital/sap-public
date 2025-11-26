@@ -8,13 +8,36 @@
 <div class="govuk-grid-row">
     @await Component.InvokeAsync("VerticalNavigation",
     new VerticalNavigationModel
-    { 
+    {
         Urn = Model.Urn,
         SchoolName = Model.SchoolName,
         ActivePage = RouteConstants.SecondaryAboutSchool
     })
-    
+
     <div class="govuk-grid-column-three-quarters">
         <h1 class="govuk-heading-l">@ViewBag.Title</h1>
+
+        <govuk-details id="details-sen">
+            <govuk-details-summary>
+                What is a SEN unit or a resourced provision?
+            </govuk-details-summary>
+            <govuk-details-text>
+                <p>
+                    Special educational needs (SEN) units and resourced provisions are specialist provisions in mainstream schools formally recognised by the local authority.
+                </p>
+
+                <p>
+                    In SEN units pupils are taught within separate classes for at least half of their time.
+                </p>
+
+                <p>
+                    In resourced provisions, pupils are taught within mainstream classes for at least half of their time, but have access to a base and specialist facilities around the school.
+                </p>
+
+                <p>
+                    They are both for pupils with SEN, who typically have education, health, and care (EHC) plans.
+                </p>
+            </govuk-details-text>
+        </govuk-details>
     </div>
 </div>
