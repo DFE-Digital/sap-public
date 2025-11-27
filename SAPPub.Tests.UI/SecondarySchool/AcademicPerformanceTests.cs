@@ -69,4 +69,18 @@ public class AcademicPerformanceTests : BasePageTest
         // Assert
         isVisible.Should().BeTrue();
     }
+    
+
+    [Fact]
+    public async Task AcademicPerformancePage_Displays_Gcse_Grades_Explained()
+    {
+        // Arrange
+        await GoToPageAysnc(_pageUrl);
+
+        // Act
+        var isVisible = await Page.Locator("#details-gcse-grades-explained").IsVisibleAsync();
+
+        // Assert
+        isVisible.Should().BeTrue();
+    }
 }
