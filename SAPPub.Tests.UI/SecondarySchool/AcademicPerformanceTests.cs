@@ -55,5 +55,18 @@ public class AcademicPerformanceTests : BasePageTest
         await nav.ShouldHaveItemsCountAsync(6);
         await nav.ShouldHaveOneActiveItemAsync();
         await nav.ShouldHaveActiveHrefAsync(_pageUrl);
-    }    
+    }
+
+    [Fact]
+    public async Task AcademicPerformancePage_Displays_Gcse_Grades_Explained()
+    {
+        // Arrange
+        await GoToPageAysnc(_pageUrl);
+
+        // Act
+        var isVisible = await Page.Locator("#details-gcse-grades-explained").IsVisibleAsync();
+
+        // Assert
+        isVisible.Should().BeTrue();
+    }
 }
