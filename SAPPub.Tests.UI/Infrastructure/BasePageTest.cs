@@ -10,6 +10,14 @@ public class BasePageTest : PageTest
 
     }
 
+    public override BrowserNewContextOptions ContextOptions()
+    {
+        return new BrowserNewContextOptions
+        {
+            IgnoreHTTPSErrors = true
+        };
+    }
+
     protected async Task<IResponse?> GoToPageAysnc(string relativeUrl)
     {
         var baseUrl = Environment.GetEnvironmentVariable("BASE_URL") 
