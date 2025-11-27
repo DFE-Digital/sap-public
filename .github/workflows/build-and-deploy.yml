@@ -88,8 +88,11 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
+      - name: Build solution
+        run: dotnet build --configuration Debug
+
       - name: Install Playwright browsers
-        uses: microsoft/playwright-github-action@v1
+        run: npx playwright install --with-deps
 
       - name: Run Unit Tests
         run: dotnet test ./SAPPub.Tests.Unit/SAPPub.Tests.Unit.csproj --no-build --logger trx /p:CollectCoverage=false
@@ -99,6 +102,7 @@ jobs:
 
       - name: Run UI Tests
         run: dotnet test ./SAPPub.Tests.UI/SAPPub.Tests.UI.csproj --no-build --logger trx /p:CollectCoverage=false
+
 
 
   # ---------------------------
