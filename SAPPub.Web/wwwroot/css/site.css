@@ -134,3 +134,8 @@ body {
     box-shadow: none;
     outline: 0;
 }
+
+.govuk-accordion__controls {
+    display: none;
+}
+
