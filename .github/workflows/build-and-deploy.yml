@@ -88,19 +88,18 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-      # Optional for Playwright UI tests (harmless if unused)
       - name: Install Playwright browsers
-        run: pwsh ./SAPPub.Tests.UI/bin/Debug/net8.0/playwright.ps1 install
-        continue-on-error: true
+        uses: microsoft/playwright-github-action@v1
 
       - name: Run Unit Tests
-        run: dotnet test ./SAPPub.Tests.Unit/SAPPub.Tests.Unit.csproj --no-build --logger trx
+        run: dotnet test ./SAPPub.Tests.Unit/SAPPub.Tests.Unit.csproj --no-build --logger trx /p:CollectCoverage=false
 
       - name: Run Integration Tests
-        run: dotnet test ./SAPPub.Tests.Integration/SAPPub.Tests.Integration.csproj --no-build --logger trx
+        run: dotnet test ./SAPPub.Tests.Integration/SAPPub.Tests.Integration.csproj --no-build --logger trx /p:CollectCoverage=false
 
       - name: Run UI Tests
-        run: dotnet test ./SAPPub.Tests.UI/SAPPub.Tests.UI.csproj --no-build --logger trx
+        run: dotnet test ./SAPPub.Tests.UI/SAPPub.Tests.UI.csproj --no-build --logger trx /p:CollectCoverage=false
+
 
   # ---------------------------
   # REVIEW APP DEPLOYMENT (PR)
