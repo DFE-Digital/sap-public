@@ -69,7 +69,7 @@ public class AcademicPerformanceTests : BasePageTest
         // Assert
         isVisible.Should().BeTrue();
     }
-    }
+    
 
     [Fact]
     public async Task AcademicPerformancePage_Displays_Gcse_Grades_Explained()
