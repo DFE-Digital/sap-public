@@ -97,18 +97,15 @@ jobs:
       - name: Install Playwright browsers (.NET)
         run: pwsh ./SAPPub.Tests.UI/bin/Debug/net8.0/playwright.ps1 install
 
-      # ⭐ Start ASP.NET MVC app ⭐
       - name: Start MVC App
         run: |
-          dotnet run --project ./SAPPub/SAPPub.csproj --urls "https://localhost:3000" &
+          dotnet run --project ./SAPPub.Web/SAPPub.Web.csproj --urls "https://localhost:3000" &
         env:
           ASPNETCORE_ENVIRONMENT: Development
 
-      # ⭐ Wait for the app to be ready ⭐
       - name: Wait for MVC App to be ready
         run: npx wait-on https://localhost:3000
 
-      # --- Run Tests ---
       - name: Run Unit Tests
         run: dotnet test ./SAPPub.Tests.Unit/SAPPub.Tests.Unit.csproj --no-build --logger trx /p:CollectCoverage=false
 
