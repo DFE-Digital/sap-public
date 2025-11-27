@@ -1,9 +1,4 @@
-﻿<style>
-    #accordion-default .govuk-accordion__controls {
-        display:none;
-    }
-</style>
-<div>
+﻿<div>
     <h1 class="govuk-heading-l">
         Accordion
     </h1>
@@ -80,7 +75,7 @@
                     <div class="govuk-summary-card__content">
 
                         <div class="govuk-summary-list__row govuk-!-margin-top-3 govuk-!-margin-bottom-3">
-                            <p class="govuk-body">
+                            <p>
                                 If your child is moving schools, you’ll need to apply through your local council,
                                 even if you’re applying for a school in another council area or you’ve just moved to England.
                             </p>
@@ -122,16 +117,14 @@
         Details
     </h1>
 
-    <details class="govuk-details">
-        <summary class="govuk-details__summary">
-            <span class="govuk-details__summary-text">
-                What do the qualifications mean?
-            </span>
-        </summary>
-        <div class="govuk-details__text">
-            <p class="govuk-body">A GCSE is an academic qualification awarded for exams in England, usually taken at the age of 16.</p>
-            <p class="govuk-body">Technical Awards, such as BTECs, are work-related qualifications in areas like travel and tourism or animal care.</p>
-            <p class="govuk-body">If the qualification offered is not applicable, it means that pupils will study this subject but will not gain a qualification.</p>
-        </div>
-    </details>
+    <govuk-details id="details-demo">
+        <govuk-details-summary>
+            What do the qualifications mean?
+        </govuk-details-summary>
+        <govuk-details-text>
+            <p>A GCSE is an academic qualification awarded for exams in England, usually taken at the age of 16.</p>
+            <p>Technical Awards, such as BTECs, are work-related qualifications in areas like travel and tourism or animal care.</p>
+            <p>If the qualification offered is not applicable, it means that pupils will study this subject but will not gain a qualification.</p>
+        </govuk-details-text>
+    </govuk-details>
 </div>

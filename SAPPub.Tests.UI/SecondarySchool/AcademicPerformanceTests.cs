@@ -58,6 +58,20 @@ public class AcademicPerformanceTests : BasePageTest
     }
 
     [Fact]
+    public async Task AcademicPerformancePage_DisplaysWhatDoTheQualificationsMean()
+    {
+        // Arrange
+        await GoToPageAysnc(_pageUrl);
+
+        // Act
+        var isVisible = await Page.Locator("#details-academic-performance").IsVisibleAsync();
+
+        // Assert
+        isVisible.Should().BeTrue();
+    }
+    }
+
+    [Fact]
     public async Task AcademicPerformancePage_Displays_Gcse_Grades_Explained()
     {
         // Arrange
