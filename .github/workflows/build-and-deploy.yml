@@ -36,7 +36,6 @@ env:
   HEALTHCHECK_CMD: "healthcheck"
 
 jobs:
-
   # ---------------------------
   # BUILD
   # ---------------------------
@@ -53,8 +52,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-        name: Checkout
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Build and push docker image
         id: build-image
@@ -115,8 +114,14 @@ jobs:
       - name: Run UI Tests
         run: dotnet test ./SAPPub.Tests.UI/SAPPub.Tests.UI.csproj --no-build --logger trx /p:CollectCoverage=false
 
+      - name: List artifacts
+        if: ${{ always() }}
+        run: |
+          echo "Listing test-artifacts..."
+          ls -R test-artifacts || echo "No artifacts found"
+
       - name: Upload UI artifacts on failure
-        if: failure()
+        if: ${{ failure() }}
         uses: actions/upload-artifact@v4
         with:
           name: ui-test-artifacts
