@@ -50,6 +50,7 @@ public class BasePageTest : PageTest
         await base.DisposeAsync();
     }
 
+
     protected async Task<IResponse?> GoToPageAysnc(string relativeUrl)
     {
         var baseUrl = Environment.GetEnvironmentVariable("BASE_URL")
