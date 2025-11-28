@@ -80,4 +80,17 @@ public class HomePageTests : BasePageTest
         // Assert
         isVisible.Should().BeTrue($"Heading should be visible at {width}x{height}");
     }
+
+    [Fact]
+    public async Task HomePage_DeliberatelyFailingTestToCheckPlaywrightVideoAndScreenshotOutput()//To be removed after playwright functionality has been tested
+    {
+        // Arrange
+        await GoToPageAysnc(string.Empty);
+
+        // Act
+        var title = await Page.TitleAsync();
+
+        // Assert
+        title.Should().Match("Text That Does Not Exist");
+    }
 }
