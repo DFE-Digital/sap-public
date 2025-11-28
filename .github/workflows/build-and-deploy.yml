@@ -115,9 +115,15 @@ jobs:
       - name: Run UI Tests
         run: dotnet test ./SAPPub.Tests.UI/SAPPub.Tests.UI.csproj --no-build --logger trx /p:CollectCoverage=false
 
-
-
-
+      - name: Upload UI artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-test-artifacts
+          path: |
+            test-artifacts/screenshots
+            test-artifacts/videos
+            test-artifacts/traces
 
   # ---------------------------
   # REVIEW APP DEPLOYMENT (PR)
