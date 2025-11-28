@@ -18,8 +18,12 @@ public class BasePageTest : PageTest, IAsyncLifetime
         };
     }
 
-    public async Task InitializeAsync()
+    // ⭐ IMPORTANT: use `new` (NOT override)
+    public new async Task InitializeAsync()
     {
+        Console.WriteLine(">>> IAsyncLifetime.InitializeAsync called");
+
+        // Run Playwright’s built-in init
         await base.InitializeAsync();
 
         Directory.CreateDirectory("test-artifacts/screenshots");
@@ -34,19 +38,25 @@ public class BasePageTest : PageTest, IAsyncLifetime
         });
     }
 
-    public async Task DisposeAsync()
+    // ⭐ IMPORTANT: use `new` (NOT override)
+    public new async Task DisposeAsync()
     {
+        Console.WriteLine(">>> IAsyncLifetime.DisposeAsync called");
+
+        // Write trace
         await Context.Tracing.StopAsync(new()
         {
             Path = $"test-artifacts/traces/{Guid.NewGuid()}.zip"
         });
 
+        // Write screenshot
         await Page.ScreenshotAsync(new()
         {
             Path = $"test-artifacts/screenshots/{Guid.NewGuid()}.png",
             FullPage = true
         });
 
+        // Run Playwright internal cleanup
         await base.DisposeAsync();
     }
 
