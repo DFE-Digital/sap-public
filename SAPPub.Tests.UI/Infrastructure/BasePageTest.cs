@@ -1,9 +1,10 @@
 ﻿using Microsoft.Playwright;
 using Microsoft.Playwright.Xunit;
+using Xunit;
 
 namespace SAPPub.Tests.UI.Infrastructure;
 
-public class BasePageTest : PageTest
+public class BasePageTest : PageTest, IAsyncLifetime
 {
     public BasePageTest() : base() { }
 
@@ -17,9 +18,13 @@ public class BasePageTest : PageTest
         };
     }
 
-    public override async Task InitializeAsync()
+    public async Task InitializeAsync()
     {
         await base.InitializeAsync();
+
+        Directory.CreateDirectory("test-artifacts/screenshots");
+        Directory.CreateDirectory("test-artifacts/traces");
+        Directory.CreateDirectory("test-artifacts/videos");
 
         await Context.Tracing.StartAsync(new()
         {
@@ -29,27 +34,21 @@ public class BasePageTest : PageTest
         });
     }
 
-    public override async Task DisposeAsync()
+    public async Task DisposeAsync()
     {
-        Directory.CreateDirectory("test-artifacts/screenshots");
-        Directory.CreateDirectory("test-artifacts/traces");
+        await Context.Tracing.StopAsync(new()
+        {
+            Path = $"test-artifacts/traces/{Guid.NewGuid()}.zip"
+        });
 
-        // Screenshot every time (small cost)
         await Page.ScreenshotAsync(new()
         {
             Path = $"test-artifacts/screenshots/{Guid.NewGuid()}.png",
             FullPage = true
         });
 
-        // Stop tracing and save trace file
-        await Context.Tracing.StopAsync(new()
-        {
-            Path = $"test-artifacts/traces/{Guid.NewGuid()}.zip"
-        });
-
         await base.DisposeAsync();
     }
-
 
     protected async Task<IResponse?> GoToPageAysnc(string relativeUrl)
     {
