@@ -1,10 +1,9 @@
 ﻿using Microsoft.Playwright;
 using Microsoft.Playwright.Xunit;
-using Xunit;
 
 namespace SAPPub.Tests.UI.Infrastructure;
 
-public class BasePageTest : PageTest, IAsyncLifetime
+public class BasePageTest : PageTest
 {
     public BasePageTest() : base() { }
 
@@ -18,12 +17,10 @@ public class BasePageTest : PageTest, IAsyncLifetime
         };
     }
 
-    // ⭐ IMPORTANT: use `new` (NOT override)
-    public new async Task InitializeAsync()
+    public override async Task InitializeAsync()
     {
-        Console.WriteLine(">>> IAsyncLifetime.InitializeAsync called");
+        Console.WriteLine(">>> PageTest.InitializeAsync RUN");
 
-        // Run Playwright’s built-in init
         await base.InitializeAsync();
 
         Directory.CreateDirectory("test-artifacts/screenshots");
@@ -38,25 +35,21 @@ public class BasePageTest : PageTest, IAsyncLifetime
         });
     }
 
-    // ⭐ IMPORTANT: use `new` (NOT override)
-    public new async Task DisposeAsync()
+    public override async Task DisposeAsync()
     {
-        Console.WriteLine(">>> IAsyncLifetime.DisposeAsync called");
+        Console.WriteLine(">>> PageTest.DisposeAsync RUN");
 
-        // Write trace
         await Context.Tracing.StopAsync(new()
         {
             Path = $"test-artifacts/traces/{Guid.NewGuid()}.zip"
         });
 
-        // Write screenshot
         await Page.ScreenshotAsync(new()
         {
             Path = $"test-artifacts/screenshots/{Guid.NewGuid()}.png",
             FullPage = true
         });
 
-        // Run Playwright internal cleanup
         await base.DisposeAsync();
     }
 

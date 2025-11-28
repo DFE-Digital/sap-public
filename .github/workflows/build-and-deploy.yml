@@ -115,6 +115,12 @@ jobs:
       - name: Run UI Tests
         run: dotnet test ./SAPPub.Tests.UI/SAPPub.Tests.UI.csproj --no-build --logger trx /p:CollectCoverage=false
 
+      - name: Debug: list artifacts
+        if: always()
+        run: |
+          echo "Listing test-artifacts..."
+          ls -R test-artifacts || echo "No artifacts found"
+
       - name: Upload UI artifacts on failure
         if: failure()
         uses: actions/upload-artifact@v4
