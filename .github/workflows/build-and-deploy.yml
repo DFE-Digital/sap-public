@@ -36,6 +36,7 @@ env:
   HEALTHCHECK_CMD: "healthcheck"
 
 jobs:
+
   # ---------------------------
   # BUILD
   # ---------------------------
@@ -67,10 +68,10 @@ jobs:
           snyk-token: ${{ secrets.SNYK_TOKEN }}
 
   # ---------------------------
-  # TESTS — UNIT/INTEGRATION/UI
+  # TESTS: UNIT, INTEGRATION, UI
   # ---------------------------
   test:
-    name: Run Unit, Integration & UI Tests
+    name: Run Unit, Integration and UI Tests
     if: ${{ github.event_name != 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     needs: [build]
@@ -163,10 +164,10 @@ jobs:
           smoke-test: false
 
   # ---------------------------
-  # DEPLOY TEST (AUTO) + PROD (MANUAL APPROVAL REQUIRED)
+  # DEPLOY TEST (AUTO) + PROD (MANUAL APPROVAL)
   # ---------------------------
   deploy:
-    name: Deploy to Test & Production
+    name: Deploy to Test and Production
     if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
     needs: [build, test]
     runs-on: ubuntu-latest
