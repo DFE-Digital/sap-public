@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using SAPPub.Tests.UI.Helpers;
 using SAPPub.Tests.UI.Infrastructure;
-using Xunit.Abstractions;
 
 namespace SAPPub.Tests.UI.SecondarySchool;
 
