@@ -17,9 +17,51 @@
     <div class="govuk-grid-column-three-quarters">
         <h1 class="govuk-heading-l">@ViewBag.Title</h1>
 
-        <hr />
+        <div id="current-curriculum-summary" class="govuk-summary-card">
+            <div class="govuk-summary-card__title-wrapper">
+                <h2 class="govuk-summary-card__title">Current curriculum</h2>
+            </div>
+            <div class="govuk-summary-card__content">
+                <div class="govuk-summary-list__row">
+                    <p>
+                        Subjects taught at each school will vary. Most secondary schools will teach the core subjects of English, maths and science, along with the foundation subjects of the national curriculum.
+                        Schools can also include other subjects or topics of their choice as part of the school curriculum.
+                    </p>
+                </div>
+                <dl class="govuk-summary-list govuk-summary-list--no-border-top">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Key stage 3 (KS3) curriculum
+                            <span class="govuk-hint govuk-clear">
+                                Covers years 7 to 9
+                            </span>
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <a class="govuk-link" href="#">
+                                View the school’s KS3 curriculum on their website
+                            </a>
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Key stage 4 (KS4) curriculum
+                            <span class="govuk-hint govuk-clear">
+                                Covers years 10 and 11
+                            </span>
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <a class="govuk-link" href="#">
+                                View the school’s KS4 curriculum on their website
+                            </a>
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
 
-        <h3>
+        <hr/>
+
+        <h3 class="govuk-!-margin-top-5">
             Extra-curricular activities
         </h3>
 
@@ -57,5 +99,33 @@
                 personal and social development - some schools may offer activities such as Duke of Edinburgh Award, for example
             </li>
         </ul>
+
+        <div id="current-extra-curricular-activities-offered-summary" class="govuk-summary-card">
+            <div class="govuk-summary-card__title-wrapper">
+                <h2 class="govuk-summary-card__title">Current extra-curricular activities offered</h2>
+            </div>
+            <div class="govuk-summary-card__content">
+                <div class="govuk-summary-list__row">
+                    <p>
+                        Most schools offer a range of activities that are linked to, or work in addition to, the curriculum.
+                    </p>
+                    <p>
+                        The range of activities can vary due to staff availability, time of year and funding.
+                    </p>
+                </div>
+                <dl class="govuk-summary-list govuk-summary-list--no-border-top">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Extra-curricular activities
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <a class="govuk-link" href="#">
+                                Visit the school website for current extra-curricular activities
+                            </a>
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
     </div>
 </div>

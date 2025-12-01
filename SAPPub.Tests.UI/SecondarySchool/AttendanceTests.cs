@@ -9,7 +9,7 @@ public class AttendancePageTests : BasePageTest
     private string _pageUrl = "school/1/kes/secondary/attendance";
 
     [Fact]
-    public async Task AcademicPerformancePage_LoadsSuccessfully()
+    public async Task AttendancePage_LoadsSuccessfully()
     {
         // Arrange && Act
         var response = await GoToPageAysnc(_pageUrl);
@@ -20,7 +20,7 @@ public class AttendancePageTests : BasePageTest
     }
 
     [Fact]
-    public async Task AcademicPerformancePage_HasCorrectTitle()
+    public async Task AttendancePage_HasCorrectTitle()
     {
         // Arrange
         await GoToPageAysnc(_pageUrl);
@@ -33,7 +33,7 @@ public class AttendancePageTests : BasePageTest
     }
 
     [Fact]
-    public async Task AcademicPerformancePage_DisplaysMainHeading()
+    public async Task AttendancePage_DisplaysMainHeading()
     {
         // Arrange
         await GoToPageAysnc(_pageUrl);
@@ -46,7 +46,7 @@ public class AttendancePageTests : BasePageTest
     }
 
     [Fact]
-    public async Task AcademicPerformancePage_Displays_VerticalNavigation()
+    public async Task AttendancePage_Displays_VerticalNavigation()
     {
         var nav = new VerticalNavigationHelper(Page);
         await GoToPageAysnc(_pageUrl);

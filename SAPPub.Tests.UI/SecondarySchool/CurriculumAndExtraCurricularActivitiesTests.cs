@@ -9,7 +9,7 @@ public class CurriculumAndExtraCurricularActivitiesTests : BasePageTest
     private string _pageUrl = "school/1/kes/secondary/curriculum-and-extra-curricular-activities";
 
     [Fact]
-    public async Task AcademicPerformancePage_LoadsSuccessfully()
+    public async Task CurriculumAndExtraCurricularActivitiesPage_LoadsSuccessfully()
     {
         // Arrange && Act
         var response = await GoToPageAysnc(_pageUrl);
@@ -20,7 +20,7 @@ public class CurriculumAndExtraCurricularActivitiesTests : BasePageTest
     }
 
     [Fact]
-    public async Task AcademicPerformancePage_HasCorrectTitle()
+    public async Task CurriculumAndExtraCurricularActivitiesPage_HasCorrectTitle()
     {
         // Arrange
         await GoToPageAysnc(_pageUrl);
@@ -33,7 +33,7 @@ public class CurriculumAndExtraCurricularActivitiesTests : BasePageTest
     }
 
     [Fact]
-    public async Task AcademicPerformancePage_DisplaysMainHeading()
+    public async Task CurriculumAndExtraCurricularActivitiesPage_DisplaysMainHeading()
     {
         // Arrange
         await GoToPageAysnc(_pageUrl);
@@ -46,7 +46,7 @@ public class CurriculumAndExtraCurricularActivitiesTests : BasePageTest
     }
 
     [Fact]
-    public async Task AcademicPerformancePage_Displays_VerticalNavigation()
+    public async Task CurriculumAndExtraCurricularActivitiesPage_Displays_VerticalNavigation()
     {
         var nav = new VerticalNavigationHelper(Page);
         await GoToPageAysnc(_pageUrl);
@@ -55,5 +55,31 @@ public class CurriculumAndExtraCurricularActivitiesTests : BasePageTest
         await nav.ShouldHaveItemsCountAsync(6);
         await nav.ShouldHaveOneActiveItemAsync();
         await nav.ShouldHaveActiveHrefAsync(_pageUrl);
+    }
+
+    [Fact]
+    public async Task CurriculumAndExtraCurricularActivitiesPage_Displays_Curriculum_Summary()
+    {
+        // Arrange
+        await GoToPageAysnc(_pageUrl);
+
+        // Act
+        var isVisible = await Page.Locator("#current-curriculum-summary").IsVisibleAsync();
+
+        // Assert
+        isVisible.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task CurriculumAndExtraCurricularActivitiesPage_Displays_Extra_Curriculum_Summary()
+    {
+        // Arrange
+        await GoToPageAysnc(_pageUrl);
+
+        // Act
+        var isVisible = await Page.Locator("#current-extra-curricular-activities-offered-summary").IsVisibleAsync();
+
+        // Assert
+        isVisible.Should().BeTrue();
     }
 }
