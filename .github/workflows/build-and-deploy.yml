@@ -122,14 +122,14 @@ jobs:
           ls -R SAPPub.Tests.UI/test-artifacts || echo "No artifacts found"
 
       - name: Upload UI artifacts on failure
-        if: ${{ failure() }}
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: ui-test-artifacts
           path: |
-            SAPPub.Tests.UI/test-artifacts/screenshots
-            SAPPub.Tests.UI/test-artifacts/videos
-            SAPPub.Tests.UI/test-artifacts/traces
+            **/test-artifacts/screenshots/**
+            **/test-artifacts/videos/**
+            **/test-artifacts/traces/**
 
   # ---------------------------
   # REVIEW APP DEPLOYMENT (PR)
