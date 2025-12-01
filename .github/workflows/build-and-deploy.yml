@@ -53,8 +53,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-        name: Checkout
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Build and push docker image
         id: build-image
@@ -68,10 +68,10 @@ jobs:
           snyk-token: ${{ secrets.SNYK_TOKEN }}
 
   # ---------------------------
-  # TESTS — UNIT/INTEGRATION/UI
+  # TESTS: UNIT, INTEGRATION, UI
   # ---------------------------
   test:
-    name: Run Unit, Integration & UI Tests
+    name: Run Unit, Integration and UI Tests
     if: ${{ github.event_name != 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     needs: [build]
@@ -115,9 +115,21 @@ jobs:
       - name: Run UI Tests
         run: dotnet test ./SAPPub.Tests.UI/SAPPub.Tests.UI.csproj --no-build --logger trx /p:CollectCoverage=false
 
+      - name: List artifacts
+        if: ${{ always() }}
+        run: |
+          echo "Listing test-artifacts..."
+          ls -R SAPPub.Tests.UI/test-artifacts || echo "No artifacts found"
 
-
-
+      - name: Upload UI artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-test-artifacts
+          path: |
+            **/test-artifacts/screenshots/**
+            **/test-artifacts/videos/**
+            **/test-artifacts/traces/**
 
   # ---------------------------
   # REVIEW APP DEPLOYMENT (PR)
@@ -152,10 +164,10 @@ jobs:
           smoke-test: false
 
   # ---------------------------
-  # DEPLOY TEST (AUTO) + PROD (MANUAL APPROVAL REQUIRED)
+  # DEPLOY TEST (AUTO) + PROD (MANUAL APPROVAL)
   # ---------------------------
   deploy:
-    name: Deploy to Test & Production
+    name: Deploy to Test and Production
     if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
     needs: [build, test]
     runs-on: ubuntu-latest
@@ -216,4 +228,4 @@ jobs:
           healthcheck: ${{ env.HEALTHCHECK_CMD }}
           slack-webhook: ${{ secrets.SLACK_WEBHOOK }}
           smoke-test: false
-          db-seed: ${{ inputs.environment == 'review' && 'true' || 'false' }}
+          db-seed: ${{ inputs.environment == 'review' && 'true' || 'false' }} 
