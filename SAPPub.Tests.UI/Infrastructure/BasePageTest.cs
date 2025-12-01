@@ -1,70 +1,75 @@
 ﻿using Microsoft.Playwright;
 using Microsoft.Playwright.Xunit;
+using Xunit;
 
-namespace SAPPub.Tests.UI.Infrastructure;
-
-[Collection("Playwright Tests")]
-public class BasePageTest : PageTest
+namespace SAPPub.Tests.UI.Infrastructure
 {
-    public BasePageTest() : base()
+    // Required to disable parallel test execution
+    [Collection("Playwright Tests")]
+    public class BasePageTest : PageTest, IAsyncLifetime
     {
-    }
-
-    public override BrowserNewContextOptions ContextOptions()
-    {
-        return new BrowserNewContextOptions
+        public BasePageTest() : base()
         {
-            IgnoreHTTPSErrors = true,
-            RecordVideoDir = "SAPPub.Tests.UI/test-artifacts/videos",
-            RecordVideoSize = new() { Width = 1280, Height = 720 }
-        };
-    }
+        }
 
-    // Called automatically before EACH test
-    public override async Task InitializeAsync()
-    {
-        // Ensure directories exist
-        Directory.CreateDirectory("SAPPub.Tests.UI/test-artifacts/screenshots");
-        Directory.CreateDirectory("SAPPub.Tests.UI/test-artifacts/traces");
-        Directory.CreateDirectory("SAPPub.Tests.UI/test-artifacts/videos");
-
-        await base.InitializeAsync();
-
-        // Start tracing
-        await Context.Tracing.StartAsync(new()
+        public override BrowserNewContextOptions ContextOptions()
         {
-            Screenshots = true,
-            Snapshots = true,
-            Sources = true
-        });
-    }
+            return new BrowserNewContextOptions
+            {
+                IgnoreHTTPSErrors = true,
+                RecordVideoDir = "SAPPub.Tests.UI/test-artifacts/videos",
+                RecordVideoSize = new() { Width = 1280, Height = 720 }
+            };
+        }
 
-    // Called automatically AFTER each test
-    public override async Task DisposeAsync()
-    {
-        var id = Guid.NewGuid().ToString();
-
-        // Save trace
-        await Context.Tracing.StopAsync(new()
+        // This is called by xUnit BEFORE each test
+        public async Task InitializeAsync()
         {
-            Path = $"SAPPub.Tests.UI/test-artifacts/traces/{id}.zip"
-        });
+            // Ensure artifact directories exist
+            Directory.CreateDirectory("SAPPub.Tests.UI/test-artifacts/screenshots");
+            Directory.CreateDirectory("SAPPub.Tests.UI/test-artifacts/traces");
+            Directory.CreateDirectory("SAPPub.Tests.UI/test-artifacts/videos");
 
-        // Save screenshot
-        await Page.ScreenshotAsync(new()
+            // Let Playwright.PageTest initialize the browser/context/page
+            await base.InitializeAsync();
+
+            // Start Playwright tracing
+            await Context.Tracing.StartAsync(new()
+            {
+                Screenshots = true,
+                Snapshots = true,
+                Sources = true
+            });
+        }
+
+        // This is called by xUnit AFTER each test
+        public async Task DisposeAsync()
         {
-            Path = $"SAPPub.Tests.UI/test-artifacts/screenshots/{id}.png",
-            FullPage = true
-        });
+            string id = Guid.NewGuid().ToString();
 
-        await base.DisposeAsync();
-    }
+            // Stop tracing and write trace file
+            await Context.Tracing.StopAsync(new()
+            {
+                Path = $"SAPPub.Tests.UI/test-artifacts/traces/{id}.zip"
+            });
 
-    protected async Task<IResponse?> GoToPageAysnc(string relativeUrl)
-    {
-        var baseUrl = Environment.GetEnvironmentVariable("BASE_URL")
-            ?? "https://localhost:3000";
+            // Save screenshot
+            await Page.ScreenshotAsync(new()
+            {
+                Path = $"SAPPub.Tests.UI/test-artifacts/screenshots/{id}.png",
+                FullPage = true
+            });
 
-        return await Page.GotoAsync($"{baseUrl}/{relativeUrl}");
+            // Dispose Playwright.PageTest resources
+            await base.DisposeAsync();
+        }
+
+        protected async Task<IResponse?> GoToPageAysnc(string relativeUrl)
+        {
+            var baseUrl = Environment.GetEnvironmentVariable("BASE_URL")
+                ?? "https://localhost:3000";
+
+            return await Page.GotoAsync($"{baseUrl}/{relativeUrl}");
+        }
     }
 }
