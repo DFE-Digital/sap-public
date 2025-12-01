@@ -77,7 +77,6 @@ public class BasePageTest : PageTest
         });
 
         // VIDEO (Playwright will auto-generate .webm files)
-        // We rename the video file AFTER close
         try
         {
             var videoPath = await Page.Video.PathAsync();
