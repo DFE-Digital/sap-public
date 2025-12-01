@@ -1,11 +1,16 @@
 ﻿using FluentAssertions;
 using SAPPub.Tests.UI.Helpers;
 using SAPPub.Tests.UI.Infrastructure;
+using Xunit.Abstractions;
 
 namespace SAPPub.Tests.UI.SecondarySchool;
 
 public class DestinationsPageTests : BasePageTest
 {
+    public DestinationsPageTests(ITestOutputHelper output) : base(output)
+    {
+    }
+
     private string _pageUrl = "school/1/kes/secondary/destinations";
 
     [Fact]
