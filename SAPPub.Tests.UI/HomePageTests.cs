@@ -6,10 +6,6 @@ namespace SAPPub.Tests.UI;
 
 public class HomePageTests : BasePageTest
 {
-    public HomePageTests(ITestOutputHelper output) : base(output)
-    {
-    }
-
     [Fact]
     public async Task HomePage_LoadsSuccessfully()
     {

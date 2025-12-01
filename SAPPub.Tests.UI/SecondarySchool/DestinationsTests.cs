@@ -7,10 +7,6 @@ namespace SAPPub.Tests.UI.SecondarySchool;
 
 public class DestinationsPageTests : BasePageTest
 {
-    public DestinationsPageTests(ITestOutputHelper output) : base(output)
-    {
-    }
-
     private string _pageUrl = "school/1/kes/secondary/destinations";
 
     [Fact]

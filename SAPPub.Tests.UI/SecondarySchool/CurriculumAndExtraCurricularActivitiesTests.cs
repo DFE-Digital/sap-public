@@ -7,10 +7,6 @@ namespace SAPPub.Tests.UI.SecondarySchool;
 
 public class CurriculumAndExtraCurricularActivitiesTests : BasePageTest
 {
-    public CurriculumAndExtraCurricularActivitiesTests(ITestOutputHelper output) : base(output)
-    {
-    }
-
     private string _pageUrl = "school/1/kes/secondary/curriculum-and-extra-curricular-activities";
 
     [Fact]
