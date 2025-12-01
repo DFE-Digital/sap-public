@@ -4,33 +4,34 @@ using Microsoft.Playwright.Xunit;
 namespace SAPPub.Tests.UI.Infrastructure;
 
 [Collection("Playwright Tests")]
-public class BasePageTest : PageTest, IAsyncLifetime
+public class BasePageTest : PageTest
 {
-    private bool _testFailed = false;
-    private string _tracePath = "";
-    private string _videoDir = "SAPPub.Tests.UI/test-artifacts/videos";
+    public BasePageTest() : base()
+    {
+    }
 
     public override BrowserNewContextOptions ContextOptions()
     {
         return new BrowserNewContextOptions
         {
             IgnoreHTTPSErrors = true,
-            RecordVideoDir = _videoDir,
+            // Playwright will drop videos here
+            RecordVideoDir = "SAPPub.Tests.UI/test-artifacts/videos",
             RecordVideoSize = new() { Width = 1280, Height = 720 }
         };
     }
 
     public override async Task InitializeAsync()
     {
+        // Make sure folders exist
         Directory.CreateDirectory("SAPPub.Tests.UI/test-artifacts/screenshots");
         Directory.CreateDirectory("SAPPub.Tests.UI/test-artifacts/traces");
-        Directory.CreateDirectory(_videoDir);
+        Directory.CreateDirectory("SAPPub.Tests.UI/test-artifacts/videos");
 
+        // Let PageTest do its thing (creates Context + Page)
         await base.InitializeAsync();
 
-        // Start tracing and remember path
-        _tracePath = $"SAPPub.Tests.UI/test-artifacts/traces/{Guid.NewGuid()}.zip";
-
+        // Start tracing for every test
         await Context.Tracing.StartAsync(new()
         {
             Screenshots = true,
@@ -41,48 +42,44 @@ public class BasePageTest : PageTest, IAsyncLifetime
 
     public override async Task DisposeAsync()
     {
+        var id = Guid.NewGuid().ToString();
+
+        // Stop tracing and save a trace for every test
         try
         {
-            // Let Playwright dispose first — if the test failed, this throws
-            await base.DisposeAsync();
+            await Context.Tracing.StopAsync(new()
+            {
+                Path = $"SAPPub.Tests.UI/test-artifacts/traces/{id}.zip"
+            });
         }
         catch
         {
-            _testFailed = true;
+            // If tracing is already stopped, ignore
         }
 
-        // We must now stop tracing — not part of failure detection
+        // Save a full-page screenshot for every test
         try
         {
-            await Context.Tracing.StopAsync(new() { Path = _tracePath });
-        }
-        catch
-        {
-            // tracing might already be stopped, ignore
-        }
-
-        if (_testFailed)
-        {
-            // Save screenshot for failed test
             await Page.ScreenshotAsync(new()
             {
-                Path = $"SAPPub.Tests.UI/test-artifacts/screenshots/{Guid.NewGuid()}.png",
+                Path = $"SAPPub.Tests.UI/test-artifacts/screenshots/{id}.png",
                 FullPage = true
             });
         }
-        else
+        catch
         {
-            // Clean up trace for passed tests
-            if (File.Exists(_tracePath))
-                File.Delete(_tracePath);
-
-            // Clean up video for passed tests
-            foreach (var file in Directory.GetFiles(_videoDir, "*.webm"))
-                File.Delete(file);
+            // If the page is already closed, ignore
         }
+
+        await base.DisposeAsync();
     }
 
-    protected async Task<IResponse?> GoToPageAysnc(string relativeUrl)
+    // Backwards-compatible helper with the original typo
+    protected Task<IResponse?> GoToPageAysnc(string relativeUrl)
+        => GoToPageAsync(relativeUrl);
+
+    // Correctly spelled helper – you can migrate tests to this over time
+    protected async Task<IResponse?> GoToPageAsync(string relativeUrl)
     {
         var baseUrl = Environment.GetEnvironmentVariable("BASE_URL")
             ?? "https://localhost:3000";
