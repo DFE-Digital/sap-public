@@ -228,4 +228,4 @@ jobs:
           healthcheck: ${{ env.HEALTHCHECK_CMD }}
           slack-webhook: ${{ secrets.SLACK_WEBHOOK }}
           smoke-test: false
-          db-seed: ${{ inputs.environment == 'review' && 'true' || 'false' }}
+          db-seed: ${{ inputs.environment == 'review' && 'true' || 'false' }} 
