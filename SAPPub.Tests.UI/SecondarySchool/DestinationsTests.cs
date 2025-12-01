@@ -9,7 +9,7 @@ public class DestinationsPageTests : BasePageTest
     private string _pageUrl = "school/1/kes/secondary/destinations";
 
     [Fact]
-    public async Task AcademicPerformancePage_LoadsSuccessfully()
+    public async Task Destinations_LoadsSuccessfully()
     {
         // Arrange && Act
         var response = await GoToPageAysnc(_pageUrl);
@@ -20,7 +20,7 @@ public class DestinationsPageTests : BasePageTest
     }
 
     [Fact]
-    public async Task AcademicPerformancePage_HasCorrectTitle()
+    public async Task DestinationsPage_HasCorrectTitle()
     {
         // Arrange
         await GoToPageAysnc(_pageUrl);
@@ -33,7 +33,7 @@ public class DestinationsPageTests : BasePageTest
     }
 
     [Fact]
-    public async Task AcademicPerformancePage_DisplaysMainHeading()
+    public async Task DestinationsPage_DisplaysMainHeading()
     {
         // Arrange
         await GoToPageAysnc(_pageUrl);
@@ -46,7 +46,7 @@ public class DestinationsPageTests : BasePageTest
     }
 
     [Fact]
-    public async Task AcademicPerformancePage_Displays_VerticalNavigation()
+    public async Task DestinationsPage_Displays_VerticalNavigation()
     {
         var nav = new VerticalNavigationHelper(Page);
         await GoToPageAysnc(_pageUrl);
