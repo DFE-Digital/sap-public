@@ -3,6 +3,7 @@ using Microsoft.Playwright.Xunit;
 
 namespace SAPPub.Tests.UI.Infrastructure;
 
+[Collection("Playwright Tests")]
 public class BasePageTest : PageTest
 {
     public BasePageTest() : base()
