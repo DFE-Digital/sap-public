@@ -127,9 +127,9 @@ jobs:
         with:
           name: ui-test-artifacts
           path: |
-            **/test-artifacts/screenshots/**
-            **/test-artifacts/videos/**
-            **/test-artifacts/traces/**
+            SAPPub.Tests.UI/test-artifacts/**/screenshots/*
+            SAPPub.Tests.UI/test-artifacts/**/videos/*
+            SAPPub.Tests.UI/test-artifacts/**/traces/*
 
   # ---------------------------
   # REVIEW APP DEPLOYMENT (PR)
