@@ -119,7 +119,7 @@ jobs:
         if: ${{ always() }}
         run: |
           echo "Listing test-artifacts..."
-          ls -R test-artifacts || echo "No artifacts found"
+          ls -R SAPPub.Tests.UI/test-artifacts || echo "No artifacts found"
 
       - name: Upload UI artifacts on failure
         if: ${{ failure() }}

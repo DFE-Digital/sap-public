@@ -5,28 +5,31 @@ namespace SAPPub.Tests.UI.Infrastructure;
 
 public class BasePageTest : PageTest
 {
-    public BasePageTest() : base() { }
+    public BasePageTest() : base()
+    {
+    }
 
     public override BrowserNewContextOptions ContextOptions()
     {
         return new BrowserNewContextOptions
         {
             IgnoreHTTPSErrors = true,
-            RecordVideoDir = "test-artifacts/videos",
+            RecordVideoDir = "SAPPub.Tests.UI/test-artifacts/videos",
             RecordVideoSize = new() { Width = 1280, Height = 720 }
         };
     }
 
+    // Called automatically before EACH test
     public override async Task InitializeAsync()
     {
-        Console.WriteLine(">>> PageTest.InitializeAsync RUN");
+        // Ensure directories exist
+        Directory.CreateDirectory("SAPPub.Tests.UI/test-artifacts/screenshots");
+        Directory.CreateDirectory("SAPPub.Tests.UI/test-artifacts/traces");
+        Directory.CreateDirectory("SAPPub.Tests.UI/test-artifacts/videos");
 
         await base.InitializeAsync();
 
-        Directory.CreateDirectory("test-artifacts/screenshots");
-        Directory.CreateDirectory("test-artifacts/traces");
-        Directory.CreateDirectory("test-artifacts/videos");
-
+        // Start tracing
         await Context.Tracing.StartAsync(new()
         {
             Screenshots = true,
@@ -35,18 +38,21 @@ public class BasePageTest : PageTest
         });
     }
 
+    // Called automatically AFTER each test
     public override async Task DisposeAsync()
     {
-        Console.WriteLine(">>> PageTest.DisposeAsync RUN");
+        var id = Guid.NewGuid().ToString();
 
+        // Save trace
         await Context.Tracing.StopAsync(new()
         {
-            Path = $"test-artifacts/traces/{Guid.NewGuid()}.zip"
+            Path = $"SAPPub.Tests.UI/test-artifacts/traces/{id}.zip"
         });
 
+        // Save screenshot
         await Page.ScreenshotAsync(new()
         {
-            Path = $"test-artifacts/screenshots/{Guid.NewGuid()}.png",
+            Path = $"SAPPub.Tests.UI/test-artifacts/screenshots/{id}.png",
             FullPage = true
         });
 
