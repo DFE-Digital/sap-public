@@ -19,6 +19,38 @@
 
         <govuk-details id="details-sen">
             <govuk-details-summary>
+                View this information on a map
+            </govuk-details-summary>
+            <govuk-details-text>
+                <div id="map"
+                     data-radius-miles="3"
+                     data-data-url="/map/schools"
+                     data-fixed-zoom="14"
+                     data-fallback-lat="51.5099"
+                     data-fallback-lon="-0.0141"
+                     role="region"
+                     aria-label="Map of primary schools near you">
+                    <div class="map-loading">Finding your location…</div>
+                </div>
+                <div class="legend">
+                    <div class="legend-item">
+                        <img src="~/assets/images/markers/marker-user.svg" alt="" />
+                        <span>Your location</span>
+                    </div>
+                    <div class="legend-item">
+                        <img src="~/assets/images/markers/marker-school-target.svg" alt="" />
+                        <span>Nearest Primary School</span>
+                    </div>
+                    <div class="legend-item">
+                        <img src="~/assets/images/markers/marker-school-nearby.svg" alt="" />
+                        <span>Other primary schools within 3 miles</span>
+                    </div>
+                </div>
+            </govuk-details-text>
+        </govuk-details>
+
+        <govuk-details id="details-sen">
+            <govuk-details-summary>
                 What is a SEN unit or a resourced provision?
             </govuk-details-summary>
             <govuk-details-text>
@@ -41,3 +73,6 @@
         </govuk-details>
     </div>
 </div>
+@section Scripts {
+    <script src="~/js/map-schools.js"></script>
+}
