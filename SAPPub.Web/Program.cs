@@ -3,6 +3,33 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.FileProviders;
+using SAPPub.Core.Entities;
+using SAPPub.Core.Entities.KS4.Absence;
+using SAPPub.Core.Entities.KS4.Destinations;
+using SAPPub.Core.Entities.KS4.Performance;
+using SAPPub.Core.Entities.KS4.Workforce;
+using SAPPub.Core.Interfaces.Repositories;
+using SAPPub.Core.Interfaces.Repositories.Generic;
+using SAPPub.Core.Interfaces.Repositories.KS4.Absence;
+using SAPPub.Core.Interfaces.Repositories.KS4.Destinations;
+using SAPPub.Core.Interfaces.Repositories.KS4.Performance;
+using SAPPub.Core.Interfaces.Repositories.KS4.Workforce;
+using SAPPub.Core.Interfaces.Services;
+using SAPPub.Core.Interfaces.Services.KS4.Absence;
+using SAPPub.Core.Interfaces.Services.KS4.Destinations;
+using SAPPub.Core.Interfaces.Services.KS4.Performance;
+using SAPPub.Core.Interfaces.Services.KS4.Workforce;
+using SAPPub.Core.Services;
+using SAPPub.Core.Services.KS4.Absence;
+using SAPPub.Core.Services.KS4.Destinations;
+using SAPPub.Core.Services.KS4.Performance;
+using SAPPub.Core.Services.KS4.Workforce;
+using SAPPub.Infrastructure.Repositories;
+using SAPPub.Infrastructure.Repositories.Generic;
+using SAPPub.Infrastructure.Repositories.KS4.Absence;
+using SAPPub.Infrastructure.Repositories.KS4.Destinations;
+using SAPPub.Infrastructure.Repositories.KS4.Performance;
+using SAPPub.Infrastructure.Repositories.KS4.Workforce;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Middleware;
 using System.Diagnostics.CodeAnalysis;
@@ -51,6 +78,52 @@ public partial class Program
         builder.Services.AddDataProtection()
                .PersistKeysToFileSystem(new DirectoryInfo(@"/keys"))
                .SetApplicationName("SAPPub");
+
+
+        //IServiceCollection serviceCollection =
+
+        builder.Services.AddSingleton<IGenericRepository<Establishment>, JSONRepository<Establishment>>();
+        builder.Services.AddSingleton<IEstablishmentRepository, EstablishmentRepository>();
+        builder.Services.AddSingleton<IEstablishmentService, EstablishmentService>();
+
+        builder.Services.AddSingleton<IGenericRepository<EstablishmentMetadata>, JSONRepository<EstablishmentMetadata>>();
+        builder.Services.AddSingleton<IEstablishmentMetadataRepository, EstablishmentMetadataRepository>();
+        builder.Services.AddSingleton<IEstablishmentMetadataService, EstablishmentMetadataService>();
+
+        builder.Services.AddSingleton<IGenericRepository<EstablishmentPerformance>, JSONRepository<EstablishmentPerformance>>();
+        builder.Services.AddSingleton<IEstablishmentPerformanceRepository, EstablishmentPerformanceRepository>();
+        builder.Services.AddSingleton<IEstablishmentPerformanceService, EstablishmentPerformanceService>();
+
+        builder.Services.AddSingleton<IGenericRepository<EstablishmentDestinations>, JSONRepository<EstablishmentDestinations>>();
+        builder.Services.AddSingleton<IEstablishmentDestinationsRepository, EstablishmentDestinationsRepository>();
+        builder.Services.AddSingleton<IEstablishmentDestinationsService, EstablishmentDestinationsService>();
+
+        builder.Services.AddSingleton<IGenericRepository<EstablishmentAbsence>, JSONRepository<EstablishmentAbsence>>();
+        builder.Services.AddSingleton<IEstablishmentAbsenceRepository, EstablishmentAbsenceRepository>();
+        builder.Services.AddSingleton<IEstablishmentAbsenceService, EstablishmentAbsenceService>();
+
+        builder.Services.AddSingleton<IGenericRepository<EstablishmentWorkforce>, JSONRepository<EstablishmentWorkforce>>();
+        builder.Services.AddSingleton<IEstablishmentWorkforceRepository, EstablishmentWorkforceRepository>();
+        builder.Services.AddSingleton<IEstablishmentWorkforceService, EstablishmentWorkforceService>();
+
+        builder.Services.AddSingleton<IGenericRepository<LAPerformance>, JSONRepository<LAPerformance>>();
+        builder.Services.AddSingleton<ILAPerformanceRepository, LAPerformanceRepository>();
+        builder.Services.AddSingleton<ILAPerformanceService, LAPerformanceService>();
+
+        builder.Services.AddSingleton<IGenericRepository<LADestinations>, JSONRepository<LADestinations>>();
+        builder.Services.AddSingleton<ILADestinationsRepository, LADestinationsRepository>();
+        builder.Services.AddSingleton<ILADestinationsService, LADestinationsService>();
+
+        builder.Services.AddSingleton<IGenericRepository<EnglandPerformance>, JSONRepository<EnglandPerformance>>();
+        builder.Services.AddSingleton<IEnglandPerformanceRepository, EnglandPerformanceRepository>();
+        builder.Services.AddSingleton<IEnglandPerformanceService, EnglandPerformanceService>();
+
+        builder.Services.AddSingleton<IGenericRepository<EnglandDestinations>, JSONRepository<EnglandDestinations>>();
+        builder.Services.AddSingleton<IEnglandDestinationsRepository, EnglandDestinationsRepository>();
+        builder.Services.AddSingleton<IEnglandDestinationsService, EnglandDestinationsService>();
+
+
+
 
         var app = builder.Build();
 
