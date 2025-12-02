@@ -1,5 +1,6 @@
 ﻿@model SAPPub.Web.Models.SecondarySchool.AcademicPerformanceViewModel;
 @using SAPPub.Web.ViewComponents.VerticalNavigation
+@using System.Text.Json
 
 @{
     ViewData["Title"] = "Academic Performance";
@@ -52,5 +53,137 @@
                 </ul>
             </govuk-details-text>
         </govuk-details>
+
+        <div class="gds-chart-container">
+            <h3 class="govuk-!-margin-left-2 govuk-!-margin-top-3">
+                Grade 5 and above in English and maths GCSEs
+            </h3>
+            <p class="govuk-!-margin-left-2">
+                Grade 5 is comparable to the top of the old grade C.
+            </p>
+            <canvas id="chart" width="500" height="200"></canvas>
+        </div>
     </div>
 </div>
+
+<style>
+    .gds-chart-container {
+        min-height: 200px;
+        margin-top: 30px;
+        margin-bottom: 30px;
+        border: 1px solid #b1b4b6;
+    }
+
+        .gds-chart-container canvas {
+            display: block;
+            width: 95% !important;
+            height: 100% !important;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+<script>
+    const labels = @Html.Raw(JsonSerializer.Serialize(Model.GcseChartData.Lables));
+    const gcseData = @Html.Raw(JsonSerializer.Serialize(Model.GcseChartData.GcseData));
+    const chartTitle = @Html.Raw(JsonSerializer.Serialize(Model.GcseChartData.ChartTitle));
+
+    const chartCtx = document.getElementById('chart').getContext('2d');
+
+    const gcseChart = new Chart(chartCtx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets:[{
+                label: '% achieving grade 5+ in English & Maths GCSEs',
+                data: gcseData,
+                backgroundColor: ['#4e79a7', '#f28e2b', '#76b7b2'],
+                borderWidth: 1,
+                barThickness: 'flex',
+                maxBarThickness: 60
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspecRatio: false,
+            indexAxis: 'y',
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    max: 80,
+                    grid: {
+                        display: true,
+                        drawBorder: false,
+                        color: (context) => {
+                            return context.tick.value === 0 ? '#000' : '#ccc';
+                        },
+                        lineWidth: (context) => {
+                            return context.tick.value === 0 ? 2 : 1;
+                        }
+                    },
+                    border: {
+                        display: false
+                    },
+                    ticks: {
+                        color: '#0b0c0c',
+                        font: {
+                            family: 'GDS Transport, Arial, sans-serif',
+                            size: 16
+                        },
+                        stepSize: 20,
+                        callback: (value) => value + '%'
+                    }
+                },
+                y: {
+                    grid: {
+                        display: false,
+                        drawBorder: false
+                    },
+                    ticks: {
+                        color: '#0b0c0c',
+                        font: {
+                            family: 'GDS Transport, Arial, sans-serif',
+                            size: 16
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    enabled: false
+                },
+                legend: { display: false },
+                title: {
+                    display: false,
+                    text: chartTitle,
+                    font: { size: 18, weight: 'bold' }
+                },
+                datalabels: {
+                    anchor: 'end',
+                    align: 'start',
+                    offset: 10,
+                    color: '#0b0c0c',
+                    font: {
+                        family: 'GDS Transport, Arial, sans-serif',
+                        size: 16
+                    },
+                    formatter: function(value) {
+                        return value + '%';
+                    },
+                    clamp: true,
+                    clip: true
+                }
+            }
+        },
+        plugins: [ChartDataLabels]
+    });
+
+</script>
+
+ 

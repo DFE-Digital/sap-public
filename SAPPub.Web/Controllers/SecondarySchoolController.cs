@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SAPPub.Web.Helpers;
+using SAPPub.Web.Models.Charts;
 using SAPPub.Web.Models.SecondarySchool;
 
 namespace SAPPub.Web.Controllers
 {
     public class SecondarySchoolController : Controller
     {
+        const string CspPolicy = "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;";
+
         private readonly ILogger<SecondarySchoolController> _logger;
 
         public SecondarySchoolController(ILogger<SecondarySchoolController> logger)
@@ -17,7 +20,11 @@ namespace SAPPub.Web.Controllers
         [Route("school/{urn}/{schoolName}/secondary/about", Name = RouteConstants.SecondaryAboutSchool)]
         public IActionResult AboutSchool(int urn, string schoolName)
         {
-            var model = new AboutSchoolViewModel { Urn = urn, SchoolName = schoolName };
+            var model = new AboutSchoolViewModel 
+            { 
+                Urn = urn,
+                SchoolName = schoolName,
+            };
             return View(model);
         }
 
@@ -49,7 +56,20 @@ namespace SAPPub.Web.Controllers
         [Route("school/{urn}/{schoolName}/secondary/academic-performance", Name = RouteConstants.SecondaryAcademicPerformance)]
         public IActionResult AcademicPerformance(int urn, string schoolName)
         {
-            var model = new AcademicPerformanceViewModel { Urn = urn, SchoolName = schoolName };
+            Response.Headers["Content-Security-Policy"] = CspPolicy;
+            var gcseDatamodel = new GcseDataViewModel
+            {
+                Lables = ["School", "Sheffield Average", "England Average"],
+                GcseData = [75, 65, 55],
+                ChartTitle = "GCSE English and Maths (Grade 5 and above)",
+            };
+
+            var model = new AcademicPerformanceViewModel 
+            { 
+                Urn = urn,
+                SchoolName = schoolName,
+                GcseChartData = gcseDatamodel,
+            };
             return View(model);
         }
         
