@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -21,6 +22,12 @@ public class SecondarySchoolControllerTests
         Directory.CreateDirectory(tempPath);
 
         _controller = new SecondarySchoolController(_mockLogger.Object);
+
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext()
+        };
+        
     }
 
     [Fact]
@@ -109,7 +116,7 @@ public class SecondarySchoolControllerTests
         // Arrange
         int urn = 1;
         string schoolName = "School Name";
-
+        
         // Act
         var result = _controller.AcademicPerformance(urn, schoolName) as ViewResult;
 
