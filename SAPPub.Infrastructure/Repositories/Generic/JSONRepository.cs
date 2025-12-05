@@ -16,7 +16,7 @@ namespace SAPPub.Infrastructure.Repositories.Generic
     public class JSONRepository<T> : IGenericRepository<T> where T : class
     {
         private readonly string _filePath = Path.Combine(
-            Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"app\Data\Files\");
+            Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Data\Files\");
         private readonly ILogger<JSONRepository<T>> _logger;
 
         public JSONRepository(ILogger<JSONRepository<T>> logger)
