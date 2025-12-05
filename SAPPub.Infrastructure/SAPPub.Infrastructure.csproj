@@ -25,9 +25,6 @@
     <None Update="Data\Files\EstablishmentDestinations.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Data\Files\EstablishmentMetadata.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="Data\Files\EstablishmentPerformance.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

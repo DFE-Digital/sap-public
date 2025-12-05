@@ -11,7 +11,7 @@
                 Establishment Name
             </govuk-summary-list-row-key>
             <govuk-summary-list-row-value>
-                @modelItem.Metadata.EstablishmentName
+                @modelItem.EstablishmentName
             </govuk-summary-list-row-value>
             <govuk-summary-list-row-actions>
                 <govuk-summary-list-row-action href="@Url.Action("Data", "Data", new {id =modelItem.URN})"  visually-hidden-text="name">View</govuk-summary-list-row-action>

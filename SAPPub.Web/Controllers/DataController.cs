@@ -12,7 +12,6 @@ namespace SAPPub.Web.Controllers
     /// </summary>
     public class DataController : Controller
     {
-        private IEstablishmentMetadataService _metadataService;
         private IEstablishmentService _service;
         private IEstablishmentAbsenceService _absenceService;
         private IEstablishmentPerformanceService _performanceService;
@@ -24,7 +23,6 @@ namespace SAPPub.Web.Controllers
         private IEstablishmentWorkforceService _workforceService;
 
         public DataController(
-            IEstablishmentMetadataService establishmentMetadataService,
             ILADestinationsService ladestinationsService,
             ILAPerformanceService laperformanceService,
             IEnglandDestinationsService englandDestinationsService,
@@ -38,7 +36,6 @@ namespace SAPPub.Web.Controllers
         {
 
             _service = establishmentService;
-            _metadataService = establishmentMetadataService;
 
             _absenceService = absenceService;
             _performanceService = performanceService;
@@ -64,7 +61,6 @@ namespace SAPPub.Web.Controllers
             var dataModel = _service.GetEstablishment(id);
 
             dataModel.Absence = _absenceService.GetEstablishmentAbsence(id);
-            dataModel.Metadata = _metadataService.GetEstablishmentMetadata(id);
             dataModel.KS4Performance = _performanceService.GetEstablishmentPerformance(id);
             dataModel.EstablishmentDestinations = _destinationsService.GetEstablishmentDestinations(id);
             dataModel.Workforce = _workforceService.GetEstablishmentWorkforce(id);

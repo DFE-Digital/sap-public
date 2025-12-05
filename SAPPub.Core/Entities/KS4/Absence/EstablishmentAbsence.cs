@@ -20,13 +20,13 @@ namespace SAPPub.Core.Entities.KS4.Absence
         /// 
         /// Absence Total filtered by Establishment for Current year 
         /// 
-        public double Auth_Tot_Est_Current_Pct { get; set; }
+        public double? Auth_Tot_Est_Current_Pct { get; set; }
         public string Auth_Tot_Est_Current_Pct_Reason { get; set; } = string.Empty;
 
         /// 
         /// Absence Total filtered by Establishment for Current year 
         /// 
-        public double UnAuth_Tot_Est_Current_Pct { get; set; }
+        public double? UnAuth_Tot_Est_Current_Pct { get; set; }
         public string UnAuth_Tot_Est_Current_Pct_Reason { get; set; } = string.Empty;
 
 

@@ -15,9 +15,9 @@
             <div class="govuk-grid-column-two-thirds">
                 <govuk-accordion id="accordion-with-summary-sections" heading-level="3">
                     <govuk-accordion-item expanded="true">
-                        <govuk-accordion-item-heading>Establishment Metadata</govuk-accordion-item-heading>
+                        <govuk-accordion-item-heading>Establishment</govuk-accordion-item-heading>
                         <govuk-accordion-item-content>
-                            @foreach (var prop in Model.Metadata.GetType().GetProperties())
+                            @foreach (var prop in Model.GetType().GetProperties())
                             {
                                 <govuk-summary-list>
                                     <govuk-summary-list-row>
@@ -25,7 +25,7 @@
                                             @prop.Name
                                         </govuk-summary-list-row-key>
                                         <govuk-summary-list-row-value>
-                                            @prop.GetValue(Model.Metadata)
+                                            @prop.GetValue(Model)
                                         </govuk-summary-list-row-value>
                                     </govuk-summary-list-row>
                                 </govuk-summary-list>
@@ -141,7 +141,7 @@
                         </govuk-accordion-item-content>
                     </govuk-accordion-item>
                     <govuk-accordion-item>
-                        <govuk-accordion-item-heading>Understanding agile project management</govuk-accordion-item-heading>
+                        <govuk-accordion-item-heading>England Destinations</govuk-accordion-item-heading>
                         <govuk-accordion-item-content>
                             @foreach (var prop in Model.EnglandDestinations.GetType().GetProperties())
                             {
