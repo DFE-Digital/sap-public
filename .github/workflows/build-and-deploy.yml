@@ -106,14 +106,38 @@ jobs:
       - name: Wait for MVC App to be ready
         run: npx wait-on https://localhost:3000
 
-      - name: Run Unit Tests
-        run: dotnet test ./SAPPub.Tests.Unit/SAPPub.Tests.Unit.csproj --no-build --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
+      #- name: Run Unit Tests
+      #  run: dotnet test ./SAPPub.Tests.Unit/SAPPub.Tests.Unit.csproj --no-build --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
 
-      - name: Run Integration Tests
-        run: dotnet test ./SAPPub.Tests.Integration/SAPPub.Tests.Integration.csproj --no-build --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
+      #- name: Run Integration Tests
+      #  run: dotnet test ./SAPPub.Tests.Integration/SAPPub.Tests.Integration.csproj --no-build --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
 
-      - name: Run UI Tests
-        run: dotnet test ./SAPPub.Tests.UI/SAPPub.Tests.UI.csproj --no-build --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
+      #- name: Run UI Tests
+      #  run: dotnet test ./SAPPub.Tests.UI/SAPPub.Tests.UI.csproj --no-build --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
+
+      - name: Run All Tests with Coverage
+        env:
+          HEADED: 0
+          PLAYWRIGHT_IGNORE_HTTPS_ERRORS: true
+        run: |
+          TEST_PROJECTS=$(find ./Tests -type f -name "*.Tests.csproj" | sort)
+
+          for proj in $TEST_PROJECTS; do
+            echo "=== Running tests in $proj ==="
+
+            dotnet test "$proj" \
+              --no-build \
+              --configuration Debug \
+              --results-directory "TestResults" \
+              --logger "trx;LogFileName=$(basename "$proj" .csproj).trx" \
+              /p:CollectCoverage=true \
+              /p:CoverletOutputFormat=cobertura \
+              /p:DeterministicReport=true \
+              /p:UseSourceLink=true \
+              /p:Exclude='[*]AspNetCoreGeneratedDocument.*%2c[*]AspNetCore.Views.*' \
+              /p:ExcludeByAttribute='GeneratedCodeAttribute*%2cObsoleteAttribute*%2cExcludeFromCodeCoverage' \
+              --verbosity normal
+          done
 
       - name: List artifacts
         if: ${{ always() }}
