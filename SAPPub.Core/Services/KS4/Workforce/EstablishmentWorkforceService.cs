@@ -15,15 +15,12 @@ namespace SAPPub.Core.Services.KS4.Workforce
     public class EstablishmentWorkforceService : IEstablishmentWorkforceService
     {
         private readonly IEstablishmentWorkforceRepository _establishmentWorkforceRepository;
-        private ILogger<EstablishmentWorkforce> _logger;
 
 
         public EstablishmentWorkforceService(
-            IEstablishmentWorkforceRepository establishmentWorkforceRepository,
-            ILogger<EstablishmentWorkforce> logger)
+            IEstablishmentWorkforceRepository establishmentWorkforceRepository)
         {
             _establishmentWorkforceRepository = establishmentWorkforceRepository;
-            _logger = logger;
         }
 
 

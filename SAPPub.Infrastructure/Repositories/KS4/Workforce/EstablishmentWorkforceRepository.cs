@@ -34,7 +34,7 @@ namespace SAPPub.Infrastructure.Repositories.KS4.Workforce
 
         public EstablishmentWorkforce GetEstablishmentWorkforce(string urn)
         {
-            return GetAllEstablishmentWorkforce().First(x => x.Id == urn) ?? new EstablishmentWorkforce();
+            return GetAllEstablishmentWorkforce().FirstOrDefault(x => x.Id == urn) ?? new EstablishmentWorkforce();
         }
     }
 }

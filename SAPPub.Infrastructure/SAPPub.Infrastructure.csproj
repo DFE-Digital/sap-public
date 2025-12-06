@@ -10,6 +10,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Data\Files\Lookup.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Data\Files\EnglandDestinations.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

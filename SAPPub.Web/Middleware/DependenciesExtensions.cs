@@ -71,6 +71,10 @@ namespace SAPPub.Web.Middleware
             services.AddSingleton<IGenericRepository<EnglandDestinations>, JSONRepository<EnglandDestinations>>();
             services.AddSingleton<IEnglandDestinationsRepository, EnglandDestinationsRepository>();
             services.AddSingleton<IEnglandDestinationsService, EnglandDestinationsService>();
+
+            services.AddSingleton<IGenericRepository<Lookup>, JSONRepository<Lookup>>();
+            services.AddSingleton<ILookupRepository, LookupRepository>();
+            services.AddSingleton<ILookupService, LookupService>();
         }
     }
 }

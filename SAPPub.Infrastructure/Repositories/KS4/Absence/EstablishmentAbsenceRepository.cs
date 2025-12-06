@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using SAPPub.Core.Entities.KS4.Absence;
-using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Repositories.KS4.Absence;
 using System;
@@ -33,7 +32,7 @@ namespace SAPPub.Infrastructure.Repositories.KS4.Absence
 
         public EstablishmentAbsence GetEstablishmentAbsence(string urn)
         {
-            return GetAllEstablishmentAbsence().First(x => x.Id == urn) ?? new EstablishmentAbsence();
+            return GetAllEstablishmentAbsence().FirstOrDefault(x => x.Id == urn) ?? new EstablishmentAbsence();
         }
     }
 }

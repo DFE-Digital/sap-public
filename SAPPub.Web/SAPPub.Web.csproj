@@ -6,7 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-SAPPub.Web-c8941719-1a44-4549-a199-e682cd5f4391</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-	  <EnvironmentName>Development</EnvironmentName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,5 +17,11 @@
     <ProjectReference Include="..\SAPPub.Core\SAPPub.Core.csproj" />
     <ProjectReference Include="..\SAPPub.Infrastructure\SAPPub.Infrastructure.csproj" />
   </ItemGroup>
+
+	<ItemGroup>
+		<Content Include="Data\Files\**\*">
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+	</ItemGroup>
 
 </Project>
