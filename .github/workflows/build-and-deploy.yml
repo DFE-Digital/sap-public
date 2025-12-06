@@ -139,11 +139,19 @@ jobs:
               --verbosity normal
           done
 
-      - name: List artifacts
-        if: ${{ always() }}
-        run: |
-          echo "Listing test-artifacts..."
-          ls -R SAPPub.Tests.UI/test-artifacts || echo "No artifacts found"
+      #- name: List artifacts
+      #  if: ${{ always() }}
+      #  run: |
+      #    echo "Listing test-artifacts..."
+      #    ls -R SAPPub.Tests.UI/test-artifacts || echo "No artifacts found"
+
+      - name: Upload Test Result Files
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: "**/TestResults/**/*"
+          retention-days: 5
 
       - name: Upload UI artifacts on failure
         if: failure()
