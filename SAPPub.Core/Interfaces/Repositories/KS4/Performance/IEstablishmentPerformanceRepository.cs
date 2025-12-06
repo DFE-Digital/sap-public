@@ -10,6 +10,6 @@ namespace SAPPub.Core.Interfaces.Repositories.KS4.Performance
     public interface IEstablishmentPerformanceRepository
     {
         IEnumerable<EstablishmentPerformance> GetAllEstablishmentPerformance();
-        EstablishmentPerformance GetEstablishmentPerformance(string urn);
+        EstablishmentPerformance? GetEstablishmentPerformance(string urn);
     }
 }

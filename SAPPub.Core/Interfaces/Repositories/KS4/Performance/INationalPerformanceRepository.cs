@@ -9,6 +9,6 @@ namespace SAPPub.Core.Interfaces.Repositories.KS4.Performance
 {
     public interface IEnglandPerformanceRepository
     {
-        EnglandPerformance GetEnglandPerformance();
+        EnglandPerformance? GetEnglandPerformance();
     }
 }

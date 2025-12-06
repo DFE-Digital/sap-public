@@ -1,12 +1,6 @@
 ﻿using SAPPub.Core.Entities.KS4.Destinations;
-using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Interfaces.Repositories.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SAPPub.Core.Services.KS4.Destinations
 {
@@ -28,7 +22,7 @@ namespace SAPPub.Core.Services.KS4.Destinations
 
         public EstablishmentDestinations GetEstablishmentDestinations(string urn)
         {
-            return _establishmentDestinationsRepository.GetEstablishmentDestinations(urn);
+            return _establishmentDestinationsRepository.GetEstablishmentDestinations(urn) ?? new(); ;
         }
     }
 }

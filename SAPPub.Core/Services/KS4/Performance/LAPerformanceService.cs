@@ -28,7 +28,7 @@ namespace SAPPub.Core.Services.KS4.Performance
 
         public LAPerformance GetLAPerformance(string urn)
         {
-            return _LAPerformanceRepository.GetLAPerformance(urn);
+            return _LAPerformanceRepository.GetLAPerformance(urn) ?? new();
         }
     }
 }

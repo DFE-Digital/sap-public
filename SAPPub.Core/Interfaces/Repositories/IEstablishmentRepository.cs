@@ -10,6 +10,6 @@ namespace SAPPub.Core.Interfaces.Repositories
     public interface IEstablishmentRepository
     {
         IEnumerable<Establishment> GetAllEstablishments();
-        Establishment GetEstablishment(string urn);
+        Establishment? GetEstablishment(string urn);
     }
 }

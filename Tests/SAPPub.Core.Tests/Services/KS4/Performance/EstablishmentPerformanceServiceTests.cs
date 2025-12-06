@@ -86,13 +86,13 @@ namespace SAPPub.Core.Tests.Services.KS4.Performance
             // Arrange
             var urn = "99999";
             _mockRepo.Setup(r => r.GetEstablishmentPerformance(urn))
-                     .Returns((EstablishmentPerformance)null);
+                     .Returns(new EstablishmentPerformance());
 
             // Act
             var result = _service.GetEstablishmentPerformance(urn);
 
             // Assert
-            Assert.Null(result);
+            Assert.Null(result.Attainment8_Tot_Est_Current_Num);
         }
 
         [Fact]

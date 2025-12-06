@@ -21,7 +21,7 @@ namespace SAPPub.Core.Services.KS4.Performance
 
         public EnglandPerformance GetEnglandPerformance()
         {
-            return _englandPerformanceRepository.GetEnglandPerformance();
+            return _englandPerformanceRepository.GetEnglandPerformance() ?? new(); ;
         }
     }
 }

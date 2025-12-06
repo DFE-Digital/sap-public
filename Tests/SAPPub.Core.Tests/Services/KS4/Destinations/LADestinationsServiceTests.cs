@@ -86,13 +86,13 @@ namespace SAPPub.Core.Tests.Services.KS4.Destinations
             // Arrange
             var urn = "99999";
             _mockRepo.Setup(r => r.GetLADestinations(urn))
-                     .Returns((LADestinations)null);
+                     .Returns(new LADestinations());
 
             // Act
             var result = _service.GetLADestinations(urn);
 
             // Assert
-            Assert.Null(result);
+            Assert.Null(result.AllDest_Tot_LA_Previous2_Pct);
         }
 
         [Fact]

@@ -32,7 +32,7 @@ namespace SAPPub.Core.Services.KS4.Workforce
 
         public EstablishmentWorkforce GetEstablishmentWorkforce(string urn)
         {
-            return _establishmentWorkforceRepository.GetEstablishmentWorkforce(urn);
+            return _establishmentWorkforceRepository.GetEstablishmentWorkforce(urn) ?? new();
         }
     }
 }

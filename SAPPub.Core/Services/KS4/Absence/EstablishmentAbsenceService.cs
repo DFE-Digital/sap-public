@@ -30,7 +30,7 @@ namespace SAPPub.Core.Services.KS4.Absence
 
         public EstablishmentAbsence GetEstablishmentAbsence(string urn)
         {
-            return _establishmentAbsenceRepository.GetEstablishmentAbsence(urn);
+            return _establishmentAbsenceRepository.GetEstablishmentAbsence(urn) ?? new();
         }
     }
 }

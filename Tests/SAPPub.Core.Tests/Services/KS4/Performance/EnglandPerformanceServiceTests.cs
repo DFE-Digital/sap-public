@@ -58,7 +58,6 @@ namespace SAPPub.Core.Tests.Services.KS4.Performance
         public void GetEnglandPerformance_ShouldThrowException_WhenRepositoryThrows()
         {
             // Arrange
-            var urn = "error";
             _mockRepo.Setup(r => r.GetEnglandPerformance())
                      .Throws(new Exception("Database error"));
 

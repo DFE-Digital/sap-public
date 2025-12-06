@@ -10,6 +10,6 @@ namespace SAPPub.Core.Interfaces.Repositories
     public interface ILookupRepository
     {
         IEnumerable<Lookup> GetAllLookups();
-        Lookup GetLookup(string urn);
+        Lookup? GetLookup(string urn);
     }
 }

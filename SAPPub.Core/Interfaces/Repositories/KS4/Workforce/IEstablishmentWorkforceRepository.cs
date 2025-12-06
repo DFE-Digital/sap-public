@@ -10,6 +10,6 @@ namespace SAPPub.Core.Interfaces.Repositories.KS4.Workforce
     public interface IEstablishmentWorkforceRepository
     {
         IEnumerable<EstablishmentWorkforce> GetAllEstablishmentWorkforce();
-        EstablishmentWorkforce GetEstablishmentWorkforce(string urn);
+        EstablishmentWorkforce? GetEstablishmentWorkforce(string urn);
     }
 }

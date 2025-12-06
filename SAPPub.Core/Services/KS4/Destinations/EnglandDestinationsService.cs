@@ -22,7 +22,7 @@ namespace SAPPub.Core.Services.KS4.Destinations
 
         public EnglandDestinations GetEnglandDestinations()
         {
-            return _EnglandDestinationsRepository.GetEnglandDestinations();
+            return _EnglandDestinationsRepository.GetEnglandDestinations() ?? new(); ;
         }
     }
 }

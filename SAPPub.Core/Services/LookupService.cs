@@ -30,7 +30,7 @@ namespace SAPPub.Core.Services
 
         public Lookup GetLookup(string urn)
         {
-            return _lookupRepository.GetLookup(urn);
+            return _lookupRepository.GetLookup(urn) ?? new();
         }
     }
 }

@@ -28,7 +28,7 @@ namespace SAPPub.Core.Services.KS4.Destinations
 
         public LADestinations GetLADestinations(string la)
         {
-            return _LADestinationsRepository.GetLADestinations(la);
+            return _LADestinationsRepository.GetLADestinations(la) ?? new(); ;
         }
     }
 }

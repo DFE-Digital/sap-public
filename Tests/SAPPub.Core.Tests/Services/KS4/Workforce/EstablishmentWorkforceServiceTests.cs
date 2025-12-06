@@ -87,13 +87,13 @@ namespace SAPPub.Core.Tests.Services.KS4.Workforce
             // Arrange
             var urn = "99999";
             _mockRepo.Setup(r => r.GetEstablishmentWorkforce(urn))
-                     .Returns((EstablishmentWorkforce)null);
+                     .Returns(new EstablishmentWorkforce());
 
             // Act
             var result = _service.GetEstablishmentWorkforce(urn);
 
             // Assert
-            Assert.Null(result);
+            Assert.Null(result.Workforce_TotPupils_Est_Current_Num);
         }
 
         [Fact]

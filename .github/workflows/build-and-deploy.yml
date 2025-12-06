@@ -107,13 +107,13 @@ jobs:
         run: npx wait-on https://localhost:3000
 
       - name: Run Unit Tests
-        run: dotnet test ./SAPPub.Tests.Unit/SAPPub.Tests.Unit.csproj --no-build --logger trx /p:CollectCoverage=false
+        run: dotnet test ./SAPPub.Tests.Unit/SAPPub.Tests.Unit.csproj --no-build --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
 
       - name: Run Integration Tests
-        run: dotnet test ./SAPPub.Tests.Integration/SAPPub.Tests.Integration.csproj --no-build --logger trx /p:CollectCoverage=false
+        run: dotnet test ./SAPPub.Tests.Integration/SAPPub.Tests.Integration.csproj --no-build --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
 
       - name: Run UI Tests
-        run: dotnet test ./SAPPub.Tests.UI/SAPPub.Tests.UI.csproj --no-build --logger trx /p:CollectCoverage=false
+        run: dotnet test ./SAPPub.Tests.UI/SAPPub.Tests.UI.csproj --no-build --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
 
       - name: List artifacts
         if: ${{ always() }}
@@ -130,6 +130,35 @@ jobs:
             **/test-artifacts/screenshots/**
             **/test-artifacts/videos/**
             **/test-artifacts/traces/**
+
+      - name: Publish Test Results
+        uses: dorny/test-reporter@v2
+        if: always()
+        with:
+          reporter: 'dotnet-trx'
+          path: "**/TestResults/**/*.trx"
+          name: 'Test Results'
+
+      - name: merge coverage files
+        run: |
+          dotnet tool install -g dotnet-coverage
+          dotnet coverage merge --reports $(find Tests -name "coverage.cobertura.xml") -f cobertura -o coverage-results/coverage.xml
+
+      - name: Generate Coverage Report
+        uses: clearlyip/code-coverage-report-action@v6
+        id: code_coverage_report_action
+        if: ${{ github.actor != 'dependabot[bot]'}}
+        with:
+          filename: "coverage-results/coverage.xml"
+          fail_on_negative_difference: true
+          only_list_changed_files: true
+
+      - name: Add Coverage PR Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: steps.code_coverage_report_action.outputs.file != '' && github.event_name == 'pull_request' && (success() || failure())
+        with:
+          recreate: true
+          path: code-coverage-results.md
 
   # ---------------------------
   # REVIEW APP DEPLOYMENT (PR)

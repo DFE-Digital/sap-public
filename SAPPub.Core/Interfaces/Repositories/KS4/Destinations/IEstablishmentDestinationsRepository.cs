@@ -10,6 +10,6 @@ namespace SAPPub.Core.Interfaces.Repositories.KS4.Destinations
     public interface IEstablishmentDestinationsRepository
     {
         IEnumerable<EstablishmentDestinations> GetAllEstablishmentDestinations();
-        EstablishmentDestinations GetEstablishmentDestinations(string urn);
+        EstablishmentDestinations? GetEstablishmentDestinations(string urn);
     }
 }

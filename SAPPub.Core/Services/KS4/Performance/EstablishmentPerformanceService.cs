@@ -29,7 +29,7 @@ namespace SAPPub.Core.Services.KS4.Performance
 
         public EstablishmentPerformance GetEstablishmentPerformance(string urn)
         {
-            return _establishmentPerformanceRepository.GetEstablishmentPerformance(urn);
+            return _establishmentPerformanceRepository.GetEstablishmentPerformance(urn) ?? new();
         }
     }
 }

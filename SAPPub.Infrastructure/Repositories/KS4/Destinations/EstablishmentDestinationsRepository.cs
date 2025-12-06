@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using SAPPub.Core.Entities.KS4.Destinations;
-using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Repositories.KS4.Destinations;
 using System;

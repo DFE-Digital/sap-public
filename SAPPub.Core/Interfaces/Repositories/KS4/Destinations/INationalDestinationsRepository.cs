@@ -9,6 +9,6 @@ namespace SAPPub.Core.Interfaces.Repositories.KS4.Destinations
 {
     public interface IEnglandDestinationsRepository
     {
-        EnglandDestinations GetEnglandDestinations();
+        EnglandDestinations? GetEnglandDestinations();
     }
 }

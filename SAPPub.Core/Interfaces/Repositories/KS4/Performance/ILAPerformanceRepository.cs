@@ -10,6 +10,6 @@ namespace SAPPub.Core.Interfaces.Repositories.KS4.Performance
     public interface ILAPerformanceRepository
     {
         IEnumerable<LAPerformance> GetAllLAPerformance();
-        LAPerformance GetLAPerformance(string laCode);
+        LAPerformance? GetLAPerformance(string laCode);
     }
 }

@@ -11,6 +11,6 @@ namespace SAPPub.Core.Interfaces.Repositories.KS4.Absence
     public interface IEstablishmentAbsenceRepository
     {
         IEnumerable<EstablishmentAbsence> GetAllEstablishmentAbsence();
-        EstablishmentAbsence GetEstablishmentAbsence(string urn);
+        EstablishmentAbsence? GetEstablishmentAbsence(string urn);
     }
 }

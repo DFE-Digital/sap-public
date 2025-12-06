@@ -61,7 +61,6 @@ namespace SAPPub.Core.Tests.Services.KS4.Destinations
         public void GetEnglandDestinations_ShouldThrowException_WhenRepositoryThrows()
         {
             // Arrange
-            var urn = "error";
             _mockRepo.Setup(r => r.GetEnglandDestinations())
                      .Throws(new Exception("Database error"));
 

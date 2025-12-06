@@ -88,13 +88,13 @@ namespace SAPPub.Core.Tests.Services
             // Arrange
             var key = "99999";
             _mockRepo.Setup(r => r.GetLookup(key))
-                     .Returns((Lookup)null);
+                     .Returns(new Lookup());
 
             // Act
             var result = _service.GetLookup(key);
 
             // Assert
-            Assert.Null(result);
+            Assert.Equal(string.Empty, result.Name);
         }
 
         [Fact]

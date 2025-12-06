@@ -10,6 +10,6 @@ namespace SAPPub.Core.Interfaces.Repositories.KS4.Destinations
     public interface ILADestinationsRepository
     {
         IEnumerable<LADestinations> GetAllLADestinations();
-        LADestinations GetLADestinations(string laCode);
+        LADestinations? GetLADestinations(string laCode);
     }
 }

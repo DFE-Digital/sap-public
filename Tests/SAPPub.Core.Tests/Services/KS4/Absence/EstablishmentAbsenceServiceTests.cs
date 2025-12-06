@@ -81,13 +81,13 @@ namespace SAPPub.Core.Tests.Services.KS4.Absence
             // Arrange
             var urn = "99999";
             _mockRepo.Setup(r => r.GetEstablishmentAbsence(urn))
-                     .Returns((EstablishmentAbsence)null);
+                     .Returns(new EstablishmentAbsence());
 
             // Act
             var result = _service.GetEstablishmentAbsence(urn);
 
             // Assert
-            Assert.Null(result);
+            Assert.Null(result.UnAuth_Tot_Est_Current_Pct);
         }
 
         [Fact]
