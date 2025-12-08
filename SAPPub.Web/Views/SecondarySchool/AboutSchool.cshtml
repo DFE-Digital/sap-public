@@ -46,7 +46,7 @@
                     Website
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    <a href="@Model.Website">@Model.Website</a>
+                    <a href="@Model.Website" target="_blank">@Model.Website</a>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -77,7 +77,7 @@
                 <dd class="govuk-summary-list__value">
                     @Model.LocalAuthority
                     <span class="govuk-clear">
-                        <a href="@Model.LocalAuthorityWebsite">View @Model.LocalAuthority City Council's website</a>
+                        <a href="@Model.LocalAuthorityWebsite" target="_blank">View @Model.LocalAuthority City Council's website</a>
                     </span>
                 </dd>
             </div>
@@ -86,7 +86,7 @@
                     Your distance from this school
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    <a>@Model.YouDistanceFromThisSchool</a>
+                    @Model.YouDistanceFromThisSchool
                 </dd>
             </div>
         </dl>
@@ -131,20 +131,73 @@
                 <p>
                     Special educational needs (SEN) units and resourced provisions are specialist provisions in mainstream schools formally recognised by the local authority.
                 </p>
-
                 <p>
                     In SEN units pupils are taught within separate classes for at least half of their time.
                 </p>
-
                 <p>
                     In resourced provisions, pupils are taught within mainstream classes for at least half of their time, but have access to a base and specialist facilities around the school.
                 </p>
-
                 <p>
                     They are both for pupils with SEN, who typically have education, health, and care (EHC) plans.
                 </p>
             </govuk-details-text>
         </govuk-details>
+
+        <h2 class="govuk-heading-l">School policies</h2>
+
+        <div id="school-policies-summary" class="govuk-summary-card">
+            <div class="govuk-summary-card__title-wrapper">
+                <h3 class="govuk-summary-card__title">Documents published by the school</h3>
+            </div>
+            <div class="govuk-summary-card__content">
+                <div class="govuk-summary-list__row">
+                    <p>
+                        All schools in England must publish statutory policies and documents that explain how the school is run and how staff and pupils should behave.
+                        Statutory policies and documents must be published on the school’s website. Schools can also create their own guidelines.
+                    </p>
+                    <a href="@Model.Website" target="_blank">View these policies on the school website</a>
+                </div>
+                
+                <table class="govuk-table govuk-!-margin-top-5">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header">Policy</th>
+                            <th scope="col" class="govuk-table__header">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">Accessibility plan</th>
+                            <td class="govuk-table__cell">Includes how to increase curriculum participation, improve the physical environment, and make information more accessible for pupils with disabilities.</td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">Behaviour policy</th>
+                            <td class="govuk-table__cell">Includes school rules, what behaviour is expected of pupils and what the school does to prevent bullying.</td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">Charging and remissions policy</th>
+                            <td class="govuk-table__cell">Schools may charge for certain activities such as school trips or music tuition. This policy covers what the school charges for and when these charges can be reduced or waived.</td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">Compliants policy</th>
+                            <td class="govuk-table__cell">A complaints policy shows how parents or carers can raise concerns with a school and how to make a complaint.</td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">Safeguarding policy</th>
+                            <td class="govuk-table__cell">Outlines how the school protects pupils from harm, ensuring their safety and well-being.</td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">School uniform policy</th>
+                            <td class="govuk-table__cell">Outlines to parents and carers what pupils are expected to wear and what the exceptions are.</td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">Special educational needs and disabilities (SEND) information report</th>
+                            <td class="govuk-table__cell">Schools must publish a report on their approach to SEND, including how the school supports pupils with SEND.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 @section Scripts {
