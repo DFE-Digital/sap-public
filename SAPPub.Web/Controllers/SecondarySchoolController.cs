@@ -24,6 +24,15 @@ namespace SAPPub.Web.Controllers
             { 
                 Urn = urn,
                 SchoolName = schoolName,
+                Name = schoolName,
+                Telephone = "01234455677",
+                Address = "Address line 1",
+                Website = "https://design-system.service.gov.uk/components/summary-list/",
+                AcademyTrust = "Test Trust",
+                AcademyTrustUpdatedIn = "2024",
+                LocalAuthority = "Sheffield",
+                LocalAuthorityWebsite = "https://design-system.service.gov.uk/components/summary-list/",
+                YouDistanceFromThisSchool = "1.5 miles"
             };
             return View(model);
         }
