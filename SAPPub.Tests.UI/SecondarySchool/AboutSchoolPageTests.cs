@@ -58,6 +58,32 @@ public class AboutSchoolPageTests : BasePageTest
     }
 
     [Fact]
+    public async Task AboutSchoolPage_DisplaysSchoolDetails()
+    {
+        // Arrange
+        await GoToPageAysnc(_pageUrl);
+
+        // Act
+        var isVisible = await Page.Locator("#school-details-summary").IsVisibleAsync();
+
+        // Assert
+        isVisible.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task AboutSchoolPage_DisplaysSchoolLocation()
+    {
+        // Arrange
+        await GoToPageAysnc(_pageUrl);
+
+        // Act
+        var isVisible = await Page.Locator("#school-location-summary").IsVisibleAsync();
+
+        // Assert
+        isVisible.Should().BeTrue();
+    }
+
+    [Fact]
     public async Task AboutSchoolPage_DisplaysSpecialistUnit()
     {
         // Arrange

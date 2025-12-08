@@ -17,6 +17,80 @@
     <div class="govuk-grid-column-three-quarters">
         <h1 class="govuk-heading-l">@ViewBag.Title</h1>
 
+        <dl id="school-details-summary" class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Name
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.Name
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Academy Trust
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.AcademyTrust
+
+                    @if (!string.IsNullOrWhiteSpace(Model.AcademyTrustUpdatedIn))
+                    {
+                        <span class="govuk-hint govuk-clear">
+                            (updated in @Model.AcademyTrustUpdatedIn)
+                        </span>
+                    }
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Website
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <a href="@Model.Website">@Model.Website</a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Telephone
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <a href="tel:@Model.Telephone">@Model.Telephone</a>                    
+                </dd>
+            </div>
+        </dl>
+
+        <h2 class="govuk-heading-l">Location</h2>
+
+        <dl id="school-location-summary" class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Address
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.Address
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Local authority
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.LocalAuthority
+                    <span class="govuk-clear">
+                        <a href="@Model.LocalAuthorityWebsite">View @Model.LocalAuthority City Council's website</a>
+                    </span>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Your distance from this school
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <a>@Model.YouDistanceFromThisSchool</a>
+                </dd>
+            </div>
+        </dl>
+
         <govuk-details id="details-map">
             <govuk-details-summary>
                 View this information on a map
