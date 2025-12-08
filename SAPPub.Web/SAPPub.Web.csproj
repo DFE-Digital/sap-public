@@ -18,4 +18,10 @@
     <ProjectReference Include="..\SAPPub.Infrastructure\SAPPub.Infrastructure.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+		<Content Include="Data\Files\**\*">
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+	</ItemGroup>
+
 </Project>

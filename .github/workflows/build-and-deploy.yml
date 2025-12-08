@@ -106,20 +106,52 @@ jobs:
       - name: Wait for MVC App to be ready
         run: npx wait-on https://localhost:3000
 
-      - name: Run Unit Tests
-        run: dotnet test ./SAPPub.Tests.Unit/SAPPub.Tests.Unit.csproj --no-build --logger trx /p:CollectCoverage=false
+      #- name: Run Unit Tests
+      #  run: dotnet test ./SAPPub.Tests.Unit/SAPPub.Tests.Unit.csproj --no-build --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
 
-      - name: Run Integration Tests
-        run: dotnet test ./SAPPub.Tests.Integration/SAPPub.Tests.Integration.csproj --no-build --logger trx /p:CollectCoverage=false
+      #- name: Run Integration Tests
+      #  run: dotnet test ./SAPPub.Tests.Integration/SAPPub.Tests.Integration.csproj --no-build --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
 
-      - name: Run UI Tests
-        run: dotnet test ./SAPPub.Tests.UI/SAPPub.Tests.UI.csproj --no-build --logger trx /p:CollectCoverage=false
+      #- name: Run UI Tests
+      #  run: dotnet test ./SAPPub.Tests.UI/SAPPub.Tests.UI.csproj --no-build --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
 
-      - name: List artifacts
-        if: ${{ always() }}
+      - name: Run All Tests with Coverage
+        env:
+          HEADED: 0
+          PLAYWRIGHT_IGNORE_HTTPS_ERRORS: true
         run: |
-          echo "Listing test-artifacts..."
-          ls -R SAPPub.Tests.UI/test-artifacts || echo "No artifacts found"
+          TEST_PROJECTS=$(find ./Tests -type f -name "*.Tests.csproj" | sort)
+
+          for proj in $TEST_PROJECTS; do
+            echo "=== Running tests in $proj ==="
+
+            dotnet test "$proj" \
+              --no-build \
+              --configuration Debug \
+              --results-directory "TestResults" \
+              --logger "trx;LogFileName=$(basename "$proj" .csproj).trx" \
+              /p:CollectCoverage=true \
+              /p:CoverletOutputFormat=cobertura \
+              /p:DeterministicReport=true \
+              /p:UseSourceLink=true \
+              /p:Exclude='[*]AspNetCoreGeneratedDocument.*%2c[*]AspNetCore.Views.*' \
+              /p:ExcludeByAttribute='GeneratedCodeAttribute*%2cObsoleteAttribute*%2cExcludeFromCodeCoverage' \
+              --verbosity normal
+          done
+
+      #- name: List artifacts
+      #  if: ${{ always() }}
+      #  run: |
+      #    echo "Listing test-artifacts..."
+      #    ls -R SAPPub.Tests.UI/test-artifacts || echo "No artifacts found"
+
+      - name: Upload Test Result Files
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: "**/TestResults/**/*"
+          retention-days: 5
 
       - name: Upload UI artifacts on failure
         if: failure()
@@ -130,6 +162,35 @@ jobs:
             **/test-artifacts/screenshots/**
             **/test-artifacts/videos/**
             **/test-artifacts/traces/**
+
+      - name: Publish Test Results
+        uses: dorny/test-reporter@v2
+        if: always()
+        with:
+          reporter: 'dotnet-trx'
+          path: "**/TestResults/**/*.trx"
+          name: 'Test Results'
+
+      - name: merge coverage files
+        run: |
+          dotnet tool install -g dotnet-coverage
+          dotnet coverage merge --reports $(find Tests -name "coverage.cobertura.xml") -f cobertura -o coverage-results/coverage.xml
+
+      - name: Generate Coverage Report
+        uses: clearlyip/code-coverage-report-action@v6
+        id: code_coverage_report_action
+        if: ${{ github.actor != 'dependabot[bot]'}}
+        with:
+          filename: "coverage-results/coverage.xml"
+          fail_on_negative_difference: true
+          only_list_changed_files: true
+
+      - name: Add Coverage PR Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: steps.code_coverage_report_action.outputs.file != '' && github.event_name == 'pull_request' && (success() || failure())
+        with:
+          recreate: true
+          path: code-coverage-results.md
 
   # ---------------------------
   # REVIEW APP DEPLOYMENT (PR)

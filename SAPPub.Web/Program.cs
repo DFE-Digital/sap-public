@@ -3,6 +3,33 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.FileProviders;
+using SAPPub.Core.Entities;
+using SAPPub.Core.Entities.KS4.Absence;
+using SAPPub.Core.Entities.KS4.Destinations;
+using SAPPub.Core.Entities.KS4.Performance;
+using SAPPub.Core.Entities.KS4.Workforce;
+using SAPPub.Core.Interfaces.Repositories;
+using SAPPub.Core.Interfaces.Repositories.Generic;
+using SAPPub.Core.Interfaces.Repositories.KS4.Absence;
+using SAPPub.Core.Interfaces.Repositories.KS4.Destinations;
+using SAPPub.Core.Interfaces.Repositories.KS4.Performance;
+using SAPPub.Core.Interfaces.Repositories.KS4.Workforce;
+using SAPPub.Core.Interfaces.Services;
+using SAPPub.Core.Interfaces.Services.KS4.Absence;
+using SAPPub.Core.Interfaces.Services.KS4.Destinations;
+using SAPPub.Core.Interfaces.Services.KS4.Performance;
+using SAPPub.Core.Interfaces.Services.KS4.Workforce;
+using SAPPub.Core.Services;
+using SAPPub.Core.Services.KS4.Absence;
+using SAPPub.Core.Services.KS4.Destinations;
+using SAPPub.Core.Services.KS4.Performance;
+using SAPPub.Core.Services.KS4.Workforce;
+using SAPPub.Infrastructure.Repositories;
+using SAPPub.Infrastructure.Repositories.Generic;
+using SAPPub.Infrastructure.Repositories.KS4.Absence;
+using SAPPub.Infrastructure.Repositories.KS4.Destinations;
+using SAPPub.Infrastructure.Repositories.KS4.Performance;
+using SAPPub.Infrastructure.Repositories.KS4.Workforce;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Middleware;
 using System.Diagnostics.CodeAnalysis;
@@ -51,6 +78,9 @@ public partial class Program
         builder.Services.AddDataProtection()
                .PersistKeysToFileSystem(new DirectoryInfo(@"/keys"))
                .SetApplicationName("SAPPub");
+
+
+        builder.Services.AddDependencies();
 
         var app = builder.Build();
 
