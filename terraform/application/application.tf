@@ -1,3 +1,20 @@
+
+data "azurerm_key_vault" "app_key_vault" {
+  name                = local.key_vault_name
+  resource_group_name = local.resource_group_name
+}
+
+# Fetch DSI secrets from Key Vault
+data "azurerm_key_vault_secret" "logit_url" {
+  name         = "LogitUrl"
+  key_vault_id = data.azurerm_key_vault.app_key_vault.id
+}
+
+data "azurerm_key_vault_secret" "logit_port" {
+  name         = "LogitPort"
+  key_vault_id = data.azurerm_key_vault.app_key_vault.id
+}
+
 module "application_configuration" {
   source = "./vendor/modules/aks//aks/application_configuration"
 
@@ -15,6 +32,8 @@ module "application_configuration" {
 
   secret_variables = {
     DATABASE_URL = module.postgres.url
+	LogitUrl = local.logit_url
+    LogitPort = local.logit_port
   }
 
 }
