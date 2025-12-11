@@ -83,4 +83,17 @@ public class AcademicPerformanceTests : BasePageTest
         // Assert
         isVisible.Should().BeTrue();
     }
+
+    [Fact]
+    public async Task AcademicPerformancePage_Displays_Sub_Navigation()
+    {
+        // Arrange
+        await GoToPageAysnc(_pageUrl);
+
+        // Act
+        var isVisible = await Page.Locator("#sub-navigation-academic-performance").IsVisibleAsync();
+
+        // Assert
+        isVisible.Should().BeTrue();
+    }    
 }
