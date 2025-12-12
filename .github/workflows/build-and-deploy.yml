@@ -106,9 +106,7 @@ jobs:
 
       - name: build frontend assets
         working-directory: SAPPub.Web
-        run: |
-          npm ci
-          npm run copy-assets
+        run: npm ci
 
       - name: Start MVC App
         run: |

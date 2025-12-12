@@ -6,7 +6,7 @@ ARG NODEJS_VERSION_MAJOR=22
 
 
 # =====================================================
-# Stage 1: Build frontend assets (DfE / GOV.UK)
+# Stage 1: Build frontend assets (DfE / GOV.UK / Moj)
 # =====================================================
 FROM node:${NODEJS_VERSION_MAJOR}-bullseye-slim AS assets
 WORKDIR /app
@@ -28,7 +28,8 @@ RUN echo "=== Assets build output ===" && \
     echo "=== Checking for frontend libraries ===" && \
     ls -la /app/wwwroot/lib/ 2>/dev/null || echo "No lib directory yet" && \
     ls -la /app/wwwroot/lib/dfe-frontend/ 2>/dev/null || echo "DfE frontend not in wwwroot/lib" && \
-    ls -la /app/wwwroot/lib/govuk-frontend/ 2>/dev/null || echo "GOV.UK frontend not in wwwroot/lib"
+    ls -la /app/wwwroot/lib/govuk-frontend/ 2>/dev/null || echo "GOV.UK frontend not in wwwroot/lib" && \
+    ls -la /app/wwwroot/lib/moj-frontend/ 2>/dev/null || echo "MOJ frontend not in wwwroot/lib"
 
 
 # =====================================================
