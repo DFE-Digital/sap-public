@@ -78,7 +78,7 @@ RUN echo "=== Final wwwroot contents ===" && \
     echo "=== Checking for DfE frontend ===" && \
     ls -la /app/wwwroot/lib/dfe-frontend/ 2>/dev/null || echo "DfE not found" && \
     echo "=== Checking for Moj frontend ===" && \
-    ls -la /app/wwwroot/lib/moj-frontend/ 3>/dev/null || echo "MOJ frontend not found"
+    ls -la /app/wwwroot/lib/moj-frontend/ 2>/dev/null || echo "MOJ frontend not found"
 
 #  Set location for keys folder:
 ENV ASPNETCORE_DataProtection__Directory=/keys
