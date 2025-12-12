@@ -71,6 +71,8 @@ WORKDIR /app
 COPY --from=publish --chown=app:app /app/publish .
 COPY --from=assets  --chown=app:app /app/wwwroot ./wwwroot
 
+RUN ls -l /app/wwwroot/
+
 #  Set location for keys folder:
 ENV ASPNETCORE_DataProtection__Directory=/keys
 
