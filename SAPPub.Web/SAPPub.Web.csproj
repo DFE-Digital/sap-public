@@ -24,8 +24,4 @@
 		</Content>
 	</ItemGroup>
 
-	<Target Name="CopyFrontend" BeforeTargets="Build">
-		<Exec Command="npm run copy-assets"></Exec>
-	</Target>
-
 </Project>
