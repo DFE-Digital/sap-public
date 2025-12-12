@@ -21,7 +21,6 @@ RUN npm ci
 # Copy all wwwroot contents (custom assets, images, CSS, etc.)
 COPY ./SAPPub.Web/ /app/
 
-ARG CACHEBUST=1
 RUN npm run postinstall
 
 # Debug: Show what was built and where

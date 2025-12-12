@@ -63,11 +63,9 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           context: .
           docker-repository: ${{ env.DOCKER_REPOSITORY }}
-          max-cache: true
-          reuse-cache: true
+          max-cache: 0
+          reuse-cache: false
           snyk-token: ${{ secrets.SNYK_TOKEN }}
-          build-args: |
-            CACHEBUST=${{ github.run_id }}
 
   # ---------------------------
   # TESTS: UNIT, INTEGRATION, UI
