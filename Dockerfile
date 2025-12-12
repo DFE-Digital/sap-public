@@ -18,10 +18,12 @@ COPY ./SAPPub.Web/package*.json /app/
 # The postinstall script copies dfe-frontend and govuk-frontend from node_modules to wwwroot/lib
 RUN npm ci
 
-# Copy all wwwroot contents (custom assets, images, CSS, etc.)
 COPY ./SAPPub.Web/ /app/
 
 RUN npm run postinstall
+
+# Copy all wwwroot contents (custom assets, images, CSS, etc.)
+COPY ./SAPPub.Web/wwwroot/ /app/wwwroot/
 
 # Debug: Show what was built and where
 RUN echo "=== Assets build output ===" && \
