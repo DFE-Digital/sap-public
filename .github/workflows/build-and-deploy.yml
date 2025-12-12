@@ -105,7 +105,7 @@ jobs:
           cache-dependency-path: '**/package-lock.json'
 
       - name: build frontend assets
-        working-directory: SAPSec.Web
+        working-directory: SAPPub.Web
         run: npm ci
 
       - name: Start MVC App
