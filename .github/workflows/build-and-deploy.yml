@@ -96,6 +96,17 @@ jobs:
 
       - name: Install Playwright browsers (.NET)
         run: pwsh ./SAPPub.Tests.UI/bin/Debug/net8.0/playwright.ps1 install
+        
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: build frontend assets
+        working-directory: SAPPub.Web
+        run: npm ci
 
       - name: Start MVC App
         run: |
