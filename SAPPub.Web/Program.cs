@@ -32,8 +32,11 @@ using SAPPub.Infrastructure.Repositories.KS4.Performance;
 using SAPPub.Infrastructure.Repositories.KS4.Workforce;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Middleware;
+using Serilog;
+using Serilog.Sinks.Network;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Net;
 using System.Text.Json;
 
 namespace SAPPub.Web;
@@ -44,6 +47,17 @@ public partial class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+        var logitVal = builder.Configuration.GetValue<string>("LogitUrl");
+        var logitPort = builder.Configuration.GetValue<int>("LogitPort");
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.Console()
+            .WriteTo.File("logs/myapp.txt", rollingInterval: RollingInterval.Day)
+            .WriteTo.TCPSink(logitVal, logitPort)
+            .CreateLogger();
+
+        Log.Information("Hello, world! - SAPPUB");
 
         builder.Services.AddGovUkFrontend(options =>
         {
