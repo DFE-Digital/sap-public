@@ -71,6 +71,15 @@ WORKDIR /app
 COPY --from=publish --chown=app:app /app/publish .
 COPY --from=assets  --chown=app:app /app/wwwroot ./wwwroot
 
+RUN echo "=== Final wwwroot contents ===" && \
+    ls -la /app/wwwroot/ && \
+    echo "=== Checking for frontend libraries ===" && \
+    ls -la /app/wwwroot/lib/ 2>/dev/null || echo "No lib directory" && \
+    echo "=== Checking for DfE frontend ===" && \
+    ls -la /app/wwwroot/lib/dfe-frontend/ 2>/dev/null || echo "DfE not found" && \
+    echo "=== Checking for Moj frontend ===" && \
+    ls -la /app/wwwroot/lib/moj-frontend/ 3>/dev/null || echo "MOJ frontend not found"
+
 #  Set location for keys folder:
 ENV ASPNETCORE_DataProtection__Directory=/keys
 
