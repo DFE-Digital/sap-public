@@ -241,16 +241,16 @@
         schoolData
             .filter((s) => s !== closest && s.distance <= RADIUS_METERS)
             .forEach((s) => {
-                const marker = L.marker(s.ll, { icon: nearbyIcon })
-                    .bindPopup(
-                        `<strong>${s.name}</strong><br>${(
-                            s.distance / 1609.344
-                        ).toFixed(2)} miles away`
-                    )
-                    .addTo(layer);
+                //const marker = L.marker(s.ll, { icon: nearbyIcon })
+                //    .bindPopup(
+                //        `<strong>${s.name}</strong><br>${(
+                //            s.distance / 1609.344
+                //        ).toFixed(2)} miles away`
+                //    )
+                //    .addTo(layer);
 
-                a11yMarker(marker, `${s.name}, primary school`);
-                registerMarker(marker, s.ll);
+                //a11yMarker(marker, `${s.name}, primary school`);
+                //registerMarker(marker, s.ll);
             });
 
         // ============================================================
