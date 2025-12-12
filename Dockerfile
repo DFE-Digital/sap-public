@@ -14,12 +14,12 @@ WORKDIR /app
 # Copy package files for dependency installation
 COPY ./SAPPub.Web/package*.json /app/
 
+# Copy all wwwroot contents (custom assets, images, CSS, etc.)
+COPY ./SAPPub.Web/ /app/
+
 # Install dependencies - this will trigger postinstall which runs copy-assets
 # The postinstall script copies dfe-frontend and govuk-frontend from node_modules to wwwroot/lib
 RUN npm ci
-
-# Copy all wwwroot contents (custom assets, images, CSS, etc.)
-COPY ./SAPPub.Web/ /app/
 
 RUN npm run postinstall
 
