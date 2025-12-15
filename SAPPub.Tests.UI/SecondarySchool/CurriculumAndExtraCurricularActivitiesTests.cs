@@ -82,4 +82,17 @@ public class CurriculumAndExtraCurricularActivitiesTests : BasePageTest
         // Assert
         isVisible.Should().BeTrue();
     }
+
+    [Fact]
+    public async Task CurriculumAndExtraCurricularActivitiesPage_DisplaysPagination()
+    {
+        // Arrange
+        await GoToPageAysnc(_pageUrl);
+
+        // Act
+        var isVisible = await Page.Locator("#current-extra-curricular-activities-pagination").IsVisibleAsync();
+
+        // Assert
+        isVisible.Should().BeTrue();
+    }
 }

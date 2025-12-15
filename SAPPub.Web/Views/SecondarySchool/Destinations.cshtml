@@ -16,5 +16,9 @@
 
     <div class="govuk-grid-column-three-quarters">
         <h1 class="govuk-heading-l">@ViewBag.Title</h1>
+
+        <govuk-pagination id="destinations-pagination">
+            <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAcademicPerformance" asp-all-route-data="@Model.RouteAttributes">Academic performance: Subjects entered</govuk-pagination-previous>
+        </govuk-pagination>
     </div>
 </div>

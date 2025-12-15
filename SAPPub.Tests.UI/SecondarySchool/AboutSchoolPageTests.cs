@@ -108,4 +108,17 @@ public class AboutSchoolPageTests : BasePageTest
         // Assert
         isVisible.Should().BeTrue();
     }
+
+    [Fact]
+    public async Task AboutSchoolPage_DisplaysPagination()
+    {
+        // Arrange
+        await GoToPageAysnc(_pageUrl);
+
+        // Act
+        var isVisible = await Page.Locator("#about-the-school-pagination").IsVisibleAsync();
+
+        // Assert
+        isVisible.Should().BeTrue();
+    }
 }

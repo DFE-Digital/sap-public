@@ -95,5 +95,18 @@ public class AcademicPerformanceTests : BasePageTest
 
         // Assert
         isVisible.Should().BeTrue();
-    }    
+    }
+
+    [Fact]
+    public async Task AcademicPerformancePage_DisplaysPagination()
+    {
+        // Arrange
+        await GoToPageAysnc(_pageUrl);
+
+        // Act
+        var isVisible = await Page.Locator("#academic-performance-pagination").IsVisibleAsync();
+
+        // Assert
+        isVisible.Should().BeTrue();
+    }
 }

@@ -56,4 +56,17 @@ public class AttendancePageTests : BasePageTest
         await nav.ShouldHaveOneActiveItemAsync();
         await nav.ShouldHaveActiveHrefAsync(_pageUrl);
     }
+
+    [Fact]
+    public async Task AttendancePage_DisplaysPagination()
+    {
+        // Arrange
+        await GoToPageAysnc(_pageUrl);
+
+        // Act
+        var isVisible = await Page.Locator("#attendance-pagination").IsVisibleAsync();
+
+        // Assert
+        isVisible.Should().BeTrue();
+    }
 }

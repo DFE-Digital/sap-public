@@ -56,4 +56,17 @@ public class DestinationsPageTests : BasePageTest
         await nav.ShouldHaveOneActiveItemAsync();
         await nav.ShouldHaveActiveHrefAsync(_pageUrl);
     }
+
+    [Fact]
+    public async Task DestinationsPage_DisplaysPagination()
+    {
+        // Arrange
+        await GoToPageAysnc(_pageUrl);
+
+        // Act
+        var isVisible = await Page.Locator("#destinations-pagination").IsVisibleAsync();
+
+        // Assert
+        isVisible.Should().BeTrue();
+    }
 }

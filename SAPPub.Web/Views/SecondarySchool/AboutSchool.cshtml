@@ -16,21 +16,16 @@
 
     <div class="govuk-grid-column-three-quarters">
         <h1 class="govuk-heading-l">@ViewBag.Title</h1>
-
-        <dl id="school-details-summary" class="govuk-summary-list">
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Name
-                </dt>
-                <dd class="govuk-summary-list__value">
+        <govuk-summary-list id="school-details-summary">
+            <govuk-summary-list-row>
+                <govuk-summary-list-row-key>Name</govuk-summary-list-row-key>
+                <govuk-summary-list-row-value>
                     @Model.Name
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Academy Trust
-                </dt>
-                <dd class="govuk-summary-list__value">
+                </govuk-summary-list-row-value>
+            </govuk-summary-list-row>
+            <govuk-summary-list-row>
+                <govuk-summary-list-row-key>Academy Trust</govuk-summary-list-row-key>
+                <govuk-summary-list-row-value>
                     @Model.AcademyTrust
 
                     @if (!string.IsNullOrWhiteSpace(Model.AcademyTrustUpdatedIn))
@@ -39,57 +34,47 @@
                             (updated in @Model.AcademyTrustUpdatedIn)
                         </span>
                     }
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Website
-                </dt>
-                <dd class="govuk-summary-list__value">
+                </govuk-summary-list-row-value>
+            </govuk-summary-list-row>
+            <govuk-summary-list-row>
+                <govuk-summary-list-row-key>Website</govuk-summary-list-row-key>
+                <govuk-summary-list-row-value>
                     <a href="@Model.Website" target="_blank">@Model.Website</a>
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Telephone
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    <a href="tel:@Model.Telephone">@Model.Telephone</a>                    
-                </dd>
-            </div>
-        </dl>
+                </govuk-summary-list-row-value>
+            </govuk-summary-list-row>
+            <govuk-summary-list-row>
+                <govuk-summary-list-row-key>Telephone</govuk-summary-list-row-key>
+                <govuk-summary-list-row-value>
+                    <a href="tel:@Model.Telephone">@Model.Telephone</a>
+                </govuk-summary-list-row-value>
+            </govuk-summary-list-row>
+        </govuk-summary-list>
 
         <h2 class="govuk-heading-l">Location</h2>
 
-        <dl id="school-location-summary" class="govuk-summary-list">
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Address
-                </dt>
-                <dd class="govuk-summary-list__value">
+        <govuk-summary-list id="school-location-summary">
+            <govuk-summary-list-row>
+                <govuk-summary-list-row-key>Address</govuk-summary-list-row-key>
+                <govuk-summary-list-row-value>
                     @Model.Address
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Local authority
-                </dt>
-                <dd class="govuk-summary-list__value">
+                </govuk-summary-list-row-value>
+            </govuk-summary-list-row>
+            <govuk-summary-list-row>
+                <govuk-summary-list-row-key>Local authority</govuk-summary-list-row-key>
+                <govuk-summary-list-row-value>
                     @Model.LocalAuthority
                     <span class="govuk-clear">
                         <a href="@Model.LocalAuthorityWebsite" target="_blank">View @Model.LocalAuthority City Council's website</a>
                     </span>
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Your distance from this school
-                </dt>
-                <dd class="govuk-summary-list__value">
+                </govuk-summary-list-row-value>
+            </govuk-summary-list-row>
+            <govuk-summary-list-row>
+                <govuk-summary-list-row-key>Your distance from this school</govuk-summary-list-row-key>
+                <govuk-summary-list-row-value>
                     @Model.YouDistanceFromThisSchool
-                </dd>
-            </div>
-        </dl>
+                </govuk-summary-list-row-value>
+            </govuk-summary-list-row>
+        </govuk-summary-list>
 
         <govuk-details id="details-map">
             <govuk-details-summary>
@@ -198,6 +183,10 @@
                 </table>
             </div>
         </div>
+
+        <govuk-pagination id="about-the-school-pagination">
+            <govuk-pagination-next asp-route="@RouteConstants.SecondaryAdmissions" asp-all-route-data="@Model.RouteAttributes">Admissions</govuk-pagination-next>
+        </govuk-pagination>
     </div>
 </div>
 @section Scripts {
