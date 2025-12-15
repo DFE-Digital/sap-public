@@ -66,6 +66,8 @@ jobs:
           max-cache: false
           reuse-cache: false
           snyk-token: ${{ secrets.SNYK_TOKEN }}
+        env:
+            CACHE_BUST: ${{ github.run_id }}
 
   # ---------------------------
   # TESTS: UNIT, INTEGRATION, UI

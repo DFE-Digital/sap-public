@@ -11,6 +11,8 @@ ARG NODEJS_VERSION_MAJOR=22
 FROM node:${NODEJS_VERSION_MAJOR}-bullseye-slim AS assets
 WORKDIR /app
 
+ARG CACHE_BUST = 1
+
 # Copy package files for dependency installation
 COPY ./SAPPub.Web/package*.json /app/
 
