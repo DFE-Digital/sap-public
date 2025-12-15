@@ -16,12 +16,14 @@ ARG CACHE_BUST=1
 # Copy package files for dependency installation
 COPY ./SAPPub.Web/package*.json /app/
 
-# Copy all wwwroot contents (custom assets, images, CSS, etc.)
-COPY ./SAPPub.Web/wwwroot/ /app/wwwroot/
-
 # Install dependencies - this will trigger postinstall which runs copy-assets
 # The postinstall script copies dfe-frontend and govuk-frontend from node_modules to wwwroot/lib
 RUN npm ci
+
+# Copy all wwwroot contents (custom assets, images, CSS, etc.)
+COPY ./SAPPub.Web/wwwroot/ /app/wwwroot/
+
+RUN echo "wwwroot/lib contents:" && ls -R wwwroot/lib
 
 # Debug: Show what was built and where
 RUN echo "=== Assets build output ===" && \
@@ -69,6 +71,9 @@ WORKDIR /app
 
 # Copy app & assets with correct ownership; no shell, so no RUN here
 COPY --from=publish --chown=app:app /app/publish .
+
+COPY --from=assets --chown=app:app /app/wwwroot/lib/moj-frontend ./wwwroot/lib/moj-frontend
+
 COPY --from=assets  --chown=app:app /app/wwwroot ./wwwroot
 
 #  Set location for keys folder:
