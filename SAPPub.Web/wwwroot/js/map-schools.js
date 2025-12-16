@@ -219,7 +219,7 @@
 
         a11yMarker(um, "Demo location: The Lescar pub");
         registerMarker(um, userLL);
-        L.circle(userLL, { radius: user.acc }).addTo(layer);
+        //L.circle(userLL, { radius: user.acc }).addTo(layer);
 
         // ============================================================
         // CLOSEST SCHOOL

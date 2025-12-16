@@ -28,34 +28,35 @@
                         Schools can also include other subjects or topics of their choice as part of the school curriculum.
                     </p>
                 </div>
-                <dl class="govuk-summary-list govuk-summary-list--no-border-top">
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
+
+                <govuk-summary-list>
+                    <govuk-summary-list-row>
+                        <govuk-summary-list-row-key>
                             Key stage 3 (KS3) curriculum
                             <span class="govuk-hint govuk-clear">
                                 Covers years 7 to 9
                             </span>
-                        </dt>
-                        <dd class="govuk-summary-list__value">
+                        </govuk-summary-list-row-key>
+                        <govuk-summary-list-row-value>
                             <a class="govuk-link" href="#">
                                 View the school’s KS3 curriculum on their website
                             </a>
-                        </dd>
-                    </div>
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
+                        </govuk-summary-list-row-value>
+                    </govuk-summary-list-row>
+                    <govuk-summary-list-row>
+                        <govuk-summary-list-row-key>
                             Key stage 4 (KS4) curriculum
                             <span class="govuk-hint govuk-clear">
                                 Covers years 10 and 11
                             </span>
-                        </dt>
-                        <dd class="govuk-summary-list__value">
+                        </govuk-summary-list-row-key>
+                        <govuk-summary-list-row-value>
                             <a class="govuk-link" href="#">
                                 View the school’s KS4 curriculum on their website
                             </a>
-                        </dd>
-                    </div>
-                </dl>
+                        </govuk-summary-list-row-value>
+                    </govuk-summary-list-row>
+                </govuk-summary-list>
             </div>
         </div>
 
@@ -113,19 +114,22 @@
                         The range of activities can vary due to staff availability, time of year and funding.
                     </p>
                 </div>
-                <dl class="govuk-summary-list govuk-summary-list--no-border-top">
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            Extra-curricular activities
-                        </dt>
-                        <dd class="govuk-summary-list__value">
+                <govuk-summary-list>
+                    <govuk-summary-list-row>
+                        <govuk-summary-list-row-key>Extra-curricular activities</govuk-summary-list-row-key>
+                        <govuk-summary-list-row-value>
                             <a class="govuk-link" href="#">
                                 Visit the school website for current extra-curricular activities
                             </a>
-                        </dd>
-                    </div>
-                </dl>
+                        </govuk-summary-list-row-value>
+                    </govuk-summary-list-row>
+                </govuk-summary-list>
             </div>
         </div>
+
+        <govuk-pagination id="current-extra-curricular-activities-pagination">
+            <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAdmissions" asp-all-route-data="@Model.RouteAttributes">Admissions</govuk-pagination-previous>
+            <govuk-pagination-next asp-route="@RouteConstants.SecondaryAttendance" asp-all-route-data="@Model.RouteAttributes">Attendance</govuk-pagination-next>
+        </govuk-pagination>
     </div>
 </div>

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using SAPPub.Web.Controllers;
+using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.SecondarySchool;
 
 namespace SAPPub.Tests.Unit.Controllers;
@@ -48,6 +49,9 @@ public class SecondarySchoolControllerTests
         model.Should().NotBeNull();
         model.Urn.Should().Be(urn);
         model.SchoolName.Should().Be(schoolName);
+        model.RouteAttributes.Count().Should().Be(2);
+        model.RouteAttributes[RouteConstants.Urn].Should().Be(urn.ToString());
+        model.RouteAttributes[RouteConstants.SchoolName].Should().Be(schoolName);
     }
 
     [Fact]
@@ -68,6 +72,9 @@ public class SecondarySchoolControllerTests
         model.Should().NotBeNull();
         model.Urn.Should().Be(urn);
         model.SchoolName.Should().Be(schoolName);
+        model.RouteAttributes.Count().Should().Be(2);
+        model.RouteAttributes[RouteConstants.Urn].Should().Be(urn.ToString());
+        model.RouteAttributes[RouteConstants.SchoolName].Should().Be(schoolName);
     }
 
     [Fact]
@@ -88,6 +95,9 @@ public class SecondarySchoolControllerTests
         model.Should().NotBeNull();
         model.Urn.Should().Be(urn);
         model.SchoolName.Should().Be(schoolName);
+        model.RouteAttributes.Count().Should().Be(2);
+        model.RouteAttributes[RouteConstants.Urn].Should().Be(urn.ToString());
+        model.RouteAttributes[RouteConstants.SchoolName].Should().Be(schoolName);
     }
 
     [Fact]
@@ -108,6 +118,9 @@ public class SecondarySchoolControllerTests
         model.Should().NotBeNull();
         model.Urn.Should().Be(urn);
         model.SchoolName.Should().Be(schoolName);
+        model.RouteAttributes.Count().Should().Be(2);
+        model.RouteAttributes[RouteConstants.Urn].Should().Be(urn.ToString());
+        model.RouteAttributes[RouteConstants.SchoolName].Should().Be(schoolName);
     }
 
     [Fact]
@@ -128,6 +141,9 @@ public class SecondarySchoolControllerTests
         model.Should().NotBeNull();
         model.Urn.Should().Be(urn);
         model.SchoolName.Should().Be(schoolName);
+        model.RouteAttributes.Count().Should().Be(2);
+        model.RouteAttributes[RouteConstants.Urn].Should().Be(urn.ToString());
+        model.RouteAttributes[RouteConstants.SchoolName].Should().Be(schoolName);
     }
 
     [Fact]
@@ -148,5 +164,8 @@ public class SecondarySchoolControllerTests
         model.Should().NotBeNull();
         model.Urn.Should().Be(urn);
         model.SchoolName.Should().Be(schoolName);
+        model.RouteAttributes.Count().Should().Be(2);
+        model.RouteAttributes[RouteConstants.Urn].Should().Be(urn.ToString());
+        model.RouteAttributes[RouteConstants.SchoolName].Should().Be(schoolName);
     }
 }

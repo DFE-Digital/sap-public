@@ -21,14 +21,14 @@
         <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
             <ul class="moj-sub-navigation__list">
                 <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" aria-current="page" href="#1">English and maths results</a>
+                    <a class="moj-sub-navigation__link" href="#1">Pupil progress</a>
                 </li>
                 <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" href="#2">Subjects entered</a>
+                    <a class="moj-sub-navigation__link" aria-current="page" href="#2">English and maths results</a>
                 </li>
                 <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" href="#3">Pupil progress</a>
-                </li>
+                    <a class="moj-sub-navigation__link" href="#3">Subjects entered</a>
+                </li>                
             </ul>
         </nav>
 
@@ -86,6 +86,11 @@
                 <p>If the qualification offered is not applicable, it means that pupils will study this subject but will not gain a qualification.</p>
             </govuk-details-text>
         </govuk-details>
+
+        <govuk-pagination id="academic-performance-pagination">
+            <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAttendance" asp-all-route-data="@Model.RouteAttributes">Attendance</govuk-pagination-previous>
+            <govuk-pagination-next asp-route="@RouteConstants.SecondaryDestinations" asp-all-route-data="@Model.RouteAttributes">Academic performance: Destinations</govuk-pagination-next>
+        </govuk-pagination>
     </div>
 </div>
 

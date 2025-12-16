@@ -28,44 +28,39 @@
                         </div>
 
                         <div class="govuk-summary-card__content">
-
                             <div class="govuk-summary-list__row govuk-!-margin-top-3 govuk-!-margin-bottom-3">
                                 <p>
                                     If your child is moving schools, you’ll need to apply through your local council,
                                     even if you’re applying for a school in another council area or you’ve just moved to England.
                                 </p>
                             </div>
-
-                            <dl class="govuk-summary-list govuk-summary-list--no-border-top">
-
-                                <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">
-                                        Find out which schools have places
-                                    </dt>
-                                    <dd class="govuk-summary-list__value">
+                            <govuk-summary-list>
+                                <govuk-summary-list-row>
+                                    <govuk-summary-list-row-key>Find out which schools have places</govuk-summary-list-row-key>
+                                    <govuk-summary-list-row-value>
                                         <a class="govuk-link" href="#">
                                             View information on schools with vacancies on Sheffield City Council’s website
                                         </a>
-                                    </dd>
-                                </div>
-
-                                <div class="govuk-summary-list__row">
-                                    <dt class="govuk-summary-list__key">
-                                        Apply to change schools
-                                    </dt>
-                                    <dd class="govuk-summary-list__value">
+                                    </govuk-summary-list-row-value>
+                                </govuk-summary-list-row>
+                                <govuk-summary-list-row>
+                                    <govuk-summary-list-row-key>Apply to change schools</govuk-summary-list-row-key>
+                                    <govuk-summary-list-row-value>
                                         <a class="govuk-link" href="#">
                                             View information on applying to move schools on Sheffield City Council’s website
                                         </a>
-                                    </dd>
-                                </div>
-
-                            </dl>
+                                    </govuk-summary-list-row-value>
+                                </govuk-summary-list-row>
+                            </govuk-summary-list>
                         </div>
                     </div>
-
                 </govuk-accordion-item-content>
             </govuk-accordion-item>
         </govuk-accordion>
+
+        <govuk-pagination id="admissions-pagination">
+            <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAboutSchool" asp-all-route-data="@Model.RouteAttributes">About the school</govuk-pagination-previous>
+            <govuk-pagination-next asp-route="@RouteConstants.SecondaryCurriculumAndExtraCurricularActivities" asp-all-route-data="@Model.RouteAttributes">Curriculum and extra-curricular activities</govuk-pagination-next>
+        </govuk-pagination>
     </div>
 </div>
