@@ -82,9 +82,5 @@ namespace SAPPub.Core.Entities.KS4.Destinations
         /// 
         public double? Apprentice_Tot_LA_Previous2_Pct { get; set; }
         public string Apprentice_Tot_LA_Previous2_Pct_Reason { get; set; } = string.Empty;
-
-
-
-
     }
 }

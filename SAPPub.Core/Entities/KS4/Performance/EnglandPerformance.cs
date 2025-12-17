@@ -76,8 +76,5 @@ namespace SAPPub.Core.Entities.KS4.Performance
         /// 
         public double? EngMaths59_Tot_Eng_Previous2_Pct { get; set; }
         public string EngMaths59_Tot_Eng_Previous2_Pct_Reason { get; set; } = string.Empty;
-
-
-
     }
 }
