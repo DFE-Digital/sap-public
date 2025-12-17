@@ -12,19 +12,19 @@ namespace SAPPub.Core.Entities.KS4.Absence
     {
         public string Id { get; set; } = string.Empty;
         /// 
-        ///Absence Total filtered by LA for Current year 
+        /// Absence Total filtered by LA for Current year 
         /// 
         public double? Abs_Tot_LA_Current_Pct { get; set; }
         public string Abs_Tot_LA_Current_Pct_Reason { get; set; } = string.Empty;
 
         /// 
-        ///Absence Total filtered by LA for Current year 
+        /// Absence Total filtered by LA for Current year 
         /// 
         public double? Auth_Tot_LA_Current_Pct { get; set; }
         public string Auth_Tot_LA_Current_Pct_Reason { get; set; } = string.Empty;
 
         /// 
-        ///Absence Total filtered by LA for Current year 
+        /// Absence Total filtered by LA for Current year 
         /// 
         public double? UnAuth_Tot_LA_Current_Pct { get; set; }
         public string UnAuth_Tot_LA_Current_Pct_Reason { get; set; } = string.Empty;
