@@ -31,6 +31,15 @@ The workflow is intentionally simple and deterministic:
 
 ---
 
+## Prerequisites for running locally
+
+Before running locally, ensure you:
+
+1. Obtain the raw data files and place them in `SAPData/DataMap/SourceFiles`
+2. Have pgAdmin installed locally (includes psql SQL Shell which is needed to run '02_copy_into_raw_local.sql')
+
+---
+
 ## Why raw data files are not stored in Git
 
 Raw data files are **intentionally excluded** from this repository.
