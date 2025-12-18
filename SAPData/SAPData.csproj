@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include=".github\workflows\ingest.yml" />
+    <None Include=".github\workflows\data-pipeline.yml" />
   </ItemGroup>
 
   <ItemGroup>
