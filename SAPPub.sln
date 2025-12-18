@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.31903.59
+# Visual Studio Version 18
+VisualStudioVersion = 18.1.11312.151 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAPPub.Web", "SAPPub.Web\SAPPub.Web.csproj", "{24624574-4DE4-4A91-8273-7AE3EEE13537}"
 EndProject
@@ -29,6 +29,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAPPub.Tests.Integration", "SAPPub.Tests.Integration\SAPPub.Tests.Integration.csproj", "{CE3DBC01-F8D5-468B-A12C-C0AAC6B846CC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAPPub.Tests.UI", "SAPPub.Tests.UI\SAPPub.Tests.UI.csproj", "{211BD23D-396A-4E58-A8FC-37C2F1D5A904}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAPData", "SAPData\SAPData.csproj", "{CA1E3DB8-1DE2-D4CA-4E19-E74D4B952F2E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAPData.Tests.Unit", "SAPData.Tests.Unit\SAPData.Tests.Unit.csproj", "{2FD6F8C0-9D97-7714-4445-AD6E47BEB671}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -148,6 +152,30 @@ Global
 		{211BD23D-396A-4E58-A8FC-37C2F1D5A904}.Release|x64.Build.0 = Release|Any CPU
 		{211BD23D-396A-4E58-A8FC-37C2F1D5A904}.Release|x86.ActiveCfg = Release|Any CPU
 		{211BD23D-396A-4E58-A8FC-37C2F1D5A904}.Release|x86.Build.0 = Release|Any CPU
+		{CA1E3DB8-1DE2-D4CA-4E19-E74D4B952F2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA1E3DB8-1DE2-D4CA-4E19-E74D4B952F2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA1E3DB8-1DE2-D4CA-4E19-E74D4B952F2E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CA1E3DB8-1DE2-D4CA-4E19-E74D4B952F2E}.Debug|x64.Build.0 = Debug|Any CPU
+		{CA1E3DB8-1DE2-D4CA-4E19-E74D4B952F2E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CA1E3DB8-1DE2-D4CA-4E19-E74D4B952F2E}.Debug|x86.Build.0 = Debug|Any CPU
+		{CA1E3DB8-1DE2-D4CA-4E19-E74D4B952F2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA1E3DB8-1DE2-D4CA-4E19-E74D4B952F2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA1E3DB8-1DE2-D4CA-4E19-E74D4B952F2E}.Release|x64.ActiveCfg = Release|Any CPU
+		{CA1E3DB8-1DE2-D4CA-4E19-E74D4B952F2E}.Release|x64.Build.0 = Release|Any CPU
+		{CA1E3DB8-1DE2-D4CA-4E19-E74D4B952F2E}.Release|x86.ActiveCfg = Release|Any CPU
+		{CA1E3DB8-1DE2-D4CA-4E19-E74D4B952F2E}.Release|x86.Build.0 = Release|Any CPU
+		{2FD6F8C0-9D97-7714-4445-AD6E47BEB671}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FD6F8C0-9D97-7714-4445-AD6E47BEB671}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FD6F8C0-9D97-7714-4445-AD6E47BEB671}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2FD6F8C0-9D97-7714-4445-AD6E47BEB671}.Debug|x64.Build.0 = Debug|Any CPU
+		{2FD6F8C0-9D97-7714-4445-AD6E47BEB671}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2FD6F8C0-9D97-7714-4445-AD6E47BEB671}.Debug|x86.Build.0 = Debug|Any CPU
+		{2FD6F8C0-9D97-7714-4445-AD6E47BEB671}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FD6F8C0-9D97-7714-4445-AD6E47BEB671}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FD6F8C0-9D97-7714-4445-AD6E47BEB671}.Release|x64.ActiveCfg = Release|Any CPU
+		{2FD6F8C0-9D97-7714-4445-AD6E47BEB671}.Release|x64.Build.0 = Release|Any CPU
+		{2FD6F8C0-9D97-7714-4445-AD6E47BEB671}.Release|x86.ActiveCfg = Release|Any CPU
+		{2FD6F8C0-9D97-7714-4445-AD6E47BEB671}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
