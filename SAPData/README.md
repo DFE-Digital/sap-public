@@ -66,7 +66,6 @@ Generated files include:
 - `01_create_raw_tables.sql`
 - `02_copy_into_raw.sql`
 - `02_copy_into_raw_local.sql`
-- `03_stage_tables.sql`
 - View, index, and validation scripts
 
 The generation process ensures:
@@ -83,15 +82,13 @@ Two COPY scripts are generated intentionally:
 
 ### `02_copy_into_raw.sql`
 Used by the **CI/CD pipeline**.
-- Uses standard PostgreSQL `COPY`
+- Uses standard PostgreSQL `COPY` - this command cannot be run locally in pgpAdmin
 - Assumes files are accessible to the database host
 
 ### `02_copy_into_raw_local.sql`
 Used for **local development**.
 - Uses `\copy` via the `psql` client (use SQL Shell included with pgAdmin)
 - Reads files from the developer’s local filesystem
-
-This separation avoids conditional logic and keeps both workflows simple and explicit.
 
 ---
 
@@ -116,9 +113,9 @@ High-level steps:
 ## Local development
 
 Typical local workflow:
-1. Place raw CSVs in `SAPData/Data/Raw`
-2. Run the SQL generator (`dotnet run`, or run using Visual Studio)
-3. Execute `02_copy_into_raw_local.sql`
+1. Place raw CSVs in `SAPData/DataMap/SourceFiles`
+2. Run the SQL generator (`dotnet run`, or set as startup project in Visual Studio and run in VS)
+3. Execute `02_copy_into_raw_local.sql` using psql SQL Shell (Command: "\i '<PATH TO SQL FOLDER>/Sql/02_copy_into_raw_local.sql'")
 4. Run `run-all.sql` against a local PostgreSQL instance, or run individual sql files as needed.
 
 ---
