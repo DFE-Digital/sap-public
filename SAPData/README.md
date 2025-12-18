@@ -136,8 +136,8 @@ Typical local workflow:
 ## Repository structure (simplified)
 
 - `SAPData/`
-  - `Data/Raw` – downloaded source files (not committed)
-  - `Data/CleanedFiles` – normalised CSVs
+  - `DataMap/SourceFiles` – downloaded source files (not committed)
+  - `DataMap/CleanedFiles` – normalised CSVs (not committed)
   - `Sql/` – generated SQL scripts
 - `scripts/` – PowerShell helpers
 - `.github/workflows/` – pipeline definition
