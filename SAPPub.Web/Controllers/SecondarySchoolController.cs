@@ -81,7 +81,19 @@ namespace SAPPub.Web.Controllers
             };
             return View(model);
         }
-        
+
+        [HttpGet]
+        [Route("school/{urn}/{schoolName}/secondary/academic-performance-subjects-entered", Name = RouteConstants.SecondaryAcademicPerformanceSubjectsEntered)]
+        public IActionResult AcademicPerformanceSubjectsEntered(int urn, string schoolName)
+        {
+            var model = new AcademicPerformanceSubjectsEnteredViewModel
+            {
+                Urn = urn,
+                SchoolName = schoolName,
+            };
+            return View(model);
+        }
+
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/destinations", Name = RouteConstants.SecondaryDestinations)]
         public IActionResult Destinations(int urn, string schoolName)

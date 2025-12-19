@@ -131,7 +131,7 @@ jobs:
           exit 0
 
       # ==============================
-      # 10. Download latest raw data from Blob (source of truth)
+      # 10. Download latest raw data from Blob
       # ==============================
       - name: Download latest raw data from Blob Storage
         if: steps.hashcheck.outputs.changed == 'CHANGED'
