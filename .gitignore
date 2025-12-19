@@ -507,3 +507,7 @@ wwwroot/**/*.min.js
 # Data Protection key ring (allow only the placeholder)
 SAPPub.Web/keys/*
 !SAPPub.Web/keys/.gitkeep
+
+#exclude data files as these are too large to keep in repo
+/SAPData/DataMap/CleanedFiles/*.csv
+/SAPData/DataMap/SourceFiles/*.csv

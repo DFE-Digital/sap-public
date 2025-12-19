@@ -1,0 +1,31 @@
+{
+  "sources": [
+    {
+      "name": "GIAS",
+      "type": "direct",
+      "url": "https://ea-edubase-api-prod.azurewebsites.net/edubase/downloads/public/edubasealldata.csv",
+      "target": "SAPData/Data/Raw/GIAS.csv"
+    },
+    {
+      "name": "KS4 Institution Destinations",
+      "type": "ees",
+      "release": "ks4-destinations",
+      "file": "ks4_dm_ud_202223_inst_rev.csv",
+      "target": "SAPData/Data/Raw/ks4_inst.csv"
+    },
+    {
+      "name": "Absence School",
+      "type": "ees",
+      "release": "pupil-absence",
+      "file": "1a_absence_3term_school.csv",
+      "target": "SAPData/Data/Raw/absence_school.csv"
+    },
+    {
+      "name": "Workforce",
+      "type": "ees",
+      "release": "school-workforce",
+      "file": "workforce_ptrs_2010_2024_sch.csv",
+      "target": "SAPData/Data/Raw/workforce.csv"
+    }
+  ]
+}
