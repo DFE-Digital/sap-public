@@ -147,6 +147,29 @@ public class SecondarySchoolControllerTests
     }
 
     [Fact]
+    public void Get_AcademicPerformance_SubjectsEntered_ReturnsOk()
+    {
+        // Arrange
+        int urn = 1;
+        string schoolName = "School Name";
+
+        // Act
+        var result = _controller.AcademicPerformanceSubjectsEntered(urn, schoolName) as ViewResult;
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Model.Should().NotBeNull();
+
+        var model = result.Model as AcademicPerformanceSubjectsEnteredViewModel;
+        model.Should().NotBeNull();
+        model.Urn.Should().Be(urn);
+        model.SchoolName.Should().Be(schoolName);
+        model.RouteAttributes.Count().Should().Be(2);
+        model.RouteAttributes[RouteConstants.Urn].Should().Be(urn.ToString());
+        model.RouteAttributes[RouteConstants.SchoolName].Should().Be(schoolName);
+    }
+
+    [Fact]
     public void Get_Destinations_Info_ReturnsOk()
     {
         // Arrange
