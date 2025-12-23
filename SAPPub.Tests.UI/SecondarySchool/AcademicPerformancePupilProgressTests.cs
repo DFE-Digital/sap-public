@@ -4,12 +4,12 @@ using SAPPub.Tests.UI.Infrastructure;
 
 namespace SAPPub.Tests.UI.SecondarySchool;
 
-public class AcademicPerformanceTests : BasePageTest
+public class AcademicPerformancePupilProgressTests : BasePageTest
 {
-    private string _pageUrl = "school/1/kes/secondary/academic-performance";
+    private string _pageUrl = "school/1/kes/secondary/academic-performance-pupil-progress";
 
     [Fact]
-    public async Task AcademicPerformancePage_LoadsSuccessfully()
+    public async Task AcademicPerformancePupilProgressPage_LoadsSuccessfully()
     {
         // Arrange && Act
         var response = await GoToPageAysnc(_pageUrl);
@@ -20,7 +20,7 @@ public class AcademicPerformanceTests : BasePageTest
     }
 
     [Fact]
-    public async Task AcademicPerformancePage_HasCorrectTitle()
+    public async Task AcademicPerformancePupilProgressPage_HasCorrectTitle()
     {
         // Arrange
         await GoToPageAysnc(_pageUrl);
@@ -33,7 +33,7 @@ public class AcademicPerformanceTests : BasePageTest
     }
 
     [Fact]
-    public async Task AcademicPerformancePage_DisplaysMainHeading()
+    public async Task AcademicPerformancePupilProgressPage_DisplaysMainHeading()
     {
         // Arrange
         await GoToPageAysnc(_pageUrl);
@@ -46,7 +46,7 @@ public class AcademicPerformanceTests : BasePageTest
     }
 
     [Fact]
-    public async Task AcademicPerformancePage_Displays_VerticalNavigation()
+    public async Task AcademicPerformancePupilProgressPage_Displays_VerticalNavigation()
     {
         var nav = new VerticalNavigationHelper(Page);
         await GoToPageAysnc(_pageUrl);
@@ -58,7 +58,7 @@ public class AcademicPerformanceTests : BasePageTest
     }
 
     [Fact]
-    public async Task AcademicPerformancePage_DisplaysWhatDoTheQualificationsMean()
+    public async Task AcademicPerformancePupilProgressPage_DisplaysWhatDoTheQualificationsMean()
     {
         // Arrange
         await GoToPageAysnc(_pageUrl);
@@ -72,7 +72,7 @@ public class AcademicPerformanceTests : BasePageTest
     
 
     [Fact]
-    public async Task AcademicPerformancePage_Displays_Gcse_Grades_Explained()
+    public async Task AcademicPerformancePupilProgressPage_Displays_Gcse_Grades_Explained()
     {
         // Arrange
         await GoToPageAysnc(_pageUrl);
@@ -85,7 +85,7 @@ public class AcademicPerformanceTests : BasePageTest
     }
 
     [Fact]
-    public async Task AcademicPerformancePage_Displays_Sub_Navigation()
+    public async Task AcademicPerformancePupilProgressPage_Displays_Sub_Navigation()
     {
         // Arrange
         await GoToPageAysnc(_pageUrl);
@@ -98,13 +98,13 @@ public class AcademicPerformanceTests : BasePageTest
     }
 
     [Fact]
-    public async Task AcademicPerformancePage_DisplaysPagination()
+    public async Task AcademicPerformancePupilProgressPage_DisplaysPagination()
     {
         // Arrange
         await GoToPageAysnc(_pageUrl);
 
         // Act
-        var isVisible = await Page.Locator("#academic-performance-pagination").IsVisibleAsync();
+        var isVisible = await Page.Locator("#academic-performance-pupil-progress-pagination").IsVisibleAsync();
 
         // Assert
         isVisible.Should().BeTrue();
