@@ -64,6 +64,10 @@ namespace SAPPub.Web.Middleware
             services.AddSingleton<ILADestinationsRepository, LADestinationsRepository>();
             services.AddSingleton<ILADestinationsService, LADestinationsService>();
 
+            services.AddSingleton<IGenericRepository<LAAbsence>, JSONRepository<LAAbsence>>();
+            services.AddSingleton<ILAAbsenceRepository, LAAbsenceRepository>();
+            services.AddSingleton<ILAAbsenceService, LAAbsenceService>();
+
             services.AddSingleton<IGenericRepository<EnglandPerformance>, JSONRepository<EnglandPerformance>>();
             services.AddSingleton<IEnglandPerformanceRepository, EnglandPerformanceRepository>();
             services.AddSingleton<IEnglandPerformanceService, EnglandPerformanceService>();
@@ -71,6 +75,10 @@ namespace SAPPub.Web.Middleware
             services.AddSingleton<IGenericRepository<EnglandDestinations>, JSONRepository<EnglandDestinations>>();
             services.AddSingleton<IEnglandDestinationsRepository, EnglandDestinationsRepository>();
             services.AddSingleton<IEnglandDestinationsService, EnglandDestinationsService>();
+
+            services.AddSingleton<IGenericRepository<EnglandAbsence>, JSONRepository<EnglandAbsence>>();
+            services.AddSingleton<IEnglandAbsenceRepository, EnglandAbsenceRepository>();
+            services.AddSingleton<IEnglandAbsenceService, EnglandAbsenceService>();
 
             services.AddSingleton<IGenericRepository<Lookup>, JSONRepository<Lookup>>();
             services.AddSingleton<ILookupRepository, LookupRepository>();

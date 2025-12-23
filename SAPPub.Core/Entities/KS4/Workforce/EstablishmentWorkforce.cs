@@ -22,7 +22,5 @@ namespace SAPPub.Core.Entities.KS4.Workforce
         /// 
         public double? Workforce_TotPupils_Est_Current_Num { get; set; }
         public string Workforce_TotPupils_Est_Current_Num_Reason { get; set; } = string.Empty;
-
-
     }
 }

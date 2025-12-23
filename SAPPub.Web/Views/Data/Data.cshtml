@@ -141,6 +141,24 @@
                         </govuk-accordion-item-content>
                     </govuk-accordion-item>
                     <govuk-accordion-item>
+                        <govuk-accordion-item-heading>LA Absence</govuk-accordion-item-heading>
+                        <govuk-accordion-item-content>
+                            @foreach (var prop in Model.LAAbsence.GetType().GetProperties())
+                            {
+                                <govuk-summary-list>
+                                    <govuk-summary-list-row>
+                                        <govuk-summary-list-row-key>
+                                            @prop.Name
+                                        </govuk-summary-list-row-key>
+                                        <govuk-summary-list-row-value>
+                                            @prop.GetValue(Model.LAAbsence)
+                                        </govuk-summary-list-row-value>
+                                    </govuk-summary-list-row>
+                                </govuk-summary-list>
+                            }
+                        </govuk-accordion-item-content>
+                    </govuk-accordion-item>
+                    <govuk-accordion-item>
                         <govuk-accordion-item-heading>England Destinations</govuk-accordion-item-heading>
                         <govuk-accordion-item-content>
                             @foreach (var prop in Model.EnglandDestinations.GetType().GetProperties())
@@ -170,6 +188,25 @@
                                         </govuk-summary-list-row-key>
                                         <govuk-summary-list-row-value>
                                             @prop.GetValue(Model.EnglandPerformance)
+                                        </govuk-summary-list-row-value>
+                                    </govuk-summary-list-row>
+                                </govuk-summary-list>
+                            }
+                        </govuk-accordion-item-content>
+                    </govuk-accordion-item>
+
+                    <govuk-accordion-item>
+                        <govuk-accordion-item-heading>England Absence</govuk-accordion-item-heading>
+                        <govuk-accordion-item-content>
+                            @foreach (var prop in Model.EnglandAbsence.GetType().GetProperties())
+                            {
+                                <govuk-summary-list>
+                                    <govuk-summary-list-row>
+                                        <govuk-summary-list-row-key>
+                                            @prop.Name
+                                        </govuk-summary-list-row-key>
+                                        <govuk-summary-list-row-value>
+                                            @prop.GetValue(Model.EnglandAbsence)
                                         </govuk-summary-list-row-value>
                                     </govuk-summary-list-row>
                                 </govuk-summary-list>

@@ -15,38 +15,84 @@ namespace SAPPub.Core.Entities
     public class Establishment
     {
         public string URN { get; set; } = string.Empty;
-        public string LAId { get; set; } = string.Empty;
 
-        public string EstablishmentName { get; set; } = string.Empty;
-        public int? EstablishmentNumber { get; set; }
-
-        public int? TrustsId { get; set; }
+        public string TrustsId { get; set; } = string.Empty;
         public string TrustName { get; set; } = string.Empty;
 
-        public int? AdmissionsPolicyId { get; set; }
+        public string Address { get; set; } = string.Empty;
+
+        public string AdmissionsPolicyId { get; set; } = string.Empty;
         public string AdmissionPolicy { get; set; } = string.Empty;
+
+        public string AgeRange { get; set; } = string.Empty;
+
+        public string DFENumber { get; set; } = string.Empty;
+
         public string DistrictAdministrativeId { get; set; } = string.Empty;
         public string DistrictAdministrativeName { get; set; } = string.Empty;
-        public int? PhaseOfEducationId { get; set; }
+
+        public string PhaseOfEducationId { get; set; } = string.Empty;
         public string PhaseOfEducationName { get; set; } = string.Empty;
-        public int? GenderId { get; set; }
+
+        public string GenderId { get; set; } = string.Empty;
         public string GenderName { get; set; } = string.Empty;
-        public int? OfficialSixthFormId { get; set; }
+
+        public string HeadteacherTitle { get; set; } = string.Empty;
+
+        public string HeadteacherFirstName { get; set; } = string.Empty;
+
+        public string HeadteacherLastName { get; set; } = string.Empty;
+
+        public string HeadteacherPreferredJobTitle { get; set; } = string.Empty;
+
+        public string AddressStreet { get; set; } = string.Empty;
+
+        public string AddressLocality { get; set; } = string.Empty;
+
+        public string AddressAddress3 { get; set; } = string.Empty;
+
+        public string AddressTown { get; set; } = string.Empty;
+
+        public string AddressPostcode { get; set; } = string.Empty;
+
+        public string AgeRangeLow { get; set; } = string.Empty;
+
+        public string AgeRangeRange { get; set; } = string.Empty;
+
+        public string OfficialSixthFormId { get; set; } = string.Empty;
+
+        public string Headteacher { get; set; } = string.Empty;
+
+        public string LAId { get; set; } = string.Empty;
         public string LANAme { get; set; } = string.Empty;
-        public int? ReligiousCharacterId { get; set; }
+
+        public string ReligiousCharacterId { get; set; } = string.Empty;
         public string ReligiousCharacterName { get; set; } = string.Empty;
+
         public string TelephoneNum { get; set; } = string.Empty;
-        public int TotalPupils { get; set; }
-        public int? TypeOfEstablishmentId { get; set; }
+
+        public string TotalPupils { get; set; } = string.Empty;
+
+        public string TypeOfEstablishmentId { get; set; } = string.Empty;
         public string TypeOfEstablishmentName { get; set; } = string.Empty;
-        public int? ResourcedProvision { get; set; }
-        public string ResourcedProvisionName { get; set; } = string.Empty;
-        public int UKPRN { get; set; }
+
+        public string ResourcedProvision { get; set; } = string.Empty;
+
+        public string UKPRN { get; set; } = string.Empty;
+
         public string UrbanRuralId { get; set; } = string.Empty;
         public string UrbanRuralName { get; set; } = string.Empty;
+
         public string Website { get; set; } = string.Empty;
-        public int? Easting { get; set; }
-        public int? Northing { get; set; }
+
+        public string EstablishmentName { get; set; } = string.Empty;
+
+        public string Easting { get; set; } = string.Empty;
+
+        public string Northing { get; set; } = string.Empty;
+
+        public string EstablishmentNumber { get; set; } = string.Empty;
+
 
         public EstablishmentPerformance KS4Performance { get; set; } = new();
         public LAPerformance LAPerformance { get; set; } = new();
@@ -57,6 +103,9 @@ namespace SAPPub.Core.Entities
         public EnglandDestinations EnglandDestinations { get; set; } = new();
 
         public EstablishmentAbsence Absence { get; set; } = new(); // Will eventually need one per phase
+        public LAAbsence LAAbsence { get; set; } = new();
+        public EnglandAbsence EnglandAbsence { get; set; } = new();
+
         public EstablishmentWorkforce Workforce { get; set; } = new(); // Will eventually need one per phase
 
 
