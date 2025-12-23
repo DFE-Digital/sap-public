@@ -1,4 +1,4 @@
-﻿@model SAPPub.Web.Models.SecondarySchool.AcademicPerformanceViewModel;
+﻿@model SAPPub.Web.Models.SecondarySchool.AcademicPerformancePupilProgressViewModel;
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 @using System.Text.Json
 
@@ -12,7 +12,7 @@
     {
         Urn = Model.Urn,
         SchoolName = Model.SchoolName,
-        ActivePage = RouteConstants.SecondaryAcademicPerformance
+        ActivePage = RouteConstants.SecondaryAcademicPerformancePupilProgress
     })
 
     <div class="govuk-grid-column-three-quarters">
@@ -21,10 +21,10 @@
         <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
             <ul class="moj-sub-navigation__list">
                 <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformance" asp-all-route-data="@Model.RouteAttributes">Pupil progress</a>
+                    <a class="moj-sub-navigation__link" aria-current="page" asp-route="@RouteConstants.SecondaryAcademicPerformancePupilProgress" asp-all-route-data="@Model.RouteAttributes">Pupil progress</a>
                 </li>
                 <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" aria-current="page" href="#2">English and maths results</a>
+                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults" asp-all-route-data="@Model.RouteAttributes">English and maths results</a>
                 </li>
                 <li class="moj-sub-navigation__item">
                     <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">Subjects entered</a>
@@ -87,9 +87,9 @@
             </govuk-details-text>
         </govuk-details>
 
-        <govuk-pagination id="academic-performance-pagination">
+        <govuk-pagination id="academic-performance-pupil-progress-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAttendance" asp-all-route-data="@Model.RouteAttributes">Attendance</govuk-pagination-previous>
-            <govuk-pagination-next asp-route="@RouteConstants.SecondaryDestinations" asp-all-route-data="@Model.RouteAttributes">Academic performance: Destinations</govuk-pagination-next>
+            <govuk-pagination-next asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults" asp-all-route-data="@Model.RouteAttributes">Academic performance: English and maths results</govuk-pagination-next>
         </govuk-pagination>
     </div>
 </div>

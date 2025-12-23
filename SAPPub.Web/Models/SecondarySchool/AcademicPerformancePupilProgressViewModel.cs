@@ -2,7 +2,7 @@
 
 namespace SAPPub.Web.Models.SecondarySchool;
 
-public class AcademicPerformanceViewModel : SecondarySchoolBaseViewModel
+public class AcademicPerformancePupilProgressViewModel : SecondarySchoolBaseViewModel
 {
     public required GcseDataViewModel GcseChartData { get; set; }
 }
