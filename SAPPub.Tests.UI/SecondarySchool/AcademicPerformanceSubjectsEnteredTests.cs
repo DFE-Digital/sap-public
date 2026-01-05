@@ -71,6 +71,19 @@ public class AcademicPerformanceSubjectsEnteredTests : BasePageTest
     }
 
     [Fact]
+    public async Task AcademicPerformancSubjectsEnteredPage_DisplaysWhatDoTheQualificationsMean()
+    {
+        // Arrange
+        await GoToPageAysnc(_pageUrl);
+
+        // Act
+        var isVisible = await Page.Locator("#details-academic-performance").IsVisibleAsync();
+
+        // Assert
+        isVisible.Should().BeTrue();
+    }
+
+    [Fact]
     public async Task AcademicPerformanceSubjectsEnteredPage_DisplaysPagination()
     {
         // Arrange

@@ -31,6 +31,17 @@
             </ul>
         </nav>
 
+        <govuk-details id="details-academic-performance">
+            <govuk-details-summary>
+                What do the qualifications mean?
+            </govuk-details-summary>
+            <govuk-details-text>
+                <p>A GCSE is an academic qualification awarded for exams in England, usually taken at the age of 16.</p>
+                <p>Technical Awards, such as BTECs, are work-related qualifications in areas like travel and tourism or animal care.</p>
+                <p>If the qualification offered is not applicable, it means that pupils will study this subject but will not gain a qualification.</p>
+            </govuk-details-text>
+        </govuk-details>
+
         <govuk-pagination id="academic-performance-subjects-entered-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults" asp-all-route-data="@Model.RouteAttributes">Academic performance: English and maths results</govuk-pagination-previous>
             <govuk-pagination-next asp-route="@RouteConstants.SecondaryDestinations" asp-all-route-data="@Model.RouteAttributes">Destinations</govuk-pagination-next>
