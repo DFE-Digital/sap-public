@@ -98,7 +98,7 @@ variable "azure_maintenance_window" {
     start_hour   = number
     start_minute = number
   })
-  default = null
+  default     = null
   description = "Maintenance window for PostgreSQL. Day 0 = Sunday, 1 = Monday, etc."
 }
 
@@ -114,3 +114,8 @@ variable "redis_eviction_policy" {
   default  = "allkeys-lru"
 }
 
+variable "storage_container_delete_retention_days" {
+  type        = number
+  default     = null
+  description = "Number of days to retain deleted containers"
+}
