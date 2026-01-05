@@ -65,19 +65,10 @@ namespace SAPPub.Web.Controllers
         [Route("school/{urn}/{schoolName}/secondary/academic-performance-pupil-progress", Name = RouteConstants.SecondaryAcademicPerformancePupilProgress)]
         public IActionResult AcademicPerformancePupilProgress(int urn, string schoolName)
         {
-            Response.Headers["Content-Security-Policy"] = CspPolicy;
-            var gcseDatamodel = new GcseDataViewModel
-            {
-                Lables = ["School", "Sheffield Average", "England Average"],
-                GcseData = [75, 65, 55],
-                ChartTitle = "GCSE English and Maths (Grade 5 and above)",
-            };
-
             var model = new AcademicPerformancePupilProgressViewModel 
             { 
                 Urn = urn,
                 SchoolName = schoolName,
-                GcseChartData = gcseDatamodel,
             };
             return View(model);
         }
@@ -86,10 +77,19 @@ namespace SAPPub.Web.Controllers
         [Route("school/{urn}/{schoolName}/secondary/academic-performance-english-and-maths-results", Name = RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults)]
         public IActionResult AcademicPerformanceEnglishAndMathsResults(int urn, string schoolName)
         {
+            Response.Headers["Content-Security-Policy"] = CspPolicy;
+            var gcseDatamodel = new GcseDataViewModel
+            {
+                Lables = ["School", "Sheffield Average", "England Average"],
+                GcseData = [75, 65, 55],
+                ChartTitle = "GCSE English and Maths (Grade 5 and above)",
+            };
+
             var model = new AcademicPerformanceEnglishAndMathsResultsViewModel
             {
                 Urn = urn,
                 SchoolName = schoolName,
+                GcseChartData = gcseDatamodel,
             };
             return View(model);
         }

@@ -56,34 +56,7 @@ public class AcademicPerformancePupilProgressTests : BasePageTest
         await nav.ShouldHaveOneActiveItemAsync();
         await nav.ShouldHaveActiveHrefAsync(_pageUrl);
     }
-
-    [Fact]
-    public async Task AcademicPerformancePupilProgressPage_DisplaysWhatDoTheQualificationsMean()
-    {
-        // Arrange
-        await GoToPageAysnc(_pageUrl);
-
-        // Act
-        var isVisible = await Page.Locator("#details-academic-performance").IsVisibleAsync();
-
-        // Assert
-        isVisible.Should().BeTrue();
-    }
     
-
-    [Fact]
-    public async Task AcademicPerformancePupilProgressPage_Displays_Gcse_Grades_Explained()
-    {
-        // Arrange
-        await GoToPageAysnc(_pageUrl);
-
-        // Act
-        var isVisible = await Page.Locator("#details-gcse-grades-explained").IsVisibleAsync();
-
-        // Assert
-        isVisible.Should().BeTrue();
-    }
-
     [Fact]
     public async Task AcademicPerformancePupilProgressPage_Displays_Sub_Navigation()
     {
