@@ -185,7 +185,7 @@ jobs:
         working-directory: SAPData
         run: |
           echo "Running ETL because data changed..."
-          psql -v ON_ERROR_STOP=1 -f sql/run-all.sql
+          psql -v ON_ERROR_STOP=1 -f Sql/run-all.sql
 
       # ==============================
       # 13. Commit updated hashes
