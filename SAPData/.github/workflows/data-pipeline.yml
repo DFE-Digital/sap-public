@@ -61,40 +61,58 @@ jobs:
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
       # ==============================
-      # 6. Download raw data files (upstream sources)
+      # 6. Ensure Blob container exists (idempotent)
       # ==============================
-      - name: Download raw data files
+      - name: Ensure Blob container exists
         shell: pwsh
         run: |
-          pwsh SAPData/scripts/download-raw-data.ps1 `
-            -ConfigFile "SAPData/raw_sources.json" `
-            -RawFolder "SAPData/Data/Raw"
-
-      # ==============================
-      # 7. Upload raw files to Azure Blob Storage
-      # ==============================
-      - name: Upload raw files to Azure Blob Storage
-        shell: pwsh
-        run: |
-          $rawDir = "SAPData/Data/Raw"
-          $version = (Get-Date -Format "yyyy-MM-dd")
-
           az storage container create `
             --name $env:AZURE_STORAGE_CONTAINER `
             --connection-string $env:AZURE_STORAGE_CONNECTION_STRING `
-            --public-access off
+            --public-access off | Out-Null
 
-          Get-ChildItem $rawDir -Filter *.csv | ForEach-Object {
-            $dataset = $_.BaseName
-            $blobPath = "$dataset/$version/$($_.Name)"
+      # ==============================
+      # 7. Download raw data files from Blob (ROOT LEVEL)
+      # ==============================
+      - name: Download raw data files from Blob Storage
+        shell: pwsh
+        run: |
+          $rawDir = "SAPData/DataMap/SourceFiles"
+          New-Item -ItemType Directory -Force -Path $rawDir | Out-Null
 
-            az storage blob upload `
+          # Clear existing CSVs so we only process Blob-delivered files
+          Remove-Item "$rawDir/*.csv" -Force -ErrorAction SilentlyContinue
+
+          # List only root-level blobs (no '/')
+          $blobs = az storage blob list `
+            --container-name $env:AZURE_STORAGE_CONTAINER `
+            --connection-string $env:AZURE_STORAGE_CONNECTION_STRING `
+            --query "[?contains(name, '/')==\`false\`].name" -o tsv
+
+          if (-not $blobs) {
+            throw "No root-level blobs found in container '$env:AZURE_STORAGE_CONTAINER'."
+          }
+
+          foreach ($blob in $blobs) {
+            if ($blob -notlike "*.csv") { continue }
+
+            $dest = Join-Path $rawDir $blob
+
+            az storage blob download `
               --container-name $env:AZURE_STORAGE_CONTAINER `
-              --file $_.FullName `
-              --name $blobPath `
+              --name $blob `
+              --file $dest `
               --connection-string $env:AZURE_STORAGE_CONNECTION_STRING `
               --overwrite true
           }
+
+          $files = Get-ChildItem $rawDir -Filter *.csv
+          if (-not $files) {
+            throw "No CSV files were downloaded from Blob to $rawDir."
+          }
+
+          Write-Host "Downloaded CSVs:"
+          $files | Select-Object Name, Length
 
       # ==============================
       # 8. Check for data changes (hash-based)
@@ -104,18 +122,28 @@ jobs:
         shell: pwsh
         run: |
           $changed = "UNCHANGED"
-          $rawDir = "SAPData/Data/Raw"
+          $rawDir = "SAPData/DataMap/SourceFiles"
           $hashDir = "SAPData/Hashes"
 
           New-Item -ItemType Directory -Force -Path $hashDir | Out-Null
 
-          foreach ($file in Get-ChildItem $rawDir -Filter *.csv) {
+          $files = Get-ChildItem $rawDir -Filter *.csv
+          if (-not $files) {
+            throw "No CSV files found in $rawDir to hash."
+          }
+
+          foreach ($file in $files) {
             $hash = (Get-FileHash $file.FullName -Algorithm SHA256).Hash
             $hashFile = Join-Path $hashDir "$($file.BaseName).hash"
 
-            if (-not (Test-Path $hashFile) -or (Get-Content $hashFile) -ne $hash) {
+            $existing = $null
+            if (Test-Path $hashFile) {
+              $existing = (Get-Content $hashFile -Raw).Trim()
+            }
+
+            if ($existing -ne $hash) {
               $changed = "CHANGED"
-              $hash | Out-File $hashFile -Force
+              $hash | Out-File $hashFile -Force -NoNewline
             }
           }
 
@@ -131,35 +159,7 @@ jobs:
           exit 0
 
       # ==============================
-      # 10. Download latest raw data from Blob
-      # ==============================
-      - name: Download latest raw data from Blob Storage
-        if: steps.hashcheck.outputs.changed == 'CHANGED'
-        shell: pwsh
-        run: |
-          $rawDir = "SAPData/Data/Raw"
-          Remove-Item "$rawDir/*.csv" -Force -ErrorAction SilentlyContinue
-
-          $blobs = az storage blob list `
-            --container-name $env:AZURE_STORAGE_CONTAINER `
-            --connection-string $env:AZURE_STORAGE_CONNECTION_STRING `
-            --query "[].name" -o tsv
-
-          $latestByDataset = $blobs |
-            Sort-Object |
-            Group-Object { ($_ -split '/')[0] } |
-            ForEach-Object { $_.Group | Select-Object -Last 1 }
-
-          foreach ($blob in $latestByDataset) {
-            az storage blob download `
-              --container-name $env:AZURE_STORAGE_CONTAINER `
-              --name $blob `
-              --file (Join-Path $rawDir (Split-Path $blob -Leaf)) `
-              --connection-string $env:AZURE_STORAGE_CONNECTION_STRING
-          }
-
-      # ==============================
-      # 11. Build SQL Generator
+      # 10. Build SQL Generator
       # ==============================
       - name: Build SQL Generator
         if: steps.hashcheck.outputs.changed == 'CHANGED'
@@ -168,7 +168,7 @@ jobs:
           dotnet build SAPData.sln --configuration Release
 
       # ==============================
-      # 12. Generate SQL Scripts
+      # 11. Generate SQL Scripts
       # ==============================
       - name: Generate SQL Scripts
         if: steps.hashcheck.outputs.changed == 'CHANGED'
@@ -178,7 +178,7 @@ jobs:
           echo "Generated SQL scripts."
 
       # ==============================
-      # 13. Run ETL SQL pipeline
+      # 12. Run ETL SQL pipeline
       # ==============================
       - name: Run ETL pipeline
         if: steps.hashcheck.outputs.changed == 'CHANGED'
@@ -188,7 +188,7 @@ jobs:
           psql -v ON_ERROR_STOP=1 -f sql/run-all.sql
 
       # ==============================
-      # 14. Commit updated hashes
+      # 13. Commit updated hashes
       # ==============================
       - name: Commit updated hashes
         if: steps.hashcheck.outputs.changed == 'CHANGED'
