@@ -1,0 +1,200 @@
+name: School Data Ingestion Pipeline
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * *"   # every day at 06:00 UTC
+
+jobs:
+  ingest:
+    name: Ingest Raw Data & Build Warehouse
+    runs-on: ubuntu-latest
+
+    env:
+      PGHOST: ${{ secrets.PGHOST }}
+      PGUSER: ${{ secrets.PGUSER }}
+      PGPASSWORD: ${{ secrets.PGPASSWORD }}
+      PGDATABASE: ${{ secrets.PGDATABASE }}
+      PGPORT: ${{ secrets.PGPORT }}
+
+      AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
+      AZURE_STORAGE_CONTAINER: ${{ secrets.AZURE_STORAGE_CONTAINER }}
+
+    steps:
+      # ==============================
+      # 1. Checkout repo
+      # ==============================
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      # ==============================
+      # 2. Install PostgreSQL client
+      # ==============================
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      # ==============================
+      # 3. Install .NET SDK
+      # ==============================
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      # ==============================
+      # 4. Install PowerShell
+      # ==============================
+      - name: Install PowerShell
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y powershell
+
+      # ==============================
+      # 5. Install Azure CLI
+      # ==============================
+      - name: Install Azure CLI
+        run: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+      # ==============================
+      # 6. Ensure Blob container exists (idempotent)
+      # ==============================
+      - name: Ensure Blob container exists
+        shell: pwsh
+        run: |
+          az storage container create `
+            --name $env:AZURE_STORAGE_CONTAINER `
+            --connection-string $env:AZURE_STORAGE_CONNECTION_STRING `
+            --public-access off | Out-Null
+
+      # ==============================
+      # 7. Download raw data files from Blob (ROOT LEVEL)
+      # ==============================
+      - name: Download raw data files from Blob Storage
+        shell: pwsh
+        run: |
+          $rawDir = "SAPData/DataMap/SourceFiles"
+          New-Item -ItemType Directory -Force -Path $rawDir | Out-Null
+
+          # Clear existing CSVs so we only process Blob-delivered files
+          Remove-Item "$rawDir/*.csv" -Force -ErrorAction SilentlyContinue
+
+          # List only root-level blobs (no '/')
+          $blobs = az storage blob list `
+            --container-name $env:AZURE_STORAGE_CONTAINER `
+            --connection-string $env:AZURE_STORAGE_CONNECTION_STRING `
+            --query "[?contains(name, '/')==\`false\`].name" -o tsv
+
+          if (-not $blobs) {
+            throw "No root-level blobs found in container '$env:AZURE_STORAGE_CONTAINER'."
+          }
+
+          foreach ($blob in $blobs) {
+            if ($blob -notlike "*.csv") { continue }
+
+            $dest = Join-Path $rawDir $blob
+
+            az storage blob download `
+              --container-name $env:AZURE_STORAGE_CONTAINER `
+              --name $blob `
+              --file $dest `
+              --connection-string $env:AZURE_STORAGE_CONNECTION_STRING `
+              --overwrite true
+          }
+
+          $files = Get-ChildItem $rawDir -Filter *.csv
+          if (-not $files) {
+            throw "No CSV files were downloaded from Blob to $rawDir."
+          }
+
+          Write-Host "Downloaded CSVs:"
+          $files | Select-Object Name, Length
+
+      # ==============================
+      # 8. Check for data changes (hash-based)
+      # ==============================
+      - name: Check for data changes
+        id: hashcheck
+        shell: pwsh
+        run: |
+          $changed = "UNCHANGED"
+          $rawDir = "SAPData/DataMap/SourceFiles"
+          $hashDir = "SAPData/Hashes"
+
+          New-Item -ItemType Directory -Force -Path $hashDir | Out-Null
+
+          $files = Get-ChildItem $rawDir -Filter *.csv
+          if (-not $files) {
+            throw "No CSV files found in $rawDir to hash."
+          }
+
+          foreach ($file in $files) {
+            $hash = (Get-FileHash $file.FullName -Algorithm SHA256).Hash
+            $hashFile = Join-Path $hashDir "$($file.BaseName).hash"
+
+            $existing = $null
+            if (Test-Path $hashFile) {
+              $existing = (Get-Content $hashFile -Raw).Trim()
+            }
+
+            if ($existing -ne $hash) {
+              $changed = "CHANGED"
+              $hash | Out-File $hashFile -Force -NoNewline
+            }
+          }
+
+          echo "changed=$changed" >> $env:GITHUB_OUTPUT
+
+      # ==============================
+      # 9. Early exit if unchanged
+      # ==============================
+      - name: Stop workflow if no new data
+        if: steps.hashcheck.outputs.changed == 'UNCHANGED'
+        run: |
+          echo "No raw data changed. Exiting early."
+          exit 0
+
+      # ==============================
+      # 10. Build SQL Generator
+      # ==============================
+      - name: Build SQL Generator
+        if: steps.hashcheck.outputs.changed == 'CHANGED'
+        working-directory: SAPData
+        run: |
+          dotnet build SAPData.sln --configuration Release
+
+      # ==============================
+      # 11. Generate SQL Scripts
+      # ==============================
+      - name: Generate SQL Scripts
+        if: steps.hashcheck.outputs.changed == 'CHANGED'
+        working-directory: SAPData
+        run: |
+          dotnet run --project SAPData/SAPData.csproj
+          echo "Generated SQL scripts."
+
+      # ==============================
+      # 12. Run ETL SQL pipeline
+      # ==============================
+      - name: Run ETL pipeline
+        if: steps.hashcheck.outputs.changed == 'CHANGED'
+        working-directory: SAPData
+        run: |
+          echo "Running ETL because data changed..."
+          psql -v ON_ERROR_STOP=1 -f Sql/run-all.sql
+
+      # ==============================
+      # 13. Commit updated hashes
+      # ==============================
+      - name: Commit updated hashes
+        if: steps.hashcheck.outputs.changed == 'CHANGED'
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git add SAPData/Hashes/*.hash
+          git commit -m "Update raw data hashes" || echo "No changes to commit"
+          git push || echo "Nothing to push"

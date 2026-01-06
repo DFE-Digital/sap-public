@@ -28,14 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Hashes\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include=".github\workflows\data-pipeline.yml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="CsvHelper" Version="33.1.0" />
     <PackageReference Include="Dapper" Version="2.1.66" />
   </ItemGroup>
@@ -132,6 +124,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="DataMap\SourceFiles\workforce_ptrs_2010_2024_sch.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Hashes\placeholder.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Sql\00_cleanup.sql">
