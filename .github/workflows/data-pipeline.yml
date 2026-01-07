@@ -88,6 +88,7 @@ jobs:
             --container-name $env:AZURE_STORAGE_CONTAINER `
             --connection-string $env:AZURE_STORAGE_CONNECTION_STRING `
             --query "[].name" -o tsv
+          # this query should show as changed from: --query "[?contains(name, '/')==\`false\`].name" -o tsv
 
           # Root-level only = no '/' and CSV only
           $rootCsvBlobs = $blobs | Where-Object { $_ -and ($_ -notmatch '/') -and ($_ -like "*.csv") }
