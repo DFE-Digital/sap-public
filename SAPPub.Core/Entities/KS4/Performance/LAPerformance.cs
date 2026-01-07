@@ -23,7 +23,7 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public double? EngMaths49_Boy_LA_Current_Pct { get; set; }
         public string EngMaths49_Boy_LA_Current_Pct_Reason { get; set; } = string.Empty;
 
-        ///  
+        /// 
         /// English and Maths grades 4 to 9 Girls filtered by LA for Current year 
         /// 
         public double? EngMaths49_Grl_LA_Current_Pct { get; set; }
@@ -88,7 +88,5 @@ namespace SAPPub.Core.Entities.KS4.Performance
         /// 
         public double? Prog8_Avg_LA_Previous2_Num { get; set; }
         public string Prog8_Avg_LA_Previous2_Num_Reason { get; set; } = string.Empty;
-
-
     }
 }

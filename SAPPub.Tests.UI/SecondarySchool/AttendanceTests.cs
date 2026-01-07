@@ -58,6 +58,19 @@ public class AttendancePageTests : BasePageTest
     }
 
     [Fact]
+    public async Task AttendancePage_Displays_AttendancePolicy_Summary()
+    {
+        // Arrange
+        await GoToPageAysnc(_pageUrl);
+
+        // Act
+        var isVisible = await Page.Locator("#attendance-policy-summary").IsVisibleAsync();
+
+        // Assert
+        isVisible.Should().BeTrue();
+    }
+
+    [Fact]
     public async Task AttendancePage_DisplaysPagination()
     {
         // Arrange

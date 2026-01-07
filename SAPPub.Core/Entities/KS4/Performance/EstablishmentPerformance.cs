@@ -66,7 +66,7 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public string EngMaths59_Tot_Est_Previous_Pct_Reason { get; set; } = string.Empty;
 
         /// 
-        /// Progress 8 Total filtered by Establishment for Previous year 
+        /// Progress 8 Average filtered by Establishment for Previous year 
         /// 
         public double? Prog8_Tot_Est_Previous_Num { get; set; }
         public string Prog8_Tot_Est_Previous_Num_Reason { get; set; } = string.Empty;
@@ -84,12 +84,9 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public string EngMaths59_Tot_Est_Previous2_Pct_Reason { get; set; } = string.Empty;
 
         /// 
-        /// Progress 8 Total filtered by Establishment for Previous2 year 
+        /// Progress 8 Average filtered by Establishment for Previous2 year 
         /// 
         public double? Prog8_Tot_Est_Previous2_Num { get; set; }
         public string Prog8_Tot_Est_Previous2_Num_Reason { get; set; } = string.Empty;
-
-
-
     }
 }

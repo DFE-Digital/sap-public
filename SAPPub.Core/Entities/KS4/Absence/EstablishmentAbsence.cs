@@ -28,7 +28,5 @@ namespace SAPPub.Core.Entities.KS4.Absence
         /// 
         public double? UnAuth_Tot_Est_Current_Pct { get; set; }
         public string UnAuth_Tot_Est_Current_Pct_Reason { get; set; } = string.Empty;
-
-
     }
 }
