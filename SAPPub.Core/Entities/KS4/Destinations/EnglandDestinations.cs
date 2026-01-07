@@ -10,6 +10,7 @@ namespace SAPPub.Core.Entities.KS4.Destinations
     [ExcludeFromCodeCoverage]
     public class EnglandDestinations
     {
+        public string Id { get; set; } = string.Empty;
         /// 
         /// All Destinations Total filtered by England for Current year 
         /// 
@@ -81,7 +82,5 @@ namespace SAPPub.Core.Entities.KS4.Destinations
         /// 
         public double? Apprentice_Tot_Eng_Previous2_Pct { get; set; }
         public string Apprentice_Tot_Eng_Previous2_Pct_Reason { get; set; } = string.Empty;
-
-
     }
 }

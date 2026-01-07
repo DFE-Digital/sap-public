@@ -14,6 +14,8 @@ namespace SAPPub.Web.Controllers
     {
         private IEstablishmentService _service;
         private IEstablishmentAbsenceService _absenceService;
+        private ILAAbsenceService _laAbsenceService; 
+        private IEnglandAbsenceService _englandAbsenceService;
         private IEstablishmentPerformanceService _performanceService;
         private IEstablishmentDestinationsService _destinationsService;
         private ILADestinationsService _LAdestinationsService;
@@ -31,13 +33,19 @@ namespace SAPPub.Web.Controllers
             IEstablishmentAbsenceService absenceService,
             IEstablishmentPerformanceService performanceService,
             IEstablishmentService establishmentService,
-            IEstablishmentWorkforceService workforceService
+            IEstablishmentWorkforceService workforceService,
+            IEnglandAbsenceService englandAbsenceService,
+            ILAAbsenceService laAbsenceService
             )
         {
 
             _service = establishmentService;
 
             _absenceService = absenceService;
+            _laAbsenceService = laAbsenceService;
+            _englandAbsenceService = englandAbsenceService;
+
+
             _performanceService = performanceService;
             _destinationsService = destinationsService;
             _workforceService = workforceService;
@@ -61,6 +69,9 @@ namespace SAPPub.Web.Controllers
             var dataModel = _service.GetEstablishment(id);
 
             dataModel.Absence = _absenceService.GetEstablishmentAbsence(id);
+            dataModel.LAAbsence = _laAbsenceService.GetLAAbsence(dataModel.LAId);
+            dataModel.EnglandAbsence = _englandAbsenceService.GetEnglandAbsence();
+
             dataModel.KS4Performance = _performanceService.GetEstablishmentPerformance(id);
             dataModel.EstablishmentDestinations = _destinationsService.GetEstablishmentDestinations(id);
             dataModel.Workforce = _workforceService.GetEstablishmentWorkforce(id);
