@@ -15,6 +15,6 @@ public static class RouteConstants
 
 
     // Route Attributes
-    public const string Urn = "urn";
+    public const string URN = "urn";
     public const string SchoolName = "schoolName";
 }

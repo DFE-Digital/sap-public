@@ -12,7 +12,7 @@ public class VerticalNavigationTests
     public void Invoke_ReturnsDefaultViewWithModel()
     {
         // Arrange
-        var item = new VerticalNavigationModel { Urn = 1, SchoolName = "Kes", ActivePage = "About" };
+        var item = new VerticalNavigationModel { URN = "1", SchoolName = "Kes", ActivePage = "About" };
         
         var component = CreateComponent();
 
@@ -24,7 +24,7 @@ public class VerticalNavigationTests
         result.ViewName.Should().Be("~/ViewComponents/VerticalNavigation/Default.cshtml");
 
         var model = result.ViewData!.Model.Should().BeOfType<VerticalNavigationModel>().Subject;
-        model.Urn.Should().Be(item.Urn);
+        model.URN.Should().Be(item.URN);
         model.SchoolName.Should().Be(item.SchoolName);
         model.ActivePage.Should().Be(item.ActivePage);
     }

@@ -9,8 +9,8 @@
     <title>@ViewData["Title"] - @ViewBag.ServiceName</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#1d70b8">
-    <link rel="icon" sizes="48x48" href="/~/lib/govuk-frontend/dist/govuk/assets/rebrand/images/favicon.ico">
-    <link rel="icon" sizes="any" href="/~/lib/govuk-frontend/dist/govuk/assets/rebrand/images/favicon.svg" type="image/svg+xml">
+    <link rel="icon" sizes="48x48" href="~/lib/govuk-frontend/dist/govuk/assets/rebrand/images/favicon.ico">
+    <link rel="icon" sizes="any" href="~/lib/govuk-frontend/dist/govuk/assets/rebrand/images/favicon.svg" type="image/svg+xml">
     <link rel="mask-icon" href="~/lib/govuk-frontend/dist/govuk/assets/rebrand/images/govuk-icon-mask.svg" color="blue">
     <link rel="apple-touch-icon" href="~/lib/govuk-frontend/dist/govuk/assets/rebrand/images/govuk-icon-180.png">
     <link rel="stylesheet" href="~/lib/dfe-frontend/dist/dfefrontend-2.0.0.min.css" />
@@ -18,12 +18,8 @@
     <link rel="manifest" href="/assets/rebrand/manifest.json">
     <meta property="og:image" content="YOUR-DOMAIN/images/govuk-opengraph-image.png">
     @Html.GovUkFrontendStyleImports()
-    @Html.GovUkFrontendScriptImports()
     <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet"
-          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-          crossorigin />
+    <link rel="stylesheet" href="~/lib/leaflet/dist/leaflet.css" />
 </head>
 
 <body class="govuk-template__body app-body-class">
@@ -63,7 +59,7 @@
     </header>
 
     <govuk-service-navigation service-name="@ViewBag.ServiceName" service-url="#">
-        <govuk-service-navigation-nav>            
+        <govuk-service-navigation-nav>
         </govuk-service-navigation-nav>
     </govuk-service-navigation>
 
@@ -84,9 +80,7 @@
     </govuk-footer>
 
     @Html.GovUkFrontendScriptImports(Html.ScriptNonce().ToString())
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-            crossorigin></script>
+    <script src="~/lib/leaflet/dist/leaflet.js" nonce="@Html.ScriptNonce().ToString()"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
