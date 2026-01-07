@@ -178,6 +178,18 @@ jobs:
           echo "Generated SQL scripts."
 
       # ==============================
+      # Debug step - remove when fixed
+      # ==============================
+      - name: Debug PostgreSQL connectivity 
+        if: steps.hashcheck.outputs.changed == 'CHANGED'
+        run: |
+          if [ -z "$PGHOST" ]; then echo "PGHOST is empty"; exit 1; fi
+          if [ -z "$PGPORT" ]; then echo "PGPORT is empty"; exit 1; fi
+          echo "PGHOST length: ${#PGHOST}"
+          echo "PGPORT: $PGPORT"
+          getent hosts "$PGHOST" || (echo "DNS lookup failed for PGHOST"; exit 1)
+
+      # ==============================
       # 12. Run ETL SQL pipeline
       # ==============================
       - name: Run ETL pipeline
