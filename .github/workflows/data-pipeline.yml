@@ -165,18 +165,16 @@ jobs:
       # ==============================
       - name: Build SQL Generator
         if: steps.hashcheck.outputs.changed == 'CHANGED'
-        working-directory: SAPData
         run: |
-          dotnet build SAPData.sln --configuration Release
+          dotnet build SAPPub.sln --configuration Release
 
       # ==============================
       # 11. Generate SQL Scripts
       # ==============================
       - name: Generate SQL Scripts
         if: steps.hashcheck.outputs.changed == 'CHANGED'
-        working-directory: SAPData
         run: |
-          dotnet run --project SAPData/SAPData.csproj
+          dotnet run --project SAPData/SAPData.csproj --configuration Release
           echo "Generated SQL scripts."
 
       # ==============================
