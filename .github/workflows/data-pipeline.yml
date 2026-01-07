@@ -3,7 +3,7 @@ name: School Data Ingestion Pipeline
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 6 * * *"   # every day at 06:00 UTC
+    - cron: "0 6 * * *" # every day at 06:00 UTC
 
 jobs:
   ingest:
@@ -83,19 +83,20 @@ jobs:
           # Clear existing CSVs so we only process Blob-delivered files
           Remove-Item "$rawDir/*.csv" -Force -ErrorAction SilentlyContinue
 
-          # List only root-level blobs (no '/')
+          # List ALL blob names, then filter in PowerShell
           $blobs = az storage blob list `
             --container-name $env:AZURE_STORAGE_CONTAINER `
             --connection-string $env:AZURE_STORAGE_CONNECTION_STRING `
-            --query "[?contains(name, '/')==\`false\`].name" -o tsv
+            --query "[].name" -o tsv
 
-          if (-not $blobs) {
-            throw "No root-level blobs found in container '$env:AZURE_STORAGE_CONTAINER'."
+          # Root-level only = no '/' and CSV only
+          $rootCsvBlobs = $blobs | Where-Object { $_ -and ($_ -notmatch '/') -and ($_ -like "*.csv") }
+
+          if (-not $rootCsvBlobs) {
+            throw "No root-level CSV blobs found in container '$env:AZURE_STORAGE_CONTAINER'."
           }
 
-          foreach ($blob in $blobs) {
-            if ($blob -notlike "*.csv") { continue }
-
+          foreach ($blob in $rootCsvBlobs) {
             $dest = Join-Path $rawDir $blob
 
             az storage blob download `
