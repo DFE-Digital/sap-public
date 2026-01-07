@@ -14,7 +14,8 @@ module "application_configuration" {
   }
 
   secret_variables = {
-    DATABASE_URL = module.postgres.url
+    DATABASE_URL            = module.postgres.url
+    StorageConnectionString = "DefaultEndpointsProtocol=https;AccountName=${module.storage.name};AccountKey=${module.storage.primary_access_key}"
   }
 
 }
@@ -33,8 +34,8 @@ module "web_application" {
   kubernetes_config_map_name = module.application_configuration.kubernetes_config_map_name
   kubernetes_secret_name     = module.application_configuration.kubernetes_secret_name
 
-  docker_image = var.docker_image
-  enable_logit = true
-  probe_path   = var.probe_path
+  docker_image                     = var.docker_image
+  enable_logit                     = true
+  probe_path                       = var.probe_path
   send_traffic_to_maintenance_page = var.send_traffic_to_maintenance_page
 }
