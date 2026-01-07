@@ -17,6 +17,32 @@
     <div class="govuk-grid-column-three-quarters">
         <h1 class="govuk-heading-l">@ViewBag.Title</h1>
 
+        <div id="attendance-policy-summary" class="govuk-summary-card">
+            <div class="govuk-summary-card__title-wrapper">
+                <h2 class="govuk-summary-card__title">Attendance policy</h2>
+            </div>
+            <div class="govuk-summary-card__content">
+                <div class="govuk-summary-list__row">
+                    <p>
+                        All schools must publish an attendance policy. This should outline expectations, procedures, and responsibilities for ensuring pupils attend school regularly and on time.
+                    </p>
+                </div>
+
+                <govuk-summary-list>
+                    <govuk-summary-list-row>
+                        <govuk-summary-list-row-key>
+                            Attendance policy
+                        </govuk-summary-list-row-key>
+                        <govuk-summary-list-row-value>
+                            <a class="govuk-link" target="_blank" href="@Model.SchoolWebsite">
+                                View the attendance policy on the school website
+                            </a>
+                        </govuk-summary-list-row-value>
+                    </govuk-summary-list-row>
+                </govuk-summary-list>
+            </div>
+        </div>
+
         <govuk-pagination id="attendance-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.SecondaryCurriculumAndExtraCurricularActivities" asp-all-route-data="@Model.RouteAttributes">Curriculum and extra-curricular activities</govuk-pagination-previous>
             <govuk-pagination-next asp-route="@RouteConstants.SecondaryAcademicPerformancePupilProgress" asp-all-route-data="@Model.RouteAttributes">Academic performance: Pupil progress</govuk-pagination-next>

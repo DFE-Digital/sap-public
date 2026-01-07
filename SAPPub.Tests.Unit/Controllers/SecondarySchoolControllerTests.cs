@@ -35,8 +35,8 @@ public class SecondarySchoolControllerTests
     public void Get_AboutSchool_Info_ReturnsOk()
     {
         // Arrange
-        int urn = 1;
-        string schoolName = "School Name";
+        var urn = 1;
+        var schoolName = "School Name";
 
         // Act
         var result = _controller.AboutSchool(urn, schoolName) as ViewResult;
@@ -49,7 +49,7 @@ public class SecondarySchoolControllerTests
         model.Should().NotBeNull();
         model.Urn.Should().Be(urn);
         model.SchoolName.Should().Be(schoolName);
-        model.RouteAttributes.Count().Should().Be(2);
+        model.RouteAttributes.Count.Should().Be(2);
         model.RouteAttributes[RouteConstants.Urn].Should().Be(urn.ToString());
         model.RouteAttributes[RouteConstants.SchoolName].Should().Be(schoolName);
     }
@@ -58,8 +58,8 @@ public class SecondarySchoolControllerTests
     public void Get_Admissions_Info_ReturnsOk()
     {
         // Arrange
-        int urn = 1;
-        string schoolName = "School Name";
+        var urn = 1;
+        var schoolName = "School Name";
 
         // Act
         var result = _controller.Admissions(urn, schoolName) as ViewResult;
@@ -72,7 +72,7 @@ public class SecondarySchoolControllerTests
         model.Should().NotBeNull();
         model.Urn.Should().Be(urn);
         model.SchoolName.Should().Be(schoolName);
-        model.RouteAttributes.Count().Should().Be(2);
+        model.RouteAttributes.Count.Should().Be(2);
         model.RouteAttributes[RouteConstants.Urn].Should().Be(urn.ToString());
         model.RouteAttributes[RouteConstants.SchoolName].Should().Be(schoolName);
     }
@@ -81,8 +81,9 @@ public class SecondarySchoolControllerTests
     public void Get_Attendance_Info_ReturnsOk()
     {
         // Arrange
-        int urn = 1;
-        string schoolName = "School Name";
+        var urn = 1;
+        var schoolName = "School Name";
+        var schoolWebsite = "https://www.gov.uk/";
 
         // Act
         var result = _controller.Attendance(urn, schoolName) as ViewResult;
@@ -95,7 +96,8 @@ public class SecondarySchoolControllerTests
         model.Should().NotBeNull();
         model.Urn.Should().Be(urn);
         model.SchoolName.Should().Be(schoolName);
-        model.RouteAttributes.Count().Should().Be(2);
+        model.SchoolWebsite.Should().Be(schoolWebsite);
+        model.RouteAttributes.Count.Should().Be(2);
         model.RouteAttributes[RouteConstants.Urn].Should().Be(urn.ToString());
         model.RouteAttributes[RouteConstants.SchoolName].Should().Be(schoolName);
     }
@@ -104,8 +106,8 @@ public class SecondarySchoolControllerTests
     public void Get_CurriculumAndExtraCurricularActivities_Info_ReturnsOk()
     {
         // Arrange
-        int urn = 1;
-        string schoolName = "School Name";
+        var urn = 1;
+        var schoolName = "School Name";
 
         // Act
         var result = _controller.CurriculumAndExtraCurricularActivities(urn, schoolName) as ViewResult;
@@ -118,7 +120,7 @@ public class SecondarySchoolControllerTests
         model.Should().NotBeNull();
         model.Urn.Should().Be(urn);
         model.SchoolName.Should().Be(schoolName);
-        model.RouteAttributes.Count().Should().Be(2);
+        model.RouteAttributes.Count.Should().Be(2);
         model.RouteAttributes[RouteConstants.Urn].Should().Be(urn.ToString());
         model.RouteAttributes[RouteConstants.SchoolName].Should().Be(schoolName);
     }
@@ -127,8 +129,8 @@ public class SecondarySchoolControllerTests
     public void Get_AcademicPerformancePupilProgress_Info_ReturnsOk()
     {
         // Arrange
-        int urn = 1;
-        string schoolName = "School Name";
+        var urn = 1;
+        var schoolName = "School Name";
         
         // Act
         var result = _controller.AcademicPerformancePupilProgress(urn, schoolName) as ViewResult;
@@ -141,7 +143,7 @@ public class SecondarySchoolControllerTests
         model.Should().NotBeNull();
         model.Urn.Should().Be(urn);
         model.SchoolName.Should().Be(schoolName);
-        model.RouteAttributes.Count().Should().Be(2);
+        model.RouteAttributes.Count.Should().Be(2);
         model.RouteAttributes[RouteConstants.Urn].Should().Be(urn.ToString());
         model.RouteAttributes[RouteConstants.SchoolName].Should().Be(schoolName);
     }
@@ -150,8 +152,8 @@ public class SecondarySchoolControllerTests
     public void Get_AcademicPerformance_EnglishAndMathsResults_ReturnsOk()
     {
         // Arrange
-        int urn = 1;
-        string schoolName = "School Name";
+        var urn = 1;
+        var schoolName = "School Name";
 
         // Act
         var result = _controller.AcademicPerformanceEnglishAndMathsResults(urn, schoolName) as ViewResult;
@@ -164,7 +166,7 @@ public class SecondarySchoolControllerTests
         model.Should().NotBeNull();
         model.Urn.Should().Be(urn);
         model.SchoolName.Should().Be(schoolName);
-        model.RouteAttributes.Count().Should().Be(2);
+        model.RouteAttributes.Count.Should().Be(2);
         model.RouteAttributes[RouteConstants.Urn].Should().Be(urn.ToString());
         model.RouteAttributes[RouteConstants.SchoolName].Should().Be(schoolName);
     }
@@ -173,8 +175,8 @@ public class SecondarySchoolControllerTests
     public void Get_AcademicPerformance_SubjectsEntered_ReturnsOk()
     {
         // Arrange
-        int urn = 1;
-        string schoolName = "School Name";
+        var urn = 1;
+        var schoolName = "School Name";
 
         // Act
         var result = _controller.AcademicPerformanceSubjectsEntered(urn, schoolName) as ViewResult;
@@ -187,7 +189,7 @@ public class SecondarySchoolControllerTests
         model.Should().NotBeNull();
         model.Urn.Should().Be(urn);
         model.SchoolName.Should().Be(schoolName);
-        model.RouteAttributes.Count().Should().Be(2);
+        model.RouteAttributes.Count.Should().Be(2);
         model.RouteAttributes[RouteConstants.Urn].Should().Be(urn.ToString());
         model.RouteAttributes[RouteConstants.SchoolName].Should().Be(schoolName);
     }
@@ -196,8 +198,8 @@ public class SecondarySchoolControllerTests
     public void Get_Destinations_Info_ReturnsOk()
     {
         // Arrange
-        int urn = 1;
-        string schoolName = "School Name";
+        var urn = 1;
+        var schoolName = "School Name";
 
         // Act
         var result = _controller.Destinations(urn, schoolName) as ViewResult;
@@ -210,7 +212,7 @@ public class SecondarySchoolControllerTests
         model.Should().NotBeNull();
         model.Urn.Should().Be(urn);
         model.SchoolName.Should().Be(schoolName);
-        model.RouteAttributes.Count().Should().Be(2);
+        model.RouteAttributes.Count.Should().Be(2);
         model.RouteAttributes[RouteConstants.Urn].Should().Be(urn.ToString());
         model.RouteAttributes[RouteConstants.SchoolName].Should().Be(schoolName);
     }
