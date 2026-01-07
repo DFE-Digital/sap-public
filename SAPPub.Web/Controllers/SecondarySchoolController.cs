@@ -49,7 +49,7 @@ namespace SAPPub.Web.Controllers
         [Route("school/{urn}/{schoolName}/secondary/attendance", Name = RouteConstants.SecondaryAttendance)]
         public IActionResult Attendance(int urn, string schoolName)
         {
-            var model = new AttendanceViewModel { Urn = urn, SchoolName = schoolName };
+            var model = new AttendanceViewModel { Urn = urn, SchoolName = schoolName, SchoolWebsite = "https://www.gov.uk/" };
             return View(model);
         }
 
