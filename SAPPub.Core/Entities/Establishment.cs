@@ -2,6 +2,7 @@
 using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.KS4.Workforce;
+using SAPPub.Core.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -16,10 +17,24 @@ namespace SAPPub.Core.Entities
     {
         public string URN { get; set; } = string.Empty;
 
+        public string EstablishmentName { get; set; } = string.Empty;
+        public string EstablishmentNameClean => TextHelpers.CleanForUrl(EstablishmentName);
+
         public string TrustsId { get; set; } = string.Empty;
         public string TrustName { get; set; } = string.Empty;
 
-        public string Address { get; set; } = string.Empty;
+        public string Address => TextHelpers.ConcatListToString([AddressStreet, AddressLocality, AddressAddress3, AddressTown, AddressPostcode]);
+
+        public string AddressStreet { get; set; } = string.Empty;
+
+        public string AddressLocality { get; set; } = string.Empty;
+
+        public string AddressAddress3 { get; set; } = string.Empty;
+
+        public string AddressTown { get; set; } = string.Empty;
+
+        public string AddressPostcode { get; set; } = string.Empty;
+
 
         public string AdmissionsPolicyId { get; set; } = string.Empty;
         public string AdmissionPolicy { get; set; } = string.Empty;
@@ -37,6 +52,8 @@ namespace SAPPub.Core.Entities
         public string GenderId { get; set; } = string.Empty;
         public string GenderName { get; set; } = string.Empty;
 
+        public string Headteacher => TextHelpers.ConcatListToString([HeadteacherTitle, HeadteacherFirstName, HeadteacherLastName]);
+
         public string HeadteacherTitle { get; set; } = string.Empty;
 
         public string HeadteacherFirstName { get; set; } = string.Empty;
@@ -45,23 +62,13 @@ namespace SAPPub.Core.Entities
 
         public string HeadteacherPreferredJobTitle { get; set; } = string.Empty;
 
-        public string AddressStreet { get; set; } = string.Empty;
-
-        public string AddressLocality { get; set; } = string.Empty;
-
-        public string AddressAddress3 { get; set; } = string.Empty;
-
-        public string AddressTown { get; set; } = string.Empty;
-
-        public string AddressPostcode { get; set; } = string.Empty;
+       
 
         public string AgeRangeLow { get; set; } = string.Empty;
 
-        public string AgeRangeRange { get; set; } = string.Empty;
+        public string AgeRangeHigh { get; set; } = string.Empty;
 
         public string OfficialSixthFormId { get; set; } = string.Empty;
-
-        public string Headteacher { get; set; } = string.Empty;
 
         public string LAId { get; set; } = string.Empty;
         public string LANAme { get; set; } = string.Empty;
@@ -85,7 +92,7 @@ namespace SAPPub.Core.Entities
 
         public string Website { get; set; } = string.Empty;
 
-        public string EstablishmentName { get; set; } = string.Empty;
+        
 
         public string Easting { get; set; } = string.Empty;
 

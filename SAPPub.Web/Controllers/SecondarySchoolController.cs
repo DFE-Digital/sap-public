@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SAPPub.Core.Interfaces.Services;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.Charts;
 using SAPPub.Web.Models.SecondarySchool;
@@ -7,67 +8,62 @@ namespace SAPPub.Web.Controllers
 {
     public class SecondarySchoolController : Controller
     {
-        const string CspPolicy = "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;";
+        const string CspPolicy = "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;"; //ToDo - Fix this.
 
         private readonly ILogger<SecondarySchoolController> _logger;
+        private readonly IEstablishmentService _establishmentService;
 
-        public SecondarySchoolController(ILogger<SecondarySchoolController> logger)
+        public SecondarySchoolController(ILogger<SecondarySchoolController> logger, IEstablishmentService establishmentService)
         {
             _logger = logger;
+            _establishmentService = establishmentService;
         }
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/about", Name = RouteConstants.SecondaryAboutSchool)]
-        public IActionResult AboutSchool(int urn, string schoolName)
+        public IActionResult AboutSchool(string urn, string schoolName)
         {
-            var model = new AboutSchoolViewModel 
-            { 
-                Urn = urn,
-                SchoolName = schoolName,
-                Name = schoolName,
-                Telephone = "01234455677",
-                Address = "Address line 1",
-                Website = "https://design-system.service.gov.uk/components/summary-list/",
-                AcademyTrust = "Test Trust",
-                AcademyTrustUpdatedIn = "2024",
-                LocalAuthority = "Sheffield",
-                LocalAuthorityWebsite = "https://design-system.service.gov.uk/components/summary-list/",
-                YouDistanceFromThisSchool = "1.5 miles"
-            };
+            var establishmentDetails = _establishmentService.GetEstablishment(urn);
+            if (establishmentDetails?.URN == null)
+            {
+                return View("Error");
+            }
+
+            var model = AboutSchoolViewModel.Map(establishmentDetails);
             return View(model);
         }
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/admissions", Name = RouteConstants.SecondaryAdmissions)]
-        public IActionResult Admissions(int urn, string schoolName)
+        public IActionResult Admissions(string urn, string schoolName)
         {
-            var model = new AdmissionsViewModel { Urn = urn, SchoolName = schoolName };
+            var model = new AdmissionsViewModel { URN = urn, SchoolName = schoolName };
             return View(model);
         }
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/attendance", Name = RouteConstants.SecondaryAttendance)]
-        public IActionResult Attendance(int urn, string schoolName)
+        public IActionResult Attendance(string urn, string schoolName)
         {
-            var model = new AttendanceViewModel { Urn = urn, SchoolName = schoolName, SchoolWebsite = "https://www.gov.uk/" };
+            var model = new AttendanceViewModel { URN = urn, SchoolName = schoolName, SchoolWebsite = "https://www.gov.uk/" };
             return View(model);
         }
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/curriculum-and-extra-curricular-activities", Name = RouteConstants.SecondaryCurriculumAndExtraCurricularActivities)]
-        public IActionResult CurriculumAndExtraCurricularActivities(int urn, string schoolName)
+        public IActionResult CurriculumAndExtraCurricularActivities(string urn, string schoolName)
         {
-            var model = new CurriculumAndExtraCurricularActivitiesViewModel { Urn = urn, SchoolName = schoolName };
+            var model = new CurriculumAndExtraCurricularActivitiesViewModel { URN = urn, SchoolName = schoolName };
             return View(model);
         }
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/academic-performance-pupil-progress", Name = RouteConstants.SecondaryAcademicPerformancePupilProgress)]
-        public IActionResult AcademicPerformancePupilProgress(int urn, string schoolName)
+        public IActionResult AcademicPerformancePupilProgress(string urn, string schoolName)
         {
             var model = new AcademicPerformancePupilProgressViewModel 
             { 
-                Urn = urn,
+                URN = urn,
                 SchoolName = schoolName,
             };
             return View(model);
@@ -75,7 +71,7 @@ namespace SAPPub.Web.Controllers
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/academic-performance-english-and-maths-results", Name = RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults)]
-        public IActionResult AcademicPerformanceEnglishAndMathsResults(int urn, string schoolName)
+        public IActionResult AcademicPerformanceEnglishAndMathsResults(string urn, string schoolName)
         {
             Response.Headers["Content-Security-Policy"] = CspPolicy;
             var gcseDatamodel = new GcseDataViewModel
@@ -87,7 +83,7 @@ namespace SAPPub.Web.Controllers
 
             var model = new AcademicPerformanceEnglishAndMathsResultsViewModel
             {
-                Urn = urn,
+                URN = urn,
                 SchoolName = schoolName,
                 GcseChartData = gcseDatamodel,
             };
@@ -96,11 +92,11 @@ namespace SAPPub.Web.Controllers
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/academic-performance-subjects-entered", Name = RouteConstants.SecondaryAcademicPerformanceSubjectsEntered)]
-        public IActionResult AcademicPerformanceSubjectsEntered(int urn, string schoolName)
+        public IActionResult AcademicPerformanceSubjectsEntered(string urn, string schoolName)
         {
             var model = new AcademicPerformanceSubjectsEnteredViewModel
             {
-                Urn = urn,
+                URN = urn,
                 SchoolName = schoolName,
             };
             return View(model);
@@ -108,9 +104,9 @@ namespace SAPPub.Web.Controllers
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/destinations", Name = RouteConstants.SecondaryDestinations)]
-        public IActionResult Destinations(int urn, string schoolName)
+        public IActionResult Destinations(string urn, string schoolName)
         {
-            var model = new DestinationsViewModel { Urn = urn, SchoolName = schoolName };
+            var model = new DestinationsViewModel { URN = urn, SchoolName = schoolName };
             return View(model);
         }
     }

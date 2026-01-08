@@ -46,12 +46,12 @@ public class HomeController : Controller
     };
 
     // JSON endpoint used by map-schools.js
-    [HttpGet("/map/schools")]
-    public IActionResult Schools()
-    {
-        var data = GetPrimarySchools().Select(s => new { name = s.Name, lat = s.Lat, lon = s.Lon });
-        return Json(data);
-    }
+    //[HttpGet("/map/schools")]
+    //public IActionResult Schools()
+    //{
+    //    var data = GetPrimarySchools().Select(s => new { name = s.Name, lat = s.Lat, lon = s.Lon });
+    //    return Json(data);
+    //}
 
     public IActionResult Accordion()
     {
