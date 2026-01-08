@@ -36,7 +36,7 @@ jobs:
   backup:
     name: Backup database
     runs-on: ubuntu-latest
-    environment:
+    environment: 
       name: ${{ inputs.environment || 'production' }}
     env:
       DEPLOY_ENV: ${{ inputs.environment || 'production'  }}
