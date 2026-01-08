@@ -70,12 +70,24 @@ jobs:
       # ==============================
       # 4. AKS access + konduit install
       # ==============================
-      - name: Install kubectl
-        uses: azure/setup-kubectl@v4
-
-      - name: Install kubelogin
+      - name: Install kubectl (pinned)
+        shell: bash
         run: |
-          az aks install-cli
+          set -euo pipefail
+          KUBECTL_VERSION="v1.29.8"
+          curl -fsSLo kubectl "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+          sudo install -m 0755 kubectl /usr/local/bin/kubectl
+          kubectl version --client=true
+
+      - name: Install kubelogin (pinned)
+        shell: bash
+        run: |
+          set -euo pipefail
+          KUBELOGIN_VERSION="v0.1.6"
+          curl -fsSLo kubelogin.zip "https://github.com/Azure/kubelogin/releases/download/${KUBELOGIN_VERSION}/kubelogin-linux-amd64.zip"
+          unzip -q kubelogin.zip
+          sudo install -m 0755 bin/linux_amd64/kubelogin /usr/local/bin/kubelogin
+          kubelogin --version
 
       - name: Configure AKS credentials
         shell: bash
