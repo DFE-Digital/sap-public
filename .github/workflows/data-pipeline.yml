@@ -13,6 +13,7 @@ jobs:
   ingest:
     name: Ingest Raw Data & Build Warehouse
     runs-on: ubuntu-latest
+    environment: test
 
     env:
       # Blob (currently from GitHub secrets)
