@@ -223,13 +223,12 @@ jobs:
       # ==============================
       - name: Run ETL pipeline via konduit
         if: steps.hashcheck.outputs.changed == 'CHANGED'
-        working-directory: SAPData
         shell: bash
         run: |
           set -euo pipefail
           echo "Running ETL via konduit because data changed..."
 
-          "$GITHUB_WORKSPACE/konduit.sh" -n "${AKS_NAMESPACE}" -t 7200 -x "${KONDUIT_APP_NAME}" -- psql --set=ON_ERROR_STOP=1 -f "$GITHUB_WORKSPACE/SAPData/Sql/run-all.sql"
+          "$GITHUB_WORKSPACE/konduit.sh" -n "${AKS_NAMESPACE}" -t 7200 -x -i "$GITHUB_WORKSPACE/SAPData/Sql/run-all.sql" "${KONDUIT_APP_NAME}" -- psql
 
 
       # ==============================
