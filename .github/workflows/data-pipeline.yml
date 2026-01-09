@@ -230,19 +230,19 @@ jobs:
 
           RUN_ALL="$GITHUB_WORKSPACE/SAPData/bin/Release/net8.0/Sql/run_all.sql"
 
-          if [ -z "${RUN_ALL}" ]; then
-            echo "ERROR: Generated run_all.sql not found at $RUN_ALL"
-            echo "Debug: listing SAPData/bin:"
-            find "$GITHUB_WORKSPACE/SAPData/bin" -maxdepth 5 -type d -print || true
+          if [ ! -f "$RUN_ALL" ]; then
+            echo "ERROR: Generated run_all.sql not found at: $RUN_ALL"
+            find "$GITHUB_WORKSPACE/SAPData/bin" -maxdepth 6 -type f -name "run_all.sql" -print || true
             exit 1
           fi
 
           echo "Using: $RUN_ALL"
           ls -la "$(dirname "$RUN_ALL")"
 
-          "$GITHUB_WORKSPACE/konduit.sh" -n "${AKS_NAMESPACE}" -t 7200 -x \
-            -i "${RUN_ALL}" \
-            "${KONDUIT_APP_NAME}" -- psql
+          "$GITHUB_WORKSPACE/konduit.sh" -n "${AKS_NAMESPACE}" -t 7200 -x "${KONDUIT_APP_NAME}" -- \
+            psql -f "$RUN_ALL"
+
+
 
 
       # ==============================
