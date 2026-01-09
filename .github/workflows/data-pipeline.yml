@@ -215,7 +215,7 @@ jobs:
       - name: Generate SQL Scripts
         if: steps.hashcheck.outputs.changed == 'CHANGED'
         run: |
-          dotnet run --project SAPData/SAPData.csproj
+          dotnet run --configuration Release --project SAPData/SAPData.csproj
           echo "Generated SQL scripts."
 
       # ==============================
@@ -223,17 +223,27 @@ jobs:
       # ==============================
       - name: Run ETL pipeline via konduit
         if: steps.hashcheck.outputs.changed == 'CHANGED'
-        working-directory: SAPData/Sql
         shell: bash
         run: |
           set -euo pipefail
           echo "Running ETL via konduit because data changed..."
 
-          ls -la "$GITHUB_WORKSPACE/SAPData/Sql" || true
+          RUN_ALL="$(find "$GITHUB_WORKSPACE" -path "*SAPData/bin/*/Sql/run_all.sql" | head -n 1)"
+
+          if [ -z "${RUN_ALL}" ]; then
+            echo "ERROR: Could not find generated run_all.sql under SAPData/bin/**/Sql"
+            echo "Debug: listing candidate Sql dirs:"
+            find "$GITHUB_WORKSPACE/SAPData/bin" -type d -name Sql -maxdepth 6 -print || true
+            exit 1
+          fi
+
+          echo "Using generated run_all.sql at: ${RUN_ALL}"
+          ls -la "$(dirname "$RUN_ALL")" || true
 
           "$GITHUB_WORKSPACE/konduit.sh" -n "${AKS_NAMESPACE}" -t 7200 -x \
-            -i "$GITHUB_WORKSPACE/SAPData/Sql/run_all.sql" \
+            -i "${RUN_ALL}" \
             "${KONDUIT_APP_NAME}" -- psql
+
 
       # ==============================
       # 11. Commit updated hashes
