@@ -225,13 +225,6 @@ jobs:
         if: steps.hashcheck.outputs.changed == 'CHANGED'
         working-directory: SAPData
         shell: bash
-        env:
-          # psql reads these automatically
-          PGHOST: ${{ secrets.PGHOST }}
-          PGPORT: ${{ secrets.PGPORT }}
-          PGDATABASE: ${{ secrets.PGDATABASE }}
-          PGUSER: ${{ secrets.PGUSER }}
-          PGPASSWORD: ${{ secrets.PGPASSWORD }}
         run: |
           set -euo pipefail
           echo "Running ETL via konduit because data changed..."
