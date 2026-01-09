@@ -228,7 +228,7 @@ jobs:
           set -euo pipefail
           echo "Running ETL via konduit because data changed..."
 
-          "$GITHUB_WORKSPACE/konduit.sh" -n "${AKS_NAMESPACE}" -t 7200 -x -i "$GITHUB_WORKSPACE/SAPData/Sql/run-all.sql" "${KONDUIT_APP_NAME}" -- psql
+          "$GITHUB_WORKSPACE/konduit.sh" -n "${AKS_NAMESPACE}" -t 7200 -x -i "$GITHUB_WORKSPACE/SAPData/Sql/run_all.sql" "${KONDUIT_APP_NAME}" -- psql
 
 
       # ==============================
