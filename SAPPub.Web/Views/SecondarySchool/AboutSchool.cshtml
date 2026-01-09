@@ -108,6 +108,77 @@
             </govuk-details-text>
         </govuk-details>
 
+        <h2 class="govuk-heading-l">School features</h2>
+
+        <govuk-summary-list id="school-features-summary">
+            <govuk-summary-list-row>
+                <govuk-summary-list-row-key>Value and ethos</govuk-summary-list-row-key>
+                <govuk-summary-list-row-value>
+                   <a href="@Model.Website" target="_blank">View the value and ethos policy on the school website</a>
+                </govuk-summary-list-row-value>
+            </govuk-summary-list-row>
+            <govuk-summary-list-row>
+                <govuk-summary-list-row-key>Ofsted report</govuk-summary-list-row-key>
+                <govuk-summary-list-row-value>
+                   <a href="http://reports.ofsted.gov.uk/inspection-reports/find-inspection-report/provider/ELS/@Model.URN" target="_blank">View the latest Ofsted report</a>
+                </govuk-summary-list-row-value>
+            </govuk-summary-list-row>
+            <govuk-summary-list-row>
+                <govuk-summary-list-row-key>Type of school</govuk-summary-list-row-key>
+                <govuk-summary-list-row-value>
+                   @Model.TypeOfSchool
+                </govuk-summary-list-row-value>
+            </govuk-summary-list-row>
+            <govuk-summary-list-row>
+                <govuk-summary-list-row-key>Headteacher</govuk-summary-list-row-key>
+                <govuk-summary-list-row-value>
+                   @Model.HeadTeacher
+                </govuk-summary-list-row-value>
+            </govuk-summary-list-row>
+            <govuk-summary-list-row>
+                <govuk-summary-list-row-key>Age range</govuk-summary-list-row-key>
+                <govuk-summary-list-row-value>
+                   @Model.AgeRange
+                </govuk-summary-list-row-value>
+            </govuk-summary-list-row>
+            <govuk-summary-list-row>
+                <govuk-summary-list-row-key>Number of pupils</govuk-summary-list-row-key>
+                <govuk-summary-list-row-value>
+                   @Model.NumberOfPupils
+                </govuk-summary-list-row-value>
+            </govuk-summary-list-row>
+            <govuk-summary-list-row>
+                <govuk-summary-list-row-key>Pupil sex</govuk-summary-list-row-key>
+                <govuk-summary-list-row-value>
+                   @Model.PupilSex
+                </govuk-summary-list-row-value>
+            </govuk-summary-list-row>
+            <govuk-summary-list-row>
+                <govuk-summary-list-row-key>Religious character</govuk-summary-list-row-key>
+                <govuk-summary-list-row-value>
+                   @Model.ReligiousCharacter
+                </govuk-summary-list-row-value>
+            </govuk-summary-list-row>
+            <govuk-summary-list-row>
+                <govuk-summary-list-row-key>Sixth form</govuk-summary-list-row-key>
+                <govuk-summary-list-row-value>
+                   @Model.SixthForm
+                </govuk-summary-list-row-value>
+            </govuk-summary-list-row>
+            <govuk-summary-list-row>
+                <govuk-summary-list-row-key>SEN unit</govuk-summary-list-row-key>
+                <govuk-summary-list-row-value>
+                   @Model.SenUnit
+                </govuk-summary-list-row-value>
+            </govuk-summary-list-row>
+            <govuk-summary-list-row>
+                <govuk-summary-list-row-key>Resourced provision</govuk-summary-list-row-key>
+                <govuk-summary-list-row-value>
+                   @Model.ResourcedProvision
+                </govuk-summary-list-row-value>
+            </govuk-summary-list-row>
+        </govuk-summary-list>
+
         <govuk-details id="details-sen">
             <govuk-details-summary>
                 What is a SEN unit or a resourced provision?

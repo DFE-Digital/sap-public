@@ -1,15 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SAPPub.Core.Interfaces.Repositories.Generic;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace SAPPub.Infrastructure.Repositories.Generic
 {
@@ -49,7 +40,7 @@ namespace SAPPub.Infrastructure.Repositories.Generic
             try
             {
                 var fullPath = Path.Combine(_filePath, $"{fileName}.json");
-                return System.IO.File.ReadAllText(fullPath);
+                return File.ReadAllText(fullPath);
             }
             catch (Exception ex)
             {
