@@ -92,14 +92,18 @@ jobs:
       - name: Configure AKS credentials
         shell: bash
         run: |
+          set -euo pipefail
           az aks get-credentials --overwrite-existing -g "${AKS_RESOURCE_GROUP}" -n "${AKS_CLUSTER_NAME}"
           kubelogin convert-kubeconfig -l azurecli
 
       - name: Download konduit.sh
         shell: bash
         run: |
-          curl -s https://raw.githubusercontent.com/DFE-Digital/teacher-services-cloud/main/scripts/konduit.sh -o ./konduit.sh
-          chmod +x ./konduit.sh
+          set -euo pipefail
+          curl -fsSL https://raw.githubusercontent.com/DFE-Digital/teacher-services-cloud/main/scripts/konduit.sh \
+            -o "$GITHUB_WORKSPACE/konduit.sh"
+          chmod +x "$GITHUB_WORKSPACE/konduit.sh"
+          ls -la "$GITHUB_WORKSPACE/konduit.sh"
 
       # ==============================
       # 5. Ensure Blob container exists (idempotent)
@@ -205,13 +209,11 @@ jobs:
       # ==============================
       - name: Build SQL Generator
         if: steps.hashcheck.outputs.changed == 'CHANGED'
-
         run: |
           dotnet build SAPPub.sln --configuration Release
 
       - name: Generate SQL Scripts
         if: steps.hashcheck.outputs.changed == 'CHANGED'
-
         run: |
           dotnet run --project SAPData/SAPData.csproj
           echo "Generated SQL scripts."
@@ -223,10 +225,18 @@ jobs:
         if: steps.hashcheck.outputs.changed == 'CHANGED'
         working-directory: SAPData
         shell: bash
+        env:
+          # psql reads these automatically
+          PGHOST: ${{ secrets.PGHOST }}
+          PGPORT: ${{ secrets.PGPORT }}
+          PGDATABASE: ${{ secrets.PGDATABASE }}
+          PGUSER: ${{ secrets.PGUSER }}
+          PGPASSWORD: ${{ secrets.PGPASSWORD }}
         run: |
+          set -euo pipefail
           echo "Running ETL via konduit because data changed..."
 
-          ./konduit.sh -n "${AKS_NAMESPACE}" -t 7200 -x "${KONDUIT_APP_NAME}" -- \
+          "$GITHUB_WORKSPACE/konduit.sh" -n "${AKS_NAMESPACE}" -t 7200 -x "${KONDUIT_APP_NAME}" -- \
             psql -v ON_ERROR_STOP=1 -f Sql/run-all.sql
 
       # ==============================
