@@ -229,8 +229,8 @@ jobs:
           set -euo pipefail
           echo "Running ETL via konduit because data changed..."
 
-          "$GITHUB_WORKSPACE/konduit.sh" -n "${AKS_NAMESPACE}" -t 7200 -x "${KONDUIT_APP_NAME}" -- \
-            psql -v ON_ERROR_STOP=1 -f Sql/run-all.sql
+          "$GITHUB_WORKSPACE/konduit.sh" "${AKS_NAMESPACE}" -t 7200 -x "${KONDUIT_APP_NAME}" -- \
+            psql --set=ON_ERROR_STOP=1 -f "Sql/run-all.sql"
 
       # ==============================
       # 11. Commit updated hashes
