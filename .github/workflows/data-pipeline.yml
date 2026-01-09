@@ -231,9 +231,9 @@ jobs:
 
           ls -la "$GITHUB_WORKSPACE/SAPData/Sql" || true
 
-          "$GITHUB_WORKSPACE/konduit.sh" -n "${AKS_NAMESPACE}" -t 7200 -x "${KONDUIT_APP_NAME}" -- psql -f "$GITHUB_WORKSPACE/SAPData/Sql/run_all.sql"
-
-
+          "$GITHUB_WORKSPACE/konduit.sh" -n "${AKS_NAMESPACE}" -t 7200 -x \
+            -i "$GITHUB_WORKSPACE/SAPData/Sql/run_all.sql" \
+            "${KONDUIT_APP_NAME}" -- psql
 
       # ==============================
       # 11. Commit updated hashes
