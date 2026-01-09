@@ -6,24 +6,21 @@ using SAPPub.Web.Models.SecondarySchool;
 
 namespace SAPPub.Web.Controllers
 {
-    public class SecondarySchoolController : Controller
+    public class SecondarySchoolController(
+        ILogger<SecondarySchoolController> logger,
+        IEstablishmentService establishmentService) : Controller
     {
         const string CspPolicy = "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;"; //ToDo - Fix this.
 
-        private readonly ILogger<SecondarySchoolController> _logger;
-        private readonly IEstablishmentService _establishmentService;
-
-        public SecondarySchoolController(ILogger<SecondarySchoolController> logger, IEstablishmentService establishmentService)
-        {
-            _logger = logger;
-            _establishmentService = establishmentService;
-        }
+        private readonly ILogger<SecondarySchoolController> _logger = logger;
+        private readonly IEstablishmentService _establishmentService = establishmentService;
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/about", Name = RouteConstants.SecondaryAboutSchool)]
         public IActionResult AboutSchool(string urn, string schoolName)
         {
             var establishmentDetails = _establishmentService.GetEstablishment(urn);
+
             if (establishmentDetails?.URN == null)
             {
                 return View("Error");

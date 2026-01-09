@@ -97,6 +97,19 @@ public class AboutSchoolPageTests : BasePageTest
     }
 
     [Fact]
+    public async Task AboutSchoolPage_DisplaysSchoolFeatures()
+    {
+        // Arrange
+        await GoToPageAysnc(_pageUrl);
+
+        // Act
+        var isVisible = await Page.Locator("#school-features-summary").IsVisibleAsync();
+
+        // Assert
+        isVisible.Should().BeTrue();
+    }
+
+    [Fact]
     public async Task AboutSchoolPage_DisplaysSchoolPolicies()
     {
         // Arrange
