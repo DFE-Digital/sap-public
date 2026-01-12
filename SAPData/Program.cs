@@ -10,8 +10,8 @@ internal class Program
     {
         Console.WriteLine("Generating Raw Data Tables and Scripts...");
 
-        // NOTE: this is the build output directory
-        string baseDir = AppContext.BaseDirectory;
+        // Find the folder that contains SAPData.csproj
+        string baseDir = FindProjectDirectory("SAPData.csproj");
 
         string dataMapDir = Path.Combine(baseDir, "DataMap");
         string rawInputDir = Path.Combine(dataMapDir, "SourceFiles");
@@ -58,5 +58,24 @@ internal class Program
 
         Console.WriteLine("Run Complete.");
         Console.ReadLine();
+    }
+
+    private static string FindProjectDirectory(string projectFileName)
+    {
+        var dir = new DirectoryInfo(Directory.GetCurrentDirectory());
+
+        while (dir != null)
+        {
+            if (File.Exists(Path.Combine(dir.FullName, projectFileName)))
+            {
+                return dir.FullName;
+            }
+
+            dir = dir.Parent;
+        }
+
+        throw new DirectoryNotFoundException(
+            $"Could not find {projectFileName} starting from {Directory.GetCurrentDirectory()}"
+        );
     }
 }

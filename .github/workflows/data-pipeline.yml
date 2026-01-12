@@ -223,27 +223,15 @@ jobs:
       # ==============================
       - name: Run ETL pipeline via konduit
         if: steps.hashcheck.outputs.changed == 'CHANGED'
+        working-directory: SAPData/Sql
         shell: bash
         run: |
           set -euo pipefail
           echo "Running ETL via konduit because data changed..."
-
-          RUN_ALL="$GITHUB_WORKSPACE/SAPData/SAPData/bin/Release/net8.0/Sql/run_all.sql"
-
-          if [ ! -f "$RUN_ALL" ]; then
-            echo "ERROR: Generated run_all.sql not found at: $RUN_ALL"
-            find "$GITHUB_WORKSPACE/SAPData/SAPData/bin" -maxdepth 6 -type f -name "run_all.sql" -print || true
-            exit 1
-          fi
-
-          echo "Using: $RUN_ALL"
-          ls -la "$(dirname "$RUN_ALL")"
-
-          "$GITHUB_WORKSPACE/konduit.sh" -n "${AKS_NAMESPACE}" -t 7200 -x "${KONDUIT_APP_NAME}" -- \
-            psql -f "$RUN_ALL"
-
-
-
+          ls -la "$GITHUB_WORKSPACE/SAPData/Sql" || true
+          "$GITHUB_WORKSPACE/konduit.sh" -n "${AKS_NAMESPACE}" -t 7200 -x \
+            -i "$GITHUB_WORKSPACE/SAPData/Sql/run_all.sql" \
+            "${KONDUIT_APP_NAME}" -- psql
 
       # ==============================
       # 11. Commit updated hashes
