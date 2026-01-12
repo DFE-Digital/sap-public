@@ -71,6 +71,19 @@ public class AcademicPerformancePupilProgressTests : BasePageTest
     }
 
     [Fact]
+    public async Task AcademicPerformancePupilProgressPage_Displays_Attainment8_Details()
+    {
+        // Arrange
+        await GoToPageAysnc(_pageUrl);
+
+        // Act
+        var isVisible = await Page.Locator("#details-attainment8").IsVisibleAsync();
+
+        // Assert
+        isVisible.Should().BeTrue();
+    }
+
+    [Fact]
     public async Task AcademicPerformancePupilProgressPage_DisplaysPagination()
     {
         // Arrange
