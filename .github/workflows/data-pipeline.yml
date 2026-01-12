@@ -228,11 +228,11 @@ jobs:
           set -euo pipefail
           echo "Running ETL via konduit because data changed..."
 
-          RUN_ALL="$GITHUB_WORKSPACE/SAPData/bin/Release/net8.0/Sql/run_all.sql"
+          RUN_ALL="$GITHUB_WORKSPACE/SAPData/SAPData/bin/Release/net8.0/Sql/run_all.sql"
 
           if [ ! -f "$RUN_ALL" ]; then
             echo "ERROR: Generated run_all.sql not found at: $RUN_ALL"
-            find "$GITHUB_WORKSPACE/SAPData/bin" -maxdepth 6 -type f -name "run_all.sql" -print || true
+            find "$GITHUB_WORKSPACE/SAPData/SAPData/bin" -maxdepth 6 -type f -name "run_all.sql" -print || true
             exit 1
           fi
 
