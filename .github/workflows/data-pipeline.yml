@@ -234,13 +234,20 @@ jobs:
             "${KONDUIT_APP_NAME}" -- psql
 
       # ==============================
-      # 11. Commit updated hashes
+      # 11. Create PR for updated hashes
       # ==============================
-      - name: Commit updated hashes
+      - name: Create PR for updated hashes
         if: steps.hashcheck.outputs.changed == 'CHANGED'
-        run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
-          git add SAPData/Hashes/*.hash
-          git commit -m "Update raw data hashes" || echo "No changes to commit"
-          git push || echo "Nothing to push"
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore(hashes): update raw data hashes"
+          title: "chore(hashes): update raw data hashes"
+          body: |
+            Automated update of SHA256 hash files for public CSV datasets.
+            Merging this PR enables future runs to short-circuit when data is unchanged.
+          branch: ci/hashes
+          delete-branch: true
+          add-paths: |
+            SAPData/Hashes/*.hash
+
