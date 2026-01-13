@@ -141,6 +141,7 @@ jobs:
               --configuration Debug \
               --results-directory "TestResults" \
               --logger "trx;LogFileName=$(basename "$proj" .csproj).trx" \
+              --collect "XPlat Code Coverage"\
               /p:CollectCoverage=true \
               /p:CoverletOutputFormat=cobertura \
               /p:DeterministicReport=true \
