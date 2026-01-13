@@ -5,7 +5,7 @@ namespace SAPPub.Web.Tests.UI.SecondarySchool;
 
 public class DestinationsPageTests : BasePageTest
 {
-    private string _pageUrl = "school/105574/Loreto-High-School-Chorlton/secondary/destinations";
+    private string _pageUrl = "school/105574/Loreto%20High%20School%20Chorlton/secondary/destinations";
 
     [Fact]
     public async Task Destinations_LoadsSuccessfully()

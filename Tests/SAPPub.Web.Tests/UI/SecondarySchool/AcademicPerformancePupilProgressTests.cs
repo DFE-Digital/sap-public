@@ -5,7 +5,7 @@ namespace SAPPub.Web.Tests.UI.SecondarySchool;
 
 public class AcademicPerformancePupilProgressTests : BasePageTest
 {
-    private string _pageUrl = "school/105574/Loreto-High-School-Chorlton/secondary/academic-performance-pupil-progress";
+    private string _pageUrl = "school/105574/Loreto%20High%20School%20Chorlton/secondary/academic-performance-pupil-progress";
 
     [Fact]
     public async Task AcademicPerformancePupilProgressPage_LoadsSuccessfully()

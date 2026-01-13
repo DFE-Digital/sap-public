@@ -5,7 +5,7 @@ namespace SAPPub.Web.Tests.UI.SecondarySchool;
 
 public class CurriculumAndExtraCurricularActivitiesTests : BasePageTest
 {
-    private string _pageUrl = "school/105574/Loreto-High-School-Chorlton/secondary/curriculum-and-extra-curricular-activities";
+    private string _pageUrl = "school/105574/Loreto%20High%20School%20Chorlton/secondary/curriculum-and-extra-curricular-activities";
 
     [Fact]
     public async Task CurriculumAndExtraCurricularActivitiesPage_LoadsSuccessfully()
