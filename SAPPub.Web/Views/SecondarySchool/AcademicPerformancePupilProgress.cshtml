@@ -76,11 +76,47 @@
             </govuk-details-text>
         </govuk-details>
 
+        <h3>Progress 8</h3>
+
+        <p>
+            Progress 8 is a performance measure used to show how much progress pupils make from the end of primary school (KS2)
+            to the end of secondary school (KS4) across their best performing 8 subjects.            
+        </p>
+
+        <p>
+            Progress 8 is calculated by comparing the pupil’s actual Attainment 8 score to their estimated Attainment 8 score based on their results at the end of primary school (KS2).
+        </p>
+
+        <govuk-details id="details-progress8">
+            <govuk-details-summary>
+                Find out more about Progress 8
+            </govuk-details-summary>
+            <govuk-details-text>
+                <p>
+                    Progress 8 shows how much progress a pupil made compared to other pupils with similar starting points at the end of primary school.
+                </p>
+
+                <p>
+                    The score shows progress compared to the national average:
+                </p>
+
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>
+                        a score of 0 means students made average progress compared to others with similar starting points
+                    </li>
+                    <li>
+                        a positive score of more than 0 means pupils made more progress than average
+                    </li>
+                    <li>
+                        a negative score of less than 0 means students made less progress than average
+                    </li>
+                </ul>
+            </govuk-details-text>
+        </govuk-details>
+
         <govuk-pagination id="academic-performance-pupil-progress-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAttendance" asp-all-route-data="@Model.RouteAttributes">Attendance</govuk-pagination-previous>
             <govuk-pagination-next asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults" asp-all-route-data="@Model.RouteAttributes">Academic performance: English and maths results</govuk-pagination-next>
         </govuk-pagination>
     </div>
 </div>
-
-
