@@ -28,7 +28,7 @@ public class AboutSchoolPageTests : BasePageTest
         var title = await Page.TitleAsync();
 
         // Assert
-        Assert.Equal("About the school*", title);
+        Assert.Contains("About the school", title);
     }
 
     [Fact]

@@ -28,7 +28,7 @@ public class CurriculumAndExtraCurricularActivitiesTests : BasePageTest
         var title = await Page.TitleAsync();
 
         // Assert
-        Assert.Equal("Curriculum and extra-curricular activities*", title);
+        Assert.Contains("Curriculum and extra-curricular activities", title);
     }
 
     [Fact]

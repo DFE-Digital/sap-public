@@ -28,7 +28,7 @@ public class AcademicPerformanceEnglishAndMathsResults : BasePageTest
         var title = await Page.TitleAsync();
 
         // Assert
-        Assert.Equal("Academic Performance*", title);
+        Assert.Contains("Academic Performance", title);
     }
 
     [Fact]

@@ -29,7 +29,7 @@ public class VerticalNavigationHelper(IPage page)
     public async Task ShouldHaveOneActiveItemAsync()
     {
         //(await ActiveItem.CountAsync()).Should().Be(1, $"Vertical navigation should have 1 active item");
-        Assert.Equal(1, await Items.CountAsync());
+        Assert.Equal(1, await ActiveItem.CountAsync());
     }
 
     public async Task ShouldHaveActiveHrefAsync(string expectedHref)
