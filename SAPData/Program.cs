@@ -75,19 +75,55 @@ internal class Program
         if (File.Exists(direct))
             return startDir;
 
-        // Search for the csproj under the current directory (repo root in CI).
+        // Primary search (works in GitHub Actions)
         var matches = Directory.GetFiles(startDir, projectFileName, SearchOption.AllDirectories);
 
         if (matches.Length == 0)
         {
+            // ---------- LOCAL FALLBACK ----------
+            // If running from bin/Debug/... or bin/Release/..., walk up until we exit /bin
+            var dir = new DirectoryInfo(startDir);
+            while (dir != null && dir.Name.Equals("bin", StringComparison.OrdinalIgnoreCase) == false)
+            {
+                dir = dir.Parent;
+            }
+
+            // If we found /bin, move one level up (project root candidate)
+            if (dir?.Parent != null)
+            {
+                var projectRootCandidate = dir.Parent.FullName;
+
+                var fallbackMatches = Directory.GetFiles(
+                    projectRootCandidate,
+                    projectFileName,
+                    SearchOption.AllDirectories);
+
+                if (fallbackMatches.Length > 0)
+                {
+                    var preferredFallback = fallbackMatches
+                        .FirstOrDefault(p =>
+                            string.Equals(
+                                new DirectoryInfo(Path.GetDirectoryName(p)!).Name,
+                                "SAPData",
+                                StringComparison.OrdinalIgnoreCase))
+                        ?? fallbackMatches[0];
+
+                    return Path.GetDirectoryName(preferredFallback)!;
+                }
+            }
+
             throw new DirectoryNotFoundException(
-                $"Could not find {projectFileName} under {startDir}"
+                $"Could not find {projectFileName} under {startDir} (including bin fallback)"
             );
         }
 
-        // If multiple exist, choose the one under a folder named "SAPData" if possible.
+        // Prefer SAPData project if multiple found
         var preferred = matches
-            .FirstOrDefault(p => string.Equals(new DirectoryInfo(Path.GetDirectoryName(p)!).Name, "SAPData", StringComparison.OrdinalIgnoreCase))
+            .FirstOrDefault(p =>
+                string.Equals(
+                    new DirectoryInfo(Path.GetDirectoryName(p)!).Name,
+                    "SAPData",
+                    StringComparison.OrdinalIgnoreCase))
             ?? matches[0];
 
         return Path.GetDirectoryName(preferred)!;
