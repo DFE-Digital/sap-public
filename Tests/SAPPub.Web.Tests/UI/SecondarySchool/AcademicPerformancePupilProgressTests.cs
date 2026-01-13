@@ -92,7 +92,7 @@ public class AcademicPerformancePupilProgressTests : BasePageTest
         var isVisible = await Page.Locator("#details-progress8").IsVisibleAsync();
 
         // Assert
-        isVisible.Should().BeTrue();
+        Assert.True(isVisible);
     }
 
     [Fact]
