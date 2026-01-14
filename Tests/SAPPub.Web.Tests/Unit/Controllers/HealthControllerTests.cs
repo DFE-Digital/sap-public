@@ -5,7 +5,7 @@ using Moq;
 using SAPPub.Web.Controllers;
 using Xunit;
 
-namespace SAPPub.Tests.Unit.Controllers;
+namespace SAPPub.Web.Tests.Unit.Controllers;
 
 public class HealthControllerTests
 {

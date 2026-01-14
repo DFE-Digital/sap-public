@@ -1,7 +1,6 @@
-﻿using FluentAssertions;
-using Microsoft.Playwright;
+﻿using Microsoft.Playwright;
 
-namespace SAPPub.Tests.UI.Helpers;
+namespace SAPPub.Web.Tests.UI.Helpers;
 
 public class VerticalNavigationHelper(IPage page)
 {
@@ -19,22 +18,24 @@ public class VerticalNavigationHelper(IPage page)
 
     public async Task ShouldBeVisibleAsync()
     {
-        (await Nav.IsVisibleAsync()).Should().BeTrue("Vertical navigation should be visible");
+        Assert.True(await Nav.IsVisibleAsync(), "Vertical navigation should be visible");
     }
 
     public async Task ShouldHaveItemsCountAsync(int expectedCount)
     {
-        (await Items.CountAsync()).Should().Be(expectedCount, $"Vertical navigation should have {expectedCount} items");
+        Assert.Equal(expectedCount, await Items.CountAsync());//, $"Vertical navigation should have {expectedCount} items");
     }
 
     public async Task ShouldHaveOneActiveItemAsync()
     {
-        (await ActiveItem.CountAsync()).Should().Be(1, $"Vertical navigation should have 1 active item");
+        //(await ActiveItem.CountAsync()).Should().Be(1, $"Vertical navigation should have 1 active item");
+        Assert.Equal(1, await ActiveItem.CountAsync());
     }
 
     public async Task ShouldHaveActiveHrefAsync(string expectedHref)
     {
-        (await GetActiveHrefAsync()).Should().Be($"/{expectedHref}", $"Active item link href should match expected");
+        //(await GetActiveHrefAsync()).Should().Be($"/{expectedHref}", $"Active item link href should match expected");
+        Assert.Equal($"/{expectedHref}", await GetActiveHrefAsync());
     }
 
     public Task<string?> GetActiveHrefAsync() => ActiveLink.GetAttributeAsync("href");

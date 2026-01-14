@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Hosting;
 using SAPPub.Web;
 
-namespace SAPPub.Tests.Integration;
+namespace SAPPub.Web.Tests.IntegrationTests;
 // Custom factory for better control over the test environment
 public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 {

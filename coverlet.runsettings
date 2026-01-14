@@ -4,50 +4,39 @@
     <DataCollectors>
       <DataCollector friendlyName="XPlat code coverage">
         <Configuration>
-          <Format>cobertura,opencover</Format>
-          
-          <!-- Include your assemblies -->
-          <Include>[SAPPub.Web]*,[SAPPub.Core]*,[SAPPub.Infrastructure]*</Include>
-          
+          <Format>cobertura</Format>
+                  
           <!-- Exclude test assemblies and generated code -->
-          <Exclude>
-            [xunit.*]*,
-            [Microsoft.*]*,
-            [System.*]*,
-            [*.Tests]*,
-            [*.Tests.*]*,
-            [SAPPub.Tests]*,
-            [SAPPub.Tests.*]*,
-            [SAPPub.Web]AspNetCoreGeneratedDocument.*,
-            [SAPPub.Web]AspNetCore.Views*,
-            [*]AspNetCoreGeneratedDocument.*,
-            [*]AspNetCore.Views*
-          </Exclude>
-          
-          <!-- Exclude files by path pattern -->
-          <ExcludeByFile>
-            **/*.cshtml,
-            **/*.cshtml.cs,
-            **/*.cshtml.g.cs,
-            **/*.razor,
-            **/*.razor.cs,
-            **/*.razor.g.cs,
-            **/*.g.cs,
-            **/obj/**/*,
-            **/bin/**/*,
-            **/Views/**/*,
-            **/wwwroot/**/*,
-            **/Pages/**/*.cshtml.cs,
-            **/Migrations/**/*
-          </ExcludeByFile>
-          
-          <!-- Exclude by attribute -->
-          <ExcludeByAttribute>
-            ExcludeFromCodeCoverageAttribute,
-            GeneratedCodeAttribute,
-            CompilerGeneratedAttribute,
-            DebuggerNonUserCodeAttribute
-          </ExcludeByAttribute>
+			<ExcludeByFile>
+				**/Migrations/**/*.cs,
+				**/Views/**/*.cshtml.cs,
+				**/obj/**/*.cs,
+				**/Program.cs
+			</ExcludeByFile>
+
+			<ExcludeByAttribute>
+				Obsolete,
+				GeneratedCodeAttribute,
+				CompilerGeneratedAttribute,
+				ExcludeFromCodeCoverageAttribute
+			</ExcludeByAttribute>
+
+			<Exclude>
+				[*]*.Migrations.*,
+				[*]AspNetCoreGeneratedDocument.*,
+				[*]*ViewStart*,
+				[*]*GlobalUsings*,
+				[*.Tests]*,
+				[*.UI.Tests]*,
+				[*.Integration.Tests]*
+			</Exclude>
+
+			<!-- Include your assemblies -->
+			<Include>
+				[SAPPub.Web]*,
+				[SAPPub.Core]*,
+				[SAPPub.Infrastructure]*
+			</Include>
           
           <!-- Additional settings -->
           <SkipAutoProps>true</SkipAutoProps>

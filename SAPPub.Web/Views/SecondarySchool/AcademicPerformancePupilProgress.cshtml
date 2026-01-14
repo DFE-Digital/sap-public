@@ -32,11 +32,91 @@
             </ul>
         </nav>
 
+        <h2>Attainment and progress of pupils in the previous academic year</h2>
+
+        <p>
+            Information in this section is for the 2024 to 2025 academic year.
+        </p>
+
+        <h3>Attainment 8</h3>
+
+        <p>
+            Attainment 8 is used to assess a pupil’s average achievement across their best performing 8 subjects.
+        </p>
+
+        <govuk-details id="details-attainment8">
+            <govuk-details-summary>
+                Find out more about Attainment 8
+            </govuk-details-summary>
+            <govuk-details-text>
+                <p>
+                    The 8 subjects that are used in Attainment 8 are split into 3 groups:
+                </p>
+               
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>
+                        English and maths, which are both double-weighted
+                    </li>
+                    <li>
+                        EBacc subjects, these are a group of GCSE subjects that help students gain a broad set of knowledge and skills.
+                        These subjects include sciences, geography, history, and languages                        
+                    </li>
+                    <li>
+                        open group which includes any other approved GCSEs or vocational qualifications
+                    </li>
+                </ul>
+                <p>
+                    Each GCSE grade is given a point score (for example grade 9 = 9 points, grade 8 = 8 points, and so on).
+                    The scores from the best 8 subjects (with English and Maths counting twice) are added together to give the Attainment 8 score.
+                </p>
+
+                <p>
+                    If a student scores high grades across these subjects, their Attainment 8 score will be higher.  The maximum score a pupil can have is 90.
+                </p>
+            </govuk-details-text>
+        </govuk-details>
+
+        <h3>Progress 8</h3>
+
+        <p>
+            Progress 8 is a performance measure used to show how much progress pupils make from the end of primary school (KS2)
+            to the end of secondary school (KS4) across their best performing 8 subjects.            
+        </p>
+
+        <p>
+            Progress 8 is calculated by comparing the pupil’s actual Attainment 8 score to their estimated Attainment 8 score based on their results at the end of primary school (KS2).
+        </p>
+
+        <govuk-details id="details-progress8">
+            <govuk-details-summary>
+                Find out more about Progress 8
+            </govuk-details-summary>
+            <govuk-details-text>
+                <p>
+                    Progress 8 shows how much progress a pupil made compared to other pupils with similar starting points at the end of primary school.
+                </p>
+
+                <p>
+                    The score shows progress compared to the national average:
+                </p>
+
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>
+                        a score of 0 means students made average progress compared to others with similar starting points
+                    </li>
+                    <li>
+                        a positive score of more than 0 means pupils made more progress than average
+                    </li>
+                    <li>
+                        a negative score of less than 0 means students made less progress than average
+                    </li>
+                </ul>
+            </govuk-details-text>
+        </govuk-details>
+
         <govuk-pagination id="academic-performance-pupil-progress-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAttendance" asp-all-route-data="@Model.RouteAttributes">Attendance</govuk-pagination-previous>
             <govuk-pagination-next asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults" asp-all-route-data="@Model.RouteAttributes">Academic performance: English and maths results</govuk-pagination-next>
         </govuk-pagination>
     </div>
 </div>
-
-

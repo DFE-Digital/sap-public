@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc.Testing;
 using SAPPub.Web;
 using Xunit;
+using SAPPub.Web.Tests.IntegrationTests;
 
 namespace SAPPub.Tests.Integration;
 public class PageTests : IClassFixture<CustomWebApplicationFactory>

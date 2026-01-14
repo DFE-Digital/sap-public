@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using SAPPub.Web;
 using SAPPub.Web.Controllers;
+using SAPPub.Web.Tests.IntegrationTests;
 using Xunit;
 
 namespace SAPPub.Tests.Integration;
