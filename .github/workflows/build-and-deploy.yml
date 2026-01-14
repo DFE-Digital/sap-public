@@ -95,7 +95,7 @@ jobs:
         run: dotnet tool restore
 
       - name: Install Playwright browsers (.NET)
-        run: pwsh ./SAPPub.Tests.UI/bin/Debug/net8.0/playwright.ps1 install
+        run: pwsh ./Tests/SAPPub.Web.Tests/bin/Debug/net8.0/playwright.ps1 install
         
       - name: Setup Node
         uses: actions/setup-node@v4

@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -9,7 +8,7 @@ using SAPPub.Web.Controllers;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.SecondarySchool;
 
-namespace SAPPub.Tests.Unit.Controllers;
+namespace SAPPub.Web.Tests.Unit.Controllers;
 
 public class SecondarySchoolControllerTests
 {
@@ -38,7 +37,7 @@ public class SecondarySchoolControllerTests
         TotalPupils = "1117",
         GenderName = "GenderName",
         ReligiousCharacterName = "ReligiousCharacter",
-        OfficialSixthFormId = "Yes",
+        OfficialSixthFormId = "No",
         ResourcedProvision = "Resourced provision",
     };
 
@@ -69,29 +68,29 @@ public class SecondarySchoolControllerTests
         var result = _controller.AboutSchool(fakeEstablishment.URN, fakeEstablishment.EstablishmentName) as ViewResult;
 
         // Assert
-        result.Should().NotBeNull();
-        result.Model.Should().NotBeNull();
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
 
         var model = result.Model as AboutSchoolViewModel;
-        model.Should().NotBeNull();
-        model.URN.Should().Be(fakeEstablishment.URN);
-        model.SchoolName.Should().Be(fakeEstablishment.EstablishmentName);
-        model.Website.Should().Be(fakeEstablishment.Website);
-        model.AcademyTrust.Should().Be(fakeEstablishment.TrustName);
-        model.Telephone.Should().Be(fakeEstablishment.TelephoneNum);
-        model.LocalAuthority.Should().Be(fakeEstablishment.LAName);
-        model.TypeOfSchool.Should().Be(fakeEstablishment.TypeOfEstablishmentName);
-        model.HeadTeacher.Should().Be(fakeEstablishment.Headteacher);
-        model.AgeRange.Should().Be(fakeEstablishment.AgeRange);
-        model.NumberOfPupils.Should().Be("1,117");
-        model.PupilSex.Should().Be(fakeEstablishment.GenderName);
-        model.ReligiousCharacter.Should().Be(fakeEstablishment.ReligiousCharacterName);
-        model.SixthForm.Should().Be(fakeEstablishment.OfficialSixthFormId);
-        model.SchoolName.Should().Be(fakeEstablishment.EstablishmentName);
-
-        model.RouteAttributes.Count.Should().Be(2);
-        model.RouteAttributes[RouteConstants.URN].Should().Be(fakeEstablishment.URN);
-        model.RouteAttributes[RouteConstants.SchoolName].Should().Be(fakeEstablishment.EstablishmentName);
+        Assert.NotNull(model);
+        Assert.Equal(fakeEstablishment.URN, model.URN);
+        Assert.Equal(fakeEstablishment.EstablishmentName, model.SchoolName);
+        Assert.Equal(fakeEstablishment.Website, model.Website);
+        Assert.Equal(fakeEstablishment.TrustName, model.AcademyTrust);
+        Assert.Equal(fakeEstablishment.TelephoneNum, model.Telephone);
+        Assert.Equal(fakeEstablishment.LAName, model.LocalAuthority);
+        Assert.Equal(fakeEstablishment.TypeOfEstablishmentName, model.TypeOfSchool);
+        Assert.Equal(fakeEstablishment.Headteacher, model.HeadTeacher);
+        Assert.Equal(fakeEstablishment.AgeRange, model.AgeRange);
+        Assert.Equal("1,117", model.NumberOfPupils);
+        Assert.Equal(fakeEstablishment.GenderName, model.PupilSex);
+        Assert.Equal(fakeEstablishment.ReligiousCharacterName, model.ReligiousCharacter);
+        Assert.Equal(fakeEstablishment.OfficialSixthFormId, model.SixthForm);
+        Assert.Equal(fakeEstablishment.EstablishmentName, model.SchoolName);
+        Assert.Equal(2, model.RouteAttributes.Count);
+        Assert.Equal(fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
+        Assert.Equal(fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
+        
     }
 
     [Theory]
@@ -109,13 +108,12 @@ public class SecondarySchoolControllerTests
         var result = _controller.AboutSchool(fakeEstablishment.URN, fakeEstablishment.EstablishmentName) as ViewResult;
 
         // Assert
-        result.Should().NotBeNull();
-        result.Model.Should().NotBeNull();
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
 
         var model = result.Model as AboutSchoolViewModel;
-        model.Should().NotBeNull();
-
-        model.NumberOfPupils.Should().Be(expectedOutput);
+        Assert.NotNull(model);
+        Assert.Equal(expectedOutput, model.NumberOfPupils);
     }
 
     [Theory]
@@ -132,17 +130,16 @@ public class SecondarySchoolControllerTests
         var result = _controller.AboutSchool(fakeEstablishment.URN, fakeEstablishment.EstablishmentName) as ViewResult;
 
         // Assert
-        result.Should().NotBeNull();
-        result.Model.Should().NotBeNull();
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
 
         var model = result.Model as AboutSchoolViewModel;
-        model.Should().NotBeNull();
-        
-        model.SenUnit.Should().Be(expectedOutput);
+        Assert.NotNull(model);
+        Assert.Equal(expectedOutput, model.SenUnit);
 
-        model.RouteAttributes.Count.Should().Be(2);
-        model.RouteAttributes[RouteConstants.URN].Should().Be(fakeEstablishment.URN);
-        model.RouteAttributes[RouteConstants.SchoolName].Should().Be(fakeEstablishment.EstablishmentName);
+        Assert.Equal(2, model.RouteAttributes.Count);
+        Assert.Equal(fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
+        Assert.Equal(fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
     [Theory]
@@ -159,17 +156,17 @@ public class SecondarySchoolControllerTests
         var result = _controller.AboutSchool(fakeEstablishment.URN, fakeEstablishment.EstablishmentName) as ViewResult;
 
         // Assert
-        result.Should().NotBeNull();
-        result.Model.Should().NotBeNull();
+         Assert.NotNull(result);
+        Assert.NotNull(result.Model);
 
         var model = result.Model as AboutSchoolViewModel;
-        model.Should().NotBeNull();
+        Assert.NotNull(model);
 
-        model.ResourcedProvision.Should().Be(expectedOutput);
+        Assert.Equal(expectedOutput, model.ResourcedProvision);
 
-        model.RouteAttributes.Count.Should().Be(2);
-        model.RouteAttributes[RouteConstants.URN].Should().Be(fakeEstablishment.URN);
-        model.RouteAttributes[RouteConstants.SchoolName].Should().Be(fakeEstablishment.EstablishmentName);
+        Assert.Equal(2, model.RouteAttributes.Count);
+        Assert.Equal(fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
+        Assert.Equal(fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
     [Theory]    
@@ -186,13 +183,13 @@ public class SecondarySchoolControllerTests
         var result = _controller.AboutSchool(fakeEstablishment.URN, fakeEstablishment.EstablishmentName) as ViewResult;
 
         // Assert
-        result.Should().NotBeNull();
-        result.Model.Should().NotBeNull();
+         Assert.NotNull(result);
+        Assert.NotNull(result.Model);
 
         var model = result.Model as AboutSchoolViewModel;
-        model.Should().NotBeNull();
+        Assert.NotNull(model);
 
-        model.SixthForm.Should().Be(expectedOutput);
+        Assert.Equal(expectedOutput, model.SixthForm);  
     }
 
     [Fact]
@@ -203,16 +200,16 @@ public class SecondarySchoolControllerTests
         var result = _controller.Admissions(fakeEstablishment.URN, fakeEstablishment.EstablishmentName) as ViewResult;
 
         // Assert
-        result.Should().NotBeNull();
-        result.Model.Should().NotBeNull();
+         Assert.NotNull(result);
+        Assert.NotNull(result.Model);
 
         var model = result.Model as AdmissionsViewModel;
-        model.Should().NotBeNull();
-        model.URN.Should().Be(fakeEstablishment.URN);
-        model.SchoolName.Should().Be(fakeEstablishment.EstablishmentName);
-        model.RouteAttributes.Count.Should().Be(2);
-        model.RouteAttributes[RouteConstants.URN].Should().Be(fakeEstablishment.URN);
-        model.RouteAttributes[RouteConstants.SchoolName].Should().Be(fakeEstablishment.EstablishmentName);
+        Assert.NotNull(model);
+        Assert.Equal(fakeEstablishment.URN, model.URN);
+        Assert.Equal( fakeEstablishment.EstablishmentName, model.SchoolName);
+        Assert.Equal(2, model.RouteAttributes.Count);
+        Assert.Equal(fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
+        Assert.Equal(fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
     [Fact]
@@ -223,17 +220,17 @@ public class SecondarySchoolControllerTests
         var result = _controller.Attendance(fakeEstablishment.URN, fakeEstablishment.EstablishmentName) as ViewResult;
 
         // Assert
-        result.Should().NotBeNull();
-        result.Model.Should().NotBeNull();
+         Assert.NotNull(result);
+        Assert.NotNull(result.Model);
 
         var model = result.Model as AttendanceViewModel;
-        model.Should().NotBeNull();
-        model.URN.Should().Be(fakeEstablishment.URN);
-        model.SchoolName.Should().Be(fakeEstablishment.EstablishmentName);
-        model.SchoolWebsite.Should().Be(fakeEstablishment.Website);
-        model.RouteAttributes.Count.Should().Be(2);
-        model.RouteAttributes[RouteConstants.URN].Should().Be(fakeEstablishment.URN);
-        model.RouteAttributes[RouteConstants.SchoolName].Should().Be(fakeEstablishment.EstablishmentName);
+        Assert.NotNull(model);
+        Assert.Equal(fakeEstablishment.URN, model.URN);
+        Assert.Equal(fakeEstablishment.EstablishmentName, model.SchoolName);
+        Assert.Equal(fakeEstablishment.Website, model.SchoolWebsite);
+        Assert.Equal(2, model.RouteAttributes.Count);
+        Assert.Equal(fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
+        Assert.Equal(fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
     [Fact]
@@ -244,16 +241,16 @@ public class SecondarySchoolControllerTests
         var result = _controller.CurriculumAndExtraCurricularActivities(fakeEstablishment.URN, fakeEstablishment.EstablishmentName) as ViewResult;
 
         // Assert
-        result.Should().NotBeNull();
-        result.Model.Should().NotBeNull();
+         Assert.NotNull(result);
+        Assert.NotNull(result.Model);
 
         var model = result.Model as CurriculumAndExtraCurricularActivitiesViewModel;
-        model.Should().NotBeNull();
-        model.URN.Should().Be(fakeEstablishment.URN);
-        model.SchoolName.Should().Be(fakeEstablishment.EstablishmentName);
-        model.RouteAttributes.Count.Should().Be(2);
-        model.RouteAttributes[RouteConstants.URN].Should().Be(fakeEstablishment.URN);
-        model.RouteAttributes[RouteConstants.SchoolName].Should().Be(fakeEstablishment.EstablishmentName);
+        Assert.NotNull(model);
+        Assert.Equal(fakeEstablishment.URN, model.URN);
+        Assert.Equal(fakeEstablishment.EstablishmentName, model.SchoolName);
+        Assert.Equal(2, model.RouteAttributes.Count);
+        Assert.Equal(fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
+        Assert.Equal(fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
     [Fact]
@@ -264,16 +261,16 @@ public class SecondarySchoolControllerTests
         var result = _controller.AcademicPerformancePupilProgress(fakeEstablishment.URN, fakeEstablishment.EstablishmentName) as ViewResult;
 
         // Assert
-        result.Should().NotBeNull();
-        result.Model.Should().NotBeNull();
+         Assert.NotNull(result);
+        Assert.NotNull(result.Model);
 
         var model = result.Model as AcademicPerformancePupilProgressViewModel;
-        model.Should().NotBeNull();
-        model.URN.Should().Be(fakeEstablishment.URN);
-        model.SchoolName.Should().Be(fakeEstablishment.EstablishmentName);
-        model.RouteAttributes.Count.Should().Be(2);
-        model.RouteAttributes[RouteConstants.URN].Should().Be(fakeEstablishment.URN);
-        model.RouteAttributes[RouteConstants.SchoolName].Should().Be(fakeEstablishment.EstablishmentName);
+        Assert.NotNull(model);
+        Assert.Equal(fakeEstablishment.URN, model.URN);
+        Assert.Equal(fakeEstablishment.EstablishmentName, model.SchoolName);
+        Assert.Equal(2, model.RouteAttributes.Count);
+        Assert.Equal(fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
+        Assert.Equal(fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
     [Fact]
@@ -284,16 +281,16 @@ public class SecondarySchoolControllerTests
         var result = _controller.AcademicPerformanceEnglishAndMathsResults(fakeEstablishment.URN, fakeEstablishment.EstablishmentName) as ViewResult;
 
         // Assert
-        result.Should().NotBeNull();
-        result.Model.Should().NotBeNull();
+         Assert.NotNull(result);
+        Assert.NotNull(result.Model);
 
         var model = result.Model as AcademicPerformanceEnglishAndMathsResultsViewModel;
-        model.Should().NotBeNull();
-        model.URN.Should().Be(fakeEstablishment.URN);
-        model.SchoolName.Should().Be(fakeEstablishment.EstablishmentName);
-        model.RouteAttributes.Count.Should().Be(2);
-        model.RouteAttributes[RouteConstants.URN].Should().Be(fakeEstablishment.URN);
-        model.RouteAttributes[RouteConstants.SchoolName].Should().Be(fakeEstablishment.EstablishmentName);
+        Assert.NotNull(model);
+        Assert.Equal(fakeEstablishment.URN, model.URN);
+        Assert.Equal(fakeEstablishment.EstablishmentName, model.SchoolName);
+        Assert.Equal(2, model.RouteAttributes.Count);
+        Assert.Equal(fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
+        Assert.Equal(fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
     [Fact]
@@ -304,16 +301,16 @@ public class SecondarySchoolControllerTests
         var result = _controller.AcademicPerformanceSubjectsEntered(fakeEstablishment.URN, fakeEstablishment.EstablishmentName) as ViewResult;
 
         // Assert
-        result.Should().NotBeNull();
-        result.Model.Should().NotBeNull();
+         Assert.NotNull(result);
+        Assert.NotNull(result.Model);
 
         var model = result.Model as AcademicPerformanceSubjectsEnteredViewModel;
-        model.Should().NotBeNull();
-        model.URN.Should().Be(fakeEstablishment.URN);
-        model.SchoolName.Should().Be(fakeEstablishment.EstablishmentName);
-        model.RouteAttributes.Count.Should().Be(2);
-        model.RouteAttributes[RouteConstants.URN].Should().Be(fakeEstablishment.URN);
-        model.RouteAttributes[RouteConstants.SchoolName].Should().Be(fakeEstablishment.EstablishmentName);
+        Assert.NotNull(model);
+        Assert.Equal(fakeEstablishment.URN, model.URN);
+        Assert.Equal(fakeEstablishment.EstablishmentName, model.SchoolName);
+        Assert.Equal(2, model.RouteAttributes.Count);
+        Assert.Equal(fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
+        Assert.Equal(fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
     [Fact]
@@ -324,15 +321,15 @@ public class SecondarySchoolControllerTests
         var result = _controller.Destinations(fakeEstablishment.URN, fakeEstablishment.EstablishmentName) as ViewResult;
 
         // Assert
-        result.Should().NotBeNull();
-        result.Model.Should().NotBeNull();
+         Assert.NotNull(result);
+        Assert.NotNull(result.Model);
 
         var model = result.Model as DestinationsViewModel;
-        model.Should().NotBeNull();
-        model.URN.Should().Be(fakeEstablishment.URN);
-        model.SchoolName.Should().Be(fakeEstablishment.EstablishmentName);
-        model.RouteAttributes.Count.Should().Be(2);
-        model.RouteAttributes[RouteConstants.URN].Should().Be(fakeEstablishment.URN);
-        model.RouteAttributes[RouteConstants.SchoolName].Should().Be(fakeEstablishment.EstablishmentName);
+        Assert.NotNull(model);
+        Assert.Equal(fakeEstablishment.URN, model.URN);
+        Assert.Equal(fakeEstablishment.EstablishmentName, model.SchoolName);
+        Assert.Equal(2, model.RouteAttributes.Count);
+        Assert.Equal(fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
+        Assert.Equal(fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 }

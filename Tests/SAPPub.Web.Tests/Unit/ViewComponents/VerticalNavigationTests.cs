@@ -1,8 +1,7 @@
-﻿using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.ViewComponents;
+﻿using Microsoft.AspNetCore.Mvc.ViewComponents;
 using SAPPub.Web.ViewComponents.VerticalNavigation;
 
-namespace SAPPub.Tests.Unit.ViewComponents;
+namespace SAPPub.Web.Tests.Unit.ViewComponents;
 
 public class VerticalNavigationTests
 {
@@ -20,13 +19,15 @@ public class VerticalNavigationTests
         var result = component.Invoke(item) as ViewViewComponentResult;
 
         // Assert
-        result.Should().NotBeNull();
-        result.ViewName.Should().Be("~/ViewComponents/VerticalNavigation/Default.cshtml");
+        Assert.NotNull(result);
+        Assert.Equal("~/ViewComponents/VerticalNavigation/Default.cshtml", result.ViewName);
 
-        var model = result.ViewData!.Model.Should().BeOfType<VerticalNavigationModel>().Subject;
-        model.URN.Should().Be(item.URN);
-        model.SchoolName.Should().Be(item.SchoolName);
-        model.ActivePage.Should().Be(item.ActivePage);
+
+        var model = result.ViewData!;
+        Assert.IsType<VerticalNavigationModel>(model.Model);  
+        Assert.Equal(item.URN, ((VerticalNavigationModel)model.Model).URN);
+        Assert.Equal(item.SchoolName, ((VerticalNavigationModel)model.Model).SchoolName);
+        Assert.Equal(item.ActivePage, ((VerticalNavigationModel)model.Model).ActivePage);
     }
 
     [Fact]
@@ -39,9 +40,9 @@ public class VerticalNavigationTests
         var result = component.Invoke(null!) as ViewViewComponentResult;
 
         // Assert
-        result.Should().NotBeNull();
-        result.ViewName.Should().Be("~/ViewComponents/VerticalNavigation/Default.cshtml");
+        Assert.NotNull(result);
+        Assert.Equal("~/ViewComponents/VerticalNavigation/Default.cshtml", result.ViewName);
 
-        result.ViewData!.Model.Should().BeNull();
+        Assert.Null(result.ViewData.Model);
     }
 }
