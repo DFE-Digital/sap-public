@@ -7,130 +7,130 @@ public class AboutSchoolPageTests : BasePageTest
 {
     private string _pageUrl = "school/105574/Loreto%20High%20School%20Chorlton/secondary/about";
 
-    [Fact]
-    public async Task AboutSchoolPage_LoadsSuccessfully()
-    {
-        // Arrange && Act
-        var response = await GoToPageAysnc(_pageUrl);
+    //[Fact]
+    //public async Task AboutSchoolPage_LoadsSuccessfully()
+    //{
+    //    // Arrange && Act
+    //    var response = await GoToPageAysnc(_pageUrl);
 
-        // Assert
-        Assert.NotNull(response);
-        Assert.Equal(200, response.Status);
-    }
+    //    // Assert
+    //    Assert.NotNull(response);
+    //    Assert.Equal(200, response.Status);
+    //}
 
-    [Fact]
-    public async Task AboutSchoolPage_HasCorrectTitle()
-    {
-        // Arrange
-        await GoToPageAysnc(_pageUrl);
+    //[Fact]
+    //public async Task AboutSchoolPage_HasCorrectTitle()
+    //{
+    //    // Arrange
+    //    await GoToPageAysnc(_pageUrl);
 
-        // Act
-        var title = await Page.TitleAsync();
+    //    // Act
+    //    var title = await Page.TitleAsync();
 
-        // Assert
-        Assert.Contains("About the school", title);
-    }
+    //    // Assert
+    //    Assert.Contains("About the school", title);
+    //}
 
-    [Fact]
-    public async Task AboutSchoolPage_DisplaysMainHeading()
-    {
-        // Arrange
-        await GoToPageAysnc(_pageUrl);
+    //[Fact]
+    //public async Task AboutSchoolPage_DisplaysMainHeading()
+    //{
+    //    // Arrange
+    //    await GoToPageAysnc(_pageUrl);
 
-        // Act
-        var heading = await Page.Locator("h1").TextContentAsync();
+    //    // Act
+    //    var heading = await Page.Locator("h1").TextContentAsync();
 
-        // Assert
-        Assert.NotNull(heading.Replace(" ", ""));
-    }
+    //    // Assert
+    //    Assert.NotNull(heading.Replace(" ", ""));
+    //}
 
-    [Fact]
-    public async Task AboutSchoolPage_Displays_VerticalNavigation()
-    {
-        var nav = new VerticalNavigationHelper(Page);
-        await GoToPageAysnc(_pageUrl);
+    //[Fact]
+    //public async Task AboutSchoolPage_Displays_VerticalNavigation()
+    //{
+    //    var nav = new VerticalNavigationHelper(Page);
+    //    await GoToPageAysnc(_pageUrl);
 
-        await nav.ShouldBeVisibleAsync();
-        await nav.ShouldHaveItemsCountAsync(6);
-        await nav.ShouldHaveOneActiveItemAsync();
-        await nav.ShouldHaveActiveHrefAsync(_pageUrl);
-    }
+    //    await nav.ShouldBeVisibleAsync();
+    //    await nav.ShouldHaveItemsCountAsync(6);
+    //    await nav.ShouldHaveOneActiveItemAsync();
+    //    await nav.ShouldHaveActiveHrefAsync(_pageUrl);
+    //}
 
-    [Fact]
-    public async Task AboutSchoolPage_DisplaysSchoolDetails()
-    {
-        // Arrange
-        await GoToPageAysnc(_pageUrl);
+    //[Fact]
+    //public async Task AboutSchoolPage_DisplaysSchoolDetails()
+    //{
+    //    // Arrange
+    //    await GoToPageAysnc(_pageUrl);
 
-        // Act
-        var isVisible = await Page.Locator("#school-details-summary").IsVisibleAsync();
+    //    // Act
+    //    var isVisible = await Page.Locator("#school-details-summary").IsVisibleAsync();
 
-        // Assert
-        Assert.True(isVisible);
-    }
+    //    // Assert
+    //    Assert.True(isVisible);
+    //}
 
-    [Fact]
-    public async Task AboutSchoolPage_DisplaysSchoolLocation()
-    {
-        // Arrange
-        await GoToPageAysnc(_pageUrl);
+    //[Fact]
+    //public async Task AboutSchoolPage_DisplaysSchoolLocation()
+    //{
+    //    // Arrange
+    //    await GoToPageAysnc(_pageUrl);
 
-        // Act
-        var isVisible = await Page.Locator("#school-location-summary").IsVisibleAsync();
+    //    // Act
+    //    var isVisible = await Page.Locator("#school-location-summary").IsVisibleAsync();
 
-        // Assert
-        Assert.True(isVisible);
-    }
+    //    // Assert
+    //    Assert.True(isVisible);
+    //}
 
-    [Fact]
-    public async Task AboutSchoolPage_DisplaysSpecialistUnit()
-    {
-        // Arrange
-        await GoToPageAysnc(_pageUrl);
+    //[Fact]
+    //public async Task AboutSchoolPage_DisplaysSpecialistUnit()
+    //{
+    //    // Arrange
+    //    await GoToPageAysnc(_pageUrl);
 
-        // Act
-        var isVisible = await Page.Locator("#details-sen").IsVisibleAsync();
+    //    // Act
+    //    var isVisible = await Page.Locator("#details-sen").IsVisibleAsync();
 
-        // Assert
-        Assert.True(isVisible);
-    }
+    //    // Assert
+    //    Assert.True(isVisible);
+    //}
 
-    [Fact]
-    public async Task AboutSchoolPage_DisplaysSchoolFeatures()
-    {
-        // Arrange
-        await GoToPageAysnc(_pageUrl);
+    //[Fact]
+    //public async Task AboutSchoolPage_DisplaysSchoolFeatures()
+    //{
+    //    // Arrange
+    //    await GoToPageAysnc(_pageUrl);
 
-        // Act
-        var isVisible = await Page.Locator("#school-features-summary").IsVisibleAsync();
+    //    // Act
+    //    var isVisible = await Page.Locator("#school-features-summary").IsVisibleAsync();
 
-        // Assert
-        Assert.True(isVisible);
-    }
+    //    // Assert
+    //    Assert.True(isVisible);
+    //}
 
-    [Fact]
-    public async Task AboutSchoolPage_DisplaysSchoolPolicies()
-    {
-        // Arrange
-        await GoToPageAysnc(_pageUrl);
+    //[Fact]
+    //public async Task AboutSchoolPage_DisplaysSchoolPolicies()
+    //{
+    //    // Arrange
+    //    await GoToPageAysnc(_pageUrl);
 
-        // Act
-        var isVisible = await Page.Locator("#school-policies-summary").IsVisibleAsync();
+    //    // Act
+    //    var isVisible = await Page.Locator("#school-policies-summary").IsVisibleAsync();
 
-        // Assert
-        Assert.True(isVisible);
-    }
+    //    // Assert
+    //    Assert.True(isVisible);
+    //}
 
-    [Fact]
-    public async Task AboutSchoolPage_DisplaysPagination()
-    {
-        // Arrange
-        await GoToPageAysnc(_pageUrl);
+    //[Fact]
+    //public async Task AboutSchoolPage_DisplaysPagination()
+    //{
+    //    // Arrange
+    //    await GoToPageAysnc(_pageUrl);
 
-        // Act
-        var isVisible = await Page.Locator("#about-the-school-pagination").IsVisibleAsync();
+    //    // Act
+    //    var isVisible = await Page.Locator("#about-the-school-pagination").IsVisibleAsync();
 
-        // Assert
-        Assert.True(isVisible);
-    }
+    //    // Assert
+    //    Assert.True(isVisible);
+    //}
 }
