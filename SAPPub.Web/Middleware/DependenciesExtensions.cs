@@ -36,7 +36,7 @@ namespace SAPPub.Web.Middleware
         {
 
 
-            services.AddSingleton<IGenericRepository<Establishment>, JSONRepository<Establishment>>();
+            services.AddSingleton<IGenericRepository<Establishment>, DapperRepository<Establishment>>();
             services.AddSingleton<IEstablishmentRepository, EstablishmentRepository>();
             services.AddSingleton<IEstablishmentService, EstablishmentService>();
 
