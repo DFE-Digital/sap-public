@@ -26,14 +26,18 @@ namespace SAPPub.Infrastructure.Repositories.Generic
         {
             try
             {
-                return _connection.Query<T>(
+                var result=  _connection.Query<T>(
                     DapperHelpers.GetQuery(typeof(T)),
                     commandType: CommandType.Text
                     );
+
+                _logger.LogError($"Read all! from {_connection.Database} - result: {result.Count()}");
+
+                return result.ToList();
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to readall! - " + ex.Message, ex);
+                _logger.LogError($"Failed to readall! from {_connection.Database} - {ex.Message}", ex);
             }
 
             return default;
