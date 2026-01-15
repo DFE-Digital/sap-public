@@ -108,14 +108,14 @@ jobs:
         working-directory: SAPPub.Web
         run: npm ci
 
-      - name: Start MVC App
-        run: |
-          dotnet run --project ./SAPPub.Web/SAPPub.Web.csproj --urls "https://localhost:3000" &
-        env:
-          ASPNETCORE_ENVIRONMENT: Development
+#      - name: Start MVC App
+#        run: |
+#          dotnet run --project ./SAPPub.Web/SAPPub.Web.csproj --urls "https://localhost:3000" &
+#        env:
+#          ASPNETCORE_ENVIRONMENT: Development
 
-      - name: Wait for MVC App to be ready
-        run: npx wait-on https://localhost:3000
+#      - name: Wait for MVC App to be ready
+#        run: npx wait-on https://localhost:3000
 
       #- name: Run Unit Tests
       #  run: dotnet test ./SAPPub.Tests.Unit/SAPPub.Tests.Unit.csproj --no-build --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
