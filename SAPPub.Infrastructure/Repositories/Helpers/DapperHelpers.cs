@@ -13,7 +13,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
         {
 
             //return $"select * from v_{entityName.Name.ToLower()} Where \"PhaseOfEducationId\" = 4 LIMIT 100;";
-            return "SELECT table_name as EstablishmentName  FROM information_schema.tables WHERE table_schema='public'  AND table_type='BASE TABLE';";
+            return "SELECT table_name as EstablishmentName  FROM information_schema.tables WHERE table_schema='sappub_test'  AND table_type='BASE TABLE';";
         }
     }
 }
