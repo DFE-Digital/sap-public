@@ -312,6 +312,7 @@ public class SecondarySchoolControllerTests
         model.URN.Should().Be(fakeEstablishment.URN);
         model.SchoolName.Should().Be(fakeEstablishment.EstablishmentName);
         model.RouteAttributes.Count.Should().Be(2);
+        model.CoreSubjects.Should().NotBeNullOrEmpty();
         model.RouteAttributes[RouteConstants.URN].Should().Be(fakeEstablishment.URN);
         model.RouteAttributes[RouteConstants.SchoolName].Should().Be(fakeEstablishment.EstablishmentName);
     }

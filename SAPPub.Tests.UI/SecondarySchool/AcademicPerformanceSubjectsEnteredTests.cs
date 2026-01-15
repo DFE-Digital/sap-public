@@ -95,4 +95,17 @@ public class AcademicPerformanceSubjectsEnteredTests : BasePageTest
         // Assert
         isVisible.Should().BeTrue();
     }
+
+    [Fact]
+    public async Task AcademicPerformanceSubjectsEnteredPage_Displays_CoreSubjects()
+    {
+        // Arrange
+        await GoToPageAysnc(_pageUrl);
+
+        // Act
+        var isVisible = await Page.Locator("#core-subjects-entered-table").IsVisibleAsync();
+
+        // Assert
+        Assert.True(isVisible);
+    }
 }

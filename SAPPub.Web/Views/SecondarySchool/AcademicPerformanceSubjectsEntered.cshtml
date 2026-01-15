@@ -42,6 +42,30 @@
             </govuk-details-text>
         </govuk-details>
 
+        @if (Model.CoreSubjects != null)
+        {
+            <table id="core-subjects-entered-table" class="govuk-table">
+                <caption class="govuk-table__caption govuk-table__caption--m">Core subjects entered</caption>
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header">Subject</th>
+                        <th scope="col" class="govuk-table__header">Qualification</th>
+                        <th scope="col" class="govuk-table__header">Percentage of pupils entered</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                    @foreach (var coreSubject in Model.CoreSubjects)
+                    {
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">@coreSubject.Subject</td>
+                            <td class="govuk-table__cell">@coreSubject.Qualification</td>
+                            <td class="govuk-table__cell">@coreSubject.PercentageOfPupilsEntered</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
         <govuk-pagination id="academic-performance-subjects-entered-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults" asp-all-route-data="@Model.RouteAttributes">Academic performance: English and maths results</govuk-pagination-previous>
             <govuk-pagination-next asp-route="@RouteConstants.SecondaryDestinations" asp-all-route-data="@Model.RouteAttributes">Destinations</govuk-pagination-next>

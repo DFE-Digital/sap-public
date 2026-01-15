@@ -34,55 +34,53 @@ namespace SAPPub.Web.Middleware
     {
         public static void AddDependencies(this IServiceCollection services)
         {
+            services.AddTransient<IGenericRepository<Establishment>, JSONRepository<Establishment>>();
+            services.AddTransient<IEstablishmentRepository, EstablishmentRepository>();
+            services.AddTransient<IEstablishmentService, EstablishmentService>();
 
+            services.AddTransient<IGenericRepository<EstablishmentPerformance>, JSONRepository<EstablishmentPerformance>>();
+            services.AddTransient<IEstablishmentPerformanceRepository, EstablishmentPerformanceRepository>();
+            services.AddTransient<IEstablishmentPerformanceService, EstablishmentPerformanceService>();
 
-            services.AddSingleton<IGenericRepository<Establishment>, JSONRepository<Establishment>>();
-            services.AddSingleton<IEstablishmentRepository, EstablishmentRepository>();
-            services.AddSingleton<IEstablishmentService, EstablishmentService>();
+            services.AddTransient<IGenericRepository<EstablishmentDestinations>, JSONRepository<EstablishmentDestinations>>();
+            services.AddTransient<IEstablishmentDestinationsRepository, EstablishmentDestinationsRepository>();
+            services.AddTransient<IEstablishmentDestinationsService, EstablishmentDestinationsService>();
 
-            services.AddSingleton<IGenericRepository<EstablishmentPerformance>, JSONRepository<EstablishmentPerformance>>();
-            services.AddSingleton<IEstablishmentPerformanceRepository, EstablishmentPerformanceRepository>();
-            services.AddSingleton<IEstablishmentPerformanceService, EstablishmentPerformanceService>();
+            services.AddTransient<IGenericRepository<EstablishmentAbsence>, JSONRepository<EstablishmentAbsence>>();
+            services.AddTransient<IEstablishmentAbsenceRepository, EstablishmentAbsenceRepository>();
+            services.AddTransient<IEstablishmentAbsenceService, EstablishmentAbsenceService>();
 
-            services.AddSingleton<IGenericRepository<EstablishmentDestinations>, JSONRepository<EstablishmentDestinations>>();
-            services.AddSingleton<IEstablishmentDestinationsRepository, EstablishmentDestinationsRepository>();
-            services.AddSingleton<IEstablishmentDestinationsService, EstablishmentDestinationsService>();
+            services.AddTransient<IGenericRepository<EstablishmentWorkforce>, JSONRepository<EstablishmentWorkforce>>();
+            services.AddTransient<IEstablishmentWorkforceRepository, EstablishmentWorkforceRepository>();
+            services.AddTransient<IEstablishmentWorkforceService, EstablishmentWorkforceService>();
 
-            services.AddSingleton<IGenericRepository<EstablishmentAbsence>, JSONRepository<EstablishmentAbsence>>();
-            services.AddSingleton<IEstablishmentAbsenceRepository, EstablishmentAbsenceRepository>();
-            services.AddSingleton<IEstablishmentAbsenceService, EstablishmentAbsenceService>();
+            services.AddTransient<IGenericRepository<LAPerformance>, JSONRepository<LAPerformance>>();
+            services.AddTransient<ILAPerformanceRepository, LAPerformanceRepository>();
+            services.AddTransient<ILAPerformanceService, LAPerformanceService>();
 
-            services.AddSingleton<IGenericRepository<EstablishmentWorkforce>, JSONRepository<EstablishmentWorkforce>>();
-            services.AddSingleton<IEstablishmentWorkforceRepository, EstablishmentWorkforceRepository>();
-            services.AddSingleton<IEstablishmentWorkforceService, EstablishmentWorkforceService>();
+            services.AddTransient<IGenericRepository<LADestinations>, JSONRepository<LADestinations>>();
+            services.AddTransient<ILADestinationsRepository, LADestinationsRepository>();
+            services.AddTransient<ILADestinationsService, LADestinationsService>();
 
-            services.AddSingleton<IGenericRepository<LAPerformance>, JSONRepository<LAPerformance>>();
-            services.AddSingleton<ILAPerformanceRepository, LAPerformanceRepository>();
-            services.AddSingleton<ILAPerformanceService, LAPerformanceService>();
+            services.AddTransient<IGenericRepository<LAAbsence>, JSONRepository<LAAbsence>>();
+            services.AddTransient<ILAAbsenceRepository, LAAbsenceRepository>();
+            services.AddTransient<ILAAbsenceService, LAAbsenceService>();
 
-            services.AddSingleton<IGenericRepository<LADestinations>, JSONRepository<LADestinations>>();
-            services.AddSingleton<ILADestinationsRepository, LADestinationsRepository>();
-            services.AddSingleton<ILADestinationsService, LADestinationsService>();
+            services.AddTransient<IGenericRepository<EnglandPerformance>, JSONRepository<EnglandPerformance>>();
+            services.AddTransient<IEnglandPerformanceRepository, EnglandPerformanceRepository>();
+            services.AddTransient<IEnglandPerformanceService, EnglandPerformanceService>();
 
-            services.AddSingleton<IGenericRepository<LAAbsence>, JSONRepository<LAAbsence>>();
-            services.AddSingleton<ILAAbsenceRepository, LAAbsenceRepository>();
-            services.AddSingleton<ILAAbsenceService, LAAbsenceService>();
+            services.AddTransient<IGenericRepository<EnglandDestinations>, JSONRepository<EnglandDestinations>>();
+            services.AddTransient<IEnglandDestinationsRepository, EnglandDestinationsRepository>();
+            services.AddTransient<IEnglandDestinationsService, EnglandDestinationsService>();
 
-            services.AddSingleton<IGenericRepository<EnglandPerformance>, JSONRepository<EnglandPerformance>>();
-            services.AddSingleton<IEnglandPerformanceRepository, EnglandPerformanceRepository>();
-            services.AddSingleton<IEnglandPerformanceService, EnglandPerformanceService>();
+            services.AddTransient<IGenericRepository<EnglandAbsence>, JSONRepository<EnglandAbsence>>();
+            services.AddTransient<IEnglandAbsenceRepository, EnglandAbsenceRepository>();
+            services.AddTransient<IEnglandAbsenceService, EnglandAbsenceService>();
 
-            services.AddSingleton<IGenericRepository<EnglandDestinations>, JSONRepository<EnglandDestinations>>();
-            services.AddSingleton<IEnglandDestinationsRepository, EnglandDestinationsRepository>();
-            services.AddSingleton<IEnglandDestinationsService, EnglandDestinationsService>();
-
-            services.AddSingleton<IGenericRepository<EnglandAbsence>, JSONRepository<EnglandAbsence>>();
-            services.AddSingleton<IEnglandAbsenceRepository, EnglandAbsenceRepository>();
-            services.AddSingleton<IEnglandAbsenceService, EnglandAbsenceService>();
-
-            services.AddSingleton<IGenericRepository<Lookup>, JSONRepository<Lookup>>();
-            services.AddSingleton<ILookupRepository, LookupRepository>();
-            services.AddSingleton<ILookupService, LookupService>();
+            services.AddTransient<IGenericRepository<Lookup>, JSONRepository<Lookup>>();
+            services.AddTransient<ILookupRepository, LookupRepository>();
+            services.AddTransient<ILookupService, LookupService>();
         }
     }
 }
