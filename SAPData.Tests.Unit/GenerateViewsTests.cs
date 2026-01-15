@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using SAPData.Models;
+﻿using SAPData.Models;
 using Xunit;
 
 namespace SAPData.Tests.Unit;
@@ -70,12 +69,12 @@ public class GenerateViewsTests : IDisposable
         new GenerateViews(rows, _mappingPath, _sqlDir).Run();
 
         var path = Path.Combine(_sqlDir, "03_v_establishment.sql");
-        File.Exists(path).Should().BeTrue();
+        Assert.True(File.Exists(path));
 
         var sql = File.ReadAllText(path);
-        sql.Should().Contain("CREATE MATERIALIZED VIEW v_establishment");
-        sql.Should().Contain("FROM raw_edubase_123");
-        sql.Should().Contain("idx_v_establishment_urn");
+        Assert.Contains("CREATE MATERIALIZED VIEW v_establishment", sql);
+        Assert.Contains("FROM raw_edubase_123", sql);
+        Assert.Contains("idx_v_establishment_urn", sql);
     }
 
     // ------------------------------------------------------------
@@ -95,12 +94,12 @@ public class GenerateViewsTests : IDisposable
         new GenerateViews(rows, _mappingPath, _sqlDir).Run();
 
         var path = Path.Combine(_sqlDir, "03_v_england_destinations.sql");
-        File.Exists(path).Should().BeTrue();
+        Assert.True(File.Exists(path));
 
         var sql = File.ReadAllText(path);
-        sql.Should().Contain("CREATE MATERIALIZED VIEW v_england_destinations");
-        sql.Should().Contain("MAX(CASE WHEN TRUE THEN");
-        sql.Should().Contain("AS \"Overall\"");
+        Assert.Contains("CREATE MATERIALIZED VIEW v_england_destinations", sql);
+        Assert.Contains("MAX(CASE WHEN TRUE THEN", sql);
+        Assert.Contains("AS \"Overall\"", sql);
     }
 
     [Fact]
@@ -117,7 +116,7 @@ public class GenerateViewsTests : IDisposable
         new GenerateViews(rows, _mappingPath, _sqlDir).Run();
 
         var path = Path.Combine(_sqlDir, "03_v_england_destinations.sql");
-        File.Exists(path).Should().BeFalse();
+        Assert.False(File.Exists(path));
     }
 
     // ------------------------------------------------------------
@@ -134,12 +133,10 @@ public class GenerateViewsTests : IDisposable
             Row("missing_file", "England", "KS4_Destinations", "Overall", "overall")
         };
 
-        Action act = () =>
-            new GenerateViews(rows, _mappingPath, _sqlDir).Run();
+        Action act = () => new GenerateViews(rows, _mappingPath, _sqlDir).Run();
 
-        act.Should()
-           .Throw<InvalidOperationException>()
-           .WithMessage("*Missing table mapping*");
+        var ex = Assert.Throws<InvalidOperationException>(act);
+        Assert.Contains("Missing table mapping", ex.Message);
     }
 
     // ------------------------------------------------------------
@@ -156,20 +153,18 @@ public class GenerateViewsTests : IDisposable
         );
 
         var rows = new List<DataMapRow>
-    {
-        Row("file1", "England", "KS4_Performance", "Att8", "att8"),
-        Row("file2", "England", "KS4_Performance", "Att8", "att8")
-    };
+        {
+            Row("file1", "England", "KS4_Performance", "Att8", "att8"),
+            Row("file2", "England", "KS4_Performance", "Att8", "att8")
+        };
 
         new GenerateViews(rows, _mappingPath, _sqlDir).Run();
 
         var sql = File.ReadAllText(
             Path.Combine(_sqlDir, "03_v_england_performance.sql"));
 
-        sql.Should().Contain("COALESCE(");
-        sql.Should().Contain("src_1.\"Att8\"");
-        sql.Should().Contain("src_2.\"Att8\"");
+        Assert.Contains("COALESCE(", sql);
+        Assert.Contains("src_1.\"Att8\"", sql);
+        Assert.Contains("src_2.\"Att8\"", sql);
     }
-
 }
-

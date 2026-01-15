@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using System.Text;
+﻿using System.Text;
 using Xunit;
 
 namespace SAPData.Tests.Unit;
@@ -51,10 +50,10 @@ public class GenerateRawTablesTests : IDisposable
 
         new GenerateRawTables(_input, _clean, _sql).Run();
 
-        File.Exists(Path.Combine(_sql, "01_create_raw_tables.sql")).Should().BeTrue();
-        File.Exists(Path.Combine(_sql, "02_copy_into_raw.sql")).Should().BeTrue();
-        File.Exists(Path.Combine(_sql, "02_copy_into_raw_local.sql")).Should().BeTrue();
-        File.Exists(Path.Combine(_sql, "tablemapping.csv")).Should().BeTrue();
+        Assert.True(File.Exists(Path.Combine(_sql, "01_create_raw_tables.sql")));
+        Assert.True(File.Exists(Path.Combine(_sql, "02_copy_into_raw.sql")));
+        Assert.True(File.Exists(Path.Combine(_sql, "02_copy_into_raw_local.sql")));
+        Assert.True(File.Exists(Path.Combine(_sql, "tablemapping.csv")));
     }
 
     [Fact]
@@ -68,7 +67,7 @@ public class GenerateRawTablesTests : IDisposable
 
         var mapping = File.ReadAllText(Path.Combine(_sql, "tablemapping.csv"));
 
-        mapping.Should().MatchRegex(@"raw_[a-z0-9_]{1,18}_[a-f0-9]{8}");
+        Assert.Matches(@"raw_[a-z0-9_]{1,18}_[a-f0-9]{8}", mapping);
     }
 
     [Fact]
@@ -85,7 +84,7 @@ public class GenerateRawTablesTests : IDisposable
         new GenerateRawTables(_input, _clean, _sql).Run();
         var second = File.ReadAllText(Path.Combine(_sql, "tablemapping.csv"));
 
-        first.Should().Be(second);
+        Assert.Equal(first, second);
     }
 
     [Fact]
@@ -98,7 +97,7 @@ public class GenerateRawTablesTests : IDisposable
         new GenerateRawTables(_input, _clean, _sql).Run();
 
         var cleaned = File.ReadAllLines(Path.Combine(_clean, "padtest.clean.csv"));
-        cleaned[1].Should().Be("1,2,");
+        Assert.Equal("1,2,", cleaned[1]);
     }
 
     [Fact]
@@ -111,7 +110,7 @@ public class GenerateRawTablesTests : IDisposable
         new GenerateRawTables(_input, _clean, _sql).Run();
 
         var cleaned = File.ReadAllLines(Path.Combine(_clean, "trunctest.clean.csv"));
-        cleaned[1].Should().Be("1,2");
+        Assert.Equal("1,2", cleaned[1]);
     }
 
     [Fact]
@@ -125,8 +124,8 @@ public class GenerateRawTablesTests : IDisposable
 
         var sql = File.ReadAllText(Path.Combine(_sql, "01_create_raw_tables.sql"));
 
-        sql.Should().Contain("\"LA_code\"");
-        sql.Should().Contain("\"School_Name\"");
+        Assert.Contains("\"LA_code\"", sql);
+        Assert.Contains("\"School_Name\"", sql);
     }
 
     [Fact]
@@ -138,6 +137,6 @@ public class GenerateRawTablesTests : IDisposable
 
         var bytes = File.ReadAllBytes(Path.Combine(_clean, "bomtest.clean.csv"));
 
-        bytes.Take(3).Should().NotBeEquivalentTo(new byte[] { 0xEF, 0xBB, 0xBF });
+        Assert.NotEqual(new byte[] { 0xEF, 0xBB, 0xBF }, bytes.Take(3).ToArray());
     }
 }

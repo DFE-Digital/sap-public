@@ -91,11 +91,14 @@ namespace SAPPub.Web.Controllers
         [Route("school/{urn}/{schoolName}/secondary/academic-performance-subjects-entered", Name = RouteConstants.SecondaryAcademicPerformanceSubjectsEntered)]
         public IActionResult AcademicPerformanceSubjectsEntered(string urn, string schoolName)
         {
-            var model = new AcademicPerformanceSubjectsEnteredViewModel
+            var establishmentDetails = _establishmentService.GetEstablishment(urn);
+
+            if (establishmentDetails?.URN == null)
             {
-                URN = urn,
-                SchoolName = schoolName,
-            };
+                return View("Error");
+            }
+
+            var model = AcademicPerformanceSubjectsEnteredViewModel.Map(establishmentDetails);
             return View(model);
         }
 
