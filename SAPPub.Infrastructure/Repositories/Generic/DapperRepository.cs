@@ -34,7 +34,7 @@ namespace SAPPub.Infrastructure.Repositories.Generic
 
                 _logger.LogError($"Read all! from {_connection.Database} - result: {result.Count()}");
 
-                return result.ToList();
+                //return result.ToList();
             }
             catch (Exception ex)
             {
