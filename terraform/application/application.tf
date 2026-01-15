@@ -26,7 +26,7 @@ module "application_configuration" {
   secret_variables = {
     DATABASE_URL            = module.postgres.url
     StorageConnectionString = "DefaultEndpointsProtocol=https;AccountName=${module.storage.name};AccountKey=${module.storage.primary_access_key}"
-    ConnectionStrings__PostgresConnectionString = "DefaultEndpointsProtocol=https;AccountName=${module.storage.name};AccountKey=${module.storage.primary_access_key}"
+    ConnectionStrings__PostgresConnectionString = module.postgres.dotnet_connection_string
   }
 
 }
