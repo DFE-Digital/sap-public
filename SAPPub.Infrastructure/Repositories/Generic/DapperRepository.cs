@@ -31,6 +31,7 @@ namespace SAPPub.Infrastructure.Repositories.Generic
                     commandType: CommandType.Text
                     );
 
+
                 _logger.LogError($"Read all! from {_connection.Database} - result: {result.Count()}");
 
                 return result.ToList();
@@ -38,6 +39,39 @@ namespace SAPPub.Infrastructure.Repositories.Generic
             catch (Exception ex)
             {
                 _logger.LogError($"Failed to readall! from {_connection.Database} - {ex.Message}", ex);
+                _logger.LogError($"Debug dbname {_connection.ConnectionString.Substring(_connection.ConnectionString.LastIndexOf("//"))}");
+            }
+
+            try
+            {
+                _connection.ChangeDatabase("sappub-test");
+                var result = _connection.Query<T>(
+                    DapperHelpers.GetQuery(typeof(T)),
+                    commandType: CommandType.Text
+                    );
+
+
+                _logger.LogError($"Read all! from {_connection.Database} - result: {result.Count()}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Failed on first switch - {ex.Message}", ex);
+            }
+
+            try
+            {
+                _connection.ChangeDatabase("postgres");
+                var result = _connection.Query<T>(
+                    DapperHelpers.GetQuery(typeof(T)),
+                    commandType: CommandType.Text
+                    );
+
+
+                _logger.LogError($"Read all! from {_connection.Database} - result: {result.Count()}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Failed on first switch - {ex.Message}", ex);
             }
 
             return default;
