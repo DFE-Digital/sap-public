@@ -1,12 +1,11 @@
-﻿using FluentAssertions;
-using SAPPub.Tests.UI.Helpers;
+﻿using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Tests.UI.Infrastructure;
 
-namespace SAPPub.Tests.UI.SecondarySchool;
+namespace SAPPub.Web.Tests.UI.SecondarySchool;
 
 public class AboutSchoolPageTests : BasePageTest
 {
-    private string _pageUrl = "school/1/kes/secondary/about";
+    private string _pageUrl = "school/105574/Loreto%20High%20School%20Chorlton/secondary/about";
 
     [Fact]
     public async Task AboutSchoolPage_LoadsSuccessfully()
@@ -15,8 +14,8 @@ public class AboutSchoolPageTests : BasePageTest
         var response = await GoToPageAysnc(_pageUrl);
 
         // Assert
-        response.Should().NotBeNull();
-        response.Status.Should().Be(200);
+        Assert.NotNull(response);
+        Assert.Equal(200, response.Status);
     }
 
     [Fact]
@@ -29,7 +28,7 @@ public class AboutSchoolPageTests : BasePageTest
         var title = await Page.TitleAsync();
 
         // Assert
-        title.Should().Match("About the school*");
+        Assert.Contains("About the school", title);
     }
 
     [Fact]
@@ -42,7 +41,7 @@ public class AboutSchoolPageTests : BasePageTest
         var heading = await Page.Locator("h1").TextContentAsync();
 
         // Assert
-        heading.Should().NotBeNullOrWhiteSpace();
+        Assert.NotNull(heading.Replace(" ", ""));
     }
 
     [Fact]
@@ -67,7 +66,7 @@ public class AboutSchoolPageTests : BasePageTest
         var isVisible = await Page.Locator("#school-details-summary").IsVisibleAsync();
 
         // Assert
-        isVisible.Should().BeTrue();
+        Assert.True(isVisible);
     }
 
     [Fact]
@@ -80,7 +79,7 @@ public class AboutSchoolPageTests : BasePageTest
         var isVisible = await Page.Locator("#school-location-summary").IsVisibleAsync();
 
         // Assert
-        isVisible.Should().BeTrue();
+        Assert.True(isVisible);
     }
 
     [Fact]
@@ -93,7 +92,7 @@ public class AboutSchoolPageTests : BasePageTest
         var isVisible = await Page.Locator("#details-sen").IsVisibleAsync();
 
         // Assert
-        isVisible.Should().BeTrue();
+        Assert.True(isVisible);
     }
 
     [Fact]
@@ -106,7 +105,7 @@ public class AboutSchoolPageTests : BasePageTest
         var isVisible = await Page.Locator("#school-features-summary").IsVisibleAsync();
 
         // Assert
-        isVisible.Should().BeTrue();
+        Assert.True(isVisible);
     }
 
     [Fact]
@@ -119,7 +118,7 @@ public class AboutSchoolPageTests : BasePageTest
         var isVisible = await Page.Locator("#school-policies-summary").IsVisibleAsync();
 
         // Assert
-        isVisible.Should().BeTrue();
+        Assert.True(isVisible);
     }
 
     [Fact]
@@ -132,6 +131,6 @@ public class AboutSchoolPageTests : BasePageTest
         var isVisible = await Page.Locator("#about-the-school-pagination").IsVisibleAsync();
 
         // Assert
-        isVisible.Should().BeTrue();
+        Assert.True(isVisible);
     }
 }

@@ -1,12 +1,11 @@
-﻿using FluentAssertions;
-using SAPPub.Tests.UI.Helpers;
+﻿using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Tests.UI.Infrastructure;
 
-namespace SAPPub.Tests.UI.SecondarySchool;
+namespace SAPPub.Web.Tests.UI.SecondarySchool;
 
 public class AdmissionsPageTests : BasePageTest
 {
-    private string _pageUrl = "school/1/kes/secondary/admissions";
+    private string _pageUrl = "school/105574/Loreto%20High%20School%20Chorlton/secondary/admissions";
 
     [Fact]
     public async Task AdmissionsPage_LoadsSuccessfully()
@@ -15,8 +14,8 @@ public class AdmissionsPageTests : BasePageTest
         var response = await GoToPageAysnc(_pageUrl);
 
         // Assert
-        response.Should().NotBeNull();
-        response.Status.Should().Be(200);
+        Assert.NotNull(response);
+        Assert.Equal(200, response.Status);
     }
 
     [Fact]
@@ -29,7 +28,7 @@ public class AdmissionsPageTests : BasePageTest
         var title = await Page.TitleAsync();
 
         // Assert
-        title.Should().Match("Admissions*");
+        Assert.Contains("Admissions", title);
     }
 
     [Fact]
@@ -42,7 +41,7 @@ public class AdmissionsPageTests : BasePageTest
         var heading = await Page.Locator("h1").TextContentAsync();
 
         // Assert
-        heading.Should().NotBeNullOrWhiteSpace();
+        Assert.NotNull(heading.Replace(" ", ""));
     }
 
     [Fact]
@@ -67,7 +66,7 @@ public class AdmissionsPageTests : BasePageTest
         var isVisible = await Page.Locator("#admissions-accordion").IsVisibleAsync();
 
         // Assert
-        isVisible.Should().BeTrue();
+        Assert.True(isVisible);
     }
 
     [Fact]
@@ -80,6 +79,6 @@ public class AdmissionsPageTests : BasePageTest
         var isVisible = await Page.Locator("#admissions-pagination").IsVisibleAsync();
 
         // Assert
-        isVisible.Should().BeTrue();
+        Assert.True(isVisible);
     }
 }

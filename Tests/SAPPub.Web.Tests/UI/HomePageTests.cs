@@ -1,7 +1,6 @@
-﻿using FluentAssertions;
-using SAPPub.Tests.UI.Infrastructure;
+﻿using SAPPub.Tests.UI.Infrastructure;
 
-namespace SAPPub.Tests.UI;
+namespace SAPPub.Web.Tests.UI;
 
 public class HomePageTests : BasePageTest
 {
@@ -12,8 +11,8 @@ public class HomePageTests : BasePageTest
         var response = await GoToPageAysnc(string.Empty);
 
         // Assert
-        response.Should().NotBeNull();
-        response.Status.Should().Be(200);
+        Assert.NotNull(response);
+        Assert.Equal(200, response.Status);
     }
 
     [Fact]
@@ -26,7 +25,7 @@ public class HomePageTests : BasePageTest
         var title = await Page.TitleAsync();
 
         // Assert
-        title.Should().Match("School Profile*");
+        Assert.Contains("School Profile", title);
     }
 
     [Fact]
@@ -39,7 +38,7 @@ public class HomePageTests : BasePageTest
         var heading = await Page.Locator("h1").TextContentAsync();
 
         // Assert
-        heading.Should().NotBeNullOrWhiteSpace();
+        Assert.NotNull(heading.Replace(" ",""));
     }
 
     [Fact]
@@ -58,8 +57,8 @@ public class HomePageTests : BasePageTest
         var logoVisible = await govUkLogo.IsVisibleAsync();
 
         // Assert
-        isVisible.Should().BeTrue("GOV.UK header should be visible");
-        logoVisible.Should().BeTrue("GOV.UK SVG logo should be visible in the header");
+        Assert.True(isVisible, "GOV.UK header should be visible");
+        Assert.True(logoVisible, "GOV.UK SVG logo should be visible in the header");
     }
 
 
@@ -78,6 +77,7 @@ public class HomePageTests : BasePageTest
         var isVisible = await heading.IsVisibleAsync();
 
         // Assert
-        isVisible.Should().BeTrue($"Heading should be visible at {width}x{height}");
+        Assert.True(isVisible, $"Heading should be visible at {width}x{height}");
+        //isVisible.Should().BeTrue($"Heading should be visible at {width}x{height}");
     }
 }

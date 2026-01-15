@@ -21,7 +21,7 @@
                 <li class="dfe-vertical-nav__section-item  @(Model.ActivePage == RouteConstants.SecondaryAttendance ? "dfe-vertical-nav__section-item--current" : "")">
                     <a class="dfe-vertical-nav__link" asp-route="@RouteConstants.SecondaryAttendance" asp-all-route-data="routeAttributes">Attendance</a>
                 </li>
-                <li class="dfe-vertical-nav__section-item  @(Model.ActivePage == RouteConstants.SecondaryAcademicPerformancePupilProgress ? "dfe-vertical-nav__section-item--current" : "")">
+                <li class="dfe-vertical-nav__section-item  @(new List<string>{RouteConstants.SecondaryAcademicPerformancePupilProgress,RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults, RouteConstants.SecondaryAcademicPerformanceSubjectsEntered}.Contains(Model.ActivePage)? " dfe-vertical-nav__section-item--current" : "" ) ">
                     <a class="dfe-vertical-nav__link" asp-route="@RouteConstants.SecondaryAcademicPerformancePupilProgress" asp-all-route-data="routeAttributes">Academic performance</a>
                 </li>
                 <li class="dfe-vertical-nav__section-item  @(Model.ActivePage == RouteConstants.SecondaryDestinations ? "dfe-vertical-nav__section-item--current" : "")">
