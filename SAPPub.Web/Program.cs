@@ -62,7 +62,7 @@ public partial class Program
 
         //builder.Services.Configure<UserSecrets>(builder.Configuration.GetSection("ConnectionStrings"));
 
-        var connectionString = builder.Configuration.GetValue<string>("StorageConnectionString");
+        var connectionString = builder.Configuration.GetConnectionString("PostgresConnectionString");
         builder.Services.AddTransient<IDbConnection>((sp) => new NpgsqlConnection(connectionString));
 
 
