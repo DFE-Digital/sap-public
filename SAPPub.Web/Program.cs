@@ -63,6 +63,7 @@ public partial class Program
         //builder.Services.Configure<UserSecrets>(builder.Configuration.GetSection("ConnectionStrings"));
 
         var connectionString = builder.Configuration.GetConnectionString("PostgresConnectionString");
+        connectionString = connectionString.Replace("sappub_pr-94", "sappub_test");
         builder.Services.AddTransient<IDbConnection>((sp) => new NpgsqlConnection(connectionString));
 
 
