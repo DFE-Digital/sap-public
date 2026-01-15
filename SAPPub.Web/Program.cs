@@ -140,7 +140,11 @@ public partial class Program
 
         // Health check endpoints for AKS
         app.MapHealthChecks("/healthcheck");
-
+        app.Logger.LogError($"DEBUG - {builder.Configuration.GetValue<string>("DATABASE_URL")}");
+        app.Logger.LogError($"DEBUG - {builder.Configuration.GetValue<string>("DB_HOST_NAME")}");
+        app.Logger.LogError($"DEBUG - {builder.Configuration.GetValue<string>("DB_DATABASE_NAME")}");
         app.Run();
+
+
     }
 }

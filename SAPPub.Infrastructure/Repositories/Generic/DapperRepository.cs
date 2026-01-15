@@ -42,28 +42,6 @@ namespace SAPPub.Infrastructure.Repositories.Generic
                 _logger.LogError($"Debug dbname {_connection.ConnectionString.Substring(_connection.ConnectionString.LastIndexOf("//"))}");
             }
 
-            _connection.Close();
-            _connection.Open();
-            try
-            {
-                
-                _connection.ChangeDatabase("postgres");
-                var result = _connection.Query<T>(
-                    DapperHelpers.GetQuery(typeof(T)),
-                    commandType: CommandType.Text
-                    );
-
-
-                _logger.LogError($"Read all! from {_connection.Database} - result: {result.Count()}");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Failed on first switch - {ex.Message}", ex);
-            }
-
-            _connection.Close();
-
-
             return default;
         }
     }
