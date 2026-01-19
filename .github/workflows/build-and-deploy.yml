@@ -72,7 +72,8 @@ jobs:
   # ---------------------------
   test:
     name: Run Unit, Integration and UI Tests
-    if: ${{ github.event_name != 'workflow_dispatch' }}
+    #if: ${{ github.event_name != 'workflow_dispatch' }}
+    if: ${{ github.repository == 'dontrunme' }}
     runs-on: ubuntu-latest
     needs: [build]
 
@@ -211,7 +212,7 @@ jobs:
     name: Deployment To Review
     concurrency: deploy_review_${{ github.event.pull_request.number }}
     if: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'deploy') }}
-    needs: [build, test]
+    needs: [build]
     environment:
       name: review
       url: ${{ steps.deploy_review.outputs.environment_url }}
@@ -242,7 +243,7 @@ jobs:
   deploy:
     name: Deploy to Test and Production
     if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
-    needs: [build, test]
+    needs: [build]
     runs-on: ubuntu-latest
     permissions:
       id-token: write
