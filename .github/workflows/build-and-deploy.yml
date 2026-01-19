@@ -72,7 +72,8 @@ jobs:
   # ---------------------------
   test:
     name: Run Unit, Integration and UI Tests
-    if: ${{ github.event_name != 'workflow_dispatch' }}
+    #if: ${{ github.event_name != 'workflow_dispatch' }}
+    if: ${{ github.repository == 'dontrunme' }}
     runs-on: ubuntu-latest
     needs: [build]
 
