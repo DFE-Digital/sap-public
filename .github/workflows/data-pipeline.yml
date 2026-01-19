@@ -121,7 +121,7 @@ jobs:
       # ==============================
       # Debug json file parsing
       # ==============================
-      - name: Debug raw_sources.json
+      - name: Download raw data files from Blob Storage
         shell: pwsh
         run: |
           $p = "SAPData/raw_sources.json"
