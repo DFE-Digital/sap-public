@@ -307,7 +307,8 @@ public class SecondarySchoolControllerTests
         var model = result.Model as AcademicPerformanceSubjectsEnteredViewModel;
         Assert.NotNull(model);
         Assert.Equal(fakeEstablishment.URN, model.URN);
-        Assert.Equal(fakeEstablishment.EstablishmentName, model.SchoolName);
+        Assert.Equal(fakeEstablishment.EstablishmentName, model.SchoolName);        
+        Assert.NotNull(model.CoreSubjects);
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);

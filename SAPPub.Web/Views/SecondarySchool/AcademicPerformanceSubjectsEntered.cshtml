@@ -15,6 +15,7 @@
     })
 
     <div class="govuk-grid-column-three-quarters">
+        <span id="school-name-caption" class="govuk-caption-l">@Model.SchoolName</span>
         <h1 class="govuk-heading-l">@ViewBag.Title</h1>
 
         <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
@@ -41,6 +42,30 @@
                 <p>If the qualification offered is not applicable, it means that pupils will study this subject but will not gain a qualification.</p>
             </govuk-details-text>
         </govuk-details>
+
+        @if (Model.CoreSubjects != null)
+        {
+            <table id="core-subjects-entered-table" class="govuk-table">
+                <caption class="govuk-table__caption govuk-table__caption--m">Core subjects entered</caption>
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header">Subject</th>
+                        <th scope="col" class="govuk-table__header">Qualification</th>
+                        <th scope="col" class="govuk-table__header">Percentage of pupils entered</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                    @foreach (var coreSubject in Model.CoreSubjects)
+                    {
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">@coreSubject.Subject</td>
+                            <td class="govuk-table__cell">@coreSubject.Qualification</td>
+                            <td class="govuk-table__cell">@coreSubject.PercentageOfPupilsEntered</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
 
         <govuk-pagination id="academic-performance-subjects-entered-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults" asp-all-route-data="@Model.RouteAttributes">Academic performance: English and maths results</govuk-pagination-previous>

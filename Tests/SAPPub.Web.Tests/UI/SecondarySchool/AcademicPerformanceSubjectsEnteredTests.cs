@@ -45,6 +45,23 @@ public class AcademicPerformanceSubjectsEnteredTests : BasePageTest
     }
 
     [Fact]
+    public async Task AcademicPerformanceSubjectsEnteredPage_Displays_SchoolName_Caption()
+    {
+        // Arrange
+        await GoToPageAysnc(_pageUrl);
+
+        // Act
+        var schoolNameCaptionLocator = Page.Locator("#school-name-caption");
+        var isVisible = await schoolNameCaptionLocator.IsVisibleAsync();
+        var schoolNameCaption = await schoolNameCaptionLocator.TextContentAsync();
+
+        // Assert
+        Assert.True(isVisible);
+        Assert.NotNull(schoolNameCaption);
+        Assert.Equal("Loreto High School Chorlton", schoolNameCaption);
+    }
+
+    [Fact]
     public async Task AcademicPerformanceSubjectsEnteredPage_Displays_VerticalNavigation()
     {
         var performancePage = "school/105574/Loreto%20High%20School%20Chorlton/secondary/academic-performance-pupil-progress";
@@ -93,6 +110,19 @@ public class AcademicPerformanceSubjectsEnteredTests : BasePageTest
 
         // Act
         var isVisible = await Page.Locator("#academic-performance-subjects-entered-pagination").IsVisibleAsync();
+
+        // Assert
+        Assert.True(isVisible);
+    }
+
+    [Fact]
+    public async Task AcademicPerformanceSubjectsEnteredPage_Displays_CoreSubjects()
+    {
+        // Arrange
+        await GoToPageAysnc(_pageUrl);
+
+        // Act
+        var isVisible = await Page.Locator("#core-subjects-entered-table").IsVisibleAsync();
 
         // Assert
         Assert.True(isVisible);
