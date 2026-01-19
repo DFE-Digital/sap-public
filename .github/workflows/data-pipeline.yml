@@ -117,6 +117,30 @@ jobs:
             --connection-string $env:AZURE_STORAGE_CONNECTION_STRING `
             --public-access off | Out-Null
 
+
+      # ==============================
+      # Debug json file parsing
+      # ==============================
+      - name: Debug raw_sources.json
+        shell: pwsh
+        run: |
+          $p = "SAPData/raw_sources.json"
+          Write-Host "PWD: $(Get-Location)"
+          Write-Host "Exists? " (Test-Path $p)
+          Write-Host "SHA256:"
+          if (Test-Path $p) { (Get-FileHash $p -Algorithm SHA256).Hash } else { "MISSING" }
+          Write-Host "First 300 chars:"
+          if (Test-Path $p) {
+            $c = Get-Content $p -Raw
+            $c.Substring(0, [Math]::Min(300, $c.Length)) | Write-Host
+          }
+          Write-Host "Type:"
+          if (Test-Path $p) {
+            $o = Get-Content $p -Raw | ConvertFrom-Json
+            $o.GetType().FullName | Write-Host
+          }
+
+
       # ==============================
       # 6. Download from HTTP sources -> version in Blob -> produce latest set
       #    - uses SAPData/raw_sources.json (27 safe URLs + 1 __SECRET_URL__)
@@ -431,7 +455,7 @@ jobs:
           exit 0
 
       # ==============================
-      # Remove after testing
+      # Remove after testing GIAS 
       # ==============================
       - name: Stop after GIAS test
         if: always()
