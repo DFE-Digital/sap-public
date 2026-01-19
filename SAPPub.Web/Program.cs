@@ -2,8 +2,10 @@ using GovUk.Frontend.AspNetCore;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.StaticFiles;
+using Npgsql;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Middleware;
+using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.Json;
@@ -55,6 +57,8 @@ public partial class Program
                .PersistKeysToFileSystem(new DirectoryInfo(@"/keys"))
                .SetApplicationName("SAPPub");
 
+        var connectionString = builder.Configuration.GetConnectionString("PostgresConnectionString");
+        builder.Services.AddTransient<IDbConnection>((sp) => new NpgsqlConnection(connectionString));
 
         builder.Services.AddDependencies();
 
