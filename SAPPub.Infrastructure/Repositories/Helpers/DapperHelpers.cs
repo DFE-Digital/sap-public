@@ -12,7 +12,8 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
         public static string GetQuery(Type entityName)
         {
 
-            return $"select * from v_{entityName.Name.ToLower()} Where \"PhaseOfEducationId\" = 4 LIMIT 100;";
+            //return $"select * from v_{entityName.Name.ToLower()} Where \"PhaseOfEducationId\" = 4 LIMIT 100;";
+            return $"select * from v_establishment Where \"PhaseOfEducationId\" = 4 LIMIT 100;";
         }
     }
 }
