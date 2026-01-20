@@ -15,11 +15,11 @@ namespace SAPPub.Web.Tests.Unit.Controllers;
 public class SecondarySchoolControllerTests
 {
     private readonly Mock<ILogger<SecondarySchoolController>> _mockLogger;
-    private readonly Mock<IEstablishmentService> _mockEstablishment = new();
-    private readonly Mock<IEstablishmentSubjectEntriesService> _mockEstablishmentSubjectEntriesService = new();
+    private readonly Mock<IEstablishmentService> _mockEstablishment;
+    private readonly Mock<IEstablishmentSubjectEntriesService> _mockEstablishmentSubjectEntriesService;
     private readonly SecondarySchoolController _controller;
 
-    private static readonly Establishment fakeEstablishment = new()
+    private readonly Establishment fakeEstablishment = new()
     {
         URN = "1",
         EstablishmentName = "Test School",
@@ -44,13 +44,13 @@ public class SecondarySchoolControllerTests
         ResourcedProvision = "Resourced provision",
     };
 
-    private static List<EstablishmentCoreSubjectEntries.SubjectEntry> CoreSubjects =
+    private List<EstablishmentCoreSubjectEntries.SubjectEntry> CoreSubjects =
                 new()
                 {
                     new () {
                         SubEntCore_Sub_Est_Current_Num = "English language",
                         SubEntCore_Qual_Est_Current_Num = "GCSE",
-                        SubEntCore_Entr_Est_Current_Num = 95.0, // CML TODO  which tier converts the numbers to percentages?
+                        SubEntCore_Entr_Est_Current_Num = 95.0,
                     },
                     new () {
                         SubEntCore_Sub_Est_Current_Num = "English literature",
@@ -80,7 +80,9 @@ public class SecondarySchoolControllerTests
     public SecondarySchoolControllerTests()
     {
         _mockLogger = new Mock<ILogger<SecondarySchoolController>>();
+        _mockEstablishment = new();
         _mockEstablishment.Setup(es => es.GetEstablishment(It.IsAny<string>())).Returns(fakeEstablishment);
+        _mockEstablishmentSubjectEntriesService = new();
         _mockEstablishmentSubjectEntriesService.Setup(s => s.GetSubjectEntriesByUrn(It.IsAny<string>()))
             .Returns((new() { SubjectEntries = CoreSubjects }, new Core.Entities.KS4.SubjectEntries.EstablishmentAdditionalSubjectEntries()));
 
