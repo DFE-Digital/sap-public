@@ -171,9 +171,11 @@ jobs:
 
           # Load sources
           $sourcesRaw = Get-Content $sourcesPathRepo -Raw | ConvertFrom-Json
-          if ($sourcesRaw -isnot [System.Array]) {
-            throw "raw_sources.json must be a JSON array."
-          }
+
+          if ($null -eq $sourcesRaw) { throw "raw_sources.json parsed to null." }
+          
+          # Normalize: if a single object is returned, wrap it into an array
+          if ($sourcesRaw -isnot [System.Array]) { $sourcesRaw = @($sourcesRaw) }
 
           # Normalize to { key, url } using composite key: Type_Subtype_Year
           $sources = @()
