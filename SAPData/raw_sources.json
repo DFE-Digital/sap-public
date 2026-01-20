@@ -3,7 +3,16 @@
     "Type": "All establishment data",
     "Subtype": "Metadata",
     "Year": "Current",
-    "Url": "__SECRET_URL__",
-    "SourceOrg": "GIAS"
+    "SourceOrg": "GIAS",
+    "DataSetId": "",
+    "Url": "__SECRET_URL__"
+  },
+  {
+    "Type": "KS4_Performance",
+    "Subtype": "Performance",
+    "Year": "Current",
+    "SourceOrg": "EES",
+    "DataSetId": "19e39901-a96c-be76-b9c2-6af54ae076d2",
+    "Url": ""
   }
 ]

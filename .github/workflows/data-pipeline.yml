@@ -119,7 +119,7 @@ jobs:
 
 
       # ==============================
-      # Debug json file parsing
+      # Debug json file parsing - remove later
       # ==============================
       - name: Download raw data files from Blob Storage
         shell: pwsh
@@ -142,13 +142,25 @@ jobs:
 
 
       # ==============================
-      # 6. Download from HTTP sources -> version in Blob -> produce latest set
-      #    - uses SAPData/raw_sources.json (27 safe URLs + 1 __SECRET_URL__)
-      #    - stores versions.json in Blob
-      #    - uploads <type>_<subtype>_<year>_v000001.csv, ...
-      #    - outputs:
+      # 6. Download source data and store latest versions in Blob
+      #
+      #    - Reads SAPData/raw_sources.json
+      #    - GIAS:
+      #        * Resolves dated file using {fileDatePostfix} template
+      #        * Walks backwards by day until a valid file is found
+      #
+      #    - EES:
+      #        * Queries API to get latest published dataset version
+      #        * Downloads CSV using datasetId + version
+      #
+      #    - Stores files in Blob using:
+      #        <type>_<subtype>_<year>_v<publisherVersion>.csv (EES)
+      #        publisher filename with date (GIAS)
+      #
+      #    - Tracks state in versions.json
+      #    - Outputs:
       #         changed=True/False
-      #         latest_files={"composite_key":"composite_key_v000123.csv",...}
+      #         latest_files={ key : filename }
       # ==============================
       - name: Version datasets from raw_sources.json and upload to Blob
         id: version
@@ -169,12 +181,14 @@ jobs:
           $workDir = "SAPData/Work/Versioning"
           New-Item -ItemType Directory -Force -Path $workDir | Out-Null
 
-          # Load sources
+          # -----------------------------
+          # Load sources (robust: array or single object)
+          # -----------------------------
           $sourcesRaw = Get-Content $sourcesPathRepo -Raw | ConvertFrom-Json
           if ($null -eq $sourcesRaw) { throw "raw_sources.json parsed to null." }
           if ($sourcesRaw -isnot [System.Array]) { $sourcesRaw = @($sourcesRaw) }
 
-          # Normalize to { key, url } using composite key: Type_Subtype_Year
+          # Normalize to objects with stable key + metadata
           $sources = @()
           foreach ($s in $sourcesRaw) {
             $type = [string]$s.Type
@@ -184,24 +198,33 @@ jobs:
 
             if ([string]::IsNullOrWhiteSpace($type) -or
                 [string]::IsNullOrWhiteSpace($sub)  -or
-                [string]::IsNullOrWhiteSpace($year) -or
-                [string]::IsNullOrWhiteSpace($u)) {
-              throw "Each entry in raw_sources.json must include Type, Subtype, Year, Url. Offending entry: $($s | ConvertTo-Json -Compress)"
+                [string]::IsNullOrWhiteSpace($year)) {
+              throw "Each entry in raw_sources.json must include Type, Subtype, Year. Offending entry: $($s | ConvertTo-Json -Compress)"
             }
+
+            # NOTE: We intentionally do NOT inject SENSITIVE_DATASET_URL here.
+            # GIAS is handled later so we can resolve the dated URL safely.
 
             $composite = "${type}_${sub}_${year}"
             $safeKey = ($composite -replace '[^a-zA-Z0-9_\-\.]', '_').ToLowerInvariant()
 
             $sources += [pscustomobject]@{
-              key = $safeKey
-              url = $u
+              key       = $safeKey
+              url       = $u
+              type      = $type
+              subtype   = $sub
+              year      = $year
+              sourceOrg = [string]$s.SourceOrg
+              dataSetId = [string]$s.DataSetId
             }
           }
 
           if ($sources.Count -eq 0) { throw "No sources found in raw_sources.json" }
           Write-Host "Loaded $($sources.Count) sources."
 
+          # -----------------------------
           # Load manifest from Blob (if present)
+          # -----------------------------
           $manifestPath = Join-Path $workDir "versions.json"
           $manifest = @{}
 
@@ -221,51 +244,85 @@ jobs:
             $manifest = Get-Content $manifestPath -Raw | ConvertFrom-Json -AsHashtable
           }
 
-          function Get-OriginalFileNameFromUrl([string]$u) {
-            # Use the last URL path segment (ignoring querystring). If empty, fallback.
+          # -----------------------------
+          # Helpers
+          # -----------------------------
+          function Get-LondonDateYyyyMmDd([int]$daysAgo = 0) {
+            $tz = [TimeZoneInfo]::FindSystemTimeZoneById("Europe/London")
+            $nowLondon = [TimeZoneInfo]::ConvertTime([DateTimeOffset]::UtcNow, $tz).DateTime.Date
+            return $nowLondon.AddDays(-$daysAgo).ToString("yyyyMMdd")
+          }
+
+          function Try-Head([string]$testUrl) {
             try {
-              $uri = [Uri]$u
-              $name = [IO.Path]::GetFileName($uri.AbsolutePath)
-              if ([string]::IsNullOrWhiteSpace($name)) { $name = "download.csv" }
-              return $name
+              $h = Invoke-WebRequest -Method Head -Uri $testUrl -UseBasicParsing
+              return @{
+                ok   = $true
+                etag = $h.Headers.ETag
+                len  = $h.Headers.'Content-Length'
+                lm   = $h.Headers.'Last-Modified'
+              }
             } catch {
-              # If URL isn't a valid URI, fallback to a safe name
-              return "download.csv"
+              return @{ ok = $false; etag = $null; len = $null; lm = $null }
             }
           }
 
-          function Split-Name([string]$fileName) {
-            $base = [IO.Path]::GetFileNameWithoutExtension($fileName)
-            $ext  = [IO.Path]::GetExtension($fileName)
-            if ([string]::IsNullOrWhiteSpace($ext)) { $ext = ".csv" }
-            return @{ base = $base; ext = $ext }
+          function Try-RangeGet([string]$testUrl) {
+            try {
+              $g = Invoke-WebRequest -Method Get -Uri $testUrl -Headers @{ Range = "bytes=0-0" } -UseBasicParsing
+              return @{
+                ok   = $true
+                etag = $g.Headers.ETag
+                len  = $g.Headers.'Content-Length'
+                lm   = $g.Headers.'Last-Modified'
+              }
+            } catch {
+              return @{ ok = $false; etag = $null; len = $null; lm = $null }
+            }
           }
 
+          function New-EesFileName([string]$type, [string]$subtype, [string]$year, [string]$version) {
+            $base = "${type}_${subtype}_${year}"
+            $safe = ($base -replace '[^a-zA-Z0-9_\-\.]', '_').ToLowerInvariant()
+            return "${safe}_v${version}.csv"
+          }
+
+          # -----------------------------
+          # Main loop
+          # -----------------------------
           $anyChanged = $false
           $latestFiles = @{}
 
           foreach ($src in $sources) {
-            $key = $src.key
-            $url = $src.url
+            $key  = [string]$src.key
+            $type = [string]$src.type
+            $sub  = [string]$src.subtype
+            $year = [string]$src.year
+            $org  = [string]$src.sourceOrg
+            $dsid = [string]$src.dataSetId
+            $url  = [string]$src.url
 
             if (-not $manifest.ContainsKey($key)) {
-              $manifest[$key] = @{ latest = 0; lastSignature = ""; lastSuccessDate = "" }
+              $manifest[$key] = @{ latest = 0; lastSignature = ""; lastFileName = "" }
             }
 
             $prevSig = [string]$manifest[$key].lastSignature
             $latest  = [int]$manifest[$key].latest
 
-            # -------------------------------------------------
-            # GIAS special handling (template URL + date postfix)
-            # -------------------------------------------------
             $forcedSignature = $null
-            $isGias = $false
+            $finalName = $null
 
-            if ($url -eq "__SECRET_URL__") {
+            # -------------------------------------------------
+            # GIAS special handling
+            # - url in raw_sources can be "__SECRET_URL__" or SourceOrg="GIAS"
+            # - template URL comes from SENSITIVE_DATASET_URL and contains {fileDatePostfix}
+            # - preserve original dated filename (no extra version suffix)
+            # -------------------------------------------------
+            if ($org -eq "GIAS" -or $url -eq "__SECRET_URL__") {
               $isGias = $true
 
               if ([string]::IsNullOrWhiteSpace($env:SENSITIVE_DATASET_URL)) {
-                throw "raw_sources.json contains __SECRET_URL__ but SENSITIVE_DATASET_URL secret is not set."
+                throw "GIAS requires SENSITIVE_DATASET_URL secret."
               }
 
               $template = $env:SENSITIVE_DATASET_URL
@@ -273,41 +330,10 @@ jobs:
                 throw "SENSITIVE_DATASET_URL must include {fileDatePostfix} placeholder."
               }
 
-              function Get-LondonDateYyyyMmDd([int]$daysAgo = 0) {
-                $tz = [TimeZoneInfo]::FindSystemTimeZoneById("Europe/London")
-                $nowLondon = [TimeZoneInfo]::ConvertTime([DateTimeOffset]::UtcNow, $tz).DateTime.Date
-                return $nowLondon.AddDays(-$daysAgo).ToString("yyyyMMdd")
-              }
-
-              function Try-Get-Headers([string]$testUrl) {
-                $etag = $null; $len = $null; $lm = $null
-                try {
-                  $h = Invoke-WebRequest -Method Head -Uri $testUrl -UseBasicParsing
-                  $etag = $h.Headers.ETag
-                  $len  = $h.Headers.'Content-Length'
-                  $lm   = $h.Headers.'Last-Modified'
-                  return @{ ok = $true; etag = $etag; len = $len; lm = $lm }
-                } catch {
-                  return @{ ok = $false; etag = $null; len = $null; lm = $null }
-                }
-              }
-
-              function Test-Url-200([string]$testUrl) {
-                $hdr = Try-Get-Headers $testUrl
-                if ($hdr.ok) { return @{ ok = $true; etag = $hdr.etag; len = $hdr.len; lm = $hdr.lm } }
-
-                try {
-                  $g = Invoke-WebRequest -Method Get -Uri $testUrl -Headers @{ Range = "bytes=0-0" } -UseBasicParsing
-                  return @{ ok = $true; etag = $g.Headers.ETag; len = $null; lm = $g.Headers.'Last-Modified' }
-                } catch {
-                  return @{ ok = $false; etag = $null; len = $null; lm = $null }
-                }
-              }
-
               # Look back day-by-day starting at today.
               # Cap at last successful date if present, otherwise 30 days.
               $maxLookbackDays = 30
-              if ($manifest.ContainsKey($key) -and $manifest[$key].ContainsKey("lastSuccessDate")) {
+              if ($manifest[$key].ContainsKey("lastSuccessDate")) {
                 $lastSuccess = [string]$manifest[$key].lastSuccessDate
                 if ($lastSuccess -match '^\d{8}$') {
                   $tz = [TimeZoneInfo]::FindSystemTimeZoneById("Europe/London")
@@ -326,7 +352,9 @@ jobs:
                 $d = Get-LondonDateYyyyMmDd -daysAgo $i
                 $candidate = $template.Replace("{fileDatePostfix}", $d)
 
-                $hdr = Test-Url-200 $candidate
+                $hdr = Try-Head $candidate
+                if (-not $hdr.ok) { $hdr = Try-RangeGet $candidate }
+
                 if ($hdr.ok) {
                   $resolvedDate = $d
                   $resolvedUrl = $candidate
@@ -340,61 +368,84 @@ jobs:
               }
 
               $url = $resolvedUrl
+              $manifest[$key].lastSuccessDate = $resolvedDate
 
-              # Override signature so same-date updates are detected
+              # Preserve original filename exactly (the dated filename in the URL)
+              $finalName = [System.IO.Path]::GetFileName($url)
+
+              # Signature includes date + headers
               $parts = @("giasDate:$resolvedDate")
               if ($resolvedHdr.etag) { $parts += "etag:$($resolvedHdr.etag)" }
               if ($resolvedHdr.lm)   { $parts += "lm:$($resolvedHdr.lm)" }
               if ($resolvedHdr.len)  { $parts += "len:$($resolvedHdr.len)" }
               $forcedSignature = ($parts -join "|")
-
-              $manifest[$key].lastSuccessDate = $resolvedDate
             }
 
             # -------------------------------------------------
-            # Determine original filename to preserve
+            # EES handling (publisher versions)
+            # - use DataSetId -> latest Published version -> download csv
+            # - store file as Type_Subtype_Year_v<PublisherVersion>.csv
             # -------------------------------------------------
-            $originalName = Get-OriginalFileNameFromUrl $url
-            $nameParts = Split-Name $originalName
-            $origBase = $nameParts.base
-            $origExt  = $nameParts.ext
+            if (-not $finalName -and $org -eq "EES" -and -not [string]::IsNullOrWhiteSpace($dsid)) {
+              $versionsUrl = "https://api.education.gov.uk/statistics/v1/data-sets/$dsid/versions"
+              $versions = Invoke-WebRequest -Uri $versionsUrl -UseBasicParsing |
+                Select-Object -ExpandProperty Content | ConvertFrom-Json
+
+              $published = @($versions.results | Where-Object { $_.status -eq "Published" })
+              if ($published.Count -eq 0) { throw "No Published versions returned for EES datasetId '$dsid'." }
+
+              $latestPub = $published | Sort-Object { [DateTimeOffset]$_.published } -Descending | Select-Object -First 1
+              $dataSetVersion = [string]$latestPub.version
+
+              $url = "https://api.education.gov.uk/statistics/v1/data-sets/$dsid/csv?dataSetVersion=$dataSetVersion"
+
+              $forcedSignature = "ees:$dsid|version:$dataSetVersion"
+              $finalName = New-EesFileName -type $type -subtype $sub -year $year -version $dataSetVersion
+
+              $manifest[$key].eesLatestVersion = $dataSetVersion
+            }
 
             # -------------------------------------------------
-            # Generic signature logic (EES + anything else)
+            # Generic signature (fallback)
             # -------------------------------------------------
-            $etag = $null
-            $len = $null
-            $lm = $null
-            $headOk = $false
+            $signature = $null
 
-            try {
-              $head = Invoke-WebRequest -Method Head -Uri $url -UseBasicParsing
-              $etag = $head.Headers.ETag
-              $len  = $head.Headers.'Content-Length'
-              $lm   = $head.Headers.'Last-Modified'
-              $headOk = $true
-            } catch {
+            if ($forcedSignature) {
+              $signature = $forcedSignature
+            } else {
+              $etag = $null
+              $len = $null
+              $lm = $null
               $headOk = $false
-            }
 
-            if (-not $headOk -or (-not $etag -and -not $lm -and -not $len)) {
               try {
-                $resp = Invoke-WebRequest -Method Get -Uri $url -Headers @{ Range = "bytes=0-0" } -UseBasicParsing
-                if (-not $etag) { $etag = $resp.Headers.ETag }
-                if (-not $len)  { $len  = $resp.Headers.'Content-Length' }
-                if (-not $lm)   { $lm   = $resp.Headers.'Last-Modified' }
+                $head = Invoke-WebRequest -Method Head -Uri $url -UseBasicParsing
+                $etag = $head.Headers.ETag
+                $len  = $head.Headers.'Content-Length'
+                $lm   = $head.Headers.'Last-Modified'
+                $headOk = $true
               } catch {
-                # We'll fall back to full download if needed
+                $headOk = $false
               }
+
+              if (-not $headOk -or (-not $etag -and -not $lm -and -not $len)) {
+                try {
+                  $resp = Invoke-WebRequest -Method Get -Uri $url -Headers @{ Range = "bytes=0-0" } -UseBasicParsing
+                  if (-not $etag) { $etag = $resp.Headers.ETag }
+                  if (-not $len)  { $len  = $resp.Headers.'Content-Length' }
+                  if (-not $lm)   { $lm   = $resp.Headers.'Last-Modified' }
+                } catch {
+                  # We'll fall back to download if needed
+                }
+              }
+
+              $sigParts = @()
+              if ($etag) { $sigParts += "etag:$etag" }
+              if ($lm)   { $sigParts += "lm:$lm" }
+              # ignore tiny/likely-wrong lengths (e.g. Range responses returning 1 byte)
+              if ($len -and [int64]$len -gt 1024) { $sigParts += "len:$len" }
+              $signature = ($sigParts -join "|")
             }
-
-            $sigParts = @()
-            if ($etag) { $sigParts += "etag:$etag" }
-            if ($lm)   { $sigParts += "lm:$lm" }
-            if ($len -and [int64]$len -gt 1024) { $sigParts += "len:$len" }
-            $signature = ($sigParts -join "|")
-
-            if ($forcedSignature) { $signature = $forcedSignature }
 
             $needDownloadToDecide = [string]::IsNullOrWhiteSpace($signature)
 
@@ -411,45 +462,8 @@ jobs:
                 throw "Failed downloading dataset '$key' from source (URL hidden). $($_.Exception.Message)"
               }
 
-              $lenActual = (Get-Item $tmpPath).Length
-              if (-not $etag -and -not $lm) { $lm = (Get-Date).ToUniversalTime().ToString("r") }
-
-              if (-not $forcedSignature) {
-                $sigParts = @()
-                if ($etag) { $sigParts += "etag:$etag" }
-                if ($lm)   { $sigParts += "lm:$lm" }
-                $sigParts += "len:$lenActual"
-                $signature = ($sigParts -join "|")
-              }
-
-              # If signature matches previous after download, treat as unchanged
-              if ($signature -eq $prevSig -and -not $needDownloadToDecide -and ($latest -gt 0)) {
-                Remove-Item -Force $tmpPath
-
-                if ($isGias) {
-                  $finalName = $originalName
-                } else {
-                  $v = $latest.ToString("D6")
-                  $finalName = "${origBase}_v$v${origExt}"
-                }
-
-                $latestFiles[$key] = $finalName
-                Write-Host "UNCHANGED(after download): $key remains $finalName"
-                continue
-              }
-
-              $anyChanged = $true
-
-              if ($isGias) {
-                # Preserve original dated filename (no numeric version suffix)
-                $finalName = $originalName
-              } else {
-                # Increment numeric version but preserve original base name
-                $newVersion = $latest + 1
-                $v = $newVersion.ToString("D6")
-                $finalName = "${origBase}_v$v${origExt}"
-                $manifest[$key].latest = $newVersion
-              }
+              # Default naming if neither GIAS nor EES set it
+              if (-not $finalName) { $finalName = "${key}.csv" }
 
               $finalPath = Join-Path $workDir $finalName
               Move-Item -Force $tmpPath $finalPath
@@ -461,27 +475,30 @@ jobs:
                 --connection-string $conn `
                 --overwrite | Out-Null
 
+              $anyChanged = $true
+              $manifest[$key].latest = ($latest + 1)
               $manifest[$key].lastSignature = $signature
+              $manifest[$key].lastFileName = $finalName
               $latestFiles[$key] = $finalName
 
               Write-Host "UPDATED: $key -> $finalName"
             }
             else {
-              # Unchanged: compute the expected latest blob name
-              if ($isGias) {
-                $finalName = $originalName
-              } else {
-                $v = $latest.ToString("D6")
-                $finalName = "${origBase}_v$v${origExt}"
+              # unchanged - keep last known file name
+              $lastFile = [string]$manifest[$key].lastFileName
+              if ([string]::IsNullOrWhiteSpace($lastFile)) {
+                # best-effort fallback
+                if ($finalName) { $lastFile = $finalName } else { $lastFile = "${key}.csv" }
               }
 
-              $latestFiles[$key] = $finalName
-              Write-Host "UNCHANGED: $key remains $finalName"
+              $latestFiles[$key] = $lastFile
+              Write-Host "UNCHANGED: $key remains $lastFile"
             }
           }
 
+          # Upload updated manifest if changed
           if ($anyChanged) {
-            $manifest | ConvertTo-Json -Depth 10 | Set-Content -Path $manifestPath -Encoding UTF8
+            $manifest | ConvertTo-Json -Depth 30 | Set-Content -Path $manifestPath -Encoding UTF8
             az storage blob upload `
               --container-name $container `
               --name $manifestBlobName `
@@ -490,12 +507,10 @@ jobs:
               --overwrite | Out-Null
           }
 
+          # Outputs
           "changed=$anyChanged" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
-          $latestFilesJson = ($latestFiles | ConvertTo-Json -Depth 5 -Compress)
+          $latestFilesJson = ($latestFiles | ConvertTo-Json -Depth 10 -Compress)
           "latest_files=$latestFilesJson" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
-
-
-
 
       # ==============================
       # 7. Early exit if unchanged
