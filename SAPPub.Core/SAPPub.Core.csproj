@@ -10,4 +10,8 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Interfaces\Repositories\KS4\SubjectEntries\" />
+  </ItemGroup>
+
 </Project>

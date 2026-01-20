@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SAPPub.Core.Interfaces.Services;
+using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.Charts;
 using SAPPub.Web.Models.SecondarySchool;
@@ -58,8 +59,8 @@ namespace SAPPub.Web.Controllers
         [Route("school/{urn}/{schoolName}/secondary/academic-performance-pupil-progress", Name = RouteConstants.SecondaryAcademicPerformancePupilProgress)]
         public IActionResult AcademicPerformancePupilProgress(string urn, string schoolName)
         {
-            var model = new AcademicPerformancePupilProgressViewModel 
-            { 
+            var model = new AcademicPerformancePupilProgressViewModel
+            {
                 URN = urn,
                 SchoolName = schoolName,
             };
@@ -89,16 +90,16 @@ namespace SAPPub.Web.Controllers
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/academic-performance-subjects-entered", Name = RouteConstants.SecondaryAcademicPerformanceSubjectsEntered)]
-        public IActionResult AcademicPerformanceSubjectsEntered(string urn, string schoolName)
+        public IActionResult AcademicPerformanceSubjectsEntered(string urn, string schoolName, [FromServices] IEstablishmentSubjectEntriesService subjectEntriesService)
         {
             var establishmentDetails = _establishmentService.GetEstablishment(urn);
-
+            var (coreSubjectEntries, additionalSubjectEntries) = subjectEntriesService.GetSubjectEntriesByUrn(urn);
             if (establishmentDetails?.URN == null)
             {
                 return View("Error");
             }
 
-            var model = AcademicPerformanceSubjectsEnteredViewModel.Map(establishmentDetails);
+            var model = AcademicPerformanceSubjectsEnteredViewModel.Map(establishmentDetails, coreSubjectEntries, additionalSubjectEntries);
             return View(model);
         }
 
