@@ -23,6 +23,7 @@ namespace SAPPub.Web.Controllers
         private IEnglandDestinationsService _englandDestinationsService;
         private IEnglandPerformanceService _englandPerformanceService;
         private IEstablishmentWorkforceService _workforceService;
+        private ITESTablishmentService _testablishmentService;
 
         public DataController(
             ILADestinationsService ladestinationsService,
@@ -35,7 +36,8 @@ namespace SAPPub.Web.Controllers
             IEstablishmentService establishmentService,
             IEstablishmentWorkforceService workforceService,
             IEnglandAbsenceService englandAbsenceService,
-            ILAAbsenceService laAbsenceService
+            ILAAbsenceService laAbsenceService,
+            ITESTablishmentService testablishmentService
             )
         {
 
@@ -54,11 +56,19 @@ namespace SAPPub.Web.Controllers
             _LAperformanceService = laperformanceService;
             _englandDestinationsService = englandDestinationsService;
             _englandPerformanceService = englandPerformanceService;
+
+            _testablishmentService = testablishmentService;
         }
 
         public IActionResult Index()
         {
             var data = _service.GetAllEstablishments();
+            return View(data);
+        }
+
+        public IActionResult TestIndex()
+        {
+            var data = _testablishmentService.GetAllEstablishments();
             return View(data);
         }
 

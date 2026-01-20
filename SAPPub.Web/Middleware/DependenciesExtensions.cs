@@ -34,6 +34,12 @@ namespace SAPPub.Web.Middleware
     {
         public static void AddDependencies(this IServiceCollection services)
         {
+            // Just testing
+            services.AddTransient<IGenericRepository<TESTablishment>, DapperRepository<TESTablishment>>();
+            services.AddTransient<ITESTablishmentRepository, TESTablishmentRepository>();
+            services.AddTransient<ITESTablishmentService, TESTablishmentService>();
+
+
             services.AddTransient<IGenericRepository<Establishment>, JSONRepository<Establishment>>();
             services.AddTransient<IEstablishmentRepository, EstablishmentRepository>();
             services.AddTransient<IEstablishmentService, EstablishmentService>();
