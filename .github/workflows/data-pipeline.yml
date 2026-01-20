@@ -319,6 +319,8 @@ jobs:
             # - preserve original dated filename (no extra version suffix)
             # -------------------------------------------------
             if ($org -eq "GIAS" -or $url -eq "__SECRET_URL__") {
+              $isGias = $true
+
               if ([string]::IsNullOrWhiteSpace($env:SENSITIVE_DATASET_URL)) {
                 throw "GIAS requires SENSITIVE_DATASET_URL secret."
               }
@@ -446,10 +448,14 @@ jobs:
             }
 
             $needDownloadToDecide = [string]::IsNullOrWhiteSpace($signature)
+
+            # If GIAS, we *do not* use numeric versions for filenames.
+            # We still version logically via signature in manifest (lastSignature), and store the dated file name.
             $isChanged = ($latest -eq 0) -or $needDownloadToDecide -or ($signature -ne $prevSig)
 
             if ($isChanged) {
-              $tmpPath = Join-Path $workDir "${key}.tmp.csv"
+              # Download full content now
+              $tmpPath = Join-Path $workDir "${key}.tmp"
               try {
                 Invoke-WebRequest -Uri $url -OutFile $tmpPath -UseBasicParsing
               } catch {
