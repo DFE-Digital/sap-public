@@ -171,10 +171,7 @@ jobs:
 
           # Load sources
           $sourcesRaw = Get-Content $sourcesPathRepo -Raw | ConvertFrom-Json
-
           if ($null -eq $sourcesRaw) { throw "raw_sources.json parsed to null." }
-          
-          # Normalize: if a single object is returned, wrap it into an array
           if ($sourcesRaw -isnot [System.Array]) { $sourcesRaw = @($sourcesRaw) }
 
           # Normalize to { key, url } using composite key: Type_Subtype_Year
@@ -224,6 +221,26 @@ jobs:
             $manifest = Get-Content $manifestPath -Raw | ConvertFrom-Json -AsHashtable
           }
 
+          function Get-OriginalFileNameFromUrl([string]$u) {
+            # Use the last URL path segment (ignoring querystring). If empty, fallback.
+            try {
+              $uri = [Uri]$u
+              $name = [IO.Path]::GetFileName($uri.AbsolutePath)
+              if ([string]::IsNullOrWhiteSpace($name)) { $name = "download.csv" }
+              return $name
+            } catch {
+              # If URL isn't a valid URI, fallback to a safe name
+              return "download.csv"
+            }
+          }
+
+          function Split-Name([string]$fileName) {
+            $base = [IO.Path]::GetFileNameWithoutExtension($fileName)
+            $ext  = [IO.Path]::GetExtension($fileName)
+            if ([string]::IsNullOrWhiteSpace($ext)) { $ext = ".csv" }
+            return @{ base = $base; ext = $ext }
+          }
+
           $anyChanged = $false
           $latestFiles = @{}
 
@@ -232,7 +249,7 @@ jobs:
             $url = $src.url
 
             if (-not $manifest.ContainsKey($key)) {
-              $manifest[$key] = @{ latest = 0; lastSignature = "" }
+              $manifest[$key] = @{ latest = 0; lastSignature = ""; lastSuccessDate = "" }
             }
 
             $prevSig = [string]$manifest[$key].lastSignature
@@ -242,7 +259,11 @@ jobs:
             # GIAS special handling (template URL + date postfix)
             # -------------------------------------------------
             $forcedSignature = $null
+            $isGias = $false
+
             if ($url -eq "__SECRET_URL__") {
+              $isGias = $true
+
               if ([string]::IsNullOrWhiteSpace($env:SENSITIVE_DATASET_URL)) {
                 throw "raw_sources.json contains __SECRET_URL__ but SENSITIVE_DATASET_URL secret is not set."
               }
@@ -272,7 +293,6 @@ jobs:
               }
 
               function Test-Url-200([string]$testUrl) {
-                # Prefer HEAD; fallback to tiny GET
                 $hdr = Try-Get-Headers $testUrl
                 if ($hdr.ok) { return @{ ok = $true; etag = $hdr.etag; len = $hdr.len; lm = $hdr.lm } }
 
@@ -294,7 +314,7 @@ jobs:
                   $nowLondon = [TimeZoneInfo]::ConvertTime([DateTimeOffset]::UtcNow, $tz).DateTime.Date
                   $lastDt = [DateTime]::ParseExact($lastSuccess, "yyyyMMdd", [System.Globalization.CultureInfo]::InvariantCulture)
                   $d = [int]($nowLondon - $lastDt).TotalDays
-                  if ($d -gt 0) { $maxLookbackDays = [Math]::Min([Math]::Max($d, 1), 90) } # cap sanity
+                  if ($d -gt 0) { $maxLookbackDays = [Math]::Min([Math]::Max($d, 1), 90) }
                 }
               }
 
@@ -319,7 +339,6 @@ jobs:
                 throw "GIAS file not found for today or last $maxLookbackDays days (URL hidden)."
               }
 
-              # Use resolved dated URL for download
               $url = $resolvedUrl
 
               # Override signature so same-date updates are detected
@@ -329,9 +348,16 @@ jobs:
               if ($resolvedHdr.len)  { $parts += "len:$($resolvedHdr.len)" }
               $forcedSignature = ($parts -join "|")
 
-              # Record last successful date (persisted when manifest uploads)
               $manifest[$key].lastSuccessDate = $resolvedDate
             }
+
+            # -------------------------------------------------
+            # Determine original filename to preserve
+            # -------------------------------------------------
+            $originalName = Get-OriginalFileNameFromUrl $url
+            $nameParts = Split-Name $originalName
+            $origBase = $nameParts.base
+            $origExt  = $nameParts.ext
 
             # -------------------------------------------------
             # Generic signature logic (EES + anything else)
@@ -371,14 +397,17 @@ jobs:
             if ($forcedSignature) { $signature = $forcedSignature }
 
             $needDownloadToDecide = [string]::IsNullOrWhiteSpace($signature)
+
+            # If GIAS, we *do not* use numeric versions for filenames.
+            # We still version logically via signature in manifest (lastSignature), and store the dated file name.
             $isChanged = ($latest -eq 0) -or $needDownloadToDecide -or ($signature -ne $prevSig)
 
             if ($isChanged) {
-              $tmpPath = Join-Path $workDir "${key}.tmp.csv"
+              # Download full content now
+              $tmpPath = Join-Path $workDir "${key}.tmp"
               try {
                 Invoke-WebRequest -Uri $url -OutFile $tmpPath -UseBasicParsing
               } catch {
-                # avoid leaking sensitive URL in logs
                 throw "Failed downloading dataset '$key' from source (URL hidden). $($_.Exception.Message)"
               }
 
@@ -393,21 +422,36 @@ jobs:
                 $signature = ($sigParts -join "|")
               }
 
+              # If signature matches previous after download, treat as unchanged
               if ($signature -eq $prevSig -and -not $needDownloadToDecide -and ($latest -gt 0)) {
                 Remove-Item -Force $tmpPath
-                $v = $latest.ToString("D6")
-                $finalName = "${key}_v$v.csv"
+
+                if ($isGias) {
+                  $finalName = $originalName
+                } else {
+                  $v = $latest.ToString("D6")
+                  $finalName = "${origBase}_v$v${origExt}"
+                }
+
                 $latestFiles[$key] = $finalName
                 Write-Host "UNCHANGED(after download): $key remains $finalName"
                 continue
               }
 
               $anyChanged = $true
-              $newVersion = $latest + 1
-              $v = $newVersion.ToString("D6")
-              $finalName = "${key}_v$v.csv"
-              $finalPath = Join-Path $workDir $finalName
 
+              if ($isGias) {
+                # Preserve original dated filename (no numeric version suffix)
+                $finalName = $originalName
+              } else {
+                # Increment numeric version but preserve original base name
+                $newVersion = $latest + 1
+                $v = $newVersion.ToString("D6")
+                $finalName = "${origBase}_v$v${origExt}"
+                $manifest[$key].latest = $newVersion
+              }
+
+              $finalPath = Join-Path $workDir $finalName
               Move-Item -Force $tmpPath $finalPath
 
               az storage blob upload `
@@ -417,15 +461,20 @@ jobs:
                 --connection-string $conn `
                 --overwrite | Out-Null
 
-              $manifest[$key].latest = $newVersion
               $manifest[$key].lastSignature = $signature
               $latestFiles[$key] = $finalName
 
               Write-Host "UPDATED: $key -> $finalName"
             }
             else {
-              $v = $latest.ToString("D6")
-              $finalName = "${key}_v$v.csv"
+              # Unchanged: compute the expected latest blob name
+              if ($isGias) {
+                $finalName = $originalName
+              } else {
+                $v = $latest.ToString("D6")
+                $finalName = "${origBase}_v$v${origExt}"
+              }
+
               $latestFiles[$key] = $finalName
               Write-Host "UNCHANGED: $key remains $finalName"
             }
@@ -444,6 +493,7 @@ jobs:
           "changed=$anyChanged" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
           $latestFilesJson = ($latestFiles | ConvertTo-Json -Depth 5 -Compress)
           "latest_files=$latestFilesJson" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
 
 
 
@@ -468,7 +518,7 @@ jobs:
       # ==============================
       # 8. Download the *latest versioned* CSVs from Blob for the generator/ETL
       # ==============================
-      - name: Download latest versioned CSVs from Blob Storage
+      - name: Download latest versioned files from Blob Storage
         if: steps.version.outputs.changed == 'True'
         shell: pwsh
         env:
@@ -477,11 +527,19 @@ jobs:
           $ErrorActionPreference = "Stop"
           $rawDir = "SAPData/DataMap/SourceFiles"
           New-Item -ItemType Directory -Force -Path $rawDir | Out-Null
-          Remove-Item "$rawDir/*.csv" -Force -ErrorAction SilentlyContinue
+          Remove-Item "$rawDir/*" -Force -Recurse -ErrorAction SilentlyContinue
 
           $latest = $env:LATEST_FILES | ConvertFrom-Json -AsHashtable
+          if (-not $latest -or $latest.Keys.Count -eq 0) {
+            throw "LATEST_FILES output was empty."
+          }
+
           foreach ($k in $latest.Keys) {
-            $blob = $latest[$k]
+            $blob = [string]$latest[$k]
+            if ([string]::IsNullOrWhiteSpace($blob)) {
+              throw "LATEST_FILES contained an empty blob name for key '$k'"
+            }
+
             $dest = Join-Path $rawDir $blob
 
             az storage blob download `
@@ -492,45 +550,45 @@ jobs:
               --overwrite true | Out-Null
           }
 
-          $files = Get-ChildItem $rawDir -Filter *.csv
-          if (-not $files) { throw "No CSV files were downloaded from Blob to $rawDir." }
+          $files = Get-ChildItem $rawDir -File
+          if (-not $files) { throw "No files were downloaded from Blob to $rawDir." }
 
-          Write-Host "Downloaded latest versioned CSVs:"
+          Write-Host "Downloaded latest files:"
           $files | Select-Object Name, Length
 
+
       # ==============================
-      # 8b. Normalise filenames for generator (strip _v000001 suffix)
+      # 8b. Normalise filenames for generator (strip _v000001 suffix where present)
       # ==============================
-      - name: Normalise CSV filenames (strip version suffix)
+      - name: Normalise filenames for generator (strip _v000001 suffix where present)
         if: steps.version.outputs.changed == 'True'
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
           $rawDir = "SAPData/DataMap/SourceFiles"
 
-          $files = Get-ChildItem $rawDir -Filter *.csv
+          $files = Get-ChildItem $rawDir -Filter *.csv -File
           if (-not $files) {
             throw "No CSV files found in $rawDir"
           }
 
           foreach ($f in $files) {
-            # Match: <stable>_v000123.csv
+            # Only strip numeric version suffix if present: <name>_v000123.csv
             if ($f.BaseName -match '^(?<stable>.+)_v\d{6}$') {
-              $stableName = $Matches['stable'] + ".csv"
+              $stableName = $Matches['stable'] + $f.Extension
               $dest = Join-Path $rawDir $stableName
 
-              # Overwrite stable file
+              # Copy versioned -> stable (overwrite stable)
               Copy-Item -Force $f.FullName $dest
-            } else {
-              # If a file doesn't match the pattern, keep as-is
-              # (or throw if you want strictness)
-              Write-Host "Skipping (no version suffix): $($f.Name)"
             }
           }
 
-          Write-Host "Normalised files present:"
-          Get-ChildItem $rawDir -Filter *.csv | Select-Object Name, Length
-          Get-ChildItem $rawDir -Filter '*_v??????.csv' | Remove-Item -Force
+          Write-Host "Normalised files present (post-copy):"
+          Get-ChildItem $rawDir -Filter *.csv -File | Select-Object Name, Length
+
+          # Remove ONLY the numeric-versioned copies; keep everything else (e.g. GIAS dated files)
+          Get-ChildItem $rawDir -Filter '*_v??????.csv' -File | Remove-Item -Force
+
 
       # ==============================
       # 9. Build + Run SQL generator
