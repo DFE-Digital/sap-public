@@ -11,24 +11,24 @@ public class EstablishmentSubjectEntriesRepository : IEstablishmentSubjectEntrie
                     new () {
                         SubEntCore_Sub_Est_Current_Num = "English language",
                         SubEntCore_Qual_Est_Current_Num = "GCSE",
-                        SubEntCore_Entr_Est_Current_Num = 95.0,
+                        SubEntCore_Entr_Est_Current_Num = 95.01,
                     },
                     new () {
                         SubEntCore_Sub_Est_Current_Num = "English literature",
                         SubEntCore_Qual_Est_Current_Num = "GCSE",
-                        SubEntCore_Entr_Est_Current_Num = 90,
+                        SubEntCore_Entr_Est_Current_Num = 90.6,
                     },
                     new()
                     {
                         SubEntCore_Sub_Est_Current_Num = "Mathematics",
                         SubEntCore_Qual_Est_Current_Num = "GCSE",
-                        SubEntCore_Entr_Est_Current_Num = 97,
+                        SubEntCore_Entr_Est_Current_Num = 97.76,
                     },
                     new()
                     {
                         SubEntCore_Sub_Est_Current_Num = "Science: Double Award",
                         SubEntCore_Qual_Est_Current_Num = "GCSE",
-                        SubEntCore_Entr_Est_Current_Num = 55,
+                        SubEntCore_Entr_Est_Current_Num = 55.67,
                     },
                     new()
                     {
@@ -44,18 +44,18 @@ public class EstablishmentSubjectEntriesRepository : IEstablishmentSubjectEntrie
                     new () {
                         SubEntAdd_Sub_Est_Current_Num = "Drama",
                         SubEntAdd_Qual_Est_Current_Num = "GCSE",
-                        SubEntAdd_Entr_Est_Current_Num = 95,
+                        SubEntAdd_Entr_Est_Current_Num = 95.45,
                     },
                     new () {
                         SubEntAdd_Sub_Est_Current_Num = "Geography",
                         SubEntAdd_Qual_Est_Current_Num = "GCSE",
-                        SubEntAdd_Entr_Est_Current_Num = 90,
+                        SubEntAdd_Entr_Est_Current_Num = 90.5,
                     },
                     new()
                     {
                         SubEntAdd_Sub_Est_Current_Num = "Music",
                         SubEntAdd_Qual_Est_Current_Num = "GCSE",
-                        SubEntAdd_Entr_Est_Current_Num = 97,
+                        SubEntAdd_Entr_Est_Current_Num = 97.4567,
                     }
         };
 
