@@ -11,7 +11,6 @@ namespace SAPPub.Web.Models.SecondarySchool
 
         public static AcademicPerformanceSubjectsEnteredViewModel Map(Establishment establishment, EstablishmentCoreSubjectEntries coreSubjectEntries, EstablishmentAdditionalSubjectEntries additionalSubjectEntries)
         {
-            // CML TODO : is it OK that the view mapper just knows these are percentages?
             var coreSubjects = coreSubjectEntries.SubjectEntries.Select(se => new SubjectsEnteredViewModel
             {
                 Subject = se.SubEntCore_Sub_Est_Current_Num ?? "Unknown Subject",

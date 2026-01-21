@@ -16,7 +16,7 @@ public class SecondarySchoolControllerTests
 {
     private readonly Mock<ILogger<SecondarySchoolController>> _mockLogger;
     private readonly Mock<IEstablishmentService> _mockEstablishment;
-    private readonly Mock<IEstablishmentSubjectEntriesService> _mockEstablishmentSubjectEntriesService;
+    private readonly Mock<IEstablishmentSubjectEntriesService> _mockEstablishmentSubjectEntriesService = new();
     private readonly SecondarySchoolController _controller;
 
     private readonly Establishment fakeEstablishment = new()
@@ -50,30 +50,27 @@ public class SecondarySchoolControllerTests
                     new () {
                         SubEntCore_Sub_Est_Current_Num = "English language",
                         SubEntCore_Qual_Est_Current_Num = "GCSE",
-                        SubEntCore_Entr_Est_Current_Num = 95.0,
+                        SubEntCore_Entr_Est_Current_Num = 95,
                     },
                     new () {
                         SubEntCore_Sub_Est_Current_Num = "English literature",
                         SubEntCore_Qual_Est_Current_Num = "GCSE",
                         SubEntCore_Entr_Est_Current_Num = 90,
+                    }
+                };
+
+    private List<EstablishmentAdditionalSubjectEntries.SubjectEntry> AdditionalSubjects =
+                new()
+                {
+                    new () {
+                        SubEntAdd_Sub_Est_Current_Num = "Geography",
+                        SubEntAdd_Qual_Est_Current_Num = "GCSE",
+                        SubEntAdd_Entr_Est_Current_Num = 45,
                     },
-                    new()
-                    {
-                        SubEntCore_Sub_Est_Current_Num = "Mathematics",
-                        SubEntCore_Qual_Est_Current_Num = "GCSE",
-                        SubEntCore_Entr_Est_Current_Num = 97,
-                    },
-                    new()
-                    {
-                        SubEntCore_Sub_Est_Current_Num = "Science: Double Award",
-                        SubEntCore_Qual_Est_Current_Num = "GCSE",
-                        SubEntCore_Entr_Est_Current_Num = 55,
-                    },
-                    new()
-                    {
-                        SubEntCore_Sub_Est_Current_Num = "Biology",
-                        SubEntCore_Qual_Est_Current_Num = "GCSE",
-                        SubEntCore_Entr_Est_Current_Num = 76,
+                    new () {
+                        SubEntAdd_Sub_Est_Current_Num = "Music",
+                        SubEntAdd_Qual_Est_Current_Num = "GCSE",
+                        SubEntAdd_Entr_Est_Current_Num = 10,
                     }
                 };
 
@@ -82,9 +79,6 @@ public class SecondarySchoolControllerTests
         _mockLogger = new Mock<ILogger<SecondarySchoolController>>();
         _mockEstablishment = new();
         _mockEstablishment.Setup(es => es.GetEstablishment(It.IsAny<string>())).Returns(fakeEstablishment);
-        _mockEstablishmentSubjectEntriesService = new();
-        _mockEstablishmentSubjectEntriesService.Setup(s => s.GetSubjectEntriesByUrn(It.IsAny<string>()))
-            .Returns((new() { SubjectEntries = CoreSubjects }, new Core.Entities.KS4.SubjectEntries.EstablishmentAdditionalSubjectEntries()));
 
         // Create a real temp directory
         var tempPath = Path.Combine(Path.GetTempPath(), "SAPPubTests", Guid.NewGuid().ToString());
@@ -335,6 +329,9 @@ public class SecondarySchoolControllerTests
     public void Get_AcademicPerformance_SubjectsEntered_ReturnsOk()
     {
         // Arrange
+        _mockEstablishmentSubjectEntriesService.Setup(s => s.GetSubjectEntriesByUrn(fakeEstablishment.URN))
+            .Returns((new() { SubjectEntries = CoreSubjects }, new() { SubjectEntries = AdditionalSubjects }));
+
         // Act
         var result = _controller.AcademicPerformanceSubjectsEntered(fakeEstablishment.URN, fakeEstablishment.EstablishmentName, _mockEstablishmentSubjectEntriesService.Object) as ViewResult;
 
@@ -347,6 +344,31 @@ public class SecondarySchoolControllerTests
         Assert.Equal(fakeEstablishment.URN, model.URN);
         Assert.Equal(fakeEstablishment.EstablishmentName, model.SchoolName);
         Assert.NotNull(model.CoreSubjects);
+        Assert.Equal(
+            CoreSubjects.Select(c => c.SubEntCore_Sub_Est_Current_Num).OrderBy(s => s),
+            model.CoreSubjects.Select(s => s.Subject).OrderBy(s => s)
+        );
+        Assert.Equal(
+           CoreSubjects.Select(c => $"{c.SubEntCore_Entr_Est_Current_Num}%").OrderBy(s => s),
+           model.CoreSubjects.Select(s => s.PercentageOfPupilsEntered).OrderBy(s => s)
+        );
+        Assert.Equal(
+            CoreSubjects.Select(c => c.SubEntCore_Qual_Est_Current_Num).OrderBy(s => s),
+            model.CoreSubjects.Select(s => s.Qualification).OrderBy(s => s)
+        );
+        Assert.NotNull(model.AdditionalSubjects);
+        Assert.Equal(
+            AdditionalSubjects.Select(c => c.SubEntAdd_Sub_Est_Current_Num).OrderBy(s => s),
+            model.AdditionalSubjects.Select(s => s.Subject).OrderBy(s => s)
+        );
+        Assert.Equal(
+           AdditionalSubjects.Select(c => $"{c.SubEntAdd_Entr_Est_Current_Num}%").OrderBy(s => s),
+           model.AdditionalSubjects.Select(s => s.PercentageOfPupilsEntered).OrderBy(s => s)
+        );
+        Assert.Equal(
+            AdditionalSubjects.Select(c => c.SubEntAdd_Qual_Est_Current_Num).OrderBy(s => s),
+            model.AdditionalSubjects.Select(s => s.Qualification).OrderBy(s => s)
+        );
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
