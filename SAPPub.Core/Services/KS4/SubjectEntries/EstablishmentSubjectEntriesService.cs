@@ -1,5 +1,5 @@
 ﻿using SAPPub.Core.Entities.KS4.SubjectEntries;
-using SAPPub.Core.Interfaces.Repositories;
+using SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
 
 namespace SAPPub.Core.Services.KS4.SubjectEntries;

@@ -1,6 +1,6 @@
 ﻿using SAPPub.Core.Entities.KS4.SubjectEntries;
 
-namespace SAPPub.Core.Interfaces.Repositories;
+namespace SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
 
 public interface IEstablishmentSubjectEntriesRepository
 {
