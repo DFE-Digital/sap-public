@@ -7,20 +7,31 @@ namespace SAPPub.Web.Models.SecondarySchool
     {
         public List<SubjectsEnteredViewModel>? CoreSubjects { get; set; }
 
+        public List<SubjectsEnteredViewModel>? AdditionalSubjects { get; set; }
+
         public static AcademicPerformanceSubjectsEnteredViewModel Map(Establishment establishment, EstablishmentCoreSubjectEntries coreSubjectEntries, EstablishmentAdditionalSubjectEntries additionalSubjectEntries)
         {
+            // CML TODO : is it OK that the view mapper just knows these are percentages?
             var coreSubjects = coreSubjectEntries.SubjectEntries.Select(se => new SubjectsEnteredViewModel
             {
                 Subject = se.SubEntCore_Sub_Est_Current_Num ?? "Unknown Subject",
                 Qualification = se.SubEntCore_Qual_Est_Current_Num ?? "Unknown Qualification",
                 PercentageOfPupilsEntered = se.SubEntCore_Entr_Est_Current_Num.HasValue ? $"{se.SubEntCore_Entr_Est_Current_Num.Value}%" : "N/A",
-            }).ToList();
+            }).OrderByDescending(s => s.PercentageOfPupilsEntered).ToList();
+
+            var additionalSubjects = additionalSubjectEntries.SubjectEntries.Select(se => new SubjectsEnteredViewModel
+            {
+                Subject = se.SubEntAdd_Sub_Est_Current_Num ?? "Unknown Subject",
+                Qualification = se.SubEntAdd_Qual_Est_Current_Num ?? "Unknown Qualification",
+                PercentageOfPupilsEntered = se.SubEntAdd_Entr_Est_Current_Num.HasValue ? $"{se.SubEntAdd_Entr_Est_Current_Num.Value}%" : "N/A",
+            }).OrderBy(s => s.Subject).ToList();
 
             return new AcademicPerformanceSubjectsEnteredViewModel
             {
                 URN = establishment.URN,
                 SchoolName = establishment.EstablishmentName,
-                CoreSubjects = coreSubjects
+                CoreSubjects = coreSubjects,
+                AdditionalSubjects = additionalSubjects
             };
         }
     }

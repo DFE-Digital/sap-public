@@ -11,7 +11,7 @@ public class EstablishmentSubjectEntriesRepository : IEstablishmentSubjectEntrie
                     new () {
                         SubEntCore_Sub_Est_Current_Num = "English language",
                         SubEntCore_Qual_Est_Current_Num = "GCSE",
-                        SubEntCore_Entr_Est_Current_Num = 95.0, // CML TODO  which tier converts the numbers to percentages?
+                        SubEntCore_Entr_Est_Current_Num = 95.0,
                     },
                     new () {
                         SubEntCore_Sub_Est_Current_Num = "English literature",
@@ -38,6 +38,27 @@ public class EstablishmentSubjectEntriesRepository : IEstablishmentSubjectEntrie
                     }
             };
 
+    private static List<EstablishmentAdditionalSubjectEntries.SubjectEntry> AdditionalSubjects =
+        new()
+        {
+                    new () {
+                        SubEntAdd_Sub_Est_Current_Num = "Drama",
+                        SubEntAdd_Qual_Est_Current_Num = "GCSE",
+                        SubEntAdd_Entr_Est_Current_Num = 95,
+                    },
+                    new () {
+                        SubEntAdd_Sub_Est_Current_Num = "Geography",
+                        SubEntAdd_Qual_Est_Current_Num = "GCSE",
+                        SubEntAdd_Entr_Est_Current_Num = 90,
+                    },
+                    new()
+                    {
+                        SubEntAdd_Sub_Est_Current_Num = "Music",
+                        SubEntAdd_Qual_Est_Current_Num = "GCSE",
+                        SubEntAdd_Entr_Est_Current_Num = 97,
+                    }
+        };
+
     public EstablishmentCoreSubjectEntries GetCoreSubjectEntriesByUrn(string urn)
     {
         return new() { SubjectEntries = CoreSubjects };
@@ -45,6 +66,6 @@ public class EstablishmentSubjectEntriesRepository : IEstablishmentSubjectEntrie
 
     public EstablishmentAdditionalSubjectEntries GetAdditionalSubjectEntriesByUrn(string urn)
     {
-        return new();
+        return new() { SubjectEntries = AdditionalSubjects };
     }
 }
