@@ -8,22 +8,26 @@ using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Repositories.KS4.Absence;
 using SAPPub.Core.Interfaces.Repositories.KS4.Destinations;
 using SAPPub.Core.Interfaces.Repositories.KS4.Performance;
+using SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Repositories.KS4.Workforce;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Absence;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
+using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Services.KS4.Workforce;
 using SAPPub.Core.Services;
 using SAPPub.Core.Services.KS4.Absence;
 using SAPPub.Core.Services.KS4.Destinations;
 using SAPPub.Core.Services.KS4.Performance;
+using SAPPub.Core.Services.KS4.SubjectEntries;
 using SAPPub.Core.Services.KS4.Workforce;
 using SAPPub.Infrastructure.Repositories;
 using SAPPub.Infrastructure.Repositories.Generic;
 using SAPPub.Infrastructure.Repositories.KS4.Absence;
 using SAPPub.Infrastructure.Repositories.KS4.Destinations;
 using SAPPub.Infrastructure.Repositories.KS4.Performance;
+using SAPPub.Infrastructure.Repositories.KS4.SubjectEntries;
 using SAPPub.Infrastructure.Repositories.KS4.Workforce;
 using System.Diagnostics.CodeAnalysis;
 
@@ -87,6 +91,9 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<IGenericRepository<Lookup>, JSONRepository<Lookup>>();
             services.AddTransient<ILookupRepository, LookupRepository>();
             services.AddTransient<ILookupService, LookupService>();
+
+            services.AddScoped<IEstablishmentSubjectEntriesService, EstablishmentSubjectEntriesService>();
+            services.AddScoped<IEstablishmentSubjectEntriesRepository, EstablishmentSubjectEntriesRepository>();
         }
     }
 }

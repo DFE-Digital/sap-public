@@ -1,5 +1,5 @@
-﻿using SAPPub.Web.Tests.UI.Helpers;
-using SAPPub.Tests.UI.Infrastructure;
+﻿using SAPPub.Tests.UI.Infrastructure;
+using SAPPub.Web.Tests.UI.Helpers;
 
 namespace SAPPub.Web.Tests.UI.SecondarySchool;
 
@@ -123,6 +123,19 @@ public class AcademicPerformanceSubjectsEnteredTests : BasePageTest
 
         // Act
         var isVisible = await Page.Locator("#core-subjects-entered-table").IsVisibleAsync();
+
+        // Assert
+        Assert.True(isVisible);
+    }
+
+    [Fact]
+    public async Task AcademicPerformanceSubjectsEnteredPage_Displays_AdditionalSubjects()
+    {
+        // Arrange
+        await GoToPageAysnc(_pageUrl);
+
+        // Act
+        var isVisible = await Page.Locator("#additional-subjects-entered-table").IsVisibleAsync();
 
         // Assert
         Assert.True(isVisible);
