@@ -20,8 +20,11 @@ jobs:
       AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
       AZURE_STORAGE_CONTAINER: ${{ secrets.AZURE_STORAGE_CONTAINER }}
 
-      # Sensitive source URL (ONE endpoint in GitHub secrets)
+      # Sensitive source URLs (THREE endpoints in GitHub secrets)
       SENSITIVE_DATASET_URL: ${{ secrets.SENSITIVE_DATASET_URL }}
+      SENSITIVE_ESTABLISHMENT_LINKS_URL: ${{ secrets.SENSITIVE_ESTABLISHMENT_LINKS_URL }}
+      SENSITIVE_MAT_LINKS_URL: ${{ secrets.SENSITIVE_MAT_LINKS_URL }}
+
 
       # Konduit / AKS settings (also in GitHub secrets)
       AKS_RESOURCE_GROUP: ${{ secrets.AKS_RESOURCE_GROUP }}
@@ -417,14 +420,8 @@ jobs:
               if ($resolvedHdr.len)  { $parts += "len:$($resolvedHdr.len)" }
               $forcedSignature = ($parts -join "|")
 
-              if ($fileType -eq "zip") {
-                # Upload extracted CSV using deterministic filename so downstream sees a CSV in Blob.
-                # (Key is stable across runs; ZIP content changes are driven by signature above.)
-                $finalName = "${key}.csv"
-              } else {
-                # For CSV sources, keep the original dated filename
-                $finalName = $sourceFileName
-              }
+              # Always upload GIAS to a stable name to avoid accumulating dated blobs
+              $finalName = "${key}.csv"
             }
 
             # -------------------------------------------------
@@ -472,7 +469,6 @@ jobs:
               throw "Internal error: forced signature missing for '$key'."
             }
 
-            $needDownloadToDecide = $false
             $isChanged = ($latest -eq 0) -or ($signature -ne $prevSig)
 
             if ($isChanged) {
@@ -546,39 +542,132 @@ jobs:
           "latest_files=$latestFilesJson" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
 
       # ==============================
-      # 7. Early exit if unchanged
+      # 7. Download generator inputs from Blob Storage
+      #    - Downloads:
+      #        (A) ALL "manual" blobs (anything not managed by raw_sources.json)
+      #        (B) ONLY the LATEST managed blobs (from step 6 output latest_files)
+      #    - Avoids pulling old versions of managed datasets
       # ==============================
-      - name: Stop workflow if no new data
-        if: steps.version.outputs.changed != 'True'
-        run: |
-          echo "No raw data changed (based on HTTP headers/size). Exiting early."
-          exit 0
-
-      # ==============================
-      # 8. Download the *latest versioned* CSVs from Blob for the generator/ETL
-      # ==============================
-      - name: Download latest versioned files from Blob Storage
-        if: steps.version.outputs.changed == 'True'
+      - name: Download generator inputs from Blob Storage (manual + latest managed only)
         shell: pwsh
         env:
           LATEST_FILES: ${{ steps.version.outputs.latest_files }}
         run: |
           $ErrorActionPreference = "Stop"
+
           $rawDir = "SAPData/DataMap/SourceFiles"
           New-Item -ItemType Directory -Force -Path $rawDir | Out-Null
-          Remove-Item "$rawDir/*" -Force -Recurse -ErrorAction SilentlyContinue
+          Get-ChildItem -Path $rawDir -Force | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue
 
-          $latest = $env:LATEST_FILES | ConvertFrom-Json -AsHashtable
-          if (-not $latest -or $latest.Keys.Count -eq 0) {
-            throw "LATEST_FILES output was empty."
-          }
+          # ---- Load managed keys from raw_sources.json (same key logic as step 6) ----
+          $sourcesPathRepo = "SAPData/raw_sources.json"
+          if (-not (Test-Path $sourcesPathRepo)) { throw "Could not find $sourcesPathRepo in the repo." }
 
-          foreach ($k in $latest.Keys) {
-            $blob = [string]$latest[$k]
-            if ([string]::IsNullOrWhiteSpace($blob)) {
-              throw "LATEST_FILES contained an empty blob name for key '$k'"
+          $sourcesRaw = Get-Content $sourcesPathRepo -Raw | ConvertFrom-Json
+          if ($null -eq $sourcesRaw) { throw "raw_sources.json parsed to null." }
+          if ($sourcesRaw -isnot [System.Array]) { $sourcesRaw = @($sourcesRaw) }
+
+          $managedKeys = New-Object System.Collections.Generic.HashSet[string]([StringComparer]::OrdinalIgnoreCase)
+          foreach ($s in $sourcesRaw) {
+            $type = [string]$s.Type
+            $sub  = [string]$s.Subtype
+            $year = [string]$s.Year
+
+            if ([string]::IsNullOrWhiteSpace($type) -or
+                [string]::IsNullOrWhiteSpace($sub)  -or
+                [string]::IsNullOrWhiteSpace($year)) {
+              throw "Each entry in raw_sources.json must include Type, Subtype, Year. Offending entry: $($s | ConvertTo-Json -Compress)"
             }
 
+            $composite = "${type}_${sub}_${year}"
+            $key = ($composite -replace '[^a-zA-Z0-9_\-\.]', '_').ToLowerInvariant()
+            [void]$managedKeys.Add($key)
+          }
+
+          if ($managedKeys.Count -eq 0) { throw "No managed keys derived from raw_sources.json" }
+
+          # ---- Load latest managed filenames from step 6 output ----
+          $latest = $env:LATEST_FILES | ConvertFrom-Json -AsHashtable
+          if (-not $latest -or $latest.Keys.Count -eq 0) { throw "LATEST_FILES output was empty." }
+
+          $latestManagedFiles = New-Object System.Collections.Generic.HashSet[string]([StringComparer]::OrdinalIgnoreCase)
+          foreach ($k in $latest.Keys) {
+            $fn = [string]$latest[$k]
+            if ([string]::IsNullOrWhiteSpace($fn)) { throw "LATEST_FILES contained an empty filename for key '$k'" }
+            [void]$latestManagedFiles.Add($fn)
+          }
+
+          # ---- List all blobs in container ----
+          $blobNamesJson = az storage blob list `
+            --container-name $env:AZURE_STORAGE_CONTAINER `
+            --connection-string $env:AZURE_STORAGE_CONNECTION_STRING `
+            --query "[].name" -o json
+
+          $blobNames = $blobNamesJson | ConvertFrom-Json
+          if ($blobNames -isnot [System.Array]) { $blobNames = @($blobNames) }
+          if (-not $blobNames -or $blobNames.Count -eq 0) {
+            throw "No blobs found in container '$($env:AZURE_STORAGE_CONTAINER)'."
+          }
+
+          # Is this blob part of a managed dataset "family" (so we can skip non-latest versions)?
+          # Managed family rules:
+          #   - GIAS: <key>.csv (stable overwrite name)
+          #   - EES:  <key>_*   (versioned/suffixed files)
+          #   - Legacy cleanup: ANY blob that starts with <key> (e.g. old dated filenames) is treated as managed
+          # Only blobs NOT in a managed family are considered "manual" and downloaded by default.
+          function Is-ManagedFamilyBlob([string]$blobName, $managedKeysSet) {
+            if ([string]::IsNullOrWhiteSpace($blobName)) { return $false }
+            $lower = $blobName.ToLowerInvariant()
+
+            foreach ($mk in $managedKeysSet) {
+              $mkl = $mk.ToLowerInvariant()
+
+              # Stable GIAS overwrite name
+              if ($lower -eq "$mkl.csv") { return $true }
+
+              # EES versioning / suffix patterns
+              if ($lower.StartsWith($mkl + "_")) { return $true }
+
+              # Catch-all for any legacy blobs that begin with the managed key
+              # e.g. <key>20240101.csv, <key>-old.csv, etc.
+              if ($lower.StartsWith($mkl)) { return $true }
+            }
+
+            return $false
+          }
+
+
+          # ---- Decide what to download ----
+          # Rule:
+          #   - If blob name is exactly one of the latest managed filenames => download it
+          #   - Else if blob belongs to any managed dataset family => skip it (old/other managed)
+          #   - Else => download it (manual file)
+          $toDownload = New-Object System.Collections.Generic.HashSet[string]([StringComparer]::OrdinalIgnoreCase)
+
+          foreach ($blob in $blobNames) {
+            if ([string]::IsNullOrWhiteSpace($blob)) { continue }
+
+            if ($latestManagedFiles.Contains($blob)) {
+              [void]$toDownload.Add($blob)
+              continue
+            }
+
+            if (Is-ManagedFamilyBlob $blob $managedKeys) {
+              # Managed (but not the latest managed filename) => skip
+              continue
+            }
+
+            # Manual blob => include
+            [void]$toDownload.Add($blob)
+          }
+
+          # Safety: ensure all latest managed files are included
+          foreach ($mf in $latestManagedFiles) { [void]$toDownload.Add($mf) }
+
+          if ($toDownload.Count -eq 0) { throw "No blobs selected for download." }
+
+          Write-Host "Downloading $($toDownload.Count) blobs (manual + latest managed only)..."
+          foreach ($blob in $toDownload) {
             $dest = Join-Path $rawDir $blob
 
             az storage blob download `
@@ -592,67 +681,30 @@ jobs:
           $files = Get-ChildItem $rawDir -File
           if (-not $files) { throw "No files were downloaded from Blob to $rawDir." }
 
-          Write-Host "Downloaded latest files:"
+          Write-Host "Downloaded files:"
           $files | Select-Object Name, Length
 
-
       # ==============================
-      # 8b. Normalise filenames for generator (strip _v000001 suffix where present)
-      # ==============================
-      - name: Normalise filenames for generator (strip _v000001 suffix where present)
-        if: steps.version.outputs.changed == 'True'
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = "Stop"
-          $rawDir = "SAPData/DataMap/SourceFiles"
-
-          $files = Get-ChildItem $rawDir -Filter *.csv -File
-          if (-not $files) {
-            throw "No CSV files found in $rawDir"
-          }
-
-          foreach ($f in $files) {
-            # Only strip numeric version suffix if present: <name>_v000123.csv
-            if ($f.BaseName -match '^(?<stable>.+)_v\d{6}$') {
-              $stableName = $Matches['stable'] + $f.Extension
-              $dest = Join-Path $rawDir $stableName
-
-              # Copy versioned -> stable (overwrite stable)
-              Copy-Item -Force $f.FullName $dest
-            }
-          }
-
-          Write-Host "Normalised files present (post-copy):"
-          Get-ChildItem $rawDir -Filter *.csv -File | Select-Object Name, Length
-
-          # Remove ONLY the numeric-versioned copies; keep everything else (e.g. GIAS dated files)
-          Get-ChildItem $rawDir -Filter '*_v??????.csv' -File | Remove-Item -Force
-
-
-      # ==============================
-      # 9. Build + Run SQL generator
+      # 8. Build + Run SQL generator
       # ==============================
       - name: Build SQL Generator
-        if: steps.version.outputs.changed == 'True'
         run: |
           dotnet build SAPPub.sln --configuration Release
 
       - name: Generate SQL Scripts
-        if: steps.version.outputs.changed == 'True'
         run: |
           dotnet run --configuration Release --project SAPData/SAPData.csproj
           echo "Generated SQL scripts."
 
       # ==============================
-      # 10. Run ETL via konduit (private DB)
+      # 9. Run ETL via konduit (private DB)
       # ==============================
       - name: Run ETL pipeline via konduit
-        if: steps.version.outputs.changed == 'True'
         working-directory: SAPData/Sql
         shell: bash
         run: |
           set -euo pipefail
-          echo "Running ETL via konduit because data changed..."
+          echo "Running ETL via konduit..."
           ls -la "$GITHUB_WORKSPACE/SAPData/Sql" || true
           "$GITHUB_WORKSPACE/konduit.sh" -n "${AKS_NAMESPACE}" -t 7200 -x \
             -i "$GITHUB_WORKSPACE/SAPData/Sql/run_all.sql" \

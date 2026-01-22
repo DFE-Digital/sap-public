@@ -1,6 +1,6 @@
 [
   {
-    "Type": "All establishment data",
+    "Type": "All establishment",
     "Subtype": "Metadata",
     "Year": "Current",
     "SourceOrg": "GIAS",
@@ -9,7 +9,7 @@
     "FileType": "csv"
   },
   {
-    "Type": "All establishment links",
+    "Type": "All establishment",
     "Subtype": "Links",
     "Year": "Current",
     "SourceOrg": "GIAS",
@@ -18,7 +18,7 @@
     "FileType": "csv"
   },
   {
-    "Type": "Academy sponsor and trust links",
+    "Type": "Academy sponsor and trust",
     "Subtype": "Links",
     "Year": "Current",
     "SourceOrg": "GIAS",
