@@ -199,9 +199,7 @@ jobs:
           if ($sources.Count -eq 0) { throw "No sources found in raw_sources.json" }
           Write-Host "Loaded $($sources.Count) sources."
 
-          # -----------------------------
           # Load manifest from Blob (if present)
-          # -----------------------------
           $manifestPath = Join-Path $workDir "versions.json"
           $manifest = @{}
 
@@ -542,6 +540,7 @@ jobs:
               --overwrite | Out-Null
           }
 
+          # Outputs
           "changed=$anyChanged" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
           $latestFilesJson = ($latestFiles | ConvertTo-Json -Depth 10 -Compress)
           "latest_files=$latestFilesJson" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
