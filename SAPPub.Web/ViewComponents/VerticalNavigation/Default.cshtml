@@ -7,25 +7,25 @@
     var routeAttributes = new Dictionary<string, string> { { RouteConstants.URN, Model.URN }, { RouteConstants.SchoolName, Model.SchoolName } };
 
     <div class="govuk-grid-column-one-quarter">
-        <nav class="dfe-vertical-nav" aria-label="Side navigation">
-            <ul class="dfe-vertical-nav__section">
-                <li class="dfe-vertical-nav__section-item  @(Model.ActivePage == RouteConstants.SecondaryAboutSchool ? "dfe-vertical-nav__section-item--current" : "")">
-                    <a class="dfe-vertical-nav__link" asp-route="@RouteConstants.SecondaryAboutSchool" asp-all-route-data="routeAttributes">About the school</a>
+        <nav class="moj-side-navigation" aria-label="Side navigation">
+            <ul class="moj-side-navigation__list">
+                <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.SecondaryAboutSchool ? "moj-side-navigation__item--active" : "")">
+                    <a asp-route="@RouteConstants.SecondaryAboutSchool" asp-all-route-data="routeAttributes">About the school</a>
                 </li>
-                <li class="dfe-vertical-nav__section-item  @(Model.ActivePage == RouteConstants.SecondaryAdmissions ? "dfe-vertical-nav__section-item--current" : "")">
-                    <a class="dfe-vertical-nav__link" asp-route="@RouteConstants.SecondaryAdmissions" asp-all-route-data="routeAttributes">Admissions</a>
+                <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.SecondaryAdmissions ? "moj-side-navigation__item--active" : "")">
+                    <a asp-route="@RouteConstants.SecondaryAdmissions" asp-all-route-data="routeAttributes">Admissions</a>
                 </li>
-                <li class="dfe-vertical-nav__section-item  @(Model.ActivePage == RouteConstants.SecondaryCurriculumAndExtraCurricularActivities ? "dfe-vertical-nav__section-item--current" : "")">
-                    <a class="dfe-vertical-nav__link" asp-route="@RouteConstants.SecondaryCurriculumAndExtraCurricularActivities" asp-all-route-data="routeAttributes">Curriculum and extra-curricular activities</a>
+                <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.SecondaryCurriculumAndExtraCurricularActivities ? "moj-side-navigation__item--active" : "")">
+                    <a asp-route="@RouteConstants.SecondaryCurriculumAndExtraCurricularActivities" asp-all-route-data="routeAttributes">Curriculum and extra-curricular activities</a>
                 </li>
-                <li class="dfe-vertical-nav__section-item  @(Model.ActivePage == RouteConstants.SecondaryAttendance ? "dfe-vertical-nav__section-item--current" : "")">
-                    <a class="dfe-vertical-nav__link" asp-route="@RouteConstants.SecondaryAttendance" asp-all-route-data="routeAttributes">Attendance</a>
+                <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.SecondaryAttendance ? "moj-side-navigation__item--active" : "")">
+                    <a asp-route="@RouteConstants.SecondaryAttendance" asp-all-route-data="routeAttributes">Attendance</a>
                 </li>
-                <li class="dfe-vertical-nav__section-item  @(new List<string>{RouteConstants.SecondaryAcademicPerformancePupilProgress,RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults, RouteConstants.SecondaryAcademicPerformanceSubjectsEntered}.Contains(Model.ActivePage)? " dfe-vertical-nav__section-item--current" : "" ) ">
-                    <a class="dfe-vertical-nav__link" asp-route="@RouteConstants.SecondaryAcademicPerformancePupilProgress" asp-all-route-data="routeAttributes">Academic performance</a>
+                <li class="moj-side-navigation__item  @(new List<string> { RouteConstants.SecondaryAcademicPerformancePupilProgress, RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults, RouteConstants.SecondaryAcademicPerformanceSubjectsEntered }.Contains(Model.ActivePage) ? " moj-side-navigation__item--active" : "") ">
+                    <a asp-route="@RouteConstants.SecondaryAcademicPerformancePupilProgress" asp-all-route-data="routeAttributes">Academic performance</a>
                 </li>
-                <li class="dfe-vertical-nav__section-item  @(Model.ActivePage == RouteConstants.SecondaryDestinations ? "dfe-vertical-nav__section-item--current" : "")">
-                    <a class="dfe-vertical-nav__link" asp-route="@RouteConstants.SecondaryDestinations" asp-all-route-data="routeAttributes">Destinations</a>
+                <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.SecondaryDestinations ? "moj-side-navigation__item--active" : "")">
+                    <a asp-route="@RouteConstants.SecondaryDestinations" asp-all-route-data="routeAttributes">Destinations</a>
                 </li>
             </ul>
         </nav>

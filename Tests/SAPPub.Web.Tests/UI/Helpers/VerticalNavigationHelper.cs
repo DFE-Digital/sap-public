@@ -6,13 +6,11 @@ public class VerticalNavigationHelper(IPage page)
 {
     private readonly IPage _page = page;
 
-    public ILocator Nav => _page.Locator(".dfe-vertical-nav");
+    public ILocator Nav => _page.Locator(".moj-side-navigation");
 
-    public ILocator Items => _page.Locator(".dfe-vertical-nav__section-item");
+    public ILocator Items => _page.Locator(".moj-side-navigation__item");
 
-    public ILocator Links => _page.Locator(".dfe-vertical-nav__link");
-
-    public ILocator ActiveItem => _page.Locator(".dfe-vertical-nav__section-item--current");
+    public ILocator ActiveItem => _page.Locator(".moj-side-navigation__item--active");
 
     public ILocator ActiveLink => ActiveItem.Locator("a");
 
@@ -39,6 +37,5 @@ public class VerticalNavigationHelper(IPage page)
     }
 
     public Task<string?> GetActiveHrefAsync() => ActiveLink.GetAttributeAsync("href");
-
-    public Task<string> GetLinkTextAsync(int index) => Links.Nth(index).InnerTextAsync();
+    
 }
