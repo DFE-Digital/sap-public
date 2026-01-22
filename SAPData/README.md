@@ -117,6 +117,7 @@ Typical local workflow:
 2. Run the SQL generator (`dotnet run`, or set as startup project in Visual Studio and run in VS)
 3. Execute `02_copy_into_raw_local.sql` using psql SQL Shell (Command: "\i '<PATH TO SQL FOLDER>/Sql/02_copy_into_raw_local.sql'")
 4. Run `run-all.sql` against a local PostgreSQL instance, or run individual sql files as needed.
+5. Set file encoding to UTF8 without signature code page 65001
 
 ---
 
