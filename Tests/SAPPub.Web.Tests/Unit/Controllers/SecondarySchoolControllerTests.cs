@@ -5,18 +5,22 @@ using Moq;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Services;
+using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
+using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Web.Controllers;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.SecondarySchool;
+using static SAPPub.Web.Models.SecondarySchool.AcademicPerformanceEnglishAndMathsResultsViewModel;
 
 namespace SAPPub.Web.Tests.Unit.Controllers;
 
 public class SecondarySchoolControllerTests
 {
     private readonly Mock<ILogger<SecondarySchoolController>> _mockLogger;
-    private readonly Mock<IEstablishmentService> _mockEstablishment;
+    private readonly Mock<IEstablishmentService> _mockEstablishmentService;
     private readonly Mock<IEstablishmentSubjectEntriesService> _mockEstablishmentSubjectEntriesService = new();
+    private readonly Mock<IAcademicPerformanceEnglishAndMathsResultsService> _mockEnglishAndMathsResultsService = new();
     private readonly SecondarySchoolController _controller;
 
     private readonly Establishment fakeEstablishment = new()
@@ -74,17 +78,26 @@ public class SecondarySchoolControllerTests
                     }
                 };
 
+    // CML TODO move all these
+    private EnglishAndMathsResultsServiceModel EnglishAndMathsResults = new()
+    {
+        EnglandAverage = 55,
+        LocalAuthorityAverage = 65,
+        EstablishmentResult = 75,
+        LAName = "Sheffield"
+    };
+
     public SecondarySchoolControllerTests()
     {
         _mockLogger = new Mock<ILogger<SecondarySchoolController>>();
-        _mockEstablishment = new();
-        _mockEstablishment.Setup(es => es.GetEstablishment(It.IsAny<string>())).Returns(fakeEstablishment);
+        _mockEstablishmentService = new();
+        _mockEstablishmentService.Setup(es => es.GetEstablishment(fakeEstablishment.URN)).Returns(fakeEstablishment);
 
         // Create a real temp directory
         var tempPath = Path.Combine(Path.GetTempPath(), "SAPPubTests", Guid.NewGuid().ToString());
         Directory.CreateDirectory(tempPath);
 
-        _controller = new SecondarySchoolController(_mockLogger.Object, _mockEstablishment.Object);
+        _controller = new SecondarySchoolController(_mockLogger.Object, _mockEstablishmentService.Object);
 
         _controller.ControllerContext = new ControllerContext
         {
@@ -305,12 +318,17 @@ public class SecondarySchoolControllerTests
         Assert.Equal(fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
-    [Fact]
-    public void Get_AcademicPerformance_EnglishAndMathsResults_ReturnsOk()
+    [Theory]
+    [InlineData(GcseGradeDataSelection.Grade4AndAbove)]
+    [InlineData(GcseGradeDataSelection.Grade5AndAbove)]
+    public void Get_AcademicPerformance_EnglishAndMathsResults_ReturnsOk(GcseGradeDataSelection grade)
     {
         // Arrange
+        _mockEnglishAndMathsResultsService.Setup(s => s.ResultsOfSpecifiedGradeAndAbove(fakeEstablishment.URN, (int)grade))
+            .Returns(EnglishAndMathsResults);
+
         // Act
-        var result = _controller.AcademicPerformanceEnglishAndMathsResults(fakeEstablishment.URN, fakeEstablishment.EstablishmentName) as ViewResult;
+        var result = _controller.AcademicPerformanceEnglishAndMathsResults(_mockEnglishAndMathsResultsService.Object, fakeEstablishment.URN, fakeEstablishment.EstablishmentName, grade) as ViewResult;
 
         // Assert
         Assert.NotNull(result);
@@ -323,6 +341,19 @@ public class SecondarySchoolControllerTests
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
+        Assert.Equal(grade, model.SelectedGrade);
+        Assert.Contains($"Grade {grade} and above", model.GcseChartData.ChartTitle);
+        Assert.Equal(
+            new List<string> { "School", "Local Authority Average", "England Average" },
+            model.GcseChartData.Lables
+        );
+        Assert.Equal(
+            new double[] {
+                EnglishAndMathsResults.EstablishmentResult!.Value,
+                EnglishAndMathsResults.LocalAuthorityAverage!.Value,
+                EnglishAndMathsResults.EnglandAverage!.Value },
+            model.GcseChartData.GcseData
+        );
     }
 
     [Fact]
@@ -333,7 +364,7 @@ public class SecondarySchoolControllerTests
             .Returns((new() { SubjectEntries = CoreSubjects }, new() { SubjectEntries = AdditionalSubjects }));
 
         // Act
-        var result = _controller.AcademicPerformanceSubjectsEntered(fakeEstablishment.URN, fakeEstablishment.EstablishmentName, _mockEstablishmentSubjectEntriesService.Object) as ViewResult;
+        var result = _controller.AcademicPerformanceSubjectsEntered(_mockEstablishmentSubjectEntriesService.Object, fakeEstablishment.URN, fakeEstablishment.EstablishmentName) as ViewResult;
 
         // Assert
         Assert.NotNull(result);
