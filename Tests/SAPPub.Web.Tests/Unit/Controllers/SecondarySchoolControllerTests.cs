@@ -34,7 +34,7 @@ public class SecondarySchoolControllerTests
         AddressLocality = "Locality",
         AddressTown = "Town",
         AddressPostcode = "Postcode",
-        LAName = "LocalAuthority",
+        LAName = "Sheffield",
         TypeOfEstablishmentName = "EstablishmentName",
         HeadteacherTitle = "Title",
         HeadteacherFirstName = "FirstName",
@@ -344,7 +344,7 @@ public class SecondarySchoolControllerTests
         Assert.Equal(grade, model.SelectedGrade);
         Assert.Contains($"Grade {grade} and above", model.GcseChartData.ChartTitle);
         Assert.Equal(
-            new List<string> { "School", "Local Authority Average", "England Average" },
+            new List<string> { "School", $"{fakeEstablishment.LAName} average", "England average" },
             model.GcseChartData.Lables
         );
         Assert.Equal(

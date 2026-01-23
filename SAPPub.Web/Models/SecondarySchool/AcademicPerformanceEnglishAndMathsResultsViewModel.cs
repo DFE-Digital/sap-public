@@ -28,7 +28,7 @@ public class AcademicPerformanceEnglishAndMathsResultsViewModel : SecondarySchoo
                 "School",
                 string.IsNullOrEmpty(englishAndMathsResultsServiceModel?.LAName)
                     ? "Local Authority average"
-                    : englishAndMathsResultsServiceModel!.LAName,
+                    : $"{englishAndMathsResultsServiceModel!.LAName} average",
                 "England average"
             },
             GcseData = new List<double>
