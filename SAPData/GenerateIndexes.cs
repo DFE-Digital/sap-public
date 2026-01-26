@@ -5,6 +5,7 @@ namespace SAPData;
 public class GenerateIndexes
 {
     private readonly string _sqlDir;
+    private static readonly Encoding Utf8NoBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
 
     public GenerateIndexes(string sqlDir)
     {
@@ -25,9 +26,9 @@ public class GenerateIndexes
         sb.AppendLine("-- NOTE:");
         sb.AppendLine("-- - Uses quoted identifiers to respect case-sensitive columns");
         sb.AppendLine("-- - Guards index creation when a view is not present");
+        sb.AppendLine("-- - Emits NOTICE messages so execution output is descriptive");
         sb.AppendLine();
 
-        // View → column mapping (EXACT column names)
         var indexes = new Dictionary<string, string>
         {
             // Establishment
@@ -55,20 +56,30 @@ public class GenerateIndexes
             string view = kvp.Key;
             string column = kvp.Value;
 
-            string indexName = $"idx_{view}_{column.Trim('"').ToLowerInvariant().Replace(" ", "_")}";
+            string colSlug = column.Trim('"')
+                .ToLowerInvariant()
+                .Replace(" ", "_");
 
-            // Only create the index if the view exists (avoids pipeline failure when some views are skipped)
+            string indexName = $"idx_{view}_{colSlug}";
+
+            // Use a DO block so we can conditionally check view + index existence and print notices.
             sb.AppendLine("DO $$");
             sb.AppendLine("BEGIN");
-            sb.AppendLine($"  IF to_regclass('public.{view}') IS NOT NULL THEN");
-            sb.AppendLine($"    CREATE INDEX IF NOT EXISTS {indexName}");
-            sb.AppendLine($"    ON public.{view} ({column});");
+            sb.AppendLine($"  IF to_regclass('public.{view}') IS NULL THEN");
+            sb.AppendLine($"    RAISE NOTICE 'SKIP: view public.{view} does not exist (index {indexName} not created)';");
+            sb.AppendLine("  ELSE");
+            sb.AppendLine($"    IF to_regclass('public.{indexName}') IS NULL THEN");
+            sb.AppendLine($"      RAISE NOTICE 'CREATE: index public.{indexName} on public.{view} ({column})';");
+            sb.AppendLine($"      CREATE INDEX {indexName} ON public.{view} ({column});");
+            sb.AppendLine("    ELSE");
+            sb.AppendLine($"      RAISE NOTICE 'OK: index public.{indexName} already exists';");
+            sb.AppendLine("    END IF;");
             sb.AppendLine("  END IF;");
             sb.AppendLine("END $$;");
             sb.AppendLine();
         }
 
-        File.WriteAllText(outputPath, sb.ToString(), new UTF8Encoding(false));
+        File.WriteAllText(outputPath, sb.ToString(), Utf8NoBom);
 
         Console.WriteLine("Generated view index script:");
         Console.WriteLine(outputPath);

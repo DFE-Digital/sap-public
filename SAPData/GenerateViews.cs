@@ -213,7 +213,7 @@ public sealed class GenerateViews
     // ESTABLISHMENT DIMENSION (curated)
     // =====================================================
 
-    private static string GenerateEstablishmentDimensionView(string rawTable)
+    private static string GenerateEstablishmentDimensionView(string? rawTable)
     {
         var sb = new StringBuilder();
 
@@ -288,7 +288,7 @@ public sealed class GenerateViews
     // MIRROR VIEWS
     // =====================================================
 
-    private static string GenerateMirrorMaterializedView(string viewName, string rawTable)
+    private static string GenerateMirrorMaterializedView(string viewName, string? rawTable)
     {
         var sb = new StringBuilder();
         sb.AppendLine($"-- AUTO-GENERATED MIRROR MATERIALIZED VIEW: {viewName}");
@@ -519,7 +519,7 @@ public sealed class GenerateViews
     private static bool TryResolveRawTable(
         Dictionary<string, string> tableMap,
         string? datasetKey,
-        out string rawTable)
+        out string? rawTable)
     {
         rawTable = "";
 
