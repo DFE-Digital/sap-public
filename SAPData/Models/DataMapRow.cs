@@ -37,6 +37,7 @@ namespace SAPData.Models
         public string ShouldBeNormalised { get; set; }   // e.g., No -> false
         public string NormalisedLookup { get; set; }   // optional
         public string CompoundFields { get; set; }
+        public string IgnoreMapping { get; set; }
 
     }
 
@@ -71,6 +72,7 @@ namespace SAPData.Models
             Map(m => m.ShouldBeNormalised).Name("ShouldBeNormalised");
             Map(m => m.NormalisedLookup).Name("NormalisedLookup");
             Map(m => m.CompoundFields).Name("CompoundFields");
+            Map(m => m.IgnoreMapping).Name("IgnoreMapping");
         }
 
 

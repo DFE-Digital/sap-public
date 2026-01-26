@@ -1,5 +1,7 @@
 ﻿using SAPData.Models;
 using System.Text;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace SAPData;
 
@@ -9,23 +11,43 @@ public sealed class GenerateViews
     private readonly string _tableMappingPath;
     private readonly string _sqlDir;
 
-    private sealed record ViewSpec(
-        string ViewName,
-        string Range,
-        string Type
+    // raw_sources.json path in repo
+    private static readonly string[] RawSourcesCandidates =
+{
+    "raw_sources.json",
+    Path.Combine("SAPData", "raw_sources.json"),
+    Path.Combine(AppContext.BaseDirectory, "raw_sources.json"),
+    Path.Combine(AppContext.BaseDirectory, "SAPData", "raw_sources.json")
+};
+
+    private sealed record ViewSpec(string ViewName, string Range, string Type);
+
+    private sealed record RawSource(
+        string Type,
+        string Subtype,
+        string Year,
+        string SourceOrg,
+        string FileName
     );
 
     private static readonly ViewSpec[] Views =
     {
         new("v_establishment", "Establishment", "Establishment"),
+        new("v_establishment_links", "Establishment", "Establishment"),
+        new("v_establishment_group_links", "Establishment", "Establishment"),
+        new("v_establishment_subject_entries", "Establishment", "KS4_Performance"),
+
         new("v_establishment_absence", "Establishment", "PupilAbsence"),
         new("v_establishment_destinations", "Establishment", "KS4_Destinations"),
         new("v_establishment_performance", "Establishment", "KS4_Performance"),
         new("v_establishment_workforce", "Establishment", "Workforce"),
+
         new("v_england_destinations", "England", "KS4_Destinations"),
         new("v_england_performance", "England", "KS4_Performance"),
+
         new("v_la_destinations", "LA", "KS4_Destinations"),
-        new("v_la_performance", "LA", "KS4_Performance")
+        new("v_la_performance", "LA", "KS4_Performance"),
+        new("v_la_subject_entries", "LA", "KS4_Performance")
     };
 
     public GenerateViews(IReadOnlyList<DataMapRow> rows, string tableMappingPath, string sqlDir)
@@ -38,30 +60,139 @@ public sealed class GenerateViews
     public void Run()
     {
         Directory.CreateDirectory(_sqlDir);
+
         var tableMap = LoadTableMappings();
+        var sources = LoadRawSources();
 
         foreach (var view in Views)
         {
             string sql;
 
-            if (view.ViewName == "v_establishment")
+            // 1) Establishment dimension (GIAS edubasealldataYYYYmmDD)
+            if (view.ViewName.Equals("v_establishment", StringComparison.OrdinalIgnoreCase))
             {
-                if (!tableMap.Keys.Any(k =>
-                    k.TrimStart('\uFEFF')
-                     .StartsWith("edubase", StringComparison.OrdinalIgnoreCase)))
+                if (!TryResolveManagedDatasetKey(
+                        sources,
+                        tableMap,
+                        sourceOrg: "GIAS",
+                        type: "All establishment",
+                        subtype: "Metadata",
+                        year: "Current",
+                        out var datasetKey))
                 {
-                    continue; // no establishment source available
+                    continue;
                 }
 
-                sql = GenerateEstablishmentDimensionView(tableMap);
+                if (!TryResolveRawTable(tableMap, datasetKey, out var rawTable))
+                    continue;
+                
+                sql = GenerateEstablishmentDimensionView(rawTable);
             }
+
+            // 2) Mirror view (GIAS: all establishment links)
+            else if (view.ViewName.Equals("v_establishment_links", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!TryResolveManagedDatasetKey(
+                        sources,
+                        tableMap,
+                        sourceOrg: "GIAS",
+                        type: "All establishment",
+                        subtype: "Links",
+                        year: "Current",
+                        out var datasetKey))
+                {
+                    continue;
+                }
+
+                if (!TryResolveRawTable(tableMap, datasetKey, out var rawTable))
+                    continue;
+
+                sql = GenerateMirrorMaterializedView(view.ViewName, rawTable);
+            }
+            // 3) Mirror view (GIAS: academy sponsor/trust links)
+            else if (view.ViewName.Equals("v_establishment_group_links", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!TryResolveManagedDatasetKey(
+                        sources,
+                        tableMap,
+                        sourceOrg: "GIAS",
+                        type: "Academy sponsor and trust",
+                        subtype: "Links",
+                        year: "Current",
+                        out var datasetKey))
+                {
+                    continue;
+                }
+
+                if (!TryResolveRawTable(tableMap, datasetKey, out var rawTable))
+                    continue;
+
+                sql = GenerateMirrorMaterializedView(view.ViewName, rawTable);
+            }
+            // 4) Mirror view (EES: SubjectEntries_2 = school / establishment subject entries)
+            else if (view.ViewName.Equals("v_establishment_subject_entries", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!TryResolveManagedDatasetKey(
+                        sources,
+                        tableMap,
+                        sourceOrg: "EES",
+                        type: "KS4_Performance",
+                        subtype: "SubjectEntries_2",
+                        year: "Current",
+                        out var datasetKey))
+                {
+                    continue;
+                }
+
+                if (!TryResolveRawTable(tableMap, datasetKey, out var rawTable))
+                    continue;
+
+                sql = GenerateMirrorMaterializedView(view.ViewName, rawTable);
+            }
+            // 5) Mirror view (EES: SubjectEntries = LA subject entries)
+            else if (view.ViewName.Equals("v_la_subject_entries", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!TryResolveManagedDatasetKey(
+                        sources,
+                        tableMap,
+                        sourceOrg: "EES",
+                        type: "KS4_Performance",
+                        subtype: "SubjectEntries",
+                        year: "Current",
+                        out var datasetKey))
+                {
+                    continue;
+                }
+
+                if (!TryResolveRawTable(tableMap, datasetKey, out var rawTable))
+                    continue;
+
+                sql = GenerateMirrorMaterializedView(view.ViewName, rawTable);
+            }
+            // 6) Everything else uses DataMap-driven materialized view generation
             else
             {
                 var viewRows = _rows
                     .Where(r => r.Range == view.Range)
                     .Where(r => r.Type == view.Type)
                     .Where(r => !string.IsNullOrWhiteSpace(r.PropertyName))
+                    .Where(r => !IsIgnored(r))
                     .ToList();
+
+                var ignoredCount = _rows
+                    .Where(r => r.Range == view.Range)
+                    .Where(r => r.Type == view.Type)
+                    .Where(r => !string.IsNullOrWhiteSpace(r.PropertyName))
+                    .Count(IsIgnored);
+
+                if (ignoredCount > 0)
+                {
+                    Console.WriteLine($"Ignoring {ignoredCount} DataMap rows for {view.ViewName}");
+                    foreach (var row in _rows.Where(IsIgnored))
+                    {
+                        Console.WriteLine($"Ignored mapping: {row.Ref} ({row.PropertyName})");
+                    }
+                }
 
                 if (viewRows.Count == 0)
                     continue;
@@ -79,17 +210,11 @@ public sealed class GenerateViews
     }
 
     // =====================================================
-    // ESTABLISHMENT DIMENSION (EDUBASE)
+    // ESTABLISHMENT DIMENSION (curated)
     // =====================================================
 
-    private string GenerateEstablishmentDimensionView(
-        Dictionary<string, string> tableMap)
+    private static string GenerateEstablishmentDimensionView(string rawTable)
     {
-        // Single source of truth for establishment
-        var rawTable = tableMap
-            .First(kvp => kvp.Key.StartsWith("edubase", StringComparison.OrdinalIgnoreCase))
-            .Value;
-
         var sb = new StringBuilder();
 
         sb.AppendLine("-- AUTO-GENERATED MATERIALIZED VIEW: v_establishment");
@@ -160,7 +285,23 @@ public sealed class GenerateViews
     }
 
     // =====================================================
-    // GENERIC MATERIALIZED VIEW (FACT VIEWS)
+    // MIRROR VIEWS
+    // =====================================================
+
+    private static string GenerateMirrorMaterializedView(string viewName, string rawTable)
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine($"-- AUTO-GENERATED MIRROR MATERIALIZED VIEW: {viewName}");
+        sb.AppendLine();
+        sb.AppendLine($"DROP MATERIALIZED VIEW IF EXISTS {viewName};");
+        sb.AppendLine();
+        sb.AppendLine($"CREATE MATERIALIZED VIEW {viewName} AS");
+        sb.AppendLine($"SELECT * FROM {rawTable};");
+        return sb.ToString();
+    }
+
+    // =====================================================
+    // GENERIC MATERIALIZED VIEW (DataMap-driven)
     // =====================================================
 
     private string GenerateMaterializedView(string viewName, List<DataMapRow> rows, Dictionary<string, string> tableMap)
@@ -174,14 +315,16 @@ public sealed class GenerateViews
         sb.AppendLine($"CREATE MATERIALIZED VIEW {viewName} AS");
         sb.AppendLine("WITH");
 
-        var groups = rows.GroupBy(r => r.FileName).ToList();
+        var groups = rows.GroupBy(r => r.FileName?.Trim()).ToList();
 
         for (int i = 0; i < groups.Count; i++)
         {
             var g = groups[i];
             var r0 = g.First();
 
-            if (!tableMap.TryGetValue(g.Key, out var rawTable))
+            var fileKey = (g.Key ?? "").Trim().TrimStart('\uFEFF');
+
+            if (!TryResolveRawTable(tableMap, fileKey, out var rawTable))
                 throw new InvalidOperationException($"Missing table mapping for {g.Key}");
 
             sb.AppendLine($"src_{i + 1} AS (");
@@ -194,9 +337,7 @@ public sealed class GenerateViews
                 .ToList();
 
             for (int j = 0; j < props.Count; j++)
-            {
                 sb.AppendLine($"        {props[j]}{(j == props.Count - 1 ? "" : ",")}");
-            }
 
             sb.AppendLine($"    FROM {rawTable} t");
             sb.AppendLine($"    GROUP BY t.\"{r0.RecordFilterBy}\"");
@@ -207,8 +348,7 @@ public sealed class GenerateViews
         sb.AppendLine("SELECT");
 
         var propertySources = groups
-            .SelectMany((g, idx) =>
-                g.Select(r => new { r.PropertyName, Source = idx + 1 }))
+            .SelectMany((g, idx) => g.Select(r => new { r.PropertyName, Source = idx + 1 }))
             .GroupBy(x => x.PropertyName)
             .ToDictionary(
                 g => g.Key,
@@ -216,9 +356,7 @@ public sealed class GenerateViews
             );
 
         sb.AppendLine(
-            $"    COALESCE({string.Join(", ",
-                groups.Select((_, idx) => $"src_{idx + 1}.\"Id\"")
-            )}) AS \"Id\","
+            $"    COALESCE({string.Join(", ", groups.Select((_, idx) => $"src_{idx + 1}.\"Id\""))}) AS \"Id\","
         );
 
         var orderedProps = propertySources.Keys.OrderBy(p => p).ToList();
@@ -231,9 +369,7 @@ public sealed class GenerateViews
 
             var expr = sources.Count == 1
                 ? $"src_{sources[0]}.\"{prop}\""
-                : $"COALESCE({string.Join(", ",
-                    sources.Select(s => $"src_{s}.\"{prop}\"")
-                )})";
+                : $"COALESCE({string.Join(", ", sources.Select(s => $"src_{s}.\"{prop}\""))})";
 
             sb.AppendLine($"    {expr} AS \"{prop}\"{comma}");
         }
@@ -241,11 +377,7 @@ public sealed class GenerateViews
         sb.AppendLine("FROM src_1");
 
         for (int i = 1; i < groups.Count; i++)
-        {
-            sb.AppendLine(
-                $"LEFT JOIN src_{i + 1} ON src_{i + 1}.\"Id\" = src_1.\"Id\""
-            );
-        }
+            sb.AppendLine($"LEFT JOIN src_{i + 1} ON src_{i + 1}.\"Id\" = src_1.\"Id\"");
 
         sb.AppendLine(";");
 
@@ -253,25 +385,200 @@ public sealed class GenerateViews
     }
 
     // =====================================================
+    // RAW_SOURCES + RESOLUTION
+    // =====================================================
+
+    private static List<RawSource> LoadRawSources()
+    {
+        var path = RawSourcesCandidates.FirstOrDefault(File.Exists);
+        if (path == null)
+            throw new FileNotFoundException(
+                $"raw_sources.json not found. Tried: {string.Join(", ", RawSourcesCandidates)}");
+
+        var json = File.ReadAllText(path);
+        var opts = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        var sources = JsonSerializer.Deserialize<List<RawSource>>(json, opts) ?? new List<RawSource>();
+
+        return sources.Where(s => !string.IsNullOrWhiteSpace(s.FileName)).ToList();
+    }
+
+    private static bool TryResolveManagedDatasetKey(
+        List<RawSource> sources,
+        Dictionary<string, string> tableMap,
+        string sourceOrg,
+        string type,
+        string subtype,
+        string year,
+        out string datasetKey)
+    {
+        datasetKey = "";
+
+        var src = sources.FirstOrDefault(s =>
+            s.SourceOrg.Equals(sourceOrg, StringComparison.OrdinalIgnoreCase) &&
+            s.Type.Equals(type, StringComparison.OrdinalIgnoreCase) &&
+            s.Subtype.Equals(subtype, StringComparison.OrdinalIgnoreCase) &&
+            s.Year.Equals(year, StringComparison.OrdinalIgnoreCase));
+
+        if (src == null || string.IsNullOrWhiteSpace(src.FileName))
+            return false;
+
+        var pattern = src.FileName.Trim();
+
+        // 1) Dated (GIAS): contains YYYYmmDD => pick latest matching key by date
+        if (pattern.Contains("YYYYmmDD", StringComparison.OrdinalIgnoreCase))
+        {
+            var regex = BuildYyyyMmDdRegex(pattern);
+
+            var candidates = tableMap.Keys
+                .Select(k => k.Trim().TrimStart('\uFEFF'))
+                .Select(k => new { Key = k, Match = regex.Match(k) })
+                .Where(x => x.Match.Success)
+                .Select(x => new { x.Key, Date = x.Match.Groups["date"].Value })
+                .Where(x => x.Date.Length == 8)
+                .OrderByDescending(x => x.Date, StringComparer.Ordinal)
+                .ToList();
+
+            if (candidates.Count == 0)
+                return false;
+
+            datasetKey = candidates[0].Key;
+            return true;
+        }
+
+        // 2) Non-dated (EES): exact key, or key with managed version suffix (_v1.0 etc)
+        var exact = pattern.Trim();
+
+        var exactMatch = tableMap.Keys
+            .Select(k => k.Trim().TrimStart('\uFEFF'))
+            .FirstOrDefault(k => k.Equals(exact, StringComparison.OrdinalIgnoreCase));
+
+        if (exactMatch != null)
+        {
+            datasetKey = exactMatch;
+            return true;
+        }
+
+        var baseName = exact;
+
+        var versionRegex = new Regex(
+            "^" + Regex.Escape(baseName) + "_v(?<ver>[0-9]+\\.[0-9]+(\\.[0-9]+)?)$",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+
+        var versionCandidates = tableMap.Keys
+            .Select(k => k.Trim().TrimStart('\uFEFF'))
+            .Select(k => new { Key = k, Match = versionRegex.Match(k) })
+            .Where(x => x.Match.Success)
+            .Select(x =>
+            {
+                var verText = x.Match.Groups["ver"].Value;
+                Version.TryParse(verText, out var ver);
+                return new { x.Key, Version = ver ?? new Version(0, 0) };
+            })
+            .OrderByDescending(x => x.Version)
+            .ToList();
+
+        if (versionCandidates.Count > 0)
+        {
+            datasetKey = versionCandidates[0].Key;
+            return true;
+        }
+
+        return false;
+    }
+
+    private static Regex BuildYyyyMmDdRegex(string fileNamePattern)
+    {
+        // Supports exactly one YYYYmmDD placeholder.
+        // Example: "edubasealldataYYYYmmDD"
+        // Regex:   ^edubasealldata(?<date>\d{8})$
+        // Also tolerates optional ".csv" just in case.
+        const string token = "YYYYmmDD";
+
+        var idx = fileNamePattern.IndexOf(token, StringComparison.OrdinalIgnoreCase);
+        if (idx < 0)
+            throw new ArgumentException($"Pattern does not contain {token}: '{fileNamePattern}'");
+
+        var prefix = fileNamePattern.Substring(0, idx);
+        var suffix = fileNamePattern.Substring(idx + token.Length);
+
+        var rx =
+            "^" +
+            Regex.Escape(prefix) +
+            "(?<date>\\d{8})" +
+            Regex.Escape(suffix) +
+            "(?:\\.csv)?$";
+
+        return new Regex(rx, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+    }
+
+
+    // =====================================================
     // HELPERS
     // =====================================================
+
+    private static bool TryResolveRawTable(
+        Dictionary<string, string> tableMap,
+        string? datasetKey,
+        out string rawTable)
+    {
+        rawTable = "";
+
+        if (string.IsNullOrWhiteSpace(datasetKey))
+            return false;
+
+        var key = datasetKey.Trim().TrimStart('\uFEFF');
+
+        // 1) Exact
+        if (tableMap.TryGetValue(key, out rawTable))
+            return true;
+
+        // 2) manual_ canonical fallback (if you are enforcing manual_ everywhere)
+        var manualKey = "manual_" + key;
+        if (tableMap.TryGetValue(manualKey, out rawTable))
+            return true;
+
+        // 3) Managed version suffix fallback: <base>_v1.0, _v2.1, _v1.0.3 etc (pick highest)
+        var versionRegex = new Regex(
+            "^" + Regex.Escape(key) + "_v(?<ver>[0-9]+\\.[0-9]+(\\.[0-9]+)?)$",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+
+        var best = tableMap.Keys
+            .Select(k => k.Trim().TrimStart('\uFEFF'))
+            .Select(k => new { Key = k, Match = versionRegex.Match(k) })
+            .Where(x => x.Match.Success)
+            .Select(x =>
+            {
+                var verText = x.Match.Groups["ver"].Value;
+                Version.TryParse(verText, out var ver);
+                return new { x.Key, Version = ver ?? new Version(0, 0) };
+            })
+            .OrderByDescending(x => x.Version)
+            .FirstOrDefault();
+
+        if (best != null && tableMap.TryGetValue(best.Key, out rawTable))
+            return true;
+
+        return false;
+    }
+
+
 
     private static string BuildAggregatedExpression(IEnumerable<DataMapRow> rows)
     {
         var r = rows.First();
         var conditions = new List<string>();
+        static string SqlLiteral(string? s) => (s ?? "").Replace("'", "''");
 
         if (!string.IsNullOrWhiteSpace(r.Filter))
-            conditions.Add($"t.\"{r.Filter}\" = '{r.FilterValue}'");
+            conditions.Add($"t.\"{r.Filter}\" = '{SqlLiteral(r.FilterValue)}'");
         if (!string.IsNullOrWhiteSpace(r.Filter2))
-            conditions.Add($"t.\"{r.Filter2}\" = '{r.Filter2Value}'");
+            conditions.Add($"t.\"{r.Filter2}\" = '{SqlLiteral(r.Filter2Value)}'");
         if (!string.IsNullOrWhiteSpace(r.Filter3))
-            conditions.Add($"t.\"{r.Filter3}\" = '{r.Filter3Value}'");
+            conditions.Add($"t.\"{r.Filter3}\" = '{SqlLiteral(r.Filter3Value)}'");
 
         var whenClause = conditions.Count == 0 ? "TRUE" : string.Join(" AND ", conditions);
 
-        return
-            $"MAX(CASE WHEN {whenClause} THEN {BuildValueExpression(r)} END) AS \"{r.PropertyName}\"";
+        return $"MAX(CASE WHEN {whenClause} THEN {BuildValueExpression(r)} END) AS \"{r.PropertyName}\"";
     }
 
     private static string BuildValueExpression(DataMapRow r) =>
@@ -285,7 +592,22 @@ public sealed class GenerateViews
 
     private Dictionary<string, string> LoadTableMappings() =>
         File.ReadAllLines(_tableMappingPath)
+            .Select(l => l.Trim())
+            .Where(l => !string.IsNullOrWhiteSpace(l))
             .Select(l => l.Split(','))
             .Where(p => p.Length == 2)
-            .ToDictionary(p => p[0], p => p[1]);
+            .ToDictionary(
+                p => p[0].Trim().TrimStart('\uFEFF'),
+                p => p[1].Trim(),
+                StringComparer.OrdinalIgnoreCase
+            );
+
+    private static bool IsIgnored(DataMapRow r)
+    {
+        return string.Equals(
+            r.IgnoreMapping?.Trim(),
+            "Y",
+            StringComparison.OrdinalIgnoreCase);
+    }
+
 }

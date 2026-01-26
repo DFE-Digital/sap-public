@@ -1,4 +1,4 @@
-﻿-- ================================================================
+-- ================================================================
 -- 00_cleanup.sql
 -- Drops generated objects so the pipeline can re-run idempotently.
 -- Creates functions used by later steps
