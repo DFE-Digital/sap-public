@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SAPPub.Core.Interfaces.Services;
+using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
 using SAPPub.Web.Helpers;
-using SAPPub.Web.Models.Charts;
 using SAPPub.Web.Models.SecondarySchool;
+using static SAPPub.Web.Models.SecondarySchool.AcademicPerformanceEnglishAndMathsResultsViewModel;
 
 namespace SAPPub.Web.Controllers
 {
@@ -69,28 +70,25 @@ namespace SAPPub.Web.Controllers
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/academic-performance-english-and-maths-results", Name = RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults)]
-        public IActionResult AcademicPerformanceEnglishAndMathsResults(string urn, string schoolName)
+        public IActionResult AcademicPerformanceEnglishAndMathsResults([FromServices] IAcademicPerformanceEnglishAndMathsResultsService academicPerformanceEnglishAndMathsResultsService, string urn, string schoolName, GcseGradeDataSelection SelectedGrade = GcseGradeDataSelection.Grade5AndAbove)
         {
             Response.Headers["Content-Security-Policy"] = CspPolicy;
-            var gcseDatamodel = new GcseDataViewModel
+            var establishment = _establishmentService.GetEstablishment(urn);
+            if (establishment?.URN == null)
             {
-                Lables = ["School", "Sheffield Average", "England Average"],
-                GcseData = [75, 65, 55],
-                ChartTitle = "GCSE English and Maths (Grade 5 and above)",
-            };
+                return View("Error");
+            }
 
-            var model = new AcademicPerformanceEnglishAndMathsResultsViewModel
-            {
-                URN = urn,
-                SchoolName = schoolName,
-                GcseChartData = gcseDatamodel,
-            };
+            var results = academicPerformanceEnglishAndMathsResultsService.ResultsOfSpecifiedGradeAndAbove(urn, Convert.ToInt32(SelectedGrade));
+
+            var model = AcademicPerformanceEnglishAndMathsResultsViewModel.Map(establishment, results, SelectedGrade);
+
             return View(model);
         }
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/academic-performance-subjects-entered", Name = RouteConstants.SecondaryAcademicPerformanceSubjectsEntered)]
-        public IActionResult AcademicPerformanceSubjectsEntered(string urn, string schoolName, [FromServices] IEstablishmentSubjectEntriesService subjectEntriesService)
+        public IActionResult AcademicPerformanceSubjectsEntered([FromServices] IEstablishmentSubjectEntriesService subjectEntriesService, string urn, string schoolName)
         {
             var establishmentDetails = _establishmentService.GetEstablishment(urn);
             var (coreSubjectEntries, additionalSubjectEntries) = subjectEntriesService.GetSubjectEntriesByUrn(urn);
