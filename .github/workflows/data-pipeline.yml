@@ -335,6 +335,7 @@ jobs:
             $latest  = [int]$manifest[$key].latest
 
             $forcedSignature = $null
+            $signature = $null
             $finalName = $null
             $downloadUrl = $null
 
@@ -404,6 +405,9 @@ jobs:
               if ($resolvedHdr.lm)   { $parts += "lm:$($resolvedHdr.lm)" }
               if ($resolvedHdr.len)  { $parts += "len:$($resolvedHdr.len)" }
               $forcedSignature = ($parts -join "|")
+
+              # Always upload GIAS to a stable name to avoid accumulating dated blobs
+              $finalName = "${key}.csv"
             }
 
             # -------------------------------------------------
@@ -596,8 +600,18 @@ jobs:
               --overwrite true | Out-Null
           }
 
-          $files = Get-ChildItem $rawDir -File
-          if (-not $files) { throw "No files were downloaded from Blob to $rawDir." }
+          # Is this blob part of a managed dataset "family" (so we can skip non-latest versions)?
+          # Managed family rules:
+          #   - GIAS: <key>.csv (stable overwrite name)
+          #   - EES:  <key>_*   (versioned/suffixed files)
+          #   - Legacy cleanup: ANY blob that starts with <key> (e.g. old dated filenames) is treated as managed
+          # Only blobs NOT in a managed family are considered "manual" and downloaded by default.
+          function Is-ManagedFamilyBlob([string]$blobName, $managedKeysSet) {
+            if ([string]::IsNullOrWhiteSpace($blobName)) { return $false }
+            $lower = $blobName.ToLowerInvariant()
+
+            foreach ($mk in $managedKeysSet) {
+              $mkl = $mk.ToLowerInvariant()
 
           Write-Host "Downloaded files:"
           $files | Select-Object Name, Length

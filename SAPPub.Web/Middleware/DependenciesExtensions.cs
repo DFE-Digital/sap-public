@@ -88,6 +88,7 @@ namespace SAPPub.Web.Middleware
 
             services.AddScoped<IEstablishmentSubjectEntriesService, EstablishmentSubjectEntriesService>();
             services.AddScoped<IEstablishmentSubjectEntriesRepository, EstablishmentSubjectEntriesRepository>();
+            services.AddScoped<IAcademicPerformanceEnglishAndMathsResultsService, Core.Services.KS4.Performance.EnglishAndMathsResultsService>();
         }
     }
 }

@@ -71,76 +71,36 @@ body {
     outline-offset: 2px;
 }
 
-/* Vertical Navigation */
-
-.dfe-vertical-nav {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-weight: 400;
-    font-size: 0.875rem;
-    line-height: 1.14286;
-    padding-left: 15px;
-    margin-left: -15px;
-}
-
-
-/* Vertical Navigation Section */
-
-.dfe-vertical-nav__section {
-    margin: 0 0 20px;
-    padding: 0;
-    list-style-type: none;
-}
-
-.dfe-vertical-nav__section-item {
-    border-left: 4px solid #b1b4b6;
-    font-size: 1rem;
-    line-height: 1.25;
-}
-
-    .dfe-vertical-nav__section-item:hover {
-        border-left: 4px solid #347ca9;
-    }
-
-.dfe-vertical-nav__section-item--current {
-    border-left: 4px solid #003a69;
-    font-weight: 700;
-    background: #f3f2f1;
-}
-
-
-/* Vertical Navigation Links */
-
-.dfe-vertical-nav__link {
-    display: block;
-    padding: 7px 30px 8px 10px;
-    text-decoration: none;
-    margin-bottom: 5px;
-    color: #003a69;
-}
-
-.dfe-vertical-nav__link:hover,
-.dfe-vertical-nav__link:active {
-    color: #1d70b8;
-    border-left-color: #347ca9;
-    text-decoration: none;
-    box-shadow: none;
-}
-
-.dfe-vertical-nav__link:focus {
-    background: #fd0;
-    color: #0b0c0c;
-    text-decoration: none;
-    box-shadow: none;
-    outline: 0;
-}
-
-.govuk-accordion__controls {
-    display: none;
-}
-
 .govuk-clear {
     clear:both;
     display: block;
 }
 
+/* Vertical navigation */
+
+@media(max-width: 40.0525em) {
+    .moj-side-navigation {
+        padding-bottom: 20px;
+    }
+    
+    .moj-side-navigation__list {
+        flex-direction: column;
+    }
+
+    .moj-side-navigation__item {
+        width: 100%;
+    }
+
+    .moj-side-navigation__item > a {
+        border-bottom: none !important;
+    }
+
+    .moj-side-navigation__item--active {
+        border-left: 0.25em solid #1d70b8;
+        background-color: #f3f2f1;
+    }
+
+    .moj-side-navigation__link {
+        border-bottom: none;
+    }
+}
