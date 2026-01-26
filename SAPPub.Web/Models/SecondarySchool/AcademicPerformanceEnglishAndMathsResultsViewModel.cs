@@ -34,7 +34,7 @@ public class AcademicPerformanceEnglishAndMathsResultsViewModel : SecondarySchoo
             GcseData = new List<double>
                 {
                     englishAndMathsResultsServiceModel?.EstablishmentResult ?? 0,
-                    englishAndMathsResultsServiceModel?.LocalAuthorityAverage ?? 0, // CML TODO temp sub 0 until I ask Raj how his graph will cope with nulls
+                    englishAndMathsResultsServiceModel?.LocalAuthorityAverage ?? 0, // temp substitute nulls with 0 until we determine expected behaviour when data is unavailable
                     englishAndMathsResultsServiceModel?.EnglandAverage ?? 0
                 },
             ChartTitle = $"GCSE English and Maths (Grade {selectedGrade} and above)",

@@ -71,17 +71,17 @@
 
         <div id="graphSection" class="govuk-grid-row">
             <form method="get" action="@Url.Action("AcademicPerformanceEnglishAndMathsResults", "SecondarySchool")#graphSection">
-                <govuk-select for="@Model.SelectedGrade" class="govuk-grid-column-two-thirds">
-                    <govuk-select-label class="govuk-heading-s">Choose the grade you want to see results for</govuk-select-label>
-                    <govuk-select-item value=@GcseGradeDataSelection.Grade4AndAbove selected="@Model.SelectedGrade == GcseGradeDataSelection.Grade4AndAbove">Grade 4 and above</govuk-select-item>
-                    <govuk-select-item value=@GcseGradeDataSelection.Grade5AndAbove selected="!@Model.SelectedGrade.HasValue || @Model.SelectedGrade == GcseGradeDataSelection.Grade5AndAbove">Grade 5 and above</govuk-select-item>
+                <govuk-select for="@Model.SelectedGrade" class="govuk-grid-column-two-thirds govuk-input__wrapper" id="gradeSelector">
+                    <govuk-select-label class="govuk-label--s govuk-!-margin-right-2 select-inline-label">Choose the grade you want to see results for</govuk-select-label>
+                    <govuk-select-item value=@GcseGradeDataSelection.Grade4AndAbove selected="@Model.SelectedGrade == GcseGradeDataSelection.Grade4AndAbove">@GcseGradeDataSelection.Grade4AndAbove.GetDisplayName()</govuk-select-item>
+                            <govuk-select-item value=@GcseGradeDataSelection.Grade5AndAbove selected="!@Model.SelectedGrade.HasValue || @Model.SelectedGrade == GcseGradeDataSelection.Grade5AndAbove">@GcseGradeDataSelection.Grade5AndAbove.GetDisplayName()</govuk-select-item>
                 </govuk-select>
                 <govuk-button type="submit" class="govuk-button govuk-!-margin-bottom-0 govuk-!-margin-left-2">Show results</govuk-button>
             </form>
         </div>
 
         <div class="gds-chart-container">
-            <h3 class="govuk-!-margin-left-2 govuk-!-margin-top-3">
+            <h3 class="govuk-!-margin-left-2 govuk-!-margin-top-3" id="chartHeading">
                 @Model.SelectedGrade!.GetDisplayName() in English and maths GCSEs
             </h3>
             <p class="govuk-!-margin-left-2">
