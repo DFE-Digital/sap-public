@@ -18,7 +18,7 @@
         <span id="school-name-caption" class="govuk-caption-l">@Model.SchoolName</span>
         <h1 class="govuk-heading-l">@ViewBag.Title</h1>
 
-        <govuk-accordion id="admissions-accordion" hide-all-sections-text="" show-all-sections-text="" hide-section-text="Show more" show-section-text="Show more">
+        <govuk-accordion id="admissions-accordion" hide-all-sections-text="Hide all sections" show-all-sections-text="Show all sections" hide-section-text="Hide" show-section-text="Show more">
             <govuk-accordion-item>
                 <govuk-accordion-item-heading>What to do if your child is moving schools</govuk-accordion-item-heading>
                 <govuk-accordion-item-summary>If your child is moving schools, you’ll need to apply through your local council.</govuk-accordion-item-summary>
@@ -55,6 +55,32 @@
                             </govuk-summary-list>
                         </div>
                     </div>
+                </govuk-accordion-item-content>
+            </govuk-accordion-item>
+
+            <govuk-accordion-item>
+                <govuk-accordion-item-heading>Supporting information for secondary school applications</govuk-accordion-item-heading>
+                 <govuk-accordion-item-summary></govuk-accordion-item-summary>
+                <govuk-accordion-item-content>
+                    <p>
+                        Some types of schools require supporting information to make an application.
+                        Depending on the school, this could include:
+                    </p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>
+                            a Supplementary Information Form (SIF), for example for a faith school
+                        </li>
+                        <li>
+                            an aptitude test, for example a music aptitude test
+                        </li>
+                        <li>
+                            an entrance test, for example for some grammar schools
+                        </li>
+                    </ul>
+                    <p>
+                        Parents make an applications then the school arranges for the child to take the test. After the results of the test, schools use this to allocate places. - selection testing
+                        You’ll usually need to submit these forms directly to the school you’re applying for.
+                    </p>
                 </govuk-accordion-item-content>
             </govuk-accordion-item>
         </govuk-accordion>
