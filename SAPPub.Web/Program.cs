@@ -125,6 +125,8 @@ public partial class Program
         app.UseRouting();
         app.UseGovUkFrontend();
 
+        //app.UseMiddleware<GatewayMiddleware>();
+
         app.MapControllers();
         app.MapRazorPages();
 

@@ -1,0 +1,46 @@
+﻿@model GatewayConsentViewModel
+
+@{
+    ViewData["Title"] = "School Profile - Public facing";
+}
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper govuk-main-wrapper--l" id="main-content" role="main">
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+
+                <h1 class="govuk-heading-xl">
+                    School profiles
+                </h1>
+
+                @using (Html.BeginForm())
+                {
+
+                    <govuk-input name="@Model.Email" spellcheck="false">
+                        <govuk-input-label is-page-heading="true" class="govuk-label--l">What is your email address?</govuk-input-label>
+                    </govuk-input>
+
+                    <govuk-radios name="@Model.ConsentGiven">
+                        <govuk-radios-fieldset>
+                            <govuk-radios-fieldset-legend is-page-heading="true" class="govuk-fieldset__legend--l">
+                                Do you consent to analytics cookies?
+                            </govuk-radios-fieldset-legend>
+
+                            <govuk-radios-hint>
+                                Select one option.
+                            </govuk-radios-hint>
+
+                            <govuk-radios-item value="true">Yes</govuk-radios-item>
+                            <govuk-radios-item value="false">No</govuk-radios-item>
+                        </govuk-radios-fieldset>
+                    </govuk-radios>
+
+                    <govuk-button type="submit">Save and continue</govuk-button>
+                }
+
+            </div>
+        </div>
+
+    </main>
+</div>

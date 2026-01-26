@@ -1,0 +1,58 @@
+﻿@model GatewayWelcomeViewModel
+
+@{
+    ViewData["Title"] = "School Profile - Public facing";
+}
+
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper govuk-main-wrapper--l" id="main-content" role="main">
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+
+                <h1 class="govuk-heading-xl">
+                    School profiles
+                </h1>
+
+                <p>
+                    This service is in private beta, which means it’s still a work in progress. Using it helps us test, improve and design the final version.
+                    You can help us improve this service by agreeing to optional cookies. This will help us better understand how the service is used. For example, which pages are visited and how people move through the service. We anonymise all cookie data and only use this data to improve the service. You can change or withdraw your cookie preferences at any time using the cookie banner.
+                </p>
+                <p>To use the service, you need to provide:</p>
+                <ul>
+                    <li>your email address</li>
+                    <li>your cookie consent preferences</li>
+                    <li>whether you want to take part in user research (we’ll reimburse you for your time)</li>
+                </ul>
+                <p>We only collect what’s necessary. We handle all personal information in line with UK GDPR and the Department for Education privacy policy.</p>
+
+
+
+
+                @using (Html.BeginForm())
+                {
+                    @Html.HiddenFor(m => m.LocalAuthority)
+
+                    <govuk-radios name="@Model.HasBeenHereBefore">
+                        <govuk-radios-fieldset>
+                            <govuk-radios-fieldset-legend is-page-heading="true" class="govuk-fieldset__legend--l">
+                                Hast though been 'ere before?
+                            </govuk-radios-fieldset-legend>
+
+                            <govuk-radios-hint>
+                                Select one option.
+                            </govuk-radios-hint>
+
+                            <govuk-radios-item value="true">I have not registered</govuk-radios-item>
+                            <govuk-radios-item value="false">I have registered</govuk-radios-item>
+                        </govuk-radios-fieldset>
+                    </govuk-radios>
+
+                    <govuk-button type="submit">Save and continue</govuk-button>
+                }
+
+            </div>
+        </div>
+
+    </main>
+</div>
