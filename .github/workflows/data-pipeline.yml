@@ -171,6 +171,7 @@ jobs:
             $org      = [string]$s.SourceOrg
             $dsid     = [string]$s.DataSetId
             $fileType = ([string]$s.FileType).ToLowerInvariant()
+            $fileName = [string]$s.FileName
 
             if ([string]::IsNullOrWhiteSpace($type) -or
                 [string]::IsNullOrWhiteSpace($sub)  -or
@@ -179,11 +180,16 @@ jobs:
               throw "Each entry in raw_sources.json must include Type, Subtype, Year, SourceOrg. Offending entry: $($s | ConvertTo-Json -Compress)"
             }
 
+            if ([string]::IsNullOrWhiteSpace($fileName)) {
+              throw "Each entry in raw_sources.json must include FileName. Offending entry: $($s | ConvertTo-Json -Compress)"
+            }
+
             if ([string]::IsNullOrWhiteSpace($fileType)) { $fileType = "csv" }
             if ($fileType -ne "csv" -and $fileType -ne "zip") {
               throw "FileType must be 'csv' or 'zip'. Offending entry: $($s | ConvertTo-Json -Compress)"
             }
 
+            # Stable internal key for manifest tracking (NOT used for final blob names)
             $composite = "${type}_${sub}_${year}"
             $safeKey = ($composite -replace '[^a-zA-Z0-9_\-\.]', '_').ToLowerInvariant()
 
@@ -196,6 +202,7 @@ jobs:
               sourceOrg = $org
               dataSetId = $dsid
               fileType  = $fileType
+              fileName  = $fileName
             }
           }
 
@@ -259,12 +266,6 @@ jobs:
             }
           }
 
-          function New-EesFileName([string]$type, [string]$subtype, [string]$year, [string]$version) {
-            $base = "${type}_${subtype}_${year}"
-            $safe = ($base -replace '[^a-zA-Z0-9_\-\.]', '_').ToLowerInvariant()
-            return "${safe}_v${version}.csv"
-          }
-
           function Get-EnvVarRequired([string]$name) {
             $v = [Environment]::GetEnvironmentVariable($name)
             if ([string]::IsNullOrWhiteSpace($v)) {
@@ -274,31 +275,18 @@ jobs:
           }
 
           function Resolve-GiasTemplateFromToken([string]$token) {
-            # raw_sources uses placeholders like:
-            #   "__SECRET_URL__"
-            #   "__SECRET_ESTABLISHMENT_LINKS_URL__"
-            #   "__SECRET_MAT_LINKS_URL__"
-            # We map token -> env var secret:
-            #   __SECRET_URL__                    -> SENSITIVE_DATASET_URL
-            #   __SECRET_ESTABLISHMENT_LINKS_URL__-> SENSITIVE_ESTABLISHMENT_LINKS_URL
-            #   __SECRET_MAT_LINKS_URL__          -> SENSITIVE_MAT_LINKS_URL
             if ([string]::IsNullOrWhiteSpace($token)) { throw "GIAS Url token was blank." }
 
             $t = $token.Trim()
-
             switch ($t) {
               "__SECRET_URL__" { return Get-EnvVarRequired "SENSITIVE_DATASET_URL" }
               "__SECRET_ESTABLISHMENT_LINKS_URL__" { return Get-EnvVarRequired "SENSITIVE_ESTABLISHMENT_LINKS_URL" }
               "__SECRET_MAT_LINKS_URL__" { return Get-EnvVarRequired "SENSITIVE_MAT_LINKS_URL" }
-              default {
-                throw "Unknown GIAS secret token '$t'. Add a mapping in Resolve-GiasTemplateFromToken()."
-              }
+              default { throw "Unknown GIAS secret token '$t'. Add a mapping in Resolve-GiasTemplateFromToken()." }
             }
           }
 
           function Get-FirstFileFromZip([string]$zipPath, [string]$outDir) {
-            # Extract exactly one "data file" from the zip.
-            # Preference: first *.csv; otherwise first non-directory entry.
             Add-Type -AssemblyName System.IO.Compression.FileSystem
             if (-not (Test-Path $zipPath)) { throw "Zip not found: $zipPath" }
 
@@ -313,7 +301,6 @@ jobs:
               New-Item -ItemType Directory -Force -Path $outDir | Out-Null
               $dest = Join-Path $outDir $pick.Name
 
-              # Ensure parent folders if the entry has a path
               $destParent = Split-Path $dest -Parent
               if ($destParent) { New-Item -ItemType Directory -Force -Path $destParent | Out-Null }
 
@@ -332,14 +319,12 @@ jobs:
           $latestFiles = @{}
 
           foreach ($src in $sources) {
-            $key      = [string]$src.key
-            $type     = [string]$src.type
-            $sub      = [string]$src.subtype
-            $year     = [string]$src.year
-            $org      = [string]$src.sourceOrg
-            $dsid     = [string]$src.dataSetId
-            $urlToken = [string]$src.url
-            $fileType = [string]$src.fileType
+            $key         = [string]$src.key
+            $org         = [string]$src.sourceOrg
+            $dsid        = [string]$src.dataSetId
+            $urlToken    = [string]$src.url
+            $fileType    = [string]$src.fileType
+            $fileNameTpl = [string]$src.fileName
 
             if (-not $manifest.ContainsKey($key)) {
               $manifest[$key] = @{ latest = 0; lastSignature = ""; lastFileName = "" }
@@ -358,10 +343,7 @@ jobs:
             $hasDsid     = -not [string]::IsNullOrWhiteSpace($dsid)
 
             # -------------------------------------------------
-            # Branch A: GIAS (sensitive, dated URL probing)
-            # - Uses Url token -> secret env var template
-            # - Supports FileType csv or zip
-            # - If zip: download zip, extract (csv), upload extracted file
+            # Branch A: GIAS (dated URL probing)
             # -------------------------------------------------
             if ($org -eq "GIAS") {
               if (-not $hasUrlToken) { throw "GIAS entry '$key' must include Url token (e.g. __SECRET_...__)." }
@@ -369,6 +351,10 @@ jobs:
               $template = Resolve-GiasTemplateFromToken $urlToken
               if ($template -notmatch "\{fileDatePostfix\}") {
                 throw "GIAS secret template for '$key' must include {fileDatePostfix} placeholder."
+              }
+
+              if ($fileNameTpl -notmatch "YYYYmmDD") {
+                throw "GIAS FileName for '$key' must contain 'YYYYmmDD' (e.g. edubasealldataYYYYmmDD)."
               }
 
               $maxLookbackDays = 30
@@ -409,9 +395,9 @@ jobs:
               $downloadUrl = $resolvedUrl
               $manifest[$key].lastSuccessDate = $resolvedDate
 
-              # Keep original dated filename from URL for reference,
-              # but if it's a ZIP, we will upload the extracted CSV with a deterministic name.
-              $sourceFileName = [System.IO.Path]::GetFileName($downloadUrl)
+              # Name blob from raw_sources.FileName (YYYYmmDD => actual date)
+              $resolvedBase = $fileNameTpl.Replace("YYYYmmDD", $resolvedDate)
+              $finalName = "${resolvedBase}.csv"
 
               # Signature includes date + headers so same-date updates can be detected
               $parts = @("giasDate:$resolvedDate")
@@ -426,7 +412,6 @@ jobs:
 
             # -------------------------------------------------
             # Branch B: EES versioned API
-            # - DataSetId present, Url blank
             # -------------------------------------------------
             if (-not $finalName -and $org -eq "EES") {
               if (-not $hasDsid -or $hasUrlToken) {
@@ -445,25 +430,20 @@ jobs:
 
               $downloadUrl = "https://api.education.gov.uk/statistics/v1/data-sets/$dsid/csv?dataSetVersion=$dataSetVersion"
               $forcedSignature = "ees:$dsid|version:$dataSetVersion"
-              $finalName = New-EesFileName -type $type -subtype $sub -year $year -version $dataSetVersion
 
+              # Name blob from raw_sources.FileName + version suffix
+              $finalName = "${fileNameTpl}_v${dataSetVersion}.csv"
               $manifest[$key].eesLatestVersion = $dataSetVersion
             }
 
-            # -------------------------------------------------
-            # Guardrails
-            # -------------------------------------------------
             if (-not $finalName) {
-              throw "Unsupported source config for '$key'. SourceOrg must be GIAS or EES and follow the new rules."
+              throw "Unsupported source config for '$key'. SourceOrg must be GIAS or EES."
             }
 
             if ([string]::IsNullOrWhiteSpace($downloadUrl)) {
               throw "Internal error: downloadUrl not resolved for '$key'."
             }
 
-            # -------------------------------------------------
-            # Signature: always forced for GIAS and EES (by design)
-            # -------------------------------------------------
             $signature = $forcedSignature
             if ([string]::IsNullOrWhiteSpace($signature)) {
               throw "Internal error: forced signature missing for '$key'."
@@ -479,10 +459,7 @@ jobs:
                 throw "Failed downloading dataset '$key' from source (URL hidden). $($_.Exception.Message)"
               }
 
-              $uploadPath = $null
-
               if ($org -eq "GIAS" -and $fileType -eq "zip") {
-                # Extract CSV from ZIP then upload extracted file
                 $zipPath = Join-Path $workDir "${key}.zip"
                 Move-Item -Force $tmpPath $zipPath
 
@@ -491,7 +468,6 @@ jobs:
 
                 $extracted = Get-FirstFileFromZip -zipPath $zipPath -outDir $extractDir
 
-                # Move extracted file to finalName (ensures stable blob name)
                 $finalPath = Join-Path $workDir $finalName
                 Copy-Item -Force $extracted $finalPath
                 $uploadPath = $finalPath
@@ -544,11 +520,11 @@ jobs:
       # ==============================
       # 7. Download generator inputs from Blob Storage
       #    - Downloads:
-      #        (A) ALL "manual" blobs (anything not managed by raw_sources.json)
+      #        (A) ALL manual_* blobs (canonical manual uploads)
       #        (B) ONLY the LATEST managed blobs (from step 6 output latest_files)
-      #    - Avoids pulling old versions of managed datasets
+      #    - Skips everything else (old managed versions, legacy leftovers, stray blobs)
       # ==============================
-      - name: Download generator inputs from Blob Storage (manual + latest managed only)
+      - name: Download generator inputs from Blob Storage (manual_* + latest managed only)
         shell: pwsh
         env:
           LATEST_FILES: ${{ steps.version.outputs.latest_files }}
@@ -558,33 +534,6 @@ jobs:
           $rawDir = "SAPData/DataMap/SourceFiles"
           New-Item -ItemType Directory -Force -Path $rawDir | Out-Null
           Get-ChildItem -Path $rawDir -Force | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue
-
-          # ---- Load managed keys from raw_sources.json (same key logic as step 6) ----
-          $sourcesPathRepo = "SAPData/raw_sources.json"
-          if (-not (Test-Path $sourcesPathRepo)) { throw "Could not find $sourcesPathRepo in the repo." }
-
-          $sourcesRaw = Get-Content $sourcesPathRepo -Raw | ConvertFrom-Json
-          if ($null -eq $sourcesRaw) { throw "raw_sources.json parsed to null." }
-          if ($sourcesRaw -isnot [System.Array]) { $sourcesRaw = @($sourcesRaw) }
-
-          $managedKeys = New-Object System.Collections.Generic.HashSet[string]([StringComparer]::OrdinalIgnoreCase)
-          foreach ($s in $sourcesRaw) {
-            $type = [string]$s.Type
-            $sub  = [string]$s.Subtype
-            $year = [string]$s.Year
-
-            if ([string]::IsNullOrWhiteSpace($type) -or
-                [string]::IsNullOrWhiteSpace($sub)  -or
-                [string]::IsNullOrWhiteSpace($year)) {
-              throw "Each entry in raw_sources.json must include Type, Subtype, Year. Offending entry: $($s | ConvertTo-Json -Compress)"
-            }
-
-            $composite = "${type}_${sub}_${year}"
-            $key = ($composite -replace '[^a-zA-Z0-9_\-\.]', '_').ToLowerInvariant()
-            [void]$managedKeys.Add($key)
-          }
-
-          if ($managedKeys.Count -eq 0) { throw "No managed keys derived from raw_sources.json" }
 
           # ---- Load latest managed filenames from step 6 output ----
           $latest = $env:LATEST_FILES | ConvertFrom-Json -AsHashtable
@@ -609,6 +558,48 @@ jobs:
             throw "No blobs found in container '$($env:AZURE_STORAGE_CONTAINER)'."
           }
 
+          # ---- Decide what to download ----
+          # Rule (hardened):
+          #   - Download if blob is manual_* (canonical manual uploads)
+          #   - Download if blob is exactly one of the latest managed filenames
+          #   - Otherwise skip
+          $toDownload = New-Object System.Collections.Generic.HashSet[string]([StringComparer]::OrdinalIgnoreCase)
+
+          foreach ($blob in $blobNames) {
+            if ([string]::IsNullOrWhiteSpace($blob)) { continue }
+
+            $lower = $blob.ToLowerInvariant()
+
+            if ($lower.StartsWith("manual_")) {
+              [void]$toDownload.Add($blob)
+              continue
+            }
+
+            if ($latestManagedFiles.Contains($blob)) {
+              [void]$toDownload.Add($blob)
+              continue
+            }
+
+            # Everything else is skipped by design
+          }
+
+          # Safety: ensure all latest managed files are included
+          foreach ($mf in $latestManagedFiles) { [void]$toDownload.Add($mf) }
+
+          if ($toDownload.Count -eq 0) { throw "No blobs selected for download." }
+
+          Write-Host "Downloading $($toDownload.Count) blobs (manual_* + latest managed only)..."
+          foreach ($blob in $toDownload) {
+            $dest = Join-Path $rawDir $blob
+
+            az storage blob download `
+              --container-name $env:AZURE_STORAGE_CONTAINER `
+              --name $blob `
+              --file $dest `
+              --connection-string $env:AZURE_STORAGE_CONNECTION_STRING `
+              --overwrite true | Out-Null
+          }
+
           # Is this blob part of a managed dataset "family" (so we can skip non-latest versions)?
           # Managed family rules:
           #   - GIAS: <key>.csv (stable overwrite name)
@@ -621,65 +612,6 @@ jobs:
 
             foreach ($mk in $managedKeysSet) {
               $mkl = $mk.ToLowerInvariant()
-
-              # Stable GIAS overwrite name
-              if ($lower -eq "$mkl.csv") { return $true }
-
-              # EES versioning / suffix patterns
-              if ($lower.StartsWith($mkl + "_")) { return $true }
-
-              # Catch-all for any legacy blobs that begin with the managed key
-              # e.g. <key>20240101.csv, <key>-old.csv, etc.
-              if ($lower.StartsWith($mkl)) { return $true }
-            }
-
-            return $false
-          }
-
-
-          # ---- Decide what to download ----
-          # Rule:
-          #   - If blob name is exactly one of the latest managed filenames => download it
-          #   - Else if blob belongs to any managed dataset family => skip it (old/other managed)
-          #   - Else => download it (manual file)
-          $toDownload = New-Object System.Collections.Generic.HashSet[string]([StringComparer]::OrdinalIgnoreCase)
-
-          foreach ($blob in $blobNames) {
-            if ([string]::IsNullOrWhiteSpace($blob)) { continue }
-
-            if ($latestManagedFiles.Contains($blob)) {
-              [void]$toDownload.Add($blob)
-              continue
-            }
-
-            if (Is-ManagedFamilyBlob $blob $managedKeys) {
-              # Managed (but not the latest managed filename) => skip
-              continue
-            }
-
-            # Manual blob => include
-            [void]$toDownload.Add($blob)
-          }
-
-          # Safety: ensure all latest managed files are included
-          foreach ($mf in $latestManagedFiles) { [void]$toDownload.Add($mf) }
-
-          if ($toDownload.Count -eq 0) { throw "No blobs selected for download." }
-
-          Write-Host "Downloading $($toDownload.Count) blobs (manual + latest managed only)..."
-          foreach ($blob in $toDownload) {
-            $dest = Join-Path $rawDir $blob
-
-            az storage blob download `
-              --container-name $env:AZURE_STORAGE_CONTAINER `
-              --name $blob `
-              --file $dest `
-              --connection-string $env:AZURE_STORAGE_CONNECTION_STRING `
-              --overwrite true | Out-Null
-          }
-
-          $files = Get-ChildItem $rawDir -File
-          if (-not $files) { throw "No files were downloaded from Blob to $rawDir." }
 
           Write-Host "Downloaded files:"
           $files | Select-Object Name, Length
