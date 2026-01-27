@@ -473,7 +473,7 @@ jobs:
                   --connection-string $conn | ConvertFrom-Json
 
                 if ($oldExists.exists -eq $true) {
-                  Write-Host "Deleting old blob for $key: $oldBlobName"
+                  Write-Host "Deleting old blob for ${key}: ${oldBlobName}"
                   az storage blob delete `
                     --container-name $container `
                     --name $oldBlobName `
@@ -487,14 +487,14 @@ jobs:
               $manifest[$key].lastFileName = $finalName
               $latestFiles[$key] = $finalName
 
-              Write-Host "UPDATED: $key -> $finalName"
+              Write-Host "UPDATED: ${key} -> ${finalName}"
             }
 
             else {
               $lastFile = [string]$manifest[$key].lastFileName
               if ([string]::IsNullOrWhiteSpace($lastFile)) { $lastFile = $finalName }
               $latestFiles[$key] = $lastFile
-              Write-Host "UNCHANGED: $key remains $lastFile"
+              Write-Host "UNCHANGED: ${key} remains ${lastFile}"
             }
           }
 
