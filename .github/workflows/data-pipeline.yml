@@ -559,7 +559,7 @@ jobs:
           }
 
           # ---- Decide what to download ----
-          # Rule (hardened):
+          # Rule:
           #   - Download if blob is manual_* (canonical manual uploads)
           #   - Download if blob is exactly one of the latest managed filenames
           #   - Otherwise skip
@@ -579,8 +579,6 @@ jobs:
               [void]$toDownload.Add($blob)
               continue
             }
-
-            # Everything else is skipped by design
           }
 
           # Safety: ensure all latest managed files are included
@@ -600,21 +598,9 @@ jobs:
               --overwrite true | Out-Null
           }
 
-          # Is this blob part of a managed dataset "family" (so we can skip non-latest versions)?
-          # Managed family rules:
-          #   - GIAS: <key>.csv (stable overwrite name)
-          #   - EES:  <key>_*   (versioned/suffixed files)
-          #   - Legacy cleanup: ANY blob that starts with <key> (e.g. old dated filenames) is treated as managed
-          # Only blobs NOT in a managed family are considered "manual" and downloaded by default.
-          function Is-ManagedFamilyBlob([string]$blobName, $managedKeysSet) {
-            if ([string]::IsNullOrWhiteSpace($blobName)) { return $false }
-            $lower = $blobName.ToLowerInvariant()
-
-            foreach ($mk in $managedKeysSet) {
-              $mkl = $mk.ToLowerInvariant()
-
           Write-Host "Downloaded files:"
-          $files | Select-Object Name, Length
+          $files = Get-ChildItem -Path $rawDir -File | Sort-Object Name
+          $files | Select-Object Name, Length | Format-Table -AutoSize
 
       # ==============================
       # 8. Build + Run SQL generator
