@@ -25,16 +25,20 @@ public class GenerateIndexes
         sb.AppendLine();
         sb.AppendLine("-- NOTE:");
         sb.AppendLine("-- - Uses quoted identifiers to respect case-sensitive columns");
+        sb.AppendLine("-- - Uses current_schema() so it works in any schema (local + pipeline)");
         sb.AppendLine("-- - Guards index creation when a view is not present");
         sb.AppendLine("-- - Emits NOTICE messages so execution output is descriptive");
         sb.AppendLine();
 
+        // You explicitly control which column gets indexed (no guessing).
+        // IMPORTANT: Put the identifier exactly as it appears in the materialized view,
+        // including quotes where needed (e.g. \"Group UID\").
         var indexes = new Dictionary<string, string>
         {
             // Establishment
             { "v_establishment",                 "\"URN\"" },
-            { "v_establishment_links",           "\"URN\"" },
-            { "v_establishment_group_links",     "\"Group UID\"" },
+            { "v_establishment_links",           "\"urn\"" },
+            { "v_establishment_group_links",     "\"group_id\"" },
             { "v_establishment_subject_entries", "\"school_urn\"" },
 
             { "v_establishment_absence",      "\"Id\"" },
@@ -62,17 +66,26 @@ public class GenerateIndexes
 
             string indexName = $"idx_{view}_{colSlug}";
 
-            // Use a DO block so we can conditionally check view + index existence and print notices.
             sb.AppendLine("DO $$");
+            sb.AppendLine("DECLARE");
+            sb.AppendLine("  v_schema text := current_schema();");
             sb.AppendLine("BEGIN");
-            sb.AppendLine($"  IF to_regclass('public.{view}') IS NULL THEN");
-            sb.AppendLine($"    RAISE NOTICE 'SKIP: view public.{view} does not exist (index {indexName} not created)';");
+
+            // Check view exists in current schema
+            sb.AppendLine($"  IF to_regclass(format('%I.%I', v_schema, '{EscapeSqlLiteral(view)}')) IS NULL THEN");
+            sb.AppendLine($"    RAISE NOTICE 'SKIP: view %.% does not exist (index {indexName} not created)', v_schema, '{EscapeSqlLiteral(view)}';");
             sb.AppendLine("  ELSE");
-            sb.AppendLine($"    IF to_regclass('public.{indexName}') IS NULL THEN");
-            sb.AppendLine($"      RAISE NOTICE 'CREATE: index public.{indexName} on public.{view} ({column})';");
-            sb.AppendLine($"      CREATE INDEX {indexName} ON public.{view} ({column});");
+
+            // Check index exists in current schema
+            sb.AppendLine($"    IF to_regclass(format('%I.%I', v_schema, '{EscapeSqlLiteral(indexName)}')) IS NULL THEN");
+            sb.AppendLine($"      RAISE NOTICE 'CREATE: index %.% on %.% ({column})', v_schema, '{EscapeSqlLiteral(indexName)}', v_schema, '{EscapeSqlLiteral(view)}';");
+
+            // Create index in current schema on the view in current schema
+            // We keep your explicit column string as-is (already quoted as needed).
+            sb.AppendLine($"      EXECUTE format('CREATE INDEX %I ON %I.%I ({column})', '{EscapeSqlLiteral(indexName)}', v_schema, '{EscapeSqlLiteral(view)}');");
+
             sb.AppendLine("    ELSE");
-            sb.AppendLine($"      RAISE NOTICE 'OK: index public.{indexName} already exists';");
+            sb.AppendLine($"      RAISE NOTICE 'OK: index %.% already exists', v_schema, '{EscapeSqlLiteral(indexName)}';");
             sb.AppendLine("    END IF;");
             sb.AppendLine("  END IF;");
             sb.AppendLine("END $$;");
@@ -84,4 +97,6 @@ public class GenerateIndexes
         Console.WriteLine("Generated view index script:");
         Console.WriteLine(outputPath);
     }
+
+    private static string EscapeSqlLiteral(string s) => (s ?? "").Replace("'", "''");
 }

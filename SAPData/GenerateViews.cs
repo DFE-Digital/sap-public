@@ -264,6 +264,23 @@ public sealed class GenerateViews
     }
 
     // =====================================================
+    // COLUMN NORMALISATION (DataMap header -> raw table column)
+    // =====================================================
+    private static string DbCol(string? header)
+    {
+        if (string.IsNullOrWhiteSpace(header))
+            return header ?? "";
+
+        // Match GenerateRawTables.Sanitise behaviour (lower + non-alnum -> '_')
+        var s = header.Trim().ToLowerInvariant();
+        var sb = new StringBuilder(s.Length);
+        foreach (var ch in s)
+            sb.Append(char.IsLetterOrDigit(ch) ? ch : '_');
+
+        return sb.ToString();
+    }
+
+    // =====================================================
     // ESTABLISHMENT DIMENSION (curated)
     // =====================================================
 
@@ -277,62 +294,62 @@ public sealed class GenerateViews
         sb.AppendLine();
         sb.AppendLine("CREATE MATERIALIZED VIEW v_establishment AS");
         sb.AppendLine("SELECT");
-        sb.AppendLine("    t.\"URN\"                                  AS \"URN\",");
-        sb.AppendLine("    t.\"LA (code)\"                            AS \"LAId\",");
-        sb.AppendLine("    t.\"LA (name)\"                            AS \"LAName\",");
-        sb.AppendLine("    clean_int(t.\"GOR (code)\")                AS \"RegionId\",");
-        sb.AppendLine("    t.\"GOR (name)\"                           AS \"RegionName\",");
-        sb.AppendLine("    t.\"EstablishmentName\"                    AS \"EstablishmentName\",");
-        sb.AppendLine("    clean_int(t.\"EstablishmentNumber\")       AS \"EstablishmentNumber\",");
+        sb.AppendLine("    t.\"urn\"                                 AS \"URN\",");
+        sb.AppendLine("    t.\"la__code_\"                           AS \"LAId\",");
+        sb.AppendLine("    t.\"la__name_\"                           AS \"LAName\",");
+        sb.AppendLine("    clean_int(t.\"gor__code_\")               AS \"RegionId\",");
+        sb.AppendLine("    t.\"gor__name_\"                          AS \"RegionName\",");
+        sb.AppendLine("    t.\"establishmentname\"                   AS \"EstablishmentName\",");
+        sb.AppendLine("    clean_int(t.\"establishmentnumber\")      AS \"EstablishmentNumber\",");
         sb.AppendLine();
-        sb.AppendLine("    clean_int(t.\"Trusts (code)\")             AS \"TrustsId\",");
-        sb.AppendLine("    t.\"Trusts (name)\"                        AS \"TrustName\",");
+        sb.AppendLine("    clean_int(t.\"trusts__code_\")            AS \"TrustsId\",");
+        sb.AppendLine("    t.\"trusts__name_\"                       AS \"TrustName\",");
         sb.AppendLine();
-        sb.AppendLine("    clean_int(t.\"AdmissionsPolicy (code)\")   AS \"AdmissionsPolicyId\",");
-        sb.AppendLine("    t.\"AdmissionsPolicy (name)\"              AS \"AdmissionPolicy\",");
+        sb.AppendLine("    clean_int(t.\"admissionspolicy__code_\")  AS \"AdmissionsPolicyId\",");
+        sb.AppendLine("    t.\"admissionspolicy__name_\"             AS \"AdmissionPolicy\",");
         sb.AppendLine();
-        sb.AppendLine("    t.\"DistrictAdministrative (code)\"        AS \"DistrictAdministrativeId\",");
-        sb.AppendLine("    t.\"DistrictAdministrative (name)\"        AS \"DistrictAdministrativeName\",");
+        sb.AppendLine("    t.\"districtadministrative__code_\"       AS \"DistrictAdministrativeId\",");
+        sb.AppendLine("    t.\"districtadministrative__name_\"       AS \"DistrictAdministrativeName\",");
         sb.AppendLine();
-        sb.AppendLine("    clean_int(t.\"PhaseOfEducation (code)\")   AS \"PhaseOfEducationId\",");
-        sb.AppendLine("    t.\"PhaseOfEducation (name)\"              AS \"PhaseOfEducationName\",");
+        sb.AppendLine("    clean_int(t.\"phaseofeducation__code_\")  AS \"PhaseOfEducationId\",");
+        sb.AppendLine("    t.\"phaseofeducation__name_\"             AS \"PhaseOfEducationName\",");
         sb.AppendLine();
-        sb.AppendLine("    clean_int(t.\"Gender (code)\")             AS \"GenderId\",");
-        sb.AppendLine("    t.\"Gender (name)\"                        AS \"GenderName\",");
+        sb.AppendLine("    clean_int(t.\"gender__code_\")            AS \"GenderId\",");
+        sb.AppendLine("    t.\"gender__name_\"                       AS \"GenderName\",");
         sb.AppendLine();
-        sb.AppendLine("    clean_int(t.\"OfficialSixthForm (code)\")  AS \"OfficialSixthFormId\",");
-        sb.AppendLine("    clean_int(t.\"ReligiousCharacter (code)\") AS \"ReligiousCharacterId\",");
-        sb.AppendLine("    t.\"ReligiousCharacter (name)\"            AS \"ReligiousCharacterName\",");
+        sb.AppendLine("    clean_int(t.\"officialsixthform__code_\") AS \"OfficialSixthFormId\",");
+        sb.AppendLine("    clean_int(t.\"religiouscharacter__code_\") AS \"ReligiousCharacterId\",");
+        sb.AppendLine("    t.\"religiouscharacter__name_\"           AS \"ReligiousCharacterName\",");
         sb.AppendLine();
-        sb.AppendLine("    t.\"TelephoneNum\"                         AS \"TelephoneNum\",");
-        sb.AppendLine("    clean_int(t.\"NumberOfPupils\")            AS \"TotalPupils\",");
+        sb.AppendLine("    t.\"telephonenum\"                        AS \"TelephoneNum\",");
+        sb.AppendLine("    clean_int(t.\"numberofpupils\")           AS \"TotalPupils\",");
         sb.AppendLine();
-        sb.AppendLine("    clean_int(t.\"TypeOfEstablishment (code)\") AS \"TypeOfEstablishmentId\",");
-        sb.AppendLine("    t.\"TypeOfEstablishment (name)\"            AS \"TypeOfEstablishmentName\",");
+        sb.AppendLine("    clean_int(t.\"typeofestablishment__code_\") AS \"TypeOfEstablishmentId\",");
+        sb.AppendLine("    t.\"typeofestablishment__name_\"          AS \"TypeOfEstablishmentName\",");
         sb.AppendLine();
-        sb.AppendLine("    clean_int(t.\"ResourcedProvisionOnRoll\")  AS \"ResourcedProvision\",");
-        sb.AppendLine("    t.\"TypeOfResourcedProvision (name)\"      AS \"ResourcedProvisionName\",");
+        sb.AppendLine("    clean_int(t.\"resourcedprovisiononroll\") AS \"ResourcedProvision\",");
+        sb.AppendLine("    t.\"typeofresourcedprovision__name_\"     AS \"ResourcedProvisionName\",");
         sb.AppendLine();
-        sb.AppendLine("    clean_int(t.\"UKPRN\")                     AS \"UKPRN\",");
+        sb.AppendLine("    clean_int(t.\"ukprn\")                    AS \"UKPRN\",");
         sb.AppendLine();
-        sb.AppendLine("    t.\"Street\"                               AS \"Street\",");
-        sb.AppendLine("    t.\"Locality\"                             AS \"Locality\",");
-        sb.AppendLine("    t.\"Address3\"                             AS \"Address3\",");
-        sb.AppendLine("    t.\"Town\"                                 AS \"Town\",");
-        sb.AppendLine("    t.\"County (name)\"                        AS \"County\",");
-        sb.AppendLine("    t.\"Postcode\"                             AS \"Postcode\",");
+        sb.AppendLine("    t.\"street\"                              AS \"Street\",");
+        sb.AppendLine("    t.\"locality\"                            AS \"Locality\",");
+        sb.AppendLine("    t.\"address3\"                            AS \"Address3\",");
+        sb.AppendLine("    t.\"town\"                                AS \"Town\",");
+        sb.AppendLine("    t.\"county__name_\"                       AS \"County\",");
+        sb.AppendLine("    t.\"postcode\"                            AS \"Postcode\",");
         sb.AppendLine();
-        sb.AppendLine("    t.\"HeadTitle (name)\"                     AS \"HeadTitle\",");
-        sb.AppendLine("    t.\"HeadFirstName\"                        AS \"HeadFirstName\",");
-        sb.AppendLine("    t.\"HeadLastName\"                         AS \"HeadLastName\",");
-        sb.AppendLine("    t.\"HeadPreferredJobTitle\"                AS \"HeadPreferredJobTitle\",");
+        sb.AppendLine("    t.\"headtitle__name_\"                    AS \"HeadTitle\",");
+        sb.AppendLine("    t.\"headfirstname\"                       AS \"HeadFirstName\",");
+        sb.AppendLine("    t.\"headlastname\"                        AS \"HeadLastName\",");
+        sb.AppendLine("    t.\"headpreferredjobtitle\"               AS \"HeadPreferredJobTitle\",");
         sb.AppendLine();
-        sb.AppendLine("    t.\"UrbanRural (code)\"                    AS \"UrbanRuralId\",");
-        sb.AppendLine("    t.\"UrbanRural (name)\"                    AS \"UrbanRuralName\",");
+        sb.AppendLine("    t.\"urbanrural__code_\"                   AS \"UrbanRuralId\",");
+        sb.AppendLine("    t.\"urbanrural__name_\"                   AS \"UrbanRuralName\",");
         sb.AppendLine();
-        sb.AppendLine("    t.\"SchoolWebsite\"                        AS \"Website\",");
-        sb.AppendLine("    clean_int(t.\"Easting\")                   AS \"Easting\",");
-        sb.AppendLine("    clean_int(t.\"Northing\")                  AS \"Northing\"");
+        sb.AppendLine("    t.\"schoolwebsite\"                       AS \"Website\",");
+        sb.AppendLine("    clean_int(t.\"easting\")                  AS \"Easting\",");
+        sb.AppendLine("    clean_int(t.\"northing\")                 AS \"Northing\"");
         sb.AppendLine($"FROM {rawTable} t;");
         sb.AppendLine();
         sb.AppendLine("CREATE UNIQUE INDEX idx_v_establishment_urn ON v_establishment (\"URN\");");
@@ -383,9 +400,11 @@ public sealed class GenerateViews
             if (!TryResolveRawTable(tableMap, fileKey, out var rawTable))
                 throw new InvalidOperationException($"Missing table mapping for '{g.Key}'");
 
+            var idCol = DbCol(r0.RecordFilterBy);
+
             sb.AppendLine($"src_{i + 1} AS (");
             sb.AppendLine("    SELECT");
-            sb.AppendLine($"        t.\"{r0.RecordFilterBy}\" AS \"Id\",");
+            sb.AppendLine($"        t.\"{idCol}\" AS \"Id\",");
 
             var props = g
                 .Where(r => !string.IsNullOrWhiteSpace(r.PropertyName))
@@ -397,7 +416,7 @@ public sealed class GenerateViews
                 sb.AppendLine($"        {props[j]}{(j == props.Count - 1 ? "" : ",")}");
 
             sb.AppendLine($"    FROM {rawTable} t");
-            sb.AppendLine($"    GROUP BY t.\"{r0.RecordFilterBy}\"");
+            sb.AppendLine($"    GROUP BY t.\"{idCol}\"");
             sb.AppendLine(")");
             sb.AppendLine(i == groups.Count - 1 ? "," : ",");
         }
@@ -445,7 +464,6 @@ public sealed class GenerateViews
             var prop = orderedProps[i];
             var sources = propertySources[prop];
 
-            // note: trailing comma handled based on last column overall
             var isLast = i == orderedProps.Count - 1;
             var comma = isLast ? "" : ",";
 
@@ -506,10 +524,8 @@ public sealed class GenerateViews
             Norm(s.Type) == Norm(type) &&
             Norm(s.Subtype) == Norm(subtype);
 
-        // 1) Exact match org/type/subtype/year
         var src = sources.FirstOrDefault(s => Matches(s) && Norm(s.Year) == Norm(year));
 
-        // 2) If asking for Current but it isn't present, pick best available for same org/type/subtype
         if (src == null && Norm(year) == "current")
         {
             var candidates = sources.Where(Matches).ToList();
@@ -535,7 +551,6 @@ public sealed class GenerateViews
 
         var pattern = src.FileName.Trim();
 
-        // 3) Dated datasets (GIAS): contains YYYYmmDD => pick latest matching key by date
         if (pattern.Contains("YYYYmmDD", StringComparison.OrdinalIgnoreCase))
         {
             var regex = BuildYyyyMmDdRegex(pattern);
@@ -556,7 +571,6 @@ public sealed class GenerateViews
             return true;
         }
 
-        // 4) Non-dated (EES): exact key, or key with managed version suffix (_v1.0 etc)
         var exact = pattern.Trim();
 
         var exactMatch = tableMap.Keys
@@ -599,10 +613,6 @@ public sealed class GenerateViews
 
     private static Regex BuildYyyyMmDdRegex(string fileNamePattern)
     {
-        // Supports exactly one YYYYmmDD placeholder.
-        // Example: "edubasealldataYYYYmmDD"
-        // Regex:   ^edubasealldata(?<date>\d{8})$
-        // Tolerates optional ".csv", ".zip", or ".csv.zip"
         const string token = "YYYYmmDD";
 
         var idx = fileNamePattern.IndexOf(token, StringComparison.OrdinalIgnoreCase);
@@ -638,16 +648,17 @@ public sealed class GenerateViews
 
         var key = datasetKey.Trim().TrimStart('\uFEFF');
 
-        // 1) Exact
         if (tableMap.TryGetValue(key, out rawTable))
             return true;
 
-        // 2) manual_ canonical fallback
-        var manualKey = "manual_" + key;
-        if (tableMap.TryGetValue(manualKey, out rawTable))
+        var manualShortKey = "m_" + key;
+        if (tableMap.TryGetValue(manualShortKey, out rawTable))
             return true;
 
-        // 3) Managed version suffix fallback: <base>_v1.0, _v2.1, _v1.0.3 etc (pick highest)
+        var manualLongKey = "manual_" + key;
+        if (tableMap.TryGetValue(manualLongKey, out rawTable))
+            return true;
+
         var versionRegex = new Regex(
             "^" + Regex.Escape(key) + "_v(?<ver>[0-9]+\\.[0-9]+(\\.[0-9]+)?)$",
             RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
@@ -678,25 +689,29 @@ public sealed class GenerateViews
         static string SqlLiteral(string? s) => (s ?? "").Replace("'", "''");
 
         if (!string.IsNullOrWhiteSpace(r.Filter))
-            conditions.Add($"t.\"{r.Filter}\" = '{SqlLiteral(r.FilterValue)}'");
+            conditions.Add($"t.\"{DbCol(r.Filter)}\" = '{SqlLiteral(r.FilterValue)}'");
         if (!string.IsNullOrWhiteSpace(r.Filter2))
-            conditions.Add($"t.\"{r.Filter2}\" = '{SqlLiteral(r.Filter2Value)}'");
+            conditions.Add($"t.\"{DbCol(r.Filter2)}\" = '{SqlLiteral(r.Filter2Value)}'");
         if (!string.IsNullOrWhiteSpace(r.Filter3))
-            conditions.Add($"t.\"{r.Filter3}\" = '{SqlLiteral(r.Filter3Value)}'");
+            conditions.Add($"t.\"{DbCol(r.Filter3)}\" = '{SqlLiteral(r.Filter3Value)}'");
 
         var whenClause = conditions.Count == 0 ? "TRUE" : string.Join(" AND ", conditions);
 
         return $"MAX(CASE WHEN {whenClause} THEN {BuildValueExpression(r)} END) AS \"{r.PropertyName}\"";
     }
 
-    private static string BuildValueExpression(DataMapRow r) =>
-        r.DataType?.ToLowerInvariant() switch
+    private static string BuildValueExpression(DataMapRow r)
+    {
+        var col = DbCol(r.Field);
+
+        return r.DataType?.ToLowerInvariant() switch
         {
-            "int" => $"clean_int(t.\"{r.Field}\")",
-            "percentage" => $"clean_numeric(t.\"{r.Field}\")",
-            "numeric" => $"clean_numeric(t.\"{r.Field}\")",
-            _ => $"t.\"{r.Field}\""
+            "int" => $"clean_int(t.\"{col}\")",
+            "percentage" => $"clean_numeric(t.\"{col}\")",
+            "numeric" => $"clean_numeric(t.\"{col}\")",
+            _ => $"t.\"{col}\""
         };
+    }
 
     private Dictionary<string, string> LoadTableMappings() =>
         File.ReadAllLines(_tableMappingPath)

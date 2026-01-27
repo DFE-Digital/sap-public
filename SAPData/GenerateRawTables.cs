@@ -62,14 +62,29 @@ public class GenerateRawTables
         StringBuilder copySql,
         StringBuilder copyLocalSql)
     {
-        string datasetKey = Path.GetFileNameWithoutExtension(csvPath);
-        string tableName = GenerateShortTableName(datasetKey);
+        // fileKey is the actual CSV name (without extension) in your input dir.
+        // This MAY include manual_ prefix (because the blob is stored that way).
+        string fileKey = Path.GetFileNameWithoutExtension(csvPath);
 
-        _tableMappings[datasetKey] = tableName;
+        // logicalKey is the dataset identity used by DataMap / GenerateViews (no manual_ prefix)
+        bool isManual = fileKey.StartsWith("manual_", StringComparison.OrdinalIgnoreCase);
+        string logicalKey = isManual ? fileKey["manual_".Length..] : fileKey;
 
-        string cleanCsvPath = Path.Combine(_cleanDir, datasetKey + ".clean.csv");
+        // Physical table name: prefix-free, based on logical identity (stable)
+        string tableName = GenerateShortTableName(logicalKey);
 
-        Console.WriteLine($"Processing: {datasetKey}");
+        // Map BOTH keys to the same physical table
+        // - DataMap will use logicalKey
+        // - Any direct lookups / legacy scripts may still use fileKey
+        if (_tableMappings.ContainsKey(logicalKey))
+            Console.WriteLine($"WARNING: Duplicate logical dataset key detected: {logicalKey} (existing table '{_tableMappings[logicalKey]}', new '{tableName}')");
+
+        _tableMappings[logicalKey] = tableName;
+        _tableMappings[fileKey] = tableName;
+
+        string cleanCsvPath = Path.Combine(_cleanDir, fileKey + ".clean.csv");
+
+        Console.WriteLine($"Processing: {fileKey}");
 
         using var reader = new StreamReader(csvPath, Encoding.UTF8, true);
         using var writer = new StreamWriter(cleanCsvPath, false, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
@@ -238,8 +253,7 @@ public class GenerateRawTables
                 legacyKey = legacyKey.Replace("YYYYmmDD", me.LastSuccessDate, StringComparison.OrdinalIgnoreCase);
             }
 
-            // Write an alias mapping row: legacyKey -> rawTable
-            // (This is what fixes GenerateViews lookups from DataMap.)
+            // Alias row: legacyKey -> rawTable
             _tableMappings[legacyKey] = rawTable;
         }
     }
@@ -311,25 +325,42 @@ public class GenerateRawTables
     // =====================================================
     // HELPERS
     // =====================================================
-    private static string GenerateShortTableName(string datasetKey)
+    private static string GenerateShortTableName(string logicalKey)
     {
         using var sha1 = SHA1.Create();
-        var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(datasetKey));
-        string shortHash = BitConverter.ToString(hash).Replace("-", "").Substring(0, 8).ToLowerInvariant();
 
-        string prefix = Sanitise(datasetKey);
-        if (prefix.Length > 18)
-            prefix = prefix.Substring(0, 18);
+        var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(logicalKey));
+        string shortHash = BitConverter
+            .ToString(hash)
+            .Replace("-", "")
+            .Substring(0, 10)
+            .ToLowerInvariant();
 
-        return $"raw_{prefix}_{shortHash}";
+        string baseName = Sanitise(logicalKey);
+
+        if (baseName.Length > 20)
+            baseName = baseName.Substring(0, 20);
+
+        // Always prefix raw tables with t_
+        // (so cleanup can safely target t_% and names never start with a digit)
+        return $"t_{baseName}_{shortHash}";
     }
 
     private static string Sanitise(string input)
     {
-        return input
-            .Trim()
-            .Replace("-", "_");
+        var sb = new StringBuilder();
+
+        foreach (var c in input.Trim())
+        {
+            if (char.IsLetterOrDigit(c) || c == '_')
+                sb.Append(c);
+            else
+                sb.Append('_');
+        }
+
+        return sb.ToString().ToLowerInvariant();
     }
+
 
     // =====================================================
     // CSV PARSER (RFC4180-safe)
