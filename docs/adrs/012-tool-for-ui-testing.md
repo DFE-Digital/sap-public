@@ -1,7 +1,5 @@
 # 012 - Tool For UI Testing
 
-ADR taken from https://github.com/DFE-Digital/sts-plan-technology-for-your-school
-
 * **Status**: accepted
 
 ## Context and Problem Statement
@@ -14,13 +12,17 @@ What tool should be adopted within the SAP project to facilitate UI testing?
 * DfE projects using Cypress
 	* [find-a-tuition-partner](https://github.com/DFE-Digital/find-a-tuition-partner)
 	* [trams-data-api](https://github.com/DFE-Digital/trams-data-api)
+* Tooling already built within SAP projects (Sector/Public)
   
 ## Considered Options
 
-* Cypress
+* [Cypress](https://cypress.io)
 * Selenium / specflow
 * Puppeteer
+* [Playwright] (https://github.com/microsoft/playwright)
 
 ## Decision Outcome
 
-Using [Cypress](https://cypress.io) as it is the most commonly used UI testing application/framework across DFE.
+As code has already been written using Playwright, SAP will continue to use it. 
+
+Should a reason to chance arise then a new ADR will be written as is standard.
