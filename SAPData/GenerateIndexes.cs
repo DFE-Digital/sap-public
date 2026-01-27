@@ -34,7 +34,7 @@ public class GenerateIndexes
             // Establishment
             { "v_establishment",                 "\"URN\"" },
             { "v_establishment_links",           "\"URN\"" },
-            { "v_establishment_group_links",     "\"URN\"" },
+            { "v_establishment_group_links",     "\"Group UID\"" },
             { "v_establishment_subject_entries", "\"school_urn\"" },
 
             { "v_establishment_absence",      "\"Id\"" },
