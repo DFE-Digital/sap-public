@@ -1,6 +1,6 @@
 # Architectural Overview
 
-This overview provides an at-a-glance view of the SAP Public service and it's idealised workings. 
+This overview provides an at-a-glance view of the SAP Public service and its idealised workings. 
 
 This document and section is due to change, due to a want to implement more "Clean Architecture" so deemed a WIP document.
 

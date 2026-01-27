@@ -8,7 +8,15 @@ Technical Story: [description | ticket/issue URL] <!-- optional -->
 
 ## Context and Problem Statement
 
-Concerns were raised about using the local json/csv store referenced in [ADR-004](004-data-storage-strategy.md), as such the decision was re-reviewed and the decision made to go straight to using postgres as database.
+Concerns were raised about using the local json/csv store referenced in [ADR-004](004-data-storage-strategy.md). 
+
+These concerns involved:
+
+* Availability of the application - if the data is local, can it perform reliably?
+* The code would need to be deployed regularly to keep it in sync - potentially daily. 
+
+
+As such the decision was re-reviewed and the decision made to go straight to using postgres as database.
 
 ## Decision Drivers <!-- optional -->
 
