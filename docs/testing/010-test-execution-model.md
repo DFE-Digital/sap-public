@@ -7,7 +7,7 @@ It provides a single, clear view of test execution and ownership, complementing 
 
 ---
 
-## 1. Continuous Integration (CI) – Merge into `main`
+## 1. Continuous Integration (CI) ï¿½ Merge into `main`
 
 **When:** On every merge into the `main` branch  
 **Who:** Automated CI pipeline (GitHub Actions)
@@ -154,7 +154,7 @@ It provides a single, clear view of test execution and ownership, complementing 
 
 **Code and branch coverage:**
 - Used as a **visibility and guardrail metric**, not a primary quality target
-- Thresholds or “no-regression” rules may be applied pragmatically
+- Thresholds or ï¿½no-regressionï¿½ rules may be applied pragmatically
 - Emphasis remains on **risk-based, meaningful tests**, rather than achieving numeric coverage targets
 
 ---
