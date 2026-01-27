@@ -6,7 +6,6 @@ HTTP and integration tests validate the application without browser automation.
 
 These tests verify:
 - Controller endpoints return expected status codes
-- Authorisation rules are enforced (School vs LA)
 - Responses contain correct data
 - Errors are handled safely without exposing sensitive information
 

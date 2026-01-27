@@ -12,8 +12,6 @@ Security checks in CI include:
 ## Application security checks
 
 The following are validated:
-- Correct integration with DfE Sign-in
-- Role-based access control (School vs LA)
 - Secure cookie configuration
 - Content Security Policy enforcement
 - Protection against common OWASP risks

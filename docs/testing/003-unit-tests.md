@@ -9,14 +9,12 @@ Unit tests focus on:
 - Aggregation and calculation logic
 - Filtering and grouping rules
 - Defensive handling of missing or partial data
-- Role-based behaviour (School vs Local Authority)
 
 ## What is not unit tested
 
 The following are not covered by unit tests:
 - GOV.UK frontend rendering
 - Styling and layout
-- DfE Sign-in itself (external service)
 
 ## Data access
 

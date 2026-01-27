@@ -22,7 +22,7 @@ To ensure consistency, a strategy is needed for branching, merging, and deployin
 
 Trunk based flow following the the diagram
 
-![SAPSec Flow](https://github.com/DFE-Digital/sap-sector/blob/main/docs/adrs/assets/002-flow.png "Flow diagram showing branching and deployment process")
+![SAPSec Flow](https://github.com/DFE-Digital/sap-public/blob/main/docs/_assets/002-flow.png "Flow diagram showing branching and deployment process")
 
 Branches will be formatted in the following way
 
