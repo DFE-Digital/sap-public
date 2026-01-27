@@ -9,15 +9,15 @@ What software architecture should be adopted within SAP to ensure we're followin
 
 ## Decision Drivers
 * Within DfE’s Technical Guidance
-* SLT Lead Tech (Mamood Suyltan) would like a modern architecture
-* Clean Architecture has been used for other DfE Java services
+* Schools Digital's Principal (Scott Dawson) would like a modern architecture
+* Clean Architecture has been used for other DfE services
 
 ## Considered Options
 * Clean Architecture
   * Layer description 
     * UI: MVC application
     * Application: Contains all application logic
-    * Domain: Contain all entities, enums, exceptions, interfaces, types and logic specific to the domain layer.
+    * Core: Contain all entities, enums, exceptions, interfaces, types and logic specific to the domain/Ccre layer.
     * Infrastructure: Contains classes for accessing external resources such as file systems, web services, smtp, and so on.
   * Reference
     * [Uncle Bob Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
@@ -40,4 +40,4 @@ What software architecture should be adopted within SAP to ensure we're followin
 
 ## Decision Outcome
 
-We have decided to use Clean Architecture in our project. We are not using CQRS as it is unnecessarily complex for the scope of our MVS.
+We have decided to use Clean Architecture in our project. We are not using CQRS as it is unnecessarily complex for the scope of our MVP.
