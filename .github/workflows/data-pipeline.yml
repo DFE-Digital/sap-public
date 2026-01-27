@@ -395,7 +395,9 @@ jobs:
               $downloadUrl = $resolvedUrl
               $manifest[$key].lastSuccessDate = $resolvedDate
 
-              # Name blob from raw_sources.FileName (YYYYmmDD => actual date)
+              # Name blob from raw_sources.FileName:
+              # - Replace YYYYmmDD with resolved date
+              # - Resulting blob/local name becomes e.g. edubasealldata20260127.csv
               $resolvedBase = $fileNameTpl.Replace("YYYYmmDD", $resolvedDate)
               $finalName = "${resolvedBase}.csv"
 
@@ -405,9 +407,6 @@ jobs:
               if ($resolvedHdr.lm)   { $parts += "lm:$($resolvedHdr.lm)" }
               if ($resolvedHdr.len)  { $parts += "len:$($resolvedHdr.len)" }
               $forcedSignature = ($parts -join "|")
-
-              # Always upload GIAS to a stable name to avoid accumulating dated blobs
-              $finalName = "${key}.csv"
             }
 
             # -------------------------------------------------
@@ -452,38 +451,35 @@ jobs:
             $isChanged = ($latest -eq 0) -or ($signature -ne $prevSig)
 
             if ($isChanged) {
+
+              $oldBlobName = [string]$manifest[$key].lastFileName
+
               $tmpPath = Join-Path $workDir "${key}.download.tmp"
-              try {
-                Invoke-WebRequest -Uri $downloadUrl -OutFile $tmpPath -UseBasicParsing
-              } catch {
-                throw "Failed downloading dataset '$key' from source (URL hidden). $($_.Exception.Message)"
-              }
-
-              if ($org -eq "GIAS" -and $fileType -eq "zip") {
-                $zipPath = Join-Path $workDir "${key}.zip"
-                Move-Item -Force $tmpPath $zipPath
-
-                $extractDir = Join-Path $workDir "${key}_extracted"
-                if (Test-Path $extractDir) { Remove-Item $extractDir -Force -Recurse -ErrorAction SilentlyContinue }
-
-                $extracted = Get-FirstFileFromZip -zipPath $zipPath -outDir $extractDir
-
-                $finalPath = Join-Path $workDir $finalName
-                Copy-Item -Force $extracted $finalPath
-                $uploadPath = $finalPath
-              }
-              else {
-                $finalPath = Join-Path $workDir $finalName
-                Move-Item -Force $tmpPath $finalPath
-                $uploadPath = $finalPath
-              }
-
+              ...
               az storage blob upload `
                 --container-name $container `
                 --name $finalName `
                 --file $uploadPath `
                 --connection-string $conn `
                 --overwrite | Out-Null
+
+              # delete previous version
+              if (-not [string]::IsNullOrWhiteSpace($oldBlobName) -and
+                  -not ($oldBlobName.Equals($finalName, [StringComparison]::OrdinalIgnoreCase))) {
+
+                $oldExists = az storage blob exists `
+                  --container-name $container `
+                  --name $oldBlobName `
+                  --connection-string $conn | ConvertFrom-Json
+
+                if ($oldExists.exists -eq $true) {
+                  Write-Host "Deleting old blob for $key: $oldBlobName"
+                  az storage blob delete `
+                    --container-name $container `
+                    --name $oldBlobName `
+                    --connection-string $conn | Out-Null
+                }
+              }
 
               $anyChanged = $true
               $manifest[$key].latest = ($latest + 1)
@@ -493,6 +489,7 @@ jobs:
 
               Write-Host "UPDATED: $key -> $finalName"
             }
+
             else {
               $lastFile = [string]$manifest[$key].lastFileName
               if ([string]::IsNullOrWhiteSpace($lastFile)) { $lastFile = $finalName }
