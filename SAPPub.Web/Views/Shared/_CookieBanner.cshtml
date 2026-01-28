@@ -1,14 +1,54 @@
-﻿<govuk-cookie-banner aria-label="Cookie on @ViewBag.ServiceName">
-    <govuk-cookie-banner-message>
-        <govuk-cookie-banner-message-heading>Cookies on @ViewBag.ServiceName</govuk-cookie-banner-message-heading>
-        <govuk-cookie-banner-message-content>
-            <p class="govuk-body">We use some essential cookies to make this service work.</p>
-            <p class="govuk-body">We’d also like to use analytics cookies so we can understand how you use the service and make improvements.</p>
-        </govuk-cookie-banner-message-content>
-        <govuk-cookie-banner-message-actions>
-            <govuk-cookie-banner-message-action text="Accept analytics cookies" type="button" />
-            <govuk-cookie-banner-message-action text="Reject analytics cookies" type="button" />
-            <govuk-cookie-banner-message-action-link text="View cookies" href="#" />
-        </govuk-cookie-banner-message-actions>
-    </govuk-cookie-banner-message>
-</govuk-cookie-banner>
+﻿@{
+    bool analyticsAllowed = false;
+    if (Context.Request.Cookies.TryGetValue("analytics_preference", out var analyticsConsentValue))
+    {
+        analyticsAllowed = analyticsConsentValue == "true";
+    }
+    bool hasSelectedHideBanner = Context.Request.Cookies.ContainsKey("seen_cookie_confirmation");
+    var returnUrl = Context.Request.Path + Context.Request.QueryString;
+    var hasSelectedCookiePreference = Context.Request.Cookies.ContainsKey("analytics_preference");
+    var hideBanner = hasSelectedCookiePreference && hasSelectedHideBanner;
+    string chosenOptionText = analyticsAllowed ? "accepted" : "rejected";
+    var cookiePageUrl = Url.Action("Preferences", "Cookies");
+}
+
+@if (!hasSelectedCookiePreference)
+{
+    <form asp-controller="Cookies" asp-action="CookieSettings" method="post">
+        <input type="hidden" name="returnUrl" value="@returnUrl" />
+        <govuk-cookie-banner aria-label="Cookie on @ViewBag.ServiceName">
+            <govuk-cookie-banner-message>
+                <govuk-cookie-banner-message-heading>Cookies on @ViewBag.ServiceName</govuk-cookie-banner-message-heading>
+                <govuk-cookie-banner-message-content>
+                    <p class="govuk-body">We use some essential cookies to make this service work.</p>
+                    <p class="govuk-body">We’d also like to use analytics cookies so we can understand how you use the service and make improvements.</p>
+                </govuk-cookie-banner-message-content>
+                <govuk-cookie-banner-message-actions>
+                    <govuk-cookie-banner-message-action value="true" name="acceptAnalyticsCookies" text="Accept analytics cookies" type="submit" />
+                    <govuk-cookie-banner-message-action value="false" name="acceptAnalyticsCookies" text="Reject analytics cookies" type="submit" />
+                    <govuk-cookie-banner-message-action-link text="View cookies" href="@cookiePageUrl" />
+                </govuk-cookie-banner-message-actions>
+            </govuk-cookie-banner-message>
+        </govuk-cookie-banner>
+    </form>
+}
+else if (!hideBanner)
+{
+    <form asp-controller="Cookies" asp-action="HideBanner" method="post">
+        <input type="hidden" name="returnUrl" value="@returnUrl" />
+        <govuk-cookie-banner aria-label="Cookie on @ViewBag.ServiceName">
+            <govuk-cookie-banner-message>
+                <govuk-cookie-banner-message-heading>Cookies on @ViewBag.ServiceName</govuk-cookie-banner-message-heading>
+                <govuk-cookie-banner-message-content>
+                    <p>
+                        You've <span id="cookies-action">@chosenOptionText</span> analytics cookies.
+                        You can <a href="@cookiePageUrl">change your cookie settings</a> at any time
+                    </p>
+                </govuk-cookie-banner-message-content>
+                <govuk-cookie-banner-message-actions>
+                    <govuk-cookie-banner-message-action value="true" name="hideBanner" id="confirm-cookie-settings" type="submit" text="Hide this message" />
+                </govuk-cookie-banner-message-actions>
+            </govuk-cookie-banner-message>
+        </govuk-cookie-banner>
+    </form>
+}
