@@ -455,7 +455,7 @@ jobs:
               $oldBlobName = [string]$manifest[$key].lastFileName
 
               $tmpPath = Join-Path $workDir "${key}.download.tmp"
-              ...
+              
               az storage blob upload `
                 --container-name $container `
                 --name $finalName `
@@ -583,7 +583,7 @@ jobs:
 
           if ($toDownload.Count -eq 0) { throw "No blobs selected for download." }
 
-          Write-Host "Downloading $($toDownload.Count) blobs (manual_* + latest managed only)..."
+          Write-Host "Downloading $($toDownload.Count) blobs (manual_* + latest managed only)"
           foreach ($blob in $toDownload) {
             $dest = Join-Path $rawDir $blob
 
@@ -619,7 +619,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          echo "Running ETL via konduit..."
+          echo "Running ETL via konduit"
           ls -la "$GITHUB_WORKSPACE/SAPData/Sql" || true
           "$GITHUB_WORKSPACE/konduit.sh" -n "${AKS_NAMESPACE}" -t 7200 -x \
             -i "$GITHUB_WORKSPACE/SAPData/Sql/run_all.sql" \
