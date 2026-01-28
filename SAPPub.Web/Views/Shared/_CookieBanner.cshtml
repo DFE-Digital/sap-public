@@ -16,7 +16,7 @@
 {
     <form asp-controller="Cookies" asp-action="CookieSettings" method="post">
         <input type="hidden" name="returnUrl" value="@returnUrl" />
-        <govuk-cookie-banner aria-label="Cookie on @ViewBag.ServiceName">
+        <govuk-cookie-banner id="full-cookie-banner" aria-label="Cookie on @ViewBag.ServiceName">
             <govuk-cookie-banner-message>
                 <govuk-cookie-banner-message-heading>Cookies on @ViewBag.ServiceName</govuk-cookie-banner-message-heading>
                 <govuk-cookie-banner-message-content>
@@ -36,7 +36,7 @@ else if (!hideBanner)
 {
     <form asp-controller="Cookies" asp-action="HideBanner" method="post">
         <input type="hidden" name="returnUrl" value="@returnUrl" />
-        <govuk-cookie-banner aria-label="Cookie on @ViewBag.ServiceName">
+        <govuk-cookie-banner id="selection-made-cookie-banner" aria-label="Cookie on @ViewBag.ServiceName">
             <govuk-cookie-banner-message>
                 <govuk-cookie-banner-message-heading>Cookies on @ViewBag.ServiceName</govuk-cookie-banner-message-heading>
                 <govuk-cookie-banner-message-content>
