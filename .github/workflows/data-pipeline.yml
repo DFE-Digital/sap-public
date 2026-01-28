@@ -396,8 +396,6 @@ jobs:
               $manifest[$key].lastSuccessDate = $resolvedDate
 
               # Name blob from raw_sources.FileName:
-              # - Replace YYYYmmDD with resolved date
-              # - Resulting blob/local name becomes e.g. edubasealldata20260127.csv
               $resolvedBase = $fileNameTpl.Replace("YYYYmmDD", $resolvedDate)
               $finalName = "${resolvedBase}.csv"
 
@@ -430,7 +428,6 @@ jobs:
               $downloadUrl = "https://api.education.gov.uk/statistics/v1/data-sets/$dsid/csv?dataSetVersion=$dataSetVersion"
               $forcedSignature = "ees:$dsid|version:$dataSetVersion"
 
-              # Name blob from raw_sources.FileName + version suffix
               $finalName = "${fileNameTpl}_v${dataSetVersion}.csv"
               $manifest[$key].eesLatestVersion = $dataSetVersion
             }
@@ -451,19 +448,44 @@ jobs:
             $isChanged = ($latest -eq 0) -or ($signature -ne $prevSig)
 
             if ($isChanged) {
-
               $oldBlobName = [string]$manifest[$key].lastFileName
 
-              $tmpPath = Join-Path $workDir "${key}.download.tmp"
-              
+              # -----------------------------
+              # Download -> (optional unzip) -> upload
+              # -----------------------------
+              $tmpDownloadPath = Join-Path $workDir "${key}.download"
+              if ($org -eq "GIAS" -and $fileType -eq "zip") {
+                $tmpDownloadPath = "${tmpDownloadPath}.zip"
+              } else {
+                $tmpDownloadPath = "${tmpDownloadPath}.csv"
+              }
+
+              Write-Host "Downloading ${key} to: $tmpDownloadPath"
+              Invoke-WebRequest -Uri $downloadUrl -OutFile $tmpDownloadPath -UseBasicParsing
+
+              if (-not (Test-Path $tmpDownloadPath)) {
+                throw "Download failed; file not found: $tmpDownloadPath"
+              }
+
+              $uploadPath = $tmpDownloadPath
+              if ($fileType -eq "zip") {
+                $unzDir = Join-Path $workDir "${key}.unzipped"
+                $uploadPath = Get-FirstFileFromZip -zipPath $tmpDownloadPath -outDir $unzDir
+
+                if (-not (Test-Path $uploadPath)) {
+                  throw "Zip extraction failed; extracted file not found: $uploadPath"
+                }
+              }
+
+              Write-Host "Uploading ${key} -> ${finalName} (from $uploadPath)"
               az storage blob upload `
                 --container-name $container `
                 --name $finalName `
-                --file $uploadPath `
+                --file "$uploadPath" `
                 --connection-string $conn `
                 --overwrite | Out-Null
 
-              # delete previous version
+              # delete previous version (only after successful upload)
               if (-not [string]::IsNullOrWhiteSpace($oldBlobName) -and
                   -not ($oldBlobName.Equals($finalName, [StringComparison]::OrdinalIgnoreCase))) {
 
@@ -487,9 +509,9 @@ jobs:
               $manifest[$key].lastFileName = $finalName
               $latestFiles[$key] = $finalName
 
+              # IMPORTANT: only say UPDATED after success
               Write-Host "UPDATED: ${key} -> ${finalName}"
             }
-
             else {
               $lastFile = [string]$manifest[$key].lastFileName
               if ([string]::IsNullOrWhiteSpace($lastFile)) { $lastFile = $finalName }
@@ -500,11 +522,13 @@ jobs:
 
           # Upload manifest if anything changed OR we updated manifest metadata
           if ($anyChanged -or $manifestChanged) {
-            $manifest | ConvertTo-Json -Depth 30 | Set-Content -Path $manifestPath -Encoding UTF8
+            $json = $manifest | ConvertTo-Json -Depth 30
+            [System.IO.File]::WriteAllText($manifestPath, $json, (New-Object System.Text.UTF8Encoding($false)))
+
             az storage blob upload `
               --container-name $container `
               --name $manifestBlobName `
-              --file $manifestPath `
+              --file "$manifestPath" `
               --connection-string $conn `
               --overwrite | Out-Null
           }
@@ -513,6 +537,7 @@ jobs:
           "changed=$anyChanged" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
           $latestFilesJson = ($latestFiles | ConvertTo-Json -Depth 10 -Compress)
           "latest_files=$latestFilesJson" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
 
       # ==============================
       # 7. Download generator inputs from Blob Storage
