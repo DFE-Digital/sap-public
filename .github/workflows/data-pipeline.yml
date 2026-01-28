@@ -346,7 +346,7 @@ jobs:
             # Branch A: GIAS (dated URL probing)
             # -------------------------------------------------
             if ($org -eq "GIAS") {
-              if (-not $hasUrlToken) { throw "GIAS entry '$key' must include Url token (e.g. __SECRET_...__)." }
+              if (-not $hasUrlToken) { throw "GIAS entry '$key' must include Url token (e.g. __SECRET_URL__)." }
 
               $template = Resolve-GiasTemplateFromToken $urlToken
               if ($template -notmatch "\{fileDatePostfix\}") {
