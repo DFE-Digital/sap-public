@@ -22,7 +22,7 @@
 
 @if (!hasSelectedCookiePreference)
 {
-    <form asp-controller="Cookies" asp-action="CookieSettings" method="get">
+    <form asp-controller="Cookies" asp-action="CookieSettings">
         <input type="hidden" name="returnUrl" value="@returnUrl" />
         <govuk-cookie-banner id="full-cookie-banner" aria-label="Cookie on @ViewBag.ServiceName">
             <govuk-cookie-banner-message>
@@ -42,7 +42,7 @@
 }
 else if (!hideBanner)
 {
-    <form asp-controller="Cookies" asp-action="HideBanner" method="get">
+    <form asp-controller="Cookies" asp-action="HideBanner">
         <input type="hidden" name="returnUrl" value="@returnUrl" />
         <govuk-cookie-banner id="selection-made-cookie-banner" aria-label="Cookie on @ViewBag.ServiceName">
             <govuk-cookie-banner-message>

@@ -110,12 +110,9 @@ jobs:
 
       - name: Start MVC App
         run: |
-          dotnet run --project ./SAPPub.Web/SAPPub.Web.csproj --urls "https://localhost:3000" > app.log 2>&1 &
+          dotnet run --project ./SAPPub.Web/SAPPub.Web.csproj --urls "https://localhost:3000" &
         env:
           ASPNETCORE_ENVIRONMENT: Development
-
-      - name: Print app log
-        run: cat app.log || true
 
       - name: Wait for MVC App to be ready
         run: npx wait-on https://localhost:3000
