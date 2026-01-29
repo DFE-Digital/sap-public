@@ -237,7 +237,10 @@
                         </tr>
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header">Compliants policy</th>
-                            <td class="govuk-table__cell">A complaints policy shows how parents or carers can raise concerns with a school and how to make a complaint.</td>
+                            <td class="govuk-table__cell">@(String.IsNullOrEmpty(Model.AcademyTrust) 
+                                ? "A complaints policy shows how to raise concerns with a school and how to make a complaint." @* LA maintained school *@
+                                : "A complaints policy shows how parents or carers can raise concerns with a school and how to make a complaint.") @* academy school *@
+                            </td>
                         </tr>
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header">Safeguarding policy</th>
