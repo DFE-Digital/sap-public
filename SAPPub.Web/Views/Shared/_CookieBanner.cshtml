@@ -1,12 +1,20 @@
 ﻿@{
     bool analyticsAllowed = false;
-    if (Context.Request.Cookies.TryGetValue("analytics_preference", out var analyticsConsentValue))
+    bool hasSelectedHideBanner = false;
+    bool hasSelectedCookiePreference = false;
+    if (Context?.Request?.Cookies != null)
     {
-        analyticsAllowed = analyticsConsentValue == "true";
+        if (Context.Request.Cookies.TryGetValue("analytics_preference", out var analyticsConsentValue))
+        {
+            analyticsAllowed = analyticsConsentValue == "true";
+            hasSelectedCookiePreference = true;
+        }
+        if (Context.Request.Cookies.TryGetValue("seen_cookie_confirmation", out var hideBannerValue))
+        {
+            hasSelectedHideBanner = hideBannerValue == "true";
+        }
     }
-    bool hasSelectedHideBanner = Context.Request.Cookies.ContainsKey("seen_cookie_confirmation");
-    var returnUrl = Context.Request.Path + Context.Request.QueryString;
-    var hasSelectedCookiePreference = Context.Request.Cookies.ContainsKey("analytics_preference");
+    var returnUrl = Context?.Request?.Path + Context?.Request?.QueryString;
     var hideBanner = hasSelectedCookiePreference && hasSelectedHideBanner;
     string chosenOptionText = analyticsAllowed ? "accepted" : "rejected";
     var cookiePageUrl = Url.Action("Preferences", "Cookies");
