@@ -34,7 +34,6 @@ public class CookiesController : Controller
         return Redirect(returnUrl);
     }
 
-    [HttpPost]
     public IActionResult HideBanner(bool? hideBanner, string returnUrl)
     {
         var options = new CookieOptions

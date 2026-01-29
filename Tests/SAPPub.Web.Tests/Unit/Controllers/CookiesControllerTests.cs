@@ -18,7 +18,7 @@ public class CookiesControllerTests
         _controller.Url = _mockUrlHelper.Object;
     }
 
-    [Theory(Skip = "temporary skip")]
+    [Theory]
     [InlineData(true)]
     [InlineData(false)]
     public void CookieSettings_Should_Set_Cookie_And_Redirect(bool acceptCookies)
@@ -43,7 +43,7 @@ public class CookiesControllerTests
         Assert.Equal(redirectUrl, result.Url);
     }
 
-    [Theory(Skip = "temporary skip")]
+    [Theory]
     [InlineData(true)]
     [InlineData(false)]
     public void HideBanner_Should_Set_Cookie_And_Redirect(bool hideBanner)

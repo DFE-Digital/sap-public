@@ -6,7 +6,7 @@ public class CookieBannerTests : BasePageTest
 {
     private string _pageUrl = "school/105574/Loreto%20High%20School%20Chorlton/secondary/about";
 
-    [Fact(Skip = "temporary skip")]
+    [Fact]
     public async Task CookiesBanner_LoadsSuccessfully()
     {
         // Arrange: Clear cookies before navigating to the page
