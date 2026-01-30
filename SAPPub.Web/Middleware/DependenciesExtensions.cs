@@ -11,12 +11,14 @@ using SAPPub.Core.Interfaces.Repositories.KS4.Performance;
 using SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Repositories.KS4.Workforce;
 using SAPPub.Core.Interfaces.Services;
+using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.Absence;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Services.KS4.Workforce;
 using SAPPub.Core.Services;
+using SAPPub.Core.Services.KS4;
 using SAPPub.Core.Services.KS4.Absence;
 using SAPPub.Core.Services.KS4.Destinations;
 using SAPPub.Core.Services.KS4.Performance;
@@ -86,8 +88,10 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<ILookupRepository, LookupRepository>();
             services.AddTransient<ILookupService, LookupService>();
 
-            services.AddScoped<IEstablishmentSubjectEntriesService, EstablishmentSubjectEntriesService>();
-            services.AddScoped<IEstablishmentSubjectEntriesRepository, EstablishmentSubjectEntriesRepository>();
+            services.AddTransient<IEstablishmentSubjectEntriesService, EstablishmentSubjectEntriesService>();
+            services.AddTransient<IEstablishmentSubjectEntriesRepository, EstablishmentSubjectEntriesRepository>();
+
+            services.AddTransient<ISecondarySchoolService, SecondarySchoolService>();            
         }
     }
 }

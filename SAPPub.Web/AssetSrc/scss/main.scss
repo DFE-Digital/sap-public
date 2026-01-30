@@ -1,0 +1,178 @@
+﻿@import "/govuk-frontend/govuk/all";
+
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+}
+
+.govuk-header__link .govuk-header__logotype {
+    height: 30px;
+}
+
+.govuk-header__link:focus .govuk-header__logotype {
+    content: url(/public/images/department-for-education_black.png);
+    height: 30px;
+}
+
+#map {
+    position: relative;
+    height: 60vh;
+    min-height: 360px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.map-loading {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: .95rem;
+    color: #374151;
+    background: #f9fafb;
+}
+
+.legend {
+    margin-top: .75rem;
+    display: grid;
+    gap: .5rem;
+    margin-bottom: 5rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.legend-item img {
+    width: 22px;
+    height: auto;
+}
+
+.marker-focus:focus {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
+
+.govuk-clear {
+    clear: both;
+    display: block;
+}
+
+/* Vertical navigation */
+
+@media(max-width: 40.0525em) {
+    .moj-side-navigation {
+        padding-bottom: 20px;
+    }
+
+    .moj-side-navigation__list {
+        flex-direction: column;
+    }
+
+    .moj-side-navigation__item {
+        width: 100%;
+    }
+
+    .moj-side-navigation__item > a {
+        border-bottom: none !important;
+    }
+
+    .moj-side-navigation__item--active {
+        border-left: 0.25em solid govuk-colour("blue");
+        background-color: #f3f2f1;
+    }
+
+    .moj-side-navigation__link {
+        border-bottom: none;
+    }
+}
+
+/* charts */
+.chart-container {
+    --gds-font-family: "GDS Transport", Arial, sans-serif;
+    --gds-font-size: 16px;
+    --gds-text: govuk-colour("black");
+    --gds-grey: govuk-colour("mid-grey");
+    --gds-label-bg: govuk-colour("light-grey");
+    --gds-label-border: govuk-colour("mid-grey");
+    --gds-label-padding: 6;   
+    margin-bottom: 20px;
+    font-size: 16px;
+    font-family: "GDS Transport", Arial, sans-serif;
+}
+
+.chart-container canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+@media(max-width: 40.0525em) {
+    .chart-container {
+        --gds-font-size: 12px;
+    }
+}
+
+.data-container {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border: 1px solid govuk-colour("mid-grey");
+}
+
+body:not(.js-enabled) .all-dest-current-year-chart-container,
+body:not(.js-enabled) .all-dest-current-year-show-btn,
+body:not(.js-enabled) .all-dest-data-over-time-chart-container,
+body:not(.js-enabled) .all-dest-data-over-time-show-btn {
+    display: none;
+}
+
+body:not(.js-enabled) .all-dest-current-year-table-container {
+    display: block;
+}
+
+body.js-enabled .all-dest-current-year-chart-container
+body.js-enabled #all-dest-current-year-show-btn {
+    display: block;
+}
+
+body.js-enabled .all-dest-current-year-table-container,
+body.js-enabled .all-dest-data-over-time-data-container,
+body.js-enabled .all-dest-data-over-time-chart-container {
+    display: none;
+}
+
+/* non js logic to show tables and hide tables*/
+
+body:not(.js-enabled) .all-dest-data-over-time-data-container {
+    display: none;
+}
+
+#data-overtime-view:checked ~ .all-dest-current-year-data-container {
+    display: none;
+}
+
+#data-overtime-view:checked ~ .all-dest-data-over-time-data-container {
+    display: block;
+}

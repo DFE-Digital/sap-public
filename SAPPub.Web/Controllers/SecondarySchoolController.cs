@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SAPPub.Core.Interfaces.Services;
+using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.Charts;
@@ -9,12 +10,14 @@ namespace SAPPub.Web.Controllers
 {
     public class SecondarySchoolController(
         ILogger<SecondarySchoolController> logger,
-        IEstablishmentService establishmentService) : Controller
+        IEstablishmentService establishmentService,
+        ISecondarySchoolService secondarySchoolService) : Controller
     {
         const string CspPolicy = "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;"; //ToDo - Fix this.
 
         private readonly ILogger<SecondarySchoolController> _logger = logger;
         private readonly IEstablishmentService _establishmentService = establishmentService;
+        private readonly ISecondarySchoolService _secondarySchoolService = secondarySchoolService;
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/about", Name = RouteConstants.SecondaryAboutSchool)]
@@ -74,7 +77,7 @@ namespace SAPPub.Web.Controllers
             Response.Headers["Content-Security-Policy"] = CspPolicy;
             var gcseDatamodel = new GcseDataViewModel
             {
-                Lables = ["School", "Sheffield Average", "England Average"],
+                Labels = ["School", "Sheffield Average", "England Average"],
                 GcseData = [75, 65, 55],
                 ChartTitle = "GCSE English and Maths (Grade 5 and above)",
             };
@@ -107,7 +110,9 @@ namespace SAPPub.Web.Controllers
         [Route("school/{urn}/{schoolName}/secondary/destinations", Name = RouteConstants.SecondaryDestinations)]
         public IActionResult Destinations(string urn, string schoolName)
         {
-            var model = new DestinationsViewModel { URN = urn, SchoolName = schoolName };
+            var destinationDetails = _secondarySchoolService.GetDestinationsDetails(urn);
+
+            var model = DestinationsViewModel.Map(destinationDetails);
             return View(model);
         }
     }

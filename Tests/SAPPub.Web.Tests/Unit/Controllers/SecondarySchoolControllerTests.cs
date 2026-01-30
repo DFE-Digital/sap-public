@@ -3,11 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using SAPPub.Core.Entities;
+using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Services;
+using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
 using SAPPub.Web.Controllers;
 using SAPPub.Web.Helpers;
+using SAPPub.Web.Models.Charts;
 using SAPPub.Web.Models.SecondarySchool;
 
 namespace SAPPub.Web.Tests.Unit.Controllers;
@@ -16,6 +19,7 @@ public class SecondarySchoolControllerTests
 {
     private readonly Mock<ILogger<SecondarySchoolController>> _mockLogger;
     private readonly Mock<IEstablishmentService> _mockEstablishment;
+    private readonly Mock<ISecondarySchoolService> _mockSecondarySchoolService;
     private readonly Mock<IEstablishmentSubjectEntriesService> _mockEstablishmentSubjectEntriesService = new();
     private readonly SecondarySchoolController _controller;
 
@@ -78,13 +82,14 @@ public class SecondarySchoolControllerTests
     {
         _mockLogger = new Mock<ILogger<SecondarySchoolController>>();
         _mockEstablishment = new();
+        _mockSecondarySchoolService = new();
         _mockEstablishment.Setup(es => es.GetEstablishment(It.IsAny<string>())).Returns(fakeEstablishment);
 
         // Create a real temp directory
         var tempPath = Path.Combine(Path.GetTempPath(), "SAPPubTests", Guid.NewGuid().ToString());
         Directory.CreateDirectory(tempPath);
 
-        _controller = new SecondarySchoolController(_mockLogger.Object, _mockEstablishment.Object);
+        _controller = new SecondarySchoolController(_mockLogger.Object, _mockEstablishment.Object, _mockSecondarySchoolService.Object);
 
         _controller.ControllerContext = new ControllerContext
         {
@@ -378,9 +383,59 @@ public class SecondarySchoolControllerTests
     public void Get_Destinations_Info_ReturnsOk()
     {
         // Arrange
+        var destinationsDetails = new DestinationsDetails
+        {
+            Urn = fakeEstablishment.URN,
+            SchoolName = fakeEstablishment.EstablishmentName,
+            LocalAuthorityName = fakeEstablishment.LAName,
+            SchoolAll = new RelativeYearValues<double?>
+            {
+                CurrentYear = 10,
+                PreviousYear = 20,
+                TwoYearsAgo = 30,
+            },
+            LocalAuthorityAll = new RelativeYearValues<double?>
+            {
+                CurrentYear = 30,
+                PreviousYear = 40,
+                TwoYearsAgo = 50,
+            },
+            EnglandAll = new RelativeYearValues<double?>
+            {
+                CurrentYear = 70,
+                PreviousYear = 80,
+                TwoYearsAgo = 30,
+            },
+        };
+
+        _mockSecondarySchoolService.Setup(es => es.GetDestinationsDetails(It.IsAny<string>())).Returns(destinationsDetails);
+
         // Act
         var result = _controller.Destinations(fakeEstablishment.URN, fakeEstablishment.EstablishmentName) as ViewResult;
 
+        string[] expectedAllDestCurrentDataLabels = ["School", $"{fakeEstablishment.LAName} average", "England average"];
+        double[] expectedAllDestCurrentData = [destinationsDetails.SchoolAll.CurrentYear ?? 0, destinationsDetails.LocalAuthorityAll.CurrentYear ?? 0, destinationsDetails.EnglandAll.CurrentYear ?? 0];
+        var expectedDataOverTime = new DataOverTimeViewModel
+        {
+            Labels = [],
+            Datasets = [ 
+                new DatasetViewModel 
+                {
+                    Label = "School",
+                    Data = [destinationsDetails.SchoolAll.TwoYearsAgo ?? 0, destinationsDetails.SchoolAll.PreviousYear ?? 0, destinationsDetails.SchoolAll.CurrentYear ?? 0],
+                },
+                new DatasetViewModel
+                {
+                    Label = $"{destinationsDetails.LocalAuthorityName} average",
+                    Data = [destinationsDetails.LocalAuthorityAll.TwoYearsAgo ?? 0, destinationsDetails.LocalAuthorityAll.PreviousYear ?? 0, destinationsDetails.LocalAuthorityAll.CurrentYear ?? 0],
+                },
+                new DatasetViewModel
+                {
+                    Label = "England average",
+                    Data = [destinationsDetails.EnglandAll.TwoYearsAgo ?? 0, destinationsDetails.EnglandAll.PreviousYear ?? 0, destinationsDetails.EnglandAll.CurrentYear ?? 0],
+                },
+            ],
+        };
         // Assert
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
@@ -389,6 +444,18 @@ public class SecondarySchoolControllerTests
         Assert.NotNull(model);
         Assert.Equal(fakeEstablishment.URN, model.URN);
         Assert.Equal(fakeEstablishment.EstablishmentName, model.SchoolName);
+
+        Assert.Equal(expectedAllDestCurrentDataLabels, model.AllDestinationsData.Labels);
+        Assert.Equal(expectedAllDestCurrentData, model.AllDestinationsData.Data);
+        
+        foreach (var expectedDataset in expectedDataOverTime.Datasets)
+        {
+            var actualDatset = model.AllDestinationsOverTimeData.Datasets.FirstOrDefault(s => s.Label == expectedDataset.Label);
+            Assert.NotNull(actualDatset);
+            Assert.Equal(expectedDataset.Label, actualDatset.Label);
+            Assert.Equal(expectedDataset.Data, actualDatset.Data);
+        }
+        
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
