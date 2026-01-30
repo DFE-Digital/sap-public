@@ -148,7 +148,10 @@
                             const bg = ctx.dataset.backgroundColor[ctx.dataIndex];
                             return bg == '#003C56' ? '#ffffff' : gdsStyles.text;
                         },
-                        font: fonts,
+                        font: {
+                            ...fonts,
+                            weight: 'bold'
+                        },
                         display: function (context) {
                             return true;
                         },
