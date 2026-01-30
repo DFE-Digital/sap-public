@@ -4,22 +4,39 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "npm run copy-assets",
-    "copy-assets": "npx mkdirp wwwroot/lib && npx copyfiles -u 2 node_modules/dfe-frontend/dist/**/* wwwroot/lib/dfe-frontend && npx copyfiles -u 2 node_modules/govuk-frontend/dist/**/* wwwroot/lib/govuk-frontend && npx copyfiles -u 3 node_modules/@ministryofjustice/frontend/moj/* wwwroot/lib/moj-frontend && npx copyfiles -u 3 node_modules/@ministryofjustice/frontend/moj/**/* wwwroot/lib/moj-frontend && npx copyfiles -u 2 node_modules/leaflet/dist/* wwwroot/lib/leaflet"
+    "postinstall": "npm run build-fe",
+    "build-fe": "gulp build-fe"
   },
   "keywords": [],
-  "author": "",
-  "license": "MIT",
+
   "dependencies": {
     "@ministryofjustice/frontend": "^7.1.1",
+    "async": "^3.2.6",
+    "classnames": "^2.5.1",
+    "chart.js": "^4.5.1",
+    "chartjs-plugin-datalabels": "^2.2.0",
     "dfe-frontend": "^2.0.1",
     "govuk-frontend": "^5.13.0",
+    "file-saver": "^2.0.5",
     "leaflet": "^1.9.4",
     "moment": "^2.30.1"
   },
   "description": "",
   "devDependencies": {
+    "browser-sync": "^3.0.4",
     "copyfiles": "^2.4.1",
+    "gulp": "^5.0.1",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-dart-sass": "^1.1.0",
+    "gulp-rename": "^2.1.0",
+    "gulp-sourcemaps": "^3.0.0",
     "mkdirp": "^3.0.1"
+  },
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "types": "./types",
+  "engines": {
+    "node": ">=20"
   }
 }

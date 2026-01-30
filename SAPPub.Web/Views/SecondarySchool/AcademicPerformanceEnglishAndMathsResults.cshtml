@@ -122,7 +122,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 
 <script>
-    const labels = @Html.Raw(JsonSerializer.Serialize(Model.GcseChartData.Lables));
+    const labels = @Html.Raw(JsonSerializer.Serialize(Model.GcseChartData.Labels));
     const gcseData = @Html.Raw(JsonSerializer.Serialize(Model.GcseChartData.GcseData));
     const chartTitle = @Html.Raw(JsonSerializer.Serialize(Model.GcseChartData.ChartTitle));
 

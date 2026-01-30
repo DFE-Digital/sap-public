@@ -503,6 +503,9 @@ wwwroot/**/*.min.css
 wwwroot/**/*.min.js
 **/wwwroot/lib/
 /TestCoverageReport
+**/wwwroot/*
+**/wwwroot/*
+/coveragereport
 
 # Data Protection key ring (allow only the placeholder)
 SAPPub.Web/keys/*
