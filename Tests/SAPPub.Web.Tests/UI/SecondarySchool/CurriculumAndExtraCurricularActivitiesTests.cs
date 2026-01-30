@@ -1,5 +1,5 @@
-﻿using SAPPub.Web.Tests.UI.Helpers;
-using SAPPub.Tests.UI.Infrastructure;
+﻿using SAPPub.Tests.UI.Infrastructure;
+using SAPPub.Web.Tests.UI.Helpers;
 
 namespace SAPPub.Web.Tests.UI.SecondarySchool;
 
@@ -41,7 +41,7 @@ public class CurriculumAndExtraCurricularActivitiesTests : BasePageTest
         var heading = await Page.Locator("h1").TextContentAsync();
 
         // Assert
-        Assert.NotNull(heading.Replace(" ", ""));
+        Assert.NotNull(heading?.Replace(" ", ""));
     }
 
     [Fact]

@@ -89,7 +89,7 @@ jobs:
         run: dotnet restore
 
       - name: Build solution
-        run: dotnet build --configuration Debug
+        run: dotnet build --configuration Debug --warnings-as-errors
 
       - name: Restore .NET tools
         run: dotnet tool restore

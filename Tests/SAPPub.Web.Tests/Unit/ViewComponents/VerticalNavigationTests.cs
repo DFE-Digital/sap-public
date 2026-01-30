@@ -12,7 +12,7 @@ public class VerticalNavigationTests
     {
         // Arrange
         var item = new VerticalNavigationModel { URN = "1", SchoolName = "Kes", ActivePage = "About" };
-        
+
         var component = CreateComponent();
 
         // Act
@@ -24,7 +24,7 @@ public class VerticalNavigationTests
 
 
         var model = result.ViewData!;
-        Assert.IsType<VerticalNavigationModel>(model.Model);  
+        Assert.IsType<VerticalNavigationModel>(model.Model);
         Assert.Equal(item.URN, ((VerticalNavigationModel)model.Model).URN);
         Assert.Equal(item.SchoolName, ((VerticalNavigationModel)model.Model).SchoolName);
         Assert.Equal(item.ActivePage, ((VerticalNavigationModel)model.Model).ActivePage);
@@ -43,6 +43,6 @@ public class VerticalNavigationTests
         Assert.NotNull(result);
         Assert.Equal("~/ViewComponents/VerticalNavigation/Default.cshtml", result.ViewName);
 
-        Assert.Null(result.ViewData.Model);
+        Assert.Null(result.ViewData!.Model);
     }
 }

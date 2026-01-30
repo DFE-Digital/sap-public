@@ -14,7 +14,7 @@ namespace SAPPub.Web.Controllers
     {
         private IEstablishmentService _service;
         private IEstablishmentAbsenceService _absenceService;
-        private ILAAbsenceService _laAbsenceService; 
+        private ILAAbsenceService _laAbsenceService;
         private IEnglandAbsenceService _englandAbsenceService;
         private IEstablishmentPerformanceService _performanceService;
         private IEstablishmentDestinationsService _destinationsService;

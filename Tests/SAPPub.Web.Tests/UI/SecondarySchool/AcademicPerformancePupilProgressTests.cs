@@ -1,5 +1,5 @@
-﻿using SAPPub.Web.Tests.UI.Helpers;
-using SAPPub.Tests.UI.Infrastructure;
+﻿using SAPPub.Tests.UI.Infrastructure;
+using SAPPub.Web.Tests.UI.Helpers;
 
 namespace SAPPub.Web.Tests.UI.SecondarySchool;
 
@@ -41,7 +41,7 @@ public class AcademicPerformancePupilProgressTests : BasePageTest
         var heading = await Page.Locator("h1").TextContentAsync();
 
         // Assert
-        Assert.NotNull(heading.Replace(" ", ""));
+        Assert.NotNull(heading?.Replace(" ", ""));
     }
 
     [Fact]
@@ -72,7 +72,7 @@ public class AcademicPerformancePupilProgressTests : BasePageTest
         await nav.ShouldHaveOneActiveItemAsync();
         await nav.ShouldHaveActiveHrefAsync(_pageUrl);
     }
-    
+
     [Fact]
     public async Task AcademicPerformancePupilProgressPage_Displays_Sub_Navigation()
     {
