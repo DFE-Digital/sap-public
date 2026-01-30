@@ -22,6 +22,9 @@
     <None Update="Hashes\placeholder.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="raw_sources.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Sql\00_cleanup.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
