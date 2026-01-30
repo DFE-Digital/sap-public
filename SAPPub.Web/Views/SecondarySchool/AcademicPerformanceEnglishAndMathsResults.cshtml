@@ -70,7 +70,8 @@
         </govuk-details>
 
         <div id="graphSection" class="govuk-grid-row">
-            <form method="get" action="@Url.Action("AcademicPerformanceEnglishAndMathsResults", "SecondarySchool")#graphSection">
+            @* <form method="get" action="@Url.Action("AcademicPerformanceEnglishAndMathsResults", "SecondarySchool")#graphSection"> *@
+            <form method="get" asp-action="AcademicPerformanceEnglishAndMathsResults" asp-controller="SecondarySchool" asp-fragment="graphSection">
                 <govuk-select for="@Model.SelectedGrade" class="govuk-grid-column-two-thirds govuk-input__wrapper" id="gradeSelector">
                     <govuk-select-label class="govuk-label--s govuk-!-margin-right-2 select-inline-label">Choose the grade you want to see results for</govuk-select-label>
                     <govuk-select-item value=@GcseGradeDataSelection.Grade4AndAbove selected="@Model.SelectedGrade == GcseGradeDataSelection.Grade4AndAbove">@GcseGradeDataSelection.Grade4AndAbove.GetDisplayName()</govuk-select-item>

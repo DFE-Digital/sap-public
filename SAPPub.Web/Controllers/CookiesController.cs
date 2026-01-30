@@ -9,6 +9,7 @@ public class CookiesController : Controller
         return View();
     }
 
+    [HttpPost]
     public IActionResult CookieSettings(bool acceptAnalyticsCookies, string returnUrl)
     {
         var options = new CookieOptions
@@ -34,6 +35,7 @@ public class CookiesController : Controller
         return Redirect(returnUrl);
     }
 
+    [HttpPost]
     public IActionResult HideBanner(bool? hideBanner, string returnUrl)
     {
         var options = new CookieOptions
