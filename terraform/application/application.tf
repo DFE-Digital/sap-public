@@ -1,3 +1,13 @@
+data "azurerm_key_vault_secret" "gtm_code" {
+  name         = "Analytics-GoogleTagManager" //Name in KeyVault
+  key_vault_id = data.azurerm_key_vault.app_key_vault.id
+}
+
+data "azurerm_key_vault_secret" "clarity_code" {
+  name         = "Analytics-MicrosoftClarity" //Name in KeyVault
+  key_vault_id = data.azurerm_key_vault.app_key_vault.id
+}
+
 module "application_configuration" {
   source = "./vendor/modules/aks//aks/application_configuration"
 
@@ -16,7 +26,9 @@ module "application_configuration" {
   secret_variables = {
     DATABASE_URL            = module.postgres.url
     StorageConnectionString = "DefaultEndpointsProtocol=https;AccountName=${module.storage.name};AccountKey=${module.storage.primary_access_key}"
-	ConnectionStrings__PostgresConnectionString = module.postgres.dotnet_connection_string
+	  ConnectionStrings__PostgresConnectionString = module.postgres.dotnet_connection_string
+    Analytics___GoogleTagManagerId = module.azurerm_key_vault_secret.gtm_code.value
+    Analytics__ClarityId = module.azurerm_key_vault_secret.clarity_code.value
   }
 
 }
