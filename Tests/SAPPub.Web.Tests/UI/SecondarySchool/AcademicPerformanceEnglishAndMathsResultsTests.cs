@@ -1,5 +1,7 @@
-﻿using SAPPub.Web.Tests.UI.Helpers;
-using SAPPub.Tests.UI.Infrastructure;
+﻿using SAPPub.Tests.UI.Infrastructure;
+using SAPPub.Web.Helpers;
+using SAPPub.Web.Tests.UI.Helpers;
+using static SAPPub.Web.Models.SecondarySchool.AcademicPerformanceEnglishAndMathsResultsViewModel;
 
 namespace SAPPub.Web.Tests.UI.SecondarySchool;
 
@@ -14,7 +16,7 @@ public class AcademicPerformanceEnglishAndMathsResults : BasePageTest
         var response = await GoToPageAysnc(_pageUrl);
 
         // Assert
-        Assert.NotNull(response);   
+        Assert.NotNull(response);
         Assert.Equal(200, response.Status);
     }
 
@@ -113,5 +115,41 @@ public class AcademicPerformanceEnglishAndMathsResults : BasePageTest
 
         // Assert
         Assert.True(isVisible);
+    }
+
+    [Fact]
+    public async Task AcademicPerformanceEnglishAndMathsResultsPage_DisplaysGradeSelectorForDataDisplayed()
+    {
+        // Arrange
+        await GoToPageAysnc(_pageUrl);
+
+        // Act
+        var isVisible = await Page.Locator("#gradeSelector").IsVisibleAsync();
+
+        // Assert
+        Assert.True(isVisible);
+    }
+
+    [Fact]
+    public async Task AcademicPerformanceEnglishAndMathsResultsPage_ChangeGradeSelected()
+    {
+        // Arrange
+        await GoToPageAysnc(_pageUrl);
+
+        // Assert
+        var chartHeading = Page.Locator("#chartHeading");
+        var chartHeadingText = await chartHeading.TextContentAsync();
+        Assert.Contains("Grade 5 and above", chartHeadingText);
+
+        // Act
+        var gradeSelector = Page.Locator("#gradeSelector");
+        await gradeSelector.SelectOptionAsync(new[] { GcseGradeDataSelection.Grade4AndAbove.GetDisplayName()! });
+        var buttonSelector = Page.Locator("button:has-text(\"Show results\")");
+        await buttonSelector.ClickAsync();
+
+        // Assert
+        chartHeading = Page.Locator("#chartHeading");
+        chartHeadingText = await chartHeading.TextContentAsync();
+        Assert.Contains("Grade 4 and above", chartHeadingText);
     }
 }

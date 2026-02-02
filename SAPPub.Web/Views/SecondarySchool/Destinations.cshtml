@@ -18,8 +18,107 @@
         <span id="school-name-caption" class="govuk-caption-l">@Model.SchoolName</span>
         <h1 class="govuk-heading-l">@ViewBag.Title</h1>
 
+        <div class="data-container">
+            <h3 class="govuk-heading-m govuk-!-margin-top-3">
+                Staying in education, employment and apprenticeships
+            </h3>
+            <p class="govuk-body">
+                This shows the percentage of pupils who either stayed in education,
+                went into an apprenticeship or entered employment for at least 6 months after finishing key stage 4 (KS4).
+                Pupils usually finish KS4 after year 11, when they are 16.
+            </p>
+
+            <input type="radio" name="dataView" id="current-view" class="govuk-visually-hidden" checked />
+            <input type="radio" name="dataView" id="data-overtime-view" class="govuk-visually-hidden" />
+
+            <div id="all-dest-current-year-data-container" class="all-dest-current-year-data-container">
+                <div id="all-dest-current-year-chart-container" class="chart-container all-dest-current-year-chart-container">
+                    <canvas id="all-destinations-chart" width="500" height="200" 
+                        class="js-chart"
+                        data-type="bar"
+                        data-chart='@Html.Raw(Json.Serialize(Model.AllDestinationsData))'
+                        data-colors='["#DE6B24", "#27A0CC", "#003C56"]'>
+                     </canvas>
+                </div>
+
+                <div id="all-dest-current-year-table-container" class="all-dest-current-year-table-container">
+                    <table id="all-destinations-current-year-table" class="govuk-table">
+                        <tbody class="govuk-table__body">
+                            @foreach (var label in Model.AllDestinationsData.Labels.Select((value, i) => (value, i)))
+                            {
+                                <tr class="govuk-table__row">
+                                    <th scope="row" class="govuk-table__header">@label.value</th>
+                                    <td class="govuk-table__cell">@Model.AllDestinationsData.Data[label.i]%</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="govuk-button-group">
+                    <button id="all-dest-current-year-show-btn" class="govuk-button govuk-button--secondary all-dest-current-year-show-btn">Show as a table</button>
+                </div>
+
+                <div class="govuk-button-group">
+                    <label id="all-dest-show-data-over-time-btn" for="data-overtime-view" class="govuk-button govuk-button--secondary">Show data over time</label>
+                </div>
+            </div>
+
+            <div id="all-dest-data-over-time-data-container" class="all-dest-data-over-time-data-container">
+                <div id="all-dest-data-over-time-chart-container" class="chart-container all-dest-data-over-time-chart-container">
+                    <canvas id="all-destinations-data-overtime-chart" width="500" height="200" 
+                        class="js-chart"
+                        data-type="line"
+                        data-chart='@Html.Raw(Json.Serialize(Model.AllDestinationsOverTimeData))'
+                        data-colors='["#DE6B24", "#27A0CC", "#003C56"]'>
+                    </canvas>
+                </div>
+
+                <div id="all-dest-data-over-time-table-container" class="all-dest-data-over-time-table-container">
+                    <table id="all-destinations-data-overtime-table" class="govuk-table">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header"></th>
+                                @foreach (var label in Model.AllDestinationsOverTimeData.Labels)
+                                {
+                                    <th scope="col" class="govuk-table__header">@label</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            @foreach (var dataset in Model.AllDestinationsOverTimeData.Datasets.Select((value, i) => (value, i)))
+                            {
+                                <tr class="govuk-table__row">
+                                    <th scope="row" class="govuk-table__header">@dataset.value.Label</th>
+                                    @foreach (var data in dataset.value.Data)
+                                    {
+                                        <td class="govuk-table__cell">@data%</td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>                    
+                </div>
+
+                <div class="govuk-button-group">
+                    <button id="all-dest-data-over-time-show-btn" class="govuk-button govuk-button--secondary all-dest-data-over-time-show-btn">Show as a table</button>
+                </div>
+
+                <div class="govuk-button-group">
+                    <label id="all-dest-show-current-data-btn" for="current-view" class="govuk-button govuk-button--secondary">Show current data</label>
+                </div>                
+            </div>
+        </div>
+
         <govuk-pagination id="destinations-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">Academic performance: Subjects entered</govuk-pagination-previous>
         </govuk-pagination>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/chart.umd.js"></script>
+    <script src="~/js/chartjs-plugin-datalabels.min.js"></script>
+    <script src="~/js/chart-factory.js"></script>
+    <script src="~/js/destinations.js"></script>
+}

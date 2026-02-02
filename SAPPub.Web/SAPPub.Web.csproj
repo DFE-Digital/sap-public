@@ -25,6 +25,5 @@
 		<Content Include="Data\Files\**\*">
 			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 		</Content>
-	</ItemGroup>
-
+	</ItemGroup>	
 </Project>
