@@ -1,3 +1,8 @@
+data "azurerm_key_vault" "app_key_vault" {
+  name                = local.key_vault_name
+  resource_group_name = local.resource_group_name
+}
+
 data "azurerm_key_vault_secret" "gtm_code" {
   name         = "Analytics-GoogleTagManager" //Name in KeyVault
   key_vault_id = data.azurerm_key_vault.app_key_vault.id
