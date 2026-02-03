@@ -1,10 +1,11 @@
 ﻿using Microsoft.Playwright;
-using SAPPub.Tests.UI.Infrastructure;
 using SAPPub.Web.Tests.UI.Helpers;
+using SAPPub.Web.Tests.UI.Infrastructure;
 
 namespace SAPPub.Web.Tests.UI.SecondarySchool;
 
-public class DestinationsPageTests : BasePageTest
+[Collection("Playwright Tests")]
+public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
     private string _pageUrl = "school/105574/Loreto%20High%20School%20Chorlton/secondary/destinations";
 
@@ -12,7 +13,7 @@ public class DestinationsPageTests : BasePageTest
     public async Task Destinations_LoadsSuccessfully()
     {
         // Arrange && Act
-        var response = await GoToPageAysnc(_pageUrl);
+        var response = await Page.GotoAsync(_pageUrl);
 
         // Assert
         Assert.NotNull(response);
@@ -23,7 +24,7 @@ public class DestinationsPageTests : BasePageTest
     public async Task DestinationsPage_HasCorrectTitle()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         var title = await Page.TitleAsync();
@@ -36,7 +37,7 @@ public class DestinationsPageTests : BasePageTest
     public async Task DestinationsPage_DisplaysMainHeading()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         var heading = await Page.Locator("h1").TextContentAsync();
@@ -50,7 +51,7 @@ public class DestinationsPageTests : BasePageTest
     public async Task DestinationsPage_Displays_SchoolName_Caption()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         var schoolNameCaptionLocator = Page.Locator("#school-name-caption");
@@ -67,7 +68,7 @@ public class DestinationsPageTests : BasePageTest
     public async Task DestinationsPage_Displays_VerticalNavigation()
     {
         var nav = new VerticalNavigationHelper(Page);
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         await nav.ShouldBeVisibleAsync();
         await nav.ShouldHaveItemsCountAsync(6);
@@ -79,7 +80,7 @@ public class DestinationsPageTests : BasePageTest
     public async Task DestinationsPage_Displays_AllDestinations_CurrentYear_Chart()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         var chart = Page.Locator("#all-destinations-chart");
@@ -108,7 +109,7 @@ public class DestinationsPageTests : BasePageTest
     public async Task DestinationsPage_Displays_AllDestinations_CurrentYear_Table()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         // Click Show as a table button
@@ -137,7 +138,7 @@ public class DestinationsPageTests : BasePageTest
     public async Task DestinationsPage_Displays_AllDestinations_DataOverTime_Chart()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         // Click Show data over time button
@@ -170,7 +171,7 @@ public class DestinationsPageTests : BasePageTest
     public async Task DestinationsPage_Displays_AllDestinations_DataOverTime_Table()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         // Click Show data over time button
@@ -205,7 +206,7 @@ public class DestinationsPageTests : BasePageTest
     public async Task DestinationsPage_Displays_AllDestinations_DataOverTime_Table_Click_On_ShowCurrentData()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         // Click Show data over time button
@@ -237,7 +238,7 @@ public class DestinationsPageTests : BasePageTest
     public async Task DestinationsPage_DisplaysPagination()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         var isVisible = await Page.Locator("#destinations-pagination").IsVisibleAsync();

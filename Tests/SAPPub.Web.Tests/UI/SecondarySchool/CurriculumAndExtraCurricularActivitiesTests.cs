@@ -1,9 +1,10 @@
 ﻿using SAPPub.Web.Tests.UI.Helpers;
-using SAPPub.Tests.UI.Infrastructure;
+using SAPPub.Web.Tests.UI.Infrastructure;
 
 namespace SAPPub.Web.Tests.UI.SecondarySchool;
 
-public class CurriculumAndExtraCurricularActivitiesTests : BasePageTest
+[Collection("Playwright Tests")]
+public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
     private string _pageUrl = "school/105574/Loreto%20High%20School%20Chorlton/secondary/curriculum-and-extra-curricular-activities";
 
@@ -11,7 +12,7 @@ public class CurriculumAndExtraCurricularActivitiesTests : BasePageTest
     public async Task CurriculumAndExtraCurricularActivitiesPage_LoadsSuccessfully()
     {
         // Arrange && Act
-        var response = await GoToPageAysnc(_pageUrl);
+        var response = await Page.GotoAsync(_pageUrl);
 
         // Assert
         Assert.NotNull(response);
@@ -22,7 +23,7 @@ public class CurriculumAndExtraCurricularActivitiesTests : BasePageTest
     public async Task CurriculumAndExtraCurricularActivitiesPage_HasCorrectTitle()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         var title = await Page.TitleAsync();
@@ -35,7 +36,7 @@ public class CurriculumAndExtraCurricularActivitiesTests : BasePageTest
     public async Task CurriculumAndExtraCurricularActivitiesPage_DisplaysMainHeading()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         var heading = await Page.Locator("h1").TextContentAsync();
@@ -48,7 +49,7 @@ public class CurriculumAndExtraCurricularActivitiesTests : BasePageTest
     public async Task CurriculumAndExtraCurricularActivitiesPage_Displays_SchoolName_Caption()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         var schoolNameCaptionLocator = Page.Locator("#school-name-caption");
@@ -65,7 +66,7 @@ public class CurriculumAndExtraCurricularActivitiesTests : BasePageTest
     public async Task CurriculumAndExtraCurricularActivitiesPage_Displays_VerticalNavigation()
     {
         var nav = new VerticalNavigationHelper(Page);
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         await nav.ShouldBeVisibleAsync();
         await nav.ShouldHaveItemsCountAsync(6);
@@ -77,7 +78,7 @@ public class CurriculumAndExtraCurricularActivitiesTests : BasePageTest
     public async Task CurriculumAndExtraCurricularActivitiesPage_Displays_Curriculum_Summary()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         var isVisible = await Page.Locator("#current-curriculum-summary").IsVisibleAsync();
@@ -90,7 +91,7 @@ public class CurriculumAndExtraCurricularActivitiesTests : BasePageTest
     public async Task CurriculumAndExtraCurricularActivitiesPage_Displays_Extra_Curriculum_Summary()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         var isVisible = await Page.Locator("#current-extra-curricular-activities-offered-summary").IsVisibleAsync();
@@ -103,7 +104,7 @@ public class CurriculumAndExtraCurricularActivitiesTests : BasePageTest
     public async Task CurriculumAndExtraCurricularActivitiesPage_DisplaysPagination()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         var isVisible = await Page.Locator("#current-extra-curricular-activities-pagination").IsVisibleAsync();
