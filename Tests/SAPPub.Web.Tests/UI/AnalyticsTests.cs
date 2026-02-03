@@ -7,8 +7,11 @@ namespace SAPPub.Web.Tests.UI;
 
 public class AnalyticsTests : BasePageTest
 {
-    [Fact]
-    public async Task GoogleTagManager_LoadsWhenItShould()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    [InlineData(null)]
+    public async Task GoogleTagManager_LoadsWhenItShould(bool? acceptCookies)
     {
         // Arrange: Clear cookies before navigating to the page
         var cookies = new Cookie[]
@@ -16,7 +19,7 @@ public class AnalyticsTests : BasePageTest
             new Cookie
             {
                 Name = "analytics_preference",
-                Value = "true",
+                Value = acceptCookies?.ToString().ToLower() ?? string.Empty,
                 Domain = "localhost",
                 Path = "/",
                 HttpOnly = true,
@@ -24,7 +27,11 @@ public class AnalyticsTests : BasePageTest
             }
         };
 
-        await Page.Context.AddCookiesAsync(cookies);
+        if (acceptCookies.HasValue)
+        {
+            await Page.Context.AddCookiesAsync(cookies);
+        }
+
 
         // Arrange && Act
         var response = await GoToPageAysnc("");
@@ -33,7 +40,58 @@ public class AnalyticsTests : BasePageTest
         Assert.NotNull(response);
 
         string html = await response.TextAsync();
+        if (acceptCookies == true)
+        {
+            Assert.Contains("googletagmanager.com/gtm.js", html, StringComparison.OrdinalIgnoreCase);
+        }
+        else
+        {
+            Assert.DoesNotContain("googletagmanager.com/gtm.js", html, StringComparison.OrdinalIgnoreCase);
+        }
 
-        Assert.Contains("googletagmanager.com/gtm.js", html, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    [InlineData(null)]
+    public async Task MicrosoftClarity_LoadsWhenItShould(bool? acceptCookies)
+    {
+        // Arrange: Clear cookies before navigating to the page
+        var cookies = new Cookie[]
+        {
+            new Cookie
+            {
+                Name = "analytics_preference",
+                Value = acceptCookies?.ToString().ToLower() ?? string.Empty,
+                Domain = "localhost",
+                Path = "/",
+                HttpOnly = true,
+                Secure = true
+            }
+        };
+
+        if (acceptCookies.HasValue)
+        {
+            await Page.Context.AddCookiesAsync(cookies);
+        }
+
+
+        // Arrange && Act
+        var response = await GoToPageAysnc("");
+
+        // Assert
+        Assert.NotNull(response);
+
+        string html = await response.TextAsync();
+        if (acceptCookies == true)
+        {
+            Assert.Contains("www.clarity.ms", html, StringComparison.OrdinalIgnoreCase);
+        }
+        else
+        {
+            Assert.DoesNotContain("www.clarity.ms", html, StringComparison.OrdinalIgnoreCase);
+        }
+
     }
 }
