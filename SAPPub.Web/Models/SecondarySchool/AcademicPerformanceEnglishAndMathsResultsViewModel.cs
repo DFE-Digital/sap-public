@@ -23,7 +23,7 @@ public class AcademicPerformanceEnglishAndMathsResultsViewModel : SecondarySchoo
     {
         var gcseData = new GcseDataViewModel
         {
-            Lables = new List<string>
+            Labels = new List<string>
             {
                 "School",
                 string.IsNullOrEmpty(englishAndMathsResultsServiceModel?.LAName)

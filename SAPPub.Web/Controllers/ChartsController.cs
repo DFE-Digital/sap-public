@@ -12,7 +12,7 @@ public class ChartsController : Controller
         Response.Headers["Content-Security-Policy"] = CspPolicy;
         var model = new GcseDataViewModel
         {
-            Lables = ["School", "Sheffield Average", "England Average"],
+            Labels = ["School", "Sheffield Average", "England Average"],
             GcseData = [75, 65, 55],
             ChartTitle = "GCSE English and Maths (Grade 5 and above)",
         };
@@ -46,9 +46,10 @@ public class ChartsController : Controller
         Response.Headers["Content-Security-Policy"] = CspPolicy;
         var model = new GcseGradesOverTimeViewModel
         {
+            Labels = [],
             Years = ["2022 to 2023", "2023 to 2024", "2024 to 2025"],
             School = [74, 76, 38],
-            Sheffield = [40, 72, 63],
+            LocalAuthority = [40, 72, 63],
             England = [22, 74, 95]
         };
 

@@ -11,15 +11,15 @@
     <meta name="theme-color" content="#1d70b8">
     <link rel="icon" sizes="48x48" href="/assets/images/favicon.ico">
     <link rel="icon" sizes="any" href="/assets/images/favicon.svg" type="image/svg+xml">
-    <link rel="mask-icon" href="~/lib/govuk-frontend/dist/govuk/assets/rebrand/images/govuk-icon-mask.svg" color="blue">
-    <link rel="apple-touch-icon" href="~/lib/govuk-frontend/dist/govuk/assets/rebrand/images/govuk-icon-180.png">
-    <link rel="stylesheet" href="~/lib/dfe-frontend/dist/dfefrontend-2.0.0.min.css" />
-    <link rel="stylesheet" href="~/lib/moj-frontend/moj/moj-frontend.min.css">
-    <link rel="manifest" href="/assets/rebrand/manifest.json">
+    <link rel="mask-icon" href="/assets/images/govuk-icon-mask.svg" color="blue">
+    <link rel="apple-touch-icon" href="/assets/images/govuk-icon-180.png">    
+    <link rel="manifest" href="/assets/manifest.json">
     <meta property="og:image" content="YOUR-DOMAIN/images/govuk-opengraph-image.png">
+    <link rel="stylesheet" href="~/css/dfefrontend-2.0.0.min.css">    
     @Html.GovUkFrontendStyleImports()
-    <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="~/lib/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="~/css/moj-frontend.min.css">
+    <link rel="stylesheet" href="~/css/main.css" />
+    <link rel="stylesheet" href="~/css/leaflet.css" />
 </head>
 
 <body class="govuk-template__body app-body-class">
@@ -73,14 +73,14 @@
         <govuk-footer-meta>
             <govuk-footer-meta-items>
                 <govuk-footer-meta-item href="@Url.Action("Accessibility", "Content")">Accessibility</govuk-footer-meta-item>
-                <govuk-footer-meta-item href="@Url.Action("Cookies", "Content")">Cookies</govuk-footer-meta-item>
+                <govuk-footer-meta-item href="@Url.Action("Preferences", "Cookies")">Cookies</govuk-footer-meta-item>
                 <govuk-footer-meta-item href="@Url.Action("Privacy", "Content")">Privacy</govuk-footer-meta-item>
             </govuk-footer-meta-items>
         </govuk-footer-meta>
     </govuk-footer>
 
     @Html.GovUkFrontendScriptImports(Html.ScriptNonce().ToString())
-    <script src="~/lib/leaflet/dist/leaflet.js" nonce="@Html.ScriptNonce().ToString()"></script>
+    <script src="~/js/leaflet.js" nonce="@Html.ScriptNonce().ToString()"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
