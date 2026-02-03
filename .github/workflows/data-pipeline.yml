@@ -134,6 +134,8 @@ jobs:
       # Outputs:
       #   changed=True/False
       #   latest_files={ key : filename }
+      #
+      # - Retries for downloads and Azure blob operations.
       # ==============================
       - name: Version datasets from raw_sources.json and upload to Blob
         id: version
@@ -148,16 +150,14 @@ jobs:
           $sourcesPathRepo = "SAPData/raw_sources.json"
           if (-not (Test-Path $sourcesPathRepo)) { throw "Could not find $sourcesPathRepo in the repo." }
 
-          # Separate working dir (do NOT mix with generator input dir)
           $workDir = "SAPData/Work/Versioning"
           New-Item -ItemType Directory -Force -Path $workDir | Out-Null
 
-          # Step 6 report (structured summary for debugging)
           $reportPath = Join-Path $workDir "step6_report.json"
           $report = [System.Collections.Generic.List[object]]::new()
 
           # -----------------------------
-          # Helpers (A: retries + reporting)
+          # Helpers (retries + reporting)
           # -----------------------------
           function Invoke-WithRetry([scriptblock]$Action, [int]$MaxAttempts = 5, [int]$InitialDelaySeconds = 2, [string]$Label = "operation") {
             $attempt = 0
@@ -181,23 +181,29 @@ jobs:
             $report.Add([pscustomobject]@{
               key = $key
               sourceOrg = $org
-              status = $status          # unchanged | updated | failed
+              status = $status
               finalName = $finalName
               signature = $sig
-              resolved = $resolved      # giasDate:yyyyMMdd or version:x.y
+              resolved = $resolved
               message = $message
               utcTime = [DateTime]::UtcNow.ToString("o")
             })
           }
 
+          # For safe logging - never print the actual secret URL template.
+          function Mask-GiasUrl([string]$urlToken, [string]$resolvedDate, [string]$extension) {
+            $t = if ([string]::IsNullOrWhiteSpace($urlToken)) { "GIAS" } else { $urlToken.Trim() }
+            $ext = if ([string]::IsNullOrWhiteSpace($extension)) { "" } else { $extension.Trim() }
+            return "${t}:{fileDatePostfix}=${resolvedDate}${ext}"
+          }
+
           # -----------------------------
-          # Load sources (robust: array or single object)
+          # Load sources
           # -----------------------------
           $sourcesRaw = Get-Content $sourcesPathRepo -Raw | ConvertFrom-Json
           if ($null -eq $sourcesRaw) { throw "raw_sources.json parsed to null." }
           if ($sourcesRaw -isnot [System.Array]) { $sourcesRaw = @($sourcesRaw) }
 
-          # Normalize to objects with stable key + metadata
           $sources = @()
           foreach ($s in $sourcesRaw) {
             $type     = [string]$s.Type
@@ -244,7 +250,9 @@ jobs:
           if ($sources.Count -eq 0) { throw "No sources found in raw_sources.json" }
           Write-Host "Loaded $($sources.Count) sources."
 
+          # -----------------------------
           # Load manifest from Blob (if present)
+          # -----------------------------
           $manifestPath = Join-Path $workDir "versions.json"
           $manifest = @{}
 
@@ -277,19 +285,16 @@ jobs:
             return $nowLondon.AddDays(-$daysAgo).ToString("yyyyMMdd")
           }
 
-          function Try-Head([string]$testUrl) {
+          # Probe existence via Range GET only (no HEAD, no retries, and no URL logging)
+          function Try-RangeProbe([string]$testUrl) {
             try {
-              $h = Invoke-WithRetry { Invoke-WebRequest -Method Head -Uri $testUrl -UseBasicParsing } -MaxAttempts 3 -InitialDelaySeconds 1 -Label "HEAD $testUrl"
-              return @{ ok = $true; etag = $h.Headers.ETag; len = $h.Headers.'Content-Length'; lm = $h.Headers.'Last-Modified' }
-            } catch {
-              return @{ ok = $false; etag = $null; len = $null; lm = $null }
-            }
-          }
-
-          function Try-RangeGet([string]$testUrl) {
-            try {
-              $g = Invoke-WithRetry { Invoke-WebRequest -Method Get -Uri $testUrl -Headers @{ Range = "bytes=0-0" } -UseBasicParsing } -MaxAttempts 3 -InitialDelaySeconds 1 -Label "Range GET $testUrl"
-              return @{ ok = $true; etag = $g.Headers.ETag; len = $g.Headers.'Content-Length'; lm = $g.Headers.'Last-Modified' }
+              $g = Invoke-WebRequest -Method Get -Uri $testUrl -Headers @{ Range = "bytes=0-0" } -UseBasicParsing
+              return @{
+                ok   = $true
+                etag = $g.Headers.ETag
+                len  = $g.Headers.'Content-Length'
+                lm   = $g.Headers.'Last-Modified'
+              }
             } catch {
               return @{ ok = $false; etag = $null; len = $null; lm = $null }
             }
@@ -399,8 +404,8 @@ jobs:
                     $d = Get-LondonDateYyyyMmDd -daysAgo $i
                     $candidate = $template.Replace("{fileDatePostfix}", $d)
 
-                    $hdr = Try-Head $candidate
-                    if (-not $hdr.ok) { $hdr = Try-RangeGet $candidate }
+                    # Probe existence via Range GET only (quiet, no retries, and does not print URLs)
+                    $hdr = Try-RangeProbe $candidate
 
                     if ($hdr.ok) {
                       $resolvedDate = $d
@@ -423,7 +428,9 @@ jobs:
                   if ($resolvedHdr.lm)   { $parts += "lm:$($resolvedHdr.lm)" }
                   if ($resolvedHdr.len)  { $parts += "len:$($resolvedHdr.len)" }
                   $forcedSignature = ($parts -join "|")
-                  $resolvedInfo = "giasDate:$resolvedDate"
+
+                  # IMPORTANT: never log $downloadUrl or $template
+                  $resolvedInfo = Mask-GiasUrl -urlToken $urlToken -resolvedDate $resolvedDate -extension (".${fileType}")
                 }
 
                 # -----------------------------
@@ -466,7 +473,8 @@ jobs:
                   if ($org -eq "GIAS" -and $fileType -eq "zip") { $tmpDownloadPath = "${tmpDownloadPath}.zip" }
                   else { $tmpDownloadPath = "${tmpDownloadPath}.csv" }
 
-                  Write-Host "Downloading ${key} to: $tmpDownloadPath"
+                  # IMPORTANT: do not print $downloadUrl
+                  Write-Host "Downloading ${key} from $resolvedInfo to: $tmpDownloadPath"
                   Invoke-WithRetry { Invoke-WebRequest -Uri $downloadUrl -OutFile $tmpDownloadPath -UseBasicParsing } -Label "download $key"
 
                   if (-not (Test-Path $tmpDownloadPath)) { throw "Download failed; file not found: $tmpDownloadPath" }
@@ -524,19 +532,16 @@ jobs:
                   Write-Report -key $key -org $org -status "unchanged" -finalName $lastFile -sig $signature -resolved $resolvedInfo
                 }
               } catch {
-                # Record dataset-level failure, then rethrow to fail the job (fail-fast).
                 Write-Report -key $key -org $org -status "failed" -finalName ($finalName ?? "") -sig ($forcedSignature ?? "") -resolved ($resolvedInfo ?? "") -message $_.Exception.Message
                 throw
               }
             }
           } finally {
-            # Always write report (even if failing)
             $reportJson = $report | ConvertTo-Json -Depth 10
             [System.IO.File]::WriteAllText($reportPath, $reportJson, (New-Object System.Text.UTF8Encoding($false)))
             Write-Host "Wrote Step 6 report: $reportPath"
           }
 
-          # Upload manifest if anything changed OR we updated manifest metadata
           if ($anyChanged -or $manifestChanged) {
             $json = $manifest | ConvertTo-Json -Depth 30
             [System.IO.File]::WriteAllText($manifestPath, $json, (New-Object System.Text.UTF8Encoding($false)))
@@ -551,11 +556,9 @@ jobs:
             } -Label "upload versions.json"
           }
 
-          # Outputs
           "changed=$anyChanged" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
           $latestFilesJson = ($latestFiles | ConvertTo-Json -Depth 10 -Compress)
           "latest_files=$latestFilesJson" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
-
 
       # ==============================
       # 6b. Upload the report
