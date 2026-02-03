@@ -32,7 +32,7 @@ module "application_configuration" {
     DATABASE_URL            = module.postgres.url
     StorageConnectionString = "DefaultEndpointsProtocol=https;AccountName=${module.storage.name};AccountKey=${module.storage.primary_access_key}"
 	  ConnectionStrings__PostgresConnectionString = module.postgres.dotnet_connection_string
-    Analytics___GoogleTagManagerId = data.azurerm_key_vault_secret.googletagmanager.value
+    Analytics__GoogleTagManagerId = data.azurerm_key_vault_secret.googletagmanager.value
     Analytics__ClarityId = data.azurerm_key_vault_secret.microsoftclarity.value
   }
 
