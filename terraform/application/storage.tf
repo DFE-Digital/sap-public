@@ -11,7 +11,8 @@ module "storage" {
 
   # Create containers for the application (all containers are private)
   containers = [
-    { name = "schooldata" }
+    { name = "schooldata" },
+    { name = "keys" }
   ]
 
   # Configure blob lifecycle management (default: delete after 7 days)
