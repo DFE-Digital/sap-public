@@ -17,12 +17,12 @@ public class CookiePageTests : BasePageTest
 
         // Assert
         Assert.NotNull(response);
-        var cookiesNoRadio = Page.Locator("#cookies-analytics");
+        var cookiesNoRadio = Page.Locator("#cookies-analytics-no");
         bool isNoRadioChecked = await cookiesNoRadio.IsCheckedAsync();
         Assert.True(isNoRadioChecked, "The 'No' radio button should be selected.");
 
         // Act
-        var cookiesYesRadio = Page.Locator("#cookies-analytics-2");
+        var cookiesYesRadio = Page.Locator("#cookies-analytics-yes");
         await cookiesYesRadio.ClickAsync();
 
         // Act
@@ -31,7 +31,7 @@ public class CookiePageTests : BasePageTest
 
         // Assert
         Assert.NotNull(response);
-        cookiesYesRadio = Page.Locator("#cookies-analytics-2");
+        cookiesYesRadio = Page.Locator("#cookies-analytics-yes");
         bool isYesRadioChecked = await cookiesYesRadio.IsCheckedAsync();
         Assert.True(isYesRadioChecked, "The 'Yes' radio button should be selected.");
     }
