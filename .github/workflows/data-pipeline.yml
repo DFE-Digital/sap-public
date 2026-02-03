@@ -288,13 +288,8 @@ jobs:
           # Probe existence via Range GET only (no HEAD, no retries, and no URL logging)
           function Try-RangeProbe([string]$testUrl) {
             try {
-              $g = Invoke-WebRequest -Method Get -Uri $testUrl -Headers @{ Range = "bytes=0-0" } -UseBasicParsing
-              return @{
-                ok   = $true
-                etag = $g.Headers.ETag
-                len  = $g.Headers.'Content-Length'
-                lm   = $g.Headers.'Last-Modified'
-              }
+              $g = Invoke-WithRetry { Invoke-WebRequest -Method Get -Uri $testUrl -Headers @{ Range = "bytes=0-0" } -UseBasicParsing } -MaxAttempts 3 -InitialDelaySeconds 1 -Label "Range GET $testUrl"
+              return @{ ok = $true; etag = $g.Headers.ETag; len = $g.Headers.'Content-Length'; lm = $g.Headers.'Last-Modified' }
             } catch {
               return @{ ok = $false; etag = $null; len = $null; lm = $null }
             }
