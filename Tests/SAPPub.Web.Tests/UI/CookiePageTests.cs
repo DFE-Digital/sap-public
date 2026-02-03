@@ -7,7 +7,7 @@ public class CookiePageTests : BasePageTest
     private string _pageUrl = "Cookies/Preferences";
 
     [Fact]
-    public async Task CookiesBanner_LoadsSuccessfully()
+    public async Task CookiePage_UserSelectsCookieSettings()
     {
         // Arrange: Clear cookies before navigating to the page
         await Page.Context.ClearCookiesAsync();
@@ -34,6 +34,5 @@ public class CookiePageTests : BasePageTest
         cookiesYesRadio = Page.Locator("#cookies-analytics-2");
         bool isYesRadioChecked = await cookiesYesRadio.IsCheckedAsync();
         Assert.True(isYesRadioChecked, "The 'Yes' radio button should be selected.");
-
     }
 }
