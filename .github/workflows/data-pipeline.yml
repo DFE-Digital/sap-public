@@ -146,13 +146,49 @@ jobs:
           $manifestBlobName = "versions.json"
 
           $sourcesPathRepo = "SAPData/raw_sources.json"
-          if (-not (Test-Path $sourcesPathRepo)) {
-            throw "Could not find $sourcesPathRepo in the repo."
-          }
+          if (-not (Test-Path $sourcesPathRepo)) { throw "Could not find $sourcesPathRepo in the repo." }
 
           # Separate working dir (do NOT mix with generator input dir)
           $workDir = "SAPData/Work/Versioning"
           New-Item -ItemType Directory -Force -Path $workDir | Out-Null
+
+          # Step 6 report (structured summary for debugging)
+          $reportPath = Join-Path $workDir "step6_report.json"
+          $report = [System.Collections.Generic.List[object]]::new()
+
+          # -----------------------------
+          # Helpers (A: retries + reporting)
+          # -----------------------------
+          function Invoke-WithRetry([scriptblock]$Action, [int]$MaxAttempts = 5, [int]$InitialDelaySeconds = 2, [string]$Label = "operation") {
+            $attempt = 0
+            $delay = $InitialDelaySeconds
+            while ($true) {
+              try {
+                $attempt++
+                return & $Action
+              } catch {
+                if ($attempt -ge $MaxAttempts) {
+                  throw "Failed $Label after $attempt attempts. Last error: $($_.Exception.Message)"
+                }
+                Write-Host "Retrying $Label (attempt $attempt/$MaxAttempts). Waiting ${delay}s. Error: $($_.Exception.Message)"
+                Start-Sleep -Seconds $delay
+                $delay = [Math]::Min($delay * 2, 30)
+              }
+            }
+          }
+
+          function Write-Report([string]$key, [string]$org, [string]$status, [string]$finalName, [string]$sig, [string]$resolved, [string]$message = "") {
+            $report.Add([pscustomobject]@{
+              key = $key
+              sourceOrg = $org
+              status = $status          # unchanged | updated | failed
+              finalName = $finalName
+              signature = $sig
+              resolved = $resolved      # giasDate:yyyyMMdd or version:x.y
+              message = $message
+              utcTime = [DateTime]::UtcNow.ToString("o")
+            })
+          }
 
           # -----------------------------
           # Load sources (robust: array or single object)
@@ -189,7 +225,6 @@ jobs:
               throw "FileType must be 'csv' or 'zip'. Offending entry: $($s | ConvertTo-Json -Compress)"
             }
 
-            # Stable internal key for manifest tracking (NOT used for final blob names)
             $composite = "${type}_${sub}_${year}"
             $safeKey = ($composite -replace '[^a-zA-Z0-9_\-\.]', '_').ToLowerInvariant()
 
@@ -213,18 +248,22 @@ jobs:
           $manifestPath = Join-Path $workDir "versions.json"
           $manifest = @{}
 
-          $manifestExists = az storage blob exists `
-            --container-name $container `
-            --name $manifestBlobName `
-            --connection-string $conn | ConvertFrom-Json
-
-          if ($manifestExists.exists -eq $true) {
-            az storage blob download `
+          $manifestExists = Invoke-WithRetry {
+            az storage blob exists `
               --container-name $container `
               --name $manifestBlobName `
-              --file $manifestPath `
-              --connection-string $conn `
-              --overwrite true | Out-Null
+              --connection-string $conn | ConvertFrom-Json
+          } -Label "blob exists (versions.json)"
+
+          if ($manifestExists.exists -eq $true) {
+            Invoke-WithRetry {
+              az storage blob download `
+                --container-name $container `
+                --name $manifestBlobName `
+                --file "$manifestPath" `
+                --connection-string $conn `
+                --overwrite true | Out-Null
+            } -Label "download versions.json"
 
             $manifest = Get-Content $manifestPath -Raw | ConvertFrom-Json -AsHashtable
           }
@@ -240,13 +279,8 @@ jobs:
 
           function Try-Head([string]$testUrl) {
             try {
-              $h = Invoke-WebRequest -Method Head -Uri $testUrl -UseBasicParsing
-              return @{
-                ok   = $true
-                etag = $h.Headers.ETag
-                len  = $h.Headers.'Content-Length'
-                lm   = $h.Headers.'Last-Modified'
-              }
+              $h = Invoke-WithRetry { Invoke-WebRequest -Method Head -Uri $testUrl -UseBasicParsing } -MaxAttempts 3 -InitialDelaySeconds 1 -Label "HEAD $testUrl"
+              return @{ ok = $true; etag = $h.Headers.ETag; len = $h.Headers.'Content-Length'; lm = $h.Headers.'Last-Modified' }
             } catch {
               return @{ ok = $false; etag = $null; len = $null; lm = $null }
             }
@@ -254,13 +288,8 @@ jobs:
 
           function Try-RangeGet([string]$testUrl) {
             try {
-              $g = Invoke-WebRequest -Method Get -Uri $testUrl -Headers @{ Range = "bytes=0-0" } -UseBasicParsing
-              return @{
-                ok   = $true
-                etag = $g.Headers.ETag
-                len  = $g.Headers.'Content-Length'
-                lm   = $g.Headers.'Last-Modified'
-              }
+              $g = Invoke-WithRetry { Invoke-WebRequest -Method Get -Uri $testUrl -Headers @{ Range = "bytes=0-0" } -UseBasicParsing } -MaxAttempts 3 -InitialDelaySeconds 1 -Label "Range GET $testUrl"
+              return @{ ok = $true; etag = $g.Headers.ETag; len = $g.Headers.'Content-Length'; lm = $g.Headers.'Last-Modified' }
             } catch {
               return @{ ok = $false; etag = $null; len = $null; lm = $null }
             }
@@ -268,15 +297,12 @@ jobs:
 
           function Get-EnvVarRequired([string]$name) {
             $v = [Environment]::GetEnvironmentVariable($name)
-            if ([string]::IsNullOrWhiteSpace($v)) {
-              throw "Required environment variable/secret '$name' is not set."
-            }
+            if ([string]::IsNullOrWhiteSpace($v)) { throw "Required environment variable/secret '$name' is not set." }
             return $v
           }
 
           function Resolve-GiasTemplateFromToken([string]$token) {
             if ([string]::IsNullOrWhiteSpace($token)) { throw "GIAS Url token was blank." }
-
             $t = $token.Trim()
             switch ($t) {
               "__SECRET_URL__" { return Get-EnvVarRequired "SENSITIVE_DATASET_URL" }
@@ -300,7 +326,6 @@ jobs:
 
               New-Item -ItemType Directory -Force -Path $outDir | Out-Null
               $dest = Join-Path $outDir $pick.Name
-
               $destParent = Split-Path $dest -Parent
               if ($destParent) { New-Item -ItemType Directory -Force -Path $destParent | Out-Null }
 
@@ -318,206 +343,197 @@ jobs:
           $manifestChanged = $false
           $latestFiles = @{}
 
-          foreach ($src in $sources) {
-            $key         = [string]$src.key
-            $org         = [string]$src.sourceOrg
-            $dsid        = [string]$src.dataSetId
-            $urlToken    = [string]$src.url
-            $fileType    = [string]$src.fileType
-            $fileNameTpl = [string]$src.fileName
+          try {
+            foreach ($src in $sources) {
+              $key         = [string]$src.key
+              $org         = [string]$src.sourceOrg
+              $dsid        = [string]$src.dataSetId
+              $urlToken    = [string]$src.url
+              $fileType    = [string]$src.fileType
+              $fileNameTpl = [string]$src.fileName
 
-            if (-not $manifest.ContainsKey($key)) {
-              $manifest[$key] = @{ latest = 0; lastSignature = ""; lastFileName = "" }
-              $manifestChanged = $true
-            }
+              $resolvedInfo = ""
+              $finalName = $null
+              $downloadUrl = $null
+              $forcedSignature = $null
 
-            $prevSig = [string]$manifest[$key].lastSignature
-            $latest  = [int]$manifest[$key].latest
-
-            $forcedSignature = $null
-            $signature = $null
-            $finalName = $null
-            $downloadUrl = $null
-
-            $hasUrlToken = -not [string]::IsNullOrWhiteSpace($urlToken)
-            $hasDsid     = -not [string]::IsNullOrWhiteSpace($dsid)
-
-            # -------------------------------------------------
-            # Branch A: GIAS (dated URL probing)
-            # -------------------------------------------------
-            if ($org -eq "GIAS") {
-              if (-not $hasUrlToken) { throw "GIAS entry '$key' must include Url token (e.g. __SECRET_URL__)." }
-
-              $template = Resolve-GiasTemplateFromToken $urlToken
-              if ($template -notmatch "\{fileDatePostfix\}") {
-                throw "GIAS secret template for '$key' must include {fileDatePostfix} placeholder."
-              }
-
-              if ($fileNameTpl -notmatch "YYYYmmDD") {
-                throw "GIAS FileName for '$key' must contain 'YYYYmmDD' (e.g. edubasealldataYYYYmmDD)."
-              }
-
-              $maxLookbackDays = 30
-              if ($manifest[$key].ContainsKey("lastSuccessDate")) {
-                $lastSuccess = [string]$manifest[$key].lastSuccessDate
-                if ($lastSuccess -match '^\d{8}$') {
-                  $tz = [TimeZoneInfo]::FindSystemTimeZoneById("Europe/London")
-                  $nowLondon = [TimeZoneInfo]::ConvertTime([DateTimeOffset]::UtcNow, $tz).DateTime.Date
-                  $lastDt = [DateTime]::ParseExact($lastSuccess, "yyyyMMdd", [System.Globalization.CultureInfo]::InvariantCulture)
-                  $d = [int]($nowLondon - $lastDt).TotalDays
-                  if ($d -gt 0) { $maxLookbackDays = [Math]::Min([Math]::Max($d, 1), 90) }
+              try {
+                if (-not $manifest.ContainsKey($key)) {
+                  $manifest[$key] = @{ latest = 0; lastSignature = ""; lastFileName = "" }
+                  $manifestChanged = $true
                 }
-              }
 
-              $resolvedDate = $null
-              $resolvedUrl  = $null
-              $resolvedHdr  = $null
+                $prevSig = [string]$manifest[$key].lastSignature
+                $latest  = [int]$manifest[$key].latest
 
-              for ($i = 0; $i -le $maxLookbackDays; $i++) {
-                $d = Get-LondonDateYyyyMmDd -daysAgo $i
-                $candidate = $template.Replace("{fileDatePostfix}", $d)
+                $hasUrlToken = -not [string]::IsNullOrWhiteSpace($urlToken)
+                $hasDsid     = -not [string]::IsNullOrWhiteSpace($dsid)
 
-                $hdr = Try-Head $candidate
-                if (-not $hdr.ok) { $hdr = Try-RangeGet $candidate }
+                # -----------------------------
+                # GIAS
+                # -----------------------------
+                if ($org -eq "GIAS") {
+                  if (-not $hasUrlToken) { throw "GIAS entry '$key' must include Url token (e.g. __SECRET_URL__)." }
 
-                if ($hdr.ok) {
-                  $resolvedDate = $d
-                  $resolvedUrl  = $candidate
-                  $resolvedHdr  = $hdr
-                  break
+                  $template = Resolve-GiasTemplateFromToken $urlToken
+                  if ($template -notmatch "\{fileDatePostfix\}") { throw "GIAS secret template for '$key' must include {fileDatePostfix} placeholder." }
+                  if ($fileNameTpl -notmatch "YYYYmmDD") { throw "GIAS FileName for '$key' must contain 'YYYYmmDD'." }
+
+                  $maxLookbackDays = 30
+                  if ($manifest[$key].ContainsKey("lastSuccessDate")) {
+                    $lastSuccess = [string]$manifest[$key].lastSuccessDate
+                    if ($lastSuccess -match '^\d{8}$') {
+                      $tz = [TimeZoneInfo]::FindSystemTimeZoneById("Europe/London")
+                      $nowLondon = [TimeZoneInfo]::ConvertTime([DateTimeOffset]::UtcNow, $tz).DateTime.Date
+                      $lastDt = [DateTime]::ParseExact($lastSuccess, "yyyyMMdd", [System.Globalization.CultureInfo]::InvariantCulture)
+                      $d = [int]($nowLondon - $lastDt).TotalDays
+                      if ($d -gt 0) { $maxLookbackDays = [Math]::Min([Math]::Max($d, 1), 90) }
+                    }
+                  }
+
+                  $resolvedDate = $null
+                  $resolvedUrl  = $null
+                  $resolvedHdr  = $null
+
+                  for ($i = 0; $i -le $maxLookbackDays; $i++) {
+                    $d = Get-LondonDateYyyyMmDd -daysAgo $i
+                    $candidate = $template.Replace("{fileDatePostfix}", $d)
+
+                    $hdr = Try-Head $candidate
+                    if (-not $hdr.ok) { $hdr = Try-RangeGet $candidate }
+
+                    if ($hdr.ok) {
+                      $resolvedDate = $d
+                      $resolvedUrl  = $candidate
+                      $resolvedHdr  = $hdr
+                      break
+                    }
+                  }
+
+                  if (-not $resolvedUrl) { throw "GIAS file not found for today or last $maxLookbackDays days (URL hidden)." }
+
+                  $downloadUrl = $resolvedUrl
+                  $manifest[$key].lastSuccessDate = $resolvedDate
+
+                  $resolvedBase = $fileNameTpl.Replace("YYYYmmDD", $resolvedDate)
+                  $finalName = "${resolvedBase}.csv"
+
+                  $parts = @("giasDate:$resolvedDate")
+                  if ($resolvedHdr.etag) { $parts += "etag:$($resolvedHdr.etag)" }
+                  if ($resolvedHdr.lm)   { $parts += "lm:$($resolvedHdr.lm)" }
+                  if ($resolvedHdr.len)  { $parts += "len:$($resolvedHdr.len)" }
+                  $forcedSignature = ($parts -join "|")
+                  $resolvedInfo = "giasDate:$resolvedDate"
                 }
-              }
 
-              if (-not $resolvedUrl) {
-                throw "GIAS file not found for today or last $maxLookbackDays days (URL hidden)."
-              }
+                # -----------------------------
+                # EES
+                # -----------------------------
+                if (-not $finalName -and $org -eq "EES") {
+                  if (-not $hasDsid -or $hasUrlToken) { throw "Invalid EES config for '$key': must have DataSetId set AND Url blank." }
 
-              $downloadUrl = $resolvedUrl
-              $manifest[$key].lastSuccessDate = $resolvedDate
+                  $versionsUrl = "https://api.education.gov.uk/statistics/v1/data-sets/$dsid/versions"
+                  $versions = Invoke-WithRetry {
+                    Invoke-WebRequest -Uri $versionsUrl -UseBasicParsing |
+                      Select-Object -ExpandProperty Content | ConvertFrom-Json
+                  } -Label "EES versions $dsid"
 
-              # Name blob from raw_sources.FileName:
-              $resolvedBase = $fileNameTpl.Replace("YYYYmmDD", $resolvedDate)
-              $finalName = "${resolvedBase}.csv"
+                  $published = @($versions.results | Where-Object { $_.status -eq "Published" })
+                  if ($published.Count -eq 0) { throw "No Published versions returned for datasetId '$dsid'." }
 
-              # Signature includes date + headers so same-date updates can be detected
-              $parts = @("giasDate:$resolvedDate")
-              if ($resolvedHdr.etag) { $parts += "etag:$($resolvedHdr.etag)" }
-              if ($resolvedHdr.lm)   { $parts += "lm:$($resolvedHdr.lm)" }
-              if ($resolvedHdr.len)  { $parts += "len:$($resolvedHdr.len)" }
-              $forcedSignature = ($parts -join "|")
-            }
+                  $latestPub = $published | Sort-Object { [DateTimeOffset]$_.published } -Descending | Select-Object -First 1
+                  $dataSetVersion = [string]$latestPub.version
 
-            # -------------------------------------------------
-            # Branch B: EES versioned API
-            # -------------------------------------------------
-            if (-not $finalName -and $org -eq "EES") {
-              if (-not $hasDsid -or $hasUrlToken) {
-                throw "Invalid EES config for '$key': must have DataSetId set AND Url blank."
-              }
+                  $downloadUrl = "https://api.education.gov.uk/statistics/v1/data-sets/$dsid/csv?dataSetVersion=$dataSetVersion"
+                  $forcedSignature = "ees:$dsid|version:$dataSetVersion"
 
-              $versionsUrl = "https://api.education.gov.uk/statistics/v1/data-sets/$dsid/versions"
-              $versions = Invoke-WebRequest -Uri $versionsUrl -UseBasicParsing |
-                Select-Object -ExpandProperty Content | ConvertFrom-Json
-
-              $published = @($versions.results | Where-Object { $_.status -eq "Published" })
-              if ($published.Count -eq 0) { throw "No Published versions returned for datasetId '$dsid'." }
-
-              $latestPub = $published | Sort-Object { [DateTimeOffset]$_.published } -Descending | Select-Object -First 1
-              $dataSetVersion = [string]$latestPub.version
-
-              $downloadUrl = "https://api.education.gov.uk/statistics/v1/data-sets/$dsid/csv?dataSetVersion=$dataSetVersion"
-              $forcedSignature = "ees:$dsid|version:$dataSetVersion"
-
-              $finalName = "${fileNameTpl}_v${dataSetVersion}.csv"
-              $manifest[$key].eesLatestVersion = $dataSetVersion
-            }
-
-            if (-not $finalName) {
-              throw "Unsupported source config for '$key'. SourceOrg must be GIAS or EES."
-            }
-
-            if ([string]::IsNullOrWhiteSpace($downloadUrl)) {
-              throw "Internal error: downloadUrl not resolved for '$key'."
-            }
-
-            $signature = $forcedSignature
-            if ([string]::IsNullOrWhiteSpace($signature)) {
-              throw "Internal error: forced signature missing for '$key'."
-            }
-
-            $isChanged = ($latest -eq 0) -or ($signature -ne $prevSig)
-
-            if ($isChanged) {
-              $oldBlobName = [string]$manifest[$key].lastFileName
-
-              # -----------------------------
-              # Download -> (optional unzip) -> upload
-              # -----------------------------
-              $tmpDownloadPath = Join-Path $workDir "${key}.download"
-              if ($org -eq "GIAS" -and $fileType -eq "zip") {
-                $tmpDownloadPath = "${tmpDownloadPath}.zip"
-              } else {
-                $tmpDownloadPath = "${tmpDownloadPath}.csv"
-              }
-
-              Write-Host "Downloading ${key} to: $tmpDownloadPath"
-              Invoke-WebRequest -Uri $downloadUrl -OutFile $tmpDownloadPath -UseBasicParsing
-
-              if (-not (Test-Path $tmpDownloadPath)) {
-                throw "Download failed; file not found: $tmpDownloadPath"
-              }
-
-              $uploadPath = $tmpDownloadPath
-              if ($fileType -eq "zip") {
-                $unzDir = Join-Path $workDir "${key}.unzipped"
-                $uploadPath = Get-FirstFileFromZip -zipPath $tmpDownloadPath -outDir $unzDir
-
-                if (-not (Test-Path $uploadPath)) {
-                  throw "Zip extraction failed; extracted file not found: $uploadPath"
+                  $finalName = "${fileNameTpl}_v${dataSetVersion}.csv"
+                  $manifest[$key].eesLatestVersion = $dataSetVersion
+                  $resolvedInfo = "version:$dataSetVersion"
                 }
-              }
 
-              Write-Host "Uploading ${key} -> ${finalName} (from $uploadPath)"
-              az storage blob upload `
-                --container-name $container `
-                --name $finalName `
-                --file "$uploadPath" `
-                --connection-string $conn `
-                --overwrite | Out-Null
+                if (-not $finalName) { throw "Unsupported source config for '$key'. SourceOrg must be GIAS or EES." }
+                if ([string]::IsNullOrWhiteSpace($downloadUrl)) { throw "Internal error: downloadUrl not resolved for '$key'." }
+                if ([string]::IsNullOrWhiteSpace($forcedSignature)) { throw "Internal error: forced signature missing for '$key'." }
 
-              # delete previous version (only after successful upload)
-              if (-not [string]::IsNullOrWhiteSpace($oldBlobName) -and
-                  -not ($oldBlobName.Equals($finalName, [StringComparison]::OrdinalIgnoreCase))) {
+                $signature = $forcedSignature
+                $isChanged = ($latest -eq 0) -or ($signature -ne [string]$manifest[$key].lastSignature)
 
-                $oldExists = az storage blob exists `
-                  --container-name $container `
-                  --name $oldBlobName `
-                  --connection-string $conn | ConvertFrom-Json
+                if ($isChanged) {
+                  $oldBlobName = [string]$manifest[$key].lastFileName
 
-                if ($oldExists.exists -eq $true) {
-                  Write-Host "Deleting old blob for ${key}: ${oldBlobName}"
-                  az storage blob delete `
-                    --container-name $container `
-                    --name $oldBlobName `
-                    --connection-string $conn | Out-Null
+                  $tmpDownloadPath = Join-Path $workDir "${key}.download"
+                  if ($org -eq "GIAS" -and $fileType -eq "zip") { $tmpDownloadPath = "${tmpDownloadPath}.zip" }
+                  else { $tmpDownloadPath = "${tmpDownloadPath}.csv" }
+
+                  Write-Host "Downloading ${key} to: $tmpDownloadPath"
+                  Invoke-WithRetry { Invoke-WebRequest -Uri $downloadUrl -OutFile $tmpDownloadPath -UseBasicParsing } -Label "download $key"
+
+                  if (-not (Test-Path $tmpDownloadPath)) { throw "Download failed; file not found: $tmpDownloadPath" }
+
+                  $uploadPath = $tmpDownloadPath
+                  if ($fileType -eq "zip") {
+                    $unzDir = Join-Path $workDir "${key}.unzipped"
+                    $uploadPath = Get-FirstFileFromZip -zipPath $tmpDownloadPath -outDir $unzDir
+                    if (-not (Test-Path $uploadPath)) { throw "Zip extraction failed; extracted file not found: $uploadPath" }
+                  }
+
+                  Write-Host "Uploading ${key} -> ${finalName} (from $uploadPath)"
+                  Invoke-WithRetry {
+                    az storage blob upload `
+                      --container-name $container `
+                      --name $finalName `
+                      --file "$uploadPath" `
+                      --connection-string $conn `
+                      --overwrite | Out-Null
+                  } -Label "upload $finalName"
+
+                  if (-not [string]::IsNullOrWhiteSpace($oldBlobName) -and -not ($oldBlobName.Equals($finalName, [StringComparison]::OrdinalIgnoreCase))) {
+                    $oldExists = Invoke-WithRetry {
+                      az storage blob exists `
+                        --container-name $container `
+                        --name $oldBlobName `
+                        --connection-string $conn | ConvertFrom-Json
+                    } -Label "exists $oldBlobName"
+
+                    if ($oldExists.exists -eq $true) {
+                      Write-Host "Deleting old blob for ${key}: ${oldBlobName}"
+                      Invoke-WithRetry {
+                        az storage blob delete `
+                          --container-name $container `
+                          --name $oldBlobName `
+                          --connection-string $conn | Out-Null
+                      } -Label "delete $oldBlobName"
+                    }
+                  }
+
+                  $anyChanged = $true
+                  $manifest[$key].latest = ($latest + 1)
+                  $manifest[$key].lastSignature = $signature
+                  $manifest[$key].lastFileName = $finalName
+                  $latestFiles[$key] = $finalName
+
+                  Write-Host "UPDATED: ${key} -> ${finalName}"
+                  Write-Report -key $key -org $org -status "updated" -finalName $finalName -sig $signature -resolved $resolvedInfo
+                } else {
+                  $lastFile = [string]$manifest[$key].lastFileName
+                  if ([string]::IsNullOrWhiteSpace($lastFile)) { $lastFile = $finalName }
+
+                  $latestFiles[$key] = $lastFile
+                  Write-Host "UNCHANGED: ${key} remains ${lastFile}"
+                  Write-Report -key $key -org $org -status "unchanged" -finalName $lastFile -sig $signature -resolved $resolvedInfo
                 }
+              } catch {
+                # Record dataset-level failure, then rethrow to fail the job (fail-fast).
+                Write-Report -key $key -org $org -status "failed" -finalName ($finalName ?? "") -sig ($forcedSignature ?? "") -resolved ($resolvedInfo ?? "") -message $_.Exception.Message
+                throw
               }
-
-              $anyChanged = $true
-              $manifest[$key].latest = ($latest + 1)
-              $manifest[$key].lastSignature = $signature
-              $manifest[$key].lastFileName = $finalName
-              $latestFiles[$key] = $finalName
-
-              # IMPORTANT: only say UPDATED after success
-              Write-Host "UPDATED: ${key} -> ${finalName}"
             }
-            else {
-              $lastFile = [string]$manifest[$key].lastFileName
-              if ([string]::IsNullOrWhiteSpace($lastFile)) { $lastFile = $finalName }
-              $latestFiles[$key] = $lastFile
-              Write-Host "UNCHANGED: ${key} remains ${lastFile}"
-            }
+          } finally {
+            # Always write report (even if failing)
+            $reportJson = $report | ConvertTo-Json -Depth 10
+            [System.IO.File]::WriteAllText($reportPath, $reportJson, (New-Object System.Text.UTF8Encoding($false)))
+            Write-Host "Wrote Step 6 report: $reportPath"
           }
 
           # Upload manifest if anything changed OR we updated manifest metadata
@@ -525,12 +541,14 @@ jobs:
             $json = $manifest | ConvertTo-Json -Depth 30
             [System.IO.File]::WriteAllText($manifestPath, $json, (New-Object System.Text.UTF8Encoding($false)))
 
-            az storage blob upload `
-              --container-name $container `
-              --name $manifestBlobName `
-              --file "$manifestPath" `
-              --connection-string $conn `
-              --overwrite | Out-Null
+            Invoke-WithRetry {
+              az storage blob upload `
+                --container-name $container `
+                --name $manifestBlobName `
+                --file "$manifestPath" `
+                --connection-string $conn `
+                --overwrite | Out-Null
+            } -Label "upload versions.json"
           }
 
           # Outputs
@@ -538,6 +556,17 @@ jobs:
           $latestFilesJson = ($latestFiles | ConvertTo-Json -Depth 10 -Compress)
           "latest_files=$latestFilesJson" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
 
+      # ==============================
+      # 6b. Upload the report
+      # ==============================
+
+      - name: Upload Step 6 report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: step6-report
+          path: SAPData/Work/Versioning/step6_report.json
+          if-no-files-found: warn
 
       # ==============================
       # 7. Download generator inputs from Blob Storage
