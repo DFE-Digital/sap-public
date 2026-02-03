@@ -665,15 +665,54 @@ jobs:
           echo "Generated SQL scripts."
 
       # ==============================
-      # 9. Run ETL via konduit (private DB)
+      # 9. Run ETL via konduit (private DB) WITH RETRY on transient disconnects
       # ==============================
-      - name: Run ETL pipeline via konduit
+      - name: Run ETL pipeline via konduit (retry on transient DB disconnect)
         working-directory: SAPData/Sql
         shell: bash
         run: |
           set -euo pipefail
-          echo "Running ETL via konduit"
+
+          echo "Running ETL via konduit (psql) with retry on transient disconnects"
           ls -la "$GITHUB_WORKSPACE/SAPData/Sql" || true
-          "$GITHUB_WORKSPACE/konduit.sh" -n "${AKS_NAMESPACE}" -t 7200 -x \
-            -i "$GITHUB_WORKSPACE/SAPData/Sql/run_all.sql" \
-            "${KONDUIT_APP_NAME}" -- psql
+
+          max_attempts=3
+          delay=10
+          log_file="$GITHUB_WORKSPACE/SAPData/Sql/psql.log"
+
+          attempt=1
+          while [ $attempt -le $max_attempts ]; do
+            echo "ETL attempt $attempt/$max_attempts"
+
+            # Run konduit + psql, capture output for classification
+            set +e
+            "$GITHUB_WORKSPACE/konduit.sh" -n "${AKS_NAMESPACE}" -t 7200 -x \
+              -i "$GITHUB_WORKSPACE/SAPData/Sql/run_all.sql" \
+              "${KONDUIT_APP_NAME}" -- psql 2>&1 | tee "$log_file"
+            exit_code=${PIPESTATUS[0]}
+            set -e
+
+            if [ $exit_code -eq 0 ]; then
+              echo "ETL succeeded on attempt $attempt"
+              exit 0
+            fi
+
+            # Retry only if the failure looks like a transient DB/network disconnect
+            if grep -Eqi \
+              "SSL error: unexpected eof|connection to server was lost|server closed the connection unexpectedly|could not receive data from server|terminating connection due to administrator command|EOF detected" \
+              "$log_file"; then
+              echo "Detected transient DB disconnect. Retrying after ${delay}s..."
+              sleep $delay
+              delay=$((delay * 2))
+              if [ $delay -gt 120 ]; then delay=120; fi
+              attempt=$((attempt + 1))
+              continue
+            fi
+
+            echo "ETL failed with exit code $exit_code (not classified as transient)."
+            exit $exit_code
+          done
+
+          echo "ETL failed after $max_attempts attempts."
+          exit 2
+
