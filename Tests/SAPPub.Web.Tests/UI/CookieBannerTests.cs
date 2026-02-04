@@ -1,8 +1,9 @@
-﻿using SAPPub.Tests.UI.Infrastructure;
+﻿using SAPPub.Web.Tests.UI.Infrastructure;
 
 namespace SAPPub.Web.Tests.UI;
 
-public class CookieBannerTests : BasePageTest
+[Collection("Playwright Tests")]
+public class CookieBannerTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
     private string _pageUrl = "school/105574/Loreto%20High%20School%20Chorlton/secondary/about";
 
@@ -13,7 +14,7 @@ public class CookieBannerTests : BasePageTest
         await Page.Context.ClearCookiesAsync();
 
         // Arrange && Act
-        var response = await GoToPageAysnc(_pageUrl);
+        var response = await Page.GotoAsync(_pageUrl);
 
         // Assert
         Assert.NotNull(response);
