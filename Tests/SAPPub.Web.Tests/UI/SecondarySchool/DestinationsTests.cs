@@ -238,7 +238,7 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     public async Task DestinationsPage_Displays_BreakdownDestinations_CurrentYear_Chart()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         var chart = Page.Locator("#breakdown-destinations-chart");
@@ -265,7 +265,7 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     public async Task DestinationsPage_Displays_BreakdownDestinations_CurrentYear_Table()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         // Click Show as a table button
