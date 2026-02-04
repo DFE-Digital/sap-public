@@ -1,8 +1,9 @@
-﻿using SAPPub.Tests.UI.Infrastructure;
+﻿using SAPPub.Web.Tests.UI.Infrastructure;
 
 namespace SAPPub.Web.Tests.UI;
 
-public class CookiePageTests : BasePageTest
+[Collection("Playwright Tests")]
+public class CookiePageTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
     private string _pageUrl = "Cookies/Preferences";
 
@@ -13,7 +14,7 @@ public class CookiePageTests : BasePageTest
         await Page.Context.ClearCookiesAsync();
 
         // Arrange && Act
-        var response = await GoToPageAysnc(_pageUrl);
+        var response = await Page.GotoAsync(_pageUrl);
 
         // Assert
         Assert.NotNull(response);

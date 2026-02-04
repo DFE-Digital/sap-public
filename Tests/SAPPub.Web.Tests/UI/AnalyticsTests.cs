@@ -1,97 +1,133 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Playwright;
-using SAPPub.Tests.UI.Infrastructure;
+using SAPPub.Web.Tests.UI.Infrastructure;
 
 namespace SAPPub.Web.Tests.UI;
 
-public class AnalyticsTests : BasePageTest
+[Collection("Playwright Tests")]
+public class AnalyticsTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
-    [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
-    [InlineData(null)]
-    public async Task GoogleTagManager_LoadsWhenItShould(bool? acceptCookies)
+
+    [Fact]
+    public async Task GoogleTagManager_LoadsWhenAccepted()
     {
         // Arrange: Clear cookies before navigating to the page
-        var cookies = new Cookie[]
-        {
-            new Cookie
-            {
-                Name = "analytics_preference",
-                Value = acceptCookies?.ToString().ToLower() ?? string.Empty,
-                Domain = "localhost",
-                Path = "/",
-                HttpOnly = true,
-                Secure = true
-            }
-        };
-
-        if (acceptCookies.HasValue)
-        {
-            await Page.Context.AddCookiesAsync(cookies);
-        }
-
+        await Page.Context.ClearCookiesAsync();
 
         // Arrange && Act
-        var response = await GoToPageAysnc("");
+        var response = await Page.GotoAsync("");
 
         // Assert
         Assert.NotNull(response);
+        var cookieBanner = await Page.Locator("#full-cookie-banner").TextContentAsync();
+        Assert.NotNull(cookieBanner);
 
-        string html = await response.TextAsync();
-        if (acceptCookies == true)
-        {
-            Assert.Contains("googletagmanager.com/gtm.js", html, StringComparison.OrdinalIgnoreCase);
-        }
-        else
-        {
-            Assert.DoesNotContain("googletagmanager.com/gtm.js", html, StringComparison.OrdinalIgnoreCase);
-        }
+        // Act
+        var acceptCookiesButton = Page.Locator("button:has-text(\"Accept analytics cookies\")");
+        await acceptCookiesButton.ClickAsync();
 
+        var content = await Page.ContentAsync();
+
+        Assert.Contains("googletagmanager.com/gtm.js", content, StringComparison.OrdinalIgnoreCase);
     }
 
-    [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
-    [InlineData(null)]
-    public async Task MicrosoftClarity_LoadsWhenItShould(bool? acceptCookies)
+    [Fact]
+    public async Task GoogleTagManager_DoesntLoadWhenDeclined()
     {
         // Arrange: Clear cookies before navigating to the page
-        var cookies = new Cookie[]
-        {
-            new Cookie
-            {
-                Name = "analytics_preference",
-                Value = acceptCookies?.ToString().ToLower() ?? string.Empty,
-                Domain = "localhost",
-                Path = "/",
-                HttpOnly = true,
-                Secure = true
-            }
-        };
-
-        if (acceptCookies.HasValue)
-        {
-            await Page.Context.AddCookiesAsync(cookies);
-        }
-
+        await Page.Context.ClearCookiesAsync();
 
         // Arrange && Act
-        var response = await GoToPageAysnc("");
+        var response = await Page.GotoAsync("");
 
         // Assert
         Assert.NotNull(response);
+        var cookieBanner = await Page.Locator("#full-cookie-banner").TextContentAsync();
+        Assert.NotNull(cookieBanner);
 
-        string html = await response.TextAsync();
-        if (acceptCookies == true)
-        {
-            Assert.Contains("www.clarity.ms", html, StringComparison.OrdinalIgnoreCase);
-        }
-        else
-        {
-            Assert.DoesNotContain("www.clarity.ms", html, StringComparison.OrdinalIgnoreCase);
-        }
+        // Act
+        var acceptCookiesButton = Page.Locator("button:has-text(\"Reject analytics cookies\")");
+        await acceptCookiesButton.ClickAsync();
 
+        var content = await Page.ContentAsync();
+
+        Assert.DoesNotContain("googletagmanager.com/gtm.js", content, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task GoogleTagManager_DoesntLoadWhenIgnored()
+    {
+        // Arrange: Clear cookies before navigating to the page
+        await Page.Context.ClearCookiesAsync();
+
+        // Arrange && Act
+        var response = await Page.GotoAsync("");
+
+        // Assert
+        var content = await Page.ContentAsync();
+
+        Assert.DoesNotContain("googletagmanager.com/gtm.js", content, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task MicrosoftClarity_LoadsWhenAccepted()
+    {
+        // Arrange: Clear cookies before navigating to the page
+        await Page.Context.ClearCookiesAsync();
+
+        // Arrange && Act
+        var response = await Page.GotoAsync("");
+
+        // Assert
+        Assert.NotNull(response);
+        var cookieBanner = await Page.Locator("#full-cookie-banner").TextContentAsync();
+        Assert.NotNull(cookieBanner);
+
+        // Act
+        var acceptCookiesButton = Page.Locator("button:has-text(\"Accept analytics cookies\")");
+        await acceptCookiesButton.ClickAsync();
+
+        var content = await Page.ContentAsync();
+
+        Assert.Contains("www.clarity.ms", content, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task MicrosoftClarity_DoesntLoadWhenDeclined()
+    {
+        // Arrange: Clear cookies before navigating to the page
+        await Page.Context.ClearCookiesAsync();
+
+        // Arrange && Act
+        var response = await Page.GotoAsync("");
+
+        // Assert
+        Assert.NotNull(response);
+        var cookieBanner = await Page.Locator("#full-cookie-banner").TextContentAsync();
+        Assert.NotNull(cookieBanner);
+
+        // Act
+        var acceptCookiesButton = Page.Locator("button:has-text(\"Reject analytics cookies\")");
+        await acceptCookiesButton.ClickAsync();
+
+        var content = await Page.ContentAsync();
+
+        Assert.DoesNotContain("www.clarity.ms", content, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task MicrosoftClarity_DoesntLoadWhenIgnored()
+    {
+        // Arrange: Clear cookies before navigating to the page
+        await Page.Context.ClearCookiesAsync();
+
+        // Arrange && Act
+        var response = await Page.GotoAsync("");
+
+        // Assert
+        var content = await Page.ContentAsync();
+
+        Assert.DoesNotContain("www.clarity.ms", content, StringComparison.OrdinalIgnoreCase);
     }
 }
