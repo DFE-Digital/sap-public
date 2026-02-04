@@ -9,6 +9,8 @@ public class DestinationsViewModel : SecondarySchoolBaseViewModel
 
     public required DataOverTimeViewModel AllDestinationsOverTimeData { get; set; }
 
+    public required SeriesViewModel BreakdownDestinationData { get; set; }
+
     public static DestinationsViewModel Map(DestinationsDetails destinationsDetails)
     {
         return new DestinationsViewModel
@@ -40,6 +42,24 @@ public class DestinationsViewModel : SecondarySchoolBaseViewModel
                         Data = [destinationsDetails.EnglandAll.TwoYearsAgo ?? 0, destinationsDetails.EnglandAll.PreviousYear ?? 0, destinationsDetails.EnglandAll.CurrentYear ?? 0],
                     }
                 ],               
+            },
+            BreakdownDestinationData = new SeriesViewModel {
+                Labels = ["Staying in education", "Entering employment and apprenticeships"],
+                Datasets =
+                [
+                    new DataSeriesViewModel {
+                        Label = "School",
+                        Data = [destinationsDetails.SchoolEducation.CurrentYear ?? 0, (destinationsDetails.SchoolEmployment.CurrentYear ?? 0 + destinationsDetails.SchoolApprentice.CurrentYear ?? 0)]
+                    },
+                    new DataSeriesViewModel {
+                        Label = $"{destinationsDetails.LocalAuthorityName} average",
+                        Data = [destinationsDetails.LocalAuthorityEducation.CurrentYear ?? 0, (destinationsDetails.LocalAuthorityEmployment.CurrentYear ?? 0 + destinationsDetails.LocalAuthorityApprentice.CurrentYear ?? 0)]
+                    },
+                    new DataSeriesViewModel {
+                        Label = "England average",
+                        Data = [destinationsDetails.EnglandEducation.CurrentYear ?? 0, (destinationsDetails.EnglandEmployment.CurrentYear ?? 0 + destinationsDetails.EnglandApprentice.CurrentYear ?? 0)]
+                    },
+                ],
             },
         };
     }
