@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.StaticFiles;
 using Npgsql;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Middleware;
+using SAPPub.Web.Models.Config;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -18,6 +19,9 @@ public partial class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+        builder.Services.Configure<AnalyticsOptions>(builder.Configuration.GetSection("Analytics"));
+
 
         builder.Services.AddGovUkFrontend(options =>
         {
