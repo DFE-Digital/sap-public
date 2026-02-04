@@ -25,10 +25,9 @@ public class CookiesController : Controller
             options
         );
 
-        // Prevent open redirects
         if (!Url.IsLocalUrl(returnUrl))
         {
-            returnUrl = "/";
+            return RedirectToAction(nameof(Preferences));
         }
 
         return Redirect(returnUrl);
@@ -45,7 +44,7 @@ public class CookiesController : Controller
         };
 
         Response.Cookies.Append(
-            "seen_cookie_confirmation",
+            "hide_banner",
             hideBanner.HasValue && hideBanner.Value ? "true" : "false",
             options
         );

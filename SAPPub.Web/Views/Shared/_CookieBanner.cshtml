@@ -9,7 +9,7 @@
             analyticsAllowed = analyticsConsentValue == "true";
             hasSelectedCookiePreference = true;
         }
-        if (Context.Request.Cookies.TryGetValue("seen_cookie_confirmation", out var hideBannerValue))
+        if (Context.Request.Cookies.TryGetValue("hide_banner", out var hideBannerValue))
         {
             hasSelectedHideBanner = hideBannerValue == "true";
         }
