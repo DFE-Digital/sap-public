@@ -1,5 +1,12 @@
-﻿@{
+﻿@using Microsoft.Extensions.Options
+@using SAPPub.Web.Models.Config
+@inject IOptions<AnalyticsOptions> analyticsOptions;
+
+@{
     ViewBag.ServiceName = "School Profile - Public facing";
+    var gtmId = analyticsOptions.Value.GoogleTagManagerId;
+    var clarityId = analyticsOptions.Value.ClarityId;
+    var loadAnalytics = Context?.Request?.Cookies["analytics_preference"] == "true" ? true : false;
 }
 <!DOCTYPE html>
 <html lang="en" class="govuk-template govuk-template--rebranded app-html-class">
@@ -12,17 +19,50 @@
     <link rel="icon" sizes="48x48" href="/assets/images/favicon.ico">
     <link rel="icon" sizes="any" href="/assets/images/favicon.svg" type="image/svg+xml">
     <link rel="mask-icon" href="/assets/images/govuk-icon-mask.svg" color="blue">
-    <link rel="apple-touch-icon" href="/assets/images/govuk-icon-180.png">    
+    <link rel="apple-touch-icon" href="/assets/images/govuk-icon-180.png">
     <link rel="manifest" href="/assets/manifest.json">
     <meta property="og:image" content="YOUR-DOMAIN/images/govuk-opengraph-image.png">
-    <link rel="stylesheet" href="~/css/dfefrontend-2.0.0.min.css">    
+    <link rel="stylesheet" href="~/css/dfefrontend-2.0.0.min.css">
     @Html.GovUkFrontendStyleImports()
     <link rel="stylesheet" href="~/css/moj-frontend.min.css">
     <link rel="stylesheet" href="~/css/main.css" />
     <link rel="stylesheet" href="~/css/leaflet.css" />
+    @{
+        if (loadAnalytics)
+        {
+            <!-- Google Tag Manager -->
+            <script type="text/javascript" nonce="@Html.ScriptNonce()">
+                (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+                j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+                'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+                })(window,document,'script','dataLayer', '@gtmId');</script>
+            <!-- End Google Tag Manager -->
+            <!-- Microsoft Clarity -->
+            <script type="text/javascript" nonce="@Html.ScriptNonce()">
+                (function(c,l,a,r,i,t,y){
+                    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+                })(window, document, "clarity", "script", "@clarityId");
+            </script>
+            <!-- Microsoft Clarity -->
+        }
+    }
 </head>
 
 <body class="govuk-template__body app-body-class">
+    @{
+        if (loadAnalytics)
+        {
+            <!-- Google Tag Manager (noscript) -->
+            <noscript>
+                <iframe src="https://www.googletagmanager.com/ns.html?id=@gtmId"
+                        height="0" width="0" style="display:none;visibility:hidden"></iframe>
+            </noscript>
+            <!-- End Google Tag Manager (noscript) -->
+        }
+    }
     @Html.GovUkFrontendJsEnabledScript(Html.ScriptNonce().ToString())
     @await Html.PartialAsync("_CookieBanner")
 
