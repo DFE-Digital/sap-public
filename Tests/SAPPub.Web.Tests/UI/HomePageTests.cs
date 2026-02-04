@@ -1,14 +1,15 @@
-﻿using SAPPub.Tests.UI.Infrastructure;
+﻿using SAPPub.Web.Tests.UI.Infrastructure;
 
 namespace SAPPub.Web.Tests.UI;
 
-public class HomePageTests : BasePageTest
+[Collection("Playwright Tests")]
+public class HomePageTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
     [Fact]
     public async Task HomePage_LoadsSuccessfully()
     {
         // Arrange & Act
-        var response = await GoToPageAysnc(string.Empty);
+        var response = await Page.GotoAsync(string.Empty);
 
         // Assert
         Assert.NotNull(response);
@@ -19,7 +20,7 @@ public class HomePageTests : BasePageTest
     public async Task HomePage_HasCorrectTitle()
     {
         // Arrange
-        await GoToPageAysnc(string.Empty);
+        await Page.GotoAsync(string.Empty);
 
         // Act
         var title = await Page.TitleAsync();
@@ -32,20 +33,20 @@ public class HomePageTests : BasePageTest
     public async Task HomePage_DisplaysMainHeading()
     {
         // Arrange
-        await GoToPageAysnc(string.Empty);
+        await Page.GotoAsync(string.Empty);
 
         // Act
         var heading = await Page.Locator("h1").TextContentAsync();
 
         // Assert
-        Assert.NotNull(heading.Replace(" ",""));
+        Assert.NotNull(heading.Replace(" ", ""));
     }
 
     [Fact]
     public async Task HomePage_DisplaysGovUkHeader()
     {
         // Arrange
-        await GoToPageAysnc(string.Empty);
+        await Page.GotoAsync(string.Empty);
 
         // Act
         // Locate the GOV.UK header element
@@ -72,12 +73,11 @@ public class HomePageTests : BasePageTest
         await Page.SetViewportSizeAsync(width, height);
 
         // Act
-        await GoToPageAysnc(string.Empty);
+        await Page.GotoAsync(string.Empty);
         var heading = Page.Locator("h1");
         var isVisible = await heading.IsVisibleAsync();
 
         // Assert
         Assert.True(isVisible, $"Heading should be visible at {width}x{height}");
-        //isVisible.Should().BeTrue($"Heading should be visible at {width}x{height}");
     }
 }
