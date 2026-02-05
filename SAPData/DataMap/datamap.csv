@@ -1163,3 +1163,4 @@ Establishment,,Succ_Name_Est,SuccessorURN,Succ,SchoolName,Name,GIAS,,,All Establ
 Establishment,,Succ_Date_Est,SuccessorURN,Succ,Date,Date,GIAS,,,All Establishment Links,Links,Current,Current,links_edubasealldataYYYYmmDD.csv,LinkEstablishedDate,string array,list of object,URN,LinkType,Successor,,,,,,,,,,,Y,TRUE,Y
 Establishment,,TrustSch_URN_Est,TrustRelatedSchools,TrustSch,URN,URN,GIAS,,,Academy sponsor and trust links,,Current,Current,grouplinks_edubaseallacademiesandfreeYYYYmmDD.csv,Linked UID,string array,list of object,URN,,,,,,,,,,,,,Y,TRUE,
 Establishment,,TrustSch_Name_Est,TrustRelatedSchools,TrustSch,SchoolName,Name,GIAS,,,Academy sponsor and trust links,,Current,Current,grouplinks_edubaseallacademiesandfreeYYYYmmDD.csv,Linked UID,string array,list of object,URN,,,,,,,,,,,,,Y,TRUE,Y
+Establishment,,GSSLACode,LA GSS code,,,,GIAS,,,All establishment data,Metadata,Current,Current,edubasealldataYYYYmmDD,GSSLACode (name),string,text,URN,,,,,,,,,,,,,,,
