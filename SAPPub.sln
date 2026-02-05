@@ -26,7 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAPData", "SAPData\SAPData.csproj", "{CA1E3DB8-1DE2-D4CA-4E19-E74D4B952F2E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAPData.Tests.Unit", "SAPData.Tests.Unit\SAPData.Tests.Unit.csproj", "{2FD6F8C0-9D97-7714-4445-AD6E47BEB671}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAPData.Unit.Tests", "SAPData.Tests.Unit\SAPData.Unit.Tests.csproj", "{2FD6F8C0-9D97-7714-4445-AD6E47BEB671}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

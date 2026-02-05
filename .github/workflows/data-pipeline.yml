@@ -680,25 +680,21 @@ jobs:
           delay=10
           log_file="$GITHUB_WORKSPACE/SAPData/Sql/psql.log"
 
-          exit_code=1
           attempt=1
           while [ $attempt -le $max_attempts ]; do
             echo "ETL attempt $attempt/$max_attempts"
 
             # Run konduit + psql, capture output for classification
             set +e
-            "$GITHUB_WORKSPACE/konduit.sh" \
-              -n "${AKS_NAMESPACE}" \
-              -t 7200 \
-              -x "${KONDUIT_APP_NAME}" \
+            "$GITHUB_WORKSPACE/konduit.sh" -n "${AKS_NAMESPACE}" -t 7200 -x \
               -i "$GITHUB_WORKSPACE/SAPData/Sql/run_all.sql" \
-              -- psql 2>&1 | tee "$log_file"
+              "${KONDUIT_APP_NAME}" -- psql 2>&1 | tee "$log_file"
             exit_code=${PIPESTATUS[0]}
             set -e
 
             if [ $exit_code -eq 0 ]; then
               echo "ETL succeeded on attempt $attempt"
-              break
+              exit 0
             fi
 
             # Retry only if the failure looks like a transient DB/network disconnect
@@ -714,59 +710,9 @@ jobs:
             fi
 
             echo "ETL failed with exit code $exit_code (not classified as transient)."
-            break
+            exit $exit_code
           done
 
-          if [ $exit_code -ne 0 ]; then
-            echo "ETL failed after $max_attempts attempts."
-            exit 2
-          fi
-
-      # ==============================
-      # 10. Create & upload DB backup (used to restore db in review app env)
-      # ==============================
-      - name: Create + upload review seed DB backup
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          TODAY=$(TZ=Europe/London date +"%F")
-          VERSIONED_LOCAL="sappub_review_seed_${TODAY}.sql.gz"
-
-          VERSIONED_BLOB="db-backups/${VERSIONED_LOCAL}"
-          LATEST_BLOB="db-backups/sappub_review_seed_latest.sql.gz"
-
-          echo "Creating DB dump -> ${VERSIONED_LOCAL}"
-
-          # Mirror the same konduit calling convention used in the ETL step:
-          # - pass -x as a flag, and pass KONDUIT_APP_NAME positionally
-          "$GITHUB_WORKSPACE/konduit.sh" \
-            -n "${AKS_NAMESPACE}" \
-            -t 7200 \
-            -x \
-            "${KONDUIT_APP_NAME}" -- pg_dump | gzip -c > "${VERSIONED_LOCAL}"
-
-          ls -lh "${VERSIONED_LOCAL}"
-
-          echo "Uploading ${VERSIONED_BLOB} and updating ${LATEST_BLOB} in container ${AZURE_STORAGE_CONTAINER}"
-
-          az storage blob upload \
-            --container-name "${AZURE_STORAGE_CONTAINER}" \
-            --name "${VERSIONED_BLOB}" \
-            --file "${VERSIONED_LOCAL}" \
-            --connection-string "${AZURE_STORAGE_CONNECTION_STRING}" \
-            --overwrite true >/dev/null
-
-          az storage blob upload \
-            --container-name "${AZURE_STORAGE_CONTAINER}" \
-            --name "${LATEST_BLOB}" \
-            --file "${VERSIONED_LOCAL}" \
-            --connection-string "${AZURE_STORAGE_CONNECTION_STRING}" \
-            --overwrite true >/dev/null
-
-          echo "Seed backup uploaded:"
-          echo "  ${AZURE_STORAGE_CONTAINER}/${LATEST_BLOB}"
-
-
-
+          echo "ETL failed after $max_attempts attempts."
+          exit 2
 
