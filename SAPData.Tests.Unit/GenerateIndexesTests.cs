@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using Xunit;
 
-namespace SAPData.Tests.Unit;
+namespace SAPData.Unit.Tests;
 
 public class GenerateIndexesTests : IDisposable
 {
