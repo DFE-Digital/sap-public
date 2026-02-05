@@ -63,7 +63,7 @@ public class CookiesControllerTests
         var result = response as RedirectResult;
         Assert.NotNull(result);
         var setCookieHeader = httpContext.Response.Headers["Set-Cookie"].ToString();
-        var expectedValue = hideBanner ? "seen_cookie_confirmation=true" : "seen_cookie_confirmation=false";
+        var expectedValue = hideBanner ? "hide_banner=true" : "hide_banner=false";
         Assert.Contains(expectedValue, setCookieHeader);
         Assert.Equal(redirectUrl, result.Url);
     }

@@ -1,9 +1,10 @@
-﻿using SAPPub.Tests.UI.Infrastructure;
-using SAPPub.Web.Tests.UI.Helpers;
+﻿using SAPPub.Web.Tests.UI.Helpers;
+using SAPPub.Web.Tests.UI.Infrastructure;
 
 namespace SAPPub.Web.Tests.UI.SecondarySchool;
 
-public class AcademicPerformanceSubjectsEnteredTests : BasePageTest
+[Collection("Playwright Tests")]
+public class AcademicPerformanceSubjectsEnteredTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
     private string _pageUrl = "school/105574/Loreto%20High%20School%20Chorlton/secondary/academic-performance-subjects-entered";
 
@@ -11,7 +12,7 @@ public class AcademicPerformanceSubjectsEnteredTests : BasePageTest
     public async Task AcademicPerformanceSubjectsEnteredPage_LoadsSuccessfully()
     {
         // Arrange && Act
-        var response = await GoToPageAysnc(_pageUrl);
+        var response = await Page.GotoAsync(_pageUrl);
 
         // Assert
         Assert.NotNull(response);
@@ -22,7 +23,7 @@ public class AcademicPerformanceSubjectsEnteredTests : BasePageTest
     public async Task AcademicPerformanceSubjectsEnteredPage_HasCorrectTitle()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         var title = await Page.TitleAsync();
@@ -35,7 +36,7 @@ public class AcademicPerformanceSubjectsEnteredTests : BasePageTest
     public async Task AcademicPerformanceSubjectsEnteredPage_DisplaysMainHeading()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         var heading = await Page.Locator("h1").TextContentAsync();
@@ -48,7 +49,7 @@ public class AcademicPerformanceSubjectsEnteredTests : BasePageTest
     public async Task AcademicPerformanceSubjectsEnteredPage_Displays_SchoolName_Caption()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         var schoolNameCaptionLocator = Page.Locator("#school-name-caption");
@@ -68,7 +69,7 @@ public class AcademicPerformanceSubjectsEnteredTests : BasePageTest
         // We want to display the performance root page even when in a performance sub-page, hence need to check the active href is the root performance page
 
         var nav = new VerticalNavigationHelper(Page);
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         await nav.ShouldBeVisibleAsync();
         await nav.ShouldHaveItemsCountAsync(6);
@@ -80,7 +81,7 @@ public class AcademicPerformanceSubjectsEnteredTests : BasePageTest
     public async Task AcademicPerformanceSubjectsEnteredPage_Displays_Sub_Navigation()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         var isVisible = await Page.Locator("#sub-navigation-academic-performance").IsVisibleAsync();
@@ -93,7 +94,7 @@ public class AcademicPerformanceSubjectsEnteredTests : BasePageTest
     public async Task AcademicPerformancSubjectsEnteredPage_DisplaysWhatDoTheQualificationsMean()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         var isVisible = await Page.Locator("#details-academic-performance").IsVisibleAsync();
@@ -106,7 +107,7 @@ public class AcademicPerformanceSubjectsEnteredTests : BasePageTest
     public async Task AcademicPerformanceSubjectsEnteredPage_DisplaysPagination()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         var isVisible = await Page.Locator("#academic-performance-subjects-entered-pagination").IsVisibleAsync();
@@ -119,7 +120,7 @@ public class AcademicPerformanceSubjectsEnteredTests : BasePageTest
     public async Task AcademicPerformanceSubjectsEnteredPage_Displays_CoreSubjects()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         var isVisible = await Page.Locator("#core-subjects-entered-table").IsVisibleAsync();
@@ -132,7 +133,7 @@ public class AcademicPerformanceSubjectsEnteredTests : BasePageTest
     public async Task AcademicPerformanceSubjectsEnteredPage_Displays_AdditionalSubjects()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         var isVisible = await Page.Locator("#additional-subjects-entered-table").IsVisibleAsync();

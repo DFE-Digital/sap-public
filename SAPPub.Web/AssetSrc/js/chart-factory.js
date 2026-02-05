@@ -24,13 +24,17 @@
     function buildChartOptions(type, gdsStyles) {
         const common = {
             responsive: true,
-            maintainAspecRatio: false,
+            maintainAspectRatio: false,
+            devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2)
         };
 
         const fonts = {
             family: gdsStyles.fontFamily,
             size: gdsStyles.fontSize
         }
+
+        const stepSize = 20;
+        const legendOptions = { display: false };
 
         if (type === 'line') {
             return {
@@ -56,7 +60,7 @@
                         ticks: {
                             color: gdsStyles.text,
                             font: fonts,
-                            stepSize: 20,
+                            stepSize: stepSize,
                             callback: (value) => value + '%',
                         }
                     },
@@ -72,7 +76,7 @@
                 },
                 plugins: {
                     tooltip: { enabled: false },
-                    legend: { display: false },
+                    legend: legendOptions,
                     title: {
                         display: false,
                         font: fonts
@@ -98,7 +102,7 @@
 
         if (type === 'bar') {
             return {
-                ...common,
+                ...common,                
                 indexAxis: 'y',
                 scales: {
                     x: {
@@ -118,7 +122,7 @@
                         ticks: {
                             color: gdsStyles.text,
                             font: fonts,
-                            stepSize: 20,
+                            stepSize: stepSize,
                             callback: (value) => value + '%'
                         }
                     },
@@ -129,24 +133,34 @@
                         },
                         ticks: {
                             color: gdsStyles.text,
-                            font: fonts
+                            font: fonts,
+                            callback: function (value) {
+                                const label = this.getLabelForValue(value);
+                                return wrapLabel(label.toString(), 15);
+                            },
+                            padding: 10
                         }
                     }
                 },
                 plugins: {
                     tooltip: { enabled: false },
-                    legend: { display: false },
+                    legend: legendOptions,
                     title: {
                         display: false,
                         font: fonts
                     },
                     datalabels: {
                         anchor: 'end',
-                        align: ctx => ctx.dataset.data[ctx.dataIndex] === 0 ? 'end' : 'start',
+                        align: ctx => ctx.dataset.data[ctx.dataIndex] < 10 ? 'end' : 'start',
                         offset: 10,
                         color: (ctx) => {
-                            const bg = ctx.dataset.backgroundColor[ctx.dataIndex];
-                            return bg == '#003C56' ? '#ffffff' : gdsStyles.text;
+                            if (ctx.dataset.data[ctx.dataIndex] < 10) {
+                                return gdsStyles.text;
+                            }
+                            else {
+                                const bg = Array.isArray(ctx.dataset.backgroundColor) ? ctx.dataset.backgroundColor[ctx.dataIndex] : ctx.dataset.backgroundColor;
+                                return bg === '#003C56' ? '#ffffff' : gdsStyles.text;
+                            }
                         },
                         font: {
                             ...fonts,
@@ -180,13 +194,25 @@
         }
 
         if (type === 'bar') {
+            const dataOptions = {                
+                borderWidth: 1,                
+                barThickness: 'flex',
+                maxBarThickness: 70,
+                minBarLength: 3,    
+            }
+            if (Array.isArray(chartData.datasets)) {
+                return chartData.datasets.map((ds, i) => ({
+                    label: ds.label,
+                    data: ds.data,
+                    backgroundColor: colors[i] || defaultColors[i],
+                    ...dataOptions
+                }));
+            }
+
             return [{
                 data: chartData.data,
                 backgroundColor: colors.length ? colors : defaultColors,
-                borderWidth: 1,
-                barThickness: 'flex',
-                maxBarThickness: 70,
-                minBarLength: 3,                
+                ...dataOptions               
             }];
         }
     }
@@ -206,6 +232,7 @@
 
             const chartData = JSON.parse(canvas.dataset.chart);
             const type = canvas.dataset.type;
+            const showLegend = canvas.dataset.showLegend === "true";
 
             const colors = canvas.dataset.colors
                 ? JSON.parse(canvas.dataset.colors)
@@ -217,12 +244,63 @@
                     labels: chartData.labels,
                     datasets: buildDatasets(type, chartData, colors)
                 },
-                options: buildChartOptions(type, gdsStyles),
+                options: buildChartOptions(type, gdsStyles, showLegend),
                 plugins: [ChartDataLabels]
             };
 
-            charts[canvas.id] = new Chart(canvas, config);
+            var chart = new Chart(canvas, config);
+
+            charts[canvas.id] = chart;
+
+            if (showLegend) {
+                const legendContainer = document.querySelector(`.chart-legend[data-chart-id="${canvas.id}"]`);
+                if (legendContainer) {
+                    buildVerticalLegend(chart, legendContainer)
+                }
+            }
         });
+    }
+
+    function wrapLabel(label, maxChars) {
+        const words = label.split(' ');
+        const lines = [];
+        let line = '';
+
+        words.forEach(word => {
+            if ((line + word).length > maxChars) {
+                lines.push(line.trim());
+                line = word + ' ';
+            } else {
+                line += word + ' ';
+            }
+        });
+
+        lines.push(line.trim());
+        return lines;
+    }
+
+
+    function buildVerticalLegend(chart, container) {
+
+        const datasets = Array.isArray(chart.data.datasets) ? chart.data.datasets : [chart.data.datasets];
+
+        const ul = document.createElement('ul');
+
+        datasets.forEach(ds => {
+            const li = document.createElement('li');
+            const box = document.createElement("span");
+            box.classList.add("legend-box");
+            box.style.backgroundColor = ds.backgroundColor || ds.borderColor || "#000";
+
+            const label = document.createElement("span");
+            label.textContent = ds.label;
+
+            li.appendChild(box);
+            li.appendChild(label);
+            ul.appendChild(li);
+        });
+
+        container.appendChild(ul);
     }
 
     function adjustChartResize() {

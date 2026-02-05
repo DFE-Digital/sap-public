@@ -1,11 +1,12 @@
-﻿using SAPPub.Tests.UI.Infrastructure;
-using SAPPub.Web.Helpers;
+﻿using SAPPub.Web.Helpers;
 using SAPPub.Web.Tests.UI.Helpers;
+using SAPPub.Web.Tests.UI.Infrastructure;
 using static SAPPub.Web.Models.SecondarySchool.AcademicPerformanceEnglishAndMathsResultsViewModel;
 
 namespace SAPPub.Web.Tests.UI.SecondarySchool;
 
-public class AcademicPerformanceEnglishAndMathsResults : BasePageTest
+[Collection("Playwright Tests")]
+public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
     private string _pageUrl = "school/105574/Loreto%20High%20School%20Chorlton/secondary/academic-performance-english-and-maths-results";
 
@@ -13,7 +14,7 @@ public class AcademicPerformanceEnglishAndMathsResults : BasePageTest
     public async Task AcademicPerformanceEnglishAndMathsResultsPage_LoadsSuccessfully()
     {
         // Arrange && Act
-        var response = await GoToPageAysnc(_pageUrl);
+        var response = await Page.GotoAsync(_pageUrl);
 
         // Assert
         Assert.NotNull(response);
@@ -24,7 +25,7 @@ public class AcademicPerformanceEnglishAndMathsResults : BasePageTest
     public async Task AcademicPerformanceEnglishAndMathsResultsPage_HasCorrectTitle()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         var title = await Page.TitleAsync();
@@ -37,7 +38,7 @@ public class AcademicPerformanceEnglishAndMathsResults : BasePageTest
     public async Task AcademicPerformanceEnglishAndMathsResultsPage_DisplaysMainHeading()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         var heading = await Page.Locator("h1").TextContentAsync();
@@ -50,7 +51,7 @@ public class AcademicPerformanceEnglishAndMathsResults : BasePageTest
     public async Task AcademicPerformanceEnglishAndMathsResultsPage_Displays_SchoolName_Caption()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         var schoolNameCaptionLocator = Page.Locator("#school-name-caption");
@@ -70,7 +71,7 @@ public class AcademicPerformanceEnglishAndMathsResults : BasePageTest
         // We want to display the performance root page even when in a performance sub-page, hence need to check the active href is the root performance page
 
         var nav = new VerticalNavigationHelper(Page);
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         await nav.ShouldBeVisibleAsync();
         await nav.ShouldHaveItemsCountAsync(6);
@@ -82,7 +83,7 @@ public class AcademicPerformanceEnglishAndMathsResults : BasePageTest
     public async Task AcademicPerformanceEnglishAndMathsResultsPage_Displays_Sub_Navigation()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         var isVisible = await Page.Locator("#sub-navigation-academic-performance").IsVisibleAsync();
@@ -95,7 +96,7 @@ public class AcademicPerformanceEnglishAndMathsResults : BasePageTest
     public async Task AcademicPerformanceEnglishAndMathsResultsPage_Displays_Gcse_Grades_Explained()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         var isVisible = await Page.Locator("#details-gcse-grades-explained").IsVisibleAsync();
@@ -108,7 +109,7 @@ public class AcademicPerformanceEnglishAndMathsResults : BasePageTest
     public async Task AcademicPerformanceEnglishAndMathsResultsPage_DisplaysPagination()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         var isVisible = await Page.Locator("#academic-performance-english-and-maths-results-pagination").IsVisibleAsync();
@@ -121,7 +122,7 @@ public class AcademicPerformanceEnglishAndMathsResults : BasePageTest
     public async Task AcademicPerformanceEnglishAndMathsResultsPage_DisplaysGradeSelectorForDataDisplayed()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Act
         var isVisible = await Page.Locator("#gradeSelector").IsVisibleAsync();
@@ -134,7 +135,7 @@ public class AcademicPerformanceEnglishAndMathsResults : BasePageTest
     public async Task AcademicPerformanceEnglishAndMathsResultsPage_ChangeGradeSelected()
     {
         // Arrange
-        await GoToPageAysnc(_pageUrl);
+        await Page.GotoAsync(_pageUrl);
 
         // Assert
         var chartHeading = Page.Locator("#chartHeading");
