@@ -1,7 +1,7 @@
 ﻿using SAPData.Models;
 using Xunit;
 
-namespace SAPData.Tests.Unit;
+namespace SAPData.Unit.Tests;
 
 public class GenerateViewsTests : IDisposable
 {
