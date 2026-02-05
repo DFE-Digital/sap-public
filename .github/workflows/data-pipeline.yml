@@ -680,7 +680,6 @@ jobs:
           delay=10
           log_file="$GITHUB_WORKSPACE/SAPData/Sql/psql.log"
 
-          exit_code=1
           attempt=1
           while [ $attempt -le $max_attempts ]; do
             echo "ETL attempt $attempt/$max_attempts"
@@ -697,7 +696,7 @@ jobs:
 
             if [ $exit_code -eq 0 ]; then
               echo "ETL succeeded on attempt $attempt"
-              break
+              exit 0
             fi
 
             if grep -Eqi \
@@ -712,7 +711,7 @@ jobs:
             fi
 
             echo "ETL failed with exit code $exit_code (not classified as transient)."
-            break
+            exit $exit_code
           done
 
           if [ $exit_code -ne 0 ]; then
