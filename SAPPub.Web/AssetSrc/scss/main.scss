@@ -1,14 +1,7 @@
-﻿@import "../../node_modules/govuk-frontend/dist/govuk/all";
+﻿@import "../../node_modules/govuk-frontend/dist/govuk/index";
 
-html {
-    font-size: 14px;
-}
-
-@media (min-width: 768px) {
-    html {
-        font-size: 16px;
-    }
-}
+$font-size: 19px;
+$font-size-mobile: 16px;
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
     box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
@@ -80,9 +73,18 @@ body {
 
 /* Vertical navigation */
 
+.moj-side-navigation {
+    padding: 0;
+}
+
+.moj-side-navigation__item {
+    margin-bottom: 10px;
+}
+
 @media(max-width: 40.0525em) {
     .moj-side-navigation {
         padding-bottom: 20px;
+        font-size: $font-size-mobile;
     }
 
     .moj-side-navigation__list {
@@ -91,10 +93,12 @@ body {
 
     .moj-side-navigation__item {
         width: 100%;
+        margin-bottom: 8px;
     }
 
     .moj-side-navigation__item > a {
         border-bottom: none !important;
+        padding: 8px 15px 8px 15px !important;
     }
 
     .moj-side-navigation__item--active {
