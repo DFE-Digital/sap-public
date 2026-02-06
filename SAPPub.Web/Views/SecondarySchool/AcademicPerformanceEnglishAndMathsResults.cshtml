@@ -19,7 +19,7 @@
     <div class="govuk-grid-column-three-quarters">
         <span id="school-name-caption" class="govuk-caption-l">@Model.SchoolName</span>
         <h1 class="govuk-heading-l">@ViewBag.Title</h1>
-        <p>
+        <p class="govuk-body">
             Looking at school performance data is one way to see how well a school is doing.
             You should look at a range of information about a school before deciding if it’s the right fit for your child.
         </p>
@@ -37,9 +37,9 @@
             </ul>
         </nav>
 
-        <h2>English and maths results for the previous academic year</h2>
+        <h2 class="govuk-heading-l">English and maths results for the previous academic year</h2>
 
-        <p>
+        <p class="govuk-body">
             Information in this section is for the 2024 to 2025 academic year.
         </p>
 
@@ -48,10 +48,10 @@
                 GCSE grade 9 to 1 scale explained
             </govuk-details-summary>
             <govuk-details-text>
-                <p>
+                <p class="govuk-body">
                     GCSEs in England have been graded on a 9 to 1 scale since 2017. This replaced the previous A* to G scale. 
                 </p>
-                <p>
+                <p class="govuk-body">
                     The number scale is not directly equivalent to the old letter one. But the old and current grading scales are comparable at the following points: 
                 </p>
 
@@ -82,10 +82,10 @@
         </div>
 
         <div class="gds-chart-container">
-            <h3 class="govuk-!-margin-left-2 govuk-!-margin-top-3" id="chartHeading">
+            <h3 class="govuk-heading-m govuk-!-margin-left-2 govuk-!-margin-top-3" id="chartHeading">
                 @Model.SelectedGrade!.GetDisplayName() in English and maths GCSEs
             </h3>
-            <p class="govuk-!-margin-left-2">
+            <p class="govuk-body govuk-!-margin-left-2">
                 @(Model.SelectedGrade == GcseGradeDataSelection.Grade5AndAbove ? "Grade 5 is comparable to the top of the old grade C." : "The bottom of grade 4 is comparable to the bottom of the old grade C")
             </p>
             <canvas id="chart" width="500" height="200"></canvas>
