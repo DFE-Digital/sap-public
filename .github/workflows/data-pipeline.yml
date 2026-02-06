@@ -737,13 +737,17 @@ jobs:
           echo "AKS_NAMESPACE=${AKS_NAMESPACE}"
           echo "KONDUIT_APP_NAME=${KONDUIT_APP_NAME}"
 
+          # Make sure we don't accidentally append to an existing file
+          rm -f "${LOCAL_FILE}" konduit_pg_dump.log
+
           set +e
           "$GITHUB_WORKSPACE/konduit.sh" \
             -n "${AKS_NAMESPACE}" \
             -t 7200 \
             -x \
             "${KONDUIT_APP_NAME}" -- \
-            pg_dump --format=custom --no-owner --no-privileges > "${LOCAL_FILE}" 2> konduit_pg_dump.log
+            pg_dump --format=custom --no-owner --no-privileges \
+            > "${LOCAL_FILE}" 2> konduit_pg_dump.log
           exit_code=$?
           set -e
 
@@ -753,6 +757,21 @@ jobs:
             cat konduit_pg_dump.log || true
             echo "-----------------------------"
             exit $exit_code
+          fi
+
+          # Validate archive header (custom format starts with PGDMP)
+          header="$(head -c 5 "${LOCAL_FILE}" || true)"
+          if [ "${header}" != "PGDMP" ]; then
+            echo "ERROR: Dump is not a valid pg_dump custom archive (expected header 'PGDMP', got '${header}')." >&2
+            echo "This usually means konduit.sh printed log lines to STDOUT (e.g. 'Using ...'), corrupting the dump stream." >&2
+            echo "" >&2
+            echo "First 200 bytes of dump (printable view):" >&2
+            head -c 200 "${LOCAL_FILE}" | cat -v >&2 || true
+            echo "" >&2
+            echo "---- konduit_pg_dump.log ----" >&2
+            cat konduit_pg_dump.log >&2 || true
+            echo "-----------------------------" >&2
+            exit 1
           fi
 
           ls -lh "${LOCAL_FILE}"
