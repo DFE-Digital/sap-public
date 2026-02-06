@@ -641,9 +641,6 @@ jobs:
           set -e
           if [ $exit_code -ne 0 ]; then
             echo "konduit/pg_dump failed with exit code ${exit_code}"
-            echo "---- konduit_pg_dump.log ----"
-            cat konduit_pg_dump.log || true
-            echo "-----------------------------"
             exit $exit_code
           fi
           ls -lh "${LOCAL_FILE}"
