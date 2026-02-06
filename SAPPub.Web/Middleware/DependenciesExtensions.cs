@@ -13,6 +13,7 @@ using SAPPub.Core.Interfaces.Repositories.KS4.Workforce;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.Absence;
+using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
@@ -20,6 +21,7 @@ using SAPPub.Core.Interfaces.Services.KS4.Workforce;
 using SAPPub.Core.Services;
 using SAPPub.Core.Services.KS4;
 using SAPPub.Core.Services.KS4.Absence;
+using SAPPub.Core.Services.KS4.Admissions;
 using SAPPub.Core.Services.KS4.Destinations;
 using SAPPub.Core.Services.KS4.Performance;
 using SAPPub.Core.Services.KS4.SubjectEntries;
@@ -91,7 +93,9 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<IEstablishmentSubjectEntriesService, EstablishmentSubjectEntriesService>();
             services.AddTransient<IEstablishmentSubjectEntriesRepository, EstablishmentSubjectEntriesRepository>();
             services.AddTransient<IAcademicPerformanceEnglishAndMathsResultsService, Core.Services.KS4.Performance.EnglishAndMathsResultsService>();
-            services.AddTransient<ISecondarySchoolService, SecondarySchoolService>();            
+            services.AddTransient<ISecondarySchoolService, SecondarySchoolService>();
+
+            services.AddScoped<IAdmissionsService, EstablishmentAdmissionsService>();
         }
     }
 }

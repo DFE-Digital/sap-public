@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4;
+using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
 using SAPPub.Web.Helpers;
@@ -37,9 +38,10 @@ namespace SAPPub.Web.Controllers
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/admissions", Name = RouteConstants.SecondaryAdmissions)]
-        public IActionResult Admissions(string urn, string schoolName)
+        public async Task<IActionResult> Admissions([FromServices] IAdmissionsService admissionsService, string urn, string schoolName)
         {
-            var model = new AdmissionsViewModel { URN = urn, SchoolName = schoolName };
+            var admissionsDetails = await admissionsService.ExecuteAsync(urn);
+            var model = AdmissionsViewModel.MapFrom(admissionsDetails, urn, schoolName);
             return View(model);
         }
 
