@@ -735,11 +735,27 @@ jobs:
 
           echo "Creating DB dump -> ${VERSIONED_LOCAL}"
 
+          # --- Debug: show what we are targeting ---
+          echo "AKS_NAMESPACE=${AKS_NAMESPACE}"
+          echo "KONDUIT_APP_NAME=${KONDUIT_APP_NAME}"
+
+          # --- Run pg_dump via konduit and capture stderr/stdout ---
+          set +e
           "$GITHUB_WORKSPACE/konduit.sh" \
             -n "${AKS_NAMESPACE}" \
             -t 7200 \
             -x \
-            "${KONDUIT_APP_NAME}" -- pg_dump | gzip -c > "${VERSIONED_LOCAL}"
+            "${KONDUIT_APP_NAME}" -- pg_dump 2> pg_dump.err | gzip -c > "${VERSIONED_LOCAL}"
+          exit_code=${PIPESTATUS[0]}
+          set -e
+
+          if [ $exit_code -ne 0 ]; then
+            echo "pg_dump via konduit failed with exit code ${exit_code}"
+            echo "---- pg_dump.err ----"
+            cat pg_dump.err || true
+            echo "---------------------"
+            exit $exit_code
+          fi
 
           ls -lh "${VERSIONED_LOCAL}"
 
