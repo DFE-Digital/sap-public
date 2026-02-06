@@ -756,6 +756,8 @@ jobs:
             exit $exit_code
           fi
 
+          # If dump succeeded, gzip it
+          gzip -c dump.sql > "${VERSIONED_LOCAL}"
           ls -lh "${VERSIONED_LOCAL}"
 
           echo "Uploading ${VERSIONED_BLOB} and updating ${LATEST_BLOB} in container ${AZURE_STORAGE_CONTAINER}"
