@@ -728,23 +728,22 @@ jobs:
           set -euo pipefail
 
           TODAY=$(TZ=Europe/London date +"%F")
-          VERSIONED_LOCAL="sappub_review_seed_${TODAY}.sql.gz"
+          LOCAL_FILE="sappub_review_seed_${TODAY}.sql.gz"
 
-          VERSIONED_BLOB="db-backups/${VERSIONED_LOCAL}"
+          # Only ever keep this single blob in storage
           LATEST_BLOB="db-backups/sappub_review_seed_latest.sql.gz"
 
-          echo "Creating DB dump -> ${VERSIONED_LOCAL}"
+          echo "Creating DB dump -> ${LOCAL_FILE}"
           echo "AKS_NAMESPACE=${AKS_NAMESPACE}"
           echo "KONDUIT_APP_NAME=${KONDUIT_APP_NAME}"
 
-          # Create dump (plain SQL) and gzip it
           set +e
           "$GITHUB_WORKSPACE/konduit.sh" \
             -n "${AKS_NAMESPACE}" \
             -t 7200 \
             -x \
             "${KONDUIT_APP_NAME}" -- \
-            pg_dump --format=plain --no-owner --no-privileges 2> konduit_pg_dump.log | gzip -c > "${VERSIONED_LOCAL}"
+            pg_dump --format=plain --no-owner --no-privileges 2> konduit_pg_dump.log | gzip -c > "${LOCAL_FILE}"
           exit_code=${PIPESTATUS[0]}
           set -e
 
@@ -756,23 +755,14 @@ jobs:
             exit $exit_code
           fi
 
-          # If dump succeeded, gzip it
-          gzip -c dump.sql > "${VERSIONED_LOCAL}"
-          ls -lh "${VERSIONED_LOCAL}"
+          ls -lh "${LOCAL_FILE}"
 
-          echo "Uploading ${VERSIONED_BLOB} and updating ${LATEST_BLOB} in container ${AZURE_STORAGE_CONTAINER}"
-
-          az storage blob upload \
-            --container-name "${AZURE_STORAGE_CONTAINER}" \
-            --name "${VERSIONED_BLOB}" \
-            --file "${VERSIONED_LOCAL}" \
-            --connection-string "${AZURE_STORAGE_CONNECTION_STRING}" \
-            --overwrite true >/dev/null
+          echo "Uploading (overwriting) ${LATEST_BLOB} in container ${AZURE_STORAGE_CONTAINER}"
 
           az storage blob upload \
             --container-name "${AZURE_STORAGE_CONTAINER}" \
             --name "${LATEST_BLOB}" \
-            --file "${VERSIONED_LOCAL}" \
+            --file "${LOCAL_FILE}" \
             --connection-string "${AZURE_STORAGE_CONNECTION_STRING}" \
             --overwrite true >/dev/null
 
