@@ -728,10 +728,10 @@ jobs:
           set -euo pipefail
 
           TODAY=$(TZ=Europe/London date +"%F")
-          LOCAL_FILE="sappub_review_seed_${TODAY}.sql.gz"
+          LOCAL_FILE="sappub_review_seed_${TODAY}.dump"
 
           # Only ever keep this single blob in storage
-          LATEST_BLOB="db-backups/sappub_review_seed_latest.sql.gz"
+          LATEST_BLOB="db-backups/sappub_review_seed_latest.dump"
 
           echo "Creating DB dump -> ${LOCAL_FILE}"
           echo "AKS_NAMESPACE=${AKS_NAMESPACE}"
@@ -743,8 +743,8 @@ jobs:
             -t 7200 \
             -x \
             "${KONDUIT_APP_NAME}" -- \
-            pg_dump --format=plain --no-owner --no-privileges 2> konduit_pg_dump.log | gzip -c > "${LOCAL_FILE}"
-          exit_code=${PIPESTATUS[0]}
+            pg_dump --format=custom --no-owner --no-privileges > "${LOCAL_FILE}" 2> konduit_pg_dump.log
+          exit_code=$?
           set -e
 
           if [ $exit_code -ne 0 ]; then
