@@ -734,29 +734,37 @@ jobs:
           LATEST_BLOB="db-backups/sappub_review_seed_latest.sql.gz"
 
           echo "Creating DB dump -> ${VERSIONED_LOCAL}"
-
-          # --- Debug: show what we are targeting ---
           echo "AKS_NAMESPACE=${AKS_NAMESPACE}"
           echo "KONDUIT_APP_NAME=${KONDUIT_APP_NAME}"
 
-          # --- Run pg_dump via konduit and capture stderr/stdout ---
+          # Run dump without piping so we can see konduit errors clearly
           set +e
           "$GITHUB_WORKSPACE/konduit.sh" \
             -n "${AKS_NAMESPACE}" \
             -t 7200 \
             -x \
-            "${KONDUIT_APP_NAME}" -- pg_dump 2> pg_dump.err | gzip -c > "${VERSIONED_LOCAL}"
-          exit_code=${PIPESTATUS[0]}
+            "${KONDUIT_APP_NAME}" -- pg_dump > dump.sql 2> konduit_pg_dump.log
+          exit_code=$?
           set -e
 
           if [ $exit_code -ne 0 ]; then
-            echo "pg_dump via konduit failed with exit code ${exit_code}"
-            echo "---- pg_dump.err ----"
-            cat pg_dump.err || true
-            echo "---------------------"
+            echo "konduit/pg_dump failed with exit code ${exit_code}"
+            echo "---- konduit_pg_dump.log ----"
+            cat konduit_pg_dump.log || true
+            echo "-----------------------------"
+
+            echo "---- dump.sql (first 50 lines, if any) ----"
+            if [ -f dump.sql ]; then
+              head -n 50 dump.sql || true
+            else
+              echo "(dump.sql not created)"
+            fi
+            echo "------------------------------------------"
             exit $exit_code
           fi
 
+          # If dump succeeded, gzip it
+          gzip -c dump.sql > "${VERSIONED_LOCAL}"
           ls -lh "${VERSIONED_LOCAL}"
 
           echo "Uploading ${VERSIONED_BLOB} and updating ${LATEST_BLOB} in container ${AZURE_STORAGE_CONTAINER}"
