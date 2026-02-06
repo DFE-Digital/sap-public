@@ -737,14 +737,15 @@ jobs:
           echo "AKS_NAMESPACE=${AKS_NAMESPACE}"
           echo "KONDUIT_APP_NAME=${KONDUIT_APP_NAME}"
 
-          # Run dump without piping so we can see konduit errors clearly
+          # Create dump (plain SQL) and gzip it
           set +e
           "$GITHUB_WORKSPACE/konduit.sh" \
             -n "${AKS_NAMESPACE}" \
             -t 7200 \
             -x \
-            "${KONDUIT_APP_NAME}" -- pg_dump > dump.sql 2> konduit_pg_dump.log
-          exit_code=$?
+            "${KONDUIT_APP_NAME}" -- \
+            pg_dump --format=plain --no-owner --no-privileges 2> konduit_pg_dump.log | gzip -c > "${VERSIONED_LOCAL}"
+          exit_code=${PIPESTATUS[0]}
           set -e
 
           if [ $exit_code -ne 0 ]; then
@@ -752,14 +753,6 @@ jobs:
             echo "---- konduit_pg_dump.log ----"
             cat konduit_pg_dump.log || true
             echo "-----------------------------"
-
-            echo "---- dump.sql (first 50 lines, if any) ----"
-            if [ -f dump.sql ]; then
-              head -n 50 dump.sql || true
-            else
-              echo "(dump.sql not created)"
-            fi
-            echo "------------------------------------------"
             exit $exit_code
           fi
 
