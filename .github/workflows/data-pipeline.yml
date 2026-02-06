@@ -729,31 +729,40 @@ jobs:
 
           TODAY=$(TZ=Europe/London date +"%F")
           LOCAL_FILE="sappub_review_seed_${TODAY}.dump"
-
-          # Only ever keep this single blob in storage
           LATEST_BLOB="db-backups/sappub_review_seed_latest.dump"
 
           echo "Creating DB dump -> ${LOCAL_FILE}"
           echo "AKS_NAMESPACE=${AKS_NAMESPACE}"
           echo "KONDUIT_APP_NAME=${KONDUIT_APP_NAME}"
 
+          # Use a unique remote path
+          REMOTE_DUMP="/tmp/${LOCAL_FILE}"
+
+          # 1) Create the dump INSIDE the konduit pod (stdout is not the dump)
           set +e
           "$GITHUB_WORKSPACE/konduit.sh" \
             -n "${AKS_NAMESPACE}" \
             -t 7200 \
             -x \
             "${KONDUIT_APP_NAME}" -- \
-            pg_dump --format=custom --no-owner --no-privileges > "${LOCAL_FILE}" 2> konduit_pg_dump.log
+            bash -lc "pg_dump --format=custom --no-owner --no-privileges -f '${REMOTE_DUMP}'"
           exit_code=$?
           set -e
 
           if [ $exit_code -ne 0 ]; then
             echo "konduit/pg_dump failed with exit code ${exit_code}"
-            echo "---- konduit_pg_dump.log ----"
-            cat konduit_pg_dump.log || true
-            echo "-----------------------------"
             exit $exit_code
           fi
+
+          # 2) Copy the file out (this requires kubectl access and the pod name)
+          POD_NAME=$(kubectl -n "${AKS_NAMESPACE}" get pods -l "app=${KONDUIT_APP_NAME}" -o jsonpath='{.items[0].metadata.name}')
+          kubectl -n "${AKS_NAMESPACE}" cp "${POD_NAME}:${REMOTE_DUMP}" "./${LOCAL_FILE}"
+
+          # 3) Optional cleanup
+          kubectl -n "${AKS_NAMESPACE}" exec "${POD_NAME}" -- rm -f "${REMOTE_DUMP}" || true
+
+          # 4) Validate the header quickly (custom dumps start with PGDMP)
+          head -c 5 "${LOCAL_FILE}" | grep -q "PGDMP"
 
           ls -lh "${LOCAL_FILE}"
 
@@ -768,6 +777,7 @@ jobs:
 
           echo "Seed backup uploaded:"
           echo "  ${AZURE_STORAGE_CONTAINER}/${LATEST_BLOB}"
+
 
 
 
