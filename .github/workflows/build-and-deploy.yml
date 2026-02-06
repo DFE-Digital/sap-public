@@ -236,6 +236,59 @@ jobs:
           db-seed: false
           smoke-test: false
 
+      # ---------------------------
+      # REVIEW APP DATABASE DEPLOYMENT (PR)
+      # ---------------------------
+      - name: Download seed backup from Blob
+        shell: bash
+        env:
+          AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
+          AZURE_STORAGE_CONTAINER: ${{ secrets.AZURE_STORAGE_CONTAINER }} # school-data
+        run: |
+          set -euo pipefail
+          BACKUP_BLOB="db-backups/sappub_review_seed_latest.sql.gz"
+          BACKUP_FILE="seed.sql.gz"
+
+          az storage blob download \
+            --container-name "${AZURE_STORAGE_CONTAINER}" \
+            --name "${BACKUP_BLOB}" \
+            --file "${BACKUP_FILE}" \
+            --connection-string "${AZURE_STORAGE_CONNECTION_STRING}" \
+            --overwrite true
+
+          ls -lh "${BACKUP_FILE}"
+
+      - name: Restore backup into PR review DB
+        continue-on-error: true
+        shell: bash
+        env:
+          AKS_NAMESPACE: ${{ env.AKS_NAMESPACE }} 
+        run: |
+          set -euo pipefail
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          APP_NAME="sap-public-pr-${PR_NUMBER}"
+          BACKUP_FILE="seed.sql.gz"
+
+          echo "Restoring into app: ${APP_NAME} (namespace: ${AKS_NAMESPACE})"
+          echo "Backup file:"
+          ls -lh "${BACKUP_FILE}"
+
+          # quick sanity check: file isn't corrupt
+          gzip -t "${BACKUP_FILE}"
+
+          # optional: quick DB readiness check (won't restore if psql can't connect)
+          "$GITHUB_WORKSPACE/konduit.sh" \
+            -n "${AKS_NAMESPACE}" \
+            -t 300 \
+            -x "${APP_NAME}" -- psql -X -tAc "select 1"
+
+          # restore (psql will read from stdin via konduit -i)
+          "$GITHUB_WORKSPACE/konduit.sh" \
+            -n "${AKS_NAMESPACE}" \
+            -t 7200 \
+            -i "${BACKUP_FILE}" -c \
+            -x "${APP_NAME}" -- psql -v ON_ERROR_STOP=1 -X
+
   # ---------------------------
   # DEPLOY TEST (AUTO) + PROD (MANUAL APPROVAL)
   # ---------------------------
