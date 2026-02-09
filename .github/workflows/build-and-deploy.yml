@@ -326,34 +326,26 @@ jobs:
           : "${AKS_NAMESPACE:?AKS_NAMESPACE is not set}"
 
           PR_NUMBER="${{ github.event.pull_request.number }}"
+          TARGET_APP="sap-public-pr-${PR_NUMBER}"
           BACKUP_FILE="seed.sql.gz"
 
+          echo "Target app: ${TARGET_APP}"
           echo "Namespace: ${AKS_NAMESPACE}"
           ls -lh "${BACKUP_FILE}"
           gzip -t "${BACKUP_FILE}"
 
-          # Find the deployment for this PR within the namespace
-          APP_NAME="$(kubectl -n "${AKS_NAMESPACE}" get deploy -o name \
-            | sed 's|deployment.apps/||' \
-            | grep -i "pr-${PR_NUMBER}" \
-            | head -n 1 || true)"
+          # quick DB readiness check via konduit (no kubectl list)
+          "$GITHUB_WORKSPACE/konduit.sh" \
+            -n "${AKS_NAMESPACE}" \
+            -t 300 \
+            "${TARGET_APP}" -- psql -X -tAc "select 1"
 
-          if [ -z "$APP_NAME" ]; then
-            echo "No deployment found for pr-${PR_NUMBER} in namespace ${AKS_NAMESPACE}"
-            echo "Available deployments:"
-            kubectl -n "${AKS_NAMESPACE}" get deploy -o name | head -200 || true
-            exit 0   # keep non-blocking during development
-          fi
-
-          echo "Restoring into deployment: ${APP_NAME} (ns: ${AKS_NAMESPACE})"
-
-          "$GITHUB_WORKSPACE/konduit.sh" -n "${AKS_NAMESPACE}" -t 300 -x "${APP_NAME}" -- psql -X -tAc "select 1"
-
+          # restore seed backup into the PR DB via konduit
           "$GITHUB_WORKSPACE/konduit.sh" \
             -n "${AKS_NAMESPACE}" \
             -t 7200 \
             -i "${BACKUP_FILE}" -c \
-            -x "${APP_NAME}" -- psql -v ON_ERROR_STOP=1 -X
+            "${TARGET_APP}" -- psql -v ON_ERROR_STOP=1 -X
 
   # ---------------------------
   # DEPLOY TEST (AUTO) + PROD (MANUAL APPROVAL)
