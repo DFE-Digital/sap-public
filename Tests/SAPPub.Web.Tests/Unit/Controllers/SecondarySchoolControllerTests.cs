@@ -81,6 +81,7 @@ public class SecondarySchoolControllerTests
             .WithAddressTown("Town")
             .WithAddressPostcode("Postcode")
             .WithLAName("Sheffield")
+            .WithLAGssCode("123")
             .WithTypeOfEstablishmentName("EstablishmentName")
             .WithHeadteacherTitle("Title")
             .WithHeadteacherFirstName("FirstName")
@@ -250,7 +251,7 @@ public class SecondarySchoolControllerTests
         var lASchoolAdmissionsUrl = "https://www.example.com/school-admissions";
         var laName = "Example Local Authority";
 
-        _mockAdmissionsService.Setup(s => s.ExecuteAsync(_fakeEstablishment.URN)).ReturnsAsync(new AdmissionsServiceModel(
+        _mockAdmissionsService.Setup(s => s.GetAdmissionsDetailsAsync(_fakeEstablishment.URN)).ReturnsAsync(new AdmissionsServiceModel(
             LAName: laName,
             LASchoolAdmissionsUrl: lASchoolAdmissionsUrl
         ));

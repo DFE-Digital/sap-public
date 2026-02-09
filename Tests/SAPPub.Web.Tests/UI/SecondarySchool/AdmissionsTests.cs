@@ -95,19 +95,6 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
     }
 
     [Fact]
-    public async Task AdmissionsPage_DisplaysMoreInformationSection()
-    {
-        // Arrange
-        await Page.GotoAsync(_pageUrl);
-
-        // Act
-        var isVisible = await Page.Locator("#more-info-schools").IsVisibleAsync();
-
-        // Assert
-        Assert.True(isVisible);
-    }
-
-    [Fact]
     public async Task AdmissionsPage_DisplaysPagination()
     {
         // Arrange

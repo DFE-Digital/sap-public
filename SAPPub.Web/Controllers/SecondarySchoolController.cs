@@ -40,7 +40,7 @@ namespace SAPPub.Web.Controllers
         [Route("school/{urn}/{schoolName}/secondary/admissions", Name = RouteConstants.SecondaryAdmissions)]
         public async Task<IActionResult> Admissions([FromServices] IAdmissionsService admissionsService, string urn, string schoolName)
         {
-            var admissionsDetails = await admissionsService.ExecuteAsync(urn);
+            var admissionsDetails = await admissionsService.GetAdmissionsDetailsAsync(urn);
             var model = AdmissionsViewModel.MapFrom(admissionsDetails, urn, schoolName);
             return View(model);
         }
