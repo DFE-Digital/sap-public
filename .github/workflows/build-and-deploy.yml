@@ -318,6 +318,26 @@ jobs:
 
           ls -lh "${BACKUP_FILE}"
 
+      # ---------------------------
+      # debug step - remove later
+      # ---------------------------
+      - name: Debug review app resources
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Namespace: ${AKS_NAMESPACE}"
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+
+          echo "Deployments matching pr-${PR_NUMBER}:"
+          kubectl -n "${AKS_NAMESPACE}" get deploy -o name | grep -i "pr-${PR_NUMBER}" || true
+
+          echo "All deployments:"
+          kubectl -n "${AKS_NAMESPACE}" get deploy --no-headers | head -50 || true
+      # ---------------------------          
+      # end debug step
+      # ---------------------------
+
       - name: Restore backup into PR review DB
         continue-on-error: true
         shell: bash
@@ -326,12 +346,25 @@ jobs:
           : "${AKS_NAMESPACE:?AKS_NAMESPACE is not set}"
 
           PR_NUMBER="${{ github.event.pull_request.number }}"
-          APP_NAME="sap-public-pr-${PR_NUMBER}"
           BACKUP_FILE="seed.sql.gz"
 
-          echo "Restoring into app: ${APP_NAME} (namespace: ${AKS_NAMESPACE})"
+          echo "Backup file:"
           ls -lh "${BACKUP_FILE}"
           gzip -t "${BACKUP_FILE}"
+
+          APP_NAME="$(kubectl -n "${AKS_NAMESPACE}" get deploy -o name \
+            | sed 's|deployment.apps/||' \
+            | grep -i "pr-${PR_NUMBER}" \
+            | head -n 1 || true)"
+
+          if [ -z "$APP_NAME" ]; then
+            echo "No deployment found for pr-${PR_NUMBER} in namespace ${AKS_NAMESPACE}"
+            echo "Available deployments:"
+            kubectl -n "${AKS_NAMESPACE}" get deploy -o name | head -200
+            exit 1
+          fi
+
+          echo "Restoring into deployment: ${APP_NAME} (namespace: ${AKS_NAMESPACE})"
 
           "$GITHUB_WORKSPACE/konduit.sh" -n "${AKS_NAMESPACE}" -t 300 -x "${APP_NAME}" -- psql -X -tAc "select 1"
 
