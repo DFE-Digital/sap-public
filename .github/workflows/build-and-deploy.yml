@@ -223,7 +223,7 @@ jobs:
     env:
       AKS_RESOURCE_GROUP: ${{ secrets.AKS_RESOURCE_GROUP }}
       AKS_CLUSTER_NAME: ${{ secrets.AKS_CLUSTER_NAME }}
-      AKS_NAMESPACE: ${{ secrets.AKS_NAMESPACE }}
+      AKS_NAMESPACE: ${{ secrets.AKS_REVIEW_NAMESPACE }}
 
     steps:
       - name: Deploy App to Review
@@ -318,89 +318,42 @@ jobs:
 
           ls -lh "${BACKUP_FILE}"
 
-      # ---------------------------
-      # debug step - remove later
-      # ---------------------------
-      - name: Locate review app namespace from hostname
-        continue-on-error: true
-        shell: bash
-        run: |
-          set -euo pipefail
-          HOST="sap-public-pr-${{ github.event.pull_request.number }}.test.teacherservices.cloud"
-          echo "Looking for host: $HOST"
-
-          echo "Searching Ingresses across all namespaces..."
-          ing_hit="$(kubectl get ingress -A -o jsonpath='{range .items[*]}{.metadata.namespace}{"\t"}{.metadata.name}{"\t"}{range .spec.rules[*]}{.host}{" "}{end}{"\n"}{end}' \
-            | grep -F "$HOST" | head -n 1 || true)"
-
-          if [ -n "$ing_hit" ]; then
-            APP_NS="$(echo "$ing_hit" | cut -f1)"
-            ING_NAME="$(echo "$ing_hit" | cut -f2)"
-            echo "Found Ingress: $ING_NAME in namespace: $APP_NS"
-            echo "APP_NS=$APP_NS" >> "$GITHUB_ENV"
-            exit 0
-          fi
-
-          echo "No Ingress match. If your cluster uses Gateway API, searching HTTPRoutes..."
-          hr_hit="$(kubectl get httproute -A -o jsonpath='{range .items[*]}{.metadata.namespace}{"\t"}{.metadata.name}{"\t"}{range .spec.hostnames[*]}{.}{" "}{end}{"\n"}{end}' \
-            2>/dev/null | grep -F "$HOST" | head -n 1 || true)"
-
-          if [ -n "$hr_hit" ]; then
-            APP_NS="$(echo "$hr_hit" | cut -f1)"
-            HR_NAME="$(echo "$hr_hit" | cut -f2)"
-            echo "Found HTTPRoute: $HR_NAME in namespace: $APP_NS"
-            echo "APP_NS=$APP_NS" >> "$GITHUB_ENV"
-            exit 0
-          fi
-
-          echo "Could not locate host via Ingress or HTTPRoute."
-          echo "Ingresses with sap-public/pr in name (sample):"
-          kubectl get ingress -A 2>/dev/null | grep -i "sap-public\|pr-" | head -50 || true
-          echo "HTTPRoutes with sap-public/pr in name (sample):"
-          kubectl get httproute -A 2>/dev/null | grep -i "sap-public\|pr-" | head -50 || true
-      # ---------------------------          
-      # end debug step
-      # ---------------------------
-
       - name: Restore backup into PR review DB
         continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
-          BACKUP_FILE="seed.sql.gz"
+          : "${AKS_NAMESPACE:?AKS_NAMESPACE is not set}"
+
           PR_NUMBER="${{ github.event.pull_request.number }}"
+          BACKUP_FILE="seed.sql.gz"
 
-          APP_NS="${APP_NS:-}"
-          if [ -z "$APP_NS" ]; then
-            echo "APP_NS not set (host lookup failed). Skipping restore for now."
-            exit 0
-          fi
-
-          echo "Using namespace: $APP_NS"
+          echo "Namespace: ${AKS_NAMESPACE}"
           ls -lh "${BACKUP_FILE}"
           gzip -t "${BACKUP_FILE}"
 
-          # Find the deployment in that namespace that contains pr-<num> (usually 1 match)
-          APP_NAME="$(kubectl -n "$APP_NS" get deploy -o name \
+          # Find the deployment for this PR within the namespace
+          APP_NAME="$(kubectl -n "${AKS_NAMESPACE}" get deploy -o name \
             | sed 's|deployment.apps/||' \
             | grep -i "pr-${PR_NUMBER}" \
             | head -n 1 || true)"
 
           if [ -z "$APP_NAME" ]; then
-            echo "Could not find deployment for pr-${PR_NUMBER} in namespace $APP_NS"
-            kubectl -n "$APP_NS" get deploy -o name | head -200 || true
-            exit 0
+            echo "No deployment found for pr-${PR_NUMBER} in namespace ${AKS_NAMESPACE}"
+            echo "Available deployments:"
+            kubectl -n "${AKS_NAMESPACE}" get deploy -o name | head -200 || true
+            exit 0   # keep non-blocking during development
           fi
 
-          echo "Restoring into deployment: $APP_NAME (ns: $APP_NS)"
+          echo "Restoring into deployment: ${APP_NAME} (ns: ${AKS_NAMESPACE})"
 
-          "$GITHUB_WORKSPACE/konduit.sh" -n "$APP_NS" -t 300 -x "$APP_NAME" -- psql -X -tAc "select 1"
+          "$GITHUB_WORKSPACE/konduit.sh" -n "${AKS_NAMESPACE}" -t 300 -x "${APP_NAME}" -- psql -X -tAc "select 1"
 
           "$GITHUB_WORKSPACE/konduit.sh" \
-            -n "$APP_NS" \
+            -n "${AKS_NAMESPACE}" \
             -t 7200 \
             -i "${BACKUP_FILE}" -c \
-            -x "$APP_NAME" -- psql -v ON_ERROR_STOP=1 -X
+            -x "${APP_NAME}" -- psql -v ON_ERROR_STOP=1 -X
 
   # ---------------------------
   # DEPLOY TEST (AUTO) + PROD (MANUAL APPROVAL)
