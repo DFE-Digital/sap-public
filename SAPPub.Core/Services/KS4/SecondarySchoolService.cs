@@ -21,7 +21,7 @@ public class SecondarySchoolService(
     {
         var establishment = _establishmentService.GetEstablishment(urn);
         var establishmentDestinations = _establishmentDestinationsService.GetEstablishmentDestinations(urn);
-        var lADestinations = _lADestinationsService.GetLADestinations(urn);
+        var lADestinations = _lADestinationsService.GetLADestinations(establishment.LAId);
         var englandDestinations = _englandDestinationsService.GetEnglandDestinations();
         
         var model = new DestinationsDetails
