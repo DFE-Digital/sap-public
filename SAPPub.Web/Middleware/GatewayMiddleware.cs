@@ -56,6 +56,13 @@ namespace SAPPub.Web.Middleware
                         //Log audit
                         _viewAuditService.Insert(user.Id, httpContext.Request.Path);
 
+                        // If user has just registered, they still should be able to get to the gateway/complete page
+                        if (httpContext.Request.Path.StartsWithSegments("/gateway/complete"))
+                        {
+                            await _next(httpContext);
+                            return;
+                        }
+
                         httpContext.Response.Redirect("/");
                         return;
                     }
