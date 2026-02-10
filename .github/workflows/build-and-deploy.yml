@@ -327,6 +327,33 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y jq
 
+      - name: Ensure terraform vendor directory exists
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -d "vendor" ]; then
+            echo "vendor/ exists"
+            ls -la vendor | head -50 || true
+            exit 0
+          fi
+
+          echo "vendor/ missing. Checking for vendoring script..."
+          if [ -x "./bin/vendor" ]; then
+            ./bin/vendor
+          elif [ -x "./script/vendor" ]; then
+            ./script/vendor
+          elif [ -f "Makefile" ] && grep -qE '^vendor:' Makefile; then
+            make vendor
+          else
+            echo "vendor/ is required but no vendoring command was found in ./bin/vendor, ./script/vendor, or make vendor."
+            echo "Repo root contents:"
+            ls -la
+            exit 1
+          fi
+
+          echo "vendor/ created:"
+          ls -la vendor | head -50 || true
+
       - name: Read PR DB URL from terraform outputs
         id: prdb
         continue-on-error: true
@@ -334,20 +361,19 @@ jobs:
         run: |
           set -euo pipefail
 
+          sudo apt-get update
+          sudo apt-get install -y jq
+
           TF_DIR="${GITHUB_WORKSPACE}/${TERRAFORM_BASE}"
           echo "Terraform dir: ${TF_DIR}"
           cd "${TF_DIR}"
 
-          # Ensure terraform is initialised (deploy-to-aks usually does this, but be safe)
-          if [ ! -d ".terraform" ]; then
-            terraform init -input=false
-          fi
+          # Init (now safe because vendor/ exists)
+          terraform init -input=false
 
-          # Grab outputs as JSON
           OUT_JSON="$(terraform output -json)"
           echo "${OUT_JSON}" | jq -r 'keys[]' | sed 's/^/terraform output key: /' || true
 
-          # Try common output keys for DB URL (adjust list if needed)
           CANDIDATES=(
             "database_url"
             "db_url"
@@ -370,19 +396,10 @@ jobs:
 
           if [ -z "$DB_URL" ]; then
             echo "DB_URL not found in terraform outputs (candidates tried: ${CANDIDATES[*]})."
-            echo "You likely need to add the correct output key to the list above."
             exit 0
           fi
 
-          # Basic sanity check: looks like a postgres URL
-          if ! echo "$DB_URL" | grep -Eq '^postgres(ql)?://'; then
-            echo "Found DB_URL but it doesn't look like a postgres URL. (Not failing while in dev.)"
-          fi
-
-          # Masked echo for logs
           echo "DB_URL acquired (masked): $(echo "$DB_URL" | sed -E 's#(postgres(ql)?://)[^@]+@#\1****@#')"
-
-          # Export as step output
           echo "db_url=$DB_URL" >> "$GITHUB_OUTPUT"
 
       - name: Restore backup into PR review DB
