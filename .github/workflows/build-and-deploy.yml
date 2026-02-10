@@ -342,57 +342,46 @@ jobs:
 
       - name: Ensure terraform vendor directory exists
         shell: bash
+        env:
+          # Makefile terraform-init was failing because subscription + branch/ref were blank.
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          TERRAFORM_MODULES_REF: stable
         run: |
           set -euo pipefail
 
-          if [ -d "vendor" ]; then
-            echo "vendor/ exists"
+          # If vendor already exists, nothing to do
+          if [ -d "terraform/application/vendor" ] || [ -d "vendor" ]; then
+            echo "vendor directory already present"
             exit 0
           fi
 
-          echo "vendor/ missing. Trying known vendoring commands..."
+          # Fan-out env vars to match whatever Makefile expects
+          export SUBSCRIPTION="${AZURE_SUBSCRIPTION_ID}"
+          export AZ_SUBSCRIPTION="${AZURE_SUBSCRIPTION_ID}"
+          export AZURE_SUBSCRIPTION="${AZURE_SUBSCRIPTION_ID}"
+          export ARM_SUBSCRIPTION_ID="${AZURE_SUBSCRIPTION_ID}"
 
-          # 1) If bin/vendor exists but isn't executable, try running it with bash
-          if [ -f "./bin/vendor" ]; then
-            echo "Found ./bin/vendor (not necessarily executable). Running with bash..."
-            bash ./bin/vendor
-          # 2) Some repos use bin/setup or bin/init
-          elif [ -f "./bin/setup" ]; then
-            echo "Found ./bin/setup. Running..."
-            bash ./bin/setup
-          elif [ -f "./bin/init" ]; then
-            echo "Found ./bin/init. Running..."
-            bash ./bin/init
-          # 3) Common make targets
-          elif make -n terraform-init >/dev/null 2>&1; then
-            echo "Found Make target terraform-init. Running..."
+          export MODULES_REF="${TERRAFORM_MODULES_REF}"
+          export TF_MODULES_REF="${TERRAFORM_MODULES_REF}"
+          export TERRAFORM_MODULES_BRANCH="${TERRAFORM_MODULES_REF}"
+
+          # Run the repo's vendoring/init logic
+          if make -n terraform-init >/dev/null 2>&1; then
+            echo "Running: make terraform-init"
             make terraform-init
-          elif make -n vendor >/dev/null 2>&1; then
-            echo "Found Make target vendor. Running..."
-            make vendor
-          elif make -n setup >/dev/null 2>&1; then
-            echo "Found Make target setup. Running..."
-            make setup
           else
-            echo "Could not find a vendoring command."
-            echo "Repo root:"
-            ls -la
-            echo
-            echo "bin/:"
-            ls -la bin || true
-            echo
-            echo "Make targets (grep):"
-            grep -E '^[a-zA-Z0-9_\-]+:' Makefile | head -200 || true
+            echo "❌ Make target terraform-init not found."
+            grep -E '^[a-zA-Z0-9_\-]+:' Makefile | head -120 || true
             exit 1
           fi
 
-          if [ ! -d "vendor" ]; then
-            echo "Vendoring command ran but vendor/ still does not exist."
+          # Verify expected vendor path now exists
+          if [ ! -d "terraform/application/vendor" ] && [ ! -d "vendor" ]; then
+            echo "❌ terraform-init completed but vendor directory still not found."
             exit 1
           fi
 
-          echo "vendor/ created"
-          ls -la vendor | head -50 || true
+          echo "✅ Vendor directory present."
 
       - name: Read PR DB URL from terraform outputs
         id: prdb
@@ -401,14 +390,10 @@ jobs:
         run: |
           set -euo pipefail
 
-          sudo apt-get update
-          sudo apt-get install -y jq
-
           TF_DIR="${GITHUB_WORKSPACE}/${TERRAFORM_BASE}"
           echo "Terraform dir: ${TF_DIR}"
           cd "${TF_DIR}"
 
-          # Init (now safe because vendor/ exists)
           terraform init -input=false
 
           OUT_JSON="$(terraform output -json)"
@@ -463,7 +448,6 @@ jobs:
           ls -lh "${BACKUP_FILE}"
           gzip -t "${BACKUP_FILE}"
 
-          # Readiness check (connect using provided DB URL)
           "$GITHUB_WORKSPACE/konduit.sh" \
             -n "${KONDUIT_NAMESPACE}" \
             -u "${DB_URL}" \
@@ -471,7 +455,6 @@ jobs:
             -x \
             "${KONDUIT_APP_NAME}" -- psql -X -tAc "select 1"
 
-          # Restore using the provided DB URL (no need to access PR deployment)
           "$GITHUB_WORKSPACE/konduit.sh" \
             -n "${KONDUIT_NAMESPACE}" \
             -u "${DB_URL}" \
@@ -479,6 +462,7 @@ jobs:
             -x \
             -i "${BACKUP_FILE}" -c \
             "${KONDUIT_APP_NAME}" -- psql -v ON_ERROR_STOP=1 -X
+
 
   # ---------------------------
   # DEPLOY TEST (AUTO) + PROD (MANUAL APPROVAL)
