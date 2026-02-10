@@ -192,7 +192,7 @@ public class EstablishmentTestBuilder
 
     public EstablishmentTestBuilder WithLAGssCode(string? laGssCode)
     {
-        _establishment.LaGssCode = laGssCode;
+        _establishment.GSSLACode = laGssCode;
         return this;
     }
 

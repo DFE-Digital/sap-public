@@ -90,10 +90,10 @@ public class AdmissionsTests
     public async Task Get_Admissions_ReturnsExpectedViewModel(string? lASchoolAdmissionsUrl, string? laName)
     {
         _mockEstablishmentRepository.Setup(r => r.GetEstablishment(_establishment.URN)).Returns(_establishment);
-        _mockLaUrlsRepository.Setup(r => r.GetLaAsync(_establishment.LaGssCode!)).ReturnsAsync(new LaUrls
+        _mockLaUrlsRepository.Setup(r => r.GetLaAsync(_establishment.GSSLACode!)).ReturnsAsync(new LaUrls
         {
-            LaName = laName,
-            GeneralUrl = lASchoolAdmissionsUrl
+            Name = laName,
+            LAMainUrl = lASchoolAdmissionsUrl
         });
 
         // Act
@@ -119,10 +119,10 @@ public class AdmissionsTests
     public async Task Get_Admissions_LANameIsNull_RetrunsGenericLAString(string? lASchoolAdmissionsUrl, string? laName)
     {
         _mockEstablishmentRepository.Setup(r => r.GetEstablishment(_establishment.URN)).Returns(_establishment);
-        _mockLaUrlsRepository.Setup(r => r.GetLaAsync(_establishment.LaGssCode!)).ReturnsAsync(new LaUrls
+        _mockLaUrlsRepository.Setup(r => r.GetLaAsync(_establishment.GSSLACode!)).ReturnsAsync(new LaUrls
         {
-            LaName = laName,
-            GeneralUrl = lASchoolAdmissionsUrl
+            Name = laName,
+            LAMainUrl = lASchoolAdmissionsUrl
         });
 
         // Act
@@ -159,7 +159,7 @@ public class AdmissionsTests
     public async Task Get_Admissions_LAUrlsForGssCode_ReturnsPartlyPopulatedViewModel()
     {
         _mockEstablishmentRepository.Setup(r => r.GetEstablishment(_establishment.URN)).Returns(_establishment);
-        _mockLaUrlsRepository.Setup(r => r.GetLaAsync(_establishment.LaGssCode!)).ReturnsAsync((LaUrls?)null);
+        _mockLaUrlsRepository.Setup(r => r.GetLaAsync(_establishment.GSSLACode!)).ReturnsAsync((LaUrls?)null);
 
         // Act
         var result = await _controller.Admissions(_admissionsService, _establishment.URN, _establishment.EstablishmentName) as ViewResult;

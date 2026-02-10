@@ -15,7 +15,7 @@ public class EstablishmentAdmissionsService(
         {
             return null;
         }
-        var laGssCode = establishment.LaGssCode;
+        var laGssCode = establishment.GSSLACode;
         if (laGssCode is null)
         {
             return null;
@@ -26,8 +26,8 @@ public class EstablishmentAdmissionsService(
             return null;
         }
         else return new AdmissionsServiceModel(
-            LAName: laUrls?.LaName,
-            LASchoolAdmissionsUrl: laUrls?.GeneralUrl
+            LAName: laUrls?.Name,
+            LASchoolAdmissionsUrl: laUrls?.LAMainUrl
         );
     }
 }

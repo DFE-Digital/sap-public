@@ -11,10 +11,10 @@ public class LaUrlsRepository : ILaUrlsRepository
     private ILogger<Establishment> _logger;
 
     public LaUrlsRepository(
-        IGenericRepository<LaUrls> establishmentMetadataRepository,
+        IGenericRepository<LaUrls> repository,
         ILogger<Establishment> logger)
     {
-        _laUrlsRepository = establishmentMetadataRepository;
+        _laUrlsRepository = repository;
         _logger = logger;
     }
 
@@ -27,6 +27,6 @@ public class LaUrlsRepository : ILaUrlsRepository
 
     public async Task<LaUrls?> GetLaAsync(string laGssCode)
     {
-        return (await GetAllLAsAsync()).FirstOrDefault(x => x.LaGssCode == laGssCode);
+        return (await GetAllLAsAsync()).FirstOrDefault(x => x.Id == laGssCode);
     }
 }

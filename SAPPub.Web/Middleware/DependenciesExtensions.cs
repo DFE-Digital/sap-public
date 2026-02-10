@@ -96,6 +96,8 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<ISecondarySchoolService, SecondarySchoolService>();
 
             services.AddScoped<IAdmissionsService, EstablishmentAdmissionsService>();
+            services.AddScoped<IGenericRepository<LaUrls>, JSONRepository<LaUrls>>();
+            services.AddScoped<ILaUrlsRepository, LaUrlsRepository>();
         }
     }
 }

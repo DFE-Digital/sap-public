@@ -45,7 +45,7 @@
                     directly to on your local council’s website.  
                 </p>
                 <p class="govuk-body">
-                    <a href="@Model.LASecondarySchoolAdmissionsLinkUrl" class="govuk-link govuk-link--no-visited-state" data-testid="link">@($"{Model.LAName}’s in-year application process.")</a>
+                    <a href="@($"https://www.{Model.LASecondarySchoolAdmissionsLinkUrl}")" target="_blank" rel="noopener noreferrer" class="govuk-link govuk-link--no-visited-state" data-testid="link">@($"{Model.LAName}’s in-year application process.")</a>
                 </p>
             </div>
         </div>

@@ -2,7 +2,7 @@
 
 public class LaUrls
 {
-    public string? LaGssCode { get; set; }
-    public string? LaName { get; set; }
-    public string? GeneralUrl { get; set; }
+    public string? Id { get; set; }
+    public string? Name { get; set; }
+    public string? LAMainUrl { get; set; }
 }
