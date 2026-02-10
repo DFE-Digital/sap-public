@@ -56,7 +56,8 @@ CREATE TABLE IF NOT EXISTS public.gateway_local_authority
     "ModifiedOn" timestamp without time zone,
     "AuditIPAddress" text COLLATE pg_catalog."default",
     "IsDeleted" boolean,
-    CONSTRAINT gateway_local_authority_pkey PRIMARY KEY ("Id")
+    CONSTRAINT gateway_local_authority_pkey PRIMARY KEY ("Id"),
+    CONSTRAINT gateway_local_authority_unique_name UNIQUE ("LocalAuthorityName")
 );
 
 INSERT INTO public.gateway_local_authority(
@@ -64,10 +65,10 @@ INSERT INTO public.gateway_local_authority(
 	VALUES (gen_random_uuid(), 'Bury', 100, now(), now(), '::1', FALSE);
 INSERT INTO public.gateway_local_authority(
 	"Id", "LocalAuthorityName", "MaxSessions", "CreatedOn", "ModifiedOn", "AuditIPAddress", "IsDeleted")
-	VALUES (gen_random_uuid(), 'Bolton', 25, now(), now(), '::1', FALSE);
+    VALUES (gen_random_uuid(), 'Bolton', 100, now(), now(), '::1', FALSE);
 INSERT INTO public.gateway_local_authority(
 	"Id", "LocalAuthorityName", "MaxSessions", "CreatedOn", "ModifiedOn", "AuditIPAddress", "IsDeleted")
-	VALUES (gen_random_uuid(), 'Manchester City Council', 10, now(), now(), '::1', FALSE);
+    VALUES (gen_random_uuid(), 'Manchester City Council', 100, now(), now(), '::1', FALSE);
 
 CREATE TABLE IF NOT EXISTS public.gateway_settings
 (
@@ -78,7 +79,8 @@ CREATE TABLE IF NOT EXISTS public.gateway_settings
     "ModifiedOn" timestamp without time zone,
     "AuditIPAddress" text COLLATE pg_catalog."default",
     "IsDeleted" boolean,
-    CONSTRAINT gateway_global_settings_pkey PRIMARY KEY ("Id")
+    CONSTRAINT gateway_global_settings_pkey PRIMARY KEY ("Id"),
+    CONSTRAINT gateway_global_settings_unique_name UNIQUE ("SettingName")
 );
 
 INSERT INTO public.gateway_settings(
