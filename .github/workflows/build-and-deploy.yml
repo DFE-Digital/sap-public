@@ -249,6 +249,19 @@ jobs:
       - name: Checkout (needed for workspace consistency)
         uses: actions/checkout@v4
 
+      - name: Debug vendoring helpers
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "==== bin directory ===="
+          ls -la bin || true
+
+          echo
+          echo "==== Makefile targets ===="
+          grep -E '^[a-zA-Z0-9_\-]+:' Makefile | head -80 || true
+
       - name: Install Azure CLI
         shell: bash
         run: |
@@ -331,27 +344,54 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+
           if [ -d "vendor" ]; then
             echo "vendor/ exists"
-            ls -la vendor | head -50 || true
             exit 0
           fi
 
-          echo "vendor/ missing. Checking for vendoring script..."
-          if [ -x "./bin/vendor" ]; then
-            ./bin/vendor
-          elif [ -x "./script/vendor" ]; then
-            ./script/vendor
-          elif [ -f "Makefile" ] && grep -qE '^vendor:' Makefile; then
+          echo "vendor/ missing. Trying known vendoring commands..."
+
+          # 1) If bin/vendor exists but isn't executable, try running it with bash
+          if [ -f "./bin/vendor" ]; then
+            echo "Found ./bin/vendor (not necessarily executable). Running with bash..."
+            bash ./bin/vendor
+          # 2) Some repos use bin/setup or bin/init
+          elif [ -f "./bin/setup" ]; then
+            echo "Found ./bin/setup. Running..."
+            bash ./bin/setup
+          elif [ -f "./bin/init" ]; then
+            echo "Found ./bin/init. Running..."
+            bash ./bin/init
+          # 3) Common make targets
+          elif make -n terraform-init >/dev/null 2>&1; then
+            echo "Found Make target terraform-init. Running..."
+            make terraform-init
+          elif make -n vendor >/dev/null 2>&1; then
+            echo "Found Make target vendor. Running..."
             make vendor
+          elif make -n setup >/dev/null 2>&1; then
+            echo "Found Make target setup. Running..."
+            make setup
           else
-            echo "vendor/ is required but no vendoring command was found in ./bin/vendor, ./script/vendor, or make vendor."
-            echo "Repo root contents:"
+            echo "Could not find a vendoring command."
+            echo "Repo root:"
             ls -la
+            echo
+            echo "bin/:"
+            ls -la bin || true
+            echo
+            echo "Make targets (grep):"
+            grep -E '^[a-zA-Z0-9_\-]+:' Makefile | head -200 || true
             exit 1
           fi
 
-          echo "vendor/ created:"
+          if [ ! -d "vendor" ]; then
+            echo "Vendoring command ran but vendor/ still does not exist."
+            exit 1
+          fi
+
+          echo "vendor/ created"
           ls -la vendor | head -50 || true
 
       - name: Read PR DB URL from terraform outputs
