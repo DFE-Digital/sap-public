@@ -320,6 +320,24 @@ jobs:
           chmod +x "$GITHUB_WORKSPACE/konduit.sh"
           ls -la "$GITHUB_WORKSPACE/konduit.sh"
 
+      - name: Konduit connectivity smoke test (PR app)
+        continue-on-error: true
+        shell: bash
+        env:
+          AKS_NAMESPACE: ${{ secrets.AKS_REVIEW_NAMESPACE }} # e.g. sip-development or sap-public-pr
+        run: |
+          set -euo pipefail
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          APP_NAME="sap-public-pr-${PR_NUMBER}"
+          : "${AKS_NAMESPACE:?AKS_NAMESPACE is not set}"
+
+          echo "Testing konduit access to ${APP_NAME} in ${AKS_NAMESPACE}"
+          "$GITHUB_WORKSPACE/konduit.sh" \
+            -n "${AKS_NAMESPACE}" \
+            -t 300 \
+            -x \
+            "${APP_NAME}" -- psql -X -tAc "select 1"         
+
       - name: Download seed backup from Blob
         shell: bash
         env:
@@ -422,39 +440,24 @@ jobs:
       - name: Restore backup into PR review DB
         continue-on-error: true
         shell: bash
+        env:
+          AKS_NAMESPACE: ${{ secrets.AKS_REVIEW_NAMESPACE }}
         run: |
           set -euo pipefail
-          : "${KONDUIT_NAMESPACE:?KONDUIT_NAMESPACE is not set}"
-          : "${KONDUIT_APP_NAME:?KONDUIT_APP_NAME is not set}"
-
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          APP_NAME="sap-public-pr-${PR_NUMBER}"
           BACKUP_FILE="seed.sql.gz"
-          DB_URL="${{ steps.prdb.outputs.db_url }}"
+          : "${AKS_NAMESPACE:?AKS_NAMESPACE is not set}"
 
-          if [ -z "${DB_URL:-}" ]; then
-            echo "DB_URL not available from terraform outputs; skipping restore for now."
-            exit 0
-          fi
-
-          echo "Konduit tunnel app: ${KONDUIT_APP_NAME} (namespace: ${KONDUIT_NAMESPACE})"
-          echo "Backup file:"
           ls -lh "${BACKUP_FILE}"
           gzip -t "${BACKUP_FILE}"
 
           "$GITHUB_WORKSPACE/konduit.sh" \
-            -n "${KONDUIT_NAMESPACE}" \
-            -u "${DB_URL}" \
-            -t 300 \
-            -x \
-            "${KONDUIT_APP_NAME}" -- psql -X -tAc "select 1"
-
-          "$GITHUB_WORKSPACE/konduit.sh" \
-            -n "${KONDUIT_NAMESPACE}" \
-            -u "${DB_URL}" \
+            -n "${AKS_NAMESPACE}" \
             -t 7200 \
             -x \
             -i "${BACKUP_FILE}" -c \
-            "${KONDUIT_APP_NAME}" -- psql -v ON_ERROR_STOP=1 -X
-
+            "${APP_NAME}" -- psql -v ON_ERROR_STOP=1 -X
 
   # ---------------------------
   # DEPLOY TEST (AUTO) + PROD (MANUAL APPROVAL)
