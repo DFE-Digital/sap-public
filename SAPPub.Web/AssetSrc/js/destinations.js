@@ -35,6 +35,17 @@
         allDestShowCurrentDataBtn.addEventListener('click', () => {
             setTooggleState(allDestCurrentYearChartContainer, allDestCurrentYearTableContainer, false, allDestCurrentYearShowAsTableBtn);
         });
+
+
+        const breakdownDestCurrentYearShowAsTableBtn = document.getElementById('breakdown-dest-current-year-show-btn');
+        const breakdownDestCurrentYearChartContainer = document.getElementById('breakdown-dest-current-year-chart-container');
+        const breakdownDestCurrentYearTableContainer = document.getElementById('breakdown-dest-current-year-table-container');
+
+        setAriaAttribute(breakdownDestCurrentYearShowAsTableBtn, 'false');
+        breakdownDestCurrentYearShowAsTableBtn.addEventListener('click', () => {
+            const chartVisible = breakdownDestCurrentYearChartContainer.style.display !== 'none';
+            setTooggleState(breakdownDestCurrentYearChartContainer, breakdownDestCurrentYearTableContainer, chartVisible, breakdownDestCurrentYearShowAsTableBtn);
+        });
     });
 
     function setToggleText(toggle, text) {

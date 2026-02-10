@@ -486,6 +486,60 @@ public class SecondarySchoolControllerTests
                 PreviousYear = 80,
                 TwoYearsAgo = 30,
             },
+            SchoolEducation = new RelativeYearValues<double?>
+            {
+                CurrentYear = 20,
+                PreviousYear = 10,
+                TwoYearsAgo = 40,
+            },
+            LocalAuthorityEducation = new RelativeYearValues<double?>
+            {
+                CurrentYear = 40,
+                PreviousYear = 50,
+                TwoYearsAgo = 70,
+            },
+            EnglandEducation = new RelativeYearValues<double?>
+            {
+                CurrentYear = 60,
+                PreviousYear = 70,
+                TwoYearsAgo = 20,
+            },
+            SchoolEmployment = new RelativeYearValues<double?>
+            {
+                CurrentYear = 50,
+                PreviousYear = 70,
+                TwoYearsAgo = 30,
+            },
+            LocalAuthorityEmployment = new RelativeYearValues<double?>
+            {
+                CurrentYear = 60,
+                PreviousYear = 90,
+                TwoYearsAgo = 50,
+            },
+            EnglandEmployment = new RelativeYearValues<double?>
+            {
+                CurrentYear = 40,
+                PreviousYear = 60,
+                TwoYearsAgo = 50,
+            },
+            SchoolApprentice = new RelativeYearValues<double?>
+            {
+                CurrentYear = 40,
+                PreviousYear = 50,
+                TwoYearsAgo = 70,
+            },
+            LocalAuthorityApprentice = new RelativeYearValues<double?>
+            {
+                CurrentYear = 20,
+                PreviousYear = 70,
+                TwoYearsAgo = 50,
+            },
+            EnglandApprentice = new RelativeYearValues<double?>
+            {
+                CurrentYear = 50,
+                PreviousYear = 60,
+                TwoYearsAgo = 40,
+            },
         };
 
         _mockSecondarySchoolService.Setup(es => es.GetDestinationsDetails(It.IsAny<string>())).Returns(destinationsDetails);
@@ -516,6 +570,29 @@ public class SecondarySchoolControllerTests
                 },
             ],
         };
+
+        string[] expectedBreakdownCurrentYearDataLabels = ["Staying in education", "Entering employment and apprenticeships"];
+        var expectedBreakdownCurrentYearData = new SeriesViewModel
+        {
+            Labels = ["Staying in education", "Entering employment and apprenticeships"],
+            Datasets =
+                [
+                    new DataSeriesViewModel {
+                        Label = "School",
+                        Data = [destinationsDetails.SchoolEducation.CurrentYear ?? 0, (destinationsDetails.SchoolEmployment.CurrentYear ?? 0 + destinationsDetails.SchoolApprentice.CurrentYear ?? 0)]
+                    },
+                    new DataSeriesViewModel {
+                        Label = $"{destinationsDetails.LocalAuthorityName} average",
+                        Data = [destinationsDetails.LocalAuthorityEducation.CurrentYear ?? 0, (destinationsDetails.LocalAuthorityEmployment.CurrentYear ?? 0 + destinationsDetails.LocalAuthorityApprentice.CurrentYear ?? 0)]
+                    },
+                    new DataSeriesViewModel {
+                        Label = "England average",
+                        Data = [destinationsDetails.EnglandEducation.CurrentYear ?? 0, (destinationsDetails.EnglandEmployment.CurrentYear ?? 0 + destinationsDetails.EnglandApprentice.CurrentYear ?? 0)]
+                    },
+                ],
+        };
+
+
         // Assert
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
@@ -535,7 +612,16 @@ public class SecondarySchoolControllerTests
             Assert.Equal(expectedDataset.Label, actualDatset.Label);
             Assert.Equal(expectedDataset.Data, actualDatset.Data);
         }
-        
+
+        Assert.Equal(expectedBreakdownCurrentYearDataLabels, model.BreakdownDestinationData.Labels);
+        foreach (var expectedDataset in expectedBreakdownCurrentYearData.Datasets)
+        {
+            var actualDatset = model.BreakdownDestinationData.Datasets.FirstOrDefault(s => s.Label == expectedDataset.Label);
+            Assert.NotNull(actualDatset);
+            Assert.Equal(expectedDataset.Label, actualDatset.Label);
+            Assert.Equal(expectedDataset.Data, actualDatset.Data);
+        }
+
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);

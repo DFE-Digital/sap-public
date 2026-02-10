@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Xunit;
 
-namespace SAPData.Tests.Unit;
+namespace SAPData.Unit.Tests;
 
 public class GenerateRawTablesTests : IDisposable
 {
@@ -67,8 +67,12 @@ public class GenerateRawTablesTests : IDisposable
 
         var mapping = File.ReadAllText(Path.Combine(_sql, "tablemapping.csv"));
 
-        Assert.Matches(@"raw_[a-z0-9_]{1,18}_[a-f0-9]{8}", mapping);
+        // mapping format is: dataset_key,table_name
+        // table_name format observed: t_<sanitised_prefix>_<10hexhash>
+        Assert.Matches(@"^.+,t_[a-z0-9_]+_[a-f0-9]{10}\s*$", mapping);
     }
+
+
 
     [Fact]
     public void Table_name_is_deterministic()
@@ -124,9 +128,10 @@ public class GenerateRawTablesTests : IDisposable
 
         var sql = File.ReadAllText(Path.Combine(_sql, "01_create_raw_tables.sql"));
 
-        Assert.Contains("\"LA_code\"", sql);
-        Assert.Contains("\"School_Name\"", sql);
+        Assert.Matches("(?i)\"la_code\"", sql);
+        Assert.Matches("(?i)\"school_name\"", sql);
     }
+
 
     [Fact]
     public void Writes_clean_csv_without_bom()

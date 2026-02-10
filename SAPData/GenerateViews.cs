@@ -349,7 +349,8 @@ public sealed class GenerateViews
         sb.AppendLine();
         sb.AppendLine("    t.\"schoolwebsite\"                       AS \"Website\",");
         sb.AppendLine("    clean_int(t.\"easting\")                  AS \"Easting\",");
-        sb.AppendLine("    clean_int(t.\"northing\")                 AS \"Northing\"");
+        sb.AppendLine("    clean_int(t.\"northing\")                 AS \"Northing\",");
+        sb.AppendLine("    t.\"gsslacode__name_\"             AS \"GSSLACode\"");
         sb.AppendLine($"FROM {rawTable} t;");
         sb.AppendLine();
         sb.AppendLine("CREATE UNIQUE INDEX idx_v_establishment_urn ON v_establishment (\"URN\");");

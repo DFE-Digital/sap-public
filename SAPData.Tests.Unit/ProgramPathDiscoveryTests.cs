@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Xunit;
 
-namespace SAPData.Tests.Unit;
+namespace SAPData.Unit.Tests;
 
 public class ProgramPathDiscoveryTests
 {

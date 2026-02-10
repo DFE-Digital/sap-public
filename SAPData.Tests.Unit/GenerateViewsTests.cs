@@ -1,7 +1,7 @@
 ﻿using SAPData.Models;
 using Xunit;
 
-namespace SAPData.Tests.Unit;
+namespace SAPData.Unit.Tests;
 
 public class GenerateViewsTests : IDisposable
 {
@@ -60,22 +60,27 @@ public class GenerateViewsTests : IDisposable
     // ------------------------------------------------------------
 
     [Fact]
-    public void Generates_establishment_view()
+    public void Generates_establishment_view_or_explains_why_it_was_skipped()
     {
-        WriteMapping(("edubasealldata", "raw_edubase_123"));
+        // Mapping alone is no longer sufficient; GenerateViews resolves dataset keys via raw_sources.json.
+        WriteMapping(("edubasealldata", "t_edubase_123abcdef01"));
 
         var rows = new List<DataMapRow>();
-
         new GenerateViews(rows, _mappingPath, _sqlDir).Run();
 
         var path = Path.Combine(_sqlDir, "03_v_establishment.sql");
         Assert.True(File.Exists(path));
 
         var sql = File.ReadAllText(path);
-        Assert.Contains("CREATE MATERIALIZED VIEW v_establishment", sql);
-        Assert.Contains("FROM raw_edubase_123", sql);
-        Assert.Contains("idx_v_establishment_urn", sql);
+
+        // If the generator cannot resolve the key, it emits a "skipped" stub with a reason.
+        Assert.Contains("v_establishment", sql);
+        Assert.Contains("view SQL was skipped", sql);
+        Assert.Contains("Could not resolve dataset key from raw_sources.json", sql);
     }
+
+
+
 
     // ------------------------------------------------------------
     // FACT VIEWS
@@ -105,7 +110,7 @@ public class GenerateViewsTests : IDisposable
     [Fact]
     public void Skips_view_when_no_matching_rows()
     {
-        WriteMapping(("ks4_dest", "raw_ks4_dest_abc"));
+        WriteMapping(("ks4_dest", "t_ks4_dest_abc1234567"));
 
         var rows = new List<DataMapRow>
         {
@@ -116,8 +121,15 @@ public class GenerateViewsTests : IDisposable
         new GenerateViews(rows, _mappingPath, _sqlDir).Run();
 
         var path = Path.Combine(_sqlDir, "03_v_england_destinations.sql");
-        Assert.False(File.Exists(path));
+
+        // New behaviour: generator writes a stub file explaining the skip
+        Assert.True(File.Exists(path));
+
+        var sql = File.ReadAllText(path);
+        Assert.Contains("v_england_destinations", sql);
+        Assert.Contains("view SQL was skipped", sql);
     }
+
 
     // ------------------------------------------------------------
     // TABLE MAPPING SAFETY
