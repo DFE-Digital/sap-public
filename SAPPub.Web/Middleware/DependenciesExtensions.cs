@@ -120,6 +120,9 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<IGatewayPageViewAuditService, GatewayPageViewAuditService>();
 
             services.AddTransient<IGatewayUserLAService, GateWayUserLAService>();
+
+            services.AddScoped<IEmailRepository, EmailRepository>();
+            services.AddScoped<IEmailService, EmailService>();
         }
     }
 }

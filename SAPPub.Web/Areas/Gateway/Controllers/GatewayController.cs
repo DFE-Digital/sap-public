@@ -1,26 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SAPPub.Core.Entities.Gateway;
+using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Gateway;
 using SAPPub.Web.Areas.Gateway.ViewModels;
 
 namespace SAPPub.Web.Areas.Gateway.Controllers
 {
     [Area("Gateway")]
-    public class GatewayController : Controller
+    public class GatewayController(
+        IGatewayUserService UserService, 
+        IGatewayLocalAuthorityService localAuthorityService, 
+        IGatewayUserAuditService auditService, 
+        IGatewayUserLAService gatewayUserLAService, 
+        IEmailService emailService, 
+        ILogger<GatewayController> logger) : Controller
     {
-        private readonly IGatewayUserService _userService;
-        private readonly IGatewayUserAuditService _auditService;
-        private readonly IGatewayLocalAuthorityService _localAuthorityService;
-        private readonly IGatewayUserLAService _gatewayUserLAService;
-
-        public GatewayController(IGatewayUserService UserService, IGatewayLocalAuthorityService localAuthorityService, IGatewayUserAuditService auditService, IGatewayUserLAService gatewayUserLAService)
-        {
-            _userService = UserService;
-            _localAuthorityService = localAuthorityService;
-            _auditService = auditService;
-            _gatewayUserLAService = gatewayUserLAService;
-        }
-
+        private readonly IGatewayUserService _userService = UserService;
+        private readonly IGatewayUserAuditService _auditService = auditService;
+        private readonly IGatewayLocalAuthorityService _localAuthorityService = localAuthorityService;
+        private readonly IGatewayUserLAService _gatewayUserLAService = gatewayUserLAService;
+        private readonly ILogger<GatewayController> _logger = logger;
+        private readonly IEmailService _emailService = emailService;
 
         [HttpGet]
         [Route("gateway/welcome/{id}")]
@@ -193,6 +193,7 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
                     HttpOnly = true
                 });
                 // Send Email
+                _emailService.SendGatewayEmail(viewModel.EmailAddress);
 
                 return RedirectToAction("Complete");
             }
