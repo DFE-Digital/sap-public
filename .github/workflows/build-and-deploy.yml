@@ -246,27 +246,8 @@ jobs:
       # ---------------------------
       # REVIEW APP DATABASE DEPLOYMENT (PR)
       # ---------------------------
-      - name: Dump deploy-to-aks outputs
-        continue-on-error: true
-        shell: bash
-        run: |
-          echo '${{ toJson(steps.deploy_review.outputs) }}'
-
       - name: Checkout (needed for workspace consistency)
         uses: actions/checkout@v4
-
-      - name: Debug vendoring helpers
-        continue-on-error: true
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          echo "==== bin directory ===="
-          ls -la bin || true
-
-          echo
-          echo "==== Makefile targets ===="
-          grep -E '^[a-zA-Z0-9_\-]+:' Makefile | head -80 || true
 
       - name: Install Azure CLI
         shell: bash
@@ -274,8 +255,6 @@ jobs:
           set -euo pipefail
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
-      # azure/login is already handled inside deploy-to-aks, but we need az/kube access
-      # so do an explicit login here as well
       - name: Azure login (OIDC)
         uses: azure/login@v2
         with:
@@ -318,31 +297,13 @@ jobs:
           curl -fsSL https://raw.githubusercontent.com/DFE-Digital/teacher-services-cloud/main/scripts/konduit.sh \
             -o "$GITHUB_WORKSPACE/konduit.sh"
           chmod +x "$GITHUB_WORKSPACE/konduit.sh"
-          ls -la "$GITHUB_WORKSPACE/konduit.sh"
-
-      - name: Konduit connectivity smoke test (PR app)
-        continue-on-error: true
-        shell: bash
-        env:
-          AKS_NAMESPACE: ${{ secrets.AKS_REVIEW_NAMESPACE }} # e.g. sip-development or sap-public-pr
-        run: |
-          set -euo pipefail
-          PR_NUMBER="${{ github.event.pull_request.number }}"
-          APP_NAME="sap-public-pr-${PR_NUMBER}"
-          : "${AKS_NAMESPACE:?AKS_NAMESPACE is not set}"
-
-          echo "Testing konduit access to ${APP_NAME} in ${AKS_NAMESPACE}"
-          "$GITHUB_WORKSPACE/konduit.sh" \
-            -n "${AKS_NAMESPACE}" \
-            -t 300 \
-            -x \
-            "${APP_NAME}" -- psql -X -tAc "select 1"         
+          ls -la "$GITHUB_WORKSPACE/konduit.sh"         
 
       - name: Download seed backup from Blob
         shell: bash
         env:
           AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
-          AZURE_STORAGE_CONTAINER: ${{ secrets.AZURE_STORAGE_CONTAINER }} # school-data
+          AZURE_STORAGE_CONTAINER: ${{ secrets.AZURE_STORAGE_CONTAINER }} 
         run: |
           set -euo pipefail
           BACKUP_BLOB="db-backups/sappub_review_seed_latest.sql.gz"
@@ -356,86 +317,6 @@ jobs:
             --overwrite true
 
           ls -lh "${BACKUP_FILE}"
-
-      - name: Install jq
-        shell: bash
-        run: |
-          set -euo pipefail
-          sudo apt-get update
-          sudo apt-get install -y jq
-
-      - name: Prepare terraform vendor modules (aks)
-        shell: bash
-        env:
-          TF_MODULES_REF: stable
-        run: |
-          set -euo pipefail
-
-          # Where your terraform expects vendored modules
-          VENDOR_DIR="terraform/application/vendor/modules/aks"
-
-          if [ -d "${VENDOR_DIR}" ]; then
-            echo "Vendor modules already present: ${VENDOR_DIR}"
-            exit 0
-          fi
-
-          echo "Vendoring terraform-modules into ${VENDOR_DIR} (ref: ${TF_MODULES_REF})"
-          rm -rf "${VENDOR_DIR}"
-          mkdir -p "$(dirname "${VENDOR_DIR}")"
-
-          git -c advice.detachedHead=false clone \
-            --depth=1 \
-            --single-branch \
-            --branch "${TF_MODULES_REF}" \
-            https://github.com/DFE-Digital/terraform-modules.git \
-            "${VENDOR_DIR}"
-
-          echo "Vendored modules:"
-          ls -la "${VENDOR_DIR}" | head -30 || true
-
-      - name: Read PR DB URL from terraform outputs
-        id: prdb
-        continue-on-error: true
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          TF_DIR="${GITHUB_WORKSPACE}/${TERRAFORM_BASE}"
-          echo "Terraform dir: ${TF_DIR}"
-          cd "${TF_DIR}"
-
-          terraform init -input=false
-
-          OUT_JSON="$(terraform output -json)"
-          echo "${OUT_JSON}" | jq -r 'keys[]' | sed 's/^/terraform output key: /' || true
-
-          CANDIDATES=(
-            "database_url"
-            "db_url"
-            "postgres_url"
-            "postgres_database_url"
-            "app_database_url"
-            "application_database_url"
-            "review_database_url"
-          )
-
-          DB_URL=""
-          for k in "${CANDIDATES[@]}"; do
-            v="$(echo "${OUT_JSON}" | jq -r --arg k "$k" '.[$k].value // empty')"
-            if [ -n "$v" ] && [ "$v" != "null" ]; then
-              DB_URL="$v"
-              echo "Selected terraform output: $k"
-              break
-            fi
-          done
-
-          if [ -z "$DB_URL" ]; then
-            echo "DB_URL not found in terraform outputs (candidates tried: ${CANDIDATES[*]})."
-            exit 0
-          fi
-
-          echo "DB_URL acquired (masked): $(echo "$DB_URL" | sed -E 's#(postgres(ql)?://)[^@]+@#\1****@#')"
-          echo "db_url=$DB_URL" >> "$GITHUB_OUTPUT"
 
       - name: Restore backup into PR review DB
         continue-on-error: true
