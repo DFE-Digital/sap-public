@@ -21,7 +21,9 @@ public partial class Program
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.Configure<AnalyticsOptions>(builder.Configuration.GetSection("Analytics"));
+        builder.Services.Configure<GatewayOptions>(builder.Configuration.GetSection("Gateway"));
 
+        var enableGateway = builder.Configuration.GetValue<bool>("Gateway:Enabled");
 
         builder.Services.AddGovUkFrontend(options =>
         {
@@ -129,7 +131,11 @@ public partial class Program
         app.UseRouting();
         app.UseGovUkFrontend();
 
-        //app.UseMiddleware<GatewayMiddleware>();
+        if (enableGateway == true)
+        {
+            app.UseMiddleware<GatewayMiddleware>();
+        }
+        
 
         app.MapControllers();
         app.MapRazorPages();

@@ -2,9 +2,11 @@
 
 namespace SAPPub.Web.Areas.Gateway.ViewModels
 {
-    public class GatewayWelcomeViewModel : GatewayRootViewModel
+    public class GatewayWelcomeViewModel
     {
-        [Required (ErrorMessage = "Please select an option")]
-        public bool? HasBeenHereBefore { get; set; }
+        [Required(ErrorMessage = "Please select an option")]
+        public string NewOrReturning { get; set; } = string.Empty;
+        public Guid LocalAuthorityId { get; set; }
+        public string LocalAuthority { get; set; } = string.Empty;
     }
 }
