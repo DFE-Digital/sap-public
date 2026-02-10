@@ -340,48 +340,34 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y jq
 
-      - name: Ensure terraform vendor directory exists
+      - name: Prepare terraform vendor modules (aks)
         shell: bash
         env:
-          # Makefile terraform-init was failing because subscription + branch/ref were blank.
-          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          TERRAFORM_MODULES_REF: stable
+          TF_MODULES_REF: stable
         run: |
           set -euo pipefail
 
-          # If vendor already exists, nothing to do
-          if [ -d "terraform/application/vendor" ] || [ -d "vendor" ]; then
-            echo "vendor directory already present"
+          # Where your terraform expects vendored modules
+          VENDOR_DIR="terraform/application/vendor/modules/aks"
+
+          if [ -d "${VENDOR_DIR}" ]; then
+            echo "Vendor modules already present: ${VENDOR_DIR}"
             exit 0
           fi
 
-          # Fan-out env vars to match whatever Makefile expects
-          export SUBSCRIPTION="${AZURE_SUBSCRIPTION_ID}"
-          export AZ_SUBSCRIPTION="${AZURE_SUBSCRIPTION_ID}"
-          export AZURE_SUBSCRIPTION="${AZURE_SUBSCRIPTION_ID}"
-          export ARM_SUBSCRIPTION_ID="${AZURE_SUBSCRIPTION_ID}"
+          echo "Vendoring terraform-modules into ${VENDOR_DIR} (ref: ${TF_MODULES_REF})"
+          rm -rf "${VENDOR_DIR}"
+          mkdir -p "$(dirname "${VENDOR_DIR}")"
 
-          export MODULES_REF="${TERRAFORM_MODULES_REF}"
-          export TF_MODULES_REF="${TERRAFORM_MODULES_REF}"
-          export TERRAFORM_MODULES_BRANCH="${TERRAFORM_MODULES_REF}"
+          git -c advice.detachedHead=false clone \
+            --depth=1 \
+            --single-branch \
+            --branch "${TF_MODULES_REF}" \
+            https://github.com/DFE-Digital/terraform-modules.git \
+            "${VENDOR_DIR}"
 
-          # Run the repo's vendoring/init logic
-          if make -n terraform-init >/dev/null 2>&1; then
-            echo "Running: make terraform-init"
-            make terraform-init
-          else
-            echo "❌ Make target terraform-init not found."
-            grep -E '^[a-zA-Z0-9_\-]+:' Makefile | head -120 || true
-            exit 1
-          fi
-
-          # Verify expected vendor path now exists
-          if [ ! -d "terraform/application/vendor" ] && [ ! -d "vendor" ]; then
-            echo "❌ terraform-init completed but vendor directory still not found."
-            exit 1
-          fi
-
-          echo "✅ Vendor directory present."
+          echo "Vendored modules:"
+          ls -la "${VENDOR_DIR}" | head -30 || true
 
       - name: Read PR DB URL from terraform outputs
         id: prdb
