@@ -3,11 +3,11 @@
 -- Tables for the gateway service
 -- ================================================================
 
-DROP TABLE IF EXISTS public.gateway_user CASCADE;
-DROP TABLE IF EXISTS public.gateway_user_audit CASCADE;
-DROP TABLE IF EXISTS public.gateway_page_view_audit CASCADE;
-DROP TABLE IF EXISTS public.gateway_local_authority CASCADE;
-DROP TABLE IF EXISTS public.gateway_settings CASCADE;
+-- DROP TABLE IF EXISTS public.gateway_user CASCADE;
+-- DROP TABLE IF EXISTS public.gateway_user_audit CASCADE;
+-- DROP TABLE IF EXISTS public.gateway_page_view_audit CASCADE;
+-- DROP TABLE IF EXISTS public.gateway_local_authority CASCADE;
+-- DROP TABLE IF EXISTS public.gateway_settings CASCADE;
 
 CREATE TABLE IF NOT EXISTS public.gateway_user
 (
@@ -62,13 +62,16 @@ CREATE TABLE IF NOT EXISTS public.gateway_local_authority
 
 INSERT INTO public.gateway_local_authority(
 	"Id", "LocalAuthorityName", "MaxSessions", "CreatedOn", "ModifiedOn", "AuditIPAddress", "IsDeleted")
-	VALUES (gen_random_uuid(), 'Bury', 100, now(), now(), '::1', FALSE);
+	    VALUES (gen_random_uuid(), 'Bury', 100, now(), now(), '::1', FALSE)
+            ON CONFLICT ("LocalAuthorityName") DO NOTHING;
 INSERT INTO public.gateway_local_authority(
 	"Id", "LocalAuthorityName", "MaxSessions", "CreatedOn", "ModifiedOn", "AuditIPAddress", "IsDeleted")
-    VALUES (gen_random_uuid(), 'Bolton', 100, now(), now(), '::1', FALSE);
+        VALUES (gen_random_uuid(), 'Bolton', 100, now(), now(), '::1', FALSE)
+            ON CONFLICT ("LocalAuthorityName") DO NOTHING;
 INSERT INTO public.gateway_local_authority(
 	"Id", "LocalAuthorityName", "MaxSessions", "CreatedOn", "ModifiedOn", "AuditIPAddress", "IsDeleted")
-    VALUES (gen_random_uuid(), 'Manchester City Council', 100, now(), now(), '::1', FALSE);
+        VALUES (gen_random_uuid(), 'Manchester City Council', 100, now(), now(), '::1', FALSE) 
+            ON CONFLICT ("LocalAuthorityName") DO NOTHING;
 
 CREATE TABLE IF NOT EXISTS public.gateway_settings
 (
@@ -85,5 +88,6 @@ CREATE TABLE IF NOT EXISTS public.gateway_settings
 
 INSERT INTO public.gateway_settings(
 	"Id", "SettingName", "SettingValue", "CreatedOn", "ModifiedOn", "AuditIPAddress", "IsDeleted")
-	VALUES (gen_random_uuid(), 'GlobalEnable', 'true', now(), now(), '::1', FALSE);
+	    VALUES (gen_random_uuid(), 'GlobalEnable', 'true', now(), now(), '::1', FALSE) 
+            ON CONFLICT ("SettingName") DO NOTHING;
 
