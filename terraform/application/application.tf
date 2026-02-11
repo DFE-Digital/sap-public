@@ -26,7 +26,6 @@ data "azurerm_key_vault_secret" "emailgatewayapikey" {
 data "azurerm_key_vault_secret" "gatewayenabled" {
   name         = "GatewayEnabled" //Name in KeyVault
   key_vault_id = data.azurerm_key_vault.app_key_vault.id
-  content_type = "boolean"
 }
 
 module "application_configuration" {
