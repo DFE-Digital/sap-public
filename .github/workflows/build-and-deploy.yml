@@ -204,13 +204,22 @@ jobs:
           recreate: true
           path: code-coverage-results.md
 
-      - name: Accessibility scan
-        uses: ./.github/workflows/a11ywatch-scan.yml
-        with:
-          urls_file: "a11y-urls.txt"  # path in your repo
-          max_parallel: 5
-          fail_errors_count: 1
-          list_mode: true
+  # ---------------------------
+  # ACCESSIBILITY SCAN (A11yWatch)
+  # ---------------------------
+  a11y-scan:
+    name: Accessibility scan
+    # Optionally run after your build job:
+    # needs: build
+    uses: ./.github/workflows/a11ywatch-scan.yml
+    with:
+      urls_file: "a11y-urls.txt"
+      max_parallel: 5
+      fail_errors_count: 1
+      list_mode: true
+    # If you use the A11yWatch remote API (EXTERNAL mode), forward the token:
+    # secrets:
+    #   A11YWATCH_TOKEN: ${{ secrets.A11YWATCH_TOKEN }}
 
   # ---------------------------
   # REFRESH DATA
