@@ -212,8 +212,6 @@ jobs:
           max_parallel: 5
           fail_errors_count: 1
           list_mode: true
-        secrets:
-          # If you use A11yWatch remote API (EXTERNAL: true), pass the token:
 
   # ---------------------------
   # REFRESH DATA
