@@ -13,6 +13,22 @@ data "azurerm_key_vault_secret" "microsoftclarity" {
   key_vault_id = data.azurerm_key_vault.app_key_vault.id
 }
 
+data "azurerm_key_vault_secret" "emailgatewaytemplate" {
+  name         = "EmailGatewayTemplate" //Name in KeyVault
+  key_vault_id = data.azurerm_key_vault.app_key_vault.id
+}
+
+data "azurerm_key_vault_secret" "emailgatewayapikey" {
+  name         = "EmailApiKey" //Name in KeyVault
+  key_vault_id = data.azurerm_key_vault.app_key_vault.id
+}
+
+data "azurerm_key_vault_secret" "gatewayenabled" {
+  name         = "GatewayEnabled" //Name in KeyVault
+  key_vault_id = data.azurerm_key_vault.app_key_vault.id
+  content_type = "boolean"
+}
+
 module "application_configuration" {
   source = "./vendor/modules/aks//aks/application_configuration"
 
@@ -33,7 +49,9 @@ module "application_configuration" {
     StorageConnectionString = "DefaultEndpointsProtocol=https;AccountName=${module.storage.name};AccountKey=${module.storage.primary_access_key}"
 	  ConnectionStrings__PostgresConnectionString = module.postgres.dotnet_connection_string
     Analytics__GoogleTagManagerId = data.azurerm_key_vault_secret.googletagmanager.value
-    Analytics__ClarityId = data.azurerm_key_vault_secret.microsoftclarity.value
+    Email__Template = data.azurerm_key_vault_secret.emailgatewaytemplate.value,
+    Email__ApiKey = data.azurerm_key_vault_secret.emailgatewayapikey.value,
+    Gateway__Enabled = data.azurerm_key_vault_secret.gatewayenabled.value,
   }
 
 }
