@@ -1,4 +1,3 @@
-# .github/workflows/a11ywatch-scan.yml
 name: Reusable - A11yWatch scan (URLs file)
 
 on:
@@ -24,6 +23,38 @@ on:
         type: boolean
         default: true
 
+      # Optional: start a local .NET app per matrix job (use this for localhost endpoints)
+      start_dotnet:
+        description: "Start a .NET app in the same job before scanning."
+        required: false
+        type: boolean
+        default: true
+      dotnet_project:
+        description: "Path to .csproj for the app to run (only used if start_dotnet=true)."
+        required: false
+        type: string
+        default: "./SAPPub.Web/SAPPub.Web.csproj"
+      dotnet_configuration:
+        description: "Build configuration for the app."
+        required: false
+        type: string
+        default: "Release"
+      dotnet_version:
+        description: "Version of .NET SDK to use."
+        required: false
+        type: string
+        default: "8.0.x"
+      app_url:
+        description: "Base URL to wait on if start_dotnet=true (use HTTP to avoid dev cert issues)."
+        required: false
+        type: string
+        default: "http://localhost:3000"
+      health_path:
+        description: "Path to probe while waiting (e.g., / or /health)."
+        required: false
+        type: string
+        default: "/"
+
 jobs:
   prepare-matrix:
     name: Build URL matrix
@@ -34,29 +65,45 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+
       - id: build
         name: Build matrix from file
         shell: bash
         run: |
+          set -euo pipefail
+
           FILE="${{ inputs.urls_file }}"
           if [[ ! -f "$FILE" ]]; then
             echo "File not found: $FILE" >&2
             exit 1
           fi
 
-          # Strip comments/blank lines and trim
-          mapfile -t urls < <(grep -v '^\s*#' "$FILE" | sed '/^\s*$/d' | sed 's/[[:space:]]*$//')
+          # Normalize CRLF, strip comments/blank lines, trim trailing spaces
+          mapfile -t urls < <(tr -d '\r' < "$FILE" | grep -v '^\s*#' | sed '/^\s*$/d' | sed 's/[[:space:]]*$//')
+
           if (( ${#urls[@]} == 0 )); then
-            echo "No URLs found in $FILE" >&2
-            echo "websites=[]" >> "$GITHUB_OUTPUT"
-            echo "count=0" >> "$GITHUB_OUTPUT"
+            {
+              echo "websites<<EOF"
+              echo "[]"
+              echo "EOF"
+              echo "count=0"
+            } >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          # Build JSON array
+          # Build JSON array safely: ["url1","url2",...]
           json="$(printf '%s\n' "${urls[@]}" | jq -R . | jq -s .)"
-          echo "websites=${json}" >> "$GITHUB_OUTPUT"
-          echo "count=${#urls[@]}"  >> "$GITHUB_OUTPUT"
+
+          {
+            echo "websites<<EOF"
+            echo "$json"
+            echo "EOF"
+            echo "count=${#urls[@]}"
+          } >> "$GITHUB_OUTPUT"
 
   run-a11y:
     name: A11yWatch (${{ matrix.website }})
@@ -68,8 +115,48 @@ jobs:
       max-parallel: ${{ inputs.max_parallel }}
       matrix:
         website: ${{ fromJson(needs.prepare-matrix.outputs.websites) }}
+
     steps:
       - uses: actions/checkout@v4
+
+      # Start a local .NET app if requested (use HTTP to avoid dev cert hassles in CI)
+      - name: Setup .NET
+        if: ${{ inputs.start_dotnet }}
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ inputs.dotnet_version }}
+
+      - name: Restore & Build
+        if: ${{ inputs.start_dotnet }}
+        run: |
+          dotnet restore "${{ inputs.dotnet_project }}"
+          dotnet build "${{ inputs.dotnet_project }}" -c "${{ inputs.dotnet_configuration }}" --no-restore
+
+      - name: Start MVC App
+        if: ${{ inputs.start_dotnet }}
+        env:
+          ASPNETCORE_ENVIRONMENT: Development
+        run: |
+          set -euo pipefail
+          # Start in background and capture PID
+          dotnet run --project "${{ inputs.dotnet_project }}" --urls "${{ inputs.app_url }}" 2>&1 | tee app.log &
+          echo $! > app.pid
+
+      - name: Wait for App to be Ready
+        if: ${{ inputs.start_dotnet }}
+        run: |
+          set -e
+          BASE="${{ inputs.app_url }}"
+          PATHP="${{ inputs.health_path }}"
+          URL="${BASE%/}${PATHP}"
+          echo "Probing $URL ..."
+          for i in {1..60}; do
+            if curl -fsS "$URL" >/dev/null; then
+              echo "App is up"; exit 0
+            fi
+            sleep 2
+          done
+          echo "App failed to start"; tail -n 200 app.log; exit 1
 
       - name: Run A11yWatch
         uses: a11ywatch/github-action@v2.1.10
@@ -78,8 +165,13 @@ jobs:
           LIST: ${{ inputs.list_mode }}
           FAIL_ERRORS_COUNT: ${{ inputs.fail_errors_count }}
           UPLOAD: true
-          SITE_WIDE: false   # leave as page-level; set true if you want crawls
-          # SITEMAP: true      # only meaningful with SITE_WIDE: true
-          EXTERNAL: false     # enable if you have a paid A11yWatch token/remote API
+          SITE_WIDE: false
+          # SITEMAP: true    # only useful if SITE_WIDE: true
+          # EXTERNAL: true   # set to true + pass A11YWATCH_TOKEN via secrets if using remote API
         env:
           DEFAULT_RUNNERS: htmlcs,axe
+
+      - name: Stop App
+        if: ${{ always() && inputs.start_dotnet }}
+        run: |
+          if [[ -f app.pid ]]; then kill "$(cat app.pid)" || true; fi
