@@ -46,11 +46,11 @@ module "application_configuration" {
   secret_variables = {
     DATABASE_URL            = module.postgres.url
     StorageConnectionString = "DefaultEndpointsProtocol=https;AccountName=${module.storage.name};AccountKey=${module.storage.primary_access_key}"
-	  ConnectionStrings__PostgresConnectionString = module.postgres.dotnet_connection_string
-    Analytics__GoogleTagManagerId = data.azurerm_key_vault_secret.googletagmanager.value
-    Email__Template = data.azurerm_key_vault_secret.emailgatewaytemplate.value,
-    Email__ApiKey = data.azurerm_key_vault_secret.emailgatewayapikey.value,
-    Gateway__Enabled = data.azurerm_key_vault_secret.gatewayenabled.value,
+	  ConnectionStrings__PostgresConnectionString   = module.postgres.dotnet_connection_string
+    Analytics__GoogleTagManagerId                 = data.azurerm_key_vault_secret.googletagmanager.value
+    Email__GatewayTemplate                        = data.azurerm_key_vault_secret.emailgatewaytemplate.value,
+    Email__ApiKey                                 = data.azurerm_key_vault_secret.emailgatewayapikey.value,
+    Gateway__Enabled                              = data.azurerm_key_vault_secret.gatewayenabled.value,
   }
 
 }
