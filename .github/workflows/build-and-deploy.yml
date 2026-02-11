@@ -204,31 +204,27 @@ jobs:
           recreate: true
           path: code-coverage-results.md
 
-      - uses: a11ywatch/github-action@0c8d05657a89863a4620b277e0b50ed87a8ca466
-        with:
-          WEBSITE_URL: "https://localhost:3000"
-
   # ---------------------------
   # ACCESSIBILITY SCAN (A11yWatch)
   # ---------------------------
 
-# a11y-scan:
-#     name: Accessibility scan      
-#      needs: build
-#      uses: ./.github/workflows/a11ywatch-scan.yml
-#      with:
-#        urls_file: "a11y-urls.txt"          # your list (one URL per line, '#' for comments)
-#        max_parallel: 5
-#        fail_errors_count: 1
-#        list_mode: true
+  a11y-scan:
+    name: Accessibility scan      
+    needs: build
+    uses: ./.github/workflows/a11ywatch-scan.yml
+    with:
+        urls_file: "a11y-urls.txt"          # your list (one URL per line, '#' for comments)
+        max_parallel: 5
+        fail_errors_count: 1
+        list_mode: true
 
         # Set these true/paths if scanning localhost and you need the app running:
-#        start_dotnet: true
-#        dotnet_project: "./SAPPub.Web/SAPPub.Web.csproj"
-#        dotnet_configuration: "Release"
-#        dotnet_version: "8.0.x"
-#        app_url: "http://localhost:3000"    # use HTTP for CI robustness
-#        health_path: "/"
+        start_dotnet: true
+        dotnet_project: "./SAPPub.Web/SAPPub.Web.csproj"
+        dotnet_configuration: "Release"
+        dotnet_version: "8.0.x"
+        app_url: "http://localhost:3000"    # use HTTP for CI robustness
+        health_path: "/"
 
   # ---------------------------
   # REFRESH DATA
