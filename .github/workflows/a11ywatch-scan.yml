@@ -23,10 +23,6 @@ on:
         required: false
         type: boolean
         default: true
-    secrets:
-      # Optionally forward an A11yWatch API token if you use EXTERNAL mode
-      A11YWATCH_TOKEN:
-        required: false
 
 jobs:
   prepare-matrix:
@@ -87,4 +83,3 @@ jobs:
           EXTERNAL: false     # enable if you have a paid A11yWatch token/remote API
         env:
           DEFAULT_RUNNERS: htmlcs,axe
-          A11YWATCH_TOKEN: ${{ secrets.A11YWATCH_TOKEN }}

@@ -204,7 +204,6 @@ jobs:
           recreate: true
           path: code-coverage-results.md
 
-          
       - name: Accessibility scan
         needs: build                  # ensure we build before scanning the deployed preview/build output if applicable
         uses: ./.github/workflows/a11ywatch-scan.yml
@@ -215,12 +214,6 @@ jobs:
           list_mode: true
         secrets:
           # If you use A11yWatch remote API (EXTERNAL: true), pass the token:
-          # A11YWATCH_TOKEN: ${{ secrets.A11YWATCH_TOKEN }}
-
-      
-      
-      
-
 
   # ---------------------------
   # REFRESH DATA
