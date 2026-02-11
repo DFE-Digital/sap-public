@@ -210,7 +210,7 @@ jobs:
   a11y-scan:
     name: Accessibility scan
     # Optionally run after your build job:
-    # needs: build
+    needs: test
     uses: ./.github/workflows/a11ywatch-scan.yml
     with:
       urls_file: "a11y-urls.txt"
