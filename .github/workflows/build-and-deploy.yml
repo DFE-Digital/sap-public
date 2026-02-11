@@ -226,55 +226,6 @@ jobs:
         app_url: "http://localhost:3000"    # use HTTP for CI robustness
         health_path: "/"
 
-      name: A11yWatch (${{ matrix.website }})
-      needs: prepare-matrix
-      if: ${{ fromJson(needs.prepare-matrix.outputs.websites) != '' && needs.prepare-matrix.outputs.count != '0' }}
-      runs-on: ubuntu-latest
-      strategy:
-        fail-fast: false
-        max-parallel: ${{ inputs.max_parallel }}
-        matrix:
-          website: ${{ fromJson(needs.prepare-matrix.outputs.websites) }}
-      steps:
-        - uses: actions/checkout@v4
-
-        - name: Setup .NET
-          uses: actions/setup-dotnet@v4
-          with:
-            dotnet-version: '8.0.x'
-
-        - name: Restore & Build
-          run: |
-            dotnet restore ./SAPPub.Web/SAPPub.Web.csproj
-            dotnet build ./SAPPub.Web/SAPPub.Web.csproj -c Release --no-restore
-
-        - name: Start MVC App
-          run: |
-            dotnet run --project ./SAPPub.Web/SAPPub.Web.csproj --urls "https://localhost:3001" &
-          env:
-            ASPNETCORE_ENVIRONMENT: Development
-
-        - name: Wait for MVC App to be ready
-          run: npx wait-on https://localhost:3001
-
-        - name: Run A11yWatch
-          uses: a11ywatch/github-action@v2.1.10
-          with:
-            WEBSITE_URL: ${{ matrix.website }}
-            LIST: ${{ inputs.list_mode }}
-            FAIL_ERRORS_COUNT: ${{ inputs.fail_errors_count }}
-            UPLOAD: true
-            SITE_WIDE: false   # leave as page-level; set true if you want crawls
-            # SITEMAP: true      # only meaningful with SITE_WIDE: true
-            EXTERNAL: false     # enable if you have a paid A11yWatch token/remote API
-          env:
-            DEFAULT_RUNNERS: htmlcs,axe
-
-        - name: Stop App
-          if: always()
-          run: |
-            if [[ -f app.pid ]]; then kill "$(cat app.pid)" || true; fi
-
   # ---------------------------
   # REFRESH DATA
   # ---------------------------
