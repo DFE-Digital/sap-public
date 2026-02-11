@@ -164,12 +164,22 @@ jobs:
           WEBSITE_URL: ${{ matrix.website }}
           LIST: ${{ inputs.list_mode }}
           FAIL_ERRORS_COUNT: ${{ inputs.fail_errors_count }}
-          UPLOAD: true
+          UPLOAD: false
           SITE_WIDE: false
           # SITEMAP: true    # only useful if SITE_WIDE: true
           # EXTERNAL: true   # set to true + pass A11YWATCH_TOKEN via secrets if using remote API
         env:
           DEFAULT_RUNNERS: htmlcs,axe
+
+      - name: Upload A11y results (v4)
+        uses: actions/upload-artifact@v4
+        with:
+          name: a11ywatch-${{ github.job }}-${{ strategy.job-index }}
+          path: |
+            a11y-results/**          # ← update to the real path(s) produced by A11yWatch
+            **/a11ywatch*.json
+          if-no-files-found: warn
+          retention-days: 7
 
       - name: Stop App
         if: ${{ always() && inputs.start_dotnet }}
