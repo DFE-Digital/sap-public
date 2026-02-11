@@ -205,7 +205,6 @@ jobs:
           path: code-coverage-results.md
 
       - name: Accessibility scan
-        needs: build                  # ensure we build before scanning the deployed preview/build output if applicable
         uses: ./.github/workflows/a11ywatch-scan.yml
         with:
           urls_file: "a11y-urls.txt"  # path in your repo
