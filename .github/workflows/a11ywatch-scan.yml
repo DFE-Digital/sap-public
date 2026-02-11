@@ -159,7 +159,7 @@ jobs:
           echo "App failed to start"; tail -n 200 app.log; exit 1
 
       - name: Run A11yWatch
-        uses: a11ywatch/github-action@0c8d05657a89863a4620b277e0b50ed87a8c
+        uses: a11ywatch/github-action@0c8d05657a89863a4620b277e0b50ed87a8ca466
         with:
           WEBSITE_URL: ${{ matrix.website }}
           LIST: ${{ inputs.list_mode }}
