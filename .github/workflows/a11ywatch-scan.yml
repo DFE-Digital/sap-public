@@ -1,0 +1,90 @@
+# .github/workflows/a11ywatch-scan.yml
+name: Reusable - A11yWatch scan (URLs file)
+
+on:
+  workflow_call:
+    inputs:
+      urls_file:
+        description: "Path to the file containing endpoints (one per line, '#' for comments)."
+        required: true
+        type: string
+      max_parallel:
+        description: "Max parallel scans."
+        required: false
+        type: number
+        default: 5
+      fail_errors_count:
+        description: "Fail the job if detected error count exceeds this number."
+        required: false
+        type: number
+        default: 1
+      list_mode:
+        description: "Report pass/fail list in logs."
+        required: false
+        type: boolean
+        default: true
+    secrets:
+      # Optionally forward an A11yWatch API token if you use EXTERNAL mode
+      A11YWATCH_TOKEN:
+        required: false
+
+jobs:
+  prepare-matrix:
+    name: Build URL matrix
+    runs-on: ubuntu-latest
+    outputs:
+      websites: ${{ steps.build.outputs.websites }}
+      count: ${{ steps.build.outputs.count }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: build
+        name: Build matrix from file
+        shell: bash
+        run: |
+          FILE="${{ inputs.urls_file }}"
+          if [[ ! -f "$FILE" ]]; then
+            echo "File not found: $FILE" >&2
+            exit 1
+          fi
+
+          # Strip comments/blank lines and trim
+          mapfile -t urls < <(grep -v '^\s*#' "$FILE" | sed '/^\s*$/d' | sed 's/[[:space:]]*$//')
+          if (( ${#urls[@]} == 0 )); then
+            echo "No URLs found in $FILE" >&2
+            echo "websites=[]" >> "$GITHUB_OUTPUT"
+            echo "count=0" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Build JSON array
+          json="$(printf '%s\n' "${urls[@]}" | jq -R . | jq -s .)"
+          echo "websites=${json}" >> "$GITHUB_OUTPUT"
+          echo "count=${#urls[@]}"  >> "$GITHUB_OUTPUT"
+
+  run-a11y:
+    name: A11yWatch (${{ matrix.website }})
+    needs: prepare-matrix
+    if: ${{ fromJson(needs.prepare-matrix.outputs.websites) != '' && needs.prepare-matrix.outputs.count != '0' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: ${{ inputs.max_parallel }}
+      matrix:
+        website: ${{ fromJson(needs.prepare-matrix.outputs.websites) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run A11yWatch
+        uses: a11ywatch/github-action@v2.1.10
+        with:
+          WEBSITE_URL: ${{ matrix.website }}
+          LIST: ${{ inputs.list_mode }}
+          FAIL_ERRORS_COUNT: ${{ inputs.fail_errors_count }}
+          UPLOAD: true
+          SITE_WIDE: false   # leave as page-level; set true if you want crawls
+          # SITEMAP: true      # only meaningful with SITE_WIDE: true
+          EXTERNAL: false     # enable if you have a paid A11yWatch token/remote API
+        env:
+          DEFAULT_RUNNERS: htmlcs,axe
+          A11YWATCH_TOKEN: ${{ secrets.A11YWATCH_TOKEN }}

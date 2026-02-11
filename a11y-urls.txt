@@ -1,0 +1,10 @@
+https://localhost:3000/
+https://localhost:3000/Cookies/Preferences
+https://localhost:3000/school/105574/Loreto%20High%20School%20Chorlton/secondary/about
+https://localhost:3000/school/105574/Loreto%20High%20School%20Chorlton/secondary/admissions
+https://localhost:3000/school/105574/Loreto%20High%20School%20Chorlton/secondary/curriculum-and-extra-curricular-activities
+https://localhost:3000/school/105574/Loreto%20High%20School%20Chorlton/secondary/attendance
+https://localhost:3000/school/105574/Loreto%20High%20School%20Chorlton/secondary/academic-performance-pupil-progress
+https://localhost:3000/school/105574/Loreto%20High%20School%20Chorlton/secondary/academic-performance-english-and-maths-results
+https://localhost:3000/school/105574/Loreto%20High%20School%20Chorlton/secondary/academic-performance-subjects-entered
+https://localhost:3000/school/105574/Loreto%20High%20School%20Chorlton/secondary/destinations
