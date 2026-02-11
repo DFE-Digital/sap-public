@@ -159,27 +159,17 @@ jobs:
           echo "App failed to start"; tail -n 200 app.log; exit 1
 
       - name: Run A11yWatch
-        uses: a11ywatch/github-action@v2.1.10
+        uses: a11ywatch/github-action@0c8d05657a89863a4620b277e0b50ed87a8c
         with:
           WEBSITE_URL: ${{ matrix.website }}
           LIST: ${{ inputs.list_mode }}
           FAIL_ERRORS_COUNT: ${{ inputs.fail_errors_count }}
-          UPLOAD: false
+          UPLOAD: true
           SITE_WIDE: false
           # SITEMAP: true    # only useful if SITE_WIDE: true
           # EXTERNAL: true   # set to true + pass A11YWATCH_TOKEN via secrets if using remote API
         env:
           DEFAULT_RUNNERS: htmlcs,axe
-
-      - name: Upload A11y results (v4)
-        uses: actions/upload-artifact@v4
-        with:
-          name: a11ywatch-${{ github.job }}-${{ strategy.job-index }}
-          path: |
-            a11y-results/**          # ← update to the real path(s) produced by A11yWatch
-            **/a11ywatch*.json
-          if-no-files-found: warn
-          retention-days: 7
 
       - name: Stop App
         if: ${{ always() && inputs.start_dotnet }}

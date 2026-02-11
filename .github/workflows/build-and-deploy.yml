@@ -204,7 +204,7 @@ jobs:
           recreate: true
           path: code-coverage-results.md
 
-      - uses: a11ywatch/github-action@v2.1.10
+      - uses: a11ywatch/github-action@0c8d05657a89863a4620b277e0b50ed87a8c
         with:
           WEBSITE_URL: "https://localhost:3000"
 
