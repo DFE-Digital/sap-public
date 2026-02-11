@@ -205,13 +205,27 @@ jobs:
           path: code-coverage-results.md
 
   # ---------------------------
+  # REFRESH DATA
+  # ---------------------------
+  refresh-data:
+    name: Refresh data (School Data Ingestion Pipeline)
+    if: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'refresh data') }}
+    needs: [build, test]
+    uses: ./.github/workflows/data-pipeline.yml
+    permissions:
+      contents: write
+      id-token: write
+
+  # ---------------------------
   # REVIEW APP DEPLOYMENT (PR)
   # ---------------------------
   deploy-review-app:
     name: Deployment To Review
     concurrency: deploy_review_${{ github.event.pull_request.number }}
-    if: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'deploy') }}
-    needs: [build, test]
+    if: ${{ github.event_name == 'pull_request'
+      && contains(github.event.pull_request.labels.*.name, 'deploy')
+      && (needs.refresh-data.result == 'success' || needs.refresh-data.result == 'skipped') }}
+    needs: [build, test, refresh-data]
     environment:
       name: review
       url: ${{ steps.deploy_review.outputs.environment_url }}
