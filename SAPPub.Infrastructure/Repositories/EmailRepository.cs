@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Notify.Client;
 using Notify.Interfaces;
 using Notify.Models;
@@ -13,12 +14,13 @@ namespace SAPPub.Infrastructure.Repositories
     {
         private readonly INotificationClient _notificationClient;
         private readonly EmailOptions _emailOptions;
+        private readonly ILogger<EmailRepository> _logger;
 
-        public EmailRepository(INotificationClient notificationClient, IOptions<EmailOptions> emailOptions)
+        public EmailRepository(INotificationClient notificationClient, IOptions<EmailOptions> emailOptions, ILogger<EmailRepository> logger)
         {
             _emailOptions = emailOptions.Value;
             _notificationClient = notificationClient;
-
+            _logger = logger;
         }
 
         public void SendGatewayEmail(string emailAddress)
@@ -27,7 +29,15 @@ namespace SAPPub.Infrastructure.Repositories
             {
                 { "link", "https://www.localhost:3000/welcome/returning" }
             };
-            var response = _notificationClient.SendEmail(emailAddress, _emailOptions.GatewayTemplate, personalisation);
+            try
+            {
+                var response = _notificationClient.SendEmail(emailAddress, _emailOptions.GatewayTemplate, personalisation);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Failed to send gateway email of type {_emailOptions.GatewayTemplate}");
+            }
+            
         }
     }
 }
