@@ -212,9 +212,11 @@ jobs:
     if: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'refresh data') }}
     needs: [build, test]
     uses: ./.github/workflows/data-pipeline.yml
+    secrets: inherit
     permissions:
       contents: write
       id-token: write
+      actions: read
 
   # ---------------------------
   # REVIEW APP DEPLOYMENT (PR)
