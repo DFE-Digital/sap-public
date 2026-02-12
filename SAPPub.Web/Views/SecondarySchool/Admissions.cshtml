@@ -15,65 +15,47 @@
     })
 
     <div class="govuk-grid-column-three-quarters">
-        <span id="school-name-caption" class="govuk-caption-l">@Model.SchoolName</span>
-        <h1 class="govuk-heading-l">@ViewBag.Title</h1>
+        <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
+        <h1 class="govuk-heading-xl">@ViewBag.Title</h1>
 
-        <govuk-accordion id="admissions-accordion" hide-all-sections-text="Hide all sections" show-all-sections-text="Show all sections" hide-section-text="Hide" show-section-text="Show more">
-            <govuk-accordion-item>
-                <govuk-accordion-item-heading>What to do if your child is moving schools</govuk-accordion-item-heading>
-                <govuk-accordion-item-summary>If your child is moving schools, you’ll need to apply through your local council.</govuk-accordion-item-summary>
-                <govuk-accordion-item-content>
-                    <div class="govuk-summary-card">
-                        <div class="govuk-summary-card__title-wrapper">
-                            <h2 class="govuk-summary-card__title">In-year admissions</h2>
-                        </div>
+        @* Todo - More content to go here *@
 
-                        <div class="govuk-summary-card__content">
-                            <div class="govuk-summary-list__row govuk-!-margin-top-3 govuk-!-margin-bottom-3">
-                                <p class="govuk-body">
-                                    If your child is moving schools, you’ll need to apply through your local council,
-                                    even if you’re applying for a school in another council area or you’ve just moved to England.
-                                </p>
-                            </div>
-                            <govuk-summary-list>
-                                <govuk-summary-list-row>
-                                    <govuk-summary-list-row-key>Find out which schools have places</govuk-summary-list-row-key>
-                                    <govuk-summary-list-row-value>
-                                        <a class="govuk-link" href="#">
-                                            View information on schools with vacancies on Sheffield City Council’s website
-                                        </a>
-                                    </govuk-summary-list-row-value>
-                                </govuk-summary-list-row>
-                                <govuk-summary-list-row>
-                                    <govuk-summary-list-row-key>Apply to change schools</govuk-summary-list-row-key>
-                                    <govuk-summary-list-row-value>
-                                        <a class="govuk-link" href="#">
-                                            View information on applying to move schools on Sheffield City Council’s website
-                                        </a>
-                                    </govuk-summary-list-row-value>
-                                </govuk-summary-list-row>
-                            </govuk-summary-list>
-                        </div>
-                    </div>
-                </govuk-accordion-item-content>
-            </govuk-accordion-item>
+        <h2 class="govuk-heading-l">Moving schools during the school year</h2>
 
-            <govuk-accordion-item>
-                <govuk-accordion-item-heading>Further information schools may ask for</govuk-accordion-item-heading>
-                 <govuk-accordion-item-summary></govuk-accordion-item-summary>
-                <govuk-accordion-item-content>
-                    <p class="govuk-body">
-                        Some schools, for example faith schools, may require a Supplementary Information Form (SIF) to be submitted as part of the school application process. SIFs request additional information and are used to determine whether a child meets the school’s admission criteria.
-                    </p>
-                    <p class="govuk-body">
-                        Schools such as grammar schools or partially selective schools require children to take a test after making an application to help decide which children get places. For example, this could be a music aptitude test.
-                    </p>
-                    <p class="govuk-body">
-                        Grammar schools may require children to take a selection test. The school’s admission arrangements should explain what is required.
-                    </p>  
-                </govuk-accordion-item-content>
-            </govuk-accordion-item>
-        </govuk-accordion>
+        <div class="govuk-summary-card" data-testid="moving-schools-during-year-summary-card">
+            <div class="govuk-summary-card__title-wrapper">
+                <h3 class="govuk-summary-card__title">
+                    Moving schools during the school year
+                </h3>
+            </div>
+            <div class="govuk-summary-card__content">
+                <p class="govuk-body">
+                    If your child is joining a school after the school year has started in
+                    September, you’ll need to make an in-year application.
+                </p>
+                <p class="govuk-body">
+                    Depending on the school you’re applying for, you’ll either need to: 
+                </p>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>make an in-year application through your local council </li>
+                    <li>apply directly to the school </li>
+                </ul>
+                <p class="govuk-body">
+                    You can find information on which schools you’ll need to apply
+                    directly to on your local council’s website.  
+                </p>
+                <p class="govuk-body">
+                    <a href="@($"https://www.{Model.LASecondarySchoolAdmissionsLinkUrl}")"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="govuk-link"
+                       data-testid="link">
+                        @($"{Model.LAName}’s in-year application process.")
+                        <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                    </a>
+                </p>
+            </div>
+        </div>
 
         <govuk-pagination id="admissions-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAboutSchool" asp-all-route-data="@Model.RouteAttributes">About the school</govuk-pagination-previous>

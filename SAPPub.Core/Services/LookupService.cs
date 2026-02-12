@@ -2,20 +2,19 @@
 using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Services;
 
-namespace SAPPub.Core.Services
+namespace SAPPub.Core.Services;
+
+public class LookupService(ILookupRepository lookupRepository) : ILookupService
 {
-    public class LookupService(ILookupRepository lookupRepository) : ILookupService
+    private readonly ILookupRepository _lookupRepository = lookupRepository;
+
+    public IEnumerable<Lookup> GetAllLookups()
     {
-        private readonly ILookupRepository _lookupRepository = lookupRepository;
+        return _lookupRepository.GetAllLookups();
+    }
 
-        public IEnumerable<Lookup> GetAllLookups()
-        {
-            return _lookupRepository.GetAllLookups();
-        }
-
-        public Lookup GetLookup(string urn)
-        {
-            return _lookupRepository.GetLookup(urn) ?? new();
-        }
+    public Lookup GetLookup(string urn)
+    {
+        return _lookupRepository.GetLookup(urn) ?? new();
     }
 }
