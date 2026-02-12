@@ -10,6 +10,7 @@ using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.Json;
+using static SAPPub.Web.Middleware.DependenciesExtensions;
 
 namespace SAPPub.Web;
 
@@ -67,6 +68,8 @@ public partial class Program
         builder.Services.AddDependencies();
 
         var app = builder.Build();
+
+        _ = app.Services.GetRequiredService<IDapperBootstrapper>();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())

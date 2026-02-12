@@ -1,4 +1,5 @@
-﻿using SAPPub.Core.Entities;
+﻿using Dapper;
+using SAPPub.Core.Entities;
 using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Entities.KS4.Performance;
@@ -24,6 +25,7 @@ using SAPPub.Core.Services.KS4.Destinations;
 using SAPPub.Core.Services.KS4.Performance;
 using SAPPub.Core.Services.KS4.SubjectEntries;
 using SAPPub.Core.Services.KS4.Workforce;
+using SAPPub.Infrastructure.Mapping.ValueCodes;
 using SAPPub.Infrastructure.Repositories;
 using SAPPub.Infrastructure.Repositories.Generic;
 using SAPPub.Infrastructure.Repositories.KS4.Absence;
@@ -38,60 +40,88 @@ namespace SAPPub.Web.Middleware
     [ExcludeFromCodeCoverage]
     public static class DependenciesExtensions
     {
+        public interface IDapperBootstrapper { }
+        public sealed class DapperBootstrapper : IDapperBootstrapper { }
+
         public static void AddDependencies(this IServiceCollection services)
         {
-            services.AddTransient<IGenericRepository<Establishment>, JSONRepository<Establishment>>();
+            // ✅ Register generic repository for ALL entities
+            services.AddTransient(typeof(IGenericRepository<>), typeof(DapperRepository<>));
+
+            // Establishment
             services.AddTransient<IEstablishmentRepository, EstablishmentRepository>();
             services.AddTransient<IEstablishmentService, EstablishmentService>();
 
-            services.AddTransient<IGenericRepository<EstablishmentPerformance>, JSONRepository<EstablishmentPerformance>>();
+            // Establishment Performance
             services.AddTransient<IEstablishmentPerformanceRepository, EstablishmentPerformanceRepository>();
             services.AddTransient<IEstablishmentPerformanceService, EstablishmentPerformanceService>();
 
-            services.AddTransient<IGenericRepository<EstablishmentDestinations>, JSONRepository<EstablishmentDestinations>>();
+            // Establishment Destinations (now can rely on generic repo + coded mapping)
             services.AddTransient<IEstablishmentDestinationsRepository, EstablishmentDestinationsRepository>();
             services.AddTransient<IEstablishmentDestinationsService, EstablishmentDestinationsService>();
 
-            services.AddTransient<IGenericRepository<EstablishmentAbsence>, JSONRepository<EstablishmentAbsence>>();
+            // Absence
             services.AddTransient<IEstablishmentAbsenceRepository, EstablishmentAbsenceRepository>();
             services.AddTransient<IEstablishmentAbsenceService, EstablishmentAbsenceService>();
 
-            services.AddTransient<IGenericRepository<EstablishmentWorkforce>, JSONRepository<EstablishmentWorkforce>>();
+            // Workforce
             services.AddTransient<IEstablishmentWorkforceRepository, EstablishmentWorkforceRepository>();
             services.AddTransient<IEstablishmentWorkforceService, EstablishmentWorkforceService>();
 
-            services.AddTransient<IGenericRepository<LAPerformance>, JSONRepository<LAPerformance>>();
+            // LA Performance
             services.AddTransient<ILAPerformanceRepository, LAPerformanceRepository>();
             services.AddTransient<ILAPerformanceService, LAPerformanceService>();
 
-            services.AddTransient<IGenericRepository<LADestinations>, JSONRepository<LADestinations>>();
+            // LA Destinations
             services.AddTransient<ILADestinationsRepository, LADestinationsRepository>();
             services.AddTransient<ILADestinationsService, LADestinationsService>();
 
-            services.AddTransient<IGenericRepository<LAAbsence>, JSONRepository<LAAbsence>>();
+            // LA Absence
             services.AddTransient<ILAAbsenceRepository, LAAbsenceRepository>();
             services.AddTransient<ILAAbsenceService, LAAbsenceService>();
 
-            services.AddTransient<IGenericRepository<EnglandPerformance>, JSONRepository<EnglandPerformance>>();
+            // England Performance
             services.AddTransient<IEnglandPerformanceRepository, EnglandPerformanceRepository>();
             services.AddTransient<IEnglandPerformanceService, EnglandPerformanceService>();
 
-            services.AddTransient<IGenericRepository<EnglandDestinations>, JSONRepository<EnglandDestinations>>();
+            // England Destinations
             services.AddTransient<IEnglandDestinationsRepository, EnglandDestinationsRepository>();
             services.AddTransient<IEnglandDestinationsService, EnglandDestinationsService>();
 
-            services.AddTransient<IGenericRepository<EnglandAbsence>, JSONRepository<EnglandAbsence>>();
+            // England Absence
             services.AddTransient<IEnglandAbsenceRepository, EnglandAbsenceRepository>();
             services.AddTransient<IEnglandAbsenceService, EnglandAbsenceService>();
 
-            services.AddTransient<IGenericRepository<Lookup>, JSONRepository<Lookup>>();
+            // Lookup
             services.AddTransient<ILookupRepository, LookupRepository>();
             services.AddTransient<ILookupService, LookupService>();
 
+            // Subject entries / misc
             services.AddTransient<IEstablishmentSubjectEntriesService, EstablishmentSubjectEntriesService>();
             services.AddTransient<IEstablishmentSubjectEntriesRepository, EstablishmentSubjectEntriesRepository>();
             services.AddTransient<IAcademicPerformanceEnglishAndMathsResultsService, Core.Services.KS4.Performance.EnglishAndMathsResultsService>();
-            services.AddTransient<ISecondarySchoolService, SecondarySchoolService>();            
+            services.AddTransient<ISecondarySchoolService, SecondarySchoolService>();
+
+            // Mapper (reflection-based coded mapping)
+            services.AddSingleton<ICodedValueMapper, ReflectionCodedValueMapper>();
+
+            // Reason lookup
+            services.AddSingleton<IReasonCodeLookup>(_ =>
+                new ReasonCodeLookup(new Dictionary<string, string>
+                {
+                    ["z"] = "Not applicable",
+                    ["c"] = "Redacted for confidentiality",
+                    ["x"] = "Not available",
+                    ["low"] = "positive % less than 0.5"
+                }));
+
+            // Dapper type handler bootstrapper
+            services.AddSingleton<IDapperBootstrapper>(sp =>
+            {
+                var lookup = sp.GetRequiredService<IReasonCodeLookup>();
+                SqlMapper.AddTypeHandler(new CodedDoubleTypeHandler(lookup));
+                return new DapperBootstrapper();
+            });
         }
     }
 }

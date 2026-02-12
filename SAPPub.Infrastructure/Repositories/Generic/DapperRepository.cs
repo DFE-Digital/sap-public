@@ -1,13 +1,12 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Logging;
 using SAPPub.Core.Interfaces.Repositories.Generic;
+using SAPPub.Infrastructure.Mapping.ValueCodes; 
 using SAPPub.Infrastructure.Repositories.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SAPPub.Infrastructure.Repositories.Generic
 {
@@ -15,33 +14,69 @@ namespace SAPPub.Infrastructure.Repositories.Generic
     {
         private readonly IDbConnection _connection;
         private readonly ILogger<DapperRepository<T>> _logger;
+        private readonly ICodedValueMapper _codedValueMapper;
 
-        public DapperRepository(IDbConnection connection, ILogger<DapperRepository<T>> logger)
+        public DapperRepository(
+            IDbConnection connection,
+            ILogger<DapperRepository<T>> logger,
+            ICodedValueMapper codedValueMapper) 
         {
             _connection = connection ?? throw new ArgumentNullException(nameof(connection));
-            _logger = logger ?? throw new ArgumentNullException();
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _codedValueMapper = codedValueMapper ?? throw new ArgumentNullException(nameof(codedValueMapper));
         }
 
-        public IEnumerable<T>? ReadAll()
+        public T? Read(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                return default;
+
+            return ReadSingle(new { Id = id });
+        }
+
+
+        public IEnumerable<T> ReadAll()
         {
             try
             {
-                var result=  _connection.Query<T>(
-                    DapperHelpers.GetQuery(typeof(T)),
-                    commandType: CommandType.Text
-                    );
+                var sql = DapperHelpers.GetReadMultiple(typeof(T));
+                if (string.IsNullOrWhiteSpace(sql))
+                    throw new NotSupportedException($"No ReadMultiple query for {typeof(T).Name}");
 
+                var items = _connection.Query<T>(sql).ToList();
 
-                _logger.LogError($"Read all! from {_connection.Database} - result: {result.Count()}");
+                _codedValueMapper.Apply(items); // <-- map *_Coded -> numeric + _Reason
 
-                return result.ToList();
+                return items;
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Failed to readall! from {_connection.Database} - {ex.Message}", ex);
+                _logger.LogError(ex, "Failed ReadAll for {Type}", typeof(T).Name);
+                return Enumerable.Empty<T>();
             }
-
-            return default;
         }
+
+        public T? ReadSingle(object parameters)
+        {
+            try
+            {
+                var sql = DapperHelpers.GetReadSingle(typeof(T));
+                if (string.IsNullOrWhiteSpace(sql))
+                    throw new NotSupportedException($"No ReadSingle query for {typeof(T).Name}");
+
+                var item = _connection.QuerySingleOrDefault<T>(sql, parameters);
+
+                if (item is not null)
+                    _codedValueMapper.Apply(item);
+
+                return item;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed ReadSingle for {Type} params={Params}", typeof(T).Name, parameters);
+                return default;
+            }
+        }
+
     }
 }

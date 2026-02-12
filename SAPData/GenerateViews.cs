@@ -395,6 +395,15 @@ public sealed class GenerateViews
 
         var groups = rows.GroupBy(r => (r.FileName ?? "").Trim().TrimStart('\uFEFF')).ToList();
 
+        bool isEstablishmentFactView = viewName.StartsWith("v_establishment_", StringComparison.OrdinalIgnoreCase);
+
+        static bool IsLaEstabId(string idCol) =>
+            idCol.Contains("laestab", StringComparison.OrdinalIgnoreCase);
+
+        // school_laestab values like 3717002 => LAId(3) + EstablishmentNumber(4, zero-padded)
+        static string EstablishmentLaEstabKeySql() =>
+            "(e.\"LAId\"::text || LPAD(e.\"EstablishmentNumber\"::text, 4, '0'))";
+
         for (int i = 0; i < groups.Count; i++)
         {
             var g = groups[i];
@@ -406,24 +415,40 @@ public sealed class GenerateViews
                 throw new InvalidOperationException($"Missing table mapping for '{g.Key}'");
 
             var idCol = DbCol(r0.RecordFilterBy);
+            var isLaEstab = isEstablishmentFactView && IsLaEstabId(idCol);
 
             sb.AppendLine($"src_{i + 1} AS (");
             sb.AppendLine("    SELECT");
-            sb.AppendLine($"        t.\"{idCol}\" AS \"Id\",");
+
+            // Normalize Id to URN for establishment fact views when source key is LAESTAB
+            if (isLaEstab)
+                sb.AppendLine("        e.\"URN\" AS \"Id\",");
+            else
+                sb.AppendLine($"        t.\"{idCol}\" AS \"Id\",");
 
             var props = g
                 .Where(r => !string.IsNullOrWhiteSpace(r.PropertyName))
-                .GroupBy(r => r.PropertyName!)
-                .Select(BuildAggregatedExpression)
+                .GroupBy(OutputPropertyName)
+                .Select(grp => BuildAggregatedExpression(grp.Key, grp))
                 .ToList();
 
             for (int j = 0; j < props.Count; j++)
                 sb.AppendLine($"        {props[j]}{(j == props.Count - 1 ? "" : ",")}");
 
-            sb.AppendLine($"    FROM {rawTable} t");
-            sb.AppendLine($"    GROUP BY t.\"{idCol}\"");
+            if (isLaEstab)
+            {
+                sb.AppendLine($"    FROM {rawTable} t");
+                sb.AppendLine($"    JOIN v_establishment e ON {EstablishmentLaEstabKeySql()} = t.\"{idCol}\"");
+                sb.AppendLine("    GROUP BY e.\"URN\"");
+            }
+            else
+            {
+                sb.AppendLine($"    FROM {rawTable} t");
+                sb.AppendLine($"    GROUP BY t.\"{idCol}\"");
+            }
+
             sb.AppendLine(")");
-            sb.AppendLine(i == groups.Count - 1 ? "," : ",");
+            sb.AppendLine(",");
         }
 
         // all_ids
@@ -441,10 +466,7 @@ public sealed class GenerateViews
         sb.AppendLine("    a.\"Id\" AS \"Id\",");
 
         // If this is an establishment-level fact view, include LA/Region dims
-        var includeEstablishmentDims =
-            viewName.StartsWith("v_establishment_", StringComparison.OrdinalIgnoreCase);
-
-        if (includeEstablishmentDims)
+        if (isEstablishmentFactView)
         {
             sb.AppendLine("    e.\"LAId\" AS \"LAId\",");
             sb.AppendLine("    e.\"LAName\" AS \"LAName\",");
@@ -454,14 +476,13 @@ public sealed class GenerateViews
 
         // Build property -> sources lookup
         var propertySources = groups
-            .SelectMany((g, idx) => g.Select(r => new { r.PropertyName, Source = idx + 1 }))
-            .Where(x => !string.IsNullOrWhiteSpace(x.PropertyName))
-            .GroupBy(x => x.PropertyName!)
-            .ToDictionary(
+            .SelectMany((g, idx) => g.Select(r => new { Prop = OutputPropertyName(r), Source = idx + 1 }))
+            .Where(x => !string.IsNullOrWhiteSpace(x.Prop))
+            .GroupBy(x => x.Prop)
+                .ToDictionary(
                 g => g.Key,
                 g => g.Select(x => x.Source).Distinct().OrderBy(x => x).ToList()
             );
-
         var orderedProps = propertySources.Keys.OrderBy(p => p).ToList();
 
         for (int i = 0; i < orderedProps.Count; i++)
@@ -484,7 +505,7 @@ public sealed class GenerateViews
         for (int i = 0; i < groups.Count; i++)
             sb.AppendLine($"LEFT JOIN src_{i + 1} ON src_{i + 1}.\"Id\" = a.\"Id\"");
 
-        if (includeEstablishmentDims)
+        if (isEstablishmentFactView)
             sb.AppendLine("LEFT JOIN v_establishment e ON e.\"URN\" = a.\"Id\"");
 
         sb.AppendLine(";");
@@ -687,7 +708,7 @@ public sealed class GenerateViews
         return false;
     }
 
-    private static string BuildAggregatedExpression(IEnumerable<DataMapRow> rows)
+    private static string BuildAggregatedExpression(string outputPropName, IEnumerable<DataMapRow> rows)
     {
         var r = rows.First();
         var conditions = new List<string>();
@@ -702,12 +723,17 @@ public sealed class GenerateViews
 
         var whenClause = conditions.Count == 0 ? "TRUE" : string.Join(" AND ", conditions);
 
-        return $"MAX(CASE WHEN {whenClause} THEN {BuildValueExpression(r)} END) AS \"{r.PropertyName}\"";
+        return $"MAX(CASE WHEN {whenClause} THEN {BuildValueExpression(r)} END) AS \"{outputPropName}\"";
     }
+
 
     private static string BuildValueExpression(DataMapRow r)
     {
         var col = DbCol(r.Field);
+
+        // For coded properties, always preserve raw as text so codes (z/c/x/low) survive.
+        if (IsCoded(r))
+            return $"t.\"{col}\"::text";
 
         return r.DataType?.ToLowerInvariant() switch
         {
@@ -717,6 +743,9 @@ public sealed class GenerateViews
             _ => $"t.\"{col}\""
         };
     }
+
+
+
 
     private Dictionary<string, string> LoadTableMappings() =>
         File.ReadAllLines(_tableMappingPath)
@@ -737,4 +766,38 @@ public sealed class GenerateViews
             "Y",
             StringComparison.OrdinalIgnoreCase);
     }
+
+    private static bool IsEstablishmentFactView(string viewName) =>
+    viewName.StartsWith("v_establishment_", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsLaEstabId(string idCol) =>
+        idCol.Contains("laestab", StringComparison.OrdinalIgnoreCase);
+
+    private static string EstablishmentLaEstabKeySql() =>
+        // school_laestab values like 3717002 => LAId(3) + EstablishmentNumber(4, zero-padded)
+        "(e.\"LAId\"::text || LPAD(e.\"EstablishmentNumber\"::text, 4, '0'))";
+
+    private static bool IsCoded(DataMapRow r)
+    {
+        var prop = (r.PropertyName ?? "").Trim();
+
+        // Anything ending _Pct or _Num may contain a code OR numeric
+        if (prop.EndsWith("_Pct", StringComparison.OrdinalIgnoreCase)) return true;
+        if (prop.EndsWith("_Num", StringComparison.OrdinalIgnoreCase)) return true;
+
+        // Optional: keep support for explicit marker too
+        var alt = (r.DataTypeAlt ?? "").Trim().ToLowerInvariant();
+        if (alt.Contains("coded")) return true;
+
+        return false;
+    }
+
+    private static string OutputPropertyName(DataMapRow r)
+    {
+        var p = (r.PropertyName ?? "").Trim();
+        if (string.IsNullOrWhiteSpace(p)) return p;
+        return IsCoded(r) ? $"{p}_Coded" : p;
+    }
+
+
 }

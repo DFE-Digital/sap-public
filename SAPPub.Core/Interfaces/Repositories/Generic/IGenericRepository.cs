@@ -9,9 +9,9 @@ namespace SAPPub.Core.Interfaces.Repositories.Generic
 {
     public interface IGenericRepository<T>
     {
-        //T? Read(string Id);
-        IEnumerable<T>? ReadAll();
-
+        T? Read(string id);
+        IEnumerable<T> ReadAll();
+        T? ReadSingle(object parameters);
     }
 
 }

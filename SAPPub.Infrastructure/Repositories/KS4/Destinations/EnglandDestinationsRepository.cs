@@ -5,23 +5,23 @@ using SAPPub.Core.Interfaces.Repositories.KS4.Destinations;
 
 namespace SAPPub.Infrastructure.Repositories.KS4.Destinations
 {
-    public class EnglandDestinationsRepository : IEnglandDestinationsRepository
+    public sealed class EnglandDestinationsRepository : IEnglandDestinationsRepository
     {
-        private readonly IGenericRepository<EnglandDestinations> _EnglandDestinationsRepository;
-        private readonly ILogger<EnglandDestinations> _logger;
+        private readonly IGenericRepository<EnglandDestinations> _repo;
+        private readonly ILogger<EnglandDestinationsRepository> _logger;
 
         public EnglandDestinationsRepository(
-            IGenericRepository<EnglandDestinations> EnglandDestinationsRepository,
-            ILogger<EnglandDestinations> logger)
+            IGenericRepository<EnglandDestinations> repo,
+            ILogger<EnglandDestinationsRepository> logger)
         {
-            _EnglandDestinationsRepository = EnglandDestinationsRepository;
-            _logger = logger;
+            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
-
 
         public EnglandDestinations GetEnglandDestinations()
         {
-            return _EnglandDestinationsRepository.ReadAll()?.FirstOrDefault() ?? new EnglandDestinations();
+            // v_england_destinations returns a single row
+            return _repo.ReadSingle(new { }) ?? new EnglandDestinations();
         }
     }
 }
