@@ -47,7 +47,9 @@ public sealed class GenerateViews
 
         new("v_la_destinations", "LA", "KS4_Destinations"),
         new("v_la_performance", "LA", "KS4_Performance"),
-        new("v_la_subject_entries", "LA", "KS4_Performance")
+        new("v_la_subject_entries", "LA", "KS4_Performance"),
+
+        new("v_la_urls", "LA", "LaUrl")
     };
 
     public GenerateViews(IReadOnlyList<DataMapRow> rows, string tableMappingPath, string sqlDir)

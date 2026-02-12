@@ -14,6 +14,7 @@ using SAPPub.Core.Interfaces.Repositories.KS4.Workforce;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.Absence;
+using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
@@ -21,6 +22,7 @@ using SAPPub.Core.Interfaces.Services.KS4.Workforce;
 using SAPPub.Core.Services;
 using SAPPub.Core.Services.KS4;
 using SAPPub.Core.Services.KS4.Absence;
+using SAPPub.Core.Services.KS4.Admissions;
 using SAPPub.Core.Services.KS4.Destinations;
 using SAPPub.Core.Services.KS4.Performance;
 using SAPPub.Core.Services.KS4.SubjectEntries;
@@ -45,7 +47,7 @@ namespace SAPPub.Web.Middleware
 
         public static void AddDependencies(this IServiceCollection services)
         {
-            // ✅ Register generic repository for ALL entities
+            // Register generic repository for ALL entities
             services.AddTransient(typeof(IGenericRepository<>), typeof(DapperRepository<>));
 
             // Establishment
@@ -122,6 +124,11 @@ namespace SAPPub.Web.Middleware
                 SqlMapper.AddTypeHandler(new CodedDoubleTypeHandler(lookup));
                 return new DapperBootstrapper();
             });
+            services.AddTransient<ISecondarySchoolService, SecondarySchoolService>();
+
+            services.AddScoped<IAdmissionsService, EstablishmentAdmissionsService>();
+            services.AddScoped<IGenericRepository<LaUrls>, JSONRepository<LaUrls>>();
+            services.AddScoped<ILaUrlsRepository, LaUrlsRepository>();
         }
     }
 }

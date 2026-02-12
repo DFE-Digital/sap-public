@@ -7,8 +7,10 @@ using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4;
+using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
+using SAPPub.Core.ServiceModels.KS4.Admissions;
 using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Controllers;
@@ -26,6 +28,7 @@ public class SecondarySchoolControllerTests
     private readonly Mock<ISecondarySchoolService> _mockSecondarySchoolService;
     private readonly Mock<IEstablishmentSubjectEntriesService> _mockEstablishmentSubjectEntriesService = new();
     private readonly Mock<IAcademicPerformanceEnglishAndMathsResultsService> _mockEnglishAndMathsResultsService = new();
+    private readonly Mock<IAdmissionsService> _mockAdmissionsService = new();
     private readonly SecondarySchoolController _controller;
     private Establishment _fakeEstablishment;
 
@@ -78,6 +81,7 @@ public class SecondarySchoolControllerTests
             .WithAddressTown("Town")
             .WithAddressPostcode("Postcode")
             .WithLAName("Sheffield")
+            .WithLAGssCode("123")
             .WithTypeOfEstablishmentName("EstablishmentName")
             .WithHeadteacherTitle("Title")
             .WithHeadteacherFirstName("FirstName")
@@ -241,11 +245,19 @@ public class SecondarySchoolControllerTests
     }
 
     [Fact]
-    public void Get_Admissions_Info_ReturnsOk()
+    public async Task Get_Admissions_Info_ReturnsExpectedViewModel()
     {
         // Arrange
+        var lASchoolAdmissionsUrl = "https://www.example.com/school-admissions";
+        var laName = "Example Local Authority";
+
+        _mockAdmissionsService.Setup(s => s.GetAdmissionsDetailsAsync(_fakeEstablishment.URN)).ReturnsAsync(new AdmissionsServiceModel(
+            LAName: laName,
+            LASchoolAdmissionsUrl: lASchoolAdmissionsUrl
+        ));
+
         // Act
-        var result = _controller.Admissions(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName) as ViewResult;
+        var result = await _controller.Admissions(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName) as ViewResult;
 
         // Assert
         Assert.NotNull(result);
@@ -255,6 +267,8 @@ public class SecondarySchoolControllerTests
         Assert.NotNull(model);
         Assert.Equal(_fakeEstablishment.URN, model.URN);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
+        Assert.Equal(lASchoolAdmissionsUrl, model.LASecondarySchoolAdmissionsLinkUrl);
+        Assert.Equal(laName, model.LAName);
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
@@ -552,8 +566,8 @@ public class SecondarySchoolControllerTests
         var expectedDataOverTime = new DataOverTimeViewModel
         {
             Labels = [],
-            Datasets = [ 
-                new DatasetViewModel 
+            Datasets = [
+                new DatasetViewModel
                 {
                     Label = "School",
                     Data = [destinationsDetails.SchoolAll.TwoYearsAgo ?? 0, destinationsDetails.SchoolAll.PreviousYear ?? 0, destinationsDetails.SchoolAll.CurrentYear ?? 0],
@@ -604,7 +618,7 @@ public class SecondarySchoolControllerTests
 
         Assert.Equal(expectedAllDestCurrentDataLabels, model.AllDestinationsData.Labels);
         Assert.Equal(expectedAllDestCurrentData, model.AllDestinationsData.Data);
-        
+
         foreach (var expectedDataset in expectedDataOverTime.Datasets)
         {
             var actualDatset = model.AllDestinationsOverTimeData.Datasets.FirstOrDefault(s => s.Label == expectedDataset.Label);

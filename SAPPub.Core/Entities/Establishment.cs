@@ -72,6 +72,8 @@ namespace SAPPub.Core.Entities
 
         public string LAName { get; set; } = string.Empty;
 
+        public string? GSSLACode { get; set; }
+
         public string ReligiousCharacterId { get; set; } = string.Empty;
 
         public string ReligiousCharacterName { get; set; } = string.Empty;

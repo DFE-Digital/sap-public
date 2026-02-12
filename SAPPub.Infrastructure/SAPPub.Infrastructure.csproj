@@ -14,7 +14,13 @@
     <None Update="Data\Files\EnglandAbsence.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Data\Files\Establishment.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Data\Files\LAAbsence.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Files\LAUrls.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Data\Files\Lookup.json">
@@ -26,7 +32,7 @@
     <None Update="Data\Files\EnglandPerformance.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Data\Files\Establishment.json">
+    <None Update="Data\Files\NewEstablishment.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Data\Files\EstablishmentAbsence.json">
