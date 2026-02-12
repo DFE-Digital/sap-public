@@ -7,6 +7,7 @@ using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
+using SAPPub.Core.Services;
 using SAPPub.Core.Services.KS4.Admissions;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Controllers;
@@ -22,6 +23,8 @@ public class AdmissionsTests
     private readonly Mock<IEstablishmentRepository> _mockEstablishmentRepository = new();
     private readonly Mock<IEstablishmentService> _mockEstablishmentService = new();
     private readonly Mock<ISecondarySchoolService> _mockSecondarySchoolService = new();
+    private readonly Mock<ILookupService> _mockLookupService = new();
+    private readonly IEstablishmentService _establishmentService;
     private readonly IAdmissionsService _admissionsService;
     private readonly SecondarySchoolController _controller;
     private Establishment _establishment;
@@ -36,8 +39,8 @@ public class AdmissionsTests
         var tempPath = Path.Combine(Path.GetTempPath(), "SAPPubTests", Guid.NewGuid().ToString());
         Directory.CreateDirectory(tempPath);
 
-
-        _admissionsService = new EstablishmentAdmissionsService(_mockEstablishmentRepository.Object, _mockLaUrlsRepository.Object);
+        _establishmentService = new EstablishmentService(_mockEstablishmentRepository.Object, _mockLookupService.Object);
+        _admissionsService = new EstablishmentAdmissionsService(_establishmentService, _mockLaUrlsRepository.Object);
         _controller = new SecondarySchoolController(_mockLogger.Object, _mockEstablishmentService.Object, _mockSecondarySchoolService.Object);
 
         _controller.ControllerContext = new ControllerContext

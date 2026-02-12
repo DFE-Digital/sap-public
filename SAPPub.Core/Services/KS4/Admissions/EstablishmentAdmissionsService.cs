@@ -1,20 +1,18 @@
 ﻿using SAPPub.Core.Interfaces.Repositories;
+using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.ServiceModels.KS4.Admissions;
 
 namespace SAPPub.Core.Services.KS4.Admissions;
 
 public class EstablishmentAdmissionsService(
-    IEstablishmentRepository establishmentRepository,
+    IEstablishmentService establishmentService,
     ILaUrlsRepository laUrlsRepository) : IAdmissionsService
 {
     public async Task<AdmissionsServiceModel?> GetAdmissionsDetailsAsync(string urn)
     {
-        var establishment = establishmentRepository.GetEstablishment(urn);
-        if (establishment is null)
-        {
-            return null;
-        }
+        var establishment = establishmentService.GetEstablishment(urn);
+
         var laGssCode = establishment.GSSLACode;
         if (laGssCode is null)
         {
