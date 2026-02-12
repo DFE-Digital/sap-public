@@ -28,6 +28,12 @@ data "azurerm_key_vault_secret" "gatewayenabled" {
   key_vault_id = data.azurerm_key_vault.app_key_vault.id
 }
 
+data "azurerm_key_vault_secret" "gatewayalloweddays" {
+  name         = "GatewayAllowedDays" //Name in KeyVault
+  key_vault_id = data.azurerm_key_vault.app_key_vault.id
+}
+
+
 module "application_configuration" {
   source = "./vendor/modules/aks//aks/application_configuration"
 
@@ -51,6 +57,7 @@ module "application_configuration" {
     Email__GatewayTemplate                        = data.azurerm_key_vault_secret.emailgatewaytemplate.value,
     Email__ApiKey                                 = data.azurerm_key_vault_secret.emailgatewayapikey.value,
     Gateway__Enabled                              = data.azurerm_key_vault_secret.gatewayenabled.value,
+    Gateway__AllowedDays                          = data.azurerm_key_vault_secret.gatewayalloweddays.value,
   }
 
 }

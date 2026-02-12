@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using SAPPub.Core.Entities.Gateway;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Gateway;
 using SAPPub.Web.Areas.Gateway.ViewModels;
+using SAPPub.Web.Models.Config;
 
 namespace SAPPub.Web.Areas.Gateway.Controllers
 {
@@ -13,7 +15,8 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
         IGatewayUserAuditService auditService, 
         IGatewayUserLAService gatewayUserLAService, 
         IEmailService emailService, 
-        ILogger<GatewayController> logger) : Controller
+        ILogger<GatewayController> logger,
+        IOptions<GatewayOptions> options) : Controller
     {
         private readonly IGatewayUserService _userService = UserService;
         private readonly IGatewayUserAuditService _auditService = auditService;
@@ -21,6 +24,7 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
         private readonly IGatewayUserLAService _gatewayUserLAService = gatewayUserLAService;
         private readonly ILogger<GatewayController> _logger = logger;
         private readonly IEmailService _emailService = emailService;
+        private readonly GatewayOptions _options = options.Value;
 
         [HttpGet]
         [Route("gateway/welcome/{id}")]
@@ -97,7 +101,7 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
                 }
 
                 // Check expiry
-                if (user.RegisteredOn < DateTime.UtcNow.AddDays(-7))
+                if (user.RegisteredOn < DateTime.UtcNow.AddDays(-_options.AllowedDays))
                 {
                     ModelState.AddModelError("EmailAddress", "Registration occurred over 7 days ago, thank you for your time.");
                     return View(viewModel);
@@ -105,7 +109,7 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
 
                 _auditService.Insert(user.Id);
 
-                var hoursLeft = (user.RegisteredOn.AddDays(7) - DateTime.UtcNow).TotalHours;
+                var hoursLeft = (user.RegisteredOn.AddDays(_options.AllowedDays) - DateTime.UtcNow).TotalHours;
 
                 // Set cookie
                 Response.Cookies.Append("gateway", user.Id.ToString(), new CookieOptions

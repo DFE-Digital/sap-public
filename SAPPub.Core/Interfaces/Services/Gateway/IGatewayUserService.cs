@@ -13,5 +13,6 @@ namespace SAPPub.Core.Interfaces.Services.Gateway
         GatewayUser? GetByEmail(string email);
         GatewayUser? GetById(Guid? id);
         IEnumerable<GatewayUser> GetAll();
+        bool IsUserExpired(Guid? id);
     }
 }

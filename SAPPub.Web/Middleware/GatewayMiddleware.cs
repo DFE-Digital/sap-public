@@ -53,6 +53,14 @@ namespace SAPPub.Web.Middleware
                     var user = _userService.GetById(userId);
                     if (user != null)
                     {
+                        // User's time is up
+                        if (_userService.IsUserExpired(user.Id))
+                        {
+                            httpContext.Response.Redirect("/Gateway/Closed");
+                            return;
+                        }
+
+
                         //Log audit
                         _viewAuditService.Insert(user.Id, httpContext.Request.Path);
 
@@ -80,6 +88,13 @@ namespace SAPPub.Web.Middleware
                     var user = _userService.GetById(userId);
                     if (user != null)
                     {
+                        // User's time is up
+                        if (_userService.IsUserExpired(user.Id))
+                        {
+                            httpContext.Response.Redirect("/Gateway/Closed");
+                            return;
+                        }
+
                         //Log audit
                         _viewAuditService.Insert(user.Id, httpContext.Request.Path);
 

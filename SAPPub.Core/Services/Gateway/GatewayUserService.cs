@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using SAPPub.Core.Entities.Gateway;
 using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Repositories.Gateway;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Gateway;
+using SAPPub.Web.Models.Config;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,11 +18,13 @@ namespace SAPPub.Core.Services.Gateway
     {
         private readonly IGatewayUserRepository _gatewayUserRepository;
         private readonly ILogger<GatewayUserService> _logger;
+        private readonly IOptions<GatewayOptions> _options;
 
-        public GatewayUserService(IGatewayUserRepository gatewayUserRepository, ILogger<GatewayUserService> logger)
+        public GatewayUserService(IGatewayUserRepository gatewayUserRepository, ILogger<GatewayUserService> logger, IOptions<GatewayOptions> options)
         {
             _gatewayUserRepository = gatewayUserRepository;
             _logger = logger;
+            _options = options;
         }
 
         public GatewayUser? GetByEmail(string email)
@@ -31,6 +35,19 @@ namespace SAPPub.Core.Services.Gateway
         public GatewayUser? GetById(Guid? id)
         {
             return _gatewayUserRepository.GetById(id);
+        }
+
+        public bool IsUserExpired(Guid? id)
+        {
+            var userRegistration = _gatewayUserRepository.GetById(id)?.RegisteredOn;
+            if (userRegistration == null) { return true; }
+
+            var expiryDate = userRegistration.Value.AddDays(_options.Value.AllowedDays);
+            if (expiryDate > DateTime.UtcNow)
+            { 
+                return false; 
+            }
+            return true;
         }
 
         public Guid Insert(GatewayUser user)
