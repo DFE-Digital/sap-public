@@ -1,9 +1,11 @@
 ﻿using SAPPub.Core.Entities;
+using SAPPub.Core.Entities.Gateway;
 using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.KS4.Workforce;
 using SAPPub.Core.Interfaces.Repositories;
+using SAPPub.Core.Interfaces.Repositories.Gateway;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Repositories.KS4.Absence;
 using SAPPub.Core.Interfaces.Repositories.KS4.Destinations;
@@ -11,6 +13,7 @@ using SAPPub.Core.Interfaces.Repositories.KS4.Performance;
 using SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Repositories.KS4.Workforce;
 using SAPPub.Core.Interfaces.Services;
+using SAPPub.Core.Interfaces.Services.Gateway;
 using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.Absence;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
@@ -18,6 +21,7 @@ using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Services.KS4.Workforce;
 using SAPPub.Core.Services;
+using SAPPub.Core.Services.Gateway;
 using SAPPub.Core.Services.KS4;
 using SAPPub.Core.Services.KS4.Absence;
 using SAPPub.Core.Services.KS4.Destinations;
@@ -25,6 +29,7 @@ using SAPPub.Core.Services.KS4.Performance;
 using SAPPub.Core.Services.KS4.SubjectEntries;
 using SAPPub.Core.Services.KS4.Workforce;
 using SAPPub.Infrastructure.Repositories;
+using SAPPub.Infrastructure.Repositories.Gateway;
 using SAPPub.Infrastructure.Repositories.Generic;
 using SAPPub.Infrastructure.Repositories.KS4.Absence;
 using SAPPub.Infrastructure.Repositories.KS4.Destinations;
@@ -91,7 +96,33 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<IEstablishmentSubjectEntriesService, EstablishmentSubjectEntriesService>();
             services.AddTransient<IEstablishmentSubjectEntriesRepository, EstablishmentSubjectEntriesRepository>();
             services.AddTransient<IAcademicPerformanceEnglishAndMathsResultsService, Core.Services.KS4.Performance.EnglishAndMathsResultsService>();
-            services.AddTransient<ISecondarySchoolService, SecondarySchoolService>();            
+            services.AddTransient<ISecondarySchoolService, SecondarySchoolService>();
+
+
+            services.AddTransient<IGenericCRUDRepository<GatewaySettings>, DapperRepository<GatewaySettings>>();
+            //services.AddTransient<IGatewaySettingsRepository, DapperRepository<GatewaySettings>>();
+            services.AddTransient<IGatewaySettingsService, GatewaySettingsService>();
+
+            services.AddTransient<IGenericCRUDRepository<GatewayUser>, DapperRepository<GatewayUser>>();
+            services.AddTransient<IGatewayUserRepository, GatewayUserRepository>();
+            services.AddTransient<IGatewayUserService, GatewayUserService>();
+
+            services.AddTransient<IGenericCRUDRepository<GatewayLocalAuthority>, DapperRepository<GatewayLocalAuthority>>();
+            services.AddTransient<IGatewayLocalAuthorityRepository, GatewayLocalAuthorityRepository>();
+            services.AddTransient<IGatewayLocalAuthorityService, GatewayLocalAuthorityService>();
+
+            services.AddTransient<IGenericCRUDRepository<GatewayUserAudit>, DapperRepository<GatewayUserAudit>>();
+            services.AddTransient<IGatewayUserAuditRepository, GatewayUserAuditRepository>();
+            services.AddTransient<IGatewayUserAuditService, GatewayUserAuditService>();
+
+            services.AddTransient<IGenericCRUDRepository<GatewayPageViewAudit>, DapperRepository<GatewayPageViewAudit>>();
+            services.AddTransient<IGatewayPageViewAuditRepository, GatewayPageViewAuditRepository>();
+            services.AddTransient<IGatewayPageViewAuditService, GatewayPageViewAuditService>();
+
+            services.AddTransient<IGatewayUserLAService, GateWayUserLAService>();
+
+            services.AddScoped<IEmailRepository, EmailRepository>();
+            services.AddScoped<IEmailService, EmailService>();
         }
     }
 }

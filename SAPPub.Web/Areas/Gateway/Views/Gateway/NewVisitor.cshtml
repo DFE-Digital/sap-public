@@ -1,0 +1,50 @@
+﻿@model SAPPub.Web.Areas.Gateway.ViewModels.GatewayNewUserViewModel
+
+@{
+    ViewBag.Title = "New Visitor";
+}
+
+@await Html.PartialAsync("_CustomValidator")
+
+@using (Html.BeginForm("NewVisitor", "Gateway", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x => x.LocalAuthorityName)
+    @Html.HiddenFor(x => x.LocalAuthorityId)
+
+    <govuk-input name="@Html.NameFor(x => x.EmailAddress)" spellcheck="false">
+        <govuk-input-label is-page-heading="false" class="govuk-label--l">Please enter your email address</govuk-input-label>
+    </govuk-input>
+
+    <govuk-radios name="@Html.NameFor(x => x.AcceptCookies)">
+        <govuk-radios-fieldset>
+            <govuk-radios-fieldset-legend is-page-heading="false" class="govuk-fieldset__legend--l">
+                Do you want to accept analytics cookies?
+            </govuk-radios-fieldset-legend>
+
+            <govuk-radios-hint>
+                Select one option, if you have already selected you can change your mind...
+            </govuk-radios-hint>
+
+            @if (Model.AcceptCookies == "true")
+            {
+                <govuk-radios-item checked="true" value="true">Yes</govuk-radios-item>
+                <govuk-radios-item value="false">No</govuk-radios-item>
+            }
+            else if (Model.AcceptCookies == "false")
+            {
+                <govuk-radios-item value="true">Yes</govuk-radios-item>
+                <govuk-radios-item checked="true" value="false">No</govuk-radios-item>
+            }
+            else
+            {
+                <govuk-radios-item value="true">Yes</govuk-radios-item>
+                <govuk-radios-item value="false">No</govuk-radios-item>
+            }
+            
+        </govuk-radios-fieldset>
+    </govuk-radios>
+
+    <govuk-button type="submit">Confirm</govuk-button>
+
+}

@@ -11,6 +11,17 @@ namespace SAPPub.Core.Interfaces.Repositories.Generic
     {
         //T? Read(string Id);
         IEnumerable<T>? ReadAll();
+    }
+
+    public interface IGenericCRUDRepository<T>
+    {
+        bool Create(T entity);
+        T? Read(Guid Id);
+        T? Read(string Id);
+        IEnumerable<T>? ReadAll();
+        IEnumerable<T>? Query(string query, T entity);
+        bool Update(T entity);
+        //bool Delete(T entity);
 
     }
 

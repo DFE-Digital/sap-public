@@ -1,0 +1,30 @@
+﻿@model GatewayWelcomeViewModel
+@{
+    ViewBag.Title = "Welcome";
+}
+
+@await Html.PartialAsync("_CustomValidator")
+
+@using (Html.BeginForm("Welcome", "Gateway", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x => x.LocalAuthority)
+
+    <govuk-radios name="@Html.NameFor(x => x.NewOrReturning)">
+        <govuk-radios-fieldset>
+            <govuk-radios-fieldset-legend is-page-heading="true" class="govuk-fieldset__legend--l">
+                Have you been here before?
+            </govuk-radios-fieldset-legend>
+
+            <govuk-radios-hint>
+                Select one option.
+            </govuk-radios-hint>
+
+            <govuk-radios-item value="return">Yes</govuk-radios-item>
+            <govuk-radios-item value="new">No</govuk-radios-item>
+        </govuk-radios-fieldset>
+    </govuk-radios>
+
+    <govuk-button type="submit">Confirm</govuk-button>
+
+}
