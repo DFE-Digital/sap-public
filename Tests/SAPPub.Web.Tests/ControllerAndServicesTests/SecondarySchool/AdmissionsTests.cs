@@ -21,7 +21,6 @@ public class AdmissionsTests
     private readonly Mock<ILogger<SecondarySchoolController>> _mockLogger;
     private readonly Mock<ILaUrlsRepository> _mockLaUrlsRepository = new();
     private readonly Mock<IEstablishmentRepository> _mockEstablishmentRepository = new();
-    private readonly Mock<IEstablishmentService> _mockEstablishmentService = new();
     private readonly Mock<ISecondarySchoolService> _mockSecondarySchoolService = new();
     private readonly Mock<ILookupService> _mockLookupService = new();
     private readonly IEstablishmentService _establishmentService;
@@ -41,7 +40,7 @@ public class AdmissionsTests
 
         _establishmentService = new EstablishmentService(_mockEstablishmentRepository.Object, _mockLookupService.Object);
         _admissionsService = new EstablishmentAdmissionsService(_establishmentService, _mockLaUrlsRepository.Object);
-        _controller = new SecondarySchoolController(_mockLogger.Object, _mockEstablishmentService.Object, _mockSecondarySchoolService.Object);
+        _controller = new SecondarySchoolController(_mockLogger.Object, _establishmentService, _mockSecondarySchoolService.Object);
 
         _controller.ControllerContext = new ControllerContext
         {
@@ -119,7 +118,7 @@ public class AdmissionsTests
 
     [Theory]
     [InlineData("https://www.example.com/manchester/school-admissions", null)]
-    public async Task Get_Admissions_LANameIsNull_RetrunsGenericLAString(string? lASchoolAdmissionsUrl, string? laName)
+    public async Task Get_Admissions_LANameIsNull_ReturnsGenericLAString(string? lASchoolAdmissionsUrl, string? laName)
     {
         _mockEstablishmentRepository.Setup(r => r.GetEstablishment(_establishment.URN)).Returns(_establishment);
         _mockLaUrlsRepository.Setup(r => r.GetLaAsync(_establishment.GSSLACode!)).ReturnsAsync(new LaUrls
@@ -147,7 +146,7 @@ public class AdmissionsTests
         _mockEstablishmentRepository.Setup(r => r.GetEstablishment(establishment.URN)).Returns(establishment);
 
         // Act
-        var result = await _controller.Admissions(_admissionsService, _establishment.URN, _establishment.EstablishmentName) as ViewResult;
+        var result = await _controller.Admissions(_admissionsService, establishment.URN, establishment.EstablishmentName) as ViewResult;
 
         // Assert
         Assert.NotNull(result);
