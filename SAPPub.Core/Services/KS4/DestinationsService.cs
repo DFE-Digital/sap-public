@@ -6,23 +6,18 @@ using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 
 namespace SAPPub.Core.Services.KS4;
 
-public class SecondarySchoolService(
+public class DestinationsService(
     IEstablishmentService establishmentService,
     IEstablishmentDestinationsService establishmentDestinationsService,
     ILADestinationsService lADestinationsService,
-    IEnglandDestinationsService englandDestinationsService) : ISecondarySchoolService
+    IEnglandDestinationsService englandDestinationsService) : IDestinationsService
 {
-    private readonly IEstablishmentService _establishmentService = establishmentService;
-    private readonly IEstablishmentDestinationsService _establishmentDestinationsService = establishmentDestinationsService;
-    private readonly ILADestinationsService _lADestinationsService = lADestinationsService;
-    private readonly IEnglandDestinationsService _englandDestinationsService = englandDestinationsService;
-
     public DestinationsDetails GetDestinationsDetails(string urn)
     {
-        var establishment = _establishmentService.GetEstablishment(urn);
-        var establishmentDestinations = _establishmentDestinationsService.GetEstablishmentDestinations(urn);
-        var lADestinations = _lADestinationsService.GetLADestinations(establishment.LAId);
-        var englandDestinations = _englandDestinationsService.GetEnglandDestinations();
+        var establishment = establishmentService.GetEstablishment(urn);
+        var establishmentDestinations = establishmentDestinationsService.GetEstablishmentDestinations(urn);
+        var lADestinations = lADestinationsService.GetLADestinations(establishment.LAId);
+        var englandDestinations = englandDestinationsService.GetEnglandDestinations();
         
         var model = new DestinationsDetails
         {

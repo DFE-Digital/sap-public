@@ -2,7 +2,7 @@
 
 namespace SAPPub.Core.Interfaces.Services.KS4;
 
-public interface ISecondarySchoolService
+public interface IDestinationsService
 {
     DestinationsDetails GetDestinationsDetails(string urn);
 }

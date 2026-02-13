@@ -93,11 +93,10 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<IEstablishmentSubjectEntriesService, EstablishmentSubjectEntriesService>();
             services.AddTransient<IEstablishmentSubjectEntriesRepository, EstablishmentSubjectEntriesRepository>();
             services.AddTransient<IAcademicPerformanceEnglishAndMathsResultsService, Core.Services.KS4.Performance.EnglishAndMathsResultsService>();
-            services.AddTransient<ISecondarySchoolService, SecondarySchoolService>();
-
-            services.AddScoped<IAdmissionsService, EstablishmentAdmissionsService>();
-            services.AddScoped<IGenericRepository<LaUrls>, JSONRepository<LaUrls>>();
-            services.AddScoped<ILaUrlsRepository, LaUrlsRepository>();
+            services.AddTransient<IDestinationsService, DestinationsService>();
+            services.AddTransient<IAdmissionsService, EstablishmentAdmissionsService>();
+            services.AddTransient<IGenericRepository<LaUrls>, JSONRepository<LaUrls>>();
+            services.AddTransient<ILaUrlsRepository, LaUrlsRepository>();
         }
     }
 }

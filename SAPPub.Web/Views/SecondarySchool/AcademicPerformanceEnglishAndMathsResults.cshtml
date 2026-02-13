@@ -1,4 +1,5 @@
 ﻿@model SAPPub.Web.Models.SecondarySchool.AcademicPerformanceEnglishAndMathsResultsViewModel;
+@using SAPPub.Core.Enums
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 @using System.Text.Json
 @using static SAPPub.Web.Models.SecondarySchool.AcademicPerformanceEnglishAndMathsResultsViewModel
@@ -70,25 +71,104 @@
         </govuk-details>
 
         <div id="graphSection" class="govuk-grid-row">
-            @* <form method="get" action="@Url.Action("AcademicPerformanceEnglishAndMathsResults", "SecondarySchool")#graphSection"> *@
             <form method="get" asp-action="AcademicPerformanceEnglishAndMathsResults" asp-controller="SecondarySchool" asp-fragment="graphSection">
                 <govuk-select for="@Model.SelectedGrade" class="govuk-grid-column-two-thirds govuk-input__wrapper" id="gradeSelector">
                     <govuk-select-label class="govuk-label--s govuk-!-margin-right-2 select-inline-label">Choose the grade you want to see results for</govuk-select-label>
                     <govuk-select-item value=@GcseGradeDataSelection.Grade4AndAbove selected="@Model.SelectedGrade == GcseGradeDataSelection.Grade4AndAbove">@GcseGradeDataSelection.Grade4AndAbove.GetDisplayName()</govuk-select-item>
-                            <govuk-select-item value=@GcseGradeDataSelection.Grade5AndAbove selected="!@Model.SelectedGrade.HasValue || @Model.SelectedGrade == GcseGradeDataSelection.Grade5AndAbove">@GcseGradeDataSelection.Grade5AndAbove.GetDisplayName()</govuk-select-item>
+                    <govuk-select-item value=@GcseGradeDataSelection.Grade5AndAbove selected="!@Model.SelectedGrade.HasValue || @Model.SelectedGrade == GcseGradeDataSelection.Grade5AndAbove">@GcseGradeDataSelection.Grade5AndAbove.GetDisplayName()</govuk-select-item>
                 </govuk-select>
                 <govuk-button type="submit" class="govuk-button govuk-!-margin-bottom-0 govuk-!-margin-left-2">Show results</govuk-button>
             </form>
         </div>
 
-        <div class="gds-chart-container">
-            <h3 class="govuk-heading-m govuk-!-margin-left-2 govuk-!-margin-top-3" id="chartHeading">
+        <div class="data-container">
+            <h3 id="chartHeading" class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">
                 @Model.SelectedGrade!.GetDisplayName() in English and maths GCSEs
             </h3>
-            <p class="govuk-body govuk-!-margin-left-2">
+            <p class="govuk-body">
                 @(Model.SelectedGrade == GcseGradeDataSelection.Grade5AndAbove ? "Grade 5 is comparable to the top of the old grade C." : "The bottom of grade 4 is comparable to the bottom of the old grade C")
             </p>
-            <canvas id="chart" width="500" height="200"></canvas>
+
+            <input type="radio" name="dataView" id="current-view" class="govuk-visually-hidden" checked />
+            <input type="radio" name="dataView" id="data-overtime-view" class="govuk-visually-hidden" />
+
+            <div id="all-gcse-current-year-data-container" class="all-gcse-current-year-data-container">
+                <div id="all-gcse-current-year-chart-container" class="chart-container all-gcse-current-year-chart-container">
+                    <canvas id="all-gcse-chart"
+                            class="js-chart"
+                            data-type="bar"
+                            data-chart='@Html.Raw(Json.Serialize(Model.AllGcseData))'
+                            data-colors='["#DE6B24", "#27A0CC", "#003C56"]'>
+                    </canvas>
+                </div>
+
+                <div id="all-gcse-current-year-table-container" class="all-gcse-current-year-table-container">
+                    <table id="all-gcse-current-year-table" class="govuk-table">
+                        <tbody class="govuk-table__body">
+                            @foreach (var label in Model.AllGcseData.Labels.Select((value, i) => (value, i)))
+                            {
+                                <tr class="govuk-table__row">
+                                    <th scope="row" class="govuk-table__header">@label.value</th>
+                                    <td class="govuk-table__cell">@Model.AllGcseData.Data[label.i]%</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="govuk-button-group">
+                    <govuk-button id="all-gcse-current-year-show-btn" class="govuk-button govuk-button--secondary all-gcse-current-year-show-btn">Show as a table</govuk-button>
+                </div>
+
+                <div class="govuk-button-group">
+                    <label id="all-gcse-show-data-over-time-btn" for="data-overtime-view" class="govuk-button govuk-button--secondary">Show data over time</label>
+                </div>
+            </div>
+
+            <div id="all-gcse-data-over-time-data-container" class="all-gcse-data-over-time-data-container">
+                <div id="all-gcse-data-over-time-chart-container" class="chart-container all-gcse-data-over-time-chart-container">
+                    <canvas id="all-gcse-data-overtime-chart"
+                            class="js-chart"
+                            data-type="line"
+                            data-chart='@Html.Raw(Json.Serialize(Model.AllGcseOverTimeData))'
+                            data-colors='["#DE6B24", "#27A0CC", "#003C56"]'>
+                    </canvas>
+                </div>
+
+                <div id="all-gcse-data-over-time-table-container" class="all-gcse-data-over-time-table-container">
+                    <table id="all-gcse-data-overtime-table" class="govuk-table">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header"></th>
+                                @foreach (var label in Model.AllGcseOverTimeData.Labels)
+                                {
+                                    <th scope="col" class="govuk-table__header">@label</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            @foreach (var dataset in Model.AllGcseOverTimeData.Datasets.Select((value, i) => (value, i)))
+                            {
+                                <tr class="govuk-table__row">
+                                    <th scope="row" class="govuk-table__header">@dataset.value.Label</th>
+                                    @foreach (var data in dataset.value.Data)
+                                    {
+                                        <td class="govuk-table__cell">@data%</td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="govuk-button-group">
+                    <govuk-button id="all-gcse-data-over-time-show-btn" class="govuk-button govuk-button--secondary all-gcse-data-over-time-show-btn">Show as a table</govuk-button>
+                </div>
+
+                <div class="govuk-button-group">
+                    <label id="all-gcse-show-current-data-btn" for="current-view" class="govuk-button govuk-button--secondary">Show current data</label>
+                </div>
+            </div>
         </div>
 
         <govuk-pagination id="academic-performance-english-and-maths-results-pagination">
@@ -98,122 +178,9 @@
     </div>
 </div>
 
-<style>
-    .gds-chart-container {
-        min-height: 200px;
-        margin-top: 30px;
-        margin-bottom: 30px;
-        border: 1px solid #b1b4b6;
-    }
-
-        .gds-chart-container canvas {
-            display: block;
-            width: 95% !important;
-            height: 100% !important;
-            margin-top: 30px;
-            margin-bottom: 30px;
-            margin-left: 20px;
-            margin-right: 20px;
-        }
-
-</style>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
-
-<script>
-    const labels = @Html.Raw(JsonSerializer.Serialize(Model.GcseChartData.Labels));
-    const gcseData = @Html.Raw(JsonSerializer.Serialize(Model.GcseChartData.GcseData));
-    const chartTitle = @Html.Raw(JsonSerializer.Serialize(Model.GcseChartData.ChartTitle));
-
-    const chartCtx = document.getElementById('chart').getContext('2d');
-
-    const gcseChart = new Chart(chartCtx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets:[{
-                label: '% achieving grade 5+ in English & Maths GCSEs',
-                data: gcseData,
-                backgroundColor: ['#4e79a7', '#f28e2b', '#76b7b2'],
-                borderWidth: 1,
-                barThickness: 'flex',
-                maxBarThickness: 60
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspecRatio: false,
-            indexAxis: 'y',
-            scales: {
-                x: {
-                    beginAtZero: true,
-                    max: 80,
-                    grid: {
-                        display: true,
-                        drawBorder: false,
-                        color: (context) => {
-                            return context.tick.value === 0 ? '#000' : '#ccc';
-                        },
-                        lineWidth: (context) => {
-                            return context.tick.value === 0 ? 2 : 1;
-                        }
-                    },
-                    border: {
-                        display: false
-                    },
-                    ticks: {
-                        color: '#0b0c0c',
-                        font: {
-                            family: 'GDS Transport, Arial, sans-serif',
-                            size: 16
-                        },
-                        stepSize: 20,
-                        callback: (value) => value + '%'
-                    }
-                },
-                y: {
-                    grid: {
-                        display: false,
-                        drawBorder: false
-                    },
-                    ticks: {
-                        color: '#0b0c0c',
-                        font: {
-                            family: 'GDS Transport, Arial, sans-serif',
-                            size: 16
-                        }
-                    }
-                }
-            },
-            plugins: {
-                tooltip: {
-                    enabled: false
-                },
-                legend: { display: false },
-                title: {
-                    display: false,
-                    text: chartTitle,
-                    font: { size: 18, weight: 'bold' }
-                },
-                datalabels: {
-                    anchor: 'end',
-                    align: 'start',
-                    offset: 10,
-                    color: '#0b0c0c',
-                    font: {
-                        family: 'GDS Transport, Arial, sans-serif',
-                        size: 16
-                    },
-                    formatter: function(value) {
-                        return value + '%';
-                    },
-                    clamp: true,
-                    clip: true
-                }
-            }
-        },
-        plugins: [ChartDataLabels]
-    });
-
-</script>
+@section Scripts {
+    <script src="~/js/chart.umd.js"></script>
+    <script src="~/js/chartjs-plugin-datalabels.min.js"></script>
+    <script src="~/js/chart-factory.js"></script>
+    <script src="~/js/english-maths-results.js"></script>
+}
