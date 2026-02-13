@@ -102,7 +102,6 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<IEstablishmentSubjectEntriesService, EstablishmentSubjectEntriesService>();
             services.AddTransient<IEstablishmentSubjectEntriesRepository, EstablishmentSubjectEntriesRepository>();
             services.AddTransient<IAcademicPerformanceEnglishAndMathsResultsService, Core.Services.KS4.Performance.EnglishAndMathsResultsService>();
-            services.AddTransient<ISecondarySchoolService, SecondarySchoolService>();
 
             // Mapper (reflection-based coded mapping)
             services.AddSingleton<ICodedValueMapper, ReflectionCodedValueMapper>();
@@ -124,7 +123,6 @@ namespace SAPPub.Web.Middleware
                 SqlMapper.AddTypeHandler(new CodedDoubleTypeHandler(lookup));
                 return new DapperBootstrapper();
             });
-            services.AddTransient<ISecondarySchoolService, SecondarySchoolService>();
 
             services.AddScoped<IAdmissionsService, EstablishmentAdmissionsService>();
             services.AddScoped<IGenericRepository<LaUrls>, JSONRepository<LaUrls>>();
