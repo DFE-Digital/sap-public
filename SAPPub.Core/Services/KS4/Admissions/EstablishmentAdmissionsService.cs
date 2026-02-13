@@ -19,12 +19,14 @@ public class EstablishmentAdmissionsService(
             return null;
         }
         var laUrls = await laUrlsRepository.GetLaAsync(laGssCode);
-        //if (laUrls is null)
-        //{
-        //    return null;
-        //}
-        /*else*/
-        return new AdmissionsServiceModel(
+        if (laUrls is null)
+        {
+            return new AdmissionsServiceModel(
+           LAName: "LA Urls repository returned no items",
+           LASchoolAdmissionsUrl: "");
+        }
+        else
+            return new AdmissionsServiceModel(
            LAName: laUrls!.Name ?? "LA name was null",
            LASchoolAdmissionsUrl: laUrls!.LAMainUrl ?? "LA Url was null");
     }
