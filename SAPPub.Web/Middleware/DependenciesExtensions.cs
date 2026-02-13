@@ -18,6 +18,7 @@ using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Services.KS4.Workforce;
+using SAPPub.Core.Interfaces.Services.SchoolSearch;
 using SAPPub.Core.Services;
 using SAPPub.Core.Services.KS4;
 using SAPPub.Core.Services.KS4.Absence;
@@ -26,6 +27,7 @@ using SAPPub.Core.Services.KS4.Destinations;
 using SAPPub.Core.Services.KS4.Performance;
 using SAPPub.Core.Services.KS4.SubjectEntries;
 using SAPPub.Core.Services.KS4.Workforce;
+using SAPPub.Infrastructure.LuceneSearch;
 using SAPPub.Infrastructure.Repositories;
 using SAPPub.Infrastructure.Repositories.Generic;
 using SAPPub.Infrastructure.Repositories.KS4.Absence;
@@ -93,10 +95,15 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<IEstablishmentSubjectEntriesService, EstablishmentSubjectEntriesService>();
             services.AddTransient<IEstablishmentSubjectEntriesRepository, EstablishmentSubjectEntriesRepository>();
             services.AddTransient<IAcademicPerformanceEnglishAndMathsResultsService, Core.Services.KS4.Performance.EnglishAndMathsResultsService>();
+            services.AddTransient<ISecondarySchoolService, SecondarySchoolService>();
             services.AddTransient<IDestinationsService, DestinationsService>();
-            services.AddTransient<IAdmissionsService, EstablishmentAdmissionsService>();
-            services.AddTransient<IGenericRepository<LaUrls>, JSONRepository<LaUrls>>();
-            services.AddTransient<ILaUrlsRepository, LaUrlsRepository>();
+
+            services.AddScoped<IAdmissionsService, EstablishmentAdmissionsService>();
+            services.AddScoped<IGenericRepository<LaUrls>, JSONRepository<LaUrls>>();
+            services.AddScoped<ILaUrlsRepository, LaUrlsRepository>();
+
+            services.AddSingleton<ISchoolSearchIndexReader, LuceneShoolSearchIndexReader>();
+            services.AddSingleton<ISchoolSearchService, SchoolSearchService>();
         }
     }
 }

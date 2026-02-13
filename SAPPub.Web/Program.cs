@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.StaticFiles;
 using Npgsql;
+using SAPPub.Infrastructure.LuceneSearch;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Middleware;
 using SAPPub.Web.Models.Config;
@@ -65,6 +66,7 @@ public partial class Program
         builder.Services.AddTransient<IDbConnection>((sp) => new NpgsqlConnection(connectionString));
 
         builder.Services.AddDependencies();
+        builder.Services.AddLuceneDependencies();
 
         var app = builder.Build();
 
