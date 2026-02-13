@@ -514,3 +514,4 @@ SAPPub.Web/keys/*
 #exclude data files as these are too large to keep in repo
 /SAPData/DataMap/CleanedFiles/*.csv
 /SAPData/DataMap/SourceFiles/*.csv
+/SAPData/Sql/tablemapping.csv

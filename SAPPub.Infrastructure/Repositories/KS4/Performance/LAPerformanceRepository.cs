@@ -1,39 +1,30 @@
 ﻿using Microsoft.Extensions.Logging;
-using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Repositories.KS4.Performance;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SAPPub.Infrastructure.Repositories.KS4.Performance
 {
-    public class LAPerformanceRepository : ILAPerformanceRepository
+    public sealed class LAPerformanceRepository : ILAPerformanceRepository
     {
-        private readonly IGenericRepository<LAPerformance> _LAPerformanceRepository;
-        private ILogger<LAPerformance> _logger;
+        private readonly IGenericRepository<LAPerformance> _repo;
+        private readonly ILogger<LAPerformanceRepository> _logger;
 
         public LAPerformanceRepository(
-            IGenericRepository<LAPerformance> LAPerformanceRepository,
-            ILogger<LAPerformance> logger)
+            IGenericRepository<LAPerformance> repo,
+            ILogger<LAPerformanceRepository> logger)
         {
-            _LAPerformanceRepository = LAPerformanceRepository;
-            _logger = logger;
+            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
-
 
         public IEnumerable<LAPerformance> GetAllLAPerformance()
         {
-            return _LAPerformanceRepository.ReadAll() ?? [];
+            // Keep only if genuinely used by the UI (can be large)
+            return _repo.ReadAll() ?? Enumerable.Empty<LAPerformance>();
         }
-
 
         public LAPerformance GetLAPerformance(string laCode)
-        {
-            return GetAllLAPerformance().FirstOrDefault(x => x.Id == laCode) ?? new LAPerformance();
-        }
+            => _repo.Read(laCode) ?? new LAPerformance();
     }
 }

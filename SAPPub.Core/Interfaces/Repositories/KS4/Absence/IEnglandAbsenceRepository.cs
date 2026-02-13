@@ -1,15 +1,11 @@
 ﻿using SAPPub.Core.Entities.KS4.Absence;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SAPPub.Core.Interfaces.Repositories.KS4.Absence
 {
     public interface IEnglandAbsenceRepository
     {
-        EnglandAbsence GetEnglandAbsence();
+        Task<EnglandAbsence> GetEnglandAbsenceAsync(CancellationToken ct = default);
     }
 }

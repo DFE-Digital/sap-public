@@ -35,11 +35,6 @@ namespace SAPPub.Infrastructure.Repositories.Generic
             return [];
         }
 
-        T? IGenericRepository<T>.Read(string id)
-        {
-            throw new NotImplementedException();
-        }
-
         private string ReadFile(string fileName)
         {
             try
@@ -52,6 +47,16 @@ namespace SAPPub.Infrastructure.Repositories.Generic
                 _logger.LogError($"Failed to Read file {fileName}! - {ex.Message}, {ex}");
                 return string.Empty;
             }
+        }
+
+        T? IGenericRepository<T>.Read(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerable<T> IGenericRepository<T>.ReadMany(object parameters)
+        {
+            throw new NotImplementedException();
         }
 
         T? IGenericRepository<T>.ReadSingle(object parameters)

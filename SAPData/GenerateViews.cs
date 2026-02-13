@@ -414,7 +414,7 @@ public sealed class GenerateViews
             var fileKey = (g.Key ?? "").Trim().TrimStart('\uFEFF');
 
             if (!TryResolveRawTable(tableMap, fileKey, out var rawTable))
-                throw new InvalidOperationException($"Missing table mapping for '{g.Key}'");
+                throw new InvalidOperationException($"Missing table mapping or missing data file for '{g.Key}'");
 
             var idCol = DbCol(r0.RecordFilterBy);
             var isLaEstab = isEstablishmentFactView && IsLaEstabId(idCol);

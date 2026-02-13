@@ -2,37 +2,34 @@
 using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Repositories.Generic;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SAPPub.Infrastructure.Repositories
 {
-    public class EstablishmentRepository : IEstablishmentRepository
+    public sealed class EstablishmentRepository : IEstablishmentRepository
     {
-        private readonly IGenericRepository<Establishment> _establishmentMetadataRepository;
-        private ILogger<Establishment> _logger;
+        private readonly IGenericRepository<Establishment> _repo;
+        private readonly ILogger<EstablishmentRepository> _logger;
 
         public EstablishmentRepository(
-            IGenericRepository<Establishment> establishmentMetadataRepository, 
-            ILogger<Establishment> logger)
+            IGenericRepository<Establishment> repo,
+            ILogger<EstablishmentRepository> logger)
         {
-            _establishmentMetadataRepository = establishmentMetadataRepository;
-            _logger = logger;
+            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
-
 
         public IEnumerable<Establishment> GetAllEstablishments()
         {
-            return _establishmentMetadataRepository.ReadAll() ?? [];
+            // Keep only while we genuinely need to list; LIMIT 100 is already in DapperHelpers
+            return _repo.ReadAll() ?? Enumerable.Empty<Establishment>();
         }
-
 
         public Establishment GetEstablishment(string urn)
         {
-            return GetAllEstablishments().FirstOrDefault(x => x.URN == urn) ?? new Establishment();
+            if (string.IsNullOrWhiteSpace(urn))
+                return new Establishment();
+
+            return _repo.Read(urn) ?? new Establishment();
         }
     }
 }

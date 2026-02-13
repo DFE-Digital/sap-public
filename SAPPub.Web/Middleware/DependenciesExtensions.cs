@@ -80,14 +80,12 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<IEnglandDestinationsRepository, EnglandDestinationsRepository>();
             services.AddTransient<IEnglandDestinationsService, EnglandDestinationsService>();
 
-            services.AddTransient<IEnglandAbsenceRepository, EnglandAbsenceRepository>();
-            services.AddTransient<IEnglandAbsenceService, EnglandAbsenceService>();
-
             services.AddTransient<ILookupRepository, LookupRepository>();
             services.AddTransient<ILookupService, LookupService>();
 
-            services.AddTransient<IEstablishmentSubjectEntriesService, EstablishmentSubjectEntriesService>();
             services.AddTransient<IEstablishmentSubjectEntriesRepository, EstablishmentSubjectEntriesRepository>();
+            services.AddTransient<IEstablishmentSubjectEntriesService, EstablishmentSubjectEntriesService>();
+
             services.AddTransient<IAcademicPerformanceEnglishAndMathsResultsService, Core.Services.KS4.Performance.EnglishAndMathsResultsService>();
 
             // Mapper (reflection-based coded mapping)
@@ -103,17 +101,17 @@ namespace SAPPub.Web.Middleware
                     ["low"] = "positive % less than 0.5"
                 }));
 
-            // Dapper type handler bootstrapper
+            // Dapper type handler bootstrapper 
             services.AddSingleton<IDapperBootstrapper>(sp =>
             {
                 var lookup = sp.GetRequiredService<IReasonCodeLookup>();
                 SqlMapper.AddTypeHandler(new CodedDoubleTypeHandler(lookup));
                 return new DapperBootstrapper();
             });
+            services.AddSingleton(sp => sp.GetRequiredService<IDapperBootstrapper>());
 
             services.AddTransient<IDestinationsService, DestinationsService>();
             services.AddTransient<IAdmissionsService, EstablishmentAdmissionsService>();
-            services.AddTransient<IGenericRepository<LaUrls>, JSONRepository<LaUrls>>();
             services.AddTransient<ILaUrlsRepository, LaUrlsRepository>();
         }
     }

@@ -1,71 +1,106 @@
 ﻿using SAPPub.Core.Entities.KS4.SubjectEntries;
+using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
 
-namespace SAPPub.Infrastructure.Repositories.KS4.SubjectEntries;
-
-public class EstablishmentSubjectEntriesRepository : IEstablishmentSubjectEntriesRepository
+namespace SAPPub.Infrastructure.Repositories.KS4.SubjectEntries
 {
-    private static List<EstablishmentCoreSubjectEntries.SubjectEntry> CoreSubjects =
-            new()
-            {
-                    new () {
-                        SubEntCore_Sub_Est_Current_Num = "English language",
-                        SubEntCore_Qual_Est_Current_Num = "GCSE",
-                        SubEntCore_Entr_Est_Current_Num = 95.01,
-                    },
-                    new () {
-                        SubEntCore_Sub_Est_Current_Num = "English literature",
-                        SubEntCore_Qual_Est_Current_Num = "GCSE",
-                        SubEntCore_Entr_Est_Current_Num = 90.6,
-                    },
-                    new()
-                    {
-                        SubEntCore_Sub_Est_Current_Num = "Mathematics",
-                        SubEntCore_Qual_Est_Current_Num = "GCSE",
-                        SubEntCore_Entr_Est_Current_Num = 97.76,
-                    },
-                    new()
-                    {
-                        SubEntCore_Sub_Est_Current_Num = "Science: Double Award",
-                        SubEntCore_Qual_Est_Current_Num = "GCSE",
-                        SubEntCore_Entr_Est_Current_Num = 55.67,
-                    },
-                    new()
-                    {
-                        SubEntCore_Sub_Est_Current_Num = "Biology",
-                        SubEntCore_Qual_Est_Current_Num = "GCSE",
-                        SubEntCore_Entr_Est_Current_Num = 76,
-                    }
-            };
+    public sealed class EstablishmentSubjectEntriesRepository : IEstablishmentSubjectEntriesRepository
+    {
+        private readonly IGenericRepository<EstablishmentSubjectEntryRow> _repo;
 
-    private static List<EstablishmentAdditionalSubjectEntries.SubjectEntry> AdditionalSubjects =
-        new()
+        public EstablishmentSubjectEntriesRepository(IGenericRepository<EstablishmentSubjectEntryRow> repo)
         {
-                    new () {
-                        SubEntAdd_Sub_Est_Current_Num = "Drama",
-                        SubEntAdd_Qual_Est_Current_Num = "GCSE",
-                        SubEntAdd_Entr_Est_Current_Num = 95.45,
-                    },
-                    new () {
-                        SubEntAdd_Sub_Est_Current_Num = "Geography",
-                        SubEntAdd_Qual_Est_Current_Num = "GCSE",
-                        SubEntAdd_Entr_Est_Current_Num = 90.5,
-                    },
-                    new()
-                    {
-                        SubEntAdd_Sub_Est_Current_Num = "Music",
-                        SubEntAdd_Qual_Est_Current_Num = "GCSE",
-                        SubEntAdd_Entr_Est_Current_Num = 97.4567,
-                    }
+            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
+        }
+
+        public EstablishmentCoreSubjectEntries GetCoreSubjectEntriesByUrn(string urn)
+        {
+            var rows = GetAggregatedRows(urn);
+
+            var core = rows
+                .Where(r => IsCoreSubject(r.Subject))
+                .Select(r => new EstablishmentCoreSubjectEntries.SubjectEntry
+                {
+                    SubEntCore_Sub_Est_Current_Num = r.Subject,
+                    SubEntCore_Qual_Est_Current_Num = r.Qualification,
+                    SubEntCore_Entr_Est_Current_Num = r.TotalAchieving
+                })
+                .ToList();
+
+            return new EstablishmentCoreSubjectEntries { SubjectEntries = core };
+        }
+
+        public EstablishmentAdditionalSubjectEntries GetAdditionalSubjectEntriesByUrn(string urn)
+        {
+            var rows = GetAggregatedRows(urn);
+
+            var additional = rows
+                .Where(r => !IsCoreSubject(r.Subject))
+                .Select(r => new EstablishmentAdditionalSubjectEntries.SubjectEntry
+                {
+                    SubEntAdd_Sub_Est_Current_Num = r.Subject,
+                    SubEntAdd_Qual_Est_Current_Num = r.Qualification,
+                    SubEntAdd_Entr_Est_Current_Num = r.TotalAchieving
+                })
+                .ToList();
+
+            return new EstablishmentAdditionalSubjectEntries { SubjectEntries = additional };
+        }
+
+        private List<AggregatedSubjectRow> GetAggregatedRows(string urn)
+        {
+            if (string.IsNullOrWhiteSpace(urn))
+                return [];
+
+            var raw = _repo.ReadMany(new { Urn = urn });
+
+            // One row per (Subject, Qualification) with summed counts across grades
+            return raw
+                .Where(r => !string.IsNullOrWhiteSpace(r.subject))
+                .GroupBy(r => new
+                {
+                    Subject = r.subject!.Trim(),
+                    Qualification = (r.qualification_type ?? r.qualification_detailed ?? string.Empty).Trim()
+                })
+                .Select(g => new AggregatedSubjectRow(
+                    Subject: g.Key.Subject,
+                    Qualification: string.IsNullOrWhiteSpace(g.Key.Qualification) ? null : g.Key.Qualification,
+                    TotalAchieving: g.Sum(x => x.number_achieving ?? 0)
+                ))
+                .OrderBy(x => x.Subject)
+                .ThenBy(x => x.Qualification)
+                .ToList();
+        }
+
+        private static readonly HashSet<string> CoreSubjects = new(StringComparer.OrdinalIgnoreCase)
+        {
+            // English
+            "English Language",
+            "English Literature",
+
+            // Maths
+            "Mathematics",
+            "Mathematics AS level",
+            "Statistics",
+
+            // Science
+            "Biology",
+            "Chemistry",
+            "Physics",
+            "Combined Science",
+            "Computer Science",
+            "Other Sciences"
         };
 
-    public EstablishmentCoreSubjectEntries GetCoreSubjectEntriesByUrn(string urn)
-    {
-        return new() { SubjectEntries = CoreSubjects };
-    }
+        private static bool IsCoreSubject(string? subject)
+        {
+            if (string.IsNullOrWhiteSpace(subject))
+                return false;
 
-    public EstablishmentAdditionalSubjectEntries GetAdditionalSubjectEntriesByUrn(string urn)
-    {
-        return new() { SubjectEntries = AdditionalSubjects };
+            return CoreSubjects.Contains(subject.Trim());
+        }
+
+
+        private sealed record AggregatedSubjectRow(string Subject, string? Qualification, int TotalAchieving);
     }
 }
