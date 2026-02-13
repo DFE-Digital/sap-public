@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using SAPPub.Core.Entities.KS4.Destinations;
+﻿using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Repositories.KS4.Destinations;
 
@@ -8,44 +7,23 @@ namespace SAPPub.Infrastructure.Repositories.KS4.Destinations
     public sealed class EstablishmentDestinationsRepository : IEstablishmentDestinationsRepository
     {
         private readonly IGenericRepository<EstablishmentDestinations> _repo;
-        private readonly ILogger<EstablishmentDestinationsRepository> _logger;
 
-        public EstablishmentDestinationsRepository(
-            IGenericRepository<EstablishmentDestinations> repo,
-            ILogger<EstablishmentDestinationsRepository> logger)
+        public EstablishmentDestinationsRepository(IGenericRepository<EstablishmentDestinations> repo)
         {
             _repo = repo ?? throw new ArgumentNullException(nameof(repo));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        // Keep only if genuinely used (can be huge)
-        public IEnumerable<EstablishmentDestinations> GetAllEstablishmentDestinations()
+        public async Task<IEnumerable<EstablishmentDestinations>> GetAllEstablishmentDestinationsAsync(CancellationToken ct = default)
         {
-            try
-            {
-                return _repo.ReadAll() ?? Enumerable.Empty<EstablishmentDestinations>();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to load all establishment destinations");
-                return Enumerable.Empty<EstablishmentDestinations>();
-            }
+            return await _repo.ReadAllAsync(ct);
         }
 
-        public EstablishmentDestinations? GetEstablishmentDestinations(string urn)
+        public async Task<EstablishmentDestinations?> GetEstablishmentDestinationsAsync(string urn, CancellationToken ct = default)
         {
             if (string.IsNullOrWhiteSpace(urn))
                 return null;
 
-            try
-            {
-                return _repo.Read(urn);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to load establishment destinations for URN={Urn}", urn);
-                return null;
-            }
+            return await _repo.ReadAsync(urn, ct);
         }
     }
 }

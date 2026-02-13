@@ -1,32 +1,33 @@
-﻿using Microsoft.Extensions.Logging;
-using SAPPub.Core.Entities.KS4.Destinations;
+﻿using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Repositories.KS4.Destinations;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SAPPub.Infrastructure.Repositories.KS4.Destinations
 {
-    public class LADestinationsRepository : ILADestinationsRepository
+    public sealed class LADestinationsRepository : ILADestinationsRepository
     {
         private readonly IGenericRepository<LADestinations> _repo;
-        private readonly ILogger<LADestinationsRepository> _logger;
 
-        public LADestinationsRepository(
-            IGenericRepository<LADestinations> repo,
-            ILogger<LADestinationsRepository> logger)
+        public LADestinationsRepository(IGenericRepository<LADestinations> repo)
         {
-            _repo = repo;
-            _logger = logger;
+            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
-        public IEnumerable<LADestinations> GetAllLADestinations()
+        public async Task<IEnumerable<LADestinations>> GetAllLADestinationsAsync(CancellationToken ct = default)
         {
-            return _repo.ReadAll() ?? [];
+            return await _repo.ReadAllAsync(ct);
         }
 
-        public LADestinations GetLADestinations(string laCode)
+        public async Task<LADestinations> GetLADestinationsAsync(string laCode, CancellationToken ct = default)
         {
-            // Use DB filter instead of loading everything
-            return _repo.Read(laCode) ?? new LADestinations();
+            if (string.IsNullOrWhiteSpace(laCode))
+                return new LADestinations();
+
+            return await _repo.ReadAsync(laCode, ct) ?? new LADestinations();
         }
     }
 }

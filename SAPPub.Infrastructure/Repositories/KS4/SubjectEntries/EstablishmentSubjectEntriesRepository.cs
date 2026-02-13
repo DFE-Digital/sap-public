@@ -13,9 +13,9 @@ namespace SAPPub.Infrastructure.Repositories.KS4.SubjectEntries
             _repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
-        public EstablishmentCoreSubjectEntries GetCoreSubjectEntriesByUrn(string urn)
+        public async Task<EstablishmentCoreSubjectEntries> GetCoreSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default)
         {
-            var rows = GetAggregatedRows(urn);
+            var rows = await GetAggregatedRowsAsync(urn, ct);
 
             var core = rows
                 .Where(r => IsCoreSubject(r.Subject))
@@ -30,9 +30,9 @@ namespace SAPPub.Infrastructure.Repositories.KS4.SubjectEntries
             return new EstablishmentCoreSubjectEntries { SubjectEntries = core };
         }
 
-        public EstablishmentAdditionalSubjectEntries GetAdditionalSubjectEntriesByUrn(string urn)
+        public async Task<EstablishmentAdditionalSubjectEntries> GetAdditionalSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default)
         {
-            var rows = GetAggregatedRows(urn);
+            var rows = await GetAggregatedRowsAsync(urn, ct);
 
             var additional = rows
                 .Where(r => !IsCoreSubject(r.Subject))
@@ -47,12 +47,12 @@ namespace SAPPub.Infrastructure.Repositories.KS4.SubjectEntries
             return new EstablishmentAdditionalSubjectEntries { SubjectEntries = additional };
         }
 
-        private List<AggregatedSubjectRow> GetAggregatedRows(string urn)
+        private async Task<List<AggregatedSubjectRow>> GetAggregatedRowsAsync(string urn, CancellationToken ct)
         {
             if (string.IsNullOrWhiteSpace(urn))
                 return [];
 
-            var raw = _repo.ReadMany(new { Urn = urn });
+            var raw = await _repo.ReadManyAsync(new { Urn = urn }, ct);
 
             // One row per (Subject, Qualification) with summed counts across grades
             return raw
@@ -99,7 +99,6 @@ namespace SAPPub.Infrastructure.Repositories.KS4.SubjectEntries
 
             return CoreSubjects.Contains(subject.Trim());
         }
-
 
         private sealed record AggregatedSubjectRow(string Subject, string? Qualification, int TotalAchieving);
     }

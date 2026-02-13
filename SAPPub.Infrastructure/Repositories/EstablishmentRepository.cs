@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using SAPPub.Core.Entities;
+﻿using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 
@@ -8,28 +7,24 @@ namespace SAPPub.Infrastructure.Repositories
     public sealed class EstablishmentRepository : IEstablishmentRepository
     {
         private readonly IGenericRepository<Establishment> _repo;
-        private readonly ILogger<EstablishmentRepository> _logger;
 
-        public EstablishmentRepository(
-            IGenericRepository<Establishment> repo,
-            ILogger<EstablishmentRepository> logger)
+        public EstablishmentRepository(IGenericRepository<Establishment> repo)
         {
             _repo = repo ?? throw new ArgumentNullException(nameof(repo));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public IEnumerable<Establishment> GetAllEstablishments()
+        public async Task<IEnumerable<Establishment>> GetAllEstablishmentsAsync(CancellationToken ct = default)
         {
             // Keep only while we genuinely need to list; LIMIT 100 is already in DapperHelpers
-            return _repo.ReadAll() ?? Enumerable.Empty<Establishment>();
+            return await _repo.ReadAllAsync(ct);
         }
 
-        public Establishment GetEstablishment(string urn)
+        public async Task<Establishment> GetEstablishmentAsync(string urn, CancellationToken ct = default)
         {
             if (string.IsNullOrWhiteSpace(urn))
                 return new Establishment();
 
-            return _repo.Read(urn) ?? new Establishment();
+            return await _repo.ReadAsync(urn, ct) ?? new Establishment();
         }
     }
 }

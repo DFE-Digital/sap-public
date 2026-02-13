@@ -1,33 +1,33 @@
-﻿using Microsoft.Extensions.Logging;
-using SAPPub.Core.Entities;
+﻿using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Repositories.Generic;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace SAPPub.Infrastructure.Repositories;
-
-public sealed class LaUrlsRepository : ILaUrlsRepository
+namespace SAPPub.Infrastructure.Repositories
 {
-    private readonly IGenericRepository<LaUrls> _repo;
-    private readonly ILogger<LaUrlsRepository> _logger;
-
-    public LaUrlsRepository(
-        IGenericRepository<LaUrls> repo,
-        ILogger<LaUrlsRepository> logger)
+    public sealed class LaUrlsRepository : ILaUrlsRepository
     {
-        _repo = repo ?? throw new ArgumentNullException(nameof(repo));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    }
+        private readonly IGenericRepository<LaUrls> _repo;
 
-    public Task<IEnumerable<LaUrls>> GetAllLAsAsync()
-    {
-        return Task.FromResult(_repo.ReadAll() ?? Array.Empty<LaUrls>());
-    }
+        public LaUrlsRepository(IGenericRepository<LaUrls> repo)
+        {
+            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
+        }
 
-    public Task<LaUrls?> GetLaAsync(string laGssCode)
-    {
-        if (string.IsNullOrWhiteSpace(laGssCode))
-            return Task.FromResult<LaUrls?>(null);
+        public async Task<IEnumerable<LaUrls>> GetAllLAsAsync(CancellationToken ct = default)
+        {
+            return await _repo.ReadAllAsync(ct);
+        }
 
-        return Task.FromResult(_repo.Read(laGssCode));
+        public async Task<LaUrls?> GetLaAsync(string laGssCode, CancellationToken ct = default)
+        {
+            if (string.IsNullOrWhiteSpace(laGssCode))
+                return null;
+
+            return await _repo.ReadAsync(laGssCode, ct);
+        }
     }
 }

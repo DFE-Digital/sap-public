@@ -2,9 +2,6 @@
 using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Repositories.KS4.Absence;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SAPPub.Infrastructure.Repositories.KS4.Absence
 {
