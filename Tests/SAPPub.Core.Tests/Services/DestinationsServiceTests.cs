@@ -7,13 +7,13 @@ using SAPPub.Core.Services.KS4;
 
 namespace SAPPub.Core.Tests.Services;
 
-public class SecondarySchoolServiceTests
+public class DestinationsServiceTests
 {
     private readonly Mock<IEstablishmentService> _mockEstablishmentService;
     private readonly Mock<IEstablishmentDestinationsService> _mockEstablishmentDestinationsService;
     private readonly Mock<ILADestinationsService> _mockLADestinationsService;
     private readonly Mock<IEnglandDestinationsService> _mockEnglandDestinationsService;
-    private readonly SecondarySchoolService _service;
+    private readonly DestinationsService _service;
 
     private readonly Establishment fakeEstablishment = new()
     {
@@ -23,14 +23,14 @@ public class SecondarySchoolServiceTests
         LAName = "Council",
     };
 
-    public SecondarySchoolServiceTests()
+    public DestinationsServiceTests()
     {
         _mockEstablishmentService = new();
         _mockEstablishmentDestinationsService = new();
         _mockLADestinationsService = new();
         _mockEnglandDestinationsService = new();
 
-        _service = new SecondarySchoolService(
+        _service = new DestinationsService(
             _mockEstablishmentService.Object,
             _mockEstablishmentDestinationsService.Object,
             _mockLADestinationsService.Object,

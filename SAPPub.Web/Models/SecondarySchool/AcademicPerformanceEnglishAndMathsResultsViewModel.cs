@@ -1,50 +1,58 @@
-﻿using SAPPub.Core.Entities;
+﻿using SAPPub.Core.Enums;
 using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Web.Models.Charts;
-using System.ComponentModel.DataAnnotations;
 
 namespace SAPPub.Web.Models.SecondarySchool;
 
 public class AcademicPerformanceEnglishAndMathsResultsViewModel : SecondarySchoolBaseViewModel
 {
-    public enum GcseGradeDataSelection
-    {
-        [Display(Name = "Grade 4 and above")]
-        Grade4AndAbove = 4,
-        [Display(Name = "Grade 5 and above")]
-        Grade5AndAbove = 5
-    }
-
     public GcseGradeDataSelection? SelectedGrade { get; set; }
 
-    public required GcseDataViewModel GcseChartData { get; set; }
+    public required DataViewModel AllGcseData { get; set; }
 
-    public static AcademicPerformanceEnglishAndMathsResultsViewModel Map(Establishment establishment, EnglishAndMathsResultsServiceModel? englishAndMathsResultsServiceModel, GcseGradeDataSelection selectedGrade)
+    public required DataOverTimeViewModel AllGcseOverTimeData { get; set; }
+
+    public static AcademicPerformanceEnglishAndMathsResultsViewModel Map(EnglishAndMathsResultsModel englishAndMathsResultsModel, GcseGradeDataSelection selectedGrade)
     {
-        var gcseData = new GcseDataViewModel
+        var laAverageLabel = string.IsNullOrEmpty(englishAndMathsResultsModel.LAName) ? "Local Authority average" : $"{englishAndMathsResultsModel.LAName} average";
+
+        var allGcseData = new DataViewModel
         {
-            Labels = new List<string>
-            {
-                "School",
-                string.IsNullOrEmpty(englishAndMathsResultsServiceModel?.LAName)
-                    ? "Local Authority average"
-                    : $"{englishAndMathsResultsServiceModel!.LAName} average",
-                "England average"
-            },
-            GcseData = new List<double>
-                {
-                    englishAndMathsResultsServiceModel?.EstablishmentResult ?? 0,
-                    englishAndMathsResultsServiceModel?.LocalAuthorityAverage ?? 0, // temp substitute nulls with 0 until we determine expected behaviour when data is unavailable
-                    englishAndMathsResultsServiceModel?.EnglandAverage ?? 0
-                },
-            ChartTitle = $"GCSE English and Maths (Grade {selectedGrade} and above)",
+            Labels = ["School", laAverageLabel, "England average"],
+            Data = [englishAndMathsResultsModel.EstablishmentAll.CurrentYear ?? 0, englishAndMathsResultsModel.LocalAuthorityAll.CurrentYear ?? 0, englishAndMathsResultsModel.EnglandAll.CurrentYear ?? 0],
         };
+
+        var allGcseOverTimeData = new DataOverTimeViewModel
+        {
+            Labels = ["2022 to 2023", "2023 to 2024", "2024 to 2025"], // TODO - Need academic year to calculate current, previous and TwoYearsAgo
+            Datasets =
+                [
+                    new DatasetViewModel
+                    {
+                        Label = "School",
+                        Data = [englishAndMathsResultsModel.EstablishmentAll.TwoYearsAgo ?? 0, englishAndMathsResultsModel.EstablishmentAll.PreviousYear ?? 0, englishAndMathsResultsModel.EstablishmentAll.CurrentYear ?? 0],
+                    },
+                    new DatasetViewModel
+                    {
+                        Label = laAverageLabel,
+                        Data = [englishAndMathsResultsModel.LocalAuthorityAll.TwoYearsAgo ?? 0, englishAndMathsResultsModel.LocalAuthorityAll.PreviousYear ?? 0, englishAndMathsResultsModel.LocalAuthorityAll.CurrentYear ?? 0],
+                    },
+                    new DatasetViewModel
+                    {
+                        Label = "England average",
+                        Data = [englishAndMathsResultsModel.EnglandAll.TwoYearsAgo ?? 0, englishAndMathsResultsModel.EnglandAll.PreviousYear ?? 0, englishAndMathsResultsModel.EnglandAll.CurrentYear ?? 0],
+                    }
+                ],
+        };
+
+
         return new AcademicPerformanceEnglishAndMathsResultsViewModel
         {
-            URN = establishment.URN,
-            SchoolName = establishment.EstablishmentName,
+            URN = englishAndMathsResultsModel.Urn,
+            SchoolName = englishAndMathsResultsModel.SchoolName,
             SelectedGrade = selectedGrade,
-            GcseChartData = gcseData
+            AllGcseData = allGcseData,
+            AllGcseOverTimeData = allGcseOverTimeData,
         };
     }
 }

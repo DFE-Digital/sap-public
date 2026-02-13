@@ -5,6 +5,7 @@ using Moq;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Entities.KS4.SubjectEntries;
+using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
@@ -15,7 +16,6 @@ using SAPPub.Web.Controllers;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.Charts;
 using SAPPub.Web.Models.SecondarySchool;
-using static SAPPub.Web.Models.SecondarySchool.AcademicPerformanceEnglishAndMathsResultsViewModel;
 
 namespace SAPPub.Web.Tests.Unit.Controllers;
 
@@ -23,7 +23,7 @@ public class SecondarySchoolControllerTests
 {
     private readonly Mock<ILogger<SecondarySchoolController>> _mockLogger;
     private readonly Mock<IEstablishmentService> _mockEstablishmentService;
-    private readonly Mock<ISecondarySchoolService> _mockSecondarySchoolService;
+    private readonly Mock<IDestinationsService> _mockDestinationsService;
     private readonly Mock<IEstablishmentSubjectEntriesService> _mockEstablishmentSubjectEntriesService = new();
     private readonly Mock<IAcademicPerformanceEnglishAndMathsResultsService> _mockEnglishAndMathsResultsService = new();
     private readonly SecondarySchoolController _controller;
@@ -59,12 +59,57 @@ public class SecondarySchoolControllerTests
                     }
                 };
 
-    private EnglishAndMathsResultsServiceModel EnglishAndMathsResults = new()
-    {
-        EnglandAverage = 55,
-        LocalAuthorityAverage = 65,
-        EstablishmentResult = 75,
-        LAName = "Sheffield"
+    private EnglishAndMathsResultsModel EnglishAndMathsResults(
+        string urn = "123456",
+        string establishmentName = "School Name",
+        string laName = "Sheffield") => new()
+    {        
+        Urn = urn,
+        SchoolName = establishmentName,
+        LAName = laName,
+        EstablishmentAll = new RelativeYearValues<double?>()
+        { 
+            CurrentYear = 60,
+            PreviousYear = 80,
+            TwoYearsAgo = 60
+        },
+        LocalAuthorityAll = new RelativeYearValues<double?>()
+        {
+            CurrentYear = 80,
+            PreviousYear = 70,
+            TwoYearsAgo = 80
+        },
+        EnglandAll = new RelativeYearValues<double?>()
+        {
+            CurrentYear = 70,
+            PreviousYear = 70,
+            TwoYearsAgo = 80
+        },
+
+        EstablishmentBoys = new RelativeYearValues<double?>()
+        {
+            CurrentYear = 50
+        },
+        LocalAuthorityBoys = new RelativeYearValues<double?>()
+        {
+            CurrentYear = 70,
+        },
+        EnglandBoys = new RelativeYearValues<double?>()
+        {
+            CurrentYear = 60,
+        },
+        EstablishmentGirls = new RelativeYearValues<double?>()
+        {
+            CurrentYear = 80
+        },
+        LocalAuthorityGirls = new RelativeYearValues<double?>()
+        {
+            CurrentYear = 70,
+        },
+        EnglandGirls = new RelativeYearValues<double?>()
+        {
+            CurrentYear = 90,
+        },
     };
 
     public SecondarySchoolControllerTests()
@@ -93,14 +138,14 @@ public class SecondarySchoolControllerTests
 
         _mockLogger = new Mock<ILogger<SecondarySchoolController>>();
         _mockEstablishmentService = new();
-        _mockSecondarySchoolService = new();
+        _mockDestinationsService = new();
         _mockEstablishmentService.Setup(es => es.GetEstablishment(It.IsAny<string>())).Returns(_fakeEstablishment);
 
         // Create a real temp directory
         var tempPath = Path.Combine(Path.GetTempPath(), "SAPPubTests", Guid.NewGuid().ToString());
         Directory.CreateDirectory(tempPath);
 
-        _controller = new SecondarySchoolController(_mockLogger.Object, _mockEstablishmentService.Object, _mockSecondarySchoolService.Object);
+        _controller = new SecondarySchoolController(_mockLogger.Object, _mockEstablishmentService.Object, _mockDestinationsService.Object);
 
         _controller.ControllerContext = new ControllerContext
         {
@@ -327,8 +372,9 @@ public class SecondarySchoolControllerTests
     public void Get_AcademicPerformance_EnglishAndMathsResults_ReturnsOk(GcseGradeDataSelection grade)
     {
         // Arrange
-        _mockEnglishAndMathsResultsService.Setup(s => s.ResultsOfSpecifiedGradeAndAbove(_fakeEstablishment.URN, (int)grade))
-            .Returns(EnglishAndMathsResults);
+        var expectedResult = EnglishAndMathsResults(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, _fakeEstablishment.LAName);
+        _mockEnglishAndMathsResultsService.Setup(s => s.GetEnglishAndMathsResults(_fakeEstablishment.URN, (int)grade))
+            .Returns(expectedResult);
 
         // Act
         var result = _controller.AcademicPerformanceEnglishAndMathsResults(
@@ -348,18 +394,37 @@ public class SecondarySchoolControllerTests
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
         Assert.Equal(grade, model.SelectedGrade);
-        Assert.Contains($"Grade {grade} and above", model.GcseChartData.ChartTitle);
-        Assert.Equal(
-            new List<string> { "School", $"{_fakeEstablishment.LAName} average", "England average" },
-            model.GcseChartData.Labels
-        );
+        Assert.Equal(["School", $"{_fakeEstablishment.LAName} average", "England average"], model.AllGcseData.Labels);
         Assert.Equal(
             new double[] {
-                EnglishAndMathsResults.EstablishmentResult!.Value,
-                EnglishAndMathsResults.LocalAuthorityAverage!.Value,
-                EnglishAndMathsResults.EnglandAverage!.Value },
-            model.GcseChartData.GcseData
+                expectedResult.EstablishmentAll.CurrentYear!.Value,
+                expectedResult.LocalAuthorityAll.CurrentYear!.Value,
+                expectedResult.EnglandAll.CurrentYear!.Value },
+            model.AllGcseData.Data
         );
+
+        Assert.Equal(3, model.AllGcseOverTimeData.Datasets.Count);
+
+        Assert.Equal("School", model.AllGcseOverTimeData.Datasets[0].Label);
+        Assert.Equal([
+                expectedResult.EstablishmentAll.TwoYearsAgo!.Value,
+                expectedResult.EstablishmentAll.PreviousYear!.Value,
+                expectedResult.EstablishmentAll.CurrentYear!.Value],
+            model.AllGcseOverTimeData.Datasets[0].Data);
+
+        Assert.Equal($"{_fakeEstablishment.LAName} average", model.AllGcseOverTimeData.Datasets[1].Label);
+        Assert.Equal([
+                expectedResult.LocalAuthorityAll.TwoYearsAgo!.Value,
+                expectedResult.LocalAuthorityAll.PreviousYear!.Value,
+                expectedResult.LocalAuthorityAll.CurrentYear!.Value],
+            model.AllGcseOverTimeData.Datasets[1].Data);
+
+        Assert.Equal("England average", model.AllGcseOverTimeData.Datasets[2].Label);
+        Assert.Equal([
+                expectedResult.EnglandAll.TwoYearsAgo!.Value,
+                expectedResult.EnglandAll.PreviousYear!.Value,
+                expectedResult.EnglandAll.CurrentYear!.Value],
+            model.AllGcseOverTimeData.Datasets[2].Data);
     }
 
     [Fact]
@@ -367,15 +432,50 @@ public class SecondarySchoolControllerTests
     {
         // Arrange
         var gradeSelection = GcseGradeDataSelection.Grade4AndAbove;
-        EnglishAndMathsResultsServiceModel serviceModel = new()
-        {
-            EnglandAverage = null,
-            LocalAuthorityAverage = null,
-            EstablishmentResult = null,
-            LAName = "Sheffield"
+        EnglishAndMathsResultsModel serviceModel = new()
+        {            
+            Urn = _fakeEstablishment.URN,
+            SchoolName = _fakeEstablishment.EstablishmentName,
+            LAName = _fakeEstablishment.LAName,
+            EstablishmentAll = new RelativeYearValues<double?>()
+            {
+                CurrentYear = null
+            },
+            LocalAuthorityAll = new RelativeYearValues<double?>()
+            {
+                CurrentYear = null
+            },
+            EnglandAll = new RelativeYearValues<double?>()
+            {
+                CurrentYear = null,
+            },
+            EstablishmentBoys = new RelativeYearValues<double?>()
+            {
+                CurrentYear = null
+            },
+            LocalAuthorityBoys = new RelativeYearValues<double?>()
+            {
+                CurrentYear = null,
+            },
+            EnglandBoys = new RelativeYearValues<double?>()
+            {
+                CurrentYear = null,
+            },
+            EstablishmentGirls = new RelativeYearValues<double?>()
+            {
+                CurrentYear = null
+            },
+            LocalAuthorityGirls = new RelativeYearValues<double?>()
+            {
+                CurrentYear = null,
+            },
+            EnglandGirls = new RelativeYearValues<double?>()
+            {
+                CurrentYear = null,
+            },
         };
 
-        _mockEnglishAndMathsResultsService.Setup(s => s.ResultsOfSpecifiedGradeAndAbove(_fakeEstablishment.URN, (int)gradeSelection))
+        _mockEnglishAndMathsResultsService.Setup(s => s.GetEnglishAndMathsResults(_fakeEstablishment.URN, (int)gradeSelection))
             .Returns(serviceModel);
 
         // Act
@@ -396,18 +496,22 @@ public class SecondarySchoolControllerTests
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
         Assert.Equal(gradeSelection, model.SelectedGrade);
-        Assert.Contains($"Grade {gradeSelection} and above", model.GcseChartData.ChartTitle);
         Assert.Equal(
             new List<string> { "School", $"{_fakeEstablishment.LAName} average", "England average" },
-            model.GcseChartData.Labels
+            model.AllGcseData.Labels
         );
-        Assert.Equal(
-            new double[] {
-                0,
-                0,
-                0 },
-            model.GcseChartData.GcseData
-        );
+        Assert.Equal([0, 0, 0 ], model.AllGcseData.Data);
+
+        Assert.Equal(3, model.AllGcseOverTimeData.Datasets.Count);
+
+        Assert.Equal("School", model.AllGcseOverTimeData.Datasets[0].Label);
+        Assert.Equal([0, 0, 0 ], model.AllGcseOverTimeData.Datasets[0].Data);
+
+        Assert.Equal($"{_fakeEstablishment.LAName} average", model.AllGcseOverTimeData.Datasets[1].Label);
+        Assert.Equal([0, 0, 0], model.AllGcseOverTimeData.Datasets[1].Data);
+
+        Assert.Equal("England average", model.AllGcseOverTimeData.Datasets[2].Label);
+        Assert.Equal(new double[] { 0, 0, 0 }, model.AllGcseOverTimeData.Datasets[2].Data);
     }
 
     [Fact]
@@ -542,7 +646,7 @@ public class SecondarySchoolControllerTests
             },
         };
 
-        _mockSecondarySchoolService.Setup(es => es.GetDestinationsDetails(It.IsAny<string>())).Returns(destinationsDetails);
+        _mockDestinationsService.Setup(es => es.GetDestinationsDetails(It.IsAny<string>())).Returns(destinationsDetails);
 
         // Act
         var result = _controller.Destinations(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName) as ViewResult;
@@ -625,5 +729,5 @@ public class SecondarySchoolControllerTests
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
-    }
+    }    
 }
