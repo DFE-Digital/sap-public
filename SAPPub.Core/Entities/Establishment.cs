@@ -11,27 +11,27 @@ namespace SAPPub.Core.Entities
     public class Establishment
     {
         public string URN { get; set; } = string.Empty;
-        
+
         public string EstablishmentName { get; set; } = string.Empty;
-        
+
         public string EstablishmentNameClean => TextHelpers.CleanForUrl(EstablishmentName);
-        
+
         public string TrustsId { get; set; } = string.Empty;
-        
+
         public string TrustName { get; set; } = string.Empty;
-        
+
         public string Address => TextHelpers.ConcatListToString([AddressStreet, AddressLocality, AddressAddress3, AddressTown, AddressPostcode]);
-        
+
         public string AddressStreet { get; set; } = string.Empty;
-        
+
         public string AddressLocality { get; set; } = string.Empty;
-        
+
         public string AddressAddress3 { get; set; } = string.Empty;
-        
+
         public string AddressTown { get; set; } = string.Empty;
-        
+
         public string AddressPostcode { get; set; } = string.Empty;
-        
+
         public string AdmissionsPolicyId { get; set; } = string.Empty;
 
         public string AdmissionPolicy { get; set; } = string.Empty;
@@ -72,6 +72,8 @@ namespace SAPPub.Core.Entities
 
         public string LAName { get; set; } = string.Empty;
 
+        public string? GSSLACode { get; set; }
+
         public string ReligiousCharacterId { get; set; } = string.Empty;
 
         public string ReligiousCharacterName { get; set; } = string.Empty;
@@ -100,13 +102,13 @@ namespace SAPPub.Core.Entities
         public string EstablishmentNumber { get; set; } = string.Empty;
 
         public EstablishmentPerformance KS4Performance { get; set; } = new();
-        
+
         public LAPerformance LAPerformance { get; set; } = new();
-        
+
         public EnglandPerformance EnglandPerformance { get; set; } = new();
 
         public EstablishmentDestinations EstablishmentDestinations { get; set; } = new();
-        
+
         public LADestinations LADestinations { get; set; } = new();
 
         public EnglandDestinations EnglandDestinations { get; set; } = new();
@@ -118,5 +120,7 @@ namespace SAPPub.Core.Entities
         public EnglandAbsence EnglandAbsence { get; set; } = new();
 
         public EstablishmentWorkforce Workforce { get; set; } = new(); // Will eventually need one per phase
+
+        public int SchoolCapacity { get; set; }
     }
 }

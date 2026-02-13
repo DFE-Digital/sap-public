@@ -2,6 +2,7 @@ name: School Data Ingestion Pipeline
 
 on:
   workflow_dispatch:
+  workflow_call:
   schedule:
     - cron: "0 6 * * *"   # every day at 06:00 UTC
 

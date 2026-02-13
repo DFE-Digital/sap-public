@@ -42,7 +42,7 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
         var heading = await Page.Locator("h1").TextContentAsync();
 
         // Assert
-        Assert.NotNull(heading.Replace(" ", ""));
+        Assert.NotNull(heading?.Replace(" ", ""));
     }
 
     [Fact]
@@ -75,16 +75,23 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
     }
 
     [Fact]
-    public async Task AdmissionsPage_DisplaysWhatToDoIfYourChildIsMovingSchoolAccordion()
+    public async Task AdmissionsPage_DisplaysMovingSchoolsDuringYearSummaryCard()
     {
         // Arrange
         await Page.GotoAsync(_pageUrl);
 
         // Act
-        var isVisible = await Page.Locator("#admissions-accordion").IsVisibleAsync();
+        var summaryCard = Page.GetByTestId("moving-schools-during-year-summary-card");
+        await summaryCard.WaitForAsync();
+        var link = summaryCard.GetByTestId("link");
 
         // Assert
-        Assert.True(isVisible);
+        Assert.True(await summaryCard.IsVisibleAsync());
+        Assert.True(await link.IsVisibleAsync());
+        var href = await link.GetAttributeAsync("href");
+        var text = await link.TextContentAsync();
+        Assert.Contains("https://", href); // Todo - we need tests that allow us to know what these values will be
+        Assert.NotNull(text);
     }
 
     [Fact]

@@ -205,13 +205,29 @@ jobs:
           path: code-coverage-results.md
 
   # ---------------------------
+  # REFRESH DATA
+  # ---------------------------
+  refresh-data:
+    name: Refresh data (School Data Ingestion Pipeline)
+    if: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'refresh data') }}
+    needs: [build, test]
+    uses: ./.github/workflows/data-pipeline.yml
+    secrets: inherit
+    permissions:
+      contents: write
+      id-token: write
+      actions: read
+
+  # ---------------------------
   # REVIEW APP DEPLOYMENT (PR)
   # ---------------------------
   deploy-review-app:
     name: Deployment To Review
     concurrency: deploy_review_${{ github.event.pull_request.number }}
-    if: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'deploy') }}
-    needs: [build, test]
+    if: ${{ github.event_name == 'pull_request'
+      && contains(github.event.pull_request.labels.*.name, 'deploy')
+      && (needs.refresh-data.result == 'success' || needs.refresh-data.result == 'skipped') }}
+    needs: [build, test, refresh-data]
     environment:
       name: review
       url: ${{ steps.deploy_review.outputs.environment_url }}
@@ -255,8 +271,6 @@ jobs:
           set -euo pipefail
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
-      # azure/login is already handled inside deploy-to-aks, but we need az/kube access
-      # so do an explicit login here as well
       - name: Azure login (OIDC)
         uses: azure/login@v2
         with:
@@ -299,13 +313,13 @@ jobs:
           curl -fsSL https://raw.githubusercontent.com/DFE-Digital/teacher-services-cloud/main/scripts/konduit.sh \
             -o "$GITHUB_WORKSPACE/konduit.sh"
           chmod +x "$GITHUB_WORKSPACE/konduit.sh"
-          ls -la "$GITHUB_WORKSPACE/konduit.sh"
+          ls -la "$GITHUB_WORKSPACE/konduit.sh"         
 
       - name: Download seed backup from Blob
         shell: bash
         env:
           AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
-          AZURE_STORAGE_CONTAINER: ${{ secrets.AZURE_STORAGE_CONTAINER }} # school-data
+          AZURE_STORAGE_CONTAINER: ${{ secrets.AZURE_STORAGE_CONTAINER }} 
         run: |
           set -euo pipefail
           BACKUP_BLOB="db-backups/sappub_review_seed_latest.sql.gz"
@@ -320,108 +334,27 @@ jobs:
 
           ls -lh "${BACKUP_FILE}"
 
-      - name: Install jq
-        shell: bash
-        run: |
-          set -euo pipefail
-          sudo apt-get update
-          sudo apt-get install -y jq
-
-      - name: Read PR DB URL from terraform outputs
-        id: prdb
-        continue-on-error: true
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          TF_DIR="${GITHUB_WORKSPACE}/${TERRAFORM_BASE}"
-          echo "Terraform dir: ${TF_DIR}"
-          cd "${TF_DIR}"
-
-          # Ensure terraform is initialised (deploy-to-aks usually does this, but be safe)
-          if [ ! -d ".terraform" ]; then
-            terraform init -input=false
-          fi
-
-          # Grab outputs as JSON
-          OUT_JSON="$(terraform output -json)"
-          echo "${OUT_JSON}" | jq -r 'keys[]' | sed 's/^/terraform output key: /' || true
-
-          # Try common output keys for DB URL (adjust list if needed)
-          CANDIDATES=(
-            "database_url"
-            "db_url"
-            "postgres_url"
-            "postgres_database_url"
-            "app_database_url"
-            "application_database_url"
-            "review_database_url"
-          )
-
-          DB_URL=""
-          for k in "${CANDIDATES[@]}"; do
-            v="$(echo "${OUT_JSON}" | jq -r --arg k "$k" '.[$k].value // empty')"
-            if [ -n "$v" ] && [ "$v" != "null" ]; then
-              DB_URL="$v"
-              echo "Selected terraform output: $k"
-              break
-            fi
-          done
-
-          if [ -z "$DB_URL" ]; then
-            echo "DB_URL not found in terraform outputs (candidates tried: ${CANDIDATES[*]})."
-            echo "You likely need to add the correct output key to the list above."
-            exit 0
-          fi
-
-          # Basic sanity check: looks like a postgres URL
-          if ! echo "$DB_URL" | grep -Eq '^postgres(ql)?://'; then
-            echo "Found DB_URL but it doesn't look like a postgres URL. (Not failing while in dev.)"
-          fi
-
-          # Masked echo for logs
-          echo "DB_URL acquired (masked): $(echo "$DB_URL" | sed -E 's#(postgres(ql)?://)[^@]+@#\1****@#')"
-
-          # Export as step output
-          echo "db_url=$DB_URL" >> "$GITHUB_OUTPUT"
-
       - name: Restore backup into PR review DB
         continue-on-error: true
         shell: bash
+        env:
+          AKS_NAMESPACE: ${{ secrets.AKS_REVIEW_NAMESPACE }}
         run: |
           set -euo pipefail
-          : "${KONDUIT_NAMESPACE:?KONDUIT_NAMESPACE is not set}"
-          : "${KONDUIT_APP_NAME:?KONDUIT_APP_NAME is not set}"
-
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          APP_NAME="sap-public-pr-${PR_NUMBER}"
           BACKUP_FILE="seed.sql.gz"
-          DB_URL="${{ steps.prdb.outputs.db_url }}"
+          : "${AKS_NAMESPACE:?AKS_NAMESPACE is not set}"
 
-          if [ -z "${DB_URL:-}" ]; then
-            echo "DB_URL not available from terraform outputs; skipping restore for now."
-            exit 0
-          fi
-
-          echo "Konduit tunnel app: ${KONDUIT_APP_NAME} (namespace: ${KONDUIT_NAMESPACE})"
-          echo "Backup file:"
           ls -lh "${BACKUP_FILE}"
           gzip -t "${BACKUP_FILE}"
 
-          # Readiness check (connect using provided DB URL)
           "$GITHUB_WORKSPACE/konduit.sh" \
-            -n "${KONDUIT_NAMESPACE}" \
-            -u "${DB_URL}" \
-            -t 300 \
-            -x \
-            "${KONDUIT_APP_NAME}" -- psql -X -tAc "select 1"
-
-          # Restore using the provided DB URL (no need to access PR deployment)
-          "$GITHUB_WORKSPACE/konduit.sh" \
-            -n "${KONDUIT_NAMESPACE}" \
-            -u "${DB_URL}" \
+            -n "${AKS_NAMESPACE}" \
             -t 7200 \
             -x \
             -i "${BACKUP_FILE}" -c \
-            "${KONDUIT_APP_NAME}" -- psql -v ON_ERROR_STOP=1 -X
+            "${APP_NAME}" -- psql -v ON_ERROR_STOP=1 -X
 
   # ---------------------------
   # DEPLOY TEST (AUTO) + PROD (MANUAL APPROVAL)

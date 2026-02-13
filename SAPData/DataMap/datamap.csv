@@ -1164,3 +1164,7 @@ Establishment,,Succ_Date_Est,SuccessorURN,Succ,Date,Date,GIAS,,,All Establishmen
 Establishment,,TrustSch_URN_Est,TrustRelatedSchools,TrustSch,URN,URN,GIAS,,,Academy sponsor and trust links,,Current,Current,grouplinks_edubaseallacademiesandfreeYYYYmmDD.csv,Linked UID,string array,list of object,URN,,,,,,,,,,,,,Y,TRUE,
 Establishment,,TrustSch_Name_Est,TrustRelatedSchools,TrustSch,SchoolName,Name,GIAS,,,Academy sponsor and trust links,,Current,Current,grouplinks_edubaseallacademiesandfreeYYYYmmDD.csv,Linked UID,string array,list of object,URN,,,,,,,,,,,,,Y,TRUE,Y
 Establishment,,GSSLACode,LA GSS code,,,,GIAS,,,All establishment data,Metadata,Current,Current,edubasealldataYYYYmmDD,GSSLACode (name),string,text,URN,,,,,,,,,,,,,,,
+LA,,Name,Local authority name,,,,,,,LaUrl,,,,la_urls,Authority Name,string,text,GSS,,,,,,,,,,,,,,,,
+LA,,LAMainUrl,LA main Url,,,,,,,LaUrl,,,,la_urls,Cropped URL,string,text,GSS,,,,,,,,,,,,,,,,
+Establishment,,SchoolCapacity,School pupil capacity,,,,GIAS,,,All establishment data,Metadata,Current,Current,edubasealldataYYYYmmDD,SchoolCapacity,int,number,URN,,,,,,,,,,,,,,,
+Establishment,,StatusCode,"Establishment status (e.g. open, closed)",,,,GIAS,,,All establishment data,Metadata,Current,Current,edubasealldataYYYYmmDD,EstablishmentStatus (code),int,number,URN,,,,,,,,,,,,,,,
