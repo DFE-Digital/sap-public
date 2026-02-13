@@ -129,6 +129,10 @@ namespace SAPPub.Web.Middleware
             services.AddScoped<IAdmissionsService, EstablishmentAdmissionsService>();
             services.AddScoped<IGenericRepository<LaUrls>, JSONRepository<LaUrls>>();
             services.AddScoped<ILaUrlsRepository, LaUrlsRepository>();
+            services.AddTransient<IDestinationsService, DestinationsService>();
+            services.AddTransient<IAdmissionsService, EstablishmentAdmissionsService>();
+            services.AddTransient<IGenericRepository<LaUrls>, JSONRepository<LaUrls>>();
+            services.AddTransient<ILaUrlsRepository, LaUrlsRepository>();
         }
     }
 }

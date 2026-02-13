@@ -45,7 +45,7 @@
                 scales: {
                     y: {
                         beginAtZero: true,
-                        max: 100,
+                        //max: 100,
                         grid: {
                             display: true,
                             drawBorder: false,
@@ -107,7 +107,7 @@
                 scales: {
                     x: {
                         beginAtZero: true,
-                        max: 100,
+                        //max: 100,
                         grid: {
                             display: true,
                             drawBorder: false,

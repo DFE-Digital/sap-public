@@ -21,7 +21,7 @@ public class AdmissionsTests
     private readonly Mock<ILogger<SecondarySchoolController>> _mockLogger;
     private readonly Mock<ILaUrlsRepository> _mockLaUrlsRepository = new();
     private readonly Mock<IEstablishmentRepository> _mockEstablishmentRepository = new();
-    private readonly Mock<ISecondarySchoolService> _mockSecondarySchoolService = new();
+    private readonly Mock<IDestinationsService> _mockDestinationsService = new();
     private readonly Mock<ILookupService> _mockLookupService = new();
     private readonly IEstablishmentService _establishmentService;
     private readonly IAdmissionsService _admissionsService;
@@ -40,7 +40,7 @@ public class AdmissionsTests
 
         _establishmentService = new EstablishmentService(_mockEstablishmentRepository.Object, _mockLookupService.Object);
         _admissionsService = new EstablishmentAdmissionsService(_establishmentService, _mockLaUrlsRepository.Object);
-        _controller = new SecondarySchoolController(_mockLogger.Object, _establishmentService, _mockSecondarySchoolService.Object);
+        _controller = new SecondarySchoolController(_mockLogger.Object, _establishmentService, _mockDestinationsService.Object);
 
         _controller.ControllerContext = new ControllerContext
         {

@@ -1,0 +1,43 @@
+﻿// Chart Js related styles to show and enable containers
+
+body:not(.js-enabled) .all-dest-current-year-chart-container,
+body:not(.js-enabled) .all-dest-current-year-show-btn,
+body:not(.js-enabled) .all-dest-data-over-time-chart-container,
+body:not(.js-enabled) .all-dest-data-over-time-show-btn,
+body:not(.js-enabled) .breakdown-dest-current-year-chart-container,
+body:not(.js-enabled) .breakdown-dest-current-year-show-btn {
+    display: none;
+}
+
+body:not(.js-enabled) .all-dest-current-year-table-container,
+body:not(.js-enabled) .breakdown-dest-current-year-table-container {
+    display: block;
+}
+
+body.js-enabled .all-dest-current-year-chart-container
+body.js-enabled .all-dest-current-year-show-btn,
+body.js-enabled .breakdown-dest-current-year-chart-container,
+body.js-enabled .breakdown-dest-current-year-show-btn {
+    display: block;
+}
+
+body.js-enabled .all-dest-current-year-table-container,
+body.js-enabled .all-dest-data-over-time-data-container,
+body.js-enabled .all-dest-data-over-time-chart-container,
+body.js-enabled .breakdown-dest-current-year-table-container {
+    display: none;
+}
+
+/* non js logic to show tables and hide tables*/
+
+body:not(.js-enabled) .all-dest-data-over-time-data-container {
+    display: none;
+}
+
+#data-overtime-view:checked ~ .all-dest-current-year-data-container {
+    display: none;
+}
+
+#data-overtime-view:checked ~ .all-dest-data-over-time-data-container {
+    display: block;
+}

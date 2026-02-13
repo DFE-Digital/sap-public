@@ -4,5 +4,5 @@ namespace SAPPub.Core.Interfaces.Services.KS4.Performance;
 
 public interface IAcademicPerformanceEnglishAndMathsResultsService
 {
-    public EnglishAndMathsResultsServiceModel ResultsOfSpecifiedGradeAndAbove(string urn, int selectedGrade);
+    public EnglishAndMathsResultsModel GetEnglishAndMathsResults(string urn, int selectedGrade);
 }
