@@ -50,55 +50,42 @@ namespace SAPPub.Web.Middleware
             // Register generic repository for ALL entities
             services.AddTransient(typeof(IGenericRepository<>), typeof(DapperRepository<>));
 
-            // Establishment
             services.AddTransient<IEstablishmentRepository, EstablishmentRepository>();
             services.AddTransient<IEstablishmentService, EstablishmentService>();
 
-            // Establishment Performance
             services.AddTransient<IEstablishmentPerformanceRepository, EstablishmentPerformanceRepository>();
             services.AddTransient<IEstablishmentPerformanceService, EstablishmentPerformanceService>();
 
-            // Establishment Destinations (now can rely on generic repo + coded mapping)
             services.AddTransient<IEstablishmentDestinationsRepository, EstablishmentDestinationsRepository>();
             services.AddTransient<IEstablishmentDestinationsService, EstablishmentDestinationsService>();
 
-            // Absence
             services.AddTransient<IEstablishmentAbsenceRepository, EstablishmentAbsenceRepository>();
             services.AddTransient<IEstablishmentAbsenceService, EstablishmentAbsenceService>();
 
-            // Workforce
             services.AddTransient<IEstablishmentWorkforceRepository, EstablishmentWorkforceRepository>();
             services.AddTransient<IEstablishmentWorkforceService, EstablishmentWorkforceService>();
 
-            // LA Performance
             services.AddTransient<ILAPerformanceRepository, LAPerformanceRepository>();
             services.AddTransient<ILAPerformanceService, LAPerformanceService>();
 
-            // LA Destinations
             services.AddTransient<ILADestinationsRepository, LADestinationsRepository>();
             services.AddTransient<ILADestinationsService, LADestinationsService>();
 
-            // LA Absence
             services.AddTransient<ILAAbsenceRepository, LAAbsenceRepository>();
             services.AddTransient<ILAAbsenceService, LAAbsenceService>();
 
-            // England Performance
             services.AddTransient<IEnglandPerformanceRepository, EnglandPerformanceRepository>();
             services.AddTransient<IEnglandPerformanceService, EnglandPerformanceService>();
 
-            // England Destinations
             services.AddTransient<IEnglandDestinationsRepository, EnglandDestinationsRepository>();
             services.AddTransient<IEnglandDestinationsService, EnglandDestinationsService>();
 
-            // England Absence
             services.AddTransient<IEnglandAbsenceRepository, EnglandAbsenceRepository>();
             services.AddTransient<IEnglandAbsenceService, EnglandAbsenceService>();
 
-            // Lookup
             services.AddTransient<ILookupRepository, LookupRepository>();
             services.AddTransient<ILookupService, LookupService>();
 
-            // Subject entries / misc
             services.AddTransient<IEstablishmentSubjectEntriesService, EstablishmentSubjectEntriesService>();
             services.AddTransient<IEstablishmentSubjectEntriesRepository, EstablishmentSubjectEntriesRepository>();
             services.AddTransient<IAcademicPerformanceEnglishAndMathsResultsService, Core.Services.KS4.Performance.EnglishAndMathsResultsService>();
@@ -124,9 +111,6 @@ namespace SAPPub.Web.Middleware
                 return new DapperBootstrapper();
             });
 
-            services.AddScoped<IAdmissionsService, EstablishmentAdmissionsService>();
-            services.AddScoped<IGenericRepository<LaUrls>, JSONRepository<LaUrls>>();
-            services.AddScoped<ILaUrlsRepository, LaUrlsRepository>();
             services.AddTransient<IDestinationsService, DestinationsService>();
             services.AddTransient<IAdmissionsService, EstablishmentAdmissionsService>();
             services.AddTransient<IGenericRepository<LaUrls>, JSONRepository<LaUrls>>();
