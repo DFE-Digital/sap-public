@@ -3,21 +3,33 @@ using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.SchoolSearch;
 using SAPPub.Web.Models.Search;
 
-namespace SAPPub.Web.Controllers
+namespace SAPPub.Web.Controllers;
+
+public class SearchController(IEstablishmentService establishmentService,
+        ISchoolSearchService schoolSearchService) : Controller
 {
-    public class SearchController(IEstablishmentService establishmentService,
-            ISchoolSearchService schoolSearchService) : Controller
+    public IActionResult Index()
     {
-        public async Task<IActionResult> Index()
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> SearchResults(string? searchKeyWord)
+    {
+        var listOfEstabs = SearchResultsViewModel.FromEstablishmentCoreEntity(establishmentService.GetAllEstablishments());
+        if (searchKeyWord != null)
         {
-            var listOfEstabs = SearchViewModel.FromEstablishmentCoreEntity(establishmentService.GetAllEstablishments());
-            var searchResults = await schoolSearchService.SearchAsync("Manchester");
-            var temp2 = searchResults.Select(r => new SearchViewModel
+            var searchResults = await schoolSearchService.SearchAsync(searchKeyWord);
+            var viewResults = searchResults.Select(r => new SearchResultsViewModel
             {
                 URN = r.URN,
                 EstablishmentName = r.EstablishmentName
             }).ToList();
-            return View(temp2);
+            return View(viewResults);
+        }
+        else
+        {
+            return View(listOfEstabs);
         }
     }
 }

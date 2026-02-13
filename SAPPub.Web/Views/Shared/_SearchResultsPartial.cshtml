@@ -1,0 +1,37 @@
+﻿@using SAPPub.Web.Models.Search
+
+@model SearchResultsViewModel
+
+<div class="govuk-grid-column-two-thirds" id="results">
+    <h3 class="govuk-heading-m" id="search-results-count">@Model.SearchResultsCount @(Model.SearchResultsCount! > 1 ? "results" : "result") for @Model.NameSearchTerm</h3>
+    @* 
+    @await Html.PartialAsync("_pagination", Model.Pagination)
+   *@
+    <hr />
+    <ul style="list-style: none">
+        @foreach (var searchItem in Model.SearchItems!)
+        {
+            <li id="name-@searchItem.Urn">
+                <h4 style="background-color:aliceblue">
+                    @searchItem.Name
+                </h4>
+            </li>
+            <li id="urn-@searchItem.Urn">
+                <strong>URN: </strong>@searchItem.Urn
+            </li>
+            <li id="address-@searchItem.Urn">
+                <strong>Address: </strong> @searchItem.ReadableAddress
+            </li>
+            <li id="establishment-type-@searchItem.Urn">
+                <strong>Type of establishment: </strong> @searchItem.EstablishmentType
+            </li>
+            <li id="establishment-status-@searchItem.Urn">
+                <strong>Status: </strong> @searchItem.EstablishmentStatusName
+            </li>
+            <li id="education-phase-@searchItem.Urn">
+                <strong>Education phase: </strong> @searchItem.PhaseOfEducation
+                <hr />
+            </li>
+        }
+    </ul>
+</div>

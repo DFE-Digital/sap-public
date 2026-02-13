@@ -1,32 +1,6 @@
-﻿@model IEnumerable<SAPPub.Web.Models.Search.SearchViewModel>
+﻿<h1>Search for secondary schools</h1>
+<p>Use this service to find mainstream secondary schools in England</p>
 
-
-
-<govuk-summary-list>
-    <govuk-summary-list-row>
-        <govuk-summary-list-row-key>
-            Establishment Name
-        </govuk-summary-list-row-key>
-        <govuk-summary-list-row-value>
-            Address
-        </govuk-summary-list-row-value>
-        <govuk-summary-list-row-actions>
-            
-        </govuk-summary-list-row-actions>
-    </govuk-summary-list-row>
-
-    @foreach (var modelItem in Model)
-    {
-        <govuk-summary-list-row>
-            <govuk-summary-list-row-key>
-                @modelItem.EstablishmentName
-            </govuk-summary-list-row-key>
-            <govuk-summary-list-row-value>
-                @modelItem.Address
-            </govuk-summary-list-row-value>
-            <govuk-summary-list-row-actions>
-                <govuk-summary-list-row-action href="@Url.Action("Index", "School", new { urn = modelItem.URN, schoolName = modelItem.EstablishmentNameUrl})" visually-hidden-text="name">View</govuk-summary-list-row-action>
-            </govuk-summary-list-row-actions>
-        </govuk-summary-list-row>
-    }
-</govuk-summary-list>
+<form method="post" asp-controller="Search" asp-action="SearchResults">
+    @await Html.PartialAsync("_SearchPartial")
+</form>
