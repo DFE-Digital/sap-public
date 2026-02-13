@@ -1,6 +1,6 @@
 ﻿<h1>Search for secondary schools</h1>
 <p>Use this service to find mainstream secondary schools in England</p>
 
-<form method="post" asp-controller="Search" asp-action="SearchResults">
+<form method="get" asp-controller="Search" asp-action="SearchResults">
     @await Html.PartialAsync("_SearchPartial")
 </form>

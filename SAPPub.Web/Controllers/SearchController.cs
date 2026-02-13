@@ -1,35 +1,38 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.SchoolSearch;
 using SAPPub.Web.Models.Search;
 
 namespace SAPPub.Web.Controllers;
 
-public class SearchController(IEstablishmentService establishmentService,
-        ISchoolSearchService schoolSearchService) : Controller
+public class SearchController(ISchoolSearchService schoolSearchService) : Controller
 {
     public IActionResult Index()
     {
-        return View();
+        return View(new SearchResultsViewModel());
     }
 
-    [HttpPost]
     public async Task<IActionResult> SearchResults(string? searchKeyWord)
     {
-        var listOfEstabs = SearchResultsViewModel.FromEstablishmentCoreEntity(establishmentService.GetAllEstablishments());
         if (searchKeyWord != null)
         {
             var searchResults = await schoolSearchService.SearchAsync(searchKeyWord);
-            var viewResults = searchResults.Select(r => new SearchResultsViewModel
+            var viewResults = new SearchResultsViewModel()
             {
-                URN = r.URN,
-                EstablishmentName = r.EstablishmentName
-            }).ToList();
+                NameSearchTerm = searchKeyWord,
+                SearchResultsCount = searchResults.TotalCount,
+                SearchResults = searchResults.Results.Select(r => new SearchResult
+                {
+                    URN = r.URN,
+                    EstablishmentName = r.EstablishmentName
+                }).ToList()
+            };
             return View(viewResults);
         }
-        else
+        else return View(new SearchResultsViewModel()
         {
-            return View(listOfEstabs);
-        }
+            NameSearchTerm = searchKeyWord,
+            SearchResultsCount = 0,
+            SearchResults = new List<SearchResult>()
+        });
     }
 }

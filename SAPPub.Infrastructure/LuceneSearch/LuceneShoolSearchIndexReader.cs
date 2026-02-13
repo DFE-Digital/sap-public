@@ -7,6 +7,7 @@ namespace SAPPub.Infrastructure.LuceneSearch;
 
 public class LuceneShoolSearchIndexReader(LuceneIndexContext context, LuceneTokeniser luceneTokeniser, LuceneHighlighter highlighter) : ISchoolSearchIndexReader
 {
+    // CML TODO - pagination logic needs to go in here
     public async Task<IList<(int urn, string resultText)>> SearchAsync(string query, int maxResults = 10)
     {
         if (string.IsNullOrWhiteSpace(query)) return [];
@@ -55,7 +56,7 @@ public class LuceneShoolSearchIndexReader(LuceneIndexContext context, LuceneToke
 
             var take = maxResults;
 
-            var sort = new Sort(SortField.FIELD_SCORE, new SortField("EstablishmentNameSort", SortFieldType.STRING, reverse: false));
+            var sort = new Sort(new SortField("EstablishmentNameSort", SortFieldType.STRING, reverse: false), SortField.FIELD_SCORE);
 
             var topDocs = searcher.Search(finalQuery, take, sort);
 
