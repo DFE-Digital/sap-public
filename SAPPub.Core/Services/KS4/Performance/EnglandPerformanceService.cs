@@ -1,27 +1,21 @@
-﻿using SAPPub.Core.Entities.KS4.Absence;
-using SAPPub.Core.Entities.KS4.Performance;
+﻿using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Interfaces.Repositories.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SAPPub.Core.Services.KS4.Performance
 {
-    public class EnglandPerformanceService : IEnglandPerformanceService
+    public sealed class EnglandPerformanceService : IEnglandPerformanceService
     {
-        private readonly IEnglandPerformanceRepository _englandPerformanceRepository;
+        private readonly IEnglandPerformanceRepository _repo;
 
-        public EnglandPerformanceService(IEnglandPerformanceRepository englandPerformanceRepository)
+        public EnglandPerformanceService(IEnglandPerformanceRepository repo)
         {
-            _englandPerformanceRepository = englandPerformanceRepository;
+            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
-        public EnglandPerformance GetEnglandPerformance()
+        public async Task<EnglandPerformance> GetEnglandPerformanceAsync(CancellationToken ct = default)
         {
-            return _englandPerformanceRepository.GetEnglandPerformance() ?? new(); ;
+            return await _repo.GetEnglandPerformanceAsync(ct);
         }
     }
 }

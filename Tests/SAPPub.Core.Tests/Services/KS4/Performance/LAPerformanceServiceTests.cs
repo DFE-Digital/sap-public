@@ -2,12 +2,6 @@
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Interfaces.Repositories.KS4.Performance;
 using SAPPub.Core.Services.KS4.Performance;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SAPPub.Core.Tests.Services.KS4.Performance
 {
@@ -23,20 +17,21 @@ namespace SAPPub.Core.Tests.Services.KS4.Performance
         }
 
         [Fact]
-        public void GetAllLAPerformance_ShouldReturnAllItems()
+        public async Task GetAllLAPerformanceAsync_ShouldReturnAllItems()
         {
             // Arrange
-            var expectedDestinationss = new List<LAPerformance>
-        {
-            new LAPerformance { Id = "100",  Attainment8_Tot_LA_Current_Num = 99.99},
-            new LAPerformance { Id = "101", Attainment8_Tot_LA_Current_Num = 90.00}
-        };
+            var expected = new List<LAPerformance>
+            {
+                new() { Id = "100", Attainment8_Tot_LA_Current_Num = 99.99 },
+                new() { Id = "101", Attainment8_Tot_LA_Current_Num = 90.00 }
+            };
 
-            _mockRepo.Setup(r => r.GetAllLAPerformance())
-                     .Returns(expectedDestinationss);
+            _mockRepo
+                .Setup(r => r.GetAllLAPerformanceAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expected);
 
             // Act
-            var result = _service.GetAllLAPerformance();
+            var result = await _service.GetAllLAPerformanceAsync(CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
@@ -46,65 +41,71 @@ namespace SAPPub.Core.Tests.Services.KS4.Performance
         }
 
         [Fact]
-        public void GetAllLAPerformance_ShouldReturnEmpty_WhenNoData()
+        public async Task GetAllLAPerformanceAsync_ShouldReturnEmpty_WhenNoData()
         {
             // Arrange
-            _mockRepo.Setup(r => r.GetAllLAPerformance())
-                     .Returns(new List<LAPerformance>());
+            _mockRepo
+                .Setup(r => r.GetAllLAPerformanceAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<LAPerformance>());
 
             // Act
-            var result = _service.GetAllLAPerformance();
+            var result = await _service.GetAllLAPerformanceAsync(CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
             Assert.Empty(result);
         }
 
-
         [Fact]
-        public void GetLAPerformance_ShouldReturnCorrectItem_WhenUrnExists()
+        public async Task GetLAPerformanceAsync_ShouldReturnCorrectItem_WhenLaCodeExists()
         {
             // Arrange
-            var urn = "100";
-            var expectedDestinations = new LAPerformance { Id = urn, Attainment8_Tot_LA_Current_Num = 100 };
+            var laCode = "100";
+            var expected = new LAPerformance { Id = laCode, Attainment8_Tot_LA_Current_Num = 100 };
 
-            _mockRepo.Setup(r => r.GetLAPerformance(urn))
-                     .Returns(expectedDestinations);
+            _mockRepo
+                .Setup(r => r.GetLAPerformanceAsync(laCode, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expected);
 
             // Act
-            var result = _service.GetLAPerformance(urn);
+            var result = await _service.GetLAPerformanceAsync(laCode, CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(urn, result.Id);
+            Assert.Equal(laCode, result.Id);
             Assert.Equal(100, result.Attainment8_Tot_LA_Current_Num);
         }
 
         [Fact]
-        public void GetLAPerformance_ShouldReturnNull_WhenUrnDoesNotExist()
+        public async Task GetLAPerformanceAsync_ShouldReturnDefault_WhenLaCodeDoesNotExist()
         {
             // Arrange
-            var urn = "99999";
-            _mockRepo.Setup(r => r.GetLAPerformance(urn))
-                     .Returns(new LAPerformance());
+            var laCode = "99999";
+
+            _mockRepo
+                .Setup(r => r.GetLAPerformanceAsync(laCode, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new LAPerformance());
 
             // Act
-            var result = _service.GetLAPerformance(urn);
+            var result = await _service.GetLAPerformanceAsync(laCode, CancellationToken.None);
 
             // Assert
+            Assert.NotNull(result);
             Assert.Null(result.Attainment8_Tot_LA_Current_Num);
         }
 
         [Fact]
-        public void GetLAPerformance_ShouldThrowException_WhenRepositoryThrows()
+        public async Task GetLAPerformanceAsync_ShouldPropagateException_WhenRepositoryThrows()
         {
             // Arrange
-            var urn = "error";
-            _mockRepo.Setup(r => r.GetLAPerformance(urn))
-                     .Throws(new Exception("Database error"));
+            var laCode = "error";
+
+            _mockRepo
+                .Setup(r => r.GetLAPerformanceAsync(laCode, It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new Exception("Database error"));
 
             // Act & Assert
-            var ex = Assert.Throws<Exception>(() => _service.GetLAPerformance(urn));
+            var ex = await Assert.ThrowsAsync<Exception>(() => _service.GetLAPerformanceAsync(laCode, CancellationToken.None));
             Assert.Equal("Database error", ex.Message);
         }
     }

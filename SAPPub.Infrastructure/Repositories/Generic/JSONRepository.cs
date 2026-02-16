@@ -35,6 +35,26 @@ namespace SAPPub.Infrastructure.Repositories.Generic
             return [];
         }
 
+        public Task<IEnumerable<T>> ReadAllAsync(CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<T?> ReadAsync(string id, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<T>> ReadManyAsync(object parameters, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<T?> ReadSingleAsync(object parameters, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
         private string ReadFile(string fileName)
         {
             try
@@ -47,21 +67,6 @@ namespace SAPPub.Infrastructure.Repositories.Generic
                 _logger.LogError($"Failed to Read file {fileName}! - {ex.Message}, {ex}");
                 return string.Empty;
             }
-        }
-
-        T? IGenericRepository<T>.Read(string id)
-        {
-            throw new NotImplementedException();
-        }
-
-        IEnumerable<T> IGenericRepository<T>.ReadMany(object parameters)
-        {
-            throw new NotImplementedException();
-        }
-
-        T? IGenericRepository<T>.ReadSingle(object parameters)
-        {
-            throw new NotImplementedException();
         }
     }
 }
