@@ -177,6 +177,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
 
         private const string EstablishmentSubjectEntriesColumns = """
           school_urn,
+          pupil_count,
           subject,
           qualification_type,
           qualification_detailed,
@@ -274,8 +275,8 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                 nameof(LaUrls) =>
                     SelectFrom(LaUrlsColumns, "v_la_urls"),
 
-                nameof(Lookup) => 
-                    SelectFrom(LookupColumns, "v_lookup"),//not sure what view this is coming from yet
+                //nameof(Lookup) => 
+                //    SelectFrom(LookupColumns, "v_lookup"),//not sure what view this is coming from yet
 
                 _ => string.Empty,
             };
@@ -315,8 +316,8 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                 nameof(LaUrls) =>
                     SelectFromWhereId(LaUrlsColumns, "v_la_urls"),
 
-                nameof(Lookup) => 
-                    SelectFromWhereId(LookupColumns, "v_lookup"),//not sure what view this is coming from yet
+                //nameof(Lookup) => 
+                //    SelectFromWhereId(LookupColumns, "v_lookup"),//not sure what view this is coming from yet
 
                 _ => string.Empty,
             };

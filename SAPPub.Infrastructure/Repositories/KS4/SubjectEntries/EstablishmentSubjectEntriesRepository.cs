@@ -23,7 +23,7 @@ namespace SAPPub.Infrastructure.Repositories.KS4.SubjectEntries
                 {
                     SubEntCore_Sub_Est_Current_Num = r.Subject,
                     SubEntCore_Qual_Est_Current_Num = r.Qualification,
-                    SubEntCore_Entr_Est_Current_Num = r.TotalAchieving
+                    SubEntCore_Entr_Est_Current_Num = r.TotalEnteredPercent
                 })
                 .ToList();
 
@@ -40,7 +40,7 @@ namespace SAPPub.Infrastructure.Repositories.KS4.SubjectEntries
                 {
                     SubEntAdd_Sub_Est_Current_Num = r.Subject,
                     SubEntAdd_Qual_Est_Current_Num = r.Qualification,
-                    SubEntAdd_Entr_Est_Current_Num = r.TotalAchieving
+                    SubEntAdd_Entr_Est_Current_Num = r.TotalEnteredPercent
                 })
                 .ToList();
 
@@ -52,38 +52,53 @@ namespace SAPPub.Infrastructure.Repositories.KS4.SubjectEntries
             if (string.IsNullOrWhiteSpace(urn))
                 return [];
 
-            var raw = await _repo.ReadManyAsync(new { Urn = urn }, ct);
+            var raw = (await _repo.ReadManyAsync(new { Urn = urn }, ct)).ToList();
+            if (raw.Count == 0)
+                return [];
 
-            // One row per (Subject, Qualification) with summed counts across grades
+            // Cohort size should be consistent; use max defensively.
+            var cohort = raw.Select(r => r.pupil_count ?? 0).Max();
+            if (cohort <= 0)
+                return [];
+
             return raw
                 .Where(r => !string.IsNullOrWhiteSpace(r.subject))
                 .GroupBy(r => new
                 {
-                    Subject = r.subject!.Trim(),
+                    Subject = r.subject!.Trim(), // subject only (no subject_discount_group)
                     Qualification = (r.qualification_type ?? r.qualification_detailed ?? string.Empty).Trim()
                 })
-                .Select(g => new AggregatedSubjectRow(
-                    Subject: g.Key.Subject,
-                    Qualification: string.IsNullOrWhiteSpace(g.Key.Qualification) ? null : g.Key.Qualification,
-                    TotalAchieving: g.Sum(x => x.number_achieving ?? 0)
-                ))
+                .Select(g =>
+                {
+                    var totalEntries = g.Sum(x => x.number_achieving ?? 0);
+
+                    // Convert summed grade counts to percent-of-cohort.
+                    var pct = (totalEntries / (double)cohort) * 100.0;
+
+                    // Safety clamp (optional but sensible with dirty data)
+                    if (pct > 100.0) pct = 100.0;
+                    if (pct < 0.0) pct = 0.0;
+
+                    return new AggregatedSubjectRow(
+                        Subject: g.Key.Subject,
+                        Qualification: string.IsNullOrWhiteSpace(g.Key.Qualification) ? null : g.Key.Qualification,
+                        TotalEnteredPercent: pct
+                    );
+                })
                 .OrderBy(x => x.Subject)
                 .ThenBy(x => x.Qualification)
                 .ToList();
         }
 
+        private sealed record AggregatedSubjectRow(string Subject, string? Qualification, double TotalEnteredPercent);
+
         private static readonly HashSet<string> CoreSubjects = new(StringComparer.OrdinalIgnoreCase)
         {
-            // English
             "English Language",
             "English Literature",
-
-            // Maths
             "Mathematics",
             "Mathematics AS level",
             "Statistics",
-
-            // Science
             "Biology",
             "Chemistry",
             "Physics",
@@ -93,13 +108,6 @@ namespace SAPPub.Infrastructure.Repositories.KS4.SubjectEntries
         };
 
         private static bool IsCoreSubject(string? subject)
-        {
-            if (string.IsNullOrWhiteSpace(subject))
-                return false;
-
-            return CoreSubjects.Contains(subject.Trim());
-        }
-
-        private sealed record AggregatedSubjectRow(string Subject, string? Qualification, int TotalAchieving);
+            => !string.IsNullOrWhiteSpace(subject) && CoreSubjects.Contains(subject.Trim());
     }
 }

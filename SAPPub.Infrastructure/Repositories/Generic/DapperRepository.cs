@@ -1,29 +1,25 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Infrastructure.Mapping.ValueCodes;
 using SAPPub.Infrastructure.Repositories.Helpers;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SAPPub.Infrastructure.Repositories.Generic
 {
     public sealed class DapperRepository<T> : IGenericRepository<T> where T : class
     {
-        private readonly IDbConnection _connection;
+        private readonly NpgsqlDataSource _dataSource;
         private readonly ILogger<DapperRepository<T>> _logger;
         private readonly ICodedValueMapper _codedValueMapper;
 
         public DapperRepository(
-            IDbConnection connection,
+            NpgsqlDataSource dataSource,
             ILogger<DapperRepository<T>> logger,
             ICodedValueMapper codedValueMapper)
         {
-            _connection = connection ?? throw new ArgumentNullException(nameof(connection));
+            _dataSource = dataSource ?? throw new ArgumentNullException(nameof(dataSource));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _codedValueMapper = codedValueMapper ?? throw new ArgumentNullException(nameof(codedValueMapper));
         }
@@ -45,18 +41,21 @@ namespace SAPPub.Infrastructure.Repositories.Generic
                 if (string.IsNullOrWhiteSpace(sql))
                     throw new NotSupportedException($"No ReadMultiple query for {typeof(T).Name}");
 
+                await using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
+
                 var cmd = new CommandDefinition(
                     commandText: sql,
                     parameters: null,
                     transaction: null,
                     commandTimeout: null,
                     commandType: CommandType.Text,
-                    flags: CommandFlags.Buffered,
+                    flags: CommandFlags.Buffered | CommandFlags.NoCache,
                     cancellationToken: ct);
 
-                var items = (await _connection.QueryAsync<T>(cmd)).ToList();
+                var items = (await conn.QueryAsync<T>(cmd).ConfigureAwait(false)).ToList();
 
-                _codedValueMapper.Apply(items); // map *_Coded -> numeric + _Reason
+                if (items.Count > 0)
+                    _codedValueMapper.Apply(items); // map *_Coded -> numeric + _Reason
 
                 return items;
             }
@@ -72,7 +71,7 @@ namespace SAPPub.Infrastructure.Repositories.Generic
             }
         }
 
-        public async Task<T?> ReadSingleAsync(object parameters, CancellationToken ct = default)
+        public async Task<T?> ReadSingleAsync(object? parameters, CancellationToken ct = default)
         {
             if (parameters is null)
                 return default;
@@ -83,16 +82,18 @@ namespace SAPPub.Infrastructure.Repositories.Generic
                 if (string.IsNullOrWhiteSpace(sql))
                     throw new NotSupportedException($"No ReadSingle query for {typeof(T).Name}");
 
+                await using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
+
                 var cmd = new CommandDefinition(
                     commandText: sql,
                     parameters: parameters,
                     transaction: null,
                     commandTimeout: null,
                     commandType: CommandType.Text,
-                    flags: CommandFlags.Buffered,
+                    flags: CommandFlags.Buffered | CommandFlags.NoCache,
                     cancellationToken: ct);
 
-                var item = await _connection.QuerySingleOrDefaultAsync<T>(cmd);
+                var item = await conn.QuerySingleOrDefaultAsync<T>(cmd).ConfigureAwait(false);
 
                 if (item is not null)
                     _codedValueMapper.Apply(item);
@@ -105,16 +106,13 @@ namespace SAPPub.Infrastructure.Repositories.Generic
             }
             catch (Exception ex)
             {
-                // NOTE: don't interpolate params into the message; pass as a structured property.
-                _logger.LogError(ex, "Failed ReadSingleAsync for {Type} params={Params}", typeof(T).Name, parameters);
+                // Keep params out of the formatted message; log as a structured property.
+                _logger.LogError(ex, "Failed ReadSingleAsync for {Type} paramsType={ParamsType}", typeof(T).Name, parameters.GetType().Name);
                 return default;
             }
         }
 
-        // Not in your target interface, but you still need it to support feature repos calling "many".
-        // Keep it as a public method if existing code uses it; otherwise make it internal/private and
-        // expose via feature repos only.
-        public async Task<IEnumerable<T>> ReadManyAsync(object parameters, CancellationToken ct = default)
+        public async Task<IEnumerable<T>> ReadManyAsync(object? parameters, CancellationToken ct = default)
         {
             if (parameters is null)
                 return Enumerable.Empty<T>();
@@ -125,18 +123,21 @@ namespace SAPPub.Infrastructure.Repositories.Generic
                 if (string.IsNullOrWhiteSpace(sql))
                     throw new NotSupportedException($"No ReadMany query for {typeof(T).Name}");
 
+                await using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
+
                 var cmd = new CommandDefinition(
                     commandText: sql,
                     parameters: parameters,
                     transaction: null,
                     commandTimeout: null,
                     commandType: CommandType.Text,
-                    flags: CommandFlags.Buffered,
+                    flags: CommandFlags.Buffered | CommandFlags.NoCache,
                     cancellationToken: ct);
 
-                var items = (await _connection.QueryAsync<T>(cmd)).ToList();
+                var items = (await conn.QueryAsync<T>(cmd).ConfigureAwait(false)).ToList();
 
-                _codedValueMapper.Apply(items);
+                if (items.Count > 0)
+                    _codedValueMapper.Apply(items);
 
                 return items;
             }
@@ -146,7 +147,7 @@ namespace SAPPub.Infrastructure.Repositories.Generic
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed ReadManyAsync for {Type} params={Params}", typeof(T).Name, parameters);
+                _logger.LogError(ex, "Failed ReadManyAsync for {Type} paramsType={ParamsType}", typeof(T).Name, parameters.GetType().Name);
                 return Enumerable.Empty<T>();
             }
         }

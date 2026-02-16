@@ -6,6 +6,7 @@ namespace SAPPub.Core.Entities.KS4.SubjectEntries
     public sealed class EstablishmentSubjectEntryRow
     {
         public string? school_urn { get; set; }
+        public int? pupil_count { get; set; }
         public string? subject { get; set; }
         public string? qualification_type { get; set; }
         public string? qualification_detailed { get; set; }
@@ -13,4 +14,3 @@ namespace SAPPub.Core.Entities.KS4.SubjectEntries
         public int? number_achieving { get; set; }
     }
 }
-

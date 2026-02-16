@@ -63,13 +63,21 @@ public partial class Program
                .SetApplicationName("SAPPub");
 
         var connectionString = builder.Configuration.GetConnectionString("PostgresConnectionString");
-        builder.Services.AddTransient<IDbConnection>((sp) => new NpgsqlConnection(connectionString));
+
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            if (!builder.Environment.IsEnvironment("Testing"))
+                throw new InvalidOperationException("Connection string 'PostgresConnectionString' is not configured.");
+
+            // In Testing, don't register a real DB connection
+            connectionString = "Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=postgres";
+        }
+
+        builder.Services.AddSingleton<NpgsqlDataSource>(_ => NpgsqlDataSource.Create(connectionString));
 
         builder.Services.AddDependencies();
 
         var app = builder.Build();
-
-        _ = app.Services.GetRequiredService<IDapperBootstrapper>();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())

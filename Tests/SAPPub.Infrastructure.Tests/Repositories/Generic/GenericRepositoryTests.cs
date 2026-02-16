@@ -1,13 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
 using Newtonsoft.Json;
-using SAPPub.Core.Entities;
 using SAPPub.Infrastructure.Repositories.Generic;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SAPPub.Infrastructure.Tests.Repositories.Generic
 {
@@ -16,6 +10,7 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Generic
         public string Id { get; set; } = string.Empty;
         public string Value { get; set; } = string.Empty;
     }
+
     public class JSONRepositoryTests : IDisposable
     {
         private readonly string _dataDir;
@@ -46,7 +41,7 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Generic
         }
 
         [Fact]
-        public void ReadAll_ReturnsEntities_WhenFileExists_AndContainsValidJson()
+        public async Task ReadAllAsync_ReturnsEntities_WhenFileExists_AndContainsValidJson()
         {
             // Arrange
             var items = new[]
@@ -62,18 +57,18 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Generic
             var repo = new JSONRepository<TestEntity>(logger.Object);
 
             // Act
-            var result = repo.ReadAll();
+            var result = await repo.ReadAllAsync(CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
             var list = result.ToList();
             Assert.Equal(2, list.Count);
-            Assert.Contains(list, l => l.Id  == "111");
+            Assert.Contains(list, l => l.Id == "111");
             Assert.Contains(list, l => l.Id == "222");
         }
 
         [Fact]
-        public void ReadAll_ReturnsEmpty_WhenFileDoesNotExist()
+        public async Task ReadAllAsync_ReturnsEmpty_WhenFileDoesNotExist()
         {
             // Arrange
             var filePath = Path.Combine(_filesDir, "TestEntity.json");
@@ -83,7 +78,7 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Generic
             var repo = new JSONRepository<TestEntity>(logger.Object);
 
             // Act
-            var result = repo.ReadAll();
+            var result = await repo.ReadAllAsync(CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
@@ -91,7 +86,7 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Generic
         }
 
         [Fact]
-        public void ReadAll_ReturnsEmpty_WhenFileContainsInvalidJson()
+        public async Task ReadAllAsync_ReturnsEmpty_WhenFileContainsInvalidJson()
         {
             // Arrange
             var filePath = Path.Combine(_filesDir, "TestEntity.json");
@@ -101,7 +96,7 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Generic
             var repo = new JSONRepository<TestEntity>(logger.Object);
 
             // Act
-            var result = repo.ReadAll();
+            var result = await repo.ReadAllAsync(CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
@@ -115,6 +110,4 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Generic
             Assert.Throws<ArgumentNullException>(() => new JSONRepository<TestEntity>(null!));
         }
     }
-
-
 }
