@@ -1,5 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SAPPub.Infrastructure.LuceneSearch;
 
@@ -10,7 +10,7 @@ public static class LuceneExtensions
     {
         services.AddSingleton<LuceneIndexContext>();
         services.AddSingleton<LuceneIndexWriter>();
-        services.AddSingleton<LuceneShoolSearchIndexReader>();
+        services.AddSingleton<LuceneSchoolSearchIndexReader>();
         services.AddSingleton<LuceneHighlighter>();
         services.AddSingleton<LuceneSynonymMapBuilder>();
         services.AddSingleton<LuceneTokeniser>();

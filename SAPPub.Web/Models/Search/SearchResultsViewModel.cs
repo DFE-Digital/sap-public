@@ -8,7 +8,7 @@ public class SearchResult
     public string EstablishmentName { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
     public string? ReligiousCharacter { get; set; }
-    public string? PupilSex { get; set; }
+    public string? GenderName { get; set; }
 
     public static SearchResult FromEstablishmentCoreEntity(Establishment establishment)
     {
@@ -18,7 +18,7 @@ public class SearchResult
             EstablishmentName = establishment.EstablishmentName,
             Address = establishment.Address,
             ReligiousCharacter = establishment.ReligiousCharacterName,
-            PupilSex = establishment.GenderName
+            GenderName = establishment.GenderName
         };
     }
 }

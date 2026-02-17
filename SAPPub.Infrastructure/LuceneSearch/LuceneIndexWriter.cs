@@ -26,7 +26,10 @@ public class LuceneIndexWriter(LuceneIndexContext context)
                 new Field(nameof(Establishment.EstablishmentName), e.EstablishmentName, TermVectorFieldType),
                 new SortedDocValuesField("EstablishmentNameSort", new BytesRef(e.EstablishmentName))
             };
-
+            if (e.GenderName is not null) doc.Add(new StoredField(nameof(Establishment.GenderName), e.GenderName));
+            if (e.ReligiousCharacterName is not null) doc.Add(new StoredField(nameof(Establishment.ReligiousCharacterName), e.ReligiousCharacterName));
+            if (e.Address is not null) doc.Add(new StoredField(nameof(Establishment.Address), e.Address));
+            if (e.AddressPostcode is not null) doc.Add(new StoredField(nameof(Establishment.AddressPostcode), e.AddressPostcode));
             context.Writer.AddDocument(doc);
         }
 

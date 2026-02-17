@@ -6,27 +6,10 @@ namespace SAPPub.Core.Entities.SchoolSearch;
 public record SchoolSearchResults(int TotalCount, IEnumerable<SchoolSearchResult> Results);
 
 [ExcludeFromCodeCoverage]
-public record SchoolSearchResult
- (
-     string Name,
+public record SchoolSearchResult(
      string URN,
      string EstablishmentName,
-     string AddressStreet,
-     string AddressLocality,
-     string AddressAddress3,
-     string AddressTown,
-     string AddressPostcode,
-     string LAName
- )
-{
-    public static SchoolSearchResult FromNameAndEstablishment(string name, Establishment establishment) => new(
-        name,
-        establishment.URN,
-        establishment.EstablishmentName,
-        establishment.AddressStreet,
-        establishment.AddressLocality,
-        establishment.AddressAddress3,
-        establishment.AddressTown,
-        establishment.AddressPostcode,
-        establishment.LAName);
-}
+     string Address,
+     string GenderName,
+     string ReligiousCharacterName
+);

@@ -16,9 +16,9 @@ public sealed class LuceneIndexContext : IDisposable
     public IndexWriter Writer { get; }
     public SearcherManager SearcherManager { get; }
 
-    public LuceneIndexContext()
+    public LuceneIndexContext(Directory? directory = null)
     {
-        Directory = new RAMDirectory(); // CML TODO : Consider using FSDirectory for performance over many users
+        Directory = directory ?? new RAMDirectory(); // CML TODO : Consider using FSDirectory for performance over many users
 
         var luceneSynonymMapBuilder = new LuceneSynonymMapBuilder();
 

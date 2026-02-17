@@ -1,14 +1,14 @@
 ﻿using Lucene.Net.Index;
 using Lucene.Net.Search;
 using SAPPub.Core.Entities;
+using SAPPub.Core.Entities.SchoolSearch;
 using SAPPub.Core.Interfaces.Services.SchoolSearch;
 
 namespace SAPPub.Infrastructure.LuceneSearch;
 
-public class LuceneShoolSearchIndexReader(LuceneIndexContext context, LuceneTokeniser luceneTokeniser, LuceneHighlighter highlighter) : ISchoolSearchIndexReader
+public class LuceneSchoolSearchIndexReader(LuceneIndexContext context, LuceneTokeniser luceneTokeniser, LuceneHighlighter highlighter) : ISchoolSearchIndexReader
 {
-    // CML TODO - pagination logic needs to go in here
-    public async Task<IList<(int urn, string resultText)>> SearchAsync(string query, int maxResults = 10)
+    public async Task<IList<SchoolSearchResult>> SearchAsync(string query, int maxResults = 10)
     {
         if (string.IsNullOrWhiteSpace(query)) return [];
 
@@ -60,17 +60,20 @@ public class LuceneShoolSearchIndexReader(LuceneIndexContext context, LuceneToke
 
             var topDocs = searcher.Search(finalQuery, take, sort);
 
-            var results = new List<(int, string)>();
+            var results = new List<SchoolSearchResult>();
 
             foreach (var sd in topDocs.ScoreDocs)
             {
                 var doc = searcher.Doc(sd.Doc);
-                var urn = int.Parse(doc.Get(nameof(Establishment.URN)));
+                var urn = doc.Get(nameof(Establishment.URN));
                 var establishmentName = doc.Get(nameof(Establishment.EstablishmentName));
+                var religiousCharacterName = doc.Get(nameof(Establishment.ReligiousCharacterName));
+                var genderName = doc.Get(nameof(Establishment.GenderName));
+                var address = doc.Get(nameof(Establishment.Address));
 
                 var highlightedText = highlighter.HighlightText(finalQuery, establishmentName, nameof(Establishment.EstablishmentName));
 
-                results.Add((urn, highlightedText));
+                results.Add(new SchoolSearchResult(urn, establishmentName, address, genderName, religiousCharacterName));
             }
 
             return results;

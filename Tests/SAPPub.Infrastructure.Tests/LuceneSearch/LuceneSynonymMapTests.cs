@@ -6,7 +6,7 @@ namespace SAPPub.Infrastructure.Tests.LuceneSearch;
 public class LuceneSynonymMapTests
 {
     private readonly LuceneIndexWriter _writer;
-    private readonly LuceneShoolSearchIndexReader _sut;
+    private readonly LuceneSchoolSearchIndexReader _sut;
 
     public LuceneSynonymMapTests()
     {
@@ -14,7 +14,7 @@ public class LuceneSynonymMapTests
         _writer = new LuceneIndexWriter(ctx);
         var tokeniser = new LuceneTokeniser(ctx);
         var hlt = new LuceneHighlighter();
-        _sut = new LuceneShoolSearchIndexReader(ctx, tokeniser, hlt);
+        _sut = new LuceneSchoolSearchIndexReader(ctx, tokeniser, hlt);
     }
 
     [Theory]
@@ -64,12 +64,12 @@ public class LuceneSynonymMapTests
     }
 
     [Theory]
-    [InlineData("rm")]
+    [InlineData("rc")]
     [InlineData("roman catholic")]
     public async Task SearchAsync_Expands_rm_Synonym(string input)
     {
         _writer.BuildIndex([
-           new Establishment(){URN = "1",UKPRN = "10",LAId = "100",EstablishmentNumber = "1000",EstablishmentName = "Saint Peter RM School"},
+           new Establishment(){URN = "1",UKPRN = "10",LAId = "100",EstablishmentNumber = "1000",EstablishmentName = "Saint Peter RC School"},
             new Establishment(){URN = "2",UKPRN = "20",LAId = "200",EstablishmentNumber = "2000",EstablishmentName = "ss helan Primary roman Catholic"}
            ]);
 

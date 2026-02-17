@@ -6,7 +6,7 @@ namespace SAPPub.Infrastructure.Tests.LuceneSearch;
 public class LuceneIndexReaderTests
 {
     private readonly LuceneIndexWriter _writer;
-    private readonly LuceneShoolSearchIndexReader _sut;
+    private readonly LuceneSchoolSearchIndexReader _sut;
 
     private Establishment FakeEstablishmentOne = new()
     {
@@ -40,7 +40,7 @@ public class LuceneIndexReaderTests
         _writer = new LuceneIndexWriter(ctx);
         var tokeniser = new LuceneTokeniser(ctx);
         var hlt = new LuceneHighlighter();
-        _sut = new LuceneShoolSearchIndexReader(ctx, tokeniser, hlt);
+        _sut = new LuceneSchoolSearchIndexReader(ctx, tokeniser, hlt);
     }
 
     [Fact]
@@ -59,8 +59,8 @@ public class LuceneIndexReaderTests
         // Assert
         Assert.NotNull(results);
         Assert.NotEmpty(results);
-        Assert.Equal(15, results.First().urn);
-        Assert.Contains("*Fake* School *Three*", results.First().resultText);
+        Assert.Equal(15, int.Parse(results.First().URN));
+        Assert.Contains(FakeEstablishmentThree.EstablishmentName, results.First().EstablishmentName);
     }
 
     [Theory]

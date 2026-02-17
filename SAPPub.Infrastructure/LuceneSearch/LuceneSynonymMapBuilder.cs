@@ -10,7 +10,7 @@ public class LuceneSynonymMapBuilder
         ["st", "saint"],
         ["ss", "saints"],
         ["cofe", "church of england"],
-        ["rm", "roman catholic"],
+        ["rc", "roman catholic", "catholic"],
         ["ave", "ave.", "aven", "avenue"],
         ["rd", "road"],
         ["ln", "lane"],

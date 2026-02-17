@@ -102,7 +102,7 @@ namespace SAPPub.Web.Middleware
             services.AddScoped<IGenericRepository<LaUrls>, JSONRepository<LaUrls>>();
             services.AddScoped<ILaUrlsRepository, LaUrlsRepository>();
 
-            services.AddSingleton<ISchoolSearchIndexReader, LuceneShoolSearchIndexReader>();
+            services.AddSingleton<ISchoolSearchIndexReader, LuceneSchoolSearchIndexReader>();
             services.AddSingleton<ISchoolSearchService, SchoolSearchService>();
         }
     }

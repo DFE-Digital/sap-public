@@ -23,7 +23,10 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
                 SearchResults = searchResults.Results.Select(r => new SearchResult
                 {
                     URN = r.URN,
-                    EstablishmentName = r.EstablishmentName
+                    EstablishmentName = r.EstablishmentName,
+                    Address = r.Address,
+                    GenderName = r.GenderName,
+                    ReligiousCharacter = r.ReligiousCharacterName
                 }).ToList()
             };
             return View(viewResults);

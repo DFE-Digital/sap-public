@@ -1,6 +1,8 @@
-﻿namespace SAPPub.Core.Interfaces.Services.SchoolSearch;
+﻿using SAPPub.Core.Entities.SchoolSearch;
+
+namespace SAPPub.Core.Interfaces.Services.SchoolSearch;
 
 public interface ISchoolSearchIndexReader
 {
-    Task<IList<(int urn, string resultText)>> SearchAsync(string query, int maxResults = 10);
+    Task<IList<SchoolSearchResult>> SearchAsync(string query, int maxResults = 10);
 }

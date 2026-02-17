@@ -7,7 +7,10 @@
         <form method="get" asp-controller="Search" asp-action="SearchResults">
             @await Html.PartialAsync("_SearchPartial")
         </form>
-        <p class="govuk-\!-font-weight-bold">Sorted alphabetically</p>
+
+        <div class="govuk-summary-list__row">
+            <p class="govuk-body govuk-!-font-weight-bold"><strong>Sorted alphabetically</strong></p>
+        </div>
 
         @foreach (var modelItem in Model.SearchResults)
         {
@@ -23,7 +26,7 @@
                 </govuk-summary-list-row>
                 <govuk-summary-list-row>
                     <govuk-summary-list-row-key>Pupil sex</govuk-summary-list-row-key>
-                    <govuk-summary-list-row-value>@modelItem.PupilSex</govuk-summary-list-row-value>
+                    <govuk-summary-list-row-value>@modelItem.GenderName</govuk-summary-list-row-value>
                 </govuk-summary-list-row>
             </govuk-summary-list>
         }
