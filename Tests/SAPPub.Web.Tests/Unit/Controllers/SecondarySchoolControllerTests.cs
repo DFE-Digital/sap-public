@@ -439,6 +439,30 @@ public class SecondarySchoolControllerTests
                 expectedResult.EnglandAll.PreviousYear!.Value,
                 expectedResult.EnglandAll.CurrentYear!.Value],
             model.AllGcseOverTimeData.Datasets[2].Data);
+
+
+        // Breakdown gcse data assert
+        Assert.Equal(["Girls", "Boys"], model.BreakdownGcseData.Labels);
+
+        Assert.Equal(3, model.BreakdownGcseData.Datasets.Count);
+
+        Assert.Equal("School", model.BreakdownGcseData.Datasets[0].Label);
+        Assert.Equal([
+                expectedResult.EstablishmentGirls.CurrentYear!.Value,
+                expectedResult.EstablishmentBoys.CurrentYear!.Value],
+            model.BreakdownGcseData.Datasets[0].Data);
+
+        Assert.Equal($"{_fakeEstablishment.LAName} average", model.BreakdownGcseData.Datasets[1].Label);
+        Assert.Equal([
+                expectedResult.LocalAuthorityGirls.CurrentYear!.Value,
+                expectedResult.LocalAuthorityBoys.CurrentYear!.Value],
+            model.BreakdownGcseData.Datasets[1].Data);
+
+        Assert.Equal("England average", model.BreakdownGcseData.Datasets[2].Label);
+        Assert.Equal([
+                expectedResult.EnglandGirls.CurrentYear!.Value,
+                expectedResult.EnglandBoys.CurrentYear!.Value],
+            model.BreakdownGcseData.Datasets[2].Data);
     }
 
     [Fact]
@@ -510,10 +534,7 @@ public class SecondarySchoolControllerTests
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
         Assert.Equal(gradeSelection, model.SelectedGrade);
-        Assert.Equal(
-            new List<string> { "School", $"{_fakeEstablishment.LAName} average", "England average" },
-            model.AllGcseData.Labels
-        );
+        Assert.Equal(["School", $"{_fakeEstablishment.LAName} average", "England average"], model.AllGcseData.Labels);
         Assert.Equal([0, 0, 0 ], model.AllGcseData.Data);
 
         Assert.Equal(3, model.AllGcseOverTimeData.Datasets.Count);
@@ -526,6 +547,20 @@ public class SecondarySchoolControllerTests
 
         Assert.Equal("England average", model.AllGcseOverTimeData.Datasets[2].Label);
         Assert.Equal(new double[] { 0, 0, 0 }, model.AllGcseOverTimeData.Datasets[2].Data);
+
+        // Breakdown gcse data assert
+        Assert.Equal(["Girls", "Boys"], model.BreakdownGcseData.Labels);
+
+        Assert.Equal(3, model.BreakdownGcseData.Datasets.Count);
+
+        Assert.Equal("School", model.BreakdownGcseData.Datasets[0].Label);
+        Assert.Equal([0, 0], model.BreakdownGcseData.Datasets[0].Data);
+
+        Assert.Equal($"{_fakeEstablishment.LAName} average", model.BreakdownGcseData.Datasets[1].Label);
+        Assert.Equal([0, 0], model.BreakdownGcseData.Datasets[1].Data);
+
+        Assert.Equal("England average", model.BreakdownGcseData.Datasets[2].Label);
+        Assert.Equal([0, 0], model.BreakdownGcseData.Datasets[2].Data);
     }
 
     [Fact]

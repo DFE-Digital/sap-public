@@ -198,7 +198,7 @@
                 borderWidth: 1,                
                 barThickness: 'flex',
                 maxBarThickness: 70,
-                minBarLength: 3,    
+                minBarLength: 3
             }
             if (Array.isArray(chartData.datasets)) {
                 return chartData.datasets.map((ds, i) => ({
