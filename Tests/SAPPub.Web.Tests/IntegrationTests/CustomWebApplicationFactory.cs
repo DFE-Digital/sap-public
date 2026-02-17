@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Npgsql;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Web.Tests.UI.Infrastructure;
@@ -19,11 +22,13 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
             "true",
             StringComparison.OrdinalIgnoreCase);
 
-        builder.UseEnvironment(isCi ? "Testing" : "Development");
+        // CI: run in UITests so Program doesn't insist on a real connection string.
+        // Local: Development so appsettings.Development.json is used.
+        builder.UseEnvironment(isCi ? "UITests" : "Development");
 
         builder.ConfigureAppConfiguration((context, config) =>
         {
-            // ensure we read appsettings + appsettings.{ENV}.json + env vars
+            // Ensure we read appsettings + appsettings.{ENV}.json + env vars
             config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
                   .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: false)
                   .AddEnvironmentVariables();
@@ -33,16 +38,32 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         {
             if (isCi)
             {
-                // CI: don't hit DB at all
+                // -------------------------
+                // CI: no DB + no /keys access
+                // -------------------------
+
+                // Swap out the generic repo so nothing uses Dapper/Npgsql.
                 services.RemoveAll(typeof(IGenericRepository<>));
                 services.AddTransient(typeof(IGenericRepository<>), typeof(FakeGenericRepository<>));
 
-                // also ensure we don't accidentally create a real datasource
+                // Ensure we don't accidentally resolve/use a real datasource
                 services.RemoveAll<NpgsqlDataSource>();
+
+                // Avoid DataProtection trying to read/write /keys in CI
+                // (Program registers PersistKeysToFileSystem("/keys"))
+                services.RemoveAll<IConfigureOptions<KeyManagementOptions>>();
+                services.RemoveAll<IConfigureOptions<DataProtectionOptions>>();
+
+                services.AddDataProtection()
+                        .UseEphemeralDataProtectionProvider()
+                        .SetApplicationName("SAPPub.Tests");
+
                 return;
             }
 
+            // -------------------------
             // Local dev: use real local Postgres from appsettings.Development.json
+            // -------------------------
             services.RemoveAll<NpgsqlDataSource>();
 
             services.AddSingleton(sp =>
@@ -56,6 +77,17 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
                 return NpgsqlDataSource.Create(cs);
             });
+
+            // Optional: you *can* also keep ephemeral DP keys locally for consistency,
+            // but it's not required if /keys is writable on your machine.
+            // If you want it, uncomment:
+            /*
+            services.RemoveAll<IConfigureOptions<KeyManagementOptions>>();
+            services.RemoveAll<IConfigureOptions<DataProtectionOptions>>();
+            services.AddDataProtection()
+                    .UseEphemeralDataProtectionProvider()
+                    .SetApplicationName("SAPPub.Tests");
+            */
         });
     }
 
