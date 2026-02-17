@@ -71,7 +71,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
         Assert.True(count == 0, "Expected no search results, but found some.");
 
         // assert that the no results message is displayed
-        var noResultsMessage = await Page.Locator("no-results-heading").InnerTextAsync();
+        var noResultsMessage = await Page.Locator("[data-testid='no-results-heading']").InnerTextAsync();
         Assert.Contains("Try another search", noResultsMessage);
     }
 }
