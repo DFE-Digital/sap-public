@@ -30,7 +30,6 @@ using SAPPub.Infrastructure.Repositories.KS4.Destinations;
 using SAPPub.Infrastructure.Repositories.KS4.Performance;
 using SAPPub.Infrastructure.Repositories.KS4.SubjectEntries;
 using SAPPub.Infrastructure.Repositories.KS4.Workforce;
-using SAPPub.Web.Tests.UI.Infrastructure;
 
 namespace SAPPub.Web.Middleware
 {

@@ -3,7 +3,7 @@ using SAPPub.Core.Entities;
 using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 
-namespace SAPPub.Web.Tests.UI.Infrastructure;
+namespace SAPPub.Infrastructure.Repositories.Generic;
 
 public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : class
 {
@@ -42,7 +42,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             PhaseOfEducationName = "Primary"
         },
 
-        // seen in your logs
+
         ["105574"] = new Establishment
         {
             URN = "105574",

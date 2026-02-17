@@ -3,7 +3,7 @@ using SAPPub.Core.Entities;
 using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 
-namespace SAPPub.Infrastructure.Repositories.Generic;
+namespace SAPPub.Web.Tests.UI.Infrastructure;
 
 public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : class
 {
@@ -19,6 +19,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             PhaseOfEducationId = "2",
             PhaseOfEducationName = "Primary"
         },
+
         ["100273"] = new Establishment
         {
             URN = "100273",
@@ -29,6 +30,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             PhaseOfEducationId = "2",
             PhaseOfEducationName = "Primary"
         },
+
         ["102848"] = new Establishment
         {
             URN = "102848",
@@ -39,11 +41,12 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             PhaseOfEducationId = "2",
             PhaseOfEducationName = "Primary"
         },
-        // seen in your logs
+
+
         ["105574"] = new Establishment
         {
             URN = "105574",
-            EstablishmentName = "Test Secondary School",
+            EstablishmentName = "Loreto High School Chorlton",
             LAId = "999",
             LAName = "Test LA",
             EstablishmentNumber = "9999",
@@ -53,26 +56,14 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
     };
 
     public Task<T?> ReadAsync(string id, CancellationToken ct = default)
-    {
-        // Match DapperRepository behaviour: whitespace => null
-        if (string.IsNullOrWhiteSpace(id))
-            return Task.FromResult<T?>(default);
-
-        return ReadSingleAsync(new { Id = id }, ct);
-    }
+        => ReadSingleAsync(new { Id = id }, ct);
 
     public Task<IEnumerable<T>> ReadAllAsync(CancellationToken ct = default)
-    {
-        if (typeof(T) == typeof(Establishment))
-            return Task.FromResult(Establishments.Values.Cast<T>());
-
-        return Task.FromResult<IEnumerable<T>>(Array.Empty<T>());
-    }
+        => Task.FromResult(Enumerable.Empty<T>());
 
     public Task<T?> ReadSingleAsync(object? parameters, CancellationToken ct = default)
     {
-        if (parameters is null)
-            return Task.FromResult<T?>(default);
+        if (parameters is null) return Task.FromResult<T?>(default);
 
         if (typeof(T) == typeof(Establishment))
         {
@@ -81,19 +72,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             if (!string.IsNullOrWhiteSpace(id) && Establishments.TryGetValue(id, out var est))
                 return Task.FromResult<T?>((T)(object)est);
 
-            // Return a safe non-null establishment to avoid controller/service chains failing
-            var fallback = new Establishment
-            {
-                URN = id ?? string.Empty,
-                EstablishmentName = "Unknown establishment",
-                LAId = "0",
-                LAName = "Unknown LA",
-                EstablishmentNumber = "0",
-                PhaseOfEducationId = "4",
-                PhaseOfEducationName = "Secondary"
-            };
-
-            return Task.FromResult<T?>((T)(object)fallback);
+            return Task.FromResult<T?>((T)(object)new Establishment { URN = id ?? string.Empty });
         }
 
         return Task.FromResult<T?>(default);
@@ -101,17 +80,16 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
 
     public Task<IEnumerable<T>> ReadManyAsync(object? parameters, CancellationToken ct = default)
     {
-        if (parameters is null)
-            return Task.FromResult<IEnumerable<T>>(Array.Empty<T>());
+        if (parameters is null) return Task.FromResult(Enumerable.Empty<T>());
 
         if (typeof(T) == typeof(EstablishmentSubjectEntryRow))
         {
             var urn = GetPropertyString(parameters, "Urn");
             if (string.IsNullOrWhiteSpace(urn))
-                return Task.FromResult<IEnumerable<T>>(Array.Empty<T>());
+                return Task.FromResult(Enumerable.Empty<T>());
 
             // Must be consistent and >0 or your aggregation returns empty
-            const int cohort = 100;
+            var cohort = 100;
 
             var rows = new List<EstablishmentSubjectEntryRow>
             {
@@ -121,7 +99,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
                 MakeRow(urn, cohort, "Combined Science", "GCSE", 40),
                 MakeRow(urn, cohort, "Computer Science", "GCSE", 12),
 
-                // More core
+                // A few more core
                 MakeRow(urn, cohort, "Biology", "GCSE", 20),
                 MakeRow(urn, cohort, "Chemistry", "GCSE", 18),
                 MakeRow(urn, cohort, "Physics", "GCSE", 15),
@@ -137,10 +115,10 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
 
             rows.AddRange(additionalSubjects.Select(s => MakeRow(urn, cohort, s, "GCSE", 8)));
 
-            return Task.FromResult<IEnumerable<T>>(rows.Cast<T>().ToList());
+            return Task.FromResult(rows.Cast<T>());
         }
 
-        return Task.FromResult<IEnumerable<T>>(Array.Empty<T>());
+        return Task.FromResult(Enumerable.Empty<T>());
     }
 
     private static EstablishmentSubjectEntryRow MakeRow(string urn, int cohort, string subject, string qual, int count)
