@@ -1,12 +1,9 @@
-﻿using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Npgsql;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Web.Tests.UI.Infrastructure;
@@ -22,8 +19,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
             "true",
             StringComparison.OrdinalIgnoreCase);
 
-        // CI: run in UITests so Program doesn't insist on a real connection string.
-        // Local: Development so appsettings.Development.json is used.
+        // Use a dedicated env name for CI to avoid accidentally using real infra.
         builder.UseEnvironment(isCi ? "UITests" : "Development");
 
         builder.ConfigureAppConfiguration((context, config) =>
@@ -32,40 +28,43 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
             config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
                   .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: false)
                   .AddEnvironmentVariables();
+
+            // In CI, guarantee a connection string exists (but it can be dummy).
+            if (isCi)
+            {
+                // Port=1 makes it effectively unreachable if anything accidentally tries to connect.
+                config.AddInMemoryCollection(new Dictionary<string, string?>
+                {
+                    ["ConnectionStrings:PostgresConnectionString"] =
+                        "Host=127.0.0.1;Port=1;Database=x;Username=x;Password=x;Timeout=1;Command Timeout=1"
+                });
+            }
         });
 
         builder.ConfigureServices((context, services) =>
         {
             if (isCi)
             {
-                // -------------------------
-                // CI: no DB + no /keys access
-                // -------------------------
-
-                // Swap out the generic repo so nothing uses Dapper/Npgsql.
+                // CI: don't hit DB at all - swap out generic repo
                 services.RemoveAll(typeof(IGenericRepository<>));
                 services.AddTransient(typeof(IGenericRepository<>), typeof(FakeGenericRepository<>));
 
-                // Ensure we don't accidentally resolve/use a real datasource
+                // BUT still register NpgsqlDataSource so DI smoke tests pass
                 services.RemoveAll<NpgsqlDataSource>();
+                services.AddSingleton(sp =>
+                {
+                    var cfg = sp.GetRequiredService<IConfiguration>();
+                    var cs = cfg.GetConnectionString("PostgresConnectionString")
+                             ?? throw new InvalidOperationException("Connection string 'PostgresConnectionString' is not configured.");
 
-                // Avoid DataProtection trying to read/write /keys in CI
-                // (Program registers PersistKeysToFileSystem("/keys"))
-                services.RemoveAll<IConfigureOptions<KeyManagementOptions>>();
-                services.RemoveAll<IConfigureOptions<DataProtectionOptions>>();
-
-                services.AddDataProtection()
-                        .UseEphemeralDataProtectionProvider()
-                        .SetApplicationName("SAPPub.Tests");
+                    return NpgsqlDataSource.Create(cs);
+                });
 
                 return;
             }
 
-            // -------------------------
-            // Local dev: use real local Postgres from appsettings.Development.json
-            // -------------------------
+            // Local dev laptop: use real local Postgres from appsettings.Development.json
             services.RemoveAll<NpgsqlDataSource>();
-
             services.AddSingleton(sp =>
             {
                 var cfg = sp.GetRequiredService<IConfiguration>();
@@ -77,17 +76,6 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
                 return NpgsqlDataSource.Create(cs);
             });
-
-            // Optional: you *can* also keep ephemeral DP keys locally for consistency,
-            // but it's not required if /keys is writable on your machine.
-            // If you want it, uncomment:
-            /*
-            services.RemoveAll<IConfigureOptions<KeyManagementOptions>>();
-            services.RemoveAll<IConfigureOptions<DataProtectionOptions>>();
-            services.AddDataProtection()
-                    .UseEphemeralDataProtectionProvider()
-                    .SetApplicationName("SAPPub.Tests");
-            */
         });
     }
 

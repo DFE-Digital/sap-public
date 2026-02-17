@@ -1,9 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
+using SAPPub.Infrastructure.Repositories.Generic;          // FakeGenericRepository<>
 using System;
 using System.Net;
 using System.Threading.Tasks;
@@ -20,13 +21,16 @@ namespace SAPPub.Web.Tests.IntegrationTests
             _factory = factory;
         }
 
+        private static bool IsCi =>
+            string.Equals(Environment.GetEnvironmentVariable("GITHUB_ACTIONS"), "true", StringComparison.OrdinalIgnoreCase);
+
         [Fact]
         public void ServiceProvider_Resolves_Critical_Services()
         {
             using var scope = _factory.Services.CreateScope();
             var sp = scope.ServiceProvider;
 
-            // Critical plumbing: this is the thing that previously broke DI
+            // Critical plumbing
             _ = sp.GetRequiredService<NpgsqlDataSource>();
 
             // Closed generic - proves generic repo wiring is valid
@@ -53,12 +57,12 @@ namespace SAPPub.Web.Tests.IntegrationTests
         {
             var client = _factory.CreateClient();
 
-            // If your route differs, change this to your actual health URL.
-            var response = await client.GetAsync("/health");
+            // Your Program.cs maps: app.MapHealthChecks("/healthcheck");
+            var response = await client.GetAsync("/healthcheck");
 
             Assert.True(
                 response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.NoContent,
-                $"Expected 200/204 from /health but got {(int)response.StatusCode} {response.StatusCode}");
+                $"Expected 200/204 from /healthcheck but got {(int)response.StatusCode} {response.StatusCode}");
         }
 
         [Fact]
@@ -81,6 +85,18 @@ namespace SAPPub.Web.Tests.IntegrationTests
             var r2 = sp.GetRequiredService<IGenericRepository<Establishment>>();
 
             Assert.NotSame(r1, r2);
+        }
+
+        [Fact]
+        public void GenericRepository_Uses_Fake_In_CI_And_NotFake_Locally()
+        {
+            using var scope = _factory.Services.CreateScope();
+            var repo = scope.ServiceProvider.GetRequiredService<IGenericRepository<Establishment>>();
+
+            if (IsCi)
+                Assert.IsType<FakeGenericRepository<Establishment>>(repo);
+            else
+                Assert.IsNotType<FakeGenericRepository<Establishment>>(repo);
         }
     }
 }
