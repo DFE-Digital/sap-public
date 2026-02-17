@@ -46,7 +46,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
         ["105574"] = new Establishment
         {
             URN = "105574",
-            EstablishmentName = "Test Secondary School",
+            EstablishmentName = "Loreto High School Chorlton",
             LAId = "999",
             LAName = "Test LA",
             EstablishmentNumber = "9999",
