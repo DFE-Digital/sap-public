@@ -1,5 +1,9 @@
 ﻿@model SAPPub.Web.Models.Search.SearchResultsViewModel
 
+@{
+    ViewData["Title"] = "Search results";
+}
+
 <h1>@Model.SearchResultsCount results for '@Model.NameSearchTerm'</h1>
 
 <div class="govuk-grid-row">
