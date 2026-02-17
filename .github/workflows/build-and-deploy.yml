@@ -113,7 +113,6 @@ jobs:
           dotnet run --project ./SAPPub.Web/SAPPub.Web.csproj --urls "https://localhost:3000" &
         env:
           ASPNETCORE_ENVIRONMENT: Development
-          ConnectionStrings__PostgresConnectionString: ${{ secrets.POSTGRES_CONNECTION_STRING }}
 
       - name: Wait for MVC App to be ready
         run: npx wait-on https://localhost:3000
@@ -131,7 +130,6 @@ jobs:
         env:
           HEADED: 0
           PLAYWRIGHT_IGNORE_HTTPS_ERRORS: true
-          ConnectionStrings__PostgresConnectionString: ${{ secrets.POSTGRES_CONNECTION_STRING }}
         run: |
           TEST_PROJECTS=$(find ./Tests -type f -name "*.Tests.csproj" | sort)
 
