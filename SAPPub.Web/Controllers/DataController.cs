@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Absence;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
@@ -74,7 +75,7 @@ namespace SAPPub.Web.Controllers
             dataModel.EnglandAbsence = await _englandAbsenceService.GetEnglandAbsenceAsync(ct);
 
             dataModel.KS4Performance = await _performanceService.GetEstablishmentPerformanceAsync(id, ct);
-            dataModel.EstablishmentDestinations = await _destinationsService.GetEstablishmentDestinationsAsync(id, ct);
+            dataModel.EstablishmentDestinations = await _destinationsService.GetEstablishmentDestinationsAsync(id, ct) ?? new EstablishmentDestinations();
             dataModel.Workforce = await _workforceService.GetEstablishmentWorkforceAsync(id, ct);
 
             dataModel.LADestinations = await _laDestinationsService.GetLADestinationsAsync(dataModel.LAId, ct);

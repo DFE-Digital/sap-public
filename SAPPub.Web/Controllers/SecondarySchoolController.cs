@@ -26,6 +26,7 @@ namespace SAPPub.Web.Controllers
 
             if (string.IsNullOrWhiteSpace(establishmentDetails?.URN))
             {
+                logger.LogWarning("No establishment details found for URN: {URN}", urn);
                 return View("Error");
             }
 

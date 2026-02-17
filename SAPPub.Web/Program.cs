@@ -66,11 +66,11 @@ public partial class Program
 
         if (string.IsNullOrWhiteSpace(connectionString))
         {
-            if (!builder.Environment.IsEnvironment("Testing"))
+            if (!builder.Environment.IsEnvironment("Testing") && !builder.Environment.IsEnvironment("UITests"))
                 throw new InvalidOperationException("Connection string 'PostgresConnectionString' is not configured.");
 
             // In Testing, don't register a real DB connection
-            connectionString = "Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=postgres";
+            connectionString = "Host=localhost;Port=5432;Database=SAPData;Username=postgres;Password=246254PoplarHighStreet!";
         }
 
         builder.Services.AddSingleton<NpgsqlDataSource>(_ => NpgsqlDataSource.Create(connectionString));

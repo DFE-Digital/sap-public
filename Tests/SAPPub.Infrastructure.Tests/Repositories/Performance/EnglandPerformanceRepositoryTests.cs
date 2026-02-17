@@ -54,7 +54,8 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Performance
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(0d, result.Attainment8_Tot_Eng_Current_Num);
+            var expected = new EnglandPerformance();
+            Assert.Equal(expected.Attainment8_Tot_Eng_Current_Num, result.Attainment8_Tot_Eng_Current_Num);
 
             _mockGenericRepo.Verify(
                 r => r.ReadSingleAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()),

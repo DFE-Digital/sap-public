@@ -11,7 +11,7 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Generic
         public string Value { get; set; } = string.Empty;
     }
 
-    public class JSONRepositoryTests : IDisposable
+    public class JSONRepositoryTests : IDisposable  //commented out - JOSN repo is being ditched
     {
         private readonly string _dataDir;
         private readonly string _filesDir;
@@ -40,74 +40,74 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Generic
             }
         }
 
-        [Fact]
-        public async Task ReadAllAsync_ReturnsEntities_WhenFileExists_AndContainsValidJson()
-        {
-            // Arrange
-            var items = new[]
-            {
-                new TestEntity { Id = "111", Value = "One" },
-                new TestEntity { Id = "222", Value = "Two" }
-            };
+        //[Fact]
+        //public async Task ReadAllAsync_ReturnsEntities_WhenFileExists_AndContainsValidJson()
+        //{
+        //    // Arrange
+        //    var items = new[]
+        //    {
+        //        new TestEntity { Id = "111", Value = "One" },
+        //        new TestEntity { Id = "222", Value = "Two" }
+        //    };
 
-            var filePath = Path.Combine(_filesDir, "TestEntity.json");
-            File.WriteAllText(filePath, JsonConvert.SerializeObject(items));
+        //    var filePath = Path.Combine(_filesDir, "TestEntity.json");
+        //    File.WriteAllText(filePath, JsonConvert.SerializeObject(items));
 
-            var logger = new Mock<ILogger<JSONRepository<TestEntity>>>();
-            var repo = new JSONRepository<TestEntity>(logger.Object);
+        //    var logger = new Mock<ILogger<JSONRepository<TestEntity>>>();
+        //    var repo = new JSONRepository<TestEntity>(logger.Object);
 
-            // Act
-            var result = await repo.ReadAllAsync(CancellationToken.None);
+        //    // Act
+        //    var result = await repo.ReadAllAsync(CancellationToken.None);
 
-            // Assert
-            Assert.NotNull(result);
-            var list = result.ToList();
-            Assert.Equal(2, list.Count);
-            Assert.Contains(list, l => l.Id == "111");
-            Assert.Contains(list, l => l.Id == "222");
-        }
+        //    // Assert
+        //    Assert.NotNull(result);
+        //    var list = result.ToList();
+        //    Assert.Equal(2, list.Count);
+        //    Assert.Contains(list, l => l.Id == "111");
+        //    Assert.Contains(list, l => l.Id == "222");
+        //}
 
-        [Fact]
-        public async Task ReadAllAsync_ReturnsEmpty_WhenFileDoesNotExist()
-        {
-            // Arrange
-            var filePath = Path.Combine(_filesDir, "TestEntity.json");
-            if (File.Exists(filePath)) File.Delete(filePath);
+        //[Fact]
+        //public async Task ReadAllAsync_ReturnsEmpty_WhenFileDoesNotExist()
+        //{
+        //    // Arrange
+        //    var filePath = Path.Combine(_filesDir, "TestEntity.json");
+        //    if (File.Exists(filePath)) File.Delete(filePath);
 
-            var logger = new Mock<ILogger<JSONRepository<TestEntity>>>();
-            var repo = new JSONRepository<TestEntity>(logger.Object);
+        //    var logger = new Mock<ILogger<JSONRepository<TestEntity>>>();
+        //    var repo = new JSONRepository<TestEntity>(logger.Object);
 
-            // Act
-            var result = await repo.ReadAllAsync(CancellationToken.None);
+        //    // Act
+        //    var result = await repo.ReadAllAsync(CancellationToken.None);
 
-            // Assert
-            Assert.NotNull(result);
-            Assert.Empty(result);
-        }
+        //    // Assert
+        //    Assert.NotNull(result);
+        //    Assert.Empty(result);
+        //}
 
-        [Fact]
-        public async Task ReadAllAsync_ReturnsEmpty_WhenFileContainsInvalidJson()
-        {
-            // Arrange
-            var filePath = Path.Combine(_filesDir, "TestEntity.json");
-            File.WriteAllText(filePath, "{ invalid-json ");
+        //[Fact]
+        //public async Task ReadAllAsync_ReturnsEmpty_WhenFileContainsInvalidJson()
+        //{
+        //    // Arrange
+        //    var filePath = Path.Combine(_filesDir, "TestEntity.json");
+        //    File.WriteAllText(filePath, "{ invalid-json ");
 
-            var logger = new Mock<ILogger<JSONRepository<TestEntity>>>();
-            var repo = new JSONRepository<TestEntity>(logger.Object);
+        //    var logger = new Mock<ILogger<JSONRepository<TestEntity>>>();
+        //    var repo = new JSONRepository<TestEntity>(logger.Object);
 
-            // Act
-            var result = await repo.ReadAllAsync(CancellationToken.None);
+        //    // Act
+        //    var result = await repo.ReadAllAsync(CancellationToken.None);
 
-            // Assert
-            Assert.NotNull(result);
-            Assert.Empty(result);
-        }
+        //    // Assert
+        //    Assert.NotNull(result);
+        //    Assert.Empty(result);
+        //}
 
-        [Fact]
-        public void Ctor_ThrowsArgumentNullException_WhenLoggerIsNull()
-        {
-            // Arrange & Act & Assert
-            Assert.Throws<ArgumentNullException>(() => new JSONRepository<TestEntity>(null!));
-        }
+        //[Fact]
+        //public void Ctor_ThrowsArgumentNullException_WhenLoggerIsNull()
+        //{
+        //    // Arrange & Act & Assert
+        //    Assert.Throws<ArgumentNullException>(() => new JSONRepository<TestEntity>(null!));
+        //}
     }
 }
