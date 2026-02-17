@@ -2,7 +2,7 @@
 using Lucene.Net.Search;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Entities.SchoolSearch;
-using SAPPub.Core.Interfaces.Services.SchoolSearch;
+using SAPPub.Core.Interfaces.Services.Search;
 
 namespace SAPPub.Infrastructure.LuceneSearch;
 

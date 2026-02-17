@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SAPPub.Core.Interfaces.Services.SchoolSearch;
+using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Web.Models.Search;
 
 namespace SAPPub.Web.Controllers;

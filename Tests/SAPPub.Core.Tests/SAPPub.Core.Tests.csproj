@@ -36,7 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\SchoolSearch\" />
+    <Folder Include="Services\Search\" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 ﻿using SAPPub.Core.Entities.SchoolSearch;
 
-namespace SAPPub.Core.Interfaces.Services.SchoolSearch;
+namespace SAPPub.Core.Interfaces.Services.Search;
 
 public interface ISchoolSearchService
 {

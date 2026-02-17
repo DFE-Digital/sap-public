@@ -18,7 +18,7 @@ using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Services.KS4.Workforce;
-using SAPPub.Core.Interfaces.Services.SchoolSearch;
+using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.Services;
 using SAPPub.Core.Services.KS4;
 using SAPPub.Core.Services.KS4.Absence;
@@ -94,8 +94,7 @@ namespace SAPPub.Web.Middleware
 
             services.AddTransient<IEstablishmentSubjectEntriesService, EstablishmentSubjectEntriesService>();
             services.AddTransient<IEstablishmentSubjectEntriesRepository, EstablishmentSubjectEntriesRepository>();
-            services.AddTransient<IAcademicPerformanceEnglishAndMathsResultsService, Core.Services.KS4.Performance.EnglishAndMathsResultsService>();
-            services.AddTransient<ISecondarySchoolService, SecondarySchoolService>();
+            services.AddTransient<IAcademicPerformanceEnglishAndMathsResultsService, EnglishAndMathsResultsService>();
             services.AddTransient<IDestinationsService, DestinationsService>();
 
             services.AddScoped<IAdmissionsService, EstablishmentAdmissionsService>();
