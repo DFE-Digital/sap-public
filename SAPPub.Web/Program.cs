@@ -58,9 +58,21 @@ public partial class Program
         });
 
         builder.Services.AddHealthChecks();
-        builder.Services.AddDataProtection()
-               .PersistKeysToFileSystem(new DirectoryInfo(@"/keys"))
-               .SetApplicationName("SAPPub");
+
+        // Data protection
+        if (builder.Environment.IsEnvironment("Testing") || builder.Environment.IsEnvironment("UITests"))
+        {
+            // CI/tests: don't try to write to /keys
+            builder.Services.AddDataProtection()
+                .UseEphemeralDataProtectionProvider()
+                .SetApplicationName("SAPPub");
+        }
+        else
+        {
+            builder.Services.AddDataProtection()
+                .PersistKeysToFileSystem(new DirectoryInfo(@"/keys"))
+                .SetApplicationName("SAPPub");
+        }
 
         var connectionString = builder.Configuration.GetConnectionString("PostgresConnectionString");
 
