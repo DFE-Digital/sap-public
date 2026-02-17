@@ -5,10 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Npgsql;
-using System.Data;
 
 namespace SAPPub.Web.Tests.IntegrationTests;
-// Custom factory for better control over the test environment
+
 public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -17,31 +16,41 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
         builder.ConfigureAppConfiguration((context, config) =>
         {
-            // Provide a value so Program.Main doesn't throw.
-            // It won't actually connect unless you open/use it.
-            var settings = new Dictionary<string, string?>
+            // Build whatever config sources already exist (env vars, appsettings, etc.)
+            var built = config.Build();
+            var existing = built.GetConnectionString("PostgresConnectionString");
+
+            // If CI has provided a connection string, don't override it.
+            if (!string.IsNullOrWhiteSpace(existing))
+                return;
+
+            // Local fallback only (so tests still run locally without setup)
+            config.AddInMemoryCollection(new Dictionary<string, string?>
             {
                 ["ConnectionStrings:PostgresConnectionString"] =
-                    "Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=postgres"
-            };
-
-            config.AddInMemoryCollection(settings);
+                    "Host=127.0.0.1;Port=1;Database=x;Username=x;Password=x;Timeout=1;Command Timeout=1"
+            });
         });
 
         builder.ConfigureServices(services =>
         {
-            // Optional but useful: ensure IDbConnection uses the same dummy string.
+            // Ensure NpgsqlDataSource uses the configured connection string
             services.RemoveAll<NpgsqlDataSource>();
 
-            services.AddSingleton<NpgsqlDataSource>(_ =>
-                NpgsqlDataSource.Create("Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=postgres"));
+            services.AddSingleton(sp =>
+            {
+                var cfg = sp.GetRequiredService<IConfiguration>();
+                var cs = cfg.GetConnectionString("PostgresConnectionString")
+                         ?? throw new InvalidOperationException("Connection string 'PostgresConnectionString' is not configured.");
+
+                return NpgsqlDataSource.Create(cs);
+            });
         });
     }
+
     protected override IHost CreateHost(IHostBuilder builder)
     {
-        // Ensure the content root is set correctly for tests
         builder.UseContentRoot(Directory.GetCurrentDirectory());
-
         return base.CreateHost(builder);
     }
 }
