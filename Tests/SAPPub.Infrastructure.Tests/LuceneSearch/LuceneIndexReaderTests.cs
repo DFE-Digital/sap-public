@@ -58,9 +58,9 @@ public class LuceneIndexReaderTests
 
         // Assert
         Assert.NotNull(results);
-        Assert.NotEmpty(results);
-        Assert.Equal(15, int.Parse(results.First().URN));
-        Assert.Contains(FakeEstablishmentThree.EstablishmentName, results.First().EstablishmentName);
+        Assert.NotEmpty(results.Results);
+        Assert.Equal(15, int.Parse(results.Results.First().URN));
+        Assert.Contains(FakeEstablishmentThree.EstablishmentName, results.Results.First().EstablishmentName);
     }
 
     [Theory]
@@ -76,7 +76,7 @@ public class LuceneIndexReaderTests
 
         var results = await _sut.SearchAsync(input!);
 
-        Assert.Empty(results);
+        Assert.Empty(results.Results);
     }
 
     [Fact]

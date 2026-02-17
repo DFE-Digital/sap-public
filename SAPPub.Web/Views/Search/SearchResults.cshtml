@@ -8,9 +8,8 @@
             @await Html.PartialAsync("_SearchPartial")
         </form>
 
-        <div class="govuk-summary-list__row">
-            <p class="govuk-body govuk-!-font-weight-bold"><strong>Sorted alphabetically</strong></p>
-        </div>
+        <p class="govuk-body govuk-!-font-weight-bold"><strong>Sorted alphabetically</strong></p>
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
         @foreach (var modelItem in Model.SearchResults)
         {
@@ -29,6 +28,11 @@
                     <govuk-summary-list-row-value>@modelItem.GenderName</govuk-summary-list-row-value>
                 </govuk-summary-list-row>
             </govuk-summary-list>
+        }
+        @if (Model.SearchResults.Count == 0)
+        {
+            <h2 class="govuk-heading-s govuk-!-font-weight-bold" data-testid="no-results-heading">Try another search</h2>
+            <p class="govuk-body">You may need to search by a local council or postcode instead of school name.</p>
         }
     </div>
 </div>

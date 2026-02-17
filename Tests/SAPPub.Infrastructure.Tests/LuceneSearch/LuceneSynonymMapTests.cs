@@ -45,7 +45,7 @@ public class LuceneSynonymMapTests
 
         var results = await _sut.SearchAsync(input);
 
-        Assert.Single(results);
+        Assert.Single(results.Results);
     }
 
     [Theory]
@@ -123,7 +123,7 @@ public class LuceneSynonymMapTests
 
         var results = await _sut.SearchAsync(input);
 
-        Assert.Single(results);
+        Assert.Single(results.Results);
     }
 
     [Fact]

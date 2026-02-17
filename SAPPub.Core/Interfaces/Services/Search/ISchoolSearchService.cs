@@ -1,9 +1,9 @@
-﻿using SAPPub.Core.Entities.SchoolSearch;
+﻿using SAPPub.Core.ServiceModels.Search;
 
 namespace SAPPub.Core.Interfaces.Services.Search;
 
 public interface ISchoolSearchService
 {
-    Task<SchoolSearchResults> SearchAsync(string query);
+    Task<SchoolSearchResultsServiceModel> SearchAsync(string query);
 }
 

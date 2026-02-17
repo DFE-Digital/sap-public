@@ -8,12 +8,12 @@ namespace SAPPub.Infrastructure.LuceneSearch;
 
 public class LuceneSchoolSearchIndexReader(LuceneIndexContext context, LuceneTokeniser luceneTokeniser, LuceneHighlighter highlighter) : ISchoolSearchIndexReader
 {
-    public async Task<IList<SchoolSearchResult>> SearchAsync(string query, int maxResults = 10)
+    public async Task<SchoolSearchResults> SearchAsync(string query, int maxResults = 10)
     {
-        if (string.IsNullOrWhiteSpace(query)) return [];
+        if (string.IsNullOrWhiteSpace(query)) return new SchoolSearchResults(Count: 0, Results: new List<SchoolSearchResult>());
 
         var tokens = luceneTokeniser.Tokenise(query).ToList();
-        if (!tokens.Any()) return [];
+        if (!tokens.Any()) return new SchoolSearchResults(Count: 0, Results: new List<SchoolSearchResult>());
 
         await Task.Yield();
 
@@ -60,7 +60,8 @@ public class LuceneSchoolSearchIndexReader(LuceneIndexContext context, LuceneTok
 
             var topDocs = searcher.Search(finalQuery, take, sort);
 
-            var results = new List<SchoolSearchResult>();
+            // CML check this is the total, even with pagination?
+            var results = new SchoolSearchResults(Count: topDocs.TotalHits, Results: new List<SchoolSearchResult>());
 
             foreach (var sd in topDocs.ScoreDocs)
             {
@@ -73,7 +74,7 @@ public class LuceneSchoolSearchIndexReader(LuceneIndexContext context, LuceneTok
 
                 var highlightedText = highlighter.HighlightText(finalQuery, establishmentName, nameof(Establishment.EstablishmentName));
 
-                results.Add(new SchoolSearchResult(urn, establishmentName, address, genderName, religiousCharacterName));
+                results.Results.Add(new SchoolSearchResult(urn, establishmentName, address, genderName, religiousCharacterName));
             }
 
             return results;

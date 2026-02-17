@@ -19,8 +19,8 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
             var viewResults = new SearchResultsViewModel()
             {
                 NameSearchTerm = searchKeyWord,
-                SearchResultsCount = searchResults.TotalCount,
-                SearchResults = searchResults.Results.Select(r => new SearchResult
+                SearchResultsCount = searchResults.Count,
+                SearchResults = searchResults.SchoolSearchResults.Select(r => new SearchResultViewModel
                 {
                     URN = r.URN,
                     EstablishmentName = r.EstablishmentName,
@@ -35,7 +35,7 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
         {
             NameSearchTerm = searchKeyWord,
             SearchResultsCount = 0,
-            SearchResults = new List<SearchResult>()
+            SearchResults = new List<SearchResultViewModel>()
         });
     }
 }

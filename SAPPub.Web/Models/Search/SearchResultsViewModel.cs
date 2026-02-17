@@ -1,8 +1,8 @@
-﻿using SAPPub.Core.Entities;
+﻿using SAPPub.Core.ServiceModels.Search;
 
 namespace SAPPub.Web.Models.Search;
 
-public class SearchResult
+public class SearchResultViewModel
 {
     public string URN { get; set; } = string.Empty;
     public string EstablishmentName { get; set; } = string.Empty;
@@ -10,15 +10,15 @@ public class SearchResult
     public string? ReligiousCharacter { get; set; }
     public string? GenderName { get; set; }
 
-    public static SearchResult FromEstablishmentCoreEntity(Establishment establishment)
+    public static SearchResultViewModel FromServiceModel(SchoolSearchResultServiceModel serviceModel)
     {
-        return new SearchResult
+        return new SearchResultViewModel
         {
-            URN = establishment.URN,
-            EstablishmentName = establishment.EstablishmentName,
-            Address = establishment.Address,
-            ReligiousCharacter = establishment.ReligiousCharacterName,
-            GenderName = establishment.GenderName
+            URN = serviceModel.URN.ToString(),
+            EstablishmentName = serviceModel.EstablishmentName,
+            Address = serviceModel.Address,
+            ReligiousCharacter = serviceModel.ReligiousCharacterName,
+            GenderName = serviceModel.GenderName
         };
     }
 }
@@ -28,10 +28,10 @@ public class SearchResultsViewModel
     public string? NameSearchTerm { get; set; }
     public int SearchResultsCount { get; set; }
 
-    public List<SearchResult> SearchResults { get; set; } = new List<SearchResult>();
+    public List<SearchResultViewModel> SearchResults { get; set; } = new List<SearchResultViewModel>();
 
-    public static List<SearchResult> FromEstablishmentCoreEntity(IEnumerable<Establishment> establishments)
+    public static List<SearchResultViewModel> FromServiceModel(IEnumerable<SchoolSearchResultsServiceModel> serviceModel)
     {
-        return establishments.Select(e => SearchResult.FromEstablishmentCoreEntity(e)).ToList();
+        return serviceModel.SelectMany(e => e.SchoolSearchResults.Select(r => SearchResultViewModel.FromServiceModel(r))).ToList();
     }
 }

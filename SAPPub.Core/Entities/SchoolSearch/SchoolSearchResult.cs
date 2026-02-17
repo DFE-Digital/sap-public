@@ -3,7 +3,7 @@
 namespace SAPPub.Core.Entities.SchoolSearch;
 
 [ExcludeFromCodeCoverage]
-public record SchoolSearchResults(int TotalCount, IEnumerable<SchoolSearchResult> Results);
+public record SchoolSearchResults(int Count, IList<SchoolSearchResult> Results);
 
 [ExcludeFromCodeCoverage]
 public record SchoolSearchResult(
