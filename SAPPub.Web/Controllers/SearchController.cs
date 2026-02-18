@@ -20,14 +20,7 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
             {
                 NameSearchTerm = searchKeyWord,
                 SearchResultsCount = searchResults.Count,
-                SearchResults = searchResults.SchoolSearchResults.Select(r => new SearchResultViewModel
-                {
-                    URN = r.URN,
-                    EstablishmentName = r.EstablishmentName,
-                    Address = r.Address,
-                    GenderName = r.GenderName,
-                    ReligiousCharacter = r.ReligiousCharacterName
-                }).ToList()
+                SearchResults = SearchResultsViewModel.FromServiceModel(searchResults.SchoolSearchResults)
             };
             return View(viewResults);
         }

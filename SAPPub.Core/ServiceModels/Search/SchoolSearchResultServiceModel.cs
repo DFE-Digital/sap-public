@@ -8,9 +8,9 @@ public record SchoolSearchResultsServiceModel
 
 public record SchoolSearchResultServiceModel
 {
-    public string URN { get; init; }
-    public string EstablishmentName { get; init; } = string.Empty;
-    public string Address { get; init; } = string.Empty;
-    public string GenderName { get; init; } = string.Empty;
-    public string ReligiousCharacterName { get; init; } = string.Empty;
+    public string? URN { get; init; }
+    public string? EstablishmentName { get; init; }
+    public string? Address { get; init; }
+    public string? GenderName { get; init; }
+    public string? ReligiousCharacterName { get; init; }
 }

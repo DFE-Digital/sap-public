@@ -59,7 +59,7 @@ public class LuceneIndexReaderTests
         // Assert
         Assert.NotNull(results);
         Assert.NotEmpty(results.Results);
-        Assert.Equal(15, int.Parse(results.Results.First().URN));
+        Assert.Equal(FakeEstablishmentThree.URN, results.Results.First().URN);
         Assert.Contains(FakeEstablishmentThree.EstablishmentName, results.Results.First().EstablishmentName);
     }
 

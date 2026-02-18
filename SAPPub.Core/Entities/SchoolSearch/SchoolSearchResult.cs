@@ -7,9 +7,9 @@ public record SchoolSearchResults(int Count, IList<SchoolSearchResult> Results);
 
 [ExcludeFromCodeCoverage]
 public record SchoolSearchResult(
-     string URN,
-     string EstablishmentName,
-     string Address,
-     string GenderName,
-     string ReligiousCharacterName
+     string? URN,
+     string? EstablishmentName,
+     string? Address,
+     string? GenderName,
+     string? ReligiousCharacterName
 );

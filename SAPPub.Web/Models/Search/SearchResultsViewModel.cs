@@ -14,11 +14,11 @@ public class SearchResultViewModel
     {
         return new SearchResultViewModel
         {
-            URN = serviceModel.URN.ToString(),
-            EstablishmentName = serviceModel.EstablishmentName,
-            Address = serviceModel.Address,
-            ReligiousCharacter = serviceModel.ReligiousCharacterName,
-            GenderName = serviceModel.GenderName
+            URN = serviceModel.URN?.ToString() ?? string.Empty,
+            EstablishmentName = serviceModel.EstablishmentName ?? string.Empty,
+            Address = serviceModel.Address ?? string.Empty,
+            ReligiousCharacter = serviceModel.ReligiousCharacterName ?? string.Empty,
+            GenderName = serviceModel.GenderName ?? string.Empty
         };
     }
 }
@@ -30,8 +30,8 @@ public class SearchResultsViewModel
 
     public List<SearchResultViewModel> SearchResults { get; set; } = new List<SearchResultViewModel>();
 
-    public static List<SearchResultViewModel> FromServiceModel(IEnumerable<SchoolSearchResultsServiceModel> serviceModel)
+    public static List<SearchResultViewModel> FromServiceModel(IEnumerable<SchoolSearchResultServiceModel> serviceModel)
     {
-        return serviceModel.SelectMany(e => e.SchoolSearchResults.Select(r => SearchResultViewModel.FromServiceModel(r))).ToList();
+        return serviceModel.Select(r => SearchResultViewModel.FromServiceModel(r)).ToList();
     }
 }
