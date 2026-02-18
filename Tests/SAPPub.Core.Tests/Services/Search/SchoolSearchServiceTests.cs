@@ -8,12 +8,12 @@ namespace SAPPub.Core.Tests.Services.Search;
 public class SchoolSearchServiceTests
 {
     private readonly Mock<ISchoolSearchIndexReader> _mockIndexReader = new();
-    private readonly SchoolSearchResult searchResult1 = new SchoolSearchResult(URN: "123456",
+    private readonly SchoolSearchDocument searchResult1 = new SchoolSearchDocument(URN: "123456",
                     EstablishmentName: "Test School",
                     Address: "123 Test Street",
                     GenderName: "Mixed",
                     ReligiousCharacterName: "None");
-    private readonly SchoolSearchResult searchResult2 = new SchoolSearchResult(URN: "223456",
+    private readonly SchoolSearchDocument searchResult2 = new SchoolSearchDocument(URN: "223456",
                     EstablishmentName: "A Test School 2",
                     Address: "123 Test Street 2",
                     GenderName: "Girls",
@@ -26,7 +26,7 @@ public class SchoolSearchServiceTests
         var searchTerm = "test school";
         _mockIndexReader.Setup(r => r.SearchAsync(searchTerm, It.IsAny<int>())).ReturnsAsync(new SchoolSearchResults(
             Count: 2,
-            Results: new List<SchoolSearchResult> { searchResult1, searchResult2 }));
+            Results: new List<SchoolSearchDocument> { searchResult1, searchResult2 }));
 
         // Act
         var service = new SchoolSearchService(_mockIndexReader.Object);
@@ -60,8 +60,8 @@ public class SchoolSearchServiceTests
         var searchTerm = "test school";
         _mockIndexReader.Setup(r => r.SearchAsync(searchTerm, It.IsAny<int>())).ReturnsAsync(new SchoolSearchResults(
             Count: 1,
-            Results: new List<SchoolSearchResult> {
-                new SchoolSearchResult(null, null, null, null, null)
+            Results: new List<SchoolSearchDocument> {
+                new SchoolSearchDocument(null, null, null, null, null)
             }));
 
         // Act

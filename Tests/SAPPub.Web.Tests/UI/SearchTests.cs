@@ -23,7 +23,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     public async Task SearchPage_EnterSchoolName_ShowsViewWithResults()
     {
         // Arrange
-        var searchTerm = "manchester";
+        var searchTerm = "school";
         var response = await Page.GotoAsync(_pageUrl);
 
         // Act
