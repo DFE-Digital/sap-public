@@ -52,4 +52,29 @@ public class SchoolSearchServiceTests
                 Assert.Equal(searchResult2.ReligiousCharacterName, item.ReligiousCharacterName);
             });
     }
+
+    [Fact]
+    public async Task SearchAsync_SearchFieldsNull_ReturnsExpectedServiceModel()
+    {
+        // Arrange
+        var searchTerm = "test school";
+        _mockIndexReader.Setup(r => r.SearchAsync(searchTerm, It.IsAny<int>())).ReturnsAsync(new SchoolSearchResults(
+            Count: 1,
+            Results: new List<SchoolSearchResult> {
+                new SchoolSearchResult(null, null, null, null, null)
+            }));
+
+        // Act
+        var service = new SchoolSearchService(_mockIndexReader.Object);
+        var result = await service.SearchAsync(searchTerm);
+
+        // Assert
+        Assert.Equal(1, result.Count);
+        var singleResult = Assert.Single(result.SchoolSearchResults);
+        Assert.Null(singleResult.URN);
+        Assert.Null(singleResult.EstablishmentName);
+        Assert.Null(singleResult.Address);
+        Assert.Null(singleResult.GenderName);
+        Assert.Null(singleResult.ReligiousCharacterName);
+    }
 }

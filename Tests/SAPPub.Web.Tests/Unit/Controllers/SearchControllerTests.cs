@@ -80,6 +80,42 @@ public class SearchControllerTests
     }
 
     [Fact]
+    public async Task Get_SearchResults_NullFieldsInResults_ReturnsSchoolResultsViewModelWithEmptyFields()
+    {
+        // arrange
+        var searchTerm = "test school";
+        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchTerm)).ReturnsAsync(new SchoolSearchResultsServiceModel
+        {
+            Count = 1,
+            SchoolSearchResults = new List<SchoolSearchResultServiceModel> {
+                new SchoolSearchResultServiceModel
+                {
+                    URN = null,
+                    EstablishmentName = null,
+                    Address = null,
+                    GenderName = null,
+                    ReligiousCharacterName = null
+                }
+            }
+        });
+
+        // act
+        var result = await _controller.SearchResults(searchTerm);
+        var viewModel = ((ViewResult)result).Model as SearchResultsViewModel;
+
+        // assert
+        Assert.NotNull(viewModel);
+        Assert.Equal(searchTerm, viewModel.NameSearchTerm);
+        Assert.Equal(1, viewModel.SearchResultsCount);
+        var item = Assert.Single(viewModel.SearchResults);
+        Assert.Equal(string.Empty, item.URN);
+        Assert.Equal(string.Empty, item.EstablishmentName);
+        Assert.Equal(string.Empty, item.Address);
+        Assert.Equal(string.Empty, item.GenderName);
+        Assert.Equal(string.Empty, item.ReligiousCharacter);
+    }
+
+    [Fact]
     public async Task Get_SearchResults_NoResults_ReturnsExpectedSchoolResultsViewModel()
     {
         // arrange
