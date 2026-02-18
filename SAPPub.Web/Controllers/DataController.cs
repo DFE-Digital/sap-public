@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Absence;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
@@ -12,17 +13,17 @@ namespace SAPPub.Web.Controllers
     /// </summary>
     public class DataController : Controller
     {
-        private IEstablishmentService _service;
-        private IEstablishmentAbsenceService _absenceService;
-        private ILAAbsenceService _laAbsenceService; 
-        private IEnglandAbsenceService _englandAbsenceService;
-        private IEstablishmentPerformanceService _performanceService;
-        private IEstablishmentDestinationsService _destinationsService;
-        private ILADestinationsService _LAdestinationsService;
-        private ILAPerformanceService _LAperformanceService;
-        private IEnglandDestinationsService _englandDestinationsService;
-        private IEnglandPerformanceService _englandPerformanceService;
-        private IEstablishmentWorkforceService _workforceService;
+        private readonly IEstablishmentService _establishmentService;
+        private readonly IEstablishmentAbsenceService _absenceService;
+        private readonly ILAAbsenceService _laAbsenceService;
+        private readonly IEnglandAbsenceService _englandAbsenceService;
+        private readonly IEstablishmentPerformanceService _performanceService;
+        private readonly IEstablishmentDestinationsService _destinationsService;
+        private readonly ILADestinationsService _laDestinationsService;
+        private readonly ILAPerformanceService _laPerformanceService;
+        private readonly IEnglandDestinationsService _englandDestinationsService;
+        private readonly IEnglandPerformanceService _englandPerformanceService;
+        private readonly IEstablishmentWorkforceService _workforceService;
 
         public DataController(
             ILADestinationsService ladestinationsService,
@@ -35,56 +36,55 @@ namespace SAPPub.Web.Controllers
             IEstablishmentService establishmentService,
             IEstablishmentWorkforceService workforceService,
             IEnglandAbsenceService englandAbsenceService,
-            ILAAbsenceService laAbsenceService
-            )
+            ILAAbsenceService laAbsenceService)
         {
-
-            _service = establishmentService;
+            _establishmentService = establishmentService;
 
             _absenceService = absenceService;
             _laAbsenceService = laAbsenceService;
             _englandAbsenceService = englandAbsenceService;
 
-
             _performanceService = performanceService;
             _destinationsService = destinationsService;
             _workforceService = workforceService;
 
-            _LAdestinationsService = ladestinationsService;
-            _LAperformanceService = laperformanceService;
+            _laDestinationsService = ladestinationsService;
+            _laPerformanceService = laperformanceService;
             _englandDestinationsService = englandDestinationsService;
             _englandPerformanceService = englandPerformanceService;
         }
 
-        public IActionResult Index()
+        [HttpGet]
+        public async Task<IActionResult> Index(CancellationToken ct)
         {
-            var data = _service.GetAllEstablishments();
+            var data = await _establishmentService.GetAllEstablishmentsAsync(ct);
             return View(data);
         }
 
-        public IActionResult Data(string id)
+        [HttpGet]
+        public async Task<IActionResult> Data(string id, CancellationToken ct)
         {
-            //This could be wrapped into a ViewModel. Not in scope for this delivery though.
+            // This could be wrapped into a ViewModel. Not in scope for this delivery though.
+            var dataModel = await _establishmentService.GetEstablishmentAsync(id, ct);
 
-            var dataModel = _service.GetEstablishment(id);
+            // If establishment not found (service may throw or return empty), keep POC behavior:
+            // the service returns an Establishment; if URN empty, view will show empty model.
 
-            dataModel.Absence = _absenceService.GetEstablishmentAbsence(id);
-            dataModel.LAAbsence = _laAbsenceService.GetLAAbsence(dataModel.LAId);
-            dataModel.EnglandAbsence = _englandAbsenceService.GetEnglandAbsence();
+            dataModel.Absence = await _absenceService.GetEstablishmentAbsenceAsync(id, ct);
+            dataModel.LAAbsence = await _laAbsenceService.GetLAAbsenceAsync(dataModel.LAId, ct);
+            dataModel.EnglandAbsence = await _englandAbsenceService.GetEnglandAbsenceAsync(ct);
 
-            dataModel.KS4Performance = _performanceService.GetEstablishmentPerformance(id);
-            dataModel.EstablishmentDestinations = _destinationsService.GetEstablishmentDestinations(id);
-            dataModel.Workforce = _workforceService.GetEstablishmentWorkforce(id);
+            dataModel.KS4Performance = await _performanceService.GetEstablishmentPerformanceAsync(id, ct);
+            dataModel.EstablishmentDestinations = await _destinationsService.GetEstablishmentDestinationsAsync(id, ct) ?? new EstablishmentDestinations();
+            dataModel.Workforce = await _workforceService.GetEstablishmentWorkforceAsync(id, ct);
 
+            dataModel.LADestinations = await _laDestinationsService.GetLADestinationsAsync(dataModel.LAId, ct);
+            dataModel.LAPerformance = await _laPerformanceService.GetLAPerformanceAsync(dataModel.LAId, ct);
 
-            dataModel.LADestinations = _LAdestinationsService.GetLADestinations(dataModel.LAId);
-            dataModel.LAPerformance = _LAperformanceService.GetLAPerformance(dataModel.LAId);
-
-            dataModel.EnglandDestinations = _englandDestinationsService.GetEnglandDestinations();
-            dataModel.EnglandPerformance = _englandPerformanceService.GetEnglandPerformance();
+            dataModel.EnglandDestinations = await _englandDestinationsService.GetEnglandDestinationsAsync(ct);
+            dataModel.EnglandPerformance = await _englandPerformanceService.GetEnglandPerformanceAsync(ct);
 
             return View(dataModel);
-
         }
     }
 }

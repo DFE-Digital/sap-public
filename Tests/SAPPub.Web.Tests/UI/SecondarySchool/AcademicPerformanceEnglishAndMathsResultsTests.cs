@@ -45,7 +45,8 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
         var heading = await Page.Locator("h1").TextContentAsync();
 
         // Assert
-        Assert.NotNull(heading.Replace(" ", ""));
+        Assert.NotNull(heading);
+        Assert.NotEmpty(heading!.Trim());
     }
 
     [Fact]
@@ -311,5 +312,59 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
 
         Assert.Equal("Show as a table", showAsTableBtnText);
         Assert.Equal("Show data over time", showDataOverTimeBtnText);
+    }
+
+    [Fact]
+    public async Task EnglishAndMathsResultsPage_Displays_BreakdownGcse_CurrentYear_Chart()
+    {
+        // Arrange
+        await Page.GotoAsync(_pageUrl);
+
+        // Act
+        var chart = Page.Locator("#breakdown-gcse-chart");
+        var table = Page.Locator("#breakdown-gcse-current-year-table");
+        var chartLegend = Page.Locator("#breakdown-gcse-chart-legend");
+        var showAsTableBtn = Page.Locator("#breakdown-gcse-current-year-show-btn");
+
+        var isChartVisible = await chart.IsVisibleAsync();
+        var isTableVisible = await table.IsVisibleAsync();
+        var isChartLegendVisible = await chartLegend.IsVisibleAsync();
+        var isShowAsTableBtnVisible = await showAsTableBtn.IsVisibleAsync();
+        var showAsTableBtnText = await showAsTableBtn.TextContentAsync();
+
+        // Assert
+        Assert.False(isTableVisible);
+        Assert.True(isChartVisible);
+        Assert.True(isChartLegendVisible);
+        Assert.True(isShowAsTableBtnVisible);
+
+        Assert.Equal("Show as a table", showAsTableBtnText);
+    }
+
+    [Fact]
+    public async Task EnglishAndMathsResultsPage_Displays_BreakdownGcse_CurrentYear_Table()
+    {
+        // Arrange
+        await Page.GotoAsync(_pageUrl);
+
+        // Act
+        // Click Show as a table button
+        await Page.ClickAsync("#breakdown-gcse-current-year-show-btn");
+
+        var showAsTableBtn = Page.Locator("#breakdown-gcse-current-year-show-btn");
+        var chart = Page.Locator("#breakdown-gcse-chart");
+        var table = Page.Locator("#breakdown-gcse-current-year-table");
+        var chartLegend = Page.Locator("#breakdown-gcse-chart-legend");
+
+        var isChartVisible = await chart.IsVisibleAsync();
+        var isTableVisible = await table.IsVisibleAsync();
+        var isChartLegendVisible = await chartLegend.IsVisibleAsync();
+        var buttonText = await showAsTableBtn.TextContentAsync();
+
+        // Assert
+        Assert.False(isChartVisible);
+        Assert.False(isChartLegendVisible);
+        Assert.True(isTableVisible);
+        Assert.Equal("Show as a chart", buttonText);
     }
 }

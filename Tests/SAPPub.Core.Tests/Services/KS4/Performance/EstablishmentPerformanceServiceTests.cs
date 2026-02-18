@@ -4,10 +4,10 @@ using SAPPub.Core.Interfaces.Repositories.KS4.Performance;
 using SAPPub.Core.Services.KS4.Performance;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace SAPPub.Core.Tests.Services.KS4.Performance
 {
@@ -23,20 +23,21 @@ namespace SAPPub.Core.Tests.Services.KS4.Performance
         }
 
         [Fact]
-        public void GetAllEstablishmentPerformance_ShouldReturnAllItems()
+        public async Task GetAllEstablishmentPerformanceAsync_ShouldReturnAllItems()
         {
             // Arrange
-            var expectedPerformances = new List<EstablishmentPerformance>
-        {
-            new EstablishmentPerformance { Id = "100",  Attainment8_Tot_Est_Current_Num = 99.99},
-            new EstablishmentPerformance { Id = "101", Attainment8_Tot_Est_Current_Num = 90.00}
-        };
+            var expected = new List<EstablishmentPerformance>
+            {
+                new() { Id = "100", Attainment8_Tot_Est_Current_Num = 99.99 },
+                new() { Id = "101", Attainment8_Tot_Est_Current_Num = 90.00 }
+            };
 
-            _mockRepo.Setup(r => r.GetAllEstablishmentPerformance())
-                     .Returns(expectedPerformances);
+            _mockRepo
+                .Setup(r => r.GetAllEstablishmentPerformanceAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expected);
 
             // Act
-            var result = _service.GetAllEstablishmentPerformance();
+            var result = await _service.GetAllEstablishmentPerformanceAsync(CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
@@ -46,33 +47,34 @@ namespace SAPPub.Core.Tests.Services.KS4.Performance
         }
 
         [Fact]
-        public void GetAllEstablishmentPerformance_ShouldReturnEmpty_WhenNoData()
+        public async Task GetAllEstablishmentPerformanceAsync_ShouldReturnEmpty_WhenNoData()
         {
             // Arrange
-            _mockRepo.Setup(r => r.GetAllEstablishmentPerformance())
-                     .Returns(new List<EstablishmentPerformance>());
+            _mockRepo
+                .Setup(r => r.GetAllEstablishmentPerformanceAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<EstablishmentPerformance>());
 
             // Act
-            var result = _service.GetAllEstablishmentPerformance();
+            var result = await _service.GetAllEstablishmentPerformanceAsync(CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
             Assert.Empty(result);
         }
 
-
         [Fact]
-        public void GetEstablishmentPerformance_ShouldReturnCorrectItem_WhenUrnExists()
+        public async Task GetEstablishmentPerformanceAsync_ShouldReturnCorrectItem_WhenUrnExists()
         {
             // Arrange
             var urn = "100";
-            var expectedPerformance = new EstablishmentPerformance { Id = urn, Attainment8_Tot_Est_Current_Num = 100 };
+            var expected = new EstablishmentPerformance { Id = urn, Attainment8_Tot_Est_Current_Num = 100 };
 
-            _mockRepo.Setup(r => r.GetEstablishmentPerformance(urn))
-                     .Returns(expectedPerformance);
+            _mockRepo
+                .Setup(r => r.GetEstablishmentPerformanceAsync(urn, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expected);
 
             // Act
-            var result = _service.GetEstablishmentPerformance(urn);
+            var result = await _service.GetEstablishmentPerformanceAsync(urn, CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
@@ -81,30 +83,35 @@ namespace SAPPub.Core.Tests.Services.KS4.Performance
         }
 
         [Fact]
-        public void GetEstablishmentPerformance_ShouldReturnNull_WhenUrnDoesNotExist()
+        public async Task GetEstablishmentPerformanceAsync_ShouldReturnDefault_WhenUrnDoesNotExist()
         {
             // Arrange
             var urn = "99999";
-            _mockRepo.Setup(r => r.GetEstablishmentPerformance(urn))
-                     .Returns(new EstablishmentPerformance());
+
+            _mockRepo
+                .Setup(r => r.GetEstablishmentPerformanceAsync(urn, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new EstablishmentPerformance());
 
             // Act
-            var result = _service.GetEstablishmentPerformance(urn);
+            var result = await _service.GetEstablishmentPerformanceAsync(urn, CancellationToken.None);
 
             // Assert
+            Assert.NotNull(result);
             Assert.Null(result.Attainment8_Tot_Est_Current_Num);
         }
 
         [Fact]
-        public void GetEstablishmentPerformance_ShouldThrowException_WhenRepositoryThrows()
+        public async Task GetEstablishmentPerformanceAsync_ShouldPropagateException_WhenRepositoryThrows()
         {
             // Arrange
             var urn = "error";
-            _mockRepo.Setup(r => r.GetEstablishmentPerformance(urn))
-                     .Throws(new Exception("Database error"));
+
+            _mockRepo
+                .Setup(r => r.GetEstablishmentPerformanceAsync(urn, It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new Exception("Database error"));
 
             // Act & Assert
-            var ex = Assert.Throws<Exception>(() => _service.GetEstablishmentPerformance(urn));
+            var ex = await Assert.ThrowsAsync<Exception>(() => _service.GetEstablishmentPerformanceAsync(urn, CancellationToken.None));
             Assert.Equal("Database error", ex.Message);
         }
     }

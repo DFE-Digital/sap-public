@@ -1,31 +1,28 @@
-﻿using SAPPub.Core.Interfaces.Repositories;
-using SAPPub.Core.Interfaces.Services;
+﻿using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.ServiceModels.KS4.Admissions;
 
 namespace SAPPub.Core.Services.KS4.Admissions;
 
-public class EstablishmentAdmissionsService(
+public sealed class EstablishmentAdmissionsService(
     IEstablishmentService establishmentService,
     ILaUrlsRepository laUrlsRepository) : IAdmissionsService
 {
-    public async Task<AdmissionsServiceModel?> GetAdmissionsDetailsAsync(string urn)
+    public async Task<AdmissionsServiceModel?> GetAdmissionsDetailsAsync(string urn, CancellationToken ct = default)
     {
-        var establishment = establishmentService.GetEstablishment(urn);
+        var establishment = await establishmentService.GetEstablishmentAsync(urn, ct);
 
         var laGssCode = establishment.GSSLACode;
-        if (laGssCode is null)
-        {
+        if (string.IsNullOrWhiteSpace(laGssCode))
             return null;
-        }
-        var laUrls = await laUrlsRepository.GetLaAsync(laGssCode);
+
+        var laUrls = await laUrlsRepository.GetLaAsync(laGssCode, ct);
         if (laUrls is null)
-        {
             return null;
-        }
-        else return new AdmissionsServiceModel(
-            LAName: laUrls?.Name,
-            LASchoolAdmissionsUrl: laUrls?.LAMainUrl
+
+        return new AdmissionsServiceModel(
+            LAName: laUrls.Name,
+            LASchoolAdmissionsUrl: laUrls.LAMainUrl
         );
     }
 }

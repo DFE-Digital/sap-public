@@ -6,11 +6,11 @@ namespace SAPPub.Infrastructure.LuceneSearch;
 
 public class StartupIndexBuilder(ILogger<StartupIndexBuilder> logger, LuceneIndexWriter writer, IEstablishmentService establishmentService) : IHostedService
 {
-    public Task StartAsync(CancellationToken cancellationToken)
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
         logger.LogInformation("reading Establishment Data From CSV at startup...");
 
-        var schools = establishmentService.GetAllEstablishments();
+        var schools = await establishmentService.GetAllEstablishmentsAsync(cancellationToken);
 
         logger.LogInformation("Establishment Data retrieved successfully");
 
@@ -19,8 +19,6 @@ public class StartupIndexBuilder(ILogger<StartupIndexBuilder> logger, LuceneInde
         writer.BuildIndex(schools);
 
         logger.LogInformation("Lucene index built successfully");
-
-        return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;

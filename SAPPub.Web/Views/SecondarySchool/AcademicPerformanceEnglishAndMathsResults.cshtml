@@ -171,6 +171,61 @@
             </div>
         </div>
 
+        <div class="data-container">
+            <h3 class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">
+                Results by pupil types for @Model.SelectedGrade!.GetDisplayName() in English and maths GCSEs                
+            </h3>
+            <p class="govuk-body">
+                @(Model.SelectedGrade == GcseGradeDataSelection.Grade5AndAbove ? "Grade 5 is comparable to the top of the old grade C." : "The bottom of grade 4 is comparable to the bottom of the old grade C")
+            </p>
+
+            <div id="breakdown-gcse-current-year-data-container" class="breakdown-gcse-current-year-data-container">
+                <div id="breakdown-gcse-current-year-chart-container" class="chart-container breakdown-gcse-current-year-chart-container">
+                    <div id="breakdown-gcse-chart-legend" class="chart-legend" data-chart-id="breakdown-gcse-chart"></div>
+                    <div class="chart-container">
+                        <canvas id="breakdown-gcse-chart"
+                                class="js-chart"
+                                data-type="bar"
+                                data-show-legend="true"
+                                data-chart='@Html.Raw(Json.Serialize(Model.BreakdownGcseData))'
+                                data-colors='["#DE6B24", "#27A0CC", "#003C56"]'>
+                        </canvas>
+                    </div>
+                </div>
+
+                <div id="breakdown-gcse-current-year-table-container" class="breakdown-gcse-current-year-table-container">
+                    <table id="breakdown-gcse-current-year-table" class="govuk-table">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header"></th>
+                                @foreach (var label in Model.BreakdownGcseData.Labels)
+                                {
+                                    <th scope="col" class="govuk-table__header">@label</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            @foreach (var dataset in Model.BreakdownGcseData.Datasets)
+                            {
+                                <tr class="govuk-table__row">
+                                    <th scope="row" class="govuk-table__header">@dataset.Label</th>
+                                    @foreach (var data in dataset.Data)
+                                    {
+                                        <td class="govuk-table__cell">@data%</td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="govuk-button-group">
+                    <button id="breakdown-gcse-current-year-show-btn" class="govuk-button govuk-button--secondary breakdown-gcse-current-year-show-btn">Show as a table</button>
+                </div>
+
+            </div>
+        </div>
+
         <govuk-pagination id="academic-performance-english-and-maths-results-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAcademicPerformancePupilProgress" asp-all-route-data="@Model.RouteAttributes">Academic performance: Pupil progress</govuk-pagination-previous>
             <govuk-pagination-next asp-route="@RouteConstants.SecondaryAcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">Academic performance: Subjects entered</govuk-pagination-next>

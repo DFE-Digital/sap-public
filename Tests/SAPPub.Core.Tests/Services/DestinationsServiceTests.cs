@@ -21,6 +21,7 @@ public class DestinationsServiceTests
         EstablishmentName = "Test Establishment",
         PhaseOfEducationName = "Secondary School",
         LAName = "Council",
+        LAId = "E09000001"
     };
 
     public DestinationsServiceTests()
@@ -38,10 +39,10 @@ public class DestinationsServiceTests
     }
 
     [Fact]
-    public void GetDestinationsDetails_ShouldReturnData()
+    public async Task GetDestinationsDetailsAsync_ShouldReturnData()
     {
         // Arrange
-        var establishmentDestinations = new EstablishmentDestinations 
+        var establishmentDestinations = new EstablishmentDestinations
         {
             Id = fakeEstablishment.URN,
             AllDest_Tot_Est_Current_Pct = 100,
@@ -63,7 +64,7 @@ public class DestinationsServiceTests
 
         var lADestinations = new LADestinations
         {
-            Id = fakeEstablishment.URN,
+            Id = fakeEstablishment.LAId,
             AllDest_Tot_LA_Current_Pct = 70,
             AllDest_Tot_LA_Previous_Pct = 60,
             AllDest_Tot_LA_Previous2_Pct = 80,
@@ -83,7 +84,7 @@ public class DestinationsServiceTests
 
         var englandDestinations = new EnglandDestinations
         {
-            Id = fakeEstablishment.URN,
+            Id = "National",
             AllDest_Tot_Eng_Current_Pct = 50,
             AllDest_Tot_Eng_Previous_Pct = 60,
             AllDest_Tot_Eng_Previous2_Pct = 70,
@@ -101,13 +102,24 @@ public class DestinationsServiceTests
             Apprentice_Tot_Eng_Previous2_Pct = 85
         };
 
-        _mockEstablishmentService.Setup(r => r.GetEstablishment(It.IsAny<string>())).Returns(fakeEstablishment);
-        _mockEstablishmentDestinationsService.Setup(r => r.GetEstablishmentDestinations(It.IsAny<string>())).Returns(establishmentDestinations);
-        _mockLADestinationsService.Setup(r => r.GetLADestinations(It.IsAny<string>())).Returns(lADestinations);
-        _mockEnglandDestinationsService.Setup(r => r.GetEnglandDestinations()).Returns(englandDestinations);
+        _mockEstablishmentService
+            .Setup(r => r.GetEstablishmentAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(fakeEstablishment);
+
+        _mockEstablishmentDestinationsService
+            .Setup(r => r.GetEstablishmentDestinationsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(establishmentDestinations);
+
+        _mockLADestinationsService
+            .Setup(r => r.GetLADestinationsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(lADestinations);
+
+        _mockEnglandDestinationsService
+            .Setup(r => r.GetEnglandDestinationsAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(englandDestinations);
 
         // Act
-        var result = _service.GetDestinationsDetails(It.IsAny<string>());
+        var result = await _service.GetDestinationsDetailsAsync(fakeEstablishment.URN, CancellationToken.None);
 
         // Assert
         Assert.NotNull(result);

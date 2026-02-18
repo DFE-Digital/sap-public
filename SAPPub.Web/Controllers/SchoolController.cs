@@ -10,10 +10,13 @@ namespace SAPPub.Web.Controllers
 
         [HttpGet]
         [Route("school/{urn}")]
-        public IActionResult Index(string urn)
+        public async Task<IActionResult> Index(string urn, CancellationToken ct)
         {
-            var schoolDetails = _establishmentService.GetEstablishment(urn);
-            return RedirectToRoute(RouteConstants.SecondaryAboutSchool, new { urn, schoolName = schoolDetails.EstablishmentNameClean });
+            var schoolDetails = await _establishmentService.GetEstablishmentAsync(urn, ct);
+
+            return RedirectToRoute(
+                RouteConstants.SecondaryAboutSchool,
+                new { urn, schoolName = schoolDetails.EstablishmentNameClean });
         }
 
         [HttpGet]
@@ -24,11 +27,11 @@ namespace SAPPub.Web.Controllers
         }
 
         [HttpGet("/map/schools/{urn}")]
-        public IActionResult Schools(string urn)
+        public async Task<IActionResult> Schools(string urn, CancellationToken ct)
         {
-            var data = _establishmentService.GetEstablishment(urn);
+            var data = await _establishmentService.GetEstablishmentAsync(urn, ct);
 
-            if (data?.URN == null)
+            if (string.IsNullOrWhiteSpace(data?.URN))
             {
                 return Json(null);
             }

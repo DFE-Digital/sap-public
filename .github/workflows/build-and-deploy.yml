@@ -112,7 +112,8 @@ jobs:
         run: |
           dotnet run --project ./SAPPub.Web/SAPPub.Web.csproj --urls "https://localhost:3000" &
         env:
-          ASPNETCORE_ENVIRONMENT: Development
+            ASPNETCORE_ENVIRONMENT: UITests
+            USE_FAKE_REPOS: "true"
 
       - name: Wait for MVC App to be ready
         run: npx wait-on https://localhost:3000

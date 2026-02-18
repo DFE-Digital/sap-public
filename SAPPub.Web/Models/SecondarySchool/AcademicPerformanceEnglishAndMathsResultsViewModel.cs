@@ -12,6 +12,8 @@ public class AcademicPerformanceEnglishAndMathsResultsViewModel : SecondarySchoo
 
     public required DataOverTimeViewModel AllGcseOverTimeData { get; set; }
 
+    public required SeriesViewModel BreakdownGcseData { get; set; }
+
     public static AcademicPerformanceEnglishAndMathsResultsViewModel Map(EnglishAndMathsResultsModel englishAndMathsResultsModel, GcseGradeDataSelection selectedGrade)
     {
         var laAverageLabel = string.IsNullOrEmpty(englishAndMathsResultsModel.LAName) ? "Local Authority average" : $"{englishAndMathsResultsModel.LAName} average";
@@ -45,6 +47,26 @@ public class AcademicPerformanceEnglishAndMathsResultsViewModel : SecondarySchoo
                 ],
         };
 
+        var breakdownGcseData = new SeriesViewModel
+        {
+            Labels = ["Girls", "Boys"],
+            Datasets =
+                [
+                    new DataSeriesViewModel {
+                        Label = "School",
+                        Data = [englishAndMathsResultsModel.EstablishmentGirls.CurrentYear ?? 0, englishAndMathsResultsModel.EstablishmentBoys.CurrentYear ?? 0]
+                    },
+                    new DataSeriesViewModel {
+                        Label = laAverageLabel,
+                        Data = [englishAndMathsResultsModel.LocalAuthorityGirls.CurrentYear ?? 0, englishAndMathsResultsModel.LocalAuthorityBoys.CurrentYear ?? 0]
+                    },
+                    new DataSeriesViewModel {
+                        Label = "England average",
+                        Data = [englishAndMathsResultsModel.EnglandGirls.CurrentYear ?? 0, englishAndMathsResultsModel.EnglandBoys.CurrentYear ?? 0]
+                    },
+                ],
+        };
+
 
         return new AcademicPerformanceEnglishAndMathsResultsViewModel
         {
@@ -53,6 +75,7 @@ public class AcademicPerformanceEnglishAndMathsResultsViewModel : SecondarySchoo
             SelectedGrade = selectedGrade,
             AllGcseData = allGcseData,
             AllGcseOverTimeData = allGcseOverTimeData,
+            BreakdownGcseData = breakdownGcseData,
         };
     }
 }

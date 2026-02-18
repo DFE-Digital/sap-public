@@ -1,12 +1,12 @@
 ﻿(function () {
     document.addEventListener('DOMContentLoaded', () => {
 
-        // all destinations current year related elements
+        // all gcse current year related elements
         const allGcseCurrentYearShowAsTableBtn = document.getElementById('all-gcse-current-year-show-btn');
         const allGcseCurrentYearChartContainer = document.getElementById('all-gcse-current-year-chart-container');
         const allGcseCurrentYearTableContainer = document.getElementById('all-gcse-current-year-table-container');
 
-        // all destinations data over time related elements
+        // all gcse data over time related elements
         const allGcseShowDataOverTimeBtn = document.getElementById('all-gcse-show-data-over-time-btn');
         const allGcseDataOverTimeChartContainer = document.getElementById('all-gcse-data-over-time-chart-container');
         const allGcseDataOverTimeTableContainer = document.getElementById('all-gcse-data-over-time-table-container');
@@ -34,6 +34,16 @@
 
         allGcseShowCurrentDataBtn.addEventListener('click', () => {
             setTooggleState(allGcseCurrentYearChartContainer, allGcseCurrentYearTableContainer, false, allGcseCurrentYearShowAsTableBtn);
+        });
+
+        const breakdownGcseCurrentYearShowAsTableBtn = document.getElementById('breakdown-gcse-current-year-show-btn');
+        const breakdownGcseCurrentYearChartContainer = document.getElementById('breakdown-gcse-current-year-chart-container');
+        const breakdownGcseCurrentYearTableContainer = document.getElementById('breakdown-gcse-current-year-table-container');
+
+        setAriaAttribute(breakdownGcseCurrentYearShowAsTableBtn, 'false');
+        breakdownGcseCurrentYearShowAsTableBtn.addEventListener('click', () => {
+            const chartVisible = breakdownGcseCurrentYearChartContainer.style.display !== 'none';
+            setTooggleState(breakdownGcseCurrentYearChartContainer, breakdownGcseCurrentYearTableContainer, chartVisible, breakdownGcseCurrentYearShowAsTableBtn);
         });
     });
 
