@@ -6,24 +6,41 @@ using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 
 namespace SAPPub.Core.Services.KS4;
 
-public class DestinationsService(
+public sealed class DestinationsService(
     IEstablishmentService establishmentService,
     IEstablishmentDestinationsService establishmentDestinationsService,
     ILADestinationsService lADestinationsService,
     IEnglandDestinationsService englandDestinationsService) : IDestinationsService
 {
-    public DestinationsDetails GetDestinationsDetails(string urn)
+    public async Task<DestinationsDetails> GetDestinationsDetailsAsync(string urn, CancellationToken ct = default)
     {
-        var establishment = establishmentService.GetEstablishment(urn);
-        var establishmentDestinations = establishmentDestinationsService.GetEstablishmentDestinations(urn);
-        var lADestinations = lADestinationsService.GetLADestinations(establishment.LAId);
-        var englandDestinations = englandDestinationsService.GetEnglandDestinations();
-        
-        var model = new DestinationsDetails
+        var establishment = await establishmentService.GetEstablishmentAsync(urn, ct);
+
+        if (string.IsNullOrWhiteSpace(establishment.URN))
+            return CreateEmpty(urn);
+
+        // Run independent calls concurrently (LA depends on LAId being available)
+        var establishmentDestinationsTask = establishmentDestinationsService.GetEstablishmentDestinationsAsync(urn, ct);
+        var englandDestinationsTask = englandDestinationsService.GetEnglandDestinationsAsync(ct);
+
+        var laCode = establishment.LAId ?? string.Empty;
+        var laDestinationsTask = lADestinationsService.GetLADestinationsAsync(laCode, ct);
+
+        await Task.WhenAll(establishmentDestinationsTask, laDestinationsTask, englandDestinationsTask);
+
+        var establishmentDestinations = await establishmentDestinationsTask;
+        var lADestinations = await laDestinationsTask;
+        var englandDestinations = await englandDestinationsTask;
+
+        // If your establishment destinations service returns nullable, handle it here.
+        establishmentDestinations ??= new EstablishmentDestinations();
+
+        return new DestinationsDetails
         {
             Urn = establishment.URN,
             SchoolName = establishment.EstablishmentName,
             LocalAuthorityName = establishment.LAName,
+
             SchoolAll = new RelativeYearValues<double?>
             {
                 CurrentYear = establishmentDestinations.AllDest_Tot_Est_Current_Pct,
@@ -42,6 +59,7 @@ public class DestinationsService(
                 PreviousYear = englandDestinations.AllDest_Tot_Eng_Previous_Pct,
                 TwoYearsAgo = englandDestinations.AllDest_Tot_Eng_Previous2_Pct,
             },
+
             SchoolEducation = new RelativeYearValues<double?>
             {
                 CurrentYear = establishmentDestinations.Education_Tot_Est_Current_Pct,
@@ -60,6 +78,7 @@ public class DestinationsService(
                 PreviousYear = englandDestinations.Education_Tot_Eng_Previous_Pct,
                 TwoYearsAgo = englandDestinations.Education_Tot_Eng_Previous2_Pct,
             },
+
             SchoolEmployment = new RelativeYearValues<double?>
             {
                 CurrentYear = establishmentDestinations.Employment_Tot_Est_Current_Pct,
@@ -78,6 +97,7 @@ public class DestinationsService(
                 PreviousYear = englandDestinations.Employment_Tot_Eng_Previous_Pct,
                 TwoYearsAgo = englandDestinations.Employment_Tot_Eng_Previous2_Pct,
             },
+
             SchoolApprentice = new RelativeYearValues<double?>
             {
                 CurrentYear = establishmentDestinations.Apprentice_Tot_Est_Current_Pct,
@@ -97,7 +117,38 @@ public class DestinationsService(
                 TwoYearsAgo = englandDestinations.Apprentice_Tot_Eng_Previous2_Pct,
             },
         };
+    }
 
-        return model;
+    private static DestinationsDetails CreateEmpty(string urn)
+    {
+        static RelativeYearValues<double?> EmptyYears() => new()
+        {
+            CurrentYear = null,
+            PreviousYear = null,
+            TwoYearsAgo = null
+        };
+
+        return new DestinationsDetails
+        {
+            Urn = urn,
+            SchoolName = string.Empty,
+            LocalAuthorityName = string.Empty,
+
+            SchoolAll = EmptyYears(),
+            LocalAuthorityAll = EmptyYears(),
+            EnglandAll = EmptyYears(),
+
+            SchoolEducation = EmptyYears(),
+            LocalAuthorityEducation = EmptyYears(),
+            EnglandEducation = EmptyYears(),
+
+            SchoolEmployment = EmptyYears(),
+            LocalAuthorityEmployment = EmptyYears(),
+            EnglandEmployment = EmptyYears(),
+
+            SchoolApprentice = EmptyYears(),
+            LocalAuthorityApprentice = EmptyYears(),
+            EnglandApprentice = EmptyYears(),
+        };
     }
 }

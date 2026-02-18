@@ -10,6 +10,7 @@ using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.Json;
+using static SAPPub.Web.Middleware.DependenciesExtensions;
 
 namespace SAPPub.Web;
 
@@ -57,14 +58,37 @@ public partial class Program
         });
 
         builder.Services.AddHealthChecks();
-        builder.Services.AddDataProtection()
-               .PersistKeysToFileSystem(new DirectoryInfo(@"/keys"))
-               .SetApplicationName("SAPPub");
+
+        // Data protection
+        if (builder.Environment.IsEnvironment("Testing") || builder.Environment.IsEnvironment("UITests"))
+        {
+            // CI/tests: don't try to write to /keys
+            builder.Services.AddDataProtection()
+                .UseEphemeralDataProtectionProvider()
+                .SetApplicationName("SAPPub");
+        }
+        else
+        {
+            builder.Services.AddDataProtection()
+                .PersistKeysToFileSystem(new DirectoryInfo(@"/keys"))
+                .SetApplicationName("SAPPub");
+        }
 
         var connectionString = builder.Configuration.GetConnectionString("PostgresConnectionString");
-        builder.Services.AddTransient<IDbConnection>((sp) => new NpgsqlConnection(connectionString));
 
-        builder.Services.AddDependencies();
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            // Only required for real runtime environments
+            if (builder.Environment.IsDevelopment() || builder.Environment.IsProduction() || builder.Environment.IsStaging())
+                throw new InvalidOperationException("Connection string 'PostgresConnectionString' is not configured.");
+
+            // For Testing/UITests: use a harmless dummy so nothing accidentally connects
+            connectionString = "Host=127.0.0.1;Port=1;Database=x;Username=x;Password=x;Timeout=1;Command Timeout=1";
+        }
+
+        builder.Services.AddSingleton<NpgsqlDataSource>(_ => NpgsqlDataSource.Create(connectionString));
+
+        builder.Services.AddDependencies(builder.Environment, builder.Configuration);
 
         var app = builder.Build();
 

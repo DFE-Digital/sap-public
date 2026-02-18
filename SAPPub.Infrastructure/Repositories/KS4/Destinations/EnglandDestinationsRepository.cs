@@ -1,27 +1,25 @@
-﻿using Microsoft.Extensions.Logging;
-using SAPPub.Core.Entities.KS4.Destinations;
+﻿using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Repositories.KS4.Destinations;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SAPPub.Infrastructure.Repositories.KS4.Destinations
 {
-    public class EnglandDestinationsRepository : IEnglandDestinationsRepository
+    public sealed class EnglandDestinationsRepository : IEnglandDestinationsRepository
     {
-        private readonly IGenericRepository<EnglandDestinations> _EnglandDestinationsRepository;
-        private readonly ILogger<EnglandDestinations> _logger;
+        private readonly IGenericRepository<EnglandDestinations> _repo;
 
-        public EnglandDestinationsRepository(
-            IGenericRepository<EnglandDestinations> EnglandDestinationsRepository,
-            ILogger<EnglandDestinations> logger)
+        public EnglandDestinationsRepository(IGenericRepository<EnglandDestinations> repo)
         {
-            _EnglandDestinationsRepository = EnglandDestinationsRepository;
-            _logger = logger;
+            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
-
-        public EnglandDestinations GetEnglandDestinations()
+        public async Task<EnglandDestinations> GetEnglandDestinationsAsync(CancellationToken ct = default)
         {
-            return _EnglandDestinationsRepository.ReadAll()?.FirstOrDefault() ?? new EnglandDestinations();
+            // v_england_destinations returns a single row
+            return await _repo.ReadSingleAsync(new { }, ct) ?? new EnglandDestinations();
         }
     }
 }

@@ -4,5 +4,5 @@ namespace SAPPub.Core.Interfaces.Services.KS4;
 
 public interface IDestinationsService
 {
-    DestinationsDetails GetDestinationsDetails(string urn);
+    Task<DestinationsDetails> GetDestinationsDetailsAsync(string urn, CancellationToken ct = default);
 }

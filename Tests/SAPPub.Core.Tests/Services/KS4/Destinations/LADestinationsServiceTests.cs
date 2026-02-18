@@ -4,10 +4,10 @@ using SAPPub.Core.Interfaces.Repositories.KS4.Destinations;
 using SAPPub.Core.Services.KS4.Destinations;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace SAPPub.Core.Tests.Services.KS4.Destinations
 {
@@ -23,20 +23,21 @@ namespace SAPPub.Core.Tests.Services.KS4.Destinations
         }
 
         [Fact]
-        public void GetAllLADestinations_ShouldReturnAllItems()
+        public async Task GetAllLADestinationsAsync_ShouldReturnAllItems()
         {
             // Arrange
-            var expectedDestinationss = new List<LADestinations>
-        {
-            new LADestinations { Id = "100",  AllDest_Tot_LA_Current_Pct = 99.99},
-            new LADestinations { Id = "101", AllDest_Tot_LA_Current_Pct = 90.00}
-        };
+            var expected = new List<LADestinations>
+            {
+                new() { Id = "100", AllDest_Tot_LA_Current_Pct = 99.99 },
+                new() { Id = "101", AllDest_Tot_LA_Current_Pct = 90.00 }
+            };
 
-            _mockRepo.Setup(r => r.GetAllLADestinations())
-                     .Returns(expectedDestinationss);
+            _mockRepo
+                .Setup(r => r.GetAllLADestinationsAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expected);
 
             // Act
-            var result = _service.GetAllLADestinations();
+            var result = await _service.GetAllLADestinationsAsync(CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
@@ -46,65 +47,72 @@ namespace SAPPub.Core.Tests.Services.KS4.Destinations
         }
 
         [Fact]
-        public void GetAllLADestinations_ShouldReturnEmpty_WhenNoData()
+        public async Task GetAllLADestinationsAsync_ShouldReturnEmpty_WhenNoData()
         {
             // Arrange
-            _mockRepo.Setup(r => r.GetAllLADestinations())
-                     .Returns(new List<LADestinations>());
+            _mockRepo
+                .Setup(r => r.GetAllLADestinationsAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<LADestinations>());
 
             // Act
-            var result = _service.GetAllLADestinations();
+            var result = await _service.GetAllLADestinationsAsync(CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
             Assert.Empty(result);
         }
 
-
         [Fact]
-        public void GetLADestinations_ShouldReturnCorrectItem_WhenUrnExists()
+        public async Task GetLADestinationsAsync_ShouldReturnCorrectItem_WhenLaCodeExists()
         {
             // Arrange
-            var urn = "100";
-            var expectedDestinations = new LADestinations { Id = urn, AllDest_Tot_LA_Current_Pct = 100 };
+            var laCode = "100";
+            var expected = new LADestinations { Id = laCode, AllDest_Tot_LA_Current_Pct = 100 };
 
-            _mockRepo.Setup(r => r.GetLADestinations(urn))
-                     .Returns(expectedDestinations);
+            _mockRepo
+                .Setup(r => r.GetLADestinationsAsync(laCode, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expected);
 
             // Act
-            var result = _service.GetLADestinations(urn);
+            var result = await _service.GetLADestinationsAsync(laCode, CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(urn, result.Id);
+            Assert.Equal(laCode, result.Id);
             Assert.Equal(100, result.AllDest_Tot_LA_Current_Pct);
         }
 
         [Fact]
-        public void GetLADestinations_ShouldReturnNull_WhenUrnDoesNotExist()
+        public async Task GetLADestinationsAsync_ShouldReturnDefault_WhenLaCodeDoesNotExist()
         {
             // Arrange
-            var urn = "99999";
-            _mockRepo.Setup(r => r.GetLADestinations(urn))
-                     .Returns(new LADestinations());
+            var laCode = "99999";
+
+            // Repo (per refactor) may return a default object when not found.
+            _mockRepo
+                .Setup(r => r.GetLADestinationsAsync(laCode, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new LADestinations());
 
             // Act
-            var result = _service.GetLADestinations(urn);
+            var result = await _service.GetLADestinationsAsync(laCode, CancellationToken.None);
 
             // Assert
+            Assert.NotNull(result);
             Assert.Null(result.AllDest_Tot_LA_Previous2_Pct);
         }
 
         [Fact]
-        public void GetLADestinations_ShouldThrowException_WhenRepositoryThrows()
+        public async Task GetLADestinationsAsync_ShouldPropagateException_WhenRepositoryThrows()
         {
             // Arrange
-            var urn = "error";
-            _mockRepo.Setup(r => r.GetLADestinations(urn))
-                     .Throws(new Exception("Database error"));
+            var laCode = "error";
+
+            _mockRepo
+                .Setup(r => r.GetLADestinationsAsync(laCode, It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new Exception("Database error"));
 
             // Act & Assert
-            var ex = Assert.Throws<Exception>(() => _service.GetLADestinations(urn));
+            var ex = await Assert.ThrowsAsync<Exception>(() => _service.GetLADestinationsAsync(laCode, CancellationToken.None));
             Assert.Equal("Database error", ex.Message);
         }
     }

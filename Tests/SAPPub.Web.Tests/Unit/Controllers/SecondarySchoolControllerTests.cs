@@ -33,87 +33,90 @@ public class SecondarySchoolControllerTests
     private Establishment _fakeEstablishment;
 
     private List<EstablishmentCoreSubjectEntries.SubjectEntry> CoreSubjects =
-                new()
-                {
-                    new () {
-                        SubEntCore_Sub_Est_Current_Num = "English language",
-                        SubEntCore_Qual_Est_Current_Num = "GCSE",
-                        SubEntCore_Entr_Est_Current_Num = 95.04,
-                    },
-                    new () {
-                        SubEntCore_Sub_Est_Current_Num = "English literature",
-                        SubEntCore_Qual_Est_Current_Num = "GCSE",
-                        SubEntCore_Entr_Est_Current_Num = 90.15,
-                    }
-                };
+        new()
+        {
+            new()
+            {
+                SubEntCore_Sub_Est_Current_Num = "English language",
+                SubEntCore_Qual_Est_Current_Num = "GCSE",
+                SubEntCore_Entr_Est_Current_Num = 95.04,
+            },
+            new()
+            {
+                SubEntCore_Sub_Est_Current_Num = "English literature",
+                SubEntCore_Qual_Est_Current_Num = "GCSE",
+                SubEntCore_Entr_Est_Current_Num = 90.15,
+            }
+        };
 
     private List<EstablishmentAdditionalSubjectEntries.SubjectEntry> AdditionalSubjects =
-                new()
-                {
-                    new () {
-                        SubEntAdd_Sub_Est_Current_Num = "Geography",
-                        SubEntAdd_Qual_Est_Current_Num = "GCSE",
-                        SubEntAdd_Entr_Est_Current_Num = 45.45,
-                    },
-                    new () {
-                        SubEntAdd_Sub_Est_Current_Num = "Music",
-                        SubEntAdd_Qual_Est_Current_Num = "GCSE",
-                        SubEntAdd_Entr_Est_Current_Num = 10.12,
-                    }
-                };
+        new()
+        {
+            new()
+            {
+                SubEntAdd_Sub_Est_Current_Num = "Geography",
+                SubEntAdd_Qual_Est_Current_Num = "GCSE",
+                SubEntAdd_Entr_Est_Current_Num = 45.45,
+            },
+            new()
+            {
+                SubEntAdd_Sub_Est_Current_Num = "Music",
+                SubEntAdd_Qual_Est_Current_Num = "GCSE",
+                SubEntAdd_Entr_Est_Current_Num = 10.12,
+            }
+        };
 
     private EnglishAndMathsResultsModel EnglishAndMathsResults(
         string urn = "123456",
         string establishmentName = "School Name",
         string laName = "Sheffield") => new()
-    {        
-        Urn = urn,
-        SchoolName = establishmentName,
-        LAName = laName,
-        EstablishmentAll = new RelativeYearValues<double?>()
-        { 
-            CurrentYear = 60,
-            PreviousYear = 80,
-            TwoYearsAgo = 60
-        },
-        LocalAuthorityAll = new RelativeYearValues<double?>()
         {
-            CurrentYear = 80,
-            PreviousYear = 70,
-            TwoYearsAgo = 80
-        },
-        EnglandAll = new RelativeYearValues<double?>()
-        {
-            CurrentYear = 70,
-            PreviousYear = 70,
-            TwoYearsAgo = 80
-        },
-
-        EstablishmentBoys = new RelativeYearValues<double?>()
-        {
-            CurrentYear = 50
-        },
-        LocalAuthorityBoys = new RelativeYearValues<double?>()
-        {
-            CurrentYear = 70,
-        },
-        EnglandBoys = new RelativeYearValues<double?>()
-        {
-            CurrentYear = 60,
-        },
-        EstablishmentGirls = new RelativeYearValues<double?>()
-        {
-            CurrentYear = 80
-        },
-        LocalAuthorityGirls = new RelativeYearValues<double?>()
-        {
-            CurrentYear = 70,
-        },
-        EnglandGirls = new RelativeYearValues<double?>()
-        {
-            CurrentYear = 90,
-        },
-    };
+            Urn = urn,
+            SchoolName = establishmentName,
+            LAName = laName,
+            EstablishmentAll = new RelativeYearValues<double?>
+            {
+                CurrentYear = 60,
+                PreviousYear = 80,
+                TwoYearsAgo = 60
+            },
+            LocalAuthorityAll = new RelativeYearValues<double?>
+            {
+                CurrentYear = 80,
+                PreviousYear = 70,
+                TwoYearsAgo = 80
+            },
+            EnglandAll = new RelativeYearValues<double?>
+            {
+                CurrentYear = 70,
+                PreviousYear = 70,
+                TwoYearsAgo = 80
+            },
+            EstablishmentBoys = new RelativeYearValues<double?>
+            {
+                CurrentYear = 50
+            },
+            LocalAuthorityBoys = new RelativeYearValues<double?>
+            {
+                CurrentYear = 70,
+            },
+            EnglandBoys = new RelativeYearValues<double?>
+            {
+                CurrentYear = 60,
+            },
+            EstablishmentGirls = new RelativeYearValues<double?>
+            {
+                CurrentYear = 80
+            },
+            LocalAuthorityGirls = new RelativeYearValues<double?>
+            {
+                CurrentYear = 70,
+            },
+            EnglandGirls = new RelativeYearValues<double?>
+            {
+                CurrentYear = 90,
+            },
+        };
 
     public SecondarySchoolControllerTests()
     {
@@ -143,9 +146,11 @@ public class SecondarySchoolControllerTests
         _mockLogger = new Mock<ILogger<SecondarySchoolController>>();
         _mockEstablishmentService = new();
         _mockDestinationsService = new();
-        _mockEstablishmentService.Setup(es => es.GetEstablishment(It.IsAny<string>())).Returns(_fakeEstablishment);
 
-        // Create a real temp directory
+        _mockEstablishmentService
+            .Setup(es => es.GetEstablishmentAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_fakeEstablishment);
+
         var tempPath = Path.Combine(Path.GetTempPath(), "SAPPubTests", Guid.NewGuid().ToString());
         Directory.CreateDirectory(tempPath);
 
@@ -158,13 +163,10 @@ public class SecondarySchoolControllerTests
     }
 
     [Fact]
-    public void Get_AboutSchool_Info_ReturnsOk()
+    public async Task Get_AboutSchool_Info_ReturnsOk()
     {
-        // Arrange
-        // Act
-        var result = _controller.AboutSchool(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName) as ViewResult;
+        var result = await _controller.AboutSchool(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
-        // Assert
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
 
@@ -187,7 +189,6 @@ public class SecondarySchoolControllerTests
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
-
     }
 
     [Theory]
@@ -196,15 +197,12 @@ public class SecondarySchoolControllerTests
     [InlineData("50000", "50,000")]
     [InlineData("2,500", "2,500")]
     [InlineData("Test", "Test")]
-    public void Get_AboutSchool_SchoolFeatures_NumberOfPupils_Format(string totalPupils, string expectedOutput)
+    public async Task Get_AboutSchool_SchoolFeatures_NumberOfPupils_Format(string totalPupils, string expectedOutput)
     {
-        // Arrange
         _fakeEstablishment.TotalPupils = totalPupils;
 
-        // Act
-        var result = _controller.AboutSchool(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName) as ViewResult;
+        var result = await _controller.AboutSchool(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
-        // Assert
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
 
@@ -218,15 +216,12 @@ public class SecondarySchoolControllerTests
     [InlineData("Not applicable", "No")]
     [InlineData("SEN unit", "Yes")]
     [InlineData("Resourced provision and SEN unit", "Yes")]
-    public void Get_AboutSchool_SchoolFeatures_SENUnit(string resourcedProvision, string expectedOutput)
+    public async Task Get_AboutSchool_SchoolFeatures_SENUnit(string resourcedProvision, string expectedOutput)
     {
-        // Arrange
         _fakeEstablishment.ResourcedProvision = resourcedProvision;
 
-        // Act
-        var result = _controller.AboutSchool(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName) as ViewResult;
+        var result = await _controller.AboutSchool(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
-        // Assert
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
 
@@ -244,21 +239,17 @@ public class SecondarySchoolControllerTests
     [InlineData("Not applicable", "No")]
     [InlineData("Resourced provision", "Yes")]
     [InlineData("Resourced provision and SEN unit", "Yes")]
-    public void Get_AboutSchool_SchoolFeatures_ResourcedUnit(string resourcedProvision, string expectedOutput)
+    public async Task Get_AboutSchool_SchoolFeatures_ResourcedUnit(string resourcedProvision, string expectedOutput)
     {
-        // Arrange
         _fakeEstablishment.ResourcedProvision = resourcedProvision;
 
-        // Act
-        var result = _controller.AboutSchool(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName) as ViewResult;
+        var result = await _controller.AboutSchool(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
-        // Assert
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
 
         var model = result.Model as AboutSchoolViewModel;
         Assert.NotNull(model);
-
         Assert.Equal(expectedOutput, model.ResourcedProvision);
 
         Assert.Equal(2, model.RouteAttributes.Count);
@@ -271,40 +262,35 @@ public class SecondarySchoolControllerTests
     [InlineData("2", "No")]
     [InlineData("9", "No")]
     [InlineData("1", "Yes")]
-    public void Get_AboutSchool_SchoolFeatures_SixthForm_Format(string sixthFormId, string expectedOutput)
+    public async Task Get_AboutSchool_SchoolFeatures_SixthForm_Format(string sixthFormId, string expectedOutput)
     {
-        // Arrange
         _fakeEstablishment.OfficialSixthFormId = sixthFormId;
 
-        // Act
-        var result = _controller.AboutSchool(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName) as ViewResult;
+        var result = await _controller.AboutSchool(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
-        // Assert
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
 
         var model = result.Model as AboutSchoolViewModel;
         Assert.NotNull(model);
-
         Assert.Equal(expectedOutput, model.SixthForm);
     }
 
     [Fact]
     public async Task Get_Admissions_Info_ReturnsExpectedViewModel()
     {
-        // Arrange
         var lASchoolAdmissionsUrl = "https://www.example.com/school-admissions";
         var laName = "Example Local Authority";
 
-        _mockAdmissionsService.Setup(s => s.GetAdmissionsDetailsAsync(_fakeEstablishment.URN)).ReturnsAsync(new AdmissionsServiceModel(
-            LAName: laName,
-            LASchoolAdmissionsUrl: lASchoolAdmissionsUrl
-        ));
+        _mockAdmissionsService
+            .Setup(s => s.GetAdmissionsDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new AdmissionsServiceModel(
+                LAName: laName,
+                LASchoolAdmissionsUrl: lASchoolAdmissionsUrl
+            ));
 
-        // Act
-        var result = await _controller.Admissions(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName) as ViewResult;
+        var result = await _controller.Admissions(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
-        // Assert
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
 
@@ -322,11 +308,8 @@ public class SecondarySchoolControllerTests
     [Fact]
     public void Get_Attendance_Info_ReturnsOk()
     {
-        // Arrange
-        // Act
         var result = _controller.Attendance(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName) as ViewResult;
 
-        // Assert
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
 
@@ -343,11 +326,8 @@ public class SecondarySchoolControllerTests
     [Fact]
     public void Get_CurriculumAndExtraCurricularActivities_Info_ReturnsOk()
     {
-        // Arrange
-        // Act
         var result = _controller.CurriculumAndExtraCurricularActivities(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName) as ViewResult;
 
-        // Assert
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
 
@@ -363,11 +343,8 @@ public class SecondarySchoolControllerTests
     [Fact]
     public void Get_AcademicPerformancePupilProgress_Info_ReturnsOk()
     {
-        // Arrange
-        // Act
         var result = _controller.AcademicPerformancePupilProgress(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName) as ViewResult;
 
-        // Assert
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
 
@@ -383,20 +360,21 @@ public class SecondarySchoolControllerTests
     [Theory]
     [InlineData(GcseGradeDataSelection.Grade4AndAbove)]
     [InlineData(GcseGradeDataSelection.Grade5AndAbove)]
-    public void Get_AcademicPerformance_EnglishAndMathsResults_ReturnsOk(GcseGradeDataSelection grade)
+    public async Task Get_AcademicPerformance_EnglishAndMathsResults_ReturnsOk(GcseGradeDataSelection grade)
     {
-        // Arrange
         var expectedResult = EnglishAndMathsResults(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, _fakeEstablishment.LAName);
-        _mockEnglishAndMathsResultsService.Setup(s => s.GetEnglishAndMathsResults(_fakeEstablishment.URN, (int)grade))
-            .Returns(expectedResult);
 
-        // Act
-        var result = _controller.AcademicPerformanceEnglishAndMathsResults(
+        _mockEnglishAndMathsResultsService
+            .Setup(s => s.GetEnglishAndMathsResultsAsync(_fakeEstablishment.URN, (int)grade, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.AcademicPerformanceEnglishAndMathsResults(
             _mockEnglishAndMathsResultsService.Object,
             _fakeEstablishment.URN,
-            _fakeEstablishment.EstablishmentName, grade) as ViewResult;
+            _fakeEstablishment.EstablishmentName,
+            grade,
+            CancellationToken.None) as ViewResult;
 
-        // Assert
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
 
@@ -410,31 +388,40 @@ public class SecondarySchoolControllerTests
         Assert.Equal(grade, model.SelectedGrade);
         Assert.Equal(["School", $"{_fakeEstablishment.LAName} average", "England average"], model.AllGcseData.Labels);
         Assert.Equal(
-            new double[] {
+            new double[]
+            {
                 expectedResult.EstablishmentAll.CurrentYear!.Value,
                 expectedResult.LocalAuthorityAll.CurrentYear!.Value,
-                expectedResult.EnglandAll.CurrentYear!.Value },
+                expectedResult.EnglandAll.CurrentYear!.Value
+            },
             model.AllGcseData.Data
         );
 
         Assert.Equal(3, model.AllGcseOverTimeData.Datasets.Count);
 
         Assert.Equal("School", model.AllGcseOverTimeData.Datasets[0].Label);
-        Assert.Equal([
+        Assert.Equal(
+            [
                 expectedResult.EstablishmentAll.TwoYearsAgo!.Value,
                 expectedResult.EstablishmentAll.PreviousYear!.Value,
-                expectedResult.EstablishmentAll.CurrentYear!.Value],
-            model.AllGcseOverTimeData.Datasets[0].Data);
+                expectedResult.EstablishmentAll.CurrentYear!.Value
+            ],
+            model.AllGcseOverTimeData.Datasets[0].Data
+        );
 
         Assert.Equal($"{_fakeEstablishment.LAName} average", model.AllGcseOverTimeData.Datasets[1].Label);
-        Assert.Equal([
+        Assert.Equal(
+            [
                 expectedResult.LocalAuthorityAll.TwoYearsAgo!.Value,
                 expectedResult.LocalAuthorityAll.PreviousYear!.Value,
-                expectedResult.LocalAuthorityAll.CurrentYear!.Value],
-            model.AllGcseOverTimeData.Datasets[1].Data);
+                expectedResult.LocalAuthorityAll.CurrentYear!.Value
+            ],
+            model.AllGcseOverTimeData.Datasets[1].Data
+        );
 
         Assert.Equal("England average", model.AllGcseOverTimeData.Datasets[2].Label);
-        Assert.Equal([
+        Assert.Equal(
+            [
                 expectedResult.EnglandAll.TwoYearsAgo!.Value,
                 expectedResult.EnglandAll.PreviousYear!.Value,
                 expectedResult.EnglandAll.CurrentYear!.Value],
@@ -466,63 +453,37 @@ public class SecondarySchoolControllerTests
     }
 
     [Fact]
-    public void Get_AcademicPerformance_EnglishAndMathsResults_ResultsNotAvailable_Substitutes0AndReturnsOk()
+    public async Task Get_AcademicPerformance_EnglishAndMathsResults_ResultsNotAvailable_Substitutes0AndReturnsOk()
     {
-        // Arrange
         var gradeSelection = GcseGradeDataSelection.Grade4AndAbove;
+
         EnglishAndMathsResultsModel serviceModel = new()
-        {            
+        {
             Urn = _fakeEstablishment.URN,
             SchoolName = _fakeEstablishment.EstablishmentName,
             LAName = _fakeEstablishment.LAName,
-            EstablishmentAll = new RelativeYearValues<double?>()
-            {
-                CurrentYear = null
-            },
-            LocalAuthorityAll = new RelativeYearValues<double?>()
-            {
-                CurrentYear = null
-            },
-            EnglandAll = new RelativeYearValues<double?>()
-            {
-                CurrentYear = null,
-            },
-            EstablishmentBoys = new RelativeYearValues<double?>()
-            {
-                CurrentYear = null
-            },
-            LocalAuthorityBoys = new RelativeYearValues<double?>()
-            {
-                CurrentYear = null,
-            },
-            EnglandBoys = new RelativeYearValues<double?>()
-            {
-                CurrentYear = null,
-            },
-            EstablishmentGirls = new RelativeYearValues<double?>()
-            {
-                CurrentYear = null
-            },
-            LocalAuthorityGirls = new RelativeYearValues<double?>()
-            {
-                CurrentYear = null,
-            },
-            EnglandGirls = new RelativeYearValues<double?>()
-            {
-                CurrentYear = null,
-            },
+            EstablishmentAll = new RelativeYearValues<double?> { CurrentYear = null },
+            LocalAuthorityAll = new RelativeYearValues<double?> { CurrentYear = null },
+            EnglandAll = new RelativeYearValues<double?> { CurrentYear = null },
+            EstablishmentBoys = new RelativeYearValues<double?> { CurrentYear = null },
+            LocalAuthorityBoys = new RelativeYearValues<double?> { CurrentYear = null },
+            EnglandBoys = new RelativeYearValues<double?> { CurrentYear = null },
+            EstablishmentGirls = new RelativeYearValues<double?> { CurrentYear = null },
+            LocalAuthorityGirls = new RelativeYearValues<double?> { CurrentYear = null },
+            EnglandGirls = new RelativeYearValues<double?> { CurrentYear = null },
         };
 
-        _mockEnglishAndMathsResultsService.Setup(s => s.GetEnglishAndMathsResults(_fakeEstablishment.URN, (int)gradeSelection))
-            .Returns(serviceModel);
+        _mockEnglishAndMathsResultsService
+            .Setup(s => s.GetEnglishAndMathsResultsAsync(_fakeEstablishment.URN, (int)gradeSelection, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(serviceModel);
 
-        // Act
-        var result = _controller.AcademicPerformanceEnglishAndMathsResults(
+        var result = await _controller.AcademicPerformanceEnglishAndMathsResults(
             _mockEnglishAndMathsResultsService.Object,
             _fakeEstablishment.URN,
-            _fakeEstablishment.EstablishmentName, gradeSelection) as ViewResult;
+            _fakeEstablishment.EstablishmentName,
+            gradeSelection,
+            CancellationToken.None) as ViewResult;
 
-        // Assert
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
 
@@ -535,12 +496,11 @@ public class SecondarySchoolControllerTests
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
         Assert.Equal(gradeSelection, model.SelectedGrade);
         Assert.Equal(["School", $"{_fakeEstablishment.LAName} average", "England average"], model.AllGcseData.Labels);
-        Assert.Equal([0, 0, 0 ], model.AllGcseData.Data);
+        Assert.Equal([0, 0, 0], model.AllGcseData.Data);
 
         Assert.Equal(3, model.AllGcseOverTimeData.Datasets.Count);
-
         Assert.Equal("School", model.AllGcseOverTimeData.Datasets[0].Label);
-        Assert.Equal([0, 0, 0 ], model.AllGcseOverTimeData.Datasets[0].Data);
+        Assert.Equal([0, 0, 0], model.AllGcseOverTimeData.Datasets[0].Data);
 
         Assert.Equal($"{_fakeEstablishment.LAName} average", model.AllGcseOverTimeData.Datasets[1].Label);
         Assert.Equal([0, 0, 0], model.AllGcseOverTimeData.Datasets[1].Data);
@@ -564,16 +524,18 @@ public class SecondarySchoolControllerTests
     }
 
     [Fact]
-    public void Get_AcademicPerformance_SubjectsEntered_ReturnsOk()
+    public async Task Get_AcademicPerformance_SubjectsEntered_ReturnsOk()
     {
-        // Arrange
-        _mockEstablishmentSubjectEntriesService.Setup(s => s.GetSubjectEntriesByUrn(_fakeEstablishment.URN))
-            .Returns((new() { SubjectEntries = CoreSubjects }, new() { SubjectEntries = AdditionalSubjects }));
+        _mockEstablishmentSubjectEntriesService
+            .Setup(s => s.GetSubjectEntriesByUrnAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync((new() { SubjectEntries = CoreSubjects }, new() { SubjectEntries = AdditionalSubjects }));
 
-        // Act
-        var result = _controller.AcademicPerformanceSubjectsEntered(_mockEstablishmentSubjectEntriesService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName) as ViewResult;
+        var result = await _controller.AcademicPerformanceSubjectsEntered(
+            _mockEstablishmentSubjectEntriesService.Object,
+            _fakeEstablishment.URN,
+            _fakeEstablishment.EstablishmentName,
+            CancellationToken.None) as ViewResult;
 
-        // Assert
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
 
@@ -581,6 +543,7 @@ public class SecondarySchoolControllerTests
         Assert.NotNull(model);
         Assert.Equal(_fakeEstablishment.URN, model.URN);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
+
         Assert.NotNull(model.CoreSubjects);
         Assert.Equal(
             CoreSubjects.Select(c => c.SubEntCore_Sub_Est_Current_Num).OrderBy(s => s),
@@ -594,6 +557,7 @@ public class SecondarySchoolControllerTests
             CoreSubjects.Select(c => c.SubEntCore_Qual_Est_Current_Num).OrderBy(s => s),
             model.CoreSubjects.Select(s => s.Qualification).OrderBy(s => s)
         );
+
         Assert.NotNull(model.AdditionalSubjects);
         Assert.Equal(
             AdditionalSubjects.Select(c => c.SubEntAdd_Sub_Est_Current_Num).OrderBy(s => s),
@@ -607,105 +571,53 @@ public class SecondarySchoolControllerTests
             AdditionalSubjects.Select(c => c.SubEntAdd_Qual_Est_Current_Num).OrderBy(s => s),
             model.AdditionalSubjects.Select(s => s.Qualification).OrderBy(s => s)
         );
+
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
     [Fact]
-    public void Get_Destinations_Info_ReturnsOk()
+    public async Task Get_Destinations_Info_ReturnsOk()
     {
-        // Arrange
         var destinationsDetails = new DestinationsDetails
         {
             Urn = _fakeEstablishment.URN,
             SchoolName = _fakeEstablishment.EstablishmentName,
             LocalAuthorityName = _fakeEstablishment.LAName,
-            SchoolAll = new RelativeYearValues<double?>
-            {
-                CurrentYear = 10,
-                PreviousYear = 20,
-                TwoYearsAgo = 30,
-            },
-            LocalAuthorityAll = new RelativeYearValues<double?>
-            {
-                CurrentYear = 30,
-                PreviousYear = 40,
-                TwoYearsAgo = 50,
-            },
-            EnglandAll = new RelativeYearValues<double?>
-            {
-                CurrentYear = 70,
-                PreviousYear = 80,
-                TwoYearsAgo = 30,
-            },
-            SchoolEducation = new RelativeYearValues<double?>
-            {
-                CurrentYear = 20,
-                PreviousYear = 10,
-                TwoYearsAgo = 40,
-            },
-            LocalAuthorityEducation = new RelativeYearValues<double?>
-            {
-                CurrentYear = 40,
-                PreviousYear = 50,
-                TwoYearsAgo = 70,
-            },
-            EnglandEducation = new RelativeYearValues<double?>
-            {
-                CurrentYear = 60,
-                PreviousYear = 70,
-                TwoYearsAgo = 20,
-            },
-            SchoolEmployment = new RelativeYearValues<double?>
-            {
-                CurrentYear = 50,
-                PreviousYear = 70,
-                TwoYearsAgo = 30,
-            },
-            LocalAuthorityEmployment = new RelativeYearValues<double?>
-            {
-                CurrentYear = 60,
-                PreviousYear = 90,
-                TwoYearsAgo = 50,
-            },
-            EnglandEmployment = new RelativeYearValues<double?>
-            {
-                CurrentYear = 40,
-                PreviousYear = 60,
-                TwoYearsAgo = 50,
-            },
-            SchoolApprentice = new RelativeYearValues<double?>
-            {
-                CurrentYear = 40,
-                PreviousYear = 50,
-                TwoYearsAgo = 70,
-            },
-            LocalAuthorityApprentice = new RelativeYearValues<double?>
-            {
-                CurrentYear = 20,
-                PreviousYear = 70,
-                TwoYearsAgo = 50,
-            },
-            EnglandApprentice = new RelativeYearValues<double?>
-            {
-                CurrentYear = 50,
-                PreviousYear = 60,
-                TwoYearsAgo = 40,
-            },
+            SchoolAll = new RelativeYearValues<double?> { CurrentYear = 10, PreviousYear = 20, TwoYearsAgo = 30 },
+            LocalAuthorityAll = new RelativeYearValues<double?> { CurrentYear = 30, PreviousYear = 40, TwoYearsAgo = 50 },
+            EnglandAll = new RelativeYearValues<double?> { CurrentYear = 70, PreviousYear = 80, TwoYearsAgo = 30 },
+            SchoolEducation = new RelativeYearValues<double?> { CurrentYear = 20, PreviousYear = 10, TwoYearsAgo = 40 },
+            LocalAuthorityEducation = new RelativeYearValues<double?> { CurrentYear = 40, PreviousYear = 50, TwoYearsAgo = 70 },
+            EnglandEducation = new RelativeYearValues<double?> { CurrentYear = 60, PreviousYear = 70, TwoYearsAgo = 20 },
+            SchoolEmployment = new RelativeYearValues<double?> { CurrentYear = 50, PreviousYear = 70, TwoYearsAgo = 30 },
+            LocalAuthorityEmployment = new RelativeYearValues<double?> { CurrentYear = 60, PreviousYear = 90, TwoYearsAgo = 50 },
+            EnglandEmployment = new RelativeYearValues<double?> { CurrentYear = 40, PreviousYear = 60, TwoYearsAgo = 50 },
+            SchoolApprentice = new RelativeYearValues<double?> { CurrentYear = 40, PreviousYear = 50, TwoYearsAgo = 70 },
+            LocalAuthorityApprentice = new RelativeYearValues<double?> { CurrentYear = 20, PreviousYear = 70, TwoYearsAgo = 50 },
+            EnglandApprentice = new RelativeYearValues<double?> { CurrentYear = 50, PreviousYear = 60, TwoYearsAgo = 40 },
         };
 
-        _mockDestinationsService.Setup(es => es.GetDestinationsDetails(It.IsAny<string>())).Returns(destinationsDetails);
+        _mockDestinationsService
+            .Setup(es => es.GetDestinationsDetailsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(destinationsDetails);
 
-        // Act
-        var result = _controller.Destinations(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName) as ViewResult;
+        var result = await _controller.Destinations(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
         string[] expectedAllDestCurrentDataLabels = ["School", $"{_fakeEstablishment.LAName} average", "England average"];
-        double[] expectedAllDestCurrentData = [destinationsDetails.SchoolAll.CurrentYear ?? 0, destinationsDetails.LocalAuthorityAll.CurrentYear ?? 0, destinationsDetails.EnglandAll.CurrentYear ?? 0];
+        double[] expectedAllDestCurrentData =
+        [
+            destinationsDetails.SchoolAll.CurrentYear ?? 0,
+            destinationsDetails.LocalAuthorityAll.CurrentYear ?? 0,
+            destinationsDetails.EnglandAll.CurrentYear ?? 0
+        ];
+
         var expectedDataOverTime = new DataOverTimeViewModel
         {
             Labels = [],
-            Datasets = [
+            Datasets =
+            [
                 new DatasetViewModel
                 {
                     Label = "School",
@@ -725,28 +637,30 @@ public class SecondarySchoolControllerTests
         };
 
         string[] expectedBreakdownCurrentYearDataLabels = ["Staying in education", "Entering employment and apprenticeships"];
+
         var expectedBreakdownCurrentYearData = new SeriesViewModel
         {
             Labels = ["Staying in education", "Entering employment and apprenticeships"],
             Datasets =
-                [
-                    new DataSeriesViewModel {
-                        Label = "School",
-                        Data = [destinationsDetails.SchoolEducation.CurrentYear ?? 0, (destinationsDetails.SchoolEmployment.CurrentYear ?? 0 + destinationsDetails.SchoolApprentice.CurrentYear ?? 0)]
-                    },
-                    new DataSeriesViewModel {
-                        Label = $"{destinationsDetails.LocalAuthorityName} average",
-                        Data = [destinationsDetails.LocalAuthorityEducation.CurrentYear ?? 0, (destinationsDetails.LocalAuthorityEmployment.CurrentYear ?? 0 + destinationsDetails.LocalAuthorityApprentice.CurrentYear ?? 0)]
-                    },
-                    new DataSeriesViewModel {
-                        Label = "England average",
-                        Data = [destinationsDetails.EnglandEducation.CurrentYear ?? 0, (destinationsDetails.EnglandEmployment.CurrentYear ?? 0 + destinationsDetails.EnglandApprentice.CurrentYear ?? 0)]
-                    },
-                ],
+            [
+                new DataSeriesViewModel
+                {
+                    Label = "School",
+                    Data = [destinationsDetails.SchoolEducation.CurrentYear ?? 0, (destinationsDetails.SchoolEmployment.CurrentYear ?? 0 + destinationsDetails.SchoolApprentice.CurrentYear ?? 0)]
+                },
+                new DataSeriesViewModel
+                {
+                    Label = $"{destinationsDetails.LocalAuthorityName} average",
+                    Data = [destinationsDetails.LocalAuthorityEducation.CurrentYear ?? 0, (destinationsDetails.LocalAuthorityEmployment.CurrentYear ?? 0 + destinationsDetails.LocalAuthorityApprentice.CurrentYear ?? 0)]
+                },
+                new DataSeriesViewModel
+                {
+                    Label = "England average",
+                    Data = [destinationsDetails.EnglandEducation.CurrentYear ?? 0, (destinationsDetails.EnglandEmployment.CurrentYear ?? 0 + destinationsDetails.EnglandApprentice.CurrentYear ?? 0)]
+                },
+            ],
         };
 
-
-        // Assert
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
 
@@ -778,5 +692,5 @@ public class SecondarySchoolControllerTests
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
-    }    
+    }
 }

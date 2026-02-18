@@ -1,36 +1,27 @@
-﻿using Microsoft.Extensions.Logging;
-using SAPPub.Core.Entities.KS4.Absence;
+﻿using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Interfaces.Repositories.KS4.Absence;
 using SAPPub.Core.Interfaces.Services.KS4.Absence;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SAPPub.Core.Services.KS4.Absence
 {
-    public class EstablishmentAbsenceService : IEstablishmentAbsenceService
+    public sealed class EstablishmentAbsenceService : IEstablishmentAbsenceService
     {
         private readonly IEstablishmentAbsenceRepository _establishmentAbsenceRepository;
 
-
-        public EstablishmentAbsenceService(
-            IEstablishmentAbsenceRepository establishmentAbsenceRepository)
+        public EstablishmentAbsenceService(IEstablishmentAbsenceRepository establishmentAbsenceRepository)
         {
-            _establishmentAbsenceRepository = establishmentAbsenceRepository;
+            _establishmentAbsenceRepository = establishmentAbsenceRepository
+                ?? throw new ArgumentNullException(nameof(establishmentAbsenceRepository));
         }
 
-
-        public IEnumerable<EstablishmentAbsence> GetAllEstablishmentAbsence()
+        public async Task<IEnumerable<EstablishmentAbsence>> GetAllEstablishmentAbsenceAsync(CancellationToken ct = default)
         {
-            return _establishmentAbsenceRepository.GetAllEstablishmentAbsence();
+            return await _establishmentAbsenceRepository.GetAllEstablishmentAbsenceAsync(ct);
         }
 
-
-        public EstablishmentAbsence GetEstablishmentAbsence(string urn)
+        public async Task<EstablishmentAbsence> GetEstablishmentAbsenceAsync(string urn, CancellationToken ct = default)
         {
-            return _establishmentAbsenceRepository.GetEstablishmentAbsence(urn) ?? new();
+            return await _establishmentAbsenceRepository.GetEstablishmentAbsenceAsync(urn, ct);
         }
     }
 }

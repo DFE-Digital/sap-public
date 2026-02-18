@@ -4,5 +4,5 @@ namespace SAPPub.Core.Interfaces.Services.KS4.Admissions;
 
 public interface IAdmissionsService
 {
-    public Task<AdmissionsServiceModel?> GetAdmissionsDetailsAsync(string urn);
+    Task<AdmissionsServiceModel?> GetAdmissionsDetailsAsync(string urn, CancellationToken ct = default);
 }

@@ -6,18 +6,19 @@ namespace SAPPub.Web.Controllers
 {
     public class SearchController : Controller
     {
-        private IEstablishmentService _establishmentService;
+        private readonly IEstablishmentService _establishmentService;
 
-        public SearchController(
-            IEstablishmentService establishmentService
-            )
+        public SearchController(IEstablishmentService establishmentService)
         {
             _establishmentService = establishmentService;
         }
 
-        public IActionResult Index()
+        [HttpGet]
+        public async Task<IActionResult> Index(CancellationToken ct)
         {
-            var listOfEstabs = SearchViewModel.FromEstablishmentCoreEntity(_establishmentService.GetAllEstablishments());
+            var establishments = await _establishmentService.GetAllEstablishmentsAsync(ct);
+            var listOfEstabs = SearchViewModel.FromEstablishmentCoreEntity(establishments);
+
             return View(listOfEstabs);
         }
     }

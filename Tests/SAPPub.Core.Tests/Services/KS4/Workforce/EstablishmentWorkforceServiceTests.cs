@@ -6,8 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace SAPPub.Core.Tests.Services.KS4.Workforce
 {
@@ -24,20 +25,21 @@ namespace SAPPub.Core.Tests.Services.KS4.Workforce
         }
 
         [Fact]
-        public void GetAllEstablishmentWorkforce_ShouldReturnAllItems()
+        public async Task GetAllEstablishmentWorkforceAsync_ShouldReturnAllItems()
         {
             // Arrange
-            var expectedDestinationss = new List<EstablishmentWorkforce>
-        {
-            new EstablishmentWorkforce { Id = "100",  Workforce_PupTeaRatio_Est_Current_Num = 99.99},
-            new EstablishmentWorkforce { Id = "101", Workforce_PupTeaRatio_Est_Current_Num = 90.00}
-        };
+            var expected = new List<EstablishmentWorkforce>
+            {
+                new() { Id = "100", Workforce_PupTeaRatio_Est_Current_Num = 99.99 },
+                new() { Id = "101", Workforce_PupTeaRatio_Est_Current_Num = 90.00 }
+            };
 
-            _mockRepo.Setup(r => r.GetAllEstablishmentWorkforce())
-                     .Returns(expectedDestinationss);
+            _mockRepo
+                .Setup(r => r.GetAllEstablishmentWorkforceAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expected);
 
             // Act
-            var result = _service.GetAllEstablishmentWorkforce();
+            var result = await _service.GetAllEstablishmentWorkforceAsync(CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
@@ -47,33 +49,34 @@ namespace SAPPub.Core.Tests.Services.KS4.Workforce
         }
 
         [Fact]
-        public void GetAllEstablishmentWorkforce_ShouldReturnEmpty_WhenNoData()
+        public async Task GetAllEstablishmentWorkforceAsync_ShouldReturnEmpty_WhenNoData()
         {
             // Arrange
-            _mockRepo.Setup(r => r.GetAllEstablishmentWorkforce())
-                     .Returns(new List<EstablishmentWorkforce>());
+            _mockRepo
+                .Setup(r => r.GetAllEstablishmentWorkforceAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<EstablishmentWorkforce>());
 
             // Act
-            var result = _service.GetAllEstablishmentWorkforce();
+            var result = await _service.GetAllEstablishmentWorkforceAsync(CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
             Assert.Empty(result);
         }
 
-
         [Fact]
-        public void GetEstablishmentWorkforce_ShouldReturnCorrectItem_WhenUrnExists()
+        public async Task GetEstablishmentWorkforceAsync_ShouldReturnCorrectItem_WhenUrnExists()
         {
             // Arrange
             var urn = "100";
-            var expectedDestinations = new EstablishmentWorkforce { Id = urn, Workforce_PupTeaRatio_Est_Current_Num = 100 };
+            var expected = new EstablishmentWorkforce { Id = urn, Workforce_PupTeaRatio_Est_Current_Num = 100 };
 
-            _mockRepo.Setup(r => r.GetEstablishmentWorkforce(urn))
-                     .Returns(expectedDestinations);
+            _mockRepo
+                .Setup(r => r.GetEstablishmentWorkforceAsync(urn, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expected);
 
             // Act
-            var result = _service.GetEstablishmentWorkforce(urn);
+            var result = await _service.GetEstablishmentWorkforceAsync(urn, CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
@@ -82,30 +85,35 @@ namespace SAPPub.Core.Tests.Services.KS4.Workforce
         }
 
         [Fact]
-        public void GetEstablishmentWorkforce_ShouldReturnNull_WhenUrnDoesNotExist()
+        public async Task GetEstablishmentWorkforceAsync_ShouldReturnDefault_WhenUrnDoesNotExist()
         {
             // Arrange
             var urn = "99999";
-            _mockRepo.Setup(r => r.GetEstablishmentWorkforce(urn))
-                     .Returns(new EstablishmentWorkforce());
+
+            _mockRepo
+                .Setup(r => r.GetEstablishmentWorkforceAsync(urn, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new EstablishmentWorkforce());
 
             // Act
-            var result = _service.GetEstablishmentWorkforce(urn);
+            var result = await _service.GetEstablishmentWorkforceAsync(urn, CancellationToken.None);
 
             // Assert
+            Assert.NotNull(result);
             Assert.Null(result.Workforce_TotPupils_Est_Current_Num);
         }
 
         [Fact]
-        public void GetEstablishmentWorkforce_ShouldThrowException_WhenRepositoryThrows()
+        public async Task GetEstablishmentWorkforceAsync_ShouldPropagateException_WhenRepositoryThrows()
         {
             // Arrange
             var urn = "error";
-            _mockRepo.Setup(r => r.GetEstablishmentWorkforce(urn))
-                     .Throws(new Exception("Database error"));
+
+            _mockRepo
+                .Setup(r => r.GetEstablishmentWorkforceAsync(urn, It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new Exception("Database error"));
 
             // Act & Assert
-            var ex = Assert.Throws<Exception>(() => _service.GetEstablishmentWorkforce(urn));
+            var ex = await Assert.ThrowsAsync<Exception>(() => _service.GetEstablishmentWorkforceAsync(urn, CancellationToken.None));
             Assert.Equal("Database error", ex.Message);
         }
     }

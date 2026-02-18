@@ -7,6 +7,9 @@ using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.SecondarySchool;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SAPPub.Web.Controllers
 {
@@ -17,12 +20,13 @@ namespace SAPPub.Web.Controllers
     {
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/about", Name = RouteConstants.SecondaryAboutSchool)]
-        public IActionResult AboutSchool(string urn, string schoolName)
+        public async Task<IActionResult> AboutSchool(string urn, string schoolName, CancellationToken ct)
         {
-            var establishmentDetails = establishmentService.GetEstablishment(urn);
+            var establishmentDetails = await establishmentService.GetEstablishmentAsync(urn, ct);
 
-            if (establishmentDetails?.URN == null)
+            if (string.IsNullOrWhiteSpace(establishmentDetails?.URN))
             {
+                logger.LogWarning("No establishment details found for URN: {URN}", urn);
                 return View("Error");
             }
 
@@ -32,7 +36,11 @@ namespace SAPPub.Web.Controllers
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/admissions", Name = RouteConstants.SecondaryAdmissions)]
-        public async Task<IActionResult> Admissions([FromServices] IAdmissionsService admissionsService, string urn, string schoolName)
+        public async Task<IActionResult> Admissions(
+            [FromServices] IAdmissionsService admissionsService,
+            string urn,
+            string schoolName,
+            CancellationToken ct)
         {
             var admissionsDetails = await admissionsService.GetAdmissionsDetailsAsync(urn);
             var model = AdmissionsViewModel.MapFrom(admissionsDetails, urn, schoolName);
@@ -43,7 +51,13 @@ namespace SAPPub.Web.Controllers
         [Route("school/{urn}/{schoolName}/secondary/attendance", Name = RouteConstants.SecondaryAttendance)]
         public IActionResult Attendance(string urn, string schoolName)
         {
-            var model = new AttendanceViewModel { URN = urn, SchoolName = schoolName, SchoolWebsite = "https://www.gov.uk/" };
+            var model = new AttendanceViewModel
+            {
+                URN = urn,
+                SchoolName = schoolName,
+                SchoolWebsite = "https://www.gov.uk/"
+            };
+
             return View(model);
         }
 
@@ -51,7 +65,12 @@ namespace SAPPub.Web.Controllers
         [Route("school/{urn}/{schoolName}/secondary/curriculum-and-extra-curricular-activities", Name = RouteConstants.SecondaryCurriculumAndExtraCurricularActivities)]
         public IActionResult CurriculumAndExtraCurricularActivities(string urn, string schoolName)
         {
-            var model = new CurriculumAndExtraCurricularActivitiesViewModel { URN = urn, SchoolName = schoolName };
+            var model = new CurriculumAndExtraCurricularActivitiesViewModel
+            {
+                URN = urn,
+                SchoolName = schoolName
+            };
+
             return View(model);
         }
 
@@ -64,14 +83,21 @@ namespace SAPPub.Web.Controllers
                 URN = urn,
                 SchoolName = schoolName,
             };
+
             return View(model);
         }
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/academic-performance-english-and-maths-results", Name = RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults)]
-        public IActionResult AcademicPerformanceEnglishAndMathsResults([FromServices] IAcademicPerformanceEnglishAndMathsResultsService academicPerformanceEnglishAndMathsResultsService, string urn, string schoolName, GcseGradeDataSelection SelectedGrade = GcseGradeDataSelection.Grade5AndAbove)
+        public async Task<IActionResult> AcademicPerformanceEnglishAndMathsResults(
+            [FromServices] IAcademicPerformanceEnglishAndMathsResultsService academicPerformanceEnglishAndMathsResultsService,
+            string urn,
+            string schoolName,
+            GcseGradeDataSelection SelectedGrade = GcseGradeDataSelection.Grade5AndAbove,
+            CancellationToken ct = default)
         {
-            var results = academicPerformanceEnglishAndMathsResultsService.GetEnglishAndMathsResults(urn, Convert.ToInt32(SelectedGrade));
+            var results = await academicPerformanceEnglishAndMathsResultsService
+                .GetEnglishAndMathsResultsAsync(urn, Convert.ToInt32(SelectedGrade), ct);
 
             var model = AcademicPerformanceEnglishAndMathsResultsViewModel.Map(results, SelectedGrade);
             return View(model);
@@ -79,24 +105,35 @@ namespace SAPPub.Web.Controllers
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/academic-performance-subjects-entered", Name = RouteConstants.SecondaryAcademicPerformanceSubjectsEntered)]
-        public IActionResult AcademicPerformanceSubjectsEntered([FromServices] IEstablishmentSubjectEntriesService subjectEntriesService, string urn, string schoolName)
+        public async Task<IActionResult> AcademicPerformanceSubjectsEntered(
+            [FromServices] IEstablishmentSubjectEntriesService subjectEntriesService,
+            string urn,
+            string schoolName,
+            CancellationToken ct)
         {
-            var establishmentDetails = establishmentService.GetEstablishment(urn);
-            var (coreSubjectEntries, additionalSubjectEntries) = subjectEntriesService.GetSubjectEntriesByUrn(urn);
-            if (establishmentDetails?.URN == null)
+            var establishmentDetails = await establishmentService.GetEstablishmentAsync(urn, ct);
+
+            if (string.IsNullOrWhiteSpace(establishmentDetails?.URN))
             {
                 return View("Error");
             }
 
-            var model = AcademicPerformanceSubjectsEnteredViewModel.Map(establishmentDetails, coreSubjectEntries, additionalSubjectEntries);
+            var (coreSubjectEntries, additionalSubjectEntries) =
+                await subjectEntriesService.GetSubjectEntriesByUrnAsync(urn, ct);
+
+            var model = AcademicPerformanceSubjectsEnteredViewModel.Map(
+                establishmentDetails,
+                coreSubjectEntries,
+                additionalSubjectEntries);
+
             return View(model);
         }
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/destinations", Name = RouteConstants.SecondaryDestinations)]
-        public IActionResult Destinations(string urn, string schoolName)
+        public async Task<IActionResult> Destinations(string urn, string schoolName, CancellationToken ct)
         {
-            var destinationDetails = destinationsService.GetDestinationsDetails(urn);
+            var destinationDetails = await destinationsService.GetDestinationsDetailsAsync(urn, ct);
 
             var model = DestinationsViewModel.Map(destinationDetails);
             return View(model);
