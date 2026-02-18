@@ -2,12 +2,6 @@
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Interfaces.Repositories.KS4.Performance;
 using SAPPub.Core.Services.KS4.Performance;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SAPPub.Core.Tests.Services.KS4.Performance
 {
@@ -23,17 +17,17 @@ namespace SAPPub.Core.Tests.Services.KS4.Performance
         }
 
         [Fact]
-        public void GetAllEnglandPerformance_ShouldReturnAllItems()
+        public async Task GetEnglandPerformanceAsync_ShouldReturnData()
         {
             // Arrange
-            var expectedAbsences =
-            new EnglandPerformance { Attainment8_Tot_Eng_Current_Num = 99.99 };
+            var expected = new EnglandPerformance { Attainment8_Tot_Eng_Current_Num = 99.99 };
 
-            _mockRepo.Setup(r => r.GetEnglandPerformance())
-                         .Returns(expectedAbsences);
+            _mockRepo
+                .Setup(r => r.GetEnglandPerformanceAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expected);
 
             // Act
-            var result = _service.GetEnglandPerformance();
+            var result = await _service.GetEnglandPerformanceAsync(CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
@@ -41,30 +35,31 @@ namespace SAPPub.Core.Tests.Services.KS4.Performance
         }
 
         [Fact]
-        public void GetAllEnglandPerformance_ShouldReturnEmpty_WhenNoData()
+        public async Task GetEnglandPerformanceAsync_ShouldReturnDefault_WhenNoData()
         {
             // Arrange
-            _mockRepo.Setup(r => r.GetEnglandPerformance())
-                     .Returns(new EnglandPerformance());
+            _mockRepo
+                .Setup(r => r.GetEnglandPerformanceAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new EnglandPerformance());
 
             // Act
-            var result = _service.GetEnglandPerformance();
+            var result = await _service.GetEnglandPerformanceAsync(CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
         }
 
         [Fact]
-        public void GetEnglandPerformance_ShouldThrowException_WhenRepositoryThrows()
+        public async Task GetEnglandPerformanceAsync_ShouldPropagateException_WhenRepositoryThrows()
         {
             // Arrange
-            _mockRepo.Setup(r => r.GetEnglandPerformance())
-                     .Throws(new Exception("Database error"));
+            _mockRepo
+                .Setup(r => r.GetEnglandPerformanceAsync(It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new Exception("Database error"));
 
             // Act & Assert
-            var ex = Assert.Throws<Exception>(() => _service.GetEnglandPerformance());
+            var ex = await Assert.ThrowsAsync<Exception>(() => _service.GetEnglandPerformanceAsync(CancellationToken.None));
             Assert.Equal("Database error", ex.Message);
         }
-
     }
 }

@@ -1,30 +1,21 @@
-﻿using Microsoft.Extensions.Logging;
-using SAPPub.Core.Entities.KS4.Absence;
+﻿using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Interfaces.Repositories.KS4.Absence;
 using SAPPub.Core.Interfaces.Services.KS4.Absence;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SAPPub.Core.Services.KS4.Absence
 {
-    public class EnglandAbsenceService : IEnglandAbsenceService
+    public sealed class EnglandAbsenceService : IEnglandAbsenceService
     {
         private readonly IEnglandAbsenceRepository _englandAbsenceRepository;
 
-
-        public EnglandAbsenceService(
-            IEnglandAbsenceRepository englandAbsenceRepository)
+        public EnglandAbsenceService(IEnglandAbsenceRepository englandAbsenceRepository)
         {
-            _englandAbsenceRepository = englandAbsenceRepository;
+            _englandAbsenceRepository = englandAbsenceRepository ?? throw new ArgumentNullException(nameof(englandAbsenceRepository));
         }
 
-
-        public EnglandAbsence GetEnglandAbsence()
+        public async Task<EnglandAbsence> GetEnglandAbsenceAsync(CancellationToken ct = default)
         {
-            return _englandAbsenceRepository.GetEnglandAbsence();
+            return await _englandAbsenceRepository.GetEnglandAbsenceAsync(ct);
         }
     }
 }

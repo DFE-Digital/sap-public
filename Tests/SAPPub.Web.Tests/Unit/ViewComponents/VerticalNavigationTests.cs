@@ -37,12 +37,17 @@ public class VerticalNavigationTests
         var component = CreateComponent();
 
         // Act
-        var result = component.Invoke(null!) as ViewViewComponentResult;
+        var result = component.Invoke(null!);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal("~/ViewComponents/VerticalNavigation/Default.cshtml", result.ViewName);
+        var viewResult = Assert.IsType<ViewViewComponentResult>(result);
 
-        Assert.Null(result.ViewData.Model);
+        // ViewName is often nullable in MVC types
+        Assert.Equal("~/ViewComponents/VerticalNavigation/Default.cshtml", viewResult.ViewName!);
+
+        // ViewData is where analyzers commonly complain
+        Assert.NotNull(viewResult.ViewData);
+        Assert.Null(viewResult.ViewData!.Model);
     }
+
 }

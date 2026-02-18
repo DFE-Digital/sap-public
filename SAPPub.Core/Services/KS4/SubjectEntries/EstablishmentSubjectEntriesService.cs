@@ -2,14 +2,26 @@
 using SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
 
-namespace SAPPub.Core.Services.KS4.SubjectEntries;
-
-public class EstablishmentSubjectEntriesService(IEstablishmentSubjectEntriesRepository subjectEntriesRepository) : IEstablishmentSubjectEntriesService
+namespace SAPPub.Core.Services.KS4.SubjectEntries
 {
-    public (EstablishmentCoreSubjectEntries, EstablishmentAdditionalSubjectEntries) GetSubjectEntriesByUrn(string urn)
+    public sealed class EstablishmentSubjectEntriesService : IEstablishmentSubjectEntriesService
     {
-        var coreSubjectEntries = subjectEntriesRepository.GetCoreSubjectEntriesByUrn(urn);
-        var additionalSubjectEntries = subjectEntriesRepository.GetAdditionalSubjectEntriesByUrn(urn);
-        return (coreSubjectEntries, additionalSubjectEntries);
+        private readonly IEstablishmentSubjectEntriesRepository _repo;
+
+        public EstablishmentSubjectEntriesService(IEstablishmentSubjectEntriesRepository subjectEntriesRepository)
+        {
+            _repo = subjectEntriesRepository ?? throw new ArgumentNullException(nameof(subjectEntriesRepository));
+        }
+
+        public async Task<(EstablishmentCoreSubjectEntries Core, EstablishmentAdditionalSubjectEntries Additional)>
+            GetSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default)
+        {
+            var coreTask = _repo.GetCoreSubjectEntriesByUrnAsync(urn, ct);
+            var additionalTask = _repo.GetAdditionalSubjectEntriesByUrnAsync(urn, ct);
+
+            await Task.WhenAll(coreTask, additionalTask);
+
+            return (await coreTask, await additionalTask);
+        }
     }
 }

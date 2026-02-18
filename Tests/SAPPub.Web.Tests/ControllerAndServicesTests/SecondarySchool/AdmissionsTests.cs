@@ -13,6 +13,11 @@ using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Controllers;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.SecondarySchool;
+using System;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace SAPPub.Web.Tests.ControllerAndServicesTests.SecondarySchool;
 
@@ -23,18 +28,20 @@ public class AdmissionsTests
     private readonly Mock<IEstablishmentRepository> _mockEstablishmentRepository = new();
     private readonly Mock<IDestinationsService> _mockDestinationsService = new();
     private readonly Mock<ILookupService> _mockLookupService = new();
+
     private readonly IEstablishmentService _establishmentService;
     private readonly IAdmissionsService _admissionsService;
     private readonly SecondarySchoolController _controller;
-    private Establishment _establishment;
+
+    private readonly Establishment _establishment;
 
     public AdmissionsTests()
     {
-        _establishment = AdmissionsTests.Establishment;
+        _establishment = Establishment;
 
         _mockLogger = new Mock<ILogger<SecondarySchoolController>>();
 
-        // Create a real temp directory
+        // Create a real temp directory (matches your existing pattern)
         var tempPath = Path.Combine(Path.GetTempPath(), "SAPPubTests", Guid.NewGuid().ToString());
         Directory.CreateDirectory(tempPath);
 
@@ -91,15 +98,21 @@ public class AdmissionsTests
     [InlineData(null, "Manchester")]
     public async Task Get_Admissions_ReturnsExpectedViewModel(string? lASchoolAdmissionsUrl, string? laName)
     {
-        _mockEstablishmentRepository.Setup(r => r.GetEstablishment(_establishment.URN)).Returns(_establishment);
-        _mockLaUrlsRepository.Setup(r => r.GetLaAsync(_establishment.GSSLACode!)).ReturnsAsync(new LaUrls
-        {
-            Name = laName,
-            LAMainUrl = lASchoolAdmissionsUrl
-        });
+        // Arrange
+        _mockEstablishmentRepository
+            .Setup(r => r.GetEstablishmentAsync(_establishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_establishment);
+
+        _mockLaUrlsRepository
+            .Setup(r => r.GetLaAsync(_establishment.GSSLACode!, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new LaUrls
+            {
+                Name = laName,
+                LAMainUrl = lASchoolAdmissionsUrl
+            });
 
         // Act
-        var result = await _controller.Admissions(_admissionsService, _establishment.URN, _establishment.EstablishmentName) as ViewResult;
+        var result = await _controller.Admissions(_admissionsService, _establishment.URN, _establishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
         // Assert
         Assert.NotNull(result);
@@ -120,15 +133,21 @@ public class AdmissionsTests
     [InlineData("https://www.example.com/manchester/school-admissions", null)]
     public async Task Get_Admissions_LANameIsNull_ReturnsGenericLAString(string? lASchoolAdmissionsUrl, string? laName)
     {
-        _mockEstablishmentRepository.Setup(r => r.GetEstablishment(_establishment.URN)).Returns(_establishment);
-        _mockLaUrlsRepository.Setup(r => r.GetLaAsync(_establishment.GSSLACode!)).ReturnsAsync(new LaUrls
-        {
-            Name = laName,
-            LAMainUrl = lASchoolAdmissionsUrl
-        });
+        // Arrange
+        _mockEstablishmentRepository
+            .Setup(r => r.GetEstablishmentAsync(_establishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_establishment);
+
+        _mockLaUrlsRepository
+            .Setup(r => r.GetLaAsync(_establishment.GSSLACode!, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new LaUrls
+            {
+                Name = laName,
+                LAMainUrl = lASchoolAdmissionsUrl
+            });
 
         // Act
-        var result = await _controller.Admissions(_admissionsService, _establishment.URN, _establishment.EstablishmentName) as ViewResult;
+        var result = await _controller.Admissions(_admissionsService, _establishment.URN, _establishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
         // Assert
         Assert.NotNull(result);
@@ -142,11 +161,15 @@ public class AdmissionsTests
     [Fact]
     public async Task Get_Admissions_EstablishmentGssCodeIsNull_ReturnsPartlyPopulatedViewModel()
     {
+        // Arrange
         var establishment = BuildEstablishmentWithNullGssCode;
-        _mockEstablishmentRepository.Setup(r => r.GetEstablishment(establishment.URN)).Returns(establishment);
+
+        _mockEstablishmentRepository
+            .Setup(r => r.GetEstablishmentAsync(establishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(establishment);
 
         // Act
-        var result = await _controller.Admissions(_admissionsService, establishment.URN, establishment.EstablishmentName) as ViewResult;
+        var result = await _controller.Admissions(_admissionsService, establishment.URN, establishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
         // Assert
         Assert.NotNull(result);
@@ -160,11 +183,17 @@ public class AdmissionsTests
     [Fact]
     public async Task Get_Admissions_LAUrlsForGssCode_ReturnsPartlyPopulatedViewModel()
     {
-        _mockEstablishmentRepository.Setup(r => r.GetEstablishment(_establishment.URN)).Returns(_establishment);
-        _mockLaUrlsRepository.Setup(r => r.GetLaAsync(_establishment.GSSLACode!)).ReturnsAsync((LaUrls?)null);
+        // Arrange
+        _mockEstablishmentRepository
+            .Setup(r => r.GetEstablishmentAsync(_establishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_establishment);
+
+        _mockLaUrlsRepository
+            .Setup(r => r.GetLaAsync(_establishment.GSSLACode!, It.IsAny<CancellationToken>()))
+            .ReturnsAsync((LaUrls?)null);
 
         // Act
-        var result = await _controller.Admissions(_admissionsService, _establishment.URN, _establishment.EstablishmentName) as ViewResult;
+        var result = await _controller.Admissions(_admissionsService, _establishment.URN, _establishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
         // Assert
         Assert.NotNull(result);

@@ -1,35 +1,26 @@
-﻿using SAPPub.Core.Entities;
-using SAPPub.Core.Entities.KS4.Performance;
-using SAPPub.Core.Interfaces.Repositories;
+﻿using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Interfaces.Repositories.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SAPPub.Core.Services.KS4.Performance
 {
-    public class EstablishmentPerformanceService : IEstablishmentPerformanceService
+    public sealed class EstablishmentPerformanceService : IEstablishmentPerformanceService
     {
-        private readonly IEstablishmentPerformanceRepository _establishmentPerformanceRepository;
+        private readonly IEstablishmentPerformanceRepository _repo;
 
-        public EstablishmentPerformanceService(IEstablishmentPerformanceRepository establishmentPerformanceRepository)
+        public EstablishmentPerformanceService(IEstablishmentPerformanceRepository repo)
         {
-            _establishmentPerformanceRepository = establishmentPerformanceRepository;
+            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
-
-        public IEnumerable<EstablishmentPerformance> GetAllEstablishmentPerformance()
+        public async Task<IEnumerable<EstablishmentPerformance>> GetAllEstablishmentPerformanceAsync(CancellationToken ct = default)
         {
-            return _establishmentPerformanceRepository.GetAllEstablishmentPerformance();
+            return await _repo.GetAllEstablishmentPerformanceAsync(ct);
         }
 
-
-        public EstablishmentPerformance GetEstablishmentPerformance(string urn)
+        public async Task<EstablishmentPerformance> GetEstablishmentPerformanceAsync(string urn, CancellationToken ct = default)
         {
-            return _establishmentPerformanceRepository.GetEstablishmentPerformance(urn) ?? new();
+            return await _repo.GetEstablishmentPerformanceAsync(urn, ct);
         }
     }
 }

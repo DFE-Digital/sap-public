@@ -29,6 +29,7 @@ namespace SAPPub.Core.Entities
         public string AddressAddress3 { get; set; } = string.Empty;
 
         public string AddressTown { get; set; } = string.Empty;
+        public string AddressCounty { get; set; } = string.Empty;
 
         public string AddressPostcode { get; set; } = string.Empty;
 
@@ -87,6 +88,8 @@ namespace SAPPub.Core.Entities
         public string TypeOfEstablishmentName { get; set; } = string.Empty;
 
         public string ResourcedProvision { get; set; } = string.Empty;
+        
+        public string ResourcedProvisionName { get; set; } = string.Empty;
 
         public string UKPRN { get; set; } = string.Empty;
 
@@ -122,5 +125,7 @@ namespace SAPPub.Core.Entities
         public EstablishmentWorkforce Workforce { get; set; } = new(); // Will eventually need one per phase
 
         public int SchoolCapacity { get; set; }
+
+        public string StatusCode { get; set; } = string.Empty;
     }
 }

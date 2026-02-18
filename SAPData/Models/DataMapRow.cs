@@ -22,6 +22,7 @@ namespace SAPData.Models
         public string FileName { get; set; } = "";           // e.g., 202425_performance_tables_schools_provisional.csv
         public string Field { get; set; } = "";              // e.g., attainment8_average
         public string DataType { get; set; } = "";           // e.g., int
+        public string DataTypeAlt { get; set; } = "";
         public string RecordFilterBy { get; set; } = "";     // e.g., URN
         public string Filter { get; set; } = "";             // e.g., breakdown
         public string FilterValue { get; set; } = "";        // e.g., Total

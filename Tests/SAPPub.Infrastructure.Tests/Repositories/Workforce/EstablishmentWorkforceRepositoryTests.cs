@@ -3,95 +3,110 @@ using Moq;
 using SAPPub.Core.Entities.KS4.Workforce;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Infrastructure.Repositories.KS4.Workforce;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SAPPub.Infrastructure.Tests.Repositories.Workforce
 {
     public class EstablishmentWorkforceRepositoryTests
     {
         private readonly Mock<IGenericRepository<EstablishmentWorkforce>> _mockGenericRepo;
-        private readonly Mock<ILogger<EstablishmentWorkforce>> _mockLogger;
+        private readonly Mock<ILogger<EstablishmentWorkforceRepository>> _mockLogger;
         private readonly EstablishmentWorkforceRepository _sut;
 
         public EstablishmentWorkforceRepositoryTests()
         {
             _mockGenericRepo = new Mock<IGenericRepository<EstablishmentWorkforce>>();
-            _mockLogger = new Mock<ILogger<EstablishmentWorkforce>>();
-            _sut = new EstablishmentWorkforceRepository(_mockGenericRepo.Object, _mockLogger.Object);
+            _mockLogger = new Mock<ILogger<EstablishmentWorkforceRepository>>();
+            _sut = new EstablishmentWorkforceRepository(_mockGenericRepo.Object);
         }
 
         [Fact]
-        public void GetAllEstablishmentWorkforces_ReturnsAllItemsFromGenericRepository()
+        public async Task GetAllEstablishmentWorkforceAsync_ReturnsAllItemsFromGenericRepository()
         {
             // Arrange
             var expected = new List<EstablishmentWorkforce>
             {
-                new EstablishmentWorkforce { Id = "1", Workforce_PupTeaRatio_Est_Current_Num= 99.99 },
-                new EstablishmentWorkforce { Id = "2", Workforce_PupTeaRatio_Est_Current_Num = 88.88 }
+                new() { Id = "1", Workforce_PupTeaRatio_Est_Current_Num = 99.99 },
+                new() { Id = "2", Workforce_PupTeaRatio_Est_Current_Num = 88.88 }
             };
-            _mockGenericRepo.Setup(r => r.ReadAll()).Returns(expected);
+
+            _mockGenericRepo
+                .Setup(r => r.ReadAllAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expected);
 
             // Act
-            var result = _sut.GetAllEstablishmentWorkforce();
+            var result = await _sut.GetAllEstablishmentWorkforceAsync(CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
             Assert.Equal(2, result.Count());
             Assert.Contains(result, e => e.Id == "1");
             Assert.Contains(result, e => e.Id == "2");
-            _mockGenericRepo.Verify(r => r.ReadAll(), Times.Once);
+
+            _mockGenericRepo.Verify(r => r.ReadAllAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
-        public void GetAllEstablishmentWorkforces_ReturnsEmptyWhenGenericRepositoryReturnsNull()
+        public async Task GetAllEstablishmentWorkforceAsync_ReturnsEmptyWhenGenericRepositoryReturnsEmpty()
         {
             // Arrange
-            _mockGenericRepo.Setup(r => r.ReadAll()).Returns((IEnumerable<EstablishmentWorkforce>?)null);
+            _mockGenericRepo
+                .Setup(r => r.ReadAllAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Enumerable.Empty<EstablishmentWorkforce>());
 
             // Act
-            var result = _sut.GetAllEstablishmentWorkforce();
+            var result = await _sut.GetAllEstablishmentWorkforceAsync(CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
             Assert.Empty(result);
-            _mockGenericRepo.Verify(r => r.ReadAll(), Times.Once);
+
+            _mockGenericRepo.Verify(r => r.ReadAllAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
-        public void GetEstablishmentWorkforce_ReturnsCorrectItemWhenUrnExists()
+        public async Task GetEstablishmentWorkforceAsync_ReturnsCorrectItemWhenUrnExists()
         {
             // Arrange
-            var expected = new EstablishmentWorkforce { Id = "1", Workforce_PupTeaRatio_Est_Current_Num = 99.99 };
-            _mockGenericRepo.Setup(r => r.ReadAll()).Returns(new[] { expected });
+            var urn = "1";
+            var expected = new EstablishmentWorkforce
+            {
+                Id = urn,
+                Workforce_PupTeaRatio_Est_Current_Num = 99.99
+            };
+
+            _mockGenericRepo
+                .Setup(r => r.ReadAsync(urn, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expected);
 
             // Act
-            var result = _sut.GetEstablishmentWorkforce("1");
+            var result = await _sut.GetEstablishmentWorkforceAsync(urn, CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
             Assert.Equal("1", result.Id);
             Assert.Equal(99.99, result.Workforce_PupTeaRatio_Est_Current_Num);
-            _mockGenericRepo.Verify(r => r.ReadAll(), Times.Once);
+
+            _mockGenericRepo.Verify(r => r.ReadAsync(urn, It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
-        public void GetEstablishmentWorkforce_ReturnsNewEstablishmentWorkforceWhenUrnDoesNotExist()
+        public async Task GetEstablishmentWorkforceAsync_ReturnsNewEstablishmentWorkforceWhenUrnDoesNotExist()
         {
             // Arrange
-            _mockGenericRepo.Setup(r => r.ReadAll()).Returns(Enumerable.Empty<EstablishmentWorkforce>());
+            var urn = "999";
+
+            _mockGenericRepo
+                .Setup(r => r.ReadAsync(urn, It.IsAny<CancellationToken>()))
+                .ReturnsAsync((EstablishmentWorkforce?)null);
 
             // Act
-            var result = _sut.GetEstablishmentWorkforce("999");
+            var result = await _sut.GetEstablishmentWorkforceAsync(urn, CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
-            // When not found the repository returns a new EstablishmentWorkforce (defaults are empty strings / zeros)
             Assert.Equal(string.Empty, result.Id);
-            _mockGenericRepo.Verify(r => r.ReadAll(), Times.Once);
+
+            _mockGenericRepo.Verify(r => r.ReadAsync(urn, It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

@@ -1,38 +1,30 @@
-﻿using Microsoft.Extensions.Logging;
-using SAPPub.Core.Entities;
+﻿using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Repositories.Generic;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SAPPub.Infrastructure.Repositories
 {
-    public class EstablishmentRepository : IEstablishmentRepository
+    public sealed class EstablishmentRepository : IEstablishmentRepository
     {
-        private readonly IGenericRepository<Establishment> _establishmentMetadataRepository;
-        private ILogger<Establishment> _logger;
+        private readonly IGenericRepository<Establishment> _repo;
 
-        public EstablishmentRepository(
-            IGenericRepository<Establishment> establishmentMetadataRepository, 
-            ILogger<Establishment> logger)
+        public EstablishmentRepository(IGenericRepository<Establishment> repo)
         {
-            _establishmentMetadataRepository = establishmentMetadataRepository;
-            _logger = logger;
+            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
-
-        public IEnumerable<Establishment> GetAllEstablishments()
+        public async Task<IEnumerable<Establishment>> GetAllEstablishmentsAsync(CancellationToken ct = default)
         {
-            return _establishmentMetadataRepository.ReadAll() ?? [];
+            // Keep only while we genuinely need to list; LIMIT 100 is already in DapperHelpers
+            return await _repo.ReadAllAsync(ct);
         }
 
-
-        public Establishment GetEstablishment(string urn)
+        public async Task<Establishment> GetEstablishmentAsync(string urn, CancellationToken ct = default)
         {
-            return GetAllEstablishments().FirstOrDefault(x => x.URN == urn) ?? new Establishment();
+            if (string.IsNullOrWhiteSpace(urn))
+                return new Establishment();
+
+            return await _repo.ReadAsync(urn, ct) ?? new Establishment();
         }
     }
 }

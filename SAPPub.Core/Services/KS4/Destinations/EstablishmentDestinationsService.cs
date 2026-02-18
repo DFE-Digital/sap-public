@@ -4,25 +4,23 @@ using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 
 namespace SAPPub.Core.Services.KS4.Destinations
 {
-    public class EstablishmentDestinationsService : IEstablishmentDestinationsService
+    public sealed class EstablishmentDestinationsService : IEstablishmentDestinationsService
     {
-        private readonly IEstablishmentDestinationsRepository _establishmentDestinationsRepository;
+        private readonly IEstablishmentDestinationsRepository _repo;
 
-        public EstablishmentDestinationsService(IEstablishmentDestinationsRepository establishmentDestinationsRepository)
+        public EstablishmentDestinationsService(IEstablishmentDestinationsRepository repo)
         {
-            _establishmentDestinationsRepository = establishmentDestinationsRepository;
+            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
-
-        public IEnumerable<EstablishmentDestinations> GetAllEstablishmentDestinations()
+        public async Task<IEnumerable<EstablishmentDestinations>> GetAllEstablishmentDestinationsAsync(CancellationToken ct = default)
         {
-            return _establishmentDestinationsRepository.GetAllEstablishmentDestinations();
+            return await _repo.GetAllEstablishmentDestinationsAsync(ct);
         }
 
-
-        public EstablishmentDestinations GetEstablishmentDestinations(string urn)
+        public async Task<EstablishmentDestinations?> GetEstablishmentDestinationsAsync(string urn, CancellationToken ct = default)
         {
-            return _establishmentDestinationsRepository.GetEstablishmentDestinations(urn) ?? new(); ;
+            return await _repo.GetEstablishmentDestinationsAsync(urn, ct);
         }
     }
 }

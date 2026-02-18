@@ -45,7 +45,8 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
         var heading = await Page.Locator("h1").TextContentAsync();
 
         // Assert
-        Assert.NotNull(heading.Replace(" ", ""));
+        Assert.NotNull(heading);
+        Assert.NotEmpty(heading!.Trim());
     }
 
     [Fact]
