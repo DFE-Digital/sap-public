@@ -422,3 +422,23 @@ jobs:
           slack-webhook: ${{ secrets.SLACK_WEBHOOK }}
           smoke-test: false
           db-seed: ${{ inputs.environment == 'review' && 'true' || 'false' }} 
+
+  deploy_domains_infra:
+    name: Deploy Domains Infrastructure
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    concurrency: deploy_domains_infra
+    needs: [deploy]
+    environment:
+      name: production
+    permissions:
+      id-token: write
+
+    steps:
+    - name: Deploy Domains Infrastructure
+      uses: DFE-Digital/github-actions/deploy-domains-infra@master
+      with:
+        azure-client-id:  ${{ secrets.AZURE_CLIENT_ID  }}
+        azure-tenant-id:  ${{ secrets.AZURE_TENANT_ID   }}
+        azure-subscription-id:  ${{ secrets.AZURE_SUBSCRIPTION_ID   }}
+        slack-webhook: ${{ secrets.SLACK_WEBHOOK }}
