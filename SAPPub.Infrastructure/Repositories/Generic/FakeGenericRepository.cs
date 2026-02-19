@@ -1,7 +1,7 @@
-﻿using System.Reflection;
-using SAPPub.Core.Entities;
+﻿using SAPPub.Core.Entities;
 using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Repositories.Generic;
+using System.Reflection;
 
 namespace SAPPub.Infrastructure.Repositories.Generic;
 
@@ -59,7 +59,13 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
         => ReadSingleAsync(new { Id = id }, ct);
 
     public Task<IEnumerable<T>> ReadAllAsync(CancellationToken ct = default)
-        => Task.FromResult(Enumerable.Empty<T>());
+    {
+        if (typeof(T) == typeof(Establishment))
+        {
+            return Task.FromResult(Establishments.Values.Select(e => (T)(object)e));
+        }
+        else return Task.FromResult(Enumerable.Empty<T>());
+    }
 
     public Task<T?> ReadSingleAsync(object? parameters, CancellationToken ct = default)
     {
