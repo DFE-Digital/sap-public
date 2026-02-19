@@ -244,9 +244,8 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                     select
                       {EstablishmentColumns}
                     from public.v_establishment
-                    where "PhaseOfEducationId" = 4
-                    limit 100;
-                    """, // temporary until search page is built
+                    where "PhaseOfEducationId" in (4, 5, 7)
+                    """,
 
                 nameof(EstablishmentAbsence) =>
                     SelectFrom(EstablishmentAbsenceColumns, "v_establishment_absence"),
@@ -260,7 +259,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                 nameof(EstablishmentWorkforce) =>
                     SelectFrom(EstablishmentWorkforceColumns, "v_establishment_workforce"),
 
-                nameof(LADestinations) => 
+                nameof(LADestinations) =>
                     SelectFrom(LADestinationsColumns, "v_la_destinations"),
 
                 nameof(LAPerformance) =>
@@ -286,7 +285,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
         {
             return entityType.Name switch
             {
-                nameof(Establishment) => 
+                nameof(Establishment) =>
                     SelectFromWhereUrn(EstablishmentColumns, "v_establishment"),
 
                 nameof(EstablishmentAbsence) =>
@@ -301,7 +300,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                 nameof(EstablishmentWorkforce) =>
                     SelectFromWhereId(EstablishmentWorkforceColumns, "v_establishment_workforce"),
 
-                nameof(LADestinations) => 
+                nameof(LADestinations) =>
                     SelectFromWhereId(LADestinationsColumns, "v_la_destinations"),
 
                 nameof(LAPerformance) =>

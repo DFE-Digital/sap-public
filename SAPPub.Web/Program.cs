@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.StaticFiles;
 using Npgsql;
 using SAPPub.Infrastructure.LuceneSearch;
+using SAPPub.Infrastructure.Repositories;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Middleware;
 using SAPPub.Web.Models.Config;
@@ -88,7 +89,7 @@ public partial class Program
         }
 
         builder.Services.AddSingleton<NpgsqlDataSource>(_ => NpgsqlDataSource.Create(connectionString));
-
+        builder.Services.AddSingleton<DBHealthCheck>();
         builder.Services.AddDependencies(builder.Environment, builder.Configuration);
         builder.Services.AddLuceneDependencies();
 
