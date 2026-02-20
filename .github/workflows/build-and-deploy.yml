@@ -29,7 +29,7 @@ on:
   pull_request:
     branches:
       - main
-    types: [opened, reopened, synchronize, labeled] # (optional: add unlabeled if you want)
+    types: [opened, reopened, synchronize, labeled] 
 
 env:
   TERRAFORM_BASE: terraform/application
