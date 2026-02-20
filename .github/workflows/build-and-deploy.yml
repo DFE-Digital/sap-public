@@ -466,6 +466,6 @@ jobs:
           azure-tenant-id: ${{ secrets.AZURE_TENANT_ID   }}
           azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID   }}
           environment: ${{ matrix.domain_environment }}
-          healthcheck: healthcheck
+          healthcheck: ${{ env.HEALTHCHECK_CMD }}
           slack-webhook: ${{ secrets.SLACK_WEBHOOK }}
-          terraform-base: terraform/domains/environment_domains
+          terraform-base: ${{ env.TERRAFORM_BASE }}
