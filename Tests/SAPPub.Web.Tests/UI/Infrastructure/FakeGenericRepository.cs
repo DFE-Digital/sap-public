@@ -147,6 +147,9 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
 
     public Task<IEnumerable<T>> ReadPageAsync(int page, int take, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        // temporary implementation of pagination for fake data - just return empty for page > 1
+        // to avoid complications of implementing actual pagination logic
+        if (page > 1) return Task.FromResult(Enumerable.Empty<T>());
+        return ReadAllAsync(ct);
     }
 }
