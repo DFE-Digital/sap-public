@@ -7,18 +7,18 @@ Three supported ingestion patterns.
 
 - Add entry to SAPData/raw_sources.json
 - FileName must contain YYYYmmDD
-- Url must be secret token
+- Url must be secret token - actual url held in GitHub secrets
 
 Example output:
 edubasealldata20260128.csv
 
 ## EES
 
-- Add DataSetId
+- Add DataSetId to SAPData/raw_sources.json
 - Leave Url blank
 
 Example output:
-ks4performance_v1.2.csv
+202425_performance_tables_schools_provisional_v1.0.1.csv
 
 ## Manual
 

@@ -3,6 +3,7 @@
 
 ## Obtain data files from Blob storage
 
+Download all .csv files including those prefixed with_manual
 Copy to SAPData/DataMap/SourceFiles in SAPData project.
 
 ## Run SQL generator locally
@@ -18,7 +19,7 @@ Requires:
 
 Run following commands in terminal:
 
-\cd C:/Users/<username>/source/repos/sap-public/SAPData/Sql
+\cd C:/Users/<username>/source/repos/sap-public/SAPData/Sql (or whatever your path to sql folder is in local SAPData project)
 \i run_all.sql
 
 ## Querying data
