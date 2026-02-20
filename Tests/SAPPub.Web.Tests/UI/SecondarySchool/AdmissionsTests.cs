@@ -75,6 +75,33 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
     }
 
     [Fact]
+    public async Task AdmissionsPage_DisplaysStartingSecondarySchoolSummaryCard()
+    {
+        // Arrange
+        await Page.GotoAsync(_pageUrl);
+
+        // Act
+        var summaryCard = Page.GetByTestId("starting-secondary-school-summary");
+        await summaryCard.WaitForAsync();
+        var schoolWebsiteLink = summaryCard.GetByTestId("school-website-link");
+        var laWebsiteLink = summaryCard.GetByTestId("la-website-link");
+        var schoolWebsiteHref = await schoolWebsiteLink.GetAttributeAsync("href");
+        var schoolWebsiteText = await schoolWebsiteLink.TextContentAsync();
+        var laWebsiteHref = await laWebsiteLink.GetAttributeAsync("href");
+        var lalWebsiteText = await laWebsiteLink.TextContentAsync();
+
+        // Assert
+        Assert.True(await summaryCard.IsVisibleAsync());
+        Assert.True(await schoolWebsiteLink.IsVisibleAsync());
+        Assert.True(await laWebsiteLink.IsVisibleAsync());
+        
+        Assert.NotNull(schoolWebsiteHref);
+        Assert.NotNull(schoolWebsiteText);
+        Assert.NotNull(laWebsiteHref);
+        Assert.NotNull(lalWebsiteText);
+    }
+
+    [Fact]
     public async Task AdmissionsPage_DisplaysMovingSchoolsDuringYearSummaryCard()
     {
         // Arrange

@@ -285,6 +285,7 @@ public class SecondarySchoolControllerTests
         _mockAdmissionsService
             .Setup(s => s.GetAdmissionsDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new AdmissionsServiceModel(
+                SchoolWebsite: _fakeEstablishment.Website,
                 LAName: laName,
                 LASchoolAdmissionsUrl: lASchoolAdmissionsUrl
             ));
@@ -298,6 +299,7 @@ public class SecondarySchoolControllerTests
         Assert.NotNull(model);
         Assert.Equal(_fakeEstablishment.URN, model.URN);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
+        Assert.Equal(_fakeEstablishment.Website, model.SchoolWebsite);
         Assert.Equal(lASchoolAdmissionsUrl, model.LASecondarySchoolAdmissionsLinkUrl);
         Assert.Equal(laName, model.LAName);
         Assert.Equal(2, model.RouteAttributes.Count);

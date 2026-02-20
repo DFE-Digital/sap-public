@@ -12,17 +12,12 @@ public sealed class EstablishmentAdmissionsService(
     {
         var establishment = await establishmentService.GetEstablishmentAsync(urn, ct);
 
-        var laGssCode = establishment.GSSLACode;
-        if (string.IsNullOrWhiteSpace(laGssCode))
-            return null;
-
-        var laUrls = await laUrlsRepository.GetLaAsync(laGssCode, ct);
-        if (laUrls is null)
-            return null;
+        var laUrls = !string.IsNullOrWhiteSpace(establishment.GSSLACode) ? await laUrlsRepository.GetLaAsync(establishment.GSSLACode, ct) : null;
 
         return new AdmissionsServiceModel(
-            LAName: laUrls.Name,
-            LASchoolAdmissionsUrl: laUrls.LAMainUrl
+            SchoolWebsite: establishment.Website,
+            LAName: laUrls?.Name,
+            LASchoolAdmissionsUrl: laUrls?.LAMainUrl
         );
     }
 }

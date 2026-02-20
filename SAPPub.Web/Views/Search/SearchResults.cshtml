@@ -1,0 +1,42 @@
+﻿@model SAPPub.Web.Models.Search.SearchResultsViewModel
+
+@{
+    ViewData["Title"] = "Search results";
+}
+
+<h1>@Model.SearchResultsCount results for '@Model.NameSearchTerm'</h1>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form method="get" asp-controller="Search" asp-action="SearchResults">
+            @await Html.PartialAsync("_SearchPartial")
+        </form>
+
+        <p class="govuk-body govuk-!-font-weight-bold"><strong>Sorted alphabetically</strong></p>
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+        @foreach (var modelItem in Model.SearchResults)
+        {
+            <a class="govuk-link" href="@Url.Action("Index", "School", new { urn = modelItem.URN, schoolName = modelItem.EstablishmentName })">@modelItem.EstablishmentName</a>
+            <govuk-summary-list>
+                <govuk-summary-list-row>
+                    <govuk-summary-list-row-key>Address</govuk-summary-list-row-key>
+                    <govuk-summary-list-row-value>@modelItem.Address</govuk-summary-list-row-value>
+                </govuk-summary-list-row>
+                <govuk-summary-list-row>
+                    <govuk-summary-list-row-key>Religious character</govuk-summary-list-row-key>
+                    <govuk-summary-list-row-value>@modelItem.ReligiousCharacter</govuk-summary-list-row-value>
+                </govuk-summary-list-row>
+                <govuk-summary-list-row>
+                    <govuk-summary-list-row-key>Pupil sex</govuk-summary-list-row-key>
+                    <govuk-summary-list-row-value>@modelItem.GenderName</govuk-summary-list-row-value>
+                </govuk-summary-list-row>
+            </govuk-summary-list>
+        }
+        @if (Model.SearchResults.Count == 0)
+        {
+            <h2 class="govuk-heading-s govuk-!-font-weight-bold" data-testid="no-results-heading">Try another search</h2>
+            <p class="govuk-body">You may need to search by a local council or postcode instead of school name.</p>
+        }
+    </div>
+</div>
