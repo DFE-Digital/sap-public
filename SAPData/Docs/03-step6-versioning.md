@@ -1,5 +1,5 @@
 
-# Step 6 - Dataset Versioning and Blob Lifecycle
+# data-pipeline.yml - Step 6 - Dataset Versioning and Blob Lifecycle
 
 Step 6 keeps Blob storage clean and ensures downstream steps use only correct current raw inputs.
 After each pipeline run, a step6-report artifact is published in GitHub Actions containing dataset-level status and versioning details.
@@ -35,7 +35,10 @@ edubasealldataYYYYmmDD -> edubasealldata20260128.csv
 
 Naming example:
 
-ks4performance_v1.2.csv
+202425_performance_tables_schools_provisional_v1.0.1.csv
+
+When EES datasets are downloaded from their sources they are named with guids.  
+When saved in blob storage they are renamed using the filename attribute in raw_sources.json with version appended.
 
 ## Blob Lifecycle Rules
 

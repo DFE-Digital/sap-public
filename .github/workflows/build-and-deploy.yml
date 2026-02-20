@@ -29,7 +29,7 @@ on:
   pull_request:
     branches:
       - main
-    types: [opened, reopened, synchronize, labeled]
+    types: [opened, reopened, synchronize, labeled] 
 
 env:
   TERRAFORM_BASE: terraform/application
@@ -96,7 +96,7 @@ jobs:
 
       - name: Install Playwright browsers (.NET)
         run: pwsh ./Tests/SAPPub.Web.Tests/bin/Debug/net8.0/playwright.ps1 install
-        
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -112,20 +112,11 @@ jobs:
         run: |
           dotnet run --project ./SAPPub.Web/SAPPub.Web.csproj --urls "https://localhost:3000" &
         env:
-            ASPNETCORE_ENVIRONMENT: UITests
-            USE_FAKE_REPOS: "true"
+          ASPNETCORE_ENVIRONMENT: UITests
+          USE_FAKE_REPOS: "true"
 
       - name: Wait for MVC App to be ready
         run: npx wait-on https://localhost:3000
-
-      #- name: Run Unit Tests
-      #  run: dotnet test ./SAPPub.Tests.Unit/SAPPub.Tests.Unit.csproj --no-build --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
-
-      #- name: Run Integration Tests
-      #  run: dotnet test ./SAPPub.Tests.Integration/SAPPub.Tests.Integration.csproj --no-build --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
-
-      #- name: Run UI Tests
-      #  run: dotnet test ./SAPPub.Tests.UI/SAPPub.Tests.UI.csproj --no-build --logger trx /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
 
       - name: Run All Tests with Coverage
         env:
@@ -151,12 +142,6 @@ jobs:
               /p:ExcludeByAttribute='GeneratedCodeAttribute*%2cObsoleteAttribute*%2cExcludeFromCodeCoverage' \
               --verbosity normal
           done
-
-      #- name: List artifacts
-      #  if: ${{ always() }}
-      #  run: |
-      #    echo "Listing test-artifacts..."
-      #    ls -R SAPPub.Tests.UI/test-artifacts || echo "No artifacts found"
 
       - name: Upload Test Result Files
         uses: actions/upload-artifact@v4
@@ -220,15 +205,15 @@ jobs:
       actions: read
 
   # ---------------------------
-  # REVIEW APP DEPLOYMENT (PR)
+  # REVIEW APP DEPLOYMENT (PR) - no refresh requested
   # ---------------------------
   deploy-review-app:
-    name: Deployment To Review
+    name: Deployment To Review (no refresh)
     concurrency: deploy_review_${{ github.event.pull_request.number }}
+    needs: [build, test]
     if: ${{ github.event_name == 'pull_request'
       && contains(github.event.pull_request.labels.*.name, 'deploy')
-      && (needs.refresh-data.result == 'success' || needs.refresh-data.result == 'skipped') }}
-    needs: [build, test, refresh-data]
+      && !contains(github.event.pull_request.labels.*.name, 'refresh data') }}
     environment:
       name: review
       url: ${{ steps.deploy_review.outputs.environment_url }}
@@ -240,7 +225,6 @@ jobs:
     env:
       AKS_RESOURCE_GROUP: ${{ secrets.AKS_RESOURCE_GROUP }}
       AKS_CLUSTER_NAME: ${{ secrets.AKS_CLUSTER_NAME }}
-
       KONDUIT_NAMESPACE: ${{ secrets.AKS_NAMESPACE }}
       KONDUIT_APP_NAME: ${{ secrets.KONDUIT_APP_NAME }}
 
@@ -314,13 +298,151 @@ jobs:
           curl -fsSL https://raw.githubusercontent.com/DFE-Digital/teacher-services-cloud/main/scripts/konduit.sh \
             -o "$GITHUB_WORKSPACE/konduit.sh"
           chmod +x "$GITHUB_WORKSPACE/konduit.sh"
-          ls -la "$GITHUB_WORKSPACE/konduit.sh"         
+          ls -la "$GITHUB_WORKSPACE/konduit.sh"
 
       - name: Download seed backup from Blob
         shell: bash
         env:
           AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
-          AZURE_STORAGE_CONTAINER: ${{ secrets.AZURE_STORAGE_CONTAINER }} 
+          AZURE_STORAGE_CONTAINER: ${{ secrets.AZURE_STORAGE_CONTAINER }}
+        run: |
+          set -euo pipefail
+          BACKUP_BLOB="db-backups/sappub_review_seed_latest.sql.gz"
+          BACKUP_FILE="seed.sql.gz"
+
+          az storage blob download \
+            --container-name "${AZURE_STORAGE_CONTAINER}" \
+            --name "${BACKUP_BLOB}" \
+            --file "${BACKUP_FILE}" \
+            --connection-string "${AZURE_STORAGE_CONNECTION_STRING}" \
+            --overwrite true
+
+          ls -lh "${BACKUP_FILE}"
+
+      - name: Restore backup into PR review DB
+        continue-on-error: true
+        shell: bash
+        env:
+          AKS_NAMESPACE: ${{ secrets.AKS_REVIEW_NAMESPACE }}
+        run: |
+          set -euo pipefail
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          APP_NAME="sap-public-pr-${PR_NUMBER}"
+          BACKUP_FILE="seed.sql.gz"
+          : "${AKS_NAMESPACE:?AKS_NAMESPACE is not set}"
+
+          ls -lh "${BACKUP_FILE}"
+          gzip -t "${BACKUP_FILE}"
+
+          "$GITHUB_WORKSPACE/konduit.sh" \
+            -n "${AKS_NAMESPACE}" \
+            -t 7200 \
+            -x \
+            -i "${BACKUP_FILE}" -c \
+            "${APP_NAME}" -- psql -v ON_ERROR_STOP=1 -X
+
+  # ---------------------------
+  # REVIEW APP DEPLOYMENT (PR) - refresh requested
+  # ---------------------------
+  deploy-review-app-with-refresh:
+    name: Deployment To Review (after refresh)
+    concurrency: deploy_review_${{ github.event.pull_request.number }}
+    needs: [build, test, refresh-data]
+    if: ${{ github.event_name == 'pull_request'
+      && contains(github.event.pull_request.labels.*.name, 'deploy')
+      && contains(github.event.pull_request.labels.*.name, 'refresh data')
+      && needs.refresh-data.result == 'success' }}
+    environment:
+      name: review
+      url: ${{ steps.deploy_review.outputs.environment_url }}
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      pull-requests: write
+
+    env:
+      AKS_RESOURCE_GROUP: ${{ secrets.AKS_RESOURCE_GROUP }}
+      AKS_CLUSTER_NAME: ${{ secrets.AKS_CLUSTER_NAME }}
+      KONDUIT_NAMESPACE: ${{ secrets.AKS_NAMESPACE }}
+      KONDUIT_APP_NAME: ${{ secrets.KONDUIT_APP_NAME }}
+
+    steps:
+      - name: Deploy App to Review
+        id: deploy_review
+        uses: DFE-Digital/github-actions/deploy-to-aks@master
+        with:
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          environment: review
+          pr-number: ${{ github.event.pull_request.number }}
+          sha: ${{ needs.build.outputs.docker-image-tag }}
+          terraform-base: ${{ env.TERRAFORM_BASE }}
+          healthcheck: ${{ env.HEALTHCHECK_CMD }}
+          db-seed: false
+          smoke-test: false
+
+      # ---------------------------
+      # REVIEW APP DATABASE DEPLOYMENT (PR)
+      # ---------------------------
+      - name: Checkout (needed for workspace consistency)
+        uses: actions/checkout@v4
+
+      - name: Install Azure CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Install kubectl (pinned)
+        shell: bash
+        run: |
+          set -euo pipefail
+          KUBECTL_VERSION="v1.29.8"
+          curl -fsSLo kubectl "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+          sudo install -m 0755 kubectl /usr/local/bin/kubectl
+          kubectl version --client=true
+
+      - name: Install kubelogin (pinned)
+        shell: bash
+        run: |
+          set -euo pipefail
+          KUBELOGIN_VERSION="v0.1.6"
+          curl -fsSLo kubelogin.zip "https://github.com/Azure/kubelogin/releases/download/${KUBELOGIN_VERSION}/kubelogin-linux-amd64.zip"
+          unzip -q kubelogin.zip
+          sudo install -m 0755 bin/linux_amd64/kubelogin /usr/local/bin/kubelogin
+          kubelogin --version
+
+      - name: Configure AKS credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${AKS_RESOURCE_GROUP:?AKS_RESOURCE_GROUP is not set}"
+          : "${AKS_CLUSTER_NAME:?AKS_CLUSTER_NAME is not set}"
+          az aks get-credentials --overwrite-existing -g "${AKS_RESOURCE_GROUP}" -n "${AKS_CLUSTER_NAME}"
+          kubelogin convert-kubeconfig -l azurecli
+
+      - name: Download konduit.sh
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL https://raw.githubusercontent.com/DFE-Digital/teacher-services-cloud/main/scripts/konduit.sh \
+            -o "$GITHUB_WORKSPACE/konduit.sh"
+          chmod +x "$GITHUB_WORKSPACE/konduit.sh"
+          ls -la "$GITHUB_WORKSPACE/konduit.sh"
+
+      - name: Download seed backup from Blob
+        shell: bash
+        env:
+          AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
+          AZURE_STORAGE_CONTAINER: ${{ secrets.AZURE_STORAGE_CONTAINER }}
         run: |
           set -euo pipefail
           BACKUP_BLOB="db-backups/sappub_review_seed_latest.sql.gz"
@@ -422,7 +544,7 @@ jobs:
           healthcheck: ${{ env.HEALTHCHECK_CMD }}
           slack-webhook: ${{ secrets.SLACK_WEBHOOK }}
           smoke-test: false
-          db-seed: ${{ inputs.environment == 'review' && 'true' || 'false' }} 
+          db-seed: ${{ inputs.environment == 'review' && 'true' || 'false' }}
 
   deploy_domains_infra:
     name: Deploy Domains Infrastructure
@@ -436,13 +558,13 @@ jobs:
       id-token: write
 
     steps:
-    - name: Deploy Domains Infrastructure
-      uses: DFE-Digital/github-actions/deploy-domains-infra@master
-      with:
-        azure-client-id:  ${{ secrets.AZURE_CLIENT_ID  }}
-        azure-tenant-id:  ${{ secrets.AZURE_TENANT_ID   }}
-        azure-subscription-id:  ${{ secrets.AZURE_SUBSCRIPTION_ID   }}
-        slack-webhook: ${{ secrets.SLACK_WEBHOOK }}
+      - name: Deploy Domains Infrastructure
+        uses: DFE-Digital/github-actions/deploy-domains-infra@master
+        with:
+          azure-client-id:  ${{ secrets.AZURE_CLIENT_ID  }}
+          azure-tenant-id:  ${{ secrets.AZURE_TENANT_ID   }}
+          azure-subscription-id:  ${{ secrets.AZURE_SUBSCRIPTION_ID   }}
+          slack-webhook: ${{ secrets.SLACK_WEBHOOK }}
 
   deploy_domains_env:
     name: Deploy Domains to ${{ matrix.domain_environment }} environment
