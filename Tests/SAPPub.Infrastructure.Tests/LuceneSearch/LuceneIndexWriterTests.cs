@@ -13,7 +13,7 @@ public class LuceneIndexWriterTests
         using var ctx = new LuceneIndexContext();
         var sut = new LuceneIndexWriter(ctx);
 
-        sut.BuildIndex([
+        sut.AddToIndex([
             new Establishment{URN = "1", UKPRN = "10", LAId = "100", EstablishmentNumber =  "1000", EstablishmentName = "Saint Peter School" },
             new Establishment{URN = "2", UKPRN = "20", LAId = "200", EstablishmentNumber =  "2000", EstablishmentName = "Green Lane Primary" },
             new Establishment{URN = "3", UKPRN = "30", LAId = "300", EstablishmentNumber =  "3000", EstablishmentName = "Green Park High" }

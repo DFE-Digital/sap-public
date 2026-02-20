@@ -63,7 +63,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
                 return;
             }
 
-            // Local dev laptop: use real local Postgres from appsettings.Development.json
+            //Local dev laptop: use real local Postgres from appsettings.Development.json
             services.RemoveAll<NpgsqlDataSource>();
             services.AddSingleton(sp =>
             {

@@ -3,8 +3,16 @@ using Lucene.Net.Util;
 using SAPPub.Core.Entities;
 using SAPPub.Infrastructure.LuceneSearch;
 
-public class LuceneIndexWriter(LuceneIndexContext context)
+public class LuceneIndexWriter
 {
+    private LuceneIndexContext _context;
+
+    public LuceneIndexWriter(LuceneIndexContext context)
+    {
+        _context = context;
+        _context.Writer.DeleteAll();
+    }
+
     private static readonly FieldType TermVectorFieldType = new FieldType(TextField.TYPE_STORED)
     {
         StoreTermVectors = true,
@@ -14,10 +22,8 @@ public class LuceneIndexWriter(LuceneIndexContext context)
         IsStored = true
     };
 
-    public void BuildIndex(IEnumerable<Establishment> schools)
+    public void AddToIndex(IEnumerable<Establishment> schools)
     {
-        context.Writer.DeleteAll();
-
         foreach (var e in schools)
         {
             var doc = new Document
@@ -30,11 +36,14 @@ public class LuceneIndexWriter(LuceneIndexContext context)
             if (e.ReligiousCharacterName is not null) doc.Add(new StoredField(nameof(Establishment.ReligiousCharacterName), e.ReligiousCharacterName));
             if (e.Address is not null) doc.Add(new StoredField(nameof(Establishment.Address), e.Address));
             if (e.AddressPostcode is not null) doc.Add(new StoredField(nameof(Establishment.AddressPostcode), e.AddressPostcode));
-            context.Writer.AddDocument(doc);
+            _context.Writer.AddDocument(doc);
         }
+    }
 
-        context.Writer.Flush(triggerMerge: true, applyAllDeletes: true);
+    public void FinaliseIndex()
+    {
+        _context.Writer.Flush(triggerMerge: true, applyAllDeletes: true);
 
-        context.SearcherManager.MaybeRefreshBlocking();
+        _context.SearcherManager.MaybeRefreshBlocking();
     }
 }

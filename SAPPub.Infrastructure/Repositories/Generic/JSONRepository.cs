@@ -50,6 +50,11 @@ namespace SAPPub.Infrastructure.Repositories.Generic
             throw new NotImplementedException();
         }
 
+        public Task<IEnumerable<T>> ReadPageAsync(int page, int take, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<T?> ReadSingleAsync(object parameters, CancellationToken ct = default)
         {
             throw new NotImplementedException();

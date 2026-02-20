@@ -13,6 +13,11 @@ namespace SAPPub.Infrastructure.Repositories
             _repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
+        public Task<IEnumerable<Establishment>> GetEstablishmentsAsync(int page, int take, CancellationToken ct = default)
+        {
+            return _repo.ReadPageAsync(page, take, ct);
+        }
+
         public Task<IEnumerable<Establishment>> GetAllEstablishmentsAsync(CancellationToken ct = default)
         {
             // Keep only while we genuinely need to list; LIMIT 100 is already in DapperHelpers

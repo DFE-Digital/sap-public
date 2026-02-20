@@ -144,4 +144,12 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
         var prop = obj.GetType().GetProperty(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
         return prop?.GetValue(obj)?.ToString();
     }
+
+    public Task<IEnumerable<T>> ReadPageAsync(int page, int take, CancellationToken ct = default)
+    {
+        // temporary implementation of pagination for fake data - just return empty for page > 1
+        // to avoid complications of implementing actual pagination logic
+        if (page > 1) return Task.FromResult(Enumerable.Empty<T>());
+        return ReadAllAsync(ct);
+    }
 }

@@ -17,9 +17,14 @@ namespace SAPPub.Core.Services
             _lookUpService = lookUpService ?? throw new ArgumentNullException(nameof(lookUpService));
         }
 
-        public async Task<IEnumerable<Establishment>> GetAllEstablishmentsAsync(CancellationToken ct = default)
+        public Task<IEnumerable<Establishment>> GetAllEstablishmentsAsync(CancellationToken ct = default)
         {
-            return await _establishmentRepository.GetAllEstablishmentsAsync(ct);
+            return _establishmentRepository.GetAllEstablishmentsAsync(ct);
+        }
+
+        public Task<IEnumerable<Establishment>> GetEstablishmentsAsync(int page, int take, CancellationToken ct = default)
+        {
+            return _establishmentRepository.GetEstablishmentsAsync(page, take, ct);
         }
 
         public async Task<Establishment> GetEstablishmentAsync(string urn, CancellationToken ct = default)
