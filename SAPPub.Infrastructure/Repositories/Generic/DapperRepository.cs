@@ -33,6 +33,50 @@ namespace SAPPub.Infrastructure.Repositories.Generic
             return ReadSingleAsync(new { Id = id }, ct);
         }
 
+        public async Task<IEnumerable<T>> ReadPageAsync(int page, int take, CancellationToken ct = default)
+        {
+            if (page < 1)
+                throw new ArgumentOutOfRangeException(nameof(page), "Page must be 1 or greater.");
+            if (take < 1)
+                throw new ArgumentOutOfRangeException(nameof(take), "Take must be 1 or greater.");
+            try
+            {
+                var sql = DapperHelpers.GetReadMultiple(typeof(T));
+                sql = sql.TrimEnd(';'); // Remove trailing semicolon to allow appending remaining SQL clauses.
+                sql = sql + $" LIMIT {take} OFFSET {(page - 1) * take}";
+                if (string.IsNullOrWhiteSpace(sql))
+                    throw new NotSupportedException($"No ReadMultiple query for {typeof(T).Name}");
+
+                await using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
+
+                var cmd = new CommandDefinition(
+                    commandText: sql,
+                    parameters: null,
+                    transaction: null,
+                    commandTimeout: null,
+                    commandType: CommandType.Text,
+                    flags: CommandFlags.Buffered | CommandFlags.NoCache,
+                    cancellationToken: ct);
+
+                var items = (await conn.QueryAsync<T>(cmd).ConfigureAwait(false)).ToList();
+
+                if (items.Count > 0)
+                    _codedValueMapper.Apply(items); // map *_Coded -> numeric + _Reason
+
+                return items;
+            }
+            catch (OperationCanceledException)
+            {
+                // Let cancellations propagate (don’t log as error).
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed ReadAllAsync for {Type}", typeof(T).Name);
+                return Enumerable.Empty<T>();
+            }
+        }
+
         public async Task<IEnumerable<T>> ReadAllAsync(CancellationToken ct = default)
         {
             try

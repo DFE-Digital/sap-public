@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace SAPPub.Core.Interfaces.Repositories.Generic
+﻿namespace SAPPub.Core.Interfaces.Repositories.Generic
 {
     public interface IGenericRepository<T>
     {
@@ -10,5 +6,6 @@ namespace SAPPub.Core.Interfaces.Repositories.Generic
         Task<IEnumerable<T>> ReadAllAsync(CancellationToken ct = default);
         Task<T?> ReadSingleAsync(object parameters, CancellationToken ct = default);
         Task<IEnumerable<T>> ReadManyAsync(object parameters, CancellationToken ct = default);
+        Task<IEnumerable<T>> ReadPageAsync(int page, int take, CancellationToken ct = default);
     }
 }

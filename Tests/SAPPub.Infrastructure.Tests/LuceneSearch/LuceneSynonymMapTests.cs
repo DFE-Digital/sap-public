@@ -22,7 +22,7 @@ public class LuceneSynonymMapTests
     [InlineData("saint")]
     public async Task SearchAsync_Expands_Saint_Synonym(string input)
     {
-        _writer.BuildIndex([
+        _writer.AddToIndex([
             new Establishment(){URN = "1",UKPRN = "10",LAId = "100",EstablishmentNumber = "1000",EstablishmentName = "Saint Peter School"},
             new Establishment(){URN = "2",UKPRN = "20",LAId = "200",EstablishmentNumber = "2000",EstablishmentName = "ss helan Primary"},
             new Establishment(){URN = "3",UKPRN = "30",LAId = "300",EstablishmentNumber = "3000",EstablishmentName = "st park High"}
@@ -37,7 +37,7 @@ public class LuceneSynonymMapTests
     [InlineData("ss")]
     public async Task SearchAsync_Expands_Saints_Synonym(string input)
     {
-        _writer.BuildIndex([
+        _writer.AddToIndex([
             new Establishment(){URN = "1",UKPRN = "10",LAId = "100",EstablishmentNumber = "1000",EstablishmentName = "Saint Peter School"},
             new Establishment(){URN = "2",UKPRN = "20",LAId = "200",EstablishmentNumber = "2000",EstablishmentName = "ss helan Primary"},
             new Establishment(){URN = "3",UKPRN = "20",LAId = "200",EstablishmentNumber = "2000",EstablishmentName = "st park High"}
@@ -53,7 +53,7 @@ public class LuceneSynonymMapTests
     [InlineData("Church of England")]
     public async Task SearchAsync_Expands_cofe_Synonym(string input)
     {
-        _writer.BuildIndex([
+        _writer.AddToIndex([
            new Establishment(){URN = "1",UKPRN = "10",LAId = "100",EstablishmentNumber = "1000",EstablishmentName = "Saint Peter Cofe School"},
             new Establishment(){URN = "2",UKPRN = "20",LAId = "200",EstablishmentNumber = "2000",EstablishmentName = "ss helan Primary Church of England"}
        ]);
@@ -68,7 +68,7 @@ public class LuceneSynonymMapTests
     [InlineData("roman catholic")]
     public async Task SearchAsync_Expands_rm_Synonym(string input)
     {
-        _writer.BuildIndex([
+        _writer.AddToIndex([
            new Establishment(){URN = "1",UKPRN = "10",LAId = "100",EstablishmentNumber = "1000",EstablishmentName = "Saint Peter RC School"},
             new Establishment(){URN = "2",UKPRN = "20",LAId = "200",EstablishmentNumber = "2000",EstablishmentName = "ss helan Primary roman Catholic"}
            ]);
@@ -86,7 +86,7 @@ public class LuceneSynonymMapTests
     public async Task SearchAsync_Expands_ave_Synonym(string input)
     {
 
-        _writer.BuildIndex([
+        _writer.AddToIndex([
             new Establishment(){URN = "1",UKPRN = "10",LAId = "100",EstablishmentNumber = "1000",EstablishmentName = "Saint Peter ave School"},
             new Establishment(){URN = "2",UKPRN = "20",LAId = "200",EstablishmentNumber = "2000",EstablishmentName = "Primary Ave. School"},
             new Establishment(){URN = "3",UKPRN = "30",LAId = "300",EstablishmentNumber = "3000",EstablishmentName = "Primary Aven School"},
@@ -117,7 +117,7 @@ public class LuceneSynonymMapTests
     [InlineData("square", "sq")]
     public async Task SearchAsync_Expands_Synonym(string input, string synonym)
     {
-        _writer.BuildIndex([
+        _writer.AddToIndex([
             new Establishment(){URN = "1",UKPRN = "10",LAId = "100",EstablishmentNumber = "1000",EstablishmentName = $"Saint Peter {synonym} School"},
         ]);
 
@@ -131,7 +131,7 @@ public class LuceneSynonymMapTests
     {
         const string Input = "st aven";
 
-        _writer.BuildIndex([
+        _writer.AddToIndex([
             new Establishment(){URN = "1",UKPRN = "10",LAId = "100",EstablishmentNumber = "1000",EstablishmentName = "Saint Peter st ave School"},
             new Establishment(){URN = "2",UKPRN = "20",LAId = "200",EstablishmentNumber = "2000",EstablishmentName = "Primary st Avenue School"},
         ]);

@@ -10,13 +10,22 @@ public class StartupIndexBuilder(ILogger<StartupIndexBuilder> logger, LuceneInde
     {
         logger.LogInformation("reading Establishment Data From CSV at startup...");
 
-        var schools = await establishmentService.GetAllEstablishmentsAsync(cancellationToken);
+        int page = 1;
+        int take = 1000;
+        var schools = await establishmentService.GetEstablishmentsAsync(page, take, cancellationToken);
+        while (schools.Any())
+        {
+            writer.AddToIndex(schools);
+            page++;
+            schools = await establishmentService.GetEstablishmentsAsync(page, take, cancellationToken);
+        }
 
         logger.LogInformation("Establishment Data retrieved successfully");
 
         logger.LogInformation("Building Lucene index at startup...");
 
-        writer.BuildIndex(schools);
+
+        writer.FinaliseIndex();
 
         logger.LogInformation("Lucene index built successfully");
     }
