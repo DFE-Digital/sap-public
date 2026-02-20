@@ -17,8 +17,89 @@
     <div class="govuk-grid-column-three-quarters">
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
         <h1 class="govuk-heading-xl">@ViewBag.Title</h1>
+        <h2 class="govuk-heading-l">Moving from primary to secondary school</h2>
+        <div class="govuk-summary-card" data-testid="starting-secondary-school-summary">
+            <div class="govuk-summary-card__title-wrapper">
+                <h3 class="govuk-summary-card__title">
+                    Starting secondary school in September 2027
+                </h3>
+            </div>
+            <div class="govuk-summary-card__content">
+                <p class="govuk-body">
+                    If your child is in year 5, they will be due to start secondary school
+                    in September 2027. You must apply for your child to get a place at
+                    secondary school.
+                </p>
+                <p class="govuk-body">
+                    The application window for starting secondary school in September 2027
+                    will open in summer 2026. You’ll need to apply for a place by 31
+                    October 2026. You can do this by following your local council’s
+                    secondary school application process.
+                </p>
 
-        @* Todo - More content to go here *@
+                <govuk-summary-list>
+                    <govuk-summary-list-row>
+                        <govuk-summary-list-row-key>
+                            Admissions policies
+                        </govuk-summary-list-row-key>
+                        <govuk-summary-list-row-value>
+                            <a data-testid="school-website-link"
+                               class="govuk-link govuk-link--no-visited-state"
+                               href="@Model.SchoolWebsite"
+                               target="_blank"
+                               rel="noopener noreferrer">
+                                View the school website for more information on admissions
+                                policies
+                                <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                            </a>
+                        </govuk-summary-list-row-value>
+                    </govuk-summary-list-row>
+                    <govuk-summary-list-row>
+                        <govuk-summary-list-row-key>
+                            Applying for a school place
+                        </govuk-summary-list-row-key>
+                        <govuk-summary-list-row-value>
+                            <a data-testid="la-website-link"
+                               class="govuk-link govuk-link--no-visited-state" 
+                               href="@($"https://www.{Model.LASecondarySchoolAdmissionsLinkUrl}")"
+                               target="_blank"
+                               rel="noopener noreferrer">
+                                Visit the local council's website for more information on
+                                applying for a school place
+                                <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                            </a>
+                        </govuk-summary-list-row-value>
+                    </govuk-summary-list-row>
+                </govuk-summary-list>
+            </div>
+        </div>
+
+        <h3 class="govuk-heading-m">Starting secondary school in September 2026</h3>
+        <p class="govuk-body">
+            If your child is in year 6, they’ll start secondary school in September
+            2026. Applications for starting secondary school in September 2026 closed
+            on 31 October 2025.
+        </p>
+        <p class="govuk-body">
+            If you missed the application deadline, you can still apply for a school
+            place. You can do this by following your local council’s secondary school
+            application process.
+        </p>
+        <p class="govuk-body">
+            If you apply for a school place after the deadline for applications, your
+            child may be less likely to be offered a place at your preferred school.
+        </p>
+        <h3 class="govuk-heading-m">Starting secondary school in September 2028</h3>
+        <p class="govuk-body">
+            If your child is in year 4, they will be due to start secondary school in
+            September 2028. The application window for starting secondary school in
+            September 2028 will open in summer 2027. You’ll need to apply for a place
+            by 31 October 2027.
+        </p>
+        <p class="govuk-body">
+            Schools must publish their policies for starting school in September 2028
+            by March 2027.
+        </p>
 
         <h2 class="govuk-heading-l">Moving schools during the school year</h2>
 
@@ -50,7 +131,7 @@
                        rel="noopener noreferrer"
                        class="govuk-link"
                        data-testid="link">
-                        @($"{Model.LAName}’s in-year application process.")
+                        @($"View {Model.LAName}’s in-year application process")
                         <span class="govuk-visually-hidden">(opens in a new tab)</span>
                     </a>
                 </p>
