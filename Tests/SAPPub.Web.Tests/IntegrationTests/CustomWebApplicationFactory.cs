@@ -43,7 +43,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
         builder.ConfigureServices((context, services) =>
         {
-            //if (isCi)
+            if (isCi)
             {
                 // CI: don't hit DB at all - swap out generic repo
                 services.RemoveAll(typeof(IGenericRepository<>));
@@ -63,19 +63,19 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
                 return;
             }
 
-            // Local dev laptop: use real local Postgres from appsettings.Development.json
-            //services.RemoveAll<NpgsqlDataSource>();
-            //services.AddSingleton(sp =>
-            //{
-            //    var cfg = sp.GetRequiredService<IConfiguration>();
-            //    var cs = cfg.GetConnectionString("PostgresConnectionString");
+            //Local dev laptop: use real local Postgres from appsettings.Development.json
+            services.RemoveAll<NpgsqlDataSource>();
+            services.AddSingleton(sp =>
+            {
+                var cfg = sp.GetRequiredService<IConfiguration>();
+                var cs = cfg.GetConnectionString("PostgresConnectionString");
 
-            //    if (string.IsNullOrWhiteSpace(cs))
-            //        throw new InvalidOperationException(
-            //            "Expected ConnectionStrings:PostgresConnectionString in appsettings.Development.json for local test runs.");
+                if (string.IsNullOrWhiteSpace(cs))
+                    throw new InvalidOperationException(
+                        "Expected ConnectionStrings:PostgresConnectionString in appsettings.Development.json for local test runs.");
 
-            //    return NpgsqlDataSource.Create(cs);
-            //});
+                return NpgsqlDataSource.Create(cs);
+            });
         });
     }
 
