@@ -1,4 +1,6 @@
-ARM_TEMPLATE_TAG=1.1.10
+#NON-CHANGE
+
+RM_TEMPLATE_TAG=1.1.10
 RG_TAGS={"Product" : "Teacher services cloud"}
 REGION=UK South
 SERVICE_NAME=sap-public
