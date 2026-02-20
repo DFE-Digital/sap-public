@@ -244,9 +244,8 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                     select
                       {EstablishmentColumns}
                     from public.v_establishment
-                    where "PhaseOfEducationId" = 4
-                    limit 100;
-                    """, // temporary until search page is built
+                    WHERE "PhaseOfEducationId" in (4, 5, 7)
+                    """ + DapperHelpers.GetOrderBy(typeof(Establishment)),
 
                 nameof(EstablishmentAbsence) =>
                     SelectFrom(EstablishmentAbsenceColumns, "v_establishment_absence"),
@@ -260,7 +259,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                 nameof(EstablishmentWorkforce) =>
                     SelectFrom(EstablishmentWorkforceColumns, "v_establishment_workforce"),
 
-                nameof(LADestinations) => 
+                nameof(LADestinations) =>
                     SelectFrom(LADestinationsColumns, "v_la_destinations"),
 
                 nameof(LAPerformance) =>
@@ -282,11 +281,22 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
             };
         }
 
+        public static string GetOrderBy(Type entityType)
+        {
+            return entityType.Name switch
+            {
+                nameof(Establishment) =>
+                    " ORDER BY \"EstablishmentName\"",
+
+                _ => string.Empty,
+            };
+        }
+
         public static string GetReadSingle(Type entityType)
         {
             return entityType.Name switch
             {
-                nameof(Establishment) => 
+                nameof(Establishment) =>
                     SelectFromWhereUrn(EstablishmentColumns, "v_establishment"),
 
                 nameof(EstablishmentAbsence) =>
@@ -301,7 +311,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                 nameof(EstablishmentWorkforce) =>
                     SelectFromWhereId(EstablishmentWorkforceColumns, "v_establishment_workforce"),
 
-                nameof(LADestinations) => 
+                nameof(LADestinations) =>
                     SelectFromWhereId(LADestinationsColumns, "v_la_destinations"),
 
                 nameof(LAPerformance) =>

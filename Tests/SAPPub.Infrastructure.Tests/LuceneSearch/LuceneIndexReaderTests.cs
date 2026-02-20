@@ -47,7 +47,7 @@ public class LuceneIndexReaderTests
     public async Task SearchAsync_Finds_Items_With_Abbreviation_Expansion_And_Tokenization()
     {
         // Arrange: build an index with two schools
-        _writer.BuildIndex([
+        _writer.AddToIndex([
             FakeEstablishmentOne,
             FakeEstablishmentTwo,
             FakeEstablishmentThree
@@ -69,7 +69,7 @@ public class LuceneIndexReaderTests
     [InlineData("    ")]
     public async Task SearchAsync_ReturnsEmpty_ForNullOrWhiteSpace(string? input)
     {
-        _writer.BuildIndex([
+        _writer.AddToIndex([
             FakeEstablishmentOne,
             FakeEstablishmentTwo
         ]);
@@ -84,7 +84,7 @@ public class LuceneIndexReaderTests
     {
         const string Input = "fa";
 
-        _writer.BuildIndex([
+        _writer.AddToIndex([
             FakeEstablishmentOne,
             FakeEstablishmentTwo,
         ]);
@@ -99,7 +99,7 @@ public class LuceneIndexReaderTests
     {
         const string Input = "School Fake";
 
-        _writer.BuildIndex([
+        _writer.AddToIndex([
             FakeEstablishmentOne,
             FakeEstablishmentTwo,
         ]);

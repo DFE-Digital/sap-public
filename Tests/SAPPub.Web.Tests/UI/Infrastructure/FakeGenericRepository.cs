@@ -144,4 +144,9 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
         var prop = obj.GetType().GetProperty(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
         return prop?.GetValue(obj)?.ToString();
     }
+
+    public Task<IEnumerable<T>> ReadPageAsync(int page, int take, CancellationToken ct = default)
+    {
+        throw new NotImplementedException();
+    }
 }
