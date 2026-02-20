@@ -456,6 +456,8 @@ jobs:
         domain_environment: [production]
     environment:
       name: production
+    permissions:
+      id-token: write
 
     steps:
       - name: Deploy Domains Environment
