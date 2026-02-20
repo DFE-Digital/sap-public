@@ -294,6 +294,8 @@ jobs:
     name: Restore Review DB (PR)
     runs-on: ubuntu-latest
     needs: [deploy-review-app, deploy-review-app-with-refresh]
+    environment:
+    name: review
     if: ${{ always()
       && github.event_name == 'pull_request'
       && contains(github.event.pull_request.labels.*.name, 'deploy')
