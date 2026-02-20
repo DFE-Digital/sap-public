@@ -220,15 +220,34 @@ jobs:
       actions: read
 
   # ---------------------------
+  # SET FLAG FOR REVIEW APP DEPLOYMENT
+  # ---------------------------     
+  review-gate:
+    name: Review gate (allow deploy if refresh succeeded or was skipped)
+    runs-on: ubuntu-latest
+    needs: [build, test, refresh-data]
+    if: ${{ always() && github.event_name == 'pull_request' }}
+    outputs:
+      refresh_ok: ${{ steps.set.outputs.refresh_ok }}
+    steps:
+      - id: set
+        run: |
+          if [[ "${{ needs.refresh-data.result }}" == "success" || "${{ needs.refresh-data.result }}" == "skipped" ]]; then
+            echo "refresh_ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "refresh_ok=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  # ---------------------------
   # REVIEW APP DEPLOYMENT (PR)
   # ---------------------------
   deploy-review-app:
     name: Deployment To Review
     concurrency: deploy_review_${{ github.event.pull_request.number }}
+    needs: [review-gate]
     if: ${{ github.event_name == 'pull_request'
       && contains(github.event.pull_request.labels.*.name, 'deploy')
-      && (needs.refresh-data.result == 'success' || needs.refresh-data.result == 'skipped') }}
-    needs: [build, test, refresh-data]
+      && needs.review-gate.outputs.refresh_ok == 'true' }}
     environment:
       name: review
       url: ${{ steps.deploy_review.outputs.environment_url }}
