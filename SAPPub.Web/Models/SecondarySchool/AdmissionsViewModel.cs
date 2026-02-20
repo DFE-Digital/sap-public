@@ -4,6 +4,8 @@ namespace SAPPub.Web.Models.SecondarySchool;
 
 public class AdmissionsViewModel : SecondarySchoolBaseViewModel
 {
+    public required string? SchoolWebsite { get; init; }
+
     public required string? LASecondarySchoolAdmissionsLinkUrl { get; init; }
 
     public required string LAName { get; init; }
@@ -14,6 +16,7 @@ public class AdmissionsViewModel : SecondarySchoolBaseViewModel
         {
             URN = urn,
             SchoolName = schoolName,
+            SchoolWebsite = serviceModel?.SchoolWebsite,
             LASecondarySchoolAdmissionsLinkUrl = serviceModel?.LASchoolAdmissionsUrl,
             LAName = serviceModel?.LAName ?? "Local authority"
         };
