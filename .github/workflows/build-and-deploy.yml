@@ -205,92 +205,15 @@ jobs:
       actions: read
 
   # ---------------------------
-  # SET FLAG FOR REVIEW APP DEPLOYMENT
-  # ---------------------------
-  review-gate:
-    name: Review gate (allow deploy if refresh succeeded or not requested)
-    runs-on: ubuntu-latest
-    needs: [build, test]
-    if: ${{ always() && github.event_name == 'pull_request' }}
-    permissions:
-      actions: read
-    outputs:
-      refresh_ok: ${{ steps.gate.outputs.refresh_ok }}
-    steps:
-      - name: Decide if refresh is required and completed
-        id: gate
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-            const run_id = context.runId;
-
-            const labels = (context.payload.pull_request?.labels || []).map(l => l.name);
-            const refreshRequested = labels.includes('refresh data');
-
-            core.info(`PR labels: ${JSON.stringify(labels)}`);
-            core.info(`refreshRequested: ${refreshRequested}`);
-
-            if (!refreshRequested) {
-              core.setOutput('refresh_ok', 'true');
-              return;
-            }
-
-            // If refresh is requested, wait for the "Refresh data (School Data Ingestion Pipeline)" job
-            const targetJobName = 'Refresh data (School Data Ingestion Pipeline)';
-            const maxAttempts = 120;   // 120 * 15s = 30 minutes
-            const delayMs = 15000;
-
-            async function sleep(ms) {
-              return new Promise(resolve => setTimeout(resolve, ms));
-            }
-
-            let conclusion = null;
-
-            for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-              const resp = await github.rest.actions.listJobsForWorkflowRun({
-                owner,
-                repo,
-                run_id,
-                per_page: 100
-              });
-
-              const job = resp.data.jobs.find(j => j.name === targetJobName);
-
-              if (!job) {
-                core.info(`[${attempt}/${maxAttempts}] Job "${targetJobName}" not found yet. Waiting...`);
-                await sleep(delayMs);
-                continue;
-              }
-
-              core.info(`[${attempt}/${maxAttempts}] Found job "${targetJobName}" status=${job.status} conclusion=${job.conclusion}`);
-
-              if (job.status === 'completed') {
-                conclusion = job.conclusion; // success/failure/cancelled/etc
-                break;
-              }
-
-              await sleep(delayMs);
-            }
-
-            if (conclusion === 'success') {
-              core.setOutput('refresh_ok', 'true');
-            } else {
-              core.warning(`Refresh requested but refresh job did not complete successfully. conclusion=${conclusion}`);
-              core.setOutput('refresh_ok', 'false');
-            }
-
-  # ---------------------------
-  # REVIEW APP DEPLOYMENT (PR)
+  # REVIEW APP DEPLOYMENT (PR) - no refresh requested
   # ---------------------------
   deploy-review-app:
-    name: Deployment To Review
+    name: Deployment To Review (no refresh)
     concurrency: deploy_review_${{ github.event.pull_request.number }}
-    needs: [build, test, review-gate]
+    needs: [build, test]
     if: ${{ github.event_name == 'pull_request'
       && contains(github.event.pull_request.labels.*.name, 'deploy')
-      && needs.review-gate.outputs.refresh_ok == 'true' }}
+      && !contains(github.event.pull_request.labels.*.name, 'refresh data') }}
     environment:
       name: review
       url: ${{ steps.deploy_review.outputs.environment_url }}
@@ -322,9 +245,70 @@ jobs:
           db-seed: false
           smoke-test: false
 
-      # ---------------------------
-      # REVIEW APP DATABASE DEPLOYMENT (PR)
-      # ---------------------------
+  # ---------------------------
+  # REVIEW APP DEPLOYMENT (PR) - refresh requested
+  # ---------------------------
+  deploy-review-app-with-refresh:
+    name: Deployment To Review (after refresh)
+    concurrency: deploy_review_${{ github.event.pull_request.number }}
+    needs: [build, test, refresh-data]
+    if: ${{ github.event_name == 'pull_request'
+      && contains(github.event.pull_request.labels.*.name, 'deploy')
+      && contains(github.event.pull_request.labels.*.name, 'refresh data')
+      && needs.refresh-data.result == 'success' }}
+    environment:
+      name: review
+      url: ${{ steps.deploy_review.outputs.environment_url }}
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      pull-requests: write
+
+    env:
+      AKS_RESOURCE_GROUP: ${{ secrets.AKS_RESOURCE_GROUP }}
+      AKS_CLUSTER_NAME: ${{ secrets.AKS_CLUSTER_NAME }}
+
+      KONDUIT_NAMESPACE: ${{ secrets.AKS_NAMESPACE }}
+      KONDUIT_APP_NAME: ${{ secrets.KONDUIT_APP_NAME }}
+
+    steps:
+      - name: Deploy App to Review
+        id: deploy_review
+        uses: DFE-Digital/github-actions/deploy-to-aks@master
+        with:
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          environment: review
+          pr-number: ${{ github.event.pull_request.number }}
+          sha: ${{ needs.build.outputs.docker-image-tag }}
+          terraform-base: ${{ env.TERRAFORM_BASE }}
+          healthcheck: ${{ env.HEALTHCHECK_CMD }}
+          db-seed: false
+          smoke-test: false
+
+  # ---------------------------
+  # REVIEW APP DATABASE RESTORE (PR) - runs after whichever deploy job succeeded
+  # ---------------------------
+  restore-review-db:
+    name: Restore Review DB (PR)
+    runs-on: ubuntu-latest
+    needs: [deploy-review-app, deploy-review-app-with-refresh]
+    if: ${{ always()
+      && github.event_name == 'pull_request'
+      && contains(github.event.pull_request.labels.*.name, 'deploy')
+      && (needs.deploy-review-app.result == 'success' || needs.deploy-review-app-with-refresh.result == 'success') }}
+    permissions:
+      id-token: write
+
+    env:
+      AKS_RESOURCE_GROUP: ${{ secrets.AKS_RESOURCE_GROUP }}
+      AKS_CLUSTER_NAME: ${{ secrets.AKS_CLUSTER_NAME }}
+
+      KONDUIT_NAMESPACE: ${{ secrets.AKS_NAMESPACE }}
+      KONDUIT_APP_NAME: ${{ secrets.KONDUIT_APP_NAME }}
+
+    steps:
       - name: Checkout (needed for workspace consistency)
         uses: actions/checkout@v4
 
