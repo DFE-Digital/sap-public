@@ -443,3 +443,29 @@ jobs:
         azure-tenant-id:  ${{ secrets.AZURE_TENANT_ID   }}
         azure-subscription-id:  ${{ secrets.AZURE_SUBSCRIPTION_ID   }}
         slack-webhook: ${{ secrets.SLACK_WEBHOOK }}
+
+  deploy_domains_env:
+    name: Deploy Domains to ${{ matrix.domain_environment }} environment
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    concurrency: deploy_domains_env_${{ matrix.domain_environment }}
+    needs: [deploy_domains_infra]
+    strategy:
+      max-parallel: 1
+      matrix:
+        domain_environment: [production]
+    environment:
+      name: production
+
+    steps:
+      - name: Deploy Domains Environment
+        id: deploy_domains_env
+        uses: DFE-Digital/github-actions/deploy-domains-env@master
+        with:
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID  }}
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID   }}
+          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID   }}
+          environment: ${{ matrix.domain_environment }}
+          healthcheck: healthcheck
+          slack-webhook: ${{ secrets.SLACK_WEBHOOK }}
+          terraform-base: terraform/domains/environment_domains
