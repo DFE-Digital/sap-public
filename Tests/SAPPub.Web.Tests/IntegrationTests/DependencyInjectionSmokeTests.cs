@@ -4,11 +4,8 @@ using Npgsql;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
-using SAPPub.Infrastructure.Repositories.Generic;
-using System;
+using SAPPub.Web.Helpers;
 using System.Net;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace SAPPub.Web.Tests.IntegrationTests
 {
@@ -95,13 +92,13 @@ namespace SAPPub.Web.Tests.IntegrationTests
 
             if (IsCi)
             {
-                // Use the fake that the factory registers (currently the test-project fake)
-                Assert.IsType<SAPPub.Web.Tests.UI.Infrastructure.FakeGenericRepository<Establishment>>(repo);
+                // Use the fake that the factory registers 
+                Assert.IsType<FakeGenericRepository<Establishment>>(repo);
             }
             else
             {
                 // Locally should be the real Dapper repo
-                Assert.IsNotType<SAPPub.Web.Tests.UI.Infrastructure.FakeGenericRepository<Establishment>>(repo);
+                Assert.IsNotType<FakeGenericRepository<Establishment>>(repo);
             }
         }
     }
