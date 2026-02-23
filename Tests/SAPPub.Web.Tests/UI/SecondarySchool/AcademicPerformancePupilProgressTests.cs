@@ -1,4 +1,5 @@
-﻿using SAPPub.Web.Tests.UI.Helpers;
+﻿using SAPPub.Core.Enums;
+using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
 namespace SAPPub.Web.Tests.UI.SecondarySchool;
@@ -112,6 +113,38 @@ public class AcademicPerformancePupilProgressTests(WebApplicationSetupFixture fi
 
         // Assert
         Assert.True(isVisible);
+    }
+
+    [Fact]
+    public async Task AcademicPerformancePupilProgressPage_Displays_AcademicYear_Selector()
+    {
+        // Arrange
+        await Page.GotoAsync(_pageUrl);
+
+        // Act
+        var academicYearSelector = Page.Locator("#academicyearSelector");
+        var progress8CustomCard = Page.GetByTestId("progress8-custom-card");
+
+        // Assert
+        Assert.True(await academicYearSelector.IsVisibleAsync());
+        Assert.True(await progress8CustomCard.IsVisibleAsync());
+    }
+
+    [Fact]
+    public async Task AcademicPerformanceEnglishAndMathsResultsPage_Change_AcademicYear_Selected()
+    {
+        // Arrange
+        await Page.GotoAsync(_pageUrl);
+
+        // Act
+        var academicyearSelector = Page.Locator("#academicyearSelector");
+        await academicyearSelector.SelectOptionAsync([((int)AcademicYearSelection.AY_2022_2023).ToString()]);
+        var buttonSelector = Page.Locator("button:has-text(\"Show results\")");
+        await buttonSelector.ClickAsync();
+
+        // Assert
+        var progress8CustomCard = Page.GetByTestId("progress8-custom-card");
+        Assert.False(await progress8CustomCard.IsVisibleAsync());
     }
 
     [Fact]
