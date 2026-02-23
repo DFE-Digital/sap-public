@@ -43,6 +43,14 @@
             Information in this section is for the 2024 to 2025 academic year.
         </p>
 
+        <form method="get" asp-action="AcademicPerformancePupilProgress" asp-controller="SecondarySchool" asp-fragment="filterSection">
+            <div id="filterSection" class="select-filter">
+                <govuk-select-label for="academicyearSelector" class="govuk-label govuk-!-font-weight-bold">Choose the academic year you want to see results for</govuk-select-label>
+                <select id="academicyearSelector" class="govuk-select" asp-for="SelectedAcademicYear" asp-items="Model.AcademicYearsSelectList"></select>
+                <govuk-button type="submit">Show results</govuk-button>
+            </div>
+        </form>
+
         <h3 class="govuk-heading-m">Attainment 8</h3>
 
         <p class="govuk-body">
@@ -119,6 +127,20 @@
                 </ul>
             </govuk-details-text>
         </govuk-details>
+
+        @if (Model.ShowProgress8NotAvailableInfo)
+        {
+            <div class="custom-card" data-testid="progress8-custom-card">
+                <div class="custom-card__icon"></div>
+                <div class="custom-card__content">
+                    <p class="govuk-body">
+                        There are no Progress 8 scores for the academic years 2024 to 2025 and
+                        2025 to 2026, as there is no KS2 assessment data available to
+                        calculate the baseline. This is due to COVID-19 disruption.
+                    </p>
+                </div>
+            </div>
+        }
 
         <govuk-pagination id="academic-performance-pupil-progress-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAttendance" asp-all-route-data="@Model.RouteAttributes">Attendance</govuk-pagination-previous>
