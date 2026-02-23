@@ -191,11 +191,6 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "LAMainUrl"
           """;
 
-        private const string LookupColumns = """
-          "Id",
-          "LookupType",
-          "Name"
-          """;
 
         // -----------------------------
         // SQL builders
@@ -274,9 +269,6 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                 nameof(LaUrls) =>
                     SelectFrom(LaUrlsColumns, "v_la_urls"),
 
-                //nameof(Lookup) => 
-                //    SelectFrom(LookupColumns, "v_lookup"),//not sure what view this is coming from yet
-
                 _ => string.Empty,
             };
         }
@@ -325,9 +317,6 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
 
                 nameof(LaUrls) =>
                     SelectFromWhereId(LaUrlsColumns, "v_la_urls"),
-
-                //nameof(Lookup) => 
-                //    SelectFromWhereId(LookupColumns, "v_lookup"),//not sure what view this is coming from yet
 
                 _ => string.Empty,
             };

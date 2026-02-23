@@ -86,9 +86,6 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<IEnglandAbsenceRepository, EnglandAbsenceRepository>();
             services.AddTransient<IEnglandAbsenceService, EnglandAbsenceService>();
 
-            services.AddTransient<ILookupRepository, LookupRepository>();
-            services.AddTransient<ILookupService, LookupService>();
-
             services.AddTransient<IEstablishmentSubjectEntriesRepository, EstablishmentSubjectEntriesRepository>();
             services.AddTransient<IEstablishmentSubjectEntriesService, EstablishmentSubjectEntriesService>();
 
