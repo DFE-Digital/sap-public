@@ -23,7 +23,7 @@ public class SchoolSearchServiceTests
     public async Task SearchAsync_ReturnsExpectedServiceModel()
     {
         // Arrange
-        var searchTerm = "test school";
+        var searchTerm = new SearchQuery(Name: "test school", Location: null);
         _mockIndexReader.Setup(r => r.SearchAsync(searchTerm, It.IsAny<int>())).ReturnsAsync(new SchoolSearchResults(
             Count: 2,
             Results: new List<SchoolSearchDocument> { searchResult1, searchResult2 }));
@@ -57,8 +57,8 @@ public class SchoolSearchServiceTests
     public async Task SearchAsync_SearchFieldsNull_ReturnsExpectedServiceModel()
     {
         // Arrange
-        var searchTerm = "test school";
-        _mockIndexReader.Setup(r => r.SearchAsync(searchTerm, It.IsAny<int>())).ReturnsAsync(new SchoolSearchResults(
+        var searchQuery = new SearchQuery(Name: "test school", Location: null);
+        _mockIndexReader.Setup(r => r.SearchAsync(searchQuery, It.IsAny<int>())).ReturnsAsync(new SchoolSearchResults(
             Count: 1,
             Results: new List<SchoolSearchDocument> {
                 new SchoolSearchDocument(null, null, null, null, null)
@@ -66,7 +66,7 @@ public class SchoolSearchServiceTests
 
         // Act
         var service = new SchoolSearchService(_mockIndexReader.Object);
-        var result = await service.SearchAsync(searchTerm);
+        var result = await service.SearchAsync(searchQuery);
 
         // Assert
         Assert.Equal(1, result.Count);

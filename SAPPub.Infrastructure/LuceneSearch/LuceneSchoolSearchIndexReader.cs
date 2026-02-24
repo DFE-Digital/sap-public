@@ -3,16 +3,18 @@ using Lucene.Net.Search;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Entities.SchoolSearch;
 using SAPPub.Core.Interfaces.Services.Search;
+using SAPPub.Core.Services.Search;
 
 namespace SAPPub.Infrastructure.LuceneSearch;
 
 public class LuceneSchoolSearchIndexReader(LuceneIndexContext context, LuceneTokeniser luceneTokeniser, LuceneHighlighter highlighter) : ISchoolSearchIndexReader
 {
-    public async Task<SchoolSearchResults> SearchAsync(string query, int maxResults = 10)
+    public async Task<SchoolSearchResults> SearchAsync(SearchQuery searchQuery, int maxResults = 10)
     {
-        if (string.IsNullOrWhiteSpace(query)) return new SchoolSearchResults(Count: 0, Results: new List<SchoolSearchDocument>());
+        var nameQueryString = searchQuery.Name;
+        if (string.IsNullOrWhiteSpace(nameQueryString)) return new SchoolSearchResults(Count: 0, Results: new List<SchoolSearchDocument>());
 
-        var tokens = luceneTokeniser.Tokenise(query).ToList();
+        var tokens = luceneTokeniser.Tokenise(nameQueryString).ToList();
         if (!tokens.Any()) return new SchoolSearchResults(Count: 0, Results: new List<SchoolSearchDocument>());
 
         await Task.Yield();
@@ -41,7 +43,7 @@ public class LuceneSchoolSearchIndexReader(LuceneIndexContext context, LuceneTok
             }
 
             // Exact name
-            var exactName = new TermQuery(new Term(nameof(Establishment.EstablishmentName), query))
+            var exactName = new TermQuery(new Term(nameof(Establishment.EstablishmentName), nameQueryString))
             {
                 Boost = 10f
             };

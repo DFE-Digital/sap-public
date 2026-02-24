@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SAPPub.Core.Interfaces.Services.Search;
+using SAPPub.Core.Services.Search;
 using SAPPub.Web.Models.Search;
 
 namespace SAPPub.Web.Controllers;
@@ -11,11 +12,12 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
         return View(new SearchResultsViewModel());
     }
 
-    public async Task<IActionResult> SearchResults(string? searchKeyWord)
+    public async Task<IActionResult> SearchResults(string? searchKeyWord = null, string? searchLocation = null)
     {
+        var searchQuery = new SearchQuery(Name: searchKeyWord, Location: searchLocation);
         if (searchKeyWord != null)
         {
-            var searchResults = await schoolSearchService.SearchAsync(searchKeyWord);
+            var searchResults = await schoolSearchService.SearchAsync(searchQuery);
             var viewResults = new SearchResultsViewModel()
             {
                 NameSearchTerm = searchKeyWord,
@@ -27,6 +29,7 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
         else return View(new SearchResultsViewModel()
         {
             NameSearchTerm = searchKeyWord,
+            LocationSearchTerm = searchLocation,
             SearchResultsCount = 0,
             SearchResults = new List<SearchResultViewModel>()
         });

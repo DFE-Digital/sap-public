@@ -26,6 +26,7 @@ public class SearchResultViewModel
 public class SearchResultsViewModel
 {
     public string? NameSearchTerm { get; set; }
+    public string? LocationSearchTerm { get; set; }
     public int SearchResultsCount { get; set; }
 
     public List<SearchResultViewModel> SearchResults { get; set; } = new List<SearchResultViewModel>();

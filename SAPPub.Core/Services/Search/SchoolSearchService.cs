@@ -3,11 +3,15 @@ using SAPPub.Core.ServiceModels.Search;
 
 namespace SAPPub.Core.Services.Search;
 
+public record SearchQuery(
+    string? Name,
+    string? Location);
+
 public class SchoolSearchService(ISchoolSearchIndexReader indexReader) : ISchoolSearchService
 {
     private const int MaxResults = 1000;
 
-    public async Task<SchoolSearchResultsServiceModel> SearchAsync(string query)
+    public async Task<SchoolSearchResultsServiceModel> SearchAsync(SearchQuery query)
     {
         var searchResults = await indexReader.SearchAsync(query, MaxResults);
 

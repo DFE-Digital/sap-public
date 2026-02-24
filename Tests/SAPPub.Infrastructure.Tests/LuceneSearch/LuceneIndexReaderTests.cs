@@ -1,4 +1,5 @@
 ﻿using SAPPub.Core.Entities;
+using SAPPub.Core.Services.Search;
 using SAPPub.Infrastructure.LuceneSearch;
 
 namespace SAPPub.Infrastructure.Tests.LuceneSearch;
@@ -54,7 +55,7 @@ public class LuceneIndexReaderTests
         ]);
 
         // Act: search using the abbreviation 'St' that should expand to 'saint'
-        var results = await _sut.SearchAsync("St Fake Three");
+        var results = await _sut.SearchAsync(new SearchQuery(Name: "St Fake Three", Location: null));
 
         // Assert
         Assert.NotNull(results);
@@ -74,7 +75,7 @@ public class LuceneIndexReaderTests
             FakeEstablishmentTwo
         ]);
 
-        var results = await _sut.SearchAsync(input!);
+        var results = await _sut.SearchAsync(new SearchQuery(Name: input!, Location: null));
 
         Assert.Empty(results.Results);
     }
@@ -89,7 +90,7 @@ public class LuceneIndexReaderTests
             FakeEstablishmentTwo,
         ]);
 
-        var result = await _sut.SearchAsync(Input);
+        var result = await _sut.SearchAsync(new SearchQuery(Name: Input, Location: null));
 
         Assert.Equal(2, result.Count);
     }
@@ -104,7 +105,7 @@ public class LuceneIndexReaderTests
             FakeEstablishmentTwo,
         ]);
 
-        var result = await _sut.SearchAsync(Input);
+        var result = await _sut.SearchAsync(new SearchQuery(Name: Input, Location: null));
 
         Assert.Equal(2, result.Count);
     }
