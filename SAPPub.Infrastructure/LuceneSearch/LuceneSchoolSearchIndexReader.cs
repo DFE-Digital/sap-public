@@ -14,8 +14,6 @@ public class LuceneSchoolSearchIndexReader(LuceneIndexContext context, LuceneTok
         var tokens = luceneTokeniser.Tokenise(nameQueryString).ToList();
         if (!tokens.Any()) return new List<BooleanClause>();
 
-        context.SearcherManager.MaybeRefresh();
-
         // Strict query for all but the LAST token
         var must = new BooleanQuery();
         foreach (var t in tokens.Take(tokens.Count - 1))
@@ -75,6 +73,7 @@ public class LuceneSchoolSearchIndexReader(LuceneIndexContext context, LuceneTok
             return new SchoolSearchResults(Count: 0, Results: new List<SchoolSearchDocument>());
         }
 
+        context.SearcherManager.MaybeRefresh();
         var searcher = context.SearcherManager.Acquire();
         var take = maxResults;
         List<BooleanClause> queryTerms = [];
