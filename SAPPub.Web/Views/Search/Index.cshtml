@@ -6,5 +6,7 @@
 <p>Use this service to find mainstream secondary schools in England</p>
 
 <form method="get" asp-controller="Search" asp-action="SearchResults">
-    @await Html.PartialAsync("_SearchPartial")
+    <div class="shaded-box">
+        @await Html.PartialAsync("_SearchPartial")
+    </div>
 </form>
