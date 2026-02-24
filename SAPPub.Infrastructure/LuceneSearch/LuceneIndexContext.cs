@@ -23,8 +23,8 @@ public sealed class LuceneIndexContext : IDisposable
 
     public LuceneIndexContext(Directory? directory = null)
     {
-        //SpatialContext = SpatialContext.Geo;
-        //GeoStrategy = new PointVectorStrategy(SpatialContext, "geo");
+        SpatialContext = SpatialContext.Geo;
+        GeoStrategy = new PointVectorStrategy(SpatialContext, "geo");
 
         Directory = directory ?? new RAMDirectory();
 

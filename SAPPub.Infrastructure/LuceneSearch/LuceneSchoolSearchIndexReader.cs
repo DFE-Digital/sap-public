@@ -81,13 +81,13 @@ public class LuceneSchoolSearchIndexReader(LuceneIndexContext context, LuceneTok
         TopDocs? documentResults;
         try
         {
-            if (!string.IsNullOrEmpty(searchQuery.Name)) // construct name search query
+            if (!string.IsNullOrEmpty(searchQuery.Name))
             {
                 queryTerms = BuildNameQuery(searchQuery.Name);
 
                 sort = new Sort(new SortField("EstablishmentNameSort", SortFieldType.STRING, reverse: false), SortField.FIELD_SCORE);
             }
-            if (searchQuery.Latitude.HasValue && searchQuery.Longitude.HasValue) // construct distance search query
+            if (searchQuery.Latitude.HasValue && searchQuery.Longitude.HasValue)
             {
                 var distanceQuery = BuildDistanceQuery(searchQuery.Latitude.Value, searchQuery.Longitude.Value);
                 distanceQuery.ForEach(_ => queryTerms.Add(_));

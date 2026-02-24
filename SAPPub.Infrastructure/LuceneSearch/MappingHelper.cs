@@ -5,14 +5,14 @@ using GeoUK.Projections;
 
 namespace SAPPub.Infrastructure.LuceneSearch;
 
-public class MappingHelper
+public class MappingHelper // CML TODO refactor to remove the code copy
 {
     /// <summary>
     /// Converts British National Grid Easting/Northing to WGS84 Latitude/Longitude
     /// </summary>
     /// <param name="value">Tuple of Easting, and Northing</param>
     /// <returns>Tuple of Latitude, and Longitude</returns>
-    public static LatitudeLongitude? ConvertToLongLat(string easting, string northing)
+    public static LatitudeLongitude? ConvertToLatLon(string easting, string northing)
     {
         if (string.IsNullOrWhiteSpace(easting) || string.IsNullOrWhiteSpace(northing))
         {

@@ -10,9 +10,11 @@ public class SchoolSearchService(ISchoolSearchIndexReader indexReader) : ISchool
     public async Task<SchoolSearchResultsServiceModel> SearchAsync(SAPPub.Core.ServiceModels.Search.SearchQuery query)
     {
         // CML TODO: use postcode.io to convert postcode to lat/long
-        float longitude = 54.9791529f;
-        float latitude = -1.6106219f;
-        var searchResults = await indexReader.SearchAsync(new Entities.SchoolSearch.SearchQuery(latitude, longitude, query.Name), MaxResults);
+        var searchQuery = string.IsNullOrEmpty(query.Location)
+            ? new Entities.SchoolSearch.SearchQuery(null, null, query.Name)
+            : new Entities.SchoolSearch.SearchQuery(Latitude: -1.61392f, Longitude: 54.97753f, query.Name);
+
+        var searchResults = await indexReader.SearchAsync(searchQuery, MaxResults);
 
         var resultList = new List<SchoolSearchResultServiceModel>();
         var results = new SchoolSearchResultsServiceModel

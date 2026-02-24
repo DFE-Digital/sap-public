@@ -95,18 +95,46 @@ public class LuceneIndexReaderTests
         Assert.Equal(2, result.Count);
     }
 
-    [Fact]
-    public async Task SearchAsync_Returns_Empty_Results_For_Out_Of_Order_SearchTerms()
+    [Theory]
+    [InlineData(54.98411799164724f, -1.5932047883986704f, 2)]
+    [InlineData(57.98411799164724f, -1.5932047883986704f, 0)]
+    public async Task SearchAsync_Distance_ReturnsResults(float searchLatitude, float searchLongitude, int expectedCount)
     {
-        const string Input = "School Fake";
-
+        const int easting = 426042;
+        const int northing = 565547;
+        FakeEstablishmentOne.Easting = easting.ToString();
+        FakeEstablishmentOne.Northing = northing.ToString();
+        FakeEstablishmentTwo.Easting = 423790.ToString();
+        FakeEstablishmentTwo.Northing = 563957.ToString();
         _writer.AddToIndex([
             FakeEstablishmentOne,
-            FakeEstablishmentTwo,
+            FakeEstablishmentTwo
         ]);
 
-        var result = await _sut.SearchAsync(new SearchQuery(Name: Input, Latitude: null, Longitude: null));
+        var result = await _sut.SearchAsync(new SearchQuery(Name: null, Latitude: searchLatitude, Longitude: searchLongitude));
 
-        Assert.Equal(2, result.Count);
+        Assert.Equal(expectedCount, result.Count);
+    }
+
+    [Theory]
+    [InlineData("Fake", 54.98411799164724f, -1.5932047883986704f, 2)]
+    [InlineData("One", 54.98411799164724f, -1.5932047883986704f, 1)]
+    [InlineData("One", 57.98411799164724f, -1.5932047883986704f, 0)]
+    public async Task SearchAsync_NameAndDistance_ReturnsResults(string searchName, float searchLatitude, float searchLongitude, int expectedCount)
+    {
+        const int easting = 426042;
+        const int northing = 565547;
+        FakeEstablishmentOne.Easting = easting.ToString();
+        FakeEstablishmentOne.Northing = northing.ToString();
+        FakeEstablishmentTwo.Easting = 423790.ToString();
+        FakeEstablishmentTwo.Northing = 563957.ToString();
+        _writer.AddToIndex([
+            FakeEstablishmentOne,
+            FakeEstablishmentTwo
+        ]);
+
+        var result = await _sut.SearchAsync(new SearchQuery(Name: searchName, Latitude: searchLatitude, Longitude: searchLongitude));
+
+        Assert.Equal(expectedCount, result.Count);
     }
 }

@@ -37,7 +37,7 @@ public class LuceneIndexWriter
             if (e.Address is not null) doc.Add(new StoredField(nameof(Establishment.Address), e.Address));
             if (e.AddressPostcode is not null) doc.Add(new StoredField(nameof(Establishment.AddressPostcode), e.AddressPostcode));
 
-            var latlon = MappingHelper.ConvertToLongLat(e.Easting, e.Northing);
+            var latlon = MappingHelper.ConvertToLatLon(e.Easting, e.Northing);
             if (latlon != null)
             {
                 var point = _context.SpatialContext.MakePoint(latlon.Longitude, latlon.Latitude);
