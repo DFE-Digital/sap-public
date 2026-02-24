@@ -1,5 +1,5 @@
 ﻿using SAPPub.Core.Entities;
-using SAPPub.Core.Services.Search;
+using SAPPub.Core.Entities.SchoolSearch;
 using SAPPub.Infrastructure.LuceneSearch;
 
 namespace SAPPub.Infrastructure.Tests.LuceneSearch;
@@ -29,7 +29,7 @@ public class LuceneSynonymMapTests
             new Establishment(){URN = "3",UKPRN = "30",LAId = "300",EstablishmentNumber = "3000",EstablishmentName = "st park High"}
         ]);
 
-        var results = await _sut.SearchAsync(new SearchQuery(Name: input, Location: null));
+        var results = await _sut.SearchAsync(new SearchQuery(Name: input, Latitude: null, Longitude: null));
 
         Assert.Equal(2, results.Count);
     }
@@ -44,7 +44,7 @@ public class LuceneSynonymMapTests
             new Establishment(){URN = "3",UKPRN = "20",LAId = "200",EstablishmentNumber = "2000",EstablishmentName = "st park High"}
         ]);
 
-        var results = await _sut.SearchAsync(new SearchQuery(Name: input, Location: null));
+        var results = await _sut.SearchAsync(new SearchQuery(Name: input, Latitude: null, Longitude: null));
 
         Assert.Single(results.Results);
     }
@@ -59,7 +59,7 @@ public class LuceneSynonymMapTests
             new Establishment(){URN = "2",UKPRN = "20",LAId = "200",EstablishmentNumber = "2000",EstablishmentName = "ss helan Primary Church of England"}
        ]);
 
-        var results = await _sut.SearchAsync(new SearchQuery(Name: input, Location: null));
+        var results = await _sut.SearchAsync(new SearchQuery(Name: input, Latitude: null, Longitude: null));
 
         Assert.Equal(2, results.Count);
     }
@@ -74,7 +74,7 @@ public class LuceneSynonymMapTests
             new Establishment(){URN = "2",UKPRN = "20",LAId = "200",EstablishmentNumber = "2000",EstablishmentName = "ss helan Primary roman Catholic"}
            ]);
 
-        var results = await _sut.SearchAsync(new SearchQuery(Name: input, Location: null));
+        var results = await _sut.SearchAsync(new SearchQuery(Name: input, Latitude: null, Longitude: null));
 
         Assert.Equal(2, results.Count);
     }
@@ -94,7 +94,7 @@ public class LuceneSynonymMapTests
             new Establishment(){URN = "4",UKPRN = "40",LAId = "400",EstablishmentNumber = "4000",EstablishmentName = "Primary avenue School"}
         ]);
 
-        var results = await _sut.SearchAsync(new SearchQuery(Name: input, Location: null));
+        var results = await _sut.SearchAsync(new SearchQuery(Name: input, Latitude: null, Longitude: null));
 
         Assert.Equal(4, results.Count);
     }
@@ -122,7 +122,7 @@ public class LuceneSynonymMapTests
             new Establishment(){URN = "1",UKPRN = "10",LAId = "100",EstablishmentNumber = "1000",EstablishmentName = $"Saint Peter {synonym} School"},
         ]);
 
-        var results = await _sut.SearchAsync(new SearchQuery(Name: input, Location: null));
+        var results = await _sut.SearchAsync(new SearchQuery(Name: input, Latitude: null, Longitude: null));
 
         Assert.Single(results.Results);
     }
@@ -137,7 +137,7 @@ public class LuceneSynonymMapTests
             new Establishment(){URN = "2",UKPRN = "20",LAId = "200",EstablishmentNumber = "2000",EstablishmentName = "Primary st Avenue School"},
         ]);
 
-        var result = await _sut.SearchAsync(new SearchQuery(Name: Input, Location: null));
+        var result = await _sut.SearchAsync(new SearchQuery(Name: Input, Latitude: null, Longitude: null));
 
         Assert.Equal(2, result.Count);
     }

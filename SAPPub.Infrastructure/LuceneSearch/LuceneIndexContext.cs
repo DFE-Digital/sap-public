@@ -1,8 +1,10 @@
 ﻿using Lucene.Net.Analysis;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
+using Lucene.Net.Spatial.Vector;
 using Lucene.Net.Store;
 using Lucene.Net.Util;
+using Spatial4n.Context;
 using Directory = Lucene.Net.Store.Directory;
 
 namespace SAPPub.Infrastructure.LuceneSearch;
@@ -15,9 +17,15 @@ public sealed class LuceneIndexContext : IDisposable
     public Analyzer Analyzer { get; }
     public IndexWriter Writer { get; }
     public SearcherManager SearcherManager { get; }
+    public PointVectorStrategy GeoStrategy { get; }
+
+    public SpatialContext SpatialContext { get; }
 
     public LuceneIndexContext(Directory? directory = null)
     {
+        SpatialContext = SpatialContext.Geo;
+        GeoStrategy = new PointVectorStrategy(SpatialContext, "geo");
+
         Directory = directory ?? new RAMDirectory();
 
         var luceneSynonymMapBuilder = new LuceneSynonymMapBuilder();

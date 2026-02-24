@@ -3,17 +3,16 @@ using SAPPub.Core.ServiceModels.Search;
 
 namespace SAPPub.Core.Services.Search;
 
-public record SearchQuery(
-    string? Name,
-    string? Location);
-
 public class SchoolSearchService(ISchoolSearchIndexReader indexReader) : ISchoolSearchService
 {
     private const int MaxResults = 1000;
 
-    public async Task<SchoolSearchResultsServiceModel> SearchAsync(SearchQuery query)
+    public async Task<SchoolSearchResultsServiceModel> SearchAsync(SAPPub.Core.ServiceModels.Search.SearchQuery query)
     {
-        var searchResults = await indexReader.SearchAsync(query, MaxResults);
+        // CML TODO: use postcode.io to convert postcode to lat/long
+        float longitude = 54.9791529f;
+        float latitude = -1.6106219f;
+        var searchResults = await indexReader.SearchAsync(new Entities.SchoolSearch.SearchQuery(latitude, longitude, query.Name), MaxResults);
 
         var resultList = new List<SchoolSearchResultServiceModel>();
         var results = new SchoolSearchResultsServiceModel

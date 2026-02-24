@@ -36,6 +36,18 @@ public class LuceneIndexWriter
             if (e.ReligiousCharacterName is not null) doc.Add(new StoredField(nameof(Establishment.ReligiousCharacterName), e.ReligiousCharacterName));
             if (e.Address is not null) doc.Add(new StoredField(nameof(Establishment.Address), e.Address));
             if (e.AddressPostcode is not null) doc.Add(new StoredField(nameof(Establishment.AddressPostcode), e.AddressPostcode));
+
+            var latlon = MappingHelper.ConvertToLongLat(e.Easting, e.Northing);
+            if (latlon != null)
+            {
+                var point = _context.SpatialContext.MakePoint(latlon.Longitude, latlon.Latitude);
+                foreach (var f in _context.GeoStrategy.CreateIndexableFields(point))
+                    doc.Add(f);
+
+                doc.Add(new StoredField("lat", latlon!.Latitude));
+                doc.Add(new StoredField("lon", latlon.Longitude));
+            }
+
             _context.Writer.AddDocument(doc);
         }
     }

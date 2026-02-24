@@ -2,6 +2,7 @@
 using SAPPub.Core.Entities.SchoolSearch;
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.Services.Search;
+using SearchQuery = SAPPub.Core.ServiceModels.Search.SearchQuery;
 
 namespace SAPPub.Core.Tests.Services.Search;
 
@@ -23,14 +24,17 @@ public class SchoolSearchServiceTests
     public async Task SearchAsync_ReturnsExpectedServiceModel()
     {
         // Arrange
-        var searchTerm = new SearchQuery(Name: "test school", Location: null);
-        _mockIndexReader.Setup(r => r.SearchAsync(searchTerm, It.IsAny<int>())).ReturnsAsync(new SchoolSearchResults(
-            Count: 2,
-            Results: new List<SchoolSearchDocument> { searchResult1, searchResult2 }));
+        var searchQuery = new SearchQuery(Name: "test school", Location: null);
+        _mockIndexReader.Setup(r => r.SearchAsync(
+            It.Is<Entities.SchoolSearch.SearchQuery>(q => q.Name == searchQuery.Name),
+            It.IsAny<int>()))
+            .ReturnsAsync(new SchoolSearchResults(
+                Count: 2,
+                Results: new List<SchoolSearchDocument> { searchResult1, searchResult2 }));
 
         // Act
         var service = new SchoolSearchService(_mockIndexReader.Object);
-        var result = await service.SearchAsync(searchTerm);
+        var result = await service.SearchAsync(searchQuery);
 
         // Assert
         Assert.Equal(2, result.Count);
@@ -58,11 +62,13 @@ public class SchoolSearchServiceTests
     {
         // Arrange
         var searchQuery = new SearchQuery(Name: "test school", Location: null);
-        _mockIndexReader.Setup(r => r.SearchAsync(searchQuery, It.IsAny<int>())).ReturnsAsync(new SchoolSearchResults(
-            Count: 1,
-            Results: new List<SchoolSearchDocument> {
-                new SchoolSearchDocument(null, null, null, null, null)
-            }));
+        _mockIndexReader.Setup(r => r.SearchAsync(
+            It.Is<Entities.SchoolSearch.SearchQuery>(q => q.Name == searchQuery.Name),
+            It.IsAny<int>()))
+            .ReturnsAsync(new SchoolSearchResults(
+                Count: 1,
+                Results: new List<SchoolSearchDocument> {
+                new SchoolSearchDocument(null, null, null, null, null) }));
 
         // Act
         var service = new SchoolSearchService(_mockIndexReader.Object);

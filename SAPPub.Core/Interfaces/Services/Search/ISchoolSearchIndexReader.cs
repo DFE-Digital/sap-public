@@ -1,5 +1,4 @@
 ﻿using SAPPub.Core.Entities.SchoolSearch;
-using SAPPub.Core.Services.Search;
 
 namespace SAPPub.Core.Interfaces.Services.Search;
 
