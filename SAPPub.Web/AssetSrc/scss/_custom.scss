@@ -155,6 +155,10 @@
     flex-shrink: 0;
 }
 
+.shaded-box {
+    background-color: rgb(244, 248, 251);
+}
+
 @media(max-width: 40.0525em) {
     .moj-side-navigation {
         padding-bottom: 20px;
