@@ -68,6 +68,8 @@ public class LuceneSchoolSearchIndexReader(LuceneIndexContext context, LuceneTok
 
     public async Task<SchoolSearchResults> SearchAsync(Core.Entities.SchoolSearch.SearchQuery searchQuery, int maxResults = 10)
     {
+        await Task.Yield();
+
         if (string.IsNullOrEmpty(searchQuery.Name) && (!searchQuery.Latitude.HasValue || !searchQuery.Longitude.HasValue))
         {
             return new SchoolSearchResults(Count: 0, Results: new List<SchoolSearchDocument>());
