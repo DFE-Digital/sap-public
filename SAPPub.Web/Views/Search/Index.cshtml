@@ -2,11 +2,14 @@
     ViewData["Title"] = "Search";
 }
 
-<h1>Search for secondary schools</h1>
-<p>Use this service to find mainstream secondary schools in England</p>
-
-<form method="get" asp-controller="Search" asp-action="SearchResults">
-    <div class="shaded-box">
-        @await Html.PartialAsync("_SearchPartial")
-    </div>
-</form>
+<div class="shaded-box">
+    <form method="get" asp-controller="Search" asp-action="SearchResults">
+        <govuk-fieldset>
+            <govuk-fieldset-legend is-page-heading="true" class="govuk-fieldset__legend--l">
+                <h1 class="govuk-heading-l">Search for secondary schools</h1>
+                <p class="govuk-hint">Use this service to find mainstream secondary schools in England.</p>
+            </govuk-fieldset-legend>
+            @await Html.PartialAsync("_SearchPartial")
+        </govuk-fieldset>
+    </form>
+</div>

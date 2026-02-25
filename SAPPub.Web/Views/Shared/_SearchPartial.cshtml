@@ -4,4 +4,8 @@
     <govuk-input-label is-page-heading="false" class="govuk-label--s" id="page-heading">School name</govuk-input-label>
     <govuk-input-hint>For example, St Joseph's secondary school</govuk-input-hint>
 </govuk-input>
+<govuk-input input-class="govuk-input govuk-!-width-two-thirds" input-placeholder="Search by postcode" input-value=@Model.LocationSearchTerm name="searchLocation" data-testid="searchByLocationInput">
+    <govuk-input-label is-page-heading="false" class="govuk-label--s" id="page-heading">Postcode</govuk-input-label>
+    <govuk-input-hint>For example, LS28 8EU</govuk-input-hint>
+</govuk-input>
 <govuk-button id="search" type="submit">Search</govuk-button>
