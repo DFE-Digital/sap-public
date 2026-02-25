@@ -14,7 +14,7 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
 
     public async Task<IActionResult> SearchResults(string? searchKeyWord = null, string? searchLocation = null)
     {
-        var searchQuery = new SearchQuery(Name: searchKeyWord, Location: searchLocation);
+        var searchQuery = new SearchQuery() { Name = searchKeyWord, Location = searchLocation };
         if (searchKeyWord != null)
         {
             var searchResults = await schoolSearchService.SearchAsync(searchQuery);

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.ServiceModels.Search;
-using SAPPub.Core.Services.Search;
 using SAPPub.Web.Controllers;
 using SAPPub.Web.Models.Search;
 
@@ -44,7 +43,7 @@ public class SearchControllerTests
     public async Task Get_SearchResults_ReturnsSchoolResultsViewModel()
     {
         // arrange
-        var searchQuery = new SearchQuery(Name: "test school", Location: null);
+        var searchQuery = new SearchQuery() { Name = "test school" };
         _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
         {
             Count = 2,
@@ -84,7 +83,7 @@ public class SearchControllerTests
     public async Task Get_SearchResults_NullFieldsInResults_ReturnsSchoolResultsViewModelWithEmptyFields()
     {
         // arrange
-        var searchQuery = new SearchQuery(Name: "test school", Location: null);
+        var searchQuery = new SearchQuery() { Name = "test school" };
         _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
         {
             Count = 1,
@@ -120,7 +119,7 @@ public class SearchControllerTests
     public async Task Get_SearchResults_NoResults_ReturnsExpectedSchoolResultsViewModel()
     {
         // arrange
-        var searchQuery = new SearchQuery(Name: "no results term", Location: null);
+        var searchQuery = new SearchQuery() { Name = "no results term" };
         _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
         {
             Count = 0,

@@ -1,4 +1,4 @@
-﻿using SAPPub.Core.Entities.SchoolSearch;
+﻿using SAPPub.Core.ServiceModels.PostcodeLookup;
 
 namespace SAPPub.Core.Interfaces.Services.Search;
 

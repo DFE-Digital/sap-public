@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace SAPPub.Core.Entities.SchoolSearch;
+namespace SAPPub.Core.ServiceModels.PostcodeLookup;
 
 [ExcludeFromCodeCoverage]
 public record SchoolSearchResults(int Count, IList<SchoolSearchDocument> Results);

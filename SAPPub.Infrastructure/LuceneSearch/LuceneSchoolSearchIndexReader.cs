@@ -2,12 +2,12 @@
 using Lucene.Net.Search;
 using Lucene.Net.Spatial.Queries;
 using SAPPub.Core.Entities;
-using SAPPub.Core.Entities.SchoolSearch;
 using SAPPub.Core.Interfaces.Services.Search;
+using SAPPub.Core.ServiceModels.PostcodeLookup;
 
 namespace SAPPub.Infrastructure.LuceneSearch;
 
-public class LuceneSchoolSearchIndexReader(LuceneIndexContext context, LuceneTokeniser luceneTokeniser, LuceneHighlighter highlighter) : ISchoolSearchIndexReader
+public class LuceneSchoolSearchIndexReader(LuceneIndexContext context, LuceneTokeniser luceneTokeniser) : ISchoolSearchIndexReader
 {
     private List<BooleanClause> BuildNameQuery(string nameQueryString)
     {
@@ -44,11 +44,8 @@ public class LuceneSchoolSearchIndexReader(LuceneIndexContext context, LuceneTok
         };
     }
 
-    private List<BooleanClause> BuildDistanceQuery(float latitude, float longitude)
+    private List<BooleanClause> BuildDistanceQuery(float latitude, float longitude, int radiusMiles)
     {
-        // CML TODO pass radius distance in search query
-        var radiusMiles = 3;
-
         // Convert miles to degrees for Spatial4n circle
         double radiusDegrees = MappingHelper.MilesToDegrees(radiusMiles);
 
@@ -64,7 +61,7 @@ public class LuceneSchoolSearchIndexReader(LuceneIndexContext context, LuceneTok
         return new List<BooleanClause> { new BooleanClause(distanceQuery, Occur.MUST) };
     }
 
-    public async Task<SchoolSearchResults> SearchAsync(Core.Entities.SchoolSearch.SearchQuery searchQuery, int maxResults = 10)
+    public async Task<SchoolSearchResults> SearchAsync(SearchQuery searchQuery, int maxResults = 10)
     {
         await Task.Yield();
 
@@ -89,7 +86,7 @@ public class LuceneSchoolSearchIndexReader(LuceneIndexContext context, LuceneTok
             }
             if (searchQuery.Latitude.HasValue && searchQuery.Longitude.HasValue)
             {
-                var distanceQuery = BuildDistanceQuery(searchQuery.Latitude.Value, searchQuery.Longitude.Value);
+                var distanceQuery = BuildDistanceQuery(searchQuery.Latitude.Value, searchQuery.Longitude.Value, searchQuery.Distance ?? 3);
                 distanceQuery.ForEach(_ => queryTerms.Add(_));
             }
 

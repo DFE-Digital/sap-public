@@ -10,11 +10,21 @@ public class SchoolSearchService(ISchoolSearchIndexReader indexReader, IPostcode
 
     public async Task<SchoolSearchResultsServiceModel> SearchAsync(SAPPub.Core.ServiceModels.Search.SearchQuery query)
     {
-        var postcodeResponse = await postcodeLookupService.GetLatitudeAndLongitudeAsync(query.Location);
-        var postcodeResult = postcodeResponse?.result; // CML TODO handle errors in response
+        var postcodeResponse = query.Location != null ? await postcodeLookupService.GetLatitudeAndLongitudeAsync(query.Location) : null;
+        if (postcodeResponse != null && postcodeResponse.Error != null)
+        {
+            return new SchoolSearchResultsServiceModel
+            {
+                Count = 0,
+                SchoolSearchResults = new List<SchoolSearchResultServiceModel>(),
+                Status = postcodeResponse.Error == "Invalid postcode" ? SchoolSearchStatus.InvalidPostcode : SchoolSearchStatus.UnknownError
+            };
+        }
+
+        var postcodeResult = postcodeResponse?.Result;
         var searchQuery = string.IsNullOrEmpty(query.Location)
-            ? new Entities.SchoolSearch.SearchQuery(null, null, query.Name)
-            : new Entities.SchoolSearch.SearchQuery(Latitude: postcodeResult?.latitude, Longitude: postcodeResult?.longitude, query.Name);
+            ? new ServiceModels.PostcodeLookup.SearchQuery { Name = query.Name }
+            : new ServiceModels.PostcodeLookup.SearchQuery { Latitude = postcodeResult?.Latitude, Longitude = postcodeResult?.Longitude, Distance = query.Distance, Name = query.Name };
 
         var searchResults = await indexReader.SearchAsync(searchQuery, MaxResults);
 

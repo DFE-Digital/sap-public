@@ -3,11 +3,11 @@ using Lucene.Net.Util;
 using SAPPub.Core.Entities;
 using SAPPub.Infrastructure.LuceneSearch;
 
-public class LuceneIndexWriter
+public class LuceneSchoolSearchIndexWriter
 {
     private LuceneIndexContext _context;
 
-    public LuceneIndexWriter(LuceneIndexContext context)
+    public LuceneSchoolSearchIndexWriter(LuceneIndexContext context)
     {
         _context = context;
         _context.Writer.DeleteAll();

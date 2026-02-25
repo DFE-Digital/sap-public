@@ -4,7 +4,7 @@ using SAPPub.Core.Interfaces.Services;
 
 namespace SAPPub.Infrastructure.LuceneSearch;
 
-public class StartupIndexBuilder(ILogger<StartupIndexBuilder> logger, LuceneIndexWriter writer, IEstablishmentService establishmentService) : IHostedService
+public class StartupIndexBuilder(ILogger<StartupIndexBuilder> logger, LuceneSchoolSearchIndexWriter writer, IEstablishmentService establishmentService) : IHostedService
 {
     public async Task StartAsync(CancellationToken cancellationToken)
     {
