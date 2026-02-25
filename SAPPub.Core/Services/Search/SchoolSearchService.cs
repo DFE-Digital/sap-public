@@ -1,18 +1,20 @@
-﻿using SAPPub.Core.Interfaces.Services.Search;
+﻿using SAPPub.Core.Interfaces.Services;
+using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.ServiceModels.Search;
 
 namespace SAPPub.Core.Services.Search;
 
-public class SchoolSearchService(ISchoolSearchIndexReader indexReader) : ISchoolSearchService
+public class SchoolSearchService(ISchoolSearchIndexReader indexReader, IPostcodeLookupService postcodeLookupService) : ISchoolSearchService
 {
     private const int MaxResults = 1000;
 
     public async Task<SchoolSearchResultsServiceModel> SearchAsync(SAPPub.Core.ServiceModels.Search.SearchQuery query)
     {
-        // CML TODO: use postcode.io to convert postcode to lat/long
+        var postcodeResponse = await postcodeLookupService.GetLatitudeAndLongitudeAsync(query.Location);
+        var postcodeResult = postcodeResponse?.result; // CML TODO handle errors in response
         var searchQuery = string.IsNullOrEmpty(query.Location)
             ? new Entities.SchoolSearch.SearchQuery(null, null, query.Name)
-            : new Entities.SchoolSearch.SearchQuery(Latitude: -1.61392f, Longitude: 54.97753f, query.Name);
+            : new Entities.SchoolSearch.SearchQuery(Latitude: postcodeResult?.latitude, Longitude: postcodeResult?.longitude, query.Name);
 
         var searchResults = await indexReader.SearchAsync(searchQuery, MaxResults);
 

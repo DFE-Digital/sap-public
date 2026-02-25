@@ -1,5 +1,6 @@
 ﻿using Moq;
 using SAPPub.Core.Entities.SchoolSearch;
+using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.Services.Search;
 using SearchQuery = SAPPub.Core.ServiceModels.Search.SearchQuery;
@@ -9,6 +10,7 @@ namespace SAPPub.Core.Tests.Services.Search;
 public class SchoolSearchServiceTests
 {
     private readonly Mock<ISchoolSearchIndexReader> _mockIndexReader = new();
+    private readonly Mock<IPostcodeLookupService> _mockPostcodeLookupService = new();
     private readonly SchoolSearchDocument searchResult1 = new SchoolSearchDocument(URN: "123456",
                     EstablishmentName: "Test School",
                     Address: "123 Test Street",
@@ -33,7 +35,7 @@ public class SchoolSearchServiceTests
                 Results: new List<SchoolSearchDocument> { searchResult1, searchResult2 }));
 
         // Act
-        var service = new SchoolSearchService(_mockIndexReader.Object);
+        var service = new SchoolSearchService(_mockIndexReader.Object, _mockPostcodeLookupService.Object);
         var result = await service.SearchAsync(searchQuery);
 
         // Assert
@@ -71,7 +73,7 @@ public class SchoolSearchServiceTests
                 new SchoolSearchDocument(null, null, null, null, null) }));
 
         // Act
-        var service = new SchoolSearchService(_mockIndexReader.Object);
+        var service = new SchoolSearchService(_mockIndexReader.Object, _mockPostcodeLookupService.Object);
         var result = await service.SearchAsync(searchQuery);
 
         // Assert
