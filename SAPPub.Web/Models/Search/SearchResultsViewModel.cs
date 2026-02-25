@@ -18,6 +18,7 @@ public class SearchResultsViewModel
             : !String.IsNullOrEmpty(LocationSearchTerm)
                 ? $"within {Miles} miles of {LocationSearchTerm}"
                 : String.Empty;
+
     public static List<SearchResult> FromServiceModel(IEnumerable<SchoolSearchResultServiceModel> serviceModel)
     {
         return serviceModel.Select(r => SearchResult.FromServiceModel(r)).ToList();

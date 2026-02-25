@@ -11,9 +11,7 @@
         <div class="shaded-box">
             <form method="get" asp-controller="Search" asp-action="SearchResults">
                 <govuk-fieldset>
-                    <govuk-fieldset-legend is-page-heading="true" class="govuk-fieldset__legend--l">
-                        <h1 class="govuk-heading-l">Search for secondary schools</h1>
-                        <p class="govuk-hint">Use this service to find mainstream secondary schools in England.</p>
+                    <govuk-fieldset-legend is-page-heading="false" class="govuk-fieldset__legend--l">
                     </govuk-fieldset-legend>
                     @await Html.PartialAsync("_SearchPartial")
                 </govuk-fieldset>
@@ -44,7 +42,13 @@
         @if (Model.SearchResults.Count == 0)
         {
             <h2 class="govuk-heading-s govuk-!-font-weight-bold" data-testid="no-results-heading">Try another search</h2>
-            <p class="govuk-body">You may need to search by a local council or postcode instead of school name.</p>
+            <p class="govuk-body">
+                @(!String.IsNullOrEmpty(Model.NameSearchTerm)
+                ? "You may need to search by a postcode instead of school name."
+                : !String.IsNullOrEmpty(Model.LocationSearchTerm)
+                ? "You may need to search by a school name instead of postcode."
+                : String.Empty)
+            </p>
         }
     </div>
 </div>
