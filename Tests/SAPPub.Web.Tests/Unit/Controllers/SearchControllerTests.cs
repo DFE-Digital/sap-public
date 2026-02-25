@@ -40,10 +40,50 @@ public class SearchControllerTests
     }
 
     [Fact]
-    public async Task Get_SearchResults_ReturnsSchoolResultsViewModel()
+    public async Task Get_SearchResults_SearchByName_ReturnsSchoolResultsViewModel()
     {
         // arrange
         var searchQuery = new SearchQuery() { Name = "test school" };
+        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
+        {
+            Count = 2,
+            SchoolSearchResults = new List<SchoolSearchResultServiceModel> {
+                _schoolSearchResult1, _schoolSearchResult2
+            }
+        });
+
+        // act
+        var result = await _controller.SearchResults(searchQuery.Name, searchQuery.Location);
+        var viewModel = ((ViewResult)result).Model as SearchResultsViewModel;
+
+        // assert
+        Assert.NotNull(viewModel);
+        Assert.Equal(searchQuery.Name, viewModel.NameSearchTerm);
+        Assert.Equal(2, viewModel.SearchResultsCount);
+        Assert.Collection(viewModel.SearchResults,
+            item =>
+            {
+                Assert.Equal(_schoolSearchResult1.URN, item.URN);
+                Assert.Equal(_schoolSearchResult1.EstablishmentName, item.EstablishmentName);
+                Assert.Equal(_schoolSearchResult1.Address, item.Address);
+                Assert.Equal(_schoolSearchResult1.GenderName, item.GenderName);
+                Assert.Equal(_schoolSearchResult1.ReligiousCharacterName, item.ReligiousCharacter);
+            },
+            item =>
+            {
+                Assert.Equal(_schoolSearchResult2.URN, item.URN);
+                Assert.Equal(_schoolSearchResult2.EstablishmentName, item.EstablishmentName);
+                Assert.Equal(_schoolSearchResult2.Address, item.Address);
+                Assert.Equal(_schoolSearchResult2.GenderName, item.GenderName);
+                Assert.Equal(_schoolSearchResult2.ReligiousCharacterName, item.ReligiousCharacter);
+            });
+    }
+
+    [Fact]
+    public async Task Get_SearchResults_SearchByLocation_ReturnsSchoolResultsViewModel()
+    {
+        // arrange
+        var searchQuery = new SearchQuery() { Location = "NE2 1VF" };
         _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
         {
             Count = 2,

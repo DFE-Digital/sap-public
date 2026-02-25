@@ -15,12 +15,13 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
     public async Task<IActionResult> SearchResults(string? searchKeyWord = null, string? searchLocation = null)
     {
         var searchQuery = new SearchQuery() { Name = searchKeyWord, Location = searchLocation };
-        if (searchKeyWord != null)
+        if (searchKeyWord != null || searchLocation != null)
         {
             var searchResults = await schoolSearchService.SearchAsync(searchQuery);
             var viewResults = new SearchResultsViewModel()
             {
                 NameSearchTerm = searchKeyWord,
+                LocationSearchTerm = searchLocation,
                 SearchResultsCount = searchResults.Count,
                 SearchResults = SearchResultsViewModel.FromServiceModel(searchResults.SchoolSearchResults)
             };
@@ -31,7 +32,7 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
             NameSearchTerm = searchKeyWord,
             LocationSearchTerm = searchLocation,
             SearchResultsCount = 0,
-            SearchResults = new List<SearchResultViewModel>()
+            SearchResults = new List<SearchResult>()
         });
     }
 }
