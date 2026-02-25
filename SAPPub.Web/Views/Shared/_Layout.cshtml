@@ -5,7 +5,7 @@
 @{
     ViewBag.ServiceName = "School Profile - Public facing";
     var gtmId = analyticsOptions.Value.GoogleTagManagerId;
-    var clarityId = analyticsOptions.Value.ClarityId;
+    var gtmAuth = analyticsOptions.Value.GoogleTagManagerAuth;
     var loadAnalytics = Context?.Request?.Cookies["analytics_preference"] == "true" ? true : false;
 }
 <!DOCTYPE html>
@@ -29,23 +29,16 @@
     @{
         if (loadAnalytics)
         {
+            // Removed &gtm_preview=env-12&gtm_cookies_win=x from url
             <!-- Google Tag Manager -->
-            <script type="text/javascript" nonce="@Html.ScriptNonce()">
+            <script id="gtmScript" type="text/javascript" nonce="@Html.ScriptNonce()">
                 (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
                 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
                 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-                'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-                })(window,document,'script','dataLayer', '@gtmId');</script>
+                'https://www.googletagmanager.com/gtm.js?id='+i+dl+ '&gtm_auth=@gtmAuth';var n=d.querySelector('[nonce]');
+                n&&j.setAttribute('nonce',n.nonce||n.getAttribute('nonce'));f.parentNode.insertBefore(j,f);
+                })(window,document,'script','dataLayer','@gtmId');</script>
             <!-- End Google Tag Manager -->
-            <!-- Microsoft Clarity -->
-            <script type="text/javascript" nonce="@Html.ScriptNonce()">
-                (function(c,l,a,r,i,t,y){
-                    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-                    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-                    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-                })(window, document, "clarity", "script", "@clarityId");
-            </script>
-            <!-- Microsoft Clarity -->
         }
     }
 </head>
@@ -56,7 +49,7 @@
         {
             <!-- Google Tag Manager (noscript) -->
             <noscript>
-                <iframe src="https://www.googletagmanager.com/ns.html?id=@gtmId"
+                <iframe src="https://www.googletagmanager.com/ns.html?id=@gtmId&gtm_auth=@gtmAuth"
                         height="0" width="0" style="display:none;visibility:hidden"></iframe>
             </noscript>
             <!-- End Google Tag Manager (noscript) -->
