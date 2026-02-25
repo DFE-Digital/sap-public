@@ -40,10 +40,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="UI\SecondarySchool\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="UI\TestData\Establishments-UI-Test-Data.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

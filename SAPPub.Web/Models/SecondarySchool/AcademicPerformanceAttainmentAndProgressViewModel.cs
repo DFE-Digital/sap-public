@@ -4,7 +4,7 @@ using SAPPub.Web.Helpers;
 
 namespace SAPPub.Web.Models.SecondarySchool;
 
-public class AcademicPerformancePupilProgressViewModel : SecondarySchoolBaseViewModel
+public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchoolBaseViewModel
 {
     private const int _currentAcademicYear = (int)AcademicYearSelection.AY_2024_2025;
 
