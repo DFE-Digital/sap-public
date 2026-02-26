@@ -15,12 +15,13 @@
     })
 
     <div class="govuk-grid-column-three-quarters">
-        <span id="school-name-caption" class="govuk-caption-l">@Model.SchoolName</span>
-        <h1 class="govuk-heading-l">@ViewBag.Title</h1>
+        <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
+        <h1 class="govuk-heading-xl">@ViewBag.Title</h1>
 
+        <h2 class="govuk-heading-l">Curriculum</h2>
         <div id="current-curriculum-summary" class="govuk-summary-card">
             <div class="govuk-summary-card__title-wrapper">
-                <h2 class="govuk-summary-card__title">Current curriculum</h2>
+                <h3 class="govuk-summary-card__title">Current curriculum</h3>
             </div>
             <div class="govuk-summary-card__content">
                 <div class="govuk-summary-list__row">
@@ -39,7 +40,7 @@
                             </span>
                         </govuk-summary-list-row-key>
                         <govuk-summary-list-row-value>
-                            <a class="govuk-link" href="#">
+                            <a class="govuk-link govuk-link--no-visited-state" href="#">
                                 View the school’s KS3 curriculum on their website
                             </a>
                         </govuk-summary-list-row-value>
@@ -52,7 +53,7 @@
                             </span>
                         </govuk-summary-list-row-key>
                         <govuk-summary-list-row-value>
-                            <a class="govuk-link" href="#">
+                            <a class="govuk-link govuk-link--no-visited-state" href="#">
                                 View the school’s KS4 curriculum on their website
                             </a>
                         </govuk-summary-list-row-value>
@@ -63,13 +64,13 @@
 
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
-        <h3 class="govuk-heading-m govuk-!-margin-top-5">
+        <h2 class="govuk-heading-l govuk-!-margin-top-5">
             Extra-curricular activities
-        </h3>
+        </h2>
 
-        <h4 class="govuk-heading-m">
+        <h3 class="govuk-heading-m">
             Activities schools can offer
-        </h4>
+        </h3>
 
         <p class="govuk-body">
             Schools can offer a range of extra-curricular activities, for example:
@@ -104,7 +105,7 @@
 
         <div id="current-extra-curricular-activities-offered-summary" class="govuk-summary-card">
             <div class="govuk-summary-card__title-wrapper">
-                <h2 class="govuk-summary-card__title">Current extra-curricular activities offered</h2>
+                <h3 class="govuk-summary-card__title">Current extra-curricular activities offered</h3>
             </div>
             <div class="govuk-summary-card__content">
                 <div class="govuk-summary-list__row">
@@ -119,7 +120,7 @@
                     <govuk-summary-list-row>
                         <govuk-summary-list-row-key>Extra-curricular activities</govuk-summary-list-row-key>
                         <govuk-summary-list-row-value>
-                            <a class="govuk-link" href="#">
+                            <a class="govuk-link govuk-link--no-visited-state" href="#">
                                 Visit the school website for current extra-curricular activities
                             </a>
                         </govuk-summary-list-row-value>
