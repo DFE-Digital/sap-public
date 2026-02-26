@@ -75,13 +75,17 @@ namespace SAPPub.Web.Controllers
         }
 
         [HttpGet]
-        [Route("school/{urn}/{schoolName}/secondary/academic-performance-pupil-progress", Name = RouteConstants.SecondaryAcademicPerformancePupilProgress)]
-        public IActionResult AcademicPerformancePupilProgress(string urn, string schoolName)
+        [Route("school/{urn}/{schoolName}/secondary/academic-performance-attainment-and-progress", Name = RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress)]
+        public IActionResult AcademicPerformanceAttainmentAndProgress(
+            string urn,
+            string schoolName,
+            int selectedAcademicYear = (int)AcademicYearSelection.AY_2024_2025)
         {
-            var model = new AcademicPerformancePupilProgressViewModel
+            var model = new AcademicPerformanceAttainmentAndProgressViewModel
             {
                 URN = urn,
                 SchoolName = schoolName,
+                SelectedAcademicYear = selectedAcademicYear,
             };
 
             return View(model);

@@ -1,0 +1,216 @@
+﻿$font-size-mobile: 16px;
+
+#map {
+    position: relative;
+    height: 60vh;
+    min-height: 360px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.map-loading {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: .95rem;
+    color: #374151;
+    background: #f9fafb;
+}
+
+.legend {
+    margin-top: .75rem;
+    display: grid;
+    gap: .5rem;
+    margin-bottom: 5rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.legend-item img {
+    width: 22px;
+    height: auto;
+}
+
+.marker-focus:focus {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
+
+.govuk-clear {
+    clear: both;
+    display: block;
+}
+
+.select-filter {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
+
+    > * {
+        margin: 0;
+    }
+
+    button {
+        width: max-content;
+    }
+}
+
+.select-filter > * {
+    margin: 0;
+}
+
+.custom-card {
+    box-sizing: border-box;
+    background-color: #f4f8fb;
+    width: 100%;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 20px;
+    padding-right: 20px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.custom-card__icon {
+    content: url(/assets/images/custom-info-icon.svg);    
+}
+
+.custom-card__content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+
+    p {
+        margin: 0;
+    }
+}
+
+/*.custom-card__content p,
+.custom-card__content table {
+    margin: 0;
+}*/
+
+
+
+/* Vertical navigation */
+.moj-side-navigation {
+    padding: 0;
+}
+
+.moj-side-navigation__item {
+    margin-bottom: 10px;
+}
+
+/* charts */
+.chart-container {
+    --gds-font-family: "GDS Transport", Arial, sans-serif;
+    --gds-font-size: 19px;
+    --gds-text: govuk-colour("black");
+    --gds-grey: govuk-colour("mid-grey");
+    --gds-label-bg: govuk-colour("light-grey");
+    --gds-label-border: govuk-colour("mid-grey");
+    --gds-label-padding: 6;
+    min-height: 250px;
+    margin-bottom: 20px;
+    font-family: "GDS Transport", Arial, sans-serif;
+}
+
+.data-container {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border: 1px solid govuk-colour("mid-grey");
+}
+
+/* Chart legend styles */
+.chart-legend ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.chart-legend li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.legend-box {
+    width: 14px;
+    height: 14px;
+    margin-right: 8px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.shaded-box {
+    background-color: rgb(244, 248, 251);
+}
+
+@media(max-width: 40.0525em) {
+    .moj-side-navigation {
+        padding-bottom: 20px;
+        font-size: $font-size-mobile;
+    }
+
+    .moj-side-navigation__list {
+        flex-direction: column;
+    }
+
+    .moj-side-navigation__item {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+
+    .moj-side-navigation__item > a {
+        border-bottom: none !important;
+        padding: 8px 15px 8px 15px !important;
+    }
+
+    .moj-side-navigation__item--active {
+        border-left: 0.25em solid govuk-colour("blue");
+        background-color: #f3f2f1;
+    }
+
+    .moj-side-navigation__link {
+        border-bottom: none;
+    }
+
+    .chart-container {
+        --gds-font-size: 16px;
+        min-height: 260px;
+    }
+
+    .chart-legend {
+        height: 80px;
+    }
+
+    .select-filter {
+        display: inherit;
+
+        button {
+            width: 100%;
+        }
+    }
+
+    .select-filter > * {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .custom-card__icon {
+        width: 48px;
+    }
+}

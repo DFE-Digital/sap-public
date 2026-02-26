@@ -338,25 +338,31 @@ public class SecondarySchoolControllerTests
         Assert.Equal(_fakeEstablishment.URN, model.URN);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
         Assert.Equal(2, model.RouteAttributes.Count);
-        Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
+        Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);        
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
-    [Fact]
-    public void Get_AcademicPerformancePupilProgress_Info_ReturnsOk()
+    [Theory]
+    [InlineData(AcademicYearSelection.AY_2024_2025, true)]
+    [InlineData(AcademicYearSelection.AY_2023_2024, false)]
+    [InlineData(AcademicYearSelection.AY_2022_2023, false)]
+    public void Get_AcademicPerformanceAttainmentAndProgress_Info_ReturnsOk(AcademicYearSelection academicYearSelection, bool expectedShowProgress8NotAvailableInfo)
     {
-        var result = _controller.AcademicPerformancePupilProgress(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName) as ViewResult;
+        var result = _controller.AcademicPerformanceAttainmentAndProgress(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, (int)academicYearSelection) as ViewResult;
 
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
 
-        var model = result.Model as AcademicPerformancePupilProgressViewModel;
+        var model = result.Model as AcademicPerformanceAttainmentAndProgressViewModel;
         Assert.NotNull(model);
         Assert.Equal(_fakeEstablishment.URN, model.URN);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
+        Assert.Equal(3, model.AcademicYearsSelectList.Count);
+        Assert.Equal((int)academicYearSelection, model.SelectedAcademicYear);
+        Assert.Equal(expectedShowProgress8NotAvailableInfo, model.ShowProgress8NotAvailableInfo);
     }
 
     [Theory]
