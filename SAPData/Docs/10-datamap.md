@@ -380,8 +380,6 @@ When IgnoreMapping = Y:
 
 - A mirrored SQL view is produced that matches the source CSV schema
 
-This is used for datasets that will be used by the application to build .
-
 ---
 
 # How a View Is Built

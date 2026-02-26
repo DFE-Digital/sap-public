@@ -52,7 +52,7 @@ namespace SAPPub.Web.Models.SecondarySchool
 
         public static AboutSchoolViewModel Map(Establishment establishment)
         {
-            var longLat = Helpers.MappingHelper.ConvertToLongLat(establishment.Easting, establishment.Northing);
+            var latLong = Helpers.MappingHelper.ConvertToLatLong(establishment.Easting, establishment.Northing);
 
             return new AboutSchoolViewModel
             {
@@ -65,8 +65,8 @@ namespace SAPPub.Web.Models.SecondarySchool
                 LocalAuthority = establishment.LAName,
                 LocalAuthorityWebsite = "https://www.gov.uk", // ToDo - Lookup from list
                 YourDistanceFromThisSchool = "500m", // ToDo - calculate from input location,
-                Latitude = longLat?.Latitude.ToString() ?? string.Empty,
-                Longitude = longLat?.Longitude.ToString() ?? string.Empty,
+                Latitude = latLong?.Latitude.ToString() ?? string.Empty,
+                Longitude = latLong?.Longitude.ToString() ?? string.Empty,
                 TypeOfSchool = establishment.TypeOfEstablishmentName,
                 HeadTeacher = establishment.Headteacher,
                 AgeRange = establishment.AgeRange,
