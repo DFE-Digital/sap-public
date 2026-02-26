@@ -36,7 +36,7 @@ namespace SAPPub.Web.Controllers
                 return Json(null);
             }
 
-            var longLat = MappingHelper.ConvertToLongLat(data.Easting, data.Northing);
+            var longLat = MappingHelper.ConvertToLatLong(data.Easting, data.Northing);
 
             return Json(new { name = data.EstablishmentName, lat = longLat?.Latitude, lon = longLat?.Longitude });
         }

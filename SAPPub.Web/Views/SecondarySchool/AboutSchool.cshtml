@@ -69,12 +69,6 @@
                     </span>
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
-            <govuk-summary-list-row>
-                <govuk-summary-list-row-key>Your distance from this school</govuk-summary-list-row-key>
-                <govuk-summary-list-row-value>
-                    @Model.YourDistanceFromThisSchool
-                </govuk-summary-list-row-value>
-            </govuk-summary-list-row>
         </govuk-summary-list>
 
         <govuk-details id="details-map">
@@ -84,27 +78,19 @@
             <govuk-details-text>
                 <div id="map"
                      data-radius-miles="3"
-                     data-data-url="/map/schools/@Model.URN"
                      data-fixed-zoom="14"
-                     data-fallback-lat="@Model.Latitude"
-                     data-fallback-lon="@Model.Longitude"
+                     data-lat="@Model.Latitude"
+                     data-lon="@Model.Longitude"
+                     data-name="@Model.SchoolName"
                      role="region"
                      aria-label="Map of primary schools near you">
                     <div class="map-loading">Finding your location…</div>
                 </div>
                 <div class="legend">
                     <div class="legend-item">
-                        <img src="~/assets/images/marker-user.svg" alt="" />
-                        <span>Your location</span>
-                    </div>
-                    <div class="legend-item">
                         <img src="~/assets/images/marker-school-target.svg" alt="" />
-                        <span>Greystones Primary School</span>
+                        <span>@Model.SchoolName</span>
                     </div>
-                    @* <div class="legend-item">
-                        <img src="~/assets/images/marker-school-nearby.svg" alt="" />
-                        <span>Other primary schools within 3 miles</span>
-                    </div> *@
                 </div>
             </govuk-details-text>
         </govuk-details>
