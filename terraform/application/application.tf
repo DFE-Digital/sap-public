@@ -8,6 +8,11 @@ data "azurerm_key_vault_secret" "googletagmanager" {
   key_vault_id = data.azurerm_key_vault.app_key_vault.id
 }
 
+data "azurerm_key_vault_secret" "googletagmanageradditional" {
+  name         = "GoogleTagManagerAdditional" //Name in KeyVault
+  key_vault_id = data.azurerm_key_vault.app_key_vault.id
+}
+
 data "azurerm_key_vault_secret" "microsoftclarity" {
   name         = "AnalyticsMicrosoftClarity" //Name in KeyVault
   key_vault_id = data.azurerm_key_vault.app_key_vault.id
@@ -33,6 +38,7 @@ module "application_configuration" {
     StorageConnectionString = "DefaultEndpointsProtocol=https;AccountName=${module.storage.name};AccountKey=${module.storage.primary_access_key}"
 	  ConnectionStrings__PostgresConnectionString = module.postgres.dotnet_connection_string
     Analytics__GoogleTagManagerId = data.azurerm_key_vault_secret.googletagmanager.value
+	Analytics__GoogleTagManagerAdditional = data.azurerm_key_vault_secret.googletagmanageradditional.value
     Analytics__ClarityId = data.azurerm_key_vault_secret.microsoftclarity.value
   }
 
