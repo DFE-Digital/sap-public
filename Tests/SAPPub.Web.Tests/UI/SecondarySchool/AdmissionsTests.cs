@@ -122,6 +122,20 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
     }
 
     [Fact]
+    public async Task AdmissionsPage_DisplaysMoreInfoOnSecondarySchoolAdmissionsAccordion()
+    {
+        // Arrange
+        await Page.GotoAsync(_pageUrl);
+
+        // Act
+        var admissionsAccordion = Page.Locator("#more-info-on-secondary-school-admissions-accordion");
+        await admissionsAccordion.WaitForAsync();
+
+        // Assert
+        Assert.True(await admissionsAccordion.IsVisibleAsync());
+    }
+
+    [Fact]
     public async Task AdmissionsPage_DisplaysPagination()
     {
         // Arrange
