@@ -40,7 +40,10 @@
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Website</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                    <a class="govuk-link govuk-link--no-visited-state" href="@Model.Website" target="_blank">@Model.Website</a>
+                    <a class="govuk-link govuk-link--no-visited-state" href="@Model.Website" target="_blank">
+                        @Model.Website
+                        <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                    </a>
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
@@ -65,7 +68,10 @@
                 <govuk-summary-list-row-value>
                     @Model.LocalAuthority
                     <span class="govuk-clear">
-                        <a class="govuk-link govuk-link--no-visited-state" href="@Model.LocalAuthorityWebsite" target="_blank">View @Model.LocalAuthority City Council's website</a>
+                        <a class="govuk-link govuk-link--no-visited-state" href="@Model.LocalAuthorityWebsite" target="_blank">
+                            View @Model.LocalAuthority City Council's website
+                            <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                        </a>
                     </span>
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
@@ -101,13 +107,21 @@
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Value and ethos</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                    <a class="govuk-link govuk-link--no-visited-state" href="@Model.Website" target="_blank">View the value and ethos policy on the school website</a>
+                    <a class="govuk-link govuk-link--no-visited-state" href="@Model.Website" target="_blank">
+                        View the value and ethos policy on the school website
+                        <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                    </a>
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Ofsted report</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                    <a class="govuk-link govuk-link--no-visited-state" href="http://reports.ofsted.gov.uk/inspection-reports/find-inspection-report/provider/ELS/@Model.URN" target="_blank">View the latest Ofsted report</a>
+                    <a class="govuk-link govuk-link--no-visited-state"
+                       href="http://reports.ofsted.gov.uk/inspection-reports/find-inspection-report/provider/ELS/@Model.URN" 
+                       target="_blank">
+                       View the latest Ofsted report
+                       <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                    </a>
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
@@ -198,7 +212,10 @@
                         All schools in England must publish statutory policies and documents that explain how the school is run and how staff and pupils should behave.
                         Statutory policies and documents must be published on the school’s website. Schools can also create their own guidelines.
                     </p>
-                    <a class="govuk-link govuk-link--no-visited-state" href="@Model.Website" target="_blank">View these policies on the school website</a>
+                    <a class="govuk-link govuk-link--no-visited-state" href="@Model.Website" target="_blank">
+                        View these policies on the school website
+                        <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                    </a>
                 </div>
                 
                 <table class="govuk-table govuk-!-margin-top-5">

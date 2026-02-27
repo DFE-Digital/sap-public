@@ -139,6 +139,58 @@
             </div>
         </div>
 
+        <h2 class="govuk-heading-l">More information on secondary school admissions</h2>
+        <govuk-accordion id="more-info-on-secondary-school-admissions-accordion" hide-all-sections-text="Hide all sections" show-all-sections-text="Show all sections" hide-section-text="Hide" show-section-text="Show more">
+            <govuk-accordion-item>
+                <govuk-accordion-item-heading>Find out more about school admissions policies</govuk-accordion-item-heading>
+                <govuk-accordion-item-summary></govuk-accordion-item-summary>
+                <govuk-accordion-item-content>
+                    <p class="govuk-body">
+                        All schools have admissions policies that explain how school places are allocated.
+                        These policies are either set by the local council or the school.  
+                    </p>
+                    <p class="govuk-body">
+                        Admissions policies are different for every school. As part of their admissions policies,
+                        some schools may give priority to children who live in a designated catchment area, but they do not have to.
+                    </p>
+                    <p class="govuk-body">
+                        Schools do not have to have catchment areas. Some schools may use distance from the school instead.
+                    </p>
+                    <p class="govuk-body">
+                        <a href="https://www.gov.uk/schools-admissions"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="govuk-link">
+                            Find out more about school admission criteria.
+                            <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                        </a>
+                    </p>
+                    <p class="govuk-body">
+                        Further details about school’s admissions policies
+                        can be found on the school’s website or on the council’s website.
+                    </p>
+                </govuk-accordion-item-content>
+            </govuk-accordion-item>
+
+            <govuk-accordion-item>
+                <govuk-accordion-item-heading>Further information schools may ask for</govuk-accordion-item-heading>
+                <govuk-accordion-item-summary></govuk-accordion-item-summary>
+                <govuk-accordion-item-content>
+                    <p class="govuk-body">
+                        Some schools, for example faith schools, may require a Supplementary Information Form (SIF)
+                        to be submitted as part of the school application process. SIFs request additional information
+                        and are used to determine whether a child meets the school’s admission criteria.
+                    </p>
+                    <p class="govuk-body">
+                        Some types of schools, for example grammar schools or partially selective schools,
+                        require children to take a test after making an application to help decide which children get places.
+                        For example, this could be a music aptitude test. Grammar schools may require children to take a selection test.
+                        The school’s admission arrangements should explain what is required.  
+                    </p>
+                </govuk-accordion-item-content>
+            </govuk-accordion-item>
+        </govuk-accordion>
+
         <govuk-pagination id="admissions-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAboutSchool" asp-all-route-data="@Model.RouteAttributes">About the school</govuk-pagination-previous>
             <govuk-pagination-next asp-route="@RouteConstants.SecondaryCurriculumAndExtraCurricularActivities" asp-all-route-data="@Model.RouteAttributes">Curriculum and extra-curricular activities</govuk-pagination-next>
