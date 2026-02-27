@@ -1,7 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using MappingHelper = SAPPub.Web.Helpers.MappingHelper;
+﻿using SAPPub.Core.Helpers;
+using System.Diagnostics.CodeAnalysis;
 
-namespace SAPPub.Web.Tests.Helpers
+namespace SAPPub.Core.Tests.Helpers
 {
     [ExcludeFromCodeCoverage]
     public class MappingHelperTests
@@ -17,7 +17,7 @@ namespace SAPPub.Web.Tests.Helpers
             var longitudeExpected = -0.12769745130735563;
             var latitudeExpected = 51.503485756703007;
             // Act
-            var result = MappingHelper.ConvertToLongLat(easting, northing);
+            var result = MappingHelper.ConvertToLatLon(easting, northing);
 
             // Assert
             Assert.NotNull(result);
