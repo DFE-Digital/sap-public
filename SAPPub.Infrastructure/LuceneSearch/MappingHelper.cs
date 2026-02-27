@@ -1,0 +1,46 @@
+﻿using GeoUK;
+using GeoUK.Coordinates;
+using GeoUK.Ellipsoids;
+using GeoUK.Projections;
+
+namespace SAPPub.Infrastructure.LuceneSearch;
+
+public class MappingHelper // CML TODO refactor to remove the code copy
+{
+    /// <summary>
+    /// Converts British National Grid Easting/Northing to WGS84 Latitude/Longitude
+    /// </summary>
+    /// <param name="value">Tuple of Easting, and Northing</param>
+    /// <returns>Tuple of Latitude, and Longitude</returns>
+    public static LatitudeLongitude? ConvertToLatLon(string easting, string northing)
+    {
+        if (string.IsNullOrWhiteSpace(easting) || string.IsNullOrWhiteSpace(northing))
+        {
+            return null;
+        }
+
+        bool canParseEasting = double.TryParse(easting, out double Easting);
+        bool canParseNorthing = double.TryParse(northing, out double Northing);
+
+        if (!canParseEasting || !canParseNorthing)
+        {
+            return null;
+        }
+
+        Cartesian cartesian = GeoUK.Convert.ToCartesian(new Airy1830(),
+            new BritishNationalGrid(),
+            new EastingNorthing(Easting, Northing));
+
+        Cartesian wgsCartesian = Transform.Osgb36ToEtrs89(cartesian);
+
+        return GeoUK.Convert.ToLatitudeLongitude(new Wgs84(), wgsCartesian);
+    }
+
+    public static double MilesToDegrees(double miles)
+    {
+        const double metersPerMile = 1609.344;
+        const double metersPerDegree = 111_320.0;   // 1 degree latitude in meters
+        return (miles * metersPerMile) / metersPerDegree;
+    }
+
+}

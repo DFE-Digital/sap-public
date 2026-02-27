@@ -5,13 +5,13 @@ namespace SAPPub.Infrastructure.LuceneSearch;
 
 public class LuceneTokeniser(LuceneIndexContext context)
 {
-    public IEnumerable<string> Tokenise(string finalText)
+    public IEnumerable<string> Tokenise(string searchTerm)
     {
-        if (string.IsNullOrWhiteSpace(finalText)) return [];
+        if (string.IsNullOrWhiteSpace(searchTerm)) return [];
 
         var tokens = new List<string>();
 
-        using var tokenStream = context.Analyzer.GetTokenStream(nameof(Establishment.EstablishmentName), finalText);
+        using var tokenStream = context.Analyzer.GetTokenStream(nameof(Establishment.EstablishmentName), searchTerm);
         var termAttr = tokenStream.AddAttribute<ICharTermAttribute>();
         tokenStream.Reset();
 

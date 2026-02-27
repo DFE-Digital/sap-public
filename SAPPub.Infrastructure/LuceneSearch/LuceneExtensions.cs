@@ -9,7 +9,7 @@ public static class LuceneExtensions
     public static void AddLuceneDependencies(this IServiceCollection services)
     {
         services.AddSingleton<LuceneIndexContext>();
-        services.AddSingleton<LuceneIndexWriter>();
+        services.AddSingleton<LuceneSchoolSearchIndexWriter>();
         services.AddSingleton<LuceneSchoolSearchIndexReader>();
         services.AddSingleton<LuceneHighlighter>();
         services.AddSingleton<LuceneSynonymMapBuilder>();

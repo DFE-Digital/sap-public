@@ -1,11 +1,12 @@
 ﻿using SAPPub.Core.Entities;
+using SAPPub.Core.ServiceModels.PostcodeLookup;
 using SAPPub.Infrastructure.LuceneSearch;
 
 namespace SAPPub.Infrastructure.Tests.LuceneSearch;
 
 public class LuceneIndexReaderTests
 {
-    private readonly LuceneIndexWriter _writer;
+    private readonly LuceneSchoolSearchIndexWriter _writer;
     private readonly LuceneSchoolSearchIndexReader _sut;
 
     private Establishment FakeEstablishmentOne = new()
@@ -33,14 +34,51 @@ public class LuceneIndexReaderTests
         EstablishmentName = "Saint Fake School Three"
     };
 
+    private const string SearchPostcode = "NE1 8QH";
+    private const float SearchLat = 54.979671f;
+    private const float SearchLon = -1.611639f;
+    private List<Establishment> Within1MileOfPostcode => new()
+    {
+        new Establishment
+        {
+            URN = "108493",
+            EstablishmentName = "Christ Church CofE Primary School",
+            Easting = "425532",
+            Northing = "564589",
+        },
+        new Establishment
+        {
+            URN = "148271",
+            EstablishmentName = "St Catherine's Catholic Primary School",
+            Easting = "426042",
+            Northing = "565547"
+        }
+    };
+
+    private List<Establishment> Between1And3MilesOfPostcode => new()
+    {
+        new Establishment
+        {
+            URN = "146752",
+            EstablishmentName = "Jesmond Park Academy",
+            Easting = "426403",
+            Northing = "566700"
+        },
+        new Establishment
+        {
+            URN = "144271",
+            EstablishmentName = "Benfield School",
+            Easting = "428294",
+            Northing = "566235"
+        }
+    };
 
     public LuceneIndexReaderTests()
     {
         var ctx = new LuceneIndexContext();
-        _writer = new LuceneIndexWriter(ctx);
+        _writer = new LuceneSchoolSearchIndexWriter(ctx);
         var tokeniser = new LuceneTokeniser(ctx);
-        var hlt = new LuceneHighlighter();
-        _sut = new LuceneSchoolSearchIndexReader(ctx, tokeniser, hlt);
+        _sut = new LuceneSchoolSearchIndexReader(ctx, tokeniser);
     }
 
     [Fact]
@@ -54,7 +92,7 @@ public class LuceneIndexReaderTests
         ]);
 
         // Act: search using the abbreviation 'St' that should expand to 'saint'
-        var results = await _sut.SearchAsync("St Fake Three");
+        var results = await _sut.SearchAsync(new SearchQuery() { Name = "St Fake Three" });
 
         // Assert
         Assert.NotNull(results);
@@ -74,7 +112,7 @@ public class LuceneIndexReaderTests
             FakeEstablishmentTwo
         ]);
 
-        var results = await _sut.SearchAsync(input!);
+        var results = await _sut.SearchAsync(new SearchQuery() { Name = input! });
 
         Assert.Empty(results.Results);
     }
@@ -89,23 +127,37 @@ public class LuceneIndexReaderTests
             FakeEstablishmentTwo,
         ]);
 
-        var result = await _sut.SearchAsync(Input);
+        var result = await _sut.SearchAsync(new SearchQuery() { Name = Input });
 
         Assert.Equal(2, result.Count);
     }
 
-    [Fact]
-    public async Task SearchAsync_Returns_Empty_Results_For_Out_Of_Order_SearchTerms()
+    [Theory]
+    [InlineData(1, 2)]
+    [InlineData(3, 4)]
+    public async Task SearchAsync_LocationAndDistance_ReturnsResults(int distance, int expectedCount)
     {
-        const string Input = "School Fake";
+        var establishmentsInIndex = Between1And3MilesOfPostcode.Concat(this.Within1MileOfPostcode).ToList();
+        _writer.AddToIndex(establishmentsInIndex);
 
-        _writer.AddToIndex([
-            FakeEstablishmentOne,
-            FakeEstablishmentTwo,
-        ]);
+        var result = await _sut.SearchAsync(new SearchQuery() { Distance = distance, Latitude = SearchLat, Longitude = SearchLon });
 
-        var result = await _sut.SearchAsync(Input);
+        Assert.Equal(expectedCount, result.Count);
+    }
 
-        Assert.Equal(2, result.Count);
+    [Theory]
+    [InlineData("School", 1, 2)]
+    [InlineData("School", 3, 3)]
+    [InlineData("Academy", 3, 1)]
+    [InlineData("Academy", 1, 0)]
+    [InlineData("non-present name", 1, 0)]
+    public async Task SearchAsync_NameAndLocation_ReturnsResults(string searchName, int distance, int expectedCount)
+    {
+        var establishmentsInIndex = Between1And3MilesOfPostcode.Concat(this.Within1MileOfPostcode).ToList();
+        _writer.AddToIndex(establishmentsInIndex);
+
+        var result = await _sut.SearchAsync(new SearchQuery() { Distance = distance, Latitude = SearchLat, Longitude = SearchLon, Name = searchName });
+
+        Assert.Equal(expectedCount, result.Count);
     }
 }

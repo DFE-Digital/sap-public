@@ -4,13 +4,17 @@
     ViewData["Title"] = "Search results";
 }
 
-<h1>@Model.SearchResultsCount results for '@Model.NameSearchTerm'</h1>
+<h1>@Model.Heading</h1>
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <div class="shaded-box">
             <form method="get" asp-controller="Search" asp-action="SearchResults">
-                @await Html.PartialAsync("_SearchPartial")
+                <govuk-fieldset>
+                    <govuk-fieldset-legend is-page-heading="false" class="govuk-fieldset__legend--l">
+                    </govuk-fieldset-legend>
+                    @await Html.PartialAsync("_SearchPartial")
+                </govuk-fieldset>
             </form>
         </div>
 
@@ -38,7 +42,13 @@
         @if (Model.SearchResults.Count == 0)
         {
             <h2 class="govuk-heading-s govuk-!-font-weight-bold" data-testid="no-results-heading">Try another search</h2>
-            <p class="govuk-body">You may need to search by a local council or postcode instead of school name.</p>
+            <p class="govuk-body">
+                @(!String.IsNullOrEmpty(Model.NameSearchTerm)
+                ? "You may need to search by a postcode instead of school name."
+                : !String.IsNullOrEmpty(Model.LocationSearchTerm)
+                ? "You may need to search by a school name instead of postcode."
+                : String.Empty)
+            </p>
         }
     </div>
 </div>
