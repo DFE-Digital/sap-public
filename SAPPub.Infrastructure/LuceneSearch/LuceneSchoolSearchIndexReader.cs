@@ -3,7 +3,7 @@ using Lucene.Net.Search;
 using Lucene.Net.Spatial.Queries;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Services.Search;
-using SAPPub.Core.ServiceModels.PostcodeLookup;
+using SAPPub.Core.ServiceModels.PostcodeSearch;
 
 namespace SAPPub.Infrastructure.LuceneSearch;
 
@@ -106,7 +106,14 @@ public class LuceneSchoolSearchIndexReader(LuceneIndexContext context, LuceneTok
                 var genderName = doc.Get(nameof(Establishment.GenderName));
                 var address = doc.Get(nameof(Establishment.Address));
 
-                results.Results.Add(new SchoolSearchDocument(urn, establishmentName, address, genderName, religiousCharacterName));
+                results.Results.Add(new SchoolSearchDocument()
+                {
+                    URN = urn,
+                    EstablishmentName = establishmentName,
+                    Address = address,
+                    GenderName = genderName,
+                    ReligiousCharacterName = religiousCharacterName
+                });
             }
 
             return results;

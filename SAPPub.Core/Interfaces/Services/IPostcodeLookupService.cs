@@ -1,4 +1,4 @@
-﻿using SAPPub.Core.ServiceModels.PostcodeLookup;
+﻿using SAPPub.Core.ServiceModels.PostcodeSearch;
 
 namespace SAPPub.Core.Interfaces.Services;
 

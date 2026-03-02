@@ -3,8 +3,10 @@
 public enum SchoolSearchStatus
 {
     Success = 0,
-    InvalidPostcode = 1,
-    UnknownError = 2
+    InvalidPostcode,
+    PostcodeNotFound,
+    PostcodeServiceError,
+    UnknownError
 }
 
 public record SchoolSearchResultsServiceModel
@@ -21,4 +23,5 @@ public record SchoolSearchResultServiceModel
     public string? Address { get; init; }
     public string? GenderName { get; init; }
     public string? ReligiousCharacterName { get; init; }
+    public double? Distance { get; init; }
 }

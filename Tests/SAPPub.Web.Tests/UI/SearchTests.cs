@@ -74,4 +74,60 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
         var noResultsMessage = await Page.Locator("[data-testid='no-results-heading']").InnerTextAsync();
         Assert.Contains("Try another search", noResultsMessage);
     }
+
+    [Fact]
+    public async Task SearchPage_EnterValidPostcode_ShowsViewWithResults()
+    {
+        // Arrange
+        var searchTerm = "NE1 8QH";
+        var response = await Page.GotoAsync(_pageUrl);
+
+        // Act
+        await Page.FillAsync("#searchLocation", searchTerm);
+        await Page.ClickAsync("#search");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        // Assert
+        Assert.NotNull(response);
+        Assert.Equal(200, response.Status);
+        // assert text box contains search term
+        var searchBoxValue = await Page.InputValueAsync("#searchLocation");
+        Assert.Equal(searchTerm, searchBoxValue);
+
+        // assert that at least one search result is displayed
+        var rows = Page.Locator(".govuk-summary-list .govuk-summary-list__row");
+        var rowHandles = await rows.ElementHandlesAsync();
+        int count = await rows.CountAsync();
+        Assert.True(count > 0, "Expected at least one search result, but found none.");
+    }
+
+    [Fact]
+    public async Task SearchPage_EnterInvalidPostcode_ShowsViewWithErrorMessge()
+    {
+        // Arrange
+        var searchTerm = "NE1";
+        var response = await Page.GotoAsync(_pageUrl);
+
+        // Act
+        await Page.FillAsync("#searchLocation", searchTerm);
+        await Page.ClickAsync("#search");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        // Assert
+        Assert.NotNull(response);
+        Assert.Equal(200, response.Status);
+        // assert text box contains search term
+        var searchBoxValue = await Page.InputValueAsync("#searchLocation");
+        Assert.Equal(searchTerm, searchBoxValue);
+
+        // error box is displayed with correct message
+        var errorLink = Page.Locator(".govuk-error-summary__list a[href='#searchLocation']");
+        Assert.Equal("Enter a full postcode", await errorLink.InnerTextAsync());
+
+        // assert no list items are displayed
+        var rows = Page.Locator(".govuk-summary-list .govuk-summary-list__row");
+        var rowHandles = await rows.ElementHandlesAsync();
+        int count = await rows.CountAsync();
+        Assert.True(count == 0, "Expected no search results, but found some.");
+    }
 }

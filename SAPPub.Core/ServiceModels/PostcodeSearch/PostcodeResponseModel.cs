@@ -1,4 +1,4 @@
-﻿namespace SAPPub.Core.ServiceModels.PostcodeLookup;
+﻿namespace SAPPub.Core.ServiceModels.PostcodeSearch;
 
 public record PostcodeResponseModel
 {

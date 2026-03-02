@@ -1,5 +1,5 @@
 ﻿using SAPPub.Core.Interfaces.Services;
-using SAPPub.Core.ServiceModels.PostcodeLookup;
+using SAPPub.Core.ServiceModels.PostcodeSearch;
 
 namespace SAPPub.Infrastructure.PostcodeLookup;
 

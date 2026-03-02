@@ -18,7 +18,8 @@ public class SearchControllerTests
         EstablishmentName = "Test School",
         Address = "123 Test Street",
         GenderName = "Mixed",
-        ReligiousCharacterName = "None"
+        ReligiousCharacterName = "None",
+        Distance = 0.1
     };
     private readonly SchoolSearchResultServiceModel _schoolSearchResult2 = new SchoolSearchResultServiceModel
     {
@@ -26,7 +27,8 @@ public class SearchControllerTests
         EstablishmentName = "A Test School 2",
         Address = "123 Test Street 2",
         GenderName = "Female",
-        ReligiousCharacterName = "Muslim"
+        ReligiousCharacterName = "Muslim",
+        Distance = 0.4
     };
 
     public SearchControllerTests()
@@ -53,7 +55,7 @@ public class SearchControllerTests
         });
 
         // act
-        var result = await _controller.SearchResults(searchQuery.Name, searchQuery.Location);
+        var result = await _controller.SearchResults(new SearchResultsViewModel() { NameSearchTerm = searchQuery.Name, LocationSearchTerm = searchQuery.Location });
         var viewModel = ((ViewResult)result).Model as SearchResultsViewModel;
 
         // assert
@@ -80,7 +82,7 @@ public class SearchControllerTests
     }
 
     [Fact]
-    public async Task Get_SearchResults_SearchByLocation_ReturnsSchoolResultsViewModel()
+    public async Task Get_SearchResults_SearchByValidLocation_ReturnsSchoolResultsViewModel()
     {
         // arrange
         var searchQuery = new SearchQuery() { Location = "NE2 1VF" };
@@ -93,7 +95,7 @@ public class SearchControllerTests
         });
 
         // act
-        var result = await _controller.SearchResults(searchQuery.Name, searchQuery.Location);
+        var result = await _controller.SearchResults(new SearchResultsViewModel() { NameSearchTerm = searchQuery.Name, LocationSearchTerm = searchQuery.Location });
         var viewModel = ((ViewResult)result).Model as SearchResultsViewModel;
 
         // assert
@@ -117,6 +119,53 @@ public class SearchControllerTests
                 Assert.Equal(_schoolSearchResult2.GenderName, item.GenderName);
                 Assert.Equal(_schoolSearchResult2.ReligiousCharacterName, item.ReligiousCharacter);
             });
+    }
+
+    [Fact]
+    public async Task Get_SearchResults_SearchByValidLocation_ReturnsSchoolResultsOrderedDistanceAscending()
+    {
+        // arrange
+        var searchQuery = new SearchQuery() { Location = "NE2 1VF" };
+        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
+        {
+            Count = 2,
+            SchoolSearchResults = new List<SchoolSearchResultServiceModel> {
+                _schoolSearchResult2, _schoolSearchResult1
+            }
+        });
+
+        // act
+        var result = await _controller.SearchResults(new SearchResultsViewModel() { NameSearchTerm = searchQuery.Name, LocationSearchTerm = searchQuery.Location });
+        var viewModel = ((ViewResult)result).Model as SearchResultsViewModel;
+
+        // assert
+        Assert.NotNull(viewModel);
+        Assert.Equal(searchQuery.Name, viewModel.NameSearchTerm);
+        Assert.Equal(2, viewModel.SearchResultsCount);
+        Assert.Equal(_schoolSearchResult1.URN, viewModel.SearchResults[0].URN);
+        Assert.Equal(_schoolSearchResult2.URN, viewModel.SearchResults[1].URN);
+    }
+
+    [Fact]
+    public async Task Get_SearchResults_SearchByInvalidPostcode_ReturnsSchoolResultsViewModel()
+    {
+        // arrange
+        var location = "invalid";
+        var searchQuery = new SearchQuery() { Location = location };
+        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
+        {
+            Count = 1,
+            SchoolSearchResults = new List<SchoolSearchResultServiceModel>(),
+            Status = SchoolSearchStatus.InvalidPostcode
+        });
+
+
+        // act
+        var viewResult = await _controller.SearchResults(new SearchResultsViewModel() { NameSearchTerm = searchQuery.Name, LocationSearchTerm = searchQuery.Location }) as ViewResult;
+
+        // assert
+        Assert.NotNull(viewResult);
+        Assert.False(viewResult.ViewData.ModelState.IsValid);
     }
 
     [Fact]
@@ -140,7 +189,7 @@ public class SearchControllerTests
         });
 
         // act
-        var result = await _controller.SearchResults(searchQuery.Name, searchQuery.Location);
+        var result = await _controller.SearchResults(new SearchResultsViewModel() { NameSearchTerm = searchQuery.Name, LocationSearchTerm = searchQuery.Location });
         var viewModel = ((ViewResult)result).Model as SearchResultsViewModel;
 
         // assert
@@ -167,7 +216,7 @@ public class SearchControllerTests
         });
 
         // act
-        var result = await _controller.SearchResults(searchQuery.Name, searchQuery.Location);
+        var result = await _controller.SearchResults(new SearchResultsViewModel() { NameSearchTerm = searchQuery.Name, LocationSearchTerm = searchQuery.Location });
         var viewModel = ((ViewResult)result).Model as SearchResultsViewModel;
 
         // assert

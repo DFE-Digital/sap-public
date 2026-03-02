@@ -1,5 +1,5 @@
 ﻿using SAPPub.Core.Entities;
-using SAPPub.Core.ServiceModels.PostcodeLookup;
+using SAPPub.Core.ServiceModels.PostcodeSearch;
 using SAPPub.Infrastructure.LuceneSearch;
 
 namespace SAPPub.Infrastructure.Tests.LuceneSearch;

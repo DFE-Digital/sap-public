@@ -1,9 +1,11 @@
-﻿@{
+﻿@model SAPPub.Web.Models.Search.SearchResultsViewModel
+
+@{
     ViewData["Title"] = "Search";
 }
 
 <div class="shaded-box">
-    <form method="get" asp-controller="Search" asp-action="SearchResults">
+    <form method="post" asp-controller="Search" asp-action="Index">
         <govuk-fieldset>
             <govuk-fieldset-legend is-page-heading="true" class="govuk-fieldset__legend--l">
                 <h1 class="govuk-heading-l">Search for secondary schools</h1>
