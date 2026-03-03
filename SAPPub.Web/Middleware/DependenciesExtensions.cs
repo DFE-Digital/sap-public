@@ -90,7 +90,8 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<IEstablishmentSubjectEntriesRepository, EstablishmentSubjectEntriesRepository>();
             services.AddTransient<IEstablishmentSubjectEntriesService, EstablishmentSubjectEntriesService>();
 
-            services.AddTransient<IAcademicPerformanceEnglishAndMathsResultsService, Core.Services.KS4.Performance.EnglishAndMathsResultsService>();
+            services.AddTransient<IAcademicPerformanceEnglishAndMathsResultsService, EnglishAndMathsResultsService>();
+            services.AddTransient<IAttainmentAndProgressService, AttainmentAndProgressService>();
 
             services.AddTransient<IDestinationsService, DestinationsService>();
             services.AddTransient<IAdmissionsService, EstablishmentAdmissionsService>();

@@ -130,21 +130,29 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
         Assert.True(await progress8CustomCard.IsVisibleAsync());
     }
 
-    [Fact]
-    public async Task AcademicPerformanceEnglishAndMathsResultsPage_Change_AcademicYear_Selected()
+    [Theory]
+    [InlineData(AcademicYearSelection.Previous)]
+    [InlineData(AcademicYearSelection.Previous2)]
+    public async Task AcademicPerformanceAttainmentAndProgressPage_Change_AcademicYear_Selected(AcademicYearSelection academicYearSelection)
     {
         // Arrange
         await Page.GotoAsync(_pageUrl);
 
         // Act
         var academicyearSelector = Page.Locator("#academicyearSelector");
-        await academicyearSelector.SelectOptionAsync([((int)AcademicYearSelection.AY_2022_2023).ToString()]);
+        await academicyearSelector.SelectOptionAsync([academicYearSelection.ToString()]);
         var buttonSelector = Page.Locator("button:has-text(\"Show results\")");
         await buttonSelector.ClickAsync();
 
         // Assert
         var progress8CustomCard = Page.GetByTestId("progress8-custom-card");
         Assert.False(await progress8CustomCard.IsVisibleAsync());
+
+        var progress8EstablishmentCard = Page.GetByTestId("progress8-establishment-card");
+        Assert.True(await progress8EstablishmentCard.IsVisibleAsync());
+
+        var progress8LocalAuthorityCard = Page.GetByTestId("progress8-localauthority-card");
+        Assert.True(await progress8LocalAuthorityCard.IsVisibleAsync());
     }
 
     [Fact]

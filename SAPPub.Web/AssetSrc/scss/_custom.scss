@@ -81,8 +81,16 @@
     align-items: center;
 }
 
-.custom-card__icon {
+.info__icon {
     content: url(/assets/images/custom-info-icon.svg);    
+}
+
+.assignment__icon {
+    content: url(/assets/images/assignment-icon.svg);
+}
+
+.bar-chart__icon {
+    content: url(/assets/images/bar-chart-icon.svg);
 }
 
 .custom-card__content {
@@ -95,13 +103,6 @@
         margin: 0;
     }
 }
-
-/*.custom-card__content p,
-.custom-card__content table {
-    margin: 0;
-}*/
-
-
 
 /* Vertical navigation */
 .moj-side-navigation {
@@ -210,7 +211,9 @@
         margin-bottom: 15px;
     }
 
-    .custom-card__icon {
+    .info__icon,
+    .assignment__icon,
+    .bar-chart__icon {
         width: 48px;
     }
 }
