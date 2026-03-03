@@ -3,24 +3,28 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SAPPub.Web.Models.Search;
 
-public class SearchResultsViewModel
+public class SearchParamsModel
 {
     private const string PostcodeSearchValidationRegex = """^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})$""";
     public string? NameSearchTerm { get; set; }
 
     [RegularExpression(PostcodeSearchValidationRegex, ErrorMessage = "Enter a full postcode")]
     public string? LocationSearchTerm { get; set; }
-    public int Miles => 3;
+    public int Distance { get; set; } = 3;
+}
+
+public class SearchResultsViewModel
+{
+    public SearchParamsModel SearchParams { get; set; } = new SearchParamsModel();
     public int SearchResultsCount { get; set; }
     public string Heading => $"{SearchResultsCount} results {HeadingClause2}";
-
     public List<SearchResult> SearchResults { get; set; } = new List<SearchResult>();
 
     private string? HeadingClause2 =>
-        !String.IsNullOrEmpty(NameSearchTerm)
-            ? $"for '{NameSearchTerm}'" + (!String.IsNullOrEmpty(LocationSearchTerm) ? $" within {Miles} miles of {LocationSearchTerm}" : String.Empty)
-            : !String.IsNullOrEmpty(LocationSearchTerm)
-                ? $"within {Miles} miles of {LocationSearchTerm}"
+        !String.IsNullOrEmpty(SearchParams?.NameSearchTerm)
+            ? $"for '{SearchParams.NameSearchTerm}'" + (!String.IsNullOrEmpty(SearchParams.LocationSearchTerm) ? $" within {SearchParams.Distance} miles of {SearchParams.LocationSearchTerm}" : String.Empty)
+            : !String.IsNullOrEmpty(SearchParams?.LocationSearchTerm)
+                ? $"within {SearchParams.Distance}  miles of  {SearchParams.LocationSearchTerm}"
                 : String.Empty;
 
     public static List<SearchResult> FromServiceModel(IEnumerable<SchoolSearchResultServiceModel> serviceModel)

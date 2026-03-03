@@ -13,7 +13,7 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
     }
 
     [HttpPost]
-    public IActionResult Index(SearchResultsViewModel model)
+    public IActionResult Index(SearchParamsModel model)
     {
         var searchKeyWord = model.NameSearchTerm;
         var searchLocation = model.LocationSearchTerm;
@@ -23,27 +23,30 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
         }
         else
         {
-            return View(model);
+            return View(new SearchResultsViewModel()
+            {
+                SearchParams = model
+            });
         }
     }
 
-    public async Task<IActionResult> SearchResults(SearchResultsViewModel model)
+    [HttpGet]
+    public async Task<IActionResult> SearchResults(SearchParamsModel model)
     {
         var searchKeyWord = model.NameSearchTerm;
         var searchLocation = model.LocationSearchTerm;
-        var searchQuery = new SearchQuery() { Name = searchKeyWord, Location = searchLocation };
+        var searchQuery = new SearchQuery() { Name = searchKeyWord, Location = searchLocation, Distance = model.Distance };
         if (searchKeyWord != null || searchLocation != null)
         {
             var searchResults = await schoolSearchService.SearchAsync(searchQuery);
             if (searchResults.Status == SchoolSearchStatus.InvalidPostcode)
             {
-                // postcode may be a valid format but nor be found by the postcode API
-                ModelState.AddModelError(nameof(SearchResultsViewModel.LocationSearchTerm), "Enter a valid postcode");
+                // postcode may be a valid format but not be found by the postcode API
+                ModelState.AddModelError(nameof(SearchParamsModel.LocationSearchTerm), "Enter a valid postcode");
             }
             var viewResults = new SearchResultsViewModel()
             {
-                NameSearchTerm = searchKeyWord,
-                LocationSearchTerm = searchLocation,
+                SearchParams = model,
                 SearchResultsCount = searchResults.Count,
                 SearchResults = SearchResultsViewModel.FromServiceModel(searchResults.SchoolSearchResults.OrderBy(r => r.Distance))
             };
@@ -51,8 +54,7 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
         }
         else return View(new SearchResultsViewModel()
         {
-            NameSearchTerm = searchKeyWord,
-            LocationSearchTerm = searchLocation,
+            SearchParams = model,
             SearchResultsCount = 0,
             SearchResults = new List<SearchResult>()
         });

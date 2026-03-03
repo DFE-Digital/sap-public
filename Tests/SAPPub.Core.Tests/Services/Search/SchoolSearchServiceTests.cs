@@ -115,14 +115,18 @@ public class SchoolSearchServiceTests
             });
     }
 
-    [Fact]
-    public async Task SearchAsync_ByValidPostcodeAndDistance_ReturnsExpectedServiceModel()
+    [Theory]
+    [InlineData(1, new string[] { "123456" })]
+    [InlineData(3, new string[] { "123456", "223456" })]
+    public async Task SearchAsync_ByValidPostcodeAndDistance_ReturnsExpectedServiceModel(int distance, string[] expectedUrns)
     {
         // Arrange
         var searchPostcode = "NE1 8QH";
         var searchLatitude = 54.9783f;
         var searchLongitude = -1.6174f;
-        var searchQuery = new SearchQuery() { Location = searchPostcode, Distance = 5 };
+        var latLonWithin1mile = (54.97750081131553f, -1.6004802554195086f);
+        var latLonWithin3Miles = (54.993756258737676f, -1.5913472019452886f);
+        var searchQuery = new SearchQuery() { Location = searchPostcode, Distance = distance };
         _mockPostcodeLookupService.Setup(p => p.GetLatitudeAndLongitudeAsync(searchQuery.Location))
             .ReturnsAsync(new PostcodeResponseModel
             {
@@ -134,7 +138,9 @@ public class SchoolSearchServiceTests
             It.IsAny<int>()))
             .ReturnsAsync(new SchoolSearchResults(
                 Count: 2,
-                Results: new List<SchoolSearchDocument> { searchResult1, searchResult2 }));
+                Results: new List<SchoolSearchDocument> {
+                    searchResult1 with { Latitude = latLonWithin1mile.Item1, Longitude = latLonWithin1mile.Item2 },
+                    searchResult2 with { Latitude = latLonWithin3Miles.Item1, Longitude = latLonWithin3Miles.Item2 } }));
 
         // Act
         var service = new SchoolSearchService(_mockIndexReader.Object, _mockPostcodeLookupService.Object);
@@ -142,24 +148,9 @@ public class SchoolSearchServiceTests
 
         // Assert
         Assert.Equal(SchoolSearchStatus.Success, result.Status);
-        Assert.Equal(2, result.Count);
-        Assert.Collection(result.SchoolSearchResults,
-            item =>
-            {
-                Assert.Equal(searchResult1.URN, item.URN);
-                Assert.Equal(searchResult1.EstablishmentName, item.EstablishmentName);
-                Assert.Equal(searchResult1.Address, item.Address);
-                Assert.Equal(searchResult1.GenderName, item.GenderName);
-                Assert.Equal(searchResult1.ReligiousCharacterName, item.ReligiousCharacterName);
-            },
-            item =>
-            {
-                Assert.Equal(searchResult2.URN, item.URN);
-                Assert.Equal(searchResult2.EstablishmentName, item.EstablishmentName);
-                Assert.Equal(searchResult2.Address, item.Address);
-                Assert.Equal(searchResult2.GenderName, item.GenderName);
-                Assert.Equal(searchResult2.ReligiousCharacterName, item.ReligiousCharacterName);
-            });
+        Assert.Equal(expectedUrns.Length, result.SchoolSearchResults.Count);
+        var resultUrns = result.SchoolSearchResults.Select(r => r.URN).ToArray();
+        Assert.Equal(expectedUrns, resultUrns);
     }
 
     [Fact]

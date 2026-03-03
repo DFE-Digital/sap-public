@@ -105,6 +105,8 @@ public class LuceneSchoolSearchIndexReader(LuceneIndexContext context, LuceneTok
                 var religiousCharacterName = doc.Get(nameof(Establishment.ReligiousCharacterName));
                 var genderName = doc.Get(nameof(Establishment.GenderName));
                 var address = doc.Get(nameof(Establishment.Address));
+                var latitude = doc.Get(nameof(SchoolSearchDocument.Latitude));
+                var longitude = doc.Get(nameof(SchoolSearchDocument.Longitude));
 
                 results.Results.Add(new SchoolSearchDocument()
                 {
@@ -112,7 +114,9 @@ public class LuceneSchoolSearchIndexReader(LuceneIndexContext context, LuceneTok
                     EstablishmentName = establishmentName,
                     Address = address,
                     GenderName = genderName,
-                    ReligiousCharacterName = religiousCharacterName
+                    ReligiousCharacterName = religiousCharacterName,
+                    Latitude = latitude != null ? double.Parse(latitude) : null,
+                    Longitude = longitude != null ? double.Parse(longitude) : null
                 });
             }
 

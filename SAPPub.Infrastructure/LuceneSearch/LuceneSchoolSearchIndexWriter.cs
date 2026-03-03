@@ -1,6 +1,7 @@
 ﻿using Lucene.Net.Documents;
 using Lucene.Net.Util;
 using SAPPub.Core.Entities;
+using SAPPub.Core.ServiceModels.PostcodeSearch;
 using SAPPub.Infrastructure.LuceneSearch;
 
 public class LuceneSchoolSearchIndexWriter
@@ -44,8 +45,8 @@ public class LuceneSchoolSearchIndexWriter
                 foreach (var f in _context.GeoStrategy.CreateIndexableFields(point))
                     doc.Add(f);
 
-                doc.Add(new StoredField("lat", latlon!.Latitude));
-                doc.Add(new StoredField("lon", latlon.Longitude));
+                doc.Add(new StoredField(nameof(SchoolSearchDocument.Latitude), latlon!.Latitude));
+                doc.Add(new StoredField(nameof(SchoolSearchDocument.Longitude), latlon.Longitude));
             }
 
             _context.Writer.AddDocument(doc);
