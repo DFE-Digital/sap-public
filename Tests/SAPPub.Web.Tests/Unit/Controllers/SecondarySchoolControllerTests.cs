@@ -28,6 +28,7 @@ public class SecondarySchoolControllerTests
     private readonly Mock<IDestinationsService> _mockDestinationsService;
     private readonly Mock<IEstablishmentSubjectEntriesService> _mockEstablishmentSubjectEntriesService = new();
     private readonly Mock<IAcademicPerformanceEnglishAndMathsResultsService> _mockEnglishAndMathsResultsService = new();
+    private readonly Mock<IAttainmentAndProgressService> _mockAttainmentAndProgressService = new();
     private readonly Mock<IAdmissionsService> _mockAdmissionsService = new();
     private readonly SecondarySchoolController _controller;
     private Establishment _fakeEstablishment;
@@ -343,12 +344,29 @@ public class SecondarySchoolControllerTests
     }
 
     [Theory]
-    [InlineData(AcademicYearSelection.AY_2024_2025, true)]
-    [InlineData(AcademicYearSelection.AY_2023_2024, false)]
-    [InlineData(AcademicYearSelection.AY_2022_2023, false)]
-    public void Get_AcademicPerformanceAttainmentAndProgress_Info_ReturnsOk(AcademicYearSelection academicYearSelection, bool expectedShowProgress8NotAvailableInfo)
+    [InlineData(AcademicYearSelection.Current, true)]
+    [InlineData(AcademicYearSelection.Previous, false)]
+    [InlineData(AcademicYearSelection.Previous2, false)]
+    public async Task Get_AcademicPerformanceAttainmentAndProgress_Info_ReturnsOk(AcademicYearSelection academicYearSelection, bool expectedShowProgress8NotAvailableInfo)
     {
-        var result = _controller.AcademicPerformanceAttainmentAndProgress(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, (int)academicYearSelection) as ViewResult;
+        var expectedResult = new AttainmentAndProgressModel
+        {
+            Urn = _fakeEstablishment.URN,
+            SchoolName = _fakeEstablishment.EstablishmentName,
+            EstablishmentProgress8Score = expectedShowProgress8NotAvailableInfo ? null : 0.9,
+            LocalAuthorityProgress8Score = expectedShowProgress8NotAvailableInfo ? null : 1.5,
+        };
+
+        _mockAttainmentAndProgressService
+            .Setup(s => s.GetAttainmentAndProgressAsync(_fakeEstablishment.URN, academicYearSelection, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.AcademicPerformanceAttainmentAndProgress(
+            _mockAttainmentAndProgressService.Object,
+            _fakeEstablishment.URN,
+            _fakeEstablishment.EstablishmentName,
+            academicYearSelection,
+            CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
@@ -361,8 +379,19 @@ public class SecondarySchoolControllerTests
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
         Assert.Equal(3, model.AcademicYearsSelectList.Count);
-        Assert.Equal((int)academicYearSelection, model.SelectedAcademicYear);
+        Assert.Equal(academicYearSelection, model.SelectedAcademicYear);
         Assert.Equal(expectedShowProgress8NotAvailableInfo, model.ShowProgress8NotAvailableInfo);
+
+        if (expectedShowProgress8NotAvailableInfo)
+        {
+            Assert.Null(model.EstablishmentProgress8Score);
+            Assert.Null(model.LocalAuthorityProgress8Score);
+        }
+        else
+        {
+            Assert.Equal(expectedResult.EstablishmentProgress8Score, model.EstablishmentProgress8Score);
+            Assert.Equal(expectedResult.LocalAuthorityProgress8Score, model.LocalAuthorityProgress8Score);
+        }
     }
 
     [Theory]
