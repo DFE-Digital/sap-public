@@ -18,7 +18,9 @@ namespace SAPPub.Web.Helpers
                 EstablishmentNumber = "3090",
                 PhaseOfEducationId = "2",
                 PhaseOfEducationName = "Primary",
-                AddressPostcode = "TN37 6RT"
+                AddressPostcode = "TN37 6RT",
+                Easting = "580573",
+                Northing = "110137"
             },
 
             ["100273"] = new Establishment
