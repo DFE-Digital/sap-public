@@ -1,7 +1,6 @@
 ﻿@model SAPPub.Web.Models.SecondarySchool.AcademicPerformanceAttainmentAndProgressViewModel;
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 
-
 @{
     ViewData["Title"] = "Academic Performance";
 }
@@ -131,7 +130,7 @@
         @if (Model.ShowProgress8NotAvailableInfo)
         {
             <div class="custom-card" data-testid="progress8-custom-card">
-                <div class="custom-card__icon"></div>
+                <div class="info__icon"></div>
                 <div class="custom-card__content">
                     <p class="govuk-body">
                         There are no Progress 8 scores for the academic years 2024 to 2025 and
@@ -139,6 +138,26 @@
                         calculate the baseline. This is due to COVID-19 disruption.
                     </p>
                 </div>
+            </div>
+        }
+        else
+        {
+            <div class="custom-card" data-testid="progress8-establishment-card">
+                <div class="assignment__icon"></div>
+                <div class="custom-card__content">
+                    <p class="govuk-body">
+                        Pupils at this school score @Model.EstablishmentProgress8Score.
+                    </p>
+                </div>
+            </div>
+
+            <div class="custom-card" data-testid="progress8-localauthority-card">                
+                <div class="custom-card__content">
+                    <p class="govuk-body">
+                        The local authority average is @Model.LocalAuthorityProgress8Score.
+                    </p>
+                </div>
+                <div class="bar-chart__icon"></div>
             </div>
         }
 

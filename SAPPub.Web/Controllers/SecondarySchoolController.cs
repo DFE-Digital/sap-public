@@ -7,9 +7,6 @@ using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.SecondarySchool;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SAPPub.Web.Controllers
 {
@@ -76,18 +73,17 @@ namespace SAPPub.Web.Controllers
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/academic-performance-attainment-and-progress", Name = RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress)]
-        public IActionResult AcademicPerformanceAttainmentAndProgress(
+        public async Task<IActionResult> AcademicPerformanceAttainmentAndProgress(
+            [FromServices] IAttainmentAndProgressService attainmentAndProgressService,
             string urn,
             string schoolName,
-            int selectedAcademicYear = (int)AcademicYearSelection.AY_2024_2025)
+            AcademicYearSelection selectedAcademicYear = AcademicYearSelection.Current,
+            CancellationToken ct = default)
         {
-            var model = new AcademicPerformanceAttainmentAndProgressViewModel
-            {
-                URN = urn,
-                SchoolName = schoolName,
-                SelectedAcademicYear = selectedAcademicYear,
-            };
+            var results = await attainmentAndProgressService
+                .GetAttainmentAndProgressAsync(urn, selectedAcademicYear, ct);
 
+            var model = AcademicPerformanceAttainmentAndProgressViewModel.Map(results, selectedAcademicYear);
             return View(model);
         }
 
