@@ -21,7 +21,7 @@ public string Metric_Reason { get; set; }
 ### Data flow 
 
 Database views expose *_Coded columns
-Dapper maps them into CodedDouble via a type handler (`CodedDoubleTypeHandler.c`)
+Dapper maps them into CodedDouble via a type handler (`CodedDoubleTypeHandler.cs`)
 The coded value mapper (`ReflectionCodedValueMapper.cs`):
 extracts numeric values when possible
 translates suppression codes into readable reasons

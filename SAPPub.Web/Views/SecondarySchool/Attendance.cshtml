@@ -36,6 +36,7 @@
                         <govuk-summary-list-row-value>
                             <a class="govuk-link govuk-link--no-visited-state" target="_blank" href="@Model.SchoolWebsite">
                                 View the attendance policy on the school website
+                                <span class="govuk-visually-hidden">(opens in a new tab)</span>
                             </a>
                         </govuk-summary-list-row-value>
                     </govuk-summary-list-row>
@@ -45,7 +46,7 @@
 
         <govuk-pagination id="attendance-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.SecondaryCurriculumAndExtraCurricularActivities" asp-all-route-data="@Model.RouteAttributes">Curriculum and extra-curricular activities</govuk-pagination-previous>
-            <govuk-pagination-next asp-route="@RouteConstants.SecondaryAcademicPerformancePupilProgress" asp-all-route-data="@Model.RouteAttributes">Academic performance: Pupil progress</govuk-pagination-next>
+            <govuk-pagination-next asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress" asp-all-route-data="@Model.RouteAttributes">Academic performance: Attainment and progress</govuk-pagination-next>
         </govuk-pagination>
     </div>
 </div>

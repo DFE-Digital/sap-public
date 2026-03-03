@@ -103,7 +103,6 @@ namespace SAPPub.Infrastructure.Repositories.KS4.SubjectEntries
             "Chemistry",
             "Physics",
             "Combined Science",
-            "Computer Science",
             "Other Sciences"
         };
 

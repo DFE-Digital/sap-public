@@ -5,12 +5,12 @@ using SAPPub.Web.Tests.UI.Infrastructure;
 namespace SAPPub.Web.Tests.UI.SecondarySchool;
 
 [Collection("Playwright Tests")]
-public class AcademicPerformancePupilProgressTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
+public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
-    private string _pageUrl = "school/105574/Loreto%20High%20School%20Chorlton/secondary/academic-performance-pupil-progress";
+    private string _pageUrl = "school/105574/Loreto%20High%20School%20Chorlton/secondary/academic-performance-attainment-and-progress";
 
     [Fact]
-    public async Task AcademicPerformancePupilProgressPage_LoadsSuccessfully()
+    public async Task AcademicPerformanceAttainmentAndProgressPage_LoadsSuccessfully()
     {
         // Arrange && Act
         var response = await Page.GotoAsync(_pageUrl);
@@ -21,7 +21,7 @@ public class AcademicPerformancePupilProgressTests(WebApplicationSetupFixture fi
     }
 
     [Fact]
-    public async Task AcademicPerformancePupilProgressPage_HasCorrectTitle()
+    public async Task AcademicPerformanceAttainmentAndProgressPage_HasCorrectTitle()
     {
         // Arrange
         await Page.GotoAsync(_pageUrl);
@@ -34,7 +34,7 @@ public class AcademicPerformancePupilProgressTests(WebApplicationSetupFixture fi
     }
 
     [Fact]
-    public async Task AcademicPerformancePupilProgressPage_DisplaysMainHeading()
+    public async Task AcademicPerformanceAttainmentAndProgressPage_DisplaysMainHeading()
     {
         // Arrange
         await Page.GotoAsync(_pageUrl);
@@ -48,7 +48,7 @@ public class AcademicPerformancePupilProgressTests(WebApplicationSetupFixture fi
     }
 
     [Fact]
-    public async Task AcademicPerformancePupilProgressPage_Displays_SchoolName_Caption()
+    public async Task AcademicPerformanceAttainmentAndProgressPage_Displays_SchoolName_Caption()
     {
         // Arrange
         await Page.GotoAsync(_pageUrl);
@@ -65,7 +65,7 @@ public class AcademicPerformancePupilProgressTests(WebApplicationSetupFixture fi
     }
 
     [Fact]
-    public async Task AcademicPerformancePupilProgressPage_Displays_VerticalNavigation()
+    public async Task AcademicPerformanceAttainmentAndProgressPage_Displays_VerticalNavigation()
     {
         var nav = new VerticalNavigationHelper(Page);
         await Page.GotoAsync(_pageUrl);
@@ -77,7 +77,7 @@ public class AcademicPerformancePupilProgressTests(WebApplicationSetupFixture fi
     }
     
     [Fact]
-    public async Task AcademicPerformancePupilProgressPage_Displays_Sub_Navigation()
+    public async Task AcademicPerformanceAttainmentAndProgressPage_Displays_Sub_Navigation()
     {
         // Arrange
         await Page.GotoAsync(_pageUrl);
@@ -90,7 +90,7 @@ public class AcademicPerformancePupilProgressTests(WebApplicationSetupFixture fi
     }
 
     [Fact]
-    public async Task AcademicPerformancePupilProgressPage_Displays_Attainment8_Details()
+    public async Task AcademicPerformanceAttainmentAndProgressPage_Displays_Attainment8_Details()
     {
         // Arrange
         await Page.GotoAsync(_pageUrl);
@@ -103,7 +103,7 @@ public class AcademicPerformancePupilProgressTests(WebApplicationSetupFixture fi
     }
 
     [Fact]
-    public async Task AcademicPerformancePupilProgressPage_Displays_Progress8_Details()
+    public async Task AcademicPerformanceAttainmentAndProgressPage_Displays_Progress8_Details()
     {
         // Arrange
         await Page.GotoAsync(_pageUrl);
@@ -116,7 +116,7 @@ public class AcademicPerformancePupilProgressTests(WebApplicationSetupFixture fi
     }
 
     [Fact]
-    public async Task AcademicPerformancePupilProgressPage_Displays_AcademicYear_Selector()
+    public async Task AcademicPerformanceAttainmentAndProgressPage_Displays_AcademicYear_Selector()
     {
         // Arrange
         await Page.GotoAsync(_pageUrl);
@@ -148,13 +148,13 @@ public class AcademicPerformancePupilProgressTests(WebApplicationSetupFixture fi
     }
 
     [Fact]
-    public async Task AcademicPerformancePupilProgressPage_DisplaysPagination()
+    public async Task AcademicPerformanceAttainmentAndProgressPage_DisplaysPagination()
     {
         // Arrange
         await Page.GotoAsync(_pageUrl);
 
         // Act
-        var isVisible = await Page.Locator("#academic-performance-pupil-progress-pagination").IsVisibleAsync();
+        var isVisible = await Page.Locator("#academic-performance-attainment-and-progress-pagination").IsVisibleAsync();
 
         // Assert
         Assert.True(isVisible);
