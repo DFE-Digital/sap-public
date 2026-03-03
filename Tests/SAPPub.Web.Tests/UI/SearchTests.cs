@@ -27,7 +27,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
         var response = await Page.GotoAsync(_pageUrl);
 
         // Act
-        await Page.FillAsync("#searchKeyWord", searchTerm);
+        await Page.FillAsync("#NameSearchTerm", searchTerm);
         await Page.ClickAsync("#search");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
@@ -35,7 +35,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
         Assert.NotNull(response);
         Assert.Equal(200, response.Status);
         // assert text box contains search term
-        var searchBoxValue = await Page.InputValueAsync("#searchKeyWord");
+        var searchBoxValue = await Page.InputValueAsync("#NameSearchTerm");
         Assert.Equal(searchTerm, searchBoxValue);
 
         // assert that at least one search result is displayed
@@ -53,7 +53,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
         var response = await Page.GotoAsync(_pageUrl);
 
         // Act
-        await Page.FillAsync("#searchKeyWord", searchTerm);
+        await Page.FillAsync("#NameSearchTerm", searchTerm);
         await Page.ClickAsync("#search");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
@@ -61,7 +61,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
         Assert.NotNull(response);
         Assert.Equal(200, response.Status);
         // assert text box contains search term
-        var searchBoxValue = await Page.InputValueAsync("#searchKeyWord");
+        var searchBoxValue = await Page.InputValueAsync("#NameSearchTerm ");
         Assert.Equal(searchTerm, searchBoxValue);
 
         // assert no list items are displayed
@@ -79,11 +79,11 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     public async Task SearchPage_EnterValidPostcode_ShowsViewWithResults()
     {
         // Arrange
-        var searchTerm = "NE1 8QH";
+        var searchTerm = "M21 7SW";
         var response = await Page.GotoAsync(_pageUrl);
 
         // Act
-        await Page.FillAsync("#searchLocation", searchTerm);
+        await Page.FillAsync("#LocationSearchTerm", searchTerm);
         await Page.ClickAsync("#search");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
@@ -91,7 +91,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
         Assert.NotNull(response);
         Assert.Equal(200, response.Status);
         // assert text box contains search term
-        var searchBoxValue = await Page.InputValueAsync("#searchLocation");
+        var searchBoxValue = await Page.InputValueAsync("#LocationSearchTerm");
         Assert.Equal(searchTerm, searchBoxValue);
 
         // assert that at least one search result is displayed
@@ -109,7 +109,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
         var response = await Page.GotoAsync(_pageUrl);
 
         // Act
-        await Page.FillAsync("#searchLocation", searchTerm);
+        await Page.FillAsync("#LocationSearchTerm", searchTerm);
         await Page.ClickAsync("#search");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
@@ -117,11 +117,11 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
         Assert.NotNull(response);
         Assert.Equal(200, response.Status);
         // assert text box contains search term
-        var searchBoxValue = await Page.InputValueAsync("#searchLocation");
+        var searchBoxValue = await Page.InputValueAsync("#LocationSearchTerm");
         Assert.Equal(searchTerm, searchBoxValue);
 
         // error box is displayed with correct message
-        var errorLink = Page.Locator(".govuk-error-summary__list a[href='#searchLocation']");
+        var errorLink = Page.Locator(".govuk-error-summary__list a[href='#LocationSearchTerm']");
         Assert.Equal("Enter a full postcode", await errorLink.InnerTextAsync());
 
         // assert no list items are displayed
