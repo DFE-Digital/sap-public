@@ -1,4 +1,4 @@
-﻿namespace SAPPub.Core.ServiceModels.PostcodeSearch;
+﻿namespace SAPPub.Core.ServiceModels.Search.InputModels;
 
 public record SearchQuery
 {

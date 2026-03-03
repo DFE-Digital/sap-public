@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SAPPub.Core.Interfaces.Services.Search;
-using SAPPub.Core.ServiceModels.Search;
+using SAPPub.Core.ServiceModels.Search.InputModels;
+using SAPPub.Core.ServiceModels.Search.Results;
 using SAPPub.Web.Models.Search;
 
 namespace SAPPub.Web.Controllers;
@@ -43,7 +44,7 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
         }
         var searchKeyWord = model.NameSearchTerm;
         var searchLocation = model.LocationSearchTerm;
-        var searchQuery = new SearchQuery() { Name = searchKeyWord, Location = searchLocation, Distance = searchLocation != null ? model.Distance : null };
+        var searchQuery = new SchoolSearchServiceQuery() { Name = searchKeyWord, Location = searchLocation, Distance = searchLocation != null ? model.Distance : null };
         if (searchKeyWord != null || searchLocation != null)
         {
             var searchResults = await schoolSearchService.SearchAsync(searchQuery);
@@ -68,19 +69,16 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
         });
     }
 
-    // fix the model state keys so that validation messages are correctly associated with the form fields after redirecting to the SearchResults action
+    // fix the model state keys so that validation messages are correctly associated with the form fields 
     private void PrefixModelStateKeys(string prefix)
     {
         var keys = ModelState.Keys.ToList();
-
         foreach (var oldKey in keys)
         {
             // Skip already-prefixed keys
             if (oldKey.StartsWith(prefix + ".")) continue;
-
             var newKey = $"{prefix}.{oldKey}";
-
-            var entry = ModelState[oldKey];
+            var entry = ModelState[oldKey]!;
 
             // 1. Move attempted value
             ModelState.SetModelValue(newKey, entry.RawValue, entry.AttemptedValue);

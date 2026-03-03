@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SAPPub.Core.Interfaces.Services.Search;
-using SAPPub.Core.ServiceModels.Search;
+using SAPPub.Core.ServiceModels.Search.InputModels;
+using SAPPub.Core.ServiceModels.Search.Results;
 using SAPPub.Web.Controllers;
 using SAPPub.Web.Models.Search;
 
@@ -45,7 +46,7 @@ public class SearchControllerTests
     public async Task Get_SearchResults_SearchByName_ReturnsSchoolResultsViewModel()
     {
         // arrange
-        var searchQuery = new SearchQuery() { Name = "test school" };
+        var searchQuery = new SchoolSearchServiceQuery() { Name = "test school" };
         _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
         {
             Count = 2,
@@ -85,7 +86,7 @@ public class SearchControllerTests
     public async Task Get_SearchResults_SearchByValidLocation_ReturnsSchoolResultsViewModel()
     {
         // arrange
-        var searchQuery = new SearchQuery() { Location = "NE2 1VF", Distance = 3 };
+        var searchQuery = new SchoolSearchServiceQuery() { Location = "NE2 1VF", Distance = 3 };
         _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
         {
             Count = 2,
@@ -125,7 +126,7 @@ public class SearchControllerTests
     public async Task Get_SearchResults_SearchByValidLocation_ReturnsSchoolResultsOrderedDistanceAscending()
     {
         // arrange
-        var searchQuery = new SearchQuery() { Location = "NE2 1VF", Distance = 3 };
+        var searchQuery = new SchoolSearchServiceQuery() { Location = "NE2 1VF", Distance = 3 };
         _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
         {
             Count = 2,
@@ -151,7 +152,7 @@ public class SearchControllerTests
     {
         // arrange
         var location = "invalid";
-        var searchQuery = new SearchQuery() { Location = location, Distance = 3 };
+        var searchQuery = new SchoolSearchServiceQuery() { Location = location, Distance = 3 };
         _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
         {
             Count = 1,
@@ -172,7 +173,7 @@ public class SearchControllerTests
     public async Task Get_SearchResults_NullFieldsInResults_ReturnsSchoolResultsViewModelWithEmptyFields()
     {
         // arrange
-        var searchQuery = new SearchQuery() { Name = "test school" };
+        var searchQuery = new SchoolSearchServiceQuery() { Name = "test school" };
         _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
         {
             Count = 1,
@@ -208,7 +209,7 @@ public class SearchControllerTests
     public async Task Get_SearchResults_NoResults_ReturnsExpectedSchoolResultsViewModel()
     {
         // arrange
-        var searchQuery = new SearchQuery() { Name = "no results term" };
+        var searchQuery = new SchoolSearchServiceQuery() { Name = "no results term" };
         _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
         {
             Count = 0,

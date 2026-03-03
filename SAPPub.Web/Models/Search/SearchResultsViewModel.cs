@@ -1,4 +1,4 @@
-﻿using SAPPub.Core.ServiceModels.Search;
+﻿using SAPPub.Core.ServiceModels.Search.Results;
 using System.ComponentModel.DataAnnotations;
 
 namespace SAPPub.Web.Models.Search;

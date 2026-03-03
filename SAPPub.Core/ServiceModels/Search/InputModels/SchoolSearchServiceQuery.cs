@@ -1,6 +1,6 @@
-﻿namespace SAPPub.Core.ServiceModels.Search;
+﻿namespace SAPPub.Core.ServiceModels.Search.InputModels;
 
-public record SearchQuery
+public record SchoolSearchServiceQuery
 {
     public string? Name { get; init; }
     public string? Location { get; init; }

@@ -1,4 +1,4 @@
-﻿namespace SAPPub.Core.ServiceModels.Search;
+﻿namespace SAPPub.Core.ServiceModels.Search.Results;
 
 public enum SchoolSearchStatus
 {

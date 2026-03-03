@@ -3,6 +3,7 @@ using Lucene.Net.Search;
 using Lucene.Net.Spatial.Queries;
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.ServiceModels.PostcodeSearch;
+using SAPPub.Core.ServiceModels.Search.InputModels;
 
 namespace SAPPub.Infrastructure.LuceneSearch;
 

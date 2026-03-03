@@ -1,7 +1,8 @@
 ﻿using SAPPub.Core.Helpers;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Search;
-using SAPPub.Core.ServiceModels.Search;
+using SAPPub.Core.ServiceModels.Search.InputModels;
+using SAPPub.Core.ServiceModels.Search.Results;
 using System.Text.RegularExpressions;
 
 namespace SAPPub.Core.Services.Search;
@@ -11,7 +12,7 @@ public class SchoolSearchService(ISchoolSearchIndexReader indexReader, IPostcode
     private const int MaxResults = 1000;
     private const string PostcodeValidationRegex = """^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})$""";
 
-    public async Task<SchoolSearchResultsServiceModel> SearchAsync(SAPPub.Core.ServiceModels.Search.SearchQuery query)
+    public async Task<SchoolSearchResultsServiceModel> SearchAsync(SchoolSearchServiceQuery query)
     {
         if (query.Location != null && !Regex.IsMatch(query.Location, PostcodeValidationRegex))
         {
@@ -35,8 +36,8 @@ public class SchoolSearchService(ISchoolSearchIndexReader indexReader, IPostcode
 
         var postcodeResult = postcodeResponse?.Result;
         var searchQuery = string.IsNullOrEmpty(query.Location)
-            ? new ServiceModels.PostcodeSearch.SearchQuery { Name = query.Name }
-            : new ServiceModels.PostcodeSearch.SearchQuery { Latitude = postcodeResult?.Latitude, Longitude = postcodeResult?.Longitude, Distance = query.Distance, Name = query.Name };
+            ? new ServiceModels.Search.InputModels.SearchQuery { Name = query.Name }
+            : new ServiceModels.Search.InputModels.SearchQuery { Latitude = postcodeResult?.Latitude, Longitude = postcodeResult?.Longitude, Distance = query.Distance, Name = query.Name };
 
         var searchResults = await indexReader.SearchAsync(searchQuery, MaxResults);
 
