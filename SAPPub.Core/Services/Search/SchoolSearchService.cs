@@ -54,7 +54,7 @@ public class SchoolSearchService(ISchoolSearchIndexReader indexReader, IPostcode
                 Distance = postcodeResult is not null
                     ? MappingHelper.HaversineMiles(postcodeResult.Latitude, postcodeResult.Longitude, result.Latitude, result.Longitude)
                     : null
-            }).Where(r => r.Distance.HasValue && r.Distance.Value <= query.Distance).ToList()
+            }).Where(r => query.Location != null ? query.Distance.HasValue && r.Distance.HasValue && r.Distance.Value <= query.Distance : true).ToList()
         };
 
         return results;

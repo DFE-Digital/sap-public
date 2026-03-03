@@ -23,6 +23,10 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
         }
         else
         {
+            if (!ModelState.IsValid)
+            {
+                PrefixModelStateKeys("SearchParams");
+            }
             return View(new SearchResultsViewModel()
             {
                 SearchParams = model
@@ -33,9 +37,13 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
     [HttpGet]
     public async Task<IActionResult> SearchResults(SearchParamsModel model)
     {
+        if (!ModelState.IsValid)
+        {
+            PrefixModelStateKeys("SearchParams");
+        }
         var searchKeyWord = model.NameSearchTerm;
         var searchLocation = model.LocationSearchTerm;
-        var searchQuery = new SearchQuery() { Name = searchKeyWord, Location = searchLocation, Distance = model.Distance };
+        var searchQuery = new SearchQuery() { Name = searchKeyWord, Location = searchLocation, Distance = searchLocation != null ? model.Distance : null };
         if (searchKeyWord != null || searchLocation != null)
         {
             var searchResults = await schoolSearchService.SearchAsync(searchQuery);
@@ -58,5 +66,33 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
             SearchResultsCount = 0,
             SearchResults = new List<SearchResult>()
         });
+    }
+
+    // fix the model state keys so that validation messages are correctly associated with the form fields after redirecting to the SearchResults action
+    private void PrefixModelStateKeys(string prefix)
+    {
+        var keys = ModelState.Keys.ToList();
+
+        foreach (var oldKey in keys)
+        {
+            // Skip already-prefixed keys
+            if (oldKey.StartsWith(prefix + ".")) continue;
+
+            var newKey = $"{prefix}.{oldKey}";
+
+            var entry = ModelState[oldKey];
+
+            // 1. Move attempted value
+            ModelState.SetModelValue(newKey, entry.RawValue, entry.AttemptedValue);
+
+            // 2. Move errors
+            foreach (var error in entry.Errors)
+            {
+                ModelState.AddModelError(newKey, error.ErrorMessage);
+            }
+
+            // 3. Remove the old key
+            ModelState.Remove(oldKey);
+        }
     }
 }

@@ -17,14 +17,14 @@ public class SearchResultsViewModel
 {
     public SearchParamsModel SearchParams { get; set; } = new SearchParamsModel();
     public int SearchResultsCount { get; set; }
-    public string Heading => $"{SearchResultsCount} results {HeadingClause2}";
+    public string Heading => $"{SearchResultsCount} {(SearchResultsCount == 1 ? "result" : "results")} {HeadingClause2}";
     public List<SearchResult> SearchResults { get; set; } = new List<SearchResult>();
 
     private string? HeadingClause2 =>
         !String.IsNullOrEmpty(SearchParams?.NameSearchTerm)
-            ? $"for '{SearchParams.NameSearchTerm}'" + (!String.IsNullOrEmpty(SearchParams.LocationSearchTerm) ? $" within {SearchParams.Distance} miles of {SearchParams.LocationSearchTerm}" : String.Empty)
+            ? $"for '{SearchParams.NameSearchTerm}'" + (!String.IsNullOrEmpty(SearchParams.LocationSearchTerm) ? $" within {SearchParams.Distance} {(SearchParams.Distance == 1 ? "mile" : "miles")} of {SearchParams.LocationSearchTerm}" : String.Empty)
             : !String.IsNullOrEmpty(SearchParams?.LocationSearchTerm)
-                ? $"within {SearchParams.Distance}  miles of  {SearchParams.LocationSearchTerm}"
+                ? $"within {SearchParams.Distance} {(SearchParams.Distance == 1 ? "mile" : "miles")} of  {SearchParams.LocationSearchTerm}"
                 : String.Empty;
 
     public static List<SearchResult> FromServiceModel(IEnumerable<SchoolSearchResultServiceModel> serviceModel)

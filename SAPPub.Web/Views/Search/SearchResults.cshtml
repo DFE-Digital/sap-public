@@ -14,16 +14,19 @@
                     <govuk-fieldset-legend is-page-heading="false" class="govuk-fieldset__legend--l">
                     </govuk-fieldset-legend>
                     @await Html.PartialAsync("_SearchPartial")
-                    <govuk-select for=@Model.SearchParams.Distance name="Distance">
-                        <govuk-select-item value="1" selected="@Model.SearchParams.Distance == 1">1</govuk-select-item>
-                        <govuk-select-item value="3" selected="@Model.SearchParams.Distance == 3">3</govuk-select-item>
-                        <govuk-select-item value="5" selected="@Model.SearchParams.Distance == 5">5</govuk-select-item>
-                    </govuk-select>
+                    @if (Model.SearchParams.LocationSearchTerm is not null)
+                    {
+                        <govuk-select for=@Model.SearchParams.Distance name="Distance">
+                            <govuk-select-item value="1" selected="@Model.SearchParams.Distance == 1">1</govuk-select-item>
+                            <govuk-select-item value="3" selected="@Model.SearchParams.Distance == 3">3</govuk-select-item>
+                            <govuk-select-item value="5" selected="@Model.SearchParams.Distance == 5">5</govuk-select-item>
+                        </govuk-select>
+                    }
                 </govuk-fieldset>
             </form>
         </div>
 
-        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-top-4"><strong>Sorted alphabetically</strong></p>
+        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-top-4"><strong>@(Model.SearchParams.LocationSearchTerm != null ? "Sorted by distance" : "Sorted alphabetically")</strong></p>
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
         @foreach (var modelItem in Model.SearchResults)
