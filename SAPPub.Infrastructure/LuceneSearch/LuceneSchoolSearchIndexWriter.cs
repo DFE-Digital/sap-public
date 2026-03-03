@@ -29,13 +29,13 @@ public class LuceneSchoolSearchIndexWriter
         {
             var doc = new Document
             {
-                new StringField(nameof(Establishment.URN), e.URN.ToString(), Field.Store.YES),
-                new Field(nameof(Establishment.EstablishmentName), e.EstablishmentName, TermVectorFieldType),
+                new StringField(nameof(SchoolSearchDocument.URN), e.URN.ToString(), Field.Store.YES),
+                new Field(nameof(SchoolSearchDocument.EstablishmentName), e.EstablishmentName, TermVectorFieldType),
                 new SortedDocValuesField("EstablishmentNameSort", new BytesRef(e.EstablishmentName))
             };
-            if (e.GenderName is not null) doc.Add(new StoredField(nameof(Establishment.GenderName), e.GenderName));
-            if (e.ReligiousCharacterName is not null) doc.Add(new StoredField(nameof(Establishment.ReligiousCharacterName), e.ReligiousCharacterName));
-            if (e.Address is not null) doc.Add(new StoredField(nameof(Establishment.Address), e.Address));
+            if (e.GenderName is not null) doc.Add(new StoredField(nameof(SchoolSearchDocument.GenderName), e.GenderName));
+            if (e.ReligiousCharacterName is not null) doc.Add(new StoredField(nameof(SchoolSearchDocument.ReligiousCharacterName), e.ReligiousCharacterName));
+            if (e.Address is not null) doc.Add(new StoredField(nameof(SchoolSearchDocument.Address), e.Address));
             if (e.AddressPostcode is not null) doc.Add(new StoredField(nameof(Establishment.AddressPostcode), e.AddressPostcode));
 
             var latlon = MappingHelper.ConvertToLatLon(e.Easting, e.Northing);

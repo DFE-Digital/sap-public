@@ -1,7 +1,6 @@
 ﻿using Lucene.Net.Index;
 using Lucene.Net.Search;
 using Lucene.Net.Spatial.Queries;
-using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.ServiceModels.PostcodeSearch;
 
@@ -18,21 +17,21 @@ public class LuceneSchoolSearchIndexReader(LuceneIndexContext context, LuceneTok
         var must = new BooleanQuery();
         foreach (var t in tokens.Take(tokens.Count - 1))
         {
-            must.Add(new TermQuery(new Term(nameof(Establishment.EstablishmentName), t)), Occur.MUST);
+            must.Add(new TermQuery(new Term(nameof(SchoolSearchDocument.EstablishmentName), t)), Occur.MUST);
         }
 
         // Add the LAST token as a PrefixQuery for partial matching
-        must.Add(new PrefixQuery(new Term(nameof(Establishment.EstablishmentName), tokens.Last())), Occur.MUST);
+        must.Add(new PrefixQuery(new Term(nameof(SchoolSearchDocument.EstablishmentName), tokens.Last())), Occur.MUST);
 
         //Phrase boost – original order
         var phrase = new PhraseQuery { Slop = 2, Boost = 5f };
         foreach (var t in tokens)
         {
-            phrase.Add(new Term(nameof(Establishment.EstablishmentName), t));
+            phrase.Add(new Term(nameof(SchoolSearchDocument.EstablishmentName), t));
         }
 
         // Exact name
-        var exactName = new TermQuery(new Term(nameof(Establishment.EstablishmentName), nameQueryString))
+        var exactName = new TermQuery(new Term(nameof(SchoolSearchDocument.EstablishmentName), nameQueryString))
         {
             Boost = 10f
         };
@@ -100,11 +99,11 @@ public class LuceneSchoolSearchIndexReader(LuceneIndexContext context, LuceneTok
             foreach (var sd in documentResults.ScoreDocs)
             {
                 var doc = searcher.Doc(sd.Doc);
-                var urn = doc.Get(nameof(Establishment.URN));
-                var establishmentName = doc.Get(nameof(Establishment.EstablishmentName));
-                var religiousCharacterName = doc.Get(nameof(Establishment.ReligiousCharacterName));
-                var genderName = doc.Get(nameof(Establishment.GenderName));
-                var address = doc.Get(nameof(Establishment.Address));
+                var urn = doc.Get(nameof(SchoolSearchDocument.URN));
+                var establishmentName = doc.Get(nameof(SchoolSearchDocument.EstablishmentName));
+                var religiousCharacterName = doc.Get(nameof(SchoolSearchDocument.ReligiousCharacterName));
+                var genderName = doc.Get(nameof(SchoolSearchDocument.GenderName));
+                var address = doc.Get(nameof(SchoolSearchDocument.Address));
                 var latitude = doc.Get(nameof(SchoolSearchDocument.Latitude));
                 var longitude = doc.Get(nameof(SchoolSearchDocument.Longitude));
 
