@@ -11,23 +11,24 @@
         <div class="shaded-box">
             <form method="get" asp-controller="Search" asp-action="SearchResults">
                 <govuk-fieldset>
-                    <govuk-fieldset-legend is-page-heading="false" class="govuk-fieldset__legend--l">
-                    </govuk-fieldset-legend>
+                    <govuk-fieldset-legend is-page-heading="false" class="govuk-fieldset__legend--l"></govuk-fieldset-legend>
                     @await Html.PartialAsync("_SearchPartial")
+                    <govuk-button id="search" type="submit">Search</govuk-button>
+
+                    <p><strong>@(Model.SearchParams.LocationSearchTerm != null ? "Sorted by distance" : "Sorted alphabetically")</strong></p>
                     @if (Model.SearchParams.LocationSearchTerm is not null)
                     {
                         <govuk-select for=@Model.SearchParams.Distance name="Distance">
-                            <govuk-select-item value="1" selected="@Model.SearchParams.Distance == 1">1</govuk-select-item>
+                            <govuk-select-label>Change radius</govuk-select-label>
                             <govuk-select-item value="3" selected="@Model.SearchParams.Distance == 3">3</govuk-select-item>
                             <govuk-select-item value="5" selected="@Model.SearchParams.Distance == 5">5</govuk-select-item>
+                            <govuk-select-item value="10" selected="@Model.SearchParams.Distance == 10">10</govuk-select-item>
                         </govuk-select>
+                        <govuk-button class="govuk-button govuk-button--secondary" id="show-results" type="submit">Show results</govuk-button>
                     }
-                    <govuk-button id="search" type="submit">Search</govuk-button>
                 </govuk-fieldset>
             </form>
         </div>
-
-        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-top-4"><strong>@(Model.SearchParams.LocationSearchTerm != null ? "Sorted by distance" : "Sorted alphabetically")</strong></p>
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
         @foreach (var modelItem in Model.SearchResults)
@@ -53,11 +54,11 @@
             <h2 class="govuk-heading-s govuk-!-font-weight-bold" data-testid="no-results-heading">Try another search</h2>
             <p class="govuk-body">
                 @(!String.IsNullOrEmpty(Model.SearchParams.NameSearchTerm)
-                ? "You may need to search by a postcode instead of school name."
+                            ? "You may need to search by a postcode instead of school name."
                             : !String.IsNullOrEmpty(Model.SearchParams.LocationSearchTerm)
-                ? "You may need to search by a school name instead of postcode."
-                : String.Empty)
-            </p>
-        }
+                            ? "You may need to search by a school name instead of postcode."
+                            : String.Empty)
+        </p>
+                }
     </div>
 </div>
