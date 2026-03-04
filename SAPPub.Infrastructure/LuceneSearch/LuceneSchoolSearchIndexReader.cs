@@ -7,6 +7,12 @@ using SAPPub.Core.ServiceModels.Search.InputModels;
 
 namespace SAPPub.Infrastructure.LuceneSearch;
 
+/// <summary>
+/// The Lucene search index reader for schools.
+/// Provides the functionality to search the Lucene index for schools based on a search query, which can include a name and/or location parameters.
+/// </summary>
+/// <param name="context">The Lucene index context.</param>
+/// <param name="luceneTokeniser">The Lucene tokeniser.</param>
 public class LuceneSchoolSearchIndexReader(LuceneIndexContext context, LuceneTokeniser luceneTokeniser) : ISchoolSearchIndexReader
 {
     private List<BooleanClause> BuildNameQuery(string nameQueryString)
@@ -61,6 +67,13 @@ public class LuceneSchoolSearchIndexReader(LuceneIndexContext context, LuceneTok
         return new List<BooleanClause> { new BooleanClause(distanceQuery, Occur.MUST) };
     }
 
+    /// <summary>
+    /// Executes the search based on the search query and returns the search results, 
+    /// which include the list of school search documents that match the query.
+    /// </summary>
+    /// <param name="searchQuery">The search query containing the name and/or location parameters.</param>
+    /// <param name="maxResults">The maximum number of results to return.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the search results.</returns>
     public async Task<SchoolSearchResults> SearchAsync(SearchQuery searchQuery, int maxResults = 10)
     {
         await Task.Yield();

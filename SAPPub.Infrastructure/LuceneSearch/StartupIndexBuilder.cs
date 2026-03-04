@@ -4,6 +4,12 @@ using SAPPub.Core.Interfaces.Services;
 
 namespace SAPPub.Infrastructure.LuceneSearch;
 
+/// <summary>
+/// creates the Lucene search index for schools at application startup.
+/// </summary>
+/// <param name="logger"></param>
+/// <param name="writer"></param>
+/// <param name="establishmentService"></param>
 public class StartupIndexBuilder(ILogger<StartupIndexBuilder> logger, LuceneSchoolSearchIndexWriter writer, IEstablishmentService establishmentService) : IHostedService
 {
     public async Task StartAsync(CancellationToken cancellationToken)

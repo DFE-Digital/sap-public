@@ -9,6 +9,9 @@ using Directory = Lucene.Net.Store.Directory;
 
 namespace SAPPub.Infrastructure.LuceneSearch;
 
+/// <summary>
+/// Sets the context for the Lucene index, including the directory, analyzer, index writer, searcher manager, and spatial context.
+/// </summary>
 public sealed class LuceneIndexContext : IDisposable
 {
     private Directory Directory { get; }

@@ -4,6 +4,11 @@ using SAPPub.Core.Entities;
 using SAPPub.Core.ServiceModels.PostcodeSearch;
 using SAPPub.Infrastructure.LuceneSearch;
 
+/// <summary>
+/// Creates the Lucene search index for schools. 
+/// This is a one-time operation that should be run after the database has been seeded with school data. 
+/// It will delete any existing index and create a new one based on the current data in the database.
+/// </summary>
 public class LuceneSchoolSearchIndexWriter
 {
     private LuceneIndexContext _context;
