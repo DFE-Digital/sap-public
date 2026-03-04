@@ -14,7 +14,10 @@ public class StartupIndexBuilder(ILogger<StartupIndexBuilder> logger, LuceneScho
 {
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        logger.LogInformation("reading Establishment Data From CSV at startup...");
+        logger.LogInformation("StartupIndexBuilder starting...");
+
+        // Wait until DB is reachable by retrying a minimal call.
+        await WaitForDatabaseAsync(cancellationToken);
 
         int page = 1;
         int take = 1000;
@@ -34,6 +37,52 @@ public class StartupIndexBuilder(ILogger<StartupIndexBuilder> logger, LuceneScho
         writer.FinaliseIndex();
 
         logger.LogInformation("Lucene index built successfully");
+    }
+
+    private async Task WaitForDatabaseAsync(CancellationToken ct)
+    {
+        // Adjust these to taste
+        var maxWait = TimeSpan.FromMinutes(3);     // or TimeSpan.FromHours(1) / infinite in review env
+        var delay = TimeSpan.FromSeconds(1);
+        var maxDelay = TimeSpan.FromSeconds(15);
+        var started = DateTimeOffset.UtcNow;
+
+        var attempt = 0;
+
+        while (true)
+        {
+            ct.ThrowIfCancellationRequested();
+            attempt++;
+
+            try
+            {
+                // Minimal call: page=1,take=1 to avoid loading much.
+                var result = await establishmentService.GetEstablishmentsAsync(page: 1, take: 1, ct);
+                return;
+            }
+            catch (Exception ex) when (!ct.IsCancellationRequested)
+            {
+                var elapsed = DateTimeOffset.UtcNow - started;
+                if (elapsed >= maxWait)
+                {
+                    logger.LogError(ex, "Database not available after waiting {Elapsed}. Giving up.", elapsed);
+                    throw;
+                }
+
+                // Exponential backoff + jitter
+                var jitterMs = Random.Shared.Next(0, 250);
+                var sleep = delay + TimeSpan.FromMilliseconds(jitterMs);
+
+                logger.LogWarning(ex,
+                    "Database not ready yet. Retry {Attempt}. Waiting {Delay} before next attempt...",
+                    attempt, sleep);
+
+                await Task.Delay(sleep, ct);
+
+                var nextSeconds = Math.Min(delay.TotalSeconds * 2, maxDelay.TotalSeconds);
+                delay = TimeSpan.FromSeconds(nextSeconds);
+            }
+        }
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
