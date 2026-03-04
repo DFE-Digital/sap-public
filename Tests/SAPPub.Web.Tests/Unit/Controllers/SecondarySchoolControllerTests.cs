@@ -355,6 +355,9 @@ public class SecondarySchoolControllerTests
             SchoolName = _fakeEstablishment.EstablishmentName,
             EstablishmentProgress8Score = expectedShowProgress8NotAvailableInfo ? null : 0.9,
             LocalAuthorityProgress8Score = expectedShowProgress8NotAvailableInfo ? null : 1.5,
+            EstablishmentAttainment8Score = 70,
+            LocalAuthorityAttainment8Score = 80,
+            EnglandAttainment8Score = 70
         };
 
         _mockAttainmentAndProgressService
@@ -381,6 +384,10 @@ public class SecondarySchoolControllerTests
         Assert.Equal(3, model.AcademicYearsSelectList.Count);
         Assert.Equal(academicYearSelection, model.SelectedAcademicYear);
         Assert.Equal(expectedShowProgress8NotAvailableInfo, model.ShowProgress8NotAvailableInfo);
+
+        Assert.Equal(expectedResult.EstablishmentAttainment8Score, model.EstablishmentAttainment8Score);
+        Assert.Equal(expectedResult.LocalAuthorityAttainment8Score, model.LocalAuthorityAttainment8Score);
+        Assert.Equal(expectedResult.EnglandAttainment8Score, model.EnglandAttainment8Score);
 
         if (expectedShowProgress8NotAvailableInfo)
         {

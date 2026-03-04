@@ -125,9 +125,14 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
         var academicYearSelector = Page.Locator("#academicyearSelector");
         var progress8CustomCard = Page.GetByTestId("progress8-custom-card");
 
+        var attainment8EstablishmentCard = Page.GetByTestId("attainment8-establishment-card");
+        var attainment8LocalAuthorityAndNationlCard = Page.GetByTestId("attainment8-localauthority-and-national-card");
+
         // Assert
         Assert.True(await academicYearSelector.IsVisibleAsync());
         Assert.True(await progress8CustomCard.IsVisibleAsync());
+        Assert.True(await attainment8EstablishmentCard.IsVisibleAsync());
+        Assert.True(await attainment8LocalAuthorityAndNationlCard.IsVisibleAsync());
     }
 
     [Theory]
@@ -153,6 +158,13 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
 
         var progress8LocalAuthorityCard = Page.GetByTestId("progress8-localauthority-card");
         Assert.True(await progress8LocalAuthorityCard.IsVisibleAsync());
+
+        var attainment8EstablishmentCard = Page.GetByTestId("attainment8-establishment-card");
+        Assert.True(await attainment8EstablishmentCard.IsVisibleAsync());
+
+        var attainment8LocalAuthorityAndNationlCard = Page.GetByTestId("attainment8-localauthority-and-national-card");
+        Assert.True(await attainment8LocalAuthorityAndNationlCard.IsVisibleAsync());
+
     }
 
     [Fact]

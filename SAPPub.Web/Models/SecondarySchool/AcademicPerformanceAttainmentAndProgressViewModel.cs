@@ -17,6 +17,12 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
 
     public double? LocalAuthorityProgress8Score { get; init; }
 
+    public double? EstablishmentAttainment8Score { get; init; }
+
+    public double? LocalAuthorityAttainment8Score { get; init; }
+
+    public double? EnglandAttainment8Score { get; init; }
+
     public List<SelectListItem> AcademicYearsSelectList => [.. Enum.GetValues(typeof(AcademicYearSelection)).Cast<AcademicYearSelection>().Select(x => new SelectListItem
     {
         Text = AcademicYearHelper.GetAcademicYearText(x),
@@ -32,6 +38,9 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
             SelectedAcademicYear = selectedAcademicYear,
             EstablishmentProgress8Score = attainmentAndProgressModel.EstablishmentProgress8Score,
             LocalAuthorityProgress8Score = attainmentAndProgressModel.LocalAuthorityProgress8Score,
+            EstablishmentAttainment8Score = attainmentAndProgressModel.EstablishmentAttainment8Score,
+            LocalAuthorityAttainment8Score = attainmentAndProgressModel.LocalAuthorityAttainment8Score,
+            EnglandAttainment8Score = attainmentAndProgressModel.EnglandAttainment8Score
         };
     }
 }
