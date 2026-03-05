@@ -16,9 +16,6 @@ public class StartupIndexBuilder(ILogger<StartupIndexBuilder> logger, LuceneScho
     {
         logger.LogInformation("StartupIndexBuilder starting...");
 
-        // Wait until DB is reachable by retrying a minimal call.
-        await WaitForDatabaseAsync(cancellationToken);
-
         int page = 1;
         int take = 1000;
         var schools = await establishmentService.GetEstablishmentsAsync(page, take, cancellationToken);
