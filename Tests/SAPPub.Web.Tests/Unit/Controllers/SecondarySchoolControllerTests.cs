@@ -357,7 +357,7 @@ public class SecondarySchoolControllerTests
             LocalAuthorityProgress8Score = expectedShowProgress8NotAvailableInfo ? null : 1.5,
             EstablishmentAttainment8Score = 70,
             LocalAuthorityAttainment8Score = 80,
-            EnglandAttainment8Score = 70
+            EnglandAttainment8Score = 50
         };
 
         _mockAttainmentAndProgressService

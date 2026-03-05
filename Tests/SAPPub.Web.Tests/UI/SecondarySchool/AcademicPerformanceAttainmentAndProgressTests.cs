@@ -126,13 +126,13 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
         var progress8CustomCard = Page.GetByTestId("progress8-custom-card");
 
         var attainment8EstablishmentCard = Page.GetByTestId("attainment8-establishment-card");
-        var attainment8LocalAuthorityAndNationlCard = Page.GetByTestId("attainment8-localauthority-and-national-card");
+        var attainment8LocalAuthorityAndNationalCard = Page.GetByTestId("attainment8-localauthority-and-national-card");
 
         // Assert
         Assert.True(await academicYearSelector.IsVisibleAsync());
         Assert.True(await progress8CustomCard.IsVisibleAsync());
         Assert.True(await attainment8EstablishmentCard.IsVisibleAsync());
-        Assert.True(await attainment8LocalAuthorityAndNationlCard.IsVisibleAsync());
+        Assert.True(await attainment8LocalAuthorityAndNationalCard.IsVisibleAsync());
     }
 
     [Theory]
