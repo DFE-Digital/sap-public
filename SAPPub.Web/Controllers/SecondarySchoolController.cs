@@ -2,6 +2,7 @@
 using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4;
+using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
@@ -17,17 +18,21 @@ namespace SAPPub.Web.Controllers
     {
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/about", Name = RouteConstants.SecondaryAboutSchool)]
-        public async Task<IActionResult> AboutSchool(string urn, string schoolName, CancellationToken ct)
+        public async Task<IActionResult> AboutSchool(
+            [FromServices] IAboutSchoolService aboutSchoolService,
+            string urn,
+            string schoolName,
+            CancellationToken ct)
         {
-            var establishmentDetails = await establishmentService.GetEstablishmentAsync(urn, ct);
+            var schoolDetails = await aboutSchoolService.GetAboutSchoolDetailsAsync(urn, ct);
 
-            if (string.IsNullOrWhiteSpace(establishmentDetails?.URN))
+            if (string.IsNullOrWhiteSpace(schoolDetails.Urn))
             {
                 logger.LogWarning("No establishment details found for URN: {URN}", urn);
                 return View("Error");
             }
 
-            var model = AboutSchoolViewModel.Map(establishmentDetails);
+            var model = AboutSchoolViewModel.Map(schoolDetails);
             return View(model);
         }
 
