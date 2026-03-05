@@ -133,7 +133,7 @@ public class SecondarySchoolControllerTests
             Telephone = _fakeEstablishment.TelephoneNum,
             Address = _fakeEstablishment.Address,
             LocalAuthority = _fakeEstablishment.LAName,
-            LocalAuthorityCouncilName = _fakeEstablishment.LAName,
+            LocalAuthorityName = _fakeEstablishment.LAName,
             LocalAuthorityWebsite = "www.gov.uk",
             Easting = "50.01",
             Northing = "60.90",
@@ -198,7 +198,7 @@ public class SecondarySchoolControllerTests
         var expectedResult = SchoolDetails();
 
         _mockAboutSchoolService
-            .Setup(es => es.GetAboutSchoolDetailsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Setup(es => es.GetAboutSchoolDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
             .ReturnsAsync(expectedResult);
 
         var result = await _controller.AboutSchool(
@@ -218,7 +218,7 @@ public class SecondarySchoolControllerTests
         Assert.Equal(expectedResult.AcademyTrust, model.AcademyTrust);
         Assert.Equal(expectedResult.Telephone, model.Telephone);
         Assert.Equal(expectedResult.LocalAuthority, model.LocalAuthority);
-        Assert.Equal(expectedResult.LocalAuthorityCouncilName, model.LocalAuthorityCouncilName);
+        Assert.Equal(expectedResult.LocalAuthorityName, model.LocalAuthorityCouncilName);
         Assert.Equal(expectedResult.LocalAuthorityWebsite, model.LocalAuthorityWebsite);
         Assert.Equal(expectedResult.TypeOfSchool, model.TypeOfSchool);
         Assert.Equal(expectedResult.HeadTeacher, model.HeadTeacher);
@@ -245,7 +245,7 @@ public class SecondarySchoolControllerTests
         var expectedResult = SchoolDetails();
 
         _mockAboutSchoolService
-            .Setup(es => es.GetAboutSchoolDetailsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Setup(es => es.GetAboutSchoolDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
             .ReturnsAsync(expectedResult);
 
         var result = await _controller.AboutSchool(
@@ -274,7 +274,7 @@ public class SecondarySchoolControllerTests
         var expectedResult = SchoolDetails();
 
         _mockAboutSchoolService
-            .Setup(es => es.GetAboutSchoolDetailsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Setup(es => es.GetAboutSchoolDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
             .ReturnsAsync(expectedResult);
 
         var result = await _controller.AboutSchool(
@@ -307,7 +307,7 @@ public class SecondarySchoolControllerTests
         var expectedResult = SchoolDetails();
 
         _mockAboutSchoolService
-            .Setup(es => es.GetAboutSchoolDetailsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Setup(es => es.GetAboutSchoolDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
             .ReturnsAsync(expectedResult);
 
         var result = await _controller.AboutSchool(
@@ -340,7 +340,7 @@ public class SecondarySchoolControllerTests
         var expectedResult = SchoolDetails();
 
         _mockAboutSchoolService
-            .Setup(es => es.GetAboutSchoolDetailsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Setup(es => es.GetAboutSchoolDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
             .ReturnsAsync(expectedResult);
 
         var result = await _controller.AboutSchool(

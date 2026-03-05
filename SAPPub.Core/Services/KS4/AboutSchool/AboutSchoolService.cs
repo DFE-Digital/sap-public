@@ -23,7 +23,7 @@ public sealed class AboutSchoolService(
             Telephone = establishment.TelephoneNum,
             Address = establishment.Address,
             LocalAuthority = establishment.LAName,
-            LocalAuthorityCouncilName = laUrls?.Name,
+            LocalAuthorityName = laUrls?.Name,
             LocalAuthorityWebsite = laUrls?.LAMainUrl,
             Easting = establishment.Easting,
             Northing = establishment.Northing,

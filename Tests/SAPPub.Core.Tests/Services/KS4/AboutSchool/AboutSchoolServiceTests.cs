@@ -61,7 +61,7 @@ public class AboutSchoolServiceTests
         };
 
         _mockEstablishmentService
-               .Setup(r => r.GetEstablishmentAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+               .Setup(r => r.GetEstablishmentAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>()))
                .ReturnsAsync(fakeEstablishment);
 
         _mockLaUrlsRepository
@@ -76,7 +76,7 @@ public class AboutSchoolServiceTests
         Assert.Equal(fakeEstablishment.URN, result.Urn);
         Assert.Equal(fakeEstablishment.EstablishmentName, result.SchoolName);
         Assert.Equal(fakeEstablishment.LAName, result.LocalAuthority);
-        Assert.Equal(expectedLaUrl.Name, result.LocalAuthorityCouncilName);
+        Assert.Equal(expectedLaUrl.Name, result.LocalAuthorityName);
         Assert.Equal(expectedLaUrl.LAMainUrl, result.LocalAuthorityWebsite);
         Assert.Equal(fakeEstablishment.TrustName, result.AcademyTrust);
         Assert.Equal(fakeEstablishment.Website, result.Website);

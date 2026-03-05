@@ -65,7 +65,7 @@ namespace SAPPub.Web.Models.SecondarySchool
                 Telephone = schoolDetails.Telephone,
                 Address = schoolDetails.Address,
                 LocalAuthority = schoolDetails.LocalAuthority,
-                LocalAuthorityCouncilName = schoolDetails.LocalAuthorityCouncilName,
+                LocalAuthorityCouncilName = schoolDetails.LocalAuthorityName,
                 LocalAuthorityWebsite = schoolDetails.LocalAuthorityWebsite,
                 Latitude = latLong?.Latitude.ToString() ?? string.Empty,
                 Longitude = latLong?.Longitude.ToString() ?? string.Empty,

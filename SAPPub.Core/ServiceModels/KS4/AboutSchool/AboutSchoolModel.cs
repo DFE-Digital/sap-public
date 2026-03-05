@@ -18,7 +18,7 @@ public class AboutSchoolModel
 
     public string? LocalAuthority { get; set; }
 
-    public string? LocalAuthorityCouncilName { get; set; }
+    public string? LocalAuthorityName { get; set; }
 
     public string? LocalAuthorityWebsite { get; set; }
 
