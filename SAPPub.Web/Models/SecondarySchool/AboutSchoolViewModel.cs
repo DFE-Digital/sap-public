@@ -1,6 +1,6 @@
-﻿using SAPPub.Core.Entities;
-using SAPPub.Core.Extensions;
+﻿using SAPPub.Core.Extensions;
 using SAPPub.Core.Helpers;
+using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 
 namespace SAPPub.Web.Models.SecondarySchool
 {
@@ -23,6 +23,8 @@ namespace SAPPub.Web.Models.SecondarySchool
         public string? Address { get; set; }
 
         public string? LocalAuthority { get; set; }
+
+        public string? LocalAuthorityCouncilName { get; set; }
 
         public string? LocalAuthorityWebsite { get; set; }
 
@@ -50,32 +52,32 @@ namespace SAPPub.Web.Models.SecondarySchool
 
         public string? ResourcedProvision { get; set; }
 
-        public static AboutSchoolViewModel Map(Establishment establishment)
+        public static AboutSchoolViewModel Map(AboutSchoolModel schoolDetails)
         {
-            var latLong = MappingHelper.ConvertToLatLon(establishment.Easting, establishment.Northing);
+            var latLong = MappingHelper.ConvertToLatLon(schoolDetails.Easting, schoolDetails.Northing);
 
             return new AboutSchoolViewModel
             {
-                URN = establishment.URN,
-                SchoolName = establishment.EstablishmentName,
-                AcademyTrust = establishment.TrustName,
-                Website = establishment.Website,
-                Telephone = establishment.TelephoneNum,
-                Address = establishment.Address,
-                LocalAuthority = establishment.LAName,
-                LocalAuthorityWebsite = "https://www.gov.uk", // ToDo - Lookup from list
-                YourDistanceFromThisSchool = "500m", // ToDo - calculate from input location,
+                URN = schoolDetails.Urn,
+                SchoolName = schoolDetails.SchoolName,
+                AcademyTrust = schoolDetails.AcademyTrust,
+                Website = schoolDetails.Website,
+                Telephone = schoolDetails.Telephone,
+                Address = schoolDetails.Address,
+                LocalAuthority = schoolDetails.LocalAuthority,
+                LocalAuthorityCouncilName = schoolDetails.LocalAuthorityName,
+                LocalAuthorityWebsite = schoolDetails.LocalAuthorityWebsite,
                 Latitude = latLong?.Latitude.ToString() ?? string.Empty,
                 Longitude = latLong?.Longitude.ToString() ?? string.Empty,
-                TypeOfSchool = establishment.TypeOfEstablishmentName,
-                HeadTeacher = establishment.Headteacher,
-                AgeRange = establishment.AgeRange,
-                NumberOfPupils = establishment.TotalPupils?.ToInt()?.ToString("N0") ?? establishment.TotalPupils,
-                PupilSex = establishment.GenderName,
-                ReligiousCharacter = establishment.ReligiousCharacterName,
-                SixthForm = GetSixthForm(establishment.OfficialSixthFormId),
-                SenUnit = GetSenUnit(establishment.ResourcedProvision),
-                ResourcedProvision = GetResourcedProvision(establishment.ResourcedProvision),
+                TypeOfSchool = schoolDetails.TypeOfSchool,
+                HeadTeacher = schoolDetails.HeadTeacher,
+                AgeRange = schoolDetails.AgeRange,
+                NumberOfPupils = schoolDetails.NumberOfPupils?.ToInt()?.ToString("N0") ?? schoolDetails.NumberOfPupils,
+                PupilSex = schoolDetails.PupilSex,
+                ReligiousCharacter = schoolDetails.ReligiousCharacter,
+                SixthForm = GetSixthForm(schoolDetails.OfficialSixthFormId),
+                SenUnit = GetSenUnit(schoolDetails.ResourcedProvision),
+                ResourcedProvision = GetResourcedProvision(schoolDetails.ResourcedProvision),
             };
         }
 
