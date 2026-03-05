@@ -58,7 +58,15 @@ public class StartupIndexBuilder(ILogger<StartupIndexBuilder> logger, LuceneScho
             {
                 // Minimal call: page=1,take=1 to avoid loading much.
                 var result = await establishmentService.GetEstablishmentsAsync(page: 1, take: 1, ct);
-                return;
+                if (result.Count() == 1)
+                {
+                    return;
+                }
+                else
+                {
+                    logger.LogWarning("Request to v_Establishment returned 0 results");
+                    await Task.Delay(TimeSpan.FromSeconds(5), ct);
+                }
             }
             catch (Exception ex) when (!ct.IsCancellationRequested)
             {
