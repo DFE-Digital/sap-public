@@ -97,9 +97,11 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "EngMaths59_Boy_Est_Current_Pct_Coded",
           "EngMaths59_Grl_Est_Current_Pct_Coded",
           "EngMaths59_Tot_Est_Current_Pct_Coded",
+          "Attainment8_Tot_Est_Previous_Num_Coded",
           "EngMaths49_Tot_Est_Previous_Pct_Coded",
           "EngMaths59_Tot_Est_Previous_Pct_Coded",
           "Prog8_Tot_Est_Previous_Num_Coded",
+          "Attainment8_Tot_Est_Previous2_Num_Coded",
           "EngMaths49_Tot_Est_Previous2_Pct_Coded",
           "EngMaths59_Tot_Est_Previous2_Pct_Coded",
           "Prog8_Tot_Est_Previous2_Num_Coded"
@@ -120,9 +122,11 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "EngMaths59_Boy_LA_Current_Pct_Coded",
           "EngMaths59_Grl_LA_Current_Pct_Coded",
           "EngMaths59_Tot_LA_Current_Pct_Coded",
+          "Attainment8_Tot_LA_Previous_Num_Coded",
           "EngMaths49_Tot_LA_Previous_Pct_Coded",
           "EngMaths59_Tot_LA_Previous_Pct_Coded",
           "Prog8_Avg_LA_Previous_Num_Coded",
+          "Attainment8_Tot_LA_Previous2_Num_Coded",
           "EngMaths49_Tot_LA_Previous2_Pct_Coded",
           "EngMaths59_Tot_LA_Previous2_Pct_Coded",
           "Prog8_Avg_LA_Previous2_Num_Coded"
@@ -153,8 +157,10 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "EngMaths59_Boy_Eng_Current_Pct_Coded",
           "EngMaths59_Grl_Eng_Current_Pct_Coded",
           "EngMaths59_Tot_Eng_Current_Pct_Coded",
+          "Attainment8_Tot_Eng_Previous_Num_Coded",
           "EngMaths49_Tot_Eng_Previous_Pct_Coded",
           "EngMaths59_Tot_Eng_Previous_Pct_Coded",
+          "Attainment8_Tot_Eng_Previous2_Num_Coded",
           "EngMaths49_Tot_Eng_Previous2_Pct_Coded",
           "EngMaths59_Tot_Eng_Previous2_Pct_Coded"
           """;

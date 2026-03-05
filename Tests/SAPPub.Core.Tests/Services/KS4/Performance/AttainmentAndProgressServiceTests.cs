@@ -13,6 +13,7 @@ public class AttainmentAndProgressServiceTests
     private readonly Mock<IEstablishmentService> _mockEstablishmentService;
     private readonly Mock<IEstablishmentPerformanceService> _mockEstablishmentPerformanceService;
     private readonly Mock<ILAPerformanceService> _mockLAPerformanceService;
+    private readonly Mock<IEnglandPerformanceService> _mockEnglandPerformanceService;
     private readonly AttainmentAndProgressService _service;
 
     private readonly Establishment fakeEstablishment = new()
@@ -29,11 +30,13 @@ public class AttainmentAndProgressServiceTests
         _mockEstablishmentService = new();
         _mockEstablishmentPerformanceService = new();
         _mockLAPerformanceService = new();
+        _mockEnglandPerformanceService = new();
 
         _service = new AttainmentAndProgressService(
             _mockEstablishmentService.Object,
             _mockEstablishmentPerformanceService.Object,
-            _mockLAPerformanceService.Object);
+            _mockLAPerformanceService.Object,
+            _mockEnglandPerformanceService.Object);
     }
 
     [Fact]
@@ -69,13 +72,27 @@ public class AttainmentAndProgressServiceTests
             Id = fakeEstablishment.URN,
             Prog8_Tot_Est_Previous_Num = 0.3,
             Prog8_Tot_Est_Previous2_Num = 2,
+            Attainment8_Tot_Est_Current_Num = 40,
+            Attainment8_Tot_Est_Previous_Num = 50,
+            Attainment8_Tot_Est_Previous2_Num = 55,
         };
 
         var lAPerformance = new LAPerformance
         {
             Id = fakeEstablishment.LAId,
             Prog8_Avg_LA_Previous_Num = 5,
-            Prog8_Avg_LA_Previous2_Num = 3
+            Prog8_Avg_LA_Previous2_Num = 3,
+            Attainment8_Tot_LA_Current_Num = 60,
+            Attainment8_Tot_LA_Previous_Num = 50,
+            Attainment8_Tot_LA_Previous2_Num = 70,
+        };
+
+        var englandPerformance = new EnglandPerformance
+        {
+            Id = fakeEstablishment.LAId,
+            Attainment8_Tot_Eng_Current_Num = 60,
+            Attainment8_Tot_Eng_Previous_Num = 70,
+            Attainment8_Tot_Eng_Previous2_Num = 40,
         };
 
         _mockEstablishmentService
@@ -90,6 +107,10 @@ public class AttainmentAndProgressServiceTests
             .Setup(r => r.GetLAPerformanceAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(lAPerformance);
 
+        _mockEnglandPerformanceService
+            .Setup(r => r.GetEnglandPerformanceAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(englandPerformance);
+
         // Act
         var result = await _service.GetAttainmentAndProgressAsync(fakeEstablishment.URN, academicYearSelection, CancellationToken.None);
 
@@ -102,16 +123,28 @@ public class AttainmentAndProgressServiceTests
         {
             Assert.Equal(establishmentPerformance.Prog8_Tot_Est_Previous_Num, result.EstablishmentProgress8Score);
             Assert.Equal(lAPerformance.Prog8_Avg_LA_Previous_Num, result.LocalAuthorityProgress8Score);
+
+            Assert.Equal(establishmentPerformance.Attainment8_Tot_Est_Previous_Num, result.EstablishmentAttainment8Score);
+            Assert.Equal(lAPerformance.Attainment8_Tot_LA_Previous_Num, result.LocalAuthorityAttainment8Score);
+            Assert.Equal(englandPerformance.Attainment8_Tot_Eng_Previous_Num, result.EnglandAttainment8Score);
         }
         else if (academicYearSelection == AcademicYearSelection.Previous2)
         {
             Assert.Equal(establishmentPerformance.Prog8_Tot_Est_Previous2_Num, result.EstablishmentProgress8Score);
             Assert.Equal(lAPerformance.Prog8_Avg_LA_Previous2_Num, result.LocalAuthorityProgress8Score);
+
+            Assert.Equal(establishmentPerformance.Attainment8_Tot_Est_Previous2_Num, result.EstablishmentAttainment8Score);
+            Assert.Equal(lAPerformance.Attainment8_Tot_LA_Previous2_Num, result.LocalAuthorityAttainment8Score);
+            Assert.Equal(englandPerformance.Attainment8_Tot_Eng_Previous2_Num, result.EnglandAttainment8Score);
         }
         else
         {
             Assert.Null(result.EstablishmentProgress8Score);
-            Assert.Null(result.LocalAuthorityProgress8Score);            
+            Assert.Null(result.LocalAuthorityProgress8Score);
+
+            Assert.Equal(establishmentPerformance.Attainment8_Tot_Est_Current_Num, result.EstablishmentAttainment8Score);
+            Assert.Equal(lAPerformance.Attainment8_Tot_LA_Current_Num, result.LocalAuthorityAttainment8Score);
+            Assert.Equal(englandPerformance.Attainment8_Tot_Eng_Current_Num, result.EnglandAttainment8Score);
         }
     }
 }
