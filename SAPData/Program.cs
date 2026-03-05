@@ -37,11 +37,28 @@ internal class Program
         // -------------------------------------------------
         // 2. Generate raw tables + cleaned files + mapping
         // -------------------------------------------------
-        new GenerateRawTables(
+        var generator = new GenerateRawTables(
             rawInputDir,
             cleanedDir,
             sqlDir
-        ).Run();
+        );
+
+        generator.AddRowFilter((tableKey, headers, row) =>
+        {
+            if (!tableKey.StartsWith("edubasealldata", StringComparison.OrdinalIgnoreCase))
+                return true; // Only filter GIAS
+
+            var headersList = headers as List<string> ?? headers.ToList();
+            int typeIdx = headersList.IndexOf("TypeOfEstablishment (code)");
+            if (typeIdx < 0)
+                return true; // Column not found, don't filter
+
+            var type = row[typeIdx];
+            //string for now - will review rules once working
+            return type != "49";
+        });
+
+        generator.Run();
 
         // -------------------------------------------------
         // 3. Generate views
