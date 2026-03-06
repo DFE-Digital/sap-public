@@ -92,7 +92,8 @@ public partial class Program
         builder.Services.AddSingleton<NpgsqlDataSource>(_ => NpgsqlDataSource.Create(connectionString));
 
         builder.Services.AddDependencies(builder.Environment, builder.Configuration);
-        builder.Services.AddLuceneDependencies();
+        var enableLuceneStartupIndexBuilder = builder.Configuration.GetValue("Lucene:EnableStartupIndexBuilder", true);
+        builder.Services.AddLuceneDependencies(enableLuceneStartupIndexBuilder);
 
         var app = builder.Build();
 
