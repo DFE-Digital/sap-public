@@ -51,28 +51,19 @@ namespace SAPPub.Web.Controllers
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/attendance", Name = RouteConstants.SecondaryAttendance)]
-        public IActionResult Attendance(string urn, string schoolName)
+        public async Task<IActionResult> Attendance(string urn, string schoolName, CancellationToken ct)
         {
-            var model = new AttendanceViewModel
-            {
-                URN = urn,
-                SchoolName = schoolName,
-                SchoolWebsite = "https://www.gov.uk/"
-            };
-
+            var establishmentDetails = await establishmentService.GetEstablishmentAsync(urn, ct);
+            var model = AttendanceViewModel.Map(establishmentDetails);
             return View(model);
-        }
+        }     
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/curriculum-and-extra-curricular-activities", Name = RouteConstants.SecondaryCurriculumAndExtraCurricularActivities)]
-        public IActionResult CurriculumAndExtraCurricularActivities(string urn, string schoolName)
+        public async Task<IActionResult> CurriculumAndExtraCurricularActivities(string urn, string schoolName, CancellationToken ct)
         {
-            var model = new CurriculumAndExtraCurricularActivitiesViewModel
-            {
-                URN = urn,
-                SchoolName = schoolName
-            };
-
+            var establishmentDetails = await establishmentService.GetEstablishmentAsync(urn, ct);
+            var model = CurriculumAndExtraCurricularActivitiesViewModel.Map(establishmentDetails);
             return View(model);
         }
 

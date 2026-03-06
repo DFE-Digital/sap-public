@@ -214,7 +214,7 @@ public class SecondarySchoolControllerTests
         Assert.NotNull(model);
         Assert.Equal(expectedResult.Urn, model.URN);
         Assert.Equal(expectedResult.SchoolName, model.SchoolName);
-        Assert.Equal(expectedResult.Website, model.Website);
+        Assert.Equal(expectedResult.Website, model.SchoolWebsite);
         Assert.Equal(expectedResult.AcademyTrust, model.AcademyTrust);
         Assert.Equal(expectedResult.Telephone, model.Telephone);
         Assert.Equal(expectedResult.LocalAuthority, model.LocalAuthority);
@@ -389,9 +389,9 @@ public class SecondarySchoolControllerTests
     }
 
     [Fact]
-    public void Get_Attendance_Info_ReturnsOk()
+    public async Task Get_Attendance_Info_ReturnsOk()
     {
-        var result = _controller.Attendance(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName) as ViewResult;
+        var result = await _controller.Attendance(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
@@ -407,9 +407,9 @@ public class SecondarySchoolControllerTests
     }
 
     [Fact]
-    public void Get_CurriculumAndExtraCurricularActivities_Info_ReturnsOk()
+    public async Task Get_CurriculumAndExtraCurricularActivities_Info_ReturnsOk()
     {
-        var result = _controller.CurriculumAndExtraCurricularActivities(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName) as ViewResult;
+        var result = await _controller.CurriculumAndExtraCurricularActivities(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
@@ -418,6 +418,7 @@ public class SecondarySchoolControllerTests
         Assert.NotNull(model);
         Assert.Equal(_fakeEstablishment.URN, model.URN);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
+        Assert.Equal(_fakeEstablishment.Website, model.SchoolWebsite);
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);        
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
