@@ -8,6 +8,7 @@ using SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Repositories.KS4.Workforce;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4;
+using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.KS4.Absence;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
@@ -17,6 +18,7 @@ using SAPPub.Core.Interfaces.Services.KS4.Workforce;
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.Services;
 using SAPPub.Core.Services.KS4;
+using SAPPub.Core.Services.KS4.AboutSchool;
 using SAPPub.Core.Services.KS4.Absence;
 using SAPPub.Core.Services.KS4.Admissions;
 using SAPPub.Core.Services.KS4.Destinations;
@@ -95,6 +97,7 @@ namespace SAPPub.Web.Middleware
 
             services.AddTransient<IDestinationsService, DestinationsService>();
             services.AddTransient<IAdmissionsService, EstablishmentAdmissionsService>();
+            services.AddTransient<IAboutSchoolService, AboutSchoolService>();
             services.AddTransient<ILaUrlsRepository, LaUrlsRepository>();
 
             services.AddSingleton<ISchoolSearchIndexReader, LuceneSchoolSearchIndexReader>();

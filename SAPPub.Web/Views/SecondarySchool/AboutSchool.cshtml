@@ -68,8 +68,12 @@
                 <govuk-summary-list-row-value>
                     @Model.LocalAuthority
                     <span class="govuk-clear">
-                        <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.LocalAuthorityWebsite">
-                            View @Model.LocalAuthority City Council's website
+                        <a href="@($"https://www.{Model.LocalAuthorityWebsite}")"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="govuk-link govuk-link--no-visited-state"
+                           data-testid="la-website-link">
+                           View @Model.LocalAuthorityCouncilName’s website
                             <span class="govuk-visually-hidden">(opens in a new tab)</span>
                         </a>
                     </span>

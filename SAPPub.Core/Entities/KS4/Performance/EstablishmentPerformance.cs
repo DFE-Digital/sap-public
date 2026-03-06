@@ -58,6 +58,13 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public string? EngMaths59_Tot_Est_Current_Pct_Reason { get; set; }
 
         /// <summary>
+        /// Attainment 8 Total filtered by Establishment for Previous year
+        /// </summary>
+        public CodedDouble Attainment8_Tot_Est_Previous_Num_Coded { get; set; } = new();
+        public double? Attainment8_Tot_Est_Previous_Num { get; set; }
+        public string? Attainment8_Tot_Est_Previous_Num_Reason { get; set; }
+
+        /// <summary>
         /// English and Maths grades 4 to 9 Total filtered by Establishment for Previous year
         /// </summary>
         public CodedDouble EngMaths49_Tot_Est_Previous_Pct_Coded { get; set; } = new();
@@ -77,6 +84,13 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public CodedDouble Prog8_Tot_Est_Previous_Num_Coded { get; set; } = new();
         public double? Prog8_Tot_Est_Previous_Num { get; set; }
         public string? Prog8_Tot_Est_Previous_Num_Reason { get; set; }
+
+        /// <summary>
+        /// Attainment 8 Total filtered by Establishment for Previous2 year
+        /// </summary>
+        public CodedDouble Attainment8_Tot_Est_Previous2_Num_Coded { get; set; } = new();
+        public double? Attainment8_Tot_Est_Previous2_Num { get; set; }
+        public string? Attainment8_Tot_Est_Previous2_Num_Reason { get; set; }
 
         /// <summary>
         /// English and Maths grades 4 to 9 Total filtered by Establishment for Previous2 year
