@@ -214,7 +214,7 @@ public class SecondarySchoolControllerTests
         Assert.NotNull(model);
         Assert.Equal(expectedResult.Urn, model.URN);
         Assert.Equal(expectedResult.SchoolName, model.SchoolName);
-        Assert.Equal(expectedResult.Website, model.Website);
+        Assert.Equal(expectedResult.Website, model.SchoolWebsite);
         Assert.Equal(expectedResult.AcademyTrust, model.AcademyTrust);
         Assert.Equal(expectedResult.Telephone, model.Telephone);
         Assert.Equal(expectedResult.LocalAuthority, model.LocalAuthority);
