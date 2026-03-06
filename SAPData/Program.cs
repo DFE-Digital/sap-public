@@ -43,20 +43,8 @@ internal class Program
             sqlDir
         );
 
-        generator.AddRowFilter((tableKey, headers, row) =>
-        {
-            if (!tableKey.StartsWith("edubasealldata", StringComparison.OrdinalIgnoreCase))
-                return true; // Only filter GIAS
-
-            var headersList = headers as List<string> ?? headers.ToList();
-            int typeIdx = headersList.IndexOf("TypeOfEstablishment (code)");
-            if (typeIdx < 0)
-                return true; // Column not found, don't filter
-
-            var type = row[typeIdx];
-            //string for now - will review rules once working
-            return type != "49";
-        });
+        generator.AddRowFilter(ExcludeIndependentSchools);
+        generator.AddRowFilter(ExcludeOldClosedSchools);
 
         generator.Run();
 
@@ -144,5 +132,45 @@ internal class Program
             ?? matches[0];
 
         return Path.GetDirectoryName(preferred)!;
+    }
+
+    private static bool ExcludeOnlineSchools(string tableKey, IReadOnlyList<string> headers, IReadOnlyList<string> row)
+    {
+        if (!tableKey.StartsWith("edubasealldata", StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        var headersList = headers as List<string> ?? headers.ToList();
+        int typeIdx = headersList.IndexOf("TypeOfEstablishment (code)");
+        if (typeIdx < 0)
+            return true;
+
+        var type = row[typeIdx];
+        return type != "49";
+    }
+
+    private static bool ExcludeOldClosedSchools(string tableKey, IReadOnlyList<string> headers, IReadOnlyList<string> row)
+    {
+        if (!tableKey.StartsWith("edubasealldata", StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        var headersList = headers as List<string> ?? headers.ToList();
+        int closeDateIdx = headersList.IndexOf("CloseDate");
+        if (closeDateIdx < 0)
+            return true;
+
+        var closeDateStr = row[closeDateIdx];
+        if (string.IsNullOrWhiteSpace(closeDateStr))
+            return true; // Not closed
+
+        if (!DateTime.TryParse(closeDateStr, out var closeDate))
+            return true; // Invalid date, keep
+
+        var now = DateTime.Today;
+        int academicYearCutoff = now.Month < 9 || (now.Month == 9 && now.Day < 12)
+            ? now.Year - 4
+            : now.Year - 3;
+        var cutoffDate = new DateTime(academicYearCutoff, 9, 12);
+
+        return closeDate >= cutoffDate;
     }
 }
