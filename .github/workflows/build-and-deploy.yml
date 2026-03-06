@@ -33,7 +33,7 @@ on:
 
 env:
   TERRAFORM_BASE: terraform/application
-  HEALTHCHECK_CMD: "healthcheck"
+  HEALTHCHECK_CMD: ""
 
 jobs:
 

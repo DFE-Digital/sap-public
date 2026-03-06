@@ -3,6 +3,10 @@ using Lucene.Net.Util;
 
 namespace SAPPub.Infrastructure.LuceneSearch;
 
+/// <summary>
+/// sets up the synonym map for the Lucene index, 
+/// which allows for more flexible search queries by treating certain terms as equivalent.
+/// </summary>
 public class LuceneSynonymMapBuilder
 {
     private static readonly List<string[]> SynonymGroups =

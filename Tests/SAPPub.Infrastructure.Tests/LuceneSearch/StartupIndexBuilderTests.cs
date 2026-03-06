@@ -14,7 +14,7 @@ public class StartupIndexBuilderTests
         var logger = new Mock<ILogger<StartupIndexBuilder>>();
         var repo = new Mock<IEstablishmentService>().Object;
         using var ctx = new LuceneIndexContext();
-        var writer = new LuceneIndexWriter(ctx);
+        var writer = new LuceneSchoolSearchIndexWriter(ctx);
         var sut = new StartupIndexBuilder(logger.Object, writer, repo);
 
         // Act

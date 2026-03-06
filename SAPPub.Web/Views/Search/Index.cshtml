@@ -1,12 +1,29 @@
-﻿@{
+﻿@model SAPPub.Web.Models.Search.SearchResultsViewModel
+
+@{
     ViewData["Title"] = "Search";
 }
 
-<h1>Search for secondary schools</h1>
-<p>Use this service to find mainstream secondary schools in England</p>
-
-<form method="get" asp-controller="Search" asp-action="SearchResults">
-    <div class="shaded-box">
-        @await Html.PartialAsync("_SearchPartial")
-    </div>
-</form>
+<div class="shaded-box">
+    <form method="post" asp-controller="Search" asp-action="Index">
+        <govuk-fieldset>
+            <govuk-fieldset-legend is-page-heading="true" class="govuk-fieldset__legend--l">
+                <h1 class="govuk-heading-l">Search for secondary schools</h1>
+                <p class="govuk-hint">Use this service to find mainstream secondary schools in England.</p>
+            </govuk-fieldset-legend>
+            <div class="govuk-grid-column-one-half">
+            <govuk-input input-class="govuk-input govuk-!-width-two-thirds" input-placeholder="Search by keyword" for=@Model.SearchParams.NameSearchTerm name="NameSearchTerm" data-testid="searchByNameInput">
+                <govuk-input-label is-page-heading="false" class="govuk-label--s" id="school-name">School name</govuk-input-label>
+                <govuk-input-hint>For example, St Joseph's secondary school</govuk-input-hint>
+            </govuk-input>
+            </div>
+            <div class="govuk-grid-column-one-half">
+            <govuk-input input-class="govuk-input govuk-!-width-two-thirds" input-placeholder="Search by postcode" for=@Model.SearchParams.LocationSearchTerm name="LocationSearchTerm" data-testid="searchByLocationInput">
+                <govuk-input-label is-page-heading="false" class="govuk-label--s" id="location">Postcode</govuk-input-label>
+                <govuk-input-hint>For example, LS28 8EU</govuk-input-hint>
+            </govuk-input>
+            </div>
+            <govuk-button id="search" type="submit">Search</govuk-button>
+        </govuk-fieldset>
+    </form>
+</div>

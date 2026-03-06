@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SAPPub.Core.Interfaces.Services.Search;
-using SAPPub.Core.ServiceModels.Search;
+using SAPPub.Core.ServiceModels.Search.InputModels;
+using SAPPub.Core.ServiceModels.Search.Results;
 using SAPPub.Web.Controllers;
 using SAPPub.Web.Models.Search;
 
@@ -18,7 +19,8 @@ public class SearchControllerTests
         EstablishmentName = "Test School",
         Address = "123 Test Street",
         GenderName = "Mixed",
-        ReligiousCharacterName = "None"
+        ReligiousCharacterName = "None",
+        Distance = 0.1
     };
     private readonly SchoolSearchResultServiceModel _schoolSearchResult2 = new SchoolSearchResultServiceModel
     {
@@ -26,7 +28,8 @@ public class SearchControllerTests
         EstablishmentName = "A Test School 2",
         Address = "123 Test Street 2",
         GenderName = "Female",
-        ReligiousCharacterName = "Muslim"
+        ReligiousCharacterName = "Muslim",
+        Distance = 0.4
     };
 
     public SearchControllerTests()
@@ -40,11 +43,11 @@ public class SearchControllerTests
     }
 
     [Fact]
-    public async Task Get_SearchResults_ReturnsSchoolResultsViewModel()
+    public async Task Get_SearchResults_SearchByName_ReturnsSchoolResultsViewModel()
     {
         // arrange
-        var searchTerm = "test school";
-        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchTerm)).ReturnsAsync(new SchoolSearchResultsServiceModel
+        var searchQuery = new SchoolSearchServiceQuery() { Name = "test school" };
+        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
         {
             Count = 2,
             SchoolSearchResults = new List<SchoolSearchResultServiceModel> {
@@ -53,12 +56,12 @@ public class SearchControllerTests
         });
 
         // act
-        var result = await _controller.SearchResults(searchTerm);
+        var result = await _controller.SearchResults(new SearchParamsModel() { NameSearchTerm = searchQuery.Name, LocationSearchTerm = searchQuery.Location });
         var viewModel = ((ViewResult)result).Model as SearchResultsViewModel;
 
         // assert
         Assert.NotNull(viewModel);
-        Assert.Equal(searchTerm, viewModel.NameSearchTerm);
+        Assert.Equal(searchQuery.Name, viewModel.SearchParams.NameSearchTerm);
         Assert.Equal(2, viewModel.SearchResultsCount);
         Assert.Collection(viewModel.SearchResults,
             item =>
@@ -80,11 +83,98 @@ public class SearchControllerTests
     }
 
     [Fact]
+    public async Task Get_SearchResults_SearchByValidLocation_ReturnsSchoolResultsViewModel()
+    {
+        // arrange
+        var searchQuery = new SchoolSearchServiceQuery() { Location = "NE2 1VF", Distance = 3 };
+        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
+        {
+            Count = 2,
+            SchoolSearchResults = new List<SchoolSearchResultServiceModel> {
+                _schoolSearchResult1, _schoolSearchResult2
+            }
+        });
+
+        // act
+        var result = await _controller.SearchResults(new SearchParamsModel() { NameSearchTerm = searchQuery.Name, LocationSearchTerm = searchQuery.Location });
+        var viewModel = ((ViewResult)result).Model as SearchResultsViewModel;
+
+        // assert
+        Assert.NotNull(viewModel);
+        Assert.Equal(searchQuery.Name, viewModel.SearchParams.NameSearchTerm);
+        Assert.Equal(2, viewModel.SearchResultsCount);
+        Assert.Collection(viewModel.SearchResults,
+            item =>
+            {
+                Assert.Equal(_schoolSearchResult1.URN, item.URN);
+                Assert.Equal(_schoolSearchResult1.EstablishmentName, item.EstablishmentName);
+                Assert.Equal(_schoolSearchResult1.Address, item.Address);
+                Assert.Equal(_schoolSearchResult1.GenderName, item.GenderName);
+                Assert.Equal(_schoolSearchResult1.ReligiousCharacterName, item.ReligiousCharacter);
+            },
+            item =>
+            {
+                Assert.Equal(_schoolSearchResult2.URN, item.URN);
+                Assert.Equal(_schoolSearchResult2.EstablishmentName, item.EstablishmentName);
+                Assert.Equal(_schoolSearchResult2.Address, item.Address);
+                Assert.Equal(_schoolSearchResult2.GenderName, item.GenderName);
+                Assert.Equal(_schoolSearchResult2.ReligiousCharacterName, item.ReligiousCharacter);
+            });
+    }
+
+    [Fact]
+    public async Task Get_SearchResults_SearchByValidLocation_ReturnsSchoolResultsOrderedDistanceAscending()
+    {
+        // arrange
+        var searchQuery = new SchoolSearchServiceQuery() { Location = "NE2 1VF", Distance = 3 };
+        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
+        {
+            Count = 2,
+            SchoolSearchResults = new List<SchoolSearchResultServiceModel> {
+                _schoolSearchResult2, _schoolSearchResult1
+            }
+        });
+
+        // act
+        var result = await _controller.SearchResults(new SearchParamsModel() { NameSearchTerm = searchQuery.Name, LocationSearchTerm = searchQuery.Location });
+        var viewModel = ((ViewResult)result).Model as SearchResultsViewModel;
+
+        // assert
+        Assert.NotNull(viewModel);
+        Assert.Equal(searchQuery.Name, viewModel.SearchParams.NameSearchTerm);
+        Assert.Equal(2, viewModel.SearchResultsCount);
+        Assert.Equal(_schoolSearchResult1.URN, viewModel.SearchResults[0].URN);
+        Assert.Equal(_schoolSearchResult2.URN, viewModel.SearchResults[1].URN);
+    }
+
+    [Fact]
+    public async Task Get_SearchResults_SearchByInvalidPostcode_ReturnsSchoolResultsViewModel()
+    {
+        // arrange
+        var location = "invalid";
+        var searchQuery = new SchoolSearchServiceQuery() { Location = location, Distance = 3 };
+        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
+        {
+            Count = 1,
+            SchoolSearchResults = new List<SchoolSearchResultServiceModel>(),
+            Status = SchoolSearchStatus.InvalidPostcode
+        });
+
+
+        // act
+        var viewResult = await _controller.SearchResults(new SearchParamsModel() { NameSearchTerm = searchQuery.Name, LocationSearchTerm = searchQuery.Location }) as ViewResult;
+
+        // assert
+        Assert.NotNull(viewResult);
+        Assert.False(viewResult.ViewData.ModelState.IsValid);
+    }
+
+    [Fact]
     public async Task Get_SearchResults_NullFieldsInResults_ReturnsSchoolResultsViewModelWithEmptyFields()
     {
         // arrange
-        var searchTerm = "test school";
-        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchTerm)).ReturnsAsync(new SchoolSearchResultsServiceModel
+        var searchQuery = new SchoolSearchServiceQuery() { Name = "test school" };
+        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
         {
             Count = 1,
             SchoolSearchResults = new List<SchoolSearchResultServiceModel> {
@@ -100,12 +190,12 @@ public class SearchControllerTests
         });
 
         // act
-        var result = await _controller.SearchResults(searchTerm);
+        var result = await _controller.SearchResults(new SearchParamsModel() { NameSearchTerm = searchQuery.Name, LocationSearchTerm = searchQuery.Location });
         var viewModel = ((ViewResult)result).Model as SearchResultsViewModel;
 
         // assert
         Assert.NotNull(viewModel);
-        Assert.Equal(searchTerm, viewModel.NameSearchTerm);
+        Assert.Equal(searchQuery.Name, viewModel.SearchParams.NameSearchTerm);
         Assert.Equal(1, viewModel.SearchResultsCount);
         var item = Assert.Single(viewModel.SearchResults);
         Assert.Equal(string.Empty, item.URN);
@@ -119,20 +209,20 @@ public class SearchControllerTests
     public async Task Get_SearchResults_NoResults_ReturnsExpectedSchoolResultsViewModel()
     {
         // arrange
-        var searchTerm = "no results term";
-        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchTerm)).ReturnsAsync(new SchoolSearchResultsServiceModel
+        var searchQuery = new SchoolSearchServiceQuery() { Name = "no results term" };
+        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
         {
             Count = 0,
             SchoolSearchResults = new List<SchoolSearchResultServiceModel>()
         });
 
         // act
-        var result = await _controller.SearchResults(searchTerm);
+        var result = await _controller.SearchResults(new SearchParamsModel() { NameSearchTerm = searchQuery.Name, LocationSearchTerm = searchQuery.Location });
         var viewModel = ((ViewResult)result).Model as SearchResultsViewModel;
 
         // assert
         Assert.NotNull(viewModel);
-        Assert.Equal(searchTerm, viewModel.NameSearchTerm);
+        Assert.Equal(searchQuery.Name, viewModel.SearchParams.NameSearchTerm);
         Assert.Equal(0, viewModel.SearchResultsCount);
         Assert.Empty(viewModel.SearchResults);
     }

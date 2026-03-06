@@ -32,8 +32,8 @@ namespace SAPPub.Web.Models.SecondarySchool
 
         public string Longitude { get; set; } = string.Empty;
 
-        public string Latitude { get; set; } = string.Empty;   
-        
+        public string Latitude { get; set; } = string.Empty;
+
         public string? TypeOfSchool { get; set; }
 
         public string? HeadTeacher { get; set; }
@@ -54,7 +54,7 @@ namespace SAPPub.Web.Models.SecondarySchool
 
         public static AboutSchoolViewModel Map(AboutSchoolModel schoolDetails)
         {
-            var latLong = Helpers.MappingHelper.ConvertToLatLong(schoolDetails.Easting, schoolDetails.Northing);
+            var latLong = MappingHelper.ConvertToLatLon(schoolDetails.Easting, schoolDetails.Northing);
 
             return new AboutSchoolViewModel
             {
@@ -84,15 +84,15 @@ namespace SAPPub.Web.Models.SecondarySchool
         private static string GetSenUnit(string value)
         {
             return string.Equals(value, SENUnit, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(value, ResourcedProvisionAndSENUnit, StringComparison.OrdinalIgnoreCase) 
-                ? Constants.Yes 
+                string.Equals(value, ResourcedProvisionAndSENUnit, StringComparison.OrdinalIgnoreCase)
+                ? Constants.Yes
                 : Constants.No;
         }
 
         private static string GetResourcedProvision(string value)
         {
-            return string.Equals(value, ResourcedProvisionText, StringComparison.OrdinalIgnoreCase) || 
-                string.Equals(value, ResourcedProvisionAndSENUnit, StringComparison.OrdinalIgnoreCase) 
+            return string.Equals(value, ResourcedProvisionText, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(value, ResourcedProvisionAndSENUnit, StringComparison.OrdinalIgnoreCase)
                 ? Constants.Yes
                 : Constants.No;
         }
