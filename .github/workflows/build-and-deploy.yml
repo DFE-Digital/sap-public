@@ -575,7 +575,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        domain_environment: [production]
+        domain_environment: [test, production]
     environment:
       name: production
     permissions:
