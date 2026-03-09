@@ -157,8 +157,8 @@ namespace SAPPub.Web.Helpers
             // temporary implementation of pagination for fake data - just return empty for page > 1
             // to avoid complications of implementing actual pagination logic
             if (page > 1) return Task.FromResult(Enumerable.Empty<T>());
-            return ReadAllAsync(ct);
+            var results = ReadAllAsync(ct).Result;
+            return Task.FromResult(results.Take(take));
         }
     }
-
 }
