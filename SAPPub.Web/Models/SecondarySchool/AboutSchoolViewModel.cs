@@ -16,7 +16,7 @@ namespace SAPPub.Web.Models.SecondarySchool
 
         public string? AcademyTrustUpdatedIn { get; set; }
 
-        public string? Website { get; set; }
+        public string? SchoolWebsite { get; set; }
 
         public string? Telephone { get; set; }
 
@@ -61,7 +61,7 @@ namespace SAPPub.Web.Models.SecondarySchool
                 URN = schoolDetails.Urn,
                 SchoolName = schoolDetails.SchoolName,
                 AcademyTrust = schoolDetails.AcademyTrust,
-                Website = schoolDetails.Website,
+                SchoolWebsite = schoolDetails.Website,
                 Telephone = schoolDetails.Telephone,
                 Address = schoolDetails.Address,
                 LocalAuthority = schoolDetails.LocalAuthority,

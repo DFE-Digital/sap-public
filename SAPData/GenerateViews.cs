@@ -722,6 +722,10 @@ public sealed class GenerateViews
             conditions.Add($"t.\"{DbCol(r.Filter2)}\" = '{SqlLiteral(r.Filter2Value)}'");
         if (!string.IsNullOrWhiteSpace(r.Filter3))
             conditions.Add($"t.\"{DbCol(r.Filter3)}\" = '{SqlLiteral(r.Filter3Value)}'");
+        if (!string.IsNullOrWhiteSpace(r.Filter4))
+            conditions.Add($"t.\"{DbCol(r.Filter4)}\" = '{SqlLiteral(r.Filter4Value)}'");
+        if (!string.IsNullOrWhiteSpace(r.Filter5))
+            conditions.Add($"t.\"{DbCol(r.Filter5)}\" = '{SqlLiteral(r.Filter5Value)}'");
 
         var whenClause = conditions.Count == 0 ? "TRUE" : string.Join(" AND ", conditions);
 
