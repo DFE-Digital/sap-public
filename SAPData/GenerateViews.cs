@@ -52,6 +52,15 @@ public sealed class GenerateViews
         new("v_la_urls", "LA", "LaUrl")
     };
 
+
+    private readonly List<SqlViewFilter> _establishmentFilters =
+    [
+        new SqlViewFilter("ExcludeOnlineSchools", tableAlias =>
+            $"{tableAlias}.\"typeofestablishment__code_\" <> '49'"),
+        new SqlViewFilter("ExcludeClosed3YrSchools", tableAlias =>
+            $"{tableAlias}.\"closedate\" IS NULL OR {tableAlias}.\"closedate\" = '' OR TO_DATE({tableAlias}.\"closedate\", 'DD/MM/YYYY') >= '{GetAcademicYearCutoffDate()}'")
+    ];
+
     public GenerateViews(IReadOnlyList<DataMapRow> rows, string tableMappingPath, string sqlDir)
     {
         _rows = rows;
@@ -94,7 +103,7 @@ public sealed class GenerateViews
                     continue;
                 }
 
-                sql = GenerateEstablishmentDimensionView(rawTable);
+                sql = GenerateEstablishmentDimensionView(rawTable, _establishmentFilters);
             }
 
             // 2) Mirror view (GIAS: all establishment links)
@@ -286,7 +295,7 @@ public sealed class GenerateViews
     // ESTABLISHMENT DIMENSION (curated)
     // =====================================================
 
-    private static string GenerateEstablishmentDimensionView(string? rawTable)
+    private static string GenerateEstablishmentDimensionView(string? rawTable, List<SqlViewFilter> filters)
     {
         var sb = new StringBuilder();
 
@@ -356,12 +365,34 @@ public sealed class GenerateViews
         sb.AppendLine("    clean_int(t.\"statutoryhighage\")         AS \"AgeRangeHigh\",");
         sb.AppendLine("    clean_int(t.\"schoolcapacity\")           AS \"TotalCapacity\",");
         sb.AppendLine("    clean_int(t.\"establishmentstatus__code_\") AS \"StatusCode\",");
-        sb.AppendLine("    t.\"gsslacode__name_\"                    AS \"GSSLACode\"");
-        sb.AppendLine($"FROM {rawTable} t;");
+        sb.AppendLine("    t.\"gsslacode__name_\"                    AS \"GSSLACode\",");
+        sb.AppendLine("    t.\"closedate\"                           AS \"ClosedDate\"");
+        sb.AppendLine($"FROM {rawTable} t");
+        // Dynamically build WHERE clause
+        if (filters.Count > 0)
+        {
+            sb.AppendLine("WHERE");
+            sb.AppendLine("    " + string.Join("\n    AND ", filters.Select(f => f.GetSqlCondition("t"))));
+        }
+        sb.AppendLine(";");
         sb.AppendLine();
         sb.AppendLine("CREATE UNIQUE INDEX idx_v_establishment_urn ON v_establishment (\"URN\");");
 
         return sb.ToString();
+    }
+
+   
+    private static string GetAcademicYearCutoffDate()
+    {
+        var now = DateTime.Today;
+    
+        // Always use previous 12/09 minus 3 years
+        var previousSept12 = now.Month < 9 || (now.Month == 9 && now.Day < 12)
+            ? new DateTime(now.Year - 1, 9, 12)
+            : new DateTime(now.Year, 9, 12);
+
+        var cutoffDate = previousSept12.AddYears(-3);
+        return cutoffDate.ToString("yyyy-MM-dd");
     }
 
     // =====================================================
