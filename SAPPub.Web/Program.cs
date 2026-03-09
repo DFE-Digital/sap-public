@@ -101,9 +101,11 @@ public partial class Program
         }
         else
         {
-            app.UseExceptionHandler("/Home/Error");
+            app.UseExceptionHandler("/Error/500");
             app.UseHsts();
         }
+
+        app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
         // Security headers middleware - MUST come before static files
         app.UseSecurityHeaders();

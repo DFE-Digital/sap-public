@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SAPPub.Core.Interfaces.Services.Search;
+using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.Search;
 
 namespace SAPPub.Web.Controllers;
 
 public class SearchController(ISchoolSearchService schoolSearchService) : Controller
 {
+    [HttpGet]
+    [Route("search", Name = RouteConstants.Search)]
     public IActionResult Index()
     {
         return View(new SearchResultsViewModel());
