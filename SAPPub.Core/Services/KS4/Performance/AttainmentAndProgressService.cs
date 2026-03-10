@@ -67,6 +67,18 @@ public class AttainmentAndProgressService(
                 AcademicYearSelection.Previous2 => englandPerformance.Attainment8_Tot_Eng_Previous2_Num,
                 _ => null,
             },
+            EstablishmentProgress8TotalPupils = selectedYear switch
+            {
+                AcademicYearSelection.Previous => establishmentPerformance.Prog8_TotPup_Est_Previous_Num,
+                AcademicYearSelection.Previous2 => establishmentPerformance.Prog8_TotPup_Est_Previous2_Num,
+                _ => null,
+            },
+            EstablishmentTotalPupils = selectedYear switch
+            {                
+                AcademicYearSelection.Previous => establishmentPerformance.Pup_Tot_Est_Previous_Num,
+                AcademicYearSelection.Previous2 => establishmentPerformance.Pup_Tot_Est_Previous2_Num,
+                _ => null,
+            },
         };
     }
 }
