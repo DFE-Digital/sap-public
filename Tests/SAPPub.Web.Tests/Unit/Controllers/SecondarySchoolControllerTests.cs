@@ -439,8 +439,8 @@ public class SecondarySchoolControllerTests
             EstablishmentAttainment8Score = 70,
             LocalAuthorityAttainment8Score = 80,
             EnglandAttainment8Score = 50,
-            EstablishmentProgress8TotalPupils = 65,
-            EstablishmentTotalPupils = 95
+            EstablishmentProgress8TotalPupils = expectedShowProgress8NotAvailableInfo ? null : 65,
+            EstablishmentTotalPupils = expectedShowProgress8NotAvailableInfo ? null : 95
         };
 
         _mockAttainmentAndProgressService
