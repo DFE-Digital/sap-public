@@ -438,7 +438,9 @@ public class SecondarySchoolControllerTests
             LocalAuthorityProgress8Score = expectedShowProgress8NotAvailableInfo ? null : 1.5,
             EstablishmentAttainment8Score = 70,
             LocalAuthorityAttainment8Score = 80,
-            EnglandAttainment8Score = 50
+            EnglandAttainment8Score = 50,
+            EstablishmentProgress8TotalPupils = expectedShowProgress8NotAvailableInfo ? null : 65,
+            EstablishmentTotalPupils = expectedShowProgress8NotAvailableInfo ? null : 95
         };
 
         _mockAttainmentAndProgressService
@@ -474,11 +476,15 @@ public class SecondarySchoolControllerTests
         {
             Assert.Null(model.EstablishmentProgress8Score);
             Assert.Null(model.LocalAuthorityProgress8Score);
+            Assert.Null(model.EstablishmentProgress8TotalPupils);
+            Assert.Null(model.EstablishmentTotalPupils);
         }
         else
         {
             Assert.Equal(expectedResult.EstablishmentProgress8Score, model.EstablishmentProgress8Score);
             Assert.Equal(expectedResult.LocalAuthorityProgress8Score, model.LocalAuthorityProgress8Score);
+            Assert.Equal(expectedResult.EstablishmentProgress8TotalPupils, model.EstablishmentProgress8TotalPupils);
+            Assert.Equal(expectedResult.EstablishmentTotalPupils, model.EstablishmentTotalPupils);
         }
     }
 
