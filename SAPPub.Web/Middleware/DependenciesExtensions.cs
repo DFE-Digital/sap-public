@@ -1,11 +1,5 @@
-﻿using SAPPub.Core.Entities;
-using SAPPub.Core.Entities.Gateway;
-using SAPPub.Core.Entities.KS4.Absence;
-using SAPPub.Core.Entities.KS4.Destinations;
-using SAPPub.Core.Entities.KS4.Performance;
-using SAPPub.Core.Entities.KS4.Workforce;
+﻿using Dapper;
 using SAPPub.Core.Interfaces.Repositories;
-using SAPPub.Core.Interfaces.Repositories.Gateway;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Repositories.KS4.Absence;
 using SAPPub.Core.Interfaces.Repositories.KS4.Destinations;
@@ -13,116 +7,120 @@ using SAPPub.Core.Interfaces.Repositories.KS4.Performance;
 using SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Repositories.KS4.Workforce;
 using SAPPub.Core.Interfaces.Services;
-using SAPPub.Core.Interfaces.Services.Gateway;
 using SAPPub.Core.Interfaces.Services.KS4;
+using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.KS4.Absence;
+using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Services.KS4.Workforce;
+using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.Services;
-using SAPPub.Core.Services.Gateway;
 using SAPPub.Core.Services.KS4;
+using SAPPub.Core.Services.KS4.AboutSchool;
 using SAPPub.Core.Services.KS4.Absence;
+using SAPPub.Core.Services.KS4.Admissions;
 using SAPPub.Core.Services.KS4.Destinations;
 using SAPPub.Core.Services.KS4.Performance;
 using SAPPub.Core.Services.KS4.SubjectEntries;
 using SAPPub.Core.Services.KS4.Workforce;
+using SAPPub.Core.Services.Search;
+using SAPPub.Infrastructure.LuceneSearch;
+using SAPPub.Infrastructure.Mapping.ValueCodes;
 using SAPPub.Infrastructure.Repositories;
-using SAPPub.Infrastructure.Repositories.Gateway;
 using SAPPub.Infrastructure.Repositories.Generic;
 using SAPPub.Infrastructure.Repositories.KS4.Absence;
 using SAPPub.Infrastructure.Repositories.KS4.Destinations;
 using SAPPub.Infrastructure.Repositories.KS4.Performance;
 using SAPPub.Infrastructure.Repositories.KS4.SubjectEntries;
 using SAPPub.Infrastructure.Repositories.KS4.Workforce;
-using System.Diagnostics.CodeAnalysis;
+using SAPPub.Web.Helpers;
 
 namespace SAPPub.Web.Middleware
 {
-    [ExcludeFromCodeCoverage]
     public static class DependenciesExtensions
     {
-        public static void AddDependencies(this IServiceCollection services)
+        private static int _dapperConfigured;
+
+        public static void AddDependencies(this IServiceCollection services, IHostEnvironment env, IConfiguration cfg)
         {
-            services.AddTransient<IGenericRepository<Establishment>, JSONRepository<Establishment>>();
+            // CI / UI tests should not hit DB
+            var useFakeRepos =
+                env.IsEnvironment("UITests") ||
+                cfg.GetValue<bool>("USE_FAKE_REPOS");
+
+            if (useFakeRepos)
+                services.AddSingleton(typeof(IGenericRepository<>), typeof(FakeGenericRepository<>));
+            else
+                services.AddTransient(typeof(IGenericRepository<>), typeof(DapperRepository<>));
+
+            // Core repos/services
             services.AddTransient<IEstablishmentRepository, EstablishmentRepository>();
             services.AddTransient<IEstablishmentService, EstablishmentService>();
 
-            services.AddTransient<IGenericRepository<EstablishmentPerformance>, JSONRepository<EstablishmentPerformance>>();
             services.AddTransient<IEstablishmentPerformanceRepository, EstablishmentPerformanceRepository>();
             services.AddTransient<IEstablishmentPerformanceService, EstablishmentPerformanceService>();
 
-            services.AddTransient<IGenericRepository<EstablishmentDestinations>, JSONRepository<EstablishmentDestinations>>();
             services.AddTransient<IEstablishmentDestinationsRepository, EstablishmentDestinationsRepository>();
             services.AddTransient<IEstablishmentDestinationsService, EstablishmentDestinationsService>();
 
-            services.AddTransient<IGenericRepository<EstablishmentAbsence>, JSONRepository<EstablishmentAbsence>>();
             services.AddTransient<IEstablishmentAbsenceRepository, EstablishmentAbsenceRepository>();
             services.AddTransient<IEstablishmentAbsenceService, EstablishmentAbsenceService>();
 
-            services.AddTransient<IGenericRepository<EstablishmentWorkforce>, JSONRepository<EstablishmentWorkforce>>();
             services.AddTransient<IEstablishmentWorkforceRepository, EstablishmentWorkforceRepository>();
             services.AddTransient<IEstablishmentWorkforceService, EstablishmentWorkforceService>();
 
-            services.AddTransient<IGenericRepository<LAPerformance>, JSONRepository<LAPerformance>>();
             services.AddTransient<ILAPerformanceRepository, LAPerformanceRepository>();
             services.AddTransient<ILAPerformanceService, LAPerformanceService>();
 
-            services.AddTransient<IGenericRepository<LADestinations>, JSONRepository<LADestinations>>();
             services.AddTransient<ILADestinationsRepository, LADestinationsRepository>();
             services.AddTransient<ILADestinationsService, LADestinationsService>();
 
-            services.AddTransient<IGenericRepository<LAAbsence>, JSONRepository<LAAbsence>>();
             services.AddTransient<ILAAbsenceRepository, LAAbsenceRepository>();
             services.AddTransient<ILAAbsenceService, LAAbsenceService>();
 
-            services.AddTransient<IGenericRepository<EnglandPerformance>, JSONRepository<EnglandPerformance>>();
             services.AddTransient<IEnglandPerformanceRepository, EnglandPerformanceRepository>();
             services.AddTransient<IEnglandPerformanceService, EnglandPerformanceService>();
 
-            services.AddTransient<IGenericRepository<EnglandDestinations>, JSONRepository<EnglandDestinations>>();
             services.AddTransient<IEnglandDestinationsRepository, EnglandDestinationsRepository>();
             services.AddTransient<IEnglandDestinationsService, EnglandDestinationsService>();
 
-            services.AddTransient<IGenericRepository<EnglandAbsence>, JSONRepository<EnglandAbsence>>();
             services.AddTransient<IEnglandAbsenceRepository, EnglandAbsenceRepository>();
             services.AddTransient<IEnglandAbsenceService, EnglandAbsenceService>();
 
-            services.AddTransient<IGenericRepository<Lookup>, JSONRepository<Lookup>>();
-            services.AddTransient<ILookupRepository, LookupRepository>();
-            services.AddTransient<ILookupService, LookupService>();
-
-            services.AddTransient<IEstablishmentSubjectEntriesService, EstablishmentSubjectEntriesService>();
             services.AddTransient<IEstablishmentSubjectEntriesRepository, EstablishmentSubjectEntriesRepository>();
-            services.AddTransient<IAcademicPerformanceEnglishAndMathsResultsService, Core.Services.KS4.Performance.EnglishAndMathsResultsService>();
-            services.AddTransient<ISecondarySchoolService, SecondarySchoolService>();
+            services.AddTransient<IEstablishmentSubjectEntriesService, EstablishmentSubjectEntriesService>();
 
+            services.AddTransient<IAcademicPerformanceEnglishAndMathsResultsService, EnglishAndMathsResultsService>();
+            services.AddTransient<IAttainmentAndProgressService, AttainmentAndProgressService>();
 
-            services.AddTransient<IGenericCRUDRepository<GatewaySettings>, DapperRepository<GatewaySettings>>();
-            //services.AddTransient<IGatewaySettingsRepository, DapperRepository<GatewaySettings>>();
-            services.AddTransient<IGatewaySettingsService, GatewaySettingsService>();
+            services.AddTransient<IDestinationsService, DestinationsService>();
+            services.AddTransient<IAdmissionsService, EstablishmentAdmissionsService>();
+            services.AddTransient<IAboutSchoolService, AboutSchoolService>();
+            services.AddTransient<ILaUrlsRepository, LaUrlsRepository>();
 
-            services.AddTransient<IGenericCRUDRepository<GatewayUser>, DapperRepository<GatewayUser>>();
-            services.AddTransient<IGatewayUserRepository, GatewayUserRepository>();
-            services.AddTransient<IGatewayUserService, GatewayUserService>();
+            services.AddSingleton<ISchoolSearchIndexReader, LuceneSchoolSearchIndexReader>();
+            services.AddSingleton<ISchoolSearchService, SchoolSearchService>();
 
-            services.AddTransient<IGenericCRUDRepository<GatewayLocalAuthority>, DapperRepository<GatewayLocalAuthority>>();
-            services.AddTransient<IGatewayLocalAuthorityRepository, GatewayLocalAuthorityRepository>();
-            services.AddTransient<IGatewayLocalAuthorityService, GatewayLocalAuthorityService>();
+            // Mapper
+            services.AddSingleton<ICodedValueMapper, ReflectionCodedValueMapper>();
 
-            services.AddTransient<IGenericCRUDRepository<GatewayUserAudit>, DapperRepository<GatewayUserAudit>>();
-            services.AddTransient<IGatewayUserAuditRepository, GatewayUserAuditRepository>();
-            services.AddTransient<IGatewayUserAuditService, GatewayUserAuditService>();
+            // Reason lookup (singleton)
+            var reasonLookup = new ReasonCodeLookup(new Dictionary<string, string>
+            {
+                ["z"] = "Not applicable",
+                ["c"] = "Redacted for confidentiality",
+                ["x"] = "Not available",
+                ["low"] = "positive % less than 0.5"
+            });
+            services.AddSingleton<IReasonCodeLookup>(reasonLookup);
 
-            services.AddTransient<IGenericCRUDRepository<GatewayPageViewAudit>, DapperRepository<GatewayPageViewAudit>>();
-            services.AddTransient<IGatewayPageViewAuditRepository, GatewayPageViewAuditRepository>();
-            services.AddTransient<IGatewayPageViewAuditService, GatewayPageViewAuditService>();
-
-            services.AddTransient<IGatewayUserLAService, GateWayUserLAService>();
-
-            services.AddScoped<IEmailRepository, EmailRepository>();
-            services.AddScoped<IEmailService, EmailService>();
+            // Configure Dapper handlers once per process
+            if (Interlocked.Exchange(ref _dapperConfigured, 1) == 0)
+            {
+                SqlMapper.AddTypeHandler(new CodedDoubleTypeHandler(reasonLookup));
+            }
         }
     }
 }

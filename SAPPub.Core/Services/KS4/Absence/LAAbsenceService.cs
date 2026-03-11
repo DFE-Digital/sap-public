@@ -1,36 +1,27 @@
-﻿using Microsoft.Extensions.Logging;
-using SAPPub.Core.Entities.KS4.Absence;
+﻿using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Interfaces.Repositories.KS4.Absence;
 using SAPPub.Core.Interfaces.Services.KS4.Absence;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SAPPub.Core.Services.KS4.Absence
 {
-    public class LAAbsenceService : ILAAbsenceService
+    public sealed class LAAbsenceService : ILAAbsenceService
     {
         private readonly ILAAbsenceRepository _laAbsenceRepository;
 
-
-        public LAAbsenceService(
-            ILAAbsenceRepository laAbsenceRepository)
+        public LAAbsenceService(ILAAbsenceRepository laAbsenceRepository)
         {
-            _laAbsenceRepository = laAbsenceRepository;
+            _laAbsenceRepository = laAbsenceRepository
+                ?? throw new ArgumentNullException(nameof(laAbsenceRepository));
         }
 
-
-        public IEnumerable<LAAbsence> GetAllLAAbsence()
+        public async Task<IEnumerable<LAAbsence>> GetAllLAAbsenceAsync(CancellationToken ct = default)
         {
-            return _laAbsenceRepository.GetAllLAAbsence();
+            return await _laAbsenceRepository.GetAllLAAbsenceAsync(ct);
         }
 
-
-        public LAAbsence GetLAAbsence(string urn)
+        public async Task<LAAbsence> GetLAAbsenceAsync(string id, CancellationToken ct = default)
         {
-            return _laAbsenceRepository.GetLAAbsence(urn) ?? new();
+            return await _laAbsenceRepository.GetLAAbsenceAsync(id, ct);
         }
     }
 }

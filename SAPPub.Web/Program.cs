@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.StaticFiles;
 using Notify.Client;
 using Notify.Interfaces;
 using Npgsql;
+using SAPPub.Infrastructure.LuceneSearch;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Middleware;
 using SAPPub.Web.Models.Config;
@@ -12,6 +13,7 @@ using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.Json;
+using static SAPPub.Web.Middleware.DependenciesExtensions;
 
 namespace SAPPub.Web;
 
@@ -63,18 +65,42 @@ public partial class Program
         });
 
         builder.Services.AddHealthChecks();
-        builder.Services.AddDataProtection()
-               .PersistKeysToFileSystem(new DirectoryInfo(@"/keys"))
-               .SetApplicationName("SAPPub");
+
+        // Data protection
+        if (builder.Environment.IsEnvironment("Testing") || builder.Environment.IsEnvironment("UITests"))
+        {
+            // CI/tests: don't try to write to /keys
+            builder.Services.AddDataProtection()
+                .UseEphemeralDataProtectionProvider()
+                .SetApplicationName("SAPPub");
+        }
+        else
+        {
+            builder.Services.AddDataProtection()
+                .PersistKeysToFileSystem(new DirectoryInfo(@"/keys"))
+                .SetApplicationName("SAPPub");
+        }
 
         // Database connection configuration
         var connectionString = builder.Configuration.GetConnectionString("PostgresConnectionString");
-        builder.Services.AddTransient<IDbConnection>((sp) => new NpgsqlConnection(connectionString));
+
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            // Only required for real runtime environments
+            if (builder.Environment.IsDevelopment() || builder.Environment.IsProduction() || builder.Environment.IsStaging())
+                throw new InvalidOperationException("Connection string 'PostgresConnectionString' is not configured.");
+
+            // For Testing/UITests: use a harmless dummy so nothing accidentally connects
+            connectionString = "Host=127.0.0.1;Port=1;Database=x;Username=x;Password=x;Timeout=1;Command Timeout=1";
+        }
+
+        builder.Services.AddSingleton<NpgsqlDataSource>(_ => NpgsqlDataSource.Create(connectionString));
 
         //Email config
         builder.Services.AddScoped<INotificationClient>((sp) => new NotificationClient(emailAPIKey));
 
-        builder.Services.AddDependencies();
+        builder.Services.AddDependencies(builder.Environment, builder.Configuration);
+        builder.Services.AddLuceneDependencies();
 
         var app = builder.Build();
 
@@ -85,9 +111,11 @@ public partial class Program
         }
         else
         {
-            app.UseExceptionHandler("/Home/Error");
+            app.UseExceptionHandler("/Error/500");
             app.UseHsts();
         }
+
+        app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
         // Security headers middleware - MUST come before static files
         app.UseSecurityHeaders();

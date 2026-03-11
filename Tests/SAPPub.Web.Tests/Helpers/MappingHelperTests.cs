@@ -22,7 +22,7 @@ namespace SAPPub.Web.Tests.Helpers
             var longitudeExpected = -0.12769745130735563;
             var latitudeExpected = 51.503485756703007;
             // Act
-            var result = MappingHelper.ConvertToLongLat(easting, northing);
+            var result = MappingHelper.ConvertToLatLong(easting, northing);
 
             // Assert
             Assert.NotNull(result);

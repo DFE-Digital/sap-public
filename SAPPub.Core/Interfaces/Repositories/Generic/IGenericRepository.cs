@@ -1,28 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SAPPub.Core.Interfaces.Repositories.Generic
+﻿namespace SAPPub.Core.Interfaces.Repositories.Generic
 {
     public interface IGenericRepository<T>
     {
-        //T? Read(string Id);
-        IEnumerable<T>? ReadAll();
+        Task<T?> ReadAsync(string id, CancellationToken ct = default);
+        Task<IEnumerable<T>> ReadAllAsync(CancellationToken ct = default);
+        Task<T?> ReadSingleAsync(object parameters, CancellationToken ct = default);
+        Task<IEnumerable<T>> ReadManyAsync(object parameters, CancellationToken ct = default);
+        Task<IEnumerable<T>> ReadPageAsync(int page, int take, CancellationToken ct = default);
     }
-
-    public interface IGenericCRUDRepository<T>
-    {
-        bool Create(T entity);
-        T? Read(Guid Id);
-        T? Read(string Id);
-        IEnumerable<T>? ReadAll();
-        IEnumerable<T>? Query(string query, T entity);
-        bool Update(T entity);
-        //bool Delete(T entity);
-
-    }
-
 }

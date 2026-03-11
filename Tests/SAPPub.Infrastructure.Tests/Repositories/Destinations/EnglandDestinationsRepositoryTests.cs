@@ -1,62 +1,69 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
-using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Interfaces.Repositories.Generic;
-using SAPPub.Core.Interfaces.Repositories.KS4.Destinations;
 using SAPPub.Infrastructure.Repositories.KS4.Destinations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace SAPPub.Infrastructure.Tests.Repositories.Destinations
 {
     public class EnglandDestinationsRepositoryTests
     {
         private readonly Mock<IGenericRepository<EnglandDestinations>> _mockGenericRepo;
-        private readonly Mock<ILogger<EnglandDestinations>> _mockLogger;
+        private readonly Mock<ILogger<EnglandDestinationsRepository>> _mockLogger;
         private readonly EnglandDestinationsRepository _sut;
 
         public EnglandDestinationsRepositoryTests()
         {
             _mockGenericRepo = new Mock<IGenericRepository<EnglandDestinations>>();
-            _mockLogger = new Mock<ILogger<EnglandDestinations>>();
-            _sut = new EnglandDestinationsRepository(_mockGenericRepo.Object, _mockLogger.Object);
+            _mockLogger = new Mock<ILogger<EnglandDestinationsRepository>>();
+            _sut = new EnglandDestinationsRepository(_mockGenericRepo.Object);
         }
 
         [Fact]
-        public void GetAllEnglandDestinations_ReturnsAllItemsFromGenericRepository()
+        public async Task GetEnglandDestinationsAsync_ReturnsItemFromGenericRepository()
         {
             // Arrange
-            var expected = new List<EnglandDestinations>
+            var expected = new EnglandDestinations
             {
-                new() {AllDest_Tot_Eng_Current_Pct= 99.99 }
+                AllDest_Tot_Eng_Current_Pct = 99.99
             };
-            _mockGenericRepo.Setup(r => r.ReadAll()).Returns(expected);
+
+            _mockGenericRepo
+                .Setup(r => r.ReadSingleAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expected);
 
             // Act
-            var result = _sut.GetEnglandDestinations();
+            var result = await _sut.GetEnglandDestinationsAsync(CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
             Assert.Equal(99.99, result.AllDest_Tot_Eng_Current_Pct);
-            _mockGenericRepo.Verify(r => r.ReadAll(), Times.Once);
+
+            _mockGenericRepo.Verify(
+                r => r.ReadSingleAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()),
+                Times.Once);
         }
 
         [Fact]
-        public void GetAllEnglandDestinationss_ReturnsEmptyWhenGenericRepositoryReturnsNull()
+        public async Task GetEnglandDestinationsAsync_ReturnsDefaultWhenGenericRepositoryReturnsNull()
         {
             // Arrange
-            _mockGenericRepo.Setup(r => r.ReadAll()).Returns((IEnumerable<EnglandDestinations>?)null);
+            _mockGenericRepo
+                .Setup(r => r.ReadSingleAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((EnglandDestinations?)null);
 
             // Act
-            var result = _sut.GetEnglandDestinations();
+            var result = await _sut.GetEnglandDestinationsAsync(CancellationToken.None);
 
             // Assert
-            Assert.NotNull(result);
-            _mockGenericRepo.Verify(r => r.ReadAll(), Times.Once);
+            Assert.NotNull(result); // repository returns new EnglandDestinations()
+
+            _mockGenericRepo.Verify(
+                r => r.ReadSingleAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()),
+                Times.Once);
         }
     }
 }

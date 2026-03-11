@@ -1,0 +1,777 @@
+[
+  {
+    "Id": "E09000018",
+    "LAMainUrl": "hounslow.gov.uk",
+    "Name": "London Borough of Hounslow"
+  },
+  {
+    "Id": "E06000014",
+    "LAMainUrl": "york.gov.uk",
+    "Name": "City of York Council"
+  },
+  {
+    "Id": "E08000016",
+    "LAMainUrl": "barnsley.gov.uk",
+    "Name": "Barnsley Metropolitan Borough Council"
+  },
+  {
+    "Id": "E10000034",
+    "LAMainUrl": "worcestershire.gov.uk",
+    "Name": "Worcestershire County Council"
+  },
+  {
+    "Id": "E06000003",
+    "LAMainUrl": "redcar-cleveland.gov.uk",
+    "Name": "Redcar and Cleveland Borough Council"
+  },
+  {
+    "Id": "E08000001",
+    "LAMainUrl": "bolton.gov.uk",
+    "Name": "Bolton Metropolitan Borough Council"
+  },
+  {
+    "Id": "E08000031",
+    "LAMainUrl": "wolverhampton.gov.uk",
+    "Name": "City of Wolverhampton Council"
+  },
+  {
+    "Id": "E09000033",
+    "LAMainUrl": "westminster.gov.uk",
+    "Name": "City of Westminster"
+  },
+  {
+    "Id": "E09000032",
+    "LAMainUrl": "wandsworth.gov.uk",
+    "Name": "London Borough of Wandsworth"
+  },
+  {
+    "Id": "E08000032",
+    "LAMainUrl": "bradford.gov.uk",
+    "Name": "City of Bradford Metropolitan District Council"
+  },
+  {
+    "Id": "E06000050",
+    "LAMainUrl": "cheshirewestandchester.gov.uk",
+    "Name": "Cheshire West and Chester Council"
+  },
+  {
+    "Id": "E09000003",
+    "LAMainUrl": "barnet.gov.uk",
+    "Name": "London Borough of Barnet"
+  },
+  {
+    "Id": "E08000009",
+    "LAMainUrl": "trafford.gov.uk",
+    "Name": "Trafford Metropolitan Borough Council"
+  },
+  {
+    "Id": "E08000023",
+    "LAMainUrl": "southtyneside.gov.uk",
+    "Name": "South Tyneside Council"
+  },
+  {
+    "Id": "E10000015",
+    "LAMainUrl": "hertfordshire.gov.uk",
+    "Name": "Hertfordshire County Council"
+  },
+  {
+    "Id": "E06000023",
+    "LAMainUrl": "bristol.gov.uk",
+    "Name": "Bristol City Council"
+  },
+  {
+    "Id": "E08000007",
+    "LAMainUrl": "stockport.gov.uk",
+    "Name": "Stockport Metropolitan Borough Council"
+  },
+  {
+    "Id": "E10000024",
+    "LAMainUrl": "nottinghamshire.gov.uk",
+    "Name": "Nottinghamshire County Council"
+  },
+  {
+    "Id": "E08000037",
+    "LAMainUrl": "gateshead.gov.uk",
+    "Name": "Gateshead Metropolitan Borough Council"
+  },
+  {
+    "Id": "E09000024",
+    "LAMainUrl": "merton.gov.uk",
+    "Name": "London Borough of Merton"
+  },
+  {
+    "Id": "E06000053",
+    "LAMainUrl": "scilly.gov.uk",
+    "Name": "Council of the Isles of Scilly"
+  },
+  {
+    "Id": "E08000015",
+    "LAMainUrl": "wirral.gov.uk",
+    "Name": "Wirral Council"
+  },
+  {
+    "Id": "E09000014",
+    "LAMainUrl": "haringey.gov.uk",
+    "Name": "London Borough of Haringey"
+  },
+  {
+    "Id": "E10000028",
+    "LAMainUrl": "staffordshire.gov.uk",
+    "Name": "Staffordshire County Council"
+  },
+  {
+    "Id": "E09000027",
+    "LAMainUrl": "richmond.gov.uk",
+    "Name": "London Borough of Richmond upon Thames"
+  },
+  {
+    "Id": "E10000019",
+    "LAMainUrl": "lincolnshire.gov.uk",
+    "Name": "Lincolnshire County Council"
+  },
+  {
+    "Id": "E08000002",
+    "LAMainUrl": "bury.gov.uk",
+    "Name": "Bury Metropolitan Borough Council"
+  },
+  {
+    "Id": "E06000038",
+    "LAMainUrl": "reading.gov.uk",
+    "Name": "Reading Borough Council"
+  },
+  {
+    "Id": "E06000015",
+    "LAMainUrl": "derby.gov.uk",
+    "Name": "Derby City"
+  },
+  {
+    "Id": "E08000021",
+    "LAMainUrl": "newcastle.gov.uk",
+    "Name": "Newcastle City Council"
+  },
+  {
+    "Id": "E08000011",
+    "LAMainUrl": "knowsley.gov.uk",
+    "Name": "Knowsley Metropolitan Borough Council"
+  },
+  {
+    "Id": "E06000066",
+    "LAMainUrl": "somerset.gov.uk",
+    "Name": "Somerset Council"
+  },
+  {
+    "Id": "E06000021",
+    "LAMainUrl": "stoke.gov.uk",
+    "Name": "Stoke-on-Trent City Council"
+  },
+  {
+    "Id": "E06000004",
+    "LAMainUrl": "stockton.gov.uk",
+    "Name": "Stockton-on-Tees Borough Council"
+  },
+  {
+    "Id": "E10000013",
+    "LAMainUrl": "gloucestershire.gov.uk",
+    "Name": "Gloucestershire County Council"
+  },
+  {
+    "Id": "E06000065",
+    "LAMainUrl": "northyorks.gov.uk",
+    "Name": "North Yorkshire Council"
+  },
+  {
+    "Id": "E06000030",
+    "LAMainUrl": "swindon.gov.uk",
+    "Name": "Swindon Borough Council"
+  },
+  {
+    "Id": "E09000020",
+    "LAMainUrl": "rbkc.gov.uk",
+    "Name": "Royal Borough of Kensington and Chelsea"
+  },
+  {
+    "Id": "E10000023",
+    "LAMainUrl": "northyorks.gov.uk",
+    "Name": "North Yorkshire Council"
+  },
+  {
+    "Id": "E09000026",
+    "LAMainUrl": "redbridge.gov.uk",
+    "Name": "London Borough of Redbridge"
+  },
+  {
+    "Id": "E09000012",
+    "LAMainUrl": "learningtrust.co.uk",
+    "Name": "London Borough of Hackney"
+  },
+  {
+    "Id": "E09000019",
+    "LAMainUrl": "islington.gov.uk",
+    "Name": "London Borough of Islington"
+  },
+  {
+    "Id": "E06000058",
+    "LAMainUrl": "bcpcouncil.gov.uk",
+    "Name": "Bournemouth, Christchurch and Poole Council"
+  },
+  {
+    "Id": "E06000027",
+    "LAMainUrl": "torbay.gov.uk",
+    "Name": "Torbay Council"
+  },
+  {
+    "Id": "E10000029",
+    "LAMainUrl": "suffolk.gov.uk",
+    "Name": "Suffolk County Council"
+  },
+  {
+    "Id": "E09000016",
+    "LAMainUrl": "havering.gov.uk",
+    "Name": "London Borough of Havering"
+  },
+  {
+    "Id": "E10000020",
+    "LAMainUrl": "norfolk.gov.uk",
+    "Name": "Norfolk County Council"
+  },
+  {
+    "Id": "E06000016",
+    "LAMainUrl": "leicester.gov.uk",
+    "Name": "Leicester City Council"
+  },
+  {
+    "Id": "E06000005",
+    "LAMainUrl": "darlington.gov.uk",
+    "Name": "Darlington Borough Council"
+  },
+  {
+    "Id": "E06000051",
+    "LAMainUrl": "shropshire.gov.uk",
+    "Name": "Shropshire Council"
+  },
+  {
+    "Id": "E06000024",
+    "LAMainUrl": "n-somerset.gov.uk",
+    "Name": "North Somerset Council"
+  },
+  {
+    "Id": "E08000017",
+    "LAMainUrl": "doncaster.gov.uk",
+    "Name": "Doncaster Metropolitan Borough Council"
+  },
+  {
+    "Id": "E10000014",
+    "LAMainUrl": "hants.gov.uk",
+    "Name": "Hampshire County Council"
+  },
+  {
+    "Id": "E06000054",
+    "LAMainUrl": "wiltshire.gov.uk",
+    "Name": "Wiltshire Council"
+  },
+  {
+    "Id": "E08000030",
+    "LAMainUrl": "go.walsall.gov.uk",
+    "Name": "Walsall Metropolitan Borough Council"
+  },
+  {
+    "Id": "E06000033",
+    "LAMainUrl": "southend.gov.uk",
+    "Name": "Southend-on-Sea City Council"
+  },
+  {
+    "Id": "E06000012",
+    "LAMainUrl": "nelincs.gov.uk",
+    "Name": "North East Lincolnshire Council"
+  },
+  {
+    "Id": "E08000003",
+    "LAMainUrl": "manchester.gov.uk",
+    "Name": "Manchester City Council"
+  },
+  {
+    "Id": "E09000013",
+    "LAMainUrl": "lbhf.gov.uk",
+    "Name": "London Borough of Hammersmith & Fulham"
+  },
+  {
+    "Id": "E09000008",
+    "LAMainUrl": "croydon.gov.uk",
+    "Name": "London Borough of Croydon"
+  },
+  {
+    "Id": "E06000045",
+    "LAMainUrl": "southampton.gov.uk",
+    "Name": "Southampton City Council"
+  },
+  {
+    "Id": "E08000019",
+    "LAMainUrl": "sheffield.gov.uk",
+    "Name": "Sheffield City Council"
+  },
+  {
+    "Id": "E09000007",
+    "LAMainUrl": "camden.gov.uk",
+    "Name": "London Borough of Camden"
+  },
+  {
+    "Id": "E06000013",
+    "LAMainUrl": "northlincs.gov.uk",
+    "Name": "North Lincolnshire Council"
+  },
+  {
+    "Id": "E09000001",
+    "LAMainUrl": "cityoflondon.gov.uk",
+    "Name": "City of London Corporation"
+  },
+  {
+    "Id": "E10000017",
+    "LAMainUrl": "lancashire.gov.uk",
+    "Name": "Lancashire County Council"
+  },
+  {
+    "Id": "E06000040",
+    "LAMainUrl": "rbwm.gov.uk",
+    "Name": "Royal Borough of Windsor and Maidenhead"
+  },
+  {
+    "Id": "E08000033",
+    "LAMainUrl": "calderdale.gov.uk",
+    "Name": "Calderdale Metropolitan Borough Council"
+  },
+  {
+    "Id": "E06000059",
+    "LAMainUrl": "dorsetcouncil.gov.uk",
+    "Name": "Dorset Council"
+  },
+  {
+    "Id": "E08000029",
+    "LAMainUrl": "solihull.gov.uk",
+    "Name": "Solihull Metropolitan Borough Council"
+  },
+  {
+    "Id": "E06000026",
+    "LAMainUrl": "plymouth.gov.uk",
+    "Name": "Plymouth City Council"
+  },
+  {
+    "Id": "E09000022",
+    "LAMainUrl": "lambeth.gov.uk",
+    "Name": "London Borough of Lambeth"
+  },
+  {
+    "Id": "E10000016",
+    "LAMainUrl": "kent.gov.uk",
+    "Name": "Kent County Council"
+  },
+  {
+    "Id": "E08000027",
+    "LAMainUrl": "dudley.gov.uk",
+    "Name": "Dudley Metropolitan Borough Council"
+  },
+  {
+    "Id": "E06000061",
+    "LAMainUrl": "northnorthants.gov.uk",
+    "Name": "North Northamptonshire Council"
+  },
+  {
+    "Id": "E06000025",
+    "LAMainUrl": "southglos.gov.uk",
+    "Name": "South Gloucestershire Council"
+  },
+  {
+    "Id": "E08000006",
+    "LAMainUrl": "salford.gov.uk",
+    "Name": "Salford City Council"
+  },
+  {
+    "Id": "E06000063",
+    "LAMainUrl": "cumberland.gov.uk",
+    "Name": "Cumberland Council"
+  },
+  {
+    "Id": "E06000019",
+    "LAMainUrl": "herefordshire.gov.uk",
+    "Name": "Herefordshire Council"
+  },
+  {
+    "Id": "E06000049",
+    "LAMainUrl": "cheshireeast.gov.uk",
+    "Name": "Cheshire East Council"
+  },
+  {
+    "Id": "E08000018",
+    "LAMainUrl": "rotherham.gov.uk",
+    "Name": "Rotherham Metropolitan Borough Council"
+  },
+  {
+    "Id": "E09000029",
+    "LAMainUrl": "sutton.gov.uk",
+    "Name": "London Borough of Sutton"
+  },
+  {
+    "Id": "E08000034",
+    "LAMainUrl": "kirklees.gov.uk",
+    "Name": "Kirklees Council"
+  },
+  {
+    "Id": "E10000007",
+    "LAMainUrl": "derbyshire.gov.uk",
+    "Name": "Derbyshire County Council"
+  },
+  {
+    "Id": "E06000056",
+    "LAMainUrl": "centralbedfordshire.gov.uk",
+    "Name": "Central Bedfordshire Council"
+  },
+  {
+    "Id": "E09000030",
+    "LAMainUrl": "towerhamlets.gov.uk",
+    "Name": "London Borough of Tower Hamlets"
+  },
+  {
+    "Id": "E08000026",
+    "LAMainUrl": "coventry.gov.uk",
+    "Name": "Coventry City Council"
+  },
+  {
+    "Id": "E08000036",
+    "LAMainUrl": "wakefield.gov.uk",
+    "Name": "Wakefield Metropolitan District Council"
+  },
+  {
+    "Id": "E09000002",
+    "LAMainUrl": "lbbd.gov.uk",
+    "Name": "London Borough of Barking and Dagenham"
+  },
+  {
+    "Id": "E08000028",
+    "LAMainUrl": "sandwell.gov.uk",
+    "Name": "Sandwell Metropolitan Borough Council"
+  },
+  {
+    "Id": "E09000011",
+    "LAMainUrl": "royalgreenwich.gov.uk",
+    "Name": "Royal Borough of Greenwich"
+  },
+  {
+    "Id": "E09000005",
+    "LAMainUrl": "brent.gov.uk",
+    "Name": "London Borough of Brent"
+  },
+  {
+    "Id": "E06000039",
+    "LAMainUrl": "slough.gov.uk",
+    "Name": "Slough Borough Council"
+  },
+  {
+    "Id": "E08000014",
+    "LAMainUrl": "sefton.gov.uk",
+    "Name": "Sefton Metropolitan Borough Council"
+  },
+  {
+    "Id": "E06000008",
+    "LAMainUrl": "blackburn.gov.uk",
+    "Name": "Blackburn with Darwen Borough Council"
+  },
+  {
+    "Id": "E10000031",
+    "LAMainUrl": "warwickshire.gov.uk",
+    "Name": "Warwickshire County Council"
+  },
+  {
+    "Id": "E08000024",
+    "LAMainUrl": "sunderland.gov.uk",
+    "Name": "Sunderland City Council"
+  },
+  {
+    "Id": "E08000025",
+    "LAMainUrl": "birmingham.gov.uk",
+    "Name": "Birmingham City Council"
+  },
+  {
+    "Id": "E06000064",
+    "LAMainUrl": "westmorlandandfurness.gov.uk",
+    "Name": "Westmorland and Furness Council"
+  },
+  {
+    "Id": "E06000017",
+    "LAMainUrl": "rutland.gov.uk",
+    "Name": "Rutland County Council"
+  },
+  {
+    "Id": "E06000001",
+    "LAMainUrl": "hartlepool.gov.uk",
+    "Name": "Hartlepool Borough Council"
+  },
+  {
+    "Id": "E10000030",
+    "LAMainUrl": "surreycc.gov.uk",
+    "Name": "Surrey County Council"
+  },
+  {
+    "Id": "E06000010",
+    "LAMainUrl": "hull.gov.uk",
+    "Name": "Hull City Council"
+  },
+  {
+    "Id": "E09000015",
+    "LAMainUrl": "harrow.gov.uk",
+    "Name": "London Borough of Harrow"
+  },
+  {
+    "Id": "E08000010",
+    "LAMainUrl": "wigan.gov.uk",
+    "Name": "Wigan Metropolitan Borough Council"
+  },
+  {
+    "Id": "E09000006",
+    "LAMainUrl": "bromley.gov.uk",
+    "Name": "London Borough of Bromley"
+  },
+  {
+    "Id": "E06000052",
+    "LAMainUrl": "cornwall.gov.uk",
+    "Name": "Cornwall Council"
+  },
+  {
+    "Id": "E09000023",
+    "LAMainUrl": "lewisham.gov.uk",
+    "Name": "London Borough of Lewisham"
+  },
+  {
+    "Id": "E06000046",
+    "LAMainUrl": "iow.gov.uk",
+    "Name": "Isle of Wight Council"
+  },
+  {
+    "Id": "E10000008",
+    "LAMainUrl": "new.devon.gov.uk",
+    "Name": "Devon County Council"
+  },
+  {
+    "Id": "E06000044",
+    "LAMainUrl": "portsmouth.gov.uk",
+    "Name": "Portsmouth City Council"
+  },
+  {
+    "Id": "E08000022",
+    "LAMainUrl": "my.northtyneside.gov.uk",
+    "Name": "North Tyneside Council"
+  },
+  {
+    "Id": "E09000028",
+    "LAMainUrl": "southwark.gov.uk",
+    "Name": "London Borough of Southwark"
+  },
+  {
+    "Id": "E09000031",
+    "LAMainUrl": "walthamforest.gov.uk",
+    "Name": "London Borough of Waltham Forest"
+  },
+  {
+    "Id": "E09000004",
+    "LAMainUrl": "bexley.gov.uk",
+    "Name": "London Borough of Bexley"
+  },
+  {
+    "Id": "E06000022",
+    "LAMainUrl": "bathnes.gov.uk",
+    "Name": "Bath and North East Somerset Council"
+  },
+  {
+    "Id": "E06000009",
+    "LAMainUrl": "blackpool.gov.uk",
+    "Name": "Blackpool Borough Council"
+  },
+  {
+    "Id": "E06000032",
+    "LAMainUrl": "m.luton.gov.uk",
+    "Name": "Luton Borough Council"
+  },
+  {
+    "Id": "E06000055",
+    "LAMainUrl": "bedford.gov.uk",
+    "Name": "Bedford Borough Council"
+  },
+  {
+    "Id": "E08000012",
+    "LAMainUrl": "liverpool.gov.uk",
+    "Name": "Liverpool City Council"
+  },
+  {
+    "Id": "E06000006",
+    "LAMainUrl": "www3.halton.gov.uk",
+    "Name": "Halton Borough Council"
+  },
+  {
+    "Id": "E06000043",
+    "LAMainUrl": "new.brighton-hove.gov.uk",
+    "Name": "Brighton and Hove City Council"
+  },
+  {
+    "Id": "E08000008",
+    "LAMainUrl": "tameside.gov.uk",
+    "Name": "Tameside Metropolitan Borough Council"
+  },
+  {
+    "Id": "E08000005",
+    "LAMainUrl": "rochdale.gov.uk",
+    "Name": "Rochdale Metropolitan Borough Council"
+  },
+  {
+    "Id": "E06000062",
+    "LAMainUrl": "westnorthants.gov.uk",
+    "Name": "West Northamptonshire Council"
+  },
+  {
+    "Id": "E09000009",
+    "LAMainUrl": "ealing.gov.uk",
+    "Name": "London Borough of Ealing"
+  },
+  {
+    "Id": "E06000034",
+    "LAMainUrl": "thurrock.gov.uk",
+    "Name": "Thurrock Council"
+  },
+  {
+    "Id": "E10000011",
+    "LAMainUrl": "eastsussex.gov.uk",
+    "Name": "East Sussex County Council"
+  },
+  {
+    "Id": "E06000031",
+    "LAMainUrl": "peterborough.gov.uk",
+    "Name": "Peterborough City Council"
+  },
+  {
+    "Id": "E10000032",
+    "LAMainUrl": "westsussex.gov.uk",
+    "Name": "West Sussex County Council"
+  },
+  {
+    "Id": "E06000057",
+    "LAMainUrl": "northumberland.gov.uk",
+    "Name": "Northumberland County Council"
+  },
+  {
+    "Id": "E10000027",
+    "LAMainUrl": "somerset.gov.uk",
+    "Name": "Somerset Council"
+  },
+  {
+    "Id": "E10000025",
+    "LAMainUrl": "oxfordshire.gov.uk",
+    "Name": "Oxfordshire County Council"
+  },
+  {
+    "Id": "E06000007",
+    "LAMainUrl": "warrington.gov.uk",
+    "Name": "Warrington Borough Council"
+  },
+  {
+    "Id": "E08000013",
+    "LAMainUrl": "sthelens.gov.uk",
+    "Name": "St Helens Council"
+  },
+  {
+    "Id": "E09000010",
+    "LAMainUrl": "new.enfield.gov.uk",
+    "Name": "London Borough of Enfield"
+  },
+  {
+    "Id": "E10000003",
+    "LAMainUrl": "cambridgeshire.gov.uk",
+    "Name": "Cambridgeshire County Council"
+  },
+  {
+    "Id": "E09000021",
+    "LAMainUrl": "kingston.gov.uk",
+    "Name": "Royal Borough of Kingston upon Thames"
+  },
+  {
+    "Id": "E06000020",
+    "LAMainUrl": "telford.gov.uk",
+    "Name": "Telford & Wrekin Council"
+  },
+  {
+    "Id": "E06000035",
+    "LAMainUrl": "new.medway.gov.uk",
+    "Name": "Medway Council"
+  },
+  {
+    "Id": "E06000060",
+    "LAMainUrl": "buckinghamshire.gov.uk",
+    "Name": "Buckinghamshire Council"
+  },
+  {
+    "Id": "E06000002",
+    "LAMainUrl": "middlesbrough.gov.uk",
+    "Name": "Middlesbrough Borough Council"
+  },
+  {
+    "Id": "E09000025",
+    "LAMainUrl": "newham.gov.uk",
+    "Name": "London Borough of Newham"
+  },
+  {
+    "Id": "E08000004",
+    "LAMainUrl": "oldham.gov.uk",
+    "Name": "Oldham Metropolitan Borough Council"
+  },
+  {
+    "Id": "E10000018",
+    "LAMainUrl": "leicestershire.gov.uk",
+    "Name": "Leicestershire County Council"
+  },
+  {
+    "Id": "E06000018",
+    "LAMainUrl": "nottinghamcity.gov.uk",
+    "Name": "Nottingham City Council"
+  },
+  {
+    "Id": "E06000042",
+    "LAMainUrl": "milton-keynes.gov.uk",
+    "Name": "Milton Keynes City Council"
+  },
+  {
+    "Id": "E06000047",
+    "LAMainUrl": "durham.gov.uk",
+    "Name": "Durham County Council"
+  },
+  {
+    "Id": "E06000041",
+    "LAMainUrl": "wokingham.gov.uk",
+    "Name": "Wokingham Borough Council"
+  },
+  {
+    "Id": "E06000036",
+    "LAMainUrl": "bracknell-forest.gov.uk",
+    "Name": "Bracknell Forest Council"
+  },
+  {
+    "Id": "E06000011",
+    "LAMainUrl": "eastriding.gov.uk",
+    "Name": "East Riding of Yorkshire Council"
+  },
+  {
+    "Id": "E08000035",
+    "LAMainUrl": "leeds.gov.uk",
+    "Name": "Leeds City Council"
+  },
+  {
+    "Id": "E10000012",
+    "LAMainUrl": "essex.gov.uk",
+    "Name": "Essex County Council"
+  },
+  {
+    "Id": "E09000017",
+    "LAMainUrl": "hillingdon.gov.uk",
+    "Name": "London Borough of Hillingdon"
+  },
+  {
+    "Id": "E06000037",
+    "LAMainUrl": "westberks.gov.uk",
+    "Name": "West Berkshire Council"
+  }
+]

@@ -1,8 +1,9 @@
 ﻿using SAPPub.Core.ServiceModels.KS4.Performance;
 
-namespace SAPPub.Core.Interfaces.Services.KS4.Performance;
-
-public interface IAcademicPerformanceEnglishAndMathsResultsService
+namespace SAPPub.Core.Interfaces.Services.KS4.Performance
 {
-    public EnglishAndMathsResultsServiceModel ResultsOfSpecifiedGradeAndAbove(string urn, int selectedGrade);
+    public interface IAcademicPerformanceEnglishAndMathsResultsService
+    {
+        Task<EnglishAndMathsResultsModel> GetEnglishAndMathsResultsAsync(string urn, int selectedGrade, CancellationToken ct = default);
+    }
 }

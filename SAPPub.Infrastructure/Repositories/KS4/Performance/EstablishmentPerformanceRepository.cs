@@ -1,38 +1,29 @@
-﻿using Microsoft.Extensions.Logging;
-using SAPPub.Core.Entities.KS4.Performance;
+﻿using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Repositories.KS4.Performance;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SAPPub.Infrastructure.Repositories.KS4.Performance
 {
-    public class EstablishmentPerformanceRepository : IEstablishmentPerformanceRepository
+    public sealed class EstablishmentPerformanceRepository : IEstablishmentPerformanceRepository
     {
-        private readonly IGenericRepository<EstablishmentPerformance> _establishmentPerformanceRepository;
-        private ILogger<EstablishmentPerformance> _logger;
+        private readonly IGenericRepository<EstablishmentPerformance> _repo;
 
-        public EstablishmentPerformanceRepository(
-            IGenericRepository<EstablishmentPerformance> establishmentPerformanceRepository,
-            ILogger<EstablishmentPerformance> logger)
+        public EstablishmentPerformanceRepository(IGenericRepository<EstablishmentPerformance> repo)
         {
-            _establishmentPerformanceRepository = establishmentPerformanceRepository;
-            _logger = logger;
+            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
-
-        public IEnumerable<EstablishmentPerformance> GetAllEstablishmentPerformance()
+        public async Task<IEnumerable<EstablishmentPerformance>> GetAllEstablishmentPerformanceAsync(CancellationToken ct = default)
         {
-            return _establishmentPerformanceRepository.ReadAll() ?? [];
+            return await _repo.ReadAllAsync(ct);
         }
 
-
-        public EstablishmentPerformance GetEstablishmentPerformance(string urn)
+        public async Task<EstablishmentPerformance> GetEstablishmentPerformanceAsync(string urn, CancellationToken ct = default)
         {
-            return GetAllEstablishmentPerformance().FirstOrDefault(x => x.Id == urn) ?? new EstablishmentPerformance();
+            if (string.IsNullOrWhiteSpace(urn))
+                return new EstablishmentPerformance();
+
+            return await _repo.ReadAsync(urn, ct) ?? new EstablishmentPerformance();
         }
     }
 }

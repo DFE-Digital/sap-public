@@ -1,28 +1,21 @@
-﻿using SAPPub.Core.Entities.KS4.Absence;
-using SAPPub.Core.Entities.KS4.Destinations;
+﻿using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Interfaces.Repositories.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SAPPub.Core.Services.KS4.Destinations
 {
-    public class EnglandDestinationsService : IEnglandDestinationsService
+    public sealed class EnglandDestinationsService : IEnglandDestinationsService
     {
-        private readonly IEnglandDestinationsRepository _EnglandDestinationsRepository;
+        private readonly IEnglandDestinationsRepository _repo;
 
-        public EnglandDestinationsService(IEnglandDestinationsRepository EnglandDestinationsRepository)
+        public EnglandDestinationsService(IEnglandDestinationsRepository repo)
         {
-            _EnglandDestinationsRepository = EnglandDestinationsRepository;
+            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
-
-        public EnglandDestinations GetEnglandDestinations()
+        public async Task<EnglandDestinations> GetEnglandDestinationsAsync(CancellationToken ct = default)
         {
-            return _EnglandDestinationsRepository.GetEnglandDestinations() ?? new(); ;
+            return await _repo.GetEnglandDestinationsAsync(ct);
         }
     }
 }

@@ -35,6 +35,31 @@ namespace SAPPub.Infrastructure.Repositories.Generic
             return [];
         }
 
+        public Task<IEnumerable<T>> ReadAllAsync(CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<T?> ReadAsync(string id, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<T>> ReadManyAsync(object parameters, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<T>> ReadPageAsync(int page, int take, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<T?> ReadSingleAsync(object parameters, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
         private string ReadFile(string fileName)
         {
             try

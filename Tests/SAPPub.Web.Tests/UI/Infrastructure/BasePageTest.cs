@@ -1,6 +1,5 @@
 ﻿using Microsoft.Playwright;
 using Microsoft.Playwright.Xunit;
-using System.Runtime.CompilerServices;
 
 namespace SAPPub.Web.Tests.UI.Infrastructure;
 

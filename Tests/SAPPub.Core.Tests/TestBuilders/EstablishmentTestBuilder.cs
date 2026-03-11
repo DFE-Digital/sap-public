@@ -190,6 +190,12 @@ public class EstablishmentTestBuilder
         return this;
     }
 
+    public EstablishmentTestBuilder WithLAGssCode(string? laGssCode)
+    {
+        _establishment.GSSLACode = laGssCode;
+        return this;
+    }
+
     public EstablishmentTestBuilder WithReligiousCharacterId(string id)
     {
         _establishment.ReligiousCharacterId = id;

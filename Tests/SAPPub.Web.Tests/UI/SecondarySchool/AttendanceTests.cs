@@ -42,7 +42,8 @@ public class AttendancePageTests(WebApplicationSetupFixture fixture) : BasePageT
         var heading = await Page.Locator("h1").TextContentAsync();
 
         // Assert
-        Assert.NotNull(heading.Replace(" ", ""));
+        Assert.NotNull(heading);
+        Assert.NotEmpty(heading!.Trim());
     }
 
     [Fact]

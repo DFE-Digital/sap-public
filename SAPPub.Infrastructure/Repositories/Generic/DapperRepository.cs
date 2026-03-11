@@ -1,159 +1,199 @@
 ﻿using Dapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 using SAPPub.Core.Interfaces.Repositories.Generic;
+using SAPPub.Infrastructure.Mapping.ValueCodes;
 using SAPPub.Infrastructure.Repositories.Helpers;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Dapper.SqlMapper;
 
 namespace SAPPub.Infrastructure.Repositories.Generic
 {
-    public class DapperRepository<T> : IGenericCRUDRepository<T> where T : class
+    public sealed class DapperRepository<T> : IGenericRepository<T> where T : class
     {
-        private readonly IDbConnection _connection;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly NpgsqlDataSource _dataSource;
         private readonly ILogger<DapperRepository<T>> _logger;
+        private readonly ICodedValueMapper _codedValueMapper;
 
-        public DapperRepository(IDbConnection connection, IHttpContextAccessor httpContextAccessor, ILogger<DapperRepository<T>> logger)
+        public DapperRepository(
+            NpgsqlDataSource dataSource,
+            ILogger<DapperRepository<T>> logger,
+            ICodedValueMapper codedValueMapper)
         {
-            _connection = connection ?? throw new ArgumentNullException(nameof(connection));
-            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
-            _logger = logger ?? throw new ArgumentNullException();
+            _dataSource = dataSource ?? throw new ArgumentNullException(nameof(dataSource));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _codedValueMapper = codedValueMapper ?? throw new ArgumentNullException(nameof(codedValueMapper));
         }
 
-        public string GetUserIP()
+        public Task<T?> ReadAsync(string id, CancellationToken ct = default)
         {
-            var remoteIp = _httpContextAccessor?.HttpContext?.Connection?.RemoteIpAddress?.ToString();
+            if (string.IsNullOrWhiteSpace(id))
+                return Task.FromResult<T?>(default);
 
-            if (!string.IsNullOrEmpty(remoteIp))
-            {
-                return remoteIp;
-            }
-            return string.Empty;
+            // Convention: "Id" parameter name; feature repos can call ReadSingleAsync for non-Id keys.
+            return ReadSingleAsync(new { Id = id }, ct);
         }
 
-        public bool Create(T entity)
+        public async Task<IEnumerable<T>> ReadPageAsync(int page, int take, CancellationToken ct = default)
         {
-            var rowsEffected = 0;
+            if (page < 1)
+                throw new ArgumentOutOfRangeException(nameof(page), "Page must be 1 or greater.");
+            if (take < 1)
+                throw new ArgumentOutOfRangeException(nameof(take), "Take must be 1 or greater.");
             try
             {
-                var parameters = new DynamicParameters(entity);
-                parameters.Add("@AuditIPAddress", GetUserIP());
+                var sql = DapperHelpers.GetReadMultiple(typeof(T));
+                sql = sql.TrimEnd(';'); // Remove trailing semicolon to allow appending remaining SQL clauses.
+                sql = sql + $" LIMIT {take} OFFSET {(page - 1) * take}";
+                if (string.IsNullOrWhiteSpace(sql))
+                    throw new NotSupportedException($"No ReadMultiple query for {typeof(T).Name}");
 
-                rowsEffected = _connection.Execute(
-                     DapperHelpers.GetCreate(entity.GetType()),
-                     parameters,
-                     commandType: CommandType.Text
-                     );
+                await using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
+
+                var cmd = new CommandDefinition(
+                    commandText: sql,
+                    parameters: null,
+                    transaction: null,
+                    commandTimeout: null,
+                    commandType: CommandType.Text,
+                    flags: CommandFlags.Buffered | CommandFlags.NoCache,
+                    cancellationToken: ct);
+
+                var items = (await conn.QueryAsync<T>(cmd).ConfigureAwait(false)).ToList();
+
+                if (items.Count > 0)
+                    _codedValueMapper.Apply(items); // map *_Coded -> numeric + _Reason
+
+                return items;
+            }
+            catch (OperationCanceledException)
+            {
+                // Let cancellations propagate (don’t log as error).
+                throw;
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to create! - " + ex.Message, ex);
+                _logger.LogError(ex, "Failed ReadAllAsync for {Type}", typeof(T).Name);
+                return Enumerable.Empty<T>();
             }
-
-            return rowsEffected > 0;
         }
 
-        public IEnumerable<T>? ReadAll()
+        public async Task<IEnumerable<T>> ReadAllAsync(CancellationToken ct = default)
         {
             try
             {
-                return _connection.Query<T>(
-                    DapperHelpers.GetReadMultiple(typeof(T)),
-                    commandType: CommandType.Text
-                    );
+                var sql = DapperHelpers.GetReadMultiple(typeof(T));
+                if (string.IsNullOrWhiteSpace(sql))
+                    throw new NotSupportedException($"No ReadMultiple query for {typeof(T).Name}");
+
+                await using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
+
+                var cmd = new CommandDefinition(
+                    commandText: sql,
+                    parameters: null,
+                    transaction: null,
+                    commandTimeout: null,
+                    commandType: CommandType.Text,
+                    flags: CommandFlags.Buffered | CommandFlags.NoCache,
+                    cancellationToken: ct);
+
+                var items = (await conn.QueryAsync<T>(cmd).ConfigureAwait(false)).ToList();
+
+                if (items.Count > 0)
+                    _codedValueMapper.Apply(items); // map *_Coded -> numeric + _Reason
+
+                return items;
+            }
+            catch (OperationCanceledException)
+            {
+                // Let cancellations propagate (don’t log as error).
+                throw;
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to readall! - " + ex.Message, ex);
+                _logger.LogError(ex, "Failed ReadAllAsync for {Type}", typeof(T).Name);
+                return Enumerable.Empty<T>();
             }
-
-            return default;
         }
 
-        public IEnumerable<T>? Query(string query, T entity)
+        public async Task<T?> ReadSingleAsync(object? parameters, CancellationToken ct = default)
         {
+            if (parameters is null)
+                return default;
+
             try
             {
-                return _connection.Query<T>(
-                    query,
-                    commandType: CommandType.Text
-                    );
+                var sql = DapperHelpers.GetReadSingle(typeof(T));
+                if (string.IsNullOrWhiteSpace(sql))
+                    throw new NotSupportedException($"No ReadSingle query for {typeof(T).Name}");
+
+                await using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
+
+                var cmd = new CommandDefinition(
+                    commandText: sql,
+                    parameters: parameters,
+                    transaction: null,
+                    commandTimeout: null,
+                    commandType: CommandType.Text,
+                    flags: CommandFlags.Buffered | CommandFlags.NoCache,
+                    cancellationToken: ct);
+
+                var item = await conn.QuerySingleOrDefaultAsync<T>(cmd).ConfigureAwait(false);
+
+                if (item is not null)
+                    _codedValueMapper.Apply(item);
+
+                return item;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to readall! - " + ex.Message, ex);
+                // Keep params out of the formatted message; log as a structured property.
+                _logger.LogError(ex, "Failed ReadSingleAsync for {Type} paramsType={ParamsType}", typeof(T).Name, parameters.GetType().Name);
+                return default;
             }
-
-            return default;
         }
 
-        public T? Read(Guid Id)
+        public async Task<IEnumerable<T>> ReadManyAsync(object? parameters, CancellationToken ct = default)
         {
+            if (parameters is null)
+                return Enumerable.Empty<T>();
+
             try
             {
-                var param = new DynamicParameters();
-                param.Add("@Id", Id);
+                var sql = DapperHelpers.GetReadMany(typeof(T));
+                if (string.IsNullOrWhiteSpace(sql))
+                    throw new NotSupportedException($"No ReadMany query for {typeof(T).Name}");
 
-                return _connection.Query<T>(
-                        DapperHelpers.GetReadSingle(typeof(T)),
-                        param,
-                        commandType: CommandType.Text
-                        ).FirstOrDefault();
+                await using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
+
+                var cmd = new CommandDefinition(
+                    commandText: sql,
+                    parameters: parameters,
+                    transaction: null,
+                    commandTimeout: null,
+                    commandType: CommandType.Text,
+                    flags: CommandFlags.Buffered | CommandFlags.NoCache,
+                    cancellationToken: ct);
+
+                var items = (await conn.QueryAsync<T>(cmd).ConfigureAwait(false)).ToList();
+
+                if (items.Count > 0)
+                    _codedValueMapper.Apply(items);
+
+                return items;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to read! - " + ex.Message, ex);
+                _logger.LogError(ex, "Failed ReadManyAsync for {Type} paramsType={ParamsType}", typeof(T).Name, parameters.GetType().Name);
+                return Enumerable.Empty<T>();
             }
-            return default;
-        }
-
-        public T? Read(string Id)
-        {
-            try
-            {
-                var param = new DynamicParameters();
-                param.Add("@Id", Id);
-
-                return _connection.Query<T>(
-                        DapperHelpers.GetReadSingle(typeof(T)),
-                        param,
-                        commandType: CommandType.Text
-                        ).FirstOrDefault();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Failed to read! - " + ex.Message, ex);
-            }
-            return default;
-        }
-
-        public bool Update(T entity)
-        {
-            var rowsEffected = 0;
-            try
-            {
-                var parameters = new DynamicParameters(entity);
-                parameters.Add("@AuditIPAddress", GetUserIP());
-
-                rowsEffected = _connection.Execute(
-                                     DapperHelpers.GetUpdate(entity.GetType()),
-                                     parameters,
-                                     commandType: CommandType.Text
-                                     );
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Failed to update! - " + ex.Message, ex);
-            }
-
-            return rowsEffected > 0;
         }
     }
 }

@@ -1,15 +1,13 @@
 ﻿using SAPPub.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SAPPub.Core.Interfaces.Services
 {
     public interface IEstablishmentService
     {
-        IEnumerable<Establishment> GetAllEstablishments();
-        Establishment GetEstablishment(string urn);
+        Task<IEnumerable<Establishment>> GetAllEstablishmentsAsync(CancellationToken ct = default);
+
+        Task<IEnumerable<Establishment>> GetEstablishmentsAsync(int page, int take, CancellationToken ct = default);
+
+        Task<Establishment> GetEstablishmentAsync(string urn, CancellationToken ct = default);
     }
 }

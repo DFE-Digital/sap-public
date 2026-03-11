@@ -3,6 +3,6 @@
 public record RelativeYearValues<T>
 {
     public required T CurrentYear { get; init; }
-    public required T PreviousYear { get; init; }
-    public required T TwoYearsAgo { get; init; }
+    public T? PreviousYear { get; init; }
+    public T? TwoYearsAgo { get; init; }
 }

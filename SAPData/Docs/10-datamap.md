@@ -20,6 +20,8 @@ DataMap lives at:
 
 SAPData/DataMap/datamap.csv
 
+Master copy is here:  https://educationgovuk.sharepoint.com/:x:/r/sites/TeacherServices/_layouts/15/Doc.aspx?sourcedoc=%7B2CF800C6-FDCF-4AFE-9E4F-6D881854D889%7D&file=Data%20Map%20Overview.xlsx&action=default&mobileredirect=true
+
 Raw source files used by DataMap are downloaded to:
 
 SAPData/DataMap/SourceFiles/
@@ -377,8 +379,6 @@ IgnoreMapping controls whether a DataMap row is used for **semantic warehouse vi
 When IgnoreMapping = Y:
 
 - A mirrored SQL view is produced that matches the source CSV schema
-
-This is used for datasets that will be used by the application to build .
 
 ---
 

@@ -1,16 +1,7 @@
 ﻿using Moq;
-using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Entities.KS4.Destinations;
-using SAPPub.Core.Interfaces.Repositories.KS4.Absence;
 using SAPPub.Core.Interfaces.Repositories.KS4.Destinations;
-using SAPPub.Core.Services.KS4.Absence;
 using SAPPub.Core.Services.KS4.Destinations;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SAPPub.Core.Tests.Services.KS4.Destinations
 {
@@ -26,17 +17,17 @@ namespace SAPPub.Core.Tests.Services.KS4.Destinations
         }
 
         [Fact]
-        public void GetAllEnglandDestinations_ShouldReturnAllItems()
+        public async Task GetEnglandDestinationsAsync_ShouldReturnData()
         {
             // Arrange
-            var expectedAbsences =
-            new EnglandDestinations { AllDest_Tot_Eng_Current_Pct = 99.99 };
+            var expected = new EnglandDestinations { AllDest_Tot_Eng_Current_Pct = 99.99 };
 
-            _mockRepo.Setup(r => r.GetEnglandDestinations())
-                         .Returns(expectedAbsences);
+            _mockRepo
+                .Setup(r => r.GetEnglandDestinationsAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expected);
 
             // Act
-            var result = _service.GetEnglandDestinations();
+            var result = await _service.GetEnglandDestinationsAsync(CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
@@ -44,30 +35,31 @@ namespace SAPPub.Core.Tests.Services.KS4.Destinations
         }
 
         [Fact]
-        public void GetAllEnglandDestinations_ShouldReturnEmpty_WhenNoData()
+        public async Task GetEnglandDestinationsAsync_ShouldReturnDefault_WhenNoData()
         {
             // Arrange
-            _mockRepo.Setup(r => r.GetEnglandDestinations())
-                     .Returns(new EnglandDestinations());
+            _mockRepo
+                .Setup(r => r.GetEnglandDestinationsAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new EnglandDestinations());
 
             // Act
-            var result = _service.GetEnglandDestinations();
+            var result = await _service.GetEnglandDestinationsAsync(CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
         }
 
         [Fact]
-        public void GetEnglandDestinations_ShouldThrowException_WhenRepositoryThrows()
+        public async Task GetEnglandDestinationsAsync_ShouldPropagateException_WhenRepositoryThrows()
         {
             // Arrange
-            _mockRepo.Setup(r => r.GetEnglandDestinations())
-                     .Throws(new Exception("Database error"));
+            _mockRepo
+                .Setup(r => r.GetEnglandDestinationsAsync(It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new Exception("Database error"));
 
             // Act & Assert
-            var ex = Assert.Throws<Exception>(() => _service.GetEnglandDestinations());
+            var ex = await Assert.ThrowsAsync<Exception>(() => _service.GetEnglandDestinationsAsync(CancellationToken.None));
             Assert.Equal("Database error", ex.Message);
         }
-
     }
 }

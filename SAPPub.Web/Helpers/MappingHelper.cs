@@ -12,7 +12,7 @@ namespace SAPPub.Web.Helpers
         /// </summary>
         /// <param name="value">Tuple of Easting, and Northing</param>
         /// <returns>Tuple of Latitude, and Longitude</returns>
-        public static LatitudeLongitude? ConvertToLongLat(string easting, string northing)
+        public static LatitudeLongitude? ConvertToLatLong(string easting, string northing)
         {
             if (string.IsNullOrWhiteSpace(easting) || string.IsNullOrWhiteSpace(northing))
             {

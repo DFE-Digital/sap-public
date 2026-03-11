@@ -2,12 +2,6 @@
 using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Interfaces.Repositories.KS4.Destinations;
 using SAPPub.Core.Services.KS4.Destinations;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SAPPub.Core.Tests.Services.KS4.Destinations
 {
@@ -23,20 +17,21 @@ namespace SAPPub.Core.Tests.Services.KS4.Destinations
         }
 
         [Fact]
-        public void GetAllEstablishmentDestinations_ShouldReturnAllItems()
+        public async Task GetAllEstablishmentDestinationsAsync_ShouldReturnAllItems()
         {
             // Arrange
-            var expectedDestinationss = new List<EstablishmentDestinations>
-        {
-            new EstablishmentDestinations { Id = "100",  AllDest_Tot_Est_Current_Pct = 99.99},
-            new EstablishmentDestinations { Id = "101", AllDest_Tot_Est_Current_Pct = 90.00}
-        };
+            var expected = new List<EstablishmentDestinations>
+            {
+                new() { Id = "100", AllDest_Tot_Est_Current_Pct = 99.99 },
+                new() { Id = "101", AllDest_Tot_Est_Current_Pct = 90.00 }
+            };
 
-            _mockRepo.Setup(r => r.GetAllEstablishmentDestinations())
-                     .Returns(expectedDestinationss);
+            _mockRepo
+                .Setup(r => r.GetAllEstablishmentDestinationsAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expected);
 
             // Act
-            var result = _service.GetAllEstablishmentDestinations();
+            var result = await _service.GetAllEstablishmentDestinationsAsync(CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
@@ -46,33 +41,34 @@ namespace SAPPub.Core.Tests.Services.KS4.Destinations
         }
 
         [Fact]
-        public void GetAllEstablishmentDestinations_ShouldReturnEmpty_WhenNoData()
+        public async Task GetAllEstablishmentDestinationsAsync_ShouldReturnEmpty_WhenNoData()
         {
             // Arrange
-            _mockRepo.Setup(r => r.GetAllEstablishmentDestinations())
-                     .Returns(new List<EstablishmentDestinations>());
+            _mockRepo
+                .Setup(r => r.GetAllEstablishmentDestinationsAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<EstablishmentDestinations>());
 
             // Act
-            var result = _service.GetAllEstablishmentDestinations();
+            var result = await _service.GetAllEstablishmentDestinationsAsync(CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
             Assert.Empty(result);
         }
 
-
         [Fact]
-        public void GetEstablishmentDestinations_ShouldReturnCorrectItem_WhenUrnExists()
+        public async Task GetEstablishmentDestinationsAsync_ShouldReturnCorrectItem_WhenUrnExists()
         {
             // Arrange
             var urn = "100";
-            var expectedDestinations = new EstablishmentDestinations { Id = urn, AllDest_Tot_Est_Current_Pct = 100 };
+            var expected = new EstablishmentDestinations { Id = urn, AllDest_Tot_Est_Current_Pct = 100 };
 
-            _mockRepo.Setup(r => r.GetEstablishmentDestinations(urn))
-                     .Returns(expectedDestinations);
+            _mockRepo
+                .Setup(r => r.GetEstablishmentDestinationsAsync(urn, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expected);
 
             // Act
-            var result = _service.GetEstablishmentDestinations(urn);
+            var result = await _service.GetEstablishmentDestinationsAsync(urn, CancellationToken.None);
 
             // Assert
             Assert.NotNull(result);
@@ -81,30 +77,35 @@ namespace SAPPub.Core.Tests.Services.KS4.Destinations
         }
 
         [Fact]
-        public void GetEstablishmentDestinations_ShouldReturnNull_WhenUrnDoesNotExist()
+        public async Task GetEstablishmentDestinationsAsync_ShouldReturnDefault_WhenUrnDoesNotExist()
         {
             // Arrange
             var urn = "99999";
-            _mockRepo.Setup(r => r.GetEstablishmentDestinations(urn))
-                     .Returns(new EstablishmentDestinations());
+
+            // Service returns nullable; repo may return null; support either by returning null from repo setup.
+            _mockRepo
+                .Setup(r => r.GetEstablishmentDestinationsAsync(urn, It.IsAny<CancellationToken>()))
+                .ReturnsAsync((EstablishmentDestinations?)null);
 
             // Act
-            var result = _service.GetEstablishmentDestinations(urn);
+            var result = await _service.GetEstablishmentDestinationsAsync(urn, CancellationToken.None);
 
             // Assert
-            Assert.Null(result.AllDest_Tot_Est_Previous2_Pct);
+            Assert.Null(result);
         }
 
         [Fact]
-        public void GetEstablishmentDestinations_ShouldThrowException_WhenRepositoryThrows()
+        public async Task GetEstablishmentDestinationsAsync_ShouldPropagateException_WhenRepositoryThrows()
         {
             // Arrange
             var urn = "error";
-            _mockRepo.Setup(r => r.GetEstablishmentDestinations(urn))
-                     .Throws(new Exception("Database error"));
+
+            _mockRepo
+                .Setup(r => r.GetEstablishmentDestinationsAsync(urn, It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new Exception("Database error"));
 
             // Act & Assert
-            var ex = Assert.Throws<Exception>(() => _service.GetEstablishmentDestinations(urn));
+            var ex = await Assert.ThrowsAsync<Exception>(() => _service.GetEstablishmentDestinationsAsync(urn, CancellationToken.None));
             Assert.Equal("Database error", ex.Message);
         }
     }

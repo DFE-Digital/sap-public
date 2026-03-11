@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using SAPPub.Core.ValueObjects;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SAPPub.Core.Entities.KS4.Workforce
 {
@@ -11,16 +7,20 @@ namespace SAPPub.Core.Entities.KS4.Workforce
     public class EstablishmentWorkforce
     {
         public string Id { get; set; } = string.Empty;
-        /// 
-        /// Workforce Pupil Teacher Ratio filtered by Establishment for Current year 
-        /// 
-        public double? Workforce_PupTeaRatio_Est_Current_Num { get; set; }
-        public string Workforce_PupTeaRatio_Est_Current_Num_Reason { get; set; } = string.Empty;
 
-        /// 
-        /// Workforce PupIl FTE filtered by Establishment for Current year 
-        /// 
+
+        ///
+        /// Workforce Pupil Teacher Ratio filtered by Establishment for Current year
+        ///
+        public CodedDouble Workforce_PupTeaRatio_Est_Current_Num_Coded { get; set; } = new();
+        public double? Workforce_PupTeaRatio_Est_Current_Num { get; set; }
+        public string? Workforce_PupTeaRatio_Est_Current_Num_Reason { get; set; }
+
+        ///
+        /// Workforce Total Pupils filtered by Establishment for Current year
+        ///
+        public CodedDouble Workforce_TotPupils_Est_Current_Num_Coded { get; set; } = new();
         public double? Workforce_TotPupils_Est_Current_Num { get; set; }
-        public string Workforce_TotPupils_Est_Current_Num_Reason { get; set; } = string.Empty;
+        public string? Workforce_TotPupils_Est_Current_Num_Reason { get; set; }
     }
 }

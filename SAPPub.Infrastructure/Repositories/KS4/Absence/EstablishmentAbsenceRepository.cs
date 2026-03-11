@@ -1,38 +1,30 @@
-﻿using Microsoft.Extensions.Logging;
-using SAPPub.Core.Entities.KS4.Absence;
+﻿using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Repositories.KS4.Absence;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SAPPub.Infrastructure.Repositories.KS4.Absence
 {
-    public class EstablishmentAbsenceRepository: IEstablishmentAbsenceRepository
+    public sealed class EstablishmentAbsenceRepository : IEstablishmentAbsenceRepository
     {
-        private readonly IGenericRepository<EstablishmentAbsence> _establishmentAbsenceRepository;
-        private ILogger<EstablishmentAbsence> _logger;
+        private readonly IGenericRepository<EstablishmentAbsence> _repo;
 
-        public EstablishmentAbsenceRepository(
-            IGenericRepository<EstablishmentAbsence> establishmentAbsenceRepository,
-            ILogger<EstablishmentAbsence> logger)
+        public EstablishmentAbsenceRepository(IGenericRepository<EstablishmentAbsence> repo)
         {
-            _establishmentAbsenceRepository = establishmentAbsenceRepository;
-            _logger = logger;
+            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
-
-        public IEnumerable<EstablishmentAbsence> GetAllEstablishmentAbsence()
+        public async Task<IEnumerable<EstablishmentAbsence>> GetAllEstablishmentAbsenceAsync(CancellationToken ct = default)
         {
-            return _establishmentAbsenceRepository.ReadAll() ?? [];
+            return await _repo.ReadAllAsync(ct);
         }
 
-
-        public EstablishmentAbsence GetEstablishmentAbsence(string urn)
+        public async Task<EstablishmentAbsence> GetEstablishmentAbsenceAsync(string urn, CancellationToken ct = default)
         {
-            return GetAllEstablishmentAbsence().FirstOrDefault(x => x.Id == urn) ?? new EstablishmentAbsence();
+            return await _repo.ReadAsync(urn, ct) ?? new EstablishmentAbsence();
         }
     }
 }

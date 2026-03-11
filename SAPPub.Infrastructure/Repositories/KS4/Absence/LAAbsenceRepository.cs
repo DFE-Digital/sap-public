@@ -1,38 +1,26 @@
-﻿using Microsoft.Extensions.Logging;
-using SAPPub.Core.Entities.KS4.Absence;
+﻿using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Repositories.KS4.Absence;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SAPPub.Infrastructure.Repositories.KS4.Absence
 {
-    public class LAAbsenceRepository: ILAAbsenceRepository
+    public sealed class LAAbsenceRepository : ILAAbsenceRepository
     {
-        private readonly IGenericRepository<LAAbsence> _laAbsenceRepository;
-        private ILogger<LAAbsence> _logger;
+        private readonly IGenericRepository<LAAbsence> _repo;
 
-        public LAAbsenceRepository(
-            IGenericRepository<LAAbsence> laAbsenceRepository,
-            ILogger<LAAbsence> logger)
+        public LAAbsenceRepository(IGenericRepository<LAAbsence> repo)
         {
-            _laAbsenceRepository = laAbsenceRepository;
-            _logger = logger;
+            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
-
-        public IEnumerable<LAAbsence> GetAllLAAbsence()
+        public async Task<IEnumerable<LAAbsence>> GetAllLAAbsenceAsync(CancellationToken ct = default)
         {
-            return _laAbsenceRepository.ReadAll() ?? [];
+            return await _repo.ReadAllAsync(ct);
         }
 
-
-        public LAAbsence GetLAAbsence(string urn)
+        public async Task<LAAbsence> GetLAAbsenceAsync(string id, CancellationToken ct = default)
         {
-            return GetAllLAAbsence().FirstOrDefault(x => x.Id == urn) ?? new LAAbsence();
+            return await _repo.ReadAsync(id, ct) ?? new LAAbsence();
         }
     }
 }

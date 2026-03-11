@@ -1,38 +1,26 @@
-﻿using Microsoft.Extensions.Logging;
-using SAPPub.Core.Entities;
-using SAPPub.Core.Entities.KS4.Workforce;
-using SAPPub.Core.Interfaces.Repositories;
+﻿using SAPPub.Core.Entities.KS4.Workforce;
 using SAPPub.Core.Interfaces.Repositories.KS4.Workforce;
 using SAPPub.Core.Interfaces.Services.KS4.Workforce;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SAPPub.Core.Services.KS4.Workforce
 {
-    public class EstablishmentWorkforceService : IEstablishmentWorkforceService
+    public sealed class EstablishmentWorkforceService : IEstablishmentWorkforceService
     {
-        private readonly IEstablishmentWorkforceRepository _establishmentWorkforceRepository;
+        private readonly IEstablishmentWorkforceRepository _repo;
 
-
-        public EstablishmentWorkforceService(
-            IEstablishmentWorkforceRepository establishmentWorkforceRepository)
+        public EstablishmentWorkforceService(IEstablishmentWorkforceRepository repo)
         {
-            _establishmentWorkforceRepository = establishmentWorkforceRepository;
+            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
-
-        public IEnumerable<EstablishmentWorkforce> GetAllEstablishmentWorkforce()
+        public async Task<IEnumerable<EstablishmentWorkforce>> GetAllEstablishmentWorkforceAsync(CancellationToken ct = default)
         {
-            return _establishmentWorkforceRepository.GetAllEstablishmentWorkforce();
+            return await _repo.GetAllEstablishmentWorkforceAsync(ct);
         }
 
-
-        public EstablishmentWorkforce GetEstablishmentWorkforce(string urn)
+        public async Task<EstablishmentWorkforce> GetEstablishmentWorkforceAsync(string urn, CancellationToken ct = default)
         {
-            return _establishmentWorkforceRepository.GetEstablishmentWorkforce(urn) ?? new();
+            return await _repo.GetEstablishmentWorkforceAsync(urn, ct);
         }
     }
 }

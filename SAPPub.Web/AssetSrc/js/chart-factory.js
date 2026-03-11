@@ -45,7 +45,7 @@
                 scales: {
                     y: {
                         beginAtZero: true,
-                        max: 100,
+                        //max: 100,
                         grid: {
                             display: true,
                             drawBorder: false,
@@ -107,7 +107,7 @@
                 scales: {
                     x: {
                         beginAtZero: true,
-                        max: 100,
+                        //max: 100,
                         grid: {
                             display: true,
                             drawBorder: false,
@@ -198,7 +198,7 @@
                 borderWidth: 1,                
                 barThickness: 'flex',
                 maxBarThickness: 70,
-                minBarLength: 3,    
+                minBarLength: 3
             }
             if (Array.isArray(chartData.datasets)) {
                 return chartData.datasets.map((ds, i) => ({

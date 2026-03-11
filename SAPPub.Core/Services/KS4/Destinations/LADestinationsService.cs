@@ -1,34 +1,26 @@
-﻿using SAPPub.Core.Entities.KS4.Absence;
-using SAPPub.Core.Entities.KS4.Destinations;
+﻿using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Interfaces.Repositories.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SAPPub.Core.Services.KS4.Destinations
 {
-    public class LADestinationsService : ILADestinationsService
+    public sealed class LADestinationsService : ILADestinationsService
     {
-        private readonly ILADestinationsRepository _LADestinationsRepository;
+        private readonly ILADestinationsRepository _repo;
 
-        public LADestinationsService(ILADestinationsRepository LADestinationsRepository)
+        public LADestinationsService(ILADestinationsRepository repo)
         {
-            _LADestinationsRepository = LADestinationsRepository;
+            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
-
-        public IEnumerable<LADestinations> GetAllLADestinations()
+        public async Task<IEnumerable<LADestinations>> GetAllLADestinationsAsync(CancellationToken ct = default)
         {
-            return _LADestinationsRepository.GetAllLADestinations();
+            return await _repo.GetAllLADestinationsAsync(ct);
         }
 
-
-        public LADestinations GetLADestinations(string la)
+        public async Task<LADestinations> GetLADestinationsAsync(string laCode, CancellationToken ct = default)
         {
-            return _LADestinationsRepository.GetLADestinations(la) ?? new(); ;
+            return await _repo.GetLADestinationsAsync(laCode, ct);
         }
     }
 }
