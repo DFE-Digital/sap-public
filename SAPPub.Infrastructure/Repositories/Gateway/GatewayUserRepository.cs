@@ -14,25 +14,20 @@ namespace SAPPub.Infrastructure.Repositories.Gateway
 {
     public class GatewayUserRepository : IGatewayUserRepository
     {
-        private readonly IGenericCRUDRepository<GatewayUser> _genericRepository;
+        private readonly IGenericRepository<GatewayUser> _genericRepository;
         private ILogger<Establishment> _logger;
 
         public GatewayUserRepository(
-            IGenericCRUDRepository<GatewayUser> genericRepository,
+            IGenericRepository<GatewayUser> genericRepository,
             ILogger<Establishment> logger)
         {
             _genericRepository = genericRepository;
             _logger = logger;
         }
 
-        public GatewayUser? GetByEmail(string email)
+        public async Task<GatewayUser?> GetById(Guid? id, CancellationToken ct = default)
         {
-            return _genericRepository.ReadAll()?.FirstOrDefault(x => x.EmailAddress == email);
-        }
-
-        public GatewayUser? GetById(Guid? id)
-        {
-            return _genericRepository.ReadAll()?.FirstOrDefault(x => x.Id == id);
+            return await _genericRepository.ReadSingleAsync( ReadAll()?.FirstOrDefault(x => x.Id == id);
         }
 
         public bool Insert(GatewayUser user)
@@ -40,9 +35,9 @@ namespace SAPPub.Infrastructure.Repositories.Gateway
             return _genericRepository.Create(user);
         }
 
-        public IEnumerable<GatewayUser> GetAll()
+        public async Task<IEnumerable<GatewayUser>> GetAll(CancellationToken ct = default)
         {
-            return _genericRepository.ReadAll() ?? new List<GatewayUser>();
+            return await _genericRepository.ReadAllAsync(ct);
         }
     }
 }

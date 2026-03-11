@@ -13,10 +13,10 @@ namespace SAPPub.Core.Services.Gateway
 {
     public class GatewaySettingsService : IGatewaySettingsService
     {
-        private readonly IGenericCRUDRepository<GatewaySettings> _settingsRepository;
+        private readonly IGenericRepository<GatewaySettings> _settingsRepository;
         private readonly ILogger<GatewaySettingsService> _logger;
 
-        public GatewaySettingsService(IGenericCRUDRepository<GatewaySettings> settingsRepository, ILogger<GatewaySettingsService> logger)
+        public GatewaySettingsService(IGenericRepository<GatewaySettings> settingsRepository, ILogger<GatewaySettingsService> logger)
         {
             _settingsRepository = settingsRepository;
             _logger = logger;

@@ -12,32 +12,27 @@ using System.Threading.Tasks;
 
 namespace SAPPub.Infrastructure.Repositories.Gateway
 {
-    public class GatewayLocalAuthorityRepository : IGatewayLocalAuthorityRepository
+    public sealed class GatewayLocalAuthorityRepository : IGatewayLocalAuthorityRepository
     {
-        private readonly IGenericCRUDRepository<GatewayLocalAuthority> _genericRepository;
+        private readonly IGenericRepository<GatewayLocalAuthority> _genericRepository;
         private ILogger<Establishment> _logger;
 
         public GatewayLocalAuthorityRepository(
-            IGenericCRUDRepository<GatewayLocalAuthority> genericRepository,
+            IGenericRepository<GatewayLocalAuthority> genericRepository,
             ILogger<Establishment> logger)
         {
-            _genericRepository = genericRepository;
-            _logger = logger;
+            _genericRepository = genericRepository ?? throw new ArgumentNullException(nameof(genericRepository));
+            _logger = logger ?? throw new ArgumentNullException(nameof(genericRepository));
         }
 
-        public GatewayLocalAuthority? GetByName(string localAuthorityName)
+        public async Task<GatewayLocalAuthority?> GetByIdAsync(Guid id, CancellationToken ct = default)
         {
-            return _genericRepository.ReadAll()?.FirstOrDefault(x => x.LocalAuthorityName.ToLower() == localAuthorityName.ToLower());
+            return await _genericRepository.ReadAsync(id.ToString(), ct);
         }
 
-        public GatewayLocalAuthority? GetById(Guid id)
+        public async Task<IEnumerable<GatewayLocalAuthority>> GetAllAsync(CancellationToken ct = default)
         {
-            return _genericRepository.Read(id);
-        }
-
-        public IEnumerable<GatewayLocalAuthority> GetAll()
-        {
-            return _genericRepository.ReadAll() ?? new List<GatewayLocalAuthority>();
+            return await _genericRepository.ReadAllAsync() ?? new List<GatewayLocalAuthority>();
         }
     }
 }

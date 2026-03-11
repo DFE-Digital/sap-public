@@ -14,11 +14,11 @@ namespace SAPPub.Infrastructure.Repositories.Gateway
 {
     public class GatewayUserAuditRepository : IGatewayUserAuditRepository
     {
-        private readonly IGenericCRUDRepository<GatewayUserAudit> _genericRepository;
+        private readonly IGenericRepository<GatewayUserAudit> _genericRepository;
         private ILogger<Establishment> _logger;
 
         public GatewayUserAuditRepository(
-            IGenericCRUDRepository<GatewayUserAudit> genericRepository,
+            IGenericRepository<GatewayUserAudit> genericRepository,
             ILogger<Establishment> logger)
         {
             _genericRepository = genericRepository;

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SAPPub.Core.Interfaces.Repositories.Gateway
 {
-    public interface IGatewaySettingsRepository : IGenericCRUDRepository<GatewaySettings>
+    public interface IGatewaySettingsRepository : IGenericRepository<GatewaySettings>
     {
     }
 }
