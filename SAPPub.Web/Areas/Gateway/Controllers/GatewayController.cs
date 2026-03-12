@@ -173,9 +173,12 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
                 var user = await _userService.GetByEmailAsync(viewModel.EmailAddress);
                 if (user != null)
                 {
-                    ModelState.AddModelError("EmailAddress", "That user already exists, please log in");
+                    ModelState.AddModelError("EmailAddress", "User already exists, log in to access the service");
                     return View(viewModel);
                 }
+
+                var acceptedCookies = viewModel.AcceptCookies == "true";
+
 
 
                 // If not, create new record
@@ -183,13 +186,13 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
                 {
                     EmailAddress = viewModel.EmailAddress,
                     LocalAuthorityId = viewModel.LocalAuthorityId,
-                    CookiePrefs = true
+                    CookiePrefs = acceptedCookies
                 };
                 var newUserId = await _userService.InsertAsync(newUser);
 
                 _auditService.Insert(newUserId);
 
-                // Set cookie
+                // Set cookies
                 Response.Cookies.Append("gateway", newUserId.ToString(), new CookieOptions
                 {
                     Expires = DateTimeOffset.UtcNow.AddDays(1),
@@ -198,6 +201,20 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
                     Secure = true,
                     HttpOnly = true
                 });
+
+                var options = new CookieOptions
+                {
+                    Expires = DateTimeOffset.UtcNow.AddMonths(12),
+                    IsEssential = true,
+                    Secure = true,
+                    HttpOnly = true
+                };
+
+                Response.Cookies.Append(
+                    "analytics_preference",
+                    acceptedCookies ? "true" : "false",
+                    options
+                );
                 // Send Email
                 _emailService.SendGatewayEmail(viewModel.EmailAddress);
 

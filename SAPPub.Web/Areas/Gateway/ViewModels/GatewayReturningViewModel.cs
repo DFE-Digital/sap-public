@@ -4,8 +4,8 @@ namespace SAPPub.Web.Areas.Gateway.ViewModels
 {
     public class GatewayReturningViewModel
     {
-        [EmailAddress(ErrorMessage = "Please enter a valid email address")]
-        [Required(ErrorMessage = "Please enter your email address")]
+        [EmailAddress(ErrorMessage = "Enter an email address in the correct format, like name@example.com")]
+        [Required(ErrorMessage = "Enter your email address")]
         public string EmailAddress { get; set; } = string.Empty;
     }
 }

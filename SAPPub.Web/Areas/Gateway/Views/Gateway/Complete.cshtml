@@ -1,9 +1,26 @@
 ﻿@model GatewayWelcomeViewModel
 @{
-    ViewBag.Title = "Welcome";
+    ViewBag.Title = "School Profiles - signed up";
 }
 
-<!-- This obviously isn't the correct copy -->
-<p>Cheers our kid, you've got an email with the link to return, you've also got 7 days to use the link.</p>
 
-<govuk-button-link is-start-button="true" href="/">Start</govuk-button-link>
+<div class="govuk-width-container">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            <h1 class="govuk-heading-xl">
+                School Profiles - Signed up
+            </h1>
+
+            <p class="govuk-body">
+                You've successfully signed up for the School Profiles service.
+            </p>
+
+            <p class="govuk-body">
+                We'll email you a link to access the service. This link will be valid for 7 days.
+            </p>
+
+            <govuk-button-link is-start-button="true" href="/">Start</govuk-button-link>
+        </div>
+    </div>
+</div>

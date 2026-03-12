@@ -7,11 +7,11 @@ namespace SAPPub.Web.Areas.Gateway.ViewModels
         public Guid LocalAuthorityId { get; set; }
         public string LocalAuthorityName { get; set; } = string.Empty;
 
-        [EmailAddress(ErrorMessage = "Please enter a valid email address")]
-        [Required(ErrorMessage = "Please enter your email address")]
+        [EmailAddress(ErrorMessage = "Enter an email address in the correct format, like name@example.com")]
+        [Required(ErrorMessage = "Enter your email address")]
         public string EmailAddress { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "You must accept or reject the analytics cookies to continue")]
+        [Required(ErrorMessage = "Accept or reject analytics cookies")]
         public string AcceptCookies { get; set; } = string.Empty;
     }
 }
