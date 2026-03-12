@@ -152,6 +152,16 @@ namespace SAPPub.Web.Helpers
             if (page > 1) return Task.FromResult(Enumerable.Empty<T>());
             return ReadAllAsync(ct);
         }
+
+        Task<bool> IGenericRepository<T>.WriteAsync(object? writeObject, CancellationToken ct)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<bool> IGenericRepository<T>.UpdateAsync(object? updateObject, CancellationToken ct)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

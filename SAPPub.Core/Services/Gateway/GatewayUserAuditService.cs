@@ -25,7 +25,7 @@ namespace SAPPub.Core.Services.Gateway
 
         public void Insert(Guid userId)
         {
-            _gatewayUserAuditRepository.Insert(new GatewayUserAudit
+            _gatewayUserAuditRepository.InsertAsync(new GatewayUserAudit
             {
                 UserId = userId,
                 LoginDateTime = DateTime.UtcNow,

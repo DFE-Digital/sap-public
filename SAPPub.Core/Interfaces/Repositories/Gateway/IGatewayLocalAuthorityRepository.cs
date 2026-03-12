@@ -9,7 +9,7 @@ namespace SAPPub.Core.Interfaces.Repositories.Gateway
 {
     public interface IGatewayLocalAuthorityRepository
     {
-        GatewayLocalAuthority? GetById(Guid id, CancellationToken ct = default);
-        IEnumerable<GatewayLocalAuthority> GetAll(CancellationToken ct = default);
+        Task<GatewayLocalAuthority?> GetByIdAsync(Guid id, CancellationToken ct = default);
+        Task<IEnumerable<GatewayLocalAuthority>> GetAllAsync(CancellationToken ct = default);
     }
 }

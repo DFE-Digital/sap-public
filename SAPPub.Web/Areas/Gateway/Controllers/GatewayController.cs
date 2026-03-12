@@ -5,6 +5,7 @@ using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Gateway;
 using SAPPub.Web.Areas.Gateway.ViewModels;
 using SAPPub.Web.Models.Config;
+using System.Threading.Tasks;
 
 namespace SAPPub.Web.Areas.Gateway.Controllers
 {
@@ -28,11 +29,11 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
 
         [HttpGet]
         [Route("gateway/welcome/{id}")]
-        public IActionResult Welcome(string id)
+        public async Task<IActionResult> Welcome(string id)
         {
             //Check id is in allowed LAs list
             //If invalid id, return error view
-            var localAuthority = _localAuthorityService.GetByName(id);
+            var localAuthority = await _localAuthorityService.GetByName(id);
             if (localAuthority == null)
             {
                 return View("GatewayError");
@@ -88,12 +89,12 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("gateway/returning")]
-        public IActionResult Returning(GatewayReturningViewModel viewModel)
+        public async Task<IActionResult> Returning(GatewayReturningViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
                 // Check DB for email
-                var user = _userService.GetByEmail(viewModel.EmailAddress);
+                var user = await _userService.GetByEmailAsync(viewModel.EmailAddress);
                 if (user == null)
                 {
                     ModelState.AddModelError("EmailAddress", "That email address wasn't found to be registered, please use the registration link.");
@@ -133,17 +134,18 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
 
         [HttpGet]
         [Route("gateway/newvisitor/{id}")]
-        public IActionResult NewVisitor(string id)
+        public async Task<IActionResult> NewVisitor(string id)
         {
             var model = new GatewayNewUserViewModel();
 
-            var localAuthority = _localAuthorityService.GetByName(id.Replace("-", " "));
+            var localAuthority = await _localAuthorityService.GetByName(id.Replace("-", " "));
             if (localAuthority == null)
             {
                 return View("GatewayError");
             }
 
-            if (!_gatewayUserLAService.CanRegisterNewUsers(localAuthority.Id))
+            var canRegister = await _gatewayUserLAService.CanRegisterNewUsers(localAuthority.Id);
+            if (!canRegister)
             {
                 return RedirectToAction("Closed");
             }
@@ -162,13 +164,13 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
 
         [HttpPost]
         [Route("gateway/newvisitor/{id}")]
-        public IActionResult NewVisitor(GatewayNewUserViewModel viewModel)
+        public async Task<IActionResult> NewVisitor(GatewayNewUserViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
                 // Check for existing email
                 // If exists, redirect or return error?
-                var user = _userService.GetByEmail(viewModel.EmailAddress);
+                var user = await _userService.GetByEmailAsync(viewModel.EmailAddress);
                 if (user != null)
                 {
                     ModelState.AddModelError("EmailAddress", "That user already exists, please log in");
@@ -183,7 +185,7 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
                     LocalAuthorityId = viewModel.LocalAuthorityId,
                     CookiePrefs = true
                 };
-                var newUserId = _userService.Insert(newUser);
+                var newUserId = await _userService.InsertAsync(newUser);
 
                 _auditService.Insert(newUserId);
 

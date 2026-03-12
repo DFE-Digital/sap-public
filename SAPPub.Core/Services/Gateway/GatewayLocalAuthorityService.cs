@@ -23,26 +23,30 @@ namespace SAPPub.Core.Services.Gateway
             _logger = logger;
         }
 
-        public GatewayLocalAuthority? GetByName(string laName)
+        public async Task<GatewayLocalAuthority?> GetByName(string laName)
         {
-            return _authorityRepository.GetByName(laName);
-
+            var allLas = await _authorityRepository.GetAllAsync();
+            var thisLa = allLas.Where(x => x.LocalAuthorityName.Equals(laName, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+            return thisLa ?? throw new Exception($"LA with name {laName} not found.");
         }
 
-        public GatewayLocalAuthority? GetById(Guid Id)
+        public async Task<GatewayLocalAuthority?> GetById(Guid Id)
         {
-            return _authorityRepository.GetById(Id);
+            return await _authorityRepository.GetByIdAsync(Id);
         }
 
         public int CountSignUps(Guid Id)
         {
-            return _authorityRepository.GetAll().Count(x => x.Id == Id);
+            var localAuth = GetById(Id).Result ?? throw new InvalidOperationException($"Local authority with ID {Id} not found.");
+            return localAuth.MaxSessions;  
         }
 
-        public bool IsLAOpen(Guid Id)
+        public async Task<bool> IsLAOpen(Guid Id)
         {
             var signUps = CountSignUps(Id);
-            var maxSignUps = _authorityRepository.GetById(Id)?.MaxSessions ?? 0;
+
+            var authority = await _authorityRepository.GetByIdAsync(Id) ?? throw new InvalidOperationException($"Local authority with ID {Id} not found.");
+            var maxSignUps = authority.MaxSessions;
             return signUps >= maxSignUps;
         }
     }

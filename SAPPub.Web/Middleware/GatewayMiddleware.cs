@@ -6,7 +6,6 @@ namespace SAPPub.Web.Middleware
     public class GatewayMiddleware
     {
         private IGatewayUserService _userService;
-        private IGatewayPageViewAuditService _viewAuditService;
         private readonly RequestDelegate _next;
         private ILogger<GatewayMiddleware> _logger;
         private IGatewaySettingsService _gatewaySettingsService;
@@ -19,13 +18,11 @@ namespace SAPPub.Web.Middleware
         public GatewayMiddleware(RequestDelegate next, 
             ILogger<GatewayMiddleware> logger, 
             IGatewayUserService userService, 
-            IGatewayPageViewAuditService viewAuditService, 
             IGatewaySettingsService gatewaySettingsService)
         {
             _next = next;
             _logger = logger;
             _userService = userService;
-            _viewAuditService = viewAuditService;
             _gatewaySettingsService = gatewaySettingsService;
         }
 
@@ -37,7 +34,8 @@ namespace SAPPub.Web.Middleware
                 return;
             }
 
-            if (_gatewaySettingsService.IsServiceLive() == false)
+            var shouldGatewayBeLive = await _gatewaySettingsService.IsServiceLive();
+            if (shouldGatewayBeLive == false)
             {
                 httpContext.Response.Redirect("/gateway/closed");
                 return;
@@ -50,19 +48,15 @@ namespace SAPPub.Web.Middleware
             {
                 if (Guid.TryParse(gatewayCookieValue, out Guid userId))
                 {
-                    var user = _userService.GetById(userId);
+                    var user = await _userService.GetById(userId);
                     if (user != null)
                     {
                         // User's time is up
-                        if (_userService.IsUserExpired(user.Id))
+                        if (await _userService.IsUserExpiredAsync(user.Id))
                         {
                             httpContext.Response.Redirect("/Gateway/Closed");
                             return;
                         }
-
-
-                        //Log audit
-                        _viewAuditService.Insert(user.Id, httpContext.Request.Path);
 
                         // If user has just registered, they still should be able to get to the gateway/complete page
                         if (httpContext.Request.Path.StartsWithSegments("/gateway/complete"))
@@ -85,18 +79,15 @@ namespace SAPPub.Web.Middleware
             {
                 if (Guid.TryParse(gatewayCookieValue, out Guid userId))
                 {
-                    var user = _userService.GetById(userId);
+                    var user = await _userService.GetById(userId);
                     if (user != null)
                     {
                         // User's time is up
-                        if (_userService.IsUserExpired(user.Id))
+                        if (await _userService.IsUserExpiredAsync(user.Id))
                         {
                             httpContext.Response.Redirect("/Gateway/Closed");
                             return;
                         }
-
-                        //Log audit
-                        _viewAuditService.Insert(user.Id, httpContext.Request.Path);
 
                         await _next(httpContext);
                         return;

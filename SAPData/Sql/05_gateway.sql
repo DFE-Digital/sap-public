@@ -3,11 +3,11 @@
 -- Tables for the gateway service
 -- ================================================================
 
--- DROP TABLE IF EXISTS public.gateway_user CASCADE;
--- DROP TABLE IF EXISTS public.gateway_user_audit CASCADE;
--- DROP TABLE IF EXISTS public.gateway_page_view_audit CASCADE;
--- DROP TABLE IF EXISTS public.gateway_local_authority CASCADE;
--- DROP TABLE IF EXISTS public.gateway_settings CASCADE;
+ DROP TABLE IF EXISTS public.gateway_user CASCADE;
+ DROP TABLE IF EXISTS public.gateway_user_audit CASCADE;
+ DROP TABLE IF EXISTS public.gateway_page_view_audit CASCADE;
+ DROP TABLE IF EXISTS public.gateway_local_authority CASCADE;
+ DROP TABLE IF EXISTS public.gateway_settings CASCADE;
 
 CREATE TABLE IF NOT EXISTS public.gateway_user
 (
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS public.gateway_user
     "EmailAddress" text COLLATE pg_catalog."default",
     "LocalAuthorityId" uuid NOT NULL,
     "CookiePrefs" boolean,
-    "RegisteredOn" timestamp without time zone,
+    "RegisteredOn" timestamp without time zone NOT NULL,
     "CreatedOn" timestamp without time zone,
     "ModifiedOn" timestamp without time zone,
     "AuditIPAddress" text COLLATE pg_catalog."default",
@@ -33,18 +33,6 @@ CREATE TABLE IF NOT EXISTS public.gateway_user_audit
     "AuditIPAddress" text COLLATE pg_catalog."default",
     "IsDeleted" boolean,
     CONSTRAINT gateway_user_audit_pkey PRIMARY KEY ("Id")
-);
-
-CREATE TABLE IF NOT EXISTS public.gateway_page_view_audit
-(
-    "Id" uuid NOT NULL,
-    "UserId" uuid NULL,
-    "URL" text COLLATE pg_catalog."default",
-    "CreatedOn" timestamp without time zone,
-    "ModifiedOn" timestamp without time zone,
-    "AuditIPAddress" text COLLATE pg_catalog."default",
-    "IsDeleted" boolean,
-    CONSTRAINT gateway_page_view_audit_pkey PRIMARY KEY ("Id")
 );
 
 CREATE TABLE IF NOT EXISTS public.gateway_local_authority

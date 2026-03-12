@@ -25,9 +25,9 @@ namespace SAPPub.Infrastructure.Repositories.Gateway
             _logger = logger;
         }
 
-        public bool Insert(GatewayUserAudit user)
+        public async Task<bool> InsertAsync(GatewayUserAudit user)
         {
-            return _genericRepository.Create(user);
+            return await _genericRepository.WriteAsync(user);
         }
     }
 }

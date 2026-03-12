@@ -9,9 +9,9 @@ namespace SAPPub.Core.Interfaces.Services.Gateway
 {
     public interface IGatewayLocalAuthorityService
     {
-        GatewayLocalAuthority? GetByName(string name);
-        GatewayLocalAuthority? GetById(Guid Id);
+        Task<GatewayLocalAuthority?> GetByName(string laName);
+        Task<GatewayLocalAuthority?> GetById(Guid Id);
         int CountSignUps(Guid Id);
-        bool IsLAOpen(Guid Id);
+        Task<bool> IsLAOpen(Guid Id);
     }
 }

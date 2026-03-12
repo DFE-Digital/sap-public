@@ -9,9 +9,9 @@ namespace SAPPub.Core.Interfaces.Repositories.Gateway
 {
     public interface IGatewayUserRepository
     {
-        bool Insert(GatewayUser user);
-        GatewayUser? GetByEmail (string email);
-        GatewayUser? GetById(Guid? id);
-        IEnumerable<GatewayUser> GetAll();
+        Task<bool> Insert(GatewayUser user);
+        Task<GatewayUser?> GetById(Guid id, CancellationToken ct = default);
+        Task<IEnumerable<GatewayUser>> GetAll(CancellationToken ct = default);
+
     }
 }

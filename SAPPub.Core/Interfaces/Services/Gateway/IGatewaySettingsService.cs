@@ -9,6 +9,6 @@ namespace SAPPub.Core.Interfaces.Services.Gateway
 {
     public interface IGatewaySettingsService
     {
-        bool IsServiceLive();
+        Task<bool> IsServiceLive();
     }
 }

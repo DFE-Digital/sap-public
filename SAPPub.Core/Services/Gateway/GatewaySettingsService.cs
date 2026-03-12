@@ -21,9 +21,11 @@ namespace SAPPub.Core.Services.Gateway
             _settingsRepository = settingsRepository;
             _logger = logger;
         }
-        public bool IsServiceLive()
+        public async Task<bool> IsServiceLive()
         {
-            var settingValue = _settingsRepository.ReadAll()?.FirstOrDefault(x => x.SettingName == "GlobalEnable");
+            var settings = await _settingsRepository.ReadAllAsync();
+
+            var settingValue = settings.FirstOrDefault(x => x.SettingName == "GlobalEnable");
             if (settingValue == null)
             {
                 _logger.LogWarning("GlobalEnable setting not found. Defaulting to false.");

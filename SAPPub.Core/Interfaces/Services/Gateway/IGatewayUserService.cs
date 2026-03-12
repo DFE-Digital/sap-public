@@ -9,10 +9,10 @@ namespace SAPPub.Core.Interfaces.Services.Gateway
 {
     public interface IGatewayUserService
     {
-        Guid Insert(GatewayUser user);
-        GatewayUser? GetByEmail(string email);
-        GatewayUser? GetById(Guid? id);
-        IEnumerable<GatewayUser> GetAll();
-        bool IsUserExpired(Guid? id);
+        Task<IEnumerable<GatewayUser>> GetAllAsync();
+        Task<GatewayUser?> GetByEmailAsync(string email);
+        Task<GatewayUser?> GetById(Guid id);
+        Task<Guid> InsertAsync(GatewayUser user);
+        Task<bool> IsUserExpiredAsync(Guid id);
     }
 }

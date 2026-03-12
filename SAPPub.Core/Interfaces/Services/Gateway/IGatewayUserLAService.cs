@@ -9,6 +9,6 @@ namespace SAPPub.Core.Interfaces.Services.Gateway
 {
     public interface IGatewayUserLAService
     {
-        bool CanRegisterNewUsers(Guid laId);
+        Task<bool> CanRegisterNewUsers(Guid laId);
     }
 }

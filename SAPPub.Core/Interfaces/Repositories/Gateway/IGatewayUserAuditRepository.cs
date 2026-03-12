@@ -9,6 +9,6 @@ namespace SAPPub.Core.Interfaces.Repositories.Gateway
 {
     public interface IGatewayUserAuditRepository
     {
-        bool Insert(GatewayUserAudit audit);
+        Task<bool> InsertAsync(GatewayUserAudit user);
     }
 }

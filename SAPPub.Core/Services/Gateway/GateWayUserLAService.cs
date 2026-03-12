@@ -9,27 +9,28 @@ using System.Threading.Tasks;
 
 namespace SAPPub.Core.Services.Gateway
 {
-    public class GateWayUserLAService : IGatewayUserLAService
+    public class GatewayUserLAService : IGatewayUserLAService
     {
         private readonly IGatewayUserRepository _gatewayUserRepository;
         private readonly IGatewayLocalAuthorityRepository _authorityRepository;
         private readonly ILogger<GatewayUserService> _logger;
 
-        public GateWayUserLAService(IGatewayUserRepository gatewayUserRepository, IGatewayLocalAuthorityRepository localAuthorityRepository, ILogger<GatewayUserService> logger)
+        public GatewayUserLAService(IGatewayUserRepository gatewayUserRepository, IGatewayLocalAuthorityRepository localAuthorityRepository, ILogger<GatewayUserService> logger)
         {
             _gatewayUserRepository = gatewayUserRepository;
             _authorityRepository = localAuthorityRepository;
             _logger = logger;
         }
 
-        public bool CanRegisterNewUsers(Guid laId)
+        public async Task<bool> CanRegisterNewUsers(Guid laId)
         {
-            var laDetails = _authorityRepository.GetById(laId);
+            var laDetails = await _authorityRepository.GetByIdAsync(laId);
             if (laDetails == null)
             {
                 return false;
             }
-            var currentUserCount = _gatewayUserRepository.GetAll().Count(x => x.LocalAuthorityId == laId);
+            var allUsers = await _gatewayUserRepository.GetAll();
+            var currentUserCount = allUsers.Count(x => x.LocalAuthorityId == laId);
             return currentUserCount < laDetails.MaxSessions;
         }
     }

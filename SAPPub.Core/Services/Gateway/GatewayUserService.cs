@@ -27,36 +27,41 @@ namespace SAPPub.Core.Services.Gateway
             _options = options;
         }
 
-        public GatewayUser? GetByEmail(string email)
+        public async Task<GatewayUser?> GetByEmailAsync(string email)
         {
-            return _gatewayUserRepository.GetByEmail(email);
+            var allUsers = await _gatewayUserRepository.GetAll();
+            return allUsers.FirstOrDefault(u => u.EmailAddress.Equals(email, StringComparison.OrdinalIgnoreCase));
         }
 
-        public GatewayUser? GetById(Guid? id)
+        public async Task<GatewayUser?> GetById(Guid id)
         {
-            return _gatewayUserRepository.GetById(id);
+            return await _gatewayUserRepository.GetById(id);
         }
 
-        public bool IsUserExpired(Guid? id)
+        public async Task<bool> IsUserExpiredAsync(Guid id)
         {
-            var userRegistration = _gatewayUserRepository.GetById(id)?.RegisteredOn;
-            if (userRegistration == null) { return true; }
+            var user = await _gatewayUserRepository.GetById(id);
+            if (user?.Id == null)
+            {
+                throw new Exception($"User with ID {id} not found.");
+            }
 
-            var expiryDate = userRegistration.Value.AddDays(_options.Value.AllowedDays);
+            var userRegistration = user.RegisteredOn;
+
+            var expiryDate = userRegistration.AddDays(_options.Value.AllowedDays);
             if (expiryDate > DateTime.UtcNow)
-            { 
-                return false; 
+            {
+                return false;
             }
             return true;
         }
 
-        public Guid Insert(GatewayUser user)
+        public async Task<Guid> InsertAsync(GatewayUser user)
         {
             if (string.IsNullOrWhiteSpace(user.EmailAddress))
             {
                 throw new ArgumentException("Email address is required.", nameof(user.EmailAddress));
             }
-
 
             user.Id = Guid.NewGuid();
             user.RegisteredOn = DateTime.UtcNow;
@@ -64,13 +69,13 @@ namespace SAPPub.Core.Services.Gateway
             user.ModifiedOn = DateTime.UtcNow;
             user.IsDeleted = false;
 
-            return _gatewayUserRepository.Insert(user) ? user.Id : throw new Exception("Error on Add user");
+            return await _gatewayUserRepository.Insert(user) ? user.Id : throw new Exception("Error on Add user");
 
         }
 
-        public IEnumerable<GatewayUser> GetAll()
+        public async Task<IEnumerable<GatewayUser>> GetAllAsync()
         {
-            return _gatewayUserRepository.GetAll();
+            return await _gatewayUserRepository.GetAll();
         }
     }
 }

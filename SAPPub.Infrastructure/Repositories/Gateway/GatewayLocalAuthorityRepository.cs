@@ -27,12 +27,12 @@ namespace SAPPub.Infrastructure.Repositories.Gateway
 
         public async Task<GatewayLocalAuthority?> GetByIdAsync(Guid id, CancellationToken ct = default)
         {
-            return await _genericRepository.ReadAsync(id.ToString(), ct);
+            return await _genericRepository.ReadSingleAsync(new { Id = id }, ct);
         }
 
         public async Task<IEnumerable<GatewayLocalAuthority>> GetAllAsync(CancellationToken ct = default)
         {
-            return await _genericRepository.ReadAllAsync() ?? new List<GatewayLocalAuthority>();
+            return await _genericRepository.ReadAllAsync() ?? [];
         }
     }
 }
