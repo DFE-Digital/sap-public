@@ -94,6 +94,7 @@ public partial class Program
         builder.Services.AddDependencies(builder.Environment, builder.Configuration);
         builder.Services.AddLuceneDependencies();
 
+        builder.Host.ConfigureHostOptions(o => o.ShutdownTimeout = TimeSpan.FromMinutes(10));
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
