@@ -1,0 +1,37 @@
+﻿using Microsoft.Extensions.Logging;
+using SAPPub.Core.Interfaces.Repositories.Gateway;
+using SAPPub.Core.Interfaces.Services.Gateway;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SAPPub.Core.Services.Gateway
+{
+    public class GatewayUserLAService : IGatewayUserLAService
+    {
+        private readonly IGatewayUserRepository _gatewayUserRepository;
+        private readonly IGatewayLocalAuthorityRepository _authorityRepository;
+        private readonly ILogger<GatewayUserService> _logger;
+
+        public GatewayUserLAService(IGatewayUserRepository gatewayUserRepository, IGatewayLocalAuthorityRepository localAuthorityRepository, ILogger<GatewayUserService> logger)
+        {
+            _gatewayUserRepository = gatewayUserRepository;
+            _authorityRepository = localAuthorityRepository;
+            _logger = logger;
+        }
+
+        public async Task<bool> CanRegisterNewUsers(Guid laId)
+        {
+            var laDetails = await _authorityRepository.GetByIdAsync(laId);
+            if (laDetails == null)
+            {
+                return false;
+            }
+            var allUsers = await _gatewayUserRepository.GetAll();
+            var currentUserCount = allUsers.Count(x => x.LocalAuthorityId == laId);
+            return currentUserCount < laDetails.MaxSessions;
+        }
+    }
+}

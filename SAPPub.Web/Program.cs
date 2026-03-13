@@ -2,6 +2,8 @@ using GovUk.Frontend.AspNetCore;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.StaticFiles;
+using Notify.Client;
+using Notify.Interfaces;
 using Npgsql;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Infrastructure.LuceneSearch;
@@ -25,6 +27,11 @@ public partial class Program
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.Configure<AnalyticsOptions>(builder.Configuration.GetSection("Analytics"));
+        builder.Services.Configure<GatewayOptions>(builder.Configuration.GetSection("Gateway"));
+        builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("Email"));
+
+        var enableGateway = builder.Configuration.GetValue<bool>("Gateway:Enabled");
+        var emailAPIKey = builder.Configuration.GetValue<string>("Email:ApiKey");
 
         builder.Services.AddHttpClient<IPostcodeLookupService, PostcodeLookupService>();
         builder.Services.AddGovUkFrontend(options =>
@@ -77,6 +84,7 @@ public partial class Program
                 .SetApplicationName("SAPPub");
         }
 
+        // Database connection configuration
         var connectionString = builder.Configuration.GetConnectionString("PostgresConnectionString");
 
         if (string.IsNullOrWhiteSpace(connectionString))
@@ -90,6 +98,9 @@ public partial class Program
         }
 
         builder.Services.AddSingleton<NpgsqlDataSource>(_ => NpgsqlDataSource.Create(connectionString));
+
+        //Email config
+        builder.Services.AddScoped<INotificationClient>((sp) => new NotificationClient(emailAPIKey));
 
         builder.Services.AddDependencies(builder.Environment, builder.Configuration);
         builder.Services.AddLuceneDependencies();
@@ -158,6 +169,12 @@ public partial class Program
 
         app.UseRouting();
         app.UseGovUkFrontend();
+
+        if (enableGateway == true)
+        {
+            app.UseMiddleware<GatewayMiddleware>();
+        }
+        
 
         app.MapControllers();
         app.MapRazorPages();

@@ -160,5 +160,15 @@ namespace SAPPub.Web.Helpers
             var results = ReadAllAsync(ct).Result;
             return Task.FromResult(results.Take(take));
         }
+
+        Task<bool> IGenericRepository<T>.WriteAsync(object? writeObject, CancellationToken ct)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<bool> IGenericRepository<T>.UpdateAsync(object? updateObject, CancellationToken ct)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
