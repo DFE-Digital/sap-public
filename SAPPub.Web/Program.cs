@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.StaticFiles;
 using Notify.Client;
 using Notify.Interfaces;
 using Npgsql;
+using SAPPub.Core.Interfaces.Services;
 using SAPPub.Infrastructure.LuceneSearch;
+using SAPPub.Infrastructure.PostcodeLookup;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Middleware;
 using SAPPub.Web.Models.Config;
@@ -31,6 +33,7 @@ public partial class Program
         var enableGateway = builder.Configuration.GetValue<bool>("Gateway:Enabled");
         var emailAPIKey = builder.Configuration.GetValue<string>("Email:ApiKey");
 
+        builder.Services.AddHttpClient<IPostcodeLookupService, PostcodeLookupService>();
         builder.Services.AddGovUkFrontend(options =>
         {
             options.Rebrand = true;

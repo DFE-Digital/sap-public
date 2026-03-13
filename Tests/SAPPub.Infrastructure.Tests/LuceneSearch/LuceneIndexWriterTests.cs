@@ -11,7 +11,7 @@ public class LuceneIndexWriterTests
     public void BuildIndex_Writes_All_Repository_Items()
     {
         using var ctx = new LuceneIndexContext();
-        var sut = new LuceneIndexWriter(ctx);
+        var sut = new LuceneSchoolSearchIndexWriter(ctx);
 
         sut.AddToIndex([
             new Establishment{URN = "1", UKPRN = "10", LAId = "100", EstablishmentNumber =  "1000", EstablishmentName = "Saint Peter School" },

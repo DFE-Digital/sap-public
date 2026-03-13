@@ -17,7 +17,10 @@ namespace SAPPub.Web.Helpers
                 LAName = "East Sussex",
                 EstablishmentNumber = "3090",
                 PhaseOfEducationId = "2",
-                PhaseOfEducationName = "Primary"
+                PhaseOfEducationName = "Primary",
+                AddressPostcode = "TN37 6RT",
+                Easting = "580573",
+                Northing = "110137"
             },
 
             ["100273"] = new Establishment
@@ -39,7 +42,8 @@ namespace SAPPub.Web.Helpers
                 LAName = "Redbridge",
                 EstablishmentNumber = "3513",
                 PhaseOfEducationId = "2",
-                PhaseOfEducationName = "Primary"
+                PhaseOfEducationName = "Primary",
+                AddressPostcode = "IG1 1SA"
             },
 
 
@@ -51,7 +55,10 @@ namespace SAPPub.Web.Helpers
                 LAName = "Test LA",
                 EstablishmentNumber = "9999",
                 PhaseOfEducationId = "4",
-                PhaseOfEducationName = "Secondary"
+                PhaseOfEducationName = "Secondary",
+                AddressPostcode = "M21 7SW",
+                Easting = "382682",
+                Northing = "392995"
             }
         };
 
@@ -150,7 +157,8 @@ namespace SAPPub.Web.Helpers
             // temporary implementation of pagination for fake data - just return empty for page > 1
             // to avoid complications of implementing actual pagination logic
             if (page > 1) return Task.FromResult(Enumerable.Empty<T>());
-            return ReadAllAsync(ct);
+            var results = ReadAllAsync(ct).Result;
+            return Task.FromResult(results.Take(take));
         }
 
         Task<bool> IGenericRepository<T>.WriteAsync(object? writeObject, CancellationToken ct)
@@ -163,5 +171,4 @@ namespace SAPPub.Web.Helpers
             throw new NotImplementedException();
         }
     }
-
 }
