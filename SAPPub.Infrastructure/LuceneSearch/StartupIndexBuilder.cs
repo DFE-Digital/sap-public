@@ -69,7 +69,11 @@ public class StartupIndexBuilder(ILogger<StartupIndexBuilder> logger, LuceneScho
                     await Task.Delay(TimeSpan.FromSeconds(5), ct);
                 }
             }
-            catch (Exception ex) when (!ct.IsCancellationRequested)
+            catch (OperationCanceledException) when (ct.IsCancellationRequested)
+            {
+                throw;
+            }
+            catch (Exception ex)
             {
                 var elapsed = DateTimeOffset.UtcNow - started;
                 if (elapsed >= maxWait)
@@ -83,7 +87,7 @@ public class StartupIndexBuilder(ILogger<StartupIndexBuilder> logger, LuceneScho
                 var sleep = delay + TimeSpan.FromMilliseconds(jitterMs);
 
                 logger.LogWarning(ex,
-                    "Database not ready yet. Retry {Attempt}. Waiting {Delay} before next attempt...",
+                    "Database not ready yet. Attempt {Attempt}. Waiting {Delay} before next attempt...",
                     attempt, sleep);
 
                 await Task.Delay(sleep, ct);
