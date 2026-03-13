@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SAPPub.Core.Helpers;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Web.Helpers;
 
@@ -36,7 +37,7 @@ namespace SAPPub.Web.Controllers
                 return Json(null);
             }
 
-            var longLat = MappingHelper.ConvertToLatLong(data.Easting, data.Northing);
+            var longLat = MappingHelper.ConvertToLatLon(data.Easting, data.Northing);
 
             return Json(new { name = data.EstablishmentName, lat = longLat?.Latitude, lon = longLat?.Longitude });
         }
