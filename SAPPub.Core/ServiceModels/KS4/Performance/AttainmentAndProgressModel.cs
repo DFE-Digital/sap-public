@@ -15,4 +15,8 @@ public class AttainmentAndProgressModel
     public double? LocalAuthorityAttainment8Score { get; init; }
 
     public double? EnglandAttainment8Score { get; init; }
+
+    public double? EstablishmentProgress8TotalPupils { get; init; }
+
+    public double? EstablishmentTotalPupils { get; init; }
 }

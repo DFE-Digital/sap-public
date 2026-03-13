@@ -86,6 +86,21 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public string? Prog8_Tot_Est_Previous_Num_Reason { get; set; }
 
         /// <summary>
+        /// Progress 8 Total pupil for Previous year
+        /// </summary>
+        public CodedDouble Prog8_TotPup_Est_Previous_Num_Coded { get; set; } = new();
+        public double? Prog8_TotPup_Est_Previous_Num { get; set; }
+        public string? Prog8_TotPup_Est_Previous_Num_Reason { get; set; }
+
+
+        /// <summary>
+        /// Pupil Total for Previous year
+        /// </summary>
+        public CodedDouble Pup_Tot_Est_Previous_Num_Coded { get; set; } = new();
+        public double? Pup_Tot_Est_Previous_Num { get; set; }
+        public string? Pup_Tot_Est_Previous_Num_Reason { get; set; }
+
+        /// <summary>
         /// Attainment 8 Total filtered by Establishment for Previous2 year
         /// </summary>
         public CodedDouble Attainment8_Tot_Est_Previous2_Num_Coded { get; set; } = new();
@@ -112,5 +127,19 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public CodedDouble Prog8_Tot_Est_Previous2_Num_Coded { get; set; } = new();
         public double? Prog8_Tot_Est_Previous2_Num { get; set; }
         public string? Prog8_Tot_Est_Previous2_Num_Reason { get; set; }
+
+        /// <summary>
+        /// Progress 8 Total pupil for Previous2 year
+        /// </summary>
+        public CodedDouble Prog8_TotPup_Est_Previous2_Num_Coded { get; set; } = new();
+        public double? Prog8_TotPup_Est_Previous2_Num { get; set; }
+        public string? Prog8_TotPup_Est_Previous_Num2_Reason { get; set; }
+
+        /// <summary>
+        /// Pupil Total for Previous year
+        /// </summary>
+        public CodedDouble Pup_Tot_Est_Previous2_Num_Coded { get; set; } = new();
+        public double? Pup_Tot_Est_Previous2_Num { get; set; }
+        public string? Pup_Tot_Est_Previous2_Num_Reason { get; set; }
     }
 }

@@ -9,6 +9,7 @@ namespace SAPPub.Web.Models.SecondarySchool
         private const string SENUnit = "SEN unit";
         private const string ResourcedProvisionAndSENUnit = "Resourced provision and SEN unit";
         private const string ResourcedProvisionText = "Resourced provision";
+        private const int LocalAuthorityEstablishmentGroupTypeId = 4;
 
         public record School(string Name, double Lat, double Lon);
 
@@ -52,6 +53,8 @@ namespace SAPPub.Web.Models.SecondarySchool
 
         public string? ResourcedProvision { get; set; }
 
+        public bool IsLocalAuthoritySchool { get; set; }
+
         public static AboutSchoolViewModel Map(AboutSchoolModel schoolDetails)
         {
             var latLong = Helpers.MappingHelper.ConvertToLatLong(schoolDetails.Easting, schoolDetails.Northing);
@@ -78,6 +81,7 @@ namespace SAPPub.Web.Models.SecondarySchool
                 SixthForm = GetSixthForm(schoolDetails.OfficialSixthFormId),
                 SenUnit = GetSenUnit(schoolDetails.ResourcedProvision),
                 ResourcedProvision = GetResourcedProvision(schoolDetails.ResourcedProvision),
+                IsLocalAuthoritySchool = schoolDetails.EstablishmentTypeGroupId.ToInt() == LocalAuthorityEstablishmentGroupTypeId,
             };
         }
 

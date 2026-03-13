@@ -58,6 +58,8 @@ public class AttainmentAndProgressServiceTests
 
         Assert.Null(result.EstablishmentProgress8Score);
         Assert.Null(result.LocalAuthorityProgress8Score);
+        Assert.Null(result.EstablishmentProgress8TotalPupils);
+        Assert.Null(result.EstablishmentTotalPupils);
     }
 
     [Theory]
@@ -75,6 +77,10 @@ public class AttainmentAndProgressServiceTests
             Attainment8_Tot_Est_Current_Num = 40,
             Attainment8_Tot_Est_Previous_Num = 50,
             Attainment8_Tot_Est_Previous2_Num = 55,
+            Prog8_TotPup_Est_Previous_Num = 95,
+            Prog8_TotPup_Est_Previous2_Num = 65,
+            Pup_Tot_Est_Previous_Num = 100,
+            Pup_Tot_Est_Previous2_Num = 90
         };
 
         var lAPerformance = new LAPerformance
@@ -127,6 +133,9 @@ public class AttainmentAndProgressServiceTests
             Assert.Equal(establishmentPerformance.Attainment8_Tot_Est_Previous_Num, result.EstablishmentAttainment8Score);
             Assert.Equal(lAPerformance.Attainment8_Tot_LA_Previous_Num, result.LocalAuthorityAttainment8Score);
             Assert.Equal(englandPerformance.Attainment8_Tot_Eng_Previous_Num, result.EnglandAttainment8Score);
+
+            Assert.Equal(establishmentPerformance.Prog8_TotPup_Est_Previous_Num, result.EstablishmentProgress8TotalPupils);
+            Assert.Equal(establishmentPerformance.Pup_Tot_Est_Previous_Num, result.EstablishmentTotalPupils);
         }
         else if (academicYearSelection == AcademicYearSelection.Previous2)
         {
@@ -136,6 +145,9 @@ public class AttainmentAndProgressServiceTests
             Assert.Equal(establishmentPerformance.Attainment8_Tot_Est_Previous2_Num, result.EstablishmentAttainment8Score);
             Assert.Equal(lAPerformance.Attainment8_Tot_LA_Previous2_Num, result.LocalAuthorityAttainment8Score);
             Assert.Equal(englandPerformance.Attainment8_Tot_Eng_Previous2_Num, result.EnglandAttainment8Score);
+
+            Assert.Equal(establishmentPerformance.Prog8_TotPup_Est_Previous2_Num, result.EstablishmentProgress8TotalPupils);
+            Assert.Equal(establishmentPerformance.Pup_Tot_Est_Previous2_Num, result.EstablishmentTotalPupils);
         }
         else
         {
@@ -145,6 +157,9 @@ public class AttainmentAndProgressServiceTests
             Assert.Equal(establishmentPerformance.Attainment8_Tot_Est_Current_Num, result.EstablishmentAttainment8Score);
             Assert.Equal(lAPerformance.Attainment8_Tot_LA_Current_Num, result.LocalAuthorityAttainment8Score);
             Assert.Equal(englandPerformance.Attainment8_Tot_Eng_Current_Num, result.EnglandAttainment8Score);
+
+            Assert.Null(result.EstablishmentProgress8TotalPupils);
+            Assert.Null(result.EstablishmentTotalPupils);
         }
     }
 }

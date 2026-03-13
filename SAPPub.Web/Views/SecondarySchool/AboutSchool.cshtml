@@ -244,7 +244,11 @@
                         </tr>
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header">Compliants policy</th>
-                            <td class="govuk-table__cell">A complaints policy shows how parents or carers can raise concerns with a school and how to make a complaint.</td>
+                            <td class="govuk-table__cell">
+                                @(Model.IsLocalAuthoritySchool 
+                                ? "A complaints policy shows how to raise concerns with a school and how to make a complaint." 
+                                : "A complaints policy shows how parents or carers can raise concerns with a school and how to make a complaint.")
+                            </td>
                         </tr>
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header">Safeguarding policy</th>
