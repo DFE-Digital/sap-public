@@ -66,7 +66,7 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
 
                 if (string.IsNullOrWhiteSpace(viewModel.LocalAuthority))
                 {
-                    ModelState.AddModelError("", "There was a problem, please try again from the beginning.");
+                    ModelState.AddModelError("", "There was a problem, please try again.");
                 }
 
             }
@@ -97,14 +97,14 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
                 var user = await _userService.GetByEmailAsync(viewModel.EmailAddress);
                 if (user == null)
                 {
-                    ModelState.AddModelError("EmailAddress", "That email address wasn't found to be registered, please use the registration link.");
+                    ModelState.AddModelError("EmailAddress", "There is no login registered with that email. Use the registration link to sign up to the service.");
                     return View(viewModel);
                 }
 
                 // Check expiry
                 if (user.RegisteredOn < DateTime.UtcNow.AddDays(-_options.AllowedDays))
                 {
-                    ModelState.AddModelError("EmailAddress", "Registration occurred over 7 days ago, thank you for your time.");
+                    ModelState.AddModelError("EmailAddress", "Your registration occurred over 7 days and has expired. Thank you for your time.");
                     return View(viewModel);
                 }
 
