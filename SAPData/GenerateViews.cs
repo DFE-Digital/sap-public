@@ -329,6 +329,9 @@ public sealed class GenerateViews
         sb.AppendLine("    clean_int(t.\"typeofestablishment__code_\") AS \"TypeOfEstablishmentId\",");
         sb.AppendLine("    t.\"typeofestablishment__name_\"          AS \"TypeOfEstablishmentName\",");
         sb.AppendLine();
+        sb.AppendLine("    clean_int(t.\"establishmenttypegroup__code_\") AS \"EstablishmentTypeGroupId\",");
+        sb.AppendLine("    t.\"establishmenttypegroup__name_\"          AS \"EstablishmentTypeGroupName\",");
+        sb.AppendLine();
         sb.AppendLine("    clean_int(t.\"resourcedprovisiononroll\") AS \"ResourcedProvision\",");
         sb.AppendLine("    t.\"typeofresourcedprovision__name_\"     AS \"ResourcedProvisionName\",");
         sb.AppendLine();

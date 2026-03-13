@@ -238,6 +238,12 @@ public class EstablishmentTestBuilder
         return this;
     }
 
+    public EstablishmentTestBuilder WithEstablishmentTypeGroupId(string establishmentTypeGroupId)
+    {
+        _establishment.EstablishmentTypeGroupId = establishmentTypeGroupId;
+        return this;
+    }
+
     public EstablishmentTestBuilder WithUKPRN(string ukprn)
     {
         _establishment.UKPRN = ukprn;

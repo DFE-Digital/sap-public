@@ -145,6 +145,7 @@ public class SecondarySchoolControllerTests
             ReligiousCharacter = _fakeEstablishment.ReligiousCharacterName,
             OfficialSixthFormId = _fakeEstablishment.OfficialSixthFormId,
             ResourcedProvision = _fakeEstablishment.ResourcedProvision,
+            EstablishmentTypeGroupId = _fakeEstablishment.EstablishmentTypeGroupId
         };
     }
 
@@ -171,6 +172,7 @@ public class SecondarySchoolControllerTests
             .WithReligiousCharacterName("ReligiousCharacter")
             .WithOfficialSixthFormId("No")
             .WithResourcedProvision("Resourced provision")
+            .WithEstablishmentTypeGroupId("1")
             .Build();
 
         _mockLogger = new Mock<ILogger<SecondarySchoolController>>();
@@ -227,6 +229,7 @@ public class SecondarySchoolControllerTests
         Assert.Equal(expectedResult.PupilSex, model.PupilSex);
         Assert.Equal(expectedResult.ReligiousCharacter, model.ReligiousCharacter);
         Assert.Equal(expectedResult.OfficialSixthFormId, model.SixthForm);
+        Assert.False(model.IsLocalAuthoritySchool);
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(expectedResult.Urn, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(expectedResult.SchoolName, model.RouteAttributes[RouteConstants.SchoolName]);
@@ -355,6 +358,34 @@ public class SecondarySchoolControllerTests
         var model = result.Model as AboutSchoolViewModel;
         Assert.NotNull(model);
         Assert.Equal(expectedOutput, model.SixthForm);
+    }
+
+    [Theory]
+    [InlineData("4", true)]
+    [InlineData("2", false)]
+    [InlineData("9", false)]
+    public async Task Get_AboutSchool_SchoolFeatures_IsLocalAuthoritySchool(string establishmentTypeGroupId, bool expectedOutput)
+    {
+        _fakeEstablishment.EstablishmentTypeGroupId = establishmentTypeGroupId;
+
+        var expectedResult = SchoolDetails();
+
+        _mockAboutSchoolService
+            .Setup(es => es.GetAboutSchoolDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.AboutSchool(
+            _mockAboutSchoolService.Object,
+            _fakeEstablishment.URN,
+            _fakeEstablishment.EstablishmentName,
+            CancellationToken.None) as ViewResult;
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as AboutSchoolViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(expectedOutput, model.IsLocalAuthoritySchool);
     }
 
     [Fact]

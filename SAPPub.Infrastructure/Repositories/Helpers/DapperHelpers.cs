@@ -48,6 +48,8 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "TotalPupils",
           "TypeOfEstablishmentId",
           "TypeOfEstablishmentName",
+          "EstablishmentTypeGroupId",
+          "EstablishmentTypeGroupName",
           "ResourcedProvision",
           "UKPRN",
           "UrbanRuralId",
