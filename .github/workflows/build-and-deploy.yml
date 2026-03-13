@@ -108,16 +108,6 @@ jobs:
         working-directory: SAPPub.Web
         run: npm ci
 
-      # - name: Start MVC App
-      #   run: |
-      #     dotnet run --project ./SAPPub.Web/SAPPub.Web.csproj --urls "https://localhost:3000" &
-      #   env:
-      #     ASPNETCORE_ENVIRONMENT: UITests
-      #     USE_FAKE_REPOS: "true"
-
-      # - name: Wait for MVC App to be ready
-      #   run: npx wait-on https://localhost:3000
-
       - name: Run All Tests with Coverage
         env:
           HEADED: 0

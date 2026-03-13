@@ -40,7 +40,6 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
         builder.ConfigureServices((context, services) =>
         {
-            // CI: don't hit DB at all - swap out generic repo
             services.RemoveAll(typeof(IGenericRepository<>));
             services.AddTransient(typeof(IGenericRepository<>), typeof(FakeGenericRepository<>));
 
