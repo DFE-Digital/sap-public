@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using SAPPub.Core.Interfaces.Repositories.Generic;
-using SAPPub.Infrastructure.Repositories.Generic;
+using SAPPub.Web.Helpers;
 
 namespace SAPPub.Web.Tests.UI.Infrastructure;
 
@@ -41,7 +41,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
             .ConfigureServices(services =>
             {
                 services.RemoveAll(typeof(IGenericRepository<>));
-                services.AddSingleton(typeof(IGenericRepository<>), typeof(JSONRepository<>));
+                services.AddSingleton(typeof(IGenericRepository<>), typeof(FakeGenericRepository<>));
             });
     }
 
