@@ -43,9 +43,9 @@ public class StartupIndexBuilder(ILogger<StartupIndexBuilder> logger, LuceneScho
     private async Task WaitForDatabaseAsync(CancellationToken ct)
     {
         // Adjust these to taste
-        var maxWait = TimeSpan.FromMinutes(3);     // or TimeSpan.FromHours(1) / infinite in review env
-        var delay = TimeSpan.FromSeconds(1);
-        var maxDelay = TimeSpan.FromSeconds(15);
+        var maxWait = TimeSpan.FromMinutes(10);     // or TimeSpan.FromHours(1) / infinite in review env
+        var delay = TimeSpan.FromSeconds(10);
+        var maxDelay = TimeSpan.FromSeconds(60);
         var started = DateTimeOffset.UtcNow;
 
         var attempt = 0;
@@ -66,7 +66,7 @@ public class StartupIndexBuilder(ILogger<StartupIndexBuilder> logger, LuceneScho
                 else
                 {
                     logger.LogWarning("Request to v_Establishment returned 0 results");
-                    await Task.Delay(TimeSpan.FromSeconds(5), ct);
+                    await Task.Delay(delay, ct);
                 }
             }
             catch (OperationCanceledException) when (ct.IsCancellationRequested)
@@ -82,17 +82,14 @@ public class StartupIndexBuilder(ILogger<StartupIndexBuilder> logger, LuceneScho
                     throw;
                 }
 
-                // Exponential backoff + jitter
-                var jitterMs = Random.Shared.Next(0, 250);
-                var sleep = delay + TimeSpan.FromMilliseconds(jitterMs);
 
                 logger.LogWarning(ex,
                     "Database not ready yet. Attempt {Attempt}. Waiting {Delay} before next attempt...",
-                    attempt, sleep);
+                    attempt, delay);
 
-                await Task.Delay(sleep, ct);
+                await Task.Delay(delay, ct);
 
-                var nextSeconds = Math.Min(delay.TotalSeconds * 2, maxDelay.TotalSeconds);
+                var nextSeconds = Math.Max(delay.TotalSeconds * 2, maxDelay.TotalSeconds);
                 delay = TimeSpan.FromSeconds(nextSeconds);
             }
         }

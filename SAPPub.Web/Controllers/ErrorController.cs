@@ -4,11 +4,6 @@ namespace SAPPub.Web.Controllers;
 
 public class ErrorController : Controller
 {
-    public IActionResult Index()
-    {
-        return View();
-    }
-
     [Route("error/{statusCode:int}")]
     public IActionResult HandleErrorCode(int statusCode)
     {

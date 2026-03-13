@@ -35,7 +35,6 @@ using SAPPub.Infrastructure.Repositories.KS4.Destinations;
 using SAPPub.Infrastructure.Repositories.KS4.Performance;
 using SAPPub.Infrastructure.Repositories.KS4.SubjectEntries;
 using SAPPub.Infrastructure.Repositories.KS4.Workforce;
-using SAPPub.Web.Helpers;
 
 namespace SAPPub.Web.Middleware
 {
@@ -45,17 +44,9 @@ namespace SAPPub.Web.Middleware
 
         public static void AddDependencies(this IServiceCollection services, IHostEnvironment env, IConfiguration cfg)
         {
-            // CI / UI tests should not hit DB
-            var useFakeRepos =
-                env.IsEnvironment("UITests") ||
-                cfg.GetValue<bool>("USE_FAKE_REPOS");
-
-            if (useFakeRepos)
-                services.AddSingleton(typeof(IGenericRepository<>), typeof(FakeGenericRepository<>));
-            else
-                services.AddTransient(typeof(IGenericRepository<>), typeof(DapperRepository<>));
-
             // Core repos/services
+            services.AddTransient(typeof(IGenericRepository<>), typeof(DapperRepository<>));
+
             services.AddTransient<IEstablishmentRepository, EstablishmentRepository>();
             services.AddTransient<IEstablishmentService, EstablishmentService>();
 
