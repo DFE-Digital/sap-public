@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
+using Moq;
 using SAPPub.Web.Controllers;
 
 namespace SAPPub.Web.Tests.Unit.Controllers;
@@ -10,7 +12,11 @@ public class ErrorControllerTests
 
     public ErrorControllerTests()
     {
-        _controller = new ErrorController();
+        // Arrange
+        var mockEnv = new Mock<IHostEnvironment>();
+        mockEnv.SetupGet(e => e.EnvironmentName).Returns("Development");
+
+        _controller = new ErrorController(mockEnv.Object);
 
         _controller.ControllerContext = new ControllerContext
         {

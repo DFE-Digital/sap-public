@@ -24,13 +24,13 @@ public class ErrorPageTests(WebApplicationSetupFixture fixture) : BasePageTest(f
         Assert.NotNull(heading);
         Assert.Contains("Page not found", heading);
 
-        Assert.True(await link.IsVisibleAsync());       
+        Assert.True(await link.IsVisibleAsync());
 
         var text = await link.TextContentAsync();
         Assert.NotNull(text);
 
         var href = await link.GetAttributeAsync("href");
-        Assert.Equal( $"/{RouteConstants.Search.ToLower()}", href);
+        Assert.Equal($"/{RouteConstants.Search.ToLower()}", href);
     }
 
     [Fact]
@@ -55,7 +55,7 @@ public class ErrorPageTests(WebApplicationSetupFixture fixture) : BasePageTest(f
     public async Task Show_Show_ProblemWithService_Page()
     {
         // Arrange
-        var pageUrl = "error?statusCode=500";
+        var pageUrl = "error/throw";
 
         // Act
         var response = await Page.GotoAsync(pageUrl);
