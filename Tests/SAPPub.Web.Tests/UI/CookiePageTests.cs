@@ -18,22 +18,33 @@ public class CookiePageTests(WebApplicationSetupFixture fixture) : BasePageTest(
 
         // Assert
         Assert.NotNull(response);
+        var cookiesYesRadio = Page.Locator("#cookies-analytics-yes");
         var cookiesNoRadio = Page.Locator("#cookies-analytics-no");
         bool isNoRadioChecked = await cookiesNoRadio.IsCheckedAsync();
+        bool isYesRadioChecked = await cookiesNoRadio.IsCheckedAsync();
+        Assert.False(isNoRadioChecked);
+        Assert.False(isYesRadioChecked);
+
+        // Act
+        await cookiesNoRadio.ClickAsync();
+        var saveButton = Page.Locator("button:has-text(\"Save cookie setting\")");
+        await saveButton.ClickAsync();
+
+        // Assert
+        cookiesNoRadio = Page.Locator("#cookies-analytics-no");
+        isNoRadioChecked = await cookiesNoRadio.IsCheckedAsync();
         Assert.True(isNoRadioChecked, "The 'No' radio button should be selected.");
 
-        // Act
-        var cookiesYesRadio = Page.Locator("#cookies-analytics-yes");
-        await cookiesYesRadio.ClickAsync();
 
         // Act
-        var saveButton = Page.Locator("button:has-text(\"Save cookie setting\")");
+        await cookiesYesRadio.ClickAsync();
+        saveButton = Page.Locator("button:has-text(\"Save cookie setting\")");
         await saveButton.ClickAsync();
 
         // Assert
         Assert.NotNull(response);
         cookiesYesRadio = Page.Locator("#cookies-analytics-yes");
-        bool isYesRadioChecked = await cookiesYesRadio.IsCheckedAsync();
+        isYesRadioChecked = await cookiesYesRadio.IsCheckedAsync();
         Assert.True(isYesRadioChecked, "The 'Yes' radio button should be selected.");
     }
 }
