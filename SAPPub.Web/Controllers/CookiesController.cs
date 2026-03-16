@@ -25,6 +25,11 @@ public class CookiesController : Controller
             options
         );
 
+        if(!acceptAnalyticsCookies)
+        {
+            RemoveGaCookies();
+        }
+
         if (!Url.IsLocalUrl(returnUrl))
         {
             return RedirectToAction(nameof(Preferences));
@@ -56,5 +61,22 @@ public class CookiesController : Controller
         }
 
         return Redirect(returnUrl);
+    }
+
+    private void RemoveGaCookies()
+    {       
+        foreach( string cookie in Request.Cookies.Keys)
+        {
+            if (cookie.StartsWith("_ga", StringComparison.OrdinalIgnoreCase))
+            {
+                var host = Request.Host.Host;
+                var domain = host.StartsWith(".") ? host : $".{host}";
+
+                Response.Cookies.Delete(cookie);
+                Response.Cookies.Delete(cookie, new CookieOptions { Path = "/" });
+                Response.Cookies.Delete(cookie, new CookieOptions { Path = "/", Domain = host });
+                Response.Cookies.Delete(cookie, new CookieOptions { Path = "/", Domain = domain });
+            }
+        }
     }
 }

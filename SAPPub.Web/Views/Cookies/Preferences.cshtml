@@ -1,8 +1,8 @@
 ﻿@{
+    ViewData["Title"] = "Cookies";
     ViewBag.ShowONS = true;
-    ViewBag.pageTitle = "Cookies";
     ViewBag.pageClass = "cookie-info-page";
-    bool acceptAnalyticsCookies = false;
+    bool? acceptAnalyticsCookies = null;
     if (Context?.Request?.Cookies != null)
     {
         if (Context.Request.Cookies.TryGetValue("analytics_preference", out var analyticsConsentValue))
@@ -15,20 +15,20 @@
     <main class="govuk-main-wrapper " id="main-content" role="main">
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
-                <h1 class="govuk-heading-l">Cookies</h1>
+                <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
                 <p class="govuk-body">Cookies are small files saved on your phone, tablet or computer when you visit a website.</p>
                 <p class="govuk-body">We use cookies to make this site work and collect information about how you use our service.</p>
 
                 <h2 class="govuk-heading-m">Measuring website usage</h2>
                 <p class="govuk-body">We use Google Analytics software to collect information about how you use GOV.UK. We do this to help make sure the site is meeting the needs of its users and to help us make improvements. We also send cross-domain tracking information to GOV.UK to help us understand and monitor performance data across multiple public services.</p>
                 <p class="govuk-body">Google Analytics stores information about:</p>
-                <ul class="usage-desc">
+                <ul class="govuk-list govuk-list--bullet">
                     <li>the pages you visit on this service </li>
                     <li>how long you spend on each page</li>
                     <li>how you got to the site</li>
                     <li>what you click on while you’re visiting the site</li>
                 </ul>
-                <p>We don’t collect or store your personal information (eg your name or address) so this information can’t be used to identify who you are. </p>
+                <p class="govuk-body">We don’t collect or store your personal information (eg your name or address) so this information can’t be used to identify who you are. </p>
                 <div class="application-notice info-notice">
                     <p class="govuk-body">We don’t allow Google to use or share our analytics data.</p>
                 </div>
@@ -113,14 +113,14 @@
                             </legend>
                             <div class="govuk-radios" data-module="govuk-radios">
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="cookies-analytics-yes" name="acceptAnalyticsCookies" type="radio" value="true" @(acceptAnalyticsCookies ? "checked" : "")>
-                                    <label class="govuk-label govuk-radios__label" for="cookies-analytics">
+                                    <input class="govuk-radios__input" id="cookies-analytics-yes" name="acceptAnalyticsCookies" type="radio" value="true" @(acceptAnalyticsCookies.HasValue && acceptAnalyticsCookies.Value ? "checked" : "")>
+                                    <label class="govuk-label govuk-radios__label" for="cookies-analytics-yes">
                                         Yes
                                     </label>
                                 </div>
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="cookies-analytics-no" name="acceptAnalyticsCookies" type="radio" value="false" @(!acceptAnalyticsCookies ? "checked" : "")>
-                                    <label class="govuk-label govuk-radios__label" for="cookies-analytics-2">
+                                    <input class="govuk-radios__input" id="cookies-analytics-no" name="acceptAnalyticsCookies" type="radio" value="false" @((acceptAnalyticsCookies.HasValue && !acceptAnalyticsCookies.Value)? "checked" : "")>
+                                    <label class="govuk-label govuk-radios__label" for="cookies-analytics-no">
                                         No
                                     </label>
                                 </div>

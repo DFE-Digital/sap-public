@@ -8,7 +8,7 @@ namespace SAPPub.Web.Tests.Unit.Controllers;
 public class CookiesControllerTests
 {
     private readonly CookiesController _controller;
-    private Mock<IUrlHelper> _mockUrlHelper = new Mock<IUrlHelper>();
+    private readonly Mock<IUrlHelper> _mockUrlHelper = new();
 
     public CookiesControllerTests()
     {
@@ -66,5 +66,39 @@ public class CookiesControllerTests
         var expectedValue = hideBanner ? "hide_banner=true" : "hide_banner=false";
         Assert.Contains(expectedValue, setCookieHeader);
         Assert.Equal(redirectUrl, result.Url);
+    }
+
+    [Fact]
+    public void CookieSettings_Should_Remove_Ga_Cookies()
+    {
+        //Arrange
+        var acceptCookies = false;
+        var redirectUrl = "/search";
+        var httpContext = new DefaultHttpContext();
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = httpContext
+        };
+
+        httpContext.Request.Headers.Cookie = "_ga=test1; _gid=test2; _gat=test3";
+
+        //Act
+        var response = _controller.CookieSettings(acceptCookies, redirectUrl);
+
+        // Assert
+        var result = response as RedirectResult;
+        Assert.NotNull(result);
+
+        var setCookieHeader = httpContext.Response.Headers.SetCookie.ToString();
+        var expectedValue = acceptCookies ? "analytics_preference=true" : "analytics_preference=false";
+        var cookies = httpContext.Response.Headers.SetCookie.ToList();
+
+        Assert.Contains(expectedValue, setCookieHeader);
+        Assert.Equal(redirectUrl, result.Url);
+
+        Assert.All(cookies, cookie =>
+        {
+            Assert.Contains("expires=", cookie?.ToLower());
+        });
     }
 }
