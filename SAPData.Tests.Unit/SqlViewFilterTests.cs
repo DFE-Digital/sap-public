@@ -1,4 +1,4 @@
-﻿using SAPData;
+﻿using SAPData.Filters;
 using Xunit;
 
 public class SqlViewFilterTests
@@ -6,9 +6,9 @@ public class SqlViewFilterTests
     [Fact]
     public void ExcludeOnlineSchools_GeneratesExpectedSql()
     {
-        var filter = new SqlViewFilter("ExcludeOnlineSchools", t => $"{t}.\"typeofestablishment__code_\" <> '49'");
+        var filter = new SqlViewFilter("ExcludeOnlineSchools", t => $"clean_int({t}.\"typeofestablishment__code_\") <> 49");
         var sql = filter.GetSqlCondition("t");
-        Assert.Equal("t.\"typeofestablishment__code_\" <> '49'", sql);
+        Assert.Equal("clean_int(t.\"typeofestablishment__code_\") <> 49", sql);
     }
 
     [Fact]
@@ -24,8 +24,8 @@ public class SqlViewFilterTests
     [Fact]
     public void IncludeKS4_GeneratesExpectedSql()
     {
-        var filter = new SqlViewFilter("IncludeKS4", t => $"{t}.\"phaseofeducation__code_\" IN (4, 5, 7)");
+        var filter = new SqlViewFilter("IncludeKS4", t => $"clean_int({t}.\"phaseofeducation__code_\") IN (4, 5, 7)");
         var sql = filter.GetSqlCondition("t");
-        Assert.Equal("t.\"phaseofeducation__code_\" IN (4, 5, 7)", sql);
+        Assert.Equal("clean_int(t.\"phaseofeducation__code_\") IN (4, 5, 7)", sql);
     }
 }

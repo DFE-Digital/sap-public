@@ -1,4 +1,5 @@
-﻿using SAPData.Models;
+﻿using SAPData.Filters;
+using SAPData.Models;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -10,6 +11,8 @@ public sealed class GenerateViews
     private readonly IReadOnlyList<DataMapRow> _rows;
     private readonly string _tableMappingPath;
     private readonly string _sqlDir;
+    private readonly List<SqlViewFilter> _establishmentFilters;
+
 
     // raw_sources.json path in repo
     private static readonly string[] RawSourcesCandidates =
@@ -53,21 +56,12 @@ public sealed class GenerateViews
     };
 
 
-    private readonly List<SqlViewFilter> _establishmentFilters =
-    [
-        new SqlViewFilter("ExcludeOnlineSchools", tableAlias =>
-            $"{tableAlias}.\"typeofestablishment__code_\" <> '49'"),
-        new SqlViewFilter("ExcludeClosed3YrSchools", tableAlias =>
-            $"{tableAlias}.\"closedate\" IS NULL OR {tableAlias}.\"closedate\" = '' OR TO_DATE({tableAlias}.\"closedate\", 'DD/MM/YYYY') >= '{GetAcademicYearCutoffDate()}'"),
-        new SqlViewFilter("IncludeKS4", tableAlias =>
-            $"{tableAlias}.\"phaseofeducation__code_\" IN (4, 5, 7)")
-    ];
-
-    public GenerateViews(IReadOnlyList<DataMapRow> rows, string tableMappingPath, string sqlDir)
+    public GenerateViews(IReadOnlyList<DataMapRow> rows, string tableMappingPath, string sqlDir, List<SqlViewFilter>? establishmentFilters = null)
     {
         _rows = rows;
         _tableMappingPath = tableMappingPath;
         _sqlDir = sqlDir;
+        _establishmentFilters = establishmentFilters ?? new List<SqlViewFilter>();
     }
 
     public void Run()
@@ -825,20 +819,6 @@ public sealed class GenerateViews
         var p = (r.PropertyName ?? "").Trim();
         if (string.IsNullOrWhiteSpace(p)) return p;
         return IsCoded(r) ? $"{p}_Coded" : p;
-    }
-
-    public static string GetAcademicYearCutoffDate(DateTime now)
-    {
-        // Always use previous 12/09 minus 3 years
-        var previousSept12 = now.Month < 9 || (now.Month == 9 && now.Day < 12)
-            ? new DateTime(now.Year - 1, 9, 12)
-            : new DateTime(now.Year, 9, 12);
-
-        var cutoffDate = previousSept12.AddYears(-3);
-        return cutoffDate.ToString("yyyy-MM-dd");
-    }
-        public static string GetAcademicYearCutoffDate()
-    {
-        return GetAcademicYearCutoffDate(DateTime.Today);
-    }
+    }     
+      
 }

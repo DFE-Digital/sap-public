@@ -1,4 +1,5 @@
-﻿using SAPData.Models;
+﻿using SAPData.Filters;
+using SAPData.Models;
 using Xunit;
 
 namespace SAPData.Unit.Tests;
@@ -80,20 +81,28 @@ public class GenerateViewsTests : IDisposable
         Assert.Contains("Could not resolve dataset key from raw_sources.json", sql);
     }
 
-    [Theory]
-    [InlineData("2026-03-10", "2022-09-12")]
-    [InlineData("2026-09-11", "2022-09-12")]
-    [InlineData("2026-09-12", "2023-09-12")]
-    [InlineData("2026-09-13", "2023-09-12")]
-    public void GetAcademicYearCutoffDate_returns_expected_cutoff_date(string today, string expected)
+    [Fact]
+    public void EstablishmentView_Includes_All_Required_Filters()
     {
-        var testDate = DateTime.Parse(today);
-        var cutoff = GenerateViews.GetAcademicYearCutoffDate(testDate);
-        Assert.Equal(expected, cutoff);
+        // Arrange
+        WriteMapping(("edubasealldata20230912", "t_edubase_20230912"));
+        var rows = new List<DataMapRow>();
+
+        var filters = SqlViewFilterProvider.GetEstablishmentFilters();
+
+        // Act
+        new GenerateViews(rows, _mappingPath, _sqlDir, filters).Run();
+
+        var sql = File.ReadAllText(Path.Combine(_sqlDir, "03_v_establishment.sql"));
+
+        // Assert: check each filter's SQL is present
+        foreach (var filter in filters)
+        {
+            var expectedSql = filter.GetSqlCondition("t");
+            Assert.Contains(expectedSql, sql);
+        }
+        Assert.Contains("WHERE", sql);
     }
-
-
-
 
     // ------------------------------------------------------------
     // FACT VIEWS
