@@ -37,13 +37,11 @@ internal class Program
         // -------------------------------------------------
         // 2. Generate raw tables + cleaned files + mapping
         // -------------------------------------------------
-        var generator = new GenerateRawTables(
+        new GenerateRawTables(
             rawInputDir,
             cleanedDir,
             sqlDir
-        );
-
-        generator.Run();
+        ).Run();
 
         // -------------------------------------------------
         // 3. Generate views

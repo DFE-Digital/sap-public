@@ -383,20 +383,6 @@ public sealed class GenerateViews
         return sb.ToString();
     }
 
-   
-    private static string GetAcademicYearCutoffDate()
-    {
-        var now = DateTime.Today;
-    
-        // Always use previous 12/09 minus 3 years
-        var previousSept12 = now.Month < 9 || (now.Month == 9 && now.Day < 12)
-            ? new DateTime(now.Year - 1, 9, 12)
-            : new DateTime(now.Year, 9, 12);
-
-        var cutoffDate = previousSept12.AddYears(-3);
-        return cutoffDate.ToString("yyyy-MM-dd");
-    }
-
     // =====================================================
     // MIRROR VIEWS
     // =====================================================
@@ -834,5 +820,18 @@ public sealed class GenerateViews
         return IsCoded(r) ? $"{p}_Coded" : p;
     }
 
+    public static string GetAcademicYearCutoffDate(DateTime now)
+    {
+        // Always use previous 12/09 minus 3 years
+        var previousSept12 = now.Month < 9 || (now.Month == 9 && now.Day < 12)
+            ? new DateTime(now.Year - 1, 9, 12)
+            : new DateTime(now.Year, 9, 12);
 
+        var cutoffDate = previousSept12.AddYears(-3);
+        return cutoffDate.ToString("yyyy-MM-dd");
+    }
+        public static string GetAcademicYearCutoffDate()
+    {
+        return GetAcademicYearCutoffDate(DateTime.Today);
+    }
 }

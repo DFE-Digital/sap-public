@@ -54,7 +54,8 @@ public class GenerateViewsTests : IDisposable
             entries.Select(e => $"{e.key},{e.table}")
         );
     }
-
+   
+  
     // ------------------------------------------------------------
     // ESTABLISHMENT VIEW
     // ------------------------------------------------------------
@@ -77,6 +78,18 @@ public class GenerateViewsTests : IDisposable
         Assert.Contains("v_establishment", sql);
         Assert.Contains("view SQL was skipped", sql);
         Assert.Contains("Could not resolve dataset key from raw_sources.json", sql);
+    }
+
+    [Theory]
+    [InlineData("2026-03-10", "2022-09-12")]
+    [InlineData("2026-09-11", "2022-09-12")]
+    [InlineData("2026-09-12", "2023-09-12")]
+    [InlineData("2026-09-13", "2023-09-12")]
+    public void GetAcademicYearCutoffDate_returns_expected_cutoff_date(string today, string expected)
+    {
+        var testDate = DateTime.Parse(today);
+        var cutoff = GenerateViews.GetAcademicYearCutoffDate(testDate);
+        Assert.Equal(expected, cutoff);
     }
 
 

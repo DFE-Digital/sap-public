@@ -16,7 +16,6 @@ public class GenerateRawTables
     private readonly string _sqlDir;
 
     private readonly Dictionary<string, string> _tableMappings = new(StringComparer.OrdinalIgnoreCase);
-    private readonly List<CsvRowFilter> _rowFilters = new();
 
     public GenerateRawTables(string inputDir, string cleanDir, string sqlDir)
     {
@@ -121,12 +120,7 @@ public class GenerateRawTables
             else if (row.Count > columnCount)
             {
                 row = row.Take(columnCount).ToList();
-            }
-
-            // Apply filters (only for GIAS or as needed)
-            bool exclude = _rowFilters.Any(f => !f(fileKey, headers, row));
-            if (exclude)
-                continue;
+            }            
 
             writer.WriteLine(string.Join(",", row.Select(EscapeCsv)));
         }
@@ -417,13 +411,6 @@ public class GenerateRawTables
             return "\"" + value.Replace("\"", "\"\"") + "\"";
 
         return value;
-    }
-
-    public delegate bool CsvRowFilter(string tableKey, IReadOnlyList<string> headers, IReadOnlyList<string> row);
-
-    public void AddRowFilter(CsvRowFilter filter)
-    {
-        _rowFilters.Add(filter);
-    }
+    }   
 }
 
