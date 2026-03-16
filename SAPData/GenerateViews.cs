@@ -58,7 +58,9 @@ public sealed class GenerateViews
         new SqlViewFilter("ExcludeOnlineSchools", tableAlias =>
             $"{tableAlias}.\"typeofestablishment__code_\" <> '49'"),
         new SqlViewFilter("ExcludeClosed3YrSchools", tableAlias =>
-            $"{tableAlias}.\"closedate\" IS NULL OR {tableAlias}.\"closedate\" = '' OR TO_DATE({tableAlias}.\"closedate\", 'DD/MM/YYYY') >= '{GetAcademicYearCutoffDate()}'")
+            $"{tableAlias}.\"closedate\" IS NULL OR {tableAlias}.\"closedate\" = '' OR TO_DATE({tableAlias}.\"closedate\", 'DD/MM/YYYY') >= '{GetAcademicYearCutoffDate()}'"),
+        new SqlViewFilter("IncludeKS4", tableAlias =>
+            $"{tableAlias}.\"phaseofeducation__code_\" IN (4, 5, 7)")
     ];
 
     public GenerateViews(IReadOnlyList<DataMapRow> rows, string tableMappingPath, string sqlDir)

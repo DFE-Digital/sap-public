@@ -245,7 +245,6 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                     select
                       {EstablishmentColumns}
                     from public.v_establishment
-                    WHERE "PhaseOfEducationId" in (4, 5, 7)
                     """ + DapperHelpers.GetOrderBy(typeof(Establishment)),
 
                 nameof(EstablishmentAbsence) =>
