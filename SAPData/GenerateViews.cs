@@ -340,6 +340,9 @@ public sealed class GenerateViews
         sb.AppendLine("    clean_int(t.\"typeofestablishment__code_\") AS \"TypeOfEstablishmentId\",");
         sb.AppendLine("    t.\"typeofestablishment__name_\"          AS \"TypeOfEstablishmentName\",");
         sb.AppendLine();
+        sb.AppendLine("    clean_int(t.\"establishmenttypegroup__code_\") AS \"EstablishmentTypeGroupId\",");
+        sb.AppendLine("    t.\"establishmenttypegroup__name_\"          AS \"EstablishmentTypeGroupName\",");
+        sb.AppendLine();
         sb.AppendLine("    clean_int(t.\"resourcedprovisiononroll\") AS \"ResourcedProvision\",");
         sb.AppendLine("    t.\"typeofresourcedprovision__name_\"     AS \"ResourcedProvisionName\",");
         sb.AppendLine();
@@ -741,6 +744,10 @@ public sealed class GenerateViews
             conditions.Add($"t.\"{DbCol(r.Filter2)}\" = '{SqlLiteral(r.Filter2Value)}'");
         if (!string.IsNullOrWhiteSpace(r.Filter3))
             conditions.Add($"t.\"{DbCol(r.Filter3)}\" = '{SqlLiteral(r.Filter3Value)}'");
+        if (!string.IsNullOrWhiteSpace(r.Filter4))
+            conditions.Add($"t.\"{DbCol(r.Filter4)}\" = '{SqlLiteral(r.Filter4Value)}'");
+        if (!string.IsNullOrWhiteSpace(r.Filter5))
+            conditions.Add($"t.\"{DbCol(r.Filter5)}\" = '{SqlLiteral(r.Filter5Value)}'");
 
         var whenClause = conditions.Count == 0 ? "TRUE" : string.Join(" AND ", conditions);
 

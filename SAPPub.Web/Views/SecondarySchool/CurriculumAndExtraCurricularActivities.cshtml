@@ -16,7 +16,7 @@
 
     <div class="govuk-grid-column-three-quarters">
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
-        <h1 class="govuk-heading-xl">@ViewBag.Title</h1>
+        <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
 
         <h2 class="govuk-heading-l">Curriculum</h2>
         <div id="current-curriculum-summary" class="govuk-summary-card">
@@ -40,7 +40,7 @@
                             </span>
                         </govuk-summary-list-row-key>
                         <govuk-summary-list-row-value>
-                            <a class="govuk-link govuk-link--no-visited-state" href="#">
+                            <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite">
                                 View the school’s KS3 curriculum on their website
                                 <span class="govuk-visually-hidden">(opens in a new tab)</span>
                             </a>
@@ -54,7 +54,7 @@
                             </span>
                         </govuk-summary-list-row-key>
                         <govuk-summary-list-row-value>
-                            <a class="govuk-link govuk-link--no-visited-state" href="#">
+                            <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite">
                                 View the school’s KS4 curriculum on their website
                                 <span class="govuk-visually-hidden">(opens in a new tab)</span>
                             </a>
@@ -122,7 +122,7 @@
                     <govuk-summary-list-row>
                         <govuk-summary-list-row-key>Extra-curricular activities</govuk-summary-list-row-key>
                         <govuk-summary-list-row-value>
-                            <a class="govuk-link govuk-link--no-visited-state" href="#">
+                            <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite">
                                 Visit the school website for current extra-curricular activities
                                 <span class="govuk-visually-hidden">(opens in a new tab)</span>
                             </a>

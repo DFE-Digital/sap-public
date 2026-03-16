@@ -8,9 +8,11 @@ using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4;
+using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
+using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels.KS4.Admissions;
 using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Core.Tests.TestBuilders;
@@ -30,6 +32,7 @@ public class SecondarySchoolControllerTests
     private readonly Mock<IAcademicPerformanceEnglishAndMathsResultsService> _mockEnglishAndMathsResultsService = new();
     private readonly Mock<IAttainmentAndProgressService> _mockAttainmentAndProgressService = new();
     private readonly Mock<IAdmissionsService> _mockAdmissionsService = new();
+    private readonly Mock<IAboutSchoolService> _mockAboutSchoolService = new();
     private readonly SecondarySchoolController _controller;
     private Establishment _fakeEstablishment;
 
@@ -119,6 +122,33 @@ public class SecondarySchoolControllerTests
             },
         };
 
+    private AboutSchoolModel SchoolDetails()
+    {
+        return new AboutSchoolModel
+        {
+            Urn = _fakeEstablishment.URN,
+            SchoolName = _fakeEstablishment.EstablishmentName,
+            AcademyTrust = _fakeEstablishment.TrustName,
+            Website = _fakeEstablishment.Website,
+            Telephone = _fakeEstablishment.TelephoneNum,
+            Address = _fakeEstablishment.Address,
+            LocalAuthority = _fakeEstablishment.LAName,
+            LocalAuthorityName = _fakeEstablishment.LAName,
+            LocalAuthorityWebsite = "www.gov.uk",
+            Easting = "50.01",
+            Northing = "60.90",
+            TypeOfSchool = _fakeEstablishment.TypeOfEstablishmentName,
+            HeadTeacher = _fakeEstablishment.Headteacher,
+            AgeRange = _fakeEstablishment.AgeRange,
+            NumberOfPupils = _fakeEstablishment.TotalPupils,
+            PupilSex = _fakeEstablishment.GenderName,
+            ReligiousCharacter = _fakeEstablishment.ReligiousCharacterName,
+            OfficialSixthFormId = _fakeEstablishment.OfficialSixthFormId,
+            ResourcedProvision = _fakeEstablishment.ResourcedProvision,
+            EstablishmentTypeGroupId = _fakeEstablishment.EstablishmentTypeGroupId
+        };
+    }
+
     public SecondarySchoolControllerTests()
     {
         _fakeEstablishment = new EstablishmentTestBuilder()
@@ -142,6 +172,7 @@ public class SecondarySchoolControllerTests
             .WithReligiousCharacterName("ReligiousCharacter")
             .WithOfficialSixthFormId("No")
             .WithResourcedProvision("Resourced provision")
+            .WithEstablishmentTypeGroupId("1")
             .Build();
 
         _mockLogger = new Mock<ILogger<SecondarySchoolController>>();
@@ -166,30 +197,42 @@ public class SecondarySchoolControllerTests
     [Fact]
     public async Task Get_AboutSchool_Info_ReturnsOk()
     {
-        var result = await _controller.AboutSchool(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
+        var expectedResult = SchoolDetails();
+
+        _mockAboutSchoolService
+            .Setup(es => es.GetAboutSchoolDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.AboutSchool(
+            _mockAboutSchoolService.Object,
+            _fakeEstablishment.URN,
+            _fakeEstablishment.EstablishmentName,
+            CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
 
         var model = result.Model as AboutSchoolViewModel;
         Assert.NotNull(model);
-        Assert.Equal(_fakeEstablishment.URN, model.URN);
-        Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
-        Assert.Equal(_fakeEstablishment.Website, model.Website);
-        Assert.Equal(_fakeEstablishment.TrustName, model.AcademyTrust);
-        Assert.Equal(_fakeEstablishment.TelephoneNum, model.Telephone);
-        Assert.Equal(_fakeEstablishment.LAName, model.LocalAuthority);
-        Assert.Equal(_fakeEstablishment.TypeOfEstablishmentName, model.TypeOfSchool);
-        Assert.Equal(_fakeEstablishment.Headteacher, model.HeadTeacher);
-        Assert.Equal(_fakeEstablishment.AgeRange, model.AgeRange);
+        Assert.Equal(expectedResult.Urn, model.URN);
+        Assert.Equal(expectedResult.SchoolName, model.SchoolName);
+        Assert.Equal(expectedResult.Website, model.SchoolWebsite);
+        Assert.Equal(expectedResult.AcademyTrust, model.AcademyTrust);
+        Assert.Equal(expectedResult.Telephone, model.Telephone);
+        Assert.Equal(expectedResult.LocalAuthority, model.LocalAuthority);
+        Assert.Equal(expectedResult.LocalAuthorityName, model.LocalAuthorityCouncilName);
+        Assert.Equal(expectedResult.LocalAuthorityWebsite, model.LocalAuthorityWebsite);
+        Assert.Equal(expectedResult.TypeOfSchool, model.TypeOfSchool);
+        Assert.Equal(expectedResult.HeadTeacher, model.HeadTeacher);
+        Assert.Equal(expectedResult.AgeRange, model.AgeRange);
         Assert.Equal("1,117", model.NumberOfPupils);
-        Assert.Equal(_fakeEstablishment.GenderName, model.PupilSex);
-        Assert.Equal(_fakeEstablishment.ReligiousCharacterName, model.ReligiousCharacter);
-        Assert.Equal(_fakeEstablishment.OfficialSixthFormId, model.SixthForm);
-        Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
+        Assert.Equal(expectedResult.PupilSex, model.PupilSex);
+        Assert.Equal(expectedResult.ReligiousCharacter, model.ReligiousCharacter);
+        Assert.Equal(expectedResult.OfficialSixthFormId, model.SixthForm);
+        Assert.False(model.IsLocalAuthoritySchool);
         Assert.Equal(2, model.RouteAttributes.Count);
-        Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
-        Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
+        Assert.Equal(expectedResult.Urn, model.RouteAttributes[RouteConstants.URN]);
+        Assert.Equal(expectedResult.SchoolName, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
     [Theory]
@@ -202,7 +245,17 @@ public class SecondarySchoolControllerTests
     {
         _fakeEstablishment.TotalPupils = totalPupils;
 
-        var result = await _controller.AboutSchool(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
+        var expectedResult = SchoolDetails();
+
+        _mockAboutSchoolService
+            .Setup(es => es.GetAboutSchoolDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.AboutSchool(
+            _mockAboutSchoolService.Object, 
+            _fakeEstablishment.URN,
+            _fakeEstablishment.EstablishmentName,
+            CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
@@ -221,7 +274,17 @@ public class SecondarySchoolControllerTests
     {
         _fakeEstablishment.ResourcedProvision = resourcedProvision;
 
-        var result = await _controller.AboutSchool(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
+        var expectedResult = SchoolDetails();
+
+        _mockAboutSchoolService
+            .Setup(es => es.GetAboutSchoolDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.AboutSchool(
+            _mockAboutSchoolService.Object,
+            _fakeEstablishment.URN,
+            _fakeEstablishment.EstablishmentName,
+            CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
@@ -244,7 +307,17 @@ public class SecondarySchoolControllerTests
     {
         _fakeEstablishment.ResourcedProvision = resourcedProvision;
 
-        var result = await _controller.AboutSchool(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
+        var expectedResult = SchoolDetails();
+
+        _mockAboutSchoolService
+            .Setup(es => es.GetAboutSchoolDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.AboutSchool(
+            _mockAboutSchoolService.Object,
+            _fakeEstablishment.URN,
+            _fakeEstablishment.EstablishmentName,
+            CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
@@ -267,7 +340,17 @@ public class SecondarySchoolControllerTests
     {
         _fakeEstablishment.OfficialSixthFormId = sixthFormId;
 
-        var result = await _controller.AboutSchool(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
+        var expectedResult = SchoolDetails();
+
+        _mockAboutSchoolService
+            .Setup(es => es.GetAboutSchoolDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.AboutSchool(
+            _mockAboutSchoolService.Object,
+            _fakeEstablishment.URN,
+            _fakeEstablishment.EstablishmentName,
+            CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
@@ -275,6 +358,34 @@ public class SecondarySchoolControllerTests
         var model = result.Model as AboutSchoolViewModel;
         Assert.NotNull(model);
         Assert.Equal(expectedOutput, model.SixthForm);
+    }
+
+    [Theory]
+    [InlineData("4", true)]
+    [InlineData("2", false)]
+    [InlineData("9", false)]
+    public async Task Get_AboutSchool_SchoolFeatures_IsLocalAuthoritySchool(string establishmentTypeGroupId, bool expectedOutput)
+    {
+        _fakeEstablishment.EstablishmentTypeGroupId = establishmentTypeGroupId;
+
+        var expectedResult = SchoolDetails();
+
+        _mockAboutSchoolService
+            .Setup(es => es.GetAboutSchoolDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.AboutSchool(
+            _mockAboutSchoolService.Object,
+            _fakeEstablishment.URN,
+            _fakeEstablishment.EstablishmentName,
+            CancellationToken.None) as ViewResult;
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as AboutSchoolViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(expectedOutput, model.IsLocalAuthoritySchool);
     }
 
     [Fact]
@@ -309,9 +420,9 @@ public class SecondarySchoolControllerTests
     }
 
     [Fact]
-    public void Get_Attendance_Info_ReturnsOk()
+    public async Task Get_Attendance_Info_ReturnsOk()
     {
-        var result = _controller.Attendance(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName) as ViewResult;
+        var result = await _controller.Attendance(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
@@ -327,9 +438,9 @@ public class SecondarySchoolControllerTests
     }
 
     [Fact]
-    public void Get_CurriculumAndExtraCurricularActivities_Info_ReturnsOk()
+    public async Task Get_CurriculumAndExtraCurricularActivities_Info_ReturnsOk()
     {
-        var result = _controller.CurriculumAndExtraCurricularActivities(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName) as ViewResult;
+        var result = await _controller.CurriculumAndExtraCurricularActivities(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
@@ -338,6 +449,7 @@ public class SecondarySchoolControllerTests
         Assert.NotNull(model);
         Assert.Equal(_fakeEstablishment.URN, model.URN);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
+        Assert.Equal(_fakeEstablishment.Website, model.SchoolWebsite);
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);        
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
@@ -357,7 +469,9 @@ public class SecondarySchoolControllerTests
             LocalAuthorityProgress8Score = expectedShowProgress8NotAvailableInfo ? null : 1.5,
             EstablishmentAttainment8Score = 70,
             LocalAuthorityAttainment8Score = 80,
-            EnglandAttainment8Score = 50
+            EnglandAttainment8Score = 50,
+            EstablishmentProgress8TotalPupils = expectedShowProgress8NotAvailableInfo ? null : 65,
+            EstablishmentTotalPupils = expectedShowProgress8NotAvailableInfo ? null : 95
         };
 
         _mockAttainmentAndProgressService
@@ -393,11 +507,15 @@ public class SecondarySchoolControllerTests
         {
             Assert.Null(model.EstablishmentProgress8Score);
             Assert.Null(model.LocalAuthorityProgress8Score);
+            Assert.Null(model.EstablishmentProgress8TotalPupils);
+            Assert.Null(model.EstablishmentTotalPupils);
         }
         else
         {
             Assert.Equal(expectedResult.EstablishmentProgress8Score, model.EstablishmentProgress8Score);
             Assert.Equal(expectedResult.LocalAuthorityProgress8Score, model.LocalAuthorityProgress8Score);
+            Assert.Equal(expectedResult.EstablishmentProgress8TotalPupils, model.EstablishmentProgress8TotalPupils);
+            Assert.Equal(expectedResult.EstablishmentTotalPupils, model.EstablishmentTotalPupils);
         }
     }
 

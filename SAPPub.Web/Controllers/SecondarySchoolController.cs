@@ -2,6 +2,7 @@
 using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4;
+using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
@@ -17,17 +18,21 @@ namespace SAPPub.Web.Controllers
     {
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/about", Name = RouteConstants.SecondaryAboutSchool)]
-        public async Task<IActionResult> AboutSchool(string urn, string schoolName, CancellationToken ct)
+        public async Task<IActionResult> AboutSchool(
+            [FromServices] IAboutSchoolService aboutSchoolService,
+            string urn,
+            string schoolName,
+            CancellationToken ct)
         {
-            var establishmentDetails = await establishmentService.GetEstablishmentAsync(urn, ct);
+            var schoolDetails = await aboutSchoolService.GetAboutSchoolDetailsAsync(urn, ct);
 
-            if (string.IsNullOrWhiteSpace(establishmentDetails?.URN))
+            if (string.IsNullOrWhiteSpace(schoolDetails.Urn))
             {
                 logger.LogWarning("No establishment details found for URN: {URN}", urn);
                 return View("Error");
             }
 
-            var model = AboutSchoolViewModel.Map(establishmentDetails);
+            var model = AboutSchoolViewModel.Map(schoolDetails);
             return View(model);
         }
 
@@ -46,28 +51,19 @@ namespace SAPPub.Web.Controllers
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/attendance", Name = RouteConstants.SecondaryAttendance)]
-        public IActionResult Attendance(string urn, string schoolName)
+        public async Task<IActionResult> Attendance(string urn, string schoolName, CancellationToken ct)
         {
-            var model = new AttendanceViewModel
-            {
-                URN = urn,
-                SchoolName = schoolName,
-                SchoolWebsite = "https://www.gov.uk/"
-            };
-
+            var establishmentDetails = await establishmentService.GetEstablishmentAsync(urn, ct);
+            var model = AttendanceViewModel.Map(establishmentDetails);
             return View(model);
-        }
+        }     
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/curriculum-and-extra-curricular-activities", Name = RouteConstants.SecondaryCurriculumAndExtraCurricularActivities)]
-        public IActionResult CurriculumAndExtraCurricularActivities(string urn, string schoolName)
+        public async Task<IActionResult> CurriculumAndExtraCurricularActivities(string urn, string schoolName, CancellationToken ct)
         {
-            var model = new CurriculumAndExtraCurricularActivitiesViewModel
-            {
-                URN = urn,
-                SchoolName = schoolName
-            };
-
+            var establishmentDetails = await establishmentService.GetEstablishmentAsync(urn, ct);
+            var model = CurriculumAndExtraCurricularActivitiesViewModel.Map(establishmentDetails);
             return View(model);
         }
 

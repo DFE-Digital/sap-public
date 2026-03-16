@@ -13,6 +13,7 @@ public static class RouteConstants
     public const string SecondaryAcademicPerformanceSubjectsEntered = "SecondaryAcademicPerformanceSubjectsEntered";
     public const string SecondaryDestinations = "SecondaryDestinations";
 
+    public const string Search = "Search";
 
     // Route Attributes
     public const string URN = "urn";

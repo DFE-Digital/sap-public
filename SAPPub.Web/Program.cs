@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.StaticFiles;
 using Npgsql;
+using SAPPub.Core.Interfaces.Services;
 using SAPPub.Infrastructure.LuceneSearch;
+using SAPPub.Infrastructure.PostcodeLookup;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Middleware;
 using SAPPub.Web.Models.Config;
@@ -24,7 +26,7 @@ public partial class Program
 
         builder.Services.Configure<AnalyticsOptions>(builder.Configuration.GetSection("Analytics"));
 
-
+        builder.Services.AddHttpClient<IPostcodeLookupService, PostcodeLookupService>();
         builder.Services.AddGovUkFrontend(options =>
         {
             options.Rebrand = true;
@@ -101,9 +103,11 @@ public partial class Program
         }
         else
         {
-            app.UseExceptionHandler("/Home/Error");
+            app.UseExceptionHandler("/Error/500");
             app.UseHsts();
         }
+
+        app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
         // Security headers middleware - MUST come before static files
         app.UseSecurityHeaders();

@@ -1,12 +1,7 @@
-﻿using SAPPub.Web.Helpers;
-using System;
-using System.Collections.Generic;
+﻿using SAPPub.Core.Helpers;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace SAPPub.Web.Tests.Helpers
+namespace SAPPub.Core.Tests.Helpers
 {
     [ExcludeFromCodeCoverage]
     public class MappingHelperTests
@@ -22,7 +17,7 @@ namespace SAPPub.Web.Tests.Helpers
             var longitudeExpected = -0.12769745130735563;
             var latitudeExpected = 51.503485756703007;
             // Act
-            var result = MappingHelper.ConvertToLatLong(easting, northing);
+            var result = MappingHelper.ConvertToLatLon(easting, northing);
 
             // Assert
             Assert.NotNull(result);

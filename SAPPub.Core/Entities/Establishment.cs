@@ -87,6 +87,10 @@ namespace SAPPub.Core.Entities
 
         public string TypeOfEstablishmentName { get; set; } = string.Empty;
 
+        public string EstablishmentTypeGroupId { get; set; } = string.Empty;
+
+        public string EstablishmentTypeGroupName { get; set; } = string.Empty;
+
         public string ResourcedProvision { get; set; } = string.Empty;
         
         public string ResourcedProvisionName { get; set; } = string.Empty;

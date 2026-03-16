@@ -111,11 +111,17 @@
         </main>
     </div>
     <govuk-footer>
+        <govuk-footer-nav width="one-third">
+            <govuk-footer-nav-title>Support and feedback</govuk-footer-nav-title>
+            <govuk-footer-nav-items>
+                <govuk-footer-nav-item href="mailto:school.profiles@education.gov.uk">Report a problem with this site</govuk-footer-nav-item>
+            </govuk-footer-nav-items>
+        </govuk-footer-nav>
         <govuk-footer-meta>
             <govuk-footer-meta-items>
                 <govuk-footer-meta-item href="@Url.Action("Accessibility", "Content")">Accessibility</govuk-footer-meta-item>
                 <govuk-footer-meta-item href="@Url.Action("Preferences", "Cookies")">Cookies</govuk-footer-meta-item>
-                <govuk-footer-meta-item href="https://www.gov.uk/government/organisations/department-for-education/about/personal-information-charter" link-target="_blank">Privacy</govuk-footer-meta-item>
+                <govuk-footer-meta-item href="https://www.gov.uk/government/organisations/department-for-education/about/personal-information-charter" link-rel="noreferrer noopener" link-target="_blank">Privacy</govuk-footer-meta-item>
             </govuk-footer-meta-items>
         </govuk-footer-meta>
     </govuk-footer>

@@ -16,7 +16,7 @@
 
     <div class="govuk-grid-column-three-quarters">
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
-        <h1 class="govuk-heading-xl">@ViewBag.Title</h1>
+        <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
         <p class="govuk-body">
             Looking at school performance data is one way to see how well a school is doing.
             You should look at a range of information about a school before deciding if it’s the right fit for your child.
@@ -169,6 +169,9 @@
                 <div class="custom-card__content">
                     <p class="govuk-body">
                         Pupils at this school score @Model.EstablishmentProgress8Score.
+                    </p>
+                    <p class="govuk-body">
+                        @Model.EstablishmentProgress8TotalPupils out of @Model.EstablishmentTotalPupils pupils were included in this measure.
                     </p>
                 </div>
             </div>
