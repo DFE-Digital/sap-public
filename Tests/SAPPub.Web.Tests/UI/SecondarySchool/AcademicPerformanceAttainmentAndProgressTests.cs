@@ -122,7 +122,7 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
         await Page.GotoAsync(_pageUrl);
 
         // Act
-        var academicYearSelector = Page.Locator("#academicyearSelector");
+        var academicYearSelector = Page.Locator("#academicYearSelector");
         var progress8CustomCard = Page.GetByTestId("progress8-custom-card");
 
         var attainment8EstablishmentCard = Page.GetByTestId("attainment8-establishment-card");
@@ -144,7 +144,7 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
         await Page.GotoAsync(_pageUrl);
 
         // Act
-        var academicyearSelector = Page.Locator("#academicyearSelector");
+        var academicyearSelector = Page.Locator("#academicYearSelector");
         await academicyearSelector.SelectOptionAsync([academicYearSelection.ToString()]);
         var buttonSelector = Page.Locator("button:has-text(\"Show results\")");
         await buttonSelector.ClickAsync();

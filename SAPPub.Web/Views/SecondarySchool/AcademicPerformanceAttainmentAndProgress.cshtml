@@ -44,8 +44,8 @@
 
         <form method="get" asp-action="AcademicPerformanceAttainmentAndProgress" asp-controller="SecondarySchool" asp-fragment="filterSection">
             <div id="filterSection" class="select-filter">
-                <govuk-select-label for="academicyearSelector" class="govuk-label govuk-!-font-weight-bold">Choose the academic year you want to see results for</govuk-select-label>
-                <select id="academicyearSelector" class="govuk-select" asp-for="SelectedAcademicYear" asp-items="Model.AcademicYearsSelectList"></select>
+                <label for="academicYearSelector" class="govuk-label govuk-!-font-weight-bold">Choose the academic year you want to see results for</label>
+                <select id="academicYearSelector" class="govuk-select" asp-for="SelectedAcademicYear" asp-items="Model.AcademicYearsSelectList"></select>
                 <govuk-button type="submit">Show results</govuk-button>
             </div>
         </form>

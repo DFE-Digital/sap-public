@@ -20,10 +20,8 @@
             setTooggleState(allGcseCurrentYearChartContainer, allGcseCurrentYearTableContainer, chartVisible, allGcseCurrentYearShowAsTableBtn);
         });
 
-        setAriaAttribute(allGcseShowDataOverTimeBtn, 'false');
         allGcseShowDataOverTimeBtn.addEventListener('click', () => {
             setTooggleState(allGcseDataOverTimeChartContainer, allGcseDataOverTimeTableContainer, false, allGcseCurrentYearShowAsTableBtn);
-            setAriaAttribute(allGcseShowDataOverTimeBtn, 'true');
         });
 
         setAriaAttribute(allGcseDataOverTimeShowAsTableBtn, 'false');
