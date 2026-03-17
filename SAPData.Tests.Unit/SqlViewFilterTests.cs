@@ -16,9 +16,9 @@ public class SqlViewFilterTests
     {
         var cutoff = "2022-09-12";
         var filter = new SqlViewFilter("ExcludeClosed3YrSchools", t =>
-            $"{t}.\"closedate\" IS NULL OR {t}.\"closedate\" = '' OR TO_DATE({t}.\"closedate\", 'DD/MM/YYYY') >= '{cutoff}'");
+            $"({t}.\"closedate\" IS NULL OR {t}.\"closedate\" = '' OR TO_DATE({t}.\"closedate\", 'DD/MM/YYYY') >= '{cutoff}')");
         var sql = filter.GetSqlCondition("t");
-        Assert.Equal("t.\"closedate\" IS NULL OR t.\"closedate\" = '' OR TO_DATE(t.\"closedate\", 'DD/MM/YYYY') >= '2022-09-12'", sql);
+        Assert.Equal("(t.\"closedate\" IS NULL OR t.\"closedate\" = '' OR TO_DATE(t.\"closedate\", 'DD/MM/YYYY') >= '2022-09-12')", sql);
     }
 
     [Fact]

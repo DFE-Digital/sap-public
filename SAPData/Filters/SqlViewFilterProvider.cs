@@ -9,7 +9,7 @@
                 new SqlViewFilter("ExcludeOnlineSchools", tableAlias =>
                     $"clean_int({tableAlias}.\"typeofestablishment__code_\") <> 49"),
                 new SqlViewFilter("ExcludeClosed3YrSchools", tableAlias =>
-                    $"{tableAlias}.\"closedate\" IS NULL OR {tableAlias}.\"closedate\" = '' OR TO_DATE({tableAlias}.\"closedate\", 'DD/MM/YYYY') >= '{GetAcademicYearCutoffDate()}'"),
+                    $"({tableAlias}.\"closedate\" IS NULL OR {tableAlias}.\"closedate\" = '' OR TO_DATE({tableAlias}.\"closedate\", 'DD/MM/YYYY') >= '{GetAcademicYearCutoffDate()}')"),
                 new SqlViewFilter("IncludeKS4", tableAlias =>
                     $"clean_int({tableAlias}.\"phaseofeducation__code_\") IN (4, 5, 7)")
                 ];
