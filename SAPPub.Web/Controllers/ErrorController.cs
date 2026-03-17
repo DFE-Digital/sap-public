@@ -2,11 +2,24 @@
 
 namespace SAPPub.Web.Controllers;
 
-public class ErrorController : Controller
+public class ErrorController(IHostEnvironment env) : Controller
 {
-    public IActionResult Index()
+    /// <summary>
+    /// This action is used to test the unhandled exception handling in non-production environments. 
+    /// In production, it returns a 404 Not Found response
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="System.Exception"></exception>
+    public IActionResult Throw()
     {
-        return View();
+        if (env.EnvironmentName == Environments.Production)
+        {
+            return NotFound();
+        }
+        else
+        {
+            throw new System.Exception("Test unhandled exception");
+        }
     }
 
     [Route("error/{statusCode:int}")]

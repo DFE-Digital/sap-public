@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SAPPub.Core.Interfaces.Repositories.Generic;
+using System.Text;
 
 namespace SAPPub.Infrastructure.Repositories.Generic
 {
@@ -17,11 +18,11 @@ namespace SAPPub.Infrastructure.Repositories.Generic
         }
 
 
-        public IEnumerable<T> ReadAll()
+        public async Task<IEnumerable<T>> ReadAll()
         {
             try
             {
-                var fileData = ReadFile(typeof(T).Name);
+                var fileData = await ReadFileAsync(typeof(T).Name);
                 if (!string.IsNullOrWhiteSpace(fileData))
                 {
                     return JsonConvert.DeserializeObject<IEnumerable<T>>(fileData) ?? [];
@@ -50,9 +51,10 @@ namespace SAPPub.Infrastructure.Repositories.Generic
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<T>> ReadPageAsync(int page, int take, CancellationToken ct = default)
+        public async Task<IEnumerable<T>> ReadPageAsync(int page, int take, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var items = (await ReadAll()).Skip((page - 1) * take).Take(take);
+            return items;
         }
 
         public Task<T?> ReadSingleAsync(object parameters, CancellationToken ct = default)
@@ -60,17 +62,17 @@ namespace SAPPub.Infrastructure.Repositories.Generic
             throw new NotImplementedException();
         }
 
-        private string ReadFile(string fileName)
+        private Task<string> ReadFileAsync(string fileName)
         {
             try
             {
                 var fullPath = Path.Combine(_filePath, $"{fileName}.json");
-                return File.ReadAllText(fullPath);
+                return File.ReadAllTextAsync(fullPath, Encoding.UTF8);
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Failed to Read file {fileName}! - {ex.Message}, {ex}");
-                return string.Empty;
+                return Task.FromResult(string.Empty);
             }
         }
 

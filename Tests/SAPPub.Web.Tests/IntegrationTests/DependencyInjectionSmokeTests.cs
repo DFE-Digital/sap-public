@@ -4,7 +4,6 @@ using Npgsql;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
-using SAPPub.Web.Helpers;
 using System.Net;
 
 namespace SAPPub.Web.Tests.IntegrationTests
@@ -17,9 +16,6 @@ namespace SAPPub.Web.Tests.IntegrationTests
         {
             _factory = factory;
         }
-
-        private static bool IsCi =>
-            string.Equals(Environment.GetEnvironmentVariable("GITHUB_ACTIONS"), "true", StringComparison.OrdinalIgnoreCase);
 
         [Fact]
         public void ServiceProvider_Resolves_Critical_Services()
@@ -82,24 +78,6 @@ namespace SAPPub.Web.Tests.IntegrationTests
             var r2 = sp.GetRequiredService<IGenericRepository<Establishment>>();
 
             Assert.NotSame(r1, r2);
-        }
-
-        [Fact]
-        public void GenericRepository_Uses_Fake_In_CI_And_NotFake_Locally()
-        {
-            using var scope = _factory.Services.CreateScope();
-            var repo = scope.ServiceProvider.GetRequiredService<IGenericRepository<Establishment>>();
-
-            if (IsCi)
-            {
-                // Use the fake that the factory registers 
-                Assert.IsType<FakeGenericRepository<Establishment>>(repo);
-            }
-            else
-            {
-                // Locally should be the real Dapper repo
-                Assert.IsNotType<FakeGenericRepository<Establishment>>(repo);
-            }
         }
     }
 }

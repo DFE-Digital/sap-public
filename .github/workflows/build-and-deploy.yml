@@ -108,16 +108,6 @@ jobs:
         working-directory: SAPPub.Web
         run: npm ci
 
-      - name: Start MVC App
-        run: |
-          dotnet run --project ./SAPPub.Web/SAPPub.Web.csproj --urls "https://localhost:3000" &
-        env:
-          ASPNETCORE_ENVIRONMENT: UITests
-          USE_FAKE_REPOS: "true"
-
-      - name: Wait for MVC App to be ready
-        run: npx wait-on https://localhost:3000
-
       - name: Run All Tests with Coverage
         env:
           HEADED: 0
@@ -367,21 +357,6 @@ jobs:
       KONDUIT_APP_NAME: ${{ secrets.KONDUIT_APP_NAME }}
 
     steps:
-      - name: Deploy App to Review
-        id: deploy_review
-        uses: DFE-Digital/github-actions/deploy-to-aks@master
-        with:
-          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          environment: review
-          pr-number: ${{ github.event.pull_request.number }}
-          sha: ${{ needs.build.outputs.docker-image-tag }}
-          terraform-base: ${{ env.TERRAFORM_BASE }}
-          healthcheck: ${{ env.HEALTHCHECK_CMD }}
-          db-seed: false
-          smoke-test: false
-
       # ---------------------------
       # REVIEW APP DATABASE DEPLOYMENT (PR)
       # ---------------------------
@@ -478,6 +453,22 @@ jobs:
             -x \
             -i "${BACKUP_FILE}" -c \
             "${APP_NAME}" -- psql -v ON_ERROR_STOP=1 -X
+
+      - name: Deploy App to Review
+        id: deploy_review
+        uses: DFE-Digital/github-actions/deploy-to-aks@master
+        with:
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          environment: review
+          pr-number: ${{ github.event.pull_request.number }}
+          sha: ${{ needs.build.outputs.docker-image-tag }}
+          terraform-base: ${{ env.TERRAFORM_BASE }}
+          healthcheck: ${{ env.HEALTHCHECK_CMD }}
+          db-seed: false
+          smoke-test: false
+
 
   # ---------------------------
   # DEPLOY TEST (AUTO) + PROD (MANUAL APPROVAL)
