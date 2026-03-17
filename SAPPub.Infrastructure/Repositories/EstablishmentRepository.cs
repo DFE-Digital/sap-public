@@ -24,12 +24,12 @@ namespace SAPPub.Infrastructure.Repositories
             return _repo.ReadAllAsync(ct);
         }
 
-        public async Task<Establishment> GetEstablishmentAsync(string urn, CancellationToken ct = default)
+        public async Task<Establishment?> GetEstablishmentAsync(string urn, CancellationToken ct = default)
         {
             if (string.IsNullOrWhiteSpace(urn))
-                return new Establishment();
+                return null;
 
-            return await _repo.ReadAsync(urn, ct) ?? new Establishment();
+            return await _repo.ReadAsync(urn, ct) ?? null;
         }
     }
 }
