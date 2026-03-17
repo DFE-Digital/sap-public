@@ -20,7 +20,7 @@ namespace SAPPub.Infrastructure.Repositories
         {
             var personalisation = new Dictionary<string, dynamic>
             {
-                { "link", $"{_emailOptions.EmailApplicationRoot}/gateway/welcome/{localAuthorityName}" }
+                { "link", $"{_emailOptions.ApplicationRoot}/gateway/welcome/{localAuthorityName}" }
             };
             try
             {
