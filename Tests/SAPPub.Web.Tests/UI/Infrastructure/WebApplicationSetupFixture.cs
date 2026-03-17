@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SAPPub.Web.Tests.UI.Infrastructure
+﻿namespace SAPPub.Web.Tests.UI.Infrastructure
 {
- public class WebApplicationSetupFixture : IAsyncLifetime
+    public class WebApplicationSetupFixture : IAsyncLifetime
     {
         private TestWebApplicationFactory? _factory;
 

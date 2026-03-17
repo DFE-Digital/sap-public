@@ -1,12 +1,7 @@
-﻿using System.Net;
-using System.Net.Http.Json;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using SAPPub.Web;
-using SAPPub.Web.Controllers;
+﻿using SAPPub.Web.Controllers;
 using SAPPub.Web.Tests.IntegrationTests;
-using Xunit;
+using System.Net;
+using System.Net.Http.Json;
 
 namespace SAPPub.Tests.Integration;
 

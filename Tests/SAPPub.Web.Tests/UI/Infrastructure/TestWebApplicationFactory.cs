@@ -40,11 +40,6 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
             })
             .ConfigureServices(services =>
             {
-                //if (useFakeRepos)
-                //    services.AddSingleton(typeof(IGenericRepository<>), typeof(FakeGenericRepository<>));
-                //else
-                //    services.AddTransient(typeof(IGenericRepository<>), typeof(DapperRepository<>));
-                //services.AddSingleton(typeof(IGenericRepository<>), typeof(FakeGenericRepository<>))
                 services.RemoveAll(typeof(IGenericRepository<>));
                 services.AddSingleton(typeof(IGenericRepository<>), typeof(FakeGenericRepository<>));
             });

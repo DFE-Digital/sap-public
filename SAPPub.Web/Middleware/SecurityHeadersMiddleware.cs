@@ -11,7 +11,7 @@ namespace SAPPub.Web.Middleware
             _next = next;
         }
 
-        public async Task InvokeAsync(HttpContext context)
+        public Task InvokeAsync(HttpContext context)
         {
             // Generate a per-request nonce and make it available to views
             var nonce = CSPHelper.RandomCharacters;
@@ -76,7 +76,7 @@ namespace SAPPub.Web.Middleware
             context.Response.Headers["X-Content-Type-Options"] = "nosniff";
             context.Response.Headers["X-Frame-Options"] = "DENY";
 
-            await _next(context);
+            return _next(context);
         }
     }
 
