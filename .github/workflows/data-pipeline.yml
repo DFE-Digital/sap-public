@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   workflow_call:
     inputs:
-      environment:
+      enable-backup:
         required: false
         type: string
   schedule:
@@ -625,7 +625,7 @@ jobs:
       # 10. Create & upload DB backup (used to restore db in review app env)
       # ==============================
       - name: Create + upload review seed DB backup
-        if: ${{ inputs.environment != 'review' }}
+        if: ${{ inputs.enable-backup == 'false' }}
         shell: bash
         run: |
           set -euo pipefail
