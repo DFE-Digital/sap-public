@@ -65,10 +65,10 @@
 
 TBC
 
-| Environment | URL | Status | Code Coverage
+| Environment | Internal URL | Public URL | Status 
 | --- | --- | --- | --- |
-| Production | https://sap-public-production.teacherservices.cloud/ | ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/DFE-Digital/sap-public/dotnet-prod.yml) | TBC | TBC
-| Test | https://sap-public-test.test.teacherservices.cloud/  | ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/DFE-Digital/sap-public/build-and-deploy.yml?main) | TBC |
+| Production | https://sap-public-production.teacherservices.cloud | https://beta.schoolprofiles.education.gov.uk | ![GitHub Actions Workflow Status](https://img.shields.io/github/deployments/DFE-Digital/sap-public/production) | TBC 
+| Test | https://sap-public-test.test.teacherservices.cloud  | https://test.schoolprofiles.education.gov.uk  | ![GitHub Actions Workflow Status](https://img.shields.io/github/deployments/DFE-Digital/sap-public/test) | 
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
