@@ -11,7 +11,6 @@ namespace SAPPub.Core.Interfaces.Services.Gateway
     {
         Task<GatewayLocalAuthority?> GetByName(string laName);
         Task<GatewayLocalAuthority?> GetById(Guid Id);
-        int CountSignUps(Guid Id);
-        Task<bool> IsLAOpen(Guid Id);
+
     }
 }

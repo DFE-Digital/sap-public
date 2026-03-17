@@ -10,24 +10,17 @@ using System.Net.Mail;
 
 namespace SAPPub.Infrastructure.Repositories
 {
-    public  class EmailRepository : IEmailRepository
+    public  class EmailRepository(INotificationClient notificationClient, IOptions<EmailOptions> emailOptions, ILogger<EmailRepository> logger) : IEmailRepository
     {
-        private readonly INotificationClient _notificationClient;
-        private readonly EmailOptions _emailOptions;
-        private readonly ILogger<EmailRepository> _logger;
+        private readonly INotificationClient _notificationClient = notificationClient;
+        private readonly EmailOptions _emailOptions = emailOptions.Value;
+        private readonly ILogger<EmailRepository> _logger = logger;
 
-        public EmailRepository(INotificationClient notificationClient, IOptions<EmailOptions> emailOptions, ILogger<EmailRepository> logger)
-        {
-            _emailOptions = emailOptions.Value;
-            _notificationClient = notificationClient;
-            _logger = logger;
-        }
-
-        public void SendGatewayEmail(string emailAddress)
+        public void SendGatewayEmail(string emailAddress, string localAuthorityName)
         {
             var personalisation = new Dictionary<string, dynamic>
             {
-                { "link", "https://www.localhost:3000/welcome/returning" }
+                { "link", $"{_emailOptions.EmailApplicationRoot}/gateway/welcome/{localAuthorityName}" }
             };
             try
             {

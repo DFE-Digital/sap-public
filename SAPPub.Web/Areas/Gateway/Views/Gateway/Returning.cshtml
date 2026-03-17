@@ -2,22 +2,28 @@
 
 @{
     ViewBag.Title = "Returning";
+    ViewBag.BackUrl = Url.Action("Welcome", "Gateway", new { id = ViewBag.LAName });
 }
 
+<div class="govuk-width-container">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            @using (Html.BeginForm("Returning", "Gateway", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
 
-@using (Html.BeginForm("Returning", "Gateway", FormMethod.Post))
-{
-    @Html.AntiForgeryToken()
-    
 
-    <govuk-input name="@Html.NameFor(x => x.EmailAddress)" spellcheck="false">
-        <govuk-input-label is-page-heading="true" class="govuk-label--l">Please enter your email address</govuk-input-label>
-        @if (ViewData.ModelState.ContainsKey(Html.NameFor(x => x.EmailAddress)))
-        {
-            <govuk-input-error-message for="@Html.NameFor(x => x.EmailAddress)"> @Html.ValidationMessageFor(m => m.EmailAddress)</govuk-input-error-message>
-        }
-    </govuk-input>
+                <govuk-input name="@Html.NameFor(x => x.EmailAddress)" spellcheck="false">
+                    <govuk-input-label is-page-heading="true" class="govuk-label--l">Please enter your email address</govuk-input-label>
+                    @if (ViewData.ModelState.ContainsKey(Html.NameFor(x => x.EmailAddress)))
+                    {
+                        <govuk-input-error-message for="@Html.NameFor(x => x.EmailAddress)"> @Html.ValidationMessageFor(m => m.EmailAddress)</govuk-input-error-message>
+                    }
+                </govuk-input>
 
-    <govuk-button type="submit">Confirm</govuk-button>
+                <govuk-button type="submit">Confirm</govuk-button>
 
-}
+            }
+        </div>
+    </div>
+</div>

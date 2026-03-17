@@ -29,18 +29,18 @@ namespace SAPPub.Core.Services.Gateway
 
         public async Task<GatewayUser?> GetByEmailAsync(string email)
         {
-            var allUsers = await _gatewayUserRepository.GetAll();
+            var allUsers = await _gatewayUserRepository.GetAllAsync();
             return allUsers.FirstOrDefault(u => u.EmailAddress.Equals(email, StringComparison.OrdinalIgnoreCase));
         }
 
         public async Task<GatewayUser?> GetById(Guid id)
         {
-            return await _gatewayUserRepository.GetById(id);
+            return await _gatewayUserRepository.GetByIdAsync(id);
         }
 
         public async Task<bool> IsUserExpiredAsync(Guid id)
         {
-            var user = await _gatewayUserRepository.GetById(id);
+            var user = await _gatewayUserRepository.GetByIdAsync(id);
             if (user?.Id == null)
             {
                 throw new Exception($"User with ID {id} not found.");
@@ -69,13 +69,13 @@ namespace SAPPub.Core.Services.Gateway
             user.ModifiedOn = DateTime.UtcNow;
             user.IsDeleted = false;
 
-            return await _gatewayUserRepository.Insert(user) ? user.Id : throw new Exception("Error on Add user");
+            return await _gatewayUserRepository.InsertAsync(user) ? user.Id : throw new Exception("Error on Add user");
 
         }
 
         public async Task<IEnumerable<GatewayUser>> GetAllAsync()
         {
-            return await _gatewayUserRepository.GetAll();
+            return await _gatewayUserRepository.GetAllAsync();
         }
     }
 }

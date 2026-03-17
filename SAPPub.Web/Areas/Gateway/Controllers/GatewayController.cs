@@ -61,7 +61,7 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
                 }
                 else if (viewModel.NewOrReturning == "return")
                 {
-                    return RedirectToAction("Returning");
+                    return RedirectToAction("Returning", new { id = viewModel.LocalAuthority });
                 }
 
                 if (string.IsNullOrWhiteSpace(viewModel.LocalAuthority))
@@ -79,16 +79,17 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
         #region Returning user
 
         [HttpGet]
-        [Route("gateway/returning")]
-        public IActionResult Returning()
+        [Route("gateway/returning/{id}")]
+        public IActionResult Returning(string id)
         {
             var model = new GatewayReturningViewModel();
+            ViewBag.LAName = id;
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("gateway/returning")]
+        [Route("gateway/returning/{id}")]
         public async Task<IActionResult> Returning(GatewayReturningViewModel viewModel)
         {
             if (ModelState.IsValid)
@@ -216,7 +217,7 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
                     options
                 );
                 // Send Email
-                _emailService.SendGatewayEmail(viewModel.EmailAddress);
+                _emailService.SendGatewayEmail(viewModel.EmailAddress, viewModel.LocalAuthorityName);
 
                 return RedirectToAction("Complete");
             }

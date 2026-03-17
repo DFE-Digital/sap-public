@@ -25,17 +25,17 @@ namespace SAPPub.Infrastructure.Repositories.Gateway
             _logger = logger;
         }
 
-        public async Task<GatewayUser?> GetById(Guid id, CancellationToken ct = default)
+        public async Task<GatewayUser?> GetByIdAsync(Guid id, CancellationToken ct = default)
         {
             return await _genericRepository.ReadSingleAsync(new { Id = id }, ct);
         }
 
-        public async Task<bool> Insert(GatewayUser user)
+        public async Task<bool> InsertAsync(GatewayUser user)
         {
             return await _genericRepository.WriteAsync(user);
         }
 
-        public async Task<IEnumerable<GatewayUser>> GetAll(CancellationToken ct = default)
+        public async Task<IEnumerable<GatewayUser>> GetAllAsync(CancellationToken ct = default)
         {
             return await _genericRepository.ReadAllAsync(ct);
         }

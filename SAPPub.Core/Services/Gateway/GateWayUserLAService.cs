@@ -29,7 +29,7 @@ namespace SAPPub.Core.Services.Gateway
             {
                 return false;
             }
-            var allUsers = await _gatewayUserRepository.GetAll();
+            var allUsers = await _gatewayUserRepository.GetAllAsync();
             var currentUserCount = allUsers.Count(x => x.LocalAuthorityId == laId);
             return currentUserCount < laDetails.MaxSessions;
         }

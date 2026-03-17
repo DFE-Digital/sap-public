@@ -8,6 +8,6 @@ namespace SAPPub.Core.Interfaces.Services
 {
     public interface IEmailService
     {
-        void SendGatewayEmail(string emailAddress);
+        void SendGatewayEmail(string emailAddress, string localAuthorityName);
     }
 }

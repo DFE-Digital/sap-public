@@ -106,6 +106,10 @@
 
     <div class="govuk-width-container app-width-container">
         @await Html.PartialAsync("_PhaseBanner")
+        @if (!string.IsNullOrWhiteSpace(ViewBag.BackUrl))
+        {
+            <govuk-back-link href="@ViewBag.BackUrl" />
+        }
         <main class="govuk-main-wrapper app-main-class govuk-body" id="main-content" role="main">
             @RenderBody()
         </main>

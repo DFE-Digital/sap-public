@@ -12,18 +12,12 @@ using System.Threading.Tasks;
 
 namespace SAPPub.Infrastructure.Repositories.Gateway
 {
-    public sealed class GatewayLocalAuthorityRepository : IGatewayLocalAuthorityRepository
+    public sealed class GatewayLocalAuthorityRepository(
+        IGenericRepository<GatewayLocalAuthority> genericRepository,
+        ILogger<Establishment> logger) : IGatewayLocalAuthorityRepository
     {
-        private readonly IGenericRepository<GatewayLocalAuthority> _genericRepository;
-        private ILogger<Establishment> _logger;
-
-        public GatewayLocalAuthorityRepository(
-            IGenericRepository<GatewayLocalAuthority> genericRepository,
-            ILogger<Establishment> logger)
-        {
-            _genericRepository = genericRepository ?? throw new ArgumentNullException(nameof(genericRepository));
-            _logger = logger ?? throw new ArgumentNullException(nameof(genericRepository));
-        }
+        private readonly IGenericRepository<GatewayLocalAuthority> _genericRepository = genericRepository ?? throw new ArgumentNullException(nameof(genericRepository));
+        private ILogger<Establishment> _logger = logger ?? throw new ArgumentNullException(nameof(genericRepository));
 
         public async Task<GatewayLocalAuthority?> GetByIdAsync(Guid id, CancellationToken ct = default)
         {

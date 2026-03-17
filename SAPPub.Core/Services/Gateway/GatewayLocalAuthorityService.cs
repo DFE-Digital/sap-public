@@ -9,18 +9,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace SAPPub.Core.Services.Gateway
 {
     public class GatewayLocalAuthorityService : IGatewayLocalAuthorityService
     {
         private readonly IGatewayLocalAuthorityRepository _authorityRepository;
+        private readonly IGatewayUserRepository _userRepository;
         private readonly ILogger<GatewayUserService> _logger;
 
-        public GatewayLocalAuthorityService(IGatewayLocalAuthorityRepository authorityRepository, ILogger<GatewayUserService> logger)
+        public GatewayLocalAuthorityService(IGatewayLocalAuthorityRepository authorityRepository, IGatewayUserRepository userRepository, ILogger<GatewayUserService> logger)
         {
             _authorityRepository = authorityRepository;
             _logger = logger;
+            _userRepository = userRepository;
         }
 
         public async Task<GatewayLocalAuthority?> GetByName(string laName)
@@ -32,22 +35,9 @@ namespace SAPPub.Core.Services.Gateway
 
         public async Task<GatewayLocalAuthority?> GetById(Guid Id)
         {
-            return await _authorityRepository.GetByIdAsync(Id);
+            return await _authorityRepository.GetByIdAsync(Id) ?? throw new Exception($"LA with id {Id} not found.");
         }
 
-        public int CountSignUps(Guid Id)
-        {
-            var localAuth = GetById(Id).Result ?? throw new InvalidOperationException($"Local authority with ID {Id} not found.");
-            return localAuth.MaxSessions;  
-        }
 
-        public async Task<bool> IsLAOpen(Guid Id)
-        {
-            var signUps = CountSignUps(Id);
-
-            var authority = await _authorityRepository.GetByIdAsync(Id) ?? throw new InvalidOperationException($"Local authority with ID {Id} not found.");
-            var maxSignUps = authority.MaxSessions;
-            return signUps >= maxSignUps;
-        }
     }
 }

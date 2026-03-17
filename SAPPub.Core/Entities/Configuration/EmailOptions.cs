@@ -4,5 +4,6 @@
     {
         public string ApiKey { get; set; } = string.Empty;  
         public string GatewayTemplate { get; set; } = string.Empty;
+        public string EmailApplicationRoot { get; set; } = string.Empty;
     }
 }
