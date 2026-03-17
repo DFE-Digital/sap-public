@@ -3,6 +3,10 @@ name: School Data Ingestion Pipeline
 on:
   workflow_dispatch:
   workflow_call:
+    inputs:
+      environment:
+        required: false
+        type: string
   schedule:
     - cron: "0 6 * * *"   # every day at 06:00 UTC
 
@@ -621,6 +625,7 @@ jobs:
       # 10. Create & upload DB backup (used to restore db in review app env)
       # ==============================
       - name: Create + upload review seed DB backup
+        if: ${{ inputs.environment != 'review' }}
         shell: bash
         run: |
           set -euo pipefail
