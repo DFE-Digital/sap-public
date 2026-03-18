@@ -20,10 +20,8 @@
             setTooggleState(allDestCurrentYearChartContainer, allDestCurrentYearTableContainer, chartVisible, allDestCurrentYearShowAsTableBtn);
         });
 
-        setAriaAttribute(allDestShowDataOverTimeBtn, 'false');
         allDestShowDataOverTimeBtn.addEventListener('click', () => {
-            setTooggleState(allDestDataOverTimeChartContainer, allDestDataOverTimeTableContainer, false, allDestCurrentYearShowAsTableBtn);
-            setAriaAttribute(allDestShowDataOverTimeBtn, 'true');
+            setTooggleState(allDestDataOverTimeChartContainer, allDestDataOverTimeTableContainer, false, allDestCurrentYearShowAsTableBtn);        
         });
 
         setAriaAttribute(allDestDataOverTimeShowAsTableBtn, 'false');
