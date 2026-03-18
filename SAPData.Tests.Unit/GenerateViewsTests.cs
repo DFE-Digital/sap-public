@@ -1,4 +1,5 @@
-﻿using SAPData.Models;
+﻿using SAPData.Filters;
+using SAPData.Models;
 using Xunit;
 
 namespace SAPData.Unit.Tests;
@@ -54,7 +55,8 @@ public class GenerateViewsTests : IDisposable
             entries.Select(e => $"{e.key},{e.table}")
         );
     }
-
+   
+  
     // ------------------------------------------------------------
     // ESTABLISHMENT VIEW
     // ------------------------------------------------------------
@@ -79,8 +81,28 @@ public class GenerateViewsTests : IDisposable
         Assert.Contains("Could not resolve dataset key from raw_sources.json", sql);
     }
 
+    [Fact]
+    public void EstablishmentView_Includes_All_Required_Filters()
+    {
+        // Arrange
+        WriteMapping(("edubasealldata20230912", "t_edubase_20230912"));
+        var rows = new List<DataMapRow>();
 
+        var filters = SqlViewFilterProvider.GetEstablishmentFilters();
 
+        // Act
+        new GenerateViews(rows, _mappingPath, _sqlDir, filters).Run();
+
+        var sql = File.ReadAllText(Path.Combine(_sqlDir, "03_v_establishment.sql"));
+
+        // Assert: check each filter's SQL is present
+        foreach (var filter in filters)
+        {
+            var expectedSql = filter.GetSqlCondition("t");
+            Assert.Contains(expectedSql, sql);
+        }
+        Assert.Contains("WHERE", sql);
+    }
 
     // ------------------------------------------------------------
     // FACT VIEWS

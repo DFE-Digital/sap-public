@@ -1,4 +1,5 @@
-﻿using SAPData.Models;
+﻿using SAPData.Filters;
+using SAPData.Models;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -10,6 +11,8 @@ public sealed class GenerateViews
     private readonly IReadOnlyList<DataMapRow> _rows;
     private readonly string _tableMappingPath;
     private readonly string _sqlDir;
+    private readonly List<SqlViewFilter> _establishmentFilters;
+
 
     // raw_sources.json path in repo
     private static readonly string[] RawSourcesCandidates =
@@ -52,11 +55,13 @@ public sealed class GenerateViews
         new("v_la_urls", "LA", "LaUrl")
     };
 
-    public GenerateViews(IReadOnlyList<DataMapRow> rows, string tableMappingPath, string sqlDir)
+
+    public GenerateViews(IReadOnlyList<DataMapRow> rows, string tableMappingPath, string sqlDir, List<SqlViewFilter>? establishmentFilters = null)
     {
         _rows = rows;
         _tableMappingPath = tableMappingPath;
         _sqlDir = sqlDir;
+        _establishmentFilters = establishmentFilters ?? new List<SqlViewFilter>();
     }
 
     public void Run()
@@ -94,7 +99,7 @@ public sealed class GenerateViews
                     continue;
                 }
 
-                sql = GenerateEstablishmentDimensionView(rawTable);
+                sql = GenerateEstablishmentDimensionView(rawTable, _establishmentFilters);
             }
 
             // 2) Mirror view (GIAS: all establishment links)
@@ -286,7 +291,7 @@ public sealed class GenerateViews
     // ESTABLISHMENT DIMENSION (curated)
     // =====================================================
 
-    private static string GenerateEstablishmentDimensionView(string? rawTable)
+    private static string GenerateEstablishmentDimensionView(string? rawTable, List<SqlViewFilter> filters)
     {
         var sb = new StringBuilder();
 
@@ -359,8 +364,16 @@ public sealed class GenerateViews
         sb.AppendLine("    clean_int(t.\"statutoryhighage\")         AS \"AgeRangeHigh\",");
         sb.AppendLine("    clean_int(t.\"schoolcapacity\")           AS \"TotalCapacity\",");
         sb.AppendLine("    clean_int(t.\"establishmentstatus__code_\") AS \"StatusCode\",");
-        sb.AppendLine("    t.\"gsslacode__name_\"                    AS \"GSSLACode\"");
-        sb.AppendLine($"FROM {rawTable} t;");
+        sb.AppendLine("    t.\"gsslacode__name_\"                    AS \"GSSLACode\",");
+        sb.AppendLine("    t.\"closedate\"                           AS \"ClosedDate\"");
+        sb.AppendLine($"FROM {rawTable} t");
+        // Dynamically build WHERE clause
+        if (filters.Count > 0)
+        {
+            sb.AppendLine("WHERE");
+            sb.AppendLine("    " + string.Join("\n    AND ", filters.Select(f => f.GetSqlCondition("t"))));
+        }
+        sb.AppendLine(";");
         sb.AppendLine();
         sb.AppendLine("CREATE UNIQUE INDEX idx_v_establishment_urn ON v_establishment (\"URN\");");
 
@@ -806,7 +819,6 @@ public sealed class GenerateViews
         var p = (r.PropertyName ?? "").Trim();
         if (string.IsNullOrWhiteSpace(p)) return p;
         return IsCoded(r) ? $"{p}_Coded" : p;
-    }
-
-
+    }     
+      
 }
