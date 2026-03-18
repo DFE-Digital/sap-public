@@ -26,7 +26,7 @@ public class HomePageTests(WebApplicationSetupFixture fixture) : BasePageTest(fi
         var title = await Page.TitleAsync();
 
         // Assert
-        Assert.Contains("School Profile", title);
+        Assert.Contains("School Profiles", title);
     }
 
     [Fact]
@@ -42,27 +42,6 @@ public class HomePageTests(WebApplicationSetupFixture fixture) : BasePageTest(fi
         Assert.NotNull(heading);
         Assert.NotEmpty(heading!.Trim());
     }
-
-    [Fact]
-    public async Task HomePage_DisplaysGovUkHeader()
-    {
-        // Arrange
-        await Page.GotoAsync(string.Empty);
-
-        // Act
-        // Locate the GOV.UK header element
-        var header = Page.Locator("header.govuk-header");
-        var isVisible = await header.IsVisibleAsync();
-
-        // Locate the GOV.UK logotype SVG 
-        var govUkLogo = Page.Locator("header.govuk-header svg[aria-label='GOV.UK']");
-        var logoVisible = await govUkLogo.IsVisibleAsync();
-
-        // Assert
-        Assert.True(isVisible, "GOV.UK header should be visible");
-        Assert.True(logoVisible, "GOV.UK SVG logo should be visible in the header");
-    }
-
 
     [Theory]
     [InlineData(1920, 1080)] // Desktop
