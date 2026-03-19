@@ -8,6 +8,7 @@ namespace SAPPub.Core.Entities.KS4.SubjectEntries
         public string? school_urn { get; set; }
         public int? pupil_count { get; set; }
         public string? subject { get; set; }
+        public string? subject_discount_group { get; set; }
         public string? qualification_type { get; set; }
         public string? qualification_detailed { get; set; }
         public string? grade { get; set; }
