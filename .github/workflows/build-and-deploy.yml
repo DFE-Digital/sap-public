@@ -356,7 +356,7 @@ jobs:
       KONDUIT_NAMESPACE: ${{ secrets.AKS_NAMESPACE }}
       KONDUIT_APP_NAME: ${{ secrets.KONDUIT_APP_NAME }}
 
-  steps:
+    steps:
       - name: Deploy App to Review
         id: deploy_review
         uses: DFE-Digital/github-actions/deploy-to-aks@master
