@@ -16,11 +16,11 @@ public class StartupIndexBuilder(ILogger<StartupIndexBuilder> logger, LuceneScho
     {
         logger.LogInformation("StartupIndexBuilder starting...");
 
-        int page = 1;
-        int take = 1000;
-
         // Wait until DB is reachable by retrying a minimal call.
         await WaitForDatabaseAsync(cancellationToken);
+
+        int page = 1;
+        int take = 1000;
 
         var schools = await establishmentService.GetEstablishmentsAsync(page, take, cancellationToken);
         while (schools.Any())
@@ -34,21 +34,26 @@ public class StartupIndexBuilder(ILogger<StartupIndexBuilder> logger, LuceneScho
 
         logger.LogInformation("Building Lucene index at startup...");
 
-
         writer.FinaliseIndex();
 
         logger.LogInformation("Lucene index built successfully");
     }
 
+
+    /// <summary>
+    /// Waits indefinitely until the database exists AND is reachable.
+    /// The only conditions that break this loop:
+    ///  - DB becomes reachable -> return immediately
+    ///  - App receives shutdown signal -> OperationCanceledException thrown
+    /// </summary>
     private async Task WaitForDatabaseAsync(CancellationToken ct)
     {
-        // Adjust these to taste
-        var maxWait = TimeSpan.FromMinutes(10);     // or TimeSpan.FromHours(1) / infinite in review env
-        var delay = TimeSpan.FromSeconds(10);
-        var maxDelay = TimeSpan.FromSeconds(60);
-        var started = DateTimeOffset.UtcNow;
 
+        var delay = TimeSpan.FromSeconds(3);
+        var maxDelay = TimeSpan.FromSeconds(20);
         var attempt = 0;
+
+        logger.LogInformation("Waiting for database to become available and populated (infinite wait mode)...");
 
         while (true)
         {
@@ -57,41 +62,39 @@ public class StartupIndexBuilder(ILogger<StartupIndexBuilder> logger, LuceneScho
 
             try
             {
-                // Minimal call: page=1,take=1 to avoid loading much.
+                // Minimal query — does the DB exist yet?
                 var result = await establishmentService.GetEstablishmentsAsync(page: 1, take: 1, ct);
-                if (result.Count() == 1)
+                if (result.Any())
                 {
+                    logger.LogInformation("Database is reachable after {Attempt} attempt(s).", attempt);
                     return;
                 }
                 else
                 {
                     logger.LogWarning("Request to v_Establishment returned 0 results");
-                    await Task.Delay(delay, ct);
                 }
             }
             catch (OperationCanceledException) when (ct.IsCancellationRequested)
             {
                 throw;
             }
+
             catch (Exception ex)
             {
-                var elapsed = DateTimeOffset.UtcNow - started;
-                if (elapsed >= maxWait)
-                {
-                    logger.LogError(ex, "Database not available after waiting {Elapsed}. Giving up.", elapsed);
-                    throw;
-                }
-
-
-                logger.LogWarning(ex,
-                    "Database not ready yet. Attempt {Attempt}. Waiting {Delay} before next attempt...",
-                    attempt, delay);
-
-                await Task.Delay(delay, ct);
-
-                var nextSeconds = Math.Max(delay.TotalSeconds * 2, maxDelay.TotalSeconds);
-                delay = TimeSpan.FromSeconds(nextSeconds);
+                logger.LogWarning(
+                    ex,
+                    "Database not ready on attempt {Attempt}. Retrying in {Delay}…",
+                    attempt,
+                    delay
+                );
             }
+
+            await Task.Delay(delay, ct);
+
+            // simple exponential backoff
+            double next = Math.Min(delay.TotalSeconds * 2, maxDelay.TotalSeconds);
+            delay = TimeSpan.FromSeconds(next);
+
         }
     }
 
