@@ -3,7 +3,7 @@
 @inject IOptions<AnalyticsOptions> analyticsOptions;
 
 @{
-    ViewBag.ServiceName = "School Profile - Public facing";
+    ViewBag.ServiceName = "School Profiles";
     var gtmId = analyticsOptions.Value.GoogleTagManagerId;
     var gtmAdditional = analyticsOptions.Value.GoogleTagManagerAdditional;
     var clarityId = analyticsOptions.Value.ClarityId;
@@ -70,8 +70,8 @@
     <a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
     <header class="govuk-header" data-module="govuk-header">
         <div class="govuk-header__container govuk-width-container">
-            <div class="govuk-header__logo">
-                <a href="/" class="govuk-header__link govuk-header__link--homepage">
+            <div class="govuk-header__logo">          
+                <a href="https://www.gov.uk/" class="govuk-header__link govuk-header__link--homepage">
                     <svg focusable="false"
                          role="img"
                          xmlns="http://www.w3.org/2000/svg"
@@ -99,7 +99,7 @@
         </div>
     </header>
 
-    <govuk-service-navigation service-name="@ViewBag.ServiceName" service-url="#">
+    <govuk-service-navigation service-name="@ViewBag.ServiceName" service-url="/search">
         <govuk-service-navigation-nav>
         </govuk-service-navigation-nav>
     </govuk-service-navigation>
