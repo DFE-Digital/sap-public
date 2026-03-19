@@ -49,8 +49,8 @@ public class StartupIndexBuilder(ILogger<StartupIndexBuilder> logger, LuceneScho
     private async Task WaitForDatabaseAsync(CancellationToken ct)
     {
 
-        var delay = TimeSpan.FromSeconds(3);
-        var maxDelay = TimeSpan.FromSeconds(20);
+        var delay = TimeSpan.FromSeconds(10);
+        var maxDelay = TimeSpan.FromSeconds(60);
         var attempt = 0;
 
         logger.LogInformation("Waiting for database to become available and populated (infinite wait mode)...");
@@ -62,7 +62,7 @@ public class StartupIndexBuilder(ILogger<StartupIndexBuilder> logger, LuceneScho
 
             try
             {
-                // Minimal query — does the DB exist yet?
+                // Minimal call: page=1,take=1 to avoid loading much.
                 var result = await establishmentService.GetEstablishmentsAsync(page: 1, take: 1, ct);
                 if (result.Any())
                 {
@@ -91,9 +91,8 @@ public class StartupIndexBuilder(ILogger<StartupIndexBuilder> logger, LuceneScho
 
             await Task.Delay(delay, ct);
 
-            // simple exponential backoff
-            double next = Math.Min(delay.TotalSeconds * 2, maxDelay.TotalSeconds);
-            delay = TimeSpan.FromSeconds(next);
+            var nextSeconds = Math.Max(delay.TotalSeconds * 2, maxDelay.TotalSeconds);
+            delay = TimeSpan.FromSeconds(nextSeconds);
 
         }
     }
