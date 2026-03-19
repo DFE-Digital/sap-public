@@ -1,7 +1,7 @@
 ﻿using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
-using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace SAPPub.Infrastructure.Repositories.KS4.SubjectEntries
 {
@@ -29,8 +29,8 @@ namespace SAPPub.Infrastructure.Repositories.KS4.SubjectEntries
             var core = rows
                 .Select(r => new EstablishmentCoreSubjectEntries.SubjectEntry
                 {
-                    SubEntCore_Sub_Est_Current_Num = r.subject_discount_group != null && r.subject_discount_group.Contains("Maths", StringComparison.OrdinalIgnoreCase)
-                        ? Regex.Replace(r.subject_discount_group, "Maths", "Mathematics", RegexOptions.IgnoreCase).Trim()
+                    SubEntCore_Sub_Est_Current_Num = r.subject_discount_group != null && r.subject_discount_group.Contains("Maths", StringComparison.InvariantCultureIgnoreCase)
+                        ? r.subject_discount_group.Replace("Maths", "Mathematics", true, CultureInfo.InvariantCulture).Trim()
                         : r.subject_discount_group?.Trim(),
                     SubEntCore_Qual_Est_Current_Num = r.qualification_type ?? r.qualification_detailed,
                     SubEntCore_Entr_Est_Current_Num = r.number_achieving
