@@ -5,14 +5,14 @@ using SAPPub.Core.Interfaces.Services;
 namespace SAPPub.Infrastructure.LuceneSearch;
 
 /// <summary>
-/// creates the Lucene search index for schools at application startup.
+/// creates the Lucene search index for schools at application startup in background.
 /// </summary>
 /// <param name="logger"></param>
 /// <param name="writer"></param>
 /// <param name="establishmentService"></param>
-public class StartupIndexBuilder(ILogger<StartupIndexBuilder> logger, LuceneSchoolSearchIndexWriter writer, IEstablishmentService establishmentService) : IHostedService
+public class StartupIndexBuilder(ILogger<StartupIndexBuilder> logger, LuceneSchoolSearchIndexWriter writer, IEstablishmentService establishmentService) : BackgroundService
 {
-    public async Task StartAsync(CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         logger.LogInformation("StartupIndexBuilder starting...");
 
@@ -97,6 +97,4 @@ public class StartupIndexBuilder(ILogger<StartupIndexBuilder> logger, LuceneScho
 
         }
     }
-
-    public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 }
