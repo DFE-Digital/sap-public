@@ -219,6 +219,21 @@ jobs:
       KONDUIT_APP_NAME: ${{ secrets.KONDUIT_APP_NAME }}
 
     steps:
+      - name: Deploy App to Review
+        id: deploy_review
+        uses: DFE-Digital/github-actions/deploy-to-aks@master
+        with:
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          environment: review
+          pr-number: ${{ github.event.pull_request.number }}
+          sha: ${{ needs.build.outputs.docker-image-tag }}
+          terraform-base: ${{ env.TERRAFORM_BASE }}
+          healthcheck: ${{ env.HEALTHCHECK_CMD }}
+          db-seed: false
+          smoke-test: false
+
       # ---------------------------
       # REVIEW APP DATABASE DEPLOYMENT (PR)
       # ---------------------------
@@ -293,21 +308,6 @@ jobs:
             --overwrite true
 
           ls -lh "${BACKUP_FILE}"
-
-      - name: Deploy App to Review
-        id: deploy_review
-        uses: DFE-Digital/github-actions/deploy-to-aks@master
-        with:
-          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          environment: review
-          pr-number: ${{ github.event.pull_request.number }}
-          sha: ${{ needs.build.outputs.docker-image-tag }}
-          terraform-base: ${{ env.TERRAFORM_BASE }}
-          healthcheck: ${{ env.HEALTHCHECK_CMD }}
-          db-seed: false
-          smoke-test: false
 
       - name: Restore backup into PR review DB
         continue-on-error: true
@@ -356,7 +356,22 @@ jobs:
       KONDUIT_NAMESPACE: ${{ secrets.AKS_NAMESPACE }}
       KONDUIT_APP_NAME: ${{ secrets.KONDUIT_APP_NAME }}
 
-    steps:
+  steps:
+      - name: Deploy App to Review
+        id: deploy_review
+        uses: DFE-Digital/github-actions/deploy-to-aks@master
+        with:
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          environment: review
+          pr-number: ${{ github.event.pull_request.number }}
+          sha: ${{ needs.build.outputs.docker-image-tag }}
+          terraform-base: ${{ env.TERRAFORM_BASE }}
+          healthcheck: ${{ env.HEALTHCHECK_CMD }}
+          db-seed: false
+          smoke-test: false
+
       # ---------------------------
       # REVIEW APP DATABASE DEPLOYMENT (PR)
       # ---------------------------
@@ -430,22 +445,7 @@ jobs:
             --connection-string "${AZURE_STORAGE_CONNECTION_STRING}" \
             --overwrite true
 
-          ls -lh "${BACKUP_FILE}"
-
-      - name: Deploy App to Review
-        id: deploy_review
-        uses: DFE-Digital/github-actions/deploy-to-aks@master
-        with:
-          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          environment: review
-          pr-number: ${{ github.event.pull_request.number }}
-          sha: ${{ needs.build.outputs.docker-image-tag }}
-          terraform-base: ${{ env.TERRAFORM_BASE }}
-          healthcheck: ${{ env.HEALTHCHECK_CMD }}
-          db-seed: false
-          smoke-test: false
+          ls -lh "${BACKUP_FILE}"    
 
       - name: Restore backup into PR review DB
         continue-on-error: true
