@@ -15,14 +15,14 @@ namespace SAPPub.Web.Models.SecondarySchool
             {
                 Subject = se.SubEntCore_Sub_Est_Current_Num ?? "Unknown Subject",
                 Qualification = se.SubEntCore_Qual_Est_Current_Num ?? "Unknown Qualification",
-                NumberOfPupilsEntered = se.SubEntCore_Entr_Est_Current_Num.HasValue ? $"{se.SubEntCore_Entr_Est_Current_Num.Value:F0}" : "N/A",
+                NumberOfEntries = se.SubEntCore_Entr_Est_Current_Num.HasValue ? $"{se.SubEntCore_Entr_Est_Current_Num.Value:F0}" : "N/A",
             }).OrderBy(s => s.Subject).ToList();
 
             var additionalSubjects = additionalSubjectEntries.SubjectEntries.Select(se => new SubjectsEnteredViewModel
             {
                 Subject = se.SubEntAdd_Sub_Est_Current_Num ?? "Unknown Subject",
                 Qualification = se.SubEntAdd_Qual_Est_Current_Num ?? "Unknown Qualification",
-                NumberOfPupilsEntered = se.SubEntAdd_Entr_Est_Current_Num.HasValue ? $"{se.SubEntAdd_Entr_Est_Current_Num.Value:F0}" : "N/A",
+                NumberOfEntries = se.SubEntAdd_Entr_Est_Current_Num.HasValue ? $"{se.SubEntAdd_Entr_Est_Current_Num.Value:F0}" : "N/A",
             }).OrderBy(s => s.Subject).ToList();
 
             return new AcademicPerformanceSubjectsEnteredViewModel

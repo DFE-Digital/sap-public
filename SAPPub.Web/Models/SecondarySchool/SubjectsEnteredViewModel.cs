@@ -4,6 +4,6 @@ public class SubjectsEnteredViewModel
 {
     public required string Subject { get; set; }
     public required string Qualification { get; set; }
-    public required string NumberOfPupilsEntered { get; set; }
+    public required string NumberOfEntries { get; set; }
 
 }

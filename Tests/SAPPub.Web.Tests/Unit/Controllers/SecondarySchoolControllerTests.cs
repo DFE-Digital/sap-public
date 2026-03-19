@@ -713,7 +713,7 @@ public class SecondarySchoolControllerTests
         );
         Assert.Equal(
            CoreSubjects.Select(c => $"{c.SubEntCore_Entr_Est_Current_Num:F1}%").OrderBy(s => s),
-           model.CoreSubjects.Select(s => s.NumberOfPupilsEntered).OrderBy(s => s)
+           model.CoreSubjects.Select(s => s.NumberOfEntries).OrderBy(s => s)
         );
         Assert.Equal(
             CoreSubjects.Select(c => c.SubEntCore_Qual_Est_Current_Num).OrderBy(s => s),
@@ -727,7 +727,7 @@ public class SecondarySchoolControllerTests
         );
         Assert.Equal(
            AdditionalSubjects.Select(c => $"{c.SubEntAdd_Entr_Est_Current_Num:F1}%").OrderBy(s => s),
-           model.AdditionalSubjects.Select(s => s.NumberOfPupilsEntered).OrderBy(s => s)
+           model.AdditionalSubjects.Select(s => s.NumberOfEntries).OrderBy(s => s)
         );
         Assert.Equal(
             AdditionalSubjects.Select(c => c.SubEntAdd_Qual_Est_Current_Num).OrderBy(s => s),
