@@ -24,19 +24,22 @@
                     @Model.SchoolName
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
-            <govuk-summary-list-row>
-                <govuk-summary-list-row-key>Academy Trust</govuk-summary-list-row-key>
-                <govuk-summary-list-row-value>
-                    @Model.AcademyTrust
+            @if(Model.AcademyTrust != null)
+            {
+                <govuk-summary-list-row>
+                    <govuk-summary-list-row-key>Academy Trust</govuk-summary-list-row-key>
+                    <govuk-summary-list-row-value>
+                        @Model.AcademyTrust
 
-                    @if (!string.IsNullOrWhiteSpace(Model.AcademyTrustUpdatedIn))
-                    {
-                        <span class="govuk-hint govuk-clear">
-                            (updated in @Model.AcademyTrustUpdatedIn)
-                        </span>
-                    }
-                </govuk-summary-list-row-value>
-            </govuk-summary-list-row>
+                        @if (!string.IsNullOrWhiteSpace(Model.AcademyTrustUpdatedIn))
+                        {
+                            <span class="govuk-hint govuk-clear">
+                                (updated in @Model.AcademyTrustUpdatedIn)
+                            </span>
+                        }
+                    </govuk-summary-list-row-value>
+                </govuk-summary-list-row>
+            }
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Website</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
