@@ -71,7 +71,7 @@ public class CookiesController : Controller
         var hostName = Request.Host.Host;
         var parts = hostName.Split('.');
 
-        var possibleDomains = new List<string> { hostName};
+        var possibleDomains = new List<string?> { null, hostName };
 
         for (int i = 0; i < parts.Length - 1; i++)
         {
@@ -83,10 +83,12 @@ public class CookiesController : Controller
             .Where(cookie => cookie.StartsWith("_ga", StringComparison.OrdinalIgnoreCase))
             .SelectMany(cookie => possibleDomains.Distinct().Select(domain => (cookie, domain))))
         {
-            var expires = DateTime.UtcNow.AddDays(-1);
-            Response.Cookies.Delete(cookie);
-            Response.Cookies.Delete(cookie, new CookieOptions { Path = "/", Expires = expires });
-            Response.Cookies.Delete(cookie, new CookieOptions { Path = "/", Domain = domain, Expires = expires });
+            Response.Cookies.Delete(cookie, new CookieOptions 
+            {
+                Domain = domain,
+                Path = "/",
+                Secure = false
+            });
         }
     }
 
