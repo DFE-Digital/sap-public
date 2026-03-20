@@ -232,9 +232,9 @@ public class EstablishmentTestBuilder
         return this;
     }
 
-    public EstablishmentTestBuilder WithResourcedProvision(string resourcedProvision)
+    public EstablishmentTestBuilder WithResourcedProvisionName(string resourcedProvisionName)
     {
-        _establishment.ResourcedProvision = resourcedProvision;
+        _establishment.ResourcedProvisionName = resourcedProvisionName;
         return this;
     }
 
