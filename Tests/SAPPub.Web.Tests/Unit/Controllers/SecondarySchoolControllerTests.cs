@@ -520,6 +520,53 @@ public class SecondarySchoolControllerTests
     }
 
     [Theory]
+    [InlineData(AcademicYearSelection.Current, true)]
+    [InlineData(AcademicYearSelection.Previous, false)]
+    [InlineData(AcademicYearSelection.Previous2, false)]
+    public async Task Get_AcademicPerformanceAttainmentAndProgress_Display_Attainment8_Data(
+        AcademicYearSelection academicYearSelection,
+        bool expectedShowAttainment8Info)
+    {
+        var expectedResult = new AttainmentAndProgressModel
+        {
+            Urn = _fakeEstablishment.URN,
+            SchoolName = _fakeEstablishment.EstablishmentName,
+            EstablishmentProgress8Score = 0.9,
+            LocalAuthorityProgress8Score = 1.5,
+            EstablishmentAttainment8Score = expectedShowAttainment8Info ? 70 : null,
+            LocalAuthorityAttainment8Score = 80,
+            EnglandAttainment8Score = 50,
+            EstablishmentProgress8TotalPupils = 65,
+            EstablishmentTotalPupils = 95
+        };
+
+        _mockAttainmentAndProgressService
+            .Setup(s => s.GetAttainmentAndProgressAsync(_fakeEstablishment.URN, academicYearSelection, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.AcademicPerformanceAttainmentAndProgress(
+            _mockAttainmentAndProgressService.Object,
+            _fakeEstablishment.URN,
+            _fakeEstablishment.EstablishmentName,
+            academicYearSelection,
+            CancellationToken.None) as ViewResult;
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as AcademicPerformanceAttainmentAndProgressViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(_fakeEstablishment.URN, model.URN);
+        Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
+        Assert.Equal(2, model.RouteAttributes.Count);
+        Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
+        Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
+        Assert.Equal(3, model.AcademicYearsSelectList.Count);
+        Assert.Equal(academicYearSelection, model.SelectedAcademicYear);
+        Assert.Equal(expectedShowAttainment8Info, model.ShowAttainment8Info);
+    }
+
+    [Theory]
     [InlineData(GcseGradeDataSelection.Grade4AndAbove)]
     [InlineData(GcseGradeDataSelection.Grade5AndAbove)]
     public async Task Get_AcademicPerformance_EnglishAndMathsResults_ReturnsOk(GcseGradeDataSelection grade)
