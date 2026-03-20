@@ -1,4 +1,5 @@
 ﻿using SAPPub.Core.Enums;
+using SAPPub.Web.Helpers;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
@@ -75,7 +76,7 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
         await nav.ShouldHaveOneActiveItemAsync();
         await nav.ShouldHaveActiveHrefAsync(_pageUrl);
     }
-    
+
     [Fact]
     public async Task AcademicPerformanceAttainmentAndProgressPage_Displays_Sub_Navigation()
     {
@@ -145,7 +146,7 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
 
         // Act
         var academicyearSelector = Page.Locator("#academicYearSelector");
-        await academicyearSelector.SelectOptionAsync([academicYearSelection.ToString()]);
+        await academicyearSelector.SelectOptionAsync([academicYearSelection.GetDisplayName()!]);
         var buttonSelector = Page.Locator("button:has-text(\"Show results\")");
         await buttonSelector.ClickAsync();
 
@@ -165,6 +166,9 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
         var attainment8LocalAuthorityAndNationlCard = Page.GetByTestId("attainment8-localauthority-and-national-card");
         Assert.True(await attainment8LocalAuthorityAndNationlCard.IsVisibleAsync());
 
+        var paragraphStatingYear = Page.GetByTestId("academic-year-info");
+        Assert.True(await paragraphStatingYear.IsVisibleAsync());
+        Assert.Contains(academicYearSelection.GetDisplayName()!, await paragraphStatingYear.InnerTextAsync());
     }
 
     [Fact]

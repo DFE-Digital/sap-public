@@ -252,7 +252,7 @@ public class SecondarySchoolControllerTests
             .ReturnsAsync(expectedResult);
 
         var result = await _controller.AboutSchool(
-            _mockAboutSchoolService.Object, 
+            _mockAboutSchoolService.Object,
             _fakeEstablishment.URN,
             _fakeEstablishment.EstablishmentName,
             CancellationToken.None) as ViewResult;
@@ -451,7 +451,7 @@ public class SecondarySchoolControllerTests
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
         Assert.Equal(_fakeEstablishment.Website, model.SchoolWebsite);
         Assert.Equal(2, model.RouteAttributes.Count);
-        Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);        
+        Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
@@ -497,6 +497,7 @@ public class SecondarySchoolControllerTests
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
         Assert.Equal(3, model.AcademicYearsSelectList.Count);
         Assert.Equal(academicYearSelection, model.SelectedAcademicYear);
+        Assert.Equal($"Information in this section is for the {academicYearSelection.GetDisplayName()} academic year.", model.AcademicYearInfoParagraph);
         Assert.Equal(expectedShowProgress8NotAvailableInfo, model.ShowProgress8NotAvailableInfo);
 
         Assert.Equal(expectedResult.EstablishmentAttainment8Score, model.EstablishmentAttainment8Score);

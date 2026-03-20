@@ -36,13 +36,11 @@
             </ul>
         </nav>
 
-        <h2 class="govuk-heading-l">Attainment and progress of pupils in the previous academic year</h2>
+        <h2 class="govuk-heading-l">Pupil attainment and progress</h2>
 
-        <p class="govuk-body">
-            Information in this section is for the 2024 to 2025 academic year.
-        </p>
+        <p class="govuk-body" data-testid="academic-year-info">@Model.AcademicYearInfoParagraph</p>
 
-        <form method="get" asp-action="AcademicPerformanceAttainmentAndProgress" asp-controller="SecondarySchool" asp-fragment="filterSection">
+        <form method="get" asp-action="AcademicPerformanceAttainmentAndProgress" asp-controller="SecondarySchool">
             <div id="filterSection" class="select-filter">
                 <label for="academicYearSelector" class="govuk-label govuk-!-font-weight-bold">Choose the academic year you want to see results for</label>
                 <select id="academicYearSelector" class="govuk-select" asp-for="SelectedAcademicYear" asp-items="Model.AcademicYearsSelectList"></select>
