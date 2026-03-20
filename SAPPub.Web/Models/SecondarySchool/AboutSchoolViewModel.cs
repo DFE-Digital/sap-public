@@ -17,8 +17,6 @@ namespace SAPPub.Web.Models.SecondarySchool
 
         public string? AcademyTrustUpdatedIn { get; set; }
 
-        public string? SchoolWebsite { get; set; }
-
         public string? Telephone { get; set; }
 
         public string? Address { get; set; }

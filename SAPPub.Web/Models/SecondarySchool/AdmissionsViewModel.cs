@@ -1,12 +1,11 @@
-﻿using SAPPub.Core.ServiceModels.KS4.Admissions;
+﻿using SAPPub.Core.Helpers;
+using SAPPub.Core.ServiceModels.KS4.Admissions;
 
 namespace SAPPub.Web.Models.SecondarySchool;
 
 public class AdmissionsViewModel : SecondarySchoolBaseViewModel
 {
-    public required string? SchoolWebsite { get; init; }
-
-    public required string? LASecondarySchoolAdmissionsLinkUrl { get; init; }
+   public required string? LASecondarySchoolAdmissionsLinkUrl { get; init; }
 
     public required string LAName { get; init; }
 

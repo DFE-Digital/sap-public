@@ -92,5 +92,19 @@ namespace SAPPub.Core.Tests.Helpers
             Assert.NotNull(result);
             Assert.Equal(output, result);
         }
+
+
+        [Theory]
+        [InlineData("example.com", "https://example.com")]
+        [InlineData("www.example.com", "https://www.example.com")]
+        [InlineData("http://example.com", "http://example.com")]
+        [InlineData("https://example.com", "https://example.com")]
+        [InlineData("", "")]
+        [InlineData(null, "")]
+        public void EnsureHttpsUrl_ShouldFormatCorrectly(string? input, string expected)
+        {
+            var result = TextHelpers.EnsureHttpsUrl(input);
+            Assert.Equal(expected, result);
+        }
     }
 }

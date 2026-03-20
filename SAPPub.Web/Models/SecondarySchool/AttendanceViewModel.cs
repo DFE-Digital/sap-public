@@ -1,12 +1,11 @@
 ﻿using SAPPub.Core.Entities;
+using SAPPub.Core.Helpers;
 
 namespace SAPPub.Web.Models.SecondarySchool;
 
 public class AttendanceViewModel : SecondarySchoolBaseViewModel
 {
-    public required string SchoolWebsite { get; set; }
-
-    public static AttendanceViewModel Map(Establishment establishment)
+       public static AttendanceViewModel Map(Establishment establishment)
     {
         return new AttendanceViewModel
         {
