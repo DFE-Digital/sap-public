@@ -51,6 +51,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "EstablishmentTypeGroupId",
           "EstablishmentTypeGroupName",
           "ResourcedProvision",
+          "ResourcedProvisionName",
           "UKPRN",
           "UrbanRuralId",
           "UrbanRuralName",
