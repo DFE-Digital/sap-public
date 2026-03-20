@@ -67,8 +67,6 @@ namespace SAPPub.Infrastructure.Repositories.KS4.SubjectEntries
             return new EstablishmentAdditionalSubjectEntries { SubjectEntries = additional };
         }
 
-        private sealed record AggregatedSubjectRow(string Subject, string? Qualification, double TotalEnteredPercent);
-
         private static readonly HashSet<string> CoreSubjectCategories = new(StringComparer.OrdinalIgnoreCase)
         {
             "English Language",
