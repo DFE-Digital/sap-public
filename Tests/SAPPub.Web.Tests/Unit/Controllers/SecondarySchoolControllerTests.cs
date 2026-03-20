@@ -268,8 +268,9 @@ public class SecondarySchoolControllerTests
     [Theory]
     [InlineData("", "No")]
     [InlineData("Not applicable", "No")]
+    [InlineData("Resourced provision", "No")]
     [InlineData("SEN unit", "Yes")]
-    [InlineData("Resourced provision and SEN unit", "Yes")]
+    [InlineData("Resourced provision and SEN unit", "Yes")]    
     public async Task Get_AboutSchool_SchoolFeatures_SENUnit(string resourcedProvisionName, string expectedOutput)
     {
         _fakeEstablishment.ResourcedProvisionName = resourcedProvisionName;
@@ -301,8 +302,9 @@ public class SecondarySchoolControllerTests
     [Theory]
     [InlineData("", "No")]
     [InlineData("Not applicable", "No")]
+    [InlineData("SEN unit", "No")]
     [InlineData("Resourced provision", "Yes")]
-    [InlineData("Resourced provision and SEN unit", "Yes")]
+    [InlineData("Resourced provision and SEN unit", "Yes")]    
     public async Task Get_AboutSchool_SchoolFeatures_ResourcedUnit(string resourcedProvisionName, string expectedOutput)
     {
         _fakeEstablishment.ResourcedProvisionName = resourcedProvisionName;
