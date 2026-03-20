@@ -19,6 +19,10 @@ namespace SAPPub.Web.Models.SecondarySchool
 
         public string? Telephone { get; set; }
 
+        public string? SchoolWebsite { get; set; }
+
+        public string FormattedSchoolWebsite => TextHelpers.EnsureHttpsUrl(SchoolWebsite);
+
         public string? Address { get; set; }
 
         public string? LocalAuthority { get; set; }

@@ -5,7 +5,10 @@ namespace SAPPub.Web.Models.SecondarySchool;
 
 public class AdmissionsViewModel : SecondarySchoolBaseViewModel
 {
-   public required string? LASecondarySchoolAdmissionsLinkUrl { get; init; }
+    public string? SchoolWebsite { get; set; }
+    public string FormattedSchoolWebsite => TextHelpers.EnsureHttpsUrl(SchoolWebsite);
+
+    public required string? LASecondarySchoolAdmissionsLinkUrl { get; init; }
 
     public required string LAName { get; init; }
 

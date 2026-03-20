@@ -10,8 +10,4 @@ public class SecondarySchoolBaseViewModel
 
     public Dictionary<string, string> RouteAttributes =>
         new() { { RouteConstants.URN, URN }, { RouteConstants.SchoolName, SchoolName } };
-
-    public string? SchoolWebsite { get; set; }
-    public string FormattedSchoolWebsite => SAPPub.Core.Helpers.TextHelpers.EnsureHttpsUrl(SchoolWebsite);
-
 }

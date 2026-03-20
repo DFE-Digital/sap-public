@@ -5,7 +5,10 @@ namespace SAPPub.Web.Models.SecondarySchool;
 
 public class AttendanceViewModel : SecondarySchoolBaseViewModel
 {
-       public static AttendanceViewModel Map(Establishment establishment)
+    public string? SchoolWebsite { get; set; }
+    public string FormattedSchoolWebsite => TextHelpers.EnsureHttpsUrl(SchoolWebsite);
+
+    public static AttendanceViewModel Map(Establishment establishment)
     {
         return new AttendanceViewModel
         {
