@@ -202,6 +202,7 @@ jobs:
     concurrency: deploy_review_${{ github.event.pull_request.number }}
     needs: [build, test]
     if: ${{ github.event_name == 'pull_request'
+      && github.event.action == 'labeled'
       && contains(github.event.pull_request.labels.*.name, 'deploy')
       && !contains(github.event.pull_request.labels.*.name, 'refresh data') }}
     environment:
@@ -339,6 +340,7 @@ jobs:
     concurrency: deploy_review_${{ github.event.pull_request.number }}
     needs: [build, test, refresh-data]
     if: ${{ github.event_name == 'pull_request'
+      && github.event.action == 'labeled'
       && contains(github.event.pull_request.labels.*.name, 'deploy')
       && contains(github.event.pull_request.labels.*.name, 'refresh data')
       && needs.refresh-data.result == 'success' }}
