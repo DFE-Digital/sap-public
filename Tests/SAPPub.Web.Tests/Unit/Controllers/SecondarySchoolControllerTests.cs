@@ -43,13 +43,13 @@ public class SecondarySchoolControllerTests
             {
                 SubEntCore_Sub_Est_Current_Num = "English language",
                 SubEntCore_Qual_Est_Current_Num = "GCSE",
-                SubEntCore_Entr_Est_Current_Num = 95.04,
+                SubEntCore_Entr_Est_Current_Num = 95,
             },
             new()
             {
                 SubEntCore_Sub_Est_Current_Num = "English literature",
                 SubEntCore_Qual_Est_Current_Num = "GCSE",
-                SubEntCore_Entr_Est_Current_Num = 90.15,
+                SubEntCore_Entr_Est_Current_Num = 90,
             }
         };
 
@@ -60,13 +60,13 @@ public class SecondarySchoolControllerTests
             {
                 SubEntAdd_Sub_Est_Current_Num = "Geography",
                 SubEntAdd_Qual_Est_Current_Num = "GCSE",
-                SubEntAdd_Entr_Est_Current_Num = 45.45,
+                SubEntAdd_Entr_Est_Current_Num = 45,
             },
             new()
             {
                 SubEntAdd_Sub_Est_Current_Num = "Music",
                 SubEntAdd_Qual_Est_Current_Num = "GCSE",
-                SubEntAdd_Entr_Est_Current_Num = 10.12,
+                SubEntAdd_Entr_Est_Current_Num = 10,
             }
         };
 
@@ -252,7 +252,7 @@ public class SecondarySchoolControllerTests
             .ReturnsAsync(expectedResult);
 
         var result = await _controller.AboutSchool(
-            _mockAboutSchoolService.Object, 
+            _mockAboutSchoolService.Object,
             _fakeEstablishment.URN,
             _fakeEstablishment.EstablishmentName,
             CancellationToken.None) as ViewResult;
@@ -451,7 +451,7 @@ public class SecondarySchoolControllerTests
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
         Assert.Equal(_fakeEstablishment.Website, model.SchoolWebsite);
         Assert.Equal(2, model.RouteAttributes.Count);
-        Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);        
+        Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
@@ -712,8 +712,8 @@ public class SecondarySchoolControllerTests
             model.CoreSubjects.Select(s => s.Subject).OrderBy(s => s)
         );
         Assert.Equal(
-           CoreSubjects.Select(c => $"{c.SubEntCore_Entr_Est_Current_Num:F1}%").OrderBy(s => s),
-           model.CoreSubjects.Select(s => s.PercentageOfPupilsEntered).OrderBy(s => s)
+           CoreSubjects.Select(c => $"{c.SubEntCore_Entr_Est_Current_Num:F0}").OrderBy(s => s),
+           model.CoreSubjects.Select(s => s.NumberOfEntries).OrderBy(s => s)
         );
         Assert.Equal(
             CoreSubjects.Select(c => c.SubEntCore_Qual_Est_Current_Num).OrderBy(s => s),
@@ -726,8 +726,8 @@ public class SecondarySchoolControllerTests
             model.AdditionalSubjects.Select(s => s.Subject).OrderBy(s => s)
         );
         Assert.Equal(
-           AdditionalSubjects.Select(c => $"{c.SubEntAdd_Entr_Est_Current_Num:F1}%").OrderBy(s => s),
-           model.AdditionalSubjects.Select(s => s.PercentageOfPupilsEntered).OrderBy(s => s)
+           AdditionalSubjects.Select(c => $"{c.SubEntAdd_Entr_Est_Current_Num:F0}").OrderBy(s => s),
+           model.AdditionalSubjects.Select(s => s.NumberOfEntries).OrderBy(s => s)
         );
         Assert.Equal(
             AdditionalSubjects.Select(c => c.SubEntAdd_Qual_Est_Current_Num).OrderBy(s => s),

@@ -2,11 +2,6 @@
 using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Infrastructure.Repositories.KS4.SubjectEntries;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace SAPPub.Infrastructure.Tests.Repositories.KS4.SubjectEntries
 {
@@ -58,75 +53,76 @@ namespace SAPPub.Infrastructure.Tests.Repositories.KS4.SubjectEntries
             Assert.Empty(add.SubjectEntries);
         }
 
-        [Fact]
-        public async Task GroupsBySubjectAndQualification_SumsAcrossGrades_AndConvertsToPercentOfCohort()
+        [Theory]
+        [InlineData(200, 200, 200)]
+        [InlineData(200, 100, 100)]
+        [InlineData(200, 20, 20)]
+        [InlineData(200, 10, 10)]
+        [InlineData(200, 5, 5)]
+        // this test excludes the pupil count because we've moved from percentages to just number of pupils
+        // we did that because some subjects are lumped together and the pupil count is duplicated across them, so the percentage would be misleading
+        public async Task UsesTotalExamEntriesRow(int pupilCount, int numberAchieving, int expected)
         {
-            // Cohort 200
-            // Maths total entries across grades = 50 -> 25%
+            var urn = "123";
+            _repo.Setup(r => r.ReadManyAsync(
+                It.Is<object>(o => o.GetType().GetProperty("Urn")!.GetValue(o)!.ToString() == urn),
+                It.IsAny<CancellationToken>()))
+                 .ReturnsAsync(new List<EstablishmentSubjectEntryRow>
+                 {
+                     new() {
+                         pupil_count = pupilCount,
+                         subject = "Biology",
+                         subject_discount_group = "Biology",
+                         qualification_type = "GCSE",
+                         grade = "Total exam entries",
+                         number_achieving = numberAchieving },
+                     new()
+                     {
+                         pupil_count = pupilCount,
+                         subject = "Biology",
+                         subject_discount_group = "Biology",
+                         qualification_type = "GCSE",
+                         grade = "4",
+                         number_achieving = 1 },
+                 });
+
+            var result = await _sut.GetCoreSubjectEntriesByUrnAsync(urn, CancellationToken.None);
+
+            var entry = Assert.Single(result.SubjectEntries);
+            AssertPct(expected, entry.SubEntCore_Entr_Est_Current_Num);
+        }
+
+        [Theory]
+        [InlineData("  biology ", "biology", "biology")]
+        [InlineData("  biology ", "  biology  ", "biology")]
+        [InlineData("  mathematics ", "maths (Further)", "Mathematics (Further)")]
+        [InlineData("  mathematics ", "   maths (Further)", "Mathematics (Further)")]
+        public async Task TrimsSubject(string subject, string subjectDetail, string expected)
+        {
             _repo.Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
                  .ReturnsAsync(new List<EstablishmentSubjectEntryRow>
                  {
-                     new() { pupil_count = 200, subject = "Mathematics", qualification_type = "GCSE", grade = "9", number_achieving = 20 },
-                     new() { pupil_count = 200, subject = "Mathematics", qualification_type = "GCSE", grade = "8", number_achieving = 30 },
+                     new() { pupil_count = 100, subject = subject, subject_discount_group = subjectDetail, qualification_type = "GCSE", grade = "Total exam entries", number_achieving = 10 },
                  });
 
             var result = await _sut.GetCoreSubjectEntriesByUrnAsync("123", CancellationToken.None);
 
             var entry = Assert.Single(result.SubjectEntries);
-            Assert.Equal("Mathematics", entry.SubEntCore_Sub_Est_Current_Num);
-            Assert.Equal("GCSE", entry.SubEntCore_Qual_Est_Current_Num);
-            AssertPct(25.0, entry.SubEntCore_Entr_Est_Current_Num);
+            Assert.Equal(expected, entry.SubEntCore_Sub_Est_Current_Num); // trimmed subject; case preserved from data
         }
 
         [Fact]
-        public async Task UsesMaxPupilCountAsCohort_Defensively()
+        public async Task Qualification_UsesTypeFirst_OtherwiseDetailed()
         {
-            // Max cohort = 100 (even if some rows have smaller/0)
-            // English Language total=10 -> 10%
-            _repo.Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
-                 .ReturnsAsync(new List<EstablishmentSubjectEntryRow>
-                 {
-                     new() { pupil_count = 0,   subject = "English Language", qualification_type = "GCSE", grade = "9", number_achieving = 5 },
-                     new() { pupil_count = 100, subject = "English Language", qualification_type = "GCSE", grade = "8", number_achieving = 5 },
-                     new() { pupil_count = 80,  subject = "English Language", qualification_type = "GCSE", grade = "7", number_achieving = 0 },
-                 });
-
-            var result = await _sut.GetCoreSubjectEntriesByUrnAsync("123", CancellationToken.None);
-
-            var entry = Assert.Single(result.SubjectEntries);
-            AssertPct(10.0, entry.SubEntCore_Entr_Est_Current_Num);
-        }
-
-        [Fact]
-        public async Task TrimsSubject_AndTreatsCoreSubjectsCaseInsensitively()
-        {
-            // cohort=100, maths total=10 -> 10%
-            _repo.Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
-                 .ReturnsAsync(new List<EstablishmentSubjectEntryRow>
-                 {
-                     new() { pupil_count = 100, subject = "  mathematics  ", qualification_type = "GCSE", grade = "9", number_achieving = 10 },
-                 });
-
-            var result = await _sut.GetCoreSubjectEntriesByUrnAsync("123", CancellationToken.None);
-
-            var entry = Assert.Single(result.SubjectEntries);
-            Assert.Equal("mathematics", entry.SubEntCore_Sub_Est_Current_Num); // trimmed subject; case preserved from data
-            AssertPct(10.0, entry.SubEntCore_Entr_Est_Current_Num);
-        }
-
-        [Fact]
-        public async Task Qualification_UsesType_FirstOtherwiseDetailed_AndNormalisesEmptyToNull()
-        {
-            // cohort=100
             // subject A uses qualification_type
             // subject B uses qualification_detailed
             // subject C has neither -> null
             _repo.Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
                  .ReturnsAsync(new List<EstablishmentSubjectEntryRow>
                  {
-                     new() { pupil_count = 100, subject = "History", qualification_type = "GCSE", qualification_detailed = "Ignored", number_achieving = 10 },
-                     new() { pupil_count = 100, subject = "Geography", qualification_type = null, qualification_detailed = "BTEC", number_achieving = 20 },
-                     new() { pupil_count = 100, subject = "Art", qualification_type = null, qualification_detailed = "   ", number_achieving = 5 },
+                     new() { pupil_count = 100, subject = "History", subject_discount_group = "History", qualification_type = "GCSE", grade = "Total exam entries", qualification_detailed = "Ignored", number_achieving = 10 },
+                     new() { pupil_count = 100, subject = "Geography", subject_discount_group = "Geography", qualification_type = null, grade = "Total exam entries", qualification_detailed = "BTEC", number_achieving = 20 },
+                     new() { pupil_count = 100, subject = "Art", subject_discount_group = "Art", qualification_type = null, grade = "Total exam entries", qualification_detailed = "   ", number_achieving = 5 },
                  });
 
             var add = await _sut.GetAdditionalSubjectEntriesByUrnAsync("123", CancellationToken.None);
@@ -140,41 +136,9 @@ namespace SAPPub.Infrastructure.Tests.Repositories.KS4.SubjectEntries
             Assert.Equal("BTEC", geo.SubEntAdd_Qual_Est_Current_Num);
 
             var art = add.SubjectEntries.Single(x => x.SubEntAdd_Sub_Est_Current_Num == "Art");
-            Assert.Null(art.SubEntAdd_Qual_Est_Current_Num);
+            Assert.Empty(art.SubEntAdd_Qual_Est_Current_Num!);
         }
 
-        [Fact]
-        public async Task ClampsPercentageTo100_WhenTotalEntriesExceedCohort()
-        {
-            // cohort=100, totalEntries=150 -> 150% -> clamp to 100
-            _repo.Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
-                 .ReturnsAsync(new List<EstablishmentSubjectEntryRow>
-                 {
-                     new() { pupil_count = 100, subject = "Mathematics", qualification_type = "GCSE", grade = "9", number_achieving = 150 }
-                 });
-
-            var core = await _sut.GetCoreSubjectEntriesByUrnAsync("123", CancellationToken.None);
-
-            var entry = Assert.Single(core.SubjectEntries);
-            AssertPct(100.0, entry.SubEntCore_Entr_Est_Current_Num);
-        }
-
-        [Fact]
-        public async Task IgnoresRowsWithNullOrWhitespaceSubject()
-        {
-            _repo.Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
-                 .ReturnsAsync(new List<EstablishmentSubjectEntryRow>
-                 {
-                     new() { pupil_count = 100, subject = null, qualification_type = "GCSE", number_achieving = 10 },
-                     new() { pupil_count = 100, subject = "   ", qualification_type = "GCSE", number_achieving = 10 },
-                     new() { pupil_count = 100, subject = "History", qualification_type = "GCSE", number_achieving = 10 },
-                 });
-
-            var add = await _sut.GetAdditionalSubjectEntriesByUrnAsync("123", CancellationToken.None);
-
-            var entry = Assert.Single(add.SubjectEntries);
-            Assert.Equal("History", entry.SubEntAdd_Sub_Est_Current_Num);
-        }
 
         [Fact]
         public async Task SplitsCoreAndAdditionalCorrectly()
@@ -182,8 +146,8 @@ namespace SAPPub.Infrastructure.Tests.Repositories.KS4.SubjectEntries
             _repo.Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
                  .ReturnsAsync(new List<EstablishmentSubjectEntryRow>
                  {
-                     new() { pupil_count = 100, subject = "Mathematics", qualification_type = "GCSE", number_achieving = 10 },
-                     new() { pupil_count = 100, subject = "History", qualification_type = "GCSE", number_achieving = 20 },
+                     new() { pupil_count = 100, subject = "Biology", subject_discount_group = "Biology", qualification_type = "GCSE", grade = "Total exam entries", number_achieving = 10 },
+                     new() { pupil_count = 100, subject = "History", subject_discount_group = "History", qualification_type = "GCSE", grade = "Total exam entries", number_achieving = 20 },
                  });
 
             var core = await _sut.GetCoreSubjectEntriesByUrnAsync("123", CancellationToken.None);
@@ -192,8 +156,44 @@ namespace SAPPub.Infrastructure.Tests.Repositories.KS4.SubjectEntries
             Assert.Single(core.SubjectEntries);
             Assert.Single(add.SubjectEntries);
 
-            Assert.Equal("Mathematics", core.SubjectEntries.Single().SubEntCore_Sub_Est_Current_Num);
+            Assert.Equal("Biology", core.SubjectEntries.Single().SubEntCore_Sub_Est_Current_Num);
             Assert.Equal("History", add.SubjectEntries.Single().SubEntAdd_Sub_Est_Current_Num);
+        }
+
+        [Fact]
+        public async Task SubjectContainsWhitespace_SplitsCoreAndAdditionalCorrectly()
+        {
+            _repo.Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
+                 .ReturnsAsync(new List<EstablishmentSubjectEntryRow>
+                 {
+                     new() { pupil_count = 100, subject = "  Biology  ", subject_discount_group = "Biology", qualification_type = "GCSE", grade = "Total exam entries", number_achieving = 10 },
+                     new() { pupil_count = 100, subject = "  History  ", subject_discount_group = "History", qualification_type = "GCSE", grade = "Total exam entries", number_achieving = 20 },
+                 });
+
+            var core = await _sut.GetCoreSubjectEntriesByUrnAsync("123", CancellationToken.None);
+            var add = await _sut.GetAdditionalSubjectEntriesByUrnAsync("123", CancellationToken.None);
+
+            Assert.Single(core.SubjectEntries);
+            Assert.Single(add.SubjectEntries);
+
+            Assert.Equal("Biology", core.SubjectEntries.Single().SubEntCore_Sub_Est_Current_Num);
+            Assert.Equal("History", add.SubjectEntries.Single().SubEntAdd_Sub_Est_Current_Num);
+        }
+
+        [Fact]
+        public async Task ConvertsMathsToMathematics()
+        {
+            _repo.Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
+                 .ReturnsAsync(new List<EstablishmentSubjectEntryRow>
+                 {
+                     new() { pupil_count = 100, subject = "Mathematics", subject_discount_group = "Additional Maths (Core)", qualification_type = "GCSE", grade = "Total exam entries", number_achieving = 10 },
+                 });
+
+            var core = await _sut.GetCoreSubjectEntriesByUrnAsync("123", CancellationToken.None);
+
+            Assert.Single(core.SubjectEntries);
+
+            Assert.Equal("Additional Mathematics (Core)", core.SubjectEntries.Single().SubEntCore_Sub_Est_Current_Num);
         }
 
         [Fact]
@@ -202,9 +202,9 @@ namespace SAPPub.Infrastructure.Tests.Repositories.KS4.SubjectEntries
             _repo.Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
                  .ReturnsAsync(new List<EstablishmentSubjectEntryRow>
                  {
-             new() { pupil_count = 100, subject = "Zoology", qualification_type = "GCSE", number_achieving = 1 },
-             new() { pupil_count = 100, subject = "Art", qualification_type = "BTEC", number_achieving = 1 },
-             new() { pupil_count = 100, subject = "Art", qualification_type = "GCSE", number_achieving = 1 },
+             new() { pupil_count = 100, subject = "Zoology", subject_discount_group = "Zoology", qualification_type = "GCSE", grade = "Total exam entries", number_achieving = 1 },
+             new() { pupil_count = 100, subject = "Art", subject_discount_group = "Art", qualification_type = "BTEC", grade = "Total exam entries", number_achieving = 1 },
+             new() { pupil_count = 100, subject = "Art", subject_discount_group = "Art", qualification_type = "GCSE", grade = "Total exam entries", number_achieving = 1 },
                  });
 
             var add = await _sut.GetAdditionalSubjectEntriesByUrnAsync("123", CancellationToken.None);
@@ -234,6 +234,5 @@ namespace SAPPub.Infrastructure.Tests.Repositories.KS4.SubjectEntries
             Assert.True(actual.HasValue, "Expected a percentage value but was null.");
             Assert.InRange(actual.Value, expected - tolerance, expected + tolerance);
         }
-
     }
 }

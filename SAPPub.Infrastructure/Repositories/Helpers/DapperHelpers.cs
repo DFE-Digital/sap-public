@@ -191,6 +191,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           school_urn,
           pupil_count,
           subject,
+          subject_discount_group,
           qualification_type,
           qualification_detailed,
           grade,
