@@ -9,6 +9,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
 {
     private const AcademicYearSelection _currentAcademicYear = AcademicYearSelection.Current;
 
+    public string? AcademicYearInfoParagraph => $"Information in this section is for the {SelectedAcademicYear.GetDisplayName()} academic year.";
     public AcademicYearSelection SelectedAcademicYear { get; set; } = _currentAcademicYear;
 
     public bool ShowProgress8NotAvailableInfo => SelectedAcademicYear == _currentAcademicYear;
@@ -31,7 +32,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
 
     public List<SelectListItem> AcademicYearsSelectList => [.. Enum.GetValues(typeof(AcademicYearSelection)).Cast<AcademicYearSelection>().Select(x => new SelectListItem
     {
-        Text = AcademicYearHelper.GetAcademicYearText(x),
+        Text = x.GetDisplayName(),
         Value = x.ToString(),
     })];
 

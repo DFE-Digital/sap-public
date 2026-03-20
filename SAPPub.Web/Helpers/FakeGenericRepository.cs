@@ -108,8 +108,6 @@ namespace SAPPub.Web.Helpers
 
                 if (!string.IsNullOrWhiteSpace(id) && EstablishmentPerformances.TryGetValue(id, out var est))
                     return Task.FromResult<T?>((T)(object)est);
-
-                return Task.FromResult<T?>((T)(object)new Establishment { URN = id ?? string.Empty });
             }
 
             return Task.FromResult<T?>(default);

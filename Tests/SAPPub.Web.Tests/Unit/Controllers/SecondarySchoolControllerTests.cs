@@ -144,7 +144,7 @@ public class SecondarySchoolControllerTests
             PupilSex = _fakeEstablishment.GenderName,
             ReligiousCharacter = _fakeEstablishment.ReligiousCharacterName,
             OfficialSixthFormId = _fakeEstablishment.OfficialSixthFormId,
-            ResourcedProvision = _fakeEstablishment.ResourcedProvision,
+            ResourcedProvisionName = _fakeEstablishment.ResourcedProvisionName,
             EstablishmentTypeGroupId = _fakeEstablishment.EstablishmentTypeGroupId
         };
     }
@@ -171,7 +171,7 @@ public class SecondarySchoolControllerTests
             .WithGenderName("GenderName")
             .WithReligiousCharacterName("ReligiousCharacter")
             .WithOfficialSixthFormId("No")
-            .WithResourcedProvision("Resourced provision")
+            .WithResourcedProvisionName("Resourced provision")
             .WithEstablishmentTypeGroupId("1")
             .Build();
 
@@ -268,11 +268,12 @@ public class SecondarySchoolControllerTests
     [Theory]
     [InlineData("", "No")]
     [InlineData("Not applicable", "No")]
+    [InlineData("Resourced provision", "No")]
     [InlineData("SEN unit", "Yes")]
-    [InlineData("Resourced provision and SEN unit", "Yes")]
-    public async Task Get_AboutSchool_SchoolFeatures_SENUnit(string resourcedProvision, string expectedOutput)
+    [InlineData("Resourced provision and SEN unit", "Yes")]    
+    public async Task Get_AboutSchool_SchoolFeatures_SENUnit(string resourcedProvisionName, string expectedOutput)
     {
-        _fakeEstablishment.ResourcedProvision = resourcedProvision;
+        _fakeEstablishment.ResourcedProvisionName = resourcedProvisionName;
 
         var expectedResult = SchoolDetails();
 
@@ -301,11 +302,12 @@ public class SecondarySchoolControllerTests
     [Theory]
     [InlineData("", "No")]
     [InlineData("Not applicable", "No")]
+    [InlineData("SEN unit", "No")]
     [InlineData("Resourced provision", "Yes")]
-    [InlineData("Resourced provision and SEN unit", "Yes")]
-    public async Task Get_AboutSchool_SchoolFeatures_ResourcedUnit(string resourcedProvision, string expectedOutput)
+    [InlineData("Resourced provision and SEN unit", "Yes")]    
+    public async Task Get_AboutSchool_SchoolFeatures_ResourcedUnit(string resourcedProvisionName, string expectedOutput)
     {
-        _fakeEstablishment.ResourcedProvision = resourcedProvision;
+        _fakeEstablishment.ResourcedProvisionName = resourcedProvisionName;
 
         var expectedResult = SchoolDetails();
 
@@ -497,6 +499,7 @@ public class SecondarySchoolControllerTests
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
         Assert.Equal(3, model.AcademicYearsSelectList.Count);
         Assert.Equal(academicYearSelection, model.SelectedAcademicYear);
+        Assert.Equal($"Information in this section is for the {academicYearSelection.GetDisplayName()} academic year.", model.AcademicYearInfoParagraph);
         Assert.Equal(expectedShowProgress8NotAvailableInfo, model.ShowProgress8NotAvailableInfo);
 
         Assert.Equal(expectedResult.EstablishmentAttainment8Score, model.EstablishmentAttainment8Score);

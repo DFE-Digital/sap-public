@@ -34,7 +34,7 @@ public sealed class AboutSchoolService(
             PupilSex = establishment.GenderName,
             ReligiousCharacter = establishment.ReligiousCharacterName,
             OfficialSixthFormId = establishment.OfficialSixthFormId,
-            ResourcedProvision = establishment.ResourcedProvision,
+            ResourcedProvisionName = establishment.ResourcedProvisionName,
             EstablishmentTypeGroupId = establishment.EstablishmentTypeGroupId,
         };
     }

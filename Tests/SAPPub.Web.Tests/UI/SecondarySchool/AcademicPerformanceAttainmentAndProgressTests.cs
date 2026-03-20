@@ -1,4 +1,5 @@
 ﻿using SAPPub.Core.Enums;
+using SAPPub.Web.Helpers;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
@@ -75,7 +76,7 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
         await nav.ShouldHaveOneActiveItemAsync();
         await nav.ShouldHaveActiveHrefAsync(_pageUrl);
     }
-    
+
     [Fact]
     public async Task AcademicPerformanceAttainmentAndProgressPage_Displays_Sub_Navigation()
     {
@@ -147,7 +148,7 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
 
         // Act
         var academicyearSelector = Page.Locator("#academicYearSelector");
-        await academicyearSelector.SelectOptionAsync([academicYearSelection.ToString()]);
+        await academicyearSelector.SelectOptionAsync([academicYearSelection.GetDisplayName()!]);
         var buttonSelector = Page.Locator("button:has-text(\"Show results\")");
         await buttonSelector.ClickAsync();
 
@@ -167,6 +168,9 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
         var attainment8LocalAuthorityAndNationlCard = Page.GetByTestId("attainment8-localauthority-and-national-card");
         Assert.True(await attainment8LocalAuthorityAndNationlCard.IsVisibleAsync());
 
+        var paragraphStatingYear = Page.GetByTestId("academic-year-info");
+        Assert.True(await paragraphStatingYear.IsVisibleAsync());
+        Assert.Contains(academicYearSelection.GetDisplayName()!, await paragraphStatingYear.InnerTextAsync());
         var attainmnet8NoEstablishmentDataCard = Page.GetByTestId("attainment8-no-establishment-data-card");
         Assert.False(await attainmnet8NoEstablishmentDataCard.IsVisibleAsync());
     }
@@ -178,12 +182,12 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
     public async Task AcademicPerformanceAttainmentAndProgressPage_Display_No_Attainment8_Info(AcademicYearSelection academicYearSelection)
     {
         // Arrange
-        _pageUrl = "school/150538/Alkerden%20Church%20of%20England%20Academy/secondary/academic-performance-attainment-and-progress";
+        _pageUrl = "school/100273/Saint%20Paul%20Roman%20Catholic%20Infant%20School/secondary/academic-performance-attainment-and-progress";
         await Page.GotoAsync(_pageUrl);
 
         // Act
         var academicyearSelector = Page.Locator("#academicYearSelector");
-        await academicyearSelector.SelectOptionAsync([academicYearSelection.ToString()]);
+        await academicyearSelector.SelectOptionAsync([academicYearSelection.GetDisplayName()!]);
         var buttonSelector = Page.Locator("button:has-text(\"Show results\")");
         await buttonSelector.ClickAsync();
 
