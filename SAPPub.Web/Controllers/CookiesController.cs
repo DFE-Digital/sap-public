@@ -83,9 +83,10 @@ public class CookiesController : Controller
             .Where(cookie => cookie.StartsWith("_ga", StringComparison.OrdinalIgnoreCase))
             .SelectMany(cookie => possibleDomains.Distinct().Select(domain => (cookie, domain))))
         {
+            var expires = DateTime.UtcNow.AddDays(-1);
             Response.Cookies.Delete(cookie);
-            Response.Cookies.Delete(cookie, new CookieOptions { Path = "/" });
-            Response.Cookies.Delete(cookie, new CookieOptions { Path = "/", Domain = domain });
+            Response.Cookies.Delete(cookie, new CookieOptions { Path = "/", Expires = expires });
+            Response.Cookies.Delete(cookie, new CookieOptions { Path = "/", Domain = domain, Expires = expires });
         }
     }
 
