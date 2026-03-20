@@ -40,7 +40,8 @@ public class AboutSchoolModel
 
     public string OfficialSixthFormId { get; set; } = string.Empty;
 
-    public string ResourcedProvision { get; set; } = string.Empty;
+    public string ResourcedProvisionName { get; set; } = string.Empty;
+
 
     public string EstablishmentTypeGroupId { get; set; } = string.Empty;
 }

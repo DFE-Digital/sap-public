@@ -79,8 +79,8 @@ namespace SAPPub.Web.Models.SecondarySchool
                 PupilSex = schoolDetails.PupilSex,
                 ReligiousCharacter = schoolDetails.ReligiousCharacter,
                 SixthForm = GetSixthForm(schoolDetails.OfficialSixthFormId),
-                SenUnit = GetSenUnit(schoolDetails.ResourcedProvision),
-                ResourcedProvision = GetResourcedProvision(schoolDetails.ResourcedProvision),
+                SenUnit = GetSenUnit(schoolDetails.ResourcedProvisionName),
+                ResourcedProvision = GetResourcedProvision(schoolDetails.ResourcedProvisionName),
                 IsLocalAuthoritySchool = schoolDetails.EstablishmentTypeGroupId.ToInt() == LocalAuthorityEstablishmentGroupTypeId,
             };
         }

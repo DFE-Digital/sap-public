@@ -37,7 +37,7 @@ public class AboutSchoolServiceTests
         GenderName = "Gender",
         ReligiousCharacterName = "ReligiousCharacter",
         OfficialSixthFormId = "No",
-        ResourcedProvision = "Resourced provision",
+        ResourcedProvisionName = "Resourced provision",
         EstablishmentTypeGroupId = "4"
     };
 
@@ -92,7 +92,7 @@ public class AboutSchoolServiceTests
         Assert.Equal(fakeEstablishment.GenderName, result.PupilSex);
         Assert.Equal(fakeEstablishment.ReligiousCharacterName, result.ReligiousCharacter);
         Assert.Equal(fakeEstablishment.OfficialSixthFormId, result.OfficialSixthFormId);
-        Assert.Equal(fakeEstablishment.ResourcedProvision, result.ResourcedProvision);
+        Assert.Equal(fakeEstablishment.ResourcedProvisionName, result.ResourcedProvisionName);
         Assert.Equal(fakeEstablishment.EstablishmentTypeGroupId, result.EstablishmentTypeGroupId);
     }
 }
