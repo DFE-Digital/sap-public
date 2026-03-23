@@ -22,17 +22,16 @@ namespace SAPPub.Web.Middleware
             // Build CSP using the existing concatenation style
             // Additions:
             //  - img-src allows OpenStreetMap tiles
-            //  - style-src allows unpkg (Leaflet CSS)
-            //  - script-src retains nonce and allows unpkg
+            //  - script-src retains nonce
             //  - connect-src in Development allows localhost & websockets for Browser Link
             var csp =
                   "default-src 'self';"
                 + "base-uri 'self';"
                 + "frame-ancestors 'self';"
                 + "img-src 'self' data: https://*.tile.openstreetmap.org https://www.googletagmanager.com;"
-                + "style-src 'self' 'unsafe-inline' https://unpkg.com;"
+                + "style-src 'self' 'unsafe-inline'"
                 + "font-src 'self' data:;"
-                + $"script-src 'self' 'nonce-{nonce}' https://unpkg.com https://*.googletagmanager.com https://*.clarity.ms;"
+                + $"script-src 'self' 'nonce-{nonce}' https://*.googletagmanager.com https://*.clarity.ms;"
                 + "connect-src 'self' "
                     + "*.google-analytics.com "
                     + "https://*.googletagmanager.com "
@@ -53,9 +52,9 @@ namespace SAPPub.Web.Middleware
                     + "base-uri 'self';"
                     + "frame-ancestors 'self';"
                     + "img-src 'self' data: https://*.tile.openstreetmap.org https://www.googletagmanager.com;"
-                    + "style-src 'self' 'unsafe-inline' https://unpkg.com;"
+                    + "style-src 'self' 'unsafe-inline'"
                     + "font-src 'self' data:;"
-                    + $"script-src 'self' 'nonce-{nonce}' https://unpkg.com https://*.googletagmanager.com https://*.clarity.ms;"
+                    + $"script-src 'self' 'nonce-{nonce}' https://*.googletagmanager.com https://*.clarity.ms;"
                     + "connect-src 'self' "
                         + "*.google-analytics.com "
                         + "https://*.googletagmanager.com "
