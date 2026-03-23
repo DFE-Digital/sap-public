@@ -27,6 +27,8 @@
     <link rel="stylesheet" href="~/css/moj-frontend.min.css">
     <link rel="stylesheet" href="~/css/main.css" />
     <link rel="stylesheet" href="~/css/leaflet.css" />
+    <link rel="stylesheet" href="~/css/leaflet-gesture-handling.min.css"/>
+
     @{
         if (loadAnalytics)
         {
@@ -128,6 +130,8 @@
 
     @Html.GovUkFrontendScriptImports(Html.ScriptNonce().ToString())
     <script src="~/js/leaflet.js" nonce="@Html.ScriptNonce().ToString()"></script>
+    <script src="~/js/leaflet-gesture-handling.min.js" nonce="@Html.ScriptNonce().ToString()"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

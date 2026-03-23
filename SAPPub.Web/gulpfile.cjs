@@ -107,6 +107,17 @@ const copyStaticAssets = () =>
             gulp
                 .src(["node_modules/leaflet/dist/images/**/*"], { encoding: false })
                 .pipe(gulp.dest("wwwroot/assets/leaflet/images/"))
+        )
+        .on("end", () =>
+            gulp
+                .src(["node_modules/leaflet-gesture-handling/dist/leaflet-gesture-handling.min.js"])
+                .pipe(gulp.dest("wwwroot/js/"))
+        )
+       
+        .on("end", () =>
+            gulp
+                .src(["node_modules/leaflet-gesture-handling/dist/leaflet-gesture-handling.min.css"])
+                .pipe(gulp.dest("wwwroot/css/"))
         );
 
 gulp.task("build-fe", () => {
