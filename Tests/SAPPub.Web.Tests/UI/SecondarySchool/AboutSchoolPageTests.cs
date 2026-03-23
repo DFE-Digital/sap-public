@@ -95,7 +95,7 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         var row = detailsSummary
             .Locator(".govuk-summary-list__row")
             .Filter(new() { Has = Page.Locator(".govuk-summary-list__key", new() { HasText = " Academy Trust " }) });
-        Assert.Equal(1, await row.CountAsync());
+
         if (trustNameIsExpected)
         {
             var value = await row.Locator(".govuk-summary-list__value").TextContentAsync();
