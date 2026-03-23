@@ -216,7 +216,7 @@ public class SecondarySchoolControllerTests
         Assert.NotNull(model);
         Assert.Equal(expectedResult.Urn, model.URN);
         Assert.Equal(expectedResult.SchoolName, model.SchoolName);
-        Assert.Equal(expectedResult.Website, model.SchoolWebsite);
+        Assert.Equal(expectedResult.Website, model.SchoolWebsite.Value);
         Assert.Equal(expectedResult.AcademyTrust, model.AcademyTrust);
         Assert.Equal(expectedResult.Telephone, model.Telephone);
         Assert.Equal(expectedResult.LocalAuthority, model.LocalAuthority);
@@ -233,6 +233,49 @@ public class SecondarySchoolControllerTests
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(expectedResult.Urn, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(expectedResult.SchoolName, model.RouteAttributes[RouteConstants.SchoolName]);
+    }
+
+    [Theory]
+    [InlineData(null, FieldStatus.NotAvailable)]
+    [InlineData("", FieldStatus.NotAvailable)]
+    [InlineData(" ", FieldStatus.NotAvailable)]
+    [InlineData("test", FieldStatus.Available)]
+    public async Task Get_AboutSchool_SchoolFeatures_SchoolWebsite(string? website, FieldStatus fieldStatus)
+    {
+        _fakeEstablishment.Website = website!;
+
+        var expectedResult = SchoolDetails();
+
+        _mockAboutSchoolService
+            .Setup(es => es.GetAboutSchoolDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.AboutSchool(
+            _mockAboutSchoolService.Object,
+            _fakeEstablishment.URN,
+            _fakeEstablishment.EstablishmentName,
+            CancellationToken.None) as ViewResult;
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as AboutSchoolViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(fieldStatus, model.SchoolWebsite.Status);
+
+        if (fieldStatus == FieldStatus.Available)
+        {
+            Assert.False(model.SchoolWebsite.IsNotAvailable);
+            Assert.True(model.SchoolWebsite.IsAvailable);
+            Assert.Equal(website, model.SchoolWebsite.Value);
+            Assert.Equal(website, model.SchoolWebsite.DisplayText());
+        }
+        else
+        {
+            Assert.False(model.SchoolWebsite.IsAvailable);
+            Assert.True(model.SchoolWebsite.IsNotAvailable);
+            Assert.Equal("Not available", model.SchoolWebsite.DisplayText());
+        }            
     }
 
     [Theory]
@@ -413,12 +456,57 @@ public class SecondarySchoolControllerTests
         Assert.NotNull(model);
         Assert.Equal(_fakeEstablishment.URN, model.URN);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
-        Assert.Equal(_fakeEstablishment.Website, model.SchoolWebsite);
+        Assert.Equal(_fakeEstablishment.Website, model.SchoolWebsite.Value);
         Assert.Equal(lASchoolAdmissionsUrl, model.LASecondarySchoolAdmissionsLinkUrl);
         Assert.Equal(laName, model.LAName);
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
+    }
+
+    [Theory]
+    [InlineData(null, FieldStatus.NotAvailable)]
+    [InlineData("", FieldStatus.NotAvailable)]
+    [InlineData(" ", FieldStatus.NotAvailable)]
+    [InlineData("test", FieldStatus.Available)]
+    public async Task Get_Admissions_Info_SchoolWebsite(string? website, FieldStatus fieldStatus)
+    {
+        _fakeEstablishment.Website = website!;
+
+        var lASchoolAdmissionsUrl = "https://www.example.com/school-admissions";
+        var laName = "Example Local Authority";
+
+        _mockAdmissionsService
+            .Setup(s => s.GetAdmissionsDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new AdmissionsServiceModel(
+                SchoolWebsite: _fakeEstablishment.Website,
+                LAName: laName,
+                LASchoolAdmissionsUrl: lASchoolAdmissionsUrl
+            ));
+
+        var result = await _controller.Admissions(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as AdmissionsViewModel;
+        
+        Assert.NotNull(model);
+        Assert.Equal(fieldStatus, model.SchoolWebsite.Status);
+
+        if (fieldStatus == FieldStatus.Available)
+        {
+            Assert.False(model.SchoolWebsite.IsNotAvailable);
+            Assert.True(model.SchoolWebsite.IsAvailable);
+            Assert.Equal(website, model.SchoolWebsite.Value);
+            Assert.Equal(website, model.SchoolWebsite.DisplayText());
+        }
+        else
+        {
+            Assert.False(model.SchoolWebsite.IsAvailable);
+            Assert.True(model.SchoolWebsite.IsNotAvailable);
+            Assert.Equal("Not available", model.SchoolWebsite.DisplayText());
+        }
     }
 
     [Fact]
@@ -451,10 +539,44 @@ public class SecondarySchoolControllerTests
         Assert.NotNull(model);
         Assert.Equal(_fakeEstablishment.URN, model.URN);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
-        Assert.Equal(_fakeEstablishment.Website, model.SchoolWebsite);
+        Assert.Equal(_fakeEstablishment.Website, model.SchoolWebsite.Value);
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
+    }
+
+    [Theory]
+    [InlineData(null, FieldStatus.NotAvailable)]
+    [InlineData("", FieldStatus.NotAvailable)]
+    [InlineData(" ", FieldStatus.NotAvailable)]
+    [InlineData("test", FieldStatus.Available)]
+    public async Task Get_CurriculumAndExtraCurricularActivities_Info_SchoolWebsite(string? website, FieldStatus fieldStatus)
+    {
+        _fakeEstablishment.Website = website!;
+
+        var result = await _controller.CurriculumAndExtraCurricularActivities(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as CurriculumAndExtraCurricularActivitiesViewModel;
+
+        Assert.NotNull(model);
+        Assert.Equal(fieldStatus, model.SchoolWebsite.Status);
+
+        if (fieldStatus == FieldStatus.Available)
+        {
+            Assert.False(model.SchoolWebsite.IsNotAvailable);
+            Assert.True(model.SchoolWebsite.IsAvailable);
+            Assert.Equal(website, model.SchoolWebsite.Value);
+            Assert.Equal(website, model.SchoolWebsite.DisplayText());
+        }
+        else
+        {
+            Assert.False(model.SchoolWebsite.IsAvailable);
+            Assert.True(model.SchoolWebsite.IsNotAvailable);
+            Assert.Equal("Not available", model.SchoolWebsite.DisplayText());
+        }
     }
 
     [Theory]

@@ -59,7 +59,8 @@ namespace SAPPub.Web.Helpers
                 PhaseOfEducationName = "Secondary",
                 AddressPostcode = "M21 7SW",
                 Easting = "382682",
-                Northing = "392995"
+                Northing = "392995",
+                Website = "http://www.test.co.uk/"
             }
         };
 

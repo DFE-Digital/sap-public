@@ -19,7 +19,7 @@
         <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
 
         <h2 class="govuk-heading-l">Curriculum</h2>
-        <div id="current-curriculum-summary" class="govuk-summary-card">
+        <div id="current-curriculum-summary" data-testId="current-curriculum-summary" class="govuk-summary-card">
             <div class="govuk-summary-card__title-wrapper">
                 <h3 class="govuk-summary-card__title">Current curriculum</h3>
             </div>
@@ -40,10 +40,17 @@
                             </span>
                         </govuk-summary-list-row-key>
                         <govuk-summary-list-row-value>
-                            <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite">
-                                View the school’s KS3 curriculum on their website
-                                <span class="govuk-visually-hidden">(opens in a new tab)</span>
-                            </a>
+                            @if (Model.SchoolWebsite.IsAvailable)
+                            {
+                                <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite.Value">
+                                    View the school’s KS3 curriculum on their website
+                                    <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                                </a>
+                            }
+                            else
+                            {
+                                <span data-testId="contact-school-info-ks3">Contact the school for more information</span>
+                            }
                         </govuk-summary-list-row-value>
                     </govuk-summary-list-row>
                     <govuk-summary-list-row>
@@ -54,10 +61,17 @@
                             </span>
                         </govuk-summary-list-row-key>
                         <govuk-summary-list-row-value>
-                            <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite">
-                                View the school’s KS4 curriculum on their website
-                                <span class="govuk-visually-hidden">(opens in a new tab)</span>
-                            </a>
+                            @if (Model.SchoolWebsite.IsAvailable)
+                            {
+                                <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite.Value">
+                                    View the school’s KS4 curriculum on their website
+                                    <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                                </a>
+                            }
+                            else
+                            {
+                                <span data-testId="contact-school-info-ks4">Contact the school for more information</span>
+                            }
                         </govuk-summary-list-row-value>
                     </govuk-summary-list-row>
                 </govuk-summary-list>
@@ -122,10 +136,17 @@
                     <govuk-summary-list-row>
                         <govuk-summary-list-row-key>Extra-curricular activities</govuk-summary-list-row-key>
                         <govuk-summary-list-row-value>
-                            <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite">
-                                Visit the school website for current extra-curricular activities
-                                <span class="govuk-visually-hidden">(opens in a new tab)</span>
-                            </a>
+                            @if (Model.SchoolWebsite.IsAvailable)
+                            {
+                                <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite.Value">
+                                    Visit the school website for current extra-curricular activities
+                                    <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                                </a>
+                            }
+                            else
+                            {
+                                <span data-testId="contact-school-info-extra">Contact the school for more information</span>
+                            }
                         </govuk-summary-list-row-value>
                     </govuk-summary-list-row>
                 </govuk-summary-list>

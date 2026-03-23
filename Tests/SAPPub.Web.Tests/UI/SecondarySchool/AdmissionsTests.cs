@@ -136,6 +136,41 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
     }
 
     [Fact]
+    public async Task Admissions_DisplaysStartingSecondarySchool_Info()
+    {
+        // Arrange
+        await Page.GotoAsync(_pageUrl);
+
+        // Act
+        var summaryCard = Page.GetByTestId("starting-secondary-school-summary");
+        await summaryCard.WaitForAsync();
+
+        // Assert
+        Assert.True(await summaryCard.IsVisibleAsync());
+
+        var contactSchoolInfo = summaryCard.GetByTestId("contact-school-info");
+        Assert.False(await contactSchoolInfo.IsVisibleAsync());
+    }
+
+    [Fact]
+    public async Task Admissions_DisplaysStartingSecondarySchool_Info_ContactSchoolText()
+    {
+        // Arrange
+        _pageUrl = "school/100273/Saint%20Paul%20Roman%20Catholic%20Infant%20School/secondary/admissions";
+        await Page.GotoAsync(_pageUrl);
+
+        // Act
+        var summaryCard = Page.GetByTestId("starting-secondary-school-summary");
+        await summaryCard.WaitForAsync();
+
+        var contactSchoolInfo = summaryCard.GetByTestId("contact-school-info");
+        var isVisible = await contactSchoolInfo.IsVisibleAsync();
+
+        // Assert
+        Assert.True(isVisible);
+    }
+
+    [Fact]
     public async Task AdmissionsPage_DisplaysPagination()
     {
         // Arrange
