@@ -61,6 +61,18 @@ namespace SAPPub.Web.Helpers
                 Easting = "382682",
                 Northing = "392995",
                 Website = "http://www.test.co.uk/"
+            },
+
+            ["137552"] = new Establishment
+            {
+                URN = "137552",
+                EstablishmentName = "Stewards Academy - Science Specialist, Harlow",
+                LAId = "881",
+                TrustName = "THE PASSMORES CO-OPERATIVE LEARNING COMMUNITY",
+                EstablishmentNumber = "4343",
+                PhaseOfEducationId = "4",
+                PhaseOfEducationName = "Secondary",
+                AddressPostcode = "CM18 7NQ"
             }
         };
 

@@ -24,7 +24,7 @@
                     @Model.SchoolName
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
-            @if(Model.AcademyTrust != null)
+            @if(!string.IsNullOrEmpty(Model.AcademyTrust))
             {
                 <govuk-summary-list-row>
                     <govuk-summary-list-row-key>Academy Trust</govuk-summary-list-row-key>
