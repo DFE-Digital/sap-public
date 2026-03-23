@@ -134,7 +134,25 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         await Page.GotoAsync(_pageUrl);
 
         // Act
-        var isVisible = await Page.Locator("#school-policies-summary").IsVisibleAsync();
+        var schoolPoliciesSummaryCard = Page.Locator("#school-policies-summary");
+        var contactSchoolInfo = schoolPoliciesSummaryCard.GetByTestId("contact-school-info");
+        
+        // Assert
+        Assert.True(await schoolPoliciesSummaryCard.IsVisibleAsync());
+        Assert.False(await contactSchoolInfo.IsVisibleAsync());
+    }
+
+    [Fact]
+    public async Task AboutSchoolPage_DisplaysSchoolPolicies_ContactSchoolText()
+    {
+        // Arrange
+        _pageUrl = "school/100273/Saint%20Paul%20Roman%20Catholic%20Infant%20School/secondary/about";
+        await Page.GotoAsync(_pageUrl);
+
+        // Act
+        var schoolPoliciesSummaryCard = Page.Locator("#school-policies-summary");
+        var contactSchoolInfo = schoolPoliciesSummaryCard.GetByTestId("contact-school-info");
+        var isVisible = await contactSchoolInfo.IsVisibleAsync();
 
         // Assert
         Assert.True(isVisible);

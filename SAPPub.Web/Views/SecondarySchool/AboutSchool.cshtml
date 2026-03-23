@@ -40,10 +40,17 @@
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Website</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                    <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite">
-                        @Model.SchoolWebsite
-                        <span class="govuk-visually-hidden">(opens in a new tab)</span>
-                    </a>
+                    @if (Model.SchoolWebsite.IsAvailable)
+                    {
+                        <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite.Value">
+                            @Model.SchoolWebsite.Value
+                            <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                        </a>
+                    }
+                    else
+                    {
+                        @Model.SchoolWebsite.DisplayText()
+                    }
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
@@ -111,10 +118,17 @@
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Value and ethos</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                    <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite">
-                        View the value and ethos policy on the school website
-                        <span class="govuk-visually-hidden">(opens in a new tab)</span>
-                    </a>
+                    @if (Model.SchoolWebsite.IsAvailable)
+                    {
+                        <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite.Value">
+                            View the value and ethos policy on the school website
+                            <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                        </a>
+                    }
+                    else
+                    {
+                        @Model.SchoolWebsite.DisplayText()                        
+                    }
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
@@ -216,10 +230,17 @@
                         All schools in England must publish statutory policies and documents that explain how the school is run and how staff and pupils should behave.
                         Statutory policies and documents must be published on the school’s website. Schools can also create their own guidelines.
                     </p>
-                    <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite">
-                        View these policies on the school website
-                        <span class="govuk-visually-hidden">(opens in a new tab)</span>
-                    </a>
+                    @if (Model.SchoolWebsite.IsAvailable)
+                    {
+                        <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite.Value">
+                            View these policies on the school website
+                            <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                        </a>
+                    }
+                    else
+                    {
+                        <span data-testId="contact-school-info">Contact the school for more information</span>
+                    }
                 </div>
                 
                 <table class="govuk-table govuk-!-margin-top-5">
