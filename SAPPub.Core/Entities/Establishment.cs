@@ -16,9 +16,9 @@ namespace SAPPub.Core.Entities
 
         public string EstablishmentNameClean => TextHelpers.CleanForUrl(EstablishmentName);
 
-        public string TrustsId { get; set; } = string.Empty;
+        public string? TrustsId { get; set; }
 
-        public string TrustName { get; set; } = string.Empty;
+        public string? TrustName { get; set; }
 
         public string Address => TextHelpers.ConcatListToString([AddressStreet, AddressLocality, AddressAddress3, AddressTown, AddressPostcode]);
 
@@ -92,7 +92,7 @@ namespace SAPPub.Core.Entities
         public string EstablishmentTypeGroupName { get; set; } = string.Empty;
 
         public string ResourcedProvision { get; set; } = string.Empty;
-        
+
         public string ResourcedProvisionName { get; set; } = string.Empty;
 
         public string UKPRN { get; set; } = string.Empty;

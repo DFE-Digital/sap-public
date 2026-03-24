@@ -217,7 +217,8 @@ public class SecondarySchoolControllerTests
         Assert.Equal(expectedResult.Urn, model.URN);
         Assert.Equal(expectedResult.SchoolName, model.SchoolName);
         Assert.Equal(expectedResult.Website, model.SchoolWebsite.Value);
-        Assert.Equal(expectedResult.AcademyTrust, model.AcademyTrust);
+        Assert.Equal(expectedResult.AcademyTrust, model.AcademyTrust.Value);
+        Assert.Equal(expectedResult.AcademyTrustUpdatedIn, model.AcademyTrustUpdatedIn.Value);
         Assert.Equal(expectedResult.Telephone, model.Telephone);
         Assert.Equal(expectedResult.LocalAuthority, model.LocalAuthority);
         Assert.Equal(expectedResult.LocalAuthorityName, model.LocalAuthorityCouncilName);
@@ -275,7 +276,7 @@ public class SecondarySchoolControllerTests
             Assert.False(model.SchoolWebsite.IsAvailable);
             Assert.True(model.SchoolWebsite.IsNotAvailable);
             Assert.Equal("Not available", model.SchoolWebsite.DisplayText());
-        }            
+        }
     }
 
     [Theory]
@@ -313,7 +314,7 @@ public class SecondarySchoolControllerTests
     [InlineData("Not applicable", "No")]
     [InlineData("Resourced provision", "No")]
     [InlineData("SEN unit", "Yes")]
-    [InlineData("Resourced provision and SEN unit", "Yes")]    
+    [InlineData("Resourced provision and SEN unit", "Yes")]
     public async Task Get_AboutSchool_SchoolFeatures_SENUnit(string resourcedProvisionName, string expectedOutput)
     {
         _fakeEstablishment.ResourcedProvisionName = resourcedProvisionName;
@@ -347,7 +348,7 @@ public class SecondarySchoolControllerTests
     [InlineData("Not applicable", "No")]
     [InlineData("SEN unit", "No")]
     [InlineData("Resourced provision", "Yes")]
-    [InlineData("Resourced provision and SEN unit", "Yes")]    
+    [InlineData("Resourced provision and SEN unit", "Yes")]
     public async Task Get_AboutSchool_SchoolFeatures_ResourcedUnit(string resourcedProvisionName, string expectedOutput)
     {
         _fakeEstablishment.ResourcedProvisionName = resourcedProvisionName;
@@ -490,7 +491,7 @@ public class SecondarySchoolControllerTests
         Assert.NotNull(result.Model);
 
         var model = result.Model as AdmissionsViewModel;
-        
+
         Assert.NotNull(model);
         Assert.Equal(fieldStatus, model.SchoolWebsite.Status);
 
