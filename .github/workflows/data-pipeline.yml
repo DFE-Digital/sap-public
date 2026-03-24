@@ -3,7 +3,7 @@ name: School Data Ingestion Pipeline
 on:
   workflow_dispatch:
   workflow_call:
-      inputs:
+    inputs:
       enable-backup:
         required: false
         type: string
