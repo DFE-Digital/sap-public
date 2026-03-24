@@ -43,15 +43,22 @@
                             Admissions policies
                         </govuk-summary-list-row-key>
                         <govuk-summary-list-row-value>
-                            <a data-testid="school-website-link"
-                               class="govuk-link govuk-link--no-visited-state"
-                               href="@Model.SchoolWebsite"
-                               target="_blank"
-                               rel="noopener noreferrer">
-                                View the school website for more information on admissions
-                                policies
-                                <span class="govuk-visually-hidden">(opens in a new tab)</span>
-                            </a>
+                            @if (Model.SchoolWebsite.IsAvailable)
+                            {
+                                <a data-testid="school-website-link"
+                                class="govuk-link govuk-link--no-visited-state"
+                                href="@Model.SchoolWebsite.Value"
+                                target="_blank"
+                                rel="noopener noreferrer">
+                                    View the school website for more information on admissions
+                                    policies
+                                    <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                                </a>
+                            }
+                            else
+                            {
+                                <span data-testId="contact-school-info">Contact the school for more information</span>
+                            }
                         </govuk-summary-list-row-value>
                     </govuk-summary-list-row>
                     <govuk-summary-list-row>

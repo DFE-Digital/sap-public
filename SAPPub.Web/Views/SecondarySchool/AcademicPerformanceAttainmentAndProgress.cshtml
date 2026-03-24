@@ -87,27 +87,41 @@
             </govuk-details-text>
         </govuk-details>
 
-        <div class="custom-card" data-testid="attainment8-establishment-card">
-            <div class="assignment__icon"></div>
-            <div class="custom-card__content">
-                <p class="govuk-body">
-                    The attainment 8 score for this school is @Model.EstablishmentAttainment8Score.
-                </p>
+        @if (Model.ShowAttainment8Info)
+        {
+            <div class="custom-card" data-testid="attainment8-establishment-card">
+                <div class="assignment__icon"></div>
+                <div class="custom-card__content">
+                    <p class="govuk-body">
+                        The attainment 8 score for this school is @Model.EstablishmentAttainment8Score.
+                    </p>
+                </div>
             </div>
-        </div>
 
-        <div class="custom-card" data-testid="attainment8-localauthority-and-national-card">
-            <div class="custom-card__content">
-                <p class="govuk-body">
-                    The local authority average score is @Model.LocalAuthorityAttainment8Score.
-                </p>
+            <div class="custom-card" data-testid="attainment8-localauthority-and-national-card">
+                <div class="custom-card__content">
+                    <p class="govuk-body">
+                        The local authority average score is @Model.LocalAuthorityAttainment8Score.
+                    </p>
 
-                <p class ="govuk-body">
-                    The national average score is @Model.EnglandAttainment8Score.
-                </p>
+                    <p class ="govuk-body">
+                        The national average score is @Model.EnglandAttainment8Score.
+                    </p>
+                </div>
+                <div class="bar-chart__icon"></div>
             </div>
-            <div class="bar-chart__icon"></div>
-        </div>
+        }
+        else
+        {
+            <div class="custom-card" data-testid="attainment8-no-establishment-data-card">
+                <div class="info__icon"></div>
+                <div class="custom-card__content">
+                    <p class="govuk-body">
+                        There is no Attainment 8 data for this school.
+                    </p>
+                </div>
+            </div>
+        }
 
         <h3 class="govuk-heading-m">Progress 8</h3>
 

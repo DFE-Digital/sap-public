@@ -14,6 +14,8 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
 
     public bool ShowProgress8NotAvailableInfo => SelectedAcademicYear == _currentAcademicYear;
 
+    public bool ShowAttainment8Info => EstablishmentAttainment8Score.HasValue;
+
     public double? EstablishmentProgress8Score { get; init; }
 
     public double? LocalAuthorityProgress8Score { get; init; }

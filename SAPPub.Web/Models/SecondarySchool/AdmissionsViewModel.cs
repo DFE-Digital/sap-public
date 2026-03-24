@@ -1,22 +1,23 @@
 ﻿using SAPPub.Core.ServiceModels.KS4.Admissions;
+using SAPPub.Web.Helpers;
 
 namespace SAPPub.Web.Models.SecondarySchool;
 
 public class AdmissionsViewModel : SecondarySchoolBaseViewModel
 {
-    public required string? SchoolWebsite { get; init; }
+    public required DisplayField<string> SchoolWebsite { get; init; }
 
     public required string? LASecondarySchoolAdmissionsLinkUrl { get; init; }
 
     public required string LAName { get; init; }
 
-    public static AdmissionsViewModel MapFrom(AdmissionsServiceModel? serviceModel, string urn, string schoolName)
+    public static AdmissionsViewModel MapFrom(AdmissionsServiceModel serviceModel, string urn, string schoolName)
     {
         return new AdmissionsViewModel
         {
             URN = urn,
             SchoolName = schoolName,
-            SchoolWebsite = serviceModel?.SchoolWebsite,
+            SchoolWebsite = serviceModel.SchoolWebsite.ToDisplayField(),
             LASecondarySchoolAdmissionsLinkUrl = serviceModel?.LASchoolAdmissionsUrl,
             LAName = serviceModel?.LAName ?? "Local authority"
         };

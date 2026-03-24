@@ -1,6 +1,7 @@
 ﻿using SAPPub.Core.Extensions;
 using SAPPub.Core.Helpers;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
+using SAPPub.Web.Helpers;
 
 namespace SAPPub.Web.Models.SecondarySchool
 {
@@ -17,7 +18,7 @@ namespace SAPPub.Web.Models.SecondarySchool
 
         public string? AcademyTrustUpdatedIn { get; set; }
 
-        public string? SchoolWebsite { get; set; }
+        public required DisplayField<string> SchoolWebsite { get; set; }
 
         public string? Telephone { get; set; }
 
@@ -64,7 +65,7 @@ namespace SAPPub.Web.Models.SecondarySchool
                 URN = schoolDetails.Urn,
                 SchoolName = schoolDetails.SchoolName,
                 AcademyTrust = schoolDetails.AcademyTrust,
-                SchoolWebsite = schoolDetails.Website,
+                SchoolWebsite = schoolDetails.Website.ToDisplayField(),
                 Telephone = schoolDetails.Telephone,
                 Address = schoolDetails.Address,
                 LocalAuthority = schoolDetails.LocalAuthority,

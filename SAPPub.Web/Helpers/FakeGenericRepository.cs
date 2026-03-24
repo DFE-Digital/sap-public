@@ -1,4 +1,5 @@
 ﻿using SAPPub.Core.Entities;
+using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using System.Reflection;
@@ -58,9 +59,23 @@ namespace SAPPub.Web.Helpers
                 PhaseOfEducationName = "Secondary",
                 AddressPostcode = "M21 7SW",
                 Easting = "382682",
-                Northing = "392995"
+                Northing = "392995",
+                Website = "http://www.test.co.uk/"
             }
         };
+
+
+        private static readonly Dictionary<string, EstablishmentPerformance> EstablishmentPerformances = new(StringComparer.OrdinalIgnoreCase)
+        {
+            ["105574"] = new EstablishmentPerformance
+            {
+                Id = "105574",
+                Attainment8_Tot_Est_Current_Num = 10,
+                Attainment8_Tot_Est_Previous_Num = 20,
+                Attainment8_Tot_Est_Previous2_Num = 30
+            },            
+        };
+
 
         public Task<T?> ReadAsync(string id, CancellationToken ct = default)
             => ReadSingleAsync(new { Id = id }, ct);
@@ -86,6 +101,14 @@ namespace SAPPub.Web.Helpers
                     return Task.FromResult<T?>((T)(object)est);
 
                 return Task.FromResult<T?>((T)(object)new Establishment { URN = id ?? string.Empty });
+            }
+
+            if (typeof(T) == typeof(EstablishmentPerformance))
+            {
+                var id = GetPropertyString(parameters, "Id");
+
+                if (!string.IsNullOrWhiteSpace(id) && EstablishmentPerformances.TryGetValue(id, out var est))
+                    return Task.FromResult<T?>((T)(object)est);
             }
 
             return Task.FromResult<T?>(default);
