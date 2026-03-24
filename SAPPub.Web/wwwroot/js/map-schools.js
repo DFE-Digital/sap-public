@@ -28,22 +28,6 @@
     });
 
     // ============================================================
-    // ZOOM HINT
-    // ============================================================
-    function showZoomHint(mapContainer) {
-        let hint = mapContainer.querySelector(".map-zoom-hint");
-        if (!hint) {
-            hint = document.createElement("div");
-            hint.className = "map-zoom-hint";
-            hint.textContent = "Use Ctrl + scroll to zoom the map";
-            mapContainer.appendChild(hint);
-        }
-        hint.classList.add("visible");
-        clearTimeout(hint._hideTimer);
-        hint._hideTimer = setTimeout(() => hint.classList.remove("visible"), 3000);
-    }
-
-    // ============================================================
     // ACCESSIBILITY (TAB + ENTER/SPACE)
     // ============================================================
     function a11yMarker(marker, label) {
@@ -74,7 +58,10 @@
     const loading = host.querySelector(".map-loading");
     if (loading) loading.remove();
 
-    const map = L.map(host, { scrollWheelZoom: true }).setView(schoolLL, fixedZoom);
+    const map = L.map(host, {
+        scrollWheelZoom: true,
+        gestureHandling: true
+    }).setView(schoolLL, fixedZoom);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 19,
@@ -82,23 +69,6 @@
     }).addTo(map);
 
     setTimeout(() => map.invalidateSize(), 0);
-
-    // Scroll behaviour (Ctrl+wheel)
-    let zoomHintShown = false;
-    map.getContainer().addEventListener(
-        "wheel",
-        (e) => {
-            if (!e.ctrlKey && !e.metaKey) {
-                e.preventDefault();
-                if (!zoomHintShown) showZoomHint(host);
-                zoomHintShown = true;
-            }
-        },
-        { passive: false }
-    );
-
-    map.on("mouseover", () => map.scrollWheelZoom.enable());
-    map.on("mouseout", () => map.scrollWheelZoom.disable());
 
     const marker = L.marker(schoolLL, { icon: schoolIcon })
         .bindPopup(`<strong>${schoolName}</strong>`)
