@@ -47,7 +47,7 @@
                             {
                                 <a data-testid="school-website-link"
                                 class="govuk-link govuk-link--no-visited-state"
-                                href="@Model.SchoolWebsite.Value"
+                                href="@Model.SchoolWebsite.DisplayText(UrlHelper.EnsureHttpsUrl)"
                                 target="_blank"
                                 rel="noopener noreferrer">
                                     View the school website for more information on admissions

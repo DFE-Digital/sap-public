@@ -1,10 +1,11 @@
 ﻿using SAPPub.Core.Entities;
+using SAPPub.Web.Helpers;
 
 namespace SAPPub.Web.Models.SecondarySchool;
 
 public class AttendanceViewModel : SecondarySchoolBaseViewModel
 {
-    public required string SchoolWebsite { get; set; }
+    public required DisplayField<string> SchoolWebsite { get; init; }
 
     public static AttendanceViewModel Map(Establishment establishment)
     {
@@ -12,7 +13,7 @@ public class AttendanceViewModel : SecondarySchoolBaseViewModel
         {
             URN = establishment.URN,
             SchoolName = establishment.EstablishmentName,
-            SchoolWebsite = establishment.Website
+            SchoolWebsite = establishment.Website.ToDisplayField()
         };
     }
 }
