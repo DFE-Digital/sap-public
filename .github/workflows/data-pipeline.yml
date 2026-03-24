@@ -3,6 +3,10 @@ name: School Data Ingestion Pipeline
 on:
   workflow_dispatch:
   workflow_call:
+      inputs:
+      enable-backup:
+        required: false
+        type: string
   schedule:
     - cron: "0 6 * * *"   # every day at 06:00 UTC
 
@@ -622,6 +626,7 @@ jobs:
       # ==============================
       - name: Create + upload review seed DB backup
         shell: bash
+        if: ${{ inputs.enable-backup != 'false' }}
         run: |
           set -euo pipefail
           TODAY=$(TZ=Europe/London date +"%F")
