@@ -45,7 +45,7 @@
                 <govuk-summary-list-row-value>
                     @if (Model.SchoolWebsite.IsAvailable)
                     {
-                        <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite.Value">
+                        <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite.DisplayText(UrlHelper.EnsureHttpsUrl)">
                             @Model.SchoolWebsite.Value
                             <span class="govuk-visually-hidden">(opens in a new tab)</span>
                         </a>
@@ -123,7 +123,7 @@
                 <govuk-summary-list-row-value>
                     @if (Model.SchoolWebsite.IsAvailable)
                     {
-                        <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite.Value">
+                        <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite.DisplayText(UrlHelper.EnsureHttpsUrl)">
                             View the value and ethos policy on the school website
                             <span class="govuk-visually-hidden">(opens in a new tab)</span>
                         </a>
@@ -235,7 +235,7 @@
                     </p>
                     @if (Model.SchoolWebsite.IsAvailable)
                     {
-                        <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite.Value">
+                        <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite.DisplayText(UrlHelper.EnsureHttpsUrl)">
                             View these policies on the school website
                             <span class="govuk-visually-hidden">(opens in a new tab)</span>
                         </a>
