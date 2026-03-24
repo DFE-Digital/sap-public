@@ -74,7 +74,7 @@ public class AttainmentAndProgressService(
                 _ => null,
             },
             EstablishmentTotalPupils = selectedYear switch
-            {                
+            {
                 AcademicYearSelection.Previous => establishmentPerformance.Pup_Tot_Est_Previous_Num,
                 AcademicYearSelection.Previous2 => establishmentPerformance.Pup_Tot_Est_Previous2_Num,
                 _ => null,

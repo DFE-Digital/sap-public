@@ -275,7 +275,7 @@ public class SecondarySchoolControllerTests
             Assert.False(model.SchoolWebsite.IsAvailable);
             Assert.True(model.SchoolWebsite.IsNotAvailable);
             Assert.Equal("Not available", model.SchoolWebsite.DisplayText());
-        }            
+        }
     }
 
     [Theory]
@@ -313,7 +313,7 @@ public class SecondarySchoolControllerTests
     [InlineData("Not applicable", "No")]
     [InlineData("Resourced provision", "No")]
     [InlineData("SEN unit", "Yes")]
-    [InlineData("Resourced provision and SEN unit", "Yes")]    
+    [InlineData("Resourced provision and SEN unit", "Yes")]
     public async Task Get_AboutSchool_SchoolFeatures_SENUnit(string resourcedProvisionName, string expectedOutput)
     {
         _fakeEstablishment.ResourcedProvisionName = resourcedProvisionName;
@@ -347,7 +347,7 @@ public class SecondarySchoolControllerTests
     [InlineData("Not applicable", "No")]
     [InlineData("SEN unit", "No")]
     [InlineData("Resourced provision", "Yes")]
-    [InlineData("Resourced provision and SEN unit", "Yes")]    
+    [InlineData("Resourced provision and SEN unit", "Yes")]
     public async Task Get_AboutSchool_SchoolFeatures_ResourcedUnit(string resourcedProvisionName, string expectedOutput)
     {
         _fakeEstablishment.ResourcedProvisionName = resourcedProvisionName;
@@ -490,7 +490,7 @@ public class SecondarySchoolControllerTests
         Assert.NotNull(result.Model);
 
         var model = result.Model as AdmissionsViewModel;
-        
+
         Assert.NotNull(model);
         Assert.Equal(fieldStatus, model.SchoolWebsite.Status);
 
@@ -623,8 +623,7 @@ public class SecondarySchoolControllerTests
         Assert.Equal(academicYearSelection, model.SelectedAcademicYear);
         Assert.Equal($"Information in this section is for the {academicYearSelection.GetDisplayName()} academic year.", model.AcademicYearInfoParagraph);
         Assert.Equal(expectedShowProgress8NotAvailableInfo, model.ShowProgress8NotAvailableInfo);
-
-        Assert.Equal(expectedResult.EstablishmentAttainment8Score, model.EstablishmentAttainment8Score);
+        Assert.Equal(expectedResult.EstablishmentAttainment8Score, model.EstablishmentAttainment8Score?.Score.Value);
         Assert.Equal(expectedResult.LocalAuthorityAttainment8Score, model.LocalAuthorityAttainment8Score);
         Assert.Equal(expectedResult.EnglandAttainment8Score, model.EnglandAttainment8Score);
 

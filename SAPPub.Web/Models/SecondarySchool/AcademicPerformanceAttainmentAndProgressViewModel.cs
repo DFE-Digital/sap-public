@@ -14,13 +14,13 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
 
     public bool ShowProgress8NotAvailableInfo => SelectedAcademicYear == _currentAcademicYear;
 
-    public bool ShowAttainment8Info => EstablishmentAttainment8Score.HasValue;
+    public bool ShowAttainment8Info => EstablishmentAttainment8Score != null;
 
     public double? EstablishmentProgress8Score { get; init; }
 
     public double? LocalAuthorityProgress8Score { get; init; }
 
-    public double? EstablishmentAttainment8Score { get; init; }
+    public AttainmentScore? EstablishmentAttainment8Score { get; init; }
 
     public double? LocalAuthorityAttainment8Score { get; init; }
 
@@ -45,11 +45,18 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
             SelectedAcademicYear = selectedAcademicYear,
             EstablishmentProgress8Score = attainmentAndProgressModel.EstablishmentProgress8Score,
             LocalAuthorityProgress8Score = attainmentAndProgressModel.LocalAuthorityProgress8Score,
-            EstablishmentAttainment8Score = attainmentAndProgressModel.EstablishmentAttainment8Score,
+            EstablishmentAttainment8Score = attainmentAndProgressModel.EstablishmentAttainment8Score != null ?
+                new AttainmentScore()
+                {
+                    Score = attainmentAndProgressModel.EstablishmentAttainment8Score.Value.ToDisplayField(),
+                    DescriptionMap = AttainmentScoreMaps.EstablishmentAttainment8
+                }
+                : null,
             LocalAuthorityAttainment8Score = attainmentAndProgressModel.LocalAuthorityAttainment8Score,
             EnglandAttainment8Score = attainmentAndProgressModel.EnglandAttainment8Score,
             EstablishmentProgress8TotalPupils = attainmentAndProgressModel.EstablishmentProgress8TotalPupils,
             EstablishmentTotalPupils = attainmentAndProgressModel.EstablishmentTotalPupils
         };
     }
+
 }
