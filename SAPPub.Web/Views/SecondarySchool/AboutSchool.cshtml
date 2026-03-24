@@ -24,14 +24,14 @@
                     @Model.SchoolName
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
-            @if(!string.IsNullOrEmpty(Model.AcademyTrust))
+            @if(Model.AcademyTrust.IsAvailable)
             {
                 <govuk-summary-list-row>
                     <govuk-summary-list-row-key>Academy Trust</govuk-summary-list-row-key>
                     <govuk-summary-list-row-value>
                         @Model.AcademyTrust
 
-                        @if (!string.IsNullOrWhiteSpace(Model.AcademyTrustUpdatedIn))
+                        @if (Model.AcademyTrustUpdatedIn.IsAvailable)
                         {
                             <span class="govuk-hint govuk-clear">
                                 (updated in @Model.AcademyTrustUpdatedIn)

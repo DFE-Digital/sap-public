@@ -14,9 +14,9 @@ namespace SAPPub.Web.Models.SecondarySchool
 
         public record School(string Name, double Lat, double Lon);
 
-        public string? AcademyTrust { get; set; }
+        public required DisplayField<string> AcademyTrust { get; set; }
 
-        public string? AcademyTrustUpdatedIn { get; set; }
+        public required DisplayField<string> AcademyTrustUpdatedIn { get; set; }
 
         public required DisplayField<string> SchoolWebsite { get; set; }
 
@@ -64,7 +64,8 @@ namespace SAPPub.Web.Models.SecondarySchool
             {
                 URN = schoolDetails.Urn,
                 SchoolName = schoolDetails.SchoolName,
-                AcademyTrust = schoolDetails.AcademyTrust,
+                AcademyTrust = schoolDetails.AcademyTrust.ToDisplayField(),
+                AcademyTrustUpdatedIn = schoolDetails.AcademyTrustUpdatedIn.ToDisplayField(),
                 SchoolWebsite = schoolDetails.Website.ToDisplayField(),
                 Telephone = schoolDetails.Telephone,
                 Address = schoolDetails.Address,
