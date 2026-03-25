@@ -95,9 +95,12 @@
                     <p class="govuk-body">
                         The attainment 8 score for this school is @Model.EstablishmentAttainment8Score.
                     </p>
-                    <p class="govuk-body">
-                        @Model.EstablishmentAttainment8ScoreContextDescription.
-                    </p>
+                    if(@Model.EstablishmentAttainment8ScoreContextDescription != null)
+                    {
+                        <p class="govuk-body">
+                            @Model.EstablishmentAttainment8ScoreContextDescription.
+                        </p>
+                    }
                 </div>
             </div>
 

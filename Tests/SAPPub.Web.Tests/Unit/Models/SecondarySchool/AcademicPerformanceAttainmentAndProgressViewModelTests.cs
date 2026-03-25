@@ -127,7 +127,9 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
         var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map(testdata, Core.Enums.AcademicYearSelection.Current);
 
         // Assert
-        var expectedContextStatement = $"This means that pupils generally scored the equivalent of {expected} in their 8 best GCSE-level subjects";
+        var expectedContextStatement = expected != null ?
+            $"This means that pupils generally scored the equivalent of {expected} in their 8 best GCSE-level subjects"
+            : null;
         Assert.Equal(expectedContextStatement, viewModel.EstablishmentAttainment8ScoreContextDescription);
     }
 }

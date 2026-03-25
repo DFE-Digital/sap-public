@@ -21,8 +21,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
     public double? LocalAuthorityProgress8Score { get; init; }
 
     public double? EstablishmentAttainment8Score { get; init; }
-    public string? EstablishmentAttainment8ScoreContextDescription =>
-        $"This means that pupils generally scored the equivalent of {EstablishmentAttainment8ContextHelper(EstablishmentAttainment8Score)} in their 8 best GCSE-level subjects";
+    public string? EstablishmentAttainment8ScoreContextDescription { get; init; }
 
     public double? LocalAuthorityAttainment8Score { get; init; }
 
@@ -40,6 +39,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
 
     public static AcademicPerformanceAttainmentAndProgressViewModel Map(AttainmentAndProgressModel attainmentAndProgressModel, AcademicYearSelection selectedAcademicYear)
     {
+        var establishmentAttainment8Context = EstablishmentAttainment8ContextStatement(attainmentAndProgressModel.EstablishmentAttainment8Score);
         return new AcademicPerformanceAttainmentAndProgressViewModel
         {
             URN = attainmentAndProgressModel.Urn,
@@ -48,6 +48,9 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
             EstablishmentProgress8Score = attainmentAndProgressModel.EstablishmentProgress8Score,
             LocalAuthorityProgress8Score = attainmentAndProgressModel.LocalAuthorityProgress8Score,
             EstablishmentAttainment8Score = attainmentAndProgressModel.EstablishmentAttainment8Score,
+            EstablishmentAttainment8ScoreContextDescription = establishmentAttainment8Context != null
+                ? $"This means that pupils generally scored the equivalent of {establishmentAttainment8Context} in their 8 best GCSE-level subjects"
+                : null,
             LocalAuthorityAttainment8Score = attainmentAndProgressModel.LocalAuthorityAttainment8Score,
             EnglandAttainment8Score = attainmentAndProgressModel.EnglandAttainment8Score,
             EstablishmentProgress8TotalPupils = attainmentAndProgressModel.EstablishmentProgress8TotalPupils,
@@ -55,12 +58,12 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
         };
     }
 
-    private static readonly Func<double?, string?> EstablishmentAttainment8ContextHelper = score =>
+    private static string? EstablishmentAttainment8ContextStatement(double? score)
     {
         if (!score.HasValue || score.Value < 0 || score.Value > 90)
             return null;
 
-        if (score >= 90)
+        if (score == 90)
             return "grade 9";
 
         if (score < 10)
@@ -79,6 +82,5 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
             return $"between grade {baseGrade} and grade {baseGrade + 1}";
 
         return $"just below grade {baseGrade + 1}";
-    };
-
+    }
 }
