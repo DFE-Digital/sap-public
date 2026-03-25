@@ -99,7 +99,7 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         {
             var value = await schoolClosedCard.Locator("p").TextContentAsync();
 
-            var expectedText = hasSchoolClosedDate ? "This school closed on 23 March 2025" : "Closed";
+            var expectedText = hasSchoolClosedDate ? "This school closed on 10 March 2025" : "Closed";
 
             Assert.NotNull(value);
             Assert.Equal(expectedText, value.Trim());
