@@ -11,4 +11,12 @@ public static class StringExtensions
     {
         return int.TryParse(value, out _);
     }
+
+    public static DateOnly? ToDateOnly(this string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return null;
+
+        return DateOnly.TryParse(value, out var date) ? date : null;
+    }
 }

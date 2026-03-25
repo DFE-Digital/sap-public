@@ -56,6 +56,12 @@ namespace SAPPub.Web.Models.SecondarySchool
 
         public bool IsLocalAuthoritySchool { get; set; }
 
+        public required DisplayField<DateOnly> ClosedDate { get; set; }
+
+        public int? StatusCode { get; set; }
+
+        public bool IsSchoolClosed => StatusCode == 2;
+
         public static AboutSchoolViewModel Map(AboutSchoolModel schoolDetails)
         {
             var latLong = MappingHelper.ConvertToLatLon(schoolDetails.Easting, schoolDetails.Northing);
@@ -84,6 +90,8 @@ namespace SAPPub.Web.Models.SecondarySchool
                 SenUnit = GetSenUnit(schoolDetails.ResourcedProvisionName),
                 ResourcedProvision = GetResourcedProvision(schoolDetails.ResourcedProvisionName),
                 IsLocalAuthoritySchool = schoolDetails.EstablishmentTypeGroupId.ToInt() == LocalAuthorityEstablishmentGroupTypeId,
+                StatusCode = schoolDetails.StatusCode,
+                ClosedDate = schoolDetails.ClosedDate.ToDisplayField(),
             };
         }
 
