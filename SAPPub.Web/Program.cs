@@ -1,8 +1,12 @@
+using Dfe.Analytics;
+using Dfe.Analytics.AspNetCore;
 using GovUk.Frontend.AspNetCore;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.StaticFiles;
 using Npgsql;
+using NuGet.Protocol;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Infrastructure.LuceneSearch;
 using SAPPub.Infrastructure.PostcodeLookup;
@@ -13,6 +17,7 @@ using SAPSec.Web.Middleware;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Security.Claims;
 using System.Text.Json;
 using static SAPPub.Web.Middleware.DependenciesExtensions;
 
@@ -43,6 +48,15 @@ public partial class Program
             {
                 options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
                 options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+            });
+
+        builder.Services.AddDfeAnalytics()
+            .AddAspNetCoreIntegration(options =>
+            {
+
+                options.RequestFilter = ctx =>
+                    ctx.Request.Path != "/healthcheck" &&
+                    ctx.Request.Path != "/health";
             });
 
         // Add Razor pages separately if needed
@@ -174,6 +188,11 @@ public partial class Program
 
         // Health check endpoints for AKS
         app.MapHealthChecks("/healthcheck");
+
+        if (builder.Environment.IsProduction())
+        {
+            app.UseDfeAnalytics();
+        }
 
         app.Run();
     }
