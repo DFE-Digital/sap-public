@@ -448,7 +448,7 @@ public class SecondarySchoolControllerTests
     public async Task Get_AboutSchool_SchoolFeatures_SchoolClosed(int? statusCode, bool expectedOutput)
     {
         _fakeEstablishment.StatusCode = statusCode;
-        _fakeEstablishment.ClosedDate = _fakeEstablishment.StatusCode == 2 ? "03/03/2025" : null;
+        _fakeEstablishment.ClosedDate = _fakeEstablishment.StatusCode == 2 ? "03-03-2025" : null;
 
         var expectedResult = SchoolDetails();
 

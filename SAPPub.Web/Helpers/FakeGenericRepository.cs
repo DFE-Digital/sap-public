@@ -82,7 +82,7 @@ namespace SAPPub.Web.Helpers
                 PhaseOfEducationName = "Secondary",
                 AddressPostcode = "OL14 7DG",
                 StatusCode = 2,
-                ClosedDate = "03-03-2025"
+                ClosedDate = "23-03-2025"
             }
         };
 

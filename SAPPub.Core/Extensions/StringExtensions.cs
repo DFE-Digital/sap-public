@@ -1,4 +1,6 @@
-﻿namespace SAPPub.Core.Extensions;
+﻿using System.Globalization;
+
+namespace SAPPub.Core.Extensions;
 
 public static class StringExtensions
 {
@@ -12,11 +14,11 @@ public static class StringExtensions
         return int.TryParse(value, out _);
     }
 
-    public static DateOnly? ToDateOnly(this string? value)
+    public static DateOnly? ToDateOnly(this string? value, string format = "dd-MM-yyyy")
     {
         if (string.IsNullOrWhiteSpace(value))
             return null;
 
-        return DateOnly.TryParse(value, out var date) ? date : null;
+        return DateOnly.TryParseExact(value, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out var date) ? date : null;
     }
 }
