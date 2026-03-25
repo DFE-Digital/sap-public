@@ -23,23 +23,20 @@ on:
         type: string
 
   push:
-    branches:
-      - main
+    branches: [main]
 
   pull_request:
-    branches:
-      - main
+    branches: [main]
     types: [opened, reopened, synchronize, labeled]
 
 env:
   TERRAFORM_BASE: terraform/application
   HEALTHCHECK_CMD: ""
 
+# ======================================================
+# JOB: BUILD
+# ======================================================
 jobs:
-
-  # ---------------------------
-  # BUILD
-  # ---------------------------
   build:
     name: Build
     if: ${{ github.event_name != 'workflow_dispatch' }}
@@ -67,14 +64,14 @@ jobs:
           reuse-cache: true
           snyk-token: ${{ secrets.SNYK_TOKEN }}
 
-  # ---------------------------
-  # TESTS: UNIT, INTEGRATION, UI
-  # ---------------------------
+# ======================================================
+# JOB: TEST
+# ======================================================
   test:
     name: Run Unit, Integration and UI Tests
     if: ${{ github.event_name != 'workflow_dispatch' }}
-    runs-on: ubuntu-latest
     needs: [build]
+    runs-on: ubuntu-latest
 
     steps:
       - name: Check out repository
@@ -114,16 +111,14 @@ jobs:
           PLAYWRIGHT_IGNORE_HTTPS_ERRORS: true
         run: |
           TEST_PROJECTS=$(find ./Tests -type f -name "*.Tests.csproj" | sort)
-
           for proj in $TEST_PROJECTS; do
             echo "=== Running tests in $proj ==="
-
             dotnet test "$proj" \
               --no-build \
               --configuration Debug \
               --results-directory "TestResults" \
               --logger "trx;LogFileName=$(basename "$proj" .csproj).trx" \
-              --collect "XPlat Code Coverage"\
+              --collect "XPlat Code Coverage" \
               /p:CollectCoverage=true \
               /p:CoverletOutputFormat=cobertura \
               /p:DeterministicReport=true \
@@ -167,7 +162,7 @@ jobs:
       - name: Generate Coverage Report
         uses: clearlyip/code-coverage-report-action@v6
         id: code_coverage_report_action
-        if: ${{ github.actor != 'dependabot[bot]'}}
+        if: ${{ github.actor != 'dependabot[bot]' }}
         with:
           filename: "coverage-results/coverage.xml"
           fail_on_negative_difference: true
@@ -175,311 +170,121 @@ jobs:
 
       - name: Add Coverage PR Comment
         uses: marocchino/sticky-pull-request-comment@v2
-        if: steps.code_coverage_report_action.outputs.file != '' && github.event_name == 'pull_request' && (success() || failure())
+        if: steps.code_coverage_report_action.outputs.file != '' && github.event_name == 'pull_request'
         with:
           recreate: true
           path: code-coverage-results.md
 
-  # ---------------------------
-  # REFRESH DATA
-  # ---------------------------
-  refresh-data:
-    name: Refresh data (School Data Ingestion Pipeline)
-    if: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'refresh data') }}
+# ======================================================
+# JOB: DEPLOY REVIEW (Unified: refresh + no-refresh)
+# ======================================================
+  deploy-review:
+    name: Deploy Review App (with/without refresh)
+    concurrency: deploy_review_${{ github.event.pull_request.number }}
     needs: [build, test]
+    if: |
+      github.event_name == 'pull_request' &&
+      (
+        github.event.action == 'labeled' ||
+        github.event.action == 'synchronize'
+      ) &&
+      contains(github.event.pull_request.labels.*.name, 'deploy')
+    environment:
+      name: review
+      url: ${{ steps.deploy_app.outputs.environment_url }}
+    runs-on: ubuntu-latest
+
+    env:
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      APP_NAME: sap-public-pr-${{ github.event.pull_request.number }}
+      AKS_REVIEW_NAMESPACE: ${{ secrets.AKS_REVIEW_NAMESPACE }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy Review App
+        id: deploy_app
+        uses: DFE-Digital/github-actions/deploy-to-aks@master
+        with:
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          environment: review
+          pr-number: ${{ env.PR_NUMBER }}
+          sha: ${{ needs.build.outputs.docker-image-tag }}
+          terraform-base: ${{ env.TERRAFORM_BASE }}
+          healthcheck: ${{ env.HEALTHCHECK_CMD }}
+          db-seed: false
+          smoke-test: false
+
+      - name: Determine refresh mode
+        id: mode
+        run: |
+          if [[ "${{ contains(github.event.pull_request.labels.*.name, 'refresh data') }}" == "true" ]]; then
+            echo "mode=refresh" >> $GITHUB_OUTPUT
+          else
+            echo "mode=seed" >> $GITHUB_OUTPUT
+          fi
+
+      # --------------------------------------------
+      # MODE 1: No refresh - restore shared backup
+      # --------------------------------------------
+      - name: Restore Shared Seed Backup
+        if: ${{ steps.mode.outputs.mode == 'seed' }}
+        run: |
+          BACKUP_BLOB="db-backups/sappub_review_seed_latest.sql.gz"
+          BACKUP_FILE="seed.sql.gz"
+
+          echo "Downloading shared seed backup..."
+          az storage blob download \
+            --container-name "${{ secrets.AZURE_STORAGE_CONTAINER }}" \
+            --name "${BACKUP_BLOB}" \
+            --file "${BACKUP_FILE}" \
+            --connection-string "${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" \
+            --overwrite true
+
+          gzip -t "${BACKUP_FILE}"
+
+          "$GITHUB_WORKSPACE/konduit.sh" \
+            -n "${AKS_REVIEW_NAMESPACE}" \
+            -t 7200 \
+            -x \
+            -i "${BACKUP_FILE}" -c \
+            "${APP_NAME}" -- psql -v ON_ERROR_STOP=1 -X
+
+      # --------------------------------------------
+      # MODE 2: Refresh - run ETL into review DB
+      # --------------------------------------------
+      - name: Run ETL into Review DB
+        if: ${{ steps.mode.outputs.mode == 'refresh' }}
+        uses: ./.github/workflows/data-pipeline.yml
+        with:
+          environment: review
+          aks_namespace: ${{ secrets.AKS_REVIEW_NAMESPACE }}
+          app_name: ${{ env.APP_NAME }}
+          upload_backup: "false"
+        secrets: inherit
+
+# ======================================================
+# JOB: REFRESH DATA (main branch)
+# ======================================================
+  refresh-data-main:
+    name: Refresh Data (Main Merge)
+    if: |
+      github.ref == 'refs/heads/main' &&
+      contains(github.event.pull_request.labels.*.name, 'refresh data')
     uses: ./.github/workflows/data-pipeline.yml
+    with:
+      environment: test
+      aks_namespace: ${{ secrets.AKS_NAMESPACE }}
+      app_name: ${{ secrets.KONDUIT_APP_NAME }}
+      upload_backup: "true"
     secrets: inherit
-    permissions:
-      contents: write
-      id-token: write
-      actions: read
 
-  # ---------------------------
-  # REVIEW APP DEPLOYMENT (PR) - no refresh requested
-  # ---------------------------
-  deploy-review-app:
-    name: Deployment To Review (no refresh)
-    concurrency: deploy_review_${{ github.event.pull_request.number }}
-    needs: [build, test]
-    if: ${{ github.event_name == 'pull_request'
-      && (
-      github.event.action == 'labeled' ||
-      github.event.action == 'synchronize'
-      )
-      && contains(github.event.pull_request.labels.*.name, 'deploy')
-      && !contains(github.event.pull_request.labels.*.name, 'refresh data') }}
-    environment:
-      name: review
-      url: ${{ steps.deploy_review.outputs.environment_url }}
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      pull-requests: write
-
-    env:
-      AKS_RESOURCE_GROUP: ${{ secrets.AKS_RESOURCE_GROUP }}
-      AKS_CLUSTER_NAME: ${{ secrets.AKS_CLUSTER_NAME }}
-      KONDUIT_NAMESPACE: ${{ secrets.AKS_NAMESPACE }}
-      KONDUIT_APP_NAME: ${{ secrets.KONDUIT_APP_NAME }}
-
-    steps:
-      - name: Deploy App to Review
-        id: deploy_review
-        uses: DFE-Digital/github-actions/deploy-to-aks@master
-        with:
-          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          environment: review
-          pr-number: ${{ github.event.pull_request.number }}
-          sha: ${{ needs.build.outputs.docker-image-tag }}
-          terraform-base: ${{ env.TERRAFORM_BASE }}
-          healthcheck: ${{ env.HEALTHCHECK_CMD }}
-          db-seed: false
-          smoke-test: false
-
-      # ---------------------------
-      # REVIEW APP DATABASE DEPLOYMENT (PR)
-      # ---------------------------
-      - name: Checkout (needed for workspace consistency)
-        uses: actions/checkout@v4
-
-      - name: Install Azure CLI
-        shell: bash
-        run: |
-          set -euo pipefail
-          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
-
-      - name: Azure login (OIDC)
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Install kubectl (pinned)
-        shell: bash
-        run: |
-          set -euo pipefail
-          KUBECTL_VERSION="v1.29.8"
-          curl -fsSLo kubectl "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
-          sudo install -m 0755 kubectl /usr/local/bin/kubectl
-          kubectl version --client=true
-
-      - name: Install kubelogin (pinned)
-        shell: bash
-        run: |
-          set -euo pipefail
-          KUBELOGIN_VERSION="v0.1.6"
-          curl -fsSLo kubelogin.zip "https://github.com/Azure/kubelogin/releases/download/${KUBELOGIN_VERSION}/kubelogin-linux-amd64.zip"
-          unzip -q kubelogin.zip
-          sudo install -m 0755 bin/linux_amd64/kubelogin /usr/local/bin/kubelogin
-          kubelogin --version
-
-      - name: Configure AKS credentials
-        shell: bash
-        run: |
-          set -euo pipefail
-          : "${AKS_RESOURCE_GROUP:?AKS_RESOURCE_GROUP is not set}"
-          : "${AKS_CLUSTER_NAME:?AKS_CLUSTER_NAME is not set}"
-          az aks get-credentials --overwrite-existing -g "${AKS_RESOURCE_GROUP}" -n "${AKS_CLUSTER_NAME}"
-          kubelogin convert-kubeconfig -l azurecli
-
-      - name: Download konduit.sh
-        shell: bash
-        run: |
-          set -euo pipefail
-          curl -fsSL https://raw.githubusercontent.com/DFE-Digital/teacher-services-cloud/main/scripts/konduit.sh \
-            -o "$GITHUB_WORKSPACE/konduit.sh"
-          chmod +x "$GITHUB_WORKSPACE/konduit.sh"
-          ls -la "$GITHUB_WORKSPACE/konduit.sh"
-
-      - name: Download seed backup from Blob
-        shell: bash
-        env:
-          AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
-          AZURE_STORAGE_CONTAINER: ${{ secrets.AZURE_STORAGE_CONTAINER }}
-        run: |
-          set -euo pipefail
-          BACKUP_BLOB="db-backups/sappub_review_seed_latest.sql.gz"
-          BACKUP_FILE="seed.sql.gz"
-
-          az storage blob download \
-            --container-name "${AZURE_STORAGE_CONTAINER}" \
-            --name "${BACKUP_BLOB}" \
-            --file "${BACKUP_FILE}" \
-            --connection-string "${AZURE_STORAGE_CONNECTION_STRING}" \
-            --overwrite true
-
-          ls -lh "${BACKUP_FILE}"
-
-      - name: Restore backup into PR review DB
-        continue-on-error: true
-        shell: bash
-        env:
-          AKS_NAMESPACE: ${{ secrets.AKS_REVIEW_NAMESPACE }}
-        run: |
-          set -euo pipefail
-          PR_NUMBER="${{ github.event.pull_request.number }}"
-          APP_NAME="sap-public-pr-${PR_NUMBER}"
-          BACKUP_FILE="seed.sql.gz"
-          : "${AKS_NAMESPACE:?AKS_NAMESPACE is not set}"
-
-          ls -lh "${BACKUP_FILE}"
-          gzip -t "${BACKUP_FILE}"
-
-          "$GITHUB_WORKSPACE/konduit.sh" \
-            -n "${AKS_NAMESPACE}" \
-            -t 7200 \
-            -x \
-            -i "${BACKUP_FILE}" -c \
-            "${APP_NAME}" -- psql -v ON_ERROR_STOP=1 -X
-
-  # ---------------------------
-  # REVIEW APP DEPLOYMENT (PR) - refresh requested
-  # ---------------------------
-  deploy-review-app-with-refresh:
-    name: Deployment To Review (after refresh)
-    concurrency: deploy_review_${{ github.event.pull_request.number }}
-    needs: [build, test, refresh-data]
-    if: ${{ github.event_name == 'pull_request'
-      && (
-      github.event.action == 'labeled' ||
-      github.event.action == 'synchronize'
-      )
-      && contains(github.event.pull_request.labels.*.name, 'deploy')
-      && contains(github.event.pull_request.labels.*.name, 'refresh data')
-      && needs.refresh-data.result == 'success' }}
-    environment:
-      name: review
-      url: ${{ steps.deploy_review.outputs.environment_url }}
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      pull-requests: write
-
-    env:
-      AKS_RESOURCE_GROUP: ${{ secrets.AKS_RESOURCE_GROUP }}
-      AKS_CLUSTER_NAME: ${{ secrets.AKS_CLUSTER_NAME }}
-      KONDUIT_NAMESPACE: ${{ secrets.AKS_NAMESPACE }}
-      KONDUIT_APP_NAME: ${{ secrets.KONDUIT_APP_NAME }}
-
-    steps:
-      - name: Deploy App to Review
-        id: deploy_review
-        uses: DFE-Digital/github-actions/deploy-to-aks@master
-        with:
-          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          environment: review
-          pr-number: ${{ github.event.pull_request.number }}
-          sha: ${{ needs.build.outputs.docker-image-tag }}
-          terraform-base: ${{ env.TERRAFORM_BASE }}
-          healthcheck: ${{ env.HEALTHCHECK_CMD }}
-          db-seed: false
-          smoke-test: false
-
-      # ---------------------------
-      # REVIEW APP DATABASE DEPLOYMENT (PR)
-      # ---------------------------
-      - name: Checkout (needed for workspace consistency)
-        uses: actions/checkout@v4
-
-      - name: Install Azure CLI
-        shell: bash
-        run: |
-          set -euo pipefail
-          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
-
-      - name: Azure login (OIDC)
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Install kubectl (pinned)
-        shell: bash
-        run: |
-          set -euo pipefail
-          KUBECTL_VERSION="v1.29.8"
-          curl -fsSLo kubectl "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
-          sudo install -m 0755 kubectl /usr/local/bin/kubectl
-          kubectl version --client=true
-
-      - name: Install kubelogin (pinned)
-        shell: bash
-        run: |
-          set -euo pipefail
-          KUBELOGIN_VERSION="v0.1.6"
-          curl -fsSLo kubelogin.zip "https://github.com/Azure/kubelogin/releases/download/${KUBELOGIN_VERSION}/kubelogin-linux-amd64.zip"
-          unzip -q kubelogin.zip
-          sudo install -m 0755 bin/linux_amd64/kubelogin /usr/local/bin/kubelogin
-          kubelogin --version
-
-      - name: Configure AKS credentials
-        shell: bash
-        run: |
-          set -euo pipefail
-          : "${AKS_RESOURCE_GROUP:?AKS_RESOURCE_GROUP is not set}"
-          : "${AKS_CLUSTER_NAME:?AKS_CLUSTER_NAME is not set}"
-          az aks get-credentials --overwrite-existing -g "${AKS_RESOURCE_GROUP}" -n "${AKS_CLUSTER_NAME}"
-          kubelogin convert-kubeconfig -l azurecli
-
-      - name: Download konduit.sh
-        shell: bash
-        run: |
-          set -euo pipefail
-          curl -fsSL https://raw.githubusercontent.com/DFE-Digital/teacher-services-cloud/main/scripts/konduit.sh \
-            -o "$GITHUB_WORKSPACE/konduit.sh"
-          chmod +x "$GITHUB_WORKSPACE/konduit.sh"
-          ls -la "$GITHUB_WORKSPACE/konduit.sh"
-
-      - name: Download seed backup from Blob
-        shell: bash
-        env:
-          AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
-          AZURE_STORAGE_CONTAINER: ${{ secrets.AZURE_STORAGE_CONTAINER }}
-        run: |
-          set -euo pipefail
-          BACKUP_BLOB="db-backups/sappub_review_seed_latest.sql.gz"
-          BACKUP_FILE="seed.sql.gz"
-
-          az storage blob download \
-            --container-name "${AZURE_STORAGE_CONTAINER}" \
-            --name "${BACKUP_BLOB}" \
-            --file "${BACKUP_FILE}" \
-            --connection-string "${AZURE_STORAGE_CONNECTION_STRING}" \
-            --overwrite true
-
-          ls -lh "${BACKUP_FILE}"    
-
-      - name: Restore backup into PR review DB
-        continue-on-error: true
-        shell: bash
-        env:
-          AKS_NAMESPACE: ${{ secrets.AKS_REVIEW_NAMESPACE }}
-        run: |
-          set -euo pipefail
-          PR_NUMBER="${{ github.event.pull_request.number }}"
-          APP_NAME="sap-public-pr-${PR_NUMBER}"
-          BACKUP_FILE="seed.sql.gz"
-          : "${AKS_NAMESPACE:?AKS_NAMESPACE is not set}"
-
-          ls -lh "${BACKUP_FILE}"
-          gzip -t "${BACKUP_FILE}"
-
-          "$GITHUB_WORKSPACE/konduit.sh" \
-            -n "${AKS_NAMESPACE}" \
-            -t 7200 \
-            -x \
-            -i "${BACKUP_FILE}" -c \
-            "${APP_NAME}" -- psql -v ON_ERROR_STOP=1 -X
-     
-  # ---------------------------
-  # DEPLOY TEST (AUTO) + PROD (MANUAL APPROVAL)
-  # ---------------------------
+# ======================================================
+# JOB: TEST + PROD DEPLOY
+# ======================================================
   deploy:
     name: Deploy to Test and Production
     if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
@@ -488,7 +293,6 @@ jobs:
     permissions:
       id-token: write
       pull-requests: write
-
     strategy:
       max-parallel: 1
       matrix:
@@ -496,10 +300,9 @@ jobs:
 
     environment:
       name: ${{ matrix.environment }}
-      url: ${{ steps.deploy_app.outputs.environment_url }}
 
     steps:
-      - name: Deploy app to ${{ matrix.environment }}
+      - name: Deploy App to ${{ matrix.environment }}
         id: deploy_app
         uses: DFE-Digital/github-actions/deploy-to-aks@master
         with:
@@ -514,84 +317,84 @@ jobs:
           smoke-test: false
           service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
 
-  # ---------------------------
-  # MANUAL DEPLOY
-  # ---------------------------
-  manual_deploy:
-    name: Manual deploy
-    if: ${{ github.event_name == 'workflow_dispatch' }}
-    environment:
-      name: ${{ inputs.environment }}
-      url: ${{ steps.deploy_manual.outputs.environment_url }}
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      pull-requests: write
+ # ---------------------------
+ # MANUAL DEPLOY
+ # ---------------------------
+ manual_deploy:
+   name: Manual deploy
+   if: ${{ github.event_name == 'workflow_dispatch' }}
+   environment:
+     name: ${{ inputs.environment }}
+     url: ${{ steps.deploy_manual.outputs.environment_url }}
+   runs-on: ubuntu-latest
+   permissions:
+     id-token: write
+     pull-requests: write
 
-    steps:
-      - name: Deploy app to ${{ inputs.environment }}
-        id: deploy_manual
-        uses: DFE-Digital/github-actions/deploy-to-aks@master
-        with:
-          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          environment: ${{ inputs.environment }}
-          pr-number: ${{ inputs.pull-request-number }}
-          sha: ${{ inputs.docker-image-tag }}
-          terraform-base: ${{ env.TERRAFORM_BASE }}
-          healthcheck: ${{ env.HEALTHCHECK_CMD }}
-          teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
-          service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
-          smoke-test: false
-          db-seed: ${{ inputs.environment == 'review' && 'true' || 'false' }}
+   steps:
+     - name: Deploy app to ${{ inputs.environment }}
+       id: deploy_manual
+       uses: DFE-Digital/github-actions/deploy-to-aks@master
+       with:
+         azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+         azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+         azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+         environment: ${{ inputs.environment }}
+         pr-number: ${{ inputs.pull-request-number }}
+         sha: ${{ inputs.docker-image-tag }}
+         terraform-base: ${{ env.TERRAFORM_BASE }}
+         healthcheck: ${{ env.HEALTHCHECK_CMD }}
+         teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
+         service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
+         smoke-test: false
+         db-seed: ${{ inputs.environment == 'review' && 'true' || 'false' }}
 
-  deploy_domains_infra:
-    name: Deploy Domains Infrastructure
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    concurrency: deploy_domains_infra
-    needs: [deploy]
-    environment:
-      name: production
-    permissions:
-      id-token: write
+ deploy_domains_infra:
+   name: Deploy Domains Infrastructure
+   runs-on: ubuntu-latest
+   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+   concurrency: deploy_domains_infra
+   needs: [deploy]
+   environment:
+     name: production
+   permissions:
+     id-token: write
 
-    steps:
-      - name: Deploy Domains Infrastructure
-        uses: DFE-Digital/github-actions/deploy-domains-infra@master
-        with:
-          azure-client-id:  ${{ secrets.AZURE_CLIENT_ID  }}
-          azure-tenant-id:  ${{ secrets.AZURE_TENANT_ID   }}
-          azure-subscription-id:  ${{ secrets.AZURE_SUBSCRIPTION_ID   }}
-          teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
-          service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
+   steps:
+     - name: Deploy Domains Infrastructure
+       uses: DFE-Digital/github-actions/deploy-domains-infra@master
+       with:
+         azure-client-id:  ${{ secrets.AZURE_CLIENT_ID  }}
+         azure-tenant-id:  ${{ secrets.AZURE_TENANT_ID   }}
+         azure-subscription-id:  ${{ secrets.AZURE_SUBSCRIPTION_ID   }}
+         teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
+         service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
 
-  deploy_domains_env:
-    name: Deploy Domains to ${{ matrix.domain_environment }} environment
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    concurrency: deploy_domains_env_${{ matrix.domain_environment }}
-    needs: [deploy_domains_infra]
-    strategy:
-      max-parallel: 1
-      matrix:
-        domain_environment: [test, production]
-    environment:
-      name: production
-    permissions:
-      id-token: write
+ deploy_domains_env:
+   name: Deploy Domains to ${{ matrix.domain_environment }} environment
+   runs-on: ubuntu-latest
+   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+   concurrency: deploy_domains_env_${{ matrix.domain_environment }}
+   needs: [deploy_domains_infra]
+   strategy:
+     max-parallel: 1
+     matrix:
+       domain_environment: [test, production]
+   environment:
+     name: production
+   permissions:
+     id-token: write
 
-    steps:
-      - name: Deploy Domains Environment
-        id: deploy_domains_env
-        uses: DFE-Digital/github-actions/deploy-domains-env@master
-        with:
-          azure-client-id: ${{ secrets.AZURE_CLIENT_ID  }}
-          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID   }}
-          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID   }}
-          environment: ${{ matrix.domain_environment }}
-          healthcheck: healthcheck
-          teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
-          service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
-          terraform-base: terraform/domains/environment_domains
+   steps:
+     - name: Deploy Domains Environment
+       id: deploy_domains_env
+       uses: DFE-Digital/github-actions/deploy-domains-env@master
+       with:
+         azure-client-id: ${{ secrets.AZURE_CLIENT_ID  }}
+         azure-tenant-id: ${{ secrets.AZURE_TENANT_ID   }}
+         azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID   }}
+         environment: ${{ matrix.domain_environment }}
+         healthcheck: healthcheck
+         teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
+         service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
+         terraform-base: terraform/domains/environment_domains
