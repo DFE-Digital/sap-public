@@ -21,6 +21,8 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
     public double? LocalAuthorityProgress8Score { get; init; }
 
     public double? EstablishmentAttainment8Score { get; init; }
+    public string? EstablishmentAttainment8ScoreContextDescription =>
+        $"This means that pupils generally scored the equivalent of {EstablishmentAttainment8ContextHelper(EstablishmentAttainment8Score)} in their 8 best GCSE-level subjects";
 
     public double? LocalAuthorityAttainment8Score { get; init; }
 
@@ -52,4 +54,31 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
             EstablishmentTotalPupils = attainmentAndProgressModel.EstablishmentTotalPupils
         };
     }
+
+    private static readonly Func<double?, string?> EstablishmentAttainment8ContextHelper = score =>
+    {
+        if (!score.HasValue || score.Value < 0 || score.Value > 90)
+            return null;
+
+        if (score >= 90)
+            return "grade 9";
+
+        if (score < 10)
+            return "below a grade 1";
+
+        int baseGrade = (int)(score.Value / 10);   // 10–19 → 1, 20–29 → 2, etc.
+        float remainder = (float)Math.Round(score.Value % 10, 1);
+
+        if (remainder <= 0.9f)
+            return $"grade {baseGrade}";
+
+        if (remainder <= 2.9f)
+            return $"just above grade {baseGrade}";
+
+        if (remainder <= 8.0f)
+            return $"between grade {baseGrade} and grade {baseGrade + 1}";
+
+        return $"just below grade {baseGrade + 1}";
+    };
+
 }
