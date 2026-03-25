@@ -448,7 +448,7 @@ public class SecondarySchoolControllerTests
     public async Task Get_AboutSchool_SchoolFeatures_SchoolClosed(int? statusCode, bool expectedOutput)
     {
         _fakeEstablishment.StatusCode = statusCode;
-        _fakeEstablishment.ClosedDate = _fakeEstablishment.StatusCode == 2 ? "10/04/2025" : null;
+        _fakeEstablishment.ClosedDate = _fakeEstablishment.StatusCode == 2 ? "03/03/2025" : null;
 
         var expectedResult = SchoolDetails();
 
@@ -473,7 +473,7 @@ public class SecondarySchoolControllerTests
         {
             Assert.False(model.ClosedDate.IsNotAvailable);
             Assert.True(model.ClosedDate.IsAvailable);
-            Assert.Equal("10 April 2025", model.ClosedDate.DisplayText(d => d.ToString("dd MMMM yyyy")));
+            Assert.Equal("03 March 2025", model.ClosedDate.DisplayText(d => d.ToString("dd MMMM yyyy")));
         }
         else
         {
