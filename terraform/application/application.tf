@@ -67,7 +67,7 @@ module "application_configuration" {
     Email__ApiKey                                 = data.azurerm_key_vault_secret.emailgatewayapikey.value,
     Gateway__Enabled                              = data.azurerm_key_vault_secret.gatewayenabled.value,
     Gateway__AllowedDays                          = data.azurerm_key_vault_secret.gatewayalloweddays.value,
-    Email__ApplicationRoot                        = data.azurerm_key_vault_secret.gatewayalloweddays.value,
+    Email__ApplicationRoot                        = data.azurerm_key_vault_secret.emailapplicationroot.value,
     Analytics__GoogleTagManagerId                 = data.azurerm_key_vault_secret.googletagmanager.value,
 	  Analytics__GoogleTagManagerAdditional         = data.azurerm_key_vault_secret.googletagmanageradditional.value,
     Analytics__ClarityId                          = data.azurerm_key_vault_secret.microsoftclarity.value
