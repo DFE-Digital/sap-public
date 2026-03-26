@@ -29,7 +29,7 @@ on:
   pull_request:
     branches:
       - main
-    types: [opened, reopened, synchronize, labeled] 
+    types: [opened, reopened, synchronize, labeled]
 
 env:
   TERRAFORM_BASE: terraform/application
@@ -204,6 +204,10 @@ jobs:
     concurrency: deploy_review_${{ github.event.pull_request.number }}
     needs: [build, test]
     if: ${{ github.event_name == 'pull_request'
+      && (
+      github.event.action == 'labeled' ||
+      github.event.action == 'synchronize'
+      )
       && contains(github.event.pull_request.labels.*.name, 'deploy')
       && !contains(github.event.pull_request.labels.*.name, 'refresh data') }}
     environment:
@@ -221,6 +225,21 @@ jobs:
       KONDUIT_APP_NAME: ${{ secrets.KONDUIT_APP_NAME }}
 
     steps:
+      - name: Deploy App to Review
+        id: deploy_review
+        uses: DFE-Digital/github-actions/deploy-to-aks@master
+        with:
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          environment: review
+          pr-number: ${{ github.event.pull_request.number }}
+          sha: ${{ needs.build.outputs.docker-image-tag }}
+          terraform-base: ${{ env.TERRAFORM_BASE }}
+          healthcheck: ${{ env.HEALTHCHECK_CMD }}
+          db-seed: false
+          smoke-test: false
+
       # ---------------------------
       # REVIEW APP DATABASE DEPLOYMENT (PR)
       # ---------------------------
@@ -318,21 +337,6 @@ jobs:
             -i "${BACKUP_FILE}" -c \
             "${APP_NAME}" -- psql -v ON_ERROR_STOP=1 -X
 
-      - name: Deploy App to Review
-        id: deploy_review
-        uses: DFE-Digital/github-actions/deploy-to-aks@master
-        with:
-          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          environment: review
-          pr-number: ${{ github.event.pull_request.number }}
-          sha: ${{ needs.build.outputs.docker-image-tag }}
-          terraform-base: ${{ env.TERRAFORM_BASE }}
-          healthcheck: ${{ env.HEALTHCHECK_CMD }}
-          db-seed: false
-          smoke-test: false
-
   # ---------------------------
   # REVIEW APP DEPLOYMENT (PR) - refresh requested
   # ---------------------------
@@ -341,6 +345,10 @@ jobs:
     concurrency: deploy_review_${{ github.event.pull_request.number }}
     needs: [build, test, refresh-data]
     if: ${{ github.event_name == 'pull_request'
+      && (
+      github.event.action == 'labeled' ||
+      github.event.action == 'synchronize'
+      )
       && contains(github.event.pull_request.labels.*.name, 'deploy')
       && contains(github.event.pull_request.labels.*.name, 'refresh data')
       && needs.refresh-data.result == 'success' }}
@@ -359,6 +367,21 @@ jobs:
       KONDUIT_APP_NAME: ${{ secrets.KONDUIT_APP_NAME }}
 
     steps:
+      - name: Deploy App to Review
+        id: deploy_review
+        uses: DFE-Digital/github-actions/deploy-to-aks@master
+        with:
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          environment: review
+          pr-number: ${{ github.event.pull_request.number }}
+          sha: ${{ needs.build.outputs.docker-image-tag }}
+          terraform-base: ${{ env.TERRAFORM_BASE }}
+          healthcheck: ${{ env.HEALTHCHECK_CMD }}
+          db-seed: false
+          smoke-test: false
+
       # ---------------------------
       # REVIEW APP DATABASE DEPLOYMENT (PR)
       # ---------------------------
@@ -432,7 +455,7 @@ jobs:
 #            --connection-string "${AZURE_STORAGE_CONNECTION_STRING}" \
 #            --overwrite true
 
-#          ls -lh "${BACKUP_FILE}"
+          ls -lh "${BACKUP_FILE}"    
 
 #      - name: Restore backup into PR review DB
 #        continue-on-error: true
@@ -449,29 +472,13 @@ jobs:
 #          ls -lh "${BACKUP_FILE}"
 #          gzip -t "${BACKUP_FILE}"
 
-#          "$GITHUB_WORKSPACE/konduit.sh" \
-#            -n "${AKS_NAMESPACE}" \
-#            -t 7200 \
-#            -x \
-#            -i "${BACKUP_FILE}" -c \
-#            "${APP_NAME}" -- psql -v ON_ERROR_STOP=1 -X
-
-      - name: Deploy App to Review
-        id: deploy_review
-        uses: DFE-Digital/github-actions/deploy-to-aks@master
-        with:
-          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          environment: review
-          pr-number: ${{ github.event.pull_request.number }}
-          sha: ${{ needs.build.outputs.docker-image-tag }}
-          terraform-base: ${{ env.TERRAFORM_BASE }}
-          healthcheck: ${{ env.HEALTHCHECK_CMD }}
-          db-seed: false
-          smoke-test: false
-
-
+          "$GITHUB_WORKSPACE/konduit.sh" \
+            -n "${AKS_NAMESPACE}" \
+            -t 7200 \
+            -x \
+            -i "${BACKUP_FILE}" -c \
+            "${APP_NAME}" -- psql -v ON_ERROR_STOP=1 -X
+     
   # ---------------------------
   # DEPLOY TEST (AUTO) + PROD (MANUAL APPROVAL)
   # ---------------------------
@@ -505,8 +512,9 @@ jobs:
           sha: ${{ needs.build.outputs.docker-image-tag }}
           terraform-base: ${{ env.TERRAFORM_BASE }}
           healthcheck: ${{ env.HEALTHCHECK_CMD }}
-          slack-webhook: ${{ secrets.SLACK_WEBHOOK }}
+          teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
           smoke-test: false
+          service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
 
   # ---------------------------
   # MANUAL DEPLOY
@@ -535,7 +543,8 @@ jobs:
           sha: ${{ inputs.docker-image-tag }}
           terraform-base: ${{ env.TERRAFORM_BASE }}
           healthcheck: ${{ env.HEALTHCHECK_CMD }}
-          slack-webhook: ${{ secrets.SLACK_WEBHOOK }}
+          teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
+          service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
           smoke-test: false
           db-seed: false
 
@@ -557,7 +566,8 @@ jobs:
           azure-client-id:  ${{ secrets.AZURE_CLIENT_ID  }}
           azure-tenant-id:  ${{ secrets.AZURE_TENANT_ID   }}
           azure-subscription-id:  ${{ secrets.AZURE_SUBSCRIPTION_ID   }}
-          slack-webhook: ${{ secrets.SLACK_WEBHOOK }}
+          teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
+          service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
 
   deploy_domains_env:
     name: Deploy Domains to ${{ matrix.domain_environment }} environment
@@ -584,5 +594,6 @@ jobs:
           azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID   }}
           environment: ${{ matrix.domain_environment }}
           healthcheck: healthcheck
-          slack-webhook: ${{ secrets.SLACK_WEBHOOK }}
+          teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
+          service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
           terraform-base: terraform/domains/environment_domains

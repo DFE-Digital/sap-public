@@ -1,12 +1,14 @@
 ﻿using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
+using System.Globalization;
 
 namespace SAPPub.Infrastructure.Repositories.KS4.SubjectEntries
 {
     public sealed class EstablishmentSubjectEntriesRepository : IEstablishmentSubjectEntriesRepository
     {
         private readonly IGenericRepository<EstablishmentSubjectEntryRow> _repo;
+        private const string TotalExamEntriesRowIndicator = "Total exam entries";
 
         public EstablishmentSubjectEntriesRepository(IGenericRepository<EstablishmentSubjectEntryRow> repo)
         {
@@ -15,16 +17,26 @@ namespace SAPPub.Infrastructure.Repositories.KS4.SubjectEntries
 
         public async Task<EstablishmentCoreSubjectEntries> GetCoreSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default)
         {
-            var rows = await GetAggregatedRowsAsync(urn, ct);
+            if (string.IsNullOrWhiteSpace(urn))
+                return new EstablishmentCoreSubjectEntries { SubjectEntries = new List<EstablishmentCoreSubjectEntries.SubjectEntry>() };
+
+            var rows = (await _repo.ReadManyAsync(new { Urn = urn }, ct))
+                .Where(r => IsCoreSubject(r.subject) && r.grade == TotalExamEntriesRowIndicator);
+
+            if (rows == null || !rows.Any())
+                return new EstablishmentCoreSubjectEntries { SubjectEntries = new List<EstablishmentCoreSubjectEntries.SubjectEntry>() };
 
             var core = rows
-                .Where(r => IsCoreSubject(r.Subject))
                 .Select(r => new EstablishmentCoreSubjectEntries.SubjectEntry
                 {
-                    SubEntCore_Sub_Est_Current_Num = r.Subject,
-                    SubEntCore_Qual_Est_Current_Num = r.Qualification,
-                    SubEntCore_Entr_Est_Current_Num = r.TotalEnteredPercent
+                    SubEntCore_Sub_Est_Current_Num = r.subject_discount_group != null && r.subject_discount_group.Contains("Maths", StringComparison.InvariantCultureIgnoreCase)
+                        ? r.subject_discount_group.Replace("Maths", "Mathematics", true, CultureInfo.InvariantCulture).Trim()
+                        : r.subject_discount_group?.Trim(),
+                    SubEntCore_Qual_Est_Current_Num = r.qualification_type ?? r.qualification_detailed,
+                    SubEntCore_Entr_Est_Current_Num = r.number_achieving
                 })
+                .OrderBy(r => r.SubEntCore_Sub_Est_Current_Num)
+                .ThenBy(r => r.SubEntCore_Qual_Est_Current_Num)
                 .ToList();
 
             return new EstablishmentCoreSubjectEntries { SubjectEntries = core };
@@ -32,67 +44,30 @@ namespace SAPPub.Infrastructure.Repositories.KS4.SubjectEntries
 
         public async Task<EstablishmentAdditionalSubjectEntries> GetAdditionalSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default)
         {
-            var rows = await GetAggregatedRowsAsync(urn, ct);
+            if (string.IsNullOrWhiteSpace(urn))
+                return new EstablishmentAdditionalSubjectEntries { SubjectEntries = new List<EstablishmentAdditionalSubjectEntries.SubjectEntry>() };
+
+            var rows = (await _repo.ReadManyAsync(new { Urn = urn }, ct))
+                .Where(r => !IsCoreSubject(r.subject) && r.grade == TotalExamEntriesRowIndicator);
+
+            if (rows == null || !rows.Any())
+                return new EstablishmentAdditionalSubjectEntries { SubjectEntries = new List<EstablishmentAdditionalSubjectEntries.SubjectEntry>() };
 
             var additional = rows
-                .Where(r => !IsCoreSubject(r.Subject))
                 .Select(r => new EstablishmentAdditionalSubjectEntries.SubjectEntry
                 {
-                    SubEntAdd_Sub_Est_Current_Num = r.Subject,
-                    SubEntAdd_Qual_Est_Current_Num = r.Qualification,
-                    SubEntAdd_Entr_Est_Current_Num = r.TotalEnteredPercent
+                    SubEntAdd_Sub_Est_Current_Num = r.subject_discount_group?.Trim(),
+                    SubEntAdd_Qual_Est_Current_Num = (r.qualification_type ?? r.qualification_detailed)?.Trim(),
+                    SubEntAdd_Entr_Est_Current_Num = r.number_achieving
                 })
+                .OrderBy(r => r.SubEntAdd_Sub_Est_Current_Num)
+                .ThenBy(r => r.SubEntAdd_Qual_Est_Current_Num)
                 .ToList();
 
             return new EstablishmentAdditionalSubjectEntries { SubjectEntries = additional };
         }
 
-        private async Task<List<AggregatedSubjectRow>> GetAggregatedRowsAsync(string urn, CancellationToken ct)
-        {
-            if (string.IsNullOrWhiteSpace(urn))
-                return [];
-
-            var raw = (await _repo.ReadManyAsync(new { Urn = urn }, ct)).ToList();
-            if (raw.Count == 0)
-                return [];
-
-            // Cohort size should be consistent; use max defensively.
-            var cohort = raw.Select(r => r.pupil_count ?? 0).Max();
-            if (cohort <= 0)
-                return [];
-
-            return raw
-                .Where(r => !string.IsNullOrWhiteSpace(r.subject))
-                .GroupBy(r => new
-                {
-                    Subject = r.subject!.Trim(), // subject only (no subject_discount_group)
-                    Qualification = (r.qualification_type ?? r.qualification_detailed ?? string.Empty).Trim()
-                })
-                .Select(g =>
-                {
-                    var totalEntries = g.Sum(x => x.number_achieving ?? 0);
-
-                    // Convert summed grade counts to percent-of-cohort.
-                    var pct = (totalEntries / (double)cohort) * 100.0;
-
-                    // Safety clamp (optional but sensible with dirty data)
-                    if (pct > 100.0) pct = 100.0;
-                    if (pct < 0.0) pct = 0.0;
-
-                    return new AggregatedSubjectRow(
-                        Subject: g.Key.Subject,
-                        Qualification: string.IsNullOrWhiteSpace(g.Key.Qualification) ? null : g.Key.Qualification,
-                        TotalEnteredPercent: pct
-                    );
-                })
-                .OrderBy(x => x.Subject)
-                .ThenBy(x => x.Qualification)
-                .ToList();
-        }
-
-        private sealed record AggregatedSubjectRow(string Subject, string? Qualification, double TotalEnteredPercent);
-
-        private static readonly HashSet<string> CoreSubjects = new(StringComparer.OrdinalIgnoreCase)
+        private static readonly HashSet<string> CoreSubjectCategories = new(StringComparer.OrdinalIgnoreCase)
         {
             "English Language",
             "English Literature",
@@ -107,6 +82,6 @@ namespace SAPPub.Infrastructure.Repositories.KS4.SubjectEntries
         };
 
         private static bool IsCoreSubject(string? subject)
-            => !string.IsNullOrWhiteSpace(subject) && CoreSubjects.Contains(subject.Trim());
+            => !string.IsNullOrWhiteSpace(subject) && CoreSubjectCategories.Contains(subject.Trim());
     }
 }

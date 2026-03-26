@@ -11,6 +11,7 @@ using SAPPub.Infrastructure.PostcodeLookup;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Middleware;
 using SAPPub.Web.Models.Config;
+using SAPSec.Web.Middleware;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -105,12 +106,18 @@ public partial class Program
         builder.Services.AddDependencies(builder.Environment, builder.Configuration);
         builder.Services.AddLuceneDependencies();
 
+        // Add custom error handler for NotFoundExceptions
+        builder.Services.AddExceptionHandler<NotFoundExceptionHandler>();
+
         var app = builder.Build();
+
+        app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.UseDeveloperExceptionPage(new DeveloperExceptionPageOptions { SourceCodeLineCount = 1 });
+
         }
         else
         {
@@ -118,7 +125,6 @@ public partial class Program
             app.UseHsts();
         }
 
-        app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
         // Security headers middleware - MUST come before static files
         app.UseSecurityHeaders();

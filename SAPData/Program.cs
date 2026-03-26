@@ -1,6 +1,7 @@
 ﻿using SAPData.Models;
 using CsvHelper;
 using System.Globalization;
+using SAPData.Filters;
 
 namespace SAPData;
 
@@ -46,11 +47,8 @@ internal class Program
         // -------------------------------------------------
         // 3. Generate views
         // -------------------------------------------------
-        new GenerateViews(
-            dataMaps,
-            tableMappingPath,
-            sqlDir
-        ).Run();
+        var filters = SqlViewFilterProvider.GetEstablishmentFilters();
+        new GenerateViews(dataMaps, tableMappingPath, sqlDir, filters).Run();
 
         // -------------------------------------------------
         // 4. Generate indexes
@@ -127,5 +125,5 @@ internal class Program
             ?? matches[0];
 
         return Path.GetDirectoryName(preferred)!;
-    }
+    }  
 }

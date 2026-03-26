@@ -76,7 +76,7 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
         await Page.GotoAsync(_pageUrl);
 
         await nav.ShouldBeVisibleAsync();
-        await nav.ShouldHaveItemsCountAsync(6);
+        await nav.ShouldHaveItemsCountAsync(5);
         await nav.ShouldHaveOneActiveItemAsync();
         await nav.ShouldHaveActiveHrefAsync(performancePage);
     }

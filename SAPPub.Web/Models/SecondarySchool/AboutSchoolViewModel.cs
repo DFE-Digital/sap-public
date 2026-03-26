@@ -1,6 +1,7 @@
 ﻿using SAPPub.Core.Extensions;
 using SAPPub.Core.Helpers;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
+using SAPPub.Web.Helpers;
 
 namespace SAPPub.Web.Models.SecondarySchool
 {
@@ -13,11 +14,11 @@ namespace SAPPub.Web.Models.SecondarySchool
 
         public record School(string Name, double Lat, double Lon);
 
-        public string? AcademyTrust { get; set; }
+        public required DisplayField<string> AcademyTrust { get; set; }
 
-        public string? AcademyTrustUpdatedIn { get; set; }
+        public required DisplayField<string> AcademyTrustUpdatedIn { get; set; }
 
-        public string? SchoolWebsite { get; set; }
+        public required DisplayField<string> SchoolWebsite { get; set; }
 
         public string? Telephone { get; set; }
 
@@ -63,8 +64,9 @@ namespace SAPPub.Web.Models.SecondarySchool
             {
                 URN = schoolDetails.Urn,
                 SchoolName = schoolDetails.SchoolName,
-                AcademyTrust = schoolDetails.AcademyTrust,
-                SchoolWebsite = schoolDetails.Website,
+                AcademyTrust = schoolDetails.AcademyTrust.ToDisplayField(),
+                AcademyTrustUpdatedIn = schoolDetails.AcademyTrustUpdatedIn.ToDisplayField(),
+                SchoolWebsite = schoolDetails.Website.ToDisplayField(),
                 Telephone = schoolDetails.Telephone,
                 Address = schoolDetails.Address,
                 LocalAuthority = schoolDetails.LocalAuthority,
@@ -79,8 +81,8 @@ namespace SAPPub.Web.Models.SecondarySchool
                 PupilSex = schoolDetails.PupilSex,
                 ReligiousCharacter = schoolDetails.ReligiousCharacter,
                 SixthForm = GetSixthForm(schoolDetails.OfficialSixthFormId),
-                SenUnit = GetSenUnit(schoolDetails.ResourcedProvision),
-                ResourcedProvision = GetResourcedProvision(schoolDetails.ResourcedProvision),
+                SenUnit = GetSenUnit(schoolDetails.ResourcedProvisionName),
+                ResourcedProvision = GetResourcedProvision(schoolDetails.ResourcedProvisionName),
                 IsLocalAuthoritySchool = schoolDetails.EstablishmentTypeGroupId.ToInt() == LocalAuthorityEstablishmentGroupTypeId,
             };
         }

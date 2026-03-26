@@ -1,4 +1,5 @@
 ﻿using SAPPub.Core.Entities;
+using SAPPub.Core.Exceptions;
 using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Services;
 
@@ -25,14 +26,14 @@ namespace SAPPub.Core.Services
         }
 
         public async Task<Establishment> GetEstablishmentAsync(string urn, CancellationToken ct = default)
-        {
-            if (string.IsNullOrWhiteSpace(urn))
-                return new Establishment();
+        {           
 
             var establishment = await _establishmentRepository.GetEstablishmentAsync(urn, ct);
 
-            if (string.IsNullOrWhiteSpace(establishment.URN))
-                return new Establishment();
+            if (establishment is null)
+            {
+                throw new NotFoundException($"Establishment not found with URN: {urn}");
+            }
 
             return establishment;
         }

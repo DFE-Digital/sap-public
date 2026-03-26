@@ -1,4 +1,5 @@
 ﻿using SAPPub.Core.Enums;
+using SAPPub.Web.Helpers;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
@@ -71,11 +72,11 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
         await Page.GotoAsync(_pageUrl);
 
         await nav.ShouldBeVisibleAsync();
-        await nav.ShouldHaveItemsCountAsync(6);
+        await nav.ShouldHaveItemsCountAsync(5);
         await nav.ShouldHaveOneActiveItemAsync();
         await nav.ShouldHaveActiveHrefAsync(_pageUrl);
     }
-    
+
     [Fact]
     public async Task AcademicPerformanceAttainmentAndProgressPage_Displays_Sub_Navigation()
     {
@@ -122,17 +123,19 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
         await Page.GotoAsync(_pageUrl);
 
         // Act
-        var academicYearSelector = Page.Locator("#academicyearSelector");
+        var academicYearSelector = Page.Locator("#academicYearSelector");
         var progress8CustomCard = Page.GetByTestId("progress8-custom-card");
 
         var attainment8EstablishmentCard = Page.GetByTestId("attainment8-establishment-card");
         var attainment8LocalAuthorityAndNationalCard = Page.GetByTestId("attainment8-localauthority-and-national-card");
+        var attainmnet8NoEstablishmentDataCard = Page.GetByTestId("attainment8-no-establishment-data-card");
 
         // Assert
         Assert.True(await academicYearSelector.IsVisibleAsync());
         Assert.True(await progress8CustomCard.IsVisibleAsync());
         Assert.True(await attainment8EstablishmentCard.IsVisibleAsync());
         Assert.True(await attainment8LocalAuthorityAndNationalCard.IsVisibleAsync());
+        Assert.False(await attainmnet8NoEstablishmentDataCard.IsVisibleAsync());
     }
 
     [Theory]
@@ -144,8 +147,8 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
         await Page.GotoAsync(_pageUrl);
 
         // Act
-        var academicyearSelector = Page.Locator("#academicyearSelector");
-        await academicyearSelector.SelectOptionAsync([academicYearSelection.ToString()]);
+        var academicyearSelector = Page.Locator("#academicYearSelector");
+        await academicyearSelector.SelectOptionAsync([academicYearSelection.GetDisplayName()!]);
         var buttonSelector = Page.Locator("button:has-text(\"Show results\")");
         await buttonSelector.ClickAsync();
 
@@ -165,6 +168,32 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
         var attainment8LocalAuthorityAndNationlCard = Page.GetByTestId("attainment8-localauthority-and-national-card");
         Assert.True(await attainment8LocalAuthorityAndNationlCard.IsVisibleAsync());
 
+        var paragraphStatingYear = Page.GetByTestId("academic-year-info");
+        Assert.True(await paragraphStatingYear.IsVisibleAsync());
+        Assert.Contains(academicYearSelection.GetDisplayName()!, await paragraphStatingYear.InnerTextAsync());
+        var attainmnet8NoEstablishmentDataCard = Page.GetByTestId("attainment8-no-establishment-data-card");
+        Assert.False(await attainmnet8NoEstablishmentDataCard.IsVisibleAsync());
+    }
+
+    [Theory]
+    [InlineData(AcademicYearSelection.Current)]
+    [InlineData(AcademicYearSelection.Previous)]
+    [InlineData(AcademicYearSelection.Previous2)]
+    public async Task AcademicPerformanceAttainmentAndProgressPage_Display_No_Attainment8_Info(AcademicYearSelection academicYearSelection)
+    {
+        // Arrange
+        _pageUrl = "school/100273/Saint%20Paul%20Roman%20Catholic%20Infant%20School/secondary/academic-performance-attainment-and-progress";
+        await Page.GotoAsync(_pageUrl);
+
+        // Act
+        var academicyearSelector = Page.Locator("#academicYearSelector");
+        await academicyearSelector.SelectOptionAsync([academicYearSelection.GetDisplayName()!]);
+        var buttonSelector = Page.Locator("button:has-text(\"Show results\")");
+        await buttonSelector.ClickAsync();
+
+        // Assert        
+        var attainmnet8NoEstablishmentDataCard = Page.GetByTestId("attainment8-no-establishment-data-card");
+        Assert.True(await attainmnet8NoEstablishmentDataCard.IsVisibleAsync());
     }
 
     [Fact]

@@ -43,13 +43,13 @@ public class SecondarySchoolControllerTests
             {
                 SubEntCore_Sub_Est_Current_Num = "English language",
                 SubEntCore_Qual_Est_Current_Num = "GCSE",
-                SubEntCore_Entr_Est_Current_Num = 95.04,
+                SubEntCore_Entr_Est_Current_Num = 95,
             },
             new()
             {
                 SubEntCore_Sub_Est_Current_Num = "English literature",
                 SubEntCore_Qual_Est_Current_Num = "GCSE",
-                SubEntCore_Entr_Est_Current_Num = 90.15,
+                SubEntCore_Entr_Est_Current_Num = 90,
             }
         };
 
@@ -60,13 +60,13 @@ public class SecondarySchoolControllerTests
             {
                 SubEntAdd_Sub_Est_Current_Num = "Geography",
                 SubEntAdd_Qual_Est_Current_Num = "GCSE",
-                SubEntAdd_Entr_Est_Current_Num = 45.45,
+                SubEntAdd_Entr_Est_Current_Num = 45,
             },
             new()
             {
                 SubEntAdd_Sub_Est_Current_Num = "Music",
                 SubEntAdd_Qual_Est_Current_Num = "GCSE",
-                SubEntAdd_Entr_Est_Current_Num = 10.12,
+                SubEntAdd_Entr_Est_Current_Num = 10,
             }
         };
 
@@ -144,7 +144,7 @@ public class SecondarySchoolControllerTests
             PupilSex = _fakeEstablishment.GenderName,
             ReligiousCharacter = _fakeEstablishment.ReligiousCharacterName,
             OfficialSixthFormId = _fakeEstablishment.OfficialSixthFormId,
-            ResourcedProvision = _fakeEstablishment.ResourcedProvision,
+            ResourcedProvisionName = _fakeEstablishment.ResourcedProvisionName,
             EstablishmentTypeGroupId = _fakeEstablishment.EstablishmentTypeGroupId
         };
     }
@@ -171,7 +171,7 @@ public class SecondarySchoolControllerTests
             .WithGenderName("GenderName")
             .WithReligiousCharacterName("ReligiousCharacter")
             .WithOfficialSixthFormId("No")
-            .WithResourcedProvision("Resourced provision")
+            .WithResourcedProvisionName("Resourced provision")
             .WithEstablishmentTypeGroupId("1")
             .Build();
 
@@ -216,8 +216,9 @@ public class SecondarySchoolControllerTests
         Assert.NotNull(model);
         Assert.Equal(expectedResult.Urn, model.URN);
         Assert.Equal(expectedResult.SchoolName, model.SchoolName);
-        Assert.Equal(expectedResult.Website, model.SchoolWebsite);
-        Assert.Equal(expectedResult.AcademyTrust, model.AcademyTrust);
+        Assert.Equal(expectedResult.Website, model.SchoolWebsite.Value);
+        Assert.Equal(expectedResult.AcademyTrust, model.AcademyTrust.Value);
+        Assert.Equal(expectedResult.AcademyTrustUpdatedIn, model.AcademyTrustUpdatedIn.Value);
         Assert.Equal(expectedResult.Telephone, model.Telephone);
         Assert.Equal(expectedResult.LocalAuthority, model.LocalAuthority);
         Assert.Equal(expectedResult.LocalAuthorityName, model.LocalAuthorityCouncilName);
@@ -233,6 +234,49 @@ public class SecondarySchoolControllerTests
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(expectedResult.Urn, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(expectedResult.SchoolName, model.RouteAttributes[RouteConstants.SchoolName]);
+    }
+
+    [Theory]
+    [InlineData(null, FieldStatus.NotAvailable)]
+    [InlineData("", FieldStatus.NotAvailable)]
+    [InlineData(" ", FieldStatus.NotAvailable)]
+    [InlineData("test", FieldStatus.Available)]
+    public async Task Get_AboutSchool_SchoolFeatures_SchoolWebsite(string? website, FieldStatus fieldStatus)
+    {
+        _fakeEstablishment.Website = website!;
+
+        var expectedResult = SchoolDetails();
+
+        _mockAboutSchoolService
+            .Setup(es => es.GetAboutSchoolDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.AboutSchool(
+            _mockAboutSchoolService.Object,
+            _fakeEstablishment.URN,
+            _fakeEstablishment.EstablishmentName,
+            CancellationToken.None) as ViewResult;
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as AboutSchoolViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(fieldStatus, model.SchoolWebsite.Status);
+
+        if (fieldStatus == FieldStatus.Available)
+        {
+            Assert.False(model.SchoolWebsite.IsNotAvailable);
+            Assert.True(model.SchoolWebsite.IsAvailable);
+            Assert.Equal(website, model.SchoolWebsite.Value);
+            Assert.Equal(website, model.SchoolWebsite.DisplayText());
+        }
+        else
+        {
+            Assert.False(model.SchoolWebsite.IsAvailable);
+            Assert.True(model.SchoolWebsite.IsNotAvailable);
+            Assert.Equal("Not available", model.SchoolWebsite.DisplayText());
+        }
     }
 
     [Theory]
@@ -252,7 +296,7 @@ public class SecondarySchoolControllerTests
             .ReturnsAsync(expectedResult);
 
         var result = await _controller.AboutSchool(
-            _mockAboutSchoolService.Object, 
+            _mockAboutSchoolService.Object,
             _fakeEstablishment.URN,
             _fakeEstablishment.EstablishmentName,
             CancellationToken.None) as ViewResult;
@@ -268,11 +312,12 @@ public class SecondarySchoolControllerTests
     [Theory]
     [InlineData("", "No")]
     [InlineData("Not applicable", "No")]
+    [InlineData("Resourced provision", "No")]
     [InlineData("SEN unit", "Yes")]
     [InlineData("Resourced provision and SEN unit", "Yes")]
-    public async Task Get_AboutSchool_SchoolFeatures_SENUnit(string resourcedProvision, string expectedOutput)
+    public async Task Get_AboutSchool_SchoolFeatures_SENUnit(string resourcedProvisionName, string expectedOutput)
     {
-        _fakeEstablishment.ResourcedProvision = resourcedProvision;
+        _fakeEstablishment.ResourcedProvisionName = resourcedProvisionName;
 
         var expectedResult = SchoolDetails();
 
@@ -301,11 +346,12 @@ public class SecondarySchoolControllerTests
     [Theory]
     [InlineData("", "No")]
     [InlineData("Not applicable", "No")]
+    [InlineData("SEN unit", "No")]
     [InlineData("Resourced provision", "Yes")]
     [InlineData("Resourced provision and SEN unit", "Yes")]
-    public async Task Get_AboutSchool_SchoolFeatures_ResourcedUnit(string resourcedProvision, string expectedOutput)
+    public async Task Get_AboutSchool_SchoolFeatures_ResourcedUnit(string resourcedProvisionName, string expectedOutput)
     {
-        _fakeEstablishment.ResourcedProvision = resourcedProvision;
+        _fakeEstablishment.ResourcedProvisionName = resourcedProvisionName;
 
         var expectedResult = SchoolDetails();
 
@@ -411,12 +457,57 @@ public class SecondarySchoolControllerTests
         Assert.NotNull(model);
         Assert.Equal(_fakeEstablishment.URN, model.URN);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
-        Assert.Equal(_fakeEstablishment.Website, model.SchoolWebsite);
+        Assert.Equal(_fakeEstablishment.Website, model.SchoolWebsite.Value);
         Assert.Equal(lASchoolAdmissionsUrl, model.LASecondarySchoolAdmissionsLinkUrl);
         Assert.Equal(laName, model.LAName);
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
+    }
+
+    [Theory]
+    [InlineData(null, FieldStatus.NotAvailable)]
+    [InlineData("", FieldStatus.NotAvailable)]
+    [InlineData(" ", FieldStatus.NotAvailable)]
+    [InlineData("test", FieldStatus.Available)]
+    public async Task Get_Admissions_Info_SchoolWebsite(string? website, FieldStatus fieldStatus)
+    {
+        _fakeEstablishment.Website = website!;
+
+        var lASchoolAdmissionsUrl = "https://www.example.com/school-admissions";
+        var laName = "Example Local Authority";
+
+        _mockAdmissionsService
+            .Setup(s => s.GetAdmissionsDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new AdmissionsServiceModel(
+                SchoolWebsite: _fakeEstablishment.Website,
+                LAName: laName,
+                LASchoolAdmissionsUrl: lASchoolAdmissionsUrl
+            ));
+
+        var result = await _controller.Admissions(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as AdmissionsViewModel;
+
+        Assert.NotNull(model);
+        Assert.Equal(fieldStatus, model.SchoolWebsite.Status);
+
+        if (fieldStatus == FieldStatus.Available)
+        {
+            Assert.False(model.SchoolWebsite.IsNotAvailable);
+            Assert.True(model.SchoolWebsite.IsAvailable);
+            Assert.Equal(website, model.SchoolWebsite.Value);
+            Assert.Equal(website, model.SchoolWebsite.DisplayText());
+        }
+        else
+        {
+            Assert.False(model.SchoolWebsite.IsAvailable);
+            Assert.True(model.SchoolWebsite.IsNotAvailable);
+            Assert.Equal("Not available", model.SchoolWebsite.DisplayText());
+        }
     }
 
     [Fact]
@@ -431,7 +522,7 @@ public class SecondarySchoolControllerTests
         Assert.NotNull(model);
         Assert.Equal(_fakeEstablishment.URN, model.URN);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
-        Assert.Equal(_fakeEstablishment.Website, model.SchoolWebsite);
+        Assert.Equal(_fakeEstablishment.Website, model.SchoolWebsite.Value);
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
@@ -449,10 +540,44 @@ public class SecondarySchoolControllerTests
         Assert.NotNull(model);
         Assert.Equal(_fakeEstablishment.URN, model.URN);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
-        Assert.Equal(_fakeEstablishment.Website, model.SchoolWebsite);
+        Assert.Equal(_fakeEstablishment.Website, model.SchoolWebsite.Value);
         Assert.Equal(2, model.RouteAttributes.Count);
-        Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);        
+        Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
+    }
+
+    [Theory]
+    [InlineData(null, FieldStatus.NotAvailable)]
+    [InlineData("", FieldStatus.NotAvailable)]
+    [InlineData(" ", FieldStatus.NotAvailable)]
+    [InlineData("test", FieldStatus.Available)]
+    public async Task Get_CurriculumAndExtraCurricularActivities_Info_SchoolWebsite(string? website, FieldStatus fieldStatus)
+    {
+        _fakeEstablishment.Website = website!;
+
+        var result = await _controller.CurriculumAndExtraCurricularActivities(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as CurriculumAndExtraCurricularActivitiesViewModel;
+
+        Assert.NotNull(model);
+        Assert.Equal(fieldStatus, model.SchoolWebsite.Status);
+
+        if (fieldStatus == FieldStatus.Available)
+        {
+            Assert.False(model.SchoolWebsite.IsNotAvailable);
+            Assert.True(model.SchoolWebsite.IsAvailable);
+            Assert.Equal(website, model.SchoolWebsite.Value);
+            Assert.Equal(website, model.SchoolWebsite.DisplayText());
+        }
+        else
+        {
+            Assert.False(model.SchoolWebsite.IsAvailable);
+            Assert.True(model.SchoolWebsite.IsNotAvailable);
+            Assert.Equal("Not available", model.SchoolWebsite.DisplayText());
+        }
     }
 
     [Theory]
@@ -497,6 +622,7 @@ public class SecondarySchoolControllerTests
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
         Assert.Equal(3, model.AcademicYearsSelectList.Count);
         Assert.Equal(academicYearSelection, model.SelectedAcademicYear);
+        Assert.Equal($"Information in this section is for the {academicYearSelection.GetDisplayName()} academic year.", model.AcademicYearInfoParagraph);
         Assert.Equal(expectedShowProgress8NotAvailableInfo, model.ShowProgress8NotAvailableInfo);
 
         Assert.Equal(expectedResult.EstablishmentAttainment8Score, model.EstablishmentAttainment8Score);
@@ -517,6 +643,53 @@ public class SecondarySchoolControllerTests
             Assert.Equal(expectedResult.EstablishmentProgress8TotalPupils, model.EstablishmentProgress8TotalPupils);
             Assert.Equal(expectedResult.EstablishmentTotalPupils, model.EstablishmentTotalPupils);
         }
+    }
+
+    [Theory]
+    [InlineData(AcademicYearSelection.Current, true)]
+    [InlineData(AcademicYearSelection.Previous, false)]
+    [InlineData(AcademicYearSelection.Previous2, false)]
+    public async Task Get_AcademicPerformanceAttainmentAndProgress_Display_Attainment8_Data(
+        AcademicYearSelection academicYearSelection,
+        bool expectedShowAttainment8Info)
+    {
+        var expectedResult = new AttainmentAndProgressModel
+        {
+            Urn = _fakeEstablishment.URN,
+            SchoolName = _fakeEstablishment.EstablishmentName,
+            EstablishmentProgress8Score = 0.9,
+            LocalAuthorityProgress8Score = 1.5,
+            EstablishmentAttainment8Score = expectedShowAttainment8Info ? 70 : null,
+            LocalAuthorityAttainment8Score = 80,
+            EnglandAttainment8Score = 50,
+            EstablishmentProgress8TotalPupils = 65,
+            EstablishmentTotalPupils = 95
+        };
+
+        _mockAttainmentAndProgressService
+            .Setup(s => s.GetAttainmentAndProgressAsync(_fakeEstablishment.URN, academicYearSelection, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.AcademicPerformanceAttainmentAndProgress(
+            _mockAttainmentAndProgressService.Object,
+            _fakeEstablishment.URN,
+            _fakeEstablishment.EstablishmentName,
+            academicYearSelection,
+            CancellationToken.None) as ViewResult;
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as AcademicPerformanceAttainmentAndProgressViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(_fakeEstablishment.URN, model.URN);
+        Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
+        Assert.Equal(2, model.RouteAttributes.Count);
+        Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
+        Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
+        Assert.Equal(3, model.AcademicYearsSelectList.Count);
+        Assert.Equal(academicYearSelection, model.SelectedAcademicYear);
+        Assert.Equal(expectedShowAttainment8Info, model.ShowAttainment8Info);
     }
 
     [Theory]
@@ -712,8 +885,8 @@ public class SecondarySchoolControllerTests
             model.CoreSubjects.Select(s => s.Subject).OrderBy(s => s)
         );
         Assert.Equal(
-           CoreSubjects.Select(c => $"{c.SubEntCore_Entr_Est_Current_Num:F1}%").OrderBy(s => s),
-           model.CoreSubjects.Select(s => s.PercentageOfPupilsEntered).OrderBy(s => s)
+           CoreSubjects.Select(c => $"{c.SubEntCore_Entr_Est_Current_Num:F0}").OrderBy(s => s),
+           model.CoreSubjects.Select(s => s.NumberOfEntries).OrderBy(s => s)
         );
         Assert.Equal(
             CoreSubjects.Select(c => c.SubEntCore_Qual_Est_Current_Num).OrderBy(s => s),
@@ -726,8 +899,8 @@ public class SecondarySchoolControllerTests
             model.AdditionalSubjects.Select(s => s.Subject).OrderBy(s => s)
         );
         Assert.Equal(
-           AdditionalSubjects.Select(c => $"{c.SubEntAdd_Entr_Est_Current_Num:F1}%").OrderBy(s => s),
-           model.AdditionalSubjects.Select(s => s.PercentageOfPupilsEntered).OrderBy(s => s)
+           AdditionalSubjects.Select(c => $"{c.SubEntAdd_Entr_Est_Current_Num:F0}").OrderBy(s => s),
+           model.AdditionalSubjects.Select(s => s.NumberOfEntries).OrderBy(s => s)
         );
         Assert.Equal(
             AdditionalSubjects.Select(c => c.SubEntAdd_Qual_Est_Current_Num).OrderBy(s => s),

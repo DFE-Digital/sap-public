@@ -68,11 +68,13 @@ public class AttendancePageTests(WebApplicationSetupFixture fixture) : BasePageT
     {
         var nav = new VerticalNavigationHelper(Page);
         await Page.GotoAsync(_pageUrl);
-
+        
         await nav.ShouldBeVisibleAsync();
-        await nav.ShouldHaveItemsCountAsync(6);
-        await nav.ShouldHaveOneActiveItemAsync();
-        await nav.ShouldHaveActiveHrefAsync(_pageUrl);
+        await nav.ShouldHaveItemsCountAsync(5);
+        // Commented below assert as the attendance navigation is removed
+        // When it is added back in just uncomment below code
+        //await nav.ShouldHaveOneActiveItemAsync();
+        //await nav.ShouldHaveActiveHrefAsync(_pageUrl);
     }
 
     [Fact]

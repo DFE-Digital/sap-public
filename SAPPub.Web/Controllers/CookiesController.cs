@@ -64,19 +64,36 @@ public class CookiesController : Controller
     }
 
     private void RemoveGaCookies()
-    {       
-        foreach( string cookie in Request.Cookies.Keys)
-        {
-            if (cookie.StartsWith("_ga", StringComparison.OrdinalIgnoreCase))
-            {
-                var host = Request.Host.Host;
-                var domain = host.StartsWith(".") ? host : $".{host}";
+    {
+        if (!HasGaCookies())
+            return;
 
-                Response.Cookies.Delete(cookie);
-                Response.Cookies.Delete(cookie, new CookieOptions { Path = "/" });
-                Response.Cookies.Delete(cookie, new CookieOptions { Path = "/", Domain = host });
-                Response.Cookies.Delete(cookie, new CookieOptions { Path = "/", Domain = domain });
-            }
+        var hostName = Request.Host.Host;
+        var parts = hostName.Split('.');
+
+        var possibleDomains = new List<string?> { null, hostName };
+
+        for (int i = 0; i < parts.Length - 1; i++)
+        {
+            var domain = "." + string.Join(".", parts.Skip(i+1));
+            possibleDomains.Add(domain);
         }
+
+        foreach (var (cookie, domain) in Request.Cookies.Keys
+            .Where(cookie => cookie.StartsWith("_ga", StringComparison.OrdinalIgnoreCase))
+            .SelectMany(cookie => possibleDomains.Distinct().Select(domain => (cookie, domain))))
+        {
+            Response.Cookies.Delete(cookie, new CookieOptions 
+            {
+                Domain = domain,
+                Path = "/",
+                Secure = false
+            });
+        }
+    }
+
+    private bool HasGaCookies()
+    {
+        return Request.Cookies.Keys.Any(k => !string.IsNullOrWhiteSpace(k) && k.StartsWith("_ga", StringComparison.OrdinalIgnoreCase));
     }
 }

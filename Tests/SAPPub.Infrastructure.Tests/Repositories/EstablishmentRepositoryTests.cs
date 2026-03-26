@@ -91,7 +91,7 @@ namespace SAPPub.Infrastructure.Tests.Repositories
         }
 
         [Fact]
-        public async Task GetEstablishmentAsync_ReturnsNewEstablishmentWhenUrnDoesNotExist()
+        public async Task GetEstablishmentAsync_ReturnsNullWhenUrnDoesNotExist()
         {
             // Arrange
             var urn = "999";
@@ -104,8 +104,7 @@ namespace SAPPub.Infrastructure.Tests.Repositories
             var result = await _sut.GetEstablishmentAsync(urn, CancellationToken.None);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Equal(string.Empty, result.URN);
+            Assert.Null(result);
 
             _mockGenericRepo.Verify(r => r.ReadAsync(urn, It.IsAny<CancellationToken>()), Times.Once);
         }

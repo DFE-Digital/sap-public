@@ -52,6 +52,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "EstablishmentTypeGroupId",
           "EstablishmentTypeGroupName",
           "ResourcedProvision",
+          "ResourcedProvisionName",
           "UKPRN",
           "UrbanRuralId",
           "UrbanRuralName",
@@ -192,6 +193,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           school_urn,
           pupil_count,
           subject,
+          subject_discount_group,
           qualification_type,
           qualification_detailed,
           grade,
@@ -293,7 +295,6 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                     select
                       {EstablishmentColumns}
                     from public.v_establishment
-                    WHERE "PhaseOfEducationId" in (4, 5, 7)
                     """ + DapperHelpers.GetOrderBy(typeof(Establishment)),
 
                 nameof(EstablishmentAbsence) =>

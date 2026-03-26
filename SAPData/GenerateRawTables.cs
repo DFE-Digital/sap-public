@@ -120,7 +120,7 @@ public class GenerateRawTables
             else if (row.Count > columnCount)
             {
                 row = row.Take(columnCount).ToList();
-            }
+            }            
 
             writer.WriteLine(string.Join(",", row.Select(EscapeCsv)));
         }
@@ -411,5 +411,6 @@ public class GenerateRawTables
             return "\"" + value.Replace("\"", "\"\"") + "\"";
 
         return value;
-    }
+    }   
 }
+

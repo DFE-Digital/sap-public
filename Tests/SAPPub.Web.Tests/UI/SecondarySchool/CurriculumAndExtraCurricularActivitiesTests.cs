@@ -64,13 +64,32 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
     }
 
     [Fact]
+    public async Task CurriculumAndExtraCurricularActivitiesPage_CurrentCurriculum_ContactSchoolText()
+    {
+        // Arrange
+        _pageUrl = "school/100273/Saint%20Paul%20Roman%20Catholic%20Infant%20School/secondary/curriculum-and-extra-curricular-activities";
+        await Page.GotoAsync(_pageUrl);
+
+        // Act
+        var summaryCard = Page.GetByTestId("current-curriculum-summary");
+        await summaryCard.WaitForAsync();
+
+        var contactSchoolInfoKs3 = summaryCard.GetByTestId("contact-school-info-ks3");
+        var contactSchoolInfoKs4 = summaryCard.GetByTestId("contact-school-info-ks4");            
+
+        // Assert
+        Assert.True(await contactSchoolInfoKs3.IsVisibleAsync());
+        Assert.True(await contactSchoolInfoKs4.IsVisibleAsync());
+    }
+
+    [Fact]
     public async Task CurriculumAndExtraCurricularActivitiesPage_Displays_VerticalNavigation()
     {
         var nav = new VerticalNavigationHelper(Page);
         await Page.GotoAsync(_pageUrl);
 
         await nav.ShouldBeVisibleAsync();
-        await nav.ShouldHaveItemsCountAsync(6);
+        await nav.ShouldHaveItemsCountAsync(5);
         await nav.ShouldHaveOneActiveItemAsync();
         await nav.ShouldHaveActiveHrefAsync(_pageUrl);
     }
@@ -95,10 +114,30 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
         await Page.GotoAsync(_pageUrl);
 
         // Act
-        var isVisible = await Page.Locator("#current-extra-curricular-activities-offered-summary").IsVisibleAsync();
+        var summaryCard = Page.Locator("#current-extra-curricular-activities-offered-summary");
 
         // Assert
-        Assert.True(isVisible);
+        Assert.True(await summaryCard.IsVisibleAsync());
+
+        var contactSchoolInfo = summaryCard.GetByTestId("contact-school-info-extra");
+        Assert.False(await contactSchoolInfo.IsVisibleAsync());
+    }
+
+    [Fact]
+    public async Task CurriculumAndExtraCurricularActivitiesPage_Displays_Extra_Curriculum_Summary_ContactSchoolText()
+    {
+        // Arrange
+        _pageUrl = "school/100273/Saint%20Paul%20Roman%20Catholic%20Infant%20School/secondary/curriculum-and-extra-curricular-activities";
+        await Page.GotoAsync(_pageUrl);
+
+        // Act
+        var summaryCard = Page.Locator("#current-extra-curricular-activities-offered-summary");
+        await summaryCard.WaitForAsync();
+
+        var contactSchoolInfo = summaryCard.GetByTestId("contact-school-info-extra");
+
+        // Assert
+        Assert.True(await contactSchoolInfo.IsVisibleAsync());
     }
 
     [Fact]

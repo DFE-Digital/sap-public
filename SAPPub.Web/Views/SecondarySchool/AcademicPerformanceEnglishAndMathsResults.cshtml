@@ -71,7 +71,7 @@
         </govuk-details>
 
         <div id="graphSection" class="govuk-grid-row">
-            <form method="get" asp-action="AcademicPerformanceEnglishAndMathsResults" asp-controller="SecondarySchool" asp-fragment="graphSection">
+            <form method="get" asp-action="AcademicPerformanceEnglishAndMathsResults" asp-controller="SecondarySchool">
                 <govuk-select for="@Model.SelectedGrade" class="govuk-grid-column-two-thirds govuk-input__wrapper" id="gradeSelector">
                     <govuk-select-label class="govuk-label--s govuk-!-margin-right-2 select-inline-label">Choose the grade you want to see results for</govuk-select-label>
                     <govuk-select-item value=@GcseGradeDataSelection.Grade4AndAbove selected="@Model.SelectedGrade == GcseGradeDataSelection.Grade4AndAbove">@GcseGradeDataSelection.Grade4AndAbove.GetDisplayName()</govuk-select-item>
@@ -89,8 +89,8 @@
                 @(Model.SelectedGrade == GcseGradeDataSelection.Grade5AndAbove ? "Grade 5 is comparable to the top of the old grade C." : "The bottom of grade 4 is comparable to the bottom of the old grade C")
             </p>
 
-            <input type="radio" name="dataView" id="current-view" class="govuk-visually-hidden" checked />
-            <input type="radio" name="dataView" id="data-overtime-view" class="govuk-visually-hidden" />
+            <input type="radio" name="dataView" id="current-view" class="govuk-visually-hidden" aria-labelledby="all-gcse-show-current-data-btn" checked />
+            <input type="radio" name="dataView" id="data-overtime-view" class="govuk-visually-hidden" aria-labelledby="all-gcse-show-data-over-time-btn" />
 
             <div id="all-gcse-current-year-data-container" class="all-gcse-current-year-data-container">
                 <div id="all-gcse-current-year-chart-container" class="chart-container all-gcse-current-year-chart-container">

@@ -34,7 +34,7 @@
                             Attendance policy
                         </govuk-summary-list-row-key>
                         <govuk-summary-list-row-value>
-                            <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite">
+                            <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite.DisplayText(UrlHelper.EnsureHttpsUrl)">
                                 View the attendance policy on the school website
                                 <span class="govuk-visually-hidden">(opens in a new tab)</span>
                             </a>
