@@ -95,7 +95,7 @@
                     <p class="govuk-body">
                         The attainment 8 score for this school is @Model.EstablishmentAttainment8Score.
                     </p>
-                    if(@Model.EstablishmentAttainment8ScoreContextDescription.IsAvailable)
+                    @if(Model.EstablishmentAttainment8ScoreContextDescription.IsAvailable)
                     {
                         <p class="govuk-body">
                             @Model.EstablishmentAttainment8ScoreContextDescription.DisplayText()
@@ -194,7 +194,7 @@
                 </div>
             </div>
 
-            <div class="custom-card" data-testid="progress8-localauthority-card">                
+            <div class="custom-card" data-testid="progress8-localauthority-card">
                 <div class="custom-card__content">
                     <p class="govuk-body">
                         The local authority average is @Model.LocalAuthorityProgress8Score.
