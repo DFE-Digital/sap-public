@@ -589,11 +589,11 @@ jobs:
             echo "ETL attempt $attempt/$max_attempts"
             set +e
             "$GITHUB_WORKSPACE/konduit.sh" \
-              -n "${AKS_NAMESPACE}" \
+              -n "sip-development" \
               -t 7200 \
               -x \
               -i "$GITHUB_WORKSPACE/SAPData/Sql/run_all.sql" \
-              "${KONDUIT_APP_NAME}" -- psql 2>&1 | tee "$log_file"
+              "sap-public-pr-233" -- psql 2>&1 | tee "$log_file"
             exit_code=${PIPESTATUS[0]}
             set -e
             if [ $exit_code -eq 0 ]; then
@@ -620,37 +620,37 @@ jobs:
       # ==============================
       # 10. Create & upload DB backup (used to restore db in review app env)
       # ==============================
-      - name: Create + upload review seed DB backup
-        shell: bash
-        run: |
-          set -euo pipefail
-          TODAY=$(TZ=Europe/London date +"%F")
-          LOCAL_FILE="sappub_review_seed_${TODAY}.sql.gz"
-          # Only ever keep this single blob in storage
-          LATEST_BLOB="db-backups/sappub_review_seed_latest.sql.gz"
-          echo "Creating DB dump -> ${LOCAL_FILE}"
-          echo "AKS_NAMESPACE=${AKS_NAMESPACE}"
-          echo "KONDUIT_APP_NAME=${KONDUIT_APP_NAME}"
-          set +e
-          "$GITHUB_WORKSPACE/konduit.sh" \
-            -n "${AKS_NAMESPACE}" \
-            -t 7200 \
-            -x \
-            "${KONDUIT_APP_NAME}" -- \
-            pg_dump --format=plain --no-owner --no-privileges 2> konduit_pg_dump.log | gzip -c > "${LOCAL_FILE}"
-          exit_code=${PIPESTATUS[0]}
-          set -e
-          if [ $exit_code -ne 0 ]; then
-            echo "konduit/pg_dump failed with exit code ${exit_code}"
-            exit $exit_code
-          fi
-          ls -lh "${LOCAL_FILE}"
-          echo "Uploading (overwriting) ${LATEST_BLOB} in container ${AZURE_STORAGE_CONTAINER}"
-          az storage blob upload \
-            --container-name "${AZURE_STORAGE_CONTAINER}" \
-            --name "${LATEST_BLOB}" \
-            --file "${LOCAL_FILE}" \
-            --connection-string "${AZURE_STORAGE_CONNECTION_STRING}" \
-            --overwrite true >/dev/null
-          echo "Seed backup uploaded:"
-          echo "  ${AZURE_STORAGE_CONTAINER}/${LATEST_BLOB}"
+      # - name: Create + upload review seed DB backup
+      #   shell: bash
+      #   run: |
+      #     set -euo pipefail
+      #     TODAY=$(TZ=Europe/London date +"%F")
+      #     LOCAL_FILE="sappub_review_seed_${TODAY}.sql.gz"
+      #     # Only ever keep this single blob in storage
+      #     LATEST_BLOB="db-backups/sappub_review_seed_latest.sql.gz"
+      #     echo "Creating DB dump -> ${LOCAL_FILE}"
+      #     echo "AKS_NAMESPACE=${AKS_NAMESPACE}"
+      #     echo "KONDUIT_APP_NAME=${KONDUIT_APP_NAME}"
+      #     set +e
+      #     "$GITHUB_WORKSPACE/konduit.sh" \
+      #       -n "${AKS_NAMESPACE}" \
+      #       -t 7200 \
+      #       -x \
+      #       "${KONDUIT_APP_NAME}" -- \
+      #       pg_dump --format=plain --no-owner --no-privileges 2> konduit_pg_dump.log | gzip -c > "${LOCAL_FILE}"
+      #     exit_code=${PIPESTATUS[0]}
+      #     set -e
+      #     if [ $exit_code -ne 0 ]; then
+      #       echo "konduit/pg_dump failed with exit code ${exit_code}"
+      #       exit $exit_code
+      #     fi
+      #     ls -lh "${LOCAL_FILE}"
+      #     echo "Uploading (overwriting) ${LATEST_BLOB} in container ${AZURE_STORAGE_CONTAINER}"
+      #     az storage blob upload \
+      #       --container-name "${AZURE_STORAGE_CONTAINER}" \
+      #       --name "${LATEST_BLOB}" \
+      #       --file "${LOCAL_FILE}" \
+      #       --connection-string "${AZURE_STORAGE_CONNECTION_STRING}" \
+      #       --overwrite true >/dev/null
+      #     echo "Seed backup uploaded:"
+      #     echo "  ${AZURE_STORAGE_CONTAINER}/${LATEST_BLOB}"
