@@ -32,7 +32,7 @@
                 </li>
                 <li class="moj-sub-navigation__item">
                     <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">Subjects entered</a>
-                </li>                
+                </li>
             </ul>
         </nav>
 
@@ -95,10 +95,10 @@
                     <p class="govuk-body">
                         The attainment 8 score for this school is @Model.EstablishmentAttainment8Score.
                     </p>
-                    if(@Model.EstablishmentAttainment8ScoreContextDescription != null)
+                    if(@Model.EstablishmentAttainment8ScoreContextDescription.IsAvailable)
                     {
                         <p class="govuk-body">
-                            @Model.EstablishmentAttainment8ScoreContextDescription.
+                            @Model.EstablishmentAttainment8ScoreContextDescription.DisplayText()
                         </p>
                     }
                 </div>

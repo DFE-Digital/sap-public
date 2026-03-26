@@ -37,8 +37,8 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
     }
 
     [Theory]
-    [InlineData(-1, null)]
-    [InlineData(91, null)]
+    [InlineData(-1, "Not available")]
+    [InlineData(91, "Not available")]
     [InlineData(0, "below a grade 1")]
     [InlineData(0.1, "below a grade 1")]
     [InlineData(9.9, "below a grade 1")]
@@ -107,7 +107,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
     [InlineData(88.1, "just below grade 9")]
     [InlineData(89.9, "just below grade 9")]
     [InlineData(90.0, "grade 9")]
-    public void Map_EstablishmentAttainment8ScoreDescription_IsExpected(double establishmentAttainment8Score, string? expected)
+    public void Map_EstablishmentAttainment8ScoreDescription_IsExpected(double establishmentAttainment8Score, string expected)
     {
         // Arrange
         var testdata = new Core.ServiceModels.KS4.Performance.AttainmentAndProgressModel()
@@ -127,9 +127,19 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
         var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map(testdata, Core.Enums.AcademicYearSelection.Current);
 
         // Assert
-        var expectedContextStatement = expected != null ?
-            $"This means that pupils generally scored the equivalent of {expected} in their 8 best GCSE-level subjects"
-            : null;
-        Assert.Equal(expectedContextStatement, viewModel.EstablishmentAttainment8ScoreContextDescription);
+        var expectedContextStatement = expected != "Not available" ?
+            $"This means that pupils generally scored the equivalent of {expected} in their 8 best GCSE-level subjects."
+            : "Not available";
+        Assert.Equal(expectedContextStatement, viewModel.EstablishmentAttainment8ScoreContextDescription.DisplayText());
+        if (expected == "Not available")
+        {
+            Assert.False(viewModel.EstablishmentAttainment8ScoreContextDescription.IsAvailable);
+            Assert.True(viewModel.EstablishmentAttainment8ScoreContextDescription.IsNotAvailable);
+        }
+        else
+        {
+            Assert.True(viewModel.EstablishmentAttainment8ScoreContextDescription.IsAvailable);
+            Assert.False(viewModel.EstablishmentAttainment8ScoreContextDescription.IsNotAvailable);
+        }
     }
 }

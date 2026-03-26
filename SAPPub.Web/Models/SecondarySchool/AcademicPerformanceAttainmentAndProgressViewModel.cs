@@ -21,7 +21,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
     public double? LocalAuthorityProgress8Score { get; init; }
 
     public double? EstablishmentAttainment8Score { get; init; }
-    public string? EstablishmentAttainment8ScoreContextDescription { get; init; }
+    public required DisplayField<string> EstablishmentAttainment8ScoreContextDescription { get; init; }
 
     public double? LocalAuthorityAttainment8Score { get; init; }
 
@@ -49,8 +49,8 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
             LocalAuthorityProgress8Score = attainmentAndProgressModel.LocalAuthorityProgress8Score,
             EstablishmentAttainment8Score = attainmentAndProgressModel.EstablishmentAttainment8Score,
             EstablishmentAttainment8ScoreContextDescription = establishmentAttainment8Context != null
-                ? $"This means that pupils generally scored the equivalent of {establishmentAttainment8Context} in their 8 best GCSE-level subjects"
-                : null,
+                ? ($"This means that pupils generally scored the equivalent of {establishmentAttainment8Context} in their 8 best GCSE-level subjects.").ToDisplayField()
+                : DisplayField<string>.NotAvailable(),
             LocalAuthorityAttainment8Score = attainmentAndProgressModel.LocalAuthorityAttainment8Score,
             EnglandAttainment8Score = attainmentAndProgressModel.EnglandAttainment8Score,
             EstablishmentProgress8TotalPupils = attainmentAndProgressModel.EstablishmentProgress8TotalPupils,
