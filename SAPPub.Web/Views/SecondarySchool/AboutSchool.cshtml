@@ -16,7 +16,20 @@
 
     <div class="govuk-grid-column-three-quarters">
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
-        <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">@ViewData["Title"]</h1>
+
+        @if (Model.IsSchoolClosed)
+        {
+            <div class="custom-card" data-testid="school-closed-custom-card">
+                <div class="error__icon"></div>
+                <div class="custom-card__content">
+                    <p class="govuk-body">
+                        @(Model.ClosedDate.IsAvailable ? $"This school closed on {Model.ClosedDate.DisplayText(d => d.ToString("dd MMMM yyyy"))}" : "Closed")
+                    </p>
+                </div>
+            </div>
+        }
+
         <govuk-summary-list id="school-details-summary">
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Name</govuk-summary-list-row-key>

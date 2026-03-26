@@ -6,6 +6,7 @@ using SAPPub.Core.Entities;
 using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Enums;
+using SAPPub.Core.Extensions;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
@@ -145,7 +146,9 @@ public class SecondarySchoolControllerTests
             ReligiousCharacter = _fakeEstablishment.ReligiousCharacterName,
             OfficialSixthFormId = _fakeEstablishment.OfficialSixthFormId,
             ResourcedProvisionName = _fakeEstablishment.ResourcedProvisionName,
-            EstablishmentTypeGroupId = _fakeEstablishment.EstablishmentTypeGroupId
+            EstablishmentTypeGroupId = _fakeEstablishment.EstablishmentTypeGroupId,
+            StatusCode = _fakeEstablishment.StatusCode,
+            ClosedDate = _fakeEstablishment.ClosedDate.ToDateOnly()
         };
     }
 
@@ -173,6 +176,7 @@ public class SecondarySchoolControllerTests
             .WithOfficialSixthFormId("No")
             .WithResourcedProvisionName("Resourced provision")
             .WithEstablishmentTypeGroupId("1")
+            .WithStatusCode(1)
             .Build();
 
         _mockLogger = new Mock<ILogger<SecondarySchoolController>>();
@@ -230,6 +234,8 @@ public class SecondarySchoolControllerTests
         Assert.Equal(expectedResult.PupilSex, model.PupilSex);
         Assert.Equal(expectedResult.ReligiousCharacter, model.ReligiousCharacter);
         Assert.Equal(expectedResult.OfficialSixthFormId, model.SixthForm);
+        Assert.Equal(expectedResult.StatusCode, model.StatusCode);
+        Assert.False(model.ClosedDate.IsAvailable);
         Assert.False(model.IsLocalAuthoritySchool);
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(expectedResult.Urn, model.RouteAttributes[RouteConstants.URN]);
@@ -432,6 +438,48 @@ public class SecondarySchoolControllerTests
         var model = result.Model as AboutSchoolViewModel;
         Assert.NotNull(model);
         Assert.Equal(expectedOutput, model.IsLocalAuthoritySchool);
+    }
+
+    [Theory]
+    [InlineData(null, false)]
+    [InlineData(1, false)]
+    [InlineData(2, true)]
+    [InlineData(3, false)]
+    public async Task Get_AboutSchool_SchoolFeatures_SchoolClosed(int? statusCode, bool expectedOutput)
+    {
+        _fakeEstablishment.StatusCode = statusCode;
+        _fakeEstablishment.ClosedDate = _fakeEstablishment.StatusCode == 2 ? "03-03-2025" : null;
+
+        var expectedResult = SchoolDetails();
+
+        _mockAboutSchoolService
+            .Setup(es => es.GetAboutSchoolDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.AboutSchool(
+            _mockAboutSchoolService.Object,
+            _fakeEstablishment.URN,
+            _fakeEstablishment.EstablishmentName,
+            CancellationToken.None) as ViewResult;
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as AboutSchoolViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(expectedOutput, model.IsSchoolClosed);
+
+        if (model.IsSchoolClosed)
+        {
+            Assert.False(model.ClosedDate.IsNotAvailable);
+            Assert.True(model.ClosedDate.IsAvailable);
+            Assert.Equal("03 March 2025", model.ClosedDate.DisplayText(d => d.ToString("dd MMMM yyyy")));
+        }
+        else
+        {
+            Assert.False(model.ClosedDate.IsAvailable);
+            Assert.True(model.ClosedDate.IsNotAvailable);
+        }        
     }
 
     [Fact]

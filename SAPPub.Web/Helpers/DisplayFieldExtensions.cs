@@ -21,4 +21,15 @@ public static class DisplayFieldExtensions
 
         return DisplayField<T>.Available(value);
     }
+
+    public static DisplayField<T> ToDisplayField<T>(this T? value)
+        where T : struct
+    {
+        if (value == null || value.Equals(default(T)))
+        {
+            return DisplayField<T>.NotAvailable();
+        }
+
+        return DisplayField<T>.Available(value.Value);
+    }
 }
