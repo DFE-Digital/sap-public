@@ -103,15 +103,15 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
                 }
 
                 // Check expiry
-                if (user.RegisteredOn < DateTime.UtcNow.AddDays(-_options.AllowedDays))
+                if (user.TimerStartedOn < DateTime.UtcNow.AddDays(-_options.AllowedDays))
                 {
-                    ModelState.AddModelError("EmailAddress", "Your registration occurred over 7 days and has expired. Thank you for your time.");
+                    ModelState.AddModelError("EmailAddress", $"Your registration occurred over {_options.AllowedDays} days ago and has expired. Thank you for your time.");
                     return View(viewModel);
                 }
 
-                _auditService.Insert(user.Id);
+                _auditService.Insert(user.Id, "Login");
 
-                var hoursLeft = (user.RegisteredOn.AddDays(_options.AllowedDays) - DateTime.UtcNow).TotalHours;
+                var hoursLeft = (user.TimerStartedOn.AddDays(_options.AllowedDays) - DateTime.UtcNow).TotalHours;
 
                 // Set cookie
                 Response.Cookies.Append("gateway", user.Id.ToString(), new CookieOptions
@@ -191,7 +191,7 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
                 };
                 var newUserId = await _userService.InsertAsync(newUser);
 
-                _auditService.Insert(newUserId);
+                _auditService.Insert(newUserId, "Register");
 
                 // Set cookies
                 Response.Cookies.Append("gateway", newUserId.ToString(), new CookieOptions
@@ -241,6 +241,17 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
         [HttpGet]
         [Route("gateway/closed")]
         public IActionResult Closed()
+        {
+            return View();
+        }
+
+        #endregion
+
+        #region Session ended for user
+
+        [HttpGet]
+        [Route("gateway/sessionend")]
+        public IActionResult SessionEnded()
         {
             return View();
         }

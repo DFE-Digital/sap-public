@@ -23,7 +23,7 @@ namespace SAPPub.Core.Services.Gateway
             _logger = logger;
         }
 
-        public void Insert(Guid userId)
+        public void Insert(Guid userId, string action)
         {
             _gatewayUserAuditRepository.InsertAsync(new GatewayUserAudit
             {
@@ -32,7 +32,8 @@ namespace SAPPub.Core.Services.Gateway
                 CreatedOn = DateTime.UtcNow,
                 IsDeleted = false,
                 ModifiedOn = DateTime.UtcNow,
-                Id = Guid.NewGuid()
+                Id = Guid.NewGuid(),
+                UserAction = action
             });
         }
     }

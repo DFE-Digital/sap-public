@@ -14,6 +14,11 @@ namespace SAPPub.Web.Middleware
             "/school",
             "/search"
         };
+        private readonly static List<string> _unrestrictedUrls = new List<string>
+        {
+            "/gateway/closed",
+            "/gateway/sessionended"
+        };
 
         public GatewayMiddleware(RequestDelegate next, 
             ILogger<GatewayMiddleware> logger, 
@@ -28,7 +33,7 @@ namespace SAPPub.Web.Middleware
 
         public async Task InvokeAsync(HttpContext httpContext)
         {
-            if (httpContext.Request.Path.Equals("/gateway/closed"))
+            if (UrlInUnRestrictedList(httpContext.Request.Path))
             {
                 await _next(httpContext);
                 return;
@@ -116,6 +121,11 @@ namespace SAPPub.Web.Middleware
         public static bool UrlInRestrictedList(string url)
         {
             return _restrictedUrls.Any(restrictedUrl => url.StartsWith(restrictedUrl, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public static bool UrlInUnRestrictedList(string url)
+        {
+            return _unrestrictedUrls.Any(unrestrictedUrl => url.StartsWith(unrestrictedUrl, StringComparison.OrdinalIgnoreCase));
         }
     }
 

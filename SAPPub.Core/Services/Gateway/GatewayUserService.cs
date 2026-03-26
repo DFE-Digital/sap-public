@@ -46,7 +46,7 @@ namespace SAPPub.Core.Services.Gateway
                 throw new Exception($"User with ID {id} not found.");
             }
 
-            var userRegistration = user.RegisteredOn;
+            var userRegistration = user.TimerStartedOn;
 
             var expiryDate = userRegistration.AddDays(_options.Value.AllowedDays);
             if (expiryDate > DateTime.UtcNow)
@@ -64,7 +64,7 @@ namespace SAPPub.Core.Services.Gateway
             }
 
             user.Id = Guid.NewGuid();
-            user.RegisteredOn = DateTime.UtcNow;
+            user.TimerStartedOn = DateTime.UtcNow;
             user.CreatedOn = DateTime.UtcNow;
             user.ModifiedOn = DateTime.UtcNow;
             user.IsDeleted = false;

@@ -9,6 +9,6 @@ namespace SAPPub.Core.Interfaces.Services.Gateway
 {
     public interface IGatewayUserAuditService
     {
-        void Insert(Guid userId);
+        void Insert(Guid userId, string action);
     }
 }

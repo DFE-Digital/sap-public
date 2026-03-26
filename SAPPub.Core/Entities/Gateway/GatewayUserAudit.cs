@@ -9,6 +9,7 @@ namespace SAPPub.Core.Entities.Gateway
     public class GatewayUserAudit : GatewayMetadata
     {
         public Guid UserId { get; set; }
-       public DateTime LoginDateTime { get; set; }
+        public DateTime LoginDateTime { get; set; }
+        public string UserAction { get; set; } = string.Empty;
     }
 }

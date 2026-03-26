@@ -11,6 +11,6 @@ namespace SAPPub.Core.Entities.Gateway
         public string EmailAddress { get; set; } = string.Empty;
         public Guid LocalAuthorityId { get; set; }
         public bool CookiePrefs { get; set; }
-        public DateTime RegisteredOn { get; set; }
+        public DateTime TimerStartedOn { get; set; }
     }
 }
