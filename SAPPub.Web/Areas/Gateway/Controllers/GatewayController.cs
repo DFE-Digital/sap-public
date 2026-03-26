@@ -51,8 +51,9 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
 
         [HttpPost]
         [Route("gateway/welcome/{id}")]
-        public IActionResult Welcome(GatewayWelcomeViewModel viewModel)
+        public IActionResult Welcome(GatewayWelcomeViewModel viewModel, string id)
         {
+            ViewBag.LAName = id;
             if (ModelState.IsValid)
             {
                 if (viewModel.NewOrReturning == "new")
@@ -90,8 +91,9 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("gateway/returning/{id}")]
-        public async Task<IActionResult> Returning(GatewayReturningViewModel viewModel)
+        public async Task<IActionResult> Returning(GatewayReturningViewModel viewModel, string id)
         {
+            ViewBag.LAName = id;
             if (ModelState.IsValid)
             {
                 // Check DB for email
@@ -160,13 +162,15 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
 
             model.LocalAuthorityName = id;
             model.LocalAuthorityId = localAuthority.Id;
+            ViewBag.LAName = id;
             return View(model);
         }
 
         [HttpPost]
         [Route("gateway/newvisitor/{id}")]
-        public async Task<IActionResult> NewVisitor(GatewayNewUserViewModel viewModel)
+        public async Task<IActionResult> NewVisitor(GatewayNewUserViewModel viewModel, string id)
         {
+            ViewBag.LAName = id;
             if (ModelState.IsValid)
             {
                 // Check for existing email
@@ -250,7 +254,7 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
         #region Session ended for user
 
         [HttpGet]
-        [Route("gateway/sessionend")]
+        [Route("gateway/sessionended")]
         public IActionResult SessionEnded()
         {
             return View();

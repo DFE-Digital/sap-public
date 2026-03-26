@@ -59,7 +59,7 @@ namespace SAPPub.Web.Middleware
                         // User's time is up
                         if (await _userService.IsUserExpiredAsync(user.Id))
                         {
-                            httpContext.Response.Redirect("/Gateway/Closed");
+                            httpContext.Response.Redirect("/Gateway/SessionEnded");
                             return;
                         }
 
@@ -90,7 +90,7 @@ namespace SAPPub.Web.Middleware
                         // User's time is up
                         if (await _userService.IsUserExpiredAsync(user.Id))
                         {
-                            httpContext.Response.Redirect("/Gateway/Closed");
+                            httpContext.Response.Redirect("/Gateway/SessionEnded");
                             return;
                         }
 

@@ -227,7 +227,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "EmailAddress",
           "LocalAuthorityId",
           "CookiePrefs",
-          "RegisteredOn",
+          "TimerStartedOn",
           "CreatedOn",
           "ModifiedOn",
           "IsDeleted"
@@ -400,10 +400,10 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
             return entityType.Name switch
             {
                 nameof(GatewayUser) => 
-                    $"INSERT INTO \"gateway_user\" (  \"Id\",  \"EmailAddress\",  \"LocalAuthorityId\",  \"CookiePrefs\",  \"RegisteredOn\",  \"CreatedOn\",  \"ModifiedOn\",  \"IsDeleted\") VALUES (  @Id,  @EmailAddress,  @LocalAuthorityId,  @CookiePrefs,  @RegisteredOn,  @CreatedOn,  @ModifiedOn,  @IsDeleted);",
+                    $"INSERT INTO \"gateway_user\" (  \"Id\",  \"EmailAddress\",  \"LocalAuthorityId\",  \"CookiePrefs\",  \"TimerStartedOn\",  \"CreatedOn\",  \"ModifiedOn\",  \"IsDeleted\") VALUES (  @Id,  @EmailAddress,  @LocalAuthorityId,  @CookiePrefs,  @TimerStartedOn,  @CreatedOn,  @ModifiedOn,  @IsDeleted);",
 
                 nameof(GatewayUserAudit) => 
-                    $"INSERT INTO \"gateway_user_audit\" (  \"Id\",  \"UserId\",  \"LoginDateTime\",  \"CreatedOn\",  \"ModifiedOn\", \"IsDeleted\" )VALUES (  @Id,  @UserId,  @LoginDateTime,  @CreatedOn,  @ModifiedOn,  @IsDeleted);",
+                    $"INSERT INTO \"gateway_user_audit\" (  \"Id\",  \"UserId\",  \"LoginDateTime\", \"UserAction\", \"CreatedOn\",  \"ModifiedOn\", \"IsDeleted\" )VALUES (  @Id,  @UserId,  @LoginDateTime, @UserAction, @CreatedOn,  @ModifiedOn,  @IsDeleted);",
 
                 nameof(GatewayLocalAuthority) => 
                     "INSERT INTO \"gateway_local_authority\" (  \"Id\",  \"LocalAuthorityName\",  \"MaxSessions\",  \"CreatedOn\",  \"ModifiedOn\",  \"IsDeleted\" )VALUES (  @Id,  @LocalAuthorityName,  @MaxSessions,  @CreatedOn,  @ModifiedOn, @IsDeleted);",
@@ -421,10 +421,10 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
             return entityType.Name switch
             {
                 nameof(GatewayUser) => 
-                    $"UPDATE gateway_user SET \"EmailAddress\" = @EmailAddress,    \"LocalAuthorityId\" = @LocalAuthorityId,    \"CookiePrefs\" = @CookiePrefs,    \"RegisteredOn\" = @RegisteredOn,    \"CreatedOn\" = @CreatedOn,    \"ModifiedOn\" = @ModifiedOn,  \"IsDeleted\" = @IsDeleted WHERE \"Id\" = @Id;",
+                    $"UPDATE gateway_user SET \"EmailAddress\" = @EmailAddress,    \"LocalAuthorityId\" = @LocalAuthorityId,    \"CookiePrefs\" = @CookiePrefs,    \"TimerStartedOn\" = @TimerStartedOn,    \"CreatedOn\" = @CreatedOn,    \"ModifiedOn\" = @ModifiedOn,  \"IsDeleted\" = @IsDeleted WHERE \"Id\" = @Id;",
 
                 nameof(GatewayUserAudit) => 
-                    $"UPDATE gateway_user_audit SET \"UserId\"=@UserId, \"LoginDateTime\"=@LoginDateTime, \"CreatedOn\"=@CreatedOn, \"ModifiedOn\"=@ModifiedOn,  \"IsDeleted\"=@IsDeleted WHERE \"Id\"=@Id;",
+                    $"UPDATE gateway_user_audit SET \"UserId\"=@UserId, \"LoginDateTime\"=@LoginDateTime, \"UserAction\"=@UserAction, \"CreatedOn\"=@CreatedOn, \"ModifiedOn\"=@ModifiedOn,  \"IsDeleted\"=@IsDeleted WHERE \"Id\"=@Id;",
 
                 nameof(GatewayLocalAuthority) => 
                     "UPDATE gateway_local_authority SET \"LocalAuthorityName\"=@LocalAuthorityName, \"MaxSessions\"=@MaxSessions, \"CreatedOn\"=@CreatedOn, \"ModifiedOn\"=@ModifiedOn,  \"IsDeleted\"=@IsDeleted WHERE \"Id\"=@Id;",
