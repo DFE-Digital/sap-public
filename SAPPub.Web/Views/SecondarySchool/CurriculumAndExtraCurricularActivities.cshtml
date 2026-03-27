@@ -2,7 +2,8 @@
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 
 @{
-    ViewData["Title"] = "Curriculum and extra-curricular activities";
+    ViewData["Header"] = "Curriculum and extra-curricular activities";
+    ViewData["Title"] = $"{Model.SchoolName} - {ViewData["Header"]}";
 }
 
 <div class="govuk-grid-row">
@@ -16,7 +17,7 @@
 
     <div class="govuk-grid-column-three-quarters">
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
-        <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
+        <h1 class="govuk-heading-xl">@ViewData["Header"]</h1>
 
         <h2 class="govuk-heading-l">Curriculum</h2>
         <div id="current-curriculum-summary" data-testId="current-curriculum-summary" class="govuk-summary-card">

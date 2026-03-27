@@ -2,7 +2,8 @@
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 
 @{
-    ViewData["Title"] = "Academic Performance";
+    ViewData["Header"] = "Academic Performance";
+    ViewData["Title"] = $"{Model.SchoolName} - Progress and attainment";
 }
 
 <div class="govuk-grid-row">
@@ -16,7 +17,7 @@
 
     <div class="govuk-grid-column-three-quarters">
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
-        <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
+        <h1 class="govuk-heading-xl">@ViewData["Header"]</h1>
         <p class="govuk-body">
             Looking at school performance data is one way to see how well a school is doing.
             You should look at a range of information about a school before deciding if it’s the right fit for your child.

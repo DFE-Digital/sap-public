@@ -5,7 +5,9 @@
 @using static SAPPub.Web.Models.SecondarySchool.AcademicPerformanceEnglishAndMathsResultsViewModel
 
 @{
-    ViewData["Title"] = "Academic Performance";
+    ViewData["Header"] = "Academic Performance";
+    ViewData["SubHeader"] = "English and maths results";
+    ViewData["Title"] = $"{Model.SchoolName} - {ViewData["SubHeader"]}";
 }
 
 <div class="govuk-grid-row">
@@ -19,7 +21,7 @@
 
     <div class="govuk-grid-column-three-quarters">
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
-        <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
+        <h1 class="govuk-heading-xl">@ViewData["Header"]</h1>
         <p class="govuk-body">
             Looking at school performance data is one way to see how well a school is doing.
             You should look at a range of information about a school before deciding if it’s the right fit for your child.
@@ -38,7 +40,7 @@
             </ul>
         </nav>
 
-        <h2 class="govuk-heading-l">English and maths results for the previous academic year</h2>
+        <h2 class="govuk-heading-l">@ViewData["SubHeader"] for the previous academic year</h2>
 
         <p class="govuk-body">
             Information in this section is for the 2024 to 2025 academic year.
