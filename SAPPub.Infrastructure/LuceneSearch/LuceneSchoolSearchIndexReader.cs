@@ -1,6 +1,7 @@
 ﻿using Lucene.Net.Index;
 using Lucene.Net.Search;
 using Lucene.Net.Spatial.Queries;
+using SAPPub.Core.Extensions;
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.ServiceModels.PostcodeSearch;
 using SAPPub.Core.ServiceModels.Search.InputModels;
@@ -133,7 +134,7 @@ public class LuceneSchoolSearchIndexReader(LuceneIndexContext context, LuceneTok
                     Latitude = latitude != null ? double.Parse(latitude) : null,
                     Longitude = longitude != null ? double.Parse(longitude) : null,
                     StatusCode = statusCode != null ? int.Parse(statusCode) : null,
-                    ClosedDate = closedDate != null ? DateOnly.Parse(closedDate) : null
+                    ClosedDate = closedDate?.ToDateOnly()
                 });
             }
 
