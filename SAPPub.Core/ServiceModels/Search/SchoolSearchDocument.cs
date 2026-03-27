@@ -15,4 +15,6 @@ public record SchoolSearchDocument
     public string? ReligiousCharacterName { get; init; }
     public double? Latitude { get; init; }
     public double? Longitude { get; init; }
+    public DateOnly? ClosedDate { get; set; }
+    public int? StatusCode { get; set; }
 };

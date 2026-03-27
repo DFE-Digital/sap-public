@@ -130,4 +130,35 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
         int count = await rows.CountAsync();
         Assert.True(count == 0, "Expected no search results, but found some.");
     }
+
+    [Fact]
+    public async Task SearchPage_Enter_Closed_SchoolName_ShowsViewWithResults()
+    {
+        // Arrange
+        var searchTerm = "Todmorden High School";
+        var response = await Page.GotoAsync(_pageUrl);
+
+        // Act
+        await Page.FillAsync("#NameSearchTerm", searchTerm);
+        await Page.ClickAsync("#search");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        // Assert
+        Assert.NotNull(response);
+        Assert.Equal(200, response.Status);
+        // assert text box contains search term
+        var searchBoxValue = await Page.InputValueAsync("#NameSearchTerm");
+        Assert.Equal(searchTerm, searchBoxValue);
+
+        // assert that at least one search result is displayed
+        var rows = Page.GetByTestId("school-closed-tag");       
+
+        var rowHandles = await rows.ElementHandlesAsync();
+        int count = await rows.CountAsync();
+        Assert.True(count == 1, "Expected one closed school, but found more than one.");
+
+        var value = await rows.First.TextContentAsync();
+        Assert.NotNull(value);
+        Assert.Equal("Closed in March 2025", value.Trim());
+    }
 }

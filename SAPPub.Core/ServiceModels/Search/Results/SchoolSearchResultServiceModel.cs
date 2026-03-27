@@ -24,4 +24,6 @@ public record SchoolSearchResultServiceModel
     public string? GenderName { get; init; }
     public string? ReligiousCharacterName { get; init; }
     public double? Distance { get; init; }
+    public DateOnly? ClosedDate { get; set; }
+    public int? StatusCode { get; set; }
 }
