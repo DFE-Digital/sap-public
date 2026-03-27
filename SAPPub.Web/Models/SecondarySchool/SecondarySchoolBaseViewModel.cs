@@ -1,4 +1,4 @@
-﻿using SAPPub.Web.Helpers;
+﻿using SAPPub.Web.Constants;
 
 namespace SAPPub.Web.Models.SecondarySchool;
 
