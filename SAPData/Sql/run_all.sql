@@ -22,6 +22,7 @@
 \ir 03_v_la_subject_entries.sql
 \ir 03_v_la_urls.sql
 \ir 04_indexes.sql
+\ir 05_gateway.sql
 --\ir 05_validation.sql
 
 

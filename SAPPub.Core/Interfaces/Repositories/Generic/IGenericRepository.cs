@@ -7,5 +7,7 @@
         Task<T?> ReadSingleAsync(object parameters, CancellationToken ct = default);
         Task<IEnumerable<T>> ReadManyAsync(object parameters, CancellationToken ct = default);
         Task<IEnumerable<T>> ReadPageAsync(int page, int take, CancellationToken ct = default);
+        Task<bool> WriteAsync(object? writeObject, CancellationToken ct = default);
+        Task<bool> UpdateAsync(object? updateObject, CancellationToken ct = default);
     }
 }
