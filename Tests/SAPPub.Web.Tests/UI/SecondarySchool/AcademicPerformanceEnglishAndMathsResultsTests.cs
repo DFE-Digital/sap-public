@@ -32,7 +32,7 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
         var title = await Page.TitleAsync();
 
         // Assert
-        Assert.Contains("Academic Performance", title);
+        Assert.Contains("Loreto High School Chorlton - English and maths results - School Profiles - GOV.UK", title);
     }
 
     [Fact]

@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SAPPub.Core.Interfaces.Services.Search;
-using SAPPub.Web.Helpers;
 using SAPPub.Core.ServiceModels.Search.InputModels;
 using SAPPub.Core.ServiceModels.Search.Results;
 using SAPPub.Web.Models.Search;
+using SAPPub.Web.Constants;
 
 namespace SAPPub.Web.Controllers;
 

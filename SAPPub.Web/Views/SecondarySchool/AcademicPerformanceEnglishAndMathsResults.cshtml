@@ -1,12 +1,13 @@
 ﻿@model SAPPub.Web.Models.SecondarySchool.AcademicPerformanceEnglishAndMathsResultsViewModel;
-@using SAPPub.Core.Enums
-@using SAPPub.Web.ViewComponents.VerticalNavigation
 @using System.Text.Json
+@using SAPPub.Core.Enums
+@using SAPPub.Web.Constants
+@using SAPPub.Web.ViewComponents.VerticalNavigation
 @using static SAPPub.Web.Models.SecondarySchool.AcademicPerformanceEnglishAndMathsResultsViewModel
 
 @{
     ViewData["Header"] = "Academic Performance";
-    ViewData["SubHeader"] = "English and maths results";
+    ViewData["SubHeader"] = PageTitleConstants.SecondarySchoolPageTitles.EnglishAndMathsResults;
     ViewData["Title"] = $"{Model.SchoolName} - {ViewData["SubHeader"]}";
 }
 
@@ -29,13 +30,13 @@
         <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
             <ul class="moj-sub-navigation__list">
                 <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress" asp-all-route-data="@Model.RouteAttributes">Attainment and progress</a>
+                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.SecondarySchoolPageTitles.AttainmentAndProgress</a>
                 </li>
                 <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" aria-current="page" asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults" asp-all-route-data="@Model.RouteAttributes">English and maths results</a>
+                    <a class="moj-sub-navigation__link" aria-current="page" asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults" asp-all-route-data="@Model.RouteAttributes">@ViewData["SubHeader"]</a>
                 </li>
                 <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">Subjects entered</a>
+                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.SecondarySchoolPageTitles.SubjectsEntered</a>
                 </li>
             </ul>
         </nav>

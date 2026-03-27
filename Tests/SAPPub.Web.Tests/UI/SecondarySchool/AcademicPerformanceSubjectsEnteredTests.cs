@@ -29,7 +29,7 @@ public class AcademicPerformanceSubjectsEnteredTests(WebApplicationSetupFixture 
         var title = await Page.TitleAsync();
 
         // Assert
-        Assert.Contains("Academic Performance", title);
+        Assert.Contains("Loreto High School Chorlton - Subjects entered - School Profiles - GOV.UK", title);
     }
 
     [Fact]

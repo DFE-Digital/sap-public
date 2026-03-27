@@ -1,4 +1,4 @@
-﻿using SAPPub.Web.Helpers;
+﻿using SAPPub.Web.Constants;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
 namespace SAPPub.Web.Tests.UI.Error;
