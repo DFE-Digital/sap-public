@@ -78,6 +78,23 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     }
 
     [Fact]
+    public async Task DestinationsPage_Displays_School_Performance_Info()
+    {
+        // Arrange
+        await Page.GotoAsync(_pageUrl);
+
+        // Act
+        var schoolPerformanceInfoLocator = Page.GetByTestId("looking-at-school-performance-info");
+        var isVisible = await schoolPerformanceInfoLocator.IsVisibleAsync();
+        var schoolPerformanceInfo = await schoolPerformanceInfoLocator.TextContentAsync();
+
+        // Assert
+        Assert.True(isVisible);
+        Assert.NotNull(schoolPerformanceInfo);
+        Assert.NotEmpty(schoolPerformanceInfo!.Trim());
+    }
+
+    [Fact]
     public async Task DestinationsPage_Displays_AllDestinations_CurrentYear_Chart()
     {
         // Arrange
