@@ -286,6 +286,18 @@ public class EstablishmentTestBuilder
         return this;
     }
 
+    public EstablishmentTestBuilder WithClosedDate(string closedDate)
+    {
+        _establishment.ClosedDate = closedDate;
+        return this;
+    }
+
+    public EstablishmentTestBuilder WithStatusCode(int? statusCode)
+    {
+        _establishment.StatusCode = statusCode;
+        return this;
+    }
+
     public Establishment Build()
     {
         // fill basic values automatically if not set

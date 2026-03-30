@@ -93,4 +93,5 @@ module "web_application" {
   enable_logit                     = true
   probe_path                       = var.probe_path
   send_traffic_to_maintenance_page = var.send_traffic_to_maintenance_page
+  replicas                         = var.replicas
 }

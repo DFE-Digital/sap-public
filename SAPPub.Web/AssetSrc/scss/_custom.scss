@@ -93,6 +93,10 @@
     content: url(/assets/images/bar-chart-icon.svg);
 }
 
+.error__icon {
+    content: url(/assets/images/error-info-icon.svg);
+}
+
 .custom-card__content {
     display: flex;
     flex-direction: column;
@@ -214,7 +218,8 @@
 
     .info__icon,
     .assignment__icon,
-    .bar-chart__icon {
+    .bar-chart__icon,
+    .error__icon {
         width: 48px;
     }
 }

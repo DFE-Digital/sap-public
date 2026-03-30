@@ -42,6 +42,8 @@ public class LuceneSchoolSearchIndexWriter
             if (e.ReligiousCharacterName is not null) doc.Add(new StoredField(nameof(SchoolSearchDocument.ReligiousCharacterName), e.ReligiousCharacterName));
             if (e.Address is not null) doc.Add(new StoredField(nameof(SchoolSearchDocument.Address), e.Address));
             if (e.AddressPostcode is not null) doc.Add(new StoredField(nameof(Establishment.AddressPostcode), e.AddressPostcode));
+            if (e.StatusCode is not null) doc.Add(new StoredField(nameof(Establishment.StatusCode), e.StatusCode?.ToString()));
+            if (e.ClosedDate is not null) doc.Add(new StoredField(nameof(Establishment.ClosedDate), e.ClosedDate));
 
             var latlon = MappingHelper.ConvertToLatLon(e.Easting, e.Northing);
             if (latlon != null)

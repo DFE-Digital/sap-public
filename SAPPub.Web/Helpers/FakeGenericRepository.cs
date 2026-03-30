@@ -23,7 +23,6 @@ namespace SAPPub.Web.Helpers
                 Easting = "580573",
                 Northing = "110137"
             },
-
             ["100273"] = new Establishment
             {
                 URN = "100273",
@@ -34,7 +33,6 @@ namespace SAPPub.Web.Helpers
                 PhaseOfEducationId = "2",
                 PhaseOfEducationName = "Primary"
             },
-
             ["102848"] = new Establishment
             {
                 URN = "102848",
@@ -46,8 +44,6 @@ namespace SAPPub.Web.Helpers
                 PhaseOfEducationName = "Primary",
                 AddressPostcode = "IG1 1SA"
             },
-
-
             ["105574"] = new Establishment
             {
                 URN = "105574",
@@ -60,9 +56,9 @@ namespace SAPPub.Web.Helpers
                 AddressPostcode = "M21 7SW",
                 Easting = "382682",
                 Northing = "392995",
-                Website = "http://www.test.co.uk/"
+                Website = "http://www.test.co.uk/",
+                StatusCode = 1
             },
-
             ["137552"] = new Establishment
             {
                 URN = "137552",
@@ -72,7 +68,21 @@ namespace SAPPub.Web.Helpers
                 EstablishmentNumber = "4343",
                 PhaseOfEducationId = "4",
                 PhaseOfEducationName = "Secondary",
-                AddressPostcode = "CM18 7NQ"
+                AddressPostcode = "CM18 7NQ",
+                StatusCode = 2,
+                ClosedDate = null
+            },
+            ["107564"] = new Establishment
+            {
+                URN = "107564",
+                EstablishmentName = "Todmorden High School",
+                LAId = "381",
+                EstablishmentNumber = "4026",
+                PhaseOfEducationId = "4",
+                PhaseOfEducationName = "Secondary",
+                AddressPostcode = "OL14 7DG",
+                StatusCode = 2,
+                ClosedDate = "23-03-2025"
             }
         };
 

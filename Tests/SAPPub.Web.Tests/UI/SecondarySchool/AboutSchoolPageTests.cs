@@ -10,7 +10,8 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
     {
         ["105574"] = "school/105574/Loreto%20High%20School%20Chorlton/secondary/about",
         ["137552"] = "school/137552/Stewards%20Academy%20-%20Science%20Specialist%2C%20Harlow/secondary/about",
-        ["100273"] = "school/100273/Saint%20Paul%20Roman%20Catholic%20Infant%20School/secondary/about"
+        ["100273"] = "school/100273/Saint%20Paul%20Roman%20Catholic%20Infant%20School/secondary/about",
+        ["107564"] = "school/107564/Todmorden%20High%20School/secondary/about"
     };
 
     [Fact]
@@ -78,6 +79,31 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         await nav.ShouldHaveItemsCountAsync(5);
         await nav.ShouldHaveOneActiveItemAsync();
         await nav.ShouldHaveActiveHrefAsync(_schoolUrnToUrlMap["105574"]);
+    }
+
+    [Theory]
+    [InlineData("105574", false, false)]
+    [InlineData("137552", true, false)]
+    [InlineData("107564", true, true)]    
+    public async Task AboutSchoolPage_Displays_School_Closed_Info(string urn, bool isSchoolClosed, bool hasSchoolClosedDate)
+    {
+        // Act
+        await Page.GotoAsync(_schoolUrnToUrlMap[urn]);
+
+        // Assert
+        var schoolClosedCard = Page.GetByTestId("school-closed-custom-card");
+
+        Assert.Equal(isSchoolClosed, await schoolClosedCard.IsVisibleAsync());
+
+        if (isSchoolClosed)
+        {
+            var value = await schoolClosedCard.Locator("p").TextContentAsync();
+
+            var expectedText = hasSchoolClosedDate ? "This school closed on 23 March 2025" : "Closed";
+
+            Assert.NotNull(value);
+            Assert.Equal(expectedText, value.Trim());
+        }        
     }
 
     [Theory]

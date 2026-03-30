@@ -13,14 +13,14 @@ namespace SAPPub.Core.Services.KS4.Performance
             _repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
-        public async Task<IEnumerable<EstablishmentPerformance>> GetAllEstablishmentPerformanceAsync(CancellationToken ct = default)
+        public Task<IEnumerable<EstablishmentPerformance>> GetAllEstablishmentPerformanceAsync(CancellationToken ct = default)
         {
-            return await _repo.GetAllEstablishmentPerformanceAsync(ct);
+            return _repo.GetAllEstablishmentPerformanceAsync(ct);
         }
 
-        public async Task<EstablishmentPerformance> GetEstablishmentPerformanceAsync(string urn, CancellationToken ct = default)
+        public Task<EstablishmentPerformance> GetEstablishmentPerformanceAsync(string urn, CancellationToken ct = default)
         {
-            return await _repo.GetEstablishmentPerformanceAsync(urn, ct);
+            return _repo.GetEstablishmentPerformanceAsync(urn, ct);
         }
     }
 }

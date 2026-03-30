@@ -41,6 +41,16 @@
   },
   {
     "Type": "KS4_Performance",
+    "Subtype": "Performance_rev",
+    "Year": "Current",
+    "SourceOrg": "EES",
+    "DataSetId": "b3e19901-5d2b-b676-bb4c-e60937d74725",
+    "Url": "",
+    "FileType": "csv",
+    "FileName": "202425_all_state_funded_pupils_characteristics_and_geography_breakdowns_revised"
+  },
+  {
+    "Type": "KS4_Performance",
     "Subtype": "Performance_2",
     "Year": "Current",
     "SourceOrg": "EES",
@@ -48,6 +58,16 @@
     "Url": "",
     "FileType": "csv",
     "FileName": "202425_performance_tables_schools_provisional"
+  },
+  {
+    "Type": "KS4_Performance",
+    "Subtype": "Performance_2_rev",
+    "Year": "Current",
+    "SourceOrg": "EES",
+    "DataSetId": "19e39901-a96c-be76-b9c2-6af54ae076d2",
+    "Url": "",
+    "FileType": "csv",
+    "FileName": "202425_performance_tables_schools_revised"
   },
   {
     "Type": "KS4_Performance",
