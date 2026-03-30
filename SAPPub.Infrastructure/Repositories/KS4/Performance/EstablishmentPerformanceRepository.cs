@@ -13,9 +13,9 @@ namespace SAPPub.Infrastructure.Repositories.KS4.Performance
             _repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
-        public async Task<IEnumerable<EstablishmentPerformance>> GetAllEstablishmentPerformanceAsync(CancellationToken ct = default)
+        public Task<IEnumerable<EstablishmentPerformance>> GetAllEstablishmentPerformanceAsync(CancellationToken ct = default)
         {
-            return await _repo.ReadAllAsync(ct);
+            return _repo.ReadAllAsync(ct);
         }
 
         public async Task<EstablishmentPerformance> GetEstablishmentPerformanceAsync(string urn, CancellationToken ct = default)

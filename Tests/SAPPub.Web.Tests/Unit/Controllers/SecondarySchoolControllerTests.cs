@@ -479,7 +479,7 @@ public class SecondarySchoolControllerTests
         {
             Assert.False(model.ClosedDate.IsAvailable);
             Assert.True(model.ClosedDate.IsNotAvailable);
-        }        
+        }
     }
 
     [Fact]

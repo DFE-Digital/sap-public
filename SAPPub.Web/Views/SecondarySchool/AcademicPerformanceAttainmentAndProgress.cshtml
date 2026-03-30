@@ -110,9 +110,12 @@
                         The local authority average score is @Model.LocalAuthorityAttainment8Score.
                     </p>
 
-                    <p class ="govuk-body">
-                        The national average score is @Model.EnglandAttainment8Score.
-                    </p>
+                    @if (Model.EnglandAttainment8ScoreContextDescription.IsAvailable)
+                    {
+                        <p class="govuk-body">
+                            @Model.EnglandAttainment8ScoreContextDescription.DisplayText()
+                        </p>
+                    }
                 </div>
                 <div class="bar-chart__icon"></div>
             </div>
