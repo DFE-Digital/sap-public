@@ -20,7 +20,8 @@ jobs:
   ingest:
     name: Ingest Raw Data & Build Warehouse
     runs-on: ubuntu-latest
-    #environment: test
+    environment:
+      name: ${{ inputs.environment || 'test' }}
 
     env:
       # Blob (currently from GitHub secrets)
@@ -33,6 +34,7 @@ jobs:
       SENSITIVE_MAT_LINKS_URL: ${{ secrets.SENSITIVE_MAT_LINKS_URL }}
 
 
+      DEPLOY_ENV: ${{ inputs.environment || 'production'  }}
       # Konduit / AKS settings (also in GitHub secrets)
       # AKS_RESOURCE_GROUP: ${{ secrets.AKS_RESOURCE_GROUP }}
       # AKS_CLUSTER_NAME: ${{ secrets.AKS_CLUSTER_NAME }}
@@ -43,7 +45,7 @@ jobs:
       # =============================
       # 0. Set TFVars for later use
       # =============================
-      - name: Set environment variables
+      - name: Set environment variables for ${{ env.DEPLOY_ENV }}
         run: |
           source global_config/${DEPLOY_ENV}.sh
           tf_vars_file=${TF_VARS_PATH}/${DEPLOY_ENV}.tfvars.json
@@ -648,7 +650,7 @@ jobs:
       # ==============================
       - name: Create + upload review seed DB backup
         shell: bash
-        if: ${{ github.event.inputs.environment == 'test' || github.event.inputs.environment == 'production' }}
+        if: ${{ github.event.inputs.DEPLOY_ENV == 'test' || github.event.inputs.DEPLOY_ENV == 'production' }}
         run: |
           set -euo pipefail
           TODAY=$(TZ=Europe/London date +"%F")
