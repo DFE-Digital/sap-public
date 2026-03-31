@@ -106,10 +106,12 @@
 
             <div class="custom-card" data-testid="attainment8-localauthority-and-national-card">
                 <div class="custom-card__content">
-                    <p class="govuk-body">
-                        The local authority average score is @Model.LocalAuthorityAttainment8Score.
-                    </p>
-
+                    @if (Model.LocalAuthorityAttainment8ScoreContextDescription.IsAvailable)
+                    {
+                        <p class="govuk-body">
+                            @Model.LocalAuthorityAttainment8ScoreContextDescription.DisplayText()
+                        </p>
+                    }
                     @if (Model.EnglandAttainment8ScoreContextDescription.IsAvailable)
                     {
                         <p class="govuk-body">

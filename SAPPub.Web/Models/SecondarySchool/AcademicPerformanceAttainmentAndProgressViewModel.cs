@@ -24,6 +24,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
     public required DisplayField<string> EstablishmentAttainment8ScoreContextDescription { get; init; }
 
     public double? LocalAuthorityAttainment8Score { get; init; }
+    public required DisplayField<string> LocalAuthorityAttainment8ScoreContextDescription { get; init; }
 
     public double? EnglandAttainment8Score { get; init; }
     public required DisplayField<string> EnglandAttainment8ScoreContextDescription { get; init; }
@@ -40,8 +41,9 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
 
     public static AcademicPerformanceAttainmentAndProgressViewModel Map(AttainmentAndProgressModel attainmentAndProgressModel, AcademicYearSelection selectedAcademicYear)
     {
-        var establishmentAttainment8Context = EstablishmentAttainment8ContextStatement(attainmentAndProgressModel.EstablishmentAttainment8Score);
+        var establishmentAttainment8ContextSentence = EstablishmentAttainment8ContextStatement(attainmentAndProgressModel.EstablishmentAttainment8Score);
         var englandAttainment8ContextSentence = NationalAttainment8ContextStatement(nationalScore: attainmentAndProgressModel.EnglandAttainment8Score, schoolScore: attainmentAndProgressModel.EstablishmentAttainment8Score);
+        var localAuthorityAttainment8ContextSentence = LocalAuthorityAttainment8ContextStatement(localAuthorityScore: attainmentAndProgressModel.LocalAuthorityAttainment8Score, schoolScore: attainmentAndProgressModel.EstablishmentAttainment8Score);
         return new AcademicPerformanceAttainmentAndProgressViewModel
         {
             URN = attainmentAndProgressModel.Urn,
@@ -50,11 +52,14 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
             EstablishmentProgress8Score = attainmentAndProgressModel.EstablishmentProgress8Score,
             LocalAuthorityProgress8Score = attainmentAndProgressModel.LocalAuthorityProgress8Score,
             EstablishmentAttainment8Score = attainmentAndProgressModel.EstablishmentAttainment8Score,
-            EstablishmentAttainment8ScoreContextDescription = establishmentAttainment8Context != null
-                ? ($"This means that pupils generally scored the equivalent of {establishmentAttainment8Context} in their 8 best GCSE-level subjects.").ToDisplayField()
+            EstablishmentAttainment8ScoreContextDescription = establishmentAttainment8ContextSentence != null
+                ? establishmentAttainment8ContextSentence.ToDisplayField()
+                : DisplayField<string>.NotAvailable(),
+            LocalAuthorityAttainment8ScoreContextDescription = localAuthorityAttainment8ContextSentence != null
+                ? $"{localAuthorityAttainment8ContextSentence}".ToDisplayField()
                 : DisplayField<string>.NotAvailable(),
             EnglandAttainment8ScoreContextDescription = englandAttainment8ContextSentence != null
-                ? ($"{englandAttainment8ContextSentence}").ToDisplayField()
+                ? $"{englandAttainment8ContextSentence}".ToDisplayField()
                 : DisplayField<string>.NotAvailable(),
             LocalAuthorityAttainment8Score = attainmentAndProgressModel.LocalAuthorityAttainment8Score,
             EnglandAttainment8Score = attainmentAndProgressModel.EnglandAttainment8Score,
@@ -65,28 +70,31 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
 
     private static string? EstablishmentAttainment8ContextStatement(double? score)
     {
+        string returnClause = null!;
         if (!score.HasValue || score.Value < 0 || score.Value > 90)
             return null;
 
         if (score == 90)
-            return "grade 9";
+            returnClause = "grade 9";
 
         if (score < 10)
-            return "below a grade 1";
+            returnClause = "below a grade 1";
 
         int baseGrade = (int)(score.Value / 10);   // 10–19 → 1, 20–29 → 2, etc.
         float remainder = (float)Math.Round(score.Value % 10, 1);
 
         if (remainder <= 0.9f)
-            return $"grade {baseGrade}";
+            returnClause = $"grade {baseGrade}";
 
         if (remainder <= 2.9f)
-            return $"just above grade {baseGrade}";
+            returnClause = $"just above grade {baseGrade}";
 
         if (remainder <= 8.0f)
-            return $"between grade {baseGrade} and grade {baseGrade + 1}";
+            returnClause = $"between grade {baseGrade} and grade {baseGrade + 1}";
 
-        return $"just below grade {baseGrade + 1}";
+        returnClause = $"just below grade {baseGrade + 1}";
+
+        return $"This means that pupils generally scored the equivalent of {returnClause} in their 8 best GCSE-level subjects.";
     }
 
     private static string? NationalAttainment8ContextStatement(double? nationalScore, double? schoolScore)
@@ -94,14 +102,44 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
         if (!nationalScore.HasValue || !schoolScore.HasValue)
             return null;
 
-        var firstClause = (float)Math.Round(schoolScore.Value - nationalScore.Value, 1) switch
+        var firstClause = SentenceFirstClause(nationalScore.Value, schoolScore.Value) ?? "Not available";
+
+        var secondClause = SentenceSecondClause(nationalScore.Value, schoolScore.Value) ?? "Not available";
+
+        return $"""
+            It's {firstClause} the national average of {nationalScore.Value:0.0}, 
+            meaning pupils are performing {secondClause} the national average.
+        """;
+    }
+
+    private static string? LocalAuthorityAttainment8ContextStatement(double? localAuthorityScore, double? schoolScore)
+    {
+        if (!localAuthorityScore.HasValue || !schoolScore.HasValue)
+            return null;
+
+        var firstClause = SentenceFirstClause(localAuthorityScore.Value, schoolScore.Value) ?? "Not available";
+
+        var secondClause = SentenceSecondClause(localAuthorityScore.Value, schoolScore.Value) ?? "Not available";
+
+        return $"""
+            An Attainment 8 score of {schoolScore:0.0} is {firstClause} the local council average of {localAuthorityScore.Value:0.0}. 
+            This means pupils are performing {secondClause} pupils at other schools in the area.
+        """;
+    }
+
+    private static string? SentenceFirstClause(double contextualScore, double schoolScore)
+    {
+        return (float)Math.Round(schoolScore - contextualScore, 1) switch
         {
-            > 0.0f => $"{Math.Abs(schoolScore.Value - nationalScore.Value):0.0} points higher than",
-            < 0.0f => $"{Math.Abs(schoolScore.Value - nationalScore.Value):0.0} points lower than",
+            > 0.0f => $"{Math.Abs(schoolScore - contextualScore):0.0} points higher than",
+            < 0.0f => $"{Math.Abs(schoolScore - contextualScore):0.0} points lower than",
             _ => "the same as"
         };
+    }
 
-        var secondClause = (float)Math.Round(schoolScore.Value - nationalScore.Value, 1) switch
+    private static string? SentenceSecondClause(double contextualScore, double schoolScore)
+    {
+        return (float)Math.Round(schoolScore - contextualScore, 1) switch
         {
             > 2.9f => "above",
             > 0.9f => "just above",
@@ -110,10 +148,5 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
             < -2.9f => "below",
             _ => "Not available",
         };
-
-        return $"""
-            It's {firstClause} the national average of {nationalScore.Value:0.0}, 
-            meaning pupils are performing {secondClause} the national average.
-        """;
     }
 }
