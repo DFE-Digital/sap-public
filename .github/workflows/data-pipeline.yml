@@ -40,7 +40,7 @@ jobs:
 
       # Blob (currently from GitHub secrets)
       AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
-      #AZURE_STORAGE_CONTAINER: ${{ secrets.AZURE_STORAGE_CONTAINER }}
+      AZURE_STORAGE_CONTAINER: 'schooldata'
 
       # Sensitive source URLs (THREE endpoints in GitHub secrets)
       SENSITIVE_DATASET_URL: ${{ secrets.SENSITIVE_DATASET_URL }}
@@ -146,7 +146,7 @@ jobs:
         shell: pwsh
         run: |
           az storage container create `
-            --name $env:STORAGE_ACCOUNT_NAME `
+            --name $env:AZURE_STORAGE_CONTAINER `
             --connection-string $env:AZURE_STORAGE_CONNECTION_STRING `
             --public-access off | Out-Null
       # ==============================
@@ -172,7 +172,7 @@ jobs:
         run: |
           $ErrorActionPreference = "Stop"
           $conn = $env:AZURE_STORAGE_CONNECTION_STRING
-          $container = $env:STORAGE_ACCOUNT_NAME
+          $container = $env:AZURE_STORAGE_CONTAINER
           $manifestBlobName = "versions.json"
           $sourcesPathRepo = "SAPData/raw_sources.json"
           if (-not (Test-Path $sourcesPathRepo)) { throw "Could not find $sourcesPathRepo in the repo." }
@@ -554,13 +554,13 @@ jobs:
           }
           # ---- List all blobs in container ----
           $blobNamesJson = az storage blob list `
-            --container-name $env:STORAGE_ACCOUNT_NAME `
+            --container-name $env:AZURE_STORAGE_CONTAINER `
             --connection-string $env:AZURE_STORAGE_CONNECTION_STRING `
             --query "[].name" -o json
           $blobNames = $blobNamesJson | ConvertFrom-Json
           if ($blobNames -isnot [System.Array]) { $blobNames = @($blobNames) }
           if (-not $blobNames -or $blobNames.Count -eq 0) {
-            throw "No blobs found in container '$($env:STORAGE_ACCOUNT_NAME)'."
+            throw "No blobs found in container '$($env:AZURE_STORAGE_CONTAINER)'."
           }
           # ---- Decide what to download ----
           # Rule:
@@ -587,7 +587,7 @@ jobs:
           foreach ($blob in $toDownload) {
             $dest = Join-Path $rawDir $blob
             az storage blob download `
-              --container-name $env:STORAGE_ACCOUNT_NAME `
+              --container-name $env:AZURE_STORAGE_CONTAINER `
               --name $blob `
               --file $dest `
               --connection-string $env:AZURE_STORAGE_CONNECTION_STRING `
@@ -679,12 +679,12 @@ jobs:
             exit $exit_code
           fi
           ls -lh "${LOCAL_FILE}"
-          echo "Uploading (overwriting) ${LATEST_BLOB} in container ${STORAGE_ACCOUNT_NAME}"
+          echo "Uploading (overwriting) ${LATEST_BLOB} in container ${AZURE_STORAGE_CONTAINER}"
           az storage blob upload \
-            --container-name "${STORAGE_ACCOUNT_NAME}" \
+            --container-name "${AZURE_STORAGE_CONTAINER}" \
             --name "${LATEST_BLOB}" \
             --file "${LOCAL_FILE}" \
             --connection-string "${AZURE_STORAGE_CONNECTION_STRING}" \
             --overwrite true >/dev/null
           echo "Seed backup uploaded:"
-          echo "  ${STORAGE_ACCOUNT_NAME}/${LATEST_BLOB}"
+          echo "  ${AZURE_STORAGE_CONTAINER}/${LATEST_BLOB}"
