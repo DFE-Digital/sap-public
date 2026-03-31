@@ -24,6 +24,13 @@ jobs:
       name: ${{ inputs.environment || 'test' }}
 
     env:
+      # Terraform and service-related settings
+      SERVICE_NAME: sap-public
+      SERVICE_SHORT: sappub
+      TF_VARS_PATH: terraform/application/config
+      DEPLOY_ENV: ${{ inputs.environment || 'test'  }}
+
+
       # Blob (currently from GitHub secrets)
       AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
       AZURE_STORAGE_CONTAINER: ${{ secrets.AZURE_STORAGE_CONTAINER }}
@@ -34,7 +41,6 @@ jobs:
       SENSITIVE_MAT_LINKS_URL: ${{ secrets.SENSITIVE_MAT_LINKS_URL }}
 
 
-      DEPLOY_ENV: ${{ inputs.environment || 'production'  }}
       # Konduit / AKS settings (also in GitHub secrets)
       # AKS_RESOURCE_GROUP: ${{ secrets.AKS_RESOURCE_GROUP }}
       # AKS_CLUSTER_NAME: ${{ secrets.AKS_CLUSTER_NAME }}
