@@ -36,6 +36,7 @@ jobs:
     env:
       # Terraform and service-related settings
       DEPLOY_ENV: ${{ inputs.environment || 'test'  }}
+      PR_NUM: ${{ inputs.pr-number || ''  }}
 
 
       # Blob (currently from GitHub secrets)
@@ -77,7 +78,7 @@ jobs:
           echo "DB_SERVER=${AZURE_RESOURCE_PREFIX}-${SERVICE_SHORT}-${CONFIG_SHORT}-pg" >> $GITHUB_ENV
           if [ "${environment}" == "review" ]; then
             echo "REVIEW_KONDUIT_PREFIX=$(jq -r '.app_prefix' ${tf_vars_file})" >> $GITHUB_ENV
-            echo "KONDUIT_APP_NAME=${REVIEW_KONDUIT_PREFIX}${ inputs.pr-number }" >> $GITHUB_ENV
+            echo "KONDUIT_APP_NAME=${REVIEW_KONDUIT_PREFIX}${ env.PR_NUM }" >> $GITHUB_ENV
           else
             echo "KONDUIT_APP_NAME=$(jq -r '.app_prefix' ${tf_vars_file})" >> $GITHUB_ENV
           fi
