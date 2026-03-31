@@ -45,7 +45,7 @@ jobs:
 
       # Konduit / AKS settings (also in GitHub secrets)
       # AKS_RESOURCE_GROUP: ${{ secrets.AKS_RESOURCE_GROUP }}
-      # AKS_CLUSTER_NAME: ${{ secrets.AKS_CLUSTER_NAME }}
+      AKS_CLUSTER_NAME: ${{ secrets.AKS_CLUSTER_NAME }}
       # AKS_NAMESPACE: ${{ secrets.AKS_NAMESPACE }}
       # KONDUIT_APP_NAME: ${{ secrets.KONDUIT_APP_NAME }}
 
@@ -65,7 +65,6 @@ jobs:
         run: |
           source global_config/${DEPLOY_ENV}.sh
           tf_vars_file=${TF_VARS_PATH}/${DEPLOY_ENV}.tfvars.json
-          echo "AKS_CLUSTER_NAME=$(jq -r '.cluster' ${tf_vars_file})" >> $GITHUB_ENV
           echo "AKS_NAMESPACE=$(jq -r '.namespace' ${tf_vars_file})" >> $GITHUB_ENV
           echo "AKS_RESOURCE_GROUP=${AZURE_RESOURCE_PREFIX}-${SERVICE_SHORT}-${CONFIG_SHORT}-rg" >> $GITHUB_ENV
           echo "STORAGE_ACCOUNT_NAME=${AZURE_RESOURCE_PREFIX}${SERVICE_SHORT}dbbkp${CONFIG_SHORT}sa" >> $GITHUB_ENV
