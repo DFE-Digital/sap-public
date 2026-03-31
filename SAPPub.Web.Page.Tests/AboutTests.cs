@@ -11,7 +11,11 @@ public class AboutTests : IDisposable
     private readonly MockAccessor<IGenericRepository<Establishment>> _accessor = new();
     private readonly WebAppFixture _fixture;
 
-    private string Url => "/school/{urn}/{school-name}/secondary/about";
+    private string BuildUrl(string urn, string schoolName)
+    {
+        var encodedSchoolName = Uri.EscapeDataString(schoolName);
+        return $"/school/{urn}/{encodedSchoolName}/secondary/about";
+    }
 
     public AboutTests(WebAppFixture fixture)
     {
@@ -32,15 +36,20 @@ public class AboutTests : IDisposable
     {
         // Arrange
         var urn = "112345";
-        var establishmentGenericRepositoryMock = _accessor.GetOrDefault();
+        var establishmentGenericRepositoryMock = _accessor.Get();
         establishmentGenericRepositoryMock?
-            .Setup(repo => repo.ReadSingleAsync(
-                It.IsAny<object>(),
+            .Setup(repo => repo.ReadAsync(
+                It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Establishment());
+            .ReturnsAsync(new Establishment()
+            {
+                URN = urn,
+                EstablishmentName = "Test School"
+            });
 
         // Act
-        var document = await _fixture.BrowseToPage("/about");
+        var document = await _fixture.BrowseToPage(BuildUrl(urn, "Test School"));
+
         // Assert
         var h1 = document.QuerySelector("h1");
         Assert.Contains("About this project", h1?.TextContent.Trim());

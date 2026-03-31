@@ -56,7 +56,7 @@ namespace SAPPub.Web.Controllers
             var establishmentDetails = await establishmentService.GetEstablishmentAsync(urn, ct);
             var model = AttendanceViewModel.Map(establishmentDetails);
             return View(model);
-        }     
+        }
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/curriculum-and-extra-curricular-activities", Name = RouteConstants.SecondaryCurriculumAndExtraCurricularActivities)]
