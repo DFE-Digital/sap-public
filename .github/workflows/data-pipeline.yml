@@ -76,7 +76,7 @@ jobs:
           echo "AKS_RESOURCE_GROUP=$(jq -r '.cluster_rg' ${tf_vars_file})" >> $GITHUB_ENV
           echo "STORAGE_ACCOUNT_NAME=${AZURE_RESOURCE_PREFIX}${SERVICE_SHORT}dbbkp${CONFIG_SHORT}sa" >> $GITHUB_ENV
           echo "DB_SERVER=${AZURE_RESOURCE_PREFIX}-${SERVICE_SHORT}-${CONFIG_SHORT}-pg" >> $GITHUB_ENV
-          if [ "${environment}" == "review" ]; then
+          if [ "${DEPLOY_ENV}" == "review" ]; then
             echo "REVIEW_KONDUIT_PREFIX=$(jq -r '.app_prefix' ${tf_vars_file})" >> $GITHUB_ENV
             echo "KONDUIT_APP_NAME=${REVIEW_KONDUIT_PREFIX}${env.PR_NUM}" >> $GITHUB_ENV
           else
@@ -85,9 +85,9 @@ jobs:
 
           echo "Set environment variables from ${tf_vars_file}:"
           echo "Set environment variables for ${environment}:"
-          echo "1: ${{ env.PR_NUM }}"
-          echo "2: ${{ inputs.pr-number }}"
-          echo "3: ${{ github.event.pull_request.number }}"
+          echo "1: ${env.PR_NUM }"
+          echo "2: ${ inputs.pr-number }"
+          echo "3: ${ github.event.pull_request.number }"
           echo "REVIEW_KONDUIT_PREFIX: $REVIEW_KONDUIT_PREFIX"
 
       # ==============================
