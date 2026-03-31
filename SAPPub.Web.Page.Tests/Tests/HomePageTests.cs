@@ -1,7 +1,7 @@
 ﻿using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 
-namespace SAPPub.Web.Page.Tests;
+namespace SAPPub.Web.Page.Tests.Tests;
 
 [Collection("WebAppCollection")] // share the WebAppFixture across tests in this class so that we oly start the web app once for all tests in this collection
 public class HomePageTests : IDisposable //implement IDisposable so that we can clear the mock accessor after each test, to ensure a clean slate for the next test
