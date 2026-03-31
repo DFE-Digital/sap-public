@@ -53,7 +53,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
             LocalAuthorityProgress8Score = attainmentAndProgressModel.LocalAuthorityProgress8Score,
             EstablishmentAttainment8Score = attainmentAndProgressModel.EstablishmentAttainment8Score,
             EstablishmentAttainment8ScoreContextDescription = establishmentAttainment8ContextSentence != null
-                ? establishmentAttainment8ContextSentence.ToDisplayField()
+                ? $"This means that pupils generally scored the equivalent of {establishmentAttainment8ContextSentence} in their 8 best GCSE-level subjects.".ToDisplayField()
                 : DisplayField<string>.NotAvailable(),
             LocalAuthorityAttainment8ScoreContextDescription = localAuthorityAttainment8ContextSentence != null
                 ? $"{localAuthorityAttainment8ContextSentence}".ToDisplayField()
@@ -70,31 +70,28 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
 
     private static string? EstablishmentAttainment8ContextStatement(double? score)
     {
-        string returnClause = null!;
         if (!score.HasValue || score.Value < 0 || score.Value > 90)
             return null;
 
         if (score == 90)
-            returnClause = "grade 9";
+            return "grade 9";
 
         if (score < 10)
-            returnClause = "below a grade 1";
+            return "below a grade 1";
 
         int baseGrade = (int)(score.Value / 10);   // 10–19 → 1, 20–29 → 2, etc.
         float remainder = (float)Math.Round(score.Value % 10, 1);
 
         if (remainder <= 0.9f)
-            returnClause = $"grade {baseGrade}";
+            return $"grade {baseGrade}";
 
         if (remainder <= 2.9f)
-            returnClause = $"just above grade {baseGrade}";
+            return $"just above grade {baseGrade}";
 
         if (remainder <= 8.0f)
-            returnClause = $"between grade {baseGrade} and grade {baseGrade + 1}";
+            return $"between grade {baseGrade} and grade {baseGrade + 1}";
 
-        returnClause = $"just below grade {baseGrade + 1}";
-
-        return $"This means that pupils generally scored the equivalent of {returnClause} in their 8 best GCSE-level subjects.";
+        return $"just below grade {baseGrade + 1}";
     }
 
     private static string? NationalAttainment8ContextStatement(double? nationalScore, double? schoolScore)
