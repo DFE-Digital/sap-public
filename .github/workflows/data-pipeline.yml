@@ -16,6 +16,11 @@ permissions:
   contents: write
   id-token: write   # required if using OIDC with azure/login
 
+env:
+  SERVICE_NAME: sap-public
+  SERVICE_SHORT: sappub
+  TF_VARS_PATH: terraform/application/config
+
 jobs:
   ingest:
     name: Ingest Raw Data & Build Warehouse
@@ -25,9 +30,6 @@ jobs:
 
     env:
       # Terraform and service-related settings
-      SERVICE_NAME: sap-public
-      SERVICE_SHORT: sappub
-      TF_VARS_PATH: terraform/application/config
       DEPLOY_ENV: ${{ inputs.environment || 'test'  }}
 
 
@@ -48,8 +50,16 @@ jobs:
       # KONDUIT_APP_NAME: ${{ secrets.KONDUIT_APP_NAME }}
 
     steps:
+      # ==============================
+      # 0. Checkout repo
+      # ==============================
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
       # =============================
-      # 0. Set TFVars for later use
+      # 1. Set TFVars for later use
       # =============================
       - name: Set environment variables for ${{ env.DEPLOY_ENV }}
         run: |
@@ -66,15 +76,6 @@ jobs:
           else
             echo "KONDUIT_APP_NAME=$(jq -r '.app-prefix' ${tf_vars_file})" >> $GITHUB_ENV
           fi
-
-
-      # ==============================
-      # 1. Checkout repo
-      # ==============================
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: true
 
       # ==============================
       # 2. Install dependencies
