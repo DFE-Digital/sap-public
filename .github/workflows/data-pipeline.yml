@@ -38,22 +38,14 @@ jobs:
       DEPLOY_ENV: ${{ inputs.environment || 'test'  }}
       PR_NUM: ${{ inputs.pr-number || ''  }}
 
-
       # Blob (currently from GitHub secrets)
       AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
-      AZURE_STORAGE_CONTAINER: ${{ secrets.AZURE_STORAGE_CONTAINER }}
+      #AZURE_STORAGE_CONTAINER: ${{ secrets.AZURE_STORAGE_CONTAINER }}
 
       # Sensitive source URLs (THREE endpoints in GitHub secrets)
       SENSITIVE_DATASET_URL: ${{ secrets.SENSITIVE_DATASET_URL }}
       SENSITIVE_ESTABLISHMENT_LINKS_URL: ${{ secrets.SENSITIVE_ESTABLISHMENT_LINKS_URL }}
       SENSITIVE_MAT_LINKS_URL: ${{ secrets.SENSITIVE_MAT_LINKS_URL }}
-
-
-      # Konduit / AKS settings (also in GitHub secrets)
-      # AKS_RESOURCE_GROUP: ${{ secrets.AKS_RESOURCE_GROUP }}
-      # AKS_CLUSTER_NAME: ${{ secrets.AKS_CLUSTER_NAME }}
-      # AKS_NAMESPACE: ${{ secrets.AKS_NAMESPACE }}
-      # KONDUIT_APP_NAME: ${{ secrets.KONDUIT_APP_NAME }}
 
     steps:
       # ==============================
@@ -74,7 +66,7 @@ jobs:
           echo "AKS_NAMESPACE=$(jq -r '.namespace' ${tf_vars_file})" >> $GITHUB_ENV
           echo "AKS_CLUSTER_NAME=$(jq -r '.cluster_name' ${tf_vars_file})" >> $GITHUB_ENV
           echo "AKS_RESOURCE_GROUP=$(jq -r '.cluster_rg' ${tf_vars_file})" >> $GITHUB_ENV
-          echo "STORAGE_ACCOUNT_NAME=${AZURE_RESOURCE_PREFIX}${SERVICE_SHORT}dbbkp${CONFIG_SHORT}sa" >> $GITHUB_ENV
+          echo "STORAGE_ACCOUNT_NAME=${AZURE_RESOURCE_PREFIX}${SERVICE_SHORT}dp${CONFIG_SHORT}sa" >> $GITHUB_ENV
           echo "DB_SERVER=${AZURE_RESOURCE_PREFIX}-${SERVICE_SHORT}-${CONFIG_SHORT}-pg" >> $GITHUB_ENV
           if [ "${DEPLOY_ENV}" == "review" ]; then
             echo "KONDUIT_APP_NAME=$(jq -r '.app_prefix' ${tf_vars_file})${{env.PR_NUM}}" >> $GITHUB_ENV
@@ -154,7 +146,7 @@ jobs:
         shell: pwsh
         run: |
           az storage container create `
-            --name $env:AZURE_STORAGE_CONTAINER `
+            --name $env:STORAGE_ACCOUNT_NAME `
             --connection-string $env:AZURE_STORAGE_CONNECTION_STRING `
             --public-access off | Out-Null
       # ==============================
@@ -180,7 +172,7 @@ jobs:
         run: |
           $ErrorActionPreference = "Stop"
           $conn = $env:AZURE_STORAGE_CONNECTION_STRING
-          $container = $env:AZURE_STORAGE_CONTAINER
+          $container = $env:STORAGE_ACCOUNT_NAME
           $manifestBlobName = "versions.json"
           $sourcesPathRepo = "SAPData/raw_sources.json"
           if (-not (Test-Path $sourcesPathRepo)) { throw "Could not find $sourcesPathRepo in the repo." }
@@ -562,13 +554,13 @@ jobs:
           }
           # ---- List all blobs in container ----
           $blobNamesJson = az storage blob list `
-            --container-name $env:AZURE_STORAGE_CONTAINER `
+            --container-name $env:STORAGE_ACCOUNT_NAME `
             --connection-string $env:AZURE_STORAGE_CONNECTION_STRING `
             --query "[].name" -o json
           $blobNames = $blobNamesJson | ConvertFrom-Json
           if ($blobNames -isnot [System.Array]) { $blobNames = @($blobNames) }
           if (-not $blobNames -or $blobNames.Count -eq 0) {
-            throw "No blobs found in container '$($env:AZURE_STORAGE_CONTAINER)'."
+            throw "No blobs found in container '$($env:STORAGE_ACCOUNT_NAME)'."
           }
           # ---- Decide what to download ----
           # Rule:
@@ -595,7 +587,7 @@ jobs:
           foreach ($blob in $toDownload) {
             $dest = Join-Path $rawDir $blob
             az storage blob download `
-              --container-name $env:AZURE_STORAGE_CONTAINER `
+              --container-name $env:STORAGE_ACCOUNT_NAME `
               --name $blob `
               --file $dest `
               --connection-string $env:AZURE_STORAGE_CONNECTION_STRING `
@@ -665,7 +657,7 @@ jobs:
       # ==============================
       - name: Create + upload review seed DB backup
         shell: bash
-        if: ${{ github.event.inputs.DEPLOY_ENV == 'test' || github.event.inputs.DEPLOY_ENV == 'production' }}
+        if: ${{ env.DEPLOY_ENV == 'test' || env.DEPLOY_ENV == 'production' }}
         run: |
           set -euo pipefail
           TODAY=$(TZ=Europe/London date +"%F")
@@ -687,12 +679,12 @@ jobs:
             exit $exit_code
           fi
           ls -lh "${LOCAL_FILE}"
-          echo "Uploading (overwriting) ${LATEST_BLOB} in container ${AZURE_STORAGE_CONTAINER}"
+          echo "Uploading (overwriting) ${LATEST_BLOB} in container ${STORAGE_ACCOUNT_NAME}"
           az storage blob upload \
-            --container-name "${AZURE_STORAGE_CONTAINER}" \
+            --container-name "${STORAGE_ACCOUNT_NAME}" \
             --name "${LATEST_BLOB}" \
             --file "${LOCAL_FILE}" \
             --connection-string "${AZURE_STORAGE_CONNECTION_STRING}" \
             --overwrite true >/dev/null
           echo "Seed backup uploaded:"
-          echo "  ${AZURE_STORAGE_CONTAINER}/${LATEST_BLOB}"
+          echo "  ${STORAGE_ACCOUNT_NAME}/${LATEST_BLOB}"
