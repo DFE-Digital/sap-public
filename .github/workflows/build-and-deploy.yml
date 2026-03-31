@@ -100,7 +100,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
           cache: 'npm'
           cache-dependency-path: '**/package-lock.json'
 
@@ -181,14 +181,16 @@ jobs:
           path: code-coverage-results.md
 
   # ---------------------------
-  # REFRESH DATA
+  # REFRESH DATA - Run after environment set up via deploying app. Without prior deployment, this will fail. 
   # ---------------------------
   refresh-data:
     name: Refresh data (School Data Ingestion Pipeline)
     if: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'refresh data') }}
-    needs: [build, test]
+    needs: [build, test, deploy-review-app-with-refresh]
     uses: ./.github/workflows/data-pipeline.yml
     secrets: inherit
+    with:
+        environment: review
     permissions:
       contents: write
       id-token: write
@@ -339,9 +341,9 @@ jobs:
   # REVIEW APP DEPLOYMENT (PR) - refresh requested
   # ---------------------------
   deploy-review-app-with-refresh:
-    name: Deployment To Review (after refresh)
+    name: Deployment To Review (before refresh)
     concurrency: deploy_review_${{ github.event.pull_request.number }}
-    needs: [build, test, refresh-data]
+    needs: [build, test]
     if: ${{ github.event_name == 'pull_request'
       && (
       github.event.action == 'labeled' ||
@@ -349,7 +351,9 @@ jobs:
       )
       && contains(github.event.pull_request.labels.*.name, 'deploy')
       && contains(github.event.pull_request.labels.*.name, 'refresh data')
-      && needs.refresh-data.result == 'success' }}
+      }}
+      #&& needs.refresh-data.result == 'success' 
+
     environment:
       name: review
       url: ${{ steps.deploy_review.outputs.environment_url }}
@@ -358,11 +362,11 @@ jobs:
       id-token: write
       pull-requests: write
 
-    env:
-      AKS_RESOURCE_GROUP: ${{ secrets.AKS_RESOURCE_GROUP }}
-      AKS_CLUSTER_NAME: ${{ secrets.AKS_CLUSTER_NAME }}
-      KONDUIT_NAMESPACE: ${{ secrets.AKS_NAMESPACE }}
-      KONDUIT_APP_NAME: ${{ secrets.KONDUIT_APP_NAME }}
+    # env:
+    #   AKS_RESOURCE_GROUP: ${{ secrets.AKS_RESOURCE_GROUP }}
+    #   AKS_CLUSTER_NAME: ${{ secrets.AKS_CLUSTER_NAME }}
+    #   KONDUIT_NAMESPACE: ${{ secrets.AKS_NAMESPACE }}
+    #   KONDUIT_APP_NAME: ${{ secrets.KONDUIT_APP_NAME }}
 
     steps:
       - name: Deploy App to Review
