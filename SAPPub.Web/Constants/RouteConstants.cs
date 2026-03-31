@@ -1,4 +1,4 @@
-﻿namespace SAPPub.Web.Helpers;
+﻿namespace SAPPub.Web.Constants;
 
 public static class RouteConstants
 {

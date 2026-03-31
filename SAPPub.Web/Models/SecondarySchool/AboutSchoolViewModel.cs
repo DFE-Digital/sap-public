@@ -2,6 +2,9 @@
 using SAPPub.Core.Helpers;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Web.Helpers;
+using static SAPPub.Web.Constants.Constants;
+
+
 
 namespace SAPPub.Web.Models.SecondarySchool
 {
@@ -99,21 +102,21 @@ namespace SAPPub.Web.Models.SecondarySchool
         {
             return string.Equals(value, SENUnit, StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(value, ResourcedProvisionAndSENUnit, StringComparison.OrdinalIgnoreCase)
-                ? Constants.Yes
-                : Constants.No;
+                ? Yes
+                : No;
         }
 
         private static string GetResourcedProvision(string value)
         {
             return string.Equals(value, ResourcedProvisionText, StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(value, ResourcedProvisionAndSENUnit, StringComparison.OrdinalIgnoreCase)
-                ? Constants.Yes
-                : Constants.No;
+                ? Yes
+                : No;
         }
 
         private static string GetSixthForm(string value)
         {
-            return string.Equals(value, "1") ? Constants.Yes : Constants.No;
+            return string.Equals(value, "1") ? Yes : No;
         }
     }
 }
