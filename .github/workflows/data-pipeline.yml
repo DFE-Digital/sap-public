@@ -67,7 +67,7 @@ jobs:
           tf_vars_file=${TF_VARS_PATH}/${DEPLOY_ENV}.tfvars.json
           echo "AKS_NAMESPACE=$(jq -r '.namespace' ${tf_vars_file})" >> $GITHUB_ENV
           echo "AKS_CLUSTER_NAME=$(jq -r '.cluster_name' ${tf_vars_file})" >> $GITHUB_ENV
-          echo "AKS_RESOURCE_GROUP=${AZURE_RESOURCE_PREFIX}-${SERVICE_SHORT}-${CONFIG_SHORT}-rg" >> $GITHUB_ENV
+          echo "AKS_RESOURCE_GROUP=$(jq -r '.cluster_rg' ${tf_vars_file})" >> $GITHUB_ENV
           echo "STORAGE_ACCOUNT_NAME=${AZURE_RESOURCE_PREFIX}${SERVICE_SHORT}dbbkp${CONFIG_SHORT}sa" >> $GITHUB_ENV
           echo "DB_SERVER=${AZURE_RESOURCE_PREFIX}-${SERVICE_SHORT}-${CONFIG_SHORT}-pg" >> $GITHUB_ENV
           if [ "${environment}" == "review" ]; then
