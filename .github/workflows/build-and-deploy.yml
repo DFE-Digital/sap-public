@@ -190,7 +190,7 @@ jobs:
     uses: ./.github/workflows/data-pipeline.yml
     secrets: inherit
     with:
-      environment: review
+      environment: test
       pr-number: ${{ github.event.pull_request.number }}
     permissions:
       contents: write
