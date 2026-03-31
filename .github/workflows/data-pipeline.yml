@@ -624,11 +624,11 @@ jobs:
             echo "ETL attempt $attempt/$max_attempts"
             set +e
             "$GITHUB_WORKSPACE/konduit.sh" \
-              -n "${{ secrets.AKS_NAMESPACE }}" \
+              -n "${{ env.AKS_NAMESPACE }}" \
               -t 7200 \
               -x \
               -i "$GITHUB_WORKSPACE/SAPData/Sql/run_all.sql" \
-              "${{ secrets.KONDUIT_APP_NAME }}" -- psql 2>&1 | tee "$log_file"
+              "${{ env.KONDUIT_APP_NAME }}" -- psql 2>&1 | tee "$log_file"
             exit_code=${PIPESTATUS[0]}
             set -e
             if [ $exit_code -eq 0 ]; then
@@ -665,14 +665,12 @@ jobs:
           # Only ever keep this single blob in storage
           LATEST_BLOB="db-backups/sappub_review_seed_latest.sql.gz"
           echo "Creating DB dump -> ${LOCAL_FILE}"
-          echo "AKS_NAMESPACE=${AKS_NAMESPACE}"
-          echo "KONDUIT_APP_NAME=${KONDUIT_APP_NAME}"
           set +e
           "$GITHUB_WORKSPACE/konduit.sh" \
-            -n "${AKS_NAMESPACE}" \
+            -n "${{ env.AKS_NAMESPACE }}" \
             -t 7200 \
             -x \
-            "${KONDUIT_APP_NAME}" -- \
+            "${{ env.KONDUIT_APP_NAME }}" -- \
             pg_dump --format=plain --no-owner --no-privileges 2> konduit_pg_dump.log | gzip -c > "${LOCAL_FILE}"
           exit_code=${PIPESTATUS[0]}
           set -e
