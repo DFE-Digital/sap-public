@@ -11,7 +11,6 @@ using SAPPub.Infrastructure.PostcodeLookup;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Middleware;
 using SAPPub.Web.Models.Config;
-using SAPSec.Web.Middleware;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;

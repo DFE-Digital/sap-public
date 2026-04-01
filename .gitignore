@@ -515,3 +515,6 @@ SAPPub.Web/keys/*
 /SAPData/DataMap/CleanedFiles/*.csv
 /SAPData/DataMap/SourceFiles/*.csv
 /SAPData/Sql/tablemapping.csv
+
+#exclude any reporting csvs
+/scripts/output/*.csv

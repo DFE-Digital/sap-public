@@ -24,7 +24,7 @@ namespace SAPPub.Infrastructure.Repositories
             };
             try
             {
-                _logger.LogError($"Attempting to send gateway email of type {_emailOptions.GatewayTemplate}");
+                _logger.LogInformation($"Attempting to send gateway email of type {_emailOptions.GatewayTemplate}");
                 var response = _notificationClient.SendEmail(emailAddress, _emailOptions.GatewayTemplate, personalisation);
             }
             catch (Exception e)

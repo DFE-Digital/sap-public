@@ -17,7 +17,11 @@ namespace SAPPub.Web.Middleware
         private readonly static List<string> _unrestrictedUrls = new List<string>
         {
             "/gateway/closed",
-            "/gateway/sessionended"
+            "/gateway/sessionended",
+            "/health",
+            "terms-and-conditions",
+            "/Content/Accessibility",
+            "/Cookies/Preferences"
         };
 
         public GatewayMiddleware(RequestDelegate next, 

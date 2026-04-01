@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using SAPPub.Core.Exceptions;
 
-namespace SAPSec.Web.Middleware;
+namespace SAPPub.Web.Middleware;
 
 public sealed class NotFoundExceptionHandler(
     ILogger<NotFoundExceptionHandler> logger,

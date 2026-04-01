@@ -26,7 +26,7 @@ If user clicks "I've never been here before", they are taken to the registration
 - If email is valid, and does not exist in the database, a new record is created, a cookie is set with the new Id and user is redirected to the home page.
 - If email is valid, and does not exist in the database, user is also sent an email with a link to the welcome page. 
 - If email is invalid, user is shown an error to enter a valid email.
-- If email is valid, and already exists in the database, user is shown an error that email already exists, with a link to go to returning page.
+- If email is valid, and already exists in the database, user is shown an error that email already exists.
 
 On each page request -
 - the gateway checks for the cookie, and if it does not exist, or does not match an Id in the database, user is sent to an error page.
