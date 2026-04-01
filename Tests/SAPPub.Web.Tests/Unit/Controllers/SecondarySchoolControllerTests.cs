@@ -17,6 +17,7 @@ using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels.KS4.Admissions;
 using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Core.Tests.TestBuilders;
+using SAPPub.Web.Constants;
 using SAPPub.Web.Controllers;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.Charts;
@@ -479,7 +480,7 @@ public class SecondarySchoolControllerTests
         {
             Assert.False(model.ClosedDate.IsAvailable);
             Assert.True(model.ClosedDate.IsNotAvailable);
-        }        
+        }
     }
 
     [Fact]

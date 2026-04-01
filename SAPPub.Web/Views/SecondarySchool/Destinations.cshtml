@@ -2,7 +2,8 @@
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 
 @{
-    ViewData["Title"] = "Destinations";
+    ViewData["Header"] = "Destinations";
+    ViewData["Title"] = $"{Model.SchoolName} - {ViewData["Header"]}";
 }
 
 <div class="govuk-grid-row">
@@ -16,7 +17,14 @@
 
     <div class="govuk-grid-column-three-quarters">
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
-        <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">@ViewData["Header"]</h1>
+        
+        <p class="govuk-body" data-testId="looking-at-school-performance-info">
+            Looking at school performance data is one way to see how well a school is doing.
+            You should look at a range of information about a school before deciding if it’s the right fit for your child.
+        </p>
+
+        <h2 class="govuk-heading-l">Destinations of pupils who finished year 11 in the 2022 to 2023 academic year</h2>
 
         <div class="data-container">
             <h3 class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">
