@@ -11,6 +11,7 @@ using SAPPub.Infrastructure.PostcodeLookup;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Middleware;
 using SAPPub.Web.Models.Config;
+using Serilog;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -25,6 +26,8 @@ public partial class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+        builder.Host.UseSerilog((ctx, config) => config.ReadFrom.Configuration(ctx.Configuration));
 
         builder.Services.Configure<AnalyticsOptions>(builder.Configuration.GetSection("Analytics"));
         builder.Services.Configure<GatewayOptions>(builder.Configuration.GetSection("Gateway"));
