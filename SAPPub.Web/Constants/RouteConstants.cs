@@ -15,6 +15,7 @@ public static class RouteConstants
 
     public const string Search = "Search";
     public const string TermsAndConditions = "TermsAndConditions";
+    public const string Accessibility = "Accessibility";
 
     // Route Attributes
     public const string URN = "urn";

@@ -11,4 +11,11 @@ public class HelpController : Controller
     {
         return View();
     }
+
+    [HttpGet]
+    [Route("accessibility", Name = RouteConstants.Accessibility)]
+    public IActionResult Accessibility()
+    {
+        return View();
+    }
 }
