@@ -75,5 +75,15 @@ namespace SAPPub.Infrastructure.Repositories.Generic
                 return Task.FromResult(string.Empty);
             }
         }
+
+        Task<bool> IGenericRepository<T>.UpdateAsync(object? updateObject, CancellationToken ct)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<bool> IGenericRepository<T>.WriteAsync(object? writeObject, CancellationToken ct)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

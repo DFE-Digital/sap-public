@@ -144,6 +144,85 @@ namespace SAPPub.Infrastructure.Repositories.Generic
             }
         }
 
+        public async Task<bool> WriteAsync(object? writeObject, CancellationToken ct = default)
+        {
+            if (writeObject is null)
+                return false;
+
+            try
+            {
+                var sql = DapperHelpers.GetWriteSingle(typeof(T));
+                if (string.IsNullOrWhiteSpace(sql))
+                    throw new NotSupportedException($"No write command for {typeof(T).Name}");
+
+                await using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
+
+                var param = new DynamicParameters(writeObject);
+
+                var cmd = new CommandDefinition(
+                    commandText: sql,
+                    parameters: param,
+                    transaction: null,
+                    commandTimeout: null,
+                    commandType: CommandType.Text,
+                    flags: CommandFlags.Buffered | CommandFlags.NoCache,
+                    cancellationToken: ct);
+
+                var item = await conn.ExecuteAsync(cmd).ConfigureAwait(false);
+
+                return item > 0;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                // Keep params out of the formatted message; log as a structured property.
+                _logger.LogError(ex, "Failed Write for {Type} paramsType={ParamsType}", typeof(T).Name, writeObject.GetType().Name);
+                return default;
+            }
+        }
+        public async Task<bool> UpdateAsync(object? updateObject, CancellationToken ct = default)
+        {
+            if (updateObject is null)
+                return false;
+
+            try
+            {
+                var sql = DapperHelpers.GetUpdateSingle(typeof(T));
+                if (string.IsNullOrWhiteSpace(sql))
+                    throw new NotSupportedException($"No update command for {typeof(T).Name}");
+
+                await using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
+
+                var param = new DynamicParameters(updateObject);
+
+                var cmd = new CommandDefinition(
+                    commandText: sql,
+                    parameters: param,
+                    transaction: null,
+                    commandTimeout: null,
+                    commandType: CommandType.Text,
+                    flags: CommandFlags.Buffered | CommandFlags.NoCache,
+                    cancellationToken: ct);
+
+                var item = await conn.ExecuteAsync(cmd).ConfigureAwait(false);
+
+                return item > 0;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                // Keep params out of the formatted message; log as a structured property.
+                _logger.LogError(ex, "Failed Write for {Type} paramsType={ParamsType}", typeof(T).Name, updateObject.GetType().Name);
+                return default;
+            }
+        }
+
         public async Task<IEnumerable<T>> ReadManyAsync(object? parameters, CancellationToken ct = default)
         {
             if (parameters is null)
