@@ -1,4 +1,6 @@
 ﻿using SAPPub.Core.Entities.KS4.Destinations;
+using SAPPub.Core.ServiceModels.KS4.Performance;
+using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.Charts;
 
 namespace SAPPub.Web.Models.SecondarySchool;
@@ -13,12 +15,14 @@ public class DestinationsViewModel : SecondarySchoolBaseViewModel
 
     public static DestinationsViewModel Map(DestinationsDetails destinationsDetails)
     {
+        var laAverageLabel = CommonHelper.GetLocalAuthorityDisplayName(destinationsDetails.LocalAuthorityName);
+
         return new DestinationsViewModel
         {
             URN = destinationsDetails.Urn,
             SchoolName = destinationsDetails.SchoolName,
             AllDestinationsData = new DataViewModel    {
-                Labels = ["School", $"{destinationsDetails.LocalAuthorityName} average", "England average"],
+                Labels = ["School", laAverageLabel, "England average"],
                 Data = [destinationsDetails.SchoolAll.CurrentYear ?? 0, destinationsDetails.LocalAuthorityAll.CurrentYear ?? 0, destinationsDetails.EnglandAll.CurrentYear ?? 0],
             },
             AllDestinationsOverTimeData = new DataOverTimeViewModel
@@ -33,7 +37,7 @@ public class DestinationsViewModel : SecondarySchoolBaseViewModel
                     },
                     new DatasetViewModel
                     {
-                        Label = $"{destinationsDetails.LocalAuthorityName} average",
+                        Label = laAverageLabel,
                         Data = [destinationsDetails.LocalAuthorityAll.TwoYearsAgo ?? 0, destinationsDetails.LocalAuthorityAll.PreviousYear ?? 0, destinationsDetails.LocalAuthorityAll.CurrentYear ?? 0],
                     },
                     new DatasetViewModel
@@ -52,7 +56,7 @@ public class DestinationsViewModel : SecondarySchoolBaseViewModel
                         Data = [destinationsDetails.SchoolEducation.CurrentYear ?? 0, (destinationsDetails.SchoolEmployment.CurrentYear ?? 0 + destinationsDetails.SchoolApprentice.CurrentYear ?? 0)]
                     },
                     new DataSeriesViewModel {
-                        Label = $"{destinationsDetails.LocalAuthorityName} average",
+                        Label = laAverageLabel,
                         Data = [destinationsDetails.LocalAuthorityEducation.CurrentYear ?? 0, (destinationsDetails.LocalAuthorityEmployment.CurrentYear ?? 0 + destinationsDetails.LocalAuthorityApprentice.CurrentYear ?? 0)]
                     },
                     new DataSeriesViewModel {
@@ -62,5 +66,5 @@ public class DestinationsViewModel : SecondarySchoolBaseViewModel
                 ],
             },
         };
-    }
+    }    
 }

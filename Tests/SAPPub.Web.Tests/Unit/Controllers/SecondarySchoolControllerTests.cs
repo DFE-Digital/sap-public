@@ -907,6 +907,49 @@ public class SecondarySchoolControllerTests
         Assert.Equal([0, 0], model.BreakdownGcseData.Datasets[2].Data);
     }
 
+
+    [Theory]
+    [InlineData("Sheffield", "Sheffield average")]
+    [InlineData("Poole Grammar School", "Local council average")]
+    public async Task Get_AcademicPerformance_EnglishAndMathsResults_LocalCouncilName(string localCouncilName, string expectedCouncilName)
+    {
+        _fakeEstablishment.LAName = localCouncilName;
+        var grade = GcseGradeDataSelection.Grade4AndAbove;
+        var expectedResult = EnglishAndMathsResults(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, _fakeEstablishment.LAName);
+
+        _mockEnglishAndMathsResultsService
+            .Setup(s => s.GetEnglishAndMathsResultsAsync(_fakeEstablishment.URN, (int)grade, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.AcademicPerformanceEnglishAndMathsResults(
+            _mockEnglishAndMathsResultsService.Object,
+            _fakeEstablishment.URN,
+            _fakeEstablishment.EstablishmentName,
+            grade,
+            CancellationToken.None) as ViewResult;
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as AcademicPerformanceEnglishAndMathsResultsViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(_fakeEstablishment.URN, model.URN);
+        Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
+
+        string[] expectedAllGcseDataLabels = ["School", expectedCouncilName, "England average"];
+        string[] expectedAllGcseOverTimeDataLabels = ["School", expectedCouncilName, "England average"];
+        string[] expectedBreakdownGcseDataLabels = ["School", expectedCouncilName, "England average"];
+
+       
+        Assert.Equal(expectedAllGcseDataLabels, model.AllGcseData.Labels);
+
+        var actualAllGcseOverTimeDataLabels = model.AllGcseOverTimeData.Datasets.Select(s => s.Label).ToArray();
+        Assert.Equal(expectedAllGcseOverTimeDataLabels, actualAllGcseOverTimeDataLabels);
+
+        var actualBreakdownGcseDataLabels = model.BreakdownGcseData.Datasets.Select(s => s.Label).ToArray();
+        Assert.Equal(actualBreakdownGcseDataLabels, expectedBreakdownGcseDataLabels);        
+    }
+
     [Fact]
     public async Task Get_AcademicPerformance_SubjectsEntered_ReturnsOk()
     {
@@ -1076,5 +1119,57 @@ public class SecondarySchoolControllerTests
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
+    }
+
+    [Theory]
+    [InlineData("Sheffield", "Sheffield average")]
+    [InlineData("Poole Grammar School", "Local council average")]
+    public async Task Get_Destinations_Info_LocalCouncilName(string localCouncilName, string expectedCouncilName)
+    {
+        _fakeEstablishment.LAName = localCouncilName;
+        var destinationsDetails = new DestinationsDetails
+        {
+            Urn = _fakeEstablishment.URN,
+            SchoolName = _fakeEstablishment.EstablishmentName,
+            LocalAuthorityName = _fakeEstablishment.LAName,
+            SchoolAll = new RelativeYearValues<double?> { CurrentYear = 10, PreviousYear = 20, TwoYearsAgo = 30 },
+            LocalAuthorityAll = new RelativeYearValues<double?> { CurrentYear = 30, PreviousYear = 40, TwoYearsAgo = 50 },
+            EnglandAll = new RelativeYearValues<double?> { CurrentYear = 70, PreviousYear = 80, TwoYearsAgo = 30 },
+            SchoolEducation = new RelativeYearValues<double?> { CurrentYear = 20, PreviousYear = 10, TwoYearsAgo = 40 },
+            LocalAuthorityEducation = new RelativeYearValues<double?> { CurrentYear = 40, PreviousYear = 50, TwoYearsAgo = 70 },
+            EnglandEducation = new RelativeYearValues<double?> { CurrentYear = 60, PreviousYear = 70, TwoYearsAgo = 20 },
+            SchoolEmployment = new RelativeYearValues<double?> { CurrentYear = 50, PreviousYear = 70, TwoYearsAgo = 30 },
+            LocalAuthorityEmployment = new RelativeYearValues<double?> { CurrentYear = 60, PreviousYear = 90, TwoYearsAgo = 50 },
+            EnglandEmployment = new RelativeYearValues<double?> { CurrentYear = 40, PreviousYear = 60, TwoYearsAgo = 50 },
+            SchoolApprentice = new RelativeYearValues<double?> { CurrentYear = 40, PreviousYear = 50, TwoYearsAgo = 70 },
+            LocalAuthorityApprentice = new RelativeYearValues<double?> { CurrentYear = 20, PreviousYear = 70, TwoYearsAgo = 50 },
+            EnglandApprentice = new RelativeYearValues<double?> { CurrentYear = 50, PreviousYear = 60, TwoYearsAgo = 40 },
+        };
+
+        _mockDestinationsService
+            .Setup(es => es.GetDestinationsDetailsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(destinationsDetails);
+
+        var result = await _controller.Destinations(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
+
+        string[] expectedAllDestCurrentDataLabels = ["School", expectedCouncilName, "England average"];
+        string[] expectedDataOvertimeDataLabels = ["School", expectedCouncilName, "England average"];
+        string[] expectedBreakdownDataLabels = ["School", expectedCouncilName, "England average"];
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as DestinationsViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(_fakeEstablishment.URN, model.URN);
+        Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
+
+        Assert.Equal(expectedAllDestCurrentDataLabels, model.AllDestinationsData.Labels);
+
+        var actualDataOvertimeDataLabels = model.AllDestinationsOverTimeData.Datasets.Select(s => s.Label).ToArray();
+        Assert.Equal(expectedDataOvertimeDataLabels, actualDataOvertimeDataLabels);
+
+        var actualBreakdownDataLabels = model.BreakdownDestinationData.Datasets.Select(s => s.Label).ToArray();
+        Assert.Equal(expectedBreakdownDataLabels, actualBreakdownDataLabels);
     }
 }
