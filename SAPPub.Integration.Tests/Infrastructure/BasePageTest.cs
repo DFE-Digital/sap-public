@@ -1,7 +1,7 @@
 ﻿using Microsoft.Playwright;
 using Microsoft.Playwright.Xunit;
 
-namespace SAPPub.Web.Tests.UI.Infrastructure;
+namespace SAPPub.Integration.Tests;
 
 public abstract class BasePageTest : PageTest
 {
