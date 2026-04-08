@@ -7,4 +7,5 @@ public static class Constants
 
     public const string LocalCouncilAverage = "Local council average";
     public const string Average = "average";
+    public const string NotRecorded = "Not recorded";
 }

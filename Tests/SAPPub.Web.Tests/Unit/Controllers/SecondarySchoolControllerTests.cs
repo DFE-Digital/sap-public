@@ -317,14 +317,15 @@ public class SecondarySchoolControllerTests
     }
 
     [Theory]
-    [InlineData("", "No")]
+    [InlineData(null, "Not recorded")]
+    [InlineData("", "Not recorded")]
     [InlineData("Not applicable", "No")]
     [InlineData("Resourced provision", "No")]
     [InlineData("SEN unit", "Yes")]
     [InlineData("Resourced provision and SEN unit", "Yes")]
-    public async Task Get_AboutSchool_SchoolFeatures_SENUnit(string resourcedProvisionName, string expectedOutput)
+    public async Task Get_AboutSchool_SchoolFeatures_SENUnit(string? resourcedProvisionName, string expectedOutput)
     {
-        _fakeEstablishment.ResourcedProvisionName = resourcedProvisionName;
+        _fakeEstablishment.ResourcedProvisionName = resourcedProvisionName!;
 
         var expectedResult = SchoolDetails();
 
@@ -351,14 +352,15 @@ public class SecondarySchoolControllerTests
     }
 
     [Theory]
-    [InlineData("", "No")]
+    [InlineData(null, "Not recorded")]
+    [InlineData("", "Not recorded")]
     [InlineData("Not applicable", "No")]
     [InlineData("SEN unit", "No")]
     [InlineData("Resourced provision", "Yes")]
     [InlineData("Resourced provision and SEN unit", "Yes")]
-    public async Task Get_AboutSchool_SchoolFeatures_ResourcedUnit(string resourcedProvisionName, string expectedOutput)
+    public async Task Get_AboutSchool_SchoolFeatures_ResourcedUnit(string? resourcedProvisionName, string expectedOutput)
     {
-        _fakeEstablishment.ResourcedProvisionName = resourcedProvisionName;
+        _fakeEstablishment.ResourcedProvisionName = resourcedProvisionName!;
 
         var expectedResult = SchoolDetails();
 
