@@ -100,16 +100,20 @@ namespace SAPPub.Web.Models.SecondarySchool
 
         private static string GetSenUnit(string value)
         {
-            return string.Equals(value, SENUnit, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(value, ResourcedProvisionAndSENUnit, StringComparison.OrdinalIgnoreCase)
+            return string.IsNullOrWhiteSpace(value)
+                ? NotRecorded
+                : (string.Equals(value, SENUnit, StringComparison.OrdinalIgnoreCase) ||
+                   string.Equals(value, ResourcedProvisionAndSENUnit, StringComparison.OrdinalIgnoreCase))
                 ? Yes
                 : No;
         }
 
         private static string GetResourcedProvision(string value)
         {
-            return string.Equals(value, ResourcedProvisionText, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(value, ResourcedProvisionAndSENUnit, StringComparison.OrdinalIgnoreCase)
+            return string.IsNullOrWhiteSpace(value)
+                ? NotRecorded
+                : (string.Equals(value, ResourcedProvisionText, StringComparison.OrdinalIgnoreCase) ||
+                   string.Equals(value, ResourcedProvisionAndSENUnit, StringComparison.OrdinalIgnoreCase))
                 ? Yes
                 : No;
         }
