@@ -49,6 +49,11 @@ CREATE TABLE IF NOT EXISTS public.gateway_local_authority
     CONSTRAINT gateway_local_authority_unique_name UNIQUE ("LocalAuthorityName")
 );
 
+INSERT INTO public.gateway_local_authority("Id", "LocalAuthorityName", "MaxSessions", "CreatedOn", "ModifiedOn", "AuditIPAddress", "IsDeleted")
+VALUES (gen_random_uuid(), 'Bury', 100, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
+
+INSERT INTO public.gateway_local_authority("Id", "LocalAuthorityName", "MaxSessions", "CreatedOn", "ModifiedOn", "AuditIPAddress", "IsDeleted")
+VALUES (gen_random_uuid(), 'Bolton', 100, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
 
 CREATE TABLE IF NOT EXISTS public.gateway_settings
 (
