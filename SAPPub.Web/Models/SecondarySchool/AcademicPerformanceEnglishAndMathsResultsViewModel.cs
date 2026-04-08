@@ -1,5 +1,6 @@
 ﻿using SAPPub.Core.Enums;
 using SAPPub.Core.ServiceModels.KS4.Performance;
+using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.Charts;
 
 namespace SAPPub.Web.Models.SecondarySchool;
@@ -16,7 +17,7 @@ public class AcademicPerformanceEnglishAndMathsResultsViewModel : SecondarySchoo
 
     public static AcademicPerformanceEnglishAndMathsResultsViewModel Map(EnglishAndMathsResultsModel englishAndMathsResultsModel, GcseGradeDataSelection selectedGrade)
     {
-        var laAverageLabel = string.IsNullOrEmpty(englishAndMathsResultsModel.LAName) ? "Local Authority average" : $"{englishAndMathsResultsModel.LAName} average";
+        var laAverageLabel = CommonHelper.GetLocalAuthorityDisplayName(englishAndMathsResultsModel.LAName);
 
         var allGcseData = new DataViewModel
         {
