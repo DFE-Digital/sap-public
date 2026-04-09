@@ -191,9 +191,9 @@
                 <div class="custom-card__content">
                     <p class="govuk-body">
                         Pupils at this school score @Model.EstablishmentProgress8Score.
-                        @if (Model.EstablishmentProgress8BandingDescription.IsAvailable)
+                        @if (Model.EstablishmentProgress8BandingContextDescription.IsAvailable)
                         {
-                            <span>This is @Model.EstablishmentProgress8BandingDescription.DisplayText().</span>
+                            <span>@Model.EstablishmentProgress8BandingContextDescription.DisplayText()</span>
                         }
                     </p>
                     <p class="govuk-body">
