@@ -159,7 +159,7 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
         var progress8EstablishmentCard = Page.GetByTestId("progress8-establishment-card");
         Assert.True(await progress8EstablishmentCard.IsVisibleAsync());
 
-        var progress8PupilDetails = Page.GetByTestId("pupil-details-progress8");
+        var progress8PupilDetails = Page.Locator("#pupil-details-progress8");
         Assert.True(await progress8PupilDetails.IsVisibleAsync());
 
         var progress8LocalAuthorityCard = Page.GetByTestId("progress8-localauthority-card");
