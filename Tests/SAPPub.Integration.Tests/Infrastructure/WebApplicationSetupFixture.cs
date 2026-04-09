@@ -17,6 +17,13 @@ public class WebApplicationSetupFixture : IAsyncLifetime
         return Task.CompletedTask;
     }
 
+    public bool IsHeaded()
+    {
+        return _factory?
+            .GetAppConfiguration()
+            .GetSection("Playwright")["Headed"] is string headed && bool.TryParse(headed, out var isHeaded) && isHeaded;
+    }
+
     public async Task DisposeAsync()
     {
         if (_factory != null)

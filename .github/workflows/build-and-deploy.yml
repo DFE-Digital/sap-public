@@ -514,6 +514,73 @@ jobs:
           smoke-test: false
           service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
 
+  post-deploy-tests:
+    name: Run Integration Tests on Deployed Test Environment
+    needs: deploy
+    if: ${{ matrix.environment == 'test' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Set up .NET
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Install Playwright browsers (.NET)
+        run: pwsh ./Tests/SAPPub.Integration.Tests/bin/Release/net8.0/playwright.ps1 install
+
+      - name: Run Integration Tests with Coverage
+        env:
+          HEADED: 0
+          PLAYWRIGHT_IGNORE_HTTPS_ERRORS: true
+          ASPNETCORE_ENVIRONMENT: CI
+        run:
+            dotnet test Tests/SAPPub.Integration.Tests/SAPPub.IntegrationTests.csproj \
+              --no-build \
+              --configuration Release \
+              --results-directory "TestResults" \
+              --logger "trx;LogFileName=$(basename "$proj" .csproj).trx" \
+              --collect "XPlat Code Coverage"\
+              /p:CollectCoverage=true \
+              /p:CoverletOutputFormat=cobertura \
+              /p:DeterministicReport=true \
+              /p:UseSourceLink=true \
+              /p:Exclude='[*]AspNetCoreGeneratedDocument.*%2c[*]AspNetCore.Views.*' \
+              /p:ExcludeByAttribute='GeneratedCodeAttribute*%2cObsoleteAttribute*%2cExcludeFromCodeCoverage' \
+              --verbosity normal
+          done
+
+      - name: Upload Test Result Files
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results 
+          path: "**/TestResults/**/*"
+          retention-days: 5
+
+      - name: Upload UI artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-test-artifacts
+          path: |
+            **/test-artifacts/screenshots/**
+            **/test-artifacts/videos/**
+            **/test-artifacts/traces/**
+
+      - name: Publish Test Results
+        uses: dorny/test-reporter@v2
+        if: always()
+        with:
+          reporter: 'dotnet-trx'
+          path: "**/TestResults/**/*.trx"
+          name: 'Test Results'
+
   # ---------------------------
   # MANUAL DEPLOY
   # ---------------------------

@@ -85,12 +85,14 @@ public partial class Program
             // Only required for real runtime environments
             if (builder.Environment.IsDevelopment() || builder.Environment.IsProduction() || builder.Environment.IsStaging())
                 throw new InvalidOperationException("Connection string 'PostgresConnectionString' is not configured.");
-
-            // For Testing/UITests: use a harmless dummy so nothing accidentally connects
-            connectionString = "Host=127.0.0.1;Port=1;Database=x;Username=x;Password=x;Timeout=1;Command Timeout=1";
         }
 
-        builder.Services.AddSingleton<NpgsqlDataSource>(_ => NpgsqlDataSource.Create(connectionString));
+        builder.Services.AddSingleton<NpgsqlDataSource>(_ =>
+        {
+            var builder = new NpgsqlDataSourceBuilder(connectionString);
+            builder.EnableParameterLogging();
+            return builder.Build();
+        });
 
         builder.Services.AddDependencies(builder.Environment, builder.Configuration);
         builder.Services.AddLuceneDependencies();
