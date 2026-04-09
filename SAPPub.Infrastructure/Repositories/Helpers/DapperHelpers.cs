@@ -107,7 +107,8 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "EngMaths59_Tot_Est_Previous_Pct_Coded",
           "Prog8_Tot_Est_Previous_Num_Coded",
           "Prog8_CI_Lower_Est_Previous_Num_Coded",
-          "Prog8_CI_Upper_Est_Previous_Num_Coded",          
+          "Prog8_CI_Upper_Est_Previous_Num_Coded", 
+          "Prog8_Banding_Est_Previous", 
           "Prog8_TotPup_Est_Previous_Num_Coded",
           "Pup_Tot_Est_Previous_Num_Coded",
           "Attainment8_Tot_Est_Previous2_Num_Coded",
@@ -116,6 +117,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Prog8_Tot_Est_Previous2_Num_Coded",
           "Prog8_CI_Lower_Est_Previous2_Num_Coded",
           "Prog8_CI_Upper_Est_Previous2_Num_Coded", 
+          "Prog8_Banding_Est_Previous2",          
           "Prog8_TotPup_Est_Previous2_Num_Coded",
           "Pup_Tot_Est_Previous2_Num_Coded"
           """;

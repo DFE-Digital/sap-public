@@ -22,6 +22,10 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
 
     public double? EstablishmentProgress8CIUpper { get; init; }
 
+    public string? EstablishmentProgress8Banding { get; init; }
+
+    public required DisplayField<string> EstablishmentProgress8BandingDescription { get; init; }
+
     public double? LocalAuthorityProgress8Score { get; init; }
 
     public double? EstablishmentAttainment8Score { get; init; }
@@ -48,6 +52,20 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
         var establishmentAttainment8ContextSentence = EstablishmentAttainment8ContextStatement(attainmentAndProgressModel.EstablishmentAttainment8Score);
         var englandAttainment8ContextSentence = NationalAttainment8ContextStatement(nationalScore: attainmentAndProgressModel.EnglandAttainment8Score, schoolScore: attainmentAndProgressModel.EstablishmentAttainment8Score);
         var localAuthorityAttainment8ContextSentence = LocalAuthorityAttainment8ContextStatement(localAuthorityScore: attainmentAndProgressModel.LocalAuthorityAttainment8Score, schoolScore: attainmentAndProgressModel.EstablishmentAttainment8Score);
+
+        var bandingEnum = attainmentAndProgressModel.EstablishmentProgress8Banding.ToProgress8Banding();
+        var allowedBandings = new[]
+        {
+            Progress8Banding.WellAboveAverage,
+            Progress8Banding.AboveAverage,
+            Progress8Banding.Average,
+            Progress8Banding.BelowAverage,
+            Progress8Banding.WellBelowAverage
+        };
+        var bandingDescription = allowedBandings.Contains(bandingEnum)
+            ? bandingEnum.GetDisplayName().ToDisplayField()
+            : DisplayField<string>.NotAvailable();
+
         return new AcademicPerformanceAttainmentAndProgressViewModel
         {
             URN = attainmentAndProgressModel.Urn,
@@ -56,6 +74,8 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
             EstablishmentProgress8Score = attainmentAndProgressModel.EstablishmentProgress8Score,
             EstablishmentProgress8CILower = attainmentAndProgressModel.EstablishmentProgress8CILower,
             EstablishmentProgress8CIUpper = attainmentAndProgressModel.EstablishmentProgress8CIUpper,
+            EstablishmentProgress8Banding = attainmentAndProgressModel.EstablishmentProgress8Banding,
+            EstablishmentProgress8BandingDescription = bandingDescription,
             LocalAuthorityProgress8Score = attainmentAndProgressModel.LocalAuthorityProgress8Score,
             EstablishmentAttainment8Score = attainmentAndProgressModel.EstablishmentAttainment8Score,
             EstablishmentAttainment8ScoreContextDescription = establishmentAttainment8ContextSentence != null

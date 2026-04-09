@@ -191,6 +191,10 @@
                 <div class="custom-card__content">
                     <p class="govuk-body">
                         Pupils at this school score @Model.EstablishmentProgress8Score.
+                        @if (Model.EstablishmentProgress8BandingDescription.IsAvailable)
+                        {
+                            <span>This is @Model.EstablishmentProgress8BandingDescription.DisplayText().</span>
+                        }
                     </p>
                     <p class="govuk-body">
                         The confidence interval is @Model.EstablishmentProgress8CILower and @Model.EstablishmentProgress8CIUpper.
