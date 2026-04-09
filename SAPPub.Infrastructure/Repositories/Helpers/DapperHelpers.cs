@@ -106,12 +106,16 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "EngMaths49_Tot_Est_Previous_Pct_Coded",
           "EngMaths59_Tot_Est_Previous_Pct_Coded",
           "Prog8_Tot_Est_Previous_Num_Coded",
+          "Prog8_CI_Lower_Est_Previous_Num_Coded",
+          "Prog8_CI_Upper_Est_Previous_Num_Coded",          
           "Prog8_TotPup_Est_Previous_Num_Coded",
           "Pup_Tot_Est_Previous_Num_Coded",
           "Attainment8_Tot_Est_Previous2_Num_Coded",
           "EngMaths49_Tot_Est_Previous2_Pct_Coded",
           "EngMaths59_Tot_Est_Previous2_Pct_Coded",
           "Prog8_Tot_Est_Previous2_Num_Coded",
+          "Prog8_CI_Lower_Est_Previous2_Num_Coded",
+          "Prog8_CI_Upper_Est_Previous2_Num_Coded", 
           "Prog8_TotPup_Est_Previous2_Num_Coded",
           "Pup_Tot_Est_Previous2_Num_Coded"
           """;

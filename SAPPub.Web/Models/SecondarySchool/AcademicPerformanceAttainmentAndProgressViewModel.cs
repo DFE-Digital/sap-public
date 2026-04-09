@@ -18,6 +18,10 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
 
     public double? EstablishmentProgress8Score { get; init; }
 
+    public double? EstablishmentProgress8CILower { get; init; }
+
+    public double? EstablishmentProgress8CIUpper { get; init; }
+
     public double? LocalAuthorityProgress8Score { get; init; }
 
     public double? EstablishmentAttainment8Score { get; init; }
@@ -50,6 +54,8 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
             SchoolName = attainmentAndProgressModel.SchoolName ?? string.Empty,
             SelectedAcademicYear = selectedAcademicYear,
             EstablishmentProgress8Score = attainmentAndProgressModel.EstablishmentProgress8Score,
+            EstablishmentProgress8CILower = attainmentAndProgressModel.EstablishmentProgress8CILower,
+            EstablishmentProgress8CIUpper = attainmentAndProgressModel.EstablishmentProgress8CIUpper,
             LocalAuthorityProgress8Score = attainmentAndProgressModel.LocalAuthorityProgress8Score,
             EstablishmentAttainment8Score = attainmentAndProgressModel.EstablishmentAttainment8Score,
             EstablishmentAttainment8ScoreContextDescription = establishmentAttainment8ContextSentence != null

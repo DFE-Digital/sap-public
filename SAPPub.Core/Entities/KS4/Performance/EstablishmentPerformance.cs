@@ -86,6 +86,20 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public string? Prog8_Tot_Est_Previous_Num_Reason { get; set; }
 
         /// <summary>
+        /// Progress 8 Confidence Interval Lower filtered by Establishment for Previous year
+        /// </summary>
+        public CodedDouble Prog8_CI_Lower_Est_Previous_Num_Coded { get; set; } = new();
+        public double? Prog8_CI_Lower_Est_Previous_Num { get; set; }
+        public string? Prog8_CI_Lower_Est_Previous_Num_Reason { get; set; }
+
+        /// <summary>
+        /// Progress 8 Confidence Interval Upper filtered by Establishment for Previous year
+        /// </summary>
+        public CodedDouble Prog8_CI_Upper_Est_Previous_Num_Coded { get; set; } = new();
+        public double? Prog8_CI_Upper_Est_Previous_Num { get; set; }
+        public string? Prog8_CI_Upper_Est_Previous_Num_Reason { get; set; }
+
+        /// <summary>
         /// Progress 8 Total pupil for Previous year
         /// </summary>
         public CodedDouble Prog8_TotPup_Est_Previous_Num_Coded { get; set; } = new();
@@ -127,6 +141,20 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public CodedDouble Prog8_Tot_Est_Previous2_Num_Coded { get; set; } = new();
         public double? Prog8_Tot_Est_Previous2_Num { get; set; }
         public string? Prog8_Tot_Est_Previous2_Num_Reason { get; set; }
+
+        /// <summary>
+        /// Progress 8 Confidence Interval Lower filtered by Establishment for Previous2 year
+        /// </summary>
+        public CodedDouble Prog8_CI_Lower_Est_Previous2_Num_Coded { get; set; } = new();
+        public double? Prog8_CI_Lower_Est_Previous2_Num { get; set; }
+        public string? Prog8_CI_Lower_Est_Previous2_Num_Reason { get; set; }
+
+        /// <summary>
+        /// Progress 8 Confidence Interval Upper filtered by Establishment for Previous2 year
+        /// </summary>
+        public CodedDouble Prog8_CI_Upper_Est_Previous2_Num_Coded { get; set; } = new();
+        public double? Prog8_CI_Upper_Est_Previous2_Num { get; set; }
+        public string? Prog8_CI_Upper_Est_Previous2_Num_Reason { get; set; }
 
         /// <summary>
         /// Progress 8 Total pupil for Previous2 year
