@@ -117,6 +117,19 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
     }
 
     [Fact]
+    public async Task AcademicPerformanceAttainmentAndProgressPage_Displays_Progress8_Pupil_Details()
+    {
+        // Arrange - school with data for progress 8 pupil details
+        await Page.GotoAsync(_pageUrl);
+
+        // Act
+        var isVisible = await Page.Locator("#pupil-details-progress8").IsVisibleAsync();
+
+        // Assert
+        Assert.True(isVisible);
+    }
+
+    [Fact]
     public async Task AcademicPerformanceAttainmentAndProgressPage_Displays_AcademicYear_Selector()
     {
         // Arrange
