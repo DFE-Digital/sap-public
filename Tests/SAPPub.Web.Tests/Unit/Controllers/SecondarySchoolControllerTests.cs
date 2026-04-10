@@ -642,6 +642,9 @@ public class SecondarySchoolControllerTests
             Urn = _fakeEstablishment.URN,
             SchoolName = _fakeEstablishment.EstablishmentName,
             EstablishmentProgress8Score = expectedShowProgress8NotAvailableInfo ? null : 0.9,
+            EstablishmentProgress8CILower = expectedShowProgress8NotAvailableInfo ? null : -0.2,
+            EstablishmentProgress8CIUpper = expectedShowProgress8NotAvailableInfo ? null : 1.2,
+            EstablishmentProgress8Banding = expectedShowProgress8NotAvailableInfo ? null : "Average",
             LocalAuthorityProgress8Score = expectedShowProgress8NotAvailableInfo ? null : 1.5,
             EstablishmentAttainment8Score = 70,
             LocalAuthorityAttainment8Score = 80,
@@ -683,6 +686,9 @@ public class SecondarySchoolControllerTests
         if (expectedShowProgress8NotAvailableInfo)
         {
             Assert.Null(model.EstablishmentProgress8Score);
+            Assert.Null(model.EstablishmentProgress8CILower);
+            Assert.Null(model.EstablishmentProgress8CIUpper);
+            Assert.Null(model.EstablishmentProgress8Banding);
             Assert.Null(model.LocalAuthorityProgress8Score);
             Assert.Null(model.EstablishmentProgress8TotalPupils);
             Assert.Null(model.EstablishmentTotalPupils);
@@ -690,6 +696,9 @@ public class SecondarySchoolControllerTests
         else
         {
             Assert.Equal(expectedResult.EstablishmentProgress8Score, model.EstablishmentProgress8Score);
+            Assert.Equal(expectedResult.EstablishmentProgress8CILower, model.EstablishmentProgress8CILower);
+            Assert.Equal(expectedResult.EstablishmentProgress8CIUpper, model.EstablishmentProgress8CIUpper);
+            Assert.Equal(expectedResult.EstablishmentProgress8Banding, model.EstablishmentProgress8Banding);
             Assert.Equal(expectedResult.LocalAuthorityProgress8Score, model.LocalAuthorityProgress8Score);
             Assert.Equal(expectedResult.EstablishmentProgress8TotalPupils, model.EstablishmentProgress8TotalPupils);
             Assert.Equal(expectedResult.EstablishmentTotalPupils, model.EstablishmentTotalPupils);

@@ -1,7 +1,3 @@
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-
 namespace SAPPub.Core.Enums;
 
 public static class Progress8BandingExtensions
