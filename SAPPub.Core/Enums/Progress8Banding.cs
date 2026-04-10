@@ -15,7 +15,5 @@ public enum Progress8Banding
     [Display(Name = "well below average")]
     WellBelowAverage,
     [Display(Name = "not available")]
-    NotAvailable,
-    [Display(Name = "suppressed")]
-    Suppressed
+    NotAvailable
 }

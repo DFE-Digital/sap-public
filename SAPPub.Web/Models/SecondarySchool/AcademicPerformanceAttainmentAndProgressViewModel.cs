@@ -164,16 +164,8 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
     private static DisplayField<string> EstablishmentProgress8BandingContextStatement(string? progressBanding)
     {
         var bandingEnum = progressBanding.ToProgress8Banding();
-        var allowedBandings = new[]
-        {
-            Progress8Banding.WellAboveAverage,
-            Progress8Banding.AboveAverage,
-            Progress8Banding.Average,
-            Progress8Banding.BelowAverage,
-            Progress8Banding.WellBelowAverage
-        };
 
-        return allowedBandings.Contains(bandingEnum)
+        return bandingEnum != Progress8Banding.NotAvailable
             ? $"This is {bandingEnum.GetDisplayName()}.".ToDisplayField()
             : DisplayField<string>.NotAvailable();
     }

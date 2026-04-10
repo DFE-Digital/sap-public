@@ -18,7 +18,7 @@ public static class Progress8BandingExtensions
             "average" => Progress8Banding.Average,
             "below average" => Progress8Banding.BelowAverage,
             "well below average" => Progress8Banding.WellBelowAverage,
-            "supp" => Progress8Banding.Suppressed,
+            //blank and "SUPP" values map to Not Available, Suppressed banding can be added at a later date if needed
             _ => Progress8Banding.NotAvailable
         };
     }
