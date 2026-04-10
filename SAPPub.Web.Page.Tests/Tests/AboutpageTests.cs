@@ -7,7 +7,7 @@ namespace SAPPub.Web.Page.Tests.Tests;
 
 [Collection("WebAppCollection")] // share the WebAppFixture across tests in this class so that we oly start the web app once for all tests in this collection
 
-public class AboutTests : IDisposable // implement IDisposable so can clear the mock accessor after each test
+public class AboutPageTests : IDisposable // implement IDisposable so can clear the mock accessor after each test
 {
     private readonly MockAccessor<IGenericRepository<Establishment>> _accessor;
     private readonly WebAppFixture _fixture;
@@ -18,7 +18,7 @@ public class AboutTests : IDisposable // implement IDisposable so can clear the 
         return $"/school/{urn}/{encodedSchoolName}/secondary/about";
     }
 
-    public AboutTests(WebAppFixture fixture)
+    public AboutPageTests(WebAppFixture fixture)
     {
         _fixture = fixture;
         _accessor = fixture.Factory.Services
