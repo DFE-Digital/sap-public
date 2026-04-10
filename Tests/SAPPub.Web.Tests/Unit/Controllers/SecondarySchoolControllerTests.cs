@@ -783,12 +783,11 @@ public class SecondarySchoolControllerTests
         Assert.Equal(grade, model.SelectedGrade);
         Assert.Equal(["School", $"{_fakeEstablishment.LAName} average", "England average"], model.AllGcseData.Labels);
         Assert.Equal(
-            new double[]
-            {
+            [
                 expectedResult.EstablishmentAll.CurrentYear!.Value,
                 expectedResult.LocalAuthorityAll.CurrentYear!.Value,
                 expectedResult.EnglandAll.CurrentYear!.Value
-            },
+            ],
             model.AllGcseData.Data
         );
 
@@ -848,7 +847,7 @@ public class SecondarySchoolControllerTests
     }
 
     [Fact]
-    public async Task Get_AcademicPerformance_EnglishAndMathsResults_ResultsNotAvailable_Substitutes0AndReturnsOk()
+    public async Task Get_AcademicPerformance_EnglishAndMathsResults_ResultsNotAvailable_ReturnsOk()
     {
         var gradeSelection = GcseGradeDataSelection.Grade4AndAbove;
 
@@ -891,17 +890,17 @@ public class SecondarySchoolControllerTests
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
         Assert.Equal(gradeSelection, model.SelectedGrade);
         Assert.Equal(["School", $"{_fakeEstablishment.LAName} average", "England average"], model.AllGcseData.Labels);
-        Assert.Equal([0, 0, 0], model.AllGcseData.Data);
+        Assert.Equal([null, null, null], model.AllGcseData.Data);
 
         Assert.Equal(3, model.AllGcseOverTimeData.Datasets.Count);
         Assert.Equal("School", model.AllGcseOverTimeData.Datasets[0].Label);
-        Assert.Equal([0, 0, 0], model.AllGcseOverTimeData.Datasets[0].Data);
+        Assert.Equal([null, null, null], model.AllGcseOverTimeData.Datasets[0].Data);
 
         Assert.Equal($"{_fakeEstablishment.LAName} average", model.AllGcseOverTimeData.Datasets[1].Label);
-        Assert.Equal([0, 0, 0], model.AllGcseOverTimeData.Datasets[1].Data);
+        Assert.Equal([null, null, null], model.AllGcseOverTimeData.Datasets[1].Data);
 
         Assert.Equal("England average", model.AllGcseOverTimeData.Datasets[2].Label);
-        Assert.Equal(new double[] { 0, 0, 0 }, model.AllGcseOverTimeData.Datasets[2].Data);
+        Assert.Equal(new double?[] { null, null, null }, model.AllGcseOverTimeData.Datasets[2].Data);
 
         // Breakdown gcse data assert
         Assert.Equal(["Girls", "Boys"], model.BreakdownGcseData.Labels);
@@ -909,13 +908,13 @@ public class SecondarySchoolControllerTests
         Assert.Equal(3, model.BreakdownGcseData.Datasets.Count);
 
         Assert.Equal("School", model.BreakdownGcseData.Datasets[0].Label);
-        Assert.Equal([0, 0], model.BreakdownGcseData.Datasets[0].Data);
+        Assert.Equal([null, null], model.BreakdownGcseData.Datasets[0].Data);
 
         Assert.Equal($"{_fakeEstablishment.LAName} average", model.BreakdownGcseData.Datasets[1].Label);
-        Assert.Equal([0, 0], model.BreakdownGcseData.Datasets[1].Data);
+        Assert.Equal([null, null], model.BreakdownGcseData.Datasets[1].Data);
 
         Assert.Equal("England average", model.BreakdownGcseData.Datasets[2].Label);
-        Assert.Equal([0, 0], model.BreakdownGcseData.Datasets[2].Data);
+        Assert.Equal([null, null], model.BreakdownGcseData.Datasets[2].Data);
     }
 
 
@@ -1044,11 +1043,11 @@ public class SecondarySchoolControllerTests
         var result = await _controller.Destinations(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
         string[] expectedAllDestCurrentDataLabels = ["School", $"{_fakeEstablishment.LAName} average", "England average"];
-        double[] expectedAllDestCurrentData =
+        double?[] expectedAllDestCurrentData =
         [
-            destinationsDetails.SchoolAll.CurrentYear ?? 0,
-            destinationsDetails.LocalAuthorityAll.CurrentYear ?? 0,
-            destinationsDetails.EnglandAll.CurrentYear ?? 0
+            destinationsDetails.SchoolAll.CurrentYear,
+            destinationsDetails.LocalAuthorityAll.CurrentYear,
+            destinationsDetails.EnglandAll.CurrentYear
         ];
 
         var expectedDataOverTime = new DataOverTimeViewModel
@@ -1059,17 +1058,17 @@ public class SecondarySchoolControllerTests
                 new DatasetViewModel
                 {
                     Label = "School",
-                    Data = [destinationsDetails.SchoolAll.TwoYearsAgo ?? 0, destinationsDetails.SchoolAll.PreviousYear ?? 0, destinationsDetails.SchoolAll.CurrentYear ?? 0],
+                    Data = [destinationsDetails.SchoolAll.TwoYearsAgo, destinationsDetails.SchoolAll.PreviousYear, destinationsDetails.SchoolAll.CurrentYear],
                 },
                 new DatasetViewModel
                 {
                     Label = $"{destinationsDetails.LocalAuthorityName} average",
-                    Data = [destinationsDetails.LocalAuthorityAll.TwoYearsAgo ?? 0, destinationsDetails.LocalAuthorityAll.PreviousYear ?? 0, destinationsDetails.LocalAuthorityAll.CurrentYear ?? 0],
+                    Data = [destinationsDetails.LocalAuthorityAll.TwoYearsAgo, destinationsDetails.LocalAuthorityAll.PreviousYear, destinationsDetails.LocalAuthorityAll.CurrentYear],
                 },
                 new DatasetViewModel
                 {
                     Label = "England average",
-                    Data = [destinationsDetails.EnglandAll.TwoYearsAgo ?? 0, destinationsDetails.EnglandAll.PreviousYear ?? 0, destinationsDetails.EnglandAll.CurrentYear ?? 0],
+                    Data = [destinationsDetails.EnglandAll.TwoYearsAgo, destinationsDetails.EnglandAll.PreviousYear, destinationsDetails.EnglandAll.CurrentYear],
                 },
             ],
         };
@@ -1084,17 +1083,17 @@ public class SecondarySchoolControllerTests
                 new DataSeriesViewModel
                 {
                     Label = "School",
-                    Data = [destinationsDetails.SchoolEducation.CurrentYear ?? 0, (destinationsDetails.SchoolEmployment.CurrentYear ?? 0 + destinationsDetails.SchoolApprentice.CurrentYear ?? 0)]
+                    Data = [destinationsDetails.SchoolEducation.CurrentYear, CommonHelper.AddNullable(destinationsDetails.SchoolEmployment.CurrentYear, destinationsDetails.SchoolApprentice.CurrentYear)]
                 },
                 new DataSeriesViewModel
                 {
                     Label = $"{destinationsDetails.LocalAuthorityName} average",
-                    Data = [destinationsDetails.LocalAuthorityEducation.CurrentYear ?? 0, (destinationsDetails.LocalAuthorityEmployment.CurrentYear ?? 0 + destinationsDetails.LocalAuthorityApprentice.CurrentYear ?? 0)]
+                    Data = [destinationsDetails.LocalAuthorityEducation.CurrentYear, CommonHelper.AddNullable(destinationsDetails.LocalAuthorityEmployment.CurrentYear, destinationsDetails.LocalAuthorityApprentice.CurrentYear)]
                 },
                 new DataSeriesViewModel
                 {
                     Label = "England average",
-                    Data = [destinationsDetails.EnglandEducation.CurrentYear ?? 0, (destinationsDetails.EnglandEmployment.CurrentYear ?? 0 + destinationsDetails.EnglandApprentice.CurrentYear ?? 0)]
+                    Data = [destinationsDetails.EnglandEducation.CurrentYear, CommonHelper.AddNullable(destinationsDetails.EnglandEmployment.CurrentYear, destinationsDetails.EnglandApprentice.CurrentYear)]
                 },
             ],
         };
@@ -1130,6 +1129,76 @@ public class SecondarySchoolControllerTests
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
+    }
+
+    [Fact]
+    public async Task Get_Destinations_Info_ResultsNotAvailable_ReturnsOk()
+    {
+        var destinationsDetails = new DestinationsDetails
+        {
+            Urn = _fakeEstablishment.URN,
+            SchoolName = _fakeEstablishment.EstablishmentName,
+            LocalAuthorityName = _fakeEstablishment.LAName,
+            SchoolAll = new RelativeYearValues<double?> { CurrentYear = null },
+            LocalAuthorityAll = new RelativeYearValues<double?> { CurrentYear = null },
+            EnglandAll = new RelativeYearValues<double?> { CurrentYear = null },
+            SchoolEducation = new RelativeYearValues<double?> { CurrentYear = null },
+            LocalAuthorityEducation = new RelativeYearValues<double?> { CurrentYear = null },
+            EnglandEducation = new RelativeYearValues<double?> { CurrentYear = null },
+            SchoolEmployment = new RelativeYearValues<double?> { CurrentYear = null },
+            LocalAuthorityEmployment = new RelativeYearValues<double?> { CurrentYear = null },
+            EnglandEmployment = new RelativeYearValues<double?> { CurrentYear = null },
+            SchoolApprentice = new RelativeYearValues<double?> { CurrentYear = null },
+            LocalAuthorityApprentice = new RelativeYearValues<double?> { CurrentYear = null },
+            EnglandApprentice = new RelativeYearValues<double?> { CurrentYear = null },
+        };
+
+        _mockDestinationsService
+            .Setup(es => es.GetDestinationsDetailsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(destinationsDetails);
+
+        var result = await _controller.Destinations(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
+
+        string[] expectedAllDestCurrentDataLabels = ["School", $"{_fakeEstablishment.LAName} average", "England average"];
+               
+
+        string[] expectedBreakdownCurrentYearDataLabels = ["Staying in education", "Entering employment and apprenticeships"];
+
+        
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as DestinationsViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(_fakeEstablishment.URN, model.URN);
+        Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
+
+        Assert.Equal(expectedAllDestCurrentDataLabels, model.AllDestinationsData.Labels);
+        Assert.Equal([null, null, null], model.AllDestinationsData.Data);
+
+        Assert.Equal(3, model.AllDestinationsOverTimeData.Datasets.Count);
+        Assert.Equal("School", model.AllDestinationsOverTimeData.Datasets[0].Label);
+        Assert.Equal([null, null, null], model.AllDestinationsOverTimeData.Datasets[0].Data);
+
+        Assert.Equal($"{_fakeEstablishment.LAName} average", model.AllDestinationsOverTimeData.Datasets[1].Label);
+        Assert.Equal([null, null, null], model.AllDestinationsOverTimeData.Datasets[1].Data);
+
+        Assert.Equal("England average", model.AllDestinationsOverTimeData.Datasets[2].Label);
+        Assert.Equal(new double?[] { null, null, null }, model.AllDestinationsOverTimeData.Datasets[2].Data);
+
+        // Breakdown gcse data assert
+        Assert.Equal(["Staying in education", "Entering employment and apprenticeships"], model.BreakdownDestinationData.Labels);
+
+        Assert.Equal(3, model.BreakdownDestinationData.Datasets.Count);
+
+        Assert.Equal("School", model.BreakdownDestinationData.Datasets[0].Label);
+        Assert.Equal([null, null], model.BreakdownDestinationData.Datasets[0].Data);
+
+        Assert.Equal($"{_fakeEstablishment.LAName} average", model.BreakdownDestinationData.Datasets[1].Label);
+        Assert.Equal([null, null], model.BreakdownDestinationData.Datasets[1].Data);
+
+        Assert.Equal("England average", model.BreakdownDestinationData.Datasets[2].Label);
+        Assert.Equal([null, null], model.BreakdownDestinationData.Datasets[2].Data);
     }
 
     [Theory]

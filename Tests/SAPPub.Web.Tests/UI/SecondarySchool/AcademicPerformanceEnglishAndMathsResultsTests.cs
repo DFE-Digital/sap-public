@@ -9,13 +9,17 @@ namespace SAPPub.Web.Tests.UI.SecondarySchool;
 [Collection("Playwright Tests")]
 public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
-    private string _pageUrl = "school/105574/Loreto%20High%20School%20Chorlton/secondary/academic-performance-english-and-maths-results";
+    private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
+    {
+        ["105574"] = "school/105574/Loreto%20High%20School%20Chorlton/secondary/academic-performance-english-and-maths-results",
+        ["100273"] = "school/100273/Saint%20Paul%20Roman%20Catholic%20Infant%20School/secondary/academic-performance-english-and-maths-results",
+    };
 
     [Fact]
     public async Task AcademicPerformanceEnglishAndMathsResultsPage_LoadsSuccessfully()
     {
         // Arrange && Act
-        var response = await Page.GotoAsync(_pageUrl);
+        var response = await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Assert
         Assert.NotNull(response);
@@ -26,7 +30,7 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
     public async Task AcademicPerformanceEnglishAndMathsResultsPage_HasCorrectTitle()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var title = await Page.TitleAsync();
@@ -39,7 +43,7 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
     public async Task AcademicPerformanceEnglishAndMathsResultsPage_DisplaysMainHeading()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var heading = await Page.Locator("h1").TextContentAsync();
@@ -53,7 +57,7 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
     public async Task AcademicPerformanceEnglishAndMathsResultsPage_Displays_SchoolName_Caption()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var schoolNameCaptionLocator = Page.Locator("#school-name-caption");
@@ -73,7 +77,7 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
         // We want to display the performance root page even when in a performance sub-page, hence need to check the active href is the root performance page
 
         var nav = new VerticalNavigationHelper(Page);
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         await nav.ShouldBeVisibleAsync();
         await nav.ShouldHaveItemsCountAsync(5);
@@ -85,7 +89,7 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
     public async Task AcademicPerformanceEnglishAndMathsResultsPage_Displays_Sub_Navigation()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var isVisible = await Page.Locator("#sub-navigation-academic-performance").IsVisibleAsync();
@@ -98,7 +102,7 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
     public async Task AcademicPerformanceEnglishAndMathsResultsPage_Displays_Gcse_Grades_Explained()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var isVisible = await Page.Locator("#details-gcse-grades-explained").IsVisibleAsync();
@@ -111,7 +115,7 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
     public async Task AcademicPerformanceEnglishAndMathsResultsPage_DisplaysPagination()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var isVisible = await Page.Locator("#academic-performance-english-and-maths-results-pagination").IsVisibleAsync();
@@ -124,7 +128,7 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
     public async Task AcademicPerformanceEnglishAndMathsResultsPage_DisplaysGradeSelectorForDataDisplayed()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var isVisible = await Page.Locator("#gradeSelector").IsVisibleAsync();
@@ -137,7 +141,7 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
     public async Task AcademicPerformanceEnglishAndMathsResultsPage_ChangeGradeSelected()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Assert
         var chartHeading = Page.Locator("#chartHeading");
@@ -160,7 +164,7 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
     public async Task EnglishAndMathsResultsPage_Displays_AllGcse_CurrentYear_Chart()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var chart = Page.Locator("#all-gcse-chart");
@@ -189,7 +193,7 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
     public async Task EnglishAndMathsResultsPage_Displays_AllGcse_CurrentYear_Table()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         // Click Show as a table button
@@ -218,7 +222,7 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
     public async Task EnglishAndMathsResultsPage_Displays_AllGcse_DataOverTime_Chart()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         // Click Show data over time button
@@ -251,7 +255,7 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
     public async Task EnglishAndMathsResultsPage_Displays_AllGcse_DataOverTime_Table()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         // Click Show data over time button
@@ -286,7 +290,7 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
     public async Task EnglishAndMathsResultsPage_Displays_AllGcse_DataOverTime_Table_Click_On_ShowCurrentData()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         // Click Show data over time button
@@ -315,10 +319,37 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
     }
 
     [Fact]
+    public async Task EnglishAndMathsResultsPage_Displays_AllGcse_DataOverTime_No_Chart_Only_Render_Table()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["100273"]);
+
+        // Act       
+        var gcseChart = Page.Locator("#all-gcse-chart");
+        var gcseCurrentYearTable = Page.Locator("#all-gcse-current-year-table");
+        var gcseCurrentYearShowBtn = Page.Locator("#all-gcse-current-year-show-btn");
+        var gcseShowDataOverTimeBtn = Page.Locator("#all-gcse-show-data-over-time-btn");
+        var gcseDataOverTimeChart = Page.Locator("#all-gcse-data-overtime-chart");
+        var gcseDataOverTimeTable = Page.Locator("#all-gcse-data-overtime-table");
+        var gcseDataOverTimeShowBtn = Page.Locator("#all-gcse-data-over-time-show-btn");
+        var gcseShowCurrentDataBtn = Page.Locator("#all-gcse-show-current-data-btn");
+
+        // Assert
+        Assert.False(await gcseChart.CountAsync() > 0);
+        Assert.False(await gcseCurrentYearTable.CountAsync() > 0);
+        Assert.False(await gcseCurrentYearShowBtn.CountAsync() > 0);
+        Assert.False(await gcseShowDataOverTimeBtn.CountAsync() > 0);
+        Assert.False(await gcseDataOverTimeChart.CountAsync() > 0);        
+        Assert.False(await gcseDataOverTimeShowBtn.CountAsync() > 0);
+        Assert.False(await gcseShowCurrentDataBtn.CountAsync() > 0);
+        Assert.True(await gcseDataOverTimeTable.CountAsync() > 0);
+    }
+
+    [Fact]
     public async Task EnglishAndMathsResultsPage_Displays_BreakdownGcse_CurrentYear_Chart()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var chart = Page.Locator("#breakdown-gcse-chart");
@@ -345,7 +376,7 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
     public async Task EnglishAndMathsResultsPage_Displays_BreakdownGcse_CurrentYear_Table()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         // Click Show as a table button
@@ -366,5 +397,23 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
         Assert.False(isChartLegendVisible);
         Assert.True(isTableVisible);
         Assert.Equal("Show as a chart", buttonText);
+    }
+
+    [Fact]
+    public async Task EnglishAndMathsResultsPage_Displays_BreakdownGcse_No_Chart_Only_Render_Table()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["100273"]);
+
+        // Act       
+        var breakdownGcseChart = Page.Locator("#breakdown-gcse-chart");
+        var breakdownGcseCurrentYearTable = Page.Locator("#breakdown-gcse-current-year-table");
+
+        var breakdownGcseCurrentYearShowBtn = Page.Locator("#breakdown-gcse-current-year-show-btn");
+
+        // Assert
+        Assert.False(await breakdownGcseChart.CountAsync() > 0);
+        Assert.False(await breakdownGcseCurrentYearShowBtn.CountAsync() > 0);
+        Assert.True(await breakdownGcseCurrentYearTable.CountAsync() > 0);
     }
 }

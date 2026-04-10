@@ -7,13 +7,17 @@ namespace SAPPub.Web.Tests.UI.SecondarySchool;
 [Collection("Playwright Tests")]
 public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
-    private string _pageUrl = "school/105574/Loreto%20High%20School%20Chorlton/secondary/destinations";
+    private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
+    {
+        ["105574"] = "school/105574/Loreto%20High%20School%20Chorlton/secondary/destinations",
+        ["100273"] = "school/100273/Saint%20Paul%20Roman%20Catholic%20Infant%20School/secondary/destinations",
+    };
 
     [Fact]
     public async Task Destinations_LoadsSuccessfully()
     {
         // Arrange && Act
-        var response = await Page.GotoAsync(_pageUrl);
+        var response = await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Assert
         Assert.NotNull(response);
@@ -24,7 +28,7 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     public async Task DestinationsPage_HasCorrectTitle()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var title = await Page.TitleAsync();
@@ -37,7 +41,7 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     public async Task DestinationsPage_DisplaysMainHeading()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var heading = await Page.Locator("h1").TextContentAsync();
@@ -52,7 +56,7 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     public async Task DestinationsPage_Displays_SchoolName_Caption()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var schoolNameCaptionLocator = Page.Locator("#school-name-caption");
@@ -69,19 +73,19 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     public async Task DestinationsPage_Displays_VerticalNavigation()
     {
         var nav = new VerticalNavigationHelper(Page);
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         await nav.ShouldBeVisibleAsync();
         await nav.ShouldHaveItemsCountAsync(5);
         await nav.ShouldHaveOneActiveItemAsync();
-        await nav.ShouldHaveActiveHrefAsync(_pageUrl);
+        await nav.ShouldHaveActiveHrefAsync(_schoolUrnToUrlMap["105574"]);
     }
 
     [Fact]
     public async Task DestinationsPage_Displays_School_Performance_Info()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var schoolPerformanceInfoLocator = Page.GetByTestId("looking-at-school-performance-info");
@@ -98,7 +102,7 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     public async Task DestinationsPage_Displays_AllDestinations_CurrentYear_Chart()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var chart = Page.Locator("#all-destinations-chart");
@@ -127,7 +131,7 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     public async Task DestinationsPage_Displays_AllDestinations_CurrentYear_Table()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         // Click Show as a table button
@@ -156,7 +160,7 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     public async Task DestinationsPage_Displays_AllDestinations_DataOverTime_Chart()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         // Click Show data over time button
@@ -189,7 +193,7 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     public async Task DestinationsPage_Displays_AllDestinations_DataOverTime_Table()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         // Click Show data over time button
@@ -224,7 +228,7 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     public async Task DestinationsPage_Displays_AllDestinations_DataOverTime_Table_Click_On_ShowCurrentData()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         // Click Show data over time button
@@ -253,10 +257,38 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     }
 
     [Fact]
+    public async Task DestinationsPage_Displays_AllDestinations__DataOverTime_No_Chart_Only_Render_Table()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["100273"]);
+
+        // Act       
+        var destinationsChart = Page.Locator("#all-destinations-chart");
+        var destinationsCurrentYearTable = Page.Locator("#all-destinations-current-year-table");
+        var destinationsCurrentYearShowBtn = Page.Locator("#all-dest-current-year-show-btn");
+        var destinationsShowDataOverTimeBtn = Page.Locator("#all-dest-show-data-over-time-btn");
+
+        var destinationsDataOverTimeChart = Page.Locator("#all-destinations-data-overtime-chart");
+        var destinationsDataOverTimeTable = Page.Locator("#all-destinations-data-overtime-table");
+        var destinationsDataOverTimeShowBtn = Page.Locator("#all-dest-data-over-time-show-btn");
+        var destinationsShowCurrentDataBtn = Page.Locator("#all-dest-show-current-data-btn");
+
+        // Assert
+        Assert.False(await destinationsChart.CountAsync() > 0);
+        Assert.False(await destinationsCurrentYearTable.CountAsync() > 0);
+        Assert.False(await destinationsCurrentYearShowBtn.CountAsync() > 0);
+        Assert.False(await destinationsShowDataOverTimeBtn.CountAsync() > 0);
+        Assert.False(await destinationsDataOverTimeChart.CountAsync() > 0);
+        Assert.False(await destinationsDataOverTimeShowBtn.CountAsync() > 0);
+        Assert.False(await destinationsShowCurrentDataBtn.CountAsync() > 0);
+        Assert.True(await destinationsDataOverTimeTable.CountAsync() > 0);
+    }
+
+    [Fact]
     public async Task DestinationsPage_Displays_BreakdownDestinations_CurrentYear_Chart()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var chart = Page.Locator("#breakdown-destinations-chart");
@@ -283,7 +315,7 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     public async Task DestinationsPage_Displays_BreakdownDestinations_CurrentYear_Table()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         // Click Show as a table button
@@ -307,10 +339,28 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     }
 
     [Fact]
+    public async Task DestinationsPage_Displays_BreakdownDestinations_No_Chart_Only_Render_Table()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["100273"]);
+
+        // Act       
+        var breakdownDestinationsChart = Page.Locator("#breakdown-destinations-chart");
+        var breakdownDestinationsCurrentYearTable = Page.Locator("#breakdown-destinations-current-year-table");
+
+        var breakdownDestinationsCurrentYearShowBtn = Page.Locator("#breakdown-dest-current-year-show-btn");
+
+        // Assert
+        Assert.False(await breakdownDestinationsChart.CountAsync() > 0);
+        Assert.False(await breakdownDestinationsCurrentYearShowBtn.CountAsync() > 0);
+        Assert.True(await breakdownDestinationsCurrentYearTable.CountAsync() > 0);
+    }
+
+    [Fact]
     public async Task DestinationsPage_DisplaysPagination()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var isVisible = await Page.Locator("#destinations-pagination").IsVisibleAsync();
