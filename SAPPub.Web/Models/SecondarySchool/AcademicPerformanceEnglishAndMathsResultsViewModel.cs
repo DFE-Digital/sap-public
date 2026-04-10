@@ -15,14 +15,28 @@ public class AcademicPerformanceEnglishAndMathsResultsViewModel : SecondarySchoo
 
     public required SeriesViewModel BreakdownGcseData { get; set; }
 
+    public required DisplayField<bool> HasEstablishmentData { get; set; }
+
     public static AcademicPerformanceEnglishAndMathsResultsViewModel Map(EnglishAndMathsResultsModel englishAndMathsResultsModel, GcseGradeDataSelection selectedGrade)
     {
         var laAverageLabel = CommonHelper.GetLocalAuthorityDisplayName(englishAndMathsResultsModel.LAName);
 
+        var hasEstablishmentData = new[] 
+        {
+            englishAndMathsResultsModel.EstablishmentAll.CurrentYear,
+            englishAndMathsResultsModel.EstablishmentAll.PreviousYear,
+            englishAndMathsResultsModel.EstablishmentAll.TwoYearsAgo,
+        }.All(d => d is double v && v != 0);
+
         var allGcseData = new DataViewModel
         {
             Labels = ["School", laAverageLabel, "England average"],
-            Data = [englishAndMathsResultsModel.EstablishmentAll.CurrentYear ?? 0, englishAndMathsResultsModel.LocalAuthorityAll.CurrentYear ?? 0, englishAndMathsResultsModel.EnglandAll.CurrentYear ?? 0],
+            Data = 
+            [
+                englishAndMathsResultsModel.EstablishmentAll.CurrentYear,
+                englishAndMathsResultsModel.LocalAuthorityAll.CurrentYear,
+                englishAndMathsResultsModel.EnglandAll.CurrentYear
+            ],
         };
 
         var allGcseOverTimeData = new DataOverTimeViewModel
@@ -33,17 +47,17 @@ public class AcademicPerformanceEnglishAndMathsResultsViewModel : SecondarySchoo
                     new DatasetViewModel
                     {
                         Label = "School",
-                        Data = [englishAndMathsResultsModel.EstablishmentAll.TwoYearsAgo ?? 0, englishAndMathsResultsModel.EstablishmentAll.PreviousYear ?? 0, englishAndMathsResultsModel.EstablishmentAll.CurrentYear ?? 0],
+                        Data = [englishAndMathsResultsModel.EstablishmentAll.TwoYearsAgo, englishAndMathsResultsModel.EstablishmentAll.PreviousYear, englishAndMathsResultsModel.EstablishmentAll.CurrentYear],
                     },
                     new DatasetViewModel
                     {
                         Label = laAverageLabel,
-                        Data = [englishAndMathsResultsModel.LocalAuthorityAll.TwoYearsAgo ?? 0, englishAndMathsResultsModel.LocalAuthorityAll.PreviousYear ?? 0, englishAndMathsResultsModel.LocalAuthorityAll.CurrentYear ?? 0],
+                        Data = [englishAndMathsResultsModel.LocalAuthorityAll.TwoYearsAgo, englishAndMathsResultsModel.LocalAuthorityAll.PreviousYear, englishAndMathsResultsModel.LocalAuthorityAll.CurrentYear],
                     },
                     new DatasetViewModel
                     {
                         Label = "England average",
-                        Data = [englishAndMathsResultsModel.EnglandAll.TwoYearsAgo ?? 0, englishAndMathsResultsModel.EnglandAll.PreviousYear ?? 0, englishAndMathsResultsModel.EnglandAll.CurrentYear ?? 0],
+                        Data = [englishAndMathsResultsModel.EnglandAll.TwoYearsAgo, englishAndMathsResultsModel.EnglandAll.PreviousYear, englishAndMathsResultsModel.EnglandAll.CurrentYear],
                     }
                 ],
         };
@@ -55,15 +69,15 @@ public class AcademicPerformanceEnglishAndMathsResultsViewModel : SecondarySchoo
                 [
                     new DataSeriesViewModel {
                         Label = "School",
-                        Data = [englishAndMathsResultsModel.EstablishmentGirls.CurrentYear ?? 0, englishAndMathsResultsModel.EstablishmentBoys.CurrentYear ?? 0]
+                        Data = [englishAndMathsResultsModel.EstablishmentGirls.CurrentYear, englishAndMathsResultsModel.EstablishmentBoys.CurrentYear]
                     },
                     new DataSeriesViewModel {
                         Label = laAverageLabel,
-                        Data = [englishAndMathsResultsModel.LocalAuthorityGirls.CurrentYear ?? 0, englishAndMathsResultsModel.LocalAuthorityBoys.CurrentYear ?? 0]
+                        Data = [englishAndMathsResultsModel.LocalAuthorityGirls.CurrentYear, englishAndMathsResultsModel.LocalAuthorityBoys.CurrentYear]
                     },
                     new DataSeriesViewModel {
                         Label = "England average",
-                        Data = [englishAndMathsResultsModel.EnglandGirls.CurrentYear ?? 0, englishAndMathsResultsModel.EnglandBoys.CurrentYear ?? 0]
+                        Data = [englishAndMathsResultsModel.EnglandGirls.CurrentYear, englishAndMathsResultsModel.EnglandBoys.CurrentYear]
                     },
                 ],
         };
@@ -77,6 +91,7 @@ public class AcademicPerformanceEnglishAndMathsResultsViewModel : SecondarySchoo
             AllGcseData = allGcseData,
             AllGcseOverTimeData = allGcseOverTimeData,
             BreakdownGcseData = breakdownGcseData,
+            HasEstablishmentData = hasEstablishmentData.ToDisplayField(),
         };
     }
 }
