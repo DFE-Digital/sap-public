@@ -15,24 +15,32 @@
         const allDestShowCurrentDataBtn = document.getElementById('all-dest-show-current-data-btn');
 
         setAriaAttribute(allDestCurrentYearShowAsTableBtn, 'false');
-        allDestCurrentYearShowAsTableBtn.addEventListener('click', () => {
-            const chartVisible = allDestCurrentYearChartContainer.style.display !== 'none';
-            setTooggleState(allDestCurrentYearChartContainer, allDestCurrentYearTableContainer, chartVisible, allDestCurrentYearShowAsTableBtn);
-        });
+        if (allDestCurrentYearShowAsTableBtn) {
+            allDestCurrentYearShowAsTableBtn.addEventListener('click', () => {
+                const chartVisible = allDestCurrentYearChartContainer.style.display !== 'none';
+                setTooggleState(allDestCurrentYearChartContainer, allDestCurrentYearTableContainer, chartVisible, allDestCurrentYearShowAsTableBtn);
+            });
+        }
 
-        allDestShowDataOverTimeBtn.addEventListener('click', () => {
-            setTooggleState(allDestDataOverTimeChartContainer, allDestDataOverTimeTableContainer, false, allDestCurrentYearShowAsTableBtn);        
-        });
+        if (allDestShowDataOverTimeBtn) {
+            allDestShowDataOverTimeBtn.addEventListener('click', () => {
+                setTooggleState(allDestDataOverTimeChartContainer, allDestDataOverTimeTableContainer, false, allDestCurrentYearShowAsTableBtn);
+            });
+        }
 
         setAriaAttribute(allDestDataOverTimeShowAsTableBtn, 'false');
-        allDestDataOverTimeShowAsTableBtn.addEventListener('click', () => {
-            const dataOverTimeChartVisible = allDestDataOverTimeChartContainer.style.display !== 'none';
-            setTooggleState(allDestDataOverTimeChartContainer, allDestDataOverTimeTableContainer, dataOverTimeChartVisible, allDestDataOverTimeShowAsTableBtn);
-        });
+        if (allDestDataOverTimeShowAsTableBtn) {
+            allDestDataOverTimeShowAsTableBtn.addEventListener('click', () => {
+                const dataOverTimeChartVisible = allDestDataOverTimeChartContainer.style.display !== 'none';
+                setTooggleState(allDestDataOverTimeChartContainer, allDestDataOverTimeTableContainer, dataOverTimeChartVisible, allDestDataOverTimeShowAsTableBtn);
+            });
+        }
 
-        allDestShowCurrentDataBtn.addEventListener('click', () => {
-            setTooggleState(allDestCurrentYearChartContainer, allDestCurrentYearTableContainer, false, allDestCurrentYearShowAsTableBtn);
-        });
+        if (allDestShowCurrentDataBtn) {
+            allDestShowCurrentDataBtn.addEventListener('click', () => {
+                setTooggleState(allDestCurrentYearChartContainer, allDestCurrentYearTableContainer, false, allDestCurrentYearShowAsTableBtn);
+            });
+        }
 
 
         const breakdownDestCurrentYearShowAsTableBtn = document.getElementById('breakdown-dest-current-year-show-btn');
@@ -40,10 +48,12 @@
         const breakdownDestCurrentYearTableContainer = document.getElementById('breakdown-dest-current-year-table-container');
 
         setAriaAttribute(breakdownDestCurrentYearShowAsTableBtn, 'false');
-        breakdownDestCurrentYearShowAsTableBtn.addEventListener('click', () => {
-            const chartVisible = breakdownDestCurrentYearChartContainer.style.display !== 'none';
-            setTooggleState(breakdownDestCurrentYearChartContainer, breakdownDestCurrentYearTableContainer, chartVisible, breakdownDestCurrentYearShowAsTableBtn);
-        });
+        if (breakdownDestCurrentYearShowAsTableBtn) {
+            breakdownDestCurrentYearShowAsTableBtn.addEventListener('click', () => {
+                const chartVisible = breakdownDestCurrentYearChartContainer.style.display !== 'none';
+                setTooggleState(breakdownDestCurrentYearChartContainer, breakdownDestCurrentYearTableContainer, chartVisible, breakdownDestCurrentYearShowAsTableBtn);
+            });
+        }
     });
 
     function setToggleText(toggle, text) {
