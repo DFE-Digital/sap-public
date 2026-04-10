@@ -18,6 +18,14 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
 
     public double? EstablishmentProgress8Score { get; init; }
 
+    public double? EstablishmentProgress8CILower { get; init; }
+
+    public double? EstablishmentProgress8CIUpper { get; init; }
+
+    public string? EstablishmentProgress8Banding { get; init; }
+
+    public required DisplayField<string> EstablishmentProgress8BandingContextDescription { get; init; }
+
     public double? LocalAuthorityProgress8Score { get; init; }
 
     public double? EstablishmentAttainment8Score { get; init; }
@@ -44,12 +52,18 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
         var establishmentAttainment8ContextSentence = EstablishmentAttainment8ContextStatement(attainmentAndProgressModel.EstablishmentAttainment8Score);
         var englandAttainment8ContextSentence = NationalAttainment8ContextStatement(nationalScore: attainmentAndProgressModel.EnglandAttainment8Score, schoolScore: attainmentAndProgressModel.EstablishmentAttainment8Score);
         var localAuthorityAttainment8ContextSentence = LocalAuthorityAttainment8ContextStatement(localAuthorityScore: attainmentAndProgressModel.LocalAuthorityAttainment8Score, schoolScore: attainmentAndProgressModel.EstablishmentAttainment8Score);
+        var establishmentProgress8BandingContextDescription = EstablishmentProgress8BandingContextStatement(attainmentAndProgressModel.EstablishmentProgress8Banding);
+
         return new AcademicPerformanceAttainmentAndProgressViewModel
         {
             URN = attainmentAndProgressModel.Urn,
             SchoolName = attainmentAndProgressModel.SchoolName ?? string.Empty,
             SelectedAcademicYear = selectedAcademicYear,
             EstablishmentProgress8Score = attainmentAndProgressModel.EstablishmentProgress8Score,
+            EstablishmentProgress8CILower = attainmentAndProgressModel.EstablishmentProgress8CILower,
+            EstablishmentProgress8CIUpper = attainmentAndProgressModel.EstablishmentProgress8CIUpper,
+            EstablishmentProgress8Banding = attainmentAndProgressModel.EstablishmentProgress8Banding,
+            EstablishmentProgress8BandingContextDescription = establishmentProgress8BandingContextDescription,
             LocalAuthorityProgress8Score = attainmentAndProgressModel.LocalAuthorityProgress8Score,
             EstablishmentAttainment8Score = attainmentAndProgressModel.EstablishmentAttainment8Score,
             EstablishmentAttainment8ScoreContextDescription = establishmentAttainment8ContextSentence != null
@@ -146,4 +160,14 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
             _ => "Not available",
         };
     }
+
+    private static DisplayField<string> EstablishmentProgress8BandingContextStatement(string? progressBanding)
+    {
+        var bandingEnum = progressBanding.ToProgress8Banding();
+
+        return bandingEnum != Progress8Banding.NotAvailable
+            ? $"This is {bandingEnum.GetDisplayName()}.".ToDisplayField()
+            : DisplayField<string>.NotAvailable();
+    }
+
 }

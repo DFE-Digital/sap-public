@@ -8,6 +8,12 @@ public class AttainmentAndProgressModel
 
     public double? EstablishmentProgress8Score { get; init; }
 
+    public double? EstablishmentProgress8CILower { get; init; }
+
+    public double? EstablishmentProgress8CIUpper { get; init; }
+
+    public string? EstablishmentProgress8Banding { get; init; }
+
     public double? LocalAuthorityProgress8Score { get; init; }
 
     public double? EstablishmentAttainment8Score { get; init; }

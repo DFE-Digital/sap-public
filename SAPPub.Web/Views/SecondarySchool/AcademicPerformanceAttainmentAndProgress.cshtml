@@ -191,12 +191,27 @@
                 <div class="custom-card__content">
                     <p class="govuk-body">
                         Pupils at this school score @Model.EstablishmentProgress8Score.
+                        @if (Model.EstablishmentProgress8BandingContextDescription.IsAvailable)
+                        {
+                            <span>@Model.EstablishmentProgress8BandingContextDescription.DisplayText()</span>
+                        }
                     </p>
                     <p class="govuk-body">
-                        @Model.EstablishmentProgress8TotalPupils out of @Model.EstablishmentTotalPupils pupils were included in this measure.
+                        The confidence interval is @Model.EstablishmentProgress8CILower and @Model.EstablishmentProgress8CIUpper.
                     </p>
                 </div>
             </div>
+
+            <govuk-details id="pupil-details-progress8">
+                <govuk-details-summary>
+                    Pupils included in this measure
+                </govuk-details-summary>
+                <govuk-details-text>
+                    <p class="govuk-body">
+                        @Model.EstablishmentProgress8TotalPupils out of @Model.EstablishmentTotalPupils pupils were included in this measure.
+                    </p>
+                </govuk-details-text>
+            </govuk-details>
 
             <div class="custom-card" data-testid="progress8-localauthority-card">
                 <div class="custom-card__content">
