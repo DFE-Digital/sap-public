@@ -1105,31 +1105,31 @@ public class SecondarySchoolControllerTests
         double?[] expectedAllDestCurrentData =
         [
             destinationsDetails.SchoolAll.CurrentYear,
-            destinationsDetails.LocalAuthorityAll.CurrentYear,
-            destinationsDetails.EnglandAll.CurrentYear
+        destinationsDetails.LocalAuthorityAll.CurrentYear,
+        destinationsDetails.EnglandAll.CurrentYear
         ];
 
         var expectedDataOverTime = new DataOverTimeViewModel
         {
-            Labels = [],
+            Labels = ["2020 to 2021", "2021 to 2022", "2022 to 2023"],
             Datasets =
             [
                 new DatasetViewModel
-                {
-                    Label = "School",
-                    Data = [destinationsDetails.SchoolAll.TwoYearsAgo, destinationsDetails.SchoolAll.PreviousYear, destinationsDetails.SchoolAll.CurrentYear],
-                },
-                new DatasetViewModel
-                {
-                    Label = $"{destinationsDetails.LocalAuthorityName} average",
-                    Data = [destinationsDetails.LocalAuthorityAll.TwoYearsAgo, destinationsDetails.LocalAuthorityAll.PreviousYear, destinationsDetails.LocalAuthorityAll.CurrentYear],
-                },
-                new DatasetViewModel
-                {
-                    Label = "England average",
-                    Data = [destinationsDetails.EnglandAll.TwoYearsAgo, destinationsDetails.EnglandAll.PreviousYear, destinationsDetails.EnglandAll.CurrentYear],
-                },
-            ],
+            {
+                Label = "School",
+                Data = [destinationsDetails.SchoolAll.TwoYearsAgo, destinationsDetails.SchoolAll.PreviousYear, destinationsDetails.SchoolAll.CurrentYear],
+            },
+            new DatasetViewModel
+            {
+                Label = $"{destinationsDetails.LocalAuthorityName} average",
+                Data = [destinationsDetails.LocalAuthorityAll.TwoYearsAgo, destinationsDetails.LocalAuthorityAll.PreviousYear, destinationsDetails.LocalAuthorityAll.CurrentYear],
+            },
+            new DatasetViewModel
+            {
+                Label = "England average",
+                Data = [destinationsDetails.EnglandAll.TwoYearsAgo, destinationsDetails.EnglandAll.PreviousYear, destinationsDetails.EnglandAll.CurrentYear],
+            },
+        ],
         };
 
         string[] expectedBreakdownCurrentYearDataLabels = ["Staying in education", "Entering employment and apprenticeships"];
@@ -1140,21 +1140,21 @@ public class SecondarySchoolControllerTests
             Datasets =
             [
                 new DataSeriesViewModel
-                {
-                    Label = "School",
-                    Data = [destinationsDetails.SchoolEducation.CurrentYear, CommonHelper.AddNullable(destinationsDetails.SchoolEmployment.CurrentYear, destinationsDetails.SchoolApprentice.CurrentYear)]
-                },
-                new DataSeriesViewModel
-                {
-                    Label = $"{destinationsDetails.LocalAuthorityName} average",
-                    Data = [destinationsDetails.LocalAuthorityEducation.CurrentYear, CommonHelper.AddNullable(destinationsDetails.LocalAuthorityEmployment.CurrentYear, destinationsDetails.LocalAuthorityApprentice.CurrentYear)]
-                },
-                new DataSeriesViewModel
-                {
-                    Label = "England average",
-                    Data = [destinationsDetails.EnglandEducation.CurrentYear, CommonHelper.AddNullable(destinationsDetails.EnglandEmployment.CurrentYear, destinationsDetails.EnglandApprentice.CurrentYear)]
-                },
-            ],
+            {
+                Label = "School",
+                Data = [destinationsDetails.SchoolEducation.CurrentYear, CommonHelper.AddNullable(destinationsDetails.SchoolEmployment.CurrentYear, destinationsDetails.SchoolApprentice.CurrentYear)]
+            },
+            new DataSeriesViewModel
+            {
+                Label = $"{destinationsDetails.LocalAuthorityName} average",
+                Data = [destinationsDetails.LocalAuthorityEducation.CurrentYear, CommonHelper.AddNullable(destinationsDetails.LocalAuthorityEmployment.CurrentYear, destinationsDetails.LocalAuthorityApprentice.CurrentYear)]
+            },
+            new DataSeriesViewModel
+            {
+                Label = "England average",
+                Data = [destinationsDetails.EnglandEducation.CurrentYear, CommonHelper.AddNullable(destinationsDetails.EnglandEmployment.CurrentYear, destinationsDetails.EnglandApprentice.CurrentYear)]
+            },
+        ],
         };
 
         Assert.NotNull(result);
@@ -1168,6 +1168,7 @@ public class SecondarySchoolControllerTests
         Assert.Equal(expectedAllDestCurrentDataLabels, model.AllDestinationsData.Labels);
         Assert.Equal(expectedAllDestCurrentData, model.AllDestinationsData.Data);
 
+        Assert.Equal(expectedDataOverTime.Labels, model.AllDestinationsOverTimeData.Labels);
         foreach (var expectedDataset in expectedDataOverTime.Datasets)
         {
             var actualDatset = model.AllDestinationsOverTimeData.Datasets.FirstOrDefault(s => s.Label == expectedDataset.Label);
@@ -1219,11 +1220,8 @@ public class SecondarySchoolControllerTests
         var result = await _controller.Destinations(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
         string[] expectedAllDestCurrentDataLabels = ["School", $"{_fakeEstablishment.LAName} average", "England average"];
-               
-
         string[] expectedBreakdownCurrentYearDataLabels = ["Staying in education", "Entering employment and apprenticeships"];
 
-        
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
 
@@ -1244,6 +1242,8 @@ public class SecondarySchoolControllerTests
 
         Assert.Equal("England average", model.AllDestinationsOverTimeData.Datasets[2].Label);
         Assert.Equal(new double?[] { null, null, null }, model.AllDestinationsOverTimeData.Datasets[2].Data);
+
+        Assert.Equal(["2020 to 2021", "2021 to 2022", "2022 to 2023"], model.AllDestinationsOverTimeData.Labels);
 
         // Breakdown gcse data assert
         Assert.Equal(["Staying in education", "Entering employment and apprenticeships"], model.BreakdownDestinationData.Labels);
