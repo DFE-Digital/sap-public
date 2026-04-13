@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using SAPPub.Core.Entities;
-using SAPPub.Core.Interfaces.Repositories.Generic;
+using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
+using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 
 namespace SAPPub.Web.Page.Tests.Tests;
 
@@ -9,7 +9,7 @@ namespace SAPPub.Web.Page.Tests.Tests;
 
 public class AboutPageTests : IDisposable // implement IDisposable so can clear the mock accessor after each test
 {
-    private readonly MockAccessor<IGenericRepository<Establishment>> _accessor;
+    private readonly MockAccessor<IAboutSchoolService> _accessor;
     private readonly WebAppFixture _fixture;
 
     private string BuildUrl(string urn, string schoolName)
@@ -22,8 +22,8 @@ public class AboutPageTests : IDisposable // implement IDisposable so can clear 
     {
         _fixture = fixture;
         _accessor = fixture.Factory.Services
-            .GetRequiredService<MockAccessor<IGenericRepository<Establishment>>>();
-        var mock = new Mock<IGenericRepository<Establishment>>();
+            .GetRequiredService<MockAccessor<IAboutSchoolService>>();
+        var mock = new Mock<IAboutSchoolService>();
         _accessor.Set(mock);
     }
 
@@ -38,15 +38,15 @@ public class AboutPageTests : IDisposable // implement IDisposable so can clear 
         // Arrange
         var urn = "143034";
         var establishmentName = "St Paul's Church of England Academy";
-        var establishmentGenericRepositoryMock = _accessor.Get();
-        establishmentGenericRepositoryMock?
-            .Setup(repo => repo.ReadAsync(
+        var aboutSchoolServiceMock = _accessor.Get();
+        aboutSchoolServiceMock?
+            .Setup(service => service.GetAboutSchoolDetailsAsync(
                 It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Establishment()
+            .ReturnsAsync(new AboutSchoolModel()
             {
-                URN = urn,
-                EstablishmentName = establishmentName
+                Urn = urn,
+                SchoolName = establishmentName
             });
 
         // Act
@@ -70,15 +70,15 @@ public class AboutPageTests : IDisposable // implement IDisposable so can clear 
         // Arrange
         var urn = "143034";
         var establishmentName = "St David's Church of England Academy";
-        var establishmentGenericRepositoryMock = _accessor.Get();
-        establishmentGenericRepositoryMock?
-            .Setup(repo => repo.ReadAsync(
+        var aboutSchoolServiceMock = _accessor.Get();
+        aboutSchoolServiceMock?
+            .Setup(service => service.GetAboutSchoolDetailsAsync(
                 It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Establishment()
+            .ReturnsAsync(new AboutSchoolModel()
             {
-                URN = urn,
-                EstablishmentName = establishmentName
+                Urn = urn,
+                SchoolName = establishmentName
             });
 
         // Act
