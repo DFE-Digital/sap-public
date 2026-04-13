@@ -36,6 +36,12 @@
                 <govuk-summary-list-row-key>Name</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
                     @Model.SchoolName
+                    @if (Model.RecentlyOpenedSchoolMessage.IsAvailable)
+                    {
+                        <span class="govuk-hint govuk-clear">
+                            @Model.RecentlyOpenedSchoolMessage.Value
+                        </span>
+                    }
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             @if(Model.AcademyTrust.IsAvailable)
@@ -48,7 +54,7 @@
                         @if (Model.AcademyTrustUpdatedIn.IsAvailable)
                         {
                             <span class="govuk-hint govuk-clear">
-                                (updated in @Model.AcademyTrustUpdatedIn.DisplayText())
+                                updated in @Model.AcademyTrustUpdatedIn.DisplayText()
                             </span>
                         }
                     </govuk-summary-list-row-value>
@@ -163,6 +169,12 @@
                 <govuk-summary-list-row-key>Type of school</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
                    @Model.TypeOfSchool
+                    @if (Model.RecentlyOpenedSchoolMessage.IsAvailable)
+                    {
+                        <span class="govuk-hint govuk-clear">
+                            @Model.RecentlyOpenedSchoolMessage.Value
+                        </span>
+                    }
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>

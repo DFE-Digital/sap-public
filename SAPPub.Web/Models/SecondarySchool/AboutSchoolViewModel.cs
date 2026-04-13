@@ -14,6 +14,9 @@ namespace SAPPub.Web.Models.SecondarySchool
         private const string ResourcedProvisionAndSENUnit = "Resourced provision and SEN unit";
         private const string ResourcedProvisionText = "Resourced provision";
         private const int LocalAuthorityEstablishmentGroupTypeId = 4;
+        private const int SchoolClosedStatusCode = 2;
+        private const int AcademyOpenReasonId = 10;
+        private const string SixthFormYesValue = "1";
 
         public record School(string Name, double Lat, double Lon);
 
@@ -60,10 +63,15 @@ namespace SAPPub.Web.Models.SecondarySchool
         public bool IsLocalAuthoritySchool { get; set; }
 
         public required DisplayField<DateOnly> ClosedDate { get; set; }
+        public DateOnly? OpenDate { get; set; }
 
         public int? StatusCode { get; set; }
 
-        public bool IsSchoolClosed => StatusCode == 2;
+        public bool IsSchoolClosed => StatusCode == SchoolClosedStatusCode;
+        public int? OpenReasonId { get; set; }
+
+        public required DisplayField<string> RecentlyOpenedSchoolMessage { get; set; }
+
 
         public static AboutSchoolViewModel Map(AboutSchoolModel schoolDetails)
         {
@@ -95,6 +103,9 @@ namespace SAPPub.Web.Models.SecondarySchool
                 IsLocalAuthoritySchool = schoolDetails.EstablishmentTypeGroupId.ToInt() == LocalAuthorityEstablishmentGroupTypeId,
                 StatusCode = schoolDetails.StatusCode,
                 ClosedDate = schoolDetails.ClosedDate.ToDisplayField(),
+                OpenDate = schoolDetails.OpenDate,
+                OpenReasonId = schoolDetails.OpenReasonId,
+                RecentlyOpenedSchoolMessage = GetRecentlyOpenedSchoolMessage(schoolDetails.OpenReasonId, schoolDetails.OpenDate)
             };
         }
 
@@ -120,7 +131,31 @@ namespace SAPPub.Web.Models.SecondarySchool
 
         private static string GetSixthForm(string value)
         {
-            return string.Equals(value, "1") ? Yes : No;
+            return string.Equals(value, SixthFormYesValue) ? Yes : No;
+        }
+
+        private static DisplayField<string> GetRecentlyOpenedSchoolMessage(int? openReasonId, DateOnly? openDate)
+        {
+            if (!openDate.HasValue || !IsWithinLastThreeAcademicYears(openDate.Value))
+                return DisplayField<string>.NotAvailable();
+
+            var date = $" on {openDate.Value:d MMMM yyyy}";
+            return openReasonId switch
+            {
+                AcademyOpenReasonId => $"Opened as an academy{date}".ToDisplayField(),
+                _ => $"This school opened{date}".ToDisplayField()
+            };
+        }
+
+        private static bool IsWithinLastThreeAcademicYears(DateOnly openDate)
+        {
+            var today = DateTime.Today;
+            var previousSept12 = (today.Month < 9 || (today.Month == 9 && today.Day < 12))
+                ? new DateTime(today.Year - 1, 9, 12)
+                : new DateTime(today.Year, 9, 12);
+
+            var cutoffDate = previousSept12.AddYears(-3);
+            return openDate.ToDateTime(TimeOnly.MinValue) >= cutoffDate;
         }
     }
 }
