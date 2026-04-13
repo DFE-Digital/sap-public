@@ -1,3 +1,5 @@
+using Dfe.Analytics;
+using Dfe.Analytics.AspNetCore;
 using GovUk.Frontend.AspNetCore;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -103,6 +105,9 @@ public partial class Program
 
         builder.Services.AddSingleton<NpgsqlDataSource>(_ => NpgsqlDataSource.Create(connectionString));
 
+        // Big Query client configuration
+        builder.Services.AddDfeAnalytics().AddAspNetCoreIntegration();
+
         //Email config
         builder.Services.AddScoped<INotificationClient>((sp) => new NotificationClient(emailAPIKey));
 
@@ -120,14 +125,12 @@ public partial class Program
         if (app.Environment.IsDevelopment())
         {
             app.UseDeveloperExceptionPage(new DeveloperExceptionPageOptions { SourceCodeLineCount = 1 });
-
         }
         else
         {
             app.UseExceptionHandler("/Error/500");
             app.UseHsts();
         }
-
 
         // Security headers middleware - MUST come before static files
         app.UseSecurityHeaders();
@@ -176,6 +179,11 @@ public partial class Program
             }
         });
 
+        if (builder.Environment.IsProduction())
+        {
+            app.UseDfeAnalytics();
+        }
+
         app.UseRouting();
         app.UseGovUkFrontend();
 
@@ -183,7 +191,7 @@ public partial class Program
         {
             app.UseMiddleware<GatewayMiddleware>();
         }
-        
+
 
         app.MapControllers();
         app.MapRazorPages();
