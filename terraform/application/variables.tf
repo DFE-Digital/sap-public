@@ -78,6 +78,16 @@ variable "send_traffic_to_maintenance_page" {
 locals {
   postgres_ssl_mode = var.enable_postgres_ssl ? "require" : "disable"
 
+  federated_auth_configmap = var.enable_dfe_analytics_federated_auth ? {
+    DfeAnalytics__Environment = var.environment
+    DfeAnalytics__TableId     = module.dfe_analytics[0].bigquery_table_name
+    DfeAnalytics__DatasetId   = module.dfe_analytics[0].bigquery_dataset
+  } : {}
+
+  federated_auth_secrets = var.enable_dfe_analytics_federated_auth ? {
+    DfeAnalytics__CredentialsJson = module.dfe_analytics[0].google_cloud_credentials
+  } : {}
+
 }
 
 variable "enable_logit" { default = true }
@@ -124,4 +134,9 @@ variable "replicas" {
   type        = number
   default     = 1
   description = "Number of application instances"
+}
+
+variable "enable_dfe_analytics_federated_auth" {
+  description = "Create the resources in Google cloud for federated authentication and enable in application"
+  default     = false
 }

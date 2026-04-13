@@ -55,11 +55,11 @@ module "application_configuration" {
   secret_key_vault_short = "app"
   config_variables_path  = "${path.module}/config/${var.config}.yml"
 
-  config_variables = {
+  config_variables = merge({
     ENVIRONMENT_NAME = var.environment
-  }
+  }, local.federated_auth_configmap)
 
-  secret_variables = {
+  secret_variables = merge({
     DATABASE_URL            = module.postgres.url
     StorageConnectionString = "DefaultEndpointsProtocol=https;AccountName=${module.storage.name};AccountKey=${module.storage.primary_access_key}"
 	  ConnectionStrings__PostgresConnectionString   = module.postgres.dotnet_connection_string
@@ -71,7 +71,7 @@ module "application_configuration" {
     Analytics__GoogleTagManagerId                 = data.azurerm_key_vault_secret.googletagmanager.value,
 	  Analytics__GoogleTagManagerAdditional         = data.azurerm_key_vault_secret.googletagmanageradditional.value,
     Analytics__ClarityId                          = data.azurerm_key_vault_secret.microsoftclarity.value
-  }
+  }, local.federated_auth_secrets)
 
 }
 
@@ -94,4 +94,5 @@ module "web_application" {
   probe_path                       = var.probe_path
   send_traffic_to_maintenance_page = var.send_traffic_to_maintenance_page
   replicas                         = var.replicas
+  enable_gcp_wif                   = var.enable_dfe_analytics_federated_auth
 }
