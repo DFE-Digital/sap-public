@@ -1,4 +1,5 @@
 ﻿using SAPPub.Core.Entities;
+using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Repositories.Generic;
@@ -23,7 +24,6 @@ namespace SAPPub.Web.Helpers
                 Easting = "580573",
                 Northing = "110137"
             },
-
             ["100273"] = new Establishment
             {
                 URN = "100273",
@@ -34,7 +34,6 @@ namespace SAPPub.Web.Helpers
                 PhaseOfEducationId = "2",
                 PhaseOfEducationName = "Primary"
             },
-
             ["102848"] = new Establishment
             {
                 URN = "102848",
@@ -46,8 +45,6 @@ namespace SAPPub.Web.Helpers
                 PhaseOfEducationName = "Primary",
                 AddressPostcode = "IG1 1SA"
             },
-
-
             ["105574"] = new Establishment
             {
                 URN = "105574",
@@ -60,9 +57,9 @@ namespace SAPPub.Web.Helpers
                 AddressPostcode = "M21 7SW",
                 Easting = "382682",
                 Northing = "392995",
-                Website = "http://www.test.co.uk/"
+                Website = "http://www.test.co.uk/",
+                StatusCode = 1
             },
-
             ["137552"] = new Establishment
             {
                 URN = "137552",
@@ -72,7 +69,21 @@ namespace SAPPub.Web.Helpers
                 EstablishmentNumber = "4343",
                 PhaseOfEducationId = "4",
                 PhaseOfEducationName = "Secondary",
-                AddressPostcode = "CM18 7NQ"
+                AddressPostcode = "CM18 7NQ",
+                StatusCode = 2,
+                ClosedDate = null
+            },
+            ["107564"] = new Establishment
+            {
+                URN = "107564",
+                EstablishmentName = "Todmorden High School",
+                LAId = "381",
+                EstablishmentNumber = "4026",
+                PhaseOfEducationId = "4",
+                PhaseOfEducationName = "Secondary",
+                AddressPostcode = "OL14 7DG",
+                StatusCode = 2,
+                ClosedDate = "23-03-2025"
             }
         };
 
@@ -84,8 +95,28 @@ namespace SAPPub.Web.Helpers
                 Id = "105574",
                 Attainment8_Tot_Est_Current_Num = 10,
                 Attainment8_Tot_Est_Previous_Num = 20,
-                Attainment8_Tot_Est_Previous2_Num = 30
+                Attainment8_Tot_Est_Previous2_Num = 30,
+                EngMaths49_Tot_Est_Current_Pct = 50,
+                EngMaths59_Tot_Est_Current_Pct = 60,
+                EngMaths49_Tot_Est_Previous_Pct = 65,
+                EngMaths59_Tot_Est_Previous_Pct = 70,
+                EngMaths49_Tot_Est_Previous2_Pct = 75,
+                EngMaths59_Tot_Est_Previous2_Pct = 80
             },            
+        };
+
+        private static readonly Dictionary<string, EstablishmentDestinations> EstablishmentDestinations = new(StringComparer.OrdinalIgnoreCase)
+        {
+            ["105574"] = new EstablishmentDestinations
+            {
+                Id = "105574",
+                AllDest_Tot_Est_Current_Pct = 50,
+                AllDest_Tot_Est_Previous_Pct = 20,
+                AllDest_Tot_Est_Previous2_Pct = 30,
+                Education_Tot_Est_Current_Pct = 47,
+                Employment_Tot_Est_Current_Pct = 2,
+                Apprentice_Tot_Est_Current_Pct = 1,
+            },
         };
 
 
@@ -122,6 +153,14 @@ namespace SAPPub.Web.Helpers
                 if (!string.IsNullOrWhiteSpace(id) && EstablishmentPerformances.TryGetValue(id, out var est))
                     return Task.FromResult<T?>((T)(object)est);
             }
+
+            if (typeof(T) == typeof(EstablishmentDestinations))
+            {
+                var id = GetPropertyString(parameters, "Id");
+
+                if (!string.IsNullOrWhiteSpace(id) && EstablishmentDestinations.TryGetValue(id, out var est))
+                    return Task.FromResult<T?>((T)(object)est);
+            }            
 
             return Task.FromResult<T?>(default);
         }
@@ -194,6 +233,16 @@ namespace SAPPub.Web.Helpers
             if (page > 1) return Task.FromResult(Enumerable.Empty<T>());
             var results = ReadAllAsync(ct).Result;
             return Task.FromResult(results.Take(take));
+        }
+
+        Task<bool> IGenericRepository<T>.WriteAsync(object? writeObject, CancellationToken ct)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<bool> IGenericRepository<T>.UpdateAsync(object? updateObject, CancellationToken ct)
+        {
+            throw new NotImplementedException();
         }
     }
 }

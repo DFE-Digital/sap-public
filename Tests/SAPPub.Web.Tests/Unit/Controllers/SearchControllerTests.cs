@@ -20,7 +20,8 @@ public class SearchControllerTests
         Address = "123 Test Street",
         GenderName = "Mixed",
         ReligiousCharacterName = "None",
-        Distance = 0.1
+        Distance = 0.1,
+        StatusCode = 1
     };
     private readonly SchoolSearchResultServiceModel _schoolSearchResult2 = new SchoolSearchResultServiceModel
     {
@@ -29,7 +30,9 @@ public class SearchControllerTests
         Address = "123 Test Street 2",
         GenderName = "Female",
         ReligiousCharacterName = "Muslim",
-        Distance = 0.4
+        Distance = 0.4,
+        StatusCode = 2,
+        ClosedDate = new DateOnly(2026, 01, 01)
     };
 
     public SearchControllerTests()
@@ -71,6 +74,8 @@ public class SearchControllerTests
                 Assert.Equal(_schoolSearchResult1.Address, item.Address);
                 Assert.Equal(_schoolSearchResult1.GenderName, item.GenderName);
                 Assert.Equal(_schoolSearchResult1.ReligiousCharacterName, item.ReligiousCharacter);
+                Assert.Equal(_schoolSearchResult1.StatusCode, item.StatusCode);
+                Assert.Null(_schoolSearchResult1.ClosedDate);
             },
             item =>
             {
@@ -79,6 +84,9 @@ public class SearchControllerTests
                 Assert.Equal(_schoolSearchResult2.Address, item.Address);
                 Assert.Equal(_schoolSearchResult2.GenderName, item.GenderName);
                 Assert.Equal(_schoolSearchResult2.ReligiousCharacterName, item.ReligiousCharacter);
+                Assert.Equal(_schoolSearchResult2.StatusCode, item.StatusCode);                
+                Assert.Equal(_schoolSearchResult2.ClosedDate!.Value, item.ClosedDate.Value);
+                Assert.True(item.ClosedDate.IsAvailable);
             });
     }
 

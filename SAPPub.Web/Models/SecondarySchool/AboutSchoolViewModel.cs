@@ -2,6 +2,9 @@
 using SAPPub.Core.Helpers;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Web.Helpers;
+using static SAPPub.Web.Constants.Constants;
+
+
 
 namespace SAPPub.Web.Models.SecondarySchool
 {
@@ -56,6 +59,12 @@ namespace SAPPub.Web.Models.SecondarySchool
 
         public bool IsLocalAuthoritySchool { get; set; }
 
+        public required DisplayField<DateOnly> ClosedDate { get; set; }
+
+        public int? StatusCode { get; set; }
+
+        public bool IsSchoolClosed => StatusCode == 2;
+
         public static AboutSchoolViewModel Map(AboutSchoolModel schoolDetails)
         {
             var latLong = MappingHelper.ConvertToLatLon(schoolDetails.Easting, schoolDetails.Northing);
@@ -84,28 +93,34 @@ namespace SAPPub.Web.Models.SecondarySchool
                 SenUnit = GetSenUnit(schoolDetails.ResourcedProvisionName),
                 ResourcedProvision = GetResourcedProvision(schoolDetails.ResourcedProvisionName),
                 IsLocalAuthoritySchool = schoolDetails.EstablishmentTypeGroupId.ToInt() == LocalAuthorityEstablishmentGroupTypeId,
+                StatusCode = schoolDetails.StatusCode,
+                ClosedDate = schoolDetails.ClosedDate.ToDisplayField(),
             };
         }
 
         private static string GetSenUnit(string value)
         {
-            return string.Equals(value, SENUnit, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(value, ResourcedProvisionAndSENUnit, StringComparison.OrdinalIgnoreCase)
-                ? Constants.Yes
-                : Constants.No;
+            return string.IsNullOrWhiteSpace(value)
+                ? NotRecorded
+                : (string.Equals(value, SENUnit, StringComparison.OrdinalIgnoreCase) ||
+                   string.Equals(value, ResourcedProvisionAndSENUnit, StringComparison.OrdinalIgnoreCase))
+                ? Yes
+                : No;
         }
 
         private static string GetResourcedProvision(string value)
         {
-            return string.Equals(value, ResourcedProvisionText, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(value, ResourcedProvisionAndSENUnit, StringComparison.OrdinalIgnoreCase)
-                ? Constants.Yes
-                : Constants.No;
+            return string.IsNullOrWhiteSpace(value)
+                ? NotRecorded
+                : (string.Equals(value, ResourcedProvisionText, StringComparison.OrdinalIgnoreCase) ||
+                   string.Equals(value, ResourcedProvisionAndSENUnit, StringComparison.OrdinalIgnoreCase))
+                ? Yes
+                : No;
         }
 
         private static string GetSixthForm(string value)
         {
-            return string.Equals(value, "1") ? Constants.Yes : Constants.No;
+            return string.Equals(value, "1") ? Yes : No;
         }
     }
 }

@@ -31,7 +31,7 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
         var title = await Page.TitleAsync();
 
         // Assert
-        Assert.Contains("Academic Performance", title);
+        Assert.Contains("Loreto High School Chorlton - Attainment and progress - School Profiles - GOV.UK", title);
     }
 
     [Fact]
@@ -114,7 +114,7 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
 
         // Assert
         Assert.True(isVisible);
-    }
+    }  
 
     [Fact]
     public async Task AcademicPerformanceAttainmentAndProgressPage_Displays_AcademicYear_Selector()
@@ -158,6 +158,9 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
 
         var progress8EstablishmentCard = Page.GetByTestId("progress8-establishment-card");
         Assert.True(await progress8EstablishmentCard.IsVisibleAsync());
+
+        var progress8PupilDetails = Page.Locator("#pupil-details-progress8");
+        Assert.True(await progress8PupilDetails.IsVisibleAsync());
 
         var progress8LocalAuthorityCard = Page.GetByTestId("progress8-localauthority-card");
         Assert.True(await progress8LocalAuthorityCard.IsVisibleAsync());

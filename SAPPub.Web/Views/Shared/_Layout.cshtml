@@ -14,13 +14,13 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - @ViewBag.ServiceName</title>
+    <title>@ViewData["Title"] - @ViewBag.ServiceName - GOV.UK</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#1d70b8">
-    <link rel="icon" sizes="48x48" href="/assets/images/favicon.ico">
-    <link rel="icon" sizes="any" href="/assets/images/favicon.svg" type="image/svg+xml">
-    <link rel="mask-icon" href="/assets/images/govuk-icon-mask.svg" color="blue">
-    <link rel="apple-touch-icon" href="/assets/images/govuk-icon-180.png">
+    <link rel="icon" sizes="48x48" href="/assets/rebrand/images/favicon.ico">
+    <link rel="icon" sizes="any" href="/assets/rebrand/images/favicon.svg" type="image/svg+xml">
+    <link rel="mask-icon" href="/assets/rebrand/images/govuk-icon-mask.svg">
+    <link rel="apple-touch-icon" href="/assets/rebrand/images/govuk-icon-180.png">
     <link rel="manifest" href="/assets/manifest.json">
     <meta property="og:image" content="YOUR-DOMAIN/images/govuk-opengraph-image.png">
     @Html.GovUkFrontendStyleImports()
@@ -108,7 +108,11 @@
 
     <div class="govuk-width-container app-width-container">
         @await Html.PartialAsync("_PhaseBanner")
-        <main class="govuk-main-wrapper app-main-class govuk-body" id="main-content">
+        @if (!string.IsNullOrWhiteSpace(ViewBag.BackUrl))
+        {
+            <govuk-back-link href="@ViewBag.BackUrl" />
+        }
+        <main class="govuk-main-wrapper app-main-class govuk-body" id="main-content" role="main">
             @RenderBody()
         </main>
     </div>
@@ -121,9 +125,10 @@
         </govuk-footer-nav>
         <govuk-footer-meta>
             <govuk-footer-meta-items>
-                <govuk-footer-meta-item href="@Url.Action("Accessibility", "Content")">Accessibility</govuk-footer-meta-item>
+                <govuk-footer-meta-item href="@Url.Action("Accessibility", "Help")">Accessibility</govuk-footer-meta-item>
                 <govuk-footer-meta-item href="@Url.Action("Preferences", "Cookies")">Cookies</govuk-footer-meta-item>
                 <govuk-footer-meta-item href="https://www.gov.uk/government/organisations/department-for-education/about/personal-information-charter" link-rel="noreferrer noopener" link-target="_blank">Privacy</govuk-footer-meta-item>
+                <govuk-footer-meta-item href="@Url.Action("TermsAndConditions", "Help")">Terms and conditions</govuk-footer-meta-item>
             </govuk-footer-meta-items>
         </govuk-footer-meta>
     </govuk-footer>

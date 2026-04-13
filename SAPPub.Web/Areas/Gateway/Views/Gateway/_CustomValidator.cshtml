@@ -1,0 +1,16 @@
+﻿@{
+    Layout = null;
+}
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <govuk-error-summary>
+        @foreach (var kvp in ViewData.ModelState.Where(ms => ms.Value.Errors.Any()))
+        {
+            @foreach (var err in kvp.Value.Errors)
+            {
+                <govuk-error-summary-item href="#@kvp.Key">@(string.IsNullOrEmpty(err.ErrorMessage) ? err.Exception?.Message : err.ErrorMessage)</govuk-error-summary-item>
+            }
+        }
+    </govuk-error-summary>
+}

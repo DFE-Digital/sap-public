@@ -42,6 +42,9 @@ public class AboutSchoolModel
 
     public string ResourcedProvisionName { get; set; } = string.Empty;
 
-
     public string EstablishmentTypeGroupId { get; set; } = string.Empty;
+
+    public DateOnly? ClosedDate { get; set; }
+
+    public int? StatusCode { get; set; }
 }

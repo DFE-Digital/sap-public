@@ -1,6 +1,7 @@
 ﻿using Lucene.Net.Index;
 using Lucene.Net.Search;
 using Lucene.Net.Spatial.Queries;
+using SAPPub.Core.Extensions;
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.ServiceModels.PostcodeSearch;
 using SAPPub.Core.ServiceModels.Search.InputModels;
@@ -120,6 +121,8 @@ public class LuceneSchoolSearchIndexReader(LuceneIndexContext context, LuceneTok
                 var address = doc.Get(nameof(SchoolSearchDocument.Address));
                 var latitude = doc.Get(nameof(SchoolSearchDocument.Latitude));
                 var longitude = doc.Get(nameof(SchoolSearchDocument.Longitude));
+                var statusCode = doc.Get(nameof(SchoolSearchDocument.StatusCode));
+                var closedDate = doc.Get(nameof(SchoolSearchDocument.ClosedDate));
 
                 results.Results.Add(new SchoolSearchDocument()
                 {
@@ -129,7 +132,9 @@ public class LuceneSchoolSearchIndexReader(LuceneIndexContext context, LuceneTok
                     GenderName = genderName,
                     ReligiousCharacterName = religiousCharacterName,
                     Latitude = latitude != null ? double.Parse(latitude) : null,
-                    Longitude = longitude != null ? double.Parse(longitude) : null
+                    Longitude = longitude != null ? double.Parse(longitude) : null,
+                    StatusCode = statusCode != null ? int.Parse(statusCode) : null,
+                    ClosedDate = closedDate?.ToDateOnly()
                 });
             }
 

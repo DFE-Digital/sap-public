@@ -44,6 +44,16 @@
         @foreach (var modelItem in Model.SearchResults)
         {
             <a class="govuk-link" href="@Url.Action("Index", "School", new { urn = modelItem.URN, schoolName = modelItem.EstablishmentName })">@modelItem.EstablishmentName</a>
+            
+            @if(modelItem.IsSchoolClosed)
+            {
+                <p data-testId="school-closed-tag" class="govuk-body govuk-!-margin-top-4">
+                    <strong class="govuk-tag">
+                        @(modelItem.ClosedDate.IsAvailable ? $"Closed in {modelItem.ClosedDate.DisplayText(d => d.ToString("MMMM yyyy"))}" : "Closed")
+                    </strong>
+                </p>                
+            }
+
             <govuk-summary-list>
                 <govuk-summary-list-row>
                     <govuk-summary-list-row-key>Address</govuk-summary-list-row-key>

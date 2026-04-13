@@ -1,0 +1,60 @@
+﻿@model GatewayWelcomeViewModel
+@{
+    ViewBag.Title = "Welcome";
+}
+
+<div class="govuk-width-container">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            <h1 class="govuk-heading-xl">
+                School Profiles
+            </h1>
+
+            <p class="govuk-body">
+                Use this service to find information about schools in England.
+
+                You can search for schools in your area and view information on:
+
+            <ul class="govuk-list govuk-list--bullet">
+                <li>school policies</li>
+                <li>admissions</li>
+                <li>curriculum and extra-curricular activities</li>
+                <li>academic performance data</li>
+            </ul>
+
+            <p class="govuk-body govuk-!-padding-bottom-6">
+                This is a test version of the service. We will gather early feedback before the service is made available nationally.
+            </p>
+
+            @using (Html.BeginForm("Welcome", "Gateway", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(x => x.LocalAuthority)
+
+                <govuk-radios name="@Html.NameFor(x => x.NewOrReturning)">
+                    <govuk-radios-fieldset>
+                        <govuk-radios-fieldset-legend is-page-heading="true" class="govuk-fieldset__legend--l">
+                            Have you been here before?
+                        </govuk-radios-fieldset-legend>
+
+                        <govuk-radios-hint>
+                            Select one option.
+                        </govuk-radios-hint>
+
+
+                        @if (ViewData.ModelState.ContainsKey(Html.NameFor(x => x.NewOrReturning)))
+                        {
+                            <govuk-radios-error-message for="@Html.NameFor(x => x.NewOrReturning)"> @Html.ValidationMessageFor(m => m.NewOrReturning)</govuk-radios-error-message>
+                        }
+                        <govuk-radios-item value="return">Yes</govuk-radios-item>
+                        <govuk-radios-item value="new">No</govuk-radios-item>
+                    </govuk-radios-fieldset>
+                </govuk-radios>
+
+                <govuk-button type="submit">Confirm</govuk-button>
+
+            }
+        </div>
+    </div>
+</div>

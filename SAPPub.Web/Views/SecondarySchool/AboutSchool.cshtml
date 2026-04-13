@@ -2,7 +2,8 @@
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 
 @{
-    ViewData["Title"] = "About the school";
+    ViewData["Header"] = "About the school";
+    ViewData["Title"] = $"{Model.SchoolName} - {ViewData["Header"]}";
 }
 
 <div class="govuk-grid-row">
@@ -16,7 +17,20 @@
 
     <div class="govuk-grid-column-three-quarters">
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
-        <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">@ViewData["Header"]</h1>
+
+        @if (Model.IsSchoolClosed)
+        {
+            <div class="custom-card govuk-!-margin-top-0" data-testid="school-closed-custom-card">
+                <div class="error__icon"></div>
+                <div class="custom-card__content">
+                    <p class="govuk-body">
+                        @(Model.ClosedDate.IsAvailable ? $"This school closed on {Model.ClosedDate.DisplayText(d => d.ToString("dd MMMM yyyy"))}" : "Closed")
+                    </p>
+                </div>
+            </div>
+        }
+
         <govuk-summary-list id="school-details-summary">
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Name</govuk-summary-list-row-key>
@@ -74,7 +88,7 @@
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
-                <govuk-summary-list-row-key>Local authority</govuk-summary-list-row-key>
+                <govuk-summary-list-row-key>Local council</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
                     @Model.LocalAuthority
                     <span class="govuk-clear">
@@ -260,11 +274,11 @@
                         </tr>
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header">Behaviour policy</th>
-                            <td class="govuk-table__cell">Includes school rules, what behaviour is expected of pupils and what the school does to prevent bullying.</td>
+                            <td class="govuk-table__cell">Includes school rules and values, what behaviour is expected of pupils, how staff will support pupils to meet these expectations and what the school does to prevent bullying.</td>
                         </tr>
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header">Charging and remissions policy</th>
-                            <td class="govuk-table__cell">Schools may charge for certain activities such as school trips or music tuition. This policy covers what the school charges for and when these charges can be reduced or waived.</td>
+                            <td class="govuk-table__cell">This policy sets out when a school will make charges and the circumstances in which costs will be waived for some pupils. Schools may charge for optional extras but not education provided during school hours.</td>
                         </tr>
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header">Compliants policy</th>
@@ -280,11 +294,11 @@
                         </tr>
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header">School uniform policy</th>
-                            <td class="govuk-table__cell">Outlines to parents and carers what pupils are expected to wear and what the exceptions are.</td>
+                            <td class="govuk-table__cell">Sets out what pupils are expected to wear in school, including the uniform items which are compulsory and optional. The policy should include whether uniform items must be bought from the school’s appointed uniform supplier(s) or could be bought elsewhere.</td>
                         </tr>
                         <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header">Special educational needs and disabilities (SEND) information report</th>
-                            <td class="govuk-table__cell">Schools must publish a report on their approach to SEND, including how the school supports pupils with SEND.</td>
+                            <th scope="row" class="govuk-table__header">Special educational needs (SEN) information report</th>
+                            <td class="govuk-table__cell">A SEN information report sets out how the school’s policy for pupils with SEN and disabilities is implemented.</td>
                         </tr>
                     </tbody>
                 </table>

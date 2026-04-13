@@ -106,7 +106,13 @@ namespace SAPPub.Core.Entities
 
         public string Northing { get; set; } = string.Empty;
 
-        public string EstablishmentNumber { get; set; } = string.Empty;
+        public string EstablishmentNumber { get; set; } = string.Empty;        
+
+        public int SchoolCapacity { get; set; }
+
+        public int? StatusCode { get; set; }
+
+        public string? ClosedDate { get; set; }
 
         public EstablishmentPerformance KS4Performance { get; set; } = new();
 
@@ -127,9 +133,5 @@ namespace SAPPub.Core.Entities
         public EnglandAbsence EnglandAbsence { get; set; } = new();
 
         public EstablishmentWorkforce Workforce { get; set; } = new(); // Will eventually need one per phase
-
-        public int SchoolCapacity { get; set; }
-
-        public string StatusCode { get; set; } = string.Empty;
     }
 }

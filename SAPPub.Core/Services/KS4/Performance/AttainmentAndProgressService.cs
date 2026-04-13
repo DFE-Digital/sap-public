@@ -40,6 +40,24 @@ public class AttainmentAndProgressService(
                 AcademicYearSelection.Previous2 => establishmentPerformance.Prog8_Tot_Est_Previous2_Num,
                 _ => null,
             },
+            EstablishmentProgress8CILower = selectedYear switch
+            {
+                AcademicYearSelection.Previous => establishmentPerformance.Prog8_CI_Lower_Est_Previous_Num,
+                AcademicYearSelection.Previous2 => establishmentPerformance.Prog8_CI_Lower_Est_Previous2_Num,
+                _ => null,
+            },
+            EstablishmentProgress8CIUpper = selectedYear switch
+            {
+                AcademicYearSelection.Previous => establishmentPerformance.Prog8_CI_Upper_Est_Previous_Num,
+                AcademicYearSelection.Previous2 => establishmentPerformance.Prog8_CI_Upper_Est_Previous2_Num,
+                _ => null,
+            },
+            EstablishmentProgress8Banding = selectedYear switch
+            {
+                AcademicYearSelection.Previous => establishmentPerformance.Prog8_Banding_Est_Previous,
+                AcademicYearSelection.Previous2 => establishmentPerformance.Prog8_Banding_Est_Previous2,
+                _ => null,
+            },
             LocalAuthorityProgress8Score = selectedYear switch
             {
                 AcademicYearSelection.Previous => laPerformance.Prog8_Avg_LA_Previous_Num,
@@ -74,7 +92,7 @@ public class AttainmentAndProgressService(
                 _ => null,
             },
             EstablishmentTotalPupils = selectedYear switch
-            {                
+            {
                 AcademicYearSelection.Previous => establishmentPerformance.Pup_Tot_Est_Previous_Num,
                 AcademicYearSelection.Previous2 => establishmentPerformance.Pup_Tot_Est_Previous2_Num,
                 _ => null,

@@ -15,34 +15,47 @@
         const allGcseShowCurrentDataBtn = document.getElementById('all-gcse-show-current-data-btn');
 
         setAriaAttribute(allGcseCurrentYearShowAsTableBtn, 'false');
-        allGcseCurrentYearShowAsTableBtn.addEventListener('click', () => {
-            const chartVisible = allGcseCurrentYearChartContainer.style.display !== 'none';
-            setTooggleState(allGcseCurrentYearChartContainer, allGcseCurrentYearTableContainer, chartVisible, allGcseCurrentYearShowAsTableBtn);
-        });
 
-        allGcseShowDataOverTimeBtn.addEventListener('click', () => {
-            setTooggleState(allGcseDataOverTimeChartContainer, allGcseDataOverTimeTableContainer, false, allGcseCurrentYearShowAsTableBtn);
-        });
+        if (allGcseCurrentYearShowAsTableBtn) {
+            allGcseCurrentYearShowAsTableBtn.addEventListener('click', () => {
+                const chartVisible = allGcseCurrentYearChartContainer.style.display !== 'none';
+                setTooggleState(allGcseCurrentYearChartContainer, allGcseCurrentYearTableContainer, chartVisible, allGcseCurrentYearShowAsTableBtn);
+            });
+        }
+
+        if (allGcseShowDataOverTimeBtn) {
+            allGcseShowDataOverTimeBtn.addEventListener('click', () => {
+                setTooggleState(allGcseDataOverTimeChartContainer, allGcseDataOverTimeTableContainer, false, allGcseCurrentYearShowAsTableBtn);
+            });
+        }
 
         setAriaAttribute(allGcseDataOverTimeShowAsTableBtn, 'false');
-        allGcseDataOverTimeShowAsTableBtn.addEventListener('click', () => {
-            const dataOverTimeChartVisible = allGcseDataOverTimeChartContainer.style.display !== 'none';
-            setTooggleState(allGcseDataOverTimeChartContainer, allGcseDataOverTimeTableContainer, dataOverTimeChartVisible, allGcseDataOverTimeShowAsTableBtn);
-        });
 
-        allGcseShowCurrentDataBtn.addEventListener('click', () => {
-            setTooggleState(allGcseCurrentYearChartContainer, allGcseCurrentYearTableContainer, false, allGcseCurrentYearShowAsTableBtn);
-        });
+        if (allGcseDataOverTimeShowAsTableBtn) {
+            allGcseDataOverTimeShowAsTableBtn.addEventListener('click', () => {
+                const dataOverTimeChartVisible = allGcseDataOverTimeChartContainer.style.display !== 'none';
+                setTooggleState(allGcseDataOverTimeChartContainer, allGcseDataOverTimeTableContainer, dataOverTimeChartVisible, allGcseDataOverTimeShowAsTableBtn);
+            });
+        }
+
+        if (allGcseShowCurrentDataBtn) {
+            allGcseShowCurrentDataBtn.addEventListener('click', () => {
+                setTooggleState(allGcseCurrentYearChartContainer, allGcseCurrentYearTableContainer, false, allGcseCurrentYearShowAsTableBtn);
+            });
+        }
 
         const breakdownGcseCurrentYearShowAsTableBtn = document.getElementById('breakdown-gcse-current-year-show-btn');
         const breakdownGcseCurrentYearChartContainer = document.getElementById('breakdown-gcse-current-year-chart-container');
         const breakdownGcseCurrentYearTableContainer = document.getElementById('breakdown-gcse-current-year-table-container');
 
         setAriaAttribute(breakdownGcseCurrentYearShowAsTableBtn, 'false');
-        breakdownGcseCurrentYearShowAsTableBtn.addEventListener('click', () => {
-            const chartVisible = breakdownGcseCurrentYearChartContainer.style.display !== 'none';
-            setTooggleState(breakdownGcseCurrentYearChartContainer, breakdownGcseCurrentYearTableContainer, chartVisible, breakdownGcseCurrentYearShowAsTableBtn);
-        });
+
+        if (breakdownGcseCurrentYearShowAsTableBtn) {
+            breakdownGcseCurrentYearShowAsTableBtn.addEventListener('click', () => {
+                const chartVisible = breakdownGcseCurrentYearChartContainer.style.display !== 'none';
+                setTooggleState(breakdownGcseCurrentYearChartContainer, breakdownGcseCurrentYearTableContainer, chartVisible, breakdownGcseCurrentYearShowAsTableBtn);
+            });
+        }
     });
 
     function setToggleText(toggle, text) {

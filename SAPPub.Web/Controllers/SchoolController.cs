@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SAPPub.Core.Helpers;
 using SAPPub.Core.Interfaces.Services;
-using SAPPub.Web.Helpers;
+using SAPPub.Web.Constants;
 
 namespace SAPPub.Web.Controllers
 {

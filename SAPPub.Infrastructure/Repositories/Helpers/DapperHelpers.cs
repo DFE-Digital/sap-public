@@ -1,4 +1,5 @@
 ﻿using SAPPub.Core.Entities;
+using SAPPub.Core.Entities.Gateway;
 using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Entities.KS4.Performance;
@@ -60,7 +61,8 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Northing",
           "EstablishmentNumber",
           "TotalCapacity" as "SchoolCapacity",
-          "StatusCode"
+          "StatusCode",
+          "ClosedDate"
           """;
 
         private const string EstablishmentAbsenceColumns = """
@@ -104,12 +106,18 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "EngMaths49_Tot_Est_Previous_Pct_Coded",
           "EngMaths59_Tot_Est_Previous_Pct_Coded",
           "Prog8_Tot_Est_Previous_Num_Coded",
+          "Prog8_CI_Lower_Est_Previous_Num_Coded",
+          "Prog8_CI_Upper_Est_Previous_Num_Coded", 
+          "Prog8_Banding_Est_Previous", 
           "Prog8_TotPup_Est_Previous_Num_Coded",
           "Pup_Tot_Est_Previous_Num_Coded",
           "Attainment8_Tot_Est_Previous2_Num_Coded",
           "EngMaths49_Tot_Est_Previous2_Pct_Coded",
           "EngMaths59_Tot_Est_Previous2_Pct_Coded",
           "Prog8_Tot_Est_Previous2_Num_Coded",
+          "Prog8_CI_Lower_Est_Previous2_Num_Coded",
+          "Prog8_CI_Upper_Est_Previous2_Num_Coded", 
+          "Prog8_Banding_Est_Previous2",          
           "Prog8_TotPup_Est_Previous2_Num_Coded",
           "Pup_Tot_Est_Previous2_Num_Coded"
           """;
@@ -205,6 +213,34 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "LAMainUrl"
           """;
 
+        private const string GatewayLAColumns = """
+          "Id",
+          "LocalAuthorityName",
+          "MaxSessions",
+          "CreatedOn",
+          "ModifiedOn",
+          "IsDeleted"
+          """;
+
+        private const string GatewaySettings = """
+          "Id",
+          "SettingName",
+          "SettingValue",
+          "CreatedOn",
+          "ModifiedOn",
+          "IsDeleted"
+          """;
+
+        private const string GatewayUser = """
+          "Id",
+          "EmailAddress",
+          "LocalAuthorityId",
+          "CookiePrefs",
+          "TimerStartedOn",
+          "CreatedOn",
+          "ModifiedOn",
+          "IsDeleted"
+          """;
 
         // -----------------------------
         // SQL builders
@@ -216,11 +252,24 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
             from public.{viewName};
             """;
 
+        private static string SelectFromAndNotDeleted(string columns, string viewName) => $"""
+            select
+              {columns}
+            from public.{viewName} where "IsDeleted" = false;
+            """;
+
         private static string SelectFromWhereId(string columns, string viewName) => $"""
             select
               {columns}
             from public.{viewName}
             where "Id" = @Id;
+            """;
+
+        private static string SelectFromWhereIdAndNotDeleted(string columns, string viewName) => $"""
+            select
+              {columns}
+            from public.{viewName}
+            where "Id" = @Id and "IsDeleted" = false;
             """;
 
         // Establishment uses URN
@@ -236,7 +285,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
             return $"""
         select
           {columns}
-        from public.{view}
+        from public.{view} 
         where {where};
         """;
         }
@@ -281,6 +330,15 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
 
                 nameof(LaUrls) =>
                     SelectFrom(LaUrlsColumns, "v_la_urls"),
+
+                nameof(GatewayLocalAuthority) =>
+                    SelectFromAndNotDeleted(GatewayLAColumns, "gateway_local_authority"),
+
+                nameof(GatewaySettings) =>
+                    SelectFromAndNotDeleted(GatewaySettings, "gateway_settings"),
+
+                nameof(GatewayUser) =>
+                    SelectFromAndNotDeleted(GatewayUser, "gateway_user"),
 
                 _ => string.Empty,
             };
@@ -330,6 +388,57 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
 
                 nameof(LaUrls) =>
                     SelectFromWhereId(LaUrlsColumns, "v_la_urls"),
+
+                nameof(GatewayLocalAuthority) =>
+                    SelectFromWhereIdAndNotDeleted(GatewayLAColumns, "gateway_local_authority"),
+
+                nameof(GatewaySettings) =>
+                    SelectFromWhereIdAndNotDeleted(GatewaySettings, "gateway_settings"),
+
+                nameof(GatewayUser) =>
+                    SelectFromWhereIdAndNotDeleted(GatewayUser, "gateway_user"),
+
+                _ => string.Empty,
+            };
+        }
+
+        // Writes will be removed when Gateway is no longer needed, direct SQL (with dapper parameters) should be easy and safe enough. 
+        public static string GetWriteSingle(Type entityType)
+        {
+            return entityType.Name switch
+            {
+                nameof(GatewayUser) => 
+                    $"INSERT INTO \"gateway_user\" (  \"Id\",  \"EmailAddress\",  \"LocalAuthorityId\",  \"CookiePrefs\",  \"TimerStartedOn\",  \"CreatedOn\",  \"ModifiedOn\",  \"IsDeleted\") VALUES (  @Id,  @EmailAddress,  @LocalAuthorityId,  @CookiePrefs,  @TimerStartedOn,  @CreatedOn,  @ModifiedOn,  @IsDeleted);",
+
+                nameof(GatewayUserAudit) => 
+                    $"INSERT INTO \"gateway_user_audit\" (  \"Id\",  \"UserId\",  \"LoginDateTime\", \"UserAction\", \"CreatedOn\",  \"ModifiedOn\", \"IsDeleted\" )VALUES (  @Id,  @UserId,  @LoginDateTime, @UserAction, @CreatedOn,  @ModifiedOn,  @IsDeleted);",
+
+                nameof(GatewayLocalAuthority) => 
+                    "INSERT INTO \"gateway_local_authority\" (  \"Id\",  \"LocalAuthorityName\",  \"MaxSessions\",  \"CreatedOn\",  \"ModifiedOn\",  \"IsDeleted\" )VALUES (  @Id,  @LocalAuthorityName,  @MaxSessions,  @CreatedOn,  @ModifiedOn, @IsDeleted);",
+
+                nameof(GatewaySettings) => 
+                    "INSERT INTO \"gateway_settings\" (  \"Id\",  \"Key\",  \"Value\",  \"CreatedOn\",  \"ModifiedOn\",  \"IsDeleted\")VALUES (  @Id,  @Key,  @Value,  @CreatedOn,  @ModifiedOn, @IsDeleted);",
+
+                _ => string.Empty,
+            };
+        }
+
+        // Updates will be removed when Gateway is no longer needed, direct SQL (with dapper parameters) should be easy and safe enough. 
+        public static string GetUpdateSingle(Type entityType)
+        {
+            return entityType.Name switch
+            {
+                nameof(GatewayUser) => 
+                    $"UPDATE gateway_user SET \"EmailAddress\" = @EmailAddress,    \"LocalAuthorityId\" = @LocalAuthorityId,    \"CookiePrefs\" = @CookiePrefs,    \"TimerStartedOn\" = @TimerStartedOn,    \"CreatedOn\" = @CreatedOn,    \"ModifiedOn\" = @ModifiedOn,  \"IsDeleted\" = @IsDeleted WHERE \"Id\" = @Id;",
+
+                nameof(GatewayUserAudit) => 
+                    $"UPDATE gateway_user_audit SET \"UserId\"=@UserId, \"LoginDateTime\"=@LoginDateTime, \"UserAction\"=@UserAction, \"CreatedOn\"=@CreatedOn, \"ModifiedOn\"=@ModifiedOn,  \"IsDeleted\"=@IsDeleted WHERE \"Id\"=@Id;",
+
+                nameof(GatewayLocalAuthority) => 
+                    "UPDATE gateway_local_authority SET \"LocalAuthorityName\"=@LocalAuthorityName, \"MaxSessions\"=@MaxSessions, \"CreatedOn\"=@CreatedOn, \"ModifiedOn\"=@ModifiedOn,  \"IsDeleted\"=@IsDeleted WHERE \"Id\"=@Id;",
+
+                nameof(GatewaySettings) => 
+                    "UPDATE gateway_settings SET \"SettingName\"=@SettingName, \"SettingValue\"=@SettingValue, \"CreatedOn\"=@CreatedOn, \"ModifiedOn\"=@ModifiedOn,  \"IsDeleted\"=@IsDeleted WHERE \"Id\"=@Id;",
 
                 _ => string.Empty,
             };

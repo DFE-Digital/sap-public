@@ -2,66 +2,71 @@
 using Lucene.Net.Util;
 using SAPPub.Core.Entities;
 using SAPPub.Core.ServiceModels.PostcodeSearch;
-using SAPPub.Infrastructure.LuceneSearch;
 
-/// <summary>
-/// Creates the Lucene search index for schools. 
-/// This is a one-time operation that should be run after the database has been seeded with school data. 
-/// It will delete any existing index and create a new one based on the current data in the database.
-/// </summary>
-public class LuceneSchoolSearchIndexWriter
+namespace SAPPub.Infrastructure.LuceneSearch
 {
-    private LuceneIndexContext _context;
 
-    public LuceneSchoolSearchIndexWriter(LuceneIndexContext context)
+    /// <summary>
+    /// Creates the Lucene search index for schools. 
+    /// This is a one-time operation that should be run after the database has been seeded with school data. 
+    /// It will delete any existing index and create a new one based on the current data in the database.
+    /// </summary>
+    public class LuceneSchoolSearchIndexWriter
     {
-        _context = context;
-        _context.Writer.DeleteAll();
-    }
+        private LuceneIndexContext _context;
 
-    private static readonly FieldType TermVectorFieldType = new FieldType(TextField.TYPE_STORED)
-    {
-        StoreTermVectors = true,
-        StoreTermVectorPositions = true,
-        StoreTermVectorOffsets = true,
-        StoreTermVectorPayloads = true,
-        IsStored = true
-    };
-
-    public void AddToIndex(IEnumerable<Establishment> schools)
-    {
-        foreach (var e in schools)
+        public LuceneSchoolSearchIndexWriter(LuceneIndexContext context)
         {
-            var doc = new Document
+            _context = context;
+            _context.Writer.DeleteAll();
+        }
+
+        private static readonly FieldType TermVectorFieldType = new FieldType(TextField.TYPE_STORED)
+        {
+            StoreTermVectors = true,
+            StoreTermVectorPositions = true,
+            StoreTermVectorOffsets = true,
+            StoreTermVectorPayloads = true,
+            IsStored = true
+        };
+
+        public void AddToIndex(IEnumerable<Establishment> schools)
+        {
+            foreach (var e in schools)
+            {
+                var doc = new Document
             {
                 new StringField(nameof(SchoolSearchDocument.URN), e.URN.ToString(), Field.Store.YES),
                 new Field(nameof(SchoolSearchDocument.EstablishmentName), e.EstablishmentName, TermVectorFieldType),
                 new SortedDocValuesField("EstablishmentNameSort", new BytesRef(e.EstablishmentName))
             };
-            if (e.GenderName is not null) doc.Add(new StoredField(nameof(SchoolSearchDocument.GenderName), e.GenderName));
-            if (e.ReligiousCharacterName is not null) doc.Add(new StoredField(nameof(SchoolSearchDocument.ReligiousCharacterName), e.ReligiousCharacterName));
-            if (e.Address is not null) doc.Add(new StoredField(nameof(SchoolSearchDocument.Address), e.Address));
-            if (e.AddressPostcode is not null) doc.Add(new StoredField(nameof(Establishment.AddressPostcode), e.AddressPostcode));
+                if (e.GenderName is not null) doc.Add(new StoredField(nameof(SchoolSearchDocument.GenderName), e.GenderName));
+                if (e.ReligiousCharacterName is not null) doc.Add(new StoredField(nameof(SchoolSearchDocument.ReligiousCharacterName), e.ReligiousCharacterName));
+                if (e.Address is not null) doc.Add(new StoredField(nameof(SchoolSearchDocument.Address), e.Address));
+                if (e.AddressPostcode is not null) doc.Add(new StoredField(nameof(Establishment.AddressPostcode), e.AddressPostcode));
+                if (e.StatusCode is not null) doc.Add(new StoredField(nameof(Establishment.StatusCode), e.StatusCode?.ToString()));
+                if (e.ClosedDate is not null) doc.Add(new StoredField(nameof(Establishment.ClosedDate), e.ClosedDate));
 
-            var latlon = MappingHelper.ConvertToLatLon(e.Easting, e.Northing);
-            if (latlon != null)
-            {
-                var point = _context.SpatialContext.MakePoint(latlon.Longitude, latlon.Latitude);
-                foreach (var f in _context.GeoStrategy.CreateIndexableFields(point))
-                    doc.Add(f);
+                var latlon = MappingHelper.ConvertToLatLon(e.Easting, e.Northing);
+                if (latlon != null)
+                {
+                    var point = _context.SpatialContext.MakePoint(latlon.Longitude, latlon.Latitude);
+                    foreach (var f in _context.GeoStrategy.CreateIndexableFields(point))
+                        doc.Add(f);
 
-                doc.Add(new StoredField(nameof(SchoolSearchDocument.Latitude), latlon!.Latitude));
-                doc.Add(new StoredField(nameof(SchoolSearchDocument.Longitude), latlon.Longitude));
+                    doc.Add(new StoredField(nameof(SchoolSearchDocument.Latitude), latlon!.Latitude));
+                    doc.Add(new StoredField(nameof(SchoolSearchDocument.Longitude), latlon.Longitude));
+                }
+
+                _context.Writer.AddDocument(doc);
             }
-
-            _context.Writer.AddDocument(doc);
         }
-    }
 
-    public void FinaliseIndex()
-    {
-        _context.Writer.Flush(triggerMerge: true, applyAllDeletes: true);
+        public void FinaliseIndex()
+        {
+            _context.Writer.Flush(triggerMerge: true, applyAllDeletes: true);
 
-        _context.SearcherManager.MaybeRefreshBlocking();
+            _context.SearcherManager.MaybeRefreshBlocking();
+        }
     }
 }

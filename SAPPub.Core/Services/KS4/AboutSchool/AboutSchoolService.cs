@@ -1,4 +1,5 @@
-﻿using SAPPub.Core.Interfaces.Services;
+﻿using SAPPub.Core.Extensions;
+using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 
@@ -36,6 +37,8 @@ public sealed class AboutSchoolService(
             OfficialSixthFormId = establishment.OfficialSixthFormId,
             ResourcedProvisionName = establishment.ResourcedProvisionName,
             EstablishmentTypeGroupId = establishment.EstablishmentTypeGroupId,
+            ClosedDate = establishment.ClosedDate.ToDateOnly(),
+            StatusCode = establishment.StatusCode,
         };
     }
 }
