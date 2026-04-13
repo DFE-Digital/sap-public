@@ -62,7 +62,9 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "EstablishmentNumber",
           "TotalCapacity" as "SchoolCapacity",
           "StatusCode",
-          "ClosedDate"
+          "ClosedDate",
+          "OpenDate",
+          "OpenReasonId"
           """;
 
         private const string EstablishmentAbsenceColumns = """

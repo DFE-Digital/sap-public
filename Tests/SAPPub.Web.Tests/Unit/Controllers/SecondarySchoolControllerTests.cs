@@ -149,7 +149,9 @@ public class SecondarySchoolControllerTests
             ResourcedProvisionName = _fakeEstablishment.ResourcedProvisionName,
             EstablishmentTypeGroupId = _fakeEstablishment.EstablishmentTypeGroupId,
             StatusCode = _fakeEstablishment.StatusCode,
-            ClosedDate = _fakeEstablishment.ClosedDate.ToDateOnly()
+            ClosedDate = _fakeEstablishment.ClosedDate.ToDateOnly(),
+            OpenReasonId = _fakeEstablishment.OpenReasonId,
+            OpenDate = _fakeEstablishment.OpenDate.ToDateOnly()
         };
     }
 
@@ -178,6 +180,8 @@ public class SecondarySchoolControllerTests
             .WithResourcedProvisionName("Resourced provision")
             .WithEstablishmentTypeGroupId("1")
             .WithStatusCode(1)
+            .WithOpenReasonId(10)
+            .WithOpenDate()
             .Build();
 
         _mockLogger = new Mock<ILogger<SecondarySchoolController>>();
@@ -241,6 +245,9 @@ public class SecondarySchoolControllerTests
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(expectedResult.Urn, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(expectedResult.SchoolName, model.RouteAttributes[RouteConstants.SchoolName]);
+        Assert.Equal(expectedResult.OpenReasonId, model.OpenReasonId);
+        Assert.Equal(expectedResult.OpenDate, model.OpenDate);
+        Assert.True(model.RecentlyOpenedSchoolMessage.IsAvailable);
     }
 
     [Theory]
@@ -482,6 +489,58 @@ public class SecondarySchoolControllerTests
         {
             Assert.False(model.ClosedDate.IsAvailable);
             Assert.True(model.ClosedDate.IsNotAvailable);
+        }
+    }
+
+    [Theory]
+    [InlineData(10, "2025-03-03", true, "Opened as an academy on 3 March 2025")] // Academy open reason, within 3 years
+    [InlineData(1, "2025-03-03", true, "This school opened on 3 March 2025")]    // Other open reason, within 3 years
+    [InlineData(0, "2025-03-03", true, "This school opened on 3 March 2025")]    // OpenReasonId 0, within 3 years
+    [InlineData(14, "2025-03-03", true, "This school opened on 3 March 2025")]   // OpenReasonId 14, within 3 years
+    [InlineData(99, "2025-03-03", true, "This school opened on 3 March 2025")]   // OpenReasonId 99, within 3 years
+    [InlineData(10, "2010-01-01", false, null)]                                   // Academy open reason, too old
+    [InlineData(1, "2010-01-01", false, null)]                                    // Other open reason, too old
+    [InlineData(10, null, false, null)]                                           // Academy open reason, no date
+    [InlineData(1, null, false, null)]                                            // Other open reason, no date
+    public async Task Get_AboutSchool_RecentlyOpenedSchoolMessage_VariousReasonsAndDates(
+    int? openReasonId, string? openDateString, bool expectAvailable, string? expectedMessage)
+    {
+        // Arrange
+        _fakeEstablishment.OpenReasonId = openReasonId;
+        _fakeEstablishment.OpenDate = openDateString?? null;
+
+        var expectedResult = SchoolDetails();
+
+        expectedResult.OpenReasonId = openReasonId;
+        expectedResult.OpenDate = openDateString != null ? DateOnly.Parse(openDateString) : null;
+
+        _mockAboutSchoolService
+            .Setup(es => es.GetAboutSchoolDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        // Act
+        var result = await _controller.AboutSchool(
+            _mockAboutSchoolService.Object,
+            _fakeEstablishment.URN,
+            _fakeEstablishment.EstablishmentName,
+            CancellationToken.None) as ViewResult;
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as AboutSchoolViewModel;
+        Assert.NotNull(model);
+
+        if (expectAvailable)
+        {
+            Assert.True(model.RecentlyOpenedSchoolMessage.IsAvailable);
+            Assert.Equal(expectedMessage, model.RecentlyOpenedSchoolMessage.Value);
+        }
+        else
+        {
+            Assert.False(model.RecentlyOpenedSchoolMessage.IsAvailable);
+            Assert.True(model.RecentlyOpenedSchoolMessage.IsNotAvailable);
         }
     }
 
