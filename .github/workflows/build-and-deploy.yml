@@ -186,7 +186,7 @@ jobs:
   refresh-data:
     name: Refresh data (School Data Ingestion Pipeline)
     if: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'refresh data') }}
-    needs: [build, test]
+    needs: [build, test, deploy-review-app-with-refresh]
     uses: ./.github/workflows/data-pipeline.yml
     secrets: inherit
     permissions:
@@ -343,15 +343,14 @@ jobs:
   deploy-review-app-with-refresh:
     name: Deployment To Review (after refresh)
     concurrency: deploy_review_${{ github.event.pull_request.number }}
-    needs: [build, test, refresh-data]
+    needs: [build, test]
     if: ${{ github.event_name == 'pull_request'
       && (
       github.event.action == 'labeled' ||
       github.event.action == 'synchronize'
       )
       && contains(github.event.pull_request.labels.*.name, 'deploy')
-      && contains(github.event.pull_request.labels.*.name, 'refresh data')
-      && needs.refresh-data.result == 'success' }}
+      && contains(github.event.pull_request.labels.*.name, 'refresh data')}}
     environment:
       name: review
       url: ${{ steps.deploy_review.outputs.environment_url }}
