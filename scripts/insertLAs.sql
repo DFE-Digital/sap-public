@@ -1,11 +1,11 @@
 INSERT INTO public.gateway_local_authority("Id", "LocalAuthorityName", "MaxSessions", "CreatedOn", "ModifiedOn", "AuditIPAddress", "IsDeleted")
-VALUES (gen_random_uuid(), 'LCE', 100, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
+VALUES (gen_random_uuid(), 'Bury', 100, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
 
 INSERT INTO public.gateway_local_authority("Id", "LocalAuthorityName", "MaxSessions", "CreatedOn", "ModifiedOn", "AuditIPAddress", "IsDeleted")
-VALUES (gen_random_uuid(), 'ESX', 100, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
+VALUES (gen_random_uuid(), 'Bolton', 100, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
 
 INSERT INTO public.gateway_local_authority("Id", "LocalAuthorityName", "MaxSessions", "CreatedOn", "ModifiedOn", "AuditIPAddress", "IsDeleted")
-VALUES (gen_random_uuid(), 'BPC', 100, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
+VALUES (gen_random_uuid(), 'Burnley', 0, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
 
 INSERT INTO public.gateway_local_authority("Id", "LocalAuthorityName", "MaxSessions", "CreatedOn", "ModifiedOn", "AuditIPAddress", "IsDeleted")
 VALUES (gen_random_uuid(), 'CHW', 100, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
@@ -14,10 +14,10 @@ INSERT INTO public.gateway_local_authority("Id", "LocalAuthorityName", "MaxSessi
 VALUES (gen_random_uuid(), 'HIL', 100, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
 
 INSERT INTO public.gateway_local_authority("Id", "LocalAuthorityName", "MaxSessions", "CreatedOn", "ModifiedOn", "AuditIPAddress", "IsDeleted")
-VALUES (gen_random_uuid(), 'WLL', 100, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
+VALUES (gen_random_uuid(), 'WLL', 200, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
 
 INSERT INTO public.gateway_local_authority("Id", "LocalAuthorityName", "MaxSessions", "CreatedOn", "ModifiedOn", "AuditIPAddress", "IsDeleted")
-VALUES (gen_random_uuid(), 'NBL', 100, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
+VALUES (gen_random_uuid(), 'NBL', 200, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
 
 INSERT INTO public.gateway_local_authority("Id", "LocalAuthorityName", "MaxSessions", "CreatedOn", "ModifiedOn", "AuditIPAddress", "IsDeleted")
 VALUES (gen_random_uuid(), 'BEX', 100, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
@@ -35,19 +35,19 @@ INSERT INTO public.gateway_local_authority("Id", "LocalAuthorityName", "MaxSessi
 VALUES (gen_random_uuid(), 'MRT', 100, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
 
 INSERT INTO public.gateway_local_authority("Id", "LocalAuthorityName", "MaxSessions", "CreatedOn", "ModifiedOn", "AuditIPAddress", "IsDeleted")
-VALUES (gen_random_uuid(), 'WIL', 100, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
+VALUES (gen_random_uuid(), 'WIL', 200, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
 
 INSERT INTO public.gateway_local_authority("Id", "LocalAuthorityName", "MaxSessions", "CreatedOn", "ModifiedOn", "AuditIPAddress", "IsDeleted")
 VALUES (gen_random_uuid(), 'GRE', 100, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
 
 INSERT INTO public.gateway_local_authority("Id", "LocalAuthorityName", "MaxSessions", "CreatedOn", "ModifiedOn", "AuditIPAddress", "IsDeleted")
-VALUES (gen_random_uuid(), 'BDG', 100, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
+VALUES (gen_random_uuid(), 'BDG', 200, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
 
 INSERT INTO public.gateway_local_authority("Id", "LocalAuthorityName", "MaxSessions", "CreatedOn", "ModifiedOn", "AuditIPAddress", "IsDeleted")
 VALUES (gen_random_uuid(), 'AFC', 100, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
 
 INSERT INTO public.gateway_local_authority("Id", "LocalAuthorityName", "MaxSessions", "CreatedOn", "ModifiedOn", "AuditIPAddress", "IsDeleted")
-VALUES (gen_random_uuid(), 'DNC', 100, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
+VALUES (gen_random_uuid(), 'DNC', 200, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
 
 INSERT INTO public.gateway_local_authority("Id", "LocalAuthorityName", "MaxSessions", "CreatedOn", "ModifiedOn", "AuditIPAddress", "IsDeleted")
 VALUES (gen_random_uuid(), 'SFK', 100, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
@@ -71,7 +71,7 @@ INSERT INTO public.gateway_local_authority("Id", "LocalAuthorityName", "MaxSessi
 VALUES (gen_random_uuid(), 'WNT', 100, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
 
 INSERT INTO public.gateway_local_authority("Id", "LocalAuthorityName", "MaxSessions", "CreatedOn", "ModifiedOn", "AuditIPAddress", "IsDeleted")
-VALUES (gen_random_uuid(), 'BIR', 100, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
+VALUES (gen_random_uuid(), 'BIR', 200, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
 
 INSERT INTO public.gateway_local_authority("Id", "LocalAuthorityName", "MaxSessions", "CreatedOn", "ModifiedOn", "AuditIPAddress", "IsDeleted")
 VALUES (gen_random_uuid(), 'ERY', 100, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
