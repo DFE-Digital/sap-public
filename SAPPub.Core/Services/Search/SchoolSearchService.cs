@@ -9,7 +9,7 @@ namespace SAPPub.Core.Services.Search;
 
 public class SchoolSearchService(ISchoolSearchIndexReader indexReader, IPostcodeLookupService postcodeLookupService) : ISchoolSearchService
 {
-    private const int MaxResults = 1000;
+    private const int MaxResults = 4000;
     private const string PostcodeValidationRegex = """^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})$""";
 
     public async Task<SchoolSearchResultsServiceModel> SearchAsync(SchoolSearchServiceQuery query)
