@@ -233,21 +233,6 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "IsDeleted"
           """;
 
-        //private const string GatewayUser = """
-        //  "Id",
-        //  "EmailAddress",
-        //  "LocalAuthorityId",
-        //  "SignUpMagic",
-        //  "CookiePrefs",
-        //  "OptedOutOfComms",
-        //  "SentSurvey",
-        //  "ConfirmedSignup"
-        //  "TimerStartedOn",
-        //  "CreatedOn",
-        //  "ModifiedOn",
-        //  "IsDeleted"
-        //  """;
-
         private const string GatewayUser = """
           *
           """;
