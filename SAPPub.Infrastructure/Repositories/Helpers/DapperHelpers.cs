@@ -233,15 +233,23 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "IsDeleted"
           """;
 
+        //private const string GatewayUser = """
+        //  "Id",
+        //  "EmailAddress",
+        //  "LocalAuthorityId",
+        //  "SignUpMagic",
+        //  "CookiePrefs",
+        //  "OptedOutOfComms",
+        //  "SentSurvey",
+        //  "ConfirmedSignup"
+        //  "TimerStartedOn",
+        //  "CreatedOn",
+        //  "ModifiedOn",
+        //  "IsDeleted"
+        //  """;
+
         private const string GatewayUser = """
-          "Id",
-          "EmailAddress",
-          "LocalAuthorityId",
-          "CookiePrefs",
-          "TimerStartedOn",
-          "CreatedOn",
-          "ModifiedOn",
-          "IsDeleted"
+          *
           """;
 
         // -----------------------------
@@ -410,7 +418,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
             return entityType.Name switch
             {
                 nameof(GatewayUser) => 
-                    $"INSERT INTO \"gateway_user\" (  \"Id\",  \"EmailAddress\",  \"LocalAuthorityId\",  \"CookiePrefs\",  \"TimerStartedOn\",  \"CreatedOn\",  \"ModifiedOn\",  \"IsDeleted\") VALUES (  @Id,  @EmailAddress,  @LocalAuthorityId,  @CookiePrefs,  @TimerStartedOn,  @CreatedOn,  @ModifiedOn,  @IsDeleted);",
+                    $"INSERT INTO \"gateway_user\" (  \"Id\",  \"EmailAddress\",  \"LocalAuthorityId\",  \"CookiePrefs\",  \"TimerStartedOn\",  \"CreatedOn\",  \"ModifiedOn\",  \"IsDeleted\", \"SignUpMagic\", \"OptedOutOfComms\", \"SentSurvey\", \"ConfirmedSignup\") VALUES (  @Id,  @EmailAddress,  @LocalAuthorityId,  @CookiePrefs,  @TimerStartedOn,  @CreatedOn,  @ModifiedOn,  @IsDeleted, @SignUpMagic, @OptedOutOfComms, @SentSurvey, @ConfirmedSignup);",
 
                 nameof(GatewayUserAudit) => 
                     $"INSERT INTO \"gateway_user_audit\" (  \"Id\",  \"UserId\",  \"LoginDateTime\", \"UserAction\", \"CreatedOn\",  \"ModifiedOn\", \"IsDeleted\" )VALUES (  @Id,  @UserId,  @LoginDateTime, @UserAction, @CreatedOn,  @ModifiedOn,  @IsDeleted);",
@@ -431,7 +439,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
             return entityType.Name switch
             {
                 nameof(GatewayUser) => 
-                    $"UPDATE gateway_user SET \"EmailAddress\" = @EmailAddress,    \"LocalAuthorityId\" = @LocalAuthorityId,    \"CookiePrefs\" = @CookiePrefs,    \"TimerStartedOn\" = @TimerStartedOn,    \"CreatedOn\" = @CreatedOn,    \"ModifiedOn\" = @ModifiedOn,  \"IsDeleted\" = @IsDeleted WHERE \"Id\" = @Id;",
+                    $"UPDATE gateway_user SET \"EmailAddress\" = @EmailAddress,    \"LocalAuthorityId\" = @LocalAuthorityId,    \"CookiePrefs\" = @CookiePrefs,    \"TimerStartedOn\" = @TimerStartedOn,    \"CreatedOn\" = @CreatedOn,    \"ModifiedOn\" = @ModifiedOn,  \"IsDeleted\" = @IsDeleted, \"SignUpMagic\" = @SignUpMagic, \"OptedOutOfComms\" = @OptedOutOfComms, \"SentSurvey\" = @SentSurvey, \"ConfirmedSignup\" = @ConfirmedSignup  WHERE \"Id\" = @Id;",
 
                 nameof(GatewayUserAudit) => 
                     $"UPDATE gateway_user_audit SET \"UserId\"=@UserId, \"LoginDateTime\"=@LoginDateTime, \"UserAction\"=@UserAction, \"CreatedOn\"=@CreatedOn, \"ModifiedOn\"=@ModifiedOn,  \"IsDeleted\"=@IsDeleted WHERE \"Id\"=@Id;",

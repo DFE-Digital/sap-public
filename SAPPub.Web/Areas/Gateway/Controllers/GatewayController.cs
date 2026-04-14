@@ -11,11 +11,11 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
 {
     [Area("Gateway")]
     public class GatewayController(
-        IGatewayUserService UserService, 
-        IGatewayLocalAuthorityService localAuthorityService, 
-        IGatewayUserAuditService auditService, 
-        IGatewayUserLAService gatewayUserLAService, 
-        IEmailService emailService, 
+        IGatewayUserService UserService,
+        IGatewayLocalAuthorityService localAuthorityService,
+        IGatewayUserAuditService auditService,
+        IGatewayUserLAService gatewayUserLAService,
+        IEmailService emailService,
         ILogger<GatewayController> logger,
         IOptions<GatewayOptions> options) : Controller
     {
@@ -194,18 +194,10 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
                     CookiePrefs = acceptedCookies
                 };
                 var newUserId = await _userService.InsertAsync(newUser);
-
+                var createdUserModel = await _userService.GetById(newUserId);
                 _auditService.Insert(newUserId, "Register");
 
-                // Set cookies
-                Response.Cookies.Append("gateway", newUserId.ToString(), new CookieOptions
-                {
-                    Expires = DateTimeOffset.UtcNow.AddDays(1),
-                    IsEssential = true,
-                    SameSite = SameSiteMode.Strict,
-                    Secure = true,
-                    HttpOnly = true
-                });
+
 
                 var options = new CookieOptions
                 {
@@ -220,8 +212,12 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
                     acceptedCookies ? "true" : "false",
                     options
                 );
+
                 // Send Email
-                _emailService.SendGatewayEmail(viewModel.EmailAddress, viewModel.LocalAuthorityName);
+                if (createdUserModel != null)
+                {
+                    _emailService.SendGatewayEmail(createdUserModel.EmailAddress, createdUserModel.Id.ToString(), createdUserModel.SignUpMagic);
+                }
 
                 return RedirectToAction("Complete");
             }
@@ -268,6 +264,41 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
         [Route("gateway/error")]
         public IActionResult Error()
         {
+            return View("GatewayError");
+        }
+
+        #endregion
+
+        #region Service Error
+
+        [HttpGet]
+        [Route("gateway/link/{id}")]
+        public async Task<IActionResult> MagicLink(string id, string validate)
+        {
+            var userModel = await _userService.GetById(Guid.Parse(id));
+
+            if (userModel != null && userModel.SignUpMagic == validate)
+            {
+                if (!userModel.ConfirmedSignup)
+                {
+                    _userService.UserConfirmed(userModel.Id);
+                }
+
+                // Set cookies
+                Response.Cookies.Append("gateway", userModel.Id.ToString(), new CookieOptions
+                {
+                    Expires = DateTimeOffset.UtcNow.AddDays(1),
+                    IsEssential = true,
+                    SameSite = SameSiteMode.Strict,
+                    Secure = true,
+                    HttpOnly = true
+                });
+
+                return RedirectToAction("Index", "Home");
+
+            }
+
+
             return View("GatewayError");
         }
 

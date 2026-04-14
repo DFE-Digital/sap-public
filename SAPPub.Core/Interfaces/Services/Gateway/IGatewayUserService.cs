@@ -14,5 +14,6 @@ namespace SAPPub.Core.Interfaces.Services.Gateway
         Task<GatewayUser?> GetById(Guid id);
         Task<Guid> InsertAsync(GatewayUser user);
         Task<bool> IsUserExpiredAsync(Guid id);
+        void UserConfirmed(Guid id);
     }
 }

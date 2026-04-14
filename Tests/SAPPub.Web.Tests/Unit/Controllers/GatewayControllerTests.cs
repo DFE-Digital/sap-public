@@ -212,24 +212,38 @@ namespace SAPPub.Web.Tests.Unit.Controllers
         }
 
         [Fact]
-        public async Task NewVisitor_Post_SuccessfulRegistration_CreatesUser_Audits_SendsEmail_SetsCookies_AndRedirects()
+        public async Task NewVisitor_Post_SuccessfulRegistration_CreatesUser_Audits_SendsEmail_SetsCookies()
         {
-            // Arrange
-            _mockUserService.Setup(s => s.GetByEmailAsync(It.IsAny<string>())).ReturnsAsync((GatewayUser?)null);
             var newUserId = Guid.NewGuid();
-            _mockUserService.Setup(s => s.InsertAsync(It.IsAny<GatewayUser>())).ReturnsAsync(newUserId);
-            _mockGatewayUserLAService.Setup(s => s.CanRegisterNewUsers(It.IsAny<Guid>())).ReturnsAsync(true);
-
-            var http = new DefaultHttpContext();
-            var controller = CreateController(null, http);
 
             var vm = new GatewayNewUserViewModel
             {
                 EmailAddress = "new@example.com",
                 LocalAuthorityId = Guid.NewGuid(),
                 LocalAuthorityName = "some-la",
-                AcceptCookies = "true"
+                AcceptCookies = "true",
             };
+
+            var gatewayUser = new GatewayUser()
+            {
+                Id = newUserId,
+                EmailAddress = vm.EmailAddress,
+                LocalAuthorityId = vm.LocalAuthorityId,
+                SignUpMagic = Guid.NewGuid().ToString().Replace("-", "")
+            };
+
+            // Arrange
+            _mockUserService.Setup(s => s.GetByEmailAsync(It.IsAny<string>())).ReturnsAsync((GatewayUser?)null);            
+            
+            _mockUserService.Setup(s => s.InsertAsync(It.IsAny<GatewayUser>())).ReturnsAsync(newUserId);
+            _mockGatewayUserLAService.Setup(s => s.CanRegisterNewUsers(It.IsAny<Guid>())).ReturnsAsync(true);
+
+            _mockUserService.Setup(s => s.GetById(newUserId)).ReturnsAsync(gatewayUser);
+
+            var http = new DefaultHttpContext();
+            var controller = CreateController(null, http);
+
+
 
             // Act
             var result = await controller.NewVisitor(vm, "some-la") as RedirectToActionResult;
@@ -237,14 +251,11 @@ namespace SAPPub.Web.Tests.Unit.Controllers
             // Assert
             Assert.NotNull(result);
             Assert.Equal("Complete", result.ActionName);
-            // gateway cookie present
             var setCookie = http.Response.Headers["Set-Cookie"].ToString();
-            Assert.Contains("gateway=", setCookie);
-            Assert.Contains(newUserId.ToString(), setCookie);
             // analytics preference cookie present
             Assert.Contains("analytics_preference=", setCookie);
             _mockAuditService.Verify(a => a.Insert(newUserId, "Register"), Times.Once);
-            _mockEmailService.Verify(e => e.SendGatewayEmail(vm.EmailAddress, vm.LocalAuthorityName), Times.Once);
+            _mockEmailService.Verify(e => e.SendGatewayEmail(gatewayUser.EmailAddress, gatewayUser.Id.ToString(), gatewayUser.SignUpMagic), Times.Once);
         }
     }
 }

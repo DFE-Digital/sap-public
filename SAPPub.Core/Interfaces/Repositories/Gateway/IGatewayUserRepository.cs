@@ -12,6 +12,7 @@ namespace SAPPub.Core.Interfaces.Repositories.Gateway
         Task<bool> InsertAsync(GatewayUser user);
         Task<GatewayUser?> GetByIdAsync(Guid id, CancellationToken ct = default);
         Task<IEnumerable<GatewayUser>> GetAllAsync(CancellationToken ct = default);
+        Task<bool> UpdateAsync(GatewayUser user);
 
     }
 }

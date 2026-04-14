@@ -24,7 +24,9 @@ namespace SAPPub.Infrastructure.Tests.Repositories
         {
             // Arrange
             var emailAddress = "user2@example.com";
-            var localAuthority = "OtherLA";
+            var userId = "4dadf692-3a14-4851-81e9-1c81874671e6";
+            var validation = "4dadf6923a14485181e91c81874671e7";
+
 
             var notificationMock = new Mock<Notify.Interfaces.INotificationClient>();
             var boom = new Exception("send-failed");
@@ -40,7 +42,7 @@ namespace SAPPub.Infrastructure.Tests.Repositories
             var repository = new EmailRepository(notificationMock.Object, Options.Create(_emailOptions), loggerMock.Object);
 
             // Act & Assert - should not throw (exception is caught inside)
-            var ex = Record.Exception(() => repository.SendGatewayEmail(emailAddress, localAuthority));
+            var ex = Record.Exception(() => repository.SendGatewayEmail(emailAddress, userId, validation));
             Assert.Null(ex);
         }
     }

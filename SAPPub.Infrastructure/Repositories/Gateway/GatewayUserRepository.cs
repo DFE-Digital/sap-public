@@ -35,6 +35,11 @@ namespace SAPPub.Infrastructure.Repositories.Gateway
             return await _genericRepository.WriteAsync(user);
         }
 
+        public async Task<bool> UpdateAsync(GatewayUser user)
+        {
+            return await _genericRepository.UpdateAsync(user);
+        }
+
         public async Task<IEnumerable<GatewayUser>> GetAllAsync(CancellationToken ct = default)
         {
             return await _genericRepository.ReadAllAsync(ct);

@@ -68,9 +68,29 @@ namespace SAPPub.Core.Services.Gateway
             user.CreatedOn = DateTime.UtcNow;
             user.ModifiedOn = DateTime.UtcNow;
             user.IsDeleted = false;
+            user.OptedOutOfComms = false;
+            user.SentSurvey = false;
+            user.SignUpMagic = $"{Guid.NewGuid().ToString().Replace("-", "")}";
+            user.ConfirmedSignup = false;
 
             return await _gatewayUserRepository.InsertAsync(user) ? user.Id : throw new Exception("Error on Add user");
 
+        }
+
+        public async void UserConfirmed(Guid id)
+        {
+            var user = await _gatewayUserRepository.GetByIdAsync(id);
+            if (user?.Id == null)
+            {
+                throw new Exception($"User with ID {id} not found.");
+            }
+
+            user.ConfirmedSignup = true;
+            var updateStatus = await _gatewayUserRepository.UpdateAsync(user);
+            if (!updateStatus)
+            {
+                throw new Exception($"Couldn't update {id} with confirmed status.");
+            }
         }
 
         public async Task<IEnumerable<GatewayUser>> GetAllAsync()

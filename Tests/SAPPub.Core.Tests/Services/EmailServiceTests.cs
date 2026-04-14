@@ -31,12 +31,13 @@ namespace SAPPub.Core.Tests.Services
         {
             // Arrange
             var email = "johndoe@email.com";
-            var localAuth = "Canterbury";
+            var userId = "4e2ab58d-578d-4299-bc2e-dd92fd8e3e86";
+            var validation = "4dadf6923a14485181e91c81874671e6";
 
             // Act
             try
             {
-                _service.SendGatewayEmail(email, localAuth);
+                _service.SendGatewayEmail(email, userId, validation);
             }
             catch (Exception ex)
             {
@@ -46,14 +47,15 @@ namespace SAPPub.Core.Tests.Services
         }
 
         [Theory]
-        [InlineData("johndoe@email.com", "")]
-        [InlineData("", "Canterbury")]
-        public void SendEmail_WithError(string email, string localAuth)
+        [InlineData("johndoe@email.com", "", "")]
+        [InlineData("", "4e2ab58d-578d-4299-bc2e-dd92fd8e3e86", "")]
+        [InlineData("", "", "4e2ab58d-578d-4299-bc2e-dd92fd8e3e86")]
+        public void SendEmail_WithError(string email, string userId, string validation)
         {
             // Arrange
 
             // Act
-            var ex = Assert.Throws<ArgumentException>(() => _service.SendGatewayEmail(email, localAuth));
+            var ex = Assert.Throws<ArgumentException>(() => _service.SendGatewayEmail(email, userId, validation));
 
             // Assert
             Assert.Contains("Error sending email, missing argument", ex.Message);
@@ -66,7 +68,7 @@ namespace SAPPub.Core.Tests.Services
 
             // Act
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            var ex = Assert.Throws<ArgumentException>(() => _service.SendGatewayEmail(null, ""));
+            var ex = Assert.Throws<ArgumentException>(() => _service.SendGatewayEmail(null, "", ""));
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
             // Assert
@@ -74,13 +76,26 @@ namespace SAPPub.Core.Tests.Services
         }
 
         [Fact]
-        public void SendEmail_WithError_NullLA()
+        public void SendEmail_WithError_NullUserId()
         {
             // Arrange
 
             // Act
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            var ex = Assert.Throws<ArgumentException>(() => _service.SendGatewayEmail("",null));
+            var ex = Assert.Throws<ArgumentException>(() => _service.SendGatewayEmail("",null, ""));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+
+            // Assert
+            Assert.Contains("Error sending email, missing argument", ex.Message);
+        }
+        [Fact]
+        public void SendEmail_WithError_NullValidation()
+        {
+            // Arrange
+
+            // Act
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            var ex = Assert.Throws<ArgumentException>(() => _service.SendGatewayEmail("", "", null));
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
             // Assert

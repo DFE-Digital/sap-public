@@ -16,11 +16,11 @@ namespace SAPPub.Infrastructure.Repositories
         private readonly EmailOptions _emailOptions = emailOptions.Value;
         private readonly ILogger<EmailRepository> _logger = logger;
 
-        public void SendGatewayEmail(string emailAddress, string localAuthorityName)
+        public void SendGatewayEmail(string emailAddress, string userId, string validationCheck)
         {
             var personalisation = new Dictionary<string, dynamic>
             {
-                { "link", $"{_emailOptions.ApplicationRoot}/gateway/welcome/{localAuthorityName}" }
+                { "link", $"{_emailOptions.ApplicationRoot}/gateway/link/{userId}?validate={validationCheck}" }
             };
             try
             {

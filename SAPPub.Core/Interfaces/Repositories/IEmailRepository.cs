@@ -8,6 +8,6 @@ namespace SAPPub.Core.Interfaces.Repositories
 {
     public interface IEmailRepository
     {
-        void SendGatewayEmail(string emailAddress, string localAuthorityName);
+        void SendGatewayEmail(string emailAddress, string userId, string validationCheck);
     }
 }
