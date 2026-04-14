@@ -22,6 +22,7 @@ using SAPPub.Web.Controllers;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.Charts;
 using SAPPub.Web.Models.SecondarySchool;
+using static SAPPub.Web.Constants.Constants;
 
 namespace SAPPub.Web.Tests.Unit.Controllers;
 
@@ -228,17 +229,65 @@ public class SecondarySchoolControllerTests
         Assert.Equal(expectedResult.Website, model.SchoolWebsite.Value);
         Assert.Equal(expectedResult.AcademyTrust, model.AcademyTrust.Value);
         Assert.Equal(expectedResult.AcademyTrustUpdatedIn, model.AcademyTrustUpdatedIn.Value);
-        Assert.Equal(expectedResult.Telephone, model.Telephone);
-        Assert.Equal(expectedResult.LocalAuthority, model.LocalAuthority);
+        Assert.Equal(expectedResult.Telephone, model.Telephone.Value);
+        Assert.Equal(expectedResult.LocalAuthority, model.LocalAuthority.Value);
         Assert.Equal(expectedResult.LocalAuthorityName, model.LocalAuthorityCouncilName);
         Assert.Equal(expectedResult.LocalAuthorityWebsite, model.LocalAuthorityWebsite);
-        Assert.Equal(expectedResult.TypeOfSchool, model.TypeOfSchool);
-        Assert.Equal(expectedResult.HeadTeacher, model.HeadTeacher);
-        Assert.Equal(expectedResult.AgeRange, model.AgeRange);
-        Assert.Equal("1,117", model.NumberOfPupils);
-        Assert.Equal(expectedResult.PupilSex, model.PupilSex);
-        Assert.Equal(expectedResult.ReligiousCharacter, model.ReligiousCharacter);
-        Assert.Equal(expectedResult.OfficialSixthFormId, model.SixthForm);
+        Assert.Equal(expectedResult.TypeOfSchool, model.TypeOfSchool.Value);
+        Assert.Equal(expectedResult.HeadTeacher, model.HeadTeacher.Value);
+        Assert.Equal(expectedResult.AgeRange, model.AgeRange.Value);
+        Assert.Equal("1,117", model.NumberOfPupils.Value);
+        Assert.Equal(expectedResult.PupilSex, model.PupilSex.Value);
+        Assert.Equal(expectedResult.ReligiousCharacter, model.ReligiousCharacter.Value);
+        Assert.Equal(expectedResult.OfficialSixthFormId, model.SixthForm.Value);
+        Assert.Equal(expectedResult.StatusCode, model.StatusCode);
+        Assert.False(model.ClosedDate.IsAvailable);
+        Assert.False(model.IsLocalAuthoritySchool);
+        Assert.Equal(2, model.RouteAttributes.Count);
+        Assert.Equal(expectedResult.Urn, model.RouteAttributes[RouteConstants.URN]);
+        Assert.Equal(expectedResult.SchoolName, model.RouteAttributes[RouteConstants.SchoolName]);
+    }
+
+    [Fact]
+    public async Task Get_AboutSchool_Info_With_No_Data_ReturnsOk()
+    {
+        var expectedResult = new AboutSchoolModel
+        { 
+            Urn = _fakeEstablishment.URN,
+            SchoolName = _fakeEstablishment.EstablishmentName
+        };
+
+        _mockAboutSchoolService
+            .Setup(es => es.GetAboutSchoolDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.AboutSchool(
+            _mockAboutSchoolService.Object,
+            _fakeEstablishment.URN,
+            _fakeEstablishment.EstablishmentName,
+            CancellationToken.None) as ViewResult;
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as AboutSchoolViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(expectedResult.Urn, model.URN);
+        Assert.Equal(expectedResult.SchoolName, model.SchoolName);
+        Assert.Equal(NotAvailable, model.SchoolWebsite.DisplayText());
+        Assert.Equal(NotAvailable, model.AcademyTrust.DisplayText());
+        Assert.Equal(NotAvailable, model.AcademyTrustUpdatedIn.DisplayText());
+        Assert.Equal(NotAvailable, model.Telephone.DisplayText());
+        Assert.Equal(NotAvailable, model.LocalAuthority.DisplayText());
+        Assert.Equal(expectedResult.LocalAuthorityName, model.LocalAuthorityCouncilName);
+        Assert.Equal(expectedResult.LocalAuthorityWebsite, model.LocalAuthorityWebsite);
+        Assert.Equal(NotAvailable, model.TypeOfSchool.DisplayText());
+        Assert.Equal(NotAvailable, model.HeadTeacher.DisplayText());
+        Assert.Equal(NotAvailable, model.AgeRange.DisplayText());
+        Assert.Equal(NotAvailable, model.NumberOfPupils.DisplayText());
+        Assert.Equal(NotAvailable, model.PupilSex.DisplayText());
+        Assert.Equal(NotAvailable, model.ReligiousCharacter.DisplayText());
+        Assert.Equal(NotAvailable, model.SixthForm.DisplayText());
         Assert.Equal(expectedResult.StatusCode, model.StatusCode);
         Assert.False(model.ClosedDate.IsAvailable);
         Assert.False(model.IsLocalAuthoritySchool);
@@ -247,7 +296,6 @@ public class SecondarySchoolControllerTests
         Assert.Equal(expectedResult.SchoolName, model.RouteAttributes[RouteConstants.SchoolName]);
         Assert.Equal(expectedResult.OpenReasonId, model.OpenReasonId);
         Assert.Equal(expectedResult.OpenDate, model.OpenDate);
-        Assert.True(model.RecentlyOpenedSchoolMessage.IsAvailable);
     }
 
     [Theory]
@@ -320,7 +368,7 @@ public class SecondarySchoolControllerTests
 
         var model = result.Model as AboutSchoolViewModel;
         Assert.NotNull(model);
-        Assert.Equal(expectedOutput, model.NumberOfPupils);
+        Assert.Equal(expectedOutput, model.NumberOfPupils.Value);
     }
 
     [Theory]
@@ -394,11 +442,11 @@ public class SecondarySchoolControllerTests
     }
 
     [Theory]
-    [InlineData("", "No")]
+    [InlineData("", null)]
     [InlineData("2", "No")]
     [InlineData("9", "No")]
     [InlineData("1", "Yes")]
-    public async Task Get_AboutSchool_SchoolFeatures_SixthForm_Format(string sixthFormId, string expectedOutput)
+    public async Task Get_AboutSchool_SchoolFeatures_SixthForm_Format(string sixthFormId, string? expectedOutput)
     {
         _fakeEstablishment.OfficialSixthFormId = sixthFormId;
 
@@ -419,7 +467,7 @@ public class SecondarySchoolControllerTests
 
         var model = result.Model as AboutSchoolViewModel;
         Assert.NotNull(model);
-        Assert.Equal(expectedOutput, model.SixthForm);
+        Assert.Equal(expectedOutput, model.SixthForm.Value);
     }
 
     [Theory]

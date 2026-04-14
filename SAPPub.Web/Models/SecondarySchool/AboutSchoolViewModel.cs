@@ -26,11 +26,11 @@ namespace SAPPub.Web.Models.SecondarySchool
 
         public required DisplayField<string> SchoolWebsite { get; set; }
 
-        public string? Telephone { get; set; }
+        public required DisplayField<string> Telephone { get; set; }
 
-        public string? Address { get; set; }
+        public required DisplayField<string> Address { get; set; }
 
-        public string? LocalAuthority { get; set; }
+        public required DisplayField<string> LocalAuthority { get; set; }
 
         public string? LocalAuthorityCouncilName { get; set; }
 
@@ -42,19 +42,19 @@ namespace SAPPub.Web.Models.SecondarySchool
 
         public string Latitude { get; set; } = string.Empty;
 
-        public string? TypeOfSchool { get; set; }
+        public required DisplayField<string> TypeOfSchool { get; set; }
 
-        public string? HeadTeacher { get; set; }
+        public required DisplayField<string> HeadTeacher { get; set; }
 
-        public string? AgeRange { get; set; }
+        public required DisplayField<string> AgeRange { get; set; }
 
-        public string? NumberOfPupils { get; set; }
+        public required DisplayField<string> NumberOfPupils { get; set; }
 
-        public string? PupilSex { get; set; }
+        public required DisplayField<string> PupilSex { get; set; }
 
-        public string? ReligiousCharacter { get; set; }
+        public required DisplayField<string> ReligiousCharacter { get; set; }
 
-        public string? SixthForm { get; set; }
+        public required DisplayField<string> SixthForm { get; set; }
 
         public string? SenUnit { get; set; }
 
@@ -84,20 +84,20 @@ namespace SAPPub.Web.Models.SecondarySchool
                 AcademyTrust = schoolDetails.AcademyTrust.ToDisplayField(),
                 AcademyTrustUpdatedIn = schoolDetails.AcademyTrustUpdatedIn.ToDisplayField(),
                 SchoolWebsite = schoolDetails.Website.ToDisplayField(),
-                Telephone = schoolDetails.Telephone,
-                Address = schoolDetails.Address,
-                LocalAuthority = schoolDetails.LocalAuthority,
+                Telephone = schoolDetails.Telephone.ToDisplayField(),
+                Address = schoolDetails.Address.ToDisplayField(),
+                LocalAuthority = schoolDetails.LocalAuthority.ToDisplayField(),
                 LocalAuthorityCouncilName = schoolDetails.LocalAuthorityName,
                 LocalAuthorityWebsite = schoolDetails.LocalAuthorityWebsite,
                 Latitude = latLong?.Latitude.ToString() ?? string.Empty,
                 Longitude = latLong?.Longitude.ToString() ?? string.Empty,
-                TypeOfSchool = schoolDetails.TypeOfSchool,
-                HeadTeacher = schoolDetails.HeadTeacher,
-                AgeRange = schoolDetails.AgeRange,
-                NumberOfPupils = schoolDetails.NumberOfPupils?.ToInt()?.ToString("N0") ?? schoolDetails.NumberOfPupils,
-                PupilSex = schoolDetails.PupilSex,
-                ReligiousCharacter = schoolDetails.ReligiousCharacter,
-                SixthForm = GetSixthForm(schoolDetails.OfficialSixthFormId),
+                TypeOfSchool = schoolDetails.TypeOfSchool.ToDisplayField(),
+                HeadTeacher = schoolDetails.HeadTeacher.ToDisplayField(),
+                AgeRange = schoolDetails.AgeRange.ToDisplayField(),
+                NumberOfPupils = (schoolDetails.NumberOfPupils?.ToInt()?.ToString("N0") ?? schoolDetails.NumberOfPupils).ToDisplayField(),
+                PupilSex = schoolDetails.PupilSex.ToDisplayField(),
+                ReligiousCharacter = schoolDetails.ReligiousCharacter.ToDisplayField(),
+                SixthForm = GetSixthForm(schoolDetails.OfficialSixthFormId).ToDisplayField(),
                 SenUnit = GetSenUnit(schoolDetails.ResourcedProvisionName),
                 ResourcedProvision = GetResourcedProvision(schoolDetails.ResourcedProvisionName),
                 IsLocalAuthoritySchool = schoolDetails.EstablishmentTypeGroupId.ToInt() == LocalAuthorityEstablishmentGroupTypeId,
@@ -129,9 +129,9 @@ namespace SAPPub.Web.Models.SecondarySchool
                 : No;
         }
 
-        private static string GetSixthForm(string value)
+        private static string? GetSixthForm(string value)
         {
-            return string.Equals(value, SixthFormYesValue) ? Yes : No;
+            return string.IsNullOrWhiteSpace(value) ? null : string.Equals(value, "1") ? Yes : No;
         }
 
         private static DisplayField<string> GetRecentlyOpenedSchoolMessage(int? openReasonId, DateOnly? openDate)
