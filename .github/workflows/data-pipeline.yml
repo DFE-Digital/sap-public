@@ -589,11 +589,11 @@ jobs:
             echo "ETL attempt $attempt/$max_attempts"
             set +e
             "$GITHUB_WORKSPACE/konduit.sh" \
-              -n "${{ secrets.AKS_NAMESPACE }}" \
+              -n "sip-development" \
               -t 7200 \
               -x \
               -i "$GITHUB_WORKSPACE/SAPData/Sql/run_all.sql" \
-              "${{ secrets.KONDUIT_APP_NAME }}" -- psql 2>&1 | tee "$log_file"
+              "sap-public-pr-${GITHUB_RUN_ID}" -- psql 2>&1 | tee "$log_file"
             exit_code=${PIPESTATUS[0]}
             set -e
             if [ $exit_code -eq 0 ]; then
