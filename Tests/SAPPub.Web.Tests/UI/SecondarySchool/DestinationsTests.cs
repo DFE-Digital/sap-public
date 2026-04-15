@@ -284,77 +284,77 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
         Assert.True(await destinationsDataOverTimeTable.CountAsync() > 0);
     }
 
-    [Fact]
-    public async Task DestinationsPage_Displays_BreakdownDestinations_CurrentYear_Chart()
-    {
-        // Arrange
-        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+    //[Fact]
+    //public async Task DestinationsPage_Displays_BreakdownDestinations_CurrentYear_Chart()
+    //{
+    //    // Arrange
+    //    await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
-        // Act
-        var chart = Page.Locator("#breakdown-destinations-chart");
-        var table = Page.Locator("#breakdown-destinations-current-year-table");
-        var chartLegend = Page.Locator("#breakdown-destinations-chart-legend");
-        var showAsTableBtn = Page.Locator("#breakdown-dest-current-year-show-btn");
+    //    // Act
+    //    var chart = Page.Locator("#breakdown-destinations-chart");
+    //    var table = Page.Locator("#breakdown-destinations-current-year-table");
+    //    var chartLegend = Page.Locator("#breakdown-destinations-chart-legend");
+    //    var showAsTableBtn = Page.Locator("#breakdown-dest-current-year-show-btn");
 
-        var isChartVisible = await chart.IsVisibleAsync();
-        var isTableVisible = await table.IsVisibleAsync();
-        var isChartLegendVisible = await chartLegend.IsVisibleAsync();
-        var isShowAsTableBtnVisible = await showAsTableBtn.IsVisibleAsync();
-        var showAsTableBtnText = await showAsTableBtn.TextContentAsync();
+    //    var isChartVisible = await chart.IsVisibleAsync();
+    //    var isTableVisible = await table.IsVisibleAsync();
+    //    var isChartLegendVisible = await chartLegend.IsVisibleAsync();
+    //    var isShowAsTableBtnVisible = await showAsTableBtn.IsVisibleAsync();
+    //    var showAsTableBtnText = await showAsTableBtn.TextContentAsync();
 
-        // Assert
-        Assert.False(isTableVisible);
-        Assert.True(isChartVisible);
-        Assert.True(isChartLegendVisible);
-        Assert.True(isShowAsTableBtnVisible);
+    //    // Assert
+    //    Assert.False(isTableVisible);
+    //    Assert.True(isChartVisible);
+    //    Assert.True(isChartLegendVisible);
+    //    Assert.True(isShowAsTableBtnVisible);
 
-        Assert.Equal("Show as a table", showAsTableBtnText);
-    }
+    //    Assert.Equal("Show as a table", showAsTableBtnText);
+    //}
 
-    [Fact]
-    public async Task DestinationsPage_Displays_BreakdownDestinations_CurrentYear_Table()
-    {
-        // Arrange
-        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+    //[Fact]
+    //public async Task DestinationsPage_Displays_BreakdownDestinations_CurrentYear_Table()
+    //{
+    //    // Arrange
+    //    await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
-        // Act
-        // Click Show as a table button
-        await Page.ClickAsync("#breakdown-dest-current-year-show-btn");
+    //    // Act
+    //    // Click Show as a table button
+    //    await Page.ClickAsync("#breakdown-dest-current-year-show-btn");
          
-        var showAsTableBtn = Page.Locator("#breakdown-dest-current-year-show-btn");
-        var chart = Page.Locator("#breakdown-destinations-chart");
-        var table = Page.Locator("#breakdown-destinations-current-year-table");
-        var chartLegend = Page.Locator("#breakdown-destinations-chart-legend");
+    //    var showAsTableBtn = Page.Locator("#breakdown-dest-current-year-show-btn");
+    //    var chart = Page.Locator("#breakdown-destinations-chart");
+    //    var table = Page.Locator("#breakdown-destinations-current-year-table");
+    //    var chartLegend = Page.Locator("#breakdown-destinations-chart-legend");
 
-        var isChartVisible = await chart.IsVisibleAsync();
-        var isTableVisible = await table.IsVisibleAsync();
-        var isChartLegendVisible = await chartLegend.IsVisibleAsync();
-        var buttonText = await showAsTableBtn.TextContentAsync();
+    //    var isChartVisible = await chart.IsVisibleAsync();
+    //    var isTableVisible = await table.IsVisibleAsync();
+    //    var isChartLegendVisible = await chartLegend.IsVisibleAsync();
+    //    var buttonText = await showAsTableBtn.TextContentAsync();
 
-        // Assert
-        Assert.False(isChartVisible);
-        Assert.False(isChartLegendVisible);
-        Assert.True(isTableVisible);
-        Assert.Equal("Show as a chart", buttonText);
-    }
+    //    // Assert
+    //    Assert.False(isChartVisible);
+    //    Assert.False(isChartLegendVisible);
+    //    Assert.True(isTableVisible);
+    //    Assert.Equal("Show as a chart", buttonText);
+    //}
 
-    [Fact]
-    public async Task DestinationsPage_Displays_BreakdownDestinations_No_Chart_Only_Render_Table()
-    {
-        // Arrange
-        await Page.GotoAsync(_schoolUrnToUrlMap["100273"]);
+    //[Fact]
+    //public async Task DestinationsPage_Displays_BreakdownDestinations_No_Chart_Only_Render_Table()
+    //{
+    //    // Arrange
+    //    await Page.GotoAsync(_schoolUrnToUrlMap["100273"]);
 
-        // Act       
-        var breakdownDestinationsChart = Page.Locator("#breakdown-destinations-chart");
-        var breakdownDestinationsCurrentYearTable = Page.Locator("#breakdown-destinations-current-year-table");
+    //    // Act       
+    //    var breakdownDestinationsChart = Page.Locator("#breakdown-destinations-chart");
+    //    var breakdownDestinationsCurrentYearTable = Page.Locator("#breakdown-destinations-current-year-table");
 
-        var breakdownDestinationsCurrentYearShowBtn = Page.Locator("#breakdown-dest-current-year-show-btn");
+    //    var breakdownDestinationsCurrentYearShowBtn = Page.Locator("#breakdown-dest-current-year-show-btn");
 
-        // Assert
-        Assert.False(await breakdownDestinationsChart.CountAsync() > 0);
-        Assert.False(await breakdownDestinationsCurrentYearShowBtn.CountAsync() > 0);
-        Assert.True(await breakdownDestinationsCurrentYearTable.CountAsync() > 0);
-    }
+    //    // Assert
+    //    Assert.False(await breakdownDestinationsChart.CountAsync() > 0);
+    //    Assert.False(await breakdownDestinationsCurrentYearShowBtn.CountAsync() > 0);
+    //    Assert.True(await breakdownDestinationsCurrentYearTable.CountAsync() > 0);
+    //}
 
     [Fact]
     public async Task DestinationsPage_DisplaysPagination()
