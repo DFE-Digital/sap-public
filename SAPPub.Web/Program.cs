@@ -46,6 +46,11 @@ public partial class Program
             };
         });
 
+        builder.Services.AddAntiforgery(options =>
+        {
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        });
+
         // Single, consolidated controllers registration
         builder.Services.AddControllers()
             .AddJsonOptions(options =>
