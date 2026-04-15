@@ -18,9 +18,11 @@ namespace SAPPub.Infrastructure.Repositories
 
         public void SendGatewayEmail(string emailAddress, string userId, string validationCheck)
         {
+            var tempUrl = "https://sap-public-pr-301.test.teacherservices.cloud/";
             var personalisation = new Dictionary<string, dynamic>
             {
-                { "link", $"{_emailOptions.ApplicationRoot}/gateway/link/{userId}?validate={validationCheck}" }
+                
+                { "link", $"{tempUrl}/gateway/link/{userId}?validate={validationCheck}" }
             };
             try
             {
