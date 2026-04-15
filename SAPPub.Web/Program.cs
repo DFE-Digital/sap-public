@@ -1,5 +1,6 @@
 using GovUk.Frontend.AspNetCore;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.StaticFiles;
 using Notify.Client;
@@ -178,6 +179,11 @@ public partial class Program
                     Console.WriteLine($"  WARNING: No content type for extension: {ext}");
                 }
             }
+        });
+
+        app.UseForwardedHeaders(new ForwardedHeadersOptions
+        {
+            ForwardedHeaders = ForwardedHeaders.XForwardedProto
         });
 
         app.UseRouting();
