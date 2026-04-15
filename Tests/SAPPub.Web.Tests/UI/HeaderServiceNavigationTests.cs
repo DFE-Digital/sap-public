@@ -51,4 +51,16 @@ public class HeaderServiceNavigationTests(WebApplicationSetupFixture fixture) : 
         Assert.Equal("School Profiles", text.Trim());
         Assert.Equal("/search", href, ignoreCase: true);
     }
+
+    [Fact]
+    public async Task PhaseBanner_Feedback_Link_IsCorrect()
+    {
+        await Page.GotoAsync(string.Empty);
+        var feedBackLink = Page.Locator("#feedback-link");
+        var text = await feedBackLink.InnerTextAsync();
+        var href = await feedBackLink.GetAttributeAsync("href");
+
+        Assert.Equal("give your feedback (opens in new tab)", text.Trim());
+        Assert.Equal("https://forms.cloud.microsoft/pages/responsepage.aspx?id=yXfS-grGoU2187O4s0qC-bvgNBlcYPxAqCMfEzVBipNUMjBVV05XS1hPNjhGWjZXVTlHV0ZXTjZVWS4u", href, ignoreCase: true);
+    }
 }
