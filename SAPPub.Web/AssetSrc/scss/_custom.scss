@@ -165,6 +165,11 @@
     padding: 15px;
 }
 
+.gtm-noscript {
+    display: none;
+    visibility: hidden
+}
+
 @media(max-width: 40.0525em) {
     .moj-side-navigation {
         padding-bottom: 20px;

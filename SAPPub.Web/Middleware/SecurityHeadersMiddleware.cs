@@ -29,7 +29,7 @@ namespace SAPPub.Web.Middleware
                 + "base-uri 'self';"
                 + "frame-ancestors 'self';"
                 + "img-src 'self' data: https://*.tile.openstreetmap.org https://www.googletagmanager.com;"
-                + "style-src 'self' 'unsafe-inline';"
+                + "style-src 'self';"
                 + "font-src 'self' data:;"
                 + $"script-src 'self' 'nonce-{nonce}' https://*.googletagmanager.com https://*.clarity.ms;"
                 + "connect-src 'self' "
