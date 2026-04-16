@@ -141,3 +141,7 @@ variable "enable_dfe_analytics_federated_auth" {
   description = "Create the resources in Google cloud for federated authentication and enable in application"
   default     = false
 }
+
+variable "postgres_version" {
+  default = 16
+}
