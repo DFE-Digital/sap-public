@@ -106,7 +106,11 @@ public partial class Program
         builder.Services.AddSingleton<NpgsqlDataSource>(_ => NpgsqlDataSource.Create(connectionString));
 
         // Big Query client configuration
-        builder.Services.AddDfeAnalytics().AddAspNetCoreIntegration();
+        builder.Services.AddDfeAnalytics().AddAspNetCoreIntegration(options =>
+        {
+            options.RequestFilter = ctx =>
+                ctx.Request.Path != "/healthcheck";
+        });
 
         //Email config
         builder.Services.AddScoped<INotificationClient>((sp) => new NotificationClient(emailAPIKey));
@@ -179,11 +183,6 @@ public partial class Program
             }
         });
 
-        if (builder.Environment.IsProduction())
-        {
-            app.UseDfeAnalytics();
-        }
-
         app.UseRouting();
         app.UseGovUkFrontend();
 
@@ -202,6 +201,11 @@ public partial class Program
 
         // Health check endpoints for AKS
         app.MapHealthChecks("/healthcheck");
+
+        if (!builder.Environment.IsEnvironment("Testing") && !builder.Environment.IsEnvironment("UITests") && !builder.Environment.IsEnvironment("Development"))
+        {
+            app.UseDfeAnalytics();
+        }
 
         app.Run();
     }
