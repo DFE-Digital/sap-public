@@ -7,7 +7,7 @@ namespace SAPPub.Infrastructure.Tests.LuceneSearch;
 
 public class StartupIndexBuilderTests
 {
-    [Fact(Skip = "Skipping test temporarily")]
+    [Fact(Skip = "Index is now built as a background service")]
     public async Task StartAsync_BuildsIndex_And_Completes()
     {
         // Arrange
