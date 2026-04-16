@@ -44,7 +44,11 @@
                             Admissions policies
                         </govuk-summary-list-row-key>
                         <govuk-summary-list-row-value>
-                            @if (Model.SchoolWebsite.IsAvailable)
+                            @if (Model.IsSchoolClosed)
+                            {
+                                <span data-testId="cannot-apply-info">You cannot apply for a place at this school because it is closed.</span>
+                            }
+                            else if (Model.SchoolWebsite.IsAvailable)
                             {
                                 <a data-testid="school-website-link"
                                 class="govuk-link govuk-link--no-visited-state"
