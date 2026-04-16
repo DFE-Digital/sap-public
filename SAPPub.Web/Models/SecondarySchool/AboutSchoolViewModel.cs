@@ -4,8 +4,6 @@ using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Web.Helpers;
 using static SAPPub.Web.Constants.Constants;
 
-
-
 namespace SAPPub.Web.Models.SecondarySchool
 {
     public class AboutSchoolViewModel : SecondarySchoolBaseViewModel
@@ -13,10 +11,8 @@ namespace SAPPub.Web.Models.SecondarySchool
         private const string SENUnit = "SEN unit";
         private const string ResourcedProvisionAndSENUnit = "Resourced provision and SEN unit";
         private const string ResourcedProvisionText = "Resourced provision";
-        private const int LocalAuthorityEstablishmentGroupTypeId = 4;
-        private const int SchoolClosedStatusCode = 2;
+        private const int LocalAuthorityEstablishmentGroupTypeId = 4;        
         private const int AcademyOpenReasonId = 10;
-        private const string SixthFormYesValue = "1";
 
         public record School(string Name, double Lat, double Lon);
 

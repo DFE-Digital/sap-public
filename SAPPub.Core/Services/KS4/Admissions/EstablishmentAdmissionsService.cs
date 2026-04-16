@@ -17,7 +17,8 @@ public sealed class EstablishmentAdmissionsService(
         return new AdmissionsServiceModel(
             SchoolWebsite: establishment.Website,
             LAName: laUrls?.Name,
-            LASchoolAdmissionsUrl: laUrls?.LAMainUrl
+            LASchoolAdmissionsUrl: laUrls?.LAMainUrl,
+            StatusCode: establishment.StatusCode
         );
     }
 }
