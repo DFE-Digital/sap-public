@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using SAPPub.Core.Interfaces.Repositories;
+using SAPPub.Core.Interfaces.Repositories.Gateway;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Repositories.KS4.Absence;
 using SAPPub.Core.Interfaces.Repositories.KS4.Destinations;
@@ -7,6 +8,7 @@ using SAPPub.Core.Interfaces.Repositories.KS4.Performance;
 using SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Repositories.KS4.Workforce;
 using SAPPub.Core.Interfaces.Services;
+using SAPPub.Core.Interfaces.Services.Gateway;
 using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.KS4.Absence;
@@ -17,6 +19,7 @@ using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Services.KS4.Workforce;
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.Services;
+using SAPPub.Core.Services.Gateway;
 using SAPPub.Core.Services.KS4;
 using SAPPub.Core.Services.KS4.AboutSchool;
 using SAPPub.Core.Services.KS4.Absence;
@@ -29,6 +32,7 @@ using SAPPub.Core.Services.Search;
 using SAPPub.Infrastructure.LuceneSearch;
 using SAPPub.Infrastructure.Mapping.ValueCodes;
 using SAPPub.Infrastructure.Repositories;
+using SAPPub.Infrastructure.Repositories.Gateway;
 using SAPPub.Infrastructure.Repositories.Generic;
 using SAPPub.Infrastructure.Repositories.KS4.Absence;
 using SAPPub.Infrastructure.Repositories.KS4.Destinations;
@@ -93,6 +97,22 @@ namespace SAPPub.Web.Middleware
 
             services.AddSingleton<ISchoolSearchIndexReader, LuceneSchoolSearchIndexReader>();
             services.AddSingleton<ISchoolSearchService, SchoolSearchService>();
+
+            services.AddScoped<IEmailRepository, EmailRepository>();
+            services.AddScoped<IEmailService, EmailService>();
+
+            services.AddTransient<IGatewayLocalAuthorityRepository, GatewayLocalAuthorityRepository>();
+            services.AddTransient<IGatewayLocalAuthorityService, GatewayLocalAuthorityService>();
+
+            services.AddTransient<IGatewayUserAuditRepository, GatewayUserAuditRepository>();
+            services.AddTransient<IGatewayUserAuditService, GatewayUserAuditService>();
+
+            services.AddTransient<IGatewayUserRepository, GatewayUserRepository>();
+            services.AddTransient<IGatewayUserService, GatewayUserService>();
+
+            services.AddTransient<IGatewaySettingsService, GatewaySettingsService>();
+            services.AddTransient<IGatewayUserLAService, GatewayUserLAService>();
+
 
             // Mapper
             services.AddSingleton<ICodedValueMapper, ReflectionCodedValueMapper>();

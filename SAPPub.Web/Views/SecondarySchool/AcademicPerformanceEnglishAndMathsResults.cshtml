@@ -1,11 +1,14 @@
 ﻿@model SAPPub.Web.Models.SecondarySchool.AcademicPerformanceEnglishAndMathsResultsViewModel;
-@using SAPPub.Core.Enums
-@using SAPPub.Web.ViewComponents.VerticalNavigation
 @using System.Text.Json
+@using SAPPub.Core.Enums
+@using SAPPub.Core.Extensions
+@using SAPPub.Web.ViewComponents.VerticalNavigation
 @using static SAPPub.Web.Models.SecondarySchool.AcademicPerformanceEnglishAndMathsResultsViewModel
 
 @{
-    ViewData["Title"] = "Academic Performance";
+    ViewData["Header"] = "Academic performance";
+    ViewData["SubHeader"] = PageTitleConstants.SecondarySchoolPageTitles.EnglishAndMathsResults;
+    ViewData["Title"] = $"{Model.SchoolName} - {ViewData["SubHeader"]}";
 }
 
 <div class="govuk-grid-row">
@@ -19,7 +22,7 @@
 
     <div class="govuk-grid-column-three-quarters">
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
-        <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
+        <h1 class="govuk-heading-xl">@ViewData["Header"]</h1>
         <p class="govuk-body">
             Looking at school performance data is one way to see how well a school is doing.
             You should look at a range of information about a school before deciding if it’s the right fit for your child.
@@ -27,18 +30,18 @@
         <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
             <ul class="moj-sub-navigation__list">
                 <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress" asp-all-route-data="@Model.RouteAttributes">Attainment and progress</a>
+                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.SecondarySchoolPageTitles.AttainmentAndProgress</a>
                 </li>
                 <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" aria-current="page" asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults" asp-all-route-data="@Model.RouteAttributes">English and maths results</a>
+                    <a class="moj-sub-navigation__link" aria-current="page" asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults" asp-all-route-data="@Model.RouteAttributes">@ViewData["SubHeader"]</a>
                 </li>
                 <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">Subjects entered</a>
+                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.SecondarySchoolPageTitles.SubjectsEntered</a>
                 </li>
             </ul>
         </nav>
 
-        <h2 class="govuk-heading-l">English and maths results for the previous academic year</h2>
+        <h2 class="govuk-heading-l">@ViewData["SubHeader"] for the previous academic year</h2>
 
         <p class="govuk-body">
             Information in this section is for the 2024 to 2025 academic year.
@@ -93,47 +96,53 @@
             <input type="radio" name="dataView" id="data-overtime-view" class="govuk-visually-hidden" aria-labelledby="all-gcse-show-data-over-time-btn" />
 
             <div id="all-gcse-current-year-data-container" class="all-gcse-current-year-data-container">
-                <div id="all-gcse-current-year-chart-container" class="chart-container all-gcse-current-year-chart-container">
-                    <canvas id="all-gcse-chart"
-                            class="js-chart"
-                            data-type="bar"
-                            data-chart='@Html.Raw(Json.Serialize(Model.AllGcseData))'
-                            data-colors='["#DE6B24", "#27A0CC", "#003C56"]'>
-                    </canvas>
-                </div>
+                @if(Model.HasEstablishmentData.IsAvailable)
+                {
+                    <div id="all-gcse-current-year-chart-container" class="chart-container all-gcse-current-year-chart-container">
+                        <canvas id="all-gcse-chart"
+                                class="js-chart"
+                                data-type="bar"
+                                data-chart='@Html.Raw(Json.Serialize(Model.AllGcseData))'
+                                data-colors='["#DE6B24", "#27A0CC", "#003C56"]'>
+                        </canvas>
+                    </div>                
 
-                <div id="all-gcse-current-year-table-container" class="all-gcse-current-year-table-container">
-                    <table id="all-gcse-current-year-table" class="govuk-table">
-                        <tbody class="govuk-table__body">
-                            @foreach (var label in Model.AllGcseData.Labels.Select((value, i) => (value, i)))
-                            {
-                                <tr class="govuk-table__row">
-                                    <th scope="row" class="govuk-table__header">@label.value</th>
-                                    <td class="govuk-table__cell">@Model.AllGcseData.Data[label.i]%</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+                    <div id="all-gcse-current-year-table-container" class="all-gcse-current-year-table-container">
+                        <table id="all-gcse-current-year-table" class="govuk-table">
+                            <tbody class="govuk-table__body">
+                                @foreach (var label in Model.AllGcseData.Labels.Select((value, i) => (value, i)))
+                                {
+                                    <tr class="govuk-table__row">
+                                        <th scope="row" class="govuk-table__header">@label.value</th>
+                                        <td class="govuk-table__cell">@Model.AllGcseData.Data[label.i]%</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                
+                    <div class="govuk-button-group">
+                        <govuk-button id="all-gcse-current-year-show-btn" class="govuk-button govuk-button--secondary all-gcse-current-year-show-btn">Show as a table</govuk-button>
+                    </div>
 
-                <div class="govuk-button-group">
-                    <govuk-button id="all-gcse-current-year-show-btn" class="govuk-button govuk-button--secondary all-gcse-current-year-show-btn">Show as a table</govuk-button>
-                </div>
-
-                <div class="govuk-button-group">
-                    <label id="all-gcse-show-data-over-time-btn" for="data-overtime-view" class="govuk-button govuk-button--secondary">Show data over time</label>
-                </div>
+                    <div class="govuk-button-group">
+                        <label id="all-gcse-show-data-over-time-btn" for="data-overtime-view" class="govuk-button govuk-button--secondary">Show data over time</label>
+                    </div>
+                }
             </div>
 
-            <div id="all-gcse-data-over-time-data-container" class="all-gcse-data-over-time-data-container">
-                <div id="all-gcse-data-over-time-chart-container" class="chart-container all-gcse-data-over-time-chart-container">
-                    <canvas id="all-gcse-data-overtime-chart"
-                            class="js-chart"
-                            data-type="line"
-                            data-chart='@Html.Raw(Json.Serialize(Model.AllGcseOverTimeData))'
-                            data-colors='["#DE6B24", "#27A0CC", "#003C56"]'>
-                    </canvas>
-                </div>
+            <div id="all-gcse-data-over-time-data-container" class="all-gcse-data-over-time-data-container @(Model.HasEstablishmentData.IsAvailable ? "" : "govuk-!-display-block")">
+                @if(Model.HasEstablishmentData.IsAvailable)
+                {
+                    <div id="all-gcse-data-over-time-chart-container" class="chart-container all-gcse-data-over-time-chart-container">
+                        <canvas id="all-gcse-data-overtime-chart"
+                                class="js-chart"
+                                data-type="line"
+                                data-chart='@Html.Raw(Json.Serialize(Model.AllGcseOverTimeData))'
+                                data-colors='["#DE6B24", "#27A0CC", "#003C56"]'>
+                        </canvas>
+                    </div>
+                }
 
                 <div id="all-gcse-data-over-time-table-container" class="all-gcse-data-over-time-table-container">
                     <table id="all-gcse-data-overtime-table" class="govuk-table">
@@ -153,7 +162,7 @@
                                     <th scope="row" class="govuk-table__header">@dataset.value.Label</th>
                                     @foreach (var data in dataset.value.Data)
                                     {
-                                        <td class="govuk-table__cell">@data%</td>
+                                        <td class="govuk-table__cell">@(data.HasValue ? data + "%" : Constants.NotAvailable)</td>
                                     }
                                 </tr>
                             }
@@ -161,13 +170,16 @@
                     </table>
                 </div>
 
-                <div class="govuk-button-group">
-                    <govuk-button id="all-gcse-data-over-time-show-btn" class="govuk-button govuk-button--secondary all-gcse-data-over-time-show-btn">Show as a table</govuk-button>
-                </div>
+                @if (Model.HasEstablishmentData.IsAvailable)
+                {
+                    <div class="govuk-button-group">
+                        <govuk-button id="all-gcse-data-over-time-show-btn" class="govuk-button govuk-button--secondary all-gcse-data-over-time-show-btn">Show as a table</govuk-button>
+                    </div>
 
-                <div class="govuk-button-group">
-                    <label id="all-gcse-show-current-data-btn" for="current-view" class="govuk-button govuk-button--secondary">Show current data</label>
-                </div>
+                    <div class="govuk-button-group">
+                        <label id="all-gcse-show-current-data-btn" for="current-view" class="govuk-button govuk-button--secondary">Show current data</label>
+                    </div>
+                }
             </div>
         </div>
 
@@ -180,20 +192,24 @@
             </p>
 
             <div id="breakdown-gcse-current-year-data-container" class="breakdown-gcse-current-year-data-container">
-                <div id="breakdown-gcse-current-year-chart-container" class="chart-container breakdown-gcse-current-year-chart-container">
-                    <div id="breakdown-gcse-chart-legend" class="chart-legend" data-chart-id="breakdown-gcse-chart"></div>
-                    <div class="chart-container">
-                        <canvas id="breakdown-gcse-chart"
-                                class="js-chart"
-                                data-type="bar"
-                                data-show-legend="true"
-                                data-chart='@Html.Raw(Json.Serialize(Model.BreakdownGcseData))'
-                                data-colors='["#DE6B24", "#27A0CC", "#003C56"]'>
-                        </canvas>
-                    </div>
-                </div>
 
-                <div id="breakdown-gcse-current-year-table-container" class="breakdown-gcse-current-year-table-container">
+                @if (Model.HasEstablishmentData.IsAvailable)
+                {
+                    <div id="breakdown-gcse-current-year-chart-container" class="chart-container breakdown-gcse-current-year-chart-container">
+                        <div id="breakdown-gcse-chart-legend" class="chart-legend" data-chart-id="breakdown-gcse-chart"></div>
+                        <div class="chart-container">
+                            <canvas id="breakdown-gcse-chart"
+                                    class="js-chart"
+                                    data-type="bar"
+                                    data-show-legend="true"
+                                    data-chart='@Html.Raw(Json.Serialize(Model.BreakdownGcseData))'
+                                    data-colors='["#DE6B24", "#27A0CC", "#003C56"]'>
+                            </canvas>
+                        </div>
+                    </div>
+                }
+
+                <div id="breakdown-gcse-current-year-table-container" class="breakdown-gcse-current-year-table-container @(Model.HasEstablishmentData.IsAvailable ? "" : "govuk-!-display-block")">
                     <table id="breakdown-gcse-current-year-table" class="govuk-table">
                         <thead class="govuk-table__head">
                             <tr class="govuk-table__row">
@@ -211,7 +227,7 @@
                                     <th scope="row" class="govuk-table__header">@dataset.Label</th>
                                     @foreach (var data in dataset.Data)
                                     {
-                                        <td class="govuk-table__cell">@data%</td>
+                                        <td class="govuk-table__cell">@(data.HasValue? data + "%" : Constants.NotAvailable)</td>
                                     }
                                 </tr>
                             }
@@ -219,10 +235,12 @@
                     </table>
                 </div>
 
-                <div class="govuk-button-group">
-                    <button id="breakdown-gcse-current-year-show-btn" class="govuk-button govuk-button--secondary breakdown-gcse-current-year-show-btn">Show as a table</button>
-                </div>
-
+                @if (Model.HasEstablishmentData.IsAvailable)
+                {
+                    <div class="govuk-button-group">
+                        <button id="breakdown-gcse-current-year-show-btn" class="govuk-button govuk-button--secondary breakdown-gcse-current-year-show-btn">Show as a table</button>
+                    </div>
+                }
             </div>
         </div>
 

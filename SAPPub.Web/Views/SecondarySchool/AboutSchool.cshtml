@@ -2,7 +2,8 @@
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 
 @{
-    ViewData["Title"] = "About the school";
+    ViewData["Header"] = "About the school";
+    ViewData["Title"] = $"{Model.SchoolName} - {ViewData["Header"]}";
 }
 
 <div class="govuk-grid-row">
@@ -16,7 +17,7 @@
 
     <div class="govuk-grid-column-three-quarters">
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">@ViewData["Title"]</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">@ViewData["Header"]</h1>
 
         @if (Model.IsSchoolClosed)
         {
@@ -35,6 +36,12 @@
                 <govuk-summary-list-row-key>Name</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
                     @Model.SchoolName
+                    @if (Model.RecentlyOpenedSchoolMessage.IsAvailable)
+                    {
+                        <span class="govuk-hint govuk-clear">
+                            @Model.RecentlyOpenedSchoolMessage.Value
+                        </span>
+                    }
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             @if(Model.AcademyTrust.IsAvailable)
@@ -47,7 +54,7 @@
                         @if (Model.AcademyTrustUpdatedIn.IsAvailable)
                         {
                             <span class="govuk-hint govuk-clear">
-                                (updated in @Model.AcademyTrustUpdatedIn.DisplayText())
+                                updated in @Model.AcademyTrustUpdatedIn.DisplayText()
                             </span>
                         }
                     </govuk-summary-list-row-value>
@@ -72,7 +79,14 @@
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Telephone</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                    <a class="govuk-link govuk-link--no-visited-state" href="tel:@Model.Telephone">@Model.Telephone</a>
+                    @if (Model.Telephone.IsAvailable)
+                    {
+                        <a class="govuk-link govuk-link--no-visited-state" href="tel:@Model.Telephone.Value">@Model.Telephone.Value</a>
+                    }
+                    else
+                    {
+                        @Model.Telephone.DisplayText()
+                    }
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
         </govuk-summary-list>
@@ -83,23 +97,26 @@
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Address</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                    @Model.Address
+                    @Model.Address.DisplayText()
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Local council</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                    @Model.LocalAuthority
-                    <span class="govuk-clear">
-                        <a href="@($"https://www.{Model.LocalAuthorityWebsite}")"
-                           target="_blank"
-                           rel="noopener noreferrer"
-                           class="govuk-link govuk-link--no-visited-state"
-                           data-testid="la-website-link">
-                           View @Model.LocalAuthorityCouncilName’s website
-                            <span class="govuk-visually-hidden">(opens in a new tab)</span>
-                        </a>
-                    </span>
+                    @Model.LocalAuthority.DisplayText()
+                    @if(Model.LocalAuthority.IsAvailable)
+                    {
+                        <span class="govuk-clear">
+                            <a href="@($"https://www.{Model.LocalAuthorityWebsite}")"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="govuk-link govuk-link--no-visited-state"
+                               data-testid="la-website-link">
+                               View @Model.LocalAuthorityCouncilName’s website
+                                <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                            </a>
+                        </span>
+                    }
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
         </govuk-summary-list>
@@ -161,43 +178,49 @@
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Type of school</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                   @Model.TypeOfSchool
+                   @Model.TypeOfSchool.DisplayText()
+                    @if (Model.RecentlyOpenedSchoolMessage.IsAvailable)
+                    {
+                        <span class="govuk-hint govuk-clear">
+                            @Model.RecentlyOpenedSchoolMessage.Value
+                        </span>
+                    }
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Headteacher</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                   @Model.HeadTeacher
+                   @Model.HeadTeacher.DisplayText()
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Age range</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                   @Model.AgeRange
+                   @Model.AgeRange.DisplayText()
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Number of pupils</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                   @Model.NumberOfPupils
+                   @Model.NumberOfPupils.DisplayText()
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Pupil sex</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                   @Model.PupilSex
+                   @Model.PupilSex.DisplayText()
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Religious character</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                   @Model.ReligiousCharacter
+                   @Model.ReligiousCharacter.DisplayText()
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Sixth form</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                   @Model.SixthForm
+                   @Model.SixthForm.DisplayText()
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
@@ -273,11 +296,11 @@
                         </tr>
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header">Behaviour policy</th>
-                            <td class="govuk-table__cell">Includes school rules, what behaviour is expected of pupils and what the school does to prevent bullying.</td>
+                            <td class="govuk-table__cell">Includes school rules and values, what behaviour is expected of pupils, how staff will support pupils to meet these expectations and what the school does to prevent bullying.</td>
                         </tr>
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header">Charging and remissions policy</th>
-                            <td class="govuk-table__cell">Schools may charge for certain activities such as school trips or music tuition. This policy covers what the school charges for and when these charges can be reduced or waived.</td>
+                            <td class="govuk-table__cell">This policy sets out when a school will make charges and the circumstances in which costs will be waived for some pupils. Schools may charge for optional extras but not education provided during school hours.</td>
                         </tr>
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header">Compliants policy</th>
@@ -293,11 +316,11 @@
                         </tr>
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header">School uniform policy</th>
-                            <td class="govuk-table__cell">Outlines to parents and carers what pupils are expected to wear and what the exceptions are.</td>
+                            <td class="govuk-table__cell">Sets out what pupils are expected to wear in school, including the uniform items which are compulsory and optional. The policy should include whether uniform items must be bought from the school’s appointed uniform supplier(s) or could be bought elsewhere.</td>
                         </tr>
                         <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header">Special educational needs and disabilities (SEND) information report</th>
-                            <td class="govuk-table__cell">Schools must publish a report on their approach to SEND, including how the school supports pupils with SEND.</td>
+                            <th scope="row" class="govuk-table__header">Special educational needs (SEN) information report</th>
+                            <td class="govuk-table__cell">A SEN information report sets out how the school’s policy for pupils with SEN and disabilities is implemented.</td>
                         </tr>
                     </tbody>
                 </table>

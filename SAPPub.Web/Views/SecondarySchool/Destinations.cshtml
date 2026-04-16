@@ -2,7 +2,8 @@
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 
 @{
-    ViewData["Title"] = "Destinations";
+    ViewData["Header"] = "Destinations";
+    ViewData["Title"] = $"{Model.SchoolName} - {ViewData["Header"]}";
 }
 
 <div class="govuk-grid-row">
@@ -16,7 +17,7 @@
 
     <div class="govuk-grid-column-three-quarters">
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">@ViewData["Title"]</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">@ViewData["Header"]</h1>
         
         <p class="govuk-body" data-testId="looking-at-school-performance-info">
             Looking at school performance data is one way to see how well a school is doing.
@@ -38,48 +39,54 @@
             <input type="radio" name="dataView" id="current-view" class="govuk-visually-hidden" aria-labelledby="all-dest-show-current-data-btn" checked />
             <input type="radio" name="dataView" id="data-overtime-view" class="govuk-visually-hidden" aria-labelledby="all-dest-show-data-over-time-btn" />
 
-            <div id="all-dest-current-year-data-container" class="all-dest-current-year-data-container">
-                <div id="all-dest-current-year-chart-container" class="chart-container all-dest-current-year-chart-container">
-                    <canvas id="all-destinations-chart"  
-                        class="js-chart"
-                        data-type="bar"
-                        data-chart='@Html.Raw(Json.Serialize(Model.AllDestinationsData))'
-                        data-colors='["#DE6B24", "#27A0CC", "#003C56"]'>
-                     </canvas>
-                </div>
+            @if (Model.HasEstablishmentData.IsAvailable)
+            {
+                <div id="all-dest-current-year-data-container" class="all-dest-current-year-data-container">
+                    <div id="all-dest-current-year-chart-container" class="chart-container all-dest-current-year-chart-container">
+                        <canvas id="all-destinations-chart"  
+                            class="js-chart"
+                            data-type="bar"
+                            data-chart='@Html.Raw(Json.Serialize(Model.AllDestinationsData))'
+                            data-colors='["#DE6B24", "#27A0CC", "#003C56"]'>
+                         </canvas>
+                    </div>
 
-                <div id="all-dest-current-year-table-container" class="all-dest-current-year-table-container">
-                    <table id="all-destinations-current-year-table" class="govuk-table">
-                        <tbody class="govuk-table__body">
-                            @foreach (var label in Model.AllDestinationsData.Labels.Select((value, i) => (value, i)))
-                            {
-                                <tr class="govuk-table__row">
-                                    <th scope="row" class="govuk-table__header">@label.value</th>
-                                    <td class="govuk-table__cell">@Model.AllDestinationsData.Data[label.i]%</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+                    <div id="all-dest-current-year-table-container" class="all-dest-current-year-table-container">
+                        <table id="all-destinations-current-year-table" class="govuk-table">
+                            <tbody class="govuk-table__body">
+                                @foreach (var label in Model.AllDestinationsData.Labels.Select((value, i) => (value, i)))
+                                {
+                                    <tr class="govuk-table__row">
+                                        <th scope="row" class="govuk-table__header">@label.value</th>
+                                        <td class="govuk-table__cell">@Model.AllDestinationsData.Data[label.i]%</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
 
-                <div class="govuk-button-group">
-                    <button id="all-dest-current-year-show-btn" class="govuk-button govuk-button--secondary all-dest-current-year-show-btn">Show as a table</button>
-                </div>
+                    <div class="govuk-button-group">
+                        <button id="all-dest-current-year-show-btn" class="govuk-button govuk-button--secondary all-dest-current-year-show-btn">Show as a table</button>
+                    </div>
 
-                <div class="govuk-button-group">
-                    <label id="all-dest-show-data-over-time-btn" for="data-overtime-view" class="govuk-button govuk-button--secondary">Show data over time</label>
+                    <div class="govuk-button-group">
+                        <label id="all-dest-show-data-over-time-btn" for="data-overtime-view" class="govuk-button govuk-button--secondary">Show data over time</label>
+                    </div>
                 </div>
-            </div>
+            }
 
-            <div id="all-dest-data-over-time-data-container" class="all-dest-data-over-time-data-container">
-                <div id="all-dest-data-over-time-chart-container" class="chart-container all-dest-data-over-time-chart-container">
-                    <canvas id="all-destinations-data-overtime-chart"  
-                        class="js-chart"
-                        data-type="line"
-                        data-chart='@Html.Raw(Json.Serialize(Model.AllDestinationsOverTimeData))'
-                        data-colors='["#DE6B24", "#27A0CC", "#003C56"]'>
-                    </canvas>
-                </div>
+            <div id="all-dest-data-over-time-data-container" class="all-dest-data-over-time-data-container @(Model.HasEstablishmentData.IsAvailable ? "" : "govuk-!-display-block")">
+                @if(Model.HasEstablishmentData.IsAvailable)
+                {
+                    <div id="all-dest-data-over-time-chart-container" class="chart-container all-dest-data-over-time-chart-container">
+                        <canvas id="all-destinations-data-overtime-chart"  
+                            class="js-chart"
+                            data-type="line"
+                            data-chart='@Html.Raw(Json.Serialize(Model.AllDestinationsOverTimeData))'
+                            data-colors='["#DE6B24", "#27A0CC", "#003C56"]'>
+                        </canvas>
+                    </div>
+                }
 
                 <div id="all-dest-data-over-time-table-container" class="all-dest-data-over-time-table-container">
                     <table id="all-destinations-data-overtime-table" class="govuk-table">
@@ -99,7 +106,7 @@
                                     <th scope="row" class="govuk-table__header">@dataset.value.Label</th>
                                     @foreach (var data in dataset.value.Data)
                                     {
-                                        <td class="govuk-table__cell">@data%</td>
+                                        <td class="govuk-table__cell">@(data.HasValue? data + "%" : Constants.NotAvailable)</td>
                                     }
                                 </tr>
                             }
@@ -107,17 +114,20 @@
                     </table>                    
                 </div>
 
-                <div class="govuk-button-group">
-                    <button id="all-dest-data-over-time-show-btn" class="govuk-button govuk-button--secondary all-dest-data-over-time-show-btn">Show as a table</button>
-                </div>
+                @if (Model.HasEstablishmentData.IsAvailable)
+                {
+                    <div class="govuk-button-group">
+                        <button id="all-dest-data-over-time-show-btn" class="govuk-button govuk-button--secondary all-dest-data-over-time-show-btn">Show as a table</button>
+                    </div>
 
-                <div class="govuk-button-group">
-                    <label id="all-dest-show-current-data-btn" for="current-view" class="govuk-button govuk-button--secondary">Show current data</label>
-                </div>                
+                    <div class="govuk-button-group">
+                        <label id="all-dest-show-current-data-btn" for="current-view" class="govuk-button govuk-button--secondary">Show current data</label>
+                    </div>
+                }
             </div>
         </div>
 
-        <div class="data-container">
+        @* <div class="data-container">
             <h3 class="govuk-heading-m govuk-!-margin-top-3">
                 Breakdown by destination for staying in education, employment and apprenticeships
             </h3>
@@ -131,20 +141,23 @@
             </p>
 
             <div id="breakdown-dest-current-year-data-container" class="breakdown-dest-current-year-data-container">
-                <div id="breakdown-dest-current-year-chart-container" class="chart-container breakdown-dest-current-year-chart-container">
-                    <div id="breakdown-destinations-chart-legend" class="chart-legend" data-chart-id="breakdown-destinations-chart"></div>
-                    <div class="chart-container">
-                        <canvas id="breakdown-destinations-chart" 
-                                class="js-chart"
-                                data-type="bar"
-                                data-show-legend="true"
-                                data-chart='@Html.Raw(Json.Serialize(Model.BreakdownDestinationData))'
-                                data-colors='["#DE6B24", "#27A0CC", "#003C56"]'>
-                        </canvas>
+                @if (Model.HasEstablishmentData.IsAvailable)
+                {
+                    <div id="breakdown-dest-current-year-chart-container" class="chart-container breakdown-dest-current-year-chart-container">
+                        <div id="breakdown-destinations-chart-legend" class="chart-legend" data-chart-id="breakdown-destinations-chart"></div>
+                        <div class="chart-container">
+                            <canvas id="breakdown-destinations-chart" 
+                                    class="js-chart"
+                                    data-type="bar"
+                                    data-show-legend="true"
+                                    data-chart='@Html.Raw(Json.Serialize(Model.BreakdownDestinationData))'
+                                    data-colors='["#DE6B24", "#27A0CC", "#003C56"]'>
+                            </canvas>
+                        </div>
                     </div>
-                </div>
+                }
 
-                <div id="breakdown-dest-current-year-table-container" class="breakdown-dest-current-year-table-container">
+                <div id="breakdown-dest-current-year-table-container" class="breakdown-dest-current-year-table-container @(Model.HasEstablishmentData.IsAvailable ? "" : "govuk-!-display-block")">
                     <table id="breakdown-destinations-current-year-table" class="govuk-table">
                         <thead class="govuk-table__head">
                             <tr class="govuk-table__row">
@@ -170,12 +183,14 @@
                     </table>
                 </div>
 
-                <div class="govuk-button-group">
-                    <button id="breakdown-dest-current-year-show-btn" class="govuk-button govuk-button--secondary breakdown-dest-current-year-show-btn">Show as a table</button>
-                </div>
-               
+                @if (Model.HasEstablishmentData.IsAvailable)
+                {
+                    <div class="govuk-button-group">
+                        <button id="breakdown-dest-current-year-show-btn" class="govuk-button govuk-button--secondary breakdown-dest-current-year-show-btn">Show as a table</button>
+                    </div>
+                }
             </div>
-        </div>
+        </div> *@
 
         <govuk-pagination id="destinations-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">Academic performance: Subjects entered</govuk-pagination-previous>

@@ -6,7 +6,7 @@ using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
-using SAPPub.Web.Helpers;
+using SAPPub.Web.Constants;
 using SAPPub.Web.Models.SecondarySchool;
 
 namespace SAPPub.Web.Controllers

@@ -2,7 +2,9 @@
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 
 @{
-    ViewData["Title"] = "Academic Performance";
+    ViewData["Header"] = "Academic performance";
+    ViewData["SubHeader"] = PageTitleConstants.SecondarySchoolPageTitles.AttainmentAndProgress;
+    ViewData["Title"] = $"{Model.SchoolName} - {ViewData["SubHeader"]}";
 }
 
 <div class="govuk-grid-row">
@@ -16,7 +18,7 @@
 
     <div class="govuk-grid-column-three-quarters">
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
-        <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
+        <h1 class="govuk-heading-xl">@ViewData["Header"]</h1>
         <p class="govuk-body">
             Looking at school performance data is one way to see how well a school is doing.
             You should look at a range of information about a school before deciding if it’s the right fit for your child.
@@ -25,18 +27,18 @@
         <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
             <ul class="moj-sub-navigation__list">
                 <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" aria-current="page" asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress" asp-all-route-data="@Model.RouteAttributes">Attainment and progress</a>
+                    <a class="moj-sub-navigation__link" aria-current="page" asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress" asp-all-route-data="@Model.RouteAttributes">@ViewData["SubHeader"]</a>
                 </li>
                 <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults" asp-all-route-data="@Model.RouteAttributes">English and maths results</a>
+                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.SecondarySchoolPageTitles.EnglishAndMathsResults</a>
                 </li>
                 <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">Subjects entered</a>
+                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.SecondarySchoolPageTitles.SubjectsEntered</a>
                 </li>
             </ul>
         </nav>
 
-        <h2 class="govuk-heading-l">Pupil attainment and progress</h2>
+        <h2 class="govuk-heading-l">Pupil @ViewData["SubHeader"]?.ToString()?.ToLower()</h2>
 
         <p class="govuk-body" data-testid="academic-year-info">@Model.AcademicYearInfoParagraph</p>
 
@@ -51,7 +53,7 @@
         <h3 class="govuk-heading-m">Attainment 8</h3>
 
         <p class="govuk-body">
-            Attainment 8 is used to assess a pupil’s average achievement across their best performing 8 subjects.
+            Attainment 8 is used to assess a pupil’s average achievement across their 8 best GCSE-level subjects.
         </p>
 
         <govuk-details id="details-attainment8">
@@ -68,17 +70,16 @@
                         English and maths, which are both double-weighted
                     </li>
                     <li>
-                        EBacc subjects, these are a group of GCSE subjects that help students gain a broad set of knowledge and skills.
-                        These subjects include sciences, geography, history, and languages                        
+                        other subjects including sciences, geography, history and languages                     
                     </li>
                     <li>
-                        open group which includes any other approved GCSEs or vocational qualifications
+                        any other approved GCSEs or vocational qualifications
                     </li>
                 </ul>
 
                 <p class="govuk-body">
                     Each GCSE grade is given a point score (for example grade 9 = 9 points, grade 8 = 8 points, and so on).
-                    The scores from the best 8 subjects (with English and Maths counting twice) are added together to give the Attainment 8 score.
+                    The scores from the best 8 subjects (with English and maths counting twice) are added together to give the Attainment 8 score.
                 </p>
 
                 <p class="govuk-body">
@@ -93,7 +94,7 @@
                 <div class="assignment__icon"></div>
                 <div class="custom-card__content">
                     <p class="govuk-body">
-                        The attainment 8 score for this school is @Model.EstablishmentAttainment8Score.
+                        The Attainment 8 score for this school is @($"{Model.EstablishmentAttainment8Score:0.0}").
                     </p>
                     @if(Model.EstablishmentAttainment8ScoreContextDescription.IsAvailable)
                     {
@@ -106,13 +107,18 @@
 
             <div class="custom-card" data-testid="attainment8-localauthority-and-national-card">
                 <div class="custom-card__content">
-                    <p class="govuk-body">
-                        The local authority average score is @Model.LocalAuthorityAttainment8Score.
-                    </p>
-
-                    <p class ="govuk-body">
-                        The national average score is @Model.EnglandAttainment8Score.
-                    </p>
+                    @if (Model.LocalAuthorityAttainment8ScoreContextDescription.IsAvailable)
+                    {
+                        <p class="govuk-body">
+                            @Model.LocalAuthorityAttainment8ScoreContextDescription.DisplayText()
+                        </p>
+                    }
+                    @if (Model.EnglandAttainment8ScoreContextDescription.IsAvailable)
+                    {
+                        <p class="govuk-body">
+                            @Model.EnglandAttainment8ScoreContextDescription.DisplayText()
+                        </p>
+                    }
                 </div>
                 <div class="bar-chart__icon"></div>
             </div>
@@ -173,9 +179,7 @@
                 <div class="info__icon"></div>
                 <div class="custom-card__content">
                     <p class="govuk-body">
-                        There are no Progress 8 scores for the academic years 2024 to 2025 and
-                        2025 to 2026, as there is no KS2 assessment data available to
-                        calculate the baseline. This is due to COVID-19 disruption.
+                There are no Progress 8 scores available for the academic years 2024 to 2025 and 2025 to 2026. This is because there is no KS2 baseline available to calculate secondary progress measures for these years due to COVID-19 disruption.
                     </p>
                 </div>
             </div>
@@ -187,12 +191,27 @@
                 <div class="custom-card__content">
                     <p class="govuk-body">
                         Pupils at this school score @Model.EstablishmentProgress8Score.
+                        @if (Model.EstablishmentProgress8BandingContextDescription.IsAvailable)
+                        {
+                            <span>@Model.EstablishmentProgress8BandingContextDescription.DisplayText()</span>
+                        }
                     </p>
                     <p class="govuk-body">
-                        @Model.EstablishmentProgress8TotalPupils out of @Model.EstablishmentTotalPupils pupils were included in this measure.
+                        The confidence interval is @Model.EstablishmentProgress8CILower to @Model.EstablishmentProgress8CIUpper.
                     </p>
                 </div>
             </div>
+
+            <govuk-details id="pupil-details-progress8">
+                <govuk-details-summary>
+                    Pupils included in this measure
+                </govuk-details-summary>
+                <govuk-details-text>
+                    <p class="govuk-body">
+                        @Model.EstablishmentProgress8TotalPupils out of @Model.EstablishmentTotalPupils pupils were included in this measure.
+                    </p>
+                </govuk-details-text>
+            </govuk-details>
 
             <div class="custom-card" data-testid="progress8-localauthority-card">
                 <div class="custom-card__content">

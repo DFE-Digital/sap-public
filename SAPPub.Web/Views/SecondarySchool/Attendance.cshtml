@@ -2,7 +2,8 @@
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 
 @{
-    ViewData["Title"] = "Attendance";
+    ViewData["Header"] = "Attendance";
+    ViewData["Title"] = $"{Model.SchoolName} - {ViewData["Header"]}";
 }
 
 <div class="govuk-grid-row">
@@ -16,7 +17,7 @@
 
     <div class="govuk-grid-column-three-quarters">
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
-        <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
+        <h1 class="govuk-heading-xl">@ViewData["Header"]</h1>
 
         <div id="attendance-policy-summary" class="govuk-summary-card">
             <div class="govuk-summary-card__title-wrapper">
@@ -35,7 +36,7 @@
                         </govuk-summary-list-row-key>
                         <govuk-summary-list-row-value>
                             <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite.DisplayText(UrlHelper.EnsureHttpsUrl)">
-                                View the attendance policy on the school website
+                                 Visit the school website to view their attendance policy
                                 <span class="govuk-visually-hidden">(opens in a new tab)</span>
                             </a>
                         </govuk-summary-list-row-value>

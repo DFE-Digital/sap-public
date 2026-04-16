@@ -45,6 +45,8 @@ public class AboutSchoolModel
     public string EstablishmentTypeGroupId { get; set; } = string.Empty;
 
     public DateOnly? ClosedDate { get; set; }
+    public DateOnly? OpenDate { get; set; }
 
     public int? StatusCode { get; set; }
+    public int? OpenReasonId { get; set; }
 }

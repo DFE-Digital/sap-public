@@ -2,7 +2,8 @@
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 
 @{
-    ViewData["Title"] = "Admissions";
+    ViewData["Header"] = "Admissions";
+    ViewData["Title"] = $"{Model.SchoolName} - {ViewData["Header"]}";
 }
 
 <div class="govuk-grid-row">
@@ -16,7 +17,7 @@
 
     <div class="govuk-grid-column-three-quarters">
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
-        <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
+        <h1 class="govuk-heading-xl">@ViewData["Header"]</h1>
         <h2 class="govuk-heading-l">Moving from primary to secondary school</h2>
         <div class="govuk-summary-card" data-testid="starting-secondary-school-summary">
             <div class="govuk-summary-card__title-wrapper">
@@ -168,7 +169,7 @@
                            target="_blank"
                            rel="noopener noreferrer"
                            class="govuk-link">
-                            Find out more about school admission criteria.
+                            Find out more about school admission criteria
                             <span class="govuk-visually-hidden">(opens in a new tab)</span>
                         </a>
                     </p>

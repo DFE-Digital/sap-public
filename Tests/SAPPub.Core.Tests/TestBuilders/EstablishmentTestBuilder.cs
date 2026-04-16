@@ -298,6 +298,19 @@ public class EstablishmentTestBuilder
         return this;
     }
 
+    public EstablishmentTestBuilder WithOpenReasonId(int? openReasonId)
+    {
+        _establishment.OpenReasonId = openReasonId;
+        return this;
+    }
+
+    public EstablishmentTestBuilder WithOpenDate(string? date = null)
+    {
+        _establishment.OpenDate = date ?? DateTime.Today.ToString("dd-MM-yyyy");
+        return this;
+    }
+
+
     public Establishment Build()
     {
         // fill basic values automatically if not set

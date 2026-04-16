@@ -1,4 +1,6 @@
-﻿using SAPPub.Web.Models.SecondarySchool;
+﻿using SAPPub.Core.Enums;
+using SAPPub.Core.ServiceModels.KS4.Performance;
+using SAPPub.Web.Models.SecondarySchool;
 
 namespace SAPPub.Web.Tests.Unit.Models.SecondarySchool;
 
@@ -13,6 +15,9 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
             Urn = "123456",
             SchoolName = "Test School",
             EstablishmentProgress8Score = 0.5,
+            EstablishmentProgress8CILower = -0.2,
+            EstablishmentProgress8CIUpper = 1.2,
+            EstablishmentProgress8Banding = "Average",
             LocalAuthorityProgress8Score = 0.3,
             EstablishmentAttainment8Score = 45.0,
             LocalAuthorityAttainment8Score = 40.0,
@@ -28,6 +33,9 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
         Assert.Equal(testdata.Urn, viewModel.URN);
         Assert.Equal(testdata.SchoolName, viewModel.SchoolName);
         Assert.Equal(testdata.EstablishmentProgress8Score, viewModel.EstablishmentProgress8Score);
+        Assert.Equal(testdata.EstablishmentProgress8CILower, viewModel.EstablishmentProgress8CILower);
+        Assert.Equal(testdata.EstablishmentProgress8CIUpper, viewModel.EstablishmentProgress8CIUpper);
+        Assert.Equal(testdata.EstablishmentProgress8Banding, viewModel.EstablishmentProgress8Banding);
         Assert.Equal(testdata.LocalAuthorityProgress8Score, viewModel.LocalAuthorityProgress8Score);
         Assert.Equal(testdata.EstablishmentAttainment8Score, viewModel.EstablishmentAttainment8Score);
         Assert.Equal(testdata.LocalAuthorityAttainment8Score, viewModel.LocalAuthorityAttainment8Score);
@@ -141,5 +149,134 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
             Assert.True(viewModel.EstablishmentAttainment8ScoreContextDescription.IsAvailable);
             Assert.False(viewModel.EstablishmentAttainment8ScoreContextDescription.IsNotAvailable);
         }
+    }
+
+    [Theory]
+    [InlineData(70.0, 50.0, "20.0 points higher than", "above")]
+    [InlineData(53.0, 50.0, "3.0 points higher than", "above")]
+    [InlineData(52.9, 50.0, "2.9 points higher than", "just above")]
+    [InlineData(51.0, 50.0, "1.0 points higher than", "just above")]
+    [InlineData(50.9, 50.0, "0.9 points higher than", "similar to")]
+    [InlineData(50.0, 50.0, "the same as", "similar to")]
+    [InlineData(49.9, 50.0, "0.1 points lower than", "similar to")]
+    [InlineData(49.1, 50.0, "0.9 points lower than", "similar to")]
+    [InlineData(49.0, 50.0, "1.0 points lower than", "just below")]
+    [InlineData(47.1, 50.0, "2.9 points lower than", "just below")]
+    [InlineData(47.0, 50.0, "3.0 points lower than", "below")]
+    [InlineData(40.0, 50.0, "10.0 points lower than", "below")]
+    [InlineData(40.0, null, "Not available", "Not available")]
+    [InlineData(null, 34.1, "Not available", "Not available")]
+    public void Map_LocalAuthorityAttainment8ScoreDescription_IsExpected(double? establishmentAttainment8Score, double? localAuthorityAttainment8Score, string expected1, string expected2)
+    {
+        // Arrange
+        var testdata = new Core.ServiceModels.KS4.Performance.AttainmentAndProgressModel()
+        {
+            Urn = "123456",
+            SchoolName = "Test School",
+            EstablishmentAttainment8Score = establishmentAttainment8Score,
+            LocalAuthorityAttainment8Score = localAuthorityAttainment8Score
+        };
+
+        // Act
+        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map(testdata, Core.Enums.AcademicYearSelection.Current);
+
+        // Assert
+        var expectedContextStatement1 = expected1 != "Not available" ?
+            $"An Attainment 8 score of {establishmentAttainment8Score:0.0} is {expected1} the local council average of {localAuthorityAttainment8Score:0.0}."
+            : "Not available";
+        var expectedContextStatement2 = expected2 != "Not available" ?
+            $"This means pupils are performing {expected2} pupils at other schools in the area."
+            : "Not available";
+        Assert.Contains(expectedContextStatement1, viewModel.LocalAuthorityAttainment8ScoreContextDescription.DisplayText());
+        Assert.Contains(expectedContextStatement2, viewModel.LocalAuthorityAttainment8ScoreContextDescription.DisplayText());
+        if (expected1 == "Not available")
+        {
+            Assert.False(viewModel.LocalAuthorityAttainment8ScoreContextDescription.IsAvailable);
+            Assert.True(viewModel.LocalAuthorityAttainment8ScoreContextDescription.IsNotAvailable);
+        }
+        else
+        {
+            Assert.True(viewModel.LocalAuthorityAttainment8ScoreContextDescription.IsAvailable);
+            Assert.False(viewModel.LocalAuthorityAttainment8ScoreContextDescription.IsNotAvailable);
+        }
+    }
+
+    [Theory]
+    [InlineData(70.0, 50.0, "20.0 points higher than", "above")]
+    [InlineData(53.0, 50.0, "3.0 points higher than", "above")]
+    [InlineData(52.9, 50.0, "2.9 points higher than", "just above")]
+    [InlineData(51.0, 50.0, "1.0 points higher than", "just above")]
+    [InlineData(50.9, 50.0, "0.9 points higher than", "similar to")]
+    [InlineData(50.0, 50.0, "the same as", "similar to")]
+    [InlineData(49.9, 50.0, "0.1 points lower than", "similar to")]
+    [InlineData(49.1, 50.0, "0.9 points lower than", "similar to")]
+    [InlineData(49.0, 50.0, "1.0 points lower than", "just below")]
+    [InlineData(47.1, 50.0, "2.9 points lower than", "just below")]
+    [InlineData(47.0, 50.0, "3.0 points lower than", "below")]
+    [InlineData(40.0, 50.0, "10.0 points lower than", "below")]
+    [InlineData(40.0, null, "Not available", "Not available")]
+    [InlineData(null, 34.1, "Not available", "Not available")]
+    public void Map_NationalAttainment8ScoreDescription_IsExpected(double? establishmentAttainment8Score, double? nationalAttainment8Score, string expected1, string expected2)
+    {
+        // Arrange
+        var testdata = new Core.ServiceModels.KS4.Performance.AttainmentAndProgressModel()
+        {
+            Urn = "123456",
+            SchoolName = "Test School",
+            EstablishmentAttainment8Score = establishmentAttainment8Score,
+            EnglandAttainment8Score = nationalAttainment8Score
+        };
+
+        // Act
+        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map(testdata, Core.Enums.AcademicYearSelection.Current);
+
+        // Assert
+        var expectedContextStatement1 = expected1 != "Not available" ?
+            $"It's {expected1} the national average of {nationalAttainment8Score}"
+            : "Not available";
+        var expectedContextStatement2 = expected2 != "Not available" ?
+            $"meaning pupils are performing {expected2} the national average."
+            : "Not available";
+        Assert.Contains(expectedContextStatement1, viewModel.EnglandAttainment8ScoreContextDescription.DisplayText());
+        Assert.Contains(expectedContextStatement2, viewModel.EnglandAttainment8ScoreContextDescription.DisplayText());
+        if (expected1 == "Not available")
+        {
+            Assert.False(viewModel.EnglandAttainment8ScoreContextDescription.IsAvailable);
+            Assert.True(viewModel.EnglandAttainment8ScoreContextDescription.IsNotAvailable);
+        }
+        else
+        {
+            Assert.True(viewModel.EnglandAttainment8ScoreContextDescription.IsAvailable);
+            Assert.False(viewModel.EnglandAttainment8ScoreContextDescription.IsNotAvailable);
+        }
+    }
+
+    [Theory]
+    [InlineData(null, false, true, "Not available")]
+    [InlineData("Well above average", true, false, "This is well above average.")]
+    [InlineData("Above average", true, false, "This is above average.")]
+    [InlineData("Average", true, false, "This is average.")]
+    [InlineData("Below average", true, false, "This is below average.")]
+    [InlineData("Well below average", true, false, "This is well below average.")]
+    [InlineData("Not available", false, true, "Not available")]
+    [InlineData("SUPP", false, true, "Not available")]
+
+    public void Map_EstablishmentProgress8BandingContextDescription_IsExpected(string? banding, bool isAvailable, bool isNotAvailable, string expectedText)
+    {
+        // Arrange
+        var testdata = new AttainmentAndProgressModel()
+        {
+            Urn = "123456",
+            SchoolName = "Test School",
+            EstablishmentProgress8Banding = banding
+        };
+
+        // Act
+        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map(testdata, AcademicYearSelection.Current);
+
+        // Assert
+        Assert.Equal(isAvailable, viewModel.EstablishmentProgress8BandingContextDescription.IsAvailable);
+        Assert.Equal(isNotAvailable, viewModel.EstablishmentProgress8BandingContextDescription.IsNotAvailable);
+        Assert.Contains(expectedText, viewModel.EstablishmentProgress8BandingContextDescription.DisplayText());
     }
 }

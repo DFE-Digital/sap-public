@@ -240,6 +240,8 @@ jobs:
           healthcheck: ${{ env.HEALTHCHECK_CMD }}
           db-seed: false
           smoke-test: false
+          gcp-wip: ${{ vars.GCP_WIP }}
+          gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
 
       # ---------------------------
       # REVIEW APP DATABASE DEPLOYMENT (PR)
@@ -333,7 +335,7 @@ jobs:
 
           "$GITHUB_WORKSPACE/konduit.sh" \
             -n "${AKS_NAMESPACE}" \
-            -t 7200 \
+            -t 28800 \
             -x \
             -i "${BACKUP_FILE}" -c \
             "${APP_NAME}" -- psql -v ON_ERROR_STOP=1 -X
@@ -353,7 +355,6 @@ jobs:
       && contains(github.event.pull_request.labels.*.name, 'deploy')
       && contains(github.event.pull_request.labels.*.name, 'refresh data')
       }}
-      #&& needs.refresh-data.result == 'success' 
 
     environment:
       name: review
@@ -378,7 +379,10 @@ jobs:
           healthcheck: ${{ env.HEALTHCHECK_CMD }}
           db-seed: false
           smoke-test: false
-     
+          gcp-wip: ${{ vars.GCP_WIP }}
+          gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
+
+
   # ---------------------------
   # DEPLOY TEST (AUTO) + PROD (MANUAL APPROVAL)
   # ---------------------------
@@ -416,6 +420,8 @@ jobs:
           teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
           smoke-test: false
           service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
+          gcp-wip: ${{ vars.GCP_WIP }}
+          gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
 
   # ---------------------------
   # MANUAL DEPLOY
@@ -448,6 +454,8 @@ jobs:
           service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
           smoke-test: false
           db-seed: ${{ inputs.environment == 'review' && 'true' || 'false' }}
+          gcp-wip: ${{ vars.GCP_WIP }}
+          gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
 
   deploy_domains_infra:
     name: Deploy Domains Infrastructure

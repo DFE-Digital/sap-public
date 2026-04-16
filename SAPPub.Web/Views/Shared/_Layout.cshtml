@@ -14,7 +14,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - @ViewBag.ServiceName</title>
+    <title>@ViewData["Title"] - @ViewBag.ServiceName - GOV.UK</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#1d70b8">
     <link rel="icon" sizes="48x48" href="/assets/rebrand/images/favicon.ico">
@@ -61,7 +61,7 @@
             <!-- Google Tag Manager (noscript) -->
             <noscript>
                 <iframe src="https://www.googletagmanager.com/ns.html?id=@gtmId@Html.Raw(gtmAdditional)"
-                        height="0" width="0" style="display:none;visibility:hidden"></iframe>
+                        height="0" width="0" class="gtm-noscript"></iframe>
             </noscript>
             <!-- End Google Tag Manager (noscript) -->
         }
@@ -108,7 +108,11 @@
 
     <div class="govuk-width-container app-width-container">
         @await Html.PartialAsync("_PhaseBanner")
-        <main class="govuk-main-wrapper app-main-class govuk-body" id="main-content">
+        @if (!string.IsNullOrWhiteSpace(ViewBag.BackUrl))
+        {
+            <govuk-back-link href="@ViewBag.BackUrl" />
+        }
+        <main class="govuk-main-wrapper app-main-class govuk-body" id="main-content" role="main">
             @RenderBody()
         </main>
     </div>
@@ -121,9 +125,10 @@
         </govuk-footer-nav>
         <govuk-footer-meta>
             <govuk-footer-meta-items>
-                <govuk-footer-meta-item href="@Url.Action("Accessibility", "Content")">Accessibility</govuk-footer-meta-item>
-                <govuk-footer-meta-item href="@Url.Action("Preferences", "Cookies")">Cookies</govuk-footer-meta-item>
-                <govuk-footer-meta-item href="https://www.gov.uk/government/organisations/department-for-education/about/personal-information-charter" link-rel="noreferrer noopener" link-target="_blank">Privacy</govuk-footer-meta-item>
+                <govuk-footer-meta-item id="accessibility-link" href="https://accessibility-statements.education.gov.uk/s/76" link-rel="noreferrer noopener" link-target="_blank">Accessibility</govuk-footer-meta-item>
+                <govuk-footer-meta-item id="cookies-link" href="@Url.Action("Preferences", "Cookies")">Cookies</govuk-footer-meta-item>
+                <govuk-footer-meta-item id="privacy-link" href="https://www.gov.uk/government/organisations/department-for-education/about/personal-information-charter" link-rel="noreferrer noopener" link-target="_blank">Privacy</govuk-footer-meta-item>
+                <govuk-footer-meta-item id="termsandconditions-link" href="@Url.Action("TermsAndConditions", "Help")">Terms and conditions</govuk-footer-meta-item>
             </govuk-footer-meta-items>
         </govuk-footer-meta>
     </govuk-footer>

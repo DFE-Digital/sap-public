@@ -29,7 +29,7 @@ namespace SAPPub.Web.Middleware
                 + "base-uri 'self';"
                 + "frame-ancestors 'self';"
                 + "img-src 'self' data: https://*.tile.openstreetmap.org https://www.googletagmanager.com;"
-                + "style-src 'self' 'unsafe-inline'"
+                + "style-src 'self';"
                 + "font-src 'self' data:;"
                 + $"script-src 'self' 'nonce-{nonce}' https://*.googletagmanager.com https://*.clarity.ms;"
                 + "connect-src 'self' "
@@ -47,26 +47,8 @@ namespace SAPPub.Web.Middleware
             // In Development, allow Browser Link / local dev tools over HTTP/HTTPS and WS/WSS
             if (env?.IsDevelopment() == true)
             {
-                csp =
-                      "default-src 'self';"
-                    + "base-uri 'self';"
-                    + "frame-ancestors 'self';"
-                    + "img-src 'self' data: https://*.tile.openstreetmap.org https://www.googletagmanager.com;"
-                    + "style-src 'self' 'unsafe-inline'"
-                    + "font-src 'self' data:;"
-                    + $"script-src 'self' 'nonce-{nonce}' https://*.googletagmanager.com https://*.clarity.ms;"
-                    + "connect-src 'self' "
-                        + "*.google-analytics.com "
-                        + "https://*.googletagmanager.com "
-                        + "*.analytics.google.com "
-                        //+ "https://www.compare-school-performance.service.gov.uk "
-                        + "https://api.postcodes.io "
-                        + "https://*.doubleclick.net "
-                        + "https://*.clarity.ms "
-                        + "https://c.bing.com "
-                        + "https://*.applicationinsights.azure.com/ "
-                        + "https://*.visualstudio.com/ "
-                        + "http://localhost:* https://localhost:* ws://localhost:* wss://localhost:*;";
+                csp = csp.Substring(0, csp.Length - 1)
+                    + " http://localhost:* https://localhost:* ws://localhost:* wss://localhost:*;";
             }
 
             // Apply headers

@@ -365,7 +365,12 @@ public sealed class GenerateViews
         sb.AppendLine("    clean_int(t.\"schoolcapacity\")           AS \"TotalCapacity\",");
         sb.AppendLine("    clean_int(t.\"establishmentstatus__code_\") AS \"StatusCode\",");
         sb.AppendLine("    t.\"gsslacode__name_\"                    AS \"GSSLACode\",");
-        sb.AppendLine("    t.\"closedate\"                           AS \"ClosedDate\"");
+        sb.AppendLine("    t.\"closedate\"                           AS \"ClosedDate\",");
+        sb.AppendLine("    t.\"opendate\"                            AS \"OpenDate\",");
+        sb.AppendLine();
+        sb.AppendLine("    clean_int(t.\"reasonestablishmentopened__code_\")  AS \"OpenReasonId\",");
+        sb.AppendLine("    t.\"reasonestablishmentopened__name_\"             AS \"OpenReasonName\"");
+        sb.AppendLine();
         sb.AppendLine($"FROM {rawTable} t");
         // Dynamically build WHERE clause
         if (filters.Count > 0)
