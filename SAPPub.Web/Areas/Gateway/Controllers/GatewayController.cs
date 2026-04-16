@@ -178,7 +178,7 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
                 var user = await _userService.GetByEmailAsync(viewModel.EmailAddress);
                 if (user != null)
                 {
-                    ModelState.AddModelError("EmailAddress", "User already exists, log in to access the service");
+                    ModelState.AddModelError("EmailAddress", "This email address is already registered. You can access the service using the link we sent to this email address.");
                     return View(viewModel);
                 }
 
