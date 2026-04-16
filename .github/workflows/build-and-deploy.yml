@@ -482,10 +482,10 @@ jobs:
       #       "${APP_NAME}" -- psql -v ON_ERROR_STOP=1 -X
 
   # ---------------------------
-  # DEPLOY TEST (AUTO) + PROD (MANUAL APPROVAL)
+  # DEPLOY TEST (AUTO)
   # ---------------------------
   deploy:
-    name: Deploy to Test and Production
+    name: Deploy to Test
     if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
     needs: [build, test]
     runs-on: ubuntu-latest
@@ -496,7 +496,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        environment: [test, production]
+        environment: [test]
 
     environment:
       name: ${{ matrix.environment }}
