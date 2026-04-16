@@ -120,7 +120,6 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
                 {
                     Expires = DateTimeOffset.UtcNow.AddHours(hoursLeft),
                     IsEssential = true,
-                    SameSite = SameSiteMode.Strict,
                     Secure = true,
                     HttpOnly = true
                 });
@@ -202,7 +201,6 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
                 {
                     Expires = DateTimeOffset.UtcNow.AddDays(1),
                     IsEssential = true,
-                    SameSite = SameSiteMode.Strict,
                     Secure = true,
                     HttpOnly = true
                 });
