@@ -89,7 +89,7 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+
         [Route("gateway/returning/{id}")]
         public async Task<IActionResult> Returning(GatewayReturningViewModel viewModel, string id)
         {
