@@ -603,7 +603,8 @@ public class SecondarySchoolControllerTests
             .ReturnsAsync(new AdmissionsServiceModel(
                 SchoolWebsite: _fakeEstablishment.Website,
                 LAName: laName,
-                LASchoolAdmissionsUrl: lASchoolAdmissionsUrl
+                LASchoolAdmissionsUrl: lASchoolAdmissionsUrl,
+                StatusCode: 1
             ));
 
         var result = await _controller.Admissions(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
@@ -621,6 +622,7 @@ public class SecondarySchoolControllerTests
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
+        Assert.False(model.IsSchoolClosed);
     }
 
     [Theory]
@@ -640,7 +642,8 @@ public class SecondarySchoolControllerTests
             .ReturnsAsync(new AdmissionsServiceModel(
                 SchoolWebsite: _fakeEstablishment.Website,
                 LAName: laName,
-                LASchoolAdmissionsUrl: lASchoolAdmissionsUrl
+                LASchoolAdmissionsUrl: lASchoolAdmissionsUrl,
+                StatusCode: 1
             ));
 
         var result = await _controller.Admissions(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
@@ -666,6 +669,39 @@ public class SecondarySchoolControllerTests
             Assert.True(model.SchoolWebsite.IsNotAvailable);
             Assert.Equal("Not available", model.SchoolWebsite.DisplayText());
         }
+
+        Assert.False(model.IsSchoolClosed);
+    }
+
+    [Theory]
+    [InlineData(1, false)]
+    [InlineData(2, true)]
+    [InlineData(3, false)]
+    public async Task Get_Admissions_Info_IsSchoolClosed(int statusCode, bool expectedResult)
+    {
+        _fakeEstablishment.StatusCode = statusCode;
+
+        var lASchoolAdmissionsUrl = "https://www.example.com/school-admissions";
+        var laName = "Example Local Authority";
+
+        _mockAdmissionsService
+            .Setup(s => s.GetAdmissionsDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new AdmissionsServiceModel(
+                SchoolWebsite: _fakeEstablishment.Website,
+                LAName: laName,
+                LASchoolAdmissionsUrl: lASchoolAdmissionsUrl,
+                StatusCode: statusCode
+            ));
+
+        var result = await _controller.Admissions(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as AdmissionsViewModel;
+
+        Assert.NotNull(model);
+        Assert.Equal(expectedResult, model.IsSchoolClosed);
     }
 
     [Fact]

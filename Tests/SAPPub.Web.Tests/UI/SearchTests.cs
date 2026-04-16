@@ -151,7 +151,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
         Assert.Equal(searchTerm, searchBoxValue);
 
         // assert that at least one search result is displayed
-        var rows = Page.GetByTestId("school-closed-tag");       
+        var rows = Page.GetByTestId("school-closed-tag");
 
         var rowHandles = await rows.ElementHandlesAsync();
         int count = await rows.CountAsync();

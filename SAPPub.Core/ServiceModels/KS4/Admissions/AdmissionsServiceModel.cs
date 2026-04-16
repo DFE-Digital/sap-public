@@ -3,5 +3,6 @@
 public record AdmissionsServiceModel(
     string? SchoolWebsite,
     string? LAName,
-    string? LASchoolAdmissionsUrl
+    string? LASchoolAdmissionsUrl,
+    int? StatusCode
 );
