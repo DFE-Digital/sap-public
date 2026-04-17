@@ -50,6 +50,94 @@
             </div>
         </form>
 
+        <h3 class="govuk-heading-m">Progress 8</h3>
+
+        <p class="govuk-body">
+            Progress 8 is a performance measure used to show how much progress pupils make from the end of primary school (KS2)
+            to the end of secondary school (KS4) across their best performing 8 subjects.
+        </p>
+
+        <p class="govuk-body">
+            Progress 8 is calculated by comparing the pupil’s actual Attainment 8 score to their estimated Attainment 8 score based on their results at the end of primary school (KS2).
+        </p>
+
+        <govuk-details id="details-progress8">
+            <govuk-details-summary>
+                Find out more about Progress 8
+            </govuk-details-summary>
+            <govuk-details-text>
+                <p class="govuk-body">
+                    Progress 8 shows how much progress a pupil made compared to other pupils with similar starting points at the end of primary school.
+                </p>
+
+                <p class="govuk-body">
+                    The score shows progress compared to the national average:
+                </p>
+
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>
+                        a score of 0 means students made average progress compared to others with similar starting points
+                    </li>
+                    <li>
+                        a positive score of more than 0 means pupils made more progress than average
+                    </li>
+                    <li>
+                        a negative score of less than 0 means students made less progress than average
+                    </li>
+                </ul>
+            </govuk-details-text>
+        </govuk-details>
+
+        @if (Model.ShowProgress8NotAvailableInfo)
+        {
+            <div class="custom-card" data-testid="progress8-custom-card">
+                <div class="info__icon"></div>
+                <div class="custom-card__content">
+                    <p class="govuk-body">
+                        There are no Progress 8 scores available for the academic years 2024 to 2025 and 2025 to 2026. This is because there is no KS2 baseline available to calculate secondary progress measures for these years due to COVID-19 disruption.
+                    </p>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="custom-card" data-testid="progress8-establishment-card">
+                <div class="assignment__icon"></div>
+                <div class="custom-card__content">
+                    <p class="govuk-body">
+                        Pupils at this school score @Model.EstablishmentProgress8Score.
+                        @if (Model.EstablishmentProgress8BandingContextDescription.IsAvailable)
+                        {
+                            <span>@Model.EstablishmentProgress8BandingContextDescription.DisplayText()</span>
+                        }
+                    </p>
+                    <p class="govuk-body">
+                        The confidence interval is @Model.EstablishmentProgress8CILower to @Model.EstablishmentProgress8CIUpper.
+                    </p>
+                </div>
+            </div>
+
+            <govuk-details id="pupil-details-progress8">
+                <govuk-details-summary>
+                    Pupils included in this measure
+                </govuk-details-summary>
+                <govuk-details-text>
+                    <p class="govuk-body">
+                        @Model.EstablishmentProgress8TotalPupils out of @Model.EstablishmentTotalPupils pupils were included in this measure.
+                    </p>
+                </govuk-details-text>
+            </govuk-details>
+
+            <div class="custom-card" data-testid="progress8-localauthority-card">
+                <div class="custom-card__content">
+                    <p class="govuk-body">
+                        The local authority average is @Model.LocalAuthorityProgress8Score.
+                    </p>
+                </div>
+                <div class="bar-chart__icon"></div>
+            </div>
+        }
+
         <h3 class="govuk-heading-m">Attainment 8</h3>
 
         <p class="govuk-body">
@@ -133,95 +221,7 @@
                     </p>
                 </div>
             </div>
-        }
-
-        <h3 class="govuk-heading-m">Progress 8</h3>
-
-        <p class="govuk-body">
-            Progress 8 is a performance measure used to show how much progress pupils make from the end of primary school (KS2)
-            to the end of secondary school (KS4) across their best performing 8 subjects.            
-        </p>
-
-        <p class="govuk-body">
-            Progress 8 is calculated by comparing the pupil’s actual Attainment 8 score to their estimated Attainment 8 score based on their results at the end of primary school (KS2).
-        </p>
-
-        <govuk-details id="details-progress8">
-            <govuk-details-summary>
-                Find out more about Progress 8
-            </govuk-details-summary>
-            <govuk-details-text>
-                <p class="govuk-body">
-                    Progress 8 shows how much progress a pupil made compared to other pupils with similar starting points at the end of primary school.
-                </p>
-
-                <p class="govuk-body">
-                    The score shows progress compared to the national average:
-                </p>
-
-                <ul class="govuk-list govuk-list--bullet">
-                    <li>
-                        a score of 0 means students made average progress compared to others with similar starting points
-                    </li>
-                    <li>
-                        a positive score of more than 0 means pupils made more progress than average
-                    </li>
-                    <li>
-                        a negative score of less than 0 means students made less progress than average
-                    </li>
-                </ul>
-            </govuk-details-text>
-        </govuk-details>
-
-        @if (Model.ShowProgress8NotAvailableInfo)
-        {
-            <div class="custom-card" data-testid="progress8-custom-card">
-                <div class="info__icon"></div>
-                <div class="custom-card__content">
-                    <p class="govuk-body">
-                There are no Progress 8 scores available for the academic years 2024 to 2025 and 2025 to 2026. This is because there is no KS2 baseline available to calculate secondary progress measures for these years due to COVID-19 disruption.
-                    </p>
-                </div>
-            </div>
-        }
-        else
-        {
-            <div class="custom-card" data-testid="progress8-establishment-card">
-                <div class="assignment__icon"></div>
-                <div class="custom-card__content">
-                    <p class="govuk-body">
-                        Pupils at this school score @Model.EstablishmentProgress8Score.
-                        @if (Model.EstablishmentProgress8BandingContextDescription.IsAvailable)
-                        {
-                            <span>@Model.EstablishmentProgress8BandingContextDescription.DisplayText()</span>
-                        }
-                    </p>
-                    <p class="govuk-body">
-                        The confidence interval is @Model.EstablishmentProgress8CILower to @Model.EstablishmentProgress8CIUpper.
-                    </p>
-                </div>
-            </div>
-
-            <govuk-details id="pupil-details-progress8">
-                <govuk-details-summary>
-                    Pupils included in this measure
-                </govuk-details-summary>
-                <govuk-details-text>
-                    <p class="govuk-body">
-                        @Model.EstablishmentProgress8TotalPupils out of @Model.EstablishmentTotalPupils pupils were included in this measure.
-                    </p>
-                </govuk-details-text>
-            </govuk-details>
-
-            <div class="custom-card" data-testid="progress8-localauthority-card">
-                <div class="custom-card__content">
-                    <p class="govuk-body">
-                        The local authority average is @Model.LocalAuthorityProgress8Score.
-                    </p>
-                </div>
-                <div class="bar-chart__icon"></div>
-            </div>
-        }
+        }        
 
         <govuk-pagination id="academic-performance-attainment-and-progress-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.SecondaryCurriculumAndExtraCurricularActivities" asp-all-route-data="@Model.RouteAttributes">Curriculum and extra-curricular activities</govuk-pagination-previous>
