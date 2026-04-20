@@ -34,7 +34,7 @@
                     @if (Model.SearchParams.LocationSearchTerm is not null)
                     {
                         <govuk-select for=@Model.SearchParams.Distance name="Distance">
-                            <govuk-select-label>Change radius</govuk-select-label>
+                        <govuk-select-label class="govuk-label--s">Change radius</govuk-select-label>
                             <govuk-select-item value="3" selected="@Model.SearchParams.Distance == 3">3</govuk-select-item>
                             <govuk-select-item value="5" selected="@Model.SearchParams.Distance == 5">5</govuk-select-item>
                             <govuk-select-item value="10" selected="@Model.SearchParams.Distance == 10">10</govuk-select-item>
