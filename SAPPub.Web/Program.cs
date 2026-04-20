@@ -183,6 +183,11 @@ public partial class Program
             }
         });
 
+        app.UseForwardedHeaders(new ForwardedHeadersOptions
+        {
+            ForwardedHeaders = ForwardedHeaders.All
+        });
+
         app.UseRouting();
         app.UseGovUkFrontend();
 
