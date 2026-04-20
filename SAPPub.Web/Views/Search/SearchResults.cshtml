@@ -8,22 +8,27 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <div class="shaded-box">
-            <form method="get" asp-controller="Search" asp-action="SearchResults">
+        <form method="get" asp-controller="Search" asp-action="SearchResults">
+            <div class="shaded-box">
                 <govuk-fieldset>
                     <govuk-fieldset-legend is-page-heading="false" class="govuk-fieldset__legend--l"></govuk-fieldset-legend>
 
-                        <govuk-input input-class="govuk-input govuk-!-width-two-thirds" input-placeholder="Search by keyword" for=@Model.SearchParams.NameSearchTerm name="NameSearchTerm" data-testid="searchByNameInput">
+                        <govuk-input input-class="govuk-input govuk-!-width-full" input-placeholder="Search by keyword" for=@Model.SearchParams.NameSearchTerm name="NameSearchTerm" data-testid="searchByNameInput">
                             <govuk-input-label is-page-heading="false" class="govuk-label--s" id="school-name">School name</govuk-input-label>
                             <govuk-input-hint>For example, St Joseph's secondary school</govuk-input-hint>
                         </govuk-input>
 
-                        <govuk-input input-class="govuk-input govuk-!-width-two-thirds" input-placeholder="Search by postcode" for=@Model.SearchParams.LocationSearchTerm name="LocationSearchTerm" data-testid="searchByLocationInput">
+                        <govuk-input input-class="govuk-input govuk-!-width-full" input-placeholder="Search by postcode" for=@Model.SearchParams.LocationSearchTerm name="LocationSearchTerm" data-testid="searchByLocationInput">
                             <govuk-input-label is-page-heading="false" class="govuk-label--s" id="location">Postcode</govuk-input-label>
                             <govuk-input-hint>For example, LS28 8EU</govuk-input-hint>
                         </govuk-input>
 
                     <govuk-button id="search" type="submit">Search</govuk-button>
+
+                </govuk-fieldset>
+            </div>
+            <govuk-fieldset>
+                <govuk-fieldset-legend is-page-heading="false" class="govuk-fieldset__legend--l"></govuk-fieldset-legend>
 
                     <p><strong>@(Model.SearchParams.LocationSearchTerm != null ? "Sorted by distance" : "Sorted alphabetically")</strong></p>
                     @if (Model.SearchParams.LocationSearchTerm is not null)
@@ -36,9 +41,8 @@
                         </govuk-select>
                         <govuk-button class="govuk-button govuk-button--secondary" id="show-results" type="submit">Show results</govuk-button>
                     }
-                </govuk-fieldset>
-            </form>
-        </div>
+            </govuk-fieldset>
+        </form>
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
         @foreach (var modelItem in Model.SearchResults)
