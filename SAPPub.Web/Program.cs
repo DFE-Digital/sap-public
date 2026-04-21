@@ -90,6 +90,14 @@ public partial class Program
                 .SetApplicationName("SAPPub");
         }
 
+        if (builder.Environment.IsProduction())
+        {
+            builder.Services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.All;
+            });
+        }
+
         // Database connection configuration
         var connectionString = builder.Configuration.GetConnectionString("PostgresConnectionString");
 
