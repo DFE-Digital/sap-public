@@ -33,13 +33,19 @@
                     <p><strong>@(Model.SearchParams.LocationSearchTerm != null ? "Sorted by distance" : "Sorted alphabetically")</strong></p>
                     @if (Model.SearchParams.LocationSearchTerm is not null)
                     {
-                        <govuk-select for=@Model.SearchParams.Distance name="Distance">
-                        <govuk-select-label class="govuk-label--s">Change radius</govuk-select-label>
-                            <govuk-select-item value="3" selected="@Model.SearchParams.Distance == 3">3</govuk-select-item>
-                            <govuk-select-item value="5" selected="@Model.SearchParams.Distance == 5">5</govuk-select-item>
-                            <govuk-select-item value="10" selected="@Model.SearchParams.Distance == 10">10</govuk-select-item>
+                    <div class="distance-filter">
+                        <govuk-select for="@Model.SearchParams.Distance" name="Distance">
+                            <govuk-select-label class="govuk-label--s">
+                                Change radius
+                            </govuk-select-label>
+
+                            <govuk-select-item value="3" selected="@(Model.SearchParams.Distance == 3)">3 miles</govuk-select-item>
+                            <govuk-select-item value="5" selected="@(Model.SearchParams.Distance == 5)">5 miles</govuk-select-item>
+                            <govuk-select-item value="10" selected="@(Model.SearchParams.Distance == 10)">10 miles</govuk-select-item>
                         </govuk-select>
+
                         <govuk-button class="govuk-button govuk-button--secondary" id="show-results" type="submit">Show results</govuk-button>
+                    </div>
                     }
             </govuk-fieldset>
         </form>
