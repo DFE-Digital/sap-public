@@ -90,6 +90,14 @@ public partial class Program
                 .SetApplicationName("SAPPub");
         }
 
+        if (builder.Environment.IsProduction())
+        {
+            builder.Services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.All;
+            });
+        }
+
         // Database connection configuration
         var connectionString = builder.Configuration.GetConnectionString("PostgresConnectionString");
 
@@ -181,11 +189,6 @@ public partial class Program
                     Console.WriteLine($"  WARNING: No content type for extension: {ext}");
                 }
             }
-        });
-
-        app.UseForwardedHeaders(new ForwardedHeadersOptions
-        {
-            ForwardedHeaders = ForwardedHeaders.All
         });
 
         app.UseRouting();
