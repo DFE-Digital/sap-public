@@ -53,38 +53,50 @@
         <h3 class="govuk-heading-m">Progress 8</h3>
 
         <p class="govuk-body">
-            Progress 8 is a performance measure used to show how much progress pupils make from the end of primary school (KS2)
-            to the end of secondary school (KS4) across their best performing 8 subjects.
+            Progress 8 measures a school’s performance. It shows how much progress pupils make from the end of primary school (KS2) to the end of secondary school (KS4), across 8 qualifications.
         </p>
 
-        <p class="govuk-body">
-            Progress 8 is calculated by comparing the pupil’s actual Attainment 8 score to their estimated Attainment 8 score based on their results at the end of primary school (KS2).
-        </p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>
+                A score of zero means pupils made about the same progress as similar pupils across England.
+            </li>
+            <li>
+                A positive score means pupils made more progress than similar pupils across England.
+            </li>
+            <li>
+                A negative score means pupils made less progress than similar pupils across England.
+            </li>
+        </ul>
 
         <govuk-details id="details-progress8">
             <govuk-details-summary>
-                Find out more about Progress 8
+                Find out more about Progress 8 confidence intervals
             </govuk-details-summary>
             <govuk-details-text>
                 <p class="govuk-body">
-                    Progress 8 shows how much progress a pupil made compared to other pupils with similar starting points at the end of primary school.
+                    Progress 8 scores are influenced by both the school and their pupils. It is difficult to determine how much of the progress score is due to the school and how much is due to the pupils themselves. Confidence intervals reflect this uncertainty.
                 </p>
 
                 <p class="govuk-body">
-                    The score shows progress compared to the national average:
+                    If the confidence intervals for two schools overlap, it means we cannot be sure that one school’s Progress 8 score is better than the other.
                 </p>
 
-                <ul class="govuk-list govuk-list--bullet">
-                    <li>
-                        a score of 0 means students made average progress compared to others with similar starting points
-                    </li>
-                    <li>
-                        a positive score of more than 0 means pupils made more progress than average
-                    </li>
-                    <li>
-                        a negative score of less than 0 means students made less progress than average
-                    </li>
-                </ul>
+                <p class="govuk-body">
+                    The greater the number of pupils, the smaller the range of the confidence interval. Smaller schools have larger confidence intervals because fewer pupils are included, so the score is more affected by the performance of individual pupils.  
+                </p>
+
+                <p class="govuk-body">
+                    A school is above average if its Progress 8 score is above 0 and the entire confidence interval is above 0.
+                </p>
+                <p class="govuk-body">
+                    A school is below average if its Progress 8 score is below 0 and the entire confidence interval is below 0.
+                </p>
+
+                <p class="govuk-body">
+                    Read more about how confidence intervals are used in the <a class="govuk-link govuk-link--no-visited-state" href="https://www.gov.uk/government/publications/progress-8-school-performance-measure" rel="nofollow noreferrer" target="_blank">secondary accountability measures guidance</a>.
+                </p>
+
+
             </govuk-details-text>
         </govuk-details>
 
@@ -152,13 +164,13 @@
                 <p class="govuk-body">
                     The 8 subjects that are used in Attainment 8 are split into 3 groups:
                 </p>
-               
+
                 <ul class="govuk-list govuk-list--bullet">
                     <li>
                         English and maths, which are both double-weighted
                     </li>
                     <li>
-                        other subjects including sciences, geography, history and languages                     
+                        other subjects including sciences, geography, history and languages
                     </li>
                     <li>
                         any other approved GCSEs or vocational qualifications
@@ -184,7 +196,7 @@
                     <p class="govuk-body">
                         The Attainment 8 score for this school is @($"{Model.EstablishmentAttainment8Score:0.0}").
                     </p>
-                    @if(Model.EstablishmentAttainment8ScoreContextDescription.IsAvailable)
+                    @if (Model.EstablishmentAttainment8ScoreContextDescription.IsAvailable)
                     {
                         <p class="govuk-body">
                             @Model.EstablishmentAttainment8ScoreContextDescription.DisplayText()
@@ -221,7 +233,7 @@
                     </p>
                 </div>
             </div>
-        }        
+        }
 
         <govuk-pagination id="academic-performance-attainment-and-progress-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.SecondaryCurriculumAndExtraCurricularActivities" asp-all-route-data="@Model.RouteAttributes">Curriculum and extra-curricular activities</govuk-pagination-previous>
