@@ -85,7 +85,7 @@ namespace SAPPub.Web.Helpers
                 Attainment8_Tot_Est_Current_Num = 10,
                 Attainment8_Tot_Est_Previous_Num = 20,
                 Attainment8_Tot_Est_Previous2_Num = 30
-            },            
+            },
         };
 
 
@@ -194,6 +194,16 @@ namespace SAPPub.Web.Helpers
             if (page > 1) return Task.FromResult(Enumerable.Empty<T>());
             var results = ReadAllAsync(ct).Result;
             return Task.FromResult(results.Take(take));
+        }
+
+        Task<bool> IGenericRepository<T>.WriteAsync(object? writeObject, CancellationToken ct)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<bool> IGenericRepository<T>.UpdateAsync(object? updateObject, CancellationToken ct)
+        {
+            throw new NotImplementedException();
         }
     }
 }
