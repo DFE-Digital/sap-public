@@ -2,8 +2,8 @@
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.ServiceModels.Search.InputModels;
 using SAPPub.Core.ServiceModels.Search.Results;
-using SAPPub.Web.Models.Search;
 using SAPPub.Web.Constants;
+using SAPPub.Web.Models.Search;
 
 namespace SAPPub.Web.Controllers;
 
@@ -39,6 +39,7 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
     }
 
     [HttpGet]
+    [Route("search/results")]
     public async Task<IActionResult> SearchResults(SearchParamsModel model)
     {
         if (!ModelState.IsValid)
