@@ -1,16 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SAPPub.Core.Entities.Gateway;
-using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Repositories.Gateway;
-using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Gateway;
 using SAPPub.Web.Models.Config;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SAPPub.Core.Services.Gateway
 {
@@ -33,9 +26,9 @@ namespace SAPPub.Core.Services.Gateway
             return allUsers.FirstOrDefault(u => u.EmailAddress.Equals(email, StringComparison.OrdinalIgnoreCase));
         }
 
-        public async Task<GatewayUser?> GetById(Guid id)
+        public Task<GatewayUser?> GetById(Guid id)
         {
-            return await _gatewayUserRepository.GetByIdAsync(id);
+            return _gatewayUserRepository.GetByIdAsync(id);
         }
 
         public async Task<bool> IsUserExpiredAsync(Guid id)
@@ -73,9 +66,9 @@ namespace SAPPub.Core.Services.Gateway
 
         }
 
-        public async Task<IEnumerable<GatewayUser>> GetAllAsync()
+        public Task<IEnumerable<GatewayUser>> GetAllAsync()
         {
-            return await _gatewayUserRepository.GetAllAsync();
+            return _gatewayUserRepository.GetAllAsync();
         }
     }
 }
