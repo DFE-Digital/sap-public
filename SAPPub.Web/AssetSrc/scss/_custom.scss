@@ -271,3 +271,17 @@
         white-space: nowrap;
     }
 }
+
+/* Mobile: align with padded search box */
+.distance-filter--inset {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Tablet and up: remove inset (desktop already looks correct) */
+@include govuk-media-query($from: tablet) {
+    .distance-filter--inset {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
