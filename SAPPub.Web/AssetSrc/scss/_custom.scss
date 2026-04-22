@@ -162,7 +162,13 @@
 
 .shaded-box {
     background-color: rgb(244, 248, 251);
-    padding: 15px;
+    padding: 20px 0px;
+}
+
+@include govuk-media-query($from: tablet) {
+    .shaded-box {
+        padding: 20px;
+    }
 }
 
 .gtm-noscript {
@@ -269,19 +275,5 @@
     .distance-filter .govuk-label {
         margin-bottom: 0;
         white-space: nowrap;
-    }
-}
-
-/* Mobile: align with padded search box */
-.distance-filter--inset {
-    padding-left: 15px;
-    padding-right: 15px;
-}
-
-/* Tablet and up: remove inset (desktop already looks correct) */
-@include govuk-media-query($from: tablet) {
-    .distance-filter--inset {
-        padding-left: 0;
-        padding-right: 0;
     }
 }
