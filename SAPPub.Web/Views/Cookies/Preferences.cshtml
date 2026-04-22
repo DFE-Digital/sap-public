@@ -1,4 +1,6 @@
-﻿@{
+﻿@using SAPPub.Web.Models.Config
+@inject Microsoft.Extensions.Options.IOptions<GatewayOptions> options;
+@{
     ViewData["Title"] = "Cookies";
     ViewBag.ShowONS = true;
     ViewBag.pageClass = "cookie-info-page";
@@ -10,7 +12,9 @@
             acceptAnalyticsCookies = analyticsConsentValue == "true";
         }
     }
+    var gateWayCookieLength = options.Value.AllowedDays;
 }
+
 <div class="govuk-width-container">
     <main class="govuk-main-wrapper " id="main-content" role="main">
         <div class="govuk-grid-row">
@@ -118,7 +122,7 @@
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell">gateway</td>
                             <td class="govuk-table__cell">Allows access to the service</td>
-                            <td class="govuk-table__cell">1 day</td>
+                            <td class="govuk-table__cell">@gateWayCookieLength day</td>
                         </tr>
                     </tbody>
                 </table>
