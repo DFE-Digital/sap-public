@@ -1,4 +1,5 @@
-﻿using SAPPub.Core.ServiceModels.Search.Results;
+﻿using SAPPub.Core.Helpers;
+using SAPPub.Core.ServiceModels.Search.Results;
 using SAPPub.Web.Helpers;
 using System.ComponentModel.DataAnnotations;
 
@@ -38,6 +39,8 @@ public class SearchResult
 {
     public string URN { get; set; } = string.Empty;
     public string EstablishmentName { get; set; } = string.Empty;
+    public string EstablishmentNameClean => TextHelpers.CleanForUrl(EstablishmentName);
+
     public string Address { get; set; } = string.Empty;
     public string? ReligiousCharacter { get; set; }
     public string? GenderName { get; set; }
