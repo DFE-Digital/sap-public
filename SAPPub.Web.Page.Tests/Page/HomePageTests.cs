@@ -1,5 +1,6 @@
 ﻿using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Repositories.Generic;
+using SAPPub.Web.Page.Tests.Tests.Infrastructure;
 
 namespace SAPPub.Web.Page.Tests.Tests;
 

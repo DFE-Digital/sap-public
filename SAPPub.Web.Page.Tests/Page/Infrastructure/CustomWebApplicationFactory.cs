@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 
-namespace SAPPub.Web.Page.Tests;
+namespace SAPPub.Web.Page.Tests.Tests.Infrastructure;
 
 public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Program>
      where Program : class
@@ -19,11 +19,11 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.RemoveAll(typeof(IAboutSchoolService));
                 services.AddSingleton<MockAccessor<IAboutSchoolService>>();
                 services.AddSingleton<MockAccessor<IAttainmentAndProgressService>>();
-                services.AddTransient<IAboutSchoolService>(provider =>
+                services.AddTransient(provider =>
                 {
                     return provider.GetRequiredService<MockAccessor<IAboutSchoolService>>().Get()?.Object!;
                 });
-                services.AddTransient<IAttainmentAndProgressService>(provider =>
+                services.AddTransient(provider =>
                 {
                     return provider.GetRequiredService<MockAccessor<IAttainmentAndProgressService>>().Get()?.Object!;
                 });

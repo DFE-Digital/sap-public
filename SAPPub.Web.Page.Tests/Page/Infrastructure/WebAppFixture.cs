@@ -1,7 +1,7 @@
 ﻿using AngleSharp;
 using AngleSharp.Dom;
 
-namespace SAPPub.Web.Page.Tests;
+namespace SAPPub.Web.Page.Tests.Tests.Infrastructure;
 
 public class WebAppFixture : IDisposable
 {

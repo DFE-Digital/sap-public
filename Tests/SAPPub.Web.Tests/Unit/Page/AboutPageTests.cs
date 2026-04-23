@@ -2,8 +2,9 @@
 using Moq;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
+using SAPPub.Web.Page.Tests.Tests.Infrastructure;
 
-namespace SAPPub.Web.Page.Tests.Tests;
+namespace SAPPub.Web.Tests.Unit.Page;
 
 [Collection("WebAppCollection")] // share the WebAppFixture across tests in this class so that we oly start the web app once for all tests in this collection
 
