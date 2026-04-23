@@ -14,6 +14,7 @@ public class AboutPageTests : IDisposable // implement IDisposable so can clear 
 
     private string BuildUrl(string urn, string schoolName)
     {
+        // CML TODO: use our slugify method here instead of just URL encoding the school name
         var encodedSchoolName = Uri.EscapeDataString(schoolName);
         return $"/school/{urn}/{encodedSchoolName}/secondary/about";
     }

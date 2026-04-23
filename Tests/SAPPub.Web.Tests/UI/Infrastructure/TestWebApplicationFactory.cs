@@ -40,7 +40,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
             .ConfigureServices(services =>
             {
                 services.RemoveAll(typeof(IGenericRepository<>));
-                services.AddSingleton(typeof(IGenericRepository<>), typeof(UI.Infrastructure.FakeGenericRepository<>));
+                services.AddSingleton(typeof(IGenericRepository<>), typeof(Web.Helpers.FakeGenericRepository<>));
             });
     }
 

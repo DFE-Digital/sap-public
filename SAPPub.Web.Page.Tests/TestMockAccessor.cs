@@ -4,7 +4,7 @@ namespace SAPPub.Web.Page.Tests;
 
 public class MockAccessor<T> where T : class
 {
-    private Mock<T> _current = new();
+    private Mock<T>? _current = new();
 
     public void Set(Mock<T> mock) => _current = mock;
 
@@ -15,7 +15,7 @@ public class MockAccessor<T> where T : class
 
     public Mock<T> GetOrDefault()
     {
-        return _current ?? new Mock<T>(); // null fallback because of BackgroundService requesting the Repository at startup
+        return _current ?? new Mock<T>(); // null fallback because of Lucene BackgroundService requesting the Repository
     }
 
     public void Clear() => _current = null;
