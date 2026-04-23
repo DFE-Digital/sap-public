@@ -1,4 +1,5 @@
 ﻿using SAPPub.Core.Entities;
+using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Repositories.Generic;
@@ -72,10 +73,23 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             EstablishmentNumber = "4343",
             PhaseOfEducationId = "4",
             PhaseOfEducationName = "Secondary",
-            AddressPostcode = "CM18 7NQ"
+            AddressPostcode = "CM18 7NQ",
+            StatusCode = 2,
+            ClosedDate = null
+        },
+        ["107564"] = new Establishment
+        {
+            URN = "107564",
+            EstablishmentName = "Todmorden High School",
+            LAId = "381",
+            EstablishmentNumber = "4026",
+            PhaseOfEducationId = "4",
+            PhaseOfEducationName = "Secondary",
+            AddressPostcode = "OL14 7DG",
+            StatusCode = 2,
+            ClosedDate = "23-03-2025"
         }
     };
-
 
     private static readonly Dictionary<string, EstablishmentPerformance> EstablishmentPerformances = new(StringComparer.OrdinalIgnoreCase)
     {
@@ -84,10 +98,29 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             Id = "105574",
             Attainment8_Tot_Est_Current_Num = 10,
             Attainment8_Tot_Est_Previous_Num = 20,
-            Attainment8_Tot_Est_Previous2_Num = 30
+            Attainment8_Tot_Est_Previous2_Num = 30,
+            EngMaths49_Tot_Est_Current_Pct = 50,
+            EngMaths59_Tot_Est_Current_Pct = 60,
+            EngMaths49_Tot_Est_Previous_Pct = 65,
+            EngMaths59_Tot_Est_Previous_Pct = 70,
+            EngMaths49_Tot_Est_Previous2_Pct = 75,
+            EngMaths59_Tot_Est_Previous2_Pct = 80
         },
     };
 
+    private static readonly Dictionary<string, EstablishmentDestinations> EstablishmentDestinations = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["105574"] = new EstablishmentDestinations
+        {
+            Id = "105574",
+            AllDest_Tot_Est_Current_Pct = 50,
+            AllDest_Tot_Est_Previous_Pct = 20,
+            AllDest_Tot_Est_Previous2_Pct = 30,
+            Education_Tot_Est_Current_Pct = 47,
+            Employment_Tot_Est_Current_Pct = 2,
+            Apprentice_Tot_Est_Current_Pct = 1,
+        },
+    };
 
     public Task<T?> ReadAsync(string id, CancellationToken ct = default)
         => ReadSingleAsync(new { Id = id }, ct);
@@ -123,6 +156,13 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
                 return Task.FromResult<T?>((T)(object)est);
         }
 
+        if (typeof(T) == typeof(EstablishmentDestinations))
+        {
+            var id = GetPropertyString(parameters, "Id");
+
+            if (!string.IsNullOrWhiteSpace(id) && EstablishmentDestinations.TryGetValue(id, out var est))
+                return Task.FromResult<T?>((T)(object)est);
+        }
         return Task.FromResult<T?>(default);
     }
 
