@@ -114,6 +114,10 @@ namespace SAPPub.Core.Entities
 
         public string? ClosedDate { get; set; }
 
+        public string? OpenDate { get; set; }
+
+        public int? OpenReasonId { get; set; }
+
         public EstablishmentPerformance KS4Performance { get; set; } = new();
 
         public LAPerformance LAPerformance { get; set; } = new();

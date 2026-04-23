@@ -36,6 +36,12 @@
                 <govuk-summary-list-row-key>Name</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
                     @Model.SchoolName
+                    @if (Model.RecentlyOpenedSchoolMessage.IsAvailable)
+                    {
+                        <span class="govuk-hint govuk-clear">
+                            @Model.RecentlyOpenedSchoolMessage.Value
+                        </span>
+                    }
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             @if(Model.AcademyTrust.IsAvailable)
@@ -48,7 +54,7 @@
                         @if (Model.AcademyTrustUpdatedIn.IsAvailable)
                         {
                             <span class="govuk-hint govuk-clear">
-                                (updated in @Model.AcademyTrustUpdatedIn.DisplayText())
+                                updated in @Model.AcademyTrustUpdatedIn.DisplayText()
                             </span>
                         }
                     </govuk-summary-list-row-value>
@@ -73,7 +79,14 @@
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Telephone</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                    <a class="govuk-link govuk-link--no-visited-state" href="tel:@Model.Telephone">@Model.Telephone</a>
+                    @if (Model.Telephone.IsAvailable)
+                    {
+                        <a class="govuk-link govuk-link--no-visited-state" href="tel:@Model.Telephone.Value">@Model.Telephone.Value</a>
+                    }
+                    else
+                    {
+                        @Model.Telephone.DisplayText()
+                    }
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
         </govuk-summary-list>
@@ -84,23 +97,26 @@
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Address</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                    @Model.Address
+                    @Model.Address.DisplayText()
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Local council</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                    @Model.LocalAuthority
-                    <span class="govuk-clear">
-                        <a href="@($"https://www.{Model.LocalAuthorityWebsite}")"
-                           target="_blank"
-                           rel="noopener noreferrer"
-                           class="govuk-link govuk-link--no-visited-state"
-                           data-testid="la-website-link">
-                           View @Model.LocalAuthorityCouncilName’s website
-                            <span class="govuk-visually-hidden">(opens in a new tab)</span>
-                        </a>
-                    </span>
+                    @Model.LocalAuthority.DisplayText()
+                    @if(Model.LocalAuthority.IsAvailable)
+                    {
+                        <span class="govuk-clear">
+                            <a href="@($"https://www.{Model.LocalAuthorityWebsite}")"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="govuk-link govuk-link--no-visited-state"
+                               data-testid="la-website-link">
+                               View @Model.LocalAuthorityCouncilName’s website
+                                <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                            </a>
+                        </span>
+                    }
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
         </govuk-summary-list>
@@ -162,43 +178,49 @@
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Type of school</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                   @Model.TypeOfSchool
+                   @Model.TypeOfSchool.DisplayText()
+                    @if (Model.RecentlyOpenedSchoolMessage.IsAvailable)
+                    {
+                        <span class="govuk-hint govuk-clear">
+                            @Model.RecentlyOpenedSchoolMessage.Value
+                        </span>
+                    }
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Headteacher</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                   @Model.HeadTeacher
+                   @Model.HeadTeacher.DisplayText()
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Age range</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                   @Model.AgeRange
+                   @Model.AgeRange.DisplayText()
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Number of pupils</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                   @Model.NumberOfPupils
+                   @Model.NumberOfPupils.DisplayText()
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Pupil sex</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                   @Model.PupilSex
+                   @Model.PupilSex.DisplayText()
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Religious character</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                   @Model.ReligiousCharacter
+                   @Model.ReligiousCharacter.DisplayText()
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Sixth form</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                   @Model.SixthForm
+                   @Model.SixthForm.DisplayText()
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
@@ -250,7 +272,7 @@
                     @if (Model.SchoolWebsite.IsAvailable)
                     {
                         <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite.DisplayText(UrlHelper.EnsureHttpsUrl)">
-                            View these policies on the school website
+                            Visit the school website to view their policies
                             <span class="govuk-visually-hidden">(opens in a new tab)</span>
                         </a>
                     }

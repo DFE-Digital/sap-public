@@ -4,8 +4,6 @@ using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Web.Helpers;
 using static SAPPub.Web.Constants.Constants;
 
-
-
 namespace SAPPub.Web.Models.SecondarySchool
 {
     public class AboutSchoolViewModel : SecondarySchoolBaseViewModel
@@ -13,7 +11,8 @@ namespace SAPPub.Web.Models.SecondarySchool
         private const string SENUnit = "SEN unit";
         private const string ResourcedProvisionAndSENUnit = "Resourced provision and SEN unit";
         private const string ResourcedProvisionText = "Resourced provision";
-        private const int LocalAuthorityEstablishmentGroupTypeId = 4;
+        private const int LocalAuthorityEstablishmentGroupTypeId = 4;        
+        private const int AcademyOpenReasonId = 10;
 
         public record School(string Name, double Lat, double Lon);
 
@@ -23,11 +22,11 @@ namespace SAPPub.Web.Models.SecondarySchool
 
         public required DisplayField<string> SchoolWebsite { get; set; }
 
-        public string? Telephone { get; set; }
+        public required DisplayField<string> Telephone { get; set; }
 
-        public string? Address { get; set; }
+        public required DisplayField<string> Address { get; set; }
 
-        public string? LocalAuthority { get; set; }
+        public required DisplayField<string> LocalAuthority { get; set; }
 
         public string? LocalAuthorityCouncilName { get; set; }
 
@@ -39,19 +38,19 @@ namespace SAPPub.Web.Models.SecondarySchool
 
         public string Latitude { get; set; } = string.Empty;
 
-        public string? TypeOfSchool { get; set; }
+        public required DisplayField<string> TypeOfSchool { get; set; }
 
-        public string? HeadTeacher { get; set; }
+        public required DisplayField<string> HeadTeacher { get; set; }
 
-        public string? AgeRange { get; set; }
+        public required DisplayField<string> AgeRange { get; set; }
 
-        public string? NumberOfPupils { get; set; }
+        public required DisplayField<string> NumberOfPupils { get; set; }
 
-        public string? PupilSex { get; set; }
+        public required DisplayField<string> PupilSex { get; set; }
 
-        public string? ReligiousCharacter { get; set; }
+        public required DisplayField<string> ReligiousCharacter { get; set; }
 
-        public string? SixthForm { get; set; }
+        public required DisplayField<string> SixthForm { get; set; }
 
         public string? SenUnit { get; set; }
 
@@ -60,10 +59,15 @@ namespace SAPPub.Web.Models.SecondarySchool
         public bool IsLocalAuthoritySchool { get; set; }
 
         public required DisplayField<DateOnly> ClosedDate { get; set; }
+        public DateOnly? OpenDate { get; set; }
 
         public int? StatusCode { get; set; }
 
-        public bool IsSchoolClosed => StatusCode == 2;
+        public bool IsSchoolClosed => StatusCode == SchoolClosedStatusCode;
+        public int? OpenReasonId { get; set; }
+
+        public required DisplayField<string> RecentlyOpenedSchoolMessage { get; set; }
+
 
         public static AboutSchoolViewModel Map(AboutSchoolModel schoolDetails)
         {
@@ -76,25 +80,28 @@ namespace SAPPub.Web.Models.SecondarySchool
                 AcademyTrust = schoolDetails.AcademyTrust.ToDisplayField(),
                 AcademyTrustUpdatedIn = schoolDetails.AcademyTrustUpdatedIn.ToDisplayField(),
                 SchoolWebsite = schoolDetails.Website.ToDisplayField(),
-                Telephone = schoolDetails.Telephone,
-                Address = schoolDetails.Address,
-                LocalAuthority = schoolDetails.LocalAuthority,
+                Telephone = schoolDetails.Telephone.ToDisplayField(),
+                Address = schoolDetails.Address.ToDisplayField(),
+                LocalAuthority = schoolDetails.LocalAuthority.ToDisplayField(),
                 LocalAuthorityCouncilName = schoolDetails.LocalAuthorityName,
                 LocalAuthorityWebsite = schoolDetails.LocalAuthorityWebsite,
                 Latitude = latLong?.Latitude.ToString() ?? string.Empty,
                 Longitude = latLong?.Longitude.ToString() ?? string.Empty,
-                TypeOfSchool = schoolDetails.TypeOfSchool,
-                HeadTeacher = schoolDetails.HeadTeacher,
-                AgeRange = schoolDetails.AgeRange,
-                NumberOfPupils = schoolDetails.NumberOfPupils?.ToInt()?.ToString("N0") ?? schoolDetails.NumberOfPupils,
-                PupilSex = schoolDetails.PupilSex,
-                ReligiousCharacter = schoolDetails.ReligiousCharacter,
-                SixthForm = GetSixthForm(schoolDetails.OfficialSixthFormId),
+                TypeOfSchool = schoolDetails.TypeOfSchool.ToDisplayField(),
+                HeadTeacher = schoolDetails.HeadTeacher.ToDisplayField(),
+                AgeRange = schoolDetails.AgeRange.ToDisplayField(),
+                NumberOfPupils = (schoolDetails.NumberOfPupils?.ToInt()?.ToString("N0") ?? schoolDetails.NumberOfPupils).ToDisplayField(),
+                PupilSex = schoolDetails.PupilSex.ToDisplayField(),
+                ReligiousCharacter = schoolDetails.ReligiousCharacter.ToDisplayField(),
+                SixthForm = GetSixthForm(schoolDetails.OfficialSixthFormId).ToDisplayField(),
                 SenUnit = GetSenUnit(schoolDetails.ResourcedProvisionName),
                 ResourcedProvision = GetResourcedProvision(schoolDetails.ResourcedProvisionName),
                 IsLocalAuthoritySchool = schoolDetails.EstablishmentTypeGroupId.ToInt() == LocalAuthorityEstablishmentGroupTypeId,
                 StatusCode = schoolDetails.StatusCode,
                 ClosedDate = schoolDetails.ClosedDate.ToDisplayField(),
+                OpenDate = schoolDetails.OpenDate,
+                OpenReasonId = schoolDetails.OpenReasonId,
+                RecentlyOpenedSchoolMessage = GetRecentlyOpenedSchoolMessage(schoolDetails.OpenReasonId, schoolDetails.OpenDate)
             };
         }
 
@@ -118,9 +125,33 @@ namespace SAPPub.Web.Models.SecondarySchool
                 : No;
         }
 
-        private static string GetSixthForm(string value)
+        private static string? GetSixthForm(string value)
         {
-            return string.Equals(value, "1") ? Yes : No;
+            return string.IsNullOrWhiteSpace(value) ? null : string.Equals(value, "1") ? Yes : No;
+        }
+
+        private static DisplayField<string> GetRecentlyOpenedSchoolMessage(int? openReasonId, DateOnly? openDate)
+        {
+            if (!openDate.HasValue || !IsWithinLastThreeAcademicYears(openDate.Value))
+                return DisplayField<string>.NotAvailable();
+
+            var date = $" on {openDate.Value:d MMMM yyyy}";
+            return openReasonId switch
+            {
+                AcademyOpenReasonId => $"Opened as an academy{date}".ToDisplayField(),
+                _ => $"This school opened{date}".ToDisplayField()
+            };
+        }
+
+        private static bool IsWithinLastThreeAcademicYears(DateOnly openDate)
+        {
+            var today = DateTime.Today;
+            var previousSept12 = (today.Month < 9 || (today.Month == 9 && today.Day < 12))
+                ? new DateTime(today.Year - 1, 9, 12)
+                : new DateTime(today.Year, 9, 12);
+
+            var cutoffDate = previousSept12.AddYears(-3);
+            return openDate.ToDateTime(TimeOnly.MinValue) >= cutoffDate;
         }
     }
 }

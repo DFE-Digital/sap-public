@@ -11,8 +11,10 @@
                 new SqlViewFilter("ExcludeClosed3YrSchools", tableAlias =>
                     $"({tableAlias}.\"closedate\" IS NULL OR {tableAlias}.\"closedate\" = '' OR TO_DATE({tableAlias}.\"closedate\", 'DD/MM/YYYY') >= '{GetAcademicYearCutoffDate()}')"),
                 new SqlViewFilter("IncludeKS4", tableAlias =>
-                    $"clean_int({tableAlias}.\"phaseofeducation__code_\") IN (4, 5, 7)")
-                ];
+                    $"(clean_int({tableAlias}.\"phaseofeducation__code_\") IN (4, 5, 7) OR (clean_int({tableAlias}.\"phaseofeducation__code_\") = 0 AND clean_int({tableAlias}.\"typeofestablishment__code_\") = 06))"),
+                new SqlViewFilter("ExcludeProposedToOpen", tableAlias =>
+                    $"clean_int({tableAlias}.\"establishmentstatus__code_\") <> 4")
+            ];
         }
 
         public static string GetAcademicYearCutoffDate(DateTime now)

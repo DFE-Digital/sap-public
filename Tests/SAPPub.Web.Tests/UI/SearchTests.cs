@@ -20,6 +20,26 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     }
 
     [Fact]
+    public async Task SearchPage_Has_NotificationBannner()
+    {
+        // Arrange && Act
+        var response = await Page.GotoAsync(_pageUrl);
+
+        var banner = Page.Locator(".govuk-notification-banner");
+        var isBannerVisible = await banner.IsVisibleAsync();
+
+        var bannerElement = Page.Locator(".govuk-notification-banner__content p.govuk-notification-banner__heading");
+        var bannerText = await bannerElement.InnerTextAsync();
+
+        // Assert
+        Assert.NotNull(response);
+        Assert.Equal(200, response.Status);
+
+        Assert.True(isBannerVisible);
+        Assert.Equal("This is a new service. It’s a trial and may change.", bannerText);
+    }
+
+    [Fact]
     public async Task SearchPage_EnterSchoolName_ShowsViewWithResults()
     {
         // Arrange
@@ -151,7 +171,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
         Assert.Equal(searchTerm, searchBoxValue);
 
         // assert that at least one search result is displayed
-        var rows = Page.GetByTestId("school-closed-tag");       
+        var rows = Page.GetByTestId("school-closed-tag");
 
         var rowHandles = await rows.ElementHandlesAsync();
         int count = await rows.CountAsync();

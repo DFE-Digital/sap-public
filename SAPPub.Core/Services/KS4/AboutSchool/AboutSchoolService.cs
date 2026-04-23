@@ -39,6 +39,8 @@ public sealed class AboutSchoolService(
             EstablishmentTypeGroupId = establishment.EstablishmentTypeGroupId,
             ClosedDate = establishment.ClosedDate.ToDateOnly(),
             StatusCode = establishment.StatusCode,
+            OpenDate = establishment.OpenDate.ToDateOnly(),
+            OpenReasonId = establishment.OpenReasonId
         };
     }
 }

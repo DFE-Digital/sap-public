@@ -89,7 +89,7 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+
         [Route("gateway/returning/{id}")]
         public async Task<IActionResult> Returning(GatewayReturningViewModel viewModel, string id)
         {
@@ -120,7 +120,6 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
                 {
                     Expires = DateTimeOffset.UtcNow.AddHours(hoursLeft),
                     IsEssential = true,
-                    SameSite = SameSiteMode.Strict,
                     Secure = true,
                     HttpOnly = true
                 });
@@ -178,7 +177,7 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
                 var user = await _userService.GetByEmailAsync(viewModel.EmailAddress);
                 if (user != null)
                 {
-                    ModelState.AddModelError("EmailAddress", "User already exists, log in to access the service");
+                    ModelState.AddModelError("EmailAddress", "This email address is already registered. You can access the service using the link we sent to this email address.");
                     return View(viewModel);
                 }
 
@@ -202,7 +201,6 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
                 {
                     Expires = DateTimeOffset.UtcNow.AddDays(1),
                     IsEssential = true,
-                    SameSite = SameSiteMode.Strict,
                     Secure = true,
                     HttpOnly = true
                 });

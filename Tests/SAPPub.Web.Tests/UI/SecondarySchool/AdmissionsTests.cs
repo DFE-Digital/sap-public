@@ -8,11 +8,18 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
 {
     private string _pageUrl = "school/105574/Loreto%20High%20School%20Chorlton/secondary/admissions";
 
+    private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
+    {
+        ["105574"] = "school/105574/Loreto%20High%20School%20Chorlton/secondary/admissions",
+        ["100273"] = "school/100273/Saint%20Paul%20Roman%20Catholic%20Infant%20School/secondary/admissions",
+        ["107564"] = "school/107564/Todmorden%20High%20School/secondary/admissions"
+    };
+
     [Fact]
     public async Task AdmissionsPage_LoadsSuccessfully()
     {
         // Arrange && Act
-        var response = await Page.GotoAsync(_pageUrl);
+        var response = await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Assert
         Assert.NotNull(response);
@@ -23,7 +30,7 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
     public async Task AdmissionsPage_HasCorrectTitle()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var title = await Page.TitleAsync();
@@ -36,7 +43,7 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
     public async Task AdmissionsPage_DisplaysMainHeading()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var heading = await Page.Locator("h1").TextContentAsync();
@@ -49,7 +56,7 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
     public async Task AdmissionsPage_Displays_SchoolName_Caption()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var schoolNameCaptionLocator = Page.Locator("#school-name-caption");
@@ -66,7 +73,7 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
     public async Task AdmissionsPage_Displays_VerticalNavigation()
     {
         var nav = new VerticalNavigationHelper(Page);
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         await nav.ShouldBeVisibleAsync();
         await nav.ShouldHaveItemsCountAsync(5);
@@ -78,7 +85,7 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
     public async Task AdmissionsPage_DisplaysStartingSecondarySchoolSummaryCard()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var summaryCard = Page.GetByTestId("starting-secondary-school-summary");
@@ -105,7 +112,7 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
     public async Task AdmissionsPage_DisplaysMovingSchoolsDuringYearSummaryCard()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var summaryCard = Page.GetByTestId("moving-schools-during-year-summary-card");
@@ -125,7 +132,7 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
     public async Task AdmissionsPage_DisplaysMoreInfoOnSecondarySchoolAdmissionsAccordion()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var admissionsAccordion = Page.Locator("#more-info-on-secondary-school-admissions-accordion");
@@ -139,7 +146,7 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
     public async Task Admissions_DisplaysStartingSecondarySchool_Info()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var summaryCard = Page.GetByTestId("starting-secondary-school-summary");
@@ -156,8 +163,7 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
     public async Task Admissions_DisplaysStartingSecondarySchool_Info_ContactSchoolText()
     {
         // Arrange
-        _pageUrl = "school/100273/Saint%20Paul%20Roman%20Catholic%20Infant%20School/secondary/admissions";
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["100273"]);
 
         // Act
         var summaryCard = Page.GetByTestId("starting-secondary-school-summary");
@@ -171,10 +177,27 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
     }
 
     [Fact]
+    public async Task Admissions_DisplaysStartingSecondarySchool_Info_CannotApplyToSchoolText()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["107564"]);
+
+        // Act
+        var summaryCard = Page.GetByTestId("starting-secondary-school-summary");
+        await summaryCard.WaitForAsync();
+
+        var cannotApplySchoolInfo = summaryCard.GetByTestId("cannot-apply-info");
+        var isVisible = await cannotApplySchoolInfo.IsVisibleAsync();
+
+        // Assert
+        Assert.True(isVisible);
+    }
+
+    [Fact]
     public async Task AdmissionsPage_DisplaysPagination()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var isVisible = await Page.Locator("#admissions-pagination").IsVisibleAsync();
