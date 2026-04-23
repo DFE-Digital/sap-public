@@ -2,23 +2,20 @@
 using Moq;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
-using SAPPub.Web.Page.Tests.Tests.Infrastructure;
+using SAPPub.Web.Tests.Unit.Page.Infrastructure;
 
 namespace SAPPub.Web.Tests.Unit.Page;
 
-[Collection("WebAppCollection")] // share the WebAppFixture across tests in this class so that we oly start the web app once for all tests in this collection
+// Share the WebAppFixture across tests in this class so that we oly start the web app once for all tests in this collection
+// and run tests sequentially to avoid issues with shared state in the mock accessor.`
+// The Mock accessor is cleared after each test, but if tests run in parallel, they could interfere with each other.
+[Collection("WebAppCollection")]
 
-public class AboutPageTests : IDisposable // implement IDisposable so can clear the mock accessor after each test
+public class AboutPageTests : PageTestsBase, IDisposable // implement IDisposable so can clear the mock accessor after each test
 {
+    private static string _pageRoute = "/secondary/about";
     private readonly MockAccessor<IAboutSchoolService> _accessor;
     private readonly WebAppFixture _fixture;
-
-    private string BuildUrl(string urn, string schoolName)
-    {
-        // CML TODO: use our slugify method here instead of just URL encoding the school name
-        var encodedSchoolName = Uri.EscapeDataString(schoolName);
-        return $"/school/{urn}/{encodedSchoolName}/secondary/about";
-    }
 
     public AboutPageTests(WebAppFixture fixture)
     {
@@ -38,7 +35,7 @@ public class AboutPageTests : IDisposable // implement IDisposable so can clear 
     public async Task AboutPage_ShowsHeadingAndDetails()
     {
         // Arrange
-        var urn = "143034";
+        var urn = "143032";
         var establishmentName = "St Paul's Church of England Academy";
         var aboutSchoolServiceMock = _accessor.Get();
         aboutSchoolServiceMock?
@@ -52,7 +49,7 @@ public class AboutPageTests : IDisposable // implement IDisposable so can clear 
             });
 
         // Act
-        var doc = await _fixture.BrowseToPage(BuildUrl(urn, establishmentName));
+        var doc = await _fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
 
         // Assert
         var h1 = doc.QuerySelector("h1");
@@ -84,7 +81,7 @@ public class AboutPageTests : IDisposable // implement IDisposable so can clear 
             });
 
         // Act
-        var doc = await _fixture.BrowseToPage(BuildUrl(urn, establishmentName));
+        var doc = await _fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
 
         // Assert
         var summaryList = doc.QuerySelector("#school-details-summary");

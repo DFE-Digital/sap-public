@@ -3,21 +3,16 @@ using Moq;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.ServiceModels.KS4.Performance;
-using SAPPub.Web.Page.Tests.Tests.Infrastructure;
+using SAPPub.Web.Tests.Unit.Page.Infrastructure;
 
 namespace SAPPub.Web.Tests.Unit.Page;
 
 [Collection("WebAppCollection")]
-public class AttainmentAndProgressPageTests : IDisposable
+public class AttainmentAndProgressPageTests : PageTestsBase, IDisposable
 {
+    private static string _pageRoute = "/secondary/academic-performance-attainment-and-progress";
     private readonly MockAccessor<IAttainmentAndProgressService> _serviceMockAccessor;
     private readonly WebAppFixture _fixture;
-
-    private string BuildUrl(string urn, string schoolName)
-    {
-        var encodedSchoolName = Uri.EscapeDataString(schoolName);
-        return $"/school/{urn}/{encodedSchoolName}/secondary/academic-performance-attainment-and-progress";
-    }
 
     public AttainmentAndProgressPageTests(WebAppFixture fixture)
     {
@@ -57,7 +52,7 @@ public class AttainmentAndProgressPageTests : IDisposable
             });
 
         // Act
-        var doc = await _fixture.BrowseToPage(BuildUrl(urn, establishmentName));
+        var doc = await _fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
 
         // Assert
         var schoolAttainmentCard = doc.QuerySelector("[data-testid='attainment8-establishment-card']");

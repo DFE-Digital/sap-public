@@ -1,6 +1,6 @@
 ﻿using Moq;
 
-namespace SAPPub.Web.Page.Tests.Tests.Infrastructure;
+namespace SAPPub.Web.Tests.Unit.Page.Infrastructure;
 
 public class MockAccessor<T> where T : class
 {
