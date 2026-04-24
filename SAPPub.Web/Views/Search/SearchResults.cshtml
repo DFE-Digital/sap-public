@@ -1,4 +1,5 @@
-﻿@model SAPPub.Web.Models.Search.SearchResultsViewModel
+﻿@using SAPPub.Web.ViewComponents.Pagination
+@model SAPPub.Web.Models.Search.SearchResultsViewModel
 
 @{
     ViewData["Title"] = "Search results";
@@ -9,7 +10,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <div class="shaded-box">
-            <form method="get" asp-controller="Search" asp-action="SearchResults">
+            <form method="get" asp-controller="Search" asp-action="SearchResults">                
                 <govuk-fieldset>
                     <govuk-fieldset-legend is-page-heading="false" class="govuk-fieldset__legend--l"></govuk-fieldset-legend>
 
@@ -37,6 +38,7 @@
                         <govuk-button class="govuk-button govuk-button--secondary" id="show-results" type="submit">Show results</govuk-button>
                     }
                 </govuk-fieldset>
+                <input type="hidden" name="pageNumber" value="@Model.SearchParams.PageNumber" />
             </form>
         </div>
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
@@ -69,7 +71,7 @@
                 </govuk-summary-list-row>
             </govuk-summary-list>
         }
-        @if (Model.SearchResults.Count == 0)
+        @if (Model.SearchResultsCount == 0)
         {
             <h2 class="govuk-heading-s govuk-!-font-weight-bold" data-testid="no-results-heading">Try another search</h2>
             <p class="govuk-body">
@@ -80,5 +82,7 @@
                             : String.Empty)
             </p>
         }
+        
+        @await Component.InvokeAsync("Pagination", Model.Pagination)
     </div>
 </div>

@@ -1,4 +1,6 @@
-﻿namespace SAPPub.Core.ServiceModels.Search.Results;
+﻿using SAPPub.Core.ServiceModels.Common;
+
+namespace SAPPub.Core.ServiceModels.Search.Results;
 
 public enum SchoolSearchStatus
 {
@@ -11,9 +13,8 @@ public enum SchoolSearchStatus
 
 public record SchoolSearchResultsServiceModel
 {
-    public IList<SchoolSearchResultServiceModel> SchoolSearchResults { get; init; } = new List<SchoolSearchResultServiceModel>();
-    public int Count { get; init; }
     public SchoolSearchStatus Status { get; set; }
+    public required PagedResponse<SchoolSearchResultServiceModel> PagedResponse { get; init; }
 }
 
 public record SchoolSearchResultServiceModel

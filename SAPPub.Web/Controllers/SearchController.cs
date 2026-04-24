@@ -39,6 +39,7 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
     }
 
     [HttpGet]
+    [Route("search/results", Name = RouteConstants.SearchResults)]
     public async Task<IActionResult> SearchResults(SearchParamsModel model)
     {
         if (!ModelState.IsValid)
@@ -47,29 +48,27 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
         }
         var searchKeyWord = model.NameSearchTerm;
         var searchLocation = model.LocationSearchTerm;
-        var searchQuery = new SchoolSearchServiceQuery() { Name = searchKeyWord, Location = searchLocation, Distance = searchLocation != null ? model.Distance : null };
+        var searchQuery = new SchoolSearchServiceQuery() 
+        { 
+            Name = searchKeyWord,
+            Location = searchLocation,
+            Distance = searchLocation != null ? model.Distance : null,
+            PageNumber = model.PageNumber,
+        };
+
+        SchoolSearchResultsServiceModel? searchResults = null;
         if (searchKeyWord != null || searchLocation != null)
         {
-            var searchResults = await schoolSearchService.SearchAsync(searchQuery);
+            searchResults = await schoolSearchService.SearchAsync(searchQuery);
             if (searchResults.Status == SchoolSearchStatus.InvalidPostcode)
             {
                 // postcode may be a valid format but not be found by the postcode API
                 ModelState.AddModelError(nameof(SearchParamsModel.LocationSearchTerm), "Enter a valid postcode");
             }
-            var viewResults = new SearchResultsViewModel()
-            {
-                SearchParams = model,
-                SearchResultsCount = searchResults.Count,
-                SearchResults = SearchResultsViewModel.FromServiceModel(searchResults.SchoolSearchResults.OrderBy(r => r.Distance))
-            };
-            return View(viewResults);
         }
-        else return View(new SearchResultsViewModel()
-        {
-            SearchParams = model,
-            SearchResultsCount = 0,
-            SearchResults = new List<SearchResult>()
-        });
+        
+        var searchResultsModel = SearchResultsViewModel.FromServiceModel(model, searchResults);
+        return View(searchResultsModel);
     }
 
     // fix the model state keys so that validation messages are correctly associated with the form fields 

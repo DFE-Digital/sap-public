@@ -1,18 +1,8 @@
 ﻿using SAPPub.Core.ServiceModels.Search.Results;
-using SAPPub.Web.Helpers;
-using System.ComponentModel.DataAnnotations;
+using SAPPub.Web.Constants;
+using SAPPub.Web.ViewComponents.Pagination;
 
 namespace SAPPub.Web.Models.Search;
-
-public class SearchParamsModel
-{
-    private const string PostcodeSearchValidationRegex = """^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})$""";
-    public string? NameSearchTerm { get; set; }
-
-    [RegularExpression(PostcodeSearchValidationRegex, ErrorMessage = "Enter a full postcode")]
-    public string? LocationSearchTerm { get; set; }
-    public int Distance { get; set; } = 3;
-}
 
 public class SearchResultsViewModel
 {
@@ -20,42 +10,41 @@ public class SearchResultsViewModel
     public int SearchResultsCount { get; set; }
     public string Heading => $"{SearchResultsCount} {(SearchResultsCount == 1 ? "result" : "results")} {HeadingClause2}";
     public List<SearchResult> SearchResults { get; set; } = new List<SearchResult>();
+    public PaginationModel? Pagination { get; set; }
 
     private string? HeadingClause2 =>
-        !String.IsNullOrEmpty(SearchParams?.NameSearchTerm)
-            ? $"for '{SearchParams.NameSearchTerm}'" + (!String.IsNullOrEmpty(SearchParams.LocationSearchTerm) ? $" within {SearchParams.Distance} {(SearchParams.Distance == 1 ? "mile" : "miles")} of {SearchParams.LocationSearchTerm}" : String.Empty)
-            : !String.IsNullOrEmpty(SearchParams?.LocationSearchTerm)
+        !string.IsNullOrEmpty(SearchParams?.NameSearchTerm)
+            ? $"for '{SearchParams.NameSearchTerm}'" + (!string.IsNullOrEmpty(SearchParams.LocationSearchTerm) ? $" within {SearchParams.Distance} {(SearchParams.Distance == 1 ? "mile" : "miles")} of {SearchParams.LocationSearchTerm}" : string.Empty)
+            : !string.IsNullOrEmpty(SearchParams?.LocationSearchTerm)
                 ? $"within {SearchParams.Distance} {(SearchParams.Distance == 1 ? "mile" : "miles")} of  {SearchParams.LocationSearchTerm}"
-                : String.Empty;
+                : string.Empty;
 
-    public static List<SearchResult> FromServiceModel(IEnumerable<SchoolSearchResultServiceModel> serviceModel)
+    public static SearchResultsViewModel FromServiceModel(SearchParamsModel searchModel, SchoolSearchResultsServiceModel? searchResultsServiceModel)
     {
-        return serviceModel.Select(r => SearchResult.FromServiceModel(r)).ToList();
-    }
-}
+        var searchResults = searchResultsServiceModel?.PagedResponse.Records.OrderBy(r => r.Distance);
+        var pagerInfo = searchResultsServiceModel?.PagedResponse.PagerInfo;
 
-public class SearchResult
-{
-    public string URN { get; set; } = string.Empty;
-    public string EstablishmentName { get; set; } = string.Empty;
-    public string Address { get; set; } = string.Empty;
-    public string? ReligiousCharacter { get; set; }
-    public string? GenderName { get; set; }
-    public required DisplayField<DateOnly> ClosedDate { get; set; }
-    public int? StatusCode { get; set; }
-    public bool IsSchoolClosed => StatusCode == 2;
-
-    public static SearchResult FromServiceModel(SchoolSearchResultServiceModel serviceModel)
-    {
-        return new SearchResult
+        return new SearchResultsViewModel
         {
-            URN = serviceModel.URN?.ToString() ?? string.Empty,
-            EstablishmentName = serviceModel.EstablishmentName ?? string.Empty,
-            Address = serviceModel.Address ?? string.Empty,
-            ReligiousCharacter = serviceModel.ReligiousCharacterName ?? string.Empty,
-            GenderName = serviceModel.GenderName ?? string.Empty,
-            StatusCode = serviceModel.StatusCode,
-            ClosedDate = serviceModel.ClosedDate.ToDisplayField()
+            SearchParams = searchModel,
+            SearchResultsCount = pagerInfo?.TotalItems ?? 0,
+            SearchResults = searchResults != null ? [.. searchResults.Select(SearchResult.FromServiceModel)] : [],
+            Pagination = pagerInfo != null ? new PaginationModel 
+            {
+                PagerInfo = new Common.PagerViewModel
+                {
+                    TotalItems = pagerInfo.TotalItems,
+                    CurrentPage = pagerInfo.CurrentPage,
+                    PageSize = pagerInfo.PageSize,
+                    TotalPages = pagerInfo.TotalPages,
+                },
+                RouteName = RouteConstants.SearchResults,
+                RouteAttributes = new Dictionary<string, string?>
+                {
+                    { nameof(searchModel.NameSearchTerm), searchModel?.NameSearchTerm },
+                    { nameof(searchModel.LocationSearchTerm), searchModel?.LocationSearchTerm }
+                }
+            } : null
         };
     }
 }
