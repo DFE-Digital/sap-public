@@ -1,4 +1,5 @@
-﻿@model SAPPub.Web.Models.Search.SearchResultsViewModel
+﻿@using SAPPub.Web.ViewComponents.Pagination
+@model SAPPub.Web.Models.Search.SearchResultsViewModel
 
 @{
     ViewData["Title"] = "Search results";
@@ -48,6 +49,7 @@
                     </div>
                     }
             </govuk-fieldset>
+            <input type="hidden" name="pageNumber" value="@Model.SearchParams.PageNumber" />
         </form>
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
@@ -81,7 +83,7 @@
                 </govuk-summary-list-row>
             </govuk-summary-list>
         }
-        @if (Model.SearchResults.Count == 0)
+        @if (Model.SearchResultsCount == 0)
         {
             <h2 class="govuk-heading-s govuk-!-font-weight-bold" data-testid="no-results-heading">Try another search</h2>
             <p class="govuk-body">
@@ -92,5 +94,7 @@
                             : String.Empty)
             </p>
         }
+        
+        @await Component.InvokeAsync("Pagination", Model.Pagination)
     </div>
 </div>

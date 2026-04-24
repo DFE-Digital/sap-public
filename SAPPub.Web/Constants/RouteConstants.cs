@@ -3,7 +3,6 @@
 public static class RouteConstants
 {
     // Secondary School
-
     public const string SecondaryAboutSchool = "SecondaryAboutSchool";
     public const string SecondaryAdmissions = "SecondaryAdmissions";
     public const string SecondaryAttendance = "SecondaryAttendance";
@@ -14,6 +13,7 @@ public static class RouteConstants
     public const string SecondaryDestinations = "SecondaryDestinations";
 
     public const string Search = "Search";
+    public const string SearchResults = "SearchResults";
     public const string TermsAndConditions = "TermsAndConditions";
 
     // Route Attributes

@@ -1,4 +1,6 @@
 ﻿using Moq;
+using SAPPub.Core.Entities;
+using SAPPub.Core.Helpers;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.ServiceModels.PostcodeSearch;
@@ -30,11 +32,29 @@ public class SchoolSearchServiceTests
         ReligiousCharacterName = "Muslim"
     };
 
+    private List<SchoolSearchDocument> CreateSearchResults(int count)
+    {
+        var results = new List<SchoolSearchDocument>();
+        for (int i = 1; i <= count; i++)
+        {
+            var searchDocument = new SchoolSearchDocument
+            {
+                URN = i.ToString(),
+                EstablishmentName = $"A Test School {i}",
+                Address = $"123 Test Street {1}",
+                GenderName = "Girls",
+                ReligiousCharacterName = "NOne"
+            };
+            results.Add(searchDocument);
+        }
+        return results;
+    }
+
     [Fact]
     public async Task SearchAsync_ByName_ReturnsExpectedServiceModel()
     {
         // Arrange
-        var searchQuery = new SearchQuery() { Name = "test school" };
+        var searchQuery = new SearchQuery() { Name = "test school", PageNumber = 1 };
         _mockIndexReader.Setup(r => r.SearchAsync(
             It.Is<ServiceModels.Search.InputModels.SearchQuery>(q => q.Name == searchQuery.Name),
             It.IsAny<int>()))
@@ -48,8 +68,12 @@ public class SchoolSearchServiceTests
 
         // Assert
         Assert.Equal(SchoolSearchStatus.Success, result.Status);
-        Assert.Equal(2, result.Count);
-        Assert.Collection(result.SchoolSearchResults,
+        Assert.Equal(2, result.PagedResponse.TotalRecords);
+        Assert.Equal(2, result.PagedResponse.PagerInfo.TotalItems);
+        Assert.Equal(searchQuery.PageNumber, result.PagedResponse.PagerInfo.CurrentPage);
+        Assert.Equal(Constants.PageSize, result.PagedResponse.PagerInfo.PageSize);
+        Assert.Equal(1, result.PagedResponse.PagerInfo.TotalPages);
+        Assert.Collection(result.PagedResponse.Records,
             item =>
             {
                 Assert.Equal(searchResult1.URN, item.URN);
@@ -66,6 +90,36 @@ public class SchoolSearchServiceTests
                 Assert.Equal(searchResult2.GenderName, item.GenderName);
                 Assert.Equal(searchResult2.ReligiousCharacterName, item.ReligiousCharacterName);
             });
+    }
+
+    [Theory]
+    [InlineData(10, 1)]
+    [InlineData(20, 2)]
+    [InlineData(25, 3)]
+    [InlineData(100, 10)]
+    public async Task SearchAsync_ByName_ReturnsExpectedServiceModel_With_Pagination(int records, int expectedPages)
+    {
+        // Arrange
+        var expectedSearchResults = CreateSearchResults(records);
+        var searchQuery = new SearchQuery() { Name = "test", PageNumber = 1 };
+        _mockIndexReader.Setup(r => r.SearchAsync(
+            It.Is<ServiceModels.Search.InputModels.SearchQuery>(q => q.Name == searchQuery.Name),
+            It.IsAny<int>()))
+            .ReturnsAsync(new SchoolSearchResults(
+                Count: expectedSearchResults.Count,
+                Results: expectedSearchResults));
+
+        // Act
+        var service = new SchoolSearchService(_mockIndexReader.Object, _mockPostcodeLookupService.Object);
+        var result = await service.SearchAsync(searchQuery);
+
+        // Assert
+        Assert.Equal(SchoolSearchStatus.Success, result.Status);
+        Assert.Equal(expectedSearchResults.Count, result.PagedResponse.TotalRecords);
+        Assert.Equal(expectedSearchResults.Count, result.PagedResponse.PagerInfo.TotalItems);
+        Assert.Equal(searchQuery.PageNumber, result.PagedResponse.PagerInfo.CurrentPage);
+        Assert.Equal(Constants.PageSize, result.PagedResponse.PagerInfo.PageSize);
+        Assert.Equal(expectedPages, result.PagedResponse.PagerInfo.TotalPages);        
     }
 
     [Theory]
@@ -101,8 +155,11 @@ public class SchoolSearchServiceTests
 
         // Assert
         Assert.Equal(SchoolSearchStatus.Success, result.Status);
-        Assert.Equal(expectedUrns.Length, result.SchoolSearchResults.Count);
-        var resultUrns = result.SchoolSearchResults.Select(r => r.URN).ToArray();
+        Assert.Equal(expectedUrns.Length, result.PagedResponse.TotalRecords);
+        Assert.Equal(expectedUrns.Length, result.PagedResponse.PagerInfo.TotalItems);
+        Assert.Equal(searchQuery.PageNumber ?? 1, result.PagedResponse.PagerInfo.CurrentPage);
+        Assert.Equal(Constants.PageSize, result.PagedResponse.PagerInfo.PageSize);
+        var resultUrns = result.PagedResponse.Records.Select(r => r.URN).ToArray();
         Assert.Equal(expectedUrns, resultUrns);
     }
 
@@ -125,6 +182,10 @@ public class SchoolSearchServiceTests
 
         // Assert
         Assert.Equal(SchoolSearchStatus.PostcodeNotFound, result.Status);
+        Assert.Equal(0, result.PagedResponse.TotalRecords);
+        Assert.Equal(0, result.PagedResponse.PagerInfo.TotalItems);
+        Assert.Equal(searchQuery.PageNumber ?? 1, result.PagedResponse.PagerInfo.CurrentPage);
+        Assert.Equal(Constants.PageSize, result.PagedResponse.PagerInfo.PageSize);
     }
 
     [Theory]
@@ -144,6 +205,10 @@ public class SchoolSearchServiceTests
 
         // Assert
         Assert.Equal(SchoolSearchStatus.InvalidPostcode, result.Status);
+        Assert.Equal(0, result.PagedResponse.TotalRecords);
+        Assert.Equal(0, result.PagedResponse.PagerInfo.TotalItems);
+        Assert.Equal(searchQuery.PageNumber ?? 1, result.PagedResponse.PagerInfo.CurrentPage);
+        Assert.Equal(Constants.PageSize, result.PagedResponse.PagerInfo.PageSize);
     }
 
     [Fact]
@@ -165,8 +230,8 @@ public class SchoolSearchServiceTests
 
         // Assert
         Assert.Equal(SchoolSearchStatus.Success, result.Status);
-        Assert.Equal(1, result.Count);
-        var singleResult = Assert.Single(result.SchoolSearchResults);
+        Assert.Equal(1, result.PagedResponse.PagerInfo.TotalItems);
+        var singleResult = Assert.Single(result.PagedResponse.Records);
         Assert.Null(singleResult.URN);
         Assert.Null(singleResult.EstablishmentName);
         Assert.Null(singleResult.Address);

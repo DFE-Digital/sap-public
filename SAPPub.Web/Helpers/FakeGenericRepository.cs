@@ -84,6 +84,87 @@ namespace SAPPub.Web.Helpers
                 AddressPostcode = "OL14 7DG",
                 StatusCode = 2,
                 ClosedDate = "23-03-2025"
+            },
+
+            ["145744"] = new Establishment
+            {
+                URN = "145744",
+                EstablishmentName = "Abbey Park School",
+                LAId = "381",
+                EstablishmentNumber = "123",
+                PhaseOfEducationId = "4",
+                PhaseOfEducationName = "Secondary",
+                AddressPostcode = "SN25 2ND",
+            },
+            ["151948"] = new Establishment
+            {
+                URN = "151948",
+                EstablishmentName = "Abbeyfield School",
+                LAId = "381",
+                EstablishmentNumber = "1234",
+                PhaseOfEducationId = "4",
+                PhaseOfEducationName = "Secondary",
+                AddressPostcode = "SN15 3XB",
+            },
+            ["100279"] = new Establishment
+            {
+                URN = "100279",
+                EstablishmentName = "Stoke Newington School and Sixth Form",
+                LAId = "381",
+                EstablishmentNumber = "236",
+                PhaseOfEducationId = "4",
+                PhaseOfEducationName = "Secondary",
+                AddressPostcode = "N16 9EX",
+            },
+            ["145179"] = new Establishment
+            {
+                URN = "145179",
+                EstablishmentName = "Stoke Park School",
+                LAId = "381",
+                EstablishmentNumber = "895",
+                PhaseOfEducationId = "4",
+                PhaseOfEducationName = "Secondary",
+                AddressPostcode = "CV2 4JW",
+            },
+            ["147059"] = new Establishment
+            {
+                URN = "147059",
+                EstablishmentName = "Stone Lodge School",
+                LAId = "381",
+                EstablishmentNumber = "698",
+                PhaseOfEducationId = "4",
+                PhaseOfEducationName = "Secondary",
+                AddressPostcode = "DA2 6FY",
+            },
+            ["145055"] = new Establishment
+            {
+                URN = "145055",
+                EstablishmentName = "Stowmarket High School",
+                LAId = "381",
+                EstablishmentNumber = "456",
+                PhaseOfEducationId = "4",
+                PhaseOfEducationName = "Secondary",
+                AddressPostcode = "IP14 1QR",
+            },
+            ["149893"] = new Establishment
+            {
+                URN = "149893",
+                EstablishmentName = "The Abbey School",
+                LAId = "381",
+                EstablishmentNumber = "154",
+                PhaseOfEducationId = "4",
+                PhaseOfEducationName = "Secondary",
+                AddressPostcode = "ME13 8RZ",
+            },
+            ["137020"] = new Establishment
+            {
+                URN = "137020",
+                EstablishmentName = "West Hill School",
+                LAId = "381",
+                EstablishmentNumber = "7896",
+                PhaseOfEducationId = "4",
+                PhaseOfEducationName = "Secondary",
+                AddressPostcode = "SK15 1LX",
             }
         };
 
