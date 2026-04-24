@@ -5,7 +5,7 @@
 
 @if (Model != null)
 {
-    var routeAttributes = new Dictionary<string, string> { { RouteConstants.URN, Model.URN }, { RouteConstants.SchoolName, Model.SchoolName } };
+    var routeAttributes = new Dictionary<string, string> { { RouteConstants.URN, Model.URN }, { RouteConstants.SchoolName, Model.SchoolNameClean } };
 
     <div class="govuk-grid-column-one-quarter">
         <nav class="moj-side-navigation" aria-label="Side navigation">

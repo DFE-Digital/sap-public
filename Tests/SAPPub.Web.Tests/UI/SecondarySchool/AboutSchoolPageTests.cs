@@ -8,10 +8,10 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
 {
     private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
     {
-        ["105574"] = "school/105574/Loreto%20High%20School%20Chorlton/secondary/about",
-        ["137552"] = "school/137552/Stewards%20Academy%20-%20Science%20Specialist%2C%20Harlow/secondary/about",
-        ["100273"] = "school/100273/Saint%20Paul%20Roman%20Catholic%20Infant%20School/secondary/about",
-        ["107564"] = "school/107564/Todmorden%20High%20School/secondary/about"
+        ["105574"] = "school/105574/loreto-high-school-chorlton/secondary/about",
+        ["137552"] = "school/137552/stewards-academy-science-specialist-harlow/secondary/about",
+        ["100273"] = "school/100273/saint-paul-roman-catholic-infant-school/secondary/about",
+        ["107564"] = "school/107564/todmorden-high-school/secondary/about"
     };
 
     [Fact]

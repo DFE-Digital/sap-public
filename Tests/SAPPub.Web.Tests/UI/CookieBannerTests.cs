@@ -5,7 +5,7 @@ namespace SAPPub.Web.Tests.UI;
 [Collection("Playwright Tests")]
 public class CookieBannerTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
-    private string _pageUrl = "school/105574/Loreto%20High%20School%20Chorlton/secondary/about";
+    private string _pageUrl = "school/105574/loreto-high-school-chorlton/secondary/about";
 
     [Fact]
     public async Task CookiesBanner_LoadsSuccessfully()
