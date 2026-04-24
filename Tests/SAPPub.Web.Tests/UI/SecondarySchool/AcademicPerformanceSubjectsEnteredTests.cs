@@ -6,7 +6,7 @@ namespace SAPPub.Web.Tests.UI.SecondarySchool;
 [Collection("Playwright Tests")]
 public class AcademicPerformanceSubjectsEnteredTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
-    private string _pageUrl = "school/105574/Loreto%20High%20School%20Chorlton/secondary/academic-performance-subjects-entered";
+    private string _pageUrl = "school/105574/loreto-high-school-chorlton/secondary/academic-performance-subjects-entered";
 
     [Fact]
     public async Task AcademicPerformanceSubjectsEnteredPage_LoadsSuccessfully()
@@ -66,7 +66,7 @@ public class AcademicPerformanceSubjectsEnteredTests(WebApplicationSetupFixture 
     [Fact]
     public async Task AcademicPerformanceSubjectsEnteredPage_Displays_VerticalNavigation()
     {
-        var performancePage = "school/105574/Loreto%20High%20School%20Chorlton/secondary/academic-performance-attainment-and-progress";
+        var performancePage = "school/105574/loreto-high-school-chorlton/secondary/academic-performance-attainment-and-progress";
         // We want to display the performance root page even when in a performance sub-page, hence need to check the active href is the root performance page
 
         var nav = new VerticalNavigationHelper(Page);
