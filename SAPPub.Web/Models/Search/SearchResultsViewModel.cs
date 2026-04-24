@@ -1,4 +1,5 @@
-﻿using SAPPub.Core.ServiceModels.Search.Results;
+﻿using SAPPub.Core.Helpers;
+using SAPPub.Core.ServiceModels.Search.Results;
 using SAPPub.Web.Constants;
 using SAPPub.Web.ViewComponents.Pagination;
 
