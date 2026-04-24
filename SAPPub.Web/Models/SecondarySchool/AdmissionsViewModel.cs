@@ -14,12 +14,12 @@ public class AdmissionsViewModel : SecondarySchoolBaseViewModel
 
     public bool IsSchoolClosed { get; init; }
 
-    public static AdmissionsViewModel MapFrom(AdmissionsServiceModel serviceModel, string urn, string schoolName)
+    public static AdmissionsViewModel MapFrom(AdmissionsServiceModel serviceModel, string urn)
     {
         return new AdmissionsViewModel
         {
             URN = urn,
-            SchoolName = schoolName,
+            SchoolName = serviceModel.SchoolName,
             SchoolWebsite = serviceModel.SchoolWebsite.ToDisplayField(),
             LASecondarySchoolAdmissionsLinkUrl = serviceModel?.LASchoolAdmissionsUrl,
             LAName = serviceModel?.LAName ?? "Local authority",
