@@ -6,7 +6,7 @@ namespace SAPPub.Web.Tests.UI.SecondarySchool;
 [Collection("Playwright Tests")]
 public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
-    private string _pageUrl = "school/105574/Loreto%20High%20School%20Chorlton/secondary/curriculum-and-extra-curricular-activities";
+    private string _pageUrl = "school/105574/loreto-high-school-chorlton/secondary/curriculum-and-extra-curricular-activities";
 
     [Fact]
     public async Task CurriculumAndExtraCurricularActivitiesPage_LoadsSuccessfully()
@@ -67,7 +67,7 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
     public async Task CurriculumAndExtraCurricularActivitiesPage_CurrentCurriculum_ContactSchoolText()
     {
         // Arrange
-        _pageUrl = "school/100273/Saint%20Paul%20Roman%20Catholic%20Infant%20School/secondary/curriculum-and-extra-curricular-activities";
+        _pageUrl = "school/100273/saint-paul-roman-catholic-infant-school/secondary/curriculum-and-extra-curricular-activities";
         await Page.GotoAsync(_pageUrl);
 
         // Act

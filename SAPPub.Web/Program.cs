@@ -117,7 +117,7 @@ public partial class Program
         builder.Services.AddDfeAnalytics().AddAspNetCoreIntegration(options =>
         {
             options.RequestFilter = ctx =>
-                ctx.Request.Path != "/healthcheck";
+                ctx.Request.Path != "/healthcheck" && ctx.Request.Path != "/health";
         });
 
         //Email config

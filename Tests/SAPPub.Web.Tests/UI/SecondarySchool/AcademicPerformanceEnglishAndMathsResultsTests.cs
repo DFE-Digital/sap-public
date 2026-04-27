@@ -11,8 +11,8 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
 {
     private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
     {
-        ["105574"] = "school/105574/Loreto%20High%20School%20Chorlton/secondary/academic-performance-english-and-maths-results",
-        ["100273"] = "school/100273/Saint%20Paul%20Roman%20Catholic%20Infant%20School/secondary/academic-performance-english-and-maths-results",
+        ["105574"] = "school/105574/loreto-high-school-chorlton/secondary/academic-performance-english-and-maths-results",
+        ["100273"] = "school/100273/saint-paul-roman-catholic-infant-school/secondary/academic-performance-english-and-maths-results",
     };
 
     [Fact]
@@ -73,7 +73,7 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
     [Fact]
     public async Task AcademicPerformanceEnglishAndMathsResultsPage_Displays_VerticalNavigation()
     {
-        var performancePage = "school/105574/Loreto%20High%20School%20Chorlton/secondary/academic-performance-attainment-and-progress";
+        var performancePage = "school/105574/loreto-high-school-chorlton/secondary/academic-performance-attainment-and-progress";
         // We want to display the performance root page even when in a performance sub-page, hence need to check the active href is the root performance page
 
         var nav = new VerticalNavigationHelper(Page);

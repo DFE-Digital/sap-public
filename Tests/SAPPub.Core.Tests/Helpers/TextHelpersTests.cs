@@ -79,9 +79,13 @@ namespace SAPPub.Core.Tests.Helpers
         }
 
         [Theory]
+        [InlineData("", "")]
         [InlineData("h3ll0","h3ll0")]
-        [InlineData("St John's Academy o' fine arts", "St-Johns-Academy-o-fine-arts")]
-        [InlineData("Smith School Robinson ++--{}[[];'#:@~,./<>?¬`!£$%^&*()", "Smith-School-Robinson")]
+        [InlineData("St John's Academy o' fine arts", "st-johns-academy-o-fine-arts")]
+        [InlineData("Lots of space   school", "lots-of-space-school")]
+        [InlineData("Smith School Robinson ++--{}[[];'#:@~,./<>?¬`!£$%^&*()", "smith-school-robinson")]
+        [InlineData("Smith School ++--{}[[];'#:@~,./<>?¬`!£$%^&*() Robinson", "smith-school-robinson")]
+
         public void CleanForUrl_RemovesNonAlphaChars(string input, string output)
         {
             // Arrange

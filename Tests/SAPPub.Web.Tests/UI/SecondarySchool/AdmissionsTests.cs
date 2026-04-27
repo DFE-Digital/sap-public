@@ -6,13 +6,13 @@ namespace SAPPub.Web.Tests.UI.SecondarySchool;
 [Collection("Playwright Tests")]
 public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
-    private string _pageUrl = "school/105574/Loreto%20High%20School%20Chorlton/secondary/admissions";
+    private string _pageUrl = "school/105574/loreto-high-school-chorlton/secondary/admissions";
 
     private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
     {
-        ["105574"] = "school/105574/Loreto%20High%20School%20Chorlton/secondary/admissions",
-        ["100273"] = "school/100273/Saint%20Paul%20Roman%20Catholic%20Infant%20School/secondary/admissions",
-        ["107564"] = "school/107564/Todmorden%20High%20School/secondary/admissions"
+        ["105574"] = "school/105574/loreto-high-school-chorlton/secondary/admissions",
+        ["100273"] = "school/100273/saint-paul-roman-catholic-infant-school/secondary/admissions",
+        ["107564"] = "school/107564/todmorden-high-school/secondary/admissions"
     };
 
     [Fact]

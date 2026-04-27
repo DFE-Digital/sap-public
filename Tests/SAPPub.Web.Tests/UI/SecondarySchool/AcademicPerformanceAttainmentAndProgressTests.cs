@@ -8,7 +8,7 @@ namespace SAPPub.Web.Tests.UI.SecondarySchool;
 [Collection("Playwright Tests")]
 public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
-    private string _pageUrl = "school/105574/Loreto%20High%20School%20Chorlton/secondary/academic-performance-attainment-and-progress";
+    private string _pageUrl = "school/105574/loreto-high-school-chorlton/secondary/academic-performance-attainment-and-progress";
 
     [Fact]
     public async Task AcademicPerformanceAttainmentAndProgressPage_LoadsSuccessfully()
