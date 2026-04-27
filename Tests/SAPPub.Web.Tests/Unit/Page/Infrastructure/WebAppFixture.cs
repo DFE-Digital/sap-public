@@ -17,7 +17,12 @@ public class WebAppFixture : IDisposable
     public async Task<IDocument> BrowseToPage(string url)
     {
         var response = await Client.GetAsync(url);
-        response.EnsureSuccessStatusCode();
+        var body = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(
+                $"Status: {(int)response.StatusCode}\n{body}");
+        }
 
         var html = await response.Content.ReadAsStringAsync();
 
