@@ -21,7 +21,7 @@ public class AboutPageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task AboutPage_ShowsHeadingAndDetails()
+    public async Task AboutPage_ShowsHeading()
     {
         // Arrange
         var urn = "143032";
@@ -44,13 +44,6 @@ public class AboutPageTests : PageTestsBase
         // Assert
         var h1 = doc.QuerySelector("h1");
         Assert.Contains("About the school", h1?.TextContent.Trim());
-        var summaryList = doc.QuerySelector("#school-details-summary");
-        var rows = summaryList?.QuerySelectorAll(".govuk-summary-list__row");
-
-        var nameRow = rows?.FirstOrDefault(r =>
-                    r.QuerySelector("dt")?.TextContent.Trim() == "Name");
-
-        Assert.Contains(establishmentName, nameRow?.QuerySelector("dd")?.TextContent.Trim());
     }
 
     [Fact]
@@ -74,12 +67,7 @@ public class AboutPageTests : PageTestsBase
         var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
 
         // Assert
-        var summaryList = doc.QuerySelector("#school-details-summary");
-        var rows = summaryList?.QuerySelectorAll(".govuk-summary-list__row");
-
-        var nameRow = rows?.FirstOrDefault(r =>
-                    r.QuerySelector("dt")?.TextContent.Trim() == "Name");
-
-        Assert.Contains(establishmentName, nameRow?.QuerySelector("dd")?.TextContent.Trim());
+        var nameRowContent = doc.GetRowContentByIdAndKey("school-details-summary", "Name");
+        Assert.Contains(establishmentName, nameRowContent);
     }
 }
