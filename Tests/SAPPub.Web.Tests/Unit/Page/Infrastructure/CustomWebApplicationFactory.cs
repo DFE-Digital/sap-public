@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
@@ -24,6 +25,8 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
             .ConfigureServices(services =>
             {
                 // use mock services
+                services.RemoveAll(typeof(IEstablishmentRepository));
+                services.AddSingleton<MockAccessor<IEstablishmentRepository>>(); // needed for the background Service that initialises Lucene search
                 services.RemoveAll(typeof(IAboutSchoolService));
                 services.RemoveAll(typeof(IAttainmentAndProgressService));
                 services.RemoveAll(typeof(IEstablishmentService));

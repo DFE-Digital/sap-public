@@ -10,7 +10,6 @@ namespace SAPPub.Web.Tests.Unit.Page;
 // and run tests sequentially to avoid issues with shared state in the mock accessor.`
 // The Mock accessor is cleared after each test, but if tests run in parallel, they could interfere with each other.
 [Collection("WebAppCollection")]
-
 public class AboutPageTests : PageTestsBase, IDisposable // implement IDisposable so can clear the mock accessor after each test
 {
     private static string _pageRoute = "/secondary/about";
