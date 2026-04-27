@@ -19,8 +19,7 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
     [HttpPost]
     public IActionResult Index(SearchParamsModel model)
     {
-        var searchKeyWord = model.NameSearchTerm;
-        var searchLocation = model.LocationSearchTerm;
+        model.PageNumber = 1; // always reset pagenumber, when searching
         if (ModelState.IsValid)
         {
             return RedirectToAction("SearchResults", model);
