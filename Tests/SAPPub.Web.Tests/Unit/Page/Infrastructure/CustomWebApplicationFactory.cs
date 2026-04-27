@@ -25,8 +25,16 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
             .ConfigureServices(services =>
             {
                 // use mock services
+
+                // needed for the background Service that initialises Lucene search
                 services.RemoveAll(typeof(IEstablishmentRepository));
-                services.AddSingleton<MockAccessor<IEstablishmentRepository>>(); // needed for the background Service that initialises Lucene search
+                services.AddTransient<IEstablishmentRepository>(provider =>
+                {
+                    var accessor = provider.GetRequiredService<MockAccessor<IEstablishmentRepository>>();
+                    return accessor.GetOrDefault().Object;
+                });
+
+                // mock services used by controllers
                 services.RemoveAll(typeof(IAboutSchoolService));
                 services.RemoveAll(typeof(IAttainmentAndProgressService));
                 services.RemoveAll(typeof(IEstablishmentService));
@@ -62,9 +70,10 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 {
                     return provider.GetRequiredService<MockAccessor<IAttainmentAndProgressService>>().Get()?.Object!;
                 });
-                services.AddTransient(provider =>
+                services.AddTransient<IEstablishmentService>(provider =>
                 {
-                    return provider.GetRequiredService<MockAccessor<IEstablishmentService>>().Get()?.Object!;
+                    var accessor = provider.GetRequiredService<MockAccessor<IEstablishmentService>>();
+                    return accessor.GetOrDefault().Object; // provide default for Lucene search initialisation background service
                 });
                 services.AddTransient(provider =>
                     {
