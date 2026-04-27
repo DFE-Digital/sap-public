@@ -22,11 +22,10 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        builder.UseEnvironment("Testing");
         builder
             .ConfigureServices(services =>
             {
-                builder.UseEnvironment("Testing");
-
                 // needed for the background Service that initialises Lucene search
                 services.RemoveAll<IHostedService>();
                 services.RemoveAll(typeof(IEstablishmentRepository));
