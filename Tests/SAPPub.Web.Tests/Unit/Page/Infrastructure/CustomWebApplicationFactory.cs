@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4;
@@ -24,9 +25,10 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
         builder
             .ConfigureServices(services =>
             {
-                // use mock services
+                builder.UseEnvironment("Testing");
 
                 // needed for the background Service that initialises Lucene search
+                services.RemoveAll<IHostedService>();
                 services.RemoveAll(typeof(IEstablishmentRepository));
                 services.AddTransient<IEstablishmentRepository>(provider =>
                 {
