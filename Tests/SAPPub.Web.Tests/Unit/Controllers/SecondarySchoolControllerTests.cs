@@ -196,7 +196,7 @@ public class SecondarySchoolControllerTests
         var tempPath = Path.Combine(Path.GetTempPath(), "SAPPubTests", Guid.NewGuid().ToString());
         Directory.CreateDirectory(tempPath);
 
-        _controller = new SecondarySchoolController(_mockLogger.Object, _mockEstablishmentService.Object, _mockDestinationsService.Object);
+        _controller = new SecondarySchoolController(_mockLogger.Object, _mockEstablishmentService.Object);
 
         _controller.ControllerContext = new ControllerContext
         {
@@ -252,7 +252,7 @@ public class SecondarySchoolControllerTests
     public async Task Get_AboutSchool_Info_With_No_Data_ReturnsOk()
     {
         var expectedResult = new AboutSchoolModel
-        { 
+        {
             Urn = _fakeEstablishment.URN,
             SchoolName = _fakeEstablishment.EstablishmentName
         };
@@ -555,7 +555,7 @@ public class SecondarySchoolControllerTests
     {
         // Arrange
         _fakeEstablishment.OpenReasonId = openReasonId;
-        _fakeEstablishment.OpenDate = openDateString?? null;
+        _fakeEstablishment.OpenDate = openDateString ?? null;
 
         var expectedResult = SchoolDetails();
 
@@ -1093,14 +1093,14 @@ public class SecondarySchoolControllerTests
         string[] expectedAllGcseOverTimeDataLabels = ["School", expectedCouncilName, "England average"];
         string[] expectedBreakdownGcseDataLabels = ["School", expectedCouncilName, "England average"];
 
-       
+
         Assert.Equal(expectedAllGcseDataLabels, model.AllGcseData.Labels);
 
         var actualAllGcseOverTimeDataLabels = model.AllGcseOverTimeData.Datasets.Select(s => s.Label).ToArray();
         Assert.Equal(expectedAllGcseOverTimeDataLabels, actualAllGcseOverTimeDataLabels);
 
         var actualBreakdownGcseDataLabels = model.BreakdownGcseData.Datasets.Select(s => s.Label).ToArray();
-        Assert.Equal(actualBreakdownGcseDataLabels, expectedBreakdownGcseDataLabels);        
+        Assert.Equal(actualBreakdownGcseDataLabels, expectedBreakdownGcseDataLabels);
     }
 
     [Fact]
@@ -1183,7 +1183,7 @@ public class SecondarySchoolControllerTests
             .Setup(es => es.GetDestinationsDetailsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(destinationsDetails);
 
-        var result = await _controller.Destinations(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
+        var result = await _controller.Destinations(_mockDestinationsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
         string[] expectedAllDestCurrentDataLabels = ["School", $"{_fakeEstablishment.LAName} average", "England average"];
         double?[] expectedAllDestCurrentData =
@@ -1301,7 +1301,7 @@ public class SecondarySchoolControllerTests
             .Setup(es => es.GetDestinationsDetailsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(destinationsDetails);
 
-        var result = await _controller.Destinations(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
+        var result = await _controller.Destinations(_mockDestinationsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
         string[] expectedAllDestCurrentDataLabels = ["School", $"{_fakeEstablishment.LAName} average", "England average"];
         string[] expectedBreakdownCurrentYearDataLabels = ["Staying in education", "Entering employment and apprenticeships"];
@@ -1373,7 +1373,7 @@ public class SecondarySchoolControllerTests
             .Setup(es => es.GetDestinationsDetailsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(destinationsDetails);
 
-        var result = await _controller.Destinations(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
+        var result = await _controller.Destinations(_mockDestinationsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
         string[] expectedAllDestCurrentDataLabels = ["School", expectedCouncilName, "England average"];
         string[] expectedDataOvertimeDataLabels = ["School", expectedCouncilName, "England average"];

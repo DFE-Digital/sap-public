@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Moq;
+﻿using Moq;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.ServiceModels.KS4.Performance;
@@ -8,24 +7,14 @@ using SAPPub.Web.Tests.Unit.Page.Infrastructure;
 namespace SAPPub.Web.Tests.Unit.Page;
 
 [Collection("WebAppCollection")]
-public class AttainmentAndProgressPageTests : PageTestsBase, IDisposable
+public class AttainmentAndProgressPageTests : PageTestsBase
 {
     private static string _pageRoute = "/secondary/academic-performance-attainment-and-progress";
-    private readonly MockAccessor<IAttainmentAndProgressService> _serviceMockAccessor;
-    private readonly WebAppFixture _fixture;
+    private readonly Mock<IAttainmentAndProgressService> _serviceMock;
 
-    public AttainmentAndProgressPageTests(WebAppFixture fixture)
+    public AttainmentAndProgressPageTests(WebAppFixture fixture) : base(fixture)
     {
-        _fixture = fixture;
-        _serviceMockAccessor = fixture.Factory.Services
-            .GetRequiredService<MockAccessor<IAttainmentAndProgressService>>();
-        var mockService = new Mock<IAttainmentAndProgressService>();
-        _serviceMockAccessor.Set(mockService);
-    }
-
-    public void Dispose()
-    {
-        _serviceMockAccessor.Clear();
+        _serviceMock = UseMock<IAttainmentAndProgressService>();
     }
 
     [Fact]
@@ -36,8 +25,7 @@ public class AttainmentAndProgressPageTests : PageTestsBase, IDisposable
         var establishmentName = "St Paul's Church of England Academy";
         var schoolAttainment = 10.0;
 
-        var serviceMock = _serviceMockAccessor.Get();
-        serviceMock?
+        _serviceMock
             .Setup(service => service.GetAttainmentAndProgressAsync(
                 It.IsAny<string>(),
                 It.IsAny<AcademicYearSelection>(),
@@ -52,7 +40,7 @@ public class AttainmentAndProgressPageTests : PageTestsBase, IDisposable
             });
 
         // Act
-        var doc = await _fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
 
         // Assert
         var schoolAttainmentCard = doc.QuerySelector("[data-testid='attainment8-establishment-card']");

@@ -32,7 +32,7 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.AddTransient<IEstablishmentRepository>(provider =>
                 {
                     var accessor = provider.GetRequiredService<MockAccessor<IEstablishmentRepository>>();
-                    return accessor.GetOrDefault().Object;
+                    return accessor.GetOrCreate().Object;
                 });
 
                 // mock services used by controllers
@@ -74,7 +74,7 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.AddTransient<IEstablishmentService>(provider =>
                 {
                     var accessor = provider.GetRequiredService<MockAccessor<IEstablishmentService>>();
-                    return accessor.GetOrDefault().Object; // provide default for Lucene search initialisation background service
+                    return accessor.GetOrCreate().Object; // provide default for Lucene search initialisation background service
                 });
                 services.AddTransient(provider =>
                     {

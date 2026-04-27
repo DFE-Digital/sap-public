@@ -1,21 +1,11 @@
-﻿using SAPPub.Core.Entities;
-using SAPPub.Core.Interfaces.Repositories.Generic;
-using SAPPub.Web.Tests.Unit.Page.Infrastructure;
+﻿using SAPPub.Web.Tests.Unit.Page.Infrastructure;
 
 namespace SAPPub.Web.Tests.Unit.Page;
 
 [Collection("WebAppCollection")] // share the WebAppFixture across tests in this class so that we start the web app once for all tests in this collection
-public class HomePageTests : PageTestsBase, IDisposable //implement IDisposable so that we can clear the mock accessor after each test, to ensure a clean slate for the next test
+public class HomePageTests : PageTestsBase
 {
-    private readonly MockAccessor<IGenericRepository<Establishment>> _accessor = new();
-    private readonly WebAppFixture _fixture;
-
-    public HomePageTests(WebAppFixture fixture)
-    {
-        _fixture = fixture;
-    }
-
-    public void Dispose()
+    public HomePageTests(WebAppFixture fixture) : base(fixture)
     {
     }
 
@@ -23,7 +13,7 @@ public class HomePageTests : PageTestsBase, IDisposable //implement IDisposable 
     public async Task HomePage_ShowsHeading()
     {
         // Act
-        var document = await _fixture.BrowseToPage("/");
+        var document = await Fixture.BrowseToPage("/");
 
         // Assert
         var h1 = document.QuerySelector("h1");
