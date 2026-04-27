@@ -1,6 +1,7 @@
 ﻿using SAPPub.Core.Helpers;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Search;
+using SAPPub.Core.ServiceModels.Common;
 using SAPPub.Core.ServiceModels.Search.InputModels;
 using SAPPub.Core.ServiceModels.Search.Results;
 using System.Text.RegularExpressions;
@@ -18,8 +19,12 @@ public class SchoolSearchService(ISchoolSearchIndexReader indexReader, IPostcode
         {
             return new SchoolSearchResultsServiceModel
             {
-                Count = 0,
-                SchoolSearchResults = new List<SchoolSearchResultServiceModel>(),
+                PagedResponse = new PagedResponse<SchoolSearchResultServiceModel>
+                {
+                    TotalRecords = 0,
+                    Records = [],
+                    PagerInfo = new Pager(0, query.PageNumber, Constants.PageSize)
+                },
                 Status = SchoolSearchStatus.InvalidPostcode
             };
         }
@@ -28,36 +33,53 @@ public class SchoolSearchService(ISchoolSearchIndexReader indexReader, IPostcode
         {
             return new SchoolSearchResultsServiceModel
             {
-                Count = 0,
-                SchoolSearchResults = new List<SchoolSearchResultServiceModel>(),
+                PagedResponse = new PagedResponse<SchoolSearchResultServiceModel>
+                {
+                    TotalRecords = 0,
+                    Records = [],
+                    PagerInfo = new Pager(0, query.PageNumber, Constants.PageSize)
+                },
                 Status = postcodeResponse.Error == "Postcode not found" ? SchoolSearchStatus.PostcodeNotFound : SchoolSearchStatus.PostcodeServiceError
             };
         }
 
         var postcodeResult = postcodeResponse?.Result;
         var searchQuery = string.IsNullOrEmpty(query.Location)
-            ? new ServiceModels.Search.InputModels.SearchQuery { Name = query.Name }
-            : new ServiceModels.Search.InputModels.SearchQuery { Latitude = postcodeResult?.Latitude, Longitude = postcodeResult?.Longitude, Distance = query.Distance, Name = query.Name };
+            ? new SearchQuery { Name = query.Name }
+            : new SearchQuery { Latitude = postcodeResult?.Latitude, Longitude = postcodeResult?.Longitude, Distance = query.Distance, Name = query.Name };
 
         var searchResults = await indexReader.SearchAsync(searchQuery, MaxResults);
 
-        var resultList = new List<SchoolSearchResultServiceModel>();
-        var results = new SchoolSearchResultsServiceModel
+        var filteredSearchResults = searchResults.Results.Select(result => new SchoolSearchResultServiceModel
         {
-            Count = searchResults.Count,
-            SchoolSearchResults = searchResults.Results.Select(result => new SchoolSearchResultServiceModel
-            {
-                URN = result.URN,
-                EstablishmentName = result.EstablishmentName,
-                Address = result.Address,
-                GenderName = result.GenderName,
-                ReligiousCharacterName = result.ReligiousCharacterName,
-                Distance = postcodeResult is not null
+            URN = result.URN,
+            EstablishmentName = result.EstablishmentName,
+            Address = result.Address,
+            GenderName = result.GenderName,
+            ReligiousCharacterName = result.ReligiousCharacterName,
+            Distance = postcodeResult is not null
                     ? MappingHelper.HaversineMiles(postcodeResult.Latitude, postcodeResult.Longitude, result.Latitude, result.Longitude)
                     : null,
-                StatusCode = result.StatusCode,
-                ClosedDate = result.ClosedDate
-            }).Where(r => query.Location != null ? query.Distance.HasValue && r.Distance.HasValue && r.Distance.Value <= query.Distance : true).ToList()
+            StatusCode = result.StatusCode,
+            ClosedDate = result.ClosedDate
+        }).Where(r => query.Location != null ? query.Distance.HasValue && r.Distance.HasValue && r.Distance.Value <= query.Distance : true).ToList();
+
+        var pager = new Pager(filteredSearchResults.Count, query.PageNumber, Constants.PageSize);
+
+        var pagedResults = filteredSearchResults
+            .Skip((pager.CurrentPage - 1) * pager.PageSize)
+            .Take(pager.PageSize)
+            .ToList();
+
+        var results = new SchoolSearchResultsServiceModel
+        {
+            Status = SchoolSearchStatus.Success,
+            PagedResponse = new PagedResponse<SchoolSearchResultServiceModel> 
+            {
+                TotalRecords = pager.TotalItems,
+                Records = pagedResults,
+                PagerInfo = pager
+            }
         };
 
         return results;

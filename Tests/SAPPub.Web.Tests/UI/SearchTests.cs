@@ -93,6 +93,11 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
         // assert that the no results message is displayed
         var noResultsMessage = await Page.Locator("[data-testid='no-results-heading']").InnerTextAsync();
         Assert.Contains("Try another search", noResultsMessage);
+
+        var pagination = Page.Locator(".govuk-pagination");
+        var paginationIsVisible = await pagination.IsVisibleAsync();
+
+        Assert.False(paginationIsVisible, "Pagination should not be visible when no results");
     }
 
     [Fact]
@@ -119,6 +124,11 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
         var rowHandles = await rows.ElementHandlesAsync();
         int count = await rows.CountAsync();
         Assert.True(count > 0, "Expected at least one search result, but found none.");
+
+        var pagination = Page.Locator(".govuk-pagination");
+        var paginationIsVisible = await pagination.IsVisibleAsync();
+
+        Assert.False(paginationIsVisible, "Pagination should not be visible when there are no multiple pages");
     }
 
     [Fact]
@@ -149,6 +159,11 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
         var rowHandles = await rows.ElementHandlesAsync();
         int count = await rows.CountAsync();
         Assert.True(count == 0, "Expected no search results, but found some.");
+
+        var pagination = Page.Locator(".govuk-pagination");
+        var paginationIsVisible = await pagination.IsVisibleAsync();
+
+        Assert.False(paginationIsVisible, "Pagination should not be visible when there are validation errors");
     }
 
     [Fact]
@@ -180,5 +195,164 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
         var value = await rows.First.TextContentAsync();
         Assert.NotNull(value);
         Assert.Equal("Closed in March 2025", value.Trim());
+    }
+
+    [Fact]
+    public async Task SearchPage_Enter_SchoolName_Shows_Results_With_Pagination()
+    {
+        // Arrange
+        var searchTerm = "School";
+        var response = await Page.GotoAsync(_pageUrl);
+
+        // Act
+        await Page.FillAsync("#NameSearchTerm", searchTerm);
+        await Page.ClickAsync("#search");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        // Assert
+        Assert.NotNull(response);
+        Assert.Equal(200, response.Status);
+        // assert text box contains search term
+        var searchBoxValue = await Page.InputValueAsync("#NameSearchTerm");
+        Assert.Equal(searchTerm, searchBoxValue);
+
+        // assert pagination
+        var pagination = Page.Locator(".govuk-pagination");
+        var paginationIsVisible = await pagination.IsVisibleAsync();
+
+        Assert.True(paginationIsVisible);
+    }
+
+    [Fact]
+    public async Task SearchResultsPage_With_Pagination_Has_PageNumbers()
+    {
+        // Arrange
+        var searchTerm = "School";
+
+        // Act
+        await Page.GotoAsync($"{_pageUrl}/results?NameSearchTerm={searchTerm}");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        // assert
+        var pagination = Page.Locator(".govuk-pagination");
+        var paginationIsVisible = await pagination.IsVisibleAsync();
+
+        var paginationItems = Page.Locator(".govuk-pagination__item");
+        var itemsCount = await paginationItems.CountAsync();
+
+        Assert.True(paginationIsVisible);
+        Assert.True(itemsCount > 0);
+    }
+
+    [Fact]
+    public async Task SearchResultsPage_With_Pagination_FirstPage_HasNoPreviousLink()
+    {
+        // Arrange
+        var searchTerm = "School";
+        await Page.GotoAsync($"{_pageUrl}/results?NameSearchTerm={searchTerm}&PageNumber=1");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        var pagination = Page.Locator(".govuk-pagination");
+        var paginationIsVisible = await pagination.IsVisibleAsync();
+
+        var previousLink = Page.Locator(".govuk-pagination__prev");
+        var isPreviousLinkVisible = await previousLink.IsVisibleAsync();
+
+        // assert pagination
+        Assert.True(paginationIsVisible);
+        Assert.False(isPreviousLinkVisible);
+    }
+
+    [Fact]
+    public async Task SearchResultsPage_With_Pagination_HasPreviousLink()
+    {
+        // Arrange
+        var searchTerm = "School";
+        await Page.GotoAsync($"{_pageUrl}/results?NameSearchTerm={searchTerm}&PageNumber=2");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        var pagination = Page.Locator(".govuk-pagination");
+        var paginationIsVisible = await pagination.IsVisibleAsync();
+
+        var previousLink = Page.Locator(".govuk-pagination__prev");
+        var isPreviousLinkVisible = await previousLink.IsVisibleAsync();
+
+        // assert pagination
+        Assert.True(paginationIsVisible);
+        Assert.True(isPreviousLinkVisible);
+    }
+
+    [Fact]
+    public async Task SearchResultsPage_With_Pagination_HasNextLink()
+    {
+        // Arrange
+        var searchTerm = "School";
+        await Page.GotoAsync($"{_pageUrl}/results?NameSearchTerm={searchTerm}&PageNumber=1");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        var pagination = Page.Locator(".govuk-pagination");
+        var paginationIsVisible = await pagination.IsVisibleAsync();
+
+        var nextLink = Page.Locator(".govuk-pagination__next");
+        var isNextLinkVisible = await nextLink.IsVisibleAsync();
+
+        // assert pagination
+        Assert.True(paginationIsVisible);
+        Assert.True(isNextLinkVisible);
+    }
+
+    [Fact]
+    public async Task SearchResultsPage_With_Pagination_HasNoNextLink()
+    {
+        // Arrange
+        var searchTerm = "School";
+        await Page.GotoAsync($"{_pageUrl}/results?NameSearchTerm={searchTerm}&PageNumber=2");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        var pagination = Page.Locator(".govuk-pagination");
+        var paginationIsVisible = await pagination.IsVisibleAsync();
+
+        var nextLink = Page.Locator(".govuk-pagination__next");
+        var isNextLinkVisible = await nextLink.IsVisibleAsync();
+
+        // assert pagination
+        Assert.True(paginationIsVisible);
+        Assert.False(isNextLinkVisible);
+    }
+
+    [Fact]
+    public async Task SearchResultsPage_With_Pagination_Click_Next_Link()
+    {
+        // Arrange
+        var searchTerm = "School";
+        await Page.GotoAsync($"{_pageUrl}/results?NameSearchTerm={searchTerm}&PageNumber=1");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        var previousLink = Page.Locator(".govuk-pagination__next a");
+
+        // Act
+        await previousLink.ClickAsync();
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        // assert 
+        Assert.Contains("pageNumber=2", Page.Url);
+    }
+
+    [Fact]
+    public async Task SearchResultsPage_With_Pagination_Click_Previous_Link()
+    {
+        // Arrange
+        var searchTerm = "School";
+        await Page.GotoAsync($"{_pageUrl}/results?NameSearchTerm={searchTerm}&PageNumber=2");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        var previousLink = Page.Locator(".govuk-pagination__prev a");
+
+        // Act
+        await previousLink.ClickAsync();
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        // assert 
+        Assert.Contains("pageNumber=1", Page.Url);
     }
 }

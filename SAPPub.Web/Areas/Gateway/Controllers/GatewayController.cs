@@ -5,17 +5,16 @@ using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Gateway;
 using SAPPub.Web.Areas.Gateway.ViewModels;
 using SAPPub.Web.Models.Config;
-using System.Threading.Tasks;
 
 namespace SAPPub.Web.Areas.Gateway.Controllers
 {
     [Area("Gateway")]
     public class GatewayController(
-        IGatewayUserService UserService, 
-        IGatewayLocalAuthorityService localAuthorityService, 
-        IGatewayUserAuditService auditService, 
-        IGatewayUserLAService gatewayUserLAService, 
-        IEmailService emailService, 
+        IGatewayUserService UserService,
+        IGatewayLocalAuthorityService localAuthorityService,
+        IGatewayUserAuditService auditService,
+        IGatewayUserLAService gatewayUserLAService,
+        IEmailService emailService,
         ILogger<GatewayController> logger,
         IOptions<GatewayOptions> options) : Controller
     {
@@ -182,8 +181,6 @@ namespace SAPPub.Web.Areas.Gateway.Controllers
                 }
 
                 var acceptedCookies = viewModel.AcceptCookies == "true";
-
-
 
                 // If not, create new record
                 var newUser = new GatewayUser()
