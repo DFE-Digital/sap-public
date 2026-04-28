@@ -9,8 +9,8 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
 {
     private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
     {
-        ["105574"] = "school/105574/Loreto%20High%20School%20Chorlton/secondary/destinations",
-        ["100273"] = "school/100273/Saint%20Paul%20Roman%20Catholic%20Infant%20School/secondary/destinations",
+        ["105574"] = "school/105574/loreto-high-school-chorlton/secondary/destinations",
+        ["100273"] = "school/100273/saint-paul-roman-catholic-infant-school/secondary/destinations",
     };
 
     [Fact]

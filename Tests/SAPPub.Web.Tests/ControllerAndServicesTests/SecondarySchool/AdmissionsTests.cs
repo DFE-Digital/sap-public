@@ -125,7 +125,7 @@ public class AdmissionsTests
         Assert.Equal(laName, model.LAName);
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_establishment.URN, model.RouteAttributes[RouteConstants.URN]);
-        Assert.Equal(_establishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
+        Assert.Equal(_establishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
     [Theory]

@@ -53,7 +53,7 @@ namespace SAPPub.Web.Middleware
 
             // Apply headers
             context.Response.Headers["Content-Security-Policy"] = csp;
-            context.Response.Headers["Referrer-Policy"] = "no-referrer";
+            context.Response.Headers["Referrer-Policy"] = "origin-when-cross-origin";
             context.Response.Headers["X-Content-Type-Options"] = "nosniff";
             context.Response.Headers["X-Frame-Options"] = "DENY";
 

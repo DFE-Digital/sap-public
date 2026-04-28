@@ -1,4 +1,6 @@
-﻿namespace SAPPub.Web.ViewComponents.VerticalNavigation;
+﻿using SAPPub.Core.Helpers;
+
+namespace SAPPub.Web.ViewComponents.VerticalNavigation;
 
 public class VerticalNavigationModel
 {
@@ -7,4 +9,7 @@ public class VerticalNavigationModel
     public required string URN { get; set; }
 
     public required string SchoolName { get; set; }
+
+    public string SchoolNameClean => TextHelpers.CleanForUrl(SchoolName);
+
 }

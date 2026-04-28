@@ -15,8 +15,19 @@ namespace SAPPub.Core.Helpers
 
         public static string CleanForUrl(string name)
         {
-            name = Regex.Replace(name, "[^a-zA-Z0-9 ]", "");
-            name = Regex.Replace(name.Trim(), " +", "-");
+            if (string.IsNullOrWhiteSpace(name))
+                return string.Empty;
+
+            name = name.ToLowerInvariant();
+
+            // Remove all non-alphanumeric and non-space characters
+            name = Regex.Replace(name, @"[^a-z0-9 ]+", "");
+
+            // Replace one or more spaces with a single dash
+            name = Regex.Replace(name.Trim(), @"\s+", "-");
+
+            name = name.Trim('-');
+
             return name;
 
         }

@@ -90,6 +90,14 @@ public partial class Program
                 .SetApplicationName("SAPPub");
         }
 
+        if (builder.Environment.IsProduction())
+        {
+            builder.Services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.All;
+            });
+        }
+
         // Database connection configuration
         var connectionString = builder.Configuration.GetConnectionString("PostgresConnectionString");
 
@@ -109,7 +117,7 @@ public partial class Program
         builder.Services.AddDfeAnalytics().AddAspNetCoreIntegration(options =>
         {
             options.RequestFilter = ctx =>
-                ctx.Request.Path != "/healthcheck";
+                ctx.Request.Path != "/healthcheck" && ctx.Request.Path != "/health";
         });
 
         //Email config

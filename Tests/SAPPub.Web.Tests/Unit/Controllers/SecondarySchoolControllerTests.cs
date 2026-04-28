@@ -7,6 +7,7 @@ using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Extensions;
+using SAPPub.Core.Helpers;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
@@ -245,7 +246,7 @@ public class SecondarySchoolControllerTests
         Assert.False(model.IsLocalAuthoritySchool);
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(expectedResult.Urn, model.RouteAttributes[RouteConstants.URN]);
-        Assert.Equal(expectedResult.SchoolName, model.RouteAttributes[RouteConstants.SchoolName]);
+        Assert.Equal(TextHelpers.CleanForUrl(expectedResult.SchoolName), model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
     [Fact]
@@ -293,7 +294,7 @@ public class SecondarySchoolControllerTests
         Assert.False(model.IsLocalAuthoritySchool);
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(expectedResult.Urn, model.RouteAttributes[RouteConstants.URN]);
-        Assert.Equal(expectedResult.SchoolName, model.RouteAttributes[RouteConstants.SchoolName]);
+        Assert.Equal(TextHelpers.CleanForUrl(expectedResult.SchoolName), model.RouteAttributes[RouteConstants.SchoolName]);
         Assert.Equal(expectedResult.OpenReasonId, model.OpenReasonId);
         Assert.Equal(expectedResult.OpenDate, model.OpenDate);
     }
@@ -403,7 +404,7 @@ public class SecondarySchoolControllerTests
 
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
-        Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
+        Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
     [Theory]
@@ -438,7 +439,7 @@ public class SecondarySchoolControllerTests
 
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
-        Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
+        Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
     [Theory]
@@ -601,6 +602,7 @@ public class SecondarySchoolControllerTests
         _mockAdmissionsService
             .Setup(s => s.GetAdmissionsDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new AdmissionsServiceModel(
+                SchoolName: _fakeEstablishment.EstablishmentName,
                 SchoolWebsite: _fakeEstablishment.Website,
                 LAName: laName,
                 LASchoolAdmissionsUrl: lASchoolAdmissionsUrl,
@@ -621,7 +623,7 @@ public class SecondarySchoolControllerTests
         Assert.Equal(laName, model.LAName);
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
-        Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
+        Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
         Assert.False(model.IsSchoolClosed);
     }
 
@@ -640,6 +642,7 @@ public class SecondarySchoolControllerTests
         _mockAdmissionsService
             .Setup(s => s.GetAdmissionsDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new AdmissionsServiceModel(
+                SchoolName: _fakeEstablishment.EstablishmentName,
                 SchoolWebsite: _fakeEstablishment.Website,
                 LAName: laName,
                 LASchoolAdmissionsUrl: lASchoolAdmissionsUrl,
@@ -687,6 +690,7 @@ public class SecondarySchoolControllerTests
         _mockAdmissionsService
             .Setup(s => s.GetAdmissionsDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new AdmissionsServiceModel(
+                SchoolName: _fakeEstablishment.EstablishmentName,
                 SchoolWebsite: _fakeEstablishment.Website,
                 LAName: laName,
                 LASchoolAdmissionsUrl: lASchoolAdmissionsUrl,
@@ -719,7 +723,7 @@ public class SecondarySchoolControllerTests
         Assert.Equal(_fakeEstablishment.Website, model.SchoolWebsite.Value);
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
-        Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
+        Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
     [Fact]
@@ -737,7 +741,7 @@ public class SecondarySchoolControllerTests
         Assert.Equal(_fakeEstablishment.Website, model.SchoolWebsite.Value);
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
-        Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
+        Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
     [Theory]
@@ -816,7 +820,7 @@ public class SecondarySchoolControllerTests
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
-        Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
+        Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
         Assert.Equal(3, model.AcademicYearsSelectList.Count);
         Assert.Equal(academicYearSelection, model.SelectedAcademicYear);
         Assert.Equal($"Information in this section is for the {academicYearSelection.GetDisplayName()} academic year.", model.AcademicYearInfoParagraph);
@@ -889,7 +893,7 @@ public class SecondarySchoolControllerTests
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
-        Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
+        Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
         Assert.Equal(3, model.AcademicYearsSelectList.Count);
         Assert.Equal(academicYearSelection, model.SelectedAcademicYear);
         Assert.Equal(expectedShowAttainment8Info, model.ShowAttainment8Info);
@@ -922,7 +926,7 @@ public class SecondarySchoolControllerTests
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
-        Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
+        Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
         Assert.Equal(grade, model.SelectedGrade);
         Assert.Equal(["School", $"{_fakeEstablishment.LAName} average", "England average"], model.AllGcseData.Labels);
         Assert.Equal(
@@ -1030,7 +1034,7 @@ public class SecondarySchoolControllerTests
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
-        Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
+        Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
         Assert.Equal(gradeSelection, model.SelectedGrade);
         Assert.Equal(["School", $"{_fakeEstablishment.LAName} average", "England average"], model.AllGcseData.Labels);
         Assert.Equal([null, null, null], model.AllGcseData.Data);
@@ -1154,7 +1158,7 @@ public class SecondarySchoolControllerTests
 
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
-        Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
+        Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
     [Fact]
@@ -1272,7 +1276,7 @@ public class SecondarySchoolControllerTests
 
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
-        Assert.Equal(_fakeEstablishment.EstablishmentName, model.RouteAttributes[RouteConstants.SchoolName]);
+        Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
     [Fact]
