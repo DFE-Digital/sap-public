@@ -28,6 +28,12 @@
                     All schools must publish an attendance policy. This should outline expectations, procedures, and responsibilities for
                     ensuring pupils attend school regularly and on time.
                 </p>
+                <p class="govuk-body">
+                    Schools can support children to attend regularly. If you have concerns about your child's attendance, speak to your school.
+                </p>
+                <p class="govuk-body">
+                    You can find out more about parents' and carers' responsibilities on school attendance on the Children's Commissioner website.
+                </p>
 
                 <govuk-summary-list>
                     <govuk-summary-list-row>
@@ -35,8 +41,19 @@
                             Attendance policy
                         </govuk-summary-list-row-key>
                         <govuk-summary-list-row-value>
-                            <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite.DisplayText(UrlHelper.EnsureHttpsUrl)">
-                                 Visit the school website to view their attendance policy
+                            <a class="govuk-link" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite.DisplayText(UrlHelper.EnsureHttpsUrl)">
+                                 Visit the school website to view the attendance policy
+                                <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                            </a>
+                        </govuk-summary-list-row-value>
+                    </govuk-summary-list-row>
+                    <govuk-summary-list-row>
+                        <govuk-summary-list-row-key>
+                            Parents' and carers' responsibilities
+                        </govuk-summary-list-row-key>
+                        <govuk-summary-list-row-value>
+                            <a class="govuk-link" rel="noreferrer noopener" target="_blank" href="https://www.childrenscommissioner.gov.uk/back-into-school/resources-for-families/">
+                                Visit the Children's Commissioner website
                                 <span class="govuk-visually-hidden">(opens in a new tab)</span>
                             </a>
                         </govuk-summary-list-row-value>

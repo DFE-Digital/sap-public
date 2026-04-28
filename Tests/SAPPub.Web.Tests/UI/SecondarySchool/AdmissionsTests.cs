@@ -76,7 +76,7 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         await nav.ShouldBeVisibleAsync();
-        await nav.ShouldHaveItemsCountAsync(5);
+        await nav.ShouldHaveItemsCountAsync(6);
         await nav.ShouldHaveOneActiveItemAsync();
         await nav.ShouldHaveActiveHrefAsync(_pageUrl);
     }
