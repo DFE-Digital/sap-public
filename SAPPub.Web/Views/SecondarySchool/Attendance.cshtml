@@ -41,10 +41,17 @@
                             Attendance policy
                         </govuk-summary-list-row-key>
                         <govuk-summary-list-row-value>
-                            <a class="govuk-link" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite.DisplayText(UrlHelper.EnsureHttpsUrl)">
-                                 Visit the school website to view the attendance policy
-                                <span class="govuk-visually-hidden">(opens in a new tab)</span>
-                            </a>
+                            @if (Model.SchoolWebsite.IsAvailable)
+                            {
+                                <a class="govuk-link" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite.DisplayText(UrlHelper.EnsureHttpsUrl)">
+                                        Visit the school website to view the attendance policy
+                                    <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                                </a>
+                            }
+                            else
+                            {
+                                @Model.SchoolWebsite.DisplayText(notAvailableText: "Contact the school for more information.")
+                            }
                         </govuk-summary-list-row-value>
                     </govuk-summary-list-row>
                     <govuk-summary-list-row>
