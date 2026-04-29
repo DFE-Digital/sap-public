@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Bogus;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using SAPPub.Core.Helpers;
 
@@ -8,6 +9,7 @@ public abstract class PageTestsBase : IDisposable // implement IDisposable so ca
 {
     protected readonly WebAppFixture Fixture;
     private readonly List<Action> _clearActions = new();
+    protected Faker _faker = new();
 
     protected string BuildUrl(string urn, string schoolName, string pageRoute)
     {

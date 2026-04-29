@@ -11,7 +11,7 @@ namespace SAPPub.Web.Models.SecondarySchool
         private const string SENUnit = "SEN unit";
         private const string ResourcedProvisionAndSENUnit = "Resourced provision and SEN unit";
         private const string ResourcedProvisionText = "Resourced provision";
-        private const int LocalAuthorityEstablishmentGroupTypeId = 4;        
+        private const int LocalAuthorityEstablishmentGroupTypeId = 4;
         private const int AcademyOpenReasonId = 10;
 
         public record School(string Name, double Lat, double Lon);

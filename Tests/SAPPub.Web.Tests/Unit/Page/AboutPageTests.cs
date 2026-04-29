@@ -1,4 +1,5 @@
 ﻿using Moq;
+using SAPPub.Core.Extensions;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
@@ -20,54 +21,176 @@ public class AboutPageTests : PageTestsBase
         _about = UseMock<IAboutSchoolService>();
     }
 
-    [Fact]
-    public async Task AboutPage_ShowsHeading()
+    [Theory]
+    [InlineData("Fake academy trust name")]
+    [InlineData(null)]
+    public async Task AboutPage_ShowsSchoolDetailsSummary(string? academyTrustName)
     {
         // Arrange
-        var urn = "143032";
-        var establishmentName = "St Paul's Church of England Academy";
-
-        // set up mock
+        var aboutSchoolModel = new AboutSchoolModel()
+        {
+            Urn = "143034",
+            SchoolName = "St David's Church of England Academy",
+            AcademyTrust = academyTrustName,
+        };
         _about
             .Setup(service => service.GetAboutSchoolDetailsAsync(
                 It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new AboutSchoolModel()
-            {
-                Urn = urn,
-                SchoolName = establishmentName
-            });
+            .ReturnsAsync(aboutSchoolModel);
 
         // Act
-        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
+        var doc = await Fixture.BrowseToPage(BuildUrl(aboutSchoolModel.Urn, aboutSchoolModel.SchoolName, _pageRoute));
 
         // Assert
-        var h1 = doc.QuerySelector("h1");
-        Assert.Contains("About the school", h1?.TextContent.Trim());
+        Assert.Contains(aboutSchoolModel.SchoolName, doc.GetRowContentByIdAndKey("school-details-summary", "Name"));
+        if (academyTrustName is not null)
+        {
+            Assert.Contains(aboutSchoolModel.AcademyTrust!, doc.GetRowContentByIdAndKey("school-details-summary", "Academy Trust"));
+        }
+        else
+        {
+            Assert.Null(doc.GetRowContentByIdAndKey("school-details-summary", "Academy Trust"));
+        }
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task AboutPage_ClosedSchool_ShowsSchoolClosedInfo(bool isClosed)
+    {
+        // Arrange
+        var aboutSchoolModel = new AboutSchoolModel()
+        {
+            Urn = "143034",
+            SchoolName = "St David's Church of England Academy",
+            ClosedDate = isClosed ? DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-1)) : null,
+        };
+        _about
+            .Setup(service => service.GetAboutSchoolDetailsAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(aboutSchoolModel);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(aboutSchoolModel.Urn, aboutSchoolModel.SchoolName, _pageRoute));
+
+        // Assert
+        Assert.Contains(aboutSchoolModel.SchoolName, doc.GetRowContentByIdAndKey("school-details-summary", "Name"));
     }
 
     [Fact]
-    public async Task AboutPage_ShowsDetails()
+    public async Task AboutPage_ShowsSchoolLocationSummary()
     {
         // Arrange
-        var urn = "143034";
-        var establishmentName = "St David's Church of England Academy";
-
+        var aboutSchoolModel = new AboutSchoolModel()
+        {
+            Urn = "143034",
+            SchoolName = "St David's Church of England Academy",
+            Address = "Some address",
+            LocalAuthority = "Bury"
+        };
         _about
             .Setup(service => service.GetAboutSchoolDetailsAsync(
                 It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new AboutSchoolModel()
-            {
-                Urn = urn,
-                SchoolName = establishmentName
-            });
+            .ReturnsAsync(aboutSchoolModel);
 
         // Act
-        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
+        var doc = await Fixture.BrowseToPage(BuildUrl(aboutSchoolModel.Urn, aboutSchoolModel.SchoolName, _pageRoute));
 
         // Assert
-        var nameRowContent = doc.GetRowContentByIdAndKey("school-details-summary", "Name");
-        Assert.Contains(establishmentName, nameRowContent);
+        Assert.Contains(aboutSchoolModel.Address, doc.GetRowContentByIdAndKey("school-location-summary", "Address"));
+        Assert.Contains(aboutSchoolModel.LocalAuthority, doc.GetRowContentByIdAndKey("school-location-summary", "Local council"));
+    }
+
+    [Theory]
+    [InlineData("0")]
+    [InlineData("1")]
+    public async Task AboutPage_ShowsSchoolFeatures(string officialSixthFormId)
+    {
+        // Arrange
+        var aboutSchoolModel = new AboutSchoolModel()
+        {
+            Urn = "143034",
+            SchoolName = "St David's Church of England Academy",
+            AgeRange = "11-16",
+            HeadTeacher = _faker.Name.FullName(),
+            NumberOfPupils = _faker.Random.Number(100, 2000).ToString(),
+            PupilSex = "Mixed",
+            ReligiousCharacter = "Church of England",
+            OfficialSixthFormId = officialSixthFormId,
+        };
+        _about
+            .Setup(service => service.GetAboutSchoolDetailsAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(aboutSchoolModel);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(aboutSchoolModel.Urn, aboutSchoolModel.SchoolName, _pageRoute));
+
+        // Assert
+        Assert.Contains(aboutSchoolModel.HeadTeacher, doc.GetRowContentByIdAndKey("school-features-summary", "Headteacher"));
+        Assert.Contains(aboutSchoolModel.AgeRange, doc.GetRowContentByIdAndKey("school-features-summary", "Age range"));
+        Assert.Contains(aboutSchoolModel.NumberOfPupils.ToInt()?.ToString("N0")!, doc.GetRowContentByIdAndKey("school-features-summary", "Number of pupils"));
+        Assert.Contains(aboutSchoolModel.PupilSex, doc.GetRowContentByIdAndKey("school-features-summary", "Pupil sex"));
+        Assert.Contains(aboutSchoolModel.ReligiousCharacter, doc.GetRowContentByIdAndKey("school-features-summary", "Religious character"));
+        Assert.Contains(aboutSchoolModel.OfficialSixthFormId == "1" ? "Yes" : "No", doc.GetRowContentByIdAndKey("school-features-summary", "Sixth form"));
+    }
+
+    [Fact]
+    public async Task AboutPage_ValuesNotAvailable_ShowsNotAvailableContent()
+    {
+        // Arrange
+        var notAvailableContent = "Not available";
+        var aboutSchoolModel = new AboutSchoolModel()
+        {
+            Urn = "143034",
+            SchoolName = "St David's Church of England Academy",
+        };
+        _about
+            .Setup(service => service.GetAboutSchoolDetailsAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(aboutSchoolModel);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(aboutSchoolModel.Urn, aboutSchoolModel.SchoolName, _pageRoute));
+
+        // Assert
+        Assert.Contains(notAvailableContent, doc.GetRowContentByIdAndKey("school-features-summary", "Headteacher"));
+        Assert.Contains(notAvailableContent, doc.GetRowContentByIdAndKey("school-features-summary", "Age range"));
+        Assert.Contains(notAvailableContent, doc.GetRowContentByIdAndKey("school-features-summary", "Number of pupils"));
+        Assert.Contains(notAvailableContent, doc.GetRowContentByIdAndKey("school-features-summary", "Pupil sex"));
+        Assert.Contains(notAvailableContent, doc.GetRowContentByIdAndKey("school-features-summary", "Religious character"));
+        Assert.Contains(notAvailableContent, doc.GetRowContentByIdAndKey("school-features-summary", "Sixth form"));
+    }
+
+    [Theory]
+    [InlineData("SEN unit", true, false)]
+    [InlineData("Resourced provision and SEN unit", true, true)]
+    [InlineData("Resourced provision", false, true)]
+    public async Task AboutPage_ShowsCorrectResourcedProvisionAndSENUnitDetails(string ResourcedProvisionName, bool hasSENUnit, bool hasResourcedProvision)
+    {
+        // Arrange
+        var aboutSchoolModel = new AboutSchoolModel()
+        {
+            Urn = "143031",
+            SchoolName = "St David's Church of England School",
+            ResourcedProvisionName = ResourcedProvisionName
+        };
+        _about
+            .Setup(service => service.GetAboutSchoolDetailsAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(aboutSchoolModel);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(aboutSchoolModel.Urn, aboutSchoolModel.SchoolName, _pageRoute));
+
+        // Assert
+        Assert.Contains(hasSENUnit ? "Yes" : "No", doc.GetRowContentByIdAndKey("school-features-summary", "SEN unit"));
+        Assert.Contains(hasResourcedProvision ? "Yes" : "No", doc.GetRowContentByIdAndKey("school-features-summary", "Resourced provision"));
     }
 }
