@@ -111,6 +111,17 @@
                 </div>
             </div>
         }
+        else if (!Model.ShowProgress8Info)
+        {
+            <div class="custom-card" data-testid="attainment8-no-establishment-data-card">
+                <div class="info__icon"></div>
+                <div class="custom-card__content">
+                    <p class="govuk-body">
+                        There is no Progress 8 data for this school.
+                    </p>
+                </div>
+            </div>
+        }
         else
         {
             <div class="custom-card" data-testid="progress8-establishment-card">
