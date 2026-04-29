@@ -43,7 +43,8 @@ public class SearchResultsViewModel
                 RouteAttributes = new Dictionary<string, string?>
                 {
                     { nameof(searchModel.NameSearchTerm), searchModel?.NameSearchTerm },
-                    { nameof(searchModel.LocationSearchTerm), searchModel?.LocationSearchTerm }
+                    { nameof(searchModel.LocationSearchTerm), searchModel?.LocationSearchTerm },
+                    { nameof(searchModel.Distance), searchModel?.Distance.ToString() }
                 }
             } : null
         };
