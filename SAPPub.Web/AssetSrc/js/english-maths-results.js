@@ -25,7 +25,8 @@
 
         if (allGcseShowDataOverTimeBtn) {
             allGcseShowDataOverTimeBtn.addEventListener('click', () => {
-                setTooggleState(allGcseDataOverTimeChartContainer, allGcseDataOverTimeTableContainer, false, allGcseCurrentYearShowAsTableBtn);
+                var chartVisible = allGcseCurrentYearChartContainer.style.display !== 'none';
+                setTooggleState(allGcseDataOverTimeChartContainer, allGcseDataOverTimeTableContainer, !chartVisible, allGcseDataOverTimeShowAsTableBtn);
             });
         }
 
@@ -40,7 +41,8 @@
 
         if (allGcseShowCurrentDataBtn) {
             allGcseShowCurrentDataBtn.addEventListener('click', () => {
-                setTooggleState(allGcseCurrentYearChartContainer, allGcseCurrentYearTableContainer, false, allGcseCurrentYearShowAsTableBtn);
+                var chartVisible = allGcseDataOverTimeChartContainer.style.display !== 'none';
+                setTooggleState(allGcseCurrentYearChartContainer, allGcseCurrentYearTableContainer, !chartVisible, allGcseCurrentYearShowAsTableBtn);
             });
         }
 
@@ -70,7 +72,8 @@
         chartContainer.style.display = isChartVisible ? 'none' : 'block';
         tableContainer.style.display = isChartVisible ? 'block' : 'none';
 
-        setToggleText(btnShow, isChartVisible ? 'Show as a chart' : 'Show as a table')
+        var isTableVisible = tableContainer.style.display === 'block';
+        setToggleText(btnShow, isTableVisible ? 'Show as a chart' : 'Show as a table')
         setAriaAttribute(btnShow, isChartVisible ? 'true' : 'false');
     }
 

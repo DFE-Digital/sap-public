@@ -24,7 +24,8 @@
 
         if (allDestShowDataOverTimeBtn) {
             allDestShowDataOverTimeBtn.addEventListener('click', () => {
-                setTooggleState(allDestDataOverTimeChartContainer, allDestDataOverTimeTableContainer, false, allDestCurrentYearShowAsTableBtn);
+                var chartVisible = allDestCurrentYearChartContainer.style.display !== 'none';
+                setTooggleState(allDestDataOverTimeChartContainer, allDestDataOverTimeTableContainer, !chartVisible, allDestDataOverTimeShowAsTableBtn);
             });
         }
 
@@ -38,7 +39,8 @@
 
         if (allDestShowCurrentDataBtn) {
             allDestShowCurrentDataBtn.addEventListener('click', () => {
-                setTooggleState(allDestCurrentYearChartContainer, allDestCurrentYearTableContainer, false, allDestCurrentYearShowAsTableBtn);
+                var chartVisible = allDestDataOverTimeChartContainer.style.display !== 'none';
+                setTooggleState(allDestCurrentYearChartContainer, allDestCurrentYearTableContainer, !chartVisible, allDestCurrentYearShowAsTableBtn);
             });
         }
 
@@ -68,7 +70,8 @@
         chartContainer.style.display = isChartVisible ? 'none' : 'block';
         tableContainer.style.display = isChartVisible ? 'block' : 'none';
 
-        setToggleText(btnShow, isChartVisible ? 'Show as a chart' : 'Show as a table')
+        var isTableVisible = tableContainer.style.display === 'block';
+        setToggleText(btnShow, isTableVisible ? 'Show as a chart' : 'Show as a table')
         setAriaAttribute(btnShow, isChartVisible ? 'true' : 'false');
     }
 
