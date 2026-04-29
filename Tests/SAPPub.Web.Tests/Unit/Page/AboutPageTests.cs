@@ -65,6 +65,7 @@ public class AboutPageTests : PageTestsBase
             Urn = "143034",
             SchoolName = "St David's Church of England Academy",
             ClosedDate = isClosed ? DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-1)) : null,
+            StatusCode = isClosed ? Constants.Constants.SchoolClosedStatusCode : Constants.Constants.SchoolClosedStatusCode + 1,
         };
         _about
             .Setup(service => service.GetAboutSchoolDetailsAsync(
@@ -77,6 +78,14 @@ public class AboutPageTests : PageTestsBase
 
         // Assert
         Assert.Contains(aboutSchoolModel.SchoolName, doc.GetRowContentByIdAndKey("school-details-summary", "Name"));
+        if (isClosed)
+        {
+            Assert.NotNull(doc.QuerySelector("[data-testid='school-closed-custom-card']"));
+        }
+        else
+        {
+            Assert.Null(doc.QuerySelector("[data-testid='school-closed-custom-card']"));
+        }
     }
 
     [Fact]
