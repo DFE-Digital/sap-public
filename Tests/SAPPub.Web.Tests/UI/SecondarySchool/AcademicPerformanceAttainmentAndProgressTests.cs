@@ -207,8 +207,15 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
 
         // Act
         var isVisible = await Page.Locator("#academic-performance-attainment-and-progress-pagination").IsVisibleAsync();
+        var previousPaginationLink = Page.Locator("#academic-performance-attainment-and-progress-pagination .govuk-pagination__prev a");
+        var nextPaginationLink = Page.Locator("#academic-performance-attainment-and-progress-pagination .govuk-pagination__next a");
+
+        var previousPaginationText = await previousPaginationLink.TextContentAsync();
+        var nextPaginationText = await nextPaginationLink.TextContentAsync();
 
         // Assert
         Assert.True(isVisible);
+        Assert.Equal("Attendance", previousPaginationText?.Trim());
+        Assert.Equal("Academic performance: English and maths results", nextPaginationText?.Trim());
     }
 }

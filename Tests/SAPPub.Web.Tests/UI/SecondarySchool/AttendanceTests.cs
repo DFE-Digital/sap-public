@@ -120,8 +120,17 @@ public class AttendancePageTests(WebApplicationSetupFixture fixture) : BasePageT
         // Act
         var isVisible = await Page.Locator("#attendance-pagination").IsVisibleAsync();
 
+        // Act
+        var previousPaginationLink = Page.Locator("#attendance-pagination .govuk-pagination__prev a");
+        var nextPaginationLink = Page.Locator("#attendance-pagination .govuk-pagination__next a");
+
+        var previousPaginationText = await previousPaginationLink.TextContentAsync();
+        var nextPaginationText = await nextPaginationLink.TextContentAsync();
+
         // Assert
         Assert.True(isVisible);
+        Assert.Equal("Curriculum and extra-curricular activities", previousPaginationText?.Trim());
+        Assert.Equal("Academic performance: Progress and attainment", nextPaginationText?.Trim());
     }
 
     [Fact]

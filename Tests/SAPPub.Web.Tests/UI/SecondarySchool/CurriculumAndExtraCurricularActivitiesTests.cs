@@ -148,8 +148,15 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
 
         // Act
         var isVisible = await Page.Locator("#current-extra-curricular-activities-pagination").IsVisibleAsync();
+        var previousPaginationLink = Page.Locator("#current-extra-curricular-activities-pagination .govuk-pagination__prev a");
+        var nextPaginationLink = Page.Locator("#current-extra-curricular-activities-pagination .govuk-pagination__next a");
+
+        var previousPaginationText = await previousPaginationLink.TextContentAsync();
+        var nextPaginationText = await nextPaginationLink.TextContentAsync();
 
         // Assert
         Assert.True(isVisible);
+        Assert.Equal("Admissions", previousPaginationText?.Trim());
+        Assert.Equal("Attendance", nextPaginationText?.Trim());
     }
 }
