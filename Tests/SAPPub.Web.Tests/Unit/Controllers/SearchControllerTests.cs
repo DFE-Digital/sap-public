@@ -124,9 +124,10 @@ public class SearchControllerTests
         Assert.Equal(1, viewModel.Pagination.PagerInfo.CurrentPage);
         Assert.Equal(1, viewModel.Pagination.PagerInfo.TotalPages);
         Assert.Equal(RouteConstants.SearchResults, viewModel.Pagination.RouteName);
-        Assert.Equal(2, viewModel.Pagination.RouteAttributes.Count);
+        Assert.Equal(3, viewModel.Pagination.RouteAttributes.Count);
         Assert.Equal(searchParamsModel.NameSearchTerm, viewModel.Pagination.RouteAttributes[nameof(searchParamsModel.NameSearchTerm)]);
         Assert.Equal(searchParamsModel.LocationSearchTerm, viewModel.Pagination.RouteAttributes[nameof(searchParamsModel.LocationSearchTerm)]);
+        Assert.Equal(searchParamsModel.Distance.ToString(), viewModel.Pagination.RouteAttributes[nameof(searchParamsModel.Distance)]);
     }
 
     [Theory]
@@ -179,9 +180,10 @@ public class SearchControllerTests
         Assert.Equal(1, viewModel.Pagination.PagerInfo.CurrentPage);
         Assert.Equal(expectedPages, viewModel.Pagination.PagerInfo.TotalPages);
         Assert.Equal(RouteConstants.SearchResults, viewModel.Pagination.RouteName);
-        Assert.Equal(2, viewModel.Pagination.RouteAttributes.Count);
+        Assert.Equal(3, viewModel.Pagination.RouteAttributes.Count);
         Assert.Equal(searchParamsModel.NameSearchTerm, viewModel.Pagination.RouteAttributes[nameof(searchParamsModel.NameSearchTerm)]);
         Assert.Equal(searchParamsModel.LocationSearchTerm, viewModel.Pagination.RouteAttributes[nameof(searchParamsModel.LocationSearchTerm)]);
+        Assert.Equal(searchParamsModel.Distance.ToString(), viewModel.Pagination.RouteAttributes[nameof(searchParamsModel.Distance)]);
     }
 
     [Fact]
@@ -236,9 +238,10 @@ public class SearchControllerTests
         Assert.Equal(1, viewModel.Pagination.PagerInfo.CurrentPage);
         Assert.Equal(1, viewModel.Pagination.PagerInfo.TotalPages);
         Assert.Equal(RouteConstants.SearchResults, viewModel.Pagination.RouteName);
-        Assert.Equal(2, viewModel.Pagination.RouteAttributes.Count);
+        Assert.Equal(3, viewModel.Pagination.RouteAttributes.Count);
         Assert.Equal(searchParamsModel.NameSearchTerm, viewModel.Pagination.RouteAttributes[nameof(searchParamsModel.NameSearchTerm)]);
         Assert.Equal(searchParamsModel.LocationSearchTerm, viewModel.Pagination.RouteAttributes[nameof(searchParamsModel.LocationSearchTerm)]);
+        Assert.Equal(searchParamsModel.Distance.ToString(), viewModel.Pagination.RouteAttributes[nameof(searchParamsModel.Distance)]);
     }
 
     [Fact]
@@ -277,9 +280,10 @@ public class SearchControllerTests
         Assert.Equal(1, viewModel.Pagination.PagerInfo.CurrentPage);
         Assert.Equal(1, viewModel.Pagination.PagerInfo.TotalPages);
         Assert.Equal(RouteConstants.SearchResults, viewModel.Pagination.RouteName);
-        Assert.Equal(2, viewModel.Pagination.RouteAttributes.Count);
+        Assert.Equal(3, viewModel.Pagination.RouteAttributes.Count);
         Assert.Equal(searchParamsModel.NameSearchTerm, viewModel.Pagination.RouteAttributes[nameof(searchParamsModel.NameSearchTerm)]);
         Assert.Equal(searchParamsModel.LocationSearchTerm, viewModel.Pagination.RouteAttributes[nameof(searchParamsModel.LocationSearchTerm)]);
+        Assert.Equal(searchParamsModel.Distance.ToString(), viewModel.Pagination.RouteAttributes[nameof(searchParamsModel.Distance)]);
     }
 
     [Fact]
@@ -352,9 +356,10 @@ public class SearchControllerTests
         Assert.Equal(1, viewModel.Pagination.PagerInfo.CurrentPage);
         Assert.Equal(1, viewModel.Pagination.PagerInfo.TotalPages);
         Assert.Equal(RouteConstants.SearchResults, viewModel.Pagination.RouteName);
-        Assert.Equal(2, viewModel.Pagination.RouteAttributes.Count);
+        Assert.Equal(3, viewModel.Pagination.RouteAttributes.Count);
         Assert.Equal(searchParamsModel.NameSearchTerm, viewModel.Pagination.RouteAttributes[nameof(searchParamsModel.NameSearchTerm)]);
         Assert.Equal(searchParamsModel.LocationSearchTerm, viewModel.Pagination.RouteAttributes[nameof(searchParamsModel.LocationSearchTerm)]);
+        Assert.Equal(searchParamsModel.Distance.ToString(), viewModel.Pagination.RouteAttributes[nameof(searchParamsModel.Distance)]);
     }
 
     [Fact]
@@ -387,8 +392,9 @@ public class SearchControllerTests
         Assert.Equal(1, viewModel.Pagination.PagerInfo.CurrentPage);
         Assert.Equal(0, viewModel.Pagination.PagerInfo.TotalPages);
         Assert.Equal(RouteConstants.SearchResults, viewModel.Pagination.RouteName);
-        Assert.Equal(2, viewModel.Pagination.RouteAttributes.Count);
+        Assert.Equal(3, viewModel.Pagination.RouteAttributes.Count);
         Assert.Equal(searchParamsModel.NameSearchTerm, viewModel.Pagination.RouteAttributes[nameof(searchParamsModel.NameSearchTerm)]);
         Assert.Equal(searchParamsModel.LocationSearchTerm, viewModel.Pagination.RouteAttributes[nameof(searchParamsModel.LocationSearchTerm)]);
+        Assert.Equal(searchParamsModel.Distance.ToString(), viewModel.Pagination.RouteAttributes[nameof(searchParamsModel.Distance)]);
     }
 }
