@@ -47,4 +47,90 @@ public class AttainmentAndProgressPageTests : PageTestsBase
         var text = schoolAttainmentCard?.QuerySelector("p")?.TextContent.Trim();
         Assert.Contains(schoolAttainment.ToString(), text);
     }
+
+    [Fact]
+    public async Task ShowsProgress8Values()
+    {
+        // Arrange
+        var urn = "143034";
+        var establishmentName = "St Paul's Church of England Academy";
+        var schoolProgress = _faker.Random.Double(-0.9, 0.9);
+
+        _serviceMock
+            .Setup(service => service.GetAttainmentAndProgressAsync(
+                urn,
+                AcademicYearSelection.Previous,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new AttainmentAndProgressModel()
+            {
+                Urn = urn,
+                SchoolName = establishmentName,
+                EstablishmentProgress8Score = schoolProgress,
+                LocalAuthorityProgress8Score = 15
+            });
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, $"{_pageRoute}?SelectedAcademicYear=Previous"));
+
+        // Assert
+        var schoolProgressCard = doc.QuerySelector("[data-testid='progress8-establishment-card']");
+        var text = schoolProgressCard?.QuerySelector("p")?.TextContent.Trim();
+        Assert.Contains(schoolProgress.ToString(), text);
+    }
+
+    [Fact]
+    public async Task NoProgress8DataForSchool_ShowsNoProgress8Content()
+    {
+        // Arrange
+        var urn = "143034";
+        var establishmentName = "St Paul's Church of England Academy";
+
+        _serviceMock
+            .Setup(service => service.GetAttainmentAndProgressAsync(
+                urn,
+                AcademicYearSelection.Previous,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new AttainmentAndProgressModel()
+            {
+                Urn = urn,
+                SchoolName = establishmentName,
+                EstablishmentProgress8Score = null,
+                LocalAuthorityProgress8Score = 0.1
+            });
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, $"{_pageRoute}?SelectedAcademicYear=Previous"));
+
+        // Assert
+        Assert.NotNull(doc.QuerySelector("[data-testid='progress8-no-establishment-data-card']"));
+        Assert.Null(doc.QuerySelector("[data-testid='progress8-custom-card']"));
+    }
+
+    [Fact]
+    public async Task NoProgress8DataForCurrentYear_ShowsNoProgress8ForCurrentYearContent()
+    {
+        // Arrange
+        var urn = "143034";
+        var establishmentName = "St Paul's Church of England Academy";
+
+        _serviceMock
+            .Setup(service => service.GetAttainmentAndProgressAsync(
+                urn,
+                AcademicYearSelection.Current,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new AttainmentAndProgressModel()
+            {
+                Urn = urn,
+                SchoolName = establishmentName,
+                EstablishmentProgress8Score = null,
+                LocalAuthorityProgress8Score = null
+            });
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
+
+        // Assert
+        Assert.NotNull(doc.QuerySelector("[data-testid='progress8-custom-card']"));
+        Assert.Null(doc.QuerySelector("[data-testid='progress8-no-establishment-data-card']"));
+    }
 }
