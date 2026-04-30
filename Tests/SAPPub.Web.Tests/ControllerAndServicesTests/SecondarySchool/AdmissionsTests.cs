@@ -13,11 +13,6 @@ using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Constants;
 using SAPPub.Web.Controllers;
 using SAPPub.Web.Models.SecondarySchool;
-using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace SAPPub.Web.Tests.ControllerAndServicesTests.SecondarySchool;
 
@@ -46,7 +41,7 @@ public class AdmissionsTests
 
         _establishmentService = new EstablishmentService(_mockEstablishmentRepository.Object);
         _admissionsService = new EstablishmentAdmissionsService(_establishmentService, _mockLaUrlsRepository.Object);
-        _controller = new SecondarySchoolController(_mockLogger.Object, _establishmentService, _mockDestinationsService.Object);
+        _controller = new SecondarySchoolController(_mockLogger.Object, _establishmentService);
 
         _controller.ControllerContext = new ControllerContext
         {

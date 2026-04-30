@@ -13,8 +13,7 @@ namespace SAPPub.Web.Controllers
 {
     public class SecondarySchoolController(
         ILogger<SecondarySchoolController> logger,
-        IEstablishmentService establishmentService,
-        IDestinationsService destinationsService) : Controller
+        IEstablishmentService establishmentService) : Controller
     {
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/about", Name = RouteConstants.SecondaryAboutSchool)]
@@ -56,7 +55,7 @@ namespace SAPPub.Web.Controllers
             var establishmentDetails = await establishmentService.GetEstablishmentAsync(urn, ct);
             var model = AttendanceViewModel.Map(establishmentDetails);
             return View(model);
-        }     
+        }
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/curriculum-and-extra-curricular-activities", Name = RouteConstants.SecondaryCurriculumAndExtraCurricularActivities)]
@@ -127,7 +126,9 @@ namespace SAPPub.Web.Controllers
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/destinations", Name = RouteConstants.SecondaryDestinations)]
-        public async Task<IActionResult> Destinations(string urn, string schoolName, CancellationToken ct)
+        public async Task<IActionResult> Destinations(
+            [FromServices] IDestinationsService destinationsService,
+            string urn, string schoolName, CancellationToken ct)
         {
             var destinationDetails = await destinationsService.GetDestinationsDetailsAsync(urn, ct);
 

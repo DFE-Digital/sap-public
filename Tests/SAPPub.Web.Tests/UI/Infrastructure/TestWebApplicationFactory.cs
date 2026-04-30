@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using SAPPub.Core.Interfaces.Repositories.Generic;
-using SAPPub.Web.Helpers;
 
 namespace SAPPub.Web.Tests.UI.Infrastructure;
 
