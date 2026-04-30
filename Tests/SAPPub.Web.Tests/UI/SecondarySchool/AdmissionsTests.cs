@@ -202,7 +202,16 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
         // Act
         var isVisible = await Page.Locator("#admissions-pagination").IsVisibleAsync();
 
+        // Act
+        var previousPaginationLink = Page.Locator("#admissions-pagination .govuk-pagination__prev a");
+        var nextPaginationLink = Page.Locator("#admissions-pagination .govuk-pagination__next a");
+
+        var previousPaginationText = await previousPaginationLink.TextContentAsync();
+        var nextPaginationText = await nextPaginationLink.TextContentAsync();
+
         // Assert
         Assert.True(isVisible);
+        Assert.Equal("About the school", previousPaginationText?.Trim());
+        Assert.Equal("Curriculum and extra-curricular activities", nextPaginationText?.Trim());
     }
 }

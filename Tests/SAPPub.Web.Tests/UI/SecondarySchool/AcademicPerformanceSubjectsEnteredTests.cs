@@ -112,9 +112,16 @@ public class AcademicPerformanceSubjectsEnteredTests(WebApplicationSetupFixture 
 
         // Act
         var isVisible = await Page.Locator("#academic-performance-subjects-entered-pagination").IsVisibleAsync();
+        var previousPaginationLink = Page.Locator("#academic-performance-subjects-entered-pagination .govuk-pagination__prev a");
+        var nextPaginationLink = Page.Locator("#academic-performance-subjects-entered-pagination .govuk-pagination__next a");
+
+        var previousPaginationText = await previousPaginationLink.TextContentAsync();
+        var nextPaginationText = await nextPaginationLink.TextContentAsync();
 
         // Assert
         Assert.True(isVisible);
+        Assert.Equal("Academic performance: English and maths results", previousPaginationText?.Trim());
+        Assert.Equal("Destinations", nextPaginationText?.Trim());
     }
 
     [Fact]

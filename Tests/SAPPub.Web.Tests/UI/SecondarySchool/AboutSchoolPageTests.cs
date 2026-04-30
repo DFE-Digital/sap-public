@@ -211,8 +211,14 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
 
         // Act
         var isVisible = await Page.Locator("#about-the-school-pagination").IsVisibleAsync();
+        var previousPaginationLink = Page.Locator("#about-the-school-pagination .govuk-pagination__previous a");
+        var nextPaginationLink = Page.Locator("#about-the-school-pagination .govuk-pagination__next a");
+        var previousPaginationIsVisible = await previousPaginationLink.IsVisibleAsync();
+        var nextPaginationText = await nextPaginationLink.TextContentAsync();
 
         // Assert
         Assert.True(isVisible);
+        Assert.False(previousPaginationIsVisible);
+        Assert.Equal("Admissions", nextPaginationText?.Trim());
     }
 }

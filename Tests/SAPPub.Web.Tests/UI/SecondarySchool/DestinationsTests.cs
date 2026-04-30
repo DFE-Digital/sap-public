@@ -364,8 +364,15 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
 
         // Act
         var isVisible = await Page.Locator("#destinations-pagination").IsVisibleAsync();
+        var previousPaginationLink = Page.Locator("#destinations-pagination .govuk-pagination__prev a");
+        var nextPaginationLink = Page.Locator("#destinations-pagination .govuk-pagination__next a");
+
+        var previousPaginationText = await previousPaginationLink.TextContentAsync();
+        var nextPaginationIsVisible = await nextPaginationLink.IsVisibleAsync();
 
         // Assert
         Assert.True(isVisible);
+        Assert.False(nextPaginationIsVisible);
+        Assert.Equal("Academic performance: Subjects entered", previousPaginationText?.Trim());
     }
 }
