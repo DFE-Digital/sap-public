@@ -8,6 +8,11 @@ public class AttendancePageTests(WebApplicationSetupFixture fixture) : BasePageT
 {
     private string _pageUrl = "school/105574/loreto-high-school-chorlton/secondary/attendance";
 
+    private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
+    {
+        ["100273"] = "school/100273/saint-paul-roman-catholic-infant-school/secondary/attendance",
+    };
+
     [Fact]
     public async Task AttendancePage_LoadsSuccessfully()
     {
@@ -82,10 +87,28 @@ public class AttendancePageTests(WebApplicationSetupFixture fixture) : BasePageT
         await Page.GotoAsync(_pageUrl);
 
         // Act
-        var isVisible = await Page.Locator("#attendance-policy-summary").IsVisibleAsync();
+        var summaryCard = Page.Locator("#attendance-policy-summary");
+        await summaryCard.WaitForAsync();
+
+        var contactSchoolInfo = summaryCard.GetByTestId("contact-school-info");
+        var schoolWebsiteLink = summaryCard.GetByTestId("school-website-link");
+        var commissionerWebsiteLink = summaryCard.GetByTestId("school-website-link");
+        var schoolWebsiteHref = await schoolWebsiteLink.GetAttributeAsync("href");
+        var schoolWebsiteText = await schoolWebsiteLink.TextContentAsync();
+        var commissionerWebsiteHref = await commissionerWebsiteLink.GetAttributeAsync("href");
+        var commissionerWebsiteText = await commissionerWebsiteLink.TextContentAsync();
+
 
         // Assert
-        Assert.True(isVisible);
+        Assert.True(await summaryCard.IsVisibleAsync());
+        Assert.False(await contactSchoolInfo.IsVisibleAsync());
+        Assert.True(await schoolWebsiteLink.IsVisibleAsync());
+        Assert.True(await commissionerWebsiteLink.IsVisibleAsync());
+
+        Assert.NotNull(schoolWebsiteHref);
+        Assert.NotNull(schoolWebsiteText);
+        Assert.NotNull(commissionerWebsiteHref);
+        Assert.NotNull(commissionerWebsiteText);
     }
 
     [Fact]
@@ -100,4 +123,20 @@ public class AttendancePageTests(WebApplicationSetupFixture fixture) : BasePageT
         // Assert
         Assert.True(isVisible);
     }
+
+    [Fact]
+    public async Task AttendancePage_Displays_ContactSchoolText()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["100273"]);
+
+        // Act
+
+        var contactSchoolInfo = Page.GetByTestId("contact-school-info");
+        var isVisible = await contactSchoolInfo.IsVisibleAsync();
+
+        // Assert
+        Assert.True(isVisible);
+    }
+
 }
