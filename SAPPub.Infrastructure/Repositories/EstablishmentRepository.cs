@@ -39,7 +39,8 @@ namespace SAPPub.Infrastructure.Repositories
             return await _repo.ReadAsync(urn, ct) ?? null;
         }
 
-        public async Task<IEnumerable<Establishment>> SearchByNameAsync(string searchTerm, int limit = 20, CancellationToken ct = default)
+        public async Task<(IEnumerable<Establishment> Results, int TotalCount)> SearchByNameAsync(
+            string searchTerm, int page, int pageSize, CancellationToken ct = default)
         {
             const string sql = @"
                 SELECT 
@@ -57,68 +58,105 @@ namespace SAPPub.Infrastructure.Repositories
                 FROM v_establishment
                 WHERE ""EstablishmentNameFTS"" @@ plainto_tsquery('english', @searchTerm)
                 ORDER BY ""EstablishmentName"" ASC
-                LIMIT @limit;";
+                LIMIT @pageSize OFFSET @offset;";
+
+            const string countSql = @"
+                SELECT COUNT(*)
+                FROM v_establishment
+                WHERE ""EstablishmentNameFTS"" @@ plainto_tsquery('english', @searchTerm);";
+
+
+            int offset = (page - 1) * pageSize;
 
             await using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
-            return await conn.QueryAsync<Establishment>(sql, new { searchTerm, limit });
+            var results = await conn.QueryAsync<Establishment>(sql, new { searchTerm, pageSize, offset });
+            var totalCount = await conn.ExecuteScalarAsync<int>(countSql, new { searchTerm });
+
+            return (results, totalCount);
         }
 
-        public async Task<IEnumerable<Establishment>> SearchByNameAndLocationAsync(
-    string searchTerm, double latitude, double longitude, double distance, int limit = 20, CancellationToken ct = default)
+        public async Task<(IEnumerable<Establishment> Results, int TotalCount)> SearchByNameAndLocationAsync(
+           string searchTerm, double latitude, double longitude, double distance, int page, int pageSize, CancellationToken ct = default)
         {
             const string sql = @"
-                SELECT
-                    ""URN"",
-                    ""EstablishmentName"",
-                    ""AddressStreet"",
-                    ""AddressLocality"",
-                    ""AddressAddress3"",
-                    ""AddressTown"",
-                    ""AddressPostcode"",
-                    ""GenderName"",
-                    ""ReligiousCharacterName"",
-                    ""StatusCode"",
-                    ""ClosedDate"",
-                    ST_Distance(""geom"", ST_SetSRID(ST_MakePoint(@lng, @lat), 4326)::geography) AS ""Distance""
-                FROM v_establishment
-                WHERE
-                    ""EstablishmentNameFTS"" @@ plainto_tsquery('english', @searchTerm)
-                    AND ""geom"" IS NOT NULL
-                    AND ST_DWithin(""geom"", ST_SetSRID(ST_MakePoint(@lng, @lat), 4326)::geography, @distance)
-                ORDER BY ""Distance"" ASC, ""EstablishmentName"" ASC
-                LIMIT @limit;";
+        SELECT
+            ""URN"",
+            ""EstablishmentName"",
+            ""AddressStreet"",
+            ""AddressLocality"",
+            ""AddressAddress3"",
+            ""AddressTown"",
+            ""AddressPostcode"",
+            ""GenderName"",
+            ""ReligiousCharacterName"",
+            ""StatusCode"",
+            ""ClosedDate"",
+            ST_Distance(""geom"", ST_SetSRID(ST_MakePoint(@lng, @lat), 4326)::geography) AS ""Distance""
+        FROM v_establishment
+        WHERE
+            ""EstablishmentNameFTS"" @@ plainto_tsquery('english', @searchTerm)
+            AND ""geom"" IS NOT NULL
+            AND ST_DWithin(""geom"", ST_SetSRID(ST_MakePoint(@lng, @lat), 4326)::geography, @distance)
+        ORDER BY ""Distance"" ASC, ""EstablishmentName"" ASC
+        LIMIT @pageSize OFFSET @offset;";
+
+            const string countSql = @"
+        SELECT COUNT(*)
+        FROM v_establishment
+        WHERE
+            ""EstablishmentNameFTS"" @@ plainto_tsquery('english', @searchTerm)
+            AND ""geom"" IS NOT NULL
+            AND ST_DWithin(""geom"", ST_SetSRID(ST_MakePoint(@lng, @lat), 4326)::geography, @distance);";
+
+            int offset = (page - 1) * pageSize;
+            double distanceMeters = MappingHelper.MilesToMeters(distance);
 
             await using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
-            return await conn.QueryAsync<Establishment>(sql, new { searchTerm, lat = latitude, lng = longitude, distance = MappingHelper.MilesToMeters(distance), limit });
+            var results = await conn.QueryAsync<Establishment>(sql, new { searchTerm, lat = latitude, lng = longitude, distance = distanceMeters, pageSize, offset });
+            var totalCount = await conn.ExecuteScalarAsync<int>(countSql, new { searchTerm, lat = latitude, lng = longitude, distance = distanceMeters });
+
+            return (results, totalCount);
         }
 
-        public async Task<IEnumerable<Establishment>> SearchByLocationAsync(
-    double latitude, double longitude, double distance, int limit = 20, CancellationToken ct = default)
+        public async Task<(IEnumerable<Establishment> Results, int TotalCount)> SearchByLocationAsync(
+            double latitude, double longitude, double distance, int page, int pageSize, CancellationToken ct = default)
         {
             const string sql = @"
-                SELECT
-                    ""URN"",
-                    ""EstablishmentName"",
-                    ""AddressStreet"",
-                    ""AddressLocality"",
-                    ""AddressAddress3"",
-                    ""AddressTown"",
-                    ""AddressPostcode"",
-                    ""GenderName"",
-                    ""ReligiousCharacterName"",
-                    ""StatusCode"",
-                    ""ClosedDate"",
-                    ST_Distance(""geom"", ST_SetSRID(ST_MakePoint(@lng, @lat), 4326)::geography) AS ""Distance""
-                FROM v_establishment
-                WHERE
-                    ""geom"" IS NOT NULL
-                    AND ST_DWithin(""geom"", ST_SetSRID(ST_MakePoint(@lng, @lat), 4326)::geography, @distance)
-                ORDER BY ""Distance"" ASC, ""EstablishmentName"" ASC
-                LIMIT @limit;";
+        SELECT
+            ""URN"",
+            ""EstablishmentName"",
+            ""AddressStreet"",
+            ""AddressLocality"",
+            ""AddressAddress3"",
+            ""AddressTown"",
+            ""AddressPostcode"",
+            ""GenderName"",
+            ""ReligiousCharacterName"",
+            ""StatusCode"",
+            ""ClosedDate"",
+            ST_Distance(""geom"", ST_SetSRID(ST_MakePoint(@lng, @lat), 4326)::geography) AS ""Distance""
+        FROM v_establishment
+        WHERE
+            ""geom"" IS NOT NULL
+            AND ST_DWithin(""geom"", ST_SetSRID(ST_MakePoint(@lng, @lat), 4326)::geography, @distance)
+        ORDER BY ""Distance"" ASC, ""EstablishmentName"" ASC
+        LIMIT @pageSize OFFSET @offset;";
+
+            const string countSql = @"
+        SELECT COUNT(*)
+        FROM v_establishment
+        WHERE
+            ""geom"" IS NOT NULL
+            AND ST_DWithin(""geom"", ST_SetSRID(ST_MakePoint(@lng, @lat), 4326)::geography, @distance);";
+
+            int offset = (page - 1) * pageSize;
+            double distanceMeters = MappingHelper.MilesToMeters(distance);
 
             await using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
-            return await conn.QueryAsync<Establishment>(sql, new { lat = latitude, lng = longitude, distance = MappingHelper.MilesToMeters(distance), limit });
-        }
+            var results = await conn.QueryAsync<Establishment>(sql, new { lat = latitude, lng = longitude, distance = distanceMeters, pageSize, offset });
+            var totalCount = await conn.ExecuteScalarAsync<int>(countSql, new { lat = latitude, lng = longitude, distance = distanceMeters });
 
+            return (results, totalCount);
+        }
     }
 }
