@@ -186,8 +186,8 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             EngMaths59_Tot_Est_Current_Pct = 60,
             EngMaths49_Tot_Est_Previous_Pct = 65,
             EngMaths59_Tot_Est_Previous_Pct = 70,
-            EngMaths49_Tot_Est_Previous2_Pct = null,
-            EngMaths59_Tot_Est_Previous2_Pct = null
+            EngMaths49_Tot_Est_Previous2_Pct = 75,
+            EngMaths59_Tot_Est_Previous2_Pct = 80
         },
     };
 
