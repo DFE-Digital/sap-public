@@ -18,6 +18,58 @@ public class AttainmentAndProgressPageTests : PageTestsBase
     }
 
     [Fact]
+    public async Task AcademicPerformanceAttainmentAndProgressPage_HasCorrectTitle()
+    {
+        // Arrange
+        var urn = "143034";
+        var establishmentName = "Loreto High School Chorlton";
+        _serviceMock
+            .Setup(service => service.GetAttainmentAndProgressAsync(
+                It.IsAny<string>(),
+                It.IsAny<AcademicYearSelection>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new AttainmentAndProgressModel()
+            {
+                Urn = urn,
+                SchoolName = establishmentName,
+            });
+
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
+
+        // Assert
+        var title = doc.Title;
+        Assert.Contains("Loreto High School Chorlton - Progress and attainment - School Profiles - GOV.UK", title);
+    }
+
+    [Fact]
+    public async Task AcademicPerformanceAttainmentAndProgressPage_Displays_SchoolName_Caption()
+    {
+        // Arrange
+        var urn = "123456";
+        var establishmentName = "Loreto High School Chorlton";
+        _serviceMock
+            .Setup(service => service.GetAttainmentAndProgressAsync(
+                It.IsAny<string>(),
+                It.IsAny<AcademicYearSelection>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new AttainmentAndProgressModel()
+            {
+                Urn = urn,
+                SchoolName = establishmentName,
+            });
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
+        var schoolNameCaptionElement = doc.GetElementById("school-name-caption");
+        var schoolNameCaption = schoolNameCaptionElement?.TextContent;
+
+        // Assert
+        Assert.Equal("Loreto High School Chorlton", schoolNameCaption);
+    }
+
+    [Fact]
     public async Task ShowsAttainmentValues()
     {
         // Arrange
