@@ -369,7 +369,8 @@ public sealed class GenerateViews
         sb.AppendLine("    t.\"opendate\"                            AS \"OpenDate\",");
         sb.AppendLine();
         sb.AppendLine("    clean_int(t.\"reasonestablishmentopened__code_\")  AS \"OpenReasonId\",");
-        sb.AppendLine("    t.\"reasonestablishmentopened__name_\"             AS \"OpenReasonName\"");
+        sb.AppendLine("    t.\"reasonestablishmentopened__name_\"             AS \"OpenReasonName\",");
+        sb.AppendLine("    to_tsvector('english', coalesce(t.\"establishmentname\", '')) AS \"EstablishmentNameFTS\"");
         sb.AppendLine();
         sb.AppendLine($"FROM {rawTable} t");
         // Dynamically build WHERE clause
@@ -381,7 +382,8 @@ public sealed class GenerateViews
         sb.AppendLine(";");
         sb.AppendLine();
         sb.AppendLine("CREATE UNIQUE INDEX idx_v_establishment_urn ON v_establishment (\"URN\");");
-
+        sb.AppendLine("CREATE INDEX idx_v_establishment_fts ON v_establishment USING GIN (\"EstablishmentNameFTS\");");
+      
         return sb.ToString();
     }
 
