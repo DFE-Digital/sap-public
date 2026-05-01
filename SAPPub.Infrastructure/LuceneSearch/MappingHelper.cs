@@ -41,6 +41,6 @@ public class MappingHelper // CML TODO refactor to remove the code copy
         const double metersPerMile = 1609.344;
         const double metersPerDegree = 111_320.0;   // 1 degree latitude in meters
         return (miles * metersPerMile) / metersPerDegree;
-    }
+    }   
 
 }

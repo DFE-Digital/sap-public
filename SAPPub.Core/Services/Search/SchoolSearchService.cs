@@ -1,4 +1,6 @@
-﻿using SAPPub.Core.Helpers;
+﻿using SAPPub.Core.Extensions;
+using SAPPub.Core.Helpers;
+using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.ServiceModels.Common;
@@ -8,10 +10,20 @@ using System.Text.RegularExpressions;
 
 namespace SAPPub.Core.Services.Search;
 
-public class SchoolSearchService(ISchoolSearchIndexReader indexReader, IPostcodeLookupService postcodeLookupService) : ISchoolSearchService
+public class SchoolSearchService : ISchoolSearchService
 {
     private const int MaxResults = 4000;
     private const string PostcodeValidationRegex = """^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})$""";
+    private readonly IEstablishmentRepository _establishmentRepository;
+    private readonly IPostcodeLookupService _postcodeLookupService;
+
+    public SchoolSearchService(
+        IEstablishmentRepository establishmentRepository,
+        IPostcodeLookupService postcodeLookupService)
+    {
+        _establishmentRepository = establishmentRepository ?? throw new ArgumentNullException(nameof(establishmentRepository));
+        _postcodeLookupService = postcodeLookupService ?? throw new ArgumentNullException(nameof(postcodeLookupService));
+    }
 
     public async Task<SchoolSearchResultsServiceModel> SearchAsync(SchoolSearchServiceQuery query)
     {
@@ -28,7 +40,11 @@ public class SchoolSearchService(ISchoolSearchIndexReader indexReader, IPostcode
                 Status = SchoolSearchStatus.InvalidPostcode
             };
         }
-        var postcodeResponse = query.Location != null ? await postcodeLookupService.GetLatitudeAndLongitudeAsync(query.Location) : null;
+
+        var postcodeResponse = query.Location != null
+            ? await _postcodeLookupService.GetLatitudeAndLongitudeAsync(query.Location)
+            : null;
+
         if (postcodeResponse != null && postcodeResponse.Error != null)
         {
             return new SchoolSearchResultsServiceModel
@@ -39,30 +55,77 @@ public class SchoolSearchService(ISchoolSearchIndexReader indexReader, IPostcode
                     Records = [],
                     PagerInfo = new Pager(0, query.PageNumber, Constants.PageSize)
                 },
-                Status = postcodeResponse.Error == "Postcode not found" ? SchoolSearchStatus.PostcodeNotFound : SchoolSearchStatus.PostcodeServiceError
+                Status = postcodeResponse.Error == "Postcode not found"
+                    ? SchoolSearchStatus.PostcodeNotFound
+                    : SchoolSearchStatus.PostcodeServiceError
             };
         }
 
         var postcodeResult = postcodeResponse?.Result;
-        var searchQuery = string.IsNullOrEmpty(query.Location)
-            ? new SearchQuery { Name = query.Name }
-            : new SearchQuery { Latitude = postcodeResult?.Latitude, Longitude = postcodeResult?.Longitude, Distance = query.Distance, Name = query.Name };
+        List<SchoolSearchResultServiceModel> filteredSearchResults;
 
-        var searchResults = await indexReader.SearchAsync(searchQuery, MaxResults);
-
-        var filteredSearchResults = searchResults.Results.Select(result => new SchoolSearchResultServiceModel
+        // 1. Name only
+        if (!string.IsNullOrWhiteSpace(query.Name) && string.IsNullOrWhiteSpace(query.Location))
         {
-            URN = result.URN,
-            EstablishmentName = result.EstablishmentName,
-            Address = result.Address,
-            GenderName = result.GenderName,
-            ReligiousCharacterName = result.ReligiousCharacterName,
-            Distance = postcodeResult is not null
-                    ? MappingHelper.HaversineMiles(postcodeResult.Latitude, postcodeResult.Longitude, result.Latitude, result.Longitude)
-                    : null,
-            StatusCode = result.StatusCode,
-            ClosedDate = result.ClosedDate
-        }).Where(r => query.Location != null ? query.Distance.HasValue && r.Distance.HasValue && r.Distance.Value <= query.Distance : true).ToList();
+            var establishments = await _establishmentRepository.SearchByNameAsync(query.Name, Constants.PageSize);
+            filteredSearchResults = establishments.Select(e => new SchoolSearchResultServiceModel
+            {
+                URN = e.URN,
+                EstablishmentName = e.EstablishmentName,
+                Address = e.Address,
+                GenderName = e.GenderName,
+                ReligiousCharacterName = e.ReligiousCharacterName,
+                Distance = null,
+                StatusCode = e.StatusCode,
+                ClosedDate = e.ClosedDate.ToDateOnly()
+            }).ToList();
+        }
+        // 2. Location only
+        else if (string.IsNullOrWhiteSpace(query.Name) && postcodeResult is not null && query.Distance.HasValue)
+        {
+            var establishments = await _establishmentRepository.SearchByLocationAsync(
+                postcodeResult.Latitude,
+                postcodeResult.Longitude,
+                query.Distance.Value,
+                Constants.PageSize);
+
+            filteredSearchResults = establishments.Select(e => new SchoolSearchResultServiceModel
+            {
+                URN = e.URN,
+                EstablishmentName = e.EstablishmentName,
+                Address = e.Address,
+                GenderName = e.GenderName,
+                ReligiousCharacterName = e.ReligiousCharacterName,
+                StatusCode = e.StatusCode,
+                ClosedDate = e.ClosedDate.ToDateOnly()
+            }).ToList();
+        }
+        // 3. Name + Location
+        else if (!string.IsNullOrWhiteSpace(query.Name) && postcodeResult is not null && query.Distance.HasValue)
+        {
+            var establishments = await _establishmentRepository.SearchByNameAndLocationAsync(
+                query.Name,
+                postcodeResult.Latitude,
+                postcodeResult.Longitude,
+                query.Distance.Value,
+                Constants.PageSize);
+
+            filteredSearchResults = establishments.Select(e => new SchoolSearchResultServiceModel
+            {
+                URN = e.URN,
+                EstablishmentName = e.EstablishmentName,
+                Address = e.Address,
+                GenderName = e.GenderName,
+                ReligiousCharacterName = e.ReligiousCharacterName,
+                StatusCode = e.StatusCode,
+                ClosedDate = e.ClosedDate.ToDateOnly()
+            }).ToList();
+        }
+        else
+        {
+            // No valid search parameters
+            filteredSearchResults = new List<SchoolSearchResultServiceModel>();
+        }
 
         var pager = new Pager(filteredSearchResults.Count, query.PageNumber, Constants.PageSize);
 
@@ -74,7 +137,7 @@ public class SchoolSearchService(ISchoolSearchIndexReader indexReader, IPostcode
         var results = new SchoolSearchResultsServiceModel
         {
             Status = SchoolSearchStatus.Success,
-            PagedResponse = new PagedResponse<SchoolSearchResultServiceModel> 
+            PagedResponse = new PagedResponse<SchoolSearchResultServiceModel>
             {
                 TotalRecords = pager.TotalItems,
                 Records = pagedResults,

@@ -58,4 +58,9 @@ public class MappingHelper
         const double metersPerDegree = 111_320.0;   // 1 degree latitude in meters
         return miles * metersPerMile / metersPerDegree;
     }
+    public static double MilesToMeters(double miles)
+    {
+        const double metersPerMile = 1609.344;
+        return miles * metersPerMile;
+    }
 }
