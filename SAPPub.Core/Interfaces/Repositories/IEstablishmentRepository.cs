@@ -7,8 +7,8 @@ namespace SAPPub.Core.Interfaces.Repositories
         Task<IEnumerable<Establishment>> GetAllEstablishmentsAsync(CancellationToken ct = default);
         Task<IEnumerable<Establishment>> GetEstablishmentsAsync(int page, int take, CancellationToken ct = default);
         Task<Establishment?> GetEstablishmentAsync(string urn, CancellationToken ct = default);
-        Task<IEnumerable<Establishment>> SearchByNameAsync(string searchTerm, int limit = 20, CancellationToken ct = default);
-        Task<IEnumerable<Establishment>> SearchByNameAndLocationAsync(string searchTerm, double latitude, double longitude, double distance, int limit = 20, CancellationToken ct = default);
-        Task<IEnumerable<Establishment>> SearchByLocationAsync(double latitude, double longitude, double distance, int limit = 20, CancellationToken ct = default);
+        Task<(IEnumerable<Establishment> Results, int TotalCount)> SearchByNameAsync(string searchTerm, int page, int pageSize, CancellationToken ct = default);
+        Task<(IEnumerable<Establishment> Results, int TotalCount)> SearchByNameAndLocationAsync(string searchTerm, double latitude, double longitude, double distance, int page, int pageSize, CancellationToken ct = default);
+        Task<(IEnumerable<Establishment> Results, int TotalCount)> SearchByLocationAsync(double latitude, double longitude, double distance, int page, int pageSize, CancellationToken ct = default);
     }
 }

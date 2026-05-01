@@ -1,4 +1,5 @@
-﻿using SAPPub.Core.Extensions;
+﻿using SAPPub.Core.Entities;
+using SAPPub.Core.Extensions;
 using SAPPub.Core.Helpers;
 using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Services;
@@ -6,13 +7,13 @@ using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.ServiceModels.Common;
 using SAPPub.Core.ServiceModels.Search.InputModels;
 using SAPPub.Core.ServiceModels.Search.Results;
+using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 
 namespace SAPPub.Core.Services.Search;
 
 public class SchoolSearchService : ISchoolSearchService
 {
-    private const int MaxResults = 4000;
     private const string PostcodeValidationRegex = """^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})$""";
     private readonly IEstablishmentRepository _establishmentRepository;
     private readonly IPostcodeLookupService _postcodeLookupService;
@@ -27,6 +28,8 @@ public class SchoolSearchService : ISchoolSearchService
 
     public async Task<SchoolSearchResultsServiceModel> SearchAsync(SchoolSearchServiceQuery query)
     {
+        var pageNumber = query.PageNumber ?? 1;
+
         if (query.Location != null && !Regex.IsMatch(query.Location, PostcodeValidationRegex))
         {
             return new SchoolSearchResultsServiceModel
@@ -35,7 +38,7 @@ public class SchoolSearchService : ISchoolSearchService
                 {
                     TotalRecords = 0,
                     Records = [],
-                    PagerInfo = new Pager(0, query.PageNumber, Constants.PageSize)
+                    PagerInfo = new Pager(0, pageNumber, Constants.PageSize)
                 },
                 Status = SchoolSearchStatus.InvalidPostcode
             };
@@ -53,7 +56,7 @@ public class SchoolSearchService : ISchoolSearchService
                 {
                     TotalRecords = 0,
                     Records = [],
-                    PagerInfo = new Pager(0, query.PageNumber, Constants.PageSize)
+                    PagerInfo = new Pager(0, pageNumber, Constants.PageSize)
                 },
                 Status = postcodeResponse.Error == "Postcode not found"
                     ? SchoolSearchStatus.PostcodeNotFound
@@ -63,12 +66,16 @@ public class SchoolSearchService : ISchoolSearchService
 
         var postcodeResult = postcodeResponse?.Result;
         List<SchoolSearchResultServiceModel> filteredSearchResults;
+        int totalRecords = 0;
+
 
         // 1. Name only
         if (!string.IsNullOrWhiteSpace(query.Name) && string.IsNullOrWhiteSpace(query.Location))
         {
-            var establishments = await _establishmentRepository.SearchByNameAsync(query.Name, Constants.PageSize);
+            (IEnumerable<Establishment> establishments, int count) = await _establishmentRepository.SearchByNameAsync(query.Name, pageNumber, Constants.PageSize);
+            totalRecords = count;
             filteredSearchResults = establishments.Select(e => new SchoolSearchResultServiceModel
+
             {
                 URN = e.URN,
                 EstablishmentName = e.EstablishmentName,
@@ -83,12 +90,14 @@ public class SchoolSearchService : ISchoolSearchService
         // 2. Location only
         else if (string.IsNullOrWhiteSpace(query.Name) && postcodeResult is not null && query.Distance.HasValue)
         {
-            var establishments = await _establishmentRepository.SearchByLocationAsync(
-                postcodeResult.Latitude,
-                postcodeResult.Longitude,
-                query.Distance.Value,
-                Constants.PageSize);
+            (IEnumerable<Establishment> establishments, int count) = await _establishmentRepository.SearchByLocationAsync(
+                 postcodeResult.Latitude,
+                 postcodeResult.Longitude,
+                 query.Distance.Value,
+                 pageNumber,
+                 Constants.PageSize);
 
+            totalRecords = count;
             filteredSearchResults = establishments.Select(e => new SchoolSearchResultServiceModel
             {
                 URN = e.URN,
@@ -103,13 +112,15 @@ public class SchoolSearchService : ISchoolSearchService
         // 3. Name + Location
         else if (!string.IsNullOrWhiteSpace(query.Name) && postcodeResult is not null && query.Distance.HasValue)
         {
-            var establishments = await _establishmentRepository.SearchByNameAndLocationAsync(
-                query.Name,
-                postcodeResult.Latitude,
-                postcodeResult.Longitude,
-                query.Distance.Value,
-                Constants.PageSize);
+            (IEnumerable<Establishment> establishments, int count) = await _establishmentRepository.SearchByNameAndLocationAsync(
+               query.Name,
+               postcodeResult.Latitude,
+               postcodeResult.Longitude,
+               query.Distance.Value,
+               pageNumber,
+               Constants.PageSize);
 
+            totalRecords = count;
             filteredSearchResults = establishments.Select(e => new SchoolSearchResultServiceModel
             {
                 URN = e.URN,
@@ -127,20 +138,15 @@ public class SchoolSearchService : ISchoolSearchService
             filteredSearchResults = new List<SchoolSearchResultServiceModel>();
         }
 
-        var pager = new Pager(filteredSearchResults.Count, query.PageNumber, Constants.PageSize);
-
-        var pagedResults = filteredSearchResults
-            .Skip((pager.CurrentPage - 1) * pager.PageSize)
-            .Take(pager.PageSize)
-            .ToList();
+        var pager = new Pager(totalRecords, pageNumber, Constants.PageSize);
 
         var results = new SchoolSearchResultsServiceModel
         {
             Status = SchoolSearchStatus.Success,
             PagedResponse = new PagedResponse<SchoolSearchResultServiceModel>
             {
-                TotalRecords = pager.TotalItems,
-                Records = pagedResults,
+                TotalRecords = totalRecords,
+                Records = filteredSearchResults.ToList(),
                 PagerInfo = pager
             }
         };
