@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
+using SAPPub.Core.Interfaces.Services;
 using SAPPub.Web.Controllers;
-using Xunit;
 
 namespace SAPPub.Web.Tests.Unit.Controllers;
 
@@ -11,12 +11,14 @@ public class HealthControllerTests
 {
     private readonly Mock<ILogger<HealthController>> _mockLogger;
     private readonly Mock<IWebHostEnvironment> _mockEnvironment;
+    private readonly Mock<IEstablishmentService> _mockService;
     private readonly HealthController _controller;
 
     public HealthControllerTests()
     {
         _mockLogger = new Mock<ILogger<HealthController>>();
         _mockEnvironment = new Mock<IWebHostEnvironment>();
+        _mockService = new Mock<IEstablishmentService>();
 
         // Create a real temp directory
         var tempPath = Path.Combine(Path.GetTempPath(), "SAPPubTests", Guid.NewGuid().ToString());
@@ -26,14 +28,14 @@ public class HealthControllerTests
         _mockEnvironment.Setup(e => e.ApplicationName).Returns("SAPPub.Web");
         _mockEnvironment.Setup(e => e.WebRootPath).Returns(tempPath);
 
-        _controller = new HealthController(_mockLogger.Object, _mockEnvironment.Object);
+        _controller = new HealthController(_mockLogger.Object, _mockEnvironment.Object, _mockService.Object);
     }
 
     [Fact]
-    public void Get_WhenApplicationHealthy_ReturnsOk()
+    public async Task Get_WhenApplicationHealthy_ReturnsOk()
     {
         // Act
-        var result = _controller.Get();
+        var result = await _controller.GetAsync();
 
         // Assert
         Assert.NotNull(result);
@@ -41,10 +43,10 @@ public class HealthControllerTests
     }
 
     [Fact]
-    public void Get_ReturnsHealthCheckResponse()
+    public async Task Get_ReturnsHealthCheckResponse()
     {
         // Act
-        var result = _controller.Get();
+        var result = await _controller.GetAsync();
 
         // Assert
         Assert.NotNull(result);
@@ -56,10 +58,10 @@ public class HealthControllerTests
     }
 
     [Fact]
-    public void Get_ReturnsHealthyStatus()
+    public async Task Get_ReturnsHealthyStatus()
     {
         // Act
-        var result = _controller.Get();
+        var result = await _controller.GetAsync();
 
         // Assert
         Assert.NotNull(result);
@@ -72,26 +74,27 @@ public class HealthControllerTests
     }
 
     [Fact]
-    public void Get_ReturnsAllChecks()
+    public async Task Get_ReturnsAllChecks()
     {
         // Act
-        var result = _controller.Get();
+        var result = await _controller.GetAsync();
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
         var response = Assert.IsType<HealthCheckResponse>(okResult.Value);
 
-        // Should have 2 checks: ApplicationRunning and StaticFiles
-        Assert.Equal(2, response.Checks.Count);
+
+        Assert.Equal(3, response.Checks.Count);
         Assert.Contains(response.Checks, c => c.Name == "ApplicationRunning");
         Assert.Contains(response.Checks, c => c.Name == "StaticFiles");
+        Assert.Contains(response.Checks, c => c.Name == "DatabaseConnectivity");
     }
 
     [Fact]
-    public void Get_ApplicationRunningCheck_PassesInTestEnvironment()
+    public async Task Get_ApplicationRunningCheck_PassesInTestEnvironment()
     {
         // Act
-        var result = _controller.Get();
+        var result = await _controller.GetAsync();
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
@@ -108,13 +111,13 @@ public class HealthControllerTests
     [InlineData("Development")]
     [InlineData("Staging")]
     [InlineData("Production")]
-    public void Get_WorksInAllEnvironments(string environmentName)
+    public async Task Get_WorksInAllEnvironments(string environmentName)
     {
         // Arrange
         _mockEnvironment.Setup(e => e.EnvironmentName).Returns(environmentName);
 
         // Act
-        var result = _controller.Get();
+        var result = await _controller.GetAsync();
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
@@ -128,13 +131,13 @@ public class HealthControllerTests
     }
 
     [Fact]
-    public void Get_ReturnsTimestamp()
+    public async Task Get_ReturnsTimestamp()
     {
         // Arrange
         var beforeCall = DateTime.UtcNow.AddSeconds(-1);
 
         // Act
-        var result = _controller.Get();
+        var result = await _controller.GetAsync();
         var afterCall = DateTime.UtcNow.AddSeconds(1);
 
         // Assert

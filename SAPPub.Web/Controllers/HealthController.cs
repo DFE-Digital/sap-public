@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SAPPub.Core.Interfaces.Services;
 
 namespace SAPPub.Web.Controllers
 {
@@ -9,13 +10,16 @@ namespace SAPPub.Web.Controllers
     {
         private readonly ILogger<HealthController> _logger;
         private readonly IWebHostEnvironment _environment;
+        private readonly IEstablishmentService _establishmentService;
 
         public HealthController(
             ILogger<HealthController> logger,
-            IWebHostEnvironment environment)
+            IWebHostEnvironment environment,
+            IEstablishmentService establishmentService)
         {
             _logger = logger;
             _environment = environment;
+            _establishmentService = establishmentService;
         }
 
         /// <summary>
@@ -25,7 +29,7 @@ namespace SAPPub.Web.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult Get()
+        public async Task<IActionResult> GetAsync()
         {
             var healthStatus = new HealthCheckResponse
             {
@@ -43,6 +47,29 @@ namespace SAPPub.Web.Controllers
                 // Check 2: Static files exist (wwwroot)
                 var staticFilesCheck = CheckStaticFilesExist();
                 healthStatus.Checks.Add(staticFilesCheck);
+
+                // Check 3: Database connectivity
+                try
+                {
+                    // Attempt to retrieve a small piece of data to confirm DB connectivity
+                    var establishments = await _establishmentService.GetEstablishmentsAsync(page: 1, take: 1);
+                    healthStatus.Checks.Add(new HealthCheckItem
+                    {
+                        Name = "DatabaseConnectivity",
+                        Status = "Pass",
+                        Message = "Successfully connected to the database"
+                    });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Database connectivity check failed");
+                    healthStatus.Checks.Add(new HealthCheckItem
+                    {
+                        Name = "DatabaseConnectivity",
+                        Status = "Fail",
+                        Message = $"Database connection failed"
+                    });
+                }
 
                 // Determine overall status
                 if (healthStatus.Checks.Any(c => c.Status == "Fail"))
