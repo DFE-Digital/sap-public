@@ -1,13 +1,11 @@
 ﻿using SAPPub.Core.Entities;
 using SAPPub.Core.Extensions;
 using SAPPub.Core.Helpers;
-using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.ServiceModels.Common;
 using SAPPub.Core.ServiceModels.Search.InputModels;
 using SAPPub.Core.ServiceModels.Search.Results;
-using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 
 namespace SAPPub.Core.Services.Search;
@@ -15,14 +13,14 @@ namespace SAPPub.Core.Services.Search;
 public class SchoolSearchService : ISchoolSearchService
 {
     private const string PostcodeValidationRegex = """^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})$""";
-    private readonly IEstablishmentRepository _establishmentRepository;
+    private readonly IEstablishmentService _establishmentService;
     private readonly IPostcodeLookupService _postcodeLookupService;
 
     public SchoolSearchService(
-        IEstablishmentRepository establishmentRepository,
+        IEstablishmentService establishmentService,
         IPostcodeLookupService postcodeLookupService)
     {
-        _establishmentRepository = establishmentRepository ?? throw new ArgumentNullException(nameof(establishmentRepository));
+        _establishmentService = establishmentService ?? throw new ArgumentNullException(nameof(establishmentService));
         _postcodeLookupService = postcodeLookupService ?? throw new ArgumentNullException(nameof(postcodeLookupService));
     }
 
@@ -68,14 +66,12 @@ public class SchoolSearchService : ISchoolSearchService
         List<SchoolSearchResultServiceModel> filteredSearchResults;
         int totalRecords = 0;
 
-
         // 1. Name only
         if (!string.IsNullOrWhiteSpace(query.Name) && string.IsNullOrWhiteSpace(query.Location))
         {
-            (IEnumerable<Establishment> establishments, int count) = await _establishmentRepository.SearchByNameAsync(query.Name, pageNumber, Constants.PageSize);
+            (IEnumerable<Establishment> establishments, int count) = await _establishmentService.SearchByNameAsync(query.Name, pageNumber, Constants.PageSize);
             totalRecords = count;
             filteredSearchResults = establishments.Select(e => new SchoolSearchResultServiceModel
-
             {
                 URN = e.URN,
                 EstablishmentName = e.EstablishmentName,
@@ -90,7 +86,7 @@ public class SchoolSearchService : ISchoolSearchService
         // 2. Location only
         else if (string.IsNullOrWhiteSpace(query.Name) && postcodeResult is not null && query.Distance.HasValue)
         {
-            (IEnumerable<Establishment> establishments, int count) = await _establishmentRepository.SearchByLocationAsync(
+            (IEnumerable<Establishment> establishments, int count) = await _establishmentService.SearchByLocationAsync(
                  postcodeResult.Latitude,
                  postcodeResult.Longitude,
                  query.Distance.Value,
@@ -112,7 +108,7 @@ public class SchoolSearchService : ISchoolSearchService
         // 3. Name + Location
         else if (!string.IsNullOrWhiteSpace(query.Name) && postcodeResult is not null && query.Distance.HasValue)
         {
-            (IEnumerable<Establishment> establishments, int count) = await _establishmentRepository.SearchByNameAndLocationAsync(
+            (IEnumerable<Establishment> establishments, int count) = await _establishmentService.SearchByNameAndLocationAsync(
                query.Name,
                postcodeResult.Latitude,
                postcodeResult.Longitude,
@@ -138,7 +134,7 @@ public class SchoolSearchService : ISchoolSearchService
             filteredSearchResults = new List<SchoolSearchResultServiceModel>();
         }
 
-        var pager = new Pager(totalRecords, pageNumber, Constants.PageSize);
+        var pager = new Pager(totalRecords, pageNumber  , Constants.PageSize);
 
         var results = new SchoolSearchResultsServiceModel
         {
