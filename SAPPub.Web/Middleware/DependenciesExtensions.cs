@@ -29,7 +29,6 @@ using SAPPub.Core.Services.KS4.Performance;
 using SAPPub.Core.Services.KS4.SubjectEntries;
 using SAPPub.Core.Services.KS4.Workforce;
 using SAPPub.Core.Services.Search;
-using SAPPub.Infrastructure.LuceneSearch;
 using SAPPub.Infrastructure.Mapping.ValueCodes;
 using SAPPub.Infrastructure.Repositories;
 using SAPPub.Infrastructure.Repositories.Gateway;
@@ -95,7 +94,6 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<IAboutSchoolService, AboutSchoolService>();
             services.AddTransient<ILaUrlsRepository, LaUrlsRepository>();
 
-            services.AddSingleton<ISchoolSearchIndexReader, LuceneSchoolSearchIndexReader>();
             services.AddSingleton<ISchoolSearchService, SchoolSearchService>();
 
             services.AddScoped<IEmailRepository, EmailRepository>();
