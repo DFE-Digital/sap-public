@@ -50,9 +50,9 @@ public class GenerateRawTablesTests : IDisposable
 
         new GenerateRawTables(_input, _clean, _sql).Run();
 
-        Assert.True(File.Exists(Path.Combine(_sql, "01_create_raw_tables.sql")));
-        Assert.True(File.Exists(Path.Combine(_sql, "02_copy_into_raw.sql")));
-        Assert.True(File.Exists(Path.Combine(_sql, "02_copy_into_raw_local.sql")));
+        Assert.True(File.Exists(Path.Combine(_sql, "02_create_raw_tables.sql")));
+        Assert.True(File.Exists(Path.Combine(_sql, "03_copy_into_raw.sql")));
+        Assert.True(File.Exists(Path.Combine(_sql, "03_copy_into_raw_local.sql")));
         Assert.True(File.Exists(Path.Combine(_sql, "tablemapping.csv")));
     }
 
@@ -126,7 +126,7 @@ public class GenerateRawTablesTests : IDisposable
 
         new GenerateRawTables(_input, _clean, _sql).Run();
 
-        var sql = File.ReadAllText(Path.Combine(_sql, "01_create_raw_tables.sql"));
+        var sql = File.ReadAllText(Path.Combine(_sql, "02_create_raw_tables.sql"));
 
         Assert.Matches("(?i)\"la_code\"", sql);
         Assert.Matches("(?i)\"school_name\"", sql);

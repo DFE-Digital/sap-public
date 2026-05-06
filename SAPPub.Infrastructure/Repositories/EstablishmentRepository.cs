@@ -56,14 +56,14 @@ namespace SAPPub.Infrastructure.Repositories
                     ""StatusCode"",
                     ""ClosedDate""
                 FROM v_establishment
-                WHERE ""EstablishmentNameFTS"" @@ plainto_tsquery('english', @searchTerm)
+                WHERE ""EstablishmentNameFTS"" @@ plainto_tsquery('english', normalize_text(@searchTerm))
                 ORDER BY ""EstablishmentName"" ASC
                 LIMIT @pageSize OFFSET @offset;";
 
             const string countSql = @"
                 SELECT COUNT(*)
                 FROM v_establishment
-                WHERE ""EstablishmentNameFTS"" @@ plainto_tsquery('english', @searchTerm);";
+                WHERE ""EstablishmentNameFTS"" @@ plainto_tsquery('english', normalize_text(@searchTerm));";
 
 
             int offset = (page - 1) * pageSize;
@@ -94,7 +94,7 @@ namespace SAPPub.Infrastructure.Repositories
             ST_Distance(""geom"", ST_SetSRID(ST_MakePoint(@lng, @lat), 4326)::geography) AS ""Distance""
         FROM v_establishment
         WHERE
-            ""EstablishmentNameFTS"" @@ plainto_tsquery('english', @searchTerm)
+            ""EstablishmentNameFTS"" @@ plainto_tsquery('english', normalize_text(@searchTerm))
             AND ""geom"" IS NOT NULL
             AND ST_DWithin(""geom"", ST_SetSRID(ST_MakePoint(@lng, @lat), 4326)::geography, @distance)
         ORDER BY ""Distance"" ASC, ""EstablishmentName"" ASC
@@ -104,7 +104,7 @@ namespace SAPPub.Infrastructure.Repositories
         SELECT COUNT(*)
         FROM v_establishment
         WHERE
-            ""EstablishmentNameFTS"" @@ plainto_tsquery('english', @searchTerm)
+            ""EstablishmentNameFTS"" @@ plainto_tsquery('english', normalize_text(@searchTerm))
             AND ""geom"" IS NOT NULL
             AND ST_DWithin(""geom"", ST_SetSRID(ST_MakePoint(@lng, @lat), 4326)::geography, @distance);";
 

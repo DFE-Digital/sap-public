@@ -14,12 +14,12 @@ public class GenerateIndexes
 
     public void Run()
     {
-        string outputPath = Path.Combine(_sqlDir, "04_indexes.sql");
+        string outputPath = Path.Combine(_sqlDir, "05_indexes.sql");
 
         var sb = new StringBuilder();
 
         sb.AppendLine("-- ================================================================");
-        sb.AppendLine("-- 04_indexes.sql");
+        sb.AppendLine("-- 05_indexes.sql");
         sb.AppendLine("-- Indexes for materialized views (AUTO-GENERATED)");
         sb.AppendLine("-- ================================================================");
         sb.AppendLine();

@@ -70,7 +70,7 @@ public class GenerateViewsTests : IDisposable
         var rows = new List<DataMapRow>();
         new GenerateViews(rows, _mappingPath, _sqlDir).Run();
 
-        var path = Path.Combine(_sqlDir, "03_v_establishment.sql");
+        var path = Path.Combine(_sqlDir, "04_v_establishment.sql");
         Assert.True(File.Exists(path));
 
         var sql = File.ReadAllText(path);
@@ -93,7 +93,7 @@ public class GenerateViewsTests : IDisposable
         // Act
         new GenerateViews(rows, _mappingPath, _sqlDir, filters).Run();
 
-        var sql = File.ReadAllText(Path.Combine(_sqlDir, "03_v_establishment.sql"));
+        var sql = File.ReadAllText(Path.Combine(_sqlDir, "04_v_establishment.sql"));
 
         // Assert: check each filter's SQL is present
         foreach (var filter in filters)
@@ -120,7 +120,7 @@ public class GenerateViewsTests : IDisposable
 
         new GenerateViews(rows, _mappingPath, _sqlDir).Run();
 
-        var path = Path.Combine(_sqlDir, "03_v_england_destinations.sql");
+        var path = Path.Combine(_sqlDir, "04_v_england_destinations.sql");
         Assert.True(File.Exists(path));
 
         var sql = File.ReadAllText(path);
@@ -142,7 +142,7 @@ public class GenerateViewsTests : IDisposable
 
         new GenerateViews(rows, _mappingPath, _sqlDir).Run();
 
-        var path = Path.Combine(_sqlDir, "03_v_england_destinations.sql");
+        var path = Path.Combine(_sqlDir, "04_v_england_destinations.sql");
 
         // New behaviour: generator writes a stub file explaining the skip
         Assert.True(File.Exists(path));
@@ -195,7 +195,7 @@ public class GenerateViewsTests : IDisposable
         new GenerateViews(rows, _mappingPath, _sqlDir).Run();
 
         var sql = File.ReadAllText(
-            Path.Combine(_sqlDir, "03_v_england_performance.sql"));
+            Path.Combine(_sqlDir, "04_v_england_performance.sql"));
 
         Assert.Contains("COALESCE(", sql);
         Assert.Contains("src_1.\"Att8\"", sql);

@@ -5,24 +5,25 @@
 \set ON_ERROR_STOP on
 
 \ir 00_cleanup.sql
-\ir 01_create_raw_tables.sql
-\ir 02_copy_into_raw_local.sql
-\ir 03_v_england_destinations.sql
-\ir 03_v_england_performance.sql
-\ir 03_v_establishment.sql
-\ir 03_v_establishment_links.sql
-\ir 03_v_establishment_group_links.sql
-\ir 03_v_establishment_subject_entries.sql
-\ir 03_v_establishment_absence.sql
-\ir 03_v_establishment_destinations.sql
-\ir 03_v_establishment_performance.sql
-\ir 03_v_establishment_workforce.sql
-\ir 03_v_la_destinations.sql
-\ir 03_v_la_performance.sql
-\ir 03_v_la_subject_entries.sql
-\ir 03_v_la_urls.sql
-\ir 04_indexes.sql
-\ir 05_gateway.sql
+\ir 01_reference_tables.sql
+\ir 02_create_raw_tables.sql
+\ir 03_copy_into_raw_local.sql
+\ir 04_v_england_destinations.sql
+\ir 04_v_england_performance.sql
+\ir 04_v_establishment.sql
+\ir 04_v_establishment_links.sql
+\ir 04_v_establishment_group_links.sql
+\ir 04_v_establishment_subject_entries.sql
+\ir 04_v_establishment_absence.sql
+\ir 04_v_establishment_destinations.sql
+\ir 04_v_establishment_performance.sql
+\ir 04_v_establishment_workforce.sql
+\ir 04_v_la_destinations.sql
+\ir 04_v_la_performance.sql
+\ir 04_v_la_subject_entries.sql
+\ir 04_v_la_urls.sql
+\ir 05_indexes.sql
+\ir 06_gateway.sql
 --\ir 05_validation.sql
 
 
