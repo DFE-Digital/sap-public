@@ -171,6 +171,22 @@ The application will be available at `http://localhost:3000`
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## Running the tests
+In Visual Studio, you can run the tests using the Test Explorer.
+
+
+### Running Playwright tests in headed mode
+
+To run the Playwright tests in **headed mode**, configure your test run to use the `playwright.runsettings` file.
+
+In Visual Studio:
+1. Open the **Test** menu
+2. Select **Configure Run Settings**
+3. Choose **Select Solution Wide Run Settings File**
+4. Select `playwright.runsettings`
+
+
+
 <!-- CONTRIBUTING -->
 ## Contributing
 
