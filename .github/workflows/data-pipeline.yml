@@ -3,6 +3,17 @@ name: School Data Ingestion Pipeline
 on:
   workflow_dispatch:
   workflow_call:
+    inputs:
+      environment:
+        description: Environment to run the data pipeline in (affects source URLs and Blob paths). Default is test. (Optional)
+        required: false
+        default: test
+        type: string
+      pr-number:
+        description: The pull request number for review environment. (Optional)
+        required: false
+        default: ""
+        type: string
   schedule:
     - cron: "0 6 * * *"   # every day at 06:00 UTC
 
@@ -10,37 +21,61 @@ permissions:
   contents: write
   id-token: write   # required if using OIDC with azure/login
 
+env:
+  SERVICE_NAME: sap-public
+  SERVICE_SHORT: sappub
+  TF_VARS_PATH: terraform/application/config
+
 jobs:
   ingest:
     name: Ingest Raw Data & Build Warehouse
     runs-on: ubuntu-latest
-    environment: test
+    environment:
+      name: ${{ inputs.environment || 'test' }}
 
     env:
+      # Terraform and service-related settings
+      DEPLOY_ENV: ${{ inputs.environment || 'test'  }}
+      PR_NUM: ${{ inputs.pr-number || ''  }}
+
       # Blob (currently from GitHub secrets)
       AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
-      AZURE_STORAGE_CONTAINER: ${{ secrets.AZURE_STORAGE_CONTAINER }}
+      AZURE_STORAGE_CONTAINER: 'schooldata'
 
       # Sensitive source URLs (THREE endpoints in GitHub secrets)
       SENSITIVE_DATASET_URL: ${{ secrets.SENSITIVE_DATASET_URL }}
       SENSITIVE_ESTABLISHMENT_LINKS_URL: ${{ secrets.SENSITIVE_ESTABLISHMENT_LINKS_URL }}
       SENSITIVE_MAT_LINKS_URL: ${{ secrets.SENSITIVE_MAT_LINKS_URL }}
 
-
-      # Konduit / AKS settings (also in GitHub secrets)
-      AKS_RESOURCE_GROUP: ${{ secrets.AKS_RESOURCE_GROUP }}
-      AKS_CLUSTER_NAME: ${{ secrets.AKS_CLUSTER_NAME }}
-      AKS_NAMESPACE: ${{ secrets.AKS_NAMESPACE }}
-      KONDUIT_APP_NAME: ${{ secrets.KONDUIT_APP_NAME }}
-
     steps:
       # ==============================
-      # 1. Checkout repo
+      # 0. Checkout repo
       # ==============================
       - name: Checkout
         uses: actions/checkout@v4
         with:
           persist-credentials: true
+
+      # =============================
+      # 1. Set TFVars for later use
+      # =============================
+      - name: Set environment variables for ${{ env.DEPLOY_ENV }}
+        run: |
+          source global_config/${DEPLOY_ENV}.sh
+          tf_vars_file=${TF_VARS_PATH}/${DEPLOY_ENV}.tfvars.json
+          echo "AKS_NAMESPACE=$(jq -r '.namespace' ${tf_vars_file})" >> $GITHUB_ENV
+          echo "AKS_CLUSTER_NAME=$(jq -r '.cluster_name' ${tf_vars_file})" >> $GITHUB_ENV
+          echo "AKS_RESOURCE_GROUP=$(jq -r '.cluster_rg' ${tf_vars_file})" >> $GITHUB_ENV
+          echo "STORAGE_ACCOUNT_NAME=${AZURE_RESOURCE_PREFIX}${SERVICE_SHORT}dp${CONFIG_SHORT}sa" >> $GITHUB_ENV
+          echo "DB_SERVER=${AZURE_RESOURCE_PREFIX}-${SERVICE_SHORT}-${CONFIG_SHORT}-pg" >> $GITHUB_ENV
+          if [ "${DEPLOY_ENV}" == "review" ]; then
+            echo "KONDUIT_APP_NAME=$(jq -r '.app_prefix' ${tf_vars_file})${{env.PR_NUM}}" >> $GITHUB_ENV
+          else
+            echo "KONDUIT_APP_NAME=$(jq -r '.app_prefix' ${tf_vars_file})" >> $GITHUB_ENV
+          fi
+
+          echo "Set environment variables from ${tf_vars_file}:"
+          echo "KONDUIT_APP_NAME=${KONDUIT_APP_NAME}"
 
       # ==============================
       # 2. Install dependencies
@@ -589,11 +624,11 @@ jobs:
             echo "ETL attempt $attempt/$max_attempts"
             set +e
             "$GITHUB_WORKSPACE/konduit.sh" \
-              -n "${{ secrets.AKS_NAMESPACE }}" \
+              -n "${{ env.AKS_NAMESPACE }}" \
               -t 7200 \
               -x \
               -i "$GITHUB_WORKSPACE/SAPData/Sql/run_all.sql" \
-              "${{ secrets.KONDUIT_APP_NAME }}" -- psql 2>&1 | tee "$log_file"
+              "${{ env.KONDUIT_APP_NAME }}" -- psql 2>&1 | tee "$log_file"
             exit_code=${PIPESTATUS[0]}
             set -e
             if [ $exit_code -eq 0 ]; then
@@ -622,6 +657,7 @@ jobs:
       # ==============================
       - name: Create + upload review seed DB backup
         shell: bash
+        if: ${{ env.DEPLOY_ENV == 'test' || env.DEPLOY_ENV == 'production' }}
         run: |
           set -euo pipefail
           TODAY=$(TZ=Europe/London date +"%F")
@@ -629,14 +665,12 @@ jobs:
           # Only ever keep this single blob in storage
           LATEST_BLOB="db-backups/sappub_review_seed_latest.sql.gz"
           echo "Creating DB dump -> ${LOCAL_FILE}"
-          echo "AKS_NAMESPACE=${AKS_NAMESPACE}"
-          echo "KONDUIT_APP_NAME=${KONDUIT_APP_NAME}"
           set +e
           "$GITHUB_WORKSPACE/konduit.sh" \
-            -n "${AKS_NAMESPACE}" \
+            -n "${{ env.AKS_NAMESPACE }}" \
             -t 7200 \
             -x \
-            "${KONDUIT_APP_NAME}" -- \
+            "${{ env.KONDUIT_APP_NAME }}" -- \
             pg_dump --format=plain --no-owner --no-privileges 2> konduit_pg_dump.log | gzip -c > "${LOCAL_FILE}"
           exit_code=${PIPESTATUS[0]}
           set -e
