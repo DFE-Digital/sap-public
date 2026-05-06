@@ -14,8 +14,8 @@ module "postgres" {
   azure_maintenance_window       = var.azure_maintenance_window
   azure_sku_name                 = var.postgres_flexible_server_sku
   azure_enable_high_availability = var.enable_postgres_high_availability
-  server_version                 = "16",
-  azure_extensions               = ["postgis"],
+  server_version                 = "16"
+  azure_extensions               = ["postgis"]
   server_docker_image            = "postgis/postgis:16-3.5"
 }
 
