@@ -1,6 +1,8 @@
 ﻿using SAPData.Filters;
 using Xunit;
 
+namespace SAPData.Unit.Tests;
+
 public class SqlViewFilterTests
 {
     [Fact]
