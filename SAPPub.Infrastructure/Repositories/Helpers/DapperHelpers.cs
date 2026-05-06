@@ -209,6 +209,22 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           number_achieving
           """;
 
+        private const string EnglandAbsenceColumns = """
+          "Id",
+          "Abs_Persistent_Eng_Current_Pct_Coded",
+          "Abs_Tot_Eng_Current_Pct_Coded",
+          "Auth_Tot_Eng_Current_Pct_Coded",
+          "UnAuth_Tot_Eng_Current_Pct_Coded"
+          """;
+
+        private const string LAAbsenceColumns = """
+          "Id",
+          "Abs_Persistent_LA_Current_Pct_Coded",
+          "Abs_Tot_LA_Current_Pct_Coded",
+          "Auth_Tot_LA_Current_Pct_Coded",
+          "UnAuth_Tot_LA_Current_Pct_Coded"
+          """;
+
         private const string LaUrlsColumns = """
           "Id",
           "Name",
@@ -318,11 +334,17 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                 nameof(EstablishmentWorkforce) =>
                     SelectFrom(EstablishmentWorkforceColumns, "v_establishment_workforce"),
 
+                nameof(LAAbsence) =>
+                    SelectFrom(LAAbsenceColumns, "v_la_absence"),
+
                 nameof(LADestinations) =>
                     SelectFrom(LADestinationsColumns, "v_la_destinations"),
 
                 nameof(LAPerformance) =>
                     SelectFrom(LAPerformanceColumns, "v_la_performance"),
+
+                nameof(EnglandAbsence) =>
+                    SelectFrom(EnglandAbsenceColumns, "v_england_absence"),
 
                 nameof(EnglandDestinations) =>
                     SelectFrom(EnglandDestinationsColumns, "v_england_destinations"),
@@ -376,11 +398,17 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                 nameof(EstablishmentWorkforce) =>
                     SelectFromWhereId(EstablishmentWorkforceColumns, "v_establishment_workforce"),
 
+                nameof(LAAbsence) =>
+                    SelectFromWhereId(LAAbsenceColumns, "v_la_absence"),
+
                 nameof(LADestinations) =>
                     SelectFromWhereId(LADestinationsColumns, "v_la_destinations"),
 
                 nameof(LAPerformance) =>
                     SelectFromWhereId(LAPerformanceColumns, "v_la_performance"),
+
+                nameof(EnglandAbsence) =>
+                    SelectFromWhere(EnglandAbsenceColumns, "v_england_absence", "\"Id\" = 'National'"),
 
                 nameof(EnglandDestinations) =>
                     SelectFromWhere(EnglandDestinationsColumns, "v_england_destinations", "\"Id\" = 'National'"),

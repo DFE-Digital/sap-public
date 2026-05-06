@@ -47,10 +47,12 @@ public sealed class GenerateViews
 
         new("v_england_destinations", "England", "KS4_Destinations"),
         new("v_england_performance", "England", "KS4_Performance"),
+        new("v_england_absence", "England", "PupilAbsence"),
 
         new("v_la_destinations", "LA", "KS4_Destinations"),
         new("v_la_performance", "LA", "KS4_Performance"),
         new("v_la_subject_entries", "LA", "KS4_Performance"),
+        new("v_la_absence", "LA", "PupilAbsence"),
 
         new("v_la_urls", "LA", "LaUrl")
     };
