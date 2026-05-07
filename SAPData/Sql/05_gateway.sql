@@ -3,12 +3,6 @@
 -- Tables for the gateway service
 -- ================================================================
 
- DROP TABLE IF EXISTS public.gateway_user CASCADE;
- DROP TABLE IF EXISTS public.gateway_user_audit CASCADE;
- DROP TABLE IF EXISTS public.gateway_page_view_audit CASCADE;
- DROP TABLE IF EXISTS public.gateway_local_authority CASCADE;
- DROP TABLE IF EXISTS public.gateway_settings CASCADE;
-
 CREATE TABLE IF NOT EXISTS public.gateway_user
 (
     "Id" uuid NOT NULL,
