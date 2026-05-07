@@ -716,13 +716,12 @@ public class SecondarySchoolControllerTests
     [InlineData(null, null, null)]
     public async Task Get_Attendance_Info_ReturnsOk(double? estAttendance, double? laAttendance, double? engAttendance)
     {
-        var laName = "Example Local Authority";
         _mockAttendanceService
             .Setup(s => s.GetAttendenceDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new AttendanceModel {
                 Urn = _fakeEstablishment.URN,
                 SchoolName = _fakeEstablishment.EstablishmentName,
-                LocalAuthority= laName,
+                LocalAuthority= _fakeEstablishment.LAName,
                 EstablishmentAttendance = estAttendance,
                 LocalAuthorityAttendance = laAttendance,
                 EnglandAttendance = engAttendance
