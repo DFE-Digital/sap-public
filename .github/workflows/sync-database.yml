@@ -1,0 +1,52 @@
+name: Sync DB backup between environments
+
+on:
+  workflow_dispatch:
+    inputs:
+     source-environment:
+        description: Source environment to backup
+        required: true
+        default: test
+        type: choice
+        options:
+          - test
+          - production
+     target-environment:
+        description: Target environment to restore
+        required: true
+        default: production
+        type: choice
+        options:
+            - review
+            - test
+            - production
+     excluded-tables:
+        description: Comma-separated list of tables to exclude
+        required: true
+        default: "gateway_user gateway_user_audit gateway_page_view_audit gateway_local_authority gateway_settings"
+     confirm-production:
+        description: Type 'PROCEED' to confirm restoring to production
+        required: false
+        default: ''
+        type: string
+     pull-request-number:
+        description: "Pull request number (required for review environment)"
+        required: false
+        type: string
+
+jobs:
+  backup:
+    uses: ./.github/workflows/backup-db.yml
+    with:
+      environment: ${{ inputs.source-environment }}
+      backup-file: sync_${{ inputs.source-environment }}_to_${{ inputs.target-environment }}
+      exclude-tables: ${{ inputs.excluded-tables }}
+
+  restore:
+    needs: backup
+    uses: ./.github/workflows/postgres-restore.yml
+    with:
+        environment: ${{ inputs.target-environment }}
+        confirm-production: ${{ inputs.target-environment == 'production' && inputs.confirm-production == 'PROCEED' && 'true' || 'false' }}
+        backup-file: sync_${{ inputs.source-environment }}_to_${{ inputs.target-environment }}.sql.gz
+        pull-request-number: ${{ inputs.pull-request-number }}

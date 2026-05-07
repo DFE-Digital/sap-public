@@ -20,7 +20,11 @@ on:
       db-server:
         description: |
           Name of the database server. Default is the live server. When backing up a point-in-time (PTR) server, use the full name of the PTR server. (Optional)
-
+      exclude-tables:
+        description: Comma-separated list of tables to exclude data from (schema will be preserved)
+        required: false
+        type: string
+        default: ""
   schedule:
     - cron: "0 4 * * *" # 04:00 UTC
 
@@ -86,3 +90,5 @@ jobs:
         db-server-name: ${{ inputs.db-server }}
         teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
         service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
+        exclude-tables: ${{ inputs.exclude-tables }}
+
