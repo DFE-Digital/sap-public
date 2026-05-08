@@ -21,7 +21,7 @@ on:
             - test
             - production
      excluded-tables:
-        description: Comma-separated list of tables to exclude
+        description: list of tables to exclude
         required: true
         default: "gateway_user gateway_user_audit gateway_page_view_audit gateway_local_authority gateway_settings"
      confirm-production:
