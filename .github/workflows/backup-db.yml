@@ -49,6 +49,15 @@ on:
         required: false
         type: string
         default: ""
+    secrets:
+        AZURE_CLIENT_ID:
+          required: true
+        AZURE_TENANT_ID:
+          required: true
+        AZURE_SUBSCRIPTION_ID:
+          required: true
+        TEAMS_WEBHOOK_URL:
+          required: true
   schedule:
     - cron: "0 4 * * *" # 04:00 UTC
 
