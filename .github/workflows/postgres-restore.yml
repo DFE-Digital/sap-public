@@ -107,7 +107,7 @@ jobs:
       run: |
         APP_NAME="${{ env.SERVICE_NAME }}-${{ inputs.environment }}"
         if [ "${{ inputs.environment }}" = "review" ] && [ -n "${{ inputs.pull-request-number }}" ]; then
-          APP_NAME="${env.SERVICE_NAME}-pr-${{ inputs.pull-request-number }}"
+          APP_NAME="${{ env.SERVICE_NAME }}-pr-${{ inputs.pull-request-number }}"
         fi
         echo "APP_NAME=$APP_NAME" >> $GITHUB_ENV
 
