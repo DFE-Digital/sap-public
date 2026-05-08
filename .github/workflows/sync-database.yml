@@ -34,15 +34,12 @@ on:
         required: false
         type: string
 
-env:
-  UNIQUE_SUFFIX: ${{ github.run_id }}_${{ github.run_attempt }}
-
 jobs:
   backup:
     uses: ./.github/workflows/backup-db.yml
     with:
       environment: ${{ inputs.source-environment }}
-      backup-file: sync_${{ inputs.source-environment }}_to_${{ inputs.target-environment }}_${{ env.UNIQUE_SUFFIX }}
+      backup-file: sync_${{ inputs.source-environment }}_to_${{ inputs.target-environment }}_${{ github.run_id }}_${{ github.run_attempt }}
       exclude-tables: ${{ inputs.excluded-tables }}
     secrets:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
@@ -56,7 +53,7 @@ jobs:
     with:
       environment: ${{ inputs.target-environment }}
       confirm-production: ${{ inputs.target-environment == 'production' && inputs.confirm-production == 'PROCEED' && 'true' || 'false' }}
-      backup-file: sync_${{ inputs.source-environment }}_to_${{ inputs.target-environment }}_${{ env.UNIQUE_SUFFIX }}.sql.gz
+      backup-file: sync_${{ inputs.source-environment }}_to_${{ inputs.target-environment }}_${{ github.run_id }}_${{ github.run_attempt }}.sql.gz
       pull-request-number: ${{ inputs.pull-request-number }}
       storage-account: ${{ needs.backup.outputs.storage-account }}
       resource-group: ${{ needs.backup.outputs.resource-group }}
