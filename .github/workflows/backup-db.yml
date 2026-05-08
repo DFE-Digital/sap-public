@@ -20,6 +20,16 @@ on:
       db-server:
         description: |
           Name of the database server. Default is the live server. When backing up a point-in-time (PTR) server, use the full name of the PTR server. (Optional)
+      exclude-gateway-tables:
+        description: Exclude gateway tables from backup (gateway_user, gateway_user_audit, gateway_page_view_audit, gateway_local_authority, gateway_settings)
+        required: false
+        type: boolean
+        default: false
+      exclude-tables:
+        description: Additional or alternative tables to exclude from backup (space-separated list, optional)
+        required: false
+        type: string
+        default: ""
 
   schedule:
     - cron: "0 4 * * *" # 04:00 UTC
@@ -71,6 +81,19 @@ jobs:
         echo "BACKUP_FILE=${BACKUP_FILE}" >> $GITHUB_ENV
         echo "KEYVAULT_NAME=${AZURE_RESOURCE_PREFIX}-${SERVICE_SHORT}-${CONFIG_SHORT}-inf-kv" >> $GITHUB_ENV
 
+        GATEWAY_TABLES="gateway_user gateway_user_audit gateway_page_view_audit gateway_local_authority gateway_settings"
+        EXCLUDE_TABLES_INPUT="${{ inputs.exclude-tables }}"
+        if [ "${{ inputs.exclude-gateway-tables }}" = "true" ] && [ -n "${EXCLUDE_TABLES_INPUT}" ]; then
+          EXCLUDE_TABLES="${GATEWAY_TABLES} ${EXCLUDE_TABLES_INPUT}"
+        elif [ "${{ inputs.exclude-gateway-tables }}" = "true" ]; then
+          EXCLUDE_TABLES="${GATEWAY_TABLES}"
+        elif [ -n "${EXCLUDE_TABLES_INPUT}" ]; then
+          EXCLUDE_TABLES="${EXCLUDE_TABLES_INPUT}"
+        else
+          EXCLUDE_TABLES=""
+        fi
+        echo "EXCLUDE_TABLES=${EXCLUDE_TABLES}" >> $GITHUB_ENV
+
     - name: Backup ${{ env.DEPLOY_ENV }} postgres
       uses: DFE-Digital/github-actions/backup-postgres@master
       with:
@@ -86,3 +109,4 @@ jobs:
         db-server-name: ${{ inputs.db-server }}
         teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
         service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
+        exclude-tables: ${{ env.EXCLUDE_TABLES }}
