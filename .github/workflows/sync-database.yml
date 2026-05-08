@@ -38,9 +38,14 @@ jobs:
   backup:
     uses: ./.github/workflows/backup-db.yml
     with:
-      environment: ${{ inputs.source-environment }}
-      backup-file: sync_${{ inputs.source-environment }}_to_${{ inputs.target-environment }}
-      exclude-tables: ${{ inputs.excluded-tables }}
+        environment: ${{ inputs.source-environment }}
+        backup-file: sync_${{ inputs.source-environment }}_to_${{ inputs.target-environment }}
+        exclude-tables: ${{ inputs.excluded-tables }}
+    secrets:
+        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
 
   restore:
     needs: backup
@@ -50,3 +55,7 @@ jobs:
         confirm-production: ${{ inputs.target-environment == 'production' && inputs.confirm-production == 'PROCEED' && 'true' || 'false' }}
         backup-file: sync_${{ inputs.source-environment }}_to_${{ inputs.target-environment }}.sql.gz
         pull-request-number: ${{ inputs.pull-request-number }}
+    secrets:
+        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
