@@ -1,7 +1,6 @@
 using Dfe.Analytics;
 using Dfe.Analytics.AspNetCore;
 using GovUk.Frontend.AspNetCore;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.StaticFiles;
@@ -14,6 +13,7 @@ using SAPPub.Infrastructure.PostcodeLookup;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Middleware;
 using SAPPub.Web.Models.Config;
+using SAPSec.Web.Setup;
 using Serilog;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
@@ -76,19 +76,7 @@ public partial class Program
         builder.Services.AddHealthChecks();
 
         // Data protection
-        if (builder.Environment.IsEnvironment("Testing") || builder.Environment.IsEnvironment("UITests"))
-        {
-            // CI/tests: don't try to write to /keys
-            builder.Services.AddDataProtection()
-                .UseEphemeralDataProtectionProvider()
-                .SetApplicationName("SAPPub");
-        }
-        else
-        {
-            builder.Services.AddDataProtection()
-                .PersistKeysToFileSystem(new DirectoryInfo(@"/keys"))
-                .SetApplicationName("SAPPub");
-        }
+        builder.AddDataProtectionServices();
 
         if (builder.Environment.IsProduction())
         {
