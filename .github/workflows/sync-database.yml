@@ -3,7 +3,7 @@ name: Sync DB backup between environments
 on:
   workflow_dispatch:
     inputs:
-     source-environment:
+      source-environment:
         description: Source environment to backup
         required: true
         default: test
@@ -11,53 +11,56 @@ on:
         options:
           - test
           - production
-     target-environment:
+      target-environment:
         description: Target environment to restore
         required: true
         default: production
         type: choice
         options:
-            - review
-            - test
-            - production
-     excluded-tables:
+          - review
+          - test
+          - production
+      excluded-tables:
         description: list of tables to exclude
         required: true
         default: "gateway_user gateway_user_audit gateway_page_view_audit gateway_local_authority gateway_settings"
-     confirm-production:
+      confirm-production:
         description: Type 'PROCEED' to confirm restoring to production
         required: false
         default: ''
         type: string
-     pull-request-number:
+      pull-request-number:
         description: "Pull request number (required for review environment)"
         required: false
         type: string
+
+env:
+  UNIQUE_SUFFIX: ${{ github.run_id }}_${{ github.run_attempt }}
 
 jobs:
   backup:
     uses: ./.github/workflows/backup-db.yml
     with:
-        environment: ${{ inputs.source-environment }}
-        backup-file: sync_${{ inputs.source-environment }}_to_${{ inputs.target-environment }}
-        exclude-tables: ${{ inputs.excluded-tables }}
+      environment: ${{ inputs.source-environment }}
+      backup-file: sync_${{ inputs.source-environment }}_to_${{ inputs.target-environment }}_${{ env.UNIQUE_SUFFIX }}
+      exclude-tables: ${{ inputs.excluded-tables }}
     secrets:
-        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-        AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-        TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
 
   restore:
     needs: backup
     uses: ./.github/workflows/postgres-restore.yml
     with:
-        environment: ${{ inputs.target-environment }}
-        confirm-production: ${{ inputs.target-environment == 'production' && inputs.confirm-production == 'PROCEED' && 'true' || 'false' }}
-        backup-file: sync_${{ inputs.source-environment }}_to_${{ inputs.target-environment }}.sql.gz
-        pull-request-number: ${{ inputs.pull-request-number }}
-        storage-account: ${{ needs.backup.outputs.storage-account }}
-        resource-group: ${{ needs.backup.outputs.resource-group }}
+      environment: ${{ inputs.target-environment }}
+      confirm-production: ${{ inputs.target-environment == 'production' && inputs.confirm-production == 'PROCEED' && 'true' || 'false' }}
+      backup-file: sync_${{ inputs.source-environment }}_to_${{ inputs.target-environment }}_${{ env.UNIQUE_SUFFIX }}.sql.gz
+      pull-request-number: ${{ inputs.pull-request-number }}
+      storage-account: ${{ needs.backup.outputs.storage-account }}
+      resource-group: ${{ needs.backup.outputs.resource-group }}
     secrets:
-        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-        AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
