@@ -55,6 +55,8 @@ jobs:
         confirm-production: ${{ inputs.target-environment == 'production' && inputs.confirm-production == 'PROCEED' && 'true' || 'false' }}
         backup-file: sync_${{ inputs.source-environment }}_to_${{ inputs.target-environment }}.sql.gz
         pull-request-number: ${{ inputs.pull-request-number }}
+        storage-account: ${{ needs.backup.outputs.storage-account }}
+        resource-group: ${{ needs.backup.outputs.resource-group }}
     secrets:
         AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
         AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}

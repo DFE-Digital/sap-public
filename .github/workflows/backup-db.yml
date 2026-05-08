@@ -49,6 +49,13 @@ on:
         required: false
         type: string
         default: ""
+    outputs:
+        storage-account:
+          description: "Storage account used for backup"
+          value: ${{ jobs.backup.outputs.storage-account }}
+        resource-group:
+          description: "Resource group used for backup"
+          value: ${{ jobs.backup.outputs.resource-group }}
     secrets:
         AZURE_CLIENT_ID:
           required: true
@@ -58,6 +65,7 @@ on:
           required: true
         TEAMS_WEBHOOK_URL:
           required: true
+    
   schedule:
     - cron: "0 4 * * *" # 04:00 UTC
 
@@ -78,6 +86,9 @@ jobs:
     env:
       DEPLOY_ENV: ${{ inputs.environment || 'production'  }}
       BACKUP_FILE: ${{ inputs.backup-file || 'schedule'  }}
+    outputs:
+      storage-account: ${{ steps.set_outputs.outputs.storage-account }}
+      resource-group: ${{ steps.set_outputs.outputs.resou
 
     steps:
     - uses: actions/checkout@v4
@@ -107,6 +118,12 @@ jobs:
         fi
         echo "BACKUP_FILE=${BACKUP_FILE}" >> $GITHUB_ENV
         echo "KEYVAULT_NAME=${AZURE_RESOURCE_PREFIX}-${SERVICE_SHORT}-${CONFIG_SHORT}-inf-kv" >> $GITHUB_ENV
+
+    - name: Set workflow outputs
+      id: set_outputs
+      run: |
+          echo "storage-account=${STORAGE_ACCOUNT_NAME}" >> $GITHUB_OUTPUT
+          echo "resource-group=${RESOURCE_GROUP_NAME}" >> $GITHUB_OUTPUT
 
     - name: Backup ${{ env.DEPLOY_ENV }} postgres
       uses: DFE-Digital/github-actions/backup-postgres@master
