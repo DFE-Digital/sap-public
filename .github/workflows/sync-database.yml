@@ -33,3 +33,15 @@ on:
         description: "Pull request number (required for review environment)"
         required: false
         type: string
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Backing up database from ${{ inputs.source-environment }} environment..."
+
+  restore:
+    runs-on: ubuntu-latest
+    needs: backup
+    steps:
+      - run: echo "Restoring database to ${{ inputs.target-environment }} environment..."
