@@ -8,7 +8,7 @@ PowerShell Versioning (Step 6)
 Azure Blob Storage
 Controlled Download (Step 7)
 .NET 8 SQL Generator
-PostgreSQL via AKS and konduit
+PostgreSQL via AKS and konduit with PostGIS extension
 
 ## Storage Layers
 
