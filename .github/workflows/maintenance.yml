@@ -31,11 +31,6 @@ on:
       AZURE_TENANT_ID:
         required: true   
 
-permissions:
-    contents: write
-    id-token: write
-    packages: write
-
 jobs:
   set-maintenance-mode:
     name: Set maintenance mode
