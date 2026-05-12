@@ -58,6 +58,9 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: ${{ inputs.source-environment }}
+    env:
+      DEPLOY_ENV: ${{ inputs.source-environment }}
+     
     
     steps:
         - uses: actions/checkout@v4
