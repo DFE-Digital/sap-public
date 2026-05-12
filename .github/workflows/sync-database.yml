@@ -226,8 +226,8 @@ jobs:
     name: Restore database
     if: ${{ inputs.target-environment != 'production' || (inputs.target-environment == 'production' && inputs.confirm-production == 'true' )  }}
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
-    concurrency: deploy_${{ inputs.environment }}
+    environment: ${{ inputs.target-environment }}
+    concurrency: deploy_${{ inputs.target-environment }}
     needs: enable-maintenance
 
     steps:
