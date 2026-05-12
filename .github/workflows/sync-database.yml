@@ -207,7 +207,19 @@ jobs:
               echo "resource_group_name=${RESOURCE_GROUP_NAME}" >> $GITHUB_OUTPUT
               echo "backup_file=${BACKUP_FILE}.gz" >> $GITHUB_OUTPUT
     
+  enable-maintenance:
+    name: Enable maintenance mode
+    uses: ./.github/workflows/maintenance.yml
+    needs: backup
 
+    with:
+        environment: ${{ inputs.target-environment }}
+        mode: enable
+    secrets:
+        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   restore:
     name: Restore database
@@ -215,7 +227,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     concurrency: deploy_${{ inputs.environment }}
-    needs: backup
+    needs: enable-maintenance
 
     steps:
       - uses: actions/checkout@v4
@@ -244,3 +256,16 @@ jobs:
             azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
             azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
             backup-file: ${{ env.BACKUP_FILE }}
+
+  disable-maintenance:
+    name: Disable maintenance mode
+    uses: ./.github/workflows/maintenance.yml
+    needs: restore
+    with:
+      environment: ${{ inputs.target-environment }}
+      mode: disable
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
