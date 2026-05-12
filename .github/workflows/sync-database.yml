@@ -240,8 +240,8 @@ jobs:
             tf_vars_file=${{ env.TF_VARS_PATH }}/${{ inputs.target-environment }}.tfvars.json
             echo "CLUSTER=$(jq -r '.cluster' ${tf_vars_file})" >> $GITHUB_ENV
             echo "NAMESPACE=$(jq -r '.namespace' ${tf_vars_file})" >> $GITHUB_ENV
-            echo "RESOURCE_GROUP_NAME=${{ needs.backup.outputs.resource-group-name }} >> $GITHUB_ENV
-            echo "STORAGE_ACCOUNT_NAME=${{ needs.backup.outputs.storage-account-name }} >> $GITHUB_ENV
+            echo "RESOURCE_GROUP_NAME=${{ needs.backup.outputs.resource-group-name }}" >> $GITHUB_ENV
+            echo "STORAGE_ACCOUNT_NAME=${{ needs.backup.outputs.storage-account-name }}" >> $GITHUB_ENV
             echo "DB_SERVER=${AZURE_RESOURCE_PREFIX}-${SERVICE_SHORT}-${CONFIG_SHORT}-pg" >> $GITHUB_ENV          
             echo "BACKUP_FILE=${{ needs.backup.outputs.backup-file }}" >> $GITHUB_ENV
         
