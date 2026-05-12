@@ -5,9 +5,6 @@ namespace SAPSec.Web.Setup;
 public static class WebApplicationBuilderExtensions
 {
     private const string ApplicationName = "SAPPub";
-    //private const string StorageConnectionStringKey = "StorageConnectionString";
-    //private const string BlobName = "keys.xml";
-    //private const string LocalKeysDirectoryName = "SAPPub-Keys";
 
     /// <summary>
     /// Adds data protection services with environment-specific configuration.
