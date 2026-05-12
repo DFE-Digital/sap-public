@@ -194,7 +194,7 @@ jobs:
             echo '  APP: ${{ inputs.app-name }}' >> $GITHUB_STEP_SUMMARY
             echo "  AT : ${NOW}" >> $GITHUB_STEP_SUMMARY
             echo '  STORAGE ACCOUNT: ${{ inputs.storage-account }}' >> $GITHUB_STEP_SUMMARY
-            echo '  FILENAME: ${{ inputs.backup-file }}.gz' >> $GITHUB_STEP_SUMMARY
+            echo "  FILENAME: ${{ env.BACKUP_FILE }}.gz" >> $GITHUB_STEP_SUMMARY
     
 
 
