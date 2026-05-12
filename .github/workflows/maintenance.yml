@@ -29,9 +29,7 @@ on:
       AZURE_SUBSCRIPTION_ID:
         required: true
       AZURE_TENANT_ID:
-        required: true
-      GITHUB_TOKEN:
-        required: true
+        required: true   
 
 jobs:
   set-maintenance-mode:
