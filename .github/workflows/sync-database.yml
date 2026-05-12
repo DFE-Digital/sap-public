@@ -205,9 +205,9 @@ jobs:
         - name: Set outputs for restore job
           id: set-outputs
           run: |
-              echo "storage_account_name=${STORAGE_ACCOUNT_NAME}" >> $GITHUB_OUTPUT
-              echo "resource_group_name=${RESOURCE_GROUP_NAME}" >> $GITHUB_OUTPUT
-              echo "backup_file=${BACKUP_FILE}.gz" >> $GITHUB_OUTPUT
+              echo "storage_account_name=${{ env.STORAGE_ACCOUNT_NAME }}" >> $GITHUB_OUTPUT
+              echo "resource_group_name=${{ env.RESOURCE_GROUP_NAME }}" >> $GITHUB_OUTPUT
+              echo "backup_file=${{ env.BACKUP_FILE }}.gz" >> $GITHUB_OUTPUT
     
   enable-maintenance:
     name: Enable maintenance mode
