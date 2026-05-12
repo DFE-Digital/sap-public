@@ -15,4 +15,14 @@ public record AttendanceModel
     public double? EnglandAttendance { get; init; }
 
     public double? LocalAuthorityAttendance { get; init; }
+
+    public double? EstablishmentPersistentAbsence { get; init; }
+
+    public double? EnglandPersistentAbsence { get; init; }
+
+    public double? LocalAuthorityPersistentAbsence { get; init; }
+
+    public double? EstablishmentEnrolmentsTotal { get; init; }
+
+    public double? EstablishmentPersistentAbsenceTotal { get; init; }
 }

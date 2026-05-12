@@ -15,6 +15,16 @@ public class AttendanceViewModel : SecondarySchoolBaseViewModel
 
     public required DisplayField<double> LocalAuthorityAttendance { get; init; }
 
+    public required DisplayField<double> EstablishmentPersistentAbsence { get; init; }
+
+    public required DisplayField<double> EnglandPersistentAbsence { get; init; }
+
+    public required DisplayField<double> LocalAuthorityPersistentAbsence { get; init; }
+
+    public required DisplayField<double> EstablishmentEnrolmentsTotal { get; init; }
+
+    public required DisplayField<double> EstablishmentPersistentAbsenceTotal { get; init; }
+
     public static AttendanceViewModel Map(AttendanceModel attendanceDetails)
     {
         return new AttendanceViewModel
@@ -26,6 +36,11 @@ public class AttendanceViewModel : SecondarySchoolBaseViewModel
             EstablishmentAttendance = attendanceDetails.EstablishmentAttendance.ToDisplayField(),
             EnglandAttendance = attendanceDetails.EnglandAttendance.ToDisplayField(),
             LocalAuthorityAttendance = attendanceDetails.LocalAuthorityAttendance.ToDisplayField(),
+            EstablishmentPersistentAbsence = attendanceDetails.EstablishmentPersistentAbsence.ToDisplayField(),
+            EnglandPersistentAbsence = attendanceDetails.EnglandPersistentAbsence.ToDisplayField(),
+            LocalAuthorityPersistentAbsence = attendanceDetails.LocalAuthorityPersistentAbsence.ToDisplayField(),
+            EstablishmentEnrolmentsTotal = attendanceDetails.EstablishmentEnrolmentsTotal.ToDisplayField(),
+            EstablishmentPersistentAbsenceTotal = attendanceDetails.EstablishmentPersistentAbsenceTotal.ToDisplayField()
         };
     }
 }

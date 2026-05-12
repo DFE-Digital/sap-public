@@ -69,6 +69,8 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
 
         private const string EstablishmentAbsenceColumns = """
           "Id",
+          "Enrolments_Tot_Est_Current_Num_Coded",
+          "Abs_Persistent_Est_Current_Num_Coded",
           "Abs_Persistent_Est_Current_Pct_Coded",
           "Abs_Persistent_Est_Previous_Pct_Coded",
           "Abs_Persistent_Est_Previous2_Pct_Coded",

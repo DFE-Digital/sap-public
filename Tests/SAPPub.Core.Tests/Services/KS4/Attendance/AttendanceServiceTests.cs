@@ -31,6 +31,14 @@ public class AttendanceServiceTests
             [(est: (double?)null, la: (double?)null, eng: (double?)null), (est: (double?)null, la: (double?)null, eng: (double?)null)],
         ];
 
+    public static IEnumerable<object[]> AbsenceData =>
+        [
+            [(est: (double?)5.45, la: (double?)11.25, eng: (double?)12.55), (est: (double?)5.4, la: (double?)11.2, eng: (double?)12.6)],
+            [(est: (double?)10.12, la: (double?)7.45, eng: (double?)8.35), (est: (double?)10.1, la: (double?)7.4, eng: (double?)8.4)],
+            [(est: (double?)null, la: (double?)null, eng: (double?)null), (est: (double?)null, la: (double?)null, eng: (double?)null)],
+        ];
+
+
     public AttendanceServiceTests()
     {
         _mockEstablishmentService = new();
@@ -120,5 +128,68 @@ public class AttendanceServiceTests
         Assert.Equal(expected.est, result.EstablishmentAttendance);
         Assert.Equal(expected.la, result.LocalAuthorityAttendance);
         Assert.Equal(expected.eng, result.EnglandAttendance);
+    }
+
+    [Theory]
+    [MemberData(nameof(AbsenceData))]
+    public async Task GetAttendenceDetailsAsync_ShouldReturn_Absence_Data(
+        (double? est, double? la, double? eng) absence,
+        (double? est, double? la, double? eng) expected)
+    {
+        // Arrange
+        var enrolmentsTotal = 1200;
+        var absenceTotal = 120;
+
+        var establishmentAbsence = new EstablishmentAbsence
+        {
+            Id = fakeEstablishment.URN,
+            Abs_Persistent_Est_Current_Pct = absence.est,
+            Enrolments_Tot_Est_Current_Num = enrolmentsTotal,
+            Abs_Persistent_Est_Current_Num = absenceTotal
+        };
+
+        var lAAbsence = new LAAbsence
+        {
+            Id = fakeEstablishment.LAId,
+            Abs_Persistent_LA_Current_Pct = absence.la
+        };
+
+        var englandAbsence = new EnglandAbsence
+        {
+            Id = fakeEstablishment.LAId,
+            Abs_Persistent_Eng_Current_Pct = absence.eng
+        };
+
+        _mockEstablishmentService
+            .Setup(r => r.GetEstablishmentAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(fakeEstablishment);
+
+        _mockEstablishmentAbsenceService
+            .Setup(r => r.GetEstablishmentAbsenceAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(establishmentAbsence);
+
+        _mockLAAbsenceService
+            .Setup(r => r.GetLAAbsenceAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(lAAbsence);
+
+        _mockEnglandAbsenceService
+            .Setup(r => r.GetEnglandAbsenceAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(englandAbsence);
+
+        // Act
+        var result = await _service.GetAttendenceDetailsAsync(fakeEstablishment.URN, CancellationToken.None);
+
+        // Assert (common)
+        Assert.NotNull(result);
+        Assert.Equal(fakeEstablishment.URN, result.Urn);
+        Assert.Equal(fakeEstablishment.EstablishmentName, result.SchoolName);
+        Assert.Equal(fakeEstablishment.LAName, result.LocalAuthority);
+
+        Assert.Equal(expected.est, result.EstablishmentPersistentAbsence);
+        Assert.Equal(expected.la, result.LocalAuthorityPersistentAbsence);
+        Assert.Equal(expected.eng, result.EnglandPersistentAbsence);
+
+        Assert.Equal(enrolmentsTotal, result.EstablishmentEnrolmentsTotal);
+        Assert.Equal(absenceTotal, result.EstablishmentPersistentAbsenceTotal);
     }
 }

@@ -36,12 +36,22 @@ public sealed class AttendanceService(
             LocalAuthority = establishment.LAName,
             EstablishmentAttendance = GetAttendenceValue(establishmentAbsence?.Abs_Tot_Est_Current_Pct),
             EnglandAttendance = GetAttendenceValue(englandAbsence?.Abs_Tot_Eng_Current_Pct),
-            LocalAuthorityAttendance = GetAttendenceValue(laAbsence?.Abs_Tot_LA_Current_Pct)
+            LocalAuthorityAttendance = GetAttendenceValue(laAbsence?.Abs_Tot_LA_Current_Pct),
+            EstablishmentPersistentAbsence = GetAbsenceValue(establishmentAbsence?.Abs_Persistent_Est_Current_Pct),
+            EnglandPersistentAbsence = GetAbsenceValue(englandAbsence?.Abs_Persistent_Eng_Current_Pct),
+            LocalAuthorityPersistentAbsence = GetAbsenceValue(laAbsence?.Abs_Persistent_LA_Current_Pct),
+            EstablishmentEnrolmentsTotal = establishmentAbsence?.Enrolments_Tot_Est_Current_Num,
+            EstablishmentPersistentAbsenceTotal = establishmentAbsence?.Abs_Persistent_Est_Current_Num
         };
     }
 
     private static double? GetAttendenceValue(double? absenceValue)
     {
         return absenceValue.HasValue ? Math.Round(100 - absenceValue.Value, 1) : null;
+    }
+
+    private static double? GetAbsenceValue(double? absenceValue)
+    {
+        return absenceValue.HasValue ? Math.Round(absenceValue.Value, 1) : null;
     }
 }

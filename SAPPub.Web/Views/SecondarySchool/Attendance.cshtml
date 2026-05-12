@@ -148,6 +148,70 @@
             </tbody>
         </table>
 
+        <h3 class="govuk-heading-m">Persistent absence</h3>
+
+        <p class="govuk-body">
+            If a pupil misses 10% or more of their possible sessions in a year, they are identified as being persistently absent.
+        </p>
+
+        <p class="govuk-body">
+            On average there are 380 sessions a year in school, so a pupil who misses 38 or more sessions is considered persistently absent.
+        </p>
+
+        <table id="persistent-absence-table" class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-quarter"></th>
+                    <th scope="col" class="govuk-table__header">Persistent absence</th>
+                    <th scope="col" class="govuk-table__header">Meaning</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">School</th>
+                    <td class="govuk-table__cell">@(Model.EstablishmentPersistentAbsence.IsAvailable? Model.EstablishmentPersistentAbsence.Value + "%" : Constants.NotAvailable)</td>
+                    <td class="govuk-table__cell">
+                        @if (Model.EstablishmentPersistentAbsence.IsAvailable)
+                        {
+                            <text>Out of @Model.EstablishmentEnrolmentsTotal.DisplayText(t => t.ToString("N0")) pupils, @Model.EstablishmentPersistentAbsenceTotal.DisplayText(t => t.ToString("N0")) were persistently absent. This means that @(Model.EstablishmentPersistentAbsence.Value + "%") were persistently absent.</text>
+                        }
+                        else
+                        {
+                            @Model.EstablishmentPersistentAbsence.DisplayText();
+                        }
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">@Model.LocalAuthority.DisplayText() secondary school average</th>
+                    <td class="govuk-table__cell">@(Model.LocalAuthorityPersistentAbsence.IsAvailable? Model.LocalAuthorityPersistentAbsence.Value + "%" : Constants.NotAvailable)</td>
+                    <td class="govuk-table__cell">
+                        @if (Model.LocalAuthorityPersistentAbsence.IsAvailable)
+                        {
+                            <text>Out of the total number of pupils in secondary schools in @Model.LocalAuthority.DisplayText(), have a @(Model.LocalAuthorityPersistentAbsence.Value + "%") were persistently absent.</text>
+                        }
+                        else
+                        {
+                            @Model.LocalAuthorityPersistentAbsence.DisplayText();
+                        }
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">England secondary school average</th>
+                    <td class="govuk-table__cell">@(Model.EnglandPersistentAbsence.IsAvailable? Model.EnglandPersistentAbsence.Value + "%" : Constants.NotAvailable)</td>
+                    <td class="govuk-table__cell">
+                        @if (Model.EnglandPersistentAbsence.IsAvailable)
+                        {
+                            <text>Out of the total number of pupils in secondary schools in England, @(Model.EnglandPersistentAbsence.Value + "%") were persistently absent.</text>
+                        }
+                        else
+                        {
+                            @Model.EnglandPersistentAbsence.DisplayText();
+                        }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
         <govuk-pagination id="attendance-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.SecondaryCurriculumAndExtraCurricularActivities" asp-all-route-data="@Model.RouteAttributes">Curriculum and extra-curricular activities</govuk-pagination-previous>
             <govuk-pagination-next asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress" asp-all-route-data="@Model.RouteAttributes">Academic performance: Progress and attainment</govuk-pagination-next>

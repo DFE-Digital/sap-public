@@ -308,5 +308,78 @@ public class AttendancePageTests : PageTestsBase
         Assert.Contains(NotAvailable, doc.GetTableCellContentByIdAndIndex("attendance-table", 2, 1));
         Assert.Contains(NotAvailable, doc.GetTableCellContentByIdAndIndex("attendance-table", 3, 0));
         Assert.Contains(NotAvailable, doc.GetTableCellContentByIdAndIndex("attendance-table", 3, 1));
-    }   
+    }
+
+    [Fact]
+    public async Task AttendancePage_Displays_PersistentAbsence_Table()
+    {
+        // Arrange
+        var urn = "143034";
+        var establishmentName = "Loreto High School Chorlton";
+        var enrolmentsTotal = 1200;
+        var absenceTotal = 200;
+
+        _serviceMock
+            .Setup(service => service.GetAttendenceDetailsAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new AttendanceModel()
+            {
+                Urn = urn,
+                SchoolName = establishmentName,
+                LocalAuthority = "Sheffield",
+                EstablishmentPersistentAbsence = 10.3,
+                LocalAuthorityPersistentAbsence = 5.9,
+                EnglandPersistentAbsence = 6.7,
+                EstablishmentEnrolmentsTotal = enrolmentsTotal,
+                EstablishmentPersistentAbsenceTotal = absenceTotal
+            });
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
+
+        Assert.Contains("Sheffield", doc.GetTableHeaderContentByIdAndIndex("persistent-absence-table", 2, 0));
+        Assert.Contains("10.3%", doc.GetTableCellContentByIdAndIndex("persistent-absence-table", 1, 0));
+        Assert.Contains("10.3%", doc.GetTableCellContentByIdAndIndex("persistent-absence-table", 1, 1));
+        Assert.Contains("5.9%", doc.GetTableCellContentByIdAndIndex("persistent-absence-table", 2, 0));
+        Assert.Contains("5.9%", doc.GetTableCellContentByIdAndIndex("persistent-absence-table", 2, 1));
+        Assert.Contains("6.7%", doc.GetTableCellContentByIdAndIndex("persistent-absence-table", 3, 0));
+        Assert.Contains("6.7%", doc.GetTableCellContentByIdAndIndex("persistent-absence-table", 3, 1));
+
+        var expectedEnrolmentsTotal = enrolmentsTotal.ToString("N0");
+        var expectedAbsenceTotal = absenceTotal.ToString("N0");
+
+        Assert.Contains(expectedEnrolmentsTotal, doc.GetTableCellContentByIdAndIndex("persistent-absence-table", 1, 1));
+        Assert.Contains(expectedAbsenceTotal, doc.GetTableCellContentByIdAndIndex("persistent-absence-table", 1, 1));
+    }
+
+    [Fact]
+    public async Task AttendancePage_Displays_PersistentAbsence_Table_With_NotAvailable()
+    {
+        // Arrange
+        var urn = "143034";
+        var establishmentName = "Loreto High School Chorlton";
+        _serviceMock
+            .Setup(service => service.GetAttendenceDetailsAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new AttendanceModel()
+            {
+                Urn = urn,
+                SchoolName = establishmentName,
+                EstablishmentAttendance = null,
+                LocalAuthorityAttendance = null,
+                EnglandAttendance = null
+            });
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
+
+        Assert.Equal(NotAvailable, doc.GetTableCellContentByIdAndIndex("attendance-table", 1, 0));
+        Assert.Contains(NotAvailable, doc.GetTableCellContentByIdAndIndex("attendance-table", 1, 1));
+        Assert.Contains(NotAvailable, doc.GetTableCellContentByIdAndIndex("attendance-table", 2, 0));
+        Assert.Contains(NotAvailable, doc.GetTableCellContentByIdAndIndex("attendance-table", 2, 1));
+        Assert.Contains(NotAvailable, doc.GetTableCellContentByIdAndIndex("attendance-table", 3, 0));
+        Assert.Contains(NotAvailable, doc.GetTableCellContentByIdAndIndex("attendance-table", 3, 1));
+    }
 }

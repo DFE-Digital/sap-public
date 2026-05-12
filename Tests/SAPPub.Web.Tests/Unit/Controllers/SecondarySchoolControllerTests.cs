@@ -751,6 +751,57 @@ public class SecondarySchoolControllerTests
         Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
+    [Theory]
+    [InlineData(5.5, 7.81, 10.2)]
+    [InlineData(null, null, null)]
+    public async Task Get_Attendance_Absence_Info_ReturnsOk(double? estAbsence, double? laAbsence, double? engAbsence)
+    {
+        var enrolmentsTotal = 5550;
+        var absenceTotal = 110;
+        _mockAttendanceService
+            .Setup(s => s.GetAttendenceDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new AttendanceModel
+            {
+                Urn = _fakeEstablishment.URN,
+                SchoolName = _fakeEstablishment.EstablishmentName,
+                LocalAuthority = _fakeEstablishment.LAName,
+                EstablishmentPersistentAbsence = estAbsence,
+                LocalAuthorityPersistentAbsence = laAbsence,
+                EnglandPersistentAbsence = engAbsence,
+                EstablishmentEnrolmentsTotal = enrolmentsTotal,
+                EstablishmentPersistentAbsenceTotal = absenceTotal,
+            });
+
+        var result = await _controller.Attendance(_mockAttendanceService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as AttendanceViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(_fakeEstablishment.URN, model.URN);
+        Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
+        Assert.Equal(_fakeEstablishment.LAName, model.LocalAuthority.Value);
+
+        var expectedEnrolmentsTotal = enrolmentsTotal.ToString();
+        var expectedAbsenceTotal = absenceTotal.ToString();
+
+        var expectedEstablishmentAbsence = estAbsence != null ? estAbsence.ToString() : NotAvailable;
+        var expectedLAAbsence = laAbsence != null ? laAbsence.ToString() : NotAvailable;
+        var expectedEnglandAbsence = engAbsence != null ? engAbsence.ToString() : NotAvailable;
+
+        Assert.Equal(expectedEstablishmentAbsence, model.EstablishmentPersistentAbsence.DisplayText());
+        Assert.Equal(expectedLAAbsence, model.LocalAuthorityPersistentAbsence.DisplayText());
+        Assert.Equal(expectedEnglandAbsence, model.EnglandPersistentAbsence.DisplayText());
+
+        Assert.Equal(expectedEnrolmentsTotal, model.EstablishmentEnrolmentsTotal.DisplayText());
+        Assert.Equal(expectedAbsenceTotal, model.EstablishmentPersistentAbsenceTotal.DisplayText());
+
+        Assert.Equal(2, model.RouteAttributes.Count);
+        Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
+        Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
+    }
+
     [Fact]
     public async Task Get_CurriculumAndExtraCurricularActivities_Info_ReturnsOk()
     {
