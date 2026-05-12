@@ -81,7 +81,7 @@ jobs:
             echo "STORAGE_ACCOUNT_NAME=${AZURE_RESOURCE_PREFIX}sappubdbbkp${CONFIG_SHORT}sa" >> $GITHUB_ENV
             TODAY=$(date +"%F")
             if [ "${{ inputs.backup-file }}" == "default" ]; then
-              BACKUP_FILE="sappub_${CONFIG_SHORT}_${{ inputs.source-environment }}_${{ inputs.target-environment }}_${TODAY}"
+              BACKUP_FILE="sappub_${{ inputs.source-environment }}_${{ inputs.target-environment }}_${TODAY}"
             else
               BACKUP_FILE="${{ inputs.backup-file }}"
             fi
