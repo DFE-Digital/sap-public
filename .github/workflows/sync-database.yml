@@ -60,6 +60,10 @@ jobs:
       name: ${{ inputs.source-environment }}
     env:
       DEPLOY_ENV: ${{ inputs.source-environment }}
+    outputs:
+      storage-account-name: ${{ steps.set-outputs.outputs.storage_account_name }}
+      resource-group-name: ${{ steps.set-outputs.outputs.resource_group_name }}
+      backup-file: ${{ steps.set-outputs.outputs.backup_file }}
      
     
     steps:
@@ -195,11 +199,23 @@ jobs:
             echo "  AT : ${NOW}" >> $GITHUB_STEP_SUMMARY
             echo '  STORAGE ACCOUNT: ${{ inputs.storage-account }}' >> $GITHUB_STEP_SUMMARY
             echo "  FILENAME: ${{ env.BACKUP_FILE }}.gz" >> $GITHUB_STEP_SUMMARY
+
+        - name: Set outputs for restore job
+          id: set-outputs
+          run: |
+              echo "storage_account_name=${STORAGE_ACCOUNT_NAME}" >> $GITHUB_OUTPUT
+              echo "resource_group_name=${RESOURCE_GROUP_NAME}" >> $GITHUB_OUTPUT
+              echo "backup_file=${BACKUP_FILE}.gz" >> $GITHUB_OUTPUT
     
 
 
   restore:
+    name: Restore database
     runs-on: ubuntu-latest
     needs: backup
     steps:
-      - run: echo "Restoring database to ${{ inputs.target-environment }} environment..."
+      - run: |
+          echo "Restoring database to ${{ inputs.target-environment }} environment..."
+          echo "Storage Account: ${{ needs.backup.outputs.storage-account-name }}"
+          echo "Resource Group: ${{ needs.backup.outputs.resource-group-name }}"
+          echo "Backup File: ${{ needs.backup.outputs.backup-file }}"
