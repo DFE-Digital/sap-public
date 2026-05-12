@@ -228,7 +228,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ inputs.target-environment }}
     concurrency: deploy_${{ inputs.target-environment }}
-    needs: enable-maintenance
+    needs: [enable-maintenance, backup]
 
     steps:
       - uses: actions/checkout@v4
