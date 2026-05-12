@@ -20,7 +20,7 @@ on:
             - test
             - production
      exclude-gateway-tables:
-        description: Exclude gateway tables from backup (gateway_user, gateway_user_audit, gateway_page_view_audit, gateway_local_authority, gateway_settings)
+        description: Exclude all gateway tables from backup
         required: false
         type: boolean
         default: true
