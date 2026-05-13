@@ -384,7 +384,8 @@ public sealed class GenerateViews
         sb.AppendLine();
         sb.AppendLine("CREATE UNIQUE INDEX idx_v_establishment_urn ON v_establishment (\"URN\");");
         sb.AppendLine("CREATE INDEX idx_v_establishment_fts ON v_establishment USING GIN (\"EstablishmentNameFTS\");");
-      
+        sb.AppendLine("CREATE INDEX idx_v_establishment_geom ON v_establishment USING GIST (\"geom\");");
+
         return sb.ToString();
     }
 
