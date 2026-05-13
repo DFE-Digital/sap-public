@@ -69,7 +69,11 @@ module "application_configuration" {
     Email__ApplicationRoot                        = data.azurerm_key_vault_secret.emailapplicationroot.value,
     Analytics__GoogleTagManagerId                 = data.azurerm_key_vault_secret.googletagmanager.value,
     Analytics__ClarityId                          = data.azurerm_key_vault_secret.microsoftclarity.value,
-    Sentry__Dsn                                   = data.azurerm_key_vault_secret.sentrydsn.value
+    Sentry__Dsn                                   = (
+            var.environment == "production"
+            ? data.azurerm_key_vault_secret.sentrydsn.value
+            : null
+          )
   }, local.federated_auth_secrets)
 
 }
