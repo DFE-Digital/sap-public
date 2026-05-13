@@ -119,12 +119,6 @@ variable "probe_path" {
   description = "Path for the liveness and startup probe. The probe can be disabled by setting this to null."
 }
 
-variable "redis_eviction_policy" {
-  type     = string
-  nullable = false
-  default  = "allkeys-lru"
-}
-
 variable "storage_container_delete_retention_days" {
   type        = number
   default     = null
