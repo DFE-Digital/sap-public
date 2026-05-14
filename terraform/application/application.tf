@@ -39,6 +39,7 @@ data "azurerm_key_vault_secret" "gatewayalloweddays" {
 }
 
 data "azurerm_key_vault_secret" "sentrydsn" {
+  count        = var.environment == "production" ? 1 : 0
   name         = "SentryDsn" //Name in KeyVault
   key_vault_id = data.azurerm_key_vault.app_key_vault.id
 }
@@ -71,7 +72,7 @@ module "application_configuration" {
     Analytics__ClarityId                          = data.azurerm_key_vault_secret.microsoftclarity.value,
     Sentry__Dsn                                   = (
             var.environment == "production"
-            ? data.azurerm_key_vault_secret.sentrydsn.value
+            ? data.azurerm_key_vault_secret.sentrydsn[0].value
             : null
           )
   }, local.federated_auth_secrets)
