@@ -146,6 +146,7 @@ public class AboutPageTests : PageTestsBase
         Assert.Contains(aboutSchoolModel.PupilSex, doc.GetRowContentByIdAndKey("school-features-summary", "Pupil sex"));
         Assert.Contains(aboutSchoolModel.ReligiousCharacter, doc.GetRowContentByIdAndKey("school-features-summary", "Religious character"));
         Assert.Contains(aboutSchoolModel.OfficialSixthFormId == "1" ? "Yes" : "No", doc.GetRowContentByIdAndKey("school-features-summary", "Sixth form"));
+        Assert.Contains(aboutSchoolModel.Urn, doc.GetRowContentByIdAndKey("school-features-summary", "Unique reference number (URN)"));
     }
 
     [Fact]
