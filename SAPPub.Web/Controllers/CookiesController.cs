@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SAPPub.Web.Helpers;
+using SAPPub.Web.Models;
+using static SAPPub.Web.Constants.Constants;
 
 namespace SAPPub.Web.Controllers;
 
@@ -6,7 +9,11 @@ public class CookiesController : Controller
 {
     public IActionResult Preferences()
     {
-        return View();
+        var model = new CookiesViewModel
+        {
+            ShowSuccessBanner = TempData.Get<bool>(CookiesConfirmation)
+        };
+        return View(model);
     }
 
     public IActionResult CookieSettings(bool acceptAnalyticsCookies, string returnUrl)
@@ -24,6 +31,8 @@ public class CookiesController : Controller
             acceptAnalyticsCookies ? "true" : "false",
             options
         );
+
+        TempData.Set(CookiesConfirmation, true);
 
         if(!acceptAnalyticsCookies)
         {
