@@ -54,7 +54,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Build and push docker image
         id: build-image
@@ -78,10 +78,10 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup .NET 8
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: "8.0.x"
 
@@ -247,7 +247,7 @@ jobs:
       # REVIEW APP DATABASE DEPLOYMENT (PR)
       # ---------------------------
       - name: Checkout (needed for workspace consistency)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install Azure CLI
         shell: bash
@@ -256,7 +256,7 @@ jobs:
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
       - name: Azure login (OIDC)
-        uses: azure/login@v2
+        uses: azure/login@v3
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
