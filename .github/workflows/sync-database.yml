@@ -328,7 +328,7 @@ jobs:
       - name: Read SAS URL
         id: sas
         run: |
-            URL="${{ needs.backup.outputs.sas.url }}"
+            URL="${{ needs.backup.outputs.sas-url }}"
             echo "::add-mask::$URL"
             echo "url=$URL" >> $GITHUB_OUTPUT
       
