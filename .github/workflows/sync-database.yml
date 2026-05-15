@@ -260,7 +260,6 @@ jobs:
             tf_vars_file=${{ env.TF_VARS_PATH }}/${{ inputs.target-environment }}.tfvars.json
             echo "CLUSTER=$(jq -r '.cluster' ${tf_vars_file})" >> $GITHUB_ENV
             echo "NAMESPACE=$(jq -r '.namespace' ${tf_vars_file})" >> $GITHUB_ENV
-            echo "BACKUP_SAS_URL=${{ needs.backup.outputs.sas_url }}" >> $GITHUB_ENV
             echo "DB_SERVER=${AZURE_RESOURCE_PREFIX}-${SERVICE_SHORT}-${CONFIG_SHORT}-pg" >> $GITHUB_ENV          
 
       - name: Setup postgres client
@@ -309,7 +308,7 @@ jobs:
       
       - name: Download backup via SAS
         run: |
-          curl -L "${{ env.BACKUP_SAS_URL }}" -o backup.sql.gz
+          curl -L "${{ needs.backup.outputs.backup-sas-url }}" -o backup.sql.gz
 
       
       - name: Decompress
