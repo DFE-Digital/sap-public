@@ -61,9 +61,7 @@ jobs:
     environment:
       name: ${{ inputs.source-environment }}
     env:
-      DEPLOY_ENV: ${{ inputs.source-environment }}
-    outputs:      
-      backup-sas-url: ${{ steps.sas.outputs.sas_url }}     
+      DEPLOY_ENV: ${{ inputs.source-environment }}     
     
     steps:
         - uses: actions/checkout@v4
@@ -207,7 +205,7 @@ jobs:
         - name: Generate SAS URL
           id: sas
           run: |
-            EXPIRY=$(date -u -d "30 minutes" '+%Y-%m-%dT%H:%MZ')
+            EXPIRY=$(date -u -d "15 minutes" '+%Y-%m-%dT%H:%MZ')
 
             SAS=$(az storage blob generate-sas \
             --account-name "$STORAGE_ACCOUNT_NAME" \
@@ -225,14 +223,17 @@ jobs:
                 exit 1
             fi
 
-
             URL="https://${STORAGE_ACCOUNT_NAME}.blob.core.windows.net/database-backup/${BACKUP_FILE}?${SAS}"
-                        
-            echo "URL generated (length: ${#URL})"            
+           
+        - name: Save SAS URL to file
+          run: |
+            echo "$URL" > sas_url.txt
+    
+        - uses: actions/upload-artifact@v4
+          with:
+            name: backup-sas-url
+            path: sas_url.txt
 
-            echo "sas_url<<EOF" >> $GITHUB_OUTPUT
-            echo "$URL" >> $GITHUB_OUTPUT
-            echo "EOF" >> $GITHUB_OUTPUT
     
   enable-maintenance:
     name: Enable maintenance mode
@@ -317,14 +318,24 @@ jobs:
             curl -s https://raw.githubusercontent.com/DFE-Digital/teacher-services-cloud/main/scripts/konduit.sh -o ./konduit.sh
             chmod +x ./konduit.sh
 
+            
+      - uses: actions/download-artifact@v4
+        with:
+          name: backup-sas-url
+          
+      - name: Read SAS URL
+        id: sas
+        run: |
+            URL=$(cat sas_url.txt)
+            echo "url=$URL" >> $GITHUB_OUTPUT
       
       - name: Download backup via SAS
         run: |
-          curl -L "${{ needs.backup.outputs.backup-sas-url }}" -o backup.sql.gz
+          curl -L "${{ steps.sas.outputs.url }}" -o backup.sql.gz
 
       
       - name: Decompress
-        run: gunzip backup.sql.gz
+        run: gunzip -f backup.sql.gz
 
 
       - name: Restore backup to aks env database
@@ -334,7 +345,7 @@ jobs:
               NAMESPACE_ARG="-n ${{ env.NAMESPACE }}"
             fi           
 
-            ./konduit.sh ${NAMESPACE_ARG} -i backup.sql -t 7200 -x ${{ inputs.app-name }} -- psql
+            ./konduit.sh ${NAMESPACE_ARG} -i backup.sql -t 7200 -x ${{ env.SERVICE_NAME }}-${{ inputs.target-environment }} -- psql
 
       - name: Restore Summary
         if: success()
