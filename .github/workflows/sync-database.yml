@@ -234,6 +234,7 @@ jobs:
           with:
             name: backup-sas-url
             path: sas_url.txt
+            retention-days: 1
 
         - name: Set outputs for restore job
           id: set-outputs
