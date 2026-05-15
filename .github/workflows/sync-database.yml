@@ -189,7 +189,7 @@ jobs:
               export PGOPTIONS='-c tcp_keepalives_idle=60 -c tcp_keepalives_interval=30 -c tcp_keepalives_count=10'              
               export PGSSLMODE=require
     
-              ./konduit.sh ${NAMESPACE_ARG} -t 9000 -x sap-public-${{ env.DEPLOY_ENV }} -- pg_dump -E utf8 --clean --compress=6 --if-exists --no-owner --verbose --no-password $EXCLUDE_OPTS -f "${BACKUP_FILE}"
+              ./konduit.sh ${NAMESPACE_ARG} -t 28800 -x sap-public-${{ env.DEPLOY_ENV }} -- pg_dump -E utf8 --clean --format=custom --compress=6 --if-exists --no-owner --verbose --no-password $EXCLUDE_OPTS -f "${BACKUP_FILE}"
               az storage azcopy blob upload --container database-backup --source "${BACKUP_FILE}"
             fi
         - name: Backup Summary
@@ -356,7 +356,7 @@ jobs:
               COMPRESS_ARG=-c
             fi
 
-            ./konduit.sh ${NAMESPACE_ARG} -i ${{ env.FILENAME }} ${COMPRESS_ARG} -t 7200 -x ${{ env.SERVICE_NAME }}-${{ inputs.target-environment }} -- psql
+            ./konduit.sh ${NAMESPACE_ARG} -i ${{ env.FILENAME }} ${COMPRESS_ARG} -t 28800 -x ${{ env.SERVICE_NAME }}-${{ inputs.target-environment }} -- psql
 
       - name: Restore Summary
         if: success()
