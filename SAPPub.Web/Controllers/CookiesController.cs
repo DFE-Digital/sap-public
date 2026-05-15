@@ -7,6 +7,7 @@ namespace SAPPub.Web.Controllers;
 
 public class CookiesController : Controller
 {
+    [HttpGet]
     public IActionResult Preferences()
     {
         var model = new CookiesViewModel
@@ -16,6 +17,7 @@ public class CookiesController : Controller
         return View(model);
     }
 
+    [HttpPost]
     public IActionResult CookieSettings(bool acceptAnalyticsCookies, string returnUrl)
     {
         var options = new CookieOptions
