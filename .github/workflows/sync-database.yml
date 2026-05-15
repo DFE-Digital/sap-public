@@ -186,9 +186,10 @@ jobs:
                 done
               fi
 
-              export PGOPTIONS='-c tcp_keepalives_idle=60 -c tcp_keepalives_interval=30 -c tcp_keepalives_count=10'
-
-              ./konduit.sh ${NAMESPACE_ARG} -t 7200 -x sap-public-${{ env.DEPLOY_ENV }} -- pg_dump -E utf8 --clean --compress=6 --if-exists --no-owner --verbose --no-password $EXCLUDE_OPTS -f "${BACKUP_FILE}"
+              export PGOPTIONS='-c tcp_keepalives_idle=60 -c tcp_keepalives_interval=30 -c tcp_keepalives_count=10'              
+              export PGSSLMODE=require
+    
+              ./konduit.sh ${NAMESPACE_ARG} -t 9000 -x sap-public-${{ env.DEPLOY_ENV }} -- pg_dump -E utf8 --clean --compress=6 --if-exists --no-owner --verbose --no-password $EXCLUDE_OPTS -f "${BACKUP_FILE}"
               az storage azcopy blob upload --container database-backup --source "${BACKUP_FILE}"
             fi
         - name: Backup Summary
