@@ -34,7 +34,10 @@ public class CookiesController : Controller
             options
         );
 
-        TempData.Set(CookiesConfirmation, true);
+        if (string.IsNullOrEmpty(returnUrl))
+        {
+            TempData.Set(CookiesConfirmation, true);
+        }
 
         if(!acceptAnalyticsCookies)
         {

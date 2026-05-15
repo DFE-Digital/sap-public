@@ -74,8 +74,8 @@ public class CookiesControllerTests
         Assert.Contains(expectedValue, setCookieHeader);
         Assert.Equal(redirectUrl, result.Url);
 
-        var showConfirmationBanner = _controller.TempData.Get<bool>(Constants.Constants.CookiesConfirmation);
-        Assert.True(showConfirmationBanner);
+        var showConfirmationBanner = _controller.TempData.Get<bool>(CookiesConfirmation);
+        Assert.False(showConfirmationBanner);
     }
 
     [Theory]
