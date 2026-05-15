@@ -215,7 +215,7 @@ jobs:
             --permissions r \
             --expiry "$EXPIRY" \
             --auth-mode login \
-            -as-user \
+            --as-user \
             -o tsv)
             
             URL="https://${STORAGE_ACCOUNT_NAME}.blob.core.windows.net/database-backup/${BACKUP_FILE}.gz?${SAS}"
