@@ -224,11 +224,9 @@ jobs:
             fi
 
             URL="https://${STORAGE_ACCOUNT_NAME}.blob.core.windows.net/database-backup/${BACKUP_FILE}?${SAS}"
-           
-        - name: Save SAS URL to file
-          run: |
+
             echo "$URL" > sas_url.txt
-    
+
         - uses: actions/upload-artifact@v4
           with:
             name: backup-sas-url
