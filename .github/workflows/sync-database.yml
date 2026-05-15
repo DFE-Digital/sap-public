@@ -61,7 +61,9 @@ jobs:
     environment:
       name: ${{ inputs.source-environment }}
     env:
-      DEPLOY_ENV: ${{ inputs.source-environment }}     
+      DEPLOY_ENV: ${{ inputs.source-environment }}  
+    outputs:     
+      backup-file: ${{ steps.set-outputs.outputs.backup_file }}
     
     steps:
         - uses: actions/checkout@v4
@@ -233,6 +235,12 @@ jobs:
             name: backup-sas-url
             path: sas_url.txt
 
+        - name: Set outputs for restore job
+          id: set-outputs
+          run: |
+              echo "backup_file=${{ env.BACKUP_FILE }}.gz" >> $GITHUB_OUTPUT
+    
+
     
   enable-maintenance:
     name: Enable maintenance mode
@@ -272,7 +280,8 @@ jobs:
             tf_vars_file=${{ env.TF_VARS_PATH }}/${{ inputs.target-environment }}.tfvars.json
             echo "CLUSTER=$(jq -r '.cluster' ${tf_vars_file})" >> $GITHUB_ENV
             echo "NAMESPACE=$(jq -r '.namespace' ${tf_vars_file})" >> $GITHUB_ENV
-            echo "DB_SERVER=${AZURE_RESOURCE_PREFIX}-${SERVICE_SHORT}-${CONFIG_SHORT}-pg" >> $GITHUB_ENV          
+            echo "DB_SERVER=${AZURE_RESOURCE_PREFIX}-${SERVICE_SHORT}-${CONFIG_SHORT}-pg" >> $GITHUB_ENV     
+            echo "FILENAME=${{ steps.set-outputs.outputs.backup_file }}" >> $GITHUB_ENV
 
       - name: Setup postgres client
         uses: DFE-Digital/github-actions/install-postgres-client@master
@@ -331,21 +340,22 @@ jobs:
       
       - name: Download backup via SAS
         run: |
-          curl -L "${{ steps.sas.outputs.url }}" -o backup.sql.gz
+          curl -L "${{ steps.sas.outputs.url }}" -o ${{ env.FILENAME }}
 
-      
-      - name: Decompress
-        run: gunzip -f backup.sql.gz
-
-
+ 
       - name: Restore backup to aks env database
         shell: bash
         run: |
             if [[ -n "${{ env.NAMESPACE }}" ]]; then
               NAMESPACE_ARG="-n ${{ env.NAMESPACE }}"
             fi           
+              
+            COMPRESS=$( file --brief ${{ env.FILENAME }} | grep -ic compressed || true )
+            if [[ $COMPRESS -gt 0 ]]; then
+              COMPRESS_ARG=-c
+            fi
 
-            ./konduit.sh ${NAMESPACE_ARG} -i backup.sql -t 7200 -x ${{ env.SERVICE_NAME }}-${{ inputs.target-environment }} -- psql
+            ./konduit.sh ${NAMESPACE_ARG} -i ${{ env.FILENAME }} ${COMPRESS_ARG} -t 7200 -x ${{ env.SERVICE_NAME }}-${{ inputs.target-environment }} -- psql
 
       - name: Restore Summary
         if: success()
