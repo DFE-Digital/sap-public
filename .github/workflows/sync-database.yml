@@ -324,11 +324,6 @@ jobs:
             kubelogin convert-kubeconfig -l $AAD_LOGIN_METHOD
             curl -s https://raw.githubusercontent.com/DFE-Digital/teacher-services-cloud/main/scripts/konduit.sh -o ./konduit.sh
             chmod +x ./konduit.sh
-
-            
-      - uses: actions/download-artifact@v4
-        with:
-          name: backup-sas-url
           
       - name: Read SAS URL
         id: sas
