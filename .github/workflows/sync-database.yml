@@ -212,7 +212,7 @@ jobs:
             SAS=$(az storage blob generate-sas \
             --account-name "$STORAGE_ACCOUNT_NAME" \
             --container-name "database-backup" \
-            --name "$BACKUP_FILE.gz" \
+            --name "$BACKUP_FILE" \
             --permissions r \
             --expiry "$EXPIRY" \
             --auth-mode login \
@@ -226,11 +226,13 @@ jobs:
             fi
 
 
-            URL="https://${STORAGE_ACCOUNT_NAME}.blob.core.windows.net/database-backup/${BACKUP_FILE}.gz?${SAS}"
+            URL="https://${STORAGE_ACCOUNT_NAME}.blob.core.windows.net/database-backup/${BACKUP_FILE}?${SAS}"
                         
-            echo "URL generated (length: ${#URL})"
-            
-            echo "sas_url=$URL" >> $GITHUB_OUTPUT       
+            echo "URL generated (length: ${#URL})"            
+
+            echo "sas_url<<EOF" >> $GITHUB_OUTPUT
+            echo "$URL" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
     
   enable-maintenance:
     name: Enable maintenance mode
