@@ -322,7 +322,7 @@ jobs:
               NAMESPACE_ARG="-n ${{ env.NAMESPACE }}"
             fi           
 
-            ./konduit.sh ${NAMESPACE_ARG} -i backup.sql t 7200 -x ${{ inputs.app-name }} -- psql
+            ./konduit.sh ${NAMESPACE_ARG} -i backup.sql -t 7200 -x ${{ inputs.app-name }} -- psql
 
       - name: Restore Summary
         if: success()
