@@ -64,6 +64,7 @@ jobs:
       DEPLOY_ENV: ${{ inputs.source-environment }}  
     outputs:     
       backup-file: ${{ steps.set-outputs.outputs.backup_file }}
+      sas-url: ${{ steps.set-outputs.outputs.sas_url }}
     
     steps:
         - uses: actions/checkout@v4
@@ -228,18 +229,14 @@ jobs:
 
             URL="https://${STORAGE_ACCOUNT_NAME}.blob.core.windows.net/database-backup/${BACKUP_FILE_GZ}?${SAS}"
 
-            echo "$URL" > sas_url.txt
-
-        - uses: actions/upload-artifact@v4
-          with:
-            name: backup-sas-url
-            path: sas_url.txt
-            retention-days: 1
+            echo "::add-mask::$URL" 
+            echo "url=$URL" >> $GITHUB_OUTPUT
 
         - name: Set outputs for restore job
           id: set-outputs
           run: |
               echo "backup_file=${{ env.BACKUP_FILE }}.gz" >> $GITHUB_OUTPUT
+              echo "sas_url=${{ steps.sas.outputs.url }}" >> $GITHUB_OUTPUT
     
 
     
@@ -336,7 +333,7 @@ jobs:
       - name: Read SAS URL
         id: sas
         run: |
-            URL=$(cat sas_url.txt)
+            URL="${{ needs.backup.outputs.sas.url }}"
             echo "::add-mask::$URL"
             echo "url=$URL" >> $GITHUB_OUTPUT
       
