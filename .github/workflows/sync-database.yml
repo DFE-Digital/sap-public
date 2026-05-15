@@ -206,11 +206,12 @@ jobs:
           id: sas
           run: |
             EXPIRY=$(date -u -d "15 minutes" '+%Y-%m-%dT%H:%MZ')
+            BACKUP_FILE_GZ="${BACKUP_FILE}.gz"
 
             SAS=$(az storage blob generate-sas \
             --account-name "$STORAGE_ACCOUNT_NAME" \
             --container-name "database-backup" \
-            --name "$BACKUP_FILE" \
+            --name "$BACKUP_FILE_GZ" \
             --permissions r \
             --expiry "$EXPIRY" \
             --auth-mode login \
@@ -223,7 +224,7 @@ jobs:
                 exit 1
             fi
 
-            URL="https://${STORAGE_ACCOUNT_NAME}.blob.core.windows.net/database-backup/${BACKUP_FILE}?${SAS}"
+            URL="https://${STORAGE_ACCOUNT_NAME}.blob.core.windows.net/database-backup/${$BACKUP_FILE_GZ}?${SAS}"
 
             echo "$URL" > sas_url.txt
 
@@ -325,6 +326,7 @@ jobs:
         id: sas
         run: |
             URL=$(cat sas_url.txt)
+            echo "::add-mask::$URL"
             echo "url=$URL" >> $GITHUB_OUTPUT
       
       - name: Download backup via SAS
