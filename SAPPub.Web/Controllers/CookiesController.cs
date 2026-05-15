@@ -9,6 +9,7 @@ public class CookiesController : Controller
         return View();
     }
 
+    [HttpPost]
     public IActionResult CookieSettings(bool acceptAnalyticsCookies, string returnUrl)
     {
         var options = new CookieOptions
