@@ -288,7 +288,7 @@ jobs:
             COMPRESS_ARG=-c
           fi
 
-          ./konduit.sh ${NAMESPACE_ARG} -i ${{ env.FILENAME }} ${COMPRESS_ARG} -t 28800 -x ${{ env.SERVICE_NAME }}-${{ inputs.target-environment }} -- psql
+          ./konduit.sh ${NAMESPACE_ARG} -i ${{ env.FILENAME }} ${COMPRESS_ARG} -t 28800 -x ${{ env.SERVICE_NAME }}-${{ inputs.target-environment }} -- pg_restore
 
       - name: Restore Summary
         if: success()
