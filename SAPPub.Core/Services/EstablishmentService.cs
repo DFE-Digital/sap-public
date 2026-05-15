@@ -15,11 +15,6 @@ namespace SAPPub.Core.Services
             _establishmentRepository = establishmentRepository ?? throw new ArgumentNullException(nameof(establishmentRepository));
         }
 
-        public Task<IEnumerable<Establishment>> GetAllEstablishmentsAsync(CancellationToken ct = default)
-        {
-            return _establishmentRepository.GetAllEstablishmentsAsync(ct);
-        }
-
         public Task<IEnumerable<Establishment>> GetEstablishmentsAsync(int page, int take, CancellationToken ct = default)
         {
             return _establishmentRepository.GetEstablishmentsAsync(page, take, ct);
