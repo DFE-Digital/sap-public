@@ -39,7 +39,7 @@ on:
         - 'true'
      backup-file:
             description: |
-              Backup file name (without extension). Default is sappub_[source-environment]_[target-environment]_YYYY-MM-DD. (Optional)
+              Backup file name (without extension). Default is sappub_[source-environment]_[target-environment]_YYYY-MM-DD.sql. (Optional)
             required: false
             type: string
             default: default
@@ -62,11 +62,8 @@ jobs:
       name: ${{ inputs.source-environment }}
     env:
       DEPLOY_ENV: ${{ inputs.source-environment }}
-    outputs:
-      storage-account-name: ${{ steps.set-outputs.outputs.storage_account_name }}
-      resource-group-name: ${{ steps.set-outputs.outputs.resource_group_name }}
-      backup-file: ${{ steps.set-outputs.outputs.backup_file }}
-     
+    outputs:      
+      backup-sas-url: ${{ steps.sas.outputs.sas_url }}     
     
     steps:
         - uses: actions/checkout@v4
@@ -87,9 +84,9 @@ jobs:
             echo "STORAGE_ACCOUNT_NAME=${AZURE_RESOURCE_PREFIX}sappubdbbkp${CONFIG_SHORT}sa" >> $GITHUB_ENV
             TODAY=$(date +"%F")
             if [ "${{ inputs.backup-file }}" == "default" ]; then
-              BACKUP_FILE="sappub_${{ inputs.source-environment }}_${{ inputs.target-environment }}_${TODAY}"
+              BACKUP_FILE="sappub_${{ inputs.source-environment }}_${{ inputs.target-environment }}_${TODAY}.sql"
             else
-              BACKUP_FILE="${{ inputs.backup-file }}"
+              BACKUP_FILE="${{ inputs.backup-file }}.sql"
             fi
             echo "BACKUP_FILE=${BACKUP_FILE}" >> $GITHUB_ENV
             GATEWAY_TABLES="public.gateway_*"
@@ -201,13 +198,25 @@ jobs:
             echo "  AT : ${NOW}" >> $GITHUB_STEP_SUMMARY
             echo '  STORAGE ACCOUNT: ${{ inputs.storage-account }}' >> $GITHUB_STEP_SUMMARY
             echo "  FILENAME: ${{ env.BACKUP_FILE }}.gz" >> $GITHUB_STEP_SUMMARY
-
-        - name: Set outputs for restore job
-          id: set-outputs
+        
+        
+        - name: Generate SAS URL
+          id: sas
           run: |
-              echo "storage_account_name=${{ env.STORAGE_ACCOUNT_NAME }}" >> $GITHUB_OUTPUT
-              echo "resource_group_name=${{ env.RESOURCE_GROUP_NAME }}" >> $GITHUB_OUTPUT
-              echo "backup_file=${{ env.BACKUP_FILE }}.gz" >> $GITHUB_OUTPUT
+            EXPIRY=$(date -u -d "30 minutes" '+%Y-%m-%dT%H:%MZ')
+
+            SAS=$(az storage blob generate-sas \
+            --account-name "$STORAGE_ACCOUNT_NAME" \
+            --container-name "database-backup" \
+            --name "$BACKUP_FILE.gz" \
+            --permissions r \
+            --expiry "$EXPIRY" \
+            --auth-mode login \
+            -o tsv)
+            
+            URL="https://${STORAGE_ACCOUNT_NAME}.blob.core.windows.net/database-backup/${BACKUP_FILE}.gz?${SAS}"
+            
+            echo "sas_url=$URL" >> $GITHUB_OUTPUT       
     
   enable-maintenance:
     name: Enable maintenance mode
@@ -234,29 +243,93 @@ jobs:
       - uses: actions/checkout@v4
         name: Checkout
 
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+
+
       - name: Set environment variables
         run: |
             source global_config/${{ inputs.target-environment }}.sh
             tf_vars_file=${{ env.TF_VARS_PATH }}/${{ inputs.target-environment }}.tfvars.json
             echo "CLUSTER=$(jq -r '.cluster' ${tf_vars_file})" >> $GITHUB_ENV
             echo "NAMESPACE=$(jq -r '.namespace' ${tf_vars_file})" >> $GITHUB_ENV
-            echo "RESOURCE_GROUP_NAME=${{ needs.backup.outputs.resource-group-name }}" >> $GITHUB_ENV
-            echo "STORAGE_ACCOUNT_NAME=${{ needs.backup.outputs.storage-account-name }}" >> $GITHUB_ENV
+            echo "BACKUP_SAS_URL=${{ needs.backup.outputs.sas_url }}" >> $GITHUB_ENV
             echo "DB_SERVER=${AZURE_RESOURCE_PREFIX}-${SERVICE_SHORT}-${CONFIG_SHORT}-pg" >> $GITHUB_ENV          
-            echo "BACKUP_FILE=${{ needs.backup.outputs.backup-file }}" >> $GITHUB_ENV
-        
-      - name: Restore ${{ inputs.target-environment }} postgres
-        uses: DFE-Digital/github-actions/restore-postgres-backup@master
+
+      - name: Setup postgres client
+        uses: DFE-Digital/github-actions/install-postgres-client@master
         with:
-            storage-account: ${{ env.STORAGE_ACCOUNT_NAME }}
-            resource-group: ${{ env.RESOURCE_GROUP_NAME }}
-            app-name: ${{ env.SERVICE_NAME }}-${{ inputs.target-environment }}
-            cluster: ${{ env.CLUSTER }}
-            namespace: ${{ env.NAMESPACE }}
-            azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
-            azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-            azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-            backup-file: ${{ env.BACKUP_FILE }}
+          version: 17
+
+      - name: Install kubectl
+        uses: DFE-Digital/github-actions/set-kubectl@master
+
+      - uses: DFE-Digital/github-actions/set-kubelogin-environment@master
+        with:
+           azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+           azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+           azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Set up cluster environment variables
+        shell: bash
+        run: |
+            case ${{ env.CLUSTER }} in
+                test)
+                echo "cluster_rg=s189t01-tsc-ts-rg" >> $GITHUB_ENV
+                echo "cluster_name=s189t01-tsc-test-aks" >> $GITHUB_ENV
+                ;;
+                platform-test)
+                echo "cluster_rg=s189t01-tsc-pt-rg" >> $GITHUB_ENV
+                echo "cluster_name=s189t01-tsc-platform-test-aks" >> $GITHUB_ENV
+                ;;
+                production)
+                echo "cluster_rg=s189p01-tsc-pd-rg" >> $GITHUB_ENV
+                echo "cluster_name=s189p01-tsc-production-aks" >> $GITHUB_ENV
+                ;;
+                *)
+                echo "unknown cluster"
+                ;;
+            esac
+
+      - name: K8 setup
+        shell: bash
+        run: |
+            az aks get-credentials --overwrite-existing -g ${{ env.cluster_rg }} -n ${{ env.cluster_name }}
+            kubelogin convert-kubeconfig -l $AAD_LOGIN_METHOD
+            curl -s https://raw.githubusercontent.com/DFE-Digital/teacher-services-cloud/main/scripts/konduit.sh -o ./konduit.sh
+            chmod +x ./konduit.sh
+
+      
+      - name: Download backup via SAS
+        run: |
+          curl -L "${{ env.BACKUP_SAS_URL }}" -o backup.sql.gz
+
+      
+      - name: Decompress
+        run: gunzip backup.sql.gz
+
+
+      - name: Restore backup to aks env database
+        shell: bash
+        run: |
+            if [[ -n "${{ NAMESPACE }}" ]]; then
+              NAMESPACE_ARG="-n ${{ NAMESPACE }}"
+            fi           
+
+            ./konduit.sh ${NAMESPACE_ARG} -i backup.sql t 7200 -x ${{ inputs.app-name }} -- psql
+
+      - name: Restore Summary
+        if: success()
+        shell: bash
+        run: |
+            NOW=$(TZ=Europe/London date +"%F %R")
+            echo 'RESTORE SUCCESSFUL!' >> $GITHUB_STEP_SUMMARY
+            echo '  APP: ${{ inputs.target-environment }}' >> $GITHUB_STEP_SUMMARY
+            echo '  BACKUP FILE RESTORED: ${{ inputs.source-environment }} / database-backup / ${{ inputs.backup-file }}' >> $GITHUB_STEP_SUMMARY
+            echo "  AT : ${NOW}" >> $GITHUB_STEP_SUMMARY                  
 
   disable-maintenance:
     name: Disable maintenance mode
