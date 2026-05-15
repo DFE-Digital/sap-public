@@ -185,11 +185,8 @@ jobs:
                   EXCLUDE_OPTS="$EXCLUDE_OPTS --exclude-table=$table"
                 done
               fi
-
-              export PGOPTIONS='-c tcp_keepalives_idle=60 -c tcp_keepalives_interval=30 -c tcp_keepalives_count=10'              
-              export PGSSLMODE=require
     
-              ./konduit.sh ${NAMESPACE_ARG} -t 9000 -x sap-public-${{ env.DEPLOY_ENV }} -- pg_dump -E utf8 --clean --compress=6 --if-exists --no-owner --verbose --no-password $EXCLUDE_OPTS -f "${BACKUP_FILE}"
+              ./konduit.sh ${NAMESPACE_ARG} -t 9000 -x sap-public-${{ env.DEPLOY_ENV }} -- pg_dump "sslmode=require keepalives=1 keepalives_idle=60 keepalives_interval=30 keepalives_count=10" -E utf8 --clean --compress=6 --if-exists --no-owner --verbose --no-password $EXCLUDE_OPTS -f "${BACKUP_FILE}"
               az storage azcopy blob upload --container database-backup --source "${BACKUP_FILE}"
             fi
         - name: Backup Summary
