@@ -224,7 +224,7 @@ jobs:
                 exit 1
             fi
 
-            URL="https://${STORAGE_ACCOUNT_NAME}.blob.core.windows.net/database-backup/${$BACKUP_FILE_GZ}?${SAS}"
+            URL="https://${STORAGE_ACCOUNT_NAME}.blob.core.windows.net/database-backup/${BACKUP_FILE_GZ}?${SAS}"
 
             echo "$URL" > sas_url.txt
 
