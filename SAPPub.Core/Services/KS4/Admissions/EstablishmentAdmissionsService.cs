@@ -1,4 +1,4 @@
-﻿using SAPPub.Core.Enums;
+﻿using SAPPub.Core.Extensions;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.ServiceModels.KS4.Admissions;

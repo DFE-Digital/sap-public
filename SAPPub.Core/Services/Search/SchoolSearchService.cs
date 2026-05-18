@@ -1,4 +1,4 @@
-﻿using SAPPub.Core.Enums;
+﻿using SAPPub.Core.Extensions;
 using SAPPub.Core.Helpers;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Search;
