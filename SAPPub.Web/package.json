@@ -23,6 +23,7 @@
   },
   "description": "",
   "devDependencies": {
+    "axe-core": "^4.11.4",
     "browser-sync": "^3.0.4",
     "copyfiles": "^2.4.1",
     "gulp": "^5.0.1",

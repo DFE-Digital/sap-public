@@ -34,6 +34,7 @@ public class HomePageTests(WebApplicationSetupFixture fixture) : BasePageTest(fi
     {
         // Arrange
         await Page.GotoAsync(string.Empty);
+        await WriteAccessibilityReport("Homepage_Accessibility");
 
         // Act
         var heading = await Page.Locator("h1").TextContentAsync();
