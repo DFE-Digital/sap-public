@@ -26,7 +26,7 @@ namespace SAPPub.Core.Services
         }
 
         public async Task<Establishment> GetEstablishmentAsync(string urn, CancellationToken ct = default)
-        {           
+        {
 
             var establishment = await _establishmentRepository.GetEstablishmentAsync(urn, ct);
 

@@ -19,11 +19,11 @@ public class AdmissionsViewModel : SecondarySchoolBaseViewModel
         return new AdmissionsViewModel
         {
             URN = urn,
-            SchoolName = serviceModel?.SchoolName,
+            SchoolName = serviceModel.SchoolName,
             SchoolWebsite = serviceModel.SchoolWebsite.ToDisplayField(),
-            LASecondarySchoolAdmissionsLinkUrl = serviceModel?.LASchoolAdmissionsUrl,
-            LAName = serviceModel?.LAName ?? "Local authority",
-            IsSchoolClosed = serviceModel?.StatusCode == EstablishmentStatus.Closed
+            LASecondarySchoolAdmissionsLinkUrl = serviceModel.LASchoolAdmissionsUrl,
+            LAName = serviceModel.LAName ?? "Local authority",
+            IsSchoolClosed = serviceModel.StatusCode == EstablishmentStatus.Closed
         };
     }
 }

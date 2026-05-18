@@ -9,7 +9,7 @@ public sealed class EstablishmentAdmissionsService(
     IEstablishmentService establishmentService,
     ILaUrlsRepository laUrlsRepository) : IAdmissionsService
 {
-    public async Task<AdmissionsServiceModel?> GetAdmissionsDetailsAsync(string urn, CancellationToken ct = default)
+    public async Task<AdmissionsServiceModel> GetAdmissionsDetailsAsync(string urn, CancellationToken ct = default)
     {
         var establishment = await establishmentService.GetEstablishmentAsync(urn, ct);
 
