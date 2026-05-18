@@ -134,7 +134,7 @@ jobs:
           done
 
       - name: Upload Test Result Files
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: test-results
@@ -143,7 +143,7 @@ jobs:
 
       - name: Upload UI artifacts on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ui-test-artifacts
           path: |
@@ -165,7 +165,7 @@ jobs:
           dotnet coverage merge --reports $(find Tests -name "coverage.cobertura.xml") -f cobertura -o coverage-results/coverage.xml
 
       - name: Generate Coverage Report
-        uses: clearlyip/code-coverage-report-action@5fd5b2988f03a0e1daea14f917018f7ccef1c489 # Pinned at v6.0.1
+        uses: clearlyip/code-coverage-report-action@fa02aa40d0be0d9f93e7f23402080f5e2af26e7f # Pinned at v6.0.1
         id: code_coverage_report_action
         if: ${{ github.actor != 'dependabot[bot]'}}
         with:
