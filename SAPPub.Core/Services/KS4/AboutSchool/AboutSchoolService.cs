@@ -1,4 +1,5 @@
-﻿using SAPPub.Core.Extensions;
+﻿using SAPPub.Core.Enums;
+using SAPPub.Core.Extensions;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
@@ -38,7 +39,7 @@ public sealed class AboutSchoolService(
             ResourcedProvisionName = establishment.ResourcedProvisionName,
             EstablishmentTypeGroupId = establishment.EstablishmentTypeGroupId,
             ClosedDate = establishment.ClosedDate.ToDateOnly(),
-            StatusCode = establishment.StatusCode,
+            Status = establishment.StatusCode.ToStatus(),
             OpenDate = establishment.OpenDate.ToDateOnly(),
             OpenReasonId = establishment.OpenReasonId
         };

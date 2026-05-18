@@ -1,4 +1,6 @@
-﻿namespace SAPPub.Core.ServiceModels.KS4.AboutSchool;
+﻿using SAPPub.Core.Enums;
+
+namespace SAPPub.Core.ServiceModels.KS4.AboutSchool;
 
 public class AboutSchoolModel
 {
@@ -47,6 +49,6 @@ public class AboutSchoolModel
     public DateOnly? ClosedDate { get; set; }
     public DateOnly? OpenDate { get; set; }
 
-    public int? StatusCode { get; set; }
+    public EstablishmentStatus? Status { get; set; }
     public int? OpenReasonId { get; set; }
 }
