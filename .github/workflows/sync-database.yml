@@ -190,22 +190,12 @@ jobs:
                 ${EXCLUDE_OPTS} \
                 -f "${BACKUP_FILE}"
 
-          file "${BACKUP_FILE}"
-
-          pg_restore -l "${BACKUP_FILE}" > toc.full.list
-
-          grep -v "MATERIALIZED VIEW DATA" toc.full.list > toc.filtered.list
-
-          echo "Filtered TOC created"
-
       - name: Upload backup artifact
         uses: actions/upload-artifact@v4
         with:
           name: postgres-backup
           path: |
             ${{ env.BACKUP_FILE }}
-            toc.full.list
-            toc.filtered.list
           retention-days: 1
 
       - name: Backup Summary
@@ -351,67 +341,7 @@ jobs:
                 --disable-triggers \
                 --exit-on-error \
                 --jobs=2 \
-                --use-list=toc.filtered.list \
-                "${BACKUP_FILE}"
-
-      - name: Refresh materialized views
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          if [[ -n "${NAMESPACE:-}" ]]; then
-            NAMESPACE_ARG="-n ${NAMESPACE}"
-          fi
-
-          ./konduit.sh \
-          ${NAMESPACE_ARG:-} \
-          -q \
-          -t 28800 \
-          -x \
-          ${SERVICE_NAME}-${{ inputs.target-environment }} \
-          -- psql \
-          "-Atc SELECT schemaname || '.' || matviewname FROM pg_matviews ORDER BY 1;" \
-          > matviews.txt
-
-          if [[ ! -s matviews.txt ]]; then
-            echo "No materialized views found. Skipping refresh."
-            exit 0
-          fi
-
-          while IFS= read -r MATVIEW; do
-            [[ -z "$MATVIEW" ]] && continue
-
-          echo "Refreshing: $MATVIEW"
-
-          ./konduit.sh \
-            ${NAMESPACE_ARG:-} \
-            -q \
-            -t 28800 \
-            -x \
-            ${SERVICE_NAME}-${{ inputs.target-environment }} \
-            -- psql \
-            "-c REFRESH MATERIALIZED VIEW \"${MATVIEW}\";"
-
-            done < matviews.txt
-
-
-      - name: Analyze database
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          if [[ -n "${NAMESPACE:-}" ]]; then
-            NAMESPACE_ARG="-n ${NAMESPACE}"
-          fi
-
-          ./konduit.sh \
-            ${NAMESPACE_ARG:-} \
-            -q \
-            -t 28800 \
-            -x \
-            ${SERVICE_NAME}-${{ inputs.target-environment }} \
-            -- psql \
-            "-c ANALYZE VERBOSE;"
+                "${BACKUP_FILE}"  
 
       - name: Restore Summary
         if: success()
