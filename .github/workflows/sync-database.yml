@@ -62,7 +62,7 @@ jobs:
     
     steps:
       - uses: actions/checkout@v6
-        name: Checkout
+        Name: Checkout
 
       - uses: azure/login@v3
         with:
