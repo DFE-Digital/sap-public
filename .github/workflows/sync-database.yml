@@ -317,7 +317,7 @@ jobs:
           path: .
 
       
-      - name: Restore backup (robust with retry + split sections)
+      - name: Restore backup (with retry + split sections)
         shell: bash
         run: |
             set -euo pipefail
