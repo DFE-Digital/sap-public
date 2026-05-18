@@ -165,20 +165,16 @@ jobs:
           dotnet coverage merge --reports $(find Tests -name "coverage.cobertura.xml") -f cobertura -o coverage-results/coverage.xml
 
       - name: Generate Coverage Report
-        uses: clearlyip/code-coverage-report-action@9e2cd22e39153feba8b4477e4fefcc0b5e2727ba # Pinned at v6.0.1
-        id: code_coverage_report_action
-        if: ${{ github.actor != 'dependabot[bot]'}}
-        with:
-          filename: "coverage-results/coverage.xml"
-          fail_on_negative_difference: true
-          only_list_changed_files: true
+        run: |
+          dotnet tool install -g dotnet-report-generator-globaltool
+          reportgenerator -reports:coverage-results/coverage.xml -targetdir:./coverage -reporttypes:MarkdownSummaryGithub
 
       - name: Add Coverage PR Comment
         uses: marocchino/sticky-pull-request-comment@v3
         if: steps.code_coverage_report_action.outputs.file != '' && github.event_name == 'pull_request' && (success() || failure())
         with:
           recreate: true
-          path: code-coverage-results.md
+          path: ./coverage/SummaryGithub.md
 
   # ---------------------------
   # REFRESH DATA - Run after environment set up via deploying app. Without prior deployment, this will fail. 
