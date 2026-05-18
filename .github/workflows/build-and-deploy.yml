@@ -165,6 +165,8 @@ jobs:
           dotnet coverage merge --reports $(find Tests -name "coverage.cobertura.xml") -f cobertura -o coverage-results/coverage.xml
 
       - name: Generate Coverage Report
+        id: code_coverage_report_action
+        if: ${{ github.actor != 'dependabot[bot]'}}
         run: |
           dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.5.10
           reportgenerator -reports:coverage-results/coverage.xml -targetdir:./coverage -reporttypes:MarkdownSummaryGithub
