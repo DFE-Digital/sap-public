@@ -327,6 +327,8 @@ jobs:
             NAMESPACE_ARG="-n ${NAMESPACE}"
           fi
 
+           export PGOPTIONS='-c tcp_keepalives_idle=60 -c tcp_keepalives_interval=30 -c tcp_keepalives_count=10'
+
           ./konduit.sh \
             ${NAMESPACE_ARG:-} \
             -t 28800 \
@@ -340,7 +342,7 @@ jobs:
                 --no-acl \
                 --disable-triggers \
                 --exit-on-error \
-                --jobs=1 \
+                --jobs=4 \
                 "${BACKUP_FILE}"  
 
       - name: Restore Summary
