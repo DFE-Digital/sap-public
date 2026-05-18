@@ -340,7 +340,7 @@ jobs:
                 --no-acl \
                 --disable-triggers \
                 --exit-on-error \
-                --jobs=2 \
+                --jobs=1 \
                 "${BACKUP_FILE}"  
 
       - name: Restore Summary
