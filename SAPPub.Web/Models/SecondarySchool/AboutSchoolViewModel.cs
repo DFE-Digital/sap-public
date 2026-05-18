@@ -1,4 +1,5 @@
-﻿using SAPPub.Core.Extensions;
+﻿using SAPPub.Core.Enums;
+using SAPPub.Core.Extensions;
 using SAPPub.Core.Helpers;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Web.Helpers;
@@ -61,9 +62,9 @@ namespace SAPPub.Web.Models.SecondarySchool
         public required DisplayField<DateOnly> ClosedDate { get; set; }
         public DateOnly? OpenDate { get; set; }
 
-        public int? StatusCode { get; set; }
+        public EstablishmentStatus? StatusCode { get; set; }
 
-        public bool IsSchoolClosed => StatusCode == SchoolClosedStatusCode;
+        public bool IsSchoolClosed => StatusCode == EstablishmentStatus.Closed;
         public int? OpenReasonId { get; set; }
 
         public required DisplayField<string> RecentlyOpenedSchoolMessage { get; set; }

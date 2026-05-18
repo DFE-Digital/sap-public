@@ -1,4 +1,5 @@
 ﻿using Moq;
+using SAPPub.Core.Enums;
 using SAPPub.Core.Extensions;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
@@ -65,7 +66,7 @@ public class AboutPageTests : PageTestsBase
             Urn = "143034",
             SchoolName = "St David's Church of England Academy",
             ClosedDate = isClosed ? DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-1)) : null,
-            StatusCode = isClosed ? Constants.Constants.SchoolClosedStatusCode : Constants.Constants.SchoolClosedStatusCode + 1,
+            StatusCode = isClosed ? EstablishmentStatus.Closed : EstablishmentStatus.Open,
         };
         _about
             .Setup(service => service.GetAboutSchoolDetailsAsync(

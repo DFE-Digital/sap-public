@@ -150,7 +150,7 @@ public class SecondarySchoolControllerTests
             OfficialSixthFormId = _fakeEstablishment.OfficialSixthFormId,
             ResourcedProvisionName = _fakeEstablishment.ResourcedProvisionName,
             EstablishmentTypeGroupId = _fakeEstablishment.EstablishmentTypeGroupId,
-            StatusCode = _fakeEstablishment.StatusCode,
+            StatusCode = _fakeEstablishment.StatusCode.ToStatus(),
             ClosedDate = _fakeEstablishment.ClosedDate.ToDateOnly(),
             OpenReasonId = _fakeEstablishment.OpenReasonId,
             OpenDate = _fakeEstablishment.OpenDate.ToDateOnly()
@@ -606,7 +606,7 @@ public class SecondarySchoolControllerTests
                 SchoolWebsite: _fakeEstablishment.Website,
                 LAName: laName,
                 LASchoolAdmissionsUrl: lASchoolAdmissionsUrl,
-                StatusCode: 1
+                StatusCode: EstablishmentStatus.Open
             ));
 
         var result = await _controller.Admissions(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
@@ -646,7 +646,7 @@ public class SecondarySchoolControllerTests
                 SchoolWebsite: _fakeEstablishment.Website,
                 LAName: laName,
                 LASchoolAdmissionsUrl: lASchoolAdmissionsUrl,
-                StatusCode: 1
+                StatusCode: EstablishmentStatus.Open
             ));
 
         var result = await _controller.Admissions(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
@@ -677,12 +677,11 @@ public class SecondarySchoolControllerTests
     }
 
     [Theory]
-    [InlineData(1, false)]
-    [InlineData(2, true)]
-    [InlineData(3, false)]
-    public async Task Get_Admissions_Info_IsSchoolClosed(int statusCode, bool expectedResult)
+    [InlineData(EstablishmentStatus.Open, false)]
+    [InlineData(EstablishmentStatus.Closed, true)]
+    public async Task Get_Admissions_Info_IsSchoolClosed(EstablishmentStatus? statusCode, bool expectedResult)
     {
-        _fakeEstablishment.StatusCode = statusCode;
+        _fakeEstablishment.StatusCode = statusCode.ToStatusCode();
 
         var lASchoolAdmissionsUrl = "https://www.example.com/school-admissions";
         var laName = "Example Local Authority";
