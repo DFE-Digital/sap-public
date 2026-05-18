@@ -166,7 +166,7 @@ jobs:
 
       - name: Generate Coverage Report
         run: |
-          dotnet tool install -g dotnet-report-generator-globaltool
+          dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.5.10
           reportgenerator -reports:coverage-results/coverage.xml -targetdir:./coverage -reporttypes:MarkdownSummaryGithub
 
       - name: Add Coverage PR Comment
