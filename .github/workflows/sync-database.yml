@@ -37,6 +37,12 @@ on:
         options:
         - 'false'
         - 'true'
+     backup-file:
+            description: |
+              Backup file name (without extension). Default is sappub_[source-environment]_[target-environment]_YYYY-MM-DD.sql. (Optional)
+            required: false
+            type: string
+            default: default
 
 permissions:
   contents: write
@@ -47,7 +53,6 @@ env:
   SERVICE_NAME: sap-public
   SERVICE_SHORT: sappub
   TF_VARS_PATH: terraform/application/config
-  POSTGRES_VERSION: 17
 
 jobs:
   backup:
@@ -58,7 +63,7 @@ jobs:
     env:
       DEPLOY_ENV: ${{ inputs.source-environment }}  
     outputs:     
-      backup-file: ${{ steps.vars.outputs.backup_file }}
+      backup-file: ${{ steps.set-outputs.outputs.backup_file }}
     
     steps:
       - uses: actions/checkout@v4
@@ -69,10 +74,36 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
 
+      - name: Set environment variables
+        run: |
+          source global_config/${{ inputs.source-environment }}.sh
+          tf_vars_file=terraform/application/config/${{ inputs.source-environment }}.tfvars.json
+          echo "CLUSTER=$(jq -r '.cluster' ${tf_vars_file})" >> $GITHUB_ENV
+          echo "NAMESPACE=$(jq -r '.namespace' ${tf_vars_file})" >> $GITHUB_ENV
+          TODAY=$(date +"%F")
+          if [ "${{ inputs.backup-file }}" == "default" ]; then
+            BACKUP_FILE="sappub_${{ inputs.source-environment }}_${{ inputs.target-environment }}_${TODAY}.sql"
+          else
+            BACKUP_FILE="${{ inputs.backup-file }}.sql"
+          fi
+          echo "BACKUP_FILE=${BACKUP_FILE}" >> $GITHUB_ENV
+          GATEWAY_TABLES="public.gateway_*"
+          EXCLUDE_TABLES_INPUT="${{ inputs.exclude-tables }}"
+          if [ "${{ inputs.exclude-gateway-tables }}" = "true" ] && [ -n "${EXCLUDE_TABLES_INPUT}" ]; then
+            EXCLUDE_TABLES="${GATEWAY_TABLES} ${EXCLUDE_TABLES_INPUT}"
+          elif [ "${{ inputs.exclude-gateway-tables }}" = "true" ]; then
+            EXCLUDE_TABLES="${GATEWAY_TABLES}"
+          elif [ -n "${EXCLUDE_TABLES_INPUT}" ]; then
+            EXCLUDE_TABLES="${EXCLUDE_TABLES_INPUT}"
+          else
+            EXCLUDE_TABLES=""
+          fi
+          echo "EXCLUDE_TABLES=${EXCLUDE_TABLES}" >> $GITHUB_ENV
+
       - name: Setup postgres client
         uses: DFE-Digital/github-actions/install-postgres-client@master
         with:
-          version: ${{ env.POSTGRES_VERSION }}
+          version: 17
 
       - name: Install kubectl
         uses: DFE-Digital/github-actions/set-kubectl@master
@@ -83,117 +114,62 @@ jobs:
           azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Configure Environment
-        id: vars
-        shell: bash
-        run: |    
-          set -euo pipefail
-
-          source global_config/${{ inputs.source-environment }}.sh
-          tf_vars_file=terraform/application/config/${{ inputs.source-environment }}.tfvars.json
-
-          echo "CLUSTER=$(jq -r '.cluster' ${tf_vars_file})" >> $GITHUB_ENV
-          echo "NAMESPACE=$(jq -r '.namespace' ${tf_vars_file})" >> $GITHUB_ENV
-
-          TODAY=$(date +"%F")
-            
-          BACKUP_FILE="${SERVICE_SHORT}_${{ inputs.source-environment }}_${{ inputs.target-environment }}_${TODAY}.sql"        
-          echo "BACKUP_FILE=${BACKUP_FILE}" >> $GITHUB_ENV
-
-          echo "backup_file=${BACKUP_FILE}" >> $GITHUB_OUTPUT
-
-          EXCLUDE_TABLES=""
-
-          if [[ "${{ inputs.exclude-gateway-tables }}" == "true" ]]; then
-            EXCLUDE_TABLES="public.gateway_*"
-          fi
-
-          if [[ -n "${{ inputs.exclude-tables }}" ]]; then
-            EXCLUDE_TABLES="${EXCLUDE_TABLES} ${{ inputs.exclude-tables }}"
-          fi
-
-          echo "EXCLUDE_TABLES=${EXCLUDE_TABLES}" >> $GITHUB_ENV
-
-   
-      - name: Configure cluster connection
+      - name: Set up cluster environment variables
         shell: bash
         run: |
-          set -euo pipefail
-
-          case "${CLUSTER}" in
+          case ${{ env.CLUSTER }} in
             test)
-              CLUSTER_RG="s189t01-tsc-ts-rg"
-              CLUSTER_NAME="s189t01-tsc-test-aks"
+              echo "cluster_rg=s189t01-tsc-ts-rg" >> $GITHUB_ENV
+              echo "cluster_name=s189t01-tsc-test-aks" >> $GITHUB_ENV
               ;;
             platform-test)
-              CLUSTER_RG="s189t01-tsc-pt-rg"
-              CLUSTER_NAME="s189t01-tsc-platform-test-aks"
+              echo "cluster_rg=s189t01-tsc-pt-rg" >> $GITHUB_ENV
+              echo "cluster_name=s189t01-tsc-platform-test-aks" >> $GITHUB_ENV
               ;;
             production)
-              CLUSTER_RG="s189p01-tsc-pd-rg"
-              CLUSTER_NAME="s189p01-tsc-production-aks"
+              echo "cluster_rg=s189p01-tsc-pd-rg" >> $GITHUB_ENV
+              echo "cluster_name=s189p01-tsc-production-aks" >> $GITHUB_ENV
               ;;
             *)
-              echo "Unknown cluster: ${CLUSTER}"
-              exit 1
+              echo "unknown cluster"
               ;;
           esac
 
-          echo "CLUSTER_RG=${CLUSTER_RG}" >> $GITHUB_ENV
-          echo "CLUSTER_NAME=${CLUSTER_NAME}" >> $GITHUB_ENV
-
-      - name: Configure AKS access
+      - name: K8 setup
         shell: bash
         run: |
-          set -euo pipefail
-
-          az aks get-credentials \
-            --overwrite-existing \
-            --resource-group "$CLUSTER_RG" \
-            --name "$CLUSTER_NAME"
-
+          az aks get-credentials --overwrite-existing -g ${{ env.cluster_rg }} -n ${{ env.cluster_name }}
           kubelogin convert-kubeconfig -l $AAD_LOGIN_METHOD
+          curl -s https://raw.githubusercontent.com/DFE-Digital/teacher-services-cloud/main/scripts/konduit.sh -o ./konduit.sh
+          chmod +x ./konduit.sh
 
-          curl -sSL \
-            https://raw.githubusercontent.com/DFE-Digital/teacher-services-cloud/main/scripts/konduit.sh \
-            -o konduit.sh
-
-          chmod +x konduit.sh
-
-      - name: Create backup
+      - name: Create compressed backup for aks env database
         shell: bash
         run: |
-          set -euo pipefail
-
-          if [[ -n "$NAMESPACE" ]]; then
+          BACKUP_FILE="${BACKUP_FILE}.gz"
+          if [[ -n "${NAMESPACE}" ]]; then
             NAMESPACE_ARG="-n ${NAMESPACE}"
           fi
-
           EXCLUDE_OPTS=""
+          if [[ -n "${EXCLUDE_TABLES}" ]]; then
+            for table in ${EXCLUDE_TABLES}; do
+              [[ -z "$table" ]] && continue
+              table=$(echo "$table" | xargs)
+              EXCLUDE_OPTS="$EXCLUDE_OPTS --exclude-table=$table"
+            done
+          fi
 
-          for table in ${EXCLUDE_TABLES}; do
-            [[ -z "$table" ]] && continue
-            EXCLUDE_OPTS="${EXCLUDE_OPTS} --exclude-table=${table}"
-          done
+          export PGOPTIONS='-c tcp_keepalives_idle=60 -c tcp_keepalives_interval=30 -c tcp_keepalives_count=10'
+          export PGSSLMODE=require
 
-          ./konduit.sh \
-            ${NAMESPACE_ARG:-} \
-            -t 28800 \
-            -x ${SERVICE_NAME}-${DEPLOY_ENV} \
-            -- pg_dump \
-                --format=custom \
-                --verbose \
-                --clean \
-                --if-exists \
-                --no-owner \
-                --no-acl \
-                ${EXCLUDE_OPTS} \
-                -f "${BACKUP_FILE}"
+          ./konduit.sh ${NAMESPACE_ARG} -t 28800 -x sap-public-${{ env.DEPLOY_ENV }} -- pg_dump -E utf8 --clean --compress=6 --if-exists --no-owner --verbose --no-password $EXCLUDE_OPTS -f "${BACKUP_FILE}"
 
-      - name: Upload backup artifact
+          echo "BACKUP_FILE=${BACKUP_FILE}" >> $GITHUB_ENV
+
+      - name: Upload backup as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: postgres-backup
+          name: db-backup
           path: ${{ env.BACKUP_FILE }}
           retention-days: 1
 
@@ -207,6 +183,10 @@ jobs:
           echo "  AT : ${NOW}" >> $GITHUB_STEP_SUMMARY
           echo "  FILENAME: ${{ env.BACKUP_FILE }}" >> $GITHUB_STEP_SUMMARY
 
+      - name: Set outputs for restore job
+        id: set-outputs
+        run: |
+          echo "backup_file=${BACKUP_FILE}" >> $GITHUB_OUTPUT
 
   enable-maintenance:
     name: Enable maintenance mode
@@ -238,10 +218,19 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
 
+      - name: Set environment variables
+        run: |
+          source global_config/${{ inputs.target-environment }}.sh
+          tf_vars_file=${{ env.TF_VARS_PATH }}/${{ inputs.target-environment }}.tfvars.json
+          echo "CLUSTER=$(jq -r '.cluster' ${tf_vars_file})" >> $GITHUB_ENV
+          echo "NAMESPACE=$(jq -r '.namespace' ${tf_vars_file})" >> $GITHUB_ENV
+          echo "DB_SERVER=${AZURE_RESOURCE_PREFIX}-${SERVICE_SHORT}-${CONFIG_SHORT}-pg" >> $GITHUB_ENV
+          echo "FILENAME=${{ needs.backup.outputs.backup-file }}" >> $GITHUB_ENV
+
       - name: Setup postgres client
         uses: DFE-Digital/github-actions/install-postgres-client@master
         with:
-          version: ${{ env.POSTGRES_VERSION }}
+          version: 17
 
       - name: Install kubectl
         uses: DFE-Digital/github-actions/set-kubectl@master
@@ -252,93 +241,54 @@ jobs:
           azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Configure environment
+      - name: Set up cluster environment variables
         shell: bash
         run: |
-          set -euo pipefail
-
-          source global_config/${{ inputs.target-environment }}.sh
-          tf_vars_file=${{ env.TF_VARS_PATH }}/${{ inputs.target-environment }}.tfvars.json
-
-          echo "CLUSTER=$(jq -r '.cluster' ${tf_vars_file})" >> $GITHUB_ENV
-          echo "NAMESPACE=$(jq -r '.namespace' ${tf_vars_file})" >> $GITHUB_ENV
-
-
-      - name: Configure cluster connection
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          case "${CLUSTER}" in
+          case ${{ env.CLUSTER }} in
             test)
-              CLUSTER_RG="s189t01-tsc-ts-rg"
-              CLUSTER_NAME="s189t01-tsc-test-aks"
+              echo "cluster_rg=s189t01-tsc-ts-rg" >> $GITHUB_ENV
+              echo "cluster_name=s189t01-tsc-test-aks" >> $GITHUB_ENV
               ;;
             platform-test)
-              CLUSTER_RG="s189t01-tsc-pt-rg"
-              CLUSTER_NAME="s189t01-tsc-platform-test-aks"
+              echo "cluster_rg=s189t01-tsc-pt-rg" >> $GITHUB_ENV
+              echo "cluster_name=s189t01-tsc-platform-test-aks" >> $GITHUB_ENV
               ;;
             production)
-              CLUSTER_RG="s189p01-tsc-pd-rg"
-              CLUSTER_NAME="s189p01-tsc-production-aks"
+              echo "cluster_rg=s189p01-tsc-pd-rg" >> $GITHUB_ENV
+              echo "cluster_name=s189p01-tsc-production-aks" >> $GITHUB_ENV
               ;;
             *)
-              echo "Unknown cluster: ${CLUSTER}"
-              exit 1
+              echo "unknown cluster"
               ;;
           esac
 
-          echo "CLUSTER_RG=${CLUSTER_RG}" >> $GITHUB_ENV
-          echo "CLUSTER_NAME=${CLUSTER_NAME}" >> $GITHUB_ENV
-
-      - name: Configure AKS access
+      - name: K8 setup
         shell: bash
         run: |
-          set -euo pipefail
-
-          az aks get-credentials \
-            --overwrite-existing \
-            --resource-group "$CLUSTER_RG" \
-            --name "$CLUSTER_NAME"
-
+          az aks get-credentials --overwrite-existing -g ${{ env.cluster_rg }} -n ${{ env.cluster_name }}
           kubelogin convert-kubeconfig -l $AAD_LOGIN_METHOD
-
-          curl -sSL \
-            https://raw.githubusercontent.com/DFE-Digital/teacher-services-cloud/main/scripts/konduit.sh \
-            -o konduit.sh
-
-          chmod +x konduit.sh
+          curl -s https://raw.githubusercontent.com/DFE-Digital/teacher-services-cloud/main/scripts/konduit.sh -o ./konduit.sh
+          chmod +x ./konduit.sh
 
       - name: Download backup artifact
         uses: actions/download-artifact@v4
         with:
-          name: postgres-backup
+          name: db-backup
           path: .
 
-      - name: Restore backup
+      - name: Restore backup to aks env database
         shell: bash
         run: |
-          set -euo pipefail
-
-          BACKUP_FILE="${{ needs.backup.outputs.backup-file }}"
-
-          if [[ -n "${NAMESPACE:-}" ]]; then
-            NAMESPACE_ARG="-n ${NAMESPACE}"
+          if [[ -n "${{ env.NAMESPACE }}" ]]; then
+            NAMESPACE_ARG="-n ${{ env.NAMESPACE }}"
           fi
 
-          ./konduit.sh \
-            ${NAMESPACE_ARG:-} \
-            -t 28800 \
-            -x \
-            ${SERVICE_NAME}-${{ inputs.target-environment }} \
-            -- pg_restore \
-                --verbose \
-                --clean \
-                --if-exists \
-                --no-owner \
-                --no-acl \
-                --exit-on-error \
-                "${BACKUP_FILE}"
+          COMPRESS=$( file --brief ${{ env.FILENAME }} | grep -ic compressed || true )
+          if [[ $COMPRESS -gt 0 ]]; then
+            COMPRESS_ARG=-c
+          fi
+
+          ./konduit.sh ${NAMESPACE_ARG} -i ${{ env.FILENAME }} ${COMPRESS_ARG} -t 28800 -x ${{ env.SERVICE_NAME }}-${{ inputs.target-environment }} -- psql
 
       - name: Restore Summary
         if: success()
