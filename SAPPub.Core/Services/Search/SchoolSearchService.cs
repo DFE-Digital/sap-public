@@ -1,4 +1,5 @@
-﻿using SAPPub.Core.Helpers;
+﻿using SAPPub.Core.Enums;
+using SAPPub.Core.Helpers;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.ServiceModels.Common;
@@ -60,7 +61,7 @@ public class SchoolSearchService(ISchoolSearchIndexReader indexReader, IPostcode
             Distance = postcodeResult is not null
                     ? MappingHelper.HaversineMiles(postcodeResult.Latitude, postcodeResult.Longitude, result.Latitude, result.Longitude)
                     : null,
-            StatusCode = result.StatusCode,
+            EstablishmentStatus = result.StatusCode.ToStatus(),
             ClosedDate = result.ClosedDate
         }).Where(r => query.Location != null ? query.Distance.HasValue && r.Distance.HasValue && r.Distance.Value <= query.Distance : true).ToList();
 
@@ -74,7 +75,7 @@ public class SchoolSearchService(ISchoolSearchIndexReader indexReader, IPostcode
         var results = new SchoolSearchResultsServiceModel
         {
             Status = SchoolSearchStatus.Success,
-            PagedResponse = new PagedResponse<SchoolSearchResultServiceModel> 
+            PagedResponse = new PagedResponse<SchoolSearchResultServiceModel>
             {
                 TotalRecords = pager.TotalItems,
                 Records = pagedResults,

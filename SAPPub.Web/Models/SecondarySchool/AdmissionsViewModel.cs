@@ -23,7 +23,7 @@ public class AdmissionsViewModel : SecondarySchoolBaseViewModel
             SchoolWebsite = serviceModel.SchoolWebsite.ToDisplayField(),
             LASecondarySchoolAdmissionsLinkUrl = serviceModel.LASchoolAdmissionsUrl,
             LAName = serviceModel.LAName ?? "Local authority",
-            IsSchoolClosed = serviceModel.StatusCode == EstablishmentStatus.Closed
+            IsSchoolClosed = serviceModel.EstablishmentStatus == EstablishmentStatus.Closed
         };
     }
 }

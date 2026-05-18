@@ -66,7 +66,7 @@ public class AboutPageTests : PageTestsBase
             Urn = "143034",
             SchoolName = "St David's Church of England Academy",
             ClosedDate = isClosed ? DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-1)) : null,
-            StatusCode = isClosed ? EstablishmentStatus.Closed : EstablishmentStatus.Open,
+            Status = isClosed ? EstablishmentStatus.Closed : EstablishmentStatus.Open,
         };
         _about
             .Setup(service => service.GetAboutSchoolDetailsAsync(

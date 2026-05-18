@@ -98,7 +98,7 @@ namespace SAPPub.Web.Models.SecondarySchool
                 SenUnit = GetSenUnit(schoolDetails.ResourcedProvisionName),
                 ResourcedProvision = GetResourcedProvision(schoolDetails.ResourcedProvisionName),
                 IsLocalAuthoritySchool = schoolDetails.EstablishmentTypeGroupId.ToInt() == LocalAuthorityEstablishmentGroupTypeId,
-                StatusCode = schoolDetails.StatusCode,
+                StatusCode = schoolDetails.Status,
                 ClosedDate = schoolDetails.ClosedDate.ToDisplayField(),
                 OpenDate = schoolDetails.OpenDate,
                 OpenReasonId = schoolDetails.OpenReasonId,

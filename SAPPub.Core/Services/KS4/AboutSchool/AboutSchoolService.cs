@@ -39,7 +39,7 @@ public sealed class AboutSchoolService(
             ResourcedProvisionName = establishment.ResourcedProvisionName,
             EstablishmentTypeGroupId = establishment.EstablishmentTypeGroupId,
             ClosedDate = establishment.ClosedDate.ToDateOnly(),
-            StatusCode = establishment.StatusCode.ToStatus(),
+            Status = establishment.StatusCode.ToStatus(),
             OpenDate = establishment.OpenDate.ToDateOnly(),
             OpenReasonId = establishment.OpenReasonId
         };

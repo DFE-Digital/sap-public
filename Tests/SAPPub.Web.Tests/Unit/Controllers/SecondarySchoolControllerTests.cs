@@ -150,7 +150,7 @@ public class SecondarySchoolControllerTests
             OfficialSixthFormId = _fakeEstablishment.OfficialSixthFormId,
             ResourcedProvisionName = _fakeEstablishment.ResourcedProvisionName,
             EstablishmentTypeGroupId = _fakeEstablishment.EstablishmentTypeGroupId,
-            StatusCode = _fakeEstablishment.StatusCode.ToStatus(),
+            Status = _fakeEstablishment.StatusCode.ToStatus(),
             ClosedDate = _fakeEstablishment.ClosedDate.ToDateOnly(),
             OpenReasonId = _fakeEstablishment.OpenReasonId,
             OpenDate = _fakeEstablishment.OpenDate.ToDateOnly()
@@ -241,7 +241,7 @@ public class SecondarySchoolControllerTests
         Assert.Equal(expectedResult.PupilSex, model.PupilSex.Value);
         Assert.Equal(expectedResult.ReligiousCharacter, model.ReligiousCharacter.Value);
         Assert.Equal(expectedResult.OfficialSixthFormId, model.SixthForm.Value);
-        Assert.Equal(expectedResult.StatusCode, model.StatusCode);
+        Assert.Equal(expectedResult.Status, model.StatusCode);
         Assert.False(model.ClosedDate.IsAvailable);
         Assert.False(model.IsLocalAuthoritySchool);
         Assert.Equal(2, model.RouteAttributes.Count);
@@ -289,7 +289,7 @@ public class SecondarySchoolControllerTests
         Assert.Equal(NotAvailable, model.PupilSex.DisplayText());
         Assert.Equal(NotAvailable, model.ReligiousCharacter.DisplayText());
         Assert.Equal(NotAvailable, model.SixthForm.DisplayText());
-        Assert.Equal(expectedResult.StatusCode, model.StatusCode);
+        Assert.Equal(expectedResult.Status, model.StatusCode);
         Assert.False(model.ClosedDate.IsAvailable);
         Assert.False(model.IsLocalAuthoritySchool);
         Assert.Equal(2, model.RouteAttributes.Count);
@@ -606,7 +606,7 @@ public class SecondarySchoolControllerTests
                 SchoolWebsite: _fakeEstablishment.Website,
                 LAName: laName,
                 LASchoolAdmissionsUrl: lASchoolAdmissionsUrl,
-                StatusCode: EstablishmentStatus.Open
+                EstablishmentStatus: EstablishmentStatus.Open
             ));
 
         var result = await _controller.Admissions(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
@@ -646,7 +646,7 @@ public class SecondarySchoolControllerTests
                 SchoolWebsite: _fakeEstablishment.Website,
                 LAName: laName,
                 LASchoolAdmissionsUrl: lASchoolAdmissionsUrl,
-                StatusCode: EstablishmentStatus.Open
+                EstablishmentStatus: EstablishmentStatus.Open
             ));
 
         var result = await _controller.Admissions(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
@@ -693,7 +693,7 @@ public class SecondarySchoolControllerTests
                 SchoolWebsite: _fakeEstablishment.Website,
                 LAName: laName,
                 LASchoolAdmissionsUrl: lASchoolAdmissionsUrl,
-                StatusCode: statusCode
+                EstablishmentStatus: statusCode
             ));
 
         var result = await _controller.Admissions(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;

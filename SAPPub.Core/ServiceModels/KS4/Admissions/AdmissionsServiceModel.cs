@@ -7,5 +7,5 @@ public record AdmissionsServiceModel(
     string? SchoolWebsite,
     string? LAName,
     string? LASchoolAdmissionsUrl,
-    EstablishmentStatus? StatusCode
+    EstablishmentStatus? EstablishmentStatus
 );

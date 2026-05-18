@@ -49,6 +49,6 @@ public class AboutSchoolModel
     public DateOnly? ClosedDate { get; set; }
     public DateOnly? OpenDate { get; set; }
 
-    public EstablishmentStatus? StatusCode { get; set; }
+    public EstablishmentStatus? Status { get; set; }
     public int? OpenReasonId { get; set; }
 }
