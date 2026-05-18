@@ -165,7 +165,7 @@ jobs:
           dotnet coverage merge --reports $(find Tests -name "coverage.cobertura.xml") -f cobertura -o coverage-results/coverage.xml
 
       - name: Generate Coverage Report
-        uses: clearlyip/code-coverage-report-action@fa02aa40d0be0d9f93e7f23402080f5e2af26e7f # Pinned at v6.0.1
+        uses: clearlyip/code-coverage-report-action@9e2cd22e39153feba8b4477e4fefcc0b5e2727ba # Pinned at v6.0.1
         id: code_coverage_report_action
         if: ${{ github.actor != 'dependabot[bot]'}}
         with:
