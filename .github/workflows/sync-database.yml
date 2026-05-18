@@ -364,32 +364,36 @@ jobs:
           fi
 
           ./konduit.sh \
+          ${NAMESPACE_ARG:-} \
+          -q \
+          -t 28800 \
+          -x \
+          ${SERVICE_NAME}-${{ inputs.target-environment }} \
+          -- psql \
+          "-Atc SELECT schemaname || '.' || matviewname FROM pg_matviews ORDER BY 1;" \
+          > matviews.txt
+
+          if [[ ! -s matviews.txt ]]; then
+            echo "No materialized views found. Skipping refresh."
+            exit 0
+          fi
+
+          while IFS= read -r MATVIEW; do
+            [[ -z "$MATVIEW" ]] && continue
+
+          echo "Refreshing: $MATVIEW"
+
+          ./konduit.sh \
             ${NAMESPACE_ARG:-} \
             -q \
             -t 28800 \
             -x \
             ${SERVICE_NAME}-${{ inputs.target-environment }} \
             -- psql \
-            "-Atc SELECT schemaname || '.' || matviewname FROM pg_matviews WHERE schemaname='public';" \
-            > matviews.txt
+            "-c REFRESH MATERIALIZED VIEW \"${MATVIEW}\";"
 
-          grep -E '^[a-zA-Z0-9_]+\.[a-zA-Z0-9_]+$' \
-            matviews.txt \
-            > matviews.cleaned.txt
+            done < matviews.txt
 
-          while read -r MATVIEW; do
-            echo "Refreshing ${MATVIEW}"
-
-            ./konduit.sh \
-              ${NAMESPACE_ARG:-} \
-              -q \
-              -t 28800 \
-              -x \
-              ${SERVICE_NAME}-${{ inputs.target-environment }} \
-              -- psql \
-              "-c REFRESH MATERIALIZED VIEW ${MATVIEW};"
-
-          done < matviews.cleaned.txt
 
       - name: Analyze database
         shell: bash
@@ -407,7 +411,7 @@ jobs:
             -x \
             ${SERVICE_NAME}-${{ inputs.target-environment }} \
             -- psql \
-            "-vON_ERROR_STOP=1 -c ANALYZE VERBOSE;"
+            "-c ANALYZE VERBOSE;"
 
       - name: Restore Summary
         if: success()
