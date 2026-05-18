@@ -369,8 +369,7 @@ jobs:
             -x \
             ${SERVICE_NAME}-${{ inputs.target-environment }} \
             -- psql \
-              -At \
-              -c "SELECT schemaname || '.' || matviewname FROM pg_matviews WHERE schemaname='public';" \
+            "-Atc SELECT schemaname || '.' || matviewname FROM pg_matviews WHERE schemaname='public';" \
             > matviews.txt
 
           while read -r MATVIEW; do
@@ -382,8 +381,7 @@ jobs:
               -x \
               ${SERVICE_NAME}-${{ inputs.target-environment }} \
               -- psql \
-                  -v ON_ERROR_STOP=1 \
-                  -c "REFRESH MATERIALIZED VIEW ${MATVIEW};"
+              "-c REFRESH MATERIALIZED VIEW ${MATVIEW};"
 
           done < matviews.txt
 
