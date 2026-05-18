@@ -61,9 +61,10 @@ jobs:
       backup-file: ${{ steps.vars.outputs.backup_file }}
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+        Name: Checkout
 
-      - uses: azure/login@v2
+      - uses: azure/login@v3
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
@@ -191,7 +192,7 @@ jobs:
                 -f "${BACKUP_FILE}"
 
       - name: Upload backup artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: postgres-backup
           path: |
@@ -230,10 +231,10 @@ jobs:
     needs: [enable-maintenance, backup]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         name: Checkout
 
-      - uses: azure/login@v2
+      - uses: azure/login@v3
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
@@ -311,7 +312,7 @@ jobs:
           chmod +x konduit.sh
 
       - name: Download backup artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: postgres-backup
           path: .
