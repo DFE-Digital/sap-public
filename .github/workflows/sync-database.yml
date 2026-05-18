@@ -402,12 +402,12 @@ jobs:
 
           ./konduit.sh \
             ${NAMESPACE_ARG:-} \
+            -q \
             -t 28800 \
             -x \
             ${SERVICE_NAME}-${{ inputs.target-environment }} \
             -- psql \
-                -v ON_ERROR_STOP=1 \
-                -c "ANALYZE VERBOSE;"
+            "-vON_ERROR_STOP=1 -c ANALYZE VERBOSE;"
 
       - name: Restore Summary
         if: success()
