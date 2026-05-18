@@ -47,7 +47,7 @@ env:
   SERVICE_NAME: sap-public
   SERVICE_SHORT: sappub
   TF_VARS_PATH: terraform/application/config
-  POSTGRES_VERSION: 16
+  POSTGRES_VERSION: 17
 
 jobs:
   backup:
