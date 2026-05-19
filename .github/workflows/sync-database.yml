@@ -160,7 +160,7 @@ jobs:
 
           chmod +x konduit.sh
 
-      - name: Create backup
+      - name: Create backup (with retry)
         shell: bash
         run: |
           set -euo pipefail
@@ -170,25 +170,71 @@ jobs:
           fi
 
           EXCLUDE_OPTS=""
-
           for table in ${EXCLUDE_TABLES}; do
             [[ -z "$table" ]] && continue
             EXCLUDE_OPTS="${EXCLUDE_OPTS} --exclude-table=${table}"
           done
 
-          ./konduit.sh \
-            ${NAMESPACE_ARG:-} \
-            -t 28800 \
-            -x ${SERVICE_NAME}-${DEPLOY_ENV} \
-            -- pg_dump \
-                --format=custom \
-                --verbose \
-                --clean \
-                --if-exists \
-                --no-owner \
-                --no-acl \
-                ${EXCLUDE_OPTS} \
-                -f "${BACKUP_FILE}"
+          LOG_FILE="pg_dump.log"
+          MAX_ATTEMPTS=3
+
+          run_backup () {
+            local attempt=1
+            local delay=10
+
+            while [ $attempt -le $MAX_ATTEMPTS ]; do
+              echo "=============================="
+              echo "Backup attempt $attempt/$MAX_ATTEMPTS"
+              echo "=============================="
+
+              set +e
+              ./konduit.sh \
+                ${NAMESPACE_ARG:-} \
+                -t 28800 \
+                -x ${SERVICE_NAME}-${DEPLOY_ENV} \
+                -- pg_dump \
+                    --format=custom \
+                    --verbose \
+                    --clean \
+                    --if-exists \
+                    --no-owner \
+                    --no-acl \
+                    ${EXCLUDE_OPTS} \
+                    -f "${BACKUP_FILE}" \
+                2>&1 | tee "$LOG_FILE"
+
+              exit_code=${PIPESTATUS[0]}
+              set -e
+
+              if [ $exit_code -eq 0 ]; then
+                echo "Backup succeeded"
+                return 0
+              fi
+
+              # Detect transient connection issues
+              if grep -Eqi \
+                "SSL error: unexpected eof|connection to server was lost|server closed the connection unexpectedly|could not receive data from server|EOF detected|connection reset" \
+                "$LOG_FILE"; then
+
+                echo "Transient connection drop detected during backup"
+                echo "Retrying in ${delay}s..."
+                sleep $delay
+
+                delay=$((delay * 2))
+                if [ $delay -gt 120 ]; then delay=120; fi
+
+                attempt=$((attempt + 1))
+              else
+                echo "Non-transient error during backup"
+                exit $exit_code
+              fi
+            done
+
+            echo "Backup failed after $MAX_ATTEMPTS attempts"
+            exit 1
+          }
+
+          run_backup
 
       - name: Upload backup artifact
         uses: actions/upload-artifact@v7
