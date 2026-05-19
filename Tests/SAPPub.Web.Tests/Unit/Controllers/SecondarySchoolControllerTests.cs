@@ -156,7 +156,8 @@ public class SecondarySchoolControllerTests
             Status = _fakeEstablishment.StatusCode.ToStatus(),
             ClosedDate = _fakeEstablishment.ClosedDate.ToDateOnly(),
             OpenReasonId = _fakeEstablishment.OpenReasonId,
-            OpenDate = _fakeEstablishment.OpenDate.ToDateOnly()
+            OpenDate = _fakeEstablishment.OpenDate.ToDateOnly(),
+            PredecessorLinkUrns = new List<string> { "123457", "123458" }
         };
     }
 
@@ -209,7 +210,7 @@ public class SecondarySchoolControllerTests
     }
 
     [Fact]
-    public async Task Get_AboutSchool_Info_ReturnsOk()
+    public async Task Get_AboutSchool_Info_ReturnsExpected()
     {
         var expectedResult = SchoolDetails();
 
@@ -250,6 +251,8 @@ public class SecondarySchoolControllerTests
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(expectedResult.Urn, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(TextHelpers.CleanForUrl(expectedResult.SchoolName), model.RouteAttributes[RouteConstants.SchoolName]);
+        Assert.Equal(expectedResult.OpenReasonId, model.OpenReasonId);
+        Assert.True(expectedResult.PredecessorLinkUrns!.OrderBy(x => x).SequenceEqual(model.PredecessorUrns!.OrderBy(x => x))); // cml todo - I think there's a more obvious way than this
     }
 
     [Fact]

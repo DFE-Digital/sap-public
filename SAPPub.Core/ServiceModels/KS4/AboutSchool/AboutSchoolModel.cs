@@ -51,4 +51,5 @@ public class AboutSchoolModel
 
     public EstablishmentStatus? Status { get; set; }
     public int? OpenReasonId { get; set; }
+    public IList<string>? PredecessorLinkUrns { get; set; } // TODO  probably encapsulate some of this predecessor/successor logic in a separate model/class
 }

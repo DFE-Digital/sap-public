@@ -1,5 +1,6 @@
 ﻿using Moq;
 using SAPPub.Core.Entities;
+using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Services.KS4.AboutSchool;
 
@@ -9,6 +10,7 @@ public class AboutSchoolServiceTests
 {
     private readonly Mock<IEstablishmentService> _mockEstablishmentService;
     private readonly Mock<ILaUrlsRepository> _mockLaUrlsRepository;
+    private readonly Mock<IEstablishmentLinksRepository> _mockEstablishmentLinksRepository;
 
     private readonly AboutSchoolService _service;
 
@@ -45,10 +47,12 @@ public class AboutSchoolServiceTests
     {
         _mockEstablishmentService = new();
         _mockLaUrlsRepository = new();
+        _mockEstablishmentLinksRepository = new();
 
         _service = new AboutSchoolService(
             _mockEstablishmentService.Object,
-            _mockLaUrlsRepository.Object);
+            _mockLaUrlsRepository.Object,
+            _mockEstablishmentLinksRepository.Object);
     }
 
     [Fact]
@@ -94,5 +98,48 @@ public class AboutSchoolServiceTests
         Assert.Equal(fakeEstablishment.OfficialSixthFormId, result.OfficialSixthFormId);
         Assert.Equal(fakeEstablishment.ResourcedProvisionName, result.ResourcedProvisionName);
         Assert.Equal(fakeEstablishment.EstablishmentTypeGroupId, result.EstablishmentTypeGroupId);
+    }
+
+    [Theory]
+    [InlineData(360, true)]
+    [InlineData(2000, false)]
+    public async Task GetAboutSchoolDetailsAsync_HasPredecessors_GivenSchoolOpenedDate_ReturnsExpected(int numberOfDaysAgoSchoolOpened, bool expectedPredecessors)
+    {
+        // Arrange
+        var urn = "123456";
+        var predecessorUrn = "654321";
+        var establishment = new Establishment
+        {
+            URN = urn,
+            EstablishmentName = "Test Establishment",
+            PhaseOfEducationName = "Secondary School",
+            OpenDate = DateTime.Today.AddDays(-numberOfDaysAgoSchoolOpened).ToString("dd-MM-yyyy")
+        };
+
+        _mockEstablishmentService.Setup(s => s.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(establishment);
+        _mockEstablishmentLinksRepository.Setup(r => r.GetLinksAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<Core.Entities.EstablishmentLinks>
+                {
+                    new Core.Entities.EstablishmentLinks { Urn = urn, LinkType = "Predecessor", LinkUrn = predecessorUrn}
+                });
+
+        // Act
+        var result = await _service.GetAboutSchoolDetailsAsync(urn, CancellationToken.None);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(urn, result.Urn);
+        Assert.Equal(establishment.EstablishmentName, result.SchoolName);
+        Assert.Equal(establishment.OpenDate, result.OpenDate!.Value.ToString("dd-MM-yyyy"));
+        if (expectedPredecessors)
+        {
+            Assert.NotNull(result.PredecessorLinkUrns);
+            Assert.Contains(predecessorUrn, result.PredecessorLinkUrns);
+        }
+        else
+        {
+            Assert.Null(result.PredecessorLinkUrns);
+        }
     }
 }

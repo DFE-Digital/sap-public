@@ -1,6 +1,7 @@
 ﻿using SAPPub.Core.Enums;
 using SAPPub.Core.Extensions;
 using SAPPub.Core.Helpers;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Web.Helpers;
 using static SAPPub.Web.Constants.Constants;
@@ -69,6 +70,8 @@ namespace SAPPub.Web.Models.SecondarySchool
 
         public required DisplayField<string> RecentlyOpenedSchoolMessage { get; set; }
 
+        public List<string>? PredecessorUrns { get; set; }
+
 
         public static AboutSchoolViewModel Map(AboutSchoolModel schoolDetails)
         {
@@ -133,7 +136,7 @@ namespace SAPPub.Web.Models.SecondarySchool
 
         private static DisplayField<string> GetRecentlyOpenedSchoolMessage(int? openReasonId, DateOnly? openDate)
         {
-            if (!openDate.HasValue || !IsWithinLastThreeAcademicYears(openDate.Value))
+            if (!openDate.HasValue || !AcademicYearsHelper.IsWithinLastThreeAcademicYears(openDate.Value))
                 return DisplayField<string>.NotAvailable();
 
             var date = $" on {openDate.Value:d MMMM yyyy}";
@@ -142,17 +145,6 @@ namespace SAPPub.Web.Models.SecondarySchool
                 AcademyOpenReasonId => $"Opened as an academy{date}".ToDisplayField(),
                 _ => $"This school opened{date}".ToDisplayField()
             };
-        }
-
-        private static bool IsWithinLastThreeAcademicYears(DateOnly openDate)
-        {
-            var today = DateTime.Today;
-            var previousSept12 = (today.Month < 9 || (today.Month == 9 && today.Day < 12))
-                ? new DateTime(today.Year - 1, 9, 12)
-                : new DateTime(today.Year, 9, 12);
-
-            var cutoffDate = previousSept12.AddYears(-3);
-            return openDate.ToDateTime(TimeOnly.MinValue) >= cutoffDate;
         }
     }
 }
