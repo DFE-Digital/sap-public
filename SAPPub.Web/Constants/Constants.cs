@@ -8,5 +8,7 @@ public static class Constants
     public const string Average = "average";
     public const string NotRecorded = "Not recorded";
     public const string NotAvailable = "Not available";
-    public const int SchoolClosedStatusCode = 2;
+
+    // TempData Key Constants
+    public const string CookiesConfirmation = "CookiesConfirmation";
 }

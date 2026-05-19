@@ -38,6 +38,11 @@ data "azurerm_key_vault_secret" "gatewayalloweddays" {
   key_vault_id = data.azurerm_key_vault.app_key_vault.id
 }
 
+data "azurerm_key_vault_secret" "sentrydsn" {
+  count        = var.environment == "production" ? 1 : 0
+  name         = "SentryDsn" //Name in KeyVault
+  key_vault_id = data.azurerm_key_vault.app_key_vault.id
+}
 
 module "application_configuration" {
   source = "./vendor/modules/aks//aks/application_configuration"
@@ -64,7 +69,12 @@ module "application_configuration" {
     Gateway__AllowedDays                          = data.azurerm_key_vault_secret.gatewayalloweddays.value,
     Email__ApplicationRoot                        = data.azurerm_key_vault_secret.emailapplicationroot.value,
     Analytics__GoogleTagManagerId                 = data.azurerm_key_vault_secret.googletagmanager.value,
-    Analytics__ClarityId                          = data.azurerm_key_vault_secret.microsoftclarity.value
+    Analytics__ClarityId                          = data.azurerm_key_vault_secret.microsoftclarity.value,
+    Sentry__Dsn                                   = (
+            var.environment == "production"
+            ? data.azurerm_key_vault_secret.sentrydsn[0].value
+            : null
+          )
   }, local.federated_auth_secrets)
 
 }

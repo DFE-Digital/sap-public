@@ -31,6 +31,11 @@ public partial class Program
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Host.UseSerilog((ctx, config) => config.ReadFrom.Configuration(ctx.Configuration));
+        var sentryDsn = builder.Configuration["Sentry:Dsn"];
+        if (sentryDsn is not null)
+        {
+            builder.WebHost.UseSentry(sentryDsn);
+        }
 
         builder.Services.Configure<AnalyticsOptions>(builder.Configuration.GetSection("Analytics"));
         builder.Services.Configure<GatewayOptions>(builder.Configuration.GetSection("Gateway"));
