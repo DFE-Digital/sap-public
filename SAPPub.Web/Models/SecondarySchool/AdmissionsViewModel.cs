@@ -1,6 +1,6 @@
-﻿using SAPPub.Core.ServiceModels.KS4.Admissions;
+﻿using SAPPub.Core.Enums;
+using SAPPub.Core.ServiceModels.KS4.Admissions;
 using SAPPub.Web.Helpers;
-using static SAPPub.Web.Constants.Constants;
 
 namespace SAPPub.Web.Models.SecondarySchool;
 
@@ -19,11 +19,11 @@ public class AdmissionsViewModel : SecondarySchoolBaseViewModel
         return new AdmissionsViewModel
         {
             URN = urn,
-            SchoolName = serviceModel?.SchoolName,
+            SchoolName = serviceModel.SchoolName,
             SchoolWebsite = serviceModel.SchoolWebsite.ToDisplayField(),
-            LASecondarySchoolAdmissionsLinkUrl = serviceModel?.LASchoolAdmissionsUrl,
-            LAName = serviceModel?.LAName ?? "Local authority",
-            IsSchoolClosed = serviceModel?.StatusCode == SchoolClosedStatusCode
+            LASecondarySchoolAdmissionsLinkUrl = serviceModel.LASchoolAdmissionsUrl,
+            LAName = serviceModel.LAName ?? "Local authority",
+            IsSchoolClosed = serviceModel.EstablishmentStatus == EstablishmentStatus.Closed
         };
     }
 }

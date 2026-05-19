@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using SAPPub.Web.Controllers;
+using SAPPub.Web.Helpers;
+using static SAPPub.Web.Constants.Constants;
 
 namespace SAPPub.Web.Tests.Unit.Controllers;
 
@@ -21,6 +24,33 @@ public class CookiesControllerTests
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
+    public void Preferences_Should_Show_Cookie_Confirmation_Banner(bool showBanner)
+    {
+        //Arrange
+        var httpContext = new DefaultHttpContext();
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = httpContext
+        };
+
+        _controller.TempData = new TempDataDictionary(httpContext, new Mock<ITempDataProvider>().Object);
+
+        if (showBanner)
+        {
+            _controller.TempData.Set(CookiesConfirmation, showBanner);
+        }
+
+        //Act
+        var response = _controller.Preferences();
+
+        // Assert
+        var showConfirmationBanner = _controller.TempData.Get<bool>(CookiesConfirmation);
+        Assert.Equal(showBanner, showConfirmationBanner);
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
     public void CookieSettings_Should_Set_Cookie_And_Redirect(bool acceptCookies)
     {
         //Arrange
@@ -30,6 +60,8 @@ public class CookiesControllerTests
         {
             HttpContext = httpContext
         };
+
+        _controller.TempData = new TempDataDictionary(httpContext, new Mock<ITempDataProvider>().Object);
 
         //Act
         var response = _controller.CookieSettings(acceptCookies, redirectUrl);
@@ -41,6 +73,9 @@ public class CookiesControllerTests
         var expectedValue = acceptCookies ? "analytics_preference=true" : "analytics_preference=false";
         Assert.Contains(expectedValue, setCookieHeader);
         Assert.Equal(redirectUrl, result.Url);
+
+        var showConfirmationBanner = _controller.TempData.Get<bool>(CookiesConfirmation);
+        Assert.False(showConfirmationBanner);
     }
 
     [Theory]

@@ -1,4 +1,5 @@
-﻿using SAPPub.Core.Helpers;
+﻿using SAPPub.Core.Enums;
+using SAPPub.Core.Helpers;
 using SAPPub.Core.ServiceModels.Search.Results;
 using SAPPub.Web.Helpers;
 
@@ -13,8 +14,8 @@ public class SearchResult
     public string? ReligiousCharacter { get; set; }
     public string? GenderName { get; set; }
     public required DisplayField<DateOnly> ClosedDate { get; set; }
-    public int? StatusCode { get; set; }
-    public bool IsSchoolClosed => StatusCode == 2;
+    public EstablishmentStatus? EstablishmentStatus { get; set; }
+    public bool IsSchoolClosed => EstablishmentStatus == Core.Enums.EstablishmentStatus.Closed;
 
     public static SearchResult FromServiceModel(SchoolSearchResultServiceModel serviceModel)
     {
@@ -25,7 +26,7 @@ public class SearchResult
             Address = serviceModel.Address ?? string.Empty,
             ReligiousCharacter = serviceModel.ReligiousCharacterName ?? string.Empty,
             GenderName = serviceModel.GenderName ?? string.Empty,
-            StatusCode = serviceModel.StatusCode,
+            EstablishmentStatus = serviceModel.EstablishmentStatus,
             ClosedDate = serviceModel.ClosedDate.ToDisplayField()
         };
     }

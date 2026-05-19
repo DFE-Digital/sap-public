@@ -17,31 +17,255 @@ on:
         default: production
         type: choice
         options:
-            - review
             - test
             - production
-     excluded-tables:
-        description: Comma-separated list of tables to exclude
-        required: true
-        default: "gateway_user gateway_user_audit gateway_page_view_audit gateway_local_authority gateway_settings"
+     exclude-gateway-tables:
+        description: Exclude all gateway tables from backup
+        required: false
+        type: boolean
+        default: true
+     exclude-tables:
+        description: Additional or alternative tables to exclude from backup (space-separated list, optional)
+        required: false
+        type: string
+        default: ""
      confirm-production:
-        description: Type 'PROCEED' to confirm restoring to production
-        required: false
-        default: ''
-        type: string
-     pull-request-number:
-        description: "Pull request number (required for review environment)"
-        required: false
-        type: string
+        description: Must be set to true if restoring production
+        required: true
+        default: 'false'
+        type: choice
+        options:
+        - 'false'
+        - 'true'
+     backup-file:
+            description: |
+              Backup file name (without extension). Default is sappub_[source-environment]_[target-environment]_YYYY-MM-DD. (Optional)
+            required: false
+            type: string
+            default: default
+
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+
+env:
+  SERVICE_NAME: sap-public
+  SERVICE_SHORT: sappub
+  TF_VARS_PATH: terraform/application/config
 
 jobs:
   backup:
+    name: Backup database
     runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.source-environment }}
+    env:
+      DEPLOY_ENV: ${{ inputs.source-environment }}
+    outputs:
+      storage-account-name: ${{ steps.set-outputs.outputs.storage_account_name }}
+      resource-group-name: ${{ steps.set-outputs.outputs.resource_group_name }}
+      backup-file: ${{ steps.set-outputs.outputs.backup_file }}
+     
+    
     steps:
-      - run: echo "Backing up database from ${{ inputs.source-environment }} environment..."
+        - uses: actions/checkout@v4
+
+        - uses: azure/login@v2
+          with:
+            client-id: ${{ secrets.AZURE_CLIENT_ID }}
+            subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+            tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+
+        - name: Set environment variables
+          run: |
+            source global_config/${{ inputs.source-environment }}.sh
+            tf_vars_file=terraform/application/config/${{ inputs.source-environment }}.tfvars.json
+            echo "CLUSTER=$(jq -r '.cluster' ${tf_vars_file})" >> $GITHUB_ENV
+            echo "NAMESPACE=$(jq -r '.namespace' ${tf_vars_file})" >> $GITHUB_ENV
+            echo "RESOURCE_GROUP_NAME=${AZURE_RESOURCE_PREFIX}-sappub-${CONFIG_SHORT}-rg" >> $GITHUB_ENV
+            echo "STORAGE_ACCOUNT_NAME=${AZURE_RESOURCE_PREFIX}sappubdbbkp${CONFIG_SHORT}sa" >> $GITHUB_ENV
+            TODAY=$(date +"%F")
+            if [ "${{ inputs.backup-file }}" == "default" ]; then
+              BACKUP_FILE="sappub_${{ inputs.source-environment }}_${{ inputs.target-environment }}_${TODAY}"
+            else
+              BACKUP_FILE="${{ inputs.backup-file }}"
+            fi
+            echo "BACKUP_FILE=${BACKUP_FILE}" >> $GITHUB_ENV
+            GATEWAY_TABLES="public.gateway_*"
+            EXCLUDE_TABLES_INPUT="${{ inputs.exclude-tables }}"
+            if [ "${{ inputs.exclude-gateway-tables }}" = "true" ] && [ -n "${EXCLUDE_TABLES_INPUT}" ]; then
+              EXCLUDE_TABLES="${GATEWAY_TABLES} ${EXCLUDE_TABLES_INPUT}"
+            elif [ "${{ inputs.exclude-gateway-tables }}" = "true" ]; then
+              EXCLUDE_TABLES="${GATEWAY_TABLES}"
+            elif [ -n "${EXCLUDE_TABLES_INPUT}" ]; then
+              EXCLUDE_TABLES="${EXCLUDE_TABLES_INPUT}"
+            else
+              EXCLUDE_TABLES=""
+            fi
+            echo "EXCLUDE_TABLES=${EXCLUDE_TABLES}" >> $GITHUB_ENV
+
+        - name: Setup postgres client
+          uses: DFE-Digital/github-actions/install-postgres-client@master
+          with:
+            version: 17
+
+        - name: Install kubectl
+          uses: DFE-Digital/github-actions/set-kubectl@master
+
+        - uses: DFE-Digital/github-actions/set-kubelogin-environment@master
+          with:
+            azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+            azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+            azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+        - name: Set up cluster environment variables
+          shell: bash
+          run: |
+            case ${{ env.CLUSTER }} in
+              test)
+                echo "cluster_rg=s189t01-tsc-ts-rg" >> $GITHUB_ENV
+                echo "cluster_name=s189t01-tsc-test-aks" >> $GITHUB_ENV
+                ;;
+              platform-test)
+                echo "cluster_rg=s189t01-tsc-pt-rg" >> $GITHUB_ENV
+                echo "cluster_name=s189t01-tsc-platform-test-aks" >> $GITHUB_ENV
+                ;;
+              production)
+                echo "cluster_rg=s189p01-tsc-pd-rg" >> $GITHUB_ENV
+                echo "cluster_name=s189p01-tsc-production-aks" >> $GITHUB_ENV
+                ;;
+              *)
+                echo "unknown cluster"
+                ;;
+            esac
+
+        - name: K8 setup
+          shell: bash
+          run: |
+            az aks get-credentials --overwrite-existing -g ${{ env.cluster_rg }} -n ${{ env.cluster_name }}
+            kubelogin convert-kubeconfig -l $AAD_LOGIN_METHOD
+            curl -s https://raw.githubusercontent.com/DFE-Digital/teacher-services-cloud/main/scripts/konduit.sh -o ./konduit.sh
+            chmod +x ./konduit.sh
+
+        - name: Set Connection String
+          shell: bash
+          run: |
+            STORAGE_CONN_STR=$(az storage account show-connection-string -g ${{ env.RESOURCE_GROUP_NAME }} -n ${{ env.STORAGE_ACCOUNT_NAME }} --query 'connectionString')
+            echo "::add-mask::$STORAGE_CONN_STR"
+            echo "AZURE_STORAGE_CONNECTION_STRING=$STORAGE_CONN_STR" >> $GITHUB_ENV
+
+        - name: Create compressed backup for aks env database and Upload Backup to Azure Storage
+          shell: bash
+          run: |
+            az config set extension.use_dynamic_install=yes_without_prompt
+            az config set core.only_show_errors=true
+
+            BACKUP_FILE="${BACKUP_FILE}.gz"
+            BLOB_NAME=$(basename "$BACKUP_FILE")
+
+            echo "Checking if backup $BLOB_NAME already exists in Azure Blob Storage..."
+
+            BACKUP_EXISTS=$(az storage blob exists \
+              --container-name database-backup \
+              --name "$BLOB_NAME" \
+              --connection-string "$AZURE_STORAGE_CONNECTION_STRING" \
+              --query "exists" -o tsv)
+
+            if [ "$BACKUP_EXISTS" = "true" ]; then
+              echo "Backup $BLOB_NAME already exists. Skipping backup to avoid overwrite."
+              exit 1
+            else
+              echo "Backup does not exist. Uploading backup..."
+              if [[ -n "${NAMESPACE}" ]]; then
+                NAMESPACE_ARG="-n ${NAMESPACE}"
+              fi
+              EXCLUDE_OPTS=""
+              if [[ -n "${EXCLUDE_TABLES}" ]]; then
+                for table in ${EXCLUDE_TABLES}; do
+                  [[ -z "$table" ]] && continue
+                  table=$(echo "$table" | xargs)
+                  EXCLUDE_OPTS="$EXCLUDE_OPTS --exclude-table=$table"
+                done
+              fi
+              ./konduit.sh ${NAMESPACE_ARG} -t 7200 -x sap-public-${{ env.DEPLOY_ENV }} -- pg_dump -E utf8 --clean --compress=1 --if-exists --no-owner --verbose --no-password $EXCLUDE_OPTS -f "${BACKUP_FILE}"
+              az storage azcopy blob upload --container database-backup --source "${BACKUP_FILE}"
+            fi
+        - name: Backup Summary
+          if: success()
+          shell: bash
+          run: |
+            NOW=$(TZ=Europe/London date +"%F %R")
+            echo 'BACKUP SUCCESSFUL!' >> $GITHUB_STEP_SUMMARY
+            echo '  APP: ${{ inputs.app-name }}' >> $GITHUB_STEP_SUMMARY
+            echo "  AT : ${NOW}" >> $GITHUB_STEP_SUMMARY
+            echo '  STORAGE ACCOUNT: ${{ inputs.storage-account }}' >> $GITHUB_STEP_SUMMARY
+            echo "  FILENAME: ${{ env.BACKUP_FILE }}.gz" >> $GITHUB_STEP_SUMMARY
+
+        - name: Set outputs for restore job
+          id: set-outputs
+          run: |
+              echo "storage_account_name=${{ env.STORAGE_ACCOUNT_NAME }}" >> $GITHUB_OUTPUT
+              echo "resource_group_name=${{ env.RESOURCE_GROUP_NAME }}" >> $GITHUB_OUTPUT
+              echo "backup_file=${{ env.BACKUP_FILE }}.gz" >> $GITHUB_OUTPUT
+    
+  enable-maintenance:
+    name: Enable maintenance mode
+    uses: ./.github/workflows/maintenance.yml
+    needs: backup
+
+    with:
+        environment: ${{ inputs.target-environment }}
+        mode: enable
+    secrets:
+        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
 
   restore:
+    name: Restore database
+    if: ${{ inputs.target-environment != 'production' || (inputs.target-environment == 'production' && inputs.confirm-production == 'true' )  }}
     runs-on: ubuntu-latest
-    needs: backup
+    environment: ${{ inputs.target-environment }}
+    concurrency: deploy_${{ inputs.target-environment }}
+    needs: [enable-maintenance, backup]
+
     steps:
-      - run: echo "Restoring database to ${{ inputs.target-environment }} environment..."
+      - uses: actions/checkout@v4
+        name: Checkout
+
+      - name: Set environment variables
+        run: |
+            source global_config/${{ inputs.target-environment }}.sh
+            tf_vars_file=${{ env.TF_VARS_PATH }}/${{ inputs.target-environment }}.tfvars.json
+            echo "CLUSTER=$(jq -r '.cluster' ${tf_vars_file})" >> $GITHUB_ENV
+            echo "NAMESPACE=$(jq -r '.namespace' ${tf_vars_file})" >> $GITHUB_ENV
+            echo "RESOURCE_GROUP_NAME=${{ needs.backup.outputs.resource-group-name }}" >> $GITHUB_ENV
+            echo "STORAGE_ACCOUNT_NAME=${{ needs.backup.outputs.storage-account-name }}" >> $GITHUB_ENV
+            echo "DB_SERVER=${AZURE_RESOURCE_PREFIX}-${SERVICE_SHORT}-${CONFIG_SHORT}-pg" >> $GITHUB_ENV          
+            echo "BACKUP_FILE=${{ needs.backup.outputs.backup-file }}" >> $GITHUB_ENV
+        
+      - name: Restore ${{ inputs.target-environment }} postgres
+        uses: DFE-Digital/github-actions/restore-postgres-backup@master
+        with:
+            storage-account: ${{ env.STORAGE_ACCOUNT_NAME }}
+            resource-group: ${{ env.RESOURCE_GROUP_NAME }}
+            app-name: ${{ env.SERVICE_NAME }}-${{ inputs.target-environment }}
+            cluster: ${{ env.CLUSTER }}
+            namespace: ${{ env.NAMESPACE }}
+            azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+            azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+            azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+            backup-file: ${{ env.BACKUP_FILE }}
+
+  disable-maintenance:
+    name: Disable maintenance mode
+    uses: ./.github/workflows/maintenance.yml
+    needs: restore
+    with:
+      environment: ${{ inputs.target-environment }}
+      mode: disable
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}

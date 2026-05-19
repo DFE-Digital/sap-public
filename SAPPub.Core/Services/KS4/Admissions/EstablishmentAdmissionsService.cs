@@ -1,4 +1,5 @@
-﻿using SAPPub.Core.Interfaces.Services;
+﻿using SAPPub.Core.Extensions;
+using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.ServiceModels.KS4.Admissions;
 
@@ -8,7 +9,7 @@ public sealed class EstablishmentAdmissionsService(
     IEstablishmentService establishmentService,
     ILaUrlsRepository laUrlsRepository) : IAdmissionsService
 {
-    public async Task<AdmissionsServiceModel?> GetAdmissionsDetailsAsync(string urn, CancellationToken ct = default)
+    public async Task<AdmissionsServiceModel> GetAdmissionsDetailsAsync(string urn, CancellationToken ct = default)
     {
         var establishment = await establishmentService.GetEstablishmentAsync(urn, ct);
 
@@ -19,7 +20,7 @@ public sealed class EstablishmentAdmissionsService(
             SchoolWebsite: establishment.Website,
             LAName: laUrls?.Name,
             LASchoolAdmissionsUrl: laUrls?.LAMainUrl,
-            StatusCode: establishment.StatusCode
+            EstablishmentStatus: establishment.StatusCode.ToStatus()
         );
     }
 }

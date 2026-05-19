@@ -18,12 +18,15 @@ public class CookiePageTests(WebApplicationSetupFixture fixture) : BasePageTest(
 
         // Assert
         Assert.NotNull(response);
+        var banner = Page.Locator(".govuk-notification-banner");
+        var isBannerVisible = await banner.IsVisibleAsync();
         var cookiesYesRadio = Page.Locator("#cookies-analytics-yes");
         var cookiesNoRadio = Page.Locator("#cookies-analytics-no");
         bool isNoRadioChecked = await cookiesNoRadio.IsCheckedAsync();
         bool isYesRadioChecked = await cookiesNoRadio.IsCheckedAsync();
         Assert.False(isNoRadioChecked);
         Assert.False(isYesRadioChecked);
+        Assert.False(isBannerVisible);
 
         // Act
         await cookiesNoRadio.ClickAsync();
@@ -46,5 +49,14 @@ public class CookiePageTests(WebApplicationSetupFixture fixture) : BasePageTest(
         cookiesYesRadio = Page.Locator("#cookies-analytics-yes");
         isYesRadioChecked = await cookiesYesRadio.IsCheckedAsync();
         Assert.True(isYesRadioChecked, "The 'Yes' radio button should be selected.");
+
+        banner = Page.Locator(".govuk-notification-banner");
+        isBannerVisible = await banner.IsVisibleAsync();
+
+        var bannerElement = Page.Locator(".govuk-notification-banner__content p.govuk-notification-banner__heading");
+        var bannerText = await bannerElement.InnerTextAsync();
+
+        Assert.True(isBannerVisible);
+        Assert.Equal("You’ve set your cookie preferences.", bannerText);
     }
 }

@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sap-public-maintenance
+spec:
+  selector:
+    app: sap-public-maintenance
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
