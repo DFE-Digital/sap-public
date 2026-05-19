@@ -2,18 +2,12 @@
 {
     public class AxeResult
     {
-        public string Description { get; } = "";
+        public string Help { get; set; } = "";
 
-        public string Help { get; } = "";
+        public string Id { get; set; } = "";
 
-        public string HelpUrl { get; } = "";
-
-        public string Id { get; } = "";
-
-        public AxeImpactValue? Impact { get; }
-
-        public IList<string> Tags { get; } = [];
-
-        public IList<AxeNodeResult> Nodes { get; } = [];
+        public AxeImpactValue? Impact { get; set; }
+            
+        public IList<AxeNodeResult> Nodes { get; set; } = [];
     }
 }

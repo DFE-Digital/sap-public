@@ -1,4 +1,6 @@
-﻿namespace SAPPub.Web.Tests.UI.Infrastructure
+﻿using SAPPub.Web.Tests.UI.Helpers;
+
+namespace SAPPub.Web.Tests.UI.Infrastructure
 {
     public class WebApplicationSetupFixture : IAsyncLifetime
     {
@@ -13,6 +15,9 @@
             if (_factory.Server == null) throw new InvalidOperationException("Test Server not started");
 
             BaseUrl = _factory.ClientOptions.BaseAddress.ToString();
+
+            // remove any .md accessibility report files before starting a test run
+            AccessibilityReportHelper.CleanupExistingReports();
 
             return Task.CompletedTask;
         }

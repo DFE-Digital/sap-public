@@ -13,6 +13,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     {
         // Arrange && Act
         var response = await Page.GotoAsync(_pageUrl);
+        await WriteAccessibilityReport(nameof(SearchPage_LoadsSuccessfully));
 
         // Assert
         Assert.NotNull(response);

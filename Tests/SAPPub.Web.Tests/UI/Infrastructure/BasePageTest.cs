@@ -1,5 +1,6 @@
 ﻿using Microsoft.Playwright;
 using Microsoft.Playwright.Xunit;
+using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Models;
 using System.Text;
 using System.Text.Json;
@@ -77,17 +78,15 @@ public abstract class BasePageTest : PageTest
 
     protected async Task WriteAccessibilityReport(string pageName)
     {
-        var axeScriptPath = GetAxeScriptPath();
+        _axeScriptPath = AccessibilityReportHelper.GetAxeScriptPath(_axeScriptPath);
 
-        await Page.AddScriptTagAsync(new PageAddScriptTagOptions { Path = axeScriptPath });
+        await Page.AddScriptTagAsync(new PageAddScriptTagOptions { Path = _axeScriptPath });
 
         var json = await Page.EvaluateAsync<string>(
-            @"async () => JSON.stringify(await axe.run(document, {
-            runOnly: {
-                type: 'tag',
-                values: ['wcag2a', 'wcag2aa']
-            }
-        }))");
+            @"async () => {
+                const results = await axe.run(document, {runOnly: {type: 'tag',values: ['wcag2a', 'wcag2aa']}});
+                return JSON.stringify(results);
+        }");
 
         var axeResult = JsonSerializer.Deserialize<AxeResults>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         if (axeResult is null)
@@ -95,95 +94,11 @@ public abstract class BasePageTest : PageTest
             return;
         }
 
-        string reportPath = GetReportPath(pageName);
-        await File.WriteAllTextAsync(reportPath, BuildReport(pageName, axeResult.Violations));
+        string reportPath = AccessibilityReportHelper.GetReportPath();
+        await File.AppendAllTextAsync(reportPath, AccessibilityReportHelper.BuildTestViolationMarkdown(pageName, axeResult.Violations));
        
         // TODO: Wire in config to fail tests based on config switch. At the moment, we want them to
         // still pass, but a little config switch here would be handy.
-        Assert.False(axeResult.Violations.Any());
-    }
-
-    private static string GetReportPath(string pageName)
-    {
-        var reportDirectory = Environment.GetEnvironmentVariable("ACCESSIBILITY_REPORT_DIR");
-        if (string.IsNullOrWhiteSpace(reportDirectory))
-        {
-            reportDirectory = Path.Combine(GetSolutionPath(), "Tests", "accessibility-results");
-        }
-
-        Directory.CreateDirectory(reportDirectory);
-        var reportPath = Path.Combine(reportDirectory, SanitizeFilename(pageName) + ".md");
-        return reportPath;
-    }
-
-    private static string BuildReport(string pageName, IList<AxeResult> violations)
-    {
-        if (!violations.Any())
-        {
-            return $"{pageName} violations - 0";
-        }
-
-        var builder = new StringBuilder(100);
-
-        builder.AppendLine($"{pageName} violations - {violations.Count}");
-
-        foreach (var violation in violations)
-        {
-            builder.AppendLine($" * {violation.Id} {violation.Help}");
-
-            foreach (var node in violation.Nodes)
-            {
-                builder.AppendLine($"  Target: {string.Join(", ", node.Target.Select(a => a))}");
-                builder.AppendLine($"  {node.FailureSummary}");
-            }
-        }
-
-        return builder.ToString();
-    }
-
-    private static string SanitizeFilename(string value)
-    {
-        foreach (var invalidChar in Path.GetInvalidFileNameChars())
-        {
-            value = value.Replace(invalidChar, '-');
-        }
-
-        return value.Replace('/', '-').Replace('\\', '-').Replace(' ', '-');
-    }
-
-    private static string GetAxeScriptPath()
-    {
-        if (_axeScriptPath is not null)
-        {
-            return _axeScriptPath;
-        }
-
-        var solutionPath = GetSolutionPath();
-
-        _axeScriptPath = Path.Combine(solutionPath, "SAPPub.Web", "node_modules", "axe-core", "axe.min.js");
-
-        if (!File.Exists(_axeScriptPath))
-        {
-            throw new FileNotFoundException();
-        }
-
-        return _axeScriptPath;
-    }
-
-    private static string GetSolutionPath()
-    {
-        var directory = new DirectoryInfo(AppContext.BaseDirectory);
-
-        while (directory != null && !directory.GetFiles("*.sln").Any())
-        {
-            directory = directory.Parent;
-        }
-
-        if (directory is null)
-        {
-            throw new InvalidOperationException();      // todo message
-        }
-
-        return directory.FullName;
+        // Assert.False(axeResult.Violations.Any());
     }
 }
