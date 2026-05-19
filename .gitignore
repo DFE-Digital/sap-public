@@ -519,3 +519,4 @@ SAPPub.Web/keys/*
 #exclude any reporting csvs
 /scripts/output/*.csv
 /.github/copilot-instructions.md
+/Tests/accessibility-results

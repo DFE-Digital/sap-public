@@ -1,5 +1,6 @@
 ﻿using Microsoft.Playwright;
 using Microsoft.Playwright.Xunit;
+using SAPPub.Web.Tests.UI.Models;
 using System.Text;
 using System.Text.Json;
 
@@ -26,6 +27,7 @@ public abstract class BasePageTest : PageTest
             Locale = "en-GB",
             TimezoneId = "Europe/London",
             JavaScriptEnabled = true,
+            BypassCSP = true,               // we can't run axe for accessibility testing if CSP is active 
         };
     }
 
@@ -79,61 +81,67 @@ public abstract class BasePageTest : PageTest
 
         await Page.AddScriptTagAsync(new PageAddScriptTagOptions { Path = axeScriptPath });
 
-        var json = await Page.EvaluateAsync<string>("async () => JSON.stringify(await axe.run(document, {runonly:{ {type:'tag', values: ['wcag2a','wcag2aa']}}))");
+        var json = await Page.EvaluateAsync<string>(
+            @"async () => JSON.stringify(await axe.run(document, {
+            runOnly: {
+                type: 'tag',
+                values: ['wcag2a', 'wcag2aa']
+            }
+        }))");
 
-        using var document = JsonDocument.Parse(json);
-        var violations = document.RootElement.GetProperty("violations");
+        var axeResult = JsonSerializer.Deserialize<AxeResults>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        if (axeResult is null)
+        {
+            return;
+        }
 
+        string reportPath = GetReportPath(pageName);
+        await File.WriteAllTextAsync(reportPath, BuildReport(pageName, axeResult.Violations));
+       
+        // TODO: Wire in config to fail tests based on config switch. At the moment, we want them to
+        // still pass, but a little config switch here would be handy.
+        Assert.False(axeResult.Violations.Any());
+    }
+
+    private static string GetReportPath(string pageName)
+    {
         var reportDirectory = Environment.GetEnvironmentVariable("ACCESSIBILITY_REPORT_DIR");
         if (string.IsNullOrWhiteSpace(reportDirectory))
         {
-            reportDirectory = Path.Combine(AppContext.BaseDirectory, "accessibility-results");
+            reportDirectory = Path.Combine(GetSolutionPath(), "Tests", "accessibility-results");
         }
 
         Directory.CreateDirectory(reportDirectory);
         var reportPath = Path.Combine(reportDirectory, SanitizeFilename(pageName) + ".md");
-        await File.WriteAllTextAsync(reportPath, BuildReport(pageName, violations));
+        return reportPath;
     }
 
-    private static string BuildReport(string pageName, JsonElement violations)
+    private static string BuildReport(string pageName, IList<AxeResult> violations)
     {
-        var builder = new StringBuilder();
-        builder.AppendLine($"Accessibility report for {pageName}");
-
-        if (violations.GetArrayLength() == 0)
+        if (!violations.Any())
         {
-            builder.AppendLine("No violations found.");
-            return builder.ToString();
+            return $"{pageName} violations - 0";
         }
 
-        foreach (var violation in violations.EnumerateArray()) {
-            var violationId = violation.GetProperty("id").GetString();
-            var violationHelp = violation.GetProperty("help").GetString();  
-            builder.AppendLine($"* {violationId} {violationHelp}");
-            
-            if (!violations.TryGetProperty("nodes", out var nodes))
-            {
-                continue;
-            }
+        var builder = new StringBuilder(100);
 
-            foreach (var node in nodes.EnumerateArray())
+        builder.AppendLine($"{pageName} violations - {violations.Count}");
+
+        foreach (var violation in violations)
+        {
+            builder.AppendLine($" * {violation.Id} {violation.Help}");
+
+            foreach (var node in violation.Nodes)
             {
-                if (node.TryGetProperty("target", out var target))
-                {
-                    builder.AppendLine($"Target: {string.Join(", ", target.EnumerateArray().Select(a => a.GetString()))}");
-                }
-                if (node.TryGetProperty("failureSummary", out var failureSummary))
-                { 
-                    builder.AppendLine($"{failureSummary.ToString()}");
-                }
+                builder.AppendLine($"  Target: {string.Join(", ", node.Target.Select(a => a))}");
+                builder.AppendLine($"  {node.FailureSummary}");
             }
         }
 
         return builder.ToString();
-
     }
 
-    private string SanitizeFilename(string value)
+    private static string SanitizeFilename(string value)
     {
         foreach (var invalidChar in Path.GetInvalidFileNameChars())
         {
@@ -150,6 +158,20 @@ public abstract class BasePageTest : PageTest
             return _axeScriptPath;
         }
 
+        var solutionPath = GetSolutionPath();
+
+        _axeScriptPath = Path.Combine(solutionPath, "SAPPub.Web", "node_modules", "axe-core", "axe.min.js");
+
+        if (!File.Exists(_axeScriptPath))
+        {
+            throw new FileNotFoundException();
+        }
+
+        return _axeScriptPath;
+    }
+
+    private static string GetSolutionPath()
+    {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
 
         while (directory != null && !directory.GetFiles("*.sln").Any())
@@ -162,13 +184,6 @@ public abstract class BasePageTest : PageTest
             throw new InvalidOperationException();      // todo message
         }
 
-        _axeScriptPath = Path.Combine(directory.FullName, "SAPPub.Web", "node_modules", "axe-core", "axe.min.js");
-
-        if (!File.Exists(_axeScriptPath))
-        {
-            throw new FileNotFoundException();
-        }
-
-        return _axeScriptPath;
+        return directory.FullName;
     }
 }
