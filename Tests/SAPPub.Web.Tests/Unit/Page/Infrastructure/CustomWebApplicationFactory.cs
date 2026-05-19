@@ -9,6 +9,7 @@ using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.KS4.Absence;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
+using SAPPub.Core.Interfaces.Services.KS4.Attendance;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
@@ -49,6 +50,7 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.RemoveAll(typeof(IAdmissionsService));
                 services.RemoveAll(typeof(ISchoolSearchIndexReader));
                 services.RemoveAll(typeof(ISchoolSearchService));
+                services.RemoveAll(typeof(IAttendanceService));
                 services.AddSingleton<MockAccessor<IAboutSchoolService>>();
                 services.AddSingleton<MockAccessor<IAttainmentAndProgressService>>();
                 services.AddSingleton<MockAccessor<IEstablishmentService>>();
@@ -62,6 +64,7 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.AddSingleton<MockAccessor<IAdmissionsService>>();
                 services.AddSingleton<MockAccessor<ISchoolSearchIndexReader>>();
                 services.AddSingleton<MockAccessor<ISchoolSearchService>>();
+                services.AddSingleton<MockAccessor<IAttendanceService>>();
 
                 services.AddTransient(provider =>
                 {
@@ -107,6 +110,10 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.AddTransient(provider =>
                 {
                     return provider.GetRequiredService<MockAccessor<IAdmissionsService>>().Get()?.Object!;
+                });
+                services.AddTransient(provider =>
+                {
+                    return provider.GetRequiredService<MockAccessor<IAttendanceService>>().Get()?.Object!;
                 });
                 services.AddSingleton(provider =>
                 {
