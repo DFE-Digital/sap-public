@@ -152,7 +152,7 @@ jobs:
             **/test-artifacts/traces/**
 
       - name: Publish Test Results
-        uses: dorny/test-reporter@0c2b2aa1e0fa236d713231b2b9cfb5aa6d105fae # Pinned at v2.7.0
+        uses: dorny/test-reporter@v3
         if: always()
         with:
           reporter: 'dotnet-trx'
