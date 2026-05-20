@@ -24,6 +24,8 @@ namespace SAPPub.Web.Tests.UI.Infrastructure
 
         public async Task DisposeAsync()
         {
+            await AccessibilityReportHelper.FlushReportAsync();
+
             if (_factory != null)
             {
                 await _factory.DisposeAsync();

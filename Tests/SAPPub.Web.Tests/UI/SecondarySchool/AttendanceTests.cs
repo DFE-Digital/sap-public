@@ -14,10 +14,12 @@ public class AttendancePageTests(WebApplicationSetupFixture fixture) : BasePageT
     };
 
     [Fact]
+    [Trait("Category", "Accessibility")]
     public async Task AttendancePage_LoadsSuccessfully()
     {
         // Arrange && Act
         var response = await Page.GotoAsync(_pageUrl);
+        await WriteAccessibilityReport(nameof(AttendancePage_LoadsSuccessfully));
 
         // Assert
         Assert.NotNull(response);

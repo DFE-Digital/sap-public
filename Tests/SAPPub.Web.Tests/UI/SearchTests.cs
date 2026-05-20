@@ -9,6 +9,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     private string _pageUrl = "search";
 
     [Fact]
+    [Trait("Category", "Accessibility")]
     public async Task SearchPage_LoadsSuccessfully()
     {
         // Arrange && Act

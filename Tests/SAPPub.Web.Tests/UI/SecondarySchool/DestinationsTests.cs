@@ -14,10 +14,12 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     };
 
     [Fact]
+    [Trait("Category", "Accessibility")]
     public async Task Destinations_LoadsSuccessfully()
     {
         // Arrange && Act
         var response = await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+        await WriteAccessibilityReport(nameof(Destinations_LoadsSuccessfully));
 
         // Assert
         Assert.NotNull(response);

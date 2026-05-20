@@ -16,10 +16,12 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
     };
 
     [Fact]
+    [Trait("Category", "Accessibility")]
     public async Task AcademicPerformanceEnglishAndMathsResultsPage_LoadsSuccessfully()
     {
         // Arrange && Act
         var response = await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+        await WriteAccessibilityReport(nameof(AcademicPerformanceEnglishAndMathsResultsPage_LoadsSuccessfully));
 
         // Assert
         Assert.NotNull(response);

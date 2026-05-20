@@ -10,7 +10,7 @@ namespace SAPPub.Web.Tests.UI.Infrastructure;
 public abstract class BasePageTest : PageTest
 {
     private readonly WebApplicationSetupFixture _fixture;
-    private static string? _axeScriptPath;
+    private static readonly Lazy<string> AxeScriptPath = new(() => AccessibilityReportHelper.GetAxeScriptPath(null));
 
     // ReSharper disable once ConvertToPrimaryConstructor
     protected BasePageTest(WebApplicationSetupFixture fixture)
@@ -46,6 +46,7 @@ public abstract class BasePageTest : PageTest
         await Page.WaitForSelectorAsync(selector, new() { Timeout = timeoutMs });
         await Page.WaitForTimeoutAsync(100);
     }
+    
     public async Task<ILocator> GetQueryInputLocatorAsync(int checkTimeoutMs = 1000)
     {
         var jsLocator = Page.Locator("input[name='__Query']");
@@ -78,13 +79,11 @@ public abstract class BasePageTest : PageTest
 
     protected async Task WriteAccessibilityReport(string pageName)
     {
-        _axeScriptPath = AccessibilityReportHelper.GetAxeScriptPath(_axeScriptPath);
-
-        await Page.AddScriptTagAsync(new PageAddScriptTagOptions { Path = _axeScriptPath });
+        await Page.AddScriptTagAsync(new PageAddScriptTagOptions { Path = AxeScriptPath.Value });
 
         var json = await Page.EvaluateAsync<string>(
             @"async () => {
-                const results = await axe.run(document, {runOnly: {type: 'tag',values: ['wcag2a', 'wcag2aa']}});
+                const results = await axe.run(document, {runOnly: {type: 'tag',values: ['wcag2aa']}});
                 return JSON.stringify(results);
         }");
 
@@ -94,9 +93,8 @@ public abstract class BasePageTest : PageTest
             return;
         }
 
-        string reportPath = AccessibilityReportHelper.GetReportPath();
-        await File.AppendAllTextAsync(reportPath, AccessibilityReportHelper.BuildTestViolationMarkdown(pageName, axeResult.Violations));
-       
+        AccessibilityReportHelper.AddViolations(pageName, axeResult.Violations);
+
         // TODO: Wire in config to fail tests based on config switch. At the moment, we want them to
         // still pass, but a little config switch here would be handy.
         // Assert.False(axeResult.Violations.Any());

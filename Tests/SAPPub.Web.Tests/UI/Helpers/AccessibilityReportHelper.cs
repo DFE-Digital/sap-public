@@ -1,4 +1,5 @@
 ﻿using SAPPub.Web.Tests.UI.Models;
+using System.Collections.Concurrent;
 using System.Text;
 
 namespace SAPPub.Web.Tests.UI.Helpers
@@ -8,6 +9,7 @@ namespace SAPPub.Web.Tests.UI.Helpers
         private static readonly string COLOUR_CRITICAL = "red";
         private static readonly string COLOUR_SERIOUS = "#b8860b";
         private static readonly string MARKDOWN_FILENAME = "accessibility-violations.md";
+        private static readonly ConcurrentDictionary<string, string> ViolationReports = new();
 
         /// <summary>
         /// Used to ensure any test runs with Accessibility are kept clean.
@@ -16,11 +18,38 @@ namespace SAPPub.Web.Tests.UI.Helpers
         /// <returns></returns>
         public static void CleanupExistingReports()
         {
+            ViolationReports.Clear();
+
             var reportPath = GetReportPath();
             if (File.Exists(reportPath))
             {
                 File.Delete(reportPath);
             }
+        }
+
+        public static void AddViolations(string pageName, IList<AxeResult> violations)
+        {
+            var markdown = BuildTestViolationMarkdown(pageName, violations);
+            if (string.IsNullOrWhiteSpace(markdown))
+            {
+                return;
+            }
+
+            ViolationReports[pageName] = markdown;
+        }
+
+        public static async Task FlushReportAsync()
+        {
+
+            var reportPath = GetReportPath();
+            var markdown = BuildFinalReportMarkdown();
+
+            if (File.Exists(reportPath))
+            {
+                File.Delete(reportPath);
+            }
+
+            await File.WriteAllTextAsync(reportPath, markdown);
         }
 
         public static string GetReportPath()
@@ -102,6 +131,7 @@ namespace SAPPub.Web.Tests.UI.Helpers
 
                 foreach (var node in violation.Nodes)
                 {
+                    builder.AppendLine("");
                     builder.AppendLine($"**Target**: {string.Join(", ", node.Target.Select(a => a))}");
                     builder.AppendLine("");
                     builder.AppendLine($"{node.FailureSummary}");
@@ -110,5 +140,23 @@ namespace SAPPub.Web.Tests.UI.Helpers
             builder.AppendLine("<br/><br/>");
             return builder.ToString();
         }
+
+        private static string BuildFinalReportMarkdown()
+        {
+            if (ViolationReports.IsEmpty)
+            {
+                return string.Empty;
+            }
+
+            var builder = new StringBuilder();
+
+            foreach (var report in ViolationReports.OrderBy(a => a.Key, StringComparer.OrdinalIgnoreCase))
+            {
+                builder.Append(report.Value);
+            }
+
+            return builder.ToString();
+        }
+
     }
 }
