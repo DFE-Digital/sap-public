@@ -23,7 +23,7 @@ public class EstablishmentLinksRepository(
         var cmd = new DapperCommandBuilder()
                 .WithCommandText(sql)
                 .WithParameters(new { Urn = urn })
-                .Create(ct);
+                .Build(ct);
 
         var items = (await conn.QueryAsync<Core.Entities.EstablishmentLinks>(cmd).ConfigureAwait(false)).ToList();
         return items;

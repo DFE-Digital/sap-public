@@ -49,7 +49,7 @@ namespace SAPPub.Infrastructure.Repositories.Generic
 
             var cmd = new DapperCommandBuilder()
                     .WithCommandText(sql)
-                    .Create(ct);
+                    .Build(ct);
 
             var items = (await conn.QueryAsync<T>(cmd).ConfigureAwait(false)).ToList();
 
@@ -71,7 +71,7 @@ namespace SAPPub.Infrastructure.Repositories.Generic
 
                 var cmd = new DapperCommandBuilder()
                     .WithCommandText(sql)
-                    .Create(ct);
+                    .Build(ct);
 
                 var items = (await conn.QueryAsync<T>(cmd).ConfigureAwait(false)).ToList();
 
@@ -108,7 +108,7 @@ namespace SAPPub.Infrastructure.Repositories.Generic
                 var cmd = new DapperCommandBuilder()
                     .WithCommandText(sql)
                     .WithParameters(parameters)
-                    .Create(ct);
+                    .Build(ct);
 
                 var item = await conn.QuerySingleOrDefaultAsync<T>(cmd).ConfigureAwait(false);
 
@@ -147,7 +147,7 @@ namespace SAPPub.Infrastructure.Repositories.Generic
                 var cmd = new DapperCommandBuilder()
                     .WithCommandText(sql)
                     .WithParameters(param)
-                    .Create(ct);
+                    .Build(ct);
 
                 var item = await conn.ExecuteAsync(cmd).ConfigureAwait(false);
 
@@ -182,7 +182,7 @@ namespace SAPPub.Infrastructure.Repositories.Generic
                 var cmd = new DapperCommandBuilder()
                     .WithCommandText(sql)
                     .WithParameters(param)
-                    .Create(ct);
+                    .Build(ct);
 
                 var item = await conn.ExecuteAsync(cmd).ConfigureAwait(false);
 
@@ -216,7 +216,7 @@ namespace SAPPub.Infrastructure.Repositories.Generic
                 var cmd = new DapperCommandBuilder()
                     .WithCommandText(sql)
                     .WithParameters(parameters)
-                    .Create(ct);
+                    .Build(ct);
 
                 var items = (await conn.QueryAsync<T>(cmd).ConfigureAwait(false)).ToList();
 

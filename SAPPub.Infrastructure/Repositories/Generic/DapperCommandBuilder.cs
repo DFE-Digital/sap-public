@@ -22,7 +22,7 @@ public class DapperCommandBuilder
         return this;
     }
 
-    public CommandDefinition Create(CancellationToken ct)
+    public CommandDefinition Build(CancellationToken ct)
     {
         if (_sql is null)
             throw new InvalidOperationException("Command text must be set before creating a CommandDefinition.");
