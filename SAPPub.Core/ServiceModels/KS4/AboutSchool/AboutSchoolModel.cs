@@ -51,5 +51,5 @@ public class AboutSchoolModel
 
     public EstablishmentStatus? Status { get; set; }
     public int? OpenReasonId { get; set; }
-    public IList<EstablishmentLink>? Predecessors { get; set; } // CML TODO  probably encapsulate some of this predecessor/successor logic in a separate model/class
+    public IList<EstablishmentLink>? Predecessors { get; set; }
 }
