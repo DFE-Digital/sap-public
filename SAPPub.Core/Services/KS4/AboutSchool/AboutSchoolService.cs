@@ -1,4 +1,5 @@
 ﻿using SAPPub.Core.Extensions;
+using SAPPub.Core.Helpers;
 using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
@@ -27,7 +28,6 @@ public sealed class AboutSchoolService(
             {
                 Urn = l.LinkUrn!,
                 Name = l.LinkName!,
-                LinkType = LinkType.Predecessor
             })
             .ToList();
 

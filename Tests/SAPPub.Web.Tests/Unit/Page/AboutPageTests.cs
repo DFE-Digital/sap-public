@@ -105,14 +105,12 @@ public class AboutPageTests : PageTestsBase
                 new EstablishmentLink()
                 {
                     Urn = "123456",
-                    Name = "Predecessor School 1",
-                    LinkType = LinkType.Predecessor
+                    Name = "Predecessor School 1"
                 },
                 new EstablishmentLink()
                 {
                     Urn = "123457",
-                    Name = "Predecessor School 2",
-                    LinkType = LinkType.Predecessor
+                    Name = "Predecessor School 2"
                 }
             }
         };
