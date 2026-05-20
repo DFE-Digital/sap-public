@@ -4,5 +4,5 @@ namespace SAPPub.Core.Interfaces.Repositories;
 
 public interface IEstablishmentLinksRepository
 {
-    public Task<List<EstablishmentLinks>?> GetLinksAsync(string urn, CancellationToken ct = default);
+    public Task<IEnumerable<EstablishmentLinks>?> GetLinksAsync(string urn, CancellationToken ct = default);
 }

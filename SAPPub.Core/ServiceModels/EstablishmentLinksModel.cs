@@ -15,6 +15,7 @@ public enum LinkType
 public class EstablishmentLink
 {
     public required string Urn { get; set; }
+    public required string Name { get; set; }
     public LinkType LinkType { get; set; }
 }
 

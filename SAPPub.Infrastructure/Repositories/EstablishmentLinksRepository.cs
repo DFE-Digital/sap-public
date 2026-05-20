@@ -11,7 +11,7 @@ public class EstablishmentLinksRepository(
             NpgsqlDataSource dataSource,
             ILogger<EstablishmentLinksRepository> logger) : IEstablishmentLinksRepository
 {
-    public async Task<List<EstablishmentLinks>?> GetLinksAsync(string urn, CancellationToken ct)
+    public async Task<IEnumerable<EstablishmentLinks>?> GetLinksAsync(string urn, CancellationToken ct)
     {
         await using var conn = await dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
 

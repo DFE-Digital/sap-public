@@ -134,12 +134,12 @@ public class AboutSchoolServiceTests
         Assert.Equal(establishment.OpenDate, result.OpenDate!.Value.ToString("dd-MM-yyyy"));
         if (expectedPredecessors)
         {
-            Assert.NotNull(result.PredecessorLinkUrns);
-            Assert.Contains(predecessorUrn, result.PredecessorLinkUrns);
+            Assert.NotNull(result.Predecessors);
+            Assert.Contains(predecessorUrn, result.Predecessors.Select(p => p.Urn));
         }
         else
         {
-            Assert.Null(result.PredecessorLinkUrns);
+            Assert.Null(result.Predecessors);
         }
     }
 }

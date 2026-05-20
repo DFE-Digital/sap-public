@@ -15,6 +15,7 @@ using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.Interfaces.Services.KS4.Attendance;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels.KS4.Admissions;
 using SAPPub.Core.ServiceModels.KS4.Attendance;
@@ -157,7 +158,19 @@ public class SecondarySchoolControllerTests
             ClosedDate = _fakeEstablishment.ClosedDate.ToDateOnly(),
             OpenReasonId = _fakeEstablishment.OpenReasonId,
             OpenDate = _fakeEstablishment.OpenDate.ToDateOnly(),
-            PredecessorLinkUrns = new List<string> { "123457", "123458" }
+            Predecessors = new List<EstablishmentLink>
+            {
+                new EstablishmentLink
+                {
+                    Urn = "654321",
+                    Name = "Predecessor School 1"
+                },
+                new EstablishmentLink
+                {
+                    Urn = "789012",
+                    Name = "Predecessor School 2"
+                }
+            }
         };
     }
 
@@ -252,7 +265,12 @@ public class SecondarySchoolControllerTests
         Assert.Equal(expectedResult.Urn, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(TextHelpers.CleanForUrl(expectedResult.SchoolName), model.RouteAttributes[RouteConstants.SchoolName]);
         Assert.Equal(expectedResult.OpenReasonId, model.OpenReasonId);
-        Assert.True(expectedResult.PredecessorLinkUrns!.OrderBy(x => x).SequenceEqual(model.PredecessorUrns!.OrderBy(x => x))); // cml todo - I think there's a more obvious way than this
+        Assert.Collection(model.Predecessors!,
+            predecessor =>
+            {
+                Assert.Equal(expectedResult.Urn, predecessor.Urn);
+                Assert.Equal(expectedResult.SchoolName, predecessor.Name);
+            });
     }
 
     [Fact]

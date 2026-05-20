@@ -21,9 +21,14 @@ public sealed class AboutSchoolService(
             ? AcademicYearsHelper.IsWithinLastThreeAcademicYears(openDate.Value)
                 ? await establishmentLinksRepository.GetLinksAsync(urn, ct) : null
             : null;
-        var predecessorLinks = links?
+        var predecessors = links?
             .Where(l => l.Urn is not null && l.LinkType is not null && l.LinkType.Contains("Predecessor"))
-            .Select(l => l.LinkUrn!)
+            .Select(l => new EstablishmentLink
+            {
+                Urn = l.LinkUrn!,
+                Name = l.LinkName!,
+                LinkType = LinkType.Predecessor
+            })
             .ToList();
 
         var laUrls = !string.IsNullOrWhiteSpace(establishment.GSSLACode) ? await laUrlsRepository.GetLaAsync(establishment.GSSLACode, ct) : null;
@@ -54,7 +59,7 @@ public sealed class AboutSchoolService(
             Status = establishment.StatusCode.ToStatus(),
             OpenDate = establishment.OpenDate.ToDateOnly(),
             OpenReasonId = establishment.OpenReasonId,
-            PredecessorLinkUrns = predecessorLinks
+            Predecessors = predecessors
         };
     }
 }
