@@ -2,7 +2,7 @@
 {
     public static class SqlViewFilterProvider
     {
-        public static List<SqlViewFilter> GetEstablishmentFilters()
+        public static List<SqlViewFilter> GetEstablishmentFilters(string? ks4UrnsSqlCondition = null)
         {
             return
             [
@@ -13,12 +13,17 @@
                 new SqlViewFilter("ExcludeClosed3YrSchools", tableAlias =>
                     $"({tableAlias}.\"closedate\" IS NULL OR {tableAlias}.\"closedate\" = '' OR TO_DATE({tableAlias}.\"closedate\", 'DD/MM/YYYY') >= '{GetAcademicYearCutoffDate()}')"),
                 new SqlViewFilter("IncludeKS4", tableAlias =>
-                    $"(clean_int({tableAlias}.\"phaseofeducation__code_\") IN (0, 3, 4, 5, 6, 7) " +
-                    $"AND clean_int({tableAlias}.\"statutorylowage\") < 16 " +
-                    $"AND clean_int({tableAlias}.\"statutoryhighage\") > 12) " +
-                    $"OR (clean_int({tableAlias}.\"phaseofeducation__code_\") IN (4, 7) " +
-                    $"AND clean_int({tableAlias}.\"statutoryhighage\") = 0)"
-                ),
+                {
+                    var baseCondition =
+                        $"(clean_int({tableAlias}.\"phaseofeducation__code_\") IN (0, 3, 4, 5, 6, 7) " +
+                        $"AND clean_int({tableAlias}.\"statutorylowage\") < 16 " +
+                        $"AND clean_int({tableAlias}.\"statutoryhighage\") > 12) " +
+                        $"OR (clean_int({tableAlias}.\"phaseofeducation__code_\") IN (4, 7) " +
+                        $"AND clean_int({tableAlias}.\"statutoryhighage\") = 0)";
+                    if (!string.IsNullOrWhiteSpace(ks4UrnsSqlCondition))
+                        return $"({ks4UrnsSqlCondition} OR {baseCondition})";
+                    return baseCondition;
+                }),
                 new SqlViewFilter("ExcludeProposedToOpen", tableAlias =>
                     $"clean_int({tableAlias}.\"establishmentstatus__code_\") <> 4")
             ];

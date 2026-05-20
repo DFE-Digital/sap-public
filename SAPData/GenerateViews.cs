@@ -11,7 +11,6 @@ public sealed class GenerateViews
     private readonly IReadOnlyList<DataMapRow> _rows;
     private readonly string _tableMappingPath;
     private readonly string _sqlDir;
-    private readonly List<SqlViewFilter> _establishmentFilters;
 
 
     // raw_sources.json path in repo
@@ -56,12 +55,11 @@ public sealed class GenerateViews
     };
 
 
-    public GenerateViews(IReadOnlyList<DataMapRow> rows, string tableMappingPath, string sqlDir, List<SqlViewFilter>? establishmentFilters = null)
+    public GenerateViews(IReadOnlyList<DataMapRow> rows, string tableMappingPath, string sqlDir)
     {
         _rows = rows;
         _tableMappingPath = tableMappingPath;
         _sqlDir = sqlDir;
-        _establishmentFilters = establishmentFilters ?? new List<SqlViewFilter>();
     }
 
     public void Run()
@@ -99,7 +97,17 @@ public sealed class GenerateViews
                     continue;
                 }
 
-                sql = GenerateEstablishmentDimensionView(rawTable, _establishmentFilters);
+                // Generate the KS4 URNs CTE for use in the filter
+                var ks4UrnsCte = GenerateKs4UrnsCte(_rows, tableMap);
+
+                string? ks4UrnsSqlCondition = null;
+                if (!string.IsNullOrWhiteSpace(ks4UrnsCte))
+                    ks4UrnsSqlCondition = "t.\"urn\" IN (SELECT \"urn\" FROM ks4_urns)";
+
+                var establishmentFilters = SqlViewFilterProvider.GetEstablishmentFilters(ks4UrnsSqlCondition);
+
+                sql = GenerateEstablishmentDimensionView(rawTable, establishmentFilters, ks4UrnsCte);
+
             }
 
             // 2) Mirror view (GIAS: all establishment links)
@@ -288,18 +296,64 @@ public sealed class GenerateViews
     }
 
     // =====================================================
+    // KS4 URNs CTE GENERATION
+    // =====================================================
+    private static string GenerateKs4UrnsCte(IReadOnlyList<DataMapRow> rows, Dictionary<string, string> tableMap)
+    {
+        // Group by file name and get the RecordFilterBy for each file
+        var fileGroups = rows
+            .Where(r => r.Range == "Establishment" && r.Type == "KS4_Performance")
+            .GroupBy(r => (r.FileName ?? "").Trim().TrimStart('\uFEFF'))
+            .Where(g => !string.IsNullOrWhiteSpace(g.Key))
+            .ToList();
+
+        var cteParts = new List<string>();
+        foreach (var group in fileGroups)
+        {
+            var fileName = group.Key;
+            if (!TryResolveRawTable(tableMap, fileName, out var rawTable) || string.IsNullOrEmpty(rawTable))
+                continue;
+
+            // Use the first row's RecordFilterBy as the id column
+            var idCol = DbCol(group.First().RecordFilterBy);
+            // If the idCol is empty, fallback to "urn"
+            var col = string.IsNullOrWhiteSpace(idCol) ? "urn" : idCol;
+
+            cteParts.Add($"SELECT DISTINCT t.\"{col}\" AS \"urn\" FROM {rawTable} t");
+        }
+
+        if (cteParts.Count == 0)
+            return string.Empty;
+
+        var sb = new StringBuilder();
+        sb.AppendLine("WITH ks4_urns AS (");
+        for (int i = 0; i < cteParts.Count; i++)
+        {
+            var union = i == 0 ? "    " : "    UNION ";
+            sb.AppendLine($"{union}{cteParts[i]}");
+        }
+        sb.AppendLine(")");
+        return sb.ToString();
+    }
+    // =====================================================
     // ESTABLISHMENT DIMENSION (curated)
     // =====================================================
 
-    private static string GenerateEstablishmentDimensionView(string? rawTable, List<SqlViewFilter> filters)
+    private static string GenerateEstablishmentDimensionView(string? rawTable, List<SqlViewFilter> filters, string ks4UrnsCte = "")
     {
         var sb = new StringBuilder();
-
+       
         sb.AppendLine("-- AUTO-GENERATED MATERIALIZED VIEW: v_establishment");
         sb.AppendLine();
         sb.AppendLine("DROP MATERIALIZED VIEW IF EXISTS v_establishment CASCADE;");
         sb.AppendLine();
         sb.AppendLine("CREATE MATERIALIZED VIEW v_establishment AS");
+        // Add the CTE if provided
+        if (!string.IsNullOrWhiteSpace(ks4UrnsCte))
+        {
+            sb.Append(ks4UrnsCte);
+            sb.AppendLine();
+        }
         sb.AppendLine("SELECT");
         sb.AppendLine("    t.\"urn\"                                 AS \"URN\",");
         sb.AppendLine("    t.\"la__code_\"                           AS \"LAId\",");
