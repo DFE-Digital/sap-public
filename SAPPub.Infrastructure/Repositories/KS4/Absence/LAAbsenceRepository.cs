@@ -18,9 +18,9 @@ namespace SAPPub.Infrastructure.Repositories.KS4.Absence
             return await _repo.ReadAllAsync(ct);
         }
 
-        public async Task<LAAbsence> GetLAAbsenceAsync(string id, CancellationToken ct = default)
+        public async Task<LAAbsence> GetLAAbsenceAsync(string laCode, CancellationToken ct = default)
         {
-            return await _repo.ReadAsync(id, ct) ?? new LAAbsence();
+            return await _repo.ReadAsync(laCode, ct) ?? new LAAbsence();
         }
     }
 }

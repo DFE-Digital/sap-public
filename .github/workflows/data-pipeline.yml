@@ -15,7 +15,7 @@ on:
         default: ""
         type: string
   schedule:
-    - cron: "0 6 * * *"   # every day at 06:00 UTC
+    - cron: "0 5 * * *"   # every day at 05:00 UTC
 
 permissions:
   contents: write
@@ -625,7 +625,7 @@ jobs:
             set +e
             "$GITHUB_WORKSPACE/konduit.sh" \
               -n "${{ env.AKS_NAMESPACE }}" \
-              -t 7200 \
+              -t 28800 \
               -x \
               -i "$GITHUB_WORKSPACE/SAPData/Sql/run_all.sql" \
               "${{ env.KONDUIT_APP_NAME }}" -- psql 2>&1 | tee "$log_file"
@@ -668,7 +668,7 @@ jobs:
           set +e
           "$GITHUB_WORKSPACE/konduit.sh" \
             -n "${{ env.AKS_NAMESPACE }}" \
-            -t 7200 \
+            -t 28800 \
             -x \
             "${{ env.KONDUIT_APP_NAME }}" -- \
             pg_dump --format=plain --no-owner --no-privileges 2> konduit_pg_dump.log | gzip -c > "${LOCAL_FILE}"

@@ -1,4 +1,5 @@
 ﻿@model SAPPub.Web.Models.SecondarySchool.AttendanceViewModel;
+@using SAPPub.Core.Extensions
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 
 @{
@@ -51,7 +52,6 @@
                             else
                             {
                                 <span data-testId="contact-school-info">Contact the school for more information</span>
-
                             }
                         </govuk-summary-list-row-value>
                     </govuk-summary-list-row>
@@ -69,6 +69,149 @@
                 </govuk-summary-list>
             </div>
         </div>
+
+        <h2 class="govuk-heading-l">Attendance and absence for the previous academic year</h2>
+
+        <p class="govuk-body">
+            Information in this section is for the 2024 to 2025 academic year.
+        </p>
+
+        <h3 class="govuk-heading-m">Attendance</h3>
+
+        <p class="govuk-body">
+            Schools must record pupil attendance twice a day: once in the morning and once in the afternoon. A session is a morning or afternoon period in a school.
+        </p>
+
+        <govuk-details id="details-attendance-rate">
+            <govuk-details-summary>
+                How the attendance rate is calculated
+            </govuk-details-summary>
+            <govuk-details-text>
+                <p class="govuk-body">
+                    Attendance rate is worked out by adding together the sessions that all pupils have attended.
+                    This number is then divided by the number of possible sessions that all pupils could have attended.
+                    The result is multiplied by 100 to get a percentage.
+                </p>
+            </govuk-details-text>
+        </govuk-details>
+
+        <table id="attendance-table" class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-quarter"></th>
+                    <th scope="col" class="govuk-table__header">Attendance</th>
+                    <th scope="col" class="govuk-table__header">Meaning</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">School</th>
+                    <td class="govuk-table__cell">@(Model.EstablishmentAttendance.IsAvailable? Model.EstablishmentAttendance.Value.AsPercentage() : Constants.NotAvailable)</td>
+                    <td class="govuk-table__cell">
+                        @if (Model.EstablishmentAttendance.IsAvailable)
+                        {
+                            <text>The number of sessions that all pupils attended compared to all possible sessions means that this school has a @Model.EstablishmentAttendance.Value.AsPercentage() attendance rate.</text>
+                        }
+                        else
+                        {
+                            @Model.EstablishmentAttendance.DisplayText();
+                        }
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">@Model.LocalAuthority.DisplayText() secondary school average</th>
+                    <td class="govuk-table__cell">@(Model.LocalAuthorityAttendance.IsAvailable? Model.LocalAuthorityAttendance.Value.AsPercentage() : Constants.NotAvailable)</td>
+                    <td class="govuk-table__cell">
+                        @if (Model.LocalAuthorityAttendance.IsAvailable)
+                        {
+                            <text>The number of sessions that all pupils attended compared to all possible sessions means that secondary schools in @Model.LocalAuthority.DisplayText() have a @Model.LocalAuthorityAttendance.Value.AsPercentage() attendance rate.</text>
+                        }
+                        else
+                        {
+                            @Model.LocalAuthorityAttendance.DisplayText();
+                        }
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">England secondary school average</th>
+                    <td class="govuk-table__cell">@(Model.EnglandAttendance.IsAvailable? Model.EnglandAttendance.Value.AsPercentage() : Constants.NotAvailable)</td>
+                    <td class="govuk-table__cell">
+                        @if (Model.EnglandAttendance.IsAvailable)
+                        {
+                            <text>The number of sessions that all pupils attended compared to all possible sessions means that secondary schools in England have a @Model.EnglandAttendance.Value.AsPercentage() attendance rate.</text>
+                        }
+                        else
+                        {
+                            @Model.EnglandAttendance.DisplayText();
+                        }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3 class="govuk-heading-m">Persistent absence</h3>
+
+        <p class="govuk-body">
+            If a pupil misses 10% or more of their possible sessions in a year, they are identified as being persistently absent.
+        </p>
+
+        <p class="govuk-body">
+            On average there are 380 sessions a year in school, so a pupil who misses 38 or more sessions is considered persistently absent.
+        </p>
+
+        <table id="persistent-absence-table" class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-quarter"></th>
+                    <th scope="col" class="govuk-table__header">Persistent absence</th>
+                    <th scope="col" class="govuk-table__header">Meaning</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">School</th>
+                    <td class="govuk-table__cell">@(Model.EstablishmentPersistentAbsence.IsAvailable? Model.EstablishmentPersistentAbsence.Value.AsPercentage() : Constants.NotAvailable)</td>
+                    <td class="govuk-table__cell">
+                        @if (Model.EstablishmentPersistentAbsence.IsAvailable)
+                        {
+                            <text>Out of @Model.EstablishmentEnrolmentsTotal.DisplayText(t => t.ToString("N0")) pupils, @Model.EstablishmentPersistentAbsenceTotal.DisplayText(t => t.ToString("N0")) were persistently absent. This means that @Model.EstablishmentPersistentAbsence.Value.AsPercentage() were persistently absent.</text>
+                        }
+                        else
+                        {
+                            @Model.EstablishmentPersistentAbsence.DisplayText();
+                        }
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">@Model.LocalAuthority.DisplayText() secondary school average</th>
+                    <td class="govuk-table__cell">@(Model.LocalAuthorityPersistentAbsence.IsAvailable? Model.LocalAuthorityPersistentAbsence.Value.AsPercentage() : Constants.NotAvailable)</td>
+                    <td class="govuk-table__cell">
+                        @if (Model.LocalAuthorityPersistentAbsence.IsAvailable)
+                        {
+                            <text>Out of the total number of pupils in secondary schools in @Model.LocalAuthority.DisplayText(), have a @Model.LocalAuthorityPersistentAbsence.Value.AsPercentage() were persistently absent.</text>
+                        }
+                        else
+                        {
+                            @Model.LocalAuthorityPersistentAbsence.DisplayText();
+                        }
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">England secondary school average</th>
+                    <td class="govuk-table__cell">@(Model.EnglandPersistentAbsence.IsAvailable? Model.EnglandPersistentAbsence.Value.AsPercentage() : Constants.NotAvailable)</td>
+                    <td class="govuk-table__cell">
+                        @if (Model.EnglandPersistentAbsence.IsAvailable)
+                        {
+                            <text>Out of the total number of pupils in secondary schools in England, @Model.EnglandPersistentAbsence.Value.AsPercentage() were persistently absent.</text>
+                        }
+                        else
+                        {
+                            @Model.EnglandPersistentAbsence.DisplayText();
+                        }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
         <govuk-pagination id="attendance-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.SecondaryCurriculumAndExtraCurricularActivities" asp-all-route-data="@Model.RouteAttributes">Curriculum and extra-curricular activities</govuk-pagination-previous>

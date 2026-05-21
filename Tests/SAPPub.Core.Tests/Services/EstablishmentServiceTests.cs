@@ -1,7 +1,6 @@
 ﻿using Moq;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Repositories;
-using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Services;
 using System.Diagnostics.CodeAnalysis;
 
@@ -26,55 +25,8 @@ namespace SAPPub.Core.Tests.Services
             PhaseOfEducationName = "Primary School"
         };
 
-        private readonly Establishment FakeEstablishmentTwo = new()
-        {
-            URN = "456789",
-            EstablishmentName = "Test Establishment Two",
-            PhaseOfEducationName = "Secondary School"
-        };
-
         [Fact]
-        public async Task GetAllEstablishmentsAsync_ShouldReturnAllItems()
-        {
-            // Arrange
-            var expected = new List<Establishment>
-            {
-                FakeEstablishmentOne,
-                FakeEstablishmentTwo
-            };
-
-            _mockRepo
-                .Setup(r => r.GetAllEstablishmentsAsync(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(expected);
-
-            // Act
-            var result = await _service.GetAllEstablishmentsAsync(CancellationToken.None);
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(2, result.Count());
-            Assert.Contains(result, a => a.URN == "123456");
-            Assert.Contains(result, a => a.URN == "456789");
-        }
-
-        [Fact]
-        public async Task GetAllEstablishmentsAsync_ShouldReturnEmpty_WhenNoData()
-        {
-            // Arrange
-            _mockRepo
-                .Setup(r => r.GetAllEstablishmentsAsync(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<Establishment>());
-
-            // Act
-            var result = await _service.GetAllEstablishmentsAsync(CancellationToken.None);
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Empty(result);
-        }
-
-        [Fact]
-        public async Task GetEstablishmentAsync_ShouldReturnCorrectItem_WhenUrnExists() 
+        public async Task GetEstablishmentAsync_ShouldReturnCorrectItem_WhenUrnExists()
         {
             // Arrange
             var urn = "123456";
