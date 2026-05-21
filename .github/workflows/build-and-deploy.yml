@@ -175,6 +175,7 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v3
         if: github.event_name == 'pull_request' && (success() || failure())
         with:
+          header: Coverage
           recreate: true
           path: ./coverage/SummaryGithub.md
 
@@ -182,6 +183,7 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v3
         if: github.event_name == 'pull_request' && (success() || failure())
         with:
+          header: Accessibility
           recreate: true
           path: ./Tests/accessibility-results/accessibility-violations.md
 
