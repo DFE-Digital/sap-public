@@ -178,6 +178,13 @@ jobs:
           recreate: true
           path: ./coverage/SummaryGithub.md
 
+      - name: Add Accessibility PR Comment
+        uses: marocchino/sticky-pull-request-comment@v3
+        if: github.event_name == 'pull_request' && (success() || failure())
+        with:
+          recreate: true
+          path: ./Tests/accessibility-results/accessibility-violations.md
+
   # ---------------------------
   # REFRESH DATA - Run after environment set up via deploying app. Without prior deployment, this will fail. 
   # ---------------------------
