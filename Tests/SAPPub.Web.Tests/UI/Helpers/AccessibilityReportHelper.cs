@@ -36,7 +36,7 @@ namespace SAPPub.Web.Tests.UI.Helpers
             }
 
             var filteredOrderedViolations = violations
-                .Where(a => GetSeverityRank(a.Impact) == 1 || GetSeverityRank(a.Impact) == 2)       // only critical and sever
+                .Where(a => GetSeverityRank(a.Impact) == 1 || GetSeverityRank(a.Impact) == 2)       // only critical & severe
                 .OrderBy(a => GetSeverityRank(a.Impact));
 
             ViolationReports[pageName] = new AccessibilityPageReport(pageName, BuildTestViolationMarkdown(pageName, url, filteredOrderedViolations));
@@ -53,6 +53,11 @@ namespace SAPPub.Web.Tests.UI.Helpers
                 File.Delete(reportPath);
             }
 
+            if (string.IsNullOrWhiteSpace(markdown))
+            {
+                markdown = "No critical or severe accessibility issues found";
+            }
+            
             await File.WriteAllTextAsync(reportPath, markdown);
         }
 
