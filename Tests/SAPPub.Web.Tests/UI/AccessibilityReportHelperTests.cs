@@ -28,6 +28,7 @@ namespace SAPPub.Web.Tests.UI
 
             // Act
             var result = await File.ReadAllTextAsync(AccessibilityReportHelper.GetReportPath());
+            Console.WriteLine(result);
 
             // Assert
             var split = result.Split("\r\n");
