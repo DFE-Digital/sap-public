@@ -1,4 +1,5 @@
-﻿using SAPPub.Web.Tests.UI.Models;
+﻿using Deque.AxeCore.Commons;
+using Humanizer;
 using System.Collections.Concurrent;
 using System.Text;
 
@@ -9,7 +10,7 @@ namespace SAPPub.Web.Tests.UI.Helpers
         private static readonly string COLOUR_CRITICAL = "red";
         private static readonly string COLOUR_SERIOUS = "#b8860b";
         private static readonly string MARKDOWN_FILENAME = "accessibility-violations.md";
-        private static readonly ConcurrentDictionary<string, string> ViolationReports = new();
+        private static readonly ConcurrentDictionary<string, AccessibilityPageReport> ViolationReports = new();
 
         /// <summary>
         /// Used to ensure any test runs with Accessibility are kept clean.
@@ -27,15 +28,18 @@ namespace SAPPub.Web.Tests.UI.Helpers
             }
         }
 
-        public static void AddViolations(string pageName, IList<AxeResult> violations)
+        public static void AddViolations(string pageName, string url, IList<AxeResultItem> violations)
         {
-            var markdown = BuildTestViolationMarkdown(pageName, violations);
-            if (string.IsNullOrWhiteSpace(markdown))
+            if (violations?.Any() != true)
             {
                 return;
             }
 
-            ViolationReports[pageName] = markdown;
+            var filteredOrderedViolations = violations
+                .Where(a => GetSeverityRank(a.Impact) == 1 || GetSeverityRank(a.Impact) == 2)       // only critical and sever
+                .OrderBy(a => GetSeverityRank(a.Impact));
+
+            ViolationReports[pageName] = new AccessibilityPageReport(pageName, BuildTestViolationMarkdown(pageName, url, filteredOrderedViolations));
         }
 
         public static async Task FlushReportAsync()
@@ -65,25 +69,6 @@ namespace SAPPub.Web.Tests.UI.Helpers
             return reportPath;
         }
 
-        public static string GetAxeScriptPath(string? axeScriptPath)
-        {
-            if (axeScriptPath is not null)
-            {
-                return axeScriptPath;
-            }
-
-            var solutionPath = GetSolutionPath();
-
-            axeScriptPath = Path.Combine(solutionPath, "SAPPub.Web", "node_modules", "axe-core", "axe.min.js");
-
-            if (!File.Exists(axeScriptPath))
-            {
-                throw new FileNotFoundException();
-            }
-
-            return axeScriptPath;
-        }
-
         public static string GetSolutionPath()
         {
             var directory = new DirectoryInfo(AppContext.BaseDirectory);
@@ -101,40 +86,37 @@ namespace SAPPub.Web.Tests.UI.Helpers
             return directory.FullName;
         }
 
-        public static string BuildTestViolationMarkdown(string pageName, IList<AxeResult> violations)
+        public static string BuildTestViolationMarkdown(string pageName, string url, IEnumerable<AxeResultItem> violations)
         {
             if (!violations.Any())
             {
                 return string.Empty;
             }
 
-            var builder = new StringBuilder(500);
+            var builder = new StringBuilder(1000);
 
-            builder.AppendLine($"#### {pageName}");
-            builder.AppendLine($"**Violations**: {violations.Count}");
-            builder.AppendLine("");
+            builder.AppendLine($"#### {pageName}<br/>");
+            builder.AppendLine($"{url}<br/>");
+            builder.AppendLine($"**Violations**: {violations.Count()}<br/>");
 
             foreach (var violation in violations)
             {
                 var spanColour = violation.Impact switch
                 {
-                    AxeImpactValue.Critical => COLOUR_CRITICAL,
-                    AxeImpactValue.Serious => COLOUR_SERIOUS,
+                    "critical" => COLOUR_CRITICAL,
+                    "serious" => COLOUR_SERIOUS,
                     _ => "black"
                 };
 
-                builder.AppendLine($"<span style='color:{spanColour}'>**IMPACT**: {violation.Impact.ToString()}</span>");
-                builder.AppendLine("");
-                builder.AppendLine("");
-                builder.AppendLine($"**{violation.Id}**: {violation.Help}");
-                builder.AppendLine("");
+                builder.AppendLine("<br/><br/>");
+                builder.AppendLine($"<span style='color:{spanColour}'>**IMPACT**: {violation.Impact.Titleize()}</span>");
+                builder.AppendLine("<br/>");
+                builder.AppendLine($"**{violation.Id}**: {violation.Help}<br/>");
 
                 foreach (var node in violation.Nodes)
                 {
                     builder.AppendLine("");
-                    builder.AppendLine($"**Target**: {string.Join(", ", node.Target.Select(a => a))}");
-                    builder.AppendLine("");
-                    builder.AppendLine($"{node.FailureSummary}");
+                    builder.AppendLine($"**Target**: {string.Join(", ", node.Target)}");
                 }
             }
             builder.AppendLine("<br/><br/>");
@@ -148,15 +130,28 @@ namespace SAPPub.Web.Tests.UI.Helpers
                 return string.Empty;
             }
 
-            var builder = new StringBuilder();
+            var builder = new StringBuilder(1000);
 
-            foreach (var report in ViolationReports.OrderBy(a => a.Key, StringComparer.OrdinalIgnoreCase))
+            foreach (var report in ViolationReports.Values)
             {
-                builder.Append(report.Value);
+                builder.Append(report.Markdown);
             }
 
             return builder.ToString();
         }
 
+        private static int GetSeverityRank(string impact)
+        {
+            return impact switch
+            {
+                "critical" => 1,
+                "serious" => 2,
+                "moderate" => 3,
+                "minor" => 4,
+                _ => 0,
+            };
+        }
+
+        private sealed record AccessibilityPageReport(string PageName, string Markdown);
     }
 }

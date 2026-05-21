@@ -1,16 +1,13 @@
-﻿using Microsoft.Playwright;
+﻿using Deque.AxeCore.Playwright;
+using Microsoft.Playwright;
 using Microsoft.Playwright.Xunit;
 using SAPPub.Web.Tests.UI.Helpers;
-using SAPPub.Web.Tests.UI.Models;
-using System.Text;
-using System.Text.Json;
 
 namespace SAPPub.Web.Tests.UI.Infrastructure;
 
 public abstract class BasePageTest : PageTest
 {
     private readonly WebApplicationSetupFixture _fixture;
-    private static readonly Lazy<string> AxeScriptPath = new(() => AccessibilityReportHelper.GetAxeScriptPath(null));
 
     // ReSharper disable once ConvertToPrimaryConstructor
     protected BasePageTest(WebApplicationSetupFixture fixture)
@@ -27,8 +24,7 @@ public abstract class BasePageTest : PageTest
             ViewportSize = new() { Width = 1280, Height = 720 },
             Locale = "en-GB",
             TimezoneId = "Europe/London",
-            JavaScriptEnabled = true,
-            BypassCSP = true,               // we can't run axe for accessibility testing if CSP is active 
+            JavaScriptEnabled = true
         };
     }
 
@@ -79,21 +75,11 @@ public abstract class BasePageTest : PageTest
 
     protected async Task WriteAccessibilityReport(string pageName)
     {
-        await Page.AddScriptTagAsync(new PageAddScriptTagOptions { Path = AxeScriptPath.Value });
+        var axeResult = await Page.RunAxe();
 
-        var json = await Page.EvaluateAsync<string>(
-            @"async () => {
-                const results = await axe.run(document, {runOnly: {type: 'tag',values: ['wcag2aa']}});
-                return JSON.stringify(results);
-        }");
+        
 
-        var axeResult = JsonSerializer.Deserialize<AxeResults>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-        if (axeResult is null)
-        {
-            return;
-        }
-
-        AccessibilityReportHelper.AddViolations(pageName, axeResult.Violations);
+        AccessibilityReportHelper.AddViolations(pageName, Page.Url, axeResult.Violations);
 
         // TODO: Wire in config to fail tests based on config switch. At the moment, we want them to
         // still pass, but a little config switch here would be handy.
