@@ -97,17 +97,22 @@ public sealed class GenerateViews
                     continue;
                 }
 
-                // Generate the KS4 URNs CTE for use in the filter
-                var ks4UrnsCte = GenerateKs4UrnsCte(_rows, tableMap);
+                var keyStages = new[] { "KS4" };
+                var keyStageUrnsCtes = new Dictionary<string, string>();
+                var keyStageUrnsSqlConditions = new Dictionary<string, string>();
 
-                string? ks4UrnsSqlCondition = null;
-                if (!string.IsNullOrWhiteSpace(ks4UrnsCte))
-                    ks4UrnsSqlCondition = "t.\"urn\" IN (SELECT \"urn\" FROM ks4_urns)";
-
-                var establishmentFilters = SqlViewFilterProvider.GetEstablishmentFilters(ks4UrnsSqlCondition);
-
-                sql = GenerateEstablishmentDimensionView(rawTable, establishmentFilters, ks4UrnsCte);
-
+                foreach (var ks in keyStages)
+                {
+                    var cteName = $"{ks.ToLowerInvariant()}_urns";
+                    var cte = GenerateKeyStageUrnsCte(_rows, tableMap, $"{ks}_Performance", cteName);
+                    if (!string.IsNullOrWhiteSpace(cte))
+                    {
+                        keyStageUrnsCtes[ks] = cte;
+                        keyStageUrnsSqlConditions[ks] = $"t.\"urn\" IN (SELECT \"urn\" FROM {cteName})";
+                    }
+                }
+                var establishmentFilters = SqlViewFilterProvider.GetEstablishmentFilters(keyStageUrnsSqlConditions);
+                sql = GenerateEstablishmentDimensionView(rawTable, establishmentFilters, keyStageUrnsCtes, keyStageUrnsSqlConditions);
             }
 
             // 2) Mirror view (GIAS: all establishment links)
@@ -298,11 +303,15 @@ public sealed class GenerateViews
     // =====================================================
     // KS4 URNs CTE GENERATION
     // =====================================================
-    private static string GenerateKs4UrnsCte(IReadOnlyList<DataMapRow> rows, Dictionary<string, string> tableMap)
+    private static string GenerateKeyStageUrnsCte(
+     IReadOnlyList<DataMapRow> rows,
+     Dictionary<string, string> tableMap,
+     string keyStageType,
+     string cteName)
     {
         // Group by file name and get the RecordFilterBy for each file
         var fileGroups = rows
-            .Where(r => r.Range == "Establishment" && r.Type == "KS4_Performance")
+            .Where(r => r.Range == "Establishment" && r.Type == keyStageType)
             .GroupBy(r => (r.FileName ?? "").Trim().TrimStart('\uFEFF'))
             .Where(g => !string.IsNullOrWhiteSpace(g.Key))
             .ToList();
@@ -326,7 +335,7 @@ public sealed class GenerateViews
             return string.Empty;
 
         var sb = new StringBuilder();
-        sb.AppendLine("WITH ks4_urns AS (");
+        sb.AppendLine($"WITH {cteName} AS (");
         for (int i = 0; i < cteParts.Count; i++)
         {
             var union = i == 0 ? "    " : "    UNION ";
@@ -339,7 +348,11 @@ public sealed class GenerateViews
     // ESTABLISHMENT DIMENSION (curated)
     // =====================================================
 
-    private static string GenerateEstablishmentDimensionView(string? rawTable, List<SqlViewFilter> filters, string ks4UrnsCte = "")
+    private static string GenerateEstablishmentDimensionView(
+        string? rawTable,
+        List<SqlViewFilter> filters,
+        Dictionary<string, string> keyStageUrnsCtes,
+        Dictionary<string, string> keyStageUrnsSqlConditions)
     {
         var sb = new StringBuilder();
        
@@ -348,10 +361,9 @@ public sealed class GenerateViews
         sb.AppendLine("DROP MATERIALIZED VIEW IF EXISTS v_establishment CASCADE;");
         sb.AppendLine();
         sb.AppendLine("CREATE MATERIALIZED VIEW v_establishment AS");
-        // Add the CTE if provided
-        if (!string.IsNullOrWhiteSpace(ks4UrnsCte))
+        foreach (var cte in keyStageUrnsCtes.Values)
         {
-            sb.Append(ks4UrnsCte);
+            sb.Append(cte);
             sb.AppendLine();
         }
         sb.AppendLine("SELECT");
@@ -423,7 +435,18 @@ public sealed class GenerateViews
         sb.AppendLine("    t.\"opendate\"                            AS \"OpenDate\",");
         sb.AppendLine();
         sb.AppendLine("    clean_int(t.\"reasonestablishmentopened__code_\")  AS \"OpenReasonId\",");
-        sb.AppendLine("    t.\"reasonestablishmentopened__name_\"             AS \"OpenReasonName\"");
+        sb.AppendLine("    t.\"reasonestablishmentopened__name_\"             AS \"OpenReasonName\",");
+        var keyStageKeys = keyStageUrnsCtes.Keys.ToList();
+        for (int i = 0; i < keyStageKeys.Count; i++)
+        {
+            var ks = keyStageKeys[i];
+            var urnsSqlCondition = keyStageUrnsSqlConditions.TryGetValue(ks, out var cond) ? cond : null;
+            var fullCondition = SqlViewFilterProvider.GetKeyStageFullCondition(ks, "t", urnsSqlCondition);
+            // Only add a comma if this is not the last column
+            var isLast = (i == keyStageKeys.Count - 1);
+            var comma = isLast ? "" : ",";
+            sb.AppendLine($"    CASE WHEN {fullCondition} THEN TRUE ELSE FALSE END AS \"IS{ks}\"{comma}");
+        }
         sb.AppendLine();
         sb.AppendLine($"FROM {rawTable} t");
         // Dynamically build WHERE clause

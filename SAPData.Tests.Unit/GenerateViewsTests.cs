@@ -91,7 +91,7 @@ public class GenerateViewsTests : IDisposable
         var filters = SqlViewFilterProvider.GetEstablishmentFilters();
 
         // Act
-        new GenerateViews(rows, _mappingPath, _sqlDir, filters).Run();
+        new GenerateViews(rows, _mappingPath, _sqlDir).Run();
 
         var sql = File.ReadAllText(Path.Combine(_sqlDir, "03_v_establishment.sql"));
 
