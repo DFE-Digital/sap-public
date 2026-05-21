@@ -233,8 +233,8 @@ public class SecondarySchoolControllerTests
 
         var result = await _controller.AboutSchool(
             _mockAboutSchoolService.Object,
-            _fakeEstablishment.URN,
-            _fakeEstablishment.EstablishmentName,
+            expectedResult.Urn,
+            expectedResult.SchoolName,
             CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
@@ -266,10 +266,15 @@ public class SecondarySchoolControllerTests
         Assert.Equal(TextHelpers.CleanForUrl(expectedResult.SchoolName), model.RouteAttributes[RouteConstants.SchoolName]);
         Assert.Equal(expectedResult.OpenReasonId, model.OpenReasonId);
         Assert.Collection(model.Predecessors!,
-            predecessor =>
+            predecessor1 =>
             {
-                Assert.Equal(expectedResult.Urn, predecessor.Urn);
-                Assert.Equal(expectedResult.SchoolName, predecessor.Name);
+                Assert.Equal(expectedResult.Predecessors![0].Urn, predecessor1.Urn);
+                Assert.Equal(expectedResult.Predecessors[0].Name, predecessor1.Name);
+            },
+            predecessor2 =>
+            {
+                Assert.Equal(expectedResult.Predecessors![1].Urn, predecessor2.Urn);
+                Assert.Equal(expectedResult.Predecessors[1].Name, predecessor2.Name);
             });
     }
 
@@ -738,10 +743,11 @@ public class SecondarySchoolControllerTests
     {
         _mockAttendanceService
             .Setup(s => s.GetAttendenceDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new AttendanceModel {
+            .ReturnsAsync(new AttendanceModel
+            {
                 Urn = _fakeEstablishment.URN,
                 SchoolName = _fakeEstablishment.EstablishmentName,
-                LocalAuthority= _fakeEstablishment.LAName,
+                LocalAuthority = _fakeEstablishment.LAName,
                 EstablishmentAttendance = estAttendance,
                 LocalAuthorityAttendance = laAttendance,
                 EnglandAttendance = engAttendance
