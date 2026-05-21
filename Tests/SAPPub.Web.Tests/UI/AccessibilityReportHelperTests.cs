@@ -18,9 +18,9 @@ namespace SAPPub.Web.Tests.UI
             // Arrange
             var violations = new[]
             {
-                CreateViolation("critical", "color-contrast", "Critical_HelpString", [".govuk-link"]),
                 CreateViolation("minor", "minor-violoation", "Minor_HelpString", [".minor"]),
                 CreateViolation("serious", "label", "Serious_HelpString", ["#search-input"]),
+                CreateViolation("critical", "color-contrast", "Critical_HelpString", [".govuk-link"])
             };
 
             AccessibilityReportHelper.AddViolations("Results page", "/results", violations);
@@ -28,12 +28,14 @@ namespace SAPPub.Web.Tests.UI
 
             // Act
             var result = await File.ReadAllTextAsync(AccessibilityReportHelper.GetReportPath());
-            Console.WriteLine(result);
 
             // Assert
-            var split = result.Split("\r\n");
-            Assert.Contains("Critical", split[4]);
-            Assert.Contains("Serious", split[10]);
+            var criticalIndex = result.IndexOf("**IMPACT**: Critical", StringComparison.Ordinal);
+            var seriousIndex = result.IndexOf("**IMPACT**: Serious", StringComparison.Ordinal);
+
+            Assert.NotEqual(-1, criticalIndex);
+            Assert.NotEqual(-2, seriousIndex);
+            Assert.True(criticalIndex < seriousIndex);      // critical appears before serious issues
             Assert.DoesNotContain("minor", result);
         }
 
