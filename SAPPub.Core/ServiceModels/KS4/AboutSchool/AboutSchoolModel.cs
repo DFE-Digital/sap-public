@@ -52,4 +52,5 @@ public class AboutSchoolModel
     public EstablishmentStatus? Status { get; set; }
     public int? OpenReasonId { get; set; }
     public IList<EstablishmentLinkModel>? Predecessors { get; set; }
+    public IList<EstablishmentLinkModel>? Successors { get; set; }
 }

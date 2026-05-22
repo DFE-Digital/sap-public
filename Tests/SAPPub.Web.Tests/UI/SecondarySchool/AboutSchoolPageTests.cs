@@ -12,7 +12,9 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         ["137552"] = "school/137552/stewards-academy-science-specialist-harlow/secondary/about",
         ["100273"] = "school/100273/saint-paul-roman-catholic-infant-school/secondary/about",
         ["107564"] = "school/107564/todmorden-high-school/secondary/about",
-        ["145744"] = "school/145744/abbey-park-school/secondary/about"
+        ["145744"] = "school/145744/abbey-park-school/secondary/about",
+        ["178965"] = "school/178965/predecessor-1-to-abbey-park-school/secondary/about",
+        ["178966"] = "school/178966/predecessor-2-to-abbey-park-school/secondary/about"
     };
 
     [Fact]
@@ -83,10 +85,43 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
     }
 
     [Theory]
+    [InlineData("178965")]
+    [InlineData("178966")]
+    public async Task AboutSchoolPage_SchoolClosedWithSuccessor_DisplaysExpectedSchoolClosedWithSuccessorInfo(string urn)
+    {
+        // Act
+        await Page.GotoAsync(_schoolUrnToUrlMap[urn]);
+
+        // Assert
+        var schoolClosedCard = Page.GetByTestId("school-closed-custom-card");
+
+        Assert.True(await schoolClosedCard.IsVisibleAsync());
+
+        var links = await schoolClosedCard.Locator("a[href*='/secondary/about']").AllAsync();
+        var linkText = await Task.WhenAll(links.Select(async link => await link.InnerTextAsync()));
+        Assert.Collection(linkText,
+            linkText => Assert.Contains("Abbey Park School", linkText));
+
+        await Task.WhenAll(
+            Page.WaitForURLAsync("**/secondary/about**"),
+            links[0].ClickAsync()
+        );
+
+        var schoolNameCaptionLocator = Page.Locator("#school-name-caption");
+        var isVisible = await schoolNameCaptionLocator.IsVisibleAsync();
+        var schoolNameCaption = await schoolNameCaptionLocator.TextContentAsync();
+
+        // Assert
+        Assert.True(isVisible);
+        Assert.NotNull(schoolNameCaption);
+        Assert.Equal("Abbey Park School", schoolNameCaption);
+    }
+
+    [Theory]
     [InlineData("105574", false, false)]
     [InlineData("137552", true, false)]
     [InlineData("107564", true, true)]
-    public async Task AboutSchoolPage_Displays_School_Closed_Info(string urn, bool isSchoolClosed, bool hasSchoolClosedDate)
+    public async Task AboutSchoolPage_SchoolClosedWithNoSuccessor_DisplaysExpectedSchoolClosedInfo(string urn, bool isSchoolClosed, bool hasSchoolClosedDate)
     {
         // Act
         await Page.GotoAsync(_schoolUrnToUrlMap[urn]);
@@ -103,7 +138,8 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
             var expectedText = hasSchoolClosedDate ? "This school closed on 23 March 2025" : "Closed";
 
             Assert.NotNull(value);
-            Assert.Equal(expectedText, value.Trim());
+            Assert.Contains(expectedText, value.Trim());
+            Assert.DoesNotContain("It is now ", value.Trim());
         }
     }
 
@@ -130,9 +166,9 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
             links[0].ClickAsync()
         );
 
-        var predecessorSchoolNameCaptionLocator = Page.Locator("#school-name-caption");
-        var isVisible = await predecessorSchoolNameCaptionLocator.IsVisibleAsync();
-        var schoolNameCaption = await predecessorSchoolNameCaptionLocator.TextContentAsync();
+        var schoolNameCaptionLocator = Page.Locator("#school-name-caption");
+        var isVisible = await schoolNameCaptionLocator.IsVisibleAsync();
+        var schoolNameCaption = await schoolNameCaptionLocator.TextContentAsync();
 
         // Assert
         Assert.True(isVisible);

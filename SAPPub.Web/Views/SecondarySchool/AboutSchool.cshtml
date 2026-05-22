@@ -26,8 +26,26 @@
                 <div class="error__icon"></div>
                 <div class="custom-card__content">
                     <p class="govuk-body">
-                        @(Model.ClosedDate.IsAvailable ? $"This school closed on {Model.ClosedDate.DisplayText(d => d.ToString("dd MMMM yyyy"))}" : "Closed")
+                        @(Model.ClosedDate.IsAvailable ? $"This school closed on {Model.ClosedDate.DisplayText(d => d.ToString("dd MMMM yyyy"))}." : "Closed")
+                        @if (Model.HasSuccessors) 
+                        {
+                            @($" It is now {string.Join(" and ", Model.Successors!.Select(s => s.Name))}.")
+                        }
                     </p>
+                    @if (Model.HasSuccessors)
+                    {
+                        foreach (var successor in Model.Successors!)
+                        {
+                            <p class="govuk-body">
+                                <a asp-route="@RouteConstants.SecondaryAboutSchool"
+                                asp-route-urn="@successor.Urn"
+                                asp-route-schoolName="@TextHelpers.CleanForUrl(successor.Name)"
+                                class="govuk-link">
+                                    @($"View {successor.Name}'s profile")
+                                </a>
+                            </p>
+                        }
+                    }
                 </div>
             </div>
         }
