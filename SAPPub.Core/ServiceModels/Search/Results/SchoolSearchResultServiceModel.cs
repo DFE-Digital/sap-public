@@ -1,4 +1,5 @@
-﻿using SAPPub.Core.ServiceModels.Common;
+﻿using SAPPub.Core.Enums;
+using SAPPub.Core.ServiceModels.Common;
 
 namespace SAPPub.Core.ServiceModels.Search.Results;
 
@@ -26,5 +27,5 @@ public record SchoolSearchResultServiceModel
     public string? ReligiousCharacterName { get; init; }
     public double? Distance { get; init; }
     public DateOnly? ClosedDate { get; set; }
-    public int? StatusCode { get; set; }
+    public EstablishmentStatus? EstablishmentStatus { get; set; }
 }

@@ -30,50 +30,6 @@ namespace SAPPub.Infrastructure.Tests.Repositories
         }
 
         [Fact]
-        public async Task GetAllEstablishmentsAsync_ReturnsAllItemsFromGenericRepository()
-        {
-            // Arrange
-            var expected = new List<Establishment>
-            {
-                new() { URN = "1", EstablishmentName = "One" },
-                new() { URN = "2", EstablishmentName = "Two" }
-            };
-
-            _mockGenericRepo
-                .Setup(r => r.ReadAllAsync(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(expected);
-
-            // Act
-            var result = await _sut.GetAllEstablishmentsAsync(CancellationToken.None);
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(2, result.Count());
-            Assert.Contains(result, e => e.URN == "1");
-            Assert.Contains(result, e => e.URN == "2");
-
-            _mockGenericRepo.Verify(r => r.ReadAllAsync(It.IsAny<CancellationToken>()), Times.Once);
-        }
-
-        [Fact]
-        public async Task GetAllEstablishmentsAsync_ReturnsEmptyWhenGenericRepositoryReturnsEmpty()
-        {
-            // Arrange
-            _mockGenericRepo
-                .Setup(r => r.ReadAllAsync(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(Enumerable.Empty<Establishment>());
-
-            // Act
-            var result = await _sut.GetAllEstablishmentsAsync(CancellationToken.None);
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Empty(result);
-
-            _mockGenericRepo.Verify(r => r.ReadAllAsync(It.IsAny<CancellationToken>()), Times.Once);
-        }
-
-        [Fact]
         public async Task GetEstablishmentAsync_ReturnsCorrectItemWhenUrnExists()
         {
             // Arrange

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.ServiceModels.Common;
 using SAPPub.Core.ServiceModels.Search.InputModels;
@@ -23,7 +24,7 @@ public class SearchControllerTests
         GenderName = "Mixed",
         ReligiousCharacterName = "None",
         Distance = 0.1,
-        StatusCode = 1
+        EstablishmentStatus = EstablishmentStatus.Open
     };
     private readonly SchoolSearchResultServiceModel _schoolSearchResult2 = new()
     {
@@ -33,7 +34,7 @@ public class SearchControllerTests
         GenderName = "Female",
         ReligiousCharacterName = "Muslim",
         Distance = 0.4,
-        StatusCode = 2,
+        EstablishmentStatus = EstablishmentStatus.Closed,
         ClosedDate = new DateOnly(2026, 01, 01)
     };
 
@@ -75,7 +76,7 @@ public class SearchControllerTests
         _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
         {
             PagedResponse = new PagedResponse<SchoolSearchResultServiceModel>
-            { 
+            {
                 TotalRecords = 2,
                 Records =
                 [
@@ -104,7 +105,7 @@ public class SearchControllerTests
                 Assert.Equal(_schoolSearchResult1.Address, item.Address);
                 Assert.Equal(_schoolSearchResult1.GenderName, item.GenderName);
                 Assert.Equal(_schoolSearchResult1.ReligiousCharacterName, item.ReligiousCharacter);
-                Assert.Equal(_schoolSearchResult1.StatusCode, item.StatusCode);
+                Assert.Equal(_schoolSearchResult1.EstablishmentStatus, item.EstablishmentStatus);
                 Assert.Null(_schoolSearchResult1.ClosedDate);
             },
             item =>
@@ -114,7 +115,7 @@ public class SearchControllerTests
                 Assert.Equal(_schoolSearchResult2.Address, item.Address);
                 Assert.Equal(_schoolSearchResult2.GenderName, item.GenderName);
                 Assert.Equal(_schoolSearchResult2.ReligiousCharacterName, item.ReligiousCharacter);
-                Assert.Equal(_schoolSearchResult2.StatusCode, item.StatusCode);                
+                Assert.Equal(_schoolSearchResult2.EstablishmentStatus, item.EstablishmentStatus);
                 Assert.Equal(_schoolSearchResult2.ClosedDate!.Value, item.ClosedDate.Value);
                 Assert.True(item.ClosedDate.IsAvailable);
             });
@@ -171,7 +172,7 @@ public class SearchControllerTests
             Assert.Equal(expectedSearchResult.Address, searchResult.Address);
             Assert.Equal(expectedSearchResult.GenderName, searchResult.GenderName);
             Assert.Equal(expectedSearchResult.ReligiousCharacterName, searchResult.ReligiousCharacter);
-            Assert.Equal(expectedSearchResult.StatusCode, searchResult.StatusCode);
+            Assert.Equal(expectedSearchResult.EstablishmentStatus, searchResult.EstablishmentStatus);
             Assert.Null(expectedSearchResult.ClosedDate);
         }
 
@@ -260,7 +261,7 @@ public class SearchControllerTests
                     _schoolSearchResult1
                 ],
                 PagerInfo = new Pager(2, 1, 10)
-            }            
+            }
         });
         var searchParamsModel = new SearchParamsModel() { NameSearchTerm = searchQuery.Name, LocationSearchTerm = searchQuery.Location };
 
@@ -319,7 +320,7 @@ public class SearchControllerTests
         _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
         {
             PagedResponse = new PagedResponse<SchoolSearchResultServiceModel>
-            {                
+            {
                 Records =
                 [
                     new SchoolSearchResultServiceModel

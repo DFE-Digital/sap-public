@@ -4,6 +4,7 @@ using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
+using SAPPub.Core.Interfaces.Services.KS4.Attendance;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
 using SAPPub.Web.Constants;
@@ -44,16 +45,20 @@ namespace SAPPub.Web.Controllers
             CancellationToken ct)
         {
             var admissionsDetails = await admissionsService.GetAdmissionsDetailsAsync(urn);
-            var model = AdmissionsViewModel.MapFrom(admissionsDetails!, urn);
+            var model = AdmissionsViewModel.MapFrom(admissionsDetails, urn);
             return View(model);
         }
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/attendance", Name = RouteConstants.SecondaryAttendance)]
-        public async Task<IActionResult> Attendance(string urn, string schoolName, CancellationToken ct)
+        public async Task<IActionResult> Attendance(
+            [FromServices] IAttendanceService attendanceService,
+            string urn,
+            string schoolName,
+            CancellationToken ct)
         {
-            var establishmentDetails = await establishmentService.GetEstablishmentAsync(urn, ct);
-            var model = AttendanceViewModel.Map(establishmentDetails);
+            var attendanceDetails = await attendanceService.GetAttendenceDetailsAsync(urn, ct);
+            var model = AttendanceViewModel.Map(attendanceDetails);
             return View(model);
         }
 

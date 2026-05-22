@@ -13,9 +13,9 @@ namespace SAPPub.Infrastructure.Repositories.KS4.Destinations
             _repo = repo ?? throw new ArgumentNullException(nameof(repo));
         }
 
-        public async Task<IEnumerable<EstablishmentDestinations>> GetAllEstablishmentDestinationsAsync(CancellationToken ct = default)
+        public Task<IEnumerable<EstablishmentDestinations>> GetAllEstablishmentDestinationsAsync(CancellationToken ct = default)
         {
-            return await _repo.ReadAllAsync(ct);
+            return _repo.ReadAllAsync(ct);
         }
 
         public async Task<EstablishmentDestinations?> GetEstablishmentDestinationsAsync(string urn, CancellationToken ct = default)

@@ -79,7 +79,7 @@ public class SchoolSearchService : ISchoolSearchService
                 GenderName = e.GenderName,
                 ReligiousCharacterName = e.ReligiousCharacterName,
                 Distance = null,
-                StatusCode = e.StatusCode,
+                EstablishmentStatus = e.StatusCode.ToStatus(),
                 ClosedDate = e.ClosedDate.ToDateOnly()
             }).ToList();
         }
@@ -101,7 +101,7 @@ public class SchoolSearchService : ISchoolSearchService
                 Address = e.Address,
                 GenderName = e.GenderName,
                 ReligiousCharacterName = e.ReligiousCharacterName,
-                StatusCode = e.StatusCode,
+                EstablishmentStatus = e.StatusCode.ToStatus(),
                 ClosedDate = e.ClosedDate.ToDateOnly()
             }).ToList();
         }
@@ -124,7 +124,7 @@ public class SchoolSearchService : ISchoolSearchService
                 Address = e.Address,
                 GenderName = e.GenderName,
                 ReligiousCharacterName = e.ReligiousCharacterName,
-                StatusCode = e.StatusCode,
+                EstablishmentStatus = e.StatusCode.ToStatus(),
                 ClosedDate = e.ClosedDate.ToDateOnly()
             }).ToList();
         }

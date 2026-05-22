@@ -8,6 +8,7 @@
 \ir 01_reference_tables.sql
 \ir 02_create_raw_tables.sql
 \ir 03_copy_into_raw_local.sql
+\ir 04_v_england_absence.sql
 \ir 04_v_england_destinations.sql
 \ir 04_v_england_performance.sql
 \ir 04_v_establishment.sql
@@ -18,6 +19,7 @@
 \ir 04_v_establishment_destinations.sql
 \ir 04_v_establishment_performance.sql
 \ir 04_v_establishment_workforce.sql
+\ir 04_v_la_absence.sql
 \ir 04_v_la_destinations.sql
 \ir 04_v_la_performance.sql
 \ir 04_v_la_subject_entries.sql

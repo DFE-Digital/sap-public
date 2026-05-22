@@ -47,10 +47,12 @@ public class GenerateIndexes
             { "v_establishment_workforce",    "\"Id\"" },
 
             // England
+            { "v_england_absence",      "\"Id\"" },
             { "v_england_destinations", "\"Id\"" },
             { "v_england_performance",  "\"Id\"" },
 
             // Local Authority
+            { "v_la_absence",      "\"Id\"" },
             { "v_la_destinations", "\"Id\"" },
             { "v_la_performance",  "\"Id\"" }
         };

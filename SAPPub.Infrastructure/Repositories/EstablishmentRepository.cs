@@ -25,12 +25,6 @@ namespace SAPPub.Infrastructure.Repositories
             return _repo.ReadPageAsync(page, take, ct);
         }
 
-        public Task<IEnumerable<Establishment>> GetAllEstablishmentsAsync(CancellationToken ct = default)
-        {
-            // Keep only while we genuinely need to list; LIMIT 100 is already in DapperHelpers
-            return _repo.ReadAllAsync(ct);
-        }
-
         public async Task<Establishment?> GetEstablishmentAsync(string urn, CancellationToken ct = default)
         {
             if (string.IsNullOrWhiteSpace(urn))

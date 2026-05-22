@@ -12,10 +12,13 @@ using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
+using SAPPub.Core.Interfaces.Services.KS4.Attendance;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels.KS4.Admissions;
+using SAPPub.Core.ServiceModels.KS4.Attendance;
 using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Constants;
@@ -37,6 +40,7 @@ public class SecondarySchoolControllerTests
     private readonly Mock<IAttainmentAndProgressService> _mockAttainmentAndProgressService = new();
     private readonly Mock<IAdmissionsService> _mockAdmissionsService = new();
     private readonly Mock<IAboutSchoolService> _mockAboutSchoolService = new();
+    private readonly Mock<IAttendanceService> _mockAttendanceService = new();
     private readonly SecondarySchoolController _controller;
     private Establishment _fakeEstablishment;
 
@@ -150,10 +154,23 @@ public class SecondarySchoolControllerTests
             OfficialSixthFormId = _fakeEstablishment.OfficialSixthFormId,
             ResourcedProvisionName = _fakeEstablishment.ResourcedProvisionName,
             EstablishmentTypeGroupId = _fakeEstablishment.EstablishmentTypeGroupId,
-            StatusCode = _fakeEstablishment.StatusCode,
+            Status = _fakeEstablishment.StatusCode.ToStatus(),
             ClosedDate = _fakeEstablishment.ClosedDate.ToDateOnly(),
             OpenReasonId = _fakeEstablishment.OpenReasonId,
-            OpenDate = _fakeEstablishment.OpenDate.ToDateOnly()
+            OpenDate = _fakeEstablishment.OpenDate.ToDateOnly(),
+            Predecessors = new List<EstablishmentLinkModel>
+            {
+                new EstablishmentLinkModel
+                {
+                    Urn = "654321",
+                    Name = "Predecessor School 1"
+                },
+                new EstablishmentLinkModel
+                {
+                    Urn = "789012",
+                    Name = "Predecessor School 2"
+                }
+            }
         };
     }
 
@@ -206,7 +223,7 @@ public class SecondarySchoolControllerTests
     }
 
     [Fact]
-    public async Task Get_AboutSchool_Info_ReturnsOk()
+    public async Task Get_AboutSchool_Info_ReturnsExpected()
     {
         var expectedResult = SchoolDetails();
 
@@ -216,8 +233,8 @@ public class SecondarySchoolControllerTests
 
         var result = await _controller.AboutSchool(
             _mockAboutSchoolService.Object,
-            _fakeEstablishment.URN,
-            _fakeEstablishment.EstablishmentName,
+            expectedResult.Urn,
+            expectedResult.SchoolName,
             CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
@@ -241,12 +258,24 @@ public class SecondarySchoolControllerTests
         Assert.Equal(expectedResult.PupilSex, model.PupilSex.Value);
         Assert.Equal(expectedResult.ReligiousCharacter, model.ReligiousCharacter.Value);
         Assert.Equal(expectedResult.OfficialSixthFormId, model.SixthForm.Value);
-        Assert.Equal(expectedResult.StatusCode, model.StatusCode);
+        Assert.Equal(expectedResult.Status, model.StatusCode);
         Assert.False(model.ClosedDate.IsAvailable);
         Assert.False(model.IsLocalAuthoritySchool);
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(expectedResult.Urn, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(TextHelpers.CleanForUrl(expectedResult.SchoolName), model.RouteAttributes[RouteConstants.SchoolName]);
+        Assert.Equal(expectedResult.OpenReasonId, model.OpenReasonId);
+        Assert.Collection(model.Predecessors!,
+            predecessor1 =>
+            {
+                Assert.Equal(expectedResult.Predecessors![0].Urn, predecessor1.Urn);
+                Assert.Equal(expectedResult.Predecessors[0].Name, predecessor1.Name);
+            },
+            predecessor2 =>
+            {
+                Assert.Equal(expectedResult.Predecessors![1].Urn, predecessor2.Urn);
+                Assert.Equal(expectedResult.Predecessors[1].Name, predecessor2.Name);
+            });
     }
 
     [Fact]
@@ -289,7 +318,7 @@ public class SecondarySchoolControllerTests
         Assert.Equal(NotAvailable, model.PupilSex.DisplayText());
         Assert.Equal(NotAvailable, model.ReligiousCharacter.DisplayText());
         Assert.Equal(NotAvailable, model.SixthForm.DisplayText());
-        Assert.Equal(expectedResult.StatusCode, model.StatusCode);
+        Assert.Equal(expectedResult.Status, model.StatusCode);
         Assert.False(model.ClosedDate.IsAvailable);
         Assert.False(model.IsLocalAuthoritySchool);
         Assert.Equal(2, model.RouteAttributes.Count);
@@ -606,7 +635,7 @@ public class SecondarySchoolControllerTests
                 SchoolWebsite: _fakeEstablishment.Website,
                 LAName: laName,
                 LASchoolAdmissionsUrl: lASchoolAdmissionsUrl,
-                StatusCode: 1
+                EstablishmentStatus: EstablishmentStatus.Open
             ));
 
         var result = await _controller.Admissions(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
@@ -646,7 +675,7 @@ public class SecondarySchoolControllerTests
                 SchoolWebsite: _fakeEstablishment.Website,
                 LAName: laName,
                 LASchoolAdmissionsUrl: lASchoolAdmissionsUrl,
-                StatusCode: 1
+                EstablishmentStatus: EstablishmentStatus.Open
             ));
 
         var result = await _controller.Admissions(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
@@ -677,12 +706,11 @@ public class SecondarySchoolControllerTests
     }
 
     [Theory]
-    [InlineData(1, false)]
-    [InlineData(2, true)]
-    [InlineData(3, false)]
-    public async Task Get_Admissions_Info_IsSchoolClosed(int statusCode, bool expectedResult)
+    [InlineData(EstablishmentStatus.Open, false)]
+    [InlineData(EstablishmentStatus.Closed, true)]
+    public async Task Get_Admissions_Info_IsSchoolClosed(EstablishmentStatus? statusCode, bool expectedResult)
     {
-        _fakeEstablishment.StatusCode = statusCode;
+        _fakeEstablishment.StatusCode = statusCode.ToStatusCode();
 
         var lASchoolAdmissionsUrl = "https://www.example.com/school-admissions";
         var laName = "Example Local Authority";
@@ -694,7 +722,7 @@ public class SecondarySchoolControllerTests
                 SchoolWebsite: _fakeEstablishment.Website,
                 LAName: laName,
                 LASchoolAdmissionsUrl: lASchoolAdmissionsUrl,
-                StatusCode: statusCode
+                EstablishmentStatus: statusCode
             ));
 
         var result = await _controller.Admissions(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
@@ -708,10 +736,24 @@ public class SecondarySchoolControllerTests
         Assert.Equal(expectedResult, model.IsSchoolClosed);
     }
 
-    [Fact]
-    public async Task Get_Attendance_Info_ReturnsOk()
+    [Theory]
+    [InlineData(95.5, 97.9, 93.2)]
+    [InlineData(null, null, null)]
+    public async Task Get_Attendance_Info_ReturnsOk(double? estAttendance, double? laAttendance, double? engAttendance)
     {
-        var result = await _controller.Attendance(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
+        _mockAttendanceService
+            .Setup(s => s.GetAttendenceDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new AttendanceModel
+            {
+                Urn = _fakeEstablishment.URN,
+                SchoolName = _fakeEstablishment.EstablishmentName,
+                LocalAuthority = _fakeEstablishment.LAName,
+                EstablishmentAttendance = estAttendance,
+                LocalAuthorityAttendance = laAttendance,
+                EnglandAttendance = engAttendance
+            });
+
+        var result = await _controller.Attendance(_mockAttendanceService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
@@ -720,7 +762,67 @@ public class SecondarySchoolControllerTests
         Assert.NotNull(model);
         Assert.Equal(_fakeEstablishment.URN, model.URN);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
-        Assert.Equal(_fakeEstablishment.Website, model.SchoolWebsite.Value);
+        Assert.Equal(_fakeEstablishment.LAName, model.LocalAuthority.Value);
+
+        var expectedEstablishmentAttendence = estAttendance != null ? estAttendance.ToString() : NotAvailable;
+        var expectedLAAttendence = laAttendance != null ? laAttendance.ToString() : NotAvailable;
+        var expectedEnglandAttendence = engAttendance != null ? engAttendance.ToString() : NotAvailable;
+
+        Assert.Equal(expectedEstablishmentAttendence, model.EstablishmentAttendance.DisplayText());
+        Assert.Equal(expectedLAAttendence, model.LocalAuthorityAttendance.DisplayText());
+        Assert.Equal(expectedEnglandAttendence, model.EnglandAttendance.DisplayText());
+
+        Assert.Equal(2, model.RouteAttributes.Count);
+        Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
+        Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
+    }
+
+    [Theory]
+    [InlineData(5.5, 7.81, 10.2)]
+    [InlineData(null, null, null)]
+    public async Task Get_Attendance_Absence_Info_ReturnsOk(double? estAbsence, double? laAbsence, double? engAbsence)
+    {
+        var enrolmentsTotal = 5550;
+        var absenceTotal = 110;
+        _mockAttendanceService
+            .Setup(s => s.GetAttendenceDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new AttendanceModel
+            {
+                Urn = _fakeEstablishment.URN,
+                SchoolName = _fakeEstablishment.EstablishmentName,
+                LocalAuthority = _fakeEstablishment.LAName,
+                EstablishmentPersistentAbsence = estAbsence,
+                LocalAuthorityPersistentAbsence = laAbsence,
+                EnglandPersistentAbsence = engAbsence,
+                EstablishmentEnrolmentsTotal = enrolmentsTotal,
+                EstablishmentPersistentAbsenceTotal = absenceTotal,
+            });
+
+        var result = await _controller.Attendance(_mockAttendanceService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as AttendanceViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(_fakeEstablishment.URN, model.URN);
+        Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
+        Assert.Equal(_fakeEstablishment.LAName, model.LocalAuthority.Value);
+
+        var expectedEnrolmentsTotal = enrolmentsTotal.ToString();
+        var expectedAbsenceTotal = absenceTotal.ToString();
+
+        var expectedEstablishmentAbsence = estAbsence != null ? estAbsence.ToString() : NotAvailable;
+        var expectedLAAbsence = laAbsence != null ? laAbsence.ToString() : NotAvailable;
+        var expectedEnglandAbsence = engAbsence != null ? engAbsence.ToString() : NotAvailable;
+
+        Assert.Equal(expectedEstablishmentAbsence, model.EstablishmentPersistentAbsence.DisplayText());
+        Assert.Equal(expectedLAAbsence, model.LocalAuthorityPersistentAbsence.DisplayText());
+        Assert.Equal(expectedEnglandAbsence, model.EnglandPersistentAbsence.DisplayText());
+
+        Assert.Equal(expectedEnrolmentsTotal, model.EstablishmentEnrolmentsTotal.DisplayText());
+        Assert.Equal(expectedAbsenceTotal, model.EstablishmentPersistentAbsenceTotal.DisplayText());
+
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);

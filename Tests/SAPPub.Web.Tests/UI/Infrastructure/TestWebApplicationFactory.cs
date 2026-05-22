@@ -42,6 +42,9 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
             {
                 services.RemoveAll(typeof(IGenericRepository<>));
                 services.AddSingleton(typeof(IGenericRepository<>), typeof(FakeGenericRepository<>));
+                services.RemoveAll(typeof(IEstablishmentLinksRepository));
+                services.AddSingleton<IEstablishmentLinksRepository, FakeEstablishmentLinksRepository>();
+                services.RemoveAll(typeof(IEstablishmentRepository));
                 services.AddSingleton<IEstablishmentRepository, FakeEstablishmentRepository>();
             });
     }

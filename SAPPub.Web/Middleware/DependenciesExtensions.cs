@@ -13,6 +13,7 @@ using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.KS4.Absence;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
+using SAPPub.Core.Interfaces.Services.KS4.Attendance;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
@@ -24,6 +25,7 @@ using SAPPub.Core.Services.KS4;
 using SAPPub.Core.Services.KS4.AboutSchool;
 using SAPPub.Core.Services.KS4.Absence;
 using SAPPub.Core.Services.KS4.Admissions;
+using SAPPub.Core.Services.KS4.Attendance;
 using SAPPub.Core.Services.KS4.Destinations;
 using SAPPub.Core.Services.KS4.Performance;
 using SAPPub.Core.Services.KS4.SubjectEntries;
@@ -52,6 +54,8 @@ namespace SAPPub.Web.Middleware
 
             services.AddTransient<IEstablishmentRepository, EstablishmentRepository>();
             services.AddTransient<IEstablishmentService, EstablishmentService>();
+
+            services.AddTransient<IEstablishmentLinksRepository, EstablishmentLinksRepository>();
 
             services.AddTransient<IEstablishmentPerformanceRepository, EstablishmentPerformanceRepository>();
             services.AddTransient<IEstablishmentPerformanceService, EstablishmentPerformanceService>();
@@ -93,6 +97,7 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<IAdmissionsService, EstablishmentAdmissionsService>();
             services.AddTransient<IAboutSchoolService, AboutSchoolService>();
             services.AddTransient<ILaUrlsRepository, LaUrlsRepository>();
+            services.AddTransient<IAttendanceService, AttendanceService>();
 
             services.AddSingleton<ISchoolSearchService, SchoolSearchService>();
 

@@ -1,4 +1,5 @@
-﻿using SAPPub.Core.Extensions;
+﻿using SAPPub.Core.Enums;
+using SAPPub.Core.Extensions;
 using SAPPub.Core.Helpers;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Web.Helpers;
@@ -61,13 +62,15 @@ namespace SAPPub.Web.Models.SecondarySchool
         public required DisplayField<DateOnly> ClosedDate { get; set; }
         public DateOnly? OpenDate { get; set; }
 
-        public int? StatusCode { get; set; }
+        public EstablishmentStatus? StatusCode { get; set; }
 
-        public bool IsSchoolClosed => StatusCode == SchoolClosedStatusCode;
+        public bool IsSchoolClosed => StatusCode == EstablishmentStatus.Closed;
         public int? OpenReasonId { get; set; }
 
         public required DisplayField<string> RecentlyOpenedSchoolMessage { get; set; }
 
+        public bool HasPredecessors => Predecessors != null;
+        public List<SuccessorOrPredecessorDetailsModel>? Predecessors { get; set; }
 
         public static AboutSchoolViewModel Map(AboutSchoolModel schoolDetails)
         {
@@ -97,11 +100,12 @@ namespace SAPPub.Web.Models.SecondarySchool
                 SenUnit = GetSenUnit(schoolDetails.ResourcedProvisionName),
                 ResourcedProvision = GetResourcedProvision(schoolDetails.ResourcedProvisionName),
                 IsLocalAuthoritySchool = schoolDetails.EstablishmentTypeGroupId.ToInt() == LocalAuthorityEstablishmentGroupTypeId,
-                StatusCode = schoolDetails.StatusCode,
+                StatusCode = schoolDetails.Status,
                 ClosedDate = schoolDetails.ClosedDate.ToDisplayField(),
                 OpenDate = schoolDetails.OpenDate,
                 OpenReasonId = schoolDetails.OpenReasonId,
-                RecentlyOpenedSchoolMessage = GetRecentlyOpenedSchoolMessage(schoolDetails.OpenReasonId, schoolDetails.OpenDate)
+                RecentlyOpenedSchoolMessage = GetRecentlyOpenedSchoolMessage(schoolDetails.OpenReasonId, schoolDetails.OpenDate),
+                Predecessors = schoolDetails.Predecessors?.Select(p => SuccessorOrPredecessorDetailsModel.Map(p)).ToList()
             };
         }
 
@@ -132,7 +136,7 @@ namespace SAPPub.Web.Models.SecondarySchool
 
         private static DisplayField<string> GetRecentlyOpenedSchoolMessage(int? openReasonId, DateOnly? openDate)
         {
-            if (!openDate.HasValue || !IsWithinLastThreeAcademicYears(openDate.Value))
+            if (!openDate.HasValue || !AcademicYearsHelper.IsWithinLastThreeAcademicYears(openDate.Value))
                 return DisplayField<string>.NotAvailable();
 
             var date = $" on {openDate.Value:d MMMM yyyy}";
@@ -141,17 +145,6 @@ namespace SAPPub.Web.Models.SecondarySchool
                 AcademyOpenReasonId => $"Opened as an academy{date}".ToDisplayField(),
                 _ => $"This school opened{date}".ToDisplayField()
             };
-        }
-
-        private static bool IsWithinLastThreeAcademicYears(DateOnly openDate)
-        {
-            var today = DateTime.Today;
-            var previousSept12 = (today.Month < 9 || (today.Month == 9 && today.Day < 12))
-                ? new DateTime(today.Year - 1, 9, 12)
-                : new DateTime(today.Year, 9, 12);
-
-            var cutoffDate = previousSept12.AddYears(-3);
-            return openDate.ToDateTime(TimeOnly.MinValue) >= cutoffDate;
         }
     }
 }
