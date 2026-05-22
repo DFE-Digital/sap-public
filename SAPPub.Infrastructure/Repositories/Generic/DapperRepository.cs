@@ -4,7 +4,6 @@ using Npgsql;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Infrastructure.Mapping.ValueCodes;
 using SAPPub.Infrastructure.Repositories.Helpers;
-using System.Data;
 
 namespace SAPPub.Infrastructure.Repositories.Generic
 {
@@ -48,14 +47,9 @@ namespace SAPPub.Infrastructure.Repositories.Generic
 
             await using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
 
-            var cmd = new CommandDefinition(
-                commandText: sql,
-                parameters: null,
-                transaction: null,
-                commandTimeout: null,
-                commandType: CommandType.Text,
-                flags: CommandFlags.Buffered | CommandFlags.NoCache,
-                cancellationToken: ct);
+            var cmd = new DapperCommandBuilder()
+                    .WithCommandText(sql)
+                    .Build(ct);
 
             var items = (await conn.QueryAsync<T>(cmd).ConfigureAwait(false)).ToList();
 
@@ -75,14 +69,9 @@ namespace SAPPub.Infrastructure.Repositories.Generic
 
                 await using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
 
-                var cmd = new CommandDefinition(
-                    commandText: sql,
-                    parameters: null,
-                    transaction: null,
-                    commandTimeout: null,
-                    commandType: CommandType.Text,
-                    flags: CommandFlags.Buffered | CommandFlags.NoCache,
-                    cancellationToken: ct);
+                var cmd = new DapperCommandBuilder()
+                    .WithCommandText(sql)
+                    .Build(ct);
 
                 var items = (await conn.QueryAsync<T>(cmd).ConfigureAwait(false)).ToList();
 
@@ -116,14 +105,10 @@ namespace SAPPub.Infrastructure.Repositories.Generic
 
                 await using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
 
-                var cmd = new CommandDefinition(
-                    commandText: sql,
-                    parameters: parameters,
-                    transaction: null,
-                    commandTimeout: null,
-                    commandType: CommandType.Text,
-                    flags: CommandFlags.Buffered | CommandFlags.NoCache,
-                    cancellationToken: ct);
+                var cmd = new DapperCommandBuilder()
+                    .WithCommandText(sql)
+                    .WithParameters(parameters)
+                    .Build(ct);
 
                 var item = await conn.QuerySingleOrDefaultAsync<T>(cmd).ConfigureAwait(false);
 
@@ -159,14 +144,10 @@ namespace SAPPub.Infrastructure.Repositories.Generic
 
                 var param = new DynamicParameters(writeObject);
 
-                var cmd = new CommandDefinition(
-                    commandText: sql,
-                    parameters: param,
-                    transaction: null,
-                    commandTimeout: null,
-                    commandType: CommandType.Text,
-                    flags: CommandFlags.Buffered | CommandFlags.NoCache,
-                    cancellationToken: ct);
+                var cmd = new DapperCommandBuilder()
+                    .WithCommandText(sql)
+                    .WithParameters(param)
+                    .Build(ct);
 
                 var item = await conn.ExecuteAsync(cmd).ConfigureAwait(false);
 
@@ -198,14 +179,10 @@ namespace SAPPub.Infrastructure.Repositories.Generic
 
                 var param = new DynamicParameters(updateObject);
 
-                var cmd = new CommandDefinition(
-                    commandText: sql,
-                    parameters: param,
-                    transaction: null,
-                    commandTimeout: null,
-                    commandType: CommandType.Text,
-                    flags: CommandFlags.Buffered | CommandFlags.NoCache,
-                    cancellationToken: ct);
+                var cmd = new DapperCommandBuilder()
+                    .WithCommandText(sql)
+                    .WithParameters(param)
+                    .Build(ct);
 
                 var item = await conn.ExecuteAsync(cmd).ConfigureAwait(false);
 
@@ -236,14 +213,10 @@ namespace SAPPub.Infrastructure.Repositories.Generic
 
                 await using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
 
-                var cmd = new CommandDefinition(
-                    commandText: sql,
-                    parameters: parameters,
-                    transaction: null,
-                    commandTimeout: null,
-                    commandType: CommandType.Text,
-                    flags: CommandFlags.Buffered | CommandFlags.NoCache,
-                    cancellationToken: ct);
+                var cmd = new DapperCommandBuilder()
+                    .WithCommandText(sql)
+                    .WithParameters(parameters)
+                    .Build(ct);
 
                 var items = (await conn.QueryAsync<T>(cmd).ConfigureAwait(false)).ToList();
 

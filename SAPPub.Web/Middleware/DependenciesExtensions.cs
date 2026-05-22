@@ -56,6 +56,8 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<IEstablishmentRepository, EstablishmentRepository>();
             services.AddTransient<IEstablishmentService, EstablishmentService>();
 
+            services.AddTransient<IEstablishmentLinksRepository, EstablishmentLinksRepository>();
+
             services.AddTransient<IEstablishmentPerformanceRepository, EstablishmentPerformanceRepository>();
             services.AddTransient<IEstablishmentPerformanceService, EstablishmentPerformanceService>();
 

@@ -1,4 +1,5 @@
 ﻿@model SAPPub.Web.Models.SecondarySchool.AboutSchoolViewModel;
+@using SAPPub.Core.Helpers
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 
 @{
@@ -27,6 +28,30 @@
                     <p class="govuk-body">
                         @(Model.ClosedDate.IsAvailable ? $"This school closed on {Model.ClosedDate.DisplayText(d => d.ToString("dd MMMM yyyy"))}" : "Closed")
                     </p>
+                </div>
+            </div>
+        }
+
+        @if (Model.HasPredecessors)
+        {
+            <div class="custom-card govuk-!-margin-top-0" data-testid="school-predecessors-custom-card">
+                <div class="custom-card__content">
+                    <p class="govuk-body">
+                        @($"This school opened on {Model.OpenDate?.ToString("d MMMM yyyy")}. It was previously " +
+                                            string.Join(" and ", Model.Predecessors!.Select(p => p.Name)) + ".")
+                    </p>
+
+                    @foreach (var predecessor in Model.Predecessors!)
+                    {
+                        <p class="govuk-body">
+                            <a asp-route="@RouteConstants.SecondaryAboutSchool"
+                               asp-route-urn="@predecessor.Urn"
+                               asp-route-schoolName="@TextHelpers.CleanForUrl(predecessor.Name)"
+                               class="govuk-link">
+                                @($"View {predecessor.Name}'s profile")
+                            </a>
+                        </p>
+                    }
                 </div>
             </div>
         }
