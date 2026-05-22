@@ -51,4 +51,4 @@ public sealed class EstablishmentService : IEstablishmentService
             return _establishmentRepository.SearchByLocationAsync(latitude, longitude, distance, page, pageSize, ct);
         }
     }
-}
+
