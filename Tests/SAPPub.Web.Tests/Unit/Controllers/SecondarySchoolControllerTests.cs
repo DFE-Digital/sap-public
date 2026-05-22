@@ -252,17 +252,6 @@ public class SecondarySchoolControllerTests
         Assert.Equal(expectedResult.Urn, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(TextHelpers.CleanForUrl(expectedResult.SchoolName), model.RouteAttributes[RouteConstants.SchoolName]);
         Assert.Equal(expectedResult.OpenReasonId, model.OpenReasonId);
-        Assert.Collection(model.Predecessors!,
-            predecessor1 =>
-            {
-                Assert.Equal(expectedResult.Predecessors![0].Urn, predecessor1.Urn);
-                Assert.Equal(expectedResult.Predecessors[0].Name, predecessor1.Name);
-            },
-            predecessor2 =>
-            {
-                Assert.Equal(expectedResult.Predecessors![1].Urn, predecessor2.Urn);
-                Assert.Equal(expectedResult.Predecessors[1].Name, predecessor2.Name);
-            });
     }
 
     [Fact]

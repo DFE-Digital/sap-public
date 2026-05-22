@@ -69,7 +69,7 @@ namespace SAPPub.Web.Models.SecondarySchool
 
         public required DisplayField<string> RecentlyOpenedSchoolMessage { get; set; }
 
-        public bool HasPredecessors => Predecessors != null;
+        public bool HasPredecessors => Predecessors != null && Predecessors.Count > 0;
         public bool HasSuccessors => Successors != null;
 
         public List<SuccessorOrPredecessorDetailsModel>? Predecessors { get; set; }

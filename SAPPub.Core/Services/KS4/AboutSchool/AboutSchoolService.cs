@@ -23,12 +23,11 @@ public sealed class AboutSchoolService(
         bool findSuccessorLinks = establishment.StatusCode.ToStatus() == EstablishmentStatus.Closed;
         bool findPredecessorLinks = openDate is not null && AcademicYearsHelper.IsWithinLastThreeAcademicYears(openDate.Value);
 
-
         var links = findPredecessorLinks || findSuccessorLinks
              ? await establishmentLinksRepository.GetLinksAsync(urn, ct)
              : null;
 
-        var predecessorLinks = findPredecessorLinks
+        var predecessorLinks = (findPredecessorLinks && links != null && links.Any())
             ? links?
                 .Where(l => l.Urn is not null && l.LinkType is not null && l.LinkType.Contains("Predecessor"))
                 .Select(l => new EstablishmentLinkModel
@@ -38,7 +37,7 @@ public sealed class AboutSchoolService(
                 })
                 .ToList()
             : null;
-        var sucessorLinks = findSuccessorLinks
+        var sucessorLinks = (findSuccessorLinks && links != null && links.Any())
             ? links?
                 .Where(l => l.Urn is not null && l.LinkType is not null && l.LinkType.Contains("Successor"))
                 .Select(l => new EstablishmentLinkModel
