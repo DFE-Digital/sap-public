@@ -198,6 +198,34 @@ public class AboutPageTests : PageTestsBase
     }
 
     [Fact]
+    public async Task AboutPage_SchoolClosedButHasNoSuccessors_ShowsNoSchoolSuccessorInfo()
+    {
+        // Arrange
+        var aboutSchoolModel = new AboutSchoolModel()
+        {
+            Urn = "143034",
+            SchoolName = "St David's Church of England Academy",
+            Status = EstablishmentStatus.Closed,
+        };
+        _about
+            .Setup(service => service.GetAboutSchoolDetailsAsync(
+                aboutSchoolModel.Urn,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(aboutSchoolModel);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(aboutSchoolModel.Urn, aboutSchoolModel.SchoolName, _pageRoute));
+
+        // Assert
+        Assert.Contains(aboutSchoolModel.SchoolName, doc.GetRowContentByIdAndKey("school-details-summary", "Name"));
+        var successorInfo = doc.QuerySelector("[data-testid='school-closed-custom-card']");
+        Assert.NotNull(successorInfo);
+        Assert.DoesNotContain("Successor School 1", successorInfo.TextContent);
+        Assert.DoesNotContain("Successor School 2", successorInfo.TextContent);
+    }
+
+
+    [Fact]
     public async Task AboutPage_ShowsSchoolLocationSummary()
     {
         // Arrange
