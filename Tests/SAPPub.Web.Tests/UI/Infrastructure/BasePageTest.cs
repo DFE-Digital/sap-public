@@ -76,6 +76,7 @@ public abstract class BasePageTest : PageTest
 
     protected async Task WriteAccessibilityReport(string pageName)
     {
+        await Page.WaitForLoadStateAsync(LoadState.DOMContentLoaded);
         var axeResult = await Page.RunAxe(new AxeRunOptions
         {
             RunOnly = new RunOnlyOptions { Type = "tag", Values = ["wcag2a", "wcag2aa"] }

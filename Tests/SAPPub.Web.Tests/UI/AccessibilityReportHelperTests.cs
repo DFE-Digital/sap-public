@@ -3,8 +3,15 @@ using SAPPub.Web.Tests.UI.Helpers;
 
 namespace SAPPub.Web.Tests.UI
 {
-    public class AccessibilityReportHelperTests
+    public class AccessibilityReportHelperTests : IDisposable
     {
+        private readonly string _reportDirectory = Path.Combine(Path.GetTempPath(), "sappub-accessibility-tests");
+
+        public AccessibilityReportHelperTests()
+        {
+            AccessibilityReportHelper.Reset();
+        }
+
         [Fact]
         public void BuildTestViolationMarkdown_WithNoVioloations_ReturnsEmptyString()
         {
@@ -24,10 +31,10 @@ namespace SAPPub.Web.Tests.UI
             };
 
             AccessibilityReportHelper.AddViolations("Results page", "/results", violations);
-            await AccessibilityReportHelper.FlushReportAsync();
+            await AccessibilityReportHelper.FlushReportAsync(_reportDirectory);
 
             // Act
-            var result = await File.ReadAllTextAsync(AccessibilityReportHelper.GetReportPath());
+            var result = await File.ReadAllTextAsync(AccessibilityReportHelper.GetReportPath(_reportDirectory));
 
             // Assert
             var criticalIndex = result.IndexOf("**IMPACT**: Critical", StringComparison.Ordinal);
@@ -49,13 +56,23 @@ namespace SAPPub.Web.Tests.UI
             };
 
             AccessibilityReportHelper.AddViolations("Results page", "/results", violations);
-            await AccessibilityReportHelper.FlushReportAsync();
+            await AccessibilityReportHelper.FlushReportAsync(_reportDirectory);
 
             // Act
-            var result = await File.ReadAllTextAsync(AccessibilityReportHelper.GetReportPath());
+            var result = await File.ReadAllTextAsync(AccessibilityReportHelper.GetReportPath(_reportDirectory));
 
             // Assert
             Assert.Equal("No critical or severe accessibility issues found", result);
+        }
+
+        public void Dispose()
+        {
+            AccessibilityReportHelper.Reset();
+
+            if (Directory.Exists(_reportDirectory))
+            {
+                Directory.Delete(_reportDirectory, true);
+            }
         }
 
         private static AxeResultItem CreateViolation(string impact, string id, string help, string[] targets)

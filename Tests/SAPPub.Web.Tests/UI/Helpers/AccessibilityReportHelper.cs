@@ -12,6 +12,11 @@ namespace SAPPub.Web.Tests.UI.Helpers
         private static readonly string MARKDOWN_FILENAME = "accessibility-violations.md";
         private static readonly ConcurrentDictionary<string, AccessibilityPageReport> ViolationReports = new();
 
+        public static void Reset()
+        {
+            ViolationReports.Clear();
+        }
+
         public static void AddViolations(string pageName, string url, IList<AxeResultItem> violations)
         {
             if (violations?.Any() != true)
@@ -26,10 +31,10 @@ namespace SAPPub.Web.Tests.UI.Helpers
             ViolationReports[pageName] = new AccessibilityPageReport(pageName, BuildTestViolationMarkdown(pageName, url, filteredOrderedViolations));
         }
 
-        public static async Task FlushReportAsync()
+        public static async Task FlushReportAsync(string? reportDirectory = null)
         {
 
-            var reportPath = GetReportPath();
+            var reportPath = GetReportPath(reportDirectory);
             var markdown = BuildFinalReportMarkdown();
 
             if (File.Exists(reportPath))
@@ -45,9 +50,9 @@ namespace SAPPub.Web.Tests.UI.Helpers
             await File.WriteAllTextAsync(reportPath, markdown);
         }
 
-        public static string GetReportPath()
+        public static string GetReportPath(string? reportDirectory)
         {
-            var reportDirectory = Environment.GetEnvironmentVariable("ACCESSIBILITY_REPORT_DIR");
+            reportDirectory ??= Environment.GetEnvironmentVariable("ACCESSIBILITY_REPORT_DIR");
             if (string.IsNullOrWhiteSpace(reportDirectory))
             {
                 reportDirectory = Path.Combine(GetSolutionPath(), "Tests", "accessibility-results");
