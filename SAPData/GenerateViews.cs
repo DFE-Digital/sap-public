@@ -97,20 +97,10 @@ public sealed class GenerateViews
                     continue;
                 }
 
-                var keyStages = new[] { "KS4" };
-                var keyStageUrnsCtes = new Dictionary<string, string>();
-                var keyStageUrnsSqlConditions = new Dictionary<string, string>();
-
-                foreach (var ks in keyStages)
-                {
-                    var cteName = $"{ks.ToLowerInvariant()}_urns";
-                    var cte = GenerateKeyStageUrnsCte(_rows, tableMap, $"{ks}_Performance", cteName);
-                    if (!string.IsNullOrWhiteSpace(cte))
-                    {
-                        keyStageUrnsCtes[ks] = cte;
-                        keyStageUrnsSqlConditions[ks] = $"t.\"urn\" IN (SELECT \"urn\" FROM {cteName})";
-                    }
-                }
+                //Add KS5, KS2 here when needed and when we have the relevant data files in raw_sources.json and mappings in DataMap.csv
+                var keyStages = new[] { "KS4" }; 
+                var (keyStageUrnsCtes, keyStageUrnsSqlConditions) =
+                    BuildKeyStageCtesAndFilters(_rows, tableMap, keyStages);
                 var establishmentFilters = SqlViewFilterProvider.GetEstablishmentFilters(keyStageUrnsSqlConditions);
                 sql = GenerateEstablishmentDimensionView(rawTable, establishmentFilters, keyStageUrnsCtes, keyStageUrnsSqlConditions);
             }
@@ -901,6 +891,28 @@ public sealed class GenerateViews
         var p = (r.PropertyName ?? "").Trim();
         if (string.IsNullOrWhiteSpace(p)) return p;
         return IsCoded(r) ? $"{p}_Coded" : p;
-    }     
-      
+    }
+
+    private static (Dictionary<string, string> ctes, Dictionary<string, string> filters)
+    BuildKeyStageCtesAndFilters(
+        IReadOnlyList<DataMapRow> rows,
+        Dictionary<string, string> tableMap,
+        IEnumerable<string> keyStages)
+    {
+        var ctes = new Dictionary<string, string>();
+        var filters = new Dictionary<string, string>();
+
+        foreach (var ks in keyStages)
+        {
+            var cteName = $"{ks.ToLowerInvariant()}_urns";
+            var cte = GenerateKeyStageUrnsCte(rows, tableMap, $"{ks}_Performance", cteName);
+            if (!string.IsNullOrWhiteSpace(cte))
+            {
+                ctes[ks] = cte;
+                filters[ks] = $"t.\"urn\" IN (SELECT \"urn\" FROM {cteName})";
+            }
+        }
+        return (ctes, filters);
+    }
+
 }

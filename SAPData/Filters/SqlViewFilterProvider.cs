@@ -5,13 +5,23 @@
         public static readonly Dictionary<string, Func<string, string>> KeyStageBaseConditions =
         new()
         {
+            ["KS2"] = tableAlias =>
+                 $"(clean_int({tableAlias}.\"phaseofeducation__code_\") IN (0, 2, 3, 4, 5, 7) " +
+                 $"AND clean_int({tableAlias}.\"statutorylowage\") < 11) " +
+                 $"OR (clean_int({tableAlias}.\"phaseofeducation__code_\") IN (2, 3, 7) " +
+                 $"AND clean_int({tableAlias}.\"statutorylowage\") = 0)",
             ["KS4"] = tableAlias =>
                 $"(clean_int({tableAlias}.\"phaseofeducation__code_\") IN (0, 3, 4, 5, 6, 7) " +
                 $"AND clean_int({tableAlias}.\"statutorylowage\") < 16 " +
                 $"AND clean_int({tableAlias}.\"statutoryhighage\") > 12) " +
                 $"OR (clean_int({tableAlias}.\"phaseofeducation__code_\") IN (4, 7) " +
+                $"AND clean_int({tableAlias}.\"statutoryhighage\") = 0)",
+            ["KS5"] = tableAlias =>
+                $"(clean_int({tableAlias}.\"phaseofeducation__code_\") IN (0, 4, 5, 6, 7) " +
+                $"AND clean_int({tableAlias}.\"statutoryhighage\") > 16) " +
+                $"OR (clean_int({tableAlias}.\"phaseofeducation__code_\") = 6 " +
                 $"AND clean_int({tableAlias}.\"statutoryhighage\") = 0)"
-      
+
         };
 
         public static string GetKeyStageBaseCondition(string keyStage, string tableAlias)
