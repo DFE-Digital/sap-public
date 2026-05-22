@@ -158,14 +158,14 @@ public class SecondarySchoolControllerTests
             ClosedDate = _fakeEstablishment.ClosedDate.ToDateOnly(),
             OpenReasonId = _fakeEstablishment.OpenReasonId,
             OpenDate = _fakeEstablishment.OpenDate.ToDateOnly(),
-            Predecessors = new List<EstablishmentLink>
+            Predecessors = new List<EstablishmentLinkModel>
             {
-                new EstablishmentLink
+                new EstablishmentLinkModel
                 {
                     Urn = "654321",
                     Name = "Predecessor School 1"
                 },
-                new EstablishmentLink
+                new EstablishmentLinkModel
                 {
                     Urn = "789012",
                     Name = "Predecessor School 2"

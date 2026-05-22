@@ -1,7 +1,6 @@
 ﻿using SAPPub.Core.Enums;
 using SAPPub.Core.Extensions;
 using SAPPub.Core.Helpers;
-using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Web.Helpers;
 using static SAPPub.Web.Constants.Constants;
@@ -10,21 +9,6 @@ namespace SAPPub.Web.Models.SecondarySchool
 {
     public class AboutSchoolViewModel : SecondarySchoolBaseViewModel
     {
-        public class SuccessorOrPredecessorDetailsViewModel
-        {
-            public required string Urn { get; set; }
-            public required string Name { get; set; }
-
-            public static SuccessorOrPredecessorDetailsViewModel Map(EstablishmentLink establishmentLink)
-            {
-                return new SuccessorOrPredecessorDetailsViewModel
-                {
-                    Urn = establishmentLink.Urn,
-                    Name = establishmentLink.Name
-                };
-            }
-        }
-
         private const string SENUnit = "SEN unit";
         private const string ResourcedProvisionAndSENUnit = "Resourced provision and SEN unit";
         private const string ResourcedProvisionText = "Resourced provision";
@@ -86,7 +70,7 @@ namespace SAPPub.Web.Models.SecondarySchool
         public required DisplayField<string> RecentlyOpenedSchoolMessage { get; set; }
 
         public bool HasPredecessors => Predecessors != null;
-        public List<SuccessorOrPredecessorDetailsViewModel>? Predecessors { get; set; }
+        public List<SuccessorOrPredecessorDetailsModel>? Predecessors { get; set; }
 
         public static AboutSchoolViewModel Map(AboutSchoolModel schoolDetails)
         {
@@ -121,7 +105,7 @@ namespace SAPPub.Web.Models.SecondarySchool
                 OpenDate = schoolDetails.OpenDate,
                 OpenReasonId = schoolDetails.OpenReasonId,
                 RecentlyOpenedSchoolMessage = GetRecentlyOpenedSchoolMessage(schoolDetails.OpenReasonId, schoolDetails.OpenDate),
-                Predecessors = schoolDetails.Predecessors?.Select(p => SuccessorOrPredecessorDetailsViewModel.Map(p)).ToList()
+                Predecessors = schoolDetails.Predecessors?.Select(p => SuccessorOrPredecessorDetailsModel.Map(p)).ToList()
             };
         }
 

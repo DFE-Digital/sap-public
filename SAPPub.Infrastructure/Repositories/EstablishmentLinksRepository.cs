@@ -13,19 +13,33 @@ public class EstablishmentLinksRepository(
 {
     public async Task<IEnumerable<EstablishmentLinks>?> GetLinksAsync(string urn, CancellationToken ct)
     {
-        await using var conn = await dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
+        try
+        {
+            await using var conn = await dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
 
-        var sql = """
+            var sql = """
             select *
             from public.v_establishment_links
             where "urn" = @Urn;
             """;
-        var cmd = new DapperCommandBuilder()
-                .WithCommandText(sql)
-                .WithParameters(new { Urn = urn })
-                .Build(ct);
+            var cmd = new DapperCommandBuilder()
+                    .WithCommandText(sql)
+                    .WithParameters(new { Urn = urn })
+                    .Build(ct);
 
-        var items = (await conn.QueryAsync<Core.Entities.EstablishmentLinks>(cmd).ConfigureAwait(false)).ToList();
-        return items;
+            logger.LogDebug("Executing SQL: {Sql} with parameters: {@Parameters}", sql, new { Urn = urn });
+
+            var items = (await conn.QueryAsync<Core.Entities.EstablishmentLinks>(cmd).ConfigureAwait(false)).ToList();
+            return items;
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed ReadManyAsync for {Type} paramsType={ParamsType}", nameof(EstablishmentLinks), "Urn");
+            return Enumerable.Empty<EstablishmentLinks>();
+        }
     }
 }

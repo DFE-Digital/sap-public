@@ -24,7 +24,7 @@ public sealed class AboutSchoolService(
             : null;
         var predecessors = links?
             .Where(l => l.Urn is not null && l.LinkType is not null && l.LinkType.Contains("Predecessor"))
-            .Select(l => new EstablishmentLink
+            .Select(l => new EstablishmentLinkModel
             {
                 Urn = l.LinkUrn!,
                 Name = l.LinkName!,

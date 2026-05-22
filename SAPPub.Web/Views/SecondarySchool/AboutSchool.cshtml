@@ -37,7 +37,7 @@
             <div class="custom-card govuk-!-margin-top-0" data-testid="school-predecessors-custom-card">
                 <div class="custom-card__content">
                     <p class="govuk-body">
-                        @($"This school opened on {Model.OpenDate?.ToString("dd MMMM yyyy")}. It was previously " +
+                        @($"This school opened on {Model.OpenDate?.ToString("d MMMM yyyy")}. It was previously " +
                                             string.Join(" and ", Model.Predecessors!.Select(p => p.Name)) + ".")
                     </p>
 

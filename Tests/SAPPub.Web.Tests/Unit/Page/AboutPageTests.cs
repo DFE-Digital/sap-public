@@ -100,14 +100,14 @@ public class AboutPageTests : PageTestsBase
             SchoolName = "St David's Church of England Academy",
             Status = EstablishmentStatus.Open,
             OpenDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-440)),
-            Predecessors = new List<EstablishmentLink>()
+            Predecessors = new List<EstablishmentLinkModel>()
             {
-                new EstablishmentLink()
+                new EstablishmentLinkModel()
                 {
                     Urn = "123456",
                     Name = "Predecessor School 1"
                 },
-                new EstablishmentLink()
+                new EstablishmentLinkModel()
                 {
                     Urn = "123457",
                     Name = "Predecessor School 2"
