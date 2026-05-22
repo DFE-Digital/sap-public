@@ -12,22 +12,6 @@ namespace SAPPub.Web.Tests.UI.Helpers
         private static readonly string MARKDOWN_FILENAME = "accessibility-violations.md";
         private static readonly ConcurrentDictionary<string, AccessibilityPageReport> ViolationReports = new();
 
-        /// <summary>
-        /// Used to ensure any test runs with Accessibility are kept clean.
-        /// This method deletes any previous .md files as the writer only appends and things could get confusing.
-        /// </summary>
-        /// <returns></returns>
-        public static void CleanupExistingReports()
-        {
-            ViolationReports.Clear();
-
-            var reportPath = GetReportPath();
-            if (File.Exists(reportPath))
-            {
-                File.Delete(reportPath);
-            }
-        }
-
         public static void AddViolations(string pageName, string url, IList<AxeResultItem> violations)
         {
             if (violations?.Any() != true)

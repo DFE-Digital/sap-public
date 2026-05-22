@@ -1,4 +1,5 @@
-﻿using Deque.AxeCore.Playwright;
+﻿using Deque.AxeCore.Commons;
+using Deque.AxeCore.Playwright;
 using Microsoft.Playwright;
 using Microsoft.Playwright.Xunit;
 using SAPPub.Web.Tests.UI.Helpers;
@@ -75,14 +76,14 @@ public abstract class BasePageTest : PageTest
 
     protected async Task WriteAccessibilityReport(string pageName)
     {
-        var axeResult = await Page.RunAxe();
-
-        
+        var axeResult = await Page.RunAxe(new AxeRunOptions
+        {
+            RunOnly = new RunOnlyOptions { Type = "tag", Values = ["wcag2a", "wcag2aa"] }
+        });
 
         AccessibilityReportHelper.AddViolations(pageName, Page.Url, axeResult.Violations);
 
-        // TODO: Wire in config to fail tests based on config switch. At the moment, we want them to
-        // still pass, but a little config switch here would be handy.
+        // Future TODO if required. Uncomment this line if we want to fail the tests on Accessibility issues. For now, any violations are simply logged
         // Assert.False(axeResult.Violations.Any());
     }
 }

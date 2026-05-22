@@ -16,9 +16,6 @@ namespace SAPPub.Web.Tests.UI.Infrastructure
 
             BaseUrl = _factory.ClientOptions.BaseAddress.ToString();
 
-            // remove any .md accessibility report files before starting a test run
-            AccessibilityReportHelper.CleanupExistingReports();
-
             return Task.CompletedTask;
         }
 
