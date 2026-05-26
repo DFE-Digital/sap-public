@@ -1,18 +1,20 @@
 ﻿using Moq;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Helpers;
+using SAPPub.Core.Extensions;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.ServiceModels.PostcodeSearch;
+using SAPPub.Core.ServiceModels.Search;
 using SAPPub.Core.ServiceModels.Search.Results;
 using SAPPub.Core.Services.Search;
 using SearchQuery = SAPPub.Core.ServiceModels.Search.InputModels.SchoolSearchServiceQuery;
 
 namespace SAPPub.Core.Tests.Services.Search;
-        
+
 public class SchoolSearchServiceTests
 {
-    private readonly Mock<IEstablishmentService> _mockEstablishmentService = new();
+    private readonly Mock<ISchoolSearchIndexReader> _mockSchoolSearchIndexReader = new();
     private readonly Mock<IPostcodeLookupService> _mockPostcodeLookupService = new();
 
     private readonly Establishment establishment1 = new()
@@ -51,17 +53,27 @@ public class SchoolSearchServiceTests
         return results;
     }
 
+    private SchoolSearchResults ToSchoolSearchResults(List<Establishment> establishments)
+    {
+        return new SchoolSearchResults(
+            Count: establishments.Count,
+            Results: establishments.Select(e => e.ToSchoolSearchDocument()).ToList()
+        );
+    }
+
     [Fact]
     public async Task SearchAsync_ByName_ReturnsExpectedServiceModel()
     {
         // Arrange
         var searchQuery = new SearchQuery() { Name = "test school", PageNumber = 1 };
         var establishments = new List<Establishment> { establishment1, establishment2 };
-        _mockEstablishmentService
-            .Setup(s => s.SearchByNameAsync(searchQuery.Name, searchQuery.PageNumber ?? 1, Constants.PageSize, default))
-            .ReturnsAsync((establishments, establishments.Count));
+        var schoolSearchResults = ToSchoolSearchResults(establishments);
 
-        var service = new SchoolSearchService(_mockEstablishmentService.Object, _mockPostcodeLookupService.Object);
+        _mockSchoolSearchIndexReader
+            .Setup(s => s.SearchAsync(It.IsAny<SAPPub.Core.ServiceModels.Search.InputModels.SearchQuery>(), Constants.PageSize))
+            .ReturnsAsync(schoolSearchResults);
+
+        var service = new SchoolSearchService(_mockSchoolSearchIndexReader.Object, _mockPostcodeLookupService.Object);
 
         // Act
         var result = await service.SearchAsync(searchQuery);
@@ -102,11 +114,13 @@ public class SchoolSearchServiceTests
         // Arrange
         var expectedSearchResults = CreateSearchResults(records);
         var searchQuery = new SearchQuery() { Name = "test", PageNumber = 1 };
-        _mockEstablishmentService
-            .Setup(s => s.SearchByNameAsync(searchQuery.Name, searchQuery.PageNumber ?? 1, Constants.PageSize, default))
-            .ReturnsAsync((expectedSearchResults, expectedSearchResults.Count));
+        var schoolSearchResults = ToSchoolSearchResults(expectedSearchResults);
 
-        var service = new SchoolSearchService(_mockEstablishmentService.Object, _mockPostcodeLookupService.Object);
+        _mockSchoolSearchIndexReader
+            .Setup(s => s.SearchAsync(It.IsAny<SAPPub.Core.ServiceModels.Search.InputModels.SearchQuery>(), Constants.PageSize))
+            .ReturnsAsync(schoolSearchResults);
+
+        var service = new SchoolSearchService(_mockSchoolSearchIndexReader.Object, _mockPostcodeLookupService.Object);
 
         // Act
         var result = await service.SearchAsync(searchQuery);
@@ -136,6 +150,7 @@ public class SchoolSearchServiceTests
             new Establishment { URN = "223456", EstablishmentName = "A Test School 2", AddressStreet = "123 Test Street 2", GenderName = "Girls", ReligiousCharacterName = "Muslim" }
         };
         var filteredEstablishments = allEstablishments.Where(e => expectedUrns.Contains(e.URN)).ToList();
+        var schoolSearchResults = ToSchoolSearchResults(filteredEstablishments);
 
         _mockPostcodeLookupService.Setup(p => p.GetLatitudeAndLongitudeAsync(searchQuery.Location))
             .ReturnsAsync(new PostcodeResponseModel
@@ -144,11 +159,12 @@ public class SchoolSearchServiceTests
                 Result = new PostcodeResultModel { Latitude = searchLatitude, Longitude = searchLongitude, Postcode = searchQuery.Location }
             });
 
-        _mockEstablishmentService
-            .Setup(s => s.SearchByLocationAsync(searchLatitude, searchLongitude, distance, searchQuery.PageNumber ?? 1, Constants.PageSize, default))
-            .ReturnsAsync((filteredEstablishments, filteredEstablishments.Count));
+        _mockSchoolSearchIndexReader
+            .Setup(s => s.SearchAsync(It.Is<SAPPub.Core.ServiceModels.Search.InputModels.SearchQuery>(
+                q => q.Latitude == searchLatitude && q.Longitude == searchLongitude && q.Distance == distance), Constants.PageSize))
+            .ReturnsAsync(schoolSearchResults);
 
-        var service = new SchoolSearchService(_mockEstablishmentService.Object, _mockPostcodeLookupService.Object);
+        var service = new SchoolSearchService(_mockSchoolSearchIndexReader.Object, _mockPostcodeLookupService.Object);
 
         // Act
         var result = await service.SearchAsync(searchQuery);
@@ -176,7 +192,7 @@ public class SchoolSearchServiceTests
                 Error = "Postcode not found"
             });
 
-        var service = new SchoolSearchService(_mockEstablishmentService.Object, _mockPostcodeLookupService.Object);
+        var service = new SchoolSearchService(_mockSchoolSearchIndexReader.Object, _mockPostcodeLookupService.Object);
 
         // Act
         var result = await service.SearchAsync(searchQuery);
@@ -200,7 +216,7 @@ public class SchoolSearchServiceTests
         var searchPostcode = invalidPostcode;
         var searchQuery = new SearchQuery() { Location = searchPostcode, Distance = 5, PageNumber = 1 };
 
-        var service = new SchoolSearchService(_mockEstablishmentService.Object, _mockPostcodeLookupService.Object);
+        var service = new SchoolSearchService(_mockSchoolSearchIndexReader.Object, _mockPostcodeLookupService.Object);
 
         // Act
         var result = await service.SearchAsync(searchQuery);
@@ -219,11 +235,13 @@ public class SchoolSearchServiceTests
         // Arrange
         var searchQuery = new SearchQuery() { Name = "test school", PageNumber = 1 };
         var establishments = new List<Establishment> { new Establishment() };
-        _mockEstablishmentService
-            .Setup(s => s.SearchByNameAsync(searchQuery.Name, searchQuery.PageNumber ?? 1, Constants.PageSize, default))
-            .ReturnsAsync((establishments, establishments.Count));
+        var schoolSearchResults = ToSchoolSearchResults(establishments);
 
-        var service = new SchoolSearchService(_mockEstablishmentService.Object, _mockPostcodeLookupService.Object);
+        _mockSchoolSearchIndexReader
+            .Setup(s => s.SearchAsync(It.IsAny<SAPPub.Core.ServiceModels.Search.InputModels.SearchQuery>(), Constants.PageSize))
+            .ReturnsAsync(schoolSearchResults);
+
+        var service = new SchoolSearchService(_mockSchoolSearchIndexReader.Object, _mockPostcodeLookupService.Object);
 
         // Act
         var result = await service.SearchAsync(searchQuery);
