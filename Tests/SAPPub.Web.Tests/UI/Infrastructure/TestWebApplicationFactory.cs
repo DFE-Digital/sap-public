@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 
 namespace SAPPub.Web.Tests.UI.Infrastructure;
@@ -41,6 +42,8 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
             {
                 services.RemoveAll(typeof(IGenericRepository<>));
                 services.AddSingleton(typeof(IGenericRepository<>), typeof(FakeGenericRepository<>));
+                services.RemoveAll(typeof(IEstablishmentLinksRepository));
+                services.AddSingleton<IEstablishmentLinksRepository, FakeEstablishmentLinksRepository>();
             });
     }
 

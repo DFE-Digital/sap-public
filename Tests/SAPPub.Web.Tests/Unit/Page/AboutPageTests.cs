@@ -2,6 +2,7 @@
 using SAPPub.Core.Enums;
 using SAPPub.Core.Extensions;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
 
@@ -87,6 +88,73 @@ public class AboutPageTests : PageTestsBase
         {
             Assert.Null(doc.QuerySelector("[data-testid='school-closed-custom-card']"));
         }
+    }
+
+    [Fact]
+    public async Task AboutPage_SchoolOpenedInLast3YearsAndHasPredecessors_ShowsSchoolPredecessorInfo()
+    {
+        // Arrange
+        var aboutSchoolModel = new AboutSchoolModel()
+        {
+            Urn = "143034",
+            SchoolName = "St David's Church of England Academy",
+            Status = EstablishmentStatus.Open,
+            OpenDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-440)),
+            Predecessors = new List<EstablishmentLinkModel>()
+            {
+                new EstablishmentLinkModel()
+                {
+                    Urn = "123456",
+                    Name = "Predecessor School 1"
+                },
+                new EstablishmentLinkModel()
+                {
+                    Urn = "123457",
+                    Name = "Predecessor School 2"
+                }
+            }
+        };
+        _about
+            .Setup(service => service.GetAboutSchoolDetailsAsync(
+                aboutSchoolModel.Urn,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(aboutSchoolModel);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(aboutSchoolModel.Urn, aboutSchoolModel.SchoolName, _pageRoute));
+
+        // Assert
+        Assert.Contains(aboutSchoolModel.SchoolName, doc.GetRowContentByIdAndKey("school-details-summary", "Name"));
+        var predecessorInfo = doc.QuerySelector("[data-testid='school-predecessors-custom-card']");
+        Assert.NotNull(predecessorInfo);
+        Assert.Contains("Predecessor School 1", predecessorInfo.TextContent);
+        Assert.Contains("Predecessor School 2", predecessorInfo.TextContent);
+    }
+
+    [Fact]
+    public async Task AboutPage_SchoolOpenedInLast3YearsButHasNoPredecessors_NoPredecessorInfoShown()
+    {
+        // Arrange
+        var aboutSchoolModel = new AboutSchoolModel()
+        {
+            Urn = "143034",
+            SchoolName = "St David's Church of England Academy",
+            Status = EstablishmentStatus.Open,
+            OpenDate = DateOnly.FromDateTime(DateTime.Today.AddDays(-440))
+        };
+        _about
+            .Setup(service => service.GetAboutSchoolDetailsAsync(
+                aboutSchoolModel.Urn,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(aboutSchoolModel);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(aboutSchoolModel.Urn, aboutSchoolModel.SchoolName, _pageRoute));
+
+        // Assert
+        Assert.Contains(aboutSchoolModel.SchoolName, doc.GetRowContentByIdAndKey("school-details-summary", "Name"));
+        var predecessorInfo = doc.QuerySelector("[data-testid='school-predecessors-custom-card']");
+        Assert.Null(predecessorInfo);
     }
 
     [Fact]

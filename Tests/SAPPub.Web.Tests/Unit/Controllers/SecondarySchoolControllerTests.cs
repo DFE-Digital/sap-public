@@ -15,6 +15,7 @@ using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.Interfaces.Services.KS4.Attendance;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels.KS4.Admissions;
 using SAPPub.Core.ServiceModels.KS4.Attendance;
@@ -156,7 +157,20 @@ public class SecondarySchoolControllerTests
             Status = _fakeEstablishment.StatusCode.ToStatus(),
             ClosedDate = _fakeEstablishment.ClosedDate.ToDateOnly(),
             OpenReasonId = _fakeEstablishment.OpenReasonId,
-            OpenDate = _fakeEstablishment.OpenDate.ToDateOnly()
+            OpenDate = _fakeEstablishment.OpenDate.ToDateOnly(),
+            Predecessors = new List<EstablishmentLinkModel>
+            {
+                new EstablishmentLinkModel
+                {
+                    Urn = "654321",
+                    Name = "Predecessor School 1"
+                },
+                new EstablishmentLinkModel
+                {
+                    Urn = "789012",
+                    Name = "Predecessor School 2"
+                }
+            }
         };
     }
 
@@ -209,7 +223,7 @@ public class SecondarySchoolControllerTests
     }
 
     [Fact]
-    public async Task Get_AboutSchool_Info_ReturnsOk()
+    public async Task Get_AboutSchool_Info_ReturnsExpected()
     {
         var expectedResult = SchoolDetails();
 
@@ -219,8 +233,8 @@ public class SecondarySchoolControllerTests
 
         var result = await _controller.AboutSchool(
             _mockAboutSchoolService.Object,
-            _fakeEstablishment.URN,
-            _fakeEstablishment.EstablishmentName,
+            expectedResult.Urn,
+            expectedResult.SchoolName,
             CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
@@ -250,6 +264,18 @@ public class SecondarySchoolControllerTests
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(expectedResult.Urn, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(TextHelpers.CleanForUrl(expectedResult.SchoolName), model.RouteAttributes[RouteConstants.SchoolName]);
+        Assert.Equal(expectedResult.OpenReasonId, model.OpenReasonId);
+        Assert.Collection(model.Predecessors!,
+            predecessor1 =>
+            {
+                Assert.Equal(expectedResult.Predecessors![0].Urn, predecessor1.Urn);
+                Assert.Equal(expectedResult.Predecessors[0].Name, predecessor1.Name);
+            },
+            predecessor2 =>
+            {
+                Assert.Equal(expectedResult.Predecessors![1].Urn, predecessor2.Urn);
+                Assert.Equal(expectedResult.Predecessors[1].Name, predecessor2.Name);
+            });
     }
 
     [Fact]
@@ -717,10 +743,11 @@ public class SecondarySchoolControllerTests
     {
         _mockAttendanceService
             .Setup(s => s.GetAttendenceDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new AttendanceModel {
+            .ReturnsAsync(new AttendanceModel
+            {
                 Urn = _fakeEstablishment.URN,
                 SchoolName = _fakeEstablishment.EstablishmentName,
-                LocalAuthority= _fakeEstablishment.LAName,
+                LocalAuthority = _fakeEstablishment.LAName,
                 EstablishmentAttendance = estAttendance,
                 LocalAuthorityAttendance = laAttendance,
                 EnglandAttendance = engAttendance

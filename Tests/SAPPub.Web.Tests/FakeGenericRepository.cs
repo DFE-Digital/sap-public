@@ -24,7 +24,6 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             Easting = "580573",
             Northing = "110137"
         },
-
         ["100273"] = new Establishment
         {
             URN = "100273",
@@ -35,7 +34,6 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             PhaseOfEducationId = "2",
             PhaseOfEducationName = "Primary"
         },
-
         ["102848"] = new Establishment
         {
             URN = "102848",
@@ -47,8 +45,6 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             PhaseOfEducationName = "Primary",
             AddressPostcode = "IG1 1SA"
         },
-
-
         ["105574"] = new Establishment
         {
             URN = "105574",
@@ -63,7 +59,6 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             Northing = "392995",
             Website = "http://www.test.co.uk/"
         },
-
         ["137552"] = new Establishment
         {
             URN = "137552",
@@ -89,13 +84,33 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             StatusCode = 2,
             ClosedDate = "23-03-2025"
         },
-
-        ["145744"] = new Establishment
+        ["145744"] = new Establishment // school with recent open date and having predecessors
         {
             URN = "145744",
             EstablishmentName = "Abbey Park School",
             LAId = "381",
             EstablishmentNumber = "123",
+            PhaseOfEducationId = "4",
+            PhaseOfEducationName = "Secondary",
+            AddressPostcode = "SN25 2ND",
+            OpenDate = "01-09-2025" // recent open date to test recently opened school message - this will fail in 2028
+        },
+        ["178965"] = new Establishment
+        {
+            URN = "178965",
+            EstablishmentName = "Predecessor 1 to Abbey Park School",
+            LAId = "381",
+            EstablishmentNumber = "1234",
+            PhaseOfEducationId = "4",
+            PhaseOfEducationName = "Secondary",
+            AddressPostcode = "SN25 2ND",
+        },
+        ["178966"] = new Establishment
+        {
+            URN = "178966",
+            EstablishmentName = "Predecessor 2 to Abbey Park School",
+            LAId = "381",
+            EstablishmentNumber = "1235",
             PhaseOfEducationId = "4",
             PhaseOfEducationName = "Secondary",
             AddressPostcode = "SN25 2ND",
@@ -246,6 +261,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             if (!string.IsNullOrWhiteSpace(id) && EstablishmentDestinations.TryGetValue(id, out var est))
                 return Task.FromResult<T?>((T)(object)est);
         }
+
         return Task.FromResult<T?>(default);
     }
 

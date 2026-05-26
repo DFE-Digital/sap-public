@@ -11,7 +11,8 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         ["105574"] = "school/105574/loreto-high-school-chorlton/secondary/about",
         ["137552"] = "school/137552/stewards-academy-science-specialist-harlow/secondary/about",
         ["100273"] = "school/100273/saint-paul-roman-catholic-infant-school/secondary/about",
-        ["107564"] = "school/107564/todmorden-high-school/secondary/about"
+        ["107564"] = "school/107564/todmorden-high-school/secondary/about",
+        ["145744"] = "school/145744/abbey-park-school/secondary/about"
     };
 
     [Fact]
@@ -86,7 +87,7 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
     [Theory]
     [InlineData("105574", false, false)]
     [InlineData("137552", true, false)]
-    [InlineData("107564", true, true)]    
+    [InlineData("107564", true, true)]
     public async Task AboutSchoolPage_Displays_School_Closed_Info(string urn, bool isSchoolClosed, bool hasSchoolClosedDate)
     {
         // Act
@@ -105,7 +106,40 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
 
             Assert.NotNull(value);
             Assert.Equal(expectedText, value.Trim());
-        }        
+        }
+    }
+
+    [Theory]
+    [InlineData("145744")]
+    public async Task AboutSchoolPage_SchoolRecentlyOpenedAndHasPredecessors_DisplaysPredecessorSchoolLinks(string urn)
+    {
+        // Act
+        await Page.GotoAsync(_schoolUrnToUrlMap[urn]);
+
+        // Assert
+        var schoolPredecessorsCard = Page.GetByTestId("school-predecessors-custom-card");
+
+        Assert.True(await schoolPredecessorsCard.IsVisibleAsync());
+
+        var links = await schoolPredecessorsCard.Locator("a[href*='/secondary/about']").AllAsync();
+        var linkText = await Task.WhenAll(links.Select(async link => await link.InnerTextAsync()));
+        Assert.Collection(linkText,
+            linkText => Assert.Contains("Predecessor 1 to Abbey Park School", linkText),
+            linkText => Assert.Contains("Predecessor 2 to Abbey Park School", linkText));
+
+        await Task.WhenAll(
+            Page.WaitForURLAsync("**/secondary/about**"),
+            links[0].ClickAsync()
+        );
+
+        var predecessorSchoolNameCaptionLocator = Page.Locator("#school-name-caption");
+        var isVisible = await predecessorSchoolNameCaptionLocator.IsVisibleAsync();
+        var schoolNameCaption = await predecessorSchoolNameCaptionLocator.TextContentAsync();
+
+        // Assert
+        Assert.True(isVisible);
+        Assert.NotNull(schoolNameCaption);
+        Assert.Equal("Predecessor 1 to Abbey Park School", schoolNameCaption);
     }
 
     [Theory]
