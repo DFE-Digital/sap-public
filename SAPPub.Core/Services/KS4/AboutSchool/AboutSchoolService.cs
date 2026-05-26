@@ -1,4 +1,5 @@
-﻿using SAPPub.Core.Extensions;
+﻿using SAPPub.Core.Enums;
+using SAPPub.Core.Extensions;
 using SAPPub.Core.Helpers;
 using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Services;
@@ -18,18 +19,34 @@ public sealed class AboutSchoolService(
         var establishment = await establishmentService.GetEstablishmentAsync(urn, ct);
 
         var openDate = establishment.OpenDate.ToDateOnly();
-        var links = openDate is not null
-            ? AcademicYearsHelper.IsWithinLastThreeAcademicYears(openDate.Value)
-                ? await establishmentLinksRepository.GetLinksAsync(urn, ct) : null
+
+        bool findSuccessorLinks = establishment.StatusCode.ToStatus() == EstablishmentStatus.Closed;
+        bool findPredecessorLinks = openDate is not null && AcademicYearsHelper.IsWithinLastThreeAcademicYears(openDate.Value);
+
+        var links = findPredecessorLinks || findSuccessorLinks
+             ? await establishmentLinksRepository.GetLinksAsync(urn, ct)
+             : null;
+
+        var predecessorLinks = (findPredecessorLinks && links != null && links.Any())
+            ? links?
+                .Where(l => l.Urn is not null && l.LinkType is not null && l.LinkType.Contains("Predecessor"))
+                .Select(l => new EstablishmentLinkModel
+                {
+                    Urn = l.LinkUrn!,
+                    Name = l.LinkName!,
+                })
+                .ToList()
             : null;
-        var predecessors = links?
-            .Where(l => l.Urn is not null && l.LinkType is not null && l.LinkType.Contains("Predecessor"))
-            .Select(l => new EstablishmentLinkModel
-            {
-                Urn = l.LinkUrn!,
-                Name = l.LinkName!,
-            })
-            .ToList();
+        var sucessorLinks = (findSuccessorLinks && links != null && links.Any())
+            ? links?
+                .Where(l => l.Urn is not null && l.LinkType is not null && l.LinkType.Contains("Successor"))
+                .Select(l => new EstablishmentLinkModel
+                {
+                    Urn = l.LinkUrn!,
+                    Name = l.LinkName!,
+                })
+                .ToList()
+            : null;
 
         var laUrls = !string.IsNullOrWhiteSpace(establishment.GSSLACode) ? await laUrlsRepository.GetLaAsync(establishment.GSSLACode, ct) : null;
 
@@ -59,7 +76,8 @@ public sealed class AboutSchoolService(
             Status = establishment.StatusCode.ToStatus(),
             OpenDate = establishment.OpenDate.ToDateOnly(),
             OpenReasonId = establishment.OpenReasonId,
-            Predecessors = predecessors
+            Predecessors = predecessorLinks,
+            Successors = sucessorLinks
         };
     }
 }

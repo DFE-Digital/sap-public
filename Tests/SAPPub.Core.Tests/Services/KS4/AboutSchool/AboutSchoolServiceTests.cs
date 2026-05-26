@@ -142,4 +142,37 @@ public class AboutSchoolServiceTests
             Assert.Null(result.Predecessors);
         }
     }
+
+    [Fact]
+    public async Task GetAboutSchoolDetailsAsync_ClosedSchoolHasSuccessors_ReturnsExpected()
+    {
+        // Arrange
+        var urn = "123456";
+        var successorUrn = "654321";
+        var establishment = new Establishment
+        {
+            URN = urn,
+            EstablishmentName = "Test Establishment",
+            PhaseOfEducationName = "Secondary School",
+            StatusCode = 2
+        };
+
+        _mockEstablishmentService.Setup(s => s.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(establishment);
+        _mockEstablishmentLinksRepository.Setup(r => r.GetLinksAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<Core.Entities.EstablishmentLinks>
+                {
+                    new Core.Entities.EstablishmentLinks { Urn = urn, LinkType = "Successor", LinkUrn = successorUrn}
+                });
+
+        // Act
+        var result = await _service.GetAboutSchoolDetailsAsync(urn, CancellationToken.None);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(urn, result.Urn);
+        Assert.Equal(establishment.EstablishmentName, result.SchoolName);
+        Assert.NotNull(result.Successors);
+        Assert.Contains(successorUrn, result.Successors.Select(p => p.Urn));
+    }
 }

@@ -29,7 +29,7 @@ public class EstablishmentLinksRepository(
 
             logger.LogDebug("Executing SQL: {Sql} with parameters: {@Parameters}", sql, new { Urn = urn });
 
-            var items = (await conn.QueryAsync<Core.Entities.EstablishmentLinks>(cmd).ConfigureAwait(false)).ToList();
+            var items = await conn.QueryAsync<Core.Entities.EstablishmentLinks>(cmd).ConfigureAwait(false);
             return items;
         }
         catch (OperationCanceledException)
@@ -39,7 +39,7 @@ public class EstablishmentLinksRepository(
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed ReadManyAsync for {Type} paramsType={ParamsType}", nameof(EstablishmentLinks), "Urn");
-            return Enumerable.Empty<EstablishmentLinks>();
+            return null;
         }
     }
 }

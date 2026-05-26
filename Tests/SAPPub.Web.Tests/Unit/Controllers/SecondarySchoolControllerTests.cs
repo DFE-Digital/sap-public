@@ -157,20 +157,7 @@ public class SecondarySchoolControllerTests
             Status = _fakeEstablishment.StatusCode.ToStatus(),
             ClosedDate = _fakeEstablishment.ClosedDate.ToDateOnly(),
             OpenReasonId = _fakeEstablishment.OpenReasonId,
-            OpenDate = _fakeEstablishment.OpenDate.ToDateOnly(),
-            Predecessors = new List<EstablishmentLinkModel>
-            {
-                new EstablishmentLinkModel
-                {
-                    Urn = "654321",
-                    Name = "Predecessor School 1"
-                },
-                new EstablishmentLinkModel
-                {
-                    Urn = "789012",
-                    Name = "Predecessor School 2"
-                }
-            }
+            OpenDate = _fakeEstablishment.OpenDate.ToDateOnly()
         };
     }
 
@@ -265,6 +252,41 @@ public class SecondarySchoolControllerTests
         Assert.Equal(expectedResult.Urn, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(TextHelpers.CleanForUrl(expectedResult.SchoolName), model.RouteAttributes[RouteConstants.SchoolName]);
         Assert.Equal(expectedResult.OpenReasonId, model.OpenReasonId);
+    }
+
+    [Fact]
+    public async Task Get_AboutSchool_WithPredecessors_ReturnsExpected()
+    {
+        var expectedResult = SchoolDetails();
+        expectedResult.Predecessors = new List<EstablishmentLinkModel>
+            {
+                new EstablishmentLinkModel
+                {
+                    Urn = "654321",
+                    Name = "Predecessor School 1"
+                },
+                new EstablishmentLinkModel
+                {
+                    Urn = "789012",
+                    Name = "Predecessor School 2"
+                }
+            };
+
+        _mockAboutSchoolService
+            .Setup(es => es.GetAboutSchoolDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.AboutSchool(
+            _mockAboutSchoolService.Object,
+            expectedResult.Urn,
+            expectedResult.SchoolName,
+            CancellationToken.None) as ViewResult;
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as AboutSchoolViewModel;
+        Assert.NotNull(model);
         Assert.Collection(model.Predecessors!,
             predecessor1 =>
             {
@@ -275,6 +297,52 @@ public class SecondarySchoolControllerTests
             {
                 Assert.Equal(expectedResult.Predecessors![1].Urn, predecessor2.Urn);
                 Assert.Equal(expectedResult.Predecessors[1].Name, predecessor2.Name);
+            });
+    }
+
+    [Fact]
+    public async Task Get_AboutSchool_WithSuccessors_ReturnsExpected()
+    {
+        var expectedResult = SchoolDetails();
+        expectedResult.Successors = new List<EstablishmentLinkModel>
+        {
+            new EstablishmentLinkModel
+            {
+                Urn = "654321",
+                Name = "Successor School 1"
+            },
+            new EstablishmentLinkModel
+            {
+                Urn = "789012",
+                Name = "Successor School 2"
+            }
+        };
+
+        _mockAboutSchoolService
+            .Setup(es => es.GetAboutSchoolDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.AboutSchool(
+            _mockAboutSchoolService.Object,
+            expectedResult.Urn,
+            expectedResult.SchoolName,
+            CancellationToken.None) as ViewResult;
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as AboutSchoolViewModel;
+        Assert.NotNull(model);
+        Assert.Collection(model.Successors!,
+            successor1 =>
+            {
+                Assert.Equal(expectedResult.Successors![0].Urn, successor1.Urn);
+                Assert.Equal(expectedResult.Successors[0].Name, successor1.Name);
+            },
+            successor2 =>
+            {
+                Assert.Equal(expectedResult.Successors![1].Urn, successor2.Urn);
+                Assert.Equal(expectedResult.Successors[1].Name, successor2.Name);
             });
     }
 
