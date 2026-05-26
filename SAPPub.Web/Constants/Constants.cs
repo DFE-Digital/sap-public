@@ -11,4 +11,7 @@ public static class Constants
 
     // TempData Key Constants
     public const string CookiesConfirmation = "CookiesConfirmation";
+
+    // Chart colours
+    public static readonly string[] ChartColours = { "#A285D1", "#12436D", "#28A197" };
 }

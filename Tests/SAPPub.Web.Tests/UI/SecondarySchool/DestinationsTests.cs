@@ -169,11 +169,13 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
 
         var chart = Page.Locator("#all-destinations-data-overtime-chart");
         var table = Page.Locator("#all-destinations-data-overtime-table");
+        var chartLegend = Page.Locator("#all-destinations-data-overtime-chart-legend");
         var showAsTableBtn = Page.Locator("#all-dest-data-over-time-show-btn");
         var showCurrentDataBtn = Page.Locator("#all-dest-show-current-data-btn");
 
         var isChartVisible = await chart.IsVisibleAsync();
         var isTableVisible = await table.IsVisibleAsync();
+        var isChartLegendVisible = await chartLegend.IsVisibleAsync();
         var isShowAsTableBtnVisible = await showAsTableBtn.IsVisibleAsync();
         var isShowCurrentDataBtnVisible = await showCurrentDataBtn.IsVisibleAsync();
         var showAsTableBtnText = await showAsTableBtn.TextContentAsync();
@@ -182,6 +184,7 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
         // Assert
         Assert.False(isTableVisible);
         Assert.True(isChartVisible);
+        Assert.True(isChartLegendVisible);
         Assert.True(isShowAsTableBtnVisible);
         Assert.True(isShowCurrentDataBtnVisible);
 
@@ -203,12 +206,14 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
         await Page.ClickAsync("#all-dest-data-over-time-show-btn");
 
         var chart = Page.Locator("#all-destinations-data-overtime-chart");
-        var table = Page.Locator("#all-destinations-data-overtime-table");        
+        var table = Page.Locator("#all-destinations-data-overtime-table");
+        var chartLegend = Page.Locator("#all-destinations-data-overtime-chart-legend");
         var showAsTableBtn = Page.Locator("#all-dest-data-over-time-show-btn");
         var showCurrentDataBtn = Page.Locator("#all-dest-show-current-data-btn");
 
         var isChartVisible = await chart.IsVisibleAsync();
         var isTableVisible = await table.IsVisibleAsync();
+        var isChartLegendVisible = await chartLegend.IsVisibleAsync();
         var isShowAsTableBtnVisible = await showAsTableBtn.IsVisibleAsync();
         var isShowCurrentDataBtnVisible = await showCurrentDataBtn.IsVisibleAsync();
         var showAsTableBtnText = await showAsTableBtn.TextContentAsync();
@@ -216,6 +221,7 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
 
         // Assert
         Assert.False(isChartVisible);
+        Assert.False(isChartLegendVisible);
         Assert.True(isTableVisible);
         Assert.True(isShowAsTableBtnVisible);
         Assert.True(isShowCurrentDataBtnVisible);
