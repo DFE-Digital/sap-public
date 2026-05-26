@@ -239,11 +239,13 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
 
         var chart = Page.Locator("#all-gcse-data-overtime-chart");
         var table = Page.Locator("#all-gcse-data-overtime-table");
+        var chartLegend = Page.Locator("#all-gcse-data-overtime-chart-legend");
         var showAsTableBtn = Page.Locator("#all-gcse-data-over-time-show-btn");
         var showCurrentDataBtn = Page.Locator("#all-gcse-show-current-data-btn");
 
         var isChartVisible = await chart.IsVisibleAsync();
         var isTableVisible = await table.IsVisibleAsync();
+        var isChartLegendVisible = await chartLegend.IsVisibleAsync();
         var isShowAsTableBtnVisible = await showAsTableBtn.IsVisibleAsync();
         var isShowCurrentDataBtnVisible = await showCurrentDataBtn.IsVisibleAsync();
         var showAsTableBtnText = await showAsTableBtn.TextContentAsync();
@@ -252,6 +254,7 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
         // Assert
         Assert.False(isTableVisible);
         Assert.True(isChartVisible);
+        Assert.True(isChartLegendVisible);
         Assert.True(isShowAsTableBtnVisible);
         Assert.True(isShowCurrentDataBtnVisible);
 
@@ -274,11 +277,13 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
 
         var chart = Page.Locator("#all-gcse-data-overtime-chart");
         var table = Page.Locator("#all-gcse-data-overtime-table");
+        var chartLegend = Page.Locator("#all-gcse-data-overtime-chart-legend");
         var showAsTableBtn = Page.Locator("#all-gcse-data-over-time-show-btn");
         var showCurrentDataBtn = Page.Locator("#all-gcse-show-current-data-btn");
 
         var isChartVisible = await chart.IsVisibleAsync();
         var isTableVisible = await table.IsVisibleAsync();
+        var isChartLegendVisible = await chartLegend.IsVisibleAsync();
         var isShowAsTableBtnVisible = await showAsTableBtn.IsVisibleAsync();
         var isShowCurrentDataBtnVisible = await showCurrentDataBtn.IsVisibleAsync();
         var showAsTableBtnText = await showAsTableBtn.TextContentAsync();
@@ -286,6 +291,7 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
 
         // Assert
         Assert.False(isChartVisible);
+        Assert.False(isChartLegendVisible);
         Assert.True(isTableVisible);
         Assert.True(isShowAsTableBtnVisible);
         Assert.True(isShowCurrentDataBtnVisible);
