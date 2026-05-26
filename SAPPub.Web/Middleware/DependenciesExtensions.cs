@@ -32,6 +32,7 @@ using SAPPub.Core.Services.KS4.SubjectEntries;
 using SAPPub.Core.Services.KS4.Workforce;
 using SAPPub.Core.Services.Search;
 using SAPPub.Infrastructure.Mapping.ValueCodes;
+using SAPPub.Infrastructure.PostgresSearch;
 using SAPPub.Infrastructure.Repositories;
 using SAPPub.Infrastructure.Repositories.Gateway;
 using SAPPub.Infrastructure.Repositories.Generic;
@@ -99,7 +100,8 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<ILaUrlsRepository, LaUrlsRepository>();
             services.AddTransient<IAttendanceService, AttendanceService>();
 
-            services.AddSingleton<ISchoolSearchService, SchoolSearchService>();
+            services.AddTransient<ISchoolSearchIndexReader, PostgresSchoolSearchIndexReader>();
+            services.AddTransient<ISchoolSearchService, SchoolSearchService>();
 
             services.AddScoped<IEmailRepository, EmailRepository>();
             services.AddScoped<IEmailService, EmailService>();

@@ -1,4 +1,5 @@
 ﻿using SAPPub.Core.Entities;
+using SAPPub.Core.ServiceModels.Search.InputModels;
 
 namespace SAPPub.Core.Interfaces.Repositories
 {
@@ -6,8 +7,7 @@ namespace SAPPub.Core.Interfaces.Repositories
     {
         Task<IEnumerable<Establishment>> GetEstablishmentsAsync(int page, int take, CancellationToken ct = default);
         Task<Establishment?> GetEstablishmentAsync(string urn, CancellationToken ct = default);
-        Task<(IEnumerable<Establishment> Results, int TotalCount)> SearchByNameAsync(string searchTerm, int page, int pageSize, CancellationToken ct = default);
-        Task<(IEnumerable<Establishment> Results, int TotalCount)> SearchByNameAndLocationAsync(string searchTerm, double latitude, double longitude, double distance, int page, int pageSize, CancellationToken ct = default);
-        Task<(IEnumerable<Establishment> Results, int TotalCount)> SearchByLocationAsync(double latitude, double longitude, double distance, int page, int pageSize, CancellationToken ct = default);
+        Task<(IEnumerable<Establishment> Results, int TotalCount)> SearchAsync(SearchQuery query, int maxResults = 10, CancellationToken ct = default);
+
     }
 }
