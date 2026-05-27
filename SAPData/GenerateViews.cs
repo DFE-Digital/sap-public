@@ -11,7 +11,6 @@ public sealed class GenerateViews
     private readonly IReadOnlyList<DataMapRow> _rows;
     private readonly string _tableMappingPath;
     private readonly string _sqlDir;
-    private readonly List<SqlViewFilter> _establishmentFilters;
 
 
     // raw_sources.json path in repo
@@ -58,12 +57,11 @@ public sealed class GenerateViews
     };
 
 
-    public GenerateViews(IReadOnlyList<DataMapRow> rows, string tableMappingPath, string sqlDir, List<SqlViewFilter>? establishmentFilters = null)
+    public GenerateViews(IReadOnlyList<DataMapRow> rows, string tableMappingPath, string sqlDir)
     {
         _rows = rows;
         _tableMappingPath = tableMappingPath;
         _sqlDir = sqlDir;
-        _establishmentFilters = establishmentFilters ?? new List<SqlViewFilter>();
     }
 
     public void Run()
@@ -101,7 +99,12 @@ public sealed class GenerateViews
                     continue;
                 }
 
-                sql = GenerateEstablishmentDimensionView(rawTable, _establishmentFilters);
+                //Add KS5, KS2 here when needed and when we have the relevant data files in raw_sources.json and mappings in DataMap.csv
+                var keyStages = new[] { "KS4" }; 
+                var (keyStageUrnsCtes, keyStageUrnsSqlConditions) =
+                    BuildKeyStageCtesAndFilters(_rows, tableMap, keyStages);
+                var establishmentFilters = SqlViewFilterProvider.GetEstablishmentFilters(keyStageUrnsSqlConditions);
+                sql = GenerateEstablishmentDimensionView(rawTable, establishmentFilters, keyStageUrnsCtes, keyStageUrnsSqlConditions);
             }
 
             // 2) Mirror view (GIAS: all establishment links)
@@ -290,18 +293,71 @@ public sealed class GenerateViews
     }
 
     // =====================================================
+    // KS4 URNs CTE GENERATION
+    // =====================================================
+    private static string GenerateKeyStageUrnsCte(
+     IReadOnlyList<DataMapRow> rows,
+     Dictionary<string, string> tableMap,
+     string keyStageType,
+     string cteName)
+    {
+        // Group by file name and get the RecordFilterBy for each file
+        var fileGroups = rows
+            .Where(r => r.Range == "Establishment" && r.Type == keyStageType)
+            .GroupBy(r => (r.FileName ?? "").Trim().TrimStart('\uFEFF'))
+            .Where(g => !string.IsNullOrWhiteSpace(g.Key))
+            .ToList();
+
+        var cteParts = new List<string>();
+        foreach (var group in fileGroups)
+        {
+            var fileName = group.Key;
+            if (!TryResolveRawTable(tableMap, fileName, out var rawTable) || string.IsNullOrEmpty(rawTable))
+                continue;
+
+            // Use the first row's RecordFilterBy as the id column
+            var idCol = DbCol(group.First().RecordFilterBy);
+            // If the idCol is empty, fallback to "urn"
+            var col = string.IsNullOrWhiteSpace(idCol) ? "urn" : idCol;
+
+            cteParts.Add($"SELECT DISTINCT t.\"{col}\" AS \"urn\" FROM {rawTable} t");
+        }
+
+        if (cteParts.Count == 0)
+            return string.Empty;
+
+        var sb = new StringBuilder();
+        sb.AppendLine($"WITH {cteName} AS (");
+        for (int i = 0; i < cteParts.Count; i++)
+        {
+            var union = i == 0 ? "    " : "    UNION ";
+            sb.AppendLine($"{union}{cteParts[i]}");
+        }
+        sb.AppendLine(")");
+        return sb.ToString();
+    }
+    // =====================================================
     // ESTABLISHMENT DIMENSION (curated)
     // =====================================================
 
-    private static string GenerateEstablishmentDimensionView(string? rawTable, List<SqlViewFilter> filters)
+    private static string GenerateEstablishmentDimensionView(
+        string? rawTable,
+        List<SqlViewFilter> filters,
+        Dictionary<string, string> keyStageUrnsCtes,
+        Dictionary<string, string> keyStageUrnsSqlConditions)
     {
         var sb = new StringBuilder();
-
+       
         sb.AppendLine("-- AUTO-GENERATED MATERIALIZED VIEW: v_establishment");
         sb.AppendLine();
         sb.AppendLine("DROP MATERIALIZED VIEW IF EXISTS v_establishment CASCADE;");
         sb.AppendLine();
         sb.AppendLine("CREATE MATERIALIZED VIEW v_establishment AS");
+        foreach (var cte in keyStageUrnsCtes.Values)
+        {
+            sb.Append(cte);
+            sb.AppendLine();
+        }
         sb.AppendLine("SELECT");
         sb.AppendLine("    t.\"urn\"                                 AS \"URN\",");
         sb.AppendLine("    t.\"la__code_\"                           AS \"LAId\",");
@@ -371,7 +427,18 @@ public sealed class GenerateViews
         sb.AppendLine("    t.\"opendate\"                            AS \"OpenDate\",");
         sb.AppendLine();
         sb.AppendLine("    clean_int(t.\"reasonestablishmentopened__code_\")  AS \"OpenReasonId\",");
-        sb.AppendLine("    t.\"reasonestablishmentopened__name_\"             AS \"OpenReasonName\"");
+        sb.AppendLine("    t.\"reasonestablishmentopened__name_\"             AS \"OpenReasonName\",");
+        var keyStageKeys = keyStageUrnsCtes.Keys.ToList();
+        for (int i = 0; i < keyStageKeys.Count; i++)
+        {
+            var ks = keyStageKeys[i];
+            var urnsSqlCondition = keyStageUrnsSqlConditions.TryGetValue(ks, out var cond) ? cond : null;
+            var fullCondition = SqlViewFilterProvider.GetKeyStageFullCondition(ks, "t", urnsSqlCondition);
+            // Only add a comma if this is not the last column
+            var isLast = (i == keyStageKeys.Count - 1);
+            var comma = isLast ? "" : ",";
+            sb.AppendLine($"    CASE WHEN {fullCondition} THEN TRUE ELSE FALSE END AS \"IS{ks}\"{comma}");
+        }
         sb.AppendLine();
         sb.AppendLine($"FROM {rawTable} t");
         // Dynamically build WHERE clause
@@ -826,6 +893,28 @@ public sealed class GenerateViews
         var p = (r.PropertyName ?? "").Trim();
         if (string.IsNullOrWhiteSpace(p)) return p;
         return IsCoded(r) ? $"{p}_Coded" : p;
-    }     
-      
+    }
+
+    private static (Dictionary<string, string> ctes, Dictionary<string, string> filters)
+    BuildKeyStageCtesAndFilters(
+        IReadOnlyList<DataMapRow> rows,
+        Dictionary<string, string> tableMap,
+        IEnumerable<string> keyStages)
+    {
+        var ctes = new Dictionary<string, string>();
+        var filters = new Dictionary<string, string>();
+
+        foreach (var ks in keyStages)
+        {
+            var cteName = $"{ks.ToLowerInvariant()}_urns";
+            var cte = GenerateKeyStageUrnsCte(rows, tableMap, $"{ks}_Performance", cteName);
+            if (!string.IsNullOrWhiteSpace(cte))
+            {
+                ctes[ks] = cte;
+                filters[ks] = $"t.\"urn\" IN (SELECT \"urn\" FROM {cteName})";
+            }
+        }
+        return (ctes, filters);
+    }
+
 }

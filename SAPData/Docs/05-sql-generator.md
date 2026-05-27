@@ -29,6 +29,18 @@ Two types:
 - DataMap-driven views
 - Views created as mirrors of raw data files
 
+## Establishment View Key Stage Filtering
+
+The `v_establishment` materialized view includes columns such as `ISKS4` (and will include others like `ISKS2`, `ISKS5` in the future) to indicate whether each establishment is in scope for a given key stage.  
+These columns are computed using key stage-specific SQL conditions, which are defined in the codebase (see `SqlViewFilterProvider`).  
+The filters are based on CSCP logic using establishment attributes such as `phaseofeducation__code_`, `statutorylowage`, `statutoryhighage` and inclusion in performance files.
+
+For more details, see the logic in:
+- `SAPData/Filters/SqlViewFilterProvider.cs`
+- `SAPData/GenerateViews.cs` (specifically, the generation of the `v_establishment` view and key stage filters)
+
+This ensures that the view accurately reflects which establishments are relevant for each key stage.
+
 ## Column Handling
 
 - Case-sensitive quoted identifiers

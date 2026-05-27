@@ -47,8 +47,7 @@ internal class Program
         // -------------------------------------------------
         // 3. Generate views
         // -------------------------------------------------
-        var filters = SqlViewFilterProvider.GetEstablishmentFilters();
-        new GenerateViews(dataMaps, tableMappingPath, sqlDir, filters).Run();
+        new GenerateViews(dataMaps, tableMappingPath, sqlDir).Run();
 
         // -------------------------------------------------
         // 4. Generate indexes
