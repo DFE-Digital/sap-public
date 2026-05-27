@@ -1,8 +1,8 @@
 ﻿(function () {
     const defaultColors = [
-        '#DE6B24',
-        '#27A0CC',
-        '#003C56'
+        '#A285D1',
+        '#12436D',
+        '#28A197'
     ];
 
     const charts = {};
@@ -35,70 +35,6 @@
 
         const stepSize = 20;
         const legendOptions = { display: false };
-
-        if (type === 'line') {
-            return {
-                ...common,
-                layout: {
-                    padding: { right: 100 },
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        //max: 100,
-                        grid: {
-                            display: true,
-                            drawBorder: false,
-                            color: (context) => {
-                                return context.tick.value === 0 ? '#000' : '#ccc';
-                            },
-                            lineWidth: (context) => {
-                                return context.tick.value === 0 ? 2 : 1;
-                            }
-                        },
-                        border: { display: false },
-                        ticks: {
-                            color: gdsStyles.text,
-                            font: fonts,
-                            stepSize: stepSize,
-                            callback: (value) => value + '%',
-                        }
-                    },
-                    x: {
-                        title: { display: false },
-                        ticks: {
-                            color: gdsStyles.text,
-                            font: fonts,
-                            display: true
-                        },
-                        grid: { display: false }
-                    }
-                },
-                plugins: {
-                    tooltip: { enabled: false },
-                    legend: legendOptions,
-                    title: {
-                        display: false,
-                        font: fonts
-                    },
-                    datalabels: {
-                        anchor: 'end',
-                        align: 'right',
-                        offset: 10,
-                        color: gdsStyles.text,
-                        font: fonts,
-                        display: function (ctx) {
-                            return ctx.dataIndex === ctx.dataset.data.length - 1;
-                        },
-                        formatter: function (value, context) {
-                            return context.dataset.label;
-                        },
-                        clamp: true,
-                        clip: false
-                    }
-                }
-            };
-        }
 
         if (type === 'bar') {
             return {
@@ -159,7 +95,7 @@
                             }
                             else {
                                 const bg = Array.isArray(ctx.dataset.backgroundColor) ? ctx.dataset.backgroundColor[ctx.dataIndex] : ctx.dataset.backgroundColor;
-                                return bg === '#003C56' ? '#ffffff' : gdsStyles.text;
+                                return bg === '#12436D' ? '#ffffff' : gdsStyles.text;
                             }
                         },
                         font: {
@@ -182,17 +118,6 @@
     }
 
     function buildDatasets(type, chartData, colors) {
-        if (type === 'line') {
-            return chartData.datasets.map((ds, i) => ({
-                label: ds.label,
-                data: ds.data,
-                borderColor: colors[i] || '#999',
-                fill: false,
-                tension: 0.2,
-                pointRadius: 0
-            }));
-        }
-
         if (type === 'bar') {
             const dataOptions = {                
                 borderWidth: 1,                

@@ -69,8 +69,11 @@ namespace SAPPub.Web.Models.SecondarySchool
 
         public required DisplayField<string> RecentlyOpenedSchoolMessage { get; set; }
 
-        public bool HasPredecessors => Predecessors != null;
+        public bool HasPredecessors => Predecessors != null && Predecessors.Count > 0;
+        public bool HasSuccessors => Successors != null;
+
         public List<SuccessorOrPredecessorDetailsModel>? Predecessors { get; set; }
+        public List<SuccessorOrPredecessorDetailsModel>? Successors { get; set; }
 
         public static AboutSchoolViewModel Map(AboutSchoolModel schoolDetails)
         {
@@ -105,7 +108,8 @@ namespace SAPPub.Web.Models.SecondarySchool
                 OpenDate = schoolDetails.OpenDate,
                 OpenReasonId = schoolDetails.OpenReasonId,
                 RecentlyOpenedSchoolMessage = GetRecentlyOpenedSchoolMessage(schoolDetails.OpenReasonId, schoolDetails.OpenDate),
-                Predecessors = schoolDetails.Predecessors?.Select(p => SuccessorOrPredecessorDetailsModel.Map(p)).ToList()
+                Predecessors = schoolDetails.Predecessors?.Select(p => SuccessorOrPredecessorDetailsModel.Map(p)).ToList(),
+                Successors = schoolDetails.Successors?.Select(s => SuccessorOrPredecessorDetailsModel.Map(s)).ToList()
             };
         }
 

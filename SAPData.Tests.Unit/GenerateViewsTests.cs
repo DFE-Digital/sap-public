@@ -91,7 +91,7 @@ public class GenerateViewsTests : IDisposable
         var filters = SqlViewFilterProvider.GetEstablishmentFilters();
 
         // Act
-        new GenerateViews(rows, _mappingPath, _sqlDir, filters).Run();
+        new GenerateViews(rows, _mappingPath, _sqlDir).Run();
 
         var sql = File.ReadAllText(Path.Combine(_sqlDir, "04_v_establishment.sql"));
 
@@ -102,6 +102,53 @@ public class GenerateViewsTests : IDisposable
             Assert.Contains(expectedSql, sql);
         }
         Assert.Contains("WHERE", sql);
+    }
+
+    [Fact]
+    public void EstablishmentView_Includes_KS4_CTE_And_ISKS4_Column()
+    {
+        //Arrange
+        WriteMapping(("edubasealldata20230912", "t_edubase_20230912"), ("ks4_perf", "t_ks4_perf"));
+        var rows = new List<DataMapRow>
+        {
+            Row("ks4_perf", "Establishment", "KS4_Performance", "SomeProp", "some_field")
+        };
+
+        // Act
+        new GenerateViews(rows, _mappingPath, _sqlDir).Run();
+        var sql = File.ReadAllText(Path.Combine(_sqlDir, "03_v_establishment.sql"));
+
+        // Assert: CTE and ISKS4 logic present
+        Assert.Contains("WITH ks4_urns AS", sql);
+        Assert.Contains("t.\"urn\" IN (SELECT \"urn\" FROM ks4_urns)", sql);
+        Assert.Contains("CASE WHEN", sql);
+        Assert.Contains("AS \"ISKS4\"", sql);
+    }
+
+    [Fact]
+    public void EstablishmentView_Filters_Include_KeyStage_Conditions()
+    {
+        // Arrange
+        WriteMapping(("edubasealldata20230912", "t_edubase_20230912"), ("ks4_perf", "t_ks4_perf"));
+        var rows = new List<DataMapRow>
+    {
+        Row("ks4_perf", "Establishment", "KS4_Performance", "SomeProp", "some_field")
+    };
+
+        var filters = SqlViewFilterProvider.GetEstablishmentFilters(
+            new Dictionary<string, string> { { "KS4", "t.\"urn\" IN (SELECT \"urn\" FROM ks4_urns)" } }
+        );
+
+        // Act
+        new GenerateViews(rows, _mappingPath, _sqlDir).Run();
+        var sql = File.ReadAllText(Path.Combine(_sqlDir, "03_v_establishment.sql"));
+
+        // Assert: Each filter's SQL is present
+        foreach (var filter in filters)
+        {
+            var expectedSql = filter.GetSqlCondition("t");
+            Assert.Contains(expectedSql, sql);
+        }
     }
 
     // ------------------------------------------------------------

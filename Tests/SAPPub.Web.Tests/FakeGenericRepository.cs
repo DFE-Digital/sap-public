@@ -104,6 +104,8 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             PhaseOfEducationId = "4",
             PhaseOfEducationName = "Secondary",
             AddressPostcode = "SN25 2ND",
+            StatusCode = 2,
+            ClosedDate = "01-09-2025"
         },
         ["178966"] = new Establishment
         {
@@ -114,6 +116,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             PhaseOfEducationId = "4",
             PhaseOfEducationName = "Secondary",
             AddressPostcode = "SN25 2ND",
+            StatusCode = 2
         },
         ["151948"] = new Establishment
         {

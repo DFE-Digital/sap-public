@@ -47,7 +47,7 @@
                             class="js-chart"
                             data-type="bar"
                             data-chart='@Html.Raw(Json.Serialize(Model.AllDestinationsData))'
-                            data-colors='["#DE6B24", "#27A0CC", "#003C56"]'>
+                            data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
                          </canvas>
                     </div>
 
@@ -79,12 +79,16 @@
                 @if(Model.HasEstablishmentData.IsAvailable)
                 {
                     <div id="all-dest-data-over-time-chart-container" class="chart-container all-dest-data-over-time-chart-container">
-                        <canvas id="all-destinations-data-overtime-chart"  
-                            class="js-chart"
-                            data-type="line"
-                            data-chart='@Html.Raw(Json.Serialize(Model.AllDestinationsOverTimeData))'
-                            data-colors='["#DE6B24", "#27A0CC", "#003C56"]'>
-                        </canvas>
+                        <div id="all-destinations-data-overtime-chart-legend" class="chart-legend" data-chart-id="all-destinations-data-overtime-chart"></div>
+                        <div class="chart-container stacked">
+                            <canvas id="all-destinations-data-overtime-chart"  
+                                class="js-chart"
+                                data-type="bar"
+                                data-show-legend="true"
+                                data-chart='@Html.Raw(Json.Serialize(Model.AllDestinationsOverTimeData))'
+                                data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
+                            </canvas>
+                        </div>
                     </div>
                 }
 
@@ -151,7 +155,7 @@
                                     data-type="bar"
                                     data-show-legend="true"
                                     data-chart='@Html.Raw(Json.Serialize(Model.BreakdownDestinationData))'
-                                    data-colors='["#DE6B24", "#27A0CC", "#003C56"]'>
+                                    data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
                             </canvas>
                         </div>
                     </div>
