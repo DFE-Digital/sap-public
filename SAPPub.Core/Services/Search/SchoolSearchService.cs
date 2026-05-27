@@ -9,19 +9,10 @@ using SAPPub.Core.Extensions;
 
 namespace SAPPub.Core.Services.Search;
 
-public class SchoolSearchService : ISchoolSearchService
+public class SchoolSearchService(ISchoolSearchIndexReader schoolSearchIndexReader, IPostcodeLookupService postcodeLookupService) : ISchoolSearchService
 {
     private const string PostcodeValidationRegex = """^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})$""";
-    private readonly ISchoolSearchIndexReader _schoolSearchIndexReader;
-    private readonly IPostcodeLookupService _postcodeLookupService;
 
-    public SchoolSearchService(
-        ISchoolSearchIndexReader schoolSearchIndexReader,
-        IPostcodeLookupService postcodeLookupService)
-    {
-        _schoolSearchIndexReader = schoolSearchIndexReader;
-        _postcodeLookupService = postcodeLookupService;
-    }
 
     public async Task<SchoolSearchResultsServiceModel> SearchAsync(SchoolSearchServiceQuery query)
     {
@@ -47,7 +38,7 @@ public class SchoolSearchService : ISchoolSearchService
 
         if (query.Location != null)
         {
-            var postcodeResponse = await _postcodeLookupService.GetLatitudeAndLongitudeAsync(query.Location);
+            var postcodeResponse = await postcodeLookupService.GetLatitudeAndLongitudeAsync(query.Location);
             if (postcodeResponse?.Error != null)
             {
                 return new SchoolSearchResultsServiceModel
@@ -77,7 +68,7 @@ public class SchoolSearchService : ISchoolSearchService
             PageSize = Constants.PageSize
         };
 
-        var results = await _schoolSearchIndexReader.SearchAsync(searchQuery, Constants.PageSize);
+        var results = await schoolSearchIndexReader.SearchAsync(searchQuery, Constants.PageSize);
 
         return new SchoolSearchResultsServiceModel
         {
