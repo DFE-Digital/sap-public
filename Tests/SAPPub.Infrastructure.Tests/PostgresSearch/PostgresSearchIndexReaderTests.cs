@@ -27,14 +27,7 @@ namespace SAPPub.Infrastructure.Tests.PostgresSearch
             EstablishmentNumber = "40",
             EstablishmentName = "Fake School Two"
         };
-        private readonly Establishment FakeEstablishmentThree = new()
-        {
-            URN = "15",
-            UKPRN = "25",
-            LAId = "35",
-            EstablishmentNumber = "45",
-            EstablishmentName = "Saint Fake School Three"
-        };
+    
 
         public PostgresSearchIndexReaderTests()
         {
