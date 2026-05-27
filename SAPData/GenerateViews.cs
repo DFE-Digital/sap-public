@@ -429,7 +429,7 @@ public sealed class GenerateViews
         sb.AppendLine("    clean_int(t.\"reasonestablishmentopened__code_\")  AS \"OpenReasonId\",");
         sb.AppendLine("    t.\"reasonestablishmentopened__name_\"             AS \"OpenReasonName\",");
         sb.AppendLine("    to_tsvector('english', normalize_text(coalesce(t.\"establishmentname\", ''))) AS \"EstablishmentNameFTS\",");
-        sb.AppendLine("    ST_Transform(\r\n    ST_SetSRID(ST_MakePoint(clean_int(t.\"easting\"), clean_int(t.\"northing\")), 27700), 4326\r\n)::geography AS \"geom\"");
+        sb.AppendLine("    ST_Transform(\r\n    ST_SetSRID(ST_MakePoint(clean_int(t.\"easting\"), clean_int(t.\"northing\")), 27700), 4326\r\n)::geography AS \"geom\",");
         var keyStageKeys = keyStageUrnsCtes.Keys.ToList();
         for (int i = 0; i < keyStageKeys.Count; i++)
         {
