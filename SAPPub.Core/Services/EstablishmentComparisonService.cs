@@ -19,7 +19,7 @@ namespace SAPPub.Core.Services
 
         public bool IsSaved(string urn) => GetSavedEstablishments().Contains(urn);
 
-        public void RemovaAll()
+        public void RemoveAll()
         {
             _contextAccessor.HttpContext.Response.Cookies.Delete(CookieName);
         }

@@ -12,7 +12,7 @@
 
         void Toggle(string urn);
 
-        void RemovaAll();
+        void RemoveAll();
 
         bool IsComparisonLimitReached();
 
