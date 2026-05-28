@@ -294,18 +294,161 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
     }
 
     [Fact]
-    public async Task AboutSchoolPage_ShowsSchoolComparisonLimit()
+    public async Task AboutSchoolPage_ShowsSchoolComparisonLimit_WhenLimitReached()
     {
         // Arrange
         var cookieValue = string.Join(",", Enumerable.Range(1, 100).Select(a => a.ToString()).ToList());
+        var schoolUrl = $"{fixture.BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
+
         await Page.Context.ClearCookiesAsync();
-        await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = cookieValue, Domain = "127.0.0.1", Path= "/", HttpOnly = true, SameSite = SameSiteAttribute.Strict, Secure = false }]);
+        await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = cookieValue, Domain="127.0.0.1", Path="/", SameSite = SameSiteAttribute.Lax, Secure = true }]);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+
+        // Act
+        var limitNotificationVisible = await Page.Locator("#school-compare-limit-notification").IsVisibleAsync();
+        var removeButtonVisibile = await Page.Locator(".remove-school-btn").IsVisibleAsync();
+        var addButtonVisibile = await Page.Locator(".add-school-btn").IsVisibleAsync();
+
+        // Assert
+        Assert.True(limitNotificationVisible);
+        Assert.False(removeButtonVisibile);
+        Assert.False(addButtonVisibile);
+    }
+
+    [Fact]
+    public async Task AboutSchoolPage_DoesNotShowSchoolComparisonLimit_WhenLimitNotReached()
+    {
+        // Arrange
+        var cookieValue = string.Join(",", Enumerable.Range(1, 99).Select(a => a.ToString()).ToList());
+        var schoolUrl = $"{fixture.BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
+
+        await Page.Context.ClearCookiesAsync();
+        await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = cookieValue, Domain = "127.0.0.1", Path = "/", SameSite = SameSiteAttribute.Lax, Secure = true }]);
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var limitNotificationVisible = await Page.Locator("#school-compare-limit-notification").IsVisibleAsync();
 
         // Assert
-        Assert.True(limitNotificationVisible);
+        Assert.False(limitNotificationVisible);
+    }
+
+    [Fact]
+    public async Task AboutSchoolPage_DoesNotShowAddButton_WhenSchoolOnListAndLimitReached()
+    {
+        // Arrange
+        var cookieValue = string.Join(",", Enumerable.Range(1, 99).Select(a => a.ToString()).ToList());
+        cookieValue += ",105574";
+        var schoolUrl = $"{fixture.BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
+
+        await Page.Context.ClearCookiesAsync();
+        await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = cookieValue, Domain = "127.0.0.1", Path = "/", SameSite = SameSiteAttribute.Lax, Secure = true }]);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+
+        // Act
+        var removeButtonVisibile = await Page.Locator(".remove-school-btn").IsVisibleAsync();
+        var addButtonVisibile = await Page.Locator(".add-school-btn").IsVisibleAsync();
+
+        // Assert
+        Assert.True(removeButtonVisibile);
+        Assert.False(addButtonVisibile);
+    }
+
+    [Fact]
+    public async Task AboutSchoolPage_ShowsAddButton_WhenSchoolNotOnList_AndLimitNotReached()
+    {
+        // Arrange
+        var cookieValue = string.Join(",", Enumerable.Range(1, 20).Select(a => a.ToString()).ToList());
+        var schoolUrl = $"{fixture.BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
+
+        await Page.Context.ClearCookiesAsync();
+        await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = cookieValue, Domain = "127.0.0.1", Path = "/", SameSite = SameSiteAttribute.Lax, Secure = true }]);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+
+        // Act
+        var removeButtonVisibile = await Page.Locator(".remove-school-btn").IsVisibleAsync();
+        var addButtonVisibile = await Page.Locator(".add-school-btn").IsVisibleAsync();
+
+        // Assert
+        Assert.False(removeButtonVisibile);
+        Assert.True(addButtonVisibile);
+    }
+
+    [Fact]
+    public async Task AboutSchoolPage_ShowsRemoveButton_WhenSchoolOnList_AndLimitNotReached()
+    {
+        // Arrange
+        var cookieValue = string.Join(",", Enumerable.Range(1, 20).Select(a => a.ToString()).ToList());
+        cookieValue += ",105574";
+        var schoolUrl = $"{fixture.BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
+
+        await Page.Context.ClearCookiesAsync();
+        await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = cookieValue, Domain = "127.0.0.1", Path = "/", SameSite = SameSiteAttribute.Lax, Secure = true }]);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+        var content = await Page.ContentAsync();
+
+        // Act
+        var removeButtonVisibile = await Page.Locator(".remove-school-btn").IsVisibleAsync();
+        var addButtonVisibile = await Page.Locator(".add-school-btn").IsVisibleAsync();
+
+        // Assert
+        Assert.True(removeButtonVisibile);
+        Assert.False(addButtonVisibile);
+    }
+
+
+    [Fact]
+    public async Task AboutSchoolPage_AddButtonClick_ShowsAddSuccessBanner()
+    {
+        // Arrange
+        var cookieValue = string.Join(",", Enumerable.Range(1, 20).Select(a => a.ToString()).ToList());
+        var schoolUrl = $"{fixture.BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
+
+        await Page.Context.ClearCookiesAsync();
+        await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = cookieValue, Domain = "127.0.0.1", Path = "/", SameSite = SameSiteAttribute.Lax, Secure = true }]);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+
+        // Act
+        await Page.ClickAsync(".add-school-btn");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        var removeButtonVisibile = await Page.Locator(".remove-school-btn").IsVisibleAsync();
+        var addButtonVisibile = await Page.Locator(".add-school-btn").IsVisibleAsync();
+        var comparisonAddSuccessVisible = await Page.Locator("#comparison-add-success").IsVisibleAsync();
+        var comparisonRemoveSuccessVisible = await Page.Locator("#comparison-remove-success").IsVisibleAsync();
+
+        // Assert
+        Assert.True(removeButtonVisibile);
+        Assert.False(addButtonVisibile);
+        Assert.True(comparisonAddSuccessVisible);
+        Assert.False(comparisonRemoveSuccessVisible);
+    }
+
+    [Fact]
+    public async Task AboutSchoolPage_RemoveButtonClick_ShowsRemoveSuccessBanner()
+    {
+        // Arrange
+        var cookieValue = string.Join(",", Enumerable.Range(1, 20).Select(a => a.ToString()).ToList());
+        cookieValue += ",105574";
+        var schoolUrl = $"{fixture.BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
+
+        await Page.Context.ClearCookiesAsync();
+        await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = cookieValue, Domain = "127.0.0.1", Path = "/", SameSite = SameSiteAttribute.Lax, Secure = true }]);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+
+        // Act
+        await Page.ClickAsync(".remove-school-btn");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        var removeButtonVisibile = await Page.Locator(".remove-school-btn").IsVisibleAsync();
+        var addButtonVisibile = await Page.Locator(".add-school-btn").IsVisibleAsync();
+        var comparisonAddSuccessVisible = await Page.Locator("#comparison-add-success").IsVisibleAsync();
+        var comparisonRemoveSuccessVisible = await Page.Locator("#comparison-remove-success").IsVisibleAsync();
+
+        // Assert
+        Assert.False(removeButtonVisibile);
+        Assert.True(addButtonVisibile);
+        Assert.True(comparisonRemoveSuccessVisible);
+        Assert.False(comparisonAddSuccessVisible);
     }
 }

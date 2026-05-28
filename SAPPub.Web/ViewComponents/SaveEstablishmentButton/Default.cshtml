@@ -9,7 +9,7 @@
 
     @if (Model.ShowAddSuccessNotification)
     {
-        <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner" id="comparison-add-success">
             <div class="govuk-notification-banner__header">
                 <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
                     Success
@@ -30,7 +30,7 @@
 
     @if (Model.ShowRemoveSuccessNotification)
     {
-        <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner" id="comparison-remove-success">
             <div class="govuk-notification-banner__header">
                 <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
                     Success
@@ -63,24 +63,25 @@
         </div>
         if (Model.IsSaved)
         {
-            <button type="submit" class="save-school-btn govuk-body-s saved">
+            <button type="submit" class="remove-school-btn govuk-body-s saved">
                 <span>@Model.SavedText</span>
             </button>
         }
     }
     else
     {
-        <button type="submit" class="save-school-btn govuk-body-s @(Model.IsSaved ? "saved" : "")">
-
-            @if (Model.IsSaved)
-            {
+        @if (Model.IsSaved)
+        {
+            <button type="submit" class="remove-school-btn govuk-body-s @(Model.IsSaved ? "saved" : "")">
                 <span>@Model.SavedText</span>
-            }
-            else
-            {
+            </button>
+        }
+        else
+        {
+            <button type="submit" class="add-school-btn govuk-body-s @(Model.IsSaved ? "saved" : "")">
                 <span>@Model.SaveText</span>
-            }
-        </button>
+            </button>
+        }
     }
 
 </form>

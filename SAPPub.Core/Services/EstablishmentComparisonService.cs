@@ -13,12 +13,13 @@ namespace SAPPub.Core.Services
         public IReadOnlyCollection<string> GetSavedEstablishments()
         {
             var cookie = _contextAccessor.HttpContext?.Request.Cookies[CookieName];
+            cookie ??= GetCookieValueFromHeader();
             return string.IsNullOrWhiteSpace(cookie) ? [] : cookie.Split(",", StringSplitOptions.RemoveEmptyEntries).ToList();
         }
 
         public bool IsSaved(string urn) => GetSavedEstablishments().Contains(urn);
 
-        public void RemovalAll()
+        public void RemovaAll()
         {
             _contextAccessor.HttpContext.Response.Cookies.Delete(CookieName);
         }
@@ -73,6 +74,16 @@ namespace SAPPub.Core.Services
             context.Response.Cookies.Append(CookieName, string.Join(",", establishments), options);
         }
 
+        private string? GetCookieValueFromHeader()
+        {
+            var cookieHeader = _contextAccessor.HttpContext.Request.Headers["Cookie"];
 
+            return cookieHeader
+                .ToString()
+                ?.Split(";", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+                ?.Select(a => a.Split("=", 2))
+                ?.Where(a => a.Length == 2)
+                ?.FirstOrDefault(a => a[0] == CookieName)?[1];
+        }
     }
 }
