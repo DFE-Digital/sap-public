@@ -1,4 +1,5 @@
-﻿using SAPPub.Web.Tests.UI.Helpers;
+﻿using Microsoft.Playwright;
+using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
 namespace SAPPub.Web.Tests.UI.SecondarySchool;
@@ -290,5 +291,21 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         Assert.True(isVisible);
         Assert.False(previousPaginationIsVisible);
         Assert.Equal("Admissions", nextPaginationText?.Trim());
+    }
+
+    [Fact]
+    public async Task AboutSchoolPage_ShowsSchoolComparisonLimit()
+    {
+        // Arrange
+        var cookieValue = string.Join(",", Enumerable.Range(1, 100).Select(a => a.ToString()).ToList());
+        await Page.Context.ClearCookiesAsync();
+        await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = cookieValue, Domain = "127.0.0.1", Path= "/", HttpOnly = true, SameSite = SameSiteAttribute.Strict, Secure = false }]);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+
+        // Act
+        var limitNotificationVisible = await Page.Locator("#school-compare-limit-notification").IsVisibleAsync();
+
+        // Assert
+        Assert.True(limitNotificationVisible);
     }
 }

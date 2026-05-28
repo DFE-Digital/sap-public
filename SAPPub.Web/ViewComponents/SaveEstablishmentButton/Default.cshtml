@@ -1,0 +1,86 @@
+﻿@using SAPPub.Web.Models.EstablishmentComparison
+@model EstablishmentComparisonButtonViewModel
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<form asp-controller="EstablishmentComparison" asp-action="ToggleSaveEstablishment" method="post">
+
+    <input type="hidden" name="urn" value="@Model.Urn" />
+    <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+
+    @if (Model.ShowAddSuccessNotification)
+    {
+        <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                    Success
+                </h2>
+            </div>
+            <div class="govuk-notification-banner__content">
+                <p class="govuk-notification-banner__heading">
+                    School added to your schools list
+                </p>
+                <p class="govuk-body">
+                    @Model.SchoolName
+                </p>
+                <p class="govuk-body">You can compare up to 6 schools at a time.  <a class="govuk-link" href="@Model.ComparisonPageUrl">View your schools list</a></p>
+                
+            </div>
+        </div>
+    }
+
+    @if (Model.ShowRemoveSuccessNotification)
+    {
+        <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                    Success
+                </h2>
+            </div>
+            <div class="govuk-notification-banner__content">
+                <p class="govuk-notification-banner__heading">
+                    School removed from your schools list
+                </p>
+                <p class="govuk-body">
+                    @Model.SchoolName
+                </p>
+            </div>
+        </div>
+    }
+
+    @if (Model.IsComparisonLimitReached && !Model.ShowAddSuccessNotification)
+    {
+        <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner" data-govuk-notification-banner-init="" id="school-compare-limit-notification">
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                    Important
+                </h2>
+            </div>
+            <div class="govuk-notification-banner__content">
+                <p class="govuk-notification-banner__heading">
+                    You can only add 100 schools to your list. To add another, you must first remove a school. <a class="govuk-link" href="@Model.ComparisonPageUrl">Edit your schools list</a>
+                </p>
+            </div>
+        </div>
+        if (Model.IsSaved)
+        {
+            <button type="submit" class="save-school-btn govuk-body-s saved">
+                <span>@Model.SavedText</span>
+            </button>
+        }
+    }
+    else
+    {
+        <button type="submit" class="save-school-btn govuk-body-s @(Model.IsSaved ? "saved" : "")">
+
+            @if (Model.IsSaved)
+            {
+                <span>@Model.SavedText</span>
+            }
+            else
+            {
+                <span>@Model.SaveText</span>
+            }
+        </button>
+    }
+
+</form>
