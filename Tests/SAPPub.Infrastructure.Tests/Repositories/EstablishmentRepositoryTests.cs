@@ -1,8 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
+using Npgsql;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Infrastructure.Repositories;
+using System.Data;
+
 
 namespace SAPPub.Infrastructure.Tests.Repositories
 {
@@ -12,11 +15,18 @@ namespace SAPPub.Infrastructure.Tests.Repositories
         private readonly Mock<ILogger<EstablishmentRepository>> _mockLogger;
         private readonly EstablishmentRepository _sut;
 
+        private static NpgsqlDataSource CreateSafeDataSource()
+        {
+            // Safe because our tests below do not actually open a connection
+            // (we target early return / missing SQL branches).
+            return NpgsqlDataSource.Create("Host=127.0.0.1;Port=1;Username=x;Password=x;Database=x;Timeout=1;Command Timeout=1");
+        }
+
         public EstablishmentRepositoryTests()
         {
             _mockGenericRepo = new Mock<IGenericRepository<Establishment>>();
             _mockLogger = new Mock<ILogger<EstablishmentRepository>>();
-            _sut = new EstablishmentRepository(_mockGenericRepo.Object);
+            _sut = new EstablishmentRepository(_mockGenericRepo.Object, CreateSafeDataSource());
         }
 
         [Fact]

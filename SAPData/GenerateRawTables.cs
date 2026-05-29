@@ -44,9 +44,9 @@ public class GenerateRawTables
 
         var utf8NoBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
 
-        File.WriteAllText(Path.Combine(_sqlDir, "01_create_raw_tables.sql"), createSql.ToString(), utf8NoBom);
-        File.WriteAllText(Path.Combine(_sqlDir, "02_copy_into_raw.sql"), copySql.ToString(), utf8NoBom);
-        File.WriteAllText(Path.Combine(_sqlDir, "02_copy_into_raw_local.sql"), copyLocalSql.ToString(), utf8NoBom);
+        File.WriteAllText(Path.Combine(_sqlDir, "02_create_raw_tables.sql"), createSql.ToString(), utf8NoBom);
+        File.WriteAllText(Path.Combine(_sqlDir, "03_copy_into_raw.sql"), copySql.ToString(), utf8NoBom);
+        File.WriteAllText(Path.Combine(_sqlDir, "03_copy_into_raw_local.sql"), copyLocalSql.ToString(), utf8NoBom);
 
         // Add alias rows BEFORE writing tablemapping.csv
         AddLegacyAliasesFromRawSources();

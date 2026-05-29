@@ -105,4 +105,28 @@ EXCEPTION WHEN others THEN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION public.normalize_text(input_text text)
+RETURNS text AS $$
+DECLARE
+words text[];
+w text;
+syn text;
+normalized_words text[];
+BEGIN
+-- Split the input into words
+words := regexp_split_to_array(lower(input_text), '\s+');
+
+
+
+FOREACH w IN ARRAY words LOOP
+    SELECT synonym INTO syn
+    FROM public.thesaurus_synonyms
+    WHERE word = w
+    LIMIT 1;
+    normalized_words := array_append(normalized_words, COALESCE(syn, w));
+END LOOP;
+RETURN array_to_string(normalized_words, ' ');
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
+
 \echo 'Cleanup complete.'

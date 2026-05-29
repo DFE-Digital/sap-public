@@ -26,3 +26,5 @@ This pipeline ingests UK school datasets, stores canonical raw files in Azure Bl
 - Materialized views (v_*)
 - Indexes
 - Mapping metadata (SAPData/Sql/tablemapping.csv)
+- Synonym reference table for text search
+

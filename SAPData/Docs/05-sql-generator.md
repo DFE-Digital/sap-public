@@ -60,3 +60,4 @@ UTF-8 without BOM
 
 Explicit per-view definitions.
 Uses to_regclass guards.
+Full text search index on EstablishmentName.

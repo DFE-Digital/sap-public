@@ -23,7 +23,6 @@ A caveat to this exists in the Gateway which uses email and timers to restirct a
 Is the interactor with the data and external services
 
 * Repositories live here, each currently accessing the datasets mapped out elsewhere and performing any checks or calculations on them to prepare for the Core/Services to use them. May entirely be replaced by Generic Implementations for CRUD. 
-* Lucene Search - This is the search engine used to power the school search functionality in the web app.
 
 ## SAPPub.Data
 
