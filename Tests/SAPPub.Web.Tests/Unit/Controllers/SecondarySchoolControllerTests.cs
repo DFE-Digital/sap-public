@@ -188,6 +188,7 @@ public class SecondarySchoolControllerTests
             .WithStatusCode(1)
             .WithOpenReasonId(10)
             .WithOpenDate()
+            .WithSenTypes("VI - Visual Impairment, HI - Hearing Impairment")
             .Build();
 
         _mockLogger = new Mock<ILogger<SecondarySchoolController>>();
@@ -252,6 +253,7 @@ public class SecondarySchoolControllerTests
         Assert.Equal(expectedResult.Urn, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(TextHelpers.CleanForUrl(expectedResult.SchoolName), model.RouteAttributes[RouteConstants.SchoolName]);
         Assert.Equal(expectedResult.OpenReasonId, model.OpenReasonId);
+        Assert.Equal(expectedResult.SenTypes, model.SenTypes.Value);
     }
 
     [Fact]
@@ -394,6 +396,7 @@ public class SecondarySchoolControllerTests
         Assert.Equal(TextHelpers.CleanForUrl(expectedResult.SchoolName), model.RouteAttributes[RouteConstants.SchoolName]);
         Assert.Equal(expectedResult.OpenReasonId, model.OpenReasonId);
         Assert.Equal(expectedResult.OpenDate, model.OpenDate);
+        Assert.Equal(NotRecorded, model.SenTypes.DisplayText(notAvailableText: NotRecorded));
     }
 
     [Theory]

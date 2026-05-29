@@ -72,6 +72,7 @@ namespace SAPPub.Web.Models.SecondarySchool
         public bool HasPredecessors => Predecessors != null && Predecessors.Count > 0;
         public bool HasSuccessors => Successors != null;
 
+        public required DisplayField<string> SenTypes { get; set; }
         public List<SuccessorOrPredecessorDetailsModel>? Predecessors { get; set; }
         public List<SuccessorOrPredecessorDetailsModel>? Successors { get; set; }
 
@@ -107,6 +108,7 @@ namespace SAPPub.Web.Models.SecondarySchool
                 ClosedDate = schoolDetails.ClosedDate.ToDisplayField(),
                 OpenDate = schoolDetails.OpenDate,
                 OpenReasonId = schoolDetails.OpenReasonId,
+                SenTypes = schoolDetails.SenTypes.ToDisplayField(),
                 RecentlyOpenedSchoolMessage = GetRecentlyOpenedSchoolMessage(schoolDetails.OpenReasonId, schoolDetails.OpenDate),
                 Predecessors = schoolDetails.Predecessors?.Select(p => SuccessorOrPredecessorDetailsModel.Map(p)).ToList(),
                 Successors = schoolDetails.Successors?.Select(s => SuccessorOrPredecessorDetailsModel.Map(s)).ToList()

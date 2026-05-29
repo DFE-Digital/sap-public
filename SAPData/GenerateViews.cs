@@ -430,6 +430,7 @@ public sealed class GenerateViews
         sb.AppendLine("    t.\"reasonestablishmentopened__name_\"             AS \"OpenReasonName\",");
         sb.AppendLine("    to_tsvector('english', normalize_text(coalesce(t.\"establishmentname\", ''))) AS \"EstablishmentNameFTS\",");
         sb.AppendLine("    ST_Transform(\r\n    ST_SetSRID(ST_MakePoint(clean_int(t.\"easting\"), clean_int(t.\"northing\")), 27700), 4326\r\n)::geography AS \"geom\",");
+        sb.AppendLine($"   {BuildSenTypes()} AS \"SenTypes\",");
         var keyStageKeys = keyStageUrnsCtes.Keys.ToList();
         for (int i = 0; i < keyStageKeys.Count; i++)
         {
@@ -921,4 +922,10 @@ public sealed class GenerateViews
         return (ctes, filters);
     }
 
+    private static string BuildSenTypes()
+    {
+        var columns = Enumerable.Range(1, 13).Select(i => $"NULLIF(t.\"sen{i}__name_\", 'Not Applicable')");
+        var senTypesSql = $"NULLIF(concat_ws(', ', {string.Join(", ", columns)}), '')";
+        return senTypesSql;
+    }
 }

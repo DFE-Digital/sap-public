@@ -1,6 +1,7 @@
 ﻿@model SAPPub.Web.Models.SecondarySchool.AboutSchoolViewModel;
 @using SAPPub.Core.Helpers
 @using SAPPub.Web.ViewComponents.VerticalNavigation
+@using static SAPPub.Web.Constants.Constants;
 
 @{
     ViewData["Header"] = "About the school";
@@ -264,6 +265,12 @@
                 <govuk-summary-list-row-key>Sixth form</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
                    @Model.SixthForm.DisplayText()
+                </govuk-summary-list-row-value>
+            </govuk-summary-list-row>
+            <govuk-summary-list-row>
+                <govuk-summary-list-row-key>Type of SEN provision</govuk-summary-list-row-key>
+                <govuk-summary-list-row-value>
+                    @Model.SenTypes.DisplayText(notAvailableText: NotRecorded)
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>

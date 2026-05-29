@@ -57,7 +57,8 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             AddressPostcode = "M21 7SW",
             Easting = "382682",
             Northing = "392995",
-            Website = "http://www.test.co.uk/"
+            Website = "http://www.test.co.uk/",
+            SenTypes = "VI - Visual Impairment, HI - Hearing Impairment"
         },
         ["137552"] = new Establishment
         {
