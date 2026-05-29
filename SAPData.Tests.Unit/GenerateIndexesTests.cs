@@ -18,7 +18,7 @@ public class GenerateIndexesTests : IDisposable
 
         new GenerateIndexes(_sqlDir).Run();
 
-        _sqlPath = Path.Combine(_sqlDir, "04_indexes.sql");
+        _sqlPath = Path.Combine(_sqlDir, "05_indexes.sql");
         _sql = File.ReadAllText(_sqlPath);
     }
 
@@ -37,7 +37,7 @@ public class GenerateIndexesTests : IDisposable
     [Fact]
     public void Writes_expected_header()
     {
-        Assert.Contains("-- 04_indexes.sql", _sql);
+        Assert.Contains("-- 05_indexes.sql", _sql);
         Assert.Contains("Indexes for materialized views", _sql);
         Assert.Contains("AUTO-GENERATED", _sql);
     }

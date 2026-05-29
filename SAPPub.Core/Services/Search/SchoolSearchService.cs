@@ -1,21 +1,24 @@
-﻿using SAPPub.Core.Extensions;
-using SAPPub.Core.Helpers;
+﻿using SAPPub.Core.Helpers;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.ServiceModels.Common;
 using SAPPub.Core.ServiceModels.Search.InputModels;
 using SAPPub.Core.ServiceModels.Search.Results;
 using System.Text.RegularExpressions;
+using SAPPub.Core.Extensions;
 
 namespace SAPPub.Core.Services.Search;
 
-public class SchoolSearchService(ISchoolSearchIndexReader indexReader, IPostcodeLookupService postcodeLookupService) : ISchoolSearchService
+public class SchoolSearchService(ISchoolSearchIndexReader schoolSearchIndexReader, IPostcodeLookupService postcodeLookupService) : ISchoolSearchService
 {
-    private const int MaxResults = 4000;
     private const string PostcodeValidationRegex = """^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})$""";
+
 
     public async Task<SchoolSearchResultsServiceModel> SearchAsync(SchoolSearchServiceQuery query)
     {
+        var pageNumber = query.PageNumber ?? 1;
+
+        // Validate postcode if present
         if (query.Location != null && !Regex.IsMatch(query.Location, PostcodeValidationRegex))
         {
             return new SchoolSearchResultsServiceModel
@@ -24,65 +27,58 @@ public class SchoolSearchService(ISchoolSearchIndexReader indexReader, IPostcode
                 {
                     TotalRecords = 0,
                     Records = [],
-                    PagerInfo = new Pager(0, query.PageNumber, Constants.PageSize)
+                    PagerInfo = new Pager(0, pageNumber, Constants.PageSize)
                 },
                 Status = SchoolSearchStatus.InvalidPostcode
             };
         }
-        var postcodeResponse = query.Location != null ? await postcodeLookupService.GetLatitudeAndLongitudeAsync(query.Location) : null;
-        if (postcodeResponse != null && postcodeResponse.Error != null)
+
+        double? latitude = null;
+        double? longitude = null;
+
+        if (query.Location != null)
         {
-            return new SchoolSearchResultsServiceModel
+            var postcodeResponse = await postcodeLookupService.GetLatitudeAndLongitudeAsync(query.Location);
+            if (postcodeResponse?.Error != null)
             {
-                PagedResponse = new PagedResponse<SchoolSearchResultServiceModel>
+                return new SchoolSearchResultsServiceModel
                 {
-                    TotalRecords = 0,
-                    Records = [],
-                    PagerInfo = new Pager(0, query.PageNumber, Constants.PageSize)
-                },
-                Status = postcodeResponse.Error == "Postcode not found" ? SchoolSearchStatus.PostcodeNotFound : SchoolSearchStatus.PostcodeServiceError
-            };
+                    PagedResponse = new PagedResponse<SchoolSearchResultServiceModel>
+                    {
+                        TotalRecords = 0,
+                        Records = [],
+                        PagerInfo = new Pager(0, pageNumber, Constants.PageSize)
+                    },
+                    Status = postcodeResponse.Error == "Postcode not found"
+                        ? SchoolSearchStatus.PostcodeNotFound
+                        : SchoolSearchStatus.PostcodeServiceError
+                };
+            }
+            latitude = postcodeResponse?.Result?.Latitude;
+            longitude = postcodeResponse?.Result?.Longitude;
         }
 
-        var postcodeResult = postcodeResponse?.Result;
-        var searchQuery = string.IsNullOrEmpty(query.Location)
-            ? new SearchQuery { Name = query.Name }
-            : new SearchQuery { Latitude = postcodeResult?.Latitude, Longitude = postcodeResult?.Longitude, Distance = query.Distance, Name = query.Name };
-
-        var searchResults = await indexReader.SearchAsync(searchQuery, MaxResults);
-
-        var filteredSearchResults = searchResults.Results.Select(result => new SchoolSearchResultServiceModel
+        var searchQuery = new SearchQuery
         {
-            URN = result.URN,
-            EstablishmentName = result.EstablishmentName,
-            Address = result.Address,
-            GenderName = result.GenderName,
-            ReligiousCharacterName = result.ReligiousCharacterName,
-            Distance = postcodeResult is not null
-                    ? MappingHelper.HaversineMiles(postcodeResult.Latitude, postcodeResult.Longitude, result.Latitude, result.Longitude)
-                    : null,
-            EstablishmentStatus = result.StatusCode.ToStatus(),
-            ClosedDate = result.ClosedDate
-        }).Where(r => query.Location != null ? query.Distance.HasValue && r.Distance.HasValue && r.Distance.Value <= query.Distance : true).ToList();
+            Name = query.Name,
+            Latitude = (float?)latitude,
+            Longitude = (float?)longitude,
+            Distance = query.Distance,
+            Page = pageNumber,
+            PageSize = Constants.PageSize
+        };
 
-        var pager = new Pager(filteredSearchResults.Count, query.PageNumber, Constants.PageSize);
+        var results = await schoolSearchIndexReader.SearchAsync(searchQuery, Constants.PageSize);
 
-        var pagedResults = filteredSearchResults
-            .Skip((pager.CurrentPage - 1) * pager.PageSize)
-            .Take(pager.PageSize)
-            .ToList();
-
-        var results = new SchoolSearchResultsServiceModel
+        return new SchoolSearchResultsServiceModel
         {
             Status = SchoolSearchStatus.Success,
             PagedResponse = new PagedResponse<SchoolSearchResultServiceModel>
             {
-                TotalRecords = pager.TotalItems,
-                Records = pagedResults,
-                PagerInfo = pager
+                TotalRecords = results.Count,
+                Records = results.Results.Select(e => e.ToSchoolSearchResult()).ToList(),
+                PagerInfo = new Pager(results.Count, pageNumber, Constants.PageSize)
             }
         };
-
-        return results;
     }
 }

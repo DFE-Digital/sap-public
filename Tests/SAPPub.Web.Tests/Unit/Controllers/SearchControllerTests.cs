@@ -23,7 +23,6 @@ public class SearchControllerTests
         Address = "123 Test Street",
         GenderName = "Mixed",
         ReligiousCharacterName = "None",
-        Distance = 0.1,
         EstablishmentStatus = EstablishmentStatus.Open
     };
     private readonly SchoolSearchResultServiceModel _schoolSearchResult2 = new()
@@ -33,7 +32,6 @@ public class SearchControllerTests
         Address = "123 Test Street 2",
         GenderName = "Female",
         ReligiousCharacterName = "Muslim",
-        Distance = 0.4,
         EstablishmentStatus = EstablishmentStatus.Closed,
         ClosedDate = new DateOnly(2026, 01, 01)
     };
@@ -50,7 +48,6 @@ public class SearchControllerTests
                 Address = $"123 Test Street {1}",
                 GenderName = "Girls",
                 ReligiousCharacterName = "None",
-                Distance = i,
             };
             results.Add(searchResult);
         }
@@ -245,47 +242,7 @@ public class SearchControllerTests
         Assert.Equal(searchParamsModel.Distance.ToString(), viewModel.Pagination.RouteAttributes[nameof(searchParamsModel.Distance)]);
     }
 
-    [Fact]
-    public async Task Get_SearchResults_SearchByValidLocation_ReturnsSchoolResultsOrderedDistanceAscending()
-    {
-        // arrange
-        var searchQuery = new SchoolSearchServiceQuery() { Location = "NE2 1VF", Distance = 3 };
-        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
-        {
-            PagedResponse = new PagedResponse<SchoolSearchResultServiceModel>
-            {
-                TotalRecords = 2,
-                Records =
-                [
-                    _schoolSearchResult2,
-                    _schoolSearchResult1
-                ],
-                PagerInfo = new Pager(2, 1, 10)
-            }
-        });
-        var searchParamsModel = new SearchParamsModel() { NameSearchTerm = searchQuery.Name, LocationSearchTerm = searchQuery.Location };
-
-        // act
-        var result = await _controller.SearchResults(searchParamsModel);
-        var viewModel = ((ViewResult)result).Model as SearchResultsViewModel;
-
-        // assert
-        Assert.NotNull(viewModel);
-        Assert.Equal(searchQuery.Name, viewModel.SearchParams.NameSearchTerm);
-        Assert.Equal(2, viewModel.SearchResultsCount);
-        Assert.Equal(_schoolSearchResult1.URN, viewModel.SearchResults[0].URN);
-        Assert.Equal(_schoolSearchResult2.URN, viewModel.SearchResults[1].URN);
-
-        Assert.NotNull(viewModel.Pagination);
-        Assert.Equal(2, viewModel.Pagination.PagerInfo.TotalItems);
-        Assert.Equal(1, viewModel.Pagination.PagerInfo.CurrentPage);
-        Assert.Equal(1, viewModel.Pagination.PagerInfo.TotalPages);
-        Assert.Equal(RouteConstants.SearchResults, viewModel.Pagination.RouteName);
-        Assert.Equal(3, viewModel.Pagination.RouteAttributes.Count);
-        Assert.Equal(searchParamsModel.NameSearchTerm, viewModel.Pagination.RouteAttributes[nameof(searchParamsModel.NameSearchTerm)]);
-        Assert.Equal(searchParamsModel.LocationSearchTerm, viewModel.Pagination.RouteAttributes[nameof(searchParamsModel.LocationSearchTerm)]);
-        Assert.Equal(searchParamsModel.Distance.ToString(), viewModel.Pagination.RouteAttributes[nameof(searchParamsModel.Distance)]);
-    }
+ 
 
     [Fact]
     public async Task Get_SearchResults_SearchByInvalidPostcode_ReturnsSchoolResultsViewModel()

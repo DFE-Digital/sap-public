@@ -22,7 +22,7 @@ public class SearchResultsViewModel
 
     public static SearchResultsViewModel FromServiceModel(SearchParamsModel searchModel, SchoolSearchResultsServiceModel? searchResultsServiceModel)
     {
-        var searchResults = searchResultsServiceModel?.PagedResponse.Records.OrderBy(r => r.Distance);
+        var searchResults = searchResultsServiceModel?.PagedResponse.Records;
         var pagerInfo = searchResultsServiceModel?.PagedResponse.PagerInfo;
 
         return new SearchResultsViewModel

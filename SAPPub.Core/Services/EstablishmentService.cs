@@ -30,6 +30,7 @@ public sealed class EstablishmentService : IEstablishmentService
             throw new NotFoundException($"Establishment not found with URN: {urn}");
         }
 
-        return establishment;
+            return establishment;
+        }
     }
-}
+
