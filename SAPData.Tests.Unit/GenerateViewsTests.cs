@@ -151,6 +151,25 @@ public class GenerateViewsTests : IDisposable
         }
     }
 
+    [Fact]
+    public void EstablishmentView_Includes_SenTypes_Column()
+    {
+        //Arrange
+        WriteMapping(("edubasealldata20230912", "t_edubase_20230912"));
+        var rows = new List<DataMapRow>
+        {
+            Row("edubasealldata20230912", "Establishment", "All establishment data", "SomeProp", "some_field")
+        };
+
+        // Act
+        new GenerateViews(rows, _mappingPath, _sqlDir).Run();
+        var sql = File.ReadAllText(Path.Combine(_sqlDir, "03_v_establishment.sql"));
+
+        // Assert: CTE and ISKS4 logic present
+        Assert.Contains("NULLIF(concat_ws(', ', NULLIF(t.\"sen1__name_\", 'Not Applicable')", sql);        
+        Assert.Contains("AS \"SenTypes\"", sql);
+    }
+
     // ------------------------------------------------------------
     // FACT VIEWS
     // ------------------------------------------------------------

@@ -47,10 +47,15 @@ public class AboutSchoolModel
     public string EstablishmentTypeGroupId { get; set; } = string.Empty;
 
     public DateOnly? ClosedDate { get; set; }
+
     public DateOnly? OpenDate { get; set; }
 
     public EstablishmentStatus? Status { get; set; }
+
     public int? OpenReasonId { get; set; }
+
+    public string? SenTypes { get; set; }
+
     public IList<EstablishmentLinkModel>? Predecessors { get; set; }
     public IList<EstablishmentLinkModel>? Successors { get; set; }
 }

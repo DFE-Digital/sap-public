@@ -76,8 +76,9 @@ public sealed class AboutSchoolService(
             Status = establishment.StatusCode.ToStatus(),
             OpenDate = establishment.OpenDate.ToDateOnly(),
             OpenReasonId = establishment.OpenReasonId,
+            SenTypes = establishment.SenTypes,
             Predecessors = predecessorLinks,
-            Successors = sucessorLinks
+            Successors = sucessorLinks            
         };
     }
 }
