@@ -139,6 +139,7 @@
     @Html.GovUkFrontendScriptImports(Html.ScriptNonce().ToString())
     <script src="~/js/leaflet.js" nonce="@Html.ScriptNonce().ToString()"></script>
     <script src="~/js/leaflet-gesture-handling.min.js" nonce="@Html.ScriptNonce().ToString()"></script>
+    <script src="~/js/establishment-comparison.js" nonce="@Html.ScriptNonce().ToString()"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

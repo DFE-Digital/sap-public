@@ -1,53 +1,48 @@
 ﻿@using SAPPub.Web.Models.EstablishmentComparison
+@using SAPPub.Web.Helpers
 @model EstablishmentComparisonButtonViewModel
 
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-<form asp-controller="EstablishmentComparison" asp-action="ToggleSaveEstablishment" method="post">
+<form asp-controller="EstablishmentComparison" asp-action="ToggleSaveEstablishment" method="post" class="save-establishment-comparison-form">
 
     <input type="hidden" name="urn" value="@Model.Urn" />
     <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
 
-    @if (Model.ShowAddSuccessNotification)
-    {
-        <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner" id="comparison-add-success">
-            <div class="govuk-notification-banner__header">
-                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                    Success
-                </h2>
-            </div>
-            <div class="govuk-notification-banner__content">
-                <p class="govuk-notification-banner__heading">
-                    School added to your schools list
-                </p>
-                <p class="govuk-body">
-                    @Model.SchoolName
-                </p>
-                <p class="govuk-body">You can compare up to 6 schools at a time.  <a class="govuk-link" href="@Model.ComparisonPageUrl">View your schools list</a></p>
+    <div class="govuk-notification-banner govuk-notification-banner--success @(Model.ShowAddSuccessNotification ? "" : "govuk-visually-hidden")" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner" id="comparison-add-success">
+        <div class="govuk-notification-banner__header">
+            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                Success
+            </h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+            <p class="govuk-notification-banner__heading">
+                School added to your schools list
+            </p>
+            <p class="govuk-body">
+                @Model.SchoolName
+            </p>
+            <p class="govuk-body">You can compare up to 6 schools at a time.  <a class="govuk-link" href="@Model.ComparisonPageUrl">View your schools list</a></p>
                 
-            </div>
         </div>
-    }
+    </div>
 
-    @if (Model.ShowRemoveSuccessNotification)
-    {
-        <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner" id="comparison-remove-success">
-            <div class="govuk-notification-banner__header">
-                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                    Success
-                </h2>
-            </div>
-            <div class="govuk-notification-banner__content">
-                <p class="govuk-notification-banner__heading">
-                    School removed from your schools list
-                </p>
-                <p class="govuk-body">
-                    @Model.SchoolName
-                </p>
-            </div>
+    <div class="govuk-notification-banner govuk-notification-banner--success @(Model.ShowRemoveSuccessNotification ? "" : "govuk-visually-hidden")" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner" id="comparison-remove-success">
+        <div class="govuk-notification-banner__header">
+            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                Success
+            </h2>
         </div>
-    }
+        <div class="govuk-notification-banner__content">
+            <p class="govuk-notification-banner__heading">
+                School removed from your schools list
+            </p>
+            <p class="govuk-body">
+                @Model.SchoolName
+            </p>
+        </div>
+    </div>
 
-    @if (Model.IsComparisonLimitReached && !Model.ShowAddSuccessNotification)
+    @if (Model.IsComparisonLimitReached && !Model.ShowAddSuccessNotification && !Model.IsSaved)
     {
         <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner" data-govuk-notification-banner-init="" id="school-compare-limit-notification">
             <div class="govuk-notification-banner__header">
@@ -85,3 +80,10 @@
     }
 
 </form>
+
+<script nonce="@Html.ScriptNonce().ToString()">
+    window.establishmentComparisonConfig = {
+        saveText: "@Model.SaveText",
+        savedText: "@Model.SavedText"
+    };
+</script>
