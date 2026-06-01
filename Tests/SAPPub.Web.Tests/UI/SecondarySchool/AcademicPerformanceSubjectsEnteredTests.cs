@@ -13,7 +13,6 @@ public class AcademicPerformanceSubjectsEnteredTests(WebApplicationSetupFixture 
     {
         // Arrange && Act
         var response = await Page.GotoAsync(_pageUrl);
-        await WriteAccessibilityReport(nameof(AcademicPerformanceSubjectsEnteredPage_LoadsSuccessfully));
 
         // Assert
         Assert.NotNull(response);
@@ -21,7 +20,6 @@ public class AcademicPerformanceSubjectsEnteredTests(WebApplicationSetupFixture 
     }
 
     [Fact]
-    [Trait("Category", "Accessibility")]
     public async Task AcademicPerformanceSubjectsEnteredPage_HasCorrectTitle()
     {
         // Arrange

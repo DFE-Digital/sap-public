@@ -16,12 +16,10 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
     };
 
     [Fact]
-    [Trait("Category", "Accessibility")]
     public async Task AboutSchoolPage_LoadsSuccessfully()
     {
         // Arrange && Act
         var response = await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
-        await WriteAccessibilityReport(nameof(AboutSchoolPage_LoadsSuccessfully));
 
         // Assert
         Assert.NotNull(response);

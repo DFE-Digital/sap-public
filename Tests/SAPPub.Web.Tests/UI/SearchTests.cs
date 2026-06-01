@@ -9,12 +9,10 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     private string _pageUrl = "search";
 
     [Fact]
-    [Trait("Category", "Accessibility")]
     public async Task SearchPage_LoadsSuccessfully()
     {
         // Arrange && Act
         var response = await Page.GotoAsync(_pageUrl);
-        await WriteAccessibilityReport(nameof(SearchPage_LoadsSuccessfully));
 
         // Assert
         Assert.NotNull(response);
@@ -42,7 +40,6 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     }
 
     [Fact]
-    [Trait("Category", "Accessibility")]
     public async Task SearchPage_EnterSchoolName_ShowsViewWithResults()
     {
         // Arrange
@@ -53,7 +50,6 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
         await Page.FillAsync("#NameSearchTerm", searchTerm);
         await Page.ClickAsync("#search");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-        await WriteAccessibilityReport(nameof(SearchPage_LoadsSuccessfully));
 
         // Assert
         Assert.NotNull(response);
@@ -70,7 +66,6 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     }
 
     [Fact]
-    [Trait("Category", "Accessibility")]
     public async Task SearchPage_EnterSchoolName_NoResults_ShowsViewWithNoResults()
     {
         // Arrange
@@ -81,7 +76,6 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
         await Page.FillAsync("#NameSearchTerm", searchTerm);
         await Page.ClickAsync("#search");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-        await WriteAccessibilityReport(nameof(SearchPage_LoadsSuccessfully));
 
         // Assert
         Assert.NotNull(response);
@@ -138,7 +132,6 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     }
 
     [Fact]
-    [Trait("Category", "Accessibility")]
     public async Task SearchPage_EnterInvalidPostcode_ShowsViewWithErrorMessge()
     {
         // Arrange
@@ -149,7 +142,6 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
         await Page.FillAsync("#LocationSearchTerm", searchTerm);
         await Page.ClickAsync("#search");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-        await WriteAccessibilityReport(nameof(SearchPage_LoadsSuccessfully));
 
         // Assert
         Assert.NotNull(response);

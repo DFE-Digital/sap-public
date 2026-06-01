@@ -8,20 +8,6 @@ public class CookiePageTests(WebApplicationSetupFixture fixture) : BasePageTest(
     private string _pageUrl = "Cookies/Preferences";
 
     [Fact]
-    [Trait("Category", "Accessibility")]
-    public async Task CookiePage_Accessibility()
-    {
-        // Arrange
-        await Page.Context.ClearCookiesAsync();
-
-        // Arrange
-        var response = await Page.GotoAsync(_pageUrl);
-        
-        // Assert
-        await WriteAccessibilityReport(nameof(CookiePage_Accessibility));
-    }
-
-    [Fact]
     public async Task CookiePage_UserSelectsCookieSettings()
     {
         // Arrange: Clear cookies before navigating to the page

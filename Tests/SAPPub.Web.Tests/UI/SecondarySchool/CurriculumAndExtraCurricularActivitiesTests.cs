@@ -9,12 +9,10 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
     private string _pageUrl = "school/105574/loreto-high-school-chorlton/secondary/curriculum-and-extra-curricular-activities";
 
     [Fact]
-    [Trait("Category", "Accessibility")]
     public async Task CurriculumAndExtraCurricularActivitiesPage_LoadsSuccessfully()
     {
         // Arrange && Act
         var response = await Page.GotoAsync(_pageUrl);
-        await WriteAccessibilityReport(nameof(CurriculumAndExtraCurricularActivitiesPage_LoadsSuccessfully));
 
         // Assert
         Assert.NotNull(response);

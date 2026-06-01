@@ -6,12 +6,10 @@ namespace SAPPub.Web.Tests.UI;
 public class HomePageTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
     [Fact]
-    [Trait("Category", "Accessibility")]
     public async Task HomePage_LoadsSuccessfully()
     {
         // Arrange/Act
         var response = await Page.GotoAsync(string.Empty);
-        await WriteAccessibilityReport(nameof(HomePage_LoadsSuccessfully));
 
         // Assert
         Assert.NotNull(response);

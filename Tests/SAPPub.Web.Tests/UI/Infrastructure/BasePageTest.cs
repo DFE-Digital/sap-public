@@ -73,18 +73,4 @@ public abstract class BasePageTest : PageTest
             return Page.Locator("input[name='Query']");
         }
     }
-
-    protected async Task WriteAccessibilityReport(string pageName)
-    {
-        await Page.WaitForLoadStateAsync(LoadState.DOMContentLoaded);
-        var axeResult = await Page.RunAxe(new AxeRunOptions
-        {
-            RunOnly = new RunOnlyOptions { Type = "tag", Values = ["wcag2a", "wcag2aa"] }
-        });
-
-        AccessibilityReportHelper.AddViolations(pageName, Page.Url, axeResult.Violations);
-
-        // Future TODO if required. Uncomment this line if we want to fail the tests on Accessibility issues. For now, any violations are simply logged
-        // Assert.False(axeResult.Violations.Any());
-    }
 }

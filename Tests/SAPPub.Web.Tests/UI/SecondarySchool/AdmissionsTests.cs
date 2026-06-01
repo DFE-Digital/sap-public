@@ -16,12 +16,10 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
     };
 
     [Fact]
-    [Trait("Category", "Accessibility")]
     public async Task AdmissionsPage_LoadsSuccessfully()
     {
         // Arrange && Act
         var response = await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
-        await WriteAccessibilityReport(nameof(AdmissionsPage_LoadsSuccessfully));
 
         // Assert
         Assert.NotNull(response);

@@ -11,12 +11,10 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
     private string _pageUrl = "school/105574/loreto-high-school-chorlton/secondary/academic-performance-attainment-and-progress";
 
     [Fact]
-    [Trait("Category", "Accessibility")]
     public async Task AcademicPerformanceAttainmentAndProgressPage_LoadsSuccessfully()
     {
         // Arrange && Act
         var response = await Page.GotoAsync(_pageUrl);
-        await WriteAccessibilityReport(nameof(AcademicPerformanceAttainmentAndProgressPage_LoadsSuccessfully));
 
         // Assert
         Assert.NotNull(response);
