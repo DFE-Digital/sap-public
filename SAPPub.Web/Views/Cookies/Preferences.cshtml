@@ -140,7 +140,15 @@
                             <td class="govuk-table__cell">Allows access to the service</td>
                             <td class="govuk-table__cell">@gateWayCookieLength days</td>
                         </tr>
-                    </tbody>
+                        @if(Model.IsEstablishmentComparisonFeatureEnabled)
+                        {
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell">MySchoolsList</td>
+                                <td class="govuk-table__cell">Needed to remember the schools you add so you can compare them</td>
+                                <td class="govuk-table__cell">1 year</td>
+                            </tr>
+                        }
+                        </tbody>
                 </table>
             </div>
         </div>

@@ -1,18 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SAPPub.Core.Interfaces.Services;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models;
 using static SAPPub.Web.Constants.Constants;
 
 namespace SAPPub.Web.Controllers;
 
-public class CookiesController : Controller
+public class CookiesController(IEstablishmentComparisonService establishmentComparisonService) : Controller
 {
+    private readonly IEstablishmentComparisonService _esablishmentComparisonService = establishmentComparisonService;
+
     [HttpGet]
-    public IActionResult Preferences()
+    public async Task<IActionResult> Preferences()
     {
         var model = new CookiesViewModel
         {
-            ShowSuccessBanner = TempData.Get<bool>(CookiesConfirmation)
+            ShowSuccessBanner = TempData.Get<bool>(CookiesConfirmation),
+            IsEstablishmentComparisonFeatureEnabled = await _esablishmentComparisonService.IsFeatureEnabled()
         };
         return View(model);
     }

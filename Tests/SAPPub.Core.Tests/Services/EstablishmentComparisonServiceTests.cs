@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.FeatureManagement;
 using Microsoft.Net.Http.Headers;
+using Moq;
 using SAPPub.Core.Services;
 using System.Diagnostics.CodeAnalysis;
 
@@ -11,6 +13,7 @@ namespace SAPPub.Core.Tests.Services
         private const string CookieName = "MySchoolsList";
         private readonly EstablishmentComparisonService _service;
         private readonly HttpContextAccessor _contextAccessor;
+        private readonly Mock<IFeatureManager> _featureManager;
 
 
         public EstablishmentComparisonServiceTests()
@@ -20,7 +23,9 @@ namespace SAPPub.Core.Tests.Services
                 HttpContext = new DefaultHttpContext()
             };
 
-            _service = new EstablishmentComparisonService(_contextAccessor);
+            _featureManager = new Mock<IFeatureManager>();
+
+            _service = new EstablishmentComparisonService(_contextAccessor, _featureManager.Object);
         }
 
         [Fact]

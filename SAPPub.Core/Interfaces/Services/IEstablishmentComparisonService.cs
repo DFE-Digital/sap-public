@@ -17,5 +17,7 @@
         bool IsComparisonLimitReached();
 
         string GetComparisonPageUrl();
+
+        Task<bool> IsFeatureEnabled();
     }
 }

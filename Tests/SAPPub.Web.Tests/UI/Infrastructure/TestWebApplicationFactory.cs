@@ -169,6 +169,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
         return new Dictionary<string, string?>
         {
             { "Establishments:CsvPath", testDataFilePath },
+            { "FeatureManagement:EstablishmentComparisonEnabled", "true" }
         };
     }
 

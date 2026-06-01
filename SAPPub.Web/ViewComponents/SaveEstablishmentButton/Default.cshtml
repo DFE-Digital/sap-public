@@ -2,7 +2,7 @@
 @model EstablishmentComparisonButtonViewModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-@if(!Model.IsFeatureEnabled)
+@if (!Model.IsFeatureEnabled)
 {
     return;
 }
@@ -10,31 +10,30 @@
 @{
     var componentId = $"establishment-comparison-{Model.Urn}";
     var addSuccessBannerId = $"{componentId}-add-success";
-    var addSuccessTitleId = $"{componentId}-add-title";
+    var addSuccessTitleId = $"{componentId}-add-success-title";
     var removeSuccessBannerId = $"{componentId}-remove-success";
-    var removeSuccessTitleId = $"{componentId}-remove-success";
+    var removeSuccessTitleId = $"{componentId}-remove-success-title";
     var limitNotificationBannerId = $"{componentId}-limit-notification";
     var limitNotificationTitleId = $"{componentId}-limit-notification-title";
 }
 
-<form 
-    asp-controller="EstablishmentComparison" 
-    asp-action="ToggleSaveEstablishment" 
-    method="post" 
-    class="save-establishment-comparison-form" 
-    data-save-text="@Model.SaveText" 
-    data-saved-text="@Model.SavedText">
+<form asp-controller="EstablishmentComparison"
+      asp-action="ToggleSaveEstablishment"
+      method="post"
+      class="save-establishment-comparison-form"
+      data-save-text="@Model.SaveText"
+      data-saved-text="@Model.SavedText">
 
     <input type="hidden" name="urn" value="@Model.Urn" />
-    <input type="hidden" name="returnUrl" value="@($"{Context.Request.Path}{Context.Request.Query}")" />
+    <input type="hidden" name="returnUrl" value="@($"{Context.Request.Path}{Context.Request.QueryString}")" />
 
-    <div class="govuk-notification-banner govuk-notification-banner--success @(Model.ShowAddSuccessNotification ? "" : "govuk-visually-hidden")" 
-        role="status"
-        aria-live="polite"
-        aria-atomic="true"
-        aria-labelledby="@addSuccessTitleId" 
-        data-module="govuk-notification-banner" 
-        id="@addSuccessBannerId">
+    <div class="govuk-notification-banner govuk-notification-banner--success" @(Model.ShowAddSuccessNotification ? "" : "hidden")
+         role="status"
+         aria-live="polite"
+         aria-atomic="true"
+         aria-labelledby="@addSuccessTitleId"
+         data-module="govuk-notification-banner"
+         id="@addSuccessBannerId">
         
         <div class="govuk-notification-banner__header">
             <h2 class="govuk-notification-banner__title" id="@addSuccessTitleId">
@@ -53,13 +52,13 @@
         </div>
     </div>
 
-    <div class="govuk-notification-banner govuk-notification-banner--success @(Model.ShowRemoveSuccessNotification ? "" : "govuk-visually-hidden")"
-        role="status"
-        aria-live="polite"
-        aria-atomic="true"
-        aria-labelledby="@removeSuccessTitleId" 
-        data-module="govuk-notification-banner" 
-        id="@removeSuccessBannerId">
+    <div class="govuk-notification-banner govuk-notification-banner--success" @(Model.ShowRemoveSuccessNotification ? "" : "hidden")
+         role="status"
+         aria-live="polite"
+         aria-atomic="true"
+         aria-labelledby="@removeSuccessTitleId"
+         data-module="govuk-notification-banner"
+         id="@removeSuccessBannerId">
 
         <div class="govuk-notification-banner__header">
             <h2 class="govuk-notification-banner__title" id="@removeSuccessTitleId">
@@ -78,12 +77,12 @@
 
     @if (Model.IsComparisonLimitReached && !Model.ShowAddSuccessNotification && !Model.IsSaved)
     {
-        <div class="govuk-notification-banner" 
-            role="alert"
-            aria-atomic="true"
-            aria-labelledby="@limitNotificationTitleId"
-            data-module="govuk-notification-banner"
-            id="@limitNotificationBannerId">
+        <div class="govuk-notification-banner"
+             role="alert"
+             aria-atomic="true"
+             aria-labelledby="@limitNotificationTitleId"
+             data-module="govuk-notification-banner"
+             id="@limitNotificationBannerId">
 
             <div class="govuk-notification-banner__header">
                 <h2 class="govuk-notification-banner__title" id="@limitNotificationTitleId">
@@ -98,25 +97,16 @@
         </div>
         if (Model.IsSaved)
         {
-            <button type="submit" class="remove-school-btn govuk-body-s saved">
+            <button type="submit" class="compare-establishment-btn govuk-heading-s saved">
                 <span>@Model.SavedText</span>
             </button>
         }
     }
     else
     {
-        @if (Model.IsSaved)
-        {
-            <button type="submit" class="remove-school-btn govuk-body-s @(Model.IsSaved ? "saved" : "")">
-                <span>@Model.SavedText</span>
-            </button>
-        }
-        else
-        {
-            <button type="submit" class="add-school-btn govuk-body-s @(Model.IsSaved ? "saved" : "")">
-                <span>@Model.SaveText</span>
-            </button>
-        }
+        <button type="submit" class="compare-establishment-btn govuk-heading-s @(Model.IsSaved ? "saved" : "")">
+            <span>@(Model.IsSaved ? Model.SavedText : Model.SaveText)</span>
+        </button>
     }
 
 </form>

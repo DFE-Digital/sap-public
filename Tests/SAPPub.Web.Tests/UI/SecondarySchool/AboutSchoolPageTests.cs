@@ -301,18 +301,16 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         var schoolUrl = $"{fixture.BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
 
         await Page.Context.ClearCookiesAsync();
-        await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = cookieValue, Domain="127.0.0.1", Path="/", SameSite = SameSiteAttribute.Lax, Secure = true }]);
+        await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = cookieValue, Domain = "127.0.0.1", Path = "/", SameSite = SameSiteAttribute.Lax, Secure = true }]);
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
-        var limitNotificationVisible = await Page.Locator("#school-compare-limit-notification").IsVisibleAsync();
-        var removeButtonVisibile = await Page.Locator(".remove-school-btn").IsVisibleAsync();
-        var addButtonVisibile = await Page.Locator(".add-school-btn").IsVisibleAsync();
+        var limitNotificationBannerVisible = await Page.Locator("#establishment-comparison-105574-limit-notification").IsVisibleAsync();
+        var compareButtonVisible = await Page.Locator(".compare-establishment-btn").IsVisibleAsync();
 
         // Assert
-        Assert.True(limitNotificationVisible);
-        Assert.False(removeButtonVisibile);
-        Assert.False(addButtonVisibile);
+        Assert.True(limitNotificationBannerVisible);
+        Assert.False(compareButtonVisible);
     }
 
     [Fact]
@@ -334,7 +332,7 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
     }
 
     [Fact]
-    public async Task AboutSchoolPage_DoesNotShowAddButton_WhenSchoolOnListAndLimitReached()
+    public async Task AboutSchoolPage_ShowsRemoveButton_WhenSchoolOnListAndLimitReached()
     {
         // Arrange
         var cookieValue = string.Join(",", Enumerable.Range(1, 99).Select(a => a.ToString()).ToList());
@@ -346,12 +344,11 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
-        var removeButtonVisibile = await Page.Locator(".remove-school-btn").IsVisibleAsync();
-        var addButtonVisibile = await Page.Locator(".add-school-btn").IsVisibleAsync();
+        var compareButton = Page.Locator(".compare-establishment-btn");
 
         // Assert
-        Assert.True(removeButtonVisibile);
-        Assert.False(addButtonVisibile);
+        await Expect(compareButton).ToContainTextAsync("Saved to");
+        await Expect(compareButton).ToContainClassAsync("saved");
     }
 
     [Fact]
@@ -366,12 +363,10 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
-        var removeButtonVisibile = await Page.Locator(".remove-school-btn").IsVisibleAsync();
-        var addButtonVisibile = await Page.Locator(".add-school-btn").IsVisibleAsync();
+        var compareButton = await Page.Locator(".compare-establishment-btn").InnerTextAsync();
 
         // Assert
-        Assert.False(removeButtonVisibile);
-        Assert.True(addButtonVisibile);
+        Assert.Contains("Save to", compareButton);
     }
 
     [Fact]
@@ -388,12 +383,10 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         var content = await Page.ContentAsync();
 
         // Act
-        var removeButtonVisibile = await Page.Locator(".remove-school-btn").IsVisibleAsync();
-        var addButtonVisibile = await Page.Locator(".add-school-btn").IsVisibleAsync();
+        var compareButton = await Page.Locator(".compare-establishment-btn").InnerTextAsync();
 
         // Assert
-        Assert.True(removeButtonVisibile);
-        Assert.False(addButtonVisibile);
+        Assert.Contains("Saved to", compareButton);
     }
 
 
@@ -401,6 +394,7 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
     public async Task AboutSchoolPage_AddButtonClick_ShowsAddSuccessBanner()
     {
         // Arrange
+        var urn = "105574";
         var cookieValue = string.Join(",", Enumerable.Range(1, 20).Select(a => a.ToString()).ToList());
         var schoolUrl = $"{fixture.BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
 
@@ -409,25 +403,26 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
-        await Page.ClickAsync(".add-school-btn");
+        await Page.ClickAsync(".compare-establishment-btn");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
-        var removeButtonVisibile = await Page.Locator(".remove-school-btn").IsVisibleAsync();
-        var addButtonVisibile = await Page.Locator(".add-school-btn").IsVisibleAsync();
-        var comparisonAddSuccessVisible = await Page.Locator("#comparison-add-success").IsVisibleAsync();
-        var comparisonRemoveSuccessVisible = await Page.Locator("#comparison-remove-success").IsVisibleAsync();
+        var content = await Page.ContentAsync();
+
+        var compareButtonText = await Page.Locator(".compare-establishment-btn").InnerTextAsync();
+        var comparisonAddSuccessBanner =  Page.Locator($"#establishment-comparison-{urn}-add-success");
+        var comparisonRemoveSuccessBanner = Page.Locator($"#establishment-comparison-{urn}-remove-success");
 
         // Assert
-        Assert.True(removeButtonVisibile);
-        Assert.False(addButtonVisibile);
-        Assert.True(comparisonAddSuccessVisible);
-        Assert.False(comparisonRemoveSuccessVisible);
+        Assert.Contains("Saved to", compareButtonText);
+        await Expect(comparisonAddSuccessBanner).Not.ToHaveAttributeAsync("hidden", "");
+        await Expect(comparisonRemoveSuccessBanner).ToHaveAttributeAsync("hidden", "");
     }
 
     [Fact]
     public async Task AboutSchoolPage_RemoveButtonClick_ShowsRemoveSuccessBanner()
     {
         // Arrange
+        var urn = "105574";
         var cookieValue = string.Join(",", Enumerable.Range(1, 20).Select(a => a.ToString()).ToList());
         cookieValue += ",105574";
         var schoolUrl = $"{fixture.BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
@@ -437,18 +432,16 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
-        await Page.ClickAsync(".remove-school-btn");
+        await Page.ClickAsync(".compare-establishment-btn");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
-        var removeButtonVisibile = await Page.Locator(".remove-school-btn").IsVisibleAsync();
-        var addButtonVisibile = await Page.Locator(".add-school-btn").IsVisibleAsync();
-        var comparisonAddSuccessVisible = await Page.Locator("#comparison-add-success").IsVisibleAsync();
-        var comparisonRemoveSuccessVisible = await Page.Locator("#comparison-remove-success").IsVisibleAsync();
+        var compareButton = await Page.Locator(".compare-establishment-btn").InnerTextAsync();
+        var comparisonAddSuccessBanner = Page.Locator($"#establishment-comparison-{urn}-add-success");
+        var comparisonRemoveSuccessBanner = Page.Locator($"#establishment-comparison-{urn}-remove-success");
 
         // Assert
-        Assert.False(removeButtonVisibile);
-        Assert.True(addButtonVisibile);
-        Assert.True(comparisonRemoveSuccessVisible);
-        Assert.False(comparisonAddSuccessVisible);
+        Assert.Contains("Save to", compareButton);
+        await Expect(comparisonAddSuccessBanner).ToHaveAttributeAsync("hidden", "");
+        await Expect(comparisonRemoveSuccessBanner).Not.ToHaveAttributeAsync("hidden", "");
     }
 }

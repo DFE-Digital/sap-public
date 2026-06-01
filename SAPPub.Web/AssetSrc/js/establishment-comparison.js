@@ -43,24 +43,22 @@
                 button.classList.remove("saved");
                 button.innerHTML = `<span>${saveText}</span>`;
                 if (limitNotificationBanner !== null) {
-                    limitNotificationBanner.classList.add("govuk-visually-hidden");
+                    limitNotificationBanner.hidden = true
                 }
                 showNotificationBanner(removeSuccessBanner);
             }
         }
         catch {
-            if (limitNotificationBanner !== null) {
-                limitNotificationBanner.classList.remove("govuk-visually-hidden");
-            }
+           
         }
     });
 
     function resetNotificationBanner(bannerElement) {
-        bannerElement.classList.add("govuk-visually-hidden");
+        bannerElement.hidden = true;
     }
 
     function showNotificationBanner(bannerElement) {
-        bannerElement.classList.remove("govuk-visually-hidden");
+        bannerElement.hidden = false;
     }
 
 })();

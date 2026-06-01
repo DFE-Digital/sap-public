@@ -8,12 +8,11 @@ namespace SAPPub.Web.ViewComponents.SaveEstablishmentButton
     public class SaveEstablishmentButton : ViewComponent
     {
         private readonly IEstablishmentComparisonService _establishmentComparisonService;
-        private readonly IFeatureManager _featureManager;
+       
 
-        public SaveEstablishmentButton(IEstablishmentComparisonService establishmentComparisonService, IFeatureManager featureManager)
+        public SaveEstablishmentButton(IEstablishmentComparisonService establishmentComparisonService)
         {
             _establishmentComparisonService = establishmentComparisonService;
-            _featureManager = featureManager;
         }
 
         public async Task<IViewComponentResult> InvokeAsync(string urn, string schoolName, string saveText = Constants.Constants.EstablishmentComparisonSave, string savedText = Constants.Constants.EstablishmentComparisonSaved)
@@ -28,7 +27,7 @@ namespace SAPPub.Web.ViewComponents.SaveEstablishmentButton
                 ShowRemoveSuccessNotification = TempData["BannerRemoveSuccess"] is not null,
                 IsComparisonLimitReached = _establishmentComparisonService.IsComparisonLimitReached(),
                 ComparisonPageUrl = _establishmentComparisonService.GetComparisonPageUrl(),
-                IsFeatureEnabled = await _featureManager.IsEnabledAsync("EstablishmentComparisonEnabled")
+                IsFeatureEnabled = await _establishmentComparisonService.IsFeatureEnabled()
             };
             
             return View("~/ViewComponents/SaveEstablishmentButton/Default.cshtml", viewModel);
