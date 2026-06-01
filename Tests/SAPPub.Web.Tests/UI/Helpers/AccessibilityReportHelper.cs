@@ -102,7 +102,6 @@ namespace SAPPub.Web.Tests.UI.Helpers
                     _ => "black"
                 };
 
-                builder.AppendLine("<br/><br/>");
                 builder.AppendLine($"<span style='color:{spanColour}'>**IMPACT**: {violation.Impact.Titleize()}</span>");
                 builder.AppendLine("<br/>");
                 builder.AppendLine($"**{violation.Id}**: {violation.Help}<br/>");
