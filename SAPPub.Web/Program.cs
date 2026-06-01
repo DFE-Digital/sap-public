@@ -4,6 +4,7 @@ using GovUk.Frontend.AspNetCore;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.FeatureManagement;
 using Notify.Client;
 using Notify.Interfaces;
 using Npgsql;
@@ -119,6 +120,9 @@ public partial class Program
 
         // Add custom error handler for NotFoundExceptions
         builder.Services.AddExceptionHandler<NotFoundExceptionHandler>();
+
+        // add feature flags management
+        builder.Services.AddFeatureManagement();
 
         var app = builder.Build();
 

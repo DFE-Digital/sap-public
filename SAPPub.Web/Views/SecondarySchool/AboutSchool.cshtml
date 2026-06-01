@@ -1,7 +1,9 @@
 ﻿@model SAPPub.Web.Models.SecondarySchool.AboutSchoolViewModel;
+@using Microsoft.FeatureManagement
 @using SAPPub.Core.Helpers
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 @using static SAPPub.Web.Constants.Constants;
+@inject IFeatureManager FeatureManager
 
 @{
     ViewData["Header"] = "About the school";
@@ -21,6 +23,10 @@
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">@ViewData["Header"]</h1>
 
+        @if (await FeatureManager.IsEnabledAsync("MySchoolsFeature"))
+        {
+            <p>My schools feature enabled</p>
+        }
         @if (Model.IsSchoolClosed)
         {
             <div class="custom-card govuk-!-margin-top-0" data-testid="school-closed-custom-card">
