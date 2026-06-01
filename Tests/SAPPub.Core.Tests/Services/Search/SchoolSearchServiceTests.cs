@@ -1,9 +1,11 @@
 ﻿using Moq;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Helpers;
+using SAPPub.Core.Extensions;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.ServiceModels.PostcodeSearch;
+using SAPPub.Core.ServiceModels.Search;
 using SAPPub.Core.ServiceModels.Search.Results;
 using SAPPub.Core.Services.Search;
 using SearchQuery = SAPPub.Core.ServiceModels.Search.InputModels.SchoolSearchServiceQuery;
@@ -12,42 +14,51 @@ namespace SAPPub.Core.Tests.Services.Search;
 
 public class SchoolSearchServiceTests
 {
-    private readonly Mock<ISchoolSearchIndexReader> _mockIndexReader = new();
+    private readonly Mock<ISchoolSearchIndexReader> _mockSchoolSearchIndexReader = new();
     private readonly Mock<IPostcodeLookupService> _mockPostcodeLookupService = new();
-    private readonly SchoolSearchDocument searchResult1 = new SchoolSearchDocument()
+
+    private readonly Establishment establishment1 = new()
     {
         URN = "123456",
         EstablishmentName = "Test School",
-        Address = "123 Test Street",
+        AddressStreet = "123 Test Street",
         GenderName = "Mixed",
         ReligiousCharacterName = "None"
-    }
-    ;
-    private readonly SchoolSearchDocument searchResult2 = new SchoolSearchDocument()
+    };
+
+    private readonly Establishment establishment2 = new()
     {
         URN = "223456",
         EstablishmentName = "A Test School 2",
-        Address = "123 Test Street 2",
+        AddressStreet = "123 Test Street 2",
         GenderName = "Girls",
         ReligiousCharacterName = "Muslim"
     };
 
-    private List<SchoolSearchDocument> CreateSearchResults(int count)
+    private List<Establishment> CreateSearchResults(int count)
     {
-        var results = new List<SchoolSearchDocument>();
+        var results = new List<Establishment>();
         for (int i = 1; i <= count; i++)
         {
-            var searchDocument = new SchoolSearchDocument
+            var establishment = new Establishment
             {
                 URN = i.ToString(),
                 EstablishmentName = $"A Test School {i}",
-                Address = $"123 Test Street {1}",
+                AddressStreet = $"123 Test Street {i}",
                 GenderName = "Girls",
-                ReligiousCharacterName = "NOne"
+                ReligiousCharacterName = "None"
             };
-            results.Add(searchDocument);
+            results.Add(establishment);
         }
         return results;
+    }
+
+    private SchoolSearchResults ToSchoolSearchResults(List<Establishment> establishments)
+    {
+        return new SchoolSearchResults(
+            Count: establishments.Count,
+            Results: establishments.Select(e => e.ToSchoolSearchDocument()).ToList()
+        );
     }
 
     [Fact]
@@ -55,15 +66,16 @@ public class SchoolSearchServiceTests
     {
         // Arrange
         var searchQuery = new SearchQuery() { Name = "test school", PageNumber = 1 };
-        _mockIndexReader.Setup(r => r.SearchAsync(
-            It.Is<ServiceModels.Search.InputModels.SearchQuery>(q => q.Name == searchQuery.Name),
-            It.IsAny<int>()))
-            .ReturnsAsync(new SchoolSearchResults(
-                Count: 2,
-                Results: new List<SchoolSearchDocument> { searchResult1, searchResult2 }));
+        var establishments = new List<Establishment> { establishment1, establishment2 };
+        var schoolSearchResults = ToSchoolSearchResults(establishments);
+
+        _mockSchoolSearchIndexReader
+            .Setup(s => s.SearchAsync(It.IsAny<SAPPub.Core.ServiceModels.Search.InputModels.SearchQuery>(), Constants.PageSize))
+            .ReturnsAsync(schoolSearchResults);
+
+        var service = new SchoolSearchService(_mockSchoolSearchIndexReader.Object, _mockPostcodeLookupService.Object);
 
         // Act
-        var service = new SchoolSearchService(_mockIndexReader.Object, _mockPostcodeLookupService.Object);
         var result = await service.SearchAsync(searchQuery);
 
         // Assert
@@ -76,19 +88,19 @@ public class SchoolSearchServiceTests
         Assert.Collection(result.PagedResponse.Records,
             item =>
             {
-                Assert.Equal(searchResult1.URN, item.URN);
-                Assert.Equal(searchResult1.EstablishmentName, item.EstablishmentName);
-                Assert.Equal(searchResult1.Address, item.Address);
-                Assert.Equal(searchResult1.GenderName, item.GenderName);
-                Assert.Equal(searchResult1.ReligiousCharacterName, item.ReligiousCharacterName);
+                Assert.Equal(establishment1.URN, item.URN);
+                Assert.Equal(establishment1.EstablishmentName, item.EstablishmentName);
+                Assert.Equal(establishment1.Address, item.Address);
+                Assert.Equal(establishment1.GenderName, item.GenderName);
+                Assert.Equal(establishment1.ReligiousCharacterName, item.ReligiousCharacterName);
             },
             item =>
             {
-                Assert.Equal(searchResult2.URN, item.URN);
-                Assert.Equal(searchResult2.EstablishmentName, item.EstablishmentName);
-                Assert.Equal(searchResult2.Address, item.Address);
-                Assert.Equal(searchResult2.GenderName, item.GenderName);
-                Assert.Equal(searchResult2.ReligiousCharacterName, item.ReligiousCharacterName);
+                Assert.Equal(establishment2.URN, item.URN);
+                Assert.Equal(establishment2.EstablishmentName, item.EstablishmentName);
+                Assert.Equal(establishment2.Address, item.Address);
+                Assert.Equal(establishment2.GenderName, item.GenderName);
+                Assert.Equal(establishment2.ReligiousCharacterName, item.ReligiousCharacterName);
             });
     }
 
@@ -102,15 +114,15 @@ public class SchoolSearchServiceTests
         // Arrange
         var expectedSearchResults = CreateSearchResults(records);
         var searchQuery = new SearchQuery() { Name = "test", PageNumber = 1 };
-        _mockIndexReader.Setup(r => r.SearchAsync(
-            It.Is<ServiceModels.Search.InputModels.SearchQuery>(q => q.Name == searchQuery.Name),
-            It.IsAny<int>()))
-            .ReturnsAsync(new SchoolSearchResults(
-                Count: expectedSearchResults.Count,
-                Results: expectedSearchResults));
+        var schoolSearchResults = ToSchoolSearchResults(expectedSearchResults);
+
+        _mockSchoolSearchIndexReader
+            .Setup(s => s.SearchAsync(It.IsAny<SAPPub.Core.ServiceModels.Search.InputModels.SearchQuery>(), Constants.PageSize))
+            .ReturnsAsync(schoolSearchResults);
+
+        var service = new SchoolSearchService(_mockSchoolSearchIndexReader.Object, _mockPostcodeLookupService.Object);
 
         // Act
-        var service = new SchoolSearchService(_mockIndexReader.Object, _mockPostcodeLookupService.Object);
         var result = await service.SearchAsync(searchQuery);
 
         // Assert
@@ -119,7 +131,7 @@ public class SchoolSearchServiceTests
         Assert.Equal(expectedSearchResults.Count, result.PagedResponse.PagerInfo.TotalItems);
         Assert.Equal(searchQuery.PageNumber, result.PagedResponse.PagerInfo.CurrentPage);
         Assert.Equal(Constants.PageSize, result.PagedResponse.PagerInfo.PageSize);
-        Assert.Equal(expectedPages, result.PagedResponse.PagerInfo.TotalPages);        
+        Assert.Equal(expectedPages, result.PagedResponse.PagerInfo.TotalPages);
     }
 
     [Theory]
@@ -131,26 +143,30 @@ public class SchoolSearchServiceTests
         var searchPostcode = "NE1 8QH";
         var searchLatitude = 54.9783f;
         var searchLongitude = -1.6174f;
-        var latLonWithin1mile = (54.97750081131553f, -1.6004802554195086f);
-        var latLonWithin3Miles = (54.993756258737676f, -1.5913472019452886f);
-        var searchQuery = new SearchQuery() { Location = searchPostcode, Distance = distance };
+        var searchQuery = new SearchQuery() { Location = searchPostcode, Distance = distance, PageNumber = 1 };
+        var allEstablishments = new List<Establishment>
+        {
+            new Establishment { URN = "123456", EstablishmentName = "Test School", AddressStreet = "123 Test Street", GenderName = "Mixed", ReligiousCharacterName = "None" },
+            new Establishment { URN = "223456", EstablishmentName = "A Test School 2", AddressStreet = "123 Test Street 2", GenderName = "Girls", ReligiousCharacterName = "Muslim" }
+        };
+        var filteredEstablishments = allEstablishments.Where(e => expectedUrns.Contains(e.URN)).ToList();
+        var schoolSearchResults = ToSchoolSearchResults(filteredEstablishments);
+
         _mockPostcodeLookupService.Setup(p => p.GetLatitudeAndLongitudeAsync(searchQuery.Location))
             .ReturnsAsync(new PostcodeResponseModel
             {
                 Status = 200,
                 Result = new PostcodeResultModel { Latitude = searchLatitude, Longitude = searchLongitude, Postcode = searchQuery.Location }
             });
-        _mockIndexReader.Setup(r => r.SearchAsync(
-            It.Is<ServiceModels.Search.InputModels.SearchQuery>(q => q.Latitude == searchLatitude && q.Longitude == searchLongitude && q.Distance == searchQuery.Distance),
-            It.IsAny<int>()))
-            .ReturnsAsync(new SchoolSearchResults(
-                Count: 2,
-                Results: new List<SchoolSearchDocument> {
-                    searchResult1 with { Latitude = latLonWithin1mile.Item1, Longitude = latLonWithin1mile.Item2 },
-                    searchResult2 with { Latitude = latLonWithin3Miles.Item1, Longitude = latLonWithin3Miles.Item2 } }));
+
+        _mockSchoolSearchIndexReader
+            .Setup(s => s.SearchAsync(It.Is<SAPPub.Core.ServiceModels.Search.InputModels.SearchQuery>(
+                q => q.Latitude == searchLatitude && q.Longitude == searchLongitude && q.Distance == distance), Constants.PageSize))
+            .ReturnsAsync(schoolSearchResults);
+
+        var service = new SchoolSearchService(_mockSchoolSearchIndexReader.Object, _mockPostcodeLookupService.Object);
 
         // Act
-        var service = new SchoolSearchService(_mockIndexReader.Object, _mockPostcodeLookupService.Object);
         var result = await service.SearchAsync(searchQuery);
 
         // Assert
@@ -168,7 +184,7 @@ public class SchoolSearchServiceTests
     {
         // Arrange
         var searchPostcode = "NE2 3RR";
-        var searchQuery = new SearchQuery() { Location = searchPostcode, Distance = 5 };
+        var searchQuery = new SearchQuery() { Location = searchPostcode, Distance = 5, PageNumber = 1 };
         _mockPostcodeLookupService.Setup(p => p.GetLatitudeAndLongitudeAsync(searchQuery.Location))
             .ReturnsAsync(new PostcodeResponseModel
             {
@@ -176,8 +192,9 @@ public class SchoolSearchServiceTests
                 Error = "Postcode not found"
             });
 
+        var service = new SchoolSearchService(_mockSchoolSearchIndexReader.Object, _mockPostcodeLookupService.Object);
+
         // Act
-        var service = new SchoolSearchService(_mockIndexReader.Object, _mockPostcodeLookupService.Object);
         var result = await service.SearchAsync(searchQuery);
 
         // Assert
@@ -197,10 +214,11 @@ public class SchoolSearchServiceTests
     {
         // Arrange
         var searchPostcode = invalidPostcode;
-        var searchQuery = new SearchQuery() { Location = searchPostcode, Distance = 5 };
+        var searchQuery = new SearchQuery() { Location = searchPostcode, Distance = 5, PageNumber = 1 };
+
+        var service = new SchoolSearchService(_mockSchoolSearchIndexReader.Object, _mockPostcodeLookupService.Object);
 
         // Act
-        var service = new SchoolSearchService(_mockIndexReader.Object, _mockPostcodeLookupService.Object);
         var result = await service.SearchAsync(searchQuery);
 
         // Assert
@@ -215,27 +233,27 @@ public class SchoolSearchServiceTests
     public async Task SearchAsync_ResultsFieldsNull_ReturnsExpectedServiceModel()
     {
         // Arrange
-        var searchQuery = new SearchQuery() { Name = "test school" };
-        _mockIndexReader.Setup(r => r.SearchAsync(
-            It.Is<ServiceModels.Search.InputModels.SearchQuery>(q => q.Name == searchQuery.Name),
-            It.IsAny<int>()))
-            .ReturnsAsync(new SchoolSearchResults(
-                Count: 1,
-                Results: new List<SchoolSearchDocument> {
-                new SchoolSearchDocument() }));
+        var searchQuery = new SearchQuery() { Name = "test school", PageNumber = 1 };
+        var establishments = new List<Establishment> { new Establishment() };
+        var schoolSearchResults = ToSchoolSearchResults(establishments);
+
+        _mockSchoolSearchIndexReader
+            .Setup(s => s.SearchAsync(It.IsAny<SAPPub.Core.ServiceModels.Search.InputModels.SearchQuery>(), Constants.PageSize))
+            .ReturnsAsync(schoolSearchResults);
+
+        var service = new SchoolSearchService(_mockSchoolSearchIndexReader.Object, _mockPostcodeLookupService.Object);
 
         // Act
-        var service = new SchoolSearchService(_mockIndexReader.Object, _mockPostcodeLookupService.Object);
         var result = await service.SearchAsync(searchQuery);
 
         // Assert
         Assert.Equal(SchoolSearchStatus.Success, result.Status);
         Assert.Equal(1, result.PagedResponse.PagerInfo.TotalItems);
         var singleResult = Assert.Single(result.PagedResponse.Records);
-        Assert.Null(singleResult.URN);
-        Assert.Null(singleResult.EstablishmentName);
-        Assert.Null(singleResult.Address);
-        Assert.Null(singleResult.GenderName);
-        Assert.Null(singleResult.ReligiousCharacterName);
+        Assert.True(string.IsNullOrEmpty(singleResult.URN));
+        Assert.True(string.IsNullOrEmpty(singleResult.EstablishmentName));
+        Assert.True(string.IsNullOrEmpty(singleResult.Address));
+        Assert.True(string.IsNullOrEmpty(singleResult.GenderName));
+        Assert.True(string.IsNullOrEmpty(singleResult.ReligiousCharacterName));
     }
 }

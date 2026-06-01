@@ -231,6 +231,27 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         Assert.True(isVisible);
     }
 
+    [Theory]
+    [InlineData("105574", "VI - Visual Impairment, HI - Hearing Impairment")]
+    [InlineData("137552", "Not recorded")]
+    public async Task AboutSchoolPage_Displays_TypeOfSenProvision(string urn, string senTypes)
+    {
+        // Act
+        await Page.GotoAsync(_schoolUrnToUrlMap[urn]);
+
+        // Assert
+        var detailsSummary = Page.Locator("#school-features-summary");
+
+        Assert.True(await detailsSummary.IsVisibleAsync());
+        var row = detailsSummary
+            .Locator(".govuk-summary-list__row")
+            .Filter(new() { Has = Page.Locator(".govuk-summary-list__key", new() { HasText = " Type of SEN provision " }) });
+
+        var value = await row.Locator(".govuk-summary-list__value").TextContentAsync();
+        Assert.NotNull(value);
+        Assert.Equal(senTypes, value.Trim());
+    }
+
     [Fact]
     public async Task AboutSchoolPage_DisplaysSchoolFeatures()
     {

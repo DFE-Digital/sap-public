@@ -57,7 +57,8 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             AddressPostcode = "M21 7SW",
             Easting = "382682",
             Northing = "392995",
-            Website = "http://www.test.co.uk/"
+            Website = "http://www.test.co.uk/",
+            SenTypes = "VI - Visual Impairment, HI - Hearing Impairment"
         },
         ["137552"] = new Establishment
         {
@@ -189,6 +190,11 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             AddressPostcode = "SK15 1LX",
         }
     };
+
+    public static List<Establishment> GetAllEstablishments()
+    {
+        return Establishments.Values.Select(e => e).ToList();
+    }
 
     private static readonly Dictionary<string, EstablishmentPerformance> EstablishmentPerformances = new(StringComparer.OrdinalIgnoreCase)
     {

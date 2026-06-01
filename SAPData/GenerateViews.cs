@@ -257,7 +257,7 @@ public sealed class GenerateViews
     private void Write(string viewName, string sql)
     {
         File.WriteAllText(
-            Path.Combine(_sqlDir, $"03_{viewName}.sql"),
+            Path.Combine(_sqlDir, $"04_{viewName}.sql"),
             sql,
             new UTF8Encoding(false));
     }
@@ -428,6 +428,9 @@ public sealed class GenerateViews
         sb.AppendLine();
         sb.AppendLine("    clean_int(t.\"reasonestablishmentopened__code_\")  AS \"OpenReasonId\",");
         sb.AppendLine("    t.\"reasonestablishmentopened__name_\"             AS \"OpenReasonName\",");
+        sb.AppendLine("    to_tsvector('english', normalize_text(coalesce(t.\"establishmentname\", ''))) AS \"EstablishmentNameFTS\",");
+        sb.AppendLine("    ST_Transform(\r\n    ST_SetSRID(ST_MakePoint(clean_int(t.\"easting\"), clean_int(t.\"northing\")), 27700), 4326\r\n)::geography AS \"geom\",");
+        sb.AppendLine($"   {BuildSenTypes()} AS \"SenTypes\",");
         var keyStageKeys = keyStageUrnsCtes.Keys.ToList();
         for (int i = 0; i < keyStageKeys.Count; i++)
         {
@@ -450,6 +453,8 @@ public sealed class GenerateViews
         sb.AppendLine(";");
         sb.AppendLine();
         sb.AppendLine("CREATE UNIQUE INDEX idx_v_establishment_urn ON v_establishment (\"URN\");");
+        sb.AppendLine("CREATE INDEX idx_v_establishment_fts ON v_establishment USING GIN (\"EstablishmentNameFTS\");");
+        sb.AppendLine("CREATE INDEX idx_v_establishment_geom ON v_establishment USING GIST (\"geom\");");
 
         return sb.ToString();
     }
@@ -917,4 +922,10 @@ public sealed class GenerateViews
         return (ctes, filters);
     }
 
+    private static string BuildSenTypes()
+    {
+        var columns = Enumerable.Range(1, 13).Select(i => $"NULLIF(t.\"sen{i}__name_\", 'Not Applicable')");
+        var senTypesSql = $"NULLIF(concat_ws(', ', {string.Join(", ", columns)}), '')";
+        return senTypesSql;
+    }
 }

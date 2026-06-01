@@ -8,7 +8,7 @@ public class HomePageTests(WebApplicationSetupFixture fixture) : BasePageTest(fi
     [Fact]
     public async Task HomePage_LoadsSuccessfully()
     {
-        // Arrange & Act
+        // Arrange/Act
         var response = await Page.GotoAsync(string.Empty);
 
         // Assert

@@ -310,6 +310,12 @@ public class EstablishmentTestBuilder
         return this;
     }
 
+    public EstablishmentTestBuilder WithSenTypes(string senTypes)
+    {
+        _establishment.SenTypes = senTypes;
+        return this;
+    }
+
 
     public Establishment Build()
     {

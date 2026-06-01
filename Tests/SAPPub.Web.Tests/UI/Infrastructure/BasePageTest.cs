@@ -1,5 +1,8 @@
-﻿using Microsoft.Playwright;
+﻿using Deque.AxeCore.Commons;
+using Deque.AxeCore.Playwright;
+using Microsoft.Playwright;
 using Microsoft.Playwright.Xunit;
+using SAPPub.Web.Tests.UI.Helpers;
 
 namespace SAPPub.Web.Tests.UI.Infrastructure;
 
@@ -22,7 +25,7 @@ public abstract class BasePageTest : PageTest
             ViewportSize = new() { Width = 1280, Height = 720 },
             Locale = "en-GB",
             TimezoneId = "Europe/London",
-            JavaScriptEnabled = true,
+            JavaScriptEnabled = true
         };
     }
 
@@ -40,6 +43,7 @@ public abstract class BasePageTest : PageTest
         await Page.WaitForSelectorAsync(selector, new() { Timeout = timeoutMs });
         await Page.WaitForTimeoutAsync(100);
     }
+    
     public async Task<ILocator> GetQueryInputLocatorAsync(int checkTimeoutMs = 1000)
     {
         var jsLocator = Page.Locator("input[name='__Query']");

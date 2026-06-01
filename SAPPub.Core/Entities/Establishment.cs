@@ -118,6 +118,8 @@ namespace SAPPub.Core.Entities
 
         public int? OpenReasonId { get; set; }
 
+        public string? SenTypes { get; set; } = string.Empty;
+
         public EstablishmentPerformance KS4Performance { get; set; } = new();
 
         public LAPerformance LAPerformance { get; set; } = new();

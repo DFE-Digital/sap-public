@@ -105,6 +105,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     {
         // Arrange
         var searchTerm = "M21 7SW";
+        FakeEstablishmentRepository.CurrentTestPostcode = searchTerm;
         var response = await Page.GotoAsync(_pageUrl);
 
         // Act
