@@ -1,4 +1,6 @@
-﻿namespace SAPPub.Web.Tests.UI.Infrastructure
+﻿using SAPPub.Web.Tests.UI.Helpers;
+
+namespace SAPPub.Web.Tests.UI.Infrastructure
 {
     public class WebApplicationSetupFixture : IAsyncLifetime
     {
@@ -19,6 +21,8 @@
 
         public async Task DisposeAsync()
         {
+            await AccessibilityReportHelper.FlushReportAsync();
+
             if (_factory != null)
             {
                 await _factory.DisposeAsync();
