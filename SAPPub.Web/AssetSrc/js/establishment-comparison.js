@@ -1,7 +1,6 @@
 ﻿(function () {
     document.addEventListener('submit', async function (e) {
         const form = e.target;
-        const establishmentComparisonConfig = window.establishmentComparisonConfig;
 
         if (!form.classList.contains("save-establishment-comparison-form")) {
             return;
@@ -9,32 +8,50 @@
 
         e.preventDefault();
 
-        const response = await fetch(form.action, {
-            method: "POST",
-            body: new FormData(form),
-            headers: { "X-Requested-With": "XMLHttpRequest" }
-        });
-
-        const data = await response.json();
+        const saveText = form.dataset.saveText;
+        const savedText = form.dataset.savedText;
         const button = form.querySelector("button");
-        const addSuccessBanner = document.getElementById("comparison-add-success");
-        const removeSuccessBanner = document.getElementById("comparison-remove-success");
-        resetNotificationBanner(addSuccessBanner);
-        resetNotificationBanner(removeSuccessBanner);
+        const addSuccessBanner = form.querySelector("[id$='-add-success']");
+        const removeSuccessBanner = form.querySelector("[id$='-remove-success']");
+        const limitNotificationBanner = form.querySelector("[id$='-limit-notification']");
 
-        button.classList.toggle("saved", data.saved);
-        if (data.saved) {
-            button.classList.add("saved");
-            button.innerHTML = `<span>${establishmentComparisonConfig.savedText}</span>`;
-            showNotificationBanner(addSuccessBanner);
-        } else {
-            button.classList.remove("saved");
-            button.innerHTML = `<span>${establishmentComparisonConfig.saveText}</span>`;
-            const limitNotificationBanner = document.getElementById("school-compare-limit-notification");
-            if (limitNotificationBanner !== null) {
-                limitNotificationBanner.classList.add("govuk-visually-hidden");
+        if (button === null || addSuccessBanner === null || removeSuccessBanner === null) {
+            return;
+        }
+
+        try {
+            const response = await fetch(form.action, {
+                method: "POST",
+                body: new FormData(form),
+                headers: { "X-Requested-With": "XMLHttpRequest" }
+            });
+
+            if (!response.ok) {
+                throw new Error(`Request failed with status ${response.status}`);
             }
-            showNotificationBanner(removeSuccessBanner);
+
+            const data = await response.json();
+            resetNotificationBanner(addSuccessBanner);
+            resetNotificationBanner(removeSuccessBanner);
+
+            button.classList.toggle("saved", data.saved);
+            if (data.saved) {
+                button.classList.add("saved");
+                button.innerHTML = `<span>${savedText}</span>`;
+                showNotificationBanner(addSuccessBanner);
+            } else {
+                button.classList.remove("saved");
+                button.innerHTML = `<span>${saveText}</span>`;
+                if (limitNotificationBanner !== null) {
+                    limitNotificationBanner.classList.add("govuk-visually-hidden");
+                }
+                showNotificationBanner(removeSuccessBanner);
+            }
+        }
+        catch {
+            if (limitNotificationBanner !== null) {
+                limitNotificationBanner.classList.remove("govuk-visually-hidden");
+            }
         }
     });
 
