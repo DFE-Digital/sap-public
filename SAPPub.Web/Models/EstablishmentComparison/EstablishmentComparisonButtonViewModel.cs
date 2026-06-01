@@ -21,5 +21,7 @@
         public bool IsComparisonLimitReached { get; set; }
 
         public string ComparisonPageUrl { get; set; } = default!;
+
+        public bool IsFeatureEnabled { get; set; }
     }
 }

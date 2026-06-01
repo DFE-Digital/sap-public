@@ -3,6 +3,12 @@
 @model EstablishmentComparisonButtonViewModel
 
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@if(!Model.IsFeatureEnabled)
+{
+    return;
+}
+
 <form asp-controller="EstablishmentComparison" asp-action="ToggleSaveEstablishment" method="post" class="save-establishment-comparison-form">
 
     <input type="hidden" name="urn" value="@Model.Urn" />

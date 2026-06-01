@@ -4,6 +4,7 @@ using GovUk.Frontend.AspNetCore;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.FeatureManagement;
 using Notify.Client;
 using Notify.Interfaces;
 using Npgsql;
@@ -124,6 +125,9 @@ public partial class Program
 
         // Add context accessor abstraction so we can access cookies outside of controllers
         builder.Services.AddHttpContextAccessor();
+
+        // Add feature management abilility
+        builder.Services.AddFeatureManagement();
 
         var app = builder.Build();
 
