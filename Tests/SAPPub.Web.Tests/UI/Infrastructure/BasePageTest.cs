@@ -1,19 +1,18 @@
-﻿using Deque.AxeCore.Commons;
-using Deque.AxeCore.Playwright;
-using Microsoft.Playwright;
+﻿using Microsoft.Playwright;
 using Microsoft.Playwright.Xunit;
-using SAPPub.Web.Tests.UI.Helpers;
 
 namespace SAPPub.Web.Tests.UI.Infrastructure;
 
 public abstract class BasePageTest : PageTest
 {
     private readonly WebApplicationSetupFixture _fixture;
+    protected string BaseUrl { get; set; }
 
     // ReSharper disable once ConvertToPrimaryConstructor
     protected BasePageTest(WebApplicationSetupFixture fixture)
     {
         _fixture = fixture;
+        BaseUrl = _fixture.BaseUrl;
     }
 
     public override BrowserNewContextOptions ContextOptions()

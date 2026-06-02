@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SAPPub.Core.Interfaces.Services;
+using SAPPub.Web.Helpers;
+using static SAPPub.Web.Constants.Constants;
 
 namespace SAPPub.Web.Controllers
 {
@@ -13,18 +15,13 @@ namespace SAPPub.Web.Controllers
 
             var isSaved = !establishmentComparisonService.IsSaved(urn);
 
-            if (Request.Headers.XRequestedWith == "XMLHttpRequest")
-            {
-                return Json(new { saved = isSaved });
-            }
-
             if (isSaved)
             {
-                TempData["BannerAddSuccess"] = true;
+                TempData.Set(BannerAddSuccess, true);
             }
             else
             {
-                TempData["BannerRemoveSuccess"] = true;
+                TempData.Set(BannerRemoveSuccess, true);
             }
 
             return Redirect(returnUrl);

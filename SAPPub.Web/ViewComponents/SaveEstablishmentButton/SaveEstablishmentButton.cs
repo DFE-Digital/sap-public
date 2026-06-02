@@ -2,35 +2,28 @@
 using Microsoft.FeatureManagement;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Web.Models.EstablishmentComparison;
+using static SAPPub.Web.Constants.Constants;
 
-namespace SAPPub.Web.ViewComponents.SaveEstablishmentButton
+namespace SAPPub.Web.ViewComponents.SaveEstablishmentButton;
+
+public class SaveEstablishmentButton(IEstablishmentComparisonService establishmentComparisonService, IFeatureManager featureManager) : ViewComponent
 {
-    public class SaveEstablishmentButton : ViewComponent
+    private readonly IEstablishmentComparisonService _establishmentComparisonService = establishmentComparisonService;
+    private readonly IFeatureManager _featureManager = featureManager;
+
+    public async Task<IViewComponentResult> InvokeAsync(string urn, string saveText = Constants.Constants.EstablishmentComparisonSave, string savedText = Constants.Constants.EstablishmentComparisonSaved)
     {
-        private readonly IEstablishmentComparisonService _establishmentComparisonService;
-       
-
-        public SaveEstablishmentButton(IEstablishmentComparisonService establishmentComparisonService)
+        var viewModel = new EstablishmentComparisonButtonViewModel
         {
-            _establishmentComparisonService = establishmentComparisonService;
-        }
-
-        public async Task<IViewComponentResult> InvokeAsync(string urn, string schoolName, string saveText = Constants.Constants.EstablishmentComparisonSave, string savedText = Constants.Constants.EstablishmentComparisonSaved)
-        {
-            var viewModel = new EstablishmentComparisonButtonViewModel
-            {
-                Urn = urn,
-                SavedText = savedText,
-                SaveText = saveText,
-                IsSaved = _establishmentComparisonService.IsSaved(urn),
-                ShowAddSuccessNotification = TempData["BannerAddSuccess"] is not null,
-                ShowRemoveSuccessNotification = TempData["BannerRemoveSuccess"] is not null,
-                IsComparisonLimitReached = _establishmentComparisonService.IsComparisonLimitReached(),
-                ComparisonPageUrl = _establishmentComparisonService.GetComparisonPageUrl(),
-                IsFeatureEnabled = await _establishmentComparisonService.IsFeatureEnabled()
-            };
-            
-            return View("~/ViewComponents/SaveEstablishmentButton/Default.cshtml", viewModel);
-        }
+            Urn = urn,
+            SavedText = savedText,
+            SaveText = saveText,
+            IsSaved = _establishmentComparisonService.IsSaved(urn),
+            IsComparisonLimitReached = _establishmentComparisonService.IsComparisonLimitReached(),
+            AddedSchoolListPageUrl = _establishmentComparisonService.GetAddedSchoolListPageUrl(),
+            IsFeatureEnabled = await _featureManager.IsEnabledAsync(EstablishmentComparisonEnabled),
+        };
+        
+        return View("~/ViewComponents/SaveEstablishmentButton/Default.cshtml", viewModel);
     }
 }

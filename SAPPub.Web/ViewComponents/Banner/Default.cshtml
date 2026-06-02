@@ -1,0 +1,40 @@
+﻿@using SAPPub.Web.Models.Banner
+@model BannerViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    var bannerClass = Model.Type.ToLower() switch
+    {
+        "success" => "govuk-notification-banner govuk-notification-banner--success",
+        "warning" => "govuk-notification-banner govuk-notification-banner--warning",
+        "error" => "govuk-notification-banner govuk-notification-banner--error",
+        _ => "govuk-notification-banner"
+    };
+
+    var id = $"{Model.Id ?? "banner-title"}";
+    var title = $"{Model.Id ?? "banner-title"}-title";
+}
+
+
+    <div class="@bannerClass"
+         role="@Model.Role"
+         aria-live="polite"
+         aria-labelledby="@title"
+         data-module="govuk-notification-banner"
+         id="@Model.Id">
+        
+        <div class="govuk-notification-banner__header">
+            <h2 class="govuk-notification-banner__title" id="@title">
+                @Model.Title
+            </h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+            @if (!string.IsNullOrWhiteSpace(Model.HeaderContent))
+            {
+                <p class="govuk-notification-banner__heading">
+                @Html.Raw(Model.HeaderContent)
+                </p>
+            }
+            @Html.Raw(Model.BodyContent)
+        </div>
+    </div>

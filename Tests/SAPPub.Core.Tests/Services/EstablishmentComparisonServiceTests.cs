@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.FeatureManagement;
 using Microsoft.Net.Http.Headers;
-using Moq;
 using SAPPub.Core.Services;
 using System.Diagnostics.CodeAnalysis;
 
@@ -13,8 +11,6 @@ namespace SAPPub.Core.Tests.Services
         private const string CookieName = "MySchoolsList";
         private readonly EstablishmentComparisonService _service;
         private readonly HttpContextAccessor _contextAccessor;
-        private readonly Mock<IFeatureManager> _featureManager;
-
 
         public EstablishmentComparisonServiceTests()
         {
@@ -23,9 +19,7 @@ namespace SAPPub.Core.Tests.Services
                 HttpContext = new DefaultHttpContext()
             };
 
-            _featureManager = new Mock<IFeatureManager>();
-
-            _service = new EstablishmentComparisonService(_contextAccessor, _featureManager.Object);
+            _service = new EstablishmentComparisonService(_contextAccessor);
         }
 
         [Fact]
@@ -70,87 +64,6 @@ namespace SAPPub.Core.Tests.Services
 
             // Assert
             Assert.True(result);
-        }
-
-        [Fact]
-        public void Save_ShouldAppendCookie_WhenUrnIsNew()
-        {
-            // Arrange
-            var urn1 = "123";
-            var urn2 = "456";
-
-            _contextAccessor.HttpContext!.Request.Headers.Cookie = $"{CookieName}={urn1}";
-
-            // Act
-            _service.Save(urn2);
-
-            // Assert
-            var cookie = GetCookie();
-            Assert.Equal(CookieName, cookie.Name.ToString());
-            Assert.Equal($"{urn1},{urn2}", Uri.UnescapeDataString(cookie.Value.ToString()));
-        }
-
-        [Fact]
-        public void Save_ShouldNotAppendCookie_WhenUrnAlreadyExists()
-        {
-            // Arrange
-            var urn1 = "123";
-            var urn2 = "456";
-
-            _contextAccessor.HttpContext!.Request.Headers.Cookie = $"{CookieName}={urn1},{urn2}";
-
-            // Act
-            _service.Save(urn2);
-
-            // Assert
-            Assert.Empty(_contextAccessor.HttpContext!.Response.Headers.SetCookie.ToArray());
-        }
-
-        [Theory]
-        [InlineData("")]
-        [InlineData(" ")]
-        public void Save_ShouldNotAppendCookie_WhenUrnIsEmpty(string urn)
-        {
-            // Arrange
-            // Act
-            _service.Save(urn);
-
-            // Assert
-            Assert.Empty(_contextAccessor.HttpContext!.Response.Headers.SetCookie.ToArray());
-        }
-
-        [Fact]
-        public void Remove_ShouldRemoveUrn_WhenUrnExists()
-        {
-            // Arrange
-            var urn1 = "123";
-            var urn2 = "456";
-
-            _contextAccessor.HttpContext!.Request.Headers.Cookie = $"{CookieName}={urn1},{urn2}";
-
-            // Act
-            _service.Remove(urn1);
-
-            // Assert
-            var cookie = GetCookie();
-            Assert.Equal(urn2, Uri.UnescapeDataString(cookie.Value.ToString()));
-        }
-
-        [Fact]
-        public void Remove_ShouldIgnoreUrn_WhenUrnDoesNotExist()
-        {
-            // Arrange
-            var urn1 = "123";
-            var urn2 = "456";
-            var urn3 = "789";
-
-            _contextAccessor.HttpContext!.Request.Headers.Cookie = $"{CookieName}={urn1},{urn2}";
-
-            // Act
-            _service.Remove(urn3);
-
-            // Assert
-            Assert.Empty(_contextAccessor.HttpContext!.Response.Headers.SetCookie.ToArray());
         }
 
         [Fact]

@@ -7,106 +7,22 @@
     return;
 }
 
-@{
-    var componentId = $"establishment-comparison-{Model.Urn}";
-    var addSuccessBannerId = $"{componentId}-add-success";
-    var addSuccessTitleId = $"{componentId}-add-success-title";
-    var removeSuccessBannerId = $"{componentId}-remove-success";
-    var removeSuccessTitleId = $"{componentId}-remove-success-title";
-    var limitNotificationBannerId = $"{componentId}-limit-notification";
-    var limitNotificationTitleId = $"{componentId}-limit-notification-title";
-}
-
-<form asp-controller="EstablishmentComparison"
-      asp-action="ToggleSaveEstablishment"
-      method="post"
-      class="save-establishment-comparison-form"
-      data-save-text="@Model.SaveText"
-      data-saved-text="@Model.SavedText">
+<form asp-controller="EstablishmentComparison" asp-action="ToggleSaveEstablishment" method="post">
 
     <input type="hidden" name="urn" value="@Model.Urn" />
     <input type="hidden" name="returnUrl" value="@($"{Context.Request.Path}{Context.Request.QueryString}")" />
 
-    <div class="govuk-notification-banner govuk-notification-banner--success" @(Model.ShowAddSuccessNotification ? "" : "hidden")
-         role="status"
-         aria-live="polite"
-         aria-atomic="true"
-         aria-labelledby="@addSuccessTitleId"
-         data-module="govuk-notification-banner"
-         id="@addSuccessBannerId">
-        
-        <div class="govuk-notification-banner__header">
-            <h2 class="govuk-notification-banner__title" id="@addSuccessTitleId">
-                Success
-            </h2>
-        </div>
-        <div class="govuk-notification-banner__content">
-            <p class="govuk-notification-banner__heading">
-                School added to your schools list
-            </p>
-            <p class="govuk-body">
-                @Model.SchoolName
-            </p>
-            <p class="govuk-body">You can compare up to 6 schools at a time.  <a class="govuk-link" href="@Model.ComparisonPageUrl">View your schools list</a></p>
-                
-        </div>
-    </div>
-
-    <div class="govuk-notification-banner govuk-notification-banner--success" @(Model.ShowRemoveSuccessNotification ? "" : "hidden")
-         role="status"
-         aria-live="polite"
-         aria-atomic="true"
-         aria-labelledby="@removeSuccessTitleId"
-         data-module="govuk-notification-banner"
-         id="@removeSuccessBannerId">
-
-        <div class="govuk-notification-banner__header">
-            <h2 class="govuk-notification-banner__title" id="@removeSuccessTitleId">
-                Success
-            </h2>
-        </div>
-        <div class="govuk-notification-banner__content">
-            <p class="govuk-notification-banner__heading">
-                School removed from your schools list
-            </p>
-            <p class="govuk-body">
-                @Model.SchoolName
-            </p>
-        </div>
-    </div>
-
-    @if (Model.IsComparisonLimitReached && !Model.ShowAddSuccessNotification && !Model.IsSaved)
+    @if (Model.IsComparisonLimitReached && Model.IsSaved)
     {
-        <div class="govuk-notification-banner"
-             role="alert"
-             aria-atomic="true"
-             aria-labelledby="@limitNotificationTitleId"
-             data-module="govuk-notification-banner"
-             id="@limitNotificationBannerId">
-
-            <div class="govuk-notification-banner__header">
-                <h2 class="govuk-notification-banner__title" id="@limitNotificationTitleId">
-                    Important
-                </h2>
-            </div>
-            <div class="govuk-notification-banner__content">
-                <p class="govuk-notification-banner__heading">
-                    You can only add 100 schools to your list. To add another, you must first remove a school. <a class="govuk-link" href="@Model.ComparisonPageUrl">Edit your schools list</a>
-                </p>
-            </div>
-        </div>
-        if (Model.IsSaved)
-        {
-            <button type="submit" class="compare-establishment-btn govuk-heading-s saved">
-                <span>@Model.SavedText</span>
-            </button>
-        }
+        <button type="submit" class="compare-establishment-btn govuk-heading-s saved">
+            <span>@Model.SavedText</span>
+        </button>
     }
-    else
+
+    @if (!Model.IsComparisonLimitReached)
     {
         <button type="submit" class="compare-establishment-btn govuk-heading-s @(Model.IsSaved ? "saved" : "")">
             <span>@(Model.IsSaved ? Model.SavedText : Model.SaveText)</span>
         </button>
     }
-
 </form>

@@ -7,7 +7,7 @@ namespace SAPPub.Web.Tests.UI.SecondarySchool;
 [Collection("Playwright Tests")]
 public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
-    private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
+    private readonly Dictionary<string, string> _schoolUrnToUrlMap = new()
     {
         ["105574"] = "school/105574/loreto-high-school-chorlton/secondary/about",
         ["137552"] = "school/137552/stewards-academy-science-specialist-harlow/secondary/about",
@@ -319,7 +319,7 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
     {
         // Arrange
         var cookieValue = string.Join(",", Enumerable.Range(1, 100).Select(a => a.ToString()).ToList());
-        var schoolUrl = $"{fixture.BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
+        var schoolUrl = $"{BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
 
         await Page.Context.ClearCookiesAsync();
         await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = cookieValue, Domain = "127.0.0.1", Path = "/", SameSite = SameSiteAttribute.Lax, Secure = true }]);
@@ -339,7 +339,7 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
     {
         // Arrange
         var cookieValue = string.Join(",", Enumerable.Range(1, 99).Select(a => a.ToString()).ToList());
-        var schoolUrl = $"{fixture.BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
+        var schoolUrl = $"{BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
 
         await Page.Context.ClearCookiesAsync();
         await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = cookieValue, Domain = "127.0.0.1", Path = "/", SameSite = SameSiteAttribute.Lax, Secure = true }]);
@@ -358,7 +358,7 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         // Arrange
         var cookieValue = string.Join(",", Enumerable.Range(1, 99).Select(a => a.ToString()).ToList());
         cookieValue += ",105574";
-        var schoolUrl = $"{fixture.BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
+        var schoolUrl = $"{BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
 
         await Page.Context.ClearCookiesAsync();
         await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = cookieValue, Domain = "127.0.0.1", Path = "/", SameSite = SameSiteAttribute.Lax, Secure = true }]);
@@ -377,7 +377,7 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
     {
         // Arrange
         var cookieValue = string.Join(",", Enumerable.Range(1, 20).Select(a => a.ToString()).ToList());
-        var schoolUrl = $"{fixture.BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
+        var schoolUrl = $"{BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
 
         await Page.Context.ClearCookiesAsync();
         await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = cookieValue, Domain = "127.0.0.1", Path = "/", SameSite = SameSiteAttribute.Lax, Secure = true }]);
@@ -396,12 +396,11 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         // Arrange
         var cookieValue = string.Join(",", Enumerable.Range(1, 20).Select(a => a.ToString()).ToList());
         cookieValue += ",105574";
-        var schoolUrl = $"{fixture.BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
+        var schoolUrl = $"{BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
 
         await Page.Context.ClearCookiesAsync();
         await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = cookieValue, Domain = "127.0.0.1", Path = "/", SameSite = SameSiteAttribute.Lax, Secure = true }]);
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
-        var content = await Page.ContentAsync();
 
         // Act
         var compareButton = await Page.Locator(".compare-establishment-btn").InnerTextAsync();
@@ -417,7 +416,7 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         // Arrange
         var urn = "105574";
         var cookieValue = string.Join(",", Enumerable.Range(1, 20).Select(a => a.ToString()).ToList());
-        var schoolUrl = $"{fixture.BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
+        var schoolUrl = $"{BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
 
         await Page.Context.ClearCookiesAsync();
         await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = cookieValue, Domain = "127.0.0.1", Path = "/", SameSite = SameSiteAttribute.Lax, Secure = true }]);
@@ -427,16 +426,14 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         await Page.ClickAsync(".compare-establishment-btn");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
-        var content = await Page.ContentAsync();
-
         var compareButtonText = await Page.Locator(".compare-establishment-btn").InnerTextAsync();
         var comparisonAddSuccessBanner =  Page.Locator($"#establishment-comparison-{urn}-add-success");
         var comparisonRemoveSuccessBanner = Page.Locator($"#establishment-comparison-{urn}-remove-success");
 
         // Assert
         Assert.Contains("Saved to", compareButtonText);
-        await Expect(comparisonAddSuccessBanner).Not.ToHaveAttributeAsync("hidden", "");
-        await Expect(comparisonRemoveSuccessBanner).ToHaveAttributeAsync("hidden", "");
+        await Expect(comparisonAddSuccessBanner).ToBeVisibleAsync();
+        await Expect(comparisonRemoveSuccessBanner).Not.ToBeVisibleAsync();
     }
 
     [Fact]
@@ -446,7 +443,7 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         var urn = "105574";
         var cookieValue = string.Join(",", Enumerable.Range(1, 20).Select(a => a.ToString()).ToList());
         cookieValue += ",105574";
-        var schoolUrl = $"{fixture.BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
+        var schoolUrl = $"{BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
 
         await Page.Context.ClearCookiesAsync();
         await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = cookieValue, Domain = "127.0.0.1", Path = "/", SameSite = SameSiteAttribute.Lax, Secure = true }]);
@@ -462,7 +459,7 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
 
         // Assert
         Assert.Contains("Save to", compareButton);
-        await Expect(comparisonAddSuccessBanner).ToHaveAttributeAsync("hidden", "");
-        await Expect(comparisonRemoveSuccessBanner).Not.ToHaveAttributeAsync("hidden", "");
+        await Expect(comparisonAddSuccessBanner).Not.ToBeVisibleAsync();
+        await Expect(comparisonRemoveSuccessBanner).ToBeVisibleAsync();
     }
 }

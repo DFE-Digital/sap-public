@@ -6,18 +6,12 @@
 
         bool IsSaved(string urn);
 
-        void Save(string urn);
-
-        void Remove(string urn);
-
         void Toggle(string urn);
 
         void RemoveAll();
 
         bool IsComparisonLimitReached();
 
-        string GetComparisonPageUrl();
-
-        Task<bool> IsFeatureEnabled();
+        string GetAddedSchoolListPageUrl();
     }
 }

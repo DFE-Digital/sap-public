@@ -1,18 +1,15 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.FeatureManagement;
 using SAPPub.Core.Interfaces.Services;
 
 namespace SAPPub.Core.Services
 {
-    public class EstablishmentComparisonService(IHttpContextAccessor contextAccessor, IFeatureManager featureManager) : IEstablishmentComparisonService
+    public class EstablishmentComparisonService(IHttpContextAccessor contextAccessor) : IEstablishmentComparisonService
     {
         private const string CookieName = "MySchoolsList";
-        private const string FeatureName = "EstablishmentComparisonEnabled";
         private const int ComparisonLimit = 100;
 
-        public string ComparisonPageUrl = "/compare-schools";           // TODO: Change this once the url is known.
+        public string AddedSchoolListPageUrl = "/compare-schools";           // TODO: Change this once the url is known.
         private readonly IHttpContextAccessor _contextAccessor = contextAccessor;
-        private readonly IFeatureManager _featureManager = featureManager;
 
         public IReadOnlyCollection<string> GetSavedEstablishments()
         {
@@ -40,16 +37,11 @@ namespace SAPPub.Core.Services
             }
         }
 
-        public void Remove(string urn)
-        {
-            var establishments = GetSavedEstablishments().ToList();
-            if (establishments.Remove(urn))
-            {
-                WriteCookie(establishments);
-            }
-        }
+        public bool IsComparisonLimitReached() => GetSavedEstablishments().Count >= ComparisonLimit;
 
-        public void Save(string urn)
+        public string GetAddedSchoolListPageUrl() => AddedSchoolListPageUrl;
+        
+        private void Save(string urn)
         {
             var establishments = GetSavedEstablishments().ToList();
             if (!establishments.Contains(urn) && !string.IsNullOrWhiteSpace(urn))
@@ -59,11 +51,14 @@ namespace SAPPub.Core.Services
             }
         }
 
-        public bool IsComparisonLimitReached() => GetSavedEstablishments().Count >= ComparisonLimit;
-
-        public string GetComparisonPageUrl() => ComparisonPageUrl;
-
-        public async Task<bool> IsFeatureEnabled() => await _featureManager.IsEnabledAsync(FeatureName);
+        private void Remove(string urn)
+        {
+            var establishments = GetSavedEstablishments().ToList();
+            if (establishments.Remove(urn))
+            {
+                WriteCookie(establishments);
+            }
+        }
 
         private void WriteCookie(List<string> establishments)
         {
