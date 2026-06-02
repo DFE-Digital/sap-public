@@ -1,7 +1,7 @@
 ﻿namespace SAPPub.Core.Interfaces.Services
 {
-    public interface IEstablishmentComparisonService
-    {
+public interface IEstablishmentComparisonService
+{
         IReadOnlyCollection<string> GetSavedEstablishments();
 
         bool IsSaved(string urn);

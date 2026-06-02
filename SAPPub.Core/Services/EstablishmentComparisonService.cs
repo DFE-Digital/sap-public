@@ -52,7 +52,7 @@ namespace SAPPub.Core.Services
         }
 
         private void Remove(string urn)
-        {
+{
             var establishments = GetSavedEstablishments().ToList();
             if (establishments.Remove(urn))
             {
@@ -64,7 +64,7 @@ namespace SAPPub.Core.Services
         {
             var context = _contextAccessor.HttpContext;
             var options = new CookieOptions
-            {
+    {
                 Expires = DateTimeOffset.UtcNow.AddYears(1),
                 HttpOnly = false,
                 SameSite = SameSiteMode.Lax,
@@ -73,10 +73,10 @@ namespace SAPPub.Core.Services
             };
 
             context.Response.Cookies.Append(CookieName, string.Join(",", establishments), options);
-        }
+    }
 
         private string? GetCookieValueFromHeader()
-        {
+    {
             var cookieHeader = _contextAccessor.HttpContext.Request.Headers["Cookie"];
 
             return cookieHeader

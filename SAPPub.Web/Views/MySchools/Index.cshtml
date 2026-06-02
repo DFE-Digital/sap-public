@@ -1,0 +1,45 @@
+﻿@using SAPPub.Core.Enums
+@using SAPPub.Web.ViewComponents.VerticalNavigationMySchools
+@model SAPPub.Web.Models.MySchools.MySchoolsListViewModel
+
+@{
+    ViewData["Title"] = "My schools list";
+    ViewData["Header"] = "Secondary schools";
+}
+
+<h1>@ViewData["Title"]</h1>
+<p class="govuk-hint">Choose which schools you want to compare. You can select up to 6 schools.</p>
+
+<div class="govuk-grid-row">
+    @await Component.InvokeAsync("VerticalNavigationMySchools",
+    new VerticalNavigationMySchoolsModel
+    {
+        ActivePage = RouteConstants.MySchoolsList
+    })
+
+    <div class="govuk-grid-column-three-quarters">
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-4">@ViewData["Header"]</h1>
+
+        <ul class="govuk-list">
+            @foreach (var modelItem in Model.MySchools)
+            {
+                <li>
+                    <govuk-checkboxes name="SelectedSchools">
+                        <govuk-checkboxes-item value="@modelItem.Urn">
+                            <strong>@modelItem.SchoolName</strong>
+                            <govuk-checkboxes-item-hint>@modelItem.Address</govuk-checkboxes-item-hint>
+                            @if (modelItem.EstablishmentStatus == EstablishmentStatus.Closed)
+                            {
+                                <p data-testId="school-closed-tag">
+                                    <strong class="govuk-tag">
+                                        @(modelItem.ClosedDate.IsAvailable ? $"Closed in {modelItem.ClosedDate.DisplayText(d => d.ToString("MMMM yyyy"))}" : "Closed")
+                                    </strong>
+                                </p>
+                            }
+                        </govuk-checkboxes-item>
+                    </govuk-checkboxes>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
