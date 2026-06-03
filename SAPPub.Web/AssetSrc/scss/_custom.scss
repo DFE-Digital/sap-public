@@ -239,6 +239,12 @@
     }
 }
 
+// tag with extra spacing for use in My schools list
+.govuk-tag.tag--block {
+    margin-top: 6px;
+    max-width: none
+}
+
 //search results
 /* Mobile first: stacked, full width */
 .distance-filter {

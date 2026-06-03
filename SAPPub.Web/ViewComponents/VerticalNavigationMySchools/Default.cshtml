@@ -9,7 +9,7 @@
         <nav class="moj-side-navigation" aria-label="Side navigation">
             <ul class="moj-side-navigation__list">
                 <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.MySchoolsList ? "moj-side-navigation__item--active" : "")">
-                    <a asp-route="@RouteConstants.MySchoolsList">Secondary schools</a>
+                    <a asp-route="@RouteConstants.MySchoolsList">@($"Secondary schools ({Model.SchoolCount})")</a>
                 </li>
             </ul>
         </nav>

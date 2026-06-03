@@ -1,4 +1,7 @@
-﻿using SAPPub.Core.Entities;
+﻿using Bogus;
+using SAPPub.Core.Entities;
+using SAPPub.Core.Enums;
+using SAPPub.Core.Extensions;
 
 namespace SAPPub.Core.Tests.TestBuilders;
 
@@ -49,6 +52,19 @@ public class EstablishmentTestBuilder
     public EstablishmentTestBuilder WithTrustName(string trustName)
     {
         _establishment.TrustName = trustName;
+        return this;
+    }
+
+    public EstablishmentTestBuilder WithFullAddress()
+    {
+        var ukFaker = new Faker("en_GB");
+
+        _establishment.AddressStreet = ukFaker.Address.StreetAddress();
+        _establishment.AddressLocality = ukFaker.Address.SecondaryAddress();
+        _establishment.AddressAddress3 = ukFaker.Address.SecondaryAddress();
+        _establishment.AddressTown = ukFaker.Address.City();
+        _establishment.AddressPostcode = ukFaker.Address.ZipCode();
+
         return this;
     }
 
@@ -286,15 +302,21 @@ public class EstablishmentTestBuilder
         return this;
     }
 
-    public EstablishmentTestBuilder WithClosedDate(string closedDate)
+    public EstablishmentTestBuilder WithClosedDate(DateOnly closedDate)
     {
-        _establishment.ClosedDate = closedDate;
+        _establishment.ClosedDate = closedDate.ToString("dd-MM-yyyy");
         return this;
     }
 
     public EstablishmentTestBuilder WithStatusCode(int? statusCode)
     {
         _establishment.StatusCode = statusCode;
+        return this;
+    }
+
+    public EstablishmentTestBuilder WithStatusCode(EstablishmentStatus status)
+    {
+        _establishment.StatusCode = status.ToStatusCode();
         return this;
     }
 

@@ -2,6 +2,7 @@
 @using SAPPub.Web.ViewComponents.VerticalNavigationMySchools
 @model SAPPub.Web.Models.MySchools.MySchoolsListViewModel
 
+
 @{
     ViewData["Title"] = "My schools list";
     ViewData["Header"] = "Secondary schools";
@@ -12,34 +13,35 @@
 
 <div class="govuk-grid-row">
     @await Component.InvokeAsync("VerticalNavigationMySchools",
-    new VerticalNavigationMySchoolsModel
-    {
-        ActivePage = RouteConstants.MySchoolsList
-    })
+        new VerticalNavigationMySchoolsModel
+        {
+            ActivePage = RouteConstants.MySchoolsList,
+            SchoolCount = Model.MySchools.Count
+        })
 
     <div class="govuk-grid-column-three-quarters">
         <h1 class="govuk-heading-l govuk-!-margin-bottom-4">@ViewData["Header"]</h1>
-
-        <ul class="govuk-list">
-            @foreach (var modelItem in Model.MySchools)
-            {
-                <li>
-                    <govuk-checkboxes name="SelectedSchools">
-                        <govuk-checkboxes-item value="@modelItem.Urn">
-                            <strong>@modelItem.SchoolName</strong>
-                            <govuk-checkboxes-item-hint>@modelItem.Address</govuk-checkboxes-item-hint>
+        <form method="post" asp-controller="CompareSecondary" asp-action="Index">
+            <div class="govuk-checkboxes" data-testid="my-schools-list">
+                @foreach (var modelItem in Model.MySchools)
+                {
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" type="checkbox" name="selectedEstablishments" value="@modelItem.Urn">
+                        <label class="govuk-label govuk-checkboxes__label"><strong>@modelItem.SchoolName</strong></label>
+                        <div class="govuk-checkboxes__hint">
+                            <div>@modelItem.Address</div>
                             @if (modelItem.EstablishmentStatus == EstablishmentStatus.Closed)
                             {
-                                <p data-testId="school-closed-tag">
-                                    <strong class="govuk-tag">
-                                        @(modelItem.ClosedDate.IsAvailable ? $"Closed in {modelItem.ClosedDate.DisplayText(d => d.ToString("MMMM yyyy"))}" : "Closed")
-                                    </strong>
-                                </p>
+                                <strong class="govuk-tag tag--block">
+                                    @(modelItem.ClosedDate.IsAvailable ? $"Closed in {modelItem.ClosedDate.DisplayText(d => d.ToString("MMMM yyyy"))}" : "Closed")
+                                </strong>
                             }
-                        </govuk-checkboxes-item>
-                    </govuk-checkboxes>
-                </li>
-            }
-        </ul>
+                        </div>
+                    </div>
+                    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+                }
+            </div>
+            <govuk-button id="compare" type="submit">Compare selected schools</govuk-button>
+        </form>
     </div>
 </div>
