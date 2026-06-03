@@ -11,9 +11,7 @@ namespace SAPPub.Web.Controllers
         [HttpPost]
         public IActionResult ToggleSaveEstablishment(string urn, string returnUrl)
         {
-            establishmentComparisonService.Toggle(urn);
-
-            var isSaved = !establishmentComparisonService.IsSaved(urn);
+            var isSaved = establishmentComparisonService.Toggle(urn);
 
             if (isSaved)
             {

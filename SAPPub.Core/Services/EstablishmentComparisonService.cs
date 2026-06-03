@@ -25,22 +25,22 @@ namespace SAPPub.Core.Services
             _contextAccessor.HttpContext.Response.Cookies.Delete(CookieName);
         }
 
-        public void Toggle(string urn)
+        public bool Toggle(string urn)
         {
             if (IsSaved(urn))
             {
                 Remove(urn);
+                return false;
             }
-            else
-            {
-                Save(urn);
-            }
+
+            Save(urn);
+            return true;
         }
 
         public bool IsComparisonLimitReached() => GetSavedEstablishments().Count >= ComparisonLimit;
 
         public string GetAddedSchoolListPageUrl() => AddedSchoolListPageUrl;
-        
+
         private void Save(string urn)
         {
             var establishments = GetSavedEstablishments().ToList();
