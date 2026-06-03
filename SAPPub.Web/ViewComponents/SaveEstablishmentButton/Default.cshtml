@@ -1,0 +1,28 @@
+﻿@using SAPPub.Web.Models.EstablishmentComparison
+@model EstablishmentComparisonButtonViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@if (!Model.IsFeatureEnabled)
+{
+    return;
+}
+
+<form asp-controller="EstablishmentComparison" asp-action="ToggleSaveEstablishment" method="post">
+
+    <input type="hidden" name="urn" value="@Model.Urn" />
+    <input type="hidden" name="returnUrl" value="@($"{Context.Request.Path}{Context.Request.QueryString}")" />
+
+    @if (Model.IsComparisonLimitReached && Model.IsSaved)
+    {
+        <button type="submit" class="compare-establishment-btn govuk-heading-s saved">
+            <span>@Model.SavedText</span>
+        </button>
+    }
+
+    @if (!Model.IsComparisonLimitReached)
+    {
+        <button type="submit" class="compare-establishment-btn govuk-heading-s @(Model.IsSaved ? "saved" : "")">
+            <span>@(Model.IsSaved ? Model.SavedText : Model.SaveText)</span>
+        </button>
+    }
+</form>

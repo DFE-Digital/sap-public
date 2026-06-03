@@ -1,0 +1,22 @@
+﻿.compare-establishment-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: $gov-blue-color;
+    border: 1px solid $gov-blue-color;
+    padding: 8px;
+    cursor: pointer;
+    margin: 0 0 10px 0;
+    background: none;
+    background-image: url($bookmark-unfilled-svg);
+    background-repeat: no-repeat;
+    background-position: left;
+
+    &.saved {
+        background-image: url($bookmark-filled-svg);
+    }
+
+    span {
+        margin-left: 20px;
+    }
+}

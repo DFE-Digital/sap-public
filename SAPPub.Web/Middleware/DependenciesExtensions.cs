@@ -118,6 +118,7 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<IGatewaySettingsService, GatewaySettingsService>();
             services.AddTransient<IGatewayUserLAService, GatewayUserLAService>();
 
+            services.AddTransient<IEstablishmentComparisonService, EstablishmentComparisonService>();
 
             // Mapper
             services.AddSingleton<ICodedValueMapper, ReflectionCodedValueMapper>();

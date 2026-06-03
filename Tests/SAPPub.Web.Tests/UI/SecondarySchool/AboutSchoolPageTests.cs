@@ -1,4 +1,5 @@
-﻿using SAPPub.Web.Tests.UI.Helpers;
+﻿using Microsoft.Playwright;
+using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
 namespace SAPPub.Web.Tests.UI.SecondarySchool;
@@ -6,7 +7,7 @@ namespace SAPPub.Web.Tests.UI.SecondarySchool;
 [Collection("Playwright Tests")]
 public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
-    private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
+    private readonly Dictionary<string, string> _schoolUrnToUrlMap = new()
     {
         ["105574"] = "school/105574/loreto-high-school-chorlton/secondary/about",
         ["137552"] = "school/137552/stewards-academy-science-specialist-harlow/secondary/about",
@@ -311,5 +312,154 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         Assert.True(isVisible);
         Assert.False(previousPaginationIsVisible);
         Assert.Equal("Admissions", nextPaginationText?.Trim());
+    }
+
+    [Fact]
+    public async Task AboutSchoolPage_ShowsSchoolComparisonLimit_WhenLimitReached()
+    {
+        // Arrange
+        var cookieValue = string.Join(",", Enumerable.Range(1, 100).Select(a => a.ToString()).ToList());
+        var schoolUrl = $"{BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
+
+        await Page.Context.ClearCookiesAsync();
+        await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = cookieValue, Domain = "127.0.0.1", Path = "/", SameSite = SameSiteAttribute.Lax, Secure = true }]);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+
+        // Act
+        var limitNotificationBannerVisible = await Page.Locator("#establishment-comparison-105574-limit-notification").IsVisibleAsync();
+        var compareButtonVisible = await Page.Locator(".compare-establishment-btn").IsVisibleAsync();
+
+        // Assert
+        Assert.True(limitNotificationBannerVisible);
+        Assert.False(compareButtonVisible);
+    }
+
+    [Fact]
+    public async Task AboutSchoolPage_DoesNotShowSchoolComparisonLimit_WhenLimitNotReached()
+    {
+        // Arrange
+        var cookieValue = string.Join(",", Enumerable.Range(1, 99).Select(a => a.ToString()).ToList());
+        var schoolUrl = $"{BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
+
+        await Page.Context.ClearCookiesAsync();
+        await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = cookieValue, Domain = "127.0.0.1", Path = "/", SameSite = SameSiteAttribute.Lax, Secure = true }]);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+
+        // Act
+        var limitNotificationVisible = await Page.Locator("#school-compare-limit-notification").IsVisibleAsync();
+
+        // Assert
+        Assert.False(limitNotificationVisible);
+    }
+
+    [Fact]
+    public async Task AboutSchoolPage_ShowsRemoveButton_WhenSchoolOnListAndLimitReached()
+    {
+        // Arrange
+        var cookieValue = string.Join(",", Enumerable.Range(1, 99).Select(a => a.ToString()).ToList());
+        cookieValue += ",105574";
+        var schoolUrl = $"{BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
+
+        await Page.Context.ClearCookiesAsync();
+        await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = cookieValue, Domain = "127.0.0.1", Path = "/", SameSite = SameSiteAttribute.Lax, Secure = true }]);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+
+        // Act
+        var compareButton = Page.Locator(".compare-establishment-btn");
+
+        // Assert
+        await Expect(compareButton).ToContainTextAsync("Saved to");
+        await Expect(compareButton).ToContainClassAsync("saved");
+    }
+
+    [Fact]
+    public async Task AboutSchoolPage_ShowsAddButton_WhenSchoolNotOnList_AndLimitNotReached()
+    {
+        // Arrange
+        var cookieValue = string.Join(",", Enumerable.Range(1, 20).Select(a => a.ToString()).ToList());
+        var schoolUrl = $"{BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
+
+        await Page.Context.ClearCookiesAsync();
+        await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = cookieValue, Domain = "127.0.0.1", Path = "/", SameSite = SameSiteAttribute.Lax, Secure = true }]);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+
+        // Act
+        var compareButton = await Page.Locator(".compare-establishment-btn").InnerTextAsync();
+
+        // Assert
+        Assert.Contains("Save to", compareButton);
+    }
+
+    [Fact]
+    public async Task AboutSchoolPage_ShowsRemoveButton_WhenSchoolOnList_AndLimitNotReached()
+    {
+        // Arrange
+        var cookieValue = string.Join(",", Enumerable.Range(1, 20).Select(a => a.ToString()).ToList());
+        cookieValue += ",105574";
+        var schoolUrl = $"{BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
+
+        await Page.Context.ClearCookiesAsync();
+        await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = cookieValue, Domain = "127.0.0.1", Path = "/", SameSite = SameSiteAttribute.Lax, Secure = true }]);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+
+        // Act
+        var compareButton = await Page.Locator(".compare-establishment-btn").InnerTextAsync();
+
+        // Assert
+        Assert.Contains("Saved to", compareButton);
+    }
+
+
+    [Fact]
+    public async Task AboutSchoolPage_AddButtonClick_ShowsAddSuccessBanner()
+    {
+        // Arrange
+        var urn = "105574";
+        var cookieValue = string.Join(",", Enumerable.Range(1, 20).Select(a => a.ToString()).ToList());
+        var schoolUrl = $"{BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
+
+        await Page.Context.ClearCookiesAsync();
+        await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = cookieValue, Domain = "127.0.0.1", Path = "/", SameSite = SameSiteAttribute.Lax, Secure = true }]);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+
+        // Act
+        await Page.ClickAsync(".compare-establishment-btn");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        var compareButtonText = await Page.Locator(".compare-establishment-btn").InnerTextAsync();
+        var comparisonAddSuccessBanner =  Page.Locator($"#establishment-comparison-{urn}-add-success");
+        var comparisonRemoveSuccessBanner = Page.Locator($"#establishment-comparison-{urn}-remove-success");
+
+        // Assert
+        Assert.Contains("Saved to", compareButtonText);
+        await Expect(comparisonAddSuccessBanner).ToBeVisibleAsync();
+        await Expect(comparisonRemoveSuccessBanner).Not.ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task AboutSchoolPage_RemoveButtonClick_ShowsRemoveSuccessBanner()
+    {
+        // Arrange
+        var urn = "105574";
+        var cookieValue = string.Join(",", Enumerable.Range(1, 20).Select(a => a.ToString()).ToList());
+        cookieValue += ",105574";
+        var schoolUrl = $"{BaseUrl.TrimEnd('/')}/{_schoolUrnToUrlMap["105574"]}";
+
+        await Page.Context.ClearCookiesAsync();
+        await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = cookieValue, Domain = "127.0.0.1", Path = "/", SameSite = SameSiteAttribute.Lax, Secure = true }]);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+
+        // Act
+        await Page.ClickAsync(".compare-establishment-btn");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        var compareButton = await Page.Locator(".compare-establishment-btn").InnerTextAsync();
+        var comparisonAddSuccessBanner = Page.Locator($"#establishment-comparison-{urn}-add-success");
+        var comparisonRemoveSuccessBanner = Page.Locator($"#establishment-comparison-{urn}-remove-success");
+
+        // Assert
+        Assert.Contains("Save to", compareButton);
+        await Expect(comparisonAddSuccessBanner).Not.ToBeVisibleAsync();
+        await Expect(comparisonRemoveSuccessBanner).ToBeVisibleAsync();
     }
 }

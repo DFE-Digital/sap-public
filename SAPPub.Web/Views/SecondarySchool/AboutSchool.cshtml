@@ -1,5 +1,8 @@
 ﻿@model SAPPub.Web.Models.SecondarySchool.AboutSchoolViewModel;
+@inject IEstablishmentComparisonService establishmentComparisonService;
 @using SAPPub.Core.Helpers
+@using SAPPub.Core.Interfaces.Services
+@using SAPPub.Web.Models.Banner
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 @using static SAPPub.Web.Constants.Constants;
 
@@ -18,8 +21,29 @@
     })
 
     <div class="govuk-grid-column-three-quarters">
+
+
+        @if (TempData.Get<bool>(BannerAddSuccess))
+        {
+            var bodyContent = $"<div class=\"govuk-body\"><p>{Model.SchoolName}</p>" + 
+                $"<p>You can compare up to 6 schools at a time. <a class=\"govuk-link\" href=\"{establishmentComparisonService.GetAddedSchoolListPageUrl()}\">View your schools list</a></p></div>";
+
+            @await Component.InvokeAsync("Banner", new BannerViewModel { Title = "Success", HeaderContent = "School added to your schools list", BodyContent = bodyContent, Id = $"establishment-comparison-{Model.URN}-add-success", Role = "status", Type = "Success" })
+        }
+
+        @if (TempData.Get<bool>(BannerRemoveSuccess))
+        {
+            @await Component.InvokeAsync("Banner", new BannerViewModel { Title = "Success", HeaderContent = "School removed from your schools list", BodyContent = $"<p class=\"govuk-body\">{Model.SchoolName}</p>", Id = $"establishment-comparison-{Model.URN}-remove-success", Role = "status", Type = "Success" })
+        }
+
+        @if (establishmentComparisonService.IsComparisonLimitReached() && !establishmentComparisonService.IsSaved(Model.URN))
+        {
+            var headerContent = $"You can only add 100 schools to your list. To add another, you must first remove a school. <a class=\"govuk-link\" href=\"{establishmentComparisonService.GetAddedSchoolListPageUrl()}\">Edit your schools list</a>";
+            @await Component.InvokeAsync("Banner", new BannerViewModel { Title = "Important", HeaderContent = headerContent, Id = $"establishment-comparison-{Model.URN}-limit-notification", Role = "alert", Type = "info" })
+        }
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">@ViewData["Header"]</h1>
+        @await Component.InvokeAsync("SaveEstablishmentButton", new { urn = Model.URN })
 
         @if (Model.IsSchoolClosed)
         {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.FeatureManagement;
 using Moq;
 using SAPPub.Web.Controllers;
 using SAPPub.Web.Helpers;
@@ -12,10 +13,11 @@ public class CookiesControllerTests
 {
     private readonly CookiesController _controller;
     private readonly Mock<IUrlHelper> _mockUrlHelper = new();
+    private readonly Mock<IFeatureManager> _featureManager = new();
 
     public CookiesControllerTests()
     {
-        _controller = new CookiesController();
+        _controller = new CookiesController(_featureManager.Object);
 
         _mockUrlHelper.Setup(u => u.IsLocalUrl(It.IsAny<string>())).Returns(true);
         _controller.Url = _mockUrlHelper.Object;
