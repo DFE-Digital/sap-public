@@ -8,7 +8,7 @@ namespace SAPPub.Core.Services
         private const string CookieName = "MySchoolsList";
         private const int ComparisonLimit = 100;
 
-        public string AddedSchoolListPageUrl = "/compare-schools";           // TODO: Change this once the url is known.
+        public string AddedSchoolListPageUrl = "/my-schools-list";
         private readonly IHttpContextAccessor _contextAccessor = contextAccessor;
 
         public IReadOnlyCollection<string> GetSavedEstablishments()
@@ -39,8 +39,6 @@ namespace SAPPub.Core.Services
 
         public bool IsComparisonLimitReached() => GetSavedEstablishments().Count >= ComparisonLimit;
 
-        public string GetAddedSchoolListPageUrl() => AddedSchoolListPageUrl;
-
         private void Save(string urn)
         {
             var establishments = GetSavedEstablishments().ToList();
@@ -52,7 +50,7 @@ namespace SAPPub.Core.Services
         }
 
         private void Remove(string urn)
-{
+        {
             var establishments = GetSavedEstablishments().ToList();
             if (establishments.Remove(urn))
             {
@@ -64,7 +62,7 @@ namespace SAPPub.Core.Services
         {
             var context = _contextAccessor.HttpContext;
             var options = new CookieOptions
-    {
+            {
                 Expires = DateTimeOffset.UtcNow.AddYears(1),
                 HttpOnly = false,
                 SameSite = SameSiteMode.Lax,
@@ -73,10 +71,10 @@ namespace SAPPub.Core.Services
             };
 
             context.Response.Cookies.Append(CookieName, string.Join(",", establishments), options);
-    }
+        }
 
         private string? GetCookieValueFromHeader()
-    {
+        {
             var cookieHeader = _contextAccessor.HttpContext.Request.Headers["Cookie"];
 
             return cookieHeader

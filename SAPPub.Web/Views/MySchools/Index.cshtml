@@ -15,12 +15,12 @@
     @await Component.InvokeAsync("VerticalNavigationMySchools",
         new VerticalNavigationMySchoolsModel
         {
-            ActivePage = RouteConstants.MySchoolsList,
+            ActivePage = RouteConstants.MySchoolsView,
             SchoolCount = Model.MySchools.Count
         })
 
     <div class="govuk-grid-column-three-quarters">
-        <h1 class="govuk-heading-l govuk-!-margin-bottom-4">@ViewData["Header"]</h1>
+        <h2 class="govuk-heading-l govuk-!-margin-bottom-4">@ViewData["Header"]</h2>
         <form method="post" asp-controller="CompareSecondary" asp-action="Index">
             <div class="govuk-checkboxes" data-testid="my-schools-list">
                 @foreach (var modelItem in Model.MySchools)

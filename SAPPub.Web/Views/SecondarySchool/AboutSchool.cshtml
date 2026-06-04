@@ -25,8 +25,8 @@
 
         @if (TempData.Get<bool>(BannerAddSuccess))
         {
-            var bodyContent = $"<div class=\"govuk-body\"><p>{Model.SchoolName}</p>" + 
-                $"<p>You can compare up to 6 schools at a time. <a class=\"govuk-link\" href=\"{establishmentComparisonService.GetAddedSchoolListPageUrl()}\">View your schools list</a></p></div>";
+            var bodyContent = $"<div class=\"govuk-body\"><p>{Model.SchoolName}</p>" +
+            $"<p>You can compare up to 6 schools at a time. <a class=\"govuk-link\" href=\"{Url.RouteUrl(RouteConstants.MySchoolsView)}\">View your schools list</a></p></div>";
 
             @await Component.InvokeAsync("Banner", new BannerViewModel { Title = "Success", HeaderContent = "School added to your schools list", BodyContent = bodyContent, Id = $"establishment-comparison-{Model.URN}-add-success", Role = "status", Type = "Success" })
         }
@@ -38,7 +38,7 @@
 
         @if (establishmentComparisonService.IsComparisonLimitReached() && !establishmentComparisonService.IsSaved(Model.URN))
         {
-            var headerContent = $"You can only add 100 schools to your list. To add another, you must first remove a school. <a class=\"govuk-link\" href=\"{establishmentComparisonService.GetAddedSchoolListPageUrl()}\">Edit your schools list</a>";
+            var headerContent = $"You can only add 100 schools to your list. To add another, you must first remove a school. <a class=\"govuk-link\" href=\"{Url.RouteUrl(RouteConstants.MySchoolsView)}\">Edit your schools list</a>";
             @await Component.InvokeAsync("Banner", new BannerViewModel { Title = "Important", HeaderContent = headerContent, Id = $"establishment-comparison-{Model.URN}-limit-notification", Role = "alert", Type = "info" })
         }
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>

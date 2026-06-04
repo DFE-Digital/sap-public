@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement.Mvc;
 using SAPPub.Core.Interfaces.Services;
+using SAPPub.Web.Constants;
 using SAPPub.Web.Models.MySchools;
+using static SAPPub.Web.Constants.Constants;
 
 namespace SAPPub.Web.Controllers;
 
@@ -8,6 +11,9 @@ public class MySchoolsController(
     IEstablishmentComparisonService mySchoolListService,
     IEstablishmentService establishmentService) : Controller
 {
+    [HttpGet]
+    [Route("my-schools/view", Name = RouteConstants.MySchoolsView)]
+    [FeatureGate(EstablishmentComparisonEnabled)]
     public async Task<IActionResult> Index()
     {
         var establishmentUrns = mySchoolListService.GetSavedEstablishments();
