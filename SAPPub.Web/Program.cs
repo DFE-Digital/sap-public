@@ -9,7 +9,6 @@ using Notify.Client;
 using Notify.Interfaces;
 using Npgsql;
 using SAPPub.Core.Interfaces.Services;
-using SAPPub.Core.Services;
 using SAPPub.Infrastructure.PostcodeLookup;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Middleware;
@@ -118,9 +117,6 @@ public partial class Program
         builder.Services.AddScoped<INotificationClient>((sp) => new NotificationClient(emailAPIKey));
 
         builder.Services.AddDependencies(builder.Environment, builder.Configuration);
-
-        // CML TODO temp
-        builder.Services.AddScoped<IEstablishmentComparisonService, EstablishmentComparisonService>();
 
         // Add custom error handler for NotFoundExceptions
         builder.Services.AddExceptionHandler<NotFoundExceptionHandler>();
