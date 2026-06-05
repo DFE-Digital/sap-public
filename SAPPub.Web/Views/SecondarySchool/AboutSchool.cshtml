@@ -9,6 +9,7 @@
 @{
     ViewData["Header"] = "About the school";
     ViewData["Title"] = $"{Model.SchoolName} - {ViewData["Header"]}";
+    var temp = Url.RouteUrl(RouteConstants.MySchoolsView);
 }
 
 <div class="govuk-grid-row">
@@ -21,7 +22,6 @@
     })
 
     <div class="govuk-grid-column-three-quarters">
-
 
         @if (TempData.Get<bool>(BannerAddSuccess))
         {

@@ -20,7 +20,7 @@ public class SaveEstablishmentButton(IEstablishmentComparisonService establishme
             SaveText = saveText,
             IsSaved = _establishmentComparisonService.IsSaved(urn),
             IsComparisonLimitReached = _establishmentComparisonService.IsComparisonLimitReached(),
-            IsFeatureEnabled = await _featureManager.IsEnabledAsync(EstablishmentComparisonEnabled),
+            IsFeatureEnabled = await _featureManager.IsEnabledAsync(EstablishmentComparisonEnabled)
         };
 
         return View("~/ViewComponents/SaveEstablishmentButton/Default.cshtml", viewModel);
