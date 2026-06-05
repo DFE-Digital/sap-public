@@ -11,7 +11,7 @@ namespace SAPPub.Web.Tests.Unit.Page;
 [Collection("WebAppCollection")]
 public class MySchoolsListPageTests : PageTestsBase
 {
-    private static string _pageRoute = "/myschools";
+    private static string _pageRoute = "/my-schools/view";
     private readonly Mock<IEstablishmentComparisonService> _comparisonService;
     private readonly Mock<IEstablishmentService> _establishmentService;
 
@@ -39,19 +39,18 @@ public class MySchoolsListPageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task MySchoolsListPage_ShowsSchoolsList()
+    public async Task MySchoolsListPage_ShowsSchoolsListOrderedAlphabetically()
     {
-        var establishmentBuilder = new EstablishmentTestBuilder();
         var establishmentList = (new List<Establishment>
         {
-            establishmentBuilder.WithURN("123456").WithFullAddress().WithStatusCode(EstablishmentStatus.Open).Build(),
-            establishmentBuilder.WithURN("123457").WithFullAddress().WithStatusCode(EstablishmentStatus.Closed).Build(),
-            establishmentBuilder.WithURN("123458").WithFullAddress().WithStatusCode(EstablishmentStatus.Open).Build(),
-            establishmentBuilder.WithURN("123459").WithFullAddress().WithStatusCode(EstablishmentStatus.Open).Build(),
-        }).OrderBy(e => e.EstablishmentName).ToList();
+            new EstablishmentTestBuilder().WithURN("123456").WithEstablishmentName("Charlie").WithFullAddress().WithStatusCode(EstablishmentStatus.Open).Build(),
+            new EstablishmentTestBuilder().WithURN("123457").WithEstablishmentName("Alpha").WithFullAddress().WithStatusCode(EstablishmentStatus.Closed).Build(),
+            new EstablishmentTestBuilder().WithURN("123458").WithEstablishmentName("Bravo").WithFullAddress().WithStatusCode(EstablishmentStatus.Open).Build(),
+            new EstablishmentTestBuilder().WithURN("123459").WithEstablishmentName("Delta").WithFullAddress().WithStatusCode(EstablishmentStatus.Open).Build(),
+        }).ToList();
 
         _comparisonService.Setup(s => s.GetSavedEstablishments())
-            .Returns(establishmentList.Select(e => e.URN).ToList());
+            .Returns(establishmentList.OrderByDescending(e => e.EstablishmentName).Select(e => e.URN).ToList());
 
         foreach (var establishment in establishmentList)
         {
@@ -65,6 +64,12 @@ public class MySchoolsListPageTests : PageTestsBase
         // Assert
         var schoolList = document.QuerySelectorAll(".govuk-checkboxes__item");
         Assert.Equal(establishmentList.Count, schoolList.Length);
+        var items = ParseCheckboxElements(schoolList);
+
+        Assert.Equal("Alpha", items[0].LabelText);
+        Assert.Equal("Bravo", items[1].LabelText);
+        Assert.Equal("Charlie", items[2].LabelText);
+        Assert.Equal("Delta", items[3].LabelText);
     }
 
     [Fact]
@@ -92,7 +97,7 @@ public class MySchoolsListPageTests : PageTestsBase
         // Assert
         var schoolList = document.QuerySelectorAll(".govuk-checkboxes__item");
         Assert.Equal(establishmentList.Count, schoolList.Length);
-        var items = ParseElements(schoolList);
+        var items = ParseCheckboxElements(schoolList);
         Assert.Collection(items,
             item =>
             {
@@ -129,7 +134,7 @@ public class MySchoolsListPageTests : PageTestsBase
         // Assert
         var schoolList = document.QuerySelectorAll(".govuk-checkboxes__item");
         Assert.Equal(establishmentList.Count, schoolList.Length);
-        var items = ParseElements(schoolList);
+        var items = ParseCheckboxElements(schoolList);
 
         var itemWithClosedDate = items.Single(i => i.Urn == "123458");
         var expectedWithClosedDate = establishmentList.Single(e => e.URN == "123458");
@@ -146,7 +151,37 @@ public class MySchoolsListPageTests : PageTestsBase
         Assert.Equal("Closed", itemWithoutClosedDate.HintParts?.StatusTag);
     }
 
-    private IReadOnlyList<CheckboxItemView> ParseElements(IHtmlCollection<IElement> items)
+    [Fact]
+    public async Task MySchoolsListPage_UrnIsNotInSavedEstablishments_IgnoresUrn()
+    {
+        var establishmentBuilder = new EstablishmentTestBuilder();
+        var establishmentsFromRepository = (new List<Establishment>
+        {
+            establishmentBuilder.WithURN("123456").WithFullAddress().WithStatusCode(EstablishmentStatus.Open).Build(),
+            establishmentBuilder.WithURN("123457").WithFullAddress().WithStatusCode(EstablishmentStatus.Open).Build()
+        }).OrderBy(e => e.EstablishmentName).ToList();
+
+        var establishmentsStoredByUser = establishmentsFromRepository.Select(e => e.URN).ToList();
+        establishmentsStoredByUser.Add("123458"); // Add an extra URN that won't be found in the repository
+
+        _comparisonService.Setup(s => s.GetSavedEstablishments())
+            .Returns(establishmentsStoredByUser);
+
+        foreach (var establishment in establishmentsFromRepository)
+        {
+            _establishmentService.Setup(s => s.GetEstablishmentAsync(establishment.URN, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(establishment);
+        }
+
+        // Act
+        var document = await Fixture.BrowseToPage(_pageRoute);
+
+        // Assert
+        var schoolList = document.QuerySelectorAll(".govuk-checkboxes__item");
+        Assert.Equal(establishmentsFromRepository.Count, schoolList.Length);
+    }
+
+    private IReadOnlyList<CheckboxItemView> ParseCheckboxElements(IHtmlCollection<IElement> items)
     {
         var results = new List<CheckboxItemView>(items.Length);
 

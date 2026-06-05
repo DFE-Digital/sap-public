@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
+using SAPPub.Core.Exceptions;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Web.Constants;
 using SAPPub.Web.Models.MySchools;
@@ -23,12 +24,22 @@ public class MySchoolsController(
             return RedirectToAction("AddNoSchoolsActionHere");
         }
 
-        var establishments = await Task.WhenAll(establishmentUrns
-            .Select(urn => establishmentService.GetEstablishmentAsync(urn)));
+        var establishments = await Task.WhenAll(establishmentUrns.Select(async urn =>
+                {
+                    try
+                    {
+                        return await establishmentService.GetEstablishmentAsync(urn);
+                    }
+                    catch (NotFoundException)
+                    {
+                        return null;
+                    }
+                }));
 
         var model = establishments
-            .Where(establishment => establishment != null)
-            .Select(e => MySchoolModel.MapFrom(e))
+            .Where(e => e != null)
+            .Select(e => MySchoolModel.MapFrom(e!))
+            .OrderBy(x => x.Name)
             .ToList();
 
         var viewModel = new MySchoolsListViewModel
