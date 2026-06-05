@@ -169,7 +169,7 @@ jobs:
         if: ${{ github.actor != 'dependabot[bot]'}}
         run: |
           dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.5.10
-          reportgenerator -reports:coverage-results/coverage.xml -targetdir:./coverage -reporttypes:MarkdownSummaryGithub
+          reportgenerator -reports:coverage-results/coverage.xml -targetdir:./coverage -reporttypes:MarkdownSummaryGithub "-filefilters:-*/Tests/*"
 
       - name: Add Coverage PR Comment
         uses: marocchino/sticky-pull-request-comment@v3
