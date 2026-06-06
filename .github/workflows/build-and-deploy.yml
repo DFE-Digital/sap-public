@@ -123,13 +123,8 @@ jobs:
               --configuration Debug \
               --results-directory "TestResults" \
               --logger "trx;LogFileName=$(basename "$proj" .csproj).trx" \
-              --collect "XPlat Code Coverage"\
-              /p:CollectCoverage=true \
-              /p:CoverletOutputFormat=cobertura \
-              /p:DeterministicReport=true \
-              /p:UseSourceLink=true \
-              /p:Exclude='[*]AspNetCoreGeneratedDocument.*%2c[*]AspNetCore.Views.*' \
-              /p:ExcludeByAttribute='GeneratedCodeAttribute*%2cObsoleteAttribute*%2cExcludeFromCodeCoverage' \
+              --collect:"XPlat Code Coverage" \
+              --settings ./coverlet.runsettings \
               --verbosity normal
           done
 
@@ -162,7 +157,7 @@ jobs:
       - name: merge coverage files
         run: |
           dotnet tool install -g dotnet-coverage
-          dotnet coverage merge --reports $(find Tests -name "coverage.cobertura.xml") -f cobertura -o coverage-results/coverage.xml
+          dotnet coverage merge --reports $(find TestResults -name "coverage.cobertura.xml") -f cobertura -o coverage-results/coverage.xml
 
       - name: Generate Coverage Report
         id: code_coverage_report_action

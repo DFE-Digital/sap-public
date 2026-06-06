@@ -26,9 +26,7 @@
 				[*]AspNetCoreGeneratedDocument.*,
 				[*]*ViewStart*,
 				[*]*GlobalUsings*,
-				[*.Tests]*,
-				[*.UI.Tests]*,
-				[*.Integration.Tests]*
+				[*.Tests]*
 			</Exclude>
 
 			<!-- Include your assemblies -->
