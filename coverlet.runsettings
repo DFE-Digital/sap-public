@@ -29,13 +29,6 @@
 				[*.Tests]*
 			</Exclude>
 
-			<!-- Include your assemblies -->
-			<Include>
-				[SAPPub.Web]*,
-				[SAPPub.Core]*,
-				[SAPPub.Infrastructure]*
-			</Include>
-          
           <!-- Additional settings -->
           <SkipAutoProps>true</SkipAutoProps>
           <DeterministicReport>true</DeterministicReport>
