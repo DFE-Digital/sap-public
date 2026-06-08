@@ -9,7 +9,6 @@ using Notify.Client;
 using Notify.Interfaces;
 using Npgsql;
 using SAPPub.Core.Interfaces.Services;
-using SAPPub.Core.Services;
 using SAPPub.Infrastructure.PostcodeLookup;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Middleware;
