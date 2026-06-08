@@ -103,7 +103,7 @@ jobs:
           echo "backup_file=${BACKUP_FILE}" >> $GITHUB_OUTPUT
 
           # Always exclude PostGIS extension-managed objects
-          EXCLUDE_TABLES="public.spatial_ref_sys public.geography_columns public.geometry_columns"
+          EXCLUDE_TABLES=""
 
           if [[ "${{ inputs.exclude-gateway-tables }}" == "true" ]]; then
             EXCLUDE_TABLES="${EXCLUDE_TABLES} public.gateway_*"
