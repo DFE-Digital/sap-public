@@ -9,10 +9,19 @@
     var comparisionLimitReached = TempData.Get<bool>(ComparisionLimtReached);
 }
 
-<h1>@Model.Heading</h1>
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+
+        @if (await FeatureManager.IsEnabledAsync(EstablishmentComparisonEnabled))
+        {
+            var headerContent = $"{ComparisionLimitExceeded} <a class=\"govuk-link\" href=\"{Url.RouteUrl(RouteConstants.MySchoolsView)}\">{EditYourSchoolsList}</a>";
+            <div id="comparision-limit-reached-banner" class="@(comparisionLimitReached ? "" : "govuk-!-display-none")">
+                @await Component.InvokeAsync("Banner", new BannerViewModel { Title = "Important", HeaderContent = headerContent, Id = "comparison-limit-notification", Role = "alert", Type = "info" })
+            </div>
+        }
+
+        <h1 class="govuk-heading-xl">@Model.Heading</h1>
+
         <form method="post" asp-controller="Search" asp-action="Index">
             <div class="shaded-box">
                 <govuk-fieldset>
@@ -55,15 +64,7 @@
             </govuk-fieldset>
             <input type="hidden" name="pageNumber" value="@Model.SearchParams.PageNumber" />
         </form>
-        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-
-        @if (await FeatureManager.IsEnabledAsync(EstablishmentComparisonEnabled))
-        {
-            var headerContent = $"{ComparisionLimitExceeded} <a class=\"govuk-link\" href=\"{Url.RouteUrl(RouteConstants.MySchoolsView)}\">{EditYourSchoolsList}</a>";
-            <div id="comparision-limit-reached-banner" class="@(comparisionLimitReached ? "" : "govuk-!-display-none")">
-                @await Component.InvokeAsync("Banner", new BannerViewModel { Title = "Important", HeaderContent = headerContent, Id = "comparison-limit-notification", Role = "alert", Type = "info" })
-            </div>
-        }
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">        
 
         @foreach (var modelItem in Model.SearchResults)
         {

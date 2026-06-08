@@ -68,6 +68,10 @@
 
         if (showBanner) {
             limitNotificationBanner.classList.remove("govuk-!-display-none");
+            limitNotificationBanner.focus();
+            limitNotificationBanner.scrollIntoView({
+                behavior: 'smooth'
+            });
         }
         else {
             limitNotificationBanner.classList.add("govuk-!-display-none");
