@@ -5,7 +5,6 @@
 
 @{
     ViewData["Title"] = "My schools list";
-    ViewData["Header"] = "Secondary schools";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -20,27 +19,34 @@
         })
 
     <div class="govuk-grid-column-three-quarters">
-        <h2 class="govuk-heading-l govuk-!-margin-bottom-4">@ViewData["Header"]</h2>
         <form method="post" asp-controller="CompareSecondary" asp-action="Index">
-            <div class="govuk-checkboxes" data-testid="my-schools-list">
-                @foreach (var modelItem in Model.MySchools)
-                {
-                    <div class="govuk-checkboxes__item">
-                        <input class="govuk-checkboxes__input" type="checkbox" name="selectedEstablishments" value="@modelItem.Urn">
-                        <label class="govuk-label govuk-checkboxes__label"><strong>@modelItem.SchoolName</strong></label>
-                        <div class="govuk-checkboxes__hint">
-                            <div>@modelItem.Address</div>
-                            @if (modelItem.EstablishmentStatus == EstablishmentStatus.Closed)
-                            {
-                                <strong class="govuk-tag tag--block">
-                                    @(modelItem.ClosedDate.IsAvailable ? $"Closed in {modelItem.ClosedDate.DisplayText(d => d.ToString("MMMM yyyy"))}" : "Closed")
-                                </strong>
-                            }
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h2 class="govuk-fieldset__heading">
+                        Secondary schools
+                    </h2>
+                </legend>
+                <div class="govuk-checkboxes" data-testid="my-schools-list" data-module="govuk-checkboxes">
+                    @foreach (var item in Model.MySchools.Select((modelItem, i) => new {modelItem, i}))
+                    {
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" type="checkbox" id="@($"establishment-{item.i}")" name="selectedEstablishments" value="@item.modelItem.Urn">
+                            <label class="govuk-label govuk-checkboxes__label" for="@($"establishment-{item.i}")"><strong>@item.modelItem.Name</strong></label>
+                            <div class="govuk-checkboxes__hint">
+                                <div>@item.modelItem.Address</div>
+                                @if (item.modelItem.Status == EstablishmentStatus.Closed)
+                                {
+                                    <strong class="govuk-tag tag--block">
+                                        @(item.modelItem.ClosedDate.IsAvailable ? $"Closed in {item.modelItem.ClosedDate.DisplayText(d => d.ToString("MMMM yyyy"))}" : "Closed")
+                                    </strong>
+                                }
+                            </div>
                         </div>
-                    </div>
-                    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
-                }
-            </div>
+                        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+                    }
+                </div>
+
+            </fieldset>
             <govuk-button id="compare" type="submit">Compare selected schools</govuk-button>
         </form>
     </div>

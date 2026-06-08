@@ -1,6 +1,7 @@
 ﻿using Moq;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Extensions;
+using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
@@ -16,11 +17,17 @@ public class AboutPageTests : PageTestsBase
 {
     private static string _pageRoute = "/secondary/about";
     private readonly Mock<IAboutSchoolService> _about;
+    private readonly Mock<IEstablishmentComparisonService> _comparisonService;
 
     public AboutPageTests(WebAppFixture fixture) : base(fixture)
     {
         // access the mocks needed by the controller endpoint being used
         _about = UseMock<IAboutSchoolService>();
+        _comparisonService = UseMock<IEstablishmentComparisonService>();
+
+        _comparisonService
+            .Setup(service => service.GetSavedEstablishments())
+            .Returns(new List<string>());
     }
 
     [Theory]

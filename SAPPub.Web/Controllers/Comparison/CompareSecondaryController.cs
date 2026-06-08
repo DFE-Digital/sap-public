@@ -5,7 +5,7 @@ namespace SAPPub.Web.Controllers.Comparison;
 public class CompareSecondaryController : Controller
 {
     [HttpPost]
-    public IActionResult Index(List<string> selectedEstablishments)
+    public IActionResult Index(List<string>? selectedEstablishments)
     {
         return View();
     }

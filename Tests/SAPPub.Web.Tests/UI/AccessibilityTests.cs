@@ -35,12 +35,18 @@ public class AccessibilityTests(WebApplicationSetupFixture fixture) : BasePageTe
         "search/results?NameSearchTerm=xyz&Distance=3&PageNumber=1",
         "",
         "Cookies/Preferences",
+        "my-schools/view",
         "my-schools/no-schools-added"
     };
 
     [Fact]
-    public async Task AboutSchoolPage_LoadsSuccessfully()
+    public async Task Page_AccessibilityTest()
     {
+        var cookieListOfUrns = new List<string> { "105574", "107564" };
+
+        await Page.Context.ClearCookiesAsync();
+        await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = String.Join(",", cookieListOfUrns), Domain = "127.0.0.1", Path = "/", SameSite = SameSiteAttribute.Lax, Secure = true }]);
+
         var violationCount = 0;
 
         foreach (var pageUrl in _pageUrls)
@@ -65,4 +71,4 @@ public class AccessibilityTests(WebApplicationSetupFixture fixture) : BasePageTe
 
         return axeResult.Violations.Length;
     }
- }
+}

@@ -1,6 +1,5 @@
 ﻿using SAPPub.Core.Entities;
 using SAPPub.Core.ServiceModels.Search;
-using SAPPub.Core.ServiceModels.Search.Results;
 
 namespace SAPPub.Core.Extensions;
 

@@ -8,9 +8,9 @@ namespace SAPPub.Web.Models.MySchools;
 public class MySchoolModel
 {
     public required string Urn { get; set; }
-    public string? SchoolName { get; set; }
+    public string? Name { get; set; }
     public string? Address { get; set; }
-    public EstablishmentStatus? EstablishmentStatus { get; set; }
+    public EstablishmentStatus? Status { get; set; }
     public required DisplayField<DateOnly> ClosedDate { get; set; }
 
     public static MySchoolModel MapFrom(Establishment establishment)
@@ -18,9 +18,9 @@ public class MySchoolModel
         return new MySchoolModel
         {
             Urn = establishment.URN,
-            SchoolName = establishment.EstablishmentName,
+            Name = establishment.EstablishmentName,
             Address = establishment.Address,
-            EstablishmentStatus = establishment.StatusCode.ToStatus(),
+            Status = establishment.StatusCode.ToStatus(),
             ClosedDate = establishment.ClosedDate.ToDateOnly().ToDisplayField()
         };
     }

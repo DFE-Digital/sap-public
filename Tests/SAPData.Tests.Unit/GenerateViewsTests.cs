@@ -55,8 +55,8 @@ public class GenerateViewsTests : IDisposable
             entries.Select(e => $"{e.key},{e.table}")
         );
     }
-   
-  
+
+
     // ------------------------------------------------------------
     // ESTABLISHMENT VIEW
     // ------------------------------------------------------------
@@ -116,7 +116,7 @@ public class GenerateViewsTests : IDisposable
 
         // Act
         new GenerateViews(rows, _mappingPath, _sqlDir).Run();
-        var sql = File.ReadAllText(Path.Combine(_sqlDir, "03_v_establishment.sql"));
+        var sql = File.ReadAllText(Path.Combine(_sqlDir, "04_v_establishment.sql"));
 
         // Assert: CTE and ISKS4 logic present
         Assert.Contains("WITH ks4_urns AS", sql);
@@ -141,7 +141,7 @@ public class GenerateViewsTests : IDisposable
 
         // Act
         new GenerateViews(rows, _mappingPath, _sqlDir).Run();
-        var sql = File.ReadAllText(Path.Combine(_sqlDir, "03_v_establishment.sql"));
+        var sql = File.ReadAllText(Path.Combine(_sqlDir, "04_v_establishment.sql"));
 
         // Assert: Each filter's SQL is present
         foreach (var filter in filters)
@@ -163,10 +163,10 @@ public class GenerateViewsTests : IDisposable
 
         // Act
         new GenerateViews(rows, _mappingPath, _sqlDir).Run();
-        var sql = File.ReadAllText(Path.Combine(_sqlDir, "03_v_establishment.sql"));
+        var sql = File.ReadAllText(Path.Combine(_sqlDir, "04_v_establishment.sql"));
 
         // Assert: CTE and ISKS4 logic present
-        Assert.Contains("NULLIF(concat_ws(', ', NULLIF(t.\"sen1__name_\", 'Not Applicable')", sql);        
+        Assert.Contains("NULLIF(concat_ws(', ', NULLIF(t.\"sen1__name_\", 'Not Applicable')", sql);
         Assert.Contains("AS \"SenTypes\"", sql);
     }
 

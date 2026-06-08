@@ -46,8 +46,8 @@ public class MySchoolsControllerTests
         var model = result.Model as MySchoolsListViewModel;
         Assert.NotNull(model);
         Assert.Equal(2, model.MySchools.Count);
-        Assert.Contains(model.MySchools, s => s.Urn == "123456" && s.SchoolName == "Test School 1" && s.EstablishmentStatus == EstablishmentStatus.Open);
-        Assert.Contains(model.MySchools, s => s.Urn == "123457" && s.SchoolName == "Test School 2" && s.EstablishmentStatus == EstablishmentStatus.Closed);
+        Assert.Contains(model.MySchools, s => s.Urn == "123456" && s.Name == "Test School 1" && s.Status == EstablishmentStatus.Open);
+        Assert.Contains(model.MySchools, s => s.Urn == "123457" && s.Name == "Test School 2" && s.Status == EstablishmentStatus.Closed);
     }
 
     [Fact]
