@@ -59,7 +59,7 @@ namespace SAPPub.Infrastructure.Repositories
                 whereClauses.Add(@"ST_DWithin(""geom"", ST_SetSRID(ST_MakePoint(@lng, @lat), 4326)::geography, @distance)");
                 parameters.Add("lat", query.Latitude);
                 parameters.Add("lng", query.Longitude);
-                parameters.Add("distance", MappingHelper.MilesToMeters(query.Distance.Value));
+                parameters.Add("distance", MappingHelper.MilesToMeters(query.Distance!.Value));
                 orderBy = @"""Distance"" ASC, ""EstablishmentName"" ASC";
             }
             else
@@ -80,7 +80,7 @@ namespace SAPPub.Infrastructure.Repositories
                 ORDER BY {orderBy}
                 LIMIT @pageSize OFFSET @offset;";
 
-                    string countSql = $@"
+            string countSql = $@"
                 SELECT COUNT(*)
                 FROM v_establishment
                 {where};";

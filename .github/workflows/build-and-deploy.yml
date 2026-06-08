@@ -123,13 +123,8 @@ jobs:
               --configuration Debug \
               --results-directory "TestResults" \
               --logger "trx;LogFileName=$(basename "$proj" .csproj).trx" \
-              --collect "XPlat Code Coverage"\
-              /p:CollectCoverage=true \
-              /p:CoverletOutputFormat=cobertura \
-              /p:DeterministicReport=true \
-              /p:UseSourceLink=true \
-              /p:Exclude='[*]AspNetCoreGeneratedDocument.*%2c[*]AspNetCore.Views.*' \
-              /p:ExcludeByAttribute='GeneratedCodeAttribute*%2cObsoleteAttribute*%2cExcludeFromCodeCoverage' \
+              --collect:"XPlat Code Coverage" \
+              --settings ./coverlet.runsettings \
               --verbosity normal
           done
 
@@ -162,14 +157,14 @@ jobs:
       - name: merge coverage files
         run: |
           dotnet tool install -g dotnet-coverage
-          dotnet coverage merge --reports $(find Tests -name "coverage.cobertura.xml") -f cobertura -o coverage-results/coverage.xml
+          dotnet coverage merge --reports $(find TestResults -name "coverage.cobertura.xml") -f cobertura -o coverage-results/coverage.xml
 
       - name: Generate Coverage Report
         id: code_coverage_report_action
         if: ${{ github.actor != 'dependabot[bot]'}}
         run: |
           dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.5.10
-          reportgenerator -reports:coverage-results/coverage.xml -targetdir:./coverage -reporttypes:MarkdownSummaryGithub
+          reportgenerator -reports:coverage-results/coverage.xml -targetdir:./coverage -reporttypes:MarkdownSummaryGithub "-filefilters:-*/Tests/*"
 
       - name: Add Coverage PR Comment
         uses: marocchino/sticky-pull-request-comment@v3

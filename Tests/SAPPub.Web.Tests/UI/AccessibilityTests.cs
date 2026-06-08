@@ -38,7 +38,7 @@ public class AccessibilityTests(WebApplicationSetupFixture fixture) : BasePageTe
     };
 
     [Fact]
-    public async Task AboutSchoolPage_LoadsSuccessfully()
+    public async Task Page_AccessibilityTest()
     {
         var violationCount = 0;
 
@@ -64,4 +64,4 @@ public class AccessibilityTests(WebApplicationSetupFixture fixture) : BasePageTe
 
         return axeResult.Violations.Length;
     }
- }
+}
