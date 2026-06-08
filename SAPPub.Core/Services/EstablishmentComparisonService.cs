@@ -8,7 +8,6 @@ namespace SAPPub.Core.Services
         private const string CookieName = "MySchoolsList";
         private const int ComparisonLimit = 100;
 
-        public string AddedSchoolListPageUrl = "/compare-schools";           // TODO: Change this once the url is known.
         private readonly IHttpContextAccessor _contextAccessor = contextAccessor;
 
         public IReadOnlyCollection<string> GetSavedEstablishments()
@@ -38,8 +37,6 @@ namespace SAPPub.Core.Services
         }
 
         public bool IsComparisonLimitReached() => GetSavedEstablishments().Count >= ComparisonLimit;
-
-        public string GetAddedSchoolListPageUrl() => AddedSchoolListPageUrl;
 
         private void Save(string urn)
         {

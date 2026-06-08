@@ -23,4 +23,9 @@ public static class EstablishmentStatusExtensions
             _ => null
         };
     }
+
+    public static int? ToStatusCode(this EstablishmentStatus status)
+    {
+        return ((EstablishmentStatus?)status).ToStatusCode();
+    }
 }

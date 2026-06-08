@@ -17,7 +17,5 @@
         void RemoveAll();
 
         bool IsComparisonLimitReached();
-
-        string GetAddedSchoolListPageUrl();
     }
 }

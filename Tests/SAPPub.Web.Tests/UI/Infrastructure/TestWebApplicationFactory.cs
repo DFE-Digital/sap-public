@@ -19,7 +19,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseUrls("http://127.0.0.1:0", "https://127.0.0.1:0");
-        builder.UseEnvironment("UITests");
+        builder.UseEnvironment("Testing");
 
         // Set content root to web project so static files (wwwroot) are found
         var webProjectPath = GetWebProjectPath();
