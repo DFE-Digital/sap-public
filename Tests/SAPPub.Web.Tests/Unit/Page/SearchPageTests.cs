@@ -1,6 +1,7 @@
 using AngleSharp;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.ServiceModels.Common;
 using SAPPub.Core.ServiceModels.Search.InputModels;
@@ -21,6 +22,9 @@ public class SearchPageTests : IDisposable
         _factory = new CustomWebApplicationFactory<Program>();
         var accessor = _factory.Services.GetRequiredService<MockAccessor<ISchoolSearchService>>();
         _searchServiceMock = accessor.GetOrCreate();
+
+        var establishmentComparisionServiceAccessor = _factory.Services.GetRequiredService<MockAccessor<IEstablishmentComparisonService>>();
+        _= establishmentComparisionServiceAccessor.GetOrCreate();        
         _client = _factory.CreateClient();
     }
 
