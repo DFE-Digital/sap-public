@@ -8,7 +8,6 @@ namespace SAPPub.Core.Services
         private const string CookieName = "MySchoolsList";
         private const int ComparisonLimit = 100;
 
-        public string AddedSchoolListPageUrl = "/my-schools-list";
         private readonly IHttpContextAccessor _contextAccessor = contextAccessor;
 
         public IReadOnlyCollection<string> GetSavedEstablishments()
