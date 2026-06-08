@@ -119,9 +119,6 @@ public partial class Program
 
         builder.Services.AddDependencies(builder.Environment, builder.Configuration);
 
-        // CML TODO temp
-        builder.Services.AddScoped<IEstablishmentComparisonService, EstablishmentComparisonService>();
-
         // Add custom error handler for NotFoundExceptions
         builder.Services.AddExceptionHandler<NotFoundExceptionHandler>();
 

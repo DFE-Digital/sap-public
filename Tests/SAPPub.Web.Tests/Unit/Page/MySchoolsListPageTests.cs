@@ -41,7 +41,6 @@ public class MySchoolsListPageTests : PageTestsBase
     [Fact]
     public async Task MySchoolsListPage_ShowsSchoolsListOrderedAlphabetically()
     {
-        var establishmentBuilder = new EstablishmentTestBuilder();
         var establishmentList = (new List<Establishment>
         {
             new EstablishmentTestBuilder().WithURN("123456").WithEstablishmentName("Charlie").WithFullAddress().WithStatusCode(EstablishmentStatus.Open).Build(),
