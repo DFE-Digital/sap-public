@@ -406,7 +406,7 @@ jobs:
                       --no-acl \
                       --disable-triggers \
                       --exit-on-error \
-                      --jobs=4 \
+                      --single-transaction \
                       --section=$section \
                       "${BACKUP_FILE}" \
                   2>&1 | tee "$LOG_FILE"
