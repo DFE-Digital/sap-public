@@ -1,12 +1,15 @@
 -- ================================================================
 -- 00_cleanup.sql
 -- Drops generated objects so the pipeline can re-run idempotently.
+-- Creates postgis extension if not already present
 -- Creates functions used by later steps
 -- Schema-agnostic: operates on current_schema()
 -- Assumptions:
 --   - generated tables start with: t_
 --   - generated materialized views start with: v_
 -- ================================================================
+\echo 'Ensuring required PostgreSQL extensions...'
+CREATE EXTENSION IF NOT EXISTS postgis;
 
 \echo 'Cleaning up generated objects and regenerating reusable functions...'
 
