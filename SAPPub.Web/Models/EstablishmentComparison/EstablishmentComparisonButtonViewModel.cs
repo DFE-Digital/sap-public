@@ -15,5 +15,7 @@
         public string AddedSchoolListPageUrl { get; set; } = default!;
 
         public bool IsFeatureEnabled { get; set; }
+
+        public bool IsSearchPage { get; set; }
     }
 }

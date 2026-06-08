@@ -11,13 +11,14 @@ public class SaveEstablishmentButton(IEstablishmentComparisonService establishme
     private readonly IEstablishmentComparisonService _establishmentComparisonService = establishmentComparisonService;
     private readonly IFeatureManager _featureManager = featureManager;
 
-    public async Task<IViewComponentResult> InvokeAsync(string urn, string saveText = Constants.Constants.EstablishmentComparisonSave, string savedText = Constants.Constants.EstablishmentComparisonSaved)
+    public async Task<IViewComponentResult> InvokeAsync(string urn, bool isSearchPage = false)
     {
         var viewModel = new EstablishmentComparisonButtonViewModel
         {
             Urn = urn,
-            SavedText = savedText,
-            SaveText = saveText,
+            IsSearchPage = isSearchPage,
+            SavedText = isSearchPage ? Saved : EstablishmentComparisonSaved,
+            SaveText = isSearchPage ? Save : EstablishmentComparisonSave,
             IsSaved = _establishmentComparisonService.IsSaved(urn),
             IsComparisonLimitReached = _establishmentComparisonService.IsComparisonLimitReached(),
             AddedSchoolListPageUrl = _establishmentComparisonService.GetAddedSchoolListPageUrl(),

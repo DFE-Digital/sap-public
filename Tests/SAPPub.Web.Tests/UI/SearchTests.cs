@@ -1,4 +1,5 @@
-﻿using Microsoft.Playwright;
+﻿using Google.Apis.Bigquery.v2.Data;
+using Microsoft.Playwright;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
 namespace SAPPub.Web.Tests.UI;
@@ -355,5 +356,131 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
 
         // assert 
         Assert.Contains("pageNumber=1", Page.Url);
+    }
+
+    [Fact]
+    public async Task SearchResultsPage_Shows_Comparision_Save_Button()
+    {
+        // Arrange
+        var cookieValue = GenerateCookieValue(20);
+        var searchTerm = "M21 7SW";
+        FakeEstablishmentRepository.CurrentTestPostcode = searchTerm;
+        await Page.Context.ClearCookiesAsync();
+        await Page.Context.AddCookiesAsync(CreateMySchoolsListCookie(cookieValue));
+        _ = await Page.GotoAsync(_pageUrl);
+
+        // Act
+        await Page.FillAsync("#LocationSearchTerm", searchTerm);
+        await Page.ClickAsync("#search");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        var compareButton = await Page.Locator(".compare-establishment-btn").InnerTextAsync();
+
+        // Assert
+        Assert.Equal("Save", compareButton);
+    }
+
+    [Fact]
+    public async Task SearchResultsPage_Shows_Comparision_Saved_Button()
+    {
+        // Arrange
+        var cookieValue = GenerateCookieValue(10);
+        cookieValue += ",105574";
+        var searchTerm = "M21 7SW";
+        FakeEstablishmentRepository.CurrentTestPostcode = searchTerm;
+        await Page.Context.ClearCookiesAsync();
+        await Page.Context.AddCookiesAsync(CreateMySchoolsListCookie(cookieValue));
+        _ = await Page.GotoAsync(_pageUrl);
+
+        // Act
+        await Page.FillAsync("#LocationSearchTerm", searchTerm);
+        await Page.ClickAsync("#search");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        var compareButton = await Page.Locator(".compare-establishment-btn").InnerTextAsync();
+
+        // Assert
+        Assert.Equal("Saved", compareButton);
+    }
+
+    [Fact]
+    public async Task SearchResultsPage_Comparision_Save_Button_Click_Should_Add_To_SchoolsList()
+    {
+        // Arrange
+        var cookieValue = GenerateCookieValue(10);
+        var searchTerm = "M21 7SW";
+        FakeEstablishmentRepository.CurrentTestPostcode = searchTerm;
+        await Page.Context.ClearCookiesAsync();
+        await Page.Context.AddCookiesAsync(CreateMySchoolsListCookie(cookieValue));
+        _ = await Page.GotoAsync(_pageUrl);
+
+        // Act
+        await Page.FillAsync("#LocationSearchTerm", searchTerm);
+        await Page.ClickAsync("#search");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        await Page.ClickAsync(".compare-establishment-btn");        
+
+        // Assert
+        await Expect(Page.Locator(".compare-establishment-btn")).ToHaveTextAsync("Saved");
+    }
+
+    [Fact]
+    public async Task SearchResultsPage_Comparision_Saved_Button_Click_Should_Remove_From_SchoolsList()
+    {
+        string cookieValue = GenerateCookieValue(10);
+        cookieValue += ",105574";
+        var searchTerm = "M21 7SW";
+        FakeEstablishmentRepository.CurrentTestPostcode = searchTerm;
+        await Page.Context.ClearCookiesAsync();
+        await Page.Context.AddCookiesAsync(CreateMySchoolsListCookie(cookieValue));
+        _ = await Page.GotoAsync(_pageUrl);
+
+        // Act
+        await Page.FillAsync("#LocationSearchTerm", searchTerm);
+        await Page.ClickAsync("#search");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        var compareButton1 = await Page.Locator(".compare-establishment-btn").InnerTextAsync();
+
+        await Page.ClickAsync(".compare-establishment-btn");
+
+        // Assert
+        await Expect(Page.Locator(".compare-establishment-btn")).ToHaveTextAsync("Save");
+    }    
+
+    [Fact]
+    public async Task SearchResultsPage_Shows_LimitReached_Banner_When_LimitReached()
+    {
+        // Arrange
+        var cookieValue = GenerateCookieValue();
+        var searchTerm = "M21 7SW";
+        FakeEstablishmentRepository.CurrentTestPostcode = searchTerm;
+        await Page.Context.ClearCookiesAsync();
+        await Page.Context.AddCookiesAsync(CreateMySchoolsListCookie(cookieValue));
+        _ = await Page.GotoAsync(_pageUrl);
+
+        // Act
+        await Page.FillAsync("#LocationSearchTerm", searchTerm);
+        await Page.ClickAsync("#search");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        var saveButton = Page.Locator(".compare-establishment-btn");
+        await saveButton.ClickAsync();
+        await Expect(Page.Locator("#comparison-limit-notification")).ToBeVisibleAsync();
+
+        // Assert
+        var notificationBanner = Page.Locator("#comparison-limit-notification");
+        var isLimitNotificationBannerVisible = await notificationBanner.IsVisibleAsync();
+        Assert.True(isLimitNotificationBannerVisible);
+    }
+
+    private static string GenerateCookieValue(int cookiesCount = 100)
+    {
+        return string.Join(",", Enumerable.Range(1, cookiesCount).Select(a => a.ToString()).ToList());
+    }
+
+    private static IEnumerable<Cookie> CreateMySchoolsListCookie(string cookieValue)
+    {
+        return [new Cookie { Name = "MySchoolsList", Value = cookieValue, Domain = "127.0.0.1", Path = "/", SameSite = SameSiteAttribute.Lax, Secure = true }];
     }
 }

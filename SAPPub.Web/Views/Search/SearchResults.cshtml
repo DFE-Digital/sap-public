@@ -1,8 +1,12 @@
-﻿@using SAPPub.Web.ViewComponents.Pagination
+﻿@using SAPPub.Web.Models.Banner
+@using SAPPub.Web.ViewComponents.Pagination
+@using static SAPPub.Web.Constants.Constants;
 @model SAPPub.Web.Models.Search.SearchResultsViewModel
+@inject Microsoft.FeatureManagement.IFeatureManager FeatureManager
 
 @{
     ViewData["Title"] = "Search results";
+    var comparisionLimitReached = TempData.Get<bool>(ComparisionLimtReached);
 }
 
 <h1>@Model.Heading</h1>
@@ -53,12 +57,23 @@
         </form>
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
+        @if (await FeatureManager.IsEnabledAsync(EstablishmentComparisonEnabled))
+        {
+            var headerContent = $"{ComparisionLimitExceeded} <a class=\"govuk-link\" href=\"{Url.RouteUrl(RouteConstants.MySchoolsView)}\">{EditYourSchoolsList}</a>";
+            <div id="comparision-limit-reached-banner" class="@(comparisionLimitReached ? "" : "govuk-!-display-none")">
+                @await Component.InvokeAsync("Banner", new BannerViewModel { Title = "Important", HeaderContent = headerContent, Id = "comparison-limit-notification", Role = "alert", Type = "info" })
+            </div>
+        }
+
         @foreach (var modelItem in Model.SearchResults)
         {
             <div class="school-search-result">
-                <p class="govuk-body-l govuk-!-margin-bottom-4">
-                    <a class="govuk-link" href="@Url.Action("Index", "School", new { urn = modelItem.URN, schoolName = modelItem.EstablishmentNameClean })">@modelItem.EstablishmentName</a>
-                </p>
+                <div class="school-header">
+                    <p class="govuk-body-l govuk-!-margin-bottom-4">
+                        <a class="govuk-link" href="@Url.Action("Index", "School", new { urn = modelItem.URN, schoolName = modelItem.EstablishmentNameClean })">@modelItem.EstablishmentName</a>                    
+                    </p>
+                    @await Component.InvokeAsync("SaveEstablishmentButton", new { urn = modelItem.URN, isSearchPage = true })
+                </div>
 
                 @if (modelItem.IsSchoolClosed)
                 {
@@ -100,3 +115,7 @@
         @await Component.InvokeAsync("Pagination", Model.Pagination)
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/save-for-comparison.js"></script>
+}

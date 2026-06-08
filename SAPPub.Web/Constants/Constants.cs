@@ -13,13 +13,19 @@ public static class Constants
     public const string CookiesConfirmation = "CookiesConfirmation";
     public const string BannerAddSuccess = "BannerAddSuccess";
     public const string BannerRemoveSuccess = "BannerRemoveSuccess";
+    public const string ComparisionLimtReached = "ComparisionLimtReached";
 
     // Chart colours
     public static readonly string[] ChartColours = { "#A285D1", "#12436D", "#28A197" };
 
     // School comparison labels/text
+    public const string Save = "Save";
+    public const string Saved = "Saved";
     public const string EstablishmentComparisonSave = "Save to my schools list";
     public const string EstablishmentComparisonSaved = "Saved to my schools list";
+
+    public const string ComparisionLimitExceeded = "You can only add 100 schools to your list. To add another, you must first remove a school.";
+    public const string EditYourSchoolsList = "Edit your schools list";
 
     // Managed Feature Names
     public const string EstablishmentComparisonEnabled = "EstablishmentComparisonEnabled";

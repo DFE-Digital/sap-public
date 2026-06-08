@@ -11,6 +11,7 @@ public static class RouteConstants
     public const string SecondaryAcademicPerformanceEnglishAndMathsResults = "SecondaryAcademicPerformanceEnglishAndMathsResults";
     public const string SecondaryAcademicPerformanceSubjectsEntered = "SecondaryAcademicPerformanceSubjectsEntered";
     public const string SecondaryDestinations = "SecondaryDestinations";
+    public const string MySchoolsView = "MySchoolsView";
 
     public const string Search = "Search";
     public const string SearchResults = "SearchResults";
