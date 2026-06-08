@@ -34,7 +34,8 @@ public class AccessibilityTests(WebApplicationSetupFixture fixture) : BasePageTe
         "search/results?NameSearchTerm=school&Distance=3&PageNumber=1",
         "search/results?NameSearchTerm=xyz&Distance=3&PageNumber=1",
         "",
-        "Cookies/Preferences"
+        "Cookies/Preferences",
+        "my-schools/no-schools-added"
     };
 
     [Fact]
