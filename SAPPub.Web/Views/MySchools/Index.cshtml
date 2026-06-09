@@ -1,10 +1,20 @@
 ﻿@using SAPPub.Core.Enums
 @using SAPPub.Web.ViewComponents.VerticalNavigationMySchools
+@using Microsoft.AspNetCore.Mvc.ModelBinding
 @model SAPPub.Web.Models.MySchools.MySchoolsListViewModel
-
 
 @{
     ViewData["Title"] = "My schools list";
+}
+
+@if (ViewData.ModelState.ErrorCount > 0)
+{
+    <govuk-error-summary>
+        <govuk-error-summary-description class="govuk-error-message">@($"You have selected {Model.SelectedCount} schools to compare")</govuk-error-summary-description>
+        <govuk-error-summary-item href="#establishment-checkboxes" for="@Model.SelectedEstablishmentUrns">
+            You can select between 2 and 6 schools to compare.
+        </govuk-error-summary-item>
+    </govuk-error-summary>
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -19,18 +29,30 @@
         })
 
     <div class="govuk-grid-column-three-quarters">
-        <form method="post" asp-controller="CompareSecondary" asp-action="Index">
+        <form method="post" asp-controller="MySchools" asp-action="Index">
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                     <h2 class="govuk-fieldset__heading">
                         Secondary schools
                     </h2>
                 </legend>
-                <div class="govuk-checkboxes" data-testid="my-schools-list" data-module="govuk-checkboxes">
+                @if (ViewData.ModelState.ErrorCount > 0)
+                {
+                    <govuk-error-message>
+                        @(ViewData.ModelState[nameof(Model.SelectedEstablishmentUrns)]
+                        ?.Errors.First().ErrorMessage)
+                    </govuk-error-message>
+                }
+                <div class="govuk-checkboxes" id="establishment-checkboxes" data-testid="my-schools-list" data-module="govuk-checkboxes">
                     @foreach (var item in Model.MySchools.Select((modelItem, i) => new {modelItem, i}))
                     {
                         <div class="govuk-checkboxes__item">
-                            <input class="govuk-checkboxes__input" type="checkbox" id="@($"establishment-{item.i}")" name="selectedEstablishments" value="@item.modelItem.Urn">
+                            <input class="govuk-checkboxes__input"
+                                type="checkbox"
+                                id="@($"establishment-{item.i}")"
+                                name="@nameof(Model.SelectedEstablishmentUrns)"
+                                value="@item.modelItem.Urn"
+                                @(Model.SelectedEstablishmentUrns.Contains(item.modelItem.Urn) ? "checked" : "")>
                             <label class="govuk-label govuk-checkboxes__label" for="@($"establishment-{item.i}")"><strong>@item.modelItem.Name</strong></label>
                             <div class="govuk-checkboxes__hint">
                                 <div>@item.modelItem.Address</div>
@@ -45,7 +67,6 @@
                         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
                     }
                 </div>
-
             </fieldset>
             <govuk-button id="compare" type="submit">Compare selected schools</govuk-button>
         </form>

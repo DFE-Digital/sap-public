@@ -4,18 +4,19 @@ using SAPPub.Core.Entities;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Tests.TestBuilders;
+using SAPPub.Web.Models.MySchools;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
 
 namespace SAPPub.Web.Tests.Unit.Page;
 
 [Collection("WebAppCollection")]
-public class MySchoolsListPageTests : PageTestsBase
+public class MySchoolsPageTests : PageTestsBase
 {
     private static string _pageRoute = "/my-schools/view";
     private readonly Mock<IEstablishmentComparisonService> _comparisonService;
     private readonly Mock<IEstablishmentService> _establishmentService;
 
-    public MySchoolsListPageTests(WebAppFixture fixture) : base(fixture)
+    public MySchoolsPageTests(WebAppFixture fixture) : base(fixture)
     {
         _comparisonService = UseMock<IEstablishmentComparisonService>();
         _establishmentService = UseMock<IEstablishmentService>();
@@ -179,6 +180,83 @@ public class MySchoolsListPageTests : PageTestsBase
         // Assert
         var schoolList = document.QuerySelectorAll(".govuk-checkboxes__item");
         Assert.Equal(establishmentsFromRepository.Count, schoolList.Length);
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(7)]
+    public async Task MySchoolsListPage_CompareSelection_InvalidAmountOfEstablishmentsSelected_ShowsErrorMessages(int selectedEstablishmentsCount)
+    {
+        var establishmentList = (new List<Establishment>
+        {
+            new EstablishmentTestBuilder().WithURN("123456").Build(),
+            new EstablishmentTestBuilder().WithURN("123457").Build(),
+            new EstablishmentTestBuilder().WithURN("123458").Build(),
+            new EstablishmentTestBuilder().WithURN("123459").Build(),
+            new EstablishmentTestBuilder().WithURN("123460").Build(),
+            new EstablishmentTestBuilder().WithURN("123461").Build(),
+            new EstablishmentTestBuilder().WithURN("123462").Build()
+        }).ToList();
+
+        _comparisonService.Setup(s => s.GetSavedEstablishments())
+            .Returns(establishmentList.OrderByDescending(e => e.EstablishmentName).Select(e => e.URN).ToList());
+
+        foreach (var establishment in establishmentList)
+        {
+            _establishmentService.Setup(s => s.GetEstablishmentAsync(establishment.URN, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(establishment);
+        }
+
+        var selectedEstablishments = establishmentList.Take(selectedEstablishmentsCount).Select(e => e.URN).ToList();
+        var formData = new MySchoolsListViewModel
+        {
+            SelectedEstablishmentUrns = selectedEstablishments
+        };
+
+        // Act
+        var response = await Fixture.PostToPage(_pageRoute, formData);
+        var document = response.Document;
+
+        // Assert
+        Assert.NotNull(document);
+        var summaryErrors = document.GetErrorSummaryErrors();
+        var errorMessages = document.GetErrorMessages();
+        Assert.Single(summaryErrors);
+        Assert.Single(errorMessages);
+    }
+
+    [Fact]
+    public async Task MySchoolsListPage_CompareSelection_TwoSelected_Redirects()
+    {
+        var establishmentList = (new List<Establishment>
+        {
+            new EstablishmentTestBuilder().WithURN("123456").Build(),
+            new EstablishmentTestBuilder().WithURN("123457").Build(),
+            new EstablishmentTestBuilder().WithURN("123458").Build(),
+            new EstablishmentTestBuilder().WithURN("123459").Build(),
+        }).ToList();
+
+        _comparisonService.Setup(s => s.GetSavedEstablishments())
+            .Returns(establishmentList.OrderByDescending(e => e.EstablishmentName).Select(e => e.URN).ToList());
+
+        foreach (var establishment in establishmentList)
+        {
+            _establishmentService.Setup(s => s.GetEstablishmentAsync(establishment.URN, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(establishment);
+        }
+
+        var formData = new MySchoolsListViewModel
+        {
+            SelectedEstablishmentUrns = new List<string>() { "123456", "123457" }
+        };
+
+        // Act
+        var response = await Fixture.PostToPage(_pageRoute, formData);
+        var document = response.Document;
+
+        // Assert
+        Assert.Null(document);
+        Assert.NotNull(response.RedirectionLocation);
     }
 
     private IReadOnlyList<CheckboxItemView> ParseCheckboxElements(IHtmlCollection<IElement> items)

@@ -1,8 +1,10 @@
-﻿namespace SAPPub.Web.Tests.Unit.Page.Infrastructure;
+﻿using AngleSharp.Dom;
+
+namespace SAPPub.Web.Tests.Unit.Page.Infrastructure;
 
 public static class DocumentExtensions
 {
-    public static string? GetRowContentByIdAndKey(this AngleSharp.Dom.IDocument doc, string summaryListId, string key)
+    public static string? GetRowContentByIdAndKey(this IDocument doc, string summaryListId, string key)
     {
         // get the summary list by id
         var summaryList = doc.QuerySelector($"#{summaryListId}");
@@ -14,7 +16,7 @@ public static class DocumentExtensions
         return nameRow?.QuerySelector("dd")?.TextContent.Trim();
     }
 
-    public static string? GetTableHeaderContentByIdAndIndex(this AngleSharp.Dom.IDocument doc, string tableId, int rowIndex, int cellIndex)
+    public static string? GetTableHeaderContentByIdAndIndex(this IDocument doc, string tableId, int rowIndex, int cellIndex)
     {
         // get the summary list by id
         var table = doc.QuerySelector($"#{tableId}");
@@ -26,7 +28,7 @@ public static class DocumentExtensions
         return headerCells?[cellIndex]?.TextContent.Trim();
     }
 
-    public static string? GetTableCellContentByIdAndIndex(this AngleSharp.Dom.IDocument doc, string tableId, int rowIndex, int cellIndex)
+    public static string? GetTableCellContentByIdAndIndex(this IDocument doc, string tableId, int rowIndex, int cellIndex)
     {
         // get the summary list by id
         var table = doc.QuerySelector($"#{tableId}");
@@ -38,12 +40,30 @@ public static class DocumentExtensions
         return cells?[cellIndex]?.TextContent.Trim();
     }
 
-    public static string? GetTableCellContentByRowAndCellIndex(this AngleSharp.Dom.IElement ele, int rowIndex, int cellIndex)
+    public static string? GetTableCellContentByRowAndCellIndex(this IElement ele, int rowIndex, int cellIndex)
     {
         var rows = ele?.QuerySelectorAll(".govuk-table__row");
 
         var cells = rows?[rowIndex].QuerySelectorAll(".govuk-table__cell");
 
         return cells?[cellIndex]?.TextContent.Trim();
+    }
+
+    public static List<string> GetErrorSummaryErrors(this IDocument document)
+    {
+        return document
+            .QuerySelectorAll(".govuk-error-summary .govuk-error-summary__list li")
+            .Select(x => x.TextContent.Trim())
+            .ToList();
+    }
+
+    public static List<string> GetErrorMessages(this IDocument document)
+    {
+        var errors = document
+            .QuerySelectorAll("fieldset .govuk-error-message")
+            .Select(li => li.TextContent.Trim())
+            .Where(text => !string.IsNullOrWhiteSpace(text))
+            .ToList();
+        return errors;
     }
 }
