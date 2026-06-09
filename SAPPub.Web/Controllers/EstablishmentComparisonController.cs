@@ -9,17 +9,42 @@ namespace SAPPub.Web.Controllers
         : Controller
     {
         [HttpPost]
-        public IActionResult ToggleSaveEstablishment(string urn, string returnUrl)
+        public IActionResult ToggleSaveEstablishment(string urn, bool isSearchPage, string returnUrl)
         {
-            var isSaved = establishmentComparisonService.Toggle(urn);
-
-            if (isSaved)
+            if (isSearchPage)
             {
-                TempData.Set(BannerAddSuccess, true);
+                var isComparisionLimitReached = establishmentComparisonService.IsComparisonLimitReached();
+                var urnExists = establishmentComparisonService.IsSaved(urn);                
+                var isJsRequest = Request.Headers.XRequestedWith == "XMLHttpRequest";
+
+                var canToggle = urnExists || !isComparisionLimitReached;
+                var saved = false;
+                var limitReached = !canToggle;
+
+                if (canToggle)
+                {
+                    saved = establishmentComparisonService.Toggle(urn);
+                }
+                else if(!isJsRequest)
+                {
+                    TempData.Set(ComparisionLimtReached, limitReached);
+                }
+
+                if (isJsRequest)
+                    return Json(new { isSaved = saved, isLimitReached = limitReached });
             }
             else
             {
-                TempData.Set(BannerRemoveSuccess, true);
+                var isSaved = establishmentComparisonService.Toggle(urn);
+
+                if (isSaved)
+                {
+                    TempData.Set(BannerAddSuccess, true);
+                }
+                else
+                {
+                    TempData.Set(BannerRemoveSuccess, true);
+                }
             }
 
             return Redirect(returnUrl);

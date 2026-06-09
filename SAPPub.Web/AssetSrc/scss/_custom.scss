@@ -287,3 +287,16 @@
         white-space: nowrap;
     }
 }
+
+.school-header {
+    display: flex;
+    align-items: center;
+}
+
+.school-header form {
+    margin-left: auto;
+
+    > button {
+        padding: 4px;
+    }
+}

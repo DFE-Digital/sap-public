@@ -13,5 +13,7 @@
         public bool IsComparisonLimitReached { get; set; }
 
         public bool IsFeatureEnabled { get; set; }
+
+        public bool IsSearchPage { get; set; }
     }
 }

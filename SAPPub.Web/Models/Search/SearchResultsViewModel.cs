@@ -1,5 +1,4 @@
-﻿using SAPPub.Core.Helpers;
-using SAPPub.Core.ServiceModels.Search.Results;
+﻿using SAPPub.Core.ServiceModels.Search.Results;
 using SAPPub.Web.Constants;
 using SAPPub.Web.ViewComponents.Pagination;
 
@@ -20,7 +19,9 @@ public class SearchResultsViewModel
                 ? $"within {SearchParams.Distance} {(SearchParams.Distance == 1 ? "mile" : "miles")} of  {SearchParams.LocationSearchTerm}"
                 : string.Empty;
 
-    public static SearchResultsViewModel FromServiceModel(SearchParamsModel searchModel, SchoolSearchResultsServiceModel? searchResultsServiceModel)
+    public static SearchResultsViewModel FromServiceModel(
+        SearchParamsModel searchModel,
+        SchoolSearchResultsServiceModel? searchResultsServiceModel)
     {
         var searchResults = searchResultsServiceModel?.PagedResponse.Records;
         var pagerInfo = searchResultsServiceModel?.PagedResponse.PagerInfo;
