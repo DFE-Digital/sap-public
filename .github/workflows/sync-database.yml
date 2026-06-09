@@ -403,7 +403,6 @@ jobs:
                       --if-exists \
                       --no-owner \
                       --no-acl \
-                      --disable-triggers \
                       --exit-on-error \
                       --jobs=4 \
                       --section=$section \
