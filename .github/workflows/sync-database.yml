@@ -254,9 +254,9 @@ jobs:
           echo "  AT : ${NOW}" >> $GITHUB_STEP_SUMMARY
           echo "  FILENAME: ${{ env.BACKUP_FILE }}" >> $GITHUB_STEP_SUMMARY
 
-
   enable-maintenance:
     name: Enable maintenance mode
+    if: ${{ inputs.target-environment != 'production' || (inputs.target-environment == 'production' && inputs.confirm-production == 'true') }}
     uses: ./.github/workflows/maintenance.yml
     needs: backup
     with:
@@ -269,11 +269,13 @@ jobs:
 
   restore:
     name: Restore database
-    if: ${{ inputs.target-environment != 'production' || (inputs.target-environment == 'production' && inputs.confirm-production == 'true' )  }}
+    if: ${{ inputs.target-environment != 'production' || (inputs.target-environment == 'production' && inputs.confirm-production == 'true') }}
     runs-on: ubuntu-latest
     environment: ${{ inputs.target-environment }}
     concurrency: deploy_${{ inputs.target-environment }}
     needs: [enable-maintenance, backup]
+    outputs:
+      db-usable: ${{ steps.dbcheck.outputs.db_usable }}
 
     steps:
       - uses: actions/checkout@v6
@@ -309,7 +311,6 @@ jobs:
 
           echo "CLUSTER=$(jq -r '.cluster' ${tf_vars_file})" >> $GITHUB_ENV
           echo "NAMESPACE=$(jq -r '.namespace' ${tf_vars_file})" >> $GITHUB_ENV
-
 
       - name: Configure cluster connection
         shell: bash
@@ -362,104 +363,135 @@ jobs:
           name: postgres-backup
           path: .
 
-      
-      - name: Restore backup (with retry + split sections)
+      - name: Restore backup (single transaction, with retry)
+        id: restore_run
+        shell: bash
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+
+          BACKUP_FILE="${{ needs.backup.outputs.backup-file }}"
+
+          if [[ -n "${NAMESPACE:-}" ]]; then
+            NAMESPACE_ARG="-n ${NAMESPACE}"
+          fi
+
+          export PGOPTIONS='-c tcp_keepalives_idle=60 -c tcp_keepalives_interval=30 -c tcp_keepalives_count=10'
+
+          LOG_FILE="pg_restore.log"
+          MAX_ATTEMPTS=3
+
+          run_restore () {
+            local attempt=1
+            local delay=10
+
+            while [ $attempt -le $MAX_ATTEMPTS ]; do
+              echo "=============================="
+              echo "Restore attempt $attempt/$MAX_ATTEMPTS"
+              echo "=============================="
+
+              set +e
+              ./konduit.sh \
+                ${NAMESPACE_ARG:-} \
+                -t 28800 \
+                -x ${SERVICE_NAME}-${{ inputs.target-environment }} \
+                -- pg_restore \
+                    --verbose \
+                    --clean \
+                    --if-exists \
+                    --no-owner \
+                    --no-acl \
+                    --single-transaction \
+                    --exit-on-error \
+                    "${BACKUP_FILE}" \
+                2>&1 | tee "$LOG_FILE"
+
+              exit_code=${PIPESTATUS[0]}
+              set -e
+
+              if [ $exit_code -eq 0 ]; then
+                echo "Restore succeeded"
+                return 0
+              fi
+
+              if grep -Eqi \
+                "SSL error: unexpected eof|connection to server was lost|server closed the connection unexpectedly|could not receive data from server|EOF detected|connection reset" \
+                "$LOG_FILE"; then
+
+                echo "Transient connection drop detected during restore"
+                echo "Retrying in ${delay}s..."
+                sleep $delay
+
+                delay=$((delay * 2))
+                if [ $delay -gt 120 ]; then delay=120; fi
+
+                attempt=$((attempt + 1))
+              else
+                echo "Non-transient error during restore"
+                return $exit_code
+              fi
+            done
+
+            echo "Restore failed after $MAX_ATTEMPTS attempts"
+            return 1
+          }
+
+          run_restore
+
+      - name: Check target DB usability
+        id: dbcheck
+        if: always()
         shell: bash
         run: |
-            set -euo pipefail
+          set -euo pipefail
 
-            BACKUP_FILE="${{ needs.backup.outputs.backup-file }}"
+          if [[ -n "${NAMESPACE:-}" ]]; then
+            NAMESPACE_ARG="-n ${NAMESPACE}"
+          fi
 
-            if [[ -n "${NAMESPACE:-}" ]]; then
-              NAMESPACE_ARG="-n ${NAMESPACE}"
-            fi
+          set +e
+          ./konduit.sh \
+            ${NAMESPACE_ARG:-} \
+            -t 120 \
+            -x ${SERVICE_NAME}-${{ inputs.target-environment }} \
+            -- psql -v ON_ERROR_STOP=1 -c "select 1;" >/dev/null 2>&1
+          check_exit=$?
+          set -e
 
-            # Keep connection alive through tunnel
-            export PGOPTIONS='-c tcp_keepalives_idle=60 -c tcp_keepalives_interval=30 -c tcp_keepalives_count=10'
+          if [ $check_exit -eq 0 ]; then
+            echo "db_usable=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "db_usable=false" >> "$GITHUB_OUTPUT"
+          fi
 
-            LOG_FILE="pg_restore.log"
-            MAX_ATTEMPTS=3
-
-            run_section () {
-              local section=$1
-              local attempt=1
-              local delay=10
-
-              echo "=============================="
-              echo "Starting section: $section"
-              echo "=============================="
-
-              while [ $attempt -le $MAX_ATTEMPTS ]; do
-                echo "Section $section attempt $attempt/$MAX_ATTEMPTS"
-
-                set +e
-                ./konduit.sh \
-                  ${NAMESPACE_ARG:-} \
-                  -t 28800 \
-                  -x ${SERVICE_NAME}-${{ inputs.target-environment }} \
-                  -- pg_restore \
-                      --verbose \
-                      --clean \
-                      --if-exists \
-                      --no-owner \
-                      --no-acl \
-                      --exit-on-error \
-                      --jobs=4 \
-                      --section=$section \
-                      "${BACKUP_FILE}" \
-                  2>&1 | tee "$LOG_FILE"
-
-                exit_code=${PIPESTATUS[0]}
-                set -e
-
-                if [ $exit_code -eq 0 ]; then
-                  echo "Section $section succeeded"
-                  return 0
-                fi
-
-                # Detect transient connection issues
-                if grep -Eqi \
-                  "SSL error: unexpected eof|connection to server was lost|server closed the connection unexpectedly|could not receive data from server|EOF detected|connection reset" \
-                  "$LOG_FILE"; then
-          
-                  echo "Transient connection drop detected in section $section"
-                  echo "Retrying in ${delay}s..."
-                  sleep $delay
-
-                  delay=$((delay * 2))
-                  if [ $delay -gt 120 ]; then delay=120; fi
-
-                  attempt=$((attempt + 1))
-                else
-                  echo "Non-transient error in section $section"
-                  exit $exit_code
-                fi
-              done
-
-              echo "Section $section failed after $MAX_ATTEMPTS attempts"
-              exit 1
-            }
-
-            # Run restore in phases
-            run_section pre-data
-            run_section data
-            run_section post-data
-
-            echo "FULL RESTORE COMPLETED SUCCESSFULLY"
-
+      - name: Fail if DB is not usable
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ steps.dbcheck.outputs.db_usable }}" != "true" ]]; then
+            echo "Database not usable. Keep maintenance mode enabled."
+            exit 1
+          fi
 
       - name: Restore Summary
-        if: success()
+        if: always()
         shell: bash
         run: |
           NOW=$(TZ=Europe/London date +"%F %R")
-          echo 'RESTORE SUCCESSFUL!' >> $GITHUB_STEP_SUMMARY
+          if [[ "${{ steps.restore_run.outcome }}" == "success" ]]; then
+            echo 'RESTORE SUCCESSFUL!' >> $GITHUB_STEP_SUMMARY
+          else
+            echo 'RESTORE FAILED BUT DATABASE IS USABLE (single-transaction rollback).' >> $GITHUB_STEP_SUMMARY
+          fi
           echo '  APP: ${{ inputs.target-environment }}' >> $GITHUB_STEP_SUMMARY
           echo '  BACKUP FILE RESTORED: ${{ inputs.source-environment }} / ${{ needs.backup.outputs.backup-file }}' >> $GITHUB_STEP_SUMMARY
+          echo "  DB USABLE: ${{ steps.dbcheck.outputs.db_usable }}" >> $GITHUB_STEP_SUMMARY
           echo "  AT : ${NOW}" >> $GITHUB_STEP_SUMMARY
 
   disable-maintenance:
     name: Disable maintenance mode
+    if: ${{ always() && needs.restore.outputs.db-usable == 'true' }}
     uses: ./.github/workflows/maintenance.yml
     needs: restore
     with:
