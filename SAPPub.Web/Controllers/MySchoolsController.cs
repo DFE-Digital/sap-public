@@ -26,27 +26,11 @@ public class MySchoolsController(
             return RedirectToAction(nameof(NoSchoolsAdded));
         }
 
-        var establishments = await Task.WhenAll(establishmentUrns.Select(async urn =>
-                {
-                    try
-                    {
-                        return await establishmentService.GetEstablishmentAsync(urn);
-                    }
-                    catch (NotFoundException)
-                    {
-                        return null;
-                    }
-                }));
-
-        var model = establishments
-            .Where(e => e != null)
-            .Select(e => MySchoolModel.MapFrom(e!))
-            .OrderBy(x => x.Name)
-            .ToList();
+        var schoolsList = await PopulateSchoolList();
 
         var viewModel = new MySchoolsListViewModel
         {
-            MySchools = model
+            MySchools = schoolsList
         };
 
         return View(viewModel);
