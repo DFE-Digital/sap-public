@@ -28,7 +28,7 @@ public class MySchoolsTests(WebApplicationSetupFixture fixture) : BasePageTest(f
     }
 
     [Fact]
-    public async Task Page_CanSelectSchoolsFromList()
+    public async Task Page_SelectSchoolsFromList_Compare()
     {
         // Arrange
         var cookieListOfUrns = new List<string> { "105574", "102848" };
@@ -42,10 +42,24 @@ public class MySchoolsTests(WebApplicationSetupFixture fixture) : BasePageTest(f
         // Assert
         Assert.NotNull(response);
 
+        // Act - select 1 school and expect error message
         var checkbox = await Page.CheckboxStrictAsync("Secondary schools", "SS Peter and Paul's Catholic Primary School");
         await checkbox.CheckAsync();
+        await Page.ClickButton("Compare selected schools");
+
+        // Assert
+        Assert.True(await Page.HasErrorSummary());
+
+        // Act select another school and expect to be able to compare
         checkbox = await Page.CheckboxStrictAsync("Secondary schools", "Loreto High School Chorlton");
         await checkbox.CheckAsync();
+
+        await Page.ClickButton("Compare selected schools");
+
+        var comparePageTitle = await Page.TitleAsync();
+
+        // Assert
+        Assert.Contains("Compare Secondary", comparePageTitle);
     }
 
     [Fact]

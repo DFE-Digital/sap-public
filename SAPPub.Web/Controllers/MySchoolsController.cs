@@ -16,37 +16,21 @@ public class MySchoolsController(
 {
     [HttpGet]
     [Route("view", Name = RouteConstants.MySchoolsView)]
-    
+
     public async Task<IActionResult> Index()
     {
         var establishmentUrns = mySchoolListService.GetSavedEstablishments();
 
-        if (establishmentUrns == null || !establishmentUrns.Any())
+        if (establishmentUrns == null || establishmentUrns.Count == 0)
         {
             return RedirectToAction(nameof(NoSchoolsAdded));
         }
 
-        var establishments = await Task.WhenAll(establishmentUrns.Select(async urn =>
-                {
-                    try
-                    {
-                        return await establishmentService.GetEstablishmentAsync(urn);
-                    }
-                    catch (NotFoundException)
-                    {
-                        return null;
-                    }
-                }));
-
-        var model = establishments
-            .Where(e => e != null)
-            .Select(e => MySchoolModel.MapFrom(e!))
-            .OrderBy(x => x.Name)
-            .ToList();
+        var schoolsList = await PopulateSchoolList();
 
         var viewModel = new MySchoolsListViewModel
         {
-            MySchools = model
+            MySchools = schoolsList
         };
 
         return View(viewModel);
@@ -63,5 +47,48 @@ public class MySchoolsController(
         }
 
         return View();
+    }
+
+    [HttpPost]
+    [Route("view", Name = RouteConstants.MySchoolsView)]
+    public async Task<IActionResult> Index(MySchoolsListViewModel viewModel)
+    {
+        var SelectedEstablishmentUrns = viewModel.SelectedEstablishmentUrns;
+        if (SelectedEstablishmentUrns.Count < 2 || SelectedEstablishmentUrns.Count > 6)
+        {
+            ModelState.AddModelError(nameof(SelectedEstablishmentUrns), "Please select between 2 and 6 schools to compare");
+            var schoolsList = await PopulateSchoolList();
+            return View(new MySchoolsListViewModel
+            {
+                MySchools = schoolsList,
+                SelectedEstablishmentUrns = SelectedEstablishmentUrns
+            });
+        }
+        return RedirectToAction("Index", "CompareSecondary", new { establishmentUrns = SelectedEstablishmentUrns });
+    }
+
+    private async Task<List<MySchoolModel>> PopulateSchoolList()
+    {
+        var establishmentUrns = mySchoolListService.GetSavedEstablishments();
+
+        var establishments = await Task.WhenAll(establishmentUrns.Select(async urn =>
+        {
+            try
+            {
+                return await establishmentService.GetEstablishmentAsync(urn);
+            }
+            catch (NotFoundException)
+            {
+                return null;
+            }
+        }));
+
+        var model = establishments
+            .Where(e => e != null)
+            .Select(e => MySchoolModel.MapFrom(e!))
+            .OrderBy(x => x.Name)
+            .ToList();
+
+        return model;
     }
 }

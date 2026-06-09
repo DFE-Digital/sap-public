@@ -2,5 +2,7 @@
 
 public class MySchoolsListViewModel
 {
-    public IReadOnlyCollection<MySchoolModel> MySchools { get; set; } = Array.Empty<MySchoolModel>();
+    public IReadOnlyCollection<MySchoolModel> MySchools { get; set; } = [];
+    public List<string> SelectedEstablishmentUrns { get; set; } = [];
+    public int SelectedCount => SelectedEstablishmentUrns.Count;
 }
