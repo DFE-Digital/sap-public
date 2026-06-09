@@ -17,6 +17,7 @@ public static class RouteConstants
     public const string TermsAndConditions = "TermsAndConditions";
 
     public const string MySchoolsView = "MySchoolsView";
+    public const string MySchoolsNoSchoolsView = "NoMySchoolsView";
 
     // Route Attributes
     public const string URN = "urn";

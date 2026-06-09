@@ -64,6 +64,37 @@ public class MySchoolsControllerTests
 
         // Assert
         var redirect = Assert.IsType<RedirectToActionResult>(result);
-        Assert.Equal("AddNoSchoolsActionHere", redirect.ActionName);
+        Assert.Equal("NoSchoolsAdded", redirect.ActionName);
+    }
+
+    [Fact]
+    public void NoSchoolsAdded_HasSavedEstablishments_RedirectsToPopulatedView()
+    {
+        // Arrange
+        _comparisonServiceMock
+            .Setup(s => s.GetSavedEstablishments()).Returns(["123456"]);
+
+        var controller = new MySchoolsController(_comparisonServiceMock.Object, _establishmentServiceMock.Object);
+
+        // Act
+        var result = controller.NoSchoolsAdded();
+
+        // Assert
+        var redirect = Assert.IsType<RedirectToActionResult>(result);
+        Assert.Equal("Index", redirect.ActionName);
+    }
+
+    [Fact]
+    public void NoSchoolsAdded_DoesNotHaveSavedEstablishments_ReturnsView()
+    {
+        // Arrange
+        _comparisonServiceMock.Setup(s => s.GetSavedEstablishments()).Returns(new List<string>());
+        var controller = new MySchoolsController(_comparisonServiceMock.Object, _establishmentServiceMock.Object);
+
+        // Act
+        var result = controller.NoSchoolsAdded() as ViewResult;
+
+        // Assert
+        Assert.NotNull(result);
     }
 }
