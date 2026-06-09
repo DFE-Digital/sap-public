@@ -62,7 +62,7 @@ public class WebAppFixture : IDisposable
             {
                 values.Add(new KeyValuePair<string, string>(
                     property.Name,
-                    value.ToString()));
+                    value?.ToString() ?? string.Empty));
             }
         }
 
