@@ -31,5 +31,9 @@
 		<Content Include="Data\Files\**\*">
 			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Areas\Compare\Models\" />
 	</ItemGroup>	
 </Project>
