@@ -64,7 +64,7 @@ public class MySchoolsController(
                 SelectedEstablishmentUrns = SelectedEstablishmentUrns
             });
         }
-        else return RedirectToAction("Index", "CompareSecondary", new { establishmentUrns = SelectedEstablishmentUrns });
+        return RedirectToAction("Index", "CompareSecondary", new { establishmentUrns = SelectedEstablishmentUrns });
     }
 
     private async Task<List<MySchoolModel>> PopulateSchoolList()

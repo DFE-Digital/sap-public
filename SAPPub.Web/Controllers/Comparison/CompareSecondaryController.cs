@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement.Mvc;
+using static SAPPub.Web.Constants.Constants;
 
 namespace SAPPub.Web.Controllers.Comparison;
 
+[FeatureGate(EstablishmentComparisonEnabled)]
 public class CompareSecondaryController : Controller
 {
     [HttpGet]
