@@ -275,7 +275,7 @@ jobs:
     concurrency: deploy_${{ inputs.target-environment }}
     needs: [enable-maintenance, backup]
     outputs:
-      db-usable: ${{ steps.dbcheck.outputs.db_usable }}
+       db-usable: ${{ steps.apphealth.outputs.db_usable }}
 
     steps:
       - uses: actions/checkout@v6
@@ -438,40 +438,44 @@ jobs:
 
           run_restore
 
-      - name: Check target DB usability
-        id: dbcheck
+      - name: Resolve temp URL for health check
+        id: tempurl
         if: always()
         shell: bash
         run: |
           set -euo pipefail
+          TEMP_URL=$(awk '/name:.*cloud/ {print $2}' "./maintenance_page/manifests/${{ inputs.target-environment }}/ingress_temp_to_main.yml")
+          echo "temp_url=${TEMP_URL}" >> "$GITHUB_OUTPUT"
 
-          if [[ -n "${NAMESPACE:-}" ]]; then
-            NAMESPACE_ARG="-n ${NAMESPACE}"
+      - name: Check app health via temp URL
+        id: apphealth
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL="https://${{ steps.tempurl.outputs.temp_url }}/health"
+
+          # retry app health call (transient ingress/network)
+          for i in 1 2 3; do
+            set +e
+            BODY=$(curl -fsS "$URL")
+            rc=$?
+            set -e
+            if [ $rc -eq 0 ]; then break; fi
+            sleep $((i * 5))
+          done
+
+          if [ ${rc:-1} -ne 0 ]; then
+            echo "db_usable=false" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
 
-          set +e
-          ./konduit.sh \
-            ${NAMESPACE_ARG:-} \
-            -t 120 \
-            -x ${SERVICE_NAME}-${{ inputs.target-environment }} \
-            -- psql -v ON_ERROR_STOP=1 -c "select 1;" >/dev/null 2>&1
-          check_exit=$?
-          set -e
+          DB_STATUS=$(echo "$BODY" | jq -r '.checks[] | select(.name=="DatabaseConnectivity") | .status' | head -n1)
 
-          if [ $check_exit -eq 0 ]; then
+          if [[ "$DB_STATUS" == "Pass" ]]; then
             echo "db_usable=true" >> "$GITHUB_OUTPUT"
           else
             echo "db_usable=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Fail if DB is not usable
-        if: always()
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [[ "${{ steps.dbcheck.outputs.db_usable }}" != "true" ]]; then
-            echo "Database not usable. Keep maintenance mode enabled."
-            exit 1
           fi
 
       - name: Restore Summary
@@ -486,7 +490,7 @@ jobs:
           fi
           echo '  APP: ${{ inputs.target-environment }}' >> $GITHUB_STEP_SUMMARY
           echo '  BACKUP FILE RESTORED: ${{ inputs.source-environment }} / ${{ needs.backup.outputs.backup-file }}' >> $GITHUB_STEP_SUMMARY
-          echo "  DB USABLE: ${{ steps.dbcheck.outputs.db_usable }}" >> $GITHUB_STEP_SUMMARY
+          echo "  DB USABLE: ${{ steps.apphealth.outputs.db_usable }}" >> $GITHUB_STEP_SUMMARY
           echo "  AT : ${NOW}" >> $GITHUB_STEP_SUMMARY
 
   disable-maintenance:
