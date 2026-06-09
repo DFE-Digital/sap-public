@@ -16,7 +16,7 @@ public class MySchoolsController(
 {
     [HttpGet]
     [Route("view", Name = RouteConstants.MySchoolsView)]
-    
+
     public async Task<IActionResult> Index()
     {
         var establishmentUrns = mySchoolListService.GetSavedEstablishments();
@@ -50,7 +50,7 @@ public class MySchoolsController(
     }
 
     [HttpPost]
-    [Route("my-schools/view", Name = RouteConstants.MySchoolsView)]
+    [Route("view", Name = RouteConstants.MySchoolsView)]
     public async Task<IActionResult> Index(MySchoolsListViewModel viewModel)
     {
         var SelectedEstablishmentUrns = viewModel.SelectedEstablishmentUrns;
