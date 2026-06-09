@@ -401,6 +401,7 @@ jobs:
                     --if-exists \
                     --no-owner \
                     --no-acl \
+                    --disable-triggers \
                     --single-transaction \
                     --exit-on-error \
                     "${BACKUP_FILE}" \
