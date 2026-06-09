@@ -87,10 +87,6 @@ public class MySchoolsController(
     {
         var establishmentUrns = mySchoolListService.GetSavedEstablishments();
 
-        //if (establishmentUrns == null || !establishmentUrns.Any())
-        //{
-        //    return RedirectToAction("AddNoSchoolsActionHere");
-        //}
         var establishments = await Task.WhenAll(establishmentUrns.Select(async urn =>
         {
             try
