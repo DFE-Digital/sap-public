@@ -9,13 +9,14 @@ using static SAPPub.Web.Constants.Constants;
 namespace SAPPub.Web.Controllers;
 
 [Route("my-schools")]
+[FeatureGate(EstablishmentComparisonEnabled)]
 public class MySchoolsController(
     IEstablishmentComparisonService mySchoolListService,
     IEstablishmentService establishmentService) : Controller
 {
     [HttpGet]
     [Route("view", Name = RouteConstants.MySchoolsView)]
-    [FeatureGate(EstablishmentComparisonEnabled)]
+    
     public async Task<IActionResult> Index()
     {
         var establishmentUrns = mySchoolListService.GetSavedEstablishments();
@@ -52,8 +53,7 @@ public class MySchoolsController(
     }
 
     [HttpGet]
-    [Route("no-schools-added")]
-    [FeatureGate(EstablishmentComparisonEnabled)]
+    [Route("no-schools-added", Name = RouteConstants.MySchoolsNoSchoolsView)]
     public IActionResult NoSchoolsAdded()
     {
         if (mySchoolListService.GetSavedEstablishments().Count > 0)
