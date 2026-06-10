@@ -671,31 +671,65 @@ jobs:
         if: ${{ env.DEPLOY_ENV == 'test' || env.DEPLOY_ENV == 'production' }}
         run: |
           set -euo pipefail
+
           TODAY=$(TZ=Europe/London date +"%F")
           LOCAL_FILE="sappub_review_seed_${TODAY}.sql.gz"
-          # Only ever keep this single blob in storage
           LATEST_BLOB="db-backups/sappub_review_seed_latest.sql.gz"
+
           echo "Creating DB dump -> ${LOCAL_FILE}"
+
+          # Run dump with separate stdout/stderr capture
           set +e
           "$GITHUB_WORKSPACE/konduit.sh" \
             -n "${{ env.AKS_NAMESPACE }}" \
             -t 28800 \
             -x \
             "${{ env.KONDUIT_APP_NAME }}" -- \
-            pg_dump --format=plain --no-owner --no-privileges 2> konduit_pg_dump.log | gzip -c > "${LOCAL_FILE}"
-          exit_code=${PIPESTATUS[0]}
+            pg_dump --verbose --format=plain --no-owner --no-privileges \
+            > >(gzip -c > "${LOCAL_FILE}") \
+            2> konduit_pg_dump.log
+          dump_rc=$?
           set -e
-          if [ $exit_code -ne 0 ]; then
-            echo "konduit/pg_dump failed with exit code ${exit_code}"
-            exit $exit_code
+
+          if [ $dump_rc -ne 0 ]; then
+            echo "konduit/pg_dump failed with exit code ${dump_rc}"
+            echo "----- konduit_pg_dump.log (last 200 lines) -----"
+            tail -n 200 konduit_pg_dump.log || true
+            exit $dump_rc
           fi
+
+          if [ ! -s "${LOCAL_FILE}" ]; then
+            echo "Backup file was not created or is empty: ${LOCAL_FILE}"
+            ls -lah || true
+            exit 1
+          fi
+
           ls -lh "${LOCAL_FILE}"
+
           echo "Uploading (overwriting) ${LATEST_BLOB} in container ${AZURE_STORAGE_CONTAINER}"
+          set +e
           az storage blob upload \
             --container-name "${AZURE_STORAGE_CONTAINER}" \
             --name "${LATEST_BLOB}" \
             --file "${LOCAL_FILE}" \
             --connection-string "${AZURE_STORAGE_CONNECTION_STRING}" \
-            --overwrite true >/dev/null
+            --overwrite true \
+            --only-show-errors
+          upload_rc=$?
+          set -e
+
+          if [ $upload_rc -ne 0 ]; then
+            echo "Blob upload failed with exit code ${upload_rc}"
+            # rerun with debug so you get root cause in logs
+            az storage blob upload \
+              --container-name "${AZURE_STORAGE_CONTAINER}" \
+              --name "${LATEST_BLOB}" \
+              --file "${LOCAL_FILE}" \
+              --connection-string "${AZURE_STORAGE_CONNECTION_STRING}" \
+              --overwrite true \
+              --debug || true
+            exit $upload_rc
+          fi
+
           echo "Seed backup uploaded:"
           echo "  ${AZURE_STORAGE_CONTAINER}/${LATEST_BLOB}"
