@@ -621,7 +621,7 @@ jobs:
           # Keep TCP session alive during long COPY operations
           export PGOPTIONS='-c tcp_keepalives_idle=60 -c tcp_keepalives_interval=30 -c tcp_keepalives_count=10'
 
-          max_attempts=1
+          max_attempts=5
           delay=20
           log_file="$GITHUB_WORKSPACE/SAPData/Sql/psql.log"
           attempt=1
