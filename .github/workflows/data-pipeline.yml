@@ -618,8 +618,11 @@ jobs:
           echo "Running ETL via konduit (psql) with retry on transient disconnects"
           ls -la "$GITHUB_WORKSPACE/SAPData/Sql" || true
 
-          max_attempts=3
-          delay=10
+          # Keep TCP session alive during long COPY operations
+          export PGOPTIONS='-c tcp_keepalives_idle=60 -c tcp_keepalives_interval=30 -c tcp_keepalives_count=10'
+
+          max_attempts=5
+          delay=20
           log_file="$GITHUB_WORKSPACE/SAPData/Sql/psql.log"
           attempt=1
 
@@ -648,7 +651,7 @@ jobs:
               echo "Detected transient DB disconnect. Retrying after ${delay}s..."
               sleep $delay
               delay=$((delay * 2))
-              if [ $delay -gt 120 ]; then delay=120; fi
+              if [ $delay -gt 180 ]; then delay=180; fi
               attempt=$((attempt + 1))
               continue
             fi
