@@ -620,21 +620,26 @@ jobs:
           delay=10
           log_file="$GITHUB_WORKSPACE/SAPData/Sql/psql.log"
           attempt=1
+
           while [ $attempt -le $max_attempts ]; do
             echo "ETL attempt $attempt/$max_attempts"
+
             set +e
             "$GITHUB_WORKSPACE/konduit.sh" \
               -n "${{ env.AKS_NAMESPACE }}" \
               -t 28800 \
               -x \
               -i "$GITHUB_WORKSPACE/SAPData/Sql/run_all.sql" \
-              "${{ env.KONDUIT_APP_NAME }}" -- psql 2>&1 | tee "$log_file"
+              "${{ env.KONDUIT_APP_NAME }}" -- \
+              psql --single-transaction 2>&1 | tee "$log_file"
             exit_code=${PIPESTATUS[0]}
             set -e
+
             if [ $exit_code -eq 0 ]; then
               echo "ETL succeeded on attempt $attempt"
               exit 0
             fi
+
             if grep -Eqi \
               "SSL error: unexpected eof|connection to server was lost|server closed the connection unexpectedly|could not receive data from server|terminating connection due to administrator command|EOF detected" \
               "$log_file"; then
@@ -645,13 +650,13 @@ jobs:
               attempt=$((attempt + 1))
               continue
             fi
+
             echo "ETL failed with exit code $exit_code (not classified as transient)."
             exit $exit_code
           done
-          if [ $exit_code -ne 0 ]; then
-            echo "ETL failed after $max_attempts attempts."
-            exit 2
-          fi
+
+          echo "ETL failed after $max_attempts attempts."
+          exit 2
       # ==============================
       # 10. Create & upload DB backup (used to restore db in review app env)
       # ==============================
