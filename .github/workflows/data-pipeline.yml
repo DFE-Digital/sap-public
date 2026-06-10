@@ -606,6 +606,7 @@ jobs:
         run: |
           dotnet run --configuration Release --project SAPData/SAPData.csproj
           echo "Generated SQL scripts."
+
       # ==============================
       # 9. Run ETL via konduit (private DB) WITH RETRY on transient disconnects
       # ==============================
@@ -616,6 +617,7 @@ jobs:
           set -euo pipefail
           echo "Running ETL via konduit (psql) with retry on transient disconnects"
           ls -la "$GITHUB_WORKSPACE/SAPData/Sql" || true
+
           max_attempts=3
           delay=10
           log_file="$GITHUB_WORKSPACE/SAPData/Sql/psql.log"
@@ -631,7 +633,7 @@ jobs:
               -x \
               -i "$GITHUB_WORKSPACE/SAPData/Sql/run_all.sql" \
               "${{ env.KONDUIT_APP_NAME }}" -- \
-              psql --single-transaction 2>&1 | tee "$log_file"
+              psql -v ON_ERROR_STOP=1 --single-transaction -f - 2>&1 | tee "$log_file"
             exit_code=${PIPESTATUS[0]}
             set -e
 
@@ -655,10 +657,8 @@ jobs:
             exit $exit_code
           done
 
-          if [ $exit_code -ne 0 ]; then
-            echo "ETL failed after $max_attempts attempts."
-            exit 2
-          fi
+          echo "ETL failed after $max_attempts attempts."
+          exit 2
 
       # ==============================
       # 10. Create & upload DB backup (used to restore db in review app env)
