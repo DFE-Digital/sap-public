@@ -486,12 +486,21 @@ jobs:
           if [[ "${{ steps.restore_run.outcome }}" == "success" ]]; then
             echo 'RESTORE SUCCESSFUL!' >> $GITHUB_STEP_SUMMARY
           else
-            echo 'RESTORE FAILED BUT DATABASE IS USABLE (single-transaction rollback).' >> $GITHUB_STEP_SUMMARY
+            echo 'RESTORE FAILED (single-transaction rollback).' >> $GITHUB_STEP_SUMMARY
           fi
           echo '  APP: ${{ inputs.target-environment }}' >> $GITHUB_STEP_SUMMARY
           echo '  BACKUP FILE RESTORED: ${{ inputs.source-environment }} / ${{ needs.backup.outputs.backup-file }}' >> $GITHUB_STEP_SUMMARY
           echo "  DB USABLE: ${{ steps.apphealth.outputs.db_usable }}" >> $GITHUB_STEP_SUMMARY
           echo "  AT : ${NOW}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Fail restore job when restore step failed
+        if: always()
+        shell: bash
+        run: |
+          if [[ "${{ steps.restore_run.outcome }}" != "success" ]]; then
+            echo "Restore failed. Marking job as failed after health check/summary."
+            exit 1
+          fi
 
   disable-maintenance:
     name: Disable maintenance mode
