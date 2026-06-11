@@ -596,6 +596,7 @@ jobs:
           Write-Host "Downloaded files:"
           $files = Get-ChildItem -Path $rawDir -File | Sort-Object Name
           $files | Select-Object Name, Length | Format-Table -AutoSize
+      
       # ==============================
       # 8. Build + Run SQL generator
       # ==============================
@@ -608,7 +609,21 @@ jobs:
           echo "Generated SQL scripts."
 
       # ==============================
-      # 9. Run ETL via konduit (private DB) WITH RETRY on transient disconnects
+      # 9. Enable maintenance mode (test/production only)
+      # ==============================
+      - name: Enable maintenance mode
+        if: ${{ env.DEPLOY_ENV == 'test' || env.DEPLOY_ENV == 'production' }}
+        uses: DFE-Digital/github-actions/maintenance@master
+        with:
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          environment: ${{ env.DEPLOY_ENV }}
+          mode: enable
+          docker-repository: ghcr.io/dfe-digital/sap-public-maintenance
+
+      # ==============================
+      # 10. Run ETL via konduit (private DB) WITH RETRY on transient disconnects
       # ==============================
       - name: Run ETL pipeline via konduit (retry on transient DB disconnect)
         working-directory: SAPData/Sql
@@ -664,21 +679,17 @@ jobs:
           exit 2
 
       # ==============================
-      # 10. Create & upload DB backup (used to restore db in review app env)
+      # 11. Create & upload DB backup (used to restore db in review app env)
       # ==============================
       - name: Create + upload review seed DB backup
         shell: bash
         if: ${{ env.DEPLOY_ENV == 'test' || env.DEPLOY_ENV == 'production' }}
         run: |
           set -euo pipefail
-
           TODAY=$(TZ=Europe/London date +"%F")
           LOCAL_FILE="sappub_review_seed_${TODAY}.sql.gz"
           LATEST_BLOB="db-backups/sappub_review_seed_latest.sql.gz"
-
           echo "Creating DB dump -> ${LOCAL_FILE}"
-
-          # Run dump with separate stdout/stderr capture
           set +e
           "$GITHUB_WORKSPACE/konduit.sh" \
             -n "${{ env.AKS_NAMESPACE }}" \
@@ -690,22 +701,18 @@ jobs:
             2> konduit_pg_dump.log
           dump_rc=$?
           set -e
-
           if [ $dump_rc -ne 0 ]; then
             echo "konduit/pg_dump failed with exit code ${dump_rc}"
             echo "----- konduit_pg_dump.log (last 200 lines) -----"
             tail -n 200 konduit_pg_dump.log || true
             exit $dump_rc
           fi
-
           if [ ! -s "${LOCAL_FILE}" ]; then
             echo "Backup file was not created or is empty: ${LOCAL_FILE}"
             ls -lah || true
             exit 1
           fi
-
           ls -lh "${LOCAL_FILE}"
-
           echo "Uploading (overwriting) ${LATEST_BLOB} in container ${AZURE_STORAGE_CONTAINER}"
           set +e
           az storage blob upload \
@@ -717,7 +724,6 @@ jobs:
             --only-show-errors
           upload_rc=$?
           set -e
-
           if [ $upload_rc -ne 0 ]; then
             echo "Blob upload failed with exit code ${upload_rc}"
             # rerun with debug so you get root cause in logs
@@ -730,6 +736,19 @@ jobs:
               --debug || true
             exit $upload_rc
           fi
-
           echo "Seed backup uploaded:"
           echo "  ${AZURE_STORAGE_CONTAINER}/${LATEST_BLOB}"
+
+      # ==============================
+      # 12. Disable maintenance mode (test/production only)
+      # ==============================
+      - name: Disable maintenance mode
+        if: ${{ success() && (env.DEPLOY_ENV == 'test' || env.DEPLOY_ENV == 'production') }}
+        uses: DFE-Digital/github-actions/maintenance@master
+        with:
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          environment: ${{ env.DEPLOY_ENV }}
+          mode: disable
+          docker-repository: ghcr.io/dfe-digital/sap-public-maintenance
