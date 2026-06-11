@@ -19,17 +19,17 @@ public class CompareSecondaryController : Controller
 
     [HttpGet]
     [Route("academic-performance/pupil-performance-attainment-and-progress", Name = RouteConstants.CompareSecondaryAcademicPerformancePupilProgressAndAttainment)]
-    public async Task<IActionResult> AcademicPerformancePupilProgressAndAttainment(List<string>? establishmentUrns)
+    public async Task<IActionResult> AcademicPerformancePupilProgressAndAttainment(List<string> urn)
     {
-        var model = new CompareAcademicPerformanceProgressAndAttainmentViewModel { EstablishmentUrns = establishmentUrns };
+        var model = new CompareAcademicPerformanceProgressAndAttainmentViewModel { EstablishmentUrns = urn };
         return View(model);
     }
 
     [HttpGet]
     [Route("academic-performance/english-and-maths-results", Name = RouteConstants.CompareSecondaryAcademicPerformanceEnglishAndMathsResults)]
-    public async Task<IActionResult> AcademicPerformanceEnglishAndMathsResults(List<string>? establishmentUrns)
+    public async Task<IActionResult> AcademicPerformanceEnglishAndMathsResults(List<string> urn)
     {
-        var model = new CompareAcademicPerformanceEnglishAndMathsResultsViewModel { EstablishmentUrns = establishmentUrns };
+        var model = new CompareAcademicPerformanceEnglishAndMathsResultsViewModel { EstablishmentUrns = urn };
         return View(model);
     }
 }

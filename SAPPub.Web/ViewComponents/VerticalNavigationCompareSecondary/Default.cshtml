@@ -18,7 +18,7 @@
             <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.SecondaryAttendance ? "moj-side-navigation__item--active" : "")">
                 <a asp-route="@RouteConstants.SecondaryAttendance">Curriculum</a>
             </li>
-            <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.CompareSecondaryAcademicPerformancePupilProgressAndAttainment ? "moj-side-navigation__item--active" : "")">
+            <li class="moj-side-navigation__item  @(new List<string> { RouteConstants.CompareSecondaryAcademicPerformancePupilProgressAndAttainment, RouteConstants.CompareSecondaryAcademicPerformanceEnglishAndMathsResults}.Contains(Model.ActivePage) ? " moj-side-navigation__item--active" : "")">
                 <a asp-route="@RouteConstants.CompareSecondaryAcademicPerformancePupilProgressAndAttainment">Academic Performance</a>
             </li>
             <li class="moj-side-navigation__item  @(new List<string> { RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress, RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults, RouteConstants.SecondaryAcademicPerformanceSubjectsEntered }.Contains(Model.ActivePage) ? " moj-side-navigation__item--active" : "") ">

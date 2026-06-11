@@ -4,7 +4,7 @@ namespace SAPPub.Web.Models.Compare.Secondary;
 
 public class CompareSecondarySchoolBaseViewModel
 {
-    public required List<string>? EstablishmentUrns { get; set; } = [];
+    public required List<string> EstablishmentUrns { get; set; } = [];
 
-    public Dictionary<string, List<string>> RouteAttributes => new() { { RouteConstants.URN, EstablishmentUrns! } };
+    public string RouteQueryString => EstablishmentUrns.Count == 0 ? string.Empty : $"?{string.Join("&", EstablishmentUrns.Select(urn => $"{RouteConstants.URN}={urn}"))}";
 }
