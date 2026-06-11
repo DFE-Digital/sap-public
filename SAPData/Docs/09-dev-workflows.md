@@ -16,6 +16,7 @@ dotnet run --project SAPData/SAPData.csproj
 Requires:
 
 - psql Shell tool
+- PostGIS extension installed in PostgreSQL
 
 Run following commands in terminal:
 
