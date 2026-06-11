@@ -19,6 +19,8 @@ public static class RouteConstants
     public const string MySchoolsView = "MySchoolsView";
     public const string MySchoolsNoSchoolsView = "NoMySchoolsView";
 
+    public const string CompareSecondaryView = "CompareSecondaryView";
+
     // Route Attributes
     public const string URN = "urn";
     public const string SchoolName = "schoolName";
