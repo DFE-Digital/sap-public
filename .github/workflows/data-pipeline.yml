@@ -27,9 +27,24 @@ env:
   TF_VARS_PATH: terraform/application/config
 
 jobs:
+  enable-maintenance:
+    name: Enable maintenance mode
+    if: ${{ (inputs.environment || 'test') == 'test' || inputs.environment == 'production' }}
+    uses: ./.github/workflows/maintenance.yml
+    with:
+      environment: ${{ inputs.environment || 'test' }}
+      mode: enable
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+
   ingest:
     name: Ingest Raw Data & Build Warehouse
     runs-on: ubuntu-latest
+    needs: [enable-maintenance]
+    if: ${{ always() && (needs.enable-maintenance.result == 'success' || needs.enable-maintenance.result == 'skipped') }}
+  
     environment:
       name: ${{ inputs.environment || 'test' }}
 
@@ -609,21 +624,7 @@ jobs:
           echo "Generated SQL scripts."
 
       # ==============================
-      # 9. Enable maintenance mode (test/production only)
-      # ==============================
-      - name: Enable maintenance mode
-        if: ${{ env.DEPLOY_ENV == 'test' || env.DEPLOY_ENV == 'production' }}
-        uses: DFE-Digital/github-actions/maintenance@master
-        with:
-          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          environment: ${{ env.DEPLOY_ENV }}
-          mode: enable
-          docker-repository: ghcr.io/dfe-digital/sap-public-maintenance
-
-      # ==============================
-      # 10. Run ETL via konduit (private DB) WITH RETRY on transient disconnects
+      # 9. Run ETL via konduit (private DB) WITH RETRY on transient disconnects
       # ==============================
       - name: Run ETL pipeline via konduit (retry on transient DB disconnect)
         working-directory: SAPData/Sql
@@ -679,7 +680,7 @@ jobs:
           exit 2
 
       # ==============================
-      # 11. Create & upload DB backup (used to restore db in review app env)
+      # 10. Create & upload DB backup (used to restore db in review app env)
       # ==============================
       - name: Create + upload review seed DB backup
         shell: bash
@@ -739,24 +740,28 @@ jobs:
           echo "Seed backup uploaded:"
           echo "  ${AZURE_STORAGE_CONTAINER}/${LATEST_BLOB}"
 
-      # ==============================
-      # 12. Resolve temp URL for health check (test/production only)
-      # ==============================
+  health-check:
+    name: Health check via temp URL
+    runs-on: ubuntu-latest
+    needs: [ingest]
+    if: ${{ always() && ((inputs.environment || 'test') == 'test' || inputs.environment == 'production') }}
+    outputs:
+      db-usable: ${{ steps.apphealth.outputs.db_usable }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Resolve temp URL for health check
         id: tempurl
-        if: ${{ always() && (env.DEPLOY_ENV == 'test' || env.DEPLOY_ENV == 'production') }}
         shell: bash
         run: |
           set -euo pipefail
-          TEMP_URL=$(awk '/name:.*cloud/ {print $2}' "./maintenance_page/manifests/${{ env.DEPLOY_ENV }}/ingress_temp_to_main.yml")
+          DEPLOY_ENV="${{ inputs.environment || 'test' }}"
+          TEMP_URL=$(awk '/name:.*cloud/ {print $2}' "./maintenance_page/manifests/${DEPLOY_ENV}/ingress_temp_to_main.yml")
           echo "temp_url=${TEMP_URL}" >> "$GITHUB_OUTPUT"
 
-      # ==============================
-      # 13. Check app health via temp URL (test/production only)
-      # ==============================
       - name: Check app health via temp URL
         id: apphealth
-        if: ${{ always() && (env.DEPLOY_ENV == 'test' || env.DEPLOY_ENV == 'production') }}
         shell: bash
         run: |
           set -euo pipefail
@@ -777,23 +782,24 @@ jobs:
           fi
 
           DB_STATUS=$(echo "$BODY" | jq -r '.checks[] | select(.name=="DatabaseConnectivity") | .status' | head -n1)
-
           if [[ "$DB_STATUS" == "Pass" ]]; then
             echo "db_usable=true" >> "$GITHUB_OUTPUT"
           else
             echo "db_usable=false" >> "$GITHUB_OUTPUT"
           fi
 
-      # ==============================
-      # 14. Disable maintenance mode (test/production only, when DB is usable)
-      # ==============================
-      - name: Disable maintenance mode
-        if: ${{ always() && (env.DEPLOY_ENV == 'test' || env.DEPLOY_ENV == 'production') && steps.apphealth.outputs.db_usable == 'true' }}
-        uses: DFE-Digital/github-actions/maintenance@master
-        with:
-          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          environment: ${{ env.DEPLOY_ENV }}
-          mode: disable
-          docker-repository: ghcr.io/dfe-digital/sap-public-maintenance
+  disable-maintenance:
+    name: Disable maintenance mode
+    needs: [enable-maintenance, ingest, health-check]
+    if: ${{ always()
+      && ((inputs.environment || 'test') == 'test' || inputs.environment == 'production')
+      && needs.enable-maintenance.result == 'success'
+      && needs.health-check.outputs.db-usable == 'true' }}
+    uses: ./.github/workflows/maintenance.yml
+    with:
+      environment: ${{ inputs.environment || 'test' }}
+      mode: disable
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
