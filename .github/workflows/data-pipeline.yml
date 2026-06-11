@@ -688,35 +688,67 @@ jobs:
         if: ${{ env.DEPLOY_ENV == 'test' || env.DEPLOY_ENV == 'production' }}
         run: |
           set -euo pipefail
+
           TODAY=$(TZ=Europe/London date +"%F")
           LOCAL_FILE="sappub_review_seed_${TODAY}.sql.gz"
           LATEST_BLOB="db-backups/sappub_review_seed_latest.sql.gz"
+          LOG_FILE="konduit_pg_dump.log"
+
           echo "Creating DB dump -> ${LOCAL_FILE}"
-          set +e
-          "$GITHUB_WORKSPACE/konduit.sh" \
-            -n "${{ env.AKS_NAMESPACE }}" \
-            -t 28800 \
-            -x \
-            "${{ env.KONDUIT_APP_NAME }}" -- \
-            pg_dump --verbose --format=plain --no-owner --no-privileges \
-            > >(gzip -c > "${LOCAL_FILE}") \
-            2> konduit_pg_dump.log
-          dump_rc=$?
-          set -e
-          if [ $dump_rc -ne 0 ]; then
-            echo "konduit/pg_dump failed with exit code ${dump_rc}"
-            echo "----- konduit_pg_dump.log (last 200 lines) -----"
-            tail -n 200 konduit_pg_dump.log || true
-            exit $dump_rc
-          fi
+
+          # Keep connection alive through tunnel
+          export PGOPTIONS='-c tcp_keepalives_idle=60 -c tcp_keepalives_interval=30 -c tcp_keepalives_count=10'
+
+          max_attempts=5
+          delay=20
+          attempt=1
+
+          while [ $attempt -le $max_attempts ]; do
+            echo "Backup dump attempt $attempt/$max_attempts"
+            rm -f "${LOCAL_FILE}" "${LOG_FILE}"
+
+            set +e
+            "$GITHUB_WORKSPACE/konduit.sh" \
+              -n "${{ env.AKS_NAMESPACE }}" \
+              -t 28800 \
+              -x \
+              "${{ env.KONDUIT_APP_NAME }}" -- \
+              pg_dump --format=plain --no-owner --no-privileges \
+              2> "${LOG_FILE}" | gzip -c > "${LOCAL_FILE}"
+            dump_rc=${PIPESTATUS[0]}
+            set -e
+
+            if [ $dump_rc -eq 0 ] && [ -s "${LOCAL_FILE}" ]; then
+              echo "DB dump succeeded on attempt $attempt"
+              break
+            fi
+
+            if grep -Eqi \
+              "SSL error: unexpected eof|connection to server was lost|server closed the connection unexpectedly|could not receive data from server|EOF detected|connection reset|failed to exec in container|no running task found|Internal error occurred: error executing command in container" \
+              "${LOG_FILE}"; then
+              echo "Transient dump connection/container issue detected. Retrying after ${delay}s..."
+              tail -n 80 "${LOG_FILE}" || true
+              sleep $delay
+              delay=$((delay * 2))
+              if [ $delay -gt 180 ]; then delay=180; fi
+              attempt=$((attempt + 1))
+              continue
+            fi
+
+            echo "pg_dump failed with non-transient error (exit ${dump_rc})"
+            tail -n 200 "${LOG_FILE}" || true
+            exit ${dump_rc}
+          done
+
           if [ ! -s "${LOCAL_FILE}" ]; then
-            echo "Backup file was not created or is empty: ${LOCAL_FILE}"
-            ls -lah || true
+            echo "DB dump failed after ${max_attempts} attempts or output file is empty."
+            tail -n 200 "${LOG_FILE}" || true
             exit 1
           fi
+
           ls -lh "${LOCAL_FILE}"
+
           echo "Uploading (overwriting) ${LATEST_BLOB} in container ${AZURE_STORAGE_CONTAINER}"
-          set +e
           az storage blob upload \
             --container-name "${AZURE_STORAGE_CONTAINER}" \
             --name "${LATEST_BLOB}" \
@@ -724,20 +756,7 @@ jobs:
             --connection-string "${AZURE_STORAGE_CONNECTION_STRING}" \
             --overwrite true \
             --only-show-errors
-          upload_rc=$?
-          set -e
-          if [ $upload_rc -ne 0 ]; then
-            echo "Blob upload failed with exit code ${upload_rc}"
-            # rerun with debug so you get root cause in logs
-            az storage blob upload \
-              --container-name "${AZURE_STORAGE_CONTAINER}" \
-              --name "${LATEST_BLOB}" \
-              --file "${LOCAL_FILE}" \
-              --connection-string "${AZURE_STORAGE_CONNECTION_STRING}" \
-              --overwrite true \
-              --debug || true
-            exit $upload_rc
-          fi
+
           echo "Seed backup uploaded:"
           echo "  ${AZURE_STORAGE_CONTAINER}/${LATEST_BLOB}"
 
