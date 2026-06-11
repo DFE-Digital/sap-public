@@ -740,10 +740,55 @@ jobs:
           echo "  ${AZURE_STORAGE_CONTAINER}/${LATEST_BLOB}"
 
       # ==============================
-      # 12. Disable maintenance mode (test/production only)
+      # 12. Resolve temp URL for health check (test/production only)
+      # ==============================
+      - name: Resolve temp URL for health check
+        id: tempurl
+        if: ${{ always() && (env.DEPLOY_ENV == 'test' || env.DEPLOY_ENV == 'production') }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TEMP_URL=$(awk '/name:.*cloud/ {print $2}' "./maintenance_page/manifests/${{ env.DEPLOY_ENV }}/ingress_temp_to_main.yml")
+          echo "temp_url=${TEMP_URL}" >> "$GITHUB_OUTPUT"
+
+      # ==============================
+      # 13. Check app health via temp URL (test/production only)
+      # ==============================
+      - name: Check app health via temp URL
+        id: apphealth
+        if: ${{ always() && (env.DEPLOY_ENV == 'test' || env.DEPLOY_ENV == 'production') }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL="https://${{ steps.tempurl.outputs.temp_url }}/health"
+
+          for i in 1 2 3; do
+            set +e
+            BODY=$(curl -fsS "$URL")
+            rc=$?
+            set -e
+            if [ $rc -eq 0 ]; then break; fi
+            sleep $((i * 5))
+          done
+
+          if [ ${rc:-1} -ne 0 ]; then
+            echo "db_usable=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          DB_STATUS=$(echo "$BODY" | jq -r '.checks[] | select(.name=="DatabaseConnectivity") | .status' | head -n1)
+
+          if [[ "$DB_STATUS" == "Pass" ]]; then
+            echo "db_usable=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "db_usable=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # ==============================
+      # 14. Disable maintenance mode (test/production only, when DB is usable)
       # ==============================
       - name: Disable maintenance mode
-        if: ${{ success() && (env.DEPLOY_ENV == 'test' || env.DEPLOY_ENV == 'production') }}
+        if: ${{ always() && (env.DEPLOY_ENV == 'test' || env.DEPLOY_ENV == 'production') && steps.apphealth.outputs.db_usable == 'true' }}
         uses: DFE-Digital/github-actions/maintenance@master
         with:
           azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
