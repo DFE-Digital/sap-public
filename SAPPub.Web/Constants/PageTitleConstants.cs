@@ -6,6 +6,7 @@ public class PageTitleConstants
     {
         public const string EnglishAndMathsResults = "English and maths results";
         public const string ProgressAndAttainment = "Progress and attainment";
+        public const string PupilProgressAndAttainment = "Pupil Progress and attainment";
         public const string SubjectsEntered = "Subjects entered";
     }
 }

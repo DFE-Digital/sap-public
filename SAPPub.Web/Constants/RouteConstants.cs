@@ -18,8 +18,12 @@ public static class RouteConstants
 
     public const string MySchoolsView = "MySchoolsView";
     public const string MySchoolsNoSchoolsView = "NoMySchoolsView";
+    public const string CompareSecondary = "CompareSecondary";
+    public const string CompareSecondaryAcademicPerformancePupilProgressAndAttainment = "CompareSecondaryAcademicPerformancePupilProgressAndAttainment";
+    public const string CompareSecondaryAcademicPerformanceEnglishAndMathsResults = "CompareSecondaryAcademicPerformanceEnglishAndMathsResults";
 
     // Route Attributes
     public const string URN = "urn";
+    public const string URNs = "urns";
     public const string SchoolName = "schoolName";
 }

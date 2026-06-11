@@ -1,0 +1,32 @@
+﻿@model SAPPub.Web.ViewComponents.VerticalNavigationCompareSecondary.VerticalNavigationCompareSecondaryModel
+@using SAPPub.Web.Constants
+@using SAPPub.Web.Helpers
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<div class="govuk-grid-column-one-quarter">
+    <nav class="moj-side-navigation" aria-label="Side navigation">
+        <ul class="moj-side-navigation__list">
+            <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.SecondaryAboutSchool ? "moj-side-navigation__item--active" : "")">
+                <a asp-route="@RouteConstants.SecondaryAboutSchool">About your schools</a>
+            </li>
+            <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.SecondaryAdmissions ? "moj-side-navigation__item--active" : "")">
+                <a asp-route="@RouteConstants.SecondaryAdmissions">Policies and pupil support</a>
+            </li>
+            <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.SecondaryCurriculumAndExtraCurricularActivities ? "moj-side-navigation__item--active" : "")">
+                <a asp-route="@RouteConstants.SecondaryCurriculumAndExtraCurricularActivities">Attendance</a>
+            </li>
+            <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.SecondaryAttendance ? "moj-side-navigation__item--active" : "")">
+                <a asp-route="@RouteConstants.SecondaryAttendance">Curriculum</a>
+            </li>
+            <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.CompareSecondaryAcademicPerformancePupilProgressAndAttainment ? "moj-side-navigation__item--active" : "")">
+                <a asp-route="@RouteConstants.CompareSecondaryAcademicPerformancePupilProgressAndAttainment">Academic Performance</a>
+            </li>
+            <li class="moj-side-navigation__item  @(new List<string> { RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress, RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults, RouteConstants.SecondaryAcademicPerformanceSubjectsEntered }.Contains(Model.ActivePage) ? " moj-side-navigation__item--active" : "") ">
+                <a asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress">Destinations after year 11</a>
+            </li>
+            <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.SecondaryDestinations ? "moj-side-navigation__item--active" : "")">
+                <a asp-route="@RouteConstants.SecondaryDestinations" >Next steps</a>
+            </li>
+        </ul>
+    </nav>
+</div>
