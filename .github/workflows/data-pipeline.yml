@@ -19,6 +19,7 @@ on:
 
 permissions:
   contents: write
+  packages: write   # required for maintenance mode
   id-token: write   # required if using OIDC with azure/login
 
 env:
