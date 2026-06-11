@@ -64,7 +64,7 @@ public class MySchoolsController(
                 SelectedEstablishmentUrns = SelectedEstablishmentUrns
             });
         }
-        return RedirectToAction("Index", "CompareSecondary", new { establishmentUrns = SelectedEstablishmentUrns });
+        return RedirectToRoute(RouteConstants.CompareSecondaryView, new { urns = SelectedEstablishmentUrns });
     }
 
     private async Task<List<MySchoolModel>> PopulateSchoolList()
