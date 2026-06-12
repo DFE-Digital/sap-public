@@ -19,6 +19,7 @@ on:
 
 permissions:
   contents: write
+  packages: write   # required for maintenance mode
   id-token: write   # required if using OIDC with azure/login
 
 env:
@@ -30,10 +31,6 @@ jobs:
   enable-maintenance:
     name: Enable maintenance mode
     if: ${{ (inputs.environment || 'test') == 'test' || inputs.environment == 'production' }}
-    permissions:
-      packages: write
-      contents: write
-      id-token: write
     uses: ./.github/workflows/maintenance.yml
     with:
       environment: ${{ inputs.environment || 'test' }}
@@ -818,10 +815,6 @@ jobs:
       && ((inputs.environment || 'test') == 'test' || inputs.environment == 'production')
       && needs.enable-maintenance.result == 'success'
       && needs.health-check.outputs.db-usable == 'true' }}
-    permissions:
-      packages: write
-      contents: write
-      id-token: write
     uses: ./.github/workflows/maintenance.yml
     with:
       environment: ${{ inputs.environment || 'test' }}
