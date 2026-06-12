@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SAPPub.Web.Areas.Compare.Compare.Secondary;
 using SAPPub.Web.Areas.Compare.Controllers;
+using SAPPub.Web.Areas.Compare.ViewModels.Secondary;
 
-namespace SAPPub.Web.Tests.Unit.Controllers.Area.Compare
+namespace SAPPub.Web.Tests.Unit.Areas.Compare.Controllers
 {
     public class SecondaryControllerTests
     {

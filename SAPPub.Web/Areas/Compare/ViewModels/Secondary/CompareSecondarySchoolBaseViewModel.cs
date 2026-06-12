@@ -1,6 +1,6 @@
 ﻿using SAPPub.Web.Constants;
 
-namespace SAPPub.Web.Areas.Compare.Compare.Secondary;
+namespace SAPPub.Web.Areas.Compare.ViewModels.Secondary;
 
 public class CompareSecondarySchoolBaseViewModel
 {

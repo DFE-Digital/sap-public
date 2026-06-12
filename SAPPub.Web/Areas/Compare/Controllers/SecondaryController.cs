@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
-using SAPPub.Web.Areas.Compare.Compare.Secondary;
+using SAPPub.Web.Areas.Compare.ViewModels.Secondary;
 using SAPPub.Web.Constants;
 using static SAPPub.Web.Constants.Constants;
 
