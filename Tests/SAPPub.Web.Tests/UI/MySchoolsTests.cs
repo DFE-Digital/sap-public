@@ -59,7 +59,7 @@ public class MySchoolsTests(WebApplicationSetupFixture fixture) : BasePageTest(f
         var comparePageTitle = await Page.TitleAsync();
 
         // Assert
-        Assert.Contains("Compare Secondary", comparePageTitle);
+        Assert.Contains("Comparing your schools", comparePageTitle);
     }
 
     [Fact]

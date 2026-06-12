@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SAPPub.Web.Areas.Compare.Compare.Secondary;
 using SAPPub.Web.Areas.Compare.Controllers;
 using SAPPub.Web.Areas.Compare.ViewModels.Secondary;
 
