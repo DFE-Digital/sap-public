@@ -1,0 +1,49 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using SAPPub.Web.Areas.Compare.Compare.Secondary;
+using SAPPub.Web.Areas.Compare.Controllers;
+
+namespace SAPPub.Web.Tests.Unit.Controllers.Area.Compare
+{
+    public class SecondaryControllerTests
+    {
+        [Fact]
+        public async Task AcademicPerformancePupilProgressAndAttainment_ReturnsViewResultWithCorrectModel()
+        {
+            // Arrange
+            var controller = new SecondaryController();
+            var urn1 = "123456";
+            var urn2 = "234567";
+            var urnList = new List<string> { urn1, urn2 };
+
+            // Act
+            var result = await controller.AcademicPerformancePupilProgressAndAttainment(urnList) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);
+            var model = result.Model as CompareAcademicPerformanceProgressAndAttainmentViewModel;
+            Assert.NotNull(model);
+            Assert.Equal(2, model.URNs.Count);
+            Assert.Equal(model.RouteQueryString, $"?urns={urn1}&urns={urn2}");
+        }
+
+        [Fact]
+        public async Task AcademicPerformanceEnglishAndMathsResults_ReturnsViewResultWithCorrectModel()
+        {
+            // Arrange
+            var controller = new SecondaryController();
+            var urn1 = "111111";
+            var urn2 = "222222";
+            var urnList = new List<string> { urn1, urn2 };
+
+            // Act
+            var result = await controller.AcademicPerformanceEnglishAndMathsResults(urnList) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);
+            var model = result.Model as CompareAcademicPerformanceEnglishAndMathsResultsViewModel;
+            Assert.NotNull(model);
+            Assert.Equal(2, model.URNs.Count);
+            Assert.Equal(model.RouteQueryString, $"?urns={urn1}&urns={urn2}");
+        }
+    }
+}

@@ -9,15 +9,8 @@ namespace SAPPub.Web.Areas.Compare.Controllers;
 [Area("Compare")]
 [FeatureGate(EstablishmentComparisonEnabled)]
 [Route("compare/secondary")]
-public class CompareSecondaryController : Controller
+public class SecondaryController : Controller
 {
-    [HttpGet]
-    [Route("view", Name = RouteConstants.CompareSecondary)]
-    public IActionResult Index(List<string>? establishmentUrns)
-    {
-        return View();
-    }
-
     [HttpGet]
     [Route("pupil-performance-attainment-and-progress", Name = RouteConstants.CompareSecondaryAcademicPerformancePupilProgressAndAttainment)]
     public async Task<IActionResult> AcademicPerformancePupilProgressAndAttainment(List<string> urns)
