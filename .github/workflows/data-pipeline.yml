@@ -665,7 +665,7 @@ jobs:
             if grep -Eqi \
               "SSL error: unexpected eof|connection to server was lost|server closed the connection unexpectedly|could not receive data from server|terminating connection due to administrator command|EOF detected|Container does not exist or connection cannot be established|failed to exec in container|no running task found|task .* not found|Internal error occurred: error executing command in container" \
               "$log_file"; then
-              echo "Detected transient ETL connection/container issue. Retrying after ${delay}s..."
+              echo "Detected transient ETL connection issue. Retrying after ${delay}s..."
               sleep $delay
               delay=$((delay * 2))
               if [ $delay -gt 180 ]; then delay=180; fi
@@ -726,7 +726,7 @@ jobs:
             if grep -Eqi \
               "SSL error: unexpected eof|connection to server was lost|server closed the connection unexpectedly|could not receive data from server|EOF detected|connection reset|failed to exec in container|no running task found|Internal error occurred: error executing command in container" \
               "${LOG_FILE}"; then
-              echo "Transient dump connection/container issue detected. Retrying after ${delay}s..."
+              echo "Transient dump connection issue detected. Retrying after ${delay}s..."
               tail -n 80 "${LOG_FILE}" || true
               sleep $delay
               delay=$((delay * 2))
