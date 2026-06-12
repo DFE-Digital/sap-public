@@ -106,7 +106,7 @@ namespace SAPPub.Core.Entities
 
         public string Northing { get; set; } = string.Empty;
 
-        public string EstablishmentNumber { get; set; } = string.Empty;        
+        public string EstablishmentNumber { get; set; } = string.Empty;
 
         public int SchoolCapacity { get; set; }
 
@@ -119,6 +119,8 @@ namespace SAPPub.Core.Entities
         public int? OpenReasonId { get; set; }
 
         public string? SenTypes { get; set; } = string.Empty;
+
+        public bool IsKeyStage4 { get; set; }
 
         public EstablishmentPerformance KS4Performance { get; set; } = new();
 

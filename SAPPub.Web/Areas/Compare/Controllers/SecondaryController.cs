@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
+using SAPPub.Web.Areas.Compare.Filters;
 using SAPPub.Web.Areas.Compare.ViewModels.Secondary;
 using SAPPub.Web.Constants;
 using static SAPPub.Web.Constants.Constants;
@@ -9,6 +10,7 @@ namespace SAPPub.Web.Areas.Compare.Controllers;
 [Area("Compare")]
 [FeatureGate(EstablishmentComparisonEnabled)]
 [Route("compare/secondary")]
+[EnsureUrnsAreSecondary]
 public class SecondaryController : Controller
 {
     [HttpGet]
