@@ -22,6 +22,8 @@ public static class RouteConstants
     public const string CompareSecondaryAcademicPerformancePupilProgressAndAttainment = "CompareSecondaryAcademicPerformancePupilProgressAndAttainment";
     public const string CompareSecondaryAcademicPerformanceEnglishAndMathsResults = "CompareSecondaryAcademicPerformanceEnglishAndMathsResults";
 
+    public const string CompareSecondaryView = "CompareSecondaryView";
+
     // Route Attributes
     public const string URN = "urn";
     public const string URNs = "urns";

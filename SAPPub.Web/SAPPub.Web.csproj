@@ -31,5 +31,12 @@
 		<Content Include="Data\Files\**\*">
 			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Areas\Compare\Models\**" />
+	  <Content Remove="Areas\Compare\Models\**" />
+	  <EmbeddedResource Remove="Areas\Compare\Models\**" />
+	  <None Remove="Areas\Compare\Models\**" />
 	</ItemGroup>	
 </Project>
