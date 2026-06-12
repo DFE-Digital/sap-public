@@ -19,6 +19,7 @@ on:
 
 permissions:
   contents: write
+  packages: write   # required for maintenance mode
   id-token: write   # required if using OIDC with azure/login
 
 env:
@@ -27,9 +28,24 @@ env:
   TF_VARS_PATH: terraform/application/config
 
 jobs:
+  enable-maintenance:
+    name: Enable maintenance mode
+    if: ${{ (inputs.environment || 'test') == 'test' || inputs.environment == 'production' }}
+    uses: ./.github/workflows/maintenance.yml
+    with:
+      environment: ${{ inputs.environment || 'test' }}
+      mode: enable
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+
   ingest:
     name: Ingest Raw Data & Build Warehouse
     runs-on: ubuntu-latest
+    needs: [enable-maintenance]
+    if: ${{ always() && (needs.enable-maintenance.result == 'success' || needs.enable-maintenance.result == 'skipped') }}
+  
     environment:
       name: ${{ inputs.environment || 'test' }}
 
@@ -596,6 +612,7 @@ jobs:
           Write-Host "Downloaded files:"
           $files = Get-ChildItem -Path $rawDir -File | Sort-Object Name
           $files | Select-Object Name, Length | Format-Table -AutoSize
+      
       # ==============================
       # 8. Build + Run SQL generator
       # ==============================
@@ -606,6 +623,7 @@ jobs:
         run: |
           dotnet run --configuration Release --project SAPData/SAPData.csproj
           echo "Generated SQL scripts."
+
       # ==============================
       # 9. Run ETL via konduit (private DB) WITH RETRY on transient disconnects
       # ==============================
@@ -616,42 +634,52 @@ jobs:
           set -euo pipefail
           echo "Running ETL via konduit (psql) with retry on transient disconnects"
           ls -la "$GITHUB_WORKSPACE/SAPData/Sql" || true
-          max_attempts=3
-          delay=10
+
+          # Keep TCP session alive during long COPY operations
+          export PGOPTIONS='-c tcp_keepalives_idle=60 -c tcp_keepalives_interval=30 -c tcp_keepalives_count=10'
+
+          max_attempts=5
+          delay=20
           log_file="$GITHUB_WORKSPACE/SAPData/Sql/psql.log"
           attempt=1
+
           while [ $attempt -le $max_attempts ]; do
             echo "ETL attempt $attempt/$max_attempts"
+
             set +e
             "$GITHUB_WORKSPACE/konduit.sh" \
               -n "${{ env.AKS_NAMESPACE }}" \
               -t 28800 \
               -x \
               -i "$GITHUB_WORKSPACE/SAPData/Sql/run_all.sql" \
-              "${{ env.KONDUIT_APP_NAME }}" -- psql 2>&1 | tee "$log_file"
-            exit_code=${PIPESTATUS[0]}
+              "${{ env.KONDUIT_APP_NAME }}" -- \
+              psql -X -v ON_ERROR_STOP=1 -f - 2>&1 | tee "$log_file"
+              exit_code=${PIPESTATUS[0]}
             set -e
+
             if [ $exit_code -eq 0 ]; then
               echo "ETL succeeded on attempt $attempt"
               exit 0
             fi
+
             if grep -Eqi \
-              "SSL error: unexpected eof|connection to server was lost|server closed the connection unexpectedly|could not receive data from server|terminating connection due to administrator command|EOF detected" \
+              "SSL error: unexpected eof|connection to server was lost|server closed the connection unexpectedly|could not receive data from server|terminating connection due to administrator command|EOF detected|Container does not exist or connection cannot be established|failed to exec in container|no running task found|task .* not found|Internal error occurred: error executing command in container" \
               "$log_file"; then
-              echo "Detected transient DB disconnect. Retrying after ${delay}s..."
+              echo "Detected transient ETL connection issue. Retrying after ${delay}s..."
               sleep $delay
               delay=$((delay * 2))
-              if [ $delay -gt 120 ]; then delay=120; fi
+              if [ $delay -gt 180 ]; then delay=180; fi
               attempt=$((attempt + 1))
               continue
             fi
+
             echo "ETL failed with exit code $exit_code (not classified as transient)."
             exit $exit_code
           done
-          if [ $exit_code -ne 0 ]; then
-            echo "ETL failed after $max_attempts attempts."
-            exit 2
-          fi
+
+          echo "ETL failed after $max_attempts attempts."
+          exit 2
+
       # ==============================
       # 10. Create & upload DB backup (used to restore db in review app env)
       # ==============================
@@ -660,31 +688,138 @@ jobs:
         if: ${{ env.DEPLOY_ENV == 'test' || env.DEPLOY_ENV == 'production' }}
         run: |
           set -euo pipefail
+
           TODAY=$(TZ=Europe/London date +"%F")
           LOCAL_FILE="sappub_review_seed_${TODAY}.sql.gz"
-          # Only ever keep this single blob in storage
           LATEST_BLOB="db-backups/sappub_review_seed_latest.sql.gz"
+          LOG_FILE="konduit_pg_dump.log"
+
           echo "Creating DB dump -> ${LOCAL_FILE}"
-          set +e
-          "$GITHUB_WORKSPACE/konduit.sh" \
-            -n "${{ env.AKS_NAMESPACE }}" \
-            -t 28800 \
-            -x \
-            "${{ env.KONDUIT_APP_NAME }}" -- \
-            pg_dump --format=plain --no-owner --no-privileges 2> konduit_pg_dump.log | gzip -c > "${LOCAL_FILE}"
-          exit_code=${PIPESTATUS[0]}
-          set -e
-          if [ $exit_code -ne 0 ]; then
-            echo "konduit/pg_dump failed with exit code ${exit_code}"
-            exit $exit_code
+
+          # Keep connection alive through tunnel
+          export PGOPTIONS='-c tcp_keepalives_idle=60 -c tcp_keepalives_interval=30 -c tcp_keepalives_count=10'
+
+          max_attempts=5
+          delay=20
+          attempt=1
+
+          while [ $attempt -le $max_attempts ]; do
+            echo "Backup dump attempt $attempt/$max_attempts"
+            rm -f "${LOCAL_FILE}" "${LOG_FILE}"
+
+            set +e
+            "$GITHUB_WORKSPACE/konduit.sh" \
+              -n "${{ env.AKS_NAMESPACE }}" \
+              -t 28800 \
+              -x \
+              "${{ env.KONDUIT_APP_NAME }}" -- \
+              pg_dump --format=plain --no-owner --no-privileges \
+              2> "${LOG_FILE}" | gzip -c > "${LOCAL_FILE}"
+            dump_rc=${PIPESTATUS[0]}
+            set -e
+
+            if [ $dump_rc -eq 0 ] && [ -s "${LOCAL_FILE}" ]; then
+              echo "DB dump succeeded on attempt $attempt"
+              break
+            fi
+
+            if grep -Eqi \
+              "SSL error: unexpected eof|connection to server was lost|server closed the connection unexpectedly|could not receive data from server|EOF detected|connection reset|failed to exec in container|no running task found|Internal error occurred: error executing command in container" \
+              "${LOG_FILE}"; then
+              echo "Transient dump connection issue detected. Retrying after ${delay}s..."
+              tail -n 80 "${LOG_FILE}" || true
+              sleep $delay
+              delay=$((delay * 2))
+              if [ $delay -gt 180 ]; then delay=180; fi
+              attempt=$((attempt + 1))
+              continue
+            fi
+
+            echo "pg_dump failed with non-transient error (exit ${dump_rc})"
+            tail -n 200 "${LOG_FILE}" || true
+            exit ${dump_rc}
+          done
+
+          if [ ! -s "${LOCAL_FILE}" ]; then
+            echo "DB dump failed after ${max_attempts} attempts or output file is empty."
+            tail -n 200 "${LOG_FILE}" || true
+            exit 1
           fi
+
           ls -lh "${LOCAL_FILE}"
+
           echo "Uploading (overwriting) ${LATEST_BLOB} in container ${AZURE_STORAGE_CONTAINER}"
           az storage blob upload \
             --container-name "${AZURE_STORAGE_CONTAINER}" \
             --name "${LATEST_BLOB}" \
             --file "${LOCAL_FILE}" \
             --connection-string "${AZURE_STORAGE_CONNECTION_STRING}" \
-            --overwrite true >/dev/null
+            --overwrite true \
+            --only-show-errors
+
           echo "Seed backup uploaded:"
           echo "  ${AZURE_STORAGE_CONTAINER}/${LATEST_BLOB}"
+
+  health-check:
+    name: Health check via temp URL
+    runs-on: ubuntu-latest
+    needs: [ingest]
+    if: ${{ always() && ((inputs.environment || 'test') == 'test' || inputs.environment == 'production') }}
+    outputs:
+      db-usable: ${{ steps.apphealth.outputs.db_usable }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve temp URL for health check
+        id: tempurl
+        shell: bash
+        run: |
+          set -euo pipefail
+          DEPLOY_ENV="${{ inputs.environment || 'test' }}"
+          TEMP_URL=$(awk '/name:.*cloud/ {print $2}' "./maintenance_page/manifests/${DEPLOY_ENV}/ingress_temp_to_main.yml")
+          echo "temp_url=${TEMP_URL}" >> "$GITHUB_OUTPUT"
+
+      - name: Check app health via temp URL
+        id: apphealth
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL="https://${{ steps.tempurl.outputs.temp_url }}/health"
+
+          for i in 1 2 3; do
+            set +e
+            BODY=$(curl -fsS "$URL")
+            rc=$?
+            set -e
+            if [ $rc -eq 0 ]; then break; fi
+            sleep $((i * 5))
+          done
+
+          if [ ${rc:-1} -ne 0 ]; then
+            echo "db_usable=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          DB_STATUS=$(echo "$BODY" | jq -r '.checks[] | select(.name=="DatabaseConnectivity") | .status' | head -n1)
+          if [[ "$DB_STATUS" == "Pass" ]]; then
+            echo "db_usable=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "db_usable=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  disable-maintenance:
+    name: Disable maintenance mode
+    needs: [enable-maintenance, ingest, health-check]
+    if: ${{ always()
+      && ((inputs.environment || 'test') == 'test' || inputs.environment == 'production')
+      && needs.enable-maintenance.result == 'success'
+      && needs.health-check.outputs.db-usable == 'true' }}
+    uses: ./.github/workflows/maintenance.yml
+    with:
+      environment: ${{ inputs.environment || 'test' }}
+      mode: disable
+    secrets:
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}

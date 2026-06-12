@@ -3,6 +3,9 @@
 -- ================================================================
 
 \set ON_ERROR_STOP on
+\set AUTOCOMMIT off
+
+BEGIN;
 
 \ir 00_cleanup.sql
 \ir 01_reference_tables.sql
@@ -28,7 +31,7 @@
 \ir 06_gateway.sql
 --\ir 05_validation.sql
 
-
+COMMIT;
 
 
 
