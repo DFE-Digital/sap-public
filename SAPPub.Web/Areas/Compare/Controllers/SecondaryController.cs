@@ -19,7 +19,7 @@ public class CompareSecondaryController : Controller
     }
 
     [HttpGet]
-    [Route("academic-performance/pupil-performance-attainment-and-progress", Name = RouteConstants.CompareSecondaryAcademicPerformancePupilProgressAndAttainment)]
+    [Route("pupil-performance-attainment-and-progress", Name = RouteConstants.CompareSecondaryAcademicPerformancePupilProgressAndAttainment)]
     public async Task<IActionResult> AcademicPerformancePupilProgressAndAttainment(List<string> urns)
     {
         var model = new CompareAcademicPerformanceProgressAndAttainmentViewModel { URNs = urns };
@@ -27,7 +27,7 @@ public class CompareSecondaryController : Controller
     }
 
     [HttpGet]
-    [Route("academic-performance/english-and-maths-results", Name = RouteConstants.CompareSecondaryAcademicPerformanceEnglishAndMathsResults)]
+    [Route("english-and-maths-results", Name = RouteConstants.CompareSecondaryAcademicPerformanceEnglishAndMathsResults)]
     public async Task<IActionResult> AcademicPerformanceEnglishAndMathsResults(List<string> urns)
     {
         var model = new CompareAcademicPerformanceEnglishAndMathsResultsViewModel { URNs = urns };
