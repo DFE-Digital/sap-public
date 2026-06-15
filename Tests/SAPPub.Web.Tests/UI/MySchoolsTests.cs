@@ -31,7 +31,7 @@ public class MySchoolsTests(WebApplicationSetupFixture fixture) : BasePageTest(f
     public async Task Page_SelectSchoolsFromList_Compare()
     {
         // Arrange
-        var cookieListOfUrns = new List<string> { "105574", "102848" };
+        var cookieListOfUrns = new List<string> { "105574", "100279" };
 
         await Page.Context.ClearCookiesAsync();
         await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = String.Join(",", cookieListOfUrns), Domain = "127.0.0.1", Path = "/", SameSite = SameSiteAttribute.Lax, Secure = true }]);
@@ -43,7 +43,7 @@ public class MySchoolsTests(WebApplicationSetupFixture fixture) : BasePageTest(f
         Assert.NotNull(response);
 
         // Act - select 1 school and expect error message
-        var checkbox = await Page.CheckboxStrictAsync("Secondary schools", "SS Peter and Paul's Catholic Primary School");
+        var checkbox = await Page.CheckboxStrictAsync("Secondary schools", "Stoke Newington School and Sixth Form");
         await checkbox.CheckAsync();
         await Page.ClickButton("Compare selected schools");
 
