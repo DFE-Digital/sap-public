@@ -20,7 +20,7 @@ public class EnsureUrnsAreSecondaryFilter(IEstablishmentService establishmentSer
             if (secondaryEstablishmentUrns is null || secondaryEstablishmentUrns.Count < 2)
             {
                 context.ActionArguments["urns"] = null;
-                context.Result = new NotFoundObjectResult("No secondary establishments in list.");
+                context.Result = new NotFoundObjectResult("Insufficient secondary establishments for comparison listed.");
                 return;
             }
             context.ActionArguments["urns"] = secondaryEstablishmentUrns;
