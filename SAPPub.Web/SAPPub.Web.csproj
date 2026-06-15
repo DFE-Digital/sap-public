@@ -34,6 +34,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Areas\Compare\Models\" />
+	  <Compile Remove="Areas\Compare\Models\**" />
+	  <Content Remove="Areas\Compare\Models\**" />
+	  <EmbeddedResource Remove="Areas\Compare\Models\**" />
+	  <None Remove="Areas\Compare\Models\**" />
 	</ItemGroup>	
 </Project>
