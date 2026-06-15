@@ -22,7 +22,7 @@ public class EnsureUrnsAreSecondaryFilterTests
     private DefaultHttpContext httpContext = new();
     private ActionContext actionContext;
     private ActionExecutedContext executedContext;
-    private EnsureUrnsAreSecondaryFilter filter;
+    private SecondaryComparisonQueryValidationFilter filter;
 
     public EnsureUrnsAreSecondaryFilterTests()
     {
@@ -40,7 +40,7 @@ public class EnsureUrnsAreSecondaryFilterTests
         _mockEstablishmentService.Setup(x => x.GetEstablishmentAsync(establishment4IsNotKS4.URN, It.IsAny<CancellationToken>()))
             .ReturnsAsync(establishment4IsNotKS4);
 
-        filter = new EnsureUrnsAreSecondaryFilter(_mockEstablishmentService.Object);
+        filter = new SecondaryComparisonQueryValidationFilter(_mockEstablishmentService.Object);
 
         actionContext = new ActionContext(
             httpContext,

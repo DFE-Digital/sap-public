@@ -23,7 +23,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             AddressPostcode = "TN37 6RT",
             Easting = "580573",
             Northing = "110137",
-            IsKeyStage4 = false
+            IsKS4 = false
         },
         ["100273"] = new Establishment
         {
@@ -34,7 +34,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             EstablishmentNumber = "3658",
             PhaseOfEducationId = "2",
             PhaseOfEducationName = "Primary",
-            IsKeyStage4 = false
+            IsKS4 = false
         },
         ["102848"] = new Establishment
         {
@@ -46,7 +46,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             PhaseOfEducationId = "2",
             PhaseOfEducationName = "Primary",
             AddressPostcode = "IG1 1SA",
-            IsKeyStage4 = false
+            IsKS4 = false
         },
         ["105574"] = new Establishment
         {
@@ -62,7 +62,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             Northing = "392995",
             Website = "http://www.test.co.uk/",
             SenTypes = "VI - Visual Impairment, HI - Hearing Impairment",
-            IsKeyStage4 = true
+            IsKS4 = true
         },
         ["137552"] = new Establishment
         {
@@ -76,7 +76,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             AddressPostcode = "CM18 7NQ",
             StatusCode = 2,
             ClosedDate = null,
-            IsKeyStage4 = true
+            IsKS4 = true
         },
         ["107564"] = new Establishment
         {
@@ -89,7 +89,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             AddressPostcode = "OL14 7DG",
             StatusCode = 2,
             ClosedDate = "23-03-2025",
-            IsKeyStage4 = true
+            IsKS4 = true
         },
         ["145744"] = new Establishment // school with recent open date and having predecessors
         {
@@ -101,7 +101,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             PhaseOfEducationName = "Secondary",
             AddressPostcode = "SN25 2ND",
             OpenDate = "01-09-2025", // recent open date to test recently opened school message - this will fail in 2028
-            IsKeyStage4 = true
+            IsKS4 = true
         },
         ["178965"] = new Establishment
         {
@@ -114,7 +114,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             AddressPostcode = "SN25 2ND",
             StatusCode = 2,
             ClosedDate = "01-09-2025",
-            IsKeyStage4 = true
+            IsKS4 = true
         },
         ["178966"] = new Establishment
         {
@@ -126,7 +126,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             PhaseOfEducationName = "Secondary",
             AddressPostcode = "SN25 2ND",
             StatusCode = 2,
-            IsKeyStage4 = true
+            IsKS4 = true
         },
         ["151948"] = new Establishment
         {
@@ -137,7 +137,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             PhaseOfEducationId = "4",
             PhaseOfEducationName = "Secondary",
             AddressPostcode = "SN15 3XB",
-            IsKeyStage4 = true
+            IsKS4 = true
         },
         ["100279"] = new Establishment
         {
@@ -148,7 +148,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             PhaseOfEducationId = "4",
             PhaseOfEducationName = "Secondary",
             AddressPostcode = "N16 9EX",
-            IsKeyStage4 = true
+            IsKS4 = true
         },
         ["145179"] = new Establishment
         {
@@ -159,7 +159,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             PhaseOfEducationId = "4",
             PhaseOfEducationName = "Secondary",
             AddressPostcode = "CV2 4JW",
-            IsKeyStage4 = true
+            IsKS4 = true
         },
         ["147059"] = new Establishment
         {
@@ -170,7 +170,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             PhaseOfEducationId = "4",
             PhaseOfEducationName = "Secondary",
             AddressPostcode = "DA2 6FY",
-            IsKeyStage4 = true
+            IsKS4 = true
         },
         ["145055"] = new Establishment
         {
@@ -181,7 +181,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             PhaseOfEducationId = "4",
             PhaseOfEducationName = "Secondary",
             AddressPostcode = "IP14 1QR",
-            IsKeyStage4 = true
+            IsKS4 = true
         },
         ["149893"] = new Establishment
         {
@@ -192,7 +192,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             PhaseOfEducationId = "4",
             PhaseOfEducationName = "Secondary",
             AddressPostcode = "ME13 8RZ",
-            IsKeyStage4 = true
+            IsKS4 = true
         },
         ["137020"] = new Establishment
         {
@@ -203,7 +203,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             PhaseOfEducationId = "4",
             PhaseOfEducationName = "Secondary",
             AddressPostcode = "SK15 1LX",
-            IsKeyStage4 = true
+            IsKS4 = true
         }
     };
 

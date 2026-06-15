@@ -120,7 +120,7 @@ namespace SAPPub.Core.Entities
 
         public string? SenTypes { get; set; } = string.Empty;
 
-        public bool IsKeyStage4 { get; set; }
+        public bool IsKS4 { get; set; }
 
         public EstablishmentPerformance KS4Performance { get; set; } = new();
 

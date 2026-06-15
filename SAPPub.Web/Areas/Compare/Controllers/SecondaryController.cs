@@ -10,7 +10,7 @@ namespace SAPPub.Web.Areas.Compare.Controllers;
 [Area("Compare")]
 [FeatureGate(EstablishmentComparisonEnabled)]
 [Route("compare/secondary")]
-[EnsureUrnsAreSecondary]
+[SecondaryComparisonQueryValidation]
 public class SecondaryController : Controller
 {
     [HttpGet]

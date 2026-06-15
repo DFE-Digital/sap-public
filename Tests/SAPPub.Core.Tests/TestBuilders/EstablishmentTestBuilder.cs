@@ -340,7 +340,7 @@ public class EstablishmentTestBuilder
 
     public EstablishmentTestBuilder WithIsKeyStage4(bool isKS4)
     {
-        _establishment.IsKeyStage4 = isKS4;
+        _establishment.IsKS4 = isKS4;
         return this;
     }
 
