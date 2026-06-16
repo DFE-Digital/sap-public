@@ -26,4 +26,12 @@ public class SecondaryController : Controller
         var model = new CompareAcademicPerformanceEnglishAndMathsResultsViewModel { URNs = urns };
         return View(model);
     }
+
+    [HttpGet]
+    [Route("next-steps", Name = RouteConstants.CompareSecondaryNextSteps)]
+    public async Task<IActionResult> NextSteps(List<string> urns)
+    {
+        var model = new CompareNextStepsViewModel { URNs = urns };
+        return View(model);
+    }
 }

@@ -1,0 +1,33 @@
+﻿@model SAPPub.Web.Areas.Compare.ViewModels.Secondary.CompareNextStepsViewModel
+@using SAPPub.Web.Constants
+@using SAPPub.Web.ViewComponents.VerticalNavigationCompareSecondary
+
+@{
+    ViewData["Header"] = "Next Steps";
+    ViewData["SubHeader"] = PageTitleConstants.SecondarySchoolPageTitles.NextSteps;
+    ViewData["Title"] = $"Compare - {ViewData["SubHeader"]}";
+}
+
+<div class="govuk-grid-row">
+
+    @await Component.InvokeAsync("VerticalNavigationCompareSecondary",
+    new VerticalNavigationCompareSecondaryModel
+    {
+        URNs = Model.URNs,
+        ActivePage = RouteConstants.CompareSecondaryNextSteps
+    })
+
+    <div class="govuk-grid-column-three-quarters">
+        <h1 class="govuk-heading-l">
+            <span class="govuk-caption-l">Comparing your schools</span>
+            Next Steps
+        </h1>
+
+        <h2>Explire more information</h2>
+
+        <p class="govuk-body">
+            You can find out more about each school you're comparing by viewing the school profile or visiting the school website.
+        </p>
+
+    </div>
+</div>
