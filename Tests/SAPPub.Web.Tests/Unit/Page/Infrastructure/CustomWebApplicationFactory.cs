@@ -51,7 +51,7 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.RemoveAll(typeof(ISchoolSearchIndexReader));
                 services.RemoveAll(typeof(ISchoolSearchService));
                 services.RemoveAll(typeof(IAttendanceService));
-                services.RemoveAll(typeof(IEstablishmentComparisonService));
+                services.RemoveAll(typeof(IMySchoolsListService));
                 services.AddSingleton<MockAccessor<IAboutSchoolService>>();
                 services.AddSingleton<MockAccessor<IAttainmentAndProgressService>>();
                 services.AddSingleton<MockAccessor<IEstablishmentService>>();
@@ -66,7 +66,7 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.AddSingleton<MockAccessor<ISchoolSearchIndexReader>>();
                 services.AddSingleton<MockAccessor<ISchoolSearchService>>();
                 services.AddSingleton<MockAccessor<IAttendanceService>>();
-                services.AddSingleton<MockAccessor<IEstablishmentComparisonService>>();
+                services.AddSingleton<MockAccessor<IMySchoolsListService>>();
 
                 services.AddTransient(provider =>
                 {
@@ -127,7 +127,7 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 });
                 services.AddTransient(provider =>
                 {
-                    return provider.GetRequiredService<MockAccessor<IEstablishmentComparisonService>>().Get()?.Object!;
+                    return provider.GetRequiredService<MockAccessor<IMySchoolsListService>>().Get()?.Object!;
                 });
             });
     }

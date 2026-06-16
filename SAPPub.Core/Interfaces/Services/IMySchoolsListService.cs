@@ -1,6 +1,6 @@
 ﻿namespace SAPPub.Core.Interfaces.Services
 {
-    public interface IEstablishmentComparisonService
+    public interface IMySchoolsListService
     {
         IReadOnlyCollection<string> GetSavedEstablishments();
 
@@ -16,6 +16,6 @@
 
         void RemoveAll();
 
-        bool IsComparisonLimitReached();
+        bool IsListLimitReached();
     }
 }

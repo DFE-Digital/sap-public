@@ -23,7 +23,7 @@ public class SearchPageTests : IDisposable
         var accessor = _factory.Services.GetRequiredService<MockAccessor<ISchoolSearchService>>();
         _searchServiceMock = accessor.GetOrCreate();
 
-        var establishmentComparisionServiceAccessor = _factory.Services.GetRequiredService<MockAccessor<IEstablishmentComparisonService>>();
+        var establishmentComparisionServiceAccessor = _factory.Services.GetRequiredService<MockAccessor<IMySchoolsListService>>();
         _= establishmentComparisionServiceAccessor.GetOrCreate();        
         _client = _factory.CreateClient();
     }
