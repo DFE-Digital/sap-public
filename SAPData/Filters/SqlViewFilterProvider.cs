@@ -54,7 +54,7 @@
 
             if (keyStages != null)
             {
-                filters.Add(new SqlViewFilter("IncludeAnyKeyStage", tableAlias =>
+                filters.Add(new SqlViewFilter("IncludeKeyStages", tableAlias =>
                 {
                     var conditions = new List<string>();
 
