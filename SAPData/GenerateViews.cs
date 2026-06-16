@@ -99,12 +99,22 @@ public sealed class GenerateViews
                     continue;
                 }
 
-                //Add KS5, KS2 here when needed and when we have the relevant data files in raw_sources.json and mappings in DataMap.csv
-                var keyStages = new[] { "KS4" }; 
+                // KS4 + KS5 requested; KS5 may have no CTE yet, base condition still applies
+                var keyStages = new[] { "KS4", "KS5" }; 
+                
                 var (keyStageUrnsCtes, keyStageUrnsSqlConditions) =
                     BuildKeyStageCtesAndFilters(_rows, tableMap, keyStages);
-                var establishmentFilters = SqlViewFilterProvider.GetEstablishmentFilters(keyStageUrnsSqlConditions);
-                sql = GenerateEstablishmentDimensionView(rawTable, establishmentFilters, keyStageUrnsCtes, keyStageUrnsSqlConditions);
+                
+                var establishmentFilters = SqlViewFilterProvider.GetEstablishmentFilters(
+                    keyStages,
+                    keyStageUrnsSqlConditions);
+                
+                sql = GenerateEstablishmentDimensionView(
+                    rawTable,
+                    establishmentFilters,
+                    keyStages,
+                    keyStageUrnsCtes,
+                    keyStageUrnsSqlConditions);
             }
 
             // 2) Mirror view (GIAS: all establishment links)
@@ -293,15 +303,14 @@ public sealed class GenerateViews
     }
 
     // =====================================================
-    // KS4 URNs CTE GENERATION
+    // Key Stage URNs CTE GENERATION
     // =====================================================
     private static string GenerateKeyStageUrnsCte(
-     IReadOnlyList<DataMapRow> rows,
-     Dictionary<string, string> tableMap,
-     string keyStageType,
-     string cteName)
+        IReadOnlyList<DataMapRow> rows,
+        Dictionary<string, string> tableMap,
+        string keyStageType,
+        string cteName)
     {
-        // Group by file name and get the RecordFilterBy for each file
         var fileGroups = rows
             .Where(r => r.Range == "Establishment" && r.Type == keyStageType)
             .GroupBy(r => (r.FileName ?? "").Trim().TrimStart('\uFEFF'))
@@ -315,9 +324,7 @@ public sealed class GenerateViews
             if (!TryResolveRawTable(tableMap, fileName, out var rawTable) || string.IsNullOrEmpty(rawTable))
                 continue;
 
-            // Use the first row's RecordFilterBy as the id column
             var idCol = DbCol(group.First().RecordFilterBy);
-            // If the idCol is empty, fallback to "urn"
             var col = string.IsNullOrWhiteSpace(idCol) ? "urn" : idCol;
 
             cteParts.Add($"SELECT DISTINCT t.\"{col}\" AS \"urn\" FROM {rawTable} t");
@@ -327,15 +334,17 @@ public sealed class GenerateViews
             return string.Empty;
 
         var sb = new StringBuilder();
-        sb.AppendLine($"WITH {cteName} AS (");
+        sb.AppendLine($"{cteName} AS (");
         for (int i = 0; i < cteParts.Count; i++)
         {
             var union = i == 0 ? "    " : "    UNION ";
             sb.AppendLine($"{union}{cteParts[i]}");
         }
         sb.AppendLine(")");
+
         return sb.ToString();
     }
+
     // =====================================================
     // ESTABLISHMENT DIMENSION (curated)
     // =====================================================
@@ -343,6 +352,7 @@ public sealed class GenerateViews
     private static string GenerateEstablishmentDimensionView(
         string? rawTable,
         List<SqlViewFilter> filters,
+        IReadOnlyList<string> keyStages,
         Dictionary<string, string> keyStageUrnsCtes,
         Dictionary<string, string> keyStageUrnsSqlConditions)
     {
@@ -353,11 +363,9 @@ public sealed class GenerateViews
         sb.AppendLine("DROP MATERIALIZED VIEW IF EXISTS v_establishment CASCADE;");
         sb.AppendLine();
         sb.AppendLine("CREATE MATERIALIZED VIEW v_establishment AS");
-        foreach (var cte in keyStageUrnsCtes.Values)
-        {
-            sb.Append(cte);
-            sb.AppendLine();
-        }
+
+        AppendKeyStageCtes(sb, keyStageUrnsCtes);
+
         sb.AppendLine("SELECT");
         sb.AppendLine("    t.\"urn\"                                 AS \"URN\",");
         sb.AppendLine("    t.\"la__code_\"                           AS \"LAId\",");
@@ -431,17 +439,9 @@ public sealed class GenerateViews
         sb.AppendLine("    to_tsvector('english', normalize_text(coalesce(t.\"establishmentname\", ''))) AS \"EstablishmentNameFTS\",");
         sb.AppendLine("    ST_Transform(\r\n    ST_SetSRID(ST_MakePoint(clean_int(t.\"easting\"), clean_int(t.\"northing\")), 27700), 4326\r\n)::geography AS \"geom\",");
         sb.AppendLine($"   {BuildSenTypes()} AS \"SenTypes\",");
-        var keyStageKeys = keyStageUrnsCtes.Keys.ToList();
-        for (int i = 0; i < keyStageKeys.Count; i++)
-        {
-            var ks = keyStageKeys[i];
-            var urnsSqlCondition = keyStageUrnsSqlConditions.TryGetValue(ks, out var cond) ? cond : null;
-            var fullCondition = SqlViewFilterProvider.GetKeyStageFullCondition(ks, "t", urnsSqlCondition);
-            // Only add a comma if this is not the last column
-            var isLast = (i == keyStageKeys.Count - 1);
-            var comma = isLast ? "" : ",";
-            sb.AppendLine($"    CASE WHEN {fullCondition} THEN TRUE ELSE FALSE END AS \"IS{ks}\"{comma}");
-        }
+        var hasKeyStageFlags = keyStages.Count > 0;
+        if (hasKeyStageFlags)
+            AppendKeyStageFlagColumns(sb, keyStages, keyStageUrnsSqlConditions);
         sb.AppendLine();
         sb.AppendLine($"FROM {rawTable} t");
         // Dynamically build WHERE clause
@@ -927,5 +927,38 @@ public sealed class GenerateViews
         var columns = Enumerable.Range(1, 13).Select(i => $"NULLIF(t.\"sen{i}__name_\", 'Not Applicable')");
         var senTypesSql = $"NULLIF(concat_ws(', ', {string.Join(", ", columns)}), '')";
         return senTypesSql;
+    }
+
+    private static void AppendKeyStageCtes(StringBuilder sb, Dictionary<string, string> keyStageUrnsCtes)
+    {
+        var ctes = keyStageUrnsCtes.Values
+            .Where(v => !string.IsNullOrWhiteSpace(v))
+            .Select(v => v.TrimEnd())
+            .ToList();
+
+        if (ctes.Count == 0)
+            return;
+
+        sb.AppendLine("WITH");
+        for (int i = 0; i < ctes.Count; i++)
+        {
+            var suffix = i == ctes.Count - 1 ? "" : ",";
+            sb.AppendLine($"{ctes[i]}{suffix}");
+        }
+    }
+
+    private static void AppendKeyStageFlagColumns(
+        StringBuilder sb,
+        IReadOnlyList<string> keyStages,
+        Dictionary<string, string> keyStageUrnsSqlConditions)
+    {
+        for (int i = 0; i < keyStages.Count; i++)
+        {
+            var ks = keyStages[i];
+            var urnsSqlCondition = keyStageUrnsSqlConditions.TryGetValue(ks, out var cond) ? cond : null;
+            var fullCondition = SqlViewFilterProvider.GetKeyStageFullCondition(ks, "t", urnsSqlCondition);
+            var comma = i == keyStages.Count - 1 ? "" : ",";
+            sb.AppendLine($"    CASE WHEN {fullCondition} THEN TRUE ELSE FALSE END AS \"IS{ks}\"{comma}");
+        }
     }
 }
