@@ -44,12 +44,29 @@ public class HeaderServiceNavigationTests(WebApplicationSetupFixture fixture) : 
     public async Task ServiceTitle_IsCorrect_And_LinksToSearch()
     {
         await Page.GotoAsync(string.Empty);
-        var serviceLink = Page.Locator("a.govuk-service-navigation__link");
+        var serviceLink = Page.Locator("span.govuk-service-navigation__service-name a");
         var text = await serviceLink.InnerTextAsync();
         var href = await serviceLink.GetAttributeAsync("href");
 
         Assert.Equal("School Profiles", text.Trim());
         Assert.Equal("/search", href, ignoreCase: true);
+    }
+
+    [Fact]
+    public async Task ServiceNavigation_IsCorrect_And_LinksToMySchoolsView()
+    {
+        await Page.GotoAsync(string.Empty);
+
+        // Act
+        var mySchoolsViewLink = Page.Locator("#my-schools-view-link");
+        var isVisible = await mySchoolsViewLink.IsVisibleAsync();
+        var text = await mySchoolsViewLink.InnerTextAsync();
+        var href = await mySchoolsViewLink.GetAttributeAsync("href");
+
+        // Assert
+        Assert.True(isVisible, "My schools link should be visible");
+        Assert.Equal("My schools list", text.Trim());
+        Assert.Equal("/my-schools/view", href, ignoreCase: true);
     }
 
     [Fact]

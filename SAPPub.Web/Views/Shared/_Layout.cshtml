@@ -1,6 +1,8 @@
 ﻿@using Microsoft.Extensions.Options
 @using SAPPub.Web.Models.Config
+@using static SAPPub.Web.Constants.Constants;
 @inject IOptions<AnalyticsOptions> analyticsOptions;
+@inject Microsoft.FeatureManagement.IFeatureManager FeatureManager
 
 @{
     ViewBag.ServiceName = "School Profiles";
@@ -26,7 +28,7 @@
     <link rel="stylesheet" href="~/css/moj-frontend.min.css">
     <link rel="stylesheet" href="~/css/main.css" />
     <link rel="stylesheet" href="~/css/leaflet.css" />
-    <link rel="stylesheet" href="~/css/leaflet-gesture-handling.min.css"/>
+    <link rel="stylesheet" href="~/css/leaflet-gesture-handling.min.css" />
 
     @{
         if (loadAnalytics)
@@ -75,7 +77,7 @@
     <a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
     <header class="govuk-header" data-module="govuk-header">
         <div class="govuk-header__container govuk-width-container">
-            <div class="govuk-header__logo">          
+            <div class="govuk-header__logo">
                 <a href="https://www.gov.uk/" class="govuk-header__link govuk-header__link--homepage">
                     <svg focusable="false"
                          role="img"
@@ -104,8 +106,12 @@
         </div>
     </header>
 
-    <govuk-service-navigation service-name="@ViewBag.ServiceName" service-url="/search">
+    <govuk-service-navigation id="service-name-link" service-name="@ViewBag.ServiceName" service-url="/search">
         <govuk-service-navigation-nav>
+            @if (await FeatureManager.IsEnabledAsync(EstablishmentComparisonEnabled))
+            {
+                <govuk-service-navigation-nav-item id="my-schools-view-link" href="@(Url.RouteUrl(RouteConstants.MySchoolsView))">My schools list</govuk-service-navigation-nav-item>
+            }
         </govuk-service-navigation-nav>
     </govuk-service-navigation>
 
