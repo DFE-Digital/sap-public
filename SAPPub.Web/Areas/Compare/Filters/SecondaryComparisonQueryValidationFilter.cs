@@ -9,29 +9,34 @@ public class SecondaryComparisonQueryValidationFilter(IEstablishmentService esta
 {
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
-        if (context.ActionArguments.TryGetValue("urns", out var urnsObj) && urnsObj is List<string> urns)
+        var urns = context.ActionArguments["urns"];
+        if (urns is null || urns is not List<string> urnsList || urnsList.Count == 0)
         {
-            var establishments = await Task.WhenAll(
-                urns.Select(async urn =>
-                {
-                    try
-                    {
-                        return await establishmentService.GetEstablishmentAsync(urn);
-                    }
-                    catch (NotFoundException)
-                    {
-                        return null;
-                    }
-                }));
-            var secondaryEstablishmentUrns = establishments.Where(est => est != null && est.IsKS4).Select(est => est!.URN).ToList();
-            if (secondaryEstablishmentUrns is null || secondaryEstablishmentUrns.Count < 2)
-            {
-                context.ActionArguments["urns"] = null;
-                context.Result = new NotFoundObjectResult("Insufficient secondary establishments for comparison listed.");
-                return;
-            }
-            context.ActionArguments["urns"] = secondaryEstablishmentUrns;
+            context.Result = new NotFoundResult();
+            return;
         }
+
+        var urnList = urns as List<string>;
+        var establishments = await Task.WhenAll(
+            urnList!.Select(async urn =>
+            {
+                try
+                {
+                    return await establishmentService.GetEstablishmentAsync(urn);
+                }
+                catch (NotFoundException)
+                {
+                    return null;
+                }
+            }));
+
+        var secondaryEstablishmentUrns = establishments.Where(est => est != null && est.IsKS4).Select(est => est!.URN).ToList();
+        if (secondaryEstablishmentUrns is null || secondaryEstablishmentUrns.Count < 2 || secondaryEstablishmentUrns.Count > 6)
+        {
+            context.Result = new NotFoundResult();
+            return;
+        }
+        context.ActionArguments["urns"] = secondaryEstablishmentUrns;
 
         await next();
     }
