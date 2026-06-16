@@ -119,7 +119,10 @@ public partial class Program
         builder.Services.AddDependencies(builder.Environment, builder.Configuration);
 
         // Add custom error handler for NotFoundExceptions
-        builder.Services.AddExceptionHandler<NotFoundExceptionHandler>();
+        if (!builder.Environment.IsDevelopment())
+        {
+            builder.Services.AddExceptionHandler<NotFoundExceptionHandler>();
+        }
 
         // Add context accessor abstraction so we can access cookies outside of controllers
         builder.Services.AddHttpContextAccessor();

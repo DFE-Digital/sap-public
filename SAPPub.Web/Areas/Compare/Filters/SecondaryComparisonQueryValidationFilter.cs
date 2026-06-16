@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using SAPPub.Core.Exceptions;
 using SAPPub.Core.Interfaces.Services;
 
 namespace SAPPub.Web.Areas.Compare.Filters;
@@ -10,8 +11,19 @@ public class SecondaryComparisonQueryValidationFilter(IEstablishmentService esta
     {
         if (context.ActionArguments.TryGetValue("urns", out var urnsObj) && urnsObj is List<string> urns)
         {
-            var establishments = await Task.WhenAll(urns.Select(urn => establishmentService.GetEstablishmentAsync(urn)));
-            var secondaryEstablishmentUrns = establishments.Where(est => est != null && est.IsKS4).Select(est => est.URN).ToList();
+            var establishments = await Task.WhenAll(
+                urns.Select(async urn =>
+                {
+                    try
+                    {
+                        return await establishmentService.GetEstablishmentAsync(urn);
+                    }
+                    catch (NotFoundException)
+                    {
+                        return null;
+                    }
+                }));
+            var secondaryEstablishmentUrns = establishments.Where(est => est != null && est.IsKS4).Select(est => est!.URN).ToList();
             if (secondaryEstablishmentUrns is null || secondaryEstablishmentUrns.Count < 2)
             {
                 context.ActionArguments["urns"] = null;
