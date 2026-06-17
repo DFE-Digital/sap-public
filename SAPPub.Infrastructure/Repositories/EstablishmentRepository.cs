@@ -34,14 +34,16 @@ namespace SAPPub.Infrastructure.Repositories
         }
 
         public Task<IEnumerable<Establishment>> GetEstablishmentsAsync(int page, int take, CancellationToken ct = default)
-            => _repo.ReadPageAsync(page, take, ct);
+        {
+            return _repo.ReadPageAsync(page, take, ct);
+        }
 
         public async Task<Establishment?> GetEstablishmentAsync(string urn, CancellationToken ct = default)
         {
             if (string.IsNullOrWhiteSpace(urn))
                 return null;
 
-            return await _repo.ReadAsync(urn, ct);
+            return await _repo.ReadAsync(urn, ct) ?? null;
         }
 
         internal static SearchSqlParts BuildSearchSqlParts(SearchQuery query, int maxResults, bool includeKs5)
