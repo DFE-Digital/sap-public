@@ -9,15 +9,13 @@ public class SecondaryComparisonQueryValidationFilter(IEstablishmentService esta
 {
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
-        var urns = context.ActionArguments["urns"];
-        if (urns is null || urns is not List<string> urnsList || urnsList.Count == 0)
+        if (!context.ActionArguments.TryGetValue("urns", out var urnsObj) || urnsObj is not List<string> urnList || urnList.Count == 0)
         {
             context.Result = new NotFoundResult();
             return;
         }
 
-        var urnList = urns as List<string>;
-        var establishments = await Task.WhenAll(
+        var establishments = (await Task.WhenAll(
             urnList!.Select(async urn =>
             {
                 try
@@ -28,9 +26,15 @@ public class SecondaryComparisonQueryValidationFilter(IEstablishmentService esta
                 {
                     return null;
                 }
-            }));
+            })))
+            .Where(est => est is not null)
+            .Select(est => est!);
 
-        var secondaryEstablishmentUrns = establishments.Where(est => est != null && est.IsKS4).Select(est => est!.URN).ToList();
+        var secondaryEstablishmentUrns = establishments
+            .Where(est => est.IsKS4)
+            .Select(est => est!.URN)
+            .ToList();
+
         if (secondaryEstablishmentUrns is null || secondaryEstablishmentUrns.Count < 2 || secondaryEstablishmentUrns.Count > 6)
         {
             context.Result = new NotFoundResult();
