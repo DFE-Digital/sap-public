@@ -37,6 +37,7 @@ public class AccessibilityTests(WebApplicationSetupFixture fixture) : BasePageTe
         "Cookies/Preferences",
         "my-schools/view",
         "my-schools/no-schools-added",
+        "compare/secondary/about-your-schools?urns=119052&urns=124500",
         "compare/secondary/pupil-performance-attainment-and-progress?urns=119052&urns=124500",
         "compare/secondary/english-and-maths-results?urns=119052&urns=124500"
     };

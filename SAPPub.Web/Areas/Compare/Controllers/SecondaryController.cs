@@ -12,6 +12,14 @@ namespace SAPPub.Web.Areas.Compare.Controllers;
 public class SecondaryController : Controller
 {
     [HttpGet]
+    [Route("about-your-schools", Name = RouteConstants.CompareSecondaryAboutYourSchools)]
+    public async Task<IActionResult> AboutYourSchools(List<string> urns)
+    {
+        var model = new CompareAboutYourSchoolsViewModel { URNs = urns };
+        return View(model);
+    }
+
+    [HttpGet]
     [Route("pupil-performance-attainment-and-progress", Name = RouteConstants.CompareSecondaryAcademicPerformancePupilProgressAndAttainment)]
     public async Task<IActionResult> AcademicPerformancePupilProgressAndAttainment(List<string> urns)
     {
