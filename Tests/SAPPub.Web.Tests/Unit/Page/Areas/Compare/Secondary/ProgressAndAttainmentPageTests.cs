@@ -5,7 +5,7 @@ namespace SAPPub.Web.Tests.Unit.Page.Areas.Compare.Secondary
     [Collection("WebAppCollection")]
     public class ProgressAndAttainmentPageTests(WebAppFixture fixture) : PageTestsBase(fixture)
     {
-        private string _pageUrl = "compare/secondary/pupil-performance-attainment-and-progress?urns=119052&urns=124500";
+        private string _pageUrl = "compare/secondary/pupil-attainment?urns=119052&urns=124500";
         
         [Fact]
         public async Task AcademicPerformanceProgressAndAttainment_Displays_VerticalNavigation()
@@ -39,7 +39,7 @@ namespace SAPPub.Web.Tests.Unit.Page.Areas.Compare.Secondary
 
             Assert.NotNull(links);
             Assert.Equal(2, links.Length);
-            Assert.Equal("/compare/secondary/pupil-performance-attainment-and-progress?urns=119052&urns=124500", links[0].GetAttribute("href"));
+            Assert.Equal("/compare/secondary/pupil-attainment?urns=119052&urns=124500", links[0].GetAttribute("href"));
             Assert.Equal("/compare/secondary/english-and-maths-results?urns=119052&urns=124500", links[1].GetAttribute("href"));
         }
     }

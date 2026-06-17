@@ -20,7 +20,7 @@ public static class RouteConstants
     public const string MySchoolsNoSchoolsView = "NoMySchoolsView";
     public const string CompareSecondary = "CompareSecondary";
     public const string CompareSecondaryAboutYourSchools = "CompareSecondaryAboutYourSchools";
-    public const string CompareSecondaryAcademicPerformancePupilProgressAndAttainment = "CompareSecondaryAcademicPerformancePupilProgressAndAttainment";
+    public const string CompareSecondaryAcademicPerformancePupilAttainment = "CompareSecondaryAcademicPerformancePupilAttainment";
     public const string CompareSecondaryAcademicPerformanceEnglishAndMathsResults = "CompareSecondaryAcademicPerformanceEnglishAndMathsResults";
     public const string CompareSecondaryNextSteps = "CompareSecondaryNextSteps";
 
