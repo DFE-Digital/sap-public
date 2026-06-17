@@ -1,4 +1,5 @@
 ﻿(function () {
+    const defaultNotAvailableText = 'Not available';
     const defaultColors = [
         '#A285D1',
         '#12436D',
@@ -21,7 +22,7 @@
         };
     }
 
-    function buildChartOptions(type, gdsStyles) {
+    function buildChartOptions(type, gdsStyles, notAvailableText) {
         const common = {
             responsive: true,
             maintainAspectRatio: false,
@@ -106,7 +107,7 @@
                             return true;
                         },
                         formatter: function (value) {
-                            return value + '%';
+                            return value === null ? notAvailableText : value + '%';
                         },
                         clamp: true,
                         clip: false
@@ -158,6 +159,7 @@
             const chartData = JSON.parse(canvas.dataset.chart);
             const type = canvas.dataset.type;
             const showLegend = canvas.dataset.showLegend === "true";
+            const notAvailableText = canvas.dataset.notAvailableText || defaultNotAvailableText;
 
             const colors = canvas.dataset.colors
                 ? JSON.parse(canvas.dataset.colors)
@@ -169,7 +171,7 @@
                     labels: chartData.labels,
                     datasets: buildDatasets(type, chartData, colors)
                 },
-                options: buildChartOptions(type, gdsStyles, showLegend),
+                options: buildChartOptions(type, gdsStyles, notAvailableText),
                 plugins: [ChartDataLabels]
             };
 

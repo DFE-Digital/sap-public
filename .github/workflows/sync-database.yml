@@ -176,7 +176,7 @@ jobs:
           done
 
           LOG_FILE="pg_dump.log"
-          MAX_ATTEMPTS=3
+          MAX_ATTEMPTS=5
 
           run_backup () {
             local attempt=1
@@ -379,7 +379,7 @@ jobs:
           export PGOPTIONS='-c tcp_keepalives_idle=60 -c tcp_keepalives_interval=30 -c tcp_keepalives_count=10'
 
           LOG_FILE="pg_restore.log"
-          MAX_ATTEMPTS=3
+          MAX_ATTEMPTS=5
 
           run_restore () {
             local attempt=1

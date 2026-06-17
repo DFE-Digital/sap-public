@@ -1,0 +1,43 @@
+﻿@model SAPPub.Web.Areas.Compare.ViewModels.Secondary.CompareAcademicPerformanceEnglishAndMathsResultsViewModel
+@using SAPPub.Web.Constants
+@using SAPPub.Web.ViewComponents.VerticalNavigationCompareSecondary
+
+@{
+    ViewData["Header"] = "Academic Perfomance";
+    ViewData["SubHeader"] = PageTitleConstants.SecondarySchoolPageTitles.EnglishAndMathsResults;
+    ViewData["Title"] = $"Compare - {ViewData["SubHeader"]}";
+}
+
+<div class="govuk-grid-row">
+
+    @await Component.InvokeAsync("VerticalNavigationCompareSecondary",
+    new VerticalNavigationCompareSecondaryModel
+    {
+        URNs = Model.URNs,
+        ActivePage = RouteConstants.CompareSecondaryAcademicPerformanceEnglishAndMathsResults
+    })
+
+    <div class="govuk-grid-column-three-quarters">
+        <h1 class="govuk-heading-l">
+            <span class="govuk-caption-l">Comparing your schools</span>
+            Academic Peformance
+        </h1>
+
+        <p class="govuk-body">
+            Looking at school performance data is one way to see how well a school is doing.<br/>
+            You should look at a range of information about a school before deciding if it's the right fit for your child.
+        </p>
+
+        <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
+            <ul class="moj-sub-navigation__list">
+                <li class="moj-sub-navigation__item">
+                    <a class="moj-sub-navigation__link" href="@Url.RouteUrl(RouteConstants.CompareSecondaryAcademicPerformancePupilProgressAndAttainment)@Model.RouteQueryString">@PageTitleConstants.SecondarySchoolPageTitles.PupilProgressAndAttainment</a>
+                </li>
+                <li class="moj-sub-navigation__item">
+                    <a class="moj-sub-navigation__link" aria-current="page" href="@Url.RouteUrl(RouteConstants.CompareSecondaryAcademicPerformanceEnglishAndMathsResults)@Model.RouteQueryString"> @ViewData["SubHeader"]</a>
+                </li>
+            </ul>
+        </nav>
+
+    </div>
+</div>

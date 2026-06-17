@@ -49,6 +49,7 @@ public sealed class AboutSchoolService(
             : null;
 
         var laUrls = !string.IsNullOrWhiteSpace(establishment.GSSLACode) ? await laUrlsRepository.GetLaAsync(establishment.GSSLACode, ct) : null;
+        laUrls ??= !string.IsNullOrWhiteSpace(establishment.DistrictAdministrativeId) ? await laUrlsRepository.GetLaAsync(establishment.DistrictAdministrativeId, ct) : null;
 
         return new AboutSchoolModel
         {
@@ -80,5 +81,6 @@ public sealed class AboutSchoolService(
             Predecessors = predecessorLinks,
             Successors = sucessorLinks            
         };
+
     }
 }

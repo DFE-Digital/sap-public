@@ -56,10 +56,10 @@ public class MySchoolsTests(WebApplicationSetupFixture fixture) : BasePageTest(f
 
         await Page.ClickButton("Compare selected schools");
 
-        var comparePageTitle = await Page.TitleAsync();
+        var comparePageTitle = await Page.Locator("h1").TextContentAsync();
 
         // Assert
-        Assert.Contains("Compare Secondary", comparePageTitle);
+        Assert.Contains("Comparing your schools", comparePageTitle);
     }
 
     [Fact]

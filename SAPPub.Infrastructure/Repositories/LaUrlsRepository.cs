@@ -1,10 +1,5 @@
 ﻿using SAPPub.Core.Entities;
-using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Repositories.Generic;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SAPPub.Infrastructure.Repositories
 {

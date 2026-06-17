@@ -1,0 +1,26 @@
+﻿@model SAPPub.Web.Areas.Compare.ViewModels.Secondary.CompareAboutYourSchoolsViewModel
+@using SAPPub.Web.Constants
+@using SAPPub.Web.ViewComponents.VerticalNavigationCompareSecondary
+
+@{
+    ViewData["Header"] = "About your schools";
+    ViewData["SubHeader"] = PageTitleConstants.SecondarySchoolPageTitles.AboutYourSchools;
+    ViewData["Title"] = $"Compare - {ViewData["SubHeader"]}";
+}
+
+<div class="govuk-grid-row">
+
+    @await Component.InvokeAsync("VerticalNavigationCompareSecondary",
+    new VerticalNavigationCompareSecondaryModel
+    {
+        URNs = Model.URNs,
+        ActivePage = RouteConstants.CompareSecondaryAboutYourSchools
+    })
+
+    <div class="govuk-grid-column-three-quarters">
+        <h1 class="govuk-heading-l">
+            <span class="govuk-caption-l">@Constants.CompareYourSchools</span>
+            @ViewData["Header"]
+        </h1>
+    </div>
+</div>

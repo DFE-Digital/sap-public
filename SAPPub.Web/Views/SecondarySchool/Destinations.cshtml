@@ -1,5 +1,6 @@
 ﻿@model SAPPub.Web.Models.SecondarySchool.DestinationsViewModel;
 @using SAPPub.Web.ViewComponents.VerticalNavigation
+@using static SAPPub.Web.Constants.Constants;
 
 @{
     ViewData["Header"] = "Destinations";
@@ -46,6 +47,7 @@
                         <canvas id="all-destinations-chart"  
                             class="js-chart"
                             data-type="bar"
+                            data-not-available-text="@(NotAvailable)"
                             data-chart='@Html.Raw(Json.Serialize(Model.AllDestinationsData))'
                             data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
                          </canvas>

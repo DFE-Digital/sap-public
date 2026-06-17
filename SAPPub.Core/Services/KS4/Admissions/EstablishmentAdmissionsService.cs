@@ -14,6 +14,7 @@ public sealed class EstablishmentAdmissionsService(
         var establishment = await establishmentService.GetEstablishmentAsync(urn, ct);
 
         var laUrls = !string.IsNullOrWhiteSpace(establishment.GSSLACode) ? await laUrlsRepository.GetLaAsync(establishment.GSSLACode, ct) : null;
+        laUrls ??= !string.IsNullOrWhiteSpace(establishment.DistrictAdministrativeId) ? await laUrlsRepository.GetLaAsync(establishment.DistrictAdministrativeId, ct) : null;
 
         return new AdmissionsServiceModel(
             SchoolName: establishment.EstablishmentName,
