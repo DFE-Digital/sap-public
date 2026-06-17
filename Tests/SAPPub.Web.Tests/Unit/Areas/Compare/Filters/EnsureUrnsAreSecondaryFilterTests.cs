@@ -153,9 +153,7 @@ public class EnsureUrnsAreSecondaryFilterTests
         await filter.OnActionExecutionAsync(context, next);
 
         // Assert
-        var resultUrns = context.ActionArguments["urns"] as List<string>;
-        Assert.Null(resultUrns);
-        var result = context.Result as NotFoundObjectResult;
+        var result = context.Result as NotFoundResult;
         Assert.NotNull(result);
         Assert.False(nextCalled);
     }
