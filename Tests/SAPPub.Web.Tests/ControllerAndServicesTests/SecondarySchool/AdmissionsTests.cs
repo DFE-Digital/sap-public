@@ -153,6 +153,45 @@ public class AdmissionsTests
     }
 
     [Fact]
+    public async Task Get_Admissions_FallsBackToAdministrativeCode_When_GSSLaCodeNotFound()
+    {
+        // Arrange
+        var districtAdministrativeId = "X999999";
+
+        var expectedLaUrl = new LaUrls
+        {
+            Id = "E09000001",
+            Name = "Test1",
+            LAMainUrl = "www.test1.com"
+        };
+
+        _mockEstablishmentRepository
+            .Setup(r => r.GetEstablishmentAsync(_establishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_establishment);
+
+        _mockLaUrlsRepository
+               .Setup(r => r.GetLaAsync(_establishment.GSSLACode!, It.IsAny<CancellationToken>()))
+               .ReturnsAsync((LaUrls?)null);
+
+        _mockLaUrlsRepository
+           .Setup(r => r.GetLaAsync(districtAdministrativeId!, It.IsAny<CancellationToken>()))
+           .ReturnsAsync(expectedLaUrl);
+
+        _establishment.DistrictAdministrativeId = districtAdministrativeId;
+
+        // Act
+        var result = await _controller.Admissions(_admissionsService, _establishment.URN, _establishment.EstablishmentName, CancellationToken.None) as ViewResult;
+
+        // Assert
+        Assert.NotNull(result);
+        var model = result.Model as AdmissionsViewModel;
+        Assert.NotNull(model);
+
+        _mockLaUrlsRepository.Verify(a => a.GetLaAsync(_establishment.GSSLACode!, It.IsAny<CancellationToken>()), Times.Once);
+        _mockLaUrlsRepository.Verify(a => a.GetLaAsync(districtAdministrativeId, It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
     public async Task Get_Admissions_EstablishmentGssCodeIsNull_ReturnsPartlyPopulatedViewModel()
     {
         // Arrange
