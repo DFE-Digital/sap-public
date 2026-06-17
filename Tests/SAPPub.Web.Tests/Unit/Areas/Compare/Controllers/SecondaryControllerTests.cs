@@ -7,6 +7,26 @@ namespace SAPPub.Web.Tests.Unit.Areas.Compare.Controllers
     public class SecondaryControllerTests
     {
         [Fact]
+        public async Task AboutYourSchools_ReturnsViewResultWithCorrectModel()
+        {
+            // Arrange
+            var controller = new SecondaryController();
+            var urn1 = "123456";
+            var urn2 = "234567";
+            var urnList = new List<string> { urn1, urn2 };
+
+            // Act
+            var result = await controller.AboutYourSchools(urnList) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);
+            var model = result.Model as CompareAboutYourSchoolsViewModel;
+            Assert.NotNull(model);
+            Assert.Equal(2, model.URNs.Count);
+            Assert.Equal(model.RouteQueryString, $"?urns={urn1}&urns={urn2}");
+        }
+
+        [Fact]
         public async Task AcademicPerformancePupilProgressAndAttainment_ReturnsViewResultWithCorrectModel()
         {
             // Arrange

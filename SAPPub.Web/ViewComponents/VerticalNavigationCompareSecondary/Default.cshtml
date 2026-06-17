@@ -6,8 +6,8 @@
 <div class="govuk-grid-column-one-quarter">
     <nav class="moj-side-navigation" aria-label="Side navigation">
         <ul class="moj-side-navigation__list">
-            <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.SecondaryAboutSchool ? "moj-side-navigation__item--active" : "")">
-                <a asp-route="@RouteConstants.SecondaryAboutSchool">About your schools</a>
+            <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.CompareSecondaryAboutYourSchools ? "moj-side-navigation__item--active" : "")">
+                <a asp-route="@Url.RouteUrl(RouteConstants.CompareSecondaryAboutYourSchools)@Model.RouteQueryString">About your schools</a>
             </li>
             <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.SecondaryAdmissions ? "moj-side-navigation__item--active" : "")">
                 <a asp-route="@RouteConstants.SecondaryAdmissions">Policies and pupil support</a>
