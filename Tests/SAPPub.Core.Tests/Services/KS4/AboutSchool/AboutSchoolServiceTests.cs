@@ -102,6 +102,45 @@ public class AboutSchoolServiceTests
         Assert.Equal(fakeEstablishment.SenTypes, result.SenTypes);
     }
 
+    [Fact]
+    public async Task GetAboutSchoolDetailsAsync_FallsBackToAdministrativeCode_When_GSSLaCodeNotFound()
+    {
+        // Arrange
+        var districtAdministrativeId = "X999999";
+
+        var expectedLaUrl = new LaUrls
+        {
+            Id = "E09000001",
+            Name = "Test1",
+            LAMainUrl = "www.test1.com"
+        };
+
+        fakeEstablishment.DistrictAdministrativeId = districtAdministrativeId;
+
+        _mockEstablishmentService
+               .Setup(r => r.GetEstablishmentAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+               .ReturnsAsync(fakeEstablishment);
+
+        _mockLaUrlsRepository
+               .Setup(r => r.GetLaAsync(fakeEstablishment.GSSLACode!, It.IsAny<CancellationToken>()))
+               .ReturnsAsync((LaUrls?)null);
+
+        _mockLaUrlsRepository
+           .Setup(r => r.GetLaAsync(fakeEstablishment.DistrictAdministrativeId!, It.IsAny<CancellationToken>()))
+           .ReturnsAsync(expectedLaUrl);
+
+        // Act
+        var result = await _service.GetAboutSchoolDetailsAsync(fakeEstablishment.URN, CancellationToken.None);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(fakeEstablishment.LAName, result.LocalAuthority);
+        Assert.Equal(expectedLaUrl.Name, result.LocalAuthorityName);
+        Assert.Equal(expectedLaUrl.LAMainUrl, result.LocalAuthorityWebsite);
+        _mockLaUrlsRepository.Verify(a => a.GetLaAsync(fakeEstablishment.GSSLACode!, It.IsAny<CancellationToken>()), Times.Once);
+        _mockLaUrlsRepository.Verify(a => a.GetLaAsync(districtAdministrativeId, It.IsAny<CancellationToken>()), Times.Once);
+    }
+
     [Theory]
     [InlineData(360, true)]
     [InlineData(2000, false)]
