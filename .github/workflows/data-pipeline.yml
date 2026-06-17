@@ -795,10 +795,11 @@ jobs:
             if [ $rc -eq 0 ]; then break; fi
             sleep $((i * 5))
           done
-
+          
           if [ ${rc:-1} -ne 0 ]; then
             echo "db_usable=false" >> "$GITHUB_OUTPUT"
-            exit 0
+            echo "::error::Health endpoint unreachable at ${URL}; db_usable=false"
+            exit 1
           fi
 
           DB_STATUS=$(echo "$BODY" | jq -r '.checks[] | select(.name=="DatabaseConnectivity") | .status' | head -n1)
@@ -806,6 +807,8 @@ jobs:
             echo "db_usable=true" >> "$GITHUB_OUTPUT"
           else
             echo "db_usable=false" >> "$GITHUB_OUTPUT"
+            echo "::error::DatabaseConnectivity check returned '${DB_STATUS}'; db_usable=false"
+            exit 1
           fi
 
   disable-maintenance:
