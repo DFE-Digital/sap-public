@@ -29,4 +29,5 @@ public static class Constants
 
     // Managed Feature Names
     public const string EstablishmentComparisonEnabled = "EstablishmentComparisonEnabled";
+    public const string FESearchEnabled = "FESearchEnabled";
 }

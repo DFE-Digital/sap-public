@@ -65,7 +65,9 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "ClosedDate",
           "OpenDate",
           "OpenReasonId",
-          "SenTypes"
+          "SenTypes",
+          "ISKS4",
+          "ISKS5"
           """;
 
         private const string EstablishmentAbsenceColumns = """
