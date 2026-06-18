@@ -119,6 +119,9 @@ namespace SAPPub.Core.Entities
         public int? OpenReasonId { get; set; }
 
         public string? SenTypes { get; set; } = string.Empty;
+
+        public bool IsKS2 { get; set; }
+
         public bool IsKS4 { get; set; }
 
         public bool IsKS5 { get; set; }
