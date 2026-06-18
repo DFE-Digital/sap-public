@@ -17,13 +17,13 @@ public class AboutPageTests : PageTestsBase
 {
     private static string _pageRoute = "/secondary/about";
     private readonly Mock<IAboutSchoolService> _about;
-    private readonly Mock<IEstablishmentComparisonService> _comparisonService;
+    private readonly Mock<IMySchoolsListService> _comparisonService;
 
     public AboutPageTests(WebAppFixture fixture) : base(fixture)
     {
         // access the mocks needed by the controller endpoint being used
         _about = UseMock<IAboutSchoolService>();
-        _comparisonService = UseMock<IEstablishmentComparisonService>();
+        _comparisonService = UseMock<IMySchoolsListService>();
 
         _comparisonService
             .Setup(service => service.GetSavedEstablishments())

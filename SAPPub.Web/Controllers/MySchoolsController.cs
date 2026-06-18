@@ -11,7 +11,7 @@ namespace SAPPub.Web.Controllers;
 [Route("my-schools")]
 [FeatureGate(EstablishmentComparisonEnabled)]
 public class MySchoolsController(
-    IEstablishmentComparisonService mySchoolListService,
+    IMySchoolsListService mySchoolListService,
     IEstablishmentService establishmentService) : Controller
 {
     [HttpGet]

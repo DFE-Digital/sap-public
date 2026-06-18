@@ -5,7 +5,7 @@ using static SAPPub.Web.Constants.Constants;
 
 namespace SAPPub.Web.Controllers
 {
-    public class EstablishmentComparisonController(IEstablishmentComparisonService establishmentComparisonService) 
+    public class MySchoolsListController(IMySchoolsListService establishmentComparisonService)
         : Controller
     {
         [HttpPost]
@@ -13,8 +13,8 @@ namespace SAPPub.Web.Controllers
         {
             if (isSearchPage)
             {
-                var isComparisionLimitReached = establishmentComparisonService.IsComparisonLimitReached();
-                var urnExists = establishmentComparisonService.IsSaved(urn);                
+                var isComparisionLimitReached = establishmentComparisonService.IsListLimitReached();
+                var urnExists = establishmentComparisonService.IsSaved(urn);
                 var isJsRequest = Request.Headers.XRequestedWith == "XMLHttpRequest";
 
                 var canToggle = urnExists || !isComparisionLimitReached;
@@ -25,7 +25,7 @@ namespace SAPPub.Web.Controllers
                 {
                     saved = establishmentComparisonService.Toggle(urn);
                 }
-                else if(!isJsRequest)
+                else if (!isJsRequest)
                 {
                     TempData.Set(ComparisionLimtReached, limitReached);
                 }
