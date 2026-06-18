@@ -22,10 +22,10 @@ public class SecondaryController : Controller
     }
 
     [HttpGet]
-    [Route("pupil-performance-attainment-and-progress", Name = RouteConstants.CompareSecondaryAcademicPerformancePupilProgressAndAttainment)]
-    public async Task<IActionResult> AcademicPerformancePupilProgressAndAttainment(List<string> urns)
+    [Route("pupil-attainment", Name = RouteConstants.CompareSecondaryAcademicPerformancePupilAttainment)]
+    public async Task<IActionResult> AcademicPerformancePupilAttainment(List<string> urns)
     {
-        var model = new CompareAcademicPerformanceProgressAndAttainmentViewModel { URNs = urns };
+        var model = new CompareAcademicPerformancePupilAttainmentViewModel { URNs = urns };
         return View(model);
     }
 
