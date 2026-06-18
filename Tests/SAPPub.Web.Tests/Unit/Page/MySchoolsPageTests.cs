@@ -13,12 +13,12 @@ namespace SAPPub.Web.Tests.Unit.Page;
 public class MySchoolsPageTests : PageTestsBase
 {
     private static string _pageRoute = "/my-schools/view";
-    private readonly Mock<IEstablishmentComparisonService> _comparisonService;
+    private readonly Mock<IMySchoolsListService> _comparisonService;
     private readonly Mock<IEstablishmentService> _establishmentService;
 
     public MySchoolsPageTests(WebAppFixture fixture) : base(fixture)
     {
-        _comparisonService = UseMock<IEstablishmentComparisonService>();
+        _comparisonService = UseMock<IMySchoolsListService>();
         _establishmentService = UseMock<IEstablishmentService>();
     }
 

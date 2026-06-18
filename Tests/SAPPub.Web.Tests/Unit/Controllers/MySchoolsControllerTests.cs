@@ -10,7 +10,7 @@ namespace SAPPub.Web.Tests.Unit.Controllers;
 
 public class MySchoolsControllerTests
 {
-    private readonly Mock<IEstablishmentComparisonService> _comparisonServiceMock = new();
+    private readonly Mock<IMySchoolsListService> _comparisonServiceMock = new();
     private readonly Mock<IEstablishmentService> _establishmentServiceMock = new();
 
     [Fact]

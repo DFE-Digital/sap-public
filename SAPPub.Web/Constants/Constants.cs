@@ -21,10 +21,10 @@ public static class Constants
     // School comparison labels/text
     public const string Save = "Save";
     public const string Saved = "Saved";
-    public const string EstablishmentComparisonSave = "Save to my schools list";
-    public const string EstablishmentComparisonSaved = "Saved to my schools list";
+    public const string MySchoolsSave = "Save to my schools list";
+    public const string MySchoolsSaved = "Saved to my schools list";
 
-    public const string ComparisionLimitExceeded = "You can only add 100 schools to your list. To add another, you must first remove a school.";
+    public const string MySchoolsListLimitExceeded = "You can only add 100 schools to your list. To add another, you must first remove a school.";
     public const string EditYourSchoolsList = "Edit your schools list";
     public const string CompareYourSchools = "Comparing your schools";
     // Managed Feature Names

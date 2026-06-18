@@ -1,5 +1,5 @@
-﻿@using SAPPub.Web.Models.EstablishmentComparison
-@model EstablishmentComparisonButtonViewModel
+﻿@using SAPPub.Web.Models.MySchools
+@model AddSchoolButtonViewModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @if (!Model.IsFeatureEnabled)
@@ -7,7 +7,7 @@
     return;
 }
 
-<form asp-controller="EstablishmentComparison"
+<form asp-controller="MySchoolsList"
       asp-action="ToggleSaveEstablishment"
       method="post"
       class="save-establishment-comparison-form"
@@ -26,14 +26,14 @@
     }
     else
     {
-        @if (Model.IsComparisonLimitReached && Model.IsSaved)
+        @if (Model.IsListLimitReached && Model.IsSaved)
         {
             <button type="submit" class="compare-establishment-btn govuk-heading-s saved">
                 <span>@Model.SavedText</span>
             </button>
         }
 
-        @if (!Model.IsComparisonLimitReached)
+        @if (!Model.IsListLimitReached)
         {
             <button type="submit" class="compare-establishment-btn govuk-heading-s @(Model.IsSaved ? "saved" : "")">
                 <span>@(Model.IsSaved? Model.SavedText: Model.SaveText)</span>

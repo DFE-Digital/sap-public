@@ -106,7 +106,7 @@ namespace SAPPub.Core.Entities
 
         public string Northing { get; set; } = string.Empty;
 
-        public string EstablishmentNumber { get; set; } = string.Empty;        
+        public string EstablishmentNumber { get; set; } = string.Empty;
 
         public int SchoolCapacity { get; set; }
 
