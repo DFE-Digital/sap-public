@@ -21,7 +21,7 @@ public class NavigateThroughComparePagesTests(WebApplicationSetupFixture fixture
 
         // Assert
         var title = await Page.TitleAsync();
-        Assert.Contains("Pupil Progress and attainment", title);
+        Assert.Contains("Pupil attainment", title);
 
         // Act
         navItem = nav.GetItem("Next Steps");
