@@ -10,14 +10,14 @@ using static SAPPub.Web.Constants.Constants;
 
 namespace SAPPub.Web.Tests.Unit.Controllers;
 
-public class EstablishmentComparisonControllerTests
+public class MySchoolsListControllerTests
 {
-    private readonly EstablishmentComparisonController _controller;
-    private readonly Mock<IEstablishmentComparisonService> _mockEstablishmentComparisonService = new();
+    private readonly MySchoolsListController _controller;
+    private readonly Mock<IMySchoolsListService> _mockEstablishmentComparisonService = new();
 
-    public EstablishmentComparisonControllerTests()
+    public MySchoolsListControllerTests()
     {
-        _controller = new EstablishmentComparisonController(_mockEstablishmentComparisonService.Object);
+        _controller = new MySchoolsListController(_mockEstablishmentComparisonService.Object);
     }
 
     [Theory]
@@ -38,7 +38,7 @@ public class EstablishmentComparisonControllerTests
         _controller.TempData = new TempDataDictionary(httpContext, new Mock<ITempDataProvider>().Object);
 
         _mockEstablishmentComparisonService
-            .Setup(es => es.IsComparisonLimitReached())
+            .Setup(es => es.IsListLimitReached())
             .Returns(isComparisionLimitReached);
 
         _mockEstablishmentComparisonService
@@ -77,7 +77,7 @@ public class EstablishmentComparisonControllerTests
         _controller.TempData = new TempDataDictionary(httpContext, new Mock<ITempDataProvider>().Object);
 
         _mockEstablishmentComparisonService
-            .Setup(es => es.IsComparisonLimitReached())
+            .Setup(es => es.IsListLimitReached())
             .Returns(isComparisionLimitReached);
 
         _mockEstablishmentComparisonService
@@ -120,7 +120,7 @@ public class EstablishmentComparisonControllerTests
         _controller.TempData = new TempDataDictionary(httpContext, new Mock<ITempDataProvider>().Object);
 
         _mockEstablishmentComparisonService
-            .Setup(es => es.IsComparisonLimitReached())
+            .Setup(es => es.IsListLimitReached())
             .Returns(false);
 
         _mockEstablishmentComparisonService

@@ -6,27 +6,27 @@ using System.Diagnostics.CodeAnalysis;
 namespace SAPPub.Core.Tests.Services
 {
     [ExcludeFromCodeCoverage]
-    public class EstablishmentComparisonServiceTests
+    public class MySchoolsListServiceTests
     {
         private const string CookieName = "MySchoolsList";
-        private readonly EstablishmentComparisonService _service;
+        private readonly MySchoolsListService _service;
         private readonly HttpContextAccessor _contextAccessor;
 
-        public EstablishmentComparisonServiceTests()
+        public MySchoolsListServiceTests()
         {
             _contextAccessor = new HttpContextAccessor
             {
                 HttpContext = new DefaultHttpContext()
             };
 
-            _service = new EstablishmentComparisonService(_contextAccessor);
+            _service = new MySchoolsListService(_contextAccessor);
         }
 
         [Fact]
         public void GetSavedEstablishments_ShouldReturnEmpty_WhenCookieIsMissing()
         {
             // Arrange
-           
+
             // Act
             var result = _service.GetSavedEstablishments();
 
@@ -104,10 +104,10 @@ namespace SAPPub.Core.Tests.Services
         public void IsComparisonReached_ShouldReturnTrue_WhenComparisonLimitReached()
         {
             // Arrange
-            _contextAccessor.HttpContext!.Request.Headers.Cookie = $"{CookieName}={string.Join(",", Enumerable.Range(1,100))}";
+            _contextAccessor.HttpContext!.Request.Headers.Cookie = $"{CookieName}={string.Join(",", Enumerable.Range(1, 100))}";
 
             // Act
-            var result = _service.IsComparisonLimitReached();
+            var result = _service.IsListLimitReached();
 
             // Assert
             Assert.True(result);

@@ -3,7 +3,7 @@ using SAPPub.Core.Interfaces.Services;
 
 namespace SAPPub.Core.Services
 {
-    public class EstablishmentComparisonService(IHttpContextAccessor contextAccessor) : IEstablishmentComparisonService
+    public class MySchoolsListService(IHttpContextAccessor contextAccessor) : IMySchoolsListService
     {
         private const string CookieName = "MySchoolsList";
         private const int ComparisonLimit = 100;
@@ -31,12 +31,12 @@ namespace SAPPub.Core.Services
                 Remove(urn);
                 return false;
             }
-            
+
             Save(urn);
             return true;
         }
 
-        public bool IsComparisonLimitReached() => GetSavedEstablishments().Count >= ComparisonLimit;
+        public bool IsListLimitReached() => GetSavedEstablishments().Count >= ComparisonLimit;
 
         private void Save(string urn)
         {
