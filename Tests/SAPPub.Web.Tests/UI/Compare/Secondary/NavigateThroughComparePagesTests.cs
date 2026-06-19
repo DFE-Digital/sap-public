@@ -36,8 +36,7 @@ public class NavigateThroughComparePagesTests(WebApplicationSetupFixture fixture
         await navItem.ClickAsync();
 
         // Assert
-        //coming soon
-        //title = await Page.TitleAsync();
-        //Assert.Contains("Destinations after year 11", title);
+        title = await Page.TitleAsync();
+        Assert.Contains("Destinations after year 11", title);
     }
 }

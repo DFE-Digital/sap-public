@@ -14,8 +14,8 @@
                 <li class="moj-side-navigation__item  @(new List<string> { RouteConstants.CompareSecondaryAcademicPerformancePupilAttainment, RouteConstants.CompareSecondaryAcademicPerformanceEnglishAndMathsResults }.Contains(Model.ActivePage) ? " moj-side-navigation__item--active" : "")">
                     <a href="@Url.RouteUrl(RouteConstants.CompareSecondaryAcademicPerformancePupilAttainment, new { urns = Model.URNs })">Academic Performance</a>
                 </li>
-                <li class="moj-side-navigation__item  @(new List<string> { RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress, RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults, RouteConstants.SecondaryAcademicPerformanceSubjectsEntered }.Contains(Model.ActivePage) ? " moj-side-navigation__item--active" : "") ">
-                    <a href="@Url.RouteUrl(RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress, new {urns = Model.URNs})">Destinations after year 11</a>
+                <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.CompareSecondaryDestinations ? "moj-side-navigation__item--active" : "") ">
+                    <a href="@Url.RouteUrl(RouteConstants.CompareSecondaryDestinations, new { urns = Model.URNs })">Destinations after year 11</a>
                 </li>
                 <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.CompareSecondaryNextSteps ? "moj-side-navigation__item--active" : "")">
                     <a href="@Url.RouteUrl(RouteConstants.CompareSecondaryNextSteps, new {urns = Model.URNs})">Next steps</a>
