@@ -15,7 +15,7 @@
                     <a href="@Url.RouteUrl(RouteConstants.CompareSecondaryAcademicPerformancePupilAttainment, new { urns = Model.URNs })">Academic Performance</a>
                 </li>
                 <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.CompareSecondaryDestinations ? "moj-side-navigation__item--active" : "") ">
-                    <a asp-route="@RouteConstants.CompareSecondaryDestinations">Destinations after year 11</a>
+                    <a href="@Url.RouteUrl(RouteConstants.CompareSecondaryDestinations, new { urns = Model.URNs })">Destinations after year 11</a>
                 </li>
                 <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.CompareSecondaryNextSteps ? "moj-side-navigation__item--active" : "")">
                     <a href="@Url.RouteUrl(RouteConstants.CompareSecondaryNextSteps, new {urns = Model.URNs})">Next steps</a>
