@@ -23,6 +23,7 @@ public static class RouteConstants
     public const string CompareSecondaryAcademicPerformancePupilAttainment = "CompareSecondaryAcademicPerformancePupilAttainment";
     public const string CompareSecondaryAcademicPerformanceEnglishAndMathsResults = "CompareSecondaryAcademicPerformanceEnglishAndMathsResults";
     public const string CompareSecondaryNextSteps = "CompareSecondaryNextSteps";
+    public const string CompareSecondaryDestinations = "CompareSecondaryDestinations";
 
     public const string CompareSecondaryView = "CompareSecondaryView";
 

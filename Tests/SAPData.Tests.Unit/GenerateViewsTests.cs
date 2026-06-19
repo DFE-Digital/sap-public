@@ -119,10 +119,35 @@ public class GenerateViewsTests : IDisposable
         var sql = File.ReadAllText(Path.Combine(_sqlDir, "04_v_establishment.sql"));
 
         // Assert: CTE and ISKS4 logic present
-        Assert.Contains("WITH ks4_urns AS", sql);
+        Assert.Contains("ks4_urns AS", sql);
         Assert.Contains("t.\"urn\" IN (SELECT \"urn\" FROM ks4_urns)", sql);
+        Assert.DoesNotContain("ks5_urns AS", sql);
+        Assert.DoesNotContain("t.\"urn\" IN (SELECT \"urn\" FROM ks5_urns)", sql);
         Assert.Contains("CASE WHEN", sql);
         Assert.Contains("AS \"ISKS4\"", sql);
+    }
+
+    [Fact]
+    public void EstablishmentView_Includes_KS5_CTE_And_ISKS5_Column()
+    {
+        //Arrange
+        WriteMapping(("edubasealldata20230912", "t_edubase_20230912"), ("ks5_perf", "t_ks5_perf"));
+        var rows = new List<DataMapRow>
+        {
+            Row("ks5_perf", "Establishment", "KS5_Performance", "SomeProp", "some_field")
+        };
+
+        // Act
+        new GenerateViews(rows, _mappingPath, _sqlDir).Run();
+        var sql = File.ReadAllText(Path.Combine(_sqlDir, "04_v_establishment.sql"));
+
+        // Assert: CTE and ISKS5 logic present
+        Assert.Contains("ks5_urns AS", sql);
+        Assert.Contains("t.\"urn\" IN (SELECT \"urn\" FROM ks5_urns)", sql);
+        Assert.DoesNotContain("ks4_urns AS", sql);
+        Assert.DoesNotContain("t.\"urn\" IN (SELECT \"urn\" FROM ks4_urns)", sql);
+        Assert.Contains("CASE WHEN", sql);
+        Assert.Contains("AS \"ISKS5\"", sql);
     }
 
     [Fact]
@@ -135,7 +160,7 @@ public class GenerateViewsTests : IDisposable
         Row("ks4_perf", "Establishment", "KS4_Performance", "SomeProp", "some_field")
     };
 
-        var filters = SqlViewFilterProvider.GetEstablishmentFilters(
+        var filters = SqlViewFilterProvider.GetEstablishmentFilters(["KS4", "KS5"],
             new Dictionary<string, string> { { "KS4", "t.\"urn\" IN (SELECT \"urn\" FROM ks4_urns)" } }
         );
 

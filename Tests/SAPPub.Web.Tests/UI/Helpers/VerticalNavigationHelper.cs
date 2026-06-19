@@ -14,6 +14,8 @@ public class VerticalNavigationHelper(IPage page)
 
     public ILocator ActiveLink => ActiveItem.Locator("a");
 
+    public ILocator GetItem(string label) => Nav.Locator(".moj-side-navigation__item a").Filter(new() { HasText = label });
+
     public async Task ShouldBeVisibleAsync()
     {
         Assert.True(await Nav.IsVisibleAsync(), "Vertical navigation should be visible");
@@ -37,5 +39,5 @@ public class VerticalNavigationHelper(IPage page)
     }
 
     public Task<string?> GetActiveHrefAsync() => ActiveLink.GetAttributeAsync("href");
-    
+
 }
