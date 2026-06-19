@@ -44,4 +44,12 @@ public class SecondaryController : Controller
         var model = new CompareNextStepsViewModel { URNs = urns };
         return View(model);
     }
+
+    [HttpGet]
+    [Route("destinations-after-year-11", Name = RouteConstants.CompareSecondaryDestinations)]
+    public async Task<IActionResult> Destinations(List<string> urns)
+    {
+        var model = new CompareDestinationsViewModel { URNs = urns };
+        return View(model);
+    }
 }
