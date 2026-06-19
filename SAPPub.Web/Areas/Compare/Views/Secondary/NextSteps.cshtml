@@ -29,5 +29,9 @@
             You can find out more about each school you're comparing by viewing the school profile or visiting the school website.
         </p>
 
+        <govuk-pagination id="academic-performance-attainment-pagination">
+            <govuk-pagination-previous href="@Url.RouteUrl(RouteConstants.CompareSecondaryAcademicPerformanceEnglishAndMathsResults, new { urns = Model.URNs })">Academic performance: English and maths results</govuk-pagination-previous>
+        </govuk-pagination>
+
     </div>
 </div>
