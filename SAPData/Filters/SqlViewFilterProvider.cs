@@ -36,36 +36,47 @@
         }
 
 
-        public static List<SqlViewFilter> GetEstablishmentFilters(Dictionary<string, string>? keyStageUrnsSqlConditions = null)
+        public static List<SqlViewFilter> GetEstablishmentFilters(
+    IEnumerable<string>? keyStages = null,
+    Dictionary<string, string>? keyStageUrnsSqlConditions = null)
         {
             var filters = new List<SqlViewFilter>
-            {
-                new SqlViewFilter("ExcludeNurseries", tableAlias =>
-                    $"clean_int({tableAlias}.\"phaseofeducation__code_\") <> 1"),
-                new SqlViewFilter("IncludeOnlyInScopeSchoolTypes", tableAlias =>
-                    $"clean_int({tableAlias}.\"typeofestablishment__code_\") IN (1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 18, 26, 28, 31, 33, 34, 35, 36, 39, 40, 41, 44, 45, 46, 56)"),
-                new SqlViewFilter("ExcludeClosed3YrSchools", tableAlias =>
-                    $"({tableAlias}.\"closedate\" IS NULL OR {tableAlias}.\"closedate\" = '' OR TO_DATE({tableAlias}.\"closedate\", 'DD/MM/YYYY') >= '{GetAcademicYearCutoffDate()}')"),
-                new SqlViewFilter("ExcludeProposedToOpen", tableAlias =>
-                    $"clean_int({tableAlias}.\"establishmentstatus__code_\") <> 4")
-                };
+    {
+        new SqlViewFilter("ExcludeNurseries", tableAlias =>
+            $"clean_int({tableAlias}.\"phaseofeducation__code_\") <> 1"),
+        new SqlViewFilter("IncludeOnlyInScopeSchoolTypes", tableAlias =>
+            $"clean_int({tableAlias}.\"typeofestablishment__code_\") IN (1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 18, 26, 28, 31, 33, 34, 35, 36, 39, 40, 41, 44, 45, 46, 56)"),
+        new SqlViewFilter("ExcludeClosed3YrSchools", tableAlias =>
+            $"({tableAlias}.\"closedate\" IS NULL OR {tableAlias}.\"closedate\" = '' OR TO_DATE({tableAlias}.\"closedate\", 'DD/MM/YYYY') >= '{GetAcademicYearCutoffDate()}')"),
+        new SqlViewFilter("ExcludeProposedToOpen", tableAlias =>
+            $"clean_int({tableAlias}.\"establishmentstatus__code_\") <> 4")
+    };
 
-            if (keyStageUrnsSqlConditions != null)
+            if (keyStages != null)
             {
-                foreach (var kvp in keyStageUrnsSqlConditions)
+                filters.Add(new SqlViewFilter("IncludeKeyStages", tableAlias =>
                 {
-                    var keyStage = kvp.Key;
-                    var urnsSqlCondition = kvp.Value;
-                    filters.Add(new SqlViewFilter($"Include{keyStage}", tableAlias =>
-                    {
-                        return GetKeyStageFullCondition(keyStage, tableAlias, urnsSqlCondition);
-                    }));
+                    var conditions = new List<string>();
 
-                }
+                    foreach (var keyStage in keyStages)
+                    {
+                        string? urnsSqlCondition = null;
+                        if (keyStageUrnsSqlConditions != null &&
+                            keyStageUrnsSqlConditions.TryGetValue(keyStage, out var cond))
+                        {
+                            urnsSqlCondition = cond;
+                        }
+
+                        conditions.Add(GetKeyStageFullCondition(keyStage, tableAlias, urnsSqlCondition));
+                    }
+
+                    return conditions.Count == 0
+                        ? "TRUE"
+                        : $"({string.Join(" OR ", conditions)})";
+                }));
             }
 
             return filters;
-
         }
 
         public static string GetAcademicYearCutoffDate(DateTime now)

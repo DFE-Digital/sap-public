@@ -102,6 +102,7 @@ namespace SAPPub.Web.Middleware
 
             services.AddTransient<ISchoolSearchIndexReader, PostgresSchoolSearchIndexReader>();
             services.AddTransient<ISchoolSearchService, SchoolSearchService>();
+            services.AddTransient<ISearchVisibilityPolicy, FeatureFlagSearchVisibilityPolicy>();
 
             services.AddScoped<IEmailRepository, EmailRepository>();
             services.AddScoped<IEmailService, EmailService>();

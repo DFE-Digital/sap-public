@@ -1,10 +1,11 @@
-﻿@model SAPPub.Web.Areas.Compare.ViewModels.Secondary.CompareAcademicPerformanceProgressAndAttainmentViewModel
+﻿
+@model SAPPub.Web.Areas.Compare.ViewModels.Secondary.CompareAcademicPerformancePupilAttainmentViewModel
 @using SAPPub.Web.Constants
 @using SAPPub.Web.ViewComponents.VerticalNavigationCompareSecondary
 
 @{
     ViewData["Header"] = "Academic Perfomance";
-    ViewData["SubHeader"] = PageTitleConstants.SecondarySchoolPageTitles.PupilProgressAndAttainment;
+    ViewData["SubHeader"] = PageTitleConstants.SecondarySchoolPageTitles.PupilAttainment;
     ViewData["Title"] = $"Compare - {ViewData["SubHeader"]}";
 }
 
@@ -14,7 +15,7 @@
     new VerticalNavigationCompareSecondaryModel
     {
         URNs = Model.URNs,
-        ActivePage = RouteConstants.CompareSecondaryAcademicPerformancePupilProgressAndAttainment
+        ActivePage = RouteConstants.CompareSecondaryAcademicPerformancePupilAttainment
     })
 
     <div class="govuk-grid-column-three-quarters">
@@ -31,7 +32,7 @@
         <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
             <ul class="moj-sub-navigation__list">
                 <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" aria-current="page" href="@Url.RouteUrl(RouteConstants.CompareSecondaryAcademicPerformancePupilProgressAndAttainment)@Model.RouteQueryString">@ViewData["SubHeader"]</a>
+                    <a class="moj-sub-navigation__link" aria-current="page" href="@Url.RouteUrl(RouteConstants.CompareSecondaryAcademicPerformancePupilAttainment)@Model.RouteQueryString">@ViewData["SubHeader"]</a>
                 </li>
                 <li class="moj-sub-navigation__item">
                     <a class="moj-sub-navigation__link" href="@Url.RouteUrl(RouteConstants.CompareSecondaryAcademicPerformanceEnglishAndMathsResults)@Model.RouteQueryString"> @PageTitleConstants.SecondarySchoolPageTitles.EnglishAndMathsResults</a>

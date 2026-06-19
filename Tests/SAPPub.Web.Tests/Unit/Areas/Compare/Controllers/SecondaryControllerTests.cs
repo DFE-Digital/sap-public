@@ -36,11 +36,11 @@ namespace SAPPub.Web.Tests.Unit.Areas.Compare.Controllers
             var urnList = new List<string> { urn1, urn2 };
 
             // Act
-            var result = await controller.AcademicPerformancePupilProgressAndAttainment(urnList) as ViewResult;
+            var result = await controller.AcademicPerformancePupilAttainment(urnList) as ViewResult;
 
             // Assert
             Assert.NotNull(result);
-            var model = result.Model as CompareAcademicPerformanceProgressAndAttainmentViewModel;
+            var model = result.Model as CompareAcademicPerformancePupilAttainmentViewModel;
             Assert.NotNull(model);
             Assert.Equal(2, model.URNs.Count);
             Assert.Equal(model.RouteQueryString, $"?urns={urn1}&urns={urn2}");
