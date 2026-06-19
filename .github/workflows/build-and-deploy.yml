@@ -335,7 +335,7 @@ jobs:
           APP_NAME="sap-public-pr-${PR_NUMBER}"
           BACKUP_FILE="seed.sql.gz"
           LOG_FILE="pr_seed_restore.log"
-          MAX_ATTEMPTS=5
+          MAX_ATTEMPTS=1
 
           : "${AKS_NAMESPACE:?AKS_NAMESPACE is not set}"
           ls -lh "${BACKUP_FILE}"
