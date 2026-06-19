@@ -64,6 +64,6 @@ public class NextStepsPageTests : PageTestsBase
         Assert.NotNull(nav);
         Assert.Null(navNext);
         Assert.NotNull(navPrevious);
-        Assert.Contains("Academic performance: English and maths results", navPrevious.TextContent);
+        Assert.Contains("Destinations after year 11", navPrevious.TextContent);
     }
 }

@@ -43,6 +43,6 @@ public class EnglishAndMathsResultsTests : PageTestsBase
         Assert.NotNull(navNext);
         Assert.NotNull(navPrevious);
         Assert.Contains("Academic performance: Pupil attainment", navPrevious.TextContent);
-        Assert.Contains("Next steps", navNext.TextContent);
+        Assert.Contains("Destinations after year 11", navNext.TextContent);
     }
 }
