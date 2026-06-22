@@ -39,5 +39,9 @@
             </ul>
         </nav>
 
+        <govuk-pagination id="academic-performance-english-maths-pagination">
+            <govuk-pagination-previous href="@Url.RouteUrl(RouteConstants.CompareSecondaryAcademicPerformancePupilAttainment, new { urns = Model.URNs })">Academic performance: Pupil attainment</govuk-pagination-previous>
+            <govuk-pagination-next href="@Url.RouteUrl(RouteConstants.CompareSecondaryDestinations, new { urns = Model.URNs })">Destinations after year 11</govuk-pagination-next>
+        </govuk-pagination>
     </div>
 </div>
