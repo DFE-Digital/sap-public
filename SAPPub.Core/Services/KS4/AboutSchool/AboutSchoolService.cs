@@ -79,8 +79,10 @@ public sealed class AboutSchoolService(
             OpenReasonId = establishment.OpenReasonId,
             SenTypes = establishment.SenTypes,
             Predecessors = predecessorLinks,
-            Successors = sucessorLinks            
+            Successors = sucessorLinks,
+            IsKS2 = establishment.IsKS2,
+            IsKS4 = establishment.IsKS4,
+            IsKS5 = establishment.IsKS5
         };
-
     }
 }

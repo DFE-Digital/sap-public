@@ -338,6 +338,12 @@ public class EstablishmentTestBuilder
         return this;
     }
 
+    public EstablishmentTestBuilder WithIsKeyStage2(bool isKS2)
+    { 
+        _establishment.IsKS2 = isKS2;
+        return this;
+    }
+
     public EstablishmentTestBuilder WithIsKeyStage4(bool isKS4)
     {
         _establishment.IsKS4 = isKS4;

@@ -157,7 +157,9 @@ public class SecondarySchoolControllerTests
             Status = _fakeEstablishment.StatusCode.ToStatus(),
             ClosedDate = _fakeEstablishment.ClosedDate.ToDateOnly(),
             OpenReasonId = _fakeEstablishment.OpenReasonId,
-            OpenDate = _fakeEstablishment.OpenDate.ToDateOnly()
+            OpenDate = _fakeEstablishment.OpenDate.ToDateOnly(),
+            IsKS2 = true,
+            IsKS4 = true
         };
     }
 
@@ -189,6 +191,8 @@ public class SecondarySchoolControllerTests
             .WithOpenReasonId(10)
             .WithOpenDate()
             .WithSenTypes("VI - Visual Impairment, HI - Hearing Impairment")
+            .WithIsKeyStage2(true)
+            .WithIsKeyStage4(true)
             .Build();
 
         _mockLogger = new Mock<ILogger<SecondarySchoolController>>();
@@ -254,6 +258,7 @@ public class SecondarySchoolControllerTests
         Assert.Equal(TextHelpers.CleanForUrl(expectedResult.SchoolName), model.RouteAttributes[RouteConstants.SchoolName]);
         Assert.Equal(expectedResult.OpenReasonId, model.OpenReasonId);
         Assert.Equal(expectedResult.SenTypes, model.SenTypes.Value);
+        Assert.Equal("Primary and Secondary", model.EducationPhase);
     }
 
     [Fact]

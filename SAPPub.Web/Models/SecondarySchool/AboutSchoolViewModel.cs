@@ -76,6 +76,8 @@ namespace SAPPub.Web.Models.SecondarySchool
         public List<SuccessorOrPredecessorDetailsModel>? Predecessors { get; set; }
         public List<SuccessorOrPredecessorDetailsModel>? Successors { get; set; }
 
+        public string? EducationPhase { get; set;  }
+
         public static AboutSchoolViewModel Map(AboutSchoolModel schoolDetails)
         {
             var latLong = MappingHelper.ConvertToLatLon(schoolDetails.Easting, schoolDetails.Northing);
@@ -111,7 +113,8 @@ namespace SAPPub.Web.Models.SecondarySchool
                 SenTypes = schoolDetails.SenTypes.ToDisplayField(),
                 RecentlyOpenedSchoolMessage = GetRecentlyOpenedSchoolMessage(schoolDetails.OpenReasonId, schoolDetails.OpenDate),
                 Predecessors = schoolDetails.Predecessors?.Select(p => SuccessorOrPredecessorDetailsModel.Map(p)).ToList(),
-                Successors = schoolDetails.Successors?.Select(s => SuccessorOrPredecessorDetailsModel.Map(s)).ToList()
+                Successors = schoolDetails.Successors?.Select(s => SuccessorOrPredecessorDetailsModel.Map(s)).ToList(),
+                EducationPhase = EducationPhaseFormatter.Format(schoolDetails.IsKS2, schoolDetails.IsKS4, schoolDetails.IsKS5)
             };
         }
 
