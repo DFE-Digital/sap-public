@@ -32,13 +32,7 @@ public class CompareDestinationsViewModel : CompareSecondarySchoolBaseViewModel
         }
     }
 
-    //public required List<string> URNs { get; set; } // from base class
-    public required DisplayField<bool> HasEstablishmentData { get; set; }
-
     public required double? EnglandPercentage { get; set; }
-
-    // Ideally I think the data would sit in SchoolDestinationDetails and be transformed into the shape needed for the graph
-    //public required DataViewModel AllDestinationsData { get; set; }
 
     public DataViewModel AllDestinationsData => new DataViewModel
     {
@@ -55,27 +49,7 @@ public class CompareDestinationsViewModel : CompareSecondarySchoolBaseViewModel
             URNs = urns,
             SchoolDetails = destinationsDetails
                 .Select(d => SchoolDestinationDetails.Map(d, establishments.First(e => e.URN == d.Urn))),
-            EnglandPercentage = destinationsDetails.First().EnglandAll.CurrentYear,
-            //HasEstablishmentData = new[]
-            //    {
-            //        destinationsDetails.SchoolAll.CurrentYear,
-            //        destinationsDetails.SchoolAll.PreviousYear,
-            //        destinationsDetails.SchoolAll.TwoYearsAgo,
-            //    }.All(d => d is double v && v != 0),
-            HasEstablishmentData = true.ToDisplayField(), // CML TODO
-            //AllDestinationsData = new DataViewModel
-            //{
-            //    Labels = destinationsDetails
-            //        .Select(d => d.SchoolName)
-            //        .ToList()
-            //        .Concat(["England average"])
-            //        .ToList(),
-            //    Data = destinationsDetails
-            //        .Select(d => d.SchoolAll.CurrentYear)
-            //        .ToList()
-            //        .Concat([destinationsDetails.First().EnglandAll.CurrentYear])
-            //        .ToList(),
-            //},
+            EnglandPercentage = destinationsDetails.First().EnglandAll.CurrentYear
         };
     }
 }

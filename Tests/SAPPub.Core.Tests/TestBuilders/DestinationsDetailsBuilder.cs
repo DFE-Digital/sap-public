@@ -45,7 +45,6 @@ public class DestinationsDetailsBuilder
         var faker = new Bogus.Faker();
         return new DestinationsDetails
         {
-            // CML TODO : check this geberation of numbers is correct for the test data
             Urn = _urn ?? string.Empty,
             SchoolName = _establishmentName ?? string.Empty,
             LocalAuthorityName = _laName ?? string.Empty,

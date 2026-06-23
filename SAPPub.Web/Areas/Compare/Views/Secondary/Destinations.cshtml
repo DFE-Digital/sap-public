@@ -63,42 +63,38 @@
         </p>
 
         <div class="data-container">
-            <p class="govuk-body">Information in this section is for the 2024 to 2025 academic year</p>
             <input type="radio" name="dataView" id="current-view" class="govuk-visually-hidden" aria-labelledby="all-dest-show-current-data-btn" checked />
             <input type="radio" name="dataView" id="data-overtime-view" class="govuk-visually-hidden" aria-labelledby="all-dest-show-data-over-time-btn" />
 
-            @if (Model.HasEstablishmentData.IsAvailable)
-            {
-                <div id="all-dest-current-year-data-container" class="all-dest-current-year-data-container">
-                    <div id="all-dest-current-year-chart-container" class="chart-container all-dest-current-year-chart-container">
-                        <canvas id="all-destinations-chart"
-                                class="js-chart"
-                                data-type="bar"
-                                data-not-available-text="@(NotAvailable)"
-                                data-chart='@Html.Raw(Json.Serialize(Model.AllDestinationsData))'
-                                data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
-                        </canvas>
-                    </div>
-
-                    <div id="all-dest-current-year-table-container" class="all-dest-current-year-table-container">
-                        <table id="all-destinations-current-year-table" class="govuk-table">
-                            <tbody class="govuk-table__body">
-                                @foreach (var data in Model.AllDestinationsData.Data.Select((value, i) => (value, i)))
-                                {
-                                    <tr class="govuk-table__row">
-                                        <th scope="row" class="govuk-table__header">@Model.AllDestinationsData.Labels[data.i]</th>
-                                        <td class="govuk-table__cell">@(data.value.HasValue? data.value + "%" : Constants.NotAvailable)</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="govuk-button-group">
-                        <button id="all-dest-current-year-show-btn" class="govuk-button govuk-button--secondary all-dest-current-year-show-btn">Show as a table</button>
-                    </div>
+            <div id="all-dest-current-year-data-container" class="all-dest-current-year-data-container">
+                <div id="all-dest-current-year-chart-container" class="chart-container all-dest-current-year-chart-container">
+                    <canvas id="all-destinations-chart"
+                            class="js-chart"
+                            data-type="bar"
+                            data-not-available-text="@(NotAvailable)"
+                            data-chart='@Html.Raw(Json.Serialize(Model.AllDestinationsData))'
+                            data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
+                    </canvas>
                 </div>
-            }
+
+                <div id="all-dest-current-year-table-container" class="all-dest-current-year-table-container">
+                    <table id="all-destinations-current-year-table" class="govuk-table">
+                        <tbody class="govuk-table__body">
+                            @foreach (var data in Model.AllDestinationsData.Data.Select((value, i) => (value, i)))
+                            {
+                                <tr class="govuk-table__row">
+                                    <th scope="row" class="govuk-table__header">@Model.AllDestinationsData.Labels[data.i]</th>
+                                    <td class="govuk-table__cell">@(data.value.HasValue? data.value + "%" : Constants.NotAvailable)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="govuk-button-group">
+                    <button id="all-dest-current-year-show-btn" class="govuk-button govuk-button--secondary all-dest-current-year-show-btn">Show as a table</button>
+                </div>
+            </div>
         </div>
 
         <h3 class="govuk-heading-s">What you could ask schools about pupil destinations</h3>
