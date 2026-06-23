@@ -1,0 +1,148 @@
+﻿using SAPPub.Core.Entities;
+using SAPPub.Core.Entities.KS4.Destinations;
+
+namespace SAPPub.Core.Tests.TestBuilders;
+
+public class DestinationsDetailsBuilder
+{
+    private string? _urn;
+    private string? _establishmentName;
+    private string? _laName;
+    private double? _englandPercentage;
+    private double? _laPercentage;
+
+    public DestinationsDetailsBuilder WithUrn(string urn)
+    {
+        _urn = urn;
+        return this;
+    }
+
+    public DestinationsDetailsBuilder WithEstablishmentName(string establishmentName)
+    {
+        _establishmentName = establishmentName;
+        return this;
+    }
+
+    public DestinationsDetailsBuilder WithLAName(string laName)
+    {
+        _laName = laName;
+        return this;
+    }
+
+    public DestinationsDetailsBuilder WithLaPercentage(double laPercentage)
+    {
+        _laPercentage = laPercentage;
+        return this;
+    }
+    public DestinationsDetailsBuilder WithEnglandPercentage(double englandPercentage)
+    {
+        _englandPercentage = englandPercentage;
+        return this;
+    }
+
+    public DestinationsDetails Build()
+    {
+        var faker = new Bogus.Faker();
+        return new DestinationsDetails
+        {
+            // CML TODO : check this geberation of numbers is correct for the test data
+            Urn = _urn ?? string.Empty,
+            SchoolName = _establishmentName ?? string.Empty,
+            LocalAuthorityName = _laName ?? string.Empty,
+            SchoolAll = new RelativeYearValues<double?>
+            {
+                CurrentYear = Math.Round(faker.Random.Double(5, 100), 1),
+                PreviousYear = Math.Round(faker.Random.Double(5, 100), 1),
+                TwoYearsAgo = Math.Round(faker.Random.Double(5, 100), 1)
+            },
+            LocalAuthorityAll = new RelativeYearValues<double?>
+            {
+                CurrentYear = _laPercentage ?? Math.Round(faker.Random.Double(5, 100), 1),
+                PreviousYear = Math.Round(faker.Random.Double(5, 100), 1),
+                TwoYearsAgo = Math.Round(faker.Random.Double(5, 100), 1)
+            },
+            EnglandAll = new RelativeYearValues<double?>
+            {
+                CurrentYear = _englandPercentage ?? Math.Round(faker.Random.Double(5, 100), 1),
+                PreviousYear = Math.Round(faker.Random.Double(5, 100), 1),
+                TwoYearsAgo = Math.Round(faker.Random.Double(5, 100), 1)
+            },
+            SchoolEducation = new RelativeYearValues<double?>
+            {
+                CurrentYear = Math.Round(faker.Random.Double(5, 100), 1),
+                PreviousYear = Math.Round(faker.Random.Double(5, 100), 1),
+                TwoYearsAgo = Math.Round(faker.Random.Double(5, 100), 1)
+            },
+            LocalAuthorityEducation = new RelativeYearValues<double?>
+            {
+                CurrentYear = Math.Round(faker.Random.Double(5, 100), 1),
+                PreviousYear = Math.Round(faker.Random.Double(5, 100), 1),
+                TwoYearsAgo = Math.Round(faker.Random.Double(5, 100), 1)
+            },
+            EnglandEducation = new RelativeYearValues<double?>
+            {
+                CurrentYear = Math.Round(faker.Random.Double(5, 100), 1),
+                PreviousYear = Math.Round(faker.Random.Double(5, 100), 1),
+                TwoYearsAgo = Math.Round(faker.Random.Double(5, 100), 1)
+            },
+            SchoolEmployment = new RelativeYearValues<double?>
+            {
+                CurrentYear = Math.Round(faker.Random.Double(5, 100), 1),
+                PreviousYear = Math.Round(faker.Random.Double(5, 100), 1),
+                TwoYearsAgo = Math.Round(faker.Random.Double(5, 100), 1)
+            },
+            LocalAuthorityEmployment = new RelativeYearValues<double?>
+            {
+                CurrentYear = Math.Round(faker.Random.Double(5, 100), 1),
+                PreviousYear = Math.Round(faker.Random.Double(5, 100), 1),
+                TwoYearsAgo = Math.Round(faker.Random.Double(5, 100), 1)
+            },
+            EnglandEmployment = new RelativeYearValues<double?>
+            {
+                CurrentYear = Math.Round(faker.Random.Double(5, 100), 1),
+                PreviousYear = Math.Round(faker.Random.Double(5, 100), 1),
+                TwoYearsAgo = Math.Round(faker.Random.Double(5, 100), 1)
+            },
+            SchoolApprentice = new RelativeYearValues<double?>
+            {
+                CurrentYear = Math.Round(faker.Random.Double(5, 100), 1),
+                PreviousYear = Math.Round(faker.Random.Double(5, 100), 1),
+                TwoYearsAgo = Math.Round(faker.Random.Double(5, 100), 1)
+            },
+            LocalAuthorityApprentice = new RelativeYearValues<double?>
+            {
+                CurrentYear = Math.Round(faker.Random.Double(5, 100), 1),
+                PreviousYear = Math.Round(faker.Random.Double(5, 100), 1),
+                TwoYearsAgo = Math.Round(faker.Random.Double(5, 100), 1)
+            },
+            EnglandApprentice = new RelativeYearValues<double?>
+            {
+                CurrentYear = Math.Round(faker.Random.Double(5, 100), 1),
+                PreviousYear = Math.Round(faker.Random.Double(5, 100), 1),
+                TwoYearsAgo = Math.Round(faker.Random.Double(5, 100), 1)
+            },
+        };
+    }
+
+    public DestinationsDetails BuildResultsNotAvailable()
+    {
+        return new DestinationsDetails
+        {
+            Urn = _urn ?? string.Empty,
+            SchoolName = _establishmentName ?? string.Empty,
+            LocalAuthorityName = _laName ?? string.Empty,
+            SchoolAll = new RelativeYearValues<double?> { CurrentYear = null },
+            LocalAuthorityAll = new RelativeYearValues<double?> { CurrentYear = null },
+            EnglandAll = new RelativeYearValues<double?> { CurrentYear = null },
+            SchoolEducation = new RelativeYearValues<double?> { CurrentYear = null },
+            LocalAuthorityEducation = new RelativeYearValues<double?> { CurrentYear = null },
+            EnglandEducation = new RelativeYearValues<double?> { CurrentYear = null },
+            SchoolEmployment = new RelativeYearValues<double?> { CurrentYear = null },
+            LocalAuthorityEmployment = new RelativeYearValues<double?> { CurrentYear = null },
+            EnglandEmployment = new RelativeYearValues<double?> { CurrentYear = null },
+            SchoolApprentice = new RelativeYearValues<double?> { CurrentYear = null },
+            LocalAuthorityApprentice = new RelativeYearValues<double?> { CurrentYear = null },
+            EnglandApprentice = new RelativeYearValues<double?> { CurrentYear = null },
+        };
+    }
+}

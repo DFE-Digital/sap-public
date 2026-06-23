@@ -1,5 +1,6 @@
 ﻿@model SAPPub.Web.Areas.Compare.ViewModels.Secondary.CompareDestinationsViewModel
 @using SAPPub.Web.Constants
+@using static SAPPub.Web.Constants.Constants;
 @using SAPPub.Web.ViewComponents.VerticalNavigationCompareSecondary
 
 @{
@@ -23,9 +24,97 @@
             @ViewData["Header"]
         </h1>
 
-        <govuk-pagination id="destinations-pagination">
-            <govuk-pagination-previous href="@Url.RouteUrl(RouteConstants.CompareSecondaryAcademicPerformanceEnglishAndMathsResults, new { urns = Model.URNs })">Academic performance: English and maths results</govuk-pagination-previous>
-            <govuk-pagination-next href="@Url.RouteUrl(RouteConstants.CompareSecondaryNextSteps, new { urns = Model.URNs })">Next steps</govuk-pagination-next>
-        </govuk-pagination>
+        <h2 class="govuk-heading-s">Sixth form offering</h2>
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th class="govuk-table__header">School</th>
+                    <th class="govuk-table__header">Sixth form available</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+            @foreach (var school in Model.SchoolDetails)
+            {
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">@school.SchoolName</td>
+                    <td class="govuk-table__cell">@school.SixthForm.DisplayText()</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+
+        <h2 class="govuk-heading-m">Staying in education, employment and apprenticeships</h2>
+        <p class="govuk-body">
+            Pupils usually finish KS4 after year 11 when they are 16. Between the ages of 16 and 18 they must be either:
+            <ul class="govuk-list govuk-list--bullet">
+                <li>in full-time education, for example at a college or sixth form</li>
+                <li>doing an apprenticeship</li>
+                <li>spending 20 hours or more a week working or volunteering, while in part-time education or training</li>
+            </ul>
+        </p>
+
+        <h3 class="govuk-heading-s">Percentage of pupils staying in education, employment and apprenticeships</h3>
+        <p class="govuk-body">
+            This shows the percentage of pupils who either stayed in education, went into an apprenticeship or entered employment 
+            for at least 6 months after finishing KS4.
+        </p>
+        <p>
+            If a pupil changes what they are doing before reaching sixth months they are not recorded in this data.
+        </p>
+
+        <div class="data-container">
+            <p class="govuk-body">Information in this section is for the 2024 to 2025 academic year</p>
+            <input type="radio" name="dataView" id="current-view" class="govuk-visually-hidden" aria-labelledby="all-dest-show-current-data-btn" checked />
+            <input type="radio" name="dataView" id="data-overtime-view" class="govuk-visually-hidden" aria-labelledby="all-dest-show-data-over-time-btn" />
+
+            @if (Model.HasEstablishmentData.IsAvailable)
+            {
+                <div id="all-dest-current-year-data-container" class="all-dest-current-year-data-container">
+                    <div id="all-dest-current-year-chart-container" class="chart-container all-dest-current-year-chart-container">
+                        <canvas id="all-destinations-chart"
+                                class="js-chart"
+                                data-type="bar"
+                                data-not-available-text="@(NotAvailable)"
+                                data-chart='@Html.Raw(Json.Serialize(Model.AllDestinationsData))'
+                                data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
+                        </canvas>
+                    </div>
+
+                    <div id="all-dest-current-year-table-container" class="all-dest-current-year-table-container">
+                        <table id="all-destinations-current-year-table" class="govuk-table">
+                            <tbody class="govuk-table__body">
+                                @foreach (var data in Model.AllDestinationsData.Data.Select((value, i) => (value, i)))
+                                {
+                                    <tr class="govuk-table__row">
+                                        <th scope="row" class="govuk-table__header">@Model.AllDestinationsData.Labels[data.i]</th>
+                                        <td class="govuk-table__cell">@(data.value.HasValue? data.value + "%" : Constants.NotAvailable)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="govuk-button-group">
+                        <button id="all-dest-current-year-show-btn" class="govuk-button govuk-button--secondary all-dest-current-year-show-btn">Show as a table</button>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <h3 class="govuk-heading-s">What you could ask schools about pupil destinations</h3>
+        <p class="govuk-body">When researching, contacting or visiting a school, you may want to ask:</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>how the school supports pupils with their post-16 choices</li>
+            <li>whether work experience is available through the school</li>
+            <li>what career advice or support is available</li>
+            <li>will subject choice affect future applications</li>
+        </ul>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/chart.umd.js"></script>
+    <script src="~/js/chartjs-plugin-datalabels.min.js"></script>
+    <script src="~/js/chart-factory.js"></script>
+    <script src="~/js/compare/secondary-destinations.js"></script>
+}

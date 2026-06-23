@@ -50,13 +50,13 @@ public class EnsureUrnsAreSecondaryFilterTests
 
         executedContext = new ActionExecutedContext(
                 actionContext,
-                new List<IFilterMetadata>(),
+                [],
                 controller: null!
             );
     }
 
     [Fact]
-    public async Task Filter_ContextHasValidUrns_ReturnsUrns()
+    public async Task Filter_ContextHasValidUrns_ReturnsUrnsAndAddsEstablishmentsToContext()
     {
         // Arrange
         var actionArguments = new Dictionary<string, object?>
@@ -66,16 +66,16 @@ public class EnsureUrnsAreSecondaryFilterTests
 
         var context = new ActionExecutingContext(
             actionContext,
-            new List<IFilterMetadata>(),
+            [],
             actionArguments,
             null!);
 
         var nextCalled = false;
-        ActionExecutionDelegate next = () =>
+        Task<ActionExecutedContext> next()
         {
             nextCalled = true;
             return Task.FromResult(executedContext);
-        };
+        }
 
         // Act
         await filter.OnActionExecutionAsync(context, next);
@@ -87,6 +87,11 @@ public class EnsureUrnsAreSecondaryFilterTests
         Assert.Collection(resultUrns,
             urn => Assert.Equal(establishment1IsKS4.URN, urn),
             urn => Assert.Equal(establishment2IsKS4.URN, urn)
+        );
+        var temp = context.HttpContext.Items["Establishments"];
+        Assert.Collection(context.HttpContext.Items["Establishments"]! as List<Establishment>,
+            est => Assert.Equal(establishment1IsKS4.URN, est.URN),
+            est => Assert.Equal(establishment2IsKS4.URN, est.URN)
         );
         Assert.True(nextCalled);
     }
@@ -102,16 +107,16 @@ public class EnsureUrnsAreSecondaryFilterTests
 
         var context = new ActionExecutingContext(
             actionContext,
-            new List<IFilterMetadata>(),
+            [],
             actionArguments,
             null!);
 
         var nextCalled = false;
-        ActionExecutionDelegate next = () =>
+        Task<ActionExecutedContext> next()
         {
             nextCalled = true;
             return Task.FromResult(executedContext);
-        };
+        }
 
         // Act
         await filter.OnActionExecutionAsync(context, next);
@@ -138,16 +143,17 @@ public class EnsureUrnsAreSecondaryFilterTests
 
         var context = new ActionExecutingContext(
             actionContext,
-            new List<IFilterMetadata>(),
+            [],
             actionArguments,
             null!);
 
         var nextCalled = false;
-        ActionExecutionDelegate next = () =>
+        Task<ActionExecutedContext> next()
         {
             nextCalled = true;
             return Task.FromResult(executedContext);
-        };
+        }
+        ;
 
         // Act
         await filter.OnActionExecutionAsync(context, next);

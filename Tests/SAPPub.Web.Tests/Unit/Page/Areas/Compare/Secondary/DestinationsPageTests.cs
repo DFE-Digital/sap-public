@@ -1,6 +1,11 @@
-﻿using Moq;
+﻿using AngleSharp.Dom;
+using AngleSharp.Html.Dom;
+using Moq;
 using SAPPub.Core.Entities;
+using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services;
+using SAPPub.Core.Interfaces.Services.KS4;
+using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
 
 namespace SAPPub.Web.Tests.Unit.Page.Areas.Compare.Secondary;
@@ -9,22 +14,38 @@ namespace SAPPub.Web.Tests.Unit.Page.Areas.Compare.Secondary;
 public class DestinationsPageTests : PageTestsBase
 {
     private string _pageUrl = "compare/secondary/destinations-after-year-11";
-    private List<string> _urns = new List<string> { "100279", "145179" };
+    private List<string> _urns = ["100279", "145179"];
     private string QueryString => string.Join("&", _urns.Select(urn => $"urns={urn}"));
+
+    private readonly List<Establishment> _establishments = new();
     private readonly Mock<IEstablishmentService> _establishmentService = new();
+    private readonly List<DestinationsDetails> _destinationsDetails = new();
+    private readonly Mock<IDestinationsService> _destinationsService = new();
 
     public DestinationsPageTests(WebAppFixture fixture) : base(fixture)
     {
         _establishmentService = UseMock<IEstablishmentService>();
+        _destinationsService = UseMock<IDestinationsService>();
         foreach (var urn in _urns)
         {
+            var establishment = new EstablishmentTestBuilder()
+                        .WithURN(urn)
+                        .WithEstablishmentName($"School {urn}")
+                        .WithIsKeyStage4(true)
+                        .WithSixthForm(true)
+                        .Build();
+            _establishments.Add(establishment);
             _establishmentService.Setup(s => s.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Establishment
-                {
-                    URN = urn,
-                    EstablishmentName = $"School {urn}",
-                    IsKS4 = true
-                });
+                .ReturnsAsync(establishment);
+
+            var destinationsDetails = new DestinationsDetailsBuilder()
+                        .WithUrn(urn)
+                        .WithEstablishmentName($"School {urn}")
+                        .WithEnglandPercentage(75.1)
+                        .Build();
+            _destinationsDetails.Add(destinationsDetails);
+            _destinationsService.Setup(s => s.GetDestinationsDetailsAsync(urn, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(destinationsDetails);
         }
     }
 
@@ -72,20 +93,42 @@ public class DestinationsPageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task DisplaysPagination()
+    public async Task DestinationsPage_DestinationsDataAvailable_DisplaysExpectedSchoolComparisonTableContent()
     {
-        // Arrange
+        // Act
         var doc = await Fixture.BrowseToPage($"{_pageUrl}?{QueryString}");
 
-        // Act
-        var nav = doc.QuerySelector("#destinations-pagination");
-        var navNext = doc.QuerySelector("#destinations-pagination .govuk-pagination__next a");
-        var navPrevious = doc.QuerySelector("#destinations-pagination .govuk-pagination__prev a");
+        // Assert
+        var table = doc.QuerySelector<IHtmlTableElement>("#all-destinations-current-year-table");
+        Assert.NotNull(table);
+        Assert.Equal($"{_destinationsDetails[0].SchoolAll.CurrentYear}%", table.GetTableValueByRowHeader(_destinationsDetails[0].SchoolName));
+        Assert.Equal($"{_destinationsDetails[1].SchoolAll.CurrentYear}%", table.GetTableValueByRowHeader(_destinationsDetails[1].SchoolName));
+        Assert.Equal("75.1%", table.GetTableValueByRowHeader("England average"));
+    }
 
-        Assert.NotNull(nav);
-        Assert.NotNull(navNext);
-        Assert.NotNull(navPrevious);
-        Assert.Contains("Academic performance: English and maths results", navPrevious.TextContent);
-        Assert.Contains("Next steps", navNext.TextContent);
+    [Fact]
+    public async Task DestinationsPage_DestinationsPercentageDataNotAvailable_DisplaysExpectedSchoolComparisonTableContent()
+    {
+        // Arrange
+        foreach (var urn in _urns)
+        {
+            var destinationsDetails = new DestinationsDetailsBuilder()
+            .WithUrn(urn)
+            .WithEstablishmentName($"School {urn}")
+            .BuildResultsNotAvailable();
+            _destinationsDetails.Add(destinationsDetails);
+            _destinationsService.Setup(s => s.GetDestinationsDetailsAsync(urn, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(destinationsDetails);
+        }
+
+        // Act
+        var doc = await Fixture.BrowseToPage($"{_pageUrl}?{QueryString}");
+
+        // Assert
+        var table = doc.QuerySelector<IHtmlTableElement>("#all-destinations-current-year-table");
+        Assert.NotNull(table);
+        Assert.Equal("Not available", table.GetTableValueByRowHeader(_destinationsDetails[0].SchoolName));
+        Assert.Equal("Not available", table.GetTableValueByRowHeader(_destinationsDetails[1].SchoolName));
+        Assert.Equal("Not available", table.GetTableValueByRowHeader("England average"));
     }
 }

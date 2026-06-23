@@ -194,6 +194,12 @@ public class EstablishmentTestBuilder
         return this;
     }
 
+    public EstablishmentTestBuilder WithSixthForm(bool hasSixthForm)
+    {
+        _establishment.OfficialSixthFormId = hasSixthForm ? "1" : "0";
+        return this;
+    }
+
     public EstablishmentTestBuilder WithLAId(string laId)
     {
         _establishment.LAId = laId;
