@@ -88,8 +88,12 @@ public class EnsureUrnsAreSecondaryFilterTests
             urn => Assert.Equal(establishment1IsKS4.URN, urn),
             urn => Assert.Equal(establishment2IsKS4.URN, urn)
         );
-        var temp = context.HttpContext.Items["Establishments"];
-        Assert.Collection(context.HttpContext.Items["Establishments"]! as List<Establishment>,
+
+        var establishments = context.HttpContext.Items["Establishments"] as List<Establishment>;
+
+        Assert.NotNull(establishments);
+
+        Assert.Collection(establishments,
             est => Assert.Equal(establishment1IsKS4.URN, est.URN),
             est => Assert.Equal(establishment2IsKS4.URN, est.URN)
         );
