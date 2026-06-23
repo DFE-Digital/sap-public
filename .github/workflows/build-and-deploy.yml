@@ -304,6 +304,7 @@ jobs:
           ls -la "$GITHUB_WORKSPACE/konduit.sh"
 
       - name: Download seed backup from Blob
+        if: ${{ github.event.action == 'labeled' && github.event.label.name == 'deploy' && !contains(github.event.pull_request.labels.*.name, 'refresh data') }}
         shell: bash
         env:
           AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
@@ -322,27 +323,72 @@ jobs:
 
           ls -lh "${BACKUP_FILE}"
 
-      - name: Restore backup into PR review DB
-        continue-on-error: true
+      - name: Restore backup into PR review DB (single transaction, with retry)
+        if: ${{ github.event.action == 'labeled' && github.event.label.name == 'deploy' && !contains(github.event.pull_request.labels.*.name, 'refresh data') }}
         shell: bash
         env:
           AKS_NAMESPACE: ${{ secrets.AKS_REVIEW_NAMESPACE }}
         run: |
           set -euo pipefail
+
           PR_NUMBER="${{ github.event.pull_request.number }}"
           APP_NAME="sap-public-pr-${PR_NUMBER}"
           BACKUP_FILE="seed.sql.gz"
-          : "${AKS_NAMESPACE:?AKS_NAMESPACE is not set}"
+          LOG_FILE="pr_seed_restore.log"
+          MAX_ATTEMPTS=5
 
+          : "${AKS_NAMESPACE:?AKS_NAMESPACE is not set}"
           ls -lh "${BACKUP_FILE}"
           gzip -t "${BACKUP_FILE}"
 
-          "$GITHUB_WORKSPACE/konduit.sh" \
-            -n "${AKS_NAMESPACE}" \
-            -t 28800 \
-            -x \
-            -i "${BACKUP_FILE}" -c \
-            "${APP_NAME}" -- psql -v ON_ERROR_STOP=1 -X
+          # Keep session alive during long restore
+          export PGOPTIONS='-c tcp_keepalives_idle=60 -c tcp_keepalives_interval=30 -c tcp_keepalives_count=10'
+
+          run_restore () {
+            local attempt=1
+            local delay=10
+
+            while [ $attempt -le $MAX_ATTEMPTS ]; do
+              echo "=============================="
+              echo "PR seed restore attempt $attempt/$MAX_ATTEMPTS"
+              echo "=============================="
+
+              set +e
+              "$GITHUB_WORKSPACE/konduit.sh" \
+                -n "${AKS_NAMESPACE}" \
+                -t 28800 \
+                -x \
+                -i "${BACKUP_FILE}" -c \
+                "${APP_NAME}" -- \
+                psql -X -v ON_ERROR_STOP=1 -1 -f - 2>&1 | tee "${LOG_FILE}"
+              restore_rc=${PIPESTATUS[0]}
+              set -e
+
+              if [ $restore_rc -eq 0 ]; then
+                echo "PR seed restore succeeded"
+                return 0
+              fi
+
+              if grep -Eqi \
+                "SSL error: unexpected eof|connection to server was lost|server closed the connection unexpectedly|could not receive data from server|EOF detected|connection reset|failed to exec in container|no running task found|Internal error occurred: error executing command in container" \
+                "${LOG_FILE}"; then
+                echo "Transient restore connection issue detected. Retrying in ${delay}s..."
+                sleep $delay
+                delay=$((delay * 2))
+                if [ $delay -gt 120 ]; then delay=120; fi
+                attempt=$((attempt + 1))
+              else
+                echo "Non-transient restore failure (exit ${restore_rc})"
+                tail -n 200 "${LOG_FILE}" || true
+                return $restore_rc
+              fi
+            done
+
+            echo "PR seed restore failed after ${MAX_ATTEMPTS} attempts"
+            return 1
+          }
+
+          run_restore
 
   # ---------------------------
   # REVIEW APP DEPLOYMENT (PR) - refresh requested
