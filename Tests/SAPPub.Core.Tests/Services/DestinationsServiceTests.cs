@@ -1,8 +1,8 @@
 ﻿using Moq;
-using SAPPub.Core.Entities;
 using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.Services.KS4;
 
 namespace SAPPub.Core.Tests.Services;
@@ -15,7 +15,7 @@ public class DestinationsServiceTests
     private readonly Mock<IEnglandDestinationsService> _mockEnglandDestinationsService;
     private readonly DestinationsService _service;
 
-    private readonly Establishment fakeEstablishment = new()
+    private readonly EstablishmentServiceModel fakeEstablishment = new()
     {
         URN = "123456",
         EstablishmentName = "Test Establishment",

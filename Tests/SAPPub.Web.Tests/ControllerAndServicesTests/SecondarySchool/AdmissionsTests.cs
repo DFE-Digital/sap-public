@@ -7,6 +7,7 @@ using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.Services;
 using SAPPub.Core.Services.KS4.Admissions;
 using SAPPub.Core.Tests.TestBuilders;
@@ -120,7 +121,7 @@ public class AdmissionsTests
         Assert.Equal(laName, model.LAName);
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_establishment.URN, model.RouteAttributes[RouteConstants.URN]);
-        Assert.Equal(_establishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
+        Assert.Equal(EstablishmentServiceModel.Map(_establishment).EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
     [Theory]

@@ -1,6 +1,7 @@
 ﻿using Moq;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Services;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
 
 namespace SAPPub.Web.Tests.Unit.Page.Areas.Compare.Secondary;
@@ -19,7 +20,7 @@ public class DestinationsPageTests : PageTestsBase
         foreach (var urn in _urns)
         {
             _establishmentService.Setup(s => s.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Establishment
+                .ReturnsAsync(new EstablishmentServiceModel
                 {
                     URN = urn,
                     EstablishmentName = $"School {urn}",

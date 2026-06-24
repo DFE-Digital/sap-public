@@ -2,6 +2,7 @@
 using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Services;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.Services.KS4.AboutSchool;
 
 namespace SAPPub.Core.Tests.Services.KS4.AboutSchool;
@@ -14,7 +15,7 @@ public class AboutSchoolServiceTests
 
     private readonly AboutSchoolService _service;
 
-    private readonly Establishment fakeEstablishment = new()
+    private readonly EstablishmentServiceModel fakeEstablishment = new()
     {
         URN = "123456",
         EstablishmentName = "Test Establishment",
@@ -149,7 +150,7 @@ public class AboutSchoolServiceTests
         // Arrange
         var urn = "123456";
         var predecessorUrn = "654321";
-        var establishment = new Establishment
+        var establishment = new EstablishmentServiceModel
         {
             URN = urn,
             EstablishmentName = "Test Establishment",
@@ -160,9 +161,9 @@ public class AboutSchoolServiceTests
         _mockEstablishmentService.Setup(s => s.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
             .ReturnsAsync(establishment);
         _mockEstablishmentLinksRepository.Setup(r => r.GetLinksAsync(urn, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<Core.Entities.EstablishmentLinks>
+            .ReturnsAsync(new List<EstablishmentLinks>
                 {
-                    new Core.Entities.EstablishmentLinks { Urn = urn, LinkType = "Predecessor", LinkUrn = predecessorUrn}
+                    new EstablishmentLinks { Urn = urn, LinkType = "Predecessor", LinkUrn = predecessorUrn}
                 });
 
         // Act
@@ -190,7 +191,7 @@ public class AboutSchoolServiceTests
         // Arrange
         var urn = "123456";
         var successorUrn = "654321";
-        var establishment = new Establishment
+        var establishment = new EstablishmentServiceModel
         {
             URN = urn,
             EstablishmentName = "Test Establishment",
@@ -201,9 +202,9 @@ public class AboutSchoolServiceTests
         _mockEstablishmentService.Setup(s => s.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
             .ReturnsAsync(establishment);
         _mockEstablishmentLinksRepository.Setup(r => r.GetLinksAsync(urn, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<Core.Entities.EstablishmentLinks>
+            .ReturnsAsync(new List<EstablishmentLinks>
                 {
-                    new Core.Entities.EstablishmentLinks { Urn = urn, LinkType = "Successor", LinkUrn = successorUrn}
+                    new EstablishmentLinks { Urn = urn, LinkType = "Successor", LinkUrn = successorUrn}
                 });
 
         // Act

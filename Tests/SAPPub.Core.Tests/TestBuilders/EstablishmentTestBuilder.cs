@@ -2,6 +2,7 @@
 using SAPPub.Core.Entities;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Extensions;
+using SAPPub.Core.ServiceModels;
 
 namespace SAPPub.Core.Tests.TestBuilders;
 
@@ -119,12 +120,6 @@ public class EstablishmentTestBuilder
     public EstablishmentTestBuilder WithAgeRangeHigh(string ageRangeHigh)
     {
         _establishment.AgeRangeHigh = ageRangeHigh;
-        return this;
-    }
-
-    public EstablishmentTestBuilder WithDFENumber(string dfeNumber)
-    {
-        _establishment.DFENumber = dfeNumber;
         return this;
     }
 
@@ -362,5 +357,12 @@ public class EstablishmentTestBuilder
             _establishment.EstablishmentName = GenerateEstablishmentName();
         }
         return _establishment;
+    }
+
+    public EstablishmentServiceModel BuildServiceModel()
+    {
+        var est = Build();
+
+        return EstablishmentServiceModel.Map(est);
     }
 }

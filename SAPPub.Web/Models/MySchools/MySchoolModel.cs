@@ -1,6 +1,6 @@
-﻿using SAPPub.Core.Entities;
-using SAPPub.Core.Enums;
+﻿using SAPPub.Core.Enums;
 using SAPPub.Core.Extensions;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Web.Helpers;
 
 namespace SAPPub.Web.Models.MySchools;
@@ -13,7 +13,7 @@ public class MySchoolModel
     public EstablishmentStatus? Status { get; set; }
     public required DisplayField<DateOnly> ClosedDate { get; set; }
 
-    public static MySchoolModel MapFrom(Establishment establishment)
+    public static MySchoolModel MapFrom(EstablishmentServiceModel establishment)
     {
         return new MySchoolModel
         {

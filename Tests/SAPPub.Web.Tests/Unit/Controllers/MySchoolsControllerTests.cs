@@ -3,6 +3,7 @@ using Moq;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Web.Controllers;
 using SAPPub.Web.Models.MySchools;
 
@@ -21,7 +22,7 @@ public class MySchoolsControllerTests
             s => s.GetSavedEstablishments()).Returns(new List<string> { "123456", "123457" });
         _establishmentServiceMock
             .Setup(s => s.GetEstablishmentAsync("123456", It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(new Establishment
+                    .ReturnsAsync(new EstablishmentServiceModel
                     {
                         URN = "123456",
                         EstablishmentName = "Test School 1",
@@ -29,7 +30,7 @@ public class MySchoolsControllerTests
                     });
         _establishmentServiceMock
             .Setup(s => s.GetEstablishmentAsync("123457", It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(new Establishment
+                    .ReturnsAsync(new EstablishmentServiceModel
                     {
                         URN = "123457",
                         EstablishmentName = "Test School 2",

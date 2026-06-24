@@ -44,7 +44,7 @@ namespace SAPPub.Web.Controllers
             string schoolName,
             CancellationToken ct)
         {
-            var admissionsDetails = await admissionsService.GetAdmissionsDetailsAsync(urn);
+            var admissionsDetails = await admissionsService.GetAdmissionsDetailsAsync(urn, ct);
             var model = AdmissionsViewModel.MapFrom(admissionsDetails, urn);
             return View(model);
         }

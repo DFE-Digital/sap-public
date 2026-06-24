@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
 using Moq;
-using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Services;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Areas.Compare.Filters;
 
@@ -14,10 +14,10 @@ namespace SAPPub.Web.Tests.Unit.Areas.Compare.Filters;
 public class EnsureUrnsAreSecondaryFilterTests
 {
     private readonly Mock<IEstablishmentService> _mockEstablishmentService = new();
-    private readonly Establishment establishment1IsKS4;
-    private readonly Establishment establishment2IsKS4;
-    private readonly Establishment establishment3IsNotKS4;
-    private readonly Establishment establishment4IsNotKS4;
+    private readonly EstablishmentServiceModel establishment1IsKS4;
+    private readonly EstablishmentServiceModel establishment2IsKS4;
+    private readonly EstablishmentServiceModel establishment3IsNotKS4;
+    private readonly EstablishmentServiceModel establishment4IsNotKS4;
 
     private DefaultHttpContext httpContext = new();
     private ActionContext actionContext;
@@ -26,10 +26,10 @@ public class EnsureUrnsAreSecondaryFilterTests
 
     public EnsureUrnsAreSecondaryFilterTests()
     {
-        establishment1IsKS4 = new EstablishmentTestBuilder().WithIsKeyStage4(true).Build();
-        establishment2IsKS4 = new EstablishmentTestBuilder().WithIsKeyStage4(true).Build();
-        establishment3IsNotKS4 = new EstablishmentTestBuilder().WithIsKeyStage4(false).Build();
-        establishment4IsNotKS4 = new EstablishmentTestBuilder().WithIsKeyStage4(false).Build();
+        establishment1IsKS4 = new EstablishmentTestBuilder().WithIsKeyStage4(true).BuildServiceModel();
+        establishment2IsKS4 = new EstablishmentTestBuilder().WithIsKeyStage4(true).BuildServiceModel();
+        establishment3IsNotKS4 = new EstablishmentTestBuilder().WithIsKeyStage4(false).BuildServiceModel();
+        establishment4IsNotKS4 = new EstablishmentTestBuilder().WithIsKeyStage4(false).BuildServiceModel();
 
         _mockEstablishmentService.Setup(x => x.GetEstablishmentAsync(establishment1IsKS4.URN, It.IsAny<CancellationToken>()))
             .ReturnsAsync(establishment1IsKS4);

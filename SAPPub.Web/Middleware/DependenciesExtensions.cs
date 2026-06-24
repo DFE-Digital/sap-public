@@ -124,6 +124,9 @@ namespace SAPPub.Web.Middleware
             // Mapper
             services.AddSingleton<ICodedValueMapper, ReflectionCodedValueMapper>();
 
+            // Entity property walker
+            services.AddSingleton<Core.ApplicationServices.IEntityPropertyService, Core.ApplicationServices.EntityPropertyService>();
+
             // Reason lookup (singleton)
             var reasonLookup = new ReasonCodeLookup(new Dictionary<string, string>
             {

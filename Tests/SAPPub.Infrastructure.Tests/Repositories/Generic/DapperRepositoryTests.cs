@@ -2,14 +2,10 @@
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Npgsql;
+using SAPPub.Core.ApplicationServices;
 using SAPPub.Infrastructure.Mapping.ValueCodes;
 using SAPPub.Infrastructure.Repositories.Generic;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Xunit;
+using static Dapper.SqlMapper;
 
 namespace SAPPub.Infrastructure.Tests.Repositories.Generic
 {
@@ -33,12 +29,14 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Generic
         private static DapperRepository<UnmappedEntity> CreateSut(
             NpgsqlDataSource? dataSource = null,
             Mock<ILogger<DapperRepository<UnmappedEntity>>>? logger = null,
-            Mock<ICodedValueMapper>? mapper = null)
+            Mock<ICodedValueMapper>? mapper = null,
+            Mock<IEntityPropertyService>? entityPropertyService = null)
         {
             return new DapperRepository<UnmappedEntity>(
                 dataSource ?? CreateSafeDataSource(),
                 (logger ?? new Mock<ILogger<DapperRepository<UnmappedEntity>>>()).Object,
-                (mapper ?? new Mock<ICodedValueMapper>()).Object);
+                (mapper ?? new Mock<ICodedValueMapper>()).Object,
+                (entityPropertyService ?? new Mock<IEntityPropertyService>()).Object);
         }
 
         [Fact]
@@ -46,9 +44,10 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Generic
         {
             var logger = NullLogger<DapperRepository<UnmappedEntity>>.Instance;
             var mapper = new Mock<ICodedValueMapper>();
+            var entityPropertyService = new Mock<IEntityPropertyService>();
 
             Assert.Throws<ArgumentNullException>(() =>
-                new DapperRepository<UnmappedEntity>(null!, logger, mapper.Object));
+                new DapperRepository<UnmappedEntity>(null!, logger, mapper.Object, entityPropertyService.Object));
         }
 
         [Fact]
@@ -56,9 +55,10 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Generic
         {
             var ds = CreateSafeDataSource();
             var mapper = new Mock<ICodedValueMapper>();
+            var entityPropertyService = new Mock<IEntityPropertyService>();
 
             Assert.Throws<ArgumentNullException>(() =>
-                new DapperRepository<UnmappedEntity>(ds, null!, mapper.Object));
+                new DapperRepository<UnmappedEntity>(ds, null!, mapper.Object, entityPropertyService.Object));
         }
 
         [Fact]
@@ -66,9 +66,10 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Generic
         {
             var ds = CreateSafeDataSource();
             var logger = new Mock<ILogger<DapperRepository<UnmappedEntity>>>();
+            var entityPropertyService = new Mock<IEntityPropertyService>();
 
             Assert.Throws<ArgumentNullException>(() =>
-                new DapperRepository<UnmappedEntity>(ds, logger.Object, null!));
+                new DapperRepository<UnmappedEntity>(ds, logger.Object, null!, entityPropertyService.Object));
         }
 
         [Theory]
