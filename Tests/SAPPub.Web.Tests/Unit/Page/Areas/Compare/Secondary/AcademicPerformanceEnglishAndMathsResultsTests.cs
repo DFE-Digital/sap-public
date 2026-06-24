@@ -16,33 +16,22 @@ public class AcademicPerformanceEnglishAndMathsResultsTests : PageTestsBase
     private readonly string _pageUrl = $"compare/secondary/english-and-maths-results?urns={_urns[0]}&urns={_urns[1]}";    
     private readonly Mock<IEnglishAndMathsComparisionService> _englishAndMathsComparisionService = new();
     private readonly Mock<IEstablishmentService> _establishmentService = new();
-    private readonly List<Establishment> _establishmentList = new();
+    private readonly List<Establishment> _establishmentList = [];
 
     public AcademicPerformanceEnglishAndMathsResultsTests(WebAppFixture fixture) : base(fixture)
     {
         _establishmentService = UseMock<IEstablishmentService>();
         _englishAndMathsComparisionService = UseMock<IEnglishAndMathsComparisionService>();
 
-        _establishmentList = new List<Establishment>
-        {
+        _establishmentList =
+        [
             new EstablishmentTestBuilder().WithURN(_urns[0]).WithEstablishmentName($"Test school {_urns[0]}").WithIsKeyStage4(true).Build(),
             new EstablishmentTestBuilder().WithURN(_urns[1]).WithEstablishmentName($"Test school {_urns[1]}").WithIsKeyStage4(true).Build(),
-        }.ToList();
+        ];
 
         _establishmentList.Select(e =>
             _establishmentService.Setup(s =>
             s.GetEstablishmentAsync(e.URN, It.IsAny<CancellationToken>())).ReturnsAsync(e)).ToList();
-
-        //foreach (var urn in _urns)
-        //{
-        //    _establishmentService.Setup(s => s.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
-        //        .ReturnsAsync(new Establishment
-        //        {
-        //            URN = urn,
-        //            EstablishmentName = $"School {urn}",
-        //            IsKS4 = true
-        //        });
-        //}
 
         var comparisionResults = new EnglishAndMathsComparisionResultsModel
         {
@@ -72,7 +61,6 @@ public class AcademicPerformanceEnglishAndMathsResultsTests : PageTestsBase
     [Fact]
     public async Task EnglishAndMathsResultsPage_HasCorrectTitle()
     {
-        // Arrange
 
         // Act
         var doc = await Fixture.BrowseToPage(_pageUrl);
