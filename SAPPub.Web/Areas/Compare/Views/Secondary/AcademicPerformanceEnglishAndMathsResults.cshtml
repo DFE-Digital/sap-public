@@ -25,7 +25,7 @@
         </h1>
 
         <p class="govuk-body">
-            Looking at school performance data is one way to see how well a school is doing.<br/>
+            Looking at school performance data is one way to see how well a school is doing.<br />
             You should look at a range of information about a school before deciding if it's the right fit for your child.
         </p>
 
@@ -106,7 +106,7 @@
 
                 <div class="govuk-button-group">
                     <govuk-button id="all-gcse-current-year-show-btn" class="govuk-button govuk-button--secondary all-gcse-current-year-show-btn">Show as a table</govuk-button>
-                </div>                
+                </div>
             </div>
         </div>
 
@@ -127,9 +127,13 @@
             </li>
             <li>
                 if results are low, how does the school plan to improve them?
-            </li>            
+            </li>
         </ul>
-        
+
+        <govuk-pagination id="academic-performance-english-maths-pagination">
+            <govuk-pagination-previous href="@Url.RouteUrl(RouteConstants.CompareSecondaryAcademicPerformancePupilAttainment, new { urns = Model.URNs })">Academic performance: Pupil attainment</govuk-pagination-previous>
+            <govuk-pagination-next href="@Url.RouteUrl(RouteConstants.CompareSecondaryDestinations, new { urns = Model.URNs })">Destinations after year 11</govuk-pagination-next>
+        </govuk-pagination>
     </div>
 </div>
 

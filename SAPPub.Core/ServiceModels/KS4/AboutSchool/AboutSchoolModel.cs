@@ -1,4 +1,5 @@
 ﻿using SAPPub.Core.Enums;
+using System.Runtime.InteropServices;
 
 namespace SAPPub.Core.ServiceModels.KS4.AboutSchool;
 
@@ -55,6 +56,12 @@ public class AboutSchoolModel
     public int? OpenReasonId { get; set; }
 
     public string? SenTypes { get; set; }
+
+    public bool IsKS2 { get; set; }
+
+    public bool IsKS4 { get; set; }
+
+    public bool IsKS5 { get; set; }
 
     public IList<EstablishmentLinkModel>? Predecessors { get; set; }
     public IList<EstablishmentLinkModel>? Successors { get; set; }

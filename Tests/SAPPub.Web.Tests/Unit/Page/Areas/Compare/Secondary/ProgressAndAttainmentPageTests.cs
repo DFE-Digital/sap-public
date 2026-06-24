@@ -63,4 +63,22 @@ public class ProgressAndAttainmentPageTests : PageTestsBase
         Assert.Equal("/compare/secondary/pupil-attainment?urns=123456&urns=123457", links[0].GetAttribute("href"));
         Assert.Equal("/compare/secondary/english-and-maths-results?urns=123456&urns=123457", links[1].GetAttribute("href"));
     }
+
+    [Fact]
+    public async Task DisplaysPagination()
+    {
+        // Arrange
+        var doc = await Fixture.BrowseToPage(_pageUrl);
+
+        // Act
+        var nav = doc.QuerySelector("#academic-performance-attainment-pagination");
+        var navNext = doc.QuerySelector("#academic-performance-attainment-pagination .govuk-pagination__next a");
+        var navPrevious = doc.QuerySelector("#academic-performance-attainment-pagination .govuk-pagination__prev a");
+
+        Assert.NotNull(nav);
+        Assert.NotNull(navNext);
+        Assert.NotNull(navPrevious);
+        Assert.Contains("About your schools", navPrevious.TextContent);
+        Assert.Contains("Academic performance: English and maths results", navNext.TextContent);
+    }
 }

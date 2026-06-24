@@ -49,4 +49,21 @@ public class NextStepsPageTests : PageTestsBase
 
         Assert.NotNull(h2Header);
     }
+
+    [Fact]
+    public async Task DisplaysPagination()
+    {
+        // Arrange
+        var doc = await Fixture.BrowseToPage(_pageUrl);
+
+        // Act
+        var nav = doc.QuerySelector("#next-steps-pagination");
+        var navNext = doc.QuerySelector("#next-steps-pagination .govuk-pagination__next a");
+        var navPrevious = doc.QuerySelector("#next-steps-pagination .govuk-pagination__prev a");
+
+        Assert.NotNull(nav);
+        Assert.Null(navNext);
+        Assert.NotNull(navPrevious);
+        Assert.Contains("Destinations after year 11", navPrevious.TextContent);
+    }
 }

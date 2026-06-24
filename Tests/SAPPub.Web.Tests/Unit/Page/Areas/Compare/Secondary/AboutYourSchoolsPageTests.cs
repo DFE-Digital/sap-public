@@ -67,4 +67,21 @@ public class AboutYourSchoolsPageTests : PageTestsBase
         Assert.Equal(4, doc.QuerySelectorAll(".moj-side-navigation__item").Length);
         Assert.Single(doc.QuerySelectorAll(".moj-side-navigation__item--active"));
     }
+
+    [Fact]
+    public async Task DisplaysPagination()
+    {
+        // Arrange
+        var doc = await Fixture.BrowseToPage(_pageUrl);
+
+        // Act
+        var nav = doc.QuerySelector("#about-the-school-pagination");
+        var navNext = doc.QuerySelector("#about-the-school-pagination .govuk-pagination__next a");
+        var navPrevious = doc.QuerySelector("#about-the-school-pagination .govuk-pagination__prev a");
+
+        Assert.NotNull(nav);
+        Assert.NotNull(navNext);
+        Assert.Null(navPrevious);
+        Assert.Contains("Academic Performance", navNext.TextContent);
+    }
 }

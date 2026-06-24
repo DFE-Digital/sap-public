@@ -70,4 +70,22 @@ public class DestinationsPageTests : PageTestsBase
         Assert.Equal(4, doc.QuerySelectorAll(".moj-side-navigation__item").Length);
         Assert.Single(doc.QuerySelectorAll(".moj-side-navigation__item--active"));
     }
+
+    [Fact]
+    public async Task DisplaysPagination()
+    {
+        // Arrange
+        var doc = await Fixture.BrowseToPage($"{_pageUrl}?{QueryString}");
+
+        // Act
+        var nav = doc.QuerySelector("#destinations-pagination");
+        var navNext = doc.QuerySelector("#destinations-pagination .govuk-pagination__next a");
+        var navPrevious = doc.QuerySelector("#destinations-pagination .govuk-pagination__prev a");
+
+        Assert.NotNull(nav);
+        Assert.NotNull(navNext);
+        Assert.NotNull(navPrevious);
+        Assert.Contains("Academic performance: English and maths results", navPrevious.TextContent);
+        Assert.Contains("Next steps", navNext.TextContent);
+    }
 }

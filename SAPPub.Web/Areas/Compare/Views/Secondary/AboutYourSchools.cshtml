@@ -22,5 +22,9 @@
             <span class="govuk-caption-l">@Constants.CompareYourSchools</span>
             @ViewData["Header"]
         </h1>
+
+        <govuk-pagination id="about-the-school-pagination">
+            <govuk-pagination-next href="@Url.RouteUrl(RouteConstants.CompareSecondaryAcademicPerformancePupilAttainment, new { urns = Model.URNs })">Academic Performance</govuk-pagination-next>
+        </govuk-pagination>
     </div>
 </div>
