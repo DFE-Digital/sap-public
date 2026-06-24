@@ -126,14 +126,10 @@
     --gds-label-bg: govuk-colour("light-grey");
     --gds-label-border: govuk-colour("mid-grey");
     --gds-label-padding: 6;
-    min-height: 250px;
     margin-bottom: 20px;
     font-family: "GDS Transport", Arial, sans-serif;
 }
 
-.chart-container.stacked {
-    min-height: 350px;
-}
 
 .data-container {
     margin-top: 20px;
@@ -211,7 +207,6 @@
 
     .chart-container {
         --gds-font-size: 16px;
-        min-height: 260px;
     }
 
     .chart-legend {

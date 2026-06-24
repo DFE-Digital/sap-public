@@ -1,6 +1,7 @@
 ﻿@model SAPPub.Web.Areas.Compare.ViewModels.Secondary.CompareAcademicPerformanceEnglishAndMathsResultsViewModel
-@using SAPPub.Web.Constants
+@using SAPPub.Core.Extensions
 @using SAPPub.Web.ViewComponents.VerticalNavigationCompareSecondary
+@using SAPPub.Web.Constants;
 
 @{
     ViewData["Header"] = "Academic Perfomance";
@@ -20,11 +21,11 @@
     <div class="govuk-grid-column-three-quarters">
         <h1 class="govuk-heading-l">
             <span class="govuk-caption-l">Comparing your schools</span>
-            Academic Peformance
+            @ViewData["Header"]
         </h1>
 
         <p class="govuk-body">
-            Looking at school performance data is one way to see how well a school is doing.<br/>
+            Looking at school performance data is one way to see how well a school is doing.<br />
             You should look at a range of information about a school before deciding if it's the right fit for your child.
         </p>
 
@@ -39,9 +40,106 @@
             </ul>
         </nav>
 
+        <h2 class="govuk-heading-l">Pupils achieving grades in English and maths GCSEs for the previous academic year</h2>
+
+        <p class="govuk-body">
+            Information in this section is for the 2024 to 2025 academic year.
+        </p>
+
+        <govuk-details id="details-gcse-grades-explained">
+            <govuk-details-summary>
+                GCSE grade 9 to 1 scale explained
+            </govuk-details-summary>
+            <govuk-details-text>
+                <p class="govuk-body">
+                    GCSEs in England have been graded on a 9 to 1 scale since 2017. This replaced the previous A* to G scale. 
+                </p>
+                <p class="govuk-body">
+                    The number scale is not directly equivalent to the old letter one. But the old and current grading scales are comparable at the following points: 
+                </p>
+
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>
+                        the bottom of a grade 7 is comparable to the bottom of the old grade A
+                    </li>
+                    <li>
+                        the bottom of grade 4 is comparable to the bottom of the old grade C 
+                    </li>
+                    <li>
+                        the bottom of grade 1 is comparable to the bottom of the old grade G
+                    </li>
+                </ul>
+            </govuk-details-text>
+        </govuk-details>
+
+        <h3 class="govuk-heading-m">Achieving grade 5 and above in English and maths GCSEs</h3>
+
+        <p class="govuk-body">Grade 5 is comparable to the top of the old grade C.</p>
+
+        <div class="data-container">
+            <input type="radio" name="dataView" id="current-view" class="govuk-visually-hidden" aria-labelledby="all-gcse-show-current-data-btn" checked />
+
+            <div id="all-gcse-current-year-data-container" class="all-gcse-current-year-data-container">
+                <div id="all-gcse-current-year-chart-container" class="chart-container all-gcse-current-year-chart-container">
+                    <canvas id="all-gcse-chart"
+                            class="js-chart"
+                            data-type="bar"
+                            data-not-available-text="@(Constants.NotAvailable)"
+                            data-chart='@Html.Raw(Json.Serialize(Model.AllGcseData))'
+                            data-colors='@Html.Raw(Json.Serialize(Model.AllGcseData.BackgroundColors))'>
+                    </canvas>
+                </div>
+
+                <div id="all-gcse-current-year-table-container" class="all-gcse-current-year-table-container">
+                    <table id="all-gcse-current-year-table" class="govuk-table">
+                        <tbody class="govuk-table__body">
+                            @foreach (var label in Model.AllGcseData.Labels.Select((value, i) => (value, i)))
+                            {
+                                <tr class="govuk-table__row">
+                                    <th scope="row" class="govuk-table__header">@label.value</th>
+                                    <td class="govuk-table__cell">@(Model.AllGcseData.Data[label.i].HasValue ? Model.AllGcseData.Data[label.i]!.Value.AsPercentage() : Constants.NotAvailable)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="govuk-button-group">
+                    <govuk-button id="all-gcse-current-year-show-btn" class="govuk-button govuk-button--secondary all-gcse-current-year-show-btn">Show as a table</govuk-button>
+                </div>
+            </div>
+        </div>
+
+        <h3 class="govuk-heading-m">What you could ask schools about Key stage 4 results</h3>
+
+        <p class="govuk-body">
+            When researching, contacting or visiting a school, you may want to ask:
+        </p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>
+                what subjects do pupils tend to do well in at this school?
+            </li>
+            <li>
+                how does the school help pupils who need extra support in English and maths?
+            </li>
+            <li>
+                what are the reasons behind results improving or not improving over time?
+            </li>
+            <li>
+                if results are low, how does the school plan to improve them?
+            </li>
+        </ul>
+
         <govuk-pagination id="academic-performance-english-maths-pagination">
             <govuk-pagination-previous href="@Url.RouteUrl(RouteConstants.CompareSecondaryAcademicPerformancePupilAttainment, new { urns = Model.URNs })">Academic performance: Pupil attainment</govuk-pagination-previous>
             <govuk-pagination-next href="@Url.RouteUrl(RouteConstants.CompareSecondaryDestinations, new { urns = Model.URNs })">Destinations after year 11</govuk-pagination-next>
         </govuk-pagination>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/chart.umd.js"></script>
+    <script src="~/js/chartjs-plugin-datalabels.min.js"></script>
+    <script src="~/js/chart-factory.js"></script>
+    <script src="~/js/compare-english-maths-results.js"></script>
+}

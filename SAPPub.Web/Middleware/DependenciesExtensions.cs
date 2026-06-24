@@ -120,6 +120,7 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<IGatewayUserLAService, GatewayUserLAService>();
 
             services.AddTransient<IMySchoolsListService, MySchoolsListService>();
+            services.AddTransient<IEnglishAndMathsComparisionService, EnglishAndMathsComparisionService>();
 
             // Mapper
             services.AddSingleton<ICodedValueMapper, ReflectionCodedValueMapper>();

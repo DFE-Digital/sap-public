@@ -6,5 +6,7 @@
 
         public required List<double?> Data { get; init; }
 
+        public string[]? BackgroundColors { get; init; }
+
     }
 }
