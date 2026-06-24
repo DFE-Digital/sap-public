@@ -24,17 +24,52 @@ namespace SAPData.Models
         public string DataType { get; set; } = "";           // e.g., int
         public string DataTypeAlt { get; set; } = "";
         public string RecordFilterBy { get; set; } = "";     // e.g., URN
+
+
         public string Filter { get; set; } = "";             // e.g., breakdown
         public string FilterValue { get; set; } = "";        // e.g., Total
         public string Filter2 { get; set; } = "";            // optional
         public string Filter2Value { get; set; } = "";       // optional
         public string Filter3 { get; set; } = "";            // optional
         public string Filter3Value { get; set; } = "";       // optional
-
         public string Filter4 { get; set; } = "";            // optional
         public string Filter4Value { get; set; } = "";       // optional
         public string Filter5 { get; set; } = "";            // optional
         public string Filter5Value { get; set; } = "";       // optional
+        public string Filter6 { get; set; } = "";            // optional
+        public string Filter6Value { get; set; } = "";       // optional
+        public string Filter7 { get; set; } = "";            // optional
+        public string Filter7Value { get; set; } = "";       // optional
+        public string Filter8 { get; set; } = "";            // optional
+        public string Filter8Value { get; set; } = "";       // optional
+        public string Filter9 { get; set; } = "";            // optional
+        public string Filter9Value { get; set; } = "";       // optional
+        public string Filter10 { get; set; } = "";            // optional
+        public string Filter10Value { get; set; } = "";       // optional
+        public string Filter11 { get; set; } = "";             // optional
+        public string Filter11Value { get; set; } = "";        // optional
+        public string Filter12 { get; set; } = "";            // optional
+        public string Filter12Value { get; set; } = "";       // optional
+        public string Filter13 { get; set; } = "";            // optional
+        public string Filter13Value { get; set; } = "";       // optional
+
+        public string Filter14 { get; set; } = "";            // optional
+        public string Filter14Value { get; set; } = "";       // optional
+        public string Filter15 { get; set; } = "";            // optional
+        public string Filter15Value { get; set; } = "";       // optional
+        public string Filter16 { get; set; } = "";            // optional
+        public string Filter16Value { get; set; } = "";       // optional
+        public string Filter17 { get; set; } = "";            // optional
+        public string Filter17Value { get; set; } = "";       // optional
+        public string Filter18 { get; set; } = "";            // optional
+        public string Filter18Value { get; set; } = "";       // optional
+        public string Filter19 { get; set; } = "";            // optional
+        public string Filter19Value { get; set; } = "";       // optional
+        public string Filter20 { get; set; } = "";            // optional
+        public string Filter20Value { get; set; } = "";       // optional
+
+
+
         public string ShouldBeNormalised { get; set; } = "";   // e.g., No -> false
         public string NormalisedLookup { get; set; } = "";   // optional
         public string CompoundFields { get; set; } = "";
