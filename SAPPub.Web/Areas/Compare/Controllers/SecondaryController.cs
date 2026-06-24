@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
+using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Web.Areas.Compare.Filters;
 using SAPPub.Web.Areas.Compare.ViewModels.Secondary;
 using SAPPub.Web.Constants;
@@ -31,9 +32,13 @@ public class SecondaryController : Controller
 
     [HttpGet]
     [Route("english-and-maths-results", Name = RouteConstants.CompareSecondaryAcademicPerformanceEnglishAndMathsResults)]
-    public async Task<IActionResult> AcademicPerformanceEnglishAndMathsResults(List<string> urns)
+    public async Task<IActionResult> AcademicPerformanceEnglishAndMathsResults(
+    [FromServices] IEnglishAndMathsComparisionService englishAndMathsComparisionService,
+    List<string> urns,
+    CancellationToken ct = default)
     {
-        var model = new CompareAcademicPerformanceEnglishAndMathsResultsViewModel { URNs = urns };
+        var results = await englishAndMathsComparisionService.GetComparisionResultsAsync(urns, ct);
+        var model = CompareAcademicPerformanceEnglishAndMathsResultsViewModel.Map(urns, results);
         return View(model);
     }
 

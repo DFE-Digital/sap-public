@@ -288,6 +288,13 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
             where "Id" = @Id;
             """;
 
+        private static string SelectFromWhereIds(string columns, string viewName) => $"""
+            select
+              {columns}
+            from public.{viewName}
+            where "Id" = ANY(@Ids);
+            """;
+
         private static string SelectFromWhereIdAndNotDeleted(string columns, string viewName) => $"""
             select
               {columns}
@@ -301,6 +308,13 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
               {columns}
             from public.{viewName}
             where "URN" = @Id;
+            """;
+
+        private static string SelectFromWhereUrns(string columns, string viewName) => $"""
+            select
+              {columns}
+            from public.{viewName}
+            where "URN" = ANY(@Urns);
             """;
 
         private static string SelectFromWhere(string columns, string view, string where)
@@ -483,6 +497,12 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
         {
             return entityType.Name switch
             {
+                nameof(Establishment) =>
+                    SelectFromWhereUrns(EstablishmentColumns, "v_establishment"),
+
+                nameof(EstablishmentPerformance) =>
+                    SelectFromWhereIds(EstablishmentPerformanceColumns, "v_establishment_performance"),
+
                 nameof(EstablishmentSubjectEntryRow) => $"""
                     select
                       {EstablishmentSubjectEntriesColumns}

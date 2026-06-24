@@ -218,12 +218,12 @@ namespace SAPPub.Infrastructure.Repositories.Generic
                     .WithParameters(parameters)
                     .Build(ct);
 
-                var items = (await conn.QueryAsync<T>(cmd).ConfigureAwait(false)).ToList();
+                var items = await conn.QueryAsync<T>(cmd).ConfigureAwait(false);
 
-                if (items.Count > 0)
+                if (items is not null)
                     _codedValueMapper.Apply(items);
 
-                return items;
+                return items ?? [];
             }
             catch (OperationCanceledException)
             {

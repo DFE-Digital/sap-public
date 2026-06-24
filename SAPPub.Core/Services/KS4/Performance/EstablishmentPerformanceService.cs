@@ -22,5 +22,10 @@ namespace SAPPub.Core.Services.KS4.Performance
         {
             return _repo.GetEstablishmentPerformanceAsync(urn, ct);
         }
+
+        public Task<IEnumerable<EstablishmentPerformance>> GetEstablishmentsPerformanceAsync(IEnumerable<string> urns, CancellationToken ct = default)
+        {
+            return _repo.GetEstablishmentsPerformanceAsync(urns, ct);
+        }
     }
 }
