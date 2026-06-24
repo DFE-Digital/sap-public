@@ -220,10 +220,10 @@ namespace SAPPub.Infrastructure.Repositories.Generic
 
                 var items = await conn.QueryAsync<T>(cmd).ConfigureAwait(false);
 
-                if (items is not null)
+                if (items.Count() > 0)
                     _codedValueMapper.Apply(items);
 
-                return items ?? [];
+                return items;
             }
             catch (OperationCanceledException)
             {

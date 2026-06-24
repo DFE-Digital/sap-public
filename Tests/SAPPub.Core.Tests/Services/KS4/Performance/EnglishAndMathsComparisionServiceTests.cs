@@ -19,7 +19,7 @@ public class EnglishAndMathsComparisionServiceTests
             new()
             {
                 URN = "123456",
-                EstablishmentName = "Test Establishment",
+                EstablishmentName = "Test Establishment 1",
                 PhaseOfEducationName = "Secondary School",
                 LAName = "Council",
                 LAId = "E09000001"
@@ -27,7 +27,15 @@ public class EnglishAndMathsComparisionServiceTests
             new()
             {
                 URN = "785694",
-                EstablishmentName = "New Test Establishment",
+                EstablishmentName = "New Test Establishment 2",
+                PhaseOfEducationName = "Secondary School",
+                LAName = "New Council",
+                LAId = "E12345001"
+            },
+            new()
+            {
+                URN = "587946",
+                EstablishmentName = "New Test Establishment 3",
                 PhaseOfEducationName = "Secondary School",
                 LAName = "New Council",
                 LAId = "E12345001"
@@ -50,7 +58,7 @@ public class EnglishAndMathsComparisionServiceTests
     public async Task GetComparisionResultsAsync_ShouldReturnData()
     {
         // Arrange
-        var urns = new List<string> { "123456", "785694" };
+        var urns = new List<string> { "123456", "785694", "587946" };
 
         var establishmentsPerformance = new List<EstablishmentPerformance>()
         {   
@@ -98,13 +106,11 @@ public class EnglishAndMathsComparisionServiceTests
             Assert.Equal(englandPerformance.EngMaths59_Tot_Eng_Current_Pct, result.EnglandAverage.CurrentYear);
 
             var expectedEstablishmentComparisionResult = establishmentsPerformance.FirstOrDefault(x => x.Id == expectedEstablishment.URN);
-            Assert.NotNull(expectedEstablishmentComparisionResult);
-
             var actualEstablishmentComparisionResult = result.Establishments.FirstOrDefault(x => x.Urn == expectedEstablishment.URN);
             Assert.NotNull(actualEstablishmentComparisionResult);
 
             Assert.Equal(expectedEstablishment.EstablishmentName, actualEstablishmentComparisionResult.SchoolName);
-            Assert.Equal(expectedEstablishmentComparisionResult.EngMaths59_Tot_Est_Current_Pct, actualEstablishmentComparisionResult.EstablishmentData.CurrentYear);
+            Assert.Equal(expectedEstablishmentComparisionResult?.EngMaths59_Tot_Est_Current_Pct, actualEstablishmentComparisionResult.EstablishmentData.CurrentYear);
         }       
     }
 }

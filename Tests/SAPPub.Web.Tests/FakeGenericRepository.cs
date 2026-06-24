@@ -210,7 +210,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
 
     public static List<Establishment> GetAllEstablishments()
     {
-        return [.. Establishments.Values.Select(e => e)];
+        return [.. Establishments.Values];
     }
 
     private static readonly Dictionary<string, EstablishmentPerformance> EstablishmentPerformances = new(StringComparer.OrdinalIgnoreCase)
