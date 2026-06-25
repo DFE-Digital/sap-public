@@ -474,6 +474,66 @@ jobs:
           gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
 
   # ---------------------------
+  # REFRESH TEST DATABSE (AUTO - IF REQUIRED)
+  # ---------------------------
+
+  detect-refresh-data-on-merge:
+    name: Detect refresh-data label on merged PR
+    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+    needs: [deploy]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      should-refresh: ${{ steps.detect.outputs.should_refresh }}
+
+    steps:
+      - name: Check labels on PR associated with merge commit
+        id: detect
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const commit_sha = context.sha;
+
+            const prs = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+              owner,
+              repo,
+              commit_sha
+            });
+
+            const mergedPr = prs.data.find(pr => pr.merged_at && pr.base?.ref === "main");
+
+            if (!mergedPr) {
+              core.info(`No merged PR found for commit ${commit_sha}.`);
+              core.setOutput("should_refresh", "false");
+              core.setOutput("pr_number", "");
+              return;
+            }
+
+            const hasRefreshDataLabel = (mergedPr.labels || [])
+              .some(label => label.name === "refresh data");
+
+            core.info(`PR ${mergedPr.number} has 'refresh data' label: ${hasRefreshDataLabel}`);
+            core.setOutput("should_refresh", hasRefreshDataLabel ? "true" : "false");
+
+  refresh-data-test-after-merge:
+    name: Refresh data in test after merge
+    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' && needs.detect-refresh-data-on-merge.outputs.should-refresh == 'true' }}
+    needs: [deploy, detect-refresh-data-on-merge]
+    uses: ./.github/workflows/data-pipeline.yml
+    secrets: inherit
+    with:
+      environment: test
+    permissions:
+      contents: write
+      id-token: write
+      actions: read
+      packages: write
+
+
+  # ---------------------------
   # MANUAL DEPLOY
   # ---------------------------
   manual_deploy:
