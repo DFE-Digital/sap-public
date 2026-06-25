@@ -1,7 +1,6 @@
 ﻿using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Entities.KS4.Performance;
-using SAPPub.Core.Entities.KS4.Workforce;
 using SAPPub.Core.Helpers;
 using System.Diagnostics.CodeAnalysis;
 
@@ -143,7 +142,5 @@ namespace SAPPub.Core.Entities
         public LAAbsence LAAbsence { get; set; } = new();
 
         public EnglandAbsence EnglandAbsence { get; set; } = new();
-
-        public EstablishmentWorkforce Workforce { get; set; } = new(); // Will eventually need one per phase
     }
 }

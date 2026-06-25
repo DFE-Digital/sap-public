@@ -4,7 +4,6 @@ using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.KS4.SubjectEntries;
-using SAPPub.Core.Entities.KS4.Workforce;
 
 namespace SAPPub.Infrastructure.Repositories.Helpers
 {
@@ -336,9 +335,6 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                 nameof(EstablishmentPerformance) =>
                     SelectFrom(EstablishmentPerformanceColumns, "v_establishment_performance"),
 
-                nameof(EstablishmentWorkforce) =>
-                    SelectFrom(EstablishmentWorkforceColumns, "v_establishment_workforce"),
-
                 nameof(LAAbsence) =>
                     SelectFrom(LAAbsenceColumns, "v_la_absence"),
 
@@ -399,9 +395,6 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
 
                 nameof(EstablishmentPerformance) =>
                     SelectFromWhereId(EstablishmentPerformanceColumns, "v_establishment_performance"),
-
-                nameof(EstablishmentWorkforce) =>
-                    SelectFromWhereId(EstablishmentWorkforceColumns, "v_establishment_workforce"),
 
                 nameof(LAAbsence) =>
                     SelectFromWhereId(LAAbsenceColumns, "v_la_absence"),

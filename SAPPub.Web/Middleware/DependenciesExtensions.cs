@@ -6,7 +6,6 @@ using SAPPub.Core.Interfaces.Repositories.KS4.Absence;
 using SAPPub.Core.Interfaces.Repositories.KS4.Destinations;
 using SAPPub.Core.Interfaces.Repositories.KS4.Performance;
 using SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
-using SAPPub.Core.Interfaces.Repositories.KS4.Workforce;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Gateway;
 using SAPPub.Core.Interfaces.Services.KS4;
@@ -17,7 +16,6 @@ using SAPPub.Core.Interfaces.Services.KS4.Attendance;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
-using SAPPub.Core.Interfaces.Services.KS4.Workforce;
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.Services;
 using SAPPub.Core.Services.Gateway;
@@ -29,7 +27,6 @@ using SAPPub.Core.Services.KS4.Attendance;
 using SAPPub.Core.Services.KS4.Destinations;
 using SAPPub.Core.Services.KS4.Performance;
 using SAPPub.Core.Services.KS4.SubjectEntries;
-using SAPPub.Core.Services.KS4.Workforce;
 using SAPPub.Core.Services.Search;
 using SAPPub.Infrastructure.Mapping.ValueCodes;
 using SAPPub.Infrastructure.PostgresSearch;
@@ -40,7 +37,6 @@ using SAPPub.Infrastructure.Repositories.KS4.Absence;
 using SAPPub.Infrastructure.Repositories.KS4.Destinations;
 using SAPPub.Infrastructure.Repositories.KS4.Performance;
 using SAPPub.Infrastructure.Repositories.KS4.SubjectEntries;
-using SAPPub.Infrastructure.Repositories.KS4.Workforce;
 
 namespace SAPPub.Web.Middleware
 {
@@ -66,9 +62,6 @@ namespace SAPPub.Web.Middleware
 
             services.AddTransient<IEstablishmentAbsenceRepository, EstablishmentAbsenceRepository>();
             services.AddTransient<IEstablishmentAbsenceService, EstablishmentAbsenceService>();
-
-            services.AddTransient<IEstablishmentWorkforceRepository, EstablishmentWorkforceRepository>();
-            services.AddTransient<IEstablishmentWorkforceService, EstablishmentWorkforceService>();
 
             services.AddTransient<ILAPerformanceRepository, LAPerformanceRepository>();
             services.AddTransient<ILAPerformanceService, LAPerformanceService>();
