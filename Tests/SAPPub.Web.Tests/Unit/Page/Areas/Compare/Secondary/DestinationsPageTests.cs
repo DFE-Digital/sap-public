@@ -115,6 +115,33 @@ public class DestinationsPageTests : PageTestsBase
             var destinationsDetails = new DestinationsDetailsBuilder()
             .WithUrn(urn)
             .WithEstablishmentName($"School {urn}")
+            .WithEnglandPercentage(null)
+            .Build();
+            _destinationsDetails.Add(destinationsDetails);
+            _destinationsService.Setup(s => s.GetDestinationsDetailsAsync(urn, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(destinationsDetails);
+        }
+
+        // Act
+        var doc = await Fixture.BrowseToPage($"{_pageUrl}?{QueryString}");
+
+        // Assert
+        var table = doc.QuerySelector<IHtmlTableElement>("#all-destinations-current-year-table");
+        Assert.NotNull(table);
+        //Assert.Equal("Not available", table.GetTableValueByRowHeader(_destinationsDetails[0].SchoolName));
+        //Assert.Equal("Not available", table.GetTableValueByRowHeader(_destinationsDetails[1].SchoolName));
+        Assert.Equal("Not available", table.GetTableValueByRowHeader("England average"));
+    }
+
+    [Fact]
+    public async Task DestinationsPage_DestinationsEnglandPercentageDataNotAvailable_DisplaysExpectedSchoolComparisonTableContent()
+    {
+        // Arrange
+        foreach (var urn in _urns)
+        {
+            var destinationsDetails = new DestinationsDetailsBuilder()
+            .WithUrn(urn)
+            .WithEstablishmentName($"School {urn}")
             .BuildResultsNotAvailable();
             _destinationsDetails.Add(destinationsDetails);
             _destinationsService.Setup(s => s.GetDestinationsDetailsAsync(urn, It.IsAny<CancellationToken>()))

@@ -105,6 +105,11 @@
             <li>what career advice or support is available</li>
             <li>will subject choice affect future applications</li>
         </ul>
+
+        <govuk-pagination id="academic-performance-attainment-pagination">
+            <govuk-pagination-previous href="@Url.RouteUrl(RouteConstants.CompareSecondaryAcademicPerformanceEnglishAndMathsResults, new { urns = Model.URNs })">Academic performance: English and maths results</govuk-pagination-previous>
+            <govuk-pagination-next href="@Url.RouteUrl(RouteConstants.CompareSecondaryNextSteps, new { urns = Model.URNs })">Next steps</govuk-pagination-next>
+        </govuk-pagination>
     </div>
 </div>
 

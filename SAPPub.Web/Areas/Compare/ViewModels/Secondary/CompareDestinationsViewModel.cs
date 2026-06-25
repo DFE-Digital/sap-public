@@ -49,7 +49,7 @@ public class CompareDestinationsViewModel : CompareSecondarySchoolBaseViewModel
             URNs = urns,
             SchoolDetails = destinationsDetails
                 .Select(d => SchoolDestinationDetails.Map(d, establishments.First(e => e.URN == d.Urn))),
-            EnglandPercentage = destinationsDetails.First().EnglandAll.CurrentYear
+            EnglandPercentage = destinationsDetails.First().EnglandAll?.CurrentYear
         };
     }
 }

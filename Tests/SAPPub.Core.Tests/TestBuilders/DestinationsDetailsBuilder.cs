@@ -8,8 +8,8 @@ public class DestinationsDetailsBuilder
     private string? _urn;
     private string? _establishmentName;
     private string? _laName;
-    private double? _englandPercentage;
-    private double? _laPercentage;
+    private Optional<double?> _englandPercentage = new Optional<double?>();
+    private Optional<double?> _laPercentage = new Optional<double?>();
 
     public DestinationsDetailsBuilder WithUrn(string urn)
     {
@@ -29,14 +29,14 @@ public class DestinationsDetailsBuilder
         return this;
     }
 
-    public DestinationsDetailsBuilder WithLaPercentage(double laPercentage)
+    public DestinationsDetailsBuilder WithLaPercentage(double? laPercentage)
     {
-        _laPercentage = laPercentage;
+        _laPercentage.SetValue(laPercentage);
         return this;
     }
-    public DestinationsDetailsBuilder WithEnglandPercentage(double englandPercentage)
+    public DestinationsDetailsBuilder WithEnglandPercentage(double? englandPercentage)
     {
-        _englandPercentage = englandPercentage;
+        _englandPercentage.SetValue(englandPercentage);
         return this;
     }
 
@@ -56,13 +56,13 @@ public class DestinationsDetailsBuilder
             },
             LocalAuthorityAll = new RelativeYearValues<double?>
             {
-                CurrentYear = _laPercentage ?? Math.Round(faker.Random.Double(5, 100), 1),
+                CurrentYear = _laPercentage.IsSet ? _laPercentage.Value : Math.Round(faker.Random.Double(5, 100), 1),
                 PreviousYear = Math.Round(faker.Random.Double(5, 100), 1),
                 TwoYearsAgo = Math.Round(faker.Random.Double(5, 100), 1)
             },
             EnglandAll = new RelativeYearValues<double?>
             {
-                CurrentYear = _englandPercentage ?? Math.Round(faker.Random.Double(5, 100), 1),
+                CurrentYear = _englandPercentage.IsSet ? _englandPercentage.Value : Math.Round(faker.Random.Double(5, 100), 1),
                 PreviousYear = Math.Round(faker.Random.Double(5, 100), 1),
                 TwoYearsAgo = Math.Round(faker.Random.Double(5, 100), 1)
             },
