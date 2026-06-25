@@ -22,18 +22,5 @@ namespace SAPPub.Core.Entities.KS4.Absence
         public double? Abs_Tot_Eng_Current_Pct { get; set; }
         public string Abs_Tot_Eng_Current_Pct_Reason { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Auth Absence Total filtered by England for Current year 
-        /// </summary>
-        public CodedDouble Auth_Tot_Eng_Current_Pct_Coded { get; set; } = new();
-        public double? Auth_Tot_Eng_Current_Pct { get; set; }
-        public string Auth_Tot_Eng_Current_Pct_Reason { get; set; } = string.Empty;
-
-        /// <summary>
-        /// UnAuth Absence Total filtered by England for Current year 
-        /// </summary>
-        public CodedDouble UnAuth_Tot_Eng_Current_Pct_Coded { get; set; } = new();
-        public double? UnAuth_Tot_Eng_Current_Pct { get; set; }
-        public string UnAuth_Tot_Eng_Current_Pct_Reason { get; set; } = string.Empty;
     }
 }
