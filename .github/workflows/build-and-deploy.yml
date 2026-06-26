@@ -590,9 +590,19 @@ jobs:
   deploy_domains_env:
     name: Deploy Domains to ${{ matrix.domain_environment }} environment
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: >-
+      ${{
+        always() &&
+        github.ref == 'refs/heads/main' &&
+        github.event_name == 'push' &&
+        (
+          matrix.domain_environment != 'test' ||
+          needs.detect-refresh-data-on-merge.outputs.should-refresh != 'true' ||
+          needs.refresh-data-test-after-merge.result == 'success'
+        )
+      }}
     concurrency: deploy_domains_env_${{ matrix.domain_environment }}
-    needs: [deploy_domains_infra]
+    needs: [deploy_domains_infra, detect-refresh-data-on-merge, refresh-data-test-after-merge]
     strategy:
       max-parallel: 1
       matrix:
