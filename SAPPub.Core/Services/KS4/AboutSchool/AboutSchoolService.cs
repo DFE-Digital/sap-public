@@ -85,4 +85,29 @@ public sealed class AboutSchoolService(
             IsKS5 = establishment.IsKS5
         };
     }
+
+    public async Task<IEnumerable<AboutSchoolComparisonModel>> GetAboutSchoolForComparisonAsync(IEnumerable<string> urns, CancellationToken ct = default)
+    {
+        var establishments = await establishmentService.GetEstablishmentsAsync(urns, ct);
+
+        return (await Task.WhenAll(
+            establishments.Select(async est =>
+            {
+                var laUrls = !string.IsNullOrWhiteSpace(est.GSSLACode) ? await laUrlsRepository.GetLaAsync(est.GSSLACode, ct) : null;
+                laUrls ??= !string.IsNullOrWhiteSpace(est.DistrictAdministrativeId) ? await laUrlsRepository.GetLaAsync(est.DistrictAdministrativeId, ct) : null;
+
+                return new AboutSchoolComparisonModel
+                {
+                    Urn = est.URN,
+                    SchoolName = est.EstablishmentName,
+                    Address = est.Address,
+                    Website = est.Website,
+                    Easting = est.Easting,
+                    Northing = est.Northing,
+                    LocalAuthority = est.LAName,
+                    LocalAuthorityName = laUrls?.Name,
+                    LocalAuthorityWebsite = laUrls?.LAMainUrl,
+                };
+            }))).OrderBy(a=>a.SchoolName);
+    }
 }

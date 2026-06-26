@@ -1,6 +1,8 @@
 ﻿using Moq;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Services;
+using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
+using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
 
@@ -9,13 +11,14 @@ namespace SAPPub.Web.Tests.Unit.Page.Areas.Compare.Secondary;
 [Collection("WebAppCollection")]
 public class AboutYourSchoolsPageTests : PageTestsBase
 {
-    private string _pageUrl = "compare/secondary/about-your-schools?urns=119052&urns=124500";
+    private static readonly List<string> _urns = ["119052", "124500"];
+    private string _pageUrl = $"compare/secondary/about-your-schools?urns={_urns[0]}&urns={_urns[1]}";
+    private readonly Mock<IAboutSchoolService> _mockAboutSchoolService = new();
     private readonly Mock<IEstablishmentService> _establishmentService;
 
     public AboutYourSchoolsPageTests(WebAppFixture fixture) : base(fixture)
     {
-        // set up the mock establishment service to return establishments for the URNs in the query string
-        // this is used by the page validation filter to determine if the establishments are secondary and should be compared
+        _mockAboutSchoolService = UseMock<IAboutSchoolService>();
         _establishmentService = UseMock<IEstablishmentService>();
         var establishmentList = (new List<Establishment>
         {
@@ -26,6 +29,16 @@ public class AboutYourSchoolsPageTests : PageTestsBase
         establishmentList.Select(e =>
             _establishmentService.Setup(s =>
             s.GetEstablishmentAsync(e.URN, It.IsAny<CancellationToken>())).ReturnsAsync(e)).ToList();
+
+        var aboutSchools = new List<AboutSchoolComparisonModel>
+        {
+            new(){ SchoolName ="Test School", Address="Test Street", Urn = "119052", Easting="532301", Northing="181746" },
+            new(){ SchoolName ="Test School1", Urn = "124500" }
+        };
+
+        _mockAboutSchoolService
+            .Setup(a => a.GetAboutSchoolForComparisonAsync(It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(aboutSchools);
     }
 
     [Fact]
@@ -83,5 +96,63 @@ public class AboutYourSchoolsPageTests : PageTestsBase
         Assert.NotNull(navNext);
         Assert.Null(navPrevious);
         Assert.Contains("Academic Performance", navNext.TextContent);
+    }
+
+    [Fact]
+    public async Task DisplaysLocationSection()
+    {
+        // Arrange && Act
+        var doc = await Fixture.BrowseToPage(_pageUrl);
+
+        // Assert
+        var heading = doc.QuerySelector(".govuk-grid-column-three-quarters > h2");
+        Assert.NotNull(heading);
+        Assert.Contains("Location", heading.TextContent.Trim());
+    }
+
+    [Fact]
+    public async Task DisplaysLocationTable()
+    {
+        // Arrange && Act
+        var doc = await Fixture.BrowseToPage(_pageUrl);
+
+        // Assert
+        var locationTable = doc.QuerySelector("#schoolLocationTable");
+        Assert.NotNull(locationTable);
+
+        var tableRows = locationTable.QuerySelectorAll(".govuk-table__row");
+        Assert.NotNull(tableRows);
+
+        var row1Col1Text = tableRows[0].Children[0].TextContent;
+        var row1Col2Text = tableRows[0].Children[1].TextContent;
+        var row2Col1Text = tableRows[1].Children[0].TextContent;
+        var row2Col2Text = tableRows[1].Children[1].TextContent;
+        var row3Col1Text = tableRows[2].Children[0].TextContent;
+        var row3Col2Text = tableRows[2].Children[1].TextContent;
+
+        Assert.Equal("School", row1Col1Text);
+        Assert.Equal("Address", row1Col2Text);
+        Assert.Equal("Test School", row2Col1Text);
+        Assert.Equal("Test Street", row2Col2Text);
+        Assert.Equal("Test School1", row3Col1Text);
+        Assert.Equal("Not available", row3Col2Text);
+    }
+
+    [Fact]
+    public async Task DisplaysMapWithLegend()
+    {
+        // Arrange && Act
+        var doc = await Fixture.BrowseToPage(_pageUrl);
+
+        // Assert
+        var mapElement = doc.QuerySelector("#map");
+        var legendElement = doc.QuerySelector(".legend");
+        Assert.NotNull(mapElement);
+        Assert.NotNull(legendElement);
+        var datapoints = mapElement.Attributes[3];
+        Assert.Equal("data-points", datapoints?.Name);
+        Assert.Contains("lat", datapoints?.Value);
+        Assert.Equal(1, legendElement.ChildElementCount);
+
     }
 }
