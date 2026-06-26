@@ -15,4 +15,9 @@ public sealed class EstablishmentDestinationsService(IEstablishmentDestinationsR
     {
         return repo.GetEstablishmentDestinationsAsync(urn, ct);
     }
+
+    public Task<IEnumerable<EstablishmentDestinations>> GetEstablishmentDestinationsAsync(IEnumerable<string> urns, CancellationToken ct = default)
+    {
+        return repo.GetEstablishmentsDestinationsAsync(urns, ct);
+    }
 }

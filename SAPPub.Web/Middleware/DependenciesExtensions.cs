@@ -8,6 +8,7 @@ using SAPPub.Core.Interfaces.Repositories.KS4.Performance;
 using SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Repositories.KS4.Workforce;
 using SAPPub.Core.Interfaces.Services;
+using SAPPub.Core.Interfaces.Services.Compare;
 using SAPPub.Core.Interfaces.Services.Gateway;
 using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
@@ -121,6 +122,7 @@ namespace SAPPub.Web.Middleware
 
             services.AddTransient<IMySchoolsListService, MySchoolsListService>();
             services.AddTransient<IEnglishAndMathsComparisionService, EnglishAndMathsComparisionService>();
+            services.AddTransient<IDestinationsComparisonService, DestinationsComparisonService>();
 
             // Mapper
             services.AddSingleton<ICodedValueMapper, ReflectionCodedValueMapper>();

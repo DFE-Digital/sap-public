@@ -510,6 +510,9 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                     where school_urn = @Urn;
                     """,
 
+                nameof(EstablishmentDestinations) =>
+                    SelectFromWhereIds(EstablishmentDestinationsColumns, "v_establishment_destinations"),
+
                 _ => string.Empty,
             };
         }

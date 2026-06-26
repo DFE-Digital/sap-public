@@ -15,4 +15,8 @@
     <PackageReference Include="Microsoft.FeatureManagement" Version="4.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\Compare\" />
+  </ItemGroup>
+
 </Project>

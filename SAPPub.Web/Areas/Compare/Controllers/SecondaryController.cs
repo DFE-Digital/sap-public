@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 using SAPPub.Core.Entities;
-using SAPPub.Core.Interfaces.Services.KS4;
+using SAPPub.Core.Interfaces.Services.Compare;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Web.Areas.Compare.Filters;
 using SAPPub.Web.Areas.Compare.ViewModels.Secondary;
@@ -54,12 +54,12 @@ public class SecondaryController : Controller
 
     [HttpGet]
     [Route("destinations-after-year-11", Name = RouteConstants.CompareSecondaryDestinations)]
-    public async Task<IActionResult> Destinations([FromServices] IDestinationsService destinationsService, List<string> urns)
+    public async Task<IActionResult> Destinations([FromServices] IDestinationsComparisonService destinationsService, List<string> urns)
     {
         var establishments = HttpContext.Items["Establishments"] as List<Establishment> ?? [];
-        var destinations = await Task.WhenAll(urns.Select(async d => await destinationsService.GetDestinationsDetailsAsync(d)));
+        var destinationsResult = await destinationsService.GetDestinationsDetailsAsync(urns, CancellationToken.None);
 
-        var model = CompareDestinationsViewModel.Map(urns, destinations.ToList(), establishments.ToList());
+        var model = CompareDestinationsViewModel.Map(urns, destinationsResult, establishments.ToList());
         return View(model);
     }
 }

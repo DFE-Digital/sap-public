@@ -2,8 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SAPPub.Core.Entities;
-using SAPPub.Core.Interfaces.Services.KS4;
+using SAPPub.Core.Interfaces.Services.Compare;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
+using SAPPub.Core.ServiceModels.Compare;
 using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Areas.Compare.Controllers;
@@ -15,7 +16,7 @@ namespace SAPPub.Web.Tests.Unit.Areas.Compare.Controllers;
 public class SecondaryControllerTests
 {
     private SecondaryController _controllerUnderTest = new();
-    private readonly Mock<IDestinationsService> _mockDestinationsService = new();
+    private readonly Mock<IDestinationsComparisonService> _mockDestinationsService = new();
     private readonly Mock<IEnglishAndMathsComparisionService> _mockEnglishAndMathsComparisonService = new();
 
     private List<string> _urns = ["123456", "234567"];
@@ -252,14 +253,21 @@ public class SecondaryControllerTests
     {
         // Arrange
         var englandPercentage = 50.0;
-        var destinationsDetailsBuilder = new DestinationsDetailsBuilder()
-            .WithEnglandPercentage(englandPercentage);
-        var establishmentDestinations = _urns.Select(urn => destinationsDetailsBuilder.WithUrn(urn).Build()).ToList();
+        var establishmentDestinations = _urns.Select(urn =>
+            new SchoolDestinationDetails
+            {
+                URN = urn,
+                PercentInEducationEmploymentOrTraining = new Bogus.Faker().Random.Double(5, 100)
+            }).ToList();
+        var destinationsResultsModel = new DestinationsComparisonResultModel
+        {
+            EnglandPercentage = englandPercentage,
+            SchoolDetails = establishmentDestinations
+        };
 
-        _urns.Select(urn =>
-            _mockDestinationsService
-                .Setup(s => s.GetDestinationsDetailsAsync(urn, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(establishmentDestinations.Single(x => x.Urn == urn))).ToList();
+        _mockDestinationsService
+            .Setup(s => s.GetDestinationsDetailsAsync(_urns, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(destinationsResultsModel);
 
         // Act
         var result = await _controllerUnderTest.Destinations(_mockDestinationsService.Object, _urns) as ViewResult;
@@ -274,22 +282,22 @@ public class SecondaryControllerTests
             second => Assert.Equal(_urns[1], second)
         );
         Assert.Collection(model.SchoolDetails,
-            first => Assert.Equal(establishmentDestinations[0].Urn, first.URN),
-            second => Assert.Equal(establishmentDestinations[1].Urn, second.URN)
+            first => Assert.Equal(establishmentDestinations[0].URN, first.URN),
+            second => Assert.Equal(establishmentDestinations[1].URN, second.URN)
         );
         Assert.Collection(model.SchoolDetails,
             first =>
             {
-                Assert.Equal(establishmentDestinations[0].Urn, first.URN);
-                Assert.Equal(establishmentDestinations[0].SchoolName, first.SchoolName);
-                Assert.Equal(establishmentDestinations[0].SchoolAll.CurrentYear, first.PercentInEducationEmploymentOrTraining);
+                Assert.Equal(establishmentDestinations[0].URN, first.URN);
+                Assert.Equal((_httpContext.Items["Establishments"] as List<Establishment>)?[0].EstablishmentName, first.SchoolName);
+                Assert.Equal(establishmentDestinations[0].PercentInEducationEmploymentOrTraining, first.PercentInEducationEmploymentOrTraining);
                 Assert.Equal("Yes", first.SixthForm.DisplayText());
             },
             second =>
             {
-                Assert.Equal(establishmentDestinations[1].Urn, second.URN);
-                Assert.Equal(establishmentDestinations[1].SchoolName, second.SchoolName);
-                Assert.Equal(establishmentDestinations[1].SchoolAll.CurrentYear, second.PercentInEducationEmploymentOrTraining);
+                Assert.Equal(establishmentDestinations[1].URN, second.URN);
+                Assert.Equal((_httpContext.Items["Establishments"] as List<Establishment>)?[1].EstablishmentName, second.SchoolName);
+                Assert.Equal(establishmentDestinations[1].PercentInEducationEmploymentOrTraining, second.PercentInEducationEmploymentOrTraining);
                 Assert.Equal("Yes", second.SixthForm.DisplayText());
             }
         );

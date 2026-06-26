@@ -1,8 +1,7 @@
 ﻿using SAPPub.Core.Entities;
-using SAPPub.Core.Entities.KS4.Destinations;
+using SAPPub.Core.ServiceModels.Compare;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.Charts;
-using static SAPPub.Web.Constants.Constants;
 
 namespace SAPPub.Web.Areas.Compare.ViewModels.Secondary;
 
@@ -12,23 +11,23 @@ public class CompareDestinationsViewModel : CompareSecondarySchoolBaseViewModel
     {
         public required string URN { get; set; }
         public required string SchoolName { get; set; }
-        public required DisplayField<string> SixthForm { get; set; }
+        public required DisplayField<bool> SixthForm { get; set; }
         public required double? PercentInEducationEmploymentOrTraining { get; set; }
 
-        public static SchoolDestinationDetails Map(DestinationsDetails destinationsDetails, Establishment establishmentDetails)
+        public static SchoolDestinationDetails Map(SAPPub.Core.ServiceModels.Compare.SchoolDestinationDetails destinationsDetails, Establishment establishmentDetails)
         {
             return new SchoolDestinationDetails
             {
-                URN = destinationsDetails.Urn,
-                SchoolName = destinationsDetails.SchoolName,
+                URN = destinationsDetails.URN,
+                SchoolName = establishmentDetails.EstablishmentName,
                 SixthForm = GetSixthForm(establishmentDetails.OfficialSixthFormId).ToDisplayField(),
-                PercentInEducationEmploymentOrTraining = destinationsDetails.SchoolAll.CurrentYear,
+                PercentInEducationEmploymentOrTraining = destinationsDetails.PercentInEducationEmploymentOrTraining,
             };
         }
 
-        private static string? GetSixthForm(string value)
+        private static bool? GetSixthForm(string value)
         {
-            return string.IsNullOrWhiteSpace(value) ? null : string.Equals(value, "1") ? Yes : No;
+            return string.Equals(value, "1");
         }
     }
 
@@ -38,18 +37,28 @@ public class CompareDestinationsViewModel : CompareSecondarySchoolBaseViewModel
 
     public required IEnumerable<SchoolDestinationDetails> SchoolDetails { get; set; }
 
-    public static CompareDestinationsViewModel Map(List<string> urns, List<DestinationsDetails> destinationsDetails, List<Establishment> establishments)
+    public static CompareDestinationsViewModel Map(List<string> urns, DestinationsComparisonResultModel destinationsDetails, List<Establishment> establishments)
     {
+        var schoolDetails = destinationsDetails
+                .SchoolDetails
+                .Select(d => SchoolDestinationDetails.Map(d, establishments.First(e => e.URN == d.URN)))
+                .OrderBy(d => d.SchoolName)
+                .ToList();
         return new CompareDestinationsViewModel
         {
             URNs = urns,
-            SchoolDetails = destinationsDetails
-                .Select(d => SchoolDestinationDetails.Map(d, establishments.First(e => e.URN == d.Urn))),
-            EnglandPercentage = destinationsDetails.First().EnglandAll.CurrentYear,
-            AllDestinationsData = new DataViewModel
+            EnglandPercentage = destinationsDetails.EnglandPercentage,
+            SchoolDetails = schoolDetails,
+            AllDestinationsData = new DataViewModel // save a version of the data reshaped to send into the chart component
             {
-                Labels = destinationsDetails.Select(d => d.SchoolName).ToList().Concat(new[] { "England average" }).ToList(),
-                Data = destinationsDetails.Select(d => d.SchoolAll.CurrentYear).ToList().Concat([destinationsDetails.First().EnglandAll.CurrentYear]).ToList()
+                Labels = schoolDetails
+                    .Select(d => d.SchoolName)
+                    .Concat(["England average"])
+                    .ToList(),
+                Data = schoolDetails
+                    .Select(d => d.PercentInEducationEmploymentOrTraining)
+                    .Concat([destinationsDetails.EnglandPercentage])
+                    .ToList()
             }
         };
     }
