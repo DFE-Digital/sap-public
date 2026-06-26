@@ -10,5 +10,5 @@ public class PaginationNavigationHelper(IPage page)
 
     public Task ClickNextLinkAsync() => _page.Locator(".govuk-pagination__next a.govuk-pagination__link").ClickAsync();
 
-    public Task ClickPreviousLinkAsync() => _page.Locator(".govuk-pagination__previous a.govuk-pagination__link").ClickAsync();
+    public Task ClickPreviousLinkAsync() => _page.Locator(".govuk-pagination__prev a.govuk-pagination__link").ClickAsync();
 }

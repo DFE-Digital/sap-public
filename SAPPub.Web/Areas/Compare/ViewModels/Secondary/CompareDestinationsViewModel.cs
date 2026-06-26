@@ -34,11 +34,7 @@ public class CompareDestinationsViewModel : CompareSecondarySchoolBaseViewModel
 
     public required double? EnglandPercentage { get; set; }
 
-    public DataViewModel AllDestinationsData => new DataViewModel
-    {
-        Labels = SchoolDetails.Select(s => s.SchoolName).ToList().Concat(new[] { "England average" }).ToList(),
-        Data = SchoolDetails.Select(s => s.PercentInEducationEmploymentOrTraining).ToList().Concat([EnglandPercentage]).ToList()
-    };
+    public required DataViewModel AllDestinationsData { get; set; }
 
     public required IEnumerable<SchoolDestinationDetails> SchoolDetails { get; set; }
 
@@ -49,7 +45,12 @@ public class CompareDestinationsViewModel : CompareSecondarySchoolBaseViewModel
             URNs = urns,
             SchoolDetails = destinationsDetails
                 .Select(d => SchoolDestinationDetails.Map(d, establishments.First(e => e.URN == d.Urn))),
-            EnglandPercentage = destinationsDetails.First().EnglandAll?.CurrentYear
+            EnglandPercentage = destinationsDetails.First().EnglandAll.CurrentYear,
+            AllDestinationsData = new DataViewModel
+            {
+                Labels = destinationsDetails.Select(d => d.SchoolName).ToList().Concat(new[] { "England average" }).ToList(),
+                Data = destinationsDetails.Select(d => d.SchoolAll.CurrentYear).ToList().Concat([destinationsDetails.First().EnglandAll.CurrentYear]).ToList()
+            }
         };
     }
 }
