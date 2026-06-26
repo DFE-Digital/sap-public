@@ -46,6 +46,14 @@ namespace SAPPub.Infrastructure.Repositories
             return await _repo.ReadAsync(urn, ct) ?? null;
         }
 
+        public async Task<IEnumerable<Establishment>?> GetEstablishmentsAsync(IEnumerable<string> urns, CancellationToken ct = default)
+        {
+            if (urns is null || !urns.Any())
+                return null;
+
+            return await _repo.ReadManyAsync(new { Urns = urns }, ct) ?? null;
+        }
+                
         internal static SearchSqlParts BuildSearchSqlParts(SearchQuery query, int maxResults, bool includeKs5)
         {
             ArgumentNullException.ThrowIfNull(query);

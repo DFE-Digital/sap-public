@@ -6,6 +6,7 @@ public static class Constants
     public const string No = "No";
     public const string LocalCouncilAverage = "Local council average";
     public const string Average = "average";
+    public const string EnglandAverage = "England average";
     public const string NotRecorded = "Not recorded";
     public const string NotAvailable = "Not available";
 
@@ -16,6 +17,8 @@ public static class Constants
     public const string ComparisionLimtReached = "ComparisionLimtReached";
 
     // Chart colours
+    public const string EstablishmentChartColour = "#A285D1";
+    public const string EnglandAverageChartColour = "#28A197";
     public static readonly string[] ChartColours = { "#A285D1", "#12436D", "#28A197" };
 
     // School comparison labels/text

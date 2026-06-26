@@ -1,5 +1,6 @@
 ﻿using Moq;
 using SAPPub.Core.Entities;
+using SAPPub.Core.Exceptions;
 using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Services;
 using System.Diagnostics.CodeAnalysis;
@@ -92,6 +93,69 @@ namespace SAPPub.Core.Tests.Services
 
             // Act & Assert
             var ex = await Assert.ThrowsAsync<System.Exception>(() => _service.GetEstablishmentAsync(urn, CancellationToken.None));
+            Assert.Equal("Database error", ex.Message);
+        }
+        
+        [Fact]
+        public async Task GetEstablishmentsAsync_ShouldReturnCorrectItems_WhenUrnsExists()
+        {
+            // Arrange
+            var urns = new List<string> { "123456", "785456" };
+
+            var expectedEstablishments = new List<Establishment>
+            {
+                new() { URN = "123456", EstablishmentName = "Est1" },
+                new() { URN = "785456", EstablishmentName = "Est2" }
+            };           
+
+            _mockRepo
+                .Setup(r => r.GetEstablishmentsAsync(urns, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedEstablishments);
+
+            // Act
+            var results = await _service.GetEstablishmentsAsync(urns, CancellationToken.None);
+
+            // Assert
+            Assert.NotNull(results);
+            Assert.Equal(2, results.Count());
+
+            foreach (var expectedEstablishment in expectedEstablishments)
+            {
+                var actualEstablishment = results.FirstOrDefault(r => r.URN == expectedEstablishment.URN);
+                Assert.NotNull(actualEstablishment);
+                Assert.Equal(expectedEstablishment.URN, actualEstablishment.URN);
+                Assert.Equal(expectedEstablishment.EstablishmentName, actualEstablishment.EstablishmentName);
+            }            
+        }
+
+        [Fact]
+        public async Task GetEstablishmentdAsync_ShouldThrow_NotFoundException_WhenRepository_Returns_NotResults()
+        {
+            // Arrange
+            var urns = new List<string> { "123456", "785456" };
+            var expectedEstablishments = new List<Establishment>();
+
+            _mockRepo
+                .Setup(r => r.GetEstablishmentsAsync(urns, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedEstablishments);
+
+            // Act & Assert
+            var ex = await Assert.ThrowsAsync<NotFoundException>(() => _service.GetEstablishmentsAsync(urns, CancellationToken.None));
+            Assert.Equal($"Establishments not found for the given URNs: {string.Join(", ", urns)}", ex.Message);
+        }
+
+        [Fact]
+        public async Task GetEstablishmentdAsync_ShouldPropagateException_WhenRepositoryThrows()
+        {
+            // Arrange
+            var urns = new List<string> { "123456", "785456" };
+
+            _mockRepo
+                .Setup(r => r.GetEstablishmentsAsync(urns, It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new Exception("Database error"));
+
+            // Act & Assert
+            var ex = await Assert.ThrowsAsync<Exception>(() => _service.GetEstablishmentsAsync(urns, CancellationToken.None));
             Assert.Equal("Database error", ex.Message);
         }
     }
