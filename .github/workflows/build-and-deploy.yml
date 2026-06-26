@@ -590,6 +590,10 @@ jobs:
   deploy_domains_env:
     name: Deploy Domains to ${{ matrix.domain_environment }} environment
     runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1
+      matrix:
+        domain_environment: [test, production]
     if: >-
       ${{
         always() &&
@@ -602,11 +606,7 @@ jobs:
         )
       }}
     concurrency: deploy_domains_env_${{ matrix.domain_environment }}
-    needs: [deploy_domains_infra, detect-refresh-data-on-merge, refresh-data-test-after-merge]
-    strategy:
-      max-parallel: 1
-      matrix:
-        domain_environment: [test, production]
+    needs: [deploy_domains_infra, detect-refresh-data-on-merge, refresh-data-test-after-merge]   
     environment:
       name: production
     permissions:
