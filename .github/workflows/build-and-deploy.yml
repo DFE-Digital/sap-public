@@ -590,13 +590,20 @@ jobs:
   deploy_domains_env:
     name: Deploy Domains to ${{ matrix.domain_environment }} environment
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    concurrency: deploy_domains_env_${{ matrix.domain_environment }}
-    needs: [deploy_domains_infra]
     strategy:
       max-parallel: 1
       matrix:
         domain_environment: [test, production]
+    
+    if: 
+      ${{
+        always() &&
+        github.ref == 'refs/heads/main' &&
+        github.event_name == 'push'
+      }}
+
+    concurrency: deploy_domains_env_${{ matrix.domain_environment }}
+    needs: [deploy_domains_infra, detect-refresh-data-on-merge, refresh-data-test-after-merge]   
     environment:
       name: production
     permissions:
@@ -604,7 +611,13 @@ jobs:
 
     steps:
       - name: Deploy Domains Environment
-        id: deploy_domains_env
+        id: deploy_domains_env        
+        if: 
+            ${{
+              matrix.domain_environment != 'test' ||
+              needs.detect-refresh-data-on-merge.outputs.should-refresh != 'true' ||
+              needs.refresh-data-test-after-merge.result == 'success'
+            }}
         uses: DFE-Digital/github-actions/deploy-domains-env@master
         with:
           azure-client-id: ${{ secrets.AZURE_CLIENT_ID  }}
