@@ -40,7 +40,7 @@ public class CompareAboutYourSchoolsViewModel : CompareSecondarySchoolBaseViewMo
 
         compareAboutYourSchoolsViewModel.MapData =
                 compareAboutYourSchoolsViewModel.CompareAboutSchools
-                .Where(r => r.Latitude is not null || r.Longitude is not null)
+                .Where(r => r.Latitude is not null && r.Longitude is not null)
                 .Select(r => new MapData { Lat = r.Latitude, Lng = r.Longitude, Name = r.SchoolName });
 
         return compareAboutYourSchoolsViewModel;

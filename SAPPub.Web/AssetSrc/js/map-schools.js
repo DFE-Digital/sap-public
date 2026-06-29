@@ -1,8 +1,20 @@
 ﻿(function () {
     const host = document.getElementById("map");
-    if (!host) return;
+    if (!host) {
+        return;
+    }
 
-    const fixedZoom = parseInt(host.dataset.fixedZoom || "14", 10);
+    let isSinglePointDataset = true;
+
+    const parsedFixedZoom = parseInt(host.dataset.fixedZoom || "14", 10);
+    const fixedZoom = Number.isFinite(parsedFixedZoom) ? parsedFixedZoom : 14;
+
+    function showLocationUnavailable() {
+        const loading = host.querySelector(".map-loading");
+        if (loading) {
+            loading.textContent = "Location not available for this school.";
+        }
+    }
 
     let points = null;
 
@@ -10,21 +22,21 @@
         try {
             const parsed = JSON.parse(host.dataset.points);
             if (Array.isArray(parsed)) {
-                points = parsed.map(p => ({
-                    lat: parseFloat(p.lat),
-                    lon: parseFloat(p.lng),
-                    name: p.name || "School location"
-                }));
+                points = parsed.map(p => {
+                    const lat = parseFloat(p.lat);
+                    const lon = parseFloat(p.lng);
+                    return { lat, lon, name: p.name };
+                }).filter(p=> Number.isFinite(p.lat) && Number.isFinite(p.lon));
+                isSinglePointDataset = false;
             }
             else {
-                console.error("Map lat/lon missing or invalid. Check data-lat/data-lon on #map.", { lat, lon });
-                const loading = host.querySelector(".map-loading");
-                if (loading) loading.textContent = "Location not available for this school.";
-                return; cons
+                console.error("Map points missing or invalid. Check data-points on #map.", { lat, lon });
+                showLocationUnavailable();
+                return;
             }
         }
         catch (e) {
-            console.error("Failed to parse data-points JSON", { lat, lon });
+            console.error("Failed to parse data-points JSON", e);
         }
     }
 
@@ -34,8 +46,7 @@
 
         if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
             console.error("Map lat/lon missing or invalid. Check data-lat/data-lon on #map.", { lat, lon });
-            const loading = host.querySelector(".map-loading");
-            if (loading) loading.textContent = "Location not available for this school.";
+            showLocationUnavailable();
             return;
         }
 
@@ -53,16 +64,22 @@
 
     const MAX_ICONS = 6;
     const icons = [];
-    for (let a = 0; a < MAX_ICONS; a++) {
-        const iconUrl = `/assets/images/marker-school-${a+1}.svg`;
-        icons.push(L.icon({ iconUrl, iconSize, iconAnchor, popupAnchor }));
+    if (isSinglePointDataset) {
+        // About profile page should still use the original marker for now. Future tickets will likely change this condition.
+        const iconUrl = "/assets/images/marker-school-target.svg";
+        icons.push(L.icon({ iconUrl, iconSize, iconAnchor, popupAnchor }))
+    }
+    else {
+        for (let a = 0; a < MAX_ICONS; a++) {
+            const iconUrl = `/assets/images/marker-school-${a + 1}.svg`;
+            icons.push(L.icon({ iconUrl, iconSize, iconAnchor, popupAnchor }));
+        }
     }
 
     function getIconForIndex(index) {
         const idx = Math.min(index, icons.length - 1);
         return icons[idx];
     }
-
 
     // ============================================================
     // ACCESSIBILITY (TAB + ENTER/SPACE)
@@ -114,8 +131,10 @@
         latLngs.push(ll);
 
         const icon = getIconForIndex(i);
+        const popupContent = document.createElement("strong");
+        popupContent.textContent = p.name;
         const marker = L.marker(ll, { icon })
-            .bindPopup(`<strong>${p.name}</strong>`)
+            .bindPopup(popupContent)
             .addTo(map);
 
         a11yMarker(marker, `${p.name}, map marker`);
@@ -140,6 +159,10 @@
         }
     }
 
-    document.addEventListener('DOMContentLoaded', showMap);
+    if (document.readyState === "loading") {
+        document.addEventListener('DOMContentLoaded', showMap);
+    } else {
+        showMap();
+    }
 
 })();

@@ -27,6 +27,7 @@
 
         <table class="govuk-table" id="schoolLocationTable">
             
+            <caption class="govuk-visually-hidden">Locations of the schools being compared</caption>
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
                     <th scope="col" class="govuk-table__header">School</th>
@@ -50,7 +51,7 @@
                  data-fixed-zoom="14"
                  data-points='@Html.Raw(Json.Serialize(Model.MapData))'
                  role="region"
-                 aria-label="Map of primary schools near you">
+                 aria-label="Map of the schools being compared">
                 <div class="map-loading">Finding your location…</div>
             </div>
             <div class="legend">
@@ -71,5 +72,5 @@
 </div>
 
 @section Scripts {
-    <script nonce="Html.ScriptNonce().ToString()" src="~/js/map-schools.js"></script>
+    <script nonce="@Html.ScriptNonce().ToString()" src="~/js/map-schools.js"></script>
 }

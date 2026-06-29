@@ -1,4 +1,5 @@
-﻿using SAPPub.Core.Enums;
+﻿using SAPPub.Core.Entities;
+using SAPPub.Core.Enums;
 using SAPPub.Core.Extensions;
 using SAPPub.Core.Helpers;
 using SAPPub.Core.Interfaces.Repositories;
@@ -48,8 +49,7 @@ public sealed class AboutSchoolService(
                 .ToList()
             : null;
 
-        var laUrls = !string.IsNullOrWhiteSpace(establishment.GSSLACode) ? await laUrlsRepository.GetLaAsync(establishment.GSSLACode, ct) : null;
-        laUrls ??= !string.IsNullOrWhiteSpace(establishment.DistrictAdministrativeId) ? await laUrlsRepository.GetLaAsync(establishment.DistrictAdministrativeId, ct) : null;
+        LaUrls? laUrls = await GetLaUrlsAsync(establishment, ct);
 
         return new AboutSchoolModel
         {
@@ -93,8 +93,7 @@ public sealed class AboutSchoolService(
         return (await Task.WhenAll(
             establishments.Select(async est =>
             {
-                var laUrls = !string.IsNullOrWhiteSpace(est.GSSLACode) ? await laUrlsRepository.GetLaAsync(est.GSSLACode, ct) : null;
-                laUrls ??= !string.IsNullOrWhiteSpace(est.DistrictAdministrativeId) ? await laUrlsRepository.GetLaAsync(est.DistrictAdministrativeId, ct) : null;
+                LaUrls? laUrls = await GetLaUrlsAsync(est, ct);
 
                 return new AboutSchoolComparisonModel
                 {
@@ -109,5 +108,12 @@ public sealed class AboutSchoolService(
                     LocalAuthorityWebsite = laUrls?.LAMainUrl,
                 };
             }))).OrderBy(a=>a.SchoolName);
+    }
+
+    private async Task<LaUrls?> GetLaUrlsAsync(Establishment establishment, CancellationToken ct)
+    {
+        var laUrls = !string.IsNullOrWhiteSpace(establishment.GSSLACode) ? await laUrlsRepository.GetLaAsync(establishment.GSSLACode, ct) : null;
+        laUrls ??= !string.IsNullOrWhiteSpace(establishment.DistrictAdministrativeId) ? await laUrlsRepository.GetLaAsync(establishment.DistrictAdministrativeId, ct) : null;
+        return laUrls;
     }
 }
