@@ -18,14 +18,14 @@ public class DestinationsComparisonService(
         var establishmentDestinations = await establishmentDestinationsDetailsTask;
         var englandDestinations = await englandDestinationsDetailsTask;
 
+        var schoolDetails = urns.Select(urn => new SchoolDestinationDetails
+        {
+            URN = urn,
+            PercentInEducationEmploymentOrTraining = establishmentDestinations.FirstOrDefault(x => x.Id == urn)?.AllDest_Tot_Est_Current_Pct
+        });
         return new DestinationsComparisonResultModel
         {
-            SchoolDetails = new List<SchoolDestinationDetails>(
-                establishmentDestinations.Select(ed => new SchoolDestinationDetails
-                {
-                    URN = ed.Id,
-                    PercentInEducationEmploymentOrTraining = ed.AllDest_Tot_Est_Current_Pct
-                })),
+            SchoolDetails = schoolDetails,
             EnglandPercentage = englandDestinations.AllDest_Tot_Eng_Current_Pct
         };
     }
