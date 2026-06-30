@@ -78,6 +78,7 @@
 
         <div class="data-container">
             <input type="radio" name="dataView" id="current-view" class="govuk-visually-hidden" aria-labelledby="all-gcse-show-current-data-btn" checked />
+            <input type="radio" name="dataView" id="data-overtime-view" class="govuk-visually-hidden" aria-labelledby="all-gcse-show-data-over-time-btn" />
 
             <div id="all-gcse-current-year-data-container" class="all-gcse-current-year-data-container">
                 <div id="all-gcse-current-year-chart-container" class="chart-container all-gcse-current-year-chart-container">
@@ -106,6 +107,58 @@
 
                 <div class="govuk-button-group">
                     <govuk-button id="all-gcse-current-year-show-btn" class="govuk-button govuk-button--secondary all-gcse-current-year-show-btn">Show as a table</govuk-button>
+                </div>
+                <div class="govuk-button-group">
+                    <label id="all-gcse-show-data-over-time-btn" for="data-overtime-view" class="govuk-button govuk-button--secondary">Show data over time</label>
+                </div>
+            </div>
+
+            <div id="all-gcse-data-over-time-data-container" class="all-gcse-data-over-time-data-container">
+                <div id="all-gcse-data-over-time-chart-container" class="chart-container all-gcse-data-over-time-chart-container">
+                    <div id="all-gcse-data-overtime-chart-legend" class="chart-legend" data-chart-id="all-gcse-data-overtime-chart"></div>
+                    <div class="chart-container stacked">
+                        <canvas id="all-gcse-data-overtime-chart"
+                                class="js-chart"
+                                data-type="bar"
+                                data-show-legend="true"
+                                data-chart='@Html.Raw(Json.Serialize(Model.AllGcseOverTimeData))'
+                                data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
+                        </canvas>
+                    </div>
+                </div>
+
+                <div id="all-gcse-data-over-time-table-container" class="all-gcse-data-over-time-table-container">
+                    <table id="all-gcse-data-overtime-table" class="govuk-table">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header"></th>
+                                @foreach (var dataset in Model.AllGcseOverTimeData.Datasets)
+                                {
+                                    <th scope="col" class="govuk-table__header">@dataset.Label</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            @foreach (var label in Model.AllGcseOverTimeData.Labels.Select((value, i) => (value, i)))
+                            {
+                                <tr class="govuk-table__row">
+                                    <th scope="row" class="govuk-table__header">@label.value</th>
+                                    @foreach (var dataset in Model.AllGcseOverTimeData.Datasets)
+                                    {
+                                        <td class="govuk-table__cell">@(dataset.Data[label.i].HasValue ? dataset.Data[label.i]!.Value.AsPercentage() : Constants.NotAvailable)</td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="govuk-button-group">
+                    <govuk-button id="all-gcse-data-over-time-show-btn" class="govuk-button govuk-button--secondary all-gcse-data-over-time-show-btn">Show as a table</govuk-button>
+                </div>
+
+                <div class="govuk-button-group">
+                    <label id="all-gcse-show-current-data-btn" for="current-view" class="govuk-button govuk-button--secondary">Show current data</label>
                 </div>
             </div>
         </div>
