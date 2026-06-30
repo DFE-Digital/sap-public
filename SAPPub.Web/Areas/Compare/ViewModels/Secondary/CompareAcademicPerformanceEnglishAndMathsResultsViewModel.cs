@@ -8,6 +8,8 @@ public class CompareAcademicPerformanceEnglishAndMathsResultsViewModel : Compare
 {
     public required DataViewModel AllGcseData { get; set; }
 
+    public required DataOverTimeViewModel AllGcseOverTimeData { get; set; }
+
     public static CompareAcademicPerformanceEnglishAndMathsResultsViewModel Map(
         List<string> urns,
         EnglishAndMathsComparisionResultsModel englishAndMathsComparisionResultsModel)
@@ -21,10 +23,34 @@ public class CompareAcademicPerformanceEnglishAndMathsResultsViewModel : Compare
             BackgroundColors = [.. Enumerable.Repeat(EstablishmentChartColour, orderedResults.Count), EnglandAverageChartColour]
         };
 
+        var allGcseOverTimeData = new DataOverTimeViewModel
+        {
+            Labels = [.. orderedResults.Select(x => x.SchoolName).Append(EnglandAverage)],
+            Datasets =
+                [
+                    new DatasetViewModel
+                    {
+                        Label = "2022 to 2023",
+                        Data = [.. orderedResults.Select(x => x.EstablishmentData.TwoYearsAgo).Append(englishAndMathsComparisionResultsModel.EnglandAverage.TwoYearsAgo)],
+                    },
+                    new DatasetViewModel
+                    {
+                        Label = "2023 to 2024",
+                        Data = [.. orderedResults.Select(x => x.EstablishmentData.PreviousYear).Append(englishAndMathsComparisionResultsModel.EnglandAverage.PreviousYear)],
+                    },
+                    new DatasetViewModel
+                    {
+                        Label = "2024 to 2025",
+                        Data = [.. orderedResults.Select(x => x.EstablishmentData.CurrentYear).Append(englishAndMathsComparisionResultsModel.EnglandAverage.CurrentYear)],
+                    }
+                ],
+        };
+
         return new CompareAcademicPerformanceEnglishAndMathsResultsViewModel
         {
             URNs = urns,
-            AllGcseData = allGcseData,        
+            AllGcseData = allGcseData,
+            AllGcseOverTimeData = allGcseOverTimeData,
         };
     }
 }

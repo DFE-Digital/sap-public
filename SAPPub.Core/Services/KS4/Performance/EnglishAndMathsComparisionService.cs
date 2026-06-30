@@ -44,7 +44,9 @@ public class EnglishAndMathsComparisionService(
             Establishments = establishmentResults,
             EnglandAverage = new RelativeYearValues<double?>
             {
-                CurrentYear = englandPerformance?.EngMaths59_Tot_Eng_Current_Pct
+                CurrentYear = englandPerformance?.EngMaths59_Tot_Eng_Current_Pct,
+                PreviousYear = englandPerformance?.EngMaths59_Tot_Eng_Previous_Pct,
+                TwoYearsAgo = englandPerformance?.EngMaths59_Tot_Eng_Previous2_Pct,
             },
         };
     }

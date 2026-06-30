@@ -73,11 +73,12 @@ public class EnglishAndMathsComparisionServiceTests
                 EngMaths59_Tot_Est_Current_Pct = 70
             },
         };
-               
 
         var englandPerformance = new EnglandPerformance
         {
-            EngMaths59_Tot_Eng_Current_Pct = 80
+            EngMaths59_Tot_Eng_Current_Pct = 80,
+            EngMaths59_Tot_Eng_Previous_Pct = 75.5,
+            EngMaths59_Tot_Eng_Previous2_Pct = 70.9
         };
 
         _mockEstablishmentService
@@ -104,6 +105,8 @@ public class EnglishAndMathsComparisionServiceTests
             Assert.NotNull(expectedEstablishment);
 
             Assert.Equal(englandPerformance.EngMaths59_Tot_Eng_Current_Pct, result.EnglandAverage.CurrentYear);
+            Assert.Equal(englandPerformance.EngMaths59_Tot_Eng_Previous_Pct, result.EnglandAverage.PreviousYear);
+            Assert.Equal(englandPerformance.EngMaths59_Tot_Eng_Previous2_Pct, result.EnglandAverage.TwoYearsAgo);
 
             var expectedEstablishmentComparisionResult = establishmentsPerformance.FirstOrDefault(x => x.Id == expectedEstablishment.URN);
             var actualEstablishmentComparisionResult = result.Establishments.FirstOrDefault(x => x.Urn == expectedEstablishment.URN);
