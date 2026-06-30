@@ -10,7 +10,7 @@ public class CompareAboutYourSchoolViewModel
 
     public string? Website { get; set; }
 
-    public DisplayField<string> Address { get; set; }
+    public required DisplayField<string> Address { get; set; }
 
     public string? LocalAuthority { get; set; }
 

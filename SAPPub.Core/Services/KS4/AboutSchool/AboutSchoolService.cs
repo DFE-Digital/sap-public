@@ -12,7 +12,7 @@ namespace SAPPub.Core.Services.KS4.AboutSchool;
 
 public sealed class AboutSchoolService(
     IEstablishmentService establishmentService,
-    ILaUrlsRepository laUrlsRepository,
+    ILAService laService,
     IEstablishmentLinksRepository establishmentLinksRepository) : IAboutSchoolService
 {
     public async Task<AboutSchoolModel> GetAboutSchoolDetailsAsync(string urn, CancellationToken ct = default)
@@ -49,7 +49,7 @@ public sealed class AboutSchoolService(
                 .ToList()
             : null;
 
-        LaUrls? laUrls = await GetLaUrlsAsync(establishment, ct);
+        LaUrls? laUrls = await laService.GetLaUrlsAsync(establishment, ct);
 
         return new AboutSchoolModel
         {
@@ -89,12 +89,13 @@ public sealed class AboutSchoolService(
     public async Task<IEnumerable<AboutSchoolComparisonModel>> GetAboutSchoolForComparisonAsync(IEnumerable<string> urns, CancellationToken ct = default)
     {
         var establishments = await establishmentService.GetEstablishmentsAsync(urns, ct);
+        var laUrlsList = await laService.GetLaUrlsListForEstablishmentsAsync(establishments, ct);
 
         return (await Task.WhenAll(
             establishments.Select(async est =>
             {
-                LaUrls? laUrls = await GetLaUrlsAsync(est, ct);
-
+                var laUrls = laUrlsList?.FirstOrDefault(a => a!.Id == est.GSSLACode || a.Id == est.DistrictAdministrativeId);
+                
                 return new AboutSchoolComparisonModel
                 {
                     Urn = est.URN,
@@ -107,13 +108,6 @@ public sealed class AboutSchoolService(
                     LocalAuthorityName = laUrls?.Name,
                     LocalAuthorityWebsite = laUrls?.LAMainUrl,
                 };
-            }))).OrderBy(a=>a.SchoolName);
-    }
-
-    private async Task<LaUrls?> GetLaUrlsAsync(Establishment establishment, CancellationToken ct)
-    {
-        var laUrls = !string.IsNullOrWhiteSpace(establishment.GSSLACode) ? await laUrlsRepository.GetLaAsync(establishment.GSSLACode, ct) : null;
-        laUrls ??= !string.IsNullOrWhiteSpace(establishment.DistrictAdministrativeId) ? await laUrlsRepository.GetLaAsync(establishment.DistrictAdministrativeId, ct) : null;
-        return laUrls;
+            }))).OrderBy(a => a.SchoolName);
     }
 }

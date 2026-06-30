@@ -7,14 +7,13 @@ namespace SAPPub.Core.Services.KS4.Admissions;
 
 public sealed class EstablishmentAdmissionsService(
     IEstablishmentService establishmentService,
-    ILaUrlsRepository laUrlsRepository) : IAdmissionsService
+    ILAService lAService) : IAdmissionsService
 {
     public async Task<AdmissionsServiceModel> GetAdmissionsDetailsAsync(string urn, CancellationToken ct = default)
     {
         var establishment = await establishmentService.GetEstablishmentAsync(urn, ct);
 
-        var laUrls = !string.IsNullOrWhiteSpace(establishment.GSSLACode) ? await laUrlsRepository.GetLaAsync(establishment.GSSLACode, ct) : null;
-        laUrls ??= !string.IsNullOrWhiteSpace(establishment.DistrictAdministrativeId) ? await laUrlsRepository.GetLaAsync(establishment.DistrictAdministrativeId, ct) : null;
+        var laUrls = await lAService.GetLaUrlsAsync(establishment, ct);
 
         return new AdmissionsServiceModel(
             SchoolName: establishment.EstablishmentName,
