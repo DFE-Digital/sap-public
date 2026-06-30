@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Moq;
-using NuGet.Protocol.Plugins;
 using SAPPub.Core.Entities;
-using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Web.Areas.Compare.Controllers;
@@ -69,17 +67,17 @@ namespace SAPPub.Web.Tests.Unit.Areas.Compare.Controllers
                     {
                         Urn = urn1,
                         SchoolName = "Test School1",
-                        EstablishmentData = new RelativeYearValues<double?> { CurrentYear = 90 }
+                        EstablishmentData = new RelativeYearValues<double?> { CurrentYear = 90, PreviousYear = 80.5, TwoYearsAgo = 78 }
                     },
                     new()
                     {
                         Urn = urn2,
                         SchoolName = "Test School2",
-                        EstablishmentData = new RelativeYearValues<double?> { CurrentYear = 60 }
+                        EstablishmentData = new RelativeYearValues<double?> { CurrentYear = 60, PreviousYear = 70, TwoYearsAgo = 85.5 }
                     }
 
                 ],
-                EnglandAverage = new RelativeYearValues<double?> { CurrentYear = 80 }
+                EnglandAverage = new RelativeYearValues<double?> { CurrentYear = 80, PreviousYear = 89.3, TwoYearsAgo = 90.5 }
             };
 
             var controller = new SecondaryController();            
@@ -131,6 +129,40 @@ namespace SAPPub.Web.Tests.Unit.Areas.Compare.Controllers
                 ],
                 model.AllGcseData.BackgroundColors!
             );
+
+            // Assert DataOverTime
+
+            Assert.Equal(3, model.AllGcseOverTimeData.Datasets.Count);
+
+            Assert.Equal("2022 to 2023", model.AllGcseOverTimeData.Datasets[0].Label);
+            Assert.Equal(
+                [
+                    expectedResult.Establishments[0].EstablishmentData.TwoYearsAgo!.Value,
+                    expectedResult.Establishments[1].EstablishmentData.TwoYearsAgo!.Value,
+                    expectedResult.EnglandAverage.TwoYearsAgo!.Value,
+                ],
+                model.AllGcseOverTimeData.Datasets[0].Data
+            );
+
+            Assert.Equal("2023 to 2024", model.AllGcseOverTimeData.Datasets[1].Label);
+            Assert.Equal(
+                [
+                    expectedResult.Establishments[0].EstablishmentData.PreviousYear!.Value,
+                    expectedResult.Establishments[1].EstablishmentData.PreviousYear!.Value,
+                    expectedResult.EnglandAverage.PreviousYear!.Value,
+                ],
+                model.AllGcseOverTimeData.Datasets[1].Data
+            );
+
+            Assert.Equal("2024 to 2025", model.AllGcseOverTimeData.Datasets[2].Label);
+            Assert.Equal(
+                [
+                    expectedResult.Establishments[0].EstablishmentData.CurrentYear!.Value,
+                    expectedResult.Establishments[1].EstablishmentData.CurrentYear!.Value,
+                    expectedResult.EnglandAverage.CurrentYear!.Value,
+                ],
+                model.AllGcseOverTimeData.Datasets[2].Data
+            );
         }
 
         [Fact]
@@ -147,17 +179,17 @@ namespace SAPPub.Web.Tests.Unit.Areas.Compare.Controllers
                     {
                         Urn = urn1,
                         SchoolName = "Test School1",
-                        EstablishmentData = new RelativeYearValues<double?> { CurrentYear = null }
+                        EstablishmentData = new RelativeYearValues<double?> { CurrentYear = null, PreviousYear = null, TwoYearsAgo = null }
                     },
                     new()
                     {
                         Urn = urn2,
                         SchoolName = "Test School2",
-                        EstablishmentData = new RelativeYearValues<double?> { CurrentYear = null }
+                        EstablishmentData = new RelativeYearValues<double?> { CurrentYear = null, PreviousYear = null, TwoYearsAgo = null }
                     }
 
                 ],
-                EnglandAverage = new RelativeYearValues<double?> { CurrentYear = null }
+                EnglandAverage = new RelativeYearValues<double?> { CurrentYear = null, PreviousYear = null, TwoYearsAgo = null }
             };
 
             var controller = new SecondaryController();
@@ -202,6 +234,19 @@ namespace SAPPub.Web.Tests.Unit.Areas.Compare.Controllers
                 ],
                 model.AllGcseData.BackgroundColors!
             );
+
+            // Assert DataOverTime
+
+            Assert.Equal(3, model.AllGcseOverTimeData.Datasets.Count);
+
+            Assert.Equal("2022 to 2023", model.AllGcseOverTimeData.Datasets[0].Label);
+            Assert.Equal([null, null, null], model.AllGcseOverTimeData.Datasets[0].Data);
+
+            Assert.Equal("2023 to 2024", model.AllGcseOverTimeData.Datasets[1].Label);
+            Assert.Equal([null, null, null], model.AllGcseOverTimeData.Datasets[1].Data);
+
+            Assert.Equal("2024 to 2025", model.AllGcseOverTimeData.Datasets[2].Label);
+            Assert.Equal([null, null, null], model.AllGcseOverTimeData.Datasets[2].Data);
         }
 
         [Fact]

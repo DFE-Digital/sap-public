@@ -41,17 +41,17 @@ public class AcademicPerformanceEnglishAndMathsResultsTests : PageTestsBase
                     {
                         Urn = _establishmentList[0].URN,
                         SchoolName = _establishmentList[0].EstablishmentName,
-                        EstablishmentData = new RelativeYearValues<double?> { CurrentYear = 90.3 }
+                        EstablishmentData = new RelativeYearValues<double?> { CurrentYear = 90.3, PreviousYear = 80.5, TwoYearsAgo = 78 }
                     },
                     new()
                     {
                         Urn = _establishmentList[1].URN,
                         SchoolName = _establishmentList[1].EstablishmentName,
-                        EstablishmentData = new RelativeYearValues<double?> { CurrentYear = null }
+                        EstablishmentData = new RelativeYearValues<double?> { CurrentYear = null, PreviousYear = 60, TwoYearsAgo = 95.1 }
                     }
 
                 ],
-            EnglandAverage = new RelativeYearValues<double?> { CurrentYear = 80 }
+            EnglandAverage = new RelativeYearValues<double?> { CurrentYear = 80, PreviousYear = 80.5, TwoYearsAgo = null }
         };
 
         _englishAndMathsComparisionService.Setup(s => s.GetComparisionResultsAsync(_urns, It.IsAny<CancellationToken>()))
@@ -134,7 +134,7 @@ public class AcademicPerformanceEnglishAndMathsResultsTests : PageTestsBase
         // Arrange && Act
         var doc = await Fixture.BrowseToPage(_pageUrl);
 
-        // Assert
+        // Assert Gcse current year
         Assert.Contains(_establishmentList[0].EstablishmentName, doc.GetTableHeaderContentByIdAndIndex("all-gcse-current-year-table", 0, 0));
         Assert.Contains(_establishmentList[1].EstablishmentName, doc.GetTableHeaderContentByIdAndIndex("all-gcse-current-year-table", 1, 0));
         Assert.Contains("England average", doc.GetTableHeaderContentByIdAndIndex("all-gcse-current-year-table", 2, 0));
@@ -142,6 +142,26 @@ public class AcademicPerformanceEnglishAndMathsResultsTests : PageTestsBase
         Assert.Contains("90.3%", doc.GetTableCellContentByIdAndIndex("all-gcse-current-year-table", 0, 0));
         Assert.Contains("Not available", doc.GetTableCellContentByIdAndIndex("all-gcse-current-year-table", 1, 0));
         Assert.Contains("80%", doc.GetTableCellContentByIdAndIndex("all-gcse-current-year-table", 2, 0));
+
+        // Assert Gcse DataOverTime
+        Assert.Contains("2022 to 2023", doc.GetTableHeaderContentByIdAndIndex("all-gcse-data-overtime-table", 0, 1));
+        Assert.Contains("2023 to 2024", doc.GetTableHeaderContentByIdAndIndex("all-gcse-data-overtime-table", 0, 2));
+        Assert.Contains("2024 to 2025", doc.GetTableHeaderContentByIdAndIndex("all-gcse-data-overtime-table", 0, 3));
+
+        Assert.Contains(_establishmentList[0].EstablishmentName, doc.GetTableHeaderContentByIdAndIndex("all-gcse-data-overtime-table", 1, 0));
+        Assert.Contains("78%", doc.GetTableCellContentByIdAndIndex("all-gcse-data-overtime-table", 1, 0));
+        Assert.Contains("80.5%", doc.GetTableCellContentByIdAndIndex("all-gcse-data-overtime-table", 1, 1));
+        Assert.Contains("90.3%", doc.GetTableCellContentByIdAndIndex("all-gcse-data-overtime-table", 1, 2));
+
+        Assert.Contains(_establishmentList[1].EstablishmentName, doc.GetTableHeaderContentByIdAndIndex("all-gcse-data-overtime-table", 2, 0));
+        Assert.Contains("95.1%", doc.GetTableCellContentByIdAndIndex("all-gcse-data-overtime-table", 2, 0));
+        Assert.Contains("60%", doc.GetTableCellContentByIdAndIndex("all-gcse-data-overtime-table", 2, 1));
+        Assert.Contains("Not available", doc.GetTableCellContentByIdAndIndex("all-gcse-data-overtime-table", 2, 2));
+
+        Assert.Contains("England average", doc.GetTableHeaderContentByIdAndIndex("all-gcse-data-overtime-table", 3, 0));
+        Assert.Contains("Not available", doc.GetTableCellContentByIdAndIndex("all-gcse-data-overtime-table", 3, 0));
+        Assert.Contains("80.5%", doc.GetTableCellContentByIdAndIndex("all-gcse-data-overtime-table", 3, 1));
+        Assert.Contains("80%", doc.GetTableCellContentByIdAndIndex("all-gcse-data-overtime-table", 3, 2));
     }
 
     [Fact]
