@@ -1,23 +1,19 @@
 ﻿(function () {
-    
-    const defaultColors = [
-        '#A285D1',
-        '#12436D',
-        '#28A197'
-    ];
-
     const CHART_CONFIG = {
         defaults: {
             axisSuffix: '%',
             axisStepSize: 20,
             maxDevicePixelRatio: 2,
+            maxCharsLength: 45,
             labelWrapChars: 15,
-            mobileBreakpoint: '(max-width: 40.0625em)'
-        },      
+            mobileBreakpoint: '(max-width: 40.0625em)'            
+        },
         bar: {
             labels: {
                 yTickPadding: 10,
                 baseContainerHeight: 260,
+                defaultRowHeight: 20,
+                minRowHeight: 40,
                 rowHeight: 70,
                 lineHeight: 18
             },
@@ -33,15 +29,20 @@
                 anchor: 'end',
                 smallValueAlign: 'end',
                 defaultAlign: 'start',
-                mobileInsideThresholdRatio: 0.4,
-                offset: 10,
+                mobileInsideThresholdRatio: 0.45,
+                offset: 5,
                 fontWeight: 'bold',
                 showDataLabels: true
-            },
+            },            
             noData: {
                 text: 'Not available'
             }
-        }
+        },
+        defaultColors: [
+            '#A285D1',
+            '#12436D',
+            '#28A197'
+        ]
     };
 
     const charts = {};
@@ -85,7 +86,14 @@
             wrapLabel(label.toString(), CHART_CONFIG.defaults.labelWrapChars).length
         ));
 
-        const rowHeight = CHART_CONFIG.bar.labels.rowHeight + Math.max(0, maxWrappedLines - 2) * CHART_CONFIG.bar.labels.lineHeight;
+        const calculatedRowHeight = dataPointsLength > 9 ? CHART_CONFIG.bar.labels.defaultRowHeight : CHART_CONFIG.bar.labels.rowHeight;
+
+        var rowHeight = calculatedRowHeight + Math.max(0, maxWrappedLines - 2) * CHART_CONFIG.bar.labels.lineHeight;
+
+        if (rowHeight <= CHART_CONFIG.bar.labels.minRowHeight) {
+            rowHeight = CHART_CONFIG.bar.labels.minRowHeight;
+        }
+
         const height = Math.max(CHART_CONFIG.bar.labels.baseContainerHeight, dataPointsLength * rowHeight);
         container.style.height = `${height}px`;
     }
@@ -155,13 +163,18 @@
         return align === CHART_CONFIG.bar.datalabels.defaultAlign && bg === '#12436D' ? '#ffffff' : gdsStyles.text;
     }
 
-    function wrapLabel(label, maxChars) {
+    function wrapLabel(label, labelWrapChars) {
+
+        if (label.length > CHART_CONFIG.defaults.maxCharsLength) {
+            label = `${label.substring(0, CHART_CONFIG.defaults.maxCharsLength)}...`;
+        }
+
         const words = label.split(' ');
         const lines = [];
         let line = '';
 
         words.forEach(word => {
-            if ((line + word).length > maxChars) {
+            if ((line + word).length > labelWrapChars) {
                 lines.push(line.trim());
                 line = word + ' ';
             } else {
@@ -272,14 +285,14 @@
                 return chartData.datasets.map((ds, i) => ({
                     label: ds.label,
                     data: ds.data,
-                    backgroundColor: colors[i] || defaultColors[i],
+                    backgroundColor: colors[i] || CHART_CONFIG.defaultColors[i],
                     ...dataOptions
                 }));
             }
 
             return [{
                 data: chartData.data,
-                backgroundColor: colors.length ? colors : defaultColors,
+                backgroundColor: colors.length ? colors : CHART_CONFIG.defaultColors,
                 ...dataOptions               
             }];
         }
