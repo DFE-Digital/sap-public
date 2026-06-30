@@ -29,6 +29,80 @@
             You can find out more about each school you're comparing by viewing the school profile or visiting the school website.
         </p>
 
+        <h2>Arrange a school visit</h2>
+
+        <p class="govuk-body">
+            Visiting a school allows you to experience what the school is really like.
+            You can observe the learning environment, meet the staff, and explore whether it feels right for your child.
+        </p>
+
+        <p class="govuk-body">
+            Most schools run open days, or you can contact them to arrange a visit and ask questions.
+            This can be especially helpful if your child has additional needs and you want to understand more about the transition to secondary school.
+        </p>
+
+        <h2>Applying to a school</h2>
+
+        <p class="govuk-body">
+            If you have chosen a school, you can review the schools admissions policy and apply through the local council's secondary school application process
+        </p>
+
+        <p class="govuk-body">
+            You can see our admissions guidance and explore more about the schools on their individual profiles.
+        </p>
+
+        <div class="govuk-summary-card">
+            <div class="govuk-summary-card__content">
+                @foreach (var school in Model.SchoolDetailList)
+                {
+                    <h3>@school.EstablishmentName</h3>
+                    <dl class="govuk-summary-list">
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                School Profile
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                <a class="govuk-link" href="@Url.Action("Index", "School", new { urn = school.URN, schoolName = school })">@($"View {school.EstablishmentName}'s Profile")</a>
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Website
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @if (school.Website.IsAvailable)
+                                {
+                                    <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@school.Website.DisplayText(UrlHelper.EnsureHttpsUrl)">
+                                        @school.Website.Value
+                                        <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                                    </a>
+                                }
+                                else
+                                {
+                                    @school.Website.DisplayText()
+                                }
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Telephone
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @if (school.Telephone.IsAvailable)
+                                {
+                                    <a class="govuk-link govuk-link--no-visited-state" href="tel:@school.Telephone.Value">@school.Telephone.Value</a>
+                                }
+                                else
+                                {
+                                    @school.Telephone.DisplayText()
+                                }
+                            </dd>
+                        </div>
+                    </dl>
+                }
+            </div>
+        </div>
+
         <govuk-pagination id="next-steps-pagination">
             <govuk-pagination-previous href="@Url.RouteUrl(RouteConstants.CompareSecondaryDestinations, new { urns = Model.URNs })">Destinations after year 11</govuk-pagination-previous>
         </govuk-pagination>
