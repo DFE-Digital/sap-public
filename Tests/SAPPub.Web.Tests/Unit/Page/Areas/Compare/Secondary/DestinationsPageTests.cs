@@ -106,7 +106,7 @@ public class DestinationsPageTests : PageTestsBase
                         .WithURN(urn)
                         .WithEstablishmentName($"School {urn}")
                         .WithIsKeyStage4(true)
-                        .WithSixthForm(true)
+                        .WithOfficialSixthFormId(SixthFormCode)
                         .Build();
             _establishments.Add(establishment);
             _establishmentService.Setup(s => s.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
@@ -128,6 +128,7 @@ public class DestinationsPageTests : PageTestsBase
             "1" => "Yes",
             "2" => "No",
             "9" => "Not available",
+            "0" => "Not available",
             _ => "Not available"
         };
 

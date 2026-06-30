@@ -1,6 +1,5 @@
 ﻿using SAPPub.Core.Entities;
 using SAPPub.Core.ServiceModels.Compare;
-using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.Charts;
 using static SAPPub.Web.Constants.Constants;
 
@@ -12,7 +11,7 @@ public class CompareDestinationsViewModel : CompareSecondarySchoolBaseViewModel
     {
         public required string URN { get; set; }
         public required string SchoolName { get; set; }
-        public required DisplayField<bool?> SixthForm { get; set; }
+        public required bool? SixthForm { get; set; }
         public required double? PercentInEducationEmploymentOrTraining { get; set; }
 
         public static SchoolDestinationDetails Map(SAPPub.Core.ServiceModels.Compare.SchoolDestinationDetails destinationsDetails, Establishment establishmentDetails)
@@ -21,13 +20,17 @@ public class CompareDestinationsViewModel : CompareSecondarySchoolBaseViewModel
             {
                 URN = destinationsDetails.URN,
                 SchoolName = establishmentDetails.EstablishmentName,
-                SixthForm = GetSixthForm(establishmentDetails.OfficialSixthFormId).ToDisplayField(),
+                SixthForm = GetSixthForm(establishmentDetails.OfficialSixthFormId),
                 PercentInEducationEmploymentOrTraining = destinationsDetails.PercentInEducationEmploymentOrTraining,
             };
         }
 
         private static bool? GetSixthForm(string value)
         {
+            if (string.IsNullOrEmpty(value) || value == "9" || value == "0")
+            {
+                return null;
+            }
             return string.Equals(value, "1");
         }
     }
