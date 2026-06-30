@@ -25,7 +25,7 @@
         </h1>
 
         <h2 class="govuk-heading-s">Sixth form offering</h2>
-        <table class="govuk-table">
+        <table class="govuk-table" data-testid="sixth-form-table">
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
                     <th class="govuk-table__header">School</th>
@@ -53,16 +53,16 @@
             </ul>
         </p>
 
-        <div class="data-container">
-            <h3 class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">Percentage of pupils staying in education, employment and apprenticeships</h3>
-            <p class="govuk-body">
-                This shows the percentage of pupils who either stayed in education, went into an apprenticeship or entered employment 
-                for at least 6 months after finishing KS4.
-            </p>
-            <p>
-                If a pupil changes what they are doing before reaching sixth months they are not recorded in this data.
-            </p>
+        <h3 class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">Percentage of pupils staying in education, employment and apprenticeships</h3>
+        <p class="govuk-body">
+            This shows the percentage of pupils who either stayed in education, went into an apprenticeship or entered employment
+            for at least 6 months after finishing KS4.
+        </p>
+        <p>
+            If a pupil changes what they are doing before reaching sixth months they are not recorded in this data.
+        </p>
 
+        <div class="data-container">
             <input type="radio" name="dataView" id="current-view" class="govuk-visually-hidden" aria-labelledby="all-dest-show-current-data-btn" checked />
             <input type="radio" name="dataView" id="data-overtime-view" class="govuk-visually-hidden" aria-labelledby="all-dest-show-data-over-time-btn" />
 
@@ -73,7 +73,7 @@
                             data-type="bar"
                             data-not-available-text="@(NotAvailable)"
                             data-chart='@Html.Raw(Json.Serialize(Model.AllDestinationsData))'
-                            data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
+                            data-colors='@Html.Raw(Json.Serialize(Model.AllDestinationsData.BackgroundColors))'>
                     </canvas>
                 </div>
 

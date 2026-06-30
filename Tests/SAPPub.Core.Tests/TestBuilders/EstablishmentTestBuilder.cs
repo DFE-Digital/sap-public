@@ -345,7 +345,7 @@ public class EstablishmentTestBuilder
     }
 
     public EstablishmentTestBuilder WithIsKeyStage2(bool isKS2)
-    { 
+    {
         _establishment.IsKS2 = isKS2;
         return this;
     }

@@ -2,6 +2,7 @@
 using SAPPub.Core.ServiceModels.Compare;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.Charts;
+using static SAPPub.Web.Constants.Constants;
 
 namespace SAPPub.Web.Areas.Compare.ViewModels.Secondary;
 
@@ -11,7 +12,7 @@ public class CompareDestinationsViewModel : CompareSecondarySchoolBaseViewModel
     {
         public required string URN { get; set; }
         public required string SchoolName { get; set; }
-        public required DisplayField<bool> SixthForm { get; set; }
+        public required DisplayField<bool?> SixthForm { get; set; }
         public required double? PercentInEducationEmploymentOrTraining { get; set; }
 
         public static SchoolDestinationDetails Map(SAPPub.Core.ServiceModels.Compare.SchoolDestinationDetails destinationsDetails, Establishment establishmentDetails)
@@ -39,11 +40,15 @@ public class CompareDestinationsViewModel : CompareSecondarySchoolBaseViewModel
 
     public static CompareDestinationsViewModel Map(List<string> urns, DestinationsComparisonResultModel destinationsDetails, List<Establishment> establishments)
     {
-        var schoolDetails = destinationsDetails
-                .SchoolDetails
-                .Select(d => SchoolDestinationDetails.Map(d, establishments.First(e => e.URN == d.URN)))
-                .OrderBy(d => d.SchoolName)
-                .ToList();
+        var schoolDetails = destinationsDetails.SchoolDetails
+            .Join(
+                establishments,
+                d => d.URN,
+                e => e.URN,
+                (d, e) => SchoolDestinationDetails.Map(d, e))
+            .OrderBy(d => d.SchoolName)
+            .ToList();
+
         return new CompareDestinationsViewModel
         {
             URNs = urns,
@@ -51,14 +56,9 @@ public class CompareDestinationsViewModel : CompareSecondarySchoolBaseViewModel
             SchoolDetails = schoolDetails,
             AllDestinationsData = new DataViewModel // save a version of the data reshaped to send into the chart component
             {
-                Labels = schoolDetails
-                    .Select(d => d.SchoolName)
-                    .Concat(["England average"])
-                    .ToList(),
-                Data = schoolDetails
-                    .Select(d => d.PercentInEducationEmploymentOrTraining)
-                    .Concat([destinationsDetails.EnglandPercentage])
-                    .ToList()
+                Labels = [.. schoolDetails.Select(d => d.SchoolName), "England average"],
+                Data = [.. schoolDetails.Select(d => d.PercentInEducationEmploymentOrTraining), destinationsDetails.EnglandPercentage],
+                BackgroundColors = [.. Enumerable.Repeat(EstablishmentChartColour, schoolDetails.Count), EnglandAverageChartColour]
             }
         };
     }

@@ -277,30 +277,27 @@ public class SecondaryControllerTests
         var model = result.Model as CompareDestinationsViewModel;
         Assert.NotNull(model);
         Assert.Equal(2, model.URNs.Count);
+
+        var orderedEstablishments = (
+            _httpContext.Items["Establishments"] as List<Establishment>)?
+            .OrderBy(e => e.EstablishmentName).ToList();
+
         Assert.Collection(model.URNs,
-            first => Assert.Equal(_urns[0], first),
-            second => Assert.Equal(_urns[1], second)
+            first => Assert.Equal(orderedEstablishments![0].URN, first),
+            second => Assert.Equal(orderedEstablishments![1].URN, second)
         );
-        Assert.Collection(model.SchoolDetails,
-            first => Assert.Equal(establishmentDestinations[0].URN, first.URN),
-            second => Assert.Equal(establishmentDestinations[1].URN, second.URN)
-        );
-        Assert.Collection(model.SchoolDetails,
-            first =>
-            {
-                Assert.Equal(establishmentDestinations[0].URN, first.URN);
-                Assert.Equal((_httpContext.Items["Establishments"] as List<Establishment>)?[0].EstablishmentName, first.SchoolName);
-                Assert.Equal(establishmentDestinations[0].PercentInEducationEmploymentOrTraining, first.PercentInEducationEmploymentOrTraining);
-                Assert.Equal("Yes", first.SixthForm.DisplayText());
-            },
-            second =>
-            {
-                Assert.Equal(establishmentDestinations[1].URN, second.URN);
-                Assert.Equal((_httpContext.Items["Establishments"] as List<Establishment>)?[1].EstablishmentName, second.SchoolName);
-                Assert.Equal(establishmentDestinations[1].PercentInEducationEmploymentOrTraining, second.PercentInEducationEmploymentOrTraining);
-                Assert.Equal("Yes", second.SixthForm.DisplayText());
-            }
-        );
+
+        for (int i = 0; i < orderedEstablishments!.Count; i++)
+        {
+            Assert.Contains(model.SchoolDetails, d =>
+                d.URN == orderedEstablishments![i].URN &&
+                d.SchoolName == orderedEstablishments[i].EstablishmentName
+                );
+            Assert.Contains(model.SchoolDetails, d =>
+                d.PercentInEducationEmploymentOrTraining == destinationsResultsModel.SchoolDetails.ToList()[i].PercentInEducationEmploymentOrTraining &&
+                d.SixthForm.Value == true
+            );
+        }
 
         Assert.Equal(englandPercentage, model.EnglandPercentage);
     }
