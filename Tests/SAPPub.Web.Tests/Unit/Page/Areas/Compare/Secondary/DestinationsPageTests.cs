@@ -4,7 +4,7 @@ using Bogus;
 using Moq;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Services;
-using SAPPub.Core.Interfaces.Services.Compare;
+using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 using SAPPub.Core.ServiceModels.Compare;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;

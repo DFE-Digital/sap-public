@@ -1,6 +1,6 @@
 ﻿using SAPPub.Core.ServiceModels.Compare;
 
-namespace SAPPub.Core.Interfaces.Services.Compare;
+namespace SAPPub.Core.Interfaces.Services.KS4.Destinations;
 
 public interface IDestinationsComparisonService
 {

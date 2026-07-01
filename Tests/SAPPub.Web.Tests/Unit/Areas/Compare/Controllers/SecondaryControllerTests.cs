@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SAPPub.Core.Entities;
-using SAPPub.Core.Interfaces.Services.Compare;
+using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.ServiceModels.Compare;
 using SAPPub.Core.ServiceModels.KS4.Performance;

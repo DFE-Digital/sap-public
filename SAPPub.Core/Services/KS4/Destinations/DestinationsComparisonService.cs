@@ -1,5 +1,4 @@
-﻿using SAPPub.Core.Interfaces.Services.Compare;
-using SAPPub.Core.Interfaces.Services.KS4.Destinations;
+﻿using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 using SAPPub.Core.ServiceModels.Compare;
 
 namespace SAPPub.Core.Services.KS4.Destinations;
