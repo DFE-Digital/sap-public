@@ -95,14 +95,14 @@ public class LAServiceTests
         };
 
         var laListForGss = new List<LaUrls?> { new() { Id = gssLaCode, Name = "Test" } };
-        var laForDaIds = new LaUrls { Id = districtAdministrativeId, Name = "Test2" };
+        var laForDaIds = new List<LaUrls?> { new() { Id = districtAdministrativeId, Name = "Test2" } };
 
         _mockLaUrlsRepository
-            .Setup(a => a.GetLaUrlsForEstablishmentsByGssLaCodeAsync(new List<string> { gssLaCode }, It.IsAny<CancellationToken>()))
+            .Setup(a => a.GetLaUrlsForEstablishmentsAsync(new List<string> { gssLaCode }, It.IsAny<CancellationToken>()))
             .ReturnsAsync(laListForGss);
 
         _mockLaUrlsRepository
-            .Setup(a => a.GetLaAsync(districtAdministrativeId, It.IsAny<CancellationToken>()))
+            .Setup(a => a.GetLaUrlsForEstablishmentsAsync(new List<string> { districtAdministrativeId }, It.IsAny<CancellationToken>()))
             .ReturnsAsync(laForDaIds);
 
         // Act
@@ -111,9 +111,7 @@ public class LAServiceTests
         // Assert
         Assert.Equal(2, result.Count());
         _mockLaUrlsRepository
-            .Verify(a => a.GetLaUrlsForEstablishmentsByGssLaCodeAsync(It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()), Times.Once);
-        _mockLaUrlsRepository
-            .Verify(a => a.GetLaAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
+            .Verify(a => a.GetLaUrlsForEstablishmentsAsync(It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
     }
 
     [Fact]
@@ -142,14 +140,14 @@ public class LAServiceTests
             new() { GSSLACode = gssLaCode2 }
         };
 
-        var laListForGss = new List<LaUrls?> 
-        { 
+        var laListForGss = new List<LaUrls?>
+        {
             new() { Id = gssLaCode1, Name = "Test" },
             new() { Id = gssLaCode2, Name = "Test2" }
         };
 
         _mockLaUrlsRepository
-            .Setup(a => a.GetLaUrlsForEstablishmentsByGssLaCodeAsync(new List<string> { gssLaCode1, gssLaCode2 }, It.IsAny<CancellationToken>()))
+            .Setup(a => a.GetLaUrlsForEstablishmentsAsync(new List<string> { gssLaCode1, gssLaCode2 }, It.IsAny<CancellationToken>()))
             .ReturnsAsync(laListForGss);
 
         // Act
@@ -158,7 +156,7 @@ public class LAServiceTests
         // Assert
         Assert.Equal(2, result.Count());
         _mockLaUrlsRepository
-            .Verify(a => a.GetLaUrlsForEstablishmentsByGssLaCodeAsync(It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()), Times.Once);
+            .Verify(a => a.GetLaUrlsForEstablishmentsAsync(It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()), Times.Once);
         _mockLaUrlsRepository
             .Verify(a => a.GetLaAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
     }

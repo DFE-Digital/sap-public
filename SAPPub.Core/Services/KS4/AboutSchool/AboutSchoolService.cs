@@ -91,8 +91,8 @@ public sealed class AboutSchoolService(
         var establishments = await establishmentService.GetEstablishmentsAsync(urns, ct);
         var laUrlsList = await laService.GetLaUrlsListForEstablishmentsAsync(establishments, ct);
 
-        return (await Task.WhenAll(
-            establishments.Select(async est =>
+        return 
+            establishments.Select(est =>
             {
                 var laUrls = laUrlsList?.FirstOrDefault(a => a!.Id == est.GSSLACode || a.Id == est.DistrictAdministrativeId);
                 
@@ -108,6 +108,6 @@ public sealed class AboutSchoolService(
                     LocalAuthorityName = laUrls?.Name,
                     LocalAuthorityWebsite = laUrls?.LAMainUrl,
                 };
-            }))).OrderBy(a => a.SchoolName);
+            }).OrderBy(a => a.SchoolName);
     }
 }

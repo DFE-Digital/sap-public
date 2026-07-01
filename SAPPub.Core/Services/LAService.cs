@@ -20,7 +20,7 @@ public class LAService(ILaUrlsRepository laUrlsRepository) : ILAService
         }
 
         var gssLACodes = establishments.Select(a => a.GSSLACode).Where(a => !string.IsNullOrWhiteSpace(a)).ToList();
-        var laUrlsList = await laUrlsRepository.GetLaUrlsForEstablishmentsByGssLaCodeAsync(gssLACodes, ct);
+        var laUrlsList = await laUrlsRepository.GetLaUrlsForEstablishmentsAsync(gssLACodes, ct);
 
         if (laUrlsList.Count() == establishments.Count())
         {
@@ -32,12 +32,13 @@ public class LAService(ILaUrlsRepository laUrlsRepository) : ILAService
         var l1Codes = new HashSet<string?>(laUrlsList!.Select(a => a!.Id));
         var missingList = establishments.Where(a => !l1Codes.Contains(a.GSSLACode)).ToList();
 
-        var listMissing = new List<LaUrls?>();
-        foreach (var missing in missingList.Where(a => !string.IsNullOrWhiteSpace(a.DistrictAdministrativeId)))
-        {
-            listMissing.Add(await laUrlsRepository.GetLaAsync(missing.DistrictAdministrativeId, ct));
-        }
+        var listMissing = missingList
+            .Where(a => !string.IsNullOrWhiteSpace(a.DistrictAdministrativeId))
+            .Select(a => a.DistrictAdministrativeId)
+            .ToList();
 
-        return listMissing.Union(laUrlsList);
+        var districtIdList = await laUrlsRepository.GetLaUrlsForEstablishmentsAsync(listMissing, ct);
+
+        return districtIdList.Union(laUrlsList);
     }
 }

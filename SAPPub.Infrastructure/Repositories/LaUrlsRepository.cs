@@ -25,7 +25,7 @@ namespace SAPPub.Infrastructure.Repositories
             return await _repo.ReadAsync(laGssCode, ct);
         }
 
-        public async Task<IEnumerable<LaUrls?>> GetLaUrlsForEstablishmentsByGssLaCodeAsync(IEnumerable<string?> gssLaCodeList, CancellationToken ct)
+        public async Task<IEnumerable<LaUrls?>> GetLaUrlsForEstablishmentsAsync(IEnumerable<string?> gssLaCodeList, CancellationToken ct)
         {
             if (gssLaCodeList is null || !gssLaCodeList.Any())
             {
