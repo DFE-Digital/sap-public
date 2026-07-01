@@ -79,17 +79,17 @@ public class SecondaryControllerTests
         Assert.Equal(model.RouteQueryString, $"?urns={urn1}&urns={urn2}");
     }
 
-        [Fact]
-        public async Task AcademicPerformanceEnglishAndMathsResults_ReturnsViewResultWithCorrectModel()
+    [Fact]
+    public async Task AcademicPerformanceEnglishAndMathsResults_ReturnsViewResultWithCorrectModel()
+    {
+        // Arrange
+        var urn1 = "123456";
+        var urn2 = "789456";
+        var expectedResult = new EnglishAndMathsComparisionResultsModel
         {
-            // Arrange
-            var urn1 = "123456";
-            var urn2 = "789456";
-            var expectedResult = new EnglishAndMathsComparisionResultsModel
-            {
-                Establishments =
-                [
-                    new()
+            Establishments =
+            [
+                new()
                     {
                         Urn = urn1,
                         SchoolName = "Test School1",
@@ -102,106 +102,106 @@ public class SecondaryControllerTests
                         EstablishmentData = new RelativeYearValues<double?> { CurrentYear = 60, PreviousYear = 70, TwoYearsAgo = 85.5 }
                     }
 
-                ],
-                EnglandAverage = new RelativeYearValues<double?> { CurrentYear = 80, PreviousYear = 89.3, TwoYearsAgo = 90.5 }
-            };
+            ],
+            EnglandAverage = new RelativeYearValues<double?> { CurrentYear = 80, PreviousYear = 89.3, TwoYearsAgo = 90.5 }
+        };
 
-            var controller = new SecondaryController();            
-            var urns = new List<string> { urn1, urn2 };
+        var controller = new SecondaryController();
+        var urns = new List<string> { urn1, urn2 };
 
-            _mockEnglishAndMathsComparisonService
-                .Setup(s => s.GetComparisionResultsAsync(urns, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(expectedResult);
+        _mockEnglishAndMathsComparisonService
+            .Setup(s => s.GetComparisionResultsAsync(urns, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
 
-            // Act
-            var result = await controller.AcademicPerformanceEnglishAndMathsResults(
-                _mockEnglishAndMathsComparisonService.Object,
-                urns,
-                It.IsAny<CancellationToken>()) as ViewResult;
+        // Act
+        var result = await controller.AcademicPerformanceEnglishAndMathsResults(
+            _mockEnglishAndMathsComparisonService.Object,
+            urns,
+            It.IsAny<CancellationToken>()) as ViewResult;
 
-            // Assert
-            Assert.NotNull(result);
-            var model = result.Model as CompareAcademicPerformanceEnglishAndMathsResultsViewModel;
-            Assert.NotNull(model);
-            Assert.Equal(2, model.URNs.Count);
-            Assert.Equal(model.RouteQueryString, $"?urns={urn1}&urns={urn2}");
+        // Assert
+        Assert.NotNull(result);
+        var model = result.Model as CompareAcademicPerformanceEnglishAndMathsResultsViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(2, model.URNs.Count);
+        Assert.Equal(model.RouteQueryString, $"?urns={urn1}&urns={urn2}");
 
-            // Assert Data
-            Assert.Equal(
-                [
-                    expectedResult.Establishments[0].EstablishmentData.CurrentYear!.Value,
+        // Assert Data
+        Assert.Equal(
+            [
+                expectedResult.Establishments[0].EstablishmentData.CurrentYear!.Value,
                     expectedResult.Establishments[1].EstablishmentData.CurrentYear!.Value,
                     expectedResult.EnglandAverage.CurrentYear!.Value
-                ],
-                model.AllGcseData.Data
-            );
+            ],
+            model.AllGcseData.Data
+        );
 
-            // Assert Labels
-            Assert.Equal(
-                [
-                    expectedResult.Establishments[0].SchoolName,
+        // Assert Labels
+        Assert.Equal(
+            [
+                expectedResult.Establishments[0].SchoolName,
                     expectedResult.Establishments[1].SchoolName,
                     "England average"
-                ],
-                model.AllGcseData.Labels
-            );
+            ],
+            model.AllGcseData.Labels
+        );
 
-            // Assert Background colours
-            Assert.Equal(
-                [
-                    EstablishmentChartColour,
+        // Assert Background colours
+        Assert.Equal(
+            [
+                EstablishmentChartColour,
                     EstablishmentChartColour,
                     EnglandAverageChartColour,
                 ],
-                model.AllGcseData.BackgroundColors!
-            );
+            model.AllGcseData.BackgroundColors!
+        );
 
-            // Assert DataOverTime
+        // Assert DataOverTime
 
-            Assert.Equal(3, model.AllGcseOverTimeData.Datasets.Count);
+        Assert.Equal(3, model.AllGcseOverTimeData.Datasets.Count);
 
-            Assert.Equal("2022 to 2023", model.AllGcseOverTimeData.Datasets[0].Label);
-            Assert.Equal(
-                [
-                    expectedResult.Establishments[0].EstablishmentData.TwoYearsAgo!.Value,
+        Assert.Equal("2022 to 2023", model.AllGcseOverTimeData.Datasets[0].Label);
+        Assert.Equal(
+            [
+                expectedResult.Establishments[0].EstablishmentData.TwoYearsAgo!.Value,
                     expectedResult.Establishments[1].EstablishmentData.TwoYearsAgo!.Value,
                     expectedResult.EnglandAverage.TwoYearsAgo!.Value,
                 ],
-                model.AllGcseOverTimeData.Datasets[0].Data
-            );
+            model.AllGcseOverTimeData.Datasets[0].Data
+        );
 
-            Assert.Equal("2023 to 2024", model.AllGcseOverTimeData.Datasets[1].Label);
-            Assert.Equal(
-                [
-                    expectedResult.Establishments[0].EstablishmentData.PreviousYear!.Value,
+        Assert.Equal("2023 to 2024", model.AllGcseOverTimeData.Datasets[1].Label);
+        Assert.Equal(
+            [
+                expectedResult.Establishments[0].EstablishmentData.PreviousYear!.Value,
                     expectedResult.Establishments[1].EstablishmentData.PreviousYear!.Value,
                     expectedResult.EnglandAverage.PreviousYear!.Value,
                 ],
-                model.AllGcseOverTimeData.Datasets[1].Data
-            );
+            model.AllGcseOverTimeData.Datasets[1].Data
+        );
 
-            Assert.Equal("2024 to 2025", model.AllGcseOverTimeData.Datasets[2].Label);
-            Assert.Equal(
-                [
-                    expectedResult.Establishments[0].EstablishmentData.CurrentYear!.Value,
+        Assert.Equal("2024 to 2025", model.AllGcseOverTimeData.Datasets[2].Label);
+        Assert.Equal(
+            [
+                expectedResult.Establishments[0].EstablishmentData.CurrentYear!.Value,
                     expectedResult.Establishments[1].EstablishmentData.CurrentYear!.Value,
                     expectedResult.EnglandAverage.CurrentYear!.Value,
                 ],
-                model.AllGcseOverTimeData.Datasets[2].Data
-            );
-        }
+            model.AllGcseOverTimeData.Datasets[2].Data
+        );
+    }
 
-        [Fact]
-        public async Task AcademicPerformanceEnglishAndMathsResults_NotAvailable_ReturnsViewResultWithCorrectModel()
+    [Fact]
+    public async Task AcademicPerformanceEnglishAndMathsResults_NotAvailable_ReturnsViewResultWithCorrectModel()
+    {
+        // Arrange
+        var urn1 = "123456";
+        var urn2 = "789456";
+        var expectedResult = new EnglishAndMathsComparisionResultsModel
         {
-            // Arrange
-            var urn1 = "123456";
-            var urn2 = "789456";
-            var expectedResult = new EnglishAndMathsComparisionResultsModel
-            {
-                Establishments =
-                [
-                    new()
+            Establishments =
+            [
+                new()
                     {
                         Urn = urn1,
                         SchoolName = "Test School1",
@@ -214,66 +214,66 @@ public class SecondaryControllerTests
                         EstablishmentData = new RelativeYearValues<double?> { CurrentYear = null, PreviousYear = null, TwoYearsAgo = null }
                     }
 
-                ],
-                EnglandAverage = new RelativeYearValues<double?> { CurrentYear = null, PreviousYear = null, TwoYearsAgo = null }
-            };
+            ],
+            EnglandAverage = new RelativeYearValues<double?> { CurrentYear = null, PreviousYear = null, TwoYearsAgo = null }
+        };
 
-            var controller = new SecondaryController();
-            var urns = new List<string> { urn1, urn2 };
+        var controller = new SecondaryController();
+        var urns = new List<string> { urn1, urn2 };
 
-            _mockEnglishAndMathsComparisonService
-                .Setup(s => s.GetComparisionResultsAsync(urns, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(expectedResult);
+        _mockEnglishAndMathsComparisonService
+            .Setup(s => s.GetComparisionResultsAsync(urns, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
 
-            // Act
-            var result = await controller.AcademicPerformanceEnglishAndMathsResults(
-                _mockEnglishAndMathsComparisonService.Object,
-                urns,
-                It.IsAny<CancellationToken>()) as ViewResult;
+        // Act
+        var result = await controller.AcademicPerformanceEnglishAndMathsResults(
+            _mockEnglishAndMathsComparisonService.Object,
+            urns,
+            It.IsAny<CancellationToken>()) as ViewResult;
 
-            // Assert
-            Assert.NotNull(result);
-            var model = result.Model as CompareAcademicPerformanceEnglishAndMathsResultsViewModel;
-            Assert.NotNull(model);
-            Assert.Equal(2, model.URNs.Count);
-            Assert.Equal(model.RouteQueryString, $"?urns={urn1}&urns={urn2}");
+        // Assert
+        Assert.NotNull(result);
+        var model = result.Model as CompareAcademicPerformanceEnglishAndMathsResultsViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(2, model.URNs.Count);
+        Assert.Equal(model.RouteQueryString, $"?urns={urn1}&urns={urn2}");
 
-            // Assert Data
-            Assert.Equal([null,null,null], model.AllGcseData.Data);
+        // Assert Data
+        Assert.Equal([null, null, null], model.AllGcseData.Data);
 
-            // Assert Labels
-            Assert.Equal(
-                [
-                    expectedResult.Establishments[0].SchoolName,
+        // Assert Labels
+        Assert.Equal(
+            [
+                expectedResult.Establishments[0].SchoolName,
                     expectedResult.Establishments[1].SchoolName,
                     "England average"
-                ],
-                model.AllGcseData.Labels
-            );
+            ],
+            model.AllGcseData.Labels
+        );
 
-            // Assert Background colours
-            Assert.Equal(
-                [
-                    EstablishmentChartColour,
+        // Assert Background colours
+        Assert.Equal(
+            [
+                EstablishmentChartColour,
                     EstablishmentChartColour,
                     EnglandAverageChartColour,
                 ],
-                model.AllGcseData.BackgroundColors!
-            );
+            model.AllGcseData.BackgroundColors!
+        );
 
-            // Assert DataOverTime
+        // Assert DataOverTime
 
-            Assert.Equal(3, model.AllGcseOverTimeData.Datasets.Count);
+        Assert.Equal(3, model.AllGcseOverTimeData.Datasets.Count);
 
-            Assert.Equal("2022 to 2023", model.AllGcseOverTimeData.Datasets[0].Label);
-            Assert.Equal([null, null, null], model.AllGcseOverTimeData.Datasets[0].Data);
+        Assert.Equal("2022 to 2023", model.AllGcseOverTimeData.Datasets[0].Label);
+        Assert.Equal([null, null, null], model.AllGcseOverTimeData.Datasets[0].Data);
 
-            Assert.Equal("2023 to 2024", model.AllGcseOverTimeData.Datasets[1].Label);
-            Assert.Equal([null, null, null], model.AllGcseOverTimeData.Datasets[1].Data);
+        Assert.Equal("2023 to 2024", model.AllGcseOverTimeData.Datasets[1].Label);
+        Assert.Equal([null, null, null], model.AllGcseOverTimeData.Datasets[1].Data);
 
-            Assert.Equal("2024 to 2025", model.AllGcseOverTimeData.Datasets[2].Label);
-            Assert.Equal([null, null, null], model.AllGcseOverTimeData.Datasets[2].Data);
-        }
+        Assert.Equal("2024 to 2025", model.AllGcseOverTimeData.Datasets[2].Label);
+        Assert.Equal([null, null, null], model.AllGcseOverTimeData.Datasets[2].Data);
+    }
 
     [Fact]
     public async Task NextSteps_ReturnsViewResultWithCorrectModel()
@@ -321,31 +321,31 @@ public class SecondaryControllerTests
 
         // Assert
         Assert.NotNull(result);
-        var model = result.Model as CompareDestinationsViewModel;
-        Assert.NotNull(model);
-        Assert.Equal(2, model.URNs.Count);
+        var viewModel = result.Model as CompareDestinationsViewModel;
+        Assert.NotNull(viewModel);
+        Assert.Equal(2, viewModel.URNs.Count);
 
         var orderedEstablishments = (
             _httpContext.Items["Establishments"] as List<Establishment>)?
             .OrderBy(e => e.EstablishmentName).ToList();
 
-        Assert.Collection(model.URNs,
+        Assert.Collection(viewModel.SchoolDetails.Select(s => s.URN),
             first => Assert.Equal(orderedEstablishments![0].URN, first),
             second => Assert.Equal(orderedEstablishments![1].URN, second)
         );
 
         for (int i = 0; i < orderedEstablishments!.Count; i++)
         {
-            Assert.Contains(model.SchoolDetails, d =>
+            Assert.Contains(viewModel.SchoolDetails, d =>
                 d.URN == orderedEstablishments![i].URN &&
                 d.SchoolName == orderedEstablishments[i].EstablishmentName
                 );
-            Assert.Contains(model.SchoolDetails, d =>
+            Assert.Contains(viewModel.SchoolDetails, d =>
                 d.PercentInEducationEmploymentOrTraining == destinationsResultsModel.SchoolDetails.ToList()[i].PercentInEducationEmploymentOrTraining &&
-                d.SixthForm.Value == true
+                d.SixthForm!.Value == true
             );
         }
 
-        Assert.Equal(englandPercentage, model.EnglandPercentage);
+        Assert.Equal(englandPercentage, viewModel.EnglandPercentage);
     }
 }
