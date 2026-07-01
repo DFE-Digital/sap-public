@@ -258,8 +258,34 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             Education_Tot_Est_Current_Pct = 47,
             Employment_Tot_Est_Current_Pct = 2,
             Apprentice_Tot_Est_Current_Pct = 1,
+
         },
+        ["100279"] = new EstablishmentDestinations
+        {
+            Id = "100279",
+            AllDest_Tot_Est_Current_Pct = 50,
+            AllDest_Tot_Est_Previous_Pct = 20,
+            AllDest_Tot_Est_Previous2_Pct = 30,
+            Education_Tot_Est_Current_Pct = 47,
+            Employment_Tot_Est_Current_Pct = 2,
+            Apprentice_Tot_Est_Current_Pct = 1,
+        }
     };
+
+    private static readonly Dictionary<string, EnglandDestinations> EnglandDestinations = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["105574"] = new EnglandDestinations
+        {
+            Id = "105574",
+            AllDest_Tot_Eng_Current_Pct = 50
+        },
+        ["100279"] = new EnglandDestinations
+        {
+            Id = "100279",
+            AllDest_Tot_Eng_Current_Pct = 50
+        }
+    };
+
 
     public Task<T?> ReadAsync(string id, CancellationToken ct = default)
         => ReadSingleAsync(new { Id = id }, ct);
@@ -300,6 +326,14 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             var id = GetPropertyString(parameters, "Id");
 
             if (!string.IsNullOrWhiteSpace(id) && EstablishmentDestinations.TryGetValue(id, out var est))
+                return Task.FromResult<T?>((T)(object)est);
+        }
+
+        if (typeof(T) == typeof(EnglandDestinations))
+        {
+            var id = GetPropertyString(parameters, "Id");
+
+            if (!string.IsNullOrWhiteSpace(id) && EnglandDestinations.TryGetValue(id, out var est))
                 return Task.FromResult<T?>((T)(object)est);
         }
 
