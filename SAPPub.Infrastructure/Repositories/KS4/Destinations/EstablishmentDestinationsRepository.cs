@@ -25,5 +25,15 @@ namespace SAPPub.Infrastructure.Repositories.KS4.Destinations
 
             return await _repo.ReadAsync(urn, ct);
         }
+
+        public async Task<IEnumerable<EstablishmentDestinations>> GetEstablishmentsDestinationsAsync(
+            IEnumerable<string> urns,
+            CancellationToken ct = default)
+        {
+            if (urns is null || !urns.Any())
+                return [];
+
+            return await _repo.ReadManyAsync(new { Ids = urns }, ct) ?? [];
+        }
     }
 }
