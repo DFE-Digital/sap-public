@@ -6,5 +6,6 @@ namespace SAPPub.Core.Interfaces.Repositories.KS4.Destinations
     {
         Task<IEnumerable<EstablishmentDestinations>> GetAllEstablishmentDestinationsAsync(CancellationToken ct = default);
         Task<EstablishmentDestinations?> GetEstablishmentDestinationsAsync(string urn, CancellationToken ct = default);
+        Task<IEnumerable<EstablishmentDestinations>> GetEstablishmentsDestinationsAsync(IEnumerable<string> urns, CancellationToken ct = default);
     }
 }

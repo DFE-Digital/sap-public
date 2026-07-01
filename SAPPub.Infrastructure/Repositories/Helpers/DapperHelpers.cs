@@ -517,6 +517,9 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                     where school_urn = @Urn;
                     """,
 
+                nameof(EstablishmentDestinations) =>
+                    SelectFromWhereIds(EstablishmentDestinationsColumns, "v_establishment_destinations"),
+
                 nameof(LaUrls) =>
                     SelectFromWhereGSSLACode(LaUrlsColumns, "v_la_urls"),
 
