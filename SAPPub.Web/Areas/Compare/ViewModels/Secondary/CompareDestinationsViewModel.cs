@@ -7,16 +7,16 @@ namespace SAPPub.Web.Areas.Compare.ViewModels.Secondary;
 
 public class CompareDestinationsViewModel : CompareSecondarySchoolBaseViewModel
 {
-    public class SchoolDestinationDetails
+    public class SchoolDestinationDetailsViewModel
     {
         public required string URN { get; set; }
         public required string SchoolName { get; set; }
         public required bool? SixthForm { get; set; }
         public required double? PercentInEducationEmploymentOrTraining { get; set; }
 
-        public static SchoolDestinationDetails Map(SAPPub.Core.ServiceModels.Compare.SchoolDestinationDetails destinationsDetails, Establishment establishmentDetails)
+        public static SchoolDestinationDetailsViewModel Map(SAPPub.Core.ServiceModels.Compare.SchoolDestinationDetails destinationsDetails, Establishment establishmentDetails)
         {
-            return new SchoolDestinationDetails
+            return new SchoolDestinationDetailsViewModel
             {
                 URN = destinationsDetails.URN,
                 SchoolName = establishmentDetails.EstablishmentName,
@@ -39,7 +39,7 @@ public class CompareDestinationsViewModel : CompareSecondarySchoolBaseViewModel
 
     public required DataViewModel AllDestinationsData { get; set; }
 
-    public required IEnumerable<SchoolDestinationDetails> SchoolDetails { get; set; }
+    public required IEnumerable<SchoolDestinationDetailsViewModel> SchoolDetails { get; set; }
 
     public static CompareDestinationsViewModel Map(List<string> urns, DestinationsComparisonResultModel destinationsDetails, List<Establishment> establishments)
     {
@@ -48,7 +48,7 @@ public class CompareDestinationsViewModel : CompareSecondarySchoolBaseViewModel
                 establishments,
                 d => d.URN,
                 e => e.URN,
-                (d, e) => SchoolDestinationDetails.Map(d, e))
+                (d, e) => SchoolDestinationDetailsViewModel.Map(d, e))
             .OrderBy(d => d.SchoolName)
             .ToList();
 

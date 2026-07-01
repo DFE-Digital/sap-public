@@ -1,5 +1,6 @@
 ﻿@model SAPPub.Web.Areas.Compare.ViewModels.Secondary.CompareDestinationsViewModel
 @using SAPPub.Web.Constants
+@using SAPPub.Core.Extensions
 @using static SAPPub.Web.Constants.Constants;
 @using SAPPub.Web.ViewComponents.VerticalNavigationCompareSecondary
 
@@ -37,7 +38,7 @@
             {
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell">@school.SchoolName</td>
-                    <td class="govuk-table__cell">@(school.SixthForm.HasValue ? (school.SixthForm.Value ? "Yes" : "No") : "Not available")</td>
+                    <td class="govuk-table__cell">@(school.SixthForm.HasValue ? (school.SixthForm.Value ? "Yes" : "No") : Constants.NotAvailable)</td>
                 </tr>
             }
             </tbody>
@@ -84,7 +85,7 @@
                             {
                                 <tr class="govuk-table__row">
                                     <th scope="row" class="govuk-table__header">@Model.AllDestinationsData.Labels[data.i]</th>
-                                    <td class="govuk-table__cell">@(data.value.HasValue? data.value + "%" : Constants.NotAvailable)</td>
+                                    <td class="govuk-table__cell">@(data.value.HasValue? data.value.Value.AsPercentage() : Constants.NotAvailable)</td>
                                 </tr>
                             }
                         </tbody>
