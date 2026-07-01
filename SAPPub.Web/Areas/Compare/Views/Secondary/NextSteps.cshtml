@@ -62,7 +62,7 @@
                                 School Profile
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                <a class="govuk-link" href="@Url.Action("Index", "School", new { urn = school.URN, schoolName = school })">@($"View {school.EstablishmentName}'s Profile")</a>
+                                <a class="govuk-link" target="_blank" href="@Url.Action("Index", "School", new { urn = school.URN, schoolName = school })">@($"View {school.EstablishmentName}'s Profile")</a>
                             </dd>
                         </div>
                         <div class="govuk-summary-list__row">
