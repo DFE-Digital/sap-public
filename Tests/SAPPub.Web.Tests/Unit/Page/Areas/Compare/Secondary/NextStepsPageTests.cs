@@ -19,8 +19,8 @@ public class NextStepsPageTests : PageTestsBase
         _establishmentService = UseMock<IEstablishmentService>();
         var establishmentList = (new List<Establishment>
         {
-            new EstablishmentTestBuilder().WithURN("119052").WithIsKeyStage4(true).Build(),
-            new EstablishmentTestBuilder().WithURN("124500").WithIsKeyStage4(true).Build(),
+            new EstablishmentTestBuilder().WithURN("119052").WithEstablishmentName("xyz School").WithIsKeyStage4(true).Build(),
+            new EstablishmentTestBuilder().WithURN("124500").WithEstablishmentName("abc School").WithIsKeyStage4(true).Build(),
         }).ToList();
 
         establishmentList.Select(e =>
@@ -41,16 +41,6 @@ public class NextStepsPageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task NextSteps_Show_ExploreMoreInformation_Header()
-    {
-        // Act
-        var doc = await Fixture.BrowseToPage(_pageUrl);
-        var h2Header = doc.QuerySelector("h2");
-
-        Assert.NotNull(h2Header);
-    }
-
-    [Fact]
     public async Task DisplaysPagination()
     {
         // Arrange
@@ -65,5 +55,34 @@ public class NextStepsPageTests : PageTestsBase
         Assert.Null(navNext);
         Assert.NotNull(navPrevious);
         Assert.Contains("Destinations after year 11", navPrevious.TextContent);
+    }
+
+    [Fact]
+    public async Task DisplaysCorrectH2Information()
+    {
+        // Act
+        var doc = await Fixture.BrowseToPage(_pageUrl);
+        var exploreMoreInformation = doc.GetElementsByTagName("h2")[1];
+        var arrangeASchoolVisit = doc.GetElementsByTagName("h2")[2];
+        var applyingToASchool = doc.GetElementsByTagName("h2")[3];
+
+        // Assert
+        Assert.NotNull(exploreMoreInformation);
+        Assert.NotNull(arrangeASchoolVisit);
+        Assert.NotNull(applyingToASchool);
+        Assert.Equal("Explore more information", exploreMoreInformation.TextContent);
+        Assert.Equal("Arrange a school visit", arrangeASchoolVisit.TextContent);
+        Assert.Equal("Applying to a school", applyingToASchool.TextContent);
+    }
+
+    [Fact]
+    public async Task ShowsSchoolInfoComparisonLists()
+    {
+        // Act
+        var doc = await Fixture.BrowseToPage(_pageUrl);
+        var summaryLists = doc.GetElementsByClassName("govuk-summary-list");
+        
+        // Assert
+        Assert.NotNull(summaryLists);
     }
 }
