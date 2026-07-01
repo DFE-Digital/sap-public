@@ -713,7 +713,7 @@ jobs:
               -t 28800 \
               -x \
               "${{ env.KONDUIT_APP_NAME }}" -- \
-              pg_dump --format=plain --no-owner --no-privileges \
+              pg_dump --format=plain --clean --if-exists --no-owner --no-privileges \
               2> "${LOG_FILE}" | gzip -c > "${LOCAL_FILE}"
             dump_rc=${PIPESTATUS[0]}
             set -e

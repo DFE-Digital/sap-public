@@ -182,5 +182,73 @@ namespace SAPPub.Infrastructure.Tests.Repositories
             Assert.Equal(1, parts.Parameters.Get<int>("pageSize"));
             Assert.Equal(2, parts.Parameters.Get<int>("offset"));
         }
+
+        [Fact]
+        public async Task GetEstablishmentsAsync_ReturnsCorrectItemsWhenUrnExists()
+        {
+            // Arrange
+            var urns = new List<string> {"123","234"};
+            var expectedEstablishments = new List<Establishment> 
+            {
+                new() { URN = "123", EstablishmentName = "Urn1" },
+                new() { URN = "234", EstablishmentName = "Urn2" }
+            };
+            
+            _mockGenericRepo
+                .Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedEstablishments);
+
+            // Act
+            var results = await _sut.GetEstablishmentsAsync(urns, CancellationToken.None);
+
+            // Assert
+            Assert.NotNull(results);
+            Assert.Equal(2, results.Count());
+
+            foreach (var expectedEstablishment in expectedEstablishments)
+            {
+                var actualEstablishment = results.FirstOrDefault(r => r.URN == expectedEstablishment.URN);
+                Assert.NotNull(actualEstablishment);
+                Assert.Equal(expectedEstablishment.URN, actualEstablishment.URN);
+                Assert.Equal(expectedEstablishment.EstablishmentName, actualEstablishment.EstablishmentName);
+            }      
+
+            _mockGenericRepo.Verify(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetEstablishmentsAsync_ReturnsEmptyWhenUrnDoesNotExist()
+        {
+            // Arrange
+            var urns = new List<string> { "123", "234" };
+            var expectedEstablishments = new List<Establishment>();
+
+            _mockGenericRepo
+                .Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedEstablishments);
+
+            // Act
+            var result = await _sut.GetEstablishmentsAsync(urns, CancellationToken.None);
+
+            // Assert
+            Assert.Empty(result!);
+
+            _mockGenericRepo.Verify(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetEstablishmentsAsync_ReturnsNullWhenUrnsIsNUll()
+        {
+            // Arrange
+            List<string> urns = null!;
+
+            // Act
+            var result = await _sut.GetEstablishmentsAsync(urns, CancellationToken.None);
+
+            // Assert
+            Assert.Null(result);
+
+            _mockGenericRepo.Verify(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()), Times.Never);
+        }
     }
 }

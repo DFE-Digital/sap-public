@@ -1,4 +1,5 @@
 ﻿using Moq;
+using SAPPub.Core.Entities;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Interfaces.Repositories.KS4.Performance;
 using SAPPub.Core.Services.KS4.Performance;
@@ -113,6 +114,55 @@ namespace SAPPub.Core.Tests.Services.KS4.Performance
             // Act & Assert
             var ex = await Assert.ThrowsAsync<Exception>(() => _service.GetEstablishmentPerformanceAsync(urn, CancellationToken.None));
             Assert.Equal("Database error", ex.Message);
+        }
+
+        [Fact]
+        public async Task GetEstablishmentsPerformanceAsync_ShouldReturnCorrectItems_WhenUrnsExists()
+        {
+            // Arrange
+            var urns = new List<string> { "123456", "785456" };
+
+            var expectedEstablishmentsPerformance = new List<EstablishmentPerformance>
+            {
+                new() { Id = "123456", EngMaths49_Tot_Est_Current_Pct = 99.99 },
+                new() { Id = "785456", EngMaths49_Tot_Est_Current_Pct = 55.67 }
+            };
+
+            _mockRepo
+                .Setup(r => r.GetEstablishmentsPerformanceAsync(urns, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedEstablishmentsPerformance);
+
+            // Act
+            var results = await _service.GetEstablishmentsPerformanceAsync(urns, CancellationToken.None);
+
+            // Assert
+            Assert.NotNull(results);
+            Assert.Equal(2, results.Count());
+
+            foreach (var expectedEstablishmentPerformance in expectedEstablishmentsPerformance)
+            {
+                var actualEstablishmentPerformance = results.FirstOrDefault(r => r.Id == expectedEstablishmentPerformance.Id);
+                Assert.NotNull(actualEstablishmentPerformance);
+                Assert.Equal(actualEstablishmentPerformance.EngMaths49_Tot_Est_Current_Pct, expectedEstablishmentPerformance.EngMaths49_Tot_Est_Current_Pct);
+            }
+        }
+
+        [Fact]
+        public async Task GetEstablishmentsPerformanceAsync_ReturnsEmptyWhenUrnDoesNotExist()
+        {
+            // Arrange
+            var urns = new List<string> { "123456", "785456" };
+            var expectedEstablishmentsPerformance = new List<EstablishmentPerformance>();
+
+            _mockRepo
+                .Setup(r => r.GetEstablishmentsPerformanceAsync(urns, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedEstablishmentsPerformance);
+
+            // Act
+            var results = await _service.GetEstablishmentsPerformanceAsync(urns, CancellationToken.None);
+
+            // Assert
+            Assert.Empty(results);
         }
     }
 }
