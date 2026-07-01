@@ -38,18 +38,40 @@ public sealed class GenerateViews
         new("v_establishment_links", "Establishment", "Establishment"),
         new("v_establishment_group_links", "Establishment", "Establishment"),
         new("v_establishment_subject_entries", "Establishment", "KS4_Performance"),
-
         new("v_establishment_absence", "Establishment", "PupilAbsence"),
-        new("v_establishment_destinations", "Establishment", "KS4_Destinations"),
-        new("v_establishment_performance", "Establishment", "KS4_Performance"),
+
+        new("v_establishment_destinations", "Establishment", "KS4_Destinations"), //Todo - Rename to KS4
+        new("v_establishment_ks5_destinations", "Establishment", "KS5_Destinations"),
+
+        new("v_establishment_ks2_attainment", "Establishment", "KS2_Attainment"),
+        new("v_establishment_performance", "Establishment", "KS4_Performance"), //Todo - Rename to KS4
+        new("v_establishment_ks5_performance", "Establishment", "KS5_Performance"),
+
         new("v_establishment_workforce", "Establishment", "Workforce"),
 
+
+
+
+
         new("v_england_destinations", "England", "KS4_Destinations"),
-        new("v_england_performance", "England", "KS4_Performance"),
+        new("v_england_ks5_destinations", "England", "KS5_Destinations"),
+
+        new("v_england_ks2_attainment", "England", "KS2_Attainment"),
+        new("v_england_performance", "England", "KS4_Performance"),     //Todo - Rename to KS4
+        new("v_england_ks5_performance", "England", "KS5_Performance"),
         new("v_england_absence", "England", "PupilAbsence"),
 
+
+
+
+
         new("v_la_destinations", "LA", "KS4_Destinations"),
-        new("v_la_performance", "LA", "KS4_Performance"),
+        new("v_la_ks5_destinations", "LA", "KS5_Destinations"),
+
+        new("v_la_ks2_attainment", "LA", "KS2_Attainment"),
+        new("v_la_performance", "LA", "KS4_Performance"),               //Todo - Rename to KS4
+        new("v_la_ks5_performance", "LA", "KS5_Performance"),
+
         new("v_la_subject_entries", "LA", "KS4_Performance"),
         new("v_la_absence", "LA", "PupilAbsence"),
 
@@ -569,6 +591,7 @@ public sealed class GenerateViews
             sb.AppendLine("    e.\"LAName\" AS \"LAName\",");
             sb.AppendLine("    e.\"RegionId\" AS \"RegionId\",");
             sb.AppendLine("    e.\"RegionName\" AS \"RegionName\",");
+            sb.AppendLine("    e.\"LAId\" || e.\"EstablishmentNumber\" AS \"LAEstab\",");
         }
 
         // Build property -> sources lookup
@@ -821,6 +844,36 @@ public sealed class GenerateViews
             conditions.Add($"t.\"{DbCol(r.Filter4)}\" = '{SqlLiteral(r.Filter4Value)}'");
         if (!string.IsNullOrWhiteSpace(r.Filter5))
             conditions.Add($"t.\"{DbCol(r.Filter5)}\" = '{SqlLiteral(r.Filter5Value)}'");
+        if (!string.IsNullOrWhiteSpace(r.Filter6))
+            conditions.Add($"t.\"{DbCol(r.Filter6)}\" = '{SqlLiteral(r.Filter6Value)}'");
+        if (!string.IsNullOrWhiteSpace(r.Filter7))
+            conditions.Add($"t.\"{DbCol(r.Filter7)}\" = '{SqlLiteral(r.Filter7Value)}'");
+        if (!string.IsNullOrWhiteSpace(r.Filter8))
+            conditions.Add($"t.\"{DbCol(r.Filter8)}\" = '{SqlLiteral(r.Filter8Value)}'");
+        if (!string.IsNullOrWhiteSpace(r.Filter9))
+            conditions.Add($"t.\"{DbCol(r.Filter9)}\" = '{SqlLiteral(r.Filter9Value)}'");
+        if (!string.IsNullOrWhiteSpace(r.Filter10))
+            conditions.Add($"t.\"{DbCol(r.Filter10)}\" = '{SqlLiteral(r.Filter10Value)}'");
+        if (!string.IsNullOrWhiteSpace(r.Filter11))
+            conditions.Add($"t.\"{DbCol(r.Filter11)}\" = '{SqlLiteral(r.Filter11Value)}'");
+        if (!string.IsNullOrWhiteSpace(r.Filter12))
+            conditions.Add($"t.\"{DbCol(r.Filter12)}\" = '{SqlLiteral(r.Filter12Value)}'");
+        if (!string.IsNullOrWhiteSpace(r.Filter13))
+            conditions.Add($"t.\"{DbCol(r.Filter13)}\" = '{SqlLiteral(r.Filter13Value)}'");
+        if (!string.IsNullOrWhiteSpace(r.Filter14))
+            conditions.Add($"t.\"{DbCol(r.Filter14)}\" = '{SqlLiteral(r.Filter14Value)}'");
+        if (!string.IsNullOrWhiteSpace(r.Filter15))
+            conditions.Add($"t.\"{DbCol(r.Filter15)}\" = '{SqlLiteral(r.Filter15Value)}'");
+        if (!string.IsNullOrWhiteSpace(r.Filter16))
+            conditions.Add($"t.\"{DbCol(r.Filter16)}\" = '{SqlLiteral(r.Filter16Value)}'");
+        if (!string.IsNullOrWhiteSpace(r.Filter17))
+            conditions.Add($"t.\"{DbCol(r.Filter17)}\" = '{SqlLiteral(r.Filter17Value)}'");
+        if (!string.IsNullOrWhiteSpace(r.Filter18))
+            conditions.Add($"t.\"{DbCol(r.Filter18)}\" = '{SqlLiteral(r.Filter18Value)}'");
+        if (!string.IsNullOrWhiteSpace(r.Filter19))
+            conditions.Add($"t.\"{DbCol(r.Filter19)}\" = '{SqlLiteral(r.Filter19Value)}'");
+        if (!string.IsNullOrWhiteSpace(r.Filter20))
+            conditions.Add($"t.\"{DbCol(r.Filter20)}\" = '{SqlLiteral(r.Filter20Value)}'");
 
         var whenClause = conditions.Count == 0 ? "TRUE" : string.Join(" AND ", conditions);
 

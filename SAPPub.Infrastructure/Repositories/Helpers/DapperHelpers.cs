@@ -4,7 +4,6 @@ using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.KS4.SubjectEntries;
-using SAPPub.Core.Entities.KS4.Workforce;
 
 namespace SAPPub.Infrastructure.Repositories.Helpers
 {
@@ -75,13 +74,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Enrolments_Tot_Est_Current_Num_Coded",
           "Abs_Persistent_Est_Current_Num_Coded",
           "Abs_Persistent_Est_Current_Pct_Coded",
-          "Abs_Persistent_Est_Previous_Pct_Coded",
-          "Abs_Persistent_Est_Previous2_Pct_Coded",
-          "Abs_Tot_Est_Current_Pct_Coded",
-          "Abs_Tot_Est_Previous_Pct_Coded",
-          "Abs_Tot_Est_Previous2_Pct_Coded",
-          "Auth_Tot_Est_Current_Pct_Coded",
-          "UnAuth_Tot_Est_Current_Pct_Coded"
+          "Abs_Tot_Est_Current_Pct_Coded"
           """;
 
         private const string EstablishmentDestinationsColumns = """
@@ -91,13 +84,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Employment_Tot_Est_Current_Pct_Coded",
           "Apprentice_Tot_Est_Current_Pct_Coded",
           "AllDest_Tot_Est_Previous_Pct_Coded",
-          "Education_Tot_Est_Previous_Pct_Coded",
-          "Employment_Tot_Est_Previous_Pct_Coded",
-          "Apprentice_Tot_Est_Previous_Pct_Coded",
-          "AllDest_Tot_Est_Previous2_Pct_Coded",
-          "Education_Tot_Est_Previous2_Pct_Coded",
-          "Employment_Tot_Est_Previous2_Pct_Coded",
-          "Apprentice_Tot_Est_Previous2_Pct_Coded"
+          "AllDest_Tot_Est_Previous2_Pct_Coded"
           """;
 
         private const string EstablishmentPerformanceColumns = """
@@ -129,12 +116,6 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Pup_Tot_Est_Previous2_Num_Coded"
           """;
 
-        private const string EstablishmentWorkforceColumns = """
-          "Id",
-          "Workforce_PupTeaRatio_Est_Current_Num_Coded",
-          "Workforce_TotPupils_Est_Current_Num_Coded"
-          """;
-
         private const string LAPerformanceColumns = """
           "Id",
           "Attainment8_Tot_LA_Current_Num_Coded",
@@ -161,13 +142,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Employment_Tot_LA_Current_Pct_Coded",
           "Apprentice_Tot_LA_Current_Pct_Coded",
           "AllDest_Tot_LA_Previous_Pct_Coded",
-          "Education_Tot_LA_Previous_Pct_Coded",
-          "Employment_Tot_LA_Previous_Pct_Coded",
-          "Apprentice_Tot_LA_Previous_Pct_Coded",
-          "AllDest_Tot_LA_Previous2_Pct_Coded",
-          "Education_Tot_LA_Previous2_Pct_Coded",
-          "Employment_Tot_LA_Previous2_Pct_Coded",
-          "Apprentice_Tot_LA_Previous2_Pct_Coded"
+          "AllDest_Tot_LA_Previous2_Pct_Coded"
           """;
 
         private const string EnglandPerformanceColumns = """
@@ -194,13 +169,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Employment_Tot_Eng_Current_Pct_Coded",
           "Apprentice_Tot_Eng_Current_Pct_Coded",
           "AllDest_Tot_Eng_Previous_Pct_Coded",
-          "Education_Tot_Eng_Previous_Pct_Coded",
-          "Employment_Tot_Eng_Previous_Pct_Coded",
-          "Apprentice_Tot_Eng_Previous_Pct_Coded",
-          "AllDest_Tot_Eng_Previous2_Pct_Coded",
-          "Education_Tot_Eng_Previous2_Pct_Coded",
-          "Employment_Tot_Eng_Previous2_Pct_Coded",
-          "Apprentice_Tot_Eng_Previous2_Pct_Coded"
+          "AllDest_Tot_Eng_Previous2_Pct_Coded"
           """;
 
         private const string EstablishmentSubjectEntriesColumns = """
@@ -217,17 +186,13 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
         private const string EnglandAbsenceColumns = """
           "Id",
           "Abs_Persistent_Eng_Current_Pct_Coded",
-          "Abs_Tot_Eng_Current_Pct_Coded",
-          "Auth_Tot_Eng_Current_Pct_Coded",
-          "UnAuth_Tot_Eng_Current_Pct_Coded"
+          "Abs_Tot_Eng_Current_Pct_Coded"
           """;
 
         private const string LAAbsenceColumns = """
           "Id",
           "Abs_Persistent_LA_Current_Pct_Coded",
-          "Abs_Tot_LA_Current_Pct_Coded",
-          "Auth_Tot_LA_Current_Pct_Coded",
-          "UnAuth_Tot_LA_Current_Pct_Coded"
+          "Abs_Tot_LA_Current_Pct_Coded"
           """;
 
         private const string LaUrlsColumns = """
@@ -357,9 +322,6 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                 nameof(EstablishmentPerformance) =>
                     SelectFrom(EstablishmentPerformanceColumns, "v_establishment_performance"),
 
-                nameof(EstablishmentWorkforce) =>
-                    SelectFrom(EstablishmentWorkforceColumns, "v_establishment_workforce"),
-
                 nameof(LAAbsence) =>
                     SelectFrom(LAAbsenceColumns, "v_la_absence"),
 
@@ -420,9 +382,6 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
 
                 nameof(EstablishmentPerformance) =>
                     SelectFromWhereId(EstablishmentPerformanceColumns, "v_establishment_performance"),
-
-                nameof(EstablishmentWorkforce) =>
-                    SelectFromWhereId(EstablishmentWorkforceColumns, "v_establishment_workforce"),
 
                 nameof(LAAbsence) =>
                     SelectFromWhereId(LAAbsenceColumns, "v_la_absence"),

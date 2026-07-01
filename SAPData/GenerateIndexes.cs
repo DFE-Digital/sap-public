@@ -42,19 +42,29 @@ public class GenerateIndexes
             { "v_establishment_subject_entries", "\"school_urn\"" },
 
             { "v_establishment_absence",      "\"Id\"" },
+
             { "v_establishment_destinations", "\"Id\"" },
+            { "v_establishment_ks5_destinations", "\"Id\"" },
+            { "v_establishment_ks2_attainment",  "\"Id\"" },
             { "v_establishment_performance",  "\"Id\"" },
+            { "v_establishment_ks5_performance",  "\"Id\"" },
             { "v_establishment_workforce",    "\"Id\"" },
 
             // England
             { "v_england_absence",      "\"Id\"" },
             { "v_england_destinations", "\"Id\"" },
+            { "v_england_ks5_destinations", "\"Id\"" },
+            { "v_england_ks2_attainment",  "\"Id\"" },
             { "v_england_performance",  "\"Id\"" },
+            { "v_england_ks5_performance",  "\"Id\"" },
 
             // Local Authority
             { "v_la_absence",      "\"Id\"" },
             { "v_la_destinations", "\"Id\"" },
-            { "v_la_performance",  "\"Id\"" }
+            { "v_la_ks5_destinations", "\"Id\"" },
+            { "v_la_ks2_attainment",  "\"Id\"" },
+            { "v_la_performance",  "\"Id\"" },
+            { "v_la_ks5_performance",  "\"Id\"" }
         };
 
         foreach (var kvp in indexes)

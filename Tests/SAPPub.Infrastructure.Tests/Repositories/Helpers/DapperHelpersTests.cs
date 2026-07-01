@@ -3,7 +3,6 @@ using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.KS4.SubjectEntries;
-using SAPPub.Core.Entities.KS4.Workforce;
 using SAPPub.Infrastructure.Repositories.Helpers;
 using System;
 using Xunit;
@@ -19,7 +18,6 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Helpers
             Assert.NotEmpty(DapperHelpers.GetReadMultiple(typeof(EstablishmentAbsence)));
             Assert.NotEmpty(DapperHelpers.GetReadMultiple(typeof(EstablishmentDestinations)));
             Assert.NotEmpty(DapperHelpers.GetReadMultiple(typeof(EstablishmentPerformance)));
-            Assert.NotEmpty(DapperHelpers.GetReadMultiple(typeof(EstablishmentWorkforce)));
             Assert.NotEmpty(DapperHelpers.GetReadMultiple(typeof(LADestinations)));
             Assert.NotEmpty(DapperHelpers.GetReadMultiple(typeof(LAPerformance)));
             Assert.NotEmpty(DapperHelpers.GetReadMultiple(typeof(EnglandDestinations)));
@@ -34,7 +32,6 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Helpers
             Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(EstablishmentAbsence)));
             Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(EstablishmentDestinations)));
             Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(EstablishmentPerformance)));
-            Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(EstablishmentWorkforce)));
             Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(LADestinations)));
             Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(LAPerformance)));
             Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(EnglandDestinations)));
