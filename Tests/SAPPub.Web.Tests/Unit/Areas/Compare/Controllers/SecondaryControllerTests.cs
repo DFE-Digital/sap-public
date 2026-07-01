@@ -346,6 +346,15 @@ public class SecondaryControllerTests
             );
         }
 
+        Assert.Collection(viewModel.AllDestinationsData.Labels,
+            first => Assert.Equal(viewModel.SchoolDetails.ToList()[0].SchoolName, first),
+            second => Assert.Equal(viewModel.SchoolDetails.ToList()[1].SchoolName, second),
+            third => Assert.Equal("England average", third));
+        Assert.Collection(viewModel.AllDestinationsData.Data,
+            first => Assert.Equal(viewModel.SchoolDetails.ToList()[0].PercentInEducationEmploymentOrTraining, first),
+            second => Assert.Equal(viewModel.SchoolDetails.ToList()[1].PercentInEducationEmploymentOrTraining, second),
+            third => Assert.Equal(viewModel.EnglandPercentage, third));
+
         Assert.Equal(englandPercentage, viewModel.EnglandPercentage);
     }
 }
