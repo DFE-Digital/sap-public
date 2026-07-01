@@ -67,11 +67,12 @@
 
         <div id="schoolInformationSummary" class="govuk-summary-card">
             <div class="govuk-summary-card__title-wrapper">
-                <h3 class="govuk-header-m">Further information</h3>
+                <h3 class="govuk-summary-card__title">Further information</h3>
             </div>
         <div class="govuk-summary-card__content">
                 @foreach (var school in Model.CompareAboutSchools)
                 {
+                    <div class="govuk-!-margin-bottom-4">
                         <h4 class="govuk-heading-m">@school.SchoolName</h4>
                         <govuk-summary-list id="school-details-summary-@school.Urn">
                             <govuk-summary-list-row>
@@ -111,9 +112,10 @@
                                         @school.Website.DisplayText()
                                     }
                                 </govuk-summary-list-row-value>
-                            </govuk-summary-list-row>           
+                            </govuk-summary-list-row>
                         </govuk-summary-list>
-                        }
+                    </div>                       
+                }
             </div>
         </div>
 
