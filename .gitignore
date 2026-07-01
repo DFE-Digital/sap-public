@@ -520,3 +520,4 @@ SAPPub.Web/keys/*
 /scripts/output/*.csv
 /.github/copilot-instructions.md
 /Tests/accessibility-results
+/SAPPub.Web/wwwroot/js/map-schools.js
