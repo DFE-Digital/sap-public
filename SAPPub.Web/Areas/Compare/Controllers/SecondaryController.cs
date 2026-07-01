@@ -2,6 +2,7 @@
 using Microsoft.FeatureManagement.Mvc;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
+using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Web.Areas.Compare.Filters;
 using SAPPub.Web.Areas.Compare.ViewModels.Secondary;
@@ -18,9 +19,13 @@ public class SecondaryController : Controller
 {
     [HttpGet]
     [Route("about-your-schools", Name = RouteConstants.CompareSecondaryAboutYourSchools)]
-    public async Task<IActionResult> AboutYourSchools(List<string> urns)
+    public async Task<IActionResult> AboutYourSchools(
+        [FromServices] IAboutSchoolService aboutSchoolService,
+        List<string> urns,
+        CancellationToken ct)
     {
-        var model = new CompareAboutYourSchoolsViewModel { URNs = urns };
+        var aboutSchoolsCompareModelList = await aboutSchoolService.GetAboutSchoolForComparisonAsync(urns, ct);
+        var model = CompareAboutYourSchoolsViewModel.Map(urns, aboutSchoolsCompareModelList);
         return View(model);
     }
 

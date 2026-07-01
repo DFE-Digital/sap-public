@@ -2,9 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SAPPub.Core.Entities;
+using SAPPub.Core.Helpers;
+using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.ServiceModels.Compare;
+using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Areas.Compare.Controllers;
@@ -17,6 +20,7 @@ public class SecondaryControllerTests
 {
     private SecondaryController _controllerUnderTest = new();
     private readonly Mock<IDestinationsComparisonService> _mockDestinationsService = new();
+    private readonly Mock<IAboutSchoolService> _mockAboutSchoolService = new();
     private readonly Mock<IEnglishAndMathsComparisionService> _mockEnglishAndMathsComparisonService = new();
 
     private List<string> _urns = ["123456", "234567"];
@@ -47,9 +51,22 @@ public class SecondaryControllerTests
         var urn1 = "123456";
         var urn2 = "234567";
         var urnList = new List<string> { urn1, urn2 };
+        var easting1 = "532301";
+        var northing1 = "181746";
+        var aboutSchoolsCompareModelList = new List<AboutSchoolComparisonModel>
+            {
+                new() { Urn = urn1, SchoolName = "Test School", Easting = easting1, Northing = northing1 },
+                new() { Urn = urn2, SchoolName = "Test School 2" },
+            };
+
+        _mockAboutSchoolService
+            .Setup(a => a.GetAboutSchoolForComparisonAsync(urnList, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(aboutSchoolsCompareModelList);
+
+        var longLat = MappingHelper.ConvertToLatLon(easting1, northing1);
 
         // Act
-        var result = await controller.AboutYourSchools(urnList) as ViewResult;
+        var result = await controller.AboutYourSchools(_mockAboutSchoolService.Object, urnList, It.IsAny<CancellationToken>()) as ViewResult;
 
         // Assert
         Assert.NotNull(result);
@@ -57,6 +74,11 @@ public class SecondaryControllerTests
         Assert.NotNull(model);
         Assert.Equal(2, model.URNs.Count);
         Assert.Equal(model.RouteQueryString, $"?urns={urn1}&urns={urn2}");
+        Assert.Equal(longLat?.Latitude, model.MapData.FirstOrDefault()?.Lat);
+        Assert.Equal(longLat?.Longitude, model.MapData.FirstOrDefault()?.Lng);
+        Assert.Equal("Test School", model.MapData.FirstOrDefault()?.Name);
+        Assert.Equal(1, model.MapData?.Count());
+        Assert.Equal(2, model.CompareAboutSchools.Count());
     }
 
     [Fact]

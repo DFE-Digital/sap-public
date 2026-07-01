@@ -1,5 +1,5 @@
 -- ================================================================
--- 05_gateway.sql
+-- 06_gateway.sql
 -- Tables for the gateway service
 -- ================================================================
 
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS public.gateway_user_audit
     "Id" uuid NOT NULL,
     "UserId" uuid NOT NULL,
     "LoginDateTime" timestamp without time zone,
-    "UserAction" text not null,
+    "UserAction" text NOT NULL,
     "CreatedOn" timestamp without time zone,
     "ModifiedOn" timestamp without time zone,
     "AuditIPAddress" text COLLATE pg_catalog."default",
@@ -43,11 +43,27 @@ CREATE TABLE IF NOT EXISTS public.gateway_local_authority
     CONSTRAINT gateway_local_authority_unique_name UNIQUE ("LocalAuthorityName")
 );
 
-INSERT INTO public.gateway_local_authority("Id", "LocalAuthorityName", "MaxSessions", "CreatedOn", "ModifiedOn", "AuditIPAddress", "IsDeleted")
-VALUES (gen_random_uuid(), 'Bury', 100, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
+-- Ensure unique constraint exists when table already existed before this script
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_constraint
+        WHERE conname = 'gateway_local_authority_unique_name'
+          AND conrelid = 'public.gateway_local_authority'::regclass
+    ) THEN
+        ALTER TABLE public.gateway_local_authority
+            ADD CONSTRAINT gateway_local_authority_unique_name UNIQUE ("LocalAuthorityName");
+    END IF;
+END $$;
 
 INSERT INTO public.gateway_local_authority("Id", "LocalAuthorityName", "MaxSessions", "CreatedOn", "ModifiedOn", "AuditIPAddress", "IsDeleted")
-VALUES (gen_random_uuid(), 'Bolton', 100, now(), now(), '::1', FALSE) ON CONFLICT ("LocalAuthorityName") DO NOTHING;
+VALUES (gen_random_uuid(), 'Bury', 100, now(), now(), '::1', FALSE)
+ON CONFLICT ("LocalAuthorityName") DO NOTHING;
+
+INSERT INTO public.gateway_local_authority("Id", "LocalAuthorityName", "MaxSessions", "CreatedOn", "ModifiedOn", "AuditIPAddress", "IsDeleted")
+VALUES (gen_random_uuid(), 'Bolton', 100, now(), now(), '::1', FALSE)
+ON CONFLICT ("LocalAuthorityName") DO NOTHING;
 
 CREATE TABLE IF NOT EXISTS public.gateway_settings
 (
@@ -62,8 +78,21 @@ CREATE TABLE IF NOT EXISTS public.gateway_settings
     CONSTRAINT gateway_global_settings_unique_name UNIQUE ("SettingName")
 );
 
-INSERT INTO public.gateway_settings(
-	"Id", "SettingName", "SettingValue", "CreatedOn", "ModifiedOn", "AuditIPAddress", "IsDeleted")
-	    VALUES (gen_random_uuid(), 'GlobalEnable', 'true', now(), now(), '::1', FALSE) 
-            ON CONFLICT ("SettingName") DO NOTHING;
+-- Ensure unique constraint exists when table already existed before this script
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_constraint
+        WHERE conname = 'gateway_global_settings_unique_name'
+          AND conrelid = 'public.gateway_settings'::regclass
+    ) THEN
+        ALTER TABLE public.gateway_settings
+            ADD CONSTRAINT gateway_global_settings_unique_name UNIQUE ("SettingName");
+    END IF;
+END $$;
 
+INSERT INTO public.gateway_settings(
+    "Id", "SettingName", "SettingValue", "CreatedOn", "ModifiedOn", "AuditIPAddress", "IsDeleted")
+VALUES (gen_random_uuid(), 'GlobalEnable', 'true', now(), now(), '::1', FALSE)
+ON CONFLICT ("SettingName") DO NOTHING;

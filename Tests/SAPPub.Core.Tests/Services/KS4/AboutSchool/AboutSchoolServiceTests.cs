@@ -1,5 +1,6 @@
 ﻿using Moq;
 using SAPPub.Core.Entities;
+using SAPPub.Core.Helpers;
 using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Services.KS4.AboutSchool;
@@ -9,7 +10,7 @@ namespace SAPPub.Core.Tests.Services.KS4.AboutSchool;
 public class AboutSchoolServiceTests
 {
     private readonly Mock<IEstablishmentService> _mockEstablishmentService;
-    private readonly Mock<ILaUrlsRepository> _mockLaUrlsRepository;
+    private readonly Mock<ILAService> _mockLaService;
     private readonly Mock<IEstablishmentLinksRepository> _mockEstablishmentLinksRepository;
 
     private readonly AboutSchoolService _service;
@@ -44,15 +45,49 @@ public class AboutSchoolServiceTests
         SenTypes = "SLCN - Speech, language and Communication, ASD - Autistic Spectrum Disorder, SEMH - Social"
     };
 
+    private readonly List<Establishment> fakeEstablishments =
+        [
+            new()
+            {
+                URN = "123456",
+                EstablishmentName = "Test Establishment 1",
+                PhaseOfEducationName = "Secondary School",
+                LAName = "Council",
+                LAId = "E09000001",
+                GSSLACode = "LACode",
+            },
+            new()
+            {
+                URN = "785694",
+                EstablishmentName = "New Test Establishment 2",
+                PhaseOfEducationName = "Secondary School",
+                Website = "www.test-school.com",
+                AddressStreet = "Test Street",
+                LAName = "New Council",
+                LAId = "E12345001",
+                GSSLACode = "LACode1",
+                Easting = "532301",
+                Northing = "181746"
+            },
+            new()
+            {
+                URN = "587946",
+                EstablishmentName = "New Test Establishment 3",
+                PhaseOfEducationName = "Secondary School",
+                LAName = "New Council",
+                LAId = "E12345001"
+            },
+        ];
+
     public AboutSchoolServiceTests()
     {
         _mockEstablishmentService = new();
-        _mockLaUrlsRepository = new();
+        _mockLaService = new();
         _mockEstablishmentLinksRepository = new();
 
         _service = new AboutSchoolService(
             _mockEstablishmentService.Object,
-            _mockLaUrlsRepository.Object,
+            _mockLaService.Object,
             _mockEstablishmentLinksRepository.Object);
     }
 
@@ -70,8 +105,8 @@ public class AboutSchoolServiceTests
                .Setup(r => r.GetEstablishmentAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>()))
                .ReturnsAsync(fakeEstablishment);
 
-        _mockLaUrlsRepository
-               .Setup(r => r.GetLaAsync(fakeEstablishment.GSSLACode!, It.IsAny<CancellationToken>()))
+        _mockLaService
+               .Setup(r => r.GetLaUrlsAsync(fakeEstablishment!, It.IsAny<CancellationToken>()))
                .ReturnsAsync(expectedLaUrl);
 
         // Act
@@ -102,45 +137,6 @@ public class AboutSchoolServiceTests
         Assert.Equal(fakeEstablishment.SenTypes, result.SenTypes);
     }
 
-    [Fact]
-    public async Task GetAboutSchoolDetailsAsync_FallsBackToAdministrativeCode_When_GSSLaCodeNotFound()
-    {
-        // Arrange
-        var districtAdministrativeId = "X999999";
-
-        var expectedLaUrl = new LaUrls
-        {
-            Id = "E09000001",
-            Name = "Test1",
-            LAMainUrl = "www.test1.com"
-        };
-
-        fakeEstablishment.DistrictAdministrativeId = districtAdministrativeId;
-
-        _mockEstablishmentService
-               .Setup(r => r.GetEstablishmentAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>()))
-               .ReturnsAsync(fakeEstablishment);
-
-        _mockLaUrlsRepository
-               .Setup(r => r.GetLaAsync(fakeEstablishment.GSSLACode!, It.IsAny<CancellationToken>()))
-               .ReturnsAsync((LaUrls?)null);
-
-        _mockLaUrlsRepository
-           .Setup(r => r.GetLaAsync(fakeEstablishment.DistrictAdministrativeId!, It.IsAny<CancellationToken>()))
-           .ReturnsAsync(expectedLaUrl);
-
-        // Act
-        var result = await _service.GetAboutSchoolDetailsAsync(fakeEstablishment.URN, CancellationToken.None);
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.Equal(fakeEstablishment.LAName, result.LocalAuthority);
-        Assert.Equal(expectedLaUrl.Name, result.LocalAuthorityName);
-        Assert.Equal(expectedLaUrl.LAMainUrl, result.LocalAuthorityWebsite);
-        _mockLaUrlsRepository.Verify(a => a.GetLaAsync(fakeEstablishment.GSSLACode!, It.IsAny<CancellationToken>()), Times.Once);
-        _mockLaUrlsRepository.Verify(a => a.GetLaAsync(districtAdministrativeId, It.IsAny<CancellationToken>()), Times.Once);
-    }
-
     [Theory]
     [InlineData(360, true)]
     [InlineData(2000, false)]
@@ -160,9 +156,9 @@ public class AboutSchoolServiceTests
         _mockEstablishmentService.Setup(s => s.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
             .ReturnsAsync(establishment);
         _mockEstablishmentLinksRepository.Setup(r => r.GetLinksAsync(urn, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<Core.Entities.EstablishmentLinks>
+            .ReturnsAsync(new List<EstablishmentLinks>
                 {
-                    new Core.Entities.EstablishmentLinks { Urn = urn, LinkType = "Predecessor", LinkUrn = predecessorUrn}
+                    new EstablishmentLinks { Urn = urn, LinkType = "Predecessor", LinkUrn = predecessorUrn}
                 });
 
         // Act
@@ -201,9 +197,9 @@ public class AboutSchoolServiceTests
         _mockEstablishmentService.Setup(s => s.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
             .ReturnsAsync(establishment);
         _mockEstablishmentLinksRepository.Setup(r => r.GetLinksAsync(urn, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<Core.Entities.EstablishmentLinks>
+            .ReturnsAsync(new List<EstablishmentLinks>
                 {
-                    new Core.Entities.EstablishmentLinks { Urn = urn, LinkType = "Successor", LinkUrn = successorUrn}
+                    new EstablishmentLinks { Urn = urn, LinkType = "Successor", LinkUrn = successorUrn}
                 });
 
         // Act
@@ -215,5 +211,59 @@ public class AboutSchoolServiceTests
         Assert.Equal(establishment.EstablishmentName, result.SchoolName);
         Assert.NotNull(result.Successors);
         Assert.Contains(successorUrn, result.Successors.Select(p => p.Urn));
+    }
+
+    [Fact]
+    public async Task GetAboutSchoolForComparisonAsync_ReturnsCorrectData()
+    {
+        // Arrange
+        var urn1 = fakeEstablishment.URN;
+        var urn2 = "234567";
+
+        var urnList = new List<string> { urn1, urn2 };
+
+        var laUrl = new LaUrls
+        {
+            Id = "E09000001",
+            Name = "Test1",
+            LAMainUrl = "www.test1.com"
+        };
+
+        var laUrl1 = new LaUrls
+        {
+            Id = "E12345001",
+            Name = "Test2",
+            LAMainUrl = "www.test2.com"
+        };
+
+        _mockEstablishmentService
+            .Setup(r => r.GetEstablishmentsAsync(It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(fakeEstablishments);
+
+        _mockLaService
+            .Setup(r => r.GetLaUrlsAsync(fakeEstablishments[0]!, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(laUrl);
+
+        _mockLaService
+           .Setup(r => r.GetLaUrlsAsync(fakeEstablishments[1]!, It.IsAny<CancellationToken>()))
+           .ReturnsAsync(laUrl1);
+
+        // Act
+        var result = await _service.GetAboutSchoolForComparisonAsync(urnList, CancellationToken.None);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(3, result.Count());
+        var firstSchool = result.FirstOrDefault();
+        var latLng = MappingHelper.ConvertToLatLon("532301", "181746");
+
+        Assert.Equal("785694", firstSchool?.Urn);
+        Assert.Equal("New Test Establishment 2", firstSchool?.SchoolName);
+        Assert.Equal("www.test-school.com", firstSchool?.Website);
+        Assert.Equal("Test Street", firstSchool?.Address);
+        Assert.Equal("New Council", firstSchool?.LocalAuthority);
+
+        _mockLaService
+            .Verify(a => a.GetLaUrlsListForEstablishmentsAsync(It.IsAny<IEnumerable<Establishment>>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 }
