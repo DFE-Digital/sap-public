@@ -15,7 +15,7 @@ namespace SAPPub.Web.Tests.Unit.Areas.Compare.Controllers
     public class SecondaryControllerTests
     {
         private readonly Mock<IEnglishAndMathsComparisionService> _mockEnglishAndMathsComparisonService = new();               
-        private readonly Mock<IAboutSchoolService> _mockAboutSchoolService = new(); 
+        private readonly Mock<IAboutSchoolService> _mockAboutSchoolService = new();
 
         [Fact]
         public async Task AboutYourSchools_ReturnsViewResultWithCorrectModel()
@@ -30,8 +30,8 @@ namespace SAPPub.Web.Tests.Unit.Areas.Compare.Controllers
 
             var aboutSchoolsCompareModelList = new List<AboutSchoolComparisonModel>
             {
-                new() { Urn = urn1, SchoolName = "Test School", Easting = easting1, Northing = northing1 },
-                new() { Urn = urn2, SchoolName = "Test School 2" },
+                new() { Urn = urn1, SchoolName = "Test School", Website = " www.test-school.com ", Easting = easting1, Northing = northing1 },
+                new() { Urn = urn2, SchoolName = "Test School 2", Website = null },
             };
 
             _mockAboutSchoolService
@@ -54,6 +54,14 @@ namespace SAPPub.Web.Tests.Unit.Areas.Compare.Controllers
             Assert.Equal("Test School", model.MapData.FirstOrDefault()?.Name);
             Assert.Equal(1, model.MapData?.Count());
             Assert.Equal(2, model.CompareAboutSchools.Count());
+
+            var firstSchool = model.CompareAboutSchools.First(s => s.Urn == urn1);
+            Assert.True(firstSchool.Website.IsAvailable);
+            Assert.Equal("www.test-school.com", firstSchool.Website.Value);
+
+            var secondSchool = model.CompareAboutSchools.First(s => s.Urn == urn2);
+            Assert.True(secondSchool.Website.IsNotAvailable);
+            Assert.Null(secondSchool.Website.Value);
         }
 
         [Fact]
