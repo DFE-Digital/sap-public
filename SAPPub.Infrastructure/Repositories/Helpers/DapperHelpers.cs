@@ -317,6 +317,13 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
             where "URN" = ANY(@Urns);
             """;
 
+        private static string SelectFromWhereGSSLACode(string columns, string viewName) => $"""
+            select
+              {columns}
+            from public.{viewName}
+            where "GSSLACode" = ANY(@GSSLaCodes);
+            """;
+
         private static string SelectFromWhere(string columns, string view, string where)
         {
             return $"""
@@ -509,6 +516,9 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                     from public.v_establishment_subject_entries
                     where school_urn = @Urn;
                     """,
+
+                nameof(LaUrls) =>
+                    SelectFromWhereGSSLACode(LaUrlsColumns, "v_la_urls"),
 
                 _ => string.Empty,
             };
