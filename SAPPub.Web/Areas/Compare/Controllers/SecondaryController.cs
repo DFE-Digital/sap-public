@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
+using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
@@ -51,9 +52,13 @@ public class SecondaryController : Controller
 
     [HttpGet]
     [Route("next-steps", Name = RouteConstants.CompareSecondaryNextSteps)]
-    public async Task<IActionResult> NextSteps(List<string> urns)
+    public async Task<IActionResult> NextSteps(
+         [FromServices] IEstablishmentService establishmentService,
+         List<string> urns,
+         CancellationToken ct = default)
     {
-        var model = new CompareNextStepsViewModel { URNs = urns };
+        var establishments = await establishmentService.GetEstablishmentsAsync(urns, ct);
+        var model = CompareNextStepsViewModel.Map(urns, establishments);
         return View(model);
     }
 
