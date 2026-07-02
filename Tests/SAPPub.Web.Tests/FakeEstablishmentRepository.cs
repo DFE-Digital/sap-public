@@ -17,6 +17,16 @@ public sealed class FakeEstablishmentRepository : IEstablishmentRepository
     public Task<Establishment?> GetEstablishmentAsync(string urn, CancellationToken ct = default)
         => Task.FromResult(Establishments.FirstOrDefault(e => e.URN == urn));
 
+    public Task<IEnumerable<Establishment>?> GetEstablishmentsAsync(IEnumerable<string> urns, CancellationToken ct = default)
+    {       
+        if (urns is null || !urns.Any())
+            return Task.FromResult<IEnumerable<Establishment>?>(null);
+
+        var filteredEstablishments = Establishments.Where(e => urns.Contains(e.URN));
+
+        return filteredEstablishments.Any() ? Task.FromResult((IEnumerable<Establishment>?)filteredEstablishments) : Task.FromResult<IEnumerable<Establishment>?>(null);
+    }
+
     public Task<(IEnumerable<Establishment> Results, int TotalCount)> SearchAsync(
         SearchQuery query, int maxResults = 10, CancellationToken ct = default)
     {

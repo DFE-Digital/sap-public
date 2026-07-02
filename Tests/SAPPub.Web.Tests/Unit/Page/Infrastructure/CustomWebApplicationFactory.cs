@@ -49,7 +49,11 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.RemoveAll(typeof(ISchoolSearchIndexReader));
                 services.RemoveAll(typeof(ISchoolSearchService));
                 services.RemoveAll(typeof(IAttendanceService));
+                services.RemoveAll(typeof(IEnglandPerformanceService));
                 services.RemoveAll(typeof(IMySchoolsListService));
+                services.RemoveAll(typeof(IEnglishAndMathsComparisionService));
+                services.RemoveAll(typeof(IDestinationsComparisonService));
+
                 services.AddSingleton<MockAccessor<IAboutSchoolService>>();
                 services.AddSingleton<MockAccessor<IAttainmentAndProgressService>>();
                 services.AddSingleton<MockAccessor<IEstablishmentService>>();
@@ -63,7 +67,10 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.AddSingleton<MockAccessor<ISchoolSearchIndexReader>>();
                 services.AddSingleton<MockAccessor<ISchoolSearchService>>();
                 services.AddSingleton<MockAccessor<IAttendanceService>>();
+                services.AddSingleton<MockAccessor<IEnglandPerformanceService>>();
                 services.AddSingleton<MockAccessor<IMySchoolsListService>>();
+                services.AddSingleton<MockAccessor<IEnglishAndMathsComparisionService>>();
+                services.AddSingleton<MockAccessor<IDestinationsComparisonService>>();
 
                 services.AddTransient(provider =>
                 {
@@ -112,6 +119,10 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 });
                 services.AddTransient(provider =>
                 {
+                    return provider.GetRequiredService<MockAccessor<IEnglandPerformanceService>>().Get()?.Object!;
+                });
+                services.AddTransient(provider =>
+                {
                     return provider.GetRequiredService<MockAccessor<ISchoolSearchIndexReader>>().Get()?.Object!;
                 });
                 services.AddTransient(provider =>
@@ -121,6 +132,14 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.AddTransient(provider =>
                 {
                     return provider.GetRequiredService<MockAccessor<IMySchoolsListService>>().Get()?.Object!;
+                });
+                services.AddTransient(provider =>
+                {
+                    return provider.GetRequiredService<MockAccessor<IEnglishAndMathsComparisionService>>().Get()?.Object!;
+                });
+                services.AddTransient(provider =>
+                {
+                    return provider.GetRequiredService<MockAccessor<IDestinationsComparisonService>>().Get()?.Object!;
                 });
             });
     }

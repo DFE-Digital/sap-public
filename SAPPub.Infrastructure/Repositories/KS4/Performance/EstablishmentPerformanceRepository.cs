@@ -1,4 +1,5 @@
-﻿using SAPPub.Core.Entities.KS4.Performance;
+﻿using SAPPub.Core.Entities;
+using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Repositories.KS4.Performance;
 
@@ -24,6 +25,16 @@ namespace SAPPub.Infrastructure.Repositories.KS4.Performance
                 return new EstablishmentPerformance();
 
             return await _repo.ReadAsync(urn, ct) ?? new EstablishmentPerformance();
+        }
+
+        public async Task<IEnumerable<EstablishmentPerformance>> GetEstablishmentsPerformanceAsync(
+            IEnumerable<string> urns,
+            CancellationToken ct = default)
+        {
+            if (urns is null || !urns.Any())
+                return [];
+
+            return await _repo.ReadManyAsync(new { Ids = urns }, ct) ?? [];
         }
     }
 }

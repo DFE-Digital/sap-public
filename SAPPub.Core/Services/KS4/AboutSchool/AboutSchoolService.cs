@@ -1,4 +1,5 @@
-﻿using SAPPub.Core.Enums;
+﻿using SAPPub.Core.Entities;
+using SAPPub.Core.Enums;
 using SAPPub.Core.Extensions;
 using SAPPub.Core.Helpers;
 using SAPPub.Core.Interfaces.Repositories;
@@ -11,7 +12,7 @@ namespace SAPPub.Core.Services.KS4.AboutSchool;
 
 public sealed class AboutSchoolService(
     IEstablishmentService establishmentService,
-    ILaUrlsRepository laUrlsRepository,
+    ILAService laService,
     IEstablishmentLinksRepository establishmentLinksRepository) : IAboutSchoolService
 {
     public async Task<AboutSchoolModel> GetAboutSchoolDetailsAsync(string urn, CancellationToken ct = default)
@@ -48,8 +49,7 @@ public sealed class AboutSchoolService(
                 .ToList()
             : null;
 
-        var laUrls = !string.IsNullOrWhiteSpace(establishment.GSSLACode) ? await laUrlsRepository.GetLaAsync(establishment.GSSLACode, ct) : null;
-        laUrls ??= !string.IsNullOrWhiteSpace(establishment.DistrictAdministrativeId) ? await laUrlsRepository.GetLaAsync(establishment.DistrictAdministrativeId, ct) : null;
+        LaUrls? laUrls = await laService.GetLaUrlsAsync(establishment, ct);
 
         return new AboutSchoolModel
         {
@@ -84,5 +84,30 @@ public sealed class AboutSchoolService(
             IsKS4 = establishment.IsKS4,
             IsKS5 = establishment.IsKS5
         };
+    }
+
+    public async Task<IEnumerable<AboutSchoolComparisonModel>> GetAboutSchoolForComparisonAsync(IEnumerable<string> urns, CancellationToken ct = default)
+    {
+        var establishments = await establishmentService.GetEstablishmentsAsync(urns, ct);
+        var laUrlsList = await laService.GetLaUrlsListForEstablishmentsAsync(establishments, ct);
+
+        return 
+            establishments.Select(est =>
+            {
+                var laUrls = laUrlsList?.FirstOrDefault(a => a!.Id == est.GSSLACode || a.Id == est.DistrictAdministrativeId);
+                
+                return new AboutSchoolComparisonModel
+                {
+                    Urn = est.URN,
+                    SchoolName = est.EstablishmentName,
+                    Address = est.Address,
+                    Website = est.Website,
+                    Easting = est.Easting,
+                    Northing = est.Northing,
+                    LocalAuthority = est.LAName,
+                    LocalAuthorityName = laUrls?.Name,
+                    LocalAuthorityWebsite = laUrls?.LAMainUrl,
+                };
+            }).OrderBy(a => a.SchoolName);
     }
 }

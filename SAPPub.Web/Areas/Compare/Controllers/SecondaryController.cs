@@ -1,5 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
+using SAPPub.Core.Interfaces.Services;
+using SAPPub.Core.Entities;
+using SAPPub.Core.Interfaces.Services.KS4.Destinations;
+using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
+using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Web.Areas.Compare.Filters;
 using SAPPub.Web.Areas.Compare.ViewModels.Secondary;
 using SAPPub.Web.Constants;
@@ -15,9 +20,13 @@ public class SecondaryController : Controller
 {
     [HttpGet]
     [Route("about-your-schools", Name = RouteConstants.CompareSecondaryAboutYourSchools)]
-    public async Task<IActionResult> AboutYourSchools(List<string> urns)
+    public async Task<IActionResult> AboutYourSchools(
+        [FromServices] IAboutSchoolService aboutSchoolService,
+        List<string> urns,
+        CancellationToken ct)
     {
-        var model = new CompareAboutYourSchoolsViewModel { URNs = urns };
+        var aboutSchoolsCompareModelList = await aboutSchoolService.GetAboutSchoolForComparisonAsync(urns, ct);
+        var model = CompareAboutYourSchoolsViewModel.Map(urns, aboutSchoolsCompareModelList);
         return View(model);
     }
 
@@ -31,25 +40,36 @@ public class SecondaryController : Controller
 
     [HttpGet]
     [Route("english-and-maths-results", Name = RouteConstants.CompareSecondaryAcademicPerformanceEnglishAndMathsResults)]
-    public async Task<IActionResult> AcademicPerformanceEnglishAndMathsResults(List<string> urns)
+    public async Task<IActionResult> AcademicPerformanceEnglishAndMathsResults(
+    [FromServices] IEnglishAndMathsComparisionService englishAndMathsComparisionService,
+    List<string> urns,
+    CancellationToken ct = default)
     {
-        var model = new CompareAcademicPerformanceEnglishAndMathsResultsViewModel { URNs = urns };
+        var results = await englishAndMathsComparisionService.GetComparisionResultsAsync(urns, ct);
+        var model = CompareAcademicPerformanceEnglishAndMathsResultsViewModel.Map(urns, results);
         return View(model);
     }
 
     [HttpGet]
     [Route("next-steps", Name = RouteConstants.CompareSecondaryNextSteps)]
-    public async Task<IActionResult> NextSteps(List<string> urns)
+    public async Task<IActionResult> NextSteps(
+         [FromServices] IEstablishmentService establishmentService,
+         List<string> urns,
+         CancellationToken ct = default)
     {
-        var model = new CompareNextStepsViewModel { URNs = urns };
+        var establishments = await establishmentService.GetEstablishmentsAsync(urns, ct);
+        var model = CompareNextStepsViewModel.Map(urns, establishments);
         return View(model);
     }
 
     [HttpGet]
     [Route("destinations-after-year-11", Name = RouteConstants.CompareSecondaryDestinations)]
-    public async Task<IActionResult> Destinations(List<string> urns)
+    public async Task<IActionResult> Destinations([FromServices] IDestinationsComparisonService destinationsService, List<string> urns)
     {
-        var model = new CompareDestinationsViewModel { URNs = urns };
+        var establishments = HttpContext.Items["Establishments"] as List<Establishment> ?? [];
+        var destinationsResult = await destinationsService.GetDestinationsDetailsAsync(urns, CancellationToken.None);
+
+        var model = CompareDestinationsViewModel.Map(urns, destinationsResult, establishments.ToList());
         return View(model);
     }
 }

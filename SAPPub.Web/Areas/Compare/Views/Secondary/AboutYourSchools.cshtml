@@ -23,8 +23,54 @@
             @ViewData["Header"]
         </h1>
 
+        <h2 class="govuk-heading-l">Location</h2>
+
+        <table class="govuk-table" id="schoolLocationTable">
+            
+            <caption class="govuk-visually-hidden">Locations of the schools being compared</caption>
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">School</th>
+                    <th scope="col" class="govuk-table__header">Address</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                @foreach (var school in Model.CompareAboutSchools)
+                {
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">@school.SchoolName</th>
+                        <td class="govuk-table__cell">@school.Address.DisplayText()</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+     
+        <div class="map-container govuk-visually-hidden">
+            <div id="map"
+                 data-radius-miles="3"
+                 data-fixed-zoom="14"
+                 data-points='@Html.Raw(Json.Serialize(Model.MapData))'
+                 role="region"
+                 aria-label="Map of the schools being compared">
+                <div class="map-loading">Finding your location…</div>
+            </div>
+            <div class="legend">
+                @foreach (var row in Model.MapData.Select((school, i) => (school, i)))
+                {
+                    <div class="legend-item">
+                        <img src="@($"/assets/images/marker-school-{row.i + 1}.svg")" alt="" />
+                        <span>@row.school.Name</span>
+                    </div>
+                }
+            </div>
+        </div>
+
         <govuk-pagination id="about-the-school-pagination">
             <govuk-pagination-next href="@Url.RouteUrl(RouteConstants.CompareSecondaryAcademicPerformancePupilAttainment, new { urns = Model.URNs })">Academic Performance</govuk-pagination-next>
         </govuk-pagination>
     </div>
 </div>
+
+@section Scripts {
+    <script nonce="@Html.ScriptNonce().ToString()" src="~/js/map-schools.js"></script>
+}

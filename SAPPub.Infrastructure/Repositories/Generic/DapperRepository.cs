@@ -218,9 +218,9 @@ namespace SAPPub.Infrastructure.Repositories.Generic
                     .WithParameters(parameters)
                     .Build(ct);
 
-                var items = (await conn.QueryAsync<T>(cmd).ConfigureAwait(false)).ToList();
+                var items = await conn.QueryAsync<T>(cmd).ConfigureAwait(false);
 
-                if (items.Count > 0)
+                if (items.Count() > 0)
                     _codedValueMapper.Apply(items);
 
                 return items;

@@ -6,5 +6,6 @@ namespace SAPPub.Core.Interfaces.Services.KS4.Performance
     {
         Task<IEnumerable<EstablishmentPerformance>> GetAllEstablishmentPerformanceAsync(CancellationToken ct = default);
         Task<EstablishmentPerformance> GetEstablishmentPerformanceAsync(string urn, CancellationToken ct = default);
+        Task<IEnumerable<EstablishmentPerformance>> GetEstablishmentsPerformanceAsync(IEnumerable<string> urns, CancellationToken ct = default);
     }
 }

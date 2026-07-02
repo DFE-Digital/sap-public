@@ -3,6 +3,7 @@ using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Repositories.Generic;
+using System.Collections;
 using System.Reflection;
 
 namespace SAPPub.Web.Tests;
@@ -209,7 +210,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
 
     public static List<Establishment> GetAllEstablishments()
     {
-        return Establishments.Values.Select(e => e).ToList();
+        return [.. Establishments.Values];
     }
 
     private static readonly Dictionary<string, EstablishmentPerformance> EstablishmentPerformances = new(StringComparer.OrdinalIgnoreCase)
@@ -229,6 +230,21 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             EngMaths49_Tot_Est_Previous2_Pct = 75,
             EngMaths59_Tot_Est_Previous2_Pct = 80
         },
+        ["137020"] = new EstablishmentPerformance
+        {
+            Id = "137020",
+            Attainment8_Tot_Est_Current_Num = 20,
+            Attainment8_Tot_Est_Previous_Num = 10,
+            Attainment8_Tot_Est_Previous2_Num = null,
+            Prog8_Tot_Est_Previous_Num = 0.5,
+            Prog8_Tot_Est_Previous2_Num = null,
+            EngMaths49_Tot_Est_Current_Pct = 70,
+            EngMaths59_Tot_Est_Current_Pct = 50,
+            EngMaths49_Tot_Est_Previous_Pct = 55,
+            EngMaths59_Tot_Est_Previous_Pct = 60,
+            EngMaths49_Tot_Est_Previous2_Pct = 55,
+            EngMaths59_Tot_Est_Previous2_Pct = 70
+        },
     };
 
     private static readonly Dictionary<string, EstablishmentDestinations> EstablishmentDestinations = new(StringComparer.OrdinalIgnoreCase)
@@ -242,8 +258,34 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             Education_Tot_Est_Current_Pct = 47,
             Employment_Tot_Est_Current_Pct = 2,
             Apprentice_Tot_Est_Current_Pct = 1,
+
         },
+        ["100279"] = new EstablishmentDestinations
+        {
+            Id = "100279",
+            AllDest_Tot_Est_Current_Pct = 50,
+            AllDest_Tot_Est_Previous_Pct = 20,
+            AllDest_Tot_Est_Previous2_Pct = 30,
+            Education_Tot_Est_Current_Pct = 47,
+            Employment_Tot_Est_Current_Pct = 2,
+            Apprentice_Tot_Est_Current_Pct = 1,
+        }
     };
+
+    private static readonly Dictionary<string, EnglandDestinations> EnglandDestinations = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["105574"] = new EnglandDestinations
+        {
+            Id = "105574",
+            AllDest_Tot_Eng_Current_Pct = 50
+        },
+        ["100279"] = new EnglandDestinations
+        {
+            Id = "100279",
+            AllDest_Tot_Eng_Current_Pct = 50
+        }
+    };
+
 
     public Task<T?> ReadAsync(string id, CancellationToken ct = default)
         => ReadSingleAsync(new { Id = id }, ct);
@@ -287,12 +329,40 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
                 return Task.FromResult<T?>((T)(object)est);
         }
 
+        if (typeof(T) == typeof(EnglandDestinations))
+        {
+            var id = GetPropertyString(parameters, "Id");
+
+            if (!string.IsNullOrWhiteSpace(id) && EnglandDestinations.TryGetValue(id, out var est))
+                return Task.FromResult<T?>((T)(object)est);
+        }
+
         return Task.FromResult<T?>(default);
     }
 
     public Task<IEnumerable<T>> ReadManyAsync(object? parameters, CancellationToken ct = default)
     {
         if (parameters is null) return Task.FromResult(Enumerable.Empty<T>());
+
+        if (typeof(T) == typeof(Establishment))
+        {
+            var urns = GetPropertyAsStringArray(parameters, "Urns");
+
+            if (urns == null)
+                return Task.FromResult(Enumerable.Empty<T>());
+
+            return Task.FromResult(Establishments.Values.Where(e => urns.Contains(e.URN)).Select(e => (T)(object)e));
+        }
+
+        if (typeof(T) == typeof(EstablishmentPerformance))
+        {
+            var ids = GetPropertyAsStringArray(parameters, "Ids");
+
+            if (ids == null)
+                return Task.FromResult(Enumerable.Empty<T>());
+
+            return Task.FromResult(EstablishmentPerformances.Values.Where(e => ids.Contains(e.Id)).Select(e => (T)(object)e));
+        }
 
         if (typeof(T) == typeof(EstablishmentSubjectEntryRow))
         {
@@ -350,6 +420,30 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
         var prop = obj.GetType().GetProperty(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
         return prop?.GetValue(obj)?.ToString();
     }
+
+
+    private static string[]? GetPropertyAsStringArray(object obj, string name)
+    {
+        var prop = obj.GetType().GetProperty(name,
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
+
+        var value = prop?.GetValue(obj);
+
+        if (value == null)
+            return null;
+
+        // If it's already a collection (array, list, etc.)
+        if (value is IEnumerable enumerable && value is not string)
+        {
+            return enumerable.Cast<object?>()
+                             .Select(x => x?.ToString() ?? string.Empty)
+                             .ToArray();
+        }
+
+        // Single value -> wrap into array
+        return [value.ToString() ?? string.Empty];
+    }
+
 
     public Task<IEnumerable<T>> ReadPageAsync(int page, int take, CancellationToken ct = default)
     {
