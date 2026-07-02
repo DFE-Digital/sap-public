@@ -41,6 +41,7 @@ public class SecondaryComparisonQueryValidationFilter(IEstablishmentService esta
             return;
         }
         context.ActionArguments["urns"] = secondaryEstablishmentUrns;
+        context.HttpContext.Items["Establishments"] = establishments.ToList();
 
         await next();
     }

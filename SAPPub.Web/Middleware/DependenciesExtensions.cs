@@ -121,6 +121,7 @@ namespace SAPPub.Web.Middleware
 
             services.AddTransient<IMySchoolsListService, MySchoolsListService>();
             services.AddTransient<IEnglishAndMathsComparisionService, EnglishAndMathsComparisionService>();
+            services.AddTransient<IDestinationsComparisonService, DestinationsComparisonService>();
 
             services.AddTransient<ILAService, LAService>();
 

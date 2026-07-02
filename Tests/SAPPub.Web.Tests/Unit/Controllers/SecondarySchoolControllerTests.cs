@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using SAPPub.Core.Entities;
-using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Extensions;
@@ -184,7 +183,7 @@ public class SecondarySchoolControllerTests
             .WithTotalPupils("1117")
             .WithGenderName("GenderName")
             .WithReligiousCharacterName("ReligiousCharacter")
-            .WithOfficialSixthFormId("No")
+            .WithSixthForm(false)
             .WithResourcedProvisionName("Resourced provision")
             .WithEstablishmentTypeGroupId("1")
             .WithStatusCode(1)
@@ -249,7 +248,7 @@ public class SecondarySchoolControllerTests
         Assert.Equal("1,117", model.NumberOfPupils.Value);
         Assert.Equal(expectedResult.PupilSex, model.PupilSex.Value);
         Assert.Equal(expectedResult.ReligiousCharacter, model.ReligiousCharacter.Value);
-        Assert.Equal(expectedResult.OfficialSixthFormId, model.SixthForm.Value);
+        Assert.Equal(expectedResult.OfficialSixthFormId == "1" ? "Yes" : "No", model.SixthForm.Value);
         Assert.Equal(expectedResult.Status, model.StatusCode);
         Assert.False(model.ClosedDate.IsAvailable);
         Assert.False(model.IsLocalAuthoritySchool);
@@ -265,8 +264,8 @@ public class SecondarySchoolControllerTests
     public async Task Get_AboutSchool_WithPredecessors_ReturnsExpected()
     {
         var expectedResult = SchoolDetails();
-        expectedResult.Predecessors = new List<EstablishmentLinkModel>
-            {
+        expectedResult.Predecessors =
+            [
                 new EstablishmentLinkModel
                 {
                     Urn = "654321",
@@ -277,7 +276,7 @@ public class SecondarySchoolControllerTests
                     Urn = "789012",
                     Name = "Predecessor School 2"
                 }
-            };
+            ];
 
         _mockAboutSchoolService
             .Setup(es => es.GetAboutSchoolDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
@@ -311,8 +310,7 @@ public class SecondarySchoolControllerTests
     public async Task Get_AboutSchool_WithSuccessors_ReturnsExpected()
     {
         var expectedResult = SchoolDetails();
-        expectedResult.Successors = new List<EstablishmentLinkModel>
-        {
+        expectedResult.Successors = [
             new EstablishmentLinkModel
             {
                 Urn = "654321",
@@ -323,7 +321,7 @@ public class SecondarySchoolControllerTests
                 Urn = "789012",
                 Name = "Successor School 2"
             }
-        };
+        ];
 
         _mockAboutSchoolService
             .Setup(es => es.GetAboutSchoolDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
@@ -1342,27 +1340,14 @@ public class SecondarySchoolControllerTests
     [Fact]
     public async Task Get_Destinations_Info_ReturnsOk()
     {
-        var destinationsDetails = new DestinationsDetails
-        {
-            Urn = _fakeEstablishment.URN,
-            SchoolName = _fakeEstablishment.EstablishmentName,
-            LocalAuthorityName = _fakeEstablishment.LAName,
-            SchoolAll = new RelativeYearValues<double?> { CurrentYear = 10, PreviousYear = 20, TwoYearsAgo = 30 },
-            LocalAuthorityAll = new RelativeYearValues<double?> { CurrentYear = 30, PreviousYear = 40, TwoYearsAgo = 50 },
-            EnglandAll = new RelativeYearValues<double?> { CurrentYear = 70, PreviousYear = 80, TwoYearsAgo = 30 },
-            SchoolEducation = new RelativeYearValues<double?> { CurrentYear = 20, PreviousYear = 10, TwoYearsAgo = 40 },
-            LocalAuthorityEducation = new RelativeYearValues<double?> { CurrentYear = 40, PreviousYear = 50, TwoYearsAgo = 70 },
-            EnglandEducation = new RelativeYearValues<double?> { CurrentYear = 60, PreviousYear = 70, TwoYearsAgo = 20 },
-            SchoolEmployment = new RelativeYearValues<double?> { CurrentYear = 50, PreviousYear = 70, TwoYearsAgo = 30 },
-            LocalAuthorityEmployment = new RelativeYearValues<double?> { CurrentYear = 60, PreviousYear = 90, TwoYearsAgo = 50 },
-            EnglandEmployment = new RelativeYearValues<double?> { CurrentYear = 40, PreviousYear = 60, TwoYearsAgo = 50 },
-            SchoolApprentice = new RelativeYearValues<double?> { CurrentYear = 40, PreviousYear = 50, TwoYearsAgo = 70 },
-            LocalAuthorityApprentice = new RelativeYearValues<double?> { CurrentYear = 20, PreviousYear = 70, TwoYearsAgo = 50 },
-            EnglandApprentice = new RelativeYearValues<double?> { CurrentYear = 50, PreviousYear = 60, TwoYearsAgo = 40 },
-        };
+        var destinationsDetails = new DestinationsDetailsBuilder()
+            .WithUrn(_fakeEstablishment.URN)
+            .WithEstablishmentName(_fakeEstablishment.EstablishmentName)
+            .WithLAName(_fakeEstablishment.LAName)
+            .Build();
 
         _mockDestinationsService
-            .Setup(es => es.GetDestinationsDetailsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Setup(es => es.GetDestinationsDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
             .ReturnsAsync(destinationsDetails);
 
         var result = await _controller.Destinations(_mockDestinationsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
@@ -1371,16 +1356,16 @@ public class SecondarySchoolControllerTests
         double?[] expectedAllDestCurrentData =
         [
             destinationsDetails.SchoolAll.CurrentYear,
-        destinationsDetails.LocalAuthorityAll.CurrentYear,
-        destinationsDetails.EnglandAll.CurrentYear
+            destinationsDetails.LocalAuthorityAll.CurrentYear,
+            destinationsDetails.EnglandAll.CurrentYear
         ];
 
         var expectedDataOverTime = new DataOverTimeViewModel
         {
             Labels = ["2020 to 2021", "2021 to 2022", "2022 to 2023"],
             Datasets =
-            [
-                new DatasetViewModel
+        [
+            new DatasetViewModel
             {
                 Label = "School",
                 Data = [destinationsDetails.SchoolAll.TwoYearsAgo, destinationsDetails.SchoolAll.PreviousYear, destinationsDetails.SchoolAll.CurrentYear],
@@ -1404,8 +1389,8 @@ public class SecondarySchoolControllerTests
         {
             Labels = ["Staying in education", "Entering employment and apprenticeships"],
             Datasets =
-            [
-                new DataSeriesViewModel
+        [
+            new DataSeriesViewModel
             {
                 Label = "School",
                 Data = [destinationsDetails.SchoolEducation.CurrentYear, CommonHelper.AddNullable(destinationsDetails.SchoolEmployment.CurrentYear, destinationsDetails.SchoolApprentice.CurrentYear)]
@@ -1460,24 +1445,11 @@ public class SecondarySchoolControllerTests
     [Fact]
     public async Task Get_Destinations_Info_ResultsNotAvailable_ReturnsOk()
     {
-        var destinationsDetails = new DestinationsDetails
-        {
-            Urn = _fakeEstablishment.URN,
-            SchoolName = _fakeEstablishment.EstablishmentName,
-            LocalAuthorityName = _fakeEstablishment.LAName,
-            SchoolAll = new RelativeYearValues<double?> { CurrentYear = null },
-            LocalAuthorityAll = new RelativeYearValues<double?> { CurrentYear = null },
-            EnglandAll = new RelativeYearValues<double?> { CurrentYear = null },
-            SchoolEducation = new RelativeYearValues<double?> { CurrentYear = null },
-            LocalAuthorityEducation = new RelativeYearValues<double?> { CurrentYear = null },
-            EnglandEducation = new RelativeYearValues<double?> { CurrentYear = null },
-            SchoolEmployment = new RelativeYearValues<double?> { CurrentYear = null },
-            LocalAuthorityEmployment = new RelativeYearValues<double?> { CurrentYear = null },
-            EnglandEmployment = new RelativeYearValues<double?> { CurrentYear = null },
-            SchoolApprentice = new RelativeYearValues<double?> { CurrentYear = null },
-            LocalAuthorityApprentice = new RelativeYearValues<double?> { CurrentYear = null },
-            EnglandApprentice = new RelativeYearValues<double?> { CurrentYear = null },
-        };
+        var destinationsDetails = new DestinationsDetailsBuilder()
+            .WithUrn(_fakeEstablishment.URN)
+            .WithEstablishmentName(_fakeEstablishment.EstablishmentName)
+            .WithLAName(_fakeEstablishment.LAName)
+            .BuildResultsNotAvailable();
 
         _mockDestinationsService
             .Setup(es => es.GetDestinationsDetailsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
@@ -1532,24 +1504,11 @@ public class SecondarySchoolControllerTests
     public async Task Get_Destinations_Info_LocalCouncilName(string localCouncilName, string expectedCouncilName)
     {
         _fakeEstablishment.LAName = localCouncilName;
-        var destinationsDetails = new DestinationsDetails
-        {
-            Urn = _fakeEstablishment.URN,
-            SchoolName = _fakeEstablishment.EstablishmentName,
-            LocalAuthorityName = _fakeEstablishment.LAName,
-            SchoolAll = new RelativeYearValues<double?> { CurrentYear = 10, PreviousYear = 20, TwoYearsAgo = 30 },
-            LocalAuthorityAll = new RelativeYearValues<double?> { CurrentYear = 30, PreviousYear = 40, TwoYearsAgo = 50 },
-            EnglandAll = new RelativeYearValues<double?> { CurrentYear = 70, PreviousYear = 80, TwoYearsAgo = 30 },
-            SchoolEducation = new RelativeYearValues<double?> { CurrentYear = 20, PreviousYear = 10, TwoYearsAgo = 40 },
-            LocalAuthorityEducation = new RelativeYearValues<double?> { CurrentYear = 40, PreviousYear = 50, TwoYearsAgo = 70 },
-            EnglandEducation = new RelativeYearValues<double?> { CurrentYear = 60, PreviousYear = 70, TwoYearsAgo = 20 },
-            SchoolEmployment = new RelativeYearValues<double?> { CurrentYear = 50, PreviousYear = 70, TwoYearsAgo = 30 },
-            LocalAuthorityEmployment = new RelativeYearValues<double?> { CurrentYear = 60, PreviousYear = 90, TwoYearsAgo = 50 },
-            EnglandEmployment = new RelativeYearValues<double?> { CurrentYear = 40, PreviousYear = 60, TwoYearsAgo = 50 },
-            SchoolApprentice = new RelativeYearValues<double?> { CurrentYear = 40, PreviousYear = 50, TwoYearsAgo = 70 },
-            LocalAuthorityApprentice = new RelativeYearValues<double?> { CurrentYear = 20, PreviousYear = 70, TwoYearsAgo = 50 },
-            EnglandApprentice = new RelativeYearValues<double?> { CurrentYear = 50, PreviousYear = 60, TwoYearsAgo = 40 },
-        };
+        var destinationsDetails = new DestinationsDetailsBuilder()
+             .WithUrn(_fakeEstablishment.URN)
+             .WithEstablishmentName(_fakeEstablishment.EstablishmentName)
+             .WithLAName(_fakeEstablishment.LAName)
+             .Build();
 
         _mockDestinationsService
             .Setup(es => es.GetDestinationsDetailsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))

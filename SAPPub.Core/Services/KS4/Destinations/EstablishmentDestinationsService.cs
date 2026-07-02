@@ -2,25 +2,22 @@
 using SAPPub.Core.Interfaces.Repositories.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 
-namespace SAPPub.Core.Services.KS4.Destinations
+namespace SAPPub.Core.Services.KS4.Destinations;
+
+public sealed class EstablishmentDestinationsService(IEstablishmentDestinationsRepository repo) : IEstablishmentDestinationsService
 {
-    public sealed class EstablishmentDestinationsService : IEstablishmentDestinationsService
+    public Task<IEnumerable<EstablishmentDestinations>> GetAllEstablishmentDestinationsAsync(CancellationToken ct = default)
     {
-        private readonly IEstablishmentDestinationsRepository _repo;
+        return repo.GetAllEstablishmentDestinationsAsync(ct);
+    }
 
-        public EstablishmentDestinationsService(IEstablishmentDestinationsRepository repo)
-        {
-            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
-        }
+    public Task<EstablishmentDestinations?> GetEstablishmentDestinationsAsync(string urn, CancellationToken ct = default)
+    {
+        return repo.GetEstablishmentDestinationsAsync(urn, ct);
+    }
 
-        public async Task<IEnumerable<EstablishmentDestinations>> GetAllEstablishmentDestinationsAsync(CancellationToken ct = default)
-        {
-            return await _repo.GetAllEstablishmentDestinationsAsync(ct);
-        }
-
-        public async Task<EstablishmentDestinations?> GetEstablishmentDestinationsAsync(string urn, CancellationToken ct = default)
-        {
-            return await _repo.GetEstablishmentDestinationsAsync(urn, ct);
-        }
+    public Task<IEnumerable<EstablishmentDestinations>> GetEstablishmentDestinationsAsync(IEnumerable<string> urns, CancellationToken ct = default)
+    {
+        return repo.GetEstablishmentsDestinationsAsync(urns, ct);
     }
 }
