@@ -37,15 +37,16 @@ public class AccessibilityTests(WebApplicationSetupFixture fixture) : BasePageTe
         "Cookies/Preferences",
         "my-schools/view",
         "my-schools/no-schools-added",
-        "compare/secondary/about-your-schools?urns=119052&urns=124500",
-        "compare/secondary/pupil-performance-attainment-and-progress?urns=119052&urns=124500",
-        "compare/secondary/english-and-maths-results?urns=119052&urns=124500"
+        "compare/secondary/about-your-schools?urns=105574&urns=107564",
+        "compare/secondary/pupil-attainment?urns=100279&urns=145179",
+        "compare/secondary/english-and-maths-results?urns=105574&urns=137020",
+        "compare/secondary/destinations-after-year-11?urns=105574&urns=107564"
     };
 
     [Fact]
     public async Task Page_AccessibilityTest()
     {
-        var cookieListOfUrns = new List<string> { "105574", "107564" };
+        var cookieListOfUrns = new List<string> { "105574", "107564", "137020", "100279", "145179" };
 
         await Page.Context.ClearCookiesAsync();
         await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = String.Join(",", cookieListOfUrns), Domain = "127.0.0.1", Path = "/", SameSite = SameSiteAttribute.Lax, Secure = true }]);
@@ -55,6 +56,8 @@ public class AccessibilityTests(WebApplicationSetupFixture fixture) : BasePageTe
         foreach (var pageUrl in _pageUrls)
         {
             await Page.GotoAsync(pageUrl);
+            var pageTitle = await Page.TitleAsync();
+            Assert.False(pageTitle.Contains("Page not found"), $"Request for page {pageUrl} returned {pageTitle}");
             violationCount += await WriteAccessibilityReport(pageUrl);
         }
 

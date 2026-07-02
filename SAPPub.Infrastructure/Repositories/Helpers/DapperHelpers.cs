@@ -1,5 +1,4 @@
-﻿using SAPPub.Core.ApplicationServices;
-using SAPPub.Core.Entities;
+﻿using SAPPub.Core.Entities;
 using SAPPub.Core.Entities.Gateway;
 using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Entities.KS4.Destinations;
@@ -11,6 +10,262 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
 {
     public static class DapperHelpers
     {
+        // -----------------------------
+        // Column lists (ONLY what each entity needs)
+        // -----------------------------
+
+        private const string EstablishmentColumns = """
+          "URN",
+          "EstablishmentName",
+          "TrustsId",
+          "TrustName",
+          "AddressStreet",
+          "AddressLocality",
+          "AddressAddress3",
+          "AddressTown",
+          "AddressCounty",
+          "AddressPostcode",
+          "AdmissionsPolicyId",
+          "AdmissionPolicy",
+          "AgeRangeLow",
+          "AgeRangeHigh",
+          "DistrictAdministrativeId",
+          "DistrictAdministrativeName",
+          "PhaseOfEducationId",
+          "PhaseOfEducationName",
+          "GenderId",
+          "GenderName",
+          "HeadteacherTitle",
+          "HeadteacherFirstName",
+          "HeadteacherLastName",
+          "HeadteacherPreferredJobTitle",
+          "OfficialSixthFormId",
+          "LAId",
+          "LAName",
+          "GSSLACode",
+          "ReligiousCharacterId",
+          "ReligiousCharacterName",
+          "TelephoneNum",
+          "TotalPupils",
+          "TypeOfEstablishmentId",
+          "TypeOfEstablishmentName",
+          "EstablishmentTypeGroupId",
+          "EstablishmentTypeGroupName",
+          "ResourcedProvision",
+          "ResourcedProvisionName",
+          "UKPRN",
+          "UrbanRuralId",
+          "UrbanRuralName",
+          "Website",
+          "Easting",
+          "Northing",
+          "EstablishmentNumber",
+          "TotalCapacity" as "SchoolCapacity",
+          "StatusCode",
+          "ClosedDate",
+          "OpenDate",
+          "OpenReasonId",
+          "SenTypes",
+          "ISKS4",
+          "ISKS5"
+          """;
+
+        private const string EstablishmentAbsenceColumns = """
+          "Id",
+          "Enrolments_Tot_Est_Current_Num_Coded",
+          "Abs_Persistent_Est_Current_Num_Coded",
+          "Abs_Persistent_Est_Current_Pct_Coded",
+          "Abs_Persistent_Est_Previous_Pct_Coded",
+          "Abs_Persistent_Est_Previous2_Pct_Coded",
+          "Abs_Tot_Est_Current_Pct_Coded",
+          "Abs_Tot_Est_Previous_Pct_Coded",
+          "Abs_Tot_Est_Previous2_Pct_Coded",
+          "Auth_Tot_Est_Current_Pct_Coded",
+          "UnAuth_Tot_Est_Current_Pct_Coded"
+          """;
+
+        private const string EstablishmentDestinationsColumns = """
+          "Id",
+          "AllDest_Tot_Est_Current_Pct_Coded",
+          "Education_Tot_Est_Current_Pct_Coded",
+          "Employment_Tot_Est_Current_Pct_Coded",
+          "Apprentice_Tot_Est_Current_Pct_Coded",
+          "AllDest_Tot_Est_Previous_Pct_Coded",
+          "Education_Tot_Est_Previous_Pct_Coded",
+          "Employment_Tot_Est_Previous_Pct_Coded",
+          "Apprentice_Tot_Est_Previous_Pct_Coded",
+          "AllDest_Tot_Est_Previous2_Pct_Coded",
+          "Education_Tot_Est_Previous2_Pct_Coded",
+          "Employment_Tot_Est_Previous2_Pct_Coded",
+          "Apprentice_Tot_Est_Previous2_Pct_Coded"
+          """;
+
+        private const string EstablishmentPerformanceColumns = """
+          "Id",
+          "Attainment8_Tot_Est_Current_Num_Coded",
+          "EngMaths49_Boy_Est_Current_Pct_Coded",
+          "EngMaths49_Grl_Est_Current_Pct_Coded",
+          "EngMaths49_Tot_Est_Current_Pct_Coded",
+          "EngMaths59_Boy_Est_Current_Pct_Coded",
+          "EngMaths59_Grl_Est_Current_Pct_Coded",
+          "EngMaths59_Tot_Est_Current_Pct_Coded",
+          "Attainment8_Tot_Est_Previous_Num_Coded",
+          "EngMaths49_Tot_Est_Previous_Pct_Coded",
+          "EngMaths59_Tot_Est_Previous_Pct_Coded",
+          "Prog8_Tot_Est_Previous_Num_Coded",
+          "Prog8_CI_Lower_Est_Previous_Num_Coded",
+          "Prog8_CI_Upper_Est_Previous_Num_Coded", 
+          "Prog8_Banding_Est_Previous", 
+          "Prog8_TotPup_Est_Previous_Num_Coded",
+          "Pup_Tot_Est_Previous_Num_Coded",
+          "Attainment8_Tot_Est_Previous2_Num_Coded",
+          "EngMaths49_Tot_Est_Previous2_Pct_Coded",
+          "EngMaths59_Tot_Est_Previous2_Pct_Coded",
+          "Prog8_Tot_Est_Previous2_Num_Coded",
+          "Prog8_CI_Lower_Est_Previous2_Num_Coded",
+          "Prog8_CI_Upper_Est_Previous2_Num_Coded", 
+          "Prog8_Banding_Est_Previous2",          
+          "Prog8_TotPup_Est_Previous2_Num_Coded",
+          "Pup_Tot_Est_Previous2_Num_Coded"
+          """;
+
+        private const string EstablishmentWorkforceColumns = """
+          "Id",
+          "Workforce_PupTeaRatio_Est_Current_Num_Coded",
+          "Workforce_TotPupils_Est_Current_Num_Coded"
+          """;
+
+        private const string LAPerformanceColumns = """
+          "Id",
+          "Attainment8_Tot_LA_Current_Num_Coded",
+          "EngMaths49_Boy_LA_Current_Pct_Coded",
+          "EngMaths49_Grl_LA_Current_Pct_Coded",
+          "EngMaths49_Tot_LA_Current_Pct_Coded",
+          "EngMaths59_Boy_LA_Current_Pct_Coded",
+          "EngMaths59_Grl_LA_Current_Pct_Coded",
+          "EngMaths59_Tot_LA_Current_Pct_Coded",
+          "Attainment8_Tot_LA_Previous_Num_Coded",
+          "EngMaths49_Tot_LA_Previous_Pct_Coded",
+          "EngMaths59_Tot_LA_Previous_Pct_Coded",
+          "Prog8_Avg_LA_Previous_Num_Coded",
+          "Attainment8_Tot_LA_Previous2_Num_Coded",
+          "EngMaths49_Tot_LA_Previous2_Pct_Coded",
+          "EngMaths59_Tot_LA_Previous2_Pct_Coded",
+          "Prog8_Avg_LA_Previous2_Num_Coded"
+          """;
+
+        private const string LADestinationsColumns = """
+          "Id",
+          "AllDest_Tot_LA_Current_Pct_Coded",
+          "Education_Tot_LA_Current_Pct_Coded",
+          "Employment_Tot_LA_Current_Pct_Coded",
+          "Apprentice_Tot_LA_Current_Pct_Coded",
+          "AllDest_Tot_LA_Previous_Pct_Coded",
+          "Education_Tot_LA_Previous_Pct_Coded",
+          "Employment_Tot_LA_Previous_Pct_Coded",
+          "Apprentice_Tot_LA_Previous_Pct_Coded",
+          "AllDest_Tot_LA_Previous2_Pct_Coded",
+          "Education_Tot_LA_Previous2_Pct_Coded",
+          "Employment_Tot_LA_Previous2_Pct_Coded",
+          "Apprentice_Tot_LA_Previous2_Pct_Coded"
+          """;
+
+        private const string EnglandPerformanceColumns = """
+          "Id",
+          "Attainment8_Tot_Eng_Current_Num_Coded",
+          "EngMaths49_Boy_Eng_Current_Pct_Coded",
+          "EngMaths49_Grl_Eng_Current_Pct_Coded",
+          "EngMaths49_Tot_Eng_Current_Pct_Coded",
+          "EngMaths59_Boy_Eng_Current_Pct_Coded",
+          "EngMaths59_Grl_Eng_Current_Pct_Coded",
+          "EngMaths59_Tot_Eng_Current_Pct_Coded",
+          "Attainment8_Tot_Eng_Previous_Num_Coded",
+          "EngMaths49_Tot_Eng_Previous_Pct_Coded",
+          "EngMaths59_Tot_Eng_Previous_Pct_Coded",
+          "Attainment8_Tot_Eng_Previous2_Num_Coded",
+          "EngMaths49_Tot_Eng_Previous2_Pct_Coded",
+          "EngMaths59_Tot_Eng_Previous2_Pct_Coded"
+          """;
+
+        private const string EnglandDestinationsColumns = """
+          "Id",
+          "AllDest_Tot_Eng_Current_Pct_Coded",
+          "Education_Tot_Eng_Current_Pct_Coded",
+          "Employment_Tot_Eng_Current_Pct_Coded",
+          "Apprentice_Tot_Eng_Current_Pct_Coded",
+          "AllDest_Tot_Eng_Previous_Pct_Coded",
+          "Education_Tot_Eng_Previous_Pct_Coded",
+          "Employment_Tot_Eng_Previous_Pct_Coded",
+          "Apprentice_Tot_Eng_Previous_Pct_Coded",
+          "AllDest_Tot_Eng_Previous2_Pct_Coded",
+          "Education_Tot_Eng_Previous2_Pct_Coded",
+          "Employment_Tot_Eng_Previous2_Pct_Coded",
+          "Apprentice_Tot_Eng_Previous2_Pct_Coded"
+          """;
+
+        private const string EstablishmentSubjectEntriesColumns = """
+          school_urn,
+          pupil_count,
+          subject,
+          subject_discount_group,
+          qualification_type,
+          qualification_detailed,
+          grade,
+          number_achieving
+          """;
+
+        private const string EnglandAbsenceColumns = """
+          "Id",
+          "Abs_Persistent_Eng_Current_Pct_Coded",
+          "Abs_Tot_Eng_Current_Pct_Coded",
+          "Auth_Tot_Eng_Current_Pct_Coded",
+          "UnAuth_Tot_Eng_Current_Pct_Coded"
+          """;
+
+        private const string LAAbsenceColumns = """
+          "Id",
+          "Abs_Persistent_LA_Current_Pct_Coded",
+          "Abs_Tot_LA_Current_Pct_Coded",
+          "Auth_Tot_LA_Current_Pct_Coded",
+          "UnAuth_Tot_LA_Current_Pct_Coded"
+          """;
+
+        private const string LaUrlsColumns = """
+          "Id",
+          "Name",
+          "LAMainUrl"
+          """;
+
+        private const string GatewayLAColumns = """
+          "Id",
+          "LocalAuthorityName",
+          "MaxSessions",
+          "CreatedOn",
+          "ModifiedOn",
+          "IsDeleted"
+          """;
+
+        private const string GatewaySettings = """
+          "Id",
+          "SettingName",
+          "SettingValue",
+          "CreatedOn",
+          "ModifiedOn",
+          "IsDeleted"
+          """;
+
+        private const string GatewayUser = """
+          "Id",
+          "EmailAddress",
+          "LocalAuthorityId",
+          "CookiePrefs",
+          "TimerStartedOn",
+          "CreatedOn",
+          "ModifiedOn",
+          "IsDeleted"
+          """;
+
+        // -----------------------------
         // SQL builders
         // -----------------------------
 
@@ -83,58 +338,57 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
         // Public API
         // -----------------------------
 
-        public static string GetReadMultiple(Type entityType, IEntityPropertyService entityPropertyService)
+        public static string GetReadMultiple(Type entityType)
         {
-            var columnNames = entityPropertyService.GetColumnNamesForType(entityType);
             return entityType.Name switch
             {
                 nameof(Establishment) => $"""
                     select
-                      {columnNames}
+                      {EstablishmentColumns}
                     from public.v_establishment
                     """ + DapperHelpers.GetOrderBy(typeof(Establishment)),
 
                 nameof(EstablishmentAbsence) =>
-                    SelectFrom(columnNames, "v_establishment_absence"),
+                    SelectFrom(EstablishmentAbsenceColumns, "v_establishment_absence"),
 
                 nameof(EstablishmentDestinations) =>
-                    SelectFrom(columnNames, "v_establishment_destinations"),
+                    SelectFrom(EstablishmentDestinationsColumns, "v_establishment_destinations"),
 
                 nameof(EstablishmentPerformance) =>
-                    SelectFrom(columnNames, "v_establishment_performance"),
+                    SelectFrom(EstablishmentPerformanceColumns, "v_establishment_performance"),
 
                 nameof(EstablishmentWorkforce) =>
-                    SelectFrom(columnNames, "v_establishment_workforce"),
+                    SelectFrom(EstablishmentWorkforceColumns, "v_establishment_workforce"),
 
                 nameof(LAAbsence) =>
-                    SelectFrom(columnNames, "v_la_absence"),
+                    SelectFrom(LAAbsenceColumns, "v_la_absence"),
 
                 nameof(LADestinations) =>
-                    SelectFrom(columnNames, "v_la_destinations"),
+                    SelectFrom(LADestinationsColumns, "v_la_destinations"),
 
                 nameof(LAPerformance) =>
-                    SelectFrom(columnNames, "v_la_performance"),
+                    SelectFrom(LAPerformanceColumns, "v_la_performance"),
 
                 nameof(EnglandAbsence) =>
-                    SelectFrom(columnNames, "v_england_absence"),
+                    SelectFrom(EnglandAbsenceColumns, "v_england_absence"),
 
                 nameof(EnglandDestinations) =>
-                    SelectFrom(columnNames, "v_england_destinations"),
+                    SelectFrom(EnglandDestinationsColumns, "v_england_destinations"),
 
                 nameof(EnglandPerformance) =>
-                    SelectFrom(columnNames, "v_england_performance"),
+                    SelectFrom(EnglandPerformanceColumns, "v_england_performance"),
 
                 nameof(LaUrls) =>
-                    SelectFrom(columnNames, "v_la_urls"),
+                    SelectFrom(LaUrlsColumns, "v_la_urls"),
 
                 nameof(GatewayLocalAuthority) =>
-                    SelectFromAndNotDeleted(columnNames, "gateway_local_authority"),
+                    SelectFromAndNotDeleted(GatewayLAColumns, "gateway_local_authority"),
 
                 nameof(GatewaySettings) =>
-                    SelectFromAndNotDeleted(columnNames, "gateway_settings"),
+                    SelectFromAndNotDeleted(GatewaySettings, "gateway_settings"),
 
                 nameof(GatewayUser) =>
-                    SelectFromAndNotDeleted(columnNames, "gateway_user"),
+                    SelectFromAndNotDeleted(GatewayUser, "gateway_user"),
 
                 _ => string.Empty,
             };
@@ -151,55 +405,54 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
             };
         }
 
-        public static string GetReadSingle(Type entityType, IEntityPropertyService entityPropertyService)
+        public static string GetReadSingle(Type entityType)
         {
-            var columnNames = entityPropertyService.GetColumnNamesForType(entityType);
             return entityType.Name switch
             {
                 nameof(Establishment) =>
-                    SelectFromWhereUrn(columnNames, "v_establishment"),
+                    SelectFromWhereUrn(EstablishmentColumns, "v_establishment"),
 
                 nameof(EstablishmentAbsence) =>
-                    SelectFromWhereId(columnNames, "v_establishment_absence"),
+                    SelectFromWhereId(EstablishmentAbsenceColumns, "v_establishment_absence"),
 
                 nameof(EstablishmentDestinations) =>
-                    SelectFromWhereId(columnNames, "v_establishment_destinations"),
+                    SelectFromWhereId(EstablishmentDestinationsColumns, "v_establishment_destinations"),
 
                 nameof(EstablishmentPerformance) =>
-                    SelectFromWhereId(columnNames, "v_establishment_performance"),
+                    SelectFromWhereId(EstablishmentPerformanceColumns, "v_establishment_performance"),
 
                 nameof(EstablishmentWorkforce) =>
-                    SelectFromWhereId(columnNames, "v_establishment_workforce"),
+                    SelectFromWhereId(EstablishmentWorkforceColumns, "v_establishment_workforce"),
 
                 nameof(LAAbsence) =>
-                    SelectFromWhereId(columnNames, "v_la_absence"),
+                    SelectFromWhereId(LAAbsenceColumns, "v_la_absence"),
 
                 nameof(LADestinations) =>
-                    SelectFromWhereId(columnNames, "v_la_destinations"),
+                    SelectFromWhereId(LADestinationsColumns, "v_la_destinations"),
 
                 nameof(LAPerformance) =>
-                    SelectFromWhereId(columnNames, "v_la_performance"),
+                    SelectFromWhereId(LAPerformanceColumns, "v_la_performance"),
 
                 nameof(EnglandAbsence) =>
-                    SelectFromWhere(columnNames, "v_england_absence", "\"Id\" = 'National'"),
+                    SelectFromWhere(EnglandAbsenceColumns, "v_england_absence", "\"Id\" = 'National'"),
 
                 nameof(EnglandDestinations) =>
-                    SelectFromWhere(columnNames, "v_england_destinations", "\"Id\" = 'National'"),
+                    SelectFromWhere(EnglandDestinationsColumns, "v_england_destinations", "\"Id\" = 'National'"),
 
                 nameof(EnglandPerformance) =>
-                    SelectFromWhere(columnNames, "v_england_performance", "\"Id\" = 'National'"),
+                    SelectFromWhere(EnglandPerformanceColumns, "v_england_performance", "\"Id\" = 'National'"),
 
                 nameof(LaUrls) =>
-                    SelectFromWhereId(columnNames, "v_la_urls"),
+                    SelectFromWhereId(LaUrlsColumns, "v_la_urls"),
 
                 nameof(GatewayLocalAuthority) =>
-                    SelectFromWhereIdAndNotDeleted(columnNames, "gateway_local_authority"),
+                    SelectFromWhereIdAndNotDeleted(GatewayLAColumns, "gateway_local_authority"),
 
                 nameof(GatewaySettings) =>
-                    SelectFromWhereIdAndNotDeleted(columnNames, "gateway_settings"),
+                    SelectFromWhereIdAndNotDeleted(GatewaySettings, "gateway_settings"),
 
                 nameof(GatewayUser) =>
-                    SelectFromWhereIdAndNotDeleted(columnNames, "gateway_user"),
+                    SelectFromWhereIdAndNotDeleted(GatewayUser, "gateway_user"),
 
                 _ => string.Empty,
             };
@@ -247,27 +500,28 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
             };
         }
 
-        public static string GetReadMany(Type entityType, IEntityPropertyService entityPropertyService)
+        public static string GetReadMany(Type entityType)
         {
-            var columnNames = entityPropertyService.GetColumnNamesForType(entityType);
-
             return entityType.Name switch
             {
                 nameof(Establishment) =>
-                    SelectFromWhereUrns(columnNames, "v_establishment"),
+                    SelectFromWhereUrns(EstablishmentColumns, "v_establishment"),
 
                 nameof(EstablishmentPerformance) =>
-                    SelectFromWhereIds(columnNames, "v_establishment_performance"),
+                    SelectFromWhereIds(EstablishmentPerformanceColumns, "v_establishment_performance"),
 
                 nameof(EstablishmentSubjectEntryRow) => $"""
                     select
-                      {entityPropertyService.GetColumnNamesForType(entityType)}
+                      {EstablishmentSubjectEntriesColumns}
                     from public.v_establishment_subject_entries
                     where school_urn = @Urn;
                     """,
 
+                nameof(EstablishmentDestinations) =>
+                    SelectFromWhereIds(EstablishmentDestinationsColumns, "v_establishment_destinations"),
+
                 nameof(LaUrls) =>
-                    SelectFromWhereGSSLACode(columnNames, "v_la_urls"),
+                    SelectFromWhereGSSLACode(LaUrlsColumns, "v_la_urls"),
 
                 _ => string.Empty,
             };

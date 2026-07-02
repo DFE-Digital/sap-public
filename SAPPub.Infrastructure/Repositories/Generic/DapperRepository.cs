@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Logging;
 using Npgsql;
-using SAPPub.Core.ApplicationServices;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Infrastructure.Mapping.ValueCodes;
 using SAPPub.Infrastructure.Repositories.Helpers;
@@ -13,18 +12,15 @@ namespace SAPPub.Infrastructure.Repositories.Generic
         private readonly NpgsqlDataSource _dataSource;
         private readonly ILogger<DapperRepository<T>> _logger;
         private readonly ICodedValueMapper _codedValueMapper;
-        private readonly IEntityPropertyService _entityPropertyService;
 
         public DapperRepository(
             NpgsqlDataSource dataSource,
             ILogger<DapperRepository<T>> logger,
-            ICodedValueMapper codedValueMapper,
-            IEntityPropertyService entityProperyService)
+            ICodedValueMapper codedValueMapper)
         {
             _dataSource = dataSource ?? throw new ArgumentNullException(nameof(dataSource));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _codedValueMapper = codedValueMapper ?? throw new ArgumentNullException(nameof(codedValueMapper));
-            _entityPropertyService = entityProperyService ?? throw new ArgumentNullException(nameof(entityProperyService));
         }
 
         public Task<T?> ReadAsync(string id, CancellationToken ct = default)
@@ -43,7 +39,7 @@ namespace SAPPub.Infrastructure.Repositories.Generic
             if (take < 1)
                 throw new ArgumentOutOfRangeException(nameof(take), "Take must be 1 or greater.");
 
-            var sql = DapperHelpers.GetReadMultiple(typeof(T), _entityPropertyService);
+            var sql = DapperHelpers.GetReadMultiple(typeof(T));
             sql = sql.TrimEnd(';'); // Remove trailing semicolon to allow appending remaining SQL clauses.
             sql = sql + $" LIMIT {take} OFFSET {(page - 1) * take}";
             if (string.IsNullOrWhiteSpace(sql))
@@ -67,7 +63,7 @@ namespace SAPPub.Infrastructure.Repositories.Generic
         {
             try
             {
-                var sql = DapperHelpers.GetReadMultiple(typeof(T), _entityPropertyService);
+                var sql = DapperHelpers.GetReadMultiple(typeof(T));
                 if (string.IsNullOrWhiteSpace(sql))
                     throw new NotSupportedException($"No ReadMultiple query for {typeof(T).Name}");
 
@@ -103,7 +99,7 @@ namespace SAPPub.Infrastructure.Repositories.Generic
 
             try
             {
-                var sql = DapperHelpers.GetReadSingle(typeof(T), _entityPropertyService);
+                var sql = DapperHelpers.GetReadSingle(typeof(T));
                 if (string.IsNullOrWhiteSpace(sql))
                     throw new NotSupportedException($"No ReadSingle query for {typeof(T).Name}");
 
@@ -211,7 +207,7 @@ namespace SAPPub.Infrastructure.Repositories.Generic
 
             try
             {
-                var sql = DapperHelpers.GetReadMany(typeof(T), _entityPropertyService);
+                var sql = DapperHelpers.GetReadMany(typeof(T));
                 if (string.IsNullOrWhiteSpace(sql))
                     throw new NotSupportedException($"No ReadMany query for {typeof(T).Name}");
 
