@@ -32,7 +32,7 @@ public class AboutYourSchoolsPageTests : PageTestsBase
 
         var aboutSchools = new List<AboutSchoolComparisonModel>
         {
-            new(){ SchoolName ="Test School", Address="Test Street", Urn = "119052", Easting="532301", Northing="181746" },
+            new(){ SchoolName ="Test School", Address="Test Street", Website = "www.test-school.com", Urn = "119052", Easting="532301", Northing="181746" },
             new(){ SchoolName ="Test School1", Urn = "124500" }
         };
 
@@ -154,5 +154,82 @@ public class AboutYourSchoolsPageTests : PageTestsBase
         Assert.Contains("lat", datapoints?.Value);
         Assert.Equal(1, legendElement.ChildElementCount);
 
+    }
+    [Fact]
+    public async Task DisplaysFurtherInformationSection()
+    {
+        // Arrange && Act
+        var doc = await Fixture.BrowseToPage(_pageUrl);
+
+        // Assert
+        var summaryCard = doc.QuerySelector("#schoolInformationSummary");
+        var summaryTitle = doc.QuerySelector("#schoolInformationSummary .govuk-summary-card__title");
+
+        Assert.NotNull(summaryCard);
+        Assert.NotNull(summaryTitle);
+        Assert.Equal("Further information", summaryTitle.TextContent.Trim());
+    }
+
+    [Fact]
+    public async Task DisplaysFurtherInformationLinks()
+    {
+        // Arrange && Act
+        var doc = await Fixture.BrowseToPage(_pageUrl);
+
+        // Assert - School 1
+        var school1Heading = doc.QuerySelector("#school-details-heading-119052");
+        var school1ProfileLink = doc.QuerySelector("#school-profile-link-119052");
+        var school1OfstedLink = doc.QuerySelector("#ofsted-report-link-119052");
+
+        Assert.NotNull(school1Heading);
+        Assert.Equal("Test School", school1Heading.TextContent.Trim());
+
+        Assert.NotNull(school1ProfileLink);
+        Assert.Contains("View Test School's School Profile", school1ProfileLink.TextContent);
+        Assert.Contains("school/119052", school1ProfileLink.GetAttribute("href"));
+
+        Assert.NotNull(school1OfstedLink);
+        Assert.Contains("View the latest Ofsted report", school1OfstedLink.TextContent);
+        Assert.Contains("/ELS/119052", school1OfstedLink.GetAttribute("href"));
+
+        // Assert - School 2
+        var school2Heading = doc.QuerySelector("#school-details-heading-124500");
+        var school2ProfileLink = doc.QuerySelector("#school-profile-link-124500");
+        var school2OfstedLink = doc.QuerySelector("#ofsted-report-link-124500");
+
+        Assert.NotNull(school2Heading);
+        Assert.Equal("Test School1", school2Heading.TextContent.Trim());
+
+        Assert.NotNull(school2ProfileLink);
+        Assert.Contains("View Test School1's School Profile", school2ProfileLink.TextContent);
+        Assert.Contains("school/124500", school2ProfileLink.GetAttribute("href"));
+
+        Assert.NotNull(school2OfstedLink);
+        Assert.Contains("View the latest Ofsted report", school2OfstedLink.TextContent);
+        Assert.Contains("/ELS/124500", school2OfstedLink.GetAttribute("href"));
+    }
+
+    [Fact]
+    public async Task DisplaysWebsiteAsLinkWhenAvailable_AndNotAvailableWhenMissing()
+    {
+        // Arrange && Act
+        var doc = await Fixture.BrowseToPage(_pageUrl);
+
+        // Available website (school 1)
+        var school1WebsiteValue = doc.QuerySelector("#school-website-value-119052");
+        var school1WebsiteLink = doc.QuerySelector("#school-website-link-119052");
+
+        Assert.NotNull(school1WebsiteValue);
+        Assert.NotNull(school1WebsiteLink);
+        Assert.Contains("www.test-school.com", school1WebsiteLink.TextContent);
+        Assert.Equal("https://www.test-school.com", school1WebsiteLink.GetAttribute("href"));
+
+        // Missing website (school 2)
+        var school2WebsiteValue = doc.QuerySelector("#school-website-value-124500");
+        var school2WebsiteLink = doc.QuerySelector("#school-website-link-124500");
+
+        Assert.NotNull(school2WebsiteValue);
+        Assert.Null(school2WebsiteLink);
+        Assert.Equal("Not available", school2WebsiteValue.TextContent.Trim());
     }
 }

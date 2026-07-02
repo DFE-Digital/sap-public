@@ -57,8 +57,8 @@ public class SecondaryControllerTests
         var northing1 = "181746";
         var aboutSchoolsCompareModelList = new List<AboutSchoolComparisonModel>
             {
-                new() { Urn = urn1, SchoolName = "Test School", Easting = easting1, Northing = northing1 },
-                new() { Urn = urn2, SchoolName = "Test School 2" },
+                new() { Urn = urn1, SchoolName = "Test School", Website = " www.test-school.com ", Easting = easting1, Northing = northing1 },
+                new() { Urn = urn2, SchoolName = "Test School 2", Website = null },
             };
 
         _mockAboutSchoolService
@@ -70,18 +70,26 @@ public class SecondaryControllerTests
         // Act
         var result = await controller.AboutYourSchools(_mockAboutSchoolService.Object, urnList, It.IsAny<CancellationToken>()) as ViewResult;
 
-        // Assert
-        Assert.NotNull(result);
-        var model = result.Model as CompareAboutYourSchoolsViewModel;
-        Assert.NotNull(model);
-        Assert.Equal(2, model.URNs.Count);
-        Assert.Equal(model.RouteQueryString, $"?urns={urn1}&urns={urn2}");
-        Assert.Equal(longLat?.Latitude, model.MapData.FirstOrDefault()?.Lat);
-        Assert.Equal(longLat?.Longitude, model.MapData.FirstOrDefault()?.Lng);
-        Assert.Equal("Test School", model.MapData.FirstOrDefault()?.Name);
-        Assert.Equal(1, model.MapData?.Count());
-        Assert.Equal(2, model.CompareAboutSchools.Count());
-    }
+            // Assert
+            Assert.NotNull(result);
+            var model = result.Model as CompareAboutYourSchoolsViewModel;
+            Assert.NotNull(model);
+            Assert.Equal(2, model.URNs.Count);
+            Assert.Equal(model.RouteQueryString, $"?urns={urn1}&urns={urn2}");
+            Assert.Equal(longLat?.Latitude, model.MapData.FirstOrDefault()?.Lat);
+            Assert.Equal(longLat?.Longitude, model.MapData.FirstOrDefault()?.Lng);
+            Assert.Equal("Test School", model.MapData.FirstOrDefault()?.Name);
+            Assert.Equal(1, model.MapData?.Count());
+            Assert.Equal(2, model.CompareAboutSchools.Count());
+
+            var firstSchool = model.CompareAboutSchools.First(s => s.Urn == urn1);
+            Assert.True(firstSchool.Website.IsAvailable);
+            Assert.Equal("www.test-school.com", firstSchool.Website.Value);
+
+            var secondSchool = model.CompareAboutSchools.First(s => s.Urn == urn2);
+            Assert.True(secondSchool.Website.IsNotAvailable);
+            Assert.Null(secondSchool.Website.Value);
+        }
 
     [Fact]
     public async Task AcademicPerformancePupilProgressAndAttainment_ReturnsViewResultWithCorrectModel()
