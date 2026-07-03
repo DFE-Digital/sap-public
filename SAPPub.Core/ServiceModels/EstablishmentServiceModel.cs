@@ -95,20 +95,11 @@ public class EstablishmentServiceModel
 
     public string ResourcedProvisionName { get; set; } = string.Empty;
 
-    public string UKPRN { get; set; } = string.Empty;
-
-    public string UrbanRuralId { get; set; } = string.Empty;
-    public string UrbanRuralName { get; set; } = string.Empty;
-
     public string Website { get; set; } = string.Empty;
 
     public string Easting { get; set; } = string.Empty;
 
     public string Northing { get; set; } = string.Empty;
-
-    public string EstablishmentNumber { get; set; } = string.Empty;
-
-    public int SchoolCapacity { get; set; }
 
     public int? StatusCode { get; set; }
 
@@ -189,13 +180,9 @@ public class EstablishmentServiceModel
             EstablishmentTypeGroupName = e.EstablishmentTypeGroupName,
             ResourcedProvision = e.ResourcedProvision,
             ResourcedProvisionName = e.ResourcedProvisionName,
-            UKPRN = e.UKPRN,
-            UrbanRuralId = e.UrbanRuralId,
-            UrbanRuralName = e.UrbanRuralName,
             Website = e.Website,
             Easting = e.Easting,
             Northing = e.Northing,
-            EstablishmentNumber = e.EstablishmentNumber,
             StatusCode = e.StatusCode,
             ClosedDate = e.ClosedDate,
             OpenDate = e.OpenDate,
