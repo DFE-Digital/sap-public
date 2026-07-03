@@ -5,8 +5,6 @@ using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Entities.KS4.Workforce;
 using SAPPub.Infrastructure.Repositories.Helpers;
-using System;
-using Xunit;
 
 namespace SAPPub.Infrastructure.Tests.Repositories.Helpers
 {

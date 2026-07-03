@@ -1,4 +1,5 @@
 ﻿using SAPPub.Core.Entities;
+using SAPPub.Core.ServiceModels;
 
 namespace SAPPub.Core.Interfaces.Services;
 
@@ -14,7 +15,7 @@ public interface ILAService
     /// <param name="establishment">Establishment to get LaUrl for</param>
     /// <param name="ct">Any valid cancellation token</param>
     /// <returns>A valid LaUrl record for the establishment, or null if nothing found</returns>
-    Task<LaUrls?> GetLaUrlsAsync(Establishment establishment, CancellationToken ct);
+    Task<LaUrls?> GetLaUrlsAsync(EstablishmentServiceModel establishment, CancellationToken ct);
 
     /// <summary>
     /// Gets a single LaUrl record for each establishment in the establishments list
@@ -22,5 +23,5 @@ public interface ILAService
     /// <param name="establishments">List of establishments to get LaUrls for</param>
     /// <param name="ct">Any valid cancellation token</param>
     /// <returns>Multiple LaUrls records for the establishments in the list, or null if nothing found</returns>
-    Task<IEnumerable<LaUrls?>> GetLaUrlsListForEstablishmentsAsync(IEnumerable<Establishment> establishments, CancellationToken ct);
+    Task<IEnumerable<LaUrls?>> GetLaUrlsListForEstablishmentsAsync(IEnumerable<EstablishmentServiceModel> establishments, CancellationToken ct);
 }

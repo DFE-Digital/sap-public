@@ -1,37 +1,36 @@
-﻿using SAPPub.Core.Entities;
-using SAPPub.Core.Entities.KS4.SubjectEntries;
+﻿using SAPPub.Core.Entities.KS4.SubjectEntries;
+using SAPPub.Core.ServiceModels;
 
-namespace SAPPub.Web.Models.SecondarySchool
+namespace SAPPub.Web.Models.SecondarySchool;
+
+public class AcademicPerformanceSubjectsEnteredViewModel : SecondarySchoolBaseViewModel
 {
-    public class AcademicPerformanceSubjectsEnteredViewModel : SecondarySchoolBaseViewModel
+    public List<SubjectsEnteredViewModel>? CoreSubjects { get; set; }
+
+    public List<SubjectsEnteredViewModel>? AdditionalSubjects { get; set; }
+
+    public static AcademicPerformanceSubjectsEnteredViewModel Map(EstablishmentServiceModel establishment, EstablishmentCoreSubjectEntries coreSubjectEntries, EstablishmentAdditionalSubjectEntries additionalSubjectEntries)
     {
-        public List<SubjectsEnteredViewModel>? CoreSubjects { get; set; }
-
-        public List<SubjectsEnteredViewModel>? AdditionalSubjects { get; set; }
-
-        public static AcademicPerformanceSubjectsEnteredViewModel Map(Establishment establishment, EstablishmentCoreSubjectEntries coreSubjectEntries, EstablishmentAdditionalSubjectEntries additionalSubjectEntries)
+        var coreSubjects = coreSubjectEntries.SubjectEntries.Select(se => new SubjectsEnteredViewModel
         {
-            var coreSubjects = coreSubjectEntries.SubjectEntries.Select(se => new SubjectsEnteredViewModel
-            {
-                Subject = se.SubEntCore_Sub_Est_Current_Num ?? "Unknown Subject",
-                Qualification = se.SubEntCore_Qual_Est_Current_Num ?? "Unknown Qualification",
-                NumberOfEntries = se.SubEntCore_Entr_Est_Current_Num.HasValue ? $"{se.SubEntCore_Entr_Est_Current_Num.Value:F0}" : "N/A",
-            }).OrderBy(s => s.Subject).ToList();
+            Subject = se.SubEntCore_Sub_Est_Current_Num ?? "Unknown Subject",
+            Qualification = se.SubEntCore_Qual_Est_Current_Num ?? "Unknown Qualification",
+            NumberOfEntries = se.SubEntCore_Entr_Est_Current_Num.HasValue ? $"{se.SubEntCore_Entr_Est_Current_Num.Value:F0}" : "N/A",
+        }).OrderBy(s => s.Subject).ToList();
 
-            var additionalSubjects = additionalSubjectEntries.SubjectEntries.Select(se => new SubjectsEnteredViewModel
-            {
-                Subject = se.SubEntAdd_Sub_Est_Current_Num ?? "Unknown Subject",
-                Qualification = se.SubEntAdd_Qual_Est_Current_Num ?? "Unknown Qualification",
-                NumberOfEntries = se.SubEntAdd_Entr_Est_Current_Num.HasValue ? $"{se.SubEntAdd_Entr_Est_Current_Num.Value:F0}" : "N/A",
-            }).OrderBy(s => s.Subject).ToList();
+        var additionalSubjects = additionalSubjectEntries.SubjectEntries.Select(se => new SubjectsEnteredViewModel
+        {
+            Subject = se.SubEntAdd_Sub_Est_Current_Num ?? "Unknown Subject",
+            Qualification = se.SubEntAdd_Qual_Est_Current_Num ?? "Unknown Qualification",
+            NumberOfEntries = se.SubEntAdd_Entr_Est_Current_Num.HasValue ? $"{se.SubEntAdd_Entr_Est_Current_Num.Value:F0}" : "N/A",
+        }).OrderBy(s => s.Subject).ToList();
 
-            return new AcademicPerformanceSubjectsEnteredViewModel
-            {
-                URN = establishment.URN,
-                SchoolName = establishment.EstablishmentName,
-                CoreSubjects = coreSubjects,
-                AdditionalSubjects = additionalSubjects
-            };
-        }
+        return new AcademicPerformanceSubjectsEnteredViewModel
+        {
+            URN = establishment.URN,
+            SchoolName = establishment.EstablishmentName,
+            CoreSubjects = coreSubjects,
+            AdditionalSubjects = additionalSubjects
+        };
     }
 }

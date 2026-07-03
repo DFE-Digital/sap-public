@@ -1,4 +1,4 @@
-﻿using SAPPub.Core.Entities;
+﻿using SAPPub.Core.ServiceModels;
 using SAPPub.Web.Helpers;
 
 namespace SAPPub.Web.Areas.Compare.ViewModels.Secondary;
@@ -7,7 +7,7 @@ public class CompareNextStepsViewModel : CompareSecondarySchoolBaseViewModel
 {
     public IEnumerable<CompareNextStepsModel> SchoolDetailList { get; set; } = [];
 
-    public static CompareNextStepsViewModel Map(List<string> urns, IEnumerable<Establishment> establishments)
+    public static CompareNextStepsViewModel Map(List<string> urns, IEnumerable<EstablishmentServiceModel> establishments)
     {
         return new CompareNextStepsViewModel
         {

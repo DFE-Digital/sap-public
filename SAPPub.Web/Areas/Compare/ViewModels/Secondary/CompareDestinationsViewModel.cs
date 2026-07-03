@@ -1,4 +1,4 @@
-﻿using SAPPub.Core.Entities;
+﻿using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.Compare;
 using SAPPub.Web.Models.Charts;
 using static SAPPub.Web.Constants.Constants;
@@ -14,7 +14,7 @@ public class CompareDestinationsViewModel : CompareSecondarySchoolBaseViewModel
         public required bool? SixthForm { get; set; }
         public required double? PercentInEducationEmploymentOrTraining { get; set; }
 
-        public static SchoolDestinationDetailsViewModel Map(SAPPub.Core.ServiceModels.Compare.SchoolDestinationDetails destinationsDetails, Establishment establishmentDetails)
+        public static SchoolDestinationDetailsViewModel Map(SAPPub.Core.ServiceModels.Compare.SchoolDestinationDetails destinationsDetails, EstablishmentServiceModel establishmentDetails)
         {
             return new SchoolDestinationDetailsViewModel
             {
@@ -41,7 +41,7 @@ public class CompareDestinationsViewModel : CompareSecondarySchoolBaseViewModel
 
     public required IEnumerable<SchoolDestinationDetailsViewModel> SchoolDetails { get; set; }
 
-    public static CompareDestinationsViewModel Map(List<string> urns, DestinationsComparisonResultModel destinationsDetails, List<Establishment> establishments)
+    public static CompareDestinationsViewModel Map(List<string> urns, DestinationsComparisonResultModel destinationsDetails, List<EstablishmentServiceModel> establishments)
     {
         var schoolDetails = destinationsDetails.SchoolDetails
             .Join(

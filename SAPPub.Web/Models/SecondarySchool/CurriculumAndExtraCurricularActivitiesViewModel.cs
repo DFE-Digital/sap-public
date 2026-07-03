@@ -1,4 +1,4 @@
-﻿using SAPPub.Core.Entities;
+﻿using SAPPub.Core.ServiceModels;
 using SAPPub.Web.Helpers;
 
 namespace SAPPub.Web.Models.SecondarySchool;
@@ -7,7 +7,7 @@ public class CurriculumAndExtraCurricularActivitiesViewModel : SecondarySchoolBa
 {
     public required DisplayField<string> SchoolWebsite { get; set; }
 
-    public static CurriculumAndExtraCurricularActivitiesViewModel Map(Establishment establishment)
+    public static CurriculumAndExtraCurricularActivitiesViewModel Map(EstablishmentServiceModel establishment)
     {
         return new CurriculumAndExtraCurricularActivitiesViewModel
         {

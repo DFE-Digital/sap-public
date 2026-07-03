@@ -2,9 +2,9 @@
 using AngleSharp.Html.Dom;
 using Bogus;
 using Moq;
-using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.Compare;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
@@ -18,7 +18,7 @@ public class DestinationsPageTests : PageTestsBase
     private List<string> _urns = ["100279", "145179"];
     private string QueryString => string.Join("&", _urns.Select(urn => $"urns={urn}"));
 
-    private readonly List<Establishment> _establishments = new();
+    private readonly List<EstablishmentServiceModel> _establishments = new();
     private readonly DestinationsComparisonResultModel _destinationsResult;
     private readonly Mock<IEstablishmentService> _establishmentService = new();
     private readonly Mock<IDestinationsComparisonService> _destinationsService = new();
@@ -35,10 +35,15 @@ public class DestinationsPageTests : PageTestsBase
                         .WithEstablishmentName($"School {urn}")
                         .WithIsKeyStage4(true)
                         .WithSixthForm(true)
-                        .Build();
+                        .BuildServiceModel();
             _establishments.Add(establishment);
             _establishmentService.Setup(s => s.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(establishment);
+                .ReturnsAsync(new EstablishmentServiceModel
+                {
+                    URN = urn,
+                    EstablishmentName = $"School {urn}",
+                    IsKS4 = true
+                });
         }
         _destinationsResult = new DestinationsComparisonResultModelBuilder()
             .WithEnglandPercentage(75.1)
@@ -107,7 +112,7 @@ public class DestinationsPageTests : PageTestsBase
                         .WithEstablishmentName($"School {urn}")
                         .WithIsKeyStage4(true)
                         .WithOfficialSixthFormId(SixthFormCode)
-                        .Build();
+                        .BuildServiceModel();
             _establishments.Add(establishment);
             _establishmentService.Setup(s => s.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(establishment);

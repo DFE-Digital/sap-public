@@ -3,6 +3,7 @@ using SAPPub.Core.Entities;
 using SAPPub.Core.Helpers;
 using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Services;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.Services.KS4.AboutSchool;
 
 namespace SAPPub.Core.Tests.Services.KS4.AboutSchool;
@@ -15,7 +16,7 @@ public class AboutSchoolServiceTests
 
     private readonly AboutSchoolService _service;
 
-    private readonly Establishment fakeEstablishment = new()
+    private readonly EstablishmentServiceModel fakeEstablishment = new()
     {
         URN = "123456",
         EstablishmentName = "Test Establishment",
@@ -45,7 +46,7 @@ public class AboutSchoolServiceTests
         SenTypes = "SLCN - Speech, language and Communication, ASD - Autistic Spectrum Disorder, SEMH - Social"
     };
 
-    private readonly List<Establishment> fakeEstablishments =
+    private readonly List<EstablishmentServiceModel> fakeEstablishments =
         [
             new()
             {
@@ -145,7 +146,7 @@ public class AboutSchoolServiceTests
         // Arrange
         var urn = "123456";
         var predecessorUrn = "654321";
-        var establishment = new Establishment
+        var establishment = new EstablishmentServiceModel
         {
             URN = urn,
             EstablishmentName = "Test Establishment",
@@ -186,7 +187,7 @@ public class AboutSchoolServiceTests
         // Arrange
         var urn = "123456";
         var successorUrn = "654321";
-        var establishment = new Establishment
+        var establishment = new EstablishmentServiceModel
         {
             URN = urn,
             EstablishmentName = "Test Establishment",
@@ -264,6 +265,6 @@ public class AboutSchoolServiceTests
         Assert.Equal("New Council", firstSchool?.LocalAuthority);
 
         _mockLaService
-            .Verify(a => a.GetLaUrlsListForEstablishmentsAsync(It.IsAny<IEnumerable<Establishment>>(), It.IsAny<CancellationToken>()), Times.Once);
+            .Verify(a => a.GetLaUrlsListForEstablishmentsAsync(It.IsAny<IEnumerable<EstablishmentServiceModel>>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 }

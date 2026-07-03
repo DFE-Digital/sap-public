@@ -2,6 +2,7 @@
 using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
@@ -20,10 +21,10 @@ public class AboutYourSchoolsPageTests : PageTestsBase
     {
         _mockAboutSchoolService = UseMock<IAboutSchoolService>();
         _establishmentService = UseMock<IEstablishmentService>();
-        var establishmentList = (new List<Establishment>
+        var establishmentList = (new List<EstablishmentServiceModel>
         {
-            new EstablishmentTestBuilder().WithURN("119052").WithIsKeyStage4(true).Build(),
-            new EstablishmentTestBuilder().WithURN("124500").WithIsKeyStage4(true).Build(),
+            new EstablishmentTestBuilder().WithURN("119052").WithIsKeyStage4(true).BuildServiceModel(),
+            new EstablishmentTestBuilder().WithURN("124500").WithIsKeyStage4(true).BuildServiceModel(),
         }).ToList();
 
         establishmentList.Select(e =>

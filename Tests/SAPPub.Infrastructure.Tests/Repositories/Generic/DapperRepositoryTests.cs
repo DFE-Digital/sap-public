@@ -4,12 +4,6 @@ using Moq;
 using Npgsql;
 using SAPPub.Infrastructure.Mapping.ValueCodes;
 using SAPPub.Infrastructure.Repositories.Generic;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace SAPPub.Infrastructure.Tests.Repositories.Generic
 {
