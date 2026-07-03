@@ -41,7 +41,10 @@ public class CompareDestinationsViewModel : CompareSecondarySchoolBaseViewModel
 
     public required IEnumerable<SchoolDestinationDetailsViewModel> SchoolDetails { get; set; }
 
-    public static CompareDestinationsViewModel Map(List<string> urns, DestinationsComparisonResultModel destinationsDetails, List<EstablishmentServiceModel> establishments)
+    public static CompareDestinationsViewModel Map(
+        List<string> urns,
+        DestinationsComparisonResultModel destinationsDetails,
+        List<EstablishmentServiceModel> establishments)
     {
         var schoolDetails = destinationsDetails.SchoolDetails
             .Join(
@@ -55,6 +58,7 @@ public class CompareDestinationsViewModel : CompareSecondarySchoolBaseViewModel
         return new CompareDestinationsViewModel
         {
             URNs = urns,
+            ListContainsSpecialSchool = establishments.Any(e => e.IsSpecialSchool),
             EnglandPercentage = destinationsDetails.EnglandPercentage,
             SchoolDetails = schoolDetails,
             AllDestinationsData = new DataViewModel // save a version of the data reshaped to send into the chart component

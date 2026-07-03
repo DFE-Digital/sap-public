@@ -8,6 +8,11 @@
     ViewData["Title"] = $"Compare - {ViewData["SubHeader"]}";
 }
 
+@if (Model.ListContainsSpecialSchool)
+{
+    <partial name="_SpecialSchoolWarningBanner" />
+}
+
 <div class="govuk-grid-row">
 
     @await Component.InvokeAsync("VerticalNavigationCompareSecondary",

@@ -117,6 +117,7 @@ public class EstablishmentServiceModel
 
     public bool IsKS5 { get; set; }
 
+    public bool IsSpecialSchool => new List<string> { "7", "8", "10", "12", "33", "36", "44" }.Contains(TypeOfEstablishmentId);
 
     public EstablishmentPerformance KS4Performance { get; set; } = new();
 

@@ -41,6 +41,7 @@ using SAPPub.Infrastructure.Repositories.KS4.Destinations;
 using SAPPub.Infrastructure.Repositories.KS4.Performance;
 using SAPPub.Infrastructure.Repositories.KS4.SubjectEntries;
 using SAPPub.Infrastructure.Repositories.KS4.Workforce;
+using SAPPub.Web.Areas.Compare.Filters;
 
 namespace SAPPub.Web.Middleware
 {
@@ -124,6 +125,7 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<IDestinationsComparisonService, DestinationsComparisonService>();
 
             services.AddTransient<ILAService, LAService>();
+            services.AddScoped<SecondaryComparisonQueryValidationFilter>();
 
             // Mapper
             services.AddSingleton<ICodedValueMapper, ReflectionCodedValueMapper>();

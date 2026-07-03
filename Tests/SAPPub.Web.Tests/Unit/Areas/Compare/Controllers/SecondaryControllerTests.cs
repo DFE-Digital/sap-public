@@ -7,7 +7,6 @@ using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
-using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.Compare;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels.KS4.Performance;
@@ -32,7 +31,7 @@ public class SecondaryControllerTests
     public SecondaryControllerTests()
     {
         // The action filter adds establishments to the HttpContext.Items collection, so simulate that in the test setup
-        _httpContext.Items["Establishments"] = _urns
+        var establishments = _urns
             .Select(urn => new EstablishmentTestBuilder()
                 .WithURN(urn)
                 .WithIsKeyStage4(true)
@@ -40,10 +39,11 @@ public class SecondaryControllerTests
                 .BuildServiceModel())
             .ToList();
 
-        _controllerUnderTest.ControllerContext = new ControllerContext
-        {
-            HttpContext = _httpContext
-        };
+        //_controllerUnderTest.ControllerContext = new ControllerContext
+        //{
+        //    HttpContext = _httpContext
+        //};
+        _controllerUnderTest.Establishments = establishments;
     }
 
     [Fact]
@@ -71,26 +71,26 @@ public class SecondaryControllerTests
         // Act
         var result = await controller.AboutYourSchools(_mockAboutSchoolService.Object, urnList, It.IsAny<CancellationToken>()) as ViewResult;
 
-            // Assert
-            Assert.NotNull(result);
-            var model = result.Model as CompareAboutYourSchoolsViewModel;
-            Assert.NotNull(model);
-            Assert.Equal(2, model.URNs.Count);
-            Assert.Equal(model.RouteQueryString, $"?urns={urn1}&urns={urn2}");
-            Assert.Equal(longLat?.Latitude, model.MapData.FirstOrDefault()?.Lat);
-            Assert.Equal(longLat?.Longitude, model.MapData.FirstOrDefault()?.Lng);
-            Assert.Equal("Test School", model.MapData.FirstOrDefault()?.Name);
-            Assert.Equal(1, model.MapData?.Count());
-            Assert.Equal(2, model.CompareAboutSchools.Count());
+        // Assert
+        Assert.NotNull(result);
+        var model = result.Model as CompareAboutYourSchoolsViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(2, model.URNs.Count);
+        Assert.Equal(model.RouteQueryString, $"?urns={urn1}&urns={urn2}");
+        Assert.Equal(longLat?.Latitude, model.MapData.FirstOrDefault()?.Lat);
+        Assert.Equal(longLat?.Longitude, model.MapData.FirstOrDefault()?.Lng);
+        Assert.Equal("Test School", model.MapData.FirstOrDefault()?.Name);
+        Assert.Equal(1, model.MapData?.Count());
+        Assert.Equal(2, model.CompareAboutSchools.Count());
 
-            var firstSchool = model.CompareAboutSchools.First(s => s.Urn == urn1);
-            Assert.True(firstSchool.Website.IsAvailable);
-            Assert.Equal("www.test-school.com", firstSchool.Website.Value);
+        var firstSchool = model.CompareAboutSchools.First(s => s.Urn == urn1);
+        Assert.True(firstSchool.Website.IsAvailable);
+        Assert.Equal("www.test-school.com", firstSchool.Website.Value);
 
-            var secondSchool = model.CompareAboutSchools.First(s => s.Urn == urn2);
-            Assert.True(secondSchool.Website.IsNotAvailable);
-            Assert.Null(secondSchool.Website.Value);
-        }
+        var secondSchool = model.CompareAboutSchools.First(s => s.Urn == urn2);
+        Assert.True(secondSchool.Website.IsNotAvailable);
+        Assert.Null(secondSchool.Website.Value);
+    }
 
     [Fact]
     public async Task AcademicPerformancePupilProgressAndAttainment_ReturnsViewResultWithCorrectModel()
@@ -371,8 +371,11 @@ public class SecondaryControllerTests
         Assert.NotNull(viewModel);
         Assert.Equal(2, viewModel.URNs.Count);
 
-        var orderedEstablishments = (
-            _httpContext.Items["Establishments"] as List<EstablishmentServiceModel>)?
+        //var orderedEstablishments = (
+        //    _httpContext.Items["Establishments"] as List<EstablishmentServiceModel>)?
+        //    .OrderBy(e => e.EstablishmentName).ToList();
+        var orderedEstablishments =
+            _controllerUnderTest.Establishments
             .OrderBy(e => e.EstablishmentName).ToList();
 
         Assert.Collection(viewModel.SchoolDetails.Select(s => s.URN),
