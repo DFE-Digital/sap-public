@@ -14,7 +14,7 @@ namespace SAPPub.Web.Tests.Unit.Page.Areas.Compare.Secondary;
 public class AcademicPerformanceEnglishAndMathsResultsTests : PageTestsBase
 {
     private static readonly List<string> _urns = ["100279", "145179"];
-    private readonly string _pageUrl = $"compare/secondary/english-and-maths-results?urns={_urns[0]}&urns={_urns[1]}";    
+    private readonly string _pageUrl = $"compare/secondary/english-and-maths-results?urns={_urns[0]}&urns={_urns[1]}";
     private readonly Mock<IEnglishAndMathsComparisionService> _englishAndMathsComparisionService = new();
     private readonly Mock<IEstablishmentService> _establishmentService = new();
     private readonly List<EstablishmentServiceModel> _establishmentList = [];
@@ -182,5 +182,36 @@ public class AcademicPerformanceEnglishAndMathsResultsTests : PageTestsBase
         Assert.NotNull(navPrevious);
         Assert.Contains("Academic performance: Pupil attainment", navPrevious.TextContent);
         Assert.Contains("Destinations after year 11", navNext.TextContent);
+    }
+
+    [Fact]
+    public async Task Page_WithNoSpecialSchool_DoesNotShowShowsNotificationBanner()
+    {
+        // Act
+        var doc = await Fixture.BrowseToPage(_pageUrl);
+
+        var banner = doc.QuerySelector("[data-testid='special-school-warning-banner']");
+        Assert.Null(banner);
+    }
+
+    [Fact]
+    public async Task Page_WithSpecialSchool_ShowsNotificationBanner()
+    {
+        // Arrange
+        _establishmentService.Setup(s => s.GetEstablishmentAsync("100279", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+                new EstablishmentTestBuilder()
+                    .WithURN("100279")
+                    .WithIsKeyStage4(true)
+                    .WithTypeOfEstablishmentId("7")
+                    .BuildServiceModel());
+
+        // Act
+        var doc = await Fixture.BrowseToPage(_pageUrl);
+
+        // Assert
+        var banner = doc.QuerySelector("[data-testid='special-school-warning-banner']");
+        Assert.NotNull(banner);
+        Assert.Contains("You're comparing a special school", banner.TextContent.Trim());
     }
 }

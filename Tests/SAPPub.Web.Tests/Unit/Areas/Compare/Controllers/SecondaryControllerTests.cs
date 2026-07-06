@@ -371,9 +371,6 @@ public class SecondaryControllerTests
         Assert.NotNull(viewModel);
         Assert.Equal(2, viewModel.URNs.Count);
 
-        //var orderedEstablishments = (
-        //    _httpContext.Items["Establishments"] as List<EstablishmentServiceModel>)?
-        //    .OrderBy(e => e.EstablishmentName).ToList();
         var orderedEstablishments =
             _controllerUnderTest.Establishments
             .OrderBy(e => e.EstablishmentName).ToList();
