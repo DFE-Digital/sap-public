@@ -38,7 +38,7 @@ namespace SAPPub.Core.Tests.Services
                 EstablishmentName = FakeEstablishmentOne.EstablishmentName,
                 PhaseOfEducationName = FakeEstablishmentOne.PhaseOfEducationName,
 
-                TypeOfEstablishmentId = "1",
+                TypeOfEstablishmentId = 1,
                 AdmissionsPolicyId = "2",
                 DistrictAdministrativeId = "3",
                 PhaseOfEducationId = "4",
@@ -95,7 +95,7 @@ namespace SAPPub.Core.Tests.Services
             var ex = await Assert.ThrowsAsync<System.Exception>(() => _service.GetEstablishmentAsync(urn, CancellationToken.None));
             Assert.Equal("Database error", ex.Message);
         }
-        
+
         [Fact]
         public async Task GetEstablishmentsAsync_ShouldReturnCorrectItems_WhenUrnsExists()
         {
@@ -106,7 +106,7 @@ namespace SAPPub.Core.Tests.Services
             {
                 new() { URN = "123456", EstablishmentName = "Est1" },
                 new() { URN = "785456", EstablishmentName = "Est2" }
-            };           
+            };
 
             _mockRepo
                 .Setup(r => r.GetEstablishmentsAsync(urns, It.IsAny<CancellationToken>()))
@@ -125,7 +125,7 @@ namespace SAPPub.Core.Tests.Services
                 Assert.NotNull(actualEstablishment);
                 Assert.Equal(expectedEstablishment.URN, actualEstablishment.URN);
                 Assert.Equal(expectedEstablishment.EstablishmentName, actualEstablishment.EstablishmentName);
-            }            
+            }
         }
 
         [Fact]

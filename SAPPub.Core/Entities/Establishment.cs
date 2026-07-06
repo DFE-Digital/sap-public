@@ -71,7 +71,7 @@ public class Establishment
 
     public string TotalPupils { get; set; } = string.Empty;
 
-    public string TypeOfEstablishmentId { get; set; } = string.Empty;
+    public int? TypeOfEstablishmentId { get; set; }
 
     public string TypeOfEstablishmentName { get; set; } = string.Empty;
 

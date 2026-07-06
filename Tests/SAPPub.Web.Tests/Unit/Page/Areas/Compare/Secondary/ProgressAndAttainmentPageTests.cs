@@ -102,7 +102,7 @@ public class ProgressAndAttainmentPageTests : PageTestsBase
                 new EstablishmentTestBuilder()
                     .WithURN("123456")
                     .WithIsKeyStage4(true)
-                    .WithTypeOfEstablishmentId("7")
+                    .WithTypeOfEstablishmentId(7)
                     .BuildServiceModel());
 
         // Act

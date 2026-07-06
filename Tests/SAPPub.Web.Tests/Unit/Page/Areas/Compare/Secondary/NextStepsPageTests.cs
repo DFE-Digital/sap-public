@@ -114,7 +114,7 @@ public class NextStepsPageTests : PageTestsBase
                 new EstablishmentTestBuilder()
                     .WithURN("119052")
                     .WithIsKeyStage4(true)
-                    .WithTypeOfEstablishmentId("7")
+                    .WithTypeOfEstablishmentId(7)
                     .BuildServiceModel());
 
         // Act

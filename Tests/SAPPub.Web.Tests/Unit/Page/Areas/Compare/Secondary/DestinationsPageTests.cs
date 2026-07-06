@@ -116,7 +116,7 @@ public class DestinationsPageTests : PageTestsBase
                 new EstablishmentTestBuilder()
                     .WithURN("100279")
                     .WithIsKeyStage4(true)
-                    .WithTypeOfEstablishmentId("7")
+                    .WithTypeOfEstablishmentId(7)
                     .BuildServiceModel());
 
         // Act

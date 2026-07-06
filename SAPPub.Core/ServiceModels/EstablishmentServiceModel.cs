@@ -3,6 +3,7 @@ using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.KS4.Workforce;
+using SAPPub.Core.Enums;
 using SAPPub.Core.Helpers;
 
 namespace SAPPub.Core.ServiceModels;
@@ -83,7 +84,7 @@ public class EstablishmentServiceModel
 
     public string TotalPupils { get; set; } = string.Empty;
 
-    public string TypeOfEstablishmentId { get; set; } = string.Empty;
+    public TypeOfEstablishment TypeOfEstablishment { get; set; }
 
     public string TypeOfEstablishmentName { get; set; } = string.Empty;
 
@@ -117,7 +118,7 @@ public class EstablishmentServiceModel
 
     public bool IsKS5 { get; set; }
 
-    public bool IsSpecialSchool => new List<string> { "7", "8", "10", "12", "33", "36", "44" }.Contains(TypeOfEstablishmentId);
+    public bool IsSpecialSchool { get; set; }
 
     public EstablishmentPerformance KS4Performance { get; set; } = new();
 
@@ -131,8 +132,6 @@ public class EstablishmentServiceModel
 
     public EnglandDestinations EnglandDestinations { get; set; } = new();
 
-    public EstablishmentAbsence Absence { get; set; } = new(); // Will eventually need one per phase
-
     public LAAbsence LAAbsence { get; set; } = new();
 
     public EnglandAbsence EnglandAbsence { get; set; } = new();
@@ -141,6 +140,12 @@ public class EstablishmentServiceModel
 
     public static EstablishmentServiceModel Map(Establishment e)
     {
+        var typeOfEstablishment = e.TypeOfEstablishmentId == null
+            ? TypeOfEstablishment.Unknown
+            : Enum.IsDefined<TypeOfEstablishment>((TypeOfEstablishment)e.TypeOfEstablishmentId)
+                ? (TypeOfEstablishment)e.TypeOfEstablishmentId
+                : TypeOfEstablishment.Unknown;
+
         return new()
         {
             URN = e.URN,
@@ -175,7 +180,15 @@ public class EstablishmentServiceModel
             ReligiousCharacterName = e.ReligiousCharacterName,
             TelephoneNum = e.TelephoneNum,
             TotalPupils = e.TotalPupils,
-            TypeOfEstablishmentId = e.TypeOfEstablishmentId,
+            TypeOfEstablishment = typeOfEstablishment,
+            IsSpecialSchool = e.TypeOfEstablishmentId == null ? false : new List<TypeOfEstablishment> {
+                TypeOfEstablishment.CommunitySpecialSchool,
+                TypeOfEstablishment.NonMaintainedSpecialSchool,
+                TypeOfEstablishment.OtherIndependentSpecialSchool,
+                TypeOfEstablishment.FoundationSpecialSchool,
+                TypeOfEstablishment.AcademySpecialSponsorLed,
+                TypeOfEstablishment.FreeSchoolsSpecial,
+                TypeOfEstablishment.AcademySpecialConverter }.Contains(typeOfEstablishment),
             TypeOfEstablishmentName = e.TypeOfEstablishmentName,
             EstablishmentTypeGroupId = e.EstablishmentTypeGroupId,
             EstablishmentTypeGroupName = e.EstablishmentTypeGroupName,
@@ -191,7 +204,7 @@ public class EstablishmentServiceModel
             SenTypes = e.SenTypes,
             IsKS2 = e.IsKS2,
             IsKS4 = e.IsKS4,
-            IsKS5 = e.IsKS5,
+            IsKS5 = e.IsKS5
         };
     }
 }
