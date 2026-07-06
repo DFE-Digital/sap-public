@@ -14,6 +14,7 @@ using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Areas.Compare.Controllers;
 using SAPPub.Web.Areas.Compare.ViewModels.Secondary;
 using static SAPPub.Web.Constants.Constants;
+using SAPPub.Web.Helpers;
 
 namespace SAPPub.Web.Tests.Unit.Areas.Compare.Controllers;
 
@@ -23,6 +24,7 @@ public class SecondaryControllerTests
     private readonly Mock<IDestinationsComparisonService> _mockDestinationsService = new();
     private readonly Mock<IAboutSchoolService> _mockAboutSchoolService = new();
     private readonly Mock<IEnglishAndMathsComparisionService> _mockEnglishAndMathsComparisonService = new();
+    private readonly Mock<IAttainmentAndProgressComparisionService> _mockAttainmentAndProgressComparisionService = new();
     private readonly Mock<IEstablishmentService> _mockEstablishmentService = new();
 
     private List<string> _urns = ["123456", "234567"];
@@ -87,20 +89,66 @@ public class SecondaryControllerTests
     public async Task AcademicPerformancePupilProgressAndAttainment_ReturnsViewResultWithCorrectModel()
     {
         // Arrange
-        var controller = new SecondaryController();
-        var urn1 = "123456";
-        var urn2 = "234567";
-        var urnList = new List<string> { urn1, urn2 };
+        var englandPercentage = 50.0;
+        var establishmentAttainments = _urns.Select(urn =>
+            new SchoolAttainmentAndProgressDetails
+            {
+                Urn = urn,               
+                Attainment8Score = new Bogus.Faker().Random.Double(5, 100)
+            }).ToList();
+
+        var attainmentsResultsModel = new AttainmentAndProgressComparisionResultsModel
+        {
+            SchoolDetails = establishmentAttainments,
+            EnglandAverage = englandPercentage,
+            
+        };
+
+        _mockAttainmentAndProgressComparisionService
+            .Setup(s => s.GetComparisionResultsAsync(_urns, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(attainmentsResultsModel);
 
         // Act
-        var result = await controller.AcademicPerformancePupilAttainment(urnList) as ViewResult;
+        var result = await _controllerUnderTest.AcademicPerformancePupilAttainment(_mockAttainmentAndProgressComparisionService.Object, _urns, It.IsAny<CancellationToken>()) as ViewResult;
 
         // Assert
+        // Assert
         Assert.NotNull(result);
-        var model = result.Model as CompareAcademicPerformancePupilAttainmentViewModel;
-        Assert.NotNull(model);
-        Assert.Equal(2, model.URNs.Count);
-        Assert.Equal(model.RouteQueryString, $"?urns={urn1}&urns={urn2}");
+        var viewModel = result.Model as CompareAcademicPerformancePupilAttainmentViewModel;
+        Assert.NotNull(viewModel);
+        Assert.Equal(2, viewModel.URNs.Count);
+
+        var orderedEstablishments = (
+            _httpContext.Items["Establishments"] as List<Establishment>)?
+            .OrderBy(e => e.EstablishmentName).ToList();
+
+        Assert.Collection(viewModel.SchoolDetails.Select(s => s.URN),
+            first => Assert.Equal(orderedEstablishments![0].URN, first),
+            second => Assert.Equal(orderedEstablishments![1].URN, second)
+        );
+
+        for (int i = 0; i < orderedEstablishments!.Count; i++)
+        {            
+            Assert.Contains(viewModel.SchoolDetails, d =>
+                d.URN == orderedEstablishments![i].URN &&
+                d.SchoolName == orderedEstablishments[i].EstablishmentName
+                );
+
+            var expectedSchoolDetails = attainmentsResultsModel.SchoolDetails.FirstOrDefault(s => s.Urn == orderedEstablishments[i].URN);
+            Assert.NotNull(expectedSchoolDetails);
+
+            var attainment8ContextSentence = CommonHelper.EstablishmentAttainment8ContextStatement(expectedSchoolDetails.Attainment8Score);
+            var expectedAttainment8ScoreContextDescription = attainment8ContextSentence != null ? $"Pupils generally scored the equivalent of {attainment8ContextSentence} in their 8 best GCSE-level subjects." : "Not available";
+
+            Assert.Equal(expectedSchoolDetails.Attainment8Score, viewModel.SchoolDetails.ToList()[i].Attainment8Score);
+            Assert.Equal(expectedAttainment8ScoreContextDescription, viewModel.SchoolDetails.ToList()[i].Attainment8ScoreContextDescription.Value);
+        }
+
+        var englandAttainment8ContextSentence = CommonHelper.EstablishmentAttainment8ContextStatement(englandPercentage);
+        var expectedEnglandAttainment8ScoreContextDescription = $"Pupils generally scored the equivalent of {englandAttainment8ContextSentence} in their 8 best GCSE-level subjects.";
+
+        Assert.Equal(englandPercentage, viewModel.EnglandPercentage);
+        Assert.Equal(expectedEnglandAttainment8ScoreContextDescription, viewModel.EnglandAttainment8ScoreContextDescription.Value);
     }
 
     [Fact]

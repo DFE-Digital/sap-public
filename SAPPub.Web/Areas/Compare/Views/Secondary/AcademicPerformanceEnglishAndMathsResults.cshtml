@@ -4,7 +4,7 @@
 @using SAPPub.Web.Constants;
 
 @{
-    ViewData["Header"] = "Academic Perfomance";
+    ViewData["Header"] = "Academic Performance";
     ViewData["SubHeader"] = PageTitleConstants.SecondarySchoolPageTitles.EnglishAndMathsResults;
     ViewData["Title"] = $"Compare - {ViewData["SubHeader"]}";
 }
@@ -20,7 +20,7 @@
 
     <div class="govuk-grid-column-three-quarters">
         <h1 class="govuk-heading-l">
-            <span class="govuk-caption-l">Comparing your schools</span>
+            <span class="govuk-caption-l">@Constants.CompareYourSchools</span>
             @ViewData["Header"]
         </h1>
 
@@ -171,10 +171,8 @@
         <p class="govuk-body">
             When researching, contacting or visiting a school, you may want to ask:
         </p>
-        <ul class="govuk-list govuk-list--bullet">
-            <li>
-                what subjects do pupils tend to do well in at this school?
-            </li>
+
+        <ul class="govuk-list govuk-list--bullet">            
             <li>
                 how does the school help pupils who need extra support in English and maths?
             </li>

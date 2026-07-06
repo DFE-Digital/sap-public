@@ -4,7 +4,7 @@
 @using SAPPub.Web.ViewComponents.VerticalNavigationCompareSecondary
 
 @{
-    ViewData["Header"] = "Academic Perfomance";
+    ViewData["Header"] = "Academic Performance";
     ViewData["SubHeader"] = PageTitleConstants.SecondarySchoolPageTitles.PupilAttainment;
     ViewData["Title"] = $"Compare - {ViewData["SubHeader"]}";
 }
@@ -20,8 +20,8 @@
 
     <div class="govuk-grid-column-three-quarters">
         <h1 class="govuk-heading-l">
-            <span class="govuk-caption-l">Comparing your schools</span>
-            Academic Peformance
+            <span class="govuk-caption-l">@Constants.CompareYourSchools</span>
+            @ViewData["Header"]
         </h1>
 
         <p class="govuk-body">
@@ -39,6 +39,84 @@
                 </li>
             </ul>
         </nav>
+
+        <h2 class="govuk-heading-l">Attainment 8 for the previous academic year</h2>
+        
+        <p class="govuk-body">
+            Information in this section is for the 2024 to 2025 academic year.
+        </p>
+
+        <p class="govuk-body">
+            Attainment 8 is used to assess a pupil’s average achievement across their 8 best GCSE-level subjects.
+        </p>
+
+        <govuk-details id="details-attainment8">
+            <govuk-details-summary>
+                Find out more about Attainment 8
+            </govuk-details-summary>
+            <govuk-details-text>
+                <p class="govuk-body">
+                    The 8 subjects that are used in Attainment 8 are split into 3 groups:
+                </p>
+
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>
+                        English and maths, which are both double-weighted
+                    </li>
+                    <li>
+                        EBacc subjects are a group of GCSE subjects, including sciences, geography, history and languages, that help students gain a broad set of knowledge and skills.
+                    </li>
+                    <li>
+                        open group which includes any other approved GCSEs or vocational qualifications
+                    </li>
+                </ul>
+
+                <p class="govuk-body">
+                    Each GCSE grade is given a point score (for example grade 9 = 9 points, grade 8 = 8 points, and so on).
+                    The scores from the best 8 subjects (with English and maths counting twice) are added together to give the Attainment 8 score.
+                </p>
+            </govuk-details-text>
+        </govuk-details>
+
+        <table id="attainment-table" class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">School</th>
+                    <th scope="col" class="govuk-table__header">Score</th>
+                    <th scope="col" class="govuk-table__header">Meaning</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                @foreach (var schoolDetail in Model.SchoolDetails)
+                {
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">@schoolDetail.SchoolName</th>
+                        <td class="govuk-table__cell">@(schoolDetail.Attainment8Score.HasValue? schoolDetail.Attainment8Score : Constants.NotAvailable)</td>
+                        <td class="govuk-table__cell">@schoolDetail.Attainment8ScoreContextDescription.DisplayText()</td>
+                    </tr>
+                }
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">@Constants.EnglandAverage</th>
+                    <td class="govuk-table__cell">@(Model.EnglandPercentage.HasValue? Model.EnglandPercentage : Constants.NotAvailable)</td>
+                    <td class="govuk-table__cell">@Model.EnglandAttainment8ScoreContextDescription.DisplayText()</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3 class="govuk-heading-m">What you could ask schools about attainment</h3>
+
+        <p class="govuk-body">
+            When researching, contacting or visiting a school, you may want to ask:
+        </p>
+
+        <ul class="govuk-list govuk-list--bullet">
+            <li>
+                what are the differences in attainment between different groups of pupils, for example disadvantaged pupils or pupils with SEND?
+            </li>
+            <li>
+                how does the school support pupils with lower attainment?
+            </li>            
+        </ul>
 
         <govuk-pagination id="academic-performance-attainment-pagination">
             <govuk-pagination-previous href="@Url.RouteUrl(RouteConstants.CompareSecondaryAboutYourSchools, new { urns = Model.URNs })">About your schools</govuk-pagination-previous>
