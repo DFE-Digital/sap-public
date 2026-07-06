@@ -2,11 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SAPPub.Core.Entities;
-using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Helpers;
+using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.Compare;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels.KS4.Performance;
@@ -36,7 +37,7 @@ public class SecondaryControllerTests
                 .WithURN(urn)
                 .WithIsKeyStage4(true)
                 .WithSixthForm(true)
-                .Build())
+                .BuildServiceModel())
             .ToList();
 
         _controllerUnderTest.ControllerContext = new ControllerContext
@@ -57,8 +58,8 @@ public class SecondaryControllerTests
         var northing1 = "181746";
         var aboutSchoolsCompareModelList = new List<AboutSchoolComparisonModel>
             {
-                new() { Urn = urn1, SchoolName = "Test School", Easting = easting1, Northing = northing1 },
-                new() { Urn = urn2, SchoolName = "Test School 2" },
+                new() { Urn = urn1, SchoolName = "Test School", Website = " www.test-school.com ", Easting = easting1, Northing = northing1 },
+                new() { Urn = urn2, SchoolName = "Test School 2", Website = null },
             };
 
         _mockAboutSchoolService
@@ -70,18 +71,26 @@ public class SecondaryControllerTests
         // Act
         var result = await controller.AboutYourSchools(_mockAboutSchoolService.Object, urnList, It.IsAny<CancellationToken>()) as ViewResult;
 
-        // Assert
-        Assert.NotNull(result);
-        var model = result.Model as CompareAboutYourSchoolsViewModel;
-        Assert.NotNull(model);
-        Assert.Equal(2, model.URNs.Count);
-        Assert.Equal(model.RouteQueryString, $"?urns={urn1}&urns={urn2}");
-        Assert.Equal(longLat?.Latitude, model.MapData.FirstOrDefault()?.Lat);
-        Assert.Equal(longLat?.Longitude, model.MapData.FirstOrDefault()?.Lng);
-        Assert.Equal("Test School", model.MapData.FirstOrDefault()?.Name);
-        Assert.Equal(1, model.MapData?.Count());
-        Assert.Equal(2, model.CompareAboutSchools.Count());
-    }
+            // Assert
+            Assert.NotNull(result);
+            var model = result.Model as CompareAboutYourSchoolsViewModel;
+            Assert.NotNull(model);
+            Assert.Equal(2, model.URNs.Count);
+            Assert.Equal(model.RouteQueryString, $"?urns={urn1}&urns={urn2}");
+            Assert.Equal(longLat?.Latitude, model.MapData.FirstOrDefault()?.Lat);
+            Assert.Equal(longLat?.Longitude, model.MapData.FirstOrDefault()?.Lng);
+            Assert.Equal("Test School", model.MapData.FirstOrDefault()?.Name);
+            Assert.Equal(1, model.MapData?.Count());
+            Assert.Equal(2, model.CompareAboutSchools.Count());
+
+            var firstSchool = model.CompareAboutSchools.First(s => s.Urn == urn1);
+            Assert.True(firstSchool.Website.IsAvailable);
+            Assert.Equal("www.test-school.com", firstSchool.Website.Value);
+
+            var secondSchool = model.CompareAboutSchools.First(s => s.Urn == urn2);
+            Assert.True(secondSchool.Website.IsNotAvailable);
+            Assert.Null(secondSchool.Website.Value);
+        }
 
     [Fact]
     public async Task AcademicPerformancePupilProgressAndAttainment_ReturnsViewResultWithCorrectModel()
@@ -299,38 +308,38 @@ public class SecondaryControllerTests
         Assert.Equal([null, null, null], model.AllGcseOverTimeData.Datasets[2].Data);
     }
 
-        [Fact]
-        public async Task NextSteps_ReturnsViewResultWithCorrectModel()
-        {
-            // Arrange
-            var controller = new SecondaryController();
-            var urn1 = "111111";
-            var urn2 = "222222";
-            var schoolName1 = "zxy School";
-            var schoolName2 = "abc School";
-            var urnList = new List<string> { urn1, urn2 };
+    [Fact]
+    public async Task NextSteps_ReturnsViewResultWithCorrectModel()
+    {
+        // Arrange
+        var controller = new SecondaryController();
+        var urn1 = "111111";
+        var urn2 = "222222";
+        var schoolName1 = "zxy School";
+        var schoolName2 = "abc School";
+        var urnList = new List<string> { urn1, urn2 };
 
-            _mockEstablishmentService
-                .Setup(a => a.GetEstablishmentsAsync(It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(
-                [
-                    new() { URN = urn1, EstablishmentName = schoolName1 }, 
+        _mockEstablishmentService
+            .Setup(a => a.GetEstablishmentsAsync(It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+            [
+                new() { URN = urn1, EstablishmentName = schoolName1 },
                     new() { URN = urn2, EstablishmentName = schoolName2 }
-                ]);
+            ]);
 
-            // Act
-            var result = await controller
-                .NextSteps(_mockEstablishmentService.Object, urnList, It.IsAny<CancellationToken>()) as ViewResult;
+        // Act
+        var result = await controller
+            .NextSteps(_mockEstablishmentService.Object, urnList, It.IsAny<CancellationToken>()) as ViewResult;
 
-            // Assert
-            Assert.NotNull(result);
-            var model = result.Model as CompareNextStepsViewModel;
-            Assert.NotNull(model);
-            Assert.Equal(2, model.URNs.Count);
-            Assert.Equal(model.RouteQueryString, $"?urns={urn1}&urns={urn2}");
-            Assert.Equal(2, model.SchoolDetailList.Count());
-            Assert.Equal(schoolName2, model.SchoolDetailList?.FirstOrDefault()?.EstablishmentName);
-        }
+        // Assert
+        Assert.NotNull(result);
+        var model = result.Model as CompareNextStepsViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(2, model.URNs.Count);
+        Assert.Equal(model.RouteQueryString, $"?urns={urn1}&urns={urn2}");
+        Assert.Equal(2, model.SchoolDetailList.Count());
+        Assert.Equal(schoolName2, model.SchoolDetailList?.FirstOrDefault()?.EstablishmentName);
+    }
 
     [Fact]
     public async Task Destinations_HasFullData_ReturnsViewResultWithCorrectModel()
@@ -363,7 +372,7 @@ public class SecondaryControllerTests
         Assert.Equal(2, viewModel.URNs.Count);
 
         var orderedEstablishments = (
-            _httpContext.Items["Establishments"] as List<Establishment>)?
+            _httpContext.Items["Establishments"] as List<EstablishmentServiceModel>)?
             .OrderBy(e => e.EstablishmentName).ToList();
 
         Assert.Collection(viewModel.SchoolDetails.Select(s => s.URN),

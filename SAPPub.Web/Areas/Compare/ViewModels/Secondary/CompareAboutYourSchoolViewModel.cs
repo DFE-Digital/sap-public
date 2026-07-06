@@ -8,7 +8,7 @@ public class CompareAboutYourSchoolViewModel
 
     public required string SchoolName { get; set; }
 
-    public string? Website { get; set; }
+    public required DisplayField<string> Website { get; set; }
 
     public required DisplayField<string> Address { get; set; }
 

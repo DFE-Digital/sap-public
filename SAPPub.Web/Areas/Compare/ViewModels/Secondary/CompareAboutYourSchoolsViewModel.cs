@@ -27,7 +27,7 @@ public class CompareAboutYourSchoolsViewModel : CompareSecondarySchoolBaseViewMo
                 {
                     Urn = r.Urn,
                     SchoolName = r.SchoolName,
-                    Website = r.Website,
+                    Website = r.Website.ToDisplayField(),
                     Address = r.Address.ToDisplayField(),
                     LocalAuthority = r.LocalAuthority,
                     LocalAuthorityName = r.LocalAuthorityName,

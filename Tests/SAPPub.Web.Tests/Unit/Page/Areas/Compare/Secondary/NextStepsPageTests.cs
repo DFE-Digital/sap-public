@@ -1,6 +1,6 @@
 ﻿using Moq;
-using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Services;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
 
@@ -22,10 +22,20 @@ public class NextStepsPageTests : PageTestsBase
         // set up the mock establishment service to return establishments for the URNs in the query string
         // this is used by the page validation filter to determine if the establishments are secondary and should be compared
         _establishmentService = UseMock<IEstablishmentService>();
-        var establishmentList = (new List<Establishment>
+        var establishmentList = (new List<EstablishmentServiceModel>
         {
-            new EstablishmentTestBuilder().WithURN("119052").WithEstablishmentName(schoolName1).WithTelephoneNum(telephone1).WithWebsite(website1).WithIsKeyStage4(true).Build(),
-            new EstablishmentTestBuilder().WithURN("124500").WithEstablishmentName(schoolName2).WithIsKeyStage4(true).Build(),
+            new EstablishmentTestBuilder()
+                .WithURN("119052")
+                .WithEstablishmentName(schoolName1)
+                .WithTelephoneNum(telephone1)
+                .WithWebsite(website1)
+                .WithIsKeyStage4(true)
+                .BuildServiceModel(),
+            new EstablishmentTestBuilder()
+                .WithURN("124500")
+                .WithEstablishmentName(schoolName2)
+                .WithIsKeyStage4(true)
+                .BuildServiceModel(),
         }).ToList();
 
 

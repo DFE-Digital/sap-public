@@ -41,7 +41,7 @@ public class SecondarySchoolControllerTests
     private readonly Mock<IAboutSchoolService> _mockAboutSchoolService = new();
     private readonly Mock<IAttendanceService> _mockAttendanceService = new();
     private readonly SecondarySchoolController _controller;
-    private Establishment _fakeEstablishment;
+    private EstablishmentServiceModel _fakeEstablishment;
 
     private List<EstablishmentCoreSubjectEntries.SubjectEntry> CoreSubjects =
         new()
@@ -192,7 +192,7 @@ public class SecondarySchoolControllerTests
             .WithSenTypes("VI - Visual Impairment, HI - Hearing Impairment")
             .WithIsKeyStage2(true)
             .WithIsKeyStage4(true)
-            .Build();
+            .BuildServiceModel();
 
         _mockLogger = new Mock<ILogger<SecondarySchoolController>>();
         _mockEstablishmentService = new();

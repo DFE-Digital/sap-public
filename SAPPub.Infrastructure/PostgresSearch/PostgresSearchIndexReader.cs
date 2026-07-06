@@ -1,9 +1,9 @@
-﻿using SAPPub.Core.Entities;
+﻿using SAPPub.Core.Extensions;
 using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Services.Search;
-using SAPPub.Core.ServiceModels.Search.InputModels;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.Search;
-using SAPPub.Core.Extensions;
+using SAPPub.Core.ServiceModels.Search.InputModels;
 
 namespace SAPPub.Infrastructure.PostgresSearch;
 
@@ -22,7 +22,7 @@ public class PostgresSchoolSearchIndexReader : ISchoolSearchIndexReader
 
         return new SchoolSearchResults(
             Count: totalCount,
-            Results: results.Select(e => e.ToSchoolSearchDocument()).ToList()
+            Results: [.. results.Select(e => EstablishmentServiceModel.Map(e).ToSchoolSearchDocument())]
         );
     }
 }

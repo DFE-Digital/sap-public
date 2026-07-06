@@ -3,6 +3,7 @@ using SAPPub.Core.Entities;
 using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Absence;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.Services.KS4.Attendance;
 
 namespace SAPPub.Core.Tests.Services.KS4.Attendance;
@@ -15,7 +16,7 @@ public class AttendanceServiceTests
     private readonly Mock<IEnglandAbsenceService> _mockEnglandAbsenceService;
     private readonly AttendanceService _service;
 
-    private readonly Establishment fakeEstablishment = new()
+    private readonly EstablishmentServiceModel fakeEstablishment = new()
     {
         URN = "123456",
         EstablishmentName = "Test Establishment",
@@ -60,7 +61,7 @@ public class AttendanceServiceTests
         var urn = "99999";
         _mockEstablishmentService
             .Setup(r => r.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Establishment()); // not found
+            .ReturnsAsync(new EstablishmentServiceModel()); // not found
 
         // Act
         var result = await _service.GetAttendenceDetailsAsync(urn, CancellationToken.None);

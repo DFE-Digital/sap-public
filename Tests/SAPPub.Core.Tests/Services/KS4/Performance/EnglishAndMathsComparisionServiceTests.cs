@@ -3,6 +3,7 @@ using SAPPub.Core.Entities;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.Services.KS4.Performance;
 
 namespace SAPPub.Core.Tests.Services.KS4.Performance;
@@ -14,7 +15,7 @@ public class EnglishAndMathsComparisionServiceTests
     private readonly Mock<IEnglandPerformanceService> _mockEnglandPerformanceService;
     private readonly EnglishAndMathsComparisionService _service;
 
-    private readonly List<Establishment> fakeEstablishments = 
+    private readonly List<EstablishmentServiceModel> fakeEstablishments = 
         [
             new()
             {

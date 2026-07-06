@@ -1,11 +1,12 @@
 ﻿using SAPPub.Core.Entities;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.Search;
 
 namespace SAPPub.Core.Extensions;
 
 public static class EstablishmentExtensions
 {
-    public static SchoolSearchDocument ToSchoolSearchDocument(this Establishment e)
+    public static SchoolSearchDocument ToSchoolSearchDocument(this EstablishmentServiceModel e)
     {
         return new SchoolSearchDocument
         {

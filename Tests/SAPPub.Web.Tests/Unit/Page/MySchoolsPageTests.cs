@@ -3,6 +3,7 @@ using Moq;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Models.MySchools;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
@@ -29,7 +30,7 @@ public class MySchoolsPageTests : PageTestsBase
         _comparisonService.Setup(s => s.GetSavedEstablishments())
             .Returns(new List<string> { "123456" });
         _establishmentService.Setup(s => s.GetEstablishmentAsync("123456", It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Establishment { URN = "123456", EstablishmentName = "Test School" });
+            .ReturnsAsync(new EstablishmentServiceModel { URN = "123456", EstablishmentName = "Test School" });
 
         // Act
         var document = await Fixture.BrowseToPage(_pageRoute);
@@ -42,12 +43,12 @@ public class MySchoolsPageTests : PageTestsBase
     [Fact]
     public async Task MySchoolsListPage_ShowsSchoolsListOrderedAlphabetically()
     {
-        var establishmentList = (new List<Establishment>
+        var establishmentList = (new List<EstablishmentServiceModel>
         {
-            new EstablishmentTestBuilder().WithURN("123456").WithEstablishmentName("Charlie").WithFullAddress().WithStatusCode(EstablishmentStatus.Open).Build(),
-            new EstablishmentTestBuilder().WithURN("123457").WithEstablishmentName("Alpha").WithFullAddress().WithStatusCode(EstablishmentStatus.Closed).Build(),
-            new EstablishmentTestBuilder().WithURN("123458").WithEstablishmentName("Bravo").WithFullAddress().WithStatusCode(EstablishmentStatus.Open).Build(),
-            new EstablishmentTestBuilder().WithURN("123459").WithEstablishmentName("Delta").WithFullAddress().WithStatusCode(EstablishmentStatus.Open).Build(),
+            new EstablishmentTestBuilder().WithURN("123456").WithEstablishmentName("Charlie").WithFullAddress().WithStatusCode(EstablishmentStatus.Open).BuildServiceModel(),
+            new EstablishmentTestBuilder().WithURN("123457").WithEstablishmentName("Alpha").WithFullAddress().WithStatusCode(EstablishmentStatus.Closed).BuildServiceModel(),
+            new EstablishmentTestBuilder().WithURN("123458").WithEstablishmentName("Bravo").WithFullAddress().WithStatusCode(EstablishmentStatus.Open).BuildServiceModel(),
+            new EstablishmentTestBuilder().WithURN("123459").WithEstablishmentName("Delta").WithFullAddress().WithStatusCode(EstablishmentStatus.Open).BuildServiceModel(),
         }).ToList();
 
         _comparisonService.Setup(s => s.GetSavedEstablishments())
@@ -78,9 +79,9 @@ public class MySchoolsPageTests : PageTestsBase
     {
         // Arrange
         var establishmentBuilder = new EstablishmentTestBuilder();
-        var establishmentList = new List<Establishment>
+        var establishmentList = new List<EstablishmentServiceModel>
         {
-            establishmentBuilder.WithURN("123457").WithFullAddress().WithStatusCode(EstablishmentStatus.Open).Build(),
+            establishmentBuilder.WithURN("123457").WithFullAddress().WithStatusCode(EstablishmentStatus.Open).BuildServiceModel(),
         };
 
         _comparisonService.Setup(s => s.GetSavedEstablishments())
@@ -114,10 +115,10 @@ public class MySchoolsPageTests : PageTestsBase
     {
         // Arrange
         var establishmentBuilder = new EstablishmentTestBuilder();
-        var establishmentList = (new List<Establishment>
+        var establishmentList = (new List<EstablishmentServiceModel>
         {
-            new EstablishmentTestBuilder().WithURN("123457").WithFullAddress().WithStatusCode(EstablishmentStatus.Closed).Build(),
-            new EstablishmentTestBuilder().WithURN("123458").WithFullAddress().WithStatusCode(EstablishmentStatus.Closed).WithClosedDate(new DateOnly(2020, 1, 1)).Build()
+            new EstablishmentTestBuilder().WithURN("123457").WithFullAddress().WithStatusCode(EstablishmentStatus.Closed).BuildServiceModel(),
+            new EstablishmentTestBuilder().WithURN("123458").WithFullAddress().WithStatusCode(EstablishmentStatus.Closed).WithClosedDate(new DateOnly(2020, 1, 1)).BuildServiceModel()
         }).OrderBy(e => e.EstablishmentName).ToList();
 
         _comparisonService.Setup(s => s.GetSavedEstablishments())
@@ -156,10 +157,10 @@ public class MySchoolsPageTests : PageTestsBase
     public async Task MySchoolsListPage_UrnIsNotInSavedEstablishments_IgnoresUrn()
     {
         var establishmentBuilder = new EstablishmentTestBuilder();
-        var establishmentsFromRepository = (new List<Establishment>
+        var establishmentsFromRepository = (new List<EstablishmentServiceModel>
         {
-            establishmentBuilder.WithURN("123456").WithFullAddress().WithStatusCode(EstablishmentStatus.Open).Build(),
-            establishmentBuilder.WithURN("123457").WithFullAddress().WithStatusCode(EstablishmentStatus.Open).Build()
+            establishmentBuilder.WithURN("123456").WithFullAddress().WithStatusCode(EstablishmentStatus.Open).BuildServiceModel(),
+            establishmentBuilder.WithURN("123457").WithFullAddress().WithStatusCode(EstablishmentStatus.Open).BuildServiceModel()
         }).OrderBy(e => e.EstablishmentName).ToList();
 
         var establishmentsStoredByUser = establishmentsFromRepository.Select(e => e.URN).ToList();
@@ -187,15 +188,15 @@ public class MySchoolsPageTests : PageTestsBase
     [InlineData(7)]
     public async Task MySchoolsListPage_CompareSelection_InvalidAmountOfEstablishmentsSelected_ShowsErrorMessages(int selectedEstablishmentsCount)
     {
-        var establishmentList = (new List<Establishment>
+        var establishmentList = (new List<EstablishmentServiceModel>
         {
-            new EstablishmentTestBuilder().WithURN("123456").Build(),
-            new EstablishmentTestBuilder().WithURN("123457").Build(),
-            new EstablishmentTestBuilder().WithURN("123458").Build(),
-            new EstablishmentTestBuilder().WithURN("123459").Build(),
-            new EstablishmentTestBuilder().WithURN("123460").Build(),
-            new EstablishmentTestBuilder().WithURN("123461").Build(),
-            new EstablishmentTestBuilder().WithURN("123462").Build()
+            new EstablishmentTestBuilder().WithURN("123456").BuildServiceModel(),
+            new EstablishmentTestBuilder().WithURN("123457").BuildServiceModel(),
+            new EstablishmentTestBuilder().WithURN("123458").BuildServiceModel(),
+            new EstablishmentTestBuilder().WithURN("123459").BuildServiceModel(),
+            new EstablishmentTestBuilder().WithURN("123460").BuildServiceModel(),
+            new EstablishmentTestBuilder().WithURN("123461").BuildServiceModel(),
+            new EstablishmentTestBuilder().WithURN("123462").BuildServiceModel()
         }).ToList();
 
         _comparisonService.Setup(s => s.GetSavedEstablishments())
@@ -228,12 +229,12 @@ public class MySchoolsPageTests : PageTestsBase
     [Fact]
     public async Task MySchoolsListPage_CompareSelection_TwoSelected_Redirects()
     {
-        var establishmentList = (new List<Establishment>
+        var establishmentList = (new List<EstablishmentServiceModel>
         {
-            new EstablishmentTestBuilder().WithURN("123456").Build(),
-            new EstablishmentTestBuilder().WithURN("123457").Build(),
-            new EstablishmentTestBuilder().WithURN("123458").Build(),
-            new EstablishmentTestBuilder().WithURN("123459").Build(),
+            new EstablishmentTestBuilder().WithURN("123456").BuildServiceModel(),
+            new EstablishmentTestBuilder().WithURN("123457").BuildServiceModel(),
+            new EstablishmentTestBuilder().WithURN("123458").BuildServiceModel(),
+            new EstablishmentTestBuilder().WithURN("123459").BuildServiceModel(),
         }).ToList();
 
         _comparisonService.Setup(s => s.GetSavedEstablishments())

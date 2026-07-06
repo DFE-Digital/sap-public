@@ -9,6 +9,7 @@ using SAPPub.Core.ServiceModels.Search;
 using SAPPub.Core.ServiceModels.Search.Results;
 using SAPPub.Core.Services.Search;
 using SearchQuery = SAPPub.Core.ServiceModels.Search.InputModels.SchoolSearchServiceQuery;
+using SAPPub.Core.ServiceModels;
 
 namespace SAPPub.Core.Tests.Services.Search;
 
@@ -17,7 +18,7 @@ public class SchoolSearchServiceTests
     private readonly Mock<ISchoolSearchIndexReader> _mockSchoolSearchIndexReader = new();
     private readonly Mock<IPostcodeLookupService> _mockPostcodeLookupService = new();
 
-    private readonly Establishment establishment1 = new()
+    private readonly EstablishmentServiceModel establishment1 = new()
     {
         URN = "123456",
         EstablishmentName = "Test School",
@@ -26,7 +27,7 @@ public class SchoolSearchServiceTests
         ReligiousCharacterName = "None"
     };
 
-    private readonly Establishment establishment2 = new()
+    private readonly EstablishmentServiceModel establishment2 = new()
     {
         URN = "223456",
         EstablishmentName = "A Test School 2",
@@ -35,12 +36,12 @@ public class SchoolSearchServiceTests
         ReligiousCharacterName = "Muslim"
     };
 
-    private List<Establishment> CreateSearchResults(int count)
+    private List<EstablishmentServiceModel> CreateSearchResults(int count)
     {
-        var results = new List<Establishment>();
+        var results = new List<EstablishmentServiceModel>();
         for (int i = 1; i <= count; i++)
         {
-            var establishment = new Establishment
+            var establishment = new EstablishmentServiceModel
             {
                 URN = i.ToString(),
                 EstablishmentName = $"A Test School {i}",
@@ -53,7 +54,7 @@ public class SchoolSearchServiceTests
         return results;
     }
 
-    private SchoolSearchResults ToSchoolSearchResults(List<Establishment> establishments)
+    private SchoolSearchResults ToSchoolSearchResults(List<EstablishmentServiceModel> establishments)
     {
         return new SchoolSearchResults(
             Count: establishments.Count,
@@ -66,11 +67,11 @@ public class SchoolSearchServiceTests
     {
         // Arrange
         var searchQuery = new SearchQuery() { Name = "test school", PageNumber = 1 };
-        var establishments = new List<Establishment> { establishment1, establishment2 };
+        var establishments = new List<EstablishmentServiceModel> { establishment1, establishment2 };
         var schoolSearchResults = ToSchoolSearchResults(establishments);
 
         _mockSchoolSearchIndexReader
-            .Setup(s => s.SearchAsync(It.IsAny<SAPPub.Core.ServiceModels.Search.InputModels.SearchQuery>(), Constants.PageSize))
+            .Setup(s => s.SearchAsync(It.IsAny<ServiceModels.Search.InputModels.SearchQuery>(), Constants.PageSize))
             .ReturnsAsync(schoolSearchResults);
 
         var service = new SchoolSearchService(_mockSchoolSearchIndexReader.Object, _mockPostcodeLookupService.Object);
@@ -144,10 +145,10 @@ public class SchoolSearchServiceTests
         var searchLatitude = 54.9783f;
         var searchLongitude = -1.6174f;
         var searchQuery = new SearchQuery() { Location = searchPostcode, Distance = distance, PageNumber = 1 };
-        var allEstablishments = new List<Establishment>
+        var allEstablishments = new List<EstablishmentServiceModel>
         {
-            new Establishment { URN = "123456", EstablishmentName = "Test School", AddressStreet = "123 Test Street", GenderName = "Mixed", ReligiousCharacterName = "None" },
-            new Establishment { URN = "223456", EstablishmentName = "A Test School 2", AddressStreet = "123 Test Street 2", GenderName = "Girls", ReligiousCharacterName = "Muslim" }
+            new EstablishmentServiceModel { URN = "123456", EstablishmentName = "Test School", AddressStreet = "123 Test Street", GenderName = "Mixed", ReligiousCharacterName = "None" },
+            new EstablishmentServiceModel { URN = "223456", EstablishmentName = "A Test School 2", AddressStreet = "123 Test Street 2", GenderName = "Girls", ReligiousCharacterName = "Muslim" }
         };
         var filteredEstablishments = allEstablishments.Where(e => expectedUrns.Contains(e.URN)).ToList();
         var schoolSearchResults = ToSchoolSearchResults(filteredEstablishments);
@@ -234,7 +235,7 @@ public class SchoolSearchServiceTests
     {
         // Arrange
         var searchQuery = new SearchQuery() { Name = "test school", PageNumber = 1 };
-        var establishments = new List<Establishment> { new Establishment() };
+        var establishments = new List<EstablishmentServiceModel> { new EstablishmentServiceModel() };
         var schoolSearchResults = ToSchoolSearchResults(establishments);
 
         _mockSchoolSearchIndexReader
