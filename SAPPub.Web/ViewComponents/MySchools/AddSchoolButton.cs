@@ -11,7 +11,7 @@ public class AddSchoolButton(IMySchoolsListService mySchoolsListService, IFeatur
     private readonly IMySchoolsListService _mySchoolsListService = mySchoolsListService;
     private readonly IFeatureManager _featureManager = featureManager;
 
-    public async Task<IViewComponentResult> InvokeAsync(string urn, bool isSearchPage = false)
+    public async Task<IViewComponentResult> InvokeAsync(string urn, bool isSearchPage = false, bool isKS4 = true)
     {
         var viewModel = new AddSchoolButtonViewModel
         {
@@ -21,7 +21,7 @@ public class AddSchoolButton(IMySchoolsListService mySchoolsListService, IFeatur
             SaveText = isSearchPage ? Save : MySchoolsSave,
             IsSaved = _mySchoolsListService.IsSaved(urn),
             IsListLimitReached = _mySchoolsListService.IsListLimitReached(),
-            IsFeatureEnabled = await _featureManager.IsEnabledAsync(EstablishmentComparisonEnabled)
+            IsFeatureEnabled = isKS4 && await _featureManager.IsEnabledAsync(EstablishmentComparisonEnabled)
         };
 
         return View("~/ViewComponents/MySchools/AddSchoolButton/Default.cshtml", viewModel);

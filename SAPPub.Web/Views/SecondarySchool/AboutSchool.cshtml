@@ -42,7 +42,7 @@
         }
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">@ViewData["Header"]</h1>
-        @await Component.InvokeAsync("AddSchoolButton", new { urn = Model.URN })
+        @await Component.InvokeAsync("AddSchoolButton", new { urn = Model.URN, isKS4 = Model.IsKS4 })
 
         @if (Model.IsSchoolClosed)
         {
