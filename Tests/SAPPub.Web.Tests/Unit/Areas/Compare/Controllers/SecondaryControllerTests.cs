@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Helpers;
@@ -7,6 +6,7 @@ using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.Compare;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels.KS4.Performance;
@@ -26,12 +26,12 @@ public class SecondaryControllerTests
     private readonly Mock<IEstablishmentService> _mockEstablishmentService = new();
 
     private List<string> _urns = ["123456", "234567"];
-    private HttpContext _httpContext = new DefaultHttpContext();
+    private List<EstablishmentServiceModel> _establishments;
 
     public SecondaryControllerTests()
     {
         // The action filter adds establishments to the HttpContext.Items collection, so simulate that in the test setup
-        var establishments = _urns
+        _establishments = _urns
             .Select(urn => new EstablishmentTestBuilder()
                 .WithURN(urn)
                 .WithIsKeyStage4(true)
@@ -39,11 +39,7 @@ public class SecondaryControllerTests
                 .BuildServiceModel())
             .ToList();
 
-        //_controllerUnderTest.ControllerContext = new ControllerContext
-        //{
-        //    HttpContext = _httpContext
-        //};
-        _controllerUnderTest.Establishments = establishments;
+        _controllerUnderTest.Establishments = _establishments;
     }
 
     [Fact]
@@ -312,33 +308,23 @@ public class SecondaryControllerTests
     public async Task NextSteps_ReturnsViewResultWithCorrectModel()
     {
         // Arrange
-        var controller = new SecondaryController();
-        var urn1 = "111111";
-        var urn2 = "222222";
-        var schoolName1 = "zxy School";
-        var schoolName2 = "abc School";
-        var urnList = new List<string> { urn1, urn2 };
-
-        _mockEstablishmentService
-            .Setup(a => a.GetEstablishmentsAsync(It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(
-            [
-                new() { URN = urn1, EstablishmentName = schoolName1 },
-                    new() { URN = urn2, EstablishmentName = schoolName2 }
-            ]);
 
         // Act
-        var result = await controller
-            .NextSteps(_mockEstablishmentService.Object, urnList, It.IsAny<CancellationToken>()) as ViewResult;
+        var result = await _controllerUnderTest
+            .NextSteps(_mockEstablishmentService.Object, _urns, It.IsAny<CancellationToken>()) as ViewResult;
 
         // Assert
         Assert.NotNull(result);
         var model = result.Model as CompareNextStepsViewModel;
         Assert.NotNull(model);
         Assert.Equal(2, model.URNs.Count);
-        Assert.Equal(model.RouteQueryString, $"?urns={urn1}&urns={urn2}");
+        Assert.Equal(model.RouteQueryString, $"?urns={_urns[0]}&urns={_urns[1]}");
         Assert.Equal(2, model.SchoolDetailList.Count());
-        Assert.Equal(schoolName2, model.SchoolDetailList?.FirstOrDefault()?.EstablishmentName);
+        var orderedEstablishments = _establishments.OrderBy(e => e.EstablishmentName).ToList();
+        Assert.Collection(model.SchoolDetailList,
+            first => Assert.Equal(orderedEstablishments[0].EstablishmentName, first.EstablishmentName),
+            second => Assert.Equal(orderedEstablishments[1].EstablishmentName, second.EstablishmentName)
+        );
     }
 
     [Fact]
@@ -372,7 +358,7 @@ public class SecondaryControllerTests
         Assert.Equal(2, viewModel.URNs.Count);
 
         var orderedEstablishments =
-            _controllerUnderTest.Establishments
+            _establishments
             .OrderBy(e => e.EstablishmentName).ToList();
 
         Assert.Collection(viewModel.SchoolDetails.Select(s => s.URN),
