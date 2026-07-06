@@ -23,7 +23,6 @@ BEGIN;
 \ir 04_v_establishment_absence.sql
 \ir 04_v_establishment_destinations.sql
 \ir 04_v_establishment_performance.sql
-\ir 04_v_establishment_workforce.sql
 \ir 04_v_establishment_ks5_destinations.sql
 \ir 04_v_establishment_ks5_performance.sql
 \ir 04_v_establishment_ks2_attainment.sql
