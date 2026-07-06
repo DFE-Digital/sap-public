@@ -11,7 +11,7 @@ public class AddSchoolButton(IMySchoolsListService mySchoolsListService, IFeatur
     private readonly IMySchoolsListService _mySchoolsListService = mySchoolsListService;
     private readonly IFeatureManager _featureManager = featureManager;
 
-    public async Task<IViewComponentResult> InvokeAsync(string urn, bool isSearchPage = false, bool isKS4 = true)
+    public async Task<IViewComponentResult> InvokeAsync(string urn, bool isSearchPage = false, bool isKS4 = false)
     {
         var viewModel = new AddSchoolButtonViewModel
         {

@@ -93,8 +93,12 @@ namespace SAPPub.Infrastructure.Repositories
                 ? @"""Distance"" ASC, ""EstablishmentName"" ASC"
                 : @"""EstablishmentName"" ASC";
 
-            string selectFields = @"""URN"", ""EstablishmentName"", ""AddressStreet"", ""AddressLocality"", ""AddressAddress3"", ""AddressTown"", ""AddressPostcode"", ""GenderName"", ""ReligiousCharacterName"", ""StatusCode"", ""ClosedDate"", ""ISKS4"""; if (hasLocation)
+            string selectFields = @"""URN"", ""EstablishmentName"", ""AddressStreet"", ""AddressLocality"", ""AddressAddress3"", ""AddressTown"", ""AddressPostcode"", ""GenderName"", ""ReligiousCharacterName"", ""StatusCode"", ""ClosedDate"", ""ISKS4""";
+
+            if (hasLocation)
+            {
                 selectFields += @", ST_Distance(""geom"", ST_SetSRID(ST_MakePoint(@lng, @lat), 4326)::geography) AS ""Distance""";
+            }
 
             string whereClause = whereClauses.Count > 0
                 ? "WHERE " + string.Join(" AND ", whereClauses)

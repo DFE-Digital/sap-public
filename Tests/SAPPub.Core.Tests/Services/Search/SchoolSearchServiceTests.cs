@@ -23,7 +23,8 @@ public class SchoolSearchServiceTests
         EstablishmentName = "Test School",
         AddressStreet = "123 Test Street",
         GenderName = "Mixed",
-        ReligiousCharacterName = "None"
+        ReligiousCharacterName = "None",
+        IsKS4 = true
     };
 
     private readonly Establishment establishment2 = new()
@@ -32,7 +33,8 @@ public class SchoolSearchServiceTests
         EstablishmentName = "A Test School 2",
         AddressStreet = "123 Test Street 2",
         GenderName = "Girls",
-        ReligiousCharacterName = "Muslim"
+        ReligiousCharacterName = "Muslim",
+        IsKS4 = false
     };
 
     private List<Establishment> CreateSearchResults(int count)
@@ -93,6 +95,7 @@ public class SchoolSearchServiceTests
                 Assert.Equal(establishment1.Address, item.Address);
                 Assert.Equal(establishment1.GenderName, item.GenderName);
                 Assert.Equal(establishment1.ReligiousCharacterName, item.ReligiousCharacterName);
+                Assert.True(item.IsKS4);
             },
             item =>
             {
@@ -101,6 +104,7 @@ public class SchoolSearchServiceTests
                 Assert.Equal(establishment2.Address, item.Address);
                 Assert.Equal(establishment2.GenderName, item.GenderName);
                 Assert.Equal(establishment2.ReligiousCharacterName, item.ReligiousCharacterName);
+                Assert.False(item.IsKS4);
             });
     }
 
@@ -255,5 +259,6 @@ public class SchoolSearchServiceTests
         Assert.True(string.IsNullOrEmpty(singleResult.Address));
         Assert.True(string.IsNullOrEmpty(singleResult.GenderName));
         Assert.True(string.IsNullOrEmpty(singleResult.ReligiousCharacterName));
+        Assert.False(singleResult.IsKS4);
     }
 }

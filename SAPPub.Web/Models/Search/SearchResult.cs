@@ -29,7 +29,7 @@ public class SearchResult
             GenderName = serviceModel.GenderName ?? string.Empty,
             EstablishmentStatus = serviceModel.EstablishmentStatus,
             ClosedDate = serviceModel.ClosedDate.ToDisplayField(),
-            IsKS4 = serviceModel.IsKS4,
+            IsKS4 = serviceModel.IsKS4
         };
     }
 }
