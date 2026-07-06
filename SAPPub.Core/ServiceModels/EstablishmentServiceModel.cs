@@ -1,5 +1,4 @@
-﻿using SAPPub.Core.Entities;
-using SAPPub.Core.Entities.KS4.Absence;
+﻿using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.KS4.Workforce;
@@ -138,73 +137,73 @@ public class EstablishmentServiceModel
 
     public EstablishmentWorkforce Workforce { get; set; } = new(); // Will eventually need one per phase
 
-    public static EstablishmentServiceModel Map(Establishment e)
-    {
-        var typeOfEstablishment = e.TypeOfEstablishmentId == null
-            ? TypeOfEstablishment.Unknown
-            : Enum.IsDefined<TypeOfEstablishment>((TypeOfEstablishment)e.TypeOfEstablishmentId)
-                ? (TypeOfEstablishment)e.TypeOfEstablishmentId
-                : TypeOfEstablishment.Unknown;
+    //public static EstablishmentServiceModel Map(Establishment e)
+    //{
+    //    var typeOfEstablishment = e.TypeOfEstablishmentId == null
+    //        ? TypeOfEstablishment.Unknown
+    //        : Enum.IsDefined<TypeOfEstablishment>((TypeOfEstablishment)e.TypeOfEstablishmentId)
+    //            ? (TypeOfEstablishment)e.TypeOfEstablishmentId
+    //            : TypeOfEstablishment.Unknown;
 
-        return new()
-        {
-            URN = e.URN,
-            EstablishmentName = e.EstablishmentName,
-            TrustsId = e.TrustsId,
-            TrustName = e.TrustName,
-            AddressStreet = e.AddressStreet,
-            AddressLocality = e.AddressLocality,
-            AddressAddress3 = e.AddressAddress3,
-            AddressTown = e.AddressTown,
-            AddressCounty = e.AddressCounty,
-            AddressPostcode = e.AddressPostcode,
-            AdmissionsPolicyId = e.AdmissionsPolicyId,
-            AdmissionPolicy = e.AdmissionPolicy,
-            DistrictAdministrativeId = e.DistrictAdministrativeId,
-            DistrictAdministrativeName = e.DistrictAdministrativeName,
-            PhaseOfEducationId = e.PhaseOfEducationId,
-            PhaseOfEducationName = e.PhaseOfEducationName,
-            GenderId = e.GenderId,
-            GenderName = e.GenderName,
-            HeadteacherTitle = e.HeadteacherTitle,
-            HeadteacherFirstName = e.HeadteacherFirstName,
-            HeadteacherLastName = e.HeadteacherLastName,
-            HeadteacherPreferredJobTitle = e.HeadteacherPreferredJobTitle,
-            AgeRangeLow = e.AgeRangeLow,
-            AgeRangeHigh = e.AgeRangeHigh,
-            OfficialSixthFormId = e.OfficialSixthFormId,
-            LAId = e.LAId,
-            LAName = e.LAName,
-            GSSLACode = e.GSSLACode,
-            ReligiousCharacterId = e.ReligiousCharacterId,
-            ReligiousCharacterName = e.ReligiousCharacterName,
-            TelephoneNum = e.TelephoneNum,
-            TotalPupils = e.TotalPupils,
-            TypeOfEstablishment = typeOfEstablishment,
-            IsSpecialSchool = e.TypeOfEstablishmentId == null ? false : new List<TypeOfEstablishment> {
-                TypeOfEstablishment.CommunitySpecialSchool,
-                TypeOfEstablishment.NonMaintainedSpecialSchool,
-                TypeOfEstablishment.OtherIndependentSpecialSchool,
-                TypeOfEstablishment.FoundationSpecialSchool,
-                TypeOfEstablishment.AcademySpecialSponsorLed,
-                TypeOfEstablishment.FreeSchoolsSpecial,
-                TypeOfEstablishment.AcademySpecialConverter }.Contains(typeOfEstablishment),
-            TypeOfEstablishmentName = e.TypeOfEstablishmentName,
-            EstablishmentTypeGroupId = e.EstablishmentTypeGroupId,
-            EstablishmentTypeGroupName = e.EstablishmentTypeGroupName,
-            ResourcedProvision = e.ResourcedProvision,
-            ResourcedProvisionName = e.ResourcedProvisionName,
-            Website = e.Website,
-            Easting = e.Easting,
-            Northing = e.Northing,
-            StatusCode = e.StatusCode,
-            ClosedDate = e.ClosedDate,
-            OpenDate = e.OpenDate,
-            OpenReasonId = e.OpenReasonId,
-            SenTypes = e.SenTypes,
-            IsKS2 = e.IsKS2,
-            IsKS4 = e.IsKS4,
-            IsKS5 = e.IsKS5
-        };
-    }
+    //    return new()
+    //    {
+    //        URN = e.URN,
+    //        EstablishmentName = e.EstablishmentName,
+    //        TrustsId = e.TrustsId,
+    //        TrustName = e.TrustName,
+    //        AddressStreet = e.AddressStreet,
+    //        AddressLocality = e.AddressLocality,
+    //        AddressAddress3 = e.AddressAddress3,
+    //        AddressTown = e.AddressTown,
+    //        AddressCounty = e.AddressCounty,
+    //        AddressPostcode = e.AddressPostcode,
+    //        AdmissionsPolicyId = e.AdmissionsPolicyId,
+    //        AdmissionPolicy = e.AdmissionPolicy,
+    //        DistrictAdministrativeId = e.DistrictAdministrativeId,
+    //        DistrictAdministrativeName = e.DistrictAdministrativeName,
+    //        PhaseOfEducationId = e.PhaseOfEducationId,
+    //        PhaseOfEducationName = e.PhaseOfEducationName,
+    //        GenderId = e.GenderId,
+    //        GenderName = e.GenderName,
+    //        HeadteacherTitle = e.HeadteacherTitle,
+    //        HeadteacherFirstName = e.HeadteacherFirstName,
+    //        HeadteacherLastName = e.HeadteacherLastName,
+    //        HeadteacherPreferredJobTitle = e.HeadteacherPreferredJobTitle,
+    //        AgeRangeLow = e.AgeRangeLow,
+    //        AgeRangeHigh = e.AgeRangeHigh,
+    //        OfficialSixthFormId = e.OfficialSixthFormId,
+    //        LAId = e.LAId,
+    //        LAName = e.LAName,
+    //        GSSLACode = e.GSSLACode,
+    //        ReligiousCharacterId = e.ReligiousCharacterId,
+    //        ReligiousCharacterName = e.ReligiousCharacterName,
+    //        TelephoneNum = e.TelephoneNum,
+    //        TotalPupils = e.TotalPupils,
+    //        TypeOfEstablishment = typeOfEstablishment,
+    //        IsSpecialSchool = e.TypeOfEstablishmentId == null ? false : new List<TypeOfEstablishment> {
+    //            TypeOfEstablishment.CommunitySpecialSchool,
+    //            TypeOfEstablishment.NonMaintainedSpecialSchool,
+    //            TypeOfEstablishment.OtherIndependentSpecialSchool,
+    //            TypeOfEstablishment.FoundationSpecialSchool,
+    //            TypeOfEstablishment.AcademySpecialSponsorLed,
+    //            TypeOfEstablishment.FreeSchoolsSpecial,
+    //            TypeOfEstablishment.AcademySpecialConverter }.Contains(typeOfEstablishment),
+    //        TypeOfEstablishmentName = e.TypeOfEstablishmentName,
+    //        EstablishmentTypeGroupId = e.EstablishmentTypeGroupId,
+    //        EstablishmentTypeGroupName = e.EstablishmentTypeGroupName,
+    //        ResourcedProvision = e.ResourcedProvision,
+    //        ResourcedProvisionName = e.ResourcedProvisionName,
+    //        Website = e.Website,
+    //        Easting = e.Easting,
+    //        Northing = e.Northing,
+    //        StatusCode = e.StatusCode,
+    //        ClosedDate = e.ClosedDate,
+    //        OpenDate = e.OpenDate,
+    //        OpenReasonId = e.OpenReasonId,
+    //        SenTypes = e.SenTypes,
+    //        IsKS2 = e.IsKS2,
+    //        IsKS4 = e.IsKS4,
+    //        IsKS5 = e.IsKS5
+    //    };
+    //}
 }

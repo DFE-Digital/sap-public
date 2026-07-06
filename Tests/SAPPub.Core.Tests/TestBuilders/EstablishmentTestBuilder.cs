@@ -369,6 +369,6 @@ public class EstablishmentTestBuilder
     {
         var est = Build();
 
-        return EstablishmentServiceModel.Map(est);
+        return Establishment.MapToServiceModel(est);
     }
 }

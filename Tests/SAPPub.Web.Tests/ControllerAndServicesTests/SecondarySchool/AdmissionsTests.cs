@@ -34,7 +34,7 @@ public class AdmissionsTests
     public AdmissionsTests()
     {
         _establishment = Establishment;
-        _establishmentServiceModel = EstablishmentServiceModel.Map(_establishment);
+        _establishmentServiceModel = Establishment.MapToServiceModel(_establishment);
 
         _mockLogger = new Mock<ILogger<SecondarySchoolController>>();
 
