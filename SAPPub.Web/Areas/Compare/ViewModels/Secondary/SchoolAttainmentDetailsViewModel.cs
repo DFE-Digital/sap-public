@@ -1,4 +1,4 @@
-﻿using SAPPub.Core.Entities;
+﻿using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.Compare;
 using SAPPub.Web.Helpers;
 
@@ -11,7 +11,7 @@ public class SchoolAttainmentDetailsViewModel
     public required double? Attainment8Score { get; set; }
     public required DisplayField<string> Attainment8ScoreContextDescription { get; set; }
 
-    public static SchoolAttainmentDetailsViewModel Map(SchoolAttainmentAndProgressDetails attainmentDetails, Establishment establishmentDetails)
+    public static SchoolAttainmentDetailsViewModel Map(SchoolAttainmentAndProgressDetails attainmentDetails, EstablishmentServiceModel establishmentDetails)
     {
         var establishmentAttainment8ContextSentence = CommonHelper.EstablishmentAttainment8ContextStatement(attainmentDetails.Attainment8Score);
         

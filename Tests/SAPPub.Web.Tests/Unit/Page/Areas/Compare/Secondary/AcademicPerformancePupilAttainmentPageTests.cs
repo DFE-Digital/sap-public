@@ -1,9 +1,9 @@
 ﻿using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using Moq;
-using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.Compare;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
@@ -17,7 +17,7 @@ public class AcademicPerformancePupilAttainmentPageTests : PageTestsBase
     private List<string> _urns = ["100279", "145179"];
     private string QueryString => string.Join("&", _urns.Select(urn => $"urns={urn}"));
     private readonly double _englandAverage = 65.7;
-    private readonly List<Establishment> _establishments = new();
+    private readonly List<EstablishmentServiceModel> _establishments = new();
     private readonly AttainmentAndProgressComparisionResultsModel _attainmentsResult;
     private readonly Mock<IEstablishmentService> _establishmentService = new();
     private readonly Mock<IAttainmentAndProgressComparisionService> _attainmentAndProgressComparisionServiceService = new();
@@ -34,7 +34,7 @@ public class AcademicPerformancePupilAttainmentPageTests : PageTestsBase
                         .WithEstablishmentName($"School {urn}")
                         .WithIsKeyStage4(true)
                         .WithSixthForm(true)
-                        .Build();
+                        .BuildServiceModel();
             _establishments.Add(establishment);
             _establishmentService.Setup(s => s.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(establishment);

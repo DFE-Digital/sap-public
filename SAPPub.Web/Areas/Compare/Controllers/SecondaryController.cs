@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 using SAPPub.Core.Interfaces.Services;
-using SAPPub.Core.Entities;
-using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
+using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Web.Areas.Compare.Filters;
 using SAPPub.Web.Areas.Compare.ViewModels.Secondary;
 using SAPPub.Web.Constants;
@@ -38,7 +38,7 @@ public class SecondaryController : Controller
         List<string> urns,
         CancellationToken ct = default)
     {
-        var establishments = HttpContext.Get<List<Establishment>>(Establishments) ?? [];
+        var establishments = HttpContext.Get<List<EstablishmentServiceModel>>(Establishments) ?? [];
         var attainmentResults = await attainmentAndProgressComparisionService.GetComparisionResultsAsync(urns, ct);
         var model = CompareAcademicPerformancePupilAttainmentViewModel.Map(urns, attainmentResults, establishments);
         return View(model);
@@ -72,7 +72,7 @@ public class SecondaryController : Controller
     [Route("destinations-after-year-11", Name = RouteConstants.CompareSecondaryDestinations)]
     public async Task<IActionResult> Destinations([FromServices] IDestinationsComparisonService destinationsService, List<string> urns)
     {
-        var establishments = HttpContext.Get<List<Establishment>>(Establishments) ?? [];
+        var establishments = HttpContext.Get<List<EstablishmentServiceModel>>(Establishments) ?? [];
         var destinationsResult = await destinationsService.GetDestinationsDetailsAsync(urns, CancellationToken.None);
 
         var model = CompareDestinationsViewModel.Map(urns, destinationsResult, establishments.ToList());

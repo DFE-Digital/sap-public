@@ -7,6 +7,7 @@ using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.Services;
 using SAPPub.Core.Services.KS4.Admissions;
 using SAPPub.Core.Tests.TestBuilders;
@@ -28,10 +29,12 @@ public class AdmissionsTests
     private readonly SecondarySchoolController _controller;
 
     private readonly Establishment _establishment;
+    private readonly EstablishmentServiceModel _establishmentServiceModel;
 
     public AdmissionsTests()
     {
         _establishment = Establishment;
+        _establishmentServiceModel = EstablishmentServiceModel.Map(_establishment);
 
         _mockLogger = new Mock<ILogger<SecondarySchoolController>>();
 
@@ -98,7 +101,7 @@ public class AdmissionsTests
             .ReturnsAsync(_establishment);
 
         _mockLaService
-            .Setup(r => r.GetLaUrlsAsync(_establishment!, It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetLaUrlsAsync(It.IsAny<EstablishmentServiceModel>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new LaUrls
             {
                 Name = laName,
@@ -120,7 +123,7 @@ public class AdmissionsTests
         Assert.Equal(laName, model.LAName);
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_establishment.URN, model.RouteAttributes[RouteConstants.URN]);
-        Assert.Equal(_establishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
+        Assert.Equal(_establishmentServiceModel.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
     [Theory]
@@ -133,7 +136,7 @@ public class AdmissionsTests
             .ReturnsAsync(_establishment);
 
         _mockLaService
-            .Setup(r => r.GetLaUrlsAsync(_establishment!, It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetLaUrlsAsync(_establishmentServiceModel!, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new LaUrls
             {
                 Name = laName,
@@ -183,7 +186,7 @@ public class AdmissionsTests
             .ReturnsAsync(_establishment);
 
         _mockLaService
-            .Setup(r => r.GetLaUrlsAsync(_establishment!, It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetLaUrlsAsync(_establishmentServiceModel!, It.IsAny<CancellationToken>()))
             .ReturnsAsync((LaUrls?)null);
 
         // Act

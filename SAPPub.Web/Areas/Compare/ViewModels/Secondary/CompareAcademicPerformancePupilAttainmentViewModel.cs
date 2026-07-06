@@ -1,4 +1,4 @@
-﻿using SAPPub.Core.Entities;
+﻿using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.Compare;
 using SAPPub.Web.Helpers;
 
@@ -15,7 +15,7 @@ public class CompareAcademicPerformancePupilAttainmentViewModel : CompareSeconda
     public static CompareAcademicPerformancePupilAttainmentViewModel Map(
         List<string> urns,
         AttainmentAndProgressComparisionResultsModel attainmentAndProgressComparisionResultsModel,
-        List<Establishment> establishments)
+        List<EstablishmentServiceModel> establishments)
     {
         var schoolDetails = attainmentAndProgressComparisionResultsModel.SchoolDetails
             .Join(

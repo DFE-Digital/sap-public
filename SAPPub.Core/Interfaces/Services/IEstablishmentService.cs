@@ -1,13 +1,13 @@
 ﻿using SAPPub.Core.Entities;
+using SAPPub.Core.ServiceModels;
 
-namespace SAPPub.Core.Interfaces.Services
+namespace SAPPub.Core.Interfaces.Services;
+
+public interface IEstablishmentService
 {
-    public interface IEstablishmentService
-    {
-        Task<IEnumerable<Establishment>> GetEstablishmentsAsync(int page, int take, CancellationToken ct = default);
+    Task<IEnumerable<EstablishmentServiceModel>> GetEstablishmentsAsync(int page, int take, CancellationToken ct = default);
 
-        Task<Establishment> GetEstablishmentAsync(string urn, CancellationToken ct = default);
+    Task<EstablishmentServiceModel> GetEstablishmentAsync(string urn, CancellationToken ct = default);
+    Task<IEnumerable<EstablishmentServiceModel>> GetEstablishmentsAsync(IEnumerable<string> urns, CancellationToken ct = default);
 
-        Task<IEnumerable<Establishment>> GetEstablishmentsAsync(IEnumerable<string> urns, CancellationToken ct = default);
-    }
 }

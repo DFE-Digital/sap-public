@@ -1,5 +1,6 @@
 ﻿using Moq;
 using SAPPub.Core.Entities;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.Services;
 using System.Diagnostics.CodeAnalysis;
 
@@ -11,7 +12,7 @@ public class LAServiceTests
     private readonly Mock<ILaUrlsRepository> _mockLaUrlsRepository;
     private readonly LAService? _service;
 
-    private readonly Establishment fakeEstablishment = new()
+    private readonly EstablishmentServiceModel fakeEstablishment = new()
     {
         URN = "123456",
         EstablishmentName = "Test Establishment",
@@ -88,7 +89,7 @@ public class LAServiceTests
         var gssLaCode = "123-123";
         var districtAdministrativeId = "234-234";
 
-        var establishments = new List<Establishment>
+        var establishments = new List<EstablishmentServiceModel>
         {
             new() { GSSLACode = gssLaCode },
             new() { DistrictAdministrativeId = districtAdministrativeId }
@@ -118,7 +119,7 @@ public class LAServiceTests
     public async Task GetLaUrlsListForEstablishmentsAsync_ReturnsEmptyList_WhenEstablishmentsIsNull()
     {
         // Arrange
-        List<Establishment>? establishments = null;
+        List<EstablishmentServiceModel>? establishments = null;
 
         // Act
         var result = await _service!.GetLaUrlsListForEstablishmentsAsync(establishments!, It.IsAny<CancellationToken>());
@@ -134,7 +135,7 @@ public class LAServiceTests
         var gssLaCode1 = "123-123";
         var gssLaCode2 = "234-234";
 
-        var establishments = new List<Establishment>
+        var establishments = new List<EstablishmentServiceModel>
         {
             new() { GSSLACode = gssLaCode1 },
             new() { GSSLACode = gssLaCode2 }

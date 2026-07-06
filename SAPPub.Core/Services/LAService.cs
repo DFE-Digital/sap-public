@@ -1,18 +1,19 @@
 ﻿using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Services;
+using SAPPub.Core.ServiceModels;
 
 namespace SAPPub.Core.Services;
 
 public class LAService(ILaUrlsRepository laUrlsRepository) : ILAService
 {
-    public async Task<LaUrls?> GetLaUrlsAsync(Establishment establishment, CancellationToken ct)
+    public async Task<LaUrls?> GetLaUrlsAsync(EstablishmentServiceModel establishment, CancellationToken ct)
     {
         var laUrls = !string.IsNullOrWhiteSpace(establishment.GSSLACode) ? await laUrlsRepository.GetLaAsync(establishment.GSSLACode, ct) : null;
         laUrls ??= !string.IsNullOrWhiteSpace(establishment.DistrictAdministrativeId) ? await laUrlsRepository.GetLaAsync(establishment.DistrictAdministrativeId, ct) : null;
         return laUrls;
     }
 
-    public async Task<IEnumerable<LaUrls?>> GetLaUrlsListForEstablishmentsAsync(IEnumerable<Establishment> establishments, CancellationToken ct)
+    public async Task<IEnumerable<LaUrls?>> GetLaUrlsListForEstablishmentsAsync(IEnumerable<EstablishmentServiceModel> establishments, CancellationToken ct)
     {
         if (establishments is null || !establishments.Any())
         {

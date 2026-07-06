@@ -1,5 +1,6 @@
 ﻿using SAPPub.Core.ValueObjects;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Serialization;
 
 namespace SAPPub.Core.Entities.KS4.Workforce
 {
@@ -13,14 +14,18 @@ namespace SAPPub.Core.Entities.KS4.Workforce
         /// Workforce Pupil Teacher Ratio filtered by Establishment for Current year
         ///
         public CodedDouble Workforce_PupTeaRatio_Est_Current_Num_Coded { get; set; } = new();
+        [IgnoreDataMember]
         public double? Workforce_PupTeaRatio_Est_Current_Num { get; set; }
+        [IgnoreDataMember]
         public string? Workforce_PupTeaRatio_Est_Current_Num_Reason { get; set; }
 
         ///
         /// Workforce Total Pupils filtered by Establishment for Current year
         ///
         public CodedDouble Workforce_TotPupils_Est_Current_Num_Coded { get; set; } = new();
+        [IgnoreDataMember]
         public double? Workforce_TotPupils_Est_Current_Num { get; set; }
+        [IgnoreDataMember]
         public string? Workforce_TotPupils_Est_Current_Num_Reason { get; set; }
     }
 }

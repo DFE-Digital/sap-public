@@ -3,6 +3,7 @@ using Moq;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
@@ -16,7 +17,7 @@ public class AcademicPerformanceEnglishAndMathsResultsTests : PageTestsBase
     private readonly string _pageUrl = $"compare/secondary/english-and-maths-results?urns={_urns[0]}&urns={_urns[1]}";    
     private readonly Mock<IEnglishAndMathsComparisionService> _englishAndMathsComparisionService = new();
     private readonly Mock<IEstablishmentService> _establishmentService = new();
-    private readonly List<Establishment> _establishmentList = [];
+    private readonly List<EstablishmentServiceModel> _establishmentList = [];
 
     public AcademicPerformanceEnglishAndMathsResultsTests(WebAppFixture fixture) : base(fixture)
     {
@@ -25,8 +26,8 @@ public class AcademicPerformanceEnglishAndMathsResultsTests : PageTestsBase
 
         _establishmentList =
         [
-            new EstablishmentTestBuilder().WithURN(_urns[0]).WithEstablishmentName($"Test school {_urns[0]}").WithIsKeyStage4(true).Build(),
-            new EstablishmentTestBuilder().WithURN(_urns[1]).WithEstablishmentName($"Test school {_urns[1]}").WithIsKeyStage4(true).Build(),
+            new EstablishmentTestBuilder().WithURN(_urns[0]).WithEstablishmentName($"Test school {_urns[0]}").WithIsKeyStage4(true).BuildServiceModel(),
+            new EstablishmentTestBuilder().WithURN(_urns[1]).WithEstablishmentName($"Test school {_urns[1]}").WithIsKeyStage4(true).BuildServiceModel(),
         ];
 
         _establishmentList.Select(e =>
@@ -80,7 +81,7 @@ public class AcademicPerformanceEnglishAndMathsResultsTests : PageTestsBase
         // Assert
         var heading = doc.QuerySelector("h1");
         Assert.NotNull(heading);
-        Assert.Contains("Academic Perfomance", heading.TextContent.Trim());
+        Assert.Contains("Academic Performance", heading.TextContent.Trim());
     }
 
     [Fact]
