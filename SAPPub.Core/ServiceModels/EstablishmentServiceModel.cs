@@ -121,7 +121,8 @@ public class EstablishmentServiceModel
         TypeOfEstablishment.OtherIndependentSpecialSchool or
         TypeOfEstablishment.FoundationSpecialSchool or
         TypeOfEstablishment.AcademySpecialSponsorLed or
-        TypeOfEstablishment.FreeSchoolsSpecial;
+        TypeOfEstablishment.FreeSchoolsSpecial or
+        TypeOfEstablishment.AcademySpecialConverter;
 
     public EstablishmentPerformance KS4Performance { get; set; } = new();
 
