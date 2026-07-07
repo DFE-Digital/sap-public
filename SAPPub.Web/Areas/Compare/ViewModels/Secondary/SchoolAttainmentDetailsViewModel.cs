@@ -13,7 +13,7 @@ public class SchoolAttainmentDetailsViewModel
 
     public static SchoolAttainmentDetailsViewModel Map(SchoolAttainmentAndProgressDetails attainmentDetails, EstablishmentServiceModel establishmentDetails)
     {
-        var establishmentAttainment8ContextSentence = CommonHelper.EstablishmentAttainment8ContextStatement(attainmentDetails.Attainment8Score);
+        var establishmentAttainment8ContextSentence = AttainmentHelper.EstablishmentAttainment8ContextStatement(attainmentDetails.Attainment8Score);
         
         return new SchoolAttainmentDetailsViewModel
         {

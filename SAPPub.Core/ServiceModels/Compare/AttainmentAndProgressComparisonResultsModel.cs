@@ -1,6 +1,6 @@
 ﻿namespace SAPPub.Core.ServiceModels.Compare;
 
-public class AttainmentAndProgressComparisionResultsModel
+public class AttainmentAndProgressComparisonResultsModel
 {
     public required IEnumerable<SchoolAttainmentAndProgressDetails> SchoolDetails { get; init; }
 

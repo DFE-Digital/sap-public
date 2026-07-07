@@ -31,7 +31,7 @@ public class AttainmentAndProgressComparisonResultModelBuilder
         return this;
     }
 
-    public AttainmentAndProgressComparisionResultsModel Build()
+    public AttainmentAndProgressComparisonResultsModel Build()
     {
         if (_urns is null && _schoolConfigurations is null)
         {
@@ -53,7 +53,7 @@ public class AttainmentAndProgressComparisonResultModelBuilder
                 return schoolAttainmentAndProgressDetailsBuilder.Build();
             }).ToList();
 
-            return new AttainmentAndProgressComparisionResultsModel
+            return new AttainmentAndProgressComparisonResultsModel
             {
                 EnglandAverage = _englandPercentage.IsSet ? _englandPercentage.Value : Math.Round(faker.Random.Double(5, 100), 1),
                 SchoolDetails = schoolDetails
@@ -68,7 +68,7 @@ public class AttainmentAndProgressComparisonResultModelBuilder
                  .Build();
             }).ToList();
 
-            return new AttainmentAndProgressComparisionResultsModel
+            return new AttainmentAndProgressComparisonResultsModel
             {
                 EnglandAverage = _englandPercentage.IsSet ? _englandPercentage.Value : Math.Round(faker.Random.Double(5, 100), 1),
                 SchoolDetails = schoolDetails

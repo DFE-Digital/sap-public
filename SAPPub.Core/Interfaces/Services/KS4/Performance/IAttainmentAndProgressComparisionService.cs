@@ -4,5 +4,5 @@ namespace SAPPub.Core.Interfaces.Services.KS4.Performance;
 
 public interface IAttainmentAndProgressComparisionService
 {
-    Task<AttainmentAndProgressComparisionResultsModel> GetComparisionResultsAsync(IEnumerable<string> urns, CancellationToken ct = default);
+    Task<AttainmentAndProgressComparisonResultsModel> GetComparisionResultsAsync(IEnumerable<string> urns, CancellationToken ct = default);
 }

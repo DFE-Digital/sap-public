@@ -14,7 +14,7 @@ public class CompareAcademicPerformancePupilAttainmentViewModel : CompareSeconda
 
     public static CompareAcademicPerformancePupilAttainmentViewModel Map(
         List<string> urns,
-        AttainmentAndProgressComparisionResultsModel attainmentAndProgressComparisionResultsModel,
+        AttainmentAndProgressComparisonResultsModel attainmentAndProgressComparisionResultsModel,
         List<EstablishmentServiceModel> establishments)
     {
         var schoolDetails = attainmentAndProgressComparisionResultsModel.SchoolDetails
@@ -26,7 +26,7 @@ public class CompareAcademicPerformancePupilAttainmentViewModel : CompareSeconda
             .OrderBy(d => d.SchoolName)
             .ToList();
 
-        var englandAttainment8ContextSentence = CommonHelper.EstablishmentAttainment8ContextStatement(attainmentAndProgressComparisionResultsModel.EnglandAverage);
+        var englandAttainment8ContextSentence = AttainmentHelper.EstablishmentAttainment8ContextStatement(attainmentAndProgressComparisionResultsModel.EnglandAverage);
 
         return new CompareAcademicPerformancePupilAttainmentViewModel
         {

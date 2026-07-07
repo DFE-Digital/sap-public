@@ -18,7 +18,7 @@ public class AcademicPerformancePupilAttainmentPageTests : PageTestsBase
     private string QueryString => string.Join("&", _urns.Select(urn => $"urns={urn}"));
     private readonly double _englandAverage = 65.7;
     private readonly List<EstablishmentServiceModel> _establishments = new();
-    private readonly AttainmentAndProgressComparisionResultsModel _attainmentsResult;
+    private readonly AttainmentAndProgressComparisonResultsModel _attainmentsResult;
     private readonly Mock<IEstablishmentService> _establishmentService = new();
     private readonly Mock<IAttainmentAndProgressComparisionService> _attainmentAndProgressComparisionServiceService = new();
 

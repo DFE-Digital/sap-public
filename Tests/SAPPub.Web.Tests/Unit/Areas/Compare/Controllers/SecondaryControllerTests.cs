@@ -98,15 +98,16 @@ public class SecondaryControllerTests
     public async Task AcademicPerformancePupilProgressAndAttainment_ReturnsViewResultWithCorrectModel()
     {
         // Arrange
+        var noDataUrn = "234567";
         var englandPercentage = 50.0;
         var establishmentAttainments = _urns.Select(urn =>
             new SchoolAttainmentAndProgressDetails
             {
                 Urn = urn,               
-                Attainment8Score = new Bogus.Faker().Random.Double(5, 100)
+                Attainment8Score = urn == noDataUrn ? null : new Bogus.Faker().Random.Double(5, 100)
             }).ToList();
 
-        var attainmentsResultsModel = new AttainmentAndProgressComparisionResultsModel
+        var attainmentsResultsModel = new AttainmentAndProgressComparisonResultsModel
         {
             SchoolDetails = establishmentAttainments,
             EnglandAverage = englandPercentage,
@@ -146,14 +147,14 @@ public class SecondaryControllerTests
             var expectedSchoolDetails = attainmentsResultsModel.SchoolDetails.FirstOrDefault(s => s.Urn == orderedEstablishments[i].URN);
             Assert.NotNull(expectedSchoolDetails);
 
-            var attainment8ContextSentence = CommonHelper.EstablishmentAttainment8ContextStatement(expectedSchoolDetails.Attainment8Score);
+            var attainment8ContextSentence = AttainmentHelper.EstablishmentAttainment8ContextStatement(expectedSchoolDetails.Attainment8Score);
             var expectedAttainment8ScoreContextDescription = attainment8ContextSentence != null ? $"Pupils generally scored the equivalent of {attainment8ContextSentence} in their 8 best GCSE-level subjects." : "Not available";
 
             Assert.Equal(expectedSchoolDetails.Attainment8Score, viewModel.SchoolDetails.ToList()[i].Attainment8Score);
-            Assert.Equal(expectedAttainment8ScoreContextDescription, viewModel.SchoolDetails.ToList()[i].Attainment8ScoreContextDescription.Value);
+            Assert.Equal(expectedAttainment8ScoreContextDescription, viewModel.SchoolDetails.ToList()[i].Attainment8ScoreContextDescription.DisplayText());
         }
 
-        var englandAttainment8ContextSentence = CommonHelper.EstablishmentAttainment8ContextStatement(englandPercentage);
+        var englandAttainment8ContextSentence = AttainmentHelper.EstablishmentAttainment8ContextStatement(englandPercentage);
         var expectedEnglandAttainment8ScoreContextDescription = $"Pupils generally scored the equivalent of {englandAttainment8ContextSentence} in their 8 best GCSE-level subjects.";
 
         Assert.Equal(englandPercentage, viewModel.EnglandPercentage);

@@ -7,7 +7,7 @@ public class AttainmentAndProgressComparisionService(
     IEstablishmentPerformanceService establishmentPerformanceService,
     IEnglandPerformanceService englandPerformanceService) : IAttainmentAndProgressComparisionService
 {
-    public async Task<AttainmentAndProgressComparisionResultsModel> GetComparisionResultsAsync(IEnumerable<string> urns, CancellationToken ct = default)
+    public async Task<AttainmentAndProgressComparisonResultsModel> GetComparisionResultsAsync(IEnumerable<string> urns, CancellationToken ct = default)
     {
         var establishmentsPerformanceDetailsTask = establishmentPerformanceService.GetEstablishmentsPerformanceAsync(urns, ct);
         var englandPerformanceDetailsTask = englandPerformanceService.GetEnglandPerformanceAsync(ct);
@@ -23,7 +23,7 @@ public class AttainmentAndProgressComparisionService(
             Attainment8Score = establishmentsPerformance.FirstOrDefault(x => x.Id == urn)?.Attainment8_Tot_Est_Previous_Num
         });
 
-        return new AttainmentAndProgressComparisionResultsModel
+        return new AttainmentAndProgressComparisonResultsModel
         {
             SchoolDetails = schoolDetails,
             EnglandAverage = englandPerformance?.Attainment8_Tot_Eng_Previous_Num
