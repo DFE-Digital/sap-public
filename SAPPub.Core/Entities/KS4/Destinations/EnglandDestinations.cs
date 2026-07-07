@@ -54,33 +54,6 @@ namespace SAPPub.Core.Entities.KS4.Destinations
         [IgnoreDataMember]
         public string? AllDest_Tot_Eng_Previous_Pct_Reason { get; set; }
 
-        //
-        // All Education Total filtered by England for Previous year
-        //
-        public CodedDouble Education_Tot_Eng_Previous_Pct_Coded { get; set; } = new();
-        [IgnoreDataMember]
-        public double? Education_Tot_Eng_Previous_Pct { get; set; }
-        [IgnoreDataMember]
-        public string? Education_Tot_Eng_Previous_Pct_Reason { get; set; }
-
-        //
-        // All Employment Total filtered by England for Previous year
-        //
-        public CodedDouble Employment_Tot_Eng_Previous_Pct_Coded { get; set; } = new();
-        [IgnoreDataMember]
-        public double? Employment_Tot_Eng_Previous_Pct { get; set; }
-        [IgnoreDataMember]
-        public string? Employment_Tot_Eng_Previous_Pct_Reason { get; set; }
-
-        //
-        // Apprenticeship Total filtered by England for Previous year
-        //
-        public CodedDouble Apprentice_Tot_Eng_Previous_Pct_Coded { get; set; } = new();
-
-        [IgnoreDataMember]
-        public double? Apprentice_Tot_Eng_Previous_Pct { get; set; }
-        [IgnoreDataMember]
-        public string? Apprentice_Tot_Eng_Previous_Pct_Reason { get; set; }
 
         //
         // All Destinations Total filtered by England for Previous2 year
@@ -91,31 +64,5 @@ namespace SAPPub.Core.Entities.KS4.Destinations
         [IgnoreDataMember]
         public string? AllDest_Tot_Eng_Previous2_Pct_Reason { get; set; }
 
-        //
-        // All Education Total filtered by England for Previous2 year
-        //
-        public CodedDouble Education_Tot_Eng_Previous2_Pct_Coded { get; set; } = new();
-        [IgnoreDataMember]
-        public double? Education_Tot_Eng_Previous2_Pct { get; set; }
-        [IgnoreDataMember]
-        public string? Education_Tot_Eng_Previous2_Pct_Reason { get; set; }
-
-        //
-        // All Employment Total filtered by England for Previous2 year
-        //
-        public CodedDouble Employment_Tot_Eng_Previous2_Pct_Coded { get; set; } = new();
-        [IgnoreDataMember]
-        public double? Employment_Tot_Eng_Previous2_Pct { get; set; }
-        [IgnoreDataMember]
-        public string? Employment_Tot_Eng_Previous2_Pct_Reason { get; set; }
-
-        //
-        // Apprenticeship Total filtered by England for Previous2 year
-        //
-        public CodedDouble Apprentice_Tot_Eng_Previous2_Pct_Coded { get; set; } = new();
-        [IgnoreDataMember]
-        public double? Apprentice_Tot_Eng_Previous2_Pct { get; set; }
-        [IgnoreDataMember]
-        public string? Apprentice_Tot_Eng_Previous2_Pct_Reason { get; set; }
     }
 }

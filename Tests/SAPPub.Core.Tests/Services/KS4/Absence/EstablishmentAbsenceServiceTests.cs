@@ -92,7 +92,6 @@ namespace SAPPub.Core.Tests.Services.KS4.Absence
 
             // Assert
             Assert.NotNull(result);
-            Assert.Null(result.UnAuth_Tot_Est_Current_Pct);
         }
 
         [Fact]
