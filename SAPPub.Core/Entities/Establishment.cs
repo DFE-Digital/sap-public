@@ -118,12 +118,6 @@ public class Establishment
 
     public static EstablishmentServiceModel MapToServiceModel(Establishment e)
     {
-        var typeOfEstablishment = e.TypeOfEstablishmentId == null
-            ? TypeOfEstablishment.Unknown
-            : Enum.IsDefined<TypeOfEstablishment>((TypeOfEstablishment)e.TypeOfEstablishmentId)
-                ? (TypeOfEstablishment)e.TypeOfEstablishmentId
-                : TypeOfEstablishment.Unknown;
-
         return new()
         {
             URN = e.URN,
@@ -158,15 +152,9 @@ public class Establishment
             ReligiousCharacterName = e.ReligiousCharacterName,
             TelephoneNum = e.TelephoneNum,
             TotalPupils = e.TotalPupils,
-            TypeOfEstablishment = typeOfEstablishment,
-            IsSpecialSchool = e.TypeOfEstablishmentId == null ? false : new List<TypeOfEstablishment> {
-                TypeOfEstablishment.CommunitySpecialSchool,
-                TypeOfEstablishment.NonMaintainedSpecialSchool,
-                TypeOfEstablishment.OtherIndependentSpecialSchool,
-                TypeOfEstablishment.FoundationSpecialSchool,
-                TypeOfEstablishment.AcademySpecialSponsorLed,
-                TypeOfEstablishment.FreeSchoolsSpecial,
-                TypeOfEstablishment.AcademySpecialConverter }.Contains(typeOfEstablishment),
+            TypeOfEstablishment = e.TypeOfEstablishmentId is int id && Enum.IsDefined(typeof(TypeOfEstablishment), id)
+                ? (TypeOfEstablishment)e.TypeOfEstablishmentId
+                : TypeOfEstablishment.Unknown,
             TypeOfEstablishmentName = e.TypeOfEstablishmentName,
             EstablishmentTypeGroupId = e.EstablishmentTypeGroupId,
             EstablishmentTypeGroupName = e.EstablishmentTypeGroupName,

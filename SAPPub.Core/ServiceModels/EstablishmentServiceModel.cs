@@ -115,7 +115,13 @@ public class EstablishmentServiceModel
 
     public bool IsKS5 { get; set; }
 
-    public bool IsSpecialSchool { get; set; }
+    public bool IsSpecialSchool => TypeOfEstablishment is
+        TypeOfEstablishment.CommunitySpecialSchool or
+        TypeOfEstablishment.NonMaintainedSpecialSchool or
+        TypeOfEstablishment.OtherIndependentSpecialSchool or
+        TypeOfEstablishment.FoundationSpecialSchool or
+        TypeOfEstablishment.AcademySpecialSponsorLed or
+        TypeOfEstablishment.FreeSchoolsSpecial;
 
     public EstablishmentPerformance KS4Performance { get; set; } = new();
 
