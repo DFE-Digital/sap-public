@@ -15,7 +15,8 @@ public static class SchoolSearchDocumentExtensions
             GenderName = doc.GenderName,
             ReligiousCharacterName = doc.ReligiousCharacterName,
             EstablishmentStatus = doc.StatusCode.ToStatus(),
-            ClosedDate = doc.ClosedDate
+            ClosedDate = doc.ClosedDate,
+            IsKS4 = doc.IsKS4
         };
     }
 }

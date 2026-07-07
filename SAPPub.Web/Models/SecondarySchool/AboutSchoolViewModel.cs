@@ -77,6 +77,7 @@ namespace SAPPub.Web.Models.SecondarySchool
         public List<SuccessorOrPredecessorDetailsModel>? Successors { get; set; }
 
         public string? EducationPhase { get; set;  }
+        public bool IsKS4 { get; set; }
 
         public static AboutSchoolViewModel Map(AboutSchoolModel schoolDetails)
         {
@@ -114,7 +115,8 @@ namespace SAPPub.Web.Models.SecondarySchool
                 RecentlyOpenedSchoolMessage = GetRecentlyOpenedSchoolMessage(schoolDetails.OpenReasonId, schoolDetails.OpenDate),
                 Predecessors = schoolDetails.Predecessors?.Select(p => SuccessorOrPredecessorDetailsModel.Map(p)).ToList(),
                 Successors = schoolDetails.Successors?.Select(s => SuccessorOrPredecessorDetailsModel.Map(s)).ToList(),
-                EducationPhase = EducationPhaseFormatter.Format(schoolDetails.IsKS2, schoolDetails.IsKS4, schoolDetails.IsKS5)
+                EducationPhase = EducationPhaseFormatter.Format(schoolDetails.IsKS2, schoolDetails.IsKS4, schoolDetails.IsKS5),
+                IsKS4 = schoolDetails.IsKS4
             };
         }
 

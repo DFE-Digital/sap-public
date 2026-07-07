@@ -258,6 +258,7 @@ public class SecondarySchoolControllerTests
         Assert.Equal(expectedResult.OpenReasonId, model.OpenReasonId);
         Assert.Equal(expectedResult.SenTypes, model.SenTypes.Value);
         Assert.Equal("Primary and Secondary", model.EducationPhase);
+        Assert.Equal(expectedResult.IsKS4, model.IsKS4);
     }
 
     [Fact]
