@@ -4,7 +4,7 @@
 @using SAPPub.Web.Constants;
 
 @{
-    ViewData["Header"] = "Academic Perfomance";
+    ViewData["Header"] = "Academic Performance";
     ViewData["SubHeader"] = PageTitleConstants.SecondarySchoolPageTitles.EnglishAndMathsResults;
     ViewData["Title"] = $"Compare - {ViewData["SubHeader"]}";
 }
@@ -20,7 +20,7 @@
 
     <div class="govuk-grid-column-three-quarters">
         <h1 class="govuk-heading-l">
-            <span class="govuk-caption-l">Comparing your schools</span>
+            <span class="govuk-caption-l">@Constants.CompareYourSchools</span>
             @ViewData["Header"]
         </h1>
 
@@ -29,13 +29,13 @@
             You should look at a range of information about a school before deciding if it's the right fit for your child.
         </p>
 
-        <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
+        <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation" data-testid="sub-navigation-academic-performance">
             <ul class="moj-sub-navigation__list">
                 <li class="moj-sub-navigation__item">
                     <a class="moj-sub-navigation__link" href="@Url.RouteUrl(RouteConstants.CompareSecondaryAcademicPerformancePupilAttainment)@Model.RouteQueryString">@PageTitleConstants.SecondarySchoolPageTitles.PupilAttainment</a>
                 </li>
                 <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" aria-current="page" href="@Url.RouteUrl(RouteConstants.CompareSecondaryAcademicPerformanceEnglishAndMathsResults)@Model.RouteQueryString"> @ViewData["SubHeader"]</a>
+                    <a class="moj-sub-navigation__link" aria-current="page" href="@Url.RouteUrl(RouteConstants.CompareSecondaryAcademicPerformanceEnglishAndMathsResults)@Model.RouteQueryString">@ViewData["SubHeader"]</a>
                 </li>
             </ul>
         </nav>
@@ -171,10 +171,8 @@
         <p class="govuk-body">
             When researching, contacting or visiting a school, you may want to ask:
         </p>
-        <ul class="govuk-list govuk-list--bullet">
-            <li>
-                what subjects do pupils tend to do well in at this school?
-            </li>
+
+        <ul class="govuk-list govuk-list--bullet">            
             <li>
                 how does the school help pupils who need extra support in English and maths?
             </li>
