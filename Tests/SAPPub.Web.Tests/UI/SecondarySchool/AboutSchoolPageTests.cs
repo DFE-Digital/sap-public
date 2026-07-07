@@ -74,6 +74,17 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
     }
 
     [Fact]
+    public async Task AboutSchoolPage_DoesNotShowAddButton_ForNonKs4School()
+    {
+        // Act
+        await Page.GotoAsync(_schoolUrnToUrlMap["100273"]);
+
+        // Assert
+        var compareButtons = Page.Locator(".compare-establishment-btn");
+        await Expect(compareButtons).ToHaveCountAsync(0);
+    }
+
+    [Fact]
     public async Task AboutSchoolPage_Displays_VerticalNavigation()
     {
         var nav = new VerticalNavigationHelper(Page);

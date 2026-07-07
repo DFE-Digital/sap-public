@@ -34,13 +34,13 @@ public class SecondaryController : Controller, IEstablishmentsList
 
     [HttpGet]
     [Route("pupil-attainment", Name = RouteConstants.CompareSecondaryAcademicPerformancePupilAttainment)]
-    public async Task<IActionResult> AcademicPerformancePupilAttainment(List<string> urns)
+    public async Task<IActionResult> AcademicPerformancePupilAttainment(
+        [FromServices] IAttainmentAndProgressComparisionService attainmentAndProgressComparisionService,
+        List<string> urns,
+        CancellationToken ct = default)
     {
-        var model = new CompareAcademicPerformancePupilAttainmentViewModel
-        {
-            URNs = urns,
-            ListContainsSpecialSchool = Establishments.Any(e => e.IsSpecialSchool),
-        };
+        var attainmentResults = await attainmentAndProgressComparisionService.GetComparisionResultsAsync(urns, ct);
+        var model = CompareAcademicPerformancePupilAttainmentViewModel.Map(urns, attainmentResults, Establishments);
         return View(model);
     }
 

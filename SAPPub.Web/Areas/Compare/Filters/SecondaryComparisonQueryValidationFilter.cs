@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using SAPPub.Core.Exceptions;
 using SAPPub.Core.Interfaces.Services;
+using SAPPub.Web.Extensions;
+using static SAPPub.Web.Constants.Constants;
 
 namespace SAPPub.Web.Areas.Compare.Filters;
 

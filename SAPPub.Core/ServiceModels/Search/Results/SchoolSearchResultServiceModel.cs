@@ -27,4 +27,5 @@ public record SchoolSearchResultServiceModel
     public string? ReligiousCharacterName { get; init; }
     public DateOnly? ClosedDate { get; set; }
     public EstablishmentStatus? EstablishmentStatus { get; set; }
+    public bool IsKS4 { get; init; }
 }

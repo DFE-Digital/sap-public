@@ -81,7 +81,7 @@ public class AcademicPerformanceEnglishAndMathsResultsTests : PageTestsBase
         // Assert
         var heading = doc.QuerySelector("h1");
         Assert.NotNull(heading);
-        Assert.Contains("Academic Perfomance", heading.TextContent.Trim());
+        Assert.Contains("Academic Performance", heading.TextContent.Trim());
     }
 
     [Fact]

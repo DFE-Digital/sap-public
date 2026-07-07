@@ -16,7 +16,8 @@ public static class EstablishmentExtensions
             GenderName = e.GenderName,
             ReligiousCharacterName = e.ReligiousCharacterName,
             ClosedDate = e.ClosedDate.ToDateOnly(),
-            StatusCode = e.StatusCode
+            StatusCode = e.StatusCode,
+            IsKS4 = e.IsKS4
         };
     }
 }

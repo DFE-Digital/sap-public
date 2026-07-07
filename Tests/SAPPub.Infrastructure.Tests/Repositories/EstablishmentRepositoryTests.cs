@@ -95,6 +95,7 @@ namespace SAPPub.Infrastructure.Tests.Repositories
             Assert.DoesNotContain(@"""geom"" IS NOT NULL", parts.WhereClause, StringComparison.Ordinal);
             Assert.Equal(@"""EstablishmentName"" ASC", parts.OrderBy);
             Assert.DoesNotContain(@"AS ""Distance""", parts.SelectFields, StringComparison.Ordinal);
+            Assert.Contains(@"""ISKS4""", parts.SelectFields, StringComparison.Ordinal);
 
             var names = parts.Parameters.ParameterNames.ToHashSet(StringComparer.Ordinal);
             Assert.Contains("searchTerm", names);
@@ -119,6 +120,7 @@ namespace SAPPub.Infrastructure.Tests.Repositories
             Assert.Contains(@"ST_DWithin(""geom""", parts.WhereClause, StringComparison.Ordinal);
             Assert.Equal(@"""Distance"" ASC, ""EstablishmentName"" ASC", parts.OrderBy);
             Assert.Contains(@"AS ""Distance""", parts.SelectFields, StringComparison.Ordinal);
+            Assert.Contains(@"""ISKS4""", parts.SelectFields, StringComparison.Ordinal);
 
             var names = parts.Parameters.ParameterNames.ToHashSet(StringComparer.Ordinal);
             Assert.Contains("lat", names);
