@@ -27,6 +27,15 @@ public static class RouteConstants
 
     public const string CompareSecondaryView = "CompareSecondaryView";
 
+    // 16to19 or KS5 
+    public const string KS5AcademicPerformanceRoot = "KS5AcademicPerformanceRoot";
+    public const string KS5AcademicPerformanceLevel3 = "KS5AcademicPerformanceLevel3";
+    public const string KS5AcademicPerformanceLevel3Filter = "KS5AcademicPerformanceLevel3Filter";
+    public const string KS5AcademicPerformanceLevel2 = "KS5AcademicPerformanceLevel2";
+    public const string KS5AcademicPerformanceLevel2Filter = "KS5AcademicPerformanceLevel2Filter";
+    public const string KS5AcademicPerformanceEnglishMaths = "KS5AcademicPerformanceEnglishMaths";
+    public const string KS5AcademicPerformanceSubjectsEntered = "KS5AcademicPerformanceSubjectsEntered";
+
     // Route Attributes
     public const string URN = "urn";
     public const string URNs = "urns";
