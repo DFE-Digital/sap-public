@@ -13,6 +13,7 @@ public class CompareNextStepsViewModel : CompareSecondarySchoolBaseViewModel
         {
             URNs = urns,
             ListContainsSpecialSchool = establishments.Any(e => e.IsSpecialSchool),
+            ListContainsNonSpecialSchool = establishments.Any(e => !e.IsSpecialSchool),
             SchoolDetailList = establishments
                 .OrderBy(x => x.EstablishmentName)
                 .Select(a => new CompareNextStepsModel

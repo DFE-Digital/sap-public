@@ -109,7 +109,34 @@ public class AboutYourSchoolsPageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task Page_WithSpecialSchool_ShowsNotificationBanner()
+    public async Task Page_WithOnlySpecialSchools_DoesNotShowNotificationBanner()
+    {
+        // Arrange
+        _establishmentService.Setup(s => s.GetEstablishmentAsync("119052", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+                new EstablishmentTestBuilder()
+                    .WithURN("119052")
+                    .WithIsKeyStage4(true)
+                    .WithTypeOfEstablishmentId(7) // special school
+                    .BuildServiceModel());
+        _establishmentService.Setup(s => s.GetEstablishmentAsync("124500", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+                new EstablishmentTestBuilder()
+                    .WithURN("124500")
+                    .WithIsKeyStage4(true)
+                    .WithTypeOfEstablishmentId(7) // special school
+                    .BuildServiceModel());
+
+        // Act
+        var doc = await Fixture.BrowseToPage(_pageUrl);
+
+        // Assert
+        var banner = doc.QuerySelector("[data-testid='special-school-warning-banner']");
+        Assert.Null(banner);
+    }
+
+    [Fact]
+    public async Task Page_WithSpecialSchoolAndNonSpecialSchool_ShowsNotificationBanner()
     {
         // Arrange
         _establishmentService.Setup(s => s.GetEstablishmentAsync("119052", It.IsAny<CancellationToken>()))

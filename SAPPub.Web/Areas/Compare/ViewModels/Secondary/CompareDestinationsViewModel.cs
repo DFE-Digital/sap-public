@@ -59,6 +59,7 @@ public class CompareDestinationsViewModel : CompareSecondarySchoolBaseViewModel
         {
             URNs = urns,
             ListContainsSpecialSchool = establishments.Any(e => e.IsSpecialSchool),
+            ListContainsNonSpecialSchool = establishments.Any(e => !e.IsSpecialSchool),
             EnglandPercentage = destinationsDetails.EnglandPercentage,
             SchoolDetails = schoolDetails,
             AllDestinationsData = new DataViewModel // save a version of the data reshaped to send into the chart component

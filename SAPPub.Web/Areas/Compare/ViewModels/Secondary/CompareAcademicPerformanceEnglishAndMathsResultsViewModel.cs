@@ -52,6 +52,7 @@ public class CompareAcademicPerformanceEnglishAndMathsResultsViewModel : Compare
         {
             URNs = urns,
             ListContainsSpecialSchool = establishments.Any(e => e.IsSpecialSchool),
+            ListContainsNonSpecialSchool = establishments.Any(e => !e.IsSpecialSchool),
             AllGcseData = allGcseData,
             AllGcseOverTimeData = allGcseOverTimeData,
         };
