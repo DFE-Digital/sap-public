@@ -113,7 +113,13 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Prog8_CI_Upper_Est_Previous2_Num_Coded", 
           "Prog8_Banding_Est_Previous2",          
           "Prog8_TotPup_Est_Previous2_Num_Coded",
-          "Pup_Tot_Est_Previous2_Num_Coded"
+          "Pup_Tot_Est_Previous2_Num_Coded",
+          "AnyQual_Tot_Est_Current_Pct_Coded",
+          "TripSci_Tot_Est_Current_Pct_Coded",
+          "More1FL_Tot_Est_Current_Pct_Coded",
+          "ExamEntriesGSCE_Tot_Est_Current_Num_Coded",
+          "ExamEntriesKS4_Tot_Est_Current_Num_Coded",
+          "Pup_Tot_Est_Current_Num_Coded"
           """;
 
         private const string LAPerformanceColumns = """

@@ -131,6 +131,23 @@ namespace SAPPub.Web.Controllers
             return View(model);
         }
 
-        
+        [HttpGet]
+        [Route("school/{urn}/{schoolName}/secondary/destinations", Name = RouteConstants.SecondaryDestinations)]
+        public async Task<IActionResult> Destinations(
+            [FromServices] IDestinationsService destinationsService,
+            string urn, string schoolName, CancellationToken ct)
+        {
+            var destinationDetails = await destinationsService.GetDestinationsDetailsAsync(urn, ct);
+
+            var model = DestinationsViewModel.Map(destinationDetails);
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AdditionalMeasures(
+            string urn, string schoolName, CancellationToken ct)
+        {
+            return View();
+        }
     }
 }
