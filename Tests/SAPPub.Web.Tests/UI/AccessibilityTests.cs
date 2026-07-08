@@ -11,11 +11,11 @@ public class AccessibilityTests(WebApplicationSetupFixture fixture) : BasePageTe
 {
     private List<string> _pageUrls = new List<string>
     {
-        "school/105574/loreto-high-school-chorlton/secondary/about",
-        "school/137552/stewards-academy-science-specialist-harlow/secondary/about",
-        "school/100273/saint-paul-roman-catholic-infant-school/secondary/about",
-        "school/107564/todmorden-high-school/secondary/about",
-        "school/145744/abbey-park-school/secondary/about",
+        "school/105574/loreto-high-school-chorlton/about",
+        "school/137552/stewards-academy-science-specialist-harlow/about",
+        "school/100273/saint-paul-roman-catholic-infant-school/about",
+        "school/107564/todmorden-high-school/about",
+        "school/145744/abbey-park-school/about",
         "school/105574/loreto-high-school-chorlton/secondary/academic-performance-attainment-and-progress",
         "school/105574/loreto-high-school-chorlton/secondary/academic-performance-attainment-and-progress?SelectedAcademicYear=Current",
         "school/105574/loreto-high-school-chorlton/secondary/academic-performance-english-and-maths-results",
