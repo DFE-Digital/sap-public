@@ -8,7 +8,6 @@ using SAPPub.Core.ServiceModels;
 using SAPPub.Web.Areas.Compare.Filters;
 using SAPPub.Web.Areas.Compare.ViewModels.Secondary;
 using SAPPub.Web.Constants;
-using SAPPub.Web.Extensions;
 using static SAPPub.Web.Constants.Constants;
 
 namespace SAPPub.Web.Areas.Compare.Controllers;
@@ -16,9 +15,11 @@ namespace SAPPub.Web.Areas.Compare.Controllers;
 [Area("Compare")]
 [FeatureGate(EstablishmentComparisonEnabled)]
 [Route("compare/secondary")]
-[SecondaryComparisonQueryValidation]
-public class SecondaryController : Controller
+[ServiceFilter(typeof(SecondaryComparisonQueryValidationFilter))]
+public class SecondaryController : Controller, IEstablishmentsList
 {
+    public List<EstablishmentServiceModel> Establishments { get; set; } = [];
+
     [HttpGet]
     [Route("about-your-schools", Name = RouteConstants.CompareSecondaryAboutYourSchools)]
     public async Task<IActionResult> AboutYourSchools(
@@ -27,7 +28,7 @@ public class SecondaryController : Controller
         CancellationToken ct)
     {
         var aboutSchoolsCompareModelList = await aboutSchoolService.GetAboutSchoolForComparisonAsync(urns, ct);
-        var model = CompareAboutYourSchoolsViewModel.Map(urns, aboutSchoolsCompareModelList);
+        var model = CompareAboutYourSchoolsViewModel.Map(urns, aboutSchoolsCompareModelList, Establishments);
         return View(model);
     }
 
@@ -38,9 +39,8 @@ public class SecondaryController : Controller
         List<string> urns,
         CancellationToken ct = default)
     {
-        var establishments = HttpContext.Get<List<EstablishmentServiceModel>>(Establishments) ?? [];
         var attainmentResults = await attainmentAndProgressComparisionService.GetComparisionResultsAsync(urns, ct);
-        var model = CompareAcademicPerformancePupilAttainmentViewModel.Map(urns, attainmentResults, establishments);
+        var model = CompareAcademicPerformancePupilAttainmentViewModel.Map(urns, attainmentResults, Establishments);
         return View(model);
     }
 
@@ -52,7 +52,7 @@ public class SecondaryController : Controller
     CancellationToken ct = default)
     {
         var results = await englishAndMathsComparisionService.GetComparisionResultsAsync(urns, ct);
-        var model = CompareAcademicPerformanceEnglishAndMathsResultsViewModel.Map(urns, results);
+        var model = CompareAcademicPerformanceEnglishAndMathsResultsViewModel.Map(urns, results, Establishments);
         return View(model);
     }
 
@@ -63,8 +63,7 @@ public class SecondaryController : Controller
          List<string> urns,
          CancellationToken ct = default)
     {
-        var establishments = await establishmentService.GetEstablishmentsAsync(urns, ct);
-        var model = CompareNextStepsViewModel.Map(urns, establishments);
+        var model = CompareNextStepsViewModel.Map(urns, Establishments);
         return View(model);
     }
 
@@ -72,10 +71,9 @@ public class SecondaryController : Controller
     [Route("destinations-after-year-11", Name = RouteConstants.CompareSecondaryDestinations)]
     public async Task<IActionResult> Destinations([FromServices] IDestinationsComparisonService destinationsService, List<string> urns)
     {
-        var establishments = HttpContext.Get<List<EstablishmentServiceModel>>(Establishments) ?? [];
         var destinationsResult = await destinationsService.GetDestinationsDetailsAsync(urns, CancellationToken.None);
 
-        var model = CompareDestinationsViewModel.Map(urns, destinationsResult, establishments.ToList());
+        var model = CompareDestinationsViewModel.Map(urns, destinationsResult, Establishments.ToList());
         return View(model);
     }
 }

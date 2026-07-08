@@ -1,11 +1,10 @@
-﻿using SAPPub.Core.Entities;
-using SAPPub.Core.Entities.KS4.Absence;
+﻿using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Entities.KS4.Performance;
+using SAPPub.Core.Enums;
 using SAPPub.Core.Helpers;
 
 namespace SAPPub.Core.ServiceModels;
-
 
 public class EstablishmentServiceModel
 {
@@ -82,7 +81,7 @@ public class EstablishmentServiceModel
 
     public string TotalPupils { get; set; } = string.Empty;
 
-    public string TypeOfEstablishmentId { get; set; } = string.Empty;
+    public TypeOfEstablishment TypeOfEstablishment { get; set; }
 
     public string TypeOfEstablishmentName { get; set; } = string.Empty;
 
@@ -116,6 +115,14 @@ public class EstablishmentServiceModel
 
     public bool IsKS5 { get; set; }
 
+    public bool IsSpecialSchool => TypeOfEstablishment is
+        TypeOfEstablishment.CommunitySpecialSchool or
+        TypeOfEstablishment.NonMaintainedSpecialSchool or
+        TypeOfEstablishment.OtherIndependentSpecialSchool or
+        TypeOfEstablishment.FoundationSpecialSchool or
+        TypeOfEstablishment.AcademySpecialSponsorLed or
+        TypeOfEstablishment.FreeSchoolsSpecial or
+        TypeOfEstablishment.AcademySpecialConverter;
 
     public EstablishmentPerformance KS4Performance { get; set; } = new();
 
@@ -129,65 +136,7 @@ public class EstablishmentServiceModel
 
     public EnglandDestinations EnglandDestinations { get; set; } = new();
 
-    public EstablishmentAbsence Absence { get; set; } = new(); // Will eventually need one per phase
-
     public LAAbsence LAAbsence { get; set; } = new();
 
     public EnglandAbsence EnglandAbsence { get; set; } = new();
-
-    public static EstablishmentServiceModel Map(Establishment e)
-    {
-        return new()
-        {
-            URN = e.URN,
-            EstablishmentName = e.EstablishmentName,
-            TrustsId = e.TrustsId,
-            TrustName = e.TrustName,
-            AddressStreet = e.AddressStreet,
-            AddressLocality = e.AddressLocality,
-            AddressAddress3 = e.AddressAddress3,
-            AddressTown = e.AddressTown,
-            AddressCounty = e.AddressCounty,
-            AddressPostcode = e.AddressPostcode,
-            AdmissionsPolicyId = e.AdmissionsPolicyId,
-            AdmissionPolicy = e.AdmissionPolicy,
-            DistrictAdministrativeId = e.DistrictAdministrativeId,
-            DistrictAdministrativeName = e.DistrictAdministrativeName,
-            PhaseOfEducationId = e.PhaseOfEducationId,
-            PhaseOfEducationName = e.PhaseOfEducationName,
-            GenderId = e.GenderId,
-            GenderName = e.GenderName,
-            HeadteacherTitle = e.HeadteacherTitle,
-            HeadteacherFirstName = e.HeadteacherFirstName,
-            HeadteacherLastName = e.HeadteacherLastName,
-            HeadteacherPreferredJobTitle = e.HeadteacherPreferredJobTitle,
-            AgeRangeLow = e.AgeRangeLow,
-            AgeRangeHigh = e.AgeRangeHigh,
-            OfficialSixthFormId = e.OfficialSixthFormId,
-            LAId = e.LAId,
-            LAName = e.LAName,
-            GSSLACode = e.GSSLACode,
-            ReligiousCharacterId = e.ReligiousCharacterId,
-            ReligiousCharacterName = e.ReligiousCharacterName,
-            TelephoneNum = e.TelephoneNum,
-            TotalPupils = e.TotalPupils,
-            TypeOfEstablishmentId = e.TypeOfEstablishmentId,
-            TypeOfEstablishmentName = e.TypeOfEstablishmentName,
-            EstablishmentTypeGroupId = e.EstablishmentTypeGroupId,
-            EstablishmentTypeGroupName = e.EstablishmentTypeGroupName,
-            ResourcedProvision = e.ResourcedProvision,
-            ResourcedProvisionName = e.ResourcedProvisionName,
-            Website = e.Website,
-            Easting = e.Easting,
-            Northing = e.Northing,
-            StatusCode = e.StatusCode,
-            ClosedDate = e.ClosedDate,
-            OpenDate = e.OpenDate,
-            OpenReasonId = e.OpenReasonId,
-            SenTypes = e.SenTypes,
-            IsKS2 = e.IsKS2,
-            IsKS4 = e.IsKS4,
-            IsKS5 = e.IsKS5,
-        };
-    }
 }

@@ -96,6 +96,37 @@ public class NextStepsPageTests : PageTestsBase
     }
 
     [Fact]
+    public async Task Page_WithNoSpecialSchool_DoesNotShowShowsNotificationBanner()
+    {
+        // Act
+        var doc = await Fixture.BrowseToPage(_pageUrl);
+
+        var banner = doc.QuerySelector("[data-testid='special-school-warning-banner']");
+        Assert.Null(banner);
+    }
+
+    [Fact]
+    public async Task Page_WithSpecialSchool_ShowsNotificationBanner()
+    {
+        // Arrange
+        _establishmentService.Setup(s => s.GetEstablishmentAsync("119052", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+                new EstablishmentTestBuilder()
+                    .WithURN("119052")
+                    .WithIsKeyStage4(true)
+                    .WithTypeOfEstablishmentId(7)
+                    .BuildServiceModel());
+
+        // Act
+        var doc = await Fixture.BrowseToPage(_pageUrl);
+
+        // Assert
+        var banner = doc.QuerySelector("[data-testid='special-school-warning-banner']");
+        Assert.NotNull(banner);
+        Assert.Contains("You're comparing a special school", banner.TextContent.Trim());
+    }
+
+    [Fact]
     public async Task ShowsSchoolInfoComparisonLists()
     {
         // Act

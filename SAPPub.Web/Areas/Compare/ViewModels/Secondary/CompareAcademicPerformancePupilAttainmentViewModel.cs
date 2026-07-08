@@ -5,7 +5,7 @@ using SAPPub.Web.Helpers;
 namespace SAPPub.Web.Areas.Compare.ViewModels.Secondary;
 
 public class CompareAcademicPerformancePupilAttainmentViewModel : CompareSecondarySchoolBaseViewModel
-{   
+{
     public required IEnumerable<SchoolAttainmentDetailsViewModel> SchoolDetails { get; init; }
 
     public required double? EnglandPercentage { get; init; }
@@ -32,6 +32,7 @@ public class CompareAcademicPerformancePupilAttainmentViewModel : CompareSeconda
         {
             URNs = urns,
             SchoolDetails = schoolDetails,
+            ListContainsSpecialSchool = establishments.Any(e => e.IsSpecialSchool),
             EnglandPercentage = attainmentAndProgressComparisionResultsModel.EnglandAverage,
             EnglandAttainment8ScoreContextDescription = englandAttainment8ContextSentence != null
                 ? $"Pupils generally scored the equivalent of {englandAttainment8ContextSentence} in their 8 best GCSE-level subjects.".ToDisplayField()

@@ -1,4 +1,6 @@
 ﻿using SAPPub.Core.Attributes;
+using SAPPub.Core.Enums;
+using SAPPub.Core.ServiceModels;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 
@@ -7,7 +9,6 @@ namespace SAPPub.Core.Entities;
 [ExcludeFromCodeCoverage]
 public class Establishment
 {
-
     public string URN { get; set; } = string.Empty;
 
     public string EstablishmentName { get; set; } = string.Empty;
@@ -71,7 +72,7 @@ public class Establishment
 
     public string TotalPupils { get; set; } = string.Empty;
 
-    public string TypeOfEstablishmentId { get; set; } = string.Empty;
+    public int? TypeOfEstablishmentId { get; set; }
 
     public string TypeOfEstablishmentName { get; set; } = string.Empty;
 
@@ -114,4 +115,62 @@ public class Establishment
 
     [DbColumnName("ISKS5")]
     public bool IsKS5 { get; set; }
+
+    public static EstablishmentServiceModel MapToServiceModel(Establishment e)
+    {
+        return new()
+        {
+            URN = e.URN,
+            EstablishmentName = e.EstablishmentName,
+            TrustsId = e.TrustsId,
+            TrustName = e.TrustName,
+            AddressStreet = e.AddressStreet,
+            AddressLocality = e.AddressLocality,
+            AddressAddress3 = e.AddressAddress3,
+            AddressTown = e.AddressTown,
+            AddressCounty = e.AddressCounty,
+            AddressPostcode = e.AddressPostcode,
+            AdmissionsPolicyId = e.AdmissionsPolicyId,
+            AdmissionPolicy = e.AdmissionPolicy,
+            DistrictAdministrativeId = e.DistrictAdministrativeId,
+            DistrictAdministrativeName = e.DistrictAdministrativeName,
+            PhaseOfEducationId = e.PhaseOfEducationId,
+            PhaseOfEducationName = e.PhaseOfEducationName,
+            GenderId = e.GenderId,
+            GenderName = e.GenderName,
+            HeadteacherTitle = e.HeadteacherTitle,
+            HeadteacherFirstName = e.HeadteacherFirstName,
+            HeadteacherLastName = e.HeadteacherLastName,
+            HeadteacherPreferredJobTitle = e.HeadteacherPreferredJobTitle,
+            AgeRangeLow = e.AgeRangeLow,
+            AgeRangeHigh = e.AgeRangeHigh,
+            OfficialSixthFormId = e.OfficialSixthFormId,
+            LAId = e.LAId,
+            LAName = e.LAName,
+            GSSLACode = e.GSSLACode,
+            ReligiousCharacterId = e.ReligiousCharacterId,
+            ReligiousCharacterName = e.ReligiousCharacterName,
+            TelephoneNum = e.TelephoneNum,
+            TotalPupils = e.TotalPupils,
+            TypeOfEstablishment = e.TypeOfEstablishmentId is int id && Enum.IsDefined(typeof(TypeOfEstablishment), id)
+                ? (TypeOfEstablishment)e.TypeOfEstablishmentId
+                : TypeOfEstablishment.Unknown,
+            TypeOfEstablishmentName = e.TypeOfEstablishmentName,
+            EstablishmentTypeGroupId = e.EstablishmentTypeGroupId,
+            EstablishmentTypeGroupName = e.EstablishmentTypeGroupName,
+            ResourcedProvision = e.ResourcedProvision,
+            ResourcedProvisionName = e.ResourcedProvisionName,
+            Website = e.Website,
+            Easting = e.Easting,
+            Northing = e.Northing,
+            StatusCode = e.StatusCode,
+            ClosedDate = e.ClosedDate,
+            OpenDate = e.OpenDate,
+            OpenReasonId = e.OpenReasonId,
+            SenTypes = e.SenTypes,
+            IsKS2 = e.IsKS2,
+            IsKS4 = e.IsKS4,
+            IsKS5 = e.IsKS5
+        };
+    }
 }

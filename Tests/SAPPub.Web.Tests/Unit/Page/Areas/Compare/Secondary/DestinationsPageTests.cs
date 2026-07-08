@@ -97,6 +97,37 @@ public class DestinationsPageTests : PageTestsBase
         Assert.Single(doc.QuerySelectorAll(".moj-side-navigation__item--active"));
     }
 
+    [Fact]
+    public async Task Page_WithNoSpecialSchool_DoesNotShowShowsNotificationBanner()
+    {
+        // Act
+        var doc = await Fixture.BrowseToPage($"{_pageUrl}?{QueryString}");
+
+        var banner = doc.QuerySelector("[data-testid='special-school-warning-banner']");
+        Assert.Null(banner);
+    }
+
+    [Fact]
+    public async Task Page_WithSpecialSchool_ShowsNotificationBanner()
+    {
+        // Arrange
+        _establishmentService.Setup(s => s.GetEstablishmentAsync("100279", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+                new EstablishmentTestBuilder()
+                    .WithURN("100279")
+                    .WithIsKeyStage4(true)
+                    .WithTypeOfEstablishmentId(7)
+                    .BuildServiceModel());
+
+        // Act
+        var doc = await Fixture.BrowseToPage($"{_pageUrl}?{QueryString}");
+
+        // Assert
+        var banner = doc.QuerySelector("[data-testid='special-school-warning-banner']");
+        Assert.NotNull(banner);
+        Assert.Contains("You're comparing a special school", banner.TextContent.Trim());
+    }
+
     [Theory]
     [InlineData("1")]
     [InlineData("2")]

@@ -7,6 +7,7 @@ using Moq;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.ServiceModels;
 using SAPPub.Core.Tests.TestBuilders;
+using SAPPub.Web.Areas.Compare.Controllers;
 using SAPPub.Web.Areas.Compare.Filters;
 
 namespace SAPPub.Web.Tests.Unit.Areas.Compare.Filters;
@@ -19,17 +20,17 @@ public class EnsureUrnsAreSecondaryFilterTests
     private readonly EstablishmentServiceModel establishment3IsNotKS4;
     private readonly EstablishmentServiceModel establishment4IsNotKS4;
 
-    private DefaultHttpContext httpContext = new();
-    private ActionContext actionContext;
-    private ActionExecutedContext executedContext;
-    private SecondaryComparisonQueryValidationFilter filter;
+    private DefaultHttpContext _httpContext = new();
+    private ActionContext _actionContext;
+    private ActionExecutedContext _executedContext;
+    private SecondaryComparisonQueryValidationFilter _filterUnderTest;
 
     public EnsureUrnsAreSecondaryFilterTests()
     {
-        establishment1IsKS4 = new EstablishmentTestBuilder().WithIsKeyStage4(true).BuildServiceModel();
-        establishment2IsKS4 = new EstablishmentTestBuilder().WithIsKeyStage4(true).BuildServiceModel();
-        establishment3IsNotKS4 = new EstablishmentTestBuilder().WithIsKeyStage4(false).BuildServiceModel();
-        establishment4IsNotKS4 = new EstablishmentTestBuilder().WithIsKeyStage4(false).BuildServiceModel();
+        establishment1IsKS4 = new EstablishmentTestBuilder().WithEstablishmentName("Establishment 1").WithIsKeyStage4(true).BuildServiceModel();
+        establishment2IsKS4 = new EstablishmentTestBuilder().WithEstablishmentName("Establishment 2").WithIsKeyStage4(true).BuildServiceModel();
+        establishment3IsNotKS4 = new EstablishmentTestBuilder().WithEstablishmentName("Establishment 3").WithIsKeyStage4(false).BuildServiceModel();
+        establishment4IsNotKS4 = new EstablishmentTestBuilder().WithEstablishmentName("Establishment 4").WithIsKeyStage4(false).BuildServiceModel();
 
         _mockEstablishmentService.Setup(x => x.GetEstablishmentAsync(establishment1IsKS4.URN, It.IsAny<CancellationToken>()))
             .ReturnsAsync(establishment1IsKS4);
@@ -40,23 +41,23 @@ public class EnsureUrnsAreSecondaryFilterTests
         _mockEstablishmentService.Setup(x => x.GetEstablishmentAsync(establishment4IsNotKS4.URN, It.IsAny<CancellationToken>()))
             .ReturnsAsync(establishment4IsNotKS4);
 
-        filter = new SecondaryComparisonQueryValidationFilter(_mockEstablishmentService.Object);
+        _filterUnderTest = new SecondaryComparisonQueryValidationFilter(_mockEstablishmentService.Object);
 
-        actionContext = new ActionContext(
-            httpContext,
+        _actionContext = new ActionContext(
+            _httpContext,
             new RouteData(),
             new ActionDescriptor()
         );
 
-        executedContext = new ActionExecutedContext(
-                actionContext,
+        _executedContext = new ActionExecutedContext(
+                _actionContext,
                 [],
                 controller: null!
             );
     }
 
     [Fact]
-    public async Task Filter_ContextHasValidUrns_ReturnsUrnsAndAddsEstablishmentsToContext()
+    public async Task Filter_ContextHasValidUrns_ReturnsUrns()
     {
         // Arrange
         var actionArguments = new Dictionary<string, object?>
@@ -65,20 +66,18 @@ public class EnsureUrnsAreSecondaryFilterTests
             };
 
         var context = new ActionExecutingContext(
-            actionContext,
+            _actionContext,
             [],
             actionArguments,
             null!);
 
-        var nextCalled = false;
         Task<ActionExecutedContext> next()
         {
-            nextCalled = true;
-            return Task.FromResult(executedContext);
+            return Task.FromResult(_executedContext);
         }
 
         // Act
-        await filter.OnActionExecutionAsync(context, next);
+        await _filterUnderTest.OnActionExecutionAsync(context, next);
 
         // Assert
         var resultUrns = context.ActionArguments["urns"] as List<string>;
@@ -88,16 +87,6 @@ public class EnsureUrnsAreSecondaryFilterTests
             urn => Assert.Equal(establishment1IsKS4.URN, urn),
             urn => Assert.Equal(establishment2IsKS4.URN, urn)
         );
-
-        var establishments = context.HttpContext.Items["Establishments"] as List<EstablishmentServiceModel>;
-
-        Assert.NotNull(establishments);
-
-        Assert.Collection(establishments,
-            est => Assert.Equal(establishment1IsKS4.URN, est.URN),
-            est => Assert.Equal(establishment2IsKS4.URN, est.URN)
-        );
-        Assert.True(nextCalled);
     }
 
     [Fact]
@@ -110,7 +99,7 @@ public class EnsureUrnsAreSecondaryFilterTests
             };
 
         var context = new ActionExecutingContext(
-            actionContext,
+            _actionContext,
             [],
             actionArguments,
             null!);
@@ -119,11 +108,11 @@ public class EnsureUrnsAreSecondaryFilterTests
         Task<ActionExecutedContext> next()
         {
             nextCalled = true;
-            return Task.FromResult(executedContext);
+            return Task.FromResult(_executedContext);
         }
 
         // Act
-        await filter.OnActionExecutionAsync(context, next);
+        await _filterUnderTest.OnActionExecutionAsync(context, next);
 
         // Assert
         var resultUrns = context.ActionArguments["urns"] as List<string>;
@@ -146,7 +135,7 @@ public class EnsureUrnsAreSecondaryFilterTests
             };
 
         var context = new ActionExecutingContext(
-            actionContext,
+            _actionContext,
             [],
             actionArguments,
             null!);
@@ -155,16 +144,46 @@ public class EnsureUrnsAreSecondaryFilterTests
         Task<ActionExecutedContext> next()
         {
             nextCalled = true;
-            return Task.FromResult(executedContext);
+            return Task.FromResult(_executedContext);
         }
         ;
 
         // Act
-        await filter.OnActionExecutionAsync(context, next);
+        await _filterUnderTest.OnActionExecutionAsync(context, next);
 
         // Assert
         var result = context.Result as NotFoundResult;
         Assert.NotNull(result);
         Assert.False(nextCalled);
+    }
+
+    [Fact]
+    public async Task Filter_SetsEstablishmentsOnController()
+    {
+        // Arrange
+        var actionArguments = new Dictionary<string, object?>
+            {
+                { "urns", new List<string> { establishment1IsKS4.URN, establishment2IsKS4.URN } }
+            };
+
+        var controller = new SecondaryController();
+
+        var context = new ActionExecutingContext(
+            _actionContext,
+            [],
+            actionArguments,
+            controller);
+
+        Task<ActionExecutedContext> next()
+            => Task.FromResult(_executedContext);
+
+        // Act
+        await _filterUnderTest.OnActionExecutionAsync(context, next);
+
+        // Assert
+        Assert.Collection(controller.Establishments,
+            establishment => Assert.Equal(establishment1IsKS4.URN, establishment.URN),
+            establishment => Assert.Equal(establishment2IsKS4.URN, establishment.URN)
+        );
     }
 }

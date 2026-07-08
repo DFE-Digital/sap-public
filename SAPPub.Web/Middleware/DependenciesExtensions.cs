@@ -37,6 +37,7 @@ using SAPPub.Infrastructure.Repositories.KS4.Absence;
 using SAPPub.Infrastructure.Repositories.KS4.Destinations;
 using SAPPub.Infrastructure.Repositories.KS4.Performance;
 using SAPPub.Infrastructure.Repositories.KS4.SubjectEntries;
+using SAPPub.Web.Areas.Compare.Filters;
 
 namespace SAPPub.Web.Middleware
 {
@@ -118,6 +119,7 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<IAttainmentAndProgressComparisionService, AttainmentAndProgressComparisionService>();
 
             services.AddTransient<ILAService, LAService>();
+            services.AddScoped<SecondaryComparisonQueryValidationFilter>();
 
             // Mapper
             services.AddSingleton<ICodedValueMapper, ReflectionCodedValueMapper>();
