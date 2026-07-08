@@ -195,7 +195,34 @@ public class AcademicPerformanceEnglishAndMathsResultsTests : PageTestsBase
     }
 
     [Fact]
-    public async Task Page_WithSpecialSchool_ShowsNotificationBanner()
+    public async Task Page_WithOnlySpecialSchools_DoesNotShowNotificationBanner()
+    {
+        // Arrange
+        _establishmentService.Setup(s => s.GetEstablishmentAsync("100279", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+                new EstablishmentTestBuilder()
+                    .WithURN("100279")
+                    .WithIsKeyStage4(true)
+                    .WithTypeOfEstablishmentId(7) // special school
+                    .BuildServiceModel());
+        _establishmentService.Setup(s => s.GetEstablishmentAsync("145179", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+                new EstablishmentTestBuilder()
+                    .WithURN("145179")
+                    .WithIsKeyStage4(true)
+                    .WithTypeOfEstablishmentId(7) // special school
+                    .BuildServiceModel());
+
+        // Act
+        var doc = await Fixture.BrowseToPage(_pageUrl);
+
+        // Assert
+        var banner = doc.QuerySelector("[data-testid='special-school-warning-banner']");
+        Assert.Null(banner);
+    }
+
+    [Fact]
+    public async Task Page_WithSpecialSchoolAndNonSpecialSchool_ShowsNotificationBanner()
     {
         // Arrange
         _establishmentService.Setup(s => s.GetEstablishmentAsync("100279", It.IsAny<CancellationToken>()))

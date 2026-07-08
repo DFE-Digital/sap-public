@@ -22,6 +22,7 @@ public class CompareAboutYourSchoolsViewModel : CompareSecondarySchoolBaseViewMo
         {
             URNs = urns,
             ListContainsSpecialSchool = establishments.Any(e => e.IsSpecialSchool),
+            ListContainsNonSpecialSchool = establishments.Any(e => !e.IsSpecialSchool),
             CompareAboutSchools = aboutSchoolComparisonModelList.Select(r =>
             {
                 var latLng = MappingHelper.ConvertToLatLon(r.Easting, r.Northing);

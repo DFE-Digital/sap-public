@@ -9,7 +9,7 @@
 }
 
 <div class="govuk-grid-row">
-    @if (Model.ListContainsSpecialSchool)
+    @if (Model.ListContainsSpecialSchool && Model.ListContainsNonSpecialSchool)
     {
         <partial name="_SpecialSchoolWarningBanner" />
     }
