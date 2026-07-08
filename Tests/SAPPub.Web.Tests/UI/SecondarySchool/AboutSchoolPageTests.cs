@@ -9,13 +9,13 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
 {
     private readonly Dictionary<string, string> _schoolUrnToUrlMap = new()
     {
-        ["105574"] = "school/105574/loreto-high-school-chorlton/secondary/about",
-        ["137552"] = "school/137552/stewards-academy-science-specialist-harlow/secondary/about",
-        ["100273"] = "school/100273/saint-paul-roman-catholic-infant-school/secondary/about",
-        ["107564"] = "school/107564/todmorden-high-school/secondary/about",
-        ["145744"] = "school/145744/abbey-park-school/secondary/about",
-        ["178965"] = "school/178965/predecessor-1-to-abbey-park-school/secondary/about",
-        ["178966"] = "school/178966/predecessor-2-to-abbey-park-school/secondary/about"
+        ["105574"] = "school/105574/loreto-high-school-chorlton/about",
+        ["137552"] = "school/137552/stewards-academy-science-specialist-harlow/about",
+        ["100273"] = "school/100273/saint-paul-roman-catholic-infant-school/about",
+        ["107564"] = "school/107564/todmorden-high-school/about",
+        ["145744"] = "school/145744/abbey-park-school/about",
+        ["178965"] = "school/178965/predecessor-1-to-abbey-park-school/about",
+        ["178966"] = "school/178966/predecessor-2-to-abbey-park-school/about"
     };
 
     [Fact]
@@ -109,13 +109,13 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
 
         Assert.True(await schoolClosedCard.IsVisibleAsync());
 
-        var links = await schoolClosedCard.Locator("a[href*='/secondary/about']").AllAsync();
+        var links = await schoolClosedCard.Locator("a[href*='/about']").AllAsync();
         var linkText = await Task.WhenAll(links.Select(async link => await link.InnerTextAsync()));
         Assert.Collection(linkText,
             linkText => Assert.Contains("Abbey Park School", linkText));
 
         await Task.WhenAll(
-            Page.WaitForURLAsync("**/secondary/about**"),
+            Page.WaitForURLAsync("**/about**"),
             links[0].ClickAsync()
         );
 
@@ -167,14 +167,14 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
 
         Assert.True(await schoolPredecessorsCard.IsVisibleAsync());
 
-        var links = await schoolPredecessorsCard.Locator("a[href*='/secondary/about']").AllAsync();
+        var links = await schoolPredecessorsCard.Locator("a[href*='/about']").AllAsync();
         var linkText = await Task.WhenAll(links.Select(async link => await link.InnerTextAsync()));
         Assert.Collection(linkText,
             linkText => Assert.Contains("Predecessor 1 to Abbey Park School", linkText),
             linkText => Assert.Contains("Predecessor 2 to Abbey Park School", linkText));
 
         await Task.WhenAll(
-            Page.WaitForURLAsync("**/secondary/about**"),
+            Page.WaitForURLAsync("**/about**"),
             links[0].ClickAsync()
         );
 

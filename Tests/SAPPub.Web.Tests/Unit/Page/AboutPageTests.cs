@@ -15,7 +15,7 @@ namespace SAPPub.Web.Tests.Unit.Page;
 [Collection("WebAppCollection")]
 public class AboutPageTests : PageTestsBase
 {
-    private static string _pageRoute = "/secondary/about";
+    private static string _pageRoute = "/about";
     private readonly Mock<IAboutSchoolService> _about;
     private readonly Mock<IMySchoolsListService> _comparisonService;
 
