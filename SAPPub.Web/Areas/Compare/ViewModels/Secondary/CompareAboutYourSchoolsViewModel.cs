@@ -1,4 +1,5 @@
 ﻿using SAPPub.Core.Helpers;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.Common;
@@ -14,11 +15,14 @@ public class CompareAboutYourSchoolsViewModel : CompareSecondarySchoolBaseViewMo
 
     public static CompareAboutYourSchoolsViewModel Map(
         List<string> urns,
-        IEnumerable<AboutSchoolComparisonModel> aboutSchoolComparisonModelList)
+        IEnumerable<AboutSchoolComparisonModel> aboutSchoolComparisonModelList,
+        IEnumerable<EstablishmentServiceModel> establishments)
     {
         var compareAboutYourSchoolsViewModel = new CompareAboutYourSchoolsViewModel
         {
             URNs = urns,
+            ListContainsSpecialSchool = establishments.Any(e => e.IsSpecialSchool),
+            ListContainsNonSpecialSchool = establishments.Any(e => !e.IsSpecialSchool),
             CompareAboutSchools = aboutSchoolComparisonModelList.Select(r =>
             {
                 var latLng = MappingHelper.ConvertToLatLon(r.Easting, r.Northing);

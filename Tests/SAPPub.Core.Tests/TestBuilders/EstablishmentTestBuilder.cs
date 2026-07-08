@@ -237,7 +237,7 @@ public class EstablishmentTestBuilder
         return this;
     }
 
-    public EstablishmentTestBuilder WithTypeOfEstablishmentId(string id)
+    public EstablishmentTestBuilder WithTypeOfEstablishmentId(int id)
     {
         _establishment.TypeOfEstablishmentId = id;
         return this;
@@ -369,6 +369,6 @@ public class EstablishmentTestBuilder
     {
         var est = Build();
 
-        return EstablishmentServiceModel.Map(est);
+        return Establishment.MapToServiceModel(est);
     }
 }

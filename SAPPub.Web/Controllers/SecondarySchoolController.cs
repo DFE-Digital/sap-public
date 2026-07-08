@@ -17,7 +17,7 @@ namespace SAPPub.Web.Controllers
         IEstablishmentService establishmentService) : Controller
     {
         [HttpGet]
-        [Route("school/{urn}/{schoolName}/secondary/about", Name = RouteConstants.SecondaryAboutSchool)]
+        [Route("school/{urn}/{schoolName}/about", Name = RouteConstants.SecondaryAboutSchool)]
         public async Task<IActionResult> AboutSchool(
             [FromServices] IAboutSchoolService aboutSchoolService,
             string urn,

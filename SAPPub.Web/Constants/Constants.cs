@@ -16,6 +16,9 @@ public static class Constants
     public const string BannerRemoveSuccess = "BannerRemoveSuccess";
     public const string ComparisionLimtReached = "ComparisionLimtReached";
 
+    // HttpContext Key Constants
+    public const string Establishments = "Establishments";
+
     // Chart colours
     public const string EstablishmentChartColour = "#A285D1";
     public const string EnglandAverageChartColour = "#28A197";

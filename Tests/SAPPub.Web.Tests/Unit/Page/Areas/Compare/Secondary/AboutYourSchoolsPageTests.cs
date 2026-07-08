@@ -1,5 +1,4 @@
 ﻿using Moq;
-using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels;
@@ -97,6 +96,64 @@ public class AboutYourSchoolsPageTests : PageTestsBase
         Assert.NotNull(navNext);
         Assert.Null(navPrevious);
         Assert.Contains("Academic Performance", navNext.TextContent);
+    }
+
+    [Fact]
+    public async Task Page_WithNoSpecialSchool_DoesNotShowShowsNotificationBanner()
+    {
+        // Act
+        var doc = await Fixture.BrowseToPage(_pageUrl);
+
+        var banner = doc.QuerySelector("[data-testid='special-school-warning-banner']");
+        Assert.Null(banner);
+    }
+
+    [Fact]
+    public async Task Page_WithOnlySpecialSchools_DoesNotShowNotificationBanner()
+    {
+        // Arrange
+        _establishmentService.Setup(s => s.GetEstablishmentAsync("119052", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+                new EstablishmentTestBuilder()
+                    .WithURN("119052")
+                    .WithIsKeyStage4(true)
+                    .WithTypeOfEstablishmentId(7) // special school
+                    .BuildServiceModel());
+        _establishmentService.Setup(s => s.GetEstablishmentAsync("124500", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+                new EstablishmentTestBuilder()
+                    .WithURN("124500")
+                    .WithIsKeyStage4(true)
+                    .WithTypeOfEstablishmentId(7) // special school
+                    .BuildServiceModel());
+
+        // Act
+        var doc = await Fixture.BrowseToPage(_pageUrl);
+
+        // Assert
+        var banner = doc.QuerySelector("[data-testid='special-school-warning-banner']");
+        Assert.Null(banner);
+    }
+
+    [Fact]
+    public async Task Page_WithSpecialSchoolAndNonSpecialSchool_ShowsNotificationBanner()
+    {
+        // Arrange
+        _establishmentService.Setup(s => s.GetEstablishmentAsync("119052", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+                new EstablishmentTestBuilder()
+                    .WithURN("119052")
+                    .WithIsKeyStage4(true)
+                    .WithTypeOfEstablishmentId(7)
+                    .BuildServiceModel());
+
+        // Act
+        var doc = await Fixture.BrowseToPage(_pageUrl);
+
+        // Assert
+        var banner = doc.QuerySelector("[data-testid='special-school-warning-banner']");
+        Assert.NotNull(banner);
+        Assert.Contains("You're comparing a special school", banner.TextContent.Trim());
     }
 
     [Fact]
