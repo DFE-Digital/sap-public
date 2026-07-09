@@ -5,7 +5,7 @@ using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Web.Helpers;
 using static SAPPub.Web.Constants.Constants;
 
-namespace SAPPub.Web.Models.SecondarySchool
+namespace SAPPub.Web.Models.SecondarySchool //ToDo - Needs centralising
 {
     public class AboutSchoolViewModel : SecondarySchoolBaseViewModel
     {

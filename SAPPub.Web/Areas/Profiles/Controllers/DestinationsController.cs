@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NpgsqlTypes;
 using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
@@ -10,7 +11,7 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
     [Area("Profiles")]
     public class DestinationsController(ILogger<DestinationsController> logger) : Controller
     {
-        [Route("school/{urn}/{schoolName}/destinations")]
+        [Route("school/{urn}/{schoolName}/destinations", Name = RouteConstants.DestinationsRoot)]
         public async Task<IActionResult> Index([FromServices] IAboutSchoolService aboutSchoolService, 
             string urn, string schoolName,
             CancellationToken ct)
@@ -43,20 +44,55 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
         {
             var destinationDetails = await destinationsService.GetDestinationsDetailsAsync(urn, ct);
 
+            if (!destinationDetails.IsKS4)
+            {
+                return View("Error");
+            }
+
             var model = DestinationsViewModel.Map(destinationDetails);
             return View(model);
         }
 
-        [Route("school/{urn}/{schoolName}/destinations/16to19")]
-        public IActionResult KS5(string urn, string schoolName)
+        [Route("school/{urn}/{schoolName}/destinations/16to19", Name = RouteConstants.KS5Destinations)]
+        public async Task<IActionResult> KS5([FromServices] IAboutSchoolService aboutSchoolService, 
+            string urn, string schoolName,
+            CancellationToken ct)
         {
-            return View();
+            // This all needs to be refactored into a model, but this gets the structure up
+            var schoolDetails = await aboutSchoolService.GetAboutSchoolDetailsAsync(urn, ct);
+
+            if (string.IsNullOrWhiteSpace(schoolDetails.Urn))
+            {
+                logger.LogWarning("No establishment details found for URN: {URN}", urn);
+                return View("Error");
+            }
+
+            if (!schoolDetails.IsKS5)
+            {
+                return View("Error");
+            }
+            return View(schoolDetails);
         }
 
-        [Route("school/{urn}/{schoolName}/destinations/16to19-higher-level-study")]
-        public IActionResult KS5HigherLevel(string urn, string schoolName)
+        [Route("school/{urn}/{schoolName}/destinations/16to19-higher-level-study", Name = RouteConstants.KS5DestinationsHigher)]
+        public async Task<IActionResult> KS5HigherLevel([FromServices] IAboutSchoolService aboutSchoolService, 
+            string urn, string schoolName,
+            CancellationToken ct)
         {
-            return View();
+            // This all needs to be refactored into a model, but this gets the structure up
+            var schoolDetails = await aboutSchoolService.GetAboutSchoolDetailsAsync(urn, ct);
+
+            if (string.IsNullOrWhiteSpace(schoolDetails.Urn))
+            {
+                logger.LogWarning("No establishment details found for URN: {URN}", urn);
+                return View("Error");
+            }
+
+            if (!schoolDetails.IsKS5)
+            {
+                return View("Error");
+            }
+            return View(schoolDetails);
         }
     }
 }

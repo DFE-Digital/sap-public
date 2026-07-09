@@ -2,6 +2,9 @@
 
 public static class RouteConstants
 {
+    // Shared 
+    public const string DestinationsRoot = "DestinationsRoot";
+    
     // Secondary School
     public const string SecondaryAboutSchool = "SecondaryAboutSchool";
     public const string SecondaryAdmissions = "SecondaryAdmissions";
@@ -36,6 +39,7 @@ public static class RouteConstants
     public const string KS5AcademicPerformanceEnglishMaths = "KS5AcademicPerformanceEnglishMaths";
     public const string KS5AcademicPerformanceSubjectsEntered = "KS5AcademicPerformanceSubjectsEntered";
     public const string KS5Destinations = "KS5Destinations";
+    public const string KS5DestinationsHigher = "KS5DestinationsHigher";
 
     // Route Attributes
     public const string URN = "urn";
