@@ -336,7 +336,17 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             Education_Tot_Est_Current_Pct = 47,
             Employment_Tot_Est_Current_Pct = 2,
             Apprentice_Tot_Est_Current_Pct = 1,
-        }
+        },
+        ["149328"] = new EstablishmentDestinations
+        {
+            Id = "149328",
+            AllDest_Tot_Est_Current_Pct = null,
+            AllDest_Tot_Est_Previous_Pct = null,
+            AllDest_Tot_Est_Previous2_Pct = null,
+            Education_Tot_Est_Current_Pct = null,
+            Employment_Tot_Est_Current_Pct = null,
+            Apprentice_Tot_Est_Current_Pct = null,
+        },
     };
 
     private static readonly Dictionary<string, EnglandDestinations> EnglandDestinations = new(StringComparer.OrdinalIgnoreCase)
@@ -350,6 +360,11 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
         {
             Id = "100279",
             AllDest_Tot_Eng_Current_Pct = 50
+        },
+        ["149328"] = new EnglandDestinations
+        {
+            Id = "149328",
+            AllDest_Tot_Eng_Current_Pct = null
         }
     };
 

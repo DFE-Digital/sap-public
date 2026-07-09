@@ -11,6 +11,7 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     {
         ["105574"] = "school/105574/loreto-high-school-chorlton/destinations/secondary",
         ["100273"] = "school/100273/saint-paul-roman-catholic-infant-school/destinations/secondary",
+        ["149328"] = "school/149328/king-edward-vi-high-school/destinations/secondary",
     };
 
     [Fact]
@@ -265,7 +266,7 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     public async Task DestinationsPage_Displays_AllDestinations__DataOverTime_No_Chart_Only_Render_Table()
     {
         // Arrange
-        await Page.GotoAsync(_schoolUrnToUrlMap["100273"]);
+        await Page.GotoAsync(_schoolUrnToUrlMap["149328"]);
 
         // Act       
         var destinationsChart = Page.Locator("#all-destinations-chart");

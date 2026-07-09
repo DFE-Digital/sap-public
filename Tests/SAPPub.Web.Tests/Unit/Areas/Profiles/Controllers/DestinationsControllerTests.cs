@@ -130,6 +130,7 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
                 .WithUrn(_fakeEstablishment.URN)
                 .WithEstablishmentName(_fakeEstablishment.EstablishmentName)
                 .WithLAName(_fakeEstablishment.LAName)
+                .WithKS4(true)
                 .Build();
 
             _mockDestinationsService
@@ -295,6 +296,7 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
                  .WithUrn(_fakeEstablishment.URN)
                  .WithEstablishmentName(_fakeEstablishment.EstablishmentName)
                  .WithLAName(_fakeEstablishment.LAName)
+                 .WithKS4(true)
                  .Build();
 
             _mockDestinationsService
