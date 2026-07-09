@@ -47,10 +47,13 @@ https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
 
 sudo apt-get install -y apt-transport-https ca-certificates curl gnupg
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.36/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+(Overwrite as needed)
 sudo chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
 
 echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.36/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+(Confirm use of this)
+
 sudo chmod 644 /etc/apt/sources.list.d/kubernetes.list
 
 sudo apt-get update
@@ -59,17 +62,19 @@ sudo apt-get install -y kubectl
 > Kubelogin
 https://azure.github.io/kubelogin/install.html
 
-az aks install-cli
+sudo az aks install-cli
 
-OPTIONS FOR PATH
+[POSSIBLE OUTPUT] OPTIONS FOR PATH
 instanced or system variable
 PICK ONE, copy the first or set the second
+Follow commands on screen
+
 
 > Kubectl convert
 install kubectl-convert as per https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
 
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl-convert"
-sudo install -o root -g root -m 0755 kubectl-convert /usr/local/bin/kubectl-convert.
+sudo install -o root -g root -m 0755 kubectl-convert /usr/local/bin/kubectl-convert
 rm kubectl-convert kubectl-convert.sha256
 
 Fin! (Done)
@@ -88,6 +93,10 @@ enter WSL (type WSL)
 
 ```
 wget https://raw.githubusercontent.com/DFE-Digital/sap-public/refs/heads/main/Makefile || OR https://raw.githubusercontent.com/DFE-Digital/sap-sector/refs/heads/main/Makefile
+```
+
+```
+make bin/konduit.sh
 ```
 
 
