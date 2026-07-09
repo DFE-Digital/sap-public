@@ -15,7 +15,7 @@ public sealed class EstablishmentSubjectEntriesService(IEstablishmentSubjectEntr
         var vocationalTask = _repo.GetVocationalAwardSubjectEntriesByUrnAsync(urn, ct);
         var otherTask = _repo.GetOtherSubjectEntriesByUrnAsync(urn, ct);
 
-        await Task.WhenAll(gcseTask, vocationalTask, vocationalTask);
+        await Task.WhenAll(gcseTask, vocationalTask, otherTask);
 
         return (await gcseTask, await vocationalTask, await otherTask);
     }
