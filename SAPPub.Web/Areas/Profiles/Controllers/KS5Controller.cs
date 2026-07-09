@@ -15,11 +15,13 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
         [Route("school/{urn}/{schoolName}/16-to-19-performance", Name = RouteConstants.KS5AcademicPerformanceRoot)]
         public IActionResult Index(string urn, string schoolName)
         {
+            //Not a required for the structure, but might be worth considering? What if there's no Level 3 data
+
             // if establishment has Level 3 data 
             return RedirectToAction("AdvancedLevel", new { urn = urn, schoolName = schoolName, qualification = "alevel" });
 
             // if establishment has Level 2 data
-            return RedirectToAction("AdvancedLevel", new { qualification = "alevel" });
+            return RedirectToAction("IntermediateLevel", new { urn = urn, schoolName = schoolName, qualification = "techcert" });
         }
 
 
@@ -45,7 +47,7 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
         {
             if (qualification == null)
             {
-                return RedirectToAction("Error");
+                return View("Error");
             }
 
             var schoolDetails = await aboutSchoolService.GetAboutSchoolDetailsAsync(urn, ct);
@@ -53,6 +55,12 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
             if (string.IsNullOrWhiteSpace(schoolDetails.Urn))
             {
                 logger.LogWarning("No establishment details found for URN: {URN}", urn);
+                return View("Error");
+            }
+
+            if (!schoolDetails.IsKS5)
+            {
+                logger.LogWarning("Attempted to view KS5 page with no KS5 data URN: {URN}", urn);
                 return View("Error");
             }
 
@@ -84,7 +92,7 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
         {
             if (qualification == null)
             {
-                return RedirectToAction("Error");
+                return View("Error");
             }
 
             var schoolDetails = await aboutSchoolService.GetAboutSchoolDetailsAsync(urn, ct);
@@ -92,6 +100,12 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
             if (string.IsNullOrWhiteSpace(schoolDetails.Urn))
             {
                 logger.LogWarning("No establishment details found for URN: {URN}", urn);
+                return View("Error");
+            }
+
+            if (!schoolDetails.IsKS5)
+            {
+                logger.LogWarning("Attempted to view KS5 page with no KS5 data URN: {URN}", urn);
                 return View("Error");
             }
 
@@ -113,6 +127,12 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
                 return View("Error");
             }
 
+            if (!schoolDetails.IsKS5)
+            {
+                logger.LogWarning("Attempted to view KS5 page with no KS5 data URN: {URN}", urn);
+                return View("Error");
+            }
+
             var ks5Model = KS5ViewModel.Map(schoolDetails);
             return View(ks5Model);
         }
@@ -127,6 +147,12 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
             if (string.IsNullOrWhiteSpace(schoolDetails.Urn))
             {
                 logger.LogWarning("No establishment details found for URN: {URN}", urn);
+                return View("Error");
+            }
+
+            if (!schoolDetails.IsKS5)
+            {
+                logger.LogWarning("Attempted to view KS5 page with no KS5 data URN: {URN}", urn);
                 return View("Error");
             }
 

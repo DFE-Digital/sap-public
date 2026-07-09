@@ -6,6 +6,10 @@ public record DestinationsDetails
 
     public required string SchoolName { get; init; }
 
+    public required bool IsKS2 { get; set; }
+    public required bool IsKS4 { get; set; }
+    public required bool IsKS5 { get; set; }
+
     public required string LocalAuthorityName { get; init; }
 
     public required RelativeYearValues<double?> SchoolAll { get; init; }

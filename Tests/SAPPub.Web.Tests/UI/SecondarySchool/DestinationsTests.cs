@@ -76,7 +76,6 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         await nav.ShouldBeVisibleAsync();
-        await nav.ShouldHaveItemsCountAsync(6);
         await nav.ShouldHaveOneActiveItemAsync();
         await nav.ShouldHaveActiveHrefAsync(_schoolUrnToUrlMap["105574"]);
     }

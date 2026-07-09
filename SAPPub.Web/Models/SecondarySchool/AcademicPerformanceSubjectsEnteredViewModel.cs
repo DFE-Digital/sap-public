@@ -30,7 +30,10 @@ public class AcademicPerformanceSubjectsEnteredViewModel : SecondarySchoolBaseVi
             URN = establishment.URN,
             SchoolName = establishment.EstablishmentName,
             CoreSubjects = coreSubjects,
-            AdditionalSubjects = additionalSubjects
+            AdditionalSubjects = additionalSubjects,
+            IsKS2 = establishment.IsKS2,
+            IsKS4 = establishment.IsKS4,
+            IsKS5 = establishment.IsKS5
         };
     }
 }

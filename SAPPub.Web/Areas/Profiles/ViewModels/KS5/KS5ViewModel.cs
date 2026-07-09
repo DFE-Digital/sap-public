@@ -21,6 +21,9 @@ namespace SAPPub.Web.Areas.Profiles.ViewModels.KS5
             {
                 URN = schoolDetails.Urn,
                 SchoolName = schoolDetails.SchoolName,
+                IsKS2 = schoolDetails.IsKS2,
+                IsKS4 = schoolDetails.IsKS4,
+                IsKS5 = schoolDetails.IsKS5
             };
         }
 

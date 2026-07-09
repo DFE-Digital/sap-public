@@ -47,6 +47,9 @@ public class DestinationsDetailsBuilder
         {
             Urn = _urn ?? string.Empty,
             SchoolName = _establishmentName ?? string.Empty,
+            IsKS2 = false,
+            IsKS4 = true,
+            IsKS5 = false,
             LocalAuthorityName = _laName ?? string.Empty,
             SchoolAll = new RelativeYearValues<double?>
             {
@@ -129,6 +132,9 @@ public class DestinationsDetailsBuilder
         {
             Urn = _urn ?? string.Empty,
             SchoolName = _establishmentName ?? string.Empty,
+            IsKS2 = false,
+            IsKS4 = false,
+            IsKS5 = false,
             LocalAuthorityName = _laName ?? string.Empty,
             SchoolAll = new RelativeYearValues<double?> { CurrentYear = null },
             LocalAuthorityAll = new RelativeYearValues<double?> { CurrentYear = null },

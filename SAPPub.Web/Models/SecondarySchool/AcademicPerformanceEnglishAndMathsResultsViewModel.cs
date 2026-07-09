@@ -87,6 +87,9 @@ public class AcademicPerformanceEnglishAndMathsResultsViewModel : SecondarySchoo
         {
             URN = englishAndMathsResultsModel.Urn,
             SchoolName = englishAndMathsResultsModel.SchoolName,
+            IsKS2 = englishAndMathsResultsModel.IsKS2,
+            IsKS4 = englishAndMathsResultsModel.IsKS4,
+            IsKS5 = englishAndMathsResultsModel.IsKS5,
             SelectedGrade = selectedGrade,
             AllGcseData = allGcseData,
             AllGcseOverTimeData = allGcseOverTimeData,

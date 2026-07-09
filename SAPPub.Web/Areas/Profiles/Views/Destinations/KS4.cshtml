@@ -1,4 +1,6 @@
-﻿@model SAPPub.Web.Models.SecondarySchool.DestinationsViewModel;
+﻿@model DestinationsViewModel;
+@using SAPPub.Web.Areas.Profiles.ViewModels.Destinations
+@using SAPPub.Web.Constants
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 @using static SAPPub.Web.Constants.Constants;
 
@@ -13,7 +15,10 @@
     {
         URN = Model.URN,
         SchoolName = Model.SchoolName,
-        ActivePage = RouteConstants.SecondaryDestinations
+        ActivePage = RouteConstants.SecondaryDestinations,
+        IsKS2 = Model.IsKS2,
+        IsKS4 = Model.IsKS4,
+        IsKS5 = Model.IsKS5
     })
 
     <div class="govuk-grid-column-three-quarters">

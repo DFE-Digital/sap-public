@@ -78,11 +78,6 @@ namespace SAPPub.Web.Models.SecondarySchool
 
         public string? EducationPhase { get; set;  }
         
-        public bool IsKS2 { get; set; }
-        public bool IsKS4 { get; set; }
-
-        public bool IsKS5 { get; set; }
-
         public static AboutSchoolViewModel Map(AboutSchoolModel schoolDetails)
         {
             var latLong = MappingHelper.ConvertToLatLon(schoolDetails.Easting, schoolDetails.Northing);

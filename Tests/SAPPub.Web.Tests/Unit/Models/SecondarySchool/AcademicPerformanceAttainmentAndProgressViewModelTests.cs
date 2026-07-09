@@ -23,7 +23,10 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
             LocalAuthorityAttainment8Score = 40.0,
             EnglandAttainment8Score = 50.0,
             EstablishmentProgress8TotalPupils = 100,
-            EstablishmentTotalPupils = 150
+            EstablishmentTotalPupils = 150,
+            IsKS2 = false,
+            IsKS4 = true,
+            IsKS5 = false
         };
 
         // Act
@@ -128,7 +131,10 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
             LocalAuthorityAttainment8Score = 40.0,
             EnglandAttainment8Score = 50.0,
             EstablishmentProgress8TotalPupils = 100,
-            EstablishmentTotalPupils = 150
+            EstablishmentTotalPupils = 150,
+            IsKS2 = false,
+            IsKS4 = true,
+            IsKS5 = false
         };
 
         // Act
@@ -174,7 +180,10 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
             Urn = "123456",
             SchoolName = "Test School",
             EstablishmentAttainment8Score = establishmentAttainment8Score,
-            LocalAuthorityAttainment8Score = localAuthorityAttainment8Score
+            LocalAuthorityAttainment8Score = localAuthorityAttainment8Score,
+            IsKS2 = false,
+            IsKS4 = true,
+            IsKS5 = false
         };
 
         // Act
@@ -224,7 +233,10 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
             Urn = "123456",
             SchoolName = "Test School",
             EstablishmentAttainment8Score = establishmentAttainment8Score,
-            EnglandAttainment8Score = nationalAttainment8Score
+            EnglandAttainment8Score = nationalAttainment8Score,
+            IsKS2 = false,
+            IsKS4 = true,
+            IsKS5 = false
         };
 
         // Act
@@ -268,7 +280,10 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
         {
             Urn = "123456",
             SchoolName = "Test School",
-            EstablishmentProgress8Banding = banding
+            EstablishmentProgress8Banding = banding,
+            IsKS2 = false,
+            IsKS4 = true,
+            IsKS5 = false
         };
 
         // Act

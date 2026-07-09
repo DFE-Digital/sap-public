@@ -3,11 +3,15 @@ using SAPPub.Web.Constants;
 
 namespace SAPPub.Web.Models.SecondarySchool;
 
-public class SecondarySchoolBaseViewModel
+public class SecondarySchoolBaseViewModel //ToDo - Rename and Move 
 {
     public required string URN { get; set; }
 
     public required string SchoolName { get; set; }
+
+    public required bool IsKS2 { get; set; }
+    public required bool IsKS4 { get; set; }
+    public required bool IsKS5 { get; set; }
 
     public string SchoolNameClean => TextHelpers.CleanForUrl(SchoolName);
 

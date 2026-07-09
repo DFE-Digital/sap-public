@@ -20,7 +20,7 @@ public class AttainmentAndProgressService(
         var establishment = await establishmentService.GetEstablishmentAsync(urn, ct);
 
         if (string.IsNullOrWhiteSpace(establishment.URN))
-            return new AttainmentAndProgressModel { Urn = urn };
+            return new AttainmentAndProgressModel { Urn = urn, IsKS2 = false, IsKS4 = false, IsKS5 = false };
 
         // Now we can run the remaining calls concurrently
         var establishmentPerformance = await establishmentPerformanceService.GetEstablishmentPerformanceAsync(urn, ct);
@@ -34,6 +34,9 @@ public class AttainmentAndProgressService(
         {
             Urn = establishment.URN,
             SchoolName = establishment.EstablishmentName,
+            IsKS2 = establishment.IsKS2,
+            IsKS4 = establishment.IsKS4,
+            IsKS5 = establishment.IsKS5,
             EstablishmentProgress8Score = selectedYear switch
             {
                 AcademicYearSelection.Previous => establishmentPerformance.Prog8_Tot_Est_Previous_Num,

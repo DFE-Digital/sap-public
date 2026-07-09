@@ -20,6 +20,7 @@ using SAPPub.Core.ServiceModels.KS4.Admissions;
 using SAPPub.Core.ServiceModels.KS4.Attendance;
 using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Core.Tests.TestBuilders;
+using SAPPub.Web.Areas.Profiles.ViewModels.Destinations;
 using SAPPub.Web.Constants;
 using SAPPub.Web.Controllers;
 using SAPPub.Web.Helpers;
@@ -127,6 +128,9 @@ public class SecondarySchoolControllerTests
             {
                 CurrentYear = 90,
             },
+            IsKS2 = false,
+            IsKS4 = true,
+            IsKS5 = false
         };
 
     private AboutSchoolModel SchoolDetails()
@@ -710,7 +714,11 @@ public class SecondarySchoolControllerTests
                 SchoolWebsite: _fakeEstablishment.Website,
                 LAName: laName,
                 LASchoolAdmissionsUrl: lASchoolAdmissionsUrl,
-                EstablishmentStatus: EstablishmentStatus.Open
+                EstablishmentStatus: EstablishmentStatus.Open,
+                IsKS2: false,
+                IsKS4: true,
+                IsKS5: false
+
             ));
 
         var result = await _controller.Admissions(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
@@ -750,7 +758,10 @@ public class SecondarySchoolControllerTests
                 SchoolWebsite: _fakeEstablishment.Website,
                 LAName: laName,
                 LASchoolAdmissionsUrl: lASchoolAdmissionsUrl,
-                EstablishmentStatus: EstablishmentStatus.Open
+                EstablishmentStatus: EstablishmentStatus.Open,
+                IsKS2: false,
+                IsKS4: true,
+                IsKS5: false
             ));
 
         var result = await _controller.Admissions(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
@@ -797,7 +808,10 @@ public class SecondarySchoolControllerTests
                 SchoolWebsite: _fakeEstablishment.Website,
                 LAName: laName,
                 LASchoolAdmissionsUrl: lASchoolAdmissionsUrl,
-                EstablishmentStatus: statusCode
+                EstablishmentStatus: statusCode,
+                IsKS2: false,
+                IsKS4: true,
+                IsKS5: false
             ));
 
         var result = await _controller.Admissions(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
@@ -825,7 +839,10 @@ public class SecondarySchoolControllerTests
                 LocalAuthority = _fakeEstablishment.LAName,
                 EstablishmentAttendance = estAttendance,
                 LocalAuthorityAttendance = laAttendance,
-                EnglandAttendance = engAttendance
+                EnglandAttendance = engAttendance,
+                IsKS2 = false,
+                IsKS4 = true,
+                IsKS5 = false
             });
 
         var result = await _controller.Attendance(_mockAttendanceService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
@@ -871,6 +888,9 @@ public class SecondarySchoolControllerTests
                 EnglandPersistentAbsence = engAbsence,
                 EstablishmentEnrolmentsTotal = enrolmentsTotal,
                 EstablishmentPersistentAbsenceTotal = absenceTotal,
+                IsKS2 = false,
+                IsKS4 = true,
+                IsKS5 = false
             });
 
         var result = await _controller.Attendance(_mockAttendanceService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
@@ -974,7 +994,10 @@ public class SecondarySchoolControllerTests
             LocalAuthorityAttainment8Score = 80,
             EnglandAttainment8Score = 50,
             EstablishmentProgress8TotalPupils = expectedShowProgress8NotAvailableInfo ? null : 65,
-            EstablishmentTotalPupils = expectedShowProgress8NotAvailableInfo ? null : 95
+            EstablishmentTotalPupils = expectedShowProgress8NotAvailableInfo ? null : 95,
+            IsKS2 = false,
+            IsKS4 = true,
+            IsKS5 = false
         };
 
         _mockAttainmentAndProgressService
@@ -1047,7 +1070,10 @@ public class SecondarySchoolControllerTests
             LocalAuthorityAttainment8Score = 80,
             EnglandAttainment8Score = 50,
             EstablishmentProgress8TotalPupils = 65,
-            EstablishmentTotalPupils = 95
+            EstablishmentTotalPupils = 95,
+            IsKS2 = false,
+            IsKS4 = true,
+            IsKS5 = false
         };
 
         _mockAttainmentAndProgressService
@@ -1189,6 +1215,9 @@ public class SecondarySchoolControllerTests
             EstablishmentGirls = new RelativeYearValues<double?> { CurrentYear = null },
             LocalAuthorityGirls = new RelativeYearValues<double?> { CurrentYear = null },
             EnglandGirls = new RelativeYearValues<double?> { CurrentYear = null },
+            IsKS2 = false,
+            IsKS4 = true,
+            IsKS5 = false
         };
 
         _mockEnglishAndMathsResultsService
