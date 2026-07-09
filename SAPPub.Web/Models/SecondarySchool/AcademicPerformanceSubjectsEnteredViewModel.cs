@@ -1,36 +1,43 @@
-﻿using SAPPub.Core.Entities.KS4.SubjectEntries;
-using SAPPub.Core.ServiceModels;
+﻿using SAPPub.Core.ServiceModels;
+using SAPPub.Core.ServiceModels.KS4.Performance;
 
 namespace SAPPub.Web.Models.SecondarySchool;
 
 public class AcademicPerformanceSubjectsEnteredViewModel : SecondarySchoolBaseViewModel
 {
-    public List<SubjectsEnteredViewModel>? CoreSubjects { get; set; }
+    public List<SubjectsEnteredViewModel>? GcseSubjects { get; set; }
 
-    public List<SubjectsEnteredViewModel>? AdditionalSubjects { get; set; }
+    public List<SubjectsEnteredViewModel>? VocationalSubjects { get; set; }
 
-    public static AcademicPerformanceSubjectsEnteredViewModel Map(EstablishmentServiceModel establishment, EstablishmentCoreSubjectEntries coreSubjectEntries, EstablishmentAdditionalSubjectEntries additionalSubjectEntries)
+    public List<SubjectsEnteredViewModel>? OtherSubjects { get; set; }
+
+    public static AcademicPerformanceSubjectsEnteredViewModel Map(EstablishmentServiceModel establishment, 
+        IEnumerable<SubjectsEntered> gcseSubjectEntries, 
+        IEnumerable<SubjectsEntered> vocationalSubjectEntries, 
+        IEnumerable<SubjectsEntered> otherSubjectEntries)
     {
-        var coreSubjects = coreSubjectEntries.SubjectEntries.Select(se => new SubjectsEnteredViewModel
-        {
-            Subject = se.SubEntCore_Sub_Est_Current_Num ?? "Unknown Subject",
-            Qualification = se.SubEntCore_Qual_Est_Current_Num ?? "Unknown Qualification",
-            NumberOfEntries = se.SubEntCore_Entr_Est_Current_Num.HasValue ? $"{se.SubEntCore_Entr_Est_Current_Num.Value:F0}" : "N/A",
-        }).OrderBy(s => s.Subject).ToList();
+        var gcseSubjects = GetSubjectsEntered(gcseSubjectEntries);
+        var vocationalSubjects = GetSubjectsEntered(vocationalSubjectEntries);
+        var otherSubjects = GetSubjectsEntered(otherSubjectEntries);
 
-        var additionalSubjects = additionalSubjectEntries.SubjectEntries.Select(se => new SubjectsEnteredViewModel
-        {
-            Subject = se.SubEntAdd_Sub_Est_Current_Num ?? "Unknown Subject",
-            Qualification = se.SubEntAdd_Qual_Est_Current_Num ?? "Unknown Qualification",
-            NumberOfEntries = se.SubEntAdd_Entr_Est_Current_Num.HasValue ? $"{se.SubEntAdd_Entr_Est_Current_Num.Value:F0}" : "N/A",
-        }).OrderBy(s => s.Subject).ToList();
 
         return new AcademicPerformanceSubjectsEnteredViewModel
         {
             URN = establishment.URN,
             SchoolName = establishment.EstablishmentName,
-            CoreSubjects = coreSubjects,
-            AdditionalSubjects = additionalSubjects
+            GcseSubjects = GetSubjectsEntered(gcseSubjectEntries),
+            VocationalSubjects = GetSubjectsEntered(vocationalSubjectEntries),
+            OtherSubjects = GetSubjectsEntered(otherSubjectEntries)
         };
+    }
+
+    private static List<SubjectsEnteredViewModel> GetSubjectsEntered(IEnumerable<SubjectsEntered> subjectsEntered)
+    { 
+        return subjectsEntered.Select(se => new SubjectsEnteredViewModel
+        {
+            Subject = se.Subject ?? "Unknown Subject",
+            Qualification = se.Qualification ?? "Unknown Qualification",
+            NumberOfEntries = se.TotalNumberOfEntries.HasValue ? $"{se.TotalNumberOfEntries.Value:F0}" : "N/A",
+        }).OrderBy(s => s.Subject).ToList();
     }
 }

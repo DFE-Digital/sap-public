@@ -1,69 +1,82 @@
 ﻿using Moq;
-using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
 using SAPPub.Core.Services.KS4.SubjectEntries;
 using System.Diagnostics;
-using Xunit;
 
 namespace SAPPub.Core.Tests.Services.KS4.SubjectEntries;
 
 public class EstablishmentSubjectEntriesServiceTests
 {
+    private readonly Mock<IEstablishmentSubjectEntriesRepository> _repo = new();
+    private readonly EstablishmentSubjectEntriesService _service;
+
+    public EstablishmentSubjectEntriesServiceTests()
+    {
+        _service = new EstablishmentSubjectEntriesService(_repo.Object);
+    }
+
     [Fact]
-    public async Task GetSubjectEntriesByUrnAsync_calls_core_and_additional_once_each()
+    public async Task GetSubjectEntriesByUrnAsync_calls_gcse_vocational_and_other_once_each()
     {
         // Arrange
         var urn = "123456";
 
-        var repo = new Mock<IEstablishmentSubjectEntriesRepository>(MockBehavior.Strict);
+        _repo
+            .Setup(r => r.GetGcseSubjectEntriesByUrnAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync([]);
 
-        repo.Setup(r => r.GetCoreSubjectEntriesByUrnAsync(urn, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new EstablishmentCoreSubjectEntries());
+        _repo
+            .Setup(r => r.GetVocationalAwardSubjectEntriesByUrnAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync([]);
 
-        repo.Setup(r => r.GetAdditionalSubjectEntriesByUrnAsync(urn, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new EstablishmentAdditionalSubjectEntries());
-
-        var sut = new EstablishmentSubjectEntriesService(repo.Object); 
+        _repo
+            .Setup(r => r.GetOtherSubjectEntriesByUrnAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync([]);
 
         // Act
-        var result = await sut.GetSubjectEntriesByUrnAsync(urn, CancellationToken.None);
+        await _service.GetSubjectEntriesByUrnAsync(urn, CancellationToken.None);
 
         // Assert
-        Assert.NotNull(result.Core);
-        Assert.NotNull(result.Additional);
-
-        repo.Verify(r => r.GetCoreSubjectEntriesByUrnAsync(urn, It.IsAny<CancellationToken>()), Times.Once);
-        repo.Verify(r => r.GetAdditionalSubjectEntriesByUrnAsync(urn, It.IsAny<CancellationToken>()), Times.Once);
+        _repo.Verify(r => r.GetGcseSubjectEntriesByUrnAsync(urn, It.IsAny<CancellationToken>()), Times.Once);
+        _repo.Verify(r => r.GetVocationalAwardSubjectEntriesByUrnAsync(urn, It.IsAny<CancellationToken>()), Times.Once);
+        _repo.Verify(r => r.GetOtherSubjectEntriesByUrnAsync(urn, It.IsAny<CancellationToken>()), Times.Once);
     }
 
+   
     [Fact]
     public async Task GetSubjectEntriesByUrnAsync_runs_calls_in_parallel()
     {
         // Arrange
         var urn = "123456";
 
-        var repo = new Mock<IEstablishmentSubjectEntriesRepository>();
-
-        repo.Setup(r => r.GetCoreSubjectEntriesByUrnAsync(urn, It.IsAny<CancellationToken>()))
+        _repo
+            .Setup(r => r.GetGcseSubjectEntriesByUrnAsync(urn, It.IsAny<CancellationToken>()))
             .Returns(async () =>
             {
                 await Task.Delay(200);
-                return new EstablishmentCoreSubjectEntries();
+                return [];
             });
 
-        repo.Setup(r => r.GetAdditionalSubjectEntriesByUrnAsync(urn, It.IsAny<CancellationToken>()))
+        _repo
+            .Setup(r => r.GetVocationalAwardSubjectEntriesByUrnAsync(urn, It.IsAny<CancellationToken>()))
             .Returns(async () =>
             {
                 await Task.Delay(200);
-                return new EstablishmentAdditionalSubjectEntries();
+                return [];
             });
 
-        var sut = new EstablishmentSubjectEntriesService(repo.Object); 
+        _repo
+            .Setup(r => r.GetOtherSubjectEntriesByUrnAsync(urn, It.IsAny<CancellationToken>()))
+            .Returns(async () =>
+            {
+                await Task.Delay(200);
+                return [];
+            });
 
         var sw = Stopwatch.StartNew();
 
         // Act
-        var _ = await sut.GetSubjectEntriesByUrnAsync(urn, CancellationToken.None); 
+        var _ = await _service.GetSubjectEntriesByUrnAsync(urn, CancellationToken.None);
 
         sw.Stop();
 
@@ -71,7 +84,8 @@ public class EstablishmentSubjectEntriesServiceTests
         // Sequential would be ~400ms. Parallel should be close to ~200-300ms on CI.
         Assert.True(sw.ElapsedMilliseconds < 330, $"Expected parallel execution; took {sw.ElapsedMilliseconds}ms");
 
-        repo.Verify(r => r.GetCoreSubjectEntriesByUrnAsync(urn, It.IsAny<CancellationToken>()), Times.Once);
-        repo.Verify(r => r.GetAdditionalSubjectEntriesByUrnAsync(urn, It.IsAny<CancellationToken>()), Times.Once);
+        _repo.Verify(r => r.GetGcseSubjectEntriesByUrnAsync(urn, It.IsAny<CancellationToken>()), Times.Once);
+        _repo.Verify(r => r.GetVocationalAwardSubjectEntriesByUrnAsync(urn, It.IsAny<CancellationToken>()), Times.Once);
+        _repo.Verify(r => r.GetOtherSubjectEntriesByUrnAsync(urn, It.IsAny<CancellationToken>()), Times.Once);
     }
 }

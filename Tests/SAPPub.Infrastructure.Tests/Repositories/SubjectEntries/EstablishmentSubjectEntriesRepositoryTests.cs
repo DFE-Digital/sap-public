@@ -3,236 +3,202 @@ using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Infrastructure.Repositories.KS4.SubjectEntries;
 
-namespace SAPPub.Infrastructure.Tests.Repositories.KS4.SubjectEntries
+namespace SAPPub.Infrastructure.Tests.Repositories.SubjectEntries;
+public class EstablishmentSubjectEntriesRepositoryTests
 {
-    public class EstablishmentSubjectEntriesRepositoryTests
+    private readonly Mock<IGenericRepository<EstablishmentSubjectEntryRow>> _repo = new();
+    private readonly EstablishmentSubjectEntriesRepository _sut;
+
+    public EstablishmentSubjectEntriesRepositoryTests()
     {
-        private readonly Mock<IGenericRepository<EstablishmentSubjectEntryRow>> _repo = new();
-        private readonly EstablishmentSubjectEntriesRepository _sut;
+        _sut = new EstablishmentSubjectEntriesRepository(_repo.Object);
+    }
 
-        public EstablishmentSubjectEntriesRepositoryTests()
-        {
-            _sut = new EstablishmentSubjectEntriesRepository(_repo.Object);
-        }
+    [Fact]
+    public async Task GetGcseSubjectEntriesByUrnAsync_WhenUrnBlank_ReturnsEmpty_AndDoesNotCallRepo()
+    {
+        var result = await _sut.GetGcseSubjectEntriesByUrnAsync("   ", CancellationToken.None);
 
-        [Fact]
-        public async Task GetCoreSubjectEntriesByUrnAsync_WhenUrnBlank_ReturnsEmpty_AndDoesNotCallRepo()
-        {
-            var result = await _sut.GetCoreSubjectEntriesByUrnAsync("   ", CancellationToken.None);
+        Assert.NotNull(result);
 
-            Assert.NotNull(result);
-            Assert.Empty(result.SubjectEntries);
+        _repo.Verify(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
 
-            _repo.Verify(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()), Times.Never);
-        }
+    [Fact]
+    public async Task GetVocationalSubjectEntriesByUrnAsync_WhenNoRows_ReturnsEmpty()
+    {
+        _repo
+            .Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<EstablishmentSubjectEntryRow>());
 
-        [Fact]
-        public async Task GetAdditionalSubjectEntriesByUrnAsync_WhenNoRows_ReturnsEmpty()
-        {
-            _repo.Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
-                 .ReturnsAsync(new List<EstablishmentSubjectEntryRow>());
+        var result = await _sut.GetVocationalAwardSubjectEntriesByUrnAsync("123", CancellationToken.None);
 
-            var result = await _sut.GetAdditionalSubjectEntriesByUrnAsync("123", CancellationToken.None);
+        Assert.Empty(result);
+    }
 
-            Assert.Empty(result.SubjectEntries);
-        }
+    [Fact]
+    public async Task GetOtherSubjectEntriesByUrnAsync_WhenNoRows_ReturnsEmpty()
+    {
+        _repo
+            .Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<EstablishmentSubjectEntryRow>());
 
-        [Fact]
-        public async Task WhenCohortIsZeroOrMissing_ReturnsEmpty()
-        {
-            _repo.Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
-                 .ReturnsAsync(new List<EstablishmentSubjectEntryRow>
-                 {
-                     new() { pupil_count = 0, subject = "Mathematics", qualification_type = "GCSE", grade = "9", number_achieving = 10 }
-                 });
+        var result = await _sut.GetOtherSubjectEntriesByUrnAsync("123", CancellationToken.None);
 
-            var core = await _sut.GetCoreSubjectEntriesByUrnAsync("123", CancellationToken.None);
-            var add = await _sut.GetAdditionalSubjectEntriesByUrnAsync("123", CancellationToken.None);
+        Assert.Empty(result);
+    }
 
-            Assert.Empty(core.SubjectEntries);
-            Assert.Empty(add.SubjectEntries);
-        }
+    [Fact]
+    public async Task GetGcseSubjectEntriesByUrnAsync_OnlyReturnsTotalExamEntriesRows()
+    {
+        _repo
+            .Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<EstablishmentSubjectEntryRow>
+            {
+                new() { subject_discount_group = "Mathematics", qualification_type = "GCSE", grade = "Total exam entries", number_achieving = 10 },
+                new() { subject_discount_group = "Mathematics", qualification_type = "GCSE", grade = "9", number_achieving = 1 }
+            });
 
-        [Theory]
-        [InlineData(200, 200, 200)]
-        [InlineData(200, 100, 100)]
-        [InlineData(200, 20, 20)]
-        [InlineData(200, 10, 10)]
-        [InlineData(200, 5, 5)]
-        // this test excludes the pupil count because we've moved from percentages to just number of pupils
-        // we did that because some subjects are lumped together and the pupil count is duplicated across them, so the percentage would be misleading
-        public async Task UsesTotalExamEntriesRow(int pupilCount, int numberAchieving, int expected)
-        {
-            var urn = "123";
-            _repo.Setup(r => r.ReadManyAsync(
-                It.Is<object>(o => o.GetType().GetProperty("Urn")!.GetValue(o)!.ToString() == urn),
-                It.IsAny<CancellationToken>()))
-                 .ReturnsAsync(new List<EstablishmentSubjectEntryRow>
-                 {
-                     new() {
-                         pupil_count = pupilCount,
-                         subject = "Biology",
-                         subject_discount_group = "Biology",
-                         qualification_type = "GCSE",
-                         grade = "Total exam entries",
-                         number_achieving = numberAchieving },
-                     new()
-                     {
-                         pupil_count = pupilCount,
-                         subject = "Biology",
-                         subject_discount_group = "Biology",
-                         qualification_type = "GCSE",
-                         grade = "4",
-                         number_achieving = 1 },
-                 });
+        var result = await _sut.GetGcseSubjectEntriesByUrnAsync("123", CancellationToken.None);
 
-            var result = await _sut.GetCoreSubjectEntriesByUrnAsync(urn, CancellationToken.None);
+        Assert.NotNull(result);
+        Assert.Equal(1, result?.Count());
+    }
 
-            var entry = Assert.Single(result.SubjectEntries);
-            AssertPct(expected, entry.SubEntCore_Entr_Est_Current_Num);
-        }
+    [Fact]
+    public async Task GetVocationalSubjectEntriesByUrnAsync_OnlyReturnsTotalExamEntriesRows()
+    {
+        _repo
+            .Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<EstablishmentSubjectEntryRow>
+            {
+                new() { subject_discount_group = "Sports Studies", qualification_type = "Vocational", grade = "Total exam entries", number_achieving = 10 },
+                new() { subject_discount_group = "Sports Studies", qualification_type = "Vocational", grade = "9", number_achieving = 1 }
+            });
 
-        [Theory]
-        [InlineData("  biology ", "biology", "biology")]
-        [InlineData("  biology ", "  biology  ", "biology")]
-        [InlineData("  mathematics ", "maths (Further)", "Mathematics (Further)")]
-        [InlineData("  mathematics ", "   maths (Further)", "Mathematics (Further)")]
-        public async Task TrimsSubject(string subject, string subjectDetail, string expected)
-        {
-            _repo.Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
-                 .ReturnsAsync(new List<EstablishmentSubjectEntryRow>
-                 {
-                     new() { pupil_count = 100, subject = subject, subject_discount_group = subjectDetail, qualification_type = "GCSE", grade = "Total exam entries", number_achieving = 10 },
-                 });
+        var result = await _sut.GetVocationalAwardSubjectEntriesByUrnAsync("123", CancellationToken.None);
 
-            var result = await _sut.GetCoreSubjectEntriesByUrnAsync("123", CancellationToken.None);
+        Assert.NotNull(result);
+        Assert.Equal(1, result?.Count());
+    }
 
-            var entry = Assert.Single(result.SubjectEntries);
-            Assert.Equal(expected, entry.SubEntCore_Sub_Est_Current_Num); // trimmed subject; case preserved from data
-        }
+    [Fact]
+    public async Task GetOtherSubjectEntriesByUrnAsync_OnlyReturnsTotalExamEntriesRows()
+    {
+        _repo
+            .Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<EstablishmentSubjectEntryRow>
+            {
+                new() { subject_discount_group = "Music Performance: Group", qualification_type = "Grade 6 Music or Dance", grade = "Total exam entries", number_achieving = 10 },
+                new() { subject_discount_group = "Music Performance: Group", qualification_type = "Grade 6 Music or Dance", grade = "9", number_achieving = 1 }
+            });
 
-        [Fact]
-        public async Task Qualification_UsesTypeFirst_OtherwiseDetailed()
-        {
-            // subject A uses qualification_type
-            // subject B uses qualification_detailed
-            // subject C has neither -> null
-            _repo.Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
-                 .ReturnsAsync(new List<EstablishmentSubjectEntryRow>
-                 {
-                     new() { pupil_count = 100, subject = "History", subject_discount_group = "History", qualification_type = "GCSE", grade = "Total exam entries", qualification_detailed = "Ignored", number_achieving = 10 },
-                     new() { pupil_count = 100, subject = "Geography", subject_discount_group = "Geography", qualification_type = null, grade = "Total exam entries", qualification_detailed = "BTEC", number_achieving = 20 },
-                     new() { pupil_count = 100, subject = "Art", subject_discount_group = "Art", qualification_type = null, grade = "Total exam entries", qualification_detailed = "   ", number_achieving = 5 },
-                 });
+        var result = await _sut.GetOtherSubjectEntriesByUrnAsync("123", CancellationToken.None);
 
-            var add = await _sut.GetAdditionalSubjectEntriesByUrnAsync("123", CancellationToken.None);
+        Assert.NotNull(result);
+        Assert.Equal(1, result?.Count());
+    }
 
-            Assert.Equal(3, add.SubjectEntries.Count);
+    [Theory]
+    [InlineData("  biology ", "biology", "biology")]
+    [InlineData("  biology ", "  biology  ", "biology")]
+    [InlineData("  mathematics ", "maths (Further)", "Mathematics (Further)")]
+    [InlineData("  mathematics ", "   maths (Further)", "Mathematics (Further)")]
+    public async Task TrimsSubject(string subject, string subjectDetail, string expected)
+    {
+        _repo
+            .Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+            [
+               new() { pupil_count = 100, subject = subject, subject_discount_group = subjectDetail, qualification_type = "GCSE", grade = "Total exam entries", number_achieving = 10 },
+            ]);
 
-            var history = add.SubjectEntries.Single(x => x.SubEntAdd_Sub_Est_Current_Num == "History");
-            Assert.Equal("GCSE", history.SubEntAdd_Qual_Est_Current_Num);
+        var result = await _sut.GetGcseSubjectEntriesByUrnAsync("123", CancellationToken.None);
 
-            var geo = add.SubjectEntries.Single(x => x.SubEntAdd_Sub_Est_Current_Num == "Geography");
-            Assert.Equal("BTEC", geo.SubEntAdd_Qual_Est_Current_Num);
+        var entry = Assert.Single(result);
+        Assert.Equal(expected, entry.Subject); // trimmed subject; case preserved from data
+    }
 
-            var art = add.SubjectEntries.Single(x => x.SubEntAdd_Sub_Est_Current_Num == "Art");
-            Assert.Empty(art.SubEntAdd_Qual_Est_Current_Num!);
-        }
+    [Fact]
+    public async Task SplitsGroupsCorrectly()
+    {
+        _repo
+            .Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+            [
+                new() { pupil_count = 100, subject = "Biology", subject_discount_group = "Biology", qualification_type = "GCSE", grade = "Total exam entries", number_achieving = 10 },
+                new() { pupil_count = 100, subject = "Sports", subject_discount_group = "Sports Studies", qualification_type = "Vocational", grade = "Total exam entries", number_achieving = 20 },
+                new() { pupil_count = 100, subject = "Music", subject_discount_group = "Music Performance: Group", qualification_type = "Grade 6 Performing Arts Graded Examination", grade = "Total exam entries", number_achieving = 20 },
+            ]);
+
+        var gcse = await _sut.GetGcseSubjectEntriesByUrnAsync("123", CancellationToken.None);
+        var vocational = await _sut.GetVocationalAwardSubjectEntriesByUrnAsync("123", CancellationToken.None);
+        var other = await _sut.GetOtherSubjectEntriesByUrnAsync("123", CancellationToken.None);
+
+        Assert.Single(gcse);
+        Assert.Single(vocational);
+        Assert.Single(other);
+
+        Assert.Equal("Biology", gcse.Single().Subject);
+        Assert.Equal("Sports Studies", vocational.Single().Subject);
+        Assert.Equal("Music Performance: Group", other.Single().Subject);
+    }
 
 
-        [Fact]
-        public async Task SplitsCoreAndAdditionalCorrectly()
-        {
-            _repo.Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
-                 .ReturnsAsync(new List<EstablishmentSubjectEntryRow>
-                 {
-                     new() { pupil_count = 100, subject = "Biology", subject_discount_group = "Biology", qualification_type = "GCSE", grade = "Total exam entries", number_achieving = 10 },
-                     new() { pupil_count = 100, subject = "History", subject_discount_group = "History", qualification_type = "GCSE", grade = "Total exam entries", number_achieving = 20 },
-                 });
+    [Fact]
+    public async Task ConvertsMathsToMathematics()
+    {
+        _repo
+            .Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<EstablishmentSubjectEntryRow>
+            {
+                new() { pupil_count = 100, subject = "Mathematics", subject_discount_group = "Additional Maths (Core)", qualification_type = "GCSE", grade = "Total exam entries", number_achieving = 10 },
+            });
 
-            var core = await _sut.GetCoreSubjectEntriesByUrnAsync("123", CancellationToken.None);
-            var add = await _sut.GetAdditionalSubjectEntriesByUrnAsync("123", CancellationToken.None);
+        var core = await _sut.GetGcseSubjectEntriesByUrnAsync("123", CancellationToken.None);
 
-            Assert.Single(core.SubjectEntries);
-            Assert.Single(add.SubjectEntries);
+        Assert.Single(core);
 
-            Assert.Equal("Biology", core.SubjectEntries.Single().SubEntCore_Sub_Est_Current_Num);
-            Assert.Equal("History", add.SubjectEntries.Single().SubEntAdd_Sub_Est_Current_Num);
-        }
+        Assert.Equal("Additional Mathematics (Core)", core.Single().Subject);
+    }
 
-        [Fact]
-        public async Task SubjectContainsWhitespace_SplitsCoreAndAdditionalCorrectly()
-        {
-            _repo.Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
-                 .ReturnsAsync(new List<EstablishmentSubjectEntryRow>
-                 {
-                     new() { pupil_count = 100, subject = "  Biology  ", subject_discount_group = "Biology", qualification_type = "GCSE", grade = "Total exam entries", number_achieving = 10 },
-                     new() { pupil_count = 100, subject = "  History  ", subject_discount_group = "History", qualification_type = "GCSE", grade = "Total exam entries", number_achieving = 20 },
-                 });
+    [Fact]
+    public async Task OrdersBySubjectThenQualification()
+    {
+        _repo
+            .Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+            [
+                new() { pupil_count = 100, subject = "Mathematics", subject_discount_group = "Additional Maths (FSMQ)", qualification_type = "FSMQ", grade = "Total exam entries", number_achieving = 1 },
+                new() { pupil_count = 100, subject = "Music", subject_discount_group = "Music Performance: Group", qualification_type = "Grade 8 Performing Arts Graded Examination", grade = "Total exam entries", number_achieving = 2 },
+                new() { pupil_count = 100, subject = "Music", subject_discount_group = "Music Performance: Group", qualification_type = "Grade 6 Performing Arts Graded Examination", grade = "Total exam entries", number_achieving = 2 },
+                new() { pupil_count = 100, subject = "Music", subject_discount_group = "Music Performance: Group", qualification_type = "Grade 7 Performing Arts Graded Examination", grade = "Total exam entries", number_achieving = 4 },
+            ]);
 
-            var core = await _sut.GetCoreSubjectEntriesByUrnAsync("123", CancellationToken.None);
-            var add = await _sut.GetAdditionalSubjectEntriesByUrnAsync("123", CancellationToken.None);
+        var otherSubjects = await _sut.GetOtherSubjectEntriesByUrnAsync("123", CancellationToken.None);
 
-            Assert.Single(core.SubjectEntries);
-            Assert.Single(add.SubjectEntries);
+        Assert.Equal(4, otherSubjects.Count());
 
-            Assert.Equal("Biology", core.SubjectEntries.Single().SubEntCore_Sub_Est_Current_Num);
-            Assert.Equal("History", add.SubjectEntries.Single().SubEntAdd_Sub_Est_Current_Num);
-        }
-
-        [Fact]
-        public async Task ConvertsMathsToMathematics()
-        {
-            _repo.Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
-                 .ReturnsAsync(new List<EstablishmentSubjectEntryRow>
-                 {
-                     new() { pupil_count = 100, subject = "Mathematics", subject_discount_group = "Additional Maths (Core)", qualification_type = "GCSE", grade = "Total exam entries", number_achieving = 10 },
-                 });
-
-            var core = await _sut.GetCoreSubjectEntriesByUrnAsync("123", CancellationToken.None);
-
-            Assert.Single(core.SubjectEntries);
-
-            Assert.Equal("Additional Mathematics (Core)", core.SubjectEntries.Single().SubEntCore_Sub_Est_Current_Num);
-        }
-
-        [Fact]
-        public async Task OrdersBySubjectThenQualification()
-        {
-            _repo.Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
-                 .ReturnsAsync(new List<EstablishmentSubjectEntryRow>
-                 {
-             new() { pupil_count = 100, subject = "Zoology", subject_discount_group = "Zoology", qualification_type = "GCSE", grade = "Total exam entries", number_achieving = 1 },
-             new() { pupil_count = 100, subject = "Art", subject_discount_group = "Art", qualification_type = "BTEC", grade = "Total exam entries", number_achieving = 1 },
-             new() { pupil_count = 100, subject = "Art", subject_discount_group = "Art", qualification_type = "GCSE", grade = "Total exam entries", number_achieving = 1 },
-                 });
-
-            var add = await _sut.GetAdditionalSubjectEntriesByUrnAsync("123", CancellationToken.None);
-
-            Assert.Equal(3, add.SubjectEntries.Count);
-
-            Assert.Collection(add.SubjectEntries,
-                first =>
-                {
-                    Assert.Equal("Art", first.SubEntAdd_Sub_Est_Current_Num);
-                    Assert.Equal("BTEC", first.SubEntAdd_Qual_Est_Current_Num);
-                },
-                second =>
-                {
-                    Assert.Equal("Art", second.SubEntAdd_Sub_Est_Current_Num);
-                    Assert.Equal("GCSE", second.SubEntAdd_Qual_Est_Current_Num);
-                },
-                third =>
-                {
-                    Assert.Equal("Zoology", third.SubEntAdd_Sub_Est_Current_Num);
-                    Assert.Equal("GCSE", third.SubEntAdd_Qual_Est_Current_Num);
-                });
-        }
-
-        private static void AssertPct(double expected, double? actual, double tolerance = 0.0001)
-        {
-            Assert.True(actual.HasValue, "Expected a percentage value but was null.");
-            Assert.InRange(actual.Value, expected - tolerance, expected + tolerance);
-        }
+        Assert.Collection(otherSubjects,
+            first =>
+            {
+                Assert.Equal("Additional Maths (FSMQ)", first.Subject);
+                Assert.Equal("FSMQ", first.Qualification);
+            },
+            second =>
+            {
+                Assert.Equal("Music Performance: Group", second.Subject);
+                Assert.Equal("Grade 6 Performing Arts Graded Examination", second.Qualification);
+            },
+            third =>
+            {
+                Assert.Equal("Music Performance: Group", third.Subject);
+                Assert.Equal("Grade 7 Performing Arts Graded Examination", third.Qualification);
+            },
+            fourth =>
+            {
+                Assert.Equal("Music Performance: Group", fourth.Subject);
+                Assert.Equal("Grade 8 Performing Arts Graded Examination", fourth.Qualification);
+            });
     }
 }

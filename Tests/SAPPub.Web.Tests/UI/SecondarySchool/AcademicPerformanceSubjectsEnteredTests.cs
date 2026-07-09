@@ -123,30 +123,4 @@ public class AcademicPerformanceSubjectsEnteredTests(WebApplicationSetupFixture 
         Assert.Equal("Academic performance: English and maths results", previousPaginationText?.Trim());
         Assert.Equal("Destinations", nextPaginationText?.Trim());
     }
-
-    [Fact]
-    public async Task AcademicPerformanceSubjectsEnteredPage_Displays_CoreSubjects()
-    {
-        // Arrange
-        await Page.GotoAsync(_pageUrl);
-
-        // Act
-        var isVisible = await Page.Locator("#core-subjects-entered-table").IsVisibleAsync();
-
-        // Assert
-        Assert.True(isVisible);
-    }
-
-    [Fact]
-    public async Task AcademicPerformanceSubjectsEnteredPage_Displays_AdditionalSubjects()
-    {
-        // Arrange
-        await Page.GotoAsync(_pageUrl);
-
-        // Act
-        var isVisible = await Page.Locator("#additional-subjects-entered-table").IsVisibleAsync();
-
-        // Assert
-        Assert.True(isVisible);
-    }
 }

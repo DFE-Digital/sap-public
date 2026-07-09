@@ -1,0 +1,28 @@
+﻿@using SAPPub.Web.Models.SecondarySchool
+@model IEnumerable<SubjectsEnteredViewModel>
+
+@if (Model is null)
+{
+    return;
+}
+
+<table class="govuk-table">
+    <caption class="govuk-table__caption govuk-table__caption--m">@ViewData["Caption"]</caption>
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header govuk-!-width-one-third">Subject</th>
+            <th scope="col" class="govuk-table__header">Qualification</th>
+            <th scope="col" class="govuk-table__header">Total number of entries</th>
+        </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+        @foreach (var subject in Model)
+        {
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">@subject.Subject</td>
+                <td class="govuk-table__cell">@subject.Qualification</td>
+                <td class="govuk-table__cell">@subject.NumberOfEntries</td>
+            </tr>
+        }
+    </tbody>
+</table>
