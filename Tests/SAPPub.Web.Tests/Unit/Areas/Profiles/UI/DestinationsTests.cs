@@ -2,15 +2,15 @@
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
-namespace SAPPub.Web.Tests.UI.SecondarySchool;
+namespace SAPPub.Web.Tests.Unit.Areas.Profiles.UI;
 
 [Collection("Playwright Tests")]
 public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
     private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
     {
-        ["105574"] = "school/105574/loreto-high-school-chorlton/secondary/destinations",
-        ["100273"] = "school/100273/saint-paul-roman-catholic-infant-school/secondary/destinations",
+        ["105574"] = "school/105574/loreto-high-school-chorlton/destinations/secondary",
+        ["100273"] = "school/100273/saint-paul-roman-catholic-infant-school/destinations/secondary",
     };
 
     [Fact]
@@ -77,7 +77,7 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
 
         await nav.ShouldBeVisibleAsync();
         await nav.ShouldHaveOneActiveItemAsync();
-        await nav.ShouldHaveActiveHrefAsync(_schoolUrnToUrlMap["105574"]);
+        await nav.ShouldHaveActiveHrefAsync(_schoolUrnToUrlMap["105574"].Replace("/secondary", ""));
     }
 
     [Fact]

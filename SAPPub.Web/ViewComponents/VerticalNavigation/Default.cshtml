@@ -59,8 +59,8 @@
                 }
                 @if (Model.IsKS4 || Model.IsKS5)
                 {
-                    <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.DestinationsRoot ? "moj-side-navigation__item--active" : "")">
-                        <a asp-route="@RouteConstants.SecondaryDestinations" asp-all-route-data="routeAttributes">Destinations</a>
+                    <li class="moj-side-navigation__item   @(new List<string> { RouteConstants.DestinationsRoot, RouteConstants.SecondaryDestinations, RouteConstants.KS5Destinations, RouteConstants.KS5DestinationsHigher}.Contains(Model.ActivePage) ? "moj-side-navigation__item--active" : "")">
+                        <a asp-route="@RouteConstants.DestinationsRoot" asp-all-route-data="routeAttributes">Destinations</a>
                     </li>
                 }
             </ul>

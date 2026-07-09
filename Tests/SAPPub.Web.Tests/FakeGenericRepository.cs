@@ -77,7 +77,9 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             AddressPostcode = "CM18 7NQ",
             StatusCode = 2,
             ClosedDate = null,
-            IsKS4 = true
+            IsKS2 = false,
+            IsKS4 = true,
+            IsKS5 = false,
         },
         ["107564"] = new Establishment
         {
@@ -244,19 +246,6 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             IsKS2 = true,
             IsKS4 = true,
             IsKS5 = true,
-        },
-        ["137552"] = new Establishment
-        {
-            URN = "137552",
-            EstablishmentName = "Stewards Academy - Science Specialist, Harlow",
-            LAId = "881",
-            EstablishmentNumber = "4343",
-            PhaseOfEducationId = "4",
-            PhaseOfEducationName = "Secondary",
-            AddressPostcode = "CM18 7NQ",
-            IsKS2 = false,
-            IsKS4 = true,
-            IsKS5 = false,
         },
         ["149328"] = new Establishment
         {

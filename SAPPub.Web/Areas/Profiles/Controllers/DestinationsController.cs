@@ -5,6 +5,7 @@ using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Web.Areas.Profiles.ViewModels.Destinations;
 using SAPPub.Web.Constants;
+using SAPPub.Web.Models.SecondarySchool;
 
 namespace SAPPub.Web.Areas.Profiles.Controllers
 {
@@ -71,7 +72,8 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
             {
                 return View("Error");
             }
-            return View(schoolDetails);
+            var model = AboutSchoolViewModel.Map(schoolDetails);
+            return View(model);
         }
 
         [Route("school/{urn}/{schoolName}/destinations/16to19-higher-level-study", Name = RouteConstants.KS5DestinationsHigher)]
@@ -92,7 +94,8 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
             {
                 return View("Error");
             }
-            return View(schoolDetails);
+            var model = AboutSchoolViewModel.Map(schoolDetails);
+            return View(model);
         }
     }
 }
