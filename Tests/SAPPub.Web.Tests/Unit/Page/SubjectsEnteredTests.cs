@@ -47,7 +47,7 @@ public class SubjectsEnteredTests : PageTestsBase
         // Assert
         var captions = doc.QuerySelectorAll("caption");
         Assert.Equal("GCSE subjects entered", captions[0].TextContent.Trim());
-        Assert.Equal("Technical awards subjects entered", captions[1].TextContent.Trim());
+        Assert.Equal("Technical Award subjects entered", captions[1].TextContent.Trim());
         Assert.Equal("Other subjects entered", captions[2].TextContent.Trim());
     }
 }
