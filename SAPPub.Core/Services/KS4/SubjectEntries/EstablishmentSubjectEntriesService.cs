@@ -11,6 +11,9 @@ public sealed class EstablishmentSubjectEntriesService(IEstablishmentSubjectEntr
     public async Task<(IEnumerable<SubjectsEntered> Gcse, IEnumerable<SubjectsEntered> Vocational, IEnumerable<SubjectsEntered> Other)>
         GetSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(urn);
+        ct.ThrowIfCancellationRequested();
+
         var gcseTask = _repo.GetGcseSubjectEntriesByUrnAsync(urn, ct);
         var vocationalTask = _repo.GetVocationalAwardSubjectEntriesByUrnAsync(urn, ct);
         var otherTask = _repo.GetOtherSubjectEntriesByUrnAsync(urn, ct);
