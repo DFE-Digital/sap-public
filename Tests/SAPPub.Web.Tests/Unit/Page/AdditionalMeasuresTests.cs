@@ -10,7 +10,7 @@ namespace SAPPub.Web.Tests.Unit.Page;
 [Collection("WebAppCollection")]
 public class AdditionalMeasuresTests : PageTestsBase
 {
-    private static string _pageRoute = "/secondary/additional-measures";
+    private static string _pageRoute = "/secondary/academic-performance-additional-measures";
     private readonly Mock<IAdditionalMeasuresService> _serviceMock;
 
     public AdditionalMeasuresTests(WebAppFixture fixture) : base(fixture)
@@ -44,7 +44,7 @@ public class AdditionalMeasuresTests : PageTestsBase
 
         // Assert
         var title = doc.Title;
-        Assert.Contains("Loreto High School Chorlton - Additional Measures - School Profiles - GOV.UK", title);
+        Assert.Contains("Loreto High School Chorlton - Additional measures - School Profiles - GOV.UK", title);
     }
 
     [Fact]
