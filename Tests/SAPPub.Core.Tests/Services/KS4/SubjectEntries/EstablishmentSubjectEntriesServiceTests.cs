@@ -33,7 +33,7 @@ public class EstablishmentSubjectEntriesServiceTests
     }
 
     [Fact]
-    public async Task GetSubjectEntriesByUrnAsync_throws_when_cancellation_is_already_requestsed()
+    public async Task GetSubjectEntriesByUrnAsync_throws_when_cancellation_is_already_requested()
     {
         // Arrange
         using var cts = new CancellationTokenSource();
