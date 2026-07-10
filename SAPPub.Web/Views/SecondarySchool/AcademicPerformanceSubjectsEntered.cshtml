@@ -53,53 +53,10 @@
             </govuk-details-text>
         </govuk-details>
 
-        @if (Model.CoreSubjects != null)
-        {
-            <table id="core-subjects-entered-table" class="govuk-table">
-                <caption class="govuk-table__caption govuk-table__caption--m">Core subjects entered</caption>
-                <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header govuk-!-width-one-third">Subject</th>
-                        <th scope="col" class="govuk-table__header">Qualification</th>
-                        <th scope="col" class="govuk-table__header">Total number of entries</th>
-                    </tr>
-                </thead>
-                <tbody class="govuk-table__body">
-                    @foreach (var subject in Model.CoreSubjects)
-                    {
-                        <tr class="govuk-table__row">
-                            <td class="govuk-table__cell">@subject.Subject</td>
-                            <td class="govuk-table__cell">@subject.Qualification</td>
-                            <td class="govuk-table__cell">@subject.NumberOfEntries</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
+        <partial name="_SubjectsEntered" model="Model.GcseSubjects" view-data='new ViewDataDictionary(ViewData) { ["Caption"] = "GCSE subjects entered" }' />
+        <partial name="_SubjectsEntered" model="Model.VocationalSubjects" view-data='new ViewDataDictionary(ViewData) { ["Caption"] = "Technical Award subjects entered" }' />
+        <partial name="_SubjectsEntered" model="Model.OtherSubjects" view-data='new ViewDataDictionary(ViewData) { ["Caption"] = "Other subjects entered" }' />
 
-        @if (Model.AdditionalSubjects != null)
-        {
-            <table id="additional-subjects-entered-table" class="govuk-table">
-                <caption class="govuk-table__caption govuk-table__caption--m">Additional subjects entered</caption>
-                <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header govuk-!-width-one-third">Subject</th>
-                        <th scope="col" class="govuk-table__header">Qualification</th>
-                        <th scope="col" class="govuk-table__header">Total number of entries</th>
-                    </tr>
-                </thead>
-                <tbody class="govuk-table__body">
-                    @foreach (var subject in Model.AdditionalSubjects)
-                    {
-                        <tr class="govuk-table__row">
-                            <td class="govuk-table__cell">@subject.Subject</td>
-                            <td class="govuk-table__cell">@subject.Qualification</td>
-                            <td class="govuk-table__cell">@subject.NumberOfEntries</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
         <govuk-pagination id="academic-performance-subjects-entered-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults" asp-all-route-data="@Model.RouteAttributes">Academic performance: English and maths results</govuk-pagination-previous>
             <govuk-pagination-next asp-route="@RouteConstants.SecondaryDestinations" asp-all-route-data="@Model.RouteAttributes">Destinations</govuk-pagination-next>

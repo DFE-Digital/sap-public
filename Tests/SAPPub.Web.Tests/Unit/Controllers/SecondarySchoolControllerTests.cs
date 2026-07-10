@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using SAPPub.Core.Entities;
-using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Extensions;
 using SAPPub.Core.Helpers;
@@ -43,39 +42,56 @@ public class SecondarySchoolControllerTests
     private readonly SecondarySchoolController _controller;
     private EstablishmentServiceModel _fakeEstablishment;
 
-    private List<EstablishmentCoreSubjectEntries.SubjectEntry> CoreSubjects =
+    private List<SubjectsEntered> GcseSubjects =
         new()
         {
             new()
             {
-                SubEntCore_Sub_Est_Current_Num = "English language",
-                SubEntCore_Qual_Est_Current_Num = "GCSE",
-                SubEntCore_Entr_Est_Current_Num = 95,
+                Subject = "English language",
+                Qualification = "GCSE",
+                TotalNumberOfEntries = 95,
             },
             new()
             {
-                SubEntCore_Sub_Est_Current_Num = "English literature",
-                SubEntCore_Qual_Est_Current_Num = "GCSE",
-                SubEntCore_Entr_Est_Current_Num = 90,
+                Subject = "English literature",
+                Qualification = "GCSE",
+                TotalNumberOfEntries = 90,
             }
         };
 
-    private List<EstablishmentAdditionalSubjectEntries.SubjectEntry> AdditionalSubjects =
+    private List<SubjectsEntered> VocationalSubjects =
         new()
         {
             new()
             {
-                SubEntAdd_Sub_Est_Current_Num = "Geography",
-                SubEntAdd_Qual_Est_Current_Num = "GCSE",
-                SubEntAdd_Entr_Est_Current_Num = 45,
+                Subject = "Sports Studies",
+                Qualification = "Vocational",
+                TotalNumberOfEntries = 45,
             },
             new()
             {
-                SubEntAdd_Sub_Est_Current_Num = "Music",
-                SubEntAdd_Qual_Est_Current_Num = "GCSE",
-                SubEntAdd_Entr_Est_Current_Num = 10,
+                Subject = "Engineering Studies",
+                Qualification = "Vocational",
+                TotalNumberOfEntries = 10,
             }
         };
+
+    private List<SubjectsEntered> OtherSubjects =
+    new()
+    {
+            new()
+            {
+                Subject = "Additional Maths (FSMQ)",
+                Qualification = "FSMQ",
+                TotalNumberOfEntries = 45,
+            },
+            new()
+            {
+                Subject = "Grade 6 Performing Arts Graded Examination",
+                Qualification = "Music Performance: Group",
+                TotalNumberOfEntries = 10,
+            }
+    };
 
     private EnglishAndMathsResultsModel EnglishAndMathsResults(
         string urn = "123456",
@@ -1289,7 +1305,7 @@ public class SecondarySchoolControllerTests
     {
         _mockEstablishmentSubjectEntriesService
             .Setup(s => s.GetSubjectEntriesByUrnAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((new() { SubjectEntries = CoreSubjects }, new() { SubjectEntries = AdditionalSubjects }));
+            .ReturnsAsync((GcseSubjects, VocationalSubjects, OtherSubjects));
 
         var result = await _controller.AcademicPerformanceSubjectsEntered(
             _mockEstablishmentSubjectEntriesService.Object,
@@ -1305,35 +1321,49 @@ public class SecondarySchoolControllerTests
         Assert.Equal(_fakeEstablishment.URN, model.URN);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
 
-        Assert.NotNull(model.CoreSubjects);
+        Assert.NotNull(model);
         Assert.Equal(
-            CoreSubjects.Select(c => c.SubEntCore_Sub_Est_Current_Num).OrderBy(s => s),
-            model.CoreSubjects.Select(s => s.Subject).OrderBy(s => s)
+            GcseSubjects.Select(c => c.Subject).OrderBy(s => s),
+            model?.GcseSubjects?.Select(s => s.Subject).OrderBy(s => s)
         );
         Assert.Equal(
-           CoreSubjects.Select(c => $"{c.SubEntCore_Entr_Est_Current_Num:F0}").OrderBy(s => s),
-           model.CoreSubjects.Select(s => s.NumberOfEntries).OrderBy(s => s)
+           GcseSubjects.Select(c => $"{c.TotalNumberOfEntries:F0}").OrderBy(s => s),
+           model?.GcseSubjects?.Select(s => s.NumberOfEntries).OrderBy(s => s)
         );
         Assert.Equal(
-            CoreSubjects.Select(c => c.SubEntCore_Qual_Est_Current_Num).OrderBy(s => s),
-            model.CoreSubjects.Select(s => s.Qualification).OrderBy(s => s)
-        );
-
-        Assert.NotNull(model.AdditionalSubjects);
-        Assert.Equal(
-            AdditionalSubjects.Select(c => c.SubEntAdd_Sub_Est_Current_Num).OrderBy(s => s),
-            model.AdditionalSubjects.Select(s => s.Subject).OrderBy(s => s)
-        );
-        Assert.Equal(
-           AdditionalSubjects.Select(c => $"{c.SubEntAdd_Entr_Est_Current_Num:F0}").OrderBy(s => s),
-           model.AdditionalSubjects.Select(s => s.NumberOfEntries).OrderBy(s => s)
-        );
-        Assert.Equal(
-            AdditionalSubjects.Select(c => c.SubEntAdd_Qual_Est_Current_Num).OrderBy(s => s),
-            model.AdditionalSubjects.Select(s => s.Qualification).OrderBy(s => s)
+            GcseSubjects.Select(c => c.Qualification).OrderBy(s => s),
+            model?.GcseSubjects?.Select(s => s.Qualification).OrderBy(s => s)
         );
 
-        Assert.Equal(2, model.RouteAttributes.Count);
+        Assert.NotNull(model?.VocationalSubjects);
+        Assert.Equal(
+            VocationalSubjects.Select(c => c.Subject).OrderBy(s => s),
+            model?.VocationalSubjects?.Select(s => s.Subject).OrderBy(s => s)
+        );
+        Assert.Equal(
+           VocationalSubjects.Select(c => $"{c.TotalNumberOfEntries:F0}").OrderBy(s => s),
+           model?.VocationalSubjects?.Select(s => s.NumberOfEntries).OrderBy(s => s)
+        );
+        Assert.Equal(
+            VocationalSubjects.Select(c => c.Qualification).OrderBy(s => s),
+            model?.VocationalSubjects?.Select(s => s.Qualification).OrderBy(s => s)
+        );
+
+        Assert.NotNull(model?.OtherSubjects);
+        Assert.Equal(
+            OtherSubjects.Select(c => c.Subject).OrderBy(s => s),
+            model?.OtherSubjects?.Select(s => s.Subject).OrderBy(s => s)
+        );
+        Assert.Equal(
+           OtherSubjects.Select(c => $"{c.TotalNumberOfEntries:F0}").OrderBy(s => s),
+           model?.OtherSubjects?.Select(s => s.NumberOfEntries).OrderBy(s => s)
+        );
+        Assert.Equal(
+            OtherSubjects.Select(c => c.Qualification).OrderBy(s => s),
+            model?.OtherSubjects?.Select(s => s.Qualification).OrderBy(s => s)
+        );
+
+        Assert.Equal(2, model?.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
     }
