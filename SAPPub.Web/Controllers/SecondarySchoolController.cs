@@ -132,6 +132,18 @@ namespace SAPPub.Web.Controllers
         }
 
         [HttpGet]
+        [Route("school/{urn}/{schoolName}/secondary/academic-performance-additional-measures", Name = RouteConstants.SecondaryAcademicPerformanceAdditionalMeasures)]
+        public async Task<IActionResult> AcademicPerformanceAdditionalMeasures(
+            [FromServices] IAdditionalMeasuresService additionalMeasuresService,
+            string urn, string schoolName, CancellationToken ct)
+        {
+            var additionalMeasures = await additionalMeasuresService.GetAsync(urn, ct);
+
+            var model = AcademicPerformanceAdditionalMeasuresViewModel.Map(additionalMeasures);
+            return View(model);
+        }
+
+        [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/destinations", Name = RouteConstants.SecondaryDestinations)]
         public async Task<IActionResult> Destinations(
             [FromServices] IDestinationsService destinationsService,
@@ -141,13 +153,6 @@ namespace SAPPub.Web.Controllers
 
             var model = DestinationsViewModel.Map(destinationDetails);
             return View(model);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> AdditionalMeasures(
-            string urn, string schoolName, CancellationToken ct)
-        {
-            return View();
         }
     }
 }

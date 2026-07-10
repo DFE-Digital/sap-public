@@ -40,6 +40,7 @@ public class SecondarySchoolControllerTests
     private readonly Mock<IAdmissionsService> _mockAdmissionsService = new();
     private readonly Mock<IAboutSchoolService> _mockAboutSchoolService = new();
     private readonly Mock<IAttendanceService> _mockAttendanceService = new();
+    private readonly Mock<IAdditionalMeasuresService> _mockAdditionalMeasuresService = new();
     private readonly SecondarySchoolController _controller;
     private EstablishmentServiceModel _fakeEstablishment;
 
@@ -1397,5 +1398,86 @@ public class SecondarySchoolControllerTests
         Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
-    
+    [Theory]
+    [InlineData("Sheffield", "Sheffield average")]
+    [InlineData("Poole Grammar School", "Local council average")]
+    public async Task Get_Destinations_Info_LocalCouncilName(string localCouncilName, string expectedCouncilName)
+    {
+        _fakeEstablishment.LAName = localCouncilName;
+        var destinationsDetails = new DestinationsDetailsBuilder()
+             .WithUrn(_fakeEstablishment.URN)
+             .WithEstablishmentName(_fakeEstablishment.EstablishmentName)
+             .WithLAName(_fakeEstablishment.LAName)
+             .Build();
+
+        _mockDestinationsService
+            .Setup(es => es.GetDestinationsDetailsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(destinationsDetails);
+
+        var result = await _controller.Destinations(_mockDestinationsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
+
+        string[] expectedAllDestCurrentDataLabels = ["School", expectedCouncilName, "England average"];
+        string[] expectedDataOvertimeDataLabels = ["School", expectedCouncilName, "England average"];
+        string[] expectedBreakdownDataLabels = ["School", expectedCouncilName, "England average"];
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as DestinationsViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(_fakeEstablishment.URN, model.URN);
+        Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
+
+        Assert.Equal(expectedAllDestCurrentDataLabels, model.AllDestinationsData.Labels);
+
+        var actualDataOvertimeDataLabels = model.AllDestinationsOverTimeData.Datasets.Select(s => s.Label).ToArray();
+        Assert.Equal(expectedDataOvertimeDataLabels, actualDataOvertimeDataLabels);
+
+        var actualBreakdownDataLabels = model.BreakdownDestinationData.Datasets.Select(s => s.Label).ToArray();
+        Assert.Equal(expectedBreakdownDataLabels, actualBreakdownDataLabels);
+    }
+
+    [Fact]
+    public async Task Get_AdditionalMeasures_ReturnsExpected()
+    {
+        // Arrange
+        var additionalMeasures = new AdditionalMeasuresModel()
+        {
+            SchoolName = _fakeEstablishment.EstablishmentName,
+            Urn = _fakeEstablishment.URN,
+            EnglandCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().Build(),
+            LocalAuthorityCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().Build(),
+            EstablishmentCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().Build()
+        };
+
+        _mockAdditionalMeasuresService
+            .Setup(s => s.GetAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(additionalMeasures);
+
+        // Act
+        var result = await _controller.AcademicPerformanceAdditionalMeasures(
+            _mockAdditionalMeasuresService.Object,
+            _fakeEstablishment.URN,
+            _fakeEstablishment.EstablishmentName,
+            CancellationToken.None) as ViewResult;
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as AcademicPerformanceAdditionalMeasuresViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(_fakeEstablishment.URN, model.URN);
+        Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
+
+        Assert.Equal(_fakeEstablishment.URN, model.URN);
+        Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
+        Assert.Equal(additionalMeasures.EstablishmentCurrentYear, model.EstablishmentCurrentYear);
+        Assert.Equal(additionalMeasures.LocalAuthorityCurrentYear, model.LocalAuthorityCurrentYear);
+        Assert.Equal(additionalMeasures.EnglandCurrentYear, model.EnglandCurrentYear);
+
+        Assert.Equal(2, model.RouteAttributes.Count);
+        Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
+        Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
+    }
 }

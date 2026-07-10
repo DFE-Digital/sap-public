@@ -1,0 +1,24 @@
+﻿@model SAPPub.Web.Models.SecondarySchool.AcademicPerformanceAdditionalMeasuresViewModel;
+@using SAPPub.Web.ViewComponents.VerticalNavigation
+
+@{
+    ViewData["Header"] = "Academic performance";
+    ViewData["SubHeader"] = PageTitleConstants.SecondarySchoolPageTitles.AdditionalMeasures;
+    ViewData["Title"] = $"{Model.SchoolName} - {ViewData["SubHeader"]}";
+}
+
+<div class="govuk-grid-row">
+    @await Component.InvokeAsync("VerticalNavigation",
+    new VerticalNavigationModel
+    {
+        URN = Model.URN,
+        SchoolName = Model.SchoolName,
+        ActivePage = RouteConstants.SecondaryAcademicPerformanceAdditionalMeasures
+    })
+
+    <div class="govuk-grid-column-three-quarters">
+        <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">@ViewData["Header"]</h1>
+
+    </div>
+</div>
