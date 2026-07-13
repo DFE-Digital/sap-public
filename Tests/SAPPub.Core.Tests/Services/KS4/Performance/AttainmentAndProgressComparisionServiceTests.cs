@@ -33,12 +33,12 @@ public class AttainmentAndProgressComparisionServiceTests
             new()
             {
                 Id = urns[0],
-                Attainment8_Tot_Est_Previous_Num = 90
+                Attainment8_Tot_Est_Current_Num = 85
             },
             new()
             {
                 Id = urns[1],
-                Attainment8_Tot_Est_Previous_Num = 70
+                Attainment8_Tot_Est_Current_Num = 75
             },
         };
 
@@ -47,7 +47,7 @@ public class AttainmentAndProgressComparisionServiceTests
         var englandPerformance = new EnglandPerformance
         {
             Id = "E09000001",
-            Attainment8_Tot_Eng_Previous_Num = 70
+            Attainment8_Tot_Eng_Current_Num = 80
         };
 
         _mockEstablishmentPerformanceService
@@ -66,13 +66,13 @@ public class AttainmentAndProgressComparisionServiceTests
 
         foreach (var urn in urns)
         {
-            Assert.Equal(englandPerformance.Attainment8_Tot_Eng_Previous_Num, result.EnglandAverage);
+            Assert.Equal(englandPerformance.Attainment8_Tot_Eng_Current_Num, result.EnglandAverage);
 
             var expectedEstablishmentComparisionResult = establishmentsPerformance.FirstOrDefault(x => x.Id == urn);
             var actualEstablishmentComparisionResult = result.SchoolDetails.FirstOrDefault(x => x.Urn == urn);
             Assert.NotNull(actualEstablishmentComparisionResult);
 
-            Assert.Equal(expectedEstablishmentComparisionResult?.Attainment8_Tot_Est_Previous_Num, actualEstablishmentComparisionResult.Attainment8Score);
+            Assert.Equal(expectedEstablishmentComparisionResult?.Attainment8_Tot_Est_Current_Num, actualEstablishmentComparisionResult.Attainment8Score);
         }
     }
 }
