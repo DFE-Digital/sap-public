@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement.Mvc;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Services.KS4.AboutSchool;
@@ -9,7 +10,7 @@ using SAPPub.Web.Controllers;
 namespace SAPPub.Web.Areas.Profiles.Controllers
 {
     [Area("Profiles")]
-
+    [FeatureGate("Enable16to19")]
     public class KS5Controller(ILogger<KS5Controller> logger) : Controller
     {
         [Route("school/{urn}/{schoolName}/16-to-19-performance", Name = RouteConstants.KS5AcademicPerformanceRoot)]

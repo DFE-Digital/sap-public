@@ -35,5 +35,5 @@ public static class Constants
     public const string CompareYourSchools = "Comparing your schools";
     // Managed Feature Names
     public const string EstablishmentComparisonEnabled = "EstablishmentComparisonEnabled";
-    public const string FESearchEnabled = "FESearchEnabled";
+    public const string Enable16to19 = "Enable16to19";
 }

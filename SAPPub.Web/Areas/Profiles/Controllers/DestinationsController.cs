@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement.Mvc;
 using NpgsqlTypes;
 using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4;
@@ -10,6 +11,7 @@ using SAPPub.Web.Models.SecondarySchool;
 namespace SAPPub.Web.Areas.Profiles.Controllers
 {
     [Area("Profiles")]
+
     public class DestinationsController(ILogger<DestinationsController> logger) : Controller
     {
         [Route("school/{urn}/{schoolName}/destinations", Name = RouteConstants.DestinationsRoot)]
@@ -54,6 +56,7 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
             return View(model);
         }
 
+        [FeatureGate("Enable16to19")]
         [Route("school/{urn}/{schoolName}/destinations/16to19", Name = RouteConstants.KS5Destinations)]
         public async Task<IActionResult> KS5([FromServices] IAboutSchoolService aboutSchoolService, 
             string urn, string schoolName,
@@ -76,6 +79,7 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
             return View(model);
         }
 
+        [FeatureGate("Enable16to19")]
         [Route("school/{urn}/{schoolName}/destinations/16to19-higher-level-study", Name = RouteConstants.KS5DestinationsHigher)]
         public async Task<IActionResult> KS5HigherLevel([FromServices] IAboutSchoolService aboutSchoolService, 
             string urn, string schoolName,
