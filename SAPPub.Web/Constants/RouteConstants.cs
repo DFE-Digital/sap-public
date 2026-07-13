@@ -17,7 +17,10 @@ public static class RouteConstants
     public const string TermsAndConditions = "TermsAndConditions";
 
     public const string MySchoolsView = "MySchoolsView";
+    public const string SubmitMySchoolsView = "SubmitMySchoolsView";
     public const string MySchoolsNoSchoolsView = "NoMySchoolsView";
+    public const string MySchoolsRemoveConfirm = "MySchoolsRemoveConfirm";
+    public const string SubmitMySchoolsRemoveConfirm = "SubmitMySchoolsRemoveConfirm";
     public const string CompareSecondary = "CompareSecondary";
     public const string CompareSecondaryAboutYourSchools = "CompareSecondaryAboutYourSchools";
     public const string CompareSecondaryAcademicPerformancePupilAttainment = "CompareSecondaryAcademicPerformancePupilAttainment";

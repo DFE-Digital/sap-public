@@ -16,6 +16,8 @@
 
         void RemoveAll();
 
+        void Remove(IEnumerable<string> urns);
+
         bool IsListLimitReached();
     }
 }

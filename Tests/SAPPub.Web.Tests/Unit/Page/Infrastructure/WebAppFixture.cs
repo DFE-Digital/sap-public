@@ -37,7 +37,7 @@ public class WebAppFixture : IDisposable
         return document;
     }
 
-    public async Task<PageResponse> PostToPage<T>(string url, T model)
+    public async Task<PageResponse> PostToPage<T>(string url, T model, string? submitAction = null)
     {
         var values = new List<KeyValuePair<string, string>>();
 
@@ -63,6 +63,13 @@ public class WebAppFixture : IDisposable
                 values.Add(new KeyValuePair<string, string>(
                     property.Name,
                     value?.ToString() ?? string.Empty));
+            }
+
+            if (!string.IsNullOrWhiteSpace(submitAction))
+            {
+                values.Add(new KeyValuePair<string, string>(
+                        "submitAction",
+                        submitAction));
             }
         }
 

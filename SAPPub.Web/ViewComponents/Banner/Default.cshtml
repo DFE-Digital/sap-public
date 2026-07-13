@@ -16,25 +16,33 @@
 }
 
 
-    <div class="@bannerClass"
-         role="@Model.Role"
-         aria-live="polite"
-         aria-labelledby="@title"
-         data-module="govuk-notification-banner"
-         id="@Model.Id">
-        
-        <div class="govuk-notification-banner__header">
-            <h2 class="govuk-notification-banner__title" id="@title">
-                @Model.Title
-            </h2>
-        </div>
-        <div class="govuk-notification-banner__content">
-            @if (!string.IsNullOrWhiteSpace(Model.HeaderContent))
-            {
-                <p class="govuk-notification-banner__heading">
-                @Html.Raw(Model.HeaderContent)
-                </p>
-            }
-            @Html.Raw(Model.BodyContent)
-        </div>
+<div class="@bannerClass"
+     role="@Model.Role"
+     aria-live="polite"
+     aria-labelledby="@title"
+     data-module="govuk-notification-banner"
+     id="@Model.Id">
+
+    <div class="govuk-notification-banner__header">
+        <h2 class="govuk-notification-banner__title" id="@title">
+            @Model.Title
+        </h2>
     </div>
+    <div class="govuk-notification-banner__content">
+        @if (!string.IsNullOrWhiteSpace(Model.HeaderContent))
+        {
+            <p class="govuk-notification-banner__heading">
+                @Html.Raw(Model.HeaderContent)
+            </p>
+        }
+
+        @if (Model.IsRawHtml)
+        {
+            @Html.Raw(Model.BodyContent)
+        }
+        else
+        {
+            <p class="govuk-body">@Model.BodyContent</p>
+        }
+    </div>
+</div>

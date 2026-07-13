@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
-using SAPPub.Core.Exceptions;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Web.Constants;
+using SAPPub.Web.Helpers;
+using SAPPub.Web.Models.Banner;
 using SAPPub.Web.Models.MySchools;
 using static SAPPub.Web.Constants.Constants;
 
@@ -16,7 +17,6 @@ public class MySchoolsController(
 {
     [HttpGet]
     [Route("view", Name = RouteConstants.MySchoolsView)]
-
     public async Task<IActionResult> Index()
     {
         var establishmentUrns = mySchoolListService.GetSavedEstablishments();
@@ -50,38 +50,100 @@ public class MySchoolsController(
     }
 
     [HttpPost]
-    [Route("view", Name = RouteConstants.MySchoolsView)]
-    public async Task<IActionResult> Index(MySchoolsListViewModel viewModel)
+    [Route("view", Name = RouteConstants.SubmitMySchoolsView)]
+    public async Task<IActionResult> Index(MySchoolsListViewModel viewModel, string submitAction)
     {
-        var SelectedEstablishmentUrns = viewModel.SelectedEstablishmentUrns;
-        if (SelectedEstablishmentUrns.Count < 2 || SelectedEstablishmentUrns.Count > 6)
+        if (submitAction == ActionRemove)
         {
-            ModelState.AddModelError(nameof(SelectedEstablishmentUrns), "Please select between 2 and 6 schools to compare");
-            var schoolsList = await PopulateSchoolList();
-            return View(new MySchoolsListViewModel
+            if (viewModel.SelectedEstablishmentUrns.Count == 0)
             {
-                MySchools = schoolsList,
-                SelectedEstablishmentUrns = SelectedEstablishmentUrns
-            });
+                ModelState.AddModelError(nameof(viewModel.SelectedEstablishmentUrns), "Select at least one school to remove");                
+                return View(nameof(Index), await GetMySchoolsListModel(viewModel));
+            }
+
+            TempData.Set(SelectedEstablishmentUrns, viewModel.SelectedEstablishmentUrns);
+            return RedirectToAction(nameof(RemoveConfirm));            
         }
-        return RedirectToRoute(RouteConstants.CompareSecondaryAboutYourSchools, new { urns = SelectedEstablishmentUrns });
+        else
+        {
+            if (viewModel.SelectedEstablishmentUrns.Count < 2 || viewModel.SelectedEstablishmentUrns.Count > 6)
+            {
+                ModelState.AddModelError(nameof(viewModel.SelectedEstablishmentUrns), "Select between 2 and 6 schools to compare");
+                var schoolsList = await PopulateSchoolList();
+                return View(await GetMySchoolsListModel(viewModel));
+            }
+            return RedirectToRoute(RouteConstants.CompareSecondaryAboutYourSchools, new { urns = viewModel.SelectedEstablishmentUrns });
+        }
+    }
+
+    [HttpGet]
+    [Route("remove-confirm", Name = RouteConstants.MySchoolsRemoveConfirm)]
+    public async Task<IActionResult> RemoveConfirm()
+    {
+        var establishmentUrns = TempData.Peek<List<string>>(SelectedEstablishmentUrns);
+
+        if (establishmentUrns == null)
+        {
+            return RedirectToAction(nameof(Index));
+        }
+
+        var schoolsList = await PopulateRemoveSchoolList(establishmentUrns);
+
+        var viewModel = new RemoveSchoolsConfirmationViewModel
+        {
+            Schools = schoolsList
+        };
+
+        TempData.Set(SelectedSchoolsForRemoval, schoolsList);
+
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    [Route("remove-confirm", Name = RouteConstants.SubmitMySchoolsRemoveConfirm)]
+    public IActionResult ConfirmRemove()
+    {
+        var schoolsToRemove = TempData.Get<List<RemoveSchoolViewModel>>(SelectedSchoolsForRemoval);
+
+        if (schoolsToRemove == null)
+        {
+            return RedirectToAction(nameof(Index));
+        }
+
+        mySchoolListService.Remove(schoolsToRemove.Select(s => s.Urn));
+
+        TempData.Remove(SelectedEstablishmentUrns);
+        TempData.Set(BannerModel, GetBannerModel(schoolsToRemove));
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    private async Task<MySchoolsListViewModel> GetMySchoolsListModel(MySchoolsListViewModel viewModel)
+    {
+        return new MySchoolsListViewModel
+        {
+            MySchools = await PopulateSchoolList(),
+            SelectedEstablishmentUrns = viewModel.SelectedEstablishmentUrns
+        };
+    }
+
+    private async Task<List<RemoveSchoolViewModel>> PopulateRemoveSchoolList(IEnumerable<string> urns)
+    {
+        var establishments = await establishmentService.GetEstablishmentsAsync(urns);
+
+        var model = establishments
+            .Where(e => e != null)
+            .Select(e => RemoveSchoolViewModel.MapFrom(e!))
+            .OrderBy(x => x.Name)
+            .ToList();
+
+        return model;
     }
 
     private async Task<List<MySchoolModel>> PopulateSchoolList()
     {
         var establishmentUrns = mySchoolListService.GetSavedEstablishments();
-
-        var establishments = await Task.WhenAll(establishmentUrns.Select(async urn =>
-        {
-            try
-            {
-                return await establishmentService.GetEstablishmentAsync(urn);
-            }
-            catch (NotFoundException)
-            {
-                return null;
-            }
-        }));
+        var establishments = await establishmentService.GetEstablishmentsAsync(establishmentUrns);
 
         var model = establishments
             .Where(e => e != null)
@@ -90,5 +152,18 @@ public class MySchoolsController(
             .ToList();
 
         return model;
+    }
+
+    private static BannerViewModel GetBannerModel(List<RemoveSchoolViewModel> schoolsToRemove)
+    {
+        var hasMultipleSchools = schoolsToRemove.Count > 1;
+        return new BannerViewModel
+        {
+            Title = "Success",
+            HeaderContent = $"Saved {(hasMultipleSchools ? "schools" : "school")} removed from your compare list",
+            BodyContent = hasMultipleSchools ? null : schoolsToRemove[0].Name,
+            Role = "alert",
+            Type = "success"
+        };
     }
 }
