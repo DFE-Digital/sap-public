@@ -31,7 +31,10 @@ public class PageTitleConstants
         public const string EnglishAndMaths = "English and maths";
         public const string SubjectsEntered = "Subjects entered";
 
-        public const string Destinations = "16 to 19 Destinations";
-        public const string DestinationsHigher = "16 to 19 Destinations to higher-level study";
+        public const string Destinations = "Destinations";
+        public const string DestinationsFullTitle = "Education, apprenticeships or work (2023 leavers)";
+        public const string DestinationsUrl = "16 to 19 Destinations";
+        public const string DestinationsHigherFullTitle = "Higher-level study (2022 leavers)";
+        public const string DestinationsHigherUrl = "16 to 19 Destinations to higher-level study";
     }
 }

@@ -57,7 +57,7 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
         }
 
         [FeatureGate("Enable16to19")]
-        [Route("school/{urn}/{schoolName}/destinations/16to19", Name = RouteConstants.KS5Destinations)]
+        [Route("school/{urn}/{schoolName}/destinations/16-to-19", Name = RouteConstants.KS5Destinations)]
         public async Task<IActionResult> KS5([FromServices] IAboutSchoolService aboutSchoolService, 
             string urn, string schoolName,
             CancellationToken ct)
@@ -80,7 +80,7 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
         }
 
         [FeatureGate("Enable16to19")]
-        [Route("school/{urn}/{schoolName}/destinations/16to19-higher-level-study", Name = RouteConstants.KS5DestinationsHigher)]
+        [Route("school/{urn}/{schoolName}/destinations/16-to-19-higher-level-study", Name = RouteConstants.KS5DestinationsHigher)]
         public async Task<IActionResult> KS5HigherLevel([FromServices] IAboutSchoolService aboutSchoolService, 
             string urn, string schoolName,
             CancellationToken ct)
