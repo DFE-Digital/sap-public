@@ -1,6 +1,8 @@
 ﻿@using SAPPub.Core.Enums
+@using SAPPub.Web.Models.Banner
 @using SAPPub.Web.ViewComponents.VerticalNavigationMySchools
 @using Microsoft.AspNetCore.Mvc.ModelBinding
+@using static SAPPub.Web.Constants.Constants;
 @model SAPPub.Web.Models.MySchools.MySchoolsListViewModel
 
 @{
@@ -10,9 +12,8 @@
 @if (ViewData.ModelState.ErrorCount > 0)
 {
     <govuk-error-summary>
-        <govuk-error-summary-description class="govuk-error-message">@($"You have selected {Model.SelectedCount} schools to compare")</govuk-error-summary-description>
         <govuk-error-summary-item href="#establishment-checkboxes" for="@Model.SelectedEstablishmentUrns">
-            You can select between 2 and 6 schools to compare.
+            @(ViewData.ModelState[nameof(Model.SelectedEstablishmentUrns)]?.Errors.First().ErrorMessage)
         </govuk-error-summary-item>
     </govuk-error-summary>
 }
@@ -22,13 +23,18 @@
 
 <div class="govuk-grid-row">
     @await Component.InvokeAsync("VerticalNavigationMySchools",
-        new VerticalNavigationMySchoolsModel
-        {
-            ActivePage = RouteConstants.MySchoolsView,
-            SchoolCount = Model.MySchools.Count
-        })
+    new VerticalNavigationMySchoolsModel
+    {
+        ActivePage = RouteConstants.MySchoolsView,
+        SchoolCount = Model.MySchools.Count
+    })
 
     <div class="govuk-grid-column-three-quarters">
+        @if (TempData.Get<BannerViewModel?>(BannerModel) is BannerViewModel bannerModel)
+        {
+            @await Component.InvokeAsync("Banner", bannerModel)
+        }
+
         <form method="post" asp-controller="MySchools" asp-action="Index">
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -39,20 +45,19 @@
                 @if (ViewData.ModelState.ErrorCount > 0)
                 {
                     <govuk-error-message>
-                        @(ViewData.ModelState[nameof(Model.SelectedEstablishmentUrns)]
-                        ?.Errors.First().ErrorMessage)
+                        @(ViewData.ModelState[nameof(Model.SelectedEstablishmentUrns)]?.Errors.First().ErrorMessage)
                     </govuk-error-message>
                 }
                 <div class="govuk-checkboxes" id="establishment-checkboxes" data-testid="my-schools-list" data-module="govuk-checkboxes">
-                    @foreach (var item in Model.MySchools.Select((modelItem, i) => new {modelItem, i}))
+                    @foreach (var item in Model.MySchools.Select((modelItem, i) => new { modelItem, i }))
                     {
                         <div class="govuk-checkboxes__item">
                             <input class="govuk-checkboxes__input"
-                                type="checkbox"
-                                id="@($"establishment-{item.i}")"
-                                name="@nameof(Model.SelectedEstablishmentUrns)"
-                                value="@item.modelItem.Urn"
-                                @(Model.SelectedEstablishmentUrns.Contains(item.modelItem.Urn) ? "checked" : "")>
+                                   type="checkbox"
+                                   id="@($"establishment-{item.i}")"
+                                   name="@nameof(Model.SelectedEstablishmentUrns)"
+                                   value="@item.modelItem.Urn"
+                                   @(Model.SelectedEstablishmentUrns.Contains(item.modelItem.Urn) ? "checked" : "")>
                             <label class="govuk-label govuk-checkboxes__label" for="@($"establishment-{item.i}")"><strong>@item.modelItem.Name</strong></label>
                             <div class="govuk-checkboxes__hint">
                                 <div>@item.modelItem.Address</div>
@@ -68,7 +73,8 @@
                     }
                 </div>
             </fieldset>
-            <govuk-button id="compare" type="submit">Compare selected schools</govuk-button>
+            <govuk-button id="compare" type="submit" name="submitAction" value="@Constants.ActionCompare">Compare selected schools</govuk-button>
+            <govuk-button id="remove" type="submit" name="submitAction" value="@Constants.ActionRemove" class="govuk-button--secondary govuk-clear">Remove selected schools</govuk-button>
         </form>
     </div>
 </div>

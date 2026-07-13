@@ -20,13 +20,13 @@ public class AttainmentAndProgressComparisionService(
         var schoolDetails = urns.Select(urn => new SchoolAttainmentAndProgressDetails
         {
             Urn = urn,
-            Attainment8Score = establishmentsPerformance.FirstOrDefault(x => x.Id == urn)?.Attainment8_Tot_Est_Previous_Num
+            Attainment8Score = establishmentsPerformance.FirstOrDefault(x => x.Id == urn)?.Attainment8_Tot_Est_Current_Num
         });
 
         return new AttainmentAndProgressComparisonResultsModel
         {
             SchoolDetails = schoolDetails,
-            EnglandAverage = englandPerformance?.Attainment8_Tot_Eng_Previous_Num
+            EnglandAverage = englandPerformance?.Attainment8_Tot_Eng_Current_Num
         };
     }
 }

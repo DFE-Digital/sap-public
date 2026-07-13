@@ -10,7 +10,7 @@ namespace SAPPub.Web.Middleware
         {
             _next = next;
         }
-
+            
         public Task InvokeAsync(HttpContext context)
         {
             // Generate a per-request nonce and make it available to views

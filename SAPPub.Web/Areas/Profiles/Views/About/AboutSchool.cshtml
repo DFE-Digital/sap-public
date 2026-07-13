@@ -31,12 +31,12 @@
             var bodyContent = $"<div class=\"govuk-body\"><p>{Model.SchoolName}</p>" +
             $"<p>You can compare up to 6 schools at a time. <a class=\"govuk-link\" href=\"{Url.RouteUrl(RouteConstants.MySchoolsView)}\">View your schools list</a></p></div>";
 
-            @await Component.InvokeAsync("Banner", new BannerViewModel { Title = "Success", HeaderContent = "School added to your schools list", BodyContent = bodyContent, Id = $"establishment-comparison-{Model.URN}-add-success", Role = "status", Type = "Success" })
+            @await Component.InvokeAsync("Banner", new BannerViewModel { Title = "Success", HeaderContent = "School added to your schools list", BodyContent = bodyContent, IsRawHtml = true, Id = $"establishment-comparison-{Model.URN}-add-success", Role = "status", Type = "Success" })
         }
 
         @if (TempData.Get<bool>(BannerRemoveSuccess))
         {
-            @await Component.InvokeAsync("Banner", new BannerViewModel { Title = "Success", HeaderContent = "School removed from your schools list", BodyContent = $"<p class=\"govuk-body\">{Model.SchoolName}</p>", Id = $"establishment-comparison-{Model.URN}-remove-success", Role = "status", Type = "Success" })
+            @await Component.InvokeAsync("Banner", new BannerViewModel { Title = "Success", HeaderContent = "School removed from your schools list", BodyContent = $"<p class=\"govuk-body\">{Model.SchoolName}</p>", IsRawHtml = true, Id = $"establishment-comparison-{Model.URN}-remove-success", Role = "status", Type = "Success" })
         }
 
         @if (mySchoolsListService.IsListLimitReached() && !mySchoolsListService.IsSaved(Model.URN))

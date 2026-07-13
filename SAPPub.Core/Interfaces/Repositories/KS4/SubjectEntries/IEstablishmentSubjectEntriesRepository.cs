@@ -1,10 +1,11 @@
 ﻿using SAPPub.Core.Entities.KS4.SubjectEntries;
+using SAPPub.Core.ServiceModels.KS4.Performance;
 
-namespace SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries
+namespace SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
+
+public interface IEstablishmentSubjectEntriesRepository
 {
-    public interface IEstablishmentSubjectEntriesRepository
-    {
-        Task<EstablishmentCoreSubjectEntries> GetCoreSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default);
-        Task<EstablishmentAdditionalSubjectEntries> GetAdditionalSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default);
-    }
+    Task<IEnumerable<SubjectsEntered>> GetGcseSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default);
+    Task<IEnumerable<SubjectsEntered>> GetVocationalAwardSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default);
+    Task<IEnumerable<SubjectsEntered>> GetOtherSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default);
 }

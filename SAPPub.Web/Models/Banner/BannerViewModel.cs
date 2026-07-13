@@ -13,5 +13,7 @@
         public string? Id { get; set; }
 
         public string Role { get; set; } = "status";
+
+        public bool IsRawHtml { get; set; }
     }
 }

@@ -95,13 +95,14 @@ namespace SAPPub.Web.Controllers
                 return View("Error");
             }
 
-            var (coreSubjectEntries, additionalSubjectEntries) =
+            var (gcseSubjectEntries, vocationalSubjectEntries, otherSubjectEntries) =
                 await subjectEntriesService.GetSubjectEntriesByUrnAsync(urn, ct);
 
             var model = AcademicPerformanceSubjectsEnteredViewModel.Map(
                 establishmentDetails,
-                coreSubjectEntries,
-                additionalSubjectEntries);
+                gcseSubjectEntries,
+                vocationalSubjectEntries,
+                otherSubjectEntries);
 
             return View(model);
         }
