@@ -7,7 +7,7 @@ using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
 
-namespace SAPPub.Web.Tests.Unit.Page;
+namespace SAPPub.Web.Tests.Unit.Page.Areas.Profiles;
 
 // Share the WebAppFixture across tests in this class so that we only start the web app once for all tests in this collection
 // and run tests sequentially to avoid issues with shared state in the mock accessor.`
@@ -345,5 +345,39 @@ public class AboutPageTests : PageTestsBase
         // Assert
         Assert.Contains(hasSENUnit ? "Yes" : "No", doc.GetRowContentByIdAndKey("school-features-summary", "SEN unit"));
         Assert.Contains(hasResourcedProvision ? "Yes" : "No", doc.GetRowContentByIdAndKey("school-features-summary", "Resourced provision"));
+    }
+
+
+    [Fact]
+    public async Task AboutPage_ShowsKS5OnlyElements()
+    {
+        // Arrange
+        var aboutSchoolModel = new AboutSchoolModel()
+        {
+            Urn = "143034",
+            SchoolName = "St David's Church of England Academy",
+            Address = "Some address",
+            LocalAuthority = "Bury",
+            IsKS4 = false,
+            IsKS5 = true
+        };
+        _about
+            .Setup(service => service.GetAboutSchoolDetailsAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(aboutSchoolModel);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(aboutSchoolModel.Urn, aboutSchoolModel.SchoolName, _pageRoute));
+
+        // Assert
+        Assert.Null(doc.GetRowContentByIdAndKey("school-features-summary", "Value and ethos"));
+        Assert.Null(doc.GetRowContentByIdAndKey("school-features-summary", "Headteacher"));
+        Assert.NotNull(doc.GetRowContentByIdAndKey("school-features-summary", "Headteacher, principal, or chief executive"));
+        var h1Elements = doc.GetElementsByTagName("h1");
+        var h2Elements = doc.GetElementsByTagName("h2");
+        Assert.Equal("About the school or college", h1Elements[0].TextContent);
+        Assert.Equal("Key features", h2Elements[2].TextContent);
+        Assert.Equal("Policies", h2Elements[3].TextContent);
     }
 }

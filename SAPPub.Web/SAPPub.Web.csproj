@@ -38,5 +38,9 @@
 	  <Content Remove="Areas\Compare\Models\**" />
 	  <EmbeddedResource Remove="Areas\Compare\Models\**" />
 	  <None Remove="Areas\Compare\Models\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Areas\Profiles\Data\" />
 	</ItemGroup>	
 </Project>
