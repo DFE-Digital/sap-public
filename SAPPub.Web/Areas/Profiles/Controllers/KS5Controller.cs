@@ -22,7 +22,7 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
             return RedirectToAction("AdvancedLevel", new { urn = urn, schoolName = schoolName, qualification = "alevel" });
 
             // if establishment has Level 2 data
-            return RedirectToAction("IntermediateLevel", new { urn = urn, schoolName = schoolName, qualification = "techcert" });
+            //return RedirectToAction("IntermediateLevel", new { urn = urn, schoolName = schoolName, qualification = "techcert" });
         }
 
 
