@@ -9,12 +9,19 @@ public static class Constants
     public const string EnglandAverage = "England average";
     public const string NotRecorded = "Not recorded";
     public const string NotAvailable = "Not available";
+    public const string ActionCompare = "Compare";
+    public const string ActionRemove = "Remove";
 
     // TempData Key Constants
     public const string CookiesConfirmation = "CookiesConfirmation";
     public const string BannerAddSuccess = "BannerAddSuccess";
     public const string BannerRemoveSuccess = "BannerRemoveSuccess";
     public const string ComparisionLimtReached = "ComparisionLimtReached";
+    public const string SelectedEstablishmentUrns = "SelectedEstablishmentUrns";
+    public const string SelectedSchoolsForRemoval = "SelectedSchoolsForRemoval";
+    public const string RemovedSchoolsCount = "RemovedSchoolsCount";
+    public const string BannerModel = "BannerModel";
+    public const string SubmitAction = "SubmitAction";
 
     // HttpContext Key Constants
     public const string Establishments = "Establishments";
