@@ -138,7 +138,13 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Attainment8_Tot_LA_Previous2_Num_Coded",
           "EngMaths49_Tot_LA_Previous2_Pct_Coded",
           "EngMaths59_Tot_LA_Previous2_Pct_Coded",
-          "Prog8_Avg_LA_Previous2_Num_Coded"
+          "Prog8_Avg_LA_Previous2_Num_Coded",
+          "AnyQual_Tot_LA_Current_Pct_Coded",
+          "TripSci_Tot_LA_Current_Pct_Coded",
+          "More1FL_Tot_LA_Current_Pct_Coded",
+          "ExamEntriesGSCE_Tot_LA_Current_Num_Coded",
+          "ExamEntriesKS4_Tot_LA_Current_Num_Coded",
+          "Pup_Tot_LA_Current_Num_Coded"
           """;
 
         private const string LADestinationsColumns = """
@@ -165,7 +171,13 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "EngMaths59_Tot_Eng_Previous_Pct_Coded",
           "Attainment8_Tot_Eng_Previous2_Num_Coded",
           "EngMaths49_Tot_Eng_Previous2_Pct_Coded",
-          "EngMaths59_Tot_Eng_Previous2_Pct_Coded"
+          "EngMaths59_Tot_Eng_Previous2_Pct_Coded",
+          "AnyQual_Tot_Eng_Current_Pct_Coded",
+          "TripSci_Tot_Eng_Current_Pct_Coded",
+          "More1FL_Tot_Eng_Current_Pct_Coded",
+          "ExamEntriesGSCE_Tot_Eng_Current_Num_Coded",
+          "ExamEntriesKS4_Tot_Eng_Current_Num_Coded",
+          "Pup_Tot_Eng_Current_Num_Coded"
           """;
 
         private const string EnglandDestinationsColumns = """
