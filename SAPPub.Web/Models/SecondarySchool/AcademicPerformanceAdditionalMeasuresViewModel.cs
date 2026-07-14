@@ -1,4 +1,5 @@
-﻿using SAPPub.Core.ServiceModels.KS4.Performance;
+﻿using SAPPub.Core.ServiceModels;
+using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Web.Helpers;
 
 namespace SAPPub.Web.Models.SecondarySchool;
@@ -24,12 +25,15 @@ public class AcademicPerformanceAdditionalMeasuresViewModel : SecondarySchoolBas
     //    };
     //}
 
-    public static AcademicPerformanceAdditionalMeasuresViewModel MapToMeasuresInTableFormat(AdditionalMeasuresModel additionalMeasuresModel)
+    public static AcademicPerformanceAdditionalMeasuresViewModel MapToMeasuresInTableFormat(AdditionalMeasuresModel additionalMeasuresModel, EstablishmentServiceModel establishmentDetails)
     {
         return new AcademicPerformanceAdditionalMeasuresViewModel
         {
-            URN = additionalMeasuresModel.Urn,
-            SchoolName = additionalMeasuresModel.SchoolName,
+            URN = establishmentDetails.URN,
+            SchoolName = establishmentDetails.EstablishmentName,
+            IsKS2 = establishmentDetails.IsKS2,
+            IsKS4 = establishmentDetails.IsKS4,
+            IsKS5 = establishmentDetails.IsKS5,
             MeasuresInTableFormat = new List<AcademicPerformanceAdditionalMeasureViewModel>()
             {
                 new AcademicPerformanceAdditionalMeasureViewModel{

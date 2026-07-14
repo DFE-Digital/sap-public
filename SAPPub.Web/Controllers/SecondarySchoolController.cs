@@ -138,8 +138,9 @@ namespace SAPPub.Web.Controllers
             string urn, string schoolName, CancellationToken ct)
         {
             var additionalMeasures = await additionalMeasuresService.GetAsync(urn, ct);
+            var establishmentDetails = await establishmentService.GetEstablishmentAsync(urn, ct);
 
-            var model = AcademicPerformanceAdditionalMeasuresViewModel.MapToMeasuresInTableFormat(additionalMeasures);
+            var model = AcademicPerformanceAdditionalMeasuresViewModel.MapToMeasuresInTableFormat(additionalMeasures, establishmentDetails);
             return View(model);
         }
 
