@@ -1393,7 +1393,7 @@ public class SecondarySchoolControllerTests
         );
 
         Assert.Equal(2, model?.RouteAttributes.Count);
-        Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
+        Assert.Equal(_fakeEstablishment.URN, model!.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 

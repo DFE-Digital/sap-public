@@ -1,4 +1,5 @@
 ﻿@model SAPPub.Web.Models.SecondarySchool.AcademicPerformanceAdditionalMeasuresViewModel;
+@using SAPPub.Web.Models.SecondarySchool
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 
 @{
@@ -130,9 +131,9 @@
                             @{
                                 var displayText = row.MeasureFormat switch
                                 {
-                                    "percent" => row.EstablishmentCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:F1}%" : Constants.NotAvailable),
-                                    "average" => row.EstablishmentCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:F1}" : Constants.NotAvailable),
-                                    _ => row.EstablishmentCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:N0}" : Constants.NotAvailable)
+                                    MeasureFormat.Percent => row.EstablishmentCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:F1}%" : Constants.NotAvailable),
+                                    MeasureFormat.Int => row.EstablishmentCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:N0}" : Constants.NotAvailable),
+                                    _ => row.EstablishmentCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:F1}" : Constants.NotAvailable)
                                 };
                             }
                             @displayText
@@ -141,9 +142,9 @@
                             @{
                                 displayText = row.MeasureFormat switch
                                 {
-                                    "percent" => row.LocalAuthorityCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:F1}%" : Constants.NotAvailable),
-                                    "average" => row.LocalAuthorityCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:F1}" : Constants.NotAvailable),
-                                    _ => row.LocalAuthorityCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:N0}" : Constants.NotAvailable)
+                                    MeasureFormat.Percent => row.LocalAuthorityCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:F1}%" : Constants.NotAvailable),
+                                    MeasureFormat.Int => row.LocalAuthorityCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:N0}" : Constants.NotAvailable),
+                                    _ => row.LocalAuthorityCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:F1}" : Constants.NotAvailable),
                                 };
                             }
                             @displayText
@@ -152,9 +153,9 @@
                             @{
                                 displayText = row.MeasureFormat switch
                                 {
-                                    "percent" => row.EnglandCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:F1}%" : Constants.NotAvailable),
-                                    "average" => row.EnglandCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:F1}" : Constants.NotAvailable),
-                                    _ => row.EnglandCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:N0}" : Constants.NotAvailable) 
+                                    MeasureFormat.Percent => row.EnglandCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:F1}%" : Constants.NotAvailable),
+                                    MeasureFormat.Int => row.EnglandCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:N0}" : Constants.NotAvailable),
+                                    _ => row.EnglandCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:F1}" : Constants.NotAvailable)
                                 };
                             }
                             @displayText
