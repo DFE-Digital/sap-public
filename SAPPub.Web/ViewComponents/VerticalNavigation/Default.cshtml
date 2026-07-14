@@ -12,7 +12,14 @@
             <ul class="moj-side-navigation__list">
                 <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.SecondaryAboutSchool ? "moj-side-navigation__item--active" : "")">
                     <a asp-route="@RouteConstants.SecondaryAboutSchool" asp-all-route-data="routeAttributes">
-                        About the school @(Model.IsExclusivelyKS5 ? " or college" : "")
+                        @if (Model.IsKS5)
+                        {
+                            <text>About the school or college</text>
+                        }
+                        else
+                        {
+                            <text>About the school</text>
+                        }
                     </a>
                 </li>
 
