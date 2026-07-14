@@ -1,101 +1,127 @@
-## What worked for full install
+# Connecting to Konduit
 
-```
+## Prerequisites
 
+### Windows Subsystem for Linux (WSL) Setup
+
+See: [WSL Setup Guide (KB0012457)](https://dfe.service-now.com/ithelpcentre?id=kb_article&sysparm_article=KB0012457)
+
+```bash
 wsl --set-default-version 1
 wsl --install -d Ubuntu
 wsl --set-default Ubuntu
+```
 
-as per https://dfe.service-now.com/ithelpcentre?id=kb_article&sysparm_article=KB0012457
+Once installed, set your UNIX username and password, then enter WSL:
 
-Set UNIX username and password
+```bash
+wsl
+```
 
--> wsl
+### Azure CLI
 
-> Install AZ CLI (as per https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux)
-    curl -fsSL 'https://azurecliprod.blob.core.windows.net/$root/deb_install.sh' | sudo bash
+See: [Azure CLI Installation Guide](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux)
 
+```bash
+curl -fsSL 'https://azurecliprod.blob.core.windows.net/$root/deb_install.sh' | sudo bash
+```
 
-az login 
+#### Azure Login
 
-az login --use-device-code (if no browser available) (https://login.microsoft.com/device)
+```bash
+az login
+```
 
-az login --tenant XXX
+**Options:**
+- If no browser available: `az login --use-device-code` and authenticate at https://login.microsoft.com/device
+- Specific tenant: `az login --tenant XXX`
+- When prompted, select from the available subscriptions (e.g., [10])
 
-then select number in [10] For example
+### System Packages
 
-
-
+```bash
 sudo apt-get update
 sudo apt-get install -y make
-sudo apt-get install postgresql-client
+sudo apt-get install -y postgresql-client
+```
 
+### SSL Certificate Setup
 
+You may need to be added to the SSL certificate self-signed certificate chain exclusion group:
 
+[Request SSL Certificate Exclusion](https://dfe.service-now.com/mydfe?id=sc_cat_item&table=sc_cat_item&sys_id=59d68b331bd13050199d6397b04bcb23&recordUrl=com.glideapp.servicecatalog_cat_item_view.do%3Fv%3D1&sysparm_id=59d68b331bd13050199d6397b04bcb23)
 
+Ask your administrator for Azure Internet Exclude Inspection PA approval.
 
-> To continue further, may need to be added to ssl certificate - self cert in chain exclusion group
-https://dfe.service-now.com/mydfe?id=sc_cat_item&table=sc_cat_item&sys_id=59d68b331bd13050199d6397b04bcb23&recordUrl=com.glideapp.servicecatalog_cat_item_view.do%3Fv%3D1&sysparm_id=59d68b331bd13050199d6397b04bcb23
+### Kubernetes Tools
 
-ASK FOR AZURE INTERNET EXCLUDE INSPECTION PA
+#### kubectl
 
+See: [kubectl Installation Guide](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
 
-
-> Kubectl
-
-https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
-
+```bash
 sudo apt-get install -y apt-transport-https ca-certificates curl gnupg
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.36/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-(Overwrite as needed)
 sudo chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
-
 echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.36/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
-(Confirm use of this)
-
 sudo chmod 644 /etc/apt/sources.list.d/kubernetes.list
 
 sudo apt-get update
 sudo apt-get install -y kubectl
+```
 
-> Kubelogin
-https://azure.github.io/kubelogin/install.html
+#### kubelogin
 
+See: [kubelogin Installation Guide](https://azure.github.io/kubelogin/install.html)
+
+```bash
 sudo az aks install-cli
+```
 
-[POSSIBLE OUTPUT] OPTIONS FOR PATH
-instanced or system variable
-PICK ONE, copy the first or set the second
-Follow commands on screen
+When prompted, select the PATH option (copy the first option or set as a system variable).
 
+#### kubectl-convert
 
-> Kubectl convert
-install kubectl-convert as per https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
+See: [kubectl-convert Installation Guide](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
 
+```bash
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl-convert"
 sudo install -o root -g root -m 0755 kubectl-convert /usr/local/bin/kubectl-convert
 rm kubectl-convert kubectl-convert.sha256
-
-Fin! (Done)
-
-## Further
-
-Once all the above is installed. Close all down and then open a new CMD window and type
-
 ```
+
+## Setup Konduit
+
+Once all prerequisites are installed, close your WSL session and open a new CMD window:
+
+```bash
 mkdir wsl
 cd wsl
 mkdir bin
 ```
 
-enter WSL (type WSL)
+Enter WSL:
 
-```
-wget https://raw.githubusercontent.com/DFE-Digital/sap-public/refs/heads/main/Makefile || OR https://raw.githubusercontent.com/DFE-Digital/sap-sector/refs/heads/main/Makefile
+```bash
+wsl
 ```
 
+Download the Makefile:
+
+```bash
+wget https://raw.githubusercontent.com/DFE-Digital/sap-public/refs/heads/main/Makefile
 ```
+
+Or if using the sector repository:
+
+```bash
+wget https://raw.githubusercontent.com/DFE-Digital/sap-sector/refs/heads/main/Makefile
+```
+
+Finally, build Konduit:
+
+```bash
 make bin/konduit.sh
 ```
 
