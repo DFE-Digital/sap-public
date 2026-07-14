@@ -59,7 +59,7 @@ public class AdditionalMeasuresServiceTests
             .ReturnsAsync(englandPerformance);
 
         // Act
-        var result = await _service.GetAsync(fakeEstablishment.URN, It.IsAny<string>(), It.IsAny<CancellationToken>());
+        var result = await _service.GetAsync(fakeEstablishment.URN, fakeEstablishment.LAId, It.IsAny<CancellationToken>());
 
         // Assert
         Assert.NotNull(result);
@@ -85,7 +85,7 @@ public class AdditionalMeasuresServiceTests
             .ReturnsAsync(englandPerformance);
 
         // Act
-        var result = await _service.GetAsync(fakeEstablishment.URN, It.IsAny<string>(), It.IsAny<CancellationToken>());
+        var result = await _service.GetAsync(fakeEstablishment.URN, fakeEstablishment.LAId, It.IsAny<CancellationToken>());
 
         // Assert
         Assert.NotNull(result);
@@ -111,7 +111,7 @@ public class AdditionalMeasuresServiceTests
             .ReturnsAsync(englandPerformance);
 
         // Act
-        var result = await _service.GetAsync(fakeEstablishment.URN, It.IsAny<string>(), It.IsAny<CancellationToken>());
+        var result = await _service.GetAsync(fakeEstablishment.URN, fakeEstablishment.LAId, It.IsAny<CancellationToken>());
 
         // Assert
         Assert.NotNull(result);
@@ -137,7 +137,7 @@ public class AdditionalMeasuresServiceTests
             .ReturnsAsync(new EnglandPerformance());
 
         // Act
-        var result = await _service.GetAsync(fakeEstablishment.URN, It.IsAny<string>(), It.IsAny<CancellationToken>());
+        var result = await _service.GetAsync(fakeEstablishment.URN, fakeEstablishment.LAId, It.IsAny<CancellationToken>());
 
         // Assert
         Assert.NotNull(result);

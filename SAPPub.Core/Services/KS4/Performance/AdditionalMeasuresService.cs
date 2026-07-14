@@ -12,7 +12,6 @@ public class AdditionalMeasuresService(
     {
         var establishmentPerformanceTask = establishmentPerformanceService.GetEstablishmentPerformanceAsync(urn, ct);
         var englandPerformanceTask = englandPerformanceService.GetEnglandPerformanceAsync(ct);
-
         var laPerformanceTask = lAPerformanceService.GetLAPerformanceAsync(lAId, ct);
 
         await Task.WhenAll(establishmentPerformanceTask, laPerformanceTask, englandPerformanceTask);
