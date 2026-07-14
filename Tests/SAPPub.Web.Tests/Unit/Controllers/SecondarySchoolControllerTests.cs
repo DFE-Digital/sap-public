@@ -20,6 +20,7 @@ using SAPPub.Core.ServiceModels.KS4.Attendance;
 using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Areas.Profiles.ViewModels.Destinations;
+using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Constants;
 using SAPPub.Web.Controllers;
 using SAPPub.Web.Helpers;
@@ -1472,12 +1473,24 @@ public class SecondarySchoolControllerTests
 
         Assert.Equal(_fakeEstablishment.URN, model.URN);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
-        Assert.Equal(additionalMeasures.EstablishmentCurrentYear, model.EstablishmentCurrentYear);
-        Assert.Equal(additionalMeasures.LocalAuthorityCurrentYear, model.LocalAuthorityCurrentYear);
-        Assert.Equal(additionalMeasures.EnglandCurrentYear, model.EnglandCurrentYear);
+        AssertAdditionalMeasuresData(additionalMeasures.EstablishmentCurrentYear, model.MeasuresInTableFormat.Select(d => d.EstablishmentCurrentYear).ToArray());
+        AssertAdditionalMeasuresData(additionalMeasures.LocalAuthorityCurrentYear, model.MeasuresInTableFormat.Select(d => d.LocalAuthorityCurrentYear).ToArray());
+        AssertAdditionalMeasuresData(additionalMeasures.EnglandCurrentYear, model.MeasuresInTableFormat.Select(d => d.EnglandCurrentYear).ToArray());
+        //Assert.Equal(additionalMeasures.EstablishmentCurrentYear, model.EstablishmentCurrentYear);
+        //Assert.Equal(additionalMeasures.LocalAuthorityCurrentYear, model.LocalAuthorityCurrentYear);
+        //Assert.Equal(additionalMeasures.EnglandCurrentYear, model.EnglandCurrentYear);
 
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
+    }
+
+    private void AssertAdditionalMeasuresData(AdditionalMeasures expected, DisplayField<CodedDouble>[] performance)
+    {
+        Assert.Equal(expected.PercentAchievingAtLeastOneQualification.Value, performance[0].Value.Value);
+        Assert.Equal(expected.PercentEnteredForTripleScience.Value, performance[1].Value.Value);
+        Assert.Equal(expected.PercentEnteredMoreThanOneForeignLanguage.Value, performance[2].Value.Value);
+        Assert.Equal(expected.AverageGCSEExamEntriesPerPupil.Value, performance[3].Value.Value);
+        Assert.Equal(expected.AverageAllKS4QualificationsExamEntriesPerPupil.Value, performance[4].Value.Value);
     }
 }

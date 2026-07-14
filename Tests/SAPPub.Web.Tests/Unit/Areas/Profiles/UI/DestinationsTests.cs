@@ -379,6 +379,6 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
         // Assert
         Assert.True(isVisible);
         Assert.False(nextPaginationIsVisible);
-        Assert.Equal("Academic performance: Subjects entered", previousPaginationText?.Trim());
+        Assert.Equal("Academic performance: Additional measures", previousPaginationText?.Trim());
     }
 }

@@ -7,8 +7,8 @@ public class AdditionalMeasuresTests(WebApplicationSetupFixture fixture) : BaseP
 {
     private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
     {
-        ["105574"] = "school/105574/loreto-high-school-chorlton/secondary/additional-measures",
-        ["137020"] = "school/137020/west-hill-school/secondary/additional-measures",
+        ["105574"] = "school/105574/loreto-high-school-chorlton/secondary/academic-performance-additional-measures",
+        ["137020"] = "school/137020/west-hill-school/secondary/academic-performance-additional-measures",
     };
 
     [Fact]
@@ -30,6 +30,6 @@ public class AdditionalMeasuresTests(WebApplicationSetupFixture fixture) : BaseP
 
         // Assert
         Assert.NotNull(response);
-        var gcseCurrentYearTable = Page.Locator("#additional-measures-table");
+        var measuresData = Page.Locator("#additional-measures-table");
     }
 }

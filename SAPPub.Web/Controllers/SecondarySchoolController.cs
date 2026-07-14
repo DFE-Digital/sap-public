@@ -139,7 +139,7 @@ namespace SAPPub.Web.Controllers
         {
             var additionalMeasures = await additionalMeasuresService.GetAsync(urn, ct);
 
-            var model = AcademicPerformanceAdditionalMeasuresViewModel.Map(additionalMeasures);
+            var model = AcademicPerformanceAdditionalMeasuresViewModel.MapToMeasuresInTableFormat(additionalMeasures);
             return View(model);
         }
 

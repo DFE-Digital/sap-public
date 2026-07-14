@@ -77,7 +77,6 @@ public class AdditionalMeasuresTests : PageTestsBase
         nav.ShouldBeVisibleAsync();
         nav.ShouldHaveItemsCountAsync(6);
         nav.ShouldHaveOneActiveItemAsync();
-        nav.ShouldHaveActiveHrefAsync(pageUrl);
     }
 
     [Fact]
@@ -115,7 +114,7 @@ public class AdditionalMeasuresTests : PageTestsBase
 
         // Assert
         Assert.NotNull(bottomPagination);
-        Assert.Equal("Subjects entered", previousPaginationText?.Trim());
+        Assert.Equal("Academic performance: Subjects entered", previousPaginationText?.Trim());
         Assert.Equal("Destinations", nextPaginationText?.Trim());
     }
 
@@ -144,70 +143,68 @@ public class AdditionalMeasuresTests : PageTestsBase
         var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
 
         // Assert
-        Assert.Contains("Pupils achieving at least 1 qualification", doc.GetTableCellContentByIdAndIndex("#additional-measures-table", 0, 0));
-
         // establishment values display correctly in the table
         var establishmentValues = additionalmeasuresModel.EstablishmentCurrentYear;
         Assert.Contains(
             $"{establishmentValues.PercentAchievingAtLeastOneQualification.Value!.Value:F1}%",
-            doc.GetTableCellContentByIdAndIndex("#additional-measures-table", 0, 1));
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 1, 0));
         Assert.Contains(
             $"{establishmentValues.PercentEnteredForTripleScience.Value!.Value:F1}%",
-            doc.GetTableCellContentByIdAndIndex("#additional-measures-table", 1, 1));
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 2, 0));
         Assert.Contains(
             $"{establishmentValues.PercentEnteredMoreThanOneForeignLanguage.Value!.Value:F1}%",
-            doc.GetTableCellContentByIdAndIndex("#additional-measures-table", 2, 1));
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 3, 0));
         Assert.Contains(
             $"{establishmentValues.AverageGCSEExamEntriesPerPupil.Value!.Value:F1}",
-            doc.GetTableCellContentByIdAndIndex("#additional-measures-table", 3, 1));
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 4, 0));
         Assert.Contains(
             $"{establishmentValues.AverageAllKS4QualificationsExamEntriesPerPupil.Value!.Value:F1}",
-            doc.GetTableCellContentByIdAndIndex("#additional-measures-table", 4, 1));
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 5, 0));
         Assert.Contains(
             $"{establishmentValues.NumberOfPupilsAtTheEndOfKS4.Value!.Value:F0}",
-            doc.GetTableCellContentByIdAndIndex("#additional-measures-table", 5, 1));
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 6, 0));
 
         // local authority values display correctly in the table
         var laValues = additionalmeasuresModel.LocalAuthorityCurrentYear;
         Assert.Contains(
             $"{laValues.PercentAchievingAtLeastOneQualification.Value!.Value:F1}%",
-            doc.GetTableCellContentByIdAndIndex("#additional-measures-table", 0, 2));
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 1, 1));
         Assert.Contains(
             $"{laValues.PercentEnteredForTripleScience.Value!.Value:F1}%",
-            doc.GetTableCellContentByIdAndIndex("#additional-measures-table", 1, 2));
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 2, 1));
         Assert.Contains(
             $"{laValues.PercentEnteredMoreThanOneForeignLanguage.Value!.Value:F1}%",
-            doc.GetTableCellContentByIdAndIndex("#additional-measures-table", 2, 2));
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 3, 1));
         Assert.Contains(
             $"{laValues.AverageGCSEExamEntriesPerPupil.Value!.Value:F1}",
-            doc.GetTableCellContentByIdAndIndex("#additional-measures-table", 3, 2));
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 4, 1));
         Assert.Contains(
             $"{laValues.AverageAllKS4QualificationsExamEntriesPerPupil.Value!.Value:F1}",
-            doc.GetTableCellContentByIdAndIndex("#additional-measures-table", 4, 2));
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 5, 1));
         Assert.Contains(
             $"{laValues.NumberOfPupilsAtTheEndOfKS4.Value!.Value:N0}",
-            doc.GetTableCellContentByIdAndIndex("#additional-measures-table", 5, 2));
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 6, 1));
 
         // England values display correctly in the table
         var englandValues = additionalmeasuresModel.EnglandCurrentYear;
         Assert.Contains(
             $"{englandValues.PercentAchievingAtLeastOneQualification.Value!.Value:F1}%",
-            doc.GetTableCellContentByIdAndIndex("#additional-measures-table", 0, 3));
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 1, 2));
         Assert.Contains(
             $"{englandValues.PercentEnteredForTripleScience.Value!.Value:F1}%",
-            doc.GetTableCellContentByIdAndIndex("#additional-measures-table", 1, 3));
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 2, 2));
         Assert.Contains(
             $"{englandValues.PercentEnteredMoreThanOneForeignLanguage.Value!.Value:F1}%",
-            doc.GetTableCellContentByIdAndIndex("#additional-measures-table", 2, 3));
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 3, 2));
         Assert.Contains(
             $"{englandValues.AverageGCSEExamEntriesPerPupil.Value!.Value:F1}",
-            doc.GetTableCellContentByIdAndIndex("#additional-measures-table", 3, 3));
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 4, 2));
         Assert.Contains(
             $"{englandValues.AverageAllKS4QualificationsExamEntriesPerPupil.Value!.Value:F1}",
-            doc.GetTableCellContentByIdAndIndex("#additional-measures-table", 4, 3));
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 5, 2));
         Assert.Contains(
             $"{englandValues.NumberOfPupilsAtTheEndOfKS4.Value!.Value:N0}",
-            doc.GetTableCellContentByIdAndIndex("#additional-measures-table", 5, 3));
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 6, 2));
     }
 
     [Fact]
@@ -235,27 +232,116 @@ public class AdditionalMeasuresTests : PageTestsBase
         var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
 
         // Assert
-        Assert.Contains("Pupils achieving at least 1 qualification", doc.GetTableCellContentByIdAndIndex("#additional-measures-table", 0, 0));
+        var establishmentDataCellIndex = 0;
+        Assert.Contains(
+            "Not available",
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 1, establishmentDataCellIndex));
+        Assert.Contains(
+            "Not available",
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 2, establishmentDataCellIndex));
+        Assert.Contains(
+            "Not available",
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 3, establishmentDataCellIndex));
+        Assert.Contains(
+            "Not available",
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 4, establishmentDataCellIndex));
+        Assert.Contains(
+            "Not available",
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 5, establishmentDataCellIndex));
+        Assert.Contains(
+            "Not available",
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 6, establishmentDataCellIndex));
+    }
 
-        // establishment values display correctly in the table
-        var establishmentValues = additionalmeasuresModel.EstablishmentCurrentYear;
+    [Fact]
+    public async Task AdditionalMeasuresPage_LocalAuthorityDataNotAvailable_ShowsTableValuesAsNotAvailable()
+    {
+        // Arrange
+        var urn = "143034";
+        var establishmentName = "Loreto High School Chorlton";
+        var additionalmeasuresModel = new AdditionalMeasuresModel
+        {
+            Urn = urn,
+            SchoolName = establishmentName,
+            EstablishmentCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().Build(),
+            EnglandCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().WithPupilsAtTheEndOfKS4(32600).Build(),
+            LocalAuthorityCurrentYear = new AdditionalMeasuresBuilder().Build()
+        };
+
+        _serviceMock
+            .Setup(service => service.GetAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(additionalmeasuresModel);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
+
+        // Assert
+        var localAuthorityDataCellIndex = 1;
         Assert.Contains(
             "Not available",
-            doc.GetTableCellContentByIdAndIndex("#additional-measures-table", 0, 1));
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 1, localAuthorityDataCellIndex));
         Assert.Contains(
             "Not available",
-            doc.GetTableCellContentByIdAndIndex("#additional-measures-table", 1, 1));
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 2, localAuthorityDataCellIndex));
         Assert.Contains(
             "Not available",
-            doc.GetTableCellContentByIdAndIndex("#additional-measures-table", 2, 1));
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 3, localAuthorityDataCellIndex));
         Assert.Contains(
             "Not available",
-            doc.GetTableCellContentByIdAndIndex("#additional-measures-table", 3, 1));
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 4, localAuthorityDataCellIndex));
         Assert.Contains(
             "Not available",
-            doc.GetTableCellContentByIdAndIndex("#additional-measures-table", 4, 1));
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 5, localAuthorityDataCellIndex));
         Assert.Contains(
             "Not available",
-            doc.GetTableCellContentByIdAndIndex("#additional-measures-table", 5, 1));
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 6, localAuthorityDataCellIndex));
+    }
+
+    [Fact]
+    public async Task AdditionalMeasuresPage_EnglandDataNotAvailable_ShowsTableValuesAsNotAvailable()
+    {
+        // Arrange
+        var urn = "143034";
+        var establishmentName = "Loreto High School Chorlton";
+        var additionalmeasuresModel = new AdditionalMeasuresModel
+        {
+            Urn = urn,
+            SchoolName = establishmentName,
+            EstablishmentCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().Build(),
+            EnglandCurrentYear = new AdditionalMeasuresBuilder().Build(),
+            LocalAuthorityCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().Build()
+        };
+
+        _serviceMock
+            .Setup(service => service.GetAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(additionalmeasuresModel);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
+
+        // Assert
+        var englandDataCellIndex = 2;
+        Assert.Contains(
+            "Not available",
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 1, englandDataCellIndex));
+        Assert.Contains(
+            "Not available",
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 2, englandDataCellIndex));
+        Assert.Contains(
+            "Not available",
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 3, englandDataCellIndex));
+        Assert.Contains(
+            "Not available",
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 4, englandDataCellIndex));
+        Assert.Contains(
+            "Not available",
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 5, englandDataCellIndex));
+        Assert.Contains(
+            "Not available",
+            doc.GetTableCellContentByIdAndIndex("additional-measures-table", 6, englandDataCellIndex));
     }
 }

@@ -2,7 +2,7 @@
 
 namespace SAPPub.Core.ServiceModels.KS4.Performance;
 
-public record AdditionalMeasures // CML record or class?
+public record AdditionalMeasures
 {
     public required CodedDouble PercentAchievingAtLeastOneQualification { get; init; }
     public required CodedDouble PercentEnteredForTripleScience { get; init; }
