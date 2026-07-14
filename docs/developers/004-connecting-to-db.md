@@ -51,7 +51,7 @@ You may need to be added to the SSL certificate self-signed certificate chain ex
 
 [Request SSL Certificate Exclusion](https://dfe.service-now.com/mydfe?id=sc_cat_item&table=sc_cat_item&sys_id=59d68b331bd13050199d6397b04bcb23&recordUrl=com.glideapp.servicecatalog_cat_item_view.do%3Fv%3D1&sysparm_id=59d68b331bd13050199d6397b04bcb23)
 
-Ask your administrator for Azure Internet Exclude Inspection PA approval.
+Ask for "Azure Internet Exclude Inspection PA approval".
 
 ### Kubernetes Tools
 
@@ -79,7 +79,7 @@ See: [kubelogin Installation Guide](https://azure.github.io/kubelogin/install.ht
 sudo az aks install-cli
 ```
 
-When prompted, select the PATH option (copy the first option or set as a system variable).
+If prompted, select the PATH option (copy the first option or set as a system variable).
 
 #### kubectl-convert
 
