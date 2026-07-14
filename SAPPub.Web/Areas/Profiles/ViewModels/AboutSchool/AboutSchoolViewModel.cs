@@ -6,7 +6,7 @@ using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.SecondarySchool;
 using static SAPPub.Web.Constants.Constants;
 
-namespace SAPPub.Web.Areas.Profiles.Models;
+namespace SAPPub.Web.Areas.Profiles.ViewModels.AboutSchool;
 
 public class AboutSchoolViewModel : ProfileBaseViewModel
 {

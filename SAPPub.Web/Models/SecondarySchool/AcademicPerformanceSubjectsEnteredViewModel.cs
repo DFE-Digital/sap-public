@@ -27,7 +27,10 @@ public class AcademicPerformanceSubjectsEnteredViewModel : SecondarySchoolBaseVi
             SchoolName = establishment.EstablishmentName,
             GcseSubjects = GetSubjectsEntered(gcseSubjectEntries),
             VocationalSubjects = GetSubjectsEntered(vocationalSubjectEntries),
-            OtherSubjects = GetSubjectsEntered(otherSubjectEntries)
+            OtherSubjects = GetSubjectsEntered(otherSubjectEntries),
+            IsKS2 = establishment.IsKS2,
+            IsKS4 = establishment.IsKS4,
+            IsKS5 = establishment.IsKS5
         };
     }
 

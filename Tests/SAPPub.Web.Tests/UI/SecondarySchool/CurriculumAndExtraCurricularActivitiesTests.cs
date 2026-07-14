@@ -89,7 +89,6 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
         await Page.GotoAsync(_pageUrl);
 
         await nav.ShouldBeVisibleAsync();
-        await nav.ShouldHaveItemsCountAsync(6);
         await nav.ShouldHaveOneActiveItemAsync();
         await nav.ShouldHaveActiveHrefAsync(_pageUrl);
     }

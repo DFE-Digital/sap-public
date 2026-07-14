@@ -8,6 +8,8 @@ public class DestinationsDetailsBuilder
     private string? _urn;
     private string? _establishmentName;
     private string? _laName;
+    private bool _isKs4;
+    private bool _isKs5;
     private Optional<double?> _englandPercentage = new Optional<double?>();
     private Optional<double?> _laPercentage = new Optional<double?>();
 
@@ -40,6 +42,17 @@ public class DestinationsDetailsBuilder
         return this;
     }
 
+    public DestinationsDetailsBuilder WithKS4(bool isKS4)
+    {
+        _isKs4 = isKS4;
+        return this;
+    }
+    public DestinationsDetailsBuilder WithKS5(bool isKS5)
+    {
+        _isKs5 = isKS5;
+        return this;
+    }
+
     public DestinationsDetails Build()
     {
         var faker = new Bogus.Faker();
@@ -47,6 +60,9 @@ public class DestinationsDetailsBuilder
         {
             Urn = _urn ?? string.Empty,
             SchoolName = _establishmentName ?? string.Empty,
+            IsKS2 = false,
+            IsKS4 = _isKs4,
+            IsKS5 = _isKs5,
             LocalAuthorityName = _laName ?? string.Empty,
             SchoolAll = new RelativeYearValues<double?>
             {
@@ -129,6 +145,9 @@ public class DestinationsDetailsBuilder
         {
             Urn = _urn ?? string.Empty,
             SchoolName = _establishmentName ?? string.Empty,
+            IsKS2 = false,
+            IsKS4 = true,
+            IsKS5 = true,
             LocalAuthorityName = _laName ?? string.Empty,
             SchoolAll = new RelativeYearValues<double?> { CurrentYear = null },
             LocalAuthorityAll = new RelativeYearValues<double?> { CurrentYear = null },

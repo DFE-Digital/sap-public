@@ -77,7 +77,9 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             AddressPostcode = "CM18 7NQ",
             StatusCode = 2,
             ClosedDate = null,
-            IsKS4 = true
+            IsKS2 = false,
+            IsKS4 = true,
+            IsKS5 = false,
         },
         ["107564"] = new Establishment
         {
@@ -205,6 +207,71 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             PhaseOfEducationName = "Secondary",
             AddressPostcode = "SK15 1LX",
             IsKS4 = true
+        },
+        ["149976"] = new Establishment
+        {
+            URN = "149976",
+            EstablishmentName = "Four Elms Primary School",
+            LAId = "886",
+            EstablishmentNumber = "2134",
+            PhaseOfEducationId = "2",
+            PhaseOfEducationName = "Primary",
+            AddressPostcode = "TN8 6NE",
+            IsKS2 = true,
+            IsKS4 = false,
+            IsKS5 = false,
+        },
+        ["130499"] = new Establishment
+        {
+            URN = "130499",
+            EstablishmentName = "Holy Cross College",
+            LAId = "351",
+            EstablishmentNumber = "8600",
+            PhaseOfEducationId = "6",
+            PhaseOfEducationName = "16 plus",
+            AddressPostcode = "BL9 9BB",
+            IsKS2 = false,
+            IsKS4 = false,
+            IsKS5 = true,
+        },
+        ["135600"] = new Establishment
+        {
+            URN = "135600",
+            EstablishmentName = "Ark Academy",
+            LAId = "304",
+            EstablishmentNumber = "6906",
+            PhaseOfEducationId = "7",
+            PhaseOfEducationName = "All-through",
+            AddressPostcode = "HA9 9JR",
+            IsKS2 = true,
+            IsKS4 = true,
+            IsKS5 = true,
+        },
+        ["149328"] = new Establishment
+        {
+            URN = "149328",
+            EstablishmentName = "King Edward VI High School",
+            LAId = "860",
+            EstablishmentNumber = "4020",
+            PhaseOfEducationId = "4",
+            PhaseOfEducationName = "Secondary",
+            AddressPostcode = "ST17 9YJ",
+            IsKS2 = false,
+            IsKS4 = true,
+            IsKS5 = true,
+        },
+        ["150009"] = new Establishment
+        {
+            URN = "150009",
+            EstablishmentName = "Abraham Moss Community School",
+            LAId = "352",
+            EstablishmentNumber = "4271",
+            PhaseOfEducationId = "7",
+            PhaseOfEducationName = "All-through",
+            AddressPostcode = "M8 5UF",
+            IsKS2 = true,
+            IsKS4 = true,
+            IsKS5 = false,
         }
     };
 
@@ -269,7 +336,17 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             Education_Tot_Est_Current_Pct = 47,
             Employment_Tot_Est_Current_Pct = 2,
             Apprentice_Tot_Est_Current_Pct = 1,
-        }
+        },
+        ["149328"] = new EstablishmentDestinations
+        {
+            Id = "149328",
+            AllDest_Tot_Est_Current_Pct = null,
+            AllDest_Tot_Est_Previous_Pct = null,
+            AllDest_Tot_Est_Previous2_Pct = null,
+            Education_Tot_Est_Current_Pct = null,
+            Employment_Tot_Est_Current_Pct = null,
+            Apprentice_Tot_Est_Current_Pct = null,
+        },
     };
 
     private static readonly Dictionary<string, EnglandDestinations> EnglandDestinations = new(StringComparer.OrdinalIgnoreCase)
@@ -283,6 +360,11 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
         {
             Id = "100279",
             AllDest_Tot_Eng_Current_Pct = 50
+        },
+        ["149328"] = new EnglandDestinations
+        {
+            Id = "149328",
+            AllDest_Tot_Eng_Current_Pct = null
         }
     };
 

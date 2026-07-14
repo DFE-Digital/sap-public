@@ -42,5 +42,6 @@
 
 	<ItemGroup>
 	  <Folder Include="Areas\Profiles\Data\" />
+	  <Folder Include="Areas\Profiles\Models\" />
 	</ItemGroup>	
 </Project>

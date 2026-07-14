@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
-using SAPPub.Web.Areas.Profiles.Models;
+using SAPPub.Web.Areas.Profiles.ViewModels.AboutSchool;
 using SAPPub.Web.Constants;
 
 namespace SAPPub.Web.Areas.Profiles.Controllers;

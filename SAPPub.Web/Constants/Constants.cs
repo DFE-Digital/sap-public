@@ -40,7 +40,8 @@ public static class Constants
     public const string MySchoolsListLimitExceeded = "You can only add 100 schools to your list. To add another, you must first remove a school.";
     public const string EditYourSchoolsList = "Edit your schools list";
     public const string CompareYourSchools = "Comparing your schools";
+
     // Managed Feature Names
     public const string EstablishmentComparisonEnabled = "EstablishmentComparisonEnabled";
-    public const string FESearchEnabled = "FESearchEnabled";
+    public const string Enable16to19 = "Enable16to19";
 }

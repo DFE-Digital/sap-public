@@ -32,6 +32,9 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             {
                 Urn = urn,
                 SchoolName = establishmentName,
+                IsKS2 = false,
+                IsKS4 = true,
+                IsKS5 = false
             });
 
 
@@ -58,6 +61,9 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             {
                 Urn = urn,
                 SchoolName = establishmentName,
+                IsKS2 = false,
+                IsKS4 = true,
+                IsKS5 = false
             });
 
         // Act
@@ -88,7 +94,10 @@ public class AttainmentAndProgressPageTests : PageTestsBase
                 SchoolName = establishmentName,
                 EstablishmentAttainment8Score = schoolAttainment,
                 LocalAuthorityAttainment8Score = 15,
-                EnglandAttainment8Score = 20
+                EnglandAttainment8Score = 20,
+                IsKS2 = false,
+                IsKS4 = true,
+                IsKS5 = false
             });
 
         // Act
@@ -118,7 +127,10 @@ public class AttainmentAndProgressPageTests : PageTestsBase
                 Urn = urn,
                 SchoolName = establishmentName,
                 EstablishmentProgress8Score = schoolProgress,
-                LocalAuthorityProgress8Score = 15
+                LocalAuthorityProgress8Score = 15,
+                IsKS2 = false,
+                IsKS4 = true,
+                IsKS5 = false
             });
 
         // Act
@@ -147,7 +159,10 @@ public class AttainmentAndProgressPageTests : PageTestsBase
                 Urn = urn,
                 SchoolName = establishmentName,
                 EstablishmentProgress8Score = null,
-                LocalAuthorityProgress8Score = 0.1
+                LocalAuthorityProgress8Score = 0.1,
+                IsKS2 = false,
+                IsKS4 = true,
+                IsKS5 = false
             });
 
         // Act
@@ -175,7 +190,10 @@ public class AttainmentAndProgressPageTests : PageTestsBase
                 Urn = urn,
                 SchoolName = establishmentName,
                 EstablishmentProgress8Score = null,
-                LocalAuthorityProgress8Score = null
+                LocalAuthorityProgress8Score = null,
+                IsKS2 = true,
+                IsKS4 = true,
+                IsKS5 = false
             });
 
         // Act

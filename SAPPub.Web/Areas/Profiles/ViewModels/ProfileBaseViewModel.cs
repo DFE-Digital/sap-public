@@ -1,7 +1,7 @@
 ﻿using SAPPub.Core.Helpers;
 using SAPPub.Web.Constants;
 
-namespace SAPPub.Web.Areas.Profiles.Models;
+namespace SAPPub.Web.Areas.Profiles.ViewModels;
 
 public class ProfileBaseViewModel
 {

@@ -32,6 +32,9 @@ public class AttendancePageTests : PageTestsBase
             {
                 Urn = urn,
                 SchoolName = establishmentName,
+                IsKS2 = true,
+                IsKS4 = true,
+                IsKS5 = false
             });
 
         // Act
@@ -56,6 +59,9 @@ public class AttendancePageTests : PageTestsBase
             {
                 Urn = urn,
                 SchoolName = establishmentName,
+                IsKS2 = true,
+                IsKS4 = true,
+                IsKS5 = false
             });
 
         // Act
@@ -80,6 +86,9 @@ public class AttendancePageTests : PageTestsBase
             {
                 Urn = urn,
                 SchoolName = establishmentName,
+                IsKS2 = true,
+                IsKS4 = true,
+                IsKS5 = false
             });
 
         // Act
@@ -107,7 +116,10 @@ public class AttendancePageTests : PageTestsBase
                 SchoolName = establishmentName,
                 EstablishmentAttendance = null,
                 LocalAuthorityAttendance = null,
-                EnglandAttendance = null
+                EnglandAttendance = null,
+                IsKS2 = false,
+                IsKS4 = true,
+                IsKS5 = false
             });
 
         // Act
@@ -136,7 +148,10 @@ public class AttendancePageTests : PageTestsBase
             {
                 Urn = urn,
                 SchoolName = establishmentName,
-                Website = "https://website.com"
+                Website = "https://website.com",
+                IsKS2 = true,
+                IsKS4 = true,
+                IsKS5 = false
             });
 
         // Act
@@ -177,7 +192,10 @@ public class AttendancePageTests : PageTestsBase
             .ReturnsAsync(new AttendanceModel()
             {
                 Urn = urn,
-                SchoolName = establishmentName
+                SchoolName = establishmentName,
+                IsKS2 = true,
+                IsKS4 = true,
+                IsKS5 = false
             });
 
         // Act
@@ -212,7 +230,10 @@ public class AttendancePageTests : PageTestsBase
             .ReturnsAsync(new AttendanceModel()
             {
                 Urn = urn,
-                SchoolName = establishmentName
+                SchoolName = establishmentName,
+                IsKS2 = true,
+                IsKS4 = true,
+                IsKS5 = false
             });
 
         // Act
@@ -237,7 +258,10 @@ public class AttendancePageTests : PageTestsBase
             .ReturnsAsync(new AttendanceModel()
             {
                 Urn = urn,
-                SchoolName = establishmentName
+                SchoolName = establishmentName,
+                IsKS2 = true,
+                IsKS4 = true,
+                IsKS5 = false
             });
 
         // Act
@@ -265,7 +289,10 @@ public class AttendancePageTests : PageTestsBase
                 LocalAuthority = "Sheffield",
                 EstablishmentAttendance = 50.5,
                 LocalAuthorityAttendance = 70.9,
-                EnglandAttendance = 65.7
+                EnglandAttendance = 65.7,
+                IsKS2 = true,
+                IsKS4 = true,
+                IsKS5 = false
             });
 
         // Act
@@ -296,7 +323,10 @@ public class AttendancePageTests : PageTestsBase
                 SchoolName = establishmentName,
                 EstablishmentAttendance = null,
                 LocalAuthorityAttendance = null,
-                EnglandAttendance = null
+                EnglandAttendance = null,
+                IsKS2 = true,
+                IsKS4 = true,
+                IsKS5 = false
             });
 
         // Act
@@ -332,7 +362,10 @@ public class AttendancePageTests : PageTestsBase
                 LocalAuthorityPersistentAbsence = 5.9,
                 EnglandPersistentAbsence = 6.7,
                 EstablishmentEnrolmentsTotal = enrolmentsTotal,
-                EstablishmentPersistentAbsenceTotal = absenceTotal
+                EstablishmentPersistentAbsenceTotal = absenceTotal,
+                IsKS2 = true,
+                IsKS4 = true,
+                IsKS5 = false
             });
 
         // Act
@@ -369,7 +402,10 @@ public class AttendancePageTests : PageTestsBase
                 SchoolName = establishmentName,
                 EstablishmentAttendance = null,
                 LocalAuthorityAttendance = null,
-                EnglandAttendance = null
+                EnglandAttendance = null,
+                IsKS2 = true,
+                IsKS4 = true,
+                IsKS5 = false
             });
 
         // Act

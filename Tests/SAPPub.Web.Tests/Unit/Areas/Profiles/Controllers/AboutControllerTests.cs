@@ -9,7 +9,7 @@ using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Web.Areas.Profiles.Controllers;
 using SAPPub.Web.Constants;
 using SAPPub.Core.Extensions;
-using SAPPub.Web.Areas.Profiles.Models;
+using SAPPub.Web.Areas.Profiles.ViewModels.AboutSchool;
 
 namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers;
 
