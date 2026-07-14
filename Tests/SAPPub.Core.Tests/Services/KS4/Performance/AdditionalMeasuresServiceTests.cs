@@ -36,7 +36,6 @@ public class AdditionalMeasuresServiceTests
         _mockEnglandPerformanceService = new();
 
         _service = new AdditionalMeasuresService(
-            _mockEstablishmentService.Object,
             _mockEstablishmentPerformanceService.Object,
             _mockLAPerformanceService.Object,
             _mockEnglandPerformanceService.Object);
@@ -60,12 +59,10 @@ public class AdditionalMeasuresServiceTests
             .ReturnsAsync(englandPerformance);
 
         // Act
-        var result = await _service.GetAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>());
+        var result = await _service.GetAsync(fakeEstablishment.URN, It.IsAny<string>(), It.IsAny<CancellationToken>());
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(fakeEstablishment.EstablishmentName, result.SchoolName);
-        Assert.Equal(fakeEstablishment.URN, result.Urn);
         AssertEstablishmentAdditionalMeasuresData(establishmentPerformance, result.EstablishmentCurrentYear);
         AssertLaAdditionalMeasuresData(laPerformance, result.LocalAuthorityCurrentYear);
         AssertEnglandAdditionalMeasuresData(englandPerformance, result.EnglandCurrentYear);
@@ -88,12 +85,10 @@ public class AdditionalMeasuresServiceTests
             .ReturnsAsync(englandPerformance);
 
         // Act
-        var result = await _service.GetAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>());
+        var result = await _service.GetAsync(fakeEstablishment.URN, It.IsAny<string>(), It.IsAny<CancellationToken>());
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(fakeEstablishment.EstablishmentName, result.SchoolName);
-        Assert.Equal(fakeEstablishment.URN, result.Urn);
         AssertNullAdditionalMeasuresData(result.EstablishmentCurrentYear);
         AssertLaAdditionalMeasuresData(laPerformance, result.LocalAuthorityCurrentYear);
         AssertEnglandAdditionalMeasuresData(englandPerformance, result.EnglandCurrentYear);
@@ -116,12 +111,10 @@ public class AdditionalMeasuresServiceTests
             .ReturnsAsync(englandPerformance);
 
         // Act
-        var result = await _service.GetAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>());
+        var result = await _service.GetAsync(fakeEstablishment.URN, It.IsAny<string>(), It.IsAny<CancellationToken>());
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(fakeEstablishment.EstablishmentName, result.SchoolName);
-        Assert.Equal(fakeEstablishment.URN, result.Urn);
         AssertEstablishmentAdditionalMeasuresData(establishmentPerformance, result.EstablishmentCurrentYear);
         AssertNullAdditionalMeasuresData(result.LocalAuthorityCurrentYear);
         AssertEnglandAdditionalMeasuresData(englandPerformance, result.EnglandCurrentYear);
@@ -144,12 +137,10 @@ public class AdditionalMeasuresServiceTests
             .ReturnsAsync(new EnglandPerformance());
 
         // Act
-        var result = await _service.GetAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>());
+        var result = await _service.GetAsync(fakeEstablishment.URN, It.IsAny<string>(), It.IsAny<CancellationToken>());
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(fakeEstablishment.EstablishmentName, result.SchoolName);
-        Assert.Equal(fakeEstablishment.URN, result.Urn);
         AssertEstablishmentAdditionalMeasuresData(establishmentPerformance, result.EstablishmentCurrentYear);
         AssertLaAdditionalMeasuresData(laPerformance, result.LocalAuthorityCurrentYear);
         AssertNullAdditionalMeasuresData(result.EnglandCurrentYear);

@@ -4,23 +4,17 @@ namespace SAPPub.Core.ServiceModels.KS4.Performance;
 
 public record AdditionalMeasuresModel
 {
-    public required string SchoolName { get; set; }
-    public required string Urn { get; set; }
-
     public required AdditionalMeasures EstablishmentCurrentYear { get; set; }
     public required AdditionalMeasures LocalAuthorityCurrentYear { get; set; }
     public required AdditionalMeasures EnglandCurrentYear { get; set; }
 
     public static AdditionalMeasuresModel Map(
-        EstablishmentServiceModel establishment,
         EstablishmentPerformance performanceMeasures,
         LAPerformance laPeformanceMeasures,
         EnglandPerformance englandPerformanceMeasures)
     {
         return new AdditionalMeasuresModel
         {
-            SchoolName = establishment.EstablishmentName,
-            Urn = establishment.URN,
             EstablishmentCurrentYear = new()
             {
                 PercentAchievingAtLeastOneQualification = performanceMeasures.AnyQual_Tot_Est_Current_Pct_Coded,

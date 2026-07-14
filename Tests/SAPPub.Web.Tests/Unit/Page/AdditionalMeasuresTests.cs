@@ -1,4 +1,5 @@
 ﻿using Moq;
+using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Core.Tests.TestBuilders;
@@ -12,35 +13,49 @@ public class AdditionalMeasuresTests : PageTestsBase
 {
     private static string _pageRoute = "/secondary/academic-performance-additional-measures";
     private readonly Mock<IAdditionalMeasuresService> _serviceMock;
+    private readonly Mock<IEstablishmentService> _establishmentServiceMock;
+    private readonly string _urn = "143034";
+    private readonly string _establishmentName = "Loreto High School Chorlton";
+    private readonly string _laId = "E08";
 
     public AdditionalMeasuresTests(WebAppFixture fixture) : base(fixture)
     {
         _serviceMock = UseMock<IAdditionalMeasuresService>();
+        _establishmentServiceMock = UseMock<IEstablishmentService>();
+        _establishmentServiceMock
+            .Setup(service => service.GetEstablishmentAsync(
+                _urn,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+                new EstablishmentTestBuilder()
+                    .WithURN(_urn)
+                    .WithEstablishmentName(_establishmentName)
+                    .WithIsKeyStage4(true)
+                    .WithLAId(_laId)
+                    .BuildServiceModel());
     }
 
     [Fact]
     public async Task AdditionalMeasuresPage_HasCorrectTitle()
     {
         // Arrange
-        var urn = "143034";
-        var establishmentName = "Loreto High School Chorlton";
         var additionalmeasuresModel = new AdditionalMeasuresModel
         {
-            Urn = urn,
             EnglandCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().Build(),
             EstablishmentCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().Build(),
             LocalAuthorityCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().Build(),
-            SchoolName = establishmentName
+
         };
 
         _serviceMock
             .Setup(service => service.GetAsync(
                 It.IsAny<string>(),
+                It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(additionalmeasuresModel);
 
         // Act
-        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
+        var doc = await Fixture.BrowseToPage(BuildUrl(_urn, _establishmentName, _pageRoute));
 
         // Assert
         var title = doc.Title;
@@ -51,12 +66,8 @@ public class AdditionalMeasuresTests : PageTestsBase
     public async Task AdditionalMeasuresPage_Displays_VerticalNavigation()
     {
         // Arrange
-        var urn = "143034";
-        var establishmentName = "Loreto High School Chorlton";
         var additionalmeasuresModel = new AdditionalMeasuresModel
         {
-            Urn = urn,
-            SchoolName = establishmentName,
             EnglandCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().Build(),
             EstablishmentCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().Build(),
             LocalAuthorityCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().Build()
@@ -65,11 +76,12 @@ public class AdditionalMeasuresTests : PageTestsBase
         _serviceMock
             .Setup(service => service.GetAsync(
                 It.IsAny<string>(),
+                It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(additionalmeasuresModel);
 
         // Act
-        var pageUrl = BuildUrl(urn, establishmentName, _pageRoute);
+        var pageUrl = BuildUrl(_urn, _establishmentName, _pageRoute);
         var doc = await Fixture.BrowseToPage(pageUrl);
 
         var nav = new VerticalNavigationAssertHelper(doc);
@@ -83,12 +95,8 @@ public class AdditionalMeasuresTests : PageTestsBase
     public async Task AdditionalMeasuresPage_DisplaysPagination()
     {
         // Arrange
-        var urn = "143034";
-        var establishmentName = "Loreto High School Chorlton";
         var additionalmeasuresModel = new AdditionalMeasuresModel
         {
-            Urn = urn,
-            SchoolName = establishmentName,
             EnglandCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().Build(),
             EstablishmentCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().Build(),
             LocalAuthorityCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().Build()
@@ -97,11 +105,12 @@ public class AdditionalMeasuresTests : PageTestsBase
         _serviceMock
             .Setup(service => service.GetAsync(
                 It.IsAny<string>(),
+                It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(additionalmeasuresModel);
 
         // Act
-        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
+        var doc = await Fixture.BrowseToPage(BuildUrl(_urn, _establishmentName, _pageRoute));
 
         // Act
         var bottomPagination = doc.GetElementById("bottom-pagination");
@@ -122,25 +131,22 @@ public class AdditionalMeasuresTests : PageTestsBase
     public async Task AdditionalMeasuresPage_ShowsTableWithCorrectData()
     {
         // Arrange
-        var urn = "143034";
-        var establishmentName = "Loreto High School Chorlton";
         var additionalmeasuresModel = new AdditionalMeasuresModel
         {
-            Urn = urn,
             EstablishmentCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().Build(),
             EnglandCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().WithPupilsAtTheEndOfKS4(32600).Build(),
             LocalAuthorityCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().WithPupilsAtTheEndOfKS4(3400).Build(),
-            SchoolName = establishmentName
         };
 
         _serviceMock
             .Setup(service => service.GetAsync(
                 It.IsAny<string>(),
+                It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(additionalmeasuresModel);
 
         // Act
-        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
+        var doc = await Fixture.BrowseToPage(BuildUrl(_urn, _establishmentName, _pageRoute));
 
         // Assert
         // establishment values display correctly in the table
@@ -211,12 +217,8 @@ public class AdditionalMeasuresTests : PageTestsBase
     public async Task AdditionalMeasuresPage_EstablishmentDataNotAvailable_ShowsTableValuesAsNotAvailable()
     {
         // Arrange
-        var urn = "143034";
-        var establishmentName = "Loreto High School Chorlton";
         var additionalmeasuresModel = new AdditionalMeasuresModel
         {
-            Urn = urn,
-            SchoolName = establishmentName,
             EstablishmentCurrentYear = new AdditionalMeasuresBuilder().Build(),
             EnglandCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().WithPupilsAtTheEndOfKS4(32600).Build(),
             LocalAuthorityCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().WithPupilsAtTheEndOfKS4(3400).Build()
@@ -225,11 +227,12 @@ public class AdditionalMeasuresTests : PageTestsBase
         _serviceMock
             .Setup(service => service.GetAsync(
                 It.IsAny<string>(),
+                It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(additionalmeasuresModel);
 
         // Act
-        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
+        var doc = await Fixture.BrowseToPage(BuildUrl(_urn, _establishmentName, _pageRoute));
 
         // Assert
         var establishmentDataCellIndex = 0;
@@ -257,12 +260,8 @@ public class AdditionalMeasuresTests : PageTestsBase
     public async Task AdditionalMeasuresPage_LocalAuthorityDataNotAvailable_ShowsTableValuesAsNotAvailable()
     {
         // Arrange
-        var urn = "143034";
-        var establishmentName = "Loreto High School Chorlton";
         var additionalmeasuresModel = new AdditionalMeasuresModel
         {
-            Urn = urn,
-            SchoolName = establishmentName,
             EstablishmentCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().Build(),
             EnglandCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().WithPupilsAtTheEndOfKS4(32600).Build(),
             LocalAuthorityCurrentYear = new AdditionalMeasuresBuilder().Build()
@@ -271,11 +270,12 @@ public class AdditionalMeasuresTests : PageTestsBase
         _serviceMock
             .Setup(service => service.GetAsync(
                 It.IsAny<string>(),
+                It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(additionalmeasuresModel);
 
         // Act
-        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
+        var doc = await Fixture.BrowseToPage(BuildUrl(_urn, _establishmentName, _pageRoute));
 
         // Assert
         var localAuthorityDataCellIndex = 1;
@@ -307,8 +307,6 @@ public class AdditionalMeasuresTests : PageTestsBase
         var establishmentName = "Loreto High School Chorlton";
         var additionalmeasuresModel = new AdditionalMeasuresModel
         {
-            Urn = urn,
-            SchoolName = establishmentName,
             EstablishmentCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().Build(),
             EnglandCurrentYear = new AdditionalMeasuresBuilder().Build(),
             LocalAuthorityCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().Build()
@@ -316,6 +314,7 @@ public class AdditionalMeasuresTests : PageTestsBase
 
         _serviceMock
             .Setup(service => service.GetAsync(
+                It.IsAny<string>(),
                 It.IsAny<string>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(additionalmeasuresModel);

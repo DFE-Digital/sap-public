@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services;
-using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.Interfaces.Services.KS4.Attendance;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
-using SAPPub.Web.Areas.Profiles.ViewModels.Destinations;
 using SAPPub.Web.Constants;
 using SAPPub.Web.Models.SecondarySchool;
 
@@ -137,22 +135,10 @@ namespace SAPPub.Web.Controllers
             [FromServices] IAdditionalMeasuresService additionalMeasuresService,
             string urn, string schoolName, CancellationToken ct)
         {
-            var additionalMeasures = await additionalMeasuresService.GetAsync(urn, ct);
             var establishmentDetails = await establishmentService.GetEstablishmentAsync(urn, ct);
+            var additionalMeasures = await additionalMeasuresService.GetAsync(urn, establishmentDetails.LAId, ct);
 
             var model = AcademicPerformanceAdditionalMeasuresViewModel.MapToMeasuresInTableFormat(additionalMeasures, establishmentDetails);
-            return View(model);
-        }
-
-        [HttpGet]
-        [Route("school/{urn}/{schoolName}/secondary/destinations", Name = RouteConstants.SecondaryDestinations)]
-        public async Task<IActionResult> Destinations(
-            [FromServices] IDestinationsService destinationsService,
-            string urn, string schoolName, CancellationToken ct)
-        {
-            var destinationDetails = await destinationsService.GetDestinationsDetailsAsync(urn, ct);
-
-            var model = DestinationsViewModel.Map(destinationDetails);
             return View(model);
         }
     }

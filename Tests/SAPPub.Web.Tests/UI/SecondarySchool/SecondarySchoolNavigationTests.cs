@@ -9,7 +9,7 @@ public class SecondarySchoolNavigationTests(WebApplicationSetupFixture fixture) 
 {
     private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
     {
-        ["105574"] = "school/105574/loreto-high-school-chorlton/secondary/about"
+        ["105574"] = "school/105574/loreto-high-school-chorlton/about"
     };
 
     [Fact]

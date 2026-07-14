@@ -4,5 +4,5 @@ namespace SAPPub.Core.Interfaces.Services.KS4.Performance;
 
 public interface IAdditionalMeasuresService
 {
-    Task<AdditionalMeasuresModel> GetAsync(string urn, CancellationToken ct = default);
+    Task<AdditionalMeasuresModel> GetAsync(string urn, string lAId, CancellationToken ct = default);
 }

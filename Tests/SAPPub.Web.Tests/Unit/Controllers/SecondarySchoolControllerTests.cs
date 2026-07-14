@@ -19,12 +19,10 @@ using SAPPub.Core.ServiceModels.KS4.Admissions;
 using SAPPub.Core.ServiceModels.KS4.Attendance;
 using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Core.Tests.TestBuilders;
-using SAPPub.Web.Areas.Profiles.ViewModels.Destinations;
 using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Constants;
 using SAPPub.Web.Controllers;
 using SAPPub.Web.Helpers;
-using SAPPub.Web.Models.Charts;
 using SAPPub.Web.Models.SecondarySchool;
 using static SAPPub.Web.Constants.Constants;
 
@@ -1399,60 +1397,19 @@ public class SecondarySchoolControllerTests
         Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
-    [Theory]
-    [InlineData("Sheffield", "Sheffield average")]
-    [InlineData("Poole Grammar School", "Local council average")]
-    public async Task Get_Destinations_Info_LocalCouncilName(string localCouncilName, string expectedCouncilName)
-    {
-        _fakeEstablishment.LAName = localCouncilName;
-        var destinationsDetails = new DestinationsDetailsBuilder()
-             .WithUrn(_fakeEstablishment.URN)
-             .WithEstablishmentName(_fakeEstablishment.EstablishmentName)
-             .WithLAName(_fakeEstablishment.LAName)
-             .Build();
-
-        _mockDestinationsService
-            .Setup(es => es.GetDestinationsDetailsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(destinationsDetails);
-
-        var result = await _controller.Destinations(_mockDestinationsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
-
-        string[] expectedAllDestCurrentDataLabels = ["School", expectedCouncilName, "England average"];
-        string[] expectedDataOvertimeDataLabels = ["School", expectedCouncilName, "England average"];
-        string[] expectedBreakdownDataLabels = ["School", expectedCouncilName, "England average"];
-
-        Assert.NotNull(result);
-        Assert.NotNull(result.Model);
-
-        var model = result.Model as DestinationsViewModel;
-        Assert.NotNull(model);
-        Assert.Equal(_fakeEstablishment.URN, model.URN);
-        Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
-
-        Assert.Equal(expectedAllDestCurrentDataLabels, model.AllDestinationsData.Labels);
-
-        var actualDataOvertimeDataLabels = model.AllDestinationsOverTimeData.Datasets.Select(s => s.Label).ToArray();
-        Assert.Equal(expectedDataOvertimeDataLabels, actualDataOvertimeDataLabels);
-
-        var actualBreakdownDataLabels = model.BreakdownDestinationData.Datasets.Select(s => s.Label).ToArray();
-        Assert.Equal(expectedBreakdownDataLabels, actualBreakdownDataLabels);
-    }
-
     [Fact]
     public async Task Get_AdditionalMeasures_ReturnsExpected()
     {
         // Arrange
         var additionalMeasures = new AdditionalMeasuresModel()
         {
-            SchoolName = _fakeEstablishment.EstablishmentName,
-            Urn = _fakeEstablishment.URN,
             EnglandCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().Build(),
             LocalAuthorityCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().Build(),
             EstablishmentCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().Build()
         };
 
         _mockAdditionalMeasuresService
-            .Setup(s => s.GetAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .Setup(s => s.GetAsync(_fakeEstablishment.URN, It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(additionalMeasures);
 
         // Act
@@ -1476,9 +1433,6 @@ public class SecondarySchoolControllerTests
         AssertAdditionalMeasuresData(additionalMeasures.EstablishmentCurrentYear, model.MeasuresInTableFormat.Select(d => d.EstablishmentCurrentYear).ToArray());
         AssertAdditionalMeasuresData(additionalMeasures.LocalAuthorityCurrentYear, model.MeasuresInTableFormat.Select(d => d.LocalAuthorityCurrentYear).ToArray());
         AssertAdditionalMeasuresData(additionalMeasures.EnglandCurrentYear, model.MeasuresInTableFormat.Select(d => d.EnglandCurrentYear).ToArray());
-        //Assert.Equal(additionalMeasures.EstablishmentCurrentYear, model.EstablishmentCurrentYear);
-        //Assert.Equal(additionalMeasures.LocalAuthorityCurrentYear, model.LocalAuthorityCurrentYear);
-        //Assert.Equal(additionalMeasures.EnglandCurrentYear, model.EnglandCurrentYear);
 
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
