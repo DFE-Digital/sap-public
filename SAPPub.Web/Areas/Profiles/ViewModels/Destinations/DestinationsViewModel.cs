@@ -1,8 +1,10 @@
-﻿using SAPPub.Core.Entities.KS4.Destinations;
+﻿using SAPPub.Core.Entities;
+using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.Charts;
+using SAPPub.Web.Models.SecondarySchool;
 
-namespace SAPPub.Web.Models.SecondarySchool;
+namespace SAPPub.Web.Areas.Profiles.ViewModels.Destinations;
 
 public class DestinationsViewModel : SecondarySchoolBaseViewModel
 {
@@ -29,6 +31,9 @@ public class DestinationsViewModel : SecondarySchoolBaseViewModel
         {
             URN = destinationsDetails.Urn,
             SchoolName = destinationsDetails.SchoolName,
+            IsKS2 = destinationsDetails.IsKS2,
+            IsKS4 = destinationsDetails.IsKS4,
+            IsKS5 = destinationsDetails.IsKS5,
             AllDestinationsData = new DataViewModel    {
                 Labels = ["School", laAverageLabel, "England average"],
                 Data = [destinationsDetails.SchoolAll.CurrentYear, destinationsDetails.LocalAuthorityAll.CurrentYear, destinationsDetails.EnglandAll.CurrentYear],

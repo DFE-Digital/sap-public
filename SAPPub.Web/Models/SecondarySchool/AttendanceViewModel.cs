@@ -1,4 +1,5 @@
-﻿using SAPPub.Core.ServiceModels.KS4.Attendance;
+﻿using SAPPub.Core.Entities;
+using SAPPub.Core.ServiceModels.KS4.Attendance;
 using SAPPub.Web.Helpers;
 
 namespace SAPPub.Web.Models.SecondarySchool;
@@ -40,7 +41,10 @@ public class AttendanceViewModel : SecondarySchoolBaseViewModel
             EnglandPersistentAbsence = attendanceDetails.EnglandPersistentAbsence.ToDisplayField(),
             LocalAuthorityPersistentAbsence = attendanceDetails.LocalAuthorityPersistentAbsence.ToDisplayField(),
             EstablishmentEnrolmentsTotal = attendanceDetails.EstablishmentEnrolmentsTotal.ToDisplayField(),
-            EstablishmentPersistentAbsenceTotal = attendanceDetails.EstablishmentPersistentAbsenceTotal.ToDisplayField()
+            EstablishmentPersistentAbsenceTotal = attendanceDetails.EstablishmentPersistentAbsenceTotal.ToDisplayField(),
+            IsKS2 = attendanceDetails.IsKS2,
+            IsKS4 = attendanceDetails.IsKS4,
+            IsKS5 = attendanceDetails.IsKS5
         };
     }
 }

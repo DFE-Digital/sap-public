@@ -7,5 +7,8 @@ public record AdmissionsServiceModel(
     string? SchoolWebsite,
     string? LAName,
     string? LASchoolAdmissionsUrl,
-    EstablishmentStatus? EstablishmentStatus
+    EstablishmentStatus? EstablishmentStatus,
+    bool IsKS2, 
+    bool IsKS4, 
+    bool IsKS5
 );

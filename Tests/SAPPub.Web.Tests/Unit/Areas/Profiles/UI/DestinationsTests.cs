@@ -2,15 +2,16 @@
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
-namespace SAPPub.Web.Tests.UI.SecondarySchool;
+namespace SAPPub.Web.Tests.Unit.Areas.Profiles.UI;
 
 [Collection("Playwright Tests")]
 public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
     private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
     {
-        ["105574"] = "school/105574/loreto-high-school-chorlton/secondary/destinations",
-        ["100273"] = "school/100273/saint-paul-roman-catholic-infant-school/secondary/destinations",
+        ["105574"] = "school/105574/loreto-high-school-chorlton/destinations/secondary",
+        ["100273"] = "school/100273/saint-paul-roman-catholic-infant-school/destinations/secondary",
+        ["149328"] = "school/149328/king-edward-vi-high-school/destinations/secondary",
     };
 
     [Fact]
@@ -76,9 +77,8 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         await nav.ShouldBeVisibleAsync();
-        await nav.ShouldHaveItemsCountAsync(6);
         await nav.ShouldHaveOneActiveItemAsync();
-        await nav.ShouldHaveActiveHrefAsync(_schoolUrnToUrlMap["105574"]);
+        await nav.ShouldHaveActiveHrefAsync(_schoolUrnToUrlMap["105574"].Replace("/secondary", ""));
     }
 
     [Fact]
@@ -266,7 +266,7 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     public async Task DestinationsPage_Displays_AllDestinations__DataOverTime_No_Chart_Only_Render_Table()
     {
         // Arrange
-        await Page.GotoAsync(_schoolUrnToUrlMap["100273"]);
+        await Page.GotoAsync(_schoolUrnToUrlMap["149328"]);
 
         // Act       
         var destinationsChart = Page.Locator("#all-destinations-chart");

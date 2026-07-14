@@ -59,6 +59,9 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : SecondarySchool
         {
             URN = attainmentAndProgressModel.Urn,
             SchoolName = attainmentAndProgressModel.SchoolName ?? string.Empty,
+            IsKS2 = attainmentAndProgressModel.IsKS2,
+            IsKS4 = attainmentAndProgressModel.IsKS4,
+            IsKS5 = attainmentAndProgressModel.IsKS5,
             SelectedAcademicYear = selectedAcademicYear,
             EstablishmentProgress8Score = attainmentAndProgressModel.EstablishmentProgress8Score,
             EstablishmentProgress8CILower = attainmentAndProgressModel.EstablishmentProgress8CILower,

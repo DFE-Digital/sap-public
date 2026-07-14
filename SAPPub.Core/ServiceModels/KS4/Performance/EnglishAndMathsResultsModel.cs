@@ -9,7 +9,11 @@ public class EnglishAndMathsResultsModel
     public required string SchoolName { get; init; }
 
     public required string? LAName { get; set; }
-    
+
+    public required bool IsKS2 { get; set; }
+    public required bool IsKS4 { get; set; }
+    public required bool IsKS5 { get; set; }
+
     public required RelativeYearValues<double?> EstablishmentAll { get; init; }
 
     public required RelativeYearValues<double?> LocalAuthorityAll { get; init; }

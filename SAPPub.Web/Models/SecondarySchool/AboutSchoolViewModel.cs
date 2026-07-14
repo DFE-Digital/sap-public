@@ -5,7 +5,7 @@ using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Web.Helpers;
 using static SAPPub.Web.Constants.Constants;
 
-namespace SAPPub.Web.Models.SecondarySchool
+namespace SAPPub.Web.Models.SecondarySchool //ToDo - Needs centralising
 {
     public class AboutSchoolViewModel : SecondarySchoolBaseViewModel
     {
@@ -78,11 +78,6 @@ namespace SAPPub.Web.Models.SecondarySchool
 
         public string? EducationPhase { get; set;  }
         
-        public bool IsKS2 { get; set; }
-        public bool IsKS4 { get; set; }
-
-        public bool IsKS5 { get; set; }
-
         public static AboutSchoolViewModel Map(AboutSchoolModel schoolDetails)
         {
             var latLong = MappingHelper.ConvertToLatLon(schoolDetails.Easting, schoolDetails.Northing);

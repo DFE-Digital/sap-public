@@ -7,6 +7,7 @@ using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.Interfaces.Services.KS4.Attendance;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
+using SAPPub.Web.Areas.Profiles.ViewModels.Destinations;
 using SAPPub.Web.Constants;
 using SAPPub.Web.Models.SecondarySchool;
 
@@ -130,16 +131,6 @@ namespace SAPPub.Web.Controllers
             return View(model);
         }
 
-        [HttpGet]
-        [Route("school/{urn}/{schoolName}/secondary/destinations", Name = RouteConstants.SecondaryDestinations)]
-        public async Task<IActionResult> Destinations(
-            [FromServices] IDestinationsService destinationsService,
-            string urn, string schoolName, CancellationToken ct)
-        {
-            var destinationDetails = await destinationsService.GetDestinationsDetailsAsync(urn, ct);
-
-            var model = DestinationsViewModel.Map(destinationDetails);
-            return View(model);
-        }
+        
     }
 }

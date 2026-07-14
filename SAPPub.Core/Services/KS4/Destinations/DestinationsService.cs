@@ -40,7 +40,9 @@ public sealed class DestinationsService(
             Urn = establishment.URN,
             SchoolName = establishment.EstablishmentName,
             LocalAuthorityName = establishment.LAName,
-
+            IsKS2 = establishment.IsKS2,
+            IsKS4 = establishment.IsKS4,
+            IsKS5 = establishment.IsKS5,
             SchoolAll = new RelativeYearValues<double?>
             {
                 CurrentYear = establishmentDestinations.AllDest_Tot_Est_Current_Pct,
@@ -131,6 +133,10 @@ public sealed class DestinationsService(
             SchoolApprentice = EmptyYears(),
             LocalAuthorityApprentice = EmptyYears(),
             EnglandApprentice = EmptyYears(),
+
+            IsKS2 = false,
+            IsKS4 = false,
+            IsKS5 = false
         };
     }
 }

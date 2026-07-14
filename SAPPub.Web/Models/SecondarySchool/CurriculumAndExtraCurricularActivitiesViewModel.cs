@@ -13,7 +13,10 @@ public class CurriculumAndExtraCurricularActivitiesViewModel : SecondarySchoolBa
         {
             URN = establishment.URN,
             SchoolName = establishment.EstablishmentName,
-            SchoolWebsite = establishment.Website.ToDisplayField()
+            SchoolWebsite = establishment.Website.ToDisplayField(),
+            IsKS2 = establishment.IsKS2,
+            IsKS4 = establishment.IsKS4,
+            IsKS5 = establishment.IsKS5
         };
     }
 }
