@@ -64,8 +64,8 @@
                 Pupils usually finish KS4 after year 11, when they are 16.
             </p>
 
-            <input type="radio" name="dataView" id="current-view" class="govuk-visually-hidden" aria-labelledby="all-dest-show-current-data-btn" checked />
-            <input type="radio" name="dataView" id="data-overtime-view" class="govuk-visually-hidden" aria-labelledby="all-dest-show-data-over-time-btn" />
+            <input type="radio" name="dataView" id="current-view" class="govuk-visually-hidden" tabindex="-1" aria-hidden="true" aria-labelledby="all-dest-show-current-data-btn" checked />
+            <input type="radio" name="dataView" id="data-overtime-view" class="govuk-visually-hidden" tabindex="-1" aria-hidden="true" aria-labelledby="all-dest-show-data-over-time-btn" />
 
             @if (Model.HasEstablishmentData.IsAvailable)
             {
@@ -95,11 +95,11 @@
                     </div>
 
                     <div class="govuk-button-group">
-                        <button id="all-dest-current-year-show-btn" class="govuk-button govuk-button--secondary all-dest-current-year-show-btn">Show as a table</button>
+                        <govuk-button id="all-dest-current-year-show-btn" type="button" class="govuk-button--secondary all-dest-current-year-show-btn">Show as a table</govuk-button>
                     </div>
 
                     <div class="govuk-button-group">
-                        <button id="all-dest-show-data-over-time-btn" type="button" class="govuk-button govuk-button--secondary" aria-controls="all-dest-data-over-time-data-container">Show data over time</button>
+                        <govuk-button id="all-dest-show-data-over-time-btn" type="button" class="govuk-button--secondary" aria-controls="all-dest-data-over-time-data-container">Show data over time</govuk-button>
                     </div>
                 </div>
             }
@@ -150,11 +150,11 @@
                 @if (Model.HasEstablishmentData.IsAvailable)
                 {
                     <div class="govuk-button-group">
-                        <button id="all-dest-data-over-time-show-btn" class="govuk-button govuk-button--secondary all-dest-data-over-time-show-btn">Show as a table</button>
+                        <govuk-button id="all-dest-data-over-time-show-btn" type="button" class="govuk-button--secondary all-dest-data-over-time-show-btn">Show as a table</govuk-button>
                     </div>
 
                     <div class="govuk-button-group">
-                        <button id="all-dest-show-current-data-btn" type="button" class="govuk-button govuk-button--secondary" aria-controls="all-dest-current-year-data-container">Show current data</button>
+                        <govuk-button id="all-dest-show-current-data-btn" type="button" class="govuk-button--secondary" aria-controls="all-dest-current-year-data-container">Show current data</govuk-button>
                     </div>
                 }
             </div>
@@ -219,7 +219,7 @@
                 @if (Model.HasEstablishmentData.IsAvailable)
                 {
                     <div class="govuk-button-group">
-                        <button id="breakdown-dest-current-year-show-btn" class="govuk-button govuk-button--secondary breakdown-dest-current-year-show-btn">Show as a table</button>
+                        <govuk-button id="breakdown-dest-current-year-show-btn" type="button" class="govuk-button--secondary breakdown-dest-current-year-show-btn">Show as a table</govuk-button>
                     </div>
                 }
             </div>
