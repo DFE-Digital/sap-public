@@ -11,7 +11,6 @@ public record AdditionalMeasures
     public required CodedDouble AverageGCSEExamEntriesPerPupil { get; init; }
     public required CodedDouble AverageAllKS4QualificationsExamEntriesPerPupil { get; init; }
 
-    // CML TODO -  this should be int - but does it need to be a CodedInt (that we don't have)
-    // i.e. could the value be "SUPP", "z" etc? - probably not
+    // This should be CodedInt (that we don't have yet)
     public required CodedDouble NumberOfPupilsAtTheEndOfKS4 { get; init; }
 }

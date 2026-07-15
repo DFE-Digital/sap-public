@@ -134,7 +134,7 @@ public partial class Program
 
         app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
-        //Configure the HTTP request pipeline.
+        // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.UseDeveloperExceptionPage(new DeveloperExceptionPageOptions { SourceCodeLineCount = 1 });
