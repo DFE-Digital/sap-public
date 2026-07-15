@@ -1,5 +1,4 @@
-﻿using Bogus;
-using Moq;
+﻿using Moq;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
@@ -12,7 +11,6 @@ namespace SAPPub.Core.Tests.Services.KS4.Performance;
 
 public class AdditionalMeasuresServiceTests
 {
-    private readonly Faker _faker = new Faker("en_GB");
     private readonly Mock<IEstablishmentService> _mockEstablishmentService;
     private readonly Mock<IEstablishmentPerformanceService> _mockEstablishmentPerformanceService;
     private readonly Mock<ILAPerformanceService> _mockLAPerformanceService;
