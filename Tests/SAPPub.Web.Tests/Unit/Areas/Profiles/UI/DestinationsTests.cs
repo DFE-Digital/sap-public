@@ -381,4 +381,78 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
         Assert.False(nextPaginationIsVisible);
         Assert.Equal("Academic performance: Subjects entered", previousPaginationText?.Trim());
     }
+
+    [Fact]
+    public async Task DestinationsPage_KeyboardNavigation_CanReachAndFocus_ShowDataOverTimeButton()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+
+        // Act
+        var reachedShowAsTableButton = await FocusElementByTabAsync("all-dest-current-year-show-btn");
+        Assert.True(reachedShowAsTableButton);
+
+        await Page.Keyboard.PressAsync("Tab");
+        var focusedElementId = await Page.EvaluateAsync<string>("() => document.activeElement?.id ?? ''");
+        var hasVisibleFocus = await HasVisibleFocusAsync("#all-dest-show-data-over-time-btn");
+
+        // Assert
+        Assert.Equal("all-dest-show-data-over-time-btn", focusedElementId);
+        Assert.True(hasVisibleFocus);
+
+        // Ensure reverse tab order is not trapped or skipped
+        await Page.Keyboard.PressAsync("Shift+Tab");
+        focusedElementId = await Page.EvaluateAsync<string>("() => document.activeElement?.id ?? ''");
+        Assert.Equal("all-dest-current-year-show-btn", focusedElementId);
+    }
+
+    [Fact]
+    public async Task DestinationsPage_KeyboardActivation_ShowAsTableButton_SupportsEnterAndSpace()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+
+        // Act - Enter switches to table view
+        var reachedShowAsTableButton = await FocusElementByTabAsync("all-dest-current-year-show-btn");
+        Assert.True(reachedShowAsTableButton);
+
+        await Page.Keyboard.PressAsync("Enter");
+
+        var chart = Page.Locator("#all-destinations-chart");
+        var table = Page.Locator("#all-destinations-current-year-table");
+        Assert.False(await chart.IsVisibleAsync());
+        Assert.True(await table.IsVisibleAsync());
+
+        // Act - Space switches back to chart view
+        await Page.Keyboard.PressAsync("Space");
+
+        // Assert
+        Assert.True(await chart.IsVisibleAsync());
+        Assert.False(await table.IsVisibleAsync());
+    }
+
+    private async Task<bool> FocusElementByTabAsync(string expectedElementId, int maxTabs = 60)
+    {
+        for (var index = 0; index < maxTabs; index++)
+        {
+            await Page.Keyboard.PressAsync("Tab");
+            var focusedElementId = await Page.EvaluateAsync<string>("() => document.activeElement?.id ?? ''");
+            if (focusedElementId == expectedElementId)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private async Task<bool> HasVisibleFocusAsync(string selector)
+    {
+        return await Page.Locator(selector).EvaluateAsync<bool>("""
+            element => {
+                const styles = window.getComputedStyle(element);
+                return styles.boxShadow !== 'none' || (styles.outlineStyle !== 'none' && styles.outlineWidth !== '0px');
+            }
+            """);
+    }
 }
