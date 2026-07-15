@@ -12,6 +12,8 @@
         const allDestDataOverTimeTableContainer = document.getElementById('all-dest-data-over-time-table-container');
         const allDestDataOverTimeShowAsTableBtn = document.getElementById('all-dest-data-over-time-show-btn');
 
+        const currentViewRadio = document.getElementById('current-view');
+        const dataOvertimeViewRadio = document.getElementById('data-overtime-view');
         const allDestShowCurrentDataBtn = document.getElementById('all-dest-show-current-data-btn');
 
         setAriaAttribute(allDestCurrentYearShowAsTableBtn, 'false');
@@ -24,6 +26,10 @@
 
         if (allDestShowDataOverTimeBtn) {
             allDestShowDataOverTimeBtn.addEventListener('click', () => {
+                if (dataOvertimeViewRadio) {
+                    dataOvertimeViewRadio.checked = true;
+                }
+
                 var chartVisible = allDestCurrentYearChartContainer.style.display !== 'none';
                 setTooggleState(allDestDataOverTimeChartContainer, allDestDataOverTimeTableContainer, !chartVisible, allDestDataOverTimeShowAsTableBtn);
             });
@@ -39,6 +45,10 @@
 
         if (allDestShowCurrentDataBtn) {
             allDestShowCurrentDataBtn.addEventListener('click', () => {
+                if (currentViewRadio) {
+                    currentViewRadio.checked = true;
+                }
+
                 var chartVisible = allDestDataOverTimeChartContainer.style.display !== 'none';
                 setTooggleState(allDestCurrentYearChartContainer, allDestCurrentYearTableContainer, !chartVisible, allDestCurrentYearShowAsTableBtn);
             });
