@@ -383,7 +383,7 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     }
 
     [Fact]
-    public async Task DestinationsPage_KeyboardNavigation_CanReachAndFocus_ShowDataOverTimeButton()
+    public async Task DestinationsPage_KeyboardNavigation_CanReachAndFocus_ToggleButtons()
     {
         // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
@@ -392,13 +392,16 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
         var reachedShowAsTableButton = await FocusElementByTabAsync("all-dest-current-year-show-btn");
         Assert.True(reachedShowAsTableButton);
 
+        var hasVisibleFocusOnShowAsTable = await HasVisibleFocusAsync("#all-dest-current-year-show-btn");
+
         await Page.Keyboard.PressAsync("Tab");
         var focusedElementId = await Page.EvaluateAsync<string>("() => document.activeElement?.id ?? ''");
-        var hasVisibleFocus = await HasVisibleFocusAsync("#all-dest-show-data-over-time-btn");
+        var hasVisibleFocusOnShowDataOverTime = await HasVisibleFocusAsync("#all-dest-show-data-over-time-btn");
 
         // Assert
+        Assert.True(hasVisibleFocusOnShowAsTable);
         Assert.Equal("all-dest-show-data-over-time-btn", focusedElementId);
-        Assert.True(hasVisibleFocus);
+        Assert.True(hasVisibleFocusOnShowDataOverTime);
 
         // Ensure reverse tab order is not trapped or skipped
         await Page.Keyboard.PressAsync("Shift+Tab");
@@ -429,6 +432,111 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
         // Assert
         Assert.True(await chart.IsVisibleAsync());
         Assert.False(await table.IsVisibleAsync());
+    }
+
+    [Fact]
+    public async Task DestinationsPage_KeyboardActivation_ShowDataOverTimeAndShowCurrentDataButtons_SupportEnterAndSpace()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+
+        // Act - Enter on show data over time
+        await Page.Locator("#all-dest-show-data-over-time-btn").FocusAsync();
+        await Page.Keyboard.PressAsync("Enter");
+
+        // Assert
+        Assert.True(await IsElementCheckedAsync("data-overtime-view"));
+        Assert.False(await IsElementCheckedAsync("current-view"));
+
+        // Act - Space on show current data
+        await Page.Locator("#all-dest-show-current-data-btn").FocusAsync();
+        await Page.Keyboard.PressAsync("Space");
+
+        // Assert
+        Assert.True(await IsElementCheckedAsync("current-view"));
+        Assert.False(await IsElementCheckedAsync("data-overtime-view"));
+
+        // Act - Space on show data over time
+        await Page.Locator("#all-dest-show-data-over-time-btn").FocusAsync();
+        await Page.Keyboard.PressAsync("Space");
+
+        // Assert
+        Assert.True(await IsElementCheckedAsync("data-overtime-view"));
+        Assert.False(await IsElementCheckedAsync("current-view"));
+
+        // Act - Enter on show current data
+        await Page.Locator("#all-dest-show-current-data-btn").FocusAsync();
+        await Page.Keyboard.PressAsync("Enter");
+
+        // Assert
+        Assert.True(await IsElementCheckedAsync("current-view"));
+        Assert.False(await IsElementCheckedAsync("data-overtime-view"));
+    }
+
+    [Fact]
+    public async Task DestinationsPage_KeyboardActivation_ShowDataOverTime_Enter_MovesFocusToShowCurrentData()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+
+        var reachedShowAsTableButton = await FocusElementByTabAsync("all-dest-current-year-show-btn");
+        Assert.True(reachedShowAsTableButton);
+
+        await Page.Keyboard.PressAsync("Tab");
+
+        // Act
+        await Page.Keyboard.PressAsync("Enter");
+
+        // Assert
+        var focusedElementMoved = await WaitForFocusedElementAsync("all-dest-show-current-data-btn");
+        Assert.True(focusedElementMoved);
+    }
+
+    [Fact]
+    public async Task DestinationsPage_KeyboardActivation_ShowCurrentData_Enter_TabSequenceCanReachShowDataOverTime()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+
+        var reachedShowAsTableButton = await FocusElementByTabAsync("all-dest-current-year-show-btn");
+        Assert.True(reachedShowAsTableButton);
+
+        await Page.Keyboard.PressAsync("Tab");
+        await Page.Keyboard.PressAsync("Enter");
+
+        var focusedOnShowCurrentData = await WaitForFocusedElementAsync("all-dest-show-current-data-btn");
+        Assert.True(focusedOnShowCurrentData);
+
+        // Act
+        await Page.Keyboard.PressAsync("Enter");
+
+        // Assert
+        var reachedShowDataOverTimeButton = await FocusElementByTabAsync("all-dest-show-data-over-time-btn", 120);
+        Assert.True(reachedShowDataOverTimeButton);
+    }
+
+    private async Task<bool> IsElementCheckedAsync(string elementId)
+    {
+        return await Page.EvaluateAsync<bool>("id => !!document.getElementById(id)?.checked", elementId);
+    }
+
+    private async Task<bool> WaitForFocusedElementAsync(string expectedElementId, int timeoutMs = 1000)
+    {
+        const int intervalMs = 50;
+        var attempts = timeoutMs / intervalMs;
+
+        for (var index = 0; index < attempts; index++)
+        {
+            var focusedElementId = await Page.EvaluateAsync<string>("() => document.activeElement?.id ?? ''");
+            if (focusedElementId == expectedElementId)
+            {
+                return true;
+            }
+
+            await Page.WaitForTimeoutAsync(intervalMs);
+        }
+
+        return false;
     }
 
     private async Task<bool> FocusElementByTabAsync(string expectedElementId, int maxTabs = 60)

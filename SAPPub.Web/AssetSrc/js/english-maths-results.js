@@ -33,6 +33,8 @@
 
                 var chartVisible = allGcseCurrentYearChartContainer.style.display !== 'none';
                 setTooggleState(allGcseDataOverTimeChartContainer, allGcseDataOverTimeTableContainer, !chartVisible, allGcseDataOverTimeShowAsTableBtn);
+                blurElementIfFocused(allGcseShowDataOverTimeBtn);
+                moveFocusToElement(allGcseShowCurrentDataBtn);
             });
         }
 
@@ -53,8 +55,13 @@
 
                 var chartVisible = allGcseDataOverTimeChartContainer.style.display !== 'none';
                 setTooggleState(allGcseCurrentYearChartContainer, allGcseCurrentYearTableContainer, !chartVisible, allGcseCurrentYearShowAsTableBtn);
+                blurElementIfFocused(allGcseShowCurrentDataBtn);
+                moveFocusToElement(allGcseShowDataOverTimeBtn);
             });
         }
+
+        addKeyboardFocusTransfer(allGcseShowDataOverTimeBtn, allGcseShowCurrentDataBtn);
+        addKeyboardFocusTransfer(allGcseShowCurrentDataBtn, allGcseShowDataOverTimeBtn);
 
         const breakdownGcseCurrentYearShowAsTableBtn = document.getElementById('breakdown-gcse-current-year-show-btn');
         const breakdownGcseCurrentYearChartContainer = document.getElementById('breakdown-gcse-current-year-chart-container');
@@ -76,6 +83,42 @@
 
     function setAriaAttribute(toggle, text) {
         if (toggle) toggle.setAttribute('aria-expanded', text);
+    }
+
+    function blurElementIfFocused(element) {
+        if (!element || document.activeElement !== element) {
+            return;
+        }
+
+        element.blur();
+    }
+
+    function moveFocusToElement(element) {
+        if (!element) {
+            return;
+        }
+
+        [0, 50, 150, 300].forEach(delay => {
+            setTimeout(() => {
+                if (document.activeElement !== element) {
+                    element.focus();
+                }
+            }, delay);
+        });
+    }
+
+    function addKeyboardFocusTransfer(sourceElement, targetElement) {
+        if (!sourceElement || !targetElement) {
+            return;
+        }
+
+        sourceElement.addEventListener('keyup', (event) => {
+            if (event.key !== 'Enter' && event.key !== ' ') {
+                return;
+            }
+
+            moveFocusToElement(targetElement);
+        });
     }
 
     function setTooggleState(chartContainer, tableContainer, isChartVisible, btnShow) {
