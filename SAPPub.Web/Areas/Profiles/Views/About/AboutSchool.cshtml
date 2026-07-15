@@ -1,5 +1,6 @@
-﻿@model SAPPub.Web.Models.SecondarySchool.AboutSchoolViewModel;
+﻿@model SAPPub.Web.Areas.Profiles.ViewModels.AboutSchool.AboutSchoolViewModel;
 @inject IMySchoolsListService mySchoolsListService;
+@using SAPPub.Web.Constants
 @using SAPPub.Core.Helpers
 @using SAPPub.Core.Interfaces.Services
 @using SAPPub.Web.Models.Banner
@@ -7,7 +8,7 @@
 @using static SAPPub.Web.Constants.Constants;
 
 @{
-    ViewData["Header"] = "About the school";
+    ViewData["Header"] = Model.IsExclusivelyKS5 ? "About the school or college" : "About the school";
     ViewData["Title"] = $"{Model.SchoolName} - {ViewData["Header"]}";
 }
 
@@ -54,7 +55,7 @@
                 <div class="custom-card__content">
                     <p class="govuk-body">
                         @(Model.ClosedDate.IsAvailable ? $"This school closed on {Model.ClosedDate.DisplayText(d => d.ToString("dd MMMM yyyy"))}." : "Closed")
-                        @if (Model.HasSuccessors) 
+                        @if (Model.HasSuccessors)
                         {
                             @($" It is now {string.Join(" and ", Model.Successors!.Select(s => s.Name))}.")
                         }
@@ -65,9 +66,9 @@
                         {
                             <p class="govuk-body">
                                 <a asp-route="@RouteConstants.SecondaryAboutSchool"
-                                asp-route-urn="@successor.Urn"
-                                asp-route-schoolName="@TextHelpers.CleanForUrl(successor.Name)"
-                                class="govuk-link">
+                                   asp-route-urn="@successor.Urn"
+                                   asp-route-schoolName="@TextHelpers.CleanForUrl(successor.Name)"
+                                   class="govuk-link">
                                     @($"View {successor.Name}'s profile")
                                 </a>
                             </p>
@@ -114,9 +115,10 @@
                     }
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
-            @if(Model.AcademyTrust.IsAvailable)
+            @if (Model.AcademyTrust.IsAvailable)
             {
                 <govuk-summary-list-row>
+
                     <govuk-summary-list-row-key>Academy Trust</govuk-summary-list-row-key>
                     <govuk-summary-list-row-value>
                         @Model.AcademyTrust.DisplayText()
@@ -174,7 +176,7 @@
                 <govuk-summary-list-row-key>Local council</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
                     @Model.LocalAuthority.DisplayText()
-                    @if(Model.LocalAuthority.IsAvailable)
+                    @if (Model.LocalAuthority.IsAvailable)
                     {
                         <span class="govuk-clear">
                             <a href="@($"https://www.{Model.LocalAuthorityWebsite}")"
@@ -182,7 +184,7 @@
                                rel="noopener noreferrer"
                                class="govuk-link govuk-link--no-visited-state"
                                data-testid="la-website-link">
-                               View @Model.LocalAuthorityCouncilName’s website
+                                View @Model.LocalAuthorityCouncilName’s website
                                 <span class="govuk-visually-hidden">(opens in a new tab)</span>
                             </a>
                         </span>
@@ -215,47 +217,65 @@
             </govuk-details-text>
         </govuk-details>
 
-        <h2 class="govuk-heading-l">School features</h2>
+        @if (Model.IsExclusivelyKS5)
+        {
+            <h2 class="govuk-heading-l">Key features</h2>
+        }
+        else
+        {
+            <h2 class="govuk-heading-l">School features</h2>
+        }
 
         <govuk-summary-list id="school-features-summary">
-            <govuk-summary-list-row>
-                <govuk-summary-list-row-key>Value and ethos</govuk-summary-list-row-key>
-                <govuk-summary-list-row-value>
-                    @if (Model.SchoolWebsite.IsAvailable)
-                    {
-                        <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite.DisplayText(UrlHelper.EnsureHttpsUrl)">
-                            View the value and ethos policy on the school website
-                            <span class="govuk-visually-hidden">(opens in a new tab)</span>
-                        </a>
-                    }
-                    else
-                    {
-                        @Model.SchoolWebsite.DisplayText()                        
-                    }
-                </govuk-summary-list-row-value>
-            </govuk-summary-list-row>
+            @if (!Model.IsExclusivelyKS5)
+            {
+                <govuk-summary-list-row>
+                    <govuk-summary-list-row-key>Value and ethos</govuk-summary-list-row-key>
+                    <govuk-summary-list-row-value>
+                        @if (Model.SchoolWebsite.IsAvailable)
+                        {
+                            <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite.DisplayText(UrlHelper.EnsureHttpsUrl)">
+                                View the value and ethos policy on the school website
+                                <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                            </a>
+                        }
+                        else
+                        {
+                            @Model.SchoolWebsite.DisplayText()
+                        }
+                    </govuk-summary-list-row-value>
+                </govuk-summary-list-row>
+            }
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Ofsted report</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
                     <a class="govuk-link govuk-link--no-visited-state"
-                       href="http://reports.ofsted.gov.uk/inspection-reports/find-inspection-report/provider/ELS/@Model.URN" 
+                       href="http://reports.ofsted.gov.uk/inspection-reports/find-inspection-report/provider/ELS/@Model.URN"
                        rel="noreferrer noopener" target="_blank">
-                       View the latest Ofsted report
-                       <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                        View the latest Ofsted report
+                        <span class="govuk-visually-hidden">(opens in a new tab)</span>
                     </a>
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Education Phase</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                   @Model.EducationPhase
+                    @Model.EducationPhase
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
 
             <govuk-summary-list-row>
-                <govuk-summary-list-row-key>Type of school</govuk-summary-list-row-key>
+                @if (Model.IsExclusivelyKS5)
+                {
+                    <govuk-summary-list-row-key>Type</govuk-summary-list-row-key>
+                }
+                else
+                {
+                    <govuk-summary-list-row-key>Type of school</govuk-summary-list-row-key>
+                }
+
                 <govuk-summary-list-row-value>
-                   @Model.TypeOfSchool.DisplayText()
+                    @Model.TypeOfSchool.DisplayText()
                     @if (Model.RecentlyOpenedSchoolMessage.IsAvailable)
                     {
                         <span class="govuk-hint govuk-clear">
@@ -265,41 +285,44 @@
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
-                <govuk-summary-list-row-key>Headteacher</govuk-summary-list-row-key>
+                <govuk-summary-list-row-key>@(Model.IsExclusivelyKS5 ? "Headteacher, principal, or chief executive" : "Headteacher")</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                   @Model.HeadTeacher.DisplayText()
+                    @Model.HeadTeacher.DisplayText()
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Age range</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                   @Model.AgeRange.DisplayText()
+                    @Model.AgeRange.DisplayText()
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Number of pupils</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                   @Model.NumberOfPupils.DisplayText()
+                    @Model.NumberOfPupils.DisplayText()
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Pupil sex</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                   @Model.PupilSex.DisplayText()
+                    @Model.PupilSex.DisplayText()
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Religious character</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                   @Model.ReligiousCharacter.DisplayText()
+                    @Model.ReligiousCharacter.DisplayText()
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
-            <govuk-summary-list-row>
-                <govuk-summary-list-row-key>Sixth form</govuk-summary-list-row-key>
-                <govuk-summary-list-row-value>
-                   @Model.SixthForm.DisplayText()
-                </govuk-summary-list-row-value>
-            </govuk-summary-list-row>
+            @if (!Model.IsExclusivelyKS5)
+            {
+                <govuk-summary-list-row>
+                    <govuk-summary-list-row-key>Sixth form</govuk-summary-list-row-key>
+                    <govuk-summary-list-row-value>
+                        @Model.SixthForm.DisplayText()
+                    </govuk-summary-list-row-value>
+                </govuk-summary-list-row>
+            }
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Type of SEN provision</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
@@ -309,13 +332,13 @@
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>SEN unit</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                   @Model.SenUnit
+                    @Model.SenUnit
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
             <govuk-summary-list-row>
                 <govuk-summary-list-row-key>Resourced provision</govuk-summary-list-row-key>
                 <govuk-summary-list-row-value>
-                   @Model.ResourcedProvision
+                    @Model.ResourcedProvision
                 </govuk-summary-list-row-value>
             </govuk-summary-list-row>
         </govuk-summary-list>
@@ -340,75 +363,104 @@
             </govuk-details-text>
         </govuk-details>
 
-        <h2 class="govuk-heading-l">School policies</h2>
+       
 
-        <div id="school-policies-summary" class="govuk-summary-card">
-            <div class="govuk-summary-card__title-wrapper">
-                <h3 class="govuk-summary-card__title">Documents published by the school</h3>
-            </div>
-            <div class="govuk-summary-card__content">
-                <div class="govuk-summary-list__row">
-                    <p class="govuk-body">
-                        All schools in England must publish statutory policies and documents that explain how the school is run and how staff and pupils should behave.
-                        Statutory policies and documents must be published on the school’s website. Schools can also create their own guidelines.
-                    </p>
-                    @if (Model.SchoolWebsite.IsAvailable)
-                    {
-                        <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite.DisplayText(UrlHelper.EnsureHttpsUrl)">
-                            Visit the school website to view their policies
-                            <span class="govuk-visually-hidden">(opens in a new tab)</span>
-                        </a>
-                    }
-                    else
-                    {
-                        <span data-testId="contact-school-info">Contact the school for more information</span>
-                    }
+        @if (Model.IsExclusivelyKS5)
+        {
+            <h2 class="govuk-heading-l">Policies</h2>
+
+            <p class="govuk-body">
+                Schools and colleges in England must publish statutory policies and documents that explain how they are run and how staff and students should behave.
+                They must be published on the school or college's website. Schools and colleges can also create their own guidelines.
+            </p>
+
+            @if (Model.SchoolWebsite.IsAvailable)
+            {
+                <p>
+                    <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite.DisplayText(UrlHelper.EnsureHttpsUrl)">
+                        @($"Review {Model.SchoolName}'s policies on their website (opens in a new tab)")
+                        <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                    </a>
+                </p>
+            }
+            else
+            {
+                <span data-testId="contact-school-info">Contact the school or college for more information</span>
+            }
+        }
+        else
+        {
+            <h2 class="govuk-heading-l">School policies</h2>
+
+            <div id="school-policies-summary" class="govuk-summary-card">
+                <div class="govuk-summary-card__title-wrapper">
+                    <h3 class="govuk-summary-card__title">Documents published by the school</h3>
                 </div>
-                
-                <table class="govuk-table govuk-!-margin-top-5">
-                    <thead class="govuk-table__head">
-                        <tr class="govuk-table__row">
-                            <th scope="col" class="govuk-table__header">Policy</th>
-                            <th scope="col" class="govuk-table__header">Description</th>
-                        </tr>
-                    </thead>
-                    <tbody class="govuk-table__body">
-                        <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header">Accessibility plan</th>
-                            <td class="govuk-table__cell">Includes how to increase curriculum participation, improve the physical environment, and make information more accessible for pupils with disabilities.</td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header">Behaviour policy</th>
-                            <td class="govuk-table__cell">Includes school rules and values, what behaviour is expected of pupils, how staff will support pupils to meet these expectations and what the school does to prevent bullying.</td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header">Charging and remissions policy</th>
-                            <td class="govuk-table__cell">This policy sets out when a school will make charges and the circumstances in which costs will be waived for some pupils. Schools may charge for optional extras but not education provided during school hours.</td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header">Compliants policy</th>
-                            <td class="govuk-table__cell">
-                                @(Model.IsLocalAuthoritySchool 
-                                ? "A complaints policy shows how to raise concerns with a school and how to make a complaint." 
-                                : "A complaints policy shows how parents or carers can raise concerns with a school and how to make a complaint.")
-                            </td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header">Safeguarding policy</th>
-                            <td class="govuk-table__cell">Outlines how the school protects pupils from harm, ensuring their safety and well-being.</td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header">School uniform policy</th>
-                            <td class="govuk-table__cell">Sets out what pupils are expected to wear in school, including the uniform items which are compulsory and optional. The policy should include whether uniform items must be bought from the school’s appointed uniform supplier(s) or could be bought elsewhere.</td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header">Special educational needs (SEN) information report</th>
-                            <td class="govuk-table__cell">A SEN information report sets out how the school’s policy for pupils with SEN and disabilities is implemented.</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="govuk-summary-card__content">
+                    <div class="govuk-summary-list__row">
+                        <p class="govuk-body">
+                            All schools in England must publish statutory policies and documents that explain how the school is run and how staff and pupils should behave.
+                            Statutory policies and documents must be published on the school’s website. Schools can also create their own guidelines.
+                        </p>
+                        @if (Model.SchoolWebsite.IsAvailable)
+                        {
+                            <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite.DisplayText(UrlHelper.EnsureHttpsUrl)">
+                                Visit the school website to view their policies
+                                <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                            </a>
+                        }
+                        else
+                        {
+                            <span data-testId="contact-school-info">Contact the school for more information</span>
+                        }
+                    </div>
+
+                    <table class="govuk-table govuk-!-margin-top-5">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header">Policy</th>
+                                <th scope="col" class="govuk-table__header">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">Accessibility plan</th>
+                                <td class="govuk-table__cell">Includes how to increase curriculum participation, improve the physical environment, and make information more accessible for pupils with disabilities.</td>
+                            </tr>
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">Behaviour policy</th>
+                                <td class="govuk-table__cell">Includes school rules and values, what behaviour is expected of pupils, how staff will support pupils to meet these expectations and what the school does to prevent bullying.</td>
+                            </tr>
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">Charging and remissions policy</th>
+                                <td class="govuk-table__cell">This policy sets out when a school will make charges and the circumstances in which costs will be waived for some pupils. Schools may charge for optional extras but not education provided during school hours.</td>
+                            </tr>
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">Compliants policy</th>
+                                <td class="govuk-table__cell">
+                                    @(Model.IsLocalAuthoritySchool
+                                    ? "A complaints policy shows how to raise concerns with a school and how to make a complaint."
+                                    : "A complaints policy shows how parents or carers can raise concerns with a school and how to make a complaint.")
+                                </td>
+                            </tr>
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">Safeguarding policy</th>
+                                <td class="govuk-table__cell">Outlines how the school protects pupils from harm, ensuring their safety and well-being.</td>
+                            </tr>
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">School uniform policy</th>
+                                <td class="govuk-table__cell">Sets out what pupils are expected to wear in school, including the uniform items which are compulsory and optional. The policy should include whether uniform items must be bought from the school’s appointed uniform supplier(s) or could be bought elsewhere.</td>
+                            </tr>
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">Special educational needs (SEN) information report</th>
+                                <td class="govuk-table__cell">A SEN information report sets out how the school’s policy for pupils with SEN and disabilities is implemented.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
+        }
+
 
         <govuk-pagination id="about-the-school-pagination">
             <govuk-pagination-next asp-route="@RouteConstants.SecondaryAdmissions" asp-all-route-data="@Model.RouteAttributes">Admissions</govuk-pagination-next>
