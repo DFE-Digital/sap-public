@@ -323,7 +323,6 @@ jobs:
           ls -lh "${BACKUP_FILE}"
 
       - name: Restore backup into PR review DB (single transaction, with retry)
-        if: ${{ github.event.action == 'labeled' && github.event.label.name == 'deploy' && !contains(github.event.pull_request.labels.*.name, 'refresh data') }}
         shell: bash
         env:
           AKS_NAMESPACE: ${{ secrets.AKS_REVIEW_NAMESPACE }}
