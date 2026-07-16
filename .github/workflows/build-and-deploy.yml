@@ -304,7 +304,8 @@ jobs:
           ls -la "$GITHUB_WORKSPACE/konduit.sh"
 
       - name: Download seed backup from Blob
-        if: ${{ github.event.action == 'labeled' && github.event.label.name == 'deploy' && !contains(github.event.pull_request.labels.*.name, 'refresh data') }}
+        if: ${{(github.event.action == 'labeled' || github.event.action == 'synchronize')
+          && github.event.label.name == 'deploy' && !contains(github.event.pull_request.labels.*.name, 'refresh data') }}
         shell: bash
         env:
           AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
