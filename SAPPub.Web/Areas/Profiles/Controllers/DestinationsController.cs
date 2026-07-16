@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
-using NpgsqlTypes;
-using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
+using SAPPub.Web.Areas.Profiles.ViewModels.AboutSchool;
 using SAPPub.Web.Areas.Profiles.ViewModels.Destinations;
 using SAPPub.Web.Constants;
-using SAPPub.Web.Models.SecondarySchool;
 
 namespace SAPPub.Web.Areas.Profiles.Controllers
 {
@@ -30,11 +28,11 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
 
             if (schoolDetails.IsKS4)
             {
-                return RedirectToAction("KS4", new { urn = urn, schoolName = schoolName });
+                return RedirectToAction("KS4", new { urn, schoolName });
             }
             else if (schoolDetails.IsKS5)
             {
-                return RedirectToAction("KS5", new { urn = urn, schoolName = schoolName });
+                return RedirectToAction("KS5", new { urn, schoolName });
             }
             return View("Error");
         }

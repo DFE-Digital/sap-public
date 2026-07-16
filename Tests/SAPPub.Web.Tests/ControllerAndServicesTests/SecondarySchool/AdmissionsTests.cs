@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moq;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Services;
-using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.ServiceModels;
 using SAPPub.Core.Services;
@@ -19,10 +17,8 @@ namespace SAPPub.Web.Tests.ControllerAndServicesTests.SecondarySchool;
 
 public class AdmissionsTests
 {
-    private readonly Mock<ILogger<SecondarySchoolController>> _mockLogger;
     private readonly Mock<ILAService> _mockLaService = new();
     private readonly Mock<IEstablishmentRepository> _mockEstablishmentRepository = new();
-    private readonly Mock<IDestinationsService> _mockDestinationsService = new();
 
     private readonly IEstablishmentService _establishmentService;
     private readonly IAdmissionsService _admissionsService;
@@ -36,15 +32,13 @@ public class AdmissionsTests
         _establishment = Establishment;
         _establishmentServiceModel = Establishment.MapToServiceModel(_establishment);
 
-        _mockLogger = new Mock<ILogger<SecondarySchoolController>>();
-
         // Create a real temp directory (matches your existing pattern)
         var tempPath = Path.Combine(Path.GetTempPath(), "SAPPubTests", Guid.NewGuid().ToString());
         Directory.CreateDirectory(tempPath);
 
         _establishmentService = new EstablishmentService(_mockEstablishmentRepository.Object);
         _admissionsService = new EstablishmentAdmissionsService(_establishmentService, _mockLaService.Object);
-        _controller = new SecondarySchoolController(_mockLogger.Object, _establishmentService);
+        _controller = new SecondarySchoolController(_establishmentService);
 
         _controller.ControllerContext = new ControllerContext
         {

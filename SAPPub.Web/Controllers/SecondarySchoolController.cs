@@ -2,7 +2,6 @@
 using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4;
-using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.Interfaces.Services.KS4.Attendance;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
@@ -13,30 +12,8 @@ using SAPPub.Web.Models.SecondarySchool;
 
 namespace SAPPub.Web.Controllers
 {
-    public class SecondarySchoolController(
-        ILogger<SecondarySchoolController> logger,
-        IEstablishmentService establishmentService) : Controller
+    public class SecondarySchoolController(IEstablishmentService establishmentService) : Controller
     {
-        [HttpGet]
-        [Route("school/{urn}/{schoolName}/about", Name = RouteConstants.SecondaryAboutSchool)]
-        public async Task<IActionResult> AboutSchool(
-            [FromServices] IAboutSchoolService aboutSchoolService,
-            string urn,
-            string schoolName,
-            CancellationToken ct)
-        {
-            var schoolDetails = await aboutSchoolService.GetAboutSchoolDetailsAsync(urn, ct);
-
-            if (string.IsNullOrWhiteSpace(schoolDetails.Urn))
-            {
-                logger.LogWarning("No establishment details found for URN: {URN}", urn);
-                return View("Error");
-            }
-
-            var model = AboutSchoolViewModel.Map(schoolDetails);
-            return View(model);
-        }
-
         [HttpGet]
         [Route("school/{urn}/{schoolName}/secondary/admissions", Name = RouteConstants.SecondaryAdmissions)]
         public async Task<IActionResult> Admissions(

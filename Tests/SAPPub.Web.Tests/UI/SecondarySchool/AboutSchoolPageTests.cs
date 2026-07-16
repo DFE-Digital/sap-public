@@ -436,6 +436,8 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         await Page.ClickAsync(".compare-establishment-btn");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
+        var content = await Page.ContentAsync();
+
         var compareButtonText = await Page.Locator(".compare-establishment-btn").InnerTextAsync();
         var comparisonAddSuccessBanner =  Page.Locator($"#establishment-comparison-{urn}-add-success");
         var comparisonRemoveSuccessBanner = Page.Locator($"#establishment-comparison-{urn}-remove-success");
