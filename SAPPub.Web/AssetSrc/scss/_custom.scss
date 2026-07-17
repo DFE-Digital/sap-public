@@ -303,3 +303,7 @@
 .leaflet-container a {
     text-decoration: underline !important;
 }
+
+.data-container &.dataview-button {
+    display: none;
+}
