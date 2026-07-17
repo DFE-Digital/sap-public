@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
-using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
-using SAPPub.Core.Services.KS4.AboutSchool;
 using SAPPub.Web.Areas.Profiles.ViewModels.KS5;
 using SAPPub.Web.Constants;
-using SAPPub.Web.Controllers;
 
 namespace SAPPub.Web.Areas.Profiles.Controllers
 {
@@ -19,7 +16,7 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
             //Not a required for the structure, but might be worth considering? What if there's no Level 3 data
 
             // if establishment has Level 3 data 
-            return RedirectToAction("AdvancedLevel", new { urn = urn, schoolName = schoolName, qualification = "alevel" });
+            return RedirectToAction("AdvancedLevel", new {  urn, schoolName, qualification = "alevel" });
 
             // if establishment has Level 2 data
             //return RedirectToAction("IntermediateLevel", new { urn = urn, schoolName = schoolName, qualification = "techcert" });
