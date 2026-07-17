@@ -295,3 +295,15 @@
         padding: 4px;
     }
 }
+
+/*
+    Leaflet css override for accessibility warnings.
+    Note: No licensing found on the leaflet website regarding changing styles etc.
+*/
+.leaflet-container a {
+    text-decoration: underline !important;
+}
+
+.dataview-button {
+    display: none;
+}

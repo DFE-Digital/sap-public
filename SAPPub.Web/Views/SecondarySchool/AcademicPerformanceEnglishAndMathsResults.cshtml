@@ -94,11 +94,11 @@
                 @(Model.SelectedGrade == GcseGradeDataSelection.Grade5AndAbove ? "Grade 5 is comparable to the top of the old grade C." : "The bottom of grade 4 is comparable to the bottom of the old grade C")
             </p>
 
-            <input type="radio" name="dataView" id="current-view" class="govuk-visually-hidden" aria-labelledby="all-gcse-show-current-data-btn" checked />
-            <input type="radio" name="dataView" id="data-overtime-view" class="govuk-visually-hidden" aria-labelledby="all-gcse-show-data-over-time-btn" />
+            <input type="radio" name="dataView" id="current-view" class="govuk-visually-hidden dataview-button" aria-labelledby="all-gcse-show-current-data-btn" checked />
+            <input type="radio" name="dataView" id="data-overtime-view" class="govuk-visually-hidden dataview-button" aria-labelledby="all-gcse-show-data-over-time-btn" />
 
             <div id="all-gcse-current-year-data-container" class="all-gcse-current-year-data-container">
-                @if(Model.HasEstablishmentData.IsAvailable)
+                @if (Model.HasEstablishmentData.IsAvailable)
                 {
                     <div id="all-gcse-current-year-chart-container" class="chart-container all-gcse-current-year-chart-container">
                         <canvas id="all-gcse-chart"
@@ -107,7 +107,7 @@
                                 data-chart='@Html.Raw(Json.Serialize(Model.AllGcseData))'
                                 data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
                         </canvas>
-                    </div>                
+                    </div>
 
                     <div id="all-gcse-current-year-table-container" class="all-gcse-current-year-table-container">
                         <table id="all-gcse-current-year-table" class="govuk-table">
@@ -122,7 +122,7 @@
                             </tbody>
                         </table>
                     </div>
-                
+
                     <div class="govuk-button-group">
                         <govuk-button id="all-gcse-current-year-show-btn" class="govuk-button govuk-button--secondary all-gcse-current-year-show-btn">Show as a table</govuk-button>
                     </div>
@@ -134,7 +134,7 @@
             </div>
 
             <div id="all-gcse-data-over-time-data-container" class="all-gcse-data-over-time-data-container @(Model.HasEstablishmentData.IsAvailable ? "" : "govuk-!-display-block")">
-                @if(Model.HasEstablishmentData.IsAvailable)
+                @if (Model.HasEstablishmentData.IsAvailable)
                 {
                     <div id="all-gcse-data-over-time-chart-container" class="chart-container all-gcse-data-over-time-chart-container">
                         <div id="all-gcse-data-overtime-chart-legend" class="chart-legend" data-chart-id="all-gcse-data-overtime-chart"></div>
@@ -191,7 +191,7 @@
 
         <div class="data-container">
             <h3 class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">
-                Results by pupil types for @Model.SelectedGrade!.GetDisplayName() in English and maths GCSEs                
+                Results by pupil types for @Model.SelectedGrade!.GetDisplayName() in English and maths GCSEs
             </h3>
             <p class="govuk-body">
                 @(Model.SelectedGrade == GcseGradeDataSelection.Grade5AndAbove ? "Grade 5 is comparable to the top of the old grade C." : "The bottom of grade 4 is comparable to the bottom of the old grade C")
@@ -233,7 +233,7 @@
                                     <th scope="row" class="govuk-table__header">@dataset.Label</th>
                                     @foreach (var data in dataset.Data)
                                     {
-                                        <td class="govuk-table__cell">@(data.HasValue? data + "%" : Constants.NotAvailable)</td>
+                                        <td class="govuk-table__cell">@(data.HasValue ? data + "%" : Constants.NotAvailable)</td>
                                     }
                                 </tr>
                             }
