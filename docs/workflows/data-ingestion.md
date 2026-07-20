@@ -34,7 +34,8 @@ flowchart TD
     B --> C3
 ```
 
-## If it were called from another pipeline
+## When it is called from another pipeline 
+(e.g. build-and deploy with refresh-data label)
 ```mermaid
 flowchart TD
 
@@ -51,6 +52,11 @@ flowchart TD
 
     B["School Data Ingestion Pipeline<br/>Ingest & Build Data"]
 
+    subgraph Outputs
+        C1["Refreshed Application DB<br/>in Test Environment"]
+        C2["Versioned Source Files<br/>Azure Blob Storage"]
+        C3["Review Seed Backup<br>Azure Blob Storage<br/>container:<br/>/alldata/db-backups/ <br/>file:<br/>sappub_review_seed_latest.sql.gz"]
+    end
 
     A1 --> B
     A2 --> B
@@ -58,6 +64,10 @@ flowchart TD
     D1 --> B
     D2 --> B
     D3 --> B
+
+    B --> C1
+    B --> C2
+    B --> C3
 
 ```
 

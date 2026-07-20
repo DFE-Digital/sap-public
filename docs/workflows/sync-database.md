@@ -1,4 +1,6 @@
 # Sync database workflow
+
+Creates a backup of the source PostgreSQL database and transfers/restores it to the target environment.
 ```mermaid
 flowchart TD
 

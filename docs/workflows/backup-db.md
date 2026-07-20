@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Creates a PostgreSQL database backup and stores it in Azure Blob Storage. A Teams notification is sent on completion.
+Creates a PostgreSQL database backup and stores it in Azure Blob Storage.
 
 
 ```mermaid
