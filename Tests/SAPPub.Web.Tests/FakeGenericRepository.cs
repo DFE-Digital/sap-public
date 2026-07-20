@@ -295,7 +295,14 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             EngMaths49_Tot_Est_Previous_Pct = 65,
             EngMaths59_Tot_Est_Previous_Pct = 70,
             EngMaths49_Tot_Est_Previous2_Pct = 75,
-            EngMaths59_Tot_Est_Previous2_Pct = 80
+            EngMaths59_Tot_Est_Previous2_Pct = 80,
+            // additional measures
+            AnyQual_Tot_Est_Current_Pct_Coded = new Core.ValueObjects.CodedDouble(90, "", ""),
+            TripSci_Tot_Est_Current_Pct_Coded = new Core.ValueObjects.CodedDouble(80, "", ""),
+            More1FL_Tot_Est_Current_Pct_Coded = new Core.ValueObjects.CodedDouble(70, "", ""),
+            ExamEntriesGSCE_Tot_Est_Current_Num_Coded = new Core.ValueObjects.CodedDouble(151, "", ""),
+            ExamEntriesKS4_Tot_Est_Current_Num_Coded = new Core.ValueObjects.CodedDouble(100, "", ""),
+            Pup_Tot_Est_Current_Num_Coded = new Core.ValueObjects.CodedDouble(200, "", "")
         },
         ["137020"] = new EstablishmentPerformance
         {
@@ -310,7 +317,14 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             EngMaths49_Tot_Est_Previous_Pct = 55,
             EngMaths59_Tot_Est_Previous_Pct = 60,
             EngMaths49_Tot_Est_Previous2_Pct = 55,
-            EngMaths59_Tot_Est_Previous2_Pct = 70
+            EngMaths59_Tot_Est_Previous2_Pct = 70,
+            // additional measures
+            AnyQual_Tot_Est_Current_Pct_Coded = new Core.ValueObjects.CodedDouble(null, "", ""),
+            TripSci_Tot_Est_Current_Pct_Coded = new Core.ValueObjects.CodedDouble(null, "", ""),
+            More1FL_Tot_Est_Current_Pct_Coded = new Core.ValueObjects.CodedDouble(null, "", ""),
+            ExamEntriesGSCE_Tot_Est_Current_Num_Coded = new Core.ValueObjects.CodedDouble(null, "", ""),
+            ExamEntriesKS4_Tot_Est_Current_Num_Coded = new Core.ValueObjects.CodedDouble(null, "", ""),
+            Pup_Tot_Est_Current_Num_Coded = new Core.ValueObjects.CodedDouble(null, "", "")
         },
     };
 
