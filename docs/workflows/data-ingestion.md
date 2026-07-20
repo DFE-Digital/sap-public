@@ -1,6 +1,9 @@
 # Data ingestion pipeline
 
-## Run as a scheduled task only
+Runs the data ingestion code to read files from BlobStorage and create a database populated with data from the source files. 
+The pipeline can be run as a scheduled task or called from another pipeline (e.g. build-and-deploy with refresh-data label).
+
+## When it is run as a scheduled task
 
 ```mermaid
 flowchart TD
@@ -20,7 +23,7 @@ flowchart TD
     subgraph Outputs
         C1["Refreshed Application DB<br/>in Test Environment"]
         C2["Versioned Source Files<br/>Azure Blob Storage"]
-        C3["Review Seed Backup<br>Azure Blob Storage<br/>container:<br/>/alldata/db-backups/ <br/>file:<br/>sappub_review_seed_latest.sql.gz"]
+        C3["Review Seed Backup<br>Azure Blob Storage<br/>container:<br/>/[github_secret]/db-backups/ <br/>file:<br/>sappub_review_seed_latest.sql.gz"]
     end
 
     A1 --> B
@@ -55,7 +58,7 @@ flowchart TD
     subgraph Outputs
         C1["Refreshed Application DB<br/>in Test Environment"]
         C2["Versioned Source Files<br/>Azure Blob Storage"]
-        C3["Review Seed Backup<br>Azure Blob Storage<br/>container:<br/>/alldata/db-backups/ <br/>file:<br/>sappub_review_seed_latest.sql.gz"]
+        C3["Review Seed Backup<br>Azure Blob Storage<br/>container:<br/>/[github_secret]/db-backups/ <br/>file:<br/>sappub_review_seed_latest.sql.gz"]
     end
 
     A1 --> B
