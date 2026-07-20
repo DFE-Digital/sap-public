@@ -19,11 +19,10 @@ using SAPPub.Core.ServiceModels.KS4.Admissions;
 using SAPPub.Core.ServiceModels.KS4.Attendance;
 using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Core.Tests.TestBuilders;
-using SAPPub.Web.Areas.Profiles.ViewModels.Destinations;
+using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Constants;
 using SAPPub.Web.Controllers;
 using SAPPub.Web.Helpers;
-using SAPPub.Web.Models.Charts;
 using SAPPub.Web.Models.SecondarySchool;
 using static SAPPub.Web.Constants.Constants;
 
@@ -38,6 +37,7 @@ public class SecondarySchoolControllerTests
     private readonly Mock<IAttainmentAndProgressService> _mockAttainmentAndProgressService = new();
     private readonly Mock<IAdmissionsService> _mockAdmissionsService = new();
     private readonly Mock<IAttendanceService> _mockAttendanceService = new();
+    private readonly Mock<IAdditionalMeasuresService> _mockAdditionalMeasuresService = new();
     private readonly SecondarySchoolController _controller;
     private EstablishmentServiceModel _fakeEstablishment;
 
@@ -906,9 +906,58 @@ public class SecondarySchoolControllerTests
         );
 
         Assert.Equal(2, model?.RouteAttributes.Count);
+        Assert.Equal(_fakeEstablishment.URN, model!.RouteAttributes[RouteConstants.URN]);
+        Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
+    }
+
+    [Fact]
+    public async Task Get_AdditionalMeasures_ReturnsExpected()
+    {
+        // Arrange
+        var additionalMeasures = new AdditionalMeasuresModel()
+        {
+            EnglandCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().Build(),
+            LocalAuthorityCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().Build(),
+            EstablishmentCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().Build()
+        };
+
+        _mockAdditionalMeasuresService
+            .Setup(s => s.GetAsync(_fakeEstablishment.URN, It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(additionalMeasures);
+
+        // Act
+        var result = await _controller.AcademicPerformanceAdditionalMeasures(
+            _mockAdditionalMeasuresService.Object,
+            _fakeEstablishment.URN,
+            _fakeEstablishment.EstablishmentName,
+            CancellationToken.None) as ViewResult;
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as AcademicPerformanceAdditionalMeasuresViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(_fakeEstablishment.URN, model.URN);
+        Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
+
+        Assert.Equal(_fakeEstablishment.URN, model.URN);
+        Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
+        AssertAdditionalMeasuresData(additionalMeasures.EstablishmentCurrentYear, model.MeasuresInTableFormat.Select(d => d.EstablishmentCurrentYear).ToArray());
+        AssertAdditionalMeasuresData(additionalMeasures.LocalAuthorityCurrentYear, model.MeasuresInTableFormat.Select(d => d.LocalAuthorityCurrentYear).ToArray());
+        AssertAdditionalMeasuresData(additionalMeasures.EnglandCurrentYear, model.MeasuresInTableFormat.Select(d => d.EnglandCurrentYear).ToArray());
+
+        Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
-    
+    private void AssertAdditionalMeasuresData(AdditionalMeasures expected, DisplayField<CodedDouble>[] performance)
+    {
+        Assert.Equal(expected.PercentAchievingAtLeastOneQualification.Value, performance[0].Value.Value);
+        Assert.Equal(expected.PercentEnteredForTripleScience.Value, performance[1].Value.Value);
+        Assert.Equal(expected.PercentEnteredMoreThanOneForeignLanguage.Value, performance[2].Value.Value);
+        Assert.Equal(expected.AverageGCSEExamEntriesPerPupil.Value, performance[3].Value.Value);
+        Assert.Equal(expected.AverageAllKS4QualificationsExamEntriesPerPupil.Value, performance[4].Value.Value);
+    }
 }

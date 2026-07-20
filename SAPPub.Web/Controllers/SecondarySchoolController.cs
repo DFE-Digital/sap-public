@@ -6,7 +6,6 @@ using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.Interfaces.Services.KS4.Attendance;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
-using SAPPub.Web.Areas.Profiles.ViewModels.Destinations;
 using SAPPub.Web.Constants;
 using SAPPub.Web.Models.SecondarySchool;
 
@@ -108,6 +107,17 @@ namespace SAPPub.Web.Controllers
             return View(model);
         }
 
-        
+        [HttpGet]
+        [Route("school/{urn}/{schoolName}/secondary/academic-performance-additional-measures", Name = RouteConstants.SecondaryAcademicPerformanceAdditionalMeasures)]
+        public async Task<IActionResult> AcademicPerformanceAdditionalMeasures(
+            [FromServices] IAdditionalMeasuresService additionalMeasuresService,
+            string urn, string schoolName, CancellationToken ct)
+        {
+            var establishmentDetails = await establishmentService.GetEstablishmentAsync(urn, ct);
+            var additionalMeasures = await additionalMeasuresService.GetAsync(urn, establishmentDetails.LAId, ct);
+
+            var model = AcademicPerformanceAdditionalMeasuresViewModel.MapToMeasuresInTableFormat(additionalMeasures, establishmentDetails);
+            return View(model);
+        }
     }
 }
