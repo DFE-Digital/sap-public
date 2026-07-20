@@ -62,6 +62,9 @@
 
         addKeyboardFocusTransfer(allGcseShowDataOverTimeBtn, allGcseShowCurrentDataBtn);
         addKeyboardFocusTransfer(allGcseShowCurrentDataBtn, allGcseShowDataOverTimeBtn);
+
+        addEnterKeyHandler(allGcseShowDataOverTimeBtn);
+        addEnterKeyHandler(allGcseShowCurrentDataBtn);
     });
 
     function setToggleText(toggle, text) {
@@ -105,6 +108,19 @@
             }
 
             moveFocusToElement(targetElement);
+        });
+    }
+
+    function addEnterKeyHandler(element) {
+        if (!element) {
+            return;
+        }
+
+        element.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                element.click();
+            }
         });
     }
 

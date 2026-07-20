@@ -61,6 +61,9 @@
         addKeyboardFocusTransfer(allDestShowDataOverTimeBtn, allDestShowCurrentDataBtn);
         addKeyboardFocusTransfer(allDestShowCurrentDataBtn, allDestShowDataOverTimeBtn);
 
+        addEnterKeyHandler(allDestShowDataOverTimeBtn);
+        addEnterKeyHandler(allDestShowCurrentDataBtn);
+
         const breakdownDestCurrentYearShowAsTableBtn = document.getElementById('breakdown-dest-current-year-show-btn');
         const breakdownDestCurrentYearChartContainer = document.getElementById('breakdown-dest-current-year-chart-container');
         const breakdownDestCurrentYearTableContainer = document.getElementById('breakdown-dest-current-year-table-container');
@@ -115,6 +118,19 @@
             }
 
             moveFocusToElement(targetElement);
+        });
+    }
+
+    function addEnterKeyHandler(element) {
+        if (!element) {
+            return;
+        }
+
+        element.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                element.click();
+            }
         });
     }
 
