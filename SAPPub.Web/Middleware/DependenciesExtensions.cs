@@ -92,6 +92,8 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<IAcademicPerformanceEnglishAndMathsResultsService, EnglishAndMathsResultsService>();
             services.AddTransient<IAttainmentAndProgressService, AttainmentAndProgressService>();
 
+            services.AddTransient<IAdditionalMeasuresService, AdditionalMeasuresService>();
+
             services.AddTransient<IDestinationsService, DestinationsService>();
             services.AddTransient<IAdmissionsService, EstablishmentAdmissionsService>();
             services.AddTransient<IAboutSchoolService, AboutSchoolService>();
