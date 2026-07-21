@@ -66,6 +66,11 @@
     margin: 0;
 }
 
+.app-highlight-grey {
+    background-color: govuk-colour("light-grey");
+    padding: 4px;
+}
+
 .custom-card {
     box-sizing: border-box;
     background-color: #f4f8fb;

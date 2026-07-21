@@ -1,5 +1,4 @@
 ﻿using SAPPub.Core.Enums;
-using System.Runtime.InteropServices;
 
 namespace SAPPub.Core.ServiceModels.KS4.AboutSchool;
 
