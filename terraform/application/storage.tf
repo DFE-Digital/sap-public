@@ -12,6 +12,7 @@ module "storage" {
   # Create containers for the application (all containers are private)
   containers = [
     { name = "schooldata" },
+    { name = "alldata" },
     { name = "keys" }
   ]
 
