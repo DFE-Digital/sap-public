@@ -61,7 +61,7 @@ flowchart TD
     subgraph Refresh Data Process
         B1["Build & Test Application"]
         B2["Deploy Review Environment"]
-        B3["Run School Data Ingestion Pipeline"]
+        B3["Run School Data Ingestion</br> Pipeline"]
         B4["Download & Version Source Data"]
         B5["Generate SQL & Run ETL"]
         B6["Populate Review Database"]
@@ -75,7 +75,7 @@ flowchart TD
 
     subgraph Outputs
         C1["Review Application"]
-        C2["Review Database<br/>(Freshly Built from Source Data)"]
+        C2["Review Database<br/>(Freshly Built from</br>Source Data)"]
     end
 
     A1 --> B1
