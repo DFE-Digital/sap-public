@@ -4,6 +4,7 @@ using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.KS4.SubjectEntries;
+using SAPPub.Core.Entities.Performance;
 
 namespace SAPPub.Infrastructure.Repositories.Helpers
 {
@@ -113,7 +114,13 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Prog8_CI_Upper_Est_Previous2_Num_Coded", 
           "Prog8_Banding_Est_Previous2",          
           "Prog8_TotPup_Est_Previous2_Num_Coded",
-          "Pup_Tot_Est_Previous2_Num_Coded"
+          "Pup_Tot_Est_Previous2_Num_Coded",
+          "AnyQual_Tot_Est_Current_Pct_Coded",
+          "TripSci_Tot_Est_Current_Pct_Coded",
+          "More1FL_Tot_Est_Current_Pct_Coded",
+          "ExamEntriesGSCE_Tot_Est_Current_Num_Coded",
+          "ExamEntriesKS4_Tot_Est_Current_Num_Coded",
+          "Pup_Tot_Est_Current_Num_Coded"
           """;
 
         private const string LAPerformanceColumns = """
@@ -132,7 +139,13 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Attainment8_Tot_LA_Previous2_Num_Coded",
           "EngMaths49_Tot_LA_Previous2_Pct_Coded",
           "EngMaths59_Tot_LA_Previous2_Pct_Coded",
-          "Prog8_Avg_LA_Previous2_Num_Coded"
+          "Prog8_Avg_LA_Previous2_Num_Coded",
+          "AnyQual_Tot_LA_Current_Pct_Coded",
+          "TripSci_Tot_LA_Current_Pct_Coded",
+          "More1FL_Tot_LA_Current_Pct_Coded",
+          "ExamEntriesGSCE_Tot_LA_Current_Num_Coded",
+          "ExamEntriesKS4_Tot_LA_Current_Num_Coded",
+          "Pup_Tot_LA_Current_Num_Coded"
           """;
 
         private const string LADestinationsColumns = """
@@ -159,7 +172,13 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "EngMaths59_Tot_Eng_Previous_Pct_Coded",
           "Attainment8_Tot_Eng_Previous2_Num_Coded",
           "EngMaths49_Tot_Eng_Previous2_Pct_Coded",
-          "EngMaths59_Tot_Eng_Previous2_Pct_Coded"
+          "EngMaths59_Tot_Eng_Previous2_Pct_Coded",
+          "AnyQual_Tot_Eng_Current_Pct_Coded",
+          "TripSci_Tot_Eng_Current_Pct_Coded",
+          "More1FL_Tot_Eng_Current_Pct_Coded",
+          "ExamEntriesGSCE_Tot_Eng_Current_Num_Coded",
+          "ExamEntriesKS4_Tot_Eng_Current_Num_Coded",
+          "Pup_Tot_Eng_Current_Num_Coded"
           """;
 
         private const string EnglandDestinationsColumns = """
@@ -200,6 +219,20 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Name",
           "LAMainUrl"
           """;
+
+        private const string EstablishmentKs5PerformanceColumns = """
+          "Id",
+          "TALLPUP_ACAD_1618_Est_Current_Num_Coded",
+          "VA_INS_ALEV_Est_Current_Num_Coded",
+          "PROGRESS_BAND_ALEV_Est_Current",
+          "UCI_INS_ALEV_Est_Current_Num_Coded",
+          "LCI_INS_ALEV_Est_Current_Num_Coded"          
+          """;
+
+        private const string EnglandKs5PerformanceColumns = """
+          "Id",
+          "VA_INS_ALEV_Eng_Current_Num_Coded"                  
+          """;        
 
         private const string GatewayLAColumns = """
           "Id",
@@ -381,7 +414,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                     SelectFromWhereId(EstablishmentDestinationsColumns, "v_establishment_destinations"),
 
                 nameof(EstablishmentPerformance) =>
-                    SelectFromWhereId(EstablishmentPerformanceColumns, "v_establishment_performance"),
+                    SelectFromWhereId(EstablishmentPerformanceColumns, "v_establishment_performance"),                                
 
                 nameof(LAAbsence) =>
                     SelectFromWhereId(LAAbsenceColumns, "v_la_absence"),
@@ -403,6 +436,12 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
 
                 nameof(LaUrls) =>
                     SelectFromWhereId(LaUrlsColumns, "v_la_urls"),
+
+                nameof(EstablishmentKs5Performance) =>
+                    SelectFromWhereId(EstablishmentKs5PerformanceColumns, "v_establishment_ks5_performance"),
+
+                nameof(EnglandKs5Performance) =>
+                    SelectFromWhere(EnglandKs5PerformanceColumns, "v_england_ks5_performance", "\"Id\" = 'National'"),
 
                 nameof(GatewayLocalAuthority) =>
                     SelectFromWhereIdAndNotDeleted(GatewayLAColumns, "gateway_local_authority"),

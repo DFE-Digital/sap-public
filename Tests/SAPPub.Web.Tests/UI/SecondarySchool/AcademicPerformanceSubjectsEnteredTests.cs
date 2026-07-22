@@ -120,6 +120,6 @@ public class AcademicPerformanceSubjectsEnteredTests(WebApplicationSetupFixture 
         // Assert
         Assert.True(isVisible);
         Assert.Equal("Academic performance: English and maths results", previousPaginationText?.Trim());
-        Assert.Equal("Destinations", nextPaginationText?.Trim());
+        Assert.Equal("Academic performance: Additional measures", nextPaginationText?.Trim());
     }
 }
