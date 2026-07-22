@@ -1,6 +1,8 @@
 ﻿using Deque.AxeCore.Commons;
 using Deque.AxeCore.Playwright;
+using Humanizer;
 using Microsoft.Playwright;
+using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
@@ -41,7 +43,8 @@ public class AccessibilityTests(WebApplicationSetupFixture fixture) : BasePageTe
         "compare/secondary/about-your-schools?urns=105574&urns=107564",
         "compare/secondary/pupil-attainment?urns=100279&urns=145179",
         "compare/secondary/english-and-maths-results?urns=105574&urns=137020",
-        "compare/secondary/destinations-after-year-11?urns=105574&urns=107564"
+        "compare/secondary/destinations-after-year-11?urns=105574&urns=107564",
+        "school/130499/holy-cross-college/16-to-19-performance/advanced-level/alevel"
     };
 
     [Fact]
