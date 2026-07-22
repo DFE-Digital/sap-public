@@ -4,7 +4,7 @@ using SAPPub.Web.Helpers;
 
 namespace SAPPub.Web.Models.SecondarySchool;
 
-public class AcademicPerformanceAdditionalMeasuresViewModel : SecondarySchoolBaseViewModel
+public class AcademicPerformanceAdditionalMeasuresViewModel : BaseViewModel
 {
     public required IEnumerable<AcademicPerformanceAdditionalMeasureViewModel> MeasuresInTableFormat { get; set; }
 

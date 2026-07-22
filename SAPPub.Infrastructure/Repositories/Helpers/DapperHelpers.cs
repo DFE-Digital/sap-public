@@ -4,6 +4,7 @@ using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.KS4.SubjectEntries;
+using SAPPub.Core.Entities.Performance;
 
 namespace SAPPub.Infrastructure.Repositories.Helpers
 {
@@ -219,6 +220,20 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "LAMainUrl"
           """;
 
+        private const string EstablishmentKs5PerformanceColumns = """
+          "Id",
+          "TALLPUP_ACAD_1618_Est_Current_Num_Coded",
+          "VA_INS_ALEV_Est_Current_Num_Coded",
+          "PROGRESS_BAND_ALEV_Est_Current",
+          "UCI_INS_ALEV_Est_Current_Num_Coded",
+          "LCI_INS_ALEV_Est_Current_Num_Coded"          
+          """;
+
+        private const string EnglandKs5PerformanceColumns = """
+          "Id",
+          "VA_INS_ALEV_Eng_Current_Num_Coded"                  
+          """;        
+
         private const string GatewayLAColumns = """
           "Id",
           "LocalAuthorityName",
@@ -399,7 +414,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                     SelectFromWhereId(EstablishmentDestinationsColumns, "v_establishment_destinations"),
 
                 nameof(EstablishmentPerformance) =>
-                    SelectFromWhereId(EstablishmentPerformanceColumns, "v_establishment_performance"),
+                    SelectFromWhereId(EstablishmentPerformanceColumns, "v_establishment_performance"),                                
 
                 nameof(LAAbsence) =>
                     SelectFromWhereId(LAAbsenceColumns, "v_la_absence"),
@@ -421,6 +436,12 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
 
                 nameof(LaUrls) =>
                     SelectFromWhereId(LaUrlsColumns, "v_la_urls"),
+
+                nameof(EstablishmentKs5Performance) =>
+                    SelectFromWhereId(EstablishmentKs5PerformanceColumns, "v_establishment_ks5_performance"),
+
+                nameof(EnglandKs5Performance) =>
+                    SelectFromWhere(EnglandKs5PerformanceColumns, "v_england_ks5_performance", "\"Id\" = 'National'"),
 
                 nameof(GatewayLocalAuthority) =>
                     SelectFromWhereIdAndNotDeleted(GatewayLAColumns, "gateway_local_authority"),

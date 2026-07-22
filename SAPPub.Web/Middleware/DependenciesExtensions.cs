@@ -6,6 +6,7 @@ using SAPPub.Core.Interfaces.Repositories.KS4.Absence;
 using SAPPub.Core.Interfaces.Repositories.KS4.Destinations;
 using SAPPub.Core.Interfaces.Repositories.KS4.Performance;
 using SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
+using SAPPub.Core.Interfaces.Repositories.Performance;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Gateway;
 using SAPPub.Core.Interfaces.Services.KS4;
@@ -16,6 +17,7 @@ using SAPPub.Core.Interfaces.Services.KS4.Attendance;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
+using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.Services;
 using SAPPub.Core.Services.Gateway;
@@ -27,6 +29,7 @@ using SAPPub.Core.Services.KS4.Attendance;
 using SAPPub.Core.Services.KS4.Destinations;
 using SAPPub.Core.Services.KS4.Performance;
 using SAPPub.Core.Services.KS4.SubjectEntries;
+using SAPPub.Core.Services.Performance;
 using SAPPub.Core.Services.Search;
 using SAPPub.Infrastructure.Mapping.ValueCodes;
 using SAPPub.Infrastructure.PostgresSearch;
@@ -37,6 +40,7 @@ using SAPPub.Infrastructure.Repositories.KS4.Absence;
 using SAPPub.Infrastructure.Repositories.KS4.Destinations;
 using SAPPub.Infrastructure.Repositories.KS4.Performance;
 using SAPPub.Infrastructure.Repositories.KS4.SubjectEntries;
+using SAPPub.Infrastructure.Repositories.Performance;
 using SAPPub.Web.Areas.Compare.Filters;
 
 namespace SAPPub.Web.Middleware
@@ -119,8 +123,11 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<IEnglishAndMathsComparisionService, EnglishAndMathsComparisionService>();
             services.AddTransient<IDestinationsComparisonService, DestinationsComparisonService>();
             services.AddTransient<IAttainmentAndProgressComparisionService, AttainmentAndProgressComparisionService>();
-
             services.AddTransient<ILAService, LAService>();
+
+            services.AddTransient<IKs5PerformanceRepository, Ks5PerformanceRepository>();
+            services.AddTransient<IAdvancedLevelQualificationsService, AdvancedLevelQualificationsService>();
+
             services.AddScoped<SecondaryComparisonQueryValidationFilter>();
 
             // Mapper
