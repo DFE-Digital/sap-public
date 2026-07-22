@@ -1,8 +1,6 @@
 ﻿using Deque.AxeCore.Commons;
 using Deque.AxeCore.Playwright;
-using Humanizer;
 using Microsoft.Playwright;
-using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
