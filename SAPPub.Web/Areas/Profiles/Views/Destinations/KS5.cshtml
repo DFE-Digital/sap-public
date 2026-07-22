@@ -1,6 +1,8 @@
-﻿@model SAPPub.Web.Areas.Profiles.ViewModels.AboutSchool.AboutSchoolViewModel;
+﻿@model KS5DestinationsViewModel;
+@using SAPPub.Web.Areas.Profiles.ViewModels.Destinations
 @using SAPPub.Web.Constants
 @using SAPPub.Web.ViewComponents.VerticalNavigation
+@using static SAPPub.Web.Constants.Constants;
 
 @{
     ViewData["Header"] = PageTitleConstants.KS5SchoolPageTitles.Destinations;
@@ -24,10 +26,8 @@
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">@ViewData["Header"]</h1>
 
         <p class="govuk-body" data-testId="looking-at-school-performance-info">
-            Looking at school performance data is one way to see how well a school is doing.
-            You should look at a range of information about a school before deciding if it’s the right fit for your child.
+            Find out how students from this school or college progressed after finishing 16 to 19 study. Choose a group to view:
         </p>
-
 
         <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
             <ul class="moj-sub-navigation__list">
@@ -47,11 +47,65 @@
             </ul>
         </nav>
 
-        <h2 class="govuk-heading-l">@ViewData["Header"]</h2>
+        <h2 class="govuk-heading-l">Student destinations after 16 to 19 study (2023 leavers)</h2>
 
+        <p class="govuk-body">
+            This data (published March 2026) shows what students did after finishing 16 to 19 study in 2023.
+        </p>
+        <p class="govuk-body">
+            Students are included if they:
+            <ul class="govuk-list govuk-list--bullet">
+                <li>stayed in education</li>
+                <li>started an apprenticeship (for at least 6 months)</li>
+                <li>entered employment from October to March the following year</li>
+            </ul>
+        </p>
 
+        <p class="govuk-body">
+            Compare this school or college with state-funded local and national averages.
+        </p>
 
+        <p class="govuk-tag govuk-tag--full-width govuk-tag--grey">
+            Number of students from this school or college included in the measure: @Model.NumberOfStudentsIncludedInMeasure.Value
+        </p>
 
+        <div class="data-container">
+            <h3 class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">
+                Students progressing to either education, apprenticeships or employment
+            </h3>
+            @if (Model.HasEstablishmentData.IsAvailable)
+            {
+                <div id="all-ks5-dest-data-container">
+                    <div id="all-ks5-dest-data-chart-container" class="chart-container">
+                        <canvas id="all-destinations-chart"
+                                class="js-chart"
+                                data-type="bar"
+                                data-not-available-text="@(NotAvailable)"
+                                data-chart='@Html.Raw(Json.Serialize(Model.AllDestinationsData))'
+                                data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
+                        </canvas>
+                    </div>
+
+                    <div id="all-ks5-dest-data-table-container" class="all-ks5-dest-data-table-container">
+                        <table id="all-destinations-current-year-table" class="govuk-table">
+                            <tbody class="govuk-table__body">
+                                @foreach (var label in Model.AllDestinationsData.Labels.Select((value, i) => (value, i)))
+                                {
+                                    <tr class="govuk-table__row">
+                                        <th scope="row" class="govuk-table__header">@label.value</th>
+                                        <td class="govuk-table__cell">@Model.AllDestinationsData.Data[label.i]%</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="govuk-button-group">
+                        <button id="all-ks5-dest-data-show-btn" class="govuk-button govuk-button--secondary">Show as a table</button>
+                    </div>
+                </div>
+            }
+        </div>
 
         <govuk-pagination id="destinations-pagination">
             @if (Model.IsKS4 == true)

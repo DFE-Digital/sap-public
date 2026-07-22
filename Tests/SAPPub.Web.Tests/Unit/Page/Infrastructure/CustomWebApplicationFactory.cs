@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using SAPPub.Core.Interfaces;
 using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Services;
-using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.KS4.Absence;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
@@ -40,7 +40,6 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.RemoveAll(typeof(IAttainmentAndProgressService));
                 services.RemoveAll(typeof(IEstablishmentService));
                 services.RemoveAll(typeof(IEstablishmentPerformanceService));
-                services.RemoveAll(typeof(IEstablishmentDestinationsService));
                 services.RemoveAll(typeof(IEstablishmentAbsenceService));
                 services.RemoveAll(typeof(IEstablishmentSubjectEntriesService));
                 services.RemoveAll(typeof(IAcademicPerformanceEnglishAndMathsResultsService));
@@ -59,7 +58,6 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.AddSingleton<MockAccessor<IAttainmentAndProgressService>>();
                 services.AddSingleton<MockAccessor<IEstablishmentService>>();
                 services.AddSingleton<MockAccessor<IEstablishmentPerformanceService>>();
-                services.AddSingleton<MockAccessor<IEstablishmentDestinationsService>>();
                 services.AddSingleton<MockAccessor<IEstablishmentAbsenceService>>();
                 services.AddSingleton<MockAccessor<IEstablishmentSubjectEntriesService>>();
                 services.AddSingleton<MockAccessor<IAcademicPerformanceEnglishAndMathsResultsService>>();
@@ -90,10 +88,6 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.AddTransient(provider =>
                     {
                         return provider.GetRequiredService<MockAccessor<IEstablishmentPerformanceService>>().Get()?.Object!;
-                    });
-                services.AddTransient(provider =>
-                    {
-                        return provider.GetRequiredService<MockAccessor<IEstablishmentDestinationsService>>().Get()?.Object!;
                     });
                 services.AddTransient(provider =>
                     {

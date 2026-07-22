@@ -14,6 +14,19 @@
 
         const allDestShowCurrentDataBtn = document.getElementById('all-dest-show-current-data-btn');
 
+        // KS5 destinations (edu, apprnship, work)
+        const allKs5DestsShowAsTableBtn = document.getElementById('all-ks5-dest-data-show-btn');
+        const allKs5DestChartContainer = document.getElementById('all-ks5-dest-data-chart-container');
+        const allKs5DestTableContainer = document.getElementById('all-ks5-dest-data-table-container');
+
+        setAriaAttribute(allKs5DestsShowAsTableBtn, 'false');
+        if (allKs5DestsShowAsTableBtn) {
+            allKs5DestsShowAsTableBtn.addEventListener('click', () => {
+                const chartVisible = allKs5DestChartContainer.style.display !== 'none';
+                setTooggleState(allKs5DestChartContainer, allKs5DestTableContainer, chartVisible, allKs5DestsShowAsTableBtn);
+            });
+        }
+
         setAriaAttribute(allDestCurrentYearShowAsTableBtn, 'false');
         if (allDestCurrentYearShowAsTableBtn) {
             allDestCurrentYearShowAsTableBtn.addEventListener('click', () => {

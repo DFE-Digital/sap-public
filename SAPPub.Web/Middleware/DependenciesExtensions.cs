@@ -1,14 +1,13 @@
 ﻿using Dapper;
 using SAPPub.Core.Interfaces.Repositories;
+using SAPPub.Core.Interfaces.Repositories.Destinations;
 using SAPPub.Core.Interfaces.Repositories.Gateway;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Repositories.KS4.Absence;
-using SAPPub.Core.Interfaces.Repositories.KS4.Destinations;
 using SAPPub.Core.Interfaces.Repositories.KS4.Performance;
 using SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Gateway;
-using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.KS4.Absence;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
@@ -19,7 +18,6 @@ using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.Services;
 using SAPPub.Core.Services.Gateway;
-using SAPPub.Core.Services.KS4;
 using SAPPub.Core.Services.KS4.AboutSchool;
 using SAPPub.Core.Services.KS4.Absence;
 using SAPPub.Core.Services.KS4.Admissions;
@@ -31,10 +29,10 @@ using SAPPub.Core.Services.Search;
 using SAPPub.Infrastructure.Mapping.ValueCodes;
 using SAPPub.Infrastructure.PostgresSearch;
 using SAPPub.Infrastructure.Repositories;
+using SAPPub.Infrastructure.Repositories.Destinations;
 using SAPPub.Infrastructure.Repositories.Gateway;
 using SAPPub.Infrastructure.Repositories.Generic;
 using SAPPub.Infrastructure.Repositories.KS4.Absence;
-using SAPPub.Infrastructure.Repositories.KS4.Destinations;
 using SAPPub.Infrastructure.Repositories.KS4.Performance;
 using SAPPub.Infrastructure.Repositories.KS4.SubjectEntries;
 using SAPPub.Web.Areas.Compare.Filters;
@@ -58,8 +56,8 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<IEstablishmentPerformanceRepository, EstablishmentPerformanceRepository>();
             services.AddTransient<IEstablishmentPerformanceService, EstablishmentPerformanceService>();
 
-            services.AddTransient<IEstablishmentDestinationsRepository, EstablishmentDestinationsRepository>();
-            services.AddTransient<IEstablishmentDestinationsService, EstablishmentDestinationsService>();
+            services.AddTransient<IKS4DestinationsRepository, KS4DestinationsRepository>();
+            services.AddTransient<IKS5DestinationsRepository, KS5DestinationsRepository>();
 
             services.AddTransient<IEstablishmentAbsenceRepository, EstablishmentAbsenceRepository>();
             services.AddTransient<IEstablishmentAbsenceService, EstablishmentAbsenceService>();
@@ -67,17 +65,11 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<ILAPerformanceRepository, LAPerformanceRepository>();
             services.AddTransient<ILAPerformanceService, LAPerformanceService>();
 
-            services.AddTransient<ILADestinationsRepository, LADestinationsRepository>();
-            services.AddTransient<ILADestinationsService, LADestinationsService>();
-
             services.AddTransient<ILAAbsenceRepository, LAAbsenceRepository>();
             services.AddTransient<ILAAbsenceService, LAAbsenceService>();
 
             services.AddTransient<IEnglandPerformanceRepository, EnglandPerformanceRepository>();
             services.AddTransient<IEnglandPerformanceService, EnglandPerformanceService>();
-
-            services.AddTransient<IEnglandDestinationsRepository, EnglandDestinationsRepository>();
-            services.AddTransient<IEnglandDestinationsService, EnglandDestinationsService>();
 
             services.AddTransient<IEnglandAbsenceRepository, EnglandAbsenceRepository>();
             services.AddTransient<IEnglandAbsenceService, EnglandAbsenceService>();

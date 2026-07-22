@@ -1,6 +1,6 @@
 ﻿using SAPPub.Core.Entities;
+using SAPPub.Core.Entities.Destinations;
 using SAPPub.Core.Entities.KS4.Absence;
-using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Infrastructure.Repositories.Helpers;
@@ -14,11 +14,11 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Helpers
         {
             Assert.NotEmpty(DapperHelpers.GetReadMultiple(typeof(Establishment)));
             Assert.NotEmpty(DapperHelpers.GetReadMultiple(typeof(EstablishmentAbsence)));
-            Assert.NotEmpty(DapperHelpers.GetReadMultiple(typeof(EstablishmentDestinations)));
+            Assert.NotEmpty(DapperHelpers.GetReadMultiple(typeof(KS4EstablishmentDestinations)));
             Assert.NotEmpty(DapperHelpers.GetReadMultiple(typeof(EstablishmentPerformance)));
-            Assert.NotEmpty(DapperHelpers.GetReadMultiple(typeof(LADestinations)));
+            Assert.NotEmpty(DapperHelpers.GetReadMultiple(typeof(KS4LADestinations)));
             Assert.NotEmpty(DapperHelpers.GetReadMultiple(typeof(LAPerformance)));
-            Assert.NotEmpty(DapperHelpers.GetReadMultiple(typeof(EnglandDestinations)));
+            Assert.NotEmpty(DapperHelpers.GetReadMultiple(typeof(KS4EnglandDestinations)));
             Assert.NotEmpty(DapperHelpers.GetReadMultiple(typeof(EnglandPerformance)));
             Assert.NotEmpty(DapperHelpers.GetReadMultiple(typeof(LaUrls)));
         }
@@ -28,11 +28,11 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Helpers
         {
             Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(Establishment)));
             Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(EstablishmentAbsence)));
-            Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(EstablishmentDestinations)));
+            Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(KS4EstablishmentDestinations)));
             Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(EstablishmentPerformance)));
-            Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(LADestinations)));
+            Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(KS4LADestinations)));
             Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(LAPerformance)));
-            Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(EnglandDestinations)));
+            Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(KS4EnglandDestinations)));
             Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(EnglandPerformance)));
             Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(LaUrls)));
         }
@@ -61,14 +61,14 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Helpers
         {
             // a couple of representative ones
             Assert.Contains("where \"Id\" = @Id", DapperHelpers.GetReadSingle(typeof(EstablishmentAbsence)), StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("where \"Id\" = @Id", DapperHelpers.GetReadSingle(typeof(EstablishmentDestinations)), StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("where \"Id\" = @Id", DapperHelpers.GetReadSingle(typeof(KS4EstablishmentDestinations)), StringComparison.OrdinalIgnoreCase);
             Assert.Contains("where \"Id\" = @Id", DapperHelpers.GetReadSingle(typeof(LAPerformance)), StringComparison.OrdinalIgnoreCase);
         }
 
         [Fact]
         public void England_ReadSingle_queries_filter_on_National_id()
         {
-            var destSql = DapperHelpers.GetReadSingle(typeof(EnglandDestinations));
+            var destSql = DapperHelpers.GetReadSingle(typeof(KS4EnglandDestinations));
             var perfSql = DapperHelpers.GetReadSingle(typeof(EnglandPerformance));
 
             Assert.Contains("\"Id\" = 'National'", destSql, StringComparison.OrdinalIgnoreCase);

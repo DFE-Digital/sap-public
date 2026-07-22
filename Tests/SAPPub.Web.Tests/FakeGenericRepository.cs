@@ -1,5 +1,5 @@
 ﻿using SAPPub.Core.Entities;
-using SAPPub.Core.Entities.KS4.Destinations;
+using SAPPub.Core.Entities.Destinations;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Repositories.Generic;
@@ -314,9 +314,9 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
         },
     };
 
-    private static readonly Dictionary<string, EstablishmentDestinations> EstablishmentDestinations = new(StringComparer.OrdinalIgnoreCase)
+    private static readonly Dictionary<string, KS4EstablishmentDestinations> EstablishmentDestinations = new(StringComparer.OrdinalIgnoreCase)
     {
-        ["105574"] = new EstablishmentDestinations
+        ["105574"] = new KS4EstablishmentDestinations
         {
             Id = "105574",
             AllDest_Tot_Est_Current_Pct = 50,
@@ -327,7 +327,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             Apprentice_Tot_Est_Current_Pct = 1,
 
         },
-        ["100279"] = new EstablishmentDestinations
+        ["100279"] = new KS4EstablishmentDestinations
         {
             Id = "100279",
             AllDest_Tot_Est_Current_Pct = 50,
@@ -337,7 +337,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             Employment_Tot_Est_Current_Pct = 2,
             Apprentice_Tot_Est_Current_Pct = 1,
         },
-        ["149328"] = new EstablishmentDestinations
+        ["149328"] = new KS4EstablishmentDestinations
         {
             Id = "149328",
             AllDest_Tot_Est_Current_Pct = null,
@@ -349,22 +349,31 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
         },
     };
 
-    private static readonly Dictionary<string, EnglandDestinations> EnglandDestinations = new(StringComparer.OrdinalIgnoreCase)
+    private static readonly Dictionary<string, KS4EnglandDestinations> EnglandDestinations = new(StringComparer.OrdinalIgnoreCase)
     {
-        ["105574"] = new EnglandDestinations
+        ["105574"] = new KS4EnglandDestinations
         {
             Id = "105574",
             AllDest_Tot_Eng_Current_Pct = 50
         },
-        ["100279"] = new EnglandDestinations
+        ["100279"] = new KS4EnglandDestinations
         {
             Id = "100279",
             AllDest_Tot_Eng_Current_Pct = 50
         },
-        ["149328"] = new EnglandDestinations
+        ["149328"] = new KS4EnglandDestinations
         {
             Id = "149328",
             AllDest_Tot_Eng_Current_Pct = null
+        }
+    };
+
+    private static readonly Dictionary<string, KS5EstablishmentDestinations> KS5EstablishmentDestinations = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["105574"] = new KS5EstablishmentDestinations
+        {
+            TOT_OVERALLPER_Est_Current_Pct = 50,
+            TOT_COHORT_Est_Current_Num = 1020
         }
     };
 
@@ -403,7 +412,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
                 return Task.FromResult<T?>((T)(object)est);
         }
 
-        if (typeof(T) == typeof(EstablishmentDestinations))
+        if (typeof(T) == typeof(KS4EstablishmentDestinations))
         {
             var id = GetPropertyString(parameters, "Id");
 
@@ -411,11 +420,19 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
                 return Task.FromResult<T?>((T)(object)est);
         }
 
-        if (typeof(T) == typeof(EnglandDestinations))
+        if (typeof(T) == typeof(KS4EnglandDestinations))
         {
             var id = GetPropertyString(parameters, "Id");
 
             if (!string.IsNullOrWhiteSpace(id) && EnglandDestinations.TryGetValue(id, out var est))
+                return Task.FromResult<T?>((T)(object)est);
+        }
+
+        if (typeof(T) == typeof(KS5EstablishmentDestinations))
+        {
+            var id = GetPropertyString(parameters, "Id");
+
+            if (!string.IsNullOrWhiteSpace(id) && KS5EstablishmentDestinations.TryGetValue(id, out var est))
                 return Task.FromResult<T?>((T)(object)est);
         }
 
