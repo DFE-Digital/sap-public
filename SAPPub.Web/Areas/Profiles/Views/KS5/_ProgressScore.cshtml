@@ -1,0 +1,121 @@
+﻿@using SAPPub.Core.Enums.KS5Qualifications
+@model SAPPub.Web.Areas.Profiles.ViewModels.KS5.ProgressScoreViewModel
+
+@{
+    var qualificationLevel = (Level3?)ViewData["QualificationLevel"];
+}
+
+<h3 class="govuk-heading-m">Progress score</h3>
+
+<p class="govuk-body">
+    This shows how much progress students made between the end of key stage 4 and the end of their @qualificationLevel?.GetDisplayName() studies, compared to the national average. These scores are also known as 'value added' scores.
+</p>
+
+<p class="govuk-body">
+    <strong>What the scores mean</strong>
+</p>
+
+<p class="govuk-body">
+    A score:
+</p>
+        
+<ul class="govuk-list govuk-list--bullet">
+    <li>
+        above 0 means students made more progress, on average, than students across England who got similar results at the end of key stage 4.
+    </li>
+    <li>
+        below 0 means students made less progress, on average, than students across England who got similar results at the end of key stage 4.​
+    </li>            
+</ul>
+        
+<p class="govuk-body">
+    A negative score does not mean students made no progress, or that the school or college has failed. It means these students made less progress than other students across England with similar results at the end of key stage 4.
+</p>
+
+<govuk-details id="details-progress-score-confidence-intervals">
+    <govuk-details-summary>
+        Find out how progress score confidence intervals work
+    </govuk-details-summary>
+    <govuk-details-text>
+        <p class="govuk-body">
+            ​Confidence intervals show how reliable a progress score is.
+            They show the range that the true score is likely to fall within.
+        </p>
+
+        <p class="govuk-body">
+            It is difficult to say with certainty how much of the progress scores are down to the school
+            or college (which may have scored higher with a different group of students) and how much is
+            down to the students (for example some may have performed well at any school or college).
+            The confidence intervals reflect this uncertainty. If the confidence intervals for two schools
+            or colleges overlap, then we can’t say for certain that the two progress scores for these
+            schools or colleges are significantly different.​​
+        </p>
+
+        <p class="govuk-body">
+            Generally speaking, the greater the number of students, the smaller the range of the confidence interval.
+            For smaller schools or colleges, the confidence interval tends to be larger, since fewer students are
+            included, and therefore the score will be more greatly impacted by performance of individual students.​​
+        </p>
+
+        <p class="govuk-body">
+            <strong>How ratings are decided</strong>
+        </p>
+
+        <p class="govuk-body">
+            A school or college is above average if:
+        </p>
+        
+        <ul class="govuk-list govuk-list--bullet">
+            <li>
+                the progress score is above 0, and
+            </li>
+            <li>
+                the whole confidence interval is above 0
+            </li>            
+        </ul>
+
+        <p class="govuk-body">
+            A school or college is below average if:
+        </p>
+        
+        <ul class="govuk-list govuk-list--bullet">
+            <li>
+                the progress score is below 0, and
+            </li>
+            <li>
+                the whole confidence interval is below 0
+            </li>            
+        </ul>
+                
+        <p class="govuk-body">
+            ​<a data-testid="accountability-measures-guidance-link" class="govuk-link" rel="noreferrer noopener" target="_blank" href="https://www.gov.uk/government/publications/16-to-19-accountability-headline-measures-technical-guide">
+                Read the 16 to 19 accountability measures guidance<span class="govuk-visually-hidden">(opens in a new tab)</span>
+            </a>
+        </p>
+    </govuk-details-text>
+</govuk-details>
+
+<div class="custom-card" id="progress-score-card">
+    <div class="assignment__icon"></div>
+    <div class="custom-card__content">
+        <p class="govuk-body">
+            Students at this school score @Model.Score.DisplayText().
+            @if (Model.Progress8BandingContextDescription.IsAvailable)
+            {
+                <span>@Model.Progress8BandingContextDescription.DisplayText()</span>
+            }
+        </p>
+        <p class="govuk-body">
+            The confidence interval is @Model.ConfidenceLevelLower.DisplayText() to @Model.ConfidenceLevelUpper.DisplayText().
+        </p>
+    </div>
+</div>
+
+<div class="custom-card" id="average-progress-score-national-card">
+    <div class="custom-card__content">
+        <p class="govuk-body">
+            Average progress score in England: @Model.EnglandAverageScore.DisplayText()
+        </p>
+    </div>
+    <div class="bar-chart__icon"></div>
+</div>

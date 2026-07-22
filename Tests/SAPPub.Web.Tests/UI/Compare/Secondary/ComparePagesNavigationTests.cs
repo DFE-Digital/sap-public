@@ -4,7 +4,7 @@ using SAPPub.Web.Tests.UI.Infrastructure;
 namespace SAPPub.Web.Tests.UI.Compare.Secondary;
 
 [Collection("Playwright Tests")]
-public class NavigateThroughComparePagesTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
+public class ComparePagesNavigationTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
     private string _pageUrl = "compare/secondary/about-your-schools";
 

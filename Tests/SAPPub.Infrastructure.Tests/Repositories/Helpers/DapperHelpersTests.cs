@@ -3,6 +3,7 @@ using SAPPub.Core.Entities.Destinations;
 using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.KS4.SubjectEntries;
+using SAPPub.Core.Entities.Performance;
 using SAPPub.Infrastructure.Repositories.Helpers;
 
 namespace SAPPub.Infrastructure.Tests.Repositories.Helpers
@@ -20,7 +21,7 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Helpers
             Assert.NotEmpty(DapperHelpers.GetReadMultiple(typeof(LAPerformance)));
             Assert.NotEmpty(DapperHelpers.GetReadMultiple(typeof(KS4EnglandDestinations)));
             Assert.NotEmpty(DapperHelpers.GetReadMultiple(typeof(EnglandPerformance)));
-            Assert.NotEmpty(DapperHelpers.GetReadMultiple(typeof(LaUrls)));
+            Assert.NotEmpty(DapperHelpers.GetReadMultiple(typeof(LaUrls)));            
         }
 
         [Fact]
@@ -35,6 +36,8 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Helpers
             Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(KS4EnglandDestinations)));
             Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(EnglandPerformance)));
             Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(LaUrls)));
+            Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(EnglandKs5Performance)));
+            Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(EstablishmentKs5Performance)));
         }
 
         [Fact]

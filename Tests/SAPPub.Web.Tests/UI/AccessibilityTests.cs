@@ -26,6 +26,7 @@ public class AccessibilityTests(WebApplicationSetupFixture fixture) : BasePageTe
         "school/100273/saint-paul-roman-catholic-infant-school/secondary/admissions",
         "school/107564/todmorden-high-school/secondary/admissions",
         "school/105574/loreto-high-school-chorlton/secondary/attendance",
+        "school/105574/loreto-high-school-chorlton/secondary/academic-performance-additional-measures",
         "school/105574/loreto-high-school-chorlton/secondary/curriculum-and-extra-curricular-activities",
         "school/100273/saint-paul-roman-catholic-infant-school/secondary/curriculum-and-extra-curricular-activities",
         "school/105574/loreto-high-school-chorlton/destinations/secondary",
@@ -41,7 +42,8 @@ public class AccessibilityTests(WebApplicationSetupFixture fixture) : BasePageTe
         "compare/secondary/about-your-schools?urns=105574&urns=107564",
         "compare/secondary/pupil-attainment?urns=100279&urns=145179",
         "compare/secondary/english-and-maths-results?urns=105574&urns=137020",
-        "compare/secondary/destinations-after-year-11?urns=105574&urns=107564"
+        "compare/secondary/destinations-after-year-11?urns=105574&urns=107564",
+        "school/130499/holy-cross-college/16-to-19-performance/advanced-level/alevel"
     };
 
     [Fact]

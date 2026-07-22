@@ -1,11 +1,11 @@
 ﻿using SAPPub.Core.ServiceModels.Destinations;
 using SAPPub.Web.Helpers;
+using SAPPub.Web.Models;
 using SAPPub.Web.Models.Charts;
-using SAPPub.Web.Models.SecondarySchool;
 
 namespace SAPPub.Web.Areas.Profiles.ViewModels.Destinations;
 
-public class KS4DestinationsViewModel : SecondarySchoolBaseViewModel
+public class DestinationsViewModel : BaseViewModel
 {
     public required DataViewModel AllDestinationsData { get; set; }
 
