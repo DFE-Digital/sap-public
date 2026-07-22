@@ -176,7 +176,7 @@ public class AdvancedLevelPageTests : PageTestsBase
         // Assert progress data
         var progresScoreCard = doc.QuerySelector("#progress-score-card");
         Assert.NotNull(progresScoreCard);
-        Assert.Contains($"Pupils at this school score {_advancedLevelQualificationModel.ProgressScore.Score}", progresScoreCard.QuerySelectorAll("p")[0].TextContent);
+        Assert.Contains($"Students at this school score {_advancedLevelQualificationModel.ProgressScore.Score}", progresScoreCard.QuerySelectorAll("p")[0].TextContent);
         Assert.Contains($"This is average", progresScoreCard.QuerySelectorAll("p")[0].QuerySelector("span")?.TextContent);
         Assert.Contains($"The confidence interval is {_advancedLevelQualificationModel.ProgressScore.ConfidenceLevelLower} to {_advancedLevelQualificationModel.ProgressScore.ConfidenceLevelUpper}.", progresScoreCard.QuerySelectorAll("p")[1].TextContent);
 
