@@ -25,7 +25,7 @@ public class AccessibilityTests(WebApplicationSetupFixture fixture) : BasePageTe
         "school/105574/loreto-high-school-chorlton/admissions/secondary",
         "school/100273/saint-paul-roman-catholic-infant-school/admissions/secondary",
         "school/107564/todmorden-high-school/admissions/secondary",
-        "school/105574/loreto-high-school-chorlton/attendance/secondary",
+        "school/105574/loreto-high-school-chorlton/attendance",
         "school/105574/loreto-high-school-chorlton/secondary-performance/additional-measures",
         "school/105574/loreto-high-school-chorlton/curriculum/secondary",
         "school/100273/saint-paul-roman-catholic-infant-school/curriculum/secondary",
