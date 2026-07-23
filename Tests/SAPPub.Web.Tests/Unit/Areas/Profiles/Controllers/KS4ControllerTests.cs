@@ -413,6 +413,19 @@ public class KS4ControllerTests
         Assert.NotNull(result);
     }
 
+    [Fact]
+    public async Task Get_AcademicPerformanceAttainmentAndProgress_InvalidYearSelected_ReturnsNotFound()
+    {
+        var result = await _controller.AcademicPerformanceAttainmentAndProgress(
+             _mockAttainmentAndProgressService.Object,
+             _fakeEstablishment.URN,
+             _fakeEstablishment.EstablishmentName,
+             "Invalid-year-selection-string",
+             CancellationToken.None) as NotFoundResult;
+
+        Assert.NotNull(result);
+    }
+
     [Theory]
     [InlineData(AcademicYearSelection.Current, true)]
     [InlineData(AcademicYearSelection.Previous, false)]
