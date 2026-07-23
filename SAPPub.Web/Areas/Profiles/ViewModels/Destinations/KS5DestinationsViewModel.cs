@@ -20,9 +20,9 @@ public class KS5DestinationsViewModel : ProfileBaseViewModel
         {
             URN = destinationsDetails.Urn,
             SchoolName = destinationsDetails.SchoolName,
-            IsKS2 = false,
-            IsKS4 = false,
-            IsKS5 = true,
+            IsKS2 = destinationsDetails.IsKS2,
+            IsKS4 = destinationsDetails.IsKS4,
+            IsKS5 = destinationsDetails.IsKS5,
             NumberOfStudentsIncludedInMeasure = destinationsDetails.EstablishmentTotalCohortFor.ToDisplayField(),
             AllDestinationsData = new DataViewModel
             {

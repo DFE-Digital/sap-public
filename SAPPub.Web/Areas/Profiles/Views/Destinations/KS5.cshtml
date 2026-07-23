@@ -73,8 +73,7 @@
             <h3 class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">
                 Students progressing to either education, apprenticeships or employment
             </h3>
-            @if (Model.HasEstablishmentData.IsAvailable)
-            {
+
                 <div id="all-ks5-dest-data-container">
                     <div id="all-ks5-dest-data-chart-container" class="chart-container">
                         <canvas id="all-destinations-chart"
@@ -93,7 +92,7 @@
                                 {
                                     <tr class="govuk-table__row">
                                         <th scope="row" class="govuk-table__header">@label.value</th>
-                                        <td class="govuk-table__cell">@Model.AllDestinationsData.Data[label.i]%</td>
+                                    <td class="govuk-table__cell">@(Model.AllDestinationsData.Data[label.i] is null ? NotAvailable : $"{Model.AllDestinationsData.Data[label.i]}%")</td>
                                     </tr>
                                 }
                             </tbody>
@@ -104,7 +103,7 @@
                         <button id="all-ks5-dest-data-show-btn" class="govuk-button govuk-button--secondary">Show as a table</button>
                     </div>
                 </div>
-            }
+            
         </div>
 
         <govuk-pagination id="destinations-pagination">

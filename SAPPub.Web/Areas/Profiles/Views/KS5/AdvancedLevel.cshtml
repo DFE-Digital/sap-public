@@ -55,10 +55,8 @@
          @* Qualification Info *@
         <partial name="_QualificationInfo" view-data='new ViewDataDictionary(ViewData) { ["QualificationLevel"] = Model.Level3Qualification }' />
 
-        <p id="no-of-students-completed-qulification-info" class="govuk-body">
-            <span class="app-highlight-grey">
+        <p id="no-of-students-completed-qulification-info" class="govuk-tag govuk-tag--full-width govuk-tag--grey">
                 Number of students from this school or college included in the measure: @Model.TotalNoOfStudentCompletedQualification.Value
-            </span>
         </p>
                
         @* ProgressScore Info *@
