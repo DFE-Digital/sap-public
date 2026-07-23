@@ -9,7 +9,7 @@ namespace SAPPub.Web.Tests.Unit.Page;
 [Collection("WebAppCollection")]
 public class AttainmentAndProgressPageTests : PageTestsBase
 {
-    private static string _pageRoute = "/secondary/academic-performance-attainment-and-progress";
+    private static string _pageRoute = "/secondary-performance/progress-attainment";
     private readonly Mock<IAttainmentAndProgressService> _serviceMock;
 
     public AttainmentAndProgressPageTests(WebAppFixture fixture) : base(fixture)
@@ -43,7 +43,7 @@ public class AttainmentAndProgressPageTests : PageTestsBase
 
         // Assert
         var title = doc.Title;
-        Assert.Contains("Loreto High School Chorlton - Progress and attainment - School Profiles - GOV.UK", title);
+        Assert.Contains("Loreto High School Chorlton - Secondary Progress and attainment - School Profiles - GOV.UK", title);
     }
 
     [Fact]

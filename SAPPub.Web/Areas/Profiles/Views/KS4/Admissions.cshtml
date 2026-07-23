@@ -1,9 +1,11 @@
 ﻿@model SAPPub.Web.Models.SecondarySchool.AdmissionsViewModel;
+@using SAPPub.Web.Constants
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 
 @{
     ViewData["Header"] = "Admissions";
-    ViewData["Title"] = $"{Model.SchoolName} - {ViewData["Header"]}";
+    ViewData["SubHeader"] = PageTitleConstants.SecondarySchoolPageTitles.Admissions;
+    ViewData["Title"] = $"{Model.SchoolName} - {ViewData["SubHeader"]}";
 }
 
 <div class="govuk-grid-row">

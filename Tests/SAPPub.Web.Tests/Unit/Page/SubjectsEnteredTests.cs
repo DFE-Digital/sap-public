@@ -13,10 +13,10 @@ public class SubjectsEnteredTests : PageTestsBase
 {
     private static string _urn = "143034";
     private static string _establishmentName = "Loreto High School Chorlton";
-    private static string _pageRoute = "/secondary/academic-performance-subjects-entered";
+    private static string _pageRoute = "/secondary-performance/subjects-entered";
     private readonly Mock<IEstablishmentSubjectEntriesService> _mockEstablishmentSubjectEntriesService;
     private readonly Mock<IEstablishmentService> _mockEstablishmentService;
-    private EstablishmentServiceModel _establishment; 
+    private EstablishmentServiceModel _establishment;
 
     public SubjectsEnteredTests(WebAppFixture fixture) : base(fixture)
     {
@@ -36,7 +36,7 @@ public class SubjectsEnteredTests : PageTestsBase
     {
         // Arrange
         var returnValue = (new List<SubjectsEntered>(), new List<SubjectsEntered>(), new List<SubjectsEntered>());
-        
+
         _mockEstablishmentSubjectEntriesService
             .Setup(service => service.GetSubjectEntriesByUrnAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(returnValue);

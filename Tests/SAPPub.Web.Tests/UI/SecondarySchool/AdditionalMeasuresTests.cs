@@ -7,8 +7,8 @@ public class AdditionalMeasuresTests(WebApplicationSetupFixture fixture) : BaseP
 {
     private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
     {
-        ["105574"] = "school/105574/loreto-high-school-chorlton/secondary/academic-performance-additional-measures",
-        ["137020"] = "school/137020/west-hill-school/secondary/academic-performance-additional-measures",
+        ["105574"] = "school/105574/loreto-high-school-chorlton/secondary-performance/additional-measures",
+        ["137020"] = "school/137020/west-hill-school/secondary-performance/additional-measures",
     };
 
     [Fact]

@@ -6,7 +6,7 @@ namespace SAPPub.Web.Tests.UI.SecondarySchool;
 [Collection("Playwright Tests")]
 public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
-    private string _pageUrl = "school/105574/loreto-high-school-chorlton/secondary/curriculum-and-extra-curricular-activities";
+    private string _pageUrl = "school/105574/loreto-high-school-chorlton/curriculum/secondary";
 
     [Fact]
     public async Task CurriculumAndExtraCurricularActivitiesPage_LoadsSuccessfully()
@@ -29,7 +29,7 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
         var title = await Page.TitleAsync();
 
         // Assert
-        Assert.Contains("Curriculum and extra-curricular activities", title);
+        Assert.Contains("Secondary Curriculum", title);
     }
 
     [Fact]
@@ -67,7 +67,7 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
     public async Task CurriculumAndExtraCurricularActivitiesPage_CurrentCurriculum_ContactSchoolText()
     {
         // Arrange
-        _pageUrl = "school/100273/saint-paul-roman-catholic-infant-school/secondary/curriculum-and-extra-curricular-activities";
+        _pageUrl = "school/100273/saint-paul-roman-catholic-infant-school/curriculum/secondary";
         await Page.GotoAsync(_pageUrl);
 
         // Act
@@ -75,7 +75,7 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
         await summaryCard.WaitForAsync();
 
         var contactSchoolInfoKs3 = summaryCard.GetByTestId("contact-school-info-ks3");
-        var contactSchoolInfoKs4 = summaryCard.GetByTestId("contact-school-info-ks4");            
+        var contactSchoolInfoKs4 = summaryCard.GetByTestId("contact-school-info-ks4");
 
         // Assert
         Assert.True(await contactSchoolInfoKs3.IsVisibleAsync());
@@ -126,7 +126,7 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
     public async Task CurriculumAndExtraCurricularActivitiesPage_Displays_Extra_Curriculum_Summary_ContactSchoolText()
     {
         // Arrange
-        _pageUrl = "school/100273/Saint%20Paul%20Roman%20Catholic%20Infant%20School/secondary/curriculum-and-extra-curricular-activities";
+        _pageUrl = "school/100273/Saint%20Paul%20Roman%20Catholic%20Infant%20School/curriculum/secondary";
         await Page.GotoAsync(_pageUrl);
 
         // Act

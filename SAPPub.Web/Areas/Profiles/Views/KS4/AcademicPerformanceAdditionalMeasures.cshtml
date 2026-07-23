@@ -1,11 +1,13 @@
 ﻿@model SAPPub.Web.Models.SecondarySchool.AcademicPerformanceAdditionalMeasuresViewModel;
+@using SAPPub.Web.Constants
+@using static SAPPub.Web.Constants.PageTitleConstants
 @using SAPPub.Web.Models.SecondarySchool
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 
 @{
     ViewData["Header"] = "Academic performance";
     ViewData["SubHeader"] = PageTitleConstants.SecondarySchoolPageTitles.AdditionalMeasures;
-    ViewData["Title"] = $"{Model.SchoolName} - {ViewData["SubHeader"]}";
+    ViewData["Title"] = $"{Model.SchoolName} - Secondary {ViewData["SubHeader"]}";
 }
 
 <div class="govuk-grid-row">
@@ -31,16 +33,16 @@
         <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
             <ul class="moj-sub-navigation__list">
                 <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.SecondarySchoolPageTitles.ProgressAndAttainment</a>
+                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress" asp-all-route-data="@Model.RouteAttributes">@SecondarySchoolPageTitles.ProgressAndAttainment</a>
                 </li>
                 <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.SecondarySchoolPageTitles.EnglishAndMathsResults</a>
+                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults" asp-all-route-data="@Model.RouteAttributes">@SecondarySchoolPageTitles.EnglishAndMathsResults</a>
                 </li>
                 <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.SecondarySchoolPageTitles.SubjectsEntered</a>
+                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">@SecondarySchoolPageTitles.SubjectsEntered</a>
                 </li>
                 <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" aria-current="page" asp-route="@RouteConstants.SecondaryAcademicPerformanceAdditionalMeasures" asp-all-route-data="@Model.RouteAttributes">@ViewData["SubHeader"]</a>
+                    <a class="moj-sub-navigation__link" aria-current="page" asp-route="@RouteConstants.SecondaryAcademicPerformanceAdditionalMeasures" asp-all-route-data="@Model.RouteAttributes">@SecondarySchoolPageTitles.AdditionalMeasures</a>
                 </li>
 
             </ul>
@@ -166,7 +168,7 @@
         </table>
 
         <govuk-pagination id="bottom-pagination">
-            <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">Academic performance: Subjects entered</govuk-pagination-previous>
+            <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">Secondary academic performance: Subjects entered</govuk-pagination-previous>
             <govuk-pagination-next asp-route="@RouteConstants.SecondaryDestinations" asp-all-route-data="@Model.RouteAttributes">Destinations</govuk-pagination-next>
         </govuk-pagination>
     </div>

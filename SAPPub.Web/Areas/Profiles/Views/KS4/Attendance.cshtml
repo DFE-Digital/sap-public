@@ -1,10 +1,12 @@
 ﻿@model SAPPub.Web.Models.SecondarySchool.AttendanceViewModel;
 @using SAPPub.Core.Extensions
+@using SAPPub.Web.Constants
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 
 @{
     ViewData["Header"] = "Attendance";
-    ViewData["Title"] = $"{Model.SchoolName} - {ViewData["Header"]}";
+    ViewData["SubHeader"] = PageTitleConstants.SecondarySchoolPageTitles.Attendance;
+    ViewData["Title"] = $"{Model.SchoolName} - {ViewData["SubHeader"]}";
 }
 
 <div class="govuk-grid-row">

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Playwright;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
+using static SAPPub.Web.Constants.PageTitleConstants;
 
 namespace SAPPub.Web.Tests.UI.SecondarySchool;
 
@@ -24,7 +25,7 @@ public class SecondarySchoolNavigationTests(WebApplicationSetupFixture fixture) 
 
         // Assert
         var title = await Page.TitleAsync();
-        Assert.Contains("Admissions", title);
+        Assert.Contains(SecondarySchoolPageTitles.Admissions, title);
 
         // Act
         navItem = nav.GetItem("Curriculum and extra-curricular activities");
@@ -32,7 +33,7 @@ public class SecondarySchoolNavigationTests(WebApplicationSetupFixture fixture) 
 
         // Assert
         title = await Page.TitleAsync();
-        Assert.Contains("Curriculum and extra-curricular activities", title);
+        Assert.Contains(SecondarySchoolPageTitles.Curriculum, title);
 
         // Act
         navItem = nav.GetItem("Attendance");
@@ -40,7 +41,7 @@ public class SecondarySchoolNavigationTests(WebApplicationSetupFixture fixture) 
 
         // Assert
         title = await Page.TitleAsync();
-        Assert.Contains("Attendance", title);
+        Assert.Contains(SecondarySchoolPageTitles.Attendance, title);
 
         // Act
         navItem = nav.GetItem("Academic performance");
@@ -48,7 +49,7 @@ public class SecondarySchoolNavigationTests(WebApplicationSetupFixture fixture) 
 
         // Assert
         title = await Page.TitleAsync();
-        Assert.Contains("Progress and attainment", title);
+        Assert.Contains(SecondarySchoolPageTitles.ProgressAndAttainment, title);
 
         // Act
         navItem = nav.GetItem("Destinations");
@@ -56,7 +57,7 @@ public class SecondarySchoolNavigationTests(WebApplicationSetupFixture fixture) 
 
         // Assert
         title = await Page.TitleAsync();
-        Assert.Contains("Destinations", title);
+        Assert.Contains(SecondarySchoolPageTitles.Destinations, title);
     }
 
     [Fact]

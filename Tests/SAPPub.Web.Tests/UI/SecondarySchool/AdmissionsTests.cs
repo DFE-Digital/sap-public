@@ -6,13 +6,13 @@ namespace SAPPub.Web.Tests.UI.SecondarySchool;
 [Collection("Playwright Tests")]
 public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
-    private string _pageUrl = "school/105574/loreto-high-school-chorlton/secondary/admissions";
+    private string _pageUrl = "school/105574/loreto-high-school-chorlton/admissions/secondary";
 
     private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
     {
-        ["105574"] = "school/105574/loreto-high-school-chorlton/secondary/admissions",
-        ["100273"] = "school/100273/saint-paul-roman-catholic-infant-school/secondary/admissions",
-        ["107564"] = "school/107564/todmorden-high-school/secondary/admissions"
+        ["105574"] = "school/105574/loreto-high-school-chorlton/admissions/secondary",
+        ["100273"] = "school/100273/saint-paul-roman-catholic-infant-school/admissions/secondary",
+        ["107564"] = "school/107564/todmorden-high-school/admissions/secondary"
     };
 
     [Fact]
@@ -36,7 +36,7 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
         var title = await Page.TitleAsync();
 
         // Assert
-        Assert.Contains("Admissions", title);
+        Assert.Contains("Secondary Admissions", title);
     }
 
     [Fact]
@@ -101,7 +101,7 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
         Assert.True(await summaryCard.IsVisibleAsync());
         Assert.True(await schoolWebsiteLink.IsVisibleAsync());
         Assert.True(await laWebsiteLink.IsVisibleAsync());
-        
+
         Assert.NotNull(schoolWebsiteHref);
         Assert.NotNull(schoolWebsiteText);
         Assert.NotNull(laWebsiteHref);

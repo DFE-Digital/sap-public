@@ -1,14 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moq;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Extensions;
-using SAPPub.Core.Helpers;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4;
-using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.Interfaces.Services.KS4.Attendance;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
@@ -19,9 +16,8 @@ using SAPPub.Core.ServiceModels.KS4.Admissions;
 using SAPPub.Core.ServiceModels.KS4.Attendance;
 using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Core.Tests.TestBuilders;
-using SAPPub.Core.ValueObjects;
+using SAPPub.Web.Areas.Profiles.Controllers;
 using SAPPub.Web.Constants;
-using SAPPub.Web.Controllers;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.SecondarySchool;
 using static SAPPub.Web.Constants.Constants;
@@ -37,8 +33,7 @@ public class SecondarySchoolControllerTests
     private readonly Mock<IAttainmentAndProgressService> _mockAttainmentAndProgressService = new();
     private readonly Mock<IAdmissionsService> _mockAdmissionsService = new();
     private readonly Mock<IAttendanceService> _mockAttendanceService = new();
-    private readonly Mock<IAdditionalMeasuresService> _mockAdditionalMeasuresService = new();
-    private readonly SecondarySchoolController _controller;
+    private readonly KS4Controller _controller;
     private EstablishmentServiceModel _fakeEstablishment;
 
     private List<SubjectsEntered> GcseSubjects =
@@ -222,7 +217,7 @@ public class SecondarySchoolControllerTests
         var tempPath = Path.Combine(Path.GetTempPath(), "SAPPubTests", Guid.NewGuid().ToString());
         Directory.CreateDirectory(tempPath);
 
-        _controller = new SecondarySchoolController(_mockEstablishmentService.Object);
+        _controller = new KS4Controller(_mockEstablishmentService.Object);
 
         _controller.ControllerContext = new ControllerContext
         {
@@ -637,6 +632,7 @@ public class SecondarySchoolControllerTests
     public async Task Get_AcademicPerformance_EnglishAndMathsResults_ReturnsOk(GcseGradeDataSelection grade)
     {
         var expectedResult = EnglishAndMathsResults(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, _fakeEstablishment.LAName);
+        var gradeName = grade.ToString();
 
         _mockEnglishAndMathsResultsService
             .Setup(s => s.GetEnglishAndMathsResultsAsync(_fakeEstablishment.URN, (int)grade, It.IsAny<CancellationToken>()))
@@ -646,7 +642,7 @@ public class SecondarySchoolControllerTests
             _mockEnglishAndMathsResultsService.Object,
             _fakeEstablishment.URN,
             _fakeEstablishment.EstablishmentName,
-            grade,
+            gradeName,
             CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
@@ -729,6 +725,7 @@ public class SecondarySchoolControllerTests
     public async Task Get_AcademicPerformance_EnglishAndMathsResults_ResultsNotAvailable_ReturnsOk()
     {
         var gradeSelection = GcseGradeDataSelection.Grade4AndAbove;
+        var gradeName = gradeSelection.ToString();
 
         EnglishAndMathsResultsModel serviceModel = new()
         {
@@ -757,7 +754,7 @@ public class SecondarySchoolControllerTests
             _mockEnglishAndMathsResultsService.Object,
             _fakeEstablishment.URN,
             _fakeEstablishment.EstablishmentName,
-            gradeSelection,
+            gradeName,
             CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
@@ -807,6 +804,7 @@ public class SecondarySchoolControllerTests
     {
         _fakeEstablishment.LAName = localCouncilName;
         var grade = GcseGradeDataSelection.Grade4AndAbove;
+        var gradeName = grade.ToString();
         var expectedResult = EnglishAndMathsResults(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, _fakeEstablishment.LAName);
 
         _mockEnglishAndMathsResultsService
@@ -817,7 +815,7 @@ public class SecondarySchoolControllerTests
             _mockEnglishAndMathsResultsService.Object,
             _fakeEstablishment.URN,
             _fakeEstablishment.EstablishmentName,
-            grade,
+            gradeName,
             CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
@@ -910,54 +908,5 @@ public class SecondarySchoolControllerTests
         Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
     }
 
-    [Fact]
-    public async Task Get_AdditionalMeasures_ReturnsExpected()
-    {
-        // Arrange
-        var additionalMeasures = new AdditionalMeasuresModel()
-        {
-            EnglandCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().Build(),
-            LocalAuthorityCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().Build(),
-            EstablishmentCurrentYear = new AdditionalMeasuresBuilder().WithAutoPopulatedValues().Build()
-        };
 
-        _mockAdditionalMeasuresService
-            .Setup(s => s.GetAsync(_fakeEstablishment.URN, It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(additionalMeasures);
-
-        // Act
-        var result = await _controller.AcademicPerformanceAdditionalMeasures(
-            _mockAdditionalMeasuresService.Object,
-            _fakeEstablishment.URN,
-            _fakeEstablishment.EstablishmentName,
-            CancellationToken.None) as ViewResult;
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.NotNull(result.Model);
-
-        var model = result.Model as AcademicPerformanceAdditionalMeasuresViewModel;
-        Assert.NotNull(model);
-        Assert.Equal(_fakeEstablishment.URN, model.URN);
-        Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
-
-        Assert.Equal(_fakeEstablishment.URN, model.URN);
-        Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
-        AssertAdditionalMeasuresData(additionalMeasures.EstablishmentCurrentYear, model.MeasuresInTableFormat.Select(d => d.EstablishmentCurrentYear).ToArray());
-        AssertAdditionalMeasuresData(additionalMeasures.LocalAuthorityCurrentYear, model.MeasuresInTableFormat.Select(d => d.LocalAuthorityCurrentYear).ToArray());
-        AssertAdditionalMeasuresData(additionalMeasures.EnglandCurrentYear, model.MeasuresInTableFormat.Select(d => d.EnglandCurrentYear).ToArray());
-
-        Assert.Equal(2, model.RouteAttributes.Count);
-        Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
-        Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
-    }
-
-    private void AssertAdditionalMeasuresData(AdditionalMeasures expected, DisplayField<CodedDouble>[] performance)
-    {
-        Assert.Equal(expected.PercentAchievingAtLeastOneQualification.Value, performance[0].Value.Value);
-        Assert.Equal(expected.PercentEnteredForTripleScience.Value, performance[1].Value.Value);
-        Assert.Equal(expected.PercentEnteredMoreThanOneForeignLanguage.Value, performance[2].Value.Value);
-        Assert.Equal(expected.AverageGCSEExamEntriesPerPupil.Value, performance[3].Value.Value);
-        Assert.Equal(expected.AverageAllKS4QualificationsExamEntriesPerPupil.Value, performance[4].Value.Value);
-    }
 }
