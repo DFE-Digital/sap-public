@@ -134,16 +134,16 @@ public partial class Program
 
         app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
-        // Configure the HTTP request pipeline.
-        //if (app.Environment.IsDevelopment())
-        //{
-        app.UseDeveloperExceptionPage(new DeveloperExceptionPageOptions { SourceCodeLineCount = 1 });
-        //}
-        //else
-        //{
-        //    app.UseExceptionHandler("/Error/500");
-        //    app.UseHsts();
-        //}
+        //Configure the HTTP request pipeline.
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage(new DeveloperExceptionPageOptions { SourceCodeLineCount = 1 });
+        }
+        else
+        {
+            app.UseExceptionHandler("/Error/500");
+            app.UseHsts();
+        }
 
         // Security headers middleware - MUST come before static files
         app.UseSecurityHeaders();
