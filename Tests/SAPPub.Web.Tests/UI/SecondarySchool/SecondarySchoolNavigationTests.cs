@@ -169,24 +169,26 @@ public class SecondarySchoolNavigationTests(WebApplicationSetupFixture fixture) 
         Assert.Contains("Destinations", title);
     }
 
-    [Fact(Skip = "Not implemented yet")]
+    [Fact]
     public async Task NavigateThroughPaginationNav_SchoolIsKS4AndKS5_ShowsExpectedPages()
     {
         // Act - navigate to last tab for Academic performance
         var response = await Page.GotoAsync(_schoolUrnToUrlMap["149328"]);
-        var nav = new PaginationNavigationHelper(Page);
-        var title = await Page.TitleAsync();
+
+        var sideNav = new VerticalNavigationHelper(Page);
+        var sideNavItem = sideNav.GetItem("Secondary academic performance");
+        await sideNavItem.ClickAsync();
+
         await ClickAcademicPerformanceNavItemAsync(Page, "Additional measures");
 
-        // Assert
-        Assert.Contains("Additional measures", title);
-
         // Act
-        await nav.ClickNextLinkAsync();
+        var bottomPaginationNav = new PaginationNavigationHelper(Page);
+        await bottomPaginationNav.ClickNextLinkAsync();
 
         // Assert
+        var title = await Page.TitleAsync();
         Assert.Contains("16 to 19", title);
-        Assert.Contains("performance", title);
+        Assert.Contains("Advanced level", title);
     }
 
     private static Task ClickAcademicPerformanceNavItemAsync(

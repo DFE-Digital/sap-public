@@ -3,6 +3,8 @@
 @using static SAPPub.Web.Constants.PageTitleConstants
 @using SAPPub.Web.Models.SecondarySchool
 @using SAPPub.Web.ViewComponents.VerticalNavigation
+@using static SAPPub.Web.Constants.Constants;
+@inject Microsoft.FeatureManagement.IFeatureManager FeatureManager
 
 @{
     ViewData["Header"] = "Academic performance";
@@ -169,7 +171,14 @@
 
         <govuk-pagination id="bottom-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">Secondary academic performance: Subjects entered</govuk-pagination-previous>
-            <govuk-pagination-next asp-route="@RouteConstants.SecondaryDestinations" asp-all-route-data="@Model.RouteAttributes">Destinations</govuk-pagination-next>
+            @if (await FeatureManager.IsEnabledAsync(Enable16to19) && Model.IsKS5)
+            {
+                <govuk-pagination-next asp-route="@RouteConstants.KS5AcademicPerformanceLevel3" asp-all-route-data="@Model.RouteAttributes">Academic performance: Level 3 qualifications</govuk-pagination-next>
+            }
+            else
+            {
+                <govuk-pagination-next asp-route="@RouteConstants.SecondaryDestinations" asp-all-route-data="@Model.RouteAttributes">Destinations</govuk-pagination-next>
+            }
         </govuk-pagination>
     </div>
 </div>
