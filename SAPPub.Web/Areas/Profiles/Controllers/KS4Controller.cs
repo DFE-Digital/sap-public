@@ -2,7 +2,6 @@
 using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
-using SAPPub.Core.Interfaces.Services.KS4.Attendance;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
 using SAPPub.Web.Constants;
@@ -23,19 +22,6 @@ public class KS4Controller(IEstablishmentService establishmentService) : Control
     {
         var admissionsDetails = await admissionsService.GetAdmissionsDetailsAsync(urn, ct);
         var model = AdmissionsViewModel.MapFrom(admissionsDetails, urn);
-        return View(model);
-    }
-
-    [HttpGet]
-    [Route("school/{urn}/{schoolName}/attendance/secondary", Name = RouteConstants.SecondaryAttendance)]
-    public async Task<IActionResult> Attendance(
-        [FromServices] IAttendanceService attendanceService,
-        string urn,
-        string schoolName,
-        CancellationToken ct)
-    {
-        var attendanceDetails = await attendanceService.GetAttendenceDetailsAsync(urn, ct);
-        var model = AttendanceViewModel.Map(attendanceDetails);
         return View(model);
     }
 

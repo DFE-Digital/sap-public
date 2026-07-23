@@ -10,7 +10,7 @@ namespace SAPPub.Web.Tests.Unit.Page;
 [Collection("WebAppCollection")]
 public class AttendancePageTests : PageTestsBase
 {
-    private static string _pageRoute = "/attendance/secondary";
+    private static string _pageRoute = "/attendance";
     private readonly Mock<IAttendanceService> _serviceMock;
 
     public AttendancePageTests(WebAppFixture fixture) : base(fixture)
@@ -214,7 +214,7 @@ public class AttendancePageTests : PageTestsBase
         // Assert
         Assert.NotNull(attendancePagination);
         Assert.Equal("Curriculum and extra-curricular activities", previousPaginationText?.Trim());
-        Assert.Equal("Academic performance: Progress and attainment", nextPaginationText?.Trim());
+        Assert.Equal("Secondary academic performance: Progress and attainment", nextPaginationText?.Trim());
     }
 
     [Fact]

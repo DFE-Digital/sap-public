@@ -1,7 +1,7 @@
 ﻿using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
-namespace SAPPub.Web.Tests.UI.SecondarySchool;
+namespace SAPPub.Web.Tests.UI.KS4;
 
 [Collection("Playwright Tests")]
 public class AcademicPerformanceSubjectsEnteredTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
