@@ -1,6 +1,7 @@
-﻿@using SAPPub.Web.Constants
+﻿@using SAPPub.Core.Extensions
+@using SAPPub.Web.Constants
 @using SAPPub.Web.ViewComponents.VerticalNavigation
-@model SAPPub.Web.Areas.Profiles.ViewModels.KS5.KS5ViewModel
+@model SAPPub.Web.Areas.Profiles.ViewModels.KS5.EnglishMathsQualificationsViewModel
 
 
 @{
@@ -25,8 +26,12 @@
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
         <h1 class="govuk-heading-xl">@ViewData["Header"]</h1>
         <p class="govuk-body">
-            INTRO TEXT
+            Choose the type of qualifications you want to see.
         </p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>Level 2 qualifications include GCSEs, BTEC Firsts and other level 2 qualifications/li>
+                <li>Level 3 qualifications include A levels, Tech levels, BTECs and other level 3 qualifications</li>
+        </ul>
 
         <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
             <ul class="moj-sub-navigation__list">
@@ -45,14 +50,77 @@
             </ul>
         </nav>
 
+        <h2>English and maths</h2>
+
         <p class="govuk-body">
-            MORE TEXT
+            These scores show how much progress students made in English and maths at level 2 and below between the end of key stage 4 and the end of 16 to 19 study.
         </p>
 
+        <p class="govuk-body">
+            Scores are based on results from approved qualifications, such as GCSEs, and are calculated using the highest grade a student achieves with the school or college.
+        </p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>A positive score means students, on average, improved their grades while studying with this school or college.</li>
+            <li>A negative score means students, on average, got lower grades or were not entered into an exam for an approved English or maths qualification while studying with this school or college.</li>
+        </ul>
 
-        <govuk-pagination id="academic-performance-level-2-pagination">
-            <govuk-pagination-previous asp-route="@RouteConstants.KS5AcademicPerformanceEnglishMaths" asp-all-route-data="@Model.RouteAttributes">Academic performance: Level 2 qualifications</govuk-pagination-previous>
-            <govuk-pagination-next asp-route="@RouteConstants.KS5AcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">Academic performance: Subject entered</govuk-pagination-next>
-        </govuk-pagination>
+        <p>
+            This measure includes students who did not get a grade 4 or above in GCSE (or equivalent) by the end of key stage 4 in that subject. Read the 16 to 19 accountability technical guide (opens in a new tab) for details.
+        </p>
+
+        <p>
+            Compare this school or college with state funded local and national averages.
+        </p>
+
+        <table class="govuk-table govuk-!-margin-top-5">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header"></th>
+                        <th scope="col" class="govuk-table__header">Number of students</th>
+                        <th scope="col" class="govuk-table__header">School or college</th>
+                        <th scope="col" class="govuk-table__header">@Model.LaName average</th>
+                        <th scope="col" class="govuk-table__header">England average</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Average English progress</th>
+                        <td class="govuk-table__cell">@Model.AverageEnglishProgress.NumberOfStudents.Value</td>
+                        <td class="govuk-table__cell">@Model.AverageEnglishProgress.SchoolOrCollege.Value</td>
+                        <td class="govuk-table__cell">@Model.AverageEnglishProgress.LaAverage.Value</td>
+                        <td class="govuk-table__cell">@Model.AverageEnglishProgress.EnglandAverage.Value</td>
+                    </tr>
+
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Entered for English qualifications</th>
+                        <td class="govuk-table__cell"></td>
+                        <td class="govuk-table__cell">@Model.EnteredForEnglishQualification.SchoolOrCollege.Value.AsPercentage()</td>
+                        <td class="govuk-table__cell">@Model.EnteredForEnglishQualification.LaAverage.Value.AsPercentage()</td>
+                        <td class="govuk-table__cell">@Model.EnteredForEnglishQualification.EnglandAverage.Value.AsPercentage()</td>
+                    </tr>
+
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Average maths progress</th>
+                        <td class="govuk-table__cell">@Model.AverageMathsProgress.NumberOfStudents.Value</td>
+                        <td class="govuk-table__cell">@Model.AverageMathsProgress.SchoolOrCollege.Value</td>
+                        <td class="govuk-table__cell">@Model.AverageMathsProgress.LaAverage.Value</td>
+                        <td class="govuk-table__cell">@Model.AverageMathsProgress.EnglandAverage.Value</td>
+                    </tr>
+
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Entered for maths qualifications</th>
+                        <td class="govuk-table__cell"></td>
+                        <td class="govuk-table__cell">@Model.EnteredForMathsQualification.SchoolOrCollege.Value.AsPercentage()</td>
+                        <td class="govuk-table__cell">@Model.EnteredForMathsQualification.LaAverage.Value.AsPercentage()</td>
+                        <td class="govuk-table__cell">@Model.EnteredForMathsQualification.EnglandAverage.Value.AsPercentage()</td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+            <govuk-pagination id="academic-performance-level-2-pagination">
+                <govuk-pagination-previous asp-route="@RouteConstants.KS5AcademicPerformanceEnglishMaths" asp-all-route-data="@Model.RouteAttributes">Academic performance: Level 2 qualifications</govuk-pagination-previous>
+                <govuk-pagination-next asp-route="@RouteConstants.KS5AcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">Academic performance: Subject entered</govuk-pagination-next>
+            </govuk-pagination>
+        </div>
     </div>
-</div>

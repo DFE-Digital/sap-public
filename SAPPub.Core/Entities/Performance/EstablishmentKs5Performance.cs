@@ -37,4 +37,46 @@ public class EstablishmentKs5Performance
     public double? LCI_INS_ALEV_Est_Current_Num { get; set; }
     [IgnoreDataMember]
     public string? LCI_INS_ALEV_Est_Current_Num_Reason { get; set; }
+
+    // Number of students for English progress
+    public CodedDouble T_SCOPEEX_E_Est_Current_Num_Coded { get; set; } = new();
+    [IgnoreDataMember]
+    public double? T_SCOPEEX_E_Est_Current_Num { get; set; }
+    [IgnoreDataMember]
+    public string? T_SCOPEEX_E_Est_Current_Num_Reason { get; set; }
+
+    // Average progress in English for establishment
+    public CodedDouble PROGEX_E_Est_Current_Num_Coded { get; set; } = new();
+    [IgnoreDataMember]
+    public double? PROGEX_E_Est_Current_Num { get; set; }
+    [IgnoreDataMember]
+    public string? PROGEX_E_Est_Current_Num_Reason { get; set; }
+
+    // Entered (pct) for English for establishment
+    public CodedDouble ENTRY_PER_E_Est_Current_Pct_Coded { get; set; } = new();
+    [IgnoreDataMember]
+    public double? ENTRY_PER_E_Est_Current_Pct { get; set; }
+    [IgnoreDataMember]
+    public string? ENTRY_PER_E_Est_Current_Pct_Reason { get; set; }
+
+    // Number of students for Maths progress
+    public CodedDouble T_SCOPEEX_M_Est_Current_Num_Coded { get; set; } = new();
+    [IgnoreDataMember]
+    public double? T_SCOPEEX_M_Est_Current_Num { get; set; }
+    [IgnoreDataMember]
+    public string? T_SCOPEEX_M_Est_Current_Num_Reason { get; set; }
+
+    // Average progress in Maths for establishment
+    public CodedDouble PROGEX_M_Est_Current_Num_Coded { get; set; } = new();
+    [IgnoreDataMember]
+    public double? PROGEX_M_Est_Current_Num { get; set; }
+    [IgnoreDataMember]
+    public string? PROGEX_M_Est_Current_Num_Reason { get; set; }
+
+    // Entered (pct) for Maths for establishment
+    public CodedDouble ENTRY_PER_M_Est_Current_Pct_Coded { get; set; } = new();
+    [IgnoreDataMember]
+    public double? ENTRY_PER_M_Est_Current_Pct { get; set; }
+    [IgnoreDataMember]
+    public string? ENTRY_PER_M_Est_Current_Pct_Reason { get; set; }
 }

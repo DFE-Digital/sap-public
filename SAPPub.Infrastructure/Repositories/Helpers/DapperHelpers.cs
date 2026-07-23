@@ -224,15 +224,32 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Id",
           "TALLPUP_ACAD_1618_Est_Current_Num_Coded",
           "VA_INS_ALEV_Est_Current_Num_Coded",
-          "PROGRESS_BAND_ALEV_Est_Current",
+          "PROGRESS_BAND_ALEV_Est_Current_Num_Coded",
           "UCI_INS_ALEV_Est_Current_Num_Coded",
-          "LCI_INS_ALEV_Est_Current_Num_Coded"          
+          "LCI_INS_ALEV_Est_Current_Num_Coded",
+          "T_SCOPEEX_E_Est_Current_Num_Coded",
+          "PROGEX_E_Est_Current_Num_Coded",
+          "ENTRY_PER_E_Est_Current_Pct_Coded",
+          "T_SCOPEEX_M_Est_Current_Num_Coded",
+          "PROGEX_M_Est_Current_Num_Coded",
+          "ENTRY_PER_M_Est_Current_Pct_Coded"
           """;
 
         private const string EnglandKs5PerformanceColumns = """
           "Id",
-          "VA_INS_ALEV_Eng_Current_Num_Coded"                  
-          """;        
+          "VA_INS_ALEV_Eng_Current_Num_Coded",
+          "PROGEX_E_Eng_Current_Num_Coded",
+          "ENTRY_PER_E_Eng_Current_Pct_Coded",
+          "PROGEX_M_Eng_Current_Num_Coded",
+          "ENTRY_PER_M_Eng_Current_Pct_Coded"
+          """;
+
+        private const string LaKs5PerformanceColumns = """
+            "PROGEX_E_LA_Current_Num_Coded",
+            "ENTRY_PER_E_LA_Current_Pct_Coded",
+            "PROGEX_M_LA_Current_Num_Coded",
+            "ENTRY_PER_M_LA_Current_Pct_Coded"
+            """;
 
         private const string GatewayLAColumns = """
           "Id",
@@ -442,6 +459,9 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
 
                 nameof(EnglandKs5Performance) =>
                     SelectFromWhere(EnglandKs5PerformanceColumns, "v_england_ks5_performance", "\"Id\" = 'National'"),
+
+                nameof(LAKs5Performance) =>
+                    SelectFromWhereId(LaKs5PerformanceColumns, "v_la_ks5_performance"),
 
                 nameof(GatewayLocalAuthority) =>
                     SelectFromWhereIdAndNotDeleted(GatewayLAColumns, "gateway_local_authority"),

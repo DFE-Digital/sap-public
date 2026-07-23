@@ -98,26 +98,27 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
         }
 
         [Route("school/{urn}/{schoolName}/16-to-19-performance/english-and-maths", Name = RouteConstants.KS5AcademicPerformanceEnglishMaths)]
-        public async Task<IActionResult> EnglishAndMaths([FromServices] IAboutSchoolService aboutSchoolService, 
+        public async Task<IActionResult> EnglishAndMaths(
+            [FromServices] IEnglishAndMathsQualificationsService englishAndMathsQualificationsService, 
             string urn, string schoolName,
             CancellationToken ct)
         {
-            var schoolDetails = await aboutSchoolService.GetAboutSchoolDetailsAsync(urn, ct);
+            var englishMathsQualifications = await englishAndMathsQualificationsService.GetAdvancedLevelQualificationDetailsAsync(urn, ct);
 
-            if (string.IsNullOrWhiteSpace(schoolDetails.Urn))
+            if (string.IsNullOrWhiteSpace(englishMathsQualifications.Urn))
             {
                 logger.LogWarning("No establishment details found for URN: {URN}", urn);
                 return View("Error");
             }
 
-            if (!schoolDetails.IsKS5)
+            if (!englishMathsQualifications.IsKS5)
             {
                 logger.LogWarning("Attempted to view KS5 page with no KS5 data URN: {URN}", urn);
                 return View("Error");
             }
 
-            var ks5Model = KS5ViewModel.Map(schoolDetails);
-            return View(ks5Model);
+            var englishMathsQualificationsViewModel = EnglishMathsQualificationsViewModel.Map(englishMathsQualifications);
+            return View(englishMathsQualificationsViewModel);
         }
 
         [Route("school/{urn}/{schoolName}/16-to-19-performance/subject-entered", Name = RouteConstants.KS5AcademicPerformanceSubjectsEntered)]
