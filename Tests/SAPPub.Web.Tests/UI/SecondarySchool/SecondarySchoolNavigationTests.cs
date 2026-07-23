@@ -10,7 +10,8 @@ public class SecondarySchoolNavigationTests(WebApplicationSetupFixture fixture) 
 {
     private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
     {
-        ["105574"] = "school/105574/loreto-high-school-chorlton/about"
+        ["105574"] = "school/105574/loreto-high-school-chorlton/about",
+        ["149328"] = "school/149328/king-edward-vi-high-school/about"
     };
 
     [Fact]
@@ -136,7 +137,8 @@ public class SecondarySchoolNavigationTests(WebApplicationSetupFixture fixture) 
 
         // Assert
         title = await Page.TitleAsync();
-        Assert.Contains("Progress and attainment", title);
+        Assert.Contains("Secondary", title);
+        Assert.Contains("Progress and attainment", title); // CML TODO this and others after - assert it's secondary
 
         // Act
         await nav.ClickNextLinkAsync();
@@ -165,6 +167,26 @@ public class SecondarySchoolNavigationTests(WebApplicationSetupFixture fixture) 
         // Assert
         title = await Page.TitleAsync();
         Assert.Contains("Destinations", title);
+    }
+
+    [Fact(Skip = "Not implemented yet")]
+    public async Task NavigateThroughPaginationNav_SchoolIsKS4AndKS5_ShowsExpectedPages()
+    {
+        // Act - navigate to last tab for Academic performance
+        var response = await Page.GotoAsync(_schoolUrnToUrlMap["149328"]);
+        var nav = new PaginationNavigationHelper(Page);
+        var title = await Page.TitleAsync();
+        await ClickAcademicPerformanceNavItemAsync(Page, "Additional measures");
+
+        // Assert
+        Assert.Contains("Additional measures", title);
+
+        // Act
+        await nav.ClickNextLinkAsync();
+
+        // Assert
+        Assert.Contains("16 to 19", title);
+        Assert.Contains("performance", title);
     }
 
     private static Task ClickAcademicPerformanceNavItemAsync(

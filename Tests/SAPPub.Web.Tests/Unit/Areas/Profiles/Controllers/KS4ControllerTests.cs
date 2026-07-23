@@ -22,9 +22,9 @@ using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.SecondarySchool;
 using static SAPPub.Web.Constants.Constants;
 
-namespace SAPPub.Web.Tests.Unit.Controllers;
+namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers;
 
-public class SecondarySchoolControllerTests
+public class KS4ControllerTests
 {
     private readonly Mock<IEstablishmentService> _mockEstablishmentService;
     private readonly Mock<IDestinationsService> _mockDestinationsService;
@@ -175,7 +175,7 @@ public class SecondarySchoolControllerTests
         };
     }
 
-    public SecondarySchoolControllerTests()
+    public KS4ControllerTests()
     {
         _fakeEstablishment = new EstablishmentTestBuilder()
             .WithTrustName("Trust")
@@ -499,6 +499,19 @@ public class SecondarySchoolControllerTests
         }
     }
 
+    [Fact]
+    public async Task Get_AcademicPerformanceAttainmentAndProgress_InvalidYearSelected_ReturnsNotFound()
+    {
+        var result = await _controller.AcademicPerformanceAttainmentAndProgress(
+             _mockAttainmentAndProgressService.Object,
+             _fakeEstablishment.URN,
+             _fakeEstablishment.EstablishmentName,
+             "Invalid-year-selection-string",
+             CancellationToken.None) as NotFoundResult;
+
+        Assert.NotNull(result);
+    }
+
     [Theory]
     [InlineData(AcademicYearSelection.Current, true)]
     [InlineData(AcademicYearSelection.Previous, false)]
@@ -532,7 +545,7 @@ public class SecondarySchoolControllerTests
             _mockAttainmentAndProgressService.Object,
             _fakeEstablishment.URN,
             _fakeEstablishment.EstablishmentName,
-            academicYearSelection,
+            academicYearSelection.ToString(),
             CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
@@ -608,7 +621,7 @@ public class SecondarySchoolControllerTests
             _mockAttainmentAndProgressService.Object,
             _fakeEstablishment.URN,
             _fakeEstablishment.EstablishmentName,
-            academicYearSelection,
+            academicYearSelection.ToString(),
             CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
@@ -624,6 +637,19 @@ public class SecondarySchoolControllerTests
         Assert.Equal(3, model.AcademicYearsSelectList.Count);
         Assert.Equal(academicYearSelection, model.SelectedAcademicYear);
         Assert.Equal(expectedShowAttainment8Info, model.ShowAttainment8Info);
+    }
+
+    [Fact]
+    public async Task Get_AcademicPerformanceEnglishAndMaths_InvalidGradeSelected_ReturnsNotFound()
+    {
+        var result = await _controller.AcademicPerformanceEnglishAndMathsResults(
+             _mockEnglishAndMathsResultsService.Object,
+             _fakeEstablishment.URN,
+             _fakeEstablishment.EstablishmentName,
+             "Invalid-grade-selection-string",
+             CancellationToken.None) as NotFoundResult;
+
+        Assert.NotNull(result);
     }
 
     [Theory]

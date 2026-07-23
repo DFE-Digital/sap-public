@@ -2,7 +2,7 @@
 using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Web.Models.SecondarySchool;
 
-namespace SAPPub.Web.Tests.Unit.Models.SecondarySchool;
+namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Models.KS4;
 
 public class AcademicPerformanceAttainmentAndProgressViewModelTests
 {
@@ -10,7 +10,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
     public void Map_MapsDataAsExpected()
     {
         // Arrange
-        var testdata = new Core.ServiceModels.KS4.Performance.AttainmentAndProgressModel()
+        var testdata = new AttainmentAndProgressModel()
         {
             Urn = "123456",
             SchoolName = "Test School",
@@ -30,7 +30,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
         };
 
         // Act
-        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map(testdata, Core.Enums.AcademicYearSelection.Current);
+        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map(testdata, AcademicYearSelection.Current);
 
         // Assert
         Assert.Equal(testdata.Urn, viewModel.URN);
@@ -121,7 +121,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
     public void Map_EstablishmentAttainment8ScoreDescription_IsExpected(double establishmentAttainment8Score, string expected)
     {
         // Arrange
-        var testdata = new Core.ServiceModels.KS4.Performance.AttainmentAndProgressModel()
+        var testdata = new AttainmentAndProgressModel()
         {
             Urn = "123456",
             SchoolName = "Test School",
@@ -138,7 +138,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
         };
 
         // Act
-        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map(testdata, Core.Enums.AcademicYearSelection.Current);
+        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map(testdata, AcademicYearSelection.Current);
 
         // Assert
         var expectedContextStatement = expected != "Not available" ?
@@ -175,7 +175,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
     public void Map_LocalAuthorityAttainment8ScoreDescription_IsExpected(double? establishmentAttainment8Score, double? localAuthorityAttainment8Score, string expected1, string expected2)
     {
         // Arrange
-        var testdata = new Core.ServiceModels.KS4.Performance.AttainmentAndProgressModel()
+        var testdata = new AttainmentAndProgressModel()
         {
             Urn = "123456",
             SchoolName = "Test School",
@@ -187,7 +187,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
         };
 
         // Act
-        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map(testdata, Core.Enums.AcademicYearSelection.Current);
+        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map(testdata, AcademicYearSelection.Current);
 
         // Assert
         var expectedContextStatement1 = expected1 != "Not available" ?
@@ -228,7 +228,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
     public void Map_NationalAttainment8ScoreDescription_IsExpected(double? establishmentAttainment8Score, double? nationalAttainment8Score, string expected1, string expected2)
     {
         // Arrange
-        var testdata = new Core.ServiceModels.KS4.Performance.AttainmentAndProgressModel()
+        var testdata = new AttainmentAndProgressModel()
         {
             Urn = "123456",
             SchoolName = "Test School",
@@ -240,7 +240,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
         };
 
         // Act
-        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map(testdata, Core.Enums.AcademicYearSelection.Current);
+        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map(testdata, AcademicYearSelection.Current);
 
         // Assert
         var expectedContextStatement1 = expected1 != "Not available" ?

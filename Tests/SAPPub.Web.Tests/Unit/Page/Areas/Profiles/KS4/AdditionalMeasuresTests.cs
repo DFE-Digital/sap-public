@@ -6,7 +6,7 @@ using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
 
-namespace SAPPub.Web.Tests.Unit.Page;
+namespace SAPPub.Web.Tests.Unit.Page.Areas.Profiles.KS4;
 
 [Collection("WebAppCollection")]
 public class AdditionalMeasuresTests : PageTestsBase

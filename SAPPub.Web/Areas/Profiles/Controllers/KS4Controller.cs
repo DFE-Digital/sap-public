@@ -50,13 +50,33 @@ public class KS4Controller(IEstablishmentService establishmentService) : Control
 
     [HttpGet]
     [Route("school/{urn}/{schoolName}/secondary-performance/progress-attainment", Name = RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress)]
-    public async Task<IActionResult> AcademicPerformanceAttainmentAndProgress(
+    public IActionResult AcademicPerformanceAttainmentAndProgressRedirect(
         [FromServices] IAttainmentAndProgressService attainmentAndProgressService,
         string urn,
         string schoolName,
         AcademicYearSelection selectedAcademicYear = AcademicYearSelection.Current,
         CancellationToken ct = default)
     {
+        var selectedYearName = selectedAcademicYear.ToString();
+
+        return RedirectToAction(nameof(AcademicPerformanceAttainmentAndProgress), new { urn, schoolName, selectedAcademicYearName = selectedYearName });
+    }
+
+    [HttpGet]
+    [Route("school/{urn}/{schoolName}/secondary-performance/progress-attainment/{selectedAcademicYearName}")]
+    public async Task<IActionResult> AcademicPerformanceAttainmentAndProgress(
+    [FromServices] IAttainmentAndProgressService attainmentAndProgressService,
+    string urn,
+    string schoolName,
+    string selectedAcademicYearName,
+    CancellationToken ct = default)
+    {
+        var success = Enum.TryParse<AcademicYearSelection>(selectedAcademicYearName, out var selectedAcademicYear);
+        if (!success)
+        {
+            return NotFound();
+        }
+
         var results = await attainmentAndProgressService
             .GetAttainmentAndProgressAsync(urn, selectedAcademicYear, ct);
 

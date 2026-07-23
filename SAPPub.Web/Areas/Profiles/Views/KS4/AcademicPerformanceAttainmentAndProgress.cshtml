@@ -50,7 +50,7 @@
 
         <p class="govuk-body" data-testid="academic-year-info">@Model.AcademicYearInfoParagraph</p>
 
-        <form method="get" asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress">
+        <form method="get" asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress" asp-all-route-data="@Model.RouteAttributes">
             <div id="filterSection" class="select-filter">
                 <label for="academicYearSelector" class="govuk-label govuk-!-font-weight-bold">Choose the academic year you want to see results for</label>
                 <select id="academicYearSelector" class="govuk-select" asp-for="SelectedAcademicYear" asp-items="Model.AcademicYearsSelectList"></select>
