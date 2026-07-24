@@ -25,6 +25,7 @@ public class EnglishMathsQualificationsViewModel : BaseViewModel
             IsKS2 = model.IsKS2,
             IsKS4 = model.IsKS4,
             IsKS5 = model.IsKS5,
+            LAName = model.LAName,
             AverageEnglishProgress = EnglishMathsScoreViewModel.Map(model.AverageEnglishProgress),
             AverageMathsProgress = EnglishMathsScoreViewModel.Map(model.AverageMathsProgress),
             EnteredForEnglishQualification = EnglishMathsScoreViewModel.Map(model.EnteredForEnglishQualification),
