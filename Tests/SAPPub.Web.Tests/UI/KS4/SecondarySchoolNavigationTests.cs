@@ -83,7 +83,7 @@ public class SecondarySchoolNavigationTests(WebApplicationSetupFixture fixture) 
 
         // Assert
         title = await Page.TitleAsync();
-        Assert.Contains("English and maths", title);
+        Assert.Contains("English and Maths", title);
 
         // Act
         await ClickAcademicPerformanceNavItemAsync(Page, "Subjects entered");
@@ -145,7 +145,7 @@ public class SecondarySchoolNavigationTests(WebApplicationSetupFixture fixture) 
 
         // Assert
         title = await Page.TitleAsync();
-        Assert.Contains("English and maths", title);
+        Assert.Contains("English and Maths", title);
 
         // Act
         await nav.ClickNextLinkAsync();
