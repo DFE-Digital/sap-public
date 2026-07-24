@@ -1,12 +1,10 @@
-﻿using SAPPub.Core.Entities;
-using SAPPub.Core.Entities.KS4.Destinations;
+﻿using SAPPub.Core.ServiceModels.Destinations;
 using SAPPub.Web.Helpers;
-using SAPPub.Web.Models;
 using SAPPub.Web.Models.Charts;
 
 namespace SAPPub.Web.Areas.Profiles.ViewModels.Destinations;
 
-public class DestinationsViewModel : BaseViewModel
+public class KS4DestinationsViewModel : ProfileBaseViewModel
 {
     public required DataViewModel AllDestinationsData { get; set; }
 
@@ -16,7 +14,7 @@ public class DestinationsViewModel : BaseViewModel
 
     public required DisplayField<bool> HasEstablishmentData { get; set; }
 
-    public static DestinationsViewModel Map(DestinationsDetails destinationsDetails)
+    public static KS4DestinationsViewModel Map(KS4DestinationsDetails destinationsDetails)
     {
         var laAverageLabel = CommonHelper.GetLocalAuthorityDisplayName(destinationsDetails.LocalAuthorityName);
 
@@ -27,7 +25,7 @@ public class DestinationsViewModel : BaseViewModel
             destinationsDetails.SchoolAll.TwoYearsAgo,
         }.All(d => d is double v && v != 0);
 
-        return new DestinationsViewModel
+        return new KS4DestinationsViewModel
         {
             URN = destinationsDetails.Urn,
             SchoolName = destinationsDetails.SchoolName,

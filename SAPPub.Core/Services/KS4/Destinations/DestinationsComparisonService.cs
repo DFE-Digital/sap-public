@@ -1,16 +1,15 @@
-﻿using SAPPub.Core.Interfaces.Services.KS4.Destinations;
+﻿using SAPPub.Core.Interfaces.Repositories.Destinations;
+using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 using SAPPub.Core.ServiceModels.Compare;
 
 namespace SAPPub.Core.Services.KS4.Destinations;
 
-public class DestinationsComparisonService(
-    IEstablishmentDestinationsService establishmentDestinationsService,
-    IEnglandDestinationsService englandDestinationsService) : IDestinationsComparisonService
+public class DestinationsComparisonService(IKS4DestinationsRepository kS4Destinations) : IDestinationsComparisonService
 {
     public async Task<DestinationsComparisonResultModel> GetDestinationsDetailsAsync(IEnumerable<string> urns, CancellationToken ct = default)
     {
-        var establishmentDestinationsDetailsTask = establishmentDestinationsService.GetEstablishmentDestinationsAsync(urns, ct);
-        var englandDestinationsDetailsTask = englandDestinationsService.GetEnglandDestinationsAsync(ct);
+        var establishmentDestinationsDetailsTask = kS4Destinations.GetEstablishmentsDestinationsAsync(urns, ct);
+        var englandDestinationsDetailsTask = kS4Destinations.GetEnglandDestinationsAsync(ct);
 
         await Task.WhenAll(establishmentDestinationsDetailsTask, englandDestinationsDetailsTask);
 

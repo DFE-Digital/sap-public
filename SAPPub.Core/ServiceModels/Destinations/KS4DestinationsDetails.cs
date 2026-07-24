@@ -1,6 +1,8 @@
-﻿namespace SAPPub.Core.Entities.KS4.Destinations;
+﻿using SAPPub.Core.Entities;
 
-public record DestinationsDetails
+namespace SAPPub.Core.ServiceModels.Destinations;
+
+public record KS4DestinationsDetails
 {
     public required string Urn { get; init; }
 

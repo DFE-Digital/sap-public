@@ -1,15 +1,11 @@
 ﻿using Moq;
-using SAPPub.Core.Entities;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.ServiceModels;
 using SAPPub.Core.Services.KS4.Performance;
-using System.Threading;
-using System.Threading.Tasks;
-using Xunit;
 
-namespace SAPPub.Core.Tests.Services.KS4.Destinations
+namespace SAPPub.Core.Tests.Services.KS4.Performance
 {
     public class EnglishAndMathsResultsServiceTests
     {
