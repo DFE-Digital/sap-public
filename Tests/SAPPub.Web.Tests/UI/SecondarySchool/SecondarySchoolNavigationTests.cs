@@ -138,7 +138,7 @@ public class SecondarySchoolNavigationTests(WebApplicationSetupFixture fixture) 
         // Assert
         title = await Page.TitleAsync();
         Assert.Contains("Secondary", title);
-        Assert.Contains("Progress and attainment", title); // CML TODO this and others after - assert it's secondary
+        Assert.Contains("Progress and attainment", title);
 
         // Act
         await nav.ClickNextLinkAsync();
