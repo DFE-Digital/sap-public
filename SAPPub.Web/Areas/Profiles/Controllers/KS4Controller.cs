@@ -4,6 +4,7 @@ using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
+using SAPPub.Web.Areas.Profiles.Helpers;
 using SAPPub.Web.Constants;
 using SAPPub.Web.Models.SecondarySchool;
 
@@ -43,7 +44,7 @@ public class KS4Controller(IEstablishmentService establishmentService) : Control
         AcademicYearSelection selectedAcademicYear = AcademicYearSelection.Current,
         CancellationToken ct = default)
     {
-        var selectedYearName = selectedAcademicYear.ToString();
+        var selectedYearName = AcademicYearSelectionExtensions.ToRouteSegment(selectedAcademicYear);
 
         return RedirectToAction(nameof(AcademicPerformanceAttainmentAndProgress), new { urn, schoolName, selectedAcademicYearName = selectedYearName });
     }
@@ -51,23 +52,25 @@ public class KS4Controller(IEstablishmentService establishmentService) : Control
     [HttpGet]
     [Route("school/{urn}/{schoolName}/secondary-performance/progress-attainment/{selectedAcademicYearName}")]
     public async Task<IActionResult> AcademicPerformanceAttainmentAndProgress(
-    [FromServices] IAttainmentAndProgressService attainmentAndProgressService,
-    string urn,
-    string schoolName,
-    string selectedAcademicYearName,
-    CancellationToken ct = default)
+        [FromServices] IAttainmentAndProgressService attainmentAndProgressService,
+        string urn,
+        string schoolName,
+        string selectedAcademicYearName,
+        CancellationToken ct = default)
     {
-        var success = Enum.TryParse<AcademicYearSelection>(selectedAcademicYearName, out var selectedAcademicYear);
-        if (!success)
+        try
+        {
+            var selectedAcademicYear = AcademicYearSelectionExtensions.FromRouteSegment(selectedAcademicYearName);
+
+            var results = await attainmentAndProgressService.GetAttainmentAndProgressAsync(urn, selectedAcademicYear, ct);
+
+            var model = AcademicPerformanceAttainmentAndProgressViewModel.Map(results, selectedAcademicYear);
+            return View(model);
+        }
+        catch (ArgumentException)
         {
             return NotFound();
         }
-
-        var results = await attainmentAndProgressService
-            .GetAttainmentAndProgressAsync(urn, selectedAcademicYear, ct);
-
-        var model = AcademicPerformanceAttainmentAndProgressViewModel.Map(results, selectedAcademicYear);
-        return View(model);
     }
 
     [HttpGet]
@@ -79,7 +82,15 @@ public class KS4Controller(IEstablishmentService establishmentService) : Control
         GcseGradeDataSelection SelectedGrade = GcseGradeDataSelection.Grade5AndAbove,
         CancellationToken ct = default)
     {
-        return RedirectToAction(nameof(AcademicPerformanceEnglishAndMathsResults), new { urn, schoolName, gradeName = SelectedGrade.ToString() });
+        try
+        {
+            var gradeName = SelectedGrade.ToRouteSegment();
+            return RedirectToAction(nameof(AcademicPerformanceEnglishAndMathsResults), new { urn, schoolName, gradeName });
+        }
+        catch (ArgumentException)
+        {
+            return NotFound();
+        }
     }
 
     [HttpGet]
@@ -91,16 +102,18 @@ public class KS4Controller(IEstablishmentService establishmentService) : Control
         string gradeName,
         CancellationToken ct = default)
     {
-        var success = Enum.TryParse<GcseGradeDataSelection>(gradeName, out var SelectedGrade);
-        if (!success)
+        try
+        {
+            var grade = GcseGradeSelectionExtensions.FromRouteSegment(gradeName);
+            var results = await academicPerformanceEnglishAndMathsResultsService.GetEnglishAndMathsResultsAsync(urn, grade.ToGradeValue(), ct);
+
+            var model = AcademicPerformanceEnglishAndMathsResultsViewModel.Map(results, grade);
+            return View(model);
+        }
+        catch (ArgumentException)
         {
             return NotFound();
         }
-        var results = await academicPerformanceEnglishAndMathsResultsService
-            .GetEnglishAndMathsResultsAsync(urn, Convert.ToInt32(SelectedGrade), ct);
-
-        var model = AcademicPerformanceEnglishAndMathsResultsViewModel.Map(results, SelectedGrade);
-        return View(model);
     }
 
     [HttpGet]
