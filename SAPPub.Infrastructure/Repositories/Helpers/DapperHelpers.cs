@@ -226,13 +226,23 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "VA_INS_ALEV_Est_Current_Num_Coded",
           "PROGRESS_BAND_ALEV_Est_Current",
           "UCI_INS_ALEV_Est_Current_Num_Coded",
-          "LCI_INS_ALEV_Est_Current_Num_Coded"          
+          "LCI_INS_ALEV_Est_Current_Num_Coded",
+          "TALLPPE_ALEV_1618_Est_Current_Num_Coded",
+          "TALLPPEGRD_ALEV_1618_Est_Current"          
           """;
 
         private const string EnglandKs5PerformanceColumns = """
           "Id",
-          "VA_INS_ALEV_Eng_Current_Num_Coded"                  
-          """;        
+          "VA_INS_ALEV_Eng_Current_Num_Coded",
+          "TALLPPE_ALEV_1618_Eng_Current_Num_Coded",
+          "TALLPPEGRD_ALEV_1618_Eng_Current"
+          """;
+
+        private const string LAKs5PerformanceColumns = """
+          "Id",
+          "TALLPPE_ALEV_1618_LA_Current_Num_Coded",
+          "TALLPPEGRD_ALEV_1618_LA_Current"         
+          """;
 
         private const string GatewayLAColumns = """
           "Id",
@@ -442,6 +452,9 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
 
                 nameof(EnglandKs5Performance) =>
                     SelectFromWhere(EnglandKs5PerformanceColumns, "v_england_ks5_performance", "\"Id\" = 'National'"),
+
+                nameof(LAKs5Performance) =>
+                    SelectFromWhereId(LAKs5PerformanceColumns, "v_la_ks5_performance"),
 
                 nameof(GatewayLocalAuthority) =>
                     SelectFromWhereIdAndNotDeleted(GatewayLAColumns, "gateway_local_authority"),

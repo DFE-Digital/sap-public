@@ -15,4 +15,14 @@ public class EnglandKs5Performance
     public double? VA_INS_ALEV_Eng_Current_Num { get; set; }
     [IgnoreDataMember]
     public string? VA_INS_ALEV_Eng_Current_Num_Reason { get; set; }
+
+    // Average result points for England
+    public CodedDouble TALLPPE_ALEV_1618_Eng_Current_Num_Coded { get; set; } = new();
+    [IgnoreDataMember]
+    public double? TALLPPE_ALEV_1618_Eng_Current_Num { get; set; }
+    [IgnoreDataMember]
+    public string? TALLPPE_ALEV_1618_Eng_Current_Num_Reason { get; set; }
+
+    // Average result grade for England
+    public string? TALLPPEGRD_ALEV_1618_Eng_Current { get; set; }    
 }
