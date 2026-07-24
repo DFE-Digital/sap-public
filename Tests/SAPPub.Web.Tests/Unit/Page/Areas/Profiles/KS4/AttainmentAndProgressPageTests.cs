@@ -2,6 +2,7 @@
 using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.ServiceModels.KS4.Performance;
+using SAPPub.Web.Areas.Profiles.Helpers;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
 
 namespace SAPPub.Web.Tests.Unit.Page.Areas.Profiles.KS4;
@@ -39,7 +40,7 @@ public class AttainmentAndProgressPageTests : PageTestsBase
 
 
         // Act
-        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, $"{_pageRoute}/{AcademicYearSelection.Current}"));
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, $"{_pageRoute}/{AcademicYearSelection.Current.ToRouteSegment()}"));
 
         // Assert
         var title = doc.Title;
@@ -67,7 +68,7 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             });
 
         // Act
-        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, $"{_pageRoute}/{AcademicYearSelection.Current}"));
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, $"{_pageRoute}/{AcademicYearSelection.Current.ToRouteSegment()}"));
         var schoolNameCaptionElement = doc.GetElementById("school-name-caption");
         var schoolNameCaption = schoolNameCaptionElement?.TextContent;
 
@@ -101,7 +102,7 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             });
 
         // Act
-        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, $"{_pageRoute}/{AcademicYearSelection.Current}"));
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, $"{_pageRoute}/{AcademicYearSelection.Current.ToRouteSegment()}"));
 
         // Assert
         var schoolAttainmentCard = doc.QuerySelector("[data-testid='attainment8-establishment-card']");
@@ -134,7 +135,7 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             });
 
         // Act
-        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, $"{_pageRoute}/{AcademicYearSelection.Previous}"));
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, $"{_pageRoute}/{AcademicYearSelection.Previous.ToRouteSegment()}"));
 
         // Assert
         var schoolProgressCard = doc.QuerySelector("[data-testid='progress8-establishment-card']");
@@ -166,7 +167,7 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             });
 
         // Act
-        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, $"{_pageRoute}/{AcademicYearSelection.Previous}"));
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, $"{_pageRoute}/{AcademicYearSelection.Previous.ToRouteSegment()}"));
 
         // Assert
         Assert.NotNull(doc.QuerySelector("[data-testid='progress8-no-establishment-data-card']"));
@@ -197,7 +198,7 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             });
 
         // Act
-        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, $"{_pageRoute}/{AcademicYearSelection.Current}"));
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, $"{_pageRoute}/{AcademicYearSelection.Current.ToRouteSegment()}"));
 
         // Assert
         Assert.NotNull(doc.QuerySelector("[data-testid='progress8-custom-card']"));

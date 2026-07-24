@@ -16,6 +16,7 @@ using SAPPub.Core.ServiceModels.KS4.Admissions;
 using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Areas.Profiles.Controllers;
+using SAPPub.Web.Areas.Profiles.Helpers;
 using SAPPub.Web.Constants;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.SecondarySchool;
@@ -445,7 +446,7 @@ public class KS4ControllerTests
             _mockAttainmentAndProgressService.Object,
             _fakeEstablishment.URN,
             _fakeEstablishment.EstablishmentName,
-            academicYearSelection.ToString(),
+            academicYearSelection.ToRouteSegment(),
             CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
@@ -521,7 +522,7 @@ public class KS4ControllerTests
             _mockAttainmentAndProgressService.Object,
             _fakeEstablishment.URN,
             _fakeEstablishment.EstablishmentName,
-            academicYearSelection.ToString(),
+            academicYearSelection.ToRouteSegment(),
             CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
@@ -558,7 +559,7 @@ public class KS4ControllerTests
     public async Task Get_AcademicPerformance_EnglishAndMathsResults_ReturnsOk(GcseGradeDataSelection grade)
     {
         var expectedResult = EnglishAndMathsResults(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, _fakeEstablishment.LAName);
-        var gradeName = grade.ToString();
+        var gradeName = grade.ToRouteSegment();
 
         _mockEnglishAndMathsResultsService
             .Setup(s => s.GetEnglishAndMathsResultsAsync(_fakeEstablishment.URN, (int)grade, It.IsAny<CancellationToken>()))
@@ -651,7 +652,7 @@ public class KS4ControllerTests
     public async Task Get_AcademicPerformance_EnglishAndMathsResults_ResultsNotAvailable_ReturnsOk()
     {
         var gradeSelection = GcseGradeDataSelection.Grade4AndAbove;
-        var gradeName = gradeSelection.ToString();
+        var gradeName = gradeSelection.ToRouteSegment();
 
         EnglishAndMathsResultsModel serviceModel = new()
         {
@@ -730,7 +731,7 @@ public class KS4ControllerTests
     {
         _fakeEstablishment.LAName = localCouncilName;
         var grade = GcseGradeDataSelection.Grade4AndAbove;
-        var gradeName = grade.ToString();
+        var gradeName = grade.ToRouteSegment();
         var expectedResult = EnglishAndMathsResults(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, _fakeEstablishment.LAName);
 
         _mockEnglishAndMathsResultsService
