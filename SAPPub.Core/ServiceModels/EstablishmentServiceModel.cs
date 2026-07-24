@@ -1,5 +1,5 @@
-﻿using SAPPub.Core.Entities.KS4.Absence;
-using SAPPub.Core.Entities.KS4.Destinations;
+﻿using SAPPub.Core.Entities.Destinations;
+using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Helpers;
@@ -130,11 +130,11 @@ public class EstablishmentServiceModel
 
     public EnglandPerformance EnglandPerformance { get; set; } = new();
 
-    public EstablishmentDestinations EstablishmentDestinations { get; set; } = new();
+    public KS4EstablishmentDestinations EstablishmentDestinations { get; set; } = new();
 
-    public LADestinations LADestinations { get; set; } = new();
+    public KS4LADestinations LADestinations { get; set; } = new();
 
-    public EnglandDestinations EnglandDestinations { get; set; } = new();
+    public KS4EnglandDestinations EnglandDestinations { get; set; } = new();
 
     public LAAbsence LAAbsence { get; set; } = new();
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
-using SAPPub.Core.Interfaces.Services.KS4;
+using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Web.Areas.Profiles.ViewModels.AboutSchool;
 using SAPPub.Web.Areas.Profiles.ViewModels.Destinations;
@@ -43,37 +43,34 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
             [FromServices] IDestinationsService destinationsService,
             string urn, string schoolName, CancellationToken ct)
         {
-            var destinationDetails = await destinationsService.GetDestinationsDetailsAsync(urn, ct);
+            var destinationDetails = await destinationsService.GetKS4DestinationsDetailsAsync(urn, ct);
 
             if (!destinationDetails.IsKS4)
             {
                 return View("Error");
             }
 
-            var model = DestinationsViewModel.Map(destinationDetails);
+            var model = KS4DestinationsViewModel.Map(destinationDetails);
             return View(model);
         }
 
         [FeatureGate("Enable16to19")]
         [Route("school/{urn}/{schoolName}/destinations/16-to-19", Name = RouteConstants.KS5Destinations)]
-        public async Task<IActionResult> KS5([FromServices] IAboutSchoolService aboutSchoolService, 
+        public async Task<IActionResult> KS5(
+            [FromServices] IDestinationsService destinationsService, 
             string urn, string schoolName,
             CancellationToken ct)
         {
             // This all needs to be refactored into a model, but this gets the structure up
-            var schoolDetails = await aboutSchoolService.GetAboutSchoolDetailsAsync(urn, ct);
+            var destinationDetails = await destinationsService.GetKS5DestinationsDetailsAsync(urn, ct);
 
-            if (string.IsNullOrWhiteSpace(schoolDetails.Urn))
+            if (string.IsNullOrWhiteSpace(destinationDetails.Urn))
             {
                 logger.LogWarning("No establishment details found for URN: {URN}", urn);
                 return View("Error");
             }
 
-            if (!schoolDetails.IsKS5)
-            {
-                return View("Error");
-            }
-            var model = AboutSchoolViewModel.Map(schoolDetails);
+            var model = KS5DestinationsViewModel.Map(destinationDetails);
             return View(model);
         }
 

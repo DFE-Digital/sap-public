@@ -245,6 +245,12 @@
     max-width: none
 }
 
+.govuk-tag {
+    &--full-width {
+        max-width: none;
+    }
+}
+
 //search results
 /* Mobile first: stacked, full width */
 .distance-filter {

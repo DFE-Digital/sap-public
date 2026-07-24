@@ -1,9 +1,9 @@
 ﻿using SAPPub.Core.Entities;
-using SAPPub.Core.Entities.KS4.Destinations;
+using SAPPub.Core.ServiceModels.Destinations;
 
 namespace SAPPub.Core.Tests.TestBuilders;
 
-public class DestinationsDetailsBuilder
+public class KS4DestinationsDetailsBuilder
 {
     private string? _urn;
     private string? _establishmentName;
@@ -13,50 +13,50 @@ public class DestinationsDetailsBuilder
     private Optional<double?> _englandPercentage = new Optional<double?>();
     private Optional<double?> _laPercentage = new Optional<double?>();
 
-    public DestinationsDetailsBuilder WithUrn(string urn)
+    public KS4DestinationsDetailsBuilder WithUrn(string urn)
     {
         _urn = urn;
         return this;
     }
 
-    public DestinationsDetailsBuilder WithEstablishmentName(string establishmentName)
+    public KS4DestinationsDetailsBuilder WithEstablishmentName(string establishmentName)
     {
         _establishmentName = establishmentName;
         return this;
     }
 
-    public DestinationsDetailsBuilder WithLAName(string laName)
+    public KS4DestinationsDetailsBuilder WithLAName(string laName)
     {
         _laName = laName;
         return this;
     }
 
-    public DestinationsDetailsBuilder WithLaPercentage(double? laPercentage)
+    public KS4DestinationsDetailsBuilder WithLaPercentage(double? laPercentage)
     {
         _laPercentage.SetValue(laPercentage);
         return this;
     }
-    public DestinationsDetailsBuilder WithEnglandPercentage(double? englandPercentage)
+    public KS4DestinationsDetailsBuilder WithEnglandPercentage(double? englandPercentage)
     {
         _englandPercentage.SetValue(englandPercentage);
         return this;
     }
 
-    public DestinationsDetailsBuilder WithKS4(bool isKS4)
+    public KS4DestinationsDetailsBuilder WithKS4(bool isKS4)
     {
         _isKs4 = isKS4;
         return this;
     }
-    public DestinationsDetailsBuilder WithKS5(bool isKS5)
+    public KS4DestinationsDetailsBuilder WithKS5(bool isKS5)
     {
         _isKs5 = isKS5;
         return this;
     }
 
-    public DestinationsDetails Build()
+    public KS4DestinationsDetails Build()
     {
         var faker = new Bogus.Faker();
-        return new DestinationsDetails
+        return new KS4DestinationsDetails
         {
             Urn = _urn ?? string.Empty,
             SchoolName = _establishmentName ?? string.Empty,
@@ -139,9 +139,9 @@ public class DestinationsDetailsBuilder
         };
     }
 
-    public DestinationsDetails BuildResultsNotAvailable()
+    public KS4DestinationsDetails BuildResultsNotAvailable()
     {
-        return new DestinationsDetails
+        return new KS4DestinationsDetails
         {
             Urn = _urn ?? string.Empty,
             SchoolName = _establishmentName ?? string.Empty,
