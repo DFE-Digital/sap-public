@@ -10,11 +10,7 @@ module "storage" {
   public_network_access_enabled = true
 
   # Create containers for the application (all containers are private)
-  containers = [
-    { name = "schooldata" },
-    { name = "alldata" },
-    { name = "keys" }
-  ]
+  containers = var.containers
 
   # Configure blob lifecycle management (default: delete after 7 days)
   container_delete_retention_days = var.storage_container_delete_retention_days
