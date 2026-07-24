@@ -2,32 +2,15 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
-using SAPPub.Core.Entities;
-using SAPPub.Core.Entities.KS4.SubjectEntries;
-using SAPPub.Core.Enums;
-using SAPPub.Core.Extensions;
-using SAPPub.Core.Helpers;
 using SAPPub.Core.Interfaces.Services;
-using SAPPub.Core.Interfaces.Services.KS4;
-using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
-using SAPPub.Core.Interfaces.Services.KS4.Admissions;
-using SAPPub.Core.Interfaces.Services.KS4.Attendance;
-using SAPPub.Core.Interfaces.Services.KS4.Performance;
-using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
 using SAPPub.Core.ServiceModels;
-using SAPPub.Core.ServiceModels.KS4.AboutSchool;
-using SAPPub.Core.ServiceModels.KS4.Admissions;
-using SAPPub.Core.ServiceModels.KS4.Attendance;
-using SAPPub.Core.ServiceModels.KS4.Performance;
+using SAPPub.Core.ServiceModels.Destinations;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Areas.Profiles.Controllers;
 using SAPPub.Web.Areas.Profiles.ViewModels.Destinations;
 using SAPPub.Web.Constants;
-using SAPPub.Web.Controllers;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.Charts;
-using SAPPub.Web.Models.SecondarySchool;
-using static SAPPub.Web.Constants.Constants;
 
 namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
 {
@@ -38,39 +21,6 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
         private readonly Mock<IDestinationsService> _mockDestinationsService;
         private readonly DestinationsController _controller;
         private EstablishmentServiceModel _fakeEstablishment;
-
-        private AboutSchoolModel SchoolDetails()
-        {
-            return new AboutSchoolModel
-            {
-                Urn = _fakeEstablishment.URN,
-                SchoolName = _fakeEstablishment.EstablishmentName,
-                AcademyTrust = _fakeEstablishment.TrustName,
-                Website = _fakeEstablishment.Website,
-                Telephone = _fakeEstablishment.TelephoneNum,
-                Address = _fakeEstablishment.Address,
-                LocalAuthority = _fakeEstablishment.LAName,
-                LocalAuthorityName = _fakeEstablishment.LAName,
-                LocalAuthorityWebsite = "www.gov.uk",
-                Easting = "50.01",
-                Northing = "60.90",
-                TypeOfSchool = _fakeEstablishment.TypeOfEstablishmentName,
-                HeadTeacher = _fakeEstablishment.Headteacher,
-                AgeRange = _fakeEstablishment.AgeRange,
-                NumberOfPupils = _fakeEstablishment.TotalPupils,
-                PupilSex = _fakeEstablishment.GenderName,
-                ReligiousCharacter = _fakeEstablishment.ReligiousCharacterName,
-                OfficialSixthFormId = _fakeEstablishment.OfficialSixthFormId,
-                ResourcedProvisionName = _fakeEstablishment.ResourcedProvisionName,
-                EstablishmentTypeGroupId = _fakeEstablishment.EstablishmentTypeGroupId,
-                Status = _fakeEstablishment.StatusCode.ToStatus(),
-                ClosedDate = _fakeEstablishment.ClosedDate.ToDateOnly(),
-                OpenReasonId = _fakeEstablishment.OpenReasonId,
-                OpenDate = _fakeEstablishment.OpenDate.ToDateOnly(),
-                IsKS2 = true,
-                IsKS4 = true
-            };
-        }
 
         public DestinationsControllerTests()
         {
@@ -124,9 +74,9 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
         }
 
         [Fact]
-        public async Task Get_Destinations_Info_ReturnsOk()
+        public async Task Get_KS4Destinations_Info_ReturnsOk()
         {
-            var destinationsDetails = new DestinationsDetailsBuilder()
+            var destinationsDetails = new KS4DestinationsDetailsBuilder()
                 .WithUrn(_fakeEstablishment.URN)
                 .WithEstablishmentName(_fakeEstablishment.EstablishmentName)
                 .WithLAName(_fakeEstablishment.LAName)
@@ -134,7 +84,7 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
                 .Build();
 
             _mockDestinationsService
-                .Setup(es => es.GetDestinationsDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+                .Setup(es => es.GetKS4DestinationsDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(destinationsDetails);
 
             var result = await _controller.KS4(_mockDestinationsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
@@ -198,7 +148,7 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
             Assert.NotNull(result);
             Assert.NotNull(result.Model);
 
-            var model = result.Model as DestinationsViewModel;
+            var model = result.Model as KS4DestinationsViewModel;
             Assert.NotNull(model);
             Assert.Equal(_fakeEstablishment.URN, model.URN);
             Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
@@ -230,9 +180,9 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
         }
 
         [Fact]
-        public async Task Get_Destinations_Info_ResultsNotAvailable_ReturnsOk()
+        public async Task Get_KS4Destinations_Info_ResultsNotAvailable_ReturnsOk()
         {
-            var destinationsDetails = new DestinationsDetailsBuilder()
+            var destinationsDetails = new KS4DestinationsDetailsBuilder()
                 .WithUrn(_fakeEstablishment.URN)
                 .WithEstablishmentName(_fakeEstablishment.EstablishmentName)
                 .WithLAName(_fakeEstablishment.LAName)
@@ -240,7 +190,7 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
                 .BuildResultsNotAvailable();
 
             _mockDestinationsService
-                .Setup(es => es.GetDestinationsDetailsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Setup(es => es.GetKS4DestinationsDetailsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(destinationsDetails);
 
             var result = await _controller.KS4(_mockDestinationsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
@@ -251,7 +201,7 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
             Assert.NotNull(result);
             Assert.NotNull(result.Model);
 
-            var model = result.Model as DestinationsViewModel;
+            var model = result.Model as KS4DestinationsViewModel;
             Assert.NotNull(model);
             Assert.Equal(_fakeEstablishment.URN, model.URN);
             Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
@@ -289,10 +239,10 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
         [Theory]
         [InlineData("Sheffield", "Sheffield average")]
         [InlineData("Poole Grammar School", "Local council average")]
-        public async Task Get_Destinations_Info_LocalCouncilName(string localCouncilName, string expectedCouncilName)
+        public async Task Get_KS4Destinations_Info_LocalCouncilName(string localCouncilName, string expectedCouncilName)
         {
             _fakeEstablishment.LAName = localCouncilName;
-            var destinationsDetails = new DestinationsDetailsBuilder()
+            var destinationsDetails = new KS4DestinationsDetailsBuilder()
                  .WithUrn(_fakeEstablishment.URN)
                  .WithEstablishmentName(_fakeEstablishment.EstablishmentName)
                  .WithLAName(_fakeEstablishment.LAName)
@@ -300,7 +250,7 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
                  .Build();
 
             _mockDestinationsService
-                .Setup(es => es.GetDestinationsDetailsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Setup(es => es.GetKS4DestinationsDetailsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(destinationsDetails);
 
             var result = await _controller.KS4(_mockDestinationsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
@@ -312,7 +262,7 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
             Assert.NotNull(result);
             Assert.NotNull(result.Model);
 
-            var model = result.Model as DestinationsViewModel;
+            var model = result.Model as KS4DestinationsViewModel;
             Assert.NotNull(model);
             Assert.Equal(_fakeEstablishment.URN, model.URN);
             Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
@@ -324,6 +274,54 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
 
             var actualBreakdownDataLabels = model.BreakdownDestinationData.Datasets.Select(s => s.Label).ToArray();
             Assert.Equal(expectedBreakdownDataLabels, actualBreakdownDataLabels);
+        }
+
+        [Fact]
+        public async Task Get_KS5Destinations_Info_ReturnsOk()
+        {
+            var destinationsDetails = new KS5DestinationsDetails
+            {
+                Urn = _fakeEstablishment.URN,
+                LocalAuthorityName = _fakeEstablishment.LAName,
+                SchoolName = _fakeEstablishment.EstablishmentName,
+                IsKS2 = false,
+                IsKS4 = false,
+                IsKS5 = false,
+                EstablishmentTotalOverall = 88,
+                LATotalOverall = 77,
+                EnglandOverall = 66
+            };
+
+            double?[] expectedAllDestData =
+            [
+                destinationsDetails.EstablishmentTotalOverall = 88,
+                destinationsDetails.LATotalOverall = 66,
+                destinationsDetails.EnglandOverall = 77,
+            ];
+
+            _mockDestinationsService
+                .Setup(es => es.GetKS5DestinationsDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(destinationsDetails);
+
+            var result = await _controller.KS5(_mockDestinationsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
+
+            string[] expectedAllDestDataLabels = ["School or College", $"{_fakeEstablishment.LAName} average", "England average"];
+
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Model);
+
+            var model = result.Model as KS5DestinationsViewModel;
+            Assert.NotNull(model);
+            Assert.Equal(_fakeEstablishment.URN, model.URN);
+            Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
+
+            Assert.Equal(expectedAllDestDataLabels, model.AllDestinationsData.Labels);
+            Assert.Equal(expectedAllDestData, model.AllDestinationsData.Data);
+
+            Assert.Equal(2, model.RouteAttributes.Count);
+            Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
+            Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
         }
     }
 }

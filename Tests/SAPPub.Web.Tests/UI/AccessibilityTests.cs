@@ -31,6 +31,7 @@ public class AccessibilityTests(WebApplicationSetupFixture fixture) : BasePageTe
         "school/100273/saint-paul-roman-catholic-infant-school/secondary/curriculum-and-extra-curricular-activities",
         "school/105574/loreto-high-school-chorlton/destinations/secondary",
         "school/100273/saint-paul-roman-catholic-infant-school/destinations/secondary",
+        "school/105574/loreto-high-school-chorlton/destinations/16-to-19",
         "search",
         "search/results?NameSearchTerm=school&Distance=3&PageNumber=1",
         "search/results?NameSearchTerm=xyz&Distance=3&PageNumber=1",

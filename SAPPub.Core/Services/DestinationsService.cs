@@ -1,41 +1,43 @@
 ﻿using SAPPub.Core.Entities;
-using SAPPub.Core.Entities.KS4.Destinations;
+using SAPPub.Core.Entities.Destinations;
+using SAPPub.Core.Interfaces.Repositories.Destinations;
 using SAPPub.Core.Interfaces.Services;
-using SAPPub.Core.Interfaces.Services.KS4;
-using SAPPub.Core.Interfaces.Services.KS4.Destinations;
+using SAPPub.Core.ServiceModels.Destinations;
 
-namespace SAPPub.Core.Services.KS4;
+namespace SAPPub.Core.Services;
 
-public sealed class DestinationsService(
-    IEstablishmentService establishmentService,
-    IEstablishmentDestinationsService establishmentDestinationsService,
-    ILADestinationsService lADestinationsService,
-    IEnglandDestinationsService englandDestinationsService) : IDestinationsService
+public class DestinationsService(
+    IEstablishmentService establishmentService, 
+    IKS4DestinationsRepository kS4DestinationsRepository,
+    IKS5DestinationsRepository kS5DestinationsRepository) : IDestinationsService
 {
-    public async Task<DestinationsDetails> GetDestinationsDetailsAsync(string urn, CancellationToken ct = default)
+    public async Task<KS4DestinationsDetails> GetKS4DestinationsDetailsAsync(string urn, CancellationToken ct = default)
     {
         var establishment = await establishmentService.GetEstablishmentAsync(urn, ct);
+        var laCode = establishment?.LAId ?? string.Empty;
 
-        if (string.IsNullOrWhiteSpace(establishment.URN))
-            return CreateEmpty(urn);
-
+        if (string.IsNullOrWhiteSpace(establishment?.URN))
+        {
+            return CreateEmpty(establishment?.URN);
+        }
+            
         // Run independent calls concurrently (LA depends on LAId being available)
-        var establishmentDestinationsTask = establishmentDestinationsService.GetEstablishmentDestinationsAsync(urn, ct);
-        var englandDestinationsTask = englandDestinationsService.GetEnglandDestinationsAsync(ct);
-
-        var laCode = establishment.LAId ?? string.Empty;
-        var laDestinationsTask = lADestinationsService.GetLADestinationsAsync(laCode, ct);
+        var establishmentDestinationsTask = kS4DestinationsRepository.GetEstablishmentDestinationsAsync(urn, ct);
+        var englandDestinationsTask = kS4DestinationsRepository.GetEnglandDestinationsAsync(ct);
+        var laDestinationsTask = kS4DestinationsRepository.GetLADestinationsAsync(laCode, ct);
 
         await Task.WhenAll(establishmentDestinationsTask, laDestinationsTask, englandDestinationsTask);
+
+        ct.ThrowIfCancellationRequested();
 
         var establishmentDestinations = await establishmentDestinationsTask;
         var lADestinations = await laDestinationsTask;
         var englandDestinations = await englandDestinationsTask;
 
         // If your establishment destinations service returns nullable, handle it here.
-        establishmentDestinations ??= new EstablishmentDestinations();
+        establishmentDestinations ??= new KS4EstablishmentDestinations();
 
-        return new DestinationsDetails
+        return new KS4DestinationsDetails
         {
             Urn = establishment.URN,
             SchoolName = establishment.EstablishmentName,
@@ -103,7 +105,61 @@ public sealed class DestinationsService(
         };
     }
 
-    private static DestinationsDetails CreateEmpty(string urn)
+    public async Task<KS5DestinationsDetails> GetKS5DestinationsDetailsAsync(string urn, CancellationToken ct = default)
+    {
+        ct.ThrowIfCancellationRequested();
+
+        var establishment = await establishmentService.GetEstablishmentAsync(urn, ct);
+        var laCode = establishment.LAId ?? string.Empty;
+
+        if (string.IsNullOrWhiteSpace(establishment.URN))
+        {
+            return CreateEmptyKS5Destinations(establishment.URN);
+        }
+
+        // Run independent calls concurrently (LA depends on LAId being available)
+        var establishmentDestinationsTask = kS5DestinationsRepository.GetEstablishmentDestinationsAsync(urn, ct);
+        var englandDestinationsTask = kS5DestinationsRepository.GetEnglandDestinationsAsync(ct);
+        var laDestinationsTask = kS5DestinationsRepository.GetLADestinationsAsync(laCode, ct);
+
+        await Task.WhenAll(establishmentDestinationsTask, laDestinationsTask, englandDestinationsTask);
+
+        var establishmentDestinations = await establishmentDestinationsTask;
+        var lADestinations = await laDestinationsTask;
+        var englandDestinations = await englandDestinationsTask;
+
+        // If your establishment destinations service returns nullable, handle it here.
+        establishmentDestinations ??= new KS5EstablishmentDestinations();
+
+        return new KS5DestinationsDetails
+        {
+            Urn = establishment.URN,
+            SchoolName = establishment.EstablishmentName,
+            LocalAuthorityName = establishment.LAName,
+            IsKS2 = establishment.IsKS2,
+            IsKS4 = establishment.IsKS4,
+            IsKS5 = establishment.IsKS5,
+            EstablishmentTotalCohortFor = establishmentDestinations.TOT_COHORT_Est_Current_Num,
+            EstablishmentTotalOverall = establishmentDestinations.TOT_OVERALLPER_Est_Current_Pct,
+            LATotalOverall = lADestinations.TOT_OVERALLPER_LA_Current_Num,
+            EnglandOverall = englandDestinations.TOT_OVERALLPER_Eng_Current_Pct
+        };
+    }
+
+    private static KS5DestinationsDetails CreateEmptyKS5Destinations(string urn)
+    {
+        return new KS5DestinationsDetails
+        {
+            Urn = urn,
+            SchoolName = string.Empty,
+            LocalAuthorityName = string.Empty,
+            IsKS2 = false,
+            IsKS4 = false,
+            IsKS5 = false
+        };
+    }
+
+    private static KS4DestinationsDetails CreateEmpty(string? urn)
     {
         static RelativeYearValues<double?> EmptyYears() => new()
         {
@@ -112,9 +168,9 @@ public sealed class DestinationsService(
             TwoYearsAgo = null
         };
 
-        return new DestinationsDetails
+        return new KS4DestinationsDetails
         {
-            Urn = urn,
+            Urn = urn!,
             SchoolName = string.Empty,
             LocalAuthorityName = string.Empty,
 
