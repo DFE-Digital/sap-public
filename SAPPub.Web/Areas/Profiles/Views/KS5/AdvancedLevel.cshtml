@@ -62,6 +62,9 @@
         @* ProgressScore Info *@
         <partial name="_ProgressScore" model="@Model.ProgressScore" view-data='new ViewDataDictionary(ViewData) { ["QualificationLevel"] = Model.Level3Qualification }' />
         
+        @* Average result *@
+        <partial name="_AverageResult" model="@Model.AverageResult" view-data='new ViewDataDictionary(ViewData) { ["QualificationLevel"] = Model.Level3Qualification, ["LAName"] = Model.LAName }' />
+
         <govuk-pagination id="academic-performance-level-3-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress" asp-all-route-data="@Model.RouteAttributes">Academic performance: Progress and Attainment</govuk-pagination-previous>
             <govuk-pagination-next asp-route="@RouteConstants.KS5AcademicPerformanceLevel2" asp-all-route-data="@Model.RouteAttributes">Academic performance: Level 2 qualifications</govuk-pagination-next>

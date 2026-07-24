@@ -1,7 +1,5 @@
 ﻿using Moq;
-using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.Performance;
-using SAPPub.Core.Enums;
 using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.Interfaces.Repositories.Performance;
 using SAPPub.Core.Interfaces.Services;
@@ -51,6 +49,10 @@ public class AdvancedLevelQualificationsServiceTests
             .Setup(r => r.GetEnglandPerformanceAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(new EnglandKs5Performance());
 
+        _mockKs5PerformanceRepository
+            .Setup(r => r.GetLaPerformanceAsync(fakeEstablishment.LAId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new LAKs5Performance());
+
         // Act
         var result = await _service.GetAdvancedLevelQualificationDetailsAsync(fakeEstablishment.URN, Level3.ALevel, CancellationToken.None);
 
@@ -65,6 +67,13 @@ public class AdvancedLevelQualificationsServiceTests
         Assert.Null(result.ProgressScore.ConfidenceLevelUpper);
         Assert.Null(result.ProgressScore.ConfidenceLevelLower);
         Assert.Null(result.ProgressScore.EnglandAverageScore);
+
+        Assert.Null(result.AverageResult.Establishment.Grade);
+        Assert.Null(result.AverageResult.Establishment.Points);
+        Assert.Null(result.AverageResult.LocalAuthority.Grade);
+        Assert.Null(result.AverageResult.LocalAuthority.Points);
+        Assert.Null(result.AverageResult.England.Grade);
+        Assert.Null(result.AverageResult.England.Points);
     }
 
     [Theory]
@@ -83,13 +92,23 @@ public class AdvancedLevelQualificationsServiceTests
             VA_INS_ALEV_Est_Current_Num = 75.15,
             PROGRESS_BAND_ALEV_Est_Current = "Average",
             UCI_INS_ALEV_Est_Current_Num = 5,
-            LCI_INS_ALEV_Est_Current_Num = 1            
+            LCI_INS_ALEV_Est_Current_Num = 1,
+            TALLPPE_ALEV_1618_Est_Current_Num = 15.57,
+            TALLPPEGRD_ALEV_1618_Est_Current = "A"
         };
 
         var englandPerformance = new EnglandKs5Performance
         {
             Id = fakeEstablishment.LAId,
             VA_INS_ALEV_Eng_Current_Num = 85.75,
+            TALLPPE_ALEV_1618_Eng_Current_Num = 25.79,
+            TALLPPEGRD_ALEV_1618_Eng_Current = "B"
+        };
+
+        var laPerformance = new LAKs5Performance
+        {
+            TALLPPE_ALEV_1618_LA_Current_Num = 20.59,
+            TALLPPEGRD_ALEV_1618_LA_Current = "C"
         };
 
         _mockKs5PerformanceRepository
@@ -99,6 +118,10 @@ public class AdvancedLevelQualificationsServiceTests
         _mockKs5PerformanceRepository
             .Setup(r => r.GetEnglandPerformanceAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(englandPerformance);
+
+        _mockKs5PerformanceRepository
+            .Setup(r => r.GetLaPerformanceAsync(fakeEstablishment.LAId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(laPerformance);
 
         // Act
         var result = await _service.GetAdvancedLevelQualificationDetailsAsync(fakeEstablishment.URN, qualificationLevel, CancellationToken.None);
@@ -116,7 +139,15 @@ public class AdvancedLevelQualificationsServiceTests
             Assert.Equal(establishmentPerformance.UCI_INS_ALEV_Est_Current_Num, result.ProgressScore.ConfidenceLevelUpper);
             Assert.Equal(establishmentPerformance.LCI_INS_ALEV_Est_Current_Num, result.ProgressScore.ConfidenceLevelLower);
 
+            Assert.Equal(establishmentPerformance.TALLPPE_ALEV_1618_Est_Current_Num, result.AverageResult.Establishment.Points);
+            Assert.Equal(establishmentPerformance.TALLPPEGRD_ALEV_1618_Est_Current, result.AverageResult.Establishment.Grade);
+
             Assert.Equal(englandPerformance.VA_INS_ALEV_Eng_Current_Num, result.ProgressScore.EnglandAverageScore);
+            Assert.Equal(englandPerformance.TALLPPE_ALEV_1618_Eng_Current_Num, result.AverageResult.England.Points);
+            Assert.Equal(englandPerformance.TALLPPEGRD_ALEV_1618_Eng_Current, result.AverageResult.England.Grade);
+
+            Assert.Equal(laPerformance.TALLPPE_ALEV_1618_LA_Current_Num, result.AverageResult.LocalAuthority.Points);
+            Assert.Equal(laPerformance.TALLPPEGRD_ALEV_1618_LA_Current, result.AverageResult.LocalAuthority.Grade);
         }
     }
 }
