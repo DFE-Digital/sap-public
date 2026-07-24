@@ -86,7 +86,7 @@
                     <govuk-select-item value=@GcseGradeDataSelection.Grade4AndAbove selected="@Model.SelectedGrade == GcseGradeDataSelection.Grade4AndAbove">@GcseGradeDataSelection.Grade4AndAbove.GetDisplayName()</govuk-select-item>
                     <govuk-select-item value=@GcseGradeDataSelection.Grade5AndAbove selected="!@Model.SelectedGrade.HasValue || @Model.SelectedGrade == GcseGradeDataSelection.Grade5AndAbove">@GcseGradeDataSelection.Grade5AndAbove.GetDisplayName()</govuk-select-item>
                 </govuk-select>
-                <govuk-button type="submit" class="govuk-button govuk-!-margin-bottom-0 govuk-!-margin-left-2">Show results</govuk-button>
+                <govuk-button type="submit" class="govuk-!-margin-bottom-0 govuk-!-margin-left-2">Show results</govuk-button>
             </form>
         </div>
 
@@ -128,11 +128,11 @@
                     </div>
 
                     <div class="govuk-button-group">
-                        <govuk-button id="all-gcse-current-year-show-btn" class="govuk-button govuk-button--secondary all-gcse-current-year-show-btn">Show as a table</govuk-button>
+                        <govuk-button id="all-gcse-current-year-show-btn" type="button" class="govuk-button--secondary all-gcse-current-year-show-btn">Show as a table</govuk-button>
                     </div>
 
                     <div class="govuk-button-group">
-                        <label id="all-gcse-show-data-over-time-btn" for="data-overtime-view" class="govuk-button govuk-button--secondary">Show data over time</label>
+                        <label id="all-gcse-show-data-over-time-btn" for="data-overtime-view" class="govuk-button govuk-button--secondary" tabindex="0">Show data over time</label>
                     </div>
                 }
             </div>
@@ -183,11 +183,11 @@
                 @if (Model.HasEstablishmentData.IsAvailable)
                 {
                     <div class="govuk-button-group">
-                        <govuk-button id="all-gcse-data-over-time-show-btn" class="govuk-button govuk-button--secondary all-gcse-data-over-time-show-btn">Show as a table</govuk-button>
+                        <govuk-button id="all-gcse-data-over-time-show-btn" type="button" class="govuk-button--secondary all-gcse-data-over-time-show-btn">Show as a table</govuk-button>
                     </div>
 
                     <div class="govuk-button-group">
-                        <label id="all-gcse-show-current-data-btn" for="current-view" class="govuk-button govuk-button--secondary">Show current data</label>
+                        <label id="all-gcse-show-current-data-btn" for="current-view" class="govuk-button govuk-button--secondary" tabindex="0">Show current data</label>
                     </div>
                 }
             </div>
@@ -248,7 +248,7 @@
                 @if (Model.HasEstablishmentData.IsAvailable)
                 {
                     <div class="govuk-button-group">
-                        <button id="breakdown-gcse-current-year-show-btn" class="govuk-button govuk-button--secondary breakdown-gcse-current-year-show-btn">Show as a table</button>
+                        <govuk-button id="breakdown-gcse-current-year-show-btn" type="button" class="govuk-button--secondary breakdown-gcse-current-year-show-btn">Show as a table</govuk-button>
                     </div>
                 }
             </div>

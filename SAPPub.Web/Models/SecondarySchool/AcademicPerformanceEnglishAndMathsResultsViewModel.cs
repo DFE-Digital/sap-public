@@ -5,7 +5,7 @@ using SAPPub.Web.Models.Charts;
 
 namespace SAPPub.Web.Models.SecondarySchool;
 
-public class AcademicPerformanceEnglishAndMathsResultsViewModel : SecondarySchoolBaseViewModel
+public class AcademicPerformanceEnglishAndMathsResultsViewModel : BaseViewModel
 {
     public GcseGradeDataSelection? SelectedGrade { get; set; }
 

@@ -31,6 +31,7 @@ public class AccessibilityTests(WebApplicationSetupFixture fixture) : BasePageTe
         "school/100273/saint-paul-roman-catholic-infant-school/secondary/curriculum-and-extra-curricular-activities",
         "school/105574/loreto-high-school-chorlton/destinations/secondary",
         "school/100273/saint-paul-roman-catholic-infant-school/destinations/secondary",
+        "school/105574/loreto-high-school-chorlton/destinations/16-to-19",
         "search",
         "search/results?NameSearchTerm=school&Distance=3&PageNumber=1",
         "search/results?NameSearchTerm=xyz&Distance=3&PageNumber=1",
@@ -41,7 +42,8 @@ public class AccessibilityTests(WebApplicationSetupFixture fixture) : BasePageTe
         "compare/secondary/about-your-schools?urns=105574&urns=107564",
         "compare/secondary/pupil-attainment?urns=100279&urns=145179",
         "compare/secondary/english-and-maths-results?urns=105574&urns=137020",
-        "compare/secondary/destinations-after-year-11?urns=105574&urns=107564"
+        "compare/secondary/destinations-after-year-11?urns=105574&urns=107564",
+        "school/130499/holy-cross-college/16-to-19-performance/advanced-level/alevel"
     };
 
     [Fact]
