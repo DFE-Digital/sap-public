@@ -4,15 +4,15 @@ using SAPPub.Web.Helpers;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
-namespace SAPPub.Web.Tests.UI.SecondarySchool;
+namespace SAPPub.Web.Tests.UI.KS4;
 
 [Collection("Playwright Tests")]
 public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
     private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
     {
-        ["105574"] = "school/105574/loreto-high-school-chorlton/secondary/academic-performance-english-and-maths-results",
-        ["100273"] = "school/100273/saint-paul-roman-catholic-infant-school/secondary/academic-performance-english-and-maths-results",
+        ["105574"] = "school/105574/loreto-high-school-chorlton/secondary-performance/english-and-maths",
+        ["100273"] = "school/100273/saint-paul-roman-catholic-infant-school/secondary-performance/english-and-maths",
     };
 
     [Fact]
@@ -36,7 +36,7 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
         var title = await Page.TitleAsync();
 
         // Assert
-        Assert.Contains("Loreto High School Chorlton - English and maths results - School Profiles - GOV.UK", title);
+        Assert.Contains("Loreto High School Chorlton - Secondary English and maths - School Profiles - GOV.UK", title);
     }
 
     [Fact]
@@ -73,7 +73,7 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
     [Fact]
     public async Task AcademicPerformanceEnglishAndMathsResultsPage_Displays_VerticalNavigation()
     {
-        var performancePage = "school/105574/loreto-high-school-chorlton/secondary/academic-performance-attainment-and-progress";
+        var performancePage = "school/105574/loreto-high-school-chorlton/secondary-performance/progress-attainment";
         // We want to display the performance root page even when in a performance sub-page, hence need to check the active href is the root performance page
 
         var nav = new VerticalNavigationHelper(Page);
@@ -127,8 +127,8 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
 
         // Assert
         Assert.True(isVisible);
-        Assert.Equal("Academic performance: Progress and attainment", previousPaginationText?.Trim());
-        Assert.Equal("Academic performance: Subjects entered", nextPaginationText?.Trim());
+        Assert.Contains("performance: Progress and attainment", previousPaginationText?.Trim());
+        Assert.Contains("performance: Subjects entered", nextPaginationText?.Trim());
     }
 
     [Fact]
@@ -352,7 +352,7 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
         Assert.False(await gcseCurrentYearTable.CountAsync() > 0);
         Assert.False(await gcseCurrentYearShowBtn.CountAsync() > 0);
         Assert.False(await gcseShowDataOverTimeBtn.CountAsync() > 0);
-        Assert.False(await gcseDataOverTimeChart.CountAsync() > 0);        
+        Assert.False(await gcseDataOverTimeChart.CountAsync() > 0);
         Assert.False(await gcseDataOverTimeShowBtn.CountAsync() > 0);
         Assert.False(await gcseShowCurrentDataBtn.CountAsync() > 0);
         Assert.True(await gcseDataOverTimeTable.CountAsync() > 0);

@@ -9,8 +9,8 @@ using SAPPub.Core.ServiceModels;
 using SAPPub.Core.Services;
 using SAPPub.Core.Services.KS4.Admissions;
 using SAPPub.Core.Tests.TestBuilders;
+using SAPPub.Web.Areas.Profiles.Controllers;
 using SAPPub.Web.Constants;
-using SAPPub.Web.Controllers;
 using SAPPub.Web.Models.SecondarySchool;
 
 namespace SAPPub.Web.Tests.ControllerAndServicesTests.SecondarySchool;
@@ -22,7 +22,7 @@ public class AdmissionsTests
 
     private readonly IEstablishmentService _establishmentService;
     private readonly IAdmissionsService _admissionsService;
-    private readonly SecondarySchoolController _controller;
+    private readonly KS4Controller _controller;
 
     private readonly Establishment _establishment;
     private readonly EstablishmentServiceModel _establishmentServiceModel;
@@ -38,7 +38,7 @@ public class AdmissionsTests
 
         _establishmentService = new EstablishmentService(_mockEstablishmentRepository.Object);
         _admissionsService = new EstablishmentAdmissionsService(_establishmentService, _mockLaService.Object);
-        _controller = new SecondarySchoolController(_establishmentService);
+        _controller = new KS4Controller(_establishmentService);
 
         _controller.ControllerContext = new ControllerContext
         {

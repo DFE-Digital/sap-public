@@ -1,15 +1,17 @@
 ﻿using Microsoft.Playwright;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
+using static SAPPub.Web.Constants.PageTitleConstants;
 
-namespace SAPPub.Web.Tests.UI.SecondarySchool;
+namespace SAPPub.Web.Tests.UI.KS4;
 
 [Collection("Playwright Tests")]
 public class SecondarySchoolNavigationTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
     private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
     {
-        ["105574"] = "school/105574/loreto-high-school-chorlton/about"
+        ["105574"] = "school/105574/loreto-high-school-chorlton/about",
+        ["149328"] = "school/149328/king-edward-vi-high-school/about"
     };
 
     [Fact]
@@ -24,7 +26,7 @@ public class SecondarySchoolNavigationTests(WebApplicationSetupFixture fixture) 
 
         // Assert
         var title = await Page.TitleAsync();
-        Assert.Contains("Admissions", title);
+        Assert.Contains(SecondarySchoolPageTitles.Admissions, title);
 
         // Act
         navItem = nav.GetItem("Curriculum and extra-curricular activities");
@@ -32,7 +34,7 @@ public class SecondarySchoolNavigationTests(WebApplicationSetupFixture fixture) 
 
         // Assert
         title = await Page.TitleAsync();
-        Assert.Contains("Curriculum and extra-curricular activities", title);
+        Assert.Contains(SecondarySchoolPageTitles.Curriculum, title);
 
         // Act
         navItem = nav.GetItem("Attendance");
@@ -40,7 +42,7 @@ public class SecondarySchoolNavigationTests(WebApplicationSetupFixture fixture) 
 
         // Assert
         title = await Page.TitleAsync();
-        Assert.Contains("Attendance", title);
+        Assert.Contains(SecondarySchoolPageTitles.Attendance, title);
 
         // Act
         navItem = nav.GetItem("Academic performance");
@@ -48,7 +50,7 @@ public class SecondarySchoolNavigationTests(WebApplicationSetupFixture fixture) 
 
         // Assert
         title = await Page.TitleAsync();
-        Assert.Contains("Progress and attainment", title);
+        Assert.Contains(SecondarySchoolPageTitles.ProgressAndAttainment, title);
 
         // Act
         navItem = nav.GetItem("Destinations");
@@ -56,7 +58,7 @@ public class SecondarySchoolNavigationTests(WebApplicationSetupFixture fixture) 
 
         // Assert
         title = await Page.TitleAsync();
-        Assert.Contains("Destinations", title);
+        Assert.Contains(SecondarySchoolPageTitles.Destinations, title);
     }
 
     [Fact]
@@ -135,7 +137,8 @@ public class SecondarySchoolNavigationTests(WebApplicationSetupFixture fixture) 
 
         // Assert
         title = await Page.TitleAsync();
-        Assert.Contains("Progress and attainment", title);
+        Assert.Contains("Secondary", title);
+        Assert.Contains("Progress and attainment", title); // CML TODO this and others after - assert it's secondary
 
         // Act
         await nav.ClickNextLinkAsync();
@@ -164,6 +167,28 @@ public class SecondarySchoolNavigationTests(WebApplicationSetupFixture fixture) 
         // Assert
         title = await Page.TitleAsync();
         Assert.Contains("Destinations", title);
+    }
+
+    [Fact]
+    public async Task NavigateThroughPaginationNav_SchoolIsKS4AndKS5_ShowsExpectedPages()
+    {
+        // Act - navigate to last tab for Academic performance
+        var response = await Page.GotoAsync(_schoolUrnToUrlMap["149328"]);
+
+        var sideNav = new VerticalNavigationHelper(Page);
+        var sideNavItem = sideNav.GetItem("Secondary academic performance");
+        await sideNavItem.ClickAsync();
+
+        await ClickAcademicPerformanceNavItemAsync(Page, "Additional measures");
+
+        // Act
+        var bottomPaginationNav = new PaginationNavigationHelper(Page);
+        await bottomPaginationNav.ClickNextLinkAsync();
+
+        // Assert
+        var title = await Page.TitleAsync();
+        Assert.Contains("16 to 19", title);
+        Assert.Contains("Advanced level", title);
     }
 
     private static Task ClickAcademicPerformanceNavItemAsync(

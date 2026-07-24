@@ -1,9 +1,11 @@
 ﻿@model SAPPub.Web.Models.SecondarySchool.CurriculumAndExtraCurricularActivitiesViewModel;
+@using SAPPub.Web.Constants
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 
 @{
     ViewData["Header"] = "Curriculum and extra-curricular activities";
-    ViewData["Title"] = $"{Model.SchoolName} - {ViewData["Header"]}";
+    ViewData["SubHeader"] = PageTitleConstants.SecondarySchoolPageTitles.Curriculum;
+    ViewData["Title"] = $"{Model.SchoolName} - {ViewData["SubHeader"]}";
 }
 
 <div class="govuk-grid-row">

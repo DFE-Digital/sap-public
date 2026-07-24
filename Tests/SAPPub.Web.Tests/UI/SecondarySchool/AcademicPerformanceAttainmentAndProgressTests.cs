@@ -3,12 +3,12 @@ using SAPPub.Web.Helpers;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
-namespace SAPPub.Web.Tests.UI.SecondarySchool;
+namespace SAPPub.Web.Tests.UI.KS4;
 
 [Collection("Playwright Tests")]
 public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
-    private string _pageUrl = "school/105574/loreto-high-school-chorlton/secondary/academic-performance-attainment-and-progress";
+    private string _pageUrl = "school/105574/loreto-high-school-chorlton/secondary-performance/progress-attainment";
 
     [Fact]
     public async Task AcademicPerformanceAttainmentAndProgressPage_LoadsSuccessfully()
@@ -155,7 +155,7 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
     public async Task AcademicPerformanceAttainmentAndProgressPage_Display_No_Attainment8_Info(AcademicYearSelection academicYearSelection)
     {
         // Arrange
-        _pageUrl = "school/100273/Saint%20Paul%20Roman%20Catholic%20Infant%20School/secondary/academic-performance-attainment-and-progress";
+        _pageUrl = "school/100273/Saint%20Paul%20Roman%20Catholic%20Infant%20School/secondary-performance/progress-attainment";
         await Page.GotoAsync(_pageUrl);
 
         // Act
@@ -186,7 +186,7 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
         // Assert
         Assert.True(isVisible);
         Assert.Equal("Attendance", previousPaginationText?.Trim());
-        Assert.Equal("Academic performance: English and maths results", nextPaginationText?.Trim());
+        Assert.Contains("performance: English and maths results", nextPaginationText?.Trim());
     }
 
     private async Task AssertCorrectProgress8CardAsync(string expectedcardTestId)

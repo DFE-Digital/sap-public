@@ -1,8 +1,9 @@
 ﻿using SAPPub.Core.Entities;
 using SAPPub.Core.ServiceModels.KS4.Attendance;
 using SAPPub.Web.Helpers;
+using SAPPub.Web.Models;
 
-namespace SAPPub.Web.Models.SecondarySchool;
+namespace SAPPub.Web.Areas.Profiles.ViewModels.Attendance;
 
 public class AttendanceViewModel : BaseViewModel
 {

@@ -1,10 +1,13 @@
-﻿@model SAPPub.Web.Models.SecondarySchool.AttendanceViewModel;
+﻿@model AttendanceViewModel;
 @using SAPPub.Core.Extensions
+@using SAPPub.Web.Areas.Profiles.ViewModels.Attendance
+@using SAPPub.Web.Constants
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 
 @{
     ViewData["Header"] = "Attendance";
-    ViewData["Title"] = $"{Model.SchoolName} - {ViewData["Header"]}";
+    ViewData["SubHeader"] = PageTitleConstants.SecondarySchoolPageTitles.Attendance;
+    ViewData["Title"] = $"{Model.SchoolName} - {ViewData["SubHeader"]}";
 }
 
 <div class="govuk-grid-row">
@@ -218,7 +221,7 @@
 
         <govuk-pagination id="attendance-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.SecondaryCurriculumAndExtraCurricularActivities" asp-all-route-data="@Model.RouteAttributes">Curriculum and extra-curricular activities</govuk-pagination-previous>
-            <govuk-pagination-next asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress" asp-all-route-data="@Model.RouteAttributes">Academic performance: Progress and attainment</govuk-pagination-next>
+            <govuk-pagination-next asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress" asp-all-route-data="@Model.RouteAttributes">Secondary academic performance: Progress and attainment</govuk-pagination-next>
         </govuk-pagination>
     </div>
 </div>

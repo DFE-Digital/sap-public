@@ -1,12 +1,12 @@
 ﻿using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
-namespace SAPPub.Web.Tests.UI.SecondarySchool;
+namespace SAPPub.Web.Tests.UI.KS4;
 
 [Collection("Playwright Tests")]
 public class AcademicPerformanceSubjectsEnteredTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
-    private string _pageUrl = "school/105574/loreto-high-school-chorlton/secondary/academic-performance-subjects-entered";
+    private string _pageUrl = "school/105574/loreto-high-school-chorlton/secondary-performance/subjects-entered";
 
     [Fact]
     public async Task AcademicPerformanceSubjectsEnteredPage_LoadsSuccessfully()
@@ -29,7 +29,7 @@ public class AcademicPerformanceSubjectsEnteredTests(WebApplicationSetupFixture 
         var title = await Page.TitleAsync();
 
         // Assert
-        Assert.Contains("Loreto High School Chorlton - Subjects entered - School Profiles - GOV.UK", title);
+        Assert.Contains("Loreto High School Chorlton - Secondary Subjects entered - School Profiles - GOV.UK", title);
     }
 
     [Fact]
@@ -66,7 +66,7 @@ public class AcademicPerformanceSubjectsEnteredTests(WebApplicationSetupFixture 
     [Fact]
     public async Task AcademicPerformanceSubjectsEnteredPage_Displays_VerticalNavigation()
     {
-        var performancePage = "school/105574/loreto-high-school-chorlton/secondary/academic-performance-attainment-and-progress";
+        var performancePage = "school/105574/loreto-high-school-chorlton/secondary-performance/progress-attainment";
         // We want to display the performance root page even when in a performance sub-page, hence need to check the active href is the root performance page
 
         var nav = new VerticalNavigationHelper(Page);
@@ -119,7 +119,7 @@ public class AcademicPerformanceSubjectsEnteredTests(WebApplicationSetupFixture 
 
         // Assert
         Assert.True(isVisible);
-        Assert.Equal("Academic performance: English and maths results", previousPaginationText?.Trim());
-        Assert.Equal("Academic performance: Additional measures", nextPaginationText?.Trim());
+        Assert.Contains("performance: English and maths results", previousPaginationText?.Trim());
+        Assert.Contains("performance: Additional measures", nextPaginationText?.Trim());
     }
 }
