@@ -12,7 +12,7 @@ public class EnglishMathsQualificationModel
 
     public required string SchoolName { get; init; }
 
-    public string? LaName { get; set; }
+    public string? LAName { get; set; }
 
     public EnglishMathsScoreModel? AverageEnglishProgress { get; set; }
 

@@ -14,7 +14,7 @@ public class EnglishMathsQualificationsViewModel : BaseViewModel
 
     public EnglishMathsScoreViewModel? EnteredForMathsQualification { get; set; }
 
-    public string? LaName { get; set; }
+    public string? LAName { get; set; }
 
     public static EnglishMathsQualificationsViewModel Map(EnglishMathsQualificationModel model)
     {

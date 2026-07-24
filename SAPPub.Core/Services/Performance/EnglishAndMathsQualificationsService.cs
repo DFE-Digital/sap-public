@@ -30,6 +30,7 @@ public class EnglishAndMathsQualificationsService(
             IsKS2 = establishment.IsKS2,
             IsKS4 = establishment.IsKS4,
             IsKS5 = establishment.IsKS5,
+            LAName = establishment.LAName,
             AverageEnglishProgress = new EnglishMathsScoreModel 
             {
                 NumberOfStudents = establishmentPerformance.T_SCOPEEX_E_Est_Current_Num,
