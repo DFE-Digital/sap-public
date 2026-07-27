@@ -227,6 +227,9 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "PROGRESS_BAND_ALEV_Est_Current_Num_Coded",
           "UCI_INS_ALEV_Est_Current_Num_Coded",
           "LCI_INS_ALEV_Est_Current_Num_Coded",
+          "TALLPPE_ALEV_1618_Est_Current_Num_Coded",
+          "TALLPPEGRD_ALEV_1618_Est_Current"          
+          "LCI_INS_ALEV_Est_Current_Num_Coded",
           "T_SCOPEEX_E_Est_Current_Num_Coded",
           "PROGEX_E_Est_Current_Num_Coded",
           "ENTRY_PER_E_Est_Current_Pct_Coded",
@@ -237,6 +240,16 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
 
         private const string EnglandKs5PerformanceColumns = """
           "Id",
+          "VA_INS_ALEV_Eng_Current_Num_Coded",
+          "TALLPPE_ALEV_1618_Eng_Current_Num_Coded",
+          "TALLPPEGRD_ALEV_1618_Eng_Current"
+          """;
+
+        private const string LAKs5PerformanceColumns = """
+          "Id",
+          "TALLPPE_ALEV_1618_LA_Current_Num_Coded",
+          "TALLPPEGRD_ALEV_1618_LA_Current"         
+          """;
           "VA_INS_ALEV_Eng_Current_Num_Coded",
           "PROGEX_E_Eng_Current_Num_Coded",
           "ENTRY_PER_E_Eng_Current_Pct_Coded",
@@ -461,7 +474,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                     SelectFromWhere(EnglandKs5PerformanceColumns, "v_england_ks5_performance", "\"Id\" = 'National'"),
 
                 nameof(LAKs5Performance) =>
-                    SelectFromWhereId(LaKs5PerformanceColumns, "v_la_ks5_performance"),
+                    SelectFromWhereId(LAKs5PerformanceColumns, "v_la_ks5_performance"),
 
                 nameof(GatewayLocalAuthority) =>
                     SelectFromWhereIdAndNotDeleted(GatewayLAColumns, "gateway_local_authority"),
