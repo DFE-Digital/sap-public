@@ -41,7 +41,7 @@ public class AdvancedLevelPageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task AdvancedLevelPage_Tlevel_HasCorrectTitle()
+    public async Task AdvancedLevelPage_Alevel_HasCorrectTitle()
     {
         // Arrange
         var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
@@ -59,7 +59,7 @@ public class AdvancedLevelPageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task AdvancedLevelPage_Tlevel_DisplaysMainHeading()
+    public async Task AdvancedLevelPage_Alevel_DisplaysMainHeading()
     {
         var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
         var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
@@ -74,7 +74,7 @@ public class AdvancedLevelPageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task AdvancedLevelPage_Tlevel_DisplaysHeading()
+    public async Task AdvancedLevelPage_Alevel_DisplaysHeading()
     {
         var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
         var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
@@ -89,7 +89,7 @@ public class AdvancedLevelPageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task AdvancedLevelPage_Tlevel_Displays_VerticalNavigation()
+    public async Task AdvancedLevelPage_Alevel_Displays_VerticalNavigation()
     {
         var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
         var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
@@ -120,7 +120,7 @@ public class AdvancedLevelPageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task AdvancedLevelPage_Tlevel_DisplaysProgressScoreHeading()
+    public async Task AdvancedLevelPage_Alevel_DisplaysProgressScoreHeading()
     {
         var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
         var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
@@ -135,7 +135,7 @@ public class AdvancedLevelPageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task AdvancedLevelPage_Tlevel_DisplaysTechnicalGuidanceLink()
+    public async Task AdvancedLevelPage_Alevel_DisplaysTechnicalGuidanceLink()
     {
         var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
         var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
@@ -150,7 +150,7 @@ public class AdvancedLevelPageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task AdvancedLevelPage_Tlevel_Displays_ProgressScore()
+    public async Task AdvancedLevelPage_Alevel_Displays_ProgressScore()
     {
         var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
         var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
@@ -184,5 +184,42 @@ public class AdvancedLevelPageTests : PageTestsBase
         var averageProgresScoreNationalCard = doc.QuerySelector("#average-progress-score-national-card");
         Assert.NotNull(averageProgresScoreNationalCard);
         Assert.Contains($"Average progress score in England: {_advancedLevelQualificationModel.ProgressScore.EnglandAverageScore}", averageProgresScoreNationalCard.QuerySelector("p")?.TextContent);
+    }
+
+    [Fact]
+    public async Task AdvancedLevelPage_Alevel_Displays_AverageResult()
+    {
+        var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
+        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert heading
+        var heading = doc.GetElementsByTagName("h3")[1];
+        Assert.NotNull(heading);
+        Assert.Contains("Average result", heading.TextContent.Trim());
+
+        // Assert no of students completed qualification
+        var noOfStudentsInfo = doc.QuerySelector("#no-of-students-completed-qulification-info");
+        Assert.NotNull(noOfStudentsInfo);
+        Assert.Equal($"Number of students from this school or college included in the measure: {_advancedLevelQualificationModel.TotalNoOfStudentCompletedQualification}", noOfStudentsInfo.TextContent.Trim());
+
+        // Assert performance points link
+        var performancePointsLink = doc.QuerySelector("#performance-points-link");
+        Assert.NotNull(performancePointsLink);
+        Assert.Equal("https://www.gov.uk/government/publications/performance-points-a-practical-guide-to-key-stage-4-and-5-points", performancePointsLink.GetAttribute("href"));
+
+        Assert.Contains("School or College", doc.GetTableHeaderContentByIdAndIndex("average-result-current-year-table", 1, 0));
+        Assert.Contains(_advancedLevelQualificationModel.AverageResult.Establishment.Grade!, doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 1, 0));
+        Assert.Contains(_advancedLevelQualificationModel.AverageResult.Establishment.Points!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 1, 1));
+
+        Assert.Contains($"{_advancedLevelQualificationModel.LAName} average", doc.GetTableHeaderContentByIdAndIndex("average-result-current-year-table", 2, 0));
+        Assert.Contains(_advancedLevelQualificationModel.AverageResult.LocalAuthority.Grade!, doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 2, 0));
+        Assert.Contains(_advancedLevelQualificationModel.AverageResult.LocalAuthority.Points!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 2, 1));
+
+        Assert.Contains("England average", doc.GetTableHeaderContentByIdAndIndex("average-result-current-year-table", 3, 0));
+        Assert.Contains(_advancedLevelQualificationModel.AverageResult.England.Grade!, doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 3, 0));
+        Assert.Contains(_advancedLevelQualificationModel.AverageResult.England.Points!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 3, 1));
     }
 }

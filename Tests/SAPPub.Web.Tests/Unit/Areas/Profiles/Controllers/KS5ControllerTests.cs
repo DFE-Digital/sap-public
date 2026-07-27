@@ -59,6 +59,13 @@ public class KS5ControllerTests : BaseProfilesTests
 
         var expectedProgressBandingDescription = AttainmentHelper.EstablishmentProgress8BandingContextStatement(model.ProgressScore.BandingRating.Value);
         Assert.Equal(expectedProgressBandingDescription.Value, model.ProgressScore.Progress8BandingContextDescription.DisplayText());
+
+        Assert.Equal(expectedResult.AverageResult.Establishment.Points, model.AverageResult.EstablishmentPoints.Value);
+        Assert.Equal(expectedResult.AverageResult.Establishment.Grade, model.AverageResult.EstablishmentGrade.DisplayText());
+        Assert.Equal(expectedResult.AverageResult.Establishment.Points, model.AverageResult.EstablishmentPoints.Value);
+        Assert.Equal(expectedResult.AverageResult.Establishment.Grade, model.AverageResult.EstablishmentGrade.DisplayText());
+        Assert.Equal(expectedResult.AverageResult.Establishment.Points, model.AverageResult.EstablishmentPoints.Value);
+        Assert.Equal(expectedResult.AverageResult.Establishment.Grade, model.AverageResult.EstablishmentGrade.DisplayText());
     }
 
     [Fact]
@@ -69,11 +76,18 @@ public class KS5ControllerTests : BaseProfilesTests
         {
             Urn = fakeEstablishment.URN,
             SchoolName = fakeEstablishment.EstablishmentName,
+            LAName = fakeEstablishment.LAName,
             IsKS2 = true,
             IsKS4 = true,
             IsKS5 = true,
             QualificationType = qualification,
-            ProgressScore = new ProgressScoreModel()
+            ProgressScore = new ProgressScoreModel(),
+            AverageResult = new AverageResultModel
+            {
+                Establishment = new(),
+                LocalAuthority = new(),
+                England = new(),
+            }
         };
 
         _mockAdvancedLevelQualificationsService
@@ -94,6 +108,7 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.NotNull(model);
         Assert.Equal(expectedResult.Urn, model.URN);
         Assert.Equal(expectedResult.SchoolName, model.SchoolName);
+        Assert.Equal($"{expectedResult.LAName} average", model.LAName);
         Assert.Equal(expectedResult.IsKS2, model.IsKS2);
         Assert.Equal(expectedResult.IsKS4, model.IsKS4);
         Assert.Equal(expectedResult.IsKS5, model.IsKS5);
@@ -105,6 +120,13 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.Equal(NotAvailable, model.ProgressScore.ConfidenceLevelUpper.DisplayText());
         Assert.Equal(NotAvailable, model.ProgressScore.EnglandAverageScore.DisplayText());
         Assert.Equal(NotAvailable, model.ProgressScore.Progress8BandingContextDescription.DisplayText());
+
+        Assert.Equal(NotAvailable, model.AverageResult.EstablishmentPoints.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.EstablishmentGrade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthorityPoints.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthorityGrade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.EnglandPoints.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.EnglandGrade.DisplayText());
     }
 
     private AdvancedLevelQualificationModel AdvancedLevelDetails(Level3 qualification)
@@ -113,6 +135,7 @@ public class KS5ControllerTests : BaseProfilesTests
         {
             Urn = fakeEstablishment.URN,
             SchoolName = fakeEstablishment.EstablishmentName,
+            LAName = fakeEstablishment.LAName,
             IsKS2 = true,
             IsKS4 = true,
             IsKS5 = true,
@@ -125,6 +148,12 @@ public class KS5ControllerTests : BaseProfilesTests
                 ConfidenceLevelLower = 1.0,
                 ConfidenceLevelUpper = 5.5,
                 EnglandAverageScore = 85.1
+            },
+            AverageResult = new AverageResultModel
+            {
+                Establishment = new() { Grade = "B", Points = 21.45 },
+                LocalAuthority = new() { Grade = "A", Points = 35.28 },
+                England = new() { Grade = "B", Points = 29.75 },
             }
         };
     }

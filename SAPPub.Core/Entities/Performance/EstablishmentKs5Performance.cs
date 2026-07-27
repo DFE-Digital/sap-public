@@ -37,4 +37,14 @@ public class EstablishmentKs5Performance
     public double? LCI_INS_ALEV_Est_Current_Num { get; set; }
     [IgnoreDataMember]
     public string? LCI_INS_ALEV_Est_Current_Num_Reason { get; set; }
+
+    // Average result points for the school / college lower
+    public CodedDouble TALLPPE_ALEV_1618_Est_Current_Num_Coded { get; set; } = new();
+    [IgnoreDataMember]
+    public double? TALLPPE_ALEV_1618_Est_Current_Num { get; set; }
+    [IgnoreDataMember]
+    public string? TALLPPE_ALEV_1618_Est_Current_Num_Reason { get; set; }
+
+    // Average result grade for the school / college
+    public string? TALLPPEGRD_ALEV_1618_Est_Current { get; set; }    
 }

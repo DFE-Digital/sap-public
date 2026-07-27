@@ -13,9 +13,13 @@ public class AdvancedLevelViewModel : BaseViewModel
 
     public string LevelPageTitle => GetPageTitle(Level3Qualification, Level2Qualification);
 
+    public required string LAName { get; init; }
+
     public required DisplayField<double> TotalNoOfStudentCompletedQualification { get; init; }
 
     public required ProgressScoreViewModel ProgressScore { get; set; }
+
+    public required AverageResultViewModel AverageResult { get; set; }
 
     public static AdvancedLevelViewModel Map(AdvancedLevelQualificationModel model)
     {
@@ -23,12 +27,14 @@ public class AdvancedLevelViewModel : BaseViewModel
         {
             URN = model.Urn,
             SchoolName = model.SchoolName ?? string.Empty,
+            LAName = CommonHelper.GetLocalAuthorityDisplayName(model.LAName),
             IsKS2 = model.IsKS2,
             IsKS4 = model.IsKS4,
             IsKS5 = model.IsKS5,
             Level3Qualification = model.QualificationType,
             TotalNoOfStudentCompletedQualification = model.TotalNoOfStudentCompletedQualification.ToDisplayField(),
-            ProgressScore = ProgressScoreViewModel.Map(model.ProgressScore)
+            ProgressScore = ProgressScoreViewModel.Map(model.ProgressScore),
+            AverageResult = AverageResultViewModel.Map(model.AverageResult)
         };
     }    
 }

@@ -1,12 +1,15 @@
-﻿using SAPPub.Core.Enums.KS5Qualifications;
+﻿using Bogus;
+using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.ServiceModels.Performance;
 
 namespace SAPPub.Core.Tests.TestBuilders;
 
 public class AdvancedLevelQualificationModelBuilder
 {
+    private Faker _faker = new("en_GB");
     private string? _urn;
     private string? _establishmentName;
+    private string? _laName;
     private bool _isKs5;
     private Level3? _qualificationType;
     private double? _totalNoOfStudentsCompletedQualification;
@@ -24,7 +27,13 @@ public class AdvancedLevelQualificationModelBuilder
         _establishmentName = establishmentName;
         return this;
     }
-        
+
+    public AdvancedLevelQualificationModelBuilder WithLAName(string laName)
+    {
+        _laName = laName;
+        return this;
+    }
+
     public AdvancedLevelQualificationModelBuilder WithEnglandPercentage(double? englandPercentage)
     {
         _englandProgressAverageScore.SetValue(englandPercentage);
@@ -62,6 +71,7 @@ public class AdvancedLevelQualificationModelBuilder
         {
             Urn = _urn ?? string.Empty,
             SchoolName = _establishmentName ?? string.Empty,
+            LAName = _laName ?? string.Empty,
             IsKS2 = false,
             IsKS4 = false,
             IsKS5 = _isKs5,
@@ -74,7 +84,25 @@ public class AdvancedLevelQualificationModelBuilder
                 ConfidenceLevelLower = 1.0,
                 ConfidenceLevelUpper = 5.5,
                 EnglandAverageScore = _englandProgressAverageScore.IsSet ? _englandProgressAverageScore.Value : 1.5,
-            }            
+            },
+            AverageResult = new AverageResultModel
+            {
+                Establishment = new AverageResult
+                {
+                    Grade = "A",
+                    Points = Math.Round(_faker.Random.Double(10, 100), 1)
+                },
+                LocalAuthority = new AverageResult
+                {
+                    Grade = "B",
+                    Points = Math.Round(_faker.Random.Double(10, 100), 1)
+                },
+                England = new AverageResult
+                {
+                    Grade = "A",
+                    Points = Math.Round(_faker.Random.Double(10, 100), 1)
+                }
+            }
         };
     }
 }

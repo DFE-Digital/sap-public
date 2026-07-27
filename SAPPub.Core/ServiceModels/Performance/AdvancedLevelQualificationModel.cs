@@ -14,9 +14,13 @@ public class AdvancedLevelQualificationModel
 
     public required string SchoolName { get; init; }
 
+    public required string LAName { get; init; }
+
     public required Level3 QualificationType { get; init; }
 
     public double? TotalNoOfStudentCompletedQualification { get; init; }
 
     public required ProgressScoreModel ProgressScore { get; init; }
+
+    public required AverageResultModel AverageResult { get; init; }
 }
