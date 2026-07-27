@@ -47,7 +47,6 @@ public class EstablishmentKs5Performance
 
     // Average result grade for the school / college
     public string? TALLPPEGRD_ALEV_1618_Est_Current { get; set; }    
-}
 
     // Number of students for English progress
     public CodedDouble T_SCOPEEX_E_Est_Current_Num_Coded { get; set; } = new();

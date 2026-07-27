@@ -249,7 +249,6 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Id",
           "TALLPPE_ALEV_1618_LA_Current_Num_Coded",
           "TALLPPEGRD_ALEV_1618_LA_Current"         
-          """;
           "VA_INS_ALEV_Eng_Current_Num_Coded",
           "PROGEX_E_Eng_Current_Num_Coded",
           "ENTRY_PER_E_Eng_Current_Pct_Coded",

@@ -140,7 +140,7 @@ public class EnglishMathsAcademicPerformacePageTests : PageTestsBase
         Assert.Equal(expectedModel.AverageEnglishProgress!.LaAverage!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("english-maths-scores-and-progress", 1, 2));
         Assert.Equal(expectedModel.AverageEnglishProgress!.EnglandAverage!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("english-maths-scores-and-progress", 1, 3));
 
-        Assert.Equal("Entered for English qualifications", doc.GetTableHeaderContentByIdAndIndex("english-maths-scores-and-progress", 2, 0));
+        Assert.Equal("Entered for English qualification", doc.GetTableHeaderContentByIdAndIndex("english-maths-scores-and-progress", 2, 0));
         Assert.Equal(string.Empty, doc.GetTableCellContentByIdAndIndex("english-maths-scores-and-progress", 2, 0));
         Assert.Equal(expectedModel.EnteredForEnglishQualification!.SchoolOrCollege!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("english-maths-scores-and-progress", 2, 1));
         Assert.Equal(expectedModel.EnteredForEnglishQualification!.LaAverage!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("english-maths-scores-and-progress", 2, 2));
@@ -152,7 +152,7 @@ public class EnglishMathsAcademicPerformacePageTests : PageTestsBase
         Assert.Equal(expectedModel.AverageMathsProgress!.LaAverage!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("english-maths-scores-and-progress", 3, 2));
         Assert.Equal(expectedModel.AverageMathsProgress!.EnglandAverage!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("english-maths-scores-and-progress", 3, 3));
 
-        Assert.Equal("Entered for maths qualifications", doc.GetTableHeaderContentByIdAndIndex("english-maths-scores-and-progress", 4, 0));
+        Assert.Equal("Entered for maths qualification", doc.GetTableHeaderContentByIdAndIndex("english-maths-scores-and-progress", 4, 0));
         Assert.Equal(string.Empty, doc.GetTableCellContentByIdAndIndex("english-maths-scores-and-progress", 4, 0));
         Assert.Equal(expectedModel.EnteredForMathsQualification!.SchoolOrCollege!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("english-maths-scores-and-progress", 4, 1));
         Assert.Equal(expectedModel.EnteredForMathsQualification!.LaAverage!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("english-maths-scores-and-progress", 4, 2));
