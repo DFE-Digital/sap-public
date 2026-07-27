@@ -1,12 +1,14 @@
-﻿namespace SAPPub.Core.ServiceModels.Performance;
+﻿using SAPPub.Core.ValueObjects;
+
+namespace SAPPub.Core.ServiceModels.Performance;
 
 public class EnglishMathsScoreModel
 {
-    public double? NumberOfStudents { get; init; }
+    public required CodedDouble NumberOfStudents { get; init; }
 
-    public double? SchoolOrCollege { get; init; }
+    public required CodedDouble SchoolOrCollege { get; init; }
 
-    public double? LaAverage { get; init; }
+    public required CodedDouble LaAverage { get; init; }
 
-    public double? EnglandAverage { get; init; }
+    public required CodedDouble EnglandAverage { get; init; }
 }

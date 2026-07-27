@@ -1,5 +1,4 @@
-﻿@using SAPPub.Core.Extensions
-@using SAPPub.Web.Constants
+﻿@using SAPPub.Web.Constants
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 @model SAPPub.Web.Areas.Profiles.ViewModels.KS5.EnglishMathsQualificationsViewModel
 
@@ -30,7 +29,7 @@
         </p>
         <ul class="govuk-list govuk-list--bullet">
             <li>Level 2 qualifications include GCSEs, BTEC Firsts and other level 2 qualifications</li>
-                <li>Level 3 qualifications include A levels, Tech levels, BTECs and other level 3 qualifications</li>
+            <li>Level 3 qualifications include A levels, Tech levels, BTECs and other level 3 qualifications</li>
         </ul>
 
         <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
@@ -65,65 +64,65 @@
         </ul>
 
         <p>
-            This measure includes students who did not get a grade 4 or above in GCSE (or equivalent) by the end of key stage 4 in that subject. 
+            This measure includes students who did not get a grade 4 or above in GCSE (or equivalent) by the end of key stage 4 in that subject.
             Read the <a id="tech-guidance-link" class="govuk-link" rel="noreferrer noopener" target="_blank" href="https://www.gov.uk/government/publications/16-to-19-accountability-headline-measures-technical-guide">
-                16 to 19 accountability technical guide (opens in a new tab)
-            </a>
-        </p>
+            16 to 19 accountability technical guide (opens in a new tab)
+        </a>
+    </p>
 
-        <p>
-            Compare this school or college with state funded local and national averages.
-        </p>
+    <p>
+        Compare this school or college with state funded local and national averages.
+    </p>
 
-        <table class="govuk-table govuk-!-margin-top-5" id="english-maths-scores-and-progress">
-            <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header"></th>
-                        <th scope="col" class="govuk-table__header">Number of students</th>
-                        <th scope="col" class="govuk-table__header">School or college</th>
-                        <th scope="col" class="govuk-table__header">@Model.LAName average</th>
-                        <th scope="col" class="govuk-table__header">England average</th>
-                    </tr>
-                </thead>
-                <tbody class="govuk-table__body">
-                    <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">Average English progress</th>
-                        <td class="govuk-table__cell">@Model.AverageEnglishProgress.NumberOfStudents.Value</td>
-                        <td class="govuk-table__cell">@Model.AverageEnglishProgress.SchoolOrCollege.Value</td>
-                        <td class="govuk-table__cell">@Model.AverageEnglishProgress.LaAverage.Value</td>
-                        <td class="govuk-table__cell">@Model.AverageEnglishProgress.EnglandAverage.Value</td>
-                    </tr>
+    <table class="govuk-table govuk-!-margin-top-5" id="english-maths-scores-and-progress">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header"></th>
+                <th scope="col" class="govuk-table__header">Number of students</th>
+                <th scope="col" class="govuk-table__header">School or college</th>
+                <th scope="col" class="govuk-table__header">@Model.LAName average</th>
+                <th scope="col" class="govuk-table__header">England average</th>
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">Average English progress</th>
+                <td class="govuk-table__cell">@Model.AverageEnglishProgress.NumberOfStudents.DisplayNumber()</td>
+                <td class="govuk-table__cell">@Model.AverageEnglishProgress.SchoolOrCollege.DisplayNumber()</td>
+                <td class="govuk-table__cell">@Model.AverageEnglishProgress.LaAverage.DisplayNumber()</td>
+                <td class="govuk-table__cell">@Model.AverageEnglishProgress.EnglandAverage.DisplayNumber()</td>
+            </tr>
 
-                    <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">Entered for English qualifications</th>
-                        <td class="govuk-table__cell"></td>
-                        <td class="govuk-table__cell">@(Model.EnteredForEnglishQualification.SchoolOrCollege.IsAvailable ? Model.EnteredForEnglishQualification.SchoolOrCollege.Value.AsPercentage() : Constants.NotAvailable)</td>
-                        <td class="govuk-table__cell">@(Model.EnteredForEnglishQualification.LaAverage.IsAvailable ? Model.EnteredForEnglishQualification.LaAverage.Value.AsPercentage() : Constants.NotAvailable)</td>
-                        <td class="govuk-table__cell">@(Model.EnteredForEnglishQualification.EnglandAverage.IsAvailable ? Model.EnteredForEnglishQualification.EnglandAverage.Value.AsPercentage() : Constants.NotAvailable)</td>
-                    </tr>
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">Entered for English qualifications</th>
+                <td class="govuk-table__cell"></td>
+                <td class="govuk-table__cell">@Model.EnteredForEnglishQualification.SchoolOrCollege.DisplayPercentage()</td>
+                <td class="govuk-table__cell">@Model.EnteredForEnglishQualification.LaAverage.DisplayPercentage()</td>
+                <td class="govuk-table__cell">@Model.EnteredForEnglishQualification.EnglandAverage.DisplayPercentage()</td>
+            </tr>
 
-                    <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">Average maths progress</th>
-                        <td class="govuk-table__cell">@Model.AverageMathsProgress.NumberOfStudents.Value</td>
-                        <td class="govuk-table__cell">@Model.AverageMathsProgress.SchoolOrCollege.Value</td>
-                        <td class="govuk-table__cell">@Model.AverageMathsProgress.LaAverage.Value</td>
-                        <td class="govuk-table__cell">@Model.AverageMathsProgress.EnglandAverage.Value</td>
-                    </tr>
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">Average maths progress</th>
+                <td class="govuk-table__cell">@Model.AverageMathsProgress.NumberOfStudents.DisplayNumber()</td>
+                <td class="govuk-table__cell">@Model.AverageMathsProgress.SchoolOrCollege.DisplayNumber()</td>
+                <td class="govuk-table__cell">@Model.AverageMathsProgress.LaAverage.DisplayNumber()</td>
+                <td class="govuk-table__cell">@Model.AverageMathsProgress.EnglandAverage.DisplayNumber()</td>
+            </tr>
 
-                    <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">Entered for maths qualifications</th>
-                        <td class="govuk-table__cell"></td>
-                        <td class="govuk-table__cell">@(Model.EnteredForMathsQualification.SchoolOrCollege.IsAvailable ? Model.EnteredForMathsQualification.SchoolOrCollege.Value.AsPercentage() : Constants.NotAvailable)</td>
-                        <td class="govuk-table__cell">@(Model.EnteredForMathsQualification.LaAverage.IsAvailable ? Model.EnteredForMathsQualification.LaAverage.Value.AsPercentage() : Constants.NotAvailable)</td>
-                        <td class="govuk-table__cell">@(Model.EnteredForMathsQualification.EnglandAverage.IsAvailable ? Model.EnteredForMathsQualification.EnglandAverage.Value.AsPercentage() : Constants.NotAvailable)</td>
-                    </tr>
-                </tbody>
-            </table>
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">Entered for maths qualifications</th>
+                <td class="govuk-table__cell"></td>
+                <td class="govuk-table__cell">@Model.EnteredForMathsQualification.SchoolOrCollege.DisplayPercentage()</td>
+                <td class="govuk-table__cell">@Model.EnteredForMathsQualification.LaAverage.DisplayPercentage()</td>
+                <td class="govuk-table__cell">@Model.EnteredForMathsQualification.EnglandAverage.DisplayPercentage()</td>
+            </tr>
+        </tbody>
+    </table>
 
 
-            <govuk-pagination id="academic-performance-level-2-pagination">
-                <govuk-pagination-previous asp-route="@RouteConstants.KS5AcademicPerformanceLevel2" asp-all-route-data="@Model.RouteAttributes">Academic performance: Level 2 qualifications</govuk-pagination-previous>
-                <govuk-pagination-next asp-route="@RouteConstants.KS5AcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">Academic performance: Subjects entered</govuk-pagination-next>
-            </govuk-pagination>
-        </div>
-    </div>
+    <govuk-pagination id="academic-performance-level-2-pagination">
+        <govuk-pagination-previous asp-route="@RouteConstants.KS5AcademicPerformanceLevel2" asp-all-route-data="@Model.RouteAttributes">Academic performance: Level 2 qualifications</govuk-pagination-previous>
+        <govuk-pagination-next asp-route="@RouteConstants.KS5AcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">Academic performance: Subjects entered</govuk-pagination-next>
+    </govuk-pagination>
+</div>
+</div>

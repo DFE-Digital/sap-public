@@ -4,13 +4,13 @@ using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.Tests.TestBuilders;
-using SAPPub.Web.Constants;
+using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
 
 namespace SAPPub.Web.Tests.Unit.Page.Areas.Profiles;
 
 [Collection("WebAppCollection")]
-public class EnglishMathsAcademicPeformacePageTests : PageTestsBase
+public class EnglishMathsAcademicPerformacePageTests : PageTestsBase
 {
     private string _pageRoute = "/16-to-19-performance/english-and-maths";
     private string _urn = "100279";
@@ -21,7 +21,7 @@ public class EnglishMathsAcademicPeformacePageTests : PageTestsBase
     private readonly Mock<IEstablishmentService> _mockEstablishmentService;
 
 
-    public EnglishMathsAcademicPeformacePageTests(WebAppFixture fixture) : base(fixture)
+    public EnglishMathsAcademicPerformacePageTests(WebAppFixture fixture) : base(fixture)
     {
         _englishAndMathsQualificationsService = UseMock<IEnglishAndMathsQualificationsService>();
         _mockEstablishmentService = UseMock<IEstablishmentService>();
@@ -170,10 +170,34 @@ public class EnglishMathsAcademicPeformacePageTests : PageTestsBase
             IsKS4 = false,
             IsKS5 = true,
             LAName = "Test LA",
-            AverageEnglishProgress = new EnglishMathsScoreModel { NumberOfStudents = 1, SchoolOrCollege = 2, LaAverage = 3, EnglandAverage = 4 },
-            EnteredForEnglishQualification = new EnglishMathsScoreModel { SchoolOrCollege = 6, LaAverage = 7, EnglandAverage = 8 },
-            AverageMathsProgress = new EnglishMathsScoreModel { NumberOfStudents = 9, SchoolOrCollege = 10, LaAverage = 11, EnglandAverage = 12 },
-            EnteredForMathsQualification = new EnglishMathsScoreModel { SchoolOrCollege = 14, LaAverage = 15, EnglandAverage = 16 }
+            AverageEnglishProgress = new EnglishMathsScoreModel
+            {
+                NumberOfStudents = new CodedDouble(1, string.Empty, "1"),
+                SchoolOrCollege = new CodedDouble(2, string.Empty, "2"),
+                LaAverage = new CodedDouble(3, string.Empty, "3"),
+                EnglandAverage = new CodedDouble(4, string.Empty, "4")
+            },
+            AverageMathsProgress = new EnglishMathsScoreModel
+            {
+                NumberOfStudents = new CodedDouble(5, string.Empty, "5"),
+                SchoolOrCollege = new CodedDouble(6, string.Empty, "6"),
+                LaAverage = new CodedDouble(7, string.Empty, "7"),
+                EnglandAverage = new CodedDouble(8, string.Empty, "8")
+            },
+            EnteredForEnglishQualification = new EnglishMathsScoreModel
+            {
+                NumberOfStudents = CodedDouble.Empty,
+                SchoolOrCollege = new CodedDouble(10, string.Empty, "10"),
+                LaAverage = new CodedDouble(11, string.Empty, "11"),
+                EnglandAverage = new CodedDouble(12, string.Empty, "12")
+            },
+            EnteredForMathsQualification = new EnglishMathsScoreModel
+            {
+                NumberOfStudents = CodedDouble.Empty,
+                SchoolOrCollege = new CodedDouble(14, string.Empty, "14"),
+                LaAverage = new CodedDouble(15, string.Empty, "15"),
+                EnglandAverage = new CodedDouble(16, string.Empty, "16")
+            },
         };
     }
 }

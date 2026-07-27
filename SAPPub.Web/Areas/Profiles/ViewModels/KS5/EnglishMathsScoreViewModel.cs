@@ -1,17 +1,18 @@
 ﻿using SAPPub.Core.ServiceModels.Performance;
+using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Helpers;
 
 namespace SAPPub.Web.Areas.Profiles.ViewModels.KS5;
 
 public class EnglishMathsScoreViewModel
 {
-    public required DisplayField<double> NumberOfStudents { get; init; }
+    public required DisplayField<CodedDouble> NumberOfStudents { get; init; }
 
-    public required DisplayField<double> SchoolOrCollege { get; init; }
+    public required DisplayField<CodedDouble> SchoolOrCollege { get; init; }
 
-    public required DisplayField<double> LaAverage { get; init; }
+    public required DisplayField<CodedDouble> LaAverage { get; init; }
 
-    public required DisplayField<double> EnglandAverage { get; init; }
+    public required DisplayField<CodedDouble> EnglandAverage { get; init; }
 
     public static EnglishMathsScoreViewModel Map(EnglishMathsScoreModel model)
     {

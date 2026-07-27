@@ -2,6 +2,7 @@
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.ServiceModels.Performance;
+using SAPPub.Core.ValueObjects;
 
 namespace SAPPub.Core.Services.Performance;
 
@@ -34,32 +35,34 @@ public class EnglishAndMathsQualificationsService(
             IsKS4 = establishment.IsKS4,
             IsKS5 = establishment.IsKS5,
             LAName = establishment.LAName,
-            AverageEnglishProgress = new EnglishMathsScoreModel 
+            AverageEnglishProgress = new EnglishMathsScoreModel
             {
-                NumberOfStudents = establishmentPerformance.T_SCOPEEX_E_Est_Current_Num,
-                SchoolOrCollege = establishmentPerformance.PROGEX_E_Est_Current_Num,
-                LaAverage = laPerformance.PROGEX_E_LA_Current_Num,
-                EnglandAverage = englandPerformance.PROGEX_E_Eng_Current_Num
+                NumberOfStudents = establishmentPerformance.T_SCOPEEX_E_Est_Current_Num_Coded,
+                SchoolOrCollege = establishmentPerformance.PROGEX_E_Est_Current_Num_Coded,
+                LaAverage = laPerformance.PROGEX_E_LA_Current_Num_Coded,
+                EnglandAverage = englandPerformance.PROGEX_E_Eng_Current_Num_Coded
             },
-            AverageMathsProgress = new EnglishMathsScoreModel 
+            AverageMathsProgress = new EnglishMathsScoreModel
             {
-                NumberOfStudents = establishmentPerformance.T_SCOPEEX_M_Est_Current_Num,
-                SchoolOrCollege = establishmentPerformance.PROGEX_M_Est_Current_Num,
-                LaAverage = laPerformance.PROGEX_M_LA_Current_Num,
-                EnglandAverage = englandPerformance.PROGEX_M_Eng_Current_Num
+                NumberOfStudents = establishmentPerformance.T_SCOPEEX_M_Est_Current_Num_Coded,
+                SchoolOrCollege = establishmentPerformance.PROGEX_M_Est_Current_Num_Coded,
+                LaAverage = laPerformance.PROGEX_M_LA_Current_Num_Coded,
+                EnglandAverage = englandPerformance.PROGEX_M_Eng_Current_Num_Coded
             },
             EnteredForEnglishQualification = new EnglishMathsScoreModel
-            { 
-                SchoolOrCollege = establishmentPerformance.ENTRY_PER_E_Est_Current_Pct,
-                LaAverage = laPerformance.ENTRY_PER_E_LA_Current_Pct,
-                EnglandAverage = englandPerformance.ENTRY_PER_E_Eng_Current_Pct
+            {
+                NumberOfStudents = CodedDouble.Empty,
+                SchoolOrCollege = establishmentPerformance.ENTRY_PER_E_Est_Current_Pct_Coded,
+                LaAverage = laPerformance.ENTRY_PER_E_LA_Current_Pct_Coded,
+                EnglandAverage = englandPerformance.ENTRY_PER_E_Eng_Current_Pct_Coded
 
             },
             EnteredForMathsQualification = new EnglishMathsScoreModel
             {
-                SchoolOrCollege = establishmentPerformance.ENTRY_PER_M_Est_Current_Pct,
-                LaAverage = laPerformance.ENTRY_PER_M_LA_Current_Pct,
-                EnglandAverage = englandPerformance.ENTRY_PER_M_Eng_Current_Pct
+                NumberOfStudents = CodedDouble.Empty,
+                SchoolOrCollege = establishmentPerformance.ENTRY_PER_M_Est_Current_Pct_Coded,
+                LaAverage = laPerformance.ENTRY_PER_M_LA_Current_Pct_Coded,
+                EnglandAverage = englandPerformance.ENTRY_PER_M_Eng_Current_Pct_Coded
             }
         };
     }

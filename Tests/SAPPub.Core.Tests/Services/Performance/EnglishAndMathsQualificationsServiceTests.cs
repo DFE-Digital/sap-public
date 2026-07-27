@@ -51,20 +51,20 @@ public class EnglishAndMathsQualificationsServiceTests
         Assert.Equal(fakeEstablishment.IsKS2, result.IsKS2);
         Assert.Equal(fakeEstablishment.IsKS4, result.IsKS4);
         Assert.Equal(fakeEstablishment.LAName, result.LAName);
-        Assert.Equal(establishmentPerformance.T_SCOPEEX_E_Est_Current_Num, result.AverageEnglishProgress!.NumberOfStudents);
-        Assert.Equal(establishmentPerformance.PROGEX_E_Est_Current_Num, result.AverageEnglishProgress!.SchoolOrCollege);
-        Assert.Equal(laPerformance.PROGEX_E_LA_Current_Num, result.AverageEnglishProgress!.LaAverage);
-        Assert.Equal(englandPerformance.PROGEX_E_Eng_Current_Num, result.AverageEnglishProgress!.EnglandAverage);
-        Assert.Equal(establishmentPerformance.T_SCOPEEX_M_Est_Current_Num, result.AverageMathsProgress!.NumberOfStudents);
-        Assert.Equal(establishmentPerformance.PROGEX_M_Est_Current_Num, result.AverageMathsProgress!.SchoolOrCollege);
-        Assert.Equal(laPerformance.PROGEX_M_LA_Current_Num, result.AverageMathsProgress!.LaAverage);
-        Assert.Equal(englandPerformance.PROGEX_M_Eng_Current_Num, result.AverageMathsProgress!.EnglandAverage);
-        Assert.Equal(establishmentPerformance.ENTRY_PER_E_Est_Current_Pct, result.EnteredForEnglishQualification!.SchoolOrCollege);
-        Assert.Equal(laPerformance.ENTRY_PER_E_LA_Current_Pct, result.EnteredForEnglishQualification!.LaAverage);
-        Assert.Equal(englandPerformance.ENTRY_PER_E_Eng_Current_Pct, result.EnteredForEnglishQualification!.EnglandAverage);
-        Assert.Equal(establishmentPerformance.ENTRY_PER_M_Est_Current_Pct, result.EnteredForMathsQualification!.SchoolOrCollege);
-        Assert.Equal(laPerformance.ENTRY_PER_M_LA_Current_Pct, result.EnteredForMathsQualification!.LaAverage);
-        Assert.Equal(englandPerformance.ENTRY_PER_M_Eng_Current_Pct, result.EnteredForMathsQualification!.EnglandAverage);
+        Assert.Equal(establishmentPerformance.T_SCOPEEX_E_Est_Current_Num_Coded, result.AverageEnglishProgress!.NumberOfStudents);
+        Assert.Equal(establishmentPerformance.PROGEX_E_Est_Current_Num_Coded, result.AverageEnglishProgress!.SchoolOrCollege);
+        Assert.Equal(laPerformance.PROGEX_E_LA_Current_Num_Coded, result.AverageEnglishProgress!.LaAverage);
+        Assert.Equal(englandPerformance.PROGEX_E_Eng_Current_Num_Coded, result.AverageEnglishProgress!.EnglandAverage);
+        Assert.Equal(establishmentPerformance.T_SCOPEEX_M_Est_Current_Num_Coded, result.AverageMathsProgress!.NumberOfStudents);
+        Assert.Equal(establishmentPerformance.PROGEX_M_Est_Current_Num_Coded, result.AverageMathsProgress!.SchoolOrCollege);
+        Assert.Equal(laPerformance.PROGEX_M_LA_Current_Num_Coded, result.AverageMathsProgress!.LaAverage);
+        Assert.Equal(englandPerformance.PROGEX_M_Eng_Current_Num_Coded, result.AverageMathsProgress!.EnglandAverage);
+        Assert.Equal(establishmentPerformance.ENTRY_PER_E_Est_Current_Pct_Coded, result.EnteredForEnglishQualification!.SchoolOrCollege);
+        Assert.Equal(laPerformance.ENTRY_PER_E_LA_Current_Pct_Coded, result.EnteredForEnglishQualification!.LaAverage);
+        Assert.Equal(englandPerformance.ENTRY_PER_E_Eng_Current_Pct_Coded, result.EnteredForEnglishQualification!.EnglandAverage);
+        Assert.Equal(establishmentPerformance.ENTRY_PER_M_Est_Current_Pct_Coded, result.EnteredForMathsQualification!.SchoolOrCollege);
+        Assert.Equal(laPerformance.ENTRY_PER_M_LA_Current_Pct_Coded, result.EnteredForMathsQualification!.LaAverage);
+        Assert.Equal(englandPerformance.ENTRY_PER_M_Eng_Current_Pct_Coded, result.EnteredForMathsQualification!.EnglandAverage);
     }
 
 
