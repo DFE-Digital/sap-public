@@ -521,3 +521,4 @@ SAPPub.Web/keys/*
 /.github/copilot-instructions.md
 /Tests/accessibility-results
 /SAPPub.Web/wwwroot/js/map-schools.js
+/playwright.runsettings

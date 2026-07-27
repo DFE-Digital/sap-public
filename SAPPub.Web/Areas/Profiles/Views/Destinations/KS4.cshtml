@@ -6,7 +6,8 @@
 
 @{
     ViewData["Header"] = "Destinations";
-    ViewData["Title"] = $"{Model.SchoolName} - {ViewData["Header"]}";
+    ViewData["SubHeader"] = PageTitleConstants.SecondarySchoolPageTitles.Destinations;
+    ViewData["Title"] = $"{Model.SchoolName} - {ViewData["SubHeader"]}";
 }
 
 <div class="govuk-grid-row">
@@ -226,7 +227,7 @@
         </div> *@
 
         <govuk-pagination id="destinations-pagination">
-            <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAcademicPerformanceAdditionalMeasures" asp-all-route-data="@Model.RouteAttributes">Academic performance: Additional measures</govuk-pagination-previous>
+            <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAcademicPerformanceAdditionalMeasures" asp-all-route-data="@Model.RouteAttributes">Secondary academic performance: Additional measures</govuk-pagination-previous>
         </govuk-pagination>
     </div>
 </div>

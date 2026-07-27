@@ -1,21 +1,22 @@
 ﻿using Microsoft.Playwright;
+using SAPPub.Core.Enums;
+using SAPPub.Web.Helpers;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
-namespace SAPPub.Web.Tests.Unit.Areas.Profiles.UI;
+namespace SAPPub.Web.Tests.UI.KS4;
 
 [Collection("Playwright Tests")]
-public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
+public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
     private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
     {
-        ["105574"] = "school/105574/loreto-high-school-chorlton/destinations/secondary",
-        ["100273"] = "school/100273/saint-paul-roman-catholic-infant-school/destinations/secondary",
-        ["149328"] = "school/149328/king-edward-vi-high-school/destinations/secondary",
+        ["105574"] = "school/105574/loreto-high-school-chorlton/secondary-performance/english-and-maths",
+        ["100273"] = "school/100273/saint-paul-roman-catholic-infant-school/secondary-performance/english-and-maths",
     };
 
     [Fact]
-    public async Task Destinations_LoadsSuccessfully()
+    public async Task AcademicPerformanceEnglishAndMathsResultsPage_LoadsSuccessfully()
     {
         // Arrange && Act
         var response = await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
@@ -26,7 +27,7 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     }
 
     [Fact]
-    public async Task DestinationsPage_HasCorrectTitle()
+    public async Task AcademicPerformanceEnglishAndMathsResultsPage_HasCorrectTitle()
     {
         // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
@@ -35,11 +36,11 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
         var title = await Page.TitleAsync();
 
         // Assert
-        Assert.Contains("Destinations", title);
+        Assert.Contains("Loreto High School Chorlton - Secondary English and maths - School Profiles - GOV.UK", title);
     }
 
     [Fact]
-    public async Task DestinationsPage_DisplaysMainHeading()
+    public async Task AcademicPerformanceEnglishAndMathsResultsPage_DisplaysMainHeading()
     {
         // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
@@ -50,11 +51,10 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
         // Assert
         Assert.NotNull(heading);
         Assert.NotEmpty(heading!.Trim());
-
     }
 
     [Fact]
-    public async Task DestinationsPage_Displays_SchoolName_Caption()
+    public async Task AcademicPerformanceEnglishAndMathsResultsPage_Displays_SchoolName_Caption()
     {
         // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
@@ -71,44 +71,113 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     }
 
     [Fact]
-    public async Task DestinationsPage_Displays_VerticalNavigation()
+    public async Task AcademicPerformanceEnglishAndMathsResultsPage_Displays_VerticalNavigation()
     {
+        var performancePage = "school/105574/loreto-high-school-chorlton/secondary-performance/progress-attainment";
+        // We want to display the performance root page even when in a performance sub-page, hence need to check the active href is the root performance page
+
         var nav = new VerticalNavigationHelper(Page);
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         await nav.ShouldBeVisibleAsync();
         await nav.ShouldHaveOneActiveItemAsync();
-        await nav.ShouldHaveActiveHrefAsync(_schoolUrnToUrlMap["105574"].Replace("/secondary", ""));
+        await nav.ShouldHaveActiveHrefAsync(performancePage);
     }
 
     [Fact]
-    public async Task DestinationsPage_Displays_School_Performance_Info()
+    public async Task AcademicPerformanceEnglishAndMathsResultsPage_Displays_Sub_Navigation()
     {
         // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
-        var schoolPerformanceInfoLocator = Page.GetByTestId("looking-at-school-performance-info");
-        var isVisible = await schoolPerformanceInfoLocator.IsVisibleAsync();
-        var schoolPerformanceInfo = await schoolPerformanceInfoLocator.TextContentAsync();
+        var isVisible = await Page.Locator("#sub-navigation-academic-performance").IsVisibleAsync();
 
         // Assert
         Assert.True(isVisible);
-        Assert.NotNull(schoolPerformanceInfo);
-        Assert.NotEmpty(schoolPerformanceInfo!.Trim());
     }
 
     [Fact]
-    public async Task DestinationsPage_Displays_AllDestinations_CurrentYear_Chart()
+    public async Task AcademicPerformanceEnglishAndMathsResultsPage_Displays_Gcse_Grades_Explained()
     {
         // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
-        var chart = Page.Locator("#all-destinations-chart");
-        var table = Page.Locator("#all-destinations-current-year-table");
-        var showAsTableBtn = Page.Locator("#all-dest-current-year-show-btn");
-        var showDataOverTimeBtn = Page.Locator("#all-dest-show-data-over-time-btn");
+        var isVisible = await Page.Locator("#details-gcse-grades-explained").IsVisibleAsync();
+
+        // Assert
+        Assert.True(isVisible);
+    }
+
+    [Fact]
+    public async Task AcademicPerformanceEnglishAndMathsResultsPage_DisplaysPagination()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+
+        // Act
+        var isVisible = await Page.Locator("#academic-performance-english-and-maths-results-pagination").IsVisibleAsync();
+
+        var previousPaginationLink = Page.Locator("#academic-performance-english-and-maths-results-pagination .govuk-pagination__prev a");
+        var nextPaginationLink = Page.Locator("#academic-performance-english-and-maths-results-pagination .govuk-pagination__next a");
+
+        var previousPaginationText = await previousPaginationLink.TextContentAsync();
+        var nextPaginationText = await nextPaginationLink.TextContentAsync();
+
+        // Assert
+        Assert.True(isVisible);
+        Assert.Contains("performance: Progress and attainment", previousPaginationText?.Trim());
+        Assert.Contains("performance: Subjects entered", nextPaginationText?.Trim());
+    }
+
+    [Fact]
+    public async Task AcademicPerformanceEnglishAndMathsResultsPage_DisplaysGradeSelectorForDataDisplayed()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+
+        // Act
+        var isVisible = await Page.Locator("#gradeSelector").IsVisibleAsync();
+
+        // Assert
+        Assert.True(isVisible);
+    }
+
+    [Fact]
+    public async Task AcademicPerformanceEnglishAndMathsResultsPage_ChangeGradeSelected()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+
+        // Assert
+        var chartHeading = Page.Locator("#chartHeading");
+        var chartHeadingText = await chartHeading.TextContentAsync();
+        Assert.Contains("Grade 5 and above", chartHeadingText);
+
+        // Act
+        var gradeSelector = Page.Locator("#gradeSelector");
+        await gradeSelector.SelectOptionAsync([GcseGradeDataSelection.Grade4AndAbove.GetDisplayName()!]);
+        var buttonSelector = Page.Locator("button:has-text(\"Show results\")");
+        await buttonSelector.ClickAsync();
+
+        // Assert
+        chartHeading = Page.Locator("#chartHeading");
+        chartHeadingText = await chartHeading.TextContentAsync();
+        Assert.Contains("Grade 4 and above", chartHeadingText);
+    }
+
+    [Fact]
+    public async Task EnglishAndMathsResultsPage_Displays_AllGcse_CurrentYear_Chart()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+
+        // Act
+        var chart = Page.Locator("#all-gcse-chart");
+        var table = Page.Locator("#all-gcse-current-year-table");
+        var showAsTableBtn = Page.Locator("#all-gcse-current-year-show-btn");
+        var showDataOverTimeBtn = Page.Locator("#all-gcse-show-data-over-time-btn");
 
         var isChartVisible = await chart.IsVisibleAsync();
         var isTableVisible = await table.IsVisibleAsync();
@@ -128,19 +197,19 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     }
 
     [Fact]
-    public async Task DestinationsPage_Displays_AllDestinations_CurrentYear_Table()
+    public async Task EnglishAndMathsResultsPage_Displays_AllGcse_CurrentYear_Table()
     {
         // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         // Click Show as a table button
-        await Page.ClickAsync("#all-dest-current-year-show-btn");
+        await Page.ClickAsync("#all-gcse-current-year-show-btn");
 
-        var showAsTableBtn = Page.Locator("#all-dest-current-year-show-btn");
-        var showDataOverTimeBtn = Page.Locator("#all-dest-show-data-over-time-btn");
-        var chart = Page.Locator("#all-destinations-chart");
-        var table = Page.Locator("#all-destinations-current-year-table");
+        var showAsTableBtn = Page.Locator("#all-gcse-current-year-show-btn");
+        var showDataOverTimeBtn = Page.Locator("#all-gcse-show-data-over-time-btn");
+        var chart = Page.Locator("#all-gcse-chart");
+        var table = Page.Locator("#all-gcse-current-year-table");
 
         var isChartVisible = await chart.IsVisibleAsync();
         var isTableVisible = await table.IsVisibleAsync();
@@ -157,21 +226,21 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     }
 
     [Fact]
-    public async Task DestinationsPage_Displays_AllDestinations_DataOverTime_Chart()
+    public async Task EnglishAndMathsResultsPage_Displays_AllGcse_DataOverTime_Chart()
     {
         // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         // Click Show data over time button
-        await Page.ClickAsync("#all-dest-show-data-over-time-btn");
+        await Page.ClickAsync("#all-gcse-show-data-over-time-btn");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
-        var chart = Page.Locator("#all-destinations-data-overtime-chart");
-        var table = Page.Locator("#all-destinations-data-overtime-table");
-        var chartLegend = Page.Locator("#all-destinations-data-overtime-chart-legend");
-        var showAsTableBtn = Page.Locator("#all-dest-data-over-time-show-btn");
-        var showCurrentDataBtn = Page.Locator("#all-dest-show-current-data-btn");
+        var chart = Page.Locator("#all-gcse-data-overtime-chart");
+        var table = Page.Locator("#all-gcse-data-overtime-table");
+        var chartLegend = Page.Locator("#all-gcse-data-overtime-chart-legend");
+        var showAsTableBtn = Page.Locator("#all-gcse-data-over-time-show-btn");
+        var showCurrentDataBtn = Page.Locator("#all-gcse-show-current-data-btn");
 
         var isChartVisible = await chart.IsVisibleAsync();
         var isTableVisible = await table.IsVisibleAsync();
@@ -193,23 +262,23 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     }
 
     [Fact]
-    public async Task DestinationsPage_Displays_AllDestinations_DataOverTime_Table()
+    public async Task EnglishAndMathsResultsPage_Displays_AllGcse_DataOverTime_Table()
     {
         // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         // Click Show data over time button
-        await Page.ClickAsync("#all-dest-show-data-over-time-btn");
+        await Page.ClickAsync("#all-gcse-show-data-over-time-btn");
 
         // and click Show as a table button
-        await Page.ClickAsync("#all-dest-data-over-time-show-btn");
+        await Page.ClickAsync("#all-gcse-data-over-time-show-btn");
 
-        var chart = Page.Locator("#all-destinations-data-overtime-chart");
-        var table = Page.Locator("#all-destinations-data-overtime-table");
-        var chartLegend = Page.Locator("#all-destinations-data-overtime-chart-legend");
-        var showAsTableBtn = Page.Locator("#all-dest-data-over-time-show-btn");
-        var showCurrentDataBtn = Page.Locator("#all-dest-show-current-data-btn");
+        var chart = Page.Locator("#all-gcse-data-overtime-chart");
+        var table = Page.Locator("#all-gcse-data-overtime-table");
+        var chartLegend = Page.Locator("#all-gcse-data-overtime-chart-legend");
+        var showAsTableBtn = Page.Locator("#all-gcse-data-over-time-show-btn");
+        var showCurrentDataBtn = Page.Locator("#all-gcse-show-current-data-btn");
 
         var isChartVisible = await chart.IsVisibleAsync();
         var isTableVisible = await table.IsVisibleAsync();
@@ -231,21 +300,21 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     }
 
     [Fact]
-    public async Task DestinationsPage_Displays_AllDestinations_DataOverTime_Table_Click_On_ShowCurrentData()
+    public async Task EnglishAndMathsResultsPage_Displays_AllGcse_DataOverTime_Table_Click_On_ShowCurrentData()
     {
         // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         // Click Show data over time button
-        await Page.ClickAsync("#all-dest-show-data-over-time-btn");
+        await Page.ClickAsync("#all-gcse-show-data-over-time-btn");
 
         // and click Show current data button
-        await Page.ClickAsync("#all-dest-show-current-data-btn");
+        await Page.ClickAsync("#all-gcse-show-current-data-btn");
 
-        var chart = Page.Locator("#all-destinations-chart");
-        var showAsTableBtn = Page.Locator("#all-dest-current-year-show-btn");
-        var showDataOverTimeBtn = Page.Locator("#all-dest-show-data-over-time-btn");
+        var chart = Page.Locator("#all-gcse-chart");
+        var showAsTableBtn = Page.Locator("#all-gcse-current-year-show-btn");
+        var showDataOverTimeBtn = Page.Locator("#all-gcse-show-data-over-time-btn");
 
         var isChartVisible = await chart.IsVisibleAsync();
         var isShowAsTableBtnVisible = await showAsTableBtn.IsVisibleAsync();
@@ -263,44 +332,43 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     }
 
     [Fact]
-    public async Task DestinationsPage_Displays_AllDestinations__DataOverTime_No_Chart_Only_Render_Table()
+    public async Task EnglishAndMathsResultsPage_Displays_AllGcse_DataOverTime_No_Chart_Only_Render_Table()
     {
         // Arrange
-        await Page.GotoAsync(_schoolUrnToUrlMap["149328"]);
+        await Page.GotoAsync(_schoolUrnToUrlMap["100273"]);
 
         // Act       
-        var destinationsChart = Page.Locator("#all-destinations-chart");
-        var destinationsCurrentYearTable = Page.Locator("#all-destinations-current-year-table");
-        var destinationsCurrentYearShowBtn = Page.Locator("#all-dest-current-year-show-btn");
-        var destinationsShowDataOverTimeBtn = Page.Locator("#all-dest-show-data-over-time-btn");
-
-        var destinationsDataOverTimeChart = Page.Locator("#all-destinations-data-overtime-chart");
-        var destinationsDataOverTimeTable = Page.Locator("#all-destinations-data-overtime-table");
-        var destinationsDataOverTimeShowBtn = Page.Locator("#all-dest-data-over-time-show-btn");
-        var destinationsShowCurrentDataBtn = Page.Locator("#all-dest-show-current-data-btn");
+        var gcseChart = Page.Locator("#all-gcse-chart");
+        var gcseCurrentYearTable = Page.Locator("#all-gcse-current-year-table");
+        var gcseCurrentYearShowBtn = Page.Locator("#all-gcse-current-year-show-btn");
+        var gcseShowDataOverTimeBtn = Page.Locator("#all-gcse-show-data-over-time-btn");
+        var gcseDataOverTimeChart = Page.Locator("#all-gcse-data-overtime-chart");
+        var gcseDataOverTimeTable = Page.Locator("#all-gcse-data-overtime-table");
+        var gcseDataOverTimeShowBtn = Page.Locator("#all-gcse-data-over-time-show-btn");
+        var gcseShowCurrentDataBtn = Page.Locator("#all-gcse-show-current-data-btn");
 
         // Assert
-        Assert.False(await destinationsChart.CountAsync() > 0);
-        Assert.False(await destinationsCurrentYearTable.CountAsync() > 0);
-        Assert.False(await destinationsCurrentYearShowBtn.CountAsync() > 0);
-        Assert.False(await destinationsShowDataOverTimeBtn.CountAsync() > 0);
-        Assert.False(await destinationsDataOverTimeChart.CountAsync() > 0);
-        Assert.False(await destinationsDataOverTimeShowBtn.CountAsync() > 0);
-        Assert.False(await destinationsShowCurrentDataBtn.CountAsync() > 0);
-        Assert.True(await destinationsDataOverTimeTable.CountAsync() > 0);
+        Assert.False(await gcseChart.CountAsync() > 0);
+        Assert.False(await gcseCurrentYearTable.CountAsync() > 0);
+        Assert.False(await gcseCurrentYearShowBtn.CountAsync() > 0);
+        Assert.False(await gcseShowDataOverTimeBtn.CountAsync() > 0);
+        Assert.False(await gcseDataOverTimeChart.CountAsync() > 0);
+        Assert.False(await gcseDataOverTimeShowBtn.CountAsync() > 0);
+        Assert.False(await gcseShowCurrentDataBtn.CountAsync() > 0);
+        Assert.True(await gcseDataOverTimeTable.CountAsync() > 0);
     }
 
-    [Fact(Skip = "Functionality removed for now")]
-    public async Task DestinationsPage_Displays_BreakdownDestinations_CurrentYear_Chart()
+    [Fact]
+    public async Task EnglishAndMathsResultsPage_Displays_BreakdownGcse_CurrentYear_Chart()
     {
         // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
-        var chart = Page.Locator("#breakdown-destinations-chart");
-        var table = Page.Locator("#breakdown-destinations-current-year-table");
-        var chartLegend = Page.Locator("#breakdown-destinations-chart-legend");
-        var showAsTableBtn = Page.Locator("#breakdown-dest-current-year-show-btn");
+        var chart = Page.Locator("#breakdown-gcse-chart");
+        var table = Page.Locator("#breakdown-gcse-current-year-table");
+        var chartLegend = Page.Locator("#breakdown-gcse-chart-legend");
+        var showAsTableBtn = Page.Locator("#breakdown-gcse-current-year-show-btn");
 
         var isChartVisible = await chart.IsVisibleAsync();
         var isTableVisible = await table.IsVisibleAsync();
@@ -317,20 +385,20 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
         Assert.Equal("Show as a table", showAsTableBtnText);
     }
 
-    [Fact(Skip = "Functionality removed for now")]
-    public async Task DestinationsPage_Displays_BreakdownDestinations_CurrentYear_Table()
+    [Fact]
+    public async Task EnglishAndMathsResultsPage_Displays_BreakdownGcse_CurrentYear_Table()
     {
         // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         // Click Show as a table button
-        await Page.ClickAsync("#breakdown-dest-current-year-show-btn");
+        await Page.ClickAsync("#breakdown-gcse-current-year-show-btn");
 
-        var showAsTableBtn = Page.Locator("#breakdown-dest-current-year-show-btn");
-        var chart = Page.Locator("#breakdown-destinations-chart");
-        var table = Page.Locator("#breakdown-destinations-current-year-table");
-        var chartLegend = Page.Locator("#breakdown-destinations-chart-legend");
+        var showAsTableBtn = Page.Locator("#breakdown-gcse-current-year-show-btn");
+        var chart = Page.Locator("#breakdown-gcse-chart");
+        var table = Page.Locator("#breakdown-gcse-current-year-table");
+        var chartLegend = Page.Locator("#breakdown-gcse-chart-legend");
 
         var isChartVisible = await chart.IsVisibleAsync();
         var isTableVisible = await table.IsVisibleAsync();
@@ -344,85 +412,65 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
         Assert.Equal("Show as a chart", buttonText);
     }
 
-    [Fact(Skip = "Functionality removed for now")]
-    public async Task DestinationsPage_Displays_BreakdownDestinations_No_Chart_Only_Render_Table()
+    [Fact]
+    public async Task EnglishAndMathsResultsPage_Displays_BreakdownGcse_No_Chart_Only_Render_Table()
     {
         // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["100273"]);
 
         // Act       
-        var breakdownDestinationsChart = Page.Locator("#breakdown-destinations-chart");
-        var breakdownDestinationsCurrentYearTable = Page.Locator("#breakdown-destinations-current-year-table");
+        var breakdownGcseChart = Page.Locator("#breakdown-gcse-chart");
+        var breakdownGcseCurrentYearTable = Page.Locator("#breakdown-gcse-current-year-table");
 
-        var breakdownDestinationsCurrentYearShowBtn = Page.Locator("#breakdown-dest-current-year-show-btn");
+        var breakdownGcseCurrentYearShowBtn = Page.Locator("#breakdown-gcse-current-year-show-btn");
 
         // Assert
-        Assert.False(await breakdownDestinationsChart.CountAsync() > 0);
-        Assert.False(await breakdownDestinationsCurrentYearShowBtn.CountAsync() > 0);
-        Assert.True(await breakdownDestinationsCurrentYearTable.CountAsync() > 0);
+        Assert.False(await breakdownGcseChart.CountAsync() > 0);
+        Assert.False(await breakdownGcseCurrentYearShowBtn.CountAsync() > 0);
+        Assert.True(await breakdownGcseCurrentYearTable.CountAsync() > 0);
     }
 
     [Fact]
-    public async Task DestinationsPage_DisplaysPagination()
+    public async Task EnglishAndMathsResultsPage_KeyboardNavigation_CanReachAndFocus_ToggleButtons()
     {
         // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
-        var isVisible = await Page.Locator("#destinations-pagination").IsVisibleAsync();
-        var previousPaginationLink = Page.Locator("#destinations-pagination .govuk-pagination__prev a");
-        var nextPaginationLink = Page.Locator("#destinations-pagination .govuk-pagination__next a");
-
-        var previousPaginationText = await previousPaginationLink.TextContentAsync();
-        var nextPaginationIsVisible = await nextPaginationLink.IsVisibleAsync();
-
-        // Assert
-        Assert.True(isVisible);
-        Assert.False(nextPaginationIsVisible);
-        Assert.Contains("performance: Additional measures", previousPaginationText?.Trim());
-    }
-
-    [Fact]
-    public async Task DestinationsPage_KeyboardNavigation_CanReachAndFocus_ToggleButtons()
-    {
-        // Arrange
-        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
-
-        // Act
-        var reachedShowAsTableButton = await FocusElementByTabAsync("all-dest-current-year-show-btn");
+        var reachedShowAsTableButton = await FocusElementByTabAsync("all-gcse-current-year-show-btn");
         Assert.True(reachedShowAsTableButton);
 
-        var hasVisibleFocusOnShowAsTable = await HasVisibleFocusAsync("#all-dest-current-year-show-btn");
+        var hasVisibleFocusOnShowAsTable = await HasVisibleFocusAsync("#all-gcse-current-year-show-btn");
 
         await Page.Keyboard.PressAsync("Tab");
         var focusedElementId = await Page.EvaluateAsync<string>("() => document.activeElement?.id ?? ''");
-        var hasVisibleFocusOnShowDataOverTime = await HasVisibleFocusAsync("#all-dest-show-data-over-time-btn");
+        var hasVisibleFocusOnShowDataOverTime = await HasVisibleFocusAsync("#all-gcse-show-data-over-time-btn");
 
         // Assert
         Assert.True(hasVisibleFocusOnShowAsTable);
-        Assert.Equal("all-dest-show-data-over-time-btn", focusedElementId);
+        Assert.Equal("all-gcse-show-data-over-time-btn", focusedElementId);
         Assert.True(hasVisibleFocusOnShowDataOverTime);
 
         // Ensure reverse tab order is not trapped or skipped
         await Page.Keyboard.PressAsync("Shift+Tab");
         focusedElementId = await Page.EvaluateAsync<string>("() => document.activeElement?.id ?? ''");
-        Assert.Equal("all-dest-current-year-show-btn", focusedElementId);
+        Assert.Equal("all-gcse-current-year-show-btn", focusedElementId);
     }
 
     [Fact]
-    public async Task DestinationsPage_KeyboardActivation_ShowAsTableButton_SupportsEnterAndSpace()
+    public async Task EnglishAndMathsResultsPage_KeyboardActivation_ShowAsTableButton_SupportsEnterAndSpace()
     {
         // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act - Enter switches to table view
-        var reachedShowAsTableButton = await FocusElementByTabAsync("all-dest-current-year-show-btn");
+        var reachedShowAsTableButton = await FocusElementByTabAsync("all-gcse-current-year-show-btn");
         Assert.True(reachedShowAsTableButton);
 
         await Page.Keyboard.PressAsync("Enter");
 
-        var chart = Page.Locator("#all-destinations-chart");
-        var table = Page.Locator("#all-destinations-current-year-table");
+        var chart = Page.Locator("#all-gcse-chart");
+        var table = Page.Locator("#all-gcse-current-year-table");
         Assert.False(await chart.IsVisibleAsync());
         Assert.True(await table.IsVisibleAsync());
 
@@ -435,13 +483,13 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     }
 
     [Fact]
-    public async Task DestinationsPage_KeyboardActivation_ShowDataOverTimeAndShowCurrentDataButtons_SupportEnterAndSpace()
+    public async Task EnglishAndMathsResultsPage_KeyboardActivation_ShowDataOverTimeAndShowCurrentDataButtons_SupportEnterAndSpace()
     {
         // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act - Enter on show data over time
-        await Page.Locator("#all-dest-show-data-over-time-btn").FocusAsync();
+        await Page.Locator("#all-gcse-show-data-over-time-btn").FocusAsync();
         await Page.Keyboard.PressAsync("Enter");
 
         // Assert
@@ -449,7 +497,7 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
         Assert.False(await IsElementCheckedAsync("current-view"));
 
         // Act - Space on show current data
-        await Page.Locator("#all-dest-show-current-data-btn").FocusAsync();
+        await Page.Locator("#all-gcse-show-current-data-btn").FocusAsync();
         await Page.Keyboard.PressAsync("Space");
 
         // Assert
@@ -457,7 +505,7 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
         Assert.False(await IsElementCheckedAsync("data-overtime-view"));
 
         // Act - Space on show data over time
-        await Page.Locator("#all-dest-show-data-over-time-btn").FocusAsync();
+        await Page.Locator("#all-gcse-show-data-over-time-btn").FocusAsync();
         await Page.Keyboard.PressAsync("Space");
 
         // Assert
@@ -465,7 +513,7 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
         Assert.False(await IsElementCheckedAsync("current-view"));
 
         // Act - Enter on show current data
-        await Page.Locator("#all-dest-show-current-data-btn").FocusAsync();
+        await Page.Locator("#all-gcse-show-current-data-btn").FocusAsync();
         await Page.Keyboard.PressAsync("Enter");
 
         // Assert
@@ -474,12 +522,12 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     }
 
     [Fact]
-    public async Task DestinationsPage_KeyboardActivation_ShowDataOverTime_Enter_MovesFocusToShowCurrentData()
+    public async Task EnglishAndMathsResultsPage_KeyboardActivation_ShowDataOverTime_Enter_MovesFocusToShowCurrentData()
     {
         // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
-        var reachedShowAsTableButton = await FocusElementByTabAsync("all-dest-current-year-show-btn");
+        var reachedShowAsTableButton = await FocusElementByTabAsync("all-gcse-current-year-show-btn");
         Assert.True(reachedShowAsTableButton);
 
         await Page.Keyboard.PressAsync("Tab");
@@ -488,30 +536,30 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
         await Page.Keyboard.PressAsync("Enter");
 
         // Assert
-        var focusedElementMoved = await WaitForFocusedElementAsync("all-dest-show-current-data-btn");
+        var focusedElementMoved = await WaitForFocusedElementAsync("all-gcse-show-current-data-btn");
         Assert.True(focusedElementMoved);
     }
 
     [Fact]
-    public async Task DestinationsPage_KeyboardActivation_ShowCurrentData_Enter_TabSequenceCanReachShowDataOverTime()
+    public async Task EnglishAndMathsResultsPage_KeyboardActivation_ShowCurrentData_Enter_TabSequenceCanReachShowDataOverTime()
     {
         // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
-        var reachedShowAsTableButton = await FocusElementByTabAsync("all-dest-current-year-show-btn");
+        var reachedShowAsTableButton = await FocusElementByTabAsync("all-gcse-current-year-show-btn");
         Assert.True(reachedShowAsTableButton);
 
         await Page.Keyboard.PressAsync("Tab");
         await Page.Keyboard.PressAsync("Enter");
 
-        var focusedOnShowCurrentData = await WaitForFocusedElementAsync("all-dest-show-current-data-btn");
+        var focusedOnShowCurrentData = await WaitForFocusedElementAsync("all-gcse-show-current-data-btn");
         Assert.True(focusedOnShowCurrentData);
 
         // Act
         await Page.Keyboard.PressAsync("Enter");
 
         // Assert
-        var reachedShowDataOverTimeButton = await FocusElementByTabAsync("all-dest-show-data-over-time-btn", 120);
+        var reachedShowDataOverTimeButton = await FocusElementByTabAsync("all-gcse-show-data-over-time-btn", 120);
         Assert.True(reachedShowDataOverTimeButton);
     }
 
