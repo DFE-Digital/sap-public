@@ -137,19 +137,19 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.Equal(expectedResult.AverageEnglishProgress!.EnglandAverage, model.AverageEnglishProgress!.EnglandAverage.Value);
         Assert.Equal(expectedResult.AverageEnglishProgress!.LaAverage, model.AverageEnglishProgress!.LaAverage.Value);
         Assert.Equal(expectedResult.AverageEnglishProgress!.NumberOfStudents, model.AverageEnglishProgress!.NumberOfStudents.Value);
-       // Assert.Equal(expectedResult.AverageEnglishProgress!.SchoolOrCollege, model.AverageEnglishProgress!.SchoolOrCollege.Value);
+        Assert.Equal(expectedResult.AverageEnglishProgress!.SchoolOrCollege, model.AverageEnglishProgress!.SchoolOrCollege.Value);
         Assert.Equal(expectedResult.AverageMathsProgress!.EnglandAverage, model.AverageMathsProgress!.EnglandAverage.Value);
         Assert.Equal(expectedResult.AverageMathsProgress!.LaAverage, model.AverageMathsProgress!.LaAverage.Value);
         Assert.Equal(expectedResult.AverageMathsProgress!.NumberOfStudents, model.AverageMathsProgress!.NumberOfStudents.Value);
-       /// Assert.Equal(expectedResult.AverageMathsProgress!.SchoolOrCollege, model.AverageMathsProgress!.SchoolOrCollege.Value);
+        Assert.Equal(expectedResult.AverageMathsProgress!.SchoolOrCollege, model.AverageMathsProgress!.SchoolOrCollege.Value);
         Assert.Equal(expectedResult.EnteredForEnglishQualification!.EnglandAverage, model.EnteredForEnglishQualification!.EnglandAverage.Value);
         Assert.Equal(expectedResult.EnteredForEnglishQualification!.LaAverage, model.EnteredForEnglishQualification!.LaAverage.Value);
         Assert.Equal(expectedResult.EnteredForEnglishQualification!.NumberOfStudents, model.EnteredForEnglishQualification!.NumberOfStudents.Value);
-       // Assert.Equal(expectedResult.EnteredForEnglishQualification!.SchoolOrCollege, model.EnteredForEnglishQualification!.SchoolOrCollege.Value);
+        Assert.Equal(expectedResult.EnteredForEnglishQualification!.SchoolOrCollege, model.EnteredForEnglishQualification!.SchoolOrCollege.Value);
         Assert.Equal(expectedResult.EnteredForMathsQualification!.EnglandAverage, model.EnteredForMathsQualification!.EnglandAverage.Value);
         Assert.Equal(expectedResult.EnteredForMathsQualification!.LaAverage, model.EnteredForMathsQualification!.LaAverage.Value);
         Assert.Equal(expectedResult.EnteredForMathsQualification!.NumberOfStudents, model.EnteredForMathsQualification!.NumberOfStudents.Value);
-       // Assert.Equal(expectedResult.EnteredForMathsQualification!.SchoolOrCollege, model.EnteredForMathsQualification!.SchoolOrCollege.Value);
+        Assert.Equal(expectedResult.EnteredForMathsQualification!.SchoolOrCollege, model.EnteredForMathsQualification!.SchoolOrCollege.Value);
     }
 
     [Fact]
