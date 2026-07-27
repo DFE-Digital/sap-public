@@ -29,7 +29,7 @@
             Choose the type of qualifications you want to see.
         </p>
         <ul class="govuk-list govuk-list--bullet">
-            <li>Level 2 qualifications include GCSEs, BTEC Firsts and other level 2 qualifications/li>
+            <li>Level 2 qualifications include GCSEs, BTEC Firsts and other level 2 qualifications</li>
                 <li>Level 3 qualifications include A levels, Tech levels, BTECs and other level 3 qualifications</li>
         </ul>
 
@@ -65,14 +65,17 @@
         </ul>
 
         <p>
-            This measure includes students who did not get a grade 4 or above in GCSE (or equivalent) by the end of key stage 4 in that subject. Read the 16 to 19 accountability technical guide (opens in a new tab) for details.
+            This measure includes students who did not get a grade 4 or above in GCSE (or equivalent) by the end of key stage 4 in that subject. 
+            Read the <a id="tech-guidance-link" class="govuk-link" rel="noreferrer noopener" target="_blank" href="https://www.gov.uk/government/publications/16-to-19-accountability-headline-measures-technical-guide">
+                16 to 19 accountability technical guide (opens in a new tab)
+            </a>
         </p>
 
         <p>
             Compare this school or college with state funded local and national averages.
         </p>
 
-        <table class="govuk-table govuk-!-margin-top-5">
+        <table class="govuk-table govuk-!-margin-top-5" id="english-maths-scores-and-progress">
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
                     <th scope="col" class="govuk-table__header"></th>
@@ -94,9 +97,9 @@
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Entered for English qualifications</th>
                         <td class="govuk-table__cell"></td>
-                        <td class="govuk-table__cell">@Model.EnteredForEnglishQualification.SchoolOrCollege.Value.AsPercentage()</td>
-                        <td class="govuk-table__cell">@Model.EnteredForEnglishQualification.LaAverage.Value.AsPercentage()</td>
-                        <td class="govuk-table__cell">@Model.EnteredForEnglishQualification.EnglandAverage.Value.AsPercentage()</td>
+                        <td class="govuk-table__cell">@(Model.EnteredForEnglishQualification.SchoolOrCollege.IsAvailable ? Model.EnteredForEnglishQualification.SchoolOrCollege.Value.AsPercentage() : Constants.NotAvailable)</td>
+                        <td class="govuk-table__cell">@(Model.EnteredForEnglishQualification.LaAverage.IsAvailable ? Model.EnteredForEnglishQualification.LaAverage.Value.AsPercentage() : Constants.NotAvailable)</td>
+                        <td class="govuk-table__cell">@(Model.EnteredForEnglishQualification.EnglandAverage.IsAvailable ? Model.EnteredForEnglishQualification.EnglandAverage.Value.AsPercentage() : Constants.NotAvailable)</td>
                     </tr>
 
                     <tr class="govuk-table__row">
@@ -110,17 +113,17 @@
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Entered for maths qualifications</th>
                         <td class="govuk-table__cell"></td>
-                        <td class="govuk-table__cell">@Model.EnteredForMathsQualification.SchoolOrCollege.Value.AsPercentage()</td>
-                        <td class="govuk-table__cell">@Model.EnteredForMathsQualification.LaAverage.Value.AsPercentage()</td>
-                        <td class="govuk-table__cell">@Model.EnteredForMathsQualification.EnglandAverage.Value.AsPercentage()</td>
+                        <td class="govuk-table__cell">@(Model.EnteredForMathsQualification.SchoolOrCollege.IsAvailable ? Model.EnteredForMathsQualification.SchoolOrCollege.Value.AsPercentage() : Constants.NotAvailable)</td>
+                        <td class="govuk-table__cell">@(Model.EnteredForMathsQualification.LaAverage.IsAvailable ? Model.EnteredForMathsQualification.LaAverage.Value.AsPercentage() : Constants.NotAvailable)</td>
+                        <td class="govuk-table__cell">@(Model.EnteredForMathsQualification.EnglandAverage.IsAvailable ? Model.EnteredForMathsQualification.EnglandAverage.Value.AsPercentage() : Constants.NotAvailable)</td>
                     </tr>
                 </tbody>
             </table>
 
 
             <govuk-pagination id="academic-performance-level-2-pagination">
-                <govuk-pagination-previous asp-route="@RouteConstants.KS5AcademicPerformanceEnglishMaths" asp-all-route-data="@Model.RouteAttributes">Academic performance: Level 2 qualifications</govuk-pagination-previous>
-                <govuk-pagination-next asp-route="@RouteConstants.KS5AcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">Academic performance: Subject entered</govuk-pagination-next>
+                <govuk-pagination-previous asp-route="@RouteConstants.KS5AcademicPerformanceLevel2" asp-all-route-data="@Model.RouteAttributes">Academic performance: Level 2 qualifications</govuk-pagination-previous>
+                <govuk-pagination-next asp-route="@RouteConstants.KS5AcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">Academic performance: Subjects entered</govuk-pagination-next>
             </govuk-pagination>
         </div>
     </div>

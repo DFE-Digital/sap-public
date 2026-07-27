@@ -6,13 +6,13 @@ namespace SAPPub.Web.Areas.Profiles.ViewModels.KS5;
 public class EnglishMathsQualificationsViewModel : BaseViewModel
 {
 
-    public EnglishMathsScoreViewModel? AverageEnglishProgress { get; set; }
+    public required EnglishMathsScoreViewModel AverageEnglishProgress { get; set; }
 
-    public EnglishMathsScoreViewModel? EnteredForEnglishQualification { get; set; }
+    public required EnglishMathsScoreViewModel EnteredForEnglishQualification { get; set; }
 
-    public EnglishMathsScoreViewModel? AverageMathsProgress { get; set; }
+    public required EnglishMathsScoreViewModel AverageMathsProgress { get; set; }
 
-    public EnglishMathsScoreViewModel? EnteredForMathsQualification { get; set; }
+    public required EnglishMathsScoreViewModel EnteredForMathsQualification { get; set; }
 
     public string? LAName { get; set; }
 

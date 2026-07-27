@@ -14,11 +14,11 @@ public class EnglishMathsQualificationModel
 
     public string? LAName { get; set; }
 
-    public EnglishMathsScoreModel? AverageEnglishProgress { get; set; }
+    public required EnglishMathsScoreModel AverageEnglishProgress { get; init; }
 
-    public EnglishMathsScoreModel? EnteredForEnglishQualification { get; set; }
+    public required EnglishMathsScoreModel EnteredForEnglishQualification { get; init; }
     
-    public EnglishMathsScoreModel? AverageMathsProgress { get; set; }
+    public required EnglishMathsScoreModel AverageMathsProgress { get; init; }
     
-    public EnglishMathsScoreModel? EnteredForMathsQualification { get; set; }
+    public required EnglishMathsScoreModel EnteredForMathsQualification { get; init; }
 }

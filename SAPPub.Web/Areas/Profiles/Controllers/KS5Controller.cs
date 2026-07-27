@@ -103,7 +103,7 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
             string urn, string schoolName,
             CancellationToken ct)
         {
-            var englishMathsQualifications = await englishAndMathsQualificationsService.GetAdvancedLevelQualificationDetailsAsync(urn, ct);
+            var englishMathsQualifications = await englishAndMathsQualificationsService.GetEnglishAndMathsQualificationDetailsAsync(urn, ct);
 
             if (string.IsNullOrWhiteSpace(englishMathsQualifications.Urn))
             {

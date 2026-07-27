@@ -9,16 +9,19 @@ public class EnglishAndMathsQualificationsService(
     IEstablishmentService establishmentService,
     IKs5PerformanceRepository ks5PerformanceRepository) : IEnglishAndMathsQualificationsService
 {
-    public async Task<EnglishMathsQualificationModel> GetAdvancedLevelQualificationDetailsAsync(string urn, CancellationToken ct = default)
+    public async Task<EnglishMathsQualificationModel> GetEnglishAndMathsQualificationDetailsAsync(string urn, CancellationToken ct = default)
     {
+        ct.ThrowIfCancellationRequested();
+
         var establishment = await establishmentService.GetEstablishmentAsync(urn, ct);
         
         var establishmentPerformanceTask = ks5PerformanceRepository.GetEstablishmentPerformanceAsync(urn, ct);
         var englandPerformanceTask = ks5PerformanceRepository.GetEnglandPerformanceAsync(ct);
         var localAuthorityPerformanceTask = ks5PerformanceRepository.GetLaPerformanceAsync(establishment.LAId, ct);
-
+        
         await Task.WhenAll(establishmentPerformanceTask, englandPerformanceTask, localAuthorityPerformanceTask);
-      
+               
+
         var establishmentPerformance = await establishmentPerformanceTask;
         var englandPerformance = await englandPerformanceTask;
         var laPerformance = await localAuthorityPerformanceTask;

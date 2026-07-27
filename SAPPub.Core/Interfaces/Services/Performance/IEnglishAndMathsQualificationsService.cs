@@ -4,5 +4,5 @@ namespace SAPPub.Core.Interfaces.Services.Performance;
 
 public interface IEnglishAndMathsQualificationsService
 {
-    Task<EnglishMathsQualificationModel> GetAdvancedLevelQualificationDetailsAsync(string urn, CancellationToken ct = default);
+    Task<EnglishMathsQualificationModel> GetEnglishAndMathsQualificationDetailsAsync(string urn, CancellationToken ct = default);
 }
