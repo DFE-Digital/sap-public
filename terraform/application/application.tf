@@ -60,21 +60,21 @@ module "application_configuration" {
   }, local.federated_auth_configmap)
 
   secret_variables = merge({
-    DATABASE_URL            = module.postgres.url
-    StorageConnectionString = "DefaultEndpointsProtocol=https;AccountName=${module.storage.name};AccountKey=${module.storage.primary_access_key}"
-	  ConnectionStrings__PostgresConnectionString   = module.postgres.dotnet_connection_string
-    Email__GatewayTemplate                        = data.azurerm_key_vault_secret.emailgatewaytemplate.value,
-    Email__ApiKey                                 = data.azurerm_key_vault_secret.emailgatewayapikey.value,
-    Gateway__Enabled                              = data.azurerm_key_vault_secret.gatewayenabled.value,
-    Gateway__AllowedDays                          = data.azurerm_key_vault_secret.gatewayalloweddays.value,
-    Email__ApplicationRoot                        = data.azurerm_key_vault_secret.emailapplicationroot.value,
-    Analytics__GoogleTagManagerId                 = data.azurerm_key_vault_secret.googletagmanager.value,
-    Analytics__ClarityId                          = data.azurerm_key_vault_secret.microsoftclarity.value,
-    Sentry__Dsn                                   = (
-            var.environment == "production"
-            ? data.azurerm_key_vault_secret.sentrydsn[0].value
-            : null
-          )
+    DATABASE_URL                                = module.postgres.url
+    StorageConnectionString                     = "DefaultEndpointsProtocol=https;AccountName=${module.storage.name};AccountKey=${module.storage.primary_access_key}"
+    ConnectionStrings__PostgresConnectionString = module.postgres.dotnet_connection_string
+    Email__GatewayTemplate                      = data.azurerm_key_vault_secret.emailgatewaytemplate.value,
+    Email__ApiKey                               = data.azurerm_key_vault_secret.emailgatewayapikey.value,
+    Gateway__Enabled                            = data.azurerm_key_vault_secret.gatewayenabled.value,
+    Gateway__AllowedDays                        = data.azurerm_key_vault_secret.gatewayalloweddays.value,
+    Email__ApplicationRoot                      = data.azurerm_key_vault_secret.emailapplicationroot.value,
+    Analytics__GoogleTagManagerId               = data.azurerm_key_vault_secret.googletagmanager.value,
+    Analytics__ClarityId                        = data.azurerm_key_vault_secret.microsoftclarity.value,
+    Sentry__Dsn = (
+      var.environment == "production"
+      ? data.azurerm_key_vault_secret.sentrydsn[0].value
+      : null
+    )
   }, local.federated_auth_secrets)
 
 }

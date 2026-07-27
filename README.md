@@ -1,11 +1,10 @@
-<a name="readme-top"></a>
+# SAP Public - School Profile (Public Facing)
 
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
-
 
 
 
@@ -19,7 +18,7 @@
 <h3 align="center">School Improvement Programme - School Profiles (working title)</h3>
 
   <p align="center">
-    A WIP project 
+    Public facing school profile service built ASP.NET Core Razor Pages.
     <br />
     <br />
     <a href="#">View</a>
@@ -39,7 +38,7 @@
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
-        <li><a href="#built-with">Built With</a></li>
+        <li><a href="#built-with">Technology</a></li>
       </ul>
     </li>
     <li>
@@ -63,7 +62,9 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-TBC
+This repository contains the Schools Profiles service for the School Improvement Programme (SIP).
+It is a .NET 8 solution with a Razor Pages application and supporting class libraries for code/domain logic, infrastructure and data processing.
+This repository is an internal artefact store and not a public interface.
 
 | Environment | Internal URL | Public URL | Status 
 | --- | --- | --- | --- |
@@ -75,7 +76,7 @@ TBC
 
 
 
-### Built With
+### Technology
 <a href="https://docs.microsoft.com/en-us/dotnet/csharp/"><img src="https://img.shields.io/badge/language-C%23-%23178600" title="Go To C# Documentation"></a>
 
 <a href="https://github.com/DFE-Digital/sap-public"><img src="https://img.shields.io/badge/github-repo-%2324292e?logo=github" title="Go To Github Repo"></a>
@@ -232,8 +233,8 @@ Project Link: [https://github.com/DFE-Digital/sap-public](https://github.com/DFE
 [stars-url]: https://github.com/DFE-Digital/sap-public/stargazers
 [issues-shield]: https://img.shields.io/github/issues/DFE-Digital/sap-public.svg?style=for-the-badge
 [issues-url]: https://github.com/DFE-Digital/sap-public/issues
-[license-shield]: https://img.shields.io/github/license/DFE-Digital/sap-public.svg?style=for-the-badge
-[license-url]: https://github.com/DFE-Digital/sap-public/blob/master/LICENSE.txt
+[license-shield]: https://img.shields.io/badge/License-MIT-Yellow.svg?style=for-the-badge
+[license-url]: https://github.com/DFE-Digital/sap-public/blob/main/license.txt
 
 [language-shield]: https://img.shields.io/badge/dynamic/xml?label=target&query=%2F%2FTargetFramework%5B1%5D&url=https://raw.githubusercontent.com/DFE-Digital/sap-public/main/Charybdis.Web/Charybdis.Web.csproj&logo=.net?style=for-the-badge
 

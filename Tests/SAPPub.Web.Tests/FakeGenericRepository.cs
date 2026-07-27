@@ -1,5 +1,5 @@
 ﻿using SAPPub.Core.Entities;
-using SAPPub.Core.Entities.KS4.Destinations;
+using SAPPub.Core.Entities.Destinations;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Repositories.Generic;
@@ -295,7 +295,14 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             EngMaths49_Tot_Est_Previous_Pct = 65,
             EngMaths59_Tot_Est_Previous_Pct = 70,
             EngMaths49_Tot_Est_Previous2_Pct = 75,
-            EngMaths59_Tot_Est_Previous2_Pct = 80
+            EngMaths59_Tot_Est_Previous2_Pct = 80,
+            // additional measures
+            AnyQual_Tot_Est_Current_Pct_Coded = new Core.ValueObjects.CodedDouble(90, "", ""),
+            TripSci_Tot_Est_Current_Pct_Coded = new Core.ValueObjects.CodedDouble(80, "", ""),
+            More1FL_Tot_Est_Current_Pct_Coded = new Core.ValueObjects.CodedDouble(70, "", ""),
+            ExamEntriesGSCE_Tot_Est_Current_Num_Coded = new Core.ValueObjects.CodedDouble(151, "", ""),
+            ExamEntriesKS4_Tot_Est_Current_Num_Coded = new Core.ValueObjects.CodedDouble(100, "", ""),
+            Pup_Tot_Est_Current_Num_Coded = new Core.ValueObjects.CodedDouble(200, "", "")
         },
         ["137020"] = new EstablishmentPerformance
         {
@@ -310,13 +317,20 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             EngMaths49_Tot_Est_Previous_Pct = 55,
             EngMaths59_Tot_Est_Previous_Pct = 60,
             EngMaths49_Tot_Est_Previous2_Pct = 55,
-            EngMaths59_Tot_Est_Previous2_Pct = 70
+            EngMaths59_Tot_Est_Previous2_Pct = 70,
+            // additional measures
+            AnyQual_Tot_Est_Current_Pct_Coded = new Core.ValueObjects.CodedDouble(null, "", ""),
+            TripSci_Tot_Est_Current_Pct_Coded = new Core.ValueObjects.CodedDouble(null, "", ""),
+            More1FL_Tot_Est_Current_Pct_Coded = new Core.ValueObjects.CodedDouble(null, "", ""),
+            ExamEntriesGSCE_Tot_Est_Current_Num_Coded = new Core.ValueObjects.CodedDouble(null, "", ""),
+            ExamEntriesKS4_Tot_Est_Current_Num_Coded = new Core.ValueObjects.CodedDouble(null, "", ""),
+            Pup_Tot_Est_Current_Num_Coded = new Core.ValueObjects.CodedDouble(null, "", "")
         },
     };
 
-    private static readonly Dictionary<string, EstablishmentDestinations> EstablishmentDestinations = new(StringComparer.OrdinalIgnoreCase)
+    private static readonly Dictionary<string, KS4EstablishmentDestinations> EstablishmentDestinations = new(StringComparer.OrdinalIgnoreCase)
     {
-        ["105574"] = new EstablishmentDestinations
+        ["105574"] = new KS4EstablishmentDestinations
         {
             Id = "105574",
             AllDest_Tot_Est_Current_Pct = 50,
@@ -327,7 +341,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             Apprentice_Tot_Est_Current_Pct = 1,
 
         },
-        ["100279"] = new EstablishmentDestinations
+        ["100279"] = new KS4EstablishmentDestinations
         {
             Id = "100279",
             AllDest_Tot_Est_Current_Pct = 50,
@@ -337,7 +351,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             Employment_Tot_Est_Current_Pct = 2,
             Apprentice_Tot_Est_Current_Pct = 1,
         },
-        ["149328"] = new EstablishmentDestinations
+        ["149328"] = new KS4EstablishmentDestinations
         {
             Id = "149328",
             AllDest_Tot_Est_Current_Pct = null,
@@ -349,22 +363,31 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
         },
     };
 
-    private static readonly Dictionary<string, EnglandDestinations> EnglandDestinations = new(StringComparer.OrdinalIgnoreCase)
+    private static readonly Dictionary<string, KS4EnglandDestinations> EnglandDestinations = new(StringComparer.OrdinalIgnoreCase)
     {
-        ["105574"] = new EnglandDestinations
+        ["105574"] = new KS4EnglandDestinations
         {
             Id = "105574",
             AllDest_Tot_Eng_Current_Pct = 50
         },
-        ["100279"] = new EnglandDestinations
+        ["100279"] = new KS4EnglandDestinations
         {
             Id = "100279",
             AllDest_Tot_Eng_Current_Pct = 50
         },
-        ["149328"] = new EnglandDestinations
+        ["149328"] = new KS4EnglandDestinations
         {
             Id = "149328",
             AllDest_Tot_Eng_Current_Pct = null
+        }
+    };
+
+    private static readonly Dictionary<string, KS5EstablishmentDestinations> KS5EstablishmentDestinations = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["105574"] = new KS5EstablishmentDestinations
+        {
+            TOT_OVERALLPER_Est_Current_Pct = 50,
+            TOT_COHORT_Est_Current_Num = 1020
         }
     };
 
@@ -403,7 +426,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
                 return Task.FromResult<T?>((T)(object)est);
         }
 
-        if (typeof(T) == typeof(EstablishmentDestinations))
+        if (typeof(T) == typeof(KS4EstablishmentDestinations))
         {
             var id = GetPropertyString(parameters, "Id");
 
@@ -411,11 +434,19 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
                 return Task.FromResult<T?>((T)(object)est);
         }
 
-        if (typeof(T) == typeof(EnglandDestinations))
+        if (typeof(T) == typeof(KS4EnglandDestinations))
         {
             var id = GetPropertyString(parameters, "Id");
 
             if (!string.IsNullOrWhiteSpace(id) && EnglandDestinations.TryGetValue(id, out var est))
+                return Task.FromResult<T?>((T)(object)est);
+        }
+
+        if (typeof(T) == typeof(KS5EstablishmentDestinations))
+        {
+            var id = GetPropertyString(parameters, "Id");
+
+            if (!string.IsNullOrWhiteSpace(id) && KS5EstablishmentDestinations.TryGetValue(id, out var est))
                 return Task.FromResult<T?>((T)(object)est);
         }
 

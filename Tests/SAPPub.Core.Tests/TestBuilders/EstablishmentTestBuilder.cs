@@ -351,6 +351,12 @@ public class EstablishmentTestBuilder
         return this;
     }
 
+    public EstablishmentTestBuilder WithIsKeyStage5(bool isKS5)
+    {
+        _establishment.IsKS5 = isKS5;
+        return this;
+    }
+
     public Establishment Build()
     {
         // fill basic values automatically if not set

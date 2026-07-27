@@ -3,7 +3,7 @@ using SAPPub.Web.Helpers;
 
 namespace SAPPub.Web.Models.SecondarySchool;
 
-public class CurriculumAndExtraCurricularActivitiesViewModel : SecondarySchoolBaseViewModel
+public class CurriculumAndExtraCurricularActivitiesViewModel : BaseViewModel
 {
     public required DisplayField<string> SchoolWebsite { get; set; }
 

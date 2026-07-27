@@ -140,3 +140,8 @@ variable "gcp_table_deletion_protection" {
   description = "Prevents deletion of the event table. Default: true"
   default     = true
 }
+
+variable "containers" {
+  description = "Map of containers for storage account"
+  default     = {}
+}

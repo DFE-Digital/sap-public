@@ -12,6 +12,8 @@
         const allGcseDataOverTimeTableContainer = document.getElementById('all-gcse-data-over-time-table-container');
         const allGcseDataOverTimeShowAsTableBtn = document.getElementById('all-gcse-data-over-time-show-btn');
 
+        const currentViewRadio = document.getElementById('current-view');
+        const dataOvertimeViewRadio = document.getElementById('data-overtime-view');
         const allGcseShowCurrentDataBtn = document.getElementById('all-gcse-show-current-data-btn');
 
         setAriaAttribute(allGcseCurrentYearShowAsTableBtn, 'false');
@@ -25,8 +27,14 @@
 
         if (allGcseShowDataOverTimeBtn) {
             allGcseShowDataOverTimeBtn.addEventListener('click', () => {
+                if (dataOvertimeViewRadio) {
+                    dataOvertimeViewRadio.checked = true;
+                }
+
                 var chartVisible = allGcseCurrentYearChartContainer.style.display !== 'none';
                 setTooggleState(allGcseDataOverTimeChartContainer, allGcseDataOverTimeTableContainer, !chartVisible, allGcseDataOverTimeShowAsTableBtn);
+                blurElementIfFocused(allGcseShowDataOverTimeBtn);
+                moveFocusToElement(allGcseShowCurrentDataBtn);
             });
         }
 
@@ -41,10 +49,22 @@
 
         if (allGcseShowCurrentDataBtn) {
             allGcseShowCurrentDataBtn.addEventListener('click', () => {
+                if (currentViewRadio) {
+                    currentViewRadio.checked = true;
+                }
+
                 var chartVisible = allGcseDataOverTimeChartContainer.style.display !== 'none';
                 setTooggleState(allGcseCurrentYearChartContainer, allGcseCurrentYearTableContainer, !chartVisible, allGcseCurrentYearShowAsTableBtn);
+                blurElementIfFocused(allGcseShowCurrentDataBtn);
+                moveFocusToElement(allGcseShowDataOverTimeBtn);
             });
         }
+
+        addKeyboardFocusTransfer(allGcseShowDataOverTimeBtn, allGcseShowCurrentDataBtn);
+        addKeyboardFocusTransfer(allGcseShowCurrentDataBtn, allGcseShowDataOverTimeBtn);
+
+        addEnterKeyHandler(allGcseShowDataOverTimeBtn);
+        addEnterKeyHandler(allGcseShowCurrentDataBtn);
 
         const breakdownGcseCurrentYearShowAsTableBtn = document.getElementById('breakdown-gcse-current-year-show-btn');
         const breakdownGcseCurrentYearChartContainer = document.getElementById('breakdown-gcse-current-year-chart-container');
@@ -66,6 +86,55 @@
 
     function setAriaAttribute(toggle, text) {
         if (toggle) toggle.setAttribute('aria-expanded', text);
+    }
+
+    function blurElementIfFocused(element) {
+        if (!element || document.activeElement !== element) {
+            return;
+        }
+
+        element.blur();
+    }
+
+    function moveFocusToElement(element) {
+        if (!element) {
+            return;
+        }
+
+        [0, 50, 150, 300].forEach(delay => {
+            setTimeout(() => {
+                if (document.activeElement !== element) {
+                    element.focus();
+                }
+            }, delay);
+        });
+    }
+
+    function addKeyboardFocusTransfer(sourceElement, targetElement) {
+        if (!sourceElement || !targetElement) {
+            return;
+        }
+
+        sourceElement.addEventListener('keyup', (event) => {
+            if (event.key !== 'Enter' && event.key !== ' ') {
+                return;
+            }
+
+            moveFocusToElement(targetElement);
+        });
+    }
+
+    function addEnterKeyHandler(element) {
+        if (!element) {
+            return;
+        }
+
+        element.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                element.click();
+            }
+        });
     }
 
     function setTooggleState(chartContainer, tableContainer, isChartVisible, btnShow) {

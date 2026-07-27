@@ -3,7 +3,7 @@ using SAPPub.Core.ServiceModels.KS4.Performance;
 
 namespace SAPPub.Web.Models.SecondarySchool;
 
-public class AcademicPerformanceSubjectsEnteredViewModel : SecondarySchoolBaseViewModel
+public class AcademicPerformanceSubjectsEnteredViewModel : BaseViewModel
 {
     public List<SubjectsEnteredViewModel>? GcseSubjects { get; set; }
 

@@ -4,7 +4,7 @@ using SAPPub.Web.Helpers;
 
 namespace SAPPub.Web.Models.SecondarySchool;
 
-public class AttendanceViewModel : SecondarySchoolBaseViewModel
+public class AttendanceViewModel : BaseViewModel
 {
     public required DisplayField<string> SchoolWebsite { get; init; }
 

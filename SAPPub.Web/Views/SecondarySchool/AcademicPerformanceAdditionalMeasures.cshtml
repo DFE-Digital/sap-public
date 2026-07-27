@@ -1,0 +1,173 @@
+﻿@model SAPPub.Web.Models.SecondarySchool.AcademicPerformanceAdditionalMeasuresViewModel;
+@using SAPPub.Web.Models.SecondarySchool
+@using SAPPub.Web.ViewComponents.VerticalNavigation
+
+@{
+    ViewData["Header"] = "Academic performance";
+    ViewData["SubHeader"] = PageTitleConstants.SecondarySchoolPageTitles.AdditionalMeasures;
+    ViewData["Title"] = $"{Model.SchoolName} - {ViewData["SubHeader"]}";
+}
+
+<div class="govuk-grid-row">
+    @await Component.InvokeAsync("VerticalNavigation",
+    new VerticalNavigationModel
+    {
+        URN = Model.URN,
+        SchoolName = Model.SchoolName,
+        ActivePage = RouteConstants.SecondaryAcademicPerformanceAdditionalMeasures,
+        IsKS2 = Model.IsKS2,
+        IsKS4 = Model.IsKS4,
+        IsKS5 = Model.IsKS5
+    })
+
+    <div class="govuk-grid-column-three-quarters">
+        <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
+        <h1 class="govuk-heading-xl">@ViewData["Header"]</h1>
+        <p class="govuk-body">
+            Looking at school performance data is one way to see how well a school is doing.
+            You should look at a range of information about a school before deciding if it’s the right fit for your child.
+        </p>
+
+        <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
+            <ul class="moj-sub-navigation__list">
+                <li class="moj-sub-navigation__item">
+                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.SecondarySchoolPageTitles.ProgressAndAttainment</a>
+                </li>
+                <li class="moj-sub-navigation__item">
+                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.SecondarySchoolPageTitles.EnglishAndMathsResults</a>
+                </li>
+                <li class="moj-sub-navigation__item">
+                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.SecondarySchoolPageTitles.SubjectsEntered</a>
+                </li>
+                <li class="moj-sub-navigation__item">
+                    <a class="moj-sub-navigation__link" aria-current="page" asp-route="@RouteConstants.SecondaryAcademicPerformanceAdditionalMeasures" asp-all-route-data="@Model.RouteAttributes">@ViewData["SubHeader"]</a>
+                </li>
+
+            </ul>
+        </nav>
+
+        <h2 class="govuk-heading-l">Additional measures</h2>
+
+        <p class="govuk-body">
+            Information in this section is for the 2024 to 2025 academic year.
+        </p>
+        <p class="govuk-body">
+            Compare additional performance measures for this school with performance at state-funded schools at local authority and national level.
+        </p>
+
+        <govuk-details id="details-academic-performance">
+            <govuk-details-summary>
+                More information about the additional measures
+            </govuk-details-summary>
+            <govuk-details-text>
+                <h3 class="govuk-heading-s">
+                    Pupils achieving at least one qualification
+                </h3>
+
+                <p class="govuk-body">
+                    The total number of pupils achieving at least one qualification approved for inclusion in performance measures at end of key stage 4.
+                </p>
+
+                <h3 class="govuk-heading-s">
+                    Pupils entering for biology, chemistry and physics
+                </h3>
+
+                <p class="govuk-body">
+                    The percentage of pupils taking biology, chemistry and physics GCSEs at end of key stage 4.
+                </p>
+
+                <h3 class="govuk-heading-s">
+                    Pupils entering more than one foreign language
+                </h3>
+
+                <p class="govuk-body">
+                    The percentage of pupils taking more than one foreign language at the end of KS4.
+                </p>
+
+                <h3 class="govuk-heading-s">
+                    Exam entries per pupil, GCSEs
+                </h3>
+
+                <p class="govuk-body">
+                    The average number of GCSEs taken by pupils at the end of KS4.
+                </p>
+
+                <h3 class="govuk-heading-s">
+                    Exam entries per pupil, all KS4 qualifications
+                </h3>
+
+                <p class="govuk-body">
+                    The average number of GCSE and technical awards taken by pupils at the end of KS4.
+                </p>
+
+                <h3 class="govuk-heading-s">
+                    Number of pupils at the end of KS4
+                </h3>
+
+                <p class="govuk-body">
+                    The total number of pupils at the end of KS4.
+                </p>
+            </govuk-details-text>
+        </govuk-details>
+
+        <table id="additional-measures-table" class="govuk-table">
+            <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">
+                Other performance measures
+            </caption>
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-third">Measure</th>
+                    <th scope="col" class="govuk-table__header">School</th>
+                    <th scope="col" class="govuk-table__header">Local authority</th>
+                    <th scope="col" class="govuk-table__header">England</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                @foreach (var row in Model.MeasuresInTableFormat)
+                {
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header">@row.MeasureName</th>
+                        <td class="govuk-table__cell">
+                            @{
+                                var displayText = row.MeasureFormat switch
+                                {
+                                    MeasureFormat.Percent => row.EstablishmentCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:F1}%" : Constants.NotAvailable),
+                                    MeasureFormat.Int => row.EstablishmentCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:N0}" : Constants.NotAvailable),
+                                    _ => row.EstablishmentCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:F1}" : Constants.NotAvailable)
+                                };
+                            }
+                            @displayText
+                        </td>
+                        <td class="govuk-table__cell">
+                            @{
+                                displayText = row.MeasureFormat switch
+                                {
+                                    MeasureFormat.Percent => row.LocalAuthorityCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:F1}%" : Constants.NotAvailable),
+                                    MeasureFormat.Int => row.LocalAuthorityCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:N0}" : Constants.NotAvailable),
+                                    _ => row.LocalAuthorityCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:F1}" : Constants.NotAvailable),
+                                };
+                            }
+                            @displayText
+                        </td>
+                        <td class="govuk-table__cell">
+                            @{
+                                displayText = row.MeasureFormat switch
+                                {
+                                    MeasureFormat.Percent => row.EnglandCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:F1}%" : Constants.NotAvailable),
+                                    MeasureFormat.Int => row.EnglandCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:N0}" : Constants.NotAvailable),
+                                    _ => row.EnglandCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:F1}" : Constants.NotAvailable)
+                                };
+                            }
+                            @displayText
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <govuk-pagination id="bottom-pagination">
+            <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">Academic performance: Subjects entered</govuk-pagination-previous>
+            <govuk-pagination-next asp-route="@RouteConstants.SecondaryDestinations" asp-all-route-data="@Model.RouteAttributes">Destinations</govuk-pagination-next>
+        </govuk-pagination>
+    </div>
+</div>

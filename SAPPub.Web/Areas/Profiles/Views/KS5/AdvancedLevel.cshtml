@@ -1,7 +1,7 @@
-﻿@using SAPPub.Web.Constants
+﻿@using SAPPub.Core.Enums.KS5Qualifications
+@using SAPPub.Web.Constants
 @using SAPPub.Web.ViewComponents.VerticalNavigation
-@model SAPPub.Web.Areas.Profiles.ViewModels.KS5.KS5ViewModel
-
+@model SAPPub.Web.Areas.Profiles.ViewModels.KS5.AdvancedLevelViewModel
 
 @{
     ViewData["Header"] = PageTitleConstants.KS5SchoolPageTitles.Performance;
@@ -23,10 +23,7 @@
 
     <div class="govuk-grid-column-three-quarters">
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
-        <h1 class="govuk-heading-xl">@ViewData["Header"]</h1> 
-        <p class="govuk-body">
-            INTRO TEXT
-        </p>
+        <h1 class="govuk-heading-xl">@ViewData["Header"]</h1>
 
         <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
             <ul class="moj-sub-navigation__list">
@@ -44,21 +41,27 @@
                 </li>
             </ul>
         </nav>
-        
-        <form method="get" asp-route="KS5AcademicPerformanceLevel3" asp-all-route-data="@Model.RouteAttributes">
+
+        <form method="get" asp-route="@RouteConstants.KS5AcademicPerformanceLevel3" asp-all-route-data="@Model.RouteAttributes">
             <div id="filterSection" class="select-filter">
                 <label for="qualificationSelector" class="govuk-label govuk-!-font-weight-bold">Choose qualification</label>
-                <select id="qualificationSelector" asp-for="@Model.Level3Qualification" class="govuk-select" asp-items="Html.GetEnumSelectList<SAPPub.Core.Enums.KS5Qualifications.Level3>()"></select>
+                <select id="qualificationSelector" asp-for="@Model.Level3Qualification" class="govuk-select" asp-items="Html.GetEnumSelectList<Level3>()"></select>
                 <govuk-button type="submit">Show results</govuk-button>
             </div>
         </form>
 
+        <h2 class="govuk-heading-l">@Model.Level3Qualification.GetDisplayName()</h2>
 
-        <p class="govuk-body">
-            MORE TEXT
+         @* Qualification Info *@
+        <partial name="_QualificationInfo" view-data='new ViewDataDictionary(ViewData) { ["QualificationLevel"] = Model.Level3Qualification }' />
+
+        <p id="no-of-students-completed-qulification-info" class="govuk-tag govuk-tag--full-width govuk-tag--grey govuk-!-margin-bottom-4">
+                Number of students from this school or college included in the measure: @Model.TotalNoOfStudentCompletedQualification.Value
         </p>
-
-
+               
+        @* ProgressScore Info *@
+        <partial name="_ProgressScore" model="@Model.ProgressScore" view-data='new ViewDataDictionary(ViewData) { ["QualificationLevel"] = Model.Level3Qualification }' />
+        
         <govuk-pagination id="academic-performance-level-3-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress" asp-all-route-data="@Model.RouteAttributes">Academic performance: Progress and Attainment</govuk-pagination-previous>
             <govuk-pagination-next asp-route="@RouteConstants.KS5AcademicPerformanceLevel2" asp-all-route-data="@Model.RouteAttributes">Academic performance: Level 2 qualifications</govuk-pagination-next>
