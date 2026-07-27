@@ -9,7 +9,7 @@ namespace SAPPub.Web.Areas.Profiles.Controllers;
 public class AttendanceController : Controller
 {
     [HttpGet]
-    [Route("school/{urn}/{schoolName}/attendance", Name = RouteConstants.SecondaryAttendance)]
+    [Route("school/{urn}/{schoolName}/attendance", Name = RouteConstants.Attendance)]
     public async Task<IActionResult> Attendance(
     [FromServices] IAttendanceService attendanceService,
     string urn,

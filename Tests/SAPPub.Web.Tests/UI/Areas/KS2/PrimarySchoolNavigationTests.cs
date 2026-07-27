@@ -3,22 +3,22 @@ using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 using static SAPPub.Web.Constants.PageTitleConstants;
 
-namespace SAPPub.Web.Tests.UI.KS4;
+namespace SAPPub.Web.Tests.UI.Areas.KS2;
 
 [Collection("Playwright Tests")]
 public class PrimarySchoolNavigationTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
     private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
     {
-        ["105574"] = "school/105574/loreto-high-school-chorlton/about",
-        ["149328"] = "school/149328/king-edward-vi-high-school/about"
+        ["143034"] = "school/143034/st-pauls-church-of-england-academy/about",
+        ["100273"] = "school/100273/saint-paul-roman-catholic-infant-school/about"
     };
 
     [Fact]
     public async Task NavigateThroughLeftNav_ShowsExpectedPages()
     {
         // Act
-        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+        await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
 
         var nav = new VerticalNavigationHelper(Page);
         var navItem = nav.GetItem("Admissions");
@@ -26,7 +26,7 @@ public class PrimarySchoolNavigationTests(WebApplicationSetupFixture fixture) : 
 
         // Assert
         var title = await Page.TitleAsync();
-        Assert.Contains(SecondarySchoolPageTitles.Admissions, title);
+        Assert.Contains(PrimarySchoolPageTitles.Admissions, title);
 
         // Act
         navItem = nav.GetItem("Curriculum and extra-curricular activities");
@@ -34,7 +34,7 @@ public class PrimarySchoolNavigationTests(WebApplicationSetupFixture fixture) : 
 
         // Assert
         title = await Page.TitleAsync();
-        Assert.Contains(SecondarySchoolPageTitles.Curriculum, title);
+        Assert.Contains(PrimarySchoolPageTitles.Curriculum, title);
 
         // Act
         navItem = nav.GetItem("Attendance");
@@ -42,15 +42,15 @@ public class PrimarySchoolNavigationTests(WebApplicationSetupFixture fixture) : 
 
         // Assert
         title = await Page.TitleAsync();
-        Assert.Contains(SecondarySchoolPageTitles.Attendance, title);
+        Assert.Contains(PrimarySchoolPageTitles.Attendance, title);
 
         // Act
-        navItem = nav.GetItem("Academic performance");
+        navItem = nav.GetItem("Primary academic performance");
         await navItem.ClickAsync();
 
         // Assert
         title = await Page.TitleAsync();
-        Assert.Contains(SecondarySchoolPageTitles.ProgressAndAttainment, title);
+        Assert.Contains(PrimarySchoolPageTitles.ProgressAndAttainment, title);
 
         // Act
         navItem = nav.GetItem("Destinations");
@@ -64,8 +64,9 @@ public class PrimarySchoolNavigationTests(WebApplicationSetupFixture fixture) : 
     [Fact]
     public async Task AcademicPerformanceAttainmentAndProgressPage_Displays_Sub_Navigation()
     {
+        throw new NotImplementedException("This test is not implemented yet.");
         // Act
-        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+        await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
 
         var nav = new VerticalNavigationHelper(Page);
         var navItem = nav.GetItem("Academic performance");
@@ -103,8 +104,9 @@ public class PrimarySchoolNavigationTests(WebApplicationSetupFixture fixture) : 
     [Fact]
     public async Task NavigateThroughPaginationNav_ShowsExpectedPages()
     {
+        throw new NotImplementedException("This test is not implemented yet.");
         // Act
-        var response = await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+        var response = await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
         var nav = new PaginationNavigationHelper(Page);
 
         // Assert
@@ -167,28 +169,6 @@ public class PrimarySchoolNavigationTests(WebApplicationSetupFixture fixture) : 
         // Assert
         title = await Page.TitleAsync();
         Assert.Contains("Destinations", title);
-    }
-
-    [Fact]
-    public async Task NavigateThroughPaginationNav_SchoolIsKS4AndKS5_ShowsExpectedPages()
-    {
-        // Act - navigate to last tab for Academic performance
-        var response = await Page.GotoAsync(_schoolUrnToUrlMap["149328"]);
-
-        var sideNav = new VerticalNavigationHelper(Page);
-        var sideNavItem = sideNav.GetItem("Secondary academic performance");
-        await sideNavItem.ClickAsync();
-
-        await ClickAcademicPerformanceNavItemAsync(Page, "Additional measures");
-
-        // Act
-        var bottomPaginationNav = new PaginationNavigationHelper(Page);
-        await bottomPaginationNav.ClickNextLinkAsync();
-
-        // Assert
-        var title = await Page.TitleAsync();
-        Assert.Contains("16 to 19", title);
-        Assert.Contains("Advanced level", title);
     }
 
     private static Task ClickAcademicPerformanceNavItemAsync(

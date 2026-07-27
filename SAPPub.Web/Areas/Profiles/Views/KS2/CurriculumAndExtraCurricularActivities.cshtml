@@ -1,0 +1,49 @@
+﻿@model CurriculumAndExtraCurricularActivitiesViewModel;
+@using SAPPub.Web.Areas.Profiles.ViewModels.KS2
+@using SAPPub.Web.Constants
+@using SAPPub.Web.ViewComponents.VerticalNavigation
+
+@{
+    ViewData["Header"] = "Curriculum and extra-curricular activities";
+    ViewData["SubHeader"] = PageTitleConstants.PrimarySchoolPageTitles.Curriculum;
+    ViewData["Title"] = $"{Model.SchoolName} - {ViewData["SubHeader"]}";
+}
+
+<div class="govuk-grid-row">
+    @await Component.InvokeAsync("VerticalNavigation",
+    new VerticalNavigationModel
+    {
+        URN = Model.URN,
+        SchoolName = Model.SchoolName,
+        ActivePage = RouteConstants.PrimaryCurriculum,
+        IsKS2 = Model.IsKS2,
+        IsKS4 = Model.IsKS4,
+        IsKS5 = Model.IsKS5
+    })
+
+    <div class="govuk-grid-column-three-quarters">
+        <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
+        <h1 class="govuk-heading-xl">@ViewData["Header"]</h1>
+
+        <h2 class="govuk-heading-l">Curriculum</h2>
+
+        <govuk-pagination id="current-extra-curricular-activities-pagination">
+            @if (Model.IsKS4)
+            {
+                <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAdmissions" asp-all-route-data="@Model.RouteAttributes">Secondary admissions</govuk-pagination-previous>
+            }
+            else
+            {
+                <govuk-pagination-previous asp-route="@RouteConstants.PrimaryAdmissions" asp-all-route-data="@Model.RouteAttributes">Primary admissions</govuk-pagination-previous>
+            }
+            @if (Model.IsKS4)
+            {
+                <govuk-pagination-next asp-route="@RouteConstants.SecondaryCurriculumAndExtraCurricularActivities" asp-all-route-data="@Model.RouteAttributes">Secondary curriculum</govuk-pagination-next>
+            }
+            else
+            {
+                <govuk-pagination-next asp-route="@RouteConstants.Attendance" asp-all-route-data="@Model.RouteAttributes">Attendance</govuk-pagination-next>
+            }
+        </govuk-pagination>
+    </div>
+</div>

@@ -2,13 +2,20 @@
 
 public static class RouteConstants
 {
-    // Shared 
+    // Shared
+    public const string AboutTheSchool = "AboutTheSchool";
     public const string DestinationsRoot = "DestinationsRoot";
-    
+    public const string Attendance = "Attendance";
+
+    // Primary School
+    public const string PrimaryAdmissions = "PrimaryAdmissions";
+    public const string PrimaryCurriculum = "PrimaryCurriculum";
+    public const string PrimaryAcademicPerformanceAttainmentAndProgress = "PrimaryAcademicPerformanceAttainmentAndProgress";
+    public const string PrimaryAcademicPerformancePupilProgress = "PrimaryAcademicPerformancePupilProgress";
+    public const string PrimaryAcademicPerformanceAdditionalMeasures = "PrimaryAdditionalMeasures";
+
     // Secondary School
-    public const string SecondaryAboutSchool = "SecondaryAboutSchool";
     public const string SecondaryAdmissions = "SecondaryAdmissions";
-    public const string SecondaryAttendance = "SecondaryAttendance";
     public const string SecondaryCurriculumAndExtraCurricularActivities = "SecondaryCurriculumAndExtraCurricularActivities";
     public const string SecondaryAcademicPerformanceAttainmentAndProgress = "SecondaryAcademicPerformanceAttainmentAndProgress";
     public const string SecondaryAcademicPerformanceEnglishAndMathsResults = "SecondaryAcademicPerformanceEnglishAndMathsResults";

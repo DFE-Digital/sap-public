@@ -2,6 +2,17 @@
 
 public class PageTitleConstants
 {
+    public static class PrimarySchoolPageTitles
+    {
+        public const string AboutYourSchools = "About your schools";
+        public const string ProgressAndAttainment = "Progress and attainment";
+        public const string PupilProgress = "Pupil progress";
+        public const string AdditionalMeasures = "Additional measures";
+        public const string Admissions = "Primary Admissions";
+        public const string Attendance = "Primary Attendance";
+        public const string Curriculum = "Primary Curriculum";
+    }
+
     public static class SecondarySchoolPageTitles
     {
         public const string AboutYourSchools = "About your schools";
