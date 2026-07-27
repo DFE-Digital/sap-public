@@ -58,19 +58,15 @@ public class KS4Controller(IEstablishmentService establishmentService) : Control
         string selectedAcademicYearName,
         CancellationToken ct = default)
     {
-        try
-        {
-            var selectedAcademicYear = AcademicYearSelectionExtensions.FromRouteSegment(selectedAcademicYearName);
-
-            var results = await attainmentAndProgressService.GetAttainmentAndProgressAsync(urn, selectedAcademicYear, ct);
-
-            var model = AcademicPerformanceAttainmentAndProgressViewModel.Map(results, selectedAcademicYear);
-            return View(model);
-        }
-        catch (ArgumentException)
+        var selectedAcademicYear = AcademicYearSelectionExtensions.FromRouteSegment(selectedAcademicYearName);
+        if (!selectedAcademicYear.HasValue)
         {
             return NotFound();
         }
+        var results = await attainmentAndProgressService.GetAttainmentAndProgressAsync(urn, selectedAcademicYear!.Value, ct);
+
+        var model = AcademicPerformanceAttainmentAndProgressViewModel.Map(results, selectedAcademicYear!.Value);
+        return View(model);
     }
 
     [HttpGet]
@@ -82,15 +78,9 @@ public class KS4Controller(IEstablishmentService establishmentService) : Control
         GcseGradeDataSelection SelectedGrade = GcseGradeDataSelection.Grade5AndAbove,
         CancellationToken ct = default)
     {
-        try
-        {
-            var gradeName = SelectedGrade.ToRouteSegment();
-            return RedirectToAction(nameof(AcademicPerformanceEnglishAndMathsResults), new { urn, schoolName, gradeName });
-        }
-        catch (ArgumentException)
-        {
-            return NotFound();
-        }
+        var gradeName = SelectedGrade.ToRouteSegment();
+
+        return RedirectToAction(nameof(AcademicPerformanceEnglishAndMathsResults), new { urn, schoolName, gradeName });
     }
 
     [HttpGet]
@@ -102,18 +92,15 @@ public class KS4Controller(IEstablishmentService establishmentService) : Control
         string gradeName,
         CancellationToken ct = default)
     {
-        try
-        {
-            var grade = GcseGradeSelectionExtensions.FromRouteSegment(gradeName);
-            var results = await academicPerformanceEnglishAndMathsResultsService.GetEnglishAndMathsResultsAsync(urn, grade.ToGradeValue(), ct);
-
-            var model = AcademicPerformanceEnglishAndMathsResultsViewModel.Map(results, grade);
-            return View(model);
-        }
-        catch (ArgumentException)
+        var grade = GcseGradeSelectionExtensions.FromRouteSegment(gradeName);
+        if (!grade.HasValue)
         {
             return NotFound();
         }
+        var results = await academicPerformanceEnglishAndMathsResultsService.GetEnglishAndMathsResultsAsync(urn, grade!.Value.ToGradeValue(), ct);
+
+        var model = AcademicPerformanceEnglishAndMathsResultsViewModel.Map(results, grade!.Value);
+        return View(model);
     }
 
     [HttpGet]
