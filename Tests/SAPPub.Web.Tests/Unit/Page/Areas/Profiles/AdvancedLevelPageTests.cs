@@ -41,7 +41,7 @@ public class AdvancedLevelPageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task AdvancedLevelPage_Tlevel_HasCorrectTitle()
+    public async Task AdvancedLevelPage_Alevel_HasCorrectTitle()
     {
         // Arrange
         var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
@@ -59,7 +59,7 @@ public class AdvancedLevelPageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task AdvancedLevelPage_Tlevel_DisplaysMainHeading()
+    public async Task AdvancedLevelPage_Alevel_DisplaysMainHeading()
     {
         var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
         var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
@@ -74,7 +74,7 @@ public class AdvancedLevelPageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task AdvancedLevelPage_Tlevel_DisplaysHeading()
+    public async Task AdvancedLevelPage_Alevel_DisplaysHeading()
     {
         var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
         var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
@@ -89,7 +89,7 @@ public class AdvancedLevelPageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task AdvancedLevelPage_Tlevel_Displays_VerticalNavigation()
+    public async Task AdvancedLevelPage_Alevel_Displays_VerticalNavigation()
     {
         var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
         var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
@@ -120,7 +120,7 @@ public class AdvancedLevelPageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task AdvancedLevelPage_Tlevel_DisplaysProgressScoreHeading()
+    public async Task AdvancedLevelPage_Alevel_DisplaysProgressScoreHeading()
     {
         var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
         var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
@@ -135,7 +135,7 @@ public class AdvancedLevelPageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task AdvancedLevelPage_Tlevel_DisplaysTechnicalGuidanceLink()
+    public async Task AdvancedLevelPage_Alevel_DisplaysTechnicalGuidanceLink()
     {
         var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
         var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
@@ -150,7 +150,7 @@ public class AdvancedLevelPageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task AdvancedLevelPage_Tlevel_Displays_ProgressScore()
+    public async Task AdvancedLevelPage_Alevel_Displays_ProgressScore()
     {
         var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
         var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
@@ -187,7 +187,7 @@ public class AdvancedLevelPageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task AdvancedLevelPage_Tlevel_Displays_AverageResult()
+    public async Task AdvancedLevelPage_Alevel_Displays_AverageResult()
     {
         var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
         var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
