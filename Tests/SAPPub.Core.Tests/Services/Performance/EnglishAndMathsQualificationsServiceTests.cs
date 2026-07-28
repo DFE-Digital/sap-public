@@ -95,26 +95,26 @@ public class EnglishAndMathsQualificationsServiceTests
         establishmentPerformance = new EstablishmentKs5Performance
         {
             Id = fakeEstablishment.URN,
-            T_SCOPEEX_E_Est_Current_Num = 10.10,
-            PROGEX_E_Est_Current_Num = 20.20,
-            T_SCOPEEX_M_Est_Current_Num = 30.30,
-            PROGEX_M_Est_Current_Num = 40.40,
-            ENTRY_PER_E_Est_Current_Pct = 50.50,
-            ENTRY_PER_M_Est_Current_Pct = 60.60
+            T_SCOPEEX_E_Est_Current_Num_Coded = new ValueObjects.CodedDouble { Value = 10.10, Reason = string.Empty, Raw = "10.1011" },
+            PROGEX_E_Est_Current_Num_Coded = new ValueObjects.CodedDouble { Value = 20.20, Reason = string.Empty, Raw = "20.20" },
+            T_SCOPEEX_M_Est_Current_Num_Coded = new ValueObjects.CodedDouble { Value = 30.30, Reason = string.Empty, Raw = "30.30" },
+            PROGEX_M_Est_Current_Num_Coded = new ValueObjects.CodedDouble { Value = 40.40, Reason = string.Empty, Raw = "40.40" },
+            ENTRY_PER_E_Est_Current_Pct_Coded = new ValueObjects.CodedDouble { Value = 50.50, Reason = string.Empty, Raw = "50.50" },
+            ENTRY_PER_M_Est_Current_Pct_Coded = new ValueObjects.CodedDouble { Value = 60.60, Reason = string.Empty, Raw = "14.60.60" },
         };
         englandPerformance = new EnglandKs5Performance
         {
             Id = fakeEstablishment.LAId,
-            PROGEX_E_Eng_Current_Num = 11.11,
-            PROGEX_M_Eng_Current_Num = 12.12,
-            ENTRY_PER_E_Eng_Current_Pct = 13.13,
-            ENTRY_PER_M_Eng_Current_Pct = 14.14
+            PROGEX_E_Eng_Current_Num_Coded = new ValueObjects.CodedDouble { Value = 11.11, Reason = string.Empty, Raw = "11.11" },
+            PROGEX_M_Eng_Current_Num_Coded = new ValueObjects.CodedDouble { Value = 12.12, Reason = string.Empty, Raw = "12.12" },
+            ENTRY_PER_E_Eng_Current_Pct_Coded = new ValueObjects.CodedDouble { Value = 13.13, Reason = string.Empty, Raw = "13.13" },
+            ENTRY_PER_M_Eng_Current_Pct_Coded = new ValueObjects.CodedDouble { Value = 14.14, Reason = string.Empty, Raw = "14.14" },
         };
         laPerformance = new LAKs5Performance
         {
             Id = fakeEstablishment.LAId,
-            PROGEX_E_LA_Current_Num = 15.15,
-            PROGEX_M_LA_Current_Num = 16.16
+            PROGEX_E_LA_Current_Num_Coded = new ValueObjects.CodedDouble { Value = 15.15, Reason = string.Empty, Raw = "15.15" },
+            PROGEX_M_LA_Current_Num_Coded = new ValueObjects.CodedDouble { Value = 16.16, Reason = string.Empty, Raw = "16.16" },
         };
         _mockKs5PerformanceRepository
             .Setup(r => r.GetEstablishmentPerformanceAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>()))
