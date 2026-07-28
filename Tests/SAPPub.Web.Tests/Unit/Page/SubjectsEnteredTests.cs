@@ -1,8 +1,8 @@
 ﻿using Moq;
 using SAPPub.Core.Interfaces.Services;
-using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
+using SAPPub.Core.Interfaces.Services.SubjectEntries;
 using SAPPub.Core.ServiceModels;
-using SAPPub.Core.ServiceModels.KS4.Performance;
+using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
 
@@ -14,13 +14,13 @@ public class SubjectsEnteredTests : PageTestsBase
     private static string _urn = "143034";
     private static string _establishmentName = "Loreto High School Chorlton";
     private static string _pageRoute = "/secondary/academic-performance-subjects-entered";
-    private readonly Mock<IEstablishmentSubjectEntriesService> _mockEstablishmentSubjectEntriesService;
+    private readonly Mock<IKs4EstablishmentSubjectEntriesService> _mockEstablishmentSubjectEntriesService;
     private readonly Mock<IEstablishmentService> _mockEstablishmentService;
     private EstablishmentServiceModel _establishment; 
 
     public SubjectsEnteredTests(WebAppFixture fixture) : base(fixture)
     {
-        _mockEstablishmentSubjectEntriesService = UseMock<IEstablishmentSubjectEntriesService>();
+        _mockEstablishmentSubjectEntriesService = UseMock<IKs4EstablishmentSubjectEntriesService>();
         _mockEstablishmentService = UseMock<IEstablishmentService>();
         _establishment = new EstablishmentTestBuilder()
             .WithURN(_urn)

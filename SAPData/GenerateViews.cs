@@ -46,7 +46,7 @@ public sealed class GenerateViews
         new("v_establishment_ks2_attainment", "Establishment", "KS2_Attainment"),
         new("v_establishment_performance", "Establishment", "KS4_Performance"), //Todo - Rename to KS4
         new("v_establishment_ks5_performance", "Establishment", "KS5_Performance"),
-
+        new("v_establishment_ks5_subject_entries", "Establishment", "KS5_Performance"),
 
 
         new("v_england_destinations", "England", "KS4_Destinations"),

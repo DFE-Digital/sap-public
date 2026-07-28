@@ -1,4 +1,4 @@
-﻿namespace SAPPub.Core.ServiceModels.KS4.Performance;
+﻿namespace SAPPub.Core.ServiceModels.Performance;
 
 public class SubjectsEntered
 {

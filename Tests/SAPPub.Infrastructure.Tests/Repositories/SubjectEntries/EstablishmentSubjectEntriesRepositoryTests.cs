@@ -1,17 +1,17 @@
 ﻿using Moq;
-using SAPPub.Core.Entities.KS4.SubjectEntries;
+using SAPPub.Core.Entities.SubjectEntries;
 using SAPPub.Core.Interfaces.Repositories.Generic;
-using SAPPub.Infrastructure.Repositories.KS4.SubjectEntries;
+using SAPPub.Infrastructure.Repositories.SubjectEntries;
 
 namespace SAPPub.Infrastructure.Tests.Repositories.SubjectEntries;
 public class EstablishmentSubjectEntriesRepositoryTests
 {
-    private readonly Mock<IGenericRepository<EstablishmentSubjectEntryRow>> _repo = new();
-    private readonly EstablishmentSubjectEntriesRepository _sut;
+    private readonly Mock<IGenericRepository<EstablishmentKS4SubjectEntryRow>> _repo = new();
+    private readonly Ks4EstablishmentSubjectEntriesRepository _sut;
 
     public EstablishmentSubjectEntriesRepositoryTests()
     {
-        _sut = new EstablishmentSubjectEntriesRepository(_repo.Object);
+        _sut = new Ks4EstablishmentSubjectEntriesRepository(_repo.Object);
     }
 
     [Fact]
@@ -29,7 +29,7 @@ public class EstablishmentSubjectEntriesRepositoryTests
     {
         _repo
             .Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<EstablishmentSubjectEntryRow>());
+            .ReturnsAsync(new List<EstablishmentKS4SubjectEntryRow>());
 
         var result = await _sut.GetVocationalAwardSubjectEntriesByUrnAsync("123", CancellationToken.None);
 
@@ -41,7 +41,7 @@ public class EstablishmentSubjectEntriesRepositoryTests
     {
         _repo
             .Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<EstablishmentSubjectEntryRow>());
+            .ReturnsAsync(new List<EstablishmentKS4SubjectEntryRow>());
 
         var result = await _sut.GetOtherSubjectEntriesByUrnAsync("123", CancellationToken.None);
 
@@ -53,7 +53,7 @@ public class EstablishmentSubjectEntriesRepositoryTests
     {
         _repo
             .Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<EstablishmentSubjectEntryRow>
+            .ReturnsAsync(new List<EstablishmentKS4SubjectEntryRow>
             {
                 new() { subject_discount_group = "Mathematics", qualification_type = "GCSE", grade = "Total exam entries", number_achieving = 10 },
                 new() { subject_discount_group = "Mathematics", qualification_type = "GCSE", grade = "9", number_achieving = 1 }
@@ -70,7 +70,7 @@ public class EstablishmentSubjectEntriesRepositoryTests
     {
         _repo
             .Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<EstablishmentSubjectEntryRow>
+            .ReturnsAsync(new List<EstablishmentKS4SubjectEntryRow>
             {
                 new() { subject_discount_group = "Sports Studies", qualification_type = "Vocational", grade = "Total exam entries", number_achieving = 10 },
                 new() { subject_discount_group = "Sports Studies", qualification_type = "Vocational", grade = "9", number_achieving = 1 }
@@ -87,7 +87,7 @@ public class EstablishmentSubjectEntriesRepositoryTests
     {
         _repo
             .Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<EstablishmentSubjectEntryRow>
+            .ReturnsAsync(new List<EstablishmentKS4SubjectEntryRow>
             {
                 new() { subject_discount_group = "Music Performance: Group", qualification_type = "Grade 6 Music or Dance", grade = "Total exam entries", number_achieving = 10 },
                 new() { subject_discount_group = "Music Performance: Group", qualification_type = "Grade 6 Music or Dance", grade = "9", number_achieving = 1 }
@@ -150,7 +150,7 @@ public class EstablishmentSubjectEntriesRepositoryTests
     {
         _repo
             .Setup(r => r.ReadManyAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<EstablishmentSubjectEntryRow>
+            .ReturnsAsync(new List<EstablishmentKS4SubjectEntryRow>
             {
                 new() { pupil_count = 100, subject = "Mathematics", subject_discount_group = "Additional Maths (Core)", qualification_type = "GCSE", grade = "Total exam entries", number_achieving = 10 },
             });

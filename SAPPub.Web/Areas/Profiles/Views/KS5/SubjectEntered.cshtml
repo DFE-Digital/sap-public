@@ -1,6 +1,6 @@
 ﻿@using SAPPub.Web.Constants
 @using SAPPub.Web.ViewComponents.VerticalNavigation
-@model SAPPub.Web.Areas.Profiles.ViewModels.KS5.KS5ViewModel
+@model SAPPub.Web.Areas.Profiles.ViewModels.KS5.Ks5SubjectEnteredViewModel
 
 
 @{
@@ -49,6 +49,26 @@
             MORE TEXT
         </p>
 
+        <table class="govuk-table">
+            <caption class="govuk-table__caption govuk-table__caption--m">@ViewData["Caption"]</caption>
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-third">Subject</th>
+                    <th scope="col" class="govuk-table__header">Qualification</th>
+                    <th scope="col" class="govuk-table__header">Total number of entries</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                @foreach (var subject in Model.Subjects)
+                {
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">@subject.Subject</td>
+                        <td class="govuk-table__cell">@subject.Qualification</td>
+                        <td class="govuk-table__cell">@subject.NumberOfEntries</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
 
         <govuk-pagination id="academic-performance-level-2-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.KS5AcademicPerformanceEnglishMaths" asp-all-route-data="@Model.RouteAttributes">Academic performance: English and maths</govuk-pagination-previous>

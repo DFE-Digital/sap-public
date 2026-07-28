@@ -1,25 +1,25 @@
 ﻿using Moq;
-using SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
-using SAPPub.Core.ServiceModels.KS4.Performance;
-using SAPPub.Core.Services.KS4.SubjectEntries;
+using SAPPub.Core.Interfaces.Repositories.SubjectEntries;
+using SAPPub.Core.ServiceModels.Performance;
+using SAPPub.Core.Services.SubjectEntries;
 using System.Diagnostics;
 
 namespace SAPPub.Core.Tests.Services.KS4.SubjectEntries;
 
 public class EstablishmentSubjectEntriesServiceTests
 {
-    private readonly Mock<IEstablishmentSubjectEntriesRepository> _repo = new();
-    private readonly EstablishmentSubjectEntriesService _service;
+    private readonly Mock<IKs4EstablishmentSubjectEntriesRepository> _repo = new();
+    private readonly Ks4EstablishmentSubjectEntriesService _service;
 
     public EstablishmentSubjectEntriesServiceTests()
     {
-        _service = new EstablishmentSubjectEntriesService(_repo.Object);
+        _service = new Ks4EstablishmentSubjectEntriesService(_repo.Object);
     }
 
     [Fact]
     public async Task Constructor_throws_when_repository_is_null()
     {
-        Assert.Throws<ArgumentNullException>(() => new EstablishmentSubjectEntriesService(null!));
+        Assert.Throws<ArgumentNullException>(() => new Ks4EstablishmentSubjectEntriesService(null!));
     }
 
     [Theory]

@@ -3,6 +3,7 @@ using Microsoft.FeatureManagement.Mvc;
 using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.Performance;
+using SAPPub.Core.Interfaces.Services.SubjectEntries;
 using SAPPub.Web.Areas.Profiles.ViewModels.KS5;
 using SAPPub.Web.Constants;
 
@@ -121,8 +122,11 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
         }
 
         [Route("school/{urn}/{schoolName}/16-to-19-performance/subject-entered", Name = RouteConstants.KS5AcademicPerformanceSubjectsEntered)]
-        public async Task<IActionResult> SubjectEntered([FromServices] IAboutSchoolService aboutSchoolService, 
-            string urn, string schoolName,
+        public async Task<IActionResult> SubjectEntered(
+            [FromServices] IAboutSchoolService aboutSchoolService,
+            [FromServices] IKs5EstablishmentSubjectEntriesService establishmentSubjectEntriesService,
+            string urn, 
+            string schoolName,
             CancellationToken ct)
         {
             var schoolDetails = await aboutSchoolService.GetAboutSchoolDetailsAsync(urn, ct);
@@ -139,7 +143,9 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
                 return View("Error");
             }
 
-            var ks5Model = KS5ViewModel.Map(schoolDetails);
+            var subjectEntries = await establishmentSubjectEntriesService.GetSubjectEntriesByUrnAsync(urn, ct);
+
+            var ks5Model = Ks5SubjectEnteredViewModel.Map(schoolDetails, subjectEntries);
             return View(ks5Model);
         }
     }

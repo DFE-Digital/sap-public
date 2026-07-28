@@ -12,12 +12,13 @@ using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.Interfaces.Services.KS4.Attendance;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
-using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
+using SAPPub.Core.Interfaces.Services.SubjectEntries;
 using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels.KS4.Admissions;
 using SAPPub.Core.ServiceModels.KS4.Attendance;
 using SAPPub.Core.ServiceModels.KS4.Performance;
+using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Constants;
@@ -32,7 +33,7 @@ public class SecondarySchoolControllerTests
 {
     private readonly Mock<IEstablishmentService> _mockEstablishmentService;
     private readonly Mock<IDestinationsService> _mockDestinationsService;
-    private readonly Mock<IEstablishmentSubjectEntriesService> _mockEstablishmentSubjectEntriesService = new();
+    private readonly Mock<IKs4EstablishmentSubjectEntriesService> _mockEstablishmentSubjectEntriesService = new();
     private readonly Mock<IAcademicPerformanceEnglishAndMathsResultsService> _mockEnglishAndMathsResultsService = new();
     private readonly Mock<IAttainmentAndProgressService> _mockAttainmentAndProgressService = new();
     private readonly Mock<IAdmissionsService> _mockAdmissionsService = new();

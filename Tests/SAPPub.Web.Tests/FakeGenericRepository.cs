@@ -1,7 +1,7 @@
 ﻿using SAPPub.Core.Entities;
 using SAPPub.Core.Entities.Destinations;
 using SAPPub.Core.Entities.KS4.Performance;
-using SAPPub.Core.Entities.KS4.SubjectEntries;
+using SAPPub.Core.Entities.SubjectEntries;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using System.Collections;
 using System.Reflection;
@@ -477,7 +477,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             return Task.FromResult(EstablishmentPerformances.Values.Where(e => ids.Contains(e.Id)).Select(e => (T)(object)e));
         }
 
-        if (typeof(T) == typeof(EstablishmentSubjectEntryRow))
+        if (typeof(T) == typeof(EstablishmentKS4SubjectEntryRow))
         {
             var urn = GetPropertyString(parameters, "Urn");
             if (string.IsNullOrWhiteSpace(urn))
@@ -486,7 +486,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             // Must be consistent and >0 or your aggregation returns empty
             var cohort = 100;
 
-            var rows = new List<EstablishmentSubjectEntryRow>
+            var rows = new List<EstablishmentKS4SubjectEntryRow>
         {
             // Core
             MakeRow(urn, cohort, "English Language", "GCSE", 30),
@@ -516,7 +516,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
         return Task.FromResult(Enumerable.Empty<T>());
     }
 
-    private static EstablishmentSubjectEntryRow MakeRow(string urn, int cohort, string subject, string qual, int count)
+    private static EstablishmentKS4SubjectEntryRow MakeRow(string urn, int cohort, string subject, string qual, int count)
         => new()
         {
             school_urn = urn,

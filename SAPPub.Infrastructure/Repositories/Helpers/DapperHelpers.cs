@@ -3,8 +3,8 @@ using SAPPub.Core.Entities.Destinations;
 using SAPPub.Core.Entities.Gateway;
 using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Entities.KS4.Performance;
-using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Entities.Performance;
+using SAPPub.Core.Entities.SubjectEntries;
 
 namespace SAPPub.Infrastructure.Repositories.Helpers
 {
@@ -200,6 +200,15 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           qualification_detailed,
           grade,
           number_achieving
+          """;
+
+        private const string EstablishmentKs5SubjectEntriesColumns = """
+          "subject",
+          "qualification_detailed",
+          "qualification_level",
+          "entries_count",
+          "exam_cohort",
+          "grade"
           """;
 
         private const string EnglandAbsenceColumns = """
@@ -525,11 +534,18 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                 nameof(EstablishmentPerformance) =>
                     SelectFromWhereIds(EstablishmentPerformanceColumns, "v_establishment_performance"),
 
-                nameof(EstablishmentSubjectEntryRow) => $"""
+                nameof(EstablishmentKS4SubjectEntryRow) => $"""
                     select
                       {EstablishmentSubjectEntriesColumns}
                     from public.v_establishment_subject_entries
                     where school_urn = @Urn;
+                    """,
+
+                nameof(EstablishmentKs5SubjectEntryRow) => $"""
+                    select
+                      {EstablishmentKs5SubjectEntriesColumns}
+                    from public.v_establishment_ks5_subject_entries
+                    where school_urn = @Urn AND Grade='Total exam entries' AND Subject!='All subjects';
                     """,
 
                 nameof(KS4EstablishmentDestinations) =>

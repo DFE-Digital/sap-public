@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace SAPPub.Core.Entities.KS4.SubjectEntries
+namespace SAPPub.Core.Entities.SubjectEntries
 {
     [ExcludeFromCodeCoverage]
-    public sealed class EstablishmentSubjectEntryRow
+    public sealed class EstablishmentKS4SubjectEntryRow
     {
         public string? school_urn { get; set; }
         public int? pupil_count { get; set; }

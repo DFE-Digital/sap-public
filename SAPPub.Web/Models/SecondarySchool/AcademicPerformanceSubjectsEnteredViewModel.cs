@@ -1,5 +1,5 @@
 ﻿using SAPPub.Core.ServiceModels;
-using SAPPub.Core.ServiceModels.KS4.Performance;
+using SAPPub.Core.ServiceModels.Performance;
 
 namespace SAPPub.Web.Models.SecondarySchool;
 

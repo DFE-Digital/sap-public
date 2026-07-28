@@ -5,8 +5,8 @@ using SAPPub.Core.Interfaces.Repositories.Gateway;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Repositories.KS4.Absence;
 using SAPPub.Core.Interfaces.Repositories.KS4.Performance;
-using SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Repositories.Performance;
+using SAPPub.Core.Interfaces.Repositories.SubjectEntries;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Gateway;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
@@ -15,9 +15,9 @@ using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.Interfaces.Services.KS4.Attendance;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
-using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.Interfaces.Services.Search;
+using SAPPub.Core.Interfaces.Services.SubjectEntries;
 using SAPPub.Core.Services;
 using SAPPub.Core.Services.Gateway;
 using SAPPub.Core.Services.KS4.AboutSchool;
@@ -26,9 +26,9 @@ using SAPPub.Core.Services.KS4.Admissions;
 using SAPPub.Core.Services.KS4.Attendance;
 using SAPPub.Core.Services.KS4.Destinations;
 using SAPPub.Core.Services.KS4.Performance;
-using SAPPub.Core.Services.KS4.SubjectEntries;
 using SAPPub.Core.Services.Performance;
 using SAPPub.Core.Services.Search;
+using SAPPub.Core.Services.SubjectEntries;
 using SAPPub.Infrastructure.Mapping.ValueCodes;
 using SAPPub.Infrastructure.PostgresSearch;
 using SAPPub.Infrastructure.Repositories;
@@ -37,8 +37,8 @@ using SAPPub.Infrastructure.Repositories.Gateway;
 using SAPPub.Infrastructure.Repositories.Generic;
 using SAPPub.Infrastructure.Repositories.KS4.Absence;
 using SAPPub.Infrastructure.Repositories.KS4.Performance;
-using SAPPub.Infrastructure.Repositories.KS4.SubjectEntries;
 using SAPPub.Infrastructure.Repositories.Performance;
+using SAPPub.Infrastructure.Repositories.SubjectEntries;
 using SAPPub.Web.Areas.Compare.Filters;
 
 namespace SAPPub.Web.Middleware
@@ -78,8 +78,10 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<IEnglandAbsenceRepository, EnglandAbsenceRepository>();
             services.AddTransient<IEnglandAbsenceService, EnglandAbsenceService>();
 
-            services.AddTransient<IEstablishmentSubjectEntriesRepository, EstablishmentSubjectEntriesRepository>();
-            services.AddTransient<IEstablishmentSubjectEntriesService, EstablishmentSubjectEntriesService>();
+            services.AddTransient<IKs4EstablishmentSubjectEntriesRepository, Ks4EstablishmentSubjectEntriesRepository>();
+            services.AddTransient<IKs4EstablishmentSubjectEntriesService, Ks4EstablishmentSubjectEntriesService>();
+            services.AddTransient<IKs5EstablishmentSubjectEntriesRepository, Ks5EstablishmentSubjectEntriesRepository>();
+            services.AddTransient<IKs5EstablishmentSubjectEntriesService, Ks5EstablishmentSubjectEntriesService>();
 
             services.AddTransient<IAcademicPerformanceEnglishAndMathsResultsService, EnglishAndMathsResultsService>();
             services.AddTransient<IAttainmentAndProgressService, AttainmentAndProgressService>();
