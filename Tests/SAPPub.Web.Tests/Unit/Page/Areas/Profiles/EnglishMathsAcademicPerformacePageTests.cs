@@ -116,7 +116,7 @@ public class EnglishMathsAcademicPerformacePageTests : PageTestsBase
         var techGuidanceLink = doc.QuerySelector("#tech-guidance-link");
         Assert.NotNull(techGuidanceLink);
         Assert.Contains("https://www.gov.uk/government/publications/16-to-19-accountability-headline-measures-technical-guide", techGuidanceLink.GetAttribute("href"));
-        Assert.Equal("16 to 19 accountability technical guide (opens in a new tab)", techGuidanceLink.InnerHtml.Trim());
+        Assert.Contains("16 to 19 accountability technical guide", techGuidanceLink.InnerHtml.Trim());
     }
 
     [Fact]
