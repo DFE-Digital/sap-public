@@ -42,7 +42,7 @@ public class PrimarySchoolNavigationTests(WebApplicationSetupFixture fixture) : 
 
         // Assert
         title = await Page.TitleAsync();
-        Assert.Contains(SecondarySchoolPageTitles.Attendance, title);
+        Assert.Contains(PageTitles.Attendance, title);
 
         // Act
         navItem = nav.GetItem("Academic performance");

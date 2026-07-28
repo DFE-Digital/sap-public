@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services;
-using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
 using SAPPub.Web.Areas.Profiles.Helpers;
@@ -13,27 +12,27 @@ namespace SAPPub.Web.Areas.Profiles.Controllers;
 [Area("Profiles")]
 public class KS4Controller(IEstablishmentService establishmentService) : Controller
 {
-    [HttpGet]
-    [Route("school/{urn}/{schoolName}/admissions/secondary", Name = RouteConstants.SecondaryAdmissions)]
-    public async Task<IActionResult> Admissions(
-        [FromServices] IAdmissionsService admissionsService,
-        string urn,
-        string schoolName,
-        CancellationToken ct)
-    {
-        var admissionsDetails = await admissionsService.GetAdmissionsDetailsAsync(urn, ct);
-        var model = AdmissionsViewModel.MapFrom(admissionsDetails, urn);
-        return View(model);
-    }
+    //[HttpGet]
+    //[Route("school/{urn}/{schoolName}/admissions/secondary", Name = RouteConstants.SecondaryAdmissions)]
+    //public async Task<IActionResult> Admissions(
+    //    [FromServices] IAdmissionsService admissionsService,
+    //    string urn,
+    //    string schoolName,
+    //    CancellationToken ct)
+    //{
+    //    var admissionsDetails = await admissionsService.GetAdmissionsDetailsAsync(urn, ct);
+    //    var model = AdmissionsViewModel.MapFrom(admissionsDetails, urn);
+    //    return View(model);
+    //}
 
-    [HttpGet]
-    [Route("school/{urn}/{schoolName}/curriculum/secondary", Name = RouteConstants.SecondaryCurriculumAndExtraCurricularActivities)]
-    public async Task<IActionResult> CurriculumAndExtraCurricularActivities(string urn, string schoolName, CancellationToken ct)
-    {
-        var establishmentDetails = await establishmentService.GetEstablishmentAsync(urn, ct);
-        var model = CurriculumAndExtraCurricularActivitiesViewModel.Map(establishmentDetails);
-        return View(model);
-    }
+    //[HttpGet]
+    //[Route("school/{urn}/{schoolName}/curriculum/secondary", Name = RouteConstants.SecondaryCurriculumAndExtraCurricularActivities)]
+    //public async Task<IActionResult> CurriculumAndExtraCurricularActivities(string urn, string schoolName, CancellationToken ct)
+    //{
+    //    var establishmentDetails = await establishmentService.GetEstablishmentAsync(urn, ct);
+    //    var model = CurriculumAndExtraCurricularActivitiesViewModel.Map(establishmentDetails);
+    //    return View(model);
+    //}
 
     [HttpGet]
     [Route("school/{urn}/{schoolName}/secondary-performance/progress-attainment", Name = RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress)]

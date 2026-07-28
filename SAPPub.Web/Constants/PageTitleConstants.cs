@@ -2,20 +2,23 @@
 
 public class PageTitleConstants
 {
-    public static class PrimarySchoolPageTitles
+    public static class PageTitles
     {
         public const string AboutYourSchools = "About your schools";
+        public const string Attendance = "Attendance";
+    }
+
+    public static class PrimarySchoolPageTitles
+    {
         public const string ProgressAndAttainment = "Progress and attainment";
         public const string PupilProgress = "Pupil progress";
         public const string AdditionalMeasures = "Additional measures";
         public const string Admissions = "Primary Admissions";
-        public const string Attendance = "Primary Attendance";
         public const string Curriculum = "Primary Curriculum";
     }
 
     public static class SecondarySchoolPageTitles
     {
-        public const string AboutYourSchools = "About your schools";
         public const string EnglishAndMathsResults = "English and maths results";
         public const string ProgressAndAttainment = "Progress and attainment";
         public const string PupilAttainment = "Pupil attainment";
@@ -24,7 +27,6 @@ public class PageTitleConstants
         public const string Destinations = "Destinations after year 11";
         public const string Curriculum = "Secondary Curriculum";
         public const string Admissions = "Secondary Admissions";
-        public const string Attendance = "Secondary Attendance";
     }
 
     public static class CompareSecondarySchoolPageTitles

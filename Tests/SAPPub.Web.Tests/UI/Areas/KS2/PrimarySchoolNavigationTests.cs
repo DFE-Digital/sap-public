@@ -24,7 +24,7 @@ public class PrimarySchoolNavigationTests(WebApplicationSetupFixture fixture) : 
         var navItem = nav.GetItem("Admissions");
         await navItem.ClickAsync();
 
-        // Assert
+        //// Assert
         var title = await Page.TitleAsync();
         Assert.Contains(PrimarySchoolPageTitles.Admissions, title);
 
@@ -42,7 +42,7 @@ public class PrimarySchoolNavigationTests(WebApplicationSetupFixture fixture) : 
 
         // Assert
         title = await Page.TitleAsync();
-        Assert.Contains(PrimarySchoolPageTitles.Attendance, title);
+        Assert.Contains(PageTitles.Attendance, title);
 
         // Act
         navItem = nav.GetItem("Primary academic performance");

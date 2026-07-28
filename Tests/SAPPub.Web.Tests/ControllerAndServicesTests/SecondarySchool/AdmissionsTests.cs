@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Repositories;
@@ -19,10 +20,11 @@ public class AdmissionsTests
 {
     private readonly Mock<ILAService> _mockLaService = new();
     private readonly Mock<IEstablishmentRepository> _mockEstablishmentRepository = new();
+    private readonly Mock<ILogger<AdmissionsController>> _mockLogger = new();
 
     private readonly IEstablishmentService _establishmentService;
     private readonly IAdmissionsService _admissionsService;
-    private readonly KS4Controller _controller;
+    private readonly AdmissionsController _controller;
 
     private readonly Establishment _establishment;
     private readonly EstablishmentServiceModel _establishmentServiceModel;
@@ -38,7 +40,7 @@ public class AdmissionsTests
 
         _establishmentService = new EstablishmentService(_mockEstablishmentRepository.Object);
         _admissionsService = new EstablishmentAdmissionsService(_establishmentService, _mockLaService.Object);
-        _controller = new KS4Controller(_establishmentService);
+        _controller = new AdmissionsController(_mockLogger.Object);
 
         _controller.ControllerContext = new ControllerContext
         {
@@ -103,7 +105,7 @@ public class AdmissionsTests
             });
 
         // Act
-        var result = await _controller.Admissions(_admissionsService, _establishment.URN, _establishment.EstablishmentName, CancellationToken.None) as ViewResult;
+        var result = await _controller.KS4(_admissionsService, _establishment.URN, _establishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
         // Assert
         Assert.NotNull(result);
@@ -138,7 +140,7 @@ public class AdmissionsTests
             });
 
         // Act
-        var result = await _controller.Admissions(_admissionsService, _establishment.URN, _establishment.EstablishmentName, CancellationToken.None) as ViewResult;
+        var result = await _controller.KS4(_admissionsService, _establishment.URN, _establishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
         // Assert
         Assert.NotNull(result);
@@ -160,7 +162,7 @@ public class AdmissionsTests
             .ReturnsAsync(establishment);
 
         // Act
-        var result = await _controller.Admissions(_admissionsService, establishment.URN, establishment.EstablishmentName, CancellationToken.None) as ViewResult;
+        var result = await _controller.KS4(_admissionsService, establishment.URN, establishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
         // Assert
         Assert.NotNull(result);
@@ -184,7 +186,7 @@ public class AdmissionsTests
             .ReturnsAsync((LaUrls?)null);
 
         // Act
-        var result = await _controller.Admissions(_admissionsService, _establishment.URN, _establishment.EstablishmentName, CancellationToken.None) as ViewResult;
+        var result = await _controller.KS4(_admissionsService, _establishment.URN, _establishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
         // Assert
         Assert.NotNull(result);

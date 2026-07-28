@@ -6,6 +6,8 @@ public static class RouteConstants
     public const string AboutTheSchool = "AboutTheSchool";
     public const string DestinationsRoot = "DestinationsRoot";
     public const string Attendance = "Attendance";
+    public const string AdmissionsRoot = "Admissions";
+    public const string CurriculumRoot = "Curriculum";
 
     // Primary School
     public const string PrimaryAdmissions = "PrimaryAdmissions";

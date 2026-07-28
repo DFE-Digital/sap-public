@@ -2,6 +2,8 @@
 @using SAPPub.Web.Constants
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @addTagHelper *, Microsoft.FeatureManagement.AspNetCore
+@using static SAPPub.Web.Constants.Constants;
+@inject Microsoft.FeatureManagement.IFeatureManager FeatureManager
 
 @if (Model != null)
 {
@@ -23,27 +25,40 @@
                     </a>
                 </li>
 
-                @if (Model.IsKS2 || Model.IsKS4)
+                @if (await FeatureManager.IsEnabledAsync(EnablePrimary) && Model.IsKS2 || Model.IsKS4)
                 {
-                    <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.SecondaryAdmissions ? "moj-side-navigation__item--active" : "")">
-                        <a asp-route="@RouteConstants.SecondaryAdmissions" asp-all-route-data="routeAttributes">Admissions</a>
+                    <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.AdmissionsRoot ? "moj-side-navigation__item--active" : "")">
+                        <a asp-route="@RouteConstants.AdmissionsRoot" asp-all-route-data="routeAttributes">Admissions</a>
                     </li>
                 }
 
-                @if (Model.IsKS2 || Model.IsKS4)
+                @if (await FeatureManager.IsEnabledAsync(EnablePrimary) && Model.IsKS2 || Model.IsKS4)
                 {
-                    <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.SecondaryCurriculumAndExtraCurricularActivities ? "moj-side-navigation__item--active" : "")">
-                        <a asp-route="@RouteConstants.SecondaryCurriculumAndExtraCurricularActivities" asp-all-route-data="routeAttributes">Curriculum and extra-curricular activities</a>
+                    <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.CurriculumRoot ? "moj-side-navigation__item--active" : "")">
+                        <a asp-route="@RouteConstants.CurriculumRoot" asp-all-route-data="routeAttributes">Curriculum and extra-curricular activities</a>
                     </li>
                 }
 
-                @if (Model.IsKS2 || Model.IsKS4)
+                @if (await FeatureManager.IsEnabledAsync(EnablePrimary) && Model.IsKS2 || Model.IsKS4)
                 {
                     <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.Attendance ? "moj-side-navigation__item--active" : "")">
                         <a asp-route="@RouteConstants.Attendance" asp-all-route-data="routeAttributes">Attendance</a>
                     </li>
                 }
 
+                <feature name="EnablePrimary">
+                    @if (Model.IsKS2)
+                    {
+                        <li class="moj-side-navigation__item  
+                            @(new List<string> {
+                                                RouteConstants.PrimaryAcademicPerformanceAttainmentAndProgress,
+                                                RouteConstants.PrimaryAcademicPerformancePupilProgress,
+                                                RouteConstants.PrimaryAcademicPerformanceAdditionalMeasures
+                                            }.Contains(Model.ActivePage) ? " moj-side-navigation__item--active" : "") ">
+                            <a asp-route="@RouteConstants.PrimaryAcademicPerformanceAttainmentAndProgress" asp-all-route-data="routeAttributes">Primary academic performance</a>
+                        </li>
+                    }
+                </feature>
                 @if (Model.IsKS4)
                 {
                     <li class="moj-side-navigation__item  
