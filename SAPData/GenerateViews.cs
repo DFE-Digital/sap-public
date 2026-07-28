@@ -118,15 +118,15 @@ public sealed class GenerateViews
                 }
 
                 // KS4 + KS5 requested; KS5 may have no CTE yet, base condition still applies
-                var keyStages = new[] { "KS4", "KS5" }; 
-                
+                var keyStages = new[] { "KS4", "KS5" };
+
                 var (keyStageUrnsCtes, keyStageUrnsSqlConditions) =
                     BuildKeyStageCtesAndFilters(_rows, tableMap, keyStages);
-                
+
                 var establishmentFilters = SqlViewFilterProvider.GetEstablishmentFilters(
                     keyStages,
                     keyStageUrnsSqlConditions);
-                
+
                 sql = GenerateEstablishmentDimensionView(
                     rawTable,
                     establishmentFilters,
@@ -229,6 +229,32 @@ public sealed class GenerateViews
                         out var datasetKey))
                 {
                     sql = BuildSkippedSql(view.ViewName, "Could not resolve dataset key from raw_sources.json (EES/KS4_Performance/SubjectEntries/Current).");
+                    Write(view.ViewName, sql);
+                    continue;
+                }
+
+                if (!TryResolveRawTable(tableMap, datasetKey, out var rawTable))
+                {
+                    sql = BuildSkippedSql(view.ViewName, $"Could not resolve raw table mapping for datasetKey='{datasetKey}'.");
+                    Write(view.ViewName, sql);
+                    continue;
+                }
+
+                sql = GenerateMirrorMaterializedView(view.ViewName, rawTable);
+            }
+
+            else if (view.ViewName.Equals("v_establishment_ks5_subject_entries", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!TryResolveManagedDatasetKey(
+                        sources,
+                        tableMap,
+                        sourceOrg: "EES",
+                        type: "KS5_Performance",
+                        subtype: "SubjectEntries",
+                        year: "Current",
+                        out var datasetKey))
+                {
+                    sql = BuildSkippedSql(view.ViewName, "Could not resolve dataset key from raw_sources.json (EES/KS5_Performance/SubjectEntries/Current).");
                     Write(view.ViewName, sql);
                     continue;
                 }
