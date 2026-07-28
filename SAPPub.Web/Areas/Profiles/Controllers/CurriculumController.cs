@@ -1,13 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement;
 using Microsoft.FeatureManagement.Mvc;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
+using SAPPub.Web.Areas.Profiles.Filters;
 using SAPPub.Web.Constants;
 
 namespace SAPPub.Web.Areas.Profiles.Controllers;
 
 [Area("Profiles")]
-public class CurriculumController(ILogger<DestinationsController> logger) : Controller
+public class CurriculumController(ILogger<DestinationsController> logger, IFeatureManager featureManager) : Controller
 {
     [Route("school/{urn}/{schoolName}/curriculum", Name = RouteConstants.CurriculumRoot)]
     public async Task<IActionResult> Index([FromServices] IAboutSchoolService aboutSchoolService,
@@ -22,7 +24,7 @@ public class CurriculumController(ILogger<DestinationsController> logger) : Cont
             return View("Error");
         }
 
-        if (schoolDetails.IsKS2)
+        if (await featureManager.IsEnabledAsync(Constants.Constants.EnablePrimary) && schoolDetails.IsKS2)
         {
             return RedirectToAction("KS2", new { urn, schoolName });
         }
@@ -30,7 +32,7 @@ public class CurriculumController(ILogger<DestinationsController> logger) : Cont
         {
             return RedirectToAction("KS4", new { urn, schoolName });
         }
-        else if (schoolDetails.IsKS5)
+        else if (await featureManager.IsEnabledAsync(Constants.Constants.Enable16to19) && schoolDetails.IsKS5)
         {
             return RedirectToAction("KS5", new { urn, schoolName });
         }
@@ -38,7 +40,8 @@ public class CurriculumController(ILogger<DestinationsController> logger) : Cont
     }
 
     [HttpGet]
-    [FeatureGate("EnablePrimary")]
+    [FeatureGate(Constants.Constants.EnablePrimary)]
+    [ServiceFilter(typeof(PrimaryQueryValidationFilter))]
     [Route("school/{urn}/{schoolName}/curriculum/primary", Name = RouteConstants.PrimaryCurriculum)]
     public async Task<IActionResult> KS2(
         [FromServices] IEstablishmentService establishmentService,

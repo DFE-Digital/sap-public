@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement;
 using Moq;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Repositories;
@@ -21,6 +22,7 @@ public class AdmissionsTests
     private readonly Mock<ILAService> _mockLaService = new();
     private readonly Mock<IEstablishmentRepository> _mockEstablishmentRepository = new();
     private readonly Mock<ILogger<AdmissionsController>> _mockLogger = new();
+    private readonly Mock<IFeatureManager> _featureManager = new();
 
     private readonly IEstablishmentService _establishmentService;
     private readonly IAdmissionsService _admissionsService;
@@ -40,7 +42,7 @@ public class AdmissionsTests
 
         _establishmentService = new EstablishmentService(_mockEstablishmentRepository.Object);
         _admissionsService = new EstablishmentAdmissionsService(_establishmentService, _mockLaService.Object);
-        _controller = new AdmissionsController(_mockLogger.Object);
+        _controller = new AdmissionsController(_mockLogger.Object, _featureManager.Object);
 
         _controller.ControllerContext = new ControllerContext
         {
