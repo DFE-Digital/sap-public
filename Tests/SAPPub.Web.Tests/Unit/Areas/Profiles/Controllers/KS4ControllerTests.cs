@@ -5,7 +5,6 @@ using SAPPub.Core.Entities;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Extensions;
 using SAPPub.Core.Interfaces.Services;
-using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.Interfaces.Services.KS4.Attendance;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
@@ -398,19 +397,6 @@ public class KS4ControllerTests
     //        Assert.Equal("Not available", model.SchoolWebsite.DisplayText());
     //    }
     //}
-
-    [Fact]
-    public async Task Get_AcademicPerformanceAttainmentAndProgress_InvalidYearSelected_ReturnsNotFound()
-    {
-        var result = await _controller.AcademicPerformanceAttainmentAndProgress(
-             _mockAttainmentAndProgressService.Object,
-             _fakeEstablishment.URN,
-             _fakeEstablishment.EstablishmentName,
-             "Invalid-year-selection-string",
-             CancellationToken.None) as NotFoundResult;
-
-        Assert.NotNull(result);
-    }
 
     [Fact]
     public async Task Get_AcademicPerformanceAttainmentAndProgress_InvalidYearSelected_ReturnsNotFound()
