@@ -444,7 +444,7 @@ public class KS4ControllerTests
             _mockAttainmentAndProgressService.Object,
             _fakeEstablishment.URN,
             _fakeEstablishment.EstablishmentName,
-            academicYearSelection.ToRouteSegment(),
+            academicYearSelection.ToRouteSegment()!,
             CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
@@ -520,7 +520,7 @@ public class KS4ControllerTests
             _mockAttainmentAndProgressService.Object,
             _fakeEstablishment.URN,
             _fakeEstablishment.EstablishmentName,
-            academicYearSelection.ToRouteSegment(),
+            academicYearSelection.ToRouteSegment()!,
             CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
@@ -567,7 +567,7 @@ public class KS4ControllerTests
             _mockEnglishAndMathsResultsService.Object,
             _fakeEstablishment.URN,
             _fakeEstablishment.EstablishmentName,
-            gradeName,
+            gradeName!,
             CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
@@ -679,7 +679,7 @@ public class KS4ControllerTests
             _mockEnglishAndMathsResultsService.Object,
             _fakeEstablishment.URN,
             _fakeEstablishment.EstablishmentName,
-            gradeName,
+            gradeName!,
             CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
@@ -740,7 +740,7 @@ public class KS4ControllerTests
             _mockEnglishAndMathsResultsService.Object,
             _fakeEstablishment.URN,
             _fakeEstablishment.EstablishmentName,
-            gradeName,
+            gradeName!,
             CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);

@@ -19,10 +19,10 @@ public class AccessibilityTests(WebApplicationSetupFixture fixture) : BasePageTe
         "school/145744/abbey-park-school/about",
 
         // primary pages
-        "school/100273/saint-paul-roman-catholic-infant-school/primary-performance/pupil-progress",
-        "school/100273/saint-paul-roman-catholic-infant-school/primary-performance/additional-measures",
-        "school/100273/saint-paul-roman-catholic-infant-school/admissions/primary",
-        "school/100273/saint-paul-roman-catholic-infant-school/curriculum/primary",
+        "school/143034/st-pauls-church-of-england-academy/primary-performance/pupil-progress",
+        "school/143034/st-pauls-church-of-england-academy/primary-performance/additional-measures",
+        "school/143034/st-pauls-church-of-england-academy/admissions/primary",
+        "school/143034/st-pauls-church-of-england-academy/curriculum/primary",
 
         // secondary pages
         "school/105574/loreto-high-school-chorlton/secondary-performance/progress-attainment",

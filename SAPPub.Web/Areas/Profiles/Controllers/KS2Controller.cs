@@ -10,7 +10,7 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
     [Area("Profiles")]
     [FeatureGate(Constants.Constants.EnablePrimary)]
     [ServiceFilter(typeof(PrimaryQueryValidationFilter))]
-    public class KS2Controller(ILogger<KS2Controller> logger) : Controller, IEstablishment
+    public class KS2Controller : Controller, IEstablishment
     {
         public EstablishmentServiceModel Establishment { get; set; } = null!; // set by the PrimaryQueryValidationFilter
 
