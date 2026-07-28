@@ -119,10 +119,10 @@ public partial class Program
         builder.Services.AddDependencies(builder.Environment, builder.Configuration);
 
         // Add custom error handler for NotFoundExceptions
-        if (!builder.Environment.IsDevelopment())
-        {
-            builder.Services.AddExceptionHandler<NotFoundExceptionHandler>();
-        }
+        //if (!builder.Environment.IsDevelopment())
+        //{
+        builder.Services.AddExceptionHandler<NotFoundExceptionHandler>();
+        //}
 
         // Add context accessor abstraction so we can access cookies outside of controllers
         builder.Services.AddHttpContextAccessor();
@@ -135,15 +135,15 @@ public partial class Program
         app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
         //Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseDeveloperExceptionPage(new DeveloperExceptionPageOptions { SourceCodeLineCount = 1 });
-        }
-        else
-        {
-            app.UseExceptionHandler("/Error/500");
-            app.UseHsts();
-        }
+        //if (app.Environment.IsDevelopment())
+        //{
+        app.UseDeveloperExceptionPage(new DeveloperExceptionPageOptions { SourceCodeLineCount = 1 });
+        //}
+        //else
+        //{
+        //    app.UseExceptionHandler("/Error/500");
+        //    app.UseHsts();
+        //}
 
         // Security headers middleware - MUST come before static files
         app.UseSecurityHeaders();

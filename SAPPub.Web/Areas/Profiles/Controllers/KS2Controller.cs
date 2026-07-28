@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
-using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.ServiceModels;
 using SAPPub.Web.Areas.Profiles.Filters;
+using SAPPub.Web.Areas.Profiles.ViewModels.KS2;
 using SAPPub.Web.Constants;
 
 namespace SAPPub.Web.Areas.Profiles.Controllers
@@ -12,39 +12,39 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
     [ServiceFilter(typeof(PrimaryQueryValidationFilter))]
     public class KS2Controller(ILogger<KS2Controller> logger) : Controller, IEstablishment
     {
-        public EstablishmentServiceModel? Establishment { get; set; }
+        public EstablishmentServiceModel Establishment { get; set; } = null!; // set by the PrimaryQueryValidationFilter
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/primary-performance/progress-attainment", Name = RouteConstants.PrimaryAcademicPerformanceAttainmentAndProgress)]
         public async Task<IActionResult> AcademicPerformanceAttainmentAndProgress(
-            [FromServices] IAttainmentAndProgressService attainmentAndProgressService,
             string urn,
             string schoolName,
             CancellationToken ct = default)
         {
-            return View();
+            var model = AcademicPerformanceAttainmentAndProgressViewModel.Map(Establishment);
+            return View(model);
         }
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/primary-performance/pupil-progress", Name = RouteConstants.PrimaryAcademicPerformancePupilProgress)]
-        public IActionResult AcademicPerformancePupilProgress(
-            [FromServices] IAcademicPerformanceEnglishAndMathsResultsService academicPerformanceEnglishAndMathsResultsService,
+        public async Task<IActionResult> AcademicPerformancePupilProgress(
             string urn,
             string schoolName,
             CancellationToken ct = default)
         {
-            return View();
+            var model = AcademicPerformancePupilProgressViewModel.Map(Establishment);
+            return View(model);
         }
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/primary-performance/additional-measures", Name = RouteConstants.PrimaryAcademicPerformanceAdditionalMeasures)]
         public async Task<IActionResult> AcademicPerformanceAdditionalMeasures(
-            [FromServices] IAdditionalMeasuresService additionalMeasuresService,
             string urn,
             string schoolName,
             CancellationToken ct)
         {
-            return View();
+            var model = AcademicPerformanceAdditionalMeasuresViewModel.Map(Establishment);
+            return View(model);
         }
     }
 }

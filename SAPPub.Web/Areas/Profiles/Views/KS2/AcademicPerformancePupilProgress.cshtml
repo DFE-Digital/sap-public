@@ -40,7 +40,7 @@
             </ul>
         </nav>
 
-        <h2 class="govuk-heading-l">Pupil @ViewData["SubHeader"]?.ToString()?.ToLower()</h2>
+        <h2 class="govuk-heading-l">@ViewData["SubHeader"]?.ToString()?.ToLower()</h2>
 
          <govuk-pagination id="bottom-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.Attendance" asp-all-route-data="@Model.RouteAttributes">Attendance</govuk-pagination-previous>

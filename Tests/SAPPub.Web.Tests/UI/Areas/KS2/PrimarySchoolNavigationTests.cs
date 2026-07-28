@@ -51,25 +51,16 @@ public class PrimarySchoolNavigationTests(WebApplicationSetupFixture fixture) : 
         // Assert
         title = await Page.TitleAsync();
         Assert.Contains(PrimarySchoolPageTitles.ProgressAndAttainment, title);
-
-        // Act
-        navItem = nav.GetItem("Destinations");
-        await navItem.ClickAsync();
-
-        // Assert
-        title = await Page.TitleAsync();
-        Assert.Contains(SecondarySchoolPageTitles.Destinations, title);
     }
 
     [Fact]
     public async Task AcademicPerformanceAttainmentAndProgressPage_Displays_Sub_Navigation()
     {
-        throw new NotImplementedException("This test is not implemented yet.");
         // Act
         await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
 
         var nav = new VerticalNavigationHelper(Page);
-        var navItem = nav.GetItem("Academic performance");
+        var navItem = nav.GetItem("Primary academic performance");
         await navItem.ClickAsync();
 
         // Act
@@ -80,18 +71,18 @@ public class PrimarySchoolNavigationTests(WebApplicationSetupFixture fixture) : 
         Assert.Contains("Progress and attainment", title);
 
         // Act
-        await ClickAcademicPerformanceNavItemAsync(Page, "English and maths results");
+        await ClickAcademicPerformanceNavItemAsync(Page, "Pupil progress");
 
         // Assert
         title = await Page.TitleAsync();
-        Assert.Contains("English and maths", title);
+        Assert.Contains("Pupil progress", title);
 
         // Act
-        await ClickAcademicPerformanceNavItemAsync(Page, "Subjects entered");
+        //await ClickAcademicPerformanceNavItemAsync(Page, "Subject scaled scores");
 
-        // Assert
-        title = await Page.TitleAsync();
-        Assert.Contains("Subjects entered", title);
+        //// Assert
+        //title = await Page.TitleAsync();
+        //Assert.Contains("Subject scaled scores", title);
 
         // Act
         await ClickAcademicPerformanceNavItemAsync(Page, "Additional measures");
@@ -104,7 +95,6 @@ public class PrimarySchoolNavigationTests(WebApplicationSetupFixture fixture) : 
     [Fact]
     public async Task NavigateThroughPaginationNav_ShowsExpectedPages()
     {
-        throw new NotImplementedException("This test is not implemented yet.");
         // Act
         var response = await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
         var nav = new PaginationNavigationHelper(Page);
@@ -139,25 +129,25 @@ public class PrimarySchoolNavigationTests(WebApplicationSetupFixture fixture) : 
 
         // Assert
         title = await Page.TitleAsync();
-        Assert.Contains("Secondary", title);
-        Assert.Contains("Progress and attainment", title);
+        Assert.Contains("Primary", title);
+        Assert.Contains("Pupil progress", title);
 
         // Act
         await nav.ClickNextLinkAsync();
 
         // Assert
         title = await Page.TitleAsync();
-        Assert.Contains("English and maths", title);
+        Assert.Contains("TODO", title);
 
         // Act
         await nav.ClickNextLinkAsync();
 
         // Assert
-        title = await Page.TitleAsync();
-        Assert.Contains("Subjects entered", title);
+        //title = await Page.TitleAsync();
+        //Assert.Contains("Subject scaled scores", title);
 
-        // Act
-        await nav.ClickNextLinkAsync();
+        //// Act
+        //await nav.ClickNextLinkAsync();
 
         // Assert
         title = await Page.TitleAsync();
@@ -165,10 +155,6 @@ public class PrimarySchoolNavigationTests(WebApplicationSetupFixture fixture) : 
 
         // Act
         await nav.ClickNextLinkAsync();
-
-        // Assert
-        title = await Page.TitleAsync();
-        Assert.Contains("Destinations", title);
     }
 
     private static Task ClickAcademicPerformanceNavItemAsync(
