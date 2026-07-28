@@ -454,7 +454,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
 
                 nameof(KS5EstablishmentDestinations) => SelectFromWhereId("\"Id\", \"TOT_OVERALLPER_Est_Current_Pct_Coded\", \"TOT_COHORT_Est_Current_Num_Coded\"", "v_establishment_ks5_destinations"),
                 nameof(KS5EnglandDestinations) => SelectFromWhere("\"TOT_OVERALLPER_Eng_Current_Pct_Coded\"", "v_england_ks5_destinations", "\"Id\" = 'National'"),
-                nameof(KS5LADestinations) => SelectFromWhereId("\"Id\", \"TOT_OVERALLPER_LA_Current_Num_Coded\"", "v_la_ks5_destinations"),
+                nameof(KS5LADestinations) => SelectFromWhereId("\"Id\", \"TOT_OVERALLPER_LA_Current_Pct_Coded\"", "v_la_ks5_destinations"),
 
                 _ => string.Empty,
             };
