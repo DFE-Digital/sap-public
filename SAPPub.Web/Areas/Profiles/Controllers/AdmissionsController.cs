@@ -16,7 +16,6 @@ public class AdmissionsController(ILogger<AdmissionsController> logger, IFeature
             string urn, string schoolName,
             CancellationToken ct)
     {
-
         var schoolDetails = await aboutSchoolService.GetAboutSchoolDetailsAsync(urn, ct);
 
         if (string.IsNullOrWhiteSpace(schoolDetails.Urn))
