@@ -4,13 +4,16 @@
 @using SAPPub.Web.Constants;
 
 @{
-    ViewData["Header"] = "Academic Perfomance";
-    ViewData["SubHeader"] = PageTitleConstants.SecondarySchoolPageTitles.EnglishAndMathsResults;
+    ViewData["Header"] = "Academic Performance";
+    ViewData["SubHeader"] = PageTitleConstants.CompareSecondarySchoolPageTitles.EnglishAndMathsResults;
     ViewData["Title"] = $"Compare - {ViewData["SubHeader"]}";
 }
 
 <div class="govuk-grid-row">
-
+    @if (Model.ListContainsSpecialSchool && Model.ListContainsNonSpecialSchool)
+    {
+        <partial name="_SpecialSchoolWarningBanner" />
+    }
     @await Component.InvokeAsync("VerticalNavigationCompareSecondary",
     new VerticalNavigationCompareSecondaryModel
     {
@@ -20,7 +23,7 @@
 
     <div class="govuk-grid-column-three-quarters">
         <h1 class="govuk-heading-l">
-            <span class="govuk-caption-l">Comparing your schools</span>
+            <span class="govuk-caption-l">@Constants.CompareYourSchools</span>
             @ViewData["Header"]
         </h1>
 
@@ -29,13 +32,13 @@
             You should look at a range of information about a school before deciding if it's the right fit for your child.
         </p>
 
-        <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
+        <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation" data-testid="sub-navigation-academic-performance">
             <ul class="moj-sub-navigation__list">
                 <li class="moj-sub-navigation__item">
                     <a class="moj-sub-navigation__link" href="@Url.RouteUrl(RouteConstants.CompareSecondaryAcademicPerformancePupilAttainment)@Model.RouteQueryString">@PageTitleConstants.SecondarySchoolPageTitles.PupilAttainment</a>
                 </li>
                 <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" aria-current="page" href="@Url.RouteUrl(RouteConstants.CompareSecondaryAcademicPerformanceEnglishAndMathsResults)@Model.RouteQueryString"> @ViewData["SubHeader"]</a>
+                    <a class="moj-sub-navigation__link" aria-current="page" href="@Url.RouteUrl(RouteConstants.CompareSecondaryAcademicPerformanceEnglishAndMathsResults)@Model.RouteQueryString">@ViewData["SubHeader"]</a>
                 </li>
             </ul>
         </nav>
@@ -77,8 +80,8 @@
         <p class="govuk-body">Grade 5 is comparable to the top of the old grade C.</p>
 
         <div class="data-container">
-            <input type="radio" name="dataView" id="current-view" class="govuk-visually-hidden" aria-labelledby="all-gcse-show-current-data-btn" checked />
-            <input type="radio" name="dataView" id="data-overtime-view" class="govuk-visually-hidden" aria-labelledby="all-gcse-show-data-over-time-btn" />
+            <input type="radio" name="dataView" id="current-view" class="govuk-visually-hidden dataview-button" aria-labelledby="all-gcse-show-current-data-btn" checked />
+            <input type="radio" name="dataView" id="data-overtime-view" class="govuk-visually-hidden dataview-button" aria-labelledby="all-gcse-show-data-over-time-btn" />
 
             <div id="all-gcse-current-year-data-container" class="all-gcse-current-year-data-container">
                 <div id="all-gcse-current-year-chart-container" class="chart-container all-gcse-current-year-chart-container">
@@ -106,10 +109,10 @@
                 </div>
 
                 <div class="govuk-button-group">
-                    <govuk-button id="all-gcse-current-year-show-btn" class="govuk-button govuk-button--secondary all-gcse-current-year-show-btn">Show as a table</govuk-button>
+                    <govuk-button id="all-gcse-current-year-show-btn" type="button" class="govuk-button--secondary all-gcse-current-year-show-btn">Show as a table</govuk-button>
                 </div>
                 <div class="govuk-button-group">
-                    <label id="all-gcse-show-data-over-time-btn" for="data-overtime-view" class="govuk-button govuk-button--secondary">Show data over time</label>
+                    <label id="all-gcse-show-data-over-time-btn" for="data-overtime-view" class="govuk-button govuk-button--secondary" tabindex="0">Show data over time</label>
                 </div>
             </div>
 
@@ -157,11 +160,11 @@
                 </div>
 
                 <div class="govuk-button-group">
-                    <govuk-button id="all-gcse-data-over-time-show-btn" class="govuk-button govuk-button--secondary all-gcse-data-over-time-show-btn">Show as a table</govuk-button>
+                    <govuk-button id="all-gcse-data-over-time-show-btn" type="button" class="govuk-button--secondary all-gcse-data-over-time-show-btn">Show as a table</govuk-button>
                 </div>
 
                 <div class="govuk-button-group">
-                    <label id="all-gcse-show-current-data-btn" for="current-view" class="govuk-button govuk-button--secondary">Show current data</label>
+                    <label id="all-gcse-show-current-data-btn" for="current-view" class="govuk-button govuk-button--secondary" tabindex="0">Show current data</label>
                 </div>
             </div>
         </div>
@@ -171,10 +174,8 @@
         <p class="govuk-body">
             When researching, contacting or visiting a school, you may want to ask:
         </p>
-        <ul class="govuk-list govuk-list--bullet">
-            <li>
-                what subjects do pupils tend to do well in at this school?
-            </li>
+
+        <ul class="govuk-list govuk-list--bullet">            
             <li>
                 how does the school help pupils who need extra support in English and maths?
             </li>

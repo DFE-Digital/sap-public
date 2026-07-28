@@ -1,5 +1,5 @@
 ﻿using SAPPub.Core.Entities;
-using SAPPub.Core.Entities.KS4.Destinations;
+using SAPPub.Core.Entities.Destinations;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Repositories.Generic;
@@ -63,7 +63,8 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             Northing = "392995",
             Website = "http://www.test.co.uk/",
             SenTypes = "VI - Visual Impairment, HI - Hearing Impairment",
-            IsKS4 = true
+            IsKS4 = true,
+            IsKS5 = false
         },
         ["137552"] = new Establishment
         {
@@ -77,7 +78,9 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             AddressPostcode = "CM18 7NQ",
             StatusCode = 2,
             ClosedDate = null,
-            IsKS4 = true
+            IsKS2 = false,
+            IsKS4 = true,
+            IsKS5 = false,
         },
         ["107564"] = new Establishment
         {
@@ -205,6 +208,71 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             PhaseOfEducationName = "Secondary",
             AddressPostcode = "SK15 1LX",
             IsKS4 = true
+        },
+        ["149976"] = new Establishment
+        {
+            URN = "149976",
+            EstablishmentName = "Four Elms Primary School",
+            LAId = "886",
+            EstablishmentNumber = "2134",
+            PhaseOfEducationId = "2",
+            PhaseOfEducationName = "Primary",
+            AddressPostcode = "TN8 6NE",
+            IsKS2 = true,
+            IsKS4 = false,
+            IsKS5 = false,
+        },
+        ["130499"] = new Establishment
+        {
+            URN = "130499",
+            EstablishmentName = "Holy Cross College",
+            LAId = "351",
+            EstablishmentNumber = "8600",
+            PhaseOfEducationId = "6",
+            PhaseOfEducationName = "16 plus",
+            AddressPostcode = "BL9 9BB",
+            IsKS2 = false,
+            IsKS4 = false,
+            IsKS5 = true,
+        },
+        ["135600"] = new Establishment
+        {
+            URN = "135600",
+            EstablishmentName = "Ark Academy",
+            LAId = "304",
+            EstablishmentNumber = "6906",
+            PhaseOfEducationId = "7",
+            PhaseOfEducationName = "All-through",
+            AddressPostcode = "HA9 9JR",
+            IsKS2 = true,
+            IsKS4 = true,
+            IsKS5 = true,
+        },
+        ["149328"] = new Establishment
+        {
+            URN = "149328",
+            EstablishmentName = "King Edward VI High School",
+            LAId = "860",
+            EstablishmentNumber = "4020",
+            PhaseOfEducationId = "4",
+            PhaseOfEducationName = "Secondary",
+            AddressPostcode = "ST17 9YJ",
+            IsKS2 = false,
+            IsKS4 = true,
+            IsKS5 = true,
+        },
+        ["150009"] = new Establishment
+        {
+            URN = "150009",
+            EstablishmentName = "Abraham Moss Community School",
+            LAId = "352",
+            EstablishmentNumber = "4271",
+            PhaseOfEducationId = "7",
+            PhaseOfEducationName = "All-through",
+            AddressPostcode = "M8 5UF",
+            IsKS2 = true,
+            IsKS4 = true,
+            IsKS5 = false,
         }
     };
 
@@ -228,7 +296,14 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             EngMaths49_Tot_Est_Previous_Pct = 65,
             EngMaths59_Tot_Est_Previous_Pct = 70,
             EngMaths49_Tot_Est_Previous2_Pct = 75,
-            EngMaths59_Tot_Est_Previous2_Pct = 80
+            EngMaths59_Tot_Est_Previous2_Pct = 80,
+            // additional measures
+            AnyQual_Tot_Est_Current_Pct_Coded = new Core.ValueObjects.CodedDouble(90, "", ""),
+            TripSci_Tot_Est_Current_Pct_Coded = new Core.ValueObjects.CodedDouble(80, "", ""),
+            More1FL_Tot_Est_Current_Pct_Coded = new Core.ValueObjects.CodedDouble(70, "", ""),
+            ExamEntriesGSCE_Tot_Est_Current_Num_Coded = new Core.ValueObjects.CodedDouble(151, "", ""),
+            ExamEntriesKS4_Tot_Est_Current_Num_Coded = new Core.ValueObjects.CodedDouble(100, "", ""),
+            Pup_Tot_Est_Current_Num_Coded = new Core.ValueObjects.CodedDouble(200, "", "")
         },
         ["137020"] = new EstablishmentPerformance
         {
@@ -243,13 +318,20 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             EngMaths49_Tot_Est_Previous_Pct = 55,
             EngMaths59_Tot_Est_Previous_Pct = 60,
             EngMaths49_Tot_Est_Previous2_Pct = 55,
-            EngMaths59_Tot_Est_Previous2_Pct = 70
+            EngMaths59_Tot_Est_Previous2_Pct = 70,
+            // additional measures
+            AnyQual_Tot_Est_Current_Pct_Coded = new Core.ValueObjects.CodedDouble(null, "", ""),
+            TripSci_Tot_Est_Current_Pct_Coded = new Core.ValueObjects.CodedDouble(null, "", ""),
+            More1FL_Tot_Est_Current_Pct_Coded = new Core.ValueObjects.CodedDouble(null, "", ""),
+            ExamEntriesGSCE_Tot_Est_Current_Num_Coded = new Core.ValueObjects.CodedDouble(null, "", ""),
+            ExamEntriesKS4_Tot_Est_Current_Num_Coded = new Core.ValueObjects.CodedDouble(null, "", ""),
+            Pup_Tot_Est_Current_Num_Coded = new Core.ValueObjects.CodedDouble(null, "", "")
         },
     };
 
-    private static readonly Dictionary<string, EstablishmentDestinations> EstablishmentDestinations = new(StringComparer.OrdinalIgnoreCase)
+    private static readonly Dictionary<string, KS4EstablishmentDestinations> EstablishmentDestinations = new(StringComparer.OrdinalIgnoreCase)
     {
-        ["105574"] = new EstablishmentDestinations
+        ["105574"] = new KS4EstablishmentDestinations
         {
             Id = "105574",
             AllDest_Tot_Est_Current_Pct = 50,
@@ -260,7 +342,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             Apprentice_Tot_Est_Current_Pct = 1,
 
         },
-        ["100279"] = new EstablishmentDestinations
+        ["100279"] = new KS4EstablishmentDestinations
         {
             Id = "100279",
             AllDest_Tot_Est_Current_Pct = 50,
@@ -269,20 +351,44 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             Education_Tot_Est_Current_Pct = 47,
             Employment_Tot_Est_Current_Pct = 2,
             Apprentice_Tot_Est_Current_Pct = 1,
+        },
+        ["149328"] = new KS4EstablishmentDestinations
+        {
+            Id = "149328",
+            AllDest_Tot_Est_Current_Pct = null,
+            AllDest_Tot_Est_Previous_Pct = null,
+            AllDest_Tot_Est_Previous2_Pct = null,
+            Education_Tot_Est_Current_Pct = null,
+            Employment_Tot_Est_Current_Pct = null,
+            Apprentice_Tot_Est_Current_Pct = null,
+        },
+    };
+
+    private static readonly Dictionary<string, KS4EnglandDestinations> EnglandDestinations = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["105574"] = new KS4EnglandDestinations
+        {
+            Id = "105574",
+            AllDest_Tot_Eng_Current_Pct = 50
+        },
+        ["100279"] = new KS4EnglandDestinations
+        {
+            Id = "100279",
+            AllDest_Tot_Eng_Current_Pct = 50
+        },
+        ["149328"] = new KS4EnglandDestinations
+        {
+            Id = "149328",
+            AllDest_Tot_Eng_Current_Pct = null
         }
     };
 
-    private static readonly Dictionary<string, EnglandDestinations> EnglandDestinations = new(StringComparer.OrdinalIgnoreCase)
+    private static readonly Dictionary<string, KS5EstablishmentDestinations> KS5EstablishmentDestinations = new(StringComparer.OrdinalIgnoreCase)
     {
-        ["105574"] = new EnglandDestinations
+        ["105574"] = new KS5EstablishmentDestinations
         {
-            Id = "105574",
-            AllDest_Tot_Eng_Current_Pct = 50
-        },
-        ["100279"] = new EnglandDestinations
-        {
-            Id = "100279",
-            AllDest_Tot_Eng_Current_Pct = 50
+            TOT_OVERALLPER_Est_Current_Pct = 50,
+            TOT_COHORT_Est_Current_Num = 1020
         }
     };
 
@@ -321,7 +427,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
                 return Task.FromResult<T?>((T)(object)est);
         }
 
-        if (typeof(T) == typeof(EstablishmentDestinations))
+        if (typeof(T) == typeof(KS4EstablishmentDestinations))
         {
             var id = GetPropertyString(parameters, "Id");
 
@@ -329,11 +435,19 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
                 return Task.FromResult<T?>((T)(object)est);
         }
 
-        if (typeof(T) == typeof(EnglandDestinations))
+        if (typeof(T) == typeof(KS4EnglandDestinations))
         {
             var id = GetPropertyString(parameters, "Id");
 
             if (!string.IsNullOrWhiteSpace(id) && EnglandDestinations.TryGetValue(id, out var est))
+                return Task.FromResult<T?>((T)(object)est);
+        }
+
+        if (typeof(T) == typeof(KS5EstablishmentDestinations))
+        {
+            var id = GetPropertyString(parameters, "Id");
+
+            if (!string.IsNullOrWhiteSpace(id) && KS5EstablishmentDestinations.TryGetValue(id, out var est))
                 return Task.FromResult<T?>((T)(object)est);
         }
 

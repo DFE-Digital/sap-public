@@ -4,16 +4,16 @@ variable "hosted_zone" {
 }
 
 variable "allow_aks" {
-  type = bool
+  type    = bool
   default = false
 }
 
 variable "block_ip" {
-  type = bool
+  type    = bool
   default = false
 }
 
 variable "rate_limit_max" {
-  type = number
+  type    = number
   default = null
 }

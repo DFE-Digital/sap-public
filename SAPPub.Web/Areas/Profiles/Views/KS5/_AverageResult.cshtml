@@ -1,0 +1,58 @@
+﻿@using SAPPub.Core.Enums.KS5Qualifications
+@model SAPPub.Web.Areas.Profiles.ViewModels.KS5.AverageResultViewModel
+
+@{
+    var qualificationLevel = (Level3?)ViewData["QualificationLevel"];
+    var laName = ViewData["LAName"];
+}
+
+<h3 class="govuk-heading-m">Average result</h3>
+
+<p class="govuk-body">
+    This shows the average grade and points per @qualificationLevel?.GetDisplayName() entry.
+</p>
+
+<p class="govuk-body">
+    We use points to compare different qualifications fairly, even if they have different sizes or grading systems. For example, an A* at A level is worth up to 60 points.
+</p>
+
+<p class="govuk-body">
+    Compare this school or college with state-funded local and national averages.
+</p>
+
+<p class="govuk-body">
+    <a id="performance-points-link" class="govuk-link" rel="noreferrer noopener" target="_blank" href="https://www.gov.uk/government/publications/performance-points-a-practical-guide-to-key-stage-4-and-5-points">
+        Find out how performance points work <span class="govuk-visually-hidden">(opens in a new tab)</span>
+    </a>
+</p>
+
+<div class="data-container">
+    <table id="average-result-current-year-table" class="govuk-table">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header"></th>
+                <th scope="col" class="govuk-table__header">Grade</th>
+                <th scope="col" class="govuk-table__header">Points</th>
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">School or College</th>
+                <td class="govuk-table__cell">@Model.EstablishmentGrade.DisplayText()</td>
+                <td class="govuk-table__cell">@Model.EstablishmentPoints.DisplayText()</td>
+            </tr>
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">@laName</th>
+                <td class="govuk-table__cell">@Model.LocalAuthorityGrade.DisplayText()</td>
+                <td class="govuk-table__cell">@Model.LocalAuthorityPoints.DisplayText()</td>
+            </tr>
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">England average</th>
+                <td class="govuk-table__cell">@Model.EnglandGrade.DisplayText()</td>
+                <td class="govuk-table__cell">@Model.EnglandPoints.DisplayText()</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+

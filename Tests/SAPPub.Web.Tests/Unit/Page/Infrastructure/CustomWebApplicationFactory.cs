@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using SAPPub.Core.Interfaces;
 using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Services;
-using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.KS4.Absence;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
@@ -13,7 +13,7 @@ using SAPPub.Core.Interfaces.Services.KS4.Attendance;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
-using SAPPub.Core.Interfaces.Services.KS4.Workforce;
+using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.Interfaces.Services.Search;
 
 namespace SAPPub.Web.Tests.Unit.Page.Infrastructure;
@@ -41,9 +41,7 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.RemoveAll(typeof(IAttainmentAndProgressService));
                 services.RemoveAll(typeof(IEstablishmentService));
                 services.RemoveAll(typeof(IEstablishmentPerformanceService));
-                services.RemoveAll(typeof(IEstablishmentDestinationsService));
                 services.RemoveAll(typeof(IEstablishmentAbsenceService));
-                services.RemoveAll(typeof(IEstablishmentWorkforceService));
                 services.RemoveAll(typeof(IEstablishmentSubjectEntriesService));
                 services.RemoveAll(typeof(IAcademicPerformanceEnglishAndMathsResultsService));
                 services.RemoveAll(typeof(IDestinationsService));
@@ -55,14 +53,15 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.RemoveAll(typeof(IMySchoolsListService));
                 services.RemoveAll(typeof(IEnglishAndMathsComparisionService));
                 services.RemoveAll(typeof(IDestinationsComparisonService));
+                services.RemoveAll(typeof(IAttainmentAndProgressComparisionService));
+                services.RemoveAll(typeof(IAdditionalMeasuresService));
+                services.RemoveAll(typeof(IAdvancedLevelQualificationsService));
 
                 services.AddSingleton<MockAccessor<IAboutSchoolService>>();
                 services.AddSingleton<MockAccessor<IAttainmentAndProgressService>>();
                 services.AddSingleton<MockAccessor<IEstablishmentService>>();
                 services.AddSingleton<MockAccessor<IEstablishmentPerformanceService>>();
-                services.AddSingleton<MockAccessor<IEstablishmentDestinationsService>>();
                 services.AddSingleton<MockAccessor<IEstablishmentAbsenceService>>();
-                services.AddSingleton<MockAccessor<IEstablishmentWorkforceService>>();
                 services.AddSingleton<MockAccessor<IEstablishmentSubjectEntriesService>>();
                 services.AddSingleton<MockAccessor<IAcademicPerformanceEnglishAndMathsResultsService>>();
                 services.AddSingleton<MockAccessor<IDestinationsService>>();
@@ -74,6 +73,9 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.AddSingleton<MockAccessor<IMySchoolsListService>>();
                 services.AddSingleton<MockAccessor<IEnglishAndMathsComparisionService>>();
                 services.AddSingleton<MockAccessor<IDestinationsComparisonService>>();
+                services.AddSingleton<MockAccessor<IAttainmentAndProgressComparisionService>>();
+                services.AddSingleton<MockAccessor<IAdditionalMeasuresService>>();
+                services.AddSingleton<MockAccessor<IAdvancedLevelQualificationsService>>();
 
                 services.AddTransient(provider =>
                 {
@@ -94,16 +96,8 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                     });
                 services.AddTransient(provider =>
                     {
-                        return provider.GetRequiredService<MockAccessor<IEstablishmentDestinationsService>>().Get()?.Object!;
-                    });
-                services.AddTransient(provider =>
-                    {
                         return provider.GetRequiredService<MockAccessor<IEstablishmentAbsenceService>>().Get()?.Object!;
                     });
-                services.AddTransient(provider =>
-                {
-                    return provider.GetRequiredService<MockAccessor<IEstablishmentWorkforceService>>().Get()?.Object!;
-                });
                 services.AddTransient(provider =>
                 {
                     return provider.GetRequiredService<MockAccessor<IEstablishmentSubjectEntriesService>>().Get()?.Object!;
@@ -148,6 +142,18 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 {
                     return provider.GetRequiredService<MockAccessor<IDestinationsComparisonService>>().Get()?.Object!;
                 });
+                services.AddTransient(provider =>
+                {
+                    return provider.GetRequiredService<MockAccessor<IAttainmentAndProgressComparisionService>>().Get()?.Object!;
+                });
+                services.AddTransient(provider =>
+                {
+                    return provider.GetRequiredService<MockAccessor<IAdditionalMeasuresService>>().Get()?.Object!;
+                });
+                services.AddTransient(provider =>
+                {
+                    return provider.GetRequiredService<MockAccessor<IAdvancedLevelQualificationsService>>().Get()?.Object!;
+                });                
             });
     }
 }

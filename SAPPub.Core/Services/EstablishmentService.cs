@@ -1,4 +1,5 @@
-﻿using SAPPub.Core.Exceptions;
+﻿using SAPPub.Core.Entities;
+using SAPPub.Core.Exceptions;
 using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.ServiceModels;
@@ -13,7 +14,7 @@ public sealed class EstablishmentService(
     public async Task<IEnumerable<EstablishmentServiceModel>> GetEstablishmentsAsync(int page, int take, CancellationToken ct = default)
     {
         var establishments = await _establishmentRepository.GetEstablishmentsAsync(page, take, ct);
-        return establishments.Select(e => EstablishmentServiceModel.Map(e));
+        return establishments.Select(e => Establishment.MapToServiceModel(e));
     }
 
     public async Task<EstablishmentServiceModel> GetEstablishmentAsync(string urn, CancellationToken ct = default)
@@ -21,7 +22,7 @@ public sealed class EstablishmentService(
         var establishment = await _establishmentRepository.GetEstablishmentAsync(urn, ct)
             ?? throw new NotFoundException($"Establishment not found with URN: {urn}");
 
-        return EstablishmentServiceModel.Map(establishment);
+        return Establishment.MapToServiceModel(establishment);
     }
 
     public async Task<IEnumerable<EstablishmentServiceModel>> GetEstablishmentsAsync(IEnumerable<string> urns, CancellationToken ct = default)
@@ -33,6 +34,6 @@ public sealed class EstablishmentService(
             throw new NotFoundException($"Establishments not found for the given URNs: {string.Join(", ", urns)}");
         }
 
-        return establishments.Select(EstablishmentServiceModel.Map);
+        return establishments.Select(e => Establishment.MapToServiceModel(e));
     }
 }

@@ -10,6 +10,12 @@ public static class PageHelper
         return button.ClickAsync();
     }
 
+    public static Task ClickLink(this IPage page, string linkText)
+    {
+        var link = page.GetByRole(AriaRole.Link, new PageGetByRoleOptions { NameString = linkText }).First;
+        return link.ClickAsync();
+    }
+
     public static async Task<bool> HasErrorSummary(this IPage page)
     {
         return await page

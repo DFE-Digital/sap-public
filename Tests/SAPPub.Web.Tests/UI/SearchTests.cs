@@ -1,5 +1,4 @@
-﻿using Google.Apis.Bigquery.v2.Data;
-using Microsoft.Playwright;
+﻿using Microsoft.Playwright;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
 namespace SAPPub.Web.Tests.UI;
@@ -356,6 +355,27 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
 
         // assert 
         Assert.Contains("pageNumber=1", Page.Url);
+    }
+
+    [Fact]
+    public async Task SearchResultsPage_DoesNotShowComparisonButton_ForNonKs4Result()
+    {
+        // Arrange
+        var searchTerm = "Saint Paul Roman Catholic Infant School";
+        await Page.Context.ClearCookiesAsync();
+        _ = await Page.GotoAsync(_pageUrl);
+
+        // Act
+        await Page.FillAsync("#NameSearchTerm", searchTerm);
+        await Page.ClickAsync("#search");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        // Assert
+        var results = Page.Locator(".school-search-result");
+        await Expect(results).ToHaveCountAsync(1);
+
+        var compareButtons = Page.Locator(".compare-establishment-btn");
+        await Expect(compareButtons).ToHaveCountAsync(0);
     }
 
     [Fact]

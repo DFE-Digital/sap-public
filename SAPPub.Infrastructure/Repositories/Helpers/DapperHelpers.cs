@@ -1,10 +1,10 @@
 ﻿using SAPPub.Core.Entities;
+using SAPPub.Core.Entities.Destinations;
 using SAPPub.Core.Entities.Gateway;
 using SAPPub.Core.Entities.KS4.Absence;
-using SAPPub.Core.Entities.KS4.Destinations;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.KS4.SubjectEntries;
-using SAPPub.Core.Entities.KS4.Workforce;
+using SAPPub.Core.Entities.Performance;
 
 namespace SAPPub.Infrastructure.Repositories.Helpers
 {
@@ -75,13 +75,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Enrolments_Tot_Est_Current_Num_Coded",
           "Abs_Persistent_Est_Current_Num_Coded",
           "Abs_Persistent_Est_Current_Pct_Coded",
-          "Abs_Persistent_Est_Previous_Pct_Coded",
-          "Abs_Persistent_Est_Previous2_Pct_Coded",
-          "Abs_Tot_Est_Current_Pct_Coded",
-          "Abs_Tot_Est_Previous_Pct_Coded",
-          "Abs_Tot_Est_Previous2_Pct_Coded",
-          "Auth_Tot_Est_Current_Pct_Coded",
-          "UnAuth_Tot_Est_Current_Pct_Coded"
+          "Abs_Tot_Est_Current_Pct_Coded"
           """;
 
         private const string EstablishmentDestinationsColumns = """
@@ -91,13 +85,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Employment_Tot_Est_Current_Pct_Coded",
           "Apprentice_Tot_Est_Current_Pct_Coded",
           "AllDest_Tot_Est_Previous_Pct_Coded",
-          "Education_Tot_Est_Previous_Pct_Coded",
-          "Employment_Tot_Est_Previous_Pct_Coded",
-          "Apprentice_Tot_Est_Previous_Pct_Coded",
-          "AllDest_Tot_Est_Previous2_Pct_Coded",
-          "Education_Tot_Est_Previous2_Pct_Coded",
-          "Employment_Tot_Est_Previous2_Pct_Coded",
-          "Apprentice_Tot_Est_Previous2_Pct_Coded"
+          "AllDest_Tot_Est_Previous2_Pct_Coded"
           """;
 
         private const string EstablishmentPerformanceColumns = """
@@ -126,13 +114,13 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Prog8_CI_Upper_Est_Previous2_Num_Coded", 
           "Prog8_Banding_Est_Previous2",          
           "Prog8_TotPup_Est_Previous2_Num_Coded",
-          "Pup_Tot_Est_Previous2_Num_Coded"
-          """;
-
-        private const string EstablishmentWorkforceColumns = """
-          "Id",
-          "Workforce_PupTeaRatio_Est_Current_Num_Coded",
-          "Workforce_TotPupils_Est_Current_Num_Coded"
+          "Pup_Tot_Est_Previous2_Num_Coded",
+          "AnyQual_Tot_Est_Current_Pct_Coded",
+          "TripSci_Tot_Est_Current_Pct_Coded",
+          "More1FL_Tot_Est_Current_Pct_Coded",
+          "ExamEntriesGSCE_Tot_Est_Current_Num_Coded",
+          "ExamEntriesKS4_Tot_Est_Current_Num_Coded",
+          "Pup_Tot_Est_Current_Num_Coded"
           """;
 
         private const string LAPerformanceColumns = """
@@ -151,7 +139,13 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Attainment8_Tot_LA_Previous2_Num_Coded",
           "EngMaths49_Tot_LA_Previous2_Pct_Coded",
           "EngMaths59_Tot_LA_Previous2_Pct_Coded",
-          "Prog8_Avg_LA_Previous2_Num_Coded"
+          "Prog8_Avg_LA_Previous2_Num_Coded",
+          "AnyQual_Tot_LA_Current_Pct_Coded",
+          "TripSci_Tot_LA_Current_Pct_Coded",
+          "More1FL_Tot_LA_Current_Pct_Coded",
+          "ExamEntriesGSCE_Tot_LA_Current_Num_Coded",
+          "ExamEntriesKS4_Tot_LA_Current_Num_Coded",
+          "Pup_Tot_LA_Current_Num_Coded"
           """;
 
         private const string LADestinationsColumns = """
@@ -161,13 +155,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Employment_Tot_LA_Current_Pct_Coded",
           "Apprentice_Tot_LA_Current_Pct_Coded",
           "AllDest_Tot_LA_Previous_Pct_Coded",
-          "Education_Tot_LA_Previous_Pct_Coded",
-          "Employment_Tot_LA_Previous_Pct_Coded",
-          "Apprentice_Tot_LA_Previous_Pct_Coded",
-          "AllDest_Tot_LA_Previous2_Pct_Coded",
-          "Education_Tot_LA_Previous2_Pct_Coded",
-          "Employment_Tot_LA_Previous2_Pct_Coded",
-          "Apprentice_Tot_LA_Previous2_Pct_Coded"
+          "AllDest_Tot_LA_Previous2_Pct_Coded"
           """;
 
         private const string EnglandPerformanceColumns = """
@@ -184,7 +172,13 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "EngMaths59_Tot_Eng_Previous_Pct_Coded",
           "Attainment8_Tot_Eng_Previous2_Num_Coded",
           "EngMaths49_Tot_Eng_Previous2_Pct_Coded",
-          "EngMaths59_Tot_Eng_Previous2_Pct_Coded"
+          "EngMaths59_Tot_Eng_Previous2_Pct_Coded",
+          "AnyQual_Tot_Eng_Current_Pct_Coded",
+          "TripSci_Tot_Eng_Current_Pct_Coded",
+          "More1FL_Tot_Eng_Current_Pct_Coded",
+          "ExamEntriesGSCE_Tot_Eng_Current_Num_Coded",
+          "ExamEntriesKS4_Tot_Eng_Current_Num_Coded",
+          "Pup_Tot_Eng_Current_Num_Coded"
           """;
 
         private const string EnglandDestinationsColumns = """
@@ -194,13 +188,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Employment_Tot_Eng_Current_Pct_Coded",
           "Apprentice_Tot_Eng_Current_Pct_Coded",
           "AllDest_Tot_Eng_Previous_Pct_Coded",
-          "Education_Tot_Eng_Previous_Pct_Coded",
-          "Employment_Tot_Eng_Previous_Pct_Coded",
-          "Apprentice_Tot_Eng_Previous_Pct_Coded",
-          "AllDest_Tot_Eng_Previous2_Pct_Coded",
-          "Education_Tot_Eng_Previous2_Pct_Coded",
-          "Employment_Tot_Eng_Previous2_Pct_Coded",
-          "Apprentice_Tot_Eng_Previous2_Pct_Coded"
+          "AllDest_Tot_Eng_Previous2_Pct_Coded"
           """;
 
         private const string EstablishmentSubjectEntriesColumns = """
@@ -217,23 +205,43 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
         private const string EnglandAbsenceColumns = """
           "Id",
           "Abs_Persistent_Eng_Current_Pct_Coded",
-          "Abs_Tot_Eng_Current_Pct_Coded",
-          "Auth_Tot_Eng_Current_Pct_Coded",
-          "UnAuth_Tot_Eng_Current_Pct_Coded"
+          "Abs_Tot_Eng_Current_Pct_Coded"
           """;
 
         private const string LAAbsenceColumns = """
           "Id",
           "Abs_Persistent_LA_Current_Pct_Coded",
-          "Abs_Tot_LA_Current_Pct_Coded",
-          "Auth_Tot_LA_Current_Pct_Coded",
-          "UnAuth_Tot_LA_Current_Pct_Coded"
+          "Abs_Tot_LA_Current_Pct_Coded"
           """;
 
         private const string LaUrlsColumns = """
           "Id",
           "Name",
           "LAMainUrl"
+          """;
+
+        private const string EstablishmentKs5PerformanceColumns = """
+          "Id",
+          "TALLPUP_ACAD_1618_Est_Current_Num_Coded",
+          "VA_INS_ALEV_Est_Current_Num_Coded",
+          "PROGRESS_BAND_ALEV_Est_Current",
+          "UCI_INS_ALEV_Est_Current_Num_Coded",
+          "LCI_INS_ALEV_Est_Current_Num_Coded",
+          "TALLPPE_ALEV_1618_Est_Current_Num_Coded",
+          "TALLPPEGRD_ALEV_1618_Est_Current"          
+          """;
+
+        private const string EnglandKs5PerformanceColumns = """
+          "Id",
+          "VA_INS_ALEV_Eng_Current_Num_Coded",
+          "TALLPPE_ALEV_1618_Eng_Current_Num_Coded",
+          "TALLPPEGRD_ALEV_1618_Eng_Current"
+          """;
+
+        private const string LAKs5PerformanceColumns = """
+          "Id",
+          "TALLPPE_ALEV_1618_LA_Current_Num_Coded",
+          "TALLPPEGRD_ALEV_1618_LA_Current"         
           """;
 
         private const string GatewayLAColumns = """
@@ -351,19 +359,16 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                 nameof(EstablishmentAbsence) =>
                     SelectFrom(EstablishmentAbsenceColumns, "v_establishment_absence"),
 
-                nameof(EstablishmentDestinations) =>
+                nameof(KS4EstablishmentDestinations) =>
                     SelectFrom(EstablishmentDestinationsColumns, "v_establishment_destinations"),
 
                 nameof(EstablishmentPerformance) =>
                     SelectFrom(EstablishmentPerformanceColumns, "v_establishment_performance"),
 
-                nameof(EstablishmentWorkforce) =>
-                    SelectFrom(EstablishmentWorkforceColumns, "v_establishment_workforce"),
-
                 nameof(LAAbsence) =>
                     SelectFrom(LAAbsenceColumns, "v_la_absence"),
 
-                nameof(LADestinations) =>
+                nameof(KS4LADestinations) =>
                     SelectFrom(LADestinationsColumns, "v_la_destinations"),
 
                 nameof(LAPerformance) =>
@@ -372,7 +377,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                 nameof(EnglandAbsence) =>
                     SelectFrom(EnglandAbsenceColumns, "v_england_absence"),
 
-                nameof(EnglandDestinations) =>
+                nameof(KS4EnglandDestinations) =>
                     SelectFrom(EnglandDestinationsColumns, "v_england_destinations"),
 
                 nameof(EnglandPerformance) =>
@@ -415,19 +420,16 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                 nameof(EstablishmentAbsence) =>
                     SelectFromWhereId(EstablishmentAbsenceColumns, "v_establishment_absence"),
 
-                nameof(EstablishmentDestinations) =>
+                nameof(KS4EstablishmentDestinations) =>
                     SelectFromWhereId(EstablishmentDestinationsColumns, "v_establishment_destinations"),
 
                 nameof(EstablishmentPerformance) =>
-                    SelectFromWhereId(EstablishmentPerformanceColumns, "v_establishment_performance"),
-
-                nameof(EstablishmentWorkforce) =>
-                    SelectFromWhereId(EstablishmentWorkforceColumns, "v_establishment_workforce"),
+                    SelectFromWhereId(EstablishmentPerformanceColumns, "v_establishment_performance"),                                
 
                 nameof(LAAbsence) =>
                     SelectFromWhereId(LAAbsenceColumns, "v_la_absence"),
 
-                nameof(LADestinations) =>
+                nameof(KS4LADestinations) =>
                     SelectFromWhereId(LADestinationsColumns, "v_la_destinations"),
 
                 nameof(LAPerformance) =>
@@ -436,7 +438,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                 nameof(EnglandAbsence) =>
                     SelectFromWhere(EnglandAbsenceColumns, "v_england_absence", "\"Id\" = 'National'"),
 
-                nameof(EnglandDestinations) =>
+                nameof(KS4EnglandDestinations) =>
                     SelectFromWhere(EnglandDestinationsColumns, "v_england_destinations", "\"Id\" = 'National'"),
 
                 nameof(EnglandPerformance) =>
@@ -444,6 +446,15 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
 
                 nameof(LaUrls) =>
                     SelectFromWhereId(LaUrlsColumns, "v_la_urls"),
+
+                nameof(EstablishmentKs5Performance) =>
+                    SelectFromWhereId(EstablishmentKs5PerformanceColumns, "v_establishment_ks5_performance"),
+
+                nameof(EnglandKs5Performance) =>
+                    SelectFromWhere(EnglandKs5PerformanceColumns, "v_england_ks5_performance", "\"Id\" = 'National'"),
+
+                nameof(LAKs5Performance) =>
+                    SelectFromWhereId(LAKs5PerformanceColumns, "v_la_ks5_performance"),
 
                 nameof(GatewayLocalAuthority) =>
                     SelectFromWhereIdAndNotDeleted(GatewayLAColumns, "gateway_local_authority"),
@@ -453,6 +464,10 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
 
                 nameof(GatewayUser) =>
                     SelectFromWhereIdAndNotDeleted(GatewayUser, "gateway_user"),
+
+                nameof(KS5EstablishmentDestinations) => SelectFromWhereId("\"Id\", \"TOT_OVERALLPER_Est_Current_Pct_Coded\", \"TOT_COHORT_Est_Current_Num_Coded\"", "v_establishment_ks5_destinations"),
+                nameof(KS5EnglandDestinations) => SelectFromWhere("\"TOT_OVERALLPER_Eng_Current_Pct_Coded\"", "v_england_ks5_destinations", "\"Id\" = 'National'"),
+                nameof(KS5LADestinations) => SelectFromWhereId("\"Id\", \"TOT_OVERALLPER_LA_Current_Num_Coded\"", "v_la_ks5_destinations"),
 
                 _ => string.Empty,
             };
@@ -517,7 +532,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                     where school_urn = @Urn;
                     """,
 
-                nameof(EstablishmentDestinations) =>
+                nameof(KS4EstablishmentDestinations) =>
                     SelectFromWhereIds(EstablishmentDestinationsColumns, "v_establishment_destinations"),
 
                 nameof(LaUrls) =>

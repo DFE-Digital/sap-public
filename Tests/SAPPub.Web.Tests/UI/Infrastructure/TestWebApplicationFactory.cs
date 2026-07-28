@@ -8,18 +8,23 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Repositories.Generic;
+using SAPPub.Core.Interfaces.Services.Search;
+using SAPPub.Core.Services.Search;
 
 namespace SAPPub.Web.Tests.UI.Infrastructure;
 
 public class TestWebApplicationFactory : WebApplicationFactory<Program>
 {
     private IHost? _host;
+    public IConfiguration Configuration { get; private set; } = null!;
+    private readonly static string EnvironmentName = "Testing";
     private static string? _cachedWebProjectPath;
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        
         builder.UseUrls("http://127.0.0.1:0", "https://127.0.0.1:0");
-        builder.UseEnvironment("Testing");
+        builder.UseEnvironment(EnvironmentName);
 
         // Set content root to web project so static files (wwwroot) are found
         var webProjectPath = GetWebProjectPath();
@@ -28,15 +33,26 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
 
         var testDataFilePath = GetTestDataFilePath();
         var configurationValues = CreateConfigurationValues(testDataFilePath);
-        var configuration = new ConfigurationBuilder()
+        Configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json", optional: false)
+            .AddJsonFile($"appsettings.{EnvironmentName}.json", optional: true)
             .AddInMemoryCollection(configurationValues)
             .Build();
 
+
         builder
-            .UseConfiguration(configuration)
-            .ConfigureAppConfiguration(configurationBuilder =>
+            .UseConfiguration(Configuration)
+            .ConfigureAppConfiguration((context, configurationBuilder) =>
             {
+                // Real application configuration
+                configurationBuilder.AddJsonFile("appsettings.json", optional: false);
+                configurationBuilder.AddJsonFile(
+                    $"appsettings.{context.HostingEnvironment.EnvironmentName}.json",
+                    optional: true);
+
+                // Override with test values
                 configurationBuilder.AddInMemoryCollection(configurationValues);
+
             })
             .ConfigureServices(services =>
             {
@@ -47,6 +63,9 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
                 services.RemoveAll(typeof(IEstablishmentRepository));
                 services.AddSingleton<IEstablishmentRepository, FakeEstablishmentRepository>();
             });
+
+
+
     }
 
     protected override IHost CreateHost(IHostBuilder builder)

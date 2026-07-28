@@ -1,4 +1,5 @@
-﻿using SAPPub.Core.ServiceModels.KS4.Performance;
+﻿using SAPPub.Core.ServiceModels;
+using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Web.Models.Charts;
 using static SAPPub.Web.Constants.Constants;
 
@@ -12,7 +13,8 @@ public class CompareAcademicPerformanceEnglishAndMathsResultsViewModel : Compare
 
     public static CompareAcademicPerformanceEnglishAndMathsResultsViewModel Map(
         List<string> urns,
-        EnglishAndMathsComparisionResultsModel englishAndMathsComparisionResultsModel)
+        EnglishAndMathsComparisionResultsModel englishAndMathsComparisionResultsModel,
+        IEnumerable<EstablishmentServiceModel> establishments)
     {
         var orderedResults = englishAndMathsComparisionResultsModel.Establishments.OrderBy(x => x.SchoolName).ToList();
 
@@ -49,6 +51,8 @@ public class CompareAcademicPerformanceEnglishAndMathsResultsViewModel : Compare
         return new CompareAcademicPerformanceEnglishAndMathsResultsViewModel
         {
             URNs = urns,
+            ListContainsSpecialSchool = establishments.Any(e => e.IsSpecialSchool),
+            ListContainsNonSpecialSchool = establishments.Any(e => !e.IsSpecialSchool),
             AllGcseData = allGcseData,
             AllGcseOverTimeData = allGcseOverTimeData,
         };

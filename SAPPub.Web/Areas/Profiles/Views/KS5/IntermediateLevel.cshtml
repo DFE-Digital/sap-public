@@ -1,0 +1,67 @@
+﻿@using SAPPub.Web.Constants
+@using SAPPub.Web.ViewComponents.VerticalNavigation
+@model SAPPub.Web.Areas.Profiles.ViewModels.KS5.KS5ViewModel
+
+
+@{
+    ViewData["Header"] = PageTitleConstants.KS5SchoolPageTitles.Performance;
+    ViewData["SubHeader"] = $"{PageTitleConstants.KS5SchoolPageTitles.PhaseTitle} - {Model.LevelPageTitle}";
+    ViewData["Title"] = $"{Model.SchoolName} - {ViewData["SubHeader"]}";
+}
+
+<div class="govuk-grid-row">
+    @await Component.InvokeAsync("VerticalNavigation",
+    new VerticalNavigationModel
+    {
+        URN = Model.URN,
+        SchoolName = Model.SchoolName,
+        ActivePage = RouteConstants.KS5AcademicPerformanceLevel2,
+        IsKS2 = Model.IsKS2,
+        IsKS4 = Model.IsKS4,
+        IsKS5 = Model.IsKS5
+    })
+
+    <div class="govuk-grid-column-three-quarters">
+        <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
+        <h1 class="govuk-heading-xl">@ViewData["Header"]</h1>
+        <p class="govuk-body">
+            INTRO TEXT
+        </p>
+
+        <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
+            <ul class="moj-sub-navigation__list">
+                <li class="moj-sub-navigation__item">
+                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.KS5AcademicPerformanceLevel3" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.KS5SchoolPageTitles.Level3Qualifications</a>
+                </li>
+                <li class="moj-sub-navigation__item">
+                    <a class="moj-sub-navigation__link" aria-current="page" asp-route="@RouteConstants.KS5AcademicPerformanceLevel2" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.KS5SchoolPageTitles.Level2Qualifications</a>
+                </li>
+                <li class="moj-sub-navigation__item">
+                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.KS5AcademicPerformanceEnglishMaths" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.KS5SchoolPageTitles.EnglishAndMaths</a>
+                </li>
+                <li class="moj-sub-navigation__item">
+                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.KS5AcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.KS5SchoolPageTitles.SubjectsEntered</a>
+                </li>
+            </ul>
+        </nav>
+
+        <form method="get" asp-route="KS5AcademicPerformanceLevel2" asp-all-route-data="@Model.RouteAttributes">
+            <div id="filterSection" class="select-filter">
+                <label for="qualificationSelector" class="govuk-label govuk-!-font-weight-bold">Choose qualification</label>
+                <select id="qualificationSelector" asp-for="@Model.Level2Qualification" class="govuk-select" asp-items="Html.GetEnumSelectList<SAPPub.Core.Enums.KS5Qualifications.Level2>()"></select>
+                <govuk-button type="submit">Show results</govuk-button>
+            </div>
+        </form>
+
+
+        <p class="govuk-body">
+            MORE TEXT
+        </p>
+
+
+        <govuk-pagination id="academic-performance-level-2-pagination">
+            <govuk-pagination-previous asp-route="@RouteConstants.KS5AcademicPerformanceLevel2" asp-all-route-data="@Model.RouteAttributes">Academic performance: Level 3 qualifications</govuk-pagination-previous>
+            <govuk-pagination-next asp-route="@RouteConstants.KS5AcademicPerformanceEnglishMaths" asp-all-route-data="@Model.RouteAttributes">Academic performance: English and maths</govuk-pagination-next>
+        </govuk-pagination>
+    </div>
+</div>

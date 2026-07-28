@@ -47,6 +47,9 @@ public sealed class EnglishAndMathsResultsService(
             Urn = establishment.URN,
             SchoolName = establishment.EstablishmentName,
             LAName = establishment.LAName,
+            IsKS2 = establishment.IsKS2,
+            IsKS4 = establishment.IsKS4,
+            IsKS5 = establishment.IsKS5,
 
             EstablishmentAll = new RelativeYearValues<double?>
             {
@@ -214,6 +217,10 @@ public sealed class EnglishAndMathsResultsService(
             EstablishmentGirls = EmptyYears(),
             LocalAuthorityGirls = EmptyYears(),
             EnglandGirls = EmptyYears(),
+
+            IsKS2 = false,
+            IsKS4 = false,
+            IsKS5 = false
         };
     }
 }

@@ -1,0 +1,129 @@
+﻿@model KS5DestinationsViewModel;
+@using SAPPub.Web.Areas.Profiles.ViewModels.Destinations
+@using SAPPub.Web.Constants
+@using SAPPub.Web.ViewComponents.VerticalNavigation
+@using static SAPPub.Web.Constants.Constants;
+
+@{
+    ViewData["Header"] = PageTitleConstants.KS5SchoolPageTitles.Destinations;
+    ViewData["Title"] = $"{Model.SchoolName} - {PageTitleConstants.KS5SchoolPageTitles.DestinationsUrl}";
+}
+
+<div class="govuk-grid-row">
+    @await Component.InvokeAsync("VerticalNavigation",
+    new VerticalNavigationModel
+    {
+        URN = Model.URN,
+        SchoolName = Model.SchoolName,
+        ActivePage = RouteConstants.KS5Destinations,
+        IsKS2 = Model.IsKS2,
+        IsKS4 = Model.IsKS4,
+        IsKS5 = Model.IsKS5
+    })
+
+    <div class="govuk-grid-column-three-quarters">
+        <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">@ViewData["Header"]</h1>
+
+        <p class="govuk-body" data-testId="looking-at-school-performance-info">
+            Find out how students from this school or college progressed after finishing 16 to 19 study. Choose a group to view:
+        </p>
+
+        <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
+            <ul class="moj-sub-navigation__list">
+                @if (Model.IsKS4 == true)
+                {
+                    <li class="moj-sub-navigation__item">
+                        <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryDestinations" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.SecondarySchoolPageTitles.Destinations</a>
+                    </li>
+                }
+
+                <li class="moj-sub-navigation__item">
+                    <a class="moj-sub-navigation__link" aria-current="page" asp-route="@RouteConstants.KS5Destinations" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.KS5SchoolPageTitles.DestinationsFullTitle</a>
+                </li>
+                <li class="moj-sub-navigation__item">
+                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.KS5DestinationsHigher" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.KS5SchoolPageTitles.DestinationsHigherFullTitle</a>
+                </li>
+            </ul>
+        </nav>
+
+        <h2 class="govuk-heading-l">Student destinations after 16 to 19 study (2023 leavers)</h2>
+
+        <p class="govuk-body">
+            This data (published March 2026) shows what students did after finishing 16 to 19 study in 2023.
+        </p>
+        <p class="govuk-body">
+            Students are included if they:
+            <ul class="govuk-list govuk-list--bullet">
+                <li>stayed in education</li>
+                <li>started an apprenticeship (for at least 6 months)</li>
+                <li>entered employment from October to March the following year</li>
+            </ul>
+        </p>
+
+        <p class="govuk-body">
+            Compare this school or college with state-funded local and national averages.
+        </p>
+
+        <p class="govuk-tag govuk-tag--full-width govuk-tag--grey">
+            Number of students from this school or college included in the measure: @Model.NumberOfStudentsIncludedInMeasure.Value
+        </p>
+
+        <div class="data-container">
+            <h3 class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">
+                Students progressing to either education, apprenticeships or employment
+            </h3>
+
+                <div id="all-ks5-dest-data-container">
+                    <div id="all-ks5-dest-data-chart-container" class="chart-container">
+                        <canvas id="all-destinations-chart"
+                                class="js-chart"
+                                data-type="bar"
+                                data-not-available-text="@(NotAvailable)"
+                                data-chart='@Html.Raw(Json.Serialize(Model.AllDestinationsData))'
+                                data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
+                        </canvas>
+                    </div>
+
+                    <div id="all-ks5-dest-data-table-container" class="all-ks5-dest-data-table-container">
+                        <table id="all-destinations-current-year-table" class="govuk-table">
+                            <tbody class="govuk-table__body">
+                                @foreach (var label in Model.AllDestinationsData.Labels.Select((value, i) => (value, i)))
+                                {
+                                    <tr class="govuk-table__row">
+                                        <th scope="row" class="govuk-table__header">@label.value</th>
+                                    <td class="govuk-table__cell">@(Model.AllDestinationsData.Data[label.i] is null ? NotAvailable : $"{Model.AllDestinationsData.Data[label.i]}%")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="govuk-button-group">
+                        <button id="all-ks5-dest-data-show-btn" class="govuk-button govuk-button--secondary">Show as a table</button>
+                    </div>
+                </div>
+            
+        </div>
+
+        <govuk-pagination id="destinations-pagination">
+            @if (Model.IsKS4 == true)
+            {
+                <govuk-pagination-previous asp-route="@RouteConstants.SecondaryDestinations" asp-all-route-data="@Model.RouteAttributes">Destinations</govuk-pagination-previous>
+            }
+            else
+            {
+                <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">Academic performance: Subjects entered</govuk-pagination-previous>
+            }
+            <govuk-pagination-next asp-route="@RouteConstants.KS5DestinationsHigher" asp-all-route-data="@Model.RouteAttributes">Student destinations after 16 to 19 study</govuk-pagination-next>
+
+        </govuk-pagination>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/chart.umd.js"></script>
+    <script src="~/js/chartjs-plugin-datalabels.min.js"></script>
+    <script src="~/js/chart-factory.js"></script>
+    <script src="~/js/destinations.js"></script>
+}

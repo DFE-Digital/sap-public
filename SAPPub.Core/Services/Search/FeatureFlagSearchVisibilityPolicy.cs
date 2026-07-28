@@ -5,8 +5,8 @@ namespace SAPPub.Core.Services.Search;
 
 public sealed class FeatureFlagSearchVisibilityPolicy(IFeatureManager featureManager) : ISearchVisibilityPolicy
 {
-    private const string FESearchEnabled = "FESearchEnabled";
+    private const string Enable16to19 = "Enable16to19";
 
     public Task<bool> IncludeKs5Async(CancellationToken ct = default)
-        => featureManager.IsEnabledAsync(FESearchEnabled);
+        => featureManager.IsEnabledAsync(Enable16to19);
 }

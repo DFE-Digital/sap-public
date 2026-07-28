@@ -36,6 +36,16 @@ namespace SAPPub.Core.Services
             return true;
         }
 
+        public void Remove(IEnumerable<string> urns)
+        {
+            var urnSet = new HashSet<string>(urns);
+            var establishments = GetSavedEstablishments().ToList();
+            if (establishments.RemoveAll(urnSet.Contains) > 0)
+            {
+                WriteCookie(establishments);
+            }
+        }
+
         public bool IsListLimitReached() => GetSavedEstablishments().Count >= ComparisonLimit;
 
         private void Save(string urn)
@@ -55,7 +65,7 @@ namespace SAPPub.Core.Services
             {
                 WriteCookie(establishments);
             }
-        }
+        }        
 
         private void WriteCookie(List<string> establishments)
         {

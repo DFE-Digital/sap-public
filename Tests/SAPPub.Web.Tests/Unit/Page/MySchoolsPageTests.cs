@@ -1,12 +1,12 @@
 ﻿using AngleSharp.Dom;
 using Moq;
-using SAPPub.Core.Entities;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.ServiceModels;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Models.MySchools;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
+using static SAPPub.Web.Constants.Constants;
 
 namespace SAPPub.Web.Tests.Unit.Page;
 
@@ -43,22 +43,26 @@ public class MySchoolsPageTests : PageTestsBase
     [Fact]
     public async Task MySchoolsListPage_ShowsSchoolsListOrderedAlphabetically()
     {
-        var establishmentList = (new List<EstablishmentServiceModel>
+        var establishmentList = new List<EstablishmentServiceModel>
         {
             new EstablishmentTestBuilder().WithURN("123456").WithEstablishmentName("Charlie").WithFullAddress().WithStatusCode(EstablishmentStatus.Open).BuildServiceModel(),
             new EstablishmentTestBuilder().WithURN("123457").WithEstablishmentName("Alpha").WithFullAddress().WithStatusCode(EstablishmentStatus.Closed).BuildServiceModel(),
             new EstablishmentTestBuilder().WithURN("123458").WithEstablishmentName("Bravo").WithFullAddress().WithStatusCode(EstablishmentStatus.Open).BuildServiceModel(),
             new EstablishmentTestBuilder().WithURN("123459").WithEstablishmentName("Delta").WithFullAddress().WithStatusCode(EstablishmentStatus.Open).BuildServiceModel(),
-        }).ToList();
+        }.ToList();
 
+        var orderedUrns = establishmentList.OrderByDescending(e => e.EstablishmentName).Select(e => e.URN).ToList();
         _comparisonService.Setup(s => s.GetSavedEstablishments())
-            .Returns(establishmentList.OrderByDescending(e => e.EstablishmentName).Select(e => e.URN).ToList());
+            .Returns(orderedUrns);
 
         foreach (var establishment in establishmentList)
         {
             _establishmentService.Setup(s => s.GetEstablishmentAsync(establishment.URN, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(establishment);
         }
+
+        _establishmentService.Setup(s => s.GetEstablishmentsAsync(orderedUrns, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(establishmentList);
 
         // Act
         var document = await Fixture.BrowseToPage(_pageRoute);
@@ -93,6 +97,11 @@ public class MySchoolsPageTests : PageTestsBase
                 .ReturnsAsync(establishment);
         }
 
+        var urns = establishmentList.Select(e => e.URN).ToList();
+
+        _establishmentService.Setup(s => s.GetEstablishmentsAsync(urns, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(establishmentList.AsEnumerable());
+
         // Act
         var document = await Fixture.BrowseToPage(_pageRoute);
 
@@ -115,11 +124,11 @@ public class MySchoolsPageTests : PageTestsBase
     {
         // Arrange
         var establishmentBuilder = new EstablishmentTestBuilder();
-        var establishmentList = (new List<EstablishmentServiceModel>
+        var establishmentList = new List<EstablishmentServiceModel>
         {
             new EstablishmentTestBuilder().WithURN("123457").WithFullAddress().WithStatusCode(EstablishmentStatus.Closed).BuildServiceModel(),
             new EstablishmentTestBuilder().WithURN("123458").WithFullAddress().WithStatusCode(EstablishmentStatus.Closed).WithClosedDate(new DateOnly(2020, 1, 1)).BuildServiceModel()
-        }).OrderBy(e => e.EstablishmentName).ToList();
+        }.OrderBy(e => e.EstablishmentName).ToList();
 
         _comparisonService.Setup(s => s.GetSavedEstablishments())
             .Returns(establishmentList.Select(e => e.URN).ToList());
@@ -129,6 +138,11 @@ public class MySchoolsPageTests : PageTestsBase
             _establishmentService.Setup(s => s.GetEstablishmentAsync(establishment.URN, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(establishment);
         }
+
+        var urns = establishmentList.Select(e => e.URN).ToList();
+
+        _establishmentService.Setup(s => s.GetEstablishmentsAsync(urns, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(establishmentList.AsEnumerable());
 
         // Act
         var document = await Fixture.BrowseToPage(_pageRoute);
@@ -157,11 +171,11 @@ public class MySchoolsPageTests : PageTestsBase
     public async Task MySchoolsListPage_UrnIsNotInSavedEstablishments_IgnoresUrn()
     {
         var establishmentBuilder = new EstablishmentTestBuilder();
-        var establishmentsFromRepository = (new List<EstablishmentServiceModel>
+        var establishmentsFromRepository = new List<EstablishmentServiceModel>
         {
             establishmentBuilder.WithURN("123456").WithFullAddress().WithStatusCode(EstablishmentStatus.Open).BuildServiceModel(),
             establishmentBuilder.WithURN("123457").WithFullAddress().WithStatusCode(EstablishmentStatus.Open).BuildServiceModel()
-        }).OrderBy(e => e.EstablishmentName).ToList();
+        }.OrderBy(e => e.EstablishmentName).ToList();
 
         var establishmentsStoredByUser = establishmentsFromRepository.Select(e => e.URN).ToList();
         establishmentsStoredByUser.Add("123458"); // Add an extra URN that won't be found in the repository
@@ -174,6 +188,9 @@ public class MySchoolsPageTests : PageTestsBase
             _establishmentService.Setup(s => s.GetEstablishmentAsync(establishment.URN, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(establishment);
         }
+
+        _establishmentService.Setup(s => s.GetEstablishmentsAsync(establishmentsStoredByUser, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(establishmentsFromRepository.AsEnumerable());
 
         // Act
         var document = await Fixture.BrowseToPage(_pageRoute);
@@ -188,7 +205,7 @@ public class MySchoolsPageTests : PageTestsBase
     [InlineData(7)]
     public async Task MySchoolsListPage_CompareSelection_InvalidAmountOfEstablishmentsSelected_ShowsErrorMessages(int selectedEstablishmentsCount)
     {
-        var establishmentList = (new List<EstablishmentServiceModel>
+        var establishmentList = new List<EstablishmentServiceModel>
         {
             new EstablishmentTestBuilder().WithURN("123456").BuildServiceModel(),
             new EstablishmentTestBuilder().WithURN("123457").BuildServiceModel(),
@@ -197,7 +214,7 @@ public class MySchoolsPageTests : PageTestsBase
             new EstablishmentTestBuilder().WithURN("123460").BuildServiceModel(),
             new EstablishmentTestBuilder().WithURN("123461").BuildServiceModel(),
             new EstablishmentTestBuilder().WithURN("123462").BuildServiceModel()
-        }).ToList();
+        }.ToList();
 
         _comparisonService.Setup(s => s.GetSavedEstablishments())
             .Returns(establishmentList.OrderByDescending(e => e.EstablishmentName).Select(e => e.URN).ToList());
@@ -229,13 +246,13 @@ public class MySchoolsPageTests : PageTestsBase
     [Fact]
     public async Task MySchoolsListPage_CompareSelection_TwoSelected_Redirects()
     {
-        var establishmentList = (new List<EstablishmentServiceModel>
+        var establishmentList = new List<EstablishmentServiceModel>
         {
             new EstablishmentTestBuilder().WithURN("123456").BuildServiceModel(),
             new EstablishmentTestBuilder().WithURN("123457").BuildServiceModel(),
             new EstablishmentTestBuilder().WithURN("123458").BuildServiceModel(),
             new EstablishmentTestBuilder().WithURN("123459").BuildServiceModel(),
-        }).ToList();
+        }.ToList();
 
         _comparisonService.Setup(s => s.GetSavedEstablishments())
             .Returns(establishmentList.OrderByDescending(e => e.EstablishmentName).Select(e => e.URN).ToList());
@@ -258,6 +275,83 @@ public class MySchoolsPageTests : PageTestsBase
         // Assert
         Assert.Null(document);
         Assert.NotNull(response.RedirectionLocation);
+    }
+
+    [Fact]
+    public async Task MySchoolsListPage_RemoveSelection_NoEstablishmentsSelected_ShowsErrorMessages()
+    {
+        var establishmentList = new List<EstablishmentServiceModel>
+        {
+            new EstablishmentTestBuilder().WithURN("123456").BuildServiceModel(),
+            new EstablishmentTestBuilder().WithURN("123457").BuildServiceModel(),
+            new EstablishmentTestBuilder().WithURN("123458").BuildServiceModel(),
+            new EstablishmentTestBuilder().WithURN("123459").BuildServiceModel(),
+            new EstablishmentTestBuilder().WithURN("123460").BuildServiceModel(),
+            new EstablishmentTestBuilder().WithURN("123461").BuildServiceModel(),
+            new EstablishmentTestBuilder().WithURN("123462").BuildServiceModel()
+        }.ToList();
+
+        _comparisonService.Setup(s => s.GetSavedEstablishments())
+            .Returns(establishmentList.OrderByDescending(e => e.EstablishmentName).Select(e => e.URN).ToList());
+
+        foreach (var establishment in establishmentList)
+        {
+            _establishmentService.Setup(s => s.GetEstablishmentAsync(establishment.URN, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(establishment);
+        }
+
+        var selectedEstablishments = new List<string>();
+        var formData = new MySchoolsListViewModel
+        {
+            SelectedEstablishmentUrns = selectedEstablishments
+        };
+
+        // Act
+        var response = await Fixture.PostToPage(_pageRoute, formData, Constants.Constants.ActionRemove);
+        var document = response.Document;
+
+        // Assert
+        Assert.NotNull(document);
+        var summaryErrors = document.GetErrorSummaryErrors();
+        var errorMessages = document.GetErrorMessages();
+        Assert.Single(summaryErrors);
+        Assert.Single(errorMessages);
+        Assert.Contains("Select at least one school to remove", errorMessages[0].Trim());
+    }
+
+    [Fact]
+    public async Task MySchoolsListPage_RemoveSelection_Selected_Redirects()
+    {
+        var establishmentList = new List<EstablishmentServiceModel>
+        {
+            new EstablishmentTestBuilder().WithURN("123456").BuildServiceModel(),
+            new EstablishmentTestBuilder().WithURN("123457").BuildServiceModel(),
+            new EstablishmentTestBuilder().WithURN("123458").BuildServiceModel(),
+            new EstablishmentTestBuilder().WithURN("123459").BuildServiceModel(),
+        }.ToList();
+
+        _comparisonService.Setup(s => s.GetSavedEstablishments())
+            .Returns(establishmentList.OrderByDescending(e => e.EstablishmentName).Select(e => e.URN).ToList());
+
+        foreach (var establishment in establishmentList)
+        {
+            _establishmentService.Setup(s => s.GetEstablishmentAsync(establishment.URN, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(establishment);
+        }
+
+        var formData = new MySchoolsListViewModel
+        {
+            SelectedEstablishmentUrns = new List<string>() { "123456", "123457" }
+        };
+
+        // Act
+        var response = await Fixture.PostToPage(_pageRoute, formData, ActionRemove);
+        var document = response.Document;
+
+        // Assert
+        Assert.Null(document);
+        Assert.NotNull(response.RedirectionLocation);
+        Assert.Equal("/my-schools/remove-confirm", response.RedirectionLocation);
     }
 
     private IReadOnlyList<CheckboxItemView> ParseCheckboxElements(IHtmlCollection<IElement> items)

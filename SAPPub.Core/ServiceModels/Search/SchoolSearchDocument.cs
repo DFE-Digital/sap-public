@@ -17,4 +17,5 @@ public record SchoolSearchDocument
     public double? Longitude { get; init; }
     public DateOnly? ClosedDate { get; set; }
     public int? StatusCode { get; set; }
+    public bool IsKS4 { get; init; }
 };

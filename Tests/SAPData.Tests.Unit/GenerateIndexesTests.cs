@@ -62,14 +62,21 @@ public class GenerateIndexesTests : IDisposable
     {
         // These views should appear in the to_regclass checks
         Assert.Contains("'v_england_destinations'", _sql);
+        Assert.Contains("'v_england_ks5_destinations'", _sql);
+        Assert.Contains("'v_england_ks2_attainment'", _sql);
         Assert.Contains("'v_england_performance'", _sql);
+        Assert.Contains("'v_england_ks5_performance'", _sql);
         Assert.Contains("'v_establishment'", _sql);
         Assert.Contains("'v_establishment_absence'", _sql);
         Assert.Contains("'v_establishment_destinations'", _sql);
+        Assert.Contains("'v_establishment_ks2_attainment'", _sql);
         Assert.Contains("'v_establishment_performance'", _sql);
-        Assert.Contains("'v_establishment_workforce'", _sql);
+        Assert.Contains("'v_establishment_ks5_performance'", _sql);
         Assert.Contains("'v_la_destinations'", _sql);
+        Assert.Contains("'v_la_ks5_destinations'", _sql);
+        Assert.Contains("'v_la_ks2_attainment'", _sql);
         Assert.Contains("'v_la_performance'", _sql);
+        Assert.Contains("'v_la_ks5_performance'", _sql);
     }
 
     [Fact]
@@ -88,17 +95,44 @@ public class GenerateIndexesTests : IDisposable
     public void Uses_Id_for_expected_non_establishment_views()
     {
         Assert.Contains("idx_v_england_destinations_id", _sql);
+        Assert.Contains("idx_v_england_ks5_destinations", _sql);
+        Assert.Contains("idx_v_england_ks2_attainment", _sql);
+        Assert.Contains("idx_v_england_performance", _sql);
+        Assert.Contains("idx_v_england_ks5_performance", _sql);
+
+        Assert.Contains("idx_v_establishment", _sql);
+        Assert.Contains("idx_v_establishment_absence", _sql);
+        Assert.Contains("idx_v_establishment_destinations", _sql);
+        Assert.Contains("idx_v_establishment_ks2_attainment", _sql);
+        Assert.Contains("idx_v_establishment_performance", _sql);
+        Assert.Contains("idx_v_establishment_ks5_performance", _sql);
+
+        Assert.Contains("idx_v_la_destinations", _sql);
+        Assert.Contains("idx_v_la_ks5_destinations", _sql);
+        Assert.Contains("idx_v_la_ks2_attainment", _sql);
         Assert.Contains("idx_v_la_performance_id", _sql);
+        Assert.Contains("idx_v_la_ks5_performance", _sql);
 
-        Assert.Matches(
-            new Regex(@"idx_v_england_destinations_id.*\(""Id""\)", RegexOptions.Singleline),
-            _sql
-        );
+        Assert.Matches(new Regex(@"idx_v_england_destinations_id.*\(""Id""\)", RegexOptions.Singleline),_sql);
+        Assert.Matches(new Regex(@"idx_v_england_ks5_destinations.*\(""Id""\)", RegexOptions.Singleline),_sql);
+        Assert.Matches(new Regex(@"idx_v_england_ks2_attainment.*\(""Id""\)", RegexOptions.Singleline),_sql);
+        Assert.Matches(new Regex(@"idx_v_england_performance.*\(""Id""\)", RegexOptions.Singleline),_sql);
+        Assert.Matches(new Regex(@"idx_v_england_ks5_performance.*\(""Id""\)", RegexOptions.Singleline),_sql);
 
-        Assert.Matches(
-            new Regex(@"idx_v_la_performance_id.*\(""Id""\)", RegexOptions.Singleline),
-            _sql
-        );
+
+        Assert.Matches(new Regex(@"idx_v_establishment.*\(""Id""\)", RegexOptions.Singleline),_sql);
+        Assert.Matches(new Regex(@"idx_v_establishment_absence.*\(""Id""\)", RegexOptions.Singleline),_sql);
+        Assert.Matches(new Regex(@"idx_v_establishment_destinations.*\(""Id""\)", RegexOptions.Singleline),_sql);
+        Assert.Matches(new Regex(@"idx_v_establishment_ks2_attainment.*\(""Id""\)", RegexOptions.Singleline),_sql);
+        Assert.Matches(new Regex(@"idx_v_establishment_performance.*\(""Id""\)", RegexOptions.Singleline),_sql);
+        Assert.Matches(new Regex(@"idx_v_establishment_ks5_performance.*\(""Id""\)", RegexOptions.Singleline),_sql);
+
+
+        Assert.Matches(new Regex(@"idx_v_la_performance_id.*\(""Id""\)", RegexOptions.Singleline),_sql);
+        Assert.Matches(new Regex(@"idx_v_la_ks5_destinations.*\(""Id""\)", RegexOptions.Singleline), _sql);
+        Assert.Matches(new Regex(@"idx_v_la_ks2_attainment.*\(""Id""\)", RegexOptions.Singleline), _sql);
+        Assert.Matches(new Regex(@"idx_v_la_ks5_performance.*\(""Id""\)", RegexOptions.Singleline), _sql);
+        Assert.Matches(new Regex(@"idx_v_la_destinations.*\(""Id""\)", RegexOptions.Singleline), _sql);
     }
 
     [Fact]

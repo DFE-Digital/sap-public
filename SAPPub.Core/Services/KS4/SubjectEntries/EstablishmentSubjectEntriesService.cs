@@ -1,27 +1,25 @@
-﻿using SAPPub.Core.Entities.KS4.SubjectEntries;
-using SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
+﻿using SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
+using SAPPub.Core.ServiceModels.KS4.Performance;
 
-namespace SAPPub.Core.Services.KS4.SubjectEntries
+namespace SAPPub.Core.Services.KS4.SubjectEntries;
+
+public sealed class EstablishmentSubjectEntriesService(IEstablishmentSubjectEntriesRepository subjectEntriesRepository) : IEstablishmentSubjectEntriesService
 {
-    public sealed class EstablishmentSubjectEntriesService : IEstablishmentSubjectEntriesService
+    private readonly IEstablishmentSubjectEntriesRepository _repo = subjectEntriesRepository ?? throw new ArgumentNullException(nameof(subjectEntriesRepository));
+
+    public async Task<(IEnumerable<SubjectsEntered> Gcse, IEnumerable<SubjectsEntered> Vocational, IEnumerable<SubjectsEntered> Other)>
+        GetSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default)
     {
-        private readonly IEstablishmentSubjectEntriesRepository _repo;
+        ArgumentException.ThrowIfNullOrWhiteSpace(urn);
+        ct.ThrowIfCancellationRequested();
 
-        public EstablishmentSubjectEntriesService(IEstablishmentSubjectEntriesRepository subjectEntriesRepository)
-        {
-            _repo = subjectEntriesRepository ?? throw new ArgumentNullException(nameof(subjectEntriesRepository));
-        }
+        var gcseTask = _repo.GetGcseSubjectEntriesByUrnAsync(urn, ct);
+        var vocationalTask = _repo.GetVocationalAwardSubjectEntriesByUrnAsync(urn, ct);
+        var otherTask = _repo.GetOtherSubjectEntriesByUrnAsync(urn, ct);
 
-        public async Task<(EstablishmentCoreSubjectEntries Core, EstablishmentAdditionalSubjectEntries Additional)>
-            GetSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default)
-        {
-            var coreTask = _repo.GetCoreSubjectEntriesByUrnAsync(urn, ct);
-            var additionalTask = _repo.GetAdditionalSubjectEntriesByUrnAsync(urn, ct);
+        await Task.WhenAll(gcseTask, vocationalTask, otherTask);
 
-            await Task.WhenAll(coreTask, additionalTask);
-
-            return (await coreTask, await additionalTask);
-        }
+        return (await gcseTask, await vocationalTask, await otherTask);
     }
 }

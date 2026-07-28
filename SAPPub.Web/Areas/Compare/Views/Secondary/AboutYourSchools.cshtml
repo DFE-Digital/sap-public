@@ -4,12 +4,15 @@
 
 @{
     ViewData["Header"] = "About your schools";
-    ViewData["SubHeader"] = PageTitleConstants.SecondarySchoolPageTitles.AboutYourSchools;
+    ViewData["SubHeader"] = PageTitleConstants.CompareSecondarySchoolPageTitles.AboutYourSchools;
     ViewData["Title"] = $"Compare - {ViewData["SubHeader"]}";
 }
 
 <div class="govuk-grid-row">
-
+    @if (Model.ListContainsSpecialSchool && Model.ListContainsNonSpecialSchool)
+    {
+        <partial name="_SpecialSchoolWarningBanner" />
+    }
     @await Component.InvokeAsync("VerticalNavigationCompareSecondary",
     new VerticalNavigationCompareSecondaryModel
     {

@@ -21,4 +21,14 @@ public static class TempDataHelper
         tempData.TryGetValue(key, out var returnValue);
         return returnValue == null ? default : JsonSerializer.Deserialize<T>(returnValue.ToString()!);
     }
+
+    public static T? Peek<T>(this ITempDataDictionary tempData, string key)
+    {
+        if (tempData == null)
+            return default;
+
+        var returnValue = tempData.Peek(key);
+
+        return returnValue == null ? default : JsonSerializer.Deserialize<T>(returnValue.ToString()!);
+    }
 }

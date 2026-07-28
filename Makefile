@@ -67,6 +67,9 @@ terraform-apply: terraform-init
 terraform-destroy: terraform-init
 	terraform -chdir=terraform/application destroy -var-file "config/${CONFIG}.tfvars.json" ${AUTO_APPROVE}
 
+terraform-import: terraform-init
+	terraform -chdir=terraform/application import -var-file "config/${CONFIG}.tfvars.json" $(RESOURCE) $(ID)
+
 set-what-if:
 	$(eval WHAT_IF=--what-if)
 

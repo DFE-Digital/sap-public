@@ -70,7 +70,6 @@ Human grouping label.
 Examples:
 - KS4
 - Absence
-- Workforce
 
 Used for grouping rows in spreadsheets.
 
@@ -143,7 +142,6 @@ Dataset category.
 Examples:
 - Performance
 - Absence
-- Workforce
 
 Used to group datasets and align with raw_sources.json.
 

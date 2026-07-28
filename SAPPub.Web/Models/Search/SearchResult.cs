@@ -16,6 +16,7 @@ public class SearchResult
     public required DisplayField<DateOnly> ClosedDate { get; set; }
     public EstablishmentStatus? EstablishmentStatus { get; set; }
     public bool IsSchoolClosed => EstablishmentStatus == Core.Enums.EstablishmentStatus.Closed;
+    public bool IsKS4 { get; init; }
 
     public static SearchResult FromServiceModel(SchoolSearchResultServiceModel serviceModel)
     {
@@ -27,7 +28,8 @@ public class SearchResult
             ReligiousCharacter = serviceModel.ReligiousCharacterName ?? string.Empty,
             GenderName = serviceModel.GenderName ?? string.Empty,
             EstablishmentStatus = serviceModel.EstablishmentStatus,
-            ClosedDate = serviceModel.ClosedDate.ToDisplayField()
+            ClosedDate = serviceModel.ClosedDate.ToDisplayField(),
+            IsKS4 = serviceModel.IsKS4
         };
     }
 }

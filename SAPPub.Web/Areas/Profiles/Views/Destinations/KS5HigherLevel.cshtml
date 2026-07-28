@@ -1,0 +1,76 @@
+﻿@model SAPPub.Web.Areas.Profiles.ViewModels.AboutSchool.AboutSchoolViewModel;
+@using SAPPub.Web.Constants
+@using SAPPub.Web.ViewComponents.VerticalNavigation
+
+@{
+    ViewData["Header"] = PageTitleConstants.KS5SchoolPageTitles.Destinations;
+    ViewData["Title"] = $"{Model.SchoolName} - {PageTitleConstants.KS5SchoolPageTitles.DestinationsHigherUrl}";
+}
+
+<div class="govuk-grid-row">
+    @await Component.InvokeAsync("VerticalNavigation",
+    new VerticalNavigationModel
+    {
+        URN = Model.URN,
+        SchoolName = Model.SchoolName,
+        ActivePage = RouteConstants.KS5Destinations,
+        IsKS2 = Model.IsKS2,
+        IsKS4 = Model.IsKS4,
+        IsKS5 = Model.IsKS5
+    })
+
+    <div class="govuk-grid-column-three-quarters">
+        <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">@ViewData["Header"]</h1>
+
+        <p class="govuk-body" data-testId="looking-at-school-performance-info">
+            Looking at school performance data is one way to see how well a school is doing.
+            You should look at a range of information about a school before deciding if it’s the right fit for your child.
+        </p>
+
+
+        <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
+            <ul class="moj-sub-navigation__list">
+                @if (Model.IsKS4 == true)
+                {
+                    <li class="moj-sub-navigation__item">
+                        <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryDestinations" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.SecondarySchoolPageTitles.Destinations</a>
+                    </li>
+                }
+
+                <li class="moj-sub-navigation__item">
+                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.KS5Destinations" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.KS5SchoolPageTitles.DestinationsFullTitle</a>
+                </li>
+                <li class="moj-sub-navigation__item">
+                    <a class="moj-sub-navigation__link" aria-current="page" asp-route="@RouteConstants.KS5DestinationsHigher" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.KS5SchoolPageTitles.DestinationsHigherFullTitle</a>
+                </li>
+            </ul>
+        </nav>
+
+        <h2 class="govuk-heading-l">@ViewData["Header"]</h2>
+
+
+
+
+
+        <govuk-pagination id="destinations-pagination">
+            @if (Model.IsKS4 == true)
+            {
+                <govuk-pagination-previous asp-route="@RouteConstants.SecondaryDestinations" asp-all-route-data="@Model.RouteAttributes">Destinations</govuk-pagination-previous>
+            }
+            else
+            {
+                <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">Academic performance: Subjects entered</govuk-pagination-previous>
+            }
+            <govuk-pagination-next asp-route="@RouteConstants.KS5DestinationsHigher" asp-all-route-data="@Model.RouteAttributes">Student destinations after 16 to 19 study</govuk-pagination-next>
+
+        </govuk-pagination>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/chart.umd.js"></script>
+    <script src="~/js/chartjs-plugin-datalabels.min.js"></script>
+    <script src="~/js/chart-factory.js"></script>
+    <script src="~/js/destinations.js"></script>
+}

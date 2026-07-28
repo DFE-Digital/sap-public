@@ -34,18 +34,6 @@ namespace SAPPub.Core.Entities.KS4.Absence
         [IgnoreDataMember]
         public string? Abs_Persistent_Est_Current_Pct_Reason { get; set; }
 
-        public CodedDouble Abs_Persistent_Est_Previous_Pct_Coded { get; set; } = new();
-        [IgnoreDataMember]
-        public double? Abs_Persistent_Est_Previous_Pct { get; set; }
-        [IgnoreDataMember]
-        public string? Abs_Persistent_Est_Previous_Pct_Reason { get; set; }
-
-        public CodedDouble Abs_Persistent_Est_Previous2_Pct_Coded { get; set; } = new();
-        [IgnoreDataMember]
-        public double? Abs_Persistent_Est_Previous2_Pct { get; set; }
-        [IgnoreDataMember]
-        public string? Abs_Persistent_Est_Previous2_Pct_Reason { get; set; }
-
         //
         // Overall absence %
         //
@@ -54,33 +42,5 @@ namespace SAPPub.Core.Entities.KS4.Absence
         public double? Abs_Tot_Est_Current_Pct { get; set; }
         [IgnoreDataMember]
         public string? Abs_Tot_Est_Current_Pct_Reason { get; set; }
-
-        public CodedDouble Abs_Tot_Est_Previous_Pct_Coded { get; set; } = new();
-        [IgnoreDataMember]
-        public double? Abs_Tot_Est_Previous_Pct { get; set; }
-        [IgnoreDataMember]
-        public string? Abs_Tot_Est_Previous_Pct_Reason { get; set; }
-
-        public CodedDouble Abs_Tot_Est_Previous2_Pct_Coded { get; set; } = new();
-        [IgnoreDataMember]
-        public double? Abs_Tot_Est_Previous2_Pct { get; set; }
-        [IgnoreDataMember]
-        public string? Abs_Tot_Est_Previous2_Pct_Reason { get; set; }
-
-        //
-        // Authorised / Unauthorised absence %
-        // (view currently provides current year only)
-        //
-        public CodedDouble Auth_Tot_Est_Current_Pct_Coded { get; set; } = new();
-        [IgnoreDataMember]
-        public double? Auth_Tot_Est_Current_Pct { get; set; }
-        [IgnoreDataMember]
-        public string? Auth_Tot_Est_Current_Pct_Reason { get; set; }
-
-        public CodedDouble UnAuth_Tot_Est_Current_Pct_Coded { get; set; } = new();
-        [IgnoreDataMember]
-        public double? UnAuth_Tot_Est_Current_Pct { get; set; }
-        [IgnoreDataMember]
-        public string? UnAuth_Tot_Est_Current_Pct_Reason { get; set; }
     }
 }

@@ -4,6 +4,10 @@ public class AttainmentAndProgressModel
 {
     public required string Urn { get; init; }
 
+    public required bool IsKS2 { get; set; }
+    public required bool IsKS4 { get; set; }
+    public required bool IsKS5 { get; set; }
+
     public string? SchoolName { get; init; }
 
     public double? EstablishmentProgress8Score { get; init; }

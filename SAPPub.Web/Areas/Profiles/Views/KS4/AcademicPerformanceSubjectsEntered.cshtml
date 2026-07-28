@@ -1,0 +1,74 @@
+﻿@model SAPPub.Web.Models.SecondarySchool.AcademicPerformanceSubjectsEnteredViewModel;
+@using SAPPub.Web.Constants
+@using SAPPub.Web.ViewComponents.VerticalNavigation
+@using static SAPPub.Web.Constants.PageTitleConstants
+
+@{
+    ViewData["Header"] = "Academic performance";
+    ViewData["SubHeader"] = PageTitleConstants.SecondarySchoolPageTitles.SubjectsEntered;
+    ViewData["Title"] = $"{Model.SchoolName} - Secondary {ViewData["SubHeader"]}";
+}
+
+<div class="govuk-grid-row">
+    @await Component.InvokeAsync("VerticalNavigation",
+    new VerticalNavigationModel
+    {
+        URN = Model.URN,
+        SchoolName = Model.SchoolName,
+        ActivePage = RouteConstants.SecondaryAcademicPerformanceSubjectsEntered,
+        IsKS2 = Model.IsKS2,
+        IsKS4 = Model.IsKS4,
+        IsKS5 = Model.IsKS5
+    })
+
+    <div class="govuk-grid-column-three-quarters">
+        <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
+        <h1 class="govuk-heading-xl">@ViewData["Header"]</h1>
+        <p class="govuk-body">
+            Looking at school performance data is one way to see how well a school is doing.
+            You should look at a range of information about a school before deciding if it’s the right fit for your child.
+        </p>
+        <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
+            <ul class="moj-sub-navigation__list">
+                <li class="moj-sub-navigation__item">
+                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress" asp-all-route-data="@Model.RouteAttributes">@SecondarySchoolPageTitles.ProgressAndAttainment</a>
+                </li>
+                <li class="moj-sub-navigation__item">
+                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults" asp-all-route-data="@Model.RouteAttributes">@SecondarySchoolPageTitles.EnglishAndMathsResults</a>
+                </li>
+                <li class="moj-sub-navigation__item">
+                    <a class="moj-sub-navigation__link" aria-current="page" asp-route="@RouteConstants.SecondaryAcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">@SecondarySchoolPageTitles.SubjectsEntered</a>
+                </li>
+                <li class="moj-sub-navigation__item">
+                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceAdditionalMeasures" asp-all-route-data="@Model.RouteAttributes">@SecondarySchoolPageTitles.AdditionalMeasures</a>
+                </li>
+
+            </ul>
+        </nav>
+
+        <h2 class="govuk-heading-l">@ViewData["SubHeader"] for the previous academic year</h2>
+
+        <p class="govuk-body">
+            Information in this section is for the 2024 to 2025 academic year.
+        </p>
+
+        <govuk-details id="details-academic-performance">
+            <govuk-details-summary>
+                What do the qualifications mean?
+            </govuk-details-summary>
+            <govuk-details-text>
+                <p>A GCSE is an academic qualification awarded for exams in England, usually taken at the age of 16.</p>
+                <p>Technical Awards are vocational qualifications which focus on broad job areas, like health and social care or travel and tourism. Pupils can take Technical Awards alongside GCSEs.</p>
+            </govuk-details-text>
+        </govuk-details>
+
+        <partial name="_SubjectsEntered" model="Model.GcseSubjects" view-data='new ViewDataDictionary(ViewData) { ["Caption"] = "GCSE subjects entered" }' />
+        <partial name="_SubjectsEntered" model="Model.VocationalSubjects" view-data='new ViewDataDictionary(ViewData) { ["Caption"] = "Technical Award subjects entered" }' />
+        <partial name="_SubjectsEntered" model="Model.OtherSubjects" view-data='new ViewDataDictionary(ViewData) { ["Caption"] = "Other subjects entered" }' />
+
+        <govuk-pagination id="academic-performance-subjects-entered-pagination">
+            <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults" asp-all-route-data="@Model.RouteAttributes">Secondary academic performance: English and maths results</govuk-pagination-previous>
+            <govuk-pagination-next asp-route="@RouteConstants.SecondaryAcademicPerformanceAdditionalMeasures" asp-all-route-data="@Model.RouteAttributes">Secondary academic performance: Additional measures</govuk-pagination-next>
+        </govuk-pagination>
+    </div>
+</div>

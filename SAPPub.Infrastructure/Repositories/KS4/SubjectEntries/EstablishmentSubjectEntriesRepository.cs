@@ -1,87 +1,63 @@
 ﻿using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
+using SAPPub.Core.ServiceModels.KS4.Performance;
 using System.Globalization;
 
-namespace SAPPub.Infrastructure.Repositories.KS4.SubjectEntries
+namespace SAPPub.Infrastructure.Repositories.KS4.SubjectEntries;
+
+public sealed class EstablishmentSubjectEntriesRepository(IGenericRepository<EstablishmentSubjectEntryRow> repo) : IEstablishmentSubjectEntriesRepository
 {
-    public sealed class EstablishmentSubjectEntriesRepository : IEstablishmentSubjectEntriesRepository
+    private const string QualType_GCSE = "GCSE";
+    private const string QualType_Vocational = "Vocational";
+    private const string TotalExamEntriesRowIndicator = "Total exam entries";
+
+    private readonly IGenericRepository<EstablishmentSubjectEntryRow> _repo = repo ?? throw new ArgumentNullException(nameof(repo));
+
+    public async Task<IEnumerable<SubjectsEntered>> GetGcseSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default)
     {
-        private readonly IGenericRepository<EstablishmentSubjectEntryRow> _repo;
-        private const string TotalExamEntriesRowIndicator = "Total exam entries";
+        var gcseSubjectsEntered = await GetSubjectsEntered(urn, r => r.qualification_type == QualType_GCSE && r.grade == TotalExamEntriesRowIndicator, ct);
 
-        public EstablishmentSubjectEntriesRepository(IGenericRepository<EstablishmentSubjectEntryRow> repo)
+        foreach (var subjectEntered in gcseSubjectsEntered.Where(a => a!.Subject!.Contains("Maths", StringComparison.InvariantCultureIgnoreCase)))
         {
-            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
+            subjectEntered.Subject = subjectEntered?.Subject?.Replace("Maths", "Mathematics", true, CultureInfo.InvariantCulture).Trim();
         }
 
-        public async Task<EstablishmentCoreSubjectEntries> GetCoreSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default)
+        return gcseSubjectsEntered;
+    }
+
+    public async Task<IEnumerable<SubjectsEntered>> GetVocationalAwardSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default)
+    {
+        return await GetSubjectsEntered(urn, r => r.qualification_type == QualType_Vocational && r.grade == TotalExamEntriesRowIndicator, ct);
+    }
+
+    public async Task<IEnumerable<SubjectsEntered>> GetOtherSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default)
+    {
+        return await GetSubjectsEntered(urn, r => (r.qualification_type != QualType_Vocational && r.qualification_type != QualType_GCSE) && r.grade == TotalExamEntriesRowIndicator, ct);
+    }
+
+    private async Task<IEnumerable<SubjectsEntered>> GetSubjectsEntered(string urn, Func<EstablishmentSubjectEntryRow, bool> whereClause, CancellationToken ct = default)
+    {
+        if (string.IsNullOrWhiteSpace(urn))
         {
-            if (string.IsNullOrWhiteSpace(urn))
-                return new EstablishmentCoreSubjectEntries { SubjectEntries = new List<EstablishmentCoreSubjectEntries.SubjectEntry>() };
-
-            var rows = (await _repo.ReadManyAsync(new { Urn = urn }, ct))
-                .Where(r => IsCoreSubject(r.subject) && r.grade == TotalExamEntriesRowIndicator);
-
-            if (rows == null || !rows.Any())
-                return new EstablishmentCoreSubjectEntries { SubjectEntries = new List<EstablishmentCoreSubjectEntries.SubjectEntry>() };
-
-            var core = rows
-                .Select(r => new EstablishmentCoreSubjectEntries.SubjectEntry
-                {
-                    SubEntCore_Sub_Est_Current_Num = r.subject_discount_group != null && r.subject_discount_group.Contains("Maths", StringComparison.InvariantCultureIgnoreCase)
-                        ? r.subject_discount_group.Replace("Maths", "Mathematics", true, CultureInfo.InvariantCulture).Trim()
-                        : r.subject_discount_group?.Trim(),
-                    SubEntCore_Qual_Est_Current_Num = r.qualification_type ?? r.qualification_detailed,
-                    SubEntCore_Entr_Est_Current_Num = r.number_achieving
-                })
-                .OrderBy(r => r.SubEntCore_Sub_Est_Current_Num)
-                .ThenBy(r => r.SubEntCore_Qual_Est_Current_Num)
-                .ToList();
-
-            return new EstablishmentCoreSubjectEntries { SubjectEntries = core };
+            return [];
         }
 
-        public async Task<EstablishmentAdditionalSubjectEntries> GetAdditionalSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default)
+        var rows = (await _repo.ReadManyAsync(new { Urn = urn }, ct)).Where(whereClause);
+
+        if (rows is null || !rows.Any())
         {
-            if (string.IsNullOrWhiteSpace(urn))
-                return new EstablishmentAdditionalSubjectEntries { SubjectEntries = new List<EstablishmentAdditionalSubjectEntries.SubjectEntry>() };
-
-            var rows = (await _repo.ReadManyAsync(new { Urn = urn }, ct))
-                .Where(r => !IsCoreSubject(r.subject) && r.grade == TotalExamEntriesRowIndicator);
-
-            if (rows == null || !rows.Any())
-                return new EstablishmentAdditionalSubjectEntries { SubjectEntries = new List<EstablishmentAdditionalSubjectEntries.SubjectEntry>() };
-
-            var additional = rows
-                .Select(r => new EstablishmentAdditionalSubjectEntries.SubjectEntry
-                {
-                    SubEntAdd_Sub_Est_Current_Num = r.subject_discount_group?.Trim(),
-                    SubEntAdd_Qual_Est_Current_Num = (r.qualification_type ?? r.qualification_detailed)?.Trim(),
-                    SubEntAdd_Entr_Est_Current_Num = r.number_achieving
-                })
-                .OrderBy(r => r.SubEntAdd_Sub_Est_Current_Num)
-                .ThenBy(r => r.SubEntAdd_Qual_Est_Current_Num)
-                .ToList();
-
-            return new EstablishmentAdditionalSubjectEntries { SubjectEntries = additional };
+            return [];
         }
 
-        private static readonly HashSet<string> CoreSubjectCategories = new(StringComparer.OrdinalIgnoreCase)
-        {
-            "English Language",
-            "English Literature",
-            "Mathematics",
-            "Mathematics AS level",
-            "Statistics",
-            "Biology",
-            "Chemistry",
-            "Physics",
-            "Combined Science",
-            "Other Sciences"
-        };
-
-        private static bool IsCoreSubject(string? subject)
-            => !string.IsNullOrWhiteSpace(subject) && CoreSubjectCategories.Contains(subject.Trim());
+        return [.. rows
+            .Select(r => new SubjectsEntered
+            {
+                Subject = r.subject_discount_group?.Trim(),
+                Qualification = r.qualification_type ?? r.qualification_detailed,
+                TotalNumberOfEntries = r.number_achieving
+            })
+            .OrderBy(r => r.Subject)
+            .ThenBy(r => r.Qualification)];
     }
 }

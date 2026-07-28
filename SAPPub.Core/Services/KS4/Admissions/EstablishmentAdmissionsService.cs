@@ -20,7 +20,10 @@ public sealed class EstablishmentAdmissionsService(
             SchoolWebsite: establishment.Website,
             LAName: laUrls?.Name,
             LASchoolAdmissionsUrl: laUrls?.LAMainUrl,
-            EstablishmentStatus: establishment.StatusCode.ToStatus()
+            EstablishmentStatus: establishment.StatusCode.ToStatus(),
+            IsKS2: establishment.IsKS2,
+            IsKS4: establishment.IsKS4,
+            IsKS5: establishment.IsKS5
         );
     }
 }

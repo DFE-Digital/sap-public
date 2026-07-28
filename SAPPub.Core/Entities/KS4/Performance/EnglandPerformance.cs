@@ -125,5 +125,22 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public double? EngMaths59_Tot_Eng_Previous2_Pct { get; set; }
         [IgnoreDataMember]
         public string? EngMaths59_Tot_Eng_Previous2_Pct_Reason { get; set; }
+
+        // Number of pupils at the end of KS4
+        public CodedDouble Pup_Tot_Eng_Current_Num_Coded { get; set; }
+
+        ///
+        /// Additional measures
+        ///
+        // Pupils achieving at least 1 qualification
+        public CodedDouble AnyQual_Tot_Eng_Current_Pct_Coded { get; set; }
+        // Pupils entering for triple science
+        public CodedDouble TripSci_Tot_Eng_Current_Pct_Coded { get; set; }
+        // Pupils entering for more than one foreign language
+        public CodedDouble More1FL_Tot_Eng_Current_Pct_Coded { get; set; }
+        // Exam entries per pupil, GCSEs
+        public CodedDouble ExamEntriesGSCE_Tot_Eng_Current_Num_Coded { get; set; }
+        // Exam entries per pupil, all KS4 qualifications
+        public CodedDouble ExamEntriesKS4_Tot_Eng_Current_Num_Coded { get; set; }
     }
 }

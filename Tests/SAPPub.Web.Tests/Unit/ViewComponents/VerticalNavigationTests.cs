@@ -11,7 +11,7 @@ public class VerticalNavigationTests
     public void Invoke_ReturnsDefaultViewWithModel()
     {
         // Arrange
-        var item = new VerticalNavigationModel { URN = "1", SchoolName = "Kes", ActivePage = "About" };
+        var item = new VerticalNavigationModel { URN = "1", SchoolName = "Kes", ActivePage = "About", IsKS2 = true, IsKS4 = true, IsKS5 = true };
         
         var component = CreateComponent();
 

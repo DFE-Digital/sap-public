@@ -9,12 +9,22 @@ public static class Constants
     public const string EnglandAverage = "England average";
     public const string NotRecorded = "Not recorded";
     public const string NotAvailable = "Not available";
+    public const string ActionCompare = "Compare";
+    public const string ActionRemove = "Remove";
 
     // TempData Key Constants
     public const string CookiesConfirmation = "CookiesConfirmation";
     public const string BannerAddSuccess = "BannerAddSuccess";
     public const string BannerRemoveSuccess = "BannerRemoveSuccess";
     public const string ComparisionLimtReached = "ComparisionLimtReached";
+    public const string SelectedEstablishmentUrns = "SelectedEstablishmentUrns";
+    public const string SelectedSchoolsForRemoval = "SelectedSchoolsForRemoval";
+    public const string RemovedSchoolsCount = "RemovedSchoolsCount";
+    public const string BannerModel = "BannerModel";
+    public const string SubmitAction = "SubmitAction";
+
+    // HttpContext Key Constants
+    public const string Establishments = "Establishments";
 
     // Chart colours
     public const string EstablishmentChartColour = "#A285D1";
@@ -30,7 +40,8 @@ public static class Constants
     public const string MySchoolsListLimitExceeded = "You can only add 100 schools to your list. To add another, you must first remove a school.";
     public const string EditYourSchoolsList = "Edit your schools list";
     public const string CompareYourSchools = "Comparing your schools";
+
     // Managed Feature Names
     public const string EstablishmentComparisonEnabled = "EstablishmentComparisonEnabled";
-    public const string FESearchEnabled = "FESearchEnabled";
+    public const string Enable16to19 = "Enable16to19";
 }

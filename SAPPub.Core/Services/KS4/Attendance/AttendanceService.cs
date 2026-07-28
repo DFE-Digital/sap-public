@@ -18,7 +18,7 @@ public sealed class AttendanceService(
         var establishment = await establishmentService.GetEstablishmentAsync(urn, ct);
 
         if (string.IsNullOrWhiteSpace(establishment.URN))
-            return new AttendanceModel { Urn = urn };
+            return new AttendanceModel { Urn = urn, IsKS2 = false, IsKS4 = false, IsKS5 = false };
 
         // Now we can run the remaining calls concurrently
         var establishmentAbsence = await establishmentAbsenceService.GetEstablishmentAbsenceAsync(urn, ct);
@@ -32,6 +32,9 @@ public sealed class AttendanceService(
         {
             Urn = establishment.URN,
             SchoolName = establishment.EstablishmentName,
+            IsKS2 = establishment.IsKS2,
+            IsKS4 = establishment.IsKS4,
+            IsKS5 = establishment.IsKS5,
             Website = establishment.Website,
             LocalAuthority = establishment.LAName,
             EstablishmentAttendance = GetAttendenceValue(establishmentAbsence?.Abs_Tot_Est_Current_Pct),

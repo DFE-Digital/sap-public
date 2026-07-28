@@ -1,0 +1,42 @@
+﻿@model SAPPub.Web.Models.MySchools.RemoveSchoolsConfirmationViewModel
+
+@{
+    var hasMultipleSchools = Model.Schools.Count > 1;
+    var schoolText = hasMultipleSchools ? "schools" : "school";
+    ViewData["Title"] = $"Remove {schoolText} from your compare list";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">
+            @ViewData["Title"]
+        </h1>
+
+        @if (hasMultipleSchools)
+        {
+            <p class="govuk-body">
+                This will remove the following schools from your list:
+            </p>
+
+            <ul class="govuk-list govuk-list--bullet">
+                @foreach (var school in Model.Schools)
+                {
+                    <li>@school.Name</li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p class="govuk-body">
+                This will remove @Model.Schools[0].Name from your compare list.
+            </p>
+        }
+
+        <form method="post" asp-route="@RouteConstants.SubmitMySchoolsRemoveConfirm">
+            <div class="govuk-button-group">
+                <button id="submitButton" type="submit" class="govuk-button" data-module="govuk-button">Remove @schoolText from list</button>
+                <a id="cancelLink" class="govuk-link" asp-route="@RouteConstants.MySchoolsView">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

@@ -11,5 +11,5 @@ public static class CommonHelper
     public static double? AddNullable(double? a, double? b)
     {
         return a.HasValue && b.HasValue ? a + b : a ?? b;
-    }
+    }       
 }
