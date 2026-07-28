@@ -9,7 +9,7 @@ using SAPPub.Web.Constants;
 namespace SAPPub.Web.Areas.Profiles.Controllers;
 
 [Area("Profiles")]
-public class CurriculumController(ILogger<DestinationsController> logger, IFeatureManager featureManager) : Controller
+public class CurriculumController(ILogger<CurriculumController> logger, IFeatureManager featureManager) : Controller
 {
     [Route("school/{urn}/{schoolName}/curriculum", Name = RouteConstants.CurriculumRoot)]
     public async Task<IActionResult> Index([FromServices] IAboutSchoolService aboutSchoolService,
