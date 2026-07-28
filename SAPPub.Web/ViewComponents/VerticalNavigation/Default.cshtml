@@ -25,17 +25,29 @@
                     </a>
                 </li>
 
-                @if (await FeatureManager.IsEnabledAsync(EnablePrimary) && Model.IsKS2 || Model.IsKS4)
+                @if (await FeatureManager.IsEnabledAsync(EnablePrimary) && Model.IsKS2)
                 {
-                    <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.AdmissionsRoot ? "moj-side-navigation__item--active" : "")">
-                        <a asp-route="@RouteConstants.AdmissionsRoot" asp-all-route-data="routeAttributes">Admissions</a>
+                    <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.PrimaryAdmissions ? "moj-side-navigation__item--active" : "")">
+                        <a asp-route="@RouteConstants.PrimaryAdmissions" asp-all-route-data="routeAttributes">Admissions</a>
+                    </li>
+                }
+                else if (Model.IsKS4)
+                {
+                    <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.SecondaryAdmissions ? "moj-side-navigation__item--active" : "")">
+                        <a asp-route="@RouteConstants.SecondaryAdmissions" asp-all-route-data="routeAttributes">Admissions</a>
                     </li>
                 }
 
-                @if (await FeatureManager.IsEnabledAsync(EnablePrimary) && Model.IsKS2 || Model.IsKS4)
+                @if (await FeatureManager.IsEnabledAsync(EnablePrimary) && Model.IsKS2)
                 {
-                    <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.CurriculumRoot ? "moj-side-navigation__item--active" : "")">
-                        <a asp-route="@RouteConstants.CurriculumRoot" asp-all-route-data="routeAttributes">Curriculum and extra-curricular activities</a>
+                    <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.PrimaryCurriculum ? "moj-side-navigation__item--active" : "")">
+                        <a asp-route="@RouteConstants.PrimaryCurriculum" asp-all-route-data="routeAttributes">Curriculum and extra-curricular activities</a>
+                    </li>
+                }
+                else if (Model.IsKS4)
+                {
+                    <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.SecondaryCurriculumAndExtraCurricularActivities ? "moj-side-navigation__item--active" : "")">
+                        <a asp-route="@RouteConstants.SecondaryCurriculumAndExtraCurricularActivities" asp-all-route-data="routeAttributes">Curriculum and extra-curricular activities</a>
                     </li>
                 }
 
