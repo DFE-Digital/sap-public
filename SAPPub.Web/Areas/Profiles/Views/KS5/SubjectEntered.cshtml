@@ -24,9 +24,7 @@
     <div class="govuk-grid-column-three-quarters">
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
         <h1 class="govuk-heading-xl">@ViewData["Header"]</h1>
-        <p class="govuk-body">
-            INTRO TEXT
-        </p>
+
 
         <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
             <ul class="moj-sub-navigation__list">
@@ -44,10 +42,25 @@
                 </li>
             </ul>
         </nav>
+        <h2>Subjects entered at 16 to 19</h2>
+        <p class="govuk-body">
+            This list shows the subjects students studied at this school or college.
+        </p>
+        <p class="govuk-body">
+            It includes students in performance measures who entered exams in these subjects in 2024 to 2025. It only includes qualifications used in attainment and progress measures.
+        </p>
 
         <p class="govuk-body">
-            MORE TEXT
+            Subjects and qualifications on offer at the school or college may change
         </p>
+        <p class="govuk-body">
+            For the latest information,
+            <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.EstablilshmentWebsite.DisplayText(UrlHelper.EnsureHttpsUrl)">
+                visit the school or college website <span class="govuk-visually-hidden">(opens in a new tab)</span>
+            </a>.
+        </p>
+
+
 
         <table class="govuk-table">
             <caption class="govuk-table__caption govuk-table__caption--m">@ViewData["Caption"]</caption>
@@ -59,13 +72,16 @@
                 </tr>
             </thead>
             <tbody class="govuk-table__body">
-                @foreach (var subject in Model.Subjects)
+                @if (Model.Subjects is not null)
                 {
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">@subject.Subject</td>
-                        <td class="govuk-table__cell">@subject.Qualification</td>
-                        <td class="govuk-table__cell">@subject.NumberOfEntries</td>
-                    </tr>
+                    foreach (var subject in Model.Subjects)
+                    {
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">@subject.Subject</td>
+                            <td class="govuk-table__cell">@subject.Qualification</td>
+                            <td class="govuk-table__cell">@subject.NumberOfEntries</td>
+                        </tr>
+                    }
                 }
             </tbody>
         </table>

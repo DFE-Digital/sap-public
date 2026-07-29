@@ -1,6 +1,7 @@
 ﻿using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels.Performance;
+using SAPPub.Web.Helpers;
 using SAPPub.Web.Models;
 using SAPPub.Web.Models.SecondarySchool;
 
@@ -13,6 +14,8 @@ namespace SAPPub.Web.Areas.Profiles.ViewModels.KS5
 
         public List<SubjectsEnteredViewModel>? Subjects { get; set;  }
 
+        public required DisplayField<string> EstablilshmentWebsite { get; set; }
+
         public static Ks5SubjectEnteredViewModel Map(AboutSchoolModel schoolDetails, IEnumerable<SubjectsEntered> subjectsEntered)
         {
             return new Ks5SubjectEnteredViewModel
@@ -22,6 +25,7 @@ namespace SAPPub.Web.Areas.Profiles.ViewModels.KS5
                 IsKS2 = schoolDetails.IsKS2,
                 IsKS4 = schoolDetails.IsKS4,
                 IsKS5 = schoolDetails.IsKS5,
+                EstablilshmentWebsite = schoolDetails.Website.ToDisplayField(),
                 Subjects = subjectsEntered.Select(se => new SubjectsEnteredViewModel
                 {
                     Subject = se.Subject ?? "Unknown Subject",
