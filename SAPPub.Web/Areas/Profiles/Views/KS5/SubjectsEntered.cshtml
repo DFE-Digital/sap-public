@@ -1,4 +1,4 @@
-﻿@using SAPPub.Core.Enums.KS5Qualifications
+﻿@using SAPPub.Core.Enums
 @using SAPPub.Web.Areas.Profiles.ViewModels.Performance
 @using SAPPub.Web.Constants
 @using SAPPub.Web.ViewComponents.VerticalNavigation
@@ -26,7 +26,13 @@
     <div class="govuk-grid-column-three-quarters">
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
         <h1 class="govuk-heading-xl">@ViewData["Header"]</h1>
-
+        <p class="govuk-body">
+            Choose the type of qualifications you want to see.
+        </p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>Level 2 qualifications include GCSEs, BTEC Firsts and other level 2 qualifications</li>
+            <li>Level 3 qualifications include A levels, Tech levels, BTECs and other level 3 qualifications</li>
+        </ul>
 
         <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
             <ul class="moj-sub-navigation__list">
@@ -62,10 +68,10 @@
             </a>.
         </p>
 
-        <form method="get" asp-route="@RouteConstants.KS5AcademicPerformanceLevel3" asp-all-route-data="@Model.RouteAttributes">
+        <form method="get" asp-route="@RouteConstants.KS5AcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">
             <div id="filterSection" class="select-filter">
                 <label for="qualificationSelector" class="govuk-label govuk-!-font-weight-bold">Choose qualification</label>
-                <select id="qualificationSelector" asp-for="@Model.Level3Qualification" class="govuk-select" asp-items="Html.GetEnumSelectList<Level3>()"></select>
+                <select id="qualificationSelector" asp-for="@Model.QualificationType" class="govuk-select" asp-items="Html.GetEnumSelectList<QualificationType>()"></select>
                 <govuk-button type="submit">Show results</govuk-button>
             </div>
         </form>

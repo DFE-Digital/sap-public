@@ -7,8 +7,9 @@ public enum QualificationType
     [Display(Name = "All Qualifications")]
     AllQualifications,
 
-    [Display(Name = "All Qualifications")]
-    AcadameicQualifications
+    [Display(Name = "Academic Qualifications")]
+    AcademicQualifications,
 
-
+    [Display(Name = "Vocational and technical qualifications")]
+    VocationalAndTechnicalQualifications
 }

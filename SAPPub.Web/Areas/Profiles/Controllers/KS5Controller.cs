@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
+using SAPPub.Core.Enums;
 using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.Interfaces.Services.SubjectEntries;
+using SAPPub.Core.Services.KS4.AboutSchool;
 using SAPPub.Web.Areas.Profiles.ViewModels.KS5;
 using SAPPub.Web.Areas.Profiles.ViewModels.Performance;
 using SAPPub.Web.Constants;
@@ -123,14 +125,37 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
             return View(englishMathsQualificationsViewModel);
         }
 
-        [Route("school/{urn}/{schoolName}/16-to-19-performance/subjects-entered", Name = RouteConstants.KS5AcademicPerformanceSubjectsEntered)]
-        public async Task<IActionResult> SubjectEntered(
+        [Route("school/{urn}/{schoolName}/16-to-19-performance/subjects-entered/", Name = RouteConstants.KS5AcademicPerformanceSubjectsEntered)]
+        public async Task<IActionResult> SubjectsEnteredRedirect(
+            string urn, 
+            string schoolName, 
+            QualificationType? qualificationType)
+        {
+            qualificationType ??= 0;
+
+            var qualTypeSelected = ((QualificationType)qualificationType).ToString();
+            if (string.IsNullOrWhiteSpace(qualTypeSelected))
+            {
+                qualTypeSelected = ((QualificationType)0).ToString();
+            }
+
+            return RedirectToAction(nameof(SubjectsEntered), new { urn, schoolName, qualificationType = qualTypeSelected.ToLower() });
+        }
+
+        [Route("school/{urn}/{schoolName}/16-to-19-performance/subjects-entered/{qualificationType}", Name = RouteConstants.KS5AcademicPerformanceSubjectsEnteredFilter)]
+        public async Task<IActionResult> SubjectsEntered(
             [FromServices] IAboutSchoolService aboutSchoolService,
             [FromServices] IKs5EstablishmentSubjectEntriesService establishmentSubjectEntriesService,
+            QualificationType? qualificationType,
             string urn, 
             string schoolName,
             CancellationToken ct)
         {
+            if (qualificationType is null)
+            {
+                return View("Error");
+            }
+            
             var schoolDetails = await aboutSchoolService.GetAboutSchoolDetailsAsync(urn, ct);
 
             if (string.IsNullOrWhiteSpace(schoolDetails.Urn))
@@ -148,6 +173,7 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
             var subjectEntries = await establishmentSubjectEntriesService.GetSubjectEntriesByUrnAsync(urn, ct);
 
             var ks5Model = Ks5SubjectEnteredViewModel.Map(schoolDetails, subjectEntries);
+            ks5Model.QualificationType = qualificationType.Value;
             return View(ks5Model);
         }
     }

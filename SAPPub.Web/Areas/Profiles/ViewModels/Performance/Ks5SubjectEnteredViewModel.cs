@@ -1,4 +1,4 @@
-﻿using SAPPub.Core.Enums.KS5Qualifications;
+﻿using SAPPub.Core.Enums;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Web.Helpers;
@@ -8,9 +8,8 @@ namespace SAPPub.Web.Areas.Profiles.ViewModels.Performance;
 
 public class Ks5SubjectEnteredViewModel : BaseViewModel
 {
-    public Level3 Level3Qualification { get; set; }
-    public Level2 Level2Qualification { get; set; }
-
+    public QualificationType QualificationType { get; set; }
+    
     public List<SubjectsEnteredDetailViewModel>? Subjects { get; set;  }
 
     public required DisplayField<string> EstablilshmentWebsite { get; set; }
