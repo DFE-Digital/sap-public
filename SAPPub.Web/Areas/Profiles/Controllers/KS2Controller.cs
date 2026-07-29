@@ -15,17 +15,6 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
         public EstablishmentServiceModel Establishment { get; set; } = null!; // set by the PrimaryQueryValidationFilter
 
         [HttpGet]
-        [Route("school/{urn}/{schoolName}/primary-performance/progress-attainment", Name = RouteConstants.PrimaryAcademicPerformanceAttainmentAndProgress)]
-        public async Task<IActionResult> AcademicPerformanceAttainmentAndProgress(
-            string urn,
-            string schoolName,
-            CancellationToken ct = default)
-        {
-            var model = AcademicPerformanceAttainmentAndProgressViewModel.Map(Establishment);
-            return View(model);
-        }
-
-        [HttpGet]
         [Route("school/{urn}/{schoolName}/primary-performance/pupil-progress", Name = RouteConstants.PrimaryAcademicPerformancePupilProgress)]
         public async Task<IActionResult> AcademicPerformancePupilProgress(
             string urn,

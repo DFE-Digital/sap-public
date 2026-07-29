@@ -50,7 +50,7 @@ public class PrimarySchoolNavigationTests(WebApplicationSetupFixture fixture) : 
 
         // Assert
         title = await Page.TitleAsync();
-        Assert.Contains(PrimarySchoolPageTitles.ProgressAndAttainment, title);
+        Assert.Contains(PrimarySchoolPageTitles.PupilProgress, title);
     }
 
     [Fact]
@@ -64,18 +64,11 @@ public class PrimarySchoolNavigationTests(WebApplicationSetupFixture fixture) : 
         await navItem.ClickAsync();
 
         // Act
-        await ClickAcademicPerformanceNavItemAsync(Page, "Progress and attainment");
-
-        // Assert
-        var title = await Page.TitleAsync();
-        Assert.Contains("Progress and attainment", title);
-
-        // Act
         await ClickAcademicPerformanceNavItemAsync(Page, "Pupil progress");
 
         // Assert
-        title = await Page.TitleAsync();
-        Assert.Contains("Pupil progress", title);
+        var title = await Page.TitleAsync();
+        Assert.Contains(PrimarySchoolPageTitles.PupilProgress, title);  
 
         // Act
         //await ClickAcademicPerformanceNavItemAsync(Page, "Subject scaled scores");
@@ -89,7 +82,7 @@ public class PrimarySchoolNavigationTests(WebApplicationSetupFixture fixture) : 
 
         // Assert
         title = await Page.TitleAsync();
-        Assert.Contains("Additional measures", title);
+        Assert.Contains(PrimarySchoolPageTitles.AdditionalMeasures, title);
     }
 
     [Fact(Skip = "Bottom pagination not implented fully")]

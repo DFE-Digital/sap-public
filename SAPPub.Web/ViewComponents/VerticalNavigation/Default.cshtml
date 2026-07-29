@@ -63,11 +63,10 @@
                     {
                         <li class="moj-side-navigation__item  
                             @(new List<string> {
-                                                RouteConstants.PrimaryAcademicPerformanceAttainmentAndProgress,
                                                 RouteConstants.PrimaryAcademicPerformancePupilProgress,
                                                 RouteConstants.PrimaryAcademicPerformanceAdditionalMeasures
                                             }.Contains(Model.ActivePage) ? " moj-side-navigation__item--active" : "") ">
-                            <a asp-route="@RouteConstants.PrimaryAcademicPerformanceAttainmentAndProgress" asp-all-route-data="routeAttributes">Primary academic performance</a>
+                            <a asp-route="@RouteConstants.PrimaryAcademicPerformancePupilProgress" asp-all-route-data="routeAttributes">Primary academic performance</a>
                         </li>
                     }
                 </feature>

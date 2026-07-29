@@ -10,7 +10,6 @@ public class PageTitleConstants
 
     public static class PrimarySchoolPageTitles
     {
-        public const string ProgressAndAttainment = "Progress and attainment";
         public const string PupilProgress = "Pupil progress";
         public const string AdditionalMeasures = "Additional measures";
         public const string Admissions = "Primary Admissions";
