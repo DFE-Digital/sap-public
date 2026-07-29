@@ -183,7 +183,7 @@ public class DestinationsServiceTests
         var lADestinations = new KS5LADestinations
         {
             Id = fakeEstablishment.LAId,
-            TOT_OVERALLPER_LA_Current_Num = 77
+            TOT_OVERALLPER_LA_Current_Pct = 77
         };
 
         var englandDestinations = new KS5EnglandDestinations
@@ -218,7 +218,7 @@ public class DestinationsServiceTests
 
         Assert.Equal(establishmentDestinations.TOT_COHORT_Est_Current_Num, result.EstablishmentTotalCohortFor);
         Assert.Equal(establishmentDestinations.TOT_OVERALLPER_Est_Current_Pct, result.EstablishmentTotalOverall);
-        Assert.Equal(lADestinations.TOT_OVERALLPER_LA_Current_Num, result.LATotalOverall);
+        Assert.Equal(lADestinations.TOT_OVERALLPER_LA_Current_Pct, result.LATotalOverall);
         Assert.Equal(englandDestinations.TOT_OVERALLPER_Eng_Current_Pct, result.EnglandOverall);
 
     }

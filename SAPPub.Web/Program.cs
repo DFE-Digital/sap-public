@@ -63,7 +63,14 @@ public partial class Program
             });
 
         // Add Razor pages separately if needed
-        builder.Services.AddRazorPages();
+        if (builder.Environment.IsDevelopment())
+        {
+            builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+        }
+        else
+        {
+            builder.Services.AddRazorPages();
+        }
 
         // View configuration
         builder.Services.Configure<RazorViewEngineOptions>(options =>
