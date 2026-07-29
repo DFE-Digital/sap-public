@@ -25,4 +25,17 @@ public class EnglandKs5Performance
 
     // Average result grade for England
     public string? TALLPPEGRD_ALEV_1618_Eng_Current { get; set; }    
+
+    // Average progress for English
+    public CodedDouble PROGEX_E_Eng_Current_Num_Coded { get; set; } = new();
+
+    // Entered for English qualifications ENG
+    public CodedDouble ENTRY_PER_E_Eng_Current_Pct_Coded { get; set; } = new();
+
+    // Average progress for Maths
+    public CodedDouble PROGEX_M_Eng_Current_Num_Coded { get; set; } = new();
+
+    // Entered for Maths qualifications ENG
+    public CodedDouble ENTRY_PER_M_Eng_Current_Pct_Coded { get; set; } = new();
+
 }

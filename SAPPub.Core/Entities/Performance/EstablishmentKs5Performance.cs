@@ -47,4 +47,22 @@ public class EstablishmentKs5Performance
 
     // Average result grade for the school / college
     public string? TALLPPEGRD_ALEV_1618_Est_Current { get; set; }    
+
+    // Number of students for English progress
+    public CodedDouble T_SCOPEEX_E_Est_Current_Num_Coded { get; set; } = new();
+  
+    // Average progress in English for establishment
+    public CodedDouble PROGEX_E_Est_Current_Num_Coded { get; set; } = new();
+  
+    // Entered (pct) for English for establishment
+    public CodedDouble ENTRY_PER_E_Est_Current_Pct_Coded { get; set; } = new();
+
+    // Number of students for Maths progress
+    public CodedDouble T_SCOPEEX_M_Est_Current_Num_Coded { get; set; } = new();
+
+    // Average progress in Maths for establishment
+    public CodedDouble PROGEX_M_Est_Current_Num_Coded { get; set; } = new();
+
+    // Entered (pct) for Maths for establishment
+    public CodedDouble ENTRY_PER_M_Est_Current_Pct_Coded { get; set; } = new();
 }

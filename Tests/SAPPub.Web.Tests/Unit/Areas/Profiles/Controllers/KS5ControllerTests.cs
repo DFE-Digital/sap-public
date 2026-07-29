@@ -4,6 +4,7 @@ using Moq;
 using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.ServiceModels.Performance;
+using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Areas.Profiles.Controllers;
 using SAPPub.Web.Areas.Profiles.ViewModels.KS5;
 using SAPPub.Web.Helpers;
@@ -15,6 +16,7 @@ public class KS5ControllerTests : BaseProfilesTests
 {
     private readonly Mock<ILogger<KS5Controller>> _mockLogger = new();
     private readonly Mock<IAdvancedLevelQualificationsService> _mockAdvancedLevelQualificationsService = new();
+    private readonly Mock<IEnglishAndMathsQualificationsService> _mockEnglishAndMathsQualificationsService = new();
     private readonly KS5Controller _controller;
 
     public KS5ControllerTests()
@@ -127,6 +129,142 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.Equal(NotAvailable, model.AverageResult.LocalAuthorityGrade.DisplayText());
         Assert.Equal(NotAvailable, model.AverageResult.EnglandPoints.DisplayText());
         Assert.Equal(NotAvailable, model.AverageResult.EnglandGrade.DisplayText());
+    }
+
+    [Fact]
+    public async Task Get_EnglishAndMaths_ReturnsExpected()
+    {
+        var expectedResult = GetEnglishMathsQualificationModel();
+
+        _mockEnglishAndMathsQualificationsService
+            .Setup(a => a.GetEnglishAndMathsQualificationDetailsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.EnglishAndMaths(
+            _mockEnglishAndMathsQualificationsService.Object,
+            expectedResult.Urn,
+            expectedResult.SchoolName,
+            CancellationToken.None) as ViewResult;
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as EnglishMathsQualificationsViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(expectedResult.Urn, model.URN);
+        Assert.Equal(expectedResult.SchoolName, model.SchoolName);
+        Assert.Equal(expectedResult.IsKS2, model.IsKS2);
+        Assert.Equal(expectedResult.IsKS4, model.IsKS4);
+        Assert.Equal(expectedResult.LAName, model.LAName);
+        Assert.Equal(expectedResult.AverageEnglishProgress!.EnglandAverage, model.AverageEnglishProgress!.EnglandAverage.Value);
+        Assert.Equal(expectedResult.AverageEnglishProgress!.LaAverage, model.AverageEnglishProgress!.LaAverage.Value);
+        Assert.Equal(expectedResult.AverageEnglishProgress!.NumberOfStudents, model.AverageEnglishProgress!.NumberOfStudents.Value);
+        Assert.Equal(expectedResult.AverageEnglishProgress!.SchoolOrCollege, model.AverageEnglishProgress!.SchoolOrCollege.Value);
+        Assert.Equal(expectedResult.AverageMathsProgress!.EnglandAverage, model.AverageMathsProgress!.EnglandAverage.Value);
+        Assert.Equal(expectedResult.AverageMathsProgress!.LaAverage, model.AverageMathsProgress!.LaAverage.Value);
+        Assert.Equal(expectedResult.AverageMathsProgress!.NumberOfStudents, model.AverageMathsProgress!.NumberOfStudents.Value);
+        Assert.Equal(expectedResult.AverageMathsProgress!.SchoolOrCollege, model.AverageMathsProgress!.SchoolOrCollege.Value);
+        Assert.Equal(expectedResult.EnteredForEnglishQualification!.EnglandAverage, model.EnteredForEnglishQualification!.EnglandAverage.Value);
+        Assert.Equal(expectedResult.EnteredForEnglishQualification!.LaAverage, model.EnteredForEnglishQualification!.LaAverage.Value);
+        Assert.Equal(expectedResult.EnteredForEnglishQualification!.NumberOfStudents, model.EnteredForEnglishQualification!.NumberOfStudents.Value);
+        Assert.Equal(expectedResult.EnteredForEnglishQualification!.SchoolOrCollege, model.EnteredForEnglishQualification!.SchoolOrCollege.Value);
+        Assert.Equal(expectedResult.EnteredForMathsQualification!.EnglandAverage, model.EnteredForMathsQualification!.EnglandAverage.Value);
+        Assert.Equal(expectedResult.EnteredForMathsQualification!.LaAverage, model.EnteredForMathsQualification!.LaAverage.Value);
+        Assert.Equal(expectedResult.EnteredForMathsQualification!.NumberOfStudents, model.EnteredForMathsQualification!.NumberOfStudents.Value);
+        Assert.Equal(expectedResult.EnteredForMathsQualification!.SchoolOrCollege, model.EnteredForMathsQualification!.SchoolOrCollege.Value);
+    }
+
+    [Fact]
+    public async Task Get_EnglishAndMaths_NoEstablishmentReturnsErrorView()
+    {
+        var expectedResult = GetEnglishMathsQualificationModel(null!);
+
+        _mockEnglishAndMathsQualificationsService
+            .Setup(a => a.GetEnglishAndMathsQualificationDetailsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.EnglishAndMaths(
+            _mockEnglishAndMathsQualificationsService.Object,
+            expectedResult.Urn,
+            expectedResult.SchoolName,
+            CancellationToken.None) as ViewResult;
+
+        Assert.Equal("Error", result!.ViewName);
+
+        _mockLogger.Verify(
+            x => x.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => true),
+                It.IsAny<Exception>(),
+                It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)));
+    }
+
+    [Fact]
+    public async Task Get_EnglishAndMaths_NotKs5ReturnsErrorView()
+    {
+        var expectedResult = GetEnglishMathsQualificationModel(isKs5: false);
+
+        _mockEnglishAndMathsQualificationsService
+            .Setup(a => a.GetEnglishAndMathsQualificationDetailsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.EnglishAndMaths(
+            _mockEnglishAndMathsQualificationsService.Object,
+            expectedResult.Urn,
+            expectedResult.SchoolName,
+            CancellationToken.None) as ViewResult;
+
+        Assert.Equal("Error", result!.ViewName);
+
+        _mockLogger.Verify(
+            x => x.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => true),
+                It.IsAny<Exception>(),
+                It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)));
+    }
+
+    private EnglishMathsQualificationModel GetEnglishMathsQualificationModel(string urn = "", bool isKs5 = true)
+    {
+        return new EnglishMathsQualificationModel
+        {
+            Urn = urn == "" ? fakeEstablishment.URN : urn,
+            SchoolName = fakeEstablishment.EstablishmentName,
+            IsKS2 = true,
+            IsKS4 = true,
+            IsKS5 = isKs5,
+            LAName = "Test LA",
+            AverageEnglishProgress = new EnglishMathsScoreModel
+            {
+                NumberOfStudents = new CodedDouble(1, string.Empty, "1"),
+                SchoolOrCollege = new CodedDouble(2, string.Empty, "2"),
+                LaAverage = new CodedDouble(3, string.Empty, "3"),
+                EnglandAverage = new CodedDouble(4, string.Empty, "4")
+            },
+            AverageMathsProgress = new EnglishMathsScoreModel
+            {
+                NumberOfStudents = new CodedDouble(5, string.Empty, "5"),
+                SchoolOrCollege = new CodedDouble(6, string.Empty, "6"),
+                LaAverage = new CodedDouble(7, string.Empty, "7"),
+                EnglandAverage = new CodedDouble(8, string.Empty, "8")
+            },
+            EnteredForEnglishQualification = new EnglishMathsScoreModel
+            {
+                NumberOfStudents = new CodedDouble(9, string.Empty, "9"),
+                SchoolOrCollege = new CodedDouble(10, string.Empty, "10"),
+                LaAverage = new CodedDouble(11, string.Empty, "11"),
+                EnglandAverage = new CodedDouble(12, string.Empty, "12")
+            },
+            EnteredForMathsQualification = new EnglishMathsScoreModel
+            {
+                NumberOfStudents = new CodedDouble(13, string.Empty, "13"),
+                SchoolOrCollege = new CodedDouble(14, string.Empty, "14"),
+                LaAverage = new CodedDouble(15, string.Empty, "15"),
+                EnglandAverage = new CodedDouble(16, string.Empty, "16")
+            },
+        };
     }
 
     private AdvancedLevelQualificationModel AdvancedLevelDetails(Level3 qualification)
