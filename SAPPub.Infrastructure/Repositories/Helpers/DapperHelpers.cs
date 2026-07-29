@@ -4,7 +4,6 @@ using SAPPub.Core.Entities.Gateway;
 using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.Performance;
-using SAPPub.Core.Entities.SubjectEntries;
 
 namespace SAPPub.Infrastructure.Repositories.Helpers
 {

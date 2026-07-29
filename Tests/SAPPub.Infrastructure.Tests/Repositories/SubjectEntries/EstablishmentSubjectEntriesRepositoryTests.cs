@@ -1,5 +1,5 @@
 ﻿using Moq;
-using SAPPub.Core.Entities.SubjectEntries;
+using SAPPub.Core.Entities.Performance;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Infrastructure.Repositories.SubjectEntries;
 

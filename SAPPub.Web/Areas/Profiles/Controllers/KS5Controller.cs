@@ -5,6 +5,7 @@ using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.Interfaces.Services.SubjectEntries;
 using SAPPub.Web.Areas.Profiles.ViewModels.KS5;
+using SAPPub.Web.Areas.Profiles.ViewModels.Performance;
 using SAPPub.Web.Constants;
 
 namespace SAPPub.Web.Areas.Profiles.Controllers
@@ -122,7 +123,7 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
             return View(englishMathsQualificationsViewModel);
         }
 
-        [Route("school/{urn}/{schoolName}/16-to-19-performance/subject-entered", Name = RouteConstants.KS5AcademicPerformanceSubjectsEntered)]
+        [Route("school/{urn}/{schoolName}/16-to-19-performance/subjects-entered", Name = RouteConstants.KS5AcademicPerformanceSubjectsEntered)]
         public async Task<IActionResult> SubjectEntered(
             [FromServices] IAboutSchoolService aboutSchoolService,
             [FromServices] IKs5EstablishmentSubjectEntriesService establishmentSubjectEntriesService,

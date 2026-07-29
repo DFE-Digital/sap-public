@@ -1,4 +1,4 @@
-﻿namespace SAPPub.Core.Entities.SubjectEntries;
+﻿namespace SAPPub.Core.Entities.Performance;
 
 public class EstablishmentKs5SubjectEntryRow
 {

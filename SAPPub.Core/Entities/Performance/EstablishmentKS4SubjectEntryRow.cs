@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace SAPPub.Core.Entities.SubjectEntries
+namespace SAPPub.Core.Entities.Performance
 {
     [ExcludeFromCodeCoverage]
     public sealed class EstablishmentKS4SubjectEntryRow

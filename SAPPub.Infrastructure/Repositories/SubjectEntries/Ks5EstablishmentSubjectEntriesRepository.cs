@@ -1,4 +1,4 @@
-﻿using SAPPub.Core.Entities.SubjectEntries;
+﻿using SAPPub.Core.Entities.Performance;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Repositories.SubjectEntries;
 using SAPPub.Core.ServiceModels.Performance;
@@ -32,7 +32,8 @@ public sealed class Ks5EstablishmentSubjectEntriesRepository(IGenericRepository<
             {
                 Subject = r.subject?.Trim(),
                 Qualification = r.qualification_detailed,
-                TotalNumberOfEntries = r.entries_count
+                TotalNumberOfEntries = r.entries_count,
+                Level = r.qualification_level
             })
             .OrderBy(r => r.Subject)
             .ThenBy(r => r.Qualification)];

@@ -28,7 +28,6 @@ using SAPPub.Core.Services.KS4.Destinations;
 using SAPPub.Core.Services.KS4.Performance;
 using SAPPub.Core.Services.Performance;
 using SAPPub.Core.Services.Search;
-using SAPPub.Core.Services.SubjectEntries;
 using SAPPub.Infrastructure.Mapping.ValueCodes;
 using SAPPub.Infrastructure.PostgresSearch;
 using SAPPub.Infrastructure.Repositories;

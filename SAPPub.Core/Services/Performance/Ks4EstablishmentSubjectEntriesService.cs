@@ -2,7 +2,7 @@
 using SAPPub.Core.Interfaces.Services.SubjectEntries;
 using SAPPub.Core.ServiceModels.Performance;
 
-namespace SAPPub.Core.Services.SubjectEntries;
+namespace SAPPub.Core.Services.Performance;
 
 public sealed class Ks4EstablishmentSubjectEntriesService(IKs4EstablishmentSubjectEntriesRepository subjectEntriesRepository) : IKs4EstablishmentSubjectEntriesService
 {

@@ -3,7 +3,6 @@ using SAPPub.Core.Entities.Destinations;
 using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.Performance;
-using SAPPub.Core.Entities.SubjectEntries;
 using SAPPub.Infrastructure.Repositories.Helpers;
 
 namespace SAPPub.Infrastructure.Tests.Repositories.Helpers

@@ -1,15 +1,16 @@
 ﻿using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.Performance;
+using SAPPub.Web.Areas.Profiles.ViewModels.Performance;
 
 namespace SAPPub.Web.Models.SecondarySchool;
 
 public class AcademicPerformanceSubjectsEnteredViewModel : BaseViewModel
 {
-    public List<SubjectsEnteredViewModel>? GcseSubjects { get; set; }
+    public List<SubjectsEnteredDetailViewModel>? GcseSubjects { get; set; }
 
-    public List<SubjectsEnteredViewModel>? VocationalSubjects { get; set; }
+    public List<SubjectsEnteredDetailViewModel>? VocationalSubjects { get; set; }
 
-    public List<SubjectsEnteredViewModel>? OtherSubjects { get; set; }
+    public List<SubjectsEnteredDetailViewModel>? OtherSubjects { get; set; }
 
     public static AcademicPerformanceSubjectsEnteredViewModel Map(EstablishmentServiceModel establishment, 
         IEnumerable<SubjectsEntered> gcseSubjectEntries, 
@@ -34,9 +35,9 @@ public class AcademicPerformanceSubjectsEnteredViewModel : BaseViewModel
         };
     }
 
-    private static List<SubjectsEnteredViewModel> GetSubjectsEntered(IEnumerable<SubjectsEntered> subjectsEntered)
+    private static List<SubjectsEnteredDetailViewModel> GetSubjectsEntered(IEnumerable<SubjectsEntered> subjectsEntered)
     { 
-        return subjectsEntered.Select(se => new SubjectsEnteredViewModel
+        return subjectsEntered.Select(se => new SubjectsEnteredDetailViewModel
         {
             Subject = se.Subject ?? "Unknown Subject",
             Qualification = se.Qualification ?? "Unknown Qualification",

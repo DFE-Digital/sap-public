@@ -1,7 +1,7 @@
 ﻿using Moq;
 using SAPPub.Core.Interfaces.Repositories.SubjectEntries;
 using SAPPub.Core.ServiceModels.Performance;
-using SAPPub.Core.Services.SubjectEntries;
+using SAPPub.Core.Services.Performance;
 using System.Diagnostics;
 
 namespace SAPPub.Core.Tests.Services.KS4.SubjectEntries;
