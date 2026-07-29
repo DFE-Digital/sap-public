@@ -63,7 +63,8 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             Northing = "392995",
             Website = "http://www.test.co.uk/",
             SenTypes = "VI - Visual Impairment, HI - Hearing Impairment",
-            IsKS4 = true
+            IsKS4 = true,
+            IsKS5 = false
         },
         ["137552"] = new Establishment
         {

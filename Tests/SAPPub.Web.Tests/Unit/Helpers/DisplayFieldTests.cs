@@ -1,4 +1,5 @@
-﻿using SAPPub.Web.Helpers;
+﻿using SAPPub.Core.ValueObjects;
+using SAPPub.Web.Helpers;
 
 namespace SAPPub.Web.Tests.Unit.Helpers;
 
@@ -95,4 +96,73 @@ public class DisplayFieldTests
         Assert.Equal("Not available", field.DisplayText());
     }
 
+    [Fact]
+    public void DisplayNumber_HasValue_ReturnsValue()
+    {
+        var property = new CodedDouble(20.2, string.Empty, "20.2").ToDisplayField();
+
+        var result = property.DisplayNumber();
+
+        Assert.Equal("20.2", result);
+    }
+
+    [Fact]
+    public void DisplayNumber_HasValue_WithFormat_ReturnsFormattedValue()
+    {
+        var property = new CodedDouble(20.2, string.Empty, "20.222").ToDisplayField();
+
+        var result = property.DisplayNumber("F1");
+
+        Assert.Equal("20.2", result);
+    }
+
+    [Fact]
+    public void DisplayNumber_NoValue_DefaultDisplayReasonFalse_ReturnsNotAvailable()
+    {
+        var property = new CodedDouble(null, "Redacted for confidentiality", "c").ToDisplayField();
+
+        var result = property.DisplayNumber();
+
+        Assert.Equal("Not available", result);
+    }
+
+    [Fact]
+    public void DisplayNumber_NoValue_DefaultDisplayReasonTrue_ReturnsReason()
+    {
+        var property = new CodedDouble(null, "Redacted for confidentiality", "c").ToDisplayField();
+
+        var result = property.DisplayNumber(displayReason: true);
+
+        Assert.Equal("Redacted for confidentiality", result);
+    }
+
+    [Fact]
+    public void DisplayPercentage_HasValue_ReturnsFormattedPercentage()
+    {
+        var property = new CodedDouble(20.2, string.Empty, "20.2").ToDisplayField();
+
+        var result = property.DisplayPercentage();
+
+        Assert.Equal("20.2%", result);
+    }
+
+    [Fact]
+    public void DisplayPercentage_HasValue_DefaultDisplayReasonFalse_ReturnsNotAvailable()
+    {
+        var property = new CodedDouble(null, "Redacted for confidentiality", "c").ToDisplayField();
+
+        var result = property.DisplayPercentage();
+
+        Assert.Equal("Not available", result);
+    }
+
+    [Fact]
+    public void DisplayPercentage_HasValue_DefaultDisplayReasonTrue_ReturnsReason()
+    {
+        var property = new CodedDouble(null, "Redacted for confidentiality", "c").ToDisplayField();
+
+        var result = property.DisplayPercentage(displayReason: true);
+
+        Assert.Equal("Redacted for confidentiality", result);
+    }
 }

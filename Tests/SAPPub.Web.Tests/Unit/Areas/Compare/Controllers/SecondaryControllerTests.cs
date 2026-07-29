@@ -352,12 +352,12 @@ public class SecondaryControllerTests
     }
 
     [Fact]
-    public async Task NextSteps_ReturnsViewResultWithCorrectModel()
+    public void NextSteps_ReturnsViewResultWithCorrectModel()
     {
         // Arrange
 
         // Act
-        var result = await _controllerUnderTest
+        var result = _controllerUnderTest
             .NextSteps(_mockEstablishmentService.Object, _urns, It.IsAny<CancellationToken>()) as ViewResult;
 
         // Assert

@@ -76,6 +76,7 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.AddSingleton<MockAccessor<IAttainmentAndProgressComparisionService>>();
                 services.AddSingleton<MockAccessor<IAdditionalMeasuresService>>();
                 services.AddSingleton<MockAccessor<IAdvancedLevelQualificationsService>>();
+                services.AddSingleton<MockAccessor<IEnglishAndMathsQualificationsService>>();
 
                 services.AddTransient(provider =>
                 {
@@ -153,7 +154,11 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.AddTransient(provider =>
                 {
                     return provider.GetRequiredService<MockAccessor<IAdvancedLevelQualificationsService>>().Get()?.Object!;
-                });                
+                });    
+                services.AddTransient(provider =>
+                {
+                    return provider.GetRequiredService<MockAccessor<IEnglishAndMathsQualificationsService>>().Get()?.Object!;
+                });              
             });
     }
 }

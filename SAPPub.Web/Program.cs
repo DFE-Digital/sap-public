@@ -63,7 +63,14 @@ public partial class Program
             });
 
         // Add Razor pages separately if needed
-        builder.Services.AddRazorPages();
+        if (builder.Environment.IsDevelopment())
+        {
+            builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+        }
+        else
+        {
+            builder.Services.AddRazorPages();
+        }
 
         // View configuration
         builder.Services.Configure<RazorViewEngineOptions>(options =>
@@ -134,7 +141,7 @@ public partial class Program
 
         app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
-        // Configure the HTTP request pipeline.
+        //Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.UseDeveloperExceptionPage(new DeveloperExceptionPageOptions { SourceCodeLineCount = 1 });

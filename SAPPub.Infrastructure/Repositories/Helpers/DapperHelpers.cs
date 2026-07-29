@@ -237,20 +237,34 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "UCI_INS_ALEV_Est_Current_Num_Coded",
           "LCI_INS_ALEV_Est_Current_Num_Coded",
           "TALLPPE_ALEV_1618_Est_Current_Num_Coded",
-          "TALLPPEGRD_ALEV_1618_Est_Current"          
+          "TALLPPEGRD_ALEV_1618_Est_Current", 
+          "T_SCOPEEX_E_Est_Current_Num_Coded",
+          "PROGEX_E_Est_Current_Num_Coded",
+          "ENTRY_PER_E_Est_Current_Pct_Coded",
+          "T_SCOPEEX_M_Est_Current_Num_Coded",
+          "PROGEX_M_Est_Current_Num_Coded",
+          "ENTRY_PER_M_Est_Current_Pct_Coded"
           """;
 
         private const string EnglandKs5PerformanceColumns = """
           "Id",
           "VA_INS_ALEV_Eng_Current_Num_Coded",
           "TALLPPE_ALEV_1618_Eng_Current_Num_Coded",
-          "TALLPPEGRD_ALEV_1618_Eng_Current"
+          "TALLPPEGRD_ALEV_1618_Eng_Current",
+          "PROGEX_E_Eng_Current_Num_Coded",
+          "ENTRY_PER_E_Eng_Current_Pct_Coded",
+          "PROGEX_M_Eng_Current_Num_Coded",
+          "ENTRY_PER_M_Eng_Current_Pct_Coded"
           """;
 
         private const string LAKs5PerformanceColumns = """
           "Id",
           "TALLPPE_ALEV_1618_LA_Current_Num_Coded",
-          "TALLPPEGRD_ALEV_1618_LA_Current"         
+          "TALLPPEGRD_ALEV_1618_LA_Current",
+          "PROGEX_E_LA_Current_Num_Coded",
+          "ENTRY_PER_E_LA_Current_Pct_Coded",
+          "PROGEX_M_LA_Current_Num_Coded",
+          "ENTRY_PER_M_LA_Current_Pct_Coded"
           """;
 
         private const string GatewayLAColumns = """
