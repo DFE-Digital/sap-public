@@ -91,7 +91,7 @@
                     <tbody class="govuk-table__body">
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header">Average English progress</th>
-                            <td class="govuk-table__cell">@Model.AverageEnglishProgress.NumberOfStudents.DisplayNumber()</td>
+                            <td class="govuk-table__cell">@Model.AverageEnglishProgress.NumberOfStudents.DisplayNumber(format: "N0")</td>
                             <td class="govuk-table__cell">@Model.AverageEnglishProgress.SchoolOrCollege.DisplayNumber()</td>
                             <td class="govuk-table__cell">@Model.AverageEnglishProgress.LaAverage.DisplayNumber()</td>
                             <td class="govuk-table__cell">@Model.AverageEnglishProgress.EnglandAverage.DisplayNumber()</td>
@@ -107,7 +107,7 @@
 
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header">Average maths progress</th>
-                            <td class="govuk-table__cell">@Model.AverageMathsProgress.NumberOfStudents.DisplayNumber()</td>
+                            <td class="govuk-table__cell">@Model.AverageMathsProgress.NumberOfStudents.DisplayNumber(format: "N0")</td>
                             <td class="govuk-table__cell">@Model.AverageMathsProgress.SchoolOrCollege.DisplayNumber()</td>
                             <td class="govuk-table__cell">@Model.AverageMathsProgress.LaAverage.DisplayNumber()</td>
                             <td class="govuk-table__cell">@Model.AverageMathsProgress.EnglandAverage.DisplayNumber()</td>
