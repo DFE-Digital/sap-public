@@ -13,9 +13,9 @@ public class AcademicPerformanceSubjectsEnteredViewModel : BaseViewModel
     public List<SubjectsEnteredDetailViewModel>? OtherSubjects { get; set; }
 
     public static AcademicPerformanceSubjectsEnteredViewModel Map(EstablishmentServiceModel establishment, 
-        IEnumerable<SubjectsEntered> gcseSubjectEntries, 
-        IEnumerable<SubjectsEntered> vocationalSubjectEntries, 
-        IEnumerable<SubjectsEntered> otherSubjectEntries)
+        IEnumerable<SubjectsEnteredModel> gcseSubjectEntries, 
+        IEnumerable<SubjectsEnteredModel> vocationalSubjectEntries, 
+        IEnumerable<SubjectsEnteredModel> otherSubjectEntries)
     {
         var gcseSubjects = GetSubjectsEntered(gcseSubjectEntries);
         var vocationalSubjects = GetSubjectsEntered(vocationalSubjectEntries);
@@ -35,13 +35,28 @@ public class AcademicPerformanceSubjectsEnteredViewModel : BaseViewModel
         };
     }
 
-    private static List<SubjectsEnteredDetailViewModel> GetSubjectsEntered(IEnumerable<SubjectsEntered> subjectsEntered)
+    private static List<SubjectsEnteredDetailViewModel> GetSubjectsEntered(IEnumerable<SubjectsEnteredModel> subjectsEntered)
     { 
         return subjectsEntered.Select(se => new SubjectsEnteredDetailViewModel
         {
             Subject = se.Subject ?? "Unknown Subject",
             Qualification = se.Qualification ?? "Unknown Qualification",
-            NumberOfEntries = se.TotalNumberOfEntries.HasValue ? $"{se.TotalNumberOfEntries.Value:F0}" : "N/A",
+            NumberOfEntries = GetNumberOfEntries(se.TotalNumberOfEntries),
         }).OrderBy(s => s.Subject).ToList();
+    }
+
+    private static string GetNumberOfEntries(string? totalNumberOfEntries)
+    {
+        if (string.IsNullOrWhiteSpace(totalNumberOfEntries))
+        {
+            return "N/A"!;
+        }
+
+        if (int.TryParse(totalNumberOfEntries, out int numberOfEntries))
+        {
+            return numberOfEntries.ToString("F0");
+        }
+
+        return "N/A";
     }
 }

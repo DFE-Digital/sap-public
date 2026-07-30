@@ -1,14 +1,14 @@
 ﻿using SAPPub.Core.Interfaces.Repositories.SubjectEntries;
-using SAPPub.Core.Interfaces.Services.SubjectEntries;
+using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.ServiceModels.Performance;
 
 namespace SAPPub.Core.Services.Performance;
 
-public sealed class Ks4EstablishmentSubjectEntriesService(IKs4EstablishmentSubjectEntriesRepository subjectEntriesRepository) : IKs4EstablishmentSubjectEntriesService
+public sealed class KS4EstablishmentSubjectEntriesService(IKS4EstablishmentSubjectEntriesRepository subjectEntriesRepository) : IKS4EstablishmentSubjectEntriesService
 {
-    private readonly IKs4EstablishmentSubjectEntriesRepository _repo = subjectEntriesRepository ?? throw new ArgumentNullException(nameof(subjectEntriesRepository));
+    private readonly IKS4EstablishmentSubjectEntriesRepository _repo = subjectEntriesRepository ?? throw new ArgumentNullException(nameof(subjectEntriesRepository));
 
-    public async Task<(IEnumerable<SubjectsEntered> Gcse, IEnumerable<SubjectsEntered> Vocational, IEnumerable<SubjectsEntered> Other)>
+    public async Task<(IEnumerable<SubjectsEnteredModel> Gcse, IEnumerable<SubjectsEnteredModel> Vocational, IEnumerable<SubjectsEnteredModel> Other)>
         GetSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(urn);

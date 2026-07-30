@@ -35,14 +35,14 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Helpers
             Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(KS4EnglandDestinations)));
             Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(EnglandPerformance)));
             Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(LaUrls)));
-            Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(EnglandKs5Performance)));
-            Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(EstablishmentKs5Performance)));
+            Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(KS5EnglandPerformance)));
+            Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(KS5EstablishmentPerformance)));
         }
 
         [Fact]
         public void GetReadMany_for_subject_entries_row_returns_expected_sql_shape()
         {
-            var sql = DapperHelpers.GetReadMany(typeof(EstablishmentKS4SubjectEntryRow));
+            var sql = DapperHelpers.GetReadMany(typeof(KS4EstablishmentSubjectEntryRow));
 
             Assert.NotEmpty(sql);
             Assert.Contains("from public.v_establishment_subject_entries", sql, StringComparison.OrdinalIgnoreCase);
@@ -88,7 +88,7 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Helpers
         [Fact]
         public void SubjectEntries_ReadMany_selects_expected_columns_for_row_mapping()
         {
-            var sql = DapperHelpers.GetReadMany(typeof(EstablishmentKS4SubjectEntryRow));
+            var sql = DapperHelpers.GetReadMany(typeof(KS4EstablishmentSubjectEntryRow));
 
             Assert.NotEmpty(sql);
 

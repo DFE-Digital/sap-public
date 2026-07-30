@@ -469,13 +469,13 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                 nameof(LaUrls) =>
                     SelectFromWhereId(LaUrlsColumns, "v_la_urls"),
 
-                nameof(EstablishmentKs5Performance) =>
+                nameof(KS5EstablishmentPerformance) =>
                     SelectFromWhereId(EstablishmentKs5PerformanceColumns, "v_establishment_ks5_performance"),
 
-                nameof(EnglandKs5Performance) =>
+                nameof(KS5EnglandPerformance) =>
                     SelectFromWhere(EnglandKs5PerformanceColumns, "v_england_ks5_performance", "\"Id\" = 'National'"),
 
-                nameof(LAKs5Performance) =>
+                nameof(KS5LAPerformance) =>
                     SelectFromWhereId(LAKs5PerformanceColumns, "v_la_ks5_performance"),
 
                 nameof(GatewayLocalAuthority) =>
@@ -547,18 +547,18 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                 nameof(EstablishmentPerformance) =>
                     SelectFromWhereIds(EstablishmentPerformanceColumns, "v_establishment_performance"),
 
-                nameof(EstablishmentKS4SubjectEntryRow) => $"""
+                nameof(KS4EstablishmentSubjectEntryRow) => $"""
                     select
                       {EstablishmentSubjectEntriesColumns}
                     from public.v_establishment_subject_entries
                     where school_urn = @Urn;
                     """,
 
-                nameof(EstablishmentKs5SubjectEntryRow) => $"""
+                nameof(KS5EstablishmentSubjectEntryRow) => $"""
                     select
                       {EstablishmentKs5SubjectEntriesColumns}
                     from public.v_establishment_ks5_subject_entries
-                    where school_urn = @Urn AND Grade='Total exam entries' AND Subject!='All subjects';
+                    where school_urn = @Urn;
                     """,
 
                 nameof(KS4EstablishmentDestinations) =>

@@ -2,9 +2,9 @@
 
 namespace SAPPub.Core.Interfaces.Repositories.SubjectEntries;
 
-public interface IKs4EstablishmentSubjectEntriesRepository
+public interface IKS4EstablishmentSubjectEntriesRepository
 {
-    Task<IEnumerable<SubjectsEntered>> GetGcseSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default);
-    Task<IEnumerable<SubjectsEntered>> GetVocationalAwardSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default);
-    Task<IEnumerable<SubjectsEntered>> GetOtherSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default);
+    Task<IEnumerable<SubjectsEnteredModel>> GetGcseSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default);
+    Task<IEnumerable<SubjectsEnteredModel>> GetVocationalAwardSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default);
+    Task<IEnumerable<SubjectsEnteredModel>> GetOtherSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default);
 }

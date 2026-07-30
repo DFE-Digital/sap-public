@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace SAPPub.Core.Entities.Performance;
 
-public class EstablishmentKs5Performance
+public class KS5EstablishmentPerformance
 {
     public string Id { get; set; } = string.Empty;
 

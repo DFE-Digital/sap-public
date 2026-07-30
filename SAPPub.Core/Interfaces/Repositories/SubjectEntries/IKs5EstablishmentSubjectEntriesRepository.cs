@@ -2,7 +2,7 @@
 
 namespace SAPPub.Core.Interfaces.Repositories.SubjectEntries;
 
-public interface IKs5EstablishmentSubjectEntriesRepository
+public interface IKS5EstablishmentSubjectEntriesRepository
 {
-    Task<IEnumerable<SubjectsEntered>> GetSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default);
+    Task<IEnumerable<SubjectsEnteredModel>> GetSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default);
 }

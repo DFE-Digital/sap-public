@@ -9,7 +9,7 @@ using SAPPub.Core.Interfaces.Services.KS4;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.Interfaces.Services.KS4.Attendance;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
-using SAPPub.Core.Interfaces.Services.SubjectEntries;
+using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels.KS4.Admissions;
@@ -28,7 +28,7 @@ public class KS4ControllerTests
 {
     private readonly Mock<IEstablishmentService> _mockEstablishmentService;
     private readonly Mock<IDestinationsService> _mockDestinationsService;
-    private readonly Mock<IKs4EstablishmentSubjectEntriesService> _mockEstablishmentSubjectEntriesService = new();
+    private readonly Mock<IKS4EstablishmentSubjectEntriesService> _mockEstablishmentSubjectEntriesService = new();
     private readonly Mock<IAcademicPerformanceEnglishAndMathsResultsService> _mockEnglishAndMathsResultsService = new();
     private readonly Mock<IAttainmentAndProgressService> _mockAttainmentAndProgressService = new();
     private readonly Mock<IAdmissionsService> _mockAdmissionsService = new();
@@ -36,54 +36,54 @@ public class KS4ControllerTests
     private readonly KS4Controller _controller;
     private EstablishmentServiceModel _fakeEstablishment;
 
-    private List<SubjectsEntered> GcseSubjects =
+    private List<SubjectsEnteredModel> GcseSubjects =
         new()
         {
             new()
             {
                 Subject = "English language",
                 Qualification = "GCSE",
-                TotalNumberOfEntries = 95,
+                TotalNumberOfEntries = "95",
             },
             new()
             {
                 Subject = "English literature",
                 Qualification = "GCSE",
-                TotalNumberOfEntries = 90,
+                TotalNumberOfEntries = "90",
             }
         };
 
-    private List<SubjectsEntered> VocationalSubjects =
+    private List<SubjectsEnteredModel> VocationalSubjects =
         new()
         {
             new()
             {
                 Subject = "Sports Studies",
                 Qualification = "Vocational",
-                TotalNumberOfEntries = 45,
+                TotalNumberOfEntries = "45",
             },
             new()
             {
                 Subject = "Engineering Studies",
                 Qualification = "Vocational",
-                TotalNumberOfEntries = 10,
+                TotalNumberOfEntries = "10",
             }
         };
 
-    private List<SubjectsEntered> OtherSubjects =
+    private List<SubjectsEnteredModel> OtherSubjects =
     new()
     {
             new()
             {
                 Subject = "Additional Maths (FSMQ)",
                 Qualification = "FSMQ",
-                TotalNumberOfEntries = 45,
+                TotalNumberOfEntries = "45",
             },
             new()
             {
                 Subject = "Grade 6 Performing Arts Graded Examination",
                 Qualification = "Music Performance: Group",
-                TotalNumberOfEntries = 10,
+                TotalNumberOfEntries = "10",
             }
     };
 
@@ -447,7 +447,7 @@ public class KS4ControllerTests
             _mockAttainmentAndProgressService.Object,
             _fakeEstablishment.URN,
             _fakeEstablishment.EstablishmentName,
-            academicYearSelection.ToRouteSegment(),
+            academicYearSelection.ToRouteSegment()!,
             CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
@@ -523,7 +523,7 @@ public class KS4ControllerTests
             _mockAttainmentAndProgressService.Object,
             _fakeEstablishment.URN,
             _fakeEstablishment.EstablishmentName,
-            academicYearSelection.ToRouteSegment(),
+            academicYearSelection.ToRouteSegment()!,
             CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
@@ -570,7 +570,7 @@ public class KS4ControllerTests
             _mockEnglishAndMathsResultsService.Object,
             _fakeEstablishment.URN,
             _fakeEstablishment.EstablishmentName,
-            gradeName,
+            gradeName!,
             CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
@@ -682,7 +682,7 @@ public class KS4ControllerTests
             _mockEnglishAndMathsResultsService.Object,
             _fakeEstablishment.URN,
             _fakeEstablishment.EstablishmentName,
-            gradeName,
+            gradeName!,
             CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
@@ -743,7 +743,7 @@ public class KS4ControllerTests
             _mockEnglishAndMathsResultsService.Object,
             _fakeEstablishment.URN,
             _fakeEstablishment.EstablishmentName,
-            gradeName,
+            gradeName!,
             CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);

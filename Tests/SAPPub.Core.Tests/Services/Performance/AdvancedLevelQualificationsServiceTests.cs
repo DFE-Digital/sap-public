@@ -43,15 +43,15 @@ public class AdvancedLevelQualificationsServiceTests
 
         _mockKs5PerformanceRepository
             .Setup(r => r.GetEstablishmentPerformanceAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new EstablishmentKs5Performance());
+            .ReturnsAsync(new KS5EstablishmentPerformance());
 
         _mockKs5PerformanceRepository
             .Setup(r => r.GetEnglandPerformanceAsync(It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new EnglandKs5Performance());
+            .ReturnsAsync(new KS5EnglandPerformance());
 
         _mockKs5PerformanceRepository
             .Setup(r => r.GetLaPerformanceAsync(fakeEstablishment.LAId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new LAKs5Performance());
+            .ReturnsAsync(new KS5LAPerformance());
 
         // Act
         var result = await _service.GetAdvancedLevelQualificationDetailsAsync(fakeEstablishment.URN, Level3.ALevel, CancellationToken.None);
@@ -85,7 +85,7 @@ public class AdvancedLevelQualificationsServiceTests
             .Setup(r => r.GetEstablishmentAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>()))
             .ReturnsAsync(fakeEstablishment);
 
-        var establishmentPerformance = new EstablishmentKs5Performance
+        var establishmentPerformance = new KS5EstablishmentPerformance
         {
             Id = fakeEstablishment.URN,
             TALLPUP_ACAD_1618_Est_Current_Num = 150,
@@ -97,7 +97,7 @@ public class AdvancedLevelQualificationsServiceTests
             TALLPPEGRD_ALEV_1618_Est_Current = "A"
         };
 
-        var englandPerformance = new EnglandKs5Performance
+        var englandPerformance = new KS5EnglandPerformance
         {
             Id = fakeEstablishment.LAId,
             VA_INS_ALEV_Eng_Current_Num = 85.75,
@@ -105,7 +105,7 @@ public class AdvancedLevelQualificationsServiceTests
             TALLPPEGRD_ALEV_1618_Eng_Current = "B"
         };
 
-        var laPerformance = new LAKs5Performance
+        var laPerformance = new KS5LAPerformance
         {
             TALLPPE_ALEV_1618_LA_Current_Num = 20.59,
             TALLPPEGRD_ALEV_1618_LA_Current = "C"

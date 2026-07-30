@@ -14,7 +14,6 @@ using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.Interfaces.Services.Search;
-using SAPPub.Core.Interfaces.Services.SubjectEntries;
 
 namespace SAPPub.Web.Tests.Unit.Page.Infrastructure;
 
@@ -42,7 +41,7 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.RemoveAll(typeof(IEstablishmentService));
                 services.RemoveAll(typeof(IEstablishmentPerformanceService));
                 services.RemoveAll(typeof(IEstablishmentAbsenceService));
-                services.RemoveAll(typeof(IKs4EstablishmentSubjectEntriesService));
+                services.RemoveAll(typeof(IKS4EstablishmentSubjectEntriesService));
                 services.RemoveAll(typeof(IAcademicPerformanceEnglishAndMathsResultsService));
                 services.RemoveAll(typeof(IDestinationsService));
                 services.RemoveAll(typeof(IAdmissionsService));
@@ -62,7 +61,7 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.AddSingleton<MockAccessor<IEstablishmentService>>();
                 services.AddSingleton<MockAccessor<IEstablishmentPerformanceService>>();
                 services.AddSingleton<MockAccessor<IEstablishmentAbsenceService>>();
-                services.AddSingleton<MockAccessor<IKs4EstablishmentSubjectEntriesService>>();
+                services.AddSingleton<MockAccessor<IKS4EstablishmentSubjectEntriesService>>();
                 services.AddSingleton<MockAccessor<IAcademicPerformanceEnglishAndMathsResultsService>>();
                 services.AddSingleton<MockAccessor<IDestinationsService>>();
                 services.AddSingleton<MockAccessor<IAdmissionsService>>();
@@ -101,7 +100,7 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                     });
                 services.AddTransient(provider =>
                 {
-                    return provider.GetRequiredService<MockAccessor<IKs4EstablishmentSubjectEntriesService>>().Get()?.Object!;
+                    return provider.GetRequiredService<MockAccessor<IKS4EstablishmentSubjectEntriesService>>().Get()?.Object!;
                 });
                 services.AddTransient(provider =>
                 {

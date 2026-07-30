@@ -30,7 +30,7 @@ namespace SAPPub.Web.Tests.IntegrationTests
             _ = sp.GetRequiredService<IGenericRepository<Establishment>>();
 
             // Recent refactor area
-            _ = sp.GetRequiredService<IKs4EstablishmentSubjectEntriesRepository>();
+            _ = sp.GetRequiredService<IKS4EstablishmentSubjectEntriesRepository>();
         }
 
         [Fact]

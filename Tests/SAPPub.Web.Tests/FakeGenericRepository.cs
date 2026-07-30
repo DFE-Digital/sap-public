@@ -478,27 +478,27 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             return Task.FromResult(EstablishmentPerformances.Values.Where(e => ids.Contains(e.Id)).Select(e => (T)(object)e));
         }
 
-        if (typeof(T) == typeof(EstablishmentKS4SubjectEntryRow))
+        if (typeof(T) == typeof(KS4EstablishmentSubjectEntryRow))
         {
             var urn = GetPropertyString(parameters, "Urn");
             if (string.IsNullOrWhiteSpace(urn))
                 return Task.FromResult(Enumerable.Empty<T>());
 
             // Must be consistent and >0 or your aggregation returns empty
-            var cohort = 100;
+            var cohort = "100";
 
-            var rows = new List<EstablishmentKS4SubjectEntryRow>
+            var rows = new List<KS4EstablishmentSubjectEntryRow>
         {
             // Core
-            MakeRow(urn, cohort, "English Language", "GCSE", 30),
-            MakeRow(urn, cohort, "Mathematics", "GCSE", 35),
-            MakeRow(urn, cohort, "Combined Science", "GCSE", 40),
-            MakeRow(urn, cohort, "Computer Science", "GCSE", 12),
+            MakeRow(urn, cohort, "English Language", "GCSE", "30"),
+            MakeRow(urn, cohort, "Mathematics", "GCSE", "35"),
+            MakeRow(urn, cohort, "Combined Science", "GCSE", "40"),
+            MakeRow(urn, cohort, "Computer Science", "GCSE", "12"),
 
             // A few more core
-            MakeRow(urn, cohort, "Biology", "GCSE", 20),
-            MakeRow(urn, cohort, "Chemistry", "GCSE", 18),
-            MakeRow(urn, cohort, "Physics", "GCSE", 15),
+            MakeRow(urn, cohort, "Biology", "GCSE", "20"),
+            MakeRow(urn, cohort, "Chemistry", "GCSE", "18"),
+            MakeRow(urn, cohort, "Physics", "GCSE", "15"),
         };
 
             // Additional (enough to trigger pagination)
@@ -509,7 +509,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             "Sociology", "Psychology", "Citizenship"
         };
 
-            rows.AddRange(additionalSubjects.Select(s => MakeRow(urn, cohort, s, "GCSE", 8)));
+            rows.AddRange(additionalSubjects.Select(s => MakeRow(urn, cohort, s, "GCSE", "8")));
 
             return Task.FromResult(rows.Cast<T>());
         }
@@ -517,7 +517,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
         return Task.FromResult(Enumerable.Empty<T>());
     }
 
-    private static EstablishmentKS4SubjectEntryRow MakeRow(string urn, int cohort, string subject, string qual, int count)
+    private static KS4EstablishmentSubjectEntryRow MakeRow(string urn, string cohort, string subject, string qual, string count)
         => new()
         {
             school_urn = urn,

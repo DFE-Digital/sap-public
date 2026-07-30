@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 namespace SAPPub.Core.Entities.Performance;
 
 [ExcludeFromCodeCoverage]
-public class EnglandKs5Performance
+public class KS5EnglandPerformance
 {
     public string Id { get; set; } = string.Empty;
 
