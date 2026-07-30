@@ -63,6 +63,54 @@ public class EnglishAndMathsQualificationsService(
                 SchoolOrCollege = establishmentPerformance.ENTRY_PER_M_Est_Current_Pct_Coded,
                 LaAverage = laPerformance.ENTRY_PER_M_LA_Current_Pct_Coded,
                 EnglandAverage = englandPerformance.ENTRY_PER_M_Eng_Current_Pct_Coded
+            },
+            NumberOfDisadvantagedStudentsEnglish = new EnglishMathsQualificationsDisadvantagedModel
+            {
+                SchoolOrCollege = establishmentPerformance.T_SCOPEEX_E_DIS_Est_Current_Num_Coded,
+                LocalAuthority = laPerformance.T_SCOPEEX_E_DIS_LA_Current_Num_Coded,
+                England = englandPerformance.T_SCOPEEX_E_DIS_Eng_Current_Num_Coded
+            },
+            NumberOfDisadvantagedStudentsMaths = new EnglishMathsQualificationsDisadvantagedModel
+            {
+                SchoolOrCollege = establishmentPerformance.T_SCOPEEX_M_DIS_Est_Current_Num_Coded,
+                LocalAuthority = laPerformance.T_SCOPEEX_M_DIS_LA_Current_Num_Coded,
+                England = englandPerformance.T_SCOPEEX_M_DIS_Eng_Current_Num_Coded
+            },
+            NumberOfNonDisadvantagedStudentsEnglish = new EnglishMathsQualificationsDisadvantagedModel
+            {
+                SchoolOrCollege = CodedDouble.Empty,
+                LocalAuthority = laPerformance.T_SCOPEEX_E_NOTDIS_LA_Current_Num_Coded,
+                England = englandPerformance.T_SCOPEEX_E_NOTDIS_Eng_Current_Num_Coded
+            },
+            NumberOfNonDisadvantagedStudentsMaths = new EnglishMathsQualificationsDisadvantagedModel
+            {
+                SchoolOrCollege = CodedDouble.Empty,
+                LocalAuthority = laPerformance.T_SCOPEEX_M_NOTDIS_LA_Current_Num_Coded,
+                England = englandPerformance.T_SCOPEEX_M_NOTDIS_Eng_Current_Num_Coded
+            },
+            ProgressOfDisadvantagedStudentsEnglish = new EnglishMathsQualificationsDisadvantagedModel
+            {
+                SchoolOrCollege = establishmentPerformance.PROGEX_E_DIS_Est_Current_Num_Coded,
+                LocalAuthority = laPerformance.PROGEX_E_DIS_LA_Current_Num_Coded,
+                England = englandPerformance.PROGEX_E_DIS_Eng_Current_Num_Coded
+            },
+            ProgressOfDisadvantagedStudentsMaths = new EnglishMathsQualificationsDisadvantagedModel
+            {
+                SchoolOrCollege = establishmentPerformance.PROGEX_M_DIS_Est_Current_Num_Coded,
+                LocalAuthority = laPerformance.PROGEX_M_DIS_LA_Current_Num_Coded,
+                England = englandPerformance.PROGEX_M_DIS_Eng_Current_Num_Coded
+            },
+            ProgressOfNonDisadvantagedStudentsEnglish = new EnglishMathsQualificationsDisadvantagedModel
+            {
+                SchoolOrCollege = CodedDouble.Empty,
+                LocalAuthority = laPerformance.PROGEX_E_NOTDIS_LA_Current_Num_Coded,
+                England = englandPerformance.PROGEX_E_NOTDIS_Eng_Current_Num_Coded
+            },
+            ProgressOfNonDisadvantagedStudentsMaths = new EnglishMathsQualificationsDisadvantagedModel
+            {
+                SchoolOrCollege = CodedDouble.Empty,
+                LocalAuthority = laPerformance.PROGEX_M_NOTDIS_LA_Current_Num_Coded,
+                England = englandPerformance.PROGEX_M_NOTDIS_Eng_Current_Num_Coded
             }
         };
     }

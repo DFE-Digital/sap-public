@@ -264,6 +264,54 @@ public class KS5ControllerTests : BaseProfilesTests
                 LaAverage = new CodedDouble(15, string.Empty, "15"),
                 EnglandAverage = new CodedDouble(16, string.Empty, "16")
             },
+            NumberOfDisadvantagedStudentsEnglish = new EnglishMathsQualificationsDisadvantagedModel
+            {
+                SchoolOrCollege = new CodedDouble(17, "", "17"),
+                LocalAuthority = new CodedDouble(18, "", "18"),
+                England = new CodedDouble(19, "", "19")
+            },
+            NumberOfDisadvantagedStudentsMaths = new EnglishMathsQualificationsDisadvantagedModel
+            {
+                SchoolOrCollege = new CodedDouble(20, "", "20"),
+                LocalAuthority = new CodedDouble(21, "", "21"),
+                England = new CodedDouble(22, "", "22")
+            },
+            NumberOfNonDisadvantagedStudentsEnglish = new EnglishMathsQualificationsDisadvantagedModel
+            {
+                SchoolOrCollege = new CodedDouble(0, "", "0"),
+                LocalAuthority = new CodedDouble(23, "", "23"),
+                England = new CodedDouble(24, "", "24")
+            },
+            NumberOfNonDisadvantagedStudentsMaths = new EnglishMathsQualificationsDisadvantagedModel
+            {
+                SchoolOrCollege = new CodedDouble(0, "", "0"),
+                LocalAuthority = new CodedDouble(25, "", "25"),
+                England = new CodedDouble(26, "", "26")
+            },
+            ProgressOfDisadvantagedStudentsEnglish = new EnglishMathsQualificationsDisadvantagedModel
+            {
+                SchoolOrCollege = new CodedDouble(27, "", "27"),
+                LocalAuthority = new CodedDouble(28, "", "28"),
+                England = new CodedDouble(29, "", "29")
+            },
+            ProgressOfDisadvantagedStudentsMaths = new EnglishMathsQualificationsDisadvantagedModel
+            {
+                SchoolOrCollege = new CodedDouble(30, "", "30"),
+                LocalAuthority = new CodedDouble(31, "", "31"),
+                England = new CodedDouble(32, "", "32")
+            },
+            ProgressOfNonDisadvantagedStudentsEnglish = new EnglishMathsQualificationsDisadvantagedModel
+            {
+                SchoolOrCollege = new CodedDouble(0, "", "0"),
+                LocalAuthority = new CodedDouble(33, "", "33"),
+                England = new CodedDouble(34, "", "34")
+            },
+            ProgressOfNonDisadvantagedStudentsMaths = new EnglishMathsQualificationsDisadvantagedModel
+            {
+                SchoolOrCollege = new CodedDouble(0, "", "0"),
+                LocalAuthority = new CodedDouble(35, "", "35"),
+                England = new CodedDouble(36, "", "36")
+            }
         };
     }
 

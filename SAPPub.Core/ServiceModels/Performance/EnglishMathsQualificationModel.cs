@@ -21,4 +21,17 @@ public class EnglishMathsQualificationModel
     public required EnglishMathsScoreModel AverageMathsProgress { get; init; }
     
     public required EnglishMathsScoreModel EnteredForMathsQualification { get; init; }
+
+    public required EnglishMathsQualificationsDisadvantagedModel NumberOfDisadvantagedStudentsEnglish { get; init; }
+    public required EnglishMathsQualificationsDisadvantagedModel ProgressOfDisadvantagedStudentsEnglish { get; init; }
+
+    public required EnglishMathsQualificationsDisadvantagedModel NumberOfDisadvantagedStudentsMaths { get; init; }
+    public required EnglishMathsQualificationsDisadvantagedModel ProgressOfDisadvantagedStudentsMaths { get; init; }
+
+    public required EnglishMathsQualificationsDisadvantagedModel NumberOfNonDisadvantagedStudentsEnglish { get; init; }
+    public required EnglishMathsQualificationsDisadvantagedModel ProgressOfNonDisadvantagedStudentsEnglish { get; init; }
+
+    public required EnglishMathsQualificationsDisadvantagedModel NumberOfNonDisadvantagedStudentsMaths { get; init; }
+    public required EnglishMathsQualificationsDisadvantagedModel ProgressOfNonDisadvantagedStudentsMaths { get; init; }
+
 }

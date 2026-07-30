@@ -24,7 +24,7 @@ public class EnglandKs5Performance
     public string? TALLPPE_ALEV_1618_Eng_Current_Num_Reason { get; set; }
 
     // Average result grade for England
-    public string? TALLPPEGRD_ALEV_1618_Eng_Current { get; set; }    
+    public string? TALLPPEGRD_ALEV_1618_Eng_Current { get; set; }
 
     // Average progress for English
     public CodedDouble PROGEX_E_Eng_Current_Num_Coded { get; set; } = new();
@@ -38,4 +38,24 @@ public class EnglandKs5Performance
     // Entered for Maths qualifications ENG
     public CodedDouble ENTRY_PER_M_Eng_Current_Pct_Coded { get; set; } = new();
 
+    // Average progress for England
+    // English - Disadvantaged
+    public CodedDouble PROGEX_E_DIS_Eng_Current_Num_Coded { get; set; } = new();
+    // English - Not Dis.
+    public CodedDouble PROGEX_E_NOTDIS_Eng_Current_Num_Coded { get; set; } = new();
+    // Maths - Disadvantaged
+    public CodedDouble PROGEX_M_DIS_Eng_Current_Num_Coded { get; set; } = new();
+    // Maths - Not Dis.
+    public CodedDouble PROGEX_M_NOTDIS_Eng_Current_Num_Coded { get; set; } = new();
+
+
+    //Number of students LA
+    // English - Disadvantaged
+    public CodedDouble T_SCOPEEX_E_DIS_Eng_Current_Num_Coded { get; set; } = new();
+    // English - Not Dis.
+    public CodedDouble T_SCOPEEX_E_NOTDIS_Eng_Current_Num_Coded { get; set; } = new();
+    // Maths - Disadvantaged
+    public CodedDouble T_SCOPEEX_M_DIS_Eng_Current_Num_Coded { get; set; } = new();
+    // Maths - Not Dis.
+    public CodedDouble T_SCOPEEX_M_NOTDIS_Eng_Current_Num_Coded { get; set; } = new();
 }

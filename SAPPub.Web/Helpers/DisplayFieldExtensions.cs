@@ -1,5 +1,6 @@
 ﻿using SAPPub.Core.Extensions;
 using SAPPub.Core.ValueObjects;
+using System.Globalization;
 
 namespace SAPPub.Web.Helpers;
 
@@ -39,7 +40,7 @@ public static class DisplayFieldExtensions
     public static string DisplayNumber(this DisplayField<CodedDouble> prop, string? format = null, bool displayReason = false)
     {
         return prop.DisplayText(d => d.HasValue
-            ? (format is null ? d.Value!.Value.ToString() : d.Value!.Value.ToString(format))
+            ? (format is null ? d.Value!.Value.ToString() : d.Value!.Value.ToString(format, CultureInfo.InvariantCulture))
             : displayReason ? d.Reason : Constants.Constants.NotAvailable,
             Constants.Constants.NotAvailable);
     }
