@@ -78,11 +78,11 @@ public class PrimarySchoolNavigationTests(WebApplicationSetupFixture fixture) : 
         Assert.Contains(PrimarySchoolPageTitles.MeetingOrExceedingStandards, title);
 
         // Act
-        //await ClickAcademicPerformanceNavItemAsync(Page, "Subject scaled scores");
+        await ClickAcademicPerformanceNavItemAsync(Page, "Scaled scores");
 
         //// Assert
-        //title = await Page.TitleAsync();
-        //Assert.Contains("Subject scaled scores", title);
+        title = await Page.TitleAsync();
+        Assert.Contains(PrimarySchoolPageTitles.ScaledScores, title);
 
         // Act
         await ClickAcademicPerformanceNavItemAsync(Page, "Additional measures");

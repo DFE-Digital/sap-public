@@ -14,6 +14,7 @@ public static class RouteConstants
     public const string PrimaryCurriculum = "PrimaryCurriculum";
     public const string PrimaryAcademicPerformancePupilProgress = "PrimaryAcademicPerformancePupilProgress";
     public const string PrimaryAcademicPerformanceMeetingOrExceedingStandards = "PrimaryAcademicPerformanceMeetingOrExceedingStandards";
+    public const string PrimaryAcademicPerformanceScaledScores = "PrimaryAcademicPerformanceScaledScores";
     public const string PrimaryAcademicPerformanceAdditionalMeasures = "PrimaryAcademicPerformanceAdditionalMeasures";
 
     // Secondary School
