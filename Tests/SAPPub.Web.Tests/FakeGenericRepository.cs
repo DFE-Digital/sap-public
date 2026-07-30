@@ -514,8 +514,40 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             return Task.FromResult(rows.Cast<T>());
         }
 
+        if (typeof(T) == typeof(KS5EstablishmentSubjectEntryRow))
+        {
+            var urn = GetPropertyString(parameters, "Urn");
+            if (string.IsNullOrWhiteSpace(urn))
+                return Task.FromResult(Enumerable.Empty<T>());
+
+            var rows = new List<KS5EstablishmentSubjectEntryRow>
+            {
+                MakeKS5Row(urn, "Maths", "A level Mathematics", "Level 3", "50", "A level"),
+                MakeKS5Row(urn, "English", "A level English Literature", "Level 3", "45", "A level"),
+                MakeKS5Row(urn, "Biology", "A level Biology", "Level 3", "40", "A level"),
+                MakeKS5Row(urn, "Chemistry", "A level Chemistry", "Level 3", "35", "A level"),
+                MakeKS5Row(urn, "History", "A level History", "Level 3", "30", "A level"),
+                MakeKS5Row(urn, "Sport", "BTEC National Sport", "Level 3", "25", "Other Academic"),
+                MakeKS5Row(urn, "IT", "Cambridge Technical IT", "Level 3", "20", "Tech level"),
+                MakeKS5Row(urn, "Health", "BTEC Health and Social Care", "Level 3", "15", "Technical certificate"),
+            };
+
+            return Task.FromResult(rows.Cast<T>());
+        }
+
         return Task.FromResult(Enumerable.Empty<T>());
     }
+
+    private KS5EstablishmentSubjectEntryRow MakeKS5Row(string urn, string subject, string qualDetailed, string qualLevel, string count, string examCohort) 
+        => new()
+        { 
+            subject = subject,
+            entries_count = count,
+            qualification_detailed = qualDetailed,
+            qualification_level = qualLevel,
+            exam_cohort = examCohort,
+            grade = "Total exam entries"
+        };
 
     private static KS4EstablishmentSubjectEntryRow MakeRow(string urn, string cohort, string subject, string qual, string count)
         => new()

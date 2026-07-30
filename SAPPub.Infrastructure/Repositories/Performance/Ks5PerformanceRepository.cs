@@ -4,7 +4,7 @@ using SAPPub.Core.Interfaces.Repositories.Performance;
 
 namespace SAPPub.Infrastructure.Repositories.Performance;
 
-public class Ks5PerformanceRepository(
+public class KS5PerformanceRepository(
     IGenericRepository<KS5EstablishmentPerformance> establishmentRepo,
     IGenericRepository<KS5EnglandPerformance> englandRepo,    
     IGenericRepository<KS5LAPerformance> laRepo) : IKs5PerformanceRepository

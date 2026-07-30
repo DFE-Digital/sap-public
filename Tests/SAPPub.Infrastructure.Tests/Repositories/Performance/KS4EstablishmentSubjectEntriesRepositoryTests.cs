@@ -3,13 +3,13 @@ using SAPPub.Core.Entities.Performance;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Infrastructure.Repositories.Performance;
 
-namespace SAPPub.Infrastructure.Tests.Repositories.SubjectEntries;
-public class EstablishmentSubjectEntriesRepositoryTests
+namespace SAPPub.Infrastructure.Tests.Repositories.Performance;
+public class KS4EstablishmentSubjectEntriesRepositoryTests
 {
     private readonly Mock<IGenericRepository<KS4EstablishmentSubjectEntryRow>> _repo = new();
     private readonly KS4EstablishmentSubjectEntriesRepository _sut;
 
-    public EstablishmentSubjectEntriesRepositoryTests()
+    public KS4EstablishmentSubjectEntriesRepositoryTests()
     {
         _sut = new KS4EstablishmentSubjectEntriesRepository(_repo.Object);
     }

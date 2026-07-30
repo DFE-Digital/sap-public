@@ -116,7 +116,7 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<IAttainmentAndProgressComparisionService, AttainmentAndProgressComparisionService>();
             services.AddTransient<ILAService, LAService>();
 
-            services.AddTransient<IKs5PerformanceRepository, Ks5PerformanceRepository>();
+            services.AddTransient<IKs5PerformanceRepository, KS5PerformanceRepository>();
             services.AddTransient<IAdvancedLevelQualificationsService, AdvancedLevelQualificationsService>();
             services.AddTransient<IEnglishAndMathsQualificationsService, EnglishAndMathsQualificationsService>();
 

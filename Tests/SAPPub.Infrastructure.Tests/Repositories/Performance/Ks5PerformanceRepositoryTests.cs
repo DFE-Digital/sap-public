@@ -6,19 +6,19 @@ using SAPPub.Infrastructure.Repositories.Performance;
 
 namespace SAPPub.Infrastructure.Tests.Repositories.Performance;
 
-public class Ks5PerformanceRepositoryTests
+public class KS5PerformanceRepositoryTests
 {
     private readonly Mock<IGenericRepository<KS5EstablishmentPerformance>> _mockEstablishmentKs5PerformanceRepo;
     private readonly Mock<IGenericRepository<KS5EnglandPerformance>> _mockEnglandKs5PerformanceRepo;    
     private readonly Mock<IGenericRepository<KS5LAPerformance>> _mockLAKs5PerformanceRepo;
-    private readonly Ks5PerformanceRepository _sut;
+    private readonly KS5PerformanceRepository _sut;
 
-    public Ks5PerformanceRepositoryTests()
+    public KS5PerformanceRepositoryTests()
     {
         _mockEstablishmentKs5PerformanceRepo = new Mock<IGenericRepository<KS5EstablishmentPerformance>>();
         _mockEnglandKs5PerformanceRepo = new Mock<IGenericRepository<KS5EnglandPerformance>>();
         _mockLAKs5PerformanceRepo = new Mock<IGenericRepository<KS5LAPerformance>>();
-        _sut = new Ks5PerformanceRepository(
+        _sut = new KS5PerformanceRepository(
             _mockEstablishmentKs5PerformanceRepo.Object,
             _mockEnglandKs5PerformanceRepo.Object,            
             _mockLAKs5PerformanceRepo.Object);
