@@ -11,6 +11,7 @@ public class PageTitleConstants
     public static class PrimarySchoolPageTitles
     {
         public const string PupilProgress = "Pupil progress";
+        public const string MeetingOrExceedingStandards = "Meeting or exceeding standards";
         public const string AdditionalMeasures = "Additional measures";
         public const string Admissions = "Primary Admissions";
         public const string Curriculum = "Primary Curriculum";

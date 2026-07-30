@@ -1,4 +1,4 @@
-﻿@model SAPPub.Web.Areas.Profiles.ViewModels.KS2.AcademicPerformanceAdditionalMeasuresViewModel
+﻿@model SAPPub.Web.Areas.Profiles.ViewModels.KS2.AcademicPerformanceMeetingOrExceedingStandardsViewModel
 @using SAPPub.Web.Constants
 @using static SAPPub.Web.Constants.PageTitleConstants
 @using SAPPub.Web.ViewComponents.VerticalNavigation
@@ -6,7 +6,7 @@
 
 @{
     ViewData["Header"] = "Academic performance";
-    ViewData["SubHeader"] = PageTitleConstants.PrimarySchoolPageTitles.AdditionalMeasures;
+    ViewData["SubHeader"] = PageTitleConstants.PrimarySchoolPageTitles.MeetingOrExceedingStandards;
     ViewData["Title"] = $"{Model.SchoolName} - Primary {ViewData["SubHeader"]}";
 }
 
@@ -16,7 +16,7 @@
     {
         URN = Model.URN,
         SchoolName = Model.SchoolName,
-        ActivePage = RouteConstants.PrimaryAcademicPerformanceAdditionalMeasures,
+        ActivePage = RouteConstants.PrimaryAcademicPerformanceMeetingOrExceedingStandards,
         IsKS2 = Model.IsKS2,
         IsKS4 = Model.IsKS4,
         IsKS5 = Model.IsKS5
@@ -36,15 +36,15 @@
                     <a class="moj-sub-navigation__link" asp-route="@RouteConstants.PrimaryAcademicPerformancePupilProgress" asp-all-route-data="@Model.RouteAttributes">@PrimarySchoolPageTitles.PupilProgress</a>
                 </li>
                 <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.PrimaryAcademicPerformanceMeetingOrExceedingStandards" asp-all-route-data="@Model.RouteAttributes">@PrimarySchoolPageTitles.MeetingOrExceedingStandards</a>
+                    <a class="moj-sub-navigation__link" aria-current="page" asp-route="@RouteConstants.PrimaryAcademicPerformanceMeetingOrExceedingStandards" asp-all-route-data="@Model.RouteAttributes">@PrimarySchoolPageTitles.MeetingOrExceedingStandards</a>
                 </li>
                 <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" aria-current="page" asp-route="@RouteConstants.PrimaryAcademicPerformanceAdditionalMeasures" asp-all-route-data="@Model.RouteAttributes">@PrimarySchoolPageTitles.AdditionalMeasures</a>
+                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.PrimaryAcademicPerformanceAdditionalMeasures" asp-all-route-data="@Model.RouteAttributes">@PrimarySchoolPageTitles.AdditionalMeasures</a>
                 </li>
             </ul>
         </nav>
 
-        <h2 class="govuk-heading-l">Additional measures</h2>
+        <h2 class="govuk-heading-l">@PrimarySchoolPageTitles.MeetingOrExceedingStandards</h2>
 
         <govuk-pagination id="bottom-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.PrimaryAcademicPerformancePupilProgress" asp-all-route-data="@Model.RouteAttributes">Primary academic performance: Pupil progress</govuk-pagination-previous>
