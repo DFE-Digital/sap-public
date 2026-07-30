@@ -36,19 +36,23 @@ public static class DisplayFieldExtensions
         return DisplayField<T>.Available(value.Value);
     }
 
-    public static string DisplayNumber(this DisplayField<CodedDouble> prop, string? format = null, bool displayReason = false)
+    public static string DisplayNumber(
+        this DisplayField<CodedDouble> prop,
+        string? format = null,
+        string notAvailableText = "Not available",
+        bool displayReason = false)
     {
-        return prop.DisplayText(d => d.HasValue
-            ? (format is null ? d.Value!.Value.ToString() : d.Value!.Value.ToString(format))
-            : displayReason ? d.Reason : Constants.Constants.NotAvailable,
-            Constants.Constants.NotAvailable);
+        return prop.DisplayText(d => format is null 
+            ? d.Value!.Value.ToString() 
+            : d.Value!.Value.ToString(format),
+            notAvailableText, displayReason);
     }
 
-    public static string DisplayPercentage(this DisplayField<CodedDouble> prop, bool displayReason = false)
+    public static string DisplayPercentage(
+        this DisplayField<CodedDouble> prop,
+        string notAvailableText = "Not available",
+        bool displayReason = false)
     {
-        return prop.DisplayText(d => d.HasValue
-            ? d.Value!.Value.AsPercentage()
-            : displayReason ? d.Reason : Constants.Constants.NotAvailable,
-            Constants.Constants.NotAvailable);
+        return prop.DisplayText(d => d.Value!.Value.AsPercentage(), notAvailableText, displayReason);        
     }
 }

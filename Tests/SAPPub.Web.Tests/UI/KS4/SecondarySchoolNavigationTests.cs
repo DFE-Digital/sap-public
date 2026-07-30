@@ -188,7 +188,7 @@ public class SecondarySchoolNavigationTests(WebApplicationSetupFixture fixture) 
         // Assert
         var title = await Page.TitleAsync();
         Assert.Contains("16 to 19", title);
-        Assert.Contains("Advanced level", title);
+        Assert.Contains("Level 3 qualifications", title);
     }
 
     private static Task ClickAcademicPerformanceNavItemAsync(
