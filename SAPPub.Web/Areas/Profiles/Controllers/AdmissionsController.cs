@@ -32,10 +32,6 @@ public class AdmissionsController(ILogger<AdmissionsController> logger, IFeature
         {
             return RedirectToAction("KS4", new { urn, schoolName });
         }
-        else if (await featureManager.IsEnabledAsync(Constants.Constants.Enable16to19) && schoolDetails.IsKS5)
-        {
-            return RedirectToAction("KS5", new { urn, schoolName });
-        }
         return View("Error");
     }
 
