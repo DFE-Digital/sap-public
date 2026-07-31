@@ -3,16 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Enums;
-using SAPPub.Core.Extensions;
 using SAPPub.Core.Interfaces.Services;
-using SAPPub.Core.Interfaces.Services.KS4;
-using SAPPub.Core.Interfaces.Services.KS4.Admissions;
-using SAPPub.Core.Interfaces.Services.KS4.Attendance;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.ServiceModels;
-using SAPPub.Core.ServiceModels.KS4.AboutSchool;
-using SAPPub.Core.ServiceModels.KS4.Admissions;
 using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.Tests.TestBuilders;
@@ -31,8 +25,6 @@ public class KS4ControllerTests
     private readonly Mock<IKS4EstablishmentSubjectEntriesService> _mockEstablishmentSubjectEntriesService = new();
     private readonly Mock<IAcademicPerformanceEnglishAndMathsResultsService> _mockEnglishAndMathsResultsService = new();
     private readonly Mock<IAttainmentAndProgressService> _mockAttainmentAndProgressService = new();
-    private readonly Mock<IAdmissionsService> _mockAdmissionsService = new();
-    private readonly Mock<IAttendanceService> _mockAttendanceService = new();
     private readonly KS4Controller _controller;
     private EstablishmentServiceModel _fakeEstablishment;
 
@@ -142,39 +134,6 @@ public class KS4ControllerTests
             IsKS5 = false
         };
 
-    private AboutSchoolModel SchoolDetails()
-    {
-        return new AboutSchoolModel
-        {
-            Urn = _fakeEstablishment.URN,
-            SchoolName = _fakeEstablishment.EstablishmentName,
-            AcademyTrust = _fakeEstablishment.TrustName,
-            Website = _fakeEstablishment.Website,
-            Telephone = _fakeEstablishment.TelephoneNum,
-            Address = _fakeEstablishment.Address,
-            LocalAuthority = _fakeEstablishment.LAName,
-            LocalAuthorityName = _fakeEstablishment.LAName,
-            LocalAuthorityWebsite = "www.gov.uk",
-            Easting = "50.01",
-            Northing = "60.90",
-            TypeOfSchool = _fakeEstablishment.TypeOfEstablishmentName,
-            HeadTeacher = _fakeEstablishment.Headteacher,
-            AgeRange = _fakeEstablishment.AgeRange,
-            NumberOfPupils = _fakeEstablishment.TotalPupils,
-            PupilSex = _fakeEstablishment.GenderName,
-            ReligiousCharacter = _fakeEstablishment.ReligiousCharacterName,
-            OfficialSixthFormId = _fakeEstablishment.OfficialSixthFormId,
-            ResourcedProvisionName = _fakeEstablishment.ResourcedProvisionName,
-            EstablishmentTypeGroupId = _fakeEstablishment.EstablishmentTypeGroupId,
-            Status = _fakeEstablishment.StatusCode.ToStatus(),
-            ClosedDate = _fakeEstablishment.ClosedDate.ToDateOnly(),
-            OpenReasonId = _fakeEstablishment.OpenReasonId,
-            OpenDate = _fakeEstablishment.OpenDate.ToDateOnly(),
-            IsKS2 = true,
-            IsKS4 = true
-        };
-    }
-
     public KS4ControllerTests()
     {
         _fakeEstablishment = new EstablishmentTestBuilder()
@@ -208,7 +167,6 @@ public class KS4ControllerTests
             .BuildServiceModel();
 
         _mockEstablishmentService = new();
-        _mockDestinationsService = new();
 
         _mockEstablishmentService
             .Setup(es => es.GetEstablishmentAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
@@ -223,182 +181,6 @@ public class KS4ControllerTests
         {
             HttpContext = new DefaultHttpContext()
         };
-    }
-
-    [Fact]
-    public async Task Get_Admissions_Info_ReturnsExpectedViewModel()
-    {
-        var lASchoolAdmissionsUrl = "https://www.example.com/school-admissions";
-        var laName = "Example Local Authority";
-
-        _mockAdmissionsService
-            .Setup(s => s.GetAdmissionsDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new AdmissionsServiceModel(
-                SchoolName: _fakeEstablishment.EstablishmentName,
-                SchoolWebsite: _fakeEstablishment.Website,
-                LAName: laName,
-                LASchoolAdmissionsUrl: lASchoolAdmissionsUrl,
-                EstablishmentStatus: EstablishmentStatus.Open,
-                IsKS2: false,
-                IsKS4: true,
-                IsKS5: false
-
-            ));
-
-        var result = await _controller.Admissions(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
-
-        Assert.NotNull(result);
-        Assert.NotNull(result.Model);
-
-        var model = result.Model as AdmissionsViewModel;
-        Assert.NotNull(model);
-        Assert.Equal(_fakeEstablishment.URN, model.URN);
-        Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
-        Assert.Equal(_fakeEstablishment.Website, model.SchoolWebsite.Value);
-        Assert.Equal(lASchoolAdmissionsUrl, model.LASecondarySchoolAdmissionsLinkUrl);
-        Assert.Equal(laName, model.LAName);
-        Assert.Equal(2, model.RouteAttributes.Count);
-        Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
-        Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
-        Assert.False(model.IsSchoolClosed);
-    }
-
-    [Theory]
-    [InlineData(null, FieldStatus.NotAvailable)]
-    [InlineData("", FieldStatus.NotAvailable)]
-    [InlineData(" ", FieldStatus.NotAvailable)]
-    [InlineData("test", FieldStatus.Available)]
-    public async Task Get_Admissions_Info_SchoolWebsite(string? website, FieldStatus fieldStatus)
-    {
-        _fakeEstablishment.Website = website!;
-
-        var lASchoolAdmissionsUrl = "https://www.example.com/school-admissions";
-        var laName = "Example Local Authority";
-
-        _mockAdmissionsService
-            .Setup(s => s.GetAdmissionsDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new AdmissionsServiceModel(
-                SchoolName: _fakeEstablishment.EstablishmentName,
-                SchoolWebsite: _fakeEstablishment.Website,
-                LAName: laName,
-                LASchoolAdmissionsUrl: lASchoolAdmissionsUrl,
-                EstablishmentStatus: EstablishmentStatus.Open,
-                IsKS2: false,
-                IsKS4: true,
-                IsKS5: false
-            ));
-
-        var result = await _controller.Admissions(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
-
-        Assert.NotNull(result);
-        Assert.NotNull(result.Model);
-
-        var model = result.Model as AdmissionsViewModel;
-
-        Assert.NotNull(model);
-        Assert.Equal(fieldStatus, model.SchoolWebsite.Status);
-
-        if (fieldStatus == FieldStatus.Available)
-        {
-            Assert.False(model.SchoolWebsite.IsNotAvailable);
-            Assert.True(model.SchoolWebsite.IsAvailable);
-            Assert.Equal(website, model.SchoolWebsite.Value);
-            Assert.Equal(website, model.SchoolWebsite.DisplayText());
-        }
-        else
-        {
-            Assert.False(model.SchoolWebsite.IsAvailable);
-            Assert.True(model.SchoolWebsite.IsNotAvailable);
-            Assert.Equal("Not available", model.SchoolWebsite.DisplayText());
-        }
-
-        Assert.False(model.IsSchoolClosed);
-    }
-
-    [Theory]
-    [InlineData(EstablishmentStatus.Open, false)]
-    [InlineData(EstablishmentStatus.Closed, true)]
-    public async Task Get_Admissions_Info_IsSchoolClosed(EstablishmentStatus? statusCode, bool expectedResult)
-    {
-        _fakeEstablishment.StatusCode = statusCode.ToStatusCode();
-
-        var lASchoolAdmissionsUrl = "https://www.example.com/school-admissions";
-        var laName = "Example Local Authority";
-
-        _mockAdmissionsService
-            .Setup(s => s.GetAdmissionsDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new AdmissionsServiceModel(
-                SchoolName: _fakeEstablishment.EstablishmentName,
-                SchoolWebsite: _fakeEstablishment.Website,
-                LAName: laName,
-                LASchoolAdmissionsUrl: lASchoolAdmissionsUrl,
-                EstablishmentStatus: statusCode,
-                IsKS2: false,
-                IsKS4: true,
-                IsKS5: false
-            ));
-
-        var result = await _controller.Admissions(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
-
-        Assert.NotNull(result);
-        Assert.NotNull(result.Model);
-
-        var model = result.Model as AdmissionsViewModel;
-
-        Assert.NotNull(model);
-        Assert.Equal(expectedResult, model.IsSchoolClosed);
-    }
-
-    [Fact]
-    public async Task Get_CurriculumAndExtraCurricularActivities_Info_ReturnsOk()
-    {
-        var result = await _controller.CurriculumAndExtraCurricularActivities(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
-
-        Assert.NotNull(result);
-        Assert.NotNull(result.Model);
-
-        var model = result.Model as CurriculumAndExtraCurricularActivitiesViewModel;
-        Assert.NotNull(model);
-        Assert.Equal(_fakeEstablishment.URN, model.URN);
-        Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
-        Assert.Equal(_fakeEstablishment.Website, model.SchoolWebsite.Value);
-        Assert.Equal(2, model.RouteAttributes.Count);
-        Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
-        Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
-    }
-
-    [Theory]
-    [InlineData(null, FieldStatus.NotAvailable)]
-    [InlineData("", FieldStatus.NotAvailable)]
-    [InlineData(" ", FieldStatus.NotAvailable)]
-    [InlineData("test", FieldStatus.Available)]
-    public async Task Get_CurriculumAndExtraCurricularActivities_Info_SchoolWebsite(string? website, FieldStatus fieldStatus)
-    {
-        _fakeEstablishment.Website = website!;
-
-        var result = await _controller.CurriculumAndExtraCurricularActivities(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
-
-        Assert.NotNull(result);
-        Assert.NotNull(result.Model);
-
-        var model = result.Model as CurriculumAndExtraCurricularActivitiesViewModel;
-
-        Assert.NotNull(model);
-        Assert.Equal(fieldStatus, model.SchoolWebsite.Status);
-
-        if (fieldStatus == FieldStatus.Available)
-        {
-            Assert.False(model.SchoolWebsite.IsNotAvailable);
-            Assert.True(model.SchoolWebsite.IsAvailable);
-            Assert.Equal(website, model.SchoolWebsite.Value);
-            Assert.Equal(website, model.SchoolWebsite.DisplayText());
-        }
-        else
-        {
-            Assert.False(model.SchoolWebsite.IsAvailable);
-            Assert.True(model.SchoolWebsite.IsNotAvailable);
-            Assert.Equal("Not available", model.SchoolWebsite.DisplayText());
-        }
     }
 
     [Fact]
@@ -835,6 +617,4 @@ public class KS4ControllerTests
         Assert.Equal(_fakeEstablishment.URN, model!.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
     }
-
-
 }

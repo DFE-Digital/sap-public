@@ -65,6 +65,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "OpenDate",
           "OpenReasonId",
           "SenTypes",
+          "ISKS2",
           "ISKS4",
           "ISKS5"
           """;
@@ -446,7 +447,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                     SelectFromWhereId(EstablishmentDestinationsColumns, "v_establishment_destinations"),
 
                 nameof(EstablishmentPerformance) =>
-                    SelectFromWhereId(EstablishmentPerformanceColumns, "v_establishment_performance"),                                
+                    SelectFromWhereId(EstablishmentPerformanceColumns, "v_establishment_performance"),
 
                 nameof(LAAbsence) =>
                     SelectFromWhereId(LAAbsenceColumns, "v_la_absence"),

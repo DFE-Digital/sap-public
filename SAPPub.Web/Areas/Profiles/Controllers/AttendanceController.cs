@@ -9,16 +9,15 @@ namespace SAPPub.Web.Areas.Profiles.Controllers;
 public class AttendanceController : Controller
 {
     [HttpGet]
-    [Route("school/{urn}/{schoolName}/attendance", Name = RouteConstants.SecondaryAttendance)]
+    [Route("school/{urn}/{schoolName}/attendance", Name = RouteConstants.Attendance)]
     public async Task<IActionResult> Attendance(
-    [FromServices] IAttendanceService attendanceService,
-    string urn,
-    string schoolName,
+        [FromServices] IAttendanceService attendanceService,
+        string urn,
+        string schoolName,
     CancellationToken ct)
     {
         var attendanceDetails = await attendanceService.GetAttendenceDetailsAsync(urn, ct);
         var model = AttendanceViewModel.Map(attendanceDetails);
         return View(model);
     }
-
 }

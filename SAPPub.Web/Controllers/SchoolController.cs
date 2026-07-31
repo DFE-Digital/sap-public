@@ -16,7 +16,7 @@ namespace SAPPub.Web.Controllers
             var schoolDetails = await _establishmentService.GetEstablishmentAsync(urn, ct);
 
             return RedirectToRoute(
-                RouteConstants.SecondaryAboutSchool,
+                RouteConstants.AboutTheSchool,
                 new { urn, schoolName = schoolDetails.EstablishmentNameClean });
         }
 
@@ -24,7 +24,7 @@ namespace SAPPub.Web.Controllers
         [Route("school/{urn}/{schoolName}")]
         public IActionResult Index(string urn, string schoolName)
         {
-            return RedirectToRoute(RouteConstants.SecondaryAboutSchool, new { urn, schoolName });
+            return RedirectToRoute(RouteConstants.AboutTheSchool, new { urn, schoolName });
         }
 
         [HttpGet("/map/schools/{urn}")]
