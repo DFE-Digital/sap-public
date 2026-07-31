@@ -8,11 +8,18 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
 {
     private string _pageUrl = "school/105574/loreto-high-school-chorlton/curriculum/secondary";
 
+    private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
+    {
+        ["105574"] = "school/105574/loreto-high-school-chorlton/curriculum/secondary",
+        ["100273"] = "school/100273/saint-paul-roman-catholic-infant-school/curriculum/secondary",
+        ["150009"] = "school/150009/abraham-moss-community-school/curriculum/secondary" // KS2 + KS4 school
+    };
+
     [Fact]
     public async Task CurriculumAndExtraCurricularActivitiesPage_LoadsSuccessfully()
     {
         // Arrange && Act
-        var response = await Page.GotoAsync(_pageUrl);
+        var response = await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Assert
         Assert.NotNull(response);
@@ -23,7 +30,7 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
     public async Task CurriculumAndExtraCurricularActivitiesPage_HasCorrectTitle()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var title = await Page.TitleAsync();
@@ -36,7 +43,7 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
     public async Task CurriculumAndExtraCurricularActivitiesPage_DisplaysMainHeading()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var heading = await Page.Locator("h1").TextContentAsync();
@@ -50,7 +57,7 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
     public async Task CurriculumAndExtraCurricularActivitiesPage_Displays_SchoolName_Caption()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var schoolNameCaptionLocator = Page.Locator("#school-name-caption");
@@ -67,8 +74,7 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
     public async Task CurriculumAndExtraCurricularActivitiesPage_CurrentCurriculum_ContactSchoolText()
     {
         // Arrange
-        _pageUrl = "school/100273/saint-paul-roman-catholic-infant-school/curriculum/secondary";
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["100273"]);
 
         // Act
         var summaryCard = Page.GetByTestId("current-curriculum-summary");
@@ -86,7 +92,7 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
     public async Task CurriculumAndExtraCurricularActivitiesPage_Displays_VerticalNavigation()
     {
         var nav = new VerticalNavigationHelper(Page);
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         await nav.ShouldBeVisibleAsync();
         await nav.ShouldHaveOneActiveItemAsync();
@@ -97,7 +103,7 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
     public async Task CurriculumAndExtraCurricularActivitiesPage_Displays_Curriculum_Summary()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var isVisible = await Page.Locator("#current-curriculum-summary").IsVisibleAsync();
@@ -110,7 +116,7 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
     public async Task CurriculumAndExtraCurricularActivitiesPage_Displays_Extra_Curriculum_Summary()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var summaryCard = Page.Locator("#current-extra-curricular-activities-offered-summary");
@@ -126,8 +132,7 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
     public async Task CurriculumAndExtraCurricularActivitiesPage_Displays_Extra_Curriculum_Summary_ContactSchoolText()
     {
         // Arrange
-        _pageUrl = "school/100273/Saint%20Paul%20Roman%20Catholic%20Infant%20School/curriculum/secondary";
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["100273"]);
 
         // Act
         var summaryCard = Page.Locator("#current-extra-curricular-activities-offered-summary");
@@ -143,7 +148,7 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
     public async Task CurriculumAndExtraCurricularActivitiesPage_DisplaysPagination()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         var isVisible = await Page.Locator("#current-extra-curricular-activities-pagination").IsVisibleAsync();
@@ -157,5 +162,51 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
         Assert.True(isVisible);
         Assert.Equal("Admissions", previousPaginationText?.Trim());
         Assert.Equal("Attendance", nextPaginationText?.Trim());
+    }
+
+    [Fact]
+    public async Task CurriculumPage_DoesNotDisplay_SubNavigation_WhenOnlyKS4()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+
+        // Act
+        var subNav = Page.Locator("#sub-navigation-academic-performance");
+        var isVisible = await subNav.IsVisibleAsync();
+
+        // Assert
+        Assert.False(isVisible);
+    }
+
+    [Fact]
+    public async Task CurriculumPage_Displays_SubNavigation_WhenMultiplePhases()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["150009"]);
+
+        // Act
+        var subNav = Page.Locator("#sub-navigation-academic-performance");
+        var isVisible = await subNav.IsVisibleAsync();
+
+        // Assert
+        Assert.True(isVisible);
+    }
+
+    [Fact]
+    public async Task CurriculumPage_SubNavigation_HasCorrectLinks_WhenMultiplePhases()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["150009"]);
+
+        // Act
+        var primaryLink = Page.Locator("#sub-navigation-academic-performance a:not([aria-current='page'])");
+        var secondaryLink = Page.Locator("#sub-navigation-academic-performance a[aria-current='page']");
+
+        var primaryLinkText = await primaryLink.TextContentAsync();
+        var secondaryLinkText = await secondaryLink.TextContentAsync();
+
+        // Assert
+        Assert.Equal("Primary Curriculum", primaryLinkText?.Trim());
+        Assert.Equal("Secondary Curriculum", secondaryLinkText?.Trim());
     }
 }

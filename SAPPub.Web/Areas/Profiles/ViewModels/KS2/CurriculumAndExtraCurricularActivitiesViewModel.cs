@@ -2,7 +2,7 @@
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models;
 
-namespace SAPPub.Web.Areas.Profiles.ViewModels.KS4;
+namespace SAPPub.Web.Areas.Profiles.ViewModels.KS2;
 
 public class CurriculumAndExtraCurricularActivitiesViewModel : BaseViewModel
 {

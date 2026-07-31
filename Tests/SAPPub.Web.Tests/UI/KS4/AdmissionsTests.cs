@@ -12,7 +12,8 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
     {
         ["105574"] = "school/105574/loreto-high-school-chorlton/admissions/secondary",
         ["100273"] = "school/100273/saint-paul-roman-catholic-infant-school/admissions/secondary",
-        ["107564"] = "school/107564/todmorden-high-school/admissions/secondary"
+        ["107564"] = "school/107564/todmorden-high-school/admissions/secondary",
+        ["150009"] = "school/150009/abraham-moss-community-school/admissions/secondary" // KS2 + KS4 school
     };
 
     [Fact]
@@ -213,5 +214,51 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
         Assert.True(isVisible);
         Assert.Equal("About the school", previousPaginationText?.Trim());
         Assert.Equal("Curriculum and extra-curricular activities", nextPaginationText?.Trim());
+    }
+
+    [Fact]
+    public async Task AdmissionsPage_DoesNotDisplay_SubNavigation_WhenOnlyKS4()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+
+        // Act
+        var subNav = Page.Locator("#sub-navigation-academic-performance");
+        var isVisible = await subNav.IsVisibleAsync();
+
+        // Assert
+        Assert.False(isVisible);
+    }
+
+    [Fact]
+    public async Task AdmissionsPage_Displays_SubNavigation_WhenMultiplePhases()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["150009"]);
+
+        // Act
+        var subNav = Page.Locator("#sub-navigation-academic-performance");
+        var isVisible = await subNav.IsVisibleAsync();
+
+        // Assert
+        Assert.True(isVisible);
+    }
+
+    [Fact]
+    public async Task AdmissionsPage_SubNavigation_HasCorrectLinks_WhenMultiplePhases()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["150009"]);
+
+        // Act
+        var primaryLink = Page.Locator("#sub-navigation-academic-performance a:not([aria-current='page'])");
+        var secondaryLink = Page.Locator("#sub-navigation-academic-performance a[aria-current='page']");
+
+        var primaryLinkText = await primaryLink.TextContentAsync();
+        var secondaryLinkText = await secondaryLink.TextContentAsync();
+
+        // Assert
+        Assert.Equal("Primary Admissions", primaryLinkText?.Trim());
+        Assert.Equal("Secondary Admissions", secondaryLinkText?.Trim());
     }
 }

@@ -42,7 +42,7 @@ public class AttendancePageTests : PageTestsBase
 
         // Assert
         var title = doc.Title;
-        Assert.Contains("Loreto High School Chorlton - Secondary Attendance - School Profiles - GOV.UK", title);
+        Assert.Contains("Loreto High School Chorlton - Attendance - School Profiles - GOV.UK", title);
     }
 
     [Fact]
