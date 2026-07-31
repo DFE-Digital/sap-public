@@ -21,17 +21,7 @@ public sealed class DisplayField<T>
     public static DisplayField<T> Available(T value) => new(value, FieldStatus.Available);
 
     public static DisplayField<T> NotAvailable() => new(default, FieldStatus.NotAvailable);
-
-    //public string DisplayText(Func<T, string>? formatter = null, string notAvailableText = "Not available")
-    //{
-    //    return Status switch
-    //    {
-    //        FieldStatus.Available => formatter?.Invoke(Value!) ?? Value?.ToString() ?? string.Empty,
-    //        FieldStatus.NotAvailable => notAvailableText,
-    //        _ => notAvailableText
-    //    };
-    //}
-
+    
     public string DisplayText(
         Func<T, string>? formatter = null,
         string notAvailableText = "Not available",

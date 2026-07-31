@@ -37,13 +37,13 @@ public class Level3QualificationsService(
             IsKS4 = establishment.IsKS4,
             IsKS5 = establishment.IsKS5,
             QualificationType = level3Qualification,
-            TotalNoOfStudentCompletedQualification = GetTotalNoOfStundentsCompletedQualification(level3Qualification, establishmentPerformance),
+            TotalNoOfStudentCompletedQualification = GetTotalNoOfStudentsCompletedQualification(level3Qualification, establishmentPerformance),
             ProgressScore = GetProgressScoreModel(level3Qualification, establishmentPerformance, englandPerformance),
             AverageResult = GetAverageResultModel(level3Qualification, establishmentPerformance, englandPerformance, laPerformance),
         };
     }
 
-    private static CodedDouble GetTotalNoOfStundentsCompletedQualification(
+    private static CodedDouble GetTotalNoOfStudentsCompletedQualification(
         Level3 level3Qualification,
         KS5EstablishmentPerformance establishmentPerformance)
     {
