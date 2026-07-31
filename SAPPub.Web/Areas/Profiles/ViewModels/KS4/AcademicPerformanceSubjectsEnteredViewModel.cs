@@ -2,9 +2,9 @@
 using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Web.Areas.Profiles.ViewModels.Performance;
 
-namespace SAPPub.Web.Models.SecondarySchool;
+namespace SAPPub.Web.Areas.Profiles.ViewModels.KS4;
 
-public class AcademicPerformanceSubjectsEnteredViewModel : BaseViewModel
+public class AcademicPerformanceSubjectsEnteredViewModel : SubjectsEnteredBaseModel
 {
     public List<SubjectsEnteredDetailViewModel>? GcseSubjects { get; set; }
 
@@ -43,20 +43,5 @@ public class AcademicPerformanceSubjectsEnteredViewModel : BaseViewModel
             Qualification = se.Qualification ?? "Unknown Qualification",
             NumberOfEntries = GetNumberOfEntries(se.TotalNumberOfEntries),
         }).OrderBy(s => s.Subject).ToList();
-    }
-
-    private static string GetNumberOfEntries(string? totalNumberOfEntries)
-    {
-        if (string.IsNullOrWhiteSpace(totalNumberOfEntries))
-        {
-            return "N/A"!;
-        }
-
-        if (int.TryParse(totalNumberOfEntries, out int numberOfEntries))
-        {
-            return numberOfEntries.ToString("F0");
-        }
-
-        return "N/A";
     }
 }

@@ -5,7 +5,6 @@ using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Web.Areas.Profiles.ViewModels.KS5;
-using SAPPub.Web.Areas.Profiles.ViewModels.Performance;
 using SAPPub.Web.Constants;
 
 namespace SAPPub.Web.Areas.Profiles.Controllers;

@@ -12,6 +12,7 @@ using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Areas.Profiles.Controllers;
 using SAPPub.Web.Areas.Profiles.Helpers;
+using SAPPub.Web.Areas.Profiles.ViewModels.KS4;
 using SAPPub.Web.Constants;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.SecondarySchool;

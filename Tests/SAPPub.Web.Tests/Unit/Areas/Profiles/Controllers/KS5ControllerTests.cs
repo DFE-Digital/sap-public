@@ -11,7 +11,6 @@ using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Areas.Profiles.Controllers;
 using SAPPub.Web.Areas.Profiles.ViewModels.KS5;
-using SAPPub.Web.Areas.Profiles.ViewModels.Performance;
 using SAPPub.Web.Helpers;
 using static SAPPub.Web.Constants.Constants;
 

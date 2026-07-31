@@ -4,6 +4,7 @@ using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Web.Areas.Profiles.Helpers;
+using SAPPub.Web.Areas.Profiles.ViewModels.KS4;
 using SAPPub.Web.Constants;
 using SAPPub.Web.Models.SecondarySchool;
 

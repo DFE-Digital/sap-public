@@ -1,5 +1,4 @@
 ﻿using SAPPub.Core.ValueObjects;
-using System.Runtime.Serialization;
 
 namespace SAPPub.Core.Entities.Performance;
 

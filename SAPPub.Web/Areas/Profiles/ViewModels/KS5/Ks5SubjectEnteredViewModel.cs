@@ -1,12 +1,12 @@
 ﻿using SAPPub.Core.Enums;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels.Performance;
+using SAPPub.Web.Areas.Profiles.ViewModels.Performance;
 using SAPPub.Web.Helpers;
-using SAPPub.Web.Models;
 
-namespace SAPPub.Web.Areas.Profiles.ViewModels.Performance;
+namespace SAPPub.Web.Areas.Profiles.ViewModels.KS5;
 
-public class Ks5SubjectEnteredViewModel : BaseViewModel
+public class Ks5SubjectEnteredViewModel : SubjectsEnteredBaseModel
 {
     public QualificationType QualificationType { get; set; }
     
@@ -32,20 +32,5 @@ public class Ks5SubjectEnteredViewModel : BaseViewModel
                 Level = se.Level
             }).OrderBy(s => s.Subject).ToList()
         };
-    }
-
-    private static string GetNumberOfEntries(string? totalNumberOfEntries)
-    {
-        if (string.IsNullOrWhiteSpace(totalNumberOfEntries))
-        {
-            return "N/A"!;
-        }
-
-        if (int.TryParse(totalNumberOfEntries, out int numberOfEntries))
-        {
-            return numberOfEntries.ToString("F0");
-        }
-
-        return "N/A";
     }
 }
