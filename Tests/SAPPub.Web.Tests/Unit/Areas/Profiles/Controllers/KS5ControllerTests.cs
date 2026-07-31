@@ -15,7 +15,7 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers;
 public class KS5ControllerTests : BaseProfilesTests
 {
     private readonly Mock<ILogger<KS5Controller>> _mockLogger = new();
-    private readonly Mock<IAdvancedLevelQualificationsService> _mockAdvancedLevelQualificationsService = new();
+    private readonly Mock<ILevel3QualificationsService> _mockLevel3QualificationsService = new();
     private readonly Mock<IEnglishAndMathsQualificationsService> _mockEnglishAndMathsQualificationsService = new();
     private readonly KS5Controller _controller;
 
@@ -24,18 +24,19 @@ public class KS5ControllerTests : BaseProfilesTests
         _controller = new KS5Controller(_mockLogger.Object);
     }
 
-    [Fact]
-    public async Task Get_AdvancedLevel_ALevel_Info_ReturnsExpected()
+    [Theory]
+    [InlineData(Level3.ALevel)]
+    [InlineData(Level3.Academic)]
+    public async Task Get_Level3Qualifications_Info_ReturnsExpected(Level3 qualification)
     {
-        var qualification = Level3.ALevel;
-        var expectedResult = AdvancedLevelDetails(qualification);
+        var expectedResult = Level3QualificationDetails(qualification);
 
-        _mockAdvancedLevelQualificationsService
-            .Setup(es => es.GetAdvancedLevelQualificationDetailsAsync(fakeEstablishment.URN, qualification, It.IsAny<CancellationToken>()))
+        _mockLevel3QualificationsService
+            .Setup(es => es.GetLevel3QualificationDetailsAsync(fakeEstablishment.URN, qualification, It.IsAny<CancellationToken>()))
             .ReturnsAsync(expectedResult);
 
-        var result = await _controller.AdvancedLevel(
-            _mockAdvancedLevelQualificationsService.Object,
+        var result = await _controller.Level3Qualifications(
+            _mockLevel3QualificationsService.Object,
             expectedResult.Urn,
             expectedResult.SchoolName,
             qualification,
@@ -44,7 +45,7 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
 
-        var model = result.Model as AdvancedLevelViewModel;
+        var model = result.Model as Level3QualificationViewModel;
         Assert.NotNull(model);
         Assert.Equal(expectedResult.Urn, model.URN);
         Assert.Equal(expectedResult.SchoolName, model.SchoolName);
@@ -70,11 +71,12 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.Equal(expectedResult.AverageResult.Establishment.Grade, model.AverageResult.EstablishmentGrade.DisplayText());
     }
 
-    [Fact]
-    public async Task Get_AdvancedLevel_ALevel_Info_With_No_Data_ReturnsOk()
+    [Theory]
+    [InlineData(Level3.ALevel)]
+    [InlineData(Level3.Academic)]
+    public async Task Get_Level3Qualifications_Info_With_No_Data_ReturnsOk(Level3 qualification)
     {
-        var qualification = Level3.ALevel;
-        var expectedResult = new AdvancedLevelQualificationModel
+        var expectedResult = new Level3QualificationModel
         {
             Urn = fakeEstablishment.URN,
             SchoolName = fakeEstablishment.EstablishmentName,
@@ -92,12 +94,12 @@ public class KS5ControllerTests : BaseProfilesTests
             }
         };
 
-        _mockAdvancedLevelQualificationsService
-            .Setup(es => es.GetAdvancedLevelQualificationDetailsAsync(fakeEstablishment.URN, qualification, It.IsAny<CancellationToken>()))
+        _mockLevel3QualificationsService
+            .Setup(es => es.GetLevel3QualificationDetailsAsync(fakeEstablishment.URN, qualification, It.IsAny<CancellationToken>()))
             .ReturnsAsync(expectedResult);
 
-        var result = await _controller.AdvancedLevel(
-            _mockAdvancedLevelQualificationsService.Object,
+        var result = await _controller.Level3Qualifications(
+            _mockLevel3QualificationsService.Object,
             expectedResult.Urn,
             expectedResult.SchoolName,
             qualification,
@@ -106,7 +108,7 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
 
-        var model = result.Model as AdvancedLevelViewModel;
+        var model = result.Model as Level3QualificationViewModel;
         Assert.NotNull(model);
         Assert.Equal(expectedResult.Urn, model.URN);
         Assert.Equal(expectedResult.SchoolName, model.SchoolName);
@@ -267,9 +269,9 @@ public class KS5ControllerTests : BaseProfilesTests
         };
     }
 
-    private AdvancedLevelQualificationModel AdvancedLevelDetails(Level3 qualification)
+    private Level3QualificationModel Level3QualificationDetails(Level3 qualification)
     {
-        return new AdvancedLevelQualificationModel
+        return new Level3QualificationModel
         {
             Urn = fakeEstablishment.URN,
             SchoolName = fakeEstablishment.EstablishmentName,
@@ -278,20 +280,20 @@ public class KS5ControllerTests : BaseProfilesTests
             IsKS4 = true,
             IsKS5 = true,
             QualificationType = qualification,
-            TotalNoOfStudentCompletedQualification = 100,
+            TotalNoOfStudentCompletedQualification = new CodedDouble(100, string.Empty, string.Empty),
             ProgressScore = new ProgressScoreModel
             {
-                Score = 75.5,
+                Score = new CodedDouble(75.55, string.Empty, string.Empty),
                 BandingRating = "Average",
-                ConfidenceLevelLower = 1.0,
-                ConfidenceLevelUpper = 5.5,
-                EnglandAverageScore = 85.1
+                ConfidenceLevelLower = new CodedDouble(1.0, string.Empty, string.Empty),
+                ConfidenceLevelUpper = new CodedDouble(5.5, string.Empty, string.Empty),
+                EnglandAverageScore = new CodedDouble(85.11, string.Empty, string.Empty)
             },
             AverageResult = new AverageResultModel
             {
-                Establishment = new() { Grade = "B", Points = 21.45 },
-                LocalAuthority = new() { Grade = "A", Points = 35.28 },
-                England = new() { Grade = "B", Points = 29.75 },
+                Establishment = new() { Grade = "B", Points = new CodedDouble(21.45, string.Empty, string.Empty) },
+                LocalAuthority = new() { Grade = "A", Points = new CodedDouble(35.28, string.Empty, string.Empty) },
+                England = new() { Grade = "B", Points = new CodedDouble(29.75, string.Empty, string.Empty) },
             }
         };
     }

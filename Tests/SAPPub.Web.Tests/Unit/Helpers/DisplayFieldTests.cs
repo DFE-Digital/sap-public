@@ -109,7 +109,7 @@ public class DisplayFieldTests
     [Fact]
     public void DisplayNumber_HasValue_WithFormat_ReturnsFormattedValue()
     {
-        var property = new CodedDouble(20.2, string.Empty, "20.222").ToDisplayField();
+        var property = new CodedDouble(20.222, string.Empty, "20.222").ToDisplayField();
 
         var result = property.DisplayNumber("F1");
 
@@ -162,6 +162,51 @@ public class DisplayFieldTests
         var property = new CodedDouble(null, "Redacted for confidentiality", "c").ToDisplayField();
 
         var result = property.DisplayPercentage(displayReason: true);
+
+        Assert.Equal("Redacted for confidentiality", result);
+    }
+
+    [Fact]
+    public void DisplayFieldCodedDouble_Available_FormatText()
+    {
+        var value = new CodedDouble(1234.5478, string.Empty, string.Empty);
+        var field = value.ToDisplayField();
+
+        Assert.NotNull(field);
+        Assert.True(field.IsAvailable);
+        Assert.False(field.IsNotAvailable);
+
+        var result = field.DisplayText(d => $"{d.Value:F2}");
+
+        Assert.Equal("1234.55", result);
+    }
+
+    [Fact]
+    public void DisplayFieldCodedDouble_Available_NullValue_Returns_NotAvailable()
+    {
+        var value = new CodedDouble(null, string.Empty, string.Empty);
+        var field = value.ToDisplayField();
+
+        Assert.NotNull(field);
+        Assert.True(field.IsAvailable);
+        Assert.False(field.IsNotAvailable);
+
+        var result = field.DisplayText();
+
+        Assert.Equal("Not available", result);
+    }
+
+    [Fact]
+    public void DisplayFieldCodedDouble_Available_NullValue_DisplayReasonTrue_Returns_Reason()
+    {
+        var value = new CodedDouble(null, "Redacted for confidentiality", "c");
+        var field = value.ToDisplayField();
+
+        Assert.NotNull(field);
+        Assert.True(field.IsAvailable);
+        Assert.False(field.IsNotAvailable);
+
+        var result = field.DisplayText(d => $"{d.Value:F2}", displayReason: true);
 
         Assert.Equal("Redacted for confidentiality", result);
     }

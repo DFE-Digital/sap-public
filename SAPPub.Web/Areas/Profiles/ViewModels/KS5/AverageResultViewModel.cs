@@ -1,19 +1,20 @@
 ﻿using SAPPub.Core.ServiceModels.Performance;
+using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Helpers;
 
 namespace SAPPub.Web.Areas.Profiles.ViewModels.KS5;
 
 public class AverageResultViewModel
 {
-    public required DisplayField<double> EstablishmentPoints { get; init; }
+    public required DisplayField<CodedDouble> EstablishmentPoints { get; init; }
 
     public required DisplayField<string> EstablishmentGrade { get; init; }
 
-    public required DisplayField<double> LocalAuthorityPoints { get; init; }
+    public required DisplayField<CodedDouble> LocalAuthorityPoints { get; init; }
 
     public required DisplayField<string> LocalAuthorityGrade { get; init; }
 
-    public required DisplayField<double> EnglandPoints { get; init; }
+    public required DisplayField<CodedDouble> EnglandPoints { get; init; }
 
     public required DisplayField<string> EnglandGrade { get; init; }
 

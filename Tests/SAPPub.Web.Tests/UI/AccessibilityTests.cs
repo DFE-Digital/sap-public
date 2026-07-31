@@ -64,7 +64,8 @@ public class AccessibilityTests(WebApplicationSetupFixture fixture) : BasePageTe
         "compare/secondary/pupil-attainment?urns=100279&urns=145179",
         "compare/secondary/english-and-maths-results?urns=105574&urns=137020",
         "compare/secondary/destinations-after-year-11?urns=105574&urns=107564",
-        "school/130499/holy-cross-college/16-to-19-performance/advanced-level/alevel"
+        "school/130499/holy-cross-college/16-to-19-performance/level-3-qualifications/alevel",
+        "school/130499/holy-cross-college/16-to-19-performance/level-3-qualifications/advanced"
     };
 
     [Fact]

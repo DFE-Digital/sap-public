@@ -1,10 +1,11 @@
 ﻿using Bogus;
 using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.ServiceModels.Performance;
+using SAPPub.Core.ValueObjects;
 
 namespace SAPPub.Core.Tests.TestBuilders;
 
-public class AdvancedLevelQualificationModelBuilder
+public class Level3QualificationsModelBuilder
 {
     private Faker _faker = new("en_GB");
     private string? _urn;
@@ -16,58 +17,58 @@ public class AdvancedLevelQualificationModelBuilder
     private double? _progressScore;
     private Optional<double?> _englandProgressAverageScore = new Optional<double?>();
 
-    public AdvancedLevelQualificationModelBuilder WithUrn(string urn)
+    public Level3QualificationsModelBuilder WithUrn(string urn)
     {
         _urn = urn;
         return this;
     }
 
-    public AdvancedLevelQualificationModelBuilder WithEstablishmentName(string establishmentName)
+    public Level3QualificationsModelBuilder WithEstablishmentName(string establishmentName)
     {
         _establishmentName = establishmentName;
         return this;
     }
 
-    public AdvancedLevelQualificationModelBuilder WithLAName(string laName)
+    public Level3QualificationsModelBuilder WithLAName(string laName)
     {
         _laName = laName;
         return this;
     }
 
-    public AdvancedLevelQualificationModelBuilder WithEnglandPercentage(double? englandPercentage)
+    public Level3QualificationsModelBuilder WithEnglandPercentage(double? englandPercentage)
     {
         _englandProgressAverageScore.SetValue(englandPercentage);
         return this;
     }
         
-    public AdvancedLevelQualificationModelBuilder WithKS5(bool isKS5)
+    public Level3QualificationsModelBuilder WithKS5(bool isKS5)
     {
         _isKs5 = isKS5;
         return this;
     }
 
-    public AdvancedLevelQualificationModelBuilder WithQualificationType(Level3 qualificationType)
+    public Level3QualificationsModelBuilder WithQualificationType(Level3 qualificationType)
     {
         _qualificationType = qualificationType;
         return this;
     }
 
-    public AdvancedLevelQualificationModelBuilder WithQualificationType(double totalNoOfStudentsCompletedQualification)
+    public Level3QualificationsModelBuilder WithQualificationType(double totalNoOfStudentsCompletedQualification)
     {
         _totalNoOfStudentsCompletedQualification = totalNoOfStudentsCompletedQualification;
         return this;
     }
 
-    public AdvancedLevelQualificationModelBuilder WithProgressScore(double progressScore)
+    public Level3QualificationsModelBuilder WithProgressScore(double progressScore)
     {
         _progressScore = progressScore;
         return this;
     }
 
-    public AdvancedLevelQualificationModel Build()
+    public Level3QualificationModel Build()
     {
-        var faker = new Bogus.Faker();
-        return new AdvancedLevelQualificationModel
+        var faker = new Faker();
+        return new Level3QualificationModel
         {
             Urn = _urn ?? string.Empty,
             SchoolName = _establishmentName ?? string.Empty,
@@ -76,31 +77,31 @@ public class AdvancedLevelQualificationModelBuilder
             IsKS4 = false,
             IsKS5 = _isKs5,
             QualificationType = _qualificationType ?? Level3.ALevel,
-            TotalNoOfStudentCompletedQualification = _totalNoOfStudentsCompletedQualification ?? 150,
+            TotalNoOfStudentCompletedQualification = new CodedDouble(Value: _totalNoOfStudentsCompletedQualification ?? 150, string.Empty, string.Empty),
             ProgressScore = new ProgressScoreModel()
             {
-                Score = _progressScore ?? 95.55,
+                Score = new CodedDouble(Value: _progressScore ?? 95.55, string.Empty, string.Empty),
                 BandingRating = "Average",
-                ConfidenceLevelLower = 1.0,
-                ConfidenceLevelUpper = 5.5,
-                EnglandAverageScore = _englandProgressAverageScore.IsSet ? _englandProgressAverageScore.Value : 1.5,
+                ConfidenceLevelLower = new CodedDouble(1.0, string.Empty, string.Empty),
+                ConfidenceLevelUpper = new CodedDouble(5.5, string.Empty, string.Empty),
+                EnglandAverageScore = new CodedDouble(Value: _englandProgressAverageScore.IsSet ? _englandProgressAverageScore.Value : 1.5, string.Empty, string.Empty),
             },
             AverageResult = new AverageResultModel
             {
                 Establishment = new AverageResult
                 {
                     Grade = "A",
-                    Points = Math.Round(_faker.Random.Double(10, 100), 1)
+                    Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
                 },
                 LocalAuthority = new AverageResult
                 {
                     Grade = "B",
-                    Points = Math.Round(_faker.Random.Double(10, 100), 1)
+                    Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
                 },
                 England = new AverageResult
                 {
                     Grade = "A",
-                    Points = Math.Round(_faker.Random.Double(10, 100), 1)
+                    Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
                 }
             }
         };

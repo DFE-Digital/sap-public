@@ -1,14 +1,16 @@
-﻿namespace SAPPub.Core.ServiceModels.Performance;
+﻿using SAPPub.Core.ValueObjects;
+
+namespace SAPPub.Core.ServiceModels.Performance;
 
 public class ProgressScoreModel
 {
-    public double? Score { get; init; }
+    public CodedDouble Score { get; init; }
 
     public string? BandingRating { get; init; }
 
-    public double? ConfidenceLevelUpper { get; init; }
+    public CodedDouble ConfidenceLevelUpper { get; init; }
 
-    public double? ConfidenceLevelLower { get; init; }
+    public CodedDouble ConfidenceLevelLower { get; init; }
 
-    public double? EnglandAverageScore { get; init; }
+    public CodedDouble EnglandAverageScore { get; init; }
 }

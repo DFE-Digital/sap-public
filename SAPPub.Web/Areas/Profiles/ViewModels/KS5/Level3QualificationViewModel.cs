@@ -1,11 +1,12 @@
 ﻿using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.ServiceModels.Performance;
+using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models;
 
 namespace SAPPub.Web.Areas.Profiles.ViewModels.KS5;
 
-public class AdvancedLevelViewModel : BaseViewModel
+public class Level3QualificationViewModel : BaseViewModel
 {
     public Level3 Level3Qualification { get; set; }
 
@@ -15,15 +16,15 @@ public class AdvancedLevelViewModel : BaseViewModel
 
     public required string LAName { get; init; }
 
-    public required DisplayField<double> TotalNoOfStudentCompletedQualification { get; init; }
+    public required DisplayField<CodedDouble> TotalNoOfStudentCompletedQualification { get; init; }
 
     public required ProgressScoreViewModel ProgressScore { get; set; }
 
     public required AverageResultViewModel AverageResult { get; set; }
 
-    public static AdvancedLevelViewModel Map(AdvancedLevelQualificationModel model)
+    public static Level3QualificationViewModel Map(Level3QualificationModel model)
     {
-        return new AdvancedLevelViewModel
+        return new Level3QualificationViewModel
         {
             URN = model.Urn,
             SchoolName = model.SchoolName ?? string.Empty,

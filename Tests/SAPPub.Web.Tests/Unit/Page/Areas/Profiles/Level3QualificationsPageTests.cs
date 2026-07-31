@@ -5,45 +5,52 @@ using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Constants;
+using SAPPub.Web.Helpers;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
 
 namespace SAPPub.Web.Tests.Unit.Page.Areas.Profiles;
 
 [Collection("WebAppCollection")]
-public class AdvancedLevelPageTests : PageTestsBase
+public class Level3QualificationsPageTests : PageTestsBase
 {
-    private string _pageRoute = "/16-to-19-performance/advanced-level";
+    private string _pageRoute = "/16-to-19-performance/level-3-qualifications";
     private string _urn = "100279";
     private Level3 _qualificationType;
-    private readonly EstablishmentServiceModel _establishment = new();
-    private readonly AdvancedLevelQualificationModel _advancedLevelQualificationModel;
-    private readonly Mock<IAdvancedLevelQualificationsService> _advancedLevelQualificationsService = new();
+    private Level3QualificationModel _level3QualificationModel = null!;
+    private readonly EstablishmentServiceModel _establishment = new();    
+    private readonly Mock<ILevel3QualificationsService> _level3QualificationsService = new();
 
-    public AdvancedLevelPageTests(WebAppFixture fixture) : base(fixture)
+    public Level3QualificationsPageTests(WebAppFixture fixture) : base(fixture)
     {
-        _qualificationType = Level3.ALevel;
-        _advancedLevelQualificationsService = UseMock<IAdvancedLevelQualificationsService>();
+        _level3QualificationsService = UseMock<ILevel3QualificationsService>();
         _establishment = new EstablishmentTestBuilder()
             .WithURN(_urn)
             .WithEstablishmentName($"School{_urn}")
             .WithIsKeyStage5(true)
             .WithSixthForm(true)
-            .BuildServiceModel();
+            .BuildServiceModel();        
+    }
 
-        _advancedLevelQualificationModel = new AdvancedLevelQualificationModelBuilder()
+    private void SetupMocks(Level3 qualification = Level3.ALevel)
+    {
+        _qualificationType = qualification;
+        _level3QualificationModel = new Level3QualificationsModelBuilder()
             .WithUrn(_urn)
             .WithQualificationType(_qualificationType)
             .WithKS5(true)
             .Build();
 
-        _advancedLevelQualificationsService.Setup(s => s.GetAdvancedLevelQualificationDetailsAsync(_urn, _qualificationType, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(_advancedLevelQualificationModel);
+        _level3QualificationsService.Setup(s => s.GetLevel3QualificationDetailsAsync(_urn, _qualificationType, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_level3QualificationModel);
     }
 
-    [Fact]
-    public async Task AdvancedLevelPage_Alevel_HasCorrectTitle()
+    [Theory]
+    [InlineData(Level3.ALevel)]
+    [InlineData(Level3.Academic)]
+    public async Task Level3QualificationsPage_HasCorrectTitle(Level3 qualification)
     {
         // Arrange
+        SetupMocks(qualification);
         var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
         var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
 
@@ -54,13 +61,23 @@ public class AdvancedLevelPageTests : PageTestsBase
         var title = doc.QuerySelector("title");
         Assert.NotNull(title);
 
-        var expectedTitle = $"{PageTitleConstants.KS5SchoolPageTitles.PhaseTitle} - {PageTitleConstants.KS5SchoolPageTitles.Level3QualificationsAlevel}";
+        var suffixTitle = qualification switch
+        {
+            Level3.ALevel => PageTitleConstants.KS5SchoolPageTitles.Level3QualificationsAlevel,
+            Level3.Academic => PageTitleConstants.KS5SchoolPageTitles.Level3QualificationsAcademic,
+            _=> null
+        };
+        var expectedTitle = $"{PageTitleConstants.KS5SchoolPageTitles.PhaseTitle} - {suffixTitle}";
         Assert.Contains(expectedTitle, title.TextContent.Trim());
     }
 
-    [Fact]
-    public async Task AdvancedLevelPage_Alevel_DisplaysMainHeading()
+    [Theory]
+    [InlineData(Level3.ALevel)]
+    [InlineData(Level3.Academic)]
+    public async Task Level3QualificationsPage_DisplaysMainHeading(Level3 qualification)
     {
+        // Arrange
+        SetupMocks(qualification);
         var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
         var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
 
@@ -73,9 +90,13 @@ public class AdvancedLevelPageTests : PageTestsBase
         Assert.Contains(PageTitleConstants.KS5SchoolPageTitles.Performance, heading.TextContent.Trim());
     }
 
-    [Fact]
-    public async Task AdvancedLevelPage_Alevel_DisplaysHeading()
+    [Theory]
+    [InlineData(Level3.ALevel)]
+    [InlineData(Level3.Academic)]
+    public async Task Level3QualificationsPage_DisplaysHeading(Level3 qualification)
     {
+        // Arrange
+        SetupMocks(qualification);
         var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
         var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
 
@@ -85,12 +106,14 @@ public class AdvancedLevelPageTests : PageTestsBase
         // Assert
         var heading = doc.GetElementsByTagName("h2")[1];
         Assert.NotNull(heading);
-        Assert.Contains("A level", heading.TextContent.Trim());
+        Assert.Contains(qualification.GetDisplayName()!, heading.TextContent.Trim());
     }
 
     [Fact]
-    public async Task AdvancedLevelPage_Alevel_Displays_VerticalNavigation()
+    public async Task Level3QualificationsPage_Displays_VerticalNavigation()
     {
+        // Arrange
+        SetupMocks();
         var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
         var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
 
@@ -104,9 +127,10 @@ public class AdvancedLevelPageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task AdvancedLevelPage_Has_Correct_Sub_Navigation_Links()
+    public async Task Level3QualificationsPage_Has_Correct_Sub_Navigation_Links()
     {
         // Arrange
+        SetupMocks();
         var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
         var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
 
@@ -119,9 +143,13 @@ public class AdvancedLevelPageTests : PageTestsBase
         Assert.Equal(4, links.Length);        
     }
 
-    [Fact]
-    public async Task AdvancedLevelPage_Alevel_DisplaysProgressScoreHeading()
+    [Theory]
+    [InlineData(Level3.ALevel)]
+    [InlineData(Level3.Academic)]
+    public async Task Level3QualificationsPage_DisplaysProgressScoreHeading(Level3 qualification)
     {
+        // Arrange
+        SetupMocks(qualification);
         var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
         var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
 
@@ -134,9 +162,13 @@ public class AdvancedLevelPageTests : PageTestsBase
         Assert.Contains("Progress score", heading.TextContent.Trim());
     }
 
-    [Fact]
-    public async Task AdvancedLevelPage_Alevel_DisplaysTechnicalGuidanceLink()
+    [Theory]
+    [InlineData(Level3.ALevel)]
+    [InlineData(Level3.Academic)]
+    public async Task Level3QualificationsPage_DisplaysTechnicalGuidanceLink(Level3 qualification)
     {
+        // Arrange
+        SetupMocks(qualification);
         var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
         var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
 
@@ -145,13 +177,25 @@ public class AdvancedLevelPageTests : PageTestsBase
 
         // Assert
         var techGuidanceLink = doc.QuerySelector("#tech-guidance-link");
-        Assert.NotNull(techGuidanceLink);
-        Assert.Contains("https://www.gov.uk/government/publications/16-to-19-accountability-headline-measures-technical-guide", techGuidanceLink.GetAttribute("href"));
+
+        if (qualification == Level3.ALevel)
+        {
+            Assert.NotNull(techGuidanceLink);
+            Assert.Contains("https://www.gov.uk/government/publications/16-to-19-accountability-headline-measures-technical-guide", techGuidanceLink.GetAttribute("href"));
+        }
+        else
+        {
+            Assert.Null(techGuidanceLink);
+        }
     }
 
-    [Fact]
-    public async Task AdvancedLevelPage_Alevel_Displays_ProgressScore()
+    [Theory]
+    [InlineData(Level3.ALevel)]
+    [InlineData(Level3.Academic)]
+    public async Task Level3QualificationsPage_Displays_ProgressScore(Level3 qualification)
     {
+        // Arrange
+        SetupMocks(qualification);
         var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
         var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
 
@@ -162,7 +206,7 @@ public class AdvancedLevelPageTests : PageTestsBase
 
         var noOfStudentsInfo = doc.QuerySelector("#no-of-students-completed-qulification-info");
         Assert.NotNull(noOfStudentsInfo);
-        Assert.Equal($"Number of students from this school or college included in the measure: {_advancedLevelQualificationModel.TotalNoOfStudentCompletedQualification}", noOfStudentsInfo.TextContent.Trim());
+        Assert.Equal($"Number of students from this school or college included in the measure: {_level3QualificationModel.TotalNoOfStudentCompletedQualification}", noOfStudentsInfo.TextContent.Trim());
 
         // Assert progress score confidence level
         var progressScoreConfidenceIntervalsDetails = doc.QuerySelector("#details-progress-score-confidence-intervals");
@@ -176,19 +220,23 @@ public class AdvancedLevelPageTests : PageTestsBase
         // Assert progress data
         var progresScoreCard = doc.QuerySelector("#progress-score-card");
         Assert.NotNull(progresScoreCard);
-        Assert.Contains($"Students at this school score {_advancedLevelQualificationModel.ProgressScore.Score}", progresScoreCard.QuerySelectorAll("p")[0].TextContent);
+        Assert.Contains($"Students at this school score {_level3QualificationModel.ProgressScore.Score}", progresScoreCard.QuerySelectorAll("p")[0].TextContent);
         Assert.Contains($"This is average", progresScoreCard.QuerySelectorAll("p")[0].QuerySelector("span")?.TextContent);
-        Assert.Contains($"The confidence interval is {_advancedLevelQualificationModel.ProgressScore.ConfidenceLevelLower} to {_advancedLevelQualificationModel.ProgressScore.ConfidenceLevelUpper}.", progresScoreCard.QuerySelectorAll("p")[1].TextContent);
+        Assert.Contains($"The confidence interval is {_level3QualificationModel.ProgressScore.ConfidenceLevelLower} to {_level3QualificationModel.ProgressScore.ConfidenceLevelUpper}.", progresScoreCard.QuerySelectorAll("p")[1].TextContent);
 
         // Assert progress england average
         var averageProgresScoreNationalCard = doc.QuerySelector("#average-progress-score-national-card");
         Assert.NotNull(averageProgresScoreNationalCard);
-        Assert.Contains($"Average progress score in England: {_advancedLevelQualificationModel.ProgressScore.EnglandAverageScore}", averageProgresScoreNationalCard.QuerySelector("p")?.TextContent);
+        Assert.Contains($"Average progress score in England: {_level3QualificationModel.ProgressScore.EnglandAverageScore}", averageProgresScoreNationalCard.QuerySelector("p")?.TextContent);
     }
 
-    [Fact]
-    public async Task AdvancedLevelPage_Alevel_Displays_AverageResult()
+    [Theory]
+    [InlineData(Level3.ALevel)]
+    [InlineData(Level3.Academic)]
+    public async Task Level3QualificationsPage_Displays_AverageResult(Level3 qualification)
     {
+        // Arrange
+        SetupMocks(qualification);
         var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
         var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
 
@@ -203,7 +251,7 @@ public class AdvancedLevelPageTests : PageTestsBase
         // Assert no of students completed qualification
         var noOfStudentsInfo = doc.QuerySelector("#no-of-students-completed-qulification-info");
         Assert.NotNull(noOfStudentsInfo);
-        Assert.Equal($"Number of students from this school or college included in the measure: {_advancedLevelQualificationModel.TotalNoOfStudentCompletedQualification}", noOfStudentsInfo.TextContent.Trim());
+        Assert.Equal($"Number of students from this school or college included in the measure: {_level3QualificationModel.TotalNoOfStudentCompletedQualification}", noOfStudentsInfo.TextContent.Trim());
 
         // Assert performance points link
         var performancePointsLink = doc.QuerySelector("#performance-points-link");
@@ -211,15 +259,15 @@ public class AdvancedLevelPageTests : PageTestsBase
         Assert.Equal("https://www.gov.uk/government/publications/performance-points-a-practical-guide-to-key-stage-4-and-5-points", performancePointsLink.GetAttribute("href"));
 
         Assert.Contains("School or College", doc.GetTableHeaderContentByIdAndIndex("average-result-current-year-table", 1, 0));
-        Assert.Contains(_advancedLevelQualificationModel.AverageResult.Establishment.Grade!, doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 1, 0));
-        Assert.Contains(_advancedLevelQualificationModel.AverageResult.Establishment.Points!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 1, 1));
+        Assert.Contains(_level3QualificationModel.AverageResult.Establishment.Grade!, doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 1, 0));
+        Assert.Contains(_level3QualificationModel.AverageResult.Establishment.Points.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 1, 1));
 
-        Assert.Contains($"{_advancedLevelQualificationModel.LAName} average", doc.GetTableHeaderContentByIdAndIndex("average-result-current-year-table", 2, 0));
-        Assert.Contains(_advancedLevelQualificationModel.AverageResult.LocalAuthority.Grade!, doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 2, 0));
-        Assert.Contains(_advancedLevelQualificationModel.AverageResult.LocalAuthority.Points!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 2, 1));
+        Assert.Contains($"{_level3QualificationModel.LAName} average", doc.GetTableHeaderContentByIdAndIndex("average-result-current-year-table", 2, 0));
+        Assert.Contains(_level3QualificationModel.AverageResult.LocalAuthority.Grade!, doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 2, 0));
+        Assert.Contains(_level3QualificationModel.AverageResult.LocalAuthority.Points.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 2, 1));
 
         Assert.Contains("England average", doc.GetTableHeaderContentByIdAndIndex("average-result-current-year-table", 3, 0));
-        Assert.Contains(_advancedLevelQualificationModel.AverageResult.England.Grade!, doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 3, 0));
-        Assert.Contains(_advancedLevelQualificationModel.AverageResult.England.Points!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 3, 1));
+        Assert.Contains(_level3QualificationModel.AverageResult.England.Grade!, doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 3, 0));
+        Assert.Contains(_level3QualificationModel.AverageResult.England.Points.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 3, 1));
     }
 }

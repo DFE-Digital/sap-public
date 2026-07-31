@@ -1,8 +1,9 @@
 ﻿using SAPPub.Core.Enums.KS5Qualifications;
+using SAPPub.Core.ValueObjects;
 
 namespace SAPPub.Core.ServiceModels.Performance;
 
-public class AdvancedLevelQualificationModel
+public class Level3QualificationModel
 {
     public required string Urn { get; init; }
 
@@ -18,7 +19,7 @@ public class AdvancedLevelQualificationModel
 
     public required Level3 QualificationType { get; init; }
 
-    public double? TotalNoOfStudentCompletedQualification { get; init; }
+    public CodedDouble TotalNoOfStudentCompletedQualification { get; init; }
 
     public required ProgressScoreModel ProgressScore { get; init; }
 
