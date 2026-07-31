@@ -21,7 +21,6 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers;
 public class KS4ControllerTests
 {
     private readonly Mock<IEstablishmentService> _mockEstablishmentService;
-    private readonly Mock<IDestinationsService> _mockDestinationsService;
     private readonly Mock<IKS4EstablishmentSubjectEntriesService> _mockEstablishmentSubjectEntriesService = new();
     private readonly Mock<IAcademicPerformanceEnglishAndMathsResultsService> _mockEnglishAndMathsResultsService = new();
     private readonly Mock<IAttainmentAndProgressService> _mockAttainmentAndProgressService = new();
