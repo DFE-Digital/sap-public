@@ -38,13 +38,13 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
         }
 
         [HttpGet]
-        [Route("school/{urn}/{schoolName}/primary-performance/scaled-scores", Name = RouteConstants.PrimaryAcademicPerformanceScaledScores)]
-        public async Task<IActionResult> AcademicPerformanceScaledScores(
+        [Route("school/{urn}/{schoolName}/primary-performance/subject-scaled-scores", Name = RouteConstants.PrimaryAcademicPerformanceSubjectScaledScores)]
+        public async Task<IActionResult> AcademicPerformanceSubjectScaledScores(
             string urn,
             string schoolName,
             CancellationToken ct)
         {
-            var model = AcademicPerformanceScaledScoresViewModel.Map(Establishment);
+            var model = AcademicPerformanceSubjectScaledScoresViewModel.Map(Establishment);
             return View(model);
         }
 

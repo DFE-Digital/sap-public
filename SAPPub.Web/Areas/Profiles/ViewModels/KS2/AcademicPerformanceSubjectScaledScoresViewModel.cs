@@ -3,11 +3,11 @@ using SAPPub.Web.Models;
 
 namespace SAPPub.Web.Areas.Profiles.ViewModels.KS2;
 
-public class AcademicPerformanceScaledScoresViewModel : BaseViewModel
+public class AcademicPerformanceSubjectScaledScoresViewModel : BaseViewModel
 {
-    public static AcademicPerformanceScaledScoresViewModel Map(EstablishmentServiceModel establishment)
+    public static AcademicPerformanceSubjectScaledScoresViewModel Map(EstablishmentServiceModel establishment)
     {
-        return new AcademicPerformanceScaledScoresViewModel
+        return new AcademicPerformanceSubjectScaledScoresViewModel
         {
             URN = establishment.URN,
             SchoolName = establishment.EstablishmentName,

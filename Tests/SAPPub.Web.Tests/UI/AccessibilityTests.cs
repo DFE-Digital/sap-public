@@ -21,7 +21,7 @@ public class AccessibilityTests(WebApplicationSetupFixture fixture) : BasePageTe
         // primary pages
         "school/143034/st-pauls-church-of-england-academy/primary-performance/pupil-progress",
         "school/143034/st-pauls-church-of-england-academy/primary-performance/meeting-or-exceeding-standards",
-        "school/143034/st-pauls-church-of-england-academy/primary-performance/scaled-scores",
+        "school/143034/st-pauls-church-of-england-academy/primary-performance/subject-scaled-scores",
         "school/143034/st-pauls-church-of-england-academy/primary-performance/additional-measures",
         "school/143034/st-pauls-church-of-england-academy/admissions/primary",
         "school/143034/st-pauls-church-of-england-academy/curriculum/primary",
