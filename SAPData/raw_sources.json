@@ -48,15 +48,16 @@
     "Url": "",
     "FileType": "csv",
     "FileName": "202425_subject_school_all_exam_entriesgrades_provisional"
-  },
-  {
-    "Type": "KS5_Performance",
-    "Subtype": "SubjectEntries",
-    "Year": "Current",
-    "SourceOrg": "EES",
-    "DataSetId": "d78c6543-65f4-470c-8284-eddd6abe0133",
-    "Url": "",
-    "FileType": "csv",
-    "FileName": "institution_subject_and_qualification_results_202425_API"
   }
+  //,
+  //{
+  //  "Type": "KS5_Performance",
+  //  "Subtype": "SubjectEntries",
+  //  "Year": "Current",
+  //  "SourceOrg": "EES",
+  //  "DataSetId": "d78c6543-65f4-470c-8284-eddd6abe0133",
+  //  "Url": "",
+  //  "FileType": "csv",
+  //  "FileName": "institution_subject_and_qualification_results_202425_API"
+  //}
 ]
