@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.Interfaces.Services.Performance;
+using SAPPub.Core.ServiceModels.Common;
 using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Areas.Profiles.Controllers;
@@ -174,6 +175,38 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.Equal(expectedResult.EnteredForMathsQualification!.LaAverage, model.EnteredForMathsQualification!.LaAverage.Value);
         Assert.Equal(expectedResult.EnteredForMathsQualification!.NumberOfStudents, model.EnteredForMathsQualification!.NumberOfStudents.Value);
         Assert.Equal(expectedResult.EnteredForMathsQualification!.SchoolOrCollege, model.EnteredForMathsQualification!.SchoolOrCollege.Value);
+
+        Assert.Equal(expectedResult.NumberOfDisadvantagedStudentsEnglish.SchoolOrCollege, model.NumberOfDisadvantagedStudentsEnglish.SchoolOrCollege.Value);
+        Assert.Equal(expectedResult.NumberOfDisadvantagedStudentsEnglish.LocalAuthority, model.NumberOfDisadvantagedStudentsEnglish.LocalAuthority.Value);
+        Assert.Equal(expectedResult.NumberOfDisadvantagedStudentsEnglish.England, model.NumberOfDisadvantagedStudentsEnglish.England.Value);
+
+        Assert.Equal(expectedResult.NumberOfDisadvantagedStudentsMaths.SchoolOrCollege, model.NumberOfDisadvantagedStudentsMaths.SchoolOrCollege.Value);
+        Assert.Equal(expectedResult.NumberOfDisadvantagedStudentsMaths.LocalAuthority, model.NumberOfDisadvantagedStudentsMaths.LocalAuthority.Value);
+        Assert.Equal(expectedResult.NumberOfDisadvantagedStudentsMaths.England, model.NumberOfDisadvantagedStudentsMaths.England.Value);
+
+        Assert.Equal(expectedResult.NumberOfNonDisadvantagedStudentsEnglish.SchoolOrCollege, model.NumberOfNonDisadvantagedStudentsEnglish.SchoolOrCollege.Value);
+        Assert.Equal(expectedResult.NumberOfNonDisadvantagedStudentsEnglish.LocalAuthority, model.NumberOfNonDisadvantagedStudentsEnglish.LocalAuthority.Value);
+        Assert.Equal(expectedResult.NumberOfNonDisadvantagedStudentsEnglish.England, model.NumberOfNonDisadvantagedStudentsEnglish.England.Value);
+
+        Assert.Equal(expectedResult.NumberOfNonDisadvantagedStudentsMaths.SchoolOrCollege, model.NumberOfNonDisadvantagedStudentsMaths.SchoolOrCollege.Value);
+        Assert.Equal(expectedResult.NumberOfNonDisadvantagedStudentsMaths.LocalAuthority, model.NumberOfNonDisadvantagedStudentsMaths.LocalAuthority.Value);
+        Assert.Equal(expectedResult.NumberOfNonDisadvantagedStudentsMaths.England, model.NumberOfNonDisadvantagedStudentsMaths.England.Value);
+
+        Assert.Equal(expectedResult.ProgressOfDisadvantagedStudentsEnglish.SchoolOrCollege, model.ProgressOfDisadvantagedStudentsEnglish.SchoolOrCollege.Value);
+        Assert.Equal(expectedResult.ProgressOfDisadvantagedStudentsEnglish.LocalAuthority, model.ProgressOfDisadvantagedStudentsEnglish.LocalAuthority.Value);
+        Assert.Equal(expectedResult.ProgressOfDisadvantagedStudentsEnglish.England, model.ProgressOfDisadvantagedStudentsEnglish.England.Value);
+
+        Assert.Equal(expectedResult.ProgressOfDisadvantagedStudentsMaths.SchoolOrCollege, model.ProgressOfDisadvantagedStudentsMaths.SchoolOrCollege.Value);
+        Assert.Equal(expectedResult.ProgressOfDisadvantagedStudentsMaths.LocalAuthority, model.ProgressOfDisadvantagedStudentsMaths.LocalAuthority.Value);
+        Assert.Equal(expectedResult.ProgressOfDisadvantagedStudentsMaths.England, model.ProgressOfDisadvantagedStudentsMaths.England.Value);
+
+        Assert.Equal(expectedResult.ProgressOfNonDisadvantagedStudentsEnglish.SchoolOrCollege, model.ProgressOfNonDisadvantagedStudentsEnglish.SchoolOrCollege.Value);
+        Assert.Equal(expectedResult.ProgressOfNonDisadvantagedStudentsEnglish.LocalAuthority, model.ProgressOfNonDisadvantagedStudentsEnglish.LocalAuthority.Value);
+        Assert.Equal(expectedResult.ProgressOfNonDisadvantagedStudentsEnglish.England, model.ProgressOfNonDisadvantagedStudentsEnglish.England.Value);
+
+        Assert.Equal(expectedResult.ProgressOfNonDisadvantagedStudentsMaths.SchoolOrCollege, model.ProgressOfNonDisadvantagedStudentsMaths.SchoolOrCollege.Value);
+        Assert.Equal(expectedResult.ProgressOfNonDisadvantagedStudentsMaths.LocalAuthority, model.ProgressOfNonDisadvantagedStudentsMaths.LocalAuthority.Value);
+        Assert.Equal(expectedResult.ProgressOfNonDisadvantagedStudentsMaths.England, model.ProgressOfNonDisadvantagedStudentsMaths.England.Value);
     }
 
     [Fact]
@@ -266,49 +299,49 @@ public class KS5ControllerTests : BaseProfilesTests
                 LaAverage = new CodedDouble(15, string.Empty, "15"),
                 EnglandAverage = new CodedDouble(16, string.Empty, "16")
             },
-            NumberOfDisadvantagedStudentsEnglish = new EnglishMathsQualificationsDisadvantagedModel
+            NumberOfDisadvantagedStudentsEnglish = new SimpleCodedDoubleTableModel
             {
                 SchoolOrCollege = new CodedDouble(17, "", "17"),
                 LocalAuthority = new CodedDouble(18, "", "18"),
                 England = new CodedDouble(19, "", "19")
             },
-            NumberOfDisadvantagedStudentsMaths = new EnglishMathsQualificationsDisadvantagedModel
+            NumberOfDisadvantagedStudentsMaths = new SimpleCodedDoubleTableModel
             {
                 SchoolOrCollege = new CodedDouble(20, "", "20"),
                 LocalAuthority = new CodedDouble(21, "", "21"),
                 England = new CodedDouble(22, "", "22")
             },
-            NumberOfNonDisadvantagedStudentsEnglish = new EnglishMathsQualificationsDisadvantagedModel
+            NumberOfNonDisadvantagedStudentsEnglish = new SimpleCodedDoubleTableModel
             {
                 SchoolOrCollege = new CodedDouble(0, "", "0"),
                 LocalAuthority = new CodedDouble(23, "", "23"),
                 England = new CodedDouble(24, "", "24")
             },
-            NumberOfNonDisadvantagedStudentsMaths = new EnglishMathsQualificationsDisadvantagedModel
+            NumberOfNonDisadvantagedStudentsMaths = new SimpleCodedDoubleTableModel
             {
                 SchoolOrCollege = new CodedDouble(0, "", "0"),
                 LocalAuthority = new CodedDouble(25, "", "25"),
                 England = new CodedDouble(26, "", "26")
             },
-            ProgressOfDisadvantagedStudentsEnglish = new EnglishMathsQualificationsDisadvantagedModel
+            ProgressOfDisadvantagedStudentsEnglish = new SimpleCodedDoubleTableModel
             {
                 SchoolOrCollege = new CodedDouble(27, "", "27"),
                 LocalAuthority = new CodedDouble(28, "", "28"),
                 England = new CodedDouble(29, "", "29")
             },
-            ProgressOfDisadvantagedStudentsMaths = new EnglishMathsQualificationsDisadvantagedModel
+            ProgressOfDisadvantagedStudentsMaths = new SimpleCodedDoubleTableModel
             {
                 SchoolOrCollege = new CodedDouble(30, "", "30"),
                 LocalAuthority = new CodedDouble(31, "", "31"),
                 England = new CodedDouble(32, "", "32")
             },
-            ProgressOfNonDisadvantagedStudentsEnglish = new EnglishMathsQualificationsDisadvantagedModel
+            ProgressOfNonDisadvantagedStudentsEnglish = new SimpleCodedDoubleTableModel
             {
                 SchoolOrCollege = new CodedDouble(0, "", "0"),
                 LocalAuthority = new CodedDouble(33, "", "33"),
                 England = new CodedDouble(34, "", "34")
             },
-            ProgressOfNonDisadvantagedStudentsMaths = new EnglishMathsQualificationsDisadvantagedModel
+            ProgressOfNonDisadvantagedStudentsMaths = new SimpleCodedDoubleTableModel
             {
                 SchoolOrCollege = new CodedDouble(0, "", "0"),
                 LocalAuthority = new CodedDouble(35, "", "35"),

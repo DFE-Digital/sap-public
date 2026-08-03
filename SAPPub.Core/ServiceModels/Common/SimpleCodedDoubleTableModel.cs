@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SAPPub.Core.ServiceModels.Performance
+namespace SAPPub.Core.ServiceModels.Common
 {
-    public class EnglishMathsQualificationsDisadvantagedModel //Since this is "just" a simple model of three properties, could make it generic in future?
+    public class SimpleCodedDoubleTableModel
     {
         public CodedDouble SchoolOrCollege { get; set; }
         public CodedDouble LocalAuthority { get; set; }

@@ -15,17 +15,17 @@ public class EnglishMathsQualificationsViewModel : BaseViewModel
 
     public required EnglishMathsScoreViewModel EnteredForMathsQualification { get; set; }
 
-    public required EnglishMathsQualificationsDisadvantagedViewModel NumberOfDisadvantagedStudentsEnglish { get; init; }
-    public required EnglishMathsQualificationsDisadvantagedViewModel ProgressOfDisadvantagedStudentsEnglish { get; init; }
+    public required SimpleCodedDoubleTableViewModel NumberOfDisadvantagedStudentsEnglish { get; init; }
+    public required SimpleCodedDoubleTableViewModel ProgressOfDisadvantagedStudentsEnglish { get; init; }
 
-    public required EnglishMathsQualificationsDisadvantagedViewModel NumberOfDisadvantagedStudentsMaths { get; init; }
-    public required EnglishMathsQualificationsDisadvantagedViewModel ProgressOfDisadvantagedStudentsMaths { get; init; }
+    public required SimpleCodedDoubleTableViewModel NumberOfDisadvantagedStudentsMaths { get; init; }
+    public required SimpleCodedDoubleTableViewModel ProgressOfDisadvantagedStudentsMaths { get; init; }
 
-    public required EnglishMathsQualificationsDisadvantagedViewModel NumberOfNonDisadvantagedStudentsEnglish { get; init; }
-    public required EnglishMathsQualificationsDisadvantagedViewModel ProgressOfNonDisadvantagedStudentsEnglish { get; init; }
+    public required SimpleCodedDoubleTableViewModel NumberOfNonDisadvantagedStudentsEnglish { get; init; }
+    public required SimpleCodedDoubleTableViewModel ProgressOfNonDisadvantagedStudentsEnglish { get; init; }
 
-    public required EnglishMathsQualificationsDisadvantagedViewModel NumberOfNonDisadvantagedStudentsMaths { get; init; }
-    public required EnglishMathsQualificationsDisadvantagedViewModel ProgressOfNonDisadvantagedStudentsMaths { get; init; }
+    public required SimpleCodedDoubleTableViewModel NumberOfNonDisadvantagedStudentsMaths { get; init; }
+    public required SimpleCodedDoubleTableViewModel ProgressOfNonDisadvantagedStudentsMaths { get; init; }
 
 
     public static EnglishMathsQualificationsViewModel Map(EnglishMathsQualificationModel model)
@@ -42,14 +42,14 @@ public class EnglishMathsQualificationsViewModel : BaseViewModel
             AverageMathsProgress = EnglishMathsScoreViewModel.Map(model.AverageMathsProgress),
             EnteredForEnglishQualification = EnglishMathsScoreViewModel.Map(model.EnteredForEnglishQualification),
             EnteredForMathsQualification = EnglishMathsScoreViewModel.Map(model.EnteredForMathsQualification),
-            NumberOfDisadvantagedStudentsEnglish = EnglishMathsQualificationsDisadvantagedViewModel.Map(model.NumberOfDisadvantagedStudentsEnglish),
-            ProgressOfDisadvantagedStudentsEnglish = EnglishMathsQualificationsDisadvantagedViewModel.Map(model.ProgressOfDisadvantagedStudentsEnglish),
-            NumberOfDisadvantagedStudentsMaths = EnglishMathsQualificationsDisadvantagedViewModel.Map(model.NumberOfDisadvantagedStudentsMaths),
-            ProgressOfDisadvantagedStudentsMaths = EnglishMathsQualificationsDisadvantagedViewModel.Map(model.ProgressOfDisadvantagedStudentsMaths),
-            NumberOfNonDisadvantagedStudentsEnglish = EnglishMathsQualificationsDisadvantagedViewModel.Map(model.NumberOfNonDisadvantagedStudentsEnglish),
-            ProgressOfNonDisadvantagedStudentsEnglish = EnglishMathsQualificationsDisadvantagedViewModel.Map(model.ProgressOfNonDisadvantagedStudentsEnglish),
-            NumberOfNonDisadvantagedStudentsMaths = EnglishMathsQualificationsDisadvantagedViewModel.Map(model.NumberOfNonDisadvantagedStudentsMaths),
-            ProgressOfNonDisadvantagedStudentsMaths = EnglishMathsQualificationsDisadvantagedViewModel.Map(model.ProgressOfNonDisadvantagedStudentsMaths),
+            NumberOfDisadvantagedStudentsEnglish = SimpleCodedDoubleTableViewModel.Map(model.NumberOfDisadvantagedStudentsEnglish),
+            ProgressOfDisadvantagedStudentsEnglish = SimpleCodedDoubleTableViewModel.Map(model.ProgressOfDisadvantagedStudentsEnglish),
+            NumberOfDisadvantagedStudentsMaths = SimpleCodedDoubleTableViewModel.Map(model.NumberOfDisadvantagedStudentsMaths),
+            ProgressOfDisadvantagedStudentsMaths = SimpleCodedDoubleTableViewModel.Map(model.ProgressOfDisadvantagedStudentsMaths),
+            NumberOfNonDisadvantagedStudentsEnglish = SimpleCodedDoubleTableViewModel.Map(model.NumberOfNonDisadvantagedStudentsEnglish),
+            ProgressOfNonDisadvantagedStudentsEnglish = SimpleCodedDoubleTableViewModel.Map(model.ProgressOfNonDisadvantagedStudentsEnglish),
+            NumberOfNonDisadvantagedStudentsMaths = SimpleCodedDoubleTableViewModel.Map(model.NumberOfNonDisadvantagedStudentsMaths),
+            ProgressOfNonDisadvantagedStudentsMaths = SimpleCodedDoubleTableViewModel.Map(model.ProgressOfNonDisadvantagedStudentsMaths),
         };
     }    
 }

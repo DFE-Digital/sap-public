@@ -1,10 +1,10 @@
-﻿using SAPPub.Core.ServiceModels.Performance;
+﻿using SAPPub.Core.ServiceModels.Common;
 using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Helpers;
 
-namespace SAPPub.Web.Areas.Profiles.ViewModels.KS5
+namespace SAPPub.Web.Areas.Profiles.ViewModels
 {
-    public class EnglishMathsQualificationsDisadvantagedViewModel
+    public class SimpleCodedDoubleTableViewModel
     {
         public required DisplayField<CodedDouble> SchoolOrCollege { get; init; }
 
@@ -12,9 +12,9 @@ namespace SAPPub.Web.Areas.Profiles.ViewModels.KS5
 
         public required DisplayField<CodedDouble> England { get; init; }
 
-        public static EnglishMathsQualificationsDisadvantagedViewModel Map(EnglishMathsQualificationsDisadvantagedModel model)
+        public static SimpleCodedDoubleTableViewModel Map(SimpleCodedDoubleTableModel model)
         {
-            return new EnglishMathsQualificationsDisadvantagedViewModel
+            return new SimpleCodedDoubleTableViewModel
             {
                 England = model.England.ToDisplayField(),
                 LocalAuthority = model.LocalAuthority.ToDisplayField(),
