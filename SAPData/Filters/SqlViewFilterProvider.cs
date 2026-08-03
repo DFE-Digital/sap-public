@@ -40,6 +40,8 @@
     IEnumerable<string>? keyStages = null,
     Dictionary<string, string>? keyStageUrnsSqlConditions = null)
         {
+            keyStages ??= KeyStageConstants.AllKeyStages;
+
             var filters = new List<SqlViewFilter>
     {
         new SqlViewFilter("ExcludeNurseries", tableAlias =>
