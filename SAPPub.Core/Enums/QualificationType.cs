@@ -4,10 +4,10 @@ namespace SAPPub.Core.Enums;
 
 public enum QualificationType
 {
-    [Display(Name = "All Qualifications")]
+    [Display(Name = "All qualifications")]
     AllQualifications,
 
-    [Display(Name = "Academic Qualifications")]
+    [Display(Name = "Academic qualifications")]
     AcademicQualifications,
 
     [Display(Name = "Vocational and technical qualifications")]
