@@ -1,4 +1,5 @@
-﻿@model SAPPub.Web.Models.SecondarySchool.CurriculumAndExtraCurricularActivitiesViewModel;
+﻿@model CurriculumAndExtraCurricularActivitiesViewModel;
+@using SAPPub.Web.Areas.Profiles.ViewModels.KS4
 @using SAPPub.Web.Constants
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 
@@ -23,6 +24,19 @@
     <div class="govuk-grid-column-three-quarters">
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
         <h1 class="govuk-heading-xl">@ViewData["Header"]</h1>
+        @if (Model.IsKS2 == true)
+        {
+            <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
+                <ul class="moj-sub-navigation__list">
+                    <li class="moj-sub-navigation__item">
+                        <a class="moj-sub-navigation__link" asp-route="@RouteConstants.PrimaryCurriculum" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.PrimarySchoolPageTitles.Curriculum</a>
+                    </li>
+                    <li class="moj-sub-navigation__item">
+                        <a class="moj-sub-navigation__link" aria-current="page" asp-route="@RouteConstants.SecondaryCurriculumAndExtraCurricularActivities" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.SecondarySchoolPageTitles.Curriculum</a>
+                    </li>
+                </ul>
+            </nav>
+        }
 
         <h2 class="govuk-heading-l">Curriculum</h2>
         <div id="current-curriculum-summary" data-testId="current-curriculum-summary" class="govuk-summary-card">
@@ -152,7 +166,7 @@
 
         <govuk-pagination id="current-extra-curricular-activities-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAdmissions" asp-all-route-data="@Model.RouteAttributes">Admissions</govuk-pagination-previous>
-            <govuk-pagination-next asp-route="@RouteConstants.SecondaryAttendance" asp-all-route-data="@Model.RouteAttributes">Attendance</govuk-pagination-next>            
+            <govuk-pagination-next asp-route="@RouteConstants.Attendance" asp-all-route-data="@Model.RouteAttributes">Attendance</govuk-pagination-next>            
         </govuk-pagination>
     </div>
 </div>

@@ -11,11 +11,22 @@ public class AccessibilityTests(WebApplicationSetupFixture fixture) : BasePageTe
 {
     private List<string> _pageUrls = new List<string>
     {
+        // common pages
         "school/105574/loreto-high-school-chorlton/about",
         "school/137552/stewards-academy-science-specialist-harlow/about",
         "school/100273/saint-paul-roman-catholic-infant-school/about",
         "school/107564/todmorden-high-school/about",
         "school/145744/abbey-park-school/about",
+
+        // primary pages
+        "school/143034/st-pauls-church-of-england-academy/primary-performance/pupil-progress",
+        "school/143034/st-pauls-church-of-england-academy/primary-performance/meeting-or-exceeding-standards",
+        "school/143034/st-pauls-church-of-england-academy/primary-performance/subject-scaled-scores",
+        "school/143034/st-pauls-church-of-england-academy/primary-performance/additional-measures",
+        "school/143034/st-pauls-church-of-england-academy/admissions/primary",
+        "school/143034/st-pauls-church-of-england-academy/curriculum/primary",
+
+        // secondary pages
         "school/105574/loreto-high-school-chorlton/secondary-performance/progress-attainment",
         "school/105574/loreto-high-school-chorlton/secondary-performance/progress-attainment/current",
         "school/105574/loreto-high-school-chorlton/secondary-performance/english-and-maths",
@@ -31,19 +42,30 @@ public class AccessibilityTests(WebApplicationSetupFixture fixture) : BasePageTe
         "school/100273/saint-paul-roman-catholic-infant-school/curriculum/secondary",
         "school/105574/loreto-high-school-chorlton/destinations/secondary",
         "school/100273/saint-paul-roman-catholic-infant-school/destinations/secondary",
+
+        // 16-19 pages
         "school/105574/loreto-high-school-chorlton/destinations/16-to-19",
+
+        // search pages
         "search",
         "search/results?NameSearchTerm=school&Distance=3&PageNumber=1",
         "search/results?NameSearchTerm=xyz&Distance=3&PageNumber=1",
+
+        // miscellaneous pages
         "",
         "Cookies/Preferences",
+
+        // my schools pages
         "my-schools/view",
         "my-schools/no-schools-added",
+
+        // compare secondary pages
         "compare/secondary/about-your-schools?urns=105574&urns=107564",
         "compare/secondary/pupil-attainment?urns=100279&urns=145179",
         "compare/secondary/english-and-maths-results?urns=105574&urns=137020",
         "compare/secondary/destinations-after-year-11?urns=105574&urns=107564",
-        "school/130499/holy-cross-college/16-to-19-performance/advanced-level/alevel"
+        "school/130499/holy-cross-college/16-to-19-performance/level-3-qualifications/alevel",
+        "school/130499/holy-cross-college/16-to-19-performance/level-3-qualifications/advanced"
     };
 
     [Fact]

@@ -18,29 +18,29 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
             //Not a required for the structure, but might be worth considering? What if there's no Level 3 data
 
             // if establishment has Level 3 data 
-            return RedirectToAction("AdvancedLevel", new {  urn, schoolName, qualification = "alevel" });
+            return RedirectToAction("Level3Qualifications", new {  urn, schoolName, qualification = "alevel" });
 
             // if establishment has Level 2 data
-            //return RedirectToAction("IntermediateLevel", new { urn = urn, schoolName = schoolName, qualification = "techcert" });
+            //return RedirectToAction("Level2Qualifications", new { urn = urn, schoolName = schoolName, qualification = "techcert" });
         }
 
 
-        [Route("school/{urn}/{schoolName}/16-to-19-performance/advanced-level", Name = RouteConstants.KS5AcademicPerformanceLevel3)]
-        public IActionResult AdvancedLevelRedirect(string urn, string schoolName, Level3 level3qualification = Level3.ALevel)
+        [Route("school/{urn}/{schoolName}/16-to-19-performance/level-3-qualifications", Name = RouteConstants.KS5AcademicPerformanceLevel3)]
+        public IActionResult Level3QualificationsRedirect(string urn, string schoolName, Level3 level3qualification = Level3.ALevel)
         {
-            return RedirectToAction("AdvancedLevel", new { urn, schoolName, qualification = level3qualification.ToString().ToLower() });
+            return RedirectToAction("Level3Qualifications", new { urn, schoolName, qualification = level3qualification.ToString().ToLower() });
         }
 
-        [Route("school/{urn}/{schoolName}/16-to-19-performance/advanced-level/{qualification}", Name = RouteConstants.KS5AcademicPerformanceLevel3Filter)]
-        public async Task<IActionResult> AdvancedLevel(
-            [FromServices] IAdvancedLevelQualificationsService advancedLevelQualificationsService,            
+        [Route("school/{urn}/{schoolName}/16-to-19-performance/level-3-qualifications/{qualification}", Name = RouteConstants.KS5AcademicPerformanceLevel3Filter)]
+        public async Task<IActionResult> Level3Qualifications(
+            [FromServices] ILevel3QualificationsService level3QualificationsService,            
             string urn,
             string schoolName,
             Level3 qualification,
             CancellationToken ct)
         {           
-            var qualificationDetailsModel = await advancedLevelQualificationsService
-                .GetAdvancedLevelQualificationDetailsAsync(urn, qualification, ct);
+            var qualificationDetailsModel = await level3QualificationsService
+                .GetLevel3QualificationDetailsAsync(urn, qualification, ct);
 
             if (!qualificationDetailsModel.IsKS5)
             {
@@ -48,12 +48,12 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
                 return View("Error");
             }
 
-            var model = AdvancedLevelViewModel.Map(qualificationDetailsModel);
+            var model = Level3QualificationViewModel.Map(qualificationDetailsModel);
             return View(model);
         }
 
-        [Route("school/{urn}/{schoolName}/16-to-19-performance/intermediate-level", Name = RouteConstants.KS5AcademicPerformanceLevel2)]
-        public IActionResult IntermediateLevelRedirect(string urn, string schoolName, int? level2qualification)
+        [Route("school/{urn}/{schoolName}/16-to-19-performance/level-2-qualifications", Name = RouteConstants.KS5AcademicPerformanceLevel2)]
+        public IActionResult Level2QualificationsRedirect(string urn, string schoolName, int? level2qualification)
         {
             // if establishment has Level 2 data 
             level2qualification ??= 1;
@@ -64,12 +64,12 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
                 qualSelected = ((Level2)1).ToString();
             }
 
-            return RedirectToAction("IntermediateLevel", new { urn, schoolName, qualification = qualSelected.ToLower() });
+            return RedirectToAction("Level2Qualifications", new { urn, schoolName, qualification = qualSelected.ToLower() });
         }
 
 
-        [Route("school/{urn}/{schoolName}/16-to-19-performance/intermediate-level/{qualification}", Name = RouteConstants.KS5AcademicPerformanceLevel2Filter)]
-        public async Task<IActionResult> IntermediateLevel([FromServices] IAboutSchoolService aboutSchoolService, 
+        [Route("school/{urn}/{schoolName}/16-to-19-performance/level-2-qualifications/{qualification}", Name = RouteConstants.KS5AcademicPerformanceLevel2Filter)]
+        public async Task<IActionResult> Level2Qualifications([FromServices] IAboutSchoolService aboutSchoolService, 
             string urn, string schoolName, Level2? qualification,
             CancellationToken ct)
         {

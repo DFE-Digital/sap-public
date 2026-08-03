@@ -40,6 +40,7 @@ using SAPPub.Infrastructure.Repositories.KS4.Performance;
 using SAPPub.Infrastructure.Repositories.KS4.SubjectEntries;
 using SAPPub.Infrastructure.Repositories.Performance;
 using SAPPub.Web.Areas.Compare.Filters;
+using SAPPub.Web.Areas.Profiles.Filters;
 
 namespace SAPPub.Web.Middleware
 {
@@ -118,10 +119,11 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<ILAService, LAService>();
 
             services.AddTransient<IKs5PerformanceRepository, Ks5PerformanceRepository>();
-            services.AddTransient<IAdvancedLevelQualificationsService, AdvancedLevelQualificationsService>();
+            services.AddTransient<ILevel3QualificationsService, Level3QualificationsService>();
             services.AddTransient<IEnglishAndMathsQualificationsService, EnglishAndMathsQualificationsService>();
 
             services.AddScoped<SecondaryComparisonQueryValidationFilter>();
+            services.AddScoped<PrimaryQueryValidationFilter>();
 
             // Mapper
             services.AddSingleton<ICodedValueMapper, ReflectionCodedValueMapper>();

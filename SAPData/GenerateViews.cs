@@ -118,15 +118,15 @@ public sealed class GenerateViews
                 }
 
                 // KS4 + KS5 requested; KS5 may have no CTE yet, base condition still applies
-                var keyStages = new[] { "KS4", "KS5" }; 
-                
+                var keyStages = new[] { "KS4", "KS5" };
+
                 var (keyStageUrnsCtes, keyStageUrnsSqlConditions) =
                     BuildKeyStageCtesAndFilters(_rows, tableMap, keyStages);
-                
+
                 var establishmentFilters = SqlViewFilterProvider.GetEstablishmentFilters(
                     keyStages,
                     keyStageUrnsSqlConditions);
-                
+
                 sql = GenerateEstablishmentDimensionView(
                     rawTable,
                     establishmentFilters,
@@ -375,7 +375,7 @@ public sealed class GenerateViews
         Dictionary<string, string> keyStageUrnsSqlConditions)
     {
         var sb = new StringBuilder();
-       
+
         sb.AppendLine("-- AUTO-GENERATED MATERIALIZED VIEW: v_establishment");
         sb.AppendLine();
         sb.AppendLine("DROP MATERIALIZED VIEW IF EXISTS v_establishment CASCADE;");
@@ -459,7 +459,7 @@ public sealed class GenerateViews
         sb.AppendLine($"   {BuildSenTypes()} AS \"SenTypes\",");
         var hasKeyStageFlags = keyStages.Count > 0;
         if (hasKeyStageFlags)
-            AppendKeyStageFlagColumns(sb, keyStages, keyStageUrnsSqlConditions);
+            AppendKeyStageFlagColumns(sb, new string[] { "KS2", "KS4", "KS5" }, keyStageUrnsSqlConditions); // use separate list to populate the KS indicators for establishments
         sb.AppendLine();
         sb.AppendLine($"FROM {rawTable} t");
         // Dynamically build WHERE clause

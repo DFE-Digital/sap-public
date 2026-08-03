@@ -6,7 +6,7 @@ using static SAPPub.Web.Constants.PageTitleConstants;
 namespace SAPPub.Web.Tests.UI.KS4;
 
 [Collection("Playwright Tests")]
-public class SecondarySchoolNavigationTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
+public class PrimarySchoolNavigationTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
     private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
     {
@@ -42,7 +42,7 @@ public class SecondarySchoolNavigationTests(WebApplicationSetupFixture fixture) 
 
         // Assert
         title = await Page.TitleAsync();
-        Assert.Contains(SecondarySchoolPageTitles.Attendance, title);
+        Assert.Contains(PageTitles.Attendance, title);
 
         // Act
         navItem = nav.GetItem("Academic performance");
@@ -188,7 +188,7 @@ public class SecondarySchoolNavigationTests(WebApplicationSetupFixture fixture) 
         // Assert
         var title = await Page.TitleAsync();
         Assert.Contains("16 to 19", title);
-        Assert.Contains("Advanced level", title);
+        Assert.Contains("Level 3 qualifications", title);
     }
 
     private static Task ClickAcademicPerformanceNavItemAsync(

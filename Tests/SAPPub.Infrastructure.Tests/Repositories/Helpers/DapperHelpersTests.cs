@@ -36,8 +36,8 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Helpers
             Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(KS4EnglandDestinations)));
             Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(EnglandPerformance)));
             Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(LaUrls)));
-            Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(EnglandKs5Performance)));
-            Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(EstablishmentKs5Performance)));
+            Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(KS5England5Performance)));
+            Assert.NotEmpty(DapperHelpers.GetReadSingle(typeof(KS5EstablishmentPerformance)));
         }
 
         [Fact]
