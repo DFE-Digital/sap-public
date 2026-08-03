@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Logging;
 using Npgsql;
+using SAPPub.Core.Entities.Performance;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Infrastructure.Mapping.ValueCodes;
 using SAPPub.Infrastructure.Repositories.Helpers;
@@ -29,6 +30,12 @@ namespace SAPPub.Infrastructure.Repositories.Generic
                 return Task.FromResult<T?>(default);
 
             // Convention: "Id" parameter name; feature repos can call ReadSingleAsync for non-Id keys.
+
+            if (typeof(T).Name.Contains("KS2")) //ToDo expand this to all?
+            {
+                return ReadSingleViaDTOAsync(new { Id = id }, ct);
+            }
+
             return ReadSingleAsync(new { Id = id }, ct);
         }
 
@@ -93,6 +100,43 @@ namespace SAPPub.Infrastructure.Repositories.Generic
         }
 
         public async Task<T?> ReadSingleAsync(object? parameters, CancellationToken ct = default)
+        {
+            if (parameters is null)
+                return default;
+
+            try
+            {
+                var sql = DapperHelpers.GetReadSingle(typeof(T));
+                if (string.IsNullOrWhiteSpace(sql))
+                    throw new NotSupportedException($"No ReadSingle query for {typeof(T).Name}");
+
+                await using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
+
+                var cmd = new DapperCommandBuilder()
+                    .WithCommandText(sql)
+                    .WithParameters(parameters)
+                    .Build(ct);
+
+                var item = await conn.QuerySingleOrDefaultAsync<T>(cmd).ConfigureAwait(false);
+
+                if (item is not null)
+                    _codedValueMapper.Apply(item);
+
+                return item;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                // Keep params out of the formatted message; log as a structured property.
+                _logger.LogError(ex, "Failed ReadSingleAsync for {Type} paramsType={ParamsType}", typeof(T).Name, parameters.GetType().Name);
+                return default;
+            }
+        }
+
+        public async Task<T?> ReadSingleViaDTOAsync(object? parameters, CancellationToken ct = default)
         {
             if (parameters is null)
                 return default;

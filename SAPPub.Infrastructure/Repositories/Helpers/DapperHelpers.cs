@@ -323,6 +323,12 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
             where "Id" = @Id;
             """;
 
+        private static string SelectAllFromWhereId(string viewName) => $"""
+            select *
+            from public.{viewName}
+            where "Id" = @Id;
+            """;
+
         private static string SelectFromWhereIds(string columns, string viewName) => $"""
             select
               {columns}
@@ -364,6 +370,15 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
             return $"""
         select
           {columns}
+        from public.{view} 
+        where {where};
+        """;
+        }
+
+        private static string SelectAllFromWhere(string view, string where)
+        {
+            return $"""
+        select *
         from public.{view} 
         where {where};
         """;
@@ -476,6 +491,15 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
 
                 nameof(KS5EstablishmentPerformance) =>
                     SelectFromWhereId(KS5EstablishmentPerformanceColumns, "v_establishment_ks5_performance"),
+
+                nameof(KS2EstablishmentPerformance) =>
+                    SelectAllFromWhereId("v_establishment_ks2_attainment"),
+
+                nameof(KS2LAPerformance) =>
+                    SelectAllFromWhereId("v_la_ks2_attainment"),
+
+                nameof(KS2EnglandPerformance) =>
+                    SelectAllFromWhere("v_england_ks2_attainment", "\"Id\" = 'National'"),
 
                 nameof(KS5England5Performance) =>
                     SelectFromWhere(KS5EnglandPerformanceColumns, "v_england_ks5_performance", "\"Id\" = 'National'"),
