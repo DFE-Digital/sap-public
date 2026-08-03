@@ -292,4 +292,33 @@ public class GenerateViewsTests : IDisposable
         Assert.Contains("src_1.\"Att8\"", sql);
         Assert.Contains("src_2.\"Att8\"", sql);
     }
+
+    [Fact]
+    public void GetEstablishmentFilters_WithExcludedUrns_IncludesExclusionFilter()
+    {
+        // Arrange
+        var excludedUrns = new[] { 100060, 100094, 100549 };
+
+        // Act
+        var filters = SqlViewFilterProvider.GetEstablishmentFilters(
+            excludedUrns: excludedUrns);
+
+        // Assert
+        var excludeFilter = filters.FirstOrDefault(f => f.Name == "ExcludeSpecificUrns");
+        Assert.NotNull(excludeFilter);
+
+        var sql = excludeFilter.GetSqlCondition("t");
+        Assert.Contains("clean_int(t.\"urn\") NOT IN (100060, 100094, 100549)", sql);
+    }
+
+    [Fact]
+    public void GetEstablishmentFilters_WithoutExcludedUrns_DoesNotIncludeExclusionFilter()
+    {
+        // Act
+        var filters = SqlViewFilterProvider.GetEstablishmentFilters();
+
+        // Assert
+        var excludeFilter = filters.FirstOrDefault(f => f.Name == "ExcludeSpecificUrns");
+        Assert.Null(excludeFilter);
+    }
 }

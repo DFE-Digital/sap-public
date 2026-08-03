@@ -22,6 +22,15 @@ public sealed class GenerateViews
         Path.Combine(AppContext.BaseDirectory, "SAPData", "raw_sources.json")
     };
 
+    // excluded_urns.json path in repo
+    private static readonly string[] ExcludedUrnsCandidates =
+    {
+        "excluded_urns.json",
+        Path.Combine("SAPData", "excluded_urns.json"),
+        Path.Combine(AppContext.BaseDirectory, "excluded_urns.json"),
+        Path.Combine(AppContext.BaseDirectory, "SAPData", "excluded_urns.json")
+    };
+
     private sealed record ViewSpec(string ViewName, string Range, string Type);
 
     private sealed record RawSource(
@@ -88,6 +97,7 @@ public sealed class GenerateViews
 
         var tableMap = LoadTableMappings();
         var sources = LoadRawSources();
+        var excludedUrns = LoadExcludedUrns();
 
         foreach (var view in Views)
         {
@@ -125,7 +135,8 @@ public sealed class GenerateViews
 
                 var establishmentFilters = SqlViewFilterProvider.GetEstablishmentFilters(
                     keyStages,
-                    keyStageUrnsSqlConditions);
+                    keyStageUrnsSqlConditions,
+                    excludedUrns);
 
                 sql = GenerateEstablishmentDimensionView(
                     rawTable,
@@ -645,6 +656,61 @@ public sealed class GenerateViews
         var sources = JsonSerializer.Deserialize<List<RawSource>>(json, opts) ?? new List<RawSource>();
 
         return sources.Where(s => !string.IsNullOrWhiteSpace(s.FileName)).ToList();
+    }
+
+    private static HashSet<int> LoadExcludedUrns()
+    {
+        var path = ExcludedUrnsCandidates.FirstOrDefault(File.Exists);
+        if (path == null)
+        {
+            return new HashSet<int>();
+        }
+
+        try
+        {
+            var json = File.ReadAllText(path);
+            var data = JsonSerializer.Deserialize<JsonElement>(json);
+
+            if (data.ValueKind != JsonValueKind.Object)
+            {
+                throw new InvalidOperationException(
+                    $"Expected JSON object in excluded URNs file at '{path}', but got {data.ValueKind}.");
+            }
+
+            if (data.TryGetProperty("excluded_urns", out var urnsArray))
+            {
+                if (urnsArray.ValueKind != JsonValueKind.Array)
+                {
+                    throw new InvalidOperationException(
+                        $"Expected 'excluded_urns' to be an array in '{path}', but got {urnsArray.ValueKind}.");
+                }
+
+                var urns = new HashSet<int>();
+                int index = 0;
+                foreach (var element in urnsArray.EnumerateArray())
+                {
+                    if (element.ValueKind != JsonValueKind.Number || !element.TryGetInt32(out var urn))
+                    {
+                        throw new InvalidOperationException(
+                            $"Invalid URN value at index {index} in '{path}'. Expected integer, got {element.ValueKind}.");
+                    }
+                    urns.Add(urn);
+                    index++;
+                }
+
+                return urns;
+            }
+
+            return new HashSet<int>();
+        }
+        catch (JsonException ex)
+        {
+            throw new InvalidOperationException($"Failed to parse excluded URNs JSON file at '{path}': {ex.Message}", ex);
+        }
+        catch (IOException ex)
+        {
+            throw new InvalidOperationException($"Failed to read excluded URNs file at '{path}': {ex.Message}", ex);
+        }
     }
 
     private static bool TryResolveManagedDatasetKey(
