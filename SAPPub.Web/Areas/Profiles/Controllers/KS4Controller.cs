@@ -2,8 +2,9 @@
 using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
-using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
+using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Web.Areas.Profiles.Helpers;
+using SAPPub.Web.Areas.Profiles.ViewModels.KS4;
 using SAPPub.Web.Constants;
 using SAPPub.Web.Models.SecondarySchool;
 
@@ -83,7 +84,7 @@ public class KS4Controller(IEstablishmentService establishmentService) : Control
     [HttpGet]
     [Route("school/{urn}/{schoolName}/secondary-performance/subjects-entered", Name = RouteConstants.SecondaryAcademicPerformanceSubjectsEntered)]
     public async Task<IActionResult> AcademicPerformanceSubjectsEntered(
-        [FromServices] IEstablishmentSubjectEntriesService subjectEntriesService,
+        [FromServices] IKS4EstablishmentSubjectEntriesService subjectEntriesService,
         string urn,
         string schoolName,
         CancellationToken ct)

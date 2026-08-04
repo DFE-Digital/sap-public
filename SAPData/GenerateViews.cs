@@ -46,7 +46,7 @@ public sealed class GenerateViews
         new("v_establishment_ks2_attainment", "Establishment", "KS2_Attainment"),
         new("v_establishment_performance", "Establishment", "KS4_Performance"), //Todo - Rename to KS4
         new("v_establishment_ks5_performance", "Establishment", "KS5_Performance"),
-
+        new("v_establishment_ks5_subject_entries", "Establishment", "KS5_Performance"),
 
 
         new("v_england_destinations", "England", "KS4_Destinations"),
@@ -225,6 +225,32 @@ public sealed class GenerateViews
                         out var datasetKey))
                 {
                     sql = BuildSkippedSql(view.ViewName, "Could not resolve dataset key from raw_sources.json (EES/KS4_Performance/SubjectEntries/Current).");
+                    Write(view.ViewName, sql);
+                    continue;
+                }
+
+                if (!TryResolveRawTable(tableMap, datasetKey, out var rawTable))
+                {
+                    sql = BuildSkippedSql(view.ViewName, $"Could not resolve raw table mapping for datasetKey='{datasetKey}'.");
+                    Write(view.ViewName, sql);
+                    continue;
+                }
+
+                sql = GenerateMirrorMaterializedView(view.ViewName, rawTable);
+            }
+
+            else if (view.ViewName.Equals("v_establishment_ks5_subject_entries", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!TryResolveManagedDatasetKey(
+                        sources,
+                        tableMap,
+                        sourceOrg: "EES",
+                        type: "KS5_Performance",
+                        subtype: "SubjectEntries",
+                        year: "Current",
+                        out var datasetKey))
+                {
+                    sql = BuildSkippedSql(view.ViewName, "Could not resolve dataset key from raw_sources.json (EES/KS5_Performance/SubjectEntries/Current).");
                     Write(view.ViewName, sql);
                     continue;
                 }

@@ -52,6 +52,7 @@ public static class RouteConstants
     public const string KS5AcademicPerformanceLevel2Filter = "KS5AcademicPerformanceLevel2Filter";
     public const string KS5AcademicPerformanceEnglishMaths = "KS5AcademicPerformanceEnglishMaths";
     public const string KS5AcademicPerformanceSubjectsEntered = "KS5AcademicPerformanceSubjectsEntered";
+    public const string KS5AcademicPerformanceSubjectsEnteredFilter = "KS5AcademicPerformanceSubjectsEnteredFilter";
     public const string KS5Destinations = "KS5Destinations";
     public const string KS5DestinationsHigher = "KS5DestinationsHigher";
 

@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AngleSharp.Dom;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
+using SAPPub.Core.Enums;
 using SAPPub.Core.Enums.KS5Qualifications;
+using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.Performance;
+using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Areas.Profiles.Controllers;
@@ -17,6 +21,8 @@ public class KS5ControllerTests : BaseProfilesTests
     private readonly Mock<ILogger<KS5Controller>> _mockLogger = new();
     private readonly Mock<ILevel3QualificationsService> _mockLevel3QualificationsService = new();
     private readonly Mock<IEnglishAndMathsQualificationsService> _mockEnglishAndMathsQualificationsService = new();
+    private readonly Mock<IKS5EstablishmentSubjectEntriesService> _mockKs5EstablishmentSubjectEntriesService = new();
+    private readonly Mock<IAboutSchoolService> _mockAboutSchoolService = new();
     private readonly KS5Controller _controller;
 
     public KS5ControllerTests()
@@ -227,6 +233,149 @@ public class KS5ControllerTests : BaseProfilesTests
                 It.IsAny<Exception>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)));
     }
+
+
+    [Fact]
+    public async Task Get_SubjectsEntered_ReturnsExpected()
+    {
+        var expectedResult = GetSubjectsEnteredList();
+        _mockAboutSchoolService
+            .Setup(a => a.GetAboutSchoolDetailsAsync(It.IsAny<string>(), CancellationToken.None))
+            .ReturnsAsync(new AboutSchoolModel
+            {
+                Urn = fakeEstablishment.URN,
+                SchoolName = fakeEstablishment.EstablishmentName,
+                IsKS5 = true
+            });
+
+        _mockKs5EstablishmentSubjectEntriesService
+            .Setup(a => a.GetSubjectEntriesByUrnAsync(It.IsAny<string>(), It.IsAny<QualificationType>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.SubjectsEntered(
+            _mockAboutSchoolService.Object,
+            _mockKs5EstablishmentSubjectEntriesService.Object,
+            QualificationType.AcademicQualifications,
+            fakeEstablishment.URN,
+            fakeEstablishment.EstablishmentName,
+            CancellationToken.None) as ViewResult;
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var actualResult = result.Model as Ks5SubjectEnteredViewModel;
+        Assert.NotNull(actualResult);
+        Assert.NotNull(actualResult.Subjects);
+        Assert.Equal(actualResult.URN, fakeEstablishment.URN);
+        Assert.Equal(actualResult.SchoolName, fakeEstablishment.EstablishmentName);
+        Assert.Equal(actualResult.Subjects[0].Subject, expectedResult.First().Subject);
+        Assert.Equal(actualResult.Subjects[0].Qualification, expectedResult.First().Qualification);
+        Assert.Equal(actualResult.Subjects[0].Level, expectedResult.First().Level);
+        Assert.Equal(actualResult.Subjects[0].NumberOfEntries, expectedResult.First().TotalNumberOfEntries.ToString());
+
+    }
+
+    [Fact]
+    public async Task Get_SubjectsEntered_NoEstablishment_ReturnsErrorView()
+    {
+        _mockAboutSchoolService
+            .Setup(a => a.GetAboutSchoolDetailsAsync(It.IsAny<string>(), CancellationToken.None))
+            .ReturnsAsync(new AboutSchoolModel
+            {
+                Urn = null!,
+                SchoolName = fakeEstablishment.EstablishmentName
+            });
+
+        var result = await _controller.SubjectsEntered(
+            _mockAboutSchoolService.Object,
+            _mockKs5EstablishmentSubjectEntriesService.Object,
+            QualificationType.AcademicQualifications,
+            fakeEstablishment.URN,
+            fakeEstablishment.EstablishmentName,
+            CancellationToken.None) as ViewResult;
+
+        Assert.Equal("Error", result!.ViewName);
+
+        _mockLogger.Verify(
+            x => x.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => true),
+                It.IsAny<Exception>(),
+                It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)));
+
+        _mockAboutSchoolService
+            .Verify(a => a.GetAboutSchoolDetailsAsync(It.IsAny<string>(), CancellationToken.None), Times.Once);      
+
+        _mockKs5EstablishmentSubjectEntriesService
+            .Verify(a => a.GetSubjectEntriesByUrnAsync(It.IsAny<string>(), It.IsAny<QualificationType>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task Get_SubjectsEntered_NotKs5ReturnsErrorView()
+    {
+        _mockAboutSchoolService
+            .Setup(a => a.GetAboutSchoolDetailsAsync(It.IsAny<string>(), CancellationToken.None))
+            .ReturnsAsync(new AboutSchoolModel
+            {
+                Urn = fakeEstablishment.URN,
+                SchoolName = fakeEstablishment.EstablishmentName
+            });
+        var result = await _controller.SubjectsEntered(
+            _mockAboutSchoolService.Object,
+            _mockKs5EstablishmentSubjectEntriesService.Object,
+            QualificationType.AcademicQualifications,
+            fakeEstablishment.URN,
+            fakeEstablishment.EstablishmentName,
+            CancellationToken.None) as ViewResult;
+
+        Assert.Equal("Error", result!.ViewName);
+
+        _mockLogger.Verify(
+            x => x.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) => true),
+                It.IsAny<Exception>(),
+                It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)));
+
+        _mockAboutSchoolService
+            .Verify(a => a.GetAboutSchoolDetailsAsync(It.IsAny<string>(), CancellationToken.None), Times.Once);
+
+        _mockKs5EstablishmentSubjectEntriesService
+            .Verify(a => a.GetSubjectEntriesByUrnAsync(It.IsAny<string>(), It.IsAny<QualificationType>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task Get_SubjectsEnteredRedirect_RedirectsCorrectly()
+    {
+        // Arrange
+        var qualType = QualificationType.AcademicQualifications;
+
+        // Act
+        var result = _controller
+            .SubjectsEnteredRedirect(fakeEstablishment.URN, fakeEstablishment.EstablishmentName, qualType) as RedirectToActionResult;
+            
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.NotNull(result.RouteValues);
+        Assert.Equal("SubjectsEntered", result.ActionName);
+        Assert.Equal(fakeEstablishment.URN, result.RouteValues["urn"]);
+        Assert.Equal(fakeEstablishment.EstablishmentName, result.RouteValues["schoolName"]);
+        Assert.Equal(QualificationType.AcademicQualifications.ToString().ToLower(), result.RouteValues["qualification"]);
+    }
+
+    private IEnumerable<SubjectsEnteredModel> GetSubjectsEnteredList() => [
+            new ()
+            {
+                Subject = "Business Studies",
+                ExamCohort = "20",
+                Level = "3",
+                TotalNumberOfEntries = "55",
+                Qualification = "BTEC"
+            }
+        ];
 
     private EnglishMathsQualificationModel GetEnglishMathsQualificationModel(string urn = "", bool isKs5 = true)
     {

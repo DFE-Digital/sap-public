@@ -3,7 +3,6 @@ using SAPPub.Core.Entities.Destinations;
 using SAPPub.Core.Entities.Gateway;
 using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Entities.KS4.Performance;
-using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Entities.Performance;
 
 namespace SAPPub.Infrastructure.Repositories.Helpers
@@ -201,6 +200,15 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           qualification_detailed,
           grade,
           number_achieving
+          """;
+
+        private const string EstablishmentKs5SubjectEntriesColumns = """
+          "subject",
+          "qualification_detailed",
+          "qualification_level",
+          "entries_count",
+          "exam_cohort",
+          "grade"
           """;
 
         private const string EnglandAbsenceColumns = """
@@ -477,7 +485,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                 nameof(KS5EstablishmentPerformance) =>
                     SelectFromWhereId(KS5EstablishmentPerformanceColumns, "v_establishment_ks5_performance"),
 
-                nameof(KS5England5Performance) =>
+                nameof(KS5EnglandPerformance) =>
                     SelectFromWhere(KS5EnglandPerformanceColumns, "v_england_ks5_performance", "\"Id\" = 'National'"),
 
                 nameof(KS5LAPerformance) =>
@@ -552,10 +560,17 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                 nameof(EstablishmentPerformance) =>
                     SelectFromWhereIds(EstablishmentPerformanceColumns, "v_establishment_performance"),
 
-                nameof(EstablishmentSubjectEntryRow) => $"""
+                nameof(KS4EstablishmentSubjectEntryRow) => $"""
                     select
                       {EstablishmentSubjectEntriesColumns}
                     from public.v_establishment_subject_entries
+                    where school_urn = @Urn;
+                    """,
+
+                nameof(KS5EstablishmentSubjectEntryRow) => $"""
+                    select
+                      {EstablishmentKs5SubjectEntriesColumns}
+                    from public.v_establishment_ks5_subject_entries
                     where school_urn = @Urn;
                     """,
 

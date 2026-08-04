@@ -1,25 +1,25 @@
 ﻿using Moq;
-using SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
-using SAPPub.Core.ServiceModels.KS4.Performance;
-using SAPPub.Core.Services.KS4.SubjectEntries;
+using SAPPub.Core.Interfaces.Repositories.SubjectEntries;
+using SAPPub.Core.ServiceModels.Performance;
+using SAPPub.Core.Services.Performance;
 using System.Diagnostics;
 
-namespace SAPPub.Core.Tests.Services.KS4.SubjectEntries;
+namespace SAPPub.Core.Tests.Services.Performance;
 
-public class EstablishmentSubjectEntriesServiceTests
+public class KS4EstablishmentSubjectEntriesServiceTests
 {
-    private readonly Mock<IEstablishmentSubjectEntriesRepository> _repo = new();
-    private readonly EstablishmentSubjectEntriesService _service;
+    private readonly Mock<IKS4EstablishmentSubjectEntriesRepository> _repo = new();
+    private readonly KS4EstablishmentSubjectEntriesService _service;
 
-    public EstablishmentSubjectEntriesServiceTests()
+    public KS4EstablishmentSubjectEntriesServiceTests()
     {
-        _service = new EstablishmentSubjectEntriesService(_repo.Object);
+        _service = new KS4EstablishmentSubjectEntriesService(_repo.Object);
     }
 
     [Fact]
     public void Constructor_throws_when_repository_is_null()
     {
-        Assert.Throws<ArgumentNullException>(() => new EstablishmentSubjectEntriesService(null!));
+        Assert.Throws<ArgumentNullException>(() => new KS4EstablishmentSubjectEntriesService(null!));
     }
 
     [Theory]
@@ -54,9 +54,9 @@ public class EstablishmentSubjectEntriesServiceTests
     {
         // Arrange
         var urn = "123456";
-        var gcse = new List<SubjectsEntered> { new() { Subject = "Maths" } };
-        var vocational = new List<SubjectsEntered> { new() { Subject = "Engineering" } };
-        var other = new List<SubjectsEntered> { new() { Subject = "Music" } };
+        var gcse = new List<SubjectsEnteredModel> { new() { Subject = "Maths" } };
+        var vocational = new List<SubjectsEnteredModel> { new() { Subject = "Engineering" } };
+        var other = new List<SubjectsEnteredModel> { new() { Subject = "Music" } };
 
 
         _repo
@@ -141,7 +141,7 @@ public class EstablishmentSubjectEntriesServiceTests
 
         _repo
             .Setup(r => r.GetGcseSubjectEntriesByUrnAsync(urn, It.IsAny<CancellationToken>()))
-            .Returns(Task.FromException<IEnumerable<SubjectsEntered>>(gcseExc));
+            .Returns(Task.FromException<IEnumerable<SubjectsEnteredModel>>(gcseExc));
 
         _repo
             .Setup(r => r.GetGcseSubjectEntriesByUrnAsync(urn, It.IsAny<CancellationToken>()))
@@ -149,7 +149,7 @@ public class EstablishmentSubjectEntriesServiceTests
 
         _repo
             .Setup(r => r.GetOtherSubjectEntriesByUrnAsync(urn, It.IsAny<CancellationToken>()))
-            .Returns(Task.FromException<IEnumerable<SubjectsEntered>>(otherExc));
+            .Returns(Task.FromException<IEnumerable<SubjectsEnteredModel>>(otherExc));
 
         // Act
         var ex = await Record.ExceptionAsync(() => _service.GetSubjectEntriesByUrnAsync(urn, CancellationToken.None));
@@ -172,11 +172,11 @@ public class EstablishmentSubjectEntriesServiceTests
         var expected = new InvalidOperationException("gcse failed");
 
         // Keep the "other" task pending so we can prove Task.WhenAll includes it.
-        var otherTaskCompletionSource = new TaskCompletionSource<IEnumerable<SubjectsEntered>>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var otherTaskCompletionSource = new TaskCompletionSource<IEnumerable<SubjectsEnteredModel>>(TaskCreationOptions.RunContinuationsAsynchronously);
 
         _repo
             .Setup(r => r.GetGcseSubjectEntriesByUrnAsync(urn, It.IsAny<CancellationToken>()))
-            .Returns(Task.FromException<IEnumerable<SubjectsEntered>>(expected));
+            .Returns(Task.FromException<IEnumerable<SubjectsEnteredModel>>(expected));
 
         _repo
             .Setup(r => r.GetVocationalAwardSubjectEntriesByUrnAsync(urn, It.IsAny<CancellationToken>()))

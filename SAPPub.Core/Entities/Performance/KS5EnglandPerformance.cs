@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace SAPPub.Core.Entities.Performance;
 
 [ExcludeFromCodeCoverage]
-public class KS5England5Performance
+public class KS5EnglandPerformance
 {
     public string Id { get; set; } = string.Empty;
 

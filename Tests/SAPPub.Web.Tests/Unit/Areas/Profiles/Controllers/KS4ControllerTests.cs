@@ -5,12 +5,14 @@ using SAPPub.Core.Entities;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
-using SAPPub.Core.Interfaces.Services.KS4.SubjectEntries;
+using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.KS4.Performance;
+using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Areas.Profiles.Controllers;
 using SAPPub.Web.Areas.Profiles.Helpers;
+using SAPPub.Web.Areas.Profiles.ViewModels.KS4;
 using SAPPub.Web.Constants;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.SecondarySchool;
@@ -20,60 +22,60 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers;
 public class KS4ControllerTests
 {
     private readonly Mock<IEstablishmentService> _mockEstablishmentService;
-    private readonly Mock<IEstablishmentSubjectEntriesService> _mockEstablishmentSubjectEntriesService = new();
+    private readonly Mock<IKS4EstablishmentSubjectEntriesService> _mockEstablishmentSubjectEntriesService = new();
     private readonly Mock<IAcademicPerformanceEnglishAndMathsResultsService> _mockEnglishAndMathsResultsService = new();
     private readonly Mock<IAttainmentAndProgressService> _mockAttainmentAndProgressService = new();
     private readonly KS4Controller _controller;
     private EstablishmentServiceModel _fakeEstablishment;
 
-    private List<SubjectsEntered> GcseSubjects =
+    private List<SubjectsEnteredModel> GcseSubjects =
         new()
         {
             new()
             {
                 Subject = "English language",
                 Qualification = "GCSE",
-                TotalNumberOfEntries = 95,
+                TotalNumberOfEntries = "95",
             },
             new()
             {
                 Subject = "English literature",
                 Qualification = "GCSE",
-                TotalNumberOfEntries = 90,
+                TotalNumberOfEntries = "90",
             }
         };
 
-    private List<SubjectsEntered> VocationalSubjects =
+    private List<SubjectsEnteredModel> VocationalSubjects =
         new()
         {
             new()
             {
                 Subject = "Sports Studies",
                 Qualification = "Vocational",
-                TotalNumberOfEntries = 45,
+                TotalNumberOfEntries = "45",
             },
             new()
             {
                 Subject = "Engineering Studies",
                 Qualification = "Vocational",
-                TotalNumberOfEntries = 10,
+                TotalNumberOfEntries = "10",
             }
         };
 
-    private List<SubjectsEntered> OtherSubjects =
+    private List<SubjectsEnteredModel> OtherSubjects =
     new()
     {
             new()
             {
                 Subject = "Additional Maths (FSMQ)",
                 Qualification = "FSMQ",
-                TotalNumberOfEntries = 45,
+                TotalNumberOfEntries = "45",
             },
             new()
             {
                 Subject = "Grade 6 Performing Arts Graded Examination",
                 Qualification = "Music Performance: Group",
-                TotalNumberOfEntries = 10,
+                TotalNumberOfEntries = "10",
             }
     };
 
