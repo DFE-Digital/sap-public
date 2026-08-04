@@ -1,4 +1,6 @@
-﻿namespace SAPPub.Core.ServiceModels.Performance;
+﻿using SAPPub.Core.ServiceModels.Common;
+
+namespace SAPPub.Core.ServiceModels.Performance;
 
 public class EnglishMathsQualificationModel
 {
@@ -21,4 +23,17 @@ public class EnglishMathsQualificationModel
     public required EnglishMathsScoreModel AverageMathsProgress { get; init; }
     
     public required EnglishMathsScoreModel EnteredForMathsQualification { get; init; }
+
+    public required SimpleCodedDoubleTableModel NumberOfDisadvantagedStudentsEnglish { get; init; }
+    public required SimpleCodedDoubleTableModel ProgressOfDisadvantagedStudentsEnglish { get; init; }
+
+    public required SimpleCodedDoubleTableModel NumberOfDisadvantagedStudentsMaths { get; init; }
+    public required SimpleCodedDoubleTableModel ProgressOfDisadvantagedStudentsMaths { get; init; }
+
+    public required SimpleCodedDoubleTableModel NumberOfNonDisadvantagedStudentsEnglish { get; init; }
+    public required SimpleCodedDoubleTableModel ProgressOfNonDisadvantagedStudentsEnglish { get; init; }
+
+    public required SimpleCodedDoubleTableModel NumberOfNonDisadvantagedStudentsMaths { get; init; }
+    public required SimpleCodedDoubleTableModel ProgressOfNonDisadvantagedStudentsMaths { get; init; }
+
 }

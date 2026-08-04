@@ -1,21 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
+using SAPPub.Core.Enums;
 using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Web.Areas.Profiles.ViewModels.KS5;
 using SAPPub.Web.Constants;
 
-namespace SAPPub.Web.Areas.Profiles.Controllers
+namespace SAPPub.Web.Areas.Profiles.Controllers;
+
+[Area("Profiles")]
+[FeatureGate("Enable16to19")]
+public class KS5Controller(ILogger<KS5Controller> logger) : Controller
 {
-    [Area("Profiles")]
-    [FeatureGate("Enable16to19")]
-    public class KS5Controller(ILogger<KS5Controller> logger) : Controller
+    [Route("school/{urn}/{schoolName}/16-to-19-performance", Name = RouteConstants.KS5AcademicPerformanceRoot)]
+    public IActionResult Index(string urn, string schoolName)
     {
-        [Route("school/{urn}/{schoolName}/16-to-19-performance", Name = RouteConstants.KS5AcademicPerformanceRoot)]
-        public IActionResult Index(string urn, string schoolName)
-        {
-            //Not a required for the structure, but might be worth considering? What if there's no Level 3 data
+        //Not a required for the structure, but might be worth considering? What if there's no Level 3 data
 
             // if establishment has Level 3 data 
             return RedirectToAction("Level3Qualifications", new {  urn, schoolName, qualification = "alevel" });
@@ -42,11 +43,11 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
             var qualificationDetailsModel = await level3QualificationsService
                 .GetLevel3QualificationDetailsAsync(urn, qualification, ct);
 
-            if (!qualificationDetailsModel.IsKS5)
-            {
-                logger.LogWarning("Attempted to view KS5 page with no KS5 data URN: {URN}", urn);
-                return View("Error");
-            }
+        if (!qualificationDetailsModel.IsKS5)
+        {
+            logger.LogWarning("Attempted to view KS5 page with no KS5 data URN: {URN}", urn);
+            return View("Error");
+        }
 
             var model = Level3QualificationViewModel.Map(qualificationDetailsModel);
             return View(model);
@@ -58,11 +59,11 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
             // if establishment has Level 2 data 
             level2qualification ??= 1;
 
-            var qualSelected = ((Level2)level2qualification).ToString();
-            if (string.IsNullOrWhiteSpace(qualSelected))
-            {
-                qualSelected = ((Level2)1).ToString();
-            }
+        var qualSelected = ((Level2)level2qualification).ToString();
+        if (string.IsNullOrWhiteSpace(qualSelected))
+        {
+            qualSelected = ((Level2)1).ToString();
+        }
 
             return RedirectToAction("Level2Qualifications", new { urn, schoolName, qualification = qualSelected.ToLower() });
         }
@@ -78,70 +79,98 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
                 return View("Error");
             }
 
-            var schoolDetails = await aboutSchoolService.GetAboutSchoolDetailsAsync(urn, ct);
+        var schoolDetails = await aboutSchoolService.GetAboutSchoolDetailsAsync(urn, ct);
 
-            if (string.IsNullOrWhiteSpace(schoolDetails.Urn))
-            {
-                logger.LogWarning("No establishment details found for URN: {URN}", urn);
-                return View("Error");
-            }
-
-            if (!schoolDetails.IsKS5)
-            {
-                logger.LogWarning("Attempted to view KS5 page with no KS5 data URN: {URN}", urn);
-                return View("Error");
-            }
-
-            var ks5Model = KS5ViewModel.Map(schoolDetails);
-            ks5Model.Level2Qualification = qualification.Value;
-            return View(ks5Model);
-        }
-
-        [Route("school/{urn}/{schoolName}/16-to-19-performance/english-and-maths", Name = RouteConstants.KS5AcademicPerformanceEnglishMaths)]
-        public async Task<IActionResult> EnglishAndMaths(
-            [FromServices] IEnglishAndMathsQualificationsService englishAndMathsQualificationsService, 
-            string urn, string schoolName,
-            CancellationToken ct)
+        if (string.IsNullOrWhiteSpace(schoolDetails.Urn))
         {
-            var englishMathsQualifications = await englishAndMathsQualificationsService.GetEnglishAndMathsQualificationDetailsAsync(urn, ct);
-
-            if (string.IsNullOrWhiteSpace(englishMathsQualifications.Urn))
-            {
-                logger.LogWarning("No establishment details found for URN: {URN}", urn);
-                return View("Error");
-            }
-
-            if (!englishMathsQualifications.IsKS5)
-            {
-                logger.LogWarning("Attempted to view KS5 page with no KS5 data URN: {URN}", urn);
-                return View("Error");
-            }
-
-            var englishMathsQualificationsViewModel = EnglishMathsQualificationsViewModel.Map(englishMathsQualifications);
-            return View(englishMathsQualificationsViewModel);
+            logger.LogWarning("No establishment details found for URN: {URN}", urn);
+            return View("Error");
         }
 
-        [Route("school/{urn}/{schoolName}/16-to-19-performance/subject-entered", Name = RouteConstants.KS5AcademicPerformanceSubjectsEntered)]
-        public async Task<IActionResult> SubjectEntered([FromServices] IAboutSchoolService aboutSchoolService, 
-            string urn, string schoolName,
-            CancellationToken ct)
+        if (!schoolDetails.IsKS5)
         {
-            var schoolDetails = await aboutSchoolService.GetAboutSchoolDetailsAsync(urn, ct);
-
-            if (string.IsNullOrWhiteSpace(schoolDetails.Urn))
-            {
-                logger.LogWarning("No establishment details found for URN: {URN}", urn);
-                return View("Error");
-            }
-
-            if (!schoolDetails.IsKS5)
-            {
-                logger.LogWarning("Attempted to view KS5 page with no KS5 data URN: {URN}", urn);
-                return View("Error");
-            }
-
-            var ks5Model = KS5ViewModel.Map(schoolDetails);
-            return View(ks5Model);
+            logger.LogWarning("Attempted to view KS5 page with no KS5 data URN: {URN}", urn);
+            return View("Error");
         }
+
+        var ks5Model = KS5ViewModel.Map(schoolDetails);
+        ks5Model.Level2Qualification = qualification.Value;
+        return View(ks5Model);
+    }
+
+    [Route("school/{urn}/{schoolName}/16-to-19-performance/english-and-maths", Name = RouteConstants.KS5AcademicPerformanceEnglishMaths)]
+    public async Task<IActionResult> EnglishAndMaths(
+        [FromServices] IEnglishAndMathsQualificationsService englishAndMathsQualificationsService, 
+        string urn, string schoolName,
+        CancellationToken ct)
+    {
+        var englishMathsQualifications = await englishAndMathsQualificationsService.GetEnglishAndMathsQualificationDetailsAsync(urn, ct);
+
+        if (string.IsNullOrWhiteSpace(englishMathsQualifications.Urn))
+        {
+            logger.LogWarning("No establishment details found for URN: {URN}", urn);
+            return View("Error");
+        }
+
+        if (!englishMathsQualifications.IsKS5)
+        {
+            logger.LogWarning("Attempted to view KS5 page with no KS5 data URN: {URN}", urn);
+            return View("Error");
+        }
+
+        var englishMathsQualificationsViewModel = EnglishMathsQualificationsViewModel.Map(englishMathsQualifications);
+        return View(englishMathsQualificationsViewModel);
+    }
+
+    [Route("school/{urn}/{schoolName}/16-to-19-performance/subjects-entered/", Name = RouteConstants.KS5AcademicPerformanceSubjectsEntered)]
+    public IActionResult SubjectsEnteredRedirect(
+        string urn, 
+        string schoolName, 
+        QualificationType? qualificationType)
+    {
+        qualificationType ??= 0;
+
+        var qualTypeSelected = ((QualificationType)qualificationType).ToString();
+        if (string.IsNullOrWhiteSpace(qualTypeSelected))
+        {
+            qualTypeSelected = ((QualificationType)0).ToString();
+        }
+
+        return RedirectToAction(nameof(SubjectsEntered), new { urn, schoolName, qualification = qualTypeSelected.ToLower() });
+    }
+
+    [Route("school/{urn}/{schoolName}/16-to-19-performance/subjects-entered/{qualification}", Name = RouteConstants.KS5AcademicPerformanceSubjectsEnteredFilter)]
+    public async Task<IActionResult> SubjectsEntered(
+        [FromServices] IAboutSchoolService aboutSchoolService,
+        [FromServices] IKS5EstablishmentSubjectEntriesService establishmentSubjectEntriesService,
+        QualificationType? qualification,
+        string urn, 
+        string schoolName,
+        CancellationToken ct)
+    {
+        if (qualification is null)
+        {
+            return View("Error");
+        }
+        
+        var schoolDetails = await aboutSchoolService.GetAboutSchoolDetailsAsync(urn, ct);
+
+        if (string.IsNullOrWhiteSpace(schoolDetails.Urn))
+        {
+            logger.LogWarning("No establishment details found for URN: {URN}", urn);
+            return View("Error");
+        }
+
+        if (!schoolDetails.IsKS5)
+        {
+            logger.LogWarning("Attempted to view KS5 page with no KS5 data URN: {URN}", urn);
+            return View("Error");
+        }
+
+        var subjectEntries = await establishmentSubjectEntriesService.GetSubjectEntriesByUrnAsync(urn, qualification, ct);
+
+        var ks5Model = Ks5SubjectEnteredViewModel.Map(schoolDetails, subjectEntries);
+        ks5Model.QualificationType = qualification.Value;
+        return View(ks5Model);
     }
 }

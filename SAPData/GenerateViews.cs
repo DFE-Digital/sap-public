@@ -22,6 +22,15 @@ public sealed class GenerateViews
         Path.Combine(AppContext.BaseDirectory, "SAPData", "raw_sources.json")
     };
 
+    // excluded_urns.json path in repo
+    private static readonly string[] ExcludedUrnsCandidates =
+    {
+        "excluded_urns.json",
+        Path.Combine("SAPData", "excluded_urns.json"),
+        Path.Combine(AppContext.BaseDirectory, "excluded_urns.json"),
+        Path.Combine(AppContext.BaseDirectory, "SAPData", "excluded_urns.json")
+    };
+
     private sealed record ViewSpec(string ViewName, string Range, string Type);
 
     private sealed record RawSource(
@@ -46,7 +55,7 @@ public sealed class GenerateViews
         new("v_establishment_ks2_attainment", "Establishment", "KS2_Attainment"),
         new("v_establishment_performance", "Establishment", "KS4_Performance"), //Todo - Rename to KS4
         new("v_establishment_ks5_performance", "Establishment", "KS5_Performance"),
-
+        new("v_establishment_ks5_subject_entries", "Establishment", "KS5_Performance"),
 
 
         new("v_england_destinations", "England", "KS4_Destinations"),
@@ -88,6 +97,7 @@ public sealed class GenerateViews
 
         var tableMap = LoadTableMappings();
         var sources = LoadRawSources();
+        var excludedUrns = LoadExcludedUrns();
 
         foreach (var view in Views)
         {
@@ -122,7 +132,8 @@ public sealed class GenerateViews
                     BuildKeyStageCtesAndFilters(_rows, tableMap, KeyStageConstants.AllKeyStages);
 
                 var establishmentFilters = SqlViewFilterProvider.GetEstablishmentFilters(
-                    keyStageUrnsSqlConditions: keyStageUrnsSqlConditions);
+                    keyStageUrnsSqlConditions: keyStageUrnsSqlConditions,
+                    excludedUrns: excludedUrns);
 
                 sql = GenerateEstablishmentDimensionView(
                     rawTable,
@@ -225,6 +236,32 @@ public sealed class GenerateViews
                         out var datasetKey))
                 {
                     sql = BuildSkippedSql(view.ViewName, "Could not resolve dataset key from raw_sources.json (EES/KS4_Performance/SubjectEntries/Current).");
+                    Write(view.ViewName, sql);
+                    continue;
+                }
+
+                if (!TryResolveRawTable(tableMap, datasetKey, out var rawTable))
+                {
+                    sql = BuildSkippedSql(view.ViewName, $"Could not resolve raw table mapping for datasetKey='{datasetKey}'.");
+                    Write(view.ViewName, sql);
+                    continue;
+                }
+
+                sql = GenerateMirrorMaterializedView(view.ViewName, rawTable);
+            }
+
+            else if (view.ViewName.Equals("v_establishment_ks5_subject_entries", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!TryResolveManagedDatasetKey(
+                        sources,
+                        tableMap,
+                        sourceOrg: "EES",
+                        type: "KS5_Performance",
+                        subtype: "SubjectEntries",
+                        year: "Current",
+                        out var datasetKey))
+                {
+                    sql = BuildSkippedSql(view.ViewName, "Could not resolve dataset key from raw_sources.json (EES/KS5_Performance/SubjectEntries/Current).");
                     Write(view.ViewName, sql);
                     continue;
                 }
@@ -638,6 +675,61 @@ public sealed class GenerateViews
         var sources = JsonSerializer.Deserialize<List<RawSource>>(json, opts) ?? new List<RawSource>();
 
         return sources.Where(s => !string.IsNullOrWhiteSpace(s.FileName)).ToList();
+    }
+
+    private static HashSet<int> LoadExcludedUrns()
+    {
+        var path = ExcludedUrnsCandidates.FirstOrDefault(File.Exists);
+        if (path == null)
+        {
+            return new HashSet<int>();
+        }
+
+        try
+        {
+            var json = File.ReadAllText(path);
+            var data = JsonSerializer.Deserialize<JsonElement>(json);
+
+            if (data.ValueKind != JsonValueKind.Object)
+            {
+                throw new InvalidOperationException(
+                    $"Expected JSON object in excluded URNs file at '{path}', but got {data.ValueKind}.");
+            }
+
+            if (data.TryGetProperty("excluded_urns", out var urnsArray))
+            {
+                if (urnsArray.ValueKind != JsonValueKind.Array)
+                {
+                    throw new InvalidOperationException(
+                        $"Expected 'excluded_urns' to be an array in '{path}', but got {urnsArray.ValueKind}.");
+                }
+
+                var urns = new HashSet<int>();
+                int index = 0;
+                foreach (var element in urnsArray.EnumerateArray())
+                {
+                    if (element.ValueKind != JsonValueKind.Number || !element.TryGetInt32(out var urn))
+                    {
+                        throw new InvalidOperationException(
+                            $"Invalid URN value at index {index} in '{path}'. Expected integer, got {element.ValueKind}.");
+                    }
+                    urns.Add(urn);
+                    index++;
+                }
+
+                return urns;
+            }
+
+            return new HashSet<int>();
+        }
+        catch (JsonException ex)
+        {
+            throw new InvalidOperationException($"Failed to parse excluded URNs JSON file at '{path}': {ex.Message}", ex);
+        }
+        catch (IOException ex)
+        {
+            throw new InvalidOperationException($"Failed to read excluded URNs file at '{path}': {ex.Message}", ex);
+        }
     }
 
     private static bool TryResolveManagedDatasetKey(

@@ -1,6 +1,7 @@
 ﻿using SAPPub.Core.Interfaces.Repositories.Performance;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Performance;
+using SAPPub.Core.ServiceModels.Common;
 using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.ValueObjects;
 
@@ -63,6 +64,54 @@ public class EnglishAndMathsQualificationsService(
                 SchoolOrCollege = establishmentPerformance.ENTRY_PER_M_Est_Current_Pct_Coded,
                 LaAverage = laPerformance.ENTRY_PER_M_LA_Current_Pct_Coded,
                 EnglandAverage = englandPerformance.ENTRY_PER_M_Eng_Current_Pct_Coded
+            },
+            NumberOfDisadvantagedStudentsEnglish = new SimpleCodedDoubleTableModel
+            {
+                SchoolOrCollege = establishmentPerformance.T_SCOPEEX_E_DIS_Est_Current_Num_Coded,
+                LocalAuthority = laPerformance.T_SCOPEEX_E_DIS_LA_Current_Num_Coded,
+                England = englandPerformance.T_SCOPEEX_E_DIS_Eng_Current_Num_Coded
+            },
+            NumberOfDisadvantagedStudentsMaths = new SimpleCodedDoubleTableModel
+            {
+                SchoolOrCollege = establishmentPerformance.T_SCOPEEX_M_DIS_Est_Current_Num_Coded,
+                LocalAuthority = laPerformance.T_SCOPEEX_M_DIS_LA_Current_Num_Coded,
+                England = englandPerformance.T_SCOPEEX_M_DIS_Eng_Current_Num_Coded
+            },
+            NumberOfNonDisadvantagedStudentsEnglish = new SimpleCodedDoubleTableModel
+            {
+                SchoolOrCollege = CodedDouble.Empty,
+                LocalAuthority = laPerformance.T_SCOPEEX_E_NOTDIS_LA_Current_Num_Coded,
+                England = englandPerformance.T_SCOPEEX_E_NOTDIS_Eng_Current_Num_Coded
+            },
+            NumberOfNonDisadvantagedStudentsMaths = new SimpleCodedDoubleTableModel
+            {
+                SchoolOrCollege = CodedDouble.Empty,
+                LocalAuthority = laPerformance.T_SCOPEEX_M_NOTDIS_LA_Current_Num_Coded,
+                England = englandPerformance.T_SCOPEEX_M_NOTDIS_Eng_Current_Num_Coded
+            },
+            ProgressOfDisadvantagedStudentsEnglish = new SimpleCodedDoubleTableModel
+            {
+                SchoolOrCollege = establishmentPerformance.PROGEX_E_DIS_Est_Current_Num_Coded,
+                LocalAuthority = laPerformance.PROGEX_E_DIS_LA_Current_Num_Coded,
+                England = englandPerformance.PROGEX_E_DIS_Eng_Current_Num_Coded
+            },
+            ProgressOfDisadvantagedStudentsMaths = new SimpleCodedDoubleTableModel
+            {
+                SchoolOrCollege = establishmentPerformance.PROGEX_M_DIS_Est_Current_Num_Coded,
+                LocalAuthority = laPerformance.PROGEX_M_DIS_LA_Current_Num_Coded,
+                England = englandPerformance.PROGEX_M_DIS_Eng_Current_Num_Coded
+            },
+            ProgressOfNonDisadvantagedStudentsEnglish = new SimpleCodedDoubleTableModel
+            {
+                SchoolOrCollege = CodedDouble.Empty,
+                LocalAuthority = laPerformance.PROGEX_E_NOTDIS_LA_Current_Num_Coded,
+                England = englandPerformance.PROGEX_E_NOTDIS_Eng_Current_Num_Coded
+            },
+            ProgressOfNonDisadvantagedStudentsMaths = new SimpleCodedDoubleTableModel
+            {
+                SchoolOrCollege = CodedDouble.Empty,
+                LocalAuthority = laPerformance.PROGEX_M_NOTDIS_LA_Current_Num_Coded,
+                England = englandPerformance.PROGEX_M_NOTDIS_Eng_Current_Num_Coded
             }
         };
     }

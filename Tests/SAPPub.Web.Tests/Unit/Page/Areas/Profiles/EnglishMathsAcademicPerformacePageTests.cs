@@ -2,6 +2,7 @@
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.ServiceModels;
+using SAPPub.Core.ServiceModels.Common;
 using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Core.ValueObjects;
@@ -198,6 +199,54 @@ public class EnglishMathsAcademicPerformacePageTests : PageTestsBase
                 LaAverage = new CodedDouble(15, string.Empty, "15"),
                 EnglandAverage = new CodedDouble(16, string.Empty, "16")
             },
+            NumberOfDisadvantagedStudentsEnglish = new SimpleCodedDoubleTableModel
+            {
+                SchoolOrCollege = new CodedDouble(17, "", "17"),
+                LocalAuthority = new CodedDouble(18, "", "18"),
+                England = new CodedDouble(19, "", "19")
+            },
+            NumberOfDisadvantagedStudentsMaths = new SimpleCodedDoubleTableModel
+            {
+                SchoolOrCollege = new CodedDouble(20, "", "20"),
+                LocalAuthority = new CodedDouble(21, "", "21"),
+                England = new CodedDouble(22, "", "22")
+            },
+            NumberOfNonDisadvantagedStudentsEnglish = new SimpleCodedDoubleTableModel
+            {
+                SchoolOrCollege = new CodedDouble(0, "", "0"),
+                LocalAuthority = new CodedDouble(23, "", "23"),
+                England = new CodedDouble(24, "", "24")
+            },
+            NumberOfNonDisadvantagedStudentsMaths = new SimpleCodedDoubleTableModel
+            {
+                SchoolOrCollege = new CodedDouble(0, "", "0"),
+                LocalAuthority = new CodedDouble(25, "", "25"),
+                England = new CodedDouble(26, "", "26")
+            },
+            ProgressOfDisadvantagedStudentsEnglish = new SimpleCodedDoubleTableModel
+            {
+                SchoolOrCollege = new CodedDouble(27, "", "27"),
+                LocalAuthority = new CodedDouble(28, "", "28"),
+                England = new CodedDouble(29, "", "29")
+            },
+            ProgressOfDisadvantagedStudentsMaths = new SimpleCodedDoubleTableModel
+            {
+                SchoolOrCollege = new CodedDouble(30, "", "30"),
+                LocalAuthority = new CodedDouble(31, "", "31"),
+                England = new CodedDouble(32, "", "32")
+            },
+            ProgressOfNonDisadvantagedStudentsEnglish = new SimpleCodedDoubleTableModel
+            {
+                SchoolOrCollege = new CodedDouble(0, "", "0"),
+                LocalAuthority = new CodedDouble(33, "", "33"),
+                England = new CodedDouble(34, "", "34")
+            },
+            ProgressOfNonDisadvantagedStudentsMaths = new SimpleCodedDoubleTableModel
+            {
+                SchoolOrCollege = new CodedDouble(0, "", "0"),
+                LocalAuthority = new CodedDouble(35, "", "35"),
+                England = new CodedDouble(36, "", "36")
+            }
         };
     }
 }

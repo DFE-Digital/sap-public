@@ -6,19 +6,19 @@ using SAPPub.Infrastructure.Repositories.Performance;
 
 namespace SAPPub.Infrastructure.Tests.Repositories.Performance;
 
-public class Ks5PerformanceRepositoryTests
+public class KS5PerformanceRepositoryTests
 {
     private readonly Mock<IGenericRepository<KS5EstablishmentPerformance>> _mockEstablishmentKs5PerformanceRepo;
-    private readonly Mock<IGenericRepository<KS5England5Performance>> _mockEnglandKs5PerformanceRepo;    
+    private readonly Mock<IGenericRepository<KS5EnglandPerformance>> _mockEnglandKs5PerformanceRepo;    
     private readonly Mock<IGenericRepository<KS5LAPerformance>> _mockLAKs5PerformanceRepo;
-    private readonly Ks5PerformanceRepository _sut;
+    private readonly KS5PerformanceRepository _sut;
 
-    public Ks5PerformanceRepositoryTests()
+    public KS5PerformanceRepositoryTests()
     {
         _mockEstablishmentKs5PerformanceRepo = new Mock<IGenericRepository<KS5EstablishmentPerformance>>();
-        _mockEnglandKs5PerformanceRepo = new Mock<IGenericRepository<KS5England5Performance>>();
+        _mockEnglandKs5PerformanceRepo = new Mock<IGenericRepository<KS5EnglandPerformance>>();
         _mockLAKs5PerformanceRepo = new Mock<IGenericRepository<KS5LAPerformance>>();
-        _sut = new Ks5PerformanceRepository(
+        _sut = new KS5PerformanceRepository(
             _mockEstablishmentKs5PerformanceRepo.Object,
             _mockEnglandKs5PerformanceRepo.Object,            
             _mockLAKs5PerformanceRepo.Object);
@@ -104,14 +104,14 @@ public class Ks5PerformanceRepositoryTests
         // Arrange
         _mockEnglandKs5PerformanceRepo
             .Setup(r => r.ReadSingleAsync(It.IsAny<object>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((KS5England5Performance?)null);
+            .ReturnsAsync((KS5EnglandPerformance?)null);
 
         // Act
         var result = await _sut.GetEnglandPerformanceAsync(CancellationToken.None);
 
         // Assert
         Assert.NotNull(result);
-        var expected = new KS5England5Performance();
+        var expected = new KS5EnglandPerformance();
         Assert.Equal(expected.VA_INS_ALEV_Eng_Current_Num_Coded, result.VA_INS_ALEV_Eng_Current_Num_Coded);
         Assert.Equal(expected.TALLPPE_ALEV_1618_Eng_Current_Num_Coded, result.TALLPPE_ALEV_1618_Eng_Current_Num_Coded);
         Assert.Equal(expected.TALLPPEGRD_ALEV_1618_Eng_Current, result.TALLPPEGRD_ALEV_1618_Eng_Current);
@@ -129,7 +129,7 @@ public class Ks5PerformanceRepositoryTests
     public async Task GetEnglandPerformanceAsync_ReturnsItem()
     {
         // Arrange
-        var expected = new KS5England5Performance
+        var expected = new KS5EnglandPerformance
         {
             VA_INS_ALEV_Eng_Current_Num_Coded = new CodedDouble(75.55, string.Empty, string.Empty),
             TALLPPE_ALEV_1618_Eng_Current_Num_Coded = new CodedDouble(85, string.Empty, string.Empty),

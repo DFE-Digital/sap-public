@@ -34,8 +34,11 @@ public class Level3QualificationsServiceTests
             _mockKs5PerformanceRepository.Object);
     }
 
-    [Fact]
-    public async Task GetLevel3QualificationDetailsAsync_ShouldReturnEmptyModel_WhenNotFound()
+    [Theory]
+    [InlineData(Level3.ALevel)]
+    [InlineData(Level3.Academic)]
+    [InlineData(Level3.AppliedGeneral)]
+    public async Task GetLevel3QualificationDetailsAsync_ShouldReturnEmptyModel_WhenNotFound(Level3 qualificationLevel)
     {
         // Arrange
         _mockEstablishmentService
@@ -48,14 +51,14 @@ public class Level3QualificationsServiceTests
 
         _mockKs5PerformanceRepository
             .Setup(r => r.GetEnglandPerformanceAsync(It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new KS5England5Performance());
+            .ReturnsAsync(new KS5EnglandPerformance());
 
         _mockKs5PerformanceRepository
             .Setup(r => r.GetLaPerformanceAsync(fakeEstablishment.LAId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new KS5LAPerformance());
 
         // Act
-        var result = await _service.GetLevel3QualificationDetailsAsync(fakeEstablishment.URN, Level3.ALevel, CancellationToken.None);
+        var result = await _service.GetLevel3QualificationDetailsAsync(fakeEstablishment.URN, qualificationLevel, CancellationToken.None);
 
         // Assert
         Assert.NotNull(result);
@@ -80,6 +83,7 @@ public class Level3QualificationsServiceTests
     [Theory]
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
+    [InlineData(Level3.AppliedGeneral)]
     public async Task GetLevel3QualificationDetailsAsync_ShouldReturnData(Level3 qualificationLevel)
     {
         // Arrange
@@ -104,10 +108,18 @@ public class Level3QualificationsServiceTests
             UCI_INS_ACAD_Est_Current_Num_Coded = new CodedDouble(3, string.Empty, string.Empty),
             LCI_INS_ACAD_Est_Current_Num_Coded = new CodedDouble(0.5, string.Empty, string.Empty),
             TALLPPE_ACAD_1618_Est_Current_Num_Coded = new CodedDouble(22.95, string.Empty, string.Empty),
-            TALLPPEGRD_ACAD_1618_Est_Current = "B"
+            TALLPPEGRD_ACAD_1618_Est_Current = "B",
+
+            TALLPUP_AGEN_Est_Current_Num_Coded = new CodedDouble(45, string.Empty, string.Empty),
+            VA_INS_AGEN_Est_Current_Num_Coded = new CodedDouble(66.29, string.Empty, string.Empty),
+            PROGRESS_BAND_AGEN_Est_Current = "Average",
+            UCI_INS_AGEN_Est_Current_Num_Coded = new CodedDouble(3, string.Empty, string.Empty),
+            LCI_INS_AGEN_Est_Current_Num_Coded = new CodedDouble(0.2, string.Empty, string.Empty),
+            TALLPPE_AGEN_Est_Current_Num_Coded = new CodedDouble(22.77, string.Empty, string.Empty),
+            TALLPPEGRD_AGEN_Est_Current = "A",
         };
 
-        var englandPerformance = new KS5England5Performance
+        var englandPerformance = new KS5EnglandPerformance
         {
             Id = fakeEstablishment.LAId,
             VA_INS_ALEV_Eng_Current_Num_Coded = new CodedDouble(85.75, string.Empty, string.Empty),
@@ -116,7 +128,11 @@ public class Level3QualificationsServiceTests
 
             VA_INS_ACAD_Eng_Current_Num_Coded = new CodedDouble(67.35, string.Empty, string.Empty),
             TALLPPE_ACAD_1618_Eng_Current_Num_Coded = new CodedDouble(33.15, string.Empty, string.Empty),
-            TALLPPEGRD_ACAD_1618_Eng_Current = "C"
+            TALLPPEGRD_ACAD_1618_Eng_Current = "C",
+
+            VA_INS_AGEN_Eng_Current_Num_Coded = new CodedDouble(77.66, string.Empty, string.Empty),
+            TALLPPE_AGEN_Eng_Current_Num_Coded = new CodedDouble(33.24, string.Empty, string.Empty),
+            TALLPPEGRD_AGEN_Eng_Current = "B",
         };
 
         var laPerformance = new KS5LAPerformance
@@ -124,7 +140,9 @@ public class Level3QualificationsServiceTests
             TALLPPE_ALEV_1618_LA_Current_Num_Coded = new CodedDouble(20.59, string.Empty, string.Empty),
             TALLPPEGRD_ALEV_1618_LA_Current = "C",
             TALLPPE_ACAD_1618_LA_Current_Num_Coded = new CodedDouble(55.23, string.Empty, string.Empty),
-            TALLPPEGRD_ACAD_1618_LA_Current = "B"
+            TALLPPEGRD_ACAD_1618_LA_Current = "B",
+            TALLPPE_AGEN_LA_Current_Num_Coded = new CodedDouble(47.53, string.Empty, string.Empty),
+            TALLPPEGRD_AGEN_LA_Current = "B"
         };
 
         _mockKs5PerformanceRepository
@@ -180,6 +198,23 @@ public class Level3QualificationsServiceTests
 
             Assert.Equal(laPerformance.TALLPPE_ACAD_1618_LA_Current_Num_Coded, result.AverageResult.LocalAuthority.Points);
             Assert.Equal(laPerformance.TALLPPEGRD_ACAD_1618_LA_Current, result.AverageResult.LocalAuthority.Grade);
+        }
+        else if (qualificationLevel == Level3.AppliedGeneral)
+        {
+            Assert.Equal(establishmentPerformance.TALLPUP_AGEN_Est_Current_Num_Coded, result.TotalNoOfStudentCompletedQualification);
+            Assert.Equal(establishmentPerformance.VA_INS_AGEN_Est_Current_Num_Coded, result.ProgressScore.Score);
+            Assert.Equal(establishmentPerformance.PROGRESS_BAND_AGEN_Est_Current, result.ProgressScore.BandingRating);
+            Assert.Equal(establishmentPerformance.UCI_INS_AGEN_Est_Current_Num_Coded, result.ProgressScore.ConfidenceLevelUpper);
+            Assert.Equal(establishmentPerformance.LCI_INS_AGEN_Est_Current_Num_Coded, result.ProgressScore.ConfidenceLevelLower);
+            Assert.Equal(establishmentPerformance.TALLPPE_AGEN_Est_Current_Num_Coded, result.AverageResult.Establishment.Points);
+            Assert.Equal(establishmentPerformance.TALLPPEGRD_AGEN_Est_Current, result.AverageResult.Establishment.Grade);
+
+            Assert.Equal(englandPerformance.VA_INS_AGEN_Eng_Current_Num_Coded, result.ProgressScore.EnglandAverageScore);
+            Assert.Equal(englandPerformance.TALLPPE_AGEN_Eng_Current_Num_Coded, result.AverageResult.England.Points);
+            Assert.Equal(englandPerformance.TALLPPEGRD_AGEN_Eng_Current, result.AverageResult.England.Grade);
+
+            Assert.Equal(laPerformance.TALLPPE_AGEN_LA_Current_Num_Coded, result.AverageResult.LocalAuthority.Points);
+            Assert.Equal(laPerformance.TALLPPEGRD_AGEN_LA_Current, result.AverageResult.LocalAuthority.Grade);
         }
     }
 }
