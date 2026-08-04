@@ -22,9 +22,9 @@ public class AcademicPerformanceSubjectScaledScoresViewModel : BaseViewModel
 
         var hasEstablishmentData = new[]
         {
-            scaledScoreModel.Read_Average_Establishment.CurrentYear.Value,
-            scaledScoreModel.Read_Average_Establishment.PreviousYear.Value,
-            scaledScoreModel.Read_Average_Establishment.TwoYearsAgo.Value,
+            scaledScoreModel.ReadAverageEstablishment.CurrentYear.Value,
+            scaledScoreModel.ReadAverageEstablishment.PreviousYear.Value,
+            scaledScoreModel.ReadAverageEstablishment.TwoYearsAgo.Value,
         }.All(d => d is double v && v != 0);
 
         var allReadData = new DataViewModel
@@ -32,9 +32,9 @@ public class AcademicPerformanceSubjectScaledScoresViewModel : BaseViewModel
             Labels = ["School", laAverageLabel, "England average"],
             Data =
             [
-                scaledScoreModel.Read_Average_Establishment.CurrentYear.Value,
-                scaledScoreModel.Read_Average_LA.CurrentYear.Value,
-                scaledScoreModel.Read_Average_England.CurrentYear.Value
+                scaledScoreModel.ReadAverageEstablishment.CurrentYear.Value,
+                scaledScoreModel.ReadAverageLA.CurrentYear.Value,
+                scaledScoreModel.ReadAverageEngland.CurrentYear.Value
             ],
         };
 
@@ -46,17 +46,17 @@ public class AcademicPerformanceSubjectScaledScoresViewModel : BaseViewModel
                    new DatasetViewModel
                     {
                         Label = "School",
-                        Data = [scaledScoreModel.Read_Average_Establishment.TwoYearsAgo.Value, scaledScoreModel.Read_Average_Establishment.PreviousYear.Value, scaledScoreModel.Read_Average_Establishment.CurrentYear.Value],
+                        Data = [scaledScoreModel.ReadAverageEstablishment.TwoYearsAgo.Value, scaledScoreModel.ReadAverageEstablishment.PreviousYear.Value, scaledScoreModel.ReadAverageEstablishment.CurrentYear.Value],
                     },
                     new DatasetViewModel
                     {
                         Label = laAverageLabel,
-                        Data = [scaledScoreModel.Read_Average_LA.TwoYearsAgo.Value, scaledScoreModel.Read_Average_LA.PreviousYear.Value, scaledScoreModel.Read_Average_LA.CurrentYear.Value],
+                        Data = [scaledScoreModel.ReadAverageLA.TwoYearsAgo.Value, scaledScoreModel.ReadAverageLA.PreviousYear.Value, scaledScoreModel.ReadAverageLA.CurrentYear.Value],
                     },
                     new DatasetViewModel
                     {
                         Label = "England average",
-                        Data = [scaledScoreModel.Read_Average_England.TwoYearsAgo.Value, scaledScoreModel.Read_Average_England.PreviousYear.Value, scaledScoreModel.Read_Average_England.CurrentYear.Value],
+                        Data = [scaledScoreModel.ReadAverageEngland.TwoYearsAgo.Value, scaledScoreModel.ReadAverageEngland.PreviousYear.Value, scaledScoreModel.ReadAverageEngland.CurrentYear.Value],
                     }
                ],
         };

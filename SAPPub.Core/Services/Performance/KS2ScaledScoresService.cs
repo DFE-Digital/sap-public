@@ -28,9 +28,9 @@ namespace SAPPub.Core.Services.Performance
 
             return new KS2ScaledScoreModel
             {
-                Read_Average_Establishment = GetEstablishmentReadAverage(establishmentPerformance),
-                Read_Average_England = GetEngReadAverage(englandPerformance),
-                Read_Average_LA = GetLAReadAverage(laPerformance)
+                ReadAverageEstablishment = GetEstablishmentReadAverage(establishmentPerformance),
+                ReadAverageEngland = GetEngReadAverage(englandPerformance),
+                ReadAverageLA = GetLAReadAverage(laPerformance)
             };
         }
 
