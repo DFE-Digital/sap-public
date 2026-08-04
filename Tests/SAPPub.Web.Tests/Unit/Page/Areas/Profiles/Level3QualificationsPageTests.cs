@@ -47,6 +47,7 @@ public class Level3QualificationsPageTests : PageTestsBase
     [Theory]
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
+    [InlineData(Level3.AppliedGeneral)]
     public async Task Level3QualificationsPage_HasCorrectTitle(Level3 qualification)
     {
         // Arrange
@@ -65,7 +66,8 @@ public class Level3QualificationsPageTests : PageTestsBase
         {
             Level3.ALevel => PageTitleConstants.KS5SchoolPageTitles.Level3QualificationsAlevel,
             Level3.Academic => PageTitleConstants.KS5SchoolPageTitles.Level3QualificationsAcademic,
-            _=> null
+            Level3.AppliedGeneral => PageTitleConstants.KS5SchoolPageTitles.Level3QualificationsAppliedGeneral,
+            _ => null
         };
         var expectedTitle = $"{PageTitleConstants.KS5SchoolPageTitles.PhaseTitle} - {suffixTitle}";
         Assert.Contains(expectedTitle, title.TextContent.Trim());
@@ -74,6 +76,7 @@ public class Level3QualificationsPageTests : PageTestsBase
     [Theory]
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
+    [InlineData(Level3.AppliedGeneral)]
     public async Task Level3QualificationsPage_DisplaysMainHeading(Level3 qualification)
     {
         // Arrange
@@ -93,6 +96,7 @@ public class Level3QualificationsPageTests : PageTestsBase
     [Theory]
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
+    [InlineData(Level3.AppliedGeneral)]
     public async Task Level3QualificationsPage_DisplaysHeading(Level3 qualification)
     {
         // Arrange
@@ -146,6 +150,7 @@ public class Level3QualificationsPageTests : PageTestsBase
     [Theory]
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
+    [InlineData(Level3.AppliedGeneral)]
     public async Task Level3QualificationsPage_DisplaysProgressScoreHeading(Level3 qualification)
     {
         // Arrange
@@ -165,6 +170,7 @@ public class Level3QualificationsPageTests : PageTestsBase
     [Theory]
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
+    [InlineData(Level3.AppliedGeneral)]
     public async Task Level3QualificationsPage_DisplaysTechnicalGuidanceLink(Level3 qualification)
     {
         // Arrange
@@ -178,7 +184,7 @@ public class Level3QualificationsPageTests : PageTestsBase
         // Assert
         var techGuidanceLink = doc.QuerySelector("#tech-guidance-link");
 
-        if (qualification == Level3.ALevel)
+        if (qualification == Level3.ALevel || qualification == Level3.AppliedGeneral)
         {
             Assert.NotNull(techGuidanceLink);
             Assert.Contains("https://www.gov.uk/government/publications/16-to-19-accountability-headline-measures-technical-guide", techGuidanceLink.GetAttribute("href"));
@@ -192,6 +198,35 @@ public class Level3QualificationsPageTests : PageTestsBase
     [Theory]
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
+    [InlineData(Level3.AppliedGeneral)]
+    public async Task Level3QualificationsPage_DisplaysTechnicalVocationalQualificationsLink(Level3 qualification)
+    {
+        // Arrange
+        SetupMocks(qualification);
+        var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
+        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var techVocationalQualificationsLink = doc.QuerySelector("#tech-vocational-qualifications-link");
+
+        if (qualification == Level3.AppliedGeneral)
+        {
+            Assert.NotNull(techVocationalQualificationsLink);
+            Assert.Contains("https://www.gov.uk/government/collections/performance-tables-technical-and-vocational-qualifications", techVocationalQualificationsLink.GetAttribute("href"));
+        }
+        else
+        {
+            Assert.Null(techVocationalQualificationsLink);
+        }
+    }
+
+    [Theory]
+    [InlineData(Level3.ALevel)]
+    [InlineData(Level3.Academic)]
+    [InlineData(Level3.AppliedGeneral)]
     public async Task Level3QualificationsPage_Displays_ProgressScore(Level3 qualification)
     {
         // Arrange
@@ -233,6 +268,7 @@ public class Level3QualificationsPageTests : PageTestsBase
     [Theory]
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
+    [InlineData(Level3.AppliedGeneral)]
     public async Task Level3QualificationsPage_Displays_AverageResult(Level3 qualification)
     {
         // Arrange

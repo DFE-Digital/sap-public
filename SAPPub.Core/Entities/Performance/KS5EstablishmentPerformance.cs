@@ -6,7 +6,7 @@ public class KS5EstablishmentPerformance
 {
     public string Id { get; set; } = string.Empty;
 
-    // Total number of students who completed at least one of this qualification type
+    // A level Total number of students who completed at least one of this qualification type
     public CodedDouble TALLPUP_ALEV_1618_Est_Current_Num_Coded { get; set; }
 
     // A level Progress score for the school / college
@@ -47,6 +47,27 @@ public class KS5EstablishmentPerformance
 
     // Academic qualifications Average result grade for the school / college
     public string? TALLPPEGRD_ACAD_1618_Est_Current { get; set; }
+
+    // Applied general qualifications Total number of students who completed at least one of this qualification type
+    public CodedDouble TALLPUP_AGEN_Est_Current_Num_Coded { get; set; }
+
+    // Applied general qualifications Progress score for the school / college
+    public CodedDouble VA_INS_AGEN_Est_Current_Num_Coded { get; set; }
+
+    // Applied general qualifications Progress banding for the school / college
+    public string? PROGRESS_BAND_AGEN_Est_Current { get; set; }
+
+    // Applied general qualifications Progress confidence interval for the school / college upper
+    public CodedDouble UCI_INS_AGEN_Est_Current_Num_Coded { get; set; }
+
+    // Applied general qualifications Progress confidence interval for the school / college lower
+    public CodedDouble LCI_INS_AGEN_Est_Current_Num_Coded { get; set; }
+
+    // Applied general qualifications Average result points for the school / college lower
+    public CodedDouble TALLPPE_AGEN_Est_Current_Num_Coded { get; set; }
+
+    // Applied general qualifications Average result grade for the school / college
+    public string? TALLPPEGRD_AGEN_Est_Current { get; set; }
 
     // Number of students for English progress
     public CodedDouble T_SCOPEEX_E_Est_Current_Num_Coded { get; set; }

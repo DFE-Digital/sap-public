@@ -33,6 +33,7 @@ public class KS5ControllerTests : BaseProfilesTests
     [Theory]
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
+    [InlineData(Level3.AppliedGeneral)]
     public async Task Get_Level3Qualifications_Info_ReturnsExpected(Level3 qualification)
     {
         var expectedResult = Level3QualificationDetails(qualification);
@@ -80,6 +81,7 @@ public class KS5ControllerTests : BaseProfilesTests
     [Theory]
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
+    [InlineData(Level3.AppliedGeneral)]
     public async Task Get_Level3Qualifications_Info_With_No_Data_ReturnsOk(Level3 qualification)
     {
         var expectedResult = new Level3QualificationModel
