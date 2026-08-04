@@ -57,27 +57,29 @@
                         The national curriculum at primary includes swimming, sport and music lessons, but some schools may offer further clubs or sessions in these subjects.
                     </p>
                 </div>
+                @if (Model.SchoolWebsite.IsAvailable)
+                {
+                    <govuk-summary-list>
+                        <govuk-summary-list-row>
+                            <govuk-summary-list-row-key>
+                                Primary school curriculum
+                            </govuk-summary-list-row-key>
+                            <govuk-summary-list-row-value>
 
-                <govuk-summary-list>
-                    <govuk-summary-list-row>
-                        <govuk-summary-list-row-key>
-                            Primary school curriculum
-                        </govuk-summary-list-row-key>
-                        <govuk-summary-list-row-value>
-                            @if (Model.SchoolWebsite.IsAvailable)
-                            {
                                 <a class="govuk-link" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite.DisplayText(UrlHelper.EnsureHttpsUrl)">
                                     View the school's curriculum on their website
                                     <span class="govuk-visually-hidden">(opens in a new tab)</span>
                                 </a>
-                            }
-                            else
-                            {
-                                <span data-testId="contact-school-info-ks2">Contact the school for more information</span>
-                            }
-                        </govuk-summary-list-row-value>
-                    </govuk-summary-list-row>
-                </govuk-summary-list>
+
+
+                            </govuk-summary-list-row-value>
+                        </govuk-summary-list-row>
+                    </govuk-summary-list>
+                }
+                else
+                {
+                    <p data-testId="contact-school-info-ks2">Contact the school for more information.</p>
+                }
             </div>
         </div>
 
@@ -124,24 +126,26 @@
                         The range of activities can vary due to staff availability, time of year and funding.
                     </p>
                 </div>
+                 @if (Model.SchoolWebsite.IsAvailable)
+                            {
                 <govuk-summary-list>
                     <govuk-summary-list-row>
                         <govuk-summary-list-row-key>Extra-curricular activities</govuk-summary-list-row-key>
                         <govuk-summary-list-row-value>
-                            @if (Model.SchoolWebsite.IsAvailable)
-                            {
+                           
                                 <a class="govuk-link" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite.DisplayText(UrlHelper.EnsureHttpsUrl)">
                                     Visit the school website for current extra-curricular activities
                                     <span class="govuk-visually-hidden">(opens in a new tab)</span>
                                 </a>
-                            }
-                            else
-                            {
-                                <span data-testId="contact-school-info-extra">Contact the school for more information</span>
-                            }
+                           
                         </govuk-summary-list-row-value>
                     </govuk-summary-list-row>
                 </govuk-summary-list>
+                }
+                else
+                {
+                    <p data-testId="contact-school-info-extra">Contact the school for more information.</p>
+                }
             </div>
         </div>
 
