@@ -62,11 +62,6 @@ namespace SAPPub.Infrastructure.Repositories.Generic
             throw new NotImplementedException();
         }
 
-        public Task<T?> ReadSingleViaDTOAsync(object parameters, CancellationToken ct = default)
-        {
-            throw new NotImplementedException();
-        }
-
         private Task<string> ReadFileAsync(string fileName)
         {
             try

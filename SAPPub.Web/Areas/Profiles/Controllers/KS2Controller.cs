@@ -51,7 +51,7 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
                 .GetScaledScoreModel(urn, ct);
 
 
-            var model = AcademicPerformanceSubjectScaledScoresViewModel.Map(scaledScoreModel);
+            var model = AcademicPerformanceSubjectScaledScoresViewModel.Map(Establishment, scaledScoreModel);
             return View(model);
         }
 

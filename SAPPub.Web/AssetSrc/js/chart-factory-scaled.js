@@ -187,13 +187,13 @@
     }
 
     function getScaledLabels(value) {
-        if (value == 80) {
+        if (value === 80) {
             return [`${value}${CHART_CONFIG.defaults.axisSuffix}`, `(lowest)`];
         }
-        else if (value == 100) {
+        else if (value === 100) {
             return [`${value}${CHART_CONFIG.defaults.axisSuffix}`, `(expected`,` standard)`];
         }
-        else if (value == 120) {
+        else if (value === 120) {
             return [`${value}${CHART_CONFIG.defaults.axisSuffix}`, `(highest)`];
         }
         else {

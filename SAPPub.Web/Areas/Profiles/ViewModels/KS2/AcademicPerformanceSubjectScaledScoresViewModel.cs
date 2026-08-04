@@ -16,9 +16,9 @@ public class AcademicPerformanceSubjectScaledScoresViewModel : BaseViewModel
 
     public required DisplayField<bool> HasEstablishmentData { get; set; }
 
-    public static AcademicPerformanceSubjectScaledScoresViewModel Map(KS2ScaledScoreModel scaledScoreModel)
+    public static AcademicPerformanceSubjectScaledScoresViewModel Map(EstablishmentServiceModel establishment, KS2ScaledScoreModel scaledScoreModel)
     {
-        var laAverageLabel = CommonHelper.GetLocalAuthorityDisplayName(scaledScoreModel.LAName);
+        var laAverageLabel = CommonHelper.GetLocalAuthorityDisplayName(establishment.LAName);
 
         var hasEstablishmentData = new[]
         {
@@ -65,11 +65,11 @@ public class AcademicPerformanceSubjectScaledScoresViewModel : BaseViewModel
 
         return new AcademicPerformanceSubjectScaledScoresViewModel
         {
-            URN = scaledScoreModel.Urn,
-            SchoolName = scaledScoreModel.SchoolName,
-            IsKS2 = scaledScoreModel.IsKS2,
-            IsKS4 = scaledScoreModel.IsKS4,
-            IsKS5 = scaledScoreModel.IsKS5,
+            URN = establishment.URN,
+            SchoolName = establishment.EstablishmentName,
+            IsKS2 = establishment.IsKS2,
+            IsKS4 = establishment.IsKS4,
+            IsKS5 = establishment.IsKS5,
             AllReadData = allReadData,
             AllReadOverTimeData = allReadOverTimeData,
             HasEstablishmentData = hasEstablishmentData.ToDisplayField()

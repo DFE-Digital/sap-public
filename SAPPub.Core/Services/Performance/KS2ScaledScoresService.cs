@@ -5,11 +5,6 @@ using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.ValueObjects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SAPPub.Core.Services.Performance
 {
@@ -33,12 +28,6 @@ namespace SAPPub.Core.Services.Performance
 
             return new KS2ScaledScoreModel
             {
-                Urn = establishment.URN,
-                SchoolName = establishment.EstablishmentName,
-                LAName = establishment.LAName,
-                IsKS2 = establishment.IsKS2,
-                IsKS4 = establishment.IsKS4,
-                IsKS5 = establishment.IsKS5,
                 Read_Average_Establishment = GetEstablishmentReadAverage(establishmentPerformance),
                 Read_Average_England = GetEngReadAverage(englandPerformance),
                 Read_Average_LA = GetLAReadAverage(laPerformance)
