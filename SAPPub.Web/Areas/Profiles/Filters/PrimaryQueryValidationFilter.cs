@@ -4,8 +4,10 @@ using SAPPub.Core.Interfaces.Services;
 
 namespace SAPPub.Web.Areas.Profiles.Filters;
 
-public class PrimaryQueryValidationFilter(IEstablishmentService establishmentService) : IAsyncActionFilter
+public class PrimaryQueryValidationFilter(IEstablishmentService establishmentService) : IAsyncActionFilter, IOrderedFilter
 {
+    public int Order => 1;
+
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
         if (!context.ActionArguments.TryGetValue("urn", out var urnObj) || urnObj is not string urn)

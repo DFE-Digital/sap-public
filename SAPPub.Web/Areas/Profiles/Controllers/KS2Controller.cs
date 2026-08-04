@@ -10,6 +10,7 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
     [Area("Profiles")]
     [FeatureGate(Constants.Constants.EnablePrimary)]
     [ServiceFilter(typeof(PrimaryQueryValidationFilter))]
+    [DfEAnalyticsAddPhaseTagFilter]
     public class KS2Controller : Controller, IEstablishment
     {
         public EstablishmentServiceModel Establishment { get; set; } = null!; // set by the PrimaryQueryValidationFilter
