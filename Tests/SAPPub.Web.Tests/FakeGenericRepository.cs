@@ -1,8 +1,6 @@
 ﻿using SAPPub.Core.Entities;
 using SAPPub.Core.Entities.Destinations;
 using SAPPub.Core.Entities.KS4.Performance;
-using SAPPub.Core.Entities.KS4.SubjectEntries;
-using SAPPub.Core.Entities.Performance;
 using SAPPub.Core.Entities.Performance;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using System.Collections;

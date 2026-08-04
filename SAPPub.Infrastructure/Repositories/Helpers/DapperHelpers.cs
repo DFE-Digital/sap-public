@@ -541,7 +541,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                 nameof(KS2EnglandPerformance) =>
                     SelectAllFromWhere("v_england_ks2_attainment", "\"Id\" = 'National'"),
 
-                nameof(KS5England5Performance) =>
+                nameof(KS5EnglandPerformance) =>
                     SelectFromWhere(KS5EnglandPerformanceColumns, "v_england_ks5_performance", "\"Id\" = 'National'"),
 
                 nameof(KS5LAPerformance) =>
