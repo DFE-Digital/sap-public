@@ -22,6 +22,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             PhaseOfEducationId = "2",
             PhaseOfEducationName = "Primary",
             AddressPostcode = "TN37 6RT",
+            Website = "http://www.test.co.uk/",
             Easting = "580573",
             Northing = "110137",
             IsKS2 = true,
@@ -36,7 +37,8 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             EstablishmentNumber = "3658",
             PhaseOfEducationId = "2",
             PhaseOfEducationName = "Primary",
-            IsKS4 = false
+            IsKS4 = false,
+            IsKS2 = true
         },
         ["102848"] = new Establishment
         {
