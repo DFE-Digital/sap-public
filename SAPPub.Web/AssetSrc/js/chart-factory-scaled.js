@@ -2,7 +2,7 @@
     const CHART_CONFIG = {
         defaults: {
             axisSuffix: '',
-            axisStepSize: 20,
+            axisStepSize: 10,
             maxDevicePixelRatio: 2,
             maxCharsLength: 45,
             labelWrapChars: 15,

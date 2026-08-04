@@ -2,7 +2,7 @@
 
 namespace SAPPub.Core.Interfaces.Repositories.Performance;
 
-public interface IKs2PerformanceRepository
+public interface IKS2PerformanceRepository
 {
     Task<KS2EnglandPerformance> GetEnglandPerformanceAsync(CancellationToken ct = default);
 

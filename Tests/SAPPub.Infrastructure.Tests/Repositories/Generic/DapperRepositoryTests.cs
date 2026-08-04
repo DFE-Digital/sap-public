@@ -100,6 +100,21 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Generic
         }
 
         [Fact]
+        public async Task ReadSingleViaDTOAsync_WithNullParameters_ReturnsNull_AndDoesNotLog()
+        {
+            var logger = new Mock<ILogger<DapperRepository<UnmappedEntity>>>();
+            var mapper = new Mock<ICodedValueMapper>();
+            var sut = CreateSut(logger: logger, mapper: mapper);
+
+            var result = await sut.ReadSingleViaDTOAsync(parameters: null, ct: CancellationToken.None);
+
+            Assert.Null(result);
+
+            VerifyNoErrorLogs(logger);
+            mapper.VerifyNoOtherCalls();
+        }
+
+        [Fact]
         public async Task ReadManyAsync_WithNullParameters_ReturnsEmpty_AndDoesNotLog()
         {
             var logger = new Mock<ILogger<DapperRepository<UnmappedEntity>>>();
@@ -140,6 +155,22 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Generic
 
             // parameters is non-null so it enters try, hits missing SQL mapping, throws NotSupportedException, logs error.
             var result = await sut.ReadSingleAsync(new { Id = "123" }, CancellationToken.None);
+
+            Assert.Null(result);
+
+            VerifyErrorLoggedOnce(logger);
+            mapper.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task ReadSingleViaDTOAsync_WhenNoSqlMapping_ReturnsNull_AndLogsError()
+        {
+            var logger = new Mock<ILogger<DapperRepository<UnmappedEntity>>>();
+            var mapper = new Mock<ICodedValueMapper>();
+            var sut = CreateSut(logger: logger, mapper: mapper);
+
+            // parameters is non-null so it enters try, hits missing SQL mapping, throws NotSupportedException, logs error.
+            var result = await sut.ReadSingleViaDTOAsync(new { Id = "123" }, CancellationToken.None);
 
             Assert.Null(result);
 

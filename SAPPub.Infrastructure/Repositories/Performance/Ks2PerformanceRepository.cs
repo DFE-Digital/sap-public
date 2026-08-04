@@ -4,10 +4,10 @@ using SAPPub.Core.Interfaces.Repositories.Performance;
 
 namespace SAPPub.Infrastructure.Repositories.Performance;
 
-public class Ks2PerformanceRepository(
+public class KS2PerformanceRepository(
     IGenericRepository<KS2EstablishmentPerformance> establishmentRepo,
     IGenericRepository<KS2EnglandPerformance> englandRepo,    
-    IGenericRepository<KS2LAPerformance> laRepo) : IKs2PerformanceRepository
+    IGenericRepository<KS2LAPerformance> laRepo) : IKS2PerformanceRepository
 {
     private readonly IGenericRepository<KS2EstablishmentPerformance> _establishmentRepo = establishmentRepo
             ?? throw new ArgumentNullException(nameof(establishmentRepo));

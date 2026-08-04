@@ -15,7 +15,7 @@ namespace SAPPub.Core.Services.Performance
 {
     public class KS2ScaledScoresService(
         IEstablishmentService establishmentService, 
-        IKs2PerformanceRepository ks2PerformanceRepository) : IKS2ScaledScoreService
+        IKS2PerformanceRepository ks2PerformanceRepository) : IKS2ScaledScoreService
     {
 
         public async Task<KS2ScaledScoreModel> GetScaledScoreModel(string urn, CancellationToken ct = default)
