@@ -257,7 +257,11 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "ENTRY_PER_E_Est_Current_Pct_Coded",
           "T_SCOPEEX_M_Est_Current_Num_Coded",
           "PROGEX_M_Est_Current_Num_Coded",
-          "ENTRY_PER_M_Est_Current_Pct_Coded"
+          "ENTRY_PER_M_Est_Current_Pct_Coded",
+          "T_SCOPEEX_E_DIS_Est_Current_Num_Coded",
+          "PROGEX_E_DIS_Est_Current_Num_Coded",
+          "T_SCOPEEX_M_DIS_Est_Current_Num_Coded",
+          "PROGEX_M_DIS_Est_Current_Num_Coded"
           """;
 
         private const string KS5EnglandPerformanceColumns = """
@@ -274,7 +278,15 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "PROGEX_E_Eng_Current_Num_Coded",
           "ENTRY_PER_E_Eng_Current_Pct_Coded",
           "PROGEX_M_Eng_Current_Num_Coded",
-          "ENTRY_PER_M_Eng_Current_Pct_Coded"
+          "ENTRY_PER_M_Eng_Current_Pct_Coded",
+          "PROGEX_E_DIS_Eng_Current_Num_Coded",
+          "PROGEX_E_NOTDIS_Eng_Current_Num_Coded",
+          "PROGEX_M_DIS_Eng_Current_Num_Coded",
+          "PROGEX_M_NOTDIS_Eng_Current_Num_Coded",
+          "T_SCOPEEX_E_DIS_Eng_Current_Num_Coded",
+          "T_SCOPEEX_E_NOTDIS_Eng_Current_Num_Coded",
+          "T_SCOPEEX_M_DIS_Eng_Current_Num_Coded",
+          "T_SCOPEEX_M_NOTDIS_Eng_Current_Num_Coded"
           """;
 
         private const string KS5LAPerformanceColumns = """
@@ -288,7 +300,15 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "PROGEX_E_LA_Current_Num_Coded",
           "ENTRY_PER_E_LA_Current_Pct_Coded",
           "PROGEX_M_LA_Current_Num_Coded",
-          "ENTRY_PER_M_LA_Current_Pct_Coded"
+          "ENTRY_PER_M_LA_Current_Pct_Coded",
+          "PROGEX_E_DIS_LA_Current_Num_Coded",
+          "PROGEX_E_NOTDIS_LA_Current_Num_Coded",
+          "PROGEX_M_DIS_LA_Current_Num_Coded",
+          "PROGEX_M_NOTDIS_LA_Current_Num_Coded",
+          "T_SCOPEEX_E_DIS_LA_Current_Num_Coded",
+          "T_SCOPEEX_E_NOTDIS_LA_Current_Num_Coded",
+          "T_SCOPEEX_M_DIS_LA_Current_Num_Coded",
+          "T_SCOPEEX_M_NOTDIS_LA_Current_Num_Coded"
           """;
 
         private const string GatewayLAColumns = """

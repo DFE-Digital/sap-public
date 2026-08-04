@@ -46,4 +46,25 @@ public class KS5EnglandPerformance
 
     // Entered for Maths qualifications ENG
     public CodedDouble ENTRY_PER_M_Eng_Current_Pct_Coded { get; set; }
+
+    // Average progress for England
+    // English - Disadvantaged
+    public CodedDouble PROGEX_E_DIS_Eng_Current_Num_Coded { get; set; }
+    // English - Not Dis.
+    public CodedDouble PROGEX_E_NOTDIS_Eng_Current_Num_Coded { get; set; }
+    // Maths - Disadvantaged
+    public CodedDouble PROGEX_M_DIS_Eng_Current_Num_Coded { get; set; }
+    // Maths - Not Dis.
+    public CodedDouble PROGEX_M_NOTDIS_Eng_Current_Num_Coded { get; set; }
+
+
+    //Number of students LA
+    // English - Disadvantaged
+    public CodedDouble T_SCOPEEX_E_DIS_Eng_Current_Num_Coded { get; set; }
+    // English - Not Dis.
+    public CodedDouble T_SCOPEEX_E_NOTDIS_Eng_Current_Num_Coded { get; set; }
+    // Maths - Disadvantaged
+    public CodedDouble T_SCOPEEX_M_DIS_Eng_Current_Num_Coded { get; set; }
+    // Maths - Not Dis.
+    public CodedDouble T_SCOPEEX_M_NOTDIS_Eng_Current_Num_Coded { get; set; }
 }

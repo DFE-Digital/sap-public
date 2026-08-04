@@ -86,4 +86,16 @@ public class KS5EstablishmentPerformance
 
     // Entered (pct) for Maths for establishment
     public CodedDouble ENTRY_PER_M_Est_Current_Pct_Coded { get; set; }
+
+    // Average progress for establishment - English - Disadvantaged
+    public CodedDouble PROGEX_E_DIS_Est_Current_Num_Coded { get; set; }
+
+    // Average progress for establishment - English - Disadvantaged
+    public CodedDouble PROGEX_M_DIS_Est_Current_Num_Coded { get; set; }
+
+    // Number of students for establishment - English - Disadvantaged
+    public CodedDouble T_SCOPEEX_E_DIS_Est_Current_Num_Coded { get; set; }
+
+    // Number of students for establishment - Maths - Disadvantaged
+    public CodedDouble T_SCOPEEX_M_DIS_Est_Current_Num_Coded { get; set; }
 }

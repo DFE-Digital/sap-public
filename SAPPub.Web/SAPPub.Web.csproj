@@ -36,13 +36,16 @@
 
 	<ItemGroup>
 	  <Compile Remove="Areas\Compare\Models\**" />
+	  <Compile Remove="Areas\Profiles\Data\**" />
+	  <Compile Remove="Areas\Profiles\Models\**" />
 	  <Content Remove="Areas\Compare\Models\**" />
+	  <Content Remove="Areas\Profiles\Data\**" />
+	  <Content Remove="Areas\Profiles\Models\**" />
 	  <EmbeddedResource Remove="Areas\Compare\Models\**" />
+	  <EmbeddedResource Remove="Areas\Profiles\Data\**" />
+	  <EmbeddedResource Remove="Areas\Profiles\Models\**" />
 	  <None Remove="Areas\Compare\Models\**" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Areas\Profiles\Data\" />
-	  <Folder Include="Areas\Profiles\Models\" />
+	  <None Remove="Areas\Profiles\Data\**" />
+	  <None Remove="Areas\Profiles\Models\**" />
 	</ItemGroup>	
 </Project>

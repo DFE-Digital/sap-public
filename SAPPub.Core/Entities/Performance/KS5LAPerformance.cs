@@ -35,4 +35,25 @@ public class KS5LAPerformance
 
     // Entered for Maths qualifications
     public CodedDouble ENTRY_PER_M_LA_Current_Pct_Coded { get; set; }
+
+    // Average progress for LA
+    // English - Disadvantaged
+    public CodedDouble PROGEX_E_DIS_LA_Current_Num_Coded { get; set; }
+    // English - Not Dis.
+    public CodedDouble PROGEX_E_NOTDIS_LA_Current_Num_Coded { get; set; }
+    // Maths - Disadvantaged
+    public CodedDouble PROGEX_M_DIS_LA_Current_Num_Coded { get; set; }
+    // Maths - Not Dis.
+    public CodedDouble PROGEX_M_NOTDIS_LA_Current_Num_Coded { get; set; } 
+
+    //Number of students LA
+    // English - Disadvantaged
+    public CodedDouble T_SCOPEEX_E_DIS_LA_Current_Num_Coded { get; set; } 
+    // English - Not Dis.
+    public CodedDouble T_SCOPEEX_E_NOTDIS_LA_Current_Num_Coded { get; set; }
+    // Maths - Disadvantaged
+    public CodedDouble T_SCOPEEX_M_DIS_LA_Current_Num_Coded { get; set; }
+    // Maths - Not Dis.
+    public CodedDouble T_SCOPEEX_M_NOTDIS_LA_Current_Num_Coded { get; set; }
+
 }
