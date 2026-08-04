@@ -41,15 +41,15 @@ public class DfEAnalyticsAddPhaseTagFilter(IEstablishmentService establishmentSe
 
         if (establishment.IsKS2)
         {
-            webRequestEvent.AddTag("IsKS2");
+            webRequestEvent.AddTag("KS2");
         }
         if (establishment.IsKS4)
         {
-            webRequestEvent.AddTag("IsKS4");
+            webRequestEvent.AddTag("KS4");
         }
         if (establishment.IsKS5)
         {
-            webRequestEvent.AddTag("IsKS5");
+            webRequestEvent.AddTag("KS5");
         }
 
         await next();
