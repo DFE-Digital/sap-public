@@ -18,6 +18,12 @@ public class KS5LAPerformance
     // Academic qualification Average result (grade) for the LA state-funded schools / colleges
     public string? TALLPPEGRD_ACAD_1618_LA_Current { get; set; }
 
+    // Applied general qualifications Average result (points) for the LA state-funded schools / colleges
+    public CodedDouble TALLPPE_AGEN_LA_Current_Num_Coded { get; set; }
+
+    // Applied general qualifications Average result (grade) for the LA state-funded schools / colleges
+    public string? TALLPPEGRD_AGEN_LA_Current { get; set; }
+
     // Average progress in English for LA
     public CodedDouble PROGEX_E_LA_Current_Num_Coded { get; set; }
 

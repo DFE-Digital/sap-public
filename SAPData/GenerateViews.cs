@@ -22,6 +22,15 @@ public sealed class GenerateViews
         Path.Combine(AppContext.BaseDirectory, "SAPData", "raw_sources.json")
     };
 
+    // excluded_urns.json path in repo
+    private static readonly string[] ExcludedUrnsCandidates =
+    {
+        "excluded_urns.json",
+        Path.Combine("SAPData", "excluded_urns.json"),
+        Path.Combine(AppContext.BaseDirectory, "excluded_urns.json"),
+        Path.Combine(AppContext.BaseDirectory, "SAPData", "excluded_urns.json")
+    };
+
     private sealed record ViewSpec(string ViewName, string Range, string Type);
 
     private sealed record RawSource(
@@ -46,7 +55,7 @@ public sealed class GenerateViews
         new("v_establishment_ks2_attainment", "Establishment", "KS2_Attainment"),
         new("v_establishment_performance", "Establishment", "KS4_Performance"), //Todo - Rename to KS4
         new("v_establishment_ks5_performance", "Establishment", "KS5_Performance"),
-
+        new("v_establishment_ks5_subject_entries", "Establishment", "KS5_Performance"),
 
 
         new("v_england_destinations", "England", "KS4_Destinations"),
@@ -88,6 +97,7 @@ public sealed class GenerateViews
 
         var tableMap = LoadTableMappings();
         var sources = LoadRawSources();
+        var excludedUrns = LoadExcludedUrns();
 
         foreach (var view in Views)
         {
@@ -117,20 +127,17 @@ public sealed class GenerateViews
                     continue;
                 }
 
-                // KS4 + KS5 requested; KS5 may have no CTE yet, base condition still applies
-                var keyStages = new[] { "KS4", "KS5" };
-
+                // All key stages (KS2, KS4, KS5) - uses centralized KeyStageConstants
                 var (keyStageUrnsCtes, keyStageUrnsSqlConditions) =
-                    BuildKeyStageCtesAndFilters(_rows, tableMap, keyStages);
+                    BuildKeyStageCtesAndFilters(_rows, tableMap, KeyStageConstants.AllKeyStages);
 
                 var establishmentFilters = SqlViewFilterProvider.GetEstablishmentFilters(
-                    keyStages,
-                    keyStageUrnsSqlConditions);
+                    keyStageUrnsSqlConditions: keyStageUrnsSqlConditions,
+                    excludedUrns: excludedUrns);
 
                 sql = GenerateEstablishmentDimensionView(
                     rawTable,
                     establishmentFilters,
-                    keyStages,
                     keyStageUrnsCtes,
                     keyStageUrnsSqlConditions);
             }
@@ -229,6 +236,32 @@ public sealed class GenerateViews
                         out var datasetKey))
                 {
                     sql = BuildSkippedSql(view.ViewName, "Could not resolve dataset key from raw_sources.json (EES/KS4_Performance/SubjectEntries/Current).");
+                    Write(view.ViewName, sql);
+                    continue;
+                }
+
+                if (!TryResolveRawTable(tableMap, datasetKey, out var rawTable))
+                {
+                    sql = BuildSkippedSql(view.ViewName, $"Could not resolve raw table mapping for datasetKey='{datasetKey}'.");
+                    Write(view.ViewName, sql);
+                    continue;
+                }
+
+                sql = GenerateMirrorMaterializedView(view.ViewName, rawTable);
+            }
+
+            else if (view.ViewName.Equals("v_establishment_ks5_subject_entries", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!TryResolveManagedDatasetKey(
+                        sources,
+                        tableMap,
+                        sourceOrg: "EES",
+                        type: "KS5_Performance",
+                        subtype: "SubjectEntries",
+                        year: "Current",
+                        out var datasetKey))
+                {
+                    sql = BuildSkippedSql(view.ViewName, "Could not resolve dataset key from raw_sources.json (EES/KS5_Performance/SubjectEntries/Current).");
                     Write(view.ViewName, sql);
                     continue;
                 }
@@ -370,7 +403,6 @@ public sealed class GenerateViews
     private static string GenerateEstablishmentDimensionView(
         string? rawTable,
         List<SqlViewFilter> filters,
-        IReadOnlyList<string> keyStages,
         Dictionary<string, string> keyStageUrnsCtes,
         Dictionary<string, string> keyStageUrnsSqlConditions)
     {
@@ -457,9 +489,7 @@ public sealed class GenerateViews
         sb.AppendLine("    to_tsvector('english', normalize_text(coalesce(t.\"establishmentname\", ''))) AS \"EstablishmentNameFTS\",");
         sb.AppendLine("    ST_Transform(\r\n    ST_SetSRID(ST_MakePoint(clean_int(t.\"easting\"), clean_int(t.\"northing\")), 27700), 4326\r\n)::geography AS \"geom\",");
         sb.AppendLine($"   {BuildSenTypes()} AS \"SenTypes\",");
-        var hasKeyStageFlags = keyStages.Count > 0;
-        if (hasKeyStageFlags)
-            AppendKeyStageFlagColumns(sb, new string[] { "KS2", "KS4", "KS5" }, keyStageUrnsSqlConditions); // use separate list to populate the KS indicators for establishments
+        AppendKeyStageFlagColumns(sb, keyStageUrnsSqlConditions);
         sb.AppendLine();
         sb.AppendLine($"FROM {rawTable} t");
         // Dynamically build WHERE clause
@@ -645,6 +675,61 @@ public sealed class GenerateViews
         var sources = JsonSerializer.Deserialize<List<RawSource>>(json, opts) ?? new List<RawSource>();
 
         return sources.Where(s => !string.IsNullOrWhiteSpace(s.FileName)).ToList();
+    }
+
+    private static HashSet<int> LoadExcludedUrns()
+    {
+        var path = ExcludedUrnsCandidates.FirstOrDefault(File.Exists);
+        if (path == null)
+        {
+            return new HashSet<int>();
+        }
+
+        try
+        {
+            var json = File.ReadAllText(path);
+            var data = JsonSerializer.Deserialize<JsonElement>(json);
+
+            if (data.ValueKind != JsonValueKind.Object)
+            {
+                throw new InvalidOperationException(
+                    $"Expected JSON object in excluded URNs file at '{path}', but got {data.ValueKind}.");
+            }
+
+            if (data.TryGetProperty("excluded_urns", out var urnsArray))
+            {
+                if (urnsArray.ValueKind != JsonValueKind.Array)
+                {
+                    throw new InvalidOperationException(
+                        $"Expected 'excluded_urns' to be an array in '{path}', but got {urnsArray.ValueKind}.");
+                }
+
+                var urns = new HashSet<int>();
+                int index = 0;
+                foreach (var element in urnsArray.EnumerateArray())
+                {
+                    if (element.ValueKind != JsonValueKind.Number || !element.TryGetInt32(out var urn))
+                    {
+                        throw new InvalidOperationException(
+                            $"Invalid URN value at index {index} in '{path}'. Expected integer, got {element.ValueKind}.");
+                    }
+                    urns.Add(urn);
+                    index++;
+                }
+
+                return urns;
+            }
+
+            return new HashSet<int>();
+        }
+        catch (JsonException ex)
+        {
+            throw new InvalidOperationException($"Failed to parse excluded URNs JSON file at '{path}': {ex.Message}", ex);
+        }
+        catch (IOException ex)
+        {
+            throw new InvalidOperationException($"Failed to read excluded URNs file at '{path}': {ex.Message}", ex);
+        }
     }
 
     private static bool TryResolveManagedDatasetKey(
@@ -961,7 +1046,9 @@ public sealed class GenerateViews
         foreach (var ks in keyStages)
         {
             var cteName = $"{ks.ToLowerInvariant()}_urns";
-            var cte = GenerateKeyStageUrnsCte(rows, tableMap, $"{ks}_Performance", cteName);
+            // KS2 uses "KS2_Attainment", while KS4 and KS5 use "Performance"
+            var keyStageType = ks == KeyStageConstants.KS2 ? $"{ks}_Attainment" : $"{ks}_Performance";
+            var cte = GenerateKeyStageUrnsCte(rows, tableMap, keyStageType, cteName);
             if (!string.IsNullOrWhiteSpace(cte))
             {
                 ctes[ks] = cte;
@@ -998,15 +1085,16 @@ public sealed class GenerateViews
 
     private static void AppendKeyStageFlagColumns(
         StringBuilder sb,
-        IReadOnlyList<string> keyStages,
-        Dictionary<string, string> keyStageUrnsSqlConditions)
+        Dictionary<string, string>? keyStageUrnsSqlConditions = null)
     {
-        for (int i = 0; i < keyStages.Count; i++)
+        keyStageUrnsSqlConditions ??= new Dictionary<string, string>();
+
+        for (int i = 0; i < KeyStageConstants.AllKeyStages.Count; i++)
         {
-            var ks = keyStages[i];
+            var ks = KeyStageConstants.AllKeyStages[i];
             var urnsSqlCondition = keyStageUrnsSqlConditions.TryGetValue(ks, out var cond) ? cond : null;
             var fullCondition = SqlViewFilterProvider.GetKeyStageFullCondition(ks, "t", urnsSqlCondition);
-            var comma = i == keyStages.Count - 1 ? "" : ",";
+            var comma = i == KeyStageConstants.AllKeyStages.Count - 1 ? "" : ",";
             sb.AppendLine($"    CASE WHEN {fullCondition} THEN TRUE ELSE FALSE END AS \"IS{ks}\"{comma}");
         }
     }

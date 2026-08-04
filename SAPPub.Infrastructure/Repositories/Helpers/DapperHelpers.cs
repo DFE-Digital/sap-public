@@ -3,7 +3,6 @@ using SAPPub.Core.Entities.Destinations;
 using SAPPub.Core.Entities.Gateway;
 using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Entities.KS4.Performance;
-using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Entities.Performance;
 
 namespace SAPPub.Infrastructure.Repositories.Helpers
@@ -203,6 +202,15 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           number_achieving
           """;
 
+        private const string EstablishmentKs5SubjectEntriesColumns = """
+          "subject",
+          "qualification_detailed",
+          "qualification_level",
+          "entries_count",
+          "exam_cohort",
+          "grade"
+          """;
+
         private const string EnglandAbsenceColumns = """
           "Id",
           "Abs_Persistent_Eng_Current_Pct_Coded",
@@ -236,7 +244,14 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "UCI_INS_ACAD_Est_Current_Num_Coded",
           "LCI_INS_ACAD_Est_Current_Num_Coded",
           "TALLPPE_ACAD_1618_Est_Current_Num_Coded",
-          "TALLPPEGRD_ACAD_1618_Est_Current",
+          "TALLPPEGRD_ACAD_1618_Est_Current",          
+          "TALLPUP_AGEN_Est_Current_Num_Coded",          
+          "VA_INS_AGEN_Est_Current_Num_Coded",
+          "PROGRESS_BAND_AGEN_Est_Current",
+          "UCI_INS_AGEN_Est_Current_Num_Coded",
+          "LCI_INS_AGEN_Est_Current_Num_Coded",
+          "TALLPPE_AGEN_Est_Current_Num_Coded",
+          "TALLPPEGRD_AGEN_Est_Current",
           "T_SCOPEEX_E_Est_Current_Num_Coded",
           "PROGEX_E_Est_Current_Num_Coded",
           "ENTRY_PER_E_Est_Current_Pct_Coded",
@@ -257,6 +272,9 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "VA_INS_ACAD_Eng_Current_Num_Coded",
           "TALLPPE_ACAD_1618_Eng_Current_Num_Coded",
           "TALLPPEGRD_ACAD_1618_Eng_Current",
+          "VA_INS_AGEN_Eng_Current_Num_Coded",
+          "TALLPPE_AGEN_Eng_Current_Num_Coded",
+          "TALLPPEGRD_AGEN_Eng_Current",
           "PROGEX_E_Eng_Current_Num_Coded",
           "ENTRY_PER_E_Eng_Current_Pct_Coded",
           "PROGEX_M_Eng_Current_Num_Coded",
@@ -277,6 +295,8 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "TALLPPEGRD_ALEV_1618_LA_Current",
           "TALLPPE_ACAD_1618_LA_Current_Num_Coded",
           "TALLPPEGRD_ACAD_1618_LA_Current",
+          "TALLPPE_AGEN_LA_Current_Num_Coded",
+          "TALLPPEGRD_AGEN_LA_Current",
           "PROGEX_E_LA_Current_Num_Coded",
           "ENTRY_PER_E_LA_Current_Pct_Coded",
           "PROGEX_M_LA_Current_Num_Coded",
@@ -497,7 +517,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                 nameof(KS5EstablishmentPerformance) =>
                     SelectFromWhereId(KS5EstablishmentPerformanceColumns, "v_establishment_ks5_performance"),
 
-                nameof(KS5England5Performance) =>
+                nameof(KS5EnglandPerformance) =>
                     SelectFromWhere(KS5EnglandPerformanceColumns, "v_england_ks5_performance", "\"Id\" = 'National'"),
 
                 nameof(KS5LAPerformance) =>
@@ -572,10 +592,17 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                 nameof(EstablishmentPerformance) =>
                     SelectFromWhereIds(EstablishmentPerformanceColumns, "v_establishment_performance"),
 
-                nameof(EstablishmentSubjectEntryRow) => $"""
+                nameof(KS4EstablishmentSubjectEntryRow) => $"""
                     select
                       {EstablishmentSubjectEntriesColumns}
                     from public.v_establishment_subject_entries
+                    where school_urn = @Urn;
+                    """,
+
+                nameof(KS5EstablishmentSubjectEntryRow) => $"""
+                    select
+                      {EstablishmentKs5SubjectEntriesColumns}
+                    from public.v_establishment_ks5_subject_entries
                     where school_urn = @Urn;
                     """,
 

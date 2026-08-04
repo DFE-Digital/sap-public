@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace SAPPub.Core.Entities.Performance;
 
 [ExcludeFromCodeCoverage]
-public class KS5England5Performance
+public class KS5EnglandPerformance
 {
     public string Id { get; set; } = string.Empty;
 
@@ -25,6 +25,15 @@ public class KS5England5Performance
 
     // Academic qualifications Average result grade for England
     public string? TALLPPEGRD_ACAD_1618_Eng_Current { get; set; }
+
+    // Applied general qualifications Progress score for England average
+    public CodedDouble VA_INS_AGEN_Eng_Current_Num_Coded { get; set; }
+
+    // Applied general qualifications Average result points for England
+    public CodedDouble TALLPPE_AGEN_Eng_Current_Num_Coded { get; set; }
+
+    // Applied general qualifications Average result grade for England
+    public string? TALLPPEGRD_AGEN_Eng_Current { get; set; }
 
     // Average progress for English
     public CodedDouble PROGEX_E_Eng_Current_Num_Coded { get; set; }

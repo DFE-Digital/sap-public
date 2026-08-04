@@ -1,20 +1,20 @@
-﻿using SAPPub.Core.Entities.KS4.SubjectEntries;
+﻿using SAPPub.Core.Entities.Performance;
 using SAPPub.Core.Interfaces.Repositories.Generic;
-using SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
-using SAPPub.Core.ServiceModels.KS4.Performance;
+using SAPPub.Core.Interfaces.Repositories.SubjectEntries;
+using SAPPub.Core.ServiceModels.Performance;
 using System.Globalization;
 
-namespace SAPPub.Infrastructure.Repositories.KS4.SubjectEntries;
+namespace SAPPub.Infrastructure.Repositories.Performance;
 
-public sealed class EstablishmentSubjectEntriesRepository(IGenericRepository<EstablishmentSubjectEntryRow> repo) : IEstablishmentSubjectEntriesRepository
+public sealed class KS4EstablishmentSubjectEntriesRepository(IGenericRepository<KS4EstablishmentSubjectEntryRow> repo) : IKS4EstablishmentSubjectEntriesRepository
 {
     private const string QualType_GCSE = "GCSE";
     private const string QualType_Vocational = "Vocational";
     private const string TotalExamEntriesRowIndicator = "Total exam entries";
 
-    private readonly IGenericRepository<EstablishmentSubjectEntryRow> _repo = repo ?? throw new ArgumentNullException(nameof(repo));
+    private readonly IGenericRepository<KS4EstablishmentSubjectEntryRow> _repo = repo ?? throw new ArgumentNullException(nameof(repo));
 
-    public async Task<IEnumerable<SubjectsEntered>> GetGcseSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default)
+    public async Task<IEnumerable<SubjectsEnteredModel>> GetGcseSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default)
     {
         var gcseSubjectsEntered = await GetSubjectsEntered(urn, r => r.qualification_type == QualType_GCSE && r.grade == TotalExamEntriesRowIndicator, ct);
 
@@ -26,17 +26,17 @@ public sealed class EstablishmentSubjectEntriesRepository(IGenericRepository<Est
         return gcseSubjectsEntered;
     }
 
-    public async Task<IEnumerable<SubjectsEntered>> GetVocationalAwardSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default)
+    public async Task<IEnumerable<SubjectsEnteredModel>> GetVocationalAwardSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default)
     {
         return await GetSubjectsEntered(urn, r => r.qualification_type == QualType_Vocational && r.grade == TotalExamEntriesRowIndicator, ct);
     }
 
-    public async Task<IEnumerable<SubjectsEntered>> GetOtherSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default)
+    public async Task<IEnumerable<SubjectsEnteredModel>> GetOtherSubjectEntriesByUrnAsync(string urn, CancellationToken ct = default)
     {
         return await GetSubjectsEntered(urn, r => (r.qualification_type != QualType_Vocational && r.qualification_type != QualType_GCSE) && r.grade == TotalExamEntriesRowIndicator, ct);
     }
 
-    private async Task<IEnumerable<SubjectsEntered>> GetSubjectsEntered(string urn, Func<EstablishmentSubjectEntryRow, bool> whereClause, CancellationToken ct = default)
+    private async Task<IEnumerable<SubjectsEnteredModel>> GetSubjectsEntered(string urn, Func<KS4EstablishmentSubjectEntryRow, bool> whereClause, CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(urn))
         {
@@ -51,7 +51,7 @@ public sealed class EstablishmentSubjectEntriesRepository(IGenericRepository<Est
         }
 
         return [.. rows
-            .Select(r => new SubjectsEntered
+            .Select(r => new SubjectsEnteredModel
             {
                 Subject = r.subject_discount_group?.Trim(),
                 Qualification = r.qualification_type ?? r.qualification_detailed,

@@ -37,7 +37,7 @@ public class EnglishAndMathsQualificationsServiceTests
     {
         // Arrange
         KS5EstablishmentPerformance establishmentPerformance;
-        KS5England5Performance englandPerformance;
+        KS5EnglandPerformance englandPerformance;
         KS5LAPerformance laPerformance;
         SetupMocks(out establishmentPerformance, out englandPerformance, out laPerformance);
 
@@ -86,7 +86,7 @@ public class EnglishAndMathsQualificationsServiceTests
         _mockKs5PerformanceRepository.Verify(r => r.GetLaPerformanceAsync(urn, It.IsAny<CancellationToken>()), Times.Never);
     }
 
-    private void SetupMocks(out KS5EstablishmentPerformance establishmentPerformance, out KS5England5Performance englandPerformance, out KS5LAPerformance laPerformance)
+    private void SetupMocks(out KS5EstablishmentPerformance establishmentPerformance, out KS5EnglandPerformance englandPerformance, out KS5LAPerformance laPerformance)
     {
         _mockEstablishmentService
             .Setup(r => r.GetEstablishmentAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>()))
@@ -102,7 +102,7 @@ public class EnglishAndMathsQualificationsServiceTests
             ENTRY_PER_E_Est_Current_Pct_Coded = new ValueObjects.CodedDouble { Value = 50.50, Reason = string.Empty, Raw = "50.50" },
             ENTRY_PER_M_Est_Current_Pct_Coded = new ValueObjects.CodedDouble { Value = 60.60, Reason = string.Empty, Raw = "14.60.60" },
         };
-        englandPerformance = new KS5England5Performance
+        englandPerformance = new KS5EnglandPerformance
         {
             Id = fakeEstablishment.LAId,
             PROGEX_E_Eng_Current_Num_Coded = new ValueObjects.CodedDouble { Value = 11.11, Reason = string.Empty, Raw = "11.11" },

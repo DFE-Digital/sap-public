@@ -38,8 +38,11 @@
 
         public static List<SqlViewFilter> GetEstablishmentFilters(
     IEnumerable<string>? keyStages = null,
-    Dictionary<string, string>? keyStageUrnsSqlConditions = null)
+    Dictionary<string, string>? keyStageUrnsSqlConditions = null,
+    IEnumerable<int>? excludedUrns = null)
         {
+            keyStages ??= KeyStageConstants.AllKeyStages;
+
             var filters = new List<SqlViewFilter>
     {
         new SqlViewFilter("ExcludeNurseries", tableAlias =>
@@ -51,6 +54,15 @@
         new SqlViewFilter("ExcludeProposedToOpen", tableAlias =>
             $"clean_int({tableAlias}.\"establishmentstatus__code_\") <> 4")
     };
+
+            // Add excluded URNs filter (hospital schools, etc.)
+            if (excludedUrns != null && excludedUrns.Any())
+            {
+                var sortedUrns = excludedUrns.OrderBy(x => x).ToList();
+                var urnList = string.Join(", ", sortedUrns);
+                filters.Add(new SqlViewFilter("ExcludeSpecificUrns", tableAlias =>
+                    $"clean_int({tableAlias}.\"urn\") NOT IN ({urnList})"));
+            }
 
             if (keyStages != null)
             {

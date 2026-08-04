@@ -5,6 +5,7 @@ using SAPPub.Core.Helpers;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.ServiceModels.Search.InputModels;
+using SAPPub.Core.Specifications;
 using SAPPub.Infrastructure.Repositories;
 
 namespace SAPPub.Infrastructure.Tests.Repositories
@@ -68,28 +69,37 @@ namespace SAPPub.Infrastructure.Tests.Repositories
         public void BuildSearchSqlParts_IncludeKs5True_DoesNotApplyKs5Filter()
         {
             var query = new SearchQuery { Name = "test" };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKs2: true);
 
-            var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, includeKs5: true);
+            var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
+            var expectedPredicate = visibilitySpec.ToSqlPredicate();
 
-            Assert.DoesNotContain(EstablishmentRepository.Ks5VisibilityPredicate, parts.WhereClause, StringComparison.Ordinal);
+            // When both KS5 and KS2 are included, predicate should be "1=1" (no filtering)
+            Assert.Equal("1=1", expectedPredicate);
+            Assert.DoesNotContain("ISKS5", parts.WhereClause, StringComparison.Ordinal);
         }
 
         [Fact]
         public void BuildSearchSqlParts_IncludeKs5False_AppliesKs5Filter()
         {
             var query = new SearchQuery { Name = "test" };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: false, includeKs2: true);
 
-            var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, includeKs5: false);
+            var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
+            var expectedPredicate = visibilitySpec.ToSqlPredicate();
 
-            Assert.Contains(EstablishmentRepository.Ks5VisibilityPredicate, parts.WhereClause, StringComparison.Ordinal);
+            // When KS5 is excluded, the predicate should filter KS5-only establishments
+            Assert.Contains(expectedPredicate, parts.WhereClause, StringComparison.Ordinal);
+            Assert.Contains("ISKS5", expectedPredicate, StringComparison.Ordinal);
         }
 
         [Fact]
         public void BuildSearchSqlParts_NameOnly_BuildsExpectedWhereAndOrder()
         {
             var query = new SearchQuery { Name = "academy" };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKs2: true);
 
-            var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, includeKs5: true);
+            var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
 
             Assert.Contains(@"""EstablishmentNameFTS"" @@ plainto_tsquery", parts.WhereClause, StringComparison.Ordinal);
             Assert.DoesNotContain(@"""geom"" IS NOT NULL", parts.WhereClause, StringComparison.Ordinal);
@@ -113,8 +123,9 @@ namespace SAPPub.Infrastructure.Tests.Repositories
                 Longitude = -0.1278f,
                 Distance = 10
             };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKs2: true);
 
-            var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, includeKs5: true);
+            var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
 
             Assert.Contains(@"""geom"" IS NOT NULL", parts.WhereClause, StringComparison.Ordinal);
             Assert.Contains(@"ST_DWithin(""geom""", parts.WhereClause, StringComparison.Ordinal);
@@ -142,22 +153,70 @@ namespace SAPPub.Infrastructure.Tests.Repositories
                 Longitude = -1.0f,
                 Distance = 5
             };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: false, includeKs2: true);
 
-            var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, includeKs5: false);
+            var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
+            var expectedPredicate = visibilitySpec.ToSqlPredicate();
 
             Assert.Contains(@"""EstablishmentNameFTS"" @@ plainto_tsquery", parts.WhereClause, StringComparison.Ordinal);
             Assert.Contains(@"""geom"" IS NOT NULL", parts.WhereClause, StringComparison.Ordinal);
             Assert.Contains(@"ST_DWithin(""geom""", parts.WhereClause, StringComparison.Ordinal);
-            Assert.Contains(EstablishmentRepository.Ks5VisibilityPredicate, parts.WhereClause, StringComparison.Ordinal);
+            Assert.Contains(expectedPredicate, parts.WhereClause, StringComparison.Ordinal);
             Assert.Equal(@"""Distance"" ASC, ""EstablishmentName"" ASC", parts.OrderBy);
+        }
+
+        [Fact]
+        public void BuildSearchSqlParts_IncludeKs2False_AppliesKs2Filter()
+        {
+            var query = new SearchQuery { Name = "test" };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKs2: false);
+
+            var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
+            var expectedPredicate = visibilitySpec.ToSqlPredicate();
+
+            // When KS2 is excluded, the predicate should filter KS2-only establishments
+            Assert.Contains(expectedPredicate, parts.WhereClause, StringComparison.Ordinal);
+            Assert.Contains("ISKS2", expectedPredicate, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void BuildSearchSqlParts_IncludeKs2True_DoesNotApplyKs2Filter()
+        {
+            var query = new SearchQuery { Name = "test" };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: false, includeKs2: true);
+
+            var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
+            var expectedPredicate = visibilitySpec.ToSqlPredicate();
+
+            // When KS2 is included but KS5 is not, predicate should only filter KS5
+            Assert.Contains(expectedPredicate, parts.WhereClause, StringComparison.Ordinal);
+            Assert.DoesNotContain("ISKS2", expectedPredicate, StringComparison.Ordinal);
+            Assert.Contains("ISKS5", expectedPredicate, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void BuildSearchSqlParts_BothKs2AndKs5False_AppliesBothFilters()
+        {
+            var query = new SearchQuery { Name = "test" };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: false, includeKs2: false);
+
+            var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
+            var expectedPredicate = visibilitySpec.ToSqlPredicate();
+
+            // When both KS2 and KS5 are excluded, both predicates should be present
+            Assert.Contains(expectedPredicate, parts.WhereClause, StringComparison.Ordinal);
+            Assert.Contains("ISKS2", expectedPredicate, StringComparison.Ordinal);
+            Assert.Contains("ISKS5", expectedPredicate, StringComparison.Ordinal);
+            Assert.Contains(" AND ", expectedPredicate, StringComparison.Ordinal);
         }
 
         [Fact]
         public void BuildSearchSqlParts_PageSizeNull_UsesMaxResults_AndOffsetUsesResolvedPageSize()
         {
             var query = new SearchQuery { Page = 2, PageSize = null };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKs2: true);
 
-            var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, includeKs5: true);
+            var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
 
             Assert.Equal(10, parts.Parameters.Get<int>("pageSize"));
             Assert.Equal(10, parts.Parameters.Get<int>("offset"));
@@ -167,8 +226,9 @@ namespace SAPPub.Infrastructure.Tests.Repositories
         public void BuildSearchSqlParts_PageSizeAboveMax_ClampsToMaxResults()
         {
             var query = new SearchQuery { Page = 1, PageSize = 999 };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKs2: true);
 
-            var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, includeKs5: true);
+            var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
 
             Assert.Equal(10, parts.Parameters.Get<int>("pageSize"));
             Assert.Equal(0, parts.Parameters.Get<int>("offset"));
@@ -178,8 +238,9 @@ namespace SAPPub.Infrastructure.Tests.Repositories
         public void BuildSearchSqlParts_PageSizeBelowOne_ClampsToOne()
         {
             var query = new SearchQuery { Page = 3, PageSize = 0 };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKs2: true);
 
-            var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, includeKs5: true);
+            var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
 
             Assert.Equal(1, parts.Parameters.Get<int>("pageSize"));
             Assert.Equal(2, parts.Parameters.Get<int>("offset"));
