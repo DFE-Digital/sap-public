@@ -27,6 +27,7 @@ BEGIN;
 \ir 04_v_establishment_ks5_performance.sql
 \ir 04_v_establishment_ks2_attainment.sql
 \ir 04_v_establishment_subject_entries.sql
+\ir 04_v_establishment_ks5_subject_entries.sql
 \ir 04_v_la_absence.sql
 \ir 04_v_la_destinations.sql
 \ir 04_v_la_performance.sql

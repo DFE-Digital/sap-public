@@ -48,6 +48,7 @@ public class GenerateIndexes
             { "v_establishment_ks2_attainment",  "\"Id\"" },
             { "v_establishment_performance",  "\"Id\"" },
             { "v_establishment_ks5_performance",  "\"Id\"" },
+            { "v_establishment_ks5_subject_entries",  "\"school_urn\"" },
 
             // England
             { "v_england_absence",      "\"Id\"" },

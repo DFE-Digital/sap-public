@@ -1,20 +1,21 @@
 ﻿using SAPPub.Core.ServiceModels;
-using SAPPub.Core.ServiceModels.KS4.Performance;
+using SAPPub.Core.ServiceModels.Performance;
+using SAPPub.Web.Areas.Profiles.ViewModels.Performance;
 
-namespace SAPPub.Web.Models.SecondarySchool;
+namespace SAPPub.Web.Areas.Profiles.ViewModels.KS4;
 
-public class AcademicPerformanceSubjectsEnteredViewModel : BaseViewModel
+public class AcademicPerformanceSubjectsEnteredViewModel : SubjectsEnteredBaseModel
 {
-    public List<SubjectsEnteredViewModel>? GcseSubjects { get; set; }
+    public List<SubjectsEnteredDetailViewModel>? GcseSubjects { get; set; }
 
-    public List<SubjectsEnteredViewModel>? VocationalSubjects { get; set; }
+    public List<SubjectsEnteredDetailViewModel>? VocationalSubjects { get; set; }
 
-    public List<SubjectsEnteredViewModel>? OtherSubjects { get; set; }
+    public List<SubjectsEnteredDetailViewModel>? OtherSubjects { get; set; }
 
     public static AcademicPerformanceSubjectsEnteredViewModel Map(EstablishmentServiceModel establishment, 
-        IEnumerable<SubjectsEntered> gcseSubjectEntries, 
-        IEnumerable<SubjectsEntered> vocationalSubjectEntries, 
-        IEnumerable<SubjectsEntered> otherSubjectEntries)
+        IEnumerable<SubjectsEnteredModel> gcseSubjectEntries, 
+        IEnumerable<SubjectsEnteredModel> vocationalSubjectEntries, 
+        IEnumerable<SubjectsEnteredModel> otherSubjectEntries)
     {
         var gcseSubjects = GetSubjectsEntered(gcseSubjectEntries);
         var vocationalSubjects = GetSubjectsEntered(vocationalSubjectEntries);
@@ -34,13 +35,13 @@ public class AcademicPerformanceSubjectsEnteredViewModel : BaseViewModel
         };
     }
 
-    private static List<SubjectsEnteredViewModel> GetSubjectsEntered(IEnumerable<SubjectsEntered> subjectsEntered)
+    private static List<SubjectsEnteredDetailViewModel> GetSubjectsEntered(IEnumerable<SubjectsEnteredModel> subjectsEntered)
     { 
-        return subjectsEntered.Select(se => new SubjectsEnteredViewModel
+        return subjectsEntered.Select(se => new SubjectsEnteredDetailViewModel
         {
             Subject = se.Subject ?? "Unknown Subject",
             Qualification = se.Qualification ?? "Unknown Qualification",
-            NumberOfEntries = se.TotalNumberOfEntries.HasValue ? $"{se.TotalNumberOfEntries.Value:F0}" : "N/A",
+            NumberOfEntries = GetNumberOfEntries(se.TotalNumberOfEntries),
         }).OrderBy(s => s.Subject).ToList();
     }
 }

@@ -59,7 +59,7 @@ public class Level3QualificationsService(
     private static ProgressScoreModel GetProgressScoreModel(
         Level3 level3Qualification,
         KS5EstablishmentPerformance establishmentPerformance,
-        KS5England5Performance englandPerformance)
+        KS5EnglandPerformance englandPerformance)
     {
         return new ProgressScoreModel
         {
@@ -104,7 +104,7 @@ public class Level3QualificationsService(
     private static AverageResultModel GetAverageResultModel(
         Level3 level3Qualification,
         KS5EstablishmentPerformance establishmentPerformance,
-        KS5England5Performance englandPerformance,
+        KS5EnglandPerformance englandPerformance,
         KS5LAPerformance laPerformance)
     {
         return new AverageResultModel

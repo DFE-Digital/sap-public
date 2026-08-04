@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Repositories.Generic;
-using SAPPub.Core.Interfaces.Repositories.KS4.SubjectEntries;
+using SAPPub.Core.Interfaces.Repositories.SubjectEntries;
 using System.Net;
 
 namespace SAPPub.Web.Tests.IntegrationTests
@@ -30,7 +30,7 @@ namespace SAPPub.Web.Tests.IntegrationTests
             _ = sp.GetRequiredService<IGenericRepository<Establishment>>();
 
             // Recent refactor area
-            _ = sp.GetRequiredService<IEstablishmentSubjectEntriesRepository>();
+            _ = sp.GetRequiredService<IKS4EstablishmentSubjectEntriesRepository>();
         }
 
         [Fact]

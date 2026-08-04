@@ -4,7 +4,7 @@ namespace SAPPub.Core.Interfaces.Repositories.Performance;
 
 public interface IKs5PerformanceRepository
 {
-    Task<KS5England5Performance> GetEnglandPerformanceAsync(CancellationToken ct = default);
+    Task<KS5EnglandPerformance> GetEnglandPerformanceAsync(CancellationToken ct = default);
 
     Task<KS5EstablishmentPerformance> GetEstablishmentPerformanceAsync(
         string urn,

@@ -51,7 +51,7 @@ public class Level3QualificationsServiceTests
 
         _mockKs5PerformanceRepository
             .Setup(r => r.GetEnglandPerformanceAsync(It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new KS5England5Performance());
+            .ReturnsAsync(new KS5EnglandPerformance());
 
         _mockKs5PerformanceRepository
             .Setup(r => r.GetLaPerformanceAsync(fakeEstablishment.LAId, It.IsAny<CancellationToken>()))
@@ -119,7 +119,7 @@ public class Level3QualificationsServiceTests
             TALLPPEGRD_AGEN_Est_Current = "A",
         };
 
-        var englandPerformance = new KS5England5Performance
+        var englandPerformance = new KS5EnglandPerformance
         {
             Id = fakeEstablishment.LAId,
             VA_INS_ALEV_Eng_Current_Num_Coded = new CodedDouble(85.75, string.Empty, string.Empty),
