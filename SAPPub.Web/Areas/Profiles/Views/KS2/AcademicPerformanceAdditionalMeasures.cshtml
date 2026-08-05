@@ -30,7 +30,7 @@
         </p>
 
         <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
-            <ul class="moj-sub-navigation__list">              
+            <ul class="moj-sub-navigation__list">
                 <li class="moj-sub-navigation__item">
                     <a class="moj-sub-navigation__link" asp-route="@RouteConstants.PrimaryAcademicPerformancePupilProgress" asp-all-route-data="@Model.RouteAttributes">@PrimarySchoolPageTitles.PupilProgress</a>
                 </li>
@@ -47,6 +47,78 @@
         </nav>
 
         <h2 class="govuk-heading-l">@PrimarySchoolPageTitles.AdditionalMeasures</h2>
+
+        <p class="govuk-body">
+            Information in this section is for the 2024 to 2025 academic year.
+        </p>
+
+        <p class="govuk-body">
+            Compare additional performance measures for this school with local council and national performance.
+        </p>
+
+        <details class="govuk-details" id="details-additional-measures">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    Find out more about the additional measures
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                <govuk-details-summary>
+                    <h3 class="govuk-heading-s">Additional measures</h3>
+                </govuk-details-summary>
+                <govuk-details-text>
+                    <p class="govuk-body">
+                        These measures show the percentage of pupils achieving the expected or higher standard based on assessments at
+                        the end of key stage 2 typically when they are aged 10 or 11 and in year 6.
+                    </p>
+                </govuk-details-text>
+                <govuk-details-summary>
+                    <h3 class="govuk-heading-s">Grammar, punctuation, spelling at the expected standard</h3>
+                </govuk-details-summary>
+                <govuk-details-text>
+                    <p class="govuk-body">
+                        Pupils achieve the expected standard when they achieve a scaled score of 100 or higher in grammar, punctuation and spelling.
+                    </p>
+                </govuk-details-text>
+                <govuk-details-summary>
+                    <h3 class="govuk-heading-s">Grammar, punctuation, spelling at the higher standard</h3>
+                </govuk-details-summary>
+                <govuk-details-text>
+                    <p class="govuk-body">
+                        Pupils achieve the expected standard when they achieve a scaled score of 110 or higher in grammar, punctuation and spelling.
+                    </p>
+                </govuk-details-text>
+            </div>
+
+        </details>
+
+        <table id="additional-measures-breakdown-table" class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Pupil group</th>
+                    <th scope="col" class="govuk-table__header">Grammar, punctuation, spelling at the expected standard</th>
+                    <th scope="col" class="govuk-table__header">Grammar, punctuation, spelling at the higher standard</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">School</th>
+                    <td class="govuk-table__cell">@Model.EstablishmentGrammarAtExpectedStandard.DisplayText()</td>
+                    <td class="govuk-table__cell">@Model.EstablishmentGrammarAtHigherStandard.DisplayText()</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">@Model.LAName average</th>
+                    <td class="govuk-table__cell">@Model.LAGrammarAtExpectedStandard.DisplayText()</td>
+                    <td class="govuk-table__cell">@Model.LAGrammarAtHigherStandard.DisplayText()</td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">England average</th>
+                    <td class="govuk-table__cell">@Model.EnglandGrammarAtExpectedStandard.DisplayText()</td>
+                    <td class="govuk-table__cell">@Model.EnglandGrammarAtHigherStandard.DisplayText()</td>
+                </tr>
+            </tbody>
+        </table>
+
 
         <govuk-pagination id="bottom-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.PrimaryAcademicPerformancePupilProgress" asp-all-route-data="@Model.RouteAttributes">Primary academic performance: Pupil progress</govuk-pagination-previous>

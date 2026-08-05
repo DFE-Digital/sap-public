@@ -11,7 +11,7 @@ using SAPPub.Web.Tests.Unit.Page.Infrastructure;
 namespace SAPPub.Web.Tests.Unit.Page.Areas.Profiles;
 
 [Collection("WebAppCollection")]
-public class EnglishMathsAcademicPerformacePageTests : PageTestsBase
+public class EnglishMathsAcademicPerformancePageTests : PageTestsBase
 {
     private string _pageRoute = "/16-to-19-performance/english-and-maths";
     private string _urn = "100279";
@@ -22,7 +22,7 @@ public class EnglishMathsAcademicPerformacePageTests : PageTestsBase
     private readonly Mock<IEstablishmentService> _mockEstablishmentService;
 
 
-    public EnglishMathsAcademicPerformacePageTests(WebAppFixture fixture) : base(fixture)
+    public EnglishMathsAcademicPerformancePageTests(WebAppFixture fixture) : base(fixture)
     {
         _englishAndMathsQualificationsService = UseMock<IEnglishAndMathsQualificationsService>();
         _mockEstablishmentService = UseMock<IEstablishmentService>();
