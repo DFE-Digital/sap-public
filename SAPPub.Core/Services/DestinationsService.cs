@@ -141,7 +141,7 @@ public class DestinationsService(
             IsKS5 = establishment.IsKS5,
             EstablishmentTotalCohortFor = establishmentDestinations.TOT_COHORT_Est_Current_Num,
             EstablishmentTotalOverall = establishmentDestinations.TOT_OVERALLPER_Est_Current_Pct,
-            LATotalOverall = lADestinations.TOT_OVERALLPER_LA_Current_Num,
+            LATotalOverall = lADestinations.TOT_OVERALLPER_LA_Current_Pct,
             EnglandOverall = englandDestinations.TOT_OVERALLPER_Eng_Current_Pct
         };
     }

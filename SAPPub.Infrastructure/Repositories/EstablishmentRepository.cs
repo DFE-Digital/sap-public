@@ -6,6 +6,7 @@ using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.ServiceModels.Search.InputModels;
+using SAPPub.Core.Specifications;
 
 namespace SAPPub.Infrastructure.Repositories
 {
@@ -14,8 +15,6 @@ namespace SAPPub.Infrastructure.Repositories
         private readonly IGenericRepository<Establishment> _repo;
         private readonly NpgsqlDataSource _dataSource;
         private readonly ISearchVisibilityPolicy _searchVisibilityPolicy;
-
-        internal const string Ks5VisibilityPredicate = @"(""ISKS5"" IS NOT TRUE OR ""ISKS4"" IS TRUE)";
 
         internal sealed record SearchSqlParts(
             string SelectFields,
@@ -54,9 +53,10 @@ namespace SAPPub.Infrastructure.Repositories
             return await _repo.ReadManyAsync(new { Urns = urns }, ct) ?? null;
         }
 
-        internal static SearchSqlParts BuildSearchSqlParts(SearchQuery query, int maxResults, bool includeKs5)
+        internal static SearchSqlParts BuildSearchSqlParts(SearchQuery query, int maxResults, IEstablishmentSearchSpecification visibilitySpec)
         {
             ArgumentNullException.ThrowIfNull(query);
+            ArgumentNullException.ThrowIfNull(visibilitySpec);
 
             var parameters = new DynamicParameters();
             int requestedPageSize = query.PageSize ?? maxResults;
@@ -84,10 +84,7 @@ namespace SAPPub.Infrastructure.Repositories
                 parameters.Add("distance", MappingHelper.MilesToMeters(query.Distance!.Value));
             }
 
-            if (!includeKs5)
-            {
-                whereClauses.Add(Ks5VisibilityPredicate);
-            }
+            whereClauses.Add(visibilitySpec.ToSqlPredicate());
 
             string orderBy = hasLocation
                 ? @"""Distance"" ASC, ""EstablishmentName"" ASC"
@@ -109,8 +106,8 @@ namespace SAPPub.Infrastructure.Repositories
 
         public async Task<(IEnumerable<Establishment> Results, int TotalCount)> SearchAsync(SearchQuery query, int maxResults = 10, CancellationToken ct = default)
         {
-            bool includeKs5 = await _searchVisibilityPolicy.IncludeKs5Async(ct);
-            var parts = BuildSearchSqlParts(query, maxResults, includeKs5);
+            var visibilitySpec = await _searchVisibilityPolicy.GetVisibilitySpecificationAsync(ct);
+            var parts = BuildSearchSqlParts(query, maxResults, visibilitySpec);
 
             string sql = $@"
                 SELECT {parts.SelectFields}

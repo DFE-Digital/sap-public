@@ -58,7 +58,7 @@ public class SecondaryController : Controller, IEstablishmentsList
 
     [HttpGet]
     [Route("next-steps", Name = RouteConstants.CompareSecondaryNextSteps)]
-    public async Task<IActionResult> NextSteps(
+    public IActionResult NextSteps(
          [FromServices] IEstablishmentService establishmentService,
          List<string> urns,
          CancellationToken ct = default)

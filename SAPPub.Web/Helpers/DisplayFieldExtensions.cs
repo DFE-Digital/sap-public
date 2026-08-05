@@ -1,4 +1,8 @@
-﻿namespace SAPPub.Web.Helpers;
+﻿using SAPPub.Core.Extensions;
+using SAPPub.Core.ValueObjects;
+using System.Globalization;
+
+namespace SAPPub.Web.Helpers;
 
 public static class DisplayFieldExtensions
 {
@@ -31,5 +35,25 @@ public static class DisplayFieldExtensions
         }
 
         return DisplayField<T>.Available(value.Value);
+    }
+
+    public static string DisplayNumber(
+        this DisplayField<CodedDouble> prop,
+        string? format = null,
+        string notAvailableText = "Not available",
+        bool displayReason = false)
+    {
+        return prop.DisplayText(d => format is null 
+            ? d.Value!.Value.ToString() 
+            : d.Value!.Value.ToString(format),
+            notAvailableText, displayReason);
+    }
+
+    public static string DisplayPercentage(
+        this DisplayField<CodedDouble> prop,
+        string notAvailableText = "Not available",
+        bool displayReason = false)
+    {
+        return prop.DisplayText(d => d.Value!.Value.AsPercentage(), notAvailableText, displayReason);        
     }
 }

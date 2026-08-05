@@ -3,7 +3,6 @@ using SAPPub.Core.Entities.Destinations;
 using SAPPub.Core.Entities.Gateway;
 using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Entities.KS4.Performance;
-using SAPPub.Core.Entities.KS4.SubjectEntries;
 using SAPPub.Core.Entities.Performance;
 
 namespace SAPPub.Infrastructure.Repositories.Helpers
@@ -66,6 +65,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "OpenDate",
           "OpenReasonId",
           "SenTypes",
+          "ISKS2",
           "ISKS4",
           "ISKS5"
           """;
@@ -202,6 +202,15 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           number_achieving
           """;
 
+        private const string EstablishmentKs5SubjectEntriesColumns = """
+          "subject",
+          "qualification_detailed",
+          "qualification_level",
+          "entries_count",
+          "exam_cohort",
+          "grade"
+          """;
+
         private const string EnglandAbsenceColumns = """
           "Id",
           "Abs_Persistent_Eng_Current_Pct_Coded",
@@ -220,19 +229,87 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "LAMainUrl"
           """;
 
-        private const string EstablishmentKs5PerformanceColumns = """
+        private const string KS5EstablishmentPerformanceColumns = """
           "Id",
-          "TALLPUP_ACAD_1618_Est_Current_Num_Coded",
+          "TALLPUP_ALEV_1618_Est_Current_Num_Coded",          
           "VA_INS_ALEV_Est_Current_Num_Coded",
           "PROGRESS_BAND_ALEV_Est_Current",
           "UCI_INS_ALEV_Est_Current_Num_Coded",
-          "LCI_INS_ALEV_Est_Current_Num_Coded"          
+          "LCI_INS_ALEV_Est_Current_Num_Coded",
+          "TALLPPE_ALEV_1618_Est_Current_Num_Coded",
+          "TALLPPEGRD_ALEV_1618_Est_Current",
+          "TALLPUP_ACAD_1618_Est_Current_Num_Coded",
+          "VA_INS_ACAD_Est_Current_Num_Coded",
+          "PROGRESS_BAND_ACAD_Est_Current",
+          "UCI_INS_ACAD_Est_Current_Num_Coded",
+          "LCI_INS_ACAD_Est_Current_Num_Coded",
+          "TALLPPE_ACAD_1618_Est_Current_Num_Coded",
+          "TALLPPEGRD_ACAD_1618_Est_Current",          
+          "TALLPUP_AGEN_Est_Current_Num_Coded",          
+          "VA_INS_AGEN_Est_Current_Num_Coded",
+          "PROGRESS_BAND_AGEN_Est_Current",
+          "UCI_INS_AGEN_Est_Current_Num_Coded",
+          "LCI_INS_AGEN_Est_Current_Num_Coded",
+          "TALLPPE_AGEN_Est_Current_Num_Coded",
+          "TALLPPEGRD_AGEN_Est_Current",
+          "T_SCOPEEX_E_Est_Current_Num_Coded",
+          "PROGEX_E_Est_Current_Num_Coded",
+          "ENTRY_PER_E_Est_Current_Pct_Coded",
+          "T_SCOPEEX_M_Est_Current_Num_Coded",
+          "PROGEX_M_Est_Current_Num_Coded",
+          "ENTRY_PER_M_Est_Current_Pct_Coded",
+          "T_SCOPEEX_E_DIS_Est_Current_Num_Coded",
+          "PROGEX_E_DIS_Est_Current_Num_Coded",
+          "T_SCOPEEX_M_DIS_Est_Current_Num_Coded",
+          "PROGEX_M_DIS_Est_Current_Num_Coded"
           """;
 
-        private const string EnglandKs5PerformanceColumns = """
+        private const string KS5EnglandPerformanceColumns = """
           "Id",
-          "VA_INS_ALEV_Eng_Current_Num_Coded"                  
-          """;        
+          "VA_INS_ALEV_Eng_Current_Num_Coded",
+          "TALLPPE_ALEV_1618_Eng_Current_Num_Coded",
+          "TALLPPEGRD_ALEV_1618_Eng_Current",
+          "VA_INS_ACAD_Eng_Current_Num_Coded",
+          "TALLPPE_ACAD_1618_Eng_Current_Num_Coded",
+          "TALLPPEGRD_ACAD_1618_Eng_Current",
+          "VA_INS_AGEN_Eng_Current_Num_Coded",
+          "TALLPPE_AGEN_Eng_Current_Num_Coded",
+          "TALLPPEGRD_AGEN_Eng_Current",
+          "PROGEX_E_Eng_Current_Num_Coded",
+          "ENTRY_PER_E_Eng_Current_Pct_Coded",
+          "PROGEX_M_Eng_Current_Num_Coded",
+          "ENTRY_PER_M_Eng_Current_Pct_Coded",
+          "PROGEX_E_DIS_Eng_Current_Num_Coded",
+          "PROGEX_E_NOTDIS_Eng_Current_Num_Coded",
+          "PROGEX_M_DIS_Eng_Current_Num_Coded",
+          "PROGEX_M_NOTDIS_Eng_Current_Num_Coded",
+          "T_SCOPEEX_E_DIS_Eng_Current_Num_Coded",
+          "T_SCOPEEX_E_NOTDIS_Eng_Current_Num_Coded",
+          "T_SCOPEEX_M_DIS_Eng_Current_Num_Coded",
+          "T_SCOPEEX_M_NOTDIS_Eng_Current_Num_Coded"
+          """;
+
+        private const string KS5LAPerformanceColumns = """
+          "Id",
+          "TALLPPE_ALEV_1618_LA_Current_Num_Coded",
+          "TALLPPEGRD_ALEV_1618_LA_Current",
+          "TALLPPE_ACAD_1618_LA_Current_Num_Coded",
+          "TALLPPEGRD_ACAD_1618_LA_Current",
+          "TALLPPE_AGEN_LA_Current_Num_Coded",
+          "TALLPPEGRD_AGEN_LA_Current",
+          "PROGEX_E_LA_Current_Num_Coded",
+          "ENTRY_PER_E_LA_Current_Pct_Coded",
+          "PROGEX_M_LA_Current_Num_Coded",
+          "ENTRY_PER_M_LA_Current_Pct_Coded",
+          "PROGEX_E_DIS_LA_Current_Num_Coded",
+          "PROGEX_E_NOTDIS_LA_Current_Num_Coded",
+          "PROGEX_M_DIS_LA_Current_Num_Coded",
+          "PROGEX_M_NOTDIS_LA_Current_Num_Coded",
+          "T_SCOPEEX_E_DIS_LA_Current_Num_Coded",
+          "T_SCOPEEX_E_NOTDIS_LA_Current_Num_Coded",
+          "T_SCOPEEX_M_DIS_LA_Current_Num_Coded",
+          "T_SCOPEEX_M_NOTDIS_LA_Current_Num_Coded"
+          """;
 
         private const string GatewayLAColumns = """
           "Id",
@@ -414,7 +491,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                     SelectFromWhereId(EstablishmentDestinationsColumns, "v_establishment_destinations"),
 
                 nameof(EstablishmentPerformance) =>
-                    SelectFromWhereId(EstablishmentPerformanceColumns, "v_establishment_performance"),                                
+                    SelectFromWhereId(EstablishmentPerformanceColumns, "v_establishment_performance"),
 
                 nameof(LAAbsence) =>
                     SelectFromWhereId(LAAbsenceColumns, "v_la_absence"),
@@ -437,11 +514,14 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                 nameof(LaUrls) =>
                     SelectFromWhereId(LaUrlsColumns, "v_la_urls"),
 
-                nameof(EstablishmentKs5Performance) =>
-                    SelectFromWhereId(EstablishmentKs5PerformanceColumns, "v_establishment_ks5_performance"),
+                nameof(KS5EstablishmentPerformance) =>
+                    SelectFromWhereId(KS5EstablishmentPerformanceColumns, "v_establishment_ks5_performance"),
 
-                nameof(EnglandKs5Performance) =>
-                    SelectFromWhere(EnglandKs5PerformanceColumns, "v_england_ks5_performance", "\"Id\" = 'National'"),
+                nameof(KS5EnglandPerformance) =>
+                    SelectFromWhere(KS5EnglandPerformanceColumns, "v_england_ks5_performance", "\"Id\" = 'National'"),
+
+                nameof(KS5LAPerformance) =>
+                    SelectFromWhereId(KS5LAPerformanceColumns, "v_la_ks5_performance"),
 
                 nameof(GatewayLocalAuthority) =>
                     SelectFromWhereIdAndNotDeleted(GatewayLAColumns, "gateway_local_authority"),
@@ -454,7 +534,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
 
                 nameof(KS5EstablishmentDestinations) => SelectFromWhereId("\"Id\", \"TOT_OVERALLPER_Est_Current_Pct_Coded\", \"TOT_COHORT_Est_Current_Num_Coded\"", "v_establishment_ks5_destinations"),
                 nameof(KS5EnglandDestinations) => SelectFromWhere("\"TOT_OVERALLPER_Eng_Current_Pct_Coded\"", "v_england_ks5_destinations", "\"Id\" = 'National'"),
-                nameof(KS5LADestinations) => SelectFromWhereId("\"Id\", \"TOT_OVERALLPER_LA_Current_Num_Coded\"", "v_la_ks5_destinations"),
+                nameof(KS5LADestinations) => SelectFromWhereId("\"Id\", \"TOT_OVERALLPER_LA_Current_Pct_Coded\"", "v_la_ks5_destinations"),
 
                 _ => string.Empty,
             };
@@ -512,10 +592,17 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                 nameof(EstablishmentPerformance) =>
                     SelectFromWhereIds(EstablishmentPerformanceColumns, "v_establishment_performance"),
 
-                nameof(EstablishmentSubjectEntryRow) => $"""
+                nameof(KS4EstablishmentSubjectEntryRow) => $"""
                     select
                       {EstablishmentSubjectEntriesColumns}
                     from public.v_establishment_subject_entries
+                    where school_urn = @Urn;
+                    """,
+
+                nameof(KS5EstablishmentSubjectEntryRow) => $"""
+                    select
+                      {EstablishmentKs5SubjectEntriesColumns}
+                    from public.v_establishment_ks5_subject_entries
                     where school_urn = @Urn;
                     """,
 

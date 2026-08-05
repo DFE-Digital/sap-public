@@ -44,4 +44,5 @@ public static class Constants
     // Managed Feature Names
     public const string EstablishmentComparisonEnabled = "EstablishmentComparisonEnabled";
     public const string Enable16to19 = "Enable16to19";
+    public const string EnablePrimary = "EnablePrimary";
 }

@@ -1,0 +1,70 @@
+﻿using SAPPub.Core.ValueObjects;
+using System.Diagnostics.CodeAnalysis;
+
+namespace SAPPub.Core.Entities.Performance;
+
+[ExcludeFromCodeCoverage]
+public class KS5EnglandPerformance
+{
+    public string Id { get; set; } = string.Empty;
+
+    // A level Progress score for England average
+    public CodedDouble VA_INS_ALEV_Eng_Current_Num_Coded { get; set; }
+
+    // Alevel Average result points for England
+    public CodedDouble TALLPPE_ALEV_1618_Eng_Current_Num_Coded { get; set; }
+
+    // A level Average result grade for England
+    public string? TALLPPEGRD_ALEV_1618_Eng_Current { get; set; }
+
+    // Academic qualifications Progress score for England average
+    public CodedDouble VA_INS_ACAD_Eng_Current_Num_Coded { get; set; }
+
+    // Academic qualifications Average result points for England
+    public CodedDouble TALLPPE_ACAD_1618_Eng_Current_Num_Coded { get; set; }
+
+    // Academic qualifications Average result grade for England
+    public string? TALLPPEGRD_ACAD_1618_Eng_Current { get; set; }
+
+    // Applied general qualifications Progress score for England average
+    public CodedDouble VA_INS_AGEN_Eng_Current_Num_Coded { get; set; }
+
+    // Applied general qualifications Average result points for England
+    public CodedDouble TALLPPE_AGEN_Eng_Current_Num_Coded { get; set; }
+
+    // Applied general qualifications Average result grade for England
+    public string? TALLPPEGRD_AGEN_Eng_Current { get; set; }
+
+    // Average progress for English
+    public CodedDouble PROGEX_E_Eng_Current_Num_Coded { get; set; }
+
+    // Entered for English qualifications ENG
+    public CodedDouble ENTRY_PER_E_Eng_Current_Pct_Coded { get; set; }
+
+    // Average progress for Maths
+    public CodedDouble PROGEX_M_Eng_Current_Num_Coded { get; set; }
+
+    // Entered for Maths qualifications ENG
+    public CodedDouble ENTRY_PER_M_Eng_Current_Pct_Coded { get; set; }
+
+    // Average progress for England
+    // English - Disadvantaged
+    public CodedDouble PROGEX_E_DIS_Eng_Current_Num_Coded { get; set; }
+    // English - Not Dis.
+    public CodedDouble PROGEX_E_NOTDIS_Eng_Current_Num_Coded { get; set; }
+    // Maths - Disadvantaged
+    public CodedDouble PROGEX_M_DIS_Eng_Current_Num_Coded { get; set; }
+    // Maths - Not Dis.
+    public CodedDouble PROGEX_M_NOTDIS_Eng_Current_Num_Coded { get; set; }
+
+
+    //Number of students LA
+    // English - Disadvantaged
+    public CodedDouble T_SCOPEEX_E_DIS_Eng_Current_Num_Coded { get; set; }
+    // English - Not Dis.
+    public CodedDouble T_SCOPEEX_E_NOTDIS_Eng_Current_Num_Coded { get; set; }
+    // Maths - Disadvantaged
+    public CodedDouble T_SCOPEEX_M_DIS_Eng_Current_Num_Coded { get; set; }
+    // Maths - Not Dis.
+    public CodedDouble T_SCOPEEX_M_NOTDIS_Eng_Current_Num_Coded { get; set; }
+}

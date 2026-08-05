@@ -12,7 +12,7 @@ public class AboutController(
     IAboutSchoolService aboutSchoolService) : Controller
 {
     [HttpGet]
-    [Route("school/{urn}/{schoolName}/about", Name = RouteConstants.SecondaryAboutSchool)]
+    [Route("school/{urn}/{schoolName}/about", Name = RouteConstants.AboutTheSchool)]
     public async Task<IActionResult> AboutSchool(string urn, string schoolName, CancellationToken ct)
     {
         var schoolDetails = await aboutSchoolService.GetAboutSchoolDetailsAsync(urn, ct);
