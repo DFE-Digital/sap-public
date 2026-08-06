@@ -95,7 +95,7 @@
         <table id="additional-measures-breakdown-table" class="govuk-table">
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header">Pupil group</th>
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-third">Pupil group</th>
                     <th scope="col" class="govuk-table__header">Grammar, punctuation, spelling at the expected standard</th>
                     <th scope="col" class="govuk-table__header">Grammar, punctuation, spelling at the higher standard</th>
                 </tr>
@@ -103,18 +103,18 @@
             <tbody class="govuk-table__body">
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">School</th>
-                    <td class="govuk-table__cell">@Model.EstablishmentGrammarAtExpectedStandard.DisplayText()</td>
-                    <td class="govuk-table__cell">@Model.EstablishmentGrammarAtHigherStandard.DisplayText()</td>
+                    <td class="govuk-table__cell">@Model.EstablishmentGrammarAtExpectedStandard.DisplayPercentage()</td>
+                    <td class="govuk-table__cell">@Model.EstablishmentGrammarAtHigherStandard.DisplayPercentage()</td>
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">@Model.LAName average</th>
-                    <td class="govuk-table__cell">@Model.LAGrammarAtExpectedStandard.DisplayText()</td>
-                    <td class="govuk-table__cell">@Model.LAGrammarAtHigherStandard.DisplayText()</td>
+                    <td class="govuk-table__cell">@Model.LAGrammarAtExpectedStandard.DisplayPercentage()</td>
+                    <td class="govuk-table__cell">@Model.LAGrammarAtHigherStandard.DisplayPercentage()</td>
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">England average</th>
-                    <td class="govuk-table__cell">@Model.EnglandGrammarAtExpectedStandard.DisplayText()</td>
-                    <td class="govuk-table__cell">@Model.EnglandGrammarAtHigherStandard.DisplayText()</td>
+                    <td class="govuk-table__cell">@Model.EnglandGrammarAtExpectedStandard.DisplayPercentage()</td>
+                    <td class="govuk-table__cell">@Model.EnglandGrammarAtHigherStandard.DisplayPercentage()</td>
                 </tr>
             </tbody>
         </table>
