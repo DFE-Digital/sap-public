@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
+using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.ServiceModels;
+using SAPPub.Core.Services.Performance;
 using SAPPub.Web.Areas.Profiles.Filters;
 using SAPPub.Web.Areas.Profiles.ViewModels.KS2;
 using SAPPub.Web.Constants;
@@ -40,11 +42,16 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
         [HttpGet]
         [Route("school/{urn}/{schoolName}/primary-performance/subject-scaled-scores", Name = RouteConstants.PrimaryAcademicPerformanceSubjectScaledScores)]
         public async Task<IActionResult> AcademicPerformanceSubjectScaledScores(
+            [FromServices] IKS2ScaledScoreService scaledScoreService,
             string urn,
             string schoolName,
             CancellationToken ct)
         {
-            var model = AcademicPerformanceSubjectScaledScoresViewModel.Map(Establishment);
+            var scaledScoreModel = await scaledScoreService
+                .GetScaledScoreModel(urn, ct);
+
+
+            var model = AcademicPerformanceSubjectScaledScoresViewModel.Map(Establishment, scaledScoreModel);
             return View(model);
         }
 

@@ -12,13 +12,13 @@ public sealed class FeatureFlagSearchVisibilityPolicy(IFeatureManager featureMan
     public Task<bool> IncludeKs5Async(CancellationToken ct = default)
         => featureManager.IsEnabledAsync(Enable16to19);
 
-    public Task<bool> IncludeKs2Async(CancellationToken ct = default)
+    public Task<bool> IncludeKS2Async(CancellationToken ct = default)
         => featureManager.IsEnabledAsync(EnablePrimary);
 
     public async Task<SearchVisibilitySpecification> GetVisibilitySpecificationAsync(CancellationToken ct = default)
     {
         var includeKs5 = await IncludeKs5Async(ct);
-        var includeKs2 = await IncludeKs2Async(ct);
-        return new SearchVisibilitySpecification(includeKs5, includeKs2);
+        var includeKS2 = await IncludeKS2Async(ct);
+        return new SearchVisibilitySpecification(includeKs5, includeKS2);
     }
 }
