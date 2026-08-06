@@ -132,15 +132,22 @@ public sealed class GenerateViews
                 var (keyStageUrnsCtes, keyStageUrnsSqlConditions) =
                     BuildKeyStageCtesAndFilters(_rows, tableMap, KeyStageConstants.AllKeyStages);
 
+                // Free Breakfast club data
+                var (breakfastClubCte, breakfastClubUrnsSqlConditions) = BuildFreeBreakfastClubCteAndFilter(_rows, tableMap);
+
                 var establishmentFilters = SqlViewFilterProvider.GetEstablishmentFilters(
                     keyStageUrnsSqlConditions: keyStageUrnsSqlConditions,
                     excludedUrns: excludedUrns);
+
+                // CML TODO - need to add a comma between the keyStageUrnsCtes and breakfastClubCte
+                keyStageUrnsCtes.Add("breakfast_club_urns", breakfastClubCte);
 
                 sql = GenerateEstablishmentDimensionView(
                     rawTable,
                     establishmentFilters,
                     keyStageUrnsCtes,
                     keyStageUrnsSqlConditions,
+                    breakfastClubUrnsSqlConditions);
                     tableMap);
             }
 
@@ -398,6 +405,48 @@ public sealed class GenerateViews
         return sb.ToString();
     }
 
+    /// <summary>
+    /// Free breakfast club CTE generation
+    /// </summary>
+    private static string GenerateFreeBreakfastClubUrnsCte(
+        IReadOnlyList<DataMapRow> rows,
+        Dictionary<string, string> tableMap,
+        string cteName)
+    {
+        var fileGroups = rows
+            .Where(r => r.Range == "Establishment" && r.Type == "BreakfastClub")
+            .GroupBy(r => (r.FileName ?? "").Trim().TrimStart('\uFEFF'))
+            .Where(g => !string.IsNullOrWhiteSpace(g.Key))
+            .ToList();
+
+        var cteParts = new List<string>();
+        foreach (var group in fileGroups)
+        {
+            var fileName = group.Key;
+            if (!TryResolveRawTable(tableMap, fileName, out var rawTable) || string.IsNullOrEmpty(rawTable))
+                continue;
+
+            var idCol = DbCol(group.First().RecordFilterBy);
+            var col = string.IsNullOrWhiteSpace(idCol) ? "urn" : idCol;
+
+            cteParts.Add($"SELECT DISTINCT t.\"{col}\" AS \"urn\" FROM {rawTable} t");
+        }
+
+        if (cteParts.Count == 0)
+            return string.Empty;
+
+        var sb = new StringBuilder();
+        sb.AppendLine($"{cteName} AS (");
+        for (int i = 0; i < cteParts.Count; i++)
+        {
+            var union = i == 0 ? "    " : "    UNION ";
+            sb.AppendLine($"{union}{cteParts[i]}");
+        }
+        sb.AppendLine(")");
+
+        return sb.ToString();
+    }
+
     // =====================================================
     // ESTABLISHMENT DIMENSION (curated)
     // =====================================================
@@ -407,6 +456,7 @@ public sealed class GenerateViews
         List<SqlViewFilter> filters,
         Dictionary<string, string> keyStageUrnsCtes,
         Dictionary<string, string> keyStageUrnsSqlConditions,
+        string breakfastClubUrnsSqlCondition)
         Dictionary<string, string> tableMap)
     {
         var sb = new StringBuilder();
@@ -501,6 +551,7 @@ public sealed class GenerateViews
 
         
         AppendKeyStageFlagColumns(sb, keyStageUrnsSqlConditions);
+        AppendBreakfastClubColumn(sb, breakfastClubUrnsSqlCondition);
         sb.AppendLine();
         sb.AppendLine($"FROM {rawTable} t");
 
@@ -1051,6 +1102,17 @@ public sealed class GenerateViews
         return IsCoded(r) ? $"{p}_Coded" : p;
     }
 
+    private static (string cte, string filter) BuildFreeBreakfastClubCteAndFilter(
+        IReadOnlyList<DataMapRow> rows,
+        Dictionary<string, string> tableMap)
+    {
+        var cteName = "FreeBreakfastClub";
+        var cte = GenerateFreeBreakfastClubUrnsCte(rows, tableMap, cteName);
+        var filter = $"t.\"urn\" IN (SELECT \"urn\" FROM {cteName})";
+
+        return (cte, filter);
+    }
+
     private static (Dictionary<string, string> ctes, Dictionary<string, string> filters)
     BuildKeyStageCtesAndFilters(
         IReadOnlyList<DataMapRow> rows,
@@ -1114,5 +1176,12 @@ public sealed class GenerateViews
             var comma = i == KeyStageConstants.AllKeyStages.Count - 1 ? "" : ",";
             sb.AppendLine($"    CASE WHEN {fullCondition} THEN TRUE ELSE FALSE END AS \"IS{ks}\"{comma}");
         }
+    }
+
+    private static void AppendBreakfastClubColumn(
+        StringBuilder sb,
+        string? breakfastClubUrnsSqlCondition = null)
+    {
+        sb.AppendLine($"    CASE WHEN {breakfastClubUrnsSqlCondition} THEN TRUE ELSE FALSE END AS \"HasBreakfastClub\"");
     }
 }
