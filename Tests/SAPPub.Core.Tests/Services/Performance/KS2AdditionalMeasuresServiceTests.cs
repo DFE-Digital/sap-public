@@ -67,15 +67,15 @@ public class KS2AdditionalMeasuresServiceTests
 
         _ks2PerformanceRepository
             .Setup(a => a.GetEstablishmentPerformanceAsync(urn, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new KS2EstablishmentPerformance { PTRWM_EXP_Est_Current_Pct_Coded = new CodedDouble(1, string.Empty, "1"), PTGPS_HIGH_Est_Current_Pct_Coded = new CodedDouble(1, string.Empty, "2") });
+            .ReturnsAsync(new KS2EstablishmentPerformance { PTGPS_EXP_Est_Current_Pct_Coded = new CodedDouble(1, string.Empty, "1"), PTGPS_HIGH_Est_Current_Pct_Coded = new CodedDouble(1, string.Empty, "2") });
 
         _ks2PerformanceRepository
             .Setup(a => a.GetLaPerformanceAsync(laId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new KS2LAPerformance { PTRWM_EXP_LA_Current_Pct_Coded = new CodedDouble(1, string.Empty, "3"), PTGPS_HIGH_LA_Current_Pct_Coded = new CodedDouble(1, string.Empty, "4") });
+            .ReturnsAsync(new KS2LAPerformance { PTGPS_EXP_LA_Current_Pct_Coded = new CodedDouble(1, string.Empty, "3"), PTGPS_HIGH_LA_Current_Pct_Coded = new CodedDouble(1, string.Empty, "4") });
 
         _ks2PerformanceRepository
             .Setup(a => a.GetEnglandPerformanceAsync(It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new KS2EnglandPerformance { PTRWM_EXP_Eng_Current_Pct_Coded = new CodedDouble(1, string.Empty, "5"), PTGPS_HIGH_Eng_Current_Pct_Coded = new CodedDouble(1, string.Empty, "6") });
+            .ReturnsAsync(new KS2EnglandPerformance { PTGPS_EXP_Eng_Current_Pct_Coded = new CodedDouble(1, string.Empty, "5"), PTGPS_HIGH_Eng_Current_Pct_Coded = new CodedDouble(1, string.Empty, "6") });
 
         // Act
         var result = await _service.GetAdditionalMeasures(urn, CancellationToken.None);

@@ -28,11 +28,11 @@ public class KS2AdditionalMeasuresService(
 
         return new KS2AdditionalMeasuresModel
         {
-            EstablishmentGrammarAtExpectedStandard = establishmentPerformance.PTRWM_EXP_Est_Current_Pct_Coded,
+            EstablishmentGrammarAtExpectedStandard = establishmentPerformance.PTGPS_EXP_Est_Current_Pct_Coded,
             EstablishmentGrammarAtHigherStandard = establishmentPerformance.PTGPS_HIGH_Est_Current_Pct_Coded,
-            LAGrammarAtExpectedStandard = laPerformance.PTRWM_EXP_LA_Current_Pct_Coded,
+            LAGrammarAtExpectedStandard = laPerformance.PTGPS_EXP_LA_Current_Pct_Coded,
             LAGrammarAtHigherStandard = laPerformance.PTGPS_HIGH_LA_Current_Pct_Coded,
-            EnglandGrammarAtExpectedStandard = englandPerformance.PTRWM_EXP_Eng_Current_Pct_Coded,
+            EnglandGrammarAtExpectedStandard = englandPerformance.PTGPS_EXP_Eng_Current_Pct_Coded,
             EnglandGrammarAtHigherStandard = englandPerformance.PTGPS_HIGH_Eng_Current_Pct_Coded
         };
     }
