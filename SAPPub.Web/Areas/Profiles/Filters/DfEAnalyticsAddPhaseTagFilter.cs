@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.ServiceModels;
+using SAPPub.Web.Constants;
 
 namespace SAPPub.Web.Areas.Profiles.Filters;
 
@@ -11,7 +12,12 @@ namespace SAPPub.Web.Areas.Profiles.Filters;
 /// </summary>
 public class DfEAnalyticsAddPhaseTagFilter(IEstablishmentService establishmentService) : IAsyncActionFilter, IOrderedFilter
 {
-    public int Order => 2;
+    private const string KS2 = "KS2";
+    private const string KS4 = "KS4";
+    private const string KS5 = "KS5";
+
+    // make this filter low order priority so that it runs after any ValidationFilters
+    public int Order => 5;
 
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
@@ -23,7 +29,7 @@ public class DfEAnalyticsAddPhaseTagFilter(IEstablishmentService establishmentSe
         }
         else
         {
-            if (!context.ActionArguments.TryGetValue("urn", out var urnObj) || urnObj is not string urn)
+            if (!context.ActionArguments.TryGetValue(RouteConstants.URN, out var urnObj) || urnObj is not string urn)
             {
                 await next();
                 return;
@@ -41,15 +47,15 @@ public class DfEAnalyticsAddPhaseTagFilter(IEstablishmentService establishmentSe
 
         if (establishment.IsKS2)
         {
-            webRequestEvent.AddTag("KS2");
+            webRequestEvent.AddTag(KS2);
         }
         if (establishment.IsKS4)
         {
-            webRequestEvent.AddTag("KS4");
+            webRequestEvent.AddTag(KS4);
         }
         if (establishment.IsKS5)
         {
-            webRequestEvent.AddTag("KS5");
+            webRequestEvent.AddTag(KS5);
         }
 
         await next();
