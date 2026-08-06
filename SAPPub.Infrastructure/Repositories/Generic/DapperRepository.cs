@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Logging;
 using Npgsql;
-using SAPPub.Core.Entities.Performance;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Infrastructure.Mapping.ValueCodes;
 using SAPPub.Infrastructure.Repositories.Helpers;

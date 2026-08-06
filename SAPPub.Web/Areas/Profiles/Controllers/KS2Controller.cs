@@ -2,7 +2,6 @@
 using Microsoft.FeatureManagement.Mvc;
 using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.ServiceModels;
-using SAPPub.Core.Services.Performance;
 using SAPPub.Web.Areas.Profiles.Filters;
 using SAPPub.Web.Areas.Profiles.ViewModels.KS2;
 using SAPPub.Web.Constants;
@@ -58,11 +57,14 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
         [HttpGet]
         [Route("school/{urn}/{schoolName}/primary-performance/additional-measures", Name = RouteConstants.PrimaryAcademicPerformanceAdditionalMeasures)]
         public async Task<IActionResult> AcademicPerformanceAdditionalMeasures(
+            [FromServices] IKS2AdditionalMeasuresService kS2AdditionalMeasuresService,
             string urn,
             string schoolName,
             CancellationToken ct)
         {
-            var model = AcademicPerformanceAdditionalMeasuresViewModel.Map(Establishment);
+            var additionalServicesModel = await kS2AdditionalMeasuresService.GetAdditionalMeasures(urn, ct);
+
+            var model = AcademicPerformanceAdditionalMeasuresViewModel.Map(Establishment, additionalServicesModel);
             return View(model);
         }
     }

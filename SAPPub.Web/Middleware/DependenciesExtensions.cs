@@ -124,6 +124,8 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<IKS2PerformanceRepository, KS2PerformanceRepository>();
             services.AddTransient<IKS2ScaledScoreService, KS2ScaledScoresService>();
 
+            services.AddTransient<IKS2AdditionalMeasuresService,  KS2AdditionalMeasuresService>();
+
             services.AddScoped<SecondaryComparisonQueryValidationFilter>();
             services.AddScoped<PrimaryQueryValidationFilter>();
 

@@ -56,6 +56,7 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.RemoveAll(typeof(IAdditionalMeasuresService));
                 services.RemoveAll(typeof(ILevel3QualificationsService));
                 services.RemoveAll(typeof(IKS2ScaledScoreService));
+                services.RemoveAll(typeof(IKS2AdditionalMeasuresService));
 
                 services.AddSingleton<MockAccessor<IAboutSchoolService>>();
                 services.AddSingleton<MockAccessor<IAttainmentAndProgressService>>();
@@ -78,6 +79,7 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.AddSingleton<MockAccessor<ILevel3QualificationsService>>();
                 services.AddSingleton<MockAccessor<IEnglishAndMathsQualificationsService>>();
                 services.AddSingleton<MockAccessor<IKS2ScaledScoreService>>();
+                services.AddSingleton<MockAccessor<IKS2AdditionalMeasuresService>>();
 
                 services.AddTransient(provider =>
                 {
@@ -163,6 +165,10 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.AddTransient(provider =>
                 {
                     return provider.GetRequiredService<MockAccessor<IKS2ScaledScoreService>>().Get()?.Object!;
+                });
+                services.AddTransient(provider =>
+                {
+                    return provider.GetRequiredService<MockAccessor<IKS2AdditionalMeasuresService>>().Get()?.Object!;
                 });
             });
     }
