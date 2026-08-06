@@ -107,6 +107,8 @@ public class Establishment
 
     public string? SenTypes { get; set; } = string.Empty;
 
+    public string? KS2WraparoundCare { get; set; } = string.Empty;
+
     [IgnoreDataMember]
     public bool IsKS2 { get; set; }
 

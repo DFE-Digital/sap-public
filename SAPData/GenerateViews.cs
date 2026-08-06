@@ -1,5 +1,6 @@
 ﻿using SAPData.Filters;
 using SAPData.Models;
+using System.Globalization;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -139,7 +140,8 @@ public sealed class GenerateViews
                     rawTable,
                     establishmentFilters,
                     keyStageUrnsCtes,
-                    keyStageUrnsSqlConditions);
+                    keyStageUrnsSqlConditions,
+                    tableMap);
             }
 
             // 2) Mirror view (GIAS: all establishment links)
@@ -404,7 +406,8 @@ public sealed class GenerateViews
         string? rawTable,
         List<SqlViewFilter> filters,
         Dictionary<string, string> keyStageUrnsCtes,
-        Dictionary<string, string> keyStageUrnsSqlConditions)
+        Dictionary<string, string> keyStageUrnsSqlConditions,
+        Dictionary<string, string> tableMap)
     {
         var sb = new StringBuilder();
 
@@ -489,9 +492,23 @@ public sealed class GenerateViews
         sb.AppendLine("    to_tsvector('english', normalize_text(coalesce(t.\"establishmentname\", ''))) AS \"EstablishmentNameFTS\",");
         sb.AppendLine("    ST_Transform(\r\n    ST_SetSRID(ST_MakePoint(clean_int(t.\"easting\"), clean_int(t.\"northing\")), 27700), 4326\r\n)::geography AS \"geom\",");
         sb.AppendLine($"   {BuildSenTypes()} AS \"SenTypes\",");
+
+        bool hasWraparound = TryResolveRawTable(tableMap, "ks2_wraparound_care", out var wraparoundTable) && !string.IsNullOrWhiteSpace(wraparoundTable);
+        if (hasWraparound)
+        {
+            sb.AppendLine("     w.\"for_school_profile\" AS \"KS2WraparoundCare\",");
+        }
+
+        
         AppendKeyStageFlagColumns(sb, keyStageUrnsSqlConditions);
         sb.AppendLine();
         sb.AppendLine($"FROM {rawTable} t");
+
+        if (hasWraparound)
+        {
+            sb.AppendLine($"LEFT JOIN {wraparoundTable} w ON w.\"urn\" = t.\"urn\"");
+        }
+        
         // Dynamically build WHERE clause
         if (filters.Count > 0)
         {
