@@ -27,7 +27,7 @@ public class KS5EstablishmentSubjectEntriesServiceTests
     }
 
     [Fact]
-    public async Task Constructor_throws_when_repository_is_null()
+    public void Constructor_throws_when_repository_is_null()
     {
         Assert.Throws<ArgumentNullException>(() => new KS4EstablishmentSubjectEntriesService(null!));
     }

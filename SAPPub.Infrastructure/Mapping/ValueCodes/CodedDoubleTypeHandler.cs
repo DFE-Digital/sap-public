@@ -18,11 +18,11 @@ public sealed class CodedDoubleTypeHandler : SqlMapper.TypeHandler<CodedDouble>
     {
         if (value is null || value is DBNull) return CodedDouble.Empty;
 
-        var raw = value.ToString()?.Trim() ?? "";
+        var raw = value.ToString()?.Trim() ?? string.Empty;
         if (raw.Length == 0) return CodedDouble.Empty;
 
         if (double.TryParse(raw, NumberStyles.Any, CultureInfo.InvariantCulture, out var d))
-            return new CodedDouble(d, "", raw);
+            return new CodedDouble(d, string.Empty, raw);
 
         var reason = _lookup.TryGet(raw, out var text) ? text : raw;
         return new CodedDouble(null, reason, raw);

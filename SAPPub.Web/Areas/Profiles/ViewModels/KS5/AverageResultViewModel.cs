@@ -8,15 +8,15 @@ public class AverageResultViewModel
 {
     public required DisplayField<CodedDouble> EstablishmentPoints { get; init; }
 
-    public required DisplayField<string> EstablishmentGrade { get; init; }
+    public required DisplayField<CodedString> EstablishmentGrade { get; init; }
 
     public required DisplayField<CodedDouble> LocalAuthorityPoints { get; init; }
 
-    public required DisplayField<string> LocalAuthorityGrade { get; init; }
+    public required DisplayField<CodedString> LocalAuthorityGrade { get; init; }
 
     public required DisplayField<CodedDouble> EnglandPoints { get; init; }
 
-    public required DisplayField<string> EnglandGrade { get; init; }
+    public required DisplayField<CodedString> EnglandGrade { get; init; }
 
     public static AverageResultViewModel Map(AverageResultModel model)
     {

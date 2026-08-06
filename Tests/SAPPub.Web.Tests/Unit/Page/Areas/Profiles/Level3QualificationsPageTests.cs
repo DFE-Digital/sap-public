@@ -48,6 +48,7 @@ public class Level3QualificationsPageTests : PageTestsBase
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
     [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
     public async Task Level3QualificationsPage_HasCorrectTitle(Level3 qualification)
     {
         // Arrange
@@ -67,6 +68,7 @@ public class Level3QualificationsPageTests : PageTestsBase
             Level3.ALevel => PageTitleConstants.KS5SchoolPageTitles.Level3QualificationsAlevel,
             Level3.Academic => PageTitleConstants.KS5SchoolPageTitles.Level3QualificationsAcademic,
             Level3.AppliedGeneral => PageTitleConstants.KS5SchoolPageTitles.Level3QualificationsAppliedGeneral,
+            Level3.TechLevel => PageTitleConstants.KS5SchoolPageTitles.Level3QualificationsTechLevel,
             _ => null
         };
         var expectedTitle = $"{PageTitleConstants.KS5SchoolPageTitles.PhaseTitle} - {suffixTitle}";
@@ -77,6 +79,7 @@ public class Level3QualificationsPageTests : PageTestsBase
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
     [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
     public async Task Level3QualificationsPage_DisplaysMainHeading(Level3 qualification)
     {
         // Arrange
@@ -97,6 +100,7 @@ public class Level3QualificationsPageTests : PageTestsBase
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
     [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
     public async Task Level3QualificationsPage_DisplaysHeading(Level3 qualification)
     {
         // Arrange
@@ -151,6 +155,7 @@ public class Level3QualificationsPageTests : PageTestsBase
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
     [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
     public async Task Level3QualificationsPage_DisplaysProgressScoreHeading(Level3 qualification)
     {
         // Arrange
@@ -171,6 +176,7 @@ public class Level3QualificationsPageTests : PageTestsBase
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
     [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
     public async Task Level3QualificationsPage_DisplaysTechnicalGuidanceLink(Level3 qualification)
     {
         // Arrange
@@ -184,7 +190,9 @@ public class Level3QualificationsPageTests : PageTestsBase
         // Assert
         var techGuidanceLink = doc.QuerySelector("#tech-guidance-link");
 
-        if (qualification == Level3.ALevel || qualification == Level3.AppliedGeneral)
+        if (qualification == Level3.ALevel 
+            || qualification == Level3.AppliedGeneral
+            || qualification == Level3.TechLevel)
         {
             Assert.NotNull(techGuidanceLink);
             Assert.Contains("https://www.gov.uk/government/publications/16-to-19-accountability-headline-measures-technical-guide", techGuidanceLink.GetAttribute("href"));
@@ -199,6 +207,7 @@ public class Level3QualificationsPageTests : PageTestsBase
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
     [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
     public async Task Level3QualificationsPage_DisplaysTechnicalVocationalQualificationsLink(Level3 qualification)
     {
         // Arrange
@@ -212,7 +221,7 @@ public class Level3QualificationsPageTests : PageTestsBase
         // Assert
         var techVocationalQualificationsLink = doc.QuerySelector("#tech-vocational-qualifications-link");
 
-        if (qualification == Level3.AppliedGeneral)
+        if (qualification == Level3.AppliedGeneral || qualification == Level3.TechLevel)
         {
             Assert.NotNull(techVocationalQualificationsLink);
             Assert.Contains("https://www.gov.uk/government/collections/performance-tables-technical-and-vocational-qualifications", techVocationalQualificationsLink.GetAttribute("href"));
@@ -227,6 +236,7 @@ public class Level3QualificationsPageTests : PageTestsBase
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
     [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
     public async Task Level3QualificationsPage_Displays_ProgressScore(Level3 qualification)
     {
         // Arrange
@@ -269,6 +279,7 @@ public class Level3QualificationsPageTests : PageTestsBase
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
     [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
     public async Task Level3QualificationsPage_Displays_AverageResult(Level3 qualification)
     {
         // Arrange
@@ -294,16 +305,27 @@ public class Level3QualificationsPageTests : PageTestsBase
         Assert.NotNull(performancePointsLink);
         Assert.Equal("https://www.gov.uk/government/publications/performance-points-a-practical-guide-to-key-stage-4-and-5-points", performancePointsLink.GetAttribute("href"));
 
+        if (qualification == Level3.TechLevel)
+        {
+            var measuresTechGuidanceLink = doc.QuerySelector("#measures-tech-guidance-link");
+            Assert.NotNull(measuresTechGuidanceLink);
+            Assert.Equal("https://www.gov.uk/government/publications/16-to-19-accountability-headline-measures-technical-guide", measuresTechGuidanceLink.GetAttribute("href"));
+
+            var introTlevelsLink = doc.QuerySelector("#intro-t-levels-link");
+            Assert.NotNull(introTlevelsLink);
+            Assert.Equal("https://www.gov.uk/government/publications/introduction-of-t-levels/introduction-of-t-levels", introTlevelsLink.GetAttribute("href"));
+        }
+
         Assert.Contains("School or College", doc.GetTableHeaderContentByIdAndIndex("average-result-current-year-table", 1, 0));
-        Assert.Contains(_level3QualificationModel.AverageResult.Establishment.Grade!, doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 1, 0));
+        Assert.Contains(_level3QualificationModel.AverageResult.Establishment.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 1, 0));
         Assert.Contains(_level3QualificationModel.AverageResult.Establishment.Points.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 1, 1));
 
         Assert.Contains($"{_level3QualificationModel.LAName} average", doc.GetTableHeaderContentByIdAndIndex("average-result-current-year-table", 2, 0));
-        Assert.Contains(_level3QualificationModel.AverageResult.LocalAuthority.Grade!, doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 2, 0));
+        Assert.Contains(_level3QualificationModel.AverageResult.LocalAuthority.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 2, 0));
         Assert.Contains(_level3QualificationModel.AverageResult.LocalAuthority.Points.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 2, 1));
 
         Assert.Contains("England average", doc.GetTableHeaderContentByIdAndIndex("average-result-current-year-table", 3, 0));
-        Assert.Contains(_level3QualificationModel.AverageResult.England.Grade!, doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 3, 0));
+        Assert.Contains(_level3QualificationModel.AverageResult.England.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 3, 0));
         Assert.Contains(_level3QualificationModel.AverageResult.England.Points.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 3, 1));
     }
 }

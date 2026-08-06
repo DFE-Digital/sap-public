@@ -6,7 +6,7 @@ public class ProgressScoreModel
 {
     public CodedDouble Score { get; init; }
 
-    public string? BandingRating { get; init; }
+    public CodedString BandingRating { get; init; }
 
     public CodedDouble ConfidenceLevelUpper { get; init; }
 

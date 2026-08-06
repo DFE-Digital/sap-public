@@ -54,19 +54,19 @@ public class KS5PerformanceRepositoryTests
             Id = urn,
             TALLPUP_ALEV_1618_Est_Current_Num_Coded = new CodedDouble(150, string.Empty, string.Empty),
             VA_INS_ALEV_Est_Current_Num_Coded = new CodedDouble(50.5, string.Empty, string.Empty),
-            PROGRESS_BAND_ALEV_Est_Current = "Average",
+            PROGRESS_BAND_ALEV_Est_Current = new CodedString("Average", string.Empty, string.Empty),
             UCI_INS_ALEV_Est_Current_Num_Coded = new CodedDouble(-0.5, string.Empty, string.Empty),
             LCI_INS_ALEV_Est_Current_Num_Coded = new CodedDouble(-0.7, string.Empty, string.Empty),
             TALLPPE_ALEV_1618_Est_Current_Num_Coded = new CodedDouble(45.15, string.Empty, string.Empty),
-            TALLPPEGRD_ALEV_1618_Est_Current = "B",
+            TALLPPEGRD_ALEV_1618_Est_Current = new CodedString("B", string.Empty, string.Empty),
 
             TALLPUP_ACAD_1618_Est_Current_Num_Coded = new CodedDouble(145, string.Empty, string.Empty),
             VA_INS_ACAD_Est_Current_Num_Coded = new CodedDouble(65.33, string.Empty, string.Empty),
-            PROGRESS_BAND_ACAD_Est_Current = "Average",
+            PROGRESS_BAND_ACAD_Est_Current = new CodedString("Average", string.Empty, string.Empty),
             UCI_INS_ACAD_Est_Current_Num_Coded = new CodedDouble(1.5, string.Empty, string.Empty),
             LCI_INS_ACAD_Est_Current_Num_Coded = new CodedDouble(0.2, string.Empty, string.Empty),
             TALLPPE_ACAD_1618_Est_Current_Num_Coded = new CodedDouble(39.15, string.Empty, string.Empty),
-            TALLPPEGRD_ACAD_1618_Est_Current = "A"
+            TALLPPEGRD_ACAD_1618_Est_Current = new CodedString("A", string.Empty, string.Empty)
         };
 
         _mockEstablishmentKs5PerformanceRepo
@@ -133,11 +133,11 @@ public class KS5PerformanceRepositoryTests
         {
             VA_INS_ALEV_Eng_Current_Num_Coded = new CodedDouble(75.55, string.Empty, string.Empty),
             TALLPPE_ALEV_1618_Eng_Current_Num_Coded = new CodedDouble(85, string.Empty, string.Empty),
-            TALLPPEGRD_ALEV_1618_Eng_Current = "A",
+            TALLPPEGRD_ALEV_1618_Eng_Current = new CodedString("A", string.Empty, string.Empty),
 
             VA_INS_ACAD_Eng_Current_Num_Coded = new CodedDouble(53.15, string.Empty, string.Empty),
             TALLPPE_ACAD_1618_Eng_Current_Num_Coded = new CodedDouble(50, string.Empty, string.Empty),
-            TALLPPEGRD_ACAD_1618_Eng_Current = "B"
+            TALLPPEGRD_ACAD_1618_Eng_Current = new CodedString("B", string.Empty, string.Empty)
         };
 
         _mockEnglandKs5PerformanceRepo
@@ -191,10 +191,10 @@ public class KS5PerformanceRepositoryTests
         { 
             Id = laCode,
             TALLPPE_ALEV_1618_LA_Current_Num_Coded = new CodedDouble(85.20, string.Empty, string.Empty),
-            TALLPPEGRD_ALEV_1618_LA_Current = "A",
+            TALLPPEGRD_ALEV_1618_LA_Current = new CodedString("A", string.Empty, string.Empty),
 
             TALLPPE_ACAD_1618_LA_Current_Num_Coded = new CodedDouble(45.15, string.Empty, string.Empty),
-            TALLPPEGRD_ACAD_1618_LA_Current = "B",
+            TALLPPEGRD_ACAD_1618_LA_Current = new CodedString("B", string.Empty, string.Empty),
         };
 
         _mockLAKs5PerformanceRepo
