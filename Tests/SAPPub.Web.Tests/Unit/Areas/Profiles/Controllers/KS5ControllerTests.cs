@@ -85,6 +85,77 @@ public class KS5ControllerTests : BaseProfilesTests
     [InlineData(Level3.Academic)]
     [InlineData(Level3.AppliedGeneral)]
     [InlineData(Level3.TechLevel)]
+    public async Task Get_Level3Qualifications_Info_With_Reason_ReturnsOk(Level3 qualification)
+    {
+        var expectedResult = new Level3QualificationModel
+        {
+            Urn = fakeEstablishment.URN,
+            SchoolName = fakeEstablishment.EstablishmentName,
+            LAName = fakeEstablishment.LAName,
+            IsKS2 = true,
+            IsKS4 = true,
+            IsKS5 = true,
+            QualificationType = qualification,
+            ProgressScore = new ProgressScoreModel
+            {
+                Score = new CodedDouble(null, "Not applicable", "z"),
+                BandingRating = new CodedString(null, "Not applicable", "z"),
+                ConfidenceLevelLower = new CodedDouble(null, "Redacted for confidentiality", "c"),
+                ConfidenceLevelUpper = new CodedDouble(null, "Not applicable", "z"),
+                EnglandAverageScore = new CodedDouble(null, "Not available", "x"),
+            },
+            AverageResult = new AverageResultModel
+            {
+                Establishment = new() { Grade = new CodedString(null, "Not applicable", "z"), Points = new CodedDouble(null, "Not applicable", "z") },
+                LocalAuthority = new() { Grade = new CodedString(null, "Redacted for confidentiality", "c"), Points = new CodedDouble(null, "Redacted for confidentiality", "c") },
+                England = new() { Grade = new CodedString(null, "Not available", "x"), Points = new CodedDouble(null, "Not available", "x") },
+            }
+        };
+
+        _mockLevel3QualificationsService
+            .Setup(es => es.GetLevel3QualificationDetailsAsync(fakeEstablishment.URN, qualification, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.Level3Qualifications(
+            _mockLevel3QualificationsService.Object,
+            expectedResult.Urn,
+            expectedResult.SchoolName,
+            qualification,
+            CancellationToken.None) as ViewResult;
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as Level3QualificationViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(expectedResult.Urn, model.URN);
+        Assert.Equal(expectedResult.SchoolName, model.SchoolName);
+        Assert.Equal($"{expectedResult.LAName} average", model.LAName);
+        Assert.Equal(expectedResult.IsKS2, model.IsKS2);
+        Assert.Equal(expectedResult.IsKS4, model.IsKS4);
+        Assert.Equal(expectedResult.IsKS5, model.IsKS5);
+
+        Assert.Equal(NotAvailable, model.TotalNoOfStudentCompletedQualification.DisplayText());
+        Assert.Equal(NotAvailable, model.ProgressScore.Score.DisplayText());
+        Assert.Equal(NotAvailable, model.ProgressScore.BandingRating.DisplayText());
+        Assert.Equal(NotAvailable, model.ProgressScore.ConfidenceLevelLower.DisplayText());
+        Assert.Equal(NotAvailable, model.ProgressScore.ConfidenceLevelUpper.DisplayText());
+        Assert.Equal(NotAvailable, model.ProgressScore.EnglandAverageScore.DisplayText());
+        Assert.Equal(NotAvailable, model.ProgressScore.Progress8BandingContextDescription.DisplayText());
+
+        Assert.Equal(NotAvailable, model.AverageResult.EstablishmentPoints.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.EstablishmentGrade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthorityPoints.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthorityGrade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.EnglandPoints.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.EnglandGrade.DisplayText());
+    }
+
+    [Theory]
+    [InlineData(Level3.ALevel)]
+    [InlineData(Level3.Academic)]
+    [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
     public async Task Get_Level3Qualifications_Info_With_No_Data_ReturnsOk(Level3 qualification)
     {
         var expectedResult = new Level3QualificationModel
