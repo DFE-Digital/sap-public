@@ -120,16 +120,16 @@ public class KS2AdditionalMeasuresPageTests : PageTestsBase
 
         // Assert
         Assert.Equal("School", doc.GetTableHeaderContentByIdAndIndex("additional-measures-breakdown-table", 1, 0));
-        Assert.Equal(expectedModel.EstablishmentGrammarAtExpectedStandard!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("additional-measures-breakdown-table", 1, 0));
-        Assert.Equal(expectedModel.EstablishmentGrammarAtHigherStandard!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("additional-measures-breakdown-table", 1, 1));
+        Assert.Equal(expectedModel.EstablishmentGrammarAtExpectedStandard!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("additional-measures-breakdown-table", 1, 0));
+        Assert.Equal(expectedModel.EstablishmentGrammarAtHigherStandard!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("additional-measures-breakdown-table", 1, 1));
 
         Assert.Equal($"{_laName} average", doc.GetTableHeaderContentByIdAndIndex("additional-measures-breakdown-table", 2, 0));
-        Assert.Equal(expectedModel.LAGrammarAtExpectedStandard!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("additional-measures-breakdown-table",2, 0));
-        Assert.Equal(expectedModel.LAGrammarAtHigherStandard!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("additional-measures-breakdown-table", 2, 1));
+        Assert.Equal(expectedModel.LAGrammarAtExpectedStandard!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("additional-measures-breakdown-table",2, 0));
+        Assert.Equal(expectedModel.LAGrammarAtHigherStandard!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("additional-measures-breakdown-table", 2, 1));
 
         Assert.Equal("England average", doc.GetTableHeaderContentByIdAndIndex("additional-measures-breakdown-table", 3, 0));
-        Assert.Equal(expectedModel.EnglandGrammarAtExpectedStandard!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("additional-measures-breakdown-table", 3, 0));
-        Assert.Equal(expectedModel.EnglandGrammarAtHigherStandard!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("additional-measures-breakdown-table", 3, 1));
+        Assert.Equal(expectedModel.EnglandGrammarAtExpectedStandard!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("additional-measures-breakdown-table", 3, 0));
+        Assert.Equal(expectedModel.EnglandGrammarAtHigherStandard!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("additional-measures-breakdown-table", 3, 1));
 
     }
 
