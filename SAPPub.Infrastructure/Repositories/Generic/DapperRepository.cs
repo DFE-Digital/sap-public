@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Logging;
 using Npgsql;
+using SAPPub.Core.Entities.Performance;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Infrastructure.Mapping.ValueCodes;
 using SAPPub.Infrastructure.Repositories.Helpers;
@@ -29,6 +30,7 @@ namespace SAPPub.Infrastructure.Repositories.Generic
                 return Task.FromResult<T?>(default);
 
             // Convention: "Id" parameter name; feature repos can call ReadSingleAsync for non-Id keys.
+
             return ReadSingleAsync(new { Id = id }, ct);
         }
 
@@ -128,7 +130,6 @@ namespace SAPPub.Infrastructure.Repositories.Generic
                 return default;
             }
         }
-
         public async Task<bool> WriteAsync(object? writeObject, CancellationToken ct = default)
         {
             if (writeObject is null)

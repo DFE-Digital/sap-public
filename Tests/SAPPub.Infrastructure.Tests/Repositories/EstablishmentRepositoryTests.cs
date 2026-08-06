@@ -69,7 +69,7 @@ namespace SAPPub.Infrastructure.Tests.Repositories
         public void BuildSearchSqlParts_IncludeKs5True_DoesNotApplyKs5Filter()
         {
             var query = new SearchQuery { Name = "test" };
-            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKs2: true);
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKS2: true);
 
             var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
             var expectedPredicate = visibilitySpec.ToSqlPredicate();
@@ -83,7 +83,7 @@ namespace SAPPub.Infrastructure.Tests.Repositories
         public void BuildSearchSqlParts_IncludeKs5False_AppliesKs5Filter()
         {
             var query = new SearchQuery { Name = "test" };
-            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: false, includeKs2: true);
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: false, includeKS2: true);
 
             var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
             var expectedPredicate = visibilitySpec.ToSqlPredicate();
@@ -97,7 +97,7 @@ namespace SAPPub.Infrastructure.Tests.Repositories
         public void BuildSearchSqlParts_NameOnly_BuildsExpectedWhereAndOrder()
         {
             var query = new SearchQuery { Name = "academy" };
-            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKs2: true);
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKS2: true);
 
             var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
 
@@ -123,7 +123,7 @@ namespace SAPPub.Infrastructure.Tests.Repositories
                 Longitude = -0.1278f,
                 Distance = 10
             };
-            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKs2: true);
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKS2: true);
 
             var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
 
@@ -153,7 +153,7 @@ namespace SAPPub.Infrastructure.Tests.Repositories
                 Longitude = -1.0f,
                 Distance = 5
             };
-            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: false, includeKs2: true);
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: false, includeKS2: true);
 
             var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
             var expectedPredicate = visibilitySpec.ToSqlPredicate();
@@ -166,10 +166,10 @@ namespace SAPPub.Infrastructure.Tests.Repositories
         }
 
         [Fact]
-        public void BuildSearchSqlParts_IncludeKs2False_AppliesKs2Filter()
+        public void BuildSearchSqlParts_IncludeKS2False_AppliesKS2Filter()
         {
             var query = new SearchQuery { Name = "test" };
-            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKs2: false);
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKS2: false);
 
             var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
             var expectedPredicate = visibilitySpec.ToSqlPredicate();
@@ -180,10 +180,10 @@ namespace SAPPub.Infrastructure.Tests.Repositories
         }
 
         [Fact]
-        public void BuildSearchSqlParts_IncludeKs2True_DoesNotApplyKs2Filter()
+        public void BuildSearchSqlParts_IncludeKS2True_DoesNotApplyKS2Filter()
         {
             var query = new SearchQuery { Name = "test" };
-            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: false, includeKs2: true);
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: false, includeKS2: true);
 
             var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
             var expectedPredicate = visibilitySpec.ToSqlPredicate();
@@ -195,10 +195,10 @@ namespace SAPPub.Infrastructure.Tests.Repositories
         }
 
         [Fact]
-        public void BuildSearchSqlParts_BothKs2AndKs5False_AppliesBothFilters()
+        public void BuildSearchSqlParts_BothKS2AndKs5False_AppliesBothFilters()
         {
             var query = new SearchQuery { Name = "test" };
-            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: false, includeKs2: false);
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: false, includeKS2: false);
 
             var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
             var expectedPredicate = visibilitySpec.ToSqlPredicate();
@@ -214,7 +214,7 @@ namespace SAPPub.Infrastructure.Tests.Repositories
         public void BuildSearchSqlParts_PageSizeNull_UsesMaxResults_AndOffsetUsesResolvedPageSize()
         {
             var query = new SearchQuery { Page = 2, PageSize = null };
-            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKs2: true);
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKS2: true);
 
             var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
 
@@ -226,7 +226,7 @@ namespace SAPPub.Infrastructure.Tests.Repositories
         public void BuildSearchSqlParts_PageSizeAboveMax_ClampsToMaxResults()
         {
             var query = new SearchQuery { Page = 1, PageSize = 999 };
-            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKs2: true);
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKS2: true);
 
             var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
 
@@ -238,7 +238,7 @@ namespace SAPPub.Infrastructure.Tests.Repositories
         public void BuildSearchSqlParts_PageSizeBelowOne_ClampsToOne()
         {
             var query = new SearchQuery { Page = 3, PageSize = 0 };
-            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKs2: true);
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKS2: true);
 
             var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
 

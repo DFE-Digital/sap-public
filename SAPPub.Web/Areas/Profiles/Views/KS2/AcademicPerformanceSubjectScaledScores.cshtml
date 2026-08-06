@@ -30,7 +30,7 @@
         </p>
 
         <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
-            <ul class="moj-sub-navigation__list">              
+            <ul class="moj-sub-navigation__list">
                 <li class="moj-sub-navigation__item">
                     <a class="moj-sub-navigation__link" asp-route="@RouteConstants.PrimaryAcademicPerformancePupilProgress" asp-all-route-data="@Model.RouteAttributes">@PrimarySchoolPageTitles.PupilProgress</a>
                 </li>
@@ -46,7 +46,134 @@
             </ul>
         </nav>
 
-        <h2 class="govuk-heading-l">@PrimarySchoolPageTitles.SubjectScaledScores</h2>
+        <h2 class="govuk-heading-l">Scaled scores in reading and maths for the previous academic year</h2>
+
+        <p class="govuk-body">
+            Information in this section is for the 2024 to 2025 academic year
+        </p>
+
+        <p class="govuk-body">
+            These measures show pupils’ average scaled scores in reading and maths.
+        </p>
+
+        <p class="govuk-body">
+            Pupils sit national tests in English reading and maths, typically when they are aged 10 or 11 and in year 6. The score they get on their test is converted into a scaled score.
+        </p>
+
+        <p class="govuk-body">
+            The lowest scaled score a pupil can achieve is 80 and the highest is 120. When pupils achieve a scaled score of:
+        </p>
+
+        <ul>
+            <li>100 or higher, they achieve the expected standard</li>
+            <li>110 or higher, they achieve a higher standard</li>
+        </ul>
+
+        <div class="data-container">
+            <h3 id="chartHeading" class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">
+                Average scaled score in reading
+            </h3>
+
+
+            <p class="govuk-body">
+                The lowest scaled score a pupil can achieve is 80 and the highest is 120. A scaled score of 100 is the expected standard.
+            </p>
+
+            <input type="radio" name="dataView" id="current-view" class="govuk-visually-hidden dataview-button" aria-labelledby="read-show-current-data-btn" checked />
+            <input type="radio" name="dataView" id="data-overtime-view" class="govuk-visually-hidden dataview-button" aria-labelledby="read-show-data-over-time-btn" />
+
+            <div id="read-current-year-data-container" class="read-current-year-data-container">
+                @if (Model.HasEstablishmentData.IsAvailable)
+                {
+                    <div id="read-current-year-chart-container" class="chart-container read-current-year-chart-container">
+                        <canvas id="read-chart"
+                                class="js-chart"
+                                data-type="bar"
+                                data-chart='@Html.Raw(Json.Serialize(Model.AllReadData))'
+                                data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
+                        </canvas>
+                    </div>
+
+                    <div id="read-current-year-table-container" class="read-current-year-table-container">
+                        <table id="read-current-year-table" class="govuk-table">
+                            <tbody class="govuk-table__body">
+                                @foreach (var label in Model.AllReadData.Labels.Select((value, i) => (value, i)))
+                                {
+                                    <tr class="govuk-table__row">
+                                        <th scope="row" class="govuk-table__header">@label.value</th>
+                                        <td class="govuk-table__cell">@Model.AllReadData.Data[label.i]</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="govuk-button-group">
+                        <govuk-button id="read-current-year-show-btn" type="button" class="govuk-button--secondary read-current-year-show-btn">Show as a table</govuk-button>
+                    </div>
+
+                    <div class="govuk-button-group">
+                        <label id="read-show-data-over-time-btn" for="data-overtime-view" class="govuk-button govuk-button--secondary" tabindex="0">Show data over time</label>
+                    </div>
+                }
+            </div>
+
+            <div id="read-data-over-time-data-container" class="read-data-over-time-data-container @(Model.HasEstablishmentData.IsAvailable ? "" : "govuk-!-display-block")">
+                @if (Model.HasEstablishmentData.IsAvailable)
+                {
+                    <div id="read-data-over-time-chart-container" class="chart-container read-data-over-time-chart-container">
+                        <div id="read-data-overtime-chart-legend" class="chart-legend" data-chart-id="read-data-overtime-chart"></div>
+                        <div class="chart-container stacked">
+                            <canvas id="read-data-overtime-chart"
+                                    class="js-chart"
+                                    data-type="bar"
+                                    data-show-legend="true"
+                                    data-chart='@Html.Raw(Json.Serialize(Model.AllReadOverTimeData))'
+                                    data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
+                            </canvas>
+                        </div>
+                    </div>
+                }
+
+                <div id="read-data-over-time-table-container" class="read-data-over-time-table-container">
+                    <table id="read-data-overtime-table" class="govuk-table">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header"></th>
+                                @foreach (var label in Model.AllReadOverTimeData.Labels)
+                                {
+                                    <th scope="col" class="govuk-table__header">@label</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            @foreach (var dataset in Model.AllReadOverTimeData.Datasets.Select((value, i) => (value, i)))
+                            {
+                                <tr class="govuk-table__row">
+                                    <th scope="row" class="govuk-table__header">@dataset.value.Label</th>
+                                    @foreach (var data in dataset.value.Data)
+                                    {
+                                        <td class="govuk-table__cell">@(data.HasValue? data : Constants.NotAvailable)</td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                @if (Model.HasEstablishmentData.IsAvailable)
+                {
+                    <div class="govuk-button-group">
+                        <govuk-button id="read-data-over-time-show-btn" type="button" class="govuk-button--secondary read-data-over-time-show-btn">Show as a table</govuk-button>
+                    </div>
+
+                    <div class="govuk-button-group">
+                        <label id="read-show-current-data-btn" for="current-view" class="govuk-button govuk-button--secondary" tabindex="0">Show current data</label>
+                    </div>
+                }
+            </div>
+        </div>
+
 
         <govuk-pagination id="bottom-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.PrimaryAcademicPerformancePupilProgress" asp-all-route-data="@Model.RouteAttributes">Primary academic performance: Pupil progress</govuk-pagination-previous>
@@ -57,3 +184,12 @@
         </govuk-pagination>
     </div>
 </div>
+
+
+
+@section Scripts {
+    <script src="~/js/chart.umd.js"></script>
+    <script src="~/js/chartjs-plugin-datalabels.min.js"></script>
+    <script src="~/js/chart-factory-scaled.js"></script>
+    <script src="~/js/scaled-scores-results.js"></script>
+}

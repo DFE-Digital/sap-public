@@ -393,6 +393,52 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
         }
     };
 
+    private static readonly Dictionary<string, KS2EstablishmentPerformance> KS2EstablishmentPerformances = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["149976"] = new KS2EstablishmentPerformance
+        {
+            Id = "149976",
+            READ_AVERAGE_Est_Current_Num_Coded = new Core.ValueObjects.CodedDouble(1, "", "1"),
+            READ_AVERAGE_Est_Previous_Num_Coded = new Core.ValueObjects.CodedDouble(2, "", "2"),
+            READ_AVERAGE_Est_Previous2_Num_Coded = new Core.ValueObjects.CodedDouble(3, "", "3"),
+        },
+        ["143034"] = new KS2EstablishmentPerformance
+        {
+            Id = "143034",
+            READ_AVERAGE_Est_Current_Num_Coded = new Core.ValueObjects.CodedDouble(null, "Not available", "c"),
+            READ_AVERAGE_Est_Previous_Num_Coded = new Core.ValueObjects.CodedDouble(2.1, "", "2.1"),
+            READ_AVERAGE_Est_Previous2_Num_Coded = new Core.ValueObjects.CodedDouble(3.1, "", "3.1"),
+        },
+    };
+
+    private static readonly Dictionary<string, KS2LAPerformance> KS2LAPerformances = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["886"] = new KS2LAPerformance
+        {
+            Id = "886",
+            READ_AVERAGE_LA_Current_Num_Coded = new Core.ValueObjects.CodedDouble(1, "", "1"),
+            READ_AVERAGE_LA_Previous_Num_Coded = new Core.ValueObjects.CodedDouble(2, "", "2"),
+            READ_AVERAGE_LA_Previous2_Num_Coded = new Core.ValueObjects.CodedDouble(3, "", "3"),
+        },
+        ["845"] = new KS2LAPerformance
+        {
+            Id = "845",
+            READ_AVERAGE_LA_Current_Num_Coded = new Core.ValueObjects.CodedDouble(1.1, "", "1.1"),
+            READ_AVERAGE_LA_Previous_Num_Coded = new Core.ValueObjects.CodedDouble(2.1, "", "2.1"),
+            READ_AVERAGE_LA_Previous2_Num_Coded = new Core.ValueObjects.CodedDouble(3.1, "", "3.1"),
+        },
+    };
+
+    private static readonly List<KS2EnglandPerformance> KS2EnglandPerformances =
+    [
+        new KS2EnglandPerformance{
+            Id = "",
+            READ_AVERAGE_Eng_Current_Num_Coded = new Core.ValueObjects.CodedDouble(1, "", "1"),
+            READ_AVERAGE_Eng_Previous_Num_Coded = new Core.ValueObjects.CodedDouble(2, "", "2"),
+            READ_AVERAGE_Eng_Previous2_Num_Coded = new Core.ValueObjects.CodedDouble(3, "", "3"),
+        },
+        new KS2EnglandPerformance{}
+    ];
 
     public Task<T?> ReadAsync(string id, CancellationToken ct = default)
         => ReadSingleAsync(new { Id = id }, ct);
@@ -426,6 +472,27 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
 
             if (!string.IsNullOrWhiteSpace(id) && EstablishmentPerformances.TryGetValue(id, out var est))
                 return Task.FromResult<T?>((T)(object)est);
+        }
+
+        if (typeof(T) == typeof(KS2EstablishmentPerformance))
+        {
+            var id = GetPropertyString(parameters, "Id");
+
+            if (!string.IsNullOrWhiteSpace(id) && KS2EstablishmentPerformances.TryGetValue(id, out var est))
+                return Task.FromResult<T?>((T)(object)est);
+        }
+
+        if (typeof(T) == typeof(KS2LAPerformance))
+        {
+            var id = GetPropertyString(parameters, "Id");
+
+            if (!string.IsNullOrWhiteSpace(id) && KS2LAPerformances.TryGetValue(id, out var est))
+                return Task.FromResult<T?>((T)(object)est);
+        }
+
+        if (typeof(T) == typeof(KS2EnglandPerformance))
+        {
+            return Task.FromResult<T?>((T)(object)KS2EnglandPerformances[0]);
         }
 
         if (typeof(T) == typeof(KS4EstablishmentDestinations))
