@@ -11,6 +11,7 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
     private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
     {
         ["143034"] = "school/143034/st-pauls-church-of-england-academy/curriculum/primary",
+        ["100273"] = "school/100273/saint-paul-roman-catholic-infant-school/curriculum/primary",
         ["150009"] = "school/150009/abraham-moss-community-school/curriculum/primary" // KS2 + KS4 school
     };
 
@@ -124,5 +125,110 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
         // Assert
         Assert.Equal("Primary Curriculum", primaryLinkText?.Trim());
         Assert.Equal("Secondary Curriculum", secondaryLinkText?.Trim());
+    }
+
+    [Fact]
+    public async Task CurriculumAndExtraCurricularActivitiesPage_CurrentCurriculum_ContactSchoolText()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["100273"]);
+
+        // Act
+        var summaryCard = Page.GetByTestId("current-curriculum-summary");
+        await summaryCard.WaitForAsync();
+
+        var contactSchoolInfoKs2 = summaryCard.GetByTestId("contact-school-info-ks2");
+
+        // Assert
+        Assert.True(await contactSchoolInfoKs2.IsVisibleAsync());
+    }
+
+    [Fact]
+    public async Task CurriculumAndExtraCurricularActivitiesPage_Displays_Curriculum_Summary()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
+
+        // Act
+        var summaryCard = Page.Locator("#current-curriculum-summary");
+
+        // Assert
+        Assert.True(await summaryCard.IsVisibleAsync());
+
+        var contactSchoolInfo = summaryCard.GetByTestId("contact-school-info-ks2");
+        Assert.False(await contactSchoolInfo.IsVisibleAsync());
+    }
+
+    [Fact]
+    public async Task CurriculumAndExtraCurricularActivitiesPage_Displays_Extra_Curriculum_Summary()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
+
+        // Act
+        var summaryCard = Page.Locator("#current-extra-curricular-activities-offered-summary");
+
+        // Assert
+        Assert.True(await summaryCard.IsVisibleAsync());
+
+        var contactSchoolInfo = summaryCard.GetByTestId("contact-school-info-extra");
+        Assert.False(await contactSchoolInfo.IsVisibleAsync());
+    }
+
+    [Fact]
+    public async Task CurriculumAndExtraCurricularActivitiesPage_Displays_Extra_Curriculum_Summary_ContactSchoolText()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["100273"]);
+
+        // Act
+        var summaryCard = Page.Locator("#current-extra-curricular-activities-offered-summary");
+        await summaryCard.WaitForAsync();
+
+        var contactSchoolInfo = summaryCard.GetByTestId("contact-school-info-extra");
+
+        // Assert
+        Assert.True(await contactSchoolInfo.IsVisibleAsync());
+
+    }
+
+    [Fact]
+    public async Task CurriculumAndExtraCurricularActivitiesPage_DisplaysPagination()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
+
+        // Act
+        var isVisible = await Page.Locator("#current-extra-curricular-activities-pagination").IsVisibleAsync();
+        var previousPaginationLink = Page.Locator("#current-extra-curricular-activities-pagination .govuk-pagination__prev a");
+        var nextPaginationLink = Page.Locator("#current-extra-curricular-activities-pagination .govuk-pagination__next a");
+
+        var previousPaginationText = await previousPaginationLink.TextContentAsync();
+        var nextPaginationText = await nextPaginationLink.TextContentAsync();
+
+        // Assert
+        Assert.True(isVisible);
+        Assert.Equal("Admissions", previousPaginationText?.Trim());
+        Assert.Equal("Attendance", nextPaginationText?.Trim());
+    }
+
+    [Fact]
+    public async Task CurriculumAndExtraCurricularActivitiesPage_DisplaysPagination_WhenMultiplePhases()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["150009"]);
+
+        // Act
+        var isVisible = await Page.Locator("#current-extra-curricular-activities-pagination").IsVisibleAsync();
+        var previousPaginationLink = Page.Locator("#current-extra-curricular-activities-pagination .govuk-pagination__prev a");
+        var nextPaginationLink = Page.Locator("#current-extra-curricular-activities-pagination .govuk-pagination__next a");
+
+        var previousPaginationText = await previousPaginationLink.TextContentAsync();
+        var nextPaginationText = await nextPaginationLink.TextContentAsync();
+
+        // Assert
+        Assert.True(isVisible);
+        Assert.Equal("Secondary admissions", previousPaginationText?.Trim());
+        Assert.Equal("Secondary curriculum", nextPaginationText?.Trim());
     }
 }
