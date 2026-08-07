@@ -85,7 +85,7 @@ public class EstablishmentServiceModel
 
     public string TypeOfEstablishmentName { get; set; } = string.Empty;
 
-    public string EstablishmentTypeGroupId { get; set; } = string.Empty;
+    public EstablishmentTypeGroup EstablishmentTypeGroup { get; set; }
 
     public string EstablishmentTypeGroupName { get; set; } = string.Empty;
 
@@ -123,6 +123,8 @@ public class EstablishmentServiceModel
         TypeOfEstablishment.AcademySpecialSponsorLed or
         TypeOfEstablishment.FreeSchoolsSpecial or
         TypeOfEstablishment.AcademySpecialConverter;
+
+    public bool IsIndependentSchool => EstablishmentTypeGroup == EstablishmentTypeGroup.IndependentSchools;
 
     public EstablishmentPerformance KS4Performance { get; set; } = new();
 

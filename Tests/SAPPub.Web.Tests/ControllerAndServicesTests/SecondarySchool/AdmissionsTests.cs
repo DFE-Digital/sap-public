@@ -12,8 +12,8 @@ using SAPPub.Core.Services;
 using SAPPub.Core.Services.KS4.Admissions;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Areas.Profiles.Controllers;
+using SAPPub.Web.Areas.Profiles.ViewModels.Admissions;
 using SAPPub.Web.Constants;
-using SAPPub.Web.Models.SecondarySchool;
 
 namespace SAPPub.Web.Tests.ControllerAndServicesTests.SecondarySchool;
 
@@ -117,7 +117,7 @@ public class AdmissionsTests
         Assert.NotNull(model);
         Assert.Equal(_establishment.URN, model.URN);
         Assert.Equal(_establishment.EstablishmentName, model.SchoolName);
-        Assert.Equal(lASchoolAdmissionsUrl, model.LASecondarySchoolAdmissionsLinkUrl);
+        Assert.Equal(lASchoolAdmissionsUrl, model.LASchoolAdmissionsLinkUrl);
         Assert.Equal(laName, model.LAName);
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_establishment.URN, model.RouteAttributes[RouteConstants.URN]);

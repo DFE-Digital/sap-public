@@ -255,7 +255,7 @@ public class EstablishmentTestBuilder
         return this;
     }
 
-    public EstablishmentTestBuilder WithEstablishmentTypeGroupId(string establishmentTypeGroupId)
+    public EstablishmentTestBuilder WithEstablishmentTypeGroupId(int establishmentTypeGroupId)
     {
         _establishment.EstablishmentTypeGroupId = establishmentTypeGroupId;
         return this;

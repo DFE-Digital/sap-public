@@ -12,7 +12,7 @@ using SAPPub.Core.ServiceModels.KS4.Admissions;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Areas.Profiles.Controllers;
 using SAPPub.Web.Constants;
-using SAPPub.Web.Models.SecondarySchool;
+using SAPPub.Web.Areas.Profiles.ViewModels.Admissions;
 
 namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers;
 
@@ -48,7 +48,7 @@ public class AdmissionsControllerTests
             .WithReligiousCharacterName("ReligiousCharacter")
             .WithSixthForm(false)
             .WithResourcedProvisionName("Resourced provision")
-            .WithEstablishmentTypeGroupId("1")
+            .WithEstablishmentTypeGroupId((int)EstablishmentTypeGroup.Colleges)
             .WithStatusCode(1)
             .WithOpenReasonId(10)
             .WithOpenDate()
@@ -88,6 +88,7 @@ public class AdmissionsControllerTests
                 LAName: laName,
                 LASchoolAdmissionsUrl: lASchoolAdmissionsUrl,
                 EstablishmentStatus: EstablishmentStatus.Open,
+                IsIndependentSchool: false,
                 IsKS2: false,
                 IsKS4: true,
                 IsKS5: false
@@ -104,7 +105,7 @@ public class AdmissionsControllerTests
         Assert.Equal(_fakeEstablishment.URN, model.URN);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
         Assert.Equal(_fakeEstablishment.Website, model.SchoolWebsite.Value);
-        Assert.Equal(lASchoolAdmissionsUrl, model.LASecondarySchoolAdmissionsLinkUrl);
+        Assert.Equal(lASchoolAdmissionsUrl, model.LASchoolAdmissionsLinkUrl);
         Assert.Equal(laName, model.LAName);
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
@@ -134,7 +135,8 @@ public class AdmissionsControllerTests
                 EstablishmentStatus: EstablishmentStatus.Open,
                 IsKS2: false,
                 IsKS4: true,
-                IsKS5: false
+                IsKS5: false,
+                IsIndependentSchool: false
             ));
 
         var result = await _controller.KS4(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
@@ -184,7 +186,8 @@ public class AdmissionsControllerTests
                 EstablishmentStatus: statusCode,
                 IsKS2: false,
                 IsKS4: true,
-                IsKS5: false
+                IsKS5: false,
+                IsIndependentSchool: false
             ));
 
         var result = await _controller.KS4(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;

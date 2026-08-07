@@ -10,5 +10,6 @@ public record AdmissionsServiceModel(
     EstablishmentStatus? EstablishmentStatus,
     bool IsKS2, 
     bool IsKS4, 
-    bool IsKS5
+    bool IsKS5,
+    bool IsIndependentSchool
 );

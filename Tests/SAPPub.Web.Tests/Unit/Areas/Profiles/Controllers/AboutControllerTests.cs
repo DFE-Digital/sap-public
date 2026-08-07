@@ -43,7 +43,7 @@ public class AboutControllerTests : BaseProfilesTests
             ReligiousCharacter = fakeEstablishment.ReligiousCharacterName,
             OfficialSixthFormId = fakeEstablishment.OfficialSixthFormId,
             ResourcedProvisionName = fakeEstablishment.ResourcedProvisionName,
-            EstablishmentTypeGroupId = fakeEstablishment.EstablishmentTypeGroupId,
+            EstablishmentTypeGroup = fakeEstablishment.EstablishmentTypeGroup,
             Status = fakeEstablishment.StatusCode.ToStatus(),
             ClosedDate = fakeEstablishment.ClosedDate.ToDateOnly(),
             OpenReasonId = fakeEstablishment.OpenReasonId,
@@ -385,12 +385,12 @@ public class AboutControllerTests : BaseProfilesTests
     }
 
     [Theory]
-    [InlineData("4", true)]
-    [InlineData("2", false)]
-    [InlineData("9", false)]
-    public async Task Get_AboutSchool_SchoolFeatures_IsLocalAuthoritySchool(string establishmentTypeGroupId, bool expectedOutput)
+    [InlineData(EstablishmentTypeGroup.LocalAuthorityMaintainedSchools, true)]
+    [InlineData(EstablishmentTypeGroup.Academies, false)]
+    [InlineData(EstablishmentTypeGroup.FreeSchools, false)]
+    public async Task Get_AboutSchool_SchoolFeatures_IsLocalAuthoritySchool(EstablishmentTypeGroup establishmentTypeGroup, bool expectedOutput)
     {
-        fakeEstablishment.EstablishmentTypeGroupId = establishmentTypeGroupId;
+        fakeEstablishment.EstablishmentTypeGroup = establishmentTypeGroup;
 
         var expectedResult = SchoolDetails();
 
