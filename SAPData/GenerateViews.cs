@@ -138,13 +138,13 @@ public sealed class GenerateViews
                     keyStageUrnsSqlConditions: keyStageUrnsSqlConditions,
                     excludedUrns: excludedUrns);
 
-                // CML TODO - need to add a comma between the keyStageUrnsCtes and breakfastClubCte
-                keyStageUrnsCtes.Add("breakfast_club_urns", breakfastClubCte);
+                var ctes = new Dictionary<string, string>(keyStageUrnsCtes);
+                ctes.Add("breakfast_club_urns", breakfastClubCte);
 
                 sql = GenerateEstablishmentDimensionView(
                     rawTable,
                     establishmentFilters,
-                    keyStageUrnsCtes,
+                    ctes,
                     keyStageUrnsSqlConditions,
                     breakfastClubUrnsSqlConditions,
                     tableMap);
@@ -412,38 +412,21 @@ public sealed class GenerateViews
         Dictionary<string, string> tableMap,
         string cteName)
     {
-        var fileGroups = rows
-            .Where(r => r.Range == "Establishment" && r.Type == "BreakfastClub")
-            .GroupBy(r => (r.FileName ?? "").Trim().TrimStart('\uFEFF'))
-            .Where(g => !string.IsNullOrWhiteSpace(g.Key))
-            .ToList();
+        // find BreakfastClub row in datamap
+        var row = rows
+            .Single(r => r.Range == "Establishment" && r.Type == "BreakfastClub");
 
-        var cteParts = new List<string>();
-        foreach (var group in fileGroups)
-        {
-            var fileName = group.Key;
-            if (!TryResolveRawTable(tableMap, fileName, out var rawTable) || string.IsNullOrEmpty(rawTable))
-                continue;
-
-            var idCol = DbCol(group.First().RecordFilterBy);
-            var col = string.IsNullOrWhiteSpace(idCol) ? "urn" : idCol;
-
-            cteParts.Add($"SELECT DISTINCT t.\"{col}\" AS \"urn\" FROM {rawTable} t");
-        }
-
-        if (cteParts.Count == 0)
+        var fileName = row.FileName;
+        if (!TryResolveRawTable(tableMap, fileName, out var rawTable) || string.IsNullOrEmpty(rawTable))
             return string.Empty;
 
-        var sb = new StringBuilder();
-        sb.AppendLine($"{cteName} AS (");
-        for (int i = 0; i < cteParts.Count; i++)
-        {
-            var union = i == 0 ? "    " : "    UNION ";
-            sb.AppendLine($"{union}{cteParts[i]}");
-        }
-        sb.AppendLine(")");
+        var idCol = DbCol(row.RecordFilterBy);
+        var col = string.IsNullOrWhiteSpace(idCol) ? "urn" : idCol;
 
-        return sb.ToString();
+        var cteParts = ($"SELECT DISTINCT t.\"{col}\" AS \"urn\" FROM {rawTable} t");
+
+        var cteLine = $"{cteName} AS ({cteParts})";
+        return cteLine;
     }
 
     // =====================================================
