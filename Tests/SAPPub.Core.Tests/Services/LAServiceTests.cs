@@ -38,7 +38,7 @@ public class LAServiceTests
         ReligiousCharacterName = "ReligiousCharacter",
         OfficialSixthFormId = "No",
         ResourcedProvisionName = "Resourced provision",
-        EstablishmentTypeGroupId = "4",
+        EstablishmentTypeGroup = Enums.EstablishmentTypeGroup.LocalAuthorityMaintainedSchools,
         SenTypes = "SLCN - Speech, language and Communication, ASD - Autistic Spectrum Disorder, SEMH - Social"
     };
 

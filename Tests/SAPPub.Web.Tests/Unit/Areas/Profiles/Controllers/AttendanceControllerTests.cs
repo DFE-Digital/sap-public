@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services.KS4.Attendance;
 using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.KS4.Attendance;
@@ -41,7 +42,7 @@ public class AttendanceControllerTests
             .WithReligiousCharacterName("ReligiousCharacter")
             .WithSixthForm(false)
             .WithResourcedProvisionName("Resourced provision")
-            .WithEstablishmentTypeGroupId("1")
+            .WithEstablishmentTypeGroupId((int)EstablishmentTypeGroup.Colleges)
             .WithStatusCode(1)
             .WithOpenReasonId(10)
             .WithOpenDate()

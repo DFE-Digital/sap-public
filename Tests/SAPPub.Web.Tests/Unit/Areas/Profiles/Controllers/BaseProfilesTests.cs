@@ -1,4 +1,5 @@
 ﻿using Moq;
+using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.ServiceModels;
 using SAPPub.Core.Tests.TestBuilders;
@@ -33,7 +34,7 @@ public class BaseProfilesTests
             .WithReligiousCharacterName("ReligiousCharacter")
             .WithSixthForm(false)
             .WithResourcedProvisionName("Resourced provision")
-            .WithEstablishmentTypeGroupId("1")
+            .WithEstablishmentTypeGroupId((int)EstablishmentTypeGroup.Colleges)
             .WithStatusCode(1)
             .WithOpenReasonId(10)
             .WithOpenDate()
