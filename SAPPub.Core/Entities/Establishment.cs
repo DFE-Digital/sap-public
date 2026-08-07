@@ -172,7 +172,8 @@ public class Establishment
             SenTypes = e.SenTypes,
             IsKS2 = e.IsKS2,
             IsKS4 = e.IsKS4,
-            IsKS5 = e.IsKS5
+            IsKS5 = e.IsKS5,
+            KS2WraparoundCare = e.KS2WraparoundCare
         };
     }
 }
