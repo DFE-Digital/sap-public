@@ -81,7 +81,7 @@ public class Level3QualificationsModelBuilder
             ProgressScore = new ProgressScoreModel()
             {
                 Score = new CodedDouble(Value: _progressScore ?? 95.55, string.Empty, string.Empty),
-                BandingRating = "Average",
+                BandingRating = new CodedString("Average", string.Empty, string.Empty),
                 ConfidenceLevelLower = new CodedDouble(1.0, string.Empty, string.Empty),
                 ConfidenceLevelUpper = new CodedDouble(5.5, string.Empty, string.Empty),
                 EnglandAverageScore = new CodedDouble(Value: _englandProgressAverageScore.IsSet ? _englandProgressAverageScore.Value : 1.5, string.Empty, string.Empty),
@@ -90,17 +90,17 @@ public class Level3QualificationsModelBuilder
             {
                 Establishment = new AverageResult
                 {
-                    Grade = "A",
+                    Grade = new CodedString("A", string.Empty, string.Empty),
                     Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
                 },
                 LocalAuthority = new AverageResult
                 {
-                    Grade = "B",
+                    Grade = new CodedString("B", string.Empty, string.Empty),
                     Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
                 },
                 England = new AverageResult
                 {
-                    Grade = "A",
+                    Grade = new CodedString("A", string.Empty, string.Empty),
                     Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
                 }
             }

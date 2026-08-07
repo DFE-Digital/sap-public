@@ -15,7 +15,7 @@ public class KS5EnglandPerformance
     public CodedDouble TALLPPE_ALEV_1618_Eng_Current_Num_Coded { get; set; }
 
     // A level Average result grade for England
-    public string? TALLPPEGRD_ALEV_1618_Eng_Current { get; set; }
+    public CodedString TALLPPEGRD_ALEV_1618_Eng_Current { get; set; }
 
     // Academic qualifications Progress score for England average
     public CodedDouble VA_INS_ACAD_Eng_Current_Num_Coded { get; set; }
@@ -24,7 +24,7 @@ public class KS5EnglandPerformance
     public CodedDouble TALLPPE_ACAD_1618_Eng_Current_Num_Coded { get; set; }
 
     // Academic qualifications Average result grade for England
-    public string? TALLPPEGRD_ACAD_1618_Eng_Current { get; set; }
+    public CodedString TALLPPEGRD_ACAD_1618_Eng_Current { get; set; }
 
     // Applied general qualifications Progress score for England average
     public CodedDouble VA_INS_AGEN_Eng_Current_Num_Coded { get; set; }
@@ -33,7 +33,16 @@ public class KS5EnglandPerformance
     public CodedDouble TALLPPE_AGEN_Eng_Current_Num_Coded { get; set; }
 
     // Applied general qualifications Average result grade for England
-    public string? TALLPPEGRD_AGEN_Eng_Current { get; set; }
+    public CodedString TALLPPEGRD_AGEN_Eng_Current { get; set; }
+
+    // Tech level Progress score for England average
+    public CodedDouble VA_INS_TLEV_Eng_Current_Num_Coded { get; set; }
+
+    // Tech level Average result points for England
+    public CodedDouble TALLPPE_TLEV_Eng_Current_Num_Coded { get; set; }
+
+    // Tech level Average result grade for England
+    public CodedString TALLPPEGRD_TLEV_Eng_Current { get; set; }
 
     // Average progress for English
     public CodedDouble PROGEX_E_Eng_Current_Num_Coded { get; set; }

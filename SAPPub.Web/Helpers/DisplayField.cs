@@ -45,6 +45,7 @@ public sealed class DisplayField<T>
         {
             null => string.Empty,
             CodedDouble cd when !cd.HasValue => displayReason ? cd.Reason : notAvailableText,
+            CodedString cs when !cs.HasValue => displayReason ? cs.Reason : notAvailableText,
             _ => formatter?.Invoke(value) ?? value?.ToString() ?? string.Empty
         };
     }

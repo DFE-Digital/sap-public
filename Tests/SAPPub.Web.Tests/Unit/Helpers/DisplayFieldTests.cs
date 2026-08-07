@@ -210,4 +210,64 @@ public class DisplayFieldTests
 
         Assert.Equal("Redacted for confidentiality", result);
     }
+
+    [Fact]
+    public void DisplayFieldCodedString_Available_ReturnsText()
+    {
+        var value = new CodedString("School", string.Empty, string.Empty);
+        var field = value.ToDisplayField();
+
+        Assert.NotNull(field);
+        Assert.True(field.IsAvailable);
+        Assert.False(field.IsNotAvailable);
+
+        var result = field.DisplayText();
+
+        Assert.Equal("School", result);
+    }
+
+    [Fact]
+    public void DisplayFieldCodedString_Available_NullValue_Returns_NotAvailable()
+    {
+        var value = new CodedString(null, string.Empty, string.Empty);
+        var field = value.ToDisplayField();
+
+        Assert.NotNull(field);
+        Assert.True(field.IsAvailable);
+        Assert.False(field.IsNotAvailable);
+
+        var result = field.DisplayText();
+
+        Assert.Equal("Not available", result);
+    }
+
+    [Fact]
+    public void DisplayFieldCodedString_Available_NullValue_DisplayReasonFalse_Returns_DefaultText()
+    {
+        var value = new CodedString(null, "Not applicable", "z");
+        var field = value.ToDisplayField();
+
+        Assert.NotNull(field);
+        Assert.True(field.IsAvailable);
+        Assert.False(field.IsNotAvailable);
+
+        var result = field.DisplayText(displayReason: false);
+
+        Assert.Equal("Not available", result);
+    }
+
+    [Fact]
+    public void DisplayFieldCodedString_Available_NullValue_DisplayReasonTrue_Returns_Reason()
+    {
+        var value = new CodedString(null, "Redacted for confidentiality", "c");
+        var field = value.ToDisplayField();
+
+        Assert.NotNull(field);
+        Assert.True(field.IsAvailable);
+        Assert.False(field.IsNotAvailable);
+
+        var result = field.DisplayText(d => $"{d.Value:F2}", displayReason: true);
+
+        Assert.Equal("Redacted for confidentiality", result);
+    }
 }

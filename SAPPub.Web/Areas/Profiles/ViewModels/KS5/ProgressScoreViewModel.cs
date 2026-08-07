@@ -8,7 +8,7 @@ public class ProgressScoreViewModel
 {
     public required DisplayField<CodedDouble> Score { get; init; }
 
-    public required DisplayField<string> BandingRating { get; init; }
+    public required DisplayField<CodedString> BandingRating { get; init; }
 
     public required DisplayField<CodedDouble> ConfidenceLevelUpper { get; init; }
 
@@ -27,7 +27,7 @@ public class ProgressScoreViewModel
             ConfidenceLevelUpper = model.ConfidenceLevelUpper.ToDisplayField(),
             ConfidenceLevelLower = model.ConfidenceLevelLower.ToDisplayField(),
             EnglandAverageScore = model.EnglandAverageScore.ToDisplayField(),
-            Progress8BandingContextDescription = AttainmentHelper.EstablishmentProgress8BandingContextStatement(model.BandingRating)
+            Progress8BandingContextDescription = AttainmentHelper.EstablishmentProgress8BandingContextStatement(model.BandingRating.Value)
         };        
     }
 }

@@ -149,6 +149,7 @@ namespace SAPPub.Web.Middleware
             if (Interlocked.Exchange(ref _dapperConfigured, 1) == 0)
             {
                 SqlMapper.AddTypeHandler(new CodedDoubleTypeHandler(reasonLookup));
+                SqlMapper.AddTypeHandler(new CodedStringTypeHandler(reasonLookup));
             }
         }
     }
