@@ -416,6 +416,7 @@ public sealed class GenerateViews
         var row = rows
             .Single(r => r.Range == "Establishment" && r.Type == "BreakfastClub");
 
+        // get filename from datamap row
         var fileName = row.FileName;
         if (!TryResolveRawTable(tableMap, fileName, out var rawTable) || string.IsNullOrEmpty(rawTable))
             return string.Empty;
