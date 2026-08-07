@@ -1,7 +1,5 @@
 ﻿using SAPPub.Core.ServiceModels;
-using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Core.ServiceModels.Performance;
-using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models;
 using SAPPub.Web.Models.Charts;
@@ -60,8 +58,6 @@ public class AcademicPerformanceSubjectScaledScoresViewModel : BaseViewModel
                     }
                ],
         };
-
-
 
         return new AcademicPerformanceSubjectScaledScoresViewModel
         {

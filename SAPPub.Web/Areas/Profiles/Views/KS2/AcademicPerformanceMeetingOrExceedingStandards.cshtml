@@ -46,7 +46,36 @@
             </ul>
         </nav>
 
-        <h2 class="govuk-heading-l">@PrimarySchoolPageTitles.MeetingOrExceedingStandards</h2>
+        <h2 class="govuk-heading-l">Meeting or exceeding expected standards for the previous academic year</h2>
+
+        <p class="govuk-body">Information in this section is for the 2024 to 2025 academic year. </p>
+        <p class="govuk-body">
+            These measures show the percentage of pupils achieving the expected or higher standard based on assessments at the end of key stage 2 typically when they are aged 10 or 11 and in year 6.
+        </p>
+        <p class="govuk-body">
+            Pupils sit national tests in English reading, maths and grammar, punctuation and spelling. In writing, teachers asses which level pupils are working at.
+        </p>
+
+
+        <div id="attendance-policy-summary" class="govuk-summary-card">
+
+            <div class="govuk-summary-card__content">
+                <h3 class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">
+                    Meeting expected standard in reading, writing and maths
+                </h3>
+                <p class="govuk-body">
+                    Pupils achieve the expected standard when they:
+                </p>
+                <ul>
+                    <li>achieve a scaled score of 100 or higher in reading and maths</li>
+                    <li>are assessed by their teacher as working at the expected standard or greater depth for writing</li>
+                </ul>
+
+                <p class="govuk-body">
+                    Compare this school with state-funded local and national averages.
+                </p>
+            </div>
+        </div>
 
         <govuk-pagination id="bottom-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.PrimaryAcademicPerformancePupilProgress" asp-all-route-data="@Model.RouteAttributes">Primary academic performance: Pupil progress</govuk-pagination-previous>
