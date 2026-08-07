@@ -1,6 +1,5 @@
 ﻿using SAPData.Filters;
 using SAPData.Models;
-using System.Globalization;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -132,15 +131,22 @@ public sealed class GenerateViews
                 var (keyStageUrnsCtes, keyStageUrnsSqlConditions) =
                     BuildKeyStageCtesAndFilters(_rows, tableMap, KeyStageConstants.AllKeyStages);
 
+                // Free Breakfast club data
+                var (breakfastClubCte, breakfastClubUrnsSqlConditions) = BuildFreeBreakfastClubCteAndFilter(_rows, tableMap);
+
                 var establishmentFilters = SqlViewFilterProvider.GetEstablishmentFilters(
                     keyStageUrnsSqlConditions: keyStageUrnsSqlConditions,
                     excludedUrns: excludedUrns);
 
+                var ctes = new Dictionary<string, string>(keyStageUrnsCtes);
+                ctes.Add("breakfast_club_urns", breakfastClubCte);
+
                 sql = GenerateEstablishmentDimensionView(
                     rawTable,
                     establishmentFilters,
-                    keyStageUrnsCtes,
+                    ctes,
                     keyStageUrnsSqlConditions,
+                    breakfastClubUrnsSqlConditions,
                     tableMap);
             }
 
@@ -398,6 +404,32 @@ public sealed class GenerateViews
         return sb.ToString();
     }
 
+    /// <summary>
+    /// Free breakfast club CTE generation
+    /// </summary>
+    private static string GenerateFreeBreakfastClubUrnsCte(
+        IReadOnlyList<DataMapRow> rows,
+        Dictionary<string, string> tableMap,
+        string cteName)
+    {
+        // find BreakfastClub row in datamap
+        var row = rows
+            .Single(r => r.Range == "Establishment" && r.Type == "BreakfastClub");
+
+        // get filename from datamap row
+        var fileName = row.FileName;
+        if (!TryResolveRawTable(tableMap, fileName, out var rawTable) || string.IsNullOrEmpty(rawTable))
+            return string.Empty;
+
+        var idCol = DbCol(row.RecordFilterBy);
+        var col = string.IsNullOrWhiteSpace(idCol) ? "urn" : idCol;
+
+        var cteParts = ($"SELECT DISTINCT t.\"{col}\" AS \"urn\" FROM {rawTable} t");
+
+        var cteLine = $"{cteName} AS ({cteParts})";
+        return cteLine;
+    }
+
     // =====================================================
     // ESTABLISHMENT DIMENSION (curated)
     // =====================================================
@@ -407,6 +439,7 @@ public sealed class GenerateViews
         List<SqlViewFilter> filters,
         Dictionary<string, string> keyStageUrnsCtes,
         Dictionary<string, string> keyStageUrnsSqlConditions,
+        string breakfastClubUrnsSqlCondition,
         Dictionary<string, string> tableMap)
     {
         var sb = new StringBuilder();
@@ -499,7 +532,8 @@ public sealed class GenerateViews
             sb.AppendLine("     w.\"for_school_profile\" AS \"KS2WraparoundCare\",");
         }
 
-        
+
+        sb.AppendLine($"    CASE WHEN {breakfastClubUrnsSqlCondition} THEN TRUE ELSE FALSE END AS \"FreeBreakfastClubProgramme\",");
         AppendKeyStageFlagColumns(sb, keyStageUrnsSqlConditions);
         sb.AppendLine();
         sb.AppendLine($"FROM {rawTable} t");
@@ -508,7 +542,7 @@ public sealed class GenerateViews
         {
             sb.AppendLine($"LEFT JOIN {wraparoundTable} w ON w.\"urn\" = t.\"urn\"");
         }
-        
+
         // Dynamically build WHERE clause
         if (filters.Count > 0)
         {
@@ -1049,6 +1083,17 @@ public sealed class GenerateViews
         var p = (r.PropertyName ?? "").Trim();
         if (string.IsNullOrWhiteSpace(p)) return p;
         return IsCoded(r) ? $"{p}_Coded" : p;
+    }
+
+    private static (string cte, string filter) BuildFreeBreakfastClubCteAndFilter(
+        IReadOnlyList<DataMapRow> rows,
+        Dictionary<string, string> tableMap)
+    {
+        var cteName = "FreeBreakfastClub";
+        var cte = GenerateFreeBreakfastClubUrnsCte(rows, tableMap, cteName);
+        var filter = $"t.\"urn\" IN (SELECT \"urn\" FROM {cteName})";
+
+        return (cte, filter);
     }
 
     private static (Dictionary<string, string> ctes, Dictionary<string, string> filters)
