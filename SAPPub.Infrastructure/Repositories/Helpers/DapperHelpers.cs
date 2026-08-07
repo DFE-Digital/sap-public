@@ -67,7 +67,8 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "SenTypes",
           "ISKS2",
           "ISKS4",
-          "ISKS5"
+          "ISKS5",
+          "KS2WraparoundCare"
           """;
 
         private const string EstablishmentAbsenceColumns = """

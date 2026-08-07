@@ -109,6 +109,8 @@ public class EstablishmentServiceModel
 
     public string? SenTypes { get; set; } = string.Empty;
 
+    public string? KS2WraparoundCare { get; set; } = string.Empty;
+
     public bool IsKS2 { get; set; }
 
     public bool IsKS4 { get; set; }
