@@ -550,8 +550,8 @@ public sealed class GenerateViews
         }
 
         
+        sb.AppendLine($"    CASE WHEN {breakfastClubUrnsSqlCondition} THEN TRUE ELSE FALSE END AS \"FreeBreakfastClubProgramme\",");
         AppendKeyStageFlagColumns(sb, keyStageUrnsSqlConditions);
-        AppendBreakfastClubColumn(sb, breakfastClubUrnsSqlCondition);
         sb.AppendLine();
         sb.AppendLine($"FROM {rawTable} t");
 
@@ -1176,12 +1176,5 @@ public sealed class GenerateViews
             var comma = i == KeyStageConstants.AllKeyStages.Count - 1 ? "" : ",";
             sb.AppendLine($"    CASE WHEN {fullCondition} THEN TRUE ELSE FALSE END AS \"IS{ks}\"{comma}");
         }
-    }
-
-    private static void AppendBreakfastClubColumn(
-        StringBuilder sb,
-        string? breakfastClubUrnsSqlCondition = null)
-    {
-        sb.AppendLine($"    CASE WHEN {breakfastClubUrnsSqlCondition} THEN TRUE ELSE FALSE END AS \"HasBreakfastClub\"");
     }
 }
