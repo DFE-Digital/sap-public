@@ -1,6 +1,5 @@
 ﻿using SAPData.Filters;
 using SAPData.Models;
-using System.Globalization;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -147,7 +146,7 @@ public sealed class GenerateViews
                     establishmentFilters,
                     keyStageUrnsCtes,
                     keyStageUrnsSqlConditions,
-                    breakfastClubUrnsSqlConditions);
+                    breakfastClubUrnsSqlConditions,
                     tableMap);
             }
 
@@ -456,7 +455,7 @@ public sealed class GenerateViews
         List<SqlViewFilter> filters,
         Dictionary<string, string> keyStageUrnsCtes,
         Dictionary<string, string> keyStageUrnsSqlConditions,
-        string breakfastClubUrnsSqlCondition)
+        string breakfastClubUrnsSqlCondition,
         Dictionary<string, string> tableMap)
     {
         var sb = new StringBuilder();
@@ -549,7 +548,7 @@ public sealed class GenerateViews
             sb.AppendLine("     w.\"for_school_profile\" AS \"KS2WraparoundCare\",");
         }
 
-        
+
         sb.AppendLine($"    CASE WHEN {breakfastClubUrnsSqlCondition} THEN TRUE ELSE FALSE END AS \"FreeBreakfastClubProgramme\",");
         AppendKeyStageFlagColumns(sb, keyStageUrnsSqlConditions);
         sb.AppendLine();
@@ -559,7 +558,7 @@ public sealed class GenerateViews
         {
             sb.AppendLine($"LEFT JOIN {wraparoundTable} w ON w.\"urn\" = t.\"urn\"");
         }
-        
+
         // Dynamically build WHERE clause
         if (filters.Count > 0)
         {
