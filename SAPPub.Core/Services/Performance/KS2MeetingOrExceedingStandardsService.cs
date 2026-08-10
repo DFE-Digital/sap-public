@@ -36,7 +36,7 @@ public class KS2MeetingOrExceedingStandardsService(
         };
     }
 
-    private RelativeYearValues<CodedDouble> GetEnglandPercentage(KS2EnglandPerformance englandPerformance)
+    private static RelativeYearValues<CodedDouble> GetEnglandPercentage(KS2EnglandPerformance englandPerformance)
     {
         return new RelativeYearValues<CodedDouble>
         {
@@ -46,7 +46,7 @@ public class KS2MeetingOrExceedingStandardsService(
         };
     }
 
-    private RelativeYearValues<CodedDouble> GetLocalAuthorityPercentage(KS2LAPerformance laPerformance)
+    private static RelativeYearValues<CodedDouble> GetLocalAuthorityPercentage(KS2LAPerformance laPerformance)
     {
         return new RelativeYearValues<CodedDouble>
         {
@@ -56,7 +56,7 @@ public class KS2MeetingOrExceedingStandardsService(
         };
     }
 
-    private RelativeYearValues<CodedDouble> GetEstablishmentPercentage(KS2EstablishmentPerformance establishmentPerformance)
+    private static RelativeYearValues<CodedDouble> GetEstablishmentPercentage(KS2EstablishmentPerformance establishmentPerformance)
     {
         return new RelativeYearValues<CodedDouble>
         {

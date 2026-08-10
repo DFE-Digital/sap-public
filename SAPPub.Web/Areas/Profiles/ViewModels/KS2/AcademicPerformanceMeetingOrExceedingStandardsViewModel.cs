@@ -8,9 +8,9 @@ namespace SAPPub.Web.Areas.Profiles.ViewModels.KS2;
 
 public class AcademicPerformanceMeetingOrExceedingStandardsViewModel : BaseViewModel
 {
-    public required DataViewModel AllReadData { get; set; }
+    public required DataViewModel AllMeetingExceedingStandardsData { get; set; }
 
-    public required DataOverTimeViewModel AllReadOverTimeData { get; set; }
+    public required DataOverTimeViewModel AllMeetingExceedingStandardsOverTimeData { get; set; }
 
     public required DisplayField<bool> HasEstablishmentData { get; set; }
 
@@ -70,8 +70,8 @@ public class AcademicPerformanceMeetingOrExceedingStandardsViewModel : BaseViewM
             IsKS2 = establishment.IsKS2,
             IsKS4 = establishment.IsKS4,
             IsKS5 = establishment.IsKS5,
-            AllReadData = allPercentageData,
-            AllReadOverTimeData = allPercentageDataOverTimeData,
+            AllMeetingExceedingStandardsData = allPercentageData,
+            AllMeetingExceedingStandardsOverTimeData = allPercentageDataOverTimeData,
             HasEstablishmentData = hasEstablishmentData.ToDisplayField()
 
         };
