@@ -1,7 +1,8 @@
 ﻿@model SAPPub.Web.Areas.Profiles.ViewModels.KS2.AcademicPerformanceMeetingOrExceedingStandardsViewModel
 @using SAPPub.Web.Constants
-@using static SAPPub.Web.Constants.PageTitleConstants
+@using SAPPub.Web.ViewComponents.ChartWithTableToggle
 @using SAPPub.Web.ViewComponents.VerticalNavigation
+@using static SAPPub.Web.Constants.PageTitleConstants
 
 @{
     ViewData["Header"] = "Academic performance";
@@ -74,93 +75,14 @@
                 Compare this school with state-funded local and national averages.
             </p>
 
-            <input type="radio" name="dataView" id="current-view" class="govuk-visually-hidden dataview-button" aria-labelledby="all-mes-show-current-data-btn" checked />
-            <input type="radio" name="dataView" id="data-overtime-view" class="govuk-visually-hidden dataview-button" aria-labelledby="all-mes-show-data-over-time-btn" />
-
-            <div id="all-mes-current-year-data-container" class="all-mes-current-year-data-container">
-                <div id="all-mes-current-year-chart-container" class="chart-container all-mes-current-year-chart-container">
-                    <canvas id="all-mes-data-current-year-chart"
-                            class="js-chart"
-                            data-type="bar"
-                            data-chart='@Html.Raw(Json.Serialize(Model.AllMeetingExceedingStandardsData))'
-                            data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
-                    </canvas>
-                </div>
-
-                <div id="all-mes-current-year-table-container" class="all-mes-current-year-table-container">
-                    <table id="all-mes-current-year-table" class="govuk-table">
-                        <tbody class="govuk-table__body">
-                            @foreach (var label in Model.AllMeetingExceedingStandardsData.Labels.Select((value, i) => (value, i)))
-                            {
-                                <tr class="govuk-table__row">
-                                    <th scope="row" class="govuk-table__header">@label.value</th>
-                                    <td class="govuk-table__cell">@Model.AllMeetingExceedingStandardsData.Data[label.i]%</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="govuk-button-group">
-                    <govuk-button id="all-mes-current-year-show-btn" type="button" class="govuk-button--secondary all-mes-current-year-show-btn">Show as a table</govuk-button>
-                </div>
-
-                <div class="govuk-button-group">
-                    <label id="all-mes-show-data-over-time-btn" for="data-overtime-view" class="govuk-button govuk-button--secondary" tabindex="0">Show data over time</label>
-                </div>
-            </div>
-
-
-
-            <div id="all-mes-data-over-time-data-container" class="all-mes-data-over-time-data-container">
-                <div id="all-mes-data-over-time-chart-container" class="chart-container all-mes-data-over-time-chart-container">
-                    <div id="all-mes-data-overtime-chart-legend" class="chart-legend" data-chart-id="all-mes-data-overtime-chart"></div>
-                    <div class="chart-container stacked">
-                        <canvas id="all-mes-data-overtime-chart"
-                                class="js-chart"
-                                data-type="bar"
-                                data-show-legend="true"
-                                data-chart='@Html.Raw(Json.Serialize(Model.AllMeetingExceedingStandardsOverTimeData))'
-                                data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
-                        </canvas>
-                    </div>
-                </div>
-
-                <div id="all-mes-data-over-time-table-container" class="all-mes-data-over-time-table-container">
-                    <table id="all-mes-data-overtime-table" class="govuk-table">
-                        <thead class="govuk-table__head">
-                            <tr class="govuk-table__row">
-                                <th scope="col" class="govuk-table__header"></th>
-                                @foreach (var label in Model.AllMeetingExceedingStandardsOverTimeData.Labels)
-                                {
-                                    <th scope="col" class="govuk-table__header">@label</th>
-                                }
-                            </tr>
-                        </thead>
-                        <tbody class="govuk-table__body">
-                            @foreach (var dataset in Model.AllMeetingExceedingStandardsOverTimeData.Datasets.Select((value, i) => (value, i)))
-                            {
-                                <tr class="govuk-table__row">
-                                    <th scope="row" class="govuk-table__header">@dataset.value.Label</th>
-                                    @foreach (var data in dataset.value.Data)
-                                    {
-                                        <td class="govuk-table__cell">@(data.HasValue ? data + "%" : Constants.NotAvailable)</td>
-                                    }
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="govuk-button-group">
-                    <govuk-button id="all-mes-data-over-time-show-btn" type="button" class="govuk-button--secondary all-mes-data-over-time-show-btn">Show as a table</govuk-button>
-                </div>
-
-                <div class="govuk-button-group">
-                    <label id="all-mes-show-current-data-btn" for="current-view" class="govuk-button govuk-button--secondary" tabindex="0">Show current data</label>
-                </div>
-
-            </div>
+            @await Component.InvokeAsync("ChartWithTableToggle", new ChartWithTableToggleModel
+                {
+                    IdPrefix = "mes",
+                    ChartPrefix = "all-mes",
+                    CurrentData = Model.AllMeetingExceedingStandardsData,
+                    OverTimeData = Model.AllMeetingExceedingStandardsOverTimeData,
+                    HasEstablishmentData = Model.HasEstablishmentData.IsAvailable
+                })
         </div>
 
         <govuk-pagination id="bottom-pagination">
@@ -178,5 +100,5 @@
     <script src="~/js/chart.umd.js"></script>
     <script src="~/js/chartjs-plugin-datalabels.min.js"></script>
     <script src="~/js/chart-factory.js"></script>
-    <script src="~/js/meeting-exceeding-standards.js"></script>
+    <script src="~/js/chart-table-toggle.js"></script>
 }
