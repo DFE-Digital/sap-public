@@ -6,7 +6,6 @@ namespace SAPPub.Web.Tests.UI.Areas.KS2;
 [Collection("Playwright Tests")]
 public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
-    private string _pageUrl = "school/143034/st-pauls-church-of-england-academy/admissions/primary";
 
     private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
     {
