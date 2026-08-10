@@ -132,21 +132,22 @@ public sealed class GenerateViews
                     BuildKeyStageCtesAndFilters(_rows, tableMap, KeyStageConstants.AllKeyStages);
 
                 // Free Breakfast club data
-                var (breakfastClubCte, breakfastClubUrnsSqlConditions) = BuildFreeBreakfastClubCteAndFilter(_rows, tableMap);
+                (string breakfastClubCte, string breakfastClubUrnsSqlConditions)? breakfastClubData = BuildFreeBreakfastClubCteAndFilter(_rows, tableMap);
 
                 var establishmentFilters = SqlViewFilterProvider.GetEstablishmentFilters(
                     keyStageUrnsSqlConditions: keyStageUrnsSqlConditions,
                     excludedUrns: excludedUrns);
 
                 var ctes = new Dictionary<string, string>(keyStageUrnsCtes);
-                ctes.Add("breakfast_club_urns", breakfastClubCte);
+                if (breakfastClubData.HasValue)
+                    ctes.Add("breakfast_club_urns", breakfastClubData.Value.breakfastClubCte);
 
                 sql = GenerateEstablishmentDimensionView(
                     rawTable,
                     establishmentFilters,
                     ctes,
                     keyStageUrnsSqlConditions,
-                    breakfastClubUrnsSqlConditions,
+                    breakfastClubData!.Value.breakfastClubUrnsSqlConditions,
                     tableMap);
             }
 
@@ -405,21 +406,26 @@ public sealed class GenerateViews
     }
 
     /// <summary>
-    /// Free breakfast club CTE generation
+    /// Free breakfast club CTE generation.
+    /// Find the filename from the dataMap entry for Establishment/BreakfastClub, 
+    /// then generate a CTE that selects distinct URNs from that table.
     /// </summary>
-    private static string GenerateFreeBreakfastClubUrnsCte(
+    private static string? GenerateFreeBreakfastClubUrnsCte(
         IReadOnlyList<DataMapRow> rows,
         Dictionary<string, string> tableMap,
         string cteName)
     {
         // find BreakfastClub row in datamap
         var row = rows
-            .Single(r => r.Range == "Establishment" && r.Type == "BreakfastClub");
+            .SingleOrDefault(r => r.Range == "Establishment" && r.Type == "BreakfastClub");
+
+        if (row == null)
+            throw new Exception($"{nameof(DataMapRow.Range)}: Establishment {nameof(DataMapRow.Type)}: BreakfastClub, mapping not specified in data map");
 
         // get filename from datamap row
         var fileName = row.FileName;
         if (!TryResolveRawTable(tableMap, fileName, out var rawTable) || string.IsNullOrEmpty(rawTable))
-            return string.Empty;
+            throw new Exception($"{fileName} file not found or DB table not found");
 
         var idCol = DbCol(row.RecordFilterBy);
         var col = string.IsNullOrWhiteSpace(idCol) ? "urn" : idCol;
@@ -439,7 +445,7 @@ public sealed class GenerateViews
         List<SqlViewFilter> filters,
         Dictionary<string, string> keyStageUrnsCtes,
         Dictionary<string, string> keyStageUrnsSqlConditions,
-        string breakfastClubUrnsSqlCondition,
+        string? breakfastClubUrnsSqlCondition,
         Dictionary<string, string> tableMap)
     {
         var sb = new StringBuilder();
@@ -532,8 +538,14 @@ public sealed class GenerateViews
             sb.AppendLine("     w.\"for_school_profile\" AS \"KS2WraparoundCare\",");
         }
 
-
-        sb.AppendLine($"    CASE WHEN {breakfastClubUrnsSqlCondition} THEN TRUE ELSE FALSE END AS \"FreeBreakfastClubProgramme\",");
+        if (string.IsNullOrWhiteSpace(breakfastClubUrnsSqlCondition)) // CML TODO : really we want to fail loudly
+        {
+            sb.AppendLine("    FALSE AS \"FreeBreakfastClubProgramme\",");
+        }
+        else
+        {
+            sb.AppendLine($"    CASE WHEN {breakfastClubUrnsSqlCondition} THEN TRUE ELSE FALSE END AS \"FreeBreakfastClubProgramme\",");
+        }
         AppendKeyStageFlagColumns(sb, keyStageUrnsSqlConditions);
         sb.AppendLine();
         sb.AppendLine($"FROM {rawTable} t");
@@ -1085,12 +1097,13 @@ public sealed class GenerateViews
         return IsCoded(r) ? $"{p}_Coded" : p;
     }
 
-    private static (string cte, string filter) BuildFreeBreakfastClubCteAndFilter(
+    private static (string cte, string filter)? BuildFreeBreakfastClubCteAndFilter(
         IReadOnlyList<DataMapRow> rows,
         Dictionary<string, string> tableMap)
     {
         var cteName = "FreeBreakfastClub";
         var cte = GenerateFreeBreakfastClubUrnsCte(rows, tableMap, cteName);
+        if (cte == null) return null;
         var filter = $"t.\"urn\" IN (SELECT \"urn\" FROM {cteName})";
 
         return (cte, filter);
