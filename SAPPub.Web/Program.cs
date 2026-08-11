@@ -10,6 +10,7 @@ using Notify.Interfaces;
 using Npgsql;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Infrastructure.PostcodeLookup;
+using SAPPub.Web.Areas.Profiles.Filters;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Middleware;
 using SAPPub.Web.Models.Config;
@@ -55,7 +56,10 @@ public partial class Program
         });
 
         // Single, consolidated controllers registration
-        builder.Services.AddControllers()
+        builder.Services.AddControllers(options =>
+            {
+                options.Filters.Add<DfEAnalyticsAddPhaseTagFilter>();
+            })
             .AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;

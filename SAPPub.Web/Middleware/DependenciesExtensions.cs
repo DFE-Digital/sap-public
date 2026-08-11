@@ -129,6 +129,7 @@ namespace SAPPub.Web.Middleware
 
             services.AddScoped<SecondaryComparisonQueryValidationFilter>();
             services.AddScoped<PrimaryQueryValidationFilter>();
+            services.AddScoped<DfEAnalyticsAddPhaseTagFilter>();
 
             // Mapper
             services.AddSingleton<ICodedValueMapper, ReflectionCodedValueMapper>();

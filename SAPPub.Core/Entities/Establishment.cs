@@ -107,6 +107,8 @@ public class Establishment
 
     public string? SenTypes { get; set; } = string.Empty;
 
+    public string? KS2WraparoundCare { get; set; } = string.Empty;
+
     [IgnoreDataMember]
     public bool IsKS2 { get; set; }
 
@@ -170,7 +172,8 @@ public class Establishment
             SenTypes = e.SenTypes,
             IsKS2 = e.IsKS2,
             IsKS4 = e.IsKS4,
-            IsKS5 = e.IsKS5
+            IsKS5 = e.IsKS5,
+            KS2WraparoundCare = e.KS2WraparoundCare
         };
     }
 }
