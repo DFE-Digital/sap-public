@@ -15,15 +15,14 @@
         const currentYearTableContainer = root.querySelector(`#${idPrefix}-current-year-table-container`);
 
         // data over time related elements
-        const showDataOverTimeBtn = root.querySelector(`#${idPrefix}-show-data-over-time-show-btn`);
+        const showDataOverTimeBtn = root.querySelector(`#${idPrefix}-show-data-over-time-btn`);
         const dataOverTimeChartContainer = root.querySelector(`#${idPrefix}-data-over-time-chart-container`);
         const dataOverTimeTableContainer = root.querySelector(`#${idPrefix}-data-over-time-table-container`);
-        const dataOverTimeShowAsTableBtn = root.querySelector(`#${idPrefix}-current-year-show-btn`);
+        const dataOverTimeShowAsTableBtn = root.querySelector(`#${idPrefix}-data-over-time-show-btn`);
 
         const currentViewRadio = root.querySelector(`#${idPrefix}-current-view`);
         const dataOvertimeViewRadio = root.querySelector(`#${idPrefix}-data-overtime-view`);
         const showCurrentDataBtn = root.querySelector(`#${idPrefix}-show-current-data-btn`);
-
 
         setAriaAttribute(currentYearShowAsTableBtn, 'false');
         if (currentYearShowAsTableBtn) {
