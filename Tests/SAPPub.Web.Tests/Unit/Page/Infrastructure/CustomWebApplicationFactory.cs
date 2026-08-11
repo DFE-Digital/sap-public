@@ -55,6 +55,7 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.RemoveAll(typeof(IAttainmentAndProgressComparisionService));
                 services.RemoveAll(typeof(IAdditionalMeasuresService));
                 services.RemoveAll(typeof(ILevel3QualificationsService));
+                services.RemoveAll(typeof(ILevel2QualificationsService));
                 services.RemoveAll(typeof(IKS2ScaledScoreService));
                 services.RemoveAll(typeof(IKS2AdditionalMeasuresService));
 
@@ -77,6 +78,7 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.AddSingleton<MockAccessor<IAttainmentAndProgressComparisionService>>();
                 services.AddSingleton<MockAccessor<IAdditionalMeasuresService>>();
                 services.AddSingleton<MockAccessor<ILevel3QualificationsService>>();
+                services.AddSingleton<MockAccessor<ILevel2QualificationsService>>();
                 services.AddSingleton<MockAccessor<IEnglishAndMathsQualificationsService>>();
                 services.AddSingleton<MockAccessor<IKS2ScaledScoreService>>();
                 services.AddSingleton<MockAccessor<IKS2AdditionalMeasuresService>>();
@@ -157,7 +159,11 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.AddTransient(provider =>
                 {
                     return provider.GetRequiredService<MockAccessor<ILevel3QualificationsService>>().Get()?.Object!;
-                });    
+                });
+                services.AddTransient(provider =>
+                {
+                    return provider.GetRequiredService<MockAccessor<ILevel2QualificationsService>>().Get()?.Object!;
+                });
                 services.AddTransient(provider =>
                 {
                     return provider.GetRequiredService<MockAccessor<IEnglishAndMathsQualificationsService>>().Get()?.Object!;

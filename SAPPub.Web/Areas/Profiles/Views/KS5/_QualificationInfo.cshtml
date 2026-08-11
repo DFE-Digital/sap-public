@@ -1,112 +1,148 @@
 ﻿@using SAPPub.Core.Enums.KS5Qualifications
 
 @{
-    var qualificationLevel = (Level3?)ViewData["QualificationLevel"];
+    var qualification = ViewData["QualificationLevel"];
 }
 
-@if (qualificationLevel == Level3.ALevel)
+@if (qualification is Level3 level3Qualification)
 {
-    <p class="govuk-body">
-        These final figures show how students performed in their A levels.
-        They are based on students who entered at least one A level or AS level and completed
-        their studies in summer 2025.
 
-        For more details, <a id="tech-guidance-link" class="govuk-link" rel="noreferrer noopener" target="_blank" href="https://www.gov.uk/government/publications/16-to-19-accountability-headline-measures-technical-guide">
-            see 16 to 19 Accountability technical guidance <span class="govuk-visually-hidden">(opens in a new tab)</span>
-        </a>.
-    </p>
+    if (level3Qualification == Level3.ALevel)
+    {
+        <p class="govuk-body">
+            These final figures show how students performed in their A levels.
+            They are based on students who entered at least one A level or AS level and completed
+            their studies in summer 2025.
+
+            For more details, <a id="tech-guidance-link" class="govuk-link" rel="noreferrer noopener" target="_blank" href="https://www.gov.uk/government/publications/16-to-19-accountability-headline-measures-technical-guide">
+                see 16 to 19 Accountability technical guidance <span class="govuk-visually-hidden">(opens in a new tab)</span>
+            </a>.
+        </p>
+    }
+    else if (level3Qualification == Level3.Academic)
+    {
+        <p class="govuk-body">
+            These final figures show how students performed in academic qualifications.
+            They are based on students who completed their studies in summer 2025.
+        </p>
+
+        <p class="govuk-body">
+            Academic qualifications include A levels but also other 'level 3' academic qualifications
+            such as International Baccalaureates and Pre-University qualifications.
+            The results are based on students who were entered for at least one academic qualification
+            that takes the same amount of time to study as an AS level or above.
+        </p>
+    }
+    else if (level3Qualification == Level3.AppliedGeneral)
+    {
+        <p class="govuk-body">
+            These final figures show how students at this school or college performed at the end of their
+            16 to 19 education. They are based on students who were entered for at least one applied general qualification
+            and completed their studies in the summer of 2025.
+        </p>
+
+        <p class="govuk-body">
+            These qualifications provide a broad study of a vocational area, including areas such as performing arts,
+            business and social care. For more details check the
+            <a id="tech-vocational-qualifications-link"
+            class="govuk-link"
+            rel="noreferrer noopener"
+            target="_blank"
+            href="https://www.gov.uk/government/collections/performance-tables-technical-and-vocational-qualifications">
+                technical and vocational qualifications <span class="govuk-visually-hidden">(opens in a new tab)</span>
+            </a> 
+            and
+            <a id="tech-guidance-link"
+            class="govuk-link"
+            rel="noreferrer noopener"
+            target="_blank"
+            href="https://www.gov.uk/government/publications/16-to-19-accountability-headline-measures-technical-guide">
+                16 to 19 Accountability Technical Guide <span class="govuk-visually-hidden">(opens in a new tab)</span>
+            </a>
+        </p>
+    }
+    else if (level3Qualification == Level3.TechLevel)
+    {
+        <p class="govuk-body">
+            These final figures show how students at this school or college performed at the end of their
+            16 to 19 education. They are based on students who completed their studies in the summer of 2025.        
+        </p>
+
+        <p class="govuk-body">
+            Technical qualifications at level 3 help students develop the skills and knowledge needed for technical
+            jobs or industries.They can lead to recognised careers, for example in:
+        </p>
+
+        <ul class="govuk-list govuk-list--bullet">
+            <li>
+                engineering
+            </li>
+            <li>
+                IT
+            </li>
+            <li>
+                accounting
+            </li>
+            <li>
+                professional cookery
+            </li>
+        </ul>
+
+        <p class="govuk-body">
+            T level performance measures are not yet available on this service.
+        </p>
+
+        <p class="govuk-body">
+            For more information review 
+            <a id="tech-vocational-qualifications-link"
+            class="govuk-link" 
+            rel="noreferrer noopener" 
+            target="_blank" 
+            href="https://www.gov.uk/government/collections/performance-tables-technical-and-vocational-qualifications">
+                technical and vocational qualifications <span class="govuk-visually-hidden">(opens in a new tab)</span>
+            </a>
+            and the 
+            <a id="tech-guidance-link"
+            class="govuk-link"
+            rel="noreferrer noopener"
+            target="_blank"
+            href="https://www.gov.uk/government/publications/16-to-19-accountability-headline-measures-technical-guide">
+                16 to 19 Accountability Technical Guide <span class="govuk-visually-hidden">(opens in a new tab)</span>
+            </a>
+        </p>
+    }
 }
-else if (qualificationLevel == Level3.Academic)
+else if (qualification is Level2 level2Qualification)
 {
-    <p class="govuk-body">
-        These final figures show how students performed in academic qualifications.
-        They are based on students who completed their studies in summer 2025.
-    </p>
+    if (level2Qualification == Level2.TechCert)
+    {
+        <p class="govuk-body">
+            Technical certificates are vocational qualifications that prepare students for specific jobs or sectors.
+        </p>
 
-    <p class="govuk-body">
-        Academic qualifications include A levels but also other 'level 3' academic qualifications
-        such as International Baccalaureates and Pre-University qualifications.
-        The results are based on students who were entered for at least one academic qualification
-        that takes the same amount of time to study as an AS level or above.
-    </p>
-}
-else if (qualificationLevel == Level3.AppliedGeneral)
-{
-    <p class="govuk-body">
-        These final figures show how students at this school or college performed at the end of their
-        16 to 19 education. They are based on students who were entered for at least one applied general qualification
-        and completed their studies in the summer of 2025.
-    </p>
+        <p class="govuk-body">
+            These final figures tell you about the performance of students at this school or college at the end of
+            their 16 to 19 study.These results are based on students who completed their 16 to 19 studies in the
+            summer of 2025.
+        </p>
 
-    <p class="govuk-body">
-        These qualifications provide a broad study of a vocational area, including areas such as performing arts,
-        business and social care. For more details check the
-        <a id="tech-vocational-qualifications-link"
-           class="govuk-link"
-           rel="noreferrer noopener"
-           target="_blank"
-           href="https://www.gov.uk/government/collections/performance-tables-technical-and-vocational-qualifications">
-            technical and vocational qualifications <span class="govuk-visually-hidden">(opens in a new tab)</span>
-        </a> 
-        and
-        <a id="tech-guidance-link"
-           class="govuk-link"
-           rel="noreferrer noopener"
-           target="_blank"
-           href="https://www.gov.uk/government/publications/16-to-19-accountability-headline-measures-technical-guide">
-            16 to 19 Accountability Technical Guide <span class="govuk-visually-hidden">(opens in a new tab)</span>
-        </a>
-    </p>
-}
-else if (qualificationLevel == Level3.TechLevel)
-{
-    <p class="govuk-body">
-        These final figures show how students at this school or college performed at the end of their
-        16 to 19 education. They are based on students who completed their studies in the summer of 2025.        
-    </p>
+        <p class="govuk-body">
+            Technical certificates are level 2 qualifications for students wishing to develop the specialist skills
+            and knowledge for a technical occupation or industry.They lead to recognised occupations, for example
+            in engineering, IT, accounting or professional cookery.
+        </p>
 
-    <p class="govuk-body">
-        Technical qualifications at level 3 help students develop the skills and knowledge needed for technical
-        jobs or industries.They can lead to recognised careers, for example in:
-    </p>
-
-    <ul class="govuk-list govuk-list--bullet">
-        <li>
-            engineering
-        </li>
-        <li>
-            IT
-        </li>
-        <li>
-            accounting
-        </li>
-        <li>
-            professional cookery
-        </li>
-    </ul>
-
-    <p class="govuk-body">
-        T level performance measures are not yet available on this service.
-    </p>
-
-    <p class="govuk-body">
-        For more information review 
-        <a id="tech-vocational-qualifications-link"
-           class="govuk-link" 
-           rel="noreferrer noopener" 
-           target="_blank" 
-           href="https://www.gov.uk/government/collections/performance-tables-technical-and-vocational-qualifications">
-            technical and vocational qualifications <span class="govuk-visually-hidden">(opens in a new tab)</span>
-        </a>
-        and the 
-        <a id="tech-guidance-link"
-           class="govuk-link"
-           rel="noreferrer noopener"
-           target="_blank"
-           href="https://www.gov.uk/government/publications/16-to-19-accountability-headline-measures-technical-guide">
-            16 to 19 Accountability Technical Guide <span class="govuk-visually-hidden">(opens in a new tab)</span>
-        </a>
-    </p>
+        <p class="govuk-body">
+            ​For further details, review
+            <a id="tech-vocational-qualifications-link"
+               class="govuk-link"
+               rel="noreferrer noopener"
+               target="_blank"
+               href="https://www.gov.uk/government/collections/performance-tables-technical-and-vocational-qualifications">
+                technical and vocational qualifications <span class="govuk-visually-hidden">(opens in a new tab)</span>
+            </a>
+        </p>
+    }
 }
 
 <govuk-details id="details-provisional-revised-final-figures">

@@ -44,6 +44,15 @@ public class KS5EnglandPerformance
     // Tech level Average result grade for England
     public CodedString TALLPPEGRD_TLEV_Eng_Current { get; set; }
 
+    // Tech Cert Progress score for England average
+    public CodedDouble VA_INS_TECHCERT_Eng_Current_Num_Coded { get; set; }
+
+    // Tech Cert Average result points for England
+    public CodedDouble TALLPPE_TECHCERT_Eng_Current_Num_Coded { get; set; }
+
+    // Tech Cert Average result grade for England
+    public CodedString TALLPPEGRD_TECHCERT_Eng_Current { get; set; }
+
     // Average progress for English
     public CodedDouble PROGEX_E_Eng_Current_Num_Coded { get; set; }
 
