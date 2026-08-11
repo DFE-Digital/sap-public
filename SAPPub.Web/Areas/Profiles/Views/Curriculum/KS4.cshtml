@@ -24,6 +24,7 @@
     <div class="govuk-grid-column-three-quarters">
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
         <h1 class="govuk-heading-xl">@ViewData["Header"]</h1>
+         <feature name="Constants.Constants.EnablePrimary">
         @if (Model.IsKS2 == true)
         {
             <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
@@ -37,6 +38,7 @@
                 </ul>
             </nav>
         }
+        </feature>
 
         <h2 class="govuk-heading-l">Curriculum</h2>
         <div id="current-curriculum-summary" data-testId="current-curriculum-summary" class="govuk-summary-card">
