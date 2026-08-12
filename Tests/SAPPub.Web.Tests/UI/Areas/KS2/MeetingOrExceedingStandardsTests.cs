@@ -142,6 +142,8 @@ public class MeetingOrExceedingStandardsTests(WebApplicationSetupFixture fixture
         // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
 
+        var content = await Page.ContentAsync();
+
         // Act
         // Click Show as a table button
         await Page.ClickAsync(_pageElements["currentYearShowAsTableBtn"]);
@@ -156,6 +158,7 @@ public class MeetingOrExceedingStandardsTests(WebApplicationSetupFixture fixture
         var isShowDataOverTimeBtnVisible = await showDataOverTimeBtn.IsVisibleAsync();
         var buttonText = await showAsTableBtn.TextContentAsync();
         var showDataOverTimeBtnText = await showDataOverTimeBtn.TextContentAsync();
+        var firstTableCellText = await table.Locator("td").First.TextContentAsync();
 
         // Assert
         Assert.False(isChartVisible);
@@ -163,6 +166,7 @@ public class MeetingOrExceedingStandardsTests(WebApplicationSetupFixture fixture
         Assert.True(isShowDataOverTimeBtnVisible);
         Assert.Equal("Show as a chart", buttonText);
         Assert.Equal("Show data over time", showDataOverTimeBtnText);
+        Assert.Contains("Not available", firstTableCellText);
     }
 
     [Fact]
