@@ -30,11 +30,14 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
         [HttpGet]
         [Route("school/{urn}/{schoolName}/primary-performance/meeting-or-exceeding-standards", Name = RouteConstants.PrimaryAcademicPerformanceMeetingOrExceedingStandards)]
         public async Task<IActionResult> AcademicPerformanceMeetingOrExceedingStandards(
+            [FromServices] IKS2MeetingOrExceedingStandardsService ks2MeetingOrExceedingStandardsService,
             string urn,
             string schoolName,
             CancellationToken ct)
         {
-            var model = AcademicPerformanceMeetingOrExceedingStandardsViewModel.Map(Establishment);
+            var meetingOrExceedingStandardsModel = await ks2MeetingOrExceedingStandardsService.GetMeetingOrExceedingStandardsPercentages(urn, ct);
+
+            var model = AcademicPerformanceMeetingOrExceedingStandardsViewModel.Map(Establishment, meetingOrExceedingStandardsModel);
             return View(model);
         }
 

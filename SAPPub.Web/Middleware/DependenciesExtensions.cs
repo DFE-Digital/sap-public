@@ -125,6 +125,7 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<IKS2ScaledScoreService, KS2ScaledScoresService>();
 
             services.AddTransient<IKS2AdditionalMeasuresService,  KS2AdditionalMeasuresService>();
+            services.AddTransient<IKS2MeetingOrExceedingStandardsService, KS2MeetingOrExceedingStandardsService>();
 
             services.AddScoped<SecondaryComparisonQueryValidationFilter>();
             services.AddScoped<PrimaryQueryValidationFilter>();

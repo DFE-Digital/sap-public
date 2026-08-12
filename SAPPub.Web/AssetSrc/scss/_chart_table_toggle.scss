@@ -1,0 +1,36 @@
+﻿
+body:not(.js-enabled) .chart-table-toggle__current-year-chart-container,
+body:not(.js-enabled) .chart-table-toggle__current-year-show-btn,
+body:not(.js-enabled) .chart-table-toggle__data-over-time-chart-container,
+body:not(.js-enabled) .chart-table-toggle__data-over-time-chart-container {
+    display: none;
+}
+
+body:not(.js-enabled) .chart-table-toggle__current-year-chart-container {
+    display: block;
+}
+
+body.js-enabled .chart-table-toggle__current-year-chart-container,
+body.js-enabled .chart-table-toggle__current-year-show-btn {
+    display: block;
+}
+
+body.js-enabled .chart-table-toggle__current-year-table-container,
+body.js-enabled .chart-table-toggle__data-over-time-data-container,
+body.js-enabled .chart-table-toggle__data-over-time-chart-container {
+    display: none;
+}
+
+/* non js logic to show tables and hide tables*/
+
+body:not(.js-enabled) .chart-table-toggle__data-over-time-data-container {
+    display: none;
+}
+
+.chart-table-toggle__radio--overtime:checked ~ .chart-table-toggle__current-year-data-container {
+    display: none;
+}
+
+.chart-table-toggle__radio--overtime:checked ~ .chart-table-toggle__data-over-time-data-container {
+    display: block;
+}
