@@ -131,12 +131,40 @@
                         <p class="govuk-body">
                             EHCPs identify educational, health and social care needs and set out the additional support to meet those needs.  
                         </p>
+                        <table id="ehcp-population-table" class="govuk-table">
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header">School</th>
+                                    <th scope="col" class="govuk-table__header">England - mainstream primary schools</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                <tr class="govuk-table__row">
+                                    <td class="govuk-table__cell">@Model.EstablishmentEHCPPopulation.DisplayPercentage()</td>
+                                    <td class="govuk-table__cell">@Model.EnglandEHCPPopulation.DisplayPercentage()</td>
+                                </tr>                                
+                            </tbody>
+                        </table>
                     </section>
                     <section id="pupils-with-sen-support-section">
                         <h4 class="govuk-heading-m">Pupils with SEN support</h4>
                         <p class="govuk-body">
                             Pupils with special educational needs who receive extra support in school but do not have an EHCP. 
                         </p>
+                        <table id="sen-population-table" class="govuk-table">
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header">School</th>
+                                    <th scope="col" class="govuk-table__header">England</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                <tr class="govuk-table__row">
+                                    <td class="govuk-table__cell">@Model.EstablishmentSENSupportPopulation.DisplayPercentage()</td>
+                                    <td class="govuk-table__cell">@Model.EnglandSENSupportPopulation.DisplayPercentage()</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </section>
                 </govuk-accordion-item-content>
             </govuk-accordion-item>
