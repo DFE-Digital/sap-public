@@ -21,8 +21,6 @@ public class ScaledScoresAcademicPerformacePageTests : PageTestsBase
     private readonly KS2ScaledScoreModel _scaledScoreModel;
     private readonly Mock<IKS2ScaledScoreService> _scaledScoreService  = new();
     
-
-
     public ScaledScoresAcademicPerformacePageTests(WebAppFixture fixture) : base(fixture)
     {
         _scaledScoreService = UseMock<IKS2ScaledScoreService>();
@@ -106,7 +104,7 @@ public class ScaledScoresAcademicPerformacePageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task ScaledScore_Displays_AverageScore()
+    public async Task ScaledScore_Displays_Read_AverageScore()
     {
         var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, _pageRoute);
 
@@ -135,6 +133,37 @@ public class ScaledScoresAcademicPerformacePageTests : PageTestsBase
         Assert.Equal(expectedModel.ReadAverageEngland!.CurrentYear!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("read-data-overtime-table", 3, 2));
     }
 
+
+    [Fact]
+    public async Task ScaledScore_Displays_Maths_AverageScore()
+    {
+        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        Assert.Contains("School", doc.GetTableHeaderContentByIdAndIndex("maths-data-overtime-table", 1, 0));
+        Assert.Contains($"{_laName} average", doc.GetTableHeaderContentByIdAndIndex("maths-data-overtime-table", 2, 0));
+        Assert.Contains("England average", doc.GetTableHeaderContentByIdAndIndex("maths-data-overtime-table", 3, 0));
+
+        var expectedModel = GetScaledScoreModel();
+
+        Assert.Equal("2022 to 2023", doc.GetTableHeaderContentByIdAndIndex("maths-data-overtime-table", 0, 1));
+        Assert.Equal(expectedModel.MathsAverageEstablishment!.TwoYearsAgo!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("maths-data-overtime-table", 1, 0));
+        Assert.Equal(expectedModel.MathsAverageLA!.TwoYearsAgo!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("maths-data-overtime-table", 2, 0));
+        Assert.Equal(expectedModel.MathsAverageEngland!.TwoYearsAgo!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("maths-data-overtime-table", 3, 0));
+
+        Assert.Equal("2023 to 2024", doc.GetTableHeaderContentByIdAndIndex("maths-data-overtime-table", 0, 2));
+        Assert.Equal(expectedModel.MathsAverageEstablishment!.PreviousYear!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("maths-data-overtime-table", 1, 1));
+        Assert.Equal(expectedModel.MathsAverageLA!.PreviousYear!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("maths-data-overtime-table", 2, 1));
+        Assert.Equal(expectedModel.MathsAverageEngland!.PreviousYear!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("maths-data-overtime-table", 3, 1));
+
+        Assert.Equal("2024 to 2025", doc.GetTableHeaderContentByIdAndIndex("maths-data-overtime-table", 0, 3));
+        Assert.Equal(expectedModel.MathsAverageEstablishment!.CurrentYear!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("maths-data-overtime-table", 1, 2));
+        Assert.Equal(expectedModel.MathsAverageLA!.CurrentYear!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("maths-data-overtime-table", 2, 2));
+        Assert.Equal(expectedModel.MathsAverageEngland!.CurrentYear!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("maths-data-overtime-table", 3, 2));
+    }
+
     private KS2ScaledScoreModel GetScaledScoreModel()
     {
         return new KS2ScaledScoreModel
@@ -147,7 +176,6 @@ public class ScaledScoresAcademicPerformacePageTests : PageTestsBase
             },
             ReadAverageLA = new Core.Entities.RelativeYearValues<CodedDouble>()
             {
-
                 CurrentYear = new CodedDouble(1.1, string.Empty, "1.1"),
                 PreviousYear = new CodedDouble(2.1, string.Empty, "2.1"),
                 TwoYearsAgo = new CodedDouble(3.1, string.Empty, "3.1"),
@@ -157,6 +185,24 @@ public class ScaledScoresAcademicPerformacePageTests : PageTestsBase
                 CurrentYear = new CodedDouble(1.2, string.Empty, "1.2"),
                 PreviousYear = new CodedDouble(2.2, string.Empty, "2.2"),
                 TwoYearsAgo = new CodedDouble(3.2, string.Empty, "3.2"),
+            },
+            MathsAverageEstablishment = new Core.Entities.RelativeYearValues<CodedDouble>()
+            {
+                CurrentYear = new CodedDouble(1.3, string.Empty, "1.3"),
+                PreviousYear = new CodedDouble(2.2, string.Empty, "2.3"),
+                TwoYearsAgo = new CodedDouble(3.3, string.Empty, "3.3"),
+            },
+            MathsAverageLA = new Core.Entities.RelativeYearValues<CodedDouble>()
+            {
+                CurrentYear = new CodedDouble(1.4, string.Empty, "1.4"),
+                PreviousYear = new CodedDouble(2.4, string.Empty, "2.4"),
+                TwoYearsAgo = new CodedDouble(3.4, string.Empty, "3.4"),
+            },
+            MathsAverageEngland = new Core.Entities.RelativeYearValues<CodedDouble>()
+            {
+                CurrentYear = new CodedDouble(1.5, string.Empty, "1.5"),
+                PreviousYear = new CodedDouble(2.5, string.Empty, "2.5"),
+                TwoYearsAgo = new CodedDouble(3.5, string.Empty, "3.5"),
             }
         };
     }

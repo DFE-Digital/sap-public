@@ -6,6 +6,7 @@
 @{
     var idPrefix = Model.IdPrefix;
     var chartIdPrefix = Model.ChartPrefix;
+    var percentageSign = Model.IsPercentageData ? "%" : "";
 }
 
 <div class="chart-table-toggle" data-id-prefix="@idPrefix" data-chart-id-prefix="@chartIdPrefix">
@@ -18,6 +19,7 @@
                 <canvas id="@(chartIdPrefix)-chart"
                         class="js-chart"
                         data-type="bar"
+                        data-scaled="@Model.IsScaled.ToString().ToLower()"
                         data-chart='@Html.Raw(Json.Serialize(Model.CurrentData))'
                         data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
                 </canvas>
@@ -30,7 +32,7 @@
                         {
                             <tr class="govuk-table__row">
                                 <th scope="row" class="govuk-table__header">@label.value</th>
-                                <td class="govuk-table__cell">@Model.CurrentData.Data[label.i]%</td>
+                                <td class="govuk-table__cell">@Model.CurrentData.Data[label.i]@percentageSign</td>
                             </tr>
                         }
                     </tbody>
@@ -48,7 +50,7 @@
     }
 
 
-    <div id="@(idPrefix)-data-over-time-data-container" class="chart-table-toggle__data-over-time-data-container @(idPrefix)-data-over-time-data-container">
+    <div id="@(idPrefix)-data-over-time-data-container" class="chart-table-toggle__data-over-time-data-container @(idPrefix)-data-over-time-data-container  @(Model.HasEstablishmentData ? "" : "govuk-!-display-block")">
         @if (Model.HasEstablishmentData)
         {
             <div id="@(idPrefix)-data-over-time-chart-container" class="chart-container chart-table-toggle__data-over-time-chart-container @(idPrefix)-data-over-time-chart-container">
@@ -58,6 +60,7 @@
                             class="js-chart"
                             data-type="bar"
                             data-show-legend="true"
+                            data-scaled="@Model.IsScaled.ToString().ToLower()"
                             data-chart='@Html.Raw(Json.Serialize(Model.OverTimeData))'
                             data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
                     </canvas>
@@ -82,21 +85,23 @@
                             <th scope="row" class="govuk-table__header">@dataset.value.Label</th>
                             @foreach (var data in dataset.value.Data)
                             {
-                                <td class="govuk-table__cell">@(data.HasValue ? data + "%" : Constants.NotAvailable)</td>
+                                <td class="govuk-table__cell">@(data.HasValue ? data + percentageSign : Constants.NotAvailable)</td>
                             }
                         </tr>
                     }
                 </tbody>
             </table>
         </div>
+         @if (Model.HasEstablishmentData)
+        {
+            <div class="govuk-button-group">
+                <govuk-button id="@(idPrefix)-data-over-time-show-btn" type="button" class="govuk-button--secondary chart-table-toggle__data-over-time-show-btn @(idPrefix)-data-over-time-show-btn">Show as a table</govuk-button>
+            </div>
 
-        <div class="govuk-button-group">
-            <govuk-button id="@(idPrefix)-data-over-time-show-btn" type="button" class="govuk-button--secondary chart-table-toggle__data-over-time-show-btn @(idPrefix)-data-over-time-show-btn">Show as a table</govuk-button>
-        </div>
-
-        <div class="govuk-button-group">
-            <label id="@(idPrefix)-show-current-data-btn" for="@(idPrefix)-current-view" class="govuk-button govuk-button--secondary" tabindex="0">Show current data</label>
-        </div>
+            <div class="govuk-button-group">
+                <label id="@(idPrefix)-show-current-data-btn" for="@(idPrefix)-current-view" class="govuk-button govuk-button--secondary" tabindex="0">Show current data</label>
+            </div>
+        }
 
     </div>
 </div>
