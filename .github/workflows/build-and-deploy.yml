@@ -537,7 +537,6 @@ jobs:
   post-deploy-tests:
     name: Run Integration Tests on Deployed Test Environment
     needs: deploy
-    if: ${{ matrix.environment == 'test' }}
     runs-on: ubuntu-latest
 
     steps:
