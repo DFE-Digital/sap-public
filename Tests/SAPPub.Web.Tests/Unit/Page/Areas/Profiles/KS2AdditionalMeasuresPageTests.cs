@@ -133,6 +133,24 @@ public class KS2AdditionalMeasuresPageTests : PageTestsBase
 
     }
 
+    [Fact]
+    public async Task AdditionalMeasures_ShowsPupilPopulationAccordion()
+    {
+        // Arrange
+        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+        var accordion = doc.QuerySelector("#pupil-population-accordion");
+        var ehcpSection = doc.QuerySelector("#pupils-with-ehcp-section");
+        var senSupportSection = doc.QuerySelector("#pupils-with-sen-support-section");
+
+        //Assert
+        Assert.NotNull(accordion);
+        Assert.NotNull(ehcpSection);
+        Assert.NotNull(senSupportSection);
+    }
+
     private static KS2AdditionalMeasuresModel GetKS2AdditionalMeasuresModel()
     {
         return new KS2AdditionalMeasuresModel
