@@ -135,6 +135,6 @@ public class KS5SubjectsEnteredTests(WebApplicationSetupFixture fixture) : BaseP
         var prevLink = Page.Locator("#subjects-entered-pagination .govuk-pagination__next a");
         var text = await prevLink.TextContentAsync();
 
-        Assert.Contains("Destinations", text?.Trim());
+        Assert.Contains("Destina=tions", text?.Trim());
     }
 }
