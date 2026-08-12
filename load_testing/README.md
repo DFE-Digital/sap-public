@@ -18,52 +18,23 @@ This was "borrowed" from https://github.com/DFE-Digital/publish-teacher-training
   sudo apt install k6
 ```
 
-2. **Prepare environment variables (only for running on Grafana cloud):**
-
-```
-   cd load_testing
-   cp .env.example .env
-   # Edit .env as needed for local, staging, or cloud runs.
-
-   # Load environment variables (run this before each test session):
-   set -o allexport; source .env; set +o allexport
-```
-
 ## Services
-
-### load Service
 
 #### Local/Development Runs
 
 **Super quick local test (5 users, 10s):**
 ```
-npm run load:dev
+k6 run -e SESSION_ID=<gatewaycookieid> load-test.js
 ```
 
 **Baseline, peak, and stress local:**
 ```
- npm run load:dev
- npm run load:dev:baseline
- npm run load:dev:peak
- npm run load:dev:stress
-```
 
-#### Running on Grafana
-
-**Run baseline scenario in Grafana Cloud (250 concurrent users):**
+k6 run -e SESSION_ID=<gatewaycookieid> --env SCENARIO=baseline load-test.js
+k6 run -e SESSION_ID=<gatewaycookieid> --env SCENARIO=peak-surge load-test.js
+k6 run -e SESSION_ID=<gatewaycookieid> --env SCENARIO=stress load-test.js
+k6 run -e SESSION_ID=<gatewaycookieid> --env SCENARIO=quick load-test.js
 ```
-npm run load:baseline
-```
-**Run peak surge scenario in Grafana Cloud (3000 concurrent users, 150 RPS):**
-```
-npm run load:peak
-```
-**Run stress scenario in Grafana Cloud (4000+ concurrent users):**
-```
-npm run load:stress
-```
-
-***
 
 ## Test Scenarios
 
@@ -89,11 +60,12 @@ npm run load:stress
 
 ## User Journey Mix
 
-Based on production analytics:
-
-- 51% Search operations (enhanced filtering)
-- 42% Course page views (detailed browsing)
-- 7% Apply clicks (conversion actions)
+- User visits home page (All tests)
+- User visits all KS2 profile pages (15%)
+- User visits all KS4 profile pages (15%)
+- User visits all KS5 profile pages (15%)
+- User searches for "school", pages through 5 page, then filters on postcode, and clicks through to the about page (25%)
+- User has 5 schools in their MySchools list and clicks every page to view their comparison (30%)
 
 ***
 

@@ -43,7 +43,7 @@ export function loadPerformanceCheck (response, name, threshold = 3000) {
     [`${name}: response size > 0`]: (r) => r.body.length > 0
   }, {
     endpoint: name,
-    service: 'load',
+    service: 'school-profiles',
     success: isSuccess ? 'true' : 'false',
     error_type: errorType
   })
@@ -63,8 +63,8 @@ export function loadContentCheck (response, checkName, expectedContent) {
   }
 
   return check(response, {
-    [`load ${checkName}: contains expected content`]: (r) => r.body.includes(expectedContent),
-    [`load ${checkName}: content length > 100 chars`]: (r) => r.body.length > 100
+    [`content-check ${checkName}: contains expected content`]: (r) => r.body.includes(expectedContent),
+    [`content-check ${checkName}: content length > 100 chars`]: (r) => r.body.length > 100
   }, {
     content_check: checkName,
     service: 'load'

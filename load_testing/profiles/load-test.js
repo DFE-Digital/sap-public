@@ -1,12 +1,15 @@
 import { htmlReport } from 'https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js'
 import { textSummary } from 'https://jslib.k6.io/k6-summary/0.0.2/index.js'
+import http from 'k6/http';
 
 import { sleep, group } from 'k6'
 import { getloadEnvironment, getloadConfig } from './config/environment.js'
 import { homepageJourney } from './journeys/homepage.js'
+import { ks2FullJourney } from './journeys/full-journey-ks2.js'
+import { ks4FullJourney } from './journeys/full-journey-ks4.js'
+import { ks5FullJourney } from './journeys/full-journey-ks5.js'
 import { searchAndFilterJourney } from './journeys/search-and-filter.js'
-import { courseDetailsJourney } from './journeys/course-details.js'
-import { paginationJourney } from './journeys/pagination.js'
+import { ks4MySchools } from './journeys/myschools-ks4.js'
 import { baselineScenario } from './scenarios/baseline.js'
 import { peakSurgeScenario } from './scenarios/peak-surge.js'
 import { stressTestScenario } from './scenarios/stress-test.js'
@@ -52,11 +55,47 @@ export function setup () {
 
 export default function (data) {
   const { environment, config } = data
+  const jar = http.cookieJar();
+
+  jar.set(
+      `${environment.baseUrl}`,
+      'gateway',
+      __ENV.SESSION_ID
+  );
+
+  jar.set(
+      `${environment.baseUrl}`,
+      'MySchoolsList',
+      '138858%2C119052%2C137421%2C145724%2C149364%2C134283%2C145089'
+  );
+
 
   // load service specific user journey distribution based on historical data
   const journeyChoice = Math.random()
 
   group('User Journeys', function () {
+    if (journeyChoice < 0.15){
+      homepageJourney(environment, config)
+      ks2FullJourney(environment, config)
+
+    } else if (journeyChoice < 0.30) {
+      homepageJourney(environment, config)
+      ks4FullJourney(environment, config)
+
+    } else if (journeyChoice < 0.45) {
+      homepageJourney(environment, config)
+      ks5FullJourney(environment, config)
+
+    } else if (journeyChoice < 0.70) {
+      homepageJourney(environment, config)
+      searchAndFilterJourney(environment, config)
+    }
+    else {
+      homepageJourney(environment, config)
+      ks4MySchools(environment, config)
+    }
+
+
     // if (journeyChoice < 0.51) {
     //   // 51% - Search operations (enhanced filtering patterns)
     //   searchAndFilterJourney(environment, config)
@@ -72,7 +111,9 @@ export default function (data) {
     //     courseDetailsJourney(environment, config)
     //   })
     // }
-    homepageJourney(environment, config)
+    
+    //ks5FullJourney(environment, config)
+
   })
 
   // Think time between actions (2-5 seconds)

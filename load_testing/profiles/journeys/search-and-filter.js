@@ -1,24 +1,16 @@
 import http from 'k6/http'
 import { group, sleep } from 'k6'
 import { loadPerformanceCheck, loadContentCheck, loadErrorHandler } from '../utils/checks.js'
-import { buildloadSearchParams } from '../utils/helpers.js'
-import { getRandomSubject, getRandomLocation } from '../data/subjects.js'
 
 export function searchAndFilterJourney (environment, config) {
-  group('load: Search and Filter Journey', function () {
+  group('search: Search and Filter Journey', function () {
     group('Basic Search', function () {
-      const basicSearchParams = buildloadSearchParams({
-        subjects: [getRandomSubject()],
-        location: getRandomLocation(),
-        radius: 50
-      })
 
-      const response = http.get(`${environment.baseUrl}/results?${basicSearchParams}`)
+      const response = http.get(`${environment.baseUrl}/search/results?NameSearchTerm=school&Distance=3&PageNumber=1`)
       const isSuccess = loadPerformanceCheck(response, 'Basic Search', config.expectedResponseTimes.search)
 
-      loadContentCheck(response, 'search-results', 'courses found')
-      loadContentCheck(response, 'filter-options', 'Filters')
-      loadContentCheck(response, 'course-listings', 'Age group')
+      loadContentCheck(response, 'search-results', 'results for')
+      loadContentCheck(response, 'has-result', 'Abacus')
 
       if (!isSuccess) {
         loadErrorHandler(response, 'Basic Search')
@@ -27,43 +19,38 @@ export function searchAndFilterJourney (environment, config) {
       sleep(2)
     })
 
-    group('Multi-Filter Search', function () {
-      const multiFilterParams = buildloadSearchParams({
-        subjects: [getRandomSubject()],
-        study_types: ['part_time'],
-        location: getRandomLocation(),
-        radius: 25,
-        order: 'course_name_ascending',
-        visa_sponsorship: true
-      })
+    group('Multi-Page Search', function () {
+    const maxPages = 10
 
-      const response = http.get(`${environment.baseUrl}/results?${multiFilterParams}`)
-      const isSuccess = loadPerformanceCheck(response, 'Multi-Filter Search', config.expectedResponseTimes.search)
+    for (let page = 1; page <= maxPages; page++) {
 
-      loadContentCheck(response, 'filter-validation', 'Part time (18 to 24 months)')
-      loadContentCheck(response, 'filtered-results', 'courses found')
+        const response = http.get(`${environment.baseUrl}/search/results?NameSearchTerm=school&Distance=3&pageNumber=${page}`)
+        const isSuccess = loadPerformanceCheck(response, 'Multi-Page Search', config.expectedResponseTimes.search)
 
-      if (!isSuccess) {
-        loadErrorHandler(response, 'Multi-Filter Search')
+        loadContentCheck(response, 'search-results', 'results for')
+        if (page > 1) {
+          loadContentCheck(response, 'button-labels', 'Previous')
+        }
+        
+        loadContentCheck(response, 'button-labels', 'Next')
+
+        if (!isSuccess) {
+          loadErrorHandler(response, 'Multi-Page Search Page ' + page)
+        }
+
+        sleep(2)
       }
-
-      sleep(1)
     })
 
     group('Advanced Filter Search', function () {
-      const advancedParams = buildloadSearchParams({
-        subjects: [getRandomSubject()],
-        qualifications: ['pgce', 'pgde'],
-        funding_types: ['salary', 'bursary'],
-        location: getRandomLocation(),
-        radius: 10
-      })
 
-      const response = http.get(`${environment.baseUrl}/results?${advancedParams}`)
+      const response = http.get(`${environment.baseUrl}/search/results?NameSearchTerm=school&LocationSearchTerm=N1C%204PF&Distance=3&pageNumber=1`)
       const isSuccess = loadPerformanceCheck(response, 'Advanced Filter Search', config.expectedResponseTimes.search)
 
-      loadContentCheck(response, 'qualification-filter', 'PGCE')
-      loadContentCheck(response, 'funding-filter', 'Salary')
+      loadContentCheck(response, 'sort', 'Sorted by distance')
+      loadContentCheck(response, 'search-results', 'results for')
+      loadContentCheck(response, 'button-labels', 'Next')
+      loadContentCheck(response, 'has-result', 'Pancras')
 
       if (!isSuccess) {
         loadErrorHandler(response, 'Advanced Filter Search')
