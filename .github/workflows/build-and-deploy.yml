@@ -434,6 +434,25 @@ jobs:
           gcp-wip: ${{ vars.GCP_WIP }}
           gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
 
+  # ---------------------------
+  # INTEGRATION TESTS (POST DEPLOYMENT) temp - review app no refresh only
+  # ---------------------------         
+  integration-tests:
+    name: Integration Tests (Post Deployment)
+    needs: [deploy-review-app]
+    uses: ./.github/workflows/integration-tests.yml
+    with:
+      environment: review
+
+  # ---------------------------
+  # INTEGRATION TESTS (POST DEPLOYMENT) temp - review app no refresh only
+  # ---------------------------         
+  integration-tests_with_refresh:
+    name: Integration Tests (Post Deployment)
+    needs: [deploy-review-app-with-refresh]
+    uses: ./.github/workflows/integration-tests.yml
+    with:
+      environment: review
 
   # ---------------------------
   # DEPLOY TO TEST (AUTO)
