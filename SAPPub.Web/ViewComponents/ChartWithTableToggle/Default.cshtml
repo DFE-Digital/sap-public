@@ -30,7 +30,7 @@
                         {
                             <tr class="govuk-table__row">
                                 <th scope="row" class="govuk-table__header">@label.value</th>
-                                <td class="govuk-table__cell">@Model.CurrentData.Data[label.i]%</td>
+                                <td class="govuk-table__cell">@(Model.CurrentData.Data[label.i].HasValue ? $"{Model.CurrentData.Data[label.i]}%" : Constants.NotAvailable)</td>
                             </tr>
                         }
                     </tbody>
