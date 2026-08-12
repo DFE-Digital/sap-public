@@ -119,6 +119,29 @@
             </tbody>
         </table>
 
+        <govuk-accordion id="pupil-population-accordion" heading-level="3">
+            <govuk-accordion-item expanded="false">
+                <govuk-accordion-item-heading>Pupil population</govuk-accordion-item-heading>
+                <govuk-accordion-item-content>
+                    <section id="pupils-with-ehcp-section">
+                        <h4 class="govuk-heading-m">Pupils with an EHCP</h4>
+                        <p class="govuk-body">
+                            An EHCP is a legal document for children and young people aged up to 25 who need more support than is available through special educational needs (SEN) support.  
+                        </p>
+                        <p class="govuk-body">
+                            EHCPs identify educational, health and social care needs and set out the additional support to meet those needs.  
+                        </p>
+                    </section>
+                    <section id="pupils-with-sen-support-section">
+                        <h4 class="govuk-heading-m">Pupils with SEN support</h4>
+                        <p class="govuk-body">
+                            Pupils with special educational needs who receive extra support in school but do not have an EHCP. 
+                        </p>
+                    </section>
+                </govuk-accordion-item-content>
+            </govuk-accordion-item>
+        </govuk-accordion>
+
 
         <govuk-pagination id="bottom-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.PrimaryAcademicPerformancePupilProgress" asp-all-route-data="@Model.RouteAttributes">Primary academic performance: Pupil progress</govuk-pagination-previous>
