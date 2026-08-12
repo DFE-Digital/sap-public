@@ -1,6 +1,7 @@
-# load & Publish Teacher Training - Load Testing
+# School Profiles - Load Testing
 
-Comprehensive and scalable load testing suite for **load** & (future) Publish Teacher Training services using [k6](https://grafana.com/products/k6/).
+Comprehensive and scalable load testing suite for School Profiles services using [k6](https://grafana.com/products/k6/).
+This was "borrowed" from https://github.com/DFE-Digital/publish-teacher-training/tree/main/load_testing
 
 ## Setup
 
