@@ -124,7 +124,9 @@ public class EstablishmentServiceModel
         TypeOfEstablishment.FreeSchoolsSpecial or
         TypeOfEstablishment.AcademySpecialConverter;
 
-    public bool IsIndependentSchool => EstablishmentTypeGroup == EstablishmentTypeGroup.IndependentSchools;
+    public bool IsIndependentSchool => TypeOfEstablishment is
+        TypeOfEstablishment.OtherIndependentSchool or
+        TypeOfEstablishment.OtherIndependentSpecialSchool;
 
     public EstablishmentPerformance KS4Performance { get; set; } = new();
 

@@ -34,6 +34,7 @@ public class AdmissionsPageTests : PageTestsBase
             .WithIsKeyStage2(true)
             .WithIsKeyStage4(false)
             .WithWebsite("https://www.stpaulsacademy.co.uk")
+            .WithEstablishmentTypeGroupId((int)EstablishmentTypeGroup.Academies)
             .BuildServiceModel();
 
         _mockEstablishmentService
@@ -178,6 +179,8 @@ public class AdmissionsPageTests : PageTestsBase
         // Assert
         var summaryCard = doc.QuerySelector("[data-testid='starting-primary-school-summary']");
         Assert.NotNull(summaryCard);
+        var independentSummaryCard = doc.QuerySelector("[data-testid='independent-primary-school-summary']");
+        Assert.Null(independentSummaryCard);
 
         var schoolWebsiteLink = summaryCard.QuerySelector("[data-testid='school-website-link']");
         var laWebsiteLink = summaryCard.QuerySelector("[data-testid='la-website-link']");
@@ -188,6 +191,33 @@ public class AdmissionsPageTests : PageTestsBase
         Assert.NotNull(schoolWebsiteLink.TextContent.Trim());
         Assert.NotNull(laWebsiteLink.GetAttribute("href"));
         Assert.NotNull(laWebsiteLink.TextContent.Trim());
+    }
+
+    [Fact]
+    public async Task AdmissionsPage_DisplaysIndependentPrimarySchoolSummaryCard()
+    {
+        // Arrange
+        var independentPrimaryAdmissionsServiceModel = GetAdmissionsServiceModel(
+            _schoolName,
+            isKs2: true,
+            isKs4: false,
+            schoolWebsite: "https://www.independentprimaryschool.co.uk",
+            isIndependentSchool: true);
+
+        _mockAdmissionsService
+          .Setup(s => s.GetAdmissionsDetailsAsync(_urn, It.IsAny<CancellationToken>()))
+          .ReturnsAsync(independentPrimaryAdmissionsServiceModel);
+
+        var url = BuildUrl(_urn, _schoolName, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var independentSummaryCard = doc.QuerySelector("[data-testid='independent-primary-school-summary']");
+        Assert.NotNull(independentSummaryCard);
+        var summaryCard = doc.QuerySelector("[data-testid='starting-primary-school-summary']");
+        Assert.Null(summaryCard);
     }
 
     [Fact]
@@ -261,7 +291,8 @@ public class AdmissionsPageTests : PageTestsBase
         string schoolName,
         bool isKs2,
         bool isKs4,
-        string? schoolWebsite)
+        string? schoolWebsite,
+        bool isIndependentSchool = false)
     {
         return new AdmissionsServiceModel
         {
@@ -271,7 +302,7 @@ public class AdmissionsPageTests : PageTestsBase
             IsKS5 = false,
             LAName = "Test LA",
             EstablishmentStatus = EstablishmentStatus.Open,
-            IsIndependentSchool = false,
+            IsIndependentSchool = isIndependentSchool,
             SchoolWebsite = schoolWebsite,
             LASchoolAdmissionsUrl = "https://www.testla.gov.uk/admissions"
         };

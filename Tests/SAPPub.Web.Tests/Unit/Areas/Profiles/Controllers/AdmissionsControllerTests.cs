@@ -112,6 +112,7 @@ public class AdmissionsControllerTests
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
         Assert.False(model.IsSchoolClosed);
+        Assert.False(model.IsIndependentSchool);
     }
 
     [Theory]
