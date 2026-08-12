@@ -1,0 +1,41 @@
+name: Full integration test againt deployed application
+on:
+  workflow_call:
+
+jobs:
+  integration-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Set up .NET
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Install Playwright browsers (.NET)
+        run: pwsh ./Tests/SAPPub.Integration.Tests/bin/Release/net8.0/playwright.ps1 install
+
+      - name: Run Integration Tests with Coverage
+        env:
+          HEADED: 0
+          PLAYWRIGHT_IGNORE_HTTPS_ERRORS: true
+          ASPNETCORE_ENVIRONMENT: CI
+        run:
+            dotnet test Tests/SAPPub.Integration.Tests/SAPPub.IntegrationTests.csproj \
+              --no-build \
+              --configuration Release \
+              --results-directory "TestResults" \
+              --logger "trx;LogFileName=integration-tests.trx" \
+              --collect "XPlat Code Coverage"\
+              /p:CollectCoverage=true \
+              /p:CoverletOutputFormat=cobertura \
+              /p:DeterministicReport=true \
+              /p:UseSourceLink=true \
+              /p:Exclude='[*]AspNetCoreGeneratedDocument.*%2c[*]AspNetCore.Views.*' \
+              /p:ExcludeByAttribute='GeneratedCodeAttribute*%2cObsoleteAttribute*%2cExcludeFromCodeCoverage' \
+              --verbosity normal
