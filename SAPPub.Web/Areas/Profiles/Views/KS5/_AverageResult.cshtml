@@ -2,84 +2,112 @@
 @model SAPPub.Web.Areas.Profiles.ViewModels.KS5.AverageResultViewModel
 
 @{
-    var qualificationLevel = (Level3?)ViewData["QualificationLevel"];
+    var qualification = ViewData["QualificationLevel"];
     var laName = ViewData["LAName"];
 }
 
 <h3 class="govuk-heading-m">Average result</h3>
 
-@if (qualificationLevel == Level3.AppliedGeneral)
+@if (qualification is Level3 level3Qualification)
 {
+    if (level3Qualification == Level3.AppliedGeneral)
+    {
+        <p class="govuk-body">
+            This shows the average grade and points per @level3Qualification.GetDisplayName() entry.
+        </p>
+
+        <p class="govuk-body">
+            We use points to compare different qualifications fairly, even if they have different sizes
+            or grading systems. We base the number of points on the challenge and size of a qualification.
+        </p>
+
+        <p class="govuk-body">
+            A maximum of 50 points are available for a top grade in applied general qualifications which take
+            the same amount of time to study as an A level.
+        </p>
+    }
+    else if (level3Qualification == Level3.TechLevel)
+    {
+        <p class="govuk-body">
+            This shows the average grade and points students achieved in their tech levels.
+        </p>
+
+        <p class="govuk-body">
+            We use points to compare different qualifications fairly, even if they have different sizes
+            or grading systems.
+        </p>
+
+        <p class="govuk-body">
+            For example, a maximum of 50 points are available for a top grade in tech levels which take
+            the same amount of study as an A level.
+        </p>
+
+        <p class="govuk-body">
+            T level performance measures are not yet included here. Find out more details in the
+            <a id="measures-tech-guidance-link"
+               class="govuk-link"
+               rel="noreferrer noopener"
+               target="_blank"
+               href="https://www.gov.uk/government/publications/16-to-19-accountability-headline-measures-technical-guide">
+                16 to 19 technical guide <span class="govuk-visually-hidden">(opens in a new tab)</span>
+            </a>
+            and
+            <a id="intro-t-levels-link"
+               class="govuk-link"
+               rel="noreferrer noopener"
+               target="_blank"
+               href="https://www.gov.uk/government/publications/introduction-of-t-levels/introduction-of-t-levels">
+                introduction of T levels <span class="govuk-visually-hidden">(opens in a new tab)</span>
+            </a>
+        </p>
+    }
+    else
+    {
+        <p class="govuk-body">
+            This shows the average grade and points per @level3Qualification.GetDisplayName() entry.
+        </p>
+
+        <p class="govuk-body">
+            We use points to compare different qualifications fairly, even if they have different sizes or grading systems.
+            For example, an A* at A level is worth up to 60 points.
+        </p>
+    }
+
     <p class="govuk-body">
-        This shows the average grade and points per @qualificationLevel?.GetDisplayName() entry.
+        Compare this school or college with state-funded local and national averages.
     </p>
 
     <p class="govuk-body">
-        We use points to compare different qualifications fairly, even if they have different sizes
-        or grading systems. We base the number of points on the challenge and size of a qualification.
-    </p>
-
-    <p class="govuk-body">
-        A maximum of 50 points are available for a top grade in applied general qualifications which take
-        the same amount of time to study as an A level.
-    </p>
-}
-else if (qualificationLevel == Level3.TechLevel)
-{
-    <p class="govuk-body">
-        This shows the average grade and points students achieved in their tech levels.
-    </p>
-
-    <p class="govuk-body">
-        We use points to compare different qualifications fairly, even if they have different sizes
-        or grading systems.
-    </p>
-
-    <p class="govuk-body">
-        For example, a maximum of 50 points are available for a top grade in tech levels which take
-        the same amount of study as an A level.
-    </p>
-
-    <p class="govuk-body">
-        T level performance measures are not yet included here. Find out more details in the
-        <a id="measures-tech-guidance-link"
-           class="govuk-link"
-           rel="noreferrer noopener"
-           target="_blank"
-           href="https://www.gov.uk/government/publications/16-to-19-accountability-headline-measures-technical-guide">
-            16 to 19 technical guide <span class="govuk-visually-hidden">(opens in a new tab)</span>
+        <a id="performance-points-link" class="govuk-link" rel="noreferrer noopener" target="_blank" href="https://www.gov.uk/government/publications/performance-points-a-practical-guide-to-key-stage-4-and-5-points">
+            Find out how performance points work <span class="govuk-visually-hidden">(opens in a new tab)</span>
         </a>
-        and
-        <a id="intro-t-levels-link"
-           class="govuk-link"
-           rel="noreferrer noopener"
-           target="_blank"
-           href="https://www.gov.uk/government/publications/introduction-of-t-levels/introduction-of-t-levels">
-            introduction of T levels <span class="govuk-visually-hidden">(opens in a new tab)</span>
-        </a>     
     </p>
 }
-else
+else if (qualification is Level2 level2Qualification)
 {
-    <p class="govuk-body">
-        This shows the average grade and points per @qualificationLevel?.GetDisplayName() entry.
-    </p>
+    if (level2Qualification == Level2.TechCert)
+    {
+        <p class="govuk-body">
+            This shows the average grade and points students achieved in their technical certificates.
+        </p>
 
-    <p class="govuk-body">
-        We use points to compare different qualifications fairly, even if they have different sizes or grading systems.
-        For example, an A* at A level is worth up to 60 points.
-    </p>
+        <p class="govuk-body">
+            A points system is used to make different qualifications easier to compare. Each qualification gets
+            a points value based on how challenging it is and how big it is. Level 2 and level 3 qualifications
+            use different points scales, so you cannot compare them directly.
+        </p>
+
+        <p class="govuk-body">
+            Compare this school or college with state-funded local and national averages.
+        </p>
+
+        <p class="govuk-body">
+            <a id="performance-points-link" class="govuk-link" rel="noreferrer noopener" target="_blank" href="https://www.gov.uk/government/publications/performance-points-a-practical-guide-to-key-stage-4-and-5-points">
+                Find out how performance points work <span class="govuk-visually-hidden">(opens in a new tab)</span>
+            </a>
+        </p>
+    }
 }
-
-<p class="govuk-body">
-    Compare this school or college with state-funded local and national averages.
-</p>
-
-<p class="govuk-body">
-    <a id="performance-points-link" class="govuk-link" rel="noreferrer noopener" target="_blank" href="https://www.gov.uk/government/publications/performance-points-a-practical-guide-to-key-stage-4-and-5-points">
-        Find out how performance points work <span class="govuk-visually-hidden">(opens in a new tab)</span>
-    </a>
-</p>
 
 <div class="data-container">
     <table id="average-result-current-year-table" class="govuk-table">
