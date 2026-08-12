@@ -82,18 +82,19 @@ public class AdmissionsControllerTests
 
         _mockAdmissionsService
             .Setup(s => s.GetAdmissionsDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new AdmissionsServiceModel(
-                SchoolName: _fakeEstablishment.EstablishmentName,
-                SchoolWebsite: _fakeEstablishment.Website,
-                LAName: laName,
-                LASchoolAdmissionsUrl: lASchoolAdmissionsUrl,
-                EstablishmentStatus: EstablishmentStatus.Open,
-                IsIndependentSchool: false,
-                IsKS2: false,
-                IsKS4: true,
-                IsKS5: false
+            .ReturnsAsync(new AdmissionsServiceModel
+            {
+                SchoolName = _fakeEstablishment.EstablishmentName,
+                SchoolWebsite = _fakeEstablishment.Website,
+                LAName = laName,
+                LASchoolAdmissionsUrl = lASchoolAdmissionsUrl,
+                EstablishmentStatus = EstablishmentStatus.Open,
+                IsIndependentSchool = false,
+                IsKS2 = false,
+                IsKS4 = true,
+                IsKS5 = false
 
-            ));
+            });
 
         var result = await _controller.KS4(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
@@ -127,17 +128,18 @@ public class AdmissionsControllerTests
 
         _mockAdmissionsService
             .Setup(s => s.GetAdmissionsDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new AdmissionsServiceModel(
-                SchoolName: _fakeEstablishment.EstablishmentName,
-                SchoolWebsite: _fakeEstablishment.Website,
-                LAName: laName,
-                LASchoolAdmissionsUrl: lASchoolAdmissionsUrl,
-                EstablishmentStatus: EstablishmentStatus.Open,
-                IsKS2: false,
-                IsKS4: true,
-                IsKS5: false,
-                IsIndependentSchool: false
-            ));
+            .ReturnsAsync(new AdmissionsServiceModel
+            {
+                SchoolName = _fakeEstablishment.EstablishmentName,
+                SchoolWebsite = _fakeEstablishment.Website,
+                LAName = laName,
+                LASchoolAdmissionsUrl = lASchoolAdmissionsUrl,
+                EstablishmentStatus = EstablishmentStatus.Open,
+                IsKS2 = false,
+                IsKS4 = true,
+                IsKS5 = false,
+                IsIndependentSchool = false
+            });
 
         var result = await _controller.KS4(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
@@ -178,17 +180,18 @@ public class AdmissionsControllerTests
 
         _mockAdmissionsService
             .Setup(s => s.GetAdmissionsDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new AdmissionsServiceModel(
-                SchoolName: _fakeEstablishment.EstablishmentName,
-                SchoolWebsite: _fakeEstablishment.Website,
-                LAName: laName,
-                LASchoolAdmissionsUrl: lASchoolAdmissionsUrl,
-                EstablishmentStatus: statusCode,
-                IsKS2: false,
-                IsKS4: true,
-                IsKS5: false,
-                IsIndependentSchool: false
-            ));
+            .ReturnsAsync(new AdmissionsServiceModel
+            {
+                SchoolName = _fakeEstablishment.EstablishmentName,
+                SchoolWebsite = _fakeEstablishment.Website,
+                LAName = laName,
+                LASchoolAdmissionsUrl = lASchoolAdmissionsUrl,
+                EstablishmentStatus = statusCode,
+                IsKS2 = false,
+                IsKS4 = true,
+                IsKS5 = false,
+                IsIndependentSchool = false
+            });
 
         var result = await _controller.KS4(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
@@ -221,17 +224,18 @@ public class AdmissionsControllerTests
 
         _mockAdmissionsService
             .Setup(s => s.GetAdmissionsDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new AdmissionsServiceModel(
-                SchoolName: _fakeEstablishment.EstablishmentName,
-                SchoolWebsite: _fakeEstablishment.Website,
-                LAName: laName,
-                LASchoolAdmissionsUrl: lASchoolAdmissionsUrl,
-                EstablishmentStatus: EstablishmentStatus.Open,
-                IsKS2: _fakeEstablishment.IsKS2,
-                IsKS4: _fakeEstablishment.IsKS4,
-                IsKS5: _fakeEstablishment.IsKS5,
-                IsIndependentSchool: _fakeEstablishment.IsIndependentSchool
-            ));
+            .ReturnsAsync(new AdmissionsServiceModel
+            {
+                SchoolName = _fakeEstablishment.EstablishmentName,
+                SchoolWebsite = _fakeEstablishment.Website,
+                LAName = laName,
+                LASchoolAdmissionsUrl = lASchoolAdmissionsUrl,
+                EstablishmentStatus = EstablishmentStatus.Open,
+                IsKS2 = _fakeEstablishment.IsKS2,
+                IsKS4 = _fakeEstablishment.IsKS4,
+                IsKS5 = _fakeEstablishment.IsKS5,
+                IsIndependentSchool = _fakeEstablishment.IsIndependentSchool
+            });
 
         // Act
         var result = await _controller.KS4(

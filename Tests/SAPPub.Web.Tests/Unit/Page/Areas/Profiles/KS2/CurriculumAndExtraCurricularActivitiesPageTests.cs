@@ -201,7 +201,7 @@ public class CurriculumAndExtraCurricularActivitiesPageTests : PageTestsBase
             .WithEstablishmentName("Saint Paul Roman Catholic Infant School")
             .WithIsKeyStage2(true)
             .WithIsKeyStage4(false)
-            .WithWebsite(null) // No website - triggers contact school message
+            .WithWebsite("") // No website - triggers contact school message
             .BuildServiceModel();
 
         _mockEstablishmentService
@@ -228,7 +228,7 @@ public class CurriculumAndExtraCurricularActivitiesPageTests : PageTestsBase
             .WithEstablishmentName("Saint Paul Roman Catholic Infant School")
             .WithIsKeyStage2(true)
             .WithIsKeyStage4(false)
-            .WithWebsite(null) // No website - triggers contact school message
+            .WithWebsite("") // No website - triggers contact school message
             .BuildServiceModel();
 
         _mockEstablishmentService

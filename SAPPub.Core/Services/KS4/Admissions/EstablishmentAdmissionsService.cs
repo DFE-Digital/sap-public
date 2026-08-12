@@ -15,16 +15,17 @@ public sealed class EstablishmentAdmissionsService(
 
         var laUrls = await lAService.GetLaUrlsAsync(establishment, ct);
 
-        return new AdmissionsServiceModel(
-            SchoolName: establishment.EstablishmentName,
-            SchoolWebsite: establishment.Website,
-            LAName: laUrls?.Name,
-            LASchoolAdmissionsUrl: laUrls?.LAMainUrl,
-            EstablishmentStatus: establishment.StatusCode.ToStatus(),
-            IsIndependentSchool: establishment.IsIndependentSchool,
-            IsKS2: establishment.IsKS2,
-            IsKS4: establishment.IsKS4,
-            IsKS5: establishment.IsKS5
-        );
+        return new AdmissionsServiceModel
+        {
+            SchoolName = establishment.EstablishmentName,
+            SchoolWebsite = establishment.Website,
+            LAName = laUrls?.Name,
+            LASchoolAdmissionsUrl = laUrls?.LAMainUrl,
+            EstablishmentStatus = establishment.StatusCode.ToStatus(),
+            IsIndependentSchool = establishment.IsIndependentSchool,
+            IsKS2 = establishment.IsKS2,
+            IsKS4 = establishment.IsKS4,
+            IsKS5 = establishment.IsKS5
+        };
     }
 }
