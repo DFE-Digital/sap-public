@@ -13,7 +13,7 @@ import { stressTestScenario } from './scenarios/stress-test.js'
 import { quickTestScenario } from './scenarios/quick-test.js'
 
 function getSelectedScenario () {
-  const scenario = __ENV.SCENARIO || 'baseline'
+  const scenario = __ENV.SCENARIO || 'quick'
 
   switch (scenario) {
     case 'baseline':
