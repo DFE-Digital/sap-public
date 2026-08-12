@@ -156,6 +156,7 @@ public class MeetingOrExceedingStandardsTests(WebApplicationSetupFixture fixture
         var isShowDataOverTimeBtnVisible = await showDataOverTimeBtn.IsVisibleAsync();
         var buttonText = await showAsTableBtn.TextContentAsync();
         var showDataOverTimeBtnText = await showDataOverTimeBtn.TextContentAsync();
+        var firstTableCellText = await table.Locator("td").First.TextContentAsync();
 
         // Assert
         Assert.False(isChartVisible);
@@ -163,6 +164,7 @@ public class MeetingOrExceedingStandardsTests(WebApplicationSetupFixture fixture
         Assert.True(isShowDataOverTimeBtnVisible);
         Assert.Equal("Show as a chart", buttonText);
         Assert.Equal("Show data over time", showDataOverTimeBtnText);
+        Assert.Contains("Not available", firstTableCellText);
     }
 
     [Fact]
