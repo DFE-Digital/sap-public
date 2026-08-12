@@ -25,7 +25,7 @@ public class AdmissionsViewModel : BaseViewModel
         return new AdmissionsViewModel
         {
             URN = urn,
-            SchoolName = serviceModel.SchoolName,
+            SchoolName = serviceModel.SchoolName ?? string.Empty,
             SchoolWebsite = serviceModel.SchoolWebsite.ToDisplayField(),
             LASchoolAdmissionsLinkUrl = serviceModel.LASchoolAdmissionsUrl,
             LAName = serviceModel.LAName ?? "Local authority",
