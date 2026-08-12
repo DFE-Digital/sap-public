@@ -110,7 +110,7 @@ jobs:
         working-directory: SAPPub.Web
         run: npm ci
 
-      - name: Run All Tests with Coverage
+      - name: Run Tests with Coverage
         env:
           HEADED: 0
           PLAYWRIGHT_IGNORE_HTTPS_ERRORS: true
@@ -436,7 +436,7 @@ jobs:
 
 
   # ---------------------------
-  # DEPLOY TEST (AUTO)
+  # DEPLOY TO TEST (AUTO)
   # ---------------------------
   deploy:
     name: Deploy to Test
@@ -476,7 +476,7 @@ jobs:
           gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
 
   # ---------------------------
-  # REFRESH TEST DATABSE (AUTO - IF REQUIRED)
+  # REFRESH TEST DATABASE (AUTO - IF REQUIRED)
   # ---------------------------
 
   detect-refresh-data-on-merge:
@@ -532,10 +532,6 @@ jobs:
       id-token: write
       actions: read
       packages: write
-
-  post-deploy-tests:
-    needs: deploy
-    uses: ./.github/workflows/integration-tests.yml
 
   # ---------------------------
   # MANUAL DEPLOY
@@ -633,29 +629,3 @@ jobs:
           teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
           service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
           terraform-base: terraform/domains/environment_domains
-
-      - name: Upload Test Result Files
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: test-results 
-          path: "**/TestResults/**/*"
-          retention-days: 5
-
-      - name: Upload UI artifacts on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: ui-test-artifacts
-          path: |
-            **/test-artifacts/screenshots/**
-            **/test-artifacts/videos/**
-            **/test-artifacts/traces/**
-
-      - name: Publish Test Results
-        uses: dorny/test-reporter@v2
-        if: always()
-        with:
-          reporter: 'dotnet-trx'
-          path: "**/TestResults/**/*.trx"
-          name: 'Test Results'

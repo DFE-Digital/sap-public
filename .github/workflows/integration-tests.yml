@@ -1,15 +1,20 @@
-name: Full integration test againt deployed application
+name: Integration Tests
+
 on:
   workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
 
 jobs:
   integration-tests:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
 
     steps:
       - uses: actions/checkout@v4
 
-      # Set up .NET
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -17,25 +22,37 @@ jobs:
 
       - name: Restore dependencies
         run: dotnet restore
-      - name: Install Playwright browsers (.NET)
+
+      - name: Build integration tests
+        run: dotnet build Tests/SAPPub.Integration.Tests/SAPPub.IntegrationTests.csproj --configuration Release
+
+      - name: Install Playwright browsers
         run: pwsh ./Tests/SAPPub.Integration.Tests/bin/Release/net8.0/playwright.ps1 install
 
-      - name: Run Integration Tests with Coverage
+      - name: Run integration tests
         env:
           HEADED: 0
           PLAYWRIGHT_IGNORE_HTTPS_ERRORS: true
           ASPNETCORE_ENVIRONMENT: CI
-        run:
-            dotnet test Tests/SAPPub.Integration.Tests/SAPPub.IntegrationTests.csproj \
-              --no-build \
-              --configuration Release \
-              --results-directory "TestResults" \
-              --logger "trx;LogFileName=integration-tests.trx" \
-              --collect "XPlat Code Coverage"\
-              /p:CollectCoverage=true \
-              /p:CoverletOutputFormat=cobertura \
-              /p:DeterministicReport=true \
-              /p:UseSourceLink=true \
-              /p:Exclude='[*]AspNetCoreGeneratedDocument.*%2c[*]AspNetCore.Views.*' \
-              /p:ExcludeByAttribute='GeneratedCodeAttribute*%2cObsoleteAttribute*%2cExcludeFromCodeCoverage' \
-              --verbosity normal
+          BASE_URL: ${{ vars.BASE_URL }}
+        run: |
+          dotnet test Tests/SAPPub.Integration.Tests/SAPPub.IntegrationTests.csproj \
+            --no-build \
+            --configuration Release \
+            --results-directory "TestResults" \
+            --logger "trx;LogFileName=integration-tests.trx"
+
+      - name: Upload Test Result Files
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: post-deployment-test-results
+          path: "**/TestResults/**/*"
+
+      - name: Publish Test Results
+        uses: dorny/test-reporter@v2
+        if: always()
+        with:
+          reporter: dotnet-trx
+          path: "**/TestResults/**/*.trx"
+          name: Post Deployment Test Results
