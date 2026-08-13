@@ -6,6 +6,9 @@ on:
       environment:
         required: true
         type: string
+      base_url:
+        required: true
+        type: string
 
 jobs:
   integration-tests:
@@ -34,7 +37,7 @@ jobs:
           HEADED: 0
           PLAYWRIGHT_IGNORE_HTTPS_ERRORS: true
           ASPNETCORE_ENVIRONMENT: CI
-          BASE_URL: ${{ vars.BASE_URL }}
+          BASE_URL: ${{ inputs.base_url }}
         run: |
           dotnet test Tests/SAPPub.Integration.Tests/SAPPub.IntegrationTests.csproj \
             --no-build \

@@ -210,6 +210,8 @@ jobs:
     name: Deployment To Review (no refresh)
     concurrency: deploy_review_${{ github.event.pull_request.number }}
     needs: [build, test]
+    outputs:
+      environment_url: ${{ steps.deploy_review.outputs.environment_url }}
     if: ${{ github.event_name == 'pull_request'
       && (
       github.event.action == 'labeled' ||
@@ -481,12 +483,13 @@ jobs:
   # ---------------------------
   # INTEGRATION TESTS (POST DEPLOYMENT) temp - review app no refresh only
   # ---------------------------         
-  # integration-tests:
-  #   name: Integration Tests (Post Deployment)
-  #   needs: [deploy-review-app]
-  #   uses: ./.github/workflows/integration-tests.yml
-  #   with:
-  #     environment: review
+  integration-tests:
+    name: Integration Tests (Post Deployment)
+    needs: [deploy-review-app]
+    uses: ./.github/workflows/integration-tests.yml
+    with:
+      environment: review
+      base_url: ${{ needs.deploy-review-app.outputs.environment_url }}
 
   # ---------------------------
   # INTEGRATION TESTS (POST DEPLOYMENT) temp - review app no refresh only
