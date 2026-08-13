@@ -394,50 +394,6 @@ jobs:
 
           run_restore
 
-      - uses: actions/checkout@v4
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
-
-      - name: Restore dependencies
-        run: dotnet restore
-
-      - name: Build integration tests
-        run: dotnet build Tests/SAPPub.Integration.Tests/SAPPub.IntegrationTests.csproj --configuration Release
-
-      - name: Install Playwright browsers
-        run: pwsh ./Tests/SAPPub.Integration.Tests/bin/Release/net8.0/playwright.ps1 install
-
-      - name: Run integration tests
-        env:
-          HEADED: 0
-          PLAYWRIGHT_IGNORE_HTTPS_ERRORS: true
-          ASPNETCORE_ENVIRONMENT: CI
-          BASE_URL: ${{ steps.deploy_review.outputs.environment_url }}
-        run: |
-          dotnet test Tests/SAPPub.Integration.Tests/SAPPub.IntegrationTests.csproj \
-            --no-build \
-            --configuration Release \
-            --results-directory "TestResults" \
-            --logger "trx;LogFileName=integration-tests.trx"
-
-      - name: Upload Test Result Files
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: post-deployment-test-results
-          path: "**/TestResults/**/*"
-
-      - name: Publish Test Results
-        uses: dorny/test-reporter@v2
-        if: always()
-        with:
-          reporter: dotnet-trx
-          path: "**/TestResults/**/*.trx"
-          name: Post Deployment Test Results
-
   # ---------------------------
   # REVIEW APP DEPLOYMENT (PR) - refresh requested
   # ---------------------------
@@ -445,6 +401,8 @@ jobs:
     name: Deployment To Review (before refresh)
     concurrency: deploy_review_${{ github.event.pull_request.number }}
     needs: [build, test]
+    outputs:
+      environment_url: ${{ steps.deploy_review.outputs.environment_url }}
     if: ${{ github.event_name == 'pull_request'
       && (
       github.event.action == 'labeled' ||
@@ -481,7 +439,7 @@ jobs:
           gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
 
   # ---------------------------
-  # INTEGRATION TESTS (POST DEPLOYMENT) temp - review app no refresh only
+  # INTEGRATION TESTS (POST DEPLOYMENT)
   # ---------------------------         
   integration-tests:
     name: Integration Tests (Post Deployment)
@@ -492,14 +450,15 @@ jobs:
       base_url: ${{ needs.deploy-review-app.outputs.environment_url }}
 
   # ---------------------------
-  # INTEGRATION TESTS (POST DEPLOYMENT) temp - review app no refresh only
+  # INTEGRATION TESTS (POST DEPLOYMENT)
   # ---------------------------         
-  # integration-tests_with_refresh:
-  #   name: Integration Tests (Post Deployment)
-  #   needs: [deploy-review-app-with-refresh]
-  #   uses: ./.github/workflows/integration-tests.yml
-  #   with:
-  #     environment: review
+  integration-tests_with_refresh:
+    name: Integration Tests (Post Deployment)
+    needs: [deploy-review-app-with-refresh]
+    uses: ./.github/workflows/integration-tests.yml
+    with:
+      environment: review
+      base_url: ${{ needs.deploy-review-app-with-refresh.outputs.environment_url }}
 
   # ---------------------------
   # DEPLOY TO TEST (AUTO)
