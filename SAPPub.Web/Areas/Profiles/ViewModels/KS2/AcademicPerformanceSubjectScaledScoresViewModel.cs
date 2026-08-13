@@ -12,52 +12,57 @@ public class AcademicPerformanceSubjectScaledScoresViewModel : BaseViewModel
 
     public required DataOverTimeViewModel AllReadOverTimeData { get; set; }
 
-    public required DisplayField<bool> HasEstablishmentData { get; set; }
+    public required DataViewModel AllMathsData { get; set; }
+
+    public required DataOverTimeViewModel AllMathsOverTimeData { get; set; }
+
+    public required DisplayField<bool> HasReadEstablishmentData { get; set; }
+
+    public required DisplayField<bool> HasMathsEstablishmentData { get; set; }
+
 
     public static AcademicPerformanceSubjectScaledScoresViewModel Map(EstablishmentServiceModel establishment, KS2ScaledScoreModel scaledScoreModel)
     {
         var laAverageLabel = CommonHelper.GetLocalAuthorityDisplayName(establishment.LAName);
 
-        var hasEstablishmentData = new[]
+        var hasReadEstablishmentData = new[]
         {
             scaledScoreModel.ReadAverageEstablishment.CurrentYear.Value,
             scaledScoreModel.ReadAverageEstablishment.PreviousYear.Value,
             scaledScoreModel.ReadAverageEstablishment.TwoYearsAgo.Value,
         }.All(d => d is double v && v != 0);
 
+        var hasMathsEstablishmentData = new[]
+{
+            scaledScoreModel.MathsAverageEstablishment.CurrentYear.Value,
+            scaledScoreModel.MathsAverageEstablishment.PreviousYear.Value,
+            scaledScoreModel.MathsAverageEstablishment.TwoYearsAgo.Value,
+        }.All(d => d is double v && v != 0);
+
+
         var allReadData = new DataViewModel
         {
             Labels = ["School", laAverageLabel, "England average"],
-            Data =
-            [
-                scaledScoreModel.ReadAverageEstablishment.CurrentYear.Value,
-                scaledScoreModel.ReadAverageLA.CurrentYear.Value,
-                scaledScoreModel.ReadAverageEngland.CurrentYear.Value
-            ],
+            Data = [ scaledScoreModel.ReadAverageEstablishment.CurrentYear.Value, scaledScoreModel.ReadAverageLA.CurrentYear.Value, scaledScoreModel.ReadAverageEngland.CurrentYear.Value ],
         };
 
-        var allReadOverTimeData = new DataOverTimeViewModel
+        var allMathsData = new DataViewModel
         {
-            Labels = ["2022 to 2023", "2023 to 2024", "2024 to 2025"], // TODO - Need academic year to calculate current, previous and TwoYearsAgo
-            Datasets =
-               [
-                   new DatasetViewModel
-                    {
-                        Label = "School",
-                        Data = [scaledScoreModel.ReadAverageEstablishment.TwoYearsAgo.Value, scaledScoreModel.ReadAverageEstablishment.PreviousYear.Value, scaledScoreModel.ReadAverageEstablishment.CurrentYear.Value],
-                    },
-                    new DatasetViewModel
-                    {
-                        Label = laAverageLabel,
-                        Data = [scaledScoreModel.ReadAverageLA.TwoYearsAgo.Value, scaledScoreModel.ReadAverageLA.PreviousYear.Value, scaledScoreModel.ReadAverageLA.CurrentYear.Value],
-                    },
-                    new DatasetViewModel
-                    {
-                        Label = "England average",
-                        Data = [scaledScoreModel.ReadAverageEngland.TwoYearsAgo.Value, scaledScoreModel.ReadAverageEngland.PreviousYear.Value, scaledScoreModel.ReadAverageEngland.CurrentYear.Value],
-                    }
-               ],
+            Labels = ["School", laAverageLabel, "England average"],
+            Data = [scaledScoreModel.MathsAverageEstablishment.CurrentYear.Value, scaledScoreModel.MathsAverageLA.CurrentYear.Value, scaledScoreModel.MathsAverageEngland.CurrentYear.Value],
         };
+
+        var allReadOverTimeData = GetDataOverTimeViewModel(
+            scaledScoreModel.ReadAverageEstablishment.TwoYearsAgo.Value, scaledScoreModel.ReadAverageEstablishment.PreviousYear.Value, scaledScoreModel.ReadAverageEstablishment.CurrentYear.Value,
+            scaledScoreModel.ReadAverageLA.TwoYearsAgo.Value, scaledScoreModel.ReadAverageLA.PreviousYear.Value, scaledScoreModel.ReadAverageLA.CurrentYear.Value,
+            scaledScoreModel.ReadAverageEngland.TwoYearsAgo.Value, scaledScoreModel.ReadAverageEngland.PreviousYear.Value, scaledScoreModel.ReadAverageEngland.CurrentYear.Value,
+            laAverageLabel);
+
+        var allMathsOverTimeData = GetDataOverTimeViewModel(
+            scaledScoreModel.MathsAverageEstablishment.TwoYearsAgo.Value, scaledScoreModel.MathsAverageEstablishment.PreviousYear.Value, scaledScoreModel.MathsAverageEstablishment.CurrentYear.Value,
+            scaledScoreModel.MathsAverageLA.TwoYearsAgo.Value, scaledScoreModel.MathsAverageLA.PreviousYear.Value, scaledScoreModel.MathsAverageLA.CurrentYear.Value,
+            scaledScoreModel.MathsAverageEngland.TwoYearsAgo.Value, scaledScoreModel.MathsAverageEngland.PreviousYear.Value, scaledScoreModel.MathsAverageEngland.CurrentYear.Value,
+            laAverageLabel);
 
         return new AcademicPerformanceSubjectScaledScoresViewModel
         {
@@ -68,7 +73,28 @@ public class AcademicPerformanceSubjectScaledScoresViewModel : BaseViewModel
             IsKS5 = establishment.IsKS5,
             AllReadData = allReadData,
             AllReadOverTimeData = allReadOverTimeData,
-            HasEstablishmentData = hasEstablishmentData.ToDisplayField()
+            AllMathsData = allMathsData,
+            AllMathsOverTimeData = allMathsOverTimeData,
+            HasReadEstablishmentData = hasReadEstablishmentData.ToDisplayField(),
+            HasMathsEstablishmentData = hasMathsEstablishmentData.ToDisplayField()
+        };
+    }
+
+    private static DataOverTimeViewModel GetDataOverTimeViewModel(
+        double? estPrevious2, double? estPrevious, double? estCurrent,
+        double? laPrevious2, double? laPrevious, double? laCurrent,
+        double? engPrevious2, double? engPrevious, double? engCurrent,
+        string laAverageLabel)
+    {
+        return new DataOverTimeViewModel
+        {
+            Labels = ["2022 to 2023", "2023 to 2024", "2024 to 2025"], // TODO - Need academic year to calculate current, previous and TwoYearsAgo
+            Datasets =
+            [
+                new DatasetViewModel { Label = "School", Data = [estPrevious2, estPrevious, estCurrent] },
+                new DatasetViewModel { Label = laAverageLabel, Data = [laPrevious2, laPrevious, laCurrent] },
+                new DatasetViewModel { Label = "England average", Data = [engPrevious2, engPrevious, engCurrent] }
+            ],
         };
     }
 }

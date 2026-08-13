@@ -142,8 +142,6 @@ public class MeetingOrExceedingStandardsTests(WebApplicationSetupFixture fixture
         // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
 
-        var content = await Page.ContentAsync();
-
         // Act
         // Click Show as a table button
         await Page.ClickAsync(_pageElements["currentYearShowAsTableBtn"]);
