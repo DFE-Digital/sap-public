@@ -5,19 +5,6 @@ namespace SAPPub.Integration.Tests;
 
 public abstract class BasePageTest : PageTest
 {
-    //private readonly WebApplicationSetupFixture _fixture;
-
-    // ReSharper disable once ConvertToPrimaryConstructor
-    protected BasePageTest(/*WebApplicationSetupFixture fixture*/)
-    {
-        //_fixture = fixture;
-
-        //if (_fixture.IsHeaded())
-        //{
-        //    Environment.SetEnvironmentVariable("HEADED", "1");
-        //}
-    }
-
     public override BrowserNewContextOptions ContextOptions()
     {
         var baseUrl = Environment.GetEnvironmentVariable("BASE_URL");
