@@ -391,6 +391,33 @@ jobs:
           }
 
           run_restore
+      - name: Run integration tests
+        env:
+          HEADED: 0
+          PLAYWRIGHT_IGNORE_HTTPS_ERRORS: true
+          ASPNETCORE_ENVIRONMENT: CI
+          BASE_URL: ${{ steps.deploy_review.outputs.environment_url }}
+        run: |
+          dotnet test Tests/SAPPub.Integration.Tests/SAPPub.IntegrationTests.csproj \
+            --no-build \
+            --configuration Release \
+            --results-directory "TestResults" \
+            --logger "trx;LogFileName=integration-tests.trx"
+
+      - name: Upload Test Result Files
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: post-deployment-test-results
+          path: "**/TestResults/**/*"
+
+      - name: Publish Test Results
+        uses: dorny/test-reporter@v2
+        if: always()
+        with:
+          reporter: dotnet-trx
+          path: "**/TestResults/**/*.trx"
+          name: Post Deployment Test Results
 
   # ---------------------------
   # REVIEW APP DEPLOYMENT (PR) - refresh requested
@@ -437,22 +464,22 @@ jobs:
   # ---------------------------
   # INTEGRATION TESTS (POST DEPLOYMENT) temp - review app no refresh only
   # ---------------------------         
-  integration-tests:
-    name: Integration Tests (Post Deployment)
-    needs: [deploy-review-app]
-    uses: ./.github/workflows/integration-tests.yml
-    with:
-      environment: review
+  # integration-tests:
+  #   name: Integration Tests (Post Deployment)
+  #   needs: [deploy-review-app]
+  #   uses: ./.github/workflows/integration-tests.yml
+  #   with:
+  #     environment: review
 
   # ---------------------------
   # INTEGRATION TESTS (POST DEPLOYMENT) temp - review app no refresh only
   # ---------------------------         
-  integration-tests_with_refresh:
-    name: Integration Tests (Post Deployment)
-    needs: [deploy-review-app-with-refresh]
-    uses: ./.github/workflows/integration-tests.yml
-    with:
-      environment: review
+  # integration-tests_with_refresh:
+  #   name: Integration Tests (Post Deployment)
+  #   needs: [deploy-review-app-with-refresh]
+  #   uses: ./.github/workflows/integration-tests.yml
+  #   with:
+  #     environment: review
 
   # ---------------------------
   # DEPLOY TO TEST (AUTO)
