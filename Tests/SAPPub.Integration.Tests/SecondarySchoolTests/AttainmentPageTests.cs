@@ -15,7 +15,7 @@ public class AttainmentPageTests() : BasePageTest()
     [InlineData("142894", 39.2, 44.1, 46.1)]
     [InlineData("144496", 49.6, 44.1, 46.1)]
     [InlineData("144991", 45.6, 44.1, 46.1)]
-    public async Task SecondaryAcademicPerformanceProgressAndAttainment_ShowsExpectedAttainmentData(string urn, double expectedAttainmentSchool, double expectedAttainmentLA, double expectedAttainmentEngland)
+    public async Task SecondaryAcademicPerformanceProgressAndAttainment_Current_ShowsExpectedAttainmentData(string urn, double expectedAttainmentSchool, double expectedAttainmentLA, double expectedAttainmentEngland)
     {
         // Arrange && Act
         var _ = await Page.GotoAsync(PageUrl(urn));
@@ -36,15 +36,41 @@ public class AttainmentPageTests() : BasePageTest()
     }
 
     [Theory]
-    [InlineData("142894", -0.99, -1.27, -0.71, -0.14, 96, 121)]
+    [InlineData("100054", 65.4, 47.9, 45.9)]
+    [InlineData("142894", 36.1, 44.2, 45.9)]
+    [InlineData("114308", 48.1, 44.2, 45.9)]
+    [InlineData("137228", 44.6, 45.4, 45.9)]
+    [InlineData("143362", 43.4, 43.2, 45.9)]
+    public async Task SecondaryAcademicPerformanceProgressAndAttainment_Previous_ShowsExpectedAttainmentData(string urn, double expectedAttainmentSchool, double expectedAttainmentLA, double expectedAttainmentEngland)
+    {
+        // Arrange && Act
+        var _ = await Page.GotoAsync(PageUrl(urn));
+        var response = await ClickAcademicPerformanceLinkAsync();
+        _ = await GotoAcademicPerformanceLink(response!.Url, "previous");
+
+        // Assert
+        var schoolAttainment8 = await GetScoreAsync("attainment8-establishment-card", "The attainment 8 score for this school is");
+        Assert.NotNull(schoolAttainment8);
+        Assert.Equal(expectedAttainmentSchool.ToString("F1"), schoolAttainment8.Last());
+
+        var laAttainment8 = await GetScoreAsync("attainment8-localauthority-and-national-card", "the local council average of");
+        Assert.NotNull(laAttainment8);
+        Assert.Equal(expectedAttainmentLA.ToString("F1"), laAttainment8.Last());
+
+        var englandAttainment8 = await GetScoreAsync("attainment8-localauthority-and-national-card", "the national average of");
+        Assert.NotNull(englandAttainment8);
+        Assert.Equal(expectedAttainmentEngland.ToString("F1"), englandAttainment8.Last());
+    }
+
+
+    [Theory]
+    [InlineData("142894", -0.99, -1.27, -0.71, -0.14)]
     public async Task SecondaryAcademicPerformanceProgressAndAttainment_ShowsExpectedProgressData(
         string urn,
         double expectedProgressSchool,
         double expectedBandingLower,
         double expectedBandingHigher,
-        double expectedProgressLA,
-        double expectedPupilsInMeasure,
-        double expectedPupilsInMeasureOutOf)
+        double expectedProgressLA)
     {
         // Arrange && Act
         var _ = await Page.GotoAsync($"school/{urn}");
