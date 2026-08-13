@@ -23,40 +23,6 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseUrls("http://127.0.0.1:0", "https://127.0.0.1:0");
-
-        // Set content root to web project so static files (wwwroot) are found
-        //var webProjectPath = GetWebProjectPath();
-        //builder.UseContentRoot(webProjectPath);
-        //builder.UseWebRoot(Path.Combine(webProjectPath, "wwwroot"));
-
-
-        //---------------------------------------------------------------------------------------
-        // shouldn't need any of this - pipeline should use the web app's standard config
-        // but leaving here for now in case we need to override config or services for testing purposes
-        // ------------------------------------------------------------------------------------------------
-        //var testDataFilePath = GetTestDataFilePath();
-        //var configurationValues = CreateConfigurationValues(testDataFilePath);
-        //var configuration = new ConfigurationBuilder()
-        //    .AddInMemoryCollection(configurationValues)
-        //    .Build();
-
-        //builder
-        //    .UseConfiguration(configuration)
-        //    .ConfigureAppConfiguration(configurationBuilder =>
-        //    {
-        //        configurationBuilder.AddInMemoryCollection(configurationValues);
-        //    })
-        //    .ConfigureServices(services =>
-        //    {
-        //        services.RemoveAll(typeof(IGenericRepository<>));
-        //        services.AddSingleton(typeof(IGenericRepository<>), typeof(FakeGenericRepository<>));
-        //    });
-
-        //builder.ConfigureAppConfiguration((context, config) =>
-        //{
-        //    config.AddJsonFile("appsettings.json")
-        //    .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", optional: true);
-        //});
     }
 
     protected override IHost CreateHost(IHostBuilder builder)
