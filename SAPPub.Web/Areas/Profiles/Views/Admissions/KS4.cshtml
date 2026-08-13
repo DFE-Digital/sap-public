@@ -1,4 +1,5 @@
-﻿@model SAPPub.Web.Models.SecondarySchool.AdmissionsViewModel;
+﻿@model AdmissionsViewModel
+@using SAPPub.Web.Areas.Profiles.ViewModels.Admissions
 @using SAPPub.Web.Constants
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 
@@ -23,7 +24,7 @@
     <div class="govuk-grid-column-three-quarters">
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
         <h1 class="govuk-heading-xl">@ViewData["Header"]</h1>
-        @if (Model.IsKS2 == true)
+        @if (Model.ShowSubNavigation)
         {
             <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
             <ul class="moj-sub-navigation__list">      
@@ -91,7 +92,7 @@
                         <govuk-summary-list-row-value>
                             <a data-testid="la-website-link"
                                class="govuk-link govuk-link--no-visited-state" 
-                               href="@($"https://www.{Model.LASecondarySchoolAdmissionsLinkUrl}")"
+                               href="@UrlHelper.EnsureHttpsUrl(Model.LASchoolAdmissionsLinkUrl)"
                                target="_blank"
                                rel="noopener noreferrer">
                                 Visit the local council's website for more information on
@@ -157,7 +158,8 @@
                     directly to on your local council’s website.  
                 </p>
                 <p class="govuk-body">
-                    <a href="@($"https://www.{Model.LASecondarySchoolAdmissionsLinkUrl}")"
+                    <a 
+                       href="@UrlHelper.EnsureHttpsUrl(Model.LASchoolAdmissionsLinkUrl)"
                        target="_blank"
                        rel="noopener noreferrer"
                        class="govuk-link"

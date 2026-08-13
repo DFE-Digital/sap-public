@@ -157,7 +157,7 @@ public class KS4ControllerTests
             .WithReligiousCharacterName("ReligiousCharacter")
             .WithSixthForm(false)
             .WithResourcedProvisionName("Resourced provision")
-            .WithEstablishmentTypeGroupId("1")
+            .WithEstablishmentTypeGroupId((int)EstablishmentTypeGroup.Colleges)
             .WithStatusCode(1)
             .WithOpenReasonId(10)
             .WithOpenDate()

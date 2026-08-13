@@ -118,14 +118,15 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
         // Act
         var summaryCard = Page.GetByTestId("moving-schools-during-year-summary-card");
         await summaryCard.WaitForAsync();
-        var link = summaryCard.GetByTestId("link");
 
         // Assert
         Assert.True(await summaryCard.IsVisibleAsync());
+
+        // The link is always rendered, but may be empty if no LA URL data exists
+        var link = summaryCard.GetByTestId("link");
         Assert.True(await link.IsVisibleAsync());
-        var href = await link.GetAttributeAsync("href");
+
         var text = await link.TextContentAsync();
-        Assert.Contains("https://", href); // Todo - we need tests that allow us to know what these values will be
         Assert.NotNull(text);
     }
 
