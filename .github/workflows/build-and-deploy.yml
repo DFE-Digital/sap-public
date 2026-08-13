@@ -391,6 +391,23 @@ jobs:
           }
 
           run_restore
+
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build integration tests
+        run: dotnet build Tests/SAPPub.Integration.Tests/SAPPub.IntegrationTests.csproj --configuration Release
+
+      - name: Install Playwright browsers
+        run: pwsh ./Tests/SAPPub.Integration.Tests/bin/Release/net8.0/playwright.ps1 install
+
       - name: Run integration tests
         env:
           HEADED: 0
