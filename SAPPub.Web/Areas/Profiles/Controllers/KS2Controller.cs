@@ -1,17 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement.Mvc;
+using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.ServiceModels;
 using SAPPub.Web.Areas.Profiles.Filters;
+using SAPPub.Web.Areas.Profiles.Helpers;
 using SAPPub.Web.Areas.Profiles.ViewModels.KS2;
 using SAPPub.Web.Constants;
+using SAPPub.Web.Models.Config;
 
 namespace SAPPub.Web.Areas.Profiles.Controllers
 {
     [Area("Profiles")]
     [FeatureGate(Constants.Constants.EnablePrimary)]
     [ServiceFilter(typeof(PrimaryQueryValidationFilter))]
-    public class KS2Controller : Controller, IEstablishment
+    public class KS2Controller(IOptions<UrlLinksOptions> urlLinksOptions) : Controller, IEstablishment
     {
         public EstablishmentServiceModel Establishment { get; set; } = null!; // set by the PrimaryQueryValidationFilter
 
@@ -20,12 +24,33 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
         public async Task<IActionResult> AcademicPerformancePupilProgress(
             string urn,
             string schoolName,
+            AcademicYearSelection selectedAcademicYear = AcademicYearSelection.Current,
             CancellationToken ct = default)
         {
-            var model = AcademicPerformancePupilProgressViewModel.Map(Establishment);
-            return View(model);
+            var selectedYearName = AcademicYearSelectionExtensions.ToRouteSegment(selectedAcademicYear);
+
+            return RedirectToAction(nameof(AcademicPerformancePupilProgress), new { urn, schoolName, selectedAcademicYearName = selectedYearName });
         }
 
+
+        // SAPPub.Web.Areas.Profiles.Controllers.KS4Controller.AcademicPerformanceAttainmentAndProgress
+        [HttpGet]
+        [Route("school/{urn}/{schoolName}/primary-performance/pupil-progress/{selectedAcademicYearName}")]
+        public async Task<IActionResult> AcademicPerformancePupilProgress(
+            string urn,
+            string schoolName,
+            string selectedAcademicYearName,
+            CancellationToken ct = default)
+        {
+            var selectedAcademicYear = AcademicYearSelectionExtensions.FromRouteSegment(selectedAcademicYearName);
+            if (!selectedAcademicYear.HasValue)
+            {
+                return NotFound();
+            }
+
+            var model = AcademicPerformancePupilProgressViewModel.Map(Establishment, selectedAcademicYear!.Value, urlLinksOptions.Value);
+            return View(model);
+        }
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/primary-performance/meeting-or-exceeding-standards", Name = RouteConstants.PrimaryAcademicPerformanceMeetingOrExceedingStandards)]

@@ -12,22 +12,11 @@ public class AcademicPerformanceMeetingOrExceedingStandardsViewModel : BaseViewM
 
     public required DataOverTimeViewModel AllMeetingExceedingStandardsOverTimeData { get; set; }
 
-    public required DisplayField<bool> HasEstablishmentData { get; set; }
-
     public static AcademicPerformanceMeetingOrExceedingStandardsViewModel Map(
         EstablishmentServiceModel establishment,
         KS2MeetingOrExceedingStandardsModel kS2MeetingOrExceedingStandardsModel)
     {
         var laAverageLabel = CommonHelper.GetLocalAuthorityDisplayName(establishment.LAName);
-
-
-        var hasEstablishmentData = new[]
-        {
-            kS2MeetingOrExceedingStandardsModel.EstablishmentPercentage.CurrentYear.Value,
-            kS2MeetingOrExceedingStandardsModel.EstablishmentPercentage.PreviousYear.Value,
-            kS2MeetingOrExceedingStandardsModel.EstablishmentPercentage.TwoYearsAgo.Value,
-        }.All(d => d is double v && v != 0);
-
 
         var allPercentageData = new DataViewModel
         {
@@ -72,8 +61,6 @@ public class AcademicPerformanceMeetingOrExceedingStandardsViewModel : BaseViewM
             IsKS5 = establishment.IsKS5,
             AllMeetingExceedingStandardsData = allPercentageData,
             AllMeetingExceedingStandardsOverTimeData = allPercentageDataOverTimeData,
-            HasEstablishmentData = hasEstablishmentData.ToDisplayField()
-
         };
     }
 }

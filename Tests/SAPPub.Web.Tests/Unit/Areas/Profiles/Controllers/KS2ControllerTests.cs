@@ -1,24 +1,51 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Moq;
 using SAPPub.Core.Entities;
+using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Areas.Profiles.Controllers;
 using SAPPub.Web.Areas.Profiles.ViewModels.KS2;
+using SAPPub.Web.Models.Config;
 
 namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers;
 
 public class KS2ControllerTests : BaseProfilesTests
 {
+    private readonly string primaryschoolAccountabilityLinkUrl = "https://test.com";
+    private readonly bool primarySchoolAccountabilityLinkNewTab = true;
     private readonly Mock<IKS2AdditionalMeasuresService> _mockKS2AdditionalMeasuresService = new();
     private readonly Mock<IKS2MeetingOrExceedingStandardsService> _mockKS2MeetingOrExceedingStandardsService = new();
     private readonly KS2Controller _controller;
 
     public KS2ControllerTests()
     {
+        var opts = Options.Create(new UrlLinksOptions
+        {
+            PrimarySchoolAccountability = new UrlLinkOptions { Url = primaryschoolAccountabilityLinkUrl, NewTab = primarySchoolAccountabilityLinkNewTab }
+        });
+
         _mockKS2AdditionalMeasuresService = new Mock<IKS2AdditionalMeasuresService>();
-        _controller = new() { Establishment = fakeEstablishment };
+        _controller = new(opts) { Establishment = fakeEstablishment };
+    }
+
+    [Fact]
+    public async Task Get_AcademicPerformancePupilProgress_ReturnsConfiguredAccountabilityLink()
+    {
+        // Arrange/Act
+        var result = await _controller.AcademicPerformancePupilProgress(
+            fakeEstablishment.URN,
+            fakeEstablishment.EstablishmentName,
+            AcademicYearSelection.Current.ToString().ToLower(),
+            CancellationToken.None) as ViewResult;
+
+        // Assert
+        Assert.NotNull(result);
+        var model = Assert.IsType<AcademicPerformancePupilProgressViewModel>(result?.Model);
+        Assert.Equal(primaryschoolAccountabilityLinkUrl, model.PrimarySchoolAccountabilityLinkUrl);
+        Assert.Equal(primarySchoolAccountabilityLinkNewTab, model.PrimarySchoolAccountabilityLinkNewTab);
     }
 
     [Fact]
@@ -48,7 +75,7 @@ public class KS2ControllerTests : BaseProfilesTests
         Assert.Equal(expectedModel.LAGrammarAtHigherStandard, model.LAGrammarAtHigherStandard.Value);
         Assert.Equal(expectedModel.EnglandGrammarAtExpectedStandard, model.EnglandGrammarAtExpectedStandard.Value);
         Assert.Equal(expectedModel.EnglandGrammarAtHigherStandard, model.EnglandGrammarAtHigherStandard.Value);
-       
+
         _mockKS2AdditionalMeasuresService
             .Verify(a => a.GetAdditionalMeasures(fakeEstablishment.URN, CancellationToken.None), Times.Once);
     }
@@ -79,7 +106,7 @@ public class KS2ControllerTests : BaseProfilesTests
         Assert.Equal(expectedModel.LocalAuthorityPercentage.CurrentYear.Value, model.AllMeetingExceedingStandardsData!.Data[1]!.Value);
         Assert.Equal(expectedModel.EnglandPercentage.CurrentYear.Value, model.AllMeetingExceedingStandardsData!.Data[2]!.Value);
         Assert.Equal(expectedModel.EstablishmentPercentage.TwoYearsAgo.Value, model.AllMeetingExceedingStandardsOverTimeData!.Datasets[0].Data[0]!.Value);
-        Assert.Equal (expectedModel.EstablishmentPercentage.PreviousYear.Value, model.AllMeetingExceedingStandardsOverTimeData!.Datasets[0].Data[1]!.Value);
+        Assert.Equal(expectedModel.EstablishmentPercentage.PreviousYear.Value, model.AllMeetingExceedingStandardsOverTimeData!.Datasets[0].Data[1]!.Value);
         Assert.Equal(expectedModel.EstablishmentPercentage.CurrentYear.Value, model.AllMeetingExceedingStandardsOverTimeData!.Datasets[0].Data[2]!.Value);
         Assert.Equal(expectedModel.LocalAuthorityPercentage.TwoYearsAgo.Value, model.AllMeetingExceedingStandardsOverTimeData!.Datasets[1].Data[0]!.Value);
         Assert.Equal(expectedModel.LocalAuthorityPercentage.PreviousYear.Value, model.AllMeetingExceedingStandardsOverTimeData!.Datasets[1].Data[1]!.Value);
