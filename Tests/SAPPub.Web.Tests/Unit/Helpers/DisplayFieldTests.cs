@@ -270,4 +270,62 @@ public class DisplayFieldTests
 
         Assert.Equal("Redacted for confidentiality", result);
     }
+
+    [Fact]
+    public void Round_HasValue_RoundsToOneDecimalPlace()
+    {
+        var property = new CodedDouble(20.2567, "reason", "raw").ToDisplayField();
+
+        var result = property.Round();
+
+        Assert.True(result.IsAvailable);
+        Assert.Equal(20.3, result.Value!.Value!.Value);
+    }
+
+    [Theory]
+    [InlineData(1, 20.3)]
+    [InlineData(2, 20.26)]
+    [InlineData(3, 20.257)]
+    [InlineData(4, 20.2567)]
+    [InlineData(5, 20.2567)]
+    public void Round_HasValue_RoundsToGivenDecimalPlaces(int decimalPlaces, double expected)
+    {
+        var property = new CodedDouble(20.2567, "reason", "raw").ToDisplayField();
+
+        var result = property.Round(decimalPlaces);
+
+        Assert.True(result.IsAvailable);
+        Assert.Equal(expected, result.Value!.Value!.Value);
+    }
+
+    [Fact]
+    public void Round_HasValue_PreservesReasonAndRaw()
+    {
+        var property = new CodedDouble(20.2567, "test reason", "test raw").ToDisplayField();
+
+        var result = property.Round(1);
+
+        Assert.Equal("test reason", result.Value!.Reason);
+        Assert.Equal("test raw", result.Value!.Raw);
+    }
+
+    [Fact]
+    public void Round_NoValue_ReturnsUnchanged()
+    {
+        var property = new CodedDouble(null, "Redacted", "c").ToDisplayField();
+
+        var result = property.Round(1);
+
+        Assert.Equal(property, result);
+    }
+
+    [Fact]
+    public void Round_Chaining_RoundThenDisplayPercentage()
+    {
+        var property = new CodedDouble(20.2567, string.Empty, "20.2567").ToDisplayField();
+
+        var result = property.Round(1).DisplayPercentage();
+
+        Assert.Equal("20.3%", result);
+    }
 }

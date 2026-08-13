@@ -39,8 +39,8 @@ public class AcademicPerformanceAdditionalMeasuresViewModel : BaseViewModel
             LAGrammarAtHigherStandard = kS2AdditionalMeasuresModel.LAGrammarAtHigherStandard.ToDisplayField(),
             EnglandGrammarAtExpectedStandard = kS2AdditionalMeasuresModel.EnglandGrammarAtExpectedStandard.ToDisplayField(),
             EnglandGrammarAtHigherStandard = kS2AdditionalMeasuresModel.EnglandGrammarAtHigherStandard.ToDisplayField(),
-            EnglandEHCPPopulation = kS2AdditionalMeasuresModel.EnglandEHCPPopulation.ToDisplayField(),
-            EnglandSENSupportPopulation = kS2AdditionalMeasuresModel.EnglandSENSupportPopulation.ToDisplayField()
+            EnglandEHCPPopulation = kS2AdditionalMeasuresModel.EnglandEHCPPopulation.ToDisplayField().Round(2),
+            EnglandSENSupportPopulation = kS2AdditionalMeasuresModel.EnglandSENSupportPopulation.ToDisplayField().Round(2)
         };
     }
 }
