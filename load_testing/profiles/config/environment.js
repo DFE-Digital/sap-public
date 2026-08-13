@@ -3,6 +3,11 @@ const loadEnvironments = {
     baseUrl: 'https://sap-public-test.test.teacherservices.cloud',
     name: 'staging-school-profiles',
     service: 'load'
+  },
+    dev: {
+    baseUrl: 'https://localhost:3000',
+    name: 'development-school-profiles',
+    service: 'load'
   }
 }
 
