@@ -1,6 +1,7 @@
 import http from 'k6/http'
 import { group, sleep } from 'k6'
 import { loadPerformanceCheck, loadContentCheck, loadErrorHandler } from '../utils/checks.js'
+import { loadRandomThinkTime } from '../utils/helpers.js'
 
 export function searchAndFilterJourney (environment, config) {
   group('search: Search and Filter Journey', function () {
@@ -16,7 +17,7 @@ export function searchAndFilterJourney (environment, config) {
         loadErrorHandler(response, 'Basic Search')
       }
 
-      sleep(2)
+      sleep(loadRandomThinkTime(1, 5))
     })
 
     group('Multi-Page Search', function () {
@@ -26,19 +27,19 @@ export function searchAndFilterJourney (environment, config) {
 
         const response = http.get(`${environment.baseUrl}/search/results?NameSearchTerm=school&Distance=3&pageNumber=${page}`)
         const isSuccess = loadPerformanceCheck(response, 'Multi-Page Search', config.expectedResponseTimes.search)
-
-        loadContentCheck(response, 'search-results', 'results for')
-        if (page > 1) {
-          loadContentCheck(response, 'button-labels', 'Previous')
+        if (isSuccess) {
+          loadContentCheck(response, 'search-results', 'results for')
+          if (page > 1) {
+            loadContentCheck(response, 'button-labels', 'Previous')
+          }
+          
+          loadContentCheck(response, 'button-labels', 'Next')
         }
-        
-        loadContentCheck(response, 'button-labels', 'Next')
-
         if (!isSuccess) {
           loadErrorHandler(response, 'Multi-Page Search Page ' + page)
         }
 
-        sleep(2)
+        sleep(loadRandomThinkTime(1, 5))
       }
     })
 
@@ -46,17 +47,17 @@ export function searchAndFilterJourney (environment, config) {
 
       const response = http.get(`${environment.baseUrl}/search/results?NameSearchTerm=school&LocationSearchTerm=N1C%204PF&Distance=3&pageNumber=1`)
       const isSuccess = loadPerformanceCheck(response, 'Advanced Filter Search', config.expectedResponseTimes.search)
-
-      loadContentCheck(response, 'sort', 'Sorted by distance')
-      loadContentCheck(response, 'search-results', 'results for')
-      loadContentCheck(response, 'button-labels', 'Next')
-      loadContentCheck(response, 'has-result', 'Pancras')
-
+      if (isSuccess) {
+        loadContentCheck(response, 'sort', 'Sorted by distance')
+        loadContentCheck(response, 'search-results', 'results for')
+        loadContentCheck(response, 'button-labels', 'Next')
+        loadContentCheck(response, 'has-result', 'Pancras')
+      }
       if (!isSuccess) {
         loadErrorHandler(response, 'Advanced Filter Search')
       }
 
-      sleep(1)
+      sleep(loadRandomThinkTime(1, 5))
     })
   })
 }

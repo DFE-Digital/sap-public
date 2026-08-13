@@ -1,6 +1,7 @@
 import http from 'k6/http'
 import { group, sleep } from 'k6'
 import { loadPerformanceCheck, loadContentCheck, loadErrorHandler } from '../utils/checks.js'
+import { loadRandomThinkTime } from '../utils/helpers.js'
 
 const schoolDetails =
 {
@@ -59,14 +60,16 @@ export function ks2FullJourney (environment, config) {
 
         const response = http.get(`${environment.baseUrl}/school/${schoolDetails.schoolUrn}/${schoolDetails.schoolUrl}${page.urlSlug}`)
         const isSuccess = loadPerformanceCheck(response, `${page.pageTitle}`, config.expectedResponseTimes.homepage)
-        loadContentCheck(response, `main-heading-${page.pageTitle}`, 'School Profiles')
-        loadContentCheck(response, `page-heading-${page.pageTitle}`, `${page.checkHeading}`)
+        if (isSuccess) {
+          loadContentCheck(response, `main-heading-${page.pageTitle}`, 'School Profiles')
+          loadContentCheck(response, `page-heading-${page.pageTitle}`, `${page.checkHeading}`)
+        }
 
         if (!isSuccess) {
           loadErrorHandler(response, `${page.pageTitle}`)
         }
 
-        sleep(2)
+        sleep(loadRandomThinkTime(1, 5))
 
       });
   })

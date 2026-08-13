@@ -1,6 +1,7 @@
 import http from 'k6/http'
 import { group, sleep } from 'k6'
 import { loadPerformanceCheck, loadContentCheck, loadErrorHandler } from '../utils/checks.js'
+import { loadRandomThinkTime } from '../utils/helpers.js'
 
 const compareDetails =
 {
@@ -47,20 +48,21 @@ export function ks4MySchools (environment, config) {
 
         const response = http.get(`${environment.baseUrl}${page.urlSlug}?${compareDetails.slug}`)
         const isSuccess = loadPerformanceCheck(response, `${page.pageTitle}`, config.expectedResponseTimes.homepage)
-        loadContentCheck(response, `main-heading-${page.pageTitle}`, 'School Profiles')
-        loadContentCheck(response, `page-heading-${page.pageTitle}`, `${page.checkHeading}`)
+        if (isSuccess) {
+          loadContentCheck(response, `main-heading-${page.pageTitle}`, 'School Profiles')
+          loadContentCheck(response, `page-heading-${page.pageTitle}`, `${page.checkHeading}`)
 
-        loadContentCheck(response, `${page.pageTitle}-contains-school-1`, `${compareDetails.schoolName1}`)
-        loadContentCheck(response, `${page.pageTitle}-contains-school-2`, `${compareDetails.schoolName2}`)
-        loadContentCheck(response, `${page.pageTitle}-contains-school-3`, `${compareDetails.schoolName3}`)
-        loadContentCheck(response, `${page.pageTitle}-contains-school-4`, `${compareDetails.schoolName4}`)
-        loadContentCheck(response, `${page.pageTitle}-contains-school-5`, `${compareDetails.schoolName5}`)
-
+          loadContentCheck(response, `${page.pageTitle}-contains-school-1`, `${compareDetails.schoolName1}`)
+          loadContentCheck(response, `${page.pageTitle}-contains-school-2`, `${compareDetails.schoolName2}`)
+          loadContentCheck(response, `${page.pageTitle}-contains-school-3`, `${compareDetails.schoolName3}`)
+          loadContentCheck(response, `${page.pageTitle}-contains-school-4`, `${compareDetails.schoolName4}`)
+          loadContentCheck(response, `${page.pageTitle}-contains-school-5`, `${compareDetails.schoolName5}`)
+        }
         if (!isSuccess) {
           loadErrorHandler(response, `${page.pageTitle}`)
         }
 
-        sleep(2)
+        sleep(loadRandomThinkTime(1, 5))
 
       });
   })
