@@ -4,6 +4,7 @@ using SAPPub.Core.Enums;
 using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.Performance;
+using SAPPub.Core.Services.Performance;
 using SAPPub.Web.Areas.Profiles.ViewModels.KS5;
 using SAPPub.Web.Constants;
 
@@ -16,32 +17,25 @@ public class KS5Controller(ILogger<KS5Controller> logger) : Controller
     [Route("school/{urn}/{schoolName}/16-to-19-performance", Name = RouteConstants.KS5AcademicPerformanceRoot)]
     public IActionResult Index(string urn, string schoolName)
     {
-        //Not a required for the structure, but might be worth considering? What if there's no Level 3 data
+        return RedirectToAction("Level3Qualifications", new { urn, schoolName, qualification = Level3.ALevel.ToString().ToLower() });
+    }
 
-            // if establishment has Level 3 data 
-            return RedirectToAction("Level3Qualifications", new {  urn, schoolName, qualification = "alevel" });
+    [Route("school/{urn}/{schoolName}/16-to-19-performance/level-3-qualifications", Name = RouteConstants.KS5AcademicPerformanceLevel3)]
+    public IActionResult Level3QualificationsRedirect(string urn, string schoolName, Level3 level3qualification = Level3.ALevel)
+    {
+        return RedirectToAction("Level3Qualifications", new { urn, schoolName, qualification = level3qualification.ToString().ToLower() });
+    }
 
-            // if establishment has Level 2 data
-            //return RedirectToAction("Level2Qualifications", new { urn = urn, schoolName = schoolName, qualification = "techcert" });
-        }
-
-
-        [Route("school/{urn}/{schoolName}/16-to-19-performance/level-3-qualifications", Name = RouteConstants.KS5AcademicPerformanceLevel3)]
-        public IActionResult Level3QualificationsRedirect(string urn, string schoolName, Level3 level3qualification = Level3.ALevel)
-        {
-            return RedirectToAction("Level3Qualifications", new { urn, schoolName, qualification = level3qualification.ToString().ToLower() });
-        }
-
-        [Route("school/{urn}/{schoolName}/16-to-19-performance/level-3-qualifications/{qualification}", Name = RouteConstants.KS5AcademicPerformanceLevel3Filter)]
-        public async Task<IActionResult> Level3Qualifications(
-            [FromServices] ILevel3QualificationsService level3QualificationsService,            
-            string urn,
-            string schoolName,
-            Level3 qualification,
-            CancellationToken ct)
-        {           
-            var qualificationDetailsModel = await level3QualificationsService
-                .GetLevel3QualificationDetailsAsync(urn, qualification, ct);
+    [Route("school/{urn}/{schoolName}/16-to-19-performance/level-3-qualifications/{qualification}", Name = RouteConstants.KS5AcademicPerformanceLevel3Filter)]
+    public async Task<IActionResult> Level3Qualifications(
+        [FromServices] ILevel3QualificationsService level3QualificationsService,
+        string urn,
+        string schoolName,
+        Level3 qualification,
+        CancellationToken ct)
+    {
+        var qualificationDetailsModel = await level3QualificationsService
+            .GetLevel3QualificationDetailsAsync(urn, qualification, ct);
 
         if (!qualificationDetailsModel.IsKS5)
         {
@@ -49,58 +43,40 @@ public class KS5Controller(ILogger<KS5Controller> logger) : Controller
             return View("Error");
         }
 
-            var model = Level3QualificationViewModel.Map(qualificationDetailsModel);
-            return View(model);
-        }
+        var model = Level3QualificationViewModel.Map(qualificationDetailsModel);
+        return View(model);
+    }
 
-        [Route("school/{urn}/{schoolName}/16-to-19-performance/level-2-qualifications", Name = RouteConstants.KS5AcademicPerformanceLevel2)]
-        public IActionResult Level2QualificationsRedirect(string urn, string schoolName, int? level2qualification)
-        {
-            // if establishment has Level 2 data 
-            level2qualification ??= 1;
+    [Route("school/{urn}/{schoolName}/16-to-19-performance/level-2-qualifications", Name = RouteConstants.KS5AcademicPerformanceLevel2)]
+    public IActionResult Level2QualificationsRedirect(string urn, string schoolName, Level2 level2qualification = Level2.TechCert)
+    {
+        return RedirectToAction("Level2Qualifications", new { urn, schoolName, qualification = level2qualification.ToString().ToLower() });
+    }
 
-        var qualSelected = ((Level2)level2qualification).ToString();
-        if (string.IsNullOrWhiteSpace(qualSelected))
-        {
-            qualSelected = ((Level2)1).ToString();
-        }
+    [Route("school/{urn}/{schoolName}/16-to-19-performance/level-2-qualifications/{qualification}", Name = RouteConstants.KS5AcademicPerformanceLevel2Filter)]
+    public async Task<IActionResult> Level2Qualifications(
+        [FromServices] ILevel2QualificationsService level2QualificationsService,
+        string urn,
+        string schoolName,
+        Level2 qualification,
+        CancellationToken ct)
+    {
+        var qualificationDetailsModel = await level2QualificationsService
+            .GetLevel2QualificationDetailsAsync(urn, qualification, ct);
 
-            return RedirectToAction("Level2Qualifications", new { urn, schoolName, qualification = qualSelected.ToLower() });
-        }
-
-
-        [Route("school/{urn}/{schoolName}/16-to-19-performance/level-2-qualifications/{qualification}", Name = RouteConstants.KS5AcademicPerformanceLevel2Filter)]
-        public async Task<IActionResult> Level2Qualifications([FromServices] IAboutSchoolService aboutSchoolService, 
-            string urn, string schoolName, Level2? qualification,
-            CancellationToken ct)
-        {
-            if (qualification == null)
-            {
-                return View("Error");
-            }
-
-        var schoolDetails = await aboutSchoolService.GetAboutSchoolDetailsAsync(urn, ct);
-
-        if (string.IsNullOrWhiteSpace(schoolDetails.Urn))
-        {
-            logger.LogWarning("No establishment details found for URN: {URN}", urn);
-            return View("Error");
-        }
-
-        if (!schoolDetails.IsKS5)
+        if (!qualificationDetailsModel.IsKS5)
         {
             logger.LogWarning("Attempted to view KS5 page with no KS5 data URN: {URN}", urn);
             return View("Error");
         }
 
-        var ks5Model = KS5ViewModel.Map(schoolDetails);
-        ks5Model.Level2Qualification = qualification.Value;
-        return View(ks5Model);
+        var model = Level2QualificationViewModel.Map(qualificationDetailsModel);
+        return View(model);
     }
 
     [Route("school/{urn}/{schoolName}/16-to-19-performance/english-and-maths", Name = RouteConstants.KS5AcademicPerformanceEnglishMaths)]
     public async Task<IActionResult> EnglishAndMaths(
-        [FromServices] IEnglishAndMathsQualificationsService englishAndMathsQualificationsService, 
+        [FromServices] IEnglishAndMathsQualificationsService englishAndMathsQualificationsService,
         string urn, string schoolName,
         CancellationToken ct)
     {
@@ -124,8 +100,8 @@ public class KS5Controller(ILogger<KS5Controller> logger) : Controller
 
     [Route("school/{urn}/{schoolName}/16-to-19-performance/subjects-entered/", Name = RouteConstants.KS5AcademicPerformanceSubjectsEntered)]
     public IActionResult SubjectsEnteredRedirect(
-        string urn, 
-        string schoolName, 
+        string urn,
+        string schoolName,
         QualificationType? qualificationType)
     {
         qualificationType ??= 0;
@@ -144,7 +120,7 @@ public class KS5Controller(ILogger<KS5Controller> logger) : Controller
         [FromServices] IAboutSchoolService aboutSchoolService,
         [FromServices] IKS5EstablishmentSubjectEntriesService establishmentSubjectEntriesService,
         QualificationType? qualification,
-        string urn, 
+        string urn,
         string schoolName,
         CancellationToken ct)
     {
@@ -152,7 +128,7 @@ public class KS5Controller(ILogger<KS5Controller> logger) : Controller
         {
             return View("Error");
         }
-        
+
         var schoolDetails = await aboutSchoolService.GetAboutSchoolDetailsAsync(urn, ct);
 
         if (string.IsNullOrWhiteSpace(schoolDetails.Urn))

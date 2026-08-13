@@ -107,7 +107,7 @@ public class AboutSchoolViewModel : ProfileBaseViewModel
             SixthForm = GetSixthForm(schoolDetails.OfficialSixthFormId).ToDisplayField(),
             SenUnit = GetSenUnit(schoolDetails.ResourcedProvisionName),
             ResourcedProvision = GetResourcedProvision(schoolDetails.ResourcedProvisionName),
-            IsLocalAuthoritySchool = schoolDetails.EstablishmentTypeGroupId.ToInt() == LocalAuthorityEstablishmentGroupTypeId,
+            IsLocalAuthoritySchool = schoolDetails.EstablishmentTypeGroup == EstablishmentTypeGroup.LocalAuthorityMaintainedSchools,
             StatusCode = schoolDetails.Status,
             ClosedDate = schoolDetails.ClosedDate.ToDisplayField(),
             OpenDate = schoolDetails.OpenDate,

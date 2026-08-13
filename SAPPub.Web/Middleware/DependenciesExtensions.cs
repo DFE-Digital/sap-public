@@ -119,6 +119,7 @@ namespace SAPPub.Web.Middleware
 
             services.AddTransient<IKs5PerformanceRepository, KS5PerformanceRepository>();
             services.AddTransient<ILevel3QualificationsService, Level3QualificationsService>();
+            services.AddTransient<ILevel2QualificationsService, Level2QualificationsService>();
             services.AddTransient<IEnglishAndMathsQualificationsService, EnglishAndMathsQualificationsService>();
 
             services.AddTransient<IKS2PerformanceRepository, KS2PerformanceRepository>();

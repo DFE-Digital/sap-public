@@ -12,7 +12,7 @@ using SAPPub.Core.ServiceModels.KS4.Admissions;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Areas.Profiles.Controllers;
 using SAPPub.Web.Constants;
-using SAPPub.Web.Models.SecondarySchool;
+using SAPPub.Web.Areas.Profiles.ViewModels.Admissions;
 
 namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers;
 
@@ -48,7 +48,7 @@ public class AdmissionsControllerTests
             .WithReligiousCharacterName("ReligiousCharacter")
             .WithSixthForm(false)
             .WithResourcedProvisionName("Resourced provision")
-            .WithEstablishmentTypeGroupId("1")
+            .WithEstablishmentTypeGroupId((int)EstablishmentTypeGroup.Colleges)
             .WithStatusCode(1)
             .WithOpenReasonId(10)
             .WithOpenDate()
@@ -82,17 +82,19 @@ public class AdmissionsControllerTests
 
         _mockAdmissionsService
             .Setup(s => s.GetAdmissionsDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new AdmissionsServiceModel(
-                SchoolName: _fakeEstablishment.EstablishmentName,
-                SchoolWebsite: _fakeEstablishment.Website,
-                LAName: laName,
-                LASchoolAdmissionsUrl: lASchoolAdmissionsUrl,
-                EstablishmentStatus: EstablishmentStatus.Open,
-                IsKS2: false,
-                IsKS4: true,
-                IsKS5: false
+            .ReturnsAsync(new AdmissionsServiceModel
+            {
+                SchoolName = _fakeEstablishment.EstablishmentName,
+                SchoolWebsite = _fakeEstablishment.Website,
+                LAName = laName,
+                LASchoolAdmissionsUrl = lASchoolAdmissionsUrl,
+                EstablishmentStatus = EstablishmentStatus.Open,
+                IsIndependentSchool = false,
+                IsKS2 = false,
+                IsKS4 = true,
+                IsKS5 = false
 
-            ));
+            });
 
         var result = await _controller.KS4(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
@@ -104,12 +106,13 @@ public class AdmissionsControllerTests
         Assert.Equal(_fakeEstablishment.URN, model.URN);
         Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
         Assert.Equal(_fakeEstablishment.Website, model.SchoolWebsite.Value);
-        Assert.Equal(lASchoolAdmissionsUrl, model.LASecondarySchoolAdmissionsLinkUrl);
+        Assert.Equal(lASchoolAdmissionsUrl, model.LASchoolAdmissionsLinkUrl);
         Assert.Equal(laName, model.LAName);
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
         Assert.False(model.IsSchoolClosed);
+        Assert.False(model.IsIndependentSchool);
     }
 
     [Theory]
@@ -126,16 +129,18 @@ public class AdmissionsControllerTests
 
         _mockAdmissionsService
             .Setup(s => s.GetAdmissionsDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new AdmissionsServiceModel(
-                SchoolName: _fakeEstablishment.EstablishmentName,
-                SchoolWebsite: _fakeEstablishment.Website,
-                LAName: laName,
-                LASchoolAdmissionsUrl: lASchoolAdmissionsUrl,
-                EstablishmentStatus: EstablishmentStatus.Open,
-                IsKS2: false,
-                IsKS4: true,
-                IsKS5: false
-            ));
+            .ReturnsAsync(new AdmissionsServiceModel
+            {
+                SchoolName = _fakeEstablishment.EstablishmentName,
+                SchoolWebsite = _fakeEstablishment.Website,
+                LAName = laName,
+                LASchoolAdmissionsUrl = lASchoolAdmissionsUrl,
+                EstablishmentStatus = EstablishmentStatus.Open,
+                IsKS2 = false,
+                IsKS4 = true,
+                IsKS5 = false,
+                IsIndependentSchool = false
+            });
 
         var result = await _controller.KS4(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
@@ -176,16 +181,18 @@ public class AdmissionsControllerTests
 
         _mockAdmissionsService
             .Setup(s => s.GetAdmissionsDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new AdmissionsServiceModel(
-                SchoolName: _fakeEstablishment.EstablishmentName,
-                SchoolWebsite: _fakeEstablishment.Website,
-                LAName: laName,
-                LASchoolAdmissionsUrl: lASchoolAdmissionsUrl,
-                EstablishmentStatus: statusCode,
-                IsKS2: false,
-                IsKS4: true,
-                IsKS5: false
-            ));
+            .ReturnsAsync(new AdmissionsServiceModel
+            {
+                SchoolName = _fakeEstablishment.EstablishmentName,
+                SchoolWebsite = _fakeEstablishment.Website,
+                LAName = laName,
+                LASchoolAdmissionsUrl = lASchoolAdmissionsUrl,
+                EstablishmentStatus = statusCode,
+                IsKS2 = false,
+                IsKS4 = true,
+                IsKS5 = false,
+                IsIndependentSchool = false
+            });
 
         var result = await _controller.KS4(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
@@ -196,5 +203,53 @@ public class AdmissionsControllerTests
 
         Assert.NotNull(model);
         Assert.Equal(expectedResult, model.IsSchoolClosed);
+    }
+
+    [Theory]
+    [InlineData(true, true, true, true)]   // Multi-phase school + feature enabled = show sub-nav
+    [InlineData(true, true, false, false)] // Multi-phase school + feature disabled = no sub-nav
+    [InlineData(false, true, true, false)] // KS4-only school + feature enabled = no sub-nav
+    [InlineData(true, false, true, false)] // KS2-only school + feature enabled = no sub-nav
+    public async Task KS4_ShowSubNavigation_DependsOnPhaseAndFeatureFlag(bool isKS2, bool isKS4, bool featureEnabled, bool expectedShowSubNav)
+    {
+        // Arrange
+        _fakeEstablishment.IsKS2 = isKS2;
+        _fakeEstablishment.IsKS4 = isKS4;
+
+        var lASchoolAdmissionsUrl = "https://www.example.com/school-admissions";
+        var laName = "Example Local Authority";
+
+        _mockFeatureManager
+            .Setup(f => f.IsEnabledAsync(Constants.Constants.EnablePrimary))
+            .ReturnsAsync(featureEnabled);
+
+        _mockAdmissionsService
+            .Setup(s => s.GetAdmissionsDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new AdmissionsServiceModel
+            {
+                SchoolName = _fakeEstablishment.EstablishmentName,
+                SchoolWebsite = _fakeEstablishment.Website,
+                LAName = laName,
+                LASchoolAdmissionsUrl = lASchoolAdmissionsUrl,
+                EstablishmentStatus = EstablishmentStatus.Open,
+                IsKS2 = _fakeEstablishment.IsKS2,
+                IsKS4 = _fakeEstablishment.IsKS4,
+                IsKS5 = _fakeEstablishment.IsKS5,
+                IsIndependentSchool = _fakeEstablishment.IsIndependentSchool
+            });
+
+        // Act
+        var result = await _controller.KS4(
+            _mockAdmissionsService.Object,
+            _fakeEstablishment.URN,
+            _fakeEstablishment.EstablishmentName,
+            CancellationToken.None) as ViewResult;
+
+        // Assert
+        Assert.NotNull(result);
+        var model = result.Model as AdmissionsViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(expectedShowSubNav, model.ShowSubNavigation);
+        Assert.Equal(featureEnabled, model.IsPrimaryFeatureEnabled);
     }
 }

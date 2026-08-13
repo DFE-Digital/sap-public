@@ -56,7 +56,6 @@ public class GenerateViewsTests : IDisposable
         );
     }
 
-
     // ------------------------------------------------------------
     // ESTABLISHMENT VIEW
     // ------------------------------------------------------------
@@ -65,7 +64,7 @@ public class GenerateViewsTests : IDisposable
     public void Generates_establishment_view_or_explains_why_it_was_skipped()
     {
         // Mapping alone is no longer sufficient; GenerateViews resolves dataset keys via raw_sources.json.
-        WriteMapping(("edubasealldata", "t_edubase_123abcdef01"));
+        WriteMapping(("edubasealldata", "t_edubase_123abcdef01"), ("Free_breakfast_clubs_schools_on_the_programme", "t_free_breakfast_clubs_ac323eeb35"));
 
         var rows = new List<DataMapRow>();
         new GenerateViews(rows, _mappingPath, _sqlDir).Run();
@@ -85,8 +84,10 @@ public class GenerateViewsTests : IDisposable
     public void EstablishmentView_Includes_All_Required_Filters()
     {
         // Arrange
-        WriteMapping(("edubasealldata20230912", "t_edubase_20230912"));
-        var rows = new List<DataMapRow>();
+        WriteMapping(("edubasealldata20230912", "t_edubase_20230912"), ("Free_breakfast_clubs_schools_on_the_programme", "t_free_breakfast_clubs_ac323eeb35"));
+        var rows = new List<DataMapRow> {
+            Row("Free_breakfast_clubs_schools_on_the_programme", "Establishment", "BreakfastClub", "FreeBreakfastClub", "URN")
+        };
 
         var filters = SqlViewFilterProvider.GetEstablishmentFilters();
 
@@ -109,15 +110,17 @@ public class GenerateViewsTests : IDisposable
     {
         //Arrange
         WriteMapping(
-            ("edubasealldata20230912", "t_edubase_20230912"), 
-            ("ks2_perf", "t_ks2_perf"), 
-            ("ks4_perf", "t_ks4_perf"), 
-            ("ks5_perf", "t_ks5_perf"));
+            ("edubasealldata20230912", "t_edubase_20230912"),
+            ("ks2_perf", "t_ks2_perf"),
+            ("ks4_perf", "t_ks4_perf"),
+            ("ks5_perf", "t_ks5_perf"),
+            ("Free_breakfast_clubs_schools_on_the_programme", "t_free_breakfast_clubs_ac323eeb35"));
         var rows = new List<DataMapRow>
         {
             Row("ks2_perf", "Establishment", "KS2_Attainment", "SomeProp", "some_field"),
             Row("ks4_perf", "Establishment", "KS4_Performance", "SomeProp", "some_field"),
-            Row("ks5_perf", "Establishment", "KS5_Performance", "SomeProp", "some_field")
+            Row("ks5_perf", "Establishment", "KS5_Performance", "SomeProp", "some_field"),
+            Row("Free_breakfast_clubs_schools_on_the_programme", "Establishment", "BreakfastClub", "FreeBreakfastClub", "URN")
         };
 
         // Act
@@ -141,9 +144,18 @@ public class GenerateViewsTests : IDisposable
     public void EstablishmentView_Always_Includes_All_KeyStage_Columns()
     {
         //Arrange - Even without keystage data, all keystage columns should be present
-        WriteMapping(("edubasealldata20230912", "t_edubase_20230912"));
+        WriteMapping(("edubasealldata20230912", "t_edubase_20230912"), ("Free_breakfast_clubs_schools_on_the_programme", "t_free_breakfast_clubs_ac323eeb35"));
+        var breakfastClubdatamapRow = new DataMapRow
+        {
+            FileName = "Free_breakfast_clubs_schools_on_the_programme",
+            Range = "Establishment",
+            Type = "BreakfastClub",
+            PropertyName = "FreeBreakfastClub",
+            Field = "URN"
+        };
         var rows = new List<DataMapRow>
         {
+            breakfastClubdatamapRow
             // No keystage-specific rows, but columns should still be generated
         };
 
@@ -162,11 +174,14 @@ public class GenerateViewsTests : IDisposable
     public void EstablishmentView_Filters_Include_KeyStage_Conditions()
     {
         // Arrange
-        WriteMapping(("edubasealldata20230912", "t_edubase_20230912"), ("ks4_perf", "t_ks4_perf"));
+        WriteMapping(("edubasealldata20230912", "t_edubase_20230912"),
+            ("ks4_perf", "t_ks4_perf"),
+            ("Free_breakfast_clubs_schools_on_the_programme", "t_free_breakfast_clubs_ac323eeb35"));
         var rows = new List<DataMapRow>
-    {
-        Row("ks4_perf", "Establishment", "KS4_Performance", "SomeProp", "some_field")
-    };
+        {
+            Row("ks4_perf", "Establishment", "KS4_Performance", "SomeProp", "some_field"),
+            Row("Free_breakfast_clubs_schools_on_the_programme", "Establishment", "BreakfastClub", "FreeBreakfastClub", "URN")
+        };
 
         // GetEstablishmentFilters now defaults to all keystages (KS2, KS4, KS5) via KeyStageConstants
         var filters = SqlViewFilterProvider.GetEstablishmentFilters(
@@ -189,10 +204,11 @@ public class GenerateViewsTests : IDisposable
     public void EstablishmentView_Includes_SenTypes_Column()
     {
         //Arrange
-        WriteMapping(("edubasealldata20230912", "t_edubase_20230912"));
+        WriteMapping(("edubasealldata20230912", "t_edubase_20230912"), ("Free_breakfast_clubs_schools_on_the_programme", "t_free_breakfast_clubs_ac323eeb35"));
         var rows = new List<DataMapRow>
         {
-            Row("edubasealldata20230912", "Establishment", "All establishment data", "SomeProp", "some_field")
+            Row("edubasealldata20230912", "Establishment", "All establishment data", "SomeProp", "some_field"),
+            Row("Free_breakfast_clubs_schools_on_the_programme", "Establishment", "BreakfastClub", "FreeBreakfastClub", "URN")
         };
 
         // Act
