@@ -87,17 +87,17 @@ public class Level2QualificationsModelBuilder
             },
             AverageResult = new AverageResultModel
             {
-                Establishment = new AverageResult
+                Establishment = new PerformanceResult
                 {
                     Grade = new CodedString("C", string.Empty, string.Empty),
                     Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
                 },
-                LocalAuthority = new AverageResult
+                LocalAuthority = new PerformanceResult
                 {
                     Grade = new CodedString("B", string.Empty, string.Empty),
                     Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
                 },
-                England = new AverageResult
+                England = new PerformanceResult
                 {
                     Grade = new CodedString("A", string.Empty, string.Empty),
                     Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)

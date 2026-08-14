@@ -67,6 +67,8 @@ public class Level3QualificationsModelBuilder
 
     public Level3QualificationModel Build()
     {
+        var isAlevelQual = _qualificationType == Level3.ALevel;
+
         return new Level3QualificationModel
         {
             Urn = _urn ?? string.Empty,
@@ -87,20 +89,39 @@ public class Level3QualificationsModelBuilder
             },
             AverageResult = new AverageResultModel
             {
-                Establishment = new AverageResult
+                Establishment = new PerformanceResult
                 {
                     Grade = new CodedString("A", string.Empty, string.Empty),
                     Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
                 },
-                LocalAuthority = new AverageResult
+                LocalAuthority = new PerformanceResult
                 {
                     Grade = new CodedString("B", string.Empty, string.Empty),
                     Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
                 },
-                England = new AverageResult
+                England = new PerformanceResult
                 {
                     Grade = new CodedString("A", string.Empty, string.Empty),
                     Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
+                }
+            },
+            AdditionalData = new AdditionalDataModel
+            {
+                TotalNoOfStudentsIncludedInThisMeasure = isAlevelQual ? new CodedDouble(100, string.Empty, string.Empty) : CodedDouble.Empty,
+                Establishment = new PerformanceResult
+                {
+                    Grade = isAlevelQual ? new CodedString("C", string.Empty, string.Empty) : CodedString.Empty,
+                    Points = isAlevelQual ? new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty) : CodedDouble.Empty
+                },
+                LocalAuthority = new PerformanceResult
+                {
+                    Grade = isAlevelQual ? new CodedString("A", string.Empty, string.Empty) : CodedString.Empty,
+                    Points = isAlevelQual ? new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty) : CodedDouble.Empty
+                },
+                England = new PerformanceResult
+                {
+                    Grade = isAlevelQual ? new CodedString("B", string.Empty, string.Empty) : CodedString.Empty,
+                    Points = isAlevelQual ? new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty) : CodedDouble.Empty
                 }
             }
         };

@@ -53,6 +53,12 @@ public class KS5EnglandPerformance
     // Tech Cert Average result grade for England
     public CodedString TALLPPEGRD_TECHCERT_Eng_Current { get; set; }
 
+    // A levels additional data england points
+    public CodedDouble TB3PTSE_Eng_Current_Num_Coded { get; set; }
+
+    // A levels additional data england grade
+    public CodedString TB3PTSE_GRD_Eng_Current { get; set; }
+
     // Average progress for English
     public CodedDouble PROGEX_E_Eng_Current_Num_Coded { get; set; }
 
