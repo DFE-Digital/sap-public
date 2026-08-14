@@ -111,6 +111,12 @@ public class EstablishmentServiceModel
 
     public string? KS2WraparoundCare { get; set; } = string.Empty;
 
+    public bool FreeBreakfastClubProgramme { get; set; } 
+
+    public string? NurseryProvisionName { get; set; } = string.Empty;
+
+    public bool HasNurseryProvision => NurseryProvisionName == "Has Nursery Classes";
+
     public bool IsKS2 { get; set; }
 
     public bool IsKS4 { get; set; }
@@ -129,6 +135,7 @@ public class EstablishmentServiceModel
     public bool IsIndependentSchool => TypeOfEstablishment is
         TypeOfEstablishment.OtherIndependentSchool or
         TypeOfEstablishment.OtherIndependentSpecialSchool;
+
 
     public EstablishmentPerformance KS4Performance { get; set; } = new();
 

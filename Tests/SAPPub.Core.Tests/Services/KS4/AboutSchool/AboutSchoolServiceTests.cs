@@ -44,7 +44,13 @@ public class AboutSchoolServiceTests
         OfficialSixthFormId = "No",
         ResourcedProvisionName = "Resourced provision",
         EstablishmentTypeGroup = EstablishmentTypeGroup.LocalAuthorityMaintainedSchools,
-        SenTypes = "SLCN - Speech, language and Communication, ASD - Autistic Spectrum Disorder, SEMH - Social"
+        SenTypes = "SLCN - Speech, language and Communication, ASD - Autistic Spectrum Disorder, SEMH - Social",
+        NurseryProvisionName = "Has Nursery Classes",
+        KS2WraparoundCare = "Wraparound care",
+        FreeBreakfastClubProgramme = true,
+        IsKS2 = true,
+        IsKS4 = true,
+        IsKS5 = false
     };
 
     private readonly List<EstablishmentServiceModel> fakeEstablishments =
@@ -137,6 +143,12 @@ public class AboutSchoolServiceTests
         Assert.Equal(fakeEstablishment.ResourcedProvisionName, result.ResourcedProvisionName);
         Assert.Equal(fakeEstablishment.EstablishmentTypeGroup, result.EstablishmentTypeGroup);
         Assert.Equal(fakeEstablishment.SenTypes, result.SenTypes);
+        Assert.Equal(fakeEstablishment.HasNurseryProvision, result.HasNurseryProvision);
+        Assert.Equal(fakeEstablishment.FreeBreakfastClubProgramme, result.FreeBreakfastClubProgramme);
+        Assert.Equal(fakeEstablishment.KS2WraparoundCare, result.KS2WraparoundCare);
+        Assert.Equal(fakeEstablishment.IsKS2, result.IsKS2);
+        Assert.Equal(fakeEstablishment.IsKS4, result.IsKS4);
+        Assert.Equal(fakeEstablishment.IsKS5, result.IsKS5);
     }
 
     [Theory]

@@ -68,7 +68,9 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "ISKS2",
           "ISKS4",
           "ISKS5",
-          "KS2WraparoundCare"
+          "KS2WraparoundCare",
+          "FreeBreakfastClubProgramme",
+          "NurseryProvisionName"
           """;
 
         private const string EstablishmentAbsenceColumns = """

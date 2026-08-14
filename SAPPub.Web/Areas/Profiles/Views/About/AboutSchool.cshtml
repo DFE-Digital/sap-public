@@ -363,6 +363,31 @@
             </govuk-details-text>
         </govuk-details>
 
+            @if (Model.IsKS2)
+        {
+            <h3 class="govuk-heading-m">Primary school features</h3>
+            <govuk-summary-list id="primary-school-features-summary">           
+                <govuk-summary-list-row>
+                    <govuk-summary-list-row-key>Nursery</govuk-summary-list-row-key>
+                    <govuk-summary-list-row-value>
+                        @Model.HasNurseryProvision.DisplayText(formatter: value => value? Yes : NotAvailable)
+                    </govuk-summary-list-row-value>
+                </govuk-summary-list-row>
+                <govuk-summary-list-row>
+                    <govuk-summary-list-row-key>Free breakfast club programme</govuk-summary-list-row-key>
+                    <govuk-summary-list-row-value>
+                        @Model.FreeBreakfastClubProgramme.DisplayText(formatter: value => value ? Yes : NotAvailable)
+                    </govuk-summary-list-row-value>
+                </govuk-summary-list-row>
+                <govuk-summary-list-row>
+                    <govuk-summary-list-row-key>Wraparound care</govuk-summary-list-row-key>
+                    <govuk-summary-list-row-value>
+                        @Model.KS2WraparoundCare.DisplayText(notAvailableText: NotRecorded)
+                    </govuk-summary-list-row-value>
+                </govuk-summary-list-row>
+            </govuk-summary-list>
+        }
+
        
 
         @if (Model.IsExclusivelyKS5)

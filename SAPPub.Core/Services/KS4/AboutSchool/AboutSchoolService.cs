@@ -80,6 +80,9 @@ public sealed class AboutSchoolService(
             SenTypes = establishment.SenTypes,
             Predecessors = predecessorLinks,
             Successors = sucessorLinks,
+            KS2WraparoundCare = establishment.KS2WraparoundCare,
+            FreeBreakfastClubProgramme = establishment.FreeBreakfastClubProgramme,
+            HasNurseryProvision = establishment.HasNurseryProvision,
             IsKS2 = establishment.IsKS2,
             IsKS4 = establishment.IsKS4,
             IsKS5 = establishment.IsKS5

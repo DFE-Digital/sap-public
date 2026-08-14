@@ -380,4 +380,95 @@ public class AboutPageTests : PageTestsBase
         Assert.Equal("Key features", h2Elements[2].TextContent);
         Assert.Equal("Policies", h2Elements[3].TextContent);
     }
+
+    [Fact]
+    public async Task AboutPage_ShowsKS2OnlyElements()
+    {
+        // Arrange
+        var aboutSchoolModel = new AboutSchoolModel()
+        {
+            Urn = "143034",
+            SchoolName = "St David's Church of England Academy",
+            Address = "Some address",
+            LocalAuthority = "Bury",
+            IsKS4 = false,
+            IsKS5 = false,
+            IsKS2 = true,
+            HasNurseryProvision = true,
+            FreeBreakfastClubProgramme = true,
+            KS2WraparoundCare = "Wraparound care"
+        };
+        _about
+            .Setup(service => service.GetAboutSchoolDetailsAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(aboutSchoolModel);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(aboutSchoolModel.Urn, aboutSchoolModel.SchoolName, _pageRoute));
+
+        // Assert
+        var h1Elements = doc.GetElementsByTagName("h3");
+        Assert.Equal("Primary school features", h1Elements[0].TextContent);
+        Assert.Contains("Yes", doc.GetRowContentByIdAndKey("primary-school-features-summary", "Nursery"));
+        Assert.Contains("Yes", doc.GetRowContentByIdAndKey("primary-school-features-summary", "Free breakfast club programme"));
+        Assert.Contains("Wraparound care", doc.GetRowContentByIdAndKey("primary-school-features-summary", "Wraparound care"));
+    }
+
+    [Fact]
+    public async Task AboutPage_HidesPrimarySchoolFeatures_WhenNotKS2()
+    {
+        // Arrange
+        var aboutSchoolModel = new AboutSchoolModel()
+        {
+            Urn = "143034",
+            SchoolName = "St David's Church of England Academy",
+            IsKS2 = false,
+            IsKS4 = true,
+            HasNurseryProvision = true,
+            FreeBreakfastClubProgramme = true,
+            KS2WraparoundCare = "Wraparound care"
+        };
+        _about
+            .Setup(service => service.GetAboutSchoolDetailsAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(aboutSchoolModel);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(aboutSchoolModel.Urn, aboutSchoolModel.SchoolName, _pageRoute));
+
+        // Assert
+        Assert.Null(doc.GetElementById("primary-school-features-summary"));
+    }
+
+    [Fact]
+    public async Task AboutPage_ShowsPrimarySchoolFeatures_WithNotAvailableValues_WhenAllFalseOrEmpty()
+    {
+        // Arrange
+        var notAvailableContent = "Not available";
+        var notRecordedContent = "Not recorded";
+        var aboutSchoolModel = new AboutSchoolModel()
+        {
+            Urn = "143034",
+            SchoolName = "St David's Church of England Academy",
+            IsKS2 = true,
+            HasNurseryProvision = false,
+            FreeBreakfastClubProgramme = false,
+            KS2WraparoundCare = null
+        };
+        _about
+            .Setup(service => service.GetAboutSchoolDetailsAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(aboutSchoolModel);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(aboutSchoolModel.Urn, aboutSchoolModel.SchoolName, _pageRoute));
+
+        // Assert
+        Assert.Contains(notAvailableContent, doc.GetRowContentByIdAndKey("primary-school-features-summary", "Nursery"));
+        Assert.Contains(notAvailableContent, doc.GetRowContentByIdAndKey("primary-school-features-summary", "Free breakfast club programme"));
+        Assert.Contains(notRecordedContent, doc.GetRowContentByIdAndKey("primary-school-features-summary", "Wraparound care"));
+    }
 }
