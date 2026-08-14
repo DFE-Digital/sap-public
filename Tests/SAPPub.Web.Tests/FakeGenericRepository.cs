@@ -439,7 +439,8 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             READ_AVERAGE_LA_Previous_Num_Coded = new CodedDouble(2, "", "2"),
             READ_AVERAGE_LA_Previous2_Num_Coded = new CodedDouble(3, "", "3"),
             READPROG_LA_Previous2_Num_Coded = new CodedDouble(4, "", ""),
-            WRITPROG_LA_Previous2_Num_Coded = new CodedDouble(5, "", "")
+            WRITPROG_LA_Previous2_Num_Coded = new CodedDouble(5, "", ""),
+            MATPROG_LA_Previous2_Num_Coded = new CodedDouble(6, "", ""),
         },
         ["845"] = new KS2LAPerformance
         {

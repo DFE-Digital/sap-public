@@ -114,7 +114,7 @@
         }
         else if (!Model.ShowReadingScore && !Model.ShowMathsScore && !Model.ShowWritingScore)
         {
-            @await Html.PartialAsync("_NoProgressData")
+            @await Html.PartialAsync("_NoProgressData", "nodata")
         }
 
         else

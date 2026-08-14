@@ -1,4 +1,5 @@
-﻿using Microsoft.Playwright;
+﻿using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.Playwright;
 using SAPPub.Core.Enums;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Tests.UI.Helpers;
@@ -82,44 +83,77 @@ public class PupilProgressTests(WebApplicationSetupFixture fixture) : BasePageTe
         // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["149976"]);
 
+        var academicYearSelector = Page.Locator("#academicYearSelector");
+        var academicYearInfo = Page.Locator("#academic-year-info");
+        var dataNotAvailable = Page.Locator("#data-not-available-custom-card");
+
         // Act, Assert
         await AssertCorrectProgressCardsAsync("reading", false, false);
         await AssertCorrectProgressCardsAsync("writing", false, false);
         await AssertCorrectProgressCardsAsync("maths", false, false);
-        var covidInfo = Page.Locator("#data-not-available-custom-card");
-        Assert.NotNull(covidInfo);
+       
+        Assert.True(await dataNotAvailable.IsVisibleAsync());
+        Assert.Contains(AcademicYearSelection.Current.GetDisplayName()!, await academicYearInfo.InnerTextAsync());
 
         // select previous year
         var academicYearSelection = AcademicYearSelection.Previous2;
 
-        var academicyearSelector = Page.Locator("#academicYearSelector");
-        await academicyearSelector.SelectOptionAsync([academicYearSelection.GetDisplayName()!]);
-        var buttonSelector = Page.Locator("button:has-text(\"Show results\")");
+        await academicYearSelector.SelectOptionAsync(new SelectOptionValue { Label = academicYearSelection.GetDisplayName()! });
+        var buttonSelector = Page.GetByRole(AriaRole.Button, new() { Name = "Show results" });
+
         await buttonSelector.ClickAsync();
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
-        // Assert
+        // Assert Previous year (2) content
         await AssertCorrectProgressCardsAsync("reading", true, false);
         await AssertCorrectProgressCardsAsync("writing", true, false);
         await AssertCorrectProgressCardsAsync("maths", true, false);
+        Assert.False(await dataNotAvailable.IsVisibleAsync());
+        Assert.Contains(academicYearSelection.GetDisplayName()!, await academicYearInfo.InnerTextAsync());
+        Assert.Equal(AcademicYearSelection.Previous2.ToString(), await academicYearSelector.InputValueAsync());
 
+        // Reading assertions
+        var readingEstablishmentCard = await Page.Locator("#reading-establishment-card").InnerTextAsync();
+        var readingLaCard = await Page.Locator("#reading-localauthority-card").InnerTextAsync();
+        Assert.Contains("Pupils at this school score 7.", readingEstablishmentCard);
+        Assert.Contains("This is above average.", readingEstablishmentCard);
+        Assert.Contains("The confidence interval is 9 to 8", readingEstablishmentCard);
+        Assert.Contains("The local authority average is 4", readingLaCard);
 
-        var readingEstablishmentCard = await Page.Locator($"#reading-establishment-card").Locator("p").AllAsync();
-        var readingLocalAuthorityCard = await Page.Locator($"#reading-localauthority-card").Locator("p").AllAsync();
-    
-        var writingEstablishmentCard = Page.Locator($"#writing-establishment-card");
-        var writingLocalAuthorityCard = Page.Locator($"#writing-localauthority-card");
-        var mathsEstablishmentCard = Page.Locator($"#maths-establishment-card");
-        var mathsLocalAuthorityCard = Page.Locator($"#maths-localauthority-card");
+        // Writing assertions
+        var writingEstablishmentCard = await Page.Locator("#writing-establishment-card").InnerTextAsync();
+        var writingLaCard = await Page.Locator("#writing-localauthority-card").InnerTextAsync();
+        Assert.Contains("Pupils at this school score 10.", writingEstablishmentCard);
+        Assert.Contains("This is well above average.", writingEstablishmentCard);
+        Assert.Contains("The confidence interval is 12 to 11", writingEstablishmentCard);
+        Assert.Contains("The local authority average is 5", writingLaCard);
 
-        var readingCont1 = await readingEstablishmentCard[0].AllInnerTextsAsync();
-        var readingCont2 = await readingEstablishmentCard[1].AllInnerTextsAsync();
-        var readingCont3 = await readingLocalAuthorityCard[0].AllInnerTextsAsync();
+        // Maths assertions
+        var mathsEstablishmentCard = await Page.Locator("#maths-establishment-card").InnerTextAsync();
+        var mathsLaCard = await Page.Locator("#maths-localauthority-card").InnerTextAsync();
+        Assert.Contains("Pupils at this school score 13.", mathsEstablishmentCard);
+        Assert.Contains("This is average.", mathsEstablishmentCard);
+        Assert.Contains("The confidence interval is 15 to 14", mathsEstablishmentCard);
+        Assert.Contains("The local authority average is 6", mathsLaCard);
 
-        Assert.Equal("Pupils at this school score 7. This is above average.", readingCont1[0]);
-        Assert.Equal("The confidence interval is 9 to 8", readingCont2[0]);
-        Assert.Equal("The local authority average is 4", readingCont3[0]);
+        // Act select previous year with no progress data
+        var previousYearSelection = AcademicYearSelection.Previous;
+        await academicYearSelector.SelectOptionAsync(new SelectOptionValue { Label = previousYearSelection.GetDisplayName()! });
+        await buttonSelector.ClickAsync();
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
+        await AssertCorrectProgressCardsAsync("reading", false, false);
+        await AssertCorrectProgressCardsAsync("writing", false, false);
+        await AssertCorrectProgressCardsAsync("maths", false, false);
+
+        Assert.False(await dataNotAvailable.IsVisibleAsync());
+        Assert.Contains(previousYearSelection.GetDisplayName()!, await academicYearInfo.InnerTextAsync());
+        Assert.Equal(previousYearSelection.ToString(), await academicYearSelector.InputValueAsync());
+
+        var cont = await Page.ContentAsync();
+
+        var noProgressDataCard = Page.Locator(".nodata-no-progress-data");
+        Assert.True(await noProgressDataCard.IsVisibleAsync());
     }
 
     private async Task AssertCorrectProgressCardsAsync(string idPrefix, bool cardIsVisible, bool noDataSectionIsVisible)
