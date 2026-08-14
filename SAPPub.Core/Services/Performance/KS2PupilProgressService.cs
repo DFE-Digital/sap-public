@@ -1,103 +1,114 @@
 ﻿using SAPPub.Core.Enums;
+using SAPPub.Core.Interfaces.Repositories.Performance;
 using SAPPub.Core.Interfaces.Services;
-using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.Performance;
-using SAPPub.Core.ServiceModels.KS4.Performance;
+using SAPPub.Core.ServiceModels.Performance;
+using SAPPub.Core.ValueObjects;
 
 namespace SAPPub.Core.Services.Performance;
 
 public class KS2PupilProgressService(
     IEstablishmentService establishmentService,
-    IEstablishmentPerformanceService establishmentPerformanceService,
-    ILAPerformanceService lAPerformanceService,
-    IEnglandPerformanceService englandPerformanceService) : IKS2PupilProgressService
+    IKS2PerformanceRepository ks2PerformanceRepository) : IKS2PupilProgressService
 {
-    public async Task<AttainmentAndProgressModel> GetPupilProgressAsync(string urn, AcademicYearSelection selectedYear, CancellationToken ct = default)
+    public async Task<KS2PupilPerformance> GetPupilProgressAsync(string urn, AcademicYearSelection selectedYear, CancellationToken ct = default)
     {
-        // Need establishment first to get LAId/LAName (and to check if URN is valid)
+        ArgumentException.ThrowIfNullOrWhiteSpace(urn);
+        ct.ThrowIfCancellationRequested();
+
         var establishment = await establishmentService.GetEstablishmentAsync(urn, ct);
 
         if (string.IsNullOrWhiteSpace(establishment.URN))
-            return new AttainmentAndProgressModel { Urn = urn, IsKS2 = false, IsKS4 = false, IsKS5 = false };
+        {
+            return new KS2PupilPerformance { Urn = urn };
+        }
 
-        // Now we can run the remaining calls concurrently
-        var establishmentPerformance = await establishmentPerformanceService.GetEstablishmentPerformanceAsync(urn, ct);
+        var ks2EstablishPerformanceTask = ks2PerformanceRepository.GetEstablishmentPerformanceAsync(urn, ct);
+        var ks2LAPerformanceTask = ks2PerformanceRepository.GetLaPerformanceAsync(establishment.LAId, ct);
 
-        var laId = establishment.LAId ?? string.Empty;
-        var laPerformance = await lAPerformanceService.GetLAPerformanceAsync(laId, ct);
+        await Task.WhenAll(ks2EstablishPerformanceTask, ks2LAPerformanceTask);
 
-        var englandPerformance = await englandPerformanceService.GetEnglandPerformanceAsync(ct);
+        var establishmentPerformance = await ks2EstablishPerformanceTask;
+        var laPerformance = await ks2LAPerformanceTask;
 
-        return new AttainmentAndProgressModel
+        return new KS2PupilPerformance
         {
             Urn = establishment.URN,
-            SchoolName = establishment.EstablishmentName,
-            IsKS2 = establishment.IsKS2,
-            IsKS4 = establishment.IsKS4,
-            IsKS5 = establishment.IsKS5,
-            EstablishmentProgress8Score = selectedYear switch
+            EstablishmentReadingScore = selectedYear switch
             {
-                AcademicYearSelection.Previous => establishmentPerformance.Prog8_Tot_Est_Previous_Num,
-                AcademicYearSelection.Previous2 => establishmentPerformance.Prog8_Tot_Est_Previous2_Num,
-                _ => null,
+                AcademicYearSelection.Previous2 => establishmentPerformance.READPROG_Est_Previous2_Num_Coded,
+                _ => CodedDouble.Empty
             },
-            EstablishmentProgress8CILower = selectedYear switch
+            EstablishmentReadingDescription = selectedYear switch
+            { 
+                AcademicYearSelection.Previous2 => establishmentPerformance.READPROG_DESCR_Est_Previous2_Num_Coded,
+                _ => CodedString.Empty
+            },
+            EstablishmentReadingConfidenceUpper = selectedYear switch
             {
-                AcademicYearSelection.Previous => establishmentPerformance.Prog8_CI_Lower_Est_Previous_Num,
-                AcademicYearSelection.Previous2 => establishmentPerformance.Prog8_CI_Lower_Est_Previous2_Num,
-                _ => null,
+                AcademicYearSelection.Previous2 => establishmentPerformance.READPROG_UPPER_Est_Previous2_Num_Coded,
+                _ => CodedDouble.Empty
             },
-            EstablishmentProgress8CIUpper = selectedYear switch
+            EstablishmentReadingConfidenceLower = selectedYear switch
             {
-                AcademicYearSelection.Previous => establishmentPerformance.Prog8_CI_Upper_Est_Previous_Num,
-                AcademicYearSelection.Previous2 => establishmentPerformance.Prog8_CI_Upper_Est_Previous2_Num,
-                _ => null,
+                AcademicYearSelection.Previous2 => establishmentPerformance.READPROG_LOWER_Est_Previous2_Num_Coded,
+                _ => CodedDouble.Empty
             },
-            EstablishmentProgress8Banding = selectedYear switch
+            LaReadingScore = selectedYear switch
             {
-                AcademicYearSelection.Previous => establishmentPerformance.Prog8_Banding_Est_Previous,
-                AcademicYearSelection.Previous2 => establishmentPerformance.Prog8_Banding_Est_Previous2,
-                _ => null,
+                AcademicYearSelection.Previous2 => laPerformance.READPROG_LA_Previous2_Num_Coded,
+                _ => CodedDouble.Empty
             },
-            LocalAuthorityProgress8Score = selectedYear switch
+            EstablishmentWritingScore = selectedYear switch
             {
-                AcademicYearSelection.Previous => laPerformance.Prog8_Avg_LA_Previous_Num,
-                AcademicYearSelection.Previous2 => laPerformance.Prog8_Avg_LA_Previous2_Num,
-                _ => null,
+                AcademicYearSelection.Previous2 => establishmentPerformance.WRITPROG_Est_Previous2_Num_Coded,
+                _ => CodedDouble.Empty
             },
-            EstablishmentAttainment8Score = selectedYear switch
+            EstablishmentWritingDescription = selectedYear switch
             {
-                AcademicYearSelection.Current => establishmentPerformance.Attainment8_Tot_Est_Current_Num,
-                AcademicYearSelection.Previous => establishmentPerformance.Attainment8_Tot_Est_Previous_Num,
-                AcademicYearSelection.Previous2 => establishmentPerformance.Attainment8_Tot_Est_Previous2_Num,
-                _ => null,
+                AcademicYearSelection.Previous2 => establishmentPerformance.WRITPROG_DESCR_Est_Previous2_Num_Coded,
+                _ => CodedString.Empty
             },
-            LocalAuthorityAttainment8Score = selectedYear switch
+            EstablishmentWritingConfidenceUpper = selectedYear switch
             {
-                AcademicYearSelection.Current => laPerformance.Attainment8_Tot_LA_Current_Num,
-                AcademicYearSelection.Previous => laPerformance.Attainment8_Tot_LA_Previous_Num,
-                AcademicYearSelection.Previous2 => laPerformance.Attainment8_Tot_LA_Previous2_Num,
-                _ => null,
+                AcademicYearSelection.Previous2 => establishmentPerformance.WRITPROG_UPPER_Est_Previous2_Num_Coded,
+                _ => CodedDouble.Empty
             },
-            EnglandAttainment8Score = selectedYear switch
+            EstablishmentWritingConfidenceLower = selectedYear switch
             {
-                AcademicYearSelection.Current => englandPerformance.Attainment8_Tot_Eng_Current_Num,
-                AcademicYearSelection.Previous => englandPerformance.Attainment8_Tot_Eng_Previous_Num,
-                AcademicYearSelection.Previous2 => englandPerformance.Attainment8_Tot_Eng_Previous2_Num,
-                _ => null,
+                AcademicYearSelection.Previous2 => establishmentPerformance.WRITPROG_LOWER_Est_Previous2_Num_Coded,
+                _ => CodedDouble.Empty
             },
-            EstablishmentProgress8TotalPupils = selectedYear switch
+            LaWritingScore = selectedYear switch
             {
-                AcademicYearSelection.Previous => establishmentPerformance.Prog8_TotPup_Est_Previous_Num,
-                AcademicYearSelection.Previous2 => establishmentPerformance.Prog8_TotPup_Est_Previous2_Num,
-                _ => null,
+                AcademicYearSelection.Previous2 => laPerformance.WRITPROG_LA_Previous2_Num_Coded,
+                _ => CodedDouble.Empty
             },
-            EstablishmentTotalPupils = selectedYear switch
+            EstablishmentMathsScore = selectedYear switch
             {
-                AcademicYearSelection.Previous => establishmentPerformance.Pup_Tot_Est_Previous_Num,
-                AcademicYearSelection.Previous2 => establishmentPerformance.Pup_Tot_Est_Previous2_Num,
-                _ => null,
+                AcademicYearSelection.Previous2 => establishmentPerformance.MATPROG_Est_Previous2_Num_Coded,
+                _ => CodedDouble.Empty
             },
+            EstablishmentMathsDescription = selectedYear switch
+            {
+                AcademicYearSelection.Previous2 => establishmentPerformance.MATPROG_DESCR_Est_Previous2_Num_Coded,
+                _ => CodedString.Empty
+            },
+            EstablishmentMathsConfidenceUpper = selectedYear switch
+            {
+                AcademicYearSelection.Previous2 => establishmentPerformance.MATPROG_UPPER_Est_Previous2_Num_Coded,
+                _ => CodedDouble.Empty
+            },
+            EstablishmentMathsConfidenceLower = selectedYear switch
+            {
+                AcademicYearSelection.Previous2 => establishmentPerformance.MATPROG_LOWER_Est_Previous2_Num_Coded,
+                _ => CodedDouble.Empty
+            },
+            LaMathsScore = selectedYear switch
+            {
+                AcademicYearSelection.Previous2 => laPerformance.MATPROG_LA_Previous2_Num_Coded,
+                _ => CodedDouble.Empty
+            }
         };
     }
 }

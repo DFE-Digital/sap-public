@@ -1,6 +1,6 @@
 ﻿using SAPPub.Core.Enums;
 using SAPPub.Core.ServiceModels.KS4.Performance;
-using SAPPub.Web.Models.SecondarySchool;
+using SAPPub.Web.Areas.Profiles.ViewModels.KS4;
 
 namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Models.KS4;
 

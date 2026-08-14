@@ -29,7 +29,7 @@
             Looking at school performance data is one way to see how well a school is doing.
             You should look at a range of information about a school before deciding if it’s the right fit for your child.
         </p>
-        <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
+        <nav id="sub-navigation-academic-pupilprogress" class="moj-sub-navigation" aria-label="Sub navigation">
             <ul class="moj-sub-navigation__list">
                 <li class="moj-sub-navigation__item">
                     <a class="moj-sub-navigation__link" aria-current="page" asp-route="@RouteConstants.PrimaryAcademicPerformancePupilProgress" asp-all-route-data="@Model.RouteAttributes">@PrimarySchoolPageTitles.PupilProgress</a>
@@ -53,10 +53,8 @@
                 <govuk-button type="submit">Show results</govuk-button>
             </div>
         </form>
-        
-        <p class="govuk-body" data-testid="academic-year-info">@Model.AcademicYearInfoParagraph</p>
 
-        
+        <p class="govuk-body" id="academic-year-info">@Model.AcademicYearInfoParagraph</p>
 
         <p class="govuk-body">
             Progress scores in reading, writing, and maths show how much progress pupils have made between the end of key stage 1 (KS1) and the end of key stage 2 (KS2), compared to other pupils across England who had similar starting points.
@@ -94,40 +92,147 @@
                     A school is below average if its progress score is below 0 and the entire confidence interval is below 0.
                 </p>
                 <p class="govuk-body">
-                    Read more about how confidence intervals are used in the 
-                    <a class="govuk-link govuk-link--no-visited-state" href="@Model.PrimarySchoolAccountabilityLinkUrl" rel="nofollow noreferrer" target="@(Model.PrimarySchoolAccountabilityLinkNewTab ? "_blank": "_self")">
+                    Read more about how confidence intervals are used in the
+                    <a class="govuk-link govuk-link--no-visited-state" href="@Model.PrimarySchoolAccountabilityLinkUrl" rel="nofollow noreferrer" target="@(Model.PrimarySchoolAccountabilityLinkNewTab ? "_blank" : "_self")">
                         primary accountability measures guidance <span class="govuk-visually-hidden">(opens in a new tab)</span>
                     </a>.
                 </p>
             </govuk-details-text>
         </govuk-details>
 
-        <div class="custom-card" data-testid="progress8-establishment-card">
-            <div class="assignment__icon"></div>
-            <div class="custom-card__content">
-                <p class="govuk-body">
-                    Pupils at this school score [TODO] @* @Model.EstablishmentProgress8Score. *@
-                   @*  @if (Model.EstablishmentProgress8BandingContextDescription.IsAvailable)
-                    {
-                        <span>@Model.EstablishmentProgress8BandingContextDescription.DisplayText()</span>
-                    } *@
-                </p>
-                <p class="govuk-body">
-                    The confidence interval is@*  @Model.EstablishmentProgress8CILower to @Model.EstablishmentProgress8CIUpper. *@
-                </p>
+        @if (Model.ShowDataNotAvailableInfo)
+        {
+            <div class="custom-card" id="data-not-available-custom-card">
+                <div class="info__icon"></div>
+                <div class="custom-card__content">
+                    <p class="govuk-body">
+                        There are no Progress scores available for reading, writing and maths for the academic years 2024 to 2025 and 2025 to 2026.
+                        This is because there is no KS1 baseline available to calculate progress measures for these years due to COVID-19 disruption.
+                    </p>
+                </div>
             </div>
-        </div>
+        }
+        else if (!Model.ShowReadingScore && !Model.ShowMathsScore && !Model.ShowWritingScore)
+        {
+            @await Html.PartialAsync("_NoProgressData")
+        }
 
-        <div class="custom-card" data-testid="progress8-localauthority-card">
-            <div class="custom-card__content">
-                <p class="govuk-body">
-                    The local authority average is [TODO]@* @Model.LocalAuthorityProgress8Score. *@
-                </p>
+        else
+        {
+            <div id="reading-information">
+                <h3 class="govuk-heading-m">Reading</h3>
+                @if (!Model.ShowReadingScore)
+                {
+                    @await Html.PartialAsync("_NoProgressData", "reading")
+                }
+                else
+                {
+                    <div class="custom-card" id="reading-establishment-card">
+                        <div class="assignment__icon"></div>
+                        <div class="custom-card__content">
+                            <p class="govuk-body">
+                                Pupils at this school score @Model.EstablishmentReadingScore.Score.
+                                @if (Model.EstablishmentReadingScore.BandingRating.HasValue)
+                                {
+                                    @Model.EstablishmentReadingScore.BandingRating.ToBandingString().DisplayText()
+                                }
+                            </p>
+                            <p class="govuk-body">
+                                The confidence interval is @Model.EstablishmentReadingScore.ConfidenceLevelLower to @Model.EstablishmentReadingScore.ConfidenceLevelUpper
+                            </p>
+                        </div>
+                    </div>
+
+
+                    <div class="custom-card" id="reading-localauthority-card">
+                        <div class="custom-card__content">
+                            <p class="govuk-body">
+                                The local authority average is @Model.LaReadingAverage
+                            </p>
+                        </div>
+                        <div class="bar-chart__icon"></div>
+                    </div>
+                }
+
             </div>
-            <div class="bar-chart__icon"></div>
-        </div>
 
-         <govuk-pagination id="bottom-pagination">
+            <div id="writing-information">
+                <h3 class="govuk-heading-m">Writing</h3>
+
+                @if (!Model.ShowWritingScore)
+                {
+                    @await Html.PartialAsync("_NoProgressData", "writing")
+                }
+                else
+                {
+                    <div class="custom-card" id="writing-establishment-card">
+                        <div class="assignment__icon"></div>
+                        <div class="custom-card__content">
+                            <p class="govuk-body">
+                                Pupils at this school score @Model.EstablishmentWritingScore.Score.
+                                @if (Model.EstablishmentWritingScore.BandingRating.HasValue)
+                                {
+                                    @Model.EstablishmentWritingScore.BandingRating.ToBandingString().DisplayText()
+                                }
+                            </p>
+                            <p class="govuk-body">
+                                The confidence interval is @Model.EstablishmentWritingScore.ConfidenceLevelLower to @Model.EstablishmentWritingScore.ConfidenceLevelUpper
+                            </p>
+                        </div>
+                    </div>
+                    <div class="custom-card" id="writing-localauthority-card">
+                        <div class="custom-card__content">
+                            <p class="govuk-body">
+                                The local authority average is @Model.LaWritingAverage
+                            </p>
+                        </div>
+                        <div class="bar-chart__icon"></div>
+                    </div>
+                }
+
+          
+            </div>
+
+            <div id="maths-information">
+                <h3 class="govuk-heading-m">Maths</h3>
+
+                @if (!Model.ShowMathsScore)
+                {
+                    @await Html.PartialAsync("_NoProgressData", "maths")
+                }
+                else
+                {
+                    <div class="custom-card" id="maths-establishment-card">
+                        <div class="assignment__icon"></div>
+                        <div class="custom-card__content">
+                            <p class="govuk-body">
+                                Pupils at this school score @Model.EstablishmentMathsScore.Score.
+                                @if (Model.EstablishmentMathsScore.BandingRating.HasValue)
+                                {
+                                    @Model.EstablishmentMathsScore.BandingRating.ToBandingString().DisplayText()
+                                }
+                            </p>
+                            <p class="govuk-body">
+                                The confidence interval is @Model.EstablishmentMathsScore.ConfidenceLevelLower to @Model.EstablishmentMathsScore.ConfidenceLevelUpper
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="custom-card" id="maths-localauthority-card">
+                        <div class="custom-card__content">
+                            <p class="govuk-body">
+                                The local authority average is @Model.LaMathsAverage
+                            </p>
+                        </div>
+                        <div class="bar-chart__icon"></div>
+                    </div>
+
+                }
+
+            </div>
+        }
+
+        <govuk-pagination id="bottom-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.Attendance" asp-all-route-data="@Model.RouteAttributes">Attendance</govuk-pagination-previous>
             <govuk-pagination-next asp-route="@RouteConstants.PrimaryAcademicPerformanceAdditionalMeasures" asp-all-route-data="@Model.RouteAttributes">Primary academic performance: Additional measures</govuk-pagination-next>
         </govuk-pagination>

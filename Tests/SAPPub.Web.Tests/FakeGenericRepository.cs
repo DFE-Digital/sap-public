@@ -329,7 +329,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             More1FL_Tot_Est_Current_Pct_Coded = new CodedDouble(null, "", ""),
             ExamEntriesGSCE_Tot_Est_Current_Num_Coded = new CodedDouble(null, "", ""),
             ExamEntriesKS4_Tot_Est_Current_Num_Coded = new CodedDouble(null, "", ""),
-            Pup_Tot_Est_Current_Num_Coded = new CodedDouble(null, "", "")
+            Pup_Tot_Est_Current_Num_Coded = new CodedDouble(null, "", ""),
         },
     };
 
@@ -406,7 +406,20 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             READ_AVERAGE_Est_Previous2_Num_Coded = new CodedDouble(3, "", "3"),
             MAT_AVERAGE_Est_Current_Num_Coded = new CodedDouble(4, "", "4"),
             MAT_AVERAGE_Est_Previous_Num_Coded = new CodedDouble(5, "", "5"),
-            MAT_AVERAGE_Est_Previous2_Num_Coded = new CodedDouble(6, "", "6")
+            MAT_AVERAGE_Est_Previous2_Num_Coded = new CodedDouble(6, "", "6"),
+            READPROG_Est_Previous2_Num_Coded = new CodedDouble(7, "", ""),
+            READPROG_DESCR_Est_Previous2_Num_Coded = new CodedString("2", "", ""),
+            READPROG_UPPER_Est_Previous2_Num_Coded = new CodedDouble(8, "", ""),
+            READPROG_LOWER_Est_Previous2_Num_Coded = new CodedDouble(9, "", ""),
+            WRITPROG_Est_Previous2_Num_Coded = new CodedDouble(10, "", ""),
+            WRITPROG_DESCR_Est_Previous2_Num_Coded = new CodedString("1", "", ""),
+            WRITPROG_UPPER_Est_Previous2_Num_Coded = new CodedDouble(11, "", ""),
+            WRITPROG_LOWER_Est_Previous2_Num_Coded = new CodedDouble(12, "", ""),
+            MATPROG_Est_Previous2_Num_Coded = new CodedDouble(13, "", ""),
+            MATPROG_DESCR_Est_Previous2_Num_Coded = new CodedString("3", "", ""),
+            MATPROG_UPPER_Est_Previous2_Num_Coded = new CodedDouble(14, "", ""),
+            MATPROG_LOWER_Est_Previous2_Num_Coded = new CodedDouble(15, "", ""),
+
         },
         ["143034"] = new KS2EstablishmentPerformance
         {
@@ -425,6 +438,8 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             READ_AVERAGE_LA_Current_Num_Coded = new CodedDouble(1, "", "1"),
             READ_AVERAGE_LA_Previous_Num_Coded = new CodedDouble(2, "", "2"),
             READ_AVERAGE_LA_Previous2_Num_Coded = new CodedDouble(3, "", "3"),
+            READPROG_LA_Previous2_Num_Coded = new CodedDouble(4, "", ""),
+            WRITPROG_LA_Previous2_Num_Coded = new CodedDouble(5, "", "")
         },
         ["845"] = new KS2LAPerformance
         {

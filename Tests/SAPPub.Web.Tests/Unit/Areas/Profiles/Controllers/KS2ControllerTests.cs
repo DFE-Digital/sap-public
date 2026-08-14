@@ -17,6 +17,7 @@ public class KS2ControllerTests : BaseProfilesTests
     private readonly string primaryschoolAccountabilityLinkUrl = "https://test.com";
     private readonly bool primarySchoolAccountabilityLinkNewTab = true;
     private readonly Mock<IKS2AdditionalMeasuresService> _mockKS2AdditionalMeasuresService = new();
+    private readonly Mock<IKS2PupilProgressService> _mockKS2PupilProgressService = new();
     private readonly Mock<IKS2MeetingOrExceedingStandardsService> _mockKS2MeetingOrExceedingStandardsService = new();
     private readonly KS2Controller _controller;
 
@@ -32,20 +33,87 @@ public class KS2ControllerTests : BaseProfilesTests
     }
 
     [Fact]
-    public async Task Get_AcademicPerformancePupilProgress_ReturnsConfiguredAccountabilityLink()
+    public void AcademicPerformancePupilProgress_RedirectsAsExpected()
     {
-        // Arrange/Act
-        var result = await _controller.AcademicPerformancePupilProgress(
+        // Arrange
+        AcademicYearSelection selectedAcademicYear = AcademicYearSelection.Previous;
+
+        // Act
+        var result = _controller.AcademicPerformancePupilProgress(
             fakeEstablishment.URN,
             fakeEstablishment.EstablishmentName,
-            AcademicYearSelection.Current.ToString().ToLower(),
+            selectedAcademicYear) as RedirectToActionResult;
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal("AcademicPerformancePupilProgress", result.ActionName);
+        Assert.Equal(fakeEstablishment.URN, result?.RouteValues!["urn"]);
+        Assert.Equal(fakeEstablishment.EstablishmentName, result?.RouteValues!["schoolName"]);
+        Assert.Equal("previous", result?.RouteValues!["selectedAcademicYearName"]);
+    }
+
+    [Fact]
+    public async Task Get_AcademicPerformancePupilProgress_ReturnsNotFoundWhenIncorrectAcademicYear()
+    {
+        //Act
+        var result = await _controller.AcademicPerformancePupilProgress(
+            _mockKS2PupilProgressService.Object,
+            fakeEstablishment.URN,
+            fakeEstablishment.EstablishmentName,
+            "randomyear",
+            CancellationToken.None) as NotFoundResult;
+
+        // Assert
+        Assert.NotNull(result);
+    }
+
+    [Fact]
+    public async Task Get_AcademicPerformancePupilProgress_ReturnsCorrectData()
+    {
+        // Arrange
+        var expectedModel = GetKS2PupilPerformance();
+        _mockKS2PupilProgressService
+            .Setup(a => a.GetPupilProgressAsync(fakeEstablishment.URN, AcademicYearSelection.Previous2, CancellationToken.None))
+            .ReturnsAsync(expectedModel);
+
+        //Act
+        var result = await _controller.AcademicPerformancePupilProgress(
+            _mockKS2PupilProgressService.Object,
+            fakeEstablishment.URN,
+            fakeEstablishment.EstablishmentName,
+            AcademicYearSelection.Previous2.ToString().ToLower(),
             CancellationToken.None) as ViewResult;
 
         // Assert
         Assert.NotNull(result);
         var model = Assert.IsType<AcademicPerformancePupilProgressViewModel>(result?.Model);
+        Assert.Equal(expectedModel.Urn, model.URN);
         Assert.Equal(primaryschoolAccountabilityLinkUrl, model.PrimarySchoolAccountabilityLinkUrl);
         Assert.Equal(primarySchoolAccountabilityLinkNewTab, model.PrimarySchoolAccountabilityLinkNewTab);
+        Assert.Equal($"Information in this section is for the 2022 to 2023 academic year.", model.AcademicYearInfoParagraph);
+        Assert.False(model.ShowDataNotAvailableInfo);
+        Assert.True(model.ShowReadingScore);
+        Assert.True(model.ShowWritingScore);
+        Assert.True(model.ShowMathsScore);
+        Assert.Equal(expectedModel.EstablishmentReadingScore, model.EstablishmentReadingScore.Score);
+        Assert.Equal(expectedModel.EstablishmentReadingConfidenceLower, model.EstablishmentReadingScore.ConfidenceLevelLower);
+        Assert.Equal(expectedModel.EstablishmentReadingConfidenceUpper, model.EstablishmentReadingScore.ConfidenceLevelUpper);
+        Assert.Equal(expectedModel.EstablishmentReadingDescription, model.EstablishmentReadingScore.BandingRating);
+        Assert.Equal(expectedModel.EstablishmentWritingScore, model.EstablishmentWritingScore.Score);
+        Assert.Equal(expectedModel.EstablishmentWritingConfidenceLower, model.EstablishmentWritingScore.ConfidenceLevelLower);
+        Assert.Equal(expectedModel.EstablishmentWritingConfidenceUpper, model.EstablishmentWritingScore.ConfidenceLevelUpper);
+        Assert.Equal(expectedModel.EstablishmentWritingDescription, model.EstablishmentWritingScore.BandingRating);
+        Assert.Equal(expectedModel.EstablishmentMathsScore, model.EstablishmentMathsScore.Score);
+        Assert.Equal(expectedModel.EstablishmentMathsConfidenceLower, model.EstablishmentMathsScore.ConfidenceLevelLower);
+        Assert.Equal(expectedModel.EstablishmentMathsConfidenceUpper, model.EstablishmentMathsScore.ConfidenceLevelUpper);
+        Assert.Equal(expectedModel.EstablishmentMathsDescription, model.EstablishmentMathsScore.BandingRating);
+        Assert.Equal(expectedModel.LaReadingScore, model.LaReadingAverage);
+        Assert.Equal(expectedModel.LaWritingScore, model.LaWritingAverage);
+        Assert.Equal(expectedModel.LaMathsScore, model.LaMathsAverage);
+        Assert.Equal(AcademicYearSelection.Previous2, model.SelectedAcademicYear);
+
+        _mockKS2PupilProgressService
+            .Verify(a => a.GetPupilProgressAsync(fakeEstablishment.URN, AcademicYearSelection.Previous2, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -155,6 +223,29 @@ public class KS2ControllerTests : BaseProfilesTests
             LAGrammarAtHigherStandard = new CodedDouble(1, string.Empty, "4"),
             EnglandGrammarAtExpectedStandard = new CodedDouble(1, string.Empty, "5"),
             EnglandGrammarAtHigherStandard = new CodedDouble(1, string.Empty, "6"),
+        };
+    }
+
+    private KS2PupilPerformance GetKS2PupilPerformance()
+    {
+        return new KS2PupilPerformance
+        {
+            Urn = fakeEstablishment.URN,
+            EstablishmentReadingScore = new CodedDouble(1, "", ""),
+            EstablishmentReadingDescription = new CodedString("2", "", ""),
+            EstablishmentReadingConfidenceUpper = new CodedDouble(3, "", ""),
+            EstablishmentReadingConfidenceLower = new CodedDouble(4, "", ""),
+            LaReadingScore = new CodedDouble(5, "", ""),
+            EstablishmentWritingScore = new CodedDouble(6, "", ""),
+            EstablishmentWritingDescription = new CodedString("7", "", ""),
+            EstablishmentWritingConfidenceUpper = new CodedDouble(8, "", ""),
+            EstablishmentWritingConfidenceLower = new CodedDouble(9, "", ""),
+            LaWritingScore = new CodedDouble(10, "", ""),
+            EstablishmentMathsScore = new CodedDouble(11, "", ""),
+            EstablishmentMathsDescription = new CodedString("12", "", ""),
+            EstablishmentMathsConfidenceUpper = new CodedDouble(13, "", ""),
+            EstablishmentMathsConfidenceLower = new CodedDouble(14, "", ""),
+            LaMathsScore = new CodedDouble(15, "", ""),
         };
     }
 }
