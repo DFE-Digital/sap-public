@@ -7,7 +7,6 @@ namespace SAPPub.Web.Middleware
         public MemoryCache Cache { get; } = new MemoryCache(
             new MemoryCacheOptions
             {
-                
             });
     }
 }

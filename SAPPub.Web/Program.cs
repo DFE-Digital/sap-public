@@ -47,12 +47,6 @@ public partial class Program
         var enableGateway = builder.Configuration.GetValue<bool>("Gateway:Enabled");
         var emailAPIKey = builder.Configuration.GetValue<string>("Email:ApiKey");
 
-        builder.Services.AddMiniProfiler(options =>
-        {
-            options.SqlFormatter = new StackExchange.Profiling.SqlFormatters.InlineFormatter();
-        });
-        builder.Services.AddMiniProfilerForDapper();
-
         builder.Services.AddHttpClient<IPostcodeLookupService, PostcodeLookupService>();
         builder.Services.AddGovUkFrontend(options =>
         {
@@ -78,6 +72,11 @@ public partial class Program
         if (builder.Environment.IsDevelopment())
         {
             builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+            builder.Services.AddMiniProfiler(options =>
+            {
+                options.SqlFormatter = new StackExchange.Profiling.SqlFormatters.InlineFormatter();
+            });
+            builder.Services.AddMiniProfilerForDapper();
         }
         else
         {
