@@ -45,7 +45,7 @@ public class PupilProgressTests(WebApplicationSetupFixture fixture) : BasePageTe
         await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
 
         // Act
-        var isVisible = await Page.Locator("#sub-navigation-academic-pupilprogress").IsVisibleAsync();
+        var isVisible = await Page.Locator("#sub-navigation-academic-performance").IsVisibleAsync();
 
         // Assert
         Assert.True(isVisible);
