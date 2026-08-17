@@ -12,6 +12,6 @@ export const stressTestScenario = {
   tags: {
     service: 'load',
     scenario: 'stress',
-    description: 'load stress test - 4000+ concurrent users, breaking point'
+    description: 'load stress test - 400 concurrent users, breaking point'
   }
 }
