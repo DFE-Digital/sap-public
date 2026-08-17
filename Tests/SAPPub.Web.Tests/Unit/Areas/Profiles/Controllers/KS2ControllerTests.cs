@@ -46,9 +46,9 @@ public class KS2ControllerTests : BaseProfilesTests
         Assert.Equal(expectedModel.LAGrammarAtHigherStandard, model.LAGrammarAtHigherStandard.Value);
         Assert.Equal(expectedModel.EnglandGrammarAtExpectedStandard, model.EnglandGrammarAtExpectedStandard.Value);
         Assert.Equal(expectedModel.EnglandGrammarAtHigherStandard, model.EnglandGrammarAtHigherStandard.Value);
-       
+
         _mockKS2AdditionalMeasuresService
-            .Verify(a => a.GetAdditionalMeasures(fakeEstablishment.URN, CancellationToken.None), Times.Once);
+            .Verify(a => a.GetAdditionalMeasures(fakeMinimumEstablishment.URN, CancellationToken.None), Times.Once);
     }
 
     private static KS2AdditionalMeasuresModel GetKS2AdditionalMeasuresModel()

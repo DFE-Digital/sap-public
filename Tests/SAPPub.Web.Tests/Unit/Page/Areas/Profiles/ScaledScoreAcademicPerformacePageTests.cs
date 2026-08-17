@@ -15,7 +15,7 @@ public class ScaledScoresAcademicPerformacePageTests : PageTestsBase
     private string _pageRoute = "/primary-performance/subject-scaled-scores";
     private string _urn = "149976";
     private string _laName = "Test LA";
-    private readonly EstablishmentServiceModel _establishment = new();
+    private readonly EstablishmentMinimumServiceModel _establishment = new();
     private readonly Mock<IEstablishmentService> _mockEstablishmentService;
 
     private readonly KS2ScaledScoreModel _scaledScoreModel;
@@ -27,7 +27,7 @@ public class ScaledScoresAcademicPerformacePageTests : PageTestsBase
     {
         _scaledScoreService = UseMock<IKS2ScaledScoreService>();
         _mockEstablishmentService = UseMock<IEstablishmentService>();
-        _establishment = new EstablishmentTestBuilder()
+        _establishment = new EstablishmentMinimumTestBuilder()
             .WithURN(_urn)
             .WithEstablishmentName($"School{_urn}")
             .WithIsKeyStage2(true)
@@ -37,7 +37,7 @@ public class ScaledScoresAcademicPerformacePageTests : PageTestsBase
         _scaledScoreModel = GetScaledScoreModel();
 
         _mockEstablishmentService
-           .Setup(a => a.GetEstablishmentAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+           .Setup(a => a.GetEstablishmentMinimumAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
            .ReturnsAsync(_establishment);
 
         _scaledScoreService

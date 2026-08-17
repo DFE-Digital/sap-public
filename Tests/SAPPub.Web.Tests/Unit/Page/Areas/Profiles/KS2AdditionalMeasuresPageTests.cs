@@ -16,7 +16,7 @@ public class KS2AdditionalMeasuresPageTests : PageTestsBase
     private readonly string _urn = "149976";
     private readonly string _laName = "Test LA";
 
-    private readonly EstablishmentServiceModel _establishment = new();
+    private readonly EstablishmentMinimumServiceModel _establishment = new();
     private readonly Mock<IEstablishmentService> _mockEstablishmentService;
 
     private readonly KS2AdditionalMeasuresModel _ks2AdditionalMeasuresModel;
@@ -27,7 +27,7 @@ public class KS2AdditionalMeasuresPageTests : PageTestsBase
     {
         _ks2AdditionalMeasuresService = UseMock<IKS2AdditionalMeasuresService>();
         _mockEstablishmentService = UseMock<IEstablishmentService>();
-        _establishment = new EstablishmentTestBuilder()
+        _establishment = new EstablishmentMinimumTestBuilder()
             .WithURN(_urn)
             .WithEstablishmentName($"School{_urn}")
             .WithIsKeyStage2(true)
@@ -37,7 +37,7 @@ public class KS2AdditionalMeasuresPageTests : PageTestsBase
         _ks2AdditionalMeasuresModel = GetKS2AdditionalMeasuresModel();
 
         _mockEstablishmentService
-           .Setup(a => a.GetEstablishmentAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+           .Setup(a => a.GetEstablishmentMinimumAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
            .ReturnsAsync(_establishment);
 
         _ks2AdditionalMeasuresService

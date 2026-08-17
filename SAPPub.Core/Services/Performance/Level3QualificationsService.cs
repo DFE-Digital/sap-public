@@ -17,7 +17,7 @@ public class Level3QualificationsService(
         Level3 level3Qualification,
         CancellationToken ct = default)
     {
-        var establishment = await establishmentService.GetEstablishmentAsync(urn, ct);
+        var establishment = await establishmentService.GetEstablishmentMinimumAsync(urn, ct);
         var establishmentPerformanceTask = ks5PerformanceRepository.GetEstablishmentPerformanceAsync(urn, ct);
         var englandPerformanceTask = ks5PerformanceRepository.GetEnglandPerformanceAsync(ct);
         var laPerformanceTask = ks5PerformanceRepository.GetLaPerformanceAsync(establishment.LAId, ct);

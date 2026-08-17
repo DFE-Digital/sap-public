@@ -51,19 +51,12 @@ public sealed class EstablishmentService(
         var establishment = await _establishmentRepository.GetEstablishmentAsync(urn, ct)
             ?? throw new NotFoundException($"Establishment not found with URN: {urn}");
 
-        var cacheEntryOptions = new MemoryCacheEntryOptions()
-            .SetAbsoluteExpiration(DateTime.Today.AddDays(1));
+        var cacheEntryOptions = new MemoryCacheEntryOptions();
 
         var establishmentModel = EstablishmentMinimum.MapToServiceModel(establishment);
 
         _memoryCache.Set(urn, establishmentModel, cacheEntryOptions);
 
         return establishmentModel;
-
-
-
-
-
-
     }
 }

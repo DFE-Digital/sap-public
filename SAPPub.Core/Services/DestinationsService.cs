@@ -109,7 +109,7 @@ public class DestinationsService(
     {
         ct.ThrowIfCancellationRequested();
 
-        var establishment = await establishmentService.GetEstablishmentAsync(urn, ct);
+        var establishment = await establishmentService.GetEstablishmentMinimumAsync(urn, ct);
         var laCode = establishment.LAId ?? string.Empty;
 
         if (string.IsNullOrWhiteSpace(establishment.URN))

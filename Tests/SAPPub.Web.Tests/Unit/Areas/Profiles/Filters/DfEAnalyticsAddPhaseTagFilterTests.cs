@@ -83,8 +83,8 @@ public class DfEAnalyticsAddPhaseTagFilterTests
     {
         // Arrange
         _establishmentService
-            .Setup(x => x.GetEstablishmentAsync(_urn, CancellationToken.None))
-            .ReturnsAsync(new EstablishmentServiceModel()
+            .Setup(x => x.GetEstablishmentMinimumAsync(_urn, CancellationToken.None))
+            .ReturnsAsync(new EstablishmentMinimumServiceModel()
             {
                 IsKS2 = isKS2,
                 IsKS4 = isKS4,
@@ -114,7 +114,7 @@ public class DfEAnalyticsAddPhaseTagFilterTests
 
         // Assert
         _establishmentService.Verify(
-            x => x.GetEstablishmentAsync(_urn, It.IsAny<CancellationToken>()),
+            x => x.GetEstablishmentMinimumAsync(_urn, It.IsAny<CancellationToken>()),
             Times.Once);
 
         if (isKS2)

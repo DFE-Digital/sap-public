@@ -15,11 +15,10 @@ public class DestinationsServiceTests
     private readonly Mock<IKS5DestinationsRepository> _mockKs5DestinationsRepo;
     private readonly DestinationsService _service;
 
-    private readonly EstablishmentServiceModel fakeEstablishment = new()
+    private readonly EstablishmentMinimumServiceModel fakeEstablishment = new()
     {
         URN = "123456",
         EstablishmentName = "Test Establishment",
-        PhaseOfEducationName = "Secondary School",
         LAName = "Council",
         LAId = "E09000001"
     };
@@ -83,7 +82,7 @@ public class DestinationsServiceTests
         };
 
         _mockEstablishmentService
-            .Setup(r => r.GetEstablishmentAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetEstablishmentMinimumAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(fakeEstablishment);
 
         _mockKs4DestinationsRepo
@@ -140,8 +139,8 @@ public class DestinationsServiceTests
     {
         // Arrange
         _mockEstablishmentService
-            .Setup(r => r.GetEstablishmentAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new EstablishmentServiceModel());
+            .Setup(r => r.GetEstablishmentMinimumAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EstablishmentMinimumServiceModel());
 
         // Act
         var result = await _service.GetKS4DestinationsDetailsAsync(fakeEstablishment.URN, CancellationToken.None);
@@ -192,7 +191,7 @@ public class DestinationsServiceTests
         };
 
         _mockEstablishmentService
-            .Setup(r => r.GetEstablishmentAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetEstablishmentMinimumAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(fakeEstablishment);
 
         _mockKs5DestinationsRepo
@@ -228,8 +227,8 @@ public class DestinationsServiceTests
     {
         // Arrange
         _mockEstablishmentService
-            .Setup(r => r.GetEstablishmentAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new EstablishmentServiceModel());
+            .Setup(r => r.GetEstablishmentMinimumAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EstablishmentMinimumServiceModel());
 
         // Act
         var result = await _service.GetKS5DestinationsDetailsAsync(fakeEstablishment.URN, CancellationToken.None);
