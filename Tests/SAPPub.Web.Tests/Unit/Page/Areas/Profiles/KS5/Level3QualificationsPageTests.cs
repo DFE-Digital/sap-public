@@ -8,7 +8,7 @@ using SAPPub.Web.Constants;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
 
-namespace SAPPub.Web.Tests.Unit.Page.Areas.Profiles;
+namespace SAPPub.Web.Tests.Unit.Page.Areas.Profiles.KS5;
 
 [Collection("WebAppCollection")]
 public class Level3QualificationsPageTests : PageTestsBase

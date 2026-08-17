@@ -4,7 +4,7 @@ using SAPPub.Web.Models.Charts;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
 using System.Text.Json;
 
-namespace SAPPub.Web.Tests.Unit.Page.Areas.Profiles;
+namespace SAPPub.Web.Tests.Unit.Page.Areas.Profiles.KS5;
 
 [Collection("WebAppCollection")]
 public class KS5DestinationsTests : PageTestsBase
