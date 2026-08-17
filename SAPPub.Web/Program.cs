@@ -1,3 +1,5 @@
+using Autofac.Core;
+using Dapper.Extensions.MiniProfiler;
 using Dfe.Analytics;
 using Dfe.Analytics.AspNetCore;
 using GovUk.Frontend.AspNetCore;
@@ -44,6 +46,12 @@ public partial class Program
 
         var enableGateway = builder.Configuration.GetValue<bool>("Gateway:Enabled");
         var emailAPIKey = builder.Configuration.GetValue<string>("Email:ApiKey");
+
+        builder.Services.AddMiniProfiler(options =>
+        {
+            options.SqlFormatter = new StackExchange.Profiling.SqlFormatters.InlineFormatter();
+        });
+        builder.Services.AddMiniProfilerForDapper();
 
         builder.Services.AddHttpClient<IPostcodeLookupService, PostcodeLookupService>();
         builder.Services.AddGovUkFrontend(options =>
@@ -145,7 +153,7 @@ public partial class Program
         builder.Services.AddSingleton<MyMemoryCache>();
 
         var app = builder.Build();
-
+        app.UseMiniProfiler();
         app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
         //Configure the HTTP request pipeline.
