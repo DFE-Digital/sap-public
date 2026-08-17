@@ -408,11 +408,13 @@ public class AboutPageTests : PageTestsBase
         var doc = await Fixture.BrowseToPage(BuildUrl(aboutSchoolModel.Urn, aboutSchoolModel.SchoolName, _pageRoute));
 
         // Assert
-        var h1Elements = doc.GetElementsByTagName("h3");
-        Assert.Equal("Primary school features", h1Elements[0].TextContent);
+        var h3Elements = doc.GetElementsByTagName("h3");
+        Assert.Equal("Primary school features", h3Elements[0].TextContent);
         Assert.Contains("Yes", doc.GetRowContentByIdAndKey("primary-school-features-summary", "Nursery"));
         Assert.Contains("Yes", doc.GetRowContentByIdAndKey("primary-school-features-summary", "Free breakfast club programme"));
         Assert.Contains("Wraparound care", doc.GetRowContentByIdAndKey("primary-school-features-summary", "Wraparound care"));
+        var primaryFeaturesDetails = doc.QuerySelector("#details-primary-features");
+        Assert.NotNull(primaryFeaturesDetails);
     }
 
     [Fact]

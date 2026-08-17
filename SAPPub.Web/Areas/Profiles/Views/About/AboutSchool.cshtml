@@ -370,7 +370,7 @@
                 <govuk-summary-list-row>
                     <govuk-summary-list-row-key>Nursery</govuk-summary-list-row-key>
                     <govuk-summary-list-row-value>
-                        @Model.HasNurseryProvision.DisplayText(formatter: value => value? Yes : NotAvailable)
+                        @Model.HasNurseryProvision.DisplayText(formatter: value => value ? Yes : NotAvailable)
                     </govuk-summary-list-row-value>
                 </govuk-summary-list-row>
                 <govuk-summary-list-row>
@@ -386,6 +386,30 @@
                     </govuk-summary-list-row-value>
                 </govuk-summary-list-row>
             </govuk-summary-list>
+            <govuk-details id="details-primary-features">
+                <govuk-details-summary>
+                What is wraparound care and the free breakfast club programme?
+                </govuk-details-summary>
+                <govuk-details-text>
+                    <h4 class="govuk-heading-s">Wraparound care</h4>
+                    <p class="govuk-body">Wraparound childcare is before and after school care for primary school aged children in England during term time delivered on or near the school site.</p>
+                    <p class="govuk-body">
+                        Wraparound care is different from out-of-school activities, or school clubs, which are less frequent and can be a one-off activity.
+                    </p>
+                    <p class="govuk-body">Contact the school for more information about what they provide.</p>
+
+                    <h4 class="govuk-heading-s">Free breakfast club programme</h4>
+                    <p class="govuk-body">The free breakfast club programme is a government-funded initiative being introduced in all state-funded schools with primary-aged children in England. Schools will join the programme in stages between 2026 and 2028.</p>
+                    <p class="govuk-body">These clubs are:</p>
+                    <ul>
+                        <li>open to all pupils on roll at the school in reception to year 6</li>
+                        <li>at least 30 minutes in duration, immediately before the start of each compulsory school day</li>
+                        <li>free to access</li>
+                        <li>offering a breakfast that adheres to the school food standards for England</li>
+                        <li>on, or in the vicinity of, the school site</li>
+                    </ul>
+                </govuk-details-text>
+            </govuk-details>
         }
 
        
