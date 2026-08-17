@@ -139,11 +139,15 @@ public class KS2ControllerTests : BaseProfilesTests
         Assert.True(model.IsKS2);
         Assert.Equal(expectedModel.EstablishmentGrammarAtExpectedStandard, model.EstablishmentGrammarAtExpectedStandard.Value);
         Assert.Equal(expectedModel.EstablishmentGrammarAtHigherStandard, model.EstablishmentGrammarAtHigherStandard.Value);
+        Assert.Equal(expectedModel.EstablishmentEHCPPopulation, model.EstablishmentEHCPPopulation.Value);
+        Assert.Equal(expectedModel.EstablishmentSENSupportPopulation, model.EstablishmentSENSupportPopulation.Value);
         Assert.Equal(expectedModel.LAGrammarAtExpectedStandard, model.LAGrammarAtExpectedStandard.Value);
         Assert.Equal(expectedModel.LAGrammarAtHigherStandard, model.LAGrammarAtHigherStandard.Value);
         Assert.Equal(expectedModel.EnglandGrammarAtExpectedStandard, model.EnglandGrammarAtExpectedStandard.Value);
         Assert.Equal(expectedModel.EnglandGrammarAtHigherStandard, model.EnglandGrammarAtHigherStandard.Value);
-
+        Assert.Equal(expectedModel.EnglandEHCPPopulation, model.EnglandEHCPPopulation.Value);
+        Assert.Equal(expectedModel.EnglandSENSupportPopulation, model.EnglandSENSupportPopulation.Value);
+       
         _mockKS2AdditionalMeasuresService
             .Verify(a => a.GetAdditionalMeasures(fakeEstablishment.URN, CancellationToken.None), Times.Once);
     }
@@ -219,10 +223,14 @@ public class KS2ControllerTests : BaseProfilesTests
         {
             EstablishmentGrammarAtExpectedStandard = new CodedDouble(1, string.Empty, "1"),
             EstablishmentGrammarAtHigherStandard = new CodedDouble(1, string.Empty, "2"),
+            EstablishmentEHCPPopulation = new CodedDouble(1, string.Empty, "7"),
+            EstablishmentSENSupportPopulation = new CodedDouble(1, string.Empty, "8"),        
             LAGrammarAtExpectedStandard = new CodedDouble(1, string.Empty, "3"),
             LAGrammarAtHigherStandard = new CodedDouble(1, string.Empty, "4"),
             EnglandGrammarAtExpectedStandard = new CodedDouble(1, string.Empty, "5"),
             EnglandGrammarAtHigherStandard = new CodedDouble(1, string.Empty, "6"),
+            EnglandEHCPPopulation = new CodedDouble(1, string.Empty, "9"),
+            EnglandSENSupportPopulation = new CodedDouble(1, string.Empty, "10"),
         };
     }
 
