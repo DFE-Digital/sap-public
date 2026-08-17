@@ -141,7 +141,7 @@ public class DfEAnalyticsAddPhaseTagFilterTests
         // Arrange
         _controllerWithIEstablishment
             .SetupGet(x => x.Establishment)
-            .Returns(new EstablishmentServiceModel()
+            .Returns(new EstablishmentMinimumServiceModel()
             {
                 IsKS2 = isKS2,
                 IsKS4 = isKS4,

@@ -13,7 +13,7 @@ public class DestinationsService(
 {
     public async Task<KS4DestinationsDetails> GetKS4DestinationsDetailsAsync(string urn, CancellationToken ct = default)
     {
-        var establishment = await establishmentService.GetEstablishmentAsync(urn, ct);
+        var establishment = await establishmentService.GetEstablishmentMinimumAsync(urn, ct);
         var laCode = establishment?.LAId ?? string.Empty;
 
         if (string.IsNullOrWhiteSpace(establishment?.URN))

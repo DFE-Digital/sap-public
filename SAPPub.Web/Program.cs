@@ -141,6 +141,9 @@ public partial class Program
         // Add feature management abilility
         builder.Services.AddFeatureManagement();
 
+        // Add caching
+        builder.Services.AddSingleton<MyMemoryCache>();
+
         var app = builder.Build();
 
         app.UseStatusCodePagesWithReExecute("/Error/{0}");

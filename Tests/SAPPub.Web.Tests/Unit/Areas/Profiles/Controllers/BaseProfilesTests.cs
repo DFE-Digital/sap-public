@@ -9,6 +9,7 @@ public class BaseProfilesTests
 {
     protected readonly Mock<IEstablishmentService> mockEstablishmentService;
     protected EstablishmentServiceModel fakeEstablishment;
+    protected EstablishmentMinimumServiceModel fakeMinimumEstablishment;
 
     public BaseProfilesTests()
     {
@@ -38,6 +39,11 @@ public class BaseProfilesTests
             .WithOpenReasonId(10)
             .WithOpenDate()
             .WithSenTypes("VI - Visual Impairment, HI - Hearing Impairment")
+            .WithIsKeyStage2(true)
+            .WithIsKeyStage4(true)
+            .BuildServiceModel();
+
+        fakeMinimumEstablishment = new EstablishmentMinimumTestBuilder()
             .WithIsKeyStage2(true)
             .WithIsKeyStage4(true)
             .BuildServiceModel();

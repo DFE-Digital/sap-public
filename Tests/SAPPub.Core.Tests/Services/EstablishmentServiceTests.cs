@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Moq;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Exceptions;
 using SAPPub.Core.Interfaces.Repositories;
@@ -11,12 +12,13 @@ namespace SAPPub.Core.Tests.Services
     public class EstablishmentServiceTests
     {
         private readonly Mock<IEstablishmentRepository> _mockRepo;
+        private readonly Mock<IMemoryCache> _mockMemoryCache = new();
         private readonly EstablishmentService _service;
 
         public EstablishmentServiceTests()
         {
             _mockRepo = new Mock<IEstablishmentRepository>();
-            _service = new EstablishmentService(_mockRepo.Object);
+            _service = new EstablishmentService(_mockRepo.Object, _mockMemoryCache.Object);
         }
 
         private readonly Establishment FakeEstablishmentOne = new()

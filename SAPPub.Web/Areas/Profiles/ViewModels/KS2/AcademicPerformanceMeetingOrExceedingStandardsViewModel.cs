@@ -5,7 +5,7 @@ namespace SAPPub.Web.Areas.Profiles.ViewModels.KS2;
 
 public class AcademicPerformanceMeetingOrExceedingStandardsViewModel : BaseViewModel
 {
-    public static AcademicPerformanceMeetingOrExceedingStandardsViewModel Map(EstablishmentServiceModel establishment)
+    public static AcademicPerformanceMeetingOrExceedingStandardsViewModel Map(EstablishmentMinimumServiceModel establishment)
     {
         return new AcademicPerformanceMeetingOrExceedingStandardsViewModel
         {

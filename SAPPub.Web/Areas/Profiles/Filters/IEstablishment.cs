@@ -4,5 +4,5 @@ namespace SAPPub.Web.Areas.Profiles.Filters;
 
 public interface IEstablishment
 {
-    public EstablishmentServiceModel Establishment { get; set; }
+    public EstablishmentMinimumServiceModel Establishment { get; set; }
 }

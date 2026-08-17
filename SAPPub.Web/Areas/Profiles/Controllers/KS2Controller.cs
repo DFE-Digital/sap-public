@@ -13,7 +13,7 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
     [ServiceFilter(typeof(PrimaryQueryValidationFilter))]
     public class KS2Controller : Controller, IEstablishment
     {
-        public EstablishmentServiceModel Establishment { get; set; } = null!; // set by the PrimaryQueryValidationFilter
+        public EstablishmentMinimumServiceModel Establishment { get; set; } = null!; // set by the PrimaryQueryValidationFilter
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}/primary-performance/pupil-progress", Name = RouteConstants.PrimaryAcademicPerformancePupilProgress)]

@@ -16,7 +16,7 @@ public class KS2ControllerTests : BaseProfilesTests
     public KS2ControllerTests()
     {
         _mockKS2AdditionalMeasuresService = new Mock<IKS2AdditionalMeasuresService>();
-        _controller = new() { Establishment = fakeEstablishment };
+        _controller = new() { Establishment = fakeMinimumEstablishment };
     }
 
     [Fact]
@@ -26,19 +26,19 @@ public class KS2ControllerTests : BaseProfilesTests
         var expectedModel = GetKS2AdditionalMeasuresModel();
 
         _mockKS2AdditionalMeasuresService
-            .Setup(a => a.GetAdditionalMeasures(fakeEstablishment.URN, CancellationToken.None))
+            .Setup(a => a.GetAdditionalMeasures(fakeMinimumEstablishment.URN, CancellationToken.None))
             .ReturnsAsync(expectedModel);
 
         // Act
         var result = await _controller.AcademicPerformanceAdditionalMeasures(
              _mockKS2AdditionalMeasuresService.Object,
-             fakeEstablishment.URN,
-             fakeEstablishment.EstablishmentName,
+             fakeMinimumEstablishment.URN,
+             fakeMinimumEstablishment.EstablishmentName,
              CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
         var model = Assert.IsType<AcademicPerformanceAdditionalMeasuresViewModel>(result?.Model);
-        Assert.Equal(fakeEstablishment.URN, model.URN);
+        Assert.Equal(fakeMinimumEstablishment.URN, model.URN);
         Assert.True(model.IsKS2);
         Assert.Equal(expectedModel.EstablishmentGrammarAtExpectedStandard, model.EstablishmentGrammarAtExpectedStandard.Value);
         Assert.Equal(expectedModel.EstablishmentGrammarAtHigherStandard, model.EstablishmentGrammarAtHigherStandard.Value);

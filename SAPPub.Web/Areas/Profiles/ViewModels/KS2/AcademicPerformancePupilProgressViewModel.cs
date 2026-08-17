@@ -5,7 +5,7 @@ namespace SAPPub.Web.Areas.Profiles.ViewModels.KS2;
 
 public class AcademicPerformancePupilProgressViewModel : BaseViewModel
 {
-    public static AcademicPerformancePupilProgressViewModel Map(EstablishmentServiceModel establishment)
+    public static AcademicPerformancePupilProgressViewModel Map(EstablishmentMinimumServiceModel establishment)
     {
         return new AcademicPerformancePupilProgressViewModel
         {
