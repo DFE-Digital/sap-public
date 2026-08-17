@@ -362,8 +362,8 @@
                 </p>
             </govuk-details-text>
         </govuk-details>
-
-            @if (Model.IsKS2)
+        <feature name="EnablePrimary">
+        @if (Model.IsKS2)
         {
             <h3 class="govuk-heading-m">Primary school features</h3>
             <govuk-summary-list id="primary-school-features-summary">           
@@ -411,8 +411,7 @@
                 </govuk-details-text>
             </govuk-details>
         }
-
-       
+        </feature>      
 
         @if (Model.IsExclusivelyKS5)
         {
