@@ -72,7 +72,7 @@ public sealed class AboutSchoolService(
             ReligiousCharacter = establishment.ReligiousCharacterName,
             OfficialSixthFormId = establishment.OfficialSixthFormId,
             ResourcedProvisionName = establishment.ResourcedProvisionName,
-            EstablishmentTypeGroupId = establishment.EstablishmentTypeGroupId,
+            EstablishmentTypeGroup = establishment.EstablishmentTypeGroup,
             ClosedDate = establishment.ClosedDate.ToDateOnly(),
             Status = establishment.StatusCode.ToStatus(),
             OpenDate = establishment.OpenDate.ToDateOnly(),

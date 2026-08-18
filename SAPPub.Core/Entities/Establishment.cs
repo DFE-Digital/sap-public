@@ -76,7 +76,7 @@ public class Establishment
 
     public string TypeOfEstablishmentName { get; set; } = string.Empty;
 
-    public string EstablishmentTypeGroupId { get; set; } = string.Empty;
+    public int? EstablishmentTypeGroupId { get; set; }
 
     public string EstablishmentTypeGroupName { get; set; } = string.Empty;
 
@@ -157,7 +157,9 @@ public class Establishment
                 ? (TypeOfEstablishment)e.TypeOfEstablishmentId
                 : TypeOfEstablishment.Unknown,
             TypeOfEstablishmentName = e.TypeOfEstablishmentName,
-            EstablishmentTypeGroupId = e.EstablishmentTypeGroupId,
+            EstablishmentTypeGroup = e.EstablishmentTypeGroupId is int groupId && Enum.IsDefined(typeof(EstablishmentTypeGroup), groupId)
+                ? (EstablishmentTypeGroup)groupId
+                : EstablishmentTypeGroup.OtherTypes,
             EstablishmentTypeGroupName = e.EstablishmentTypeGroupName,
             ResourcedProvision = e.ResourcedProvision,
             ResourcedProvisionName = e.ResourcedProvisionName,

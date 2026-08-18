@@ -67,7 +67,8 @@ public class AccessibilityTests(WebApplicationSetupFixture fixture) : BasePageTe
         "school/130499/holy-cross-college/16-to-19-performance/level-3-qualifications/alevel",
         "school/130499/holy-cross-college/16-to-19-performance/level-3-qualifications/advanced",
         "school/130499/holy-cross-college/16-to-19-performance/level-3-qualifications/appliedgeneral",
-        "school/130499/holy-cross-college/16-to-19-performance/level-3-qualifications/techlevel"
+        "school/130499/holy-cross-college/16-to-19-performance/level-3-qualifications/techlevel",
+        "school/130499/holy-cross-college/16-to-19-performance/level-2-qualifications/techcert"
     };
 
     [Fact]

@@ -67,7 +67,7 @@ public class KS2AdditionalMeasuresServiceTests
 
         _ks2PerformanceRepository
             .Setup(a => a.GetEstablishmentPerformanceAsync(urn, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new KS2EstablishmentPerformance { PTGPS_EXP_Est_Current_Pct_Coded = new CodedDouble(1, string.Empty, "1"), PTGPS_HIGH_Est_Current_Pct_Coded = new CodedDouble(1, string.Empty, "2") });
+            .ReturnsAsync(new KS2EstablishmentPerformance { PTGPS_EXP_Est_Current_Pct_Coded = new CodedDouble(1, string.Empty, "1"), PTGPS_HIGH_Est_Current_Pct_Coded = new CodedDouble(1, string.Empty, "2"), PSENELE_Est_Current_Pct_Coded = new CodedDouble(1, string.Empty, "7"), PSENELK_Est_Current_Pct_Coded = new CodedDouble(1, string.Empty, "8") });
 
         _ks2PerformanceRepository
             .Setup(a => a.GetLaPerformanceAsync(laId, It.IsAny<CancellationToken>()))
@@ -75,7 +75,7 @@ public class KS2AdditionalMeasuresServiceTests
 
         _ks2PerformanceRepository
             .Setup(a => a.GetEnglandPerformanceAsync(It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new KS2EnglandPerformance { PTGPS_EXP_Eng_Current_Pct_Coded = new CodedDouble(1, string.Empty, "5"), PTGPS_HIGH_Eng_Current_Pct_Coded = new CodedDouble(1, string.Empty, "6") });
+            .ReturnsAsync(new KS2EnglandPerformance { PTGPS_EXP_Eng_Current_Pct_Coded = new CodedDouble(1, string.Empty, "5"), PTGPS_HIGH_Eng_Current_Pct_Coded = new CodedDouble(1, string.Empty, "6"), PSENELE_Eng_Current_Pct_Coded = new CodedDouble(1, string.Empty, "9"), PSENELK_Eng_Current_Pct_Coded = new CodedDouble(1, string.Empty, "10") });
 
         // Act
         var result = await _service.GetAdditionalMeasures(urn, CancellationToken.None);
@@ -83,10 +83,14 @@ public class KS2AdditionalMeasuresServiceTests
         // Assert
         Assert.Equal(expectedModel.EstablishmentGrammarAtExpectedStandard, result.EstablishmentGrammarAtExpectedStandard);
         Assert.Equal(expectedModel.EstablishmentGrammarAtHigherStandard, result.EstablishmentGrammarAtHigherStandard);
+        Assert.Equal(expectedModel.EstablishmentEHCPPopulation, result.EstablishmentEHCPPopulation);
+        Assert.Equal(expectedModel.EstablishmentSENSupportPopulation, result.EstablishmentSENSupportPopulation);
         Assert.Equal(expectedModel.LAGrammarAtExpectedStandard, result.LAGrammarAtExpectedStandard);
         Assert.Equal(expectedModel.LAGrammarAtHigherStandard, result.LAGrammarAtHigherStandard);
         Assert.Equal(expectedModel.EnglandGrammarAtExpectedStandard, result.EnglandGrammarAtExpectedStandard);
         Assert.Equal(expectedModel.EnglandGrammarAtHigherStandard, result.EnglandGrammarAtHigherStandard);
+        Assert.Equal(expectedModel.EnglandEHCPPopulation, result.EnglandEHCPPopulation);
+        Assert.Equal(expectedModel.EnglandSENSupportPopulation, result.EnglandSENSupportPopulation);
 
     }
 
@@ -96,10 +100,14 @@ public class KS2AdditionalMeasuresServiceTests
         {
             EstablishmentGrammarAtExpectedStandard = new CodedDouble(1, string.Empty, "1"),
             EstablishmentGrammarAtHigherStandard = new CodedDouble(1, string.Empty, "2"),
+            EstablishmentEHCPPopulation = new CodedDouble(1, string.Empty, "7"),
+            EstablishmentSENSupportPopulation = new CodedDouble(1, string.Empty, "8"),
             LAGrammarAtExpectedStandard = new CodedDouble(1, string.Empty, "3"),
             LAGrammarAtHigherStandard = new CodedDouble(1, string.Empty, "4"),
             EnglandGrammarAtExpectedStandard = new CodedDouble(1, string.Empty, "5"),
             EnglandGrammarAtHigherStandard = new CodedDouble(1, string.Empty, "6"),
+            EnglandEHCPPopulation = new CodedDouble(1, string.Empty, "9"),
+            EnglandSENSupportPopulation = new CodedDouble(1, string.Empty, "10"),
         };
     }
 }

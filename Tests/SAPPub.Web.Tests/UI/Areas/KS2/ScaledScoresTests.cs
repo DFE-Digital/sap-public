@@ -1,6 +1,4 @@
 ﻿using Microsoft.Playwright;
-using SAPPub.Core.Enums;
-using SAPPub.Web.Helpers;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
@@ -141,6 +139,66 @@ public class ScaledScoresTests(WebApplicationSetupFixture fixture) : BasePageTes
         var showDataOverTimeBtn = Page.Locator("#read-show-data-over-time-btn");
         var chart = Page.Locator("#read-chart");
         var table = Page.Locator("#read-current-year-table");
+
+        var isChartVisible = await chart.IsVisibleAsync();
+        var isTableVisible = await table.IsVisibleAsync();
+        var isShowDataOverTimeBtnVisible = await showDataOverTimeBtn.IsVisibleAsync();
+        var buttonText = await showAsTableBtn.TextContentAsync();
+        var showDataOverTimeBtnText = await showDataOverTimeBtn.TextContentAsync();
+
+        // Assert
+        Assert.False(isChartVisible);
+        Assert.True(isTableVisible);
+        Assert.True(isShowDataOverTimeBtnVisible);
+        Assert.Equal("Show as a chart", buttonText);
+        Assert.Equal("Show data over time", showDataOverTimeBtnText);
+    }
+
+    [Fact]
+    public async Task ScaledScoresResultsPage_Displays_Maths_CurrentYear_Chart()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["149976"]);
+
+        var content = await Page.ContentAsync();
+
+        // Act
+        var chart = Page.Locator("#maths-chart");
+        var table = Page.Locator("#maths-current-year-table");
+        var showAsTableBtn = Page.Locator("#maths-current-year-show-btn");
+        var showDataOverTimeBtn = Page.Locator("#maths-show-data-over-time-btn");
+
+        var isChartVisible = await chart.IsVisibleAsync();
+        var isTableVisible = await table.IsVisibleAsync();
+        var isShowAsTableBtnVisible = await showAsTableBtn.IsVisibleAsync();
+        var isShowDataOverTimeBtnVisible = await showDataOverTimeBtn.IsVisibleAsync();
+        var showAsTableBtnText = await showAsTableBtn.TextContentAsync();
+        var showDataOverTimeBtnText = await showDataOverTimeBtn.TextContentAsync();
+
+        // Assert
+        Assert.False(isTableVisible);
+        Assert.True(isChartVisible);
+        Assert.True(isShowAsTableBtnVisible);
+        Assert.True(isShowDataOverTimeBtnVisible);
+
+        Assert.Equal("Show as a table", showAsTableBtnText);
+        Assert.Equal("Show data over time", showDataOverTimeBtnText);
+    }
+
+    [Fact]
+    public async Task ScaledScoresResultsPage_Displays_Maths_CurrentYear_Table()
+    {
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["149976"]);
+
+        // Act
+        // Click Show as a table button
+        await Page.ClickAsync("#maths-current-year-show-btn");
+
+        var showAsTableBtn = Page.Locator("#maths-current-year-show-btn");
+        var showDataOverTimeBtn = Page.Locator("#maths-show-data-over-time-btn");
+        var chart = Page.Locator("#maths-chart");
+        var table = Page.Locator("#maths-current-year-table");
 
         var isChartVisible = await chart.IsVisibleAsync();
         var isTableVisible = await table.IsVisibleAsync();
@@ -353,15 +411,15 @@ public class ScaledScoresTests(WebApplicationSetupFixture fixture) : BasePageTes
         await Page.Keyboard.PressAsync("Enter");
 
         // Assert
-        Assert.True(await IsElementCheckedAsync("data-overtime-view"));
-        Assert.False(await IsElementCheckedAsync("current-view"));
+        Assert.True(await IsElementCheckedAsync("read-data-overtime-view"));
+        Assert.False(await IsElementCheckedAsync("read-current-view"));
 
         // Act - Space on show current data
         await Page.Locator("#read-show-current-data-btn").FocusAsync();
         await Page.Keyboard.PressAsync("Space");
 
         // Assert
-        Assert.True(await IsElementCheckedAsync("current-view"));
+        Assert.True(await IsElementCheckedAsync("read-current-view"));
         Assert.False(await IsElementCheckedAsync("data-overtime-view"));
 
         // Act - Space on show data over time
@@ -369,7 +427,7 @@ public class ScaledScoresTests(WebApplicationSetupFixture fixture) : BasePageTes
         await Page.Keyboard.PressAsync("Space");
 
         // Assert
-        Assert.True(await IsElementCheckedAsync("data-overtime-view"));
+        Assert.True(await IsElementCheckedAsync("read-data-overtime-view"));
         Assert.False(await IsElementCheckedAsync("current-view"));
 
         // Act - Enter on show current data
@@ -377,8 +435,8 @@ public class ScaledScoresTests(WebApplicationSetupFixture fixture) : BasePageTes
         await Page.Keyboard.PressAsync("Enter");
 
         // Assert
-        Assert.True(await IsElementCheckedAsync("current-view"));
-        Assert.False(await IsElementCheckedAsync("data-overtime-view"));
+        Assert.True(await IsElementCheckedAsync("read-current-view"));
+        Assert.False(await IsElementCheckedAsync("read-data-overtime-view"));
     }
 
     [Fact]

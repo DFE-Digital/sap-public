@@ -119,12 +119,15 @@ namespace SAPPub.Web.Middleware
 
             services.AddTransient<IKs5PerformanceRepository, KS5PerformanceRepository>();
             services.AddTransient<ILevel3QualificationsService, Level3QualificationsService>();
+            services.AddTransient<ILevel2QualificationsService, Level2QualificationsService>();
             services.AddTransient<IEnglishAndMathsQualificationsService, EnglishAndMathsQualificationsService>();
 
             services.AddTransient<IKS2PerformanceRepository, KS2PerformanceRepository>();
             services.AddTransient<IKS2ScaledScoreService, KS2ScaledScoresService>();
 
             services.AddTransient<IKS2AdditionalMeasuresService,  KS2AdditionalMeasuresService>();
+            services.AddTransient<IKS2MeetingOrExceedingStandardsService, KS2MeetingOrExceedingStandardsService>();
+            services.AddTransient<IKS2PupilProgressService, KS2PupilProgressService>();
 
             services.AddScoped<SecondaryComparisonQueryValidationFilter>();
             services.AddScoped<PrimaryQueryValidationFilter>();

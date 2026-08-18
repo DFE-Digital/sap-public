@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using Azure;
+using Moq;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.ServiceModels;
@@ -6,6 +7,7 @@ using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
+
 
 namespace SAPPub.Web.Tests.Unit.Page.Areas.Profiles;
 
@@ -133,16 +135,91 @@ public class KS2AdditionalMeasuresPageTests : PageTestsBase
 
     }
 
+    [Fact]
+    public async Task AdditionalMeasures_ShowsPupilPopulationAccordion()
+    {
+        // Arrange
+        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, _pageRoute);
+        var expectedModel = GetKS2AdditionalMeasuresModel();
+
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+        var accordion = doc.QuerySelector("#pupil-population-accordion");
+        var ehcpSection = doc.QuerySelector("#pupils-with-ehcp-section");
+        var senSupportSection = doc.QuerySelector("#pupils-with-sen-support-section");
+        var ehcpTable = doc.QuerySelector("#ehcp-population-table");
+        var senTable = doc.QuerySelector("#sen-population-table");
+      
+
+        //Assert
+        Assert.NotNull(accordion);
+        Assert.NotNull(ehcpSection);
+        Assert.NotNull(senSupportSection);
+        Assert.NotNull(ehcpTable);
+        Assert.NotNull(senTable);
+
+        Assert.Equal("School", doc.GetTableHeaderContentByIdAndIndex("ehcp-population-table", 0, 0));
+        Assert.Equal("England - mainstream primary schools", doc.GetTableHeaderContentByIdAndIndex("ehcp-population-table",0, 1));
+        Assert.Equal(expectedModel.EstablishmentEHCPPopulation!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("ehcp-population-table", 1, 0));
+        Assert.Equal(expectedModel.EnglandEHCPPopulation!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("ehcp-population-table", 1, 1));
+
+        Assert.Equal("School", doc.GetTableHeaderContentByIdAndIndex("sen-population-table", 0, 0));
+        Assert.Equal("England", doc.GetTableHeaderContentByIdAndIndex("sen-population-table", 0, 1));
+        Assert.Equal(expectedModel.EstablishmentSENSupportPopulation!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("sen-population-table", 1, 0));
+        Assert.Equal(expectedModel.EnglandSENSupportPopulation!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("sen-population-table", 1, 1));
+
+    }
+
+
+    [Fact]
+    public async Task AdditionalMeasures_PupilPopulationAccordion_DataNotAvailable_ShowsTableValuesAsNotAvailable()
+    {
+        // Arrange
+        var modelWithNoData = new KS2AdditionalMeasuresModel
+        {
+            EnglandGrammarAtExpectedStandard = new CodedDouble(1, string.Empty, "1"),
+            EnglandGrammarAtHigherStandard = new CodedDouble(1, string.Empty, "2"),
+            EstablishmentGrammarAtExpectedStandard = new CodedDouble(1, string.Empty, "3"),
+            EstablishmentGrammarAtHigherStandard = new CodedDouble(1, string.Empty, "4"),
+            LAGrammarAtExpectedStandard = new CodedDouble(1, string.Empty, "7"),
+            LAGrammarAtHigherStandard = new CodedDouble(1, string.Empty, "8"),
+            EstablishmentEHCPPopulation = CodedDouble.Empty,
+            EnglandEHCPPopulation = new CodedDouble(null, "Redacted for confidentiality", "c"),
+            EstablishmentSENSupportPopulation = new CodedDouble(null, "Not applicable", "z"),      
+            EnglandSENSupportPopulation = new CodedDouble(null, "Not available", "x")
+        };
+
+        _ks2AdditionalMeasuresService
+            .Setup(s => s.GetAdditionalMeasures(_urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(modelWithNoData);
+
+        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        Assert.Contains("Not available", doc.GetTableCellContentByIdAndIndex("ehcp-population-table", 1, 0));
+        Assert.Contains("Not available", doc.GetTableCellContentByIdAndIndex("ehcp-population-table", 1, 1));
+        Assert.Contains("Not available", doc.GetTableCellContentByIdAndIndex("sen-population-table", 1, 0));
+        Assert.Contains("Not available", doc.GetTableCellContentByIdAndIndex("sen-population-table", 1, 1));
+    }
+
     private static KS2AdditionalMeasuresModel GetKS2AdditionalMeasuresModel()
     {
         return new KS2AdditionalMeasuresModel
         {
             EnglandGrammarAtExpectedStandard = new CodedDouble(1, string.Empty, "1"),
             EnglandGrammarAtHigherStandard = new CodedDouble(1, string.Empty, "2"),
+            EnglandEHCPPopulation = new CodedDouble(1, string.Empty, "3"),
+            EnglandSENSupportPopulation = new CodedDouble(1, string.Empty, "4"),
             EstablishmentGrammarAtExpectedStandard  = new CodedDouble(1, string.Empty, "3"),
             EstablishmentGrammarAtHigherStandard = new CodedDouble(1, string.Empty, "4"),
-            LAGrammarAtExpectedStandard = new CodedDouble(1, string.Empty, "5"),
-            LAGrammarAtHigherStandard = new CodedDouble(1, string.Empty, "6")
+            EstablishmentEHCPPopulation = new CodedDouble(1, string.Empty, "5"),
+            EstablishmentSENSupportPopulation = new CodedDouble(1, string.Empty, "6"),
+            LAGrammarAtExpectedStandard = new CodedDouble(1, string.Empty, "7"),
+            LAGrammarAtHigherStandard = new CodedDouble(1, string.Empty, "8")
         };
     }
 }

@@ -99,4 +99,35 @@ public class CurriculumControllerTests
             Assert.Equal("Not available", model.SchoolWebsite.DisplayText());
         }
     }
+
+    [Theory]
+    [InlineData(true, true, true, true)]   // Multi-phase school + feature enabled = show sub-nav
+    [InlineData(true, true, false, false)] // Multi-phase school + feature disabled = no sub-nav
+    [InlineData(false, true, true, false)] // KS4-only school + feature enabled = no sub-nav
+    [InlineData(true, false, true, false)] // KS2-only school + feature enabled = no sub-nav
+    public async Task KS4_ShowSubNavigation_DependsOnPhaseAndFeatureFlag(bool isKS2, bool isKS4, bool featureEnabled, bool expectedShowSubNav)
+    {
+        // Arrange
+        _fakeEstablishment.IsKS2 = isKS2;
+        _fakeEstablishment.IsKS4 = isKS4;
+
+        _mockFeatureManager
+            .Setup(f => f.IsEnabledAsync(Constants.Constants.EnablePrimary))
+            .ReturnsAsync(featureEnabled);
+
+        // Act
+        var result = await _controller.KS4(
+            _mockEstablishmentService.Object, 
+            _fakeEstablishment.URN, 
+            _fakeEstablishment.EstablishmentName, 
+            CancellationToken.None) as ViewResult;
+
+        // Assert
+        Assert.NotNull(result);
+        var model = result.Model as CurriculumAndExtraCurricularActivitiesViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(expectedShowSubNav, model.ShowSubNavigation);
+        Assert.Equal(featureEnabled, model.IsPrimaryFeatureEnabled);
+    }
+
 }

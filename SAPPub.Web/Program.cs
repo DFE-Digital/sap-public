@@ -43,6 +43,7 @@ public partial class Program
         builder.Services.Configure<AnalyticsOptions>(builder.Configuration.GetSection("Analytics"));
         builder.Services.Configure<GatewayOptions>(builder.Configuration.GetSection("Gateway"));
         builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("Email"));
+        builder.Services.Configure<UrlLinksOptions>(builder.Configuration.GetSection("UrlLinks"));
 
         var enableGateway = builder.Configuration.GetValue<bool>("Gateway:Enabled");
         var emailAPIKey = builder.Configuration.GetValue<string>("Email:ApiKey");

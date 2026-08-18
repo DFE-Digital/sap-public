@@ -47,6 +47,10 @@
 
     const charts = {};
 
+    function getChartAxisSuffix(ctx) {
+        return ctx.chart?.canvas?.dataset.scaled == 'true' ? '' : CHART_CONFIG.defaults.axisSuffix;
+    }
+
     function gdsVars(canvas) {
         const s = getComputedStyle(canvas);
 
@@ -159,7 +163,7 @@
 
     function getBarLabelColor(ctx, gdsStyles) {
         const bg = Array.isArray(ctx.dataset.backgroundColor) ? ctx.dataset.backgroundColor[ctx.dataIndex] : ctx.dataset.backgroundColor;
-        const align = getBarLabelAlignment(ctx, CHART_CONFIG.defaults.axisSuffix);
+        const align = getBarLabelAlignment(ctx, getChartAxisSuffix(ctx));
         return align === CHART_CONFIG.bar.datalabels.defaultAlign && bg === '#12436D' ? '#ffffff' : gdsStyles.text;
     }
 
@@ -186,7 +190,22 @@
         return lines;
     }
 
-    function buildChartOptions(type, gdsStyles, notAvailableText) {
+    function getScaledLabels(value) {
+        if (value === 80) {
+            return [`${value}`, `(lowest)`];
+        }
+        else if (value === 100) {
+            return [`${value}`, `(expected`, ` standard)`];
+        }
+        else if (value === 120) {
+            return [`${value}`, `(highest)`];
+        }
+        else {
+            return `${value}`;
+        }
+    }
+
+    function buildChartOptions(type, gdsStyles, notAvailableText, isScaled) {
         const common = {
             responsive: true,
             maintainAspectRatio: false,
@@ -201,12 +220,14 @@
         const legendOptions = { display: false };
 
         if (type === 'bar') {
+            const axisSuffix = isScaled ? '' : CHART_CONFIG.defaults.axisSuffix;
             return {
-                ...common,                
+                ...common,
                 indexAxis: 'y',
                 scales: {
                     x: {
-                        beginAtZero: true,
+                        beginAtZero: !isScaled,
+                        ...(isScaled ? { min: 80, max: 120 } : {}),
                         //max: 100,
                         grid: {
                             display: true,
@@ -222,8 +243,8 @@
                         ticks: {
                             color: gdsStyles.text,
                             font: fonts,
-                            stepSize: CHART_CONFIG.defaults.axisStepSize,
-                            callback: (value) => `${value}${CHART_CONFIG.defaults.axisSuffix}`
+                            stepSize: isScaled ? 10 : CHART_CONFIG.defaults.axisStepSize,
+                            callback: (value) => isScaled ? getScaledLabels(value) : `${value}${axisSuffix}`
                         }
                     },
                     y: {
@@ -252,7 +273,7 @@
                     datalabels: {
                         anchor: CHART_CONFIG.bar.datalabels.anchor,
                         align: function (ctx) {
-                            return getBarLabelAlignment(ctx, CHART_CONFIG.defaults.axisSuffix);
+                            return getBarLabelAlignment(ctx, axisSuffix);
                         },
                         offset: CHART_CONFIG.bar.datalabels.offset,
                         color: (ctx) => {
@@ -264,7 +285,7 @@
                         },
                         display: CHART_CONFIG.bar.datalabels.showDataLabels,
                         formatter: function (value) {
-                            return value === null ? notAvailableText : `${value}${CHART_CONFIG.defaults.axisSuffix}`;
+                            return value === null ? notAvailableText : `${value}${axisSuffix}`;
                         },
                         clamp: true,
                         clip: false
@@ -313,6 +334,7 @@
 
             const chartData = JSON.parse(canvas.dataset.chart);
             const type = canvas.dataset.type;
+            const isScaled = canvas.dataset.scaled === "true";
             const showLegend = canvas.dataset.showLegend === "true";
             const notAvailableText = canvas.dataset.notAvailableText || CHART_CONFIG.bar.noData.text;
 
@@ -326,7 +348,7 @@
                     labels: chartData.labels,
                     datasets: buildDatasets(type, chartData, colors)
                 },
-                options: buildChartOptions(type, gdsStyles, notAvailableText),
+                options: buildChartOptions(type, gdsStyles, notAvailableText, isScaled),
                 plugins: [ChartDataLabels]
             };
 

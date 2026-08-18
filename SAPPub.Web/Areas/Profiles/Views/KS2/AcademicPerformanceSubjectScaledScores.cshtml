@@ -1,7 +1,8 @@
 ﻿@model SAPPub.Web.Areas.Profiles.ViewModels.KS2.AcademicPerformanceSubjectScaledScoresViewModel
 @using SAPPub.Web.Constants
-@using static SAPPub.Web.Constants.PageTitleConstants
+@using SAPPub.Web.ViewComponents.ChartWithTableToggle
 @using SAPPub.Web.ViewComponents.VerticalNavigation
+@using static SAPPub.Web.Constants.PageTitleConstants
 
 @{
     ViewData["Header"] = "Academic performance";
@@ -79,101 +80,39 @@
                 The lowest scaled score a pupil can achieve is 80 and the highest is 120. A scaled score of 100 is the expected standard.
             </p>
 
-            <input type="radio" name="dataView" id="current-view" class="govuk-visually-hidden dataview-button" aria-labelledby="read-show-current-data-btn" checked />
-            <input type="radio" name="dataView" id="data-overtime-view" class="govuk-visually-hidden dataview-button" aria-labelledby="read-show-data-over-time-btn" />
-
-            <div id="read-current-year-data-container" class="read-current-year-data-container">
-                @if (Model.HasEstablishmentData.IsAvailable)
-                {
-                    <div id="read-current-year-chart-container" class="chart-container read-current-year-chart-container">
-                        <canvas id="read-chart"
-                                class="js-chart"
-                                data-type="bar"
-                                data-chart='@Html.Raw(Json.Serialize(Model.AllReadData))'
-                                data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
-                        </canvas>
-                    </div>
-
-                    <div id="read-current-year-table-container" class="read-current-year-table-container">
-                        <table id="read-current-year-table" class="govuk-table">
-                            <tbody class="govuk-table__body">
-                                @foreach (var label in Model.AllReadData.Labels.Select((value, i) => (value, i)))
-                                {
-                                    <tr class="govuk-table__row">
-                                        <th scope="row" class="govuk-table__header">@label.value</th>
-                                        <td class="govuk-table__cell">@Model.AllReadData.Data[label.i]</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="govuk-button-group">
-                        <govuk-button id="read-current-year-show-btn" type="button" class="govuk-button--secondary read-current-year-show-btn">Show as a table</govuk-button>
-                    </div>
-
-                    <div class="govuk-button-group">
-                        <label id="read-show-data-over-time-btn" for="data-overtime-view" class="govuk-button govuk-button--secondary" tabindex="0">Show data over time</label>
-                    </div>
-                }
-            </div>
-
-            <div id="read-data-over-time-data-container" class="read-data-over-time-data-container @(Model.HasEstablishmentData.IsAvailable ? "" : "govuk-!-display-block")">
-                @if (Model.HasEstablishmentData.IsAvailable)
-                {
-                    <div id="read-data-over-time-chart-container" class="chart-container read-data-over-time-chart-container">
-                        <div id="read-data-overtime-chart-legend" class="chart-legend" data-chart-id="read-data-overtime-chart"></div>
-                        <div class="chart-container stacked">
-                            <canvas id="read-data-overtime-chart"
-                                    class="js-chart"
-                                    data-type="bar"
-                                    data-show-legend="true"
-                                    data-chart='@Html.Raw(Json.Serialize(Model.AllReadOverTimeData))'
-                                    data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
-                            </canvas>
-                        </div>
-                    </div>
-                }
-
-                <div id="read-data-over-time-table-container" class="read-data-over-time-table-container">
-                    <table id="read-data-overtime-table" class="govuk-table">
-                        <thead class="govuk-table__head">
-                            <tr class="govuk-table__row">
-                                <th scope="col" class="govuk-table__header"></th>
-                                @foreach (var label in Model.AllReadOverTimeData.Labels)
-                                {
-                                    <th scope="col" class="govuk-table__header">@label</th>
-                                }
-                            </tr>
-                        </thead>
-                        <tbody class="govuk-table__body">
-                            @foreach (var dataset in Model.AllReadOverTimeData.Datasets.Select((value, i) => (value, i)))
-                            {
-                                <tr class="govuk-table__row">
-                                    <th scope="row" class="govuk-table__header">@dataset.value.Label</th>
-                                    @foreach (var data in dataset.value.Data)
-                                    {
-                                        <td class="govuk-table__cell">@(data.HasValue? data : Constants.NotAvailable)</td>
-                                    }
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-
-                @if (Model.HasEstablishmentData.IsAvailable)
-                {
-                    <div class="govuk-button-group">
-                        <govuk-button id="read-data-over-time-show-btn" type="button" class="govuk-button--secondary read-data-over-time-show-btn">Show as a table</govuk-button>
-                    </div>
-
-                    <div class="govuk-button-group">
-                        <label id="read-show-current-data-btn" for="current-view" class="govuk-button govuk-button--secondary" tabindex="0">Show current data</label>
-                    </div>
-                }
-            </div>
+            @await Component.InvokeAsync("ChartWithTableToggle", new ChartWithTableToggleModel
+            {
+                IdPrefix = "read",
+                ChartPrefix = "read",
+                CurrentData = Model.AllReadData,
+                OverTimeData = Model.AllReadOverTimeData,
+                HasEstablishmentData = Model.HasReadEstablishmentData.IsAvailable,
+                IsScaled = true,
+                IsPercentageData = false
+            })
         </div>
 
+        <div class="data-container">
+            <h3 id="chartHeading" class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">
+                Average scaled score in maths
+            </h3>
+
+
+            <p class="govuk-body">
+                The lowest scaled score a pupil can achieve is 80 and the highest is 120. A scaled score of 100 is the expected standard.
+            </p>
+
+            @await Component.InvokeAsync("ChartWithTableToggle", new ChartWithTableToggleModel
+            {
+                IdPrefix = "maths",
+                ChartPrefix = "maths",
+                CurrentData = Model.AllMathsData,
+                OverTimeData = Model.AllMathsOverTimeData,
+                HasEstablishmentData = Model.HasMathsEstablishmentData.IsAvailable,
+                IsScaled = true,
+                IsPercentageData = false
+            })
+        </div>
 
         <govuk-pagination id="bottom-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.PrimaryAcademicPerformancePupilProgress" asp-all-route-data="@Model.RouteAttributes">Primary academic performance: Pupil progress</govuk-pagination-previous>
@@ -190,6 +129,6 @@
 @section Scripts {
     <script src="~/js/chart.umd.js"></script>
     <script src="~/js/chartjs-plugin-datalabels.min.js"></script>
-    <script src="~/js/chart-factory-scaled.js"></script>
-    <script src="~/js/scaled-scores-results.js"></script>
+    <script src="~/js/chart-factory.js"></script>
+    <script src="~/js/chart-table-toggle.js"></script>
 }

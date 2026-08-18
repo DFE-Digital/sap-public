@@ -90,6 +90,36 @@ public class KS5EstablishmentPerformance
     // Tech level Average result grade for the school / college
     public CodedString TALLPPEGRD_TLEV_Est_Current { get; set; }
 
+    // Tech Cert Total number of students who completed at least one of this qualification type
+    public CodedDouble TALLPUP_TECHCERT_Est_Current_Num_Coded { get; set; }
+
+    // Tech Cert Progress score for the school / college
+    public CodedDouble VA_INS_TECHCERT_Est_Current_Num_Coded { get; set; }
+
+    // Tech Cert Progress banding for the school / college
+    public CodedString PROGRESS_BAND_TECHCERT_Est_Current { get; set; }
+
+    // Tech Cert Progress confidence interval for the school / college upper
+    public CodedDouble UCI_INS_TECHCERT_Est_Current_Num_Coded { get; set; }
+
+    // Tech Cert Progress confidence interval for the school / college lower
+    public CodedDouble LCI_INS_TECHCERT_Est_Current_Num_Coded { get; set; }
+
+    // Tech Cert Average result points for the school / college lower
+    public CodedDouble TALLPPE_TECHCERT_Est_Current_Num_Coded { get; set; }
+
+    // Tech Cert Average result grade for the school / college
+    public CodedString TALLPPEGRD_TECHCERT_Est_Current { get; set; }
+
+    // A level additional data Number of students
+    public CodedDouble TINCLUDE_B3_Est_Current_Num_Coded { get; set; }
+
+    // A level additional data establishment points
+    public CodedDouble TB3PTSE_Est_Current_Num_Coded { get; set; }
+
+    // A level additional data establishment grade
+    public CodedString TB3PTSE_GRD_Est_Current { get; set; }
+
     // Number of students for English progress
     public CodedDouble T_SCOPEEX_E_Est_Current_Num_Coded { get; set; }
 

@@ -1,5 +1,6 @@
 ﻿using Moq;
 using SAPPub.Core.Entities;
+using SAPPub.Core.Enums;
 using SAPPub.Core.Helpers;
 using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Services;
@@ -42,7 +43,7 @@ public class AboutSchoolServiceTests
         ReligiousCharacterName = "ReligiousCharacter",
         OfficialSixthFormId = "No",
         ResourcedProvisionName = "Resourced provision",
-        EstablishmentTypeGroupId = "4",
+        EstablishmentTypeGroup = EstablishmentTypeGroup.LocalAuthorityMaintainedSchools,
         SenTypes = "SLCN - Speech, language and Communication, ASD - Autistic Spectrum Disorder, SEMH - Social"
     };
 
@@ -134,7 +135,7 @@ public class AboutSchoolServiceTests
         Assert.Equal(fakeEstablishment.ReligiousCharacterName, result.ReligiousCharacter);
         Assert.Equal(fakeEstablishment.OfficialSixthFormId, result.OfficialSixthFormId);
         Assert.Equal(fakeEstablishment.ResourcedProvisionName, result.ResourcedProvisionName);
-        Assert.Equal(fakeEstablishment.EstablishmentTypeGroupId, result.EstablishmentTypeGroupId);
+        Assert.Equal(fakeEstablishment.EstablishmentTypeGroup, result.EstablishmentTypeGroup);
         Assert.Equal(fakeEstablishment.SenTypes, result.SenTypes);
     }
 

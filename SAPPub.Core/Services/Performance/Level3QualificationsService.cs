@@ -40,6 +40,7 @@ public class Level3QualificationsService(
             TotalNoOfStudentCompletedQualification = GetTotalNoOfStudentsCompletedQualification(level3Qualification, establishmentPerformance),
             ProgressScore = GetProgressScoreModel(level3Qualification, establishmentPerformance, englandPerformance),
             AverageResult = GetAverageResultModel(level3Qualification, establishmentPerformance, englandPerformance, laPerformance),
+            AdditionalData = GetAdditionalData(level3Qualification, establishmentPerformance, englandPerformance, laPerformance),
         };
     }
 
@@ -115,7 +116,7 @@ public class Level3QualificationsService(
     {
         return new AverageResultModel
         {
-            Establishment = new AverageResult
+            Establishment = new PerformanceResult
             {
                 Points = level3Qualification switch
                 {
@@ -134,7 +135,7 @@ public class Level3QualificationsService(
                     _ => CodedString.Empty,
                 },                
             },
-            LocalAuthority = new AverageResult
+            LocalAuthority = new PerformanceResult
             {
                 Points = level3Qualification switch
                 {
@@ -153,7 +154,7 @@ public class Level3QualificationsService(
                     _ => CodedString.Empty,
                 },                
             },
-            England = new AverageResult
+            England = new PerformanceResult
             {
                 Points = level3Qualification switch
                 {
@@ -171,6 +172,57 @@ public class Level3QualificationsService(
                     Level3.TechLevel => englandPerformance.TALLPPEGRD_TLEV_Eng_Current,
                     _ => CodedString.Empty,
                 },                
+            }
+        };
+    }
+
+    private static AdditionalDataModel GetAdditionalData(
+        Level3 level3Qualification,
+        KS5EstablishmentPerformance establishmentPerformance,
+        KS5EnglandPerformance englandPerformance,
+        KS5LAPerformance laPerformance)
+    {
+        return new AdditionalDataModel
+        {
+            TotalNoOfStudentsIncludedInThisMeasure = establishmentPerformance.TINCLUDE_B3_Est_Current_Num_Coded,
+            Establishment = new PerformanceResult
+            {
+                Points = level3Qualification switch
+                {
+                    Level3.ALevel => establishmentPerformance.TB3PTSE_Est_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                Grade = level3Qualification switch
+                {
+                    Level3.ALevel => establishmentPerformance.TB3PTSE_GRD_Est_Current,
+                    _ => CodedString.Empty,
+                },
+            },
+            LocalAuthority = new PerformanceResult
+            {
+                Points = level3Qualification switch
+                {
+                    Level3.ALevel => laPerformance.TB3PTSE_LA_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                Grade = level3Qualification switch
+                {
+                    Level3.ALevel => laPerformance.TB3PTSE_GRD_LA_Current,
+                    _ => CodedString.Empty,
+                },
+            },
+            England = new PerformanceResult
+            {
+                Points = level3Qualification switch
+                {
+                    Level3.ALevel => englandPerformance.TB3PTSE_Eng_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                Grade = level3Qualification switch
+                {
+                    Level3.ALevel => englandPerformance.TB3PTSE_GRD_Eng_Current,
+                    _ => CodedString.Empty,
+                },
             }
         };
     }
