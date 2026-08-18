@@ -56,6 +56,12 @@ public class AboutSchoolModel
 
     public string? SenTypes { get; set; }
 
+    public string? KS2WraparoundCare { get; set; }
+    
+    public bool FreeBreakfastClubProgramme { get; set; }
+
+    public bool HasNurseryProvision { get; set; }
+
     public bool IsKS2 { get; set; }
 
     public bool IsKS4 { get; set; }

@@ -49,4 +49,15 @@ public sealed class DisplayField<T>
             _ => formatter?.Invoke(value) ?? value?.ToString() ?? string.Empty
         };
     }
+
+    public string DisplayBool(string trueText = "Yes", string falseText = "Not available")
+    {
+        return Status switch
+        {
+            FieldStatus.Available when Value is bool boolValue => boolValue ? trueText : falseText,
+            FieldStatus.Available => falseText,
+            FieldStatus.NotAvailable => falseText,
+            _ => falseText
+        };
+    }
 }
