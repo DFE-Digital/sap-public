@@ -7,9 +7,9 @@ namespace SAPPub.Core.Entities.Performance;
 public class KS2EstablishmentPerformance
 {
     public string Id { get; set; } = string.Empty;
-    public CodedDouble MATPROG_DESCR_Est_Previous2_Num_Coded { get; set; }
-    public CodedDouble READPROG_DESCR_Est_Previous2_Num_Coded { get; set; }
-    public CodedDouble WRITPROG_DESCR_Est_Previous2_Num_Coded { get; set; }
+    public CodedString MATPROG_DESCR_Est_Previous2_Num_Coded { get; set; }
+    public CodedString READPROG_DESCR_Est_Previous2_Num_Coded { get; set; }
+    public CodedString WRITPROG_DESCR_Est_Previous2_Num_Coded { get; set; }
     public CodedDouble MAT_AVERAGE_Est_Current_Num_Coded { get; set; }
     public CodedDouble MAT_AVERAGE_Est_Previous2_Num_Coded { get; set; }
     public CodedDouble MAT_AVERAGE_Est_Previous_Num_Coded { get; set; }

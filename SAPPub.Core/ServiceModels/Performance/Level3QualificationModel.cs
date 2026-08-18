@@ -24,4 +24,6 @@ public class Level3QualificationModel
     public required ProgressScoreModel ProgressScore { get; init; }
 
     public required AverageResultModel AverageResult { get; init; }
+
+    public required AdditionalDataModel AdditionalData { get; init; }
 }
