@@ -361,7 +361,7 @@ public class Level3QualificationsPageTests : PageTestsBase
             // Assert no of students included in this measure
             var noOfStudentsInfo = doc.QuerySelector("#no-of-students-included-in-measure-info");
             Assert.NotNull(noOfStudentsInfo);
-            Assert.Equal($"Number of students included in these measures: {_level3QualificationModel.AdditionalData.TotalNoOfStudentsIncludedInThisMeasure}", noOfStudentsInfo.TextContent.Trim());
+            Assert.Equal($"Number of students included in these measures: {_level3QualificationModel.AdditionalData!.TotalNoOfStudentsIncludedInThisMeasure}", noOfStudentsInfo.TextContent.Trim());
 
             Assert.Contains("School or college", doc.GetTableHeaderContentByIdAndIndex(tableId, 1, 0));
             Assert.Contains(_level3QualificationModel.AdditionalData.Establishment.Grade.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 1, 0));
@@ -380,5 +380,50 @@ public class Level3QualificationsPageTests : PageTestsBase
             Assert.Null(additionalDetails);
             Assert.Null(additionalDetailsTable);
         }        
+    }
+
+    [Theory]
+    [InlineData(Level3.ALevel)]
+    [InlineData(Level3.Academic)]
+    [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
+    public async Task Level3QualificationsPage_Displays_AdvancedLevelMathsQualificationData(Level3 qualification)
+    {
+        // Arrange
+        SetupMocks(qualification);
+        var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
+        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var advanceLevelMathsQualDetails = doc.QuerySelector("#advanced-level-maths-qualifications-details");
+        var tableId = "advanced-level-maths-qualifications-table";
+        var advancedLevelMathsQualTable = doc.QuerySelector($"#{tableId}");
+
+        if (qualification == Level3.Academic)
+        {
+            // Assert advance level maths qualification details section
+            Assert.NotNull(advanceLevelMathsQualDetails);
+
+            // Assert advance level maths qualification details table
+            Assert.NotNull(advancedLevelMathsQualTable);
+
+
+            Assert.Contains("School or college", doc.GetTableHeaderContentByIdAndIndex(tableId, 0, 0));
+            Assert.Contains(_level3QualificationModel.AdvancedLevelMathsQualificationData!.SchoolOrCollege.ToString() + "%", doc.GetTableCellContentByIdAndIndex(tableId, 0, 0));
+
+            Assert.Contains($"{_level3QualificationModel.LAName} average", doc.GetTableHeaderContentByIdAndIndex(tableId, 1, 0));
+            Assert.Contains(_level3QualificationModel.AdvancedLevelMathsQualificationData!.LocalAuthority.ToString() + "%", doc.GetTableCellContentByIdAndIndex(tableId, 1, 0));
+
+            Assert.Contains("England average", doc.GetTableHeaderContentByIdAndIndex(tableId, 2, 0));
+            Assert.Contains(_level3QualificationModel.AdvancedLevelMathsQualificationData.England.ToString() + "%", doc.GetTableCellContentByIdAndIndex(tableId, 2, 0));
+        }
+        else
+        {
+            Assert.Null(advanceLevelMathsQualDetails);
+            Assert.Null(advancedLevelMathsQualTable);
+        }
     }
 }
