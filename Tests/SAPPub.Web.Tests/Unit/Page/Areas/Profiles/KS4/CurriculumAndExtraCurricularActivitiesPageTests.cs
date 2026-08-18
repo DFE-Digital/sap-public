@@ -1,19 +1,17 @@
+using AngleSharp.Dom;
 using Microsoft.FeatureManagement;
 using Moq;
-using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services;
-using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.ServiceModels;
-using SAPPub.Core.ServiceModels.KS4.Admissions;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
 
 namespace SAPPub.Web.Tests.Unit.Page.Areas.Profiles.KS4;
 
 [Collection("WebAppCollection")]
-public class AdmissionsPageTests : PageTestsBase
+public class CurriculumAndExtraCurricularActivitiesPageTests : PageTestsBase
 {
-    private string _pageRoute = "/admissions/secondary";
+    private string _pageRoute = "/curriculum/secondary";
     private string _urn = "143034";
     private string _schoolName = "St Paul's Church of England Academy";
     private string _schoolNameMultiPhase = "Abraham Moss Community School";
@@ -21,37 +19,24 @@ public class AdmissionsPageTests : PageTestsBase
     private readonly EstablishmentServiceModel _establishment = new();
     private readonly Mock<IEstablishmentService> _mockEstablishmentService;
 
-    private readonly AdmissionsServiceModel _admissionsServiceModel;
-    private readonly Mock<IAdmissionsService> _mockAdmissionsService;
-
-    
-    public AdmissionsPageTests(WebAppFixture fixture) : base(fixture)
+    public CurriculumAndExtraCurricularActivitiesPageTests(WebAppFixture fixture) : base(fixture)
     {
         _mockEstablishmentService = UseMock<IEstablishmentService>();
-        _mockAdmissionsService = UseMock<IAdmissionsService>();
 
         _establishment = new EstablishmentTestBuilder()
             .WithURN(_urn)
             .WithEstablishmentName(_schoolName)
             .WithIsKeyStage2(false)
             .WithIsKeyStage4(true)
-            .WithWebsite("https://www.stpaulsacademy.co.uk")
-            .WithEstablishmentTypeGroupId((int)EstablishmentTypeGroup.Academies)
             .BuildServiceModel();
 
         _mockEstablishmentService
             .Setup(a => a.GetEstablishmentAsync(_urn, It.IsAny<CancellationToken>()))
             .ReturnsAsync(_establishment);
-
-        _admissionsServiceModel = GetAdmissionsServiceModel(_schoolName, isKs2: false, isKs4: true, _establishment.Website);
-
-        _mockAdmissionsService
-            .Setup(s => s.GetAdmissionsDetailsAsync(_urn, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(_admissionsServiceModel);
     }
 
     [Fact]
-    public async Task AdmissionsPage_HasCorrectTitle()
+    public async Task CurriculumAndExtraCurricularActivitiesPage_HasCorrectTitle()
     {
         // Arrange
         var url = BuildUrl(_urn, _schoolName, _pageRoute);
@@ -62,11 +47,11 @@ public class AdmissionsPageTests : PageTestsBase
         // Assert
         var title = doc.QuerySelector("title");
         Assert.NotNull(title);
-        Assert.Contains("Secondary Admissions", title.TextContent.Trim());
+        Assert.Contains("Secondary Curriculum", title.TextContent.Trim());
     }
 
     [Fact]
-    public async Task AdmissionsPage_DisplaysMainHeading()
+    public async Task CurriculumAndExtraCurricularActivitiesPage_DisplaysMainHeading()
     {
         // Arrange
         var url = BuildUrl(_urn, _schoolName, _pageRoute);
@@ -81,29 +66,35 @@ public class AdmissionsPageTests : PageTestsBase
     }
 
     [Theory]
-    [InlineData("143034", "St Paul's Church of England Academy", 6)]
-    [InlineData("150009", "Abraham Moss Community School", 7)]
-    public async Task AdmissionsPage_Displays_VerticalNavigation(string urn, string schoolName, int expectedItemCount)
+    [InlineData(true, true, 7)] // Multi-phase school (KS2 and KS4)
+    [InlineData(true, false, 6)] // ks4 only school
+    public async Task CurriculumAndExtraCurricularActivitiesPage_Displays_VerticalNavigation(bool isKs4, bool isKs2, int expectedItemCount)
     {
-        // Arrange
-        if (urn == _urnMultiPhase)
-        {
-            ConfigureMultiPhaseSchool();
-        }
+        var establishment = new EstablishmentTestBuilder()
+        .WithURN(_urnMultiPhase)
+        .WithEstablishmentName(_schoolNameMultiPhase)
+        .WithIsKeyStage2(isKs2)
+        .WithIsKeyStage4(isKs4)
+        .BuildServiceModel();
 
-        var url = BuildUrl(urn, schoolName, _pageRoute);
+        _mockEstablishmentService
+            .Setup(a => a.GetEstablishmentAsync(_urnMultiPhase, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(establishment);
+
+        var url = BuildUrl(_urnMultiPhase, _schoolNameMultiPhase, _pageRoute);
 
         // Act
         var doc = await Fixture.BrowseToPage(url);
 
         // Assert
         Assert.NotNull(doc.QuerySelector(".moj-side-navigation"));
+        var list = doc.QuerySelectorAll(".moj-side-navigation__item");
         Assert.Equal(expectedItemCount, doc.QuerySelectorAll(".moj-side-navigation__item").Length);
         Assert.Single(doc.QuerySelectorAll(".moj-side-navigation__item--active"));
     }
 
     [Fact]
-    public async Task AdmissionsPage_Displays_SchoolName_Caption()
+    public async Task CurriculumAndExtraCurricularActivitiesPage_Displays_SchoolName_Caption()
     {
         // Arrange
         var url = BuildUrl(_urn, _schoolName, _pageRoute);
@@ -118,7 +109,7 @@ public class AdmissionsPageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task AdmissionsPage_DoesNotDisplay_SubNavigation_WhenOnlyKS4()
+    public async Task CurriculumPage_DoesNotDisplay_SubNavigation_WhenOnlyKS4()
     {
         // Arrange
         var url = BuildUrl(_urn, _schoolName, _pageRoute);
@@ -127,71 +118,14 @@ public class AdmissionsPageTests : PageTestsBase
         var doc = await Fixture.BrowseToPage(url);
 
         // Assert
-        var subNav = doc.QuerySelector("#sub-navigation-admissions");
+        var subNav = doc.QuerySelector("#sub-navigation-academic-performance");
         Assert.Null(subNav);
     }
 
     [Fact]
-    public async Task AdmissionsPage_Displays_SubNavigation_WhenMultiplePhases()
+    public async Task CurriculumPage_Displays_SubNavigation_WhenMultiplePhases()
     {
         // Arrange
-        ConfigureMultiPhaseSchool();
-        var url = BuildUrl(_urnMultiPhase, _schoolNameMultiPhase, _pageRoute);
-
-        // Act
-        var doc = await Fixture.BrowseToPage(url);
-
-        // Assert
-        var subNav = doc.QuerySelector("#sub-navigation-admissions");
-        Assert.NotNull(subNav);
-    }
-
-    [Fact]
-    public async Task AdmissionsPage_SubNavigation_HasCorrectLinks_WhenMultiplePhases()
-    {
-        // Arrange
-        ConfigureMultiPhaseSchool();
-        var url = BuildUrl(_urnMultiPhase, _schoolNameMultiPhase, _pageRoute);
-
-        // Act
-        var doc = await Fixture.BrowseToPage(url);
-
-        // Assert
-        var subNav = doc.QuerySelector("#sub-navigation-admissions");
-        Assert.NotNull(subNav);
-
-        var secondaryLink = subNav.QuerySelector("a[aria-current='page']");
-        var primaryLink = subNav.QuerySelector("a:not([aria-current='page'])");
-
-        Assert.NotNull(primaryLink);
-        Assert.NotNull(secondaryLink);
-        Assert.Contains("Primary Admissions", primaryLink.TextContent.Trim());
-        Assert.Contains("Secondary Admissions", secondaryLink.TextContent.Trim());
-    }
-
-    [Fact]
-    public async Task AdmissionsPage_DoesNotDisplay_SubNavigation_WhenFeatureFlagDisabled()
-    {
-        // Arrange
-        var featureManagerMock = UseMock<IFeatureManager>();
-        featureManagerMock
-            .Setup(f => f.IsEnabledAsync(Constants.Constants.EnablePrimary))
-            .ReturnsAsync(false);
-
-        ConfigureMultiPhaseSchool();
-        var url = BuildUrl(_urnMultiPhase, _schoolNameMultiPhase, _pageRoute);
-
-        // Act
-        var doc = await Fixture.BrowseToPage(url);
-
-        // Assert
-        var subNav = doc.QuerySelector("#sub-navigation-admissions");
-        Assert.Null(subNav);
-    }
-
-
-    private void ConfigureMultiPhaseSchool()
-    {
         var multiPhaseEstablishment = new EstablishmentTestBuilder()
             .WithURN(_urnMultiPhase)
             .WithEstablishmentName(_schoolNameMultiPhase)
@@ -203,29 +137,77 @@ public class AdmissionsPageTests : PageTestsBase
             .Setup(a => a.GetEstablishmentAsync(_urnMultiPhase, It.IsAny<CancellationToken>()))
             .ReturnsAsync(multiPhaseEstablishment);
 
-        _mockAdmissionsService
-            .Setup(s => s.GetAdmissionsDetailsAsync(_urnMultiPhase, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(GetAdmissionsServiceModel(_schoolNameMultiPhase, isKs2: true, isKs4: true, multiPhaseEstablishment.Website));
+        var url = BuildUrl(_urnMultiPhase, _schoolNameMultiPhase, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var subNav = doc.QuerySelector("#sub-navigation-academic-performance");
+        Assert.NotNull(subNav);
     }
 
-    private AdmissionsServiceModel GetAdmissionsServiceModel(
-        string schoolName,
-        bool isKs2,
-        bool isKs4,
-        string? schoolWebsite,
-        bool isIndependentSchool = false)
+    [Fact]
+    public async Task AdmissionsPage_DoesNotDisplay_SubNavigation_WhenFeatureFlagDisabled()
     {
-        return new AdmissionsServiceModel
-        {
-            SchoolName = schoolName,
-            IsKS2 = isKs2,
-            IsKS4 = isKs4,
-            IsKS5 = false,
-            LAName = "Test LA",
-            EstablishmentStatus = EstablishmentStatus.Open,
-            IsIndependentSchool = isIndependentSchool,
-            SchoolWebsite = schoolWebsite,
-            LASchoolAdmissionsUrl = "https://www.testla.gov.uk/admissions"
-        };
+        // Arrange
+        var featureManagerMock = UseMock<IFeatureManager>();
+        featureManagerMock
+            .Setup(f => f.IsEnabledAsync(Constants.Constants.EnablePrimary))
+            .ReturnsAsync(false);
+
+        var multiPhaseEstablishment = new EstablishmentTestBuilder()
+                .WithURN(_urnMultiPhase)
+                .WithEstablishmentName(_schoolNameMultiPhase)
+                .WithIsKeyStage2(true)
+                .WithIsKeyStage4(true)
+                .BuildServiceModel();
+
+        _mockEstablishmentService
+            .Setup(a => a.GetEstablishmentAsync(_urnMultiPhase, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(multiPhaseEstablishment);
+
+        var url = BuildUrl(_urnMultiPhase, _schoolNameMultiPhase, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var subNav = doc.QuerySelector("#sub-navigation-academic-performance");
+        Assert.Null(subNav);
     }
+
+
+    [Fact]
+    public async Task CurriculumPage_SubNavigation_HasCorrectLinks_WhenMultiplePhases()
+    {
+        // Arrange
+        var multiPhaseEstablishment = new EstablishmentTestBuilder()
+            .WithURN(_urnMultiPhase)
+            .WithEstablishmentName(_schoolNameMultiPhase)
+            .WithIsKeyStage2(true)
+            .WithIsKeyStage4(true)
+            .BuildServiceModel();
+
+        _mockEstablishmentService
+            .Setup(a => a.GetEstablishmentAsync(_urnMultiPhase, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(multiPhaseEstablishment);
+
+        var url = BuildUrl(_urnMultiPhase, _schoolNameMultiPhase, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var subNav = doc.QuerySelector("#sub-navigation-academic-performance");
+        Assert.NotNull(subNav);
+
+        var secondaryLink = subNav.QuerySelector("a[aria-current='page']");
+        var primaryLink = subNav.QuerySelector("a:not([aria-current='page'])");
+
+        Assert.NotNull(primaryLink);
+        Assert.NotNull(secondaryLink);
+        Assert.Contains("Primary Curriculum", primaryLink.TextContent.Trim());
+        Assert.Contains("Secondary Curriculum", secondaryLink.TextContent.Trim());
+    }    
 }
