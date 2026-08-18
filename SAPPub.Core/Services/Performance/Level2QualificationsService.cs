@@ -97,7 +97,7 @@ public class Level2QualificationsService(
     {
         return new AverageResultModel
         {
-            Establishment = new AverageResult
+            Establishment = new PerformanceResult
             {
                 Points = level2Qualification switch
                 {
@@ -110,7 +110,7 @@ public class Level2QualificationsService(
                     _ => CodedString.Empty,
                 },
             },
-            LocalAuthority = new AverageResult
+            LocalAuthority = new PerformanceResult
             {
                 Points = level2Qualification switch
                 {
@@ -123,7 +123,7 @@ public class Level2QualificationsService(
                     _ => CodedString.Empty,
                 },
             },
-            England = new AverageResult
+            England = new PerformanceResult
             {
                 Points = level2Qualification switch
                 {

@@ -111,6 +111,15 @@ public class KS5EstablishmentPerformance
     // Tech Cert Average result grade for the school / college
     public CodedString TALLPPEGRD_TECHCERT_Est_Current { get; set; }
 
+    // A level additional data Number of students
+    public CodedDouble TINCLUDE_B3_Est_Current_Num_Coded { get; set; }
+
+    // A level additional data establishment points
+    public CodedDouble TB3PTSE_Est_Current_Num_Coded { get; set; }
+
+    // A level additional data establishment grade
+    public CodedString TB3PTSE_GRD_Est_Current { get; set; }
+
     // Number of students for English progress
     public CodedDouble T_SCOPEEX_E_Est_Current_Num_Coded { get; set; }
 

@@ -56,4 +56,25 @@ public static class DisplayFieldExtensions
     {
         return prop.DisplayText(d => d.Value!.Value.AsPercentage(), notAvailableText, displayReason);        
     }
+
+    public static DisplayField<CodedDouble> Round(
+        this DisplayField<CodedDouble> prop,
+        int decimalPlaces = 1)
+    {
+        if (!prop.IsAvailable)
+        {
+            return prop;
+        }
+
+        var originalValue = prop.Value!;
+
+        if (originalValue.Value is double value)
+        {
+            var roundedValue = Math.Round(value, decimalPlaces);
+            var rounded = new CodedDouble(roundedValue, originalValue.Reason, originalValue.Raw);
+            return DisplayField<CodedDouble>.Available(rounded);
+        }
+
+        return prop;
+    }
 }

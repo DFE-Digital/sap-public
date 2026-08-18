@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
+using Moq;
 using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.ServiceModels;
@@ -249,7 +250,7 @@ public class Level3QualificationsPageTests : PageTestsBase
 
         // Assert no of students completed qualification
 
-        var noOfStudentsInfo = doc.QuerySelector("#no-of-students-completed-qulification-info");
+        var noOfStudentsInfo = doc.QuerySelector("#no-of-students-completed-qualification-info");
         Assert.NotNull(noOfStudentsInfo);
         Assert.Equal($"Number of students from this school or college included in the measure: {_level3QualificationModel.TotalNoOfStudentCompletedQualification}", noOfStudentsInfo.TextContent.Trim());
 
@@ -296,7 +297,7 @@ public class Level3QualificationsPageTests : PageTestsBase
         Assert.Contains("Average result", heading.TextContent.Trim());
 
         // Assert no of students completed qualification
-        var noOfStudentsInfo = doc.QuerySelector("#no-of-students-completed-qulification-info");
+        var noOfStudentsInfo = doc.QuerySelector("#no-of-students-completed-qualification-info");
         Assert.NotNull(noOfStudentsInfo);
         Assert.Equal($"Number of students from this school or college included in the measure: {_level3QualificationModel.TotalNoOfStudentCompletedQualification}", noOfStudentsInfo.TextContent.Trim());
 
@@ -316,7 +317,7 @@ public class Level3QualificationsPageTests : PageTestsBase
             Assert.Equal("https://www.gov.uk/government/publications/introduction-of-t-levels/introduction-of-t-levels", introTlevelsLink.GetAttribute("href"));
         }
 
-        Assert.Contains("School or College", doc.GetTableHeaderContentByIdAndIndex("average-result-current-year-table", 1, 0));
+        Assert.Contains("School or college", doc.GetTableHeaderContentByIdAndIndex("average-result-current-year-table", 1, 0));
         Assert.Contains(_level3QualificationModel.AverageResult.Establishment.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 1, 0));
         Assert.Contains(_level3QualificationModel.AverageResult.Establishment.Points.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 1, 1));
 
@@ -327,5 +328,57 @@ public class Level3QualificationsPageTests : PageTestsBase
         Assert.Contains("England average", doc.GetTableHeaderContentByIdAndIndex("average-result-current-year-table", 3, 0));
         Assert.Contains(_level3QualificationModel.AverageResult.England.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 3, 0));
         Assert.Contains(_level3QualificationModel.AverageResult.England.Points.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 3, 1));
+    }
+
+    [Theory]
+    [InlineData(Level3.ALevel)]
+    [InlineData(Level3.Academic)]
+    [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
+    public async Task Level3QualificationsPage_Displays_AdditionalData(Level3 qualification)
+    {
+        // Arrange
+        SetupMocks(qualification);
+        var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
+        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var additionalDetails = doc.QuerySelector("#additional-data-details");
+        var tableId = "additional-data-current-year-table";
+        var additionalDetailsTable = doc.QuerySelector($"#{tableId}");
+
+        if (qualification == Level3.ALevel)
+        {
+            // Assert additional details section
+            Assert.NotNull(additionalDetails);
+
+            // Assert additional details table
+            Assert.NotNull(additionalDetailsTable);
+
+            // Assert no of students included in this measure
+            var noOfStudentsInfo = doc.QuerySelector("#no-of-students-included-in-measure-info");
+            Assert.NotNull(noOfStudentsInfo);
+            Assert.Equal($"Number of students included in these measures: {_level3QualificationModel.AdditionalData.TotalNoOfStudentsIncludedInThisMeasure}", noOfStudentsInfo.TextContent.Trim());
+
+            Assert.Contains("School or college", doc.GetTableHeaderContentByIdAndIndex(tableId, 1, 0));
+            Assert.Contains(_level3QualificationModel.AdditionalData.Establishment.Grade.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 1, 0));
+            Assert.Contains(_level3QualificationModel.AdditionalData.Establishment.Points.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 1, 1));
+
+            Assert.Contains($"{_level3QualificationModel.LAName} average", doc.GetTableHeaderContentByIdAndIndex(tableId, 2, 0));
+            Assert.Contains(_level3QualificationModel.AdditionalData.LocalAuthority.Grade.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 2, 0));
+            Assert.Contains(_level3QualificationModel.AdditionalData.LocalAuthority.Points.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 2, 1));
+
+            Assert.Contains("England average", doc.GetTableHeaderContentByIdAndIndex(tableId, 3, 0));
+            Assert.Contains(_level3QualificationModel.AdditionalData.England.Grade.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 3, 0));
+            Assert.Contains(_level3QualificationModel.AdditionalData.England.Points.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 3, 1));
+        }
+        else
+        {
+            Assert.Null(additionalDetails);
+            Assert.Null(additionalDetailsTable);
+        }        
     }
 }
