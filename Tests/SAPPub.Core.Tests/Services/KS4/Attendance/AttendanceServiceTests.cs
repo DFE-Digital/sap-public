@@ -16,11 +16,10 @@ public class AttendanceServiceTests
     private readonly Mock<IEnglandAbsenceService> _mockEnglandAbsenceService;
     private readonly AttendanceService _service;
 
-    private readonly EstablishmentServiceModel fakeEstablishment = new()
+    private readonly EstablishmentMinimumServiceModel fakeEstablishment = new()
     {
         URN = "123456",
         EstablishmentName = "Test Establishment",
-        PhaseOfEducationName = "Secondary School",
         LAName = "Council",
         LAId = "E09000001"
     };
@@ -60,8 +59,8 @@ public class AttendanceServiceTests
         // Arrange
         var urn = "99999";
         _mockEstablishmentService
-            .Setup(r => r.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new EstablishmentServiceModel()); // not found
+            .Setup(r => r.GetEstablishmentMinimumAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EstablishmentMinimumServiceModel()); // not found
 
         // Act
         var result = await _service.GetAttendenceDetailsAsync(urn, CancellationToken.None);
@@ -102,7 +101,7 @@ public class AttendanceServiceTests
         };
 
         _mockEstablishmentService
-            .Setup(r => r.GetEstablishmentAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetEstablishmentMinimumAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(fakeEstablishment);
 
         _mockEstablishmentAbsenceService
@@ -162,7 +161,7 @@ public class AttendanceServiceTests
         };
 
         _mockEstablishmentService
-            .Setup(r => r.GetEstablishmentAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetEstablishmentMinimumAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(fakeEstablishment);
 
         _mockEstablishmentAbsenceService

@@ -43,7 +43,7 @@ public class CurriculumController(ILogger<CurriculumController> logger, IFeature
         [FromServices] IEstablishmentService establishmentService,
         string urn, string schoolName, CancellationToken ct)
     {
-        var establishmentDetails = await establishmentService.GetEstablishmentAsync(urn, ct);
+        var establishmentDetails = await establishmentService.GetEstablishmentMinimumAsync(urn, ct);
         var model = ViewModels.KS2.CurriculumAndExtraCurricularActivitiesViewModel.Map(establishmentDetails);
         return View(model);
     }
@@ -54,7 +54,7 @@ public class CurriculumController(ILogger<CurriculumController> logger, IFeature
         [FromServices] IEstablishmentService establishmentService,
         string urn, string schoolName, CancellationToken ct)
     {
-        var establishmentDetails = await establishmentService.GetEstablishmentAsync(urn, ct);
+        var establishmentDetails = await establishmentService.GetEstablishmentMinimumAsync(urn, ct);
         var model = ViewModels.KS4.CurriculumAndExtraCurricularActivitiesViewModel.Map(establishmentDetails);
         return View(model);
     }

@@ -74,6 +74,12 @@ public class EstablishmentMinimumTestBuilder
         return this;
     }
 
+    public EstablishmentMinimumTestBuilder WithWebsite(string website)
+    {
+        _establishment.Website = website;
+        return this;
+    }
+
     public Establishment Build()
     {
         // fill basic values automatically if not set

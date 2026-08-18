@@ -23,4 +23,6 @@ public class EstablishmentMinimumServiceModel
     public bool IsKS4 { get; set; }
 
     public bool IsKS5 { get; set; }
+
+    public string Website { get; set; } = string.Empty;
 }

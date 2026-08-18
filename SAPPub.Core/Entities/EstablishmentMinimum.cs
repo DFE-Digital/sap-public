@@ -2,6 +2,7 @@
 using SAPPub.Core.Enums;
 using SAPPub.Core.ServiceModels;
 using System.Diagnostics.CodeAnalysis;
+using System.Net.WebSockets;
 using System.Runtime.Serialization;
 
 namespace SAPPub.Core.Entities;
@@ -26,6 +27,9 @@ public class EstablishmentMinimum
     [DbColumnName("ISKS5")]
     public bool IsKS5 { get; set; }
 
+    public string Website { get; set; } = string.Empty;
+
+
     public static EstablishmentMinimumServiceModel MapToServiceModel(Establishment e)
     {
         return new()
@@ -37,6 +41,7 @@ public class EstablishmentMinimum
             IsKS2 = e.IsKS2,
             IsKS4 = e.IsKS4,
             IsKS5 = e.IsKS5,
+            Website = e.Website,
         };
     }
 }
