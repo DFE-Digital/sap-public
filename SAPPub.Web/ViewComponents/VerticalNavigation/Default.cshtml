@@ -40,8 +40,8 @@
 
                 @if (await FeatureManager.IsEnabledAsync(EnablePrimary) && Model.IsKS2)
                 {
-                    <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.PrimaryCurriculum ? "moj-side-navigation__item--active" : "")">
-                        <a asp-route="@RouteConstants.PrimaryCurriculum" asp-all-route-data="routeAttributes">Curriculum and extra-curricular activities</a>
+                    <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.PrimaryCurriculumAndExtraCurricularActivities ? "moj-side-navigation__item--active" : "")">
+                        <a asp-route="@RouteConstants.PrimaryCurriculumAndExtraCurricularActivities" asp-all-route-data="routeAttributes">Curriculum and extra-curricular activities</a>
                     </li>
                 }
                 else if (Model.IsKS4)

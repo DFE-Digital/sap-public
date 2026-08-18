@@ -1,6 +1,7 @@
 ﻿@model SAPPub.Web.Models.SecondarySchool.AcademicPerformanceEnglishAndMathsResultsViewModel;
 @using SAPPub.Core.Enums
 @using SAPPub.Web.Constants
+@using SAPPub.Web.ViewComponents.SchoolProfilePagination
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 @using static SAPPub.Web.Constants.PageTitleConstants
 
@@ -254,10 +255,8 @@
             </div>
         </div>
 
-        <govuk-pagination id="academic-performance-english-and-maths-results-pagination">
-            <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress" asp-all-route-data="@Model.RouteAttributes">Secondary academic performance: Progress and attainment</govuk-pagination-previous>
-            <govuk-pagination-next asp-route="@RouteConstants.SecondaryAcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">Secondary academic performance: Subjects entered</govuk-pagination-next>
-        </govuk-pagination>
+        @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults))
+
     </div>
 </div>
 

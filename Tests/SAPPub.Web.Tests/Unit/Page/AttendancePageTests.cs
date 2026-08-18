@@ -202,19 +202,21 @@ public class AttendancePageTests : PageTestsBase
         var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
 
         // Act
-        var attendancePagination = doc.GetElementById("attendance-pagination");
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
 
         // Act
-        var previousPaginationLink = doc.QuerySelector("#attendance-pagination .govuk-pagination__prev a");
-        var nextPaginationLink = doc.QuerySelector("#attendance-pagination .govuk-pagination__next a");
+        var previousPaginationLink = pagination.QuerySelector(".govuk-pagination__prev a");
+        var nextPaginationLink = pagination.QuerySelector(".govuk-pagination__next a");
 
         var previousPaginationText = previousPaginationLink?.TextContent;
         var nextPaginationText = nextPaginationLink?.TextContent;
 
         // Assert
-        Assert.NotNull(attendancePagination);
-        Assert.Equal("Curriculum and extra-curricular activities", previousPaginationText?.Trim());
-        Assert.Equal("Secondary academic performance: Progress and attainment", nextPaginationText?.Trim());
+        Assert.NotNull(previousPaginationText);
+        Assert.Contains("Secondary: Curriculum", previousPaginationText?.Trim());        
+        Assert.NotNull(nextPaginationText);
+        Assert.Contains("Primary academic performance: Pupil progress", nextPaginationText?.Trim());
     }
 
     [Fact]

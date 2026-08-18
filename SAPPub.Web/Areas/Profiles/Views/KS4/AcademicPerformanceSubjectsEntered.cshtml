@@ -1,5 +1,6 @@
 ﻿@model SAPPub.Web.Areas.Profiles.ViewModels.KS4.AcademicPerformanceSubjectsEnteredViewModel;
 @using SAPPub.Web.Constants
+@using SAPPub.Web.ViewComponents.SchoolProfilePagination
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 @using static SAPPub.Web.Constants.PageTitleConstants
 
@@ -66,9 +67,7 @@
         <partial name="_SubjectsEntered" model="Model.VocationalSubjects" view-data='new ViewDataDictionary(ViewData) { ["Caption"] = "Technical Award subjects entered" }' />
         <partial name="_SubjectsEntered" model="Model.OtherSubjects" view-data='new ViewDataDictionary(ViewData) { ["Caption"] = "Other subjects entered" }' />
 
-        <govuk-pagination id="academic-performance-subjects-entered-pagination">
-            <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults" asp-all-route-data="@Model.RouteAttributes">Secondary academic performance: English and maths results</govuk-pagination-previous>
-            <govuk-pagination-next asp-route="@RouteConstants.SecondaryAcademicPerformanceAdditionalMeasures" asp-all-route-data="@Model.RouteAttributes">Secondary academic performance: Additional measures</govuk-pagination-next>
-        </govuk-pagination>
+        @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.SecondaryAcademicPerformanceSubjectsEntered))
+
     </div>
 </div>

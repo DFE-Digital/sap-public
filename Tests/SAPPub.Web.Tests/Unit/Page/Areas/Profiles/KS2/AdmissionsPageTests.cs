@@ -269,6 +269,48 @@ public class AdmissionsPageTests : PageTestsBase
         Assert.Null(contactSchoolInfo);
     }
 
+    [Fact]
+    public async Task AdmissionsPage_DisplaysBottomPagination_WithPhaseSpecificLabels()
+    {
+        // Arrange
+        var url = BuildUrl(_urn, _schoolName, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
+
+        var previousLink = pagination.QuerySelector(".govuk-pagination__prev .govuk-pagination__link-label");
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next .govuk-pagination__link-label");
+
+        Assert.NotNull(previousLink);
+        Assert.Equal("About the school", previousLink.TextContent.Trim());
+
+        Assert.NotNull(nextLink);
+        Assert.Equal("Primary: Curriculum", nextLink.TextContent.Trim());
+    }
+
+    [Fact]
+    public async Task AdmissionsPage_DisplaysBottomPagination_WithPhaseSpecificLabels_WhenMultiplePhases()
+    {
+        // Arrange
+        ConfigureMultiPhaseSchool();
+        var url = BuildUrl(_urnMultiPhase, _schoolNameMultiPhase, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
+
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next .govuk-pagination__link-label");
+        Assert.NotNull(nextLink);
+        Assert.Equal("Secondary: Admissions", nextLink.TextContent.Trim());
+    }
+
     private void ConfigureMultiPhaseSchool()
     {
         var multiPhaseEstablishment = new EstablishmentTestBuilder()

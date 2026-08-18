@@ -3,7 +3,7 @@ using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 using static SAPPub.Web.Constants.PageTitleConstants;
 
-namespace SAPPub.Web.Tests.UI.Areas.KS2;
+namespace SAPPub.Web.Tests.UI.Areas.Profiles.KS2;
 
 [Collection("Playwright Tests")]
 public class PrimarySchoolNavigationTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)

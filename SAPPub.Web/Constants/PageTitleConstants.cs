@@ -6,6 +6,7 @@ public class PageTitleConstants
     {
         public const string AboutYourSchools = "About your schools";
         public const string Attendance = "Attendance";
+
     }
 
     public static class PrimarySchoolPageTitles
