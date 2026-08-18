@@ -48,8 +48,12 @@ public class AboutControllerTests : BaseProfilesTests
             ClosedDate = fakeEstablishment.ClosedDate.ToDateOnly(),
             OpenReasonId = fakeEstablishment.OpenReasonId,
             OpenDate = fakeEstablishment.OpenDate.ToDateOnly(),
+            KS2WraparoundCare = "Wraparound care",
+            FreeBreakfastClubProgramme = true,
+            HasNurseryProvision = true,
             IsKS2 = true,
-            IsKS4 = true
+            IsKS4 = true,
+            IsKS5 = false
         };
     }
 
@@ -99,7 +103,11 @@ public class AboutControllerTests : BaseProfilesTests
         Assert.Equal(expectedResult.OpenReasonId, model.OpenReasonId);
         Assert.Equal(expectedResult.SenTypes, model.SenTypes.Value);
         Assert.Equal("Primary and Secondary", model.EducationPhase);
+        Assert.Equal(expectedResult.KS2WraparoundCare, model.KS2WraparoundCare.Value);
+        Assert.Equal(expectedResult.FreeBreakfastClubProgramme, model.FreeBreakfastClubProgramme.Value);
+        Assert.Equal(expectedResult.HasNurseryProvision, model.HasNurseryProvision.Value);
         Assert.Equal(expectedResult.IsKS4, model.IsKS4);
+        Assert.Equal(expectedResult.IsKS5, model.IsKS5);
     }
 
     [Fact]

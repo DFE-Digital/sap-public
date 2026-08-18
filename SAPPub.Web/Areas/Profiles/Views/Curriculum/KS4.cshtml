@@ -15,7 +15,7 @@
     {
         URN = Model.URN,
         SchoolName = Model.SchoolName,
-        ActivePage = RouteConstants.SecondaryCurriculumAndExtraCurricularActivities,
+        ActivePage = RouteConstants.CurriculumRoot,
         IsKS2 = Model.IsKS2,
         IsKS4 = Model.IsKS4,
         IsKS5 = Model.IsKS5
@@ -24,7 +24,8 @@
     <div class="govuk-grid-column-three-quarters">
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
         <h1 class="govuk-heading-xl">@ViewData["Header"]</h1>
-        @if (Model.ShowSubNavigation)
+        <feature name="EnablePrimary">
+        @if (Model.IsKS2)
         {
             <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
                 <ul class="moj-sub-navigation__list">
@@ -37,6 +38,7 @@
                 </ul>
             </nav>
         }
+        </feature>
 
         <h2 class="govuk-heading-l">Curriculum</h2>
         <div id="current-curriculum-summary" data-testId="current-curriculum-summary" class="govuk-summary-card">

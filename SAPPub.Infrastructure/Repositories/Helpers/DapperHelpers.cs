@@ -68,7 +68,9 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "ISKS2",
           "ISKS4",
           "ISKS5",
-          "KS2WraparoundCare"
+          "KS2WraparoundCare",
+          "FreeBreakfastClubProgramme",
+          "NurseryProvisionName"
           """;
 
         private const string EstablishmentAbsenceColumns = """
@@ -270,6 +272,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "TINCLUDE_B3_Est_Current_Num_Coded",
           "TB3PTSE_Est_Current_Num_Coded",
           "TB3PTSE_GRD_Est_Current",
+          "L3M_PER_Est_Current_Pct_Coded",
           "T_SCOPEEX_E_Est_Current_Num_Coded",
           "PROGEX_E_Est_Current_Num_Coded",
           "ENTRY_PER_E_Est_Current_Pct_Coded",
@@ -301,6 +304,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "TALLPPEGRD_TECHCERT_Eng_Current",
           "TB3PTSE_Eng_Current_Num_Coded",
           "TB3PTSE_GRD_Eng_Current",
+          "L3M_PER_Eng_Current_Pct_Coded",
           "PROGEX_E_Eng_Current_Num_Coded",
           "ENTRY_PER_E_Eng_Current_Pct_Coded",
           "PROGEX_M_Eng_Current_Num_Coded",
@@ -329,6 +333,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "TALLPPEGRD_TECHCERT_LA_Current",
           "TB3PTSE_LA_Current_Num_Coded",
           "TB3PTSE_GRD_LA_Current",
+          "L3M_PER_LA_Current_Pct_Coded",
           "PROGEX_E_LA_Current_Num_Coded",
           "ENTRY_PER_E_LA_Current_Pct_Coded",
           "PROGEX_M_LA_Current_Num_Coded",

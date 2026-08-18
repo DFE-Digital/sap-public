@@ -59,6 +59,9 @@ public class KS5EnglandPerformance
     // A levels additional data england grade
     public CodedString TB3PTSE_GRD_Eng_Current { get; set; }
 
+    // Advanced level maths qualification percentage
+    public CodedDouble L3M_PER_Eng_Current_Pct_Coded { get; set; }
+
     // Average progress for English
     public CodedDouble PROGEX_E_Eng_Current_Num_Coded { get; set; }
 

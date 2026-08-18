@@ -55,8 +55,7 @@ public class CurriculumController(ILogger<CurriculumController> logger, IFeature
         string urn, string schoolName, CancellationToken ct)
     {
         var establishmentDetails = await establishmentService.GetEstablishmentMinimumAsync(urn, ct);
-        var isPrimaryFeatureEnabled = await featureManager.IsEnabledAsync(Constants.Constants.EnablePrimary);
-        var model = ViewModels.KS4.CurriculumAndExtraCurricularActivitiesViewModel.Map(establishmentDetails, isPrimaryFeatureEnabled);
+        var model = ViewModels.KS4.CurriculumAndExtraCurricularActivitiesViewModel.Map(establishmentDetails);
         return View(model);
     }
 }
