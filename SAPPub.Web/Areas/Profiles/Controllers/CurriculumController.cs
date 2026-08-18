@@ -12,13 +12,13 @@ namespace SAPPub.Web.Areas.Profiles.Controllers;
 public class CurriculumController(ILogger<CurriculumController> logger, IFeatureManager featureManager) : Controller
 {
     [Route("school/{urn}/{schoolName}/curriculum", Name = RouteConstants.CurriculumRoot)]
-    public async Task<IActionResult> Index([FromServices] IAboutSchoolService aboutSchoolService,
+    public async Task<IActionResult> Index([FromServices] IEstablishmentService establishmentService,
         string urn, string schoolName,
         CancellationToken ct)
     {
-        var schoolDetails = await aboutSchoolService.GetAboutSchoolDetailsAsync(urn, ct);
+        var schoolDetails = await establishmentService.GetEstablishmentMinimumAsync(urn, ct);
 
-        if (string.IsNullOrWhiteSpace(schoolDetails.Urn))
+        if (string.IsNullOrWhiteSpace(schoolDetails.URN))
         {
             logger.LogWarning("No establishment details found for URN: {URN}", urn);
             return View("Error");
