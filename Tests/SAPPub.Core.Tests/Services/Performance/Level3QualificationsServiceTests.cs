@@ -80,13 +80,17 @@ public class Level3QualificationsServiceTests
         Assert.Null(result.AverageResult.England.Grade.Value);
         Assert.Null(result.AverageResult.England.Points.Value);
 
-        Assert.Null(result.AdditionalData.TotalNoOfStudentsIncludedInThisMeasure.Value);
-        Assert.Null(result.AdditionalData.Establishment.Grade.Value);
-        Assert.Null(result.AdditionalData.Establishment.Points.Value);
-        Assert.Null(result.AdditionalData.LocalAuthority.Grade.Value);
-        Assert.Null(result.AdditionalData.LocalAuthority.Points.Value);
-        Assert.Null(result.AdditionalData.England.Grade.Value);
-        Assert.Null(result.AdditionalData.England.Points.Value);        
+        Assert.Null(result.AdditionalData?.TotalNoOfStudentsIncludedInThisMeasure.Value);
+        Assert.Null(result.AdditionalData?.Establishment.Grade.Value);
+        Assert.Null(result.AdditionalData?.Establishment.Points.Value);
+        Assert.Null(result.AdditionalData?.LocalAuthority.Grade.Value);
+        Assert.Null(result.AdditionalData?.LocalAuthority.Points.Value);
+        Assert.Null(result.AdditionalData?.England.Grade.Value);
+        Assert.Null(result.AdditionalData?.England.Points.Value);
+
+        Assert.Null(result.AdvancedLevelMathsQualificationData?.SchoolOrCollege.Value);
+        Assert.Null(result.AdvancedLevelMathsQualificationData?.LocalAuthority.Value);
+        Assert.Null(result.AdvancedLevelMathsQualificationData?.England.Value);        
     }
 
     [Theory]
@@ -98,6 +102,8 @@ public class Level3QualificationsServiceTests
     {
         // Arrange
         var isAlevelQual = qualificationLevel == Level3.ALevel;
+        var isAcademicQual = qualificationLevel == Level3.Academic;
+
         _mockEstablishmentService
             .Setup(r => r.GetEstablishmentAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>()))
             .ReturnsAsync(fakeEstablishment);
@@ -140,6 +146,8 @@ public class Level3QualificationsServiceTests
             TINCLUDE_B3_Est_Current_Num_Coded = isAlevelQual ? new CodedDouble(100, string.Empty, string.Empty) : CodedDouble.Empty,
             TB3PTSE_Est_Current_Num_Coded = isAlevelQual ? new CodedDouble(85.27, string.Empty, string.Empty) : CodedDouble.Empty,
             TB3PTSE_GRD_Est_Current = isAlevelQual ? new CodedString("A", string.Empty, string.Empty) : CodedString.Empty,
+
+            L3M_PER_Est_Current_Pct_Coded = isAcademicQual ? new CodedDouble(79.74, string.Empty, string.Empty) : CodedDouble.Empty,
         };
 
         var englandPerformance = new KS5EnglandPerformance
@@ -163,6 +171,8 @@ public class Level3QualificationsServiceTests
 
             TB3PTSE_Eng_Current_Num_Coded = isAlevelQual ? new CodedDouble(79.19, string.Empty, string.Empty) : CodedDouble.Empty,
             TB3PTSE_GRD_Eng_Current = isAlevelQual ? new CodedString("A", string.Empty, string.Empty) : CodedString.Empty,
+
+            L3M_PER_Eng_Current_Pct_Coded = isAcademicQual ? new CodedDouble(67.58, string.Empty, string.Empty) : CodedDouble.Empty,
         };
 
         var laPerformance = new KS5LAPerformance
@@ -177,6 +187,7 @@ public class Level3QualificationsServiceTests
             TALLPPEGRD_TLEV_LA_Current = new CodedString("C", string.Empty, string.Empty),
             TB3PTSE_LA_Current_Num_Coded = isAlevelQual ? new CodedDouble(25.19, string.Empty, string.Empty) : CodedDouble.Empty,
             TB3PTSE_GRD_LA_Current = isAlevelQual ? new CodedString("C", string.Empty, string.Empty) : CodedString.Empty,
+            L3M_PER_LA_Current_Pct_Coded = isAcademicQual ? new CodedDouble(67.58, string.Empty, string.Empty) : CodedDouble.Empty,
         };
 
         _mockKs5PerformanceRepository
@@ -210,7 +221,7 @@ public class Level3QualificationsServiceTests
             Assert.Equal(establishmentPerformance.TALLPPEGRD_ALEV_1618_Est_Current, result.AverageResult.Establishment.Grade);
 
             // Establishment Additional data
-            Assert.Equal(establishmentPerformance.TINCLUDE_B3_Est_Current_Num_Coded, result.AdditionalData.TotalNoOfStudentsIncludedInThisMeasure);
+            Assert.Equal(establishmentPerformance.TINCLUDE_B3_Est_Current_Num_Coded, result.AdditionalData!.TotalNoOfStudentsIncludedInThisMeasure);
             Assert.Equal(establishmentPerformance.TB3PTSE_Est_Current_Num_Coded, result.AdditionalData.Establishment.Points);
             Assert.Equal(establishmentPerformance.TB3PTSE_GRD_Est_Current, result.AdditionalData.Establishment.Grade);
 
@@ -228,6 +239,11 @@ public class Level3QualificationsServiceTests
             // LA Additional data
             Assert.Equal(laPerformance.TB3PTSE_LA_Current_Num_Coded, result.AdditionalData.LocalAuthority.Points);
             Assert.Equal(laPerformance.TB3PTSE_GRD_LA_Current, result.AdditionalData.LocalAuthority.Grade);
+
+            // AdvancedLevelMathsQualificationData
+            Assert.Null(result.AdvancedLevelMathsQualificationData?.SchoolOrCollege);
+            Assert.Null(result.AdvancedLevelMathsQualificationData?.LocalAuthority);
+            Assert.Null(result.AdvancedLevelMathsQualificationData?.England);
         }
         else if (qualificationLevel == Level3.Academic)
         {
@@ -240,24 +256,29 @@ public class Level3QualificationsServiceTests
             Assert.Equal(establishmentPerformance.TALLPPEGRD_ACAD_1618_Est_Current, result.AverageResult.Establishment.Grade);
 
             // Establishment Additional data
-            Assert.Equal(establishmentPerformance.TINCLUDE_B3_Est_Current_Num_Coded, result.AdditionalData.TotalNoOfStudentsIncludedInThisMeasure);
-            Assert.Equal(establishmentPerformance.TB3PTSE_Est_Current_Num_Coded, result.AdditionalData.Establishment.Points);
-            Assert.Equal(establishmentPerformance.TB3PTSE_GRD_Est_Current, result.AdditionalData.Establishment.Grade);
+            Assert.Null(result.AdditionalData?.TotalNoOfStudentsIncludedInThisMeasure);
+            Assert.Null(result.AdditionalData?.Establishment.Points);
+            Assert.Null(result.AdditionalData?.Establishment.Grade);
 
             Assert.Equal(englandPerformance.VA_INS_ACAD_Eng_Current_Num_Coded, result.ProgressScore.EnglandAverageScore);
             Assert.Equal(englandPerformance.TALLPPE_ACAD_1618_Eng_Current_Num_Coded, result.AverageResult.England.Points);
             Assert.Equal(englandPerformance.TALLPPEGRD_ACAD_1618_Eng_Current, result.AverageResult.England.Grade);
 
             // England Additional data
-            Assert.Equal(englandPerformance.TB3PTSE_Eng_Current_Num_Coded, result.AdditionalData.England.Points);
-            Assert.Equal(englandPerformance.TB3PTSE_GRD_Eng_Current, result.AdditionalData.England.Grade);
+            Assert.Null(result.AdditionalData?.England.Points);
+            Assert.Null(result.AdditionalData?.England.Grade);
 
             Assert.Equal(laPerformance.TALLPPE_ACAD_1618_LA_Current_Num_Coded, result.AverageResult.LocalAuthority.Points);
             Assert.Equal(laPerformance.TALLPPEGRD_ACAD_1618_LA_Current, result.AverageResult.LocalAuthority.Grade);
 
             // LA Additional data
-            Assert.Equal(laPerformance.TB3PTSE_LA_Current_Num_Coded, result.AdditionalData.LocalAuthority.Points);
-            Assert.Equal(laPerformance.TB3PTSE_GRD_LA_Current, result.AdditionalData.LocalAuthority.Grade);
+            Assert.Null(result.AdditionalData?.LocalAuthority.Points);
+            Assert.Null(result.AdditionalData?.LocalAuthority.Grade);
+
+            // AdvancedLevelMathsQualificationData
+            Assert.Equal(establishmentPerformance.L3M_PER_Est_Current_Pct_Coded, result.AdvancedLevelMathsQualificationData?.SchoolOrCollege);
+            Assert.Equal(laPerformance.L3M_PER_LA_Current_Pct_Coded, result.AdvancedLevelMathsQualificationData?.LocalAuthority);
+            Assert.Equal(englandPerformance.L3M_PER_Eng_Current_Pct_Coded, result.AdvancedLevelMathsQualificationData?.England);
         }
         else if (qualificationLevel == Level3.AppliedGeneral)
         {
@@ -270,24 +291,29 @@ public class Level3QualificationsServiceTests
             Assert.Equal(establishmentPerformance.TALLPPEGRD_AGEN_Est_Current, result.AverageResult.Establishment.Grade);
 
             // Establishment Additional data
-            Assert.Equal(establishmentPerformance.TINCLUDE_B3_Est_Current_Num_Coded, result.AdditionalData.TotalNoOfStudentsIncludedInThisMeasure);
-            Assert.Equal(establishmentPerformance.TB3PTSE_Est_Current_Num_Coded, result.AdditionalData.Establishment.Points);
-            Assert.Equal(establishmentPerformance.TB3PTSE_GRD_Est_Current, result.AdditionalData.Establishment.Grade);
+            Assert.Null(result.AdditionalData?.TotalNoOfStudentsIncludedInThisMeasure);
+            Assert.Null(result.AdditionalData?.Establishment.Points);
+            Assert.Null(result.AdditionalData?.Establishment.Grade);
 
             Assert.Equal(englandPerformance.VA_INS_AGEN_Eng_Current_Num_Coded, result.ProgressScore.EnglandAverageScore);
             Assert.Equal(englandPerformance.TALLPPE_AGEN_Eng_Current_Num_Coded, result.AverageResult.England.Points);
             Assert.Equal(englandPerformance.TALLPPEGRD_AGEN_Eng_Current, result.AverageResult.England.Grade);
 
             // England Additional data
-            Assert.Equal(englandPerformance.TB3PTSE_Eng_Current_Num_Coded, result.AdditionalData.England.Points);
-            Assert.Equal(englandPerformance.TB3PTSE_GRD_Eng_Current, result.AdditionalData.England.Grade);
+            Assert.Null(result.AdditionalData?.England.Points);
+            Assert.Null(result.AdditionalData?.England.Grade);
 
             Assert.Equal(laPerformance.TALLPPE_AGEN_LA_Current_Num_Coded, result.AverageResult.LocalAuthority.Points);
             Assert.Equal(laPerformance.TALLPPEGRD_AGEN_LA_Current, result.AverageResult.LocalAuthority.Grade);
 
             // LA Additional data
-            Assert.Equal(laPerformance.TB3PTSE_LA_Current_Num_Coded, result.AdditionalData.LocalAuthority.Points);
-            Assert.Equal(laPerformance.TB3PTSE_GRD_LA_Current, result.AdditionalData.LocalAuthority.Grade);
+            Assert.Null(result.AdditionalData?.LocalAuthority.Points);
+            Assert.Null(result.AdditionalData?.LocalAuthority.Grade);
+
+            // AdvancedLevelMathsQualificationData
+            Assert.Null(result.AdvancedLevelMathsQualificationData?.SchoolOrCollege);
+            Assert.Null(result.AdvancedLevelMathsQualificationData?.LocalAuthority);
+            Assert.Null(result.AdvancedLevelMathsQualificationData?.England);
         }
         else if (qualificationLevel == Level3.TechLevel)
         {
@@ -300,24 +326,29 @@ public class Level3QualificationsServiceTests
             Assert.Equal(establishmentPerformance.TALLPPEGRD_TLEV_Est_Current, result.AverageResult.Establishment.Grade);
 
             // Establishment Additional data
-            Assert.Equal(establishmentPerformance.TINCLUDE_B3_Est_Current_Num_Coded, result.AdditionalData.TotalNoOfStudentsIncludedInThisMeasure);
-            Assert.Equal(establishmentPerformance.TB3PTSE_Est_Current_Num_Coded, result.AdditionalData.Establishment.Points);
-            Assert.Equal(establishmentPerformance.TB3PTSE_GRD_Est_Current, result.AdditionalData.Establishment.Grade);
+            Assert.Null(result.AdditionalData?.TotalNoOfStudentsIncludedInThisMeasure);
+            Assert.Null(result.AdditionalData?.Establishment.Points);
+            Assert.Null(result.AdditionalData?.Establishment.Grade);
 
             Assert.Equal(englandPerformance.VA_INS_TLEV_Eng_Current_Num_Coded, result.ProgressScore.EnglandAverageScore);
             Assert.Equal(englandPerformance.TALLPPE_TLEV_Eng_Current_Num_Coded, result.AverageResult.England.Points);
             Assert.Equal(englandPerformance.TALLPPEGRD_TLEV_Eng_Current, result.AverageResult.England.Grade);
 
             // England Additional data
-            Assert.Equal(englandPerformance.TB3PTSE_Eng_Current_Num_Coded, result.AdditionalData.England.Points);
-            Assert.Equal(englandPerformance.TB3PTSE_GRD_Eng_Current, result.AdditionalData.England.Grade);
+            Assert.Null(result.AdditionalData?.England.Points);
+            Assert.Null(result.AdditionalData?.England.Grade);
 
             Assert.Equal(laPerformance.TALLPPE_TLEV_LA_Current_Num_Coded, result.AverageResult.LocalAuthority.Points);
             Assert.Equal(laPerformance.TALLPPEGRD_TLEV_LA_Current, result.AverageResult.LocalAuthority.Grade);
 
             // LA Additional data
-            Assert.Equal(laPerformance.TB3PTSE_LA_Current_Num_Coded, result.AdditionalData.LocalAuthority.Points);
-            Assert.Equal(laPerformance.TB3PTSE_GRD_LA_Current, result.AdditionalData.LocalAuthority.Grade);
+            Assert.Null(result.AdditionalData?.LocalAuthority.Points);
+            Assert.Null(result.AdditionalData?.LocalAuthority.Grade);
+
+            // AdvancedLevelMathsQualificationData
+            Assert.Null(result.AdvancedLevelMathsQualificationData?.SchoolOrCollege);
+            Assert.Null(result.AdvancedLevelMathsQualificationData?.LocalAuthority);
+            Assert.Null(result.AdvancedLevelMathsQualificationData?.England);
         }
     }
 }

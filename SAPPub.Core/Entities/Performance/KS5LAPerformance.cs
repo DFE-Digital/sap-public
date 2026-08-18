@@ -42,6 +42,9 @@ public class KS5LAPerformance
     // A levels additional data LA grade
     public CodedString TB3PTSE_GRD_LA_Current { get; set; }
 
+    // Advanced level maths qualification percentage
+    public CodedDouble L3M_PER_LA_Current_Pct_Coded { get; set; }
+
     // Average progress in English for LA
     public CodedDouble PROGEX_E_LA_Current_Num_Coded { get; set; }
 

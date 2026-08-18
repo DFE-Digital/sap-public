@@ -22,7 +22,9 @@ public class Level3QualificationViewModel : BaseViewModel
 
     public required AverageResultViewModel AverageResult { get; set; }
 
-    public required AdditionalDataViewModel AdditionalData { get; set; }
+    public AdditionalDataViewModel? AdditionalData { get; set; }
+
+    public SimpleCodedDoubleTableViewModel? AdvancedLevelMathsQualificationData { get; set; }
 
     public static Level3QualificationViewModel Map(Level3QualificationModel model)
     {
@@ -38,7 +40,8 @@ public class Level3QualificationViewModel : BaseViewModel
             TotalNoOfStudentCompletedQualification = model.TotalNoOfStudentCompletedQualification.ToDisplayField(),
             ProgressScore = ProgressScoreViewModel.Map(model.ProgressScore),
             AverageResult = AverageResultViewModel.Map(model.AverageResult),
-            AdditionalData = AdditionalDataViewModel.Map(model.AdditionalData)
+            AdditionalData = model.AdditionalData != null ? AdditionalDataViewModel.Map(model.AdditionalData) : null,
+            AdvancedLevelMathsQualificationData = model.AdvancedLevelMathsQualificationData != null ? SimpleCodedDoubleTableViewModel.Map(model.AdvancedLevelMathsQualificationData) : null
         };
-    }    
+    }
 }

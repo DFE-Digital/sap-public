@@ -120,6 +120,9 @@ public class KS5EstablishmentPerformance
     // A level additional data establishment grade
     public CodedString TB3PTSE_GRD_Est_Current { get; set; }
 
+    // Advanced level maths qualification percentage
+    public CodedDouble L3M_PER_Est_Current_Pct_Coded { get; set; }
+
     // Number of students for English progress
     public CodedDouble T_SCOPEEX_E_Est_Current_Num_Coded { get; set; }
 

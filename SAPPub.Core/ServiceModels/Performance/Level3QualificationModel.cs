@@ -1,4 +1,5 @@
 ﻿using SAPPub.Core.Enums.KS5Qualifications;
+using SAPPub.Core.ServiceModels.Common;
 using SAPPub.Core.ValueObjects;
 
 namespace SAPPub.Core.ServiceModels.Performance;
@@ -25,5 +26,7 @@ public class Level3QualificationModel
 
     public required AverageResultModel AverageResult { get; init; }
 
-    public required AdditionalDataModel AdditionalData { get; init; }
+    public AdditionalDataModel? AdditionalData { get; init; }
+
+    public SimpleCodedDoubleTableModel? AdvancedLevelMathsQualificationData { get; init; }
 }
