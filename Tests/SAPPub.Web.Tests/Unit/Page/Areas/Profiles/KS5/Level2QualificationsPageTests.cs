@@ -262,4 +262,23 @@ public class Level2QualificationsPageTests : PageTestsBase
         Assert.Contains(_level2QualificationModel.AverageResult.England.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 3, 0));
         Assert.Contains(_level2QualificationModel.AverageResult.England.Points.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 3, 1));
     }
+
+    [Theory]
+    [InlineData(Level2.TechCert)]
+    public async Task Level2QualificationsPage_Displays_StudentRetention_Info(Level2 qualification)
+    {
+        // Arrange
+        SetupMocks(qualification);
+        var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
+        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var studentRetentionInsetText = doc.QuerySelector("#student-retention");
+
+        Assert.NotNull(studentRetentionInsetText);
+        Assert.Equal("Measures on student retention will be available shortly in a future release.", studentRetentionInsetText.TextContent.Trim());
+    }
 }

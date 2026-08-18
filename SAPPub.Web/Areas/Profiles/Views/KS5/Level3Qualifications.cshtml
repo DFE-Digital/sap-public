@@ -65,6 +65,12 @@
         @* Average result *@
         <partial name="_AverageResult" model="@Model.AverageResult" view-data='new ViewDataDictionary(ViewData) { ["QualificationLevel"] = Model.Level3Qualification, ["LAName"] = Model.LAName }' />
 
+        @* Student retention *@
+        <h3 class="govuk-heading-m">Student retention</h3>
+        <div id="student-retention" class="govuk-inset-text">
+            Measures on student retention will be available shortly in a future release.
+        </div>
+
         @if (Model.Level3Qualification == Level3.ALevel)
         {
             @* Additional data *@
