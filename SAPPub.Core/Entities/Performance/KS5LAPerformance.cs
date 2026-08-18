@@ -36,6 +36,12 @@ public class KS5LAPerformance
     // Tech CertAverage result (grade) for the LA state-funded schools / colleges
     public CodedString TALLPPEGRD_TECHCERT_LA_Current { get; set; }
 
+    // A levels additional data LA points
+    public CodedDouble TB3PTSE_LA_Current_Num_Coded { get; set; }
+
+    // A levels additional data LA grade
+    public CodedString TB3PTSE_GRD_LA_Current { get; set; }
+
     // Average progress in English for LA
     public CodedDouble PROGEX_E_LA_Current_Num_Coded { get; set; }
 

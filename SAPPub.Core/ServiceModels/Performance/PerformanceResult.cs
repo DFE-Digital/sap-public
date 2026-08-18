@@ -2,7 +2,7 @@
 
 namespace SAPPub.Core.ServiceModels.Performance;
 
-public class AverageResult
+public class PerformanceResult
 {
     public CodedString Grade { get; init; }
 
