@@ -46,7 +46,9 @@ public class BaseProfilesTests
 
         fakeMinimumEstablishment = new EstablishmentMinimumTestBuilder()
             .WithIsKeyStage2(true)
+            .WithLAName("Sheffield")
             .WithIsKeyStage4(true)
+            .WithWebsite("https://www.gov.uk/")
             .BuildServiceModel();
 
         mockEstablishmentService = new();
@@ -54,6 +56,10 @@ public class BaseProfilesTests
         mockEstablishmentService
             .Setup(es => es.GetEstablishmentAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(fakeEstablishment);
+
+        mockEstablishmentService
+            .Setup(es => es.GetEstablishmentMinimumAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(fakeMinimumEstablishment);
     }
 
 }
