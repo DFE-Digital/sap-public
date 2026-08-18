@@ -531,6 +531,7 @@ public sealed class GenerateViews
         sb.AppendLine("    to_tsvector('english', normalize_text(coalesce(t.\"establishmentname\", ''))) AS \"EstablishmentNameFTS\",");
         sb.AppendLine("    ST_Transform(\r\n    ST_SetSRID(ST_MakePoint(clean_int(t.\"easting\"), clean_int(t.\"northing\")), 27700), 4326\r\n)::geography AS \"geom\",");
         sb.AppendLine($"   {BuildSenTypes()} AS \"SenTypes\",");
+        sb.AppendLine("    t.\"nurseryprovision__name_\"                   AS \"NurseryProvisionName\",");
 
         bool hasWraparound = TryResolveRawTable(tableMap, "ks2_wraparound_care", out var wraparoundTable) && !string.IsNullOrWhiteSpace(wraparoundTable);
         if (hasWraparound)

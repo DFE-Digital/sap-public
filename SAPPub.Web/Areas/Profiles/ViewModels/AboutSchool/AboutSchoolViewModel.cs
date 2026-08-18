@@ -13,7 +13,6 @@ public class AboutSchoolViewModel : ProfileBaseViewModel
     private const string SENUnit = "SEN unit";
     private const string ResourcedProvisionAndSENUnit = "Resourced provision and SEN unit";
     private const string ResourcedProvisionText = "Resourced provision";
-    private const int LocalAuthorityEstablishmentGroupTypeId = 4;
     private const int AcademyOpenReasonId = 10;
 
     public record School(string Name, double Lat, double Lon);
@@ -79,6 +78,11 @@ public class AboutSchoolViewModel : ProfileBaseViewModel
 
     public string? EducationPhase { get; set;  }
 
+    public required DisplayField<string> KS2WraparoundCare { get; set; }
+
+    public required DisplayField<bool> FreeBreakfastClubProgramme { get; set; }
+
+    public required DisplayField<bool> HasNurseryProvision { get; set; }
 
     public static AboutSchoolViewModel Map(AboutSchoolModel schoolDetails)
     {
@@ -117,6 +121,9 @@ public class AboutSchoolViewModel : ProfileBaseViewModel
             Predecessors = schoolDetails.Predecessors?.Select(p => SuccessorOrPredecessorDetailsModel.Map(p)).ToList(),
             Successors = schoolDetails.Successors?.Select(s => SuccessorOrPredecessorDetailsModel.Map(s)).ToList(),
             EducationPhase = EducationPhaseFormatter.Format(schoolDetails.IsKS2, schoolDetails.IsKS4, schoolDetails.IsKS5),
+            KS2WraparoundCare = schoolDetails.KS2WraparoundCare.ToDisplayField(),
+            FreeBreakfastClubProgramme = schoolDetails.FreeBreakfastClubProgramme.ToDisplayField(),
+            HasNurseryProvision = schoolDetails.HasNurseryProvision.ToDisplayField(),
             IsKS2 = schoolDetails.IsKS2,
             IsKS4 = schoolDetails.IsKS4,
             IsKS5 = schoolDetails.IsKS5

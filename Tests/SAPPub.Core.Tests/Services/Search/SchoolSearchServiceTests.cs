@@ -73,7 +73,7 @@ public class SchoolSearchServiceTests
         var schoolSearchResults = ToSchoolSearchResults(establishments);
 
         _mockSchoolSearchIndexReader
-            .Setup(s => s.SearchAsync(It.IsAny<ServiceModels.Search.InputModels.SearchQuery>(), Constants.PageSize))
+            .Setup(s => s.SearchAsync(It.IsAny<Core.ServiceModels.Search.InputModels.SearchQuery>(), Constants.PageSize))
             .ReturnsAsync(schoolSearchResults);
 
         var service = new SchoolSearchService(_mockSchoolSearchIndexReader.Object, _mockPostcodeLookupService.Object);
@@ -243,7 +243,7 @@ public class SchoolSearchServiceTests
         var schoolSearchResults = ToSchoolSearchResults(establishments);
 
         _mockSchoolSearchIndexReader
-            .Setup(s => s.SearchAsync(It.IsAny<SAPPub.Core.ServiceModels.Search.InputModels.SearchQuery>(), Constants.PageSize))
+            .Setup(s => s.SearchAsync(It.IsAny<Core.ServiceModels.Search.InputModels.SearchQuery>(), Constants.PageSize))
             .ReturnsAsync(schoolSearchResults);
 
         var service = new SchoolSearchService(_mockSchoolSearchIndexReader.Object, _mockPostcodeLookupService.Object);

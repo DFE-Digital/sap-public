@@ -47,7 +47,7 @@ public class AdmissionsController(ILogger<AdmissionsController> logger, IFeature
         CancellationToken ct)
     {
         var admissionsDetails = await admissionsService.GetAdmissionsDetailsAsync(urn, ct);
-        var model = AdmissionsViewModel.MapFrom(admissionsDetails, urn, true);
+        var model = AdmissionsViewModel.MapFrom(admissionsDetails, urn);
         return View(model);
     }
 
@@ -60,8 +60,7 @@ public class AdmissionsController(ILogger<AdmissionsController> logger, IFeature
         CancellationToken ct)
     {
         var admissionsDetails = await admissionsService.GetAdmissionsDetailsAsync(urn, ct);
-        var isPrimaryFeatureEnabled = await featureManager.IsEnabledAsync(Constants.Constants.EnablePrimary);
-        var model = AdmissionsViewModel.MapFrom(admissionsDetails, urn, isPrimaryFeatureEnabled);
+        var model = AdmissionsViewModel.MapFrom(admissionsDetails, urn);
         return View(model);
     }
 }
