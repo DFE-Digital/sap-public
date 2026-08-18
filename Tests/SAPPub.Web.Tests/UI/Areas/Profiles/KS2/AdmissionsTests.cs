@@ -78,6 +78,6 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
         await nav.ShouldBeVisibleAsync();
         await nav.ShouldHaveItemsCountAsync(expectedItemCount);
         await nav.ShouldHaveOneActiveItemAsync();
-        await nav.ShouldHaveActiveHrefAsync(_schoolUrnToUrlMap[schoolUrn]);
+        await nav.ShouldHaveActiveHrefAsync(_schoolUrnToUrlMap[schoolUrn].Replace("/primary", ""));
     }    
 }

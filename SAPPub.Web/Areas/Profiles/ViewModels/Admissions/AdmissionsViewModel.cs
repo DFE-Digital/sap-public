@@ -15,12 +15,9 @@ public class AdmissionsViewModel : ProfileBaseViewModel
 
     public bool IsSchoolClosed { get; init; }
 
-    public bool IsIndependentSchool { get; init; }
-    public bool IsPrimaryFeatureEnabled { get; set; }
-    // Computed property - show sub-navigation only when school has both KS2 & KS4 AND primary feature is enabled
-    public bool ShowSubNavigation => IsKS2 && IsKS4 && IsPrimaryFeatureEnabled;
+    public bool IsIndependentSchool { get; init; }  
 
-    public static AdmissionsViewModel MapFrom(AdmissionsServiceModel serviceModel, string urn, bool isPrimaryFeatureEnabled)
+    public static AdmissionsViewModel MapFrom(AdmissionsServiceModel serviceModel, string urn)
     {
         return new AdmissionsViewModel
         {
@@ -33,8 +30,7 @@ public class AdmissionsViewModel : ProfileBaseViewModel
             IsIndependentSchool = serviceModel.IsIndependentSchool,
             IsKS2 = serviceModel.IsKS2,
             IsKS4 = serviceModel.IsKS4,
-            IsKS5 = serviceModel.IsKS5,
-            IsPrimaryFeatureEnabled = isPrimaryFeatureEnabled
+            IsKS5 = serviceModel.IsKS5
         };
     }
 }

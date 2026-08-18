@@ -8,8 +8,7 @@ using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
 
-
-namespace SAPPub.Web.Tests.Unit.Page.Areas.Profiles;
+namespace SAPPub.Web.Tests.Unit.Page.Areas.Profiles.KS2;
 
 [Collection("WebAppCollection")]
 public class KS2AdditionalMeasuresPageTests : PageTestsBase

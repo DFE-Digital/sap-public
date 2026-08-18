@@ -6,7 +6,6 @@ namespace SAPPub.Web.Tests.UI.Areas.Profiles.KS2;
 [Collection("Playwright Tests")]
 public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
-    private string _pageUrl = "school/143034/st-pauls-church-of-england-academy/curriculum/primary";
 
     private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
     {
@@ -78,7 +77,7 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
 
         await nav.ShouldBeVisibleAsync();
         await nav.ShouldHaveOneActiveItemAsync();
-        await nav.ShouldHaveActiveHrefAsync(_pageUrl);
+        await nav.ShouldHaveActiveHrefAsync(_schoolUrnToUrlMap["143034"].Replace("/primary", ""));
     }
   
 }

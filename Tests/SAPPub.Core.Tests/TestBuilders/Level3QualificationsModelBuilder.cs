@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using SAPPub.Core.Enums.KS5Qualifications;
+using SAPPub.Core.ServiceModels.Common;
 using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.ValueObjects;
 
@@ -68,6 +69,7 @@ public class Level3QualificationsModelBuilder
     public Level3QualificationModel Build()
     {
         var isAlevelQual = _qualificationType == Level3.ALevel;
+        var isAcademicQual = _qualificationType == Level3.Academic;
 
         return new Level3QualificationModel
         {
@@ -105,25 +107,31 @@ public class Level3QualificationsModelBuilder
                     Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
                 }
             },
-            AdditionalData = new AdditionalDataModel
+            AdditionalData = isAlevelQual ? new AdditionalDataModel
             {
-                TotalNoOfStudentsIncludedInThisMeasure = isAlevelQual ? new CodedDouble(100, string.Empty, string.Empty) : CodedDouble.Empty,
+                TotalNoOfStudentsIncludedInThisMeasure = new CodedDouble(100, string.Empty, string.Empty),
                 Establishment = new PerformanceResult
                 {
-                    Grade = isAlevelQual ? new CodedString("C", string.Empty, string.Empty) : CodedString.Empty,
-                    Points = isAlevelQual ? new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty) : CodedDouble.Empty
+                    Grade = new CodedString("C", string.Empty, string.Empty),
+                    Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
                 },
                 LocalAuthority = new PerformanceResult
                 {
-                    Grade = isAlevelQual ? new CodedString("A", string.Empty, string.Empty) : CodedString.Empty,
-                    Points = isAlevelQual ? new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty) : CodedDouble.Empty
+                    Grade = new CodedString("A", string.Empty, string.Empty),
+                    Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
                 },
                 England = new PerformanceResult
                 {
-                    Grade = isAlevelQual ? new CodedString("B", string.Empty, string.Empty) : CodedString.Empty,
-                    Points = isAlevelQual ? new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty) : CodedDouble.Empty
+                    Grade = new CodedString("B", string.Empty, string.Empty),
+                    Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
                 }
-            }
+            } : null,
+            AdvancedLevelMathsQualificationData = isAcademicQual ? new SimpleCodedDoubleTableModel
+            {
+                SchoolOrCollege = new CodedDouble(78.94, string.Empty, string.Empty),
+                LocalAuthority = new CodedDouble(61.96, string.Empty, string.Empty),
+                England = new CodedDouble(73.45, string.Empty, string.Empty),
+            } : null
         };
     }
 }

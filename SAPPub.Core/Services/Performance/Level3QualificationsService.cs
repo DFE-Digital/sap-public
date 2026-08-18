@@ -3,6 +3,7 @@ using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.Interfaces.Repositories.Performance;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Performance;
+using SAPPub.Core.ServiceModels.Common;
 using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.ValueObjects;
 
@@ -39,8 +40,9 @@ public class Level3QualificationsService(
             QualificationType = level3Qualification,
             TotalNoOfStudentCompletedQualification = GetTotalNoOfStudentsCompletedQualification(level3Qualification, establishmentPerformance),
             ProgressScore = GetProgressScoreModel(level3Qualification, establishmentPerformance, englandPerformance),
-            AverageResult = GetAverageResultModel(level3Qualification, establishmentPerformance, englandPerformance, laPerformance),
-            AdditionalData = GetAdditionalData(level3Qualification, establishmentPerformance, englandPerformance, laPerformance),
+            AverageResult = GetAverageResultModel(level3Qualification, establishmentPerformance, laPerformance, englandPerformance),
+            AdditionalData = GetAdditionalData(level3Qualification, establishmentPerformance, laPerformance, englandPerformance),
+            AdvancedLevelMathsQualificationData = AdvancedLevelMathsQualificationData(level3Qualification, establishmentPerformance, laPerformance, englandPerformance),
         };
     }
 
@@ -110,9 +112,9 @@ public class Level3QualificationsService(
 
     private static AverageResultModel GetAverageResultModel(
         Level3 level3Qualification,
-        KS5EstablishmentPerformance establishmentPerformance,
-        KS5EnglandPerformance englandPerformance,
-        KS5LAPerformance laPerformance)
+        KS5EstablishmentPerformance establishmentPerformance,        
+        KS5LAPerformance laPerformance,
+        KS5EnglandPerformance englandPerformance)
     {
         return new AverageResultModel
         {
@@ -176,54 +178,50 @@ public class Level3QualificationsService(
         };
     }
 
-    private static AdditionalDataModel GetAdditionalData(
+    private static AdditionalDataModel? GetAdditionalData(
         Level3 level3Qualification,
-        KS5EstablishmentPerformance establishmentPerformance,
-        KS5EnglandPerformance englandPerformance,
-        KS5LAPerformance laPerformance)
+        KS5EstablishmentPerformance establishmentPerformance,        
+        KS5LAPerformance laPerformance,
+        KS5EnglandPerformance englandPerformance)
     {
+        if (level3Qualification != Level3.ALevel)
+            return null;
+
         return new AdditionalDataModel
         {
             TotalNoOfStudentsIncludedInThisMeasure = establishmentPerformance.TINCLUDE_B3_Est_Current_Num_Coded,
             Establishment = new PerformanceResult
             {
-                Points = level3Qualification switch
-                {
-                    Level3.ALevel => establishmentPerformance.TB3PTSE_Est_Current_Num_Coded,
-                    _ => CodedDouble.Empty,
-                },
-                Grade = level3Qualification switch
-                {
-                    Level3.ALevel => establishmentPerformance.TB3PTSE_GRD_Est_Current,
-                    _ => CodedString.Empty,
-                },
+                Points = establishmentPerformance.TB3PTSE_Est_Current_Num_Coded,
+                Grade = establishmentPerformance.TB3PTSE_GRD_Est_Current,
             },
             LocalAuthority = new PerformanceResult
             {
-                Points = level3Qualification switch
-                {
-                    Level3.ALevel => laPerformance.TB3PTSE_LA_Current_Num_Coded,
-                    _ => CodedDouble.Empty,
-                },
-                Grade = level3Qualification switch
-                {
-                    Level3.ALevel => laPerformance.TB3PTSE_GRD_LA_Current,
-                    _ => CodedString.Empty,
-                },
+                Points = laPerformance.TB3PTSE_LA_Current_Num_Coded,
+                Grade = laPerformance.TB3PTSE_GRD_LA_Current,
             },
             England = new PerformanceResult
             {
-                Points = level3Qualification switch
-                {
-                    Level3.ALevel => englandPerformance.TB3PTSE_Eng_Current_Num_Coded,
-                    _ => CodedDouble.Empty,
-                },
-                Grade = level3Qualification switch
-                {
-                    Level3.ALevel => englandPerformance.TB3PTSE_GRD_Eng_Current,
-                    _ => CodedString.Empty,
-                },
+                Points = englandPerformance.TB3PTSE_Eng_Current_Num_Coded,
+                Grade = englandPerformance.TB3PTSE_GRD_Eng_Current,
             }
+        };
+    }
+
+    private static SimpleCodedDoubleTableModel? AdvancedLevelMathsQualificationData(
+        Level3 level3Qualification,
+        KS5EstablishmentPerformance establishmentPerformance,        
+        KS5LAPerformance laPerformance,
+        KS5EnglandPerformance englandPerformance)
+    {
+        if (level3Qualification != Level3.Academic)
+            return null;
+
+        return new SimpleCodedDoubleTableModel
+        {
+            SchoolOrCollege = establishmentPerformance.L3M_PER_Est_Current_Pct_Coded,
+            LocalAuthority = laPerformance.L3M_PER_LA_Current_Pct_Coded,
+            England = englandPerformance.L3M_PER_Eng_Current_Pct_Coded
         };
     }
 }
