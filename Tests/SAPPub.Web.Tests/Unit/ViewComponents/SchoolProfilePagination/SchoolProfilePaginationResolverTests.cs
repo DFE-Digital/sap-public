@@ -361,7 +361,7 @@ public class SchoolProfilePaginationResolverTests
     }
 
     [Fact]
-    public void PhaseAwareLabel_SecondaryAcademicPerformance_AlwaysPhaseSpecific()
+    public void PhaseAwareLabel_SecondaryAcademicPerformance_SingleWhenSecondaryOnly()
     {
         var context = SecondaryOnly();
 
@@ -391,7 +391,7 @@ public class SchoolProfilePaginationResolverTests
 
         Assert.NotNull(result.Next);
         Assert.Equal(
-            $"16 to 19 performance: {PageTitleConstants.KS5SchoolPageTitles.Level3Qualifications}",
+            $"{PageTitleConstants.KS5SchoolPageTitles.PhaseTitle} performance: {PageTitleConstants.KS5SchoolPageTitles.Level3Qualifications}",
             result.Next!.Label);
     }
 
@@ -403,7 +403,9 @@ public class SchoolProfilePaginationResolverTests
         var result = _resolver.Resolve(RouteConstants.KS5AcademicPerformanceSubjectsEntered, context);
 
         Assert.NotNull(result.Next);
-        Assert.Equal("16 to 19: Education, apprenticeships, or work", result.Next!.Label);
+        Assert.Equal(
+            $"{PageTitleConstants.KS5SchoolPageTitles.PhaseTitle}: Education, apprenticeships or work",
+            result.Next!.Label);
     }
 
     [Fact]

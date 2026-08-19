@@ -6,7 +6,9 @@ public class PageTitleConstants
     {
         public const string AboutYourSchools = "About your schools";
         public const string Attendance = "Attendance";
-
+        public const string Admissions = "Admissions";
+        public const string Curriculum = "Curriculum and extra-curricular activities";
+        public const string AcademicPerformance = "Academic performance";
     }
 
     public static class PrimarySchoolPageTitles

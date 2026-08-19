@@ -165,7 +165,7 @@ public static class SchoolProfileSitemap
             Key: "SixteenToNineteenDestinations",
             Route: RouteConstants.KS5Destinations,
             Phase: SchoolPhase.SixteenToNineteen,
-            GetLabel: _ => "16 to 19: Education, apprenticeships, or work",
+            GetLabel: _ => "16 to 19: Education, apprenticeships or work",
             IsAvailable: IsSixteenToNineteenAvailable,
             IsVariable: true),
 
