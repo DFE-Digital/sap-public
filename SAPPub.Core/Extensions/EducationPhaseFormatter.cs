@@ -18,7 +18,7 @@ public static class EducationPhaseFormatter
 
         if (isKS5)
         {
-            phaseList.Add("16 to 18");
+            phaseList.Add("16 to 19");
         }
 
         return phaseList.Count switch
