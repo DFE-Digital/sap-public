@@ -1,4 +1,5 @@
-﻿@model SAPPub.Web.Models.SecondarySchool.AdmissionsViewModel;
+﻿@model AdmissionsViewModel
+@using SAPPub.Web.Areas.Profiles.ViewModels.Admissions
 @using SAPPub.Web.Constants
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 
@@ -14,7 +15,7 @@
     {
         URN = Model.URN,
         SchoolName = Model.SchoolName,
-        ActivePage = RouteConstants.SecondaryAdmissions,
+        ActivePage = RouteConstants.AdmissionsRoot,
         IsKS2 = Model.IsKS2,
         IsKS4 = Model.IsKS4,
         IsKS5 = Model.IsKS5
@@ -23,9 +24,10 @@
     <div class="govuk-grid-column-three-quarters">
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
         <h1 class="govuk-heading-xl">@ViewData["Header"]</h1>
-        @if (Model.IsKS2 == true)
+        <feature name="EnablePrimary">
+        @if (Model.IsKS2)
         {
-            <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
+            <nav id="sub-navigation-admissions" class="moj-sub-navigation" aria-label="Sub navigation">
             <ul class="moj-sub-navigation__list">      
                 <li class="moj-sub-navigation__item">
                     <a class="moj-sub-navigation__link" asp-route="@RouteConstants.PrimaryAdmissions" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.PrimarySchoolPageTitles.Admissions</a>
@@ -36,6 +38,7 @@
             </ul>
         </nav>
         }
+        </feature>
         <h2 class="govuk-heading-l">Moving from primary to secondary school</h2>
         <div class="govuk-summary-card" data-testid="starting-secondary-school-summary">
             <div class="govuk-summary-card__title-wrapper">
@@ -91,7 +94,7 @@
                         <govuk-summary-list-row-value>
                             <a data-testid="la-website-link"
                                class="govuk-link govuk-link--no-visited-state" 
-                               href="@($"https://www.{Model.LASecondarySchoolAdmissionsLinkUrl}")"
+                               href="@UrlHelper.EnsureHttpsUrl(Model.LASchoolAdmissionsLinkUrl)"
                                target="_blank"
                                rel="noopener noreferrer">
                                 Visit the local council's website for more information on
@@ -157,7 +160,8 @@
                     directly to on your local council’s website.  
                 </p>
                 <p class="govuk-body">
-                    <a href="@($"https://www.{Model.LASecondarySchoolAdmissionsLinkUrl}")"
+                    <a 
+                       href="@UrlHelper.EnsureHttpsUrl(Model.LASchoolAdmissionsLinkUrl)"
                        target="_blank"
                        rel="noopener noreferrer"
                        class="govuk-link"

@@ -15,7 +15,7 @@ public sealed class AttendanceService(
         string urn,
         CancellationToken ct = default)
     {
-        var establishment = await establishmentService.GetEstablishmentAsync(urn, ct);
+        var establishment = await establishmentService.GetEstablishmentMinimumAsync(urn, ct);
 
         if (string.IsNullOrWhiteSpace(establishment.URN))
             return new AttendanceModel { Urn = urn, IsKS2 = false, IsKS4 = false, IsKS5 = false };

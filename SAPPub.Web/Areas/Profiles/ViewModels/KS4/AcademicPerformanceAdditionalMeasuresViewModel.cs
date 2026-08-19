@@ -8,7 +8,7 @@ public class AcademicPerformanceAdditionalMeasuresViewModel : BaseViewModel
 {
     public required IEnumerable<AcademicPerformanceAdditionalMeasureViewModel> MeasuresInTableFormat { get; set; }
 
-    public static AcademicPerformanceAdditionalMeasuresViewModel MapToMeasuresInTableFormat(AdditionalMeasuresModel additionalMeasuresModel, EstablishmentServiceModel establishmentDetails)
+    public static AcademicPerformanceAdditionalMeasuresViewModel MapToMeasuresInTableFormat(AdditionalMeasuresModel additionalMeasuresModel, EstablishmentMinimumServiceModel establishmentDetails)
     {
         return new AcademicPerformanceAdditionalMeasuresViewModel
         {

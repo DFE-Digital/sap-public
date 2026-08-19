@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
+using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.Destinations;
@@ -45,7 +46,7 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
                 .WithReligiousCharacterName("ReligiousCharacter")
                 .WithSixthForm(false)
                 .WithResourcedProvisionName("Resourced provision")
-                .WithEstablishmentTypeGroupId("1")
+                .WithEstablishmentTypeGroupId((int)EstablishmentTypeGroup.Colleges)
                 .WithStatusCode(1)
                 .WithOpenReasonId(10)
                 .WithOpenDate()

@@ -21,7 +21,7 @@ public class DfEAnalyticsAddPhaseTagFilter(IEstablishmentService establishmentSe
 
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
-        EstablishmentServiceModel? establishment = null;
+        EstablishmentMinimumServiceModel? establishment = null;
 
         if (context.Controller is IEstablishment controller)
         {
@@ -35,7 +35,7 @@ public class DfEAnalyticsAddPhaseTagFilter(IEstablishmentService establishmentSe
                 return;
             }
 
-            establishment = await establishmentService.GetEstablishmentAsync(urn);
+            establishment = await establishmentService.GetEstablishmentMinimumAsync(urn);
         }
 
         var webRequestEvent = context.HttpContext.GetWebRequestEvent();

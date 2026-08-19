@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.FeatureManagement;
+using Moq;
 using SAPPub.Core.Interfaces;
 using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Services;
@@ -55,8 +57,11 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.RemoveAll(typeof(IAttainmentAndProgressComparisionService));
                 services.RemoveAll(typeof(IAdditionalMeasuresService));
                 services.RemoveAll(typeof(ILevel3QualificationsService));
+                services.RemoveAll(typeof(ILevel2QualificationsService));
                 services.RemoveAll(typeof(IKS2ScaledScoreService));
                 services.RemoveAll(typeof(IKS2AdditionalMeasuresService));
+                services.RemoveAll(typeof(IFeatureManager));
+
 
                 services.AddSingleton<MockAccessor<IAboutSchoolService>>();
                 services.AddSingleton<MockAccessor<IAttainmentAndProgressService>>();
@@ -77,9 +82,12 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.AddSingleton<MockAccessor<IAttainmentAndProgressComparisionService>>();
                 services.AddSingleton<MockAccessor<IAdditionalMeasuresService>>();
                 services.AddSingleton<MockAccessor<ILevel3QualificationsService>>();
+                services.AddSingleton<MockAccessor<ILevel2QualificationsService>>();
                 services.AddSingleton<MockAccessor<IEnglishAndMathsQualificationsService>>();
                 services.AddSingleton<MockAccessor<IKS2ScaledScoreService>>();
                 services.AddSingleton<MockAccessor<IKS2AdditionalMeasuresService>>();
+                services.AddSingleton<MockAccessor<IFeatureManager>>();
+
 
                 services.AddTransient(provider =>
                 {
@@ -157,7 +165,11 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.AddTransient(provider =>
                 {
                     return provider.GetRequiredService<MockAccessor<ILevel3QualificationsService>>().Get()?.Object!;
-                });    
+                });
+                services.AddTransient(provider =>
+                {
+                    return provider.GetRequiredService<MockAccessor<ILevel2QualificationsService>>().Get()?.Object!;
+                });
                 services.AddTransient(provider =>
                 {
                     return provider.GetRequiredService<MockAccessor<IEnglishAndMathsQualificationsService>>().Get()?.Object!;
@@ -169,6 +181,22 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.AddTransient(provider =>
                 {
                     return provider.GetRequiredService<MockAccessor<IKS2AdditionalMeasuresService>>().Get()?.Object!;
+                });
+                services.AddTransient<IFeatureManager>(provider =>
+                {
+                    var accessor = provider.GetRequiredService<MockAccessor<IFeatureManager>>();
+
+                    if (accessor.Get() is null)
+                    {
+                        // Default: all features enabled unless a test explicitly overrides via UseMock<IFeatureManager>()
+                        var defaultMock = new Mock<IFeatureManager>();
+                        defaultMock
+                            .Setup(f => f.IsEnabledAsync(It.IsAny<string>()))
+                            .ReturnsAsync(true);
+                        accessor.Set(defaultMock);
+                    }
+
+                    return accessor.Object;
                 });
             });
     }

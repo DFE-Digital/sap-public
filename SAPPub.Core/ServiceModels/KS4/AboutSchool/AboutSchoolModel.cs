@@ -44,7 +44,7 @@ public class AboutSchoolModel
 
     public string ResourcedProvisionName { get; set; } = string.Empty;
 
-    public string EstablishmentTypeGroupId { get; set; } = string.Empty;
+    public EstablishmentTypeGroup EstablishmentTypeGroup { get; set; }
 
     public DateOnly? ClosedDate { get; set; }
 
@@ -55,6 +55,12 @@ public class AboutSchoolModel
     public int? OpenReasonId { get; set; }
 
     public string? SenTypes { get; set; }
+
+    public string? KS2WraparoundCare { get; set; }
+    
+    public bool FreeBreakfastClubProgramme { get; set; }
+
+    public bool HasNurseryProvision { get; set; }
 
     public bool IsKS2 { get; set; }
 

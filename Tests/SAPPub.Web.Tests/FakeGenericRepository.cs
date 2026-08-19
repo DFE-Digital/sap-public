@@ -3,6 +3,7 @@ using SAPPub.Core.Entities.Destinations;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.Performance;
 using SAPPub.Core.Interfaces.Repositories.Generic;
+using SAPPub.Core.ValueObjects;
 using System.Collections;
 using System.Reflection;
 
@@ -301,12 +302,12 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             EngMaths49_Tot_Est_Previous2_Pct = 75,
             EngMaths59_Tot_Est_Previous2_Pct = 80,
             // additional measures
-            AnyQual_Tot_Est_Current_Pct_Coded = new Core.ValueObjects.CodedDouble(90, "", ""),
-            TripSci_Tot_Est_Current_Pct_Coded = new Core.ValueObjects.CodedDouble(80, "", ""),
-            More1FL_Tot_Est_Current_Pct_Coded = new Core.ValueObjects.CodedDouble(70, "", ""),
-            ExamEntriesGSCE_Tot_Est_Current_Num_Coded = new Core.ValueObjects.CodedDouble(151, "", ""),
-            ExamEntriesKS4_Tot_Est_Current_Num_Coded = new Core.ValueObjects.CodedDouble(100, "", ""),
-            Pup_Tot_Est_Current_Num_Coded = new Core.ValueObjects.CodedDouble(200, "", "")
+            AnyQual_Tot_Est_Current_Pct_Coded = new CodedDouble(90, "", ""),
+            TripSci_Tot_Est_Current_Pct_Coded = new CodedDouble(80, "", ""),
+            More1FL_Tot_Est_Current_Pct_Coded = new CodedDouble(70, "", ""),
+            ExamEntriesGSCE_Tot_Est_Current_Num_Coded = new CodedDouble(151, "", ""),
+            ExamEntriesKS4_Tot_Est_Current_Num_Coded = new CodedDouble(100, "", ""),
+            Pup_Tot_Est_Current_Num_Coded = new CodedDouble(200, "", "")
         },
         ["137020"] = new EstablishmentPerformance
         {
@@ -323,12 +324,12 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             EngMaths49_Tot_Est_Previous2_Pct = 55,
             EngMaths59_Tot_Est_Previous2_Pct = 70,
             // additional measures
-            AnyQual_Tot_Est_Current_Pct_Coded = new Core.ValueObjects.CodedDouble(null, "", ""),
-            TripSci_Tot_Est_Current_Pct_Coded = new Core.ValueObjects.CodedDouble(null, "", ""),
-            More1FL_Tot_Est_Current_Pct_Coded = new Core.ValueObjects.CodedDouble(null, "", ""),
-            ExamEntriesGSCE_Tot_Est_Current_Num_Coded = new Core.ValueObjects.CodedDouble(null, "", ""),
-            ExamEntriesKS4_Tot_Est_Current_Num_Coded = new Core.ValueObjects.CodedDouble(null, "", ""),
-            Pup_Tot_Est_Current_Num_Coded = new Core.ValueObjects.CodedDouble(null, "", "")
+            AnyQual_Tot_Est_Current_Pct_Coded = new CodedDouble(null, "", ""),
+            TripSci_Tot_Est_Current_Pct_Coded = new CodedDouble(null, "", ""),
+            More1FL_Tot_Est_Current_Pct_Coded = new CodedDouble(null, "", ""),
+            ExamEntriesGSCE_Tot_Est_Current_Num_Coded = new CodedDouble(null, "", ""),
+            ExamEntriesKS4_Tot_Est_Current_Num_Coded = new CodedDouble(null, "", ""),
+            Pup_Tot_Est_Current_Num_Coded = new CodedDouble(null, "", ""),
         },
     };
 
@@ -400,16 +401,32 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
         ["149976"] = new KS2EstablishmentPerformance
         {
             Id = "149976",
-            READ_AVERAGE_Est_Current_Num_Coded = new Core.ValueObjects.CodedDouble(1, "", "1"),
-            READ_AVERAGE_Est_Previous_Num_Coded = new Core.ValueObjects.CodedDouble(2, "", "2"),
-            READ_AVERAGE_Est_Previous2_Num_Coded = new Core.ValueObjects.CodedDouble(3, "", "3"),
+            READ_AVERAGE_Est_Current_Num_Coded = new CodedDouble(1, "", "1"),
+            READ_AVERAGE_Est_Previous_Num_Coded = new CodedDouble(2, "", "2"),
+            READ_AVERAGE_Est_Previous2_Num_Coded = new CodedDouble(3, "", "3"),
+            MAT_AVERAGE_Est_Current_Num_Coded = new CodedDouble(4, "", "4"),
+            MAT_AVERAGE_Est_Previous_Num_Coded = new CodedDouble(5, "", "5"),
+            MAT_AVERAGE_Est_Previous2_Num_Coded = new CodedDouble(6, "", "6"),
+            READPROG_Est_Previous2_Num_Coded = new CodedDouble(7, "", ""),
+            READPROG_DESCR_Est_Previous2_Num_Coded = new CodedString("2", "", ""),
+            READPROG_UPPER_Est_Previous2_Num_Coded = new CodedDouble(8, "", ""),
+            READPROG_LOWER_Est_Previous2_Num_Coded = new CodedDouble(9, "", ""),
+            WRITPROG_Est_Previous2_Num_Coded = new CodedDouble(10, "", ""),
+            WRITPROG_DESCR_Est_Previous2_Num_Coded = new CodedString("1", "", ""),
+            WRITPROG_UPPER_Est_Previous2_Num_Coded = new CodedDouble(11, "", ""),
+            WRITPROG_LOWER_Est_Previous2_Num_Coded = new CodedDouble(12, "", ""),
+            MATPROG_Est_Previous2_Num_Coded = new CodedDouble(13, "", ""),
+            MATPROG_DESCR_Est_Previous2_Num_Coded = new CodedString("3", "", ""),
+            MATPROG_UPPER_Est_Previous2_Num_Coded = new CodedDouble(14, "", ""),
+            MATPROG_LOWER_Est_Previous2_Num_Coded = new CodedDouble(15, "", ""),
+
         },
         ["143034"] = new KS2EstablishmentPerformance
         {
             Id = "143034",
-            READ_AVERAGE_Est_Current_Num_Coded = new Core.ValueObjects.CodedDouble(null, "Not available", "c"),
-            READ_AVERAGE_Est_Previous_Num_Coded = new Core.ValueObjects.CodedDouble(2.1, "", "2.1"),
-            READ_AVERAGE_Est_Previous2_Num_Coded = new Core.ValueObjects.CodedDouble(3.1, "", "3.1"),
+            READ_AVERAGE_Est_Current_Num_Coded = new CodedDouble(null, "Not available", "c"),
+            READ_AVERAGE_Est_Previous_Num_Coded = new CodedDouble(2.1, "", "2.1"),
+            READ_AVERAGE_Est_Previous2_Num_Coded = new CodedDouble(3.1, "", "3.1"),
         },
     };
 
@@ -418,16 +435,19 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
         ["886"] = new KS2LAPerformance
         {
             Id = "886",
-            READ_AVERAGE_LA_Current_Num_Coded = new Core.ValueObjects.CodedDouble(1, "", "1"),
-            READ_AVERAGE_LA_Previous_Num_Coded = new Core.ValueObjects.CodedDouble(2, "", "2"),
-            READ_AVERAGE_LA_Previous2_Num_Coded = new Core.ValueObjects.CodedDouble(3, "", "3"),
+            READ_AVERAGE_LA_Current_Num_Coded = new CodedDouble(1, "", "1"),
+            READ_AVERAGE_LA_Previous_Num_Coded = new CodedDouble(2, "", "2"),
+            READ_AVERAGE_LA_Previous2_Num_Coded = new CodedDouble(3, "", "3"),
+            READPROG_LA_Previous2_Num_Coded = new CodedDouble(4, "", ""),
+            WRITPROG_LA_Previous2_Num_Coded = new CodedDouble(5, "", ""),
+            MATPROG_LA_Previous2_Num_Coded = new CodedDouble(6, "", ""),
         },
         ["845"] = new KS2LAPerformance
         {
             Id = "845",
-            READ_AVERAGE_LA_Current_Num_Coded = new Core.ValueObjects.CodedDouble(1.1, "", "1.1"),
-            READ_AVERAGE_LA_Previous_Num_Coded = new Core.ValueObjects.CodedDouble(2.1, "", "2.1"),
-            READ_AVERAGE_LA_Previous2_Num_Coded = new Core.ValueObjects.CodedDouble(3.1, "", "3.1"),
+            READ_AVERAGE_LA_Current_Num_Coded = new CodedDouble(1.1, "", "1.1"),
+            READ_AVERAGE_LA_Previous_Num_Coded = new CodedDouble(2.1, "", "2.1"),
+            READ_AVERAGE_LA_Previous2_Num_Coded = new CodedDouble(3.1, "", "3.1"),
         },
     };
 
@@ -435,9 +455,9 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
     [
         new KS2EnglandPerformance{
             Id = "",
-            READ_AVERAGE_Eng_Current_Num_Coded = new Core.ValueObjects.CodedDouble(1, "", "1"),
-            READ_AVERAGE_Eng_Previous_Num_Coded = new Core.ValueObjects.CodedDouble(2, "", "2"),
-            READ_AVERAGE_Eng_Previous2_Num_Coded = new Core.ValueObjects.CodedDouble(3, "", "3"),
+            READ_AVERAGE_Eng_Current_Num_Coded = new CodedDouble(1, "", "1"),
+            READ_AVERAGE_Eng_Previous_Num_Coded = new CodedDouble(2, "", "2"),
+            READ_AVERAGE_Eng_Previous2_Num_Coded = new CodedDouble(3, "", "3"),
         },
         new KS2EnglandPerformance{}
     ];

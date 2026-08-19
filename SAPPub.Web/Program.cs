@@ -1,3 +1,5 @@
+using Autofac.Core;
+using Dapper.Extensions.MiniProfiler;
 using Dfe.Analytics;
 using Dfe.Analytics.AspNetCore;
 using GovUk.Frontend.AspNetCore;
@@ -41,6 +43,7 @@ public partial class Program
         builder.Services.Configure<AnalyticsOptions>(builder.Configuration.GetSection("Analytics"));
         builder.Services.Configure<GatewayOptions>(builder.Configuration.GetSection("Gateway"));
         builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("Email"));
+        builder.Services.Configure<UrlLinksOptions>(builder.Configuration.GetSection("UrlLinks"));
 
         var enableGateway = builder.Configuration.GetValue<bool>("Gateway:Enabled");
         var emailAPIKey = builder.Configuration.GetValue<string>("Email:ApiKey");
@@ -70,6 +73,11 @@ public partial class Program
         if (builder.Environment.IsDevelopment())
         {
             builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+            builder.Services.AddMiniProfiler(options =>
+            {
+                options.SqlFormatter = new StackExchange.Profiling.SqlFormatters.InlineFormatter();
+            });
+            builder.Services.AddMiniProfilerForDapper();
         }
         else
         {
@@ -141,8 +149,11 @@ public partial class Program
         // Add feature management abilility
         builder.Services.AddFeatureManagement();
 
-        var app = builder.Build();
+        // Add caching
+        builder.Services.AddSingleton<MyMemoryCache>();
 
+        var app = builder.Build();
+        app.UseMiniProfiler();
         app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
         //Configure the HTTP request pipeline.

@@ -2,9 +2,9 @@
 
 public class AverageResultModel
 {
-    public required AverageResult Establishment { get; init; }
+    public required PerformanceResult Establishment { get; init; }
 
-    public required AverageResult LocalAuthority { get; init; }
+    public required PerformanceResult LocalAuthority { get; init; }
 
-    public required AverageResult England { get; init; }
+    public required PerformanceResult England { get; init; }
 }

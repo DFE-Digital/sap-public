@@ -1,5 +1,6 @@
 ﻿using Moq;
 using SAPPub.Core.Entities;
+using SAPPub.Core.Enums;
 using SAPPub.Core.Helpers;
 using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Services;
@@ -42,8 +43,14 @@ public class AboutSchoolServiceTests
         ReligiousCharacterName = "ReligiousCharacter",
         OfficialSixthFormId = "No",
         ResourcedProvisionName = "Resourced provision",
-        EstablishmentTypeGroupId = "4",
-        SenTypes = "SLCN - Speech, language and Communication, ASD - Autistic Spectrum Disorder, SEMH - Social"
+        EstablishmentTypeGroup = EstablishmentTypeGroup.LocalAuthorityMaintainedSchools,
+        SenTypes = "SLCN - Speech, language and Communication, ASD - Autistic Spectrum Disorder, SEMH - Social",
+        NurseryProvisionName = "Has Nursery Classes",
+        KS2WraparoundCare = "Wraparound care",
+        FreeBreakfastClubProgramme = true,
+        IsKS2 = true,
+        IsKS4 = true,
+        IsKS5 = false
     };
 
     private readonly List<EstablishmentServiceModel> fakeEstablishments =
@@ -134,8 +141,14 @@ public class AboutSchoolServiceTests
         Assert.Equal(fakeEstablishment.ReligiousCharacterName, result.ReligiousCharacter);
         Assert.Equal(fakeEstablishment.OfficialSixthFormId, result.OfficialSixthFormId);
         Assert.Equal(fakeEstablishment.ResourcedProvisionName, result.ResourcedProvisionName);
-        Assert.Equal(fakeEstablishment.EstablishmentTypeGroupId, result.EstablishmentTypeGroupId);
+        Assert.Equal(fakeEstablishment.EstablishmentTypeGroup, result.EstablishmentTypeGroup);
         Assert.Equal(fakeEstablishment.SenTypes, result.SenTypes);
+        Assert.Equal(fakeEstablishment.HasNurseryProvision, result.HasNurseryProvision);
+        Assert.Equal(fakeEstablishment.FreeBreakfastClubProgramme, result.FreeBreakfastClubProgramme);
+        Assert.Equal(fakeEstablishment.KS2WraparoundCare, result.KS2WraparoundCare);
+        Assert.Equal(fakeEstablishment.IsKS2, result.IsKS2);
+        Assert.Equal(fakeEstablishment.IsKS4, result.IsKS4);
+        Assert.Equal(fakeEstablishment.IsKS5, result.IsKS5);
     }
 
     [Theory]

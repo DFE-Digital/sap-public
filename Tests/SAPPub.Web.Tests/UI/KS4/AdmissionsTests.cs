@@ -6,7 +6,6 @@ namespace SAPPub.Web.Tests.UI.KS4;
 [Collection("Playwright Tests")]
 public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
-    private string _pageUrl = "school/105574/loreto-high-school-chorlton/admissions/secondary";
 
     private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
     {
@@ -79,7 +78,7 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
         await nav.ShouldBeVisibleAsync();
         await nav.ShouldHaveItemsCountAsync(6);
         await nav.ShouldHaveOneActiveItemAsync();
-        await nav.ShouldHaveActiveHrefAsync(_pageUrl);
+        await nav.ShouldHaveActiveHrefAsync(_schoolUrnToUrlMap["105574"].Replace("/secondary", ""));
     }
 
     [Fact]
@@ -118,14 +117,15 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
         // Act
         var summaryCard = Page.GetByTestId("moving-schools-during-year-summary-card");
         await summaryCard.WaitForAsync();
-        var link = summaryCard.GetByTestId("link");
 
         // Assert
         Assert.True(await summaryCard.IsVisibleAsync());
+
+        // The link is always rendered, but may be empty if no LA URL data exists
+        var link = summaryCard.GetByTestId("link");
         Assert.True(await link.IsVisibleAsync());
-        var href = await link.GetAttributeAsync("href");
+
         var text = await link.TextContentAsync();
-        Assert.Contains("https://", href); // Todo - we need tests that allow us to know what these values will be
         Assert.NotNull(text);
     }
 
@@ -223,7 +223,7 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
-        var subNav = Page.Locator("#sub-navigation-academic-performance");
+        var subNav = Page.Locator("#sub-navigation-admissions");
         var isVisible = await subNav.IsVisibleAsync();
 
         // Assert
@@ -237,7 +237,7 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
         await Page.GotoAsync(_schoolUrnToUrlMap["150009"]);
 
         // Act
-        var subNav = Page.Locator("#sub-navigation-academic-performance");
+        var subNav = Page.Locator("#sub-navigation-admissions");
         var isVisible = await subNav.IsVisibleAsync();
 
         // Assert
@@ -251,8 +251,8 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
         await Page.GotoAsync(_schoolUrnToUrlMap["150009"]);
 
         // Act
-        var primaryLink = Page.Locator("#sub-navigation-academic-performance a:not([aria-current='page'])");
-        var secondaryLink = Page.Locator("#sub-navigation-academic-performance a[aria-current='page']");
+        var primaryLink = Page.Locator("#sub-navigation-admissions a:not([aria-current='page'])");
+        var secondaryLink = Page.Locator("#sub-navigation-admissions a[aria-current='page']");
 
         var primaryLinkText = await primaryLink.TextContentAsync();
         var secondaryLinkText = await secondaryLink.TextContentAsync();

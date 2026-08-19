@@ -26,7 +26,7 @@ public class KS4ControllerTests
     private readonly Mock<IAcademicPerformanceEnglishAndMathsResultsService> _mockEnglishAndMathsResultsService = new();
     private readonly Mock<IAttainmentAndProgressService> _mockAttainmentAndProgressService = new();
     private readonly KS4Controller _controller;
-    private EstablishmentServiceModel _fakeEstablishment;
+    private EstablishmentMinimumServiceModel _fakeEstablishment;
 
     private List<SubjectsEnteredModel> GcseSubjects =
         new()
@@ -136,32 +136,8 @@ public class KS4ControllerTests
 
     public KS4ControllerTests()
     {
-        _fakeEstablishment = new EstablishmentTestBuilder()
-            .WithTrustName("Trust")
-            .WithWebsite("https://www.gov.uk/")
-            .WithTelephoneNum("012154896")
-            .WithAddressStreet("Street")
-            .WithAddressLocality("Locality")
-            .WithAddressTown("Town")
-            .WithAddressPostcode("Postcode")
+        _fakeEstablishment = new EstablishmentMinimumTestBuilder()
             .WithLAName("Sheffield")
-            .WithLAGssCode("123")
-            .WithTypeOfEstablishmentName("EstablishmentName")
-            .WithHeadteacherTitle("Title")
-            .WithHeadteacherFirstName("FirstName")
-            .WithHeadteacherLastName("LastName")
-            .WithAgeRangeLow("11")
-            .WithAgeRangeHigh("18")
-            .WithTotalPupils("1117")
-            .WithGenderName("GenderName")
-            .WithReligiousCharacterName("ReligiousCharacter")
-            .WithSixthForm(false)
-            .WithResourcedProvisionName("Resourced provision")
-            .WithEstablishmentTypeGroupId("1")
-            .WithStatusCode(1)
-            .WithOpenReasonId(10)
-            .WithOpenDate()
-            .WithSenTypes("VI - Visual Impairment, HI - Hearing Impairment")
             .WithIsKeyStage2(true)
             .WithIsKeyStage4(true)
             .BuildServiceModel();
@@ -169,7 +145,7 @@ public class KS4ControllerTests
         _mockEstablishmentService = new();
 
         _mockEstablishmentService
-            .Setup(es => es.GetEstablishmentAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Setup(es => es.GetEstablishmentMinimumAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(_fakeEstablishment);
 
         var tempPath = Path.Combine(Path.GetTempPath(), "SAPPubTests", Guid.NewGuid().ToString());

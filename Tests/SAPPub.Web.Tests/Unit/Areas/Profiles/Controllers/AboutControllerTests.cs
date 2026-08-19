@@ -43,13 +43,17 @@ public class AboutControllerTests : BaseProfilesTests
             ReligiousCharacter = fakeEstablishment.ReligiousCharacterName,
             OfficialSixthFormId = fakeEstablishment.OfficialSixthFormId,
             ResourcedProvisionName = fakeEstablishment.ResourcedProvisionName,
-            EstablishmentTypeGroupId = fakeEstablishment.EstablishmentTypeGroupId,
+            EstablishmentTypeGroup = fakeEstablishment.EstablishmentTypeGroup,
             Status = fakeEstablishment.StatusCode.ToStatus(),
             ClosedDate = fakeEstablishment.ClosedDate.ToDateOnly(),
             OpenReasonId = fakeEstablishment.OpenReasonId,
             OpenDate = fakeEstablishment.OpenDate.ToDateOnly(),
+            KS2WraparoundCare = "Wraparound care",
+            FreeBreakfastClubProgramme = true,
+            HasNurseryProvision = true,
             IsKS2 = true,
-            IsKS4 = true
+            IsKS4 = true,
+            IsKS5 = false
         };
     }
 
@@ -99,7 +103,11 @@ public class AboutControllerTests : BaseProfilesTests
         Assert.Equal(expectedResult.OpenReasonId, model.OpenReasonId);
         Assert.Equal(expectedResult.SenTypes, model.SenTypes.Value);
         Assert.Equal("Primary and Secondary", model.EducationPhase);
+        Assert.Equal(expectedResult.KS2WraparoundCare, model.KS2WraparoundCare.Value);
+        Assert.Equal(expectedResult.FreeBreakfastClubProgramme, model.FreeBreakfastClubProgramme.Value);
+        Assert.Equal(expectedResult.HasNurseryProvision, model.HasNurseryProvision.Value);
         Assert.Equal(expectedResult.IsKS4, model.IsKS4);
+        Assert.Equal(expectedResult.IsKS5, model.IsKS5);
     }
 
     [Fact]
@@ -385,12 +393,12 @@ public class AboutControllerTests : BaseProfilesTests
     }
 
     [Theory]
-    [InlineData("4", true)]
-    [InlineData("2", false)]
-    [InlineData("9", false)]
-    public async Task Get_AboutSchool_SchoolFeatures_IsLocalAuthoritySchool(string establishmentTypeGroupId, bool expectedOutput)
+    [InlineData(EstablishmentTypeGroup.LocalAuthorityMaintainedSchools, true)]
+    [InlineData(EstablishmentTypeGroup.Academies, false)]
+    [InlineData(EstablishmentTypeGroup.FreeSchools, false)]
+    public async Task Get_AboutSchool_SchoolFeatures_IsLocalAuthoritySchool(EstablishmentTypeGroup establishmentTypeGroup, bool expectedOutput)
     {
-        fakeEstablishment.EstablishmentTypeGroupId = establishmentTypeGroupId;
+        fakeEstablishment.EstablishmentTypeGroup = establishmentTypeGroup;
 
         var expectedResult = SchoolDetails();
 

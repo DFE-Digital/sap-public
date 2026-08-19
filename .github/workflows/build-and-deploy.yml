@@ -73,6 +73,8 @@ jobs:
   test:
     name: Run Unit, Integration and UI Tests
     if: ${{ github.event_name != 'workflow_dispatch' }}
+    permissions:
+      pull-requests: write
     runs-on: ubuntu-latest
     needs: [build]
 
@@ -167,7 +169,7 @@ jobs:
           reportgenerator -reports:coverage-results/coverage.xml -targetdir:./coverage -reporttypes:MarkdownSummaryGithub "-filefilters:-*/Tests/*"
 
       - name: Add Coverage PR Comment
-        uses: marocchino/sticky-pull-request-comment@v3
+        uses: marocchino/sticky-pull-request-comment@447031a6bb83f7438d890bb0136932be78342022
         if: github.event_name == 'pull_request' && (success() || failure())
         with:
           header: Coverage
@@ -175,7 +177,7 @@ jobs:
           path: ./coverage/SummaryGithub.md
 
       - name: Add Accessibility PR Comment
-        uses: marocchino/sticky-pull-request-comment@v3
+        uses: marocchino/sticky-pull-request-comment@447031a6bb83f7438d890bb0136932be78342022
         if: github.event_name == 'pull_request' && (success() || failure())
         with:
           header: Accessibility
@@ -304,7 +306,6 @@ jobs:
           ls -la "$GITHUB_WORKSPACE/konduit.sh"
 
       - name: Download seed backup from Blob
-        if: ${{ github.event.action == 'labeled' && github.event.label.name == 'deploy' && !contains(github.event.pull_request.labels.*.name, 'refresh data') }}
         shell: bash
         env:
           AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
@@ -324,7 +325,6 @@ jobs:
           ls -lh "${BACKUP_FILE}"
 
       - name: Restore backup into PR review DB (single transaction, with retry)
-        if: ${{ github.event.action == 'labeled' && github.event.label.name == 'deploy' && !contains(github.event.pull_request.labels.*.name, 'refresh data') }}
         shell: bash
         env:
           AKS_NAMESPACE: ${{ secrets.AKS_REVIEW_NAMESPACE }}

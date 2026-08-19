@@ -1,0 +1,109 @@
+﻿@using SAPPub.Web.ViewComponents.ChartWithTableToggle
+@model ChartWithTableToggleModel
+@using SAPPub.Web.Constants;
+@addTagHelper *, GovUk.Frontend.AspNetCore
+
+@{
+    var idPrefix = Model.IdPrefix;
+    var chartIdPrefix = Model.ChartPrefix;
+    var percentageSign = Model.IsPercentageData ? "%" : "";
+}
+
+<div class="chart-table-toggle" data-id-prefix="@idPrefix" data-chart-id-prefix="@chartIdPrefix">
+    <input type="radio" name="@(idPrefix)-dataView" id="@(idPrefix)-current-view" class="govuk-visually-hidden dataview-button chart-table-toggle__radio chart-table-toggle__radio-current" aria-labelledby="@(idPrefix)-show-current-data-btn" checked />
+    <input type="radio" name="@(idPrefix)-dataView" id="@(idPrefix)-data-overtime-view" class="govuk-visually-hidden dataview-button chart-table-toggle__radio--overtime chart-table-toggle__radio--overtime" aria-labelledby="@(idPrefix)-show-data-over-time-btn" />
+    @if (Model.HasEstablishmentData)
+    {
+        <div id="@(idPrefix)-current-year-data-container" class="chart-table-toggle__current-year-data-container @(idPrefix)-current-year-data-container">
+            <div id="@(idPrefix)-current-year-chart-container" class="chart-container chart-table-toggle__current-year-chart-container @(idPrefix)-current-year-chart-container">
+                <canvas id="@(chartIdPrefix)-chart"
+                        class="js-chart"
+                        data-type="bar"
+                        data-scaled="@Model.IsScaled.ToString().ToLower()"
+                        data-chart='@Html.Raw(Json.Serialize(Model.CurrentData))'
+                        data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
+                </canvas>
+            </div>
+
+            <div id="@(idPrefix)-current-year-table-container" class="chart-table-toggle__current-year-table-container @(idPrefix)-current-year-table-container">
+                <table id="@(idPrefix)-current-year-table" class="govuk-table">
+                    <tbody class="govuk-table__body">
+                        @foreach (var label in Model.CurrentData.Labels.Select((value, i) => (value, i)))
+                        {
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">@label.value</th>
+                                <td class="govuk-table__cell">
+                                    @(Model.CurrentData.Data[label.i].HasValue ? $"{Model.CurrentData.Data[label.i]}{percentageSign}" : Constants.NotAvailable)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="govuk-button-group">
+                <govuk-button id="@(idPrefix)-current-year-show-btn" type="button" class="govuk-button--secondary chart-table-toggle__current-year-show-btn @(idPrefix)-current-year-show-btn">Show as a table</govuk-button>
+            </div>
+
+            <div class="govuk-button-group">
+                <label id="@(idPrefix)-show-data-over-time-btn" for="@(idPrefix)-data-overtime-view" class="govuk-button govuk-button--secondary" tabindex="0">Show data over time</label>
+            </div>
+        </div>
+    }
+
+
+    <div id="@(idPrefix)-data-over-time-data-container" class="chart-table-toggle__data-over-time-data-container @(idPrefix)-data-over-time-data-container  @(Model.HasEstablishmentData ? "" : "govuk-!-display-block")">
+        @if (Model.HasEstablishmentData)
+        {
+            <div id="@(idPrefix)-data-over-time-chart-container" class="chart-container chart-table-toggle__data-over-time-chart-container @(idPrefix)-data-over-time-chart-container">
+                <div id="@(idPrefix)-data-overtime-chart-legend" class="chart-legend" data-chart-id="@(chartIdPrefix)-data-overtime-chart"></div>
+                <div class="chart-container stacked">
+                    <canvas id="@(chartIdPrefix)-data-overtime-chart"
+                            class="js-chart"
+                            data-type="bar"
+                            data-show-legend="true"
+                            data-scaled="@Model.IsScaled.ToString().ToLower()"
+                            data-chart='@Html.Raw(Json.Serialize(Model.OverTimeData))'
+                            data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
+                    </canvas>
+                </div>
+            </div>
+        }
+        <div id="@(idPrefix)-data-over-time-table-container" class="chart-table-toggle__data-over-time-table-container @(idPrefix)-data-over-time-table-container">
+            <table id="@(idPrefix)-data-overtime-table" class="govuk-table">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header"></th>
+                        @foreach (var label in Model.OverTimeData.Labels)
+                        {
+                            <th scope="col" class="govuk-table__header">@label</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                    @foreach (var dataset in Model.OverTimeData.Datasets.Select((value, i) => (value, i)))
+                    {
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">@dataset.value.Label</th>
+                            @foreach (var data in dataset.value.Data)
+                            {
+                                <td class="govuk-table__cell">@(data.HasValue ? data + percentageSign : Constants.NotAvailable)</td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+         @if (Model.HasEstablishmentData)
+        {
+            <div class="govuk-button-group">
+                <govuk-button id="@(idPrefix)-data-over-time-show-btn" type="button" class="govuk-button--secondary chart-table-toggle__data-over-time-show-btn @(idPrefix)-data-over-time-show-btn">Show as a table</govuk-button>
+            </div>
+
+            <div class="govuk-button-group">
+                <label id="@(idPrefix)-show-current-data-btn" for="@(idPrefix)-current-view" class="govuk-button govuk-button--secondary" tabindex="0">Show current data</label>
+            </div>
+        }
+
+    </div>
+</div>

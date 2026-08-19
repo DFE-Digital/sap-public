@@ -4,6 +4,7 @@ using Microsoft.FeatureManagement.Mvc;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Web.Areas.Profiles.Filters;
+using SAPPub.Web.Areas.Profiles.ViewModels.Admissions;
 using SAPPub.Web.Constants;
 
 namespace SAPPub.Web.Areas.Profiles.Controllers;
@@ -46,7 +47,7 @@ public class AdmissionsController(ILogger<AdmissionsController> logger, IFeature
         CancellationToken ct)
     {
         var admissionsDetails = await admissionsService.GetAdmissionsDetailsAsync(urn, ct);
-        var model = ViewModels.KS2.AdmissionsViewModel.MapFrom(admissionsDetails, urn);
+        var model = AdmissionsViewModel.MapFrom(admissionsDetails, urn);
         return View(model);
     }
 
@@ -59,7 +60,7 @@ public class AdmissionsController(ILogger<AdmissionsController> logger, IFeature
         CancellationToken ct)
     {
         var admissionsDetails = await admissionsService.GetAdmissionsDetailsAsync(urn, ct);
-        var model = SAPPub.Web.Models.SecondarySchool.AdmissionsViewModel.MapFrom(admissionsDetails, urn);
+        var model = AdmissionsViewModel.MapFrom(admissionsDetails, urn);
         return View(model);
     }
 }

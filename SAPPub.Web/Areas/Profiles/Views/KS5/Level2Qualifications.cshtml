@@ -1,7 +1,6 @@
 ﻿@using SAPPub.Web.Constants
 @using SAPPub.Web.ViewComponents.VerticalNavigation
-@model SAPPub.Web.Areas.Profiles.ViewModels.KS5.KS5ViewModel
-
+@model SAPPub.Web.Areas.Profiles.ViewModels.KS5.Level2QualificationViewModel
 
 @{
     ViewData["Header"] = PageTitleConstants.KS5SchoolPageTitles.Performance;
@@ -24,9 +23,6 @@
     <div class="govuk-grid-column-three-quarters">
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
         <h1 class="govuk-heading-xl">@ViewData["Header"]</h1>
-        <p class="govuk-body">
-            INTRO TEXT
-        </p>
 
         <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
             <ul class="moj-sub-navigation__list">
@@ -53,11 +49,26 @@
             </div>
         </form>
 
+        <h2 class="govuk-heading-l">@Model.Level2Qualification.GetDisplayName()</h2>
 
-        <p class="govuk-body">
-            MORE TEXT
+        @* Qualification Info *@
+        <partial name="_QualificationInfo" view-data='new ViewDataDictionary(ViewData) { ["QualificationLevel"] = Model.Level2Qualification }' />
+
+        <p id="no-of-students-completed-qulification-info" class="govuk-tag govuk-tag--full-width govuk-tag--grey govuk-!-margin-bottom-4">
+            Number of students from this school or college included in the measure: @Model.TotalNoOfStudentCompletedQualification.DisplayText()
         </p>
 
+        @* ProgressScore Info *@
+        <partial name="_ProgressScore" model="@Model.ProgressScore" view-data='new ViewDataDictionary(ViewData) { ["QualificationLevel"] = Model.Level2Qualification }' />
+
+        @* Average result *@
+        <partial name="_AverageResult" model="@Model.AverageResult" view-data='new ViewDataDictionary(ViewData) { ["QualificationLevel"] = Model.Level2Qualification, ["LAName"] = Model.LAName }' />
+
+        @* Student retention *@
+        <h3 class="govuk-heading-m">Student retention</h3>
+        <div id="student-retention" class="govuk-inset-text">
+            Measures on student retention will be available shortly in a future release.
+        </div>
 
         <govuk-pagination id="academic-performance-level-2-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.KS5AcademicPerformanceLevel2" asp-all-route-data="@Model.RouteAttributes">Academic performance: Level 3 qualifications</govuk-pagination-previous>

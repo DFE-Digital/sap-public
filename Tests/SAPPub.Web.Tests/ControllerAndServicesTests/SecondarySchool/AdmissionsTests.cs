@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
 using Moq;
@@ -12,8 +13,8 @@ using SAPPub.Core.Services;
 using SAPPub.Core.Services.KS4.Admissions;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Areas.Profiles.Controllers;
+using SAPPub.Web.Areas.Profiles.ViewModels.Admissions;
 using SAPPub.Web.Constants;
-using SAPPub.Web.Models.SecondarySchool;
 
 namespace SAPPub.Web.Tests.ControllerAndServicesTests.SecondarySchool;
 
@@ -23,6 +24,7 @@ public class AdmissionsTests
     private readonly Mock<IEstablishmentRepository> _mockEstablishmentRepository = new();
     private readonly Mock<ILogger<AdmissionsController>> _mockLogger = new();
     private readonly Mock<IFeatureManager> _featureManager = new();
+    private readonly Mock<IMemoryCache> _mockMemoryCache = new();
 
     private readonly IEstablishmentService _establishmentService;
     private readonly IAdmissionsService _admissionsService;
@@ -40,7 +42,7 @@ public class AdmissionsTests
         var tempPath = Path.Combine(Path.GetTempPath(), "SAPPubTests", Guid.NewGuid().ToString());
         Directory.CreateDirectory(tempPath);
 
-        _establishmentService = new EstablishmentService(_mockEstablishmentRepository.Object);
+        _establishmentService = new EstablishmentService(_mockEstablishmentRepository.Object, _mockMemoryCache.Object);
         _admissionsService = new EstablishmentAdmissionsService(_establishmentService, _mockLaService.Object);
         _controller = new AdmissionsController(_mockLogger.Object, _featureManager.Object);
 
@@ -117,7 +119,7 @@ public class AdmissionsTests
         Assert.NotNull(model);
         Assert.Equal(_establishment.URN, model.URN);
         Assert.Equal(_establishment.EstablishmentName, model.SchoolName);
-        Assert.Equal(lASchoolAdmissionsUrl, model.LASecondarySchoolAdmissionsLinkUrl);
+        Assert.Equal(lASchoolAdmissionsUrl, model.LASchoolAdmissionsLinkUrl);
         Assert.Equal(laName, model.LAName);
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(_establishment.URN, model.RouteAttributes[RouteConstants.URN]);

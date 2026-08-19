@@ -2,14 +2,15 @@
 @model SAPPub.Web.Areas.Profiles.ViewModels.KS5.ProgressScoreViewModel
 
 @{
-    var qualificationLevel = (Level3?)ViewData["QualificationLevel"];
+    var qualification = ViewData["QualificationLevel"];
+    var qualificationTitle = qualification is Enum enumValue ? enumValue.GetDisplayName() : string.Empty;
 }
 
 <h3 class="govuk-heading-m">Progress score</h3>
 
 <p class="govuk-body">
     This shows how much progress students made between the end of key stage 4 and the end of
-    their @qualificationLevel?.GetDisplayName() studies, compared to the national average.
+    their @qualificationTitle studies, compared to the national average.
     These scores are also known as 'value added' scores.
 </p>
 

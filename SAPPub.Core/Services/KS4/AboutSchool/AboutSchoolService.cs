@@ -72,7 +72,7 @@ public sealed class AboutSchoolService(
             ReligiousCharacter = establishment.ReligiousCharacterName,
             OfficialSixthFormId = establishment.OfficialSixthFormId,
             ResourcedProvisionName = establishment.ResourcedProvisionName,
-            EstablishmentTypeGroupId = establishment.EstablishmentTypeGroupId,
+            EstablishmentTypeGroup = establishment.EstablishmentTypeGroup,
             ClosedDate = establishment.ClosedDate.ToDateOnly(),
             Status = establishment.StatusCode.ToStatus(),
             OpenDate = establishment.OpenDate.ToDateOnly(),
@@ -80,6 +80,9 @@ public sealed class AboutSchoolService(
             SenTypes = establishment.SenTypes,
             Predecessors = predecessorLinks,
             Successors = sucessorLinks,
+            KS2WraparoundCare = establishment.KS2WraparoundCare,
+            FreeBreakfastClubProgramme = establishment.FreeBreakfastClubProgramme,
+            HasNurseryProvision = establishment.HasNurseryProvision,
             IsKS2 = establishment.IsKS2,
             IsKS4 = establishment.IsKS4,
             IsKS5 = establishment.IsKS5

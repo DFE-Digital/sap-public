@@ -52,18 +52,62 @@
 
         <h2 class="govuk-heading-l">@Model.Level3Qualification.GetDisplayName()</h2>
 
-         @* Qualification Info *@
+        @* Qualification Info *@
         <partial name="_QualificationInfo" view-data='new ViewDataDictionary(ViewData) { ["QualificationLevel"] = Model.Level3Qualification }' />
 
-        <p id="no-of-students-completed-qulification-info" class="govuk-tag govuk-tag--full-width govuk-tag--grey govuk-!-margin-bottom-4">
-                Number of students from this school or college included in the measure: @Model.TotalNoOfStudentCompletedQualification.DisplayText()
+        <p id="no-of-students-completed-qualification-info" class="govuk-tag govuk-tag--full-width govuk-tag--grey govuk-!-margin-bottom-4">
+            Number of students from this school or college included in the measure: @Model.TotalNoOfStudentCompletedQualification.DisplayText()
         </p>
-               
+
         @* ProgressScore Info *@
         <partial name="_ProgressScore" model="@Model.ProgressScore" view-data='new ViewDataDictionary(ViewData) { ["QualificationLevel"] = Model.Level3Qualification }' />
-        
+
         @* Average result *@
         <partial name="_AverageResult" model="@Model.AverageResult" view-data='new ViewDataDictionary(ViewData) { ["QualificationLevel"] = Model.Level3Qualification, ["LAName"] = Model.LAName }' />
+
+        @* Student retention *@
+        <h3 class="govuk-heading-m">Student retention</h3>
+        <div id="student-retention" class="govuk-inset-text">
+            Measures on student retention will be available shortly in a future release.
+        </div>
+
+        @if (Model.Level3Qualification == Level3.ALevel)
+        {
+            @* Additional data *@
+            <partial name="_AdditionalData" model="@Model.AdditionalData" view-data='new ViewDataDictionary(ViewData) { ["LAName"] = Model.LAName }' />
+        }
+
+        @* Show Achieving advanced level maths qualifications if valid *@
+        @if (Model.Level3Qualification == Level3.Academic
+                && Model.AdvancedLevelMathsQualificationData != null)
+        {            
+            <govuk-details id="advanced-level-maths-qualifications-details">
+                <govuk-details-summary>
+                    Achieving advanced level maths qualifications
+                </govuk-details-summary>
+                <govuk-details-text>
+                    <h3 class="govuk-heading-m">Achieving advanced level maths qualifications </h3>
+
+                    <table id="advanced-level-maths-qualifications-table" class="govuk-table">
+                        <tbody class="govuk-table__body">
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">School or college</th>
+                                <td class="govuk-table__cell">@Model.AdvancedLevelMathsQualificationData!.SchoolOrCollege.DisplayPercentage()</td>
+                            </tr>
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">@Model.LAName</th>
+                                <td class="govuk-table__cell">@Model.AdvancedLevelMathsQualificationData!.LocalAuthority.DisplayPercentage()</td>
+                            </tr>
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">England average</th>
+                                <td class="govuk-table__cell">@Model.AdvancedLevelMathsQualificationData!.England.DisplayPercentage()</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </govuk-details-text>
+            </govuk-details>
+        }
 
         <govuk-pagination id="academic-performance-level-3-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress" asp-all-route-data="@Model.RouteAttributes">Academic performance: Progress and Attainment</govuk-pagination-previous>

@@ -1,4 +1,5 @@
 ﻿using SAPPub.Core.Enums;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Web.Areas.Profiles.ViewModels.Performance;
@@ -14,12 +15,12 @@ public class Ks5SubjectEnteredViewModel : SubjectsEnteredBaseModel
 
     public required DisplayField<string> EstablilshmentWebsite { get; set; }
 
-    public static Ks5SubjectEnteredViewModel Map(AboutSchoolModel schoolDetails, IEnumerable<SubjectsEnteredModel> subjectsEntered)
+    public static Ks5SubjectEnteredViewModel Map(EstablishmentMinimumServiceModel schoolDetails, IEnumerable<SubjectsEnteredModel> subjectsEntered)
     {
         return new Ks5SubjectEnteredViewModel
         {
-            URN = schoolDetails.Urn,
-            SchoolName = schoolDetails.SchoolName,
+            URN = schoolDetails.URN,
+            SchoolName = schoolDetails.EstablishmentName,
             IsKS2 = schoolDetails.IsKS2,
             IsKS4 = schoolDetails.IsKS4,
             IsKS5 = schoolDetails.IsKS5,

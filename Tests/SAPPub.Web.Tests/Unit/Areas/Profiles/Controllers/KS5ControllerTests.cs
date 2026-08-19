@@ -1,13 +1,14 @@
-﻿using AngleSharp.Dom;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Enums.KS5Qualifications;
+using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.Performance;
-using SAPPub.Core.ServiceModels.KS4.AboutSchool;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.Common;
+using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Areas.Profiles.Controllers;
@@ -21,9 +22,10 @@ public class KS5ControllerTests : BaseProfilesTests
 {
     private readonly Mock<ILogger<KS5Controller>> _mockLogger = new();
     private readonly Mock<ILevel3QualificationsService> _mockLevel3QualificationsService = new();
+    private readonly Mock<ILevel2QualificationsService> _mockLevel2QualificationsService = new();
     private readonly Mock<IEnglishAndMathsQualificationsService> _mockEnglishAndMathsQualificationsService = new();
     private readonly Mock<IKS5EstablishmentSubjectEntriesService> _mockKs5EstablishmentSubjectEntriesService = new();
-    private readonly Mock<IAboutSchoolService> _mockAboutSchoolService = new();
+    private readonly Mock<IEstablishmentService> _establishmentService = new();
     private readonly KS5Controller _controller;
 
     public KS5ControllerTests()
@@ -78,6 +80,40 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.Equal(expectedResult.AverageResult.Establishment.Grade.ToString(), model.AverageResult.EstablishmentGrade.DisplayText());
         Assert.Equal(expectedResult.AverageResult.Establishment.Points, model.AverageResult.EstablishmentPoints.Value);
         Assert.Equal(expectedResult.AverageResult.Establishment.Grade.ToString(), model.AverageResult.EstablishmentGrade.DisplayText());
+
+        if (qualification == Level3.ALevel)
+        {
+            Assert.Equal(expectedResult.AdditionalData!.TotalNoOfStudentsIncludedInThisMeasure, model.AdditionalData!.TotalNoOfStudentsIncludedInThisMeasure.Value);
+            Assert.Equal(expectedResult.AdditionalData!.Establishment.Points, model.AdditionalData!.EstablishmentPoints.Value);
+            Assert.Equal(expectedResult.AdditionalData!.Establishment.Grade.ToString(), model.AdditionalData!.EstablishmentGrade.DisplayText());
+            Assert.Equal(expectedResult.AdditionalData!.Establishment.Points, model.AdditionalData!.EstablishmentPoints.Value);
+            Assert.Equal(expectedResult.AdditionalData!.Establishment.Grade.ToString(), model.AdditionalData!.EstablishmentGrade.DisplayText());
+            Assert.Equal(expectedResult.AdditionalData!.Establishment.Points, model.AdditionalData!.EstablishmentPoints.Value);
+            Assert.Equal(expectedResult.AdditionalData!.Establishment.Grade.ToString(), model.AdditionalData!.EstablishmentGrade.DisplayText());
+        }
+        else
+        {
+            Assert.Null(model.AdditionalData?.TotalNoOfStudentsIncludedInThisMeasure.Value);
+            Assert.Null(model.AdditionalData?.EstablishmentPoints.Value);
+            Assert.Null(model.AdditionalData?.EstablishmentGrade.Value);
+            Assert.Null(model.AdditionalData?.EstablishmentPoints.Value);
+            Assert.Null(model.AdditionalData?.EstablishmentGrade.Value);
+            Assert.Null(model.AdditionalData?.EstablishmentPoints.Value);
+            Assert.Null(model.AdditionalData?.EstablishmentGrade.Value);
+        }
+
+        if (qualification == Level3.Academic)
+        {
+            Assert.Equal(expectedResult.AdvancedLevelMathsQualificationData!.SchoolOrCollege, model.AdvancedLevelMathsQualificationData!.SchoolOrCollege.Value);
+            Assert.Equal(expectedResult.AdvancedLevelMathsQualificationData!.LocalAuthority, model.AdvancedLevelMathsQualificationData!.LocalAuthority.Value);
+            Assert.Equal(expectedResult.AdvancedLevelMathsQualificationData!.England, model.AdvancedLevelMathsQualificationData!.England.Value);
+        }
+        else
+        {
+            Assert.Null(model.AdvancedLevelMathsQualificationData?.SchoolOrCollege.Value);
+            Assert.Null(model.AdvancedLevelMathsQualificationData?.LocalAuthority.Value);
+            Assert.Null(model.AdvancedLevelMathsQualificationData?.England.Value);
+        }
     }
 
     [Theory]
@@ -109,6 +145,108 @@ public class KS5ControllerTests : BaseProfilesTests
                 Establishment = new() { Grade = new CodedString(null, "Not applicable", "z"), Points = new CodedDouble(null, "Not applicable", "z") },
                 LocalAuthority = new() { Grade = new CodedString(null, "Redacted for confidentiality", "c"), Points = new CodedDouble(null, "Redacted for confidentiality", "c") },
                 England = new() { Grade = new CodedString(null, "Not available", "x"), Points = new CodedDouble(null, "Not available", "x") },
+            },
+            AdditionalData = new AdditionalDataModel
+            {
+                TotalNoOfStudentsIncludedInThisMeasure = new CodedDouble(null, "Not applicable", "z"),
+                Establishment = new() { Grade = new CodedString(null, "Not applicable", "z"), Points = new CodedDouble(null, "Not applicable", "z") },
+                LocalAuthority = new() { Grade = new CodedString(null, "Redacted for confidentiality", "c"), Points = new CodedDouble(null, "Redacted for confidentiality", "c") },
+                England = new() { Grade = new CodedString(null, "Not available", "x"), Points = new CodedDouble(null, "Not available", "x") },
+            },
+            AdvancedLevelMathsQualificationData = new SimpleCodedDoubleTableModel
+            {
+                SchoolOrCollege = new CodedDouble(null, "Not applicable", "z"),
+                LocalAuthority = new CodedDouble(null, "Redacted for confidentiality", "c"),
+                England = new CodedDouble(null, "Not available", "x")
+            },
+        };
+
+        _mockLevel3QualificationsService
+            .Setup(es => es.GetLevel3QualificationDetailsAsync(fakeEstablishment.URN, qualification, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.Level3Qualifications(
+            _mockLevel3QualificationsService.Object,
+            expectedResult.Urn,
+            expectedResult.SchoolName,
+            qualification,
+            CancellationToken.None) as ViewResult;
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as Level3QualificationViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(expectedResult.Urn, model.URN);
+        Assert.Equal(expectedResult.SchoolName, model.SchoolName);
+        Assert.Equal($"{expectedResult.LAName} average", model.LAName);
+        Assert.Equal(expectedResult.IsKS2, model.IsKS2);
+        Assert.Equal(expectedResult.IsKS4, model.IsKS4);
+        Assert.Equal(expectedResult.IsKS5, model.IsKS5);
+
+        Assert.Equal(NotAvailable, model.TotalNoOfStudentCompletedQualification.DisplayText());
+        Assert.Equal(NotAvailable, model.ProgressScore.Score.DisplayText());
+        Assert.Equal(NotAvailable, model.ProgressScore.BandingRating.DisplayText());
+        Assert.Equal(NotAvailable, model.ProgressScore.ConfidenceLevelLower.DisplayText());
+        Assert.Equal(NotAvailable, model.ProgressScore.ConfidenceLevelUpper.DisplayText());
+        Assert.Equal(NotAvailable, model.ProgressScore.EnglandAverageScore.DisplayText());
+        Assert.Equal(NotAvailable, model.ProgressScore.Progress8BandingContextDescription.DisplayText());
+
+        Assert.Equal(NotAvailable, model.AverageResult.EstablishmentPoints.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.EstablishmentGrade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthorityPoints.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthorityGrade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.EnglandPoints.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.EnglandGrade.DisplayText());
+
+        Assert.Equal(NotAvailable, model.AdditionalData?.TotalNoOfStudentsIncludedInThisMeasure.DisplayText());
+        Assert.Equal(NotAvailable, model.AdditionalData?.EstablishmentPoints.DisplayText());
+        Assert.Equal(NotAvailable, model.AdditionalData?.EstablishmentGrade.DisplayText());
+        Assert.Equal(NotAvailable, model.AdditionalData?.LocalAuthorityPoints.DisplayText());
+        Assert.Equal(NotAvailable, model.AdditionalData?.LocalAuthorityGrade.DisplayText());
+        Assert.Equal(NotAvailable, model.AdditionalData?.EnglandPoints.DisplayText());
+        Assert.Equal(NotAvailable, model.AdditionalData?.EnglandGrade.DisplayText());
+
+        Assert.Equal(NotAvailable, model.AdvancedLevelMathsQualificationData?.SchoolOrCollege.DisplayText());
+        Assert.Equal(NotAvailable, model.AdvancedLevelMathsQualificationData?.LocalAuthority.DisplayText());
+        Assert.Equal(NotAvailable, model.AdvancedLevelMathsQualificationData?.England.DisplayText());
+    }
+
+    [Theory]
+    [InlineData(Level3.ALevel)]
+    [InlineData(Level3.Academic)]
+    [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
+    public async Task Get_Level3Qualifications_Info_With_No_Data_ReturnsOk(Level3 qualification)
+    {
+        var expectedResult = new Level3QualificationModel
+        {
+            Urn = fakeEstablishment.URN,
+            SchoolName = fakeEstablishment.EstablishmentName,
+            LAName = fakeEstablishment.LAName,
+            IsKS2 = true,
+            IsKS4 = true,
+            IsKS5 = true,
+            QualificationType = qualification,
+            ProgressScore = new ProgressScoreModel(),
+            AverageResult = new AverageResultModel
+            {
+                Establishment = new(),
+                LocalAuthority = new(),
+                England = new(),
+            },
+            AdditionalData = new AdditionalDataModel
+            {
+                TotalNoOfStudentsIncludedInThisMeasure = CodedDouble.Empty,
+                Establishment = new(),
+                LocalAuthority = new(),
+                England = new(),
+            },
+            AdvancedLevelMathsQualificationData = new SimpleCodedDoubleTableModel
+            {
+                SchoolOrCollege = new(),
+                LocalAuthority = new(),
+                England = new()
             }
         };
 
@@ -149,16 +287,139 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.Equal(NotAvailable, model.AverageResult.LocalAuthorityGrade.DisplayText());
         Assert.Equal(NotAvailable, model.AverageResult.EnglandPoints.DisplayText());
         Assert.Equal(NotAvailable, model.AverageResult.EnglandGrade.DisplayText());
+
+        Assert.Equal(NotAvailable, model.AdditionalData?.TotalNoOfStudentsIncludedInThisMeasure.DisplayText());
+        Assert.Equal(NotAvailable, model.AdditionalData?.EstablishmentPoints.DisplayText());
+        Assert.Equal(NotAvailable, model.AdditionalData?.EstablishmentGrade.DisplayText());
+        Assert.Equal(NotAvailable, model.AdditionalData?.LocalAuthorityPoints.DisplayText());
+        Assert.Equal(NotAvailable, model.AdditionalData?.LocalAuthorityGrade.DisplayText());
+        Assert.Equal(NotAvailable, model.AdditionalData?.EnglandPoints.DisplayText());
+        Assert.Equal(NotAvailable, model.AdditionalData?.EnglandGrade.DisplayText());
+
+        Assert.Equal(NotAvailable, model.AdvancedLevelMathsQualificationData?.SchoolOrCollege.DisplayText());
+        Assert.Equal(NotAvailable, model.AdvancedLevelMathsQualificationData?.LocalAuthority.DisplayText());
+        Assert.Equal(NotAvailable, model.AdvancedLevelMathsQualificationData?.England.DisplayText());
     }
 
     [Theory]
-    [InlineData(Level3.ALevel)]
-    [InlineData(Level3.Academic)]
-    [InlineData(Level3.AppliedGeneral)]
-    [InlineData(Level3.TechLevel)]
-    public async Task Get_Level3Qualifications_Info_With_No_Data_ReturnsOk(Level3 qualification)
+    [InlineData(Level2.TechCert)]
+    public async Task Get_Level2Qualifications_Info_ReturnsExpected(Level2 qualification)
     {
-        var expectedResult = new Level3QualificationModel
+        var expectedResult = Level2QualificationDetails(qualification);
+
+        _mockLevel2QualificationsService
+            .Setup(es => es.GetLevel2QualificationDetailsAsync(fakeEstablishment.URN, qualification, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.Level2Qualifications(
+            _mockLevel2QualificationsService.Object,
+            expectedResult.Urn,
+            expectedResult.SchoolName,
+            qualification,
+            CancellationToken.None) as ViewResult;
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as Level2QualificationViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(expectedResult.Urn, model.URN);
+        Assert.Equal(expectedResult.SchoolName, model.SchoolName);
+        Assert.Equal(expectedResult.IsKS2, model.IsKS2);
+        Assert.Equal(expectedResult.IsKS4, model.IsKS4);
+        Assert.Equal(expectedResult.IsKS5, model.IsKS5);
+
+        Assert.Equal(expectedResult.TotalNoOfStudentCompletedQualification, model.TotalNoOfStudentCompletedQualification.Value);
+        Assert.Equal(expectedResult.ProgressScore.Score, model.ProgressScore.Score.Value);
+        Assert.Equal(expectedResult.ProgressScore.BandingRating, model.ProgressScore.BandingRating.Value);
+        Assert.Equal(expectedResult.ProgressScore.ConfidenceLevelLower, model.ProgressScore.ConfidenceLevelLower.Value);
+        Assert.Equal(expectedResult.ProgressScore.ConfidenceLevelUpper, model.ProgressScore.ConfidenceLevelUpper.Value);
+        Assert.Equal(expectedResult.ProgressScore.EnglandAverageScore, model.ProgressScore.EnglandAverageScore.Value);
+
+        var expectedProgressBandingDescription = AttainmentHelper.EstablishmentProgress8BandingContextStatement(model.ProgressScore.BandingRating.Value.Value);
+        Assert.Equal(expectedProgressBandingDescription.Value, model.ProgressScore.Progress8BandingContextDescription.DisplayText());
+
+        Assert.Equal(expectedResult.AverageResult.Establishment.Points, model.AverageResult.EstablishmentPoints.Value);
+        Assert.Equal(expectedResult.AverageResult.Establishment.Grade.ToString(), model.AverageResult.EstablishmentGrade.DisplayText());
+        Assert.Equal(expectedResult.AverageResult.Establishment.Points, model.AverageResult.EstablishmentPoints.Value);
+        Assert.Equal(expectedResult.AverageResult.Establishment.Grade.ToString(), model.AverageResult.EstablishmentGrade.DisplayText());
+        Assert.Equal(expectedResult.AverageResult.Establishment.Points, model.AverageResult.EstablishmentPoints.Value);
+        Assert.Equal(expectedResult.AverageResult.Establishment.Grade.ToString(), model.AverageResult.EstablishmentGrade.DisplayText());
+    }
+
+    [Theory]
+    [InlineData(Level2.TechCert)]    
+    public async Task Get_Level2Qualifications_Info_With_Reason_ReturnsOk(Level2 qualification)
+    {
+        var expectedResult = new Level2QualificationModel
+        {
+            Urn = fakeEstablishment.URN,
+            SchoolName = fakeEstablishment.EstablishmentName,
+            LAName = fakeEstablishment.LAName,
+            IsKS2 = true,
+            IsKS4 = true,
+            IsKS5 = true,
+            QualificationType = qualification,
+            ProgressScore = new ProgressScoreModel
+            {
+                Score = new CodedDouble(null, "Not applicable", "z"),
+                BandingRating = new CodedString(null, "Not applicable", "z"),
+                ConfidenceLevelLower = new CodedDouble(null, "Redacted for confidentiality", "c"),
+                ConfidenceLevelUpper = new CodedDouble(null, "Not applicable", "z"),
+                EnglandAverageScore = new CodedDouble(null, "Not available", "x"),
+            },
+            AverageResult = new AverageResultModel
+            {
+                Establishment = new() { Grade = new CodedString(null, "Not applicable", "z"), Points = new CodedDouble(null, "Not applicable", "z") },
+                LocalAuthority = new() { Grade = new CodedString(null, "Redacted for confidentiality", "c"), Points = new CodedDouble(null, "Redacted for confidentiality", "c") },
+                England = new() { Grade = new CodedString(null, "Not available", "x"), Points = new CodedDouble(null, "Not available", "x") },
+            }
+        };
+
+        _mockLevel2QualificationsService
+            .Setup(es => es.GetLevel2QualificationDetailsAsync(fakeEstablishment.URN, qualification, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.Level2Qualifications(
+            _mockLevel2QualificationsService.Object,
+            expectedResult.Urn,
+            expectedResult.SchoolName,
+            qualification,
+            CancellationToken.None) as ViewResult;
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as Level2QualificationViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(expectedResult.Urn, model.URN);
+        Assert.Equal(expectedResult.SchoolName, model.SchoolName);
+        Assert.Equal($"{expectedResult.LAName} average", model.LAName);
+        Assert.Equal(expectedResult.IsKS2, model.IsKS2);
+        Assert.Equal(expectedResult.IsKS4, model.IsKS4);
+        Assert.Equal(expectedResult.IsKS5, model.IsKS5);
+
+        Assert.Equal(NotAvailable, model.TotalNoOfStudentCompletedQualification.DisplayText());
+        Assert.Equal(NotAvailable, model.ProgressScore.Score.DisplayText());
+        Assert.Equal(NotAvailable, model.ProgressScore.BandingRating.DisplayText());
+        Assert.Equal(NotAvailable, model.ProgressScore.ConfidenceLevelLower.DisplayText());
+        Assert.Equal(NotAvailable, model.ProgressScore.ConfidenceLevelUpper.DisplayText());
+        Assert.Equal(NotAvailable, model.ProgressScore.EnglandAverageScore.DisplayText());
+        Assert.Equal(NotAvailable, model.ProgressScore.Progress8BandingContextDescription.DisplayText());
+
+        Assert.Equal(NotAvailable, model.AverageResult.EstablishmentPoints.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.EstablishmentGrade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthorityPoints.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthorityGrade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.EnglandPoints.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.EnglandGrade.DisplayText());
+    }
+
+    [Theory]
+    [InlineData(Level2.TechCert)]    
+    public async Task Get_Level2Qualifications_Info_With_No_Data_ReturnsOk(Level2 qualification)
+    {
+        var expectedResult = new Level2QualificationModel
         {
             Urn = fakeEstablishment.URN,
             SchoolName = fakeEstablishment.EstablishmentName,
@@ -176,12 +437,12 @@ public class KS5ControllerTests : BaseProfilesTests
             }
         };
 
-        _mockLevel3QualificationsService
-            .Setup(es => es.GetLevel3QualificationDetailsAsync(fakeEstablishment.URN, qualification, It.IsAny<CancellationToken>()))
+        _mockLevel2QualificationsService
+            .Setup(es => es.GetLevel2QualificationDetailsAsync(fakeEstablishment.URN, qualification, It.IsAny<CancellationToken>()))
             .ReturnsAsync(expectedResult);
 
-        var result = await _controller.Level3Qualifications(
-            _mockLevel3QualificationsService.Object,
+        var result = await _controller.Level2Qualifications(
+            _mockLevel2QualificationsService.Object,
             expectedResult.Urn,
             expectedResult.SchoolName,
             qualification,
@@ -190,7 +451,7 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
 
-        var model = result.Model as Level3QualificationViewModel;
+        var model = result.Model as Level2QualificationViewModel;
         Assert.NotNull(model);
         Assert.Equal(expectedResult.Urn, model.URN);
         Assert.Equal(expectedResult.SchoolName, model.SchoolName);
@@ -347,12 +608,12 @@ public class KS5ControllerTests : BaseProfilesTests
     public async Task Get_SubjectsEntered_ReturnsExpected()
     {
         var expectedResult = GetSubjectsEnteredList();
-        _mockAboutSchoolService
-            .Setup(a => a.GetAboutSchoolDetailsAsync(It.IsAny<string>(), CancellationToken.None))
-            .ReturnsAsync(new AboutSchoolModel
+        _establishmentService
+            .Setup(a => a.GetEstablishmentMinimumAsync(It.IsAny<string>(), CancellationToken.None))
+            .ReturnsAsync(new EstablishmentMinimumServiceModel
             {
-                Urn = fakeEstablishment.URN,
-                SchoolName = fakeEstablishment.EstablishmentName,
+                URN = fakeEstablishment.URN,
+                EstablishmentName = fakeEstablishment.EstablishmentName,
                 IsKS5 = true
             });
 
@@ -361,7 +622,7 @@ public class KS5ControllerTests : BaseProfilesTests
             .ReturnsAsync(expectedResult);
 
         var result = await _controller.SubjectsEntered(
-            _mockAboutSchoolService.Object,
+            _establishmentService.Object,
             _mockKs5EstablishmentSubjectEntriesService.Object,
             QualificationType.AcademicQualifications,
             fakeEstablishment.URN,
@@ -386,16 +647,16 @@ public class KS5ControllerTests : BaseProfilesTests
     [Fact]
     public async Task Get_SubjectsEntered_NoEstablishment_ReturnsErrorView()
     {
-        _mockAboutSchoolService
-            .Setup(a => a.GetAboutSchoolDetailsAsync(It.IsAny<string>(), CancellationToken.None))
-            .ReturnsAsync(new AboutSchoolModel
+        _establishmentService
+            .Setup(a => a.GetEstablishmentMinimumAsync(It.IsAny<string>(), CancellationToken.None))
+            .ReturnsAsync(new EstablishmentMinimumServiceModel
             {
-                Urn = null!,
-                SchoolName = fakeEstablishment.EstablishmentName
+                URN = null!,
+                EstablishmentName = fakeEstablishment.EstablishmentName
             });
 
         var result = await _controller.SubjectsEntered(
-            _mockAboutSchoolService.Object,
+            _establishmentService.Object,
             _mockKs5EstablishmentSubjectEntriesService.Object,
             QualificationType.AcademicQualifications,
             fakeEstablishment.URN,
@@ -412,8 +673,8 @@ public class KS5ControllerTests : BaseProfilesTests
                 It.IsAny<Exception>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)));
 
-        _mockAboutSchoolService
-            .Verify(a => a.GetAboutSchoolDetailsAsync(It.IsAny<string>(), CancellationToken.None), Times.Once);      
+        _establishmentService
+            .Verify(a => a.GetEstablishmentMinimumAsync(It.IsAny<string>(), CancellationToken.None), Times.Once);      
 
         _mockKs5EstablishmentSubjectEntriesService
             .Verify(a => a.GetSubjectEntriesByUrnAsync(It.IsAny<string>(), It.IsAny<QualificationType>(), It.IsAny<CancellationToken>()), Times.Never);
@@ -422,15 +683,15 @@ public class KS5ControllerTests : BaseProfilesTests
     [Fact]
     public async Task Get_SubjectsEntered_NotKs5ReturnsErrorView()
     {
-        _mockAboutSchoolService
-            .Setup(a => a.GetAboutSchoolDetailsAsync(It.IsAny<string>(), CancellationToken.None))
-            .ReturnsAsync(new AboutSchoolModel
+        _establishmentService
+            .Setup(a => a.GetEstablishmentMinimumAsync(It.IsAny<string>(), CancellationToken.None))
+            .ReturnsAsync(new EstablishmentMinimumServiceModel
             {
-                Urn = fakeEstablishment.URN,
-                SchoolName = fakeEstablishment.EstablishmentName
+                URN = fakeEstablishment.URN,
+                EstablishmentName = fakeEstablishment.EstablishmentName
             });
         var result = await _controller.SubjectsEntered(
-            _mockAboutSchoolService.Object,
+            _establishmentService.Object,
             _mockKs5EstablishmentSubjectEntriesService.Object,
             QualificationType.AcademicQualifications,
             fakeEstablishment.URN,
@@ -447,8 +708,8 @@ public class KS5ControllerTests : BaseProfilesTests
                 It.IsAny<Exception>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)));
 
-        _mockAboutSchoolService
-            .Verify(a => a.GetAboutSchoolDetailsAsync(It.IsAny<string>(), CancellationToken.None), Times.Once);
+        _establishmentService
+            .Verify(a => a.GetEstablishmentMinimumAsync(It.IsAny<string>(), CancellationToken.None), Times.Once);
 
         _mockKs5EstablishmentSubjectEntriesService
             .Verify(a => a.GetSubjectEntriesByUrnAsync(It.IsAny<string>(), It.IsAny<QualificationType>(), It.IsAny<CancellationToken>()), Times.Never);
@@ -576,6 +837,9 @@ public class KS5ControllerTests : BaseProfilesTests
 
     private Level3QualificationModel Level3QualificationDetails(Level3 qualification)
     {
+        var isALevelQual = qualification == Level3.ALevel;
+        var isAcademicQual = qualification == Level3.Academic;
+
         return new Level3QualificationModel
         {
             Urn = fakeEstablishment.URN,
@@ -599,6 +863,48 @@ public class KS5ControllerTests : BaseProfilesTests
                 Establishment = new() { Grade = new CodedString("B", string.Empty, string.Empty), Points = new CodedDouble(21.45, string.Empty, string.Empty) },
                 LocalAuthority = new() { Grade = new CodedString("A", string.Empty, string.Empty), Points = new CodedDouble(35.28, string.Empty, string.Empty) },
                 England = new() { Grade = new CodedString("B", string.Empty, string.Empty), Points = new CodedDouble(29.75, string.Empty, string.Empty) },
+            },
+            AdditionalData = isALevelQual ? new AdditionalDataModel
+            {
+                TotalNoOfStudentsIncludedInThisMeasure = new CodedDouble(100, string.Empty, string.Empty),
+                Establishment = new() { Grade = new CodedString("A", string.Empty, string.Empty), Points = new CodedDouble(19.52, string.Empty, string.Empty) },
+                LocalAuthority = new() { Grade = new CodedString("B", string.Empty, string.Empty), Points = new CodedDouble(29.53, string.Empty, string.Empty) },
+                England = new() { Grade = new CodedString("B", string.Empty, string.Empty), Points = new CodedDouble(31.75, string.Empty, string.Empty) },
+            } : null,
+            AdvancedLevelMathsQualificationData = isAcademicQual ? new SimpleCodedDoubleTableModel
+            {
+                SchoolOrCollege = new CodedDouble(95.12, string.Empty, string.Empty),
+                LocalAuthority = new CodedDouble(82.45, string.Empty, string.Empty),
+                England = new CodedDouble(79.37, string.Empty, string.Empty),
+            } : null
+        };
+    }
+
+    private Level2QualificationModel Level2QualificationDetails(Level2 qualification)
+    {
+        return new Level2QualificationModel
+        {
+            Urn = fakeEstablishment.URN,
+            SchoolName = fakeEstablishment.EstablishmentName,
+            LAName = fakeEstablishment.LAName,
+            IsKS2 = true,
+            IsKS4 = true,
+            IsKS5 = true,
+            QualificationType = qualification,
+            TotalNoOfStudentCompletedQualification = new CodedDouble(120, string.Empty, string.Empty),
+            ProgressScore = new ProgressScoreModel
+            {
+                Score = new CodedDouble(83.37, string.Empty, string.Empty),
+                BandingRating = new CodedString("Average", string.Empty, string.Empty),
+                ConfidenceLevelLower = new CodedDouble(0.3, string.Empty, string.Empty),
+                ConfidenceLevelUpper = new CodedDouble(4.2, string.Empty, string.Empty),
+                EnglandAverageScore = new CodedDouble(71.59, string.Empty, string.Empty)
+            },
+            AverageResult = new AverageResultModel
+            {
+                Establishment = new() { Grade = new CodedString("A", string.Empty, string.Empty), Points = new CodedDouble(15.33, string.Empty, string.Empty) },
+                LocalAuthority = new() { Grade = new CodedString("B", string.Empty, string.Empty), Points = new CodedDouble(29.85, string.Empty, string.Empty) },
+                England = new() { Grade = new CodedString("C", string.Empty, string.Empty), Points = new CodedDouble(33.91, string.Empty, string.Empty) },
             }
         };
     }

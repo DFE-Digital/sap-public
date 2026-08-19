@@ -76,7 +76,7 @@ public class Establishment
 
     public string TypeOfEstablishmentName { get; set; } = string.Empty;
 
-    public string EstablishmentTypeGroupId { get; set; } = string.Empty;
+    public int? EstablishmentTypeGroupId { get; set; }
 
     public string EstablishmentTypeGroupName { get; set; } = string.Empty;
 
@@ -88,7 +88,6 @@ public class Establishment
 
     public string UrbanRuralId { get; set; } = string.Empty;
     public string UrbanRuralName { get; set; } = string.Empty;
-
     public string Website { get; set; } = string.Empty;
 
     public string Easting { get; set; } = string.Empty;
@@ -108,6 +107,10 @@ public class Establishment
     public string? SenTypes { get; set; } = string.Empty;
 
     public string? KS2WraparoundCare { get; set; } = string.Empty;
+
+    public bool FreeBreakfastClubProgramme { get; set; }
+
+    public string? NurseryProvisionName { get; set; }
 
     [IgnoreDataMember]
     public bool IsKS2 { get; set; }
@@ -158,7 +161,9 @@ public class Establishment
                 ? (TypeOfEstablishment)e.TypeOfEstablishmentId
                 : TypeOfEstablishment.Unknown,
             TypeOfEstablishmentName = e.TypeOfEstablishmentName,
-            EstablishmentTypeGroupId = e.EstablishmentTypeGroupId,
+            EstablishmentTypeGroup = e.EstablishmentTypeGroupId is int groupId && Enum.IsDefined(typeof(EstablishmentTypeGroup), groupId)
+                ? (EstablishmentTypeGroup)groupId
+                : EstablishmentTypeGroup.OtherTypes,
             EstablishmentTypeGroupName = e.EstablishmentTypeGroupName,
             ResourcedProvision = e.ResourcedProvision,
             ResourcedProvisionName = e.ResourcedProvisionName,
@@ -173,7 +178,9 @@ public class Establishment
             IsKS2 = e.IsKS2,
             IsKS4 = e.IsKS4,
             IsKS5 = e.IsKS5,
-            KS2WraparoundCare = e.KS2WraparoundCare
+            KS2WraparoundCare = e.KS2WraparoundCare,
+            FreeBreakfastClubProgramme = e.FreeBreakfastClubProgramme,
+            NurseryProvisionName = e.NurseryProvisionName
         };
     }
 }
