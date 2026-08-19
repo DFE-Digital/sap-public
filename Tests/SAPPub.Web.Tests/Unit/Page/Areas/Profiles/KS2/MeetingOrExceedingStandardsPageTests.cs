@@ -18,6 +18,7 @@ public class MeetingOrExceedingStandardsPageTests : PageTestsBase
     private readonly string _schoolNameMultiPhase = "Abraham Moss Community School";
     private readonly string _urnMultiPhase = "150009";
     private readonly EstablishmentServiceModel _establishment = new();
+    private readonly EstablishmentMinimumServiceModel _establishmentMinimum = new();
     private readonly Mock<IEstablishmentService> _mockEstablishmentService;
 
     private readonly AdmissionsServiceModel _admissionsServiceModel;
@@ -37,9 +38,21 @@ public class MeetingOrExceedingStandardsPageTests : PageTestsBase
             .WithEstablishmentTypeGroupId((int)EstablishmentTypeGroup.Academies)
             .BuildServiceModel();
 
+        _establishmentMinimum = new EstablishmentMinimumTestBuilder()
+            .WithURN(_urn)
+            .WithEstablishmentName(_schoolName)
+            .WithIsKeyStage2(true)
+            .WithIsKeyStage4(false)
+            .WithWebsite("https://www.stpaulsacademy.co.uk")
+            .BuildServiceModel();
+
         _mockEstablishmentService
             .Setup(a => a.GetEstablishmentAsync(_urn, It.IsAny<CancellationToken>()))
             .ReturnsAsync(_establishment);
+
+        _mockEstablishmentService
+            .Setup(a => a.GetEstablishmentMinimumAsync(_urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_establishmentMinimum);
 
         _admissionsServiceModel = GetAdmissionsServiceModel(_schoolName, isKs2: true, isKs4: false, _establishment.Website);
 
@@ -157,7 +170,7 @@ public class MeetingOrExceedingStandardsPageTests : PageTestsBase
 
         // Act
         var doc = await Fixture.BrowseToPage(url);
-        
+
         // Assert
         var chartDataCurrent = doc.QuerySelector("#exs-current-year-chart-container");
         var tableDataCurrent = doc.QuerySelector("#exs-current-year-table-container");
@@ -171,7 +184,7 @@ public class MeetingOrExceedingStandardsPageTests : PageTestsBase
 
     private void ConfigureMultiPhaseSchool()
     {
-        var multiPhaseEstablishment = new EstablishmentTestBuilder()
+        var multiPhaseEstablishment = new EstablishmentMinimumTestBuilder()
             .WithURN(_urnMultiPhase)
             .WithEstablishmentName(_schoolNameMultiPhase)
             .WithIsKeyStage2(true)
@@ -179,7 +192,7 @@ public class MeetingOrExceedingStandardsPageTests : PageTestsBase
             .BuildServiceModel();
 
         _mockEstablishmentService
-            .Setup(a => a.GetEstablishmentAsync(_urnMultiPhase, It.IsAny<CancellationToken>()))
+            .Setup(a => a.GetEstablishmentMinimumAsync(_urnMultiPhase, It.IsAny<CancellationToken>()))
             .ReturnsAsync(multiPhaseEstablishment);
 
         _mockAdmissionsService

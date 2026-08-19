@@ -21,7 +21,7 @@ public class AcademicPerformanceAdditionalMeasuresViewModel : BaseViewModel
     public required string LAName { get; set; }
 
 
-    public static AcademicPerformanceAdditionalMeasuresViewModel Map(EstablishmentServiceModel establishment, KS2AdditionalMeasuresModel kS2AdditionalMeasuresModel)
+    public static AcademicPerformanceAdditionalMeasuresViewModel Map(EstablishmentMinimumServiceModel establishment, KS2AdditionalMeasuresModel kS2AdditionalMeasuresModel)
     {
         return new AcademicPerformanceAdditionalMeasuresViewModel
         {

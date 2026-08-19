@@ -10,4 +10,6 @@ public interface IEstablishmentService
     Task<EstablishmentServiceModel> GetEstablishmentAsync(string urn, CancellationToken ct = default);
     Task<IEnumerable<EstablishmentServiceModel>> GetEstablishmentsAsync(IEnumerable<string> urns, CancellationToken ct = default);
 
+    Task<EstablishmentMinimumServiceModel> GetEstablishmentMinimumAsync(string urn, CancellationToken ct = default);
+
 }

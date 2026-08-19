@@ -3,8 +3,10 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Enums.KS5Qualifications;
+using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.Performance;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.Common;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels.Performance;
@@ -23,7 +25,7 @@ public class KS5ControllerTests : BaseProfilesTests
     private readonly Mock<ILevel2QualificationsService> _mockLevel2QualificationsService = new();
     private readonly Mock<IEnglishAndMathsQualificationsService> _mockEnglishAndMathsQualificationsService = new();
     private readonly Mock<IKS5EstablishmentSubjectEntriesService> _mockKs5EstablishmentSubjectEntriesService = new();
-    private readonly Mock<IAboutSchoolService> _mockAboutSchoolService = new();
+    private readonly Mock<IEstablishmentService> _establishmentService = new();
     private readonly KS5Controller _controller;
 
     public KS5ControllerTests()
@@ -606,12 +608,12 @@ public class KS5ControllerTests : BaseProfilesTests
     public async Task Get_SubjectsEntered_ReturnsExpected()
     {
         var expectedResult = GetSubjectsEnteredList();
-        _mockAboutSchoolService
-            .Setup(a => a.GetAboutSchoolDetailsAsync(It.IsAny<string>(), CancellationToken.None))
-            .ReturnsAsync(new AboutSchoolModel
+        _establishmentService
+            .Setup(a => a.GetEstablishmentMinimumAsync(It.IsAny<string>(), CancellationToken.None))
+            .ReturnsAsync(new EstablishmentMinimumServiceModel
             {
-                Urn = fakeEstablishment.URN,
-                SchoolName = fakeEstablishment.EstablishmentName,
+                URN = fakeEstablishment.URN,
+                EstablishmentName = fakeEstablishment.EstablishmentName,
                 IsKS5 = true
             });
 
@@ -620,7 +622,7 @@ public class KS5ControllerTests : BaseProfilesTests
             .ReturnsAsync(expectedResult);
 
         var result = await _controller.SubjectsEntered(
-            _mockAboutSchoolService.Object,
+            _establishmentService.Object,
             _mockKs5EstablishmentSubjectEntriesService.Object,
             QualificationType.AcademicQualifications,
             fakeEstablishment.URN,
@@ -645,16 +647,16 @@ public class KS5ControllerTests : BaseProfilesTests
     [Fact]
     public async Task Get_SubjectsEntered_NoEstablishment_ReturnsErrorView()
     {
-        _mockAboutSchoolService
-            .Setup(a => a.GetAboutSchoolDetailsAsync(It.IsAny<string>(), CancellationToken.None))
-            .ReturnsAsync(new AboutSchoolModel
+        _establishmentService
+            .Setup(a => a.GetEstablishmentMinimumAsync(It.IsAny<string>(), CancellationToken.None))
+            .ReturnsAsync(new EstablishmentMinimumServiceModel
             {
-                Urn = null!,
-                SchoolName = fakeEstablishment.EstablishmentName
+                URN = null!,
+                EstablishmentName = fakeEstablishment.EstablishmentName
             });
 
         var result = await _controller.SubjectsEntered(
-            _mockAboutSchoolService.Object,
+            _establishmentService.Object,
             _mockKs5EstablishmentSubjectEntriesService.Object,
             QualificationType.AcademicQualifications,
             fakeEstablishment.URN,
@@ -671,8 +673,8 @@ public class KS5ControllerTests : BaseProfilesTests
                 It.IsAny<Exception>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)));
 
-        _mockAboutSchoolService
-            .Verify(a => a.GetAboutSchoolDetailsAsync(It.IsAny<string>(), CancellationToken.None), Times.Once);      
+        _establishmentService
+            .Verify(a => a.GetEstablishmentMinimumAsync(It.IsAny<string>(), CancellationToken.None), Times.Once);      
 
         _mockKs5EstablishmentSubjectEntriesService
             .Verify(a => a.GetSubjectEntriesByUrnAsync(It.IsAny<string>(), It.IsAny<QualificationType>(), It.IsAny<CancellationToken>()), Times.Never);
@@ -681,15 +683,15 @@ public class KS5ControllerTests : BaseProfilesTests
     [Fact]
     public async Task Get_SubjectsEntered_NotKs5ReturnsErrorView()
     {
-        _mockAboutSchoolService
-            .Setup(a => a.GetAboutSchoolDetailsAsync(It.IsAny<string>(), CancellationToken.None))
-            .ReturnsAsync(new AboutSchoolModel
+        _establishmentService
+            .Setup(a => a.GetEstablishmentMinimumAsync(It.IsAny<string>(), CancellationToken.None))
+            .ReturnsAsync(new EstablishmentMinimumServiceModel
             {
-                Urn = fakeEstablishment.URN,
-                SchoolName = fakeEstablishment.EstablishmentName
+                URN = fakeEstablishment.URN,
+                EstablishmentName = fakeEstablishment.EstablishmentName
             });
         var result = await _controller.SubjectsEntered(
-            _mockAboutSchoolService.Object,
+            _establishmentService.Object,
             _mockKs5EstablishmentSubjectEntriesService.Object,
             QualificationType.AcademicQualifications,
             fakeEstablishment.URN,
@@ -706,8 +708,8 @@ public class KS5ControllerTests : BaseProfilesTests
                 It.IsAny<Exception>(),
                 It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)));
 
-        _mockAboutSchoolService
-            .Verify(a => a.GetAboutSchoolDetailsAsync(It.IsAny<string>(), CancellationToken.None), Times.Once);
+        _establishmentService
+            .Verify(a => a.GetEstablishmentMinimumAsync(It.IsAny<string>(), CancellationToken.None), Times.Once);
 
         _mockKs5EstablishmentSubjectEntriesService
             .Verify(a => a.GetSubjectEntriesByUrnAsync(It.IsAny<string>(), It.IsAny<QualificationType>(), It.IsAny<CancellationToken>()), Times.Never);

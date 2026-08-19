@@ -24,7 +24,7 @@ public sealed class EnglishAndMathsResultsService(
         CancellationToken ct = default)
     {
         // Need establishment first to get LAId/LAName (and to check if URN is valid)
-        var establishment = await establishmentService.GetEstablishmentAsync(urn, ct);
+        var establishment = await establishmentService.GetEstablishmentMinimumAsync(urn, ct);
 
         if (string.IsNullOrWhiteSpace(establishment.URN))
             return CreateEmpty(urn);

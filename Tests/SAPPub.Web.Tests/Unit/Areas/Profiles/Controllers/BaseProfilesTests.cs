@@ -10,6 +10,7 @@ public class BaseProfilesTests
 {
     protected readonly Mock<IEstablishmentService> mockEstablishmentService;
     protected EstablishmentServiceModel fakeEstablishment;
+    protected EstablishmentMinimumServiceModel fakeMinimumEstablishment;
 
     public BaseProfilesTests()
     {
@@ -43,11 +44,22 @@ public class BaseProfilesTests
             .WithIsKeyStage4(true)
             .BuildServiceModel();
 
+        fakeMinimumEstablishment = new EstablishmentMinimumTestBuilder()
+            .WithIsKeyStage2(true)
+            .WithLAName("Sheffield")
+            .WithIsKeyStage4(true)
+            .WithWebsite("https://www.gov.uk/")
+            .BuildServiceModel();
+
         mockEstablishmentService = new();
 
         mockEstablishmentService
             .Setup(es => es.GetEstablishmentAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(fakeEstablishment);
+
+        mockEstablishmentService
+            .Setup(es => es.GetEstablishmentMinimumAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(fakeMinimumEstablishment);
     }
 
 }

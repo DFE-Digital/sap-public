@@ -88,7 +88,6 @@ public class Establishment
 
     public string UrbanRuralId { get; set; } = string.Empty;
     public string UrbanRuralName { get; set; } = string.Empty;
-
     public string Website { get; set; } = string.Empty;
 
     public string Easting { get; set; } = string.Empty;

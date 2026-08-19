@@ -17,7 +17,7 @@ public class AcademicPerformanceMeetingOrExceedingStandardsViewModel : BaseViewM
     public required DataOverTimeViewModel AllExceedingStandardsOverTimeData { get; set; }
 
     public static AcademicPerformanceMeetingOrExceedingStandardsViewModel Map(
-        EstablishmentServiceModel establishment,
+        EstablishmentMinimumServiceModel establishment,
         KS2MeetingOrExceedingStandardsModel kS2MeetingOrExceedingStandardsModel)
     {
         var laAverageLabel = CommonHelper.GetLocalAuthorityDisplayName(establishment.LAName);

@@ -13,11 +13,10 @@ public class EnglishAndMathsQualificationsServiceTests
     private readonly Mock<IKs5PerformanceRepository> _mockKs5PerformanceRepository;
     private readonly EnglishAndMathsQualificationsService _service;
 
-    private readonly EstablishmentServiceModel fakeEstablishment = new()
+    private readonly EstablishmentMinimumServiceModel fakeEstablishment = new()
     {
         URN = "123456",
         EstablishmentName = "Test Establishment",
-        PhaseOfEducationName = "Secondary School",
         LAName = "Council",
         LAId = "E09000001"
     };
@@ -89,7 +88,7 @@ public class EnglishAndMathsQualificationsServiceTests
     private void SetupMocks(out KS5EstablishmentPerformance establishmentPerformance, out KS5EnglandPerformance englandPerformance, out KS5LAPerformance laPerformance)
     {
         _mockEstablishmentService
-            .Setup(r => r.GetEstablishmentAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetEstablishmentMinimumAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>()))
             .ReturnsAsync(fakeEstablishment);
 
         establishmentPerformance = new KS5EstablishmentPerformance

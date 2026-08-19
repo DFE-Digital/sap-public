@@ -16,18 +16,18 @@ public class SubjectsEnteredTests : PageTestsBase
     private static string _pageRoute = "/secondary-performance/subjects-entered";
     private readonly Mock<IKS4EstablishmentSubjectEntriesService> _mockEstablishmentSubjectEntriesService;
     private readonly Mock<IEstablishmentService> _mockEstablishmentService;
-    private EstablishmentServiceModel _establishment;
+    private EstablishmentMinimumServiceModel _establishment;
 
     public SubjectsEnteredTests(WebAppFixture fixture) : base(fixture)
     {
         _mockEstablishmentSubjectEntriesService = UseMock<IKS4EstablishmentSubjectEntriesService>();
         _mockEstablishmentService = UseMock<IEstablishmentService>();
-        _establishment = new EstablishmentTestBuilder()
+        _establishment = new EstablishmentMinimumTestBuilder()
             .WithURN(_urn)
             .BuildServiceModel();
 
         _mockEstablishmentService
-            .Setup(a => a.GetEstablishmentAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Setup(a => a.GetEstablishmentMinimumAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(_establishment);
     }
 

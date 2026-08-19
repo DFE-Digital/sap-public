@@ -2,9 +2,11 @@
 using Microsoft.FeatureManagement.Mvc;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Enums.KS5Qualifications;
+using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.Services.Performance;
+using SAPPub.Core.Services;
 using SAPPub.Web.Areas.Profiles.ViewModels.KS5;
 using SAPPub.Web.Constants;
 
@@ -117,7 +119,7 @@ public class KS5Controller(ILogger<KS5Controller> logger) : Controller
 
     [Route("school/{urn}/{schoolName}/16-to-19-performance/subjects-entered/{qualification}", Name = RouteConstants.KS5AcademicPerformanceSubjectsEnteredFilter)]
     public async Task<IActionResult> SubjectsEntered(
-        [FromServices] IAboutSchoolService aboutSchoolService,
+        [FromServices] IEstablishmentService establishmentService,
         [FromServices] IKS5EstablishmentSubjectEntriesService establishmentSubjectEntriesService,
         QualificationType? qualification,
         string urn,
@@ -128,10 +130,10 @@ public class KS5Controller(ILogger<KS5Controller> logger) : Controller
         {
             return View("Error");
         }
+        
+        var schoolDetails = await establishmentService.GetEstablishmentMinimumAsync(urn, ct);
 
-        var schoolDetails = await aboutSchoolService.GetAboutSchoolDetailsAsync(urn, ct);
-
-        if (string.IsNullOrWhiteSpace(schoolDetails.Urn))
+        if (string.IsNullOrWhiteSpace(schoolDetails.URN))
         {
             logger.LogWarning("No establishment details found for URN: {URN}", urn);
             return View("Error");

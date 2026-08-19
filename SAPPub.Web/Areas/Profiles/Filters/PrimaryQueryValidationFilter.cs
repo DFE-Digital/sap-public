@@ -18,7 +18,7 @@ public class PrimaryQueryValidationFilter(IEstablishmentService establishmentSer
             return;
         }
 
-        var establishment = await establishmentService.GetEstablishmentAsync(urn);
+        var establishment = await establishmentService.GetEstablishmentMinimumAsync(urn);
 
         if (!establishment.IsKS2)
         {
