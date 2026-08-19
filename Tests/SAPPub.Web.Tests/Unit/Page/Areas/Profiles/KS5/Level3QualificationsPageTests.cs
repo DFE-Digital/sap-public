@@ -426,4 +426,26 @@ public class Level3QualificationsPageTests : PageTestsBase
             Assert.Null(advancedLevelMathsQualTable);
         }
     }
+
+    [Theory]
+    [InlineData(Level3.ALevel)]
+    [InlineData(Level3.Academic)]
+    [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
+    public async Task Level3QualificationsPage_Displays_StudentRetention_Info(Level3 qualification)
+    {
+        // Arrange
+        SetupMocks(qualification);
+        var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
+        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var studentRetentionInsetText = doc.QuerySelector("#student-retention");
+
+        Assert.NotNull(studentRetentionInsetText);
+        Assert.Equal("Measures on student retention will be available shortly in a future release.", studentRetentionInsetText.TextContent.Trim());
+    }
 }
