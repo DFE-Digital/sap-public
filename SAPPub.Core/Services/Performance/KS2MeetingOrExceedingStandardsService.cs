@@ -30,13 +30,17 @@ public class KS2MeetingOrExceedingStandardsService(
 
         return new KS2MeetingOrExceedingStandardsModel
         {
-            EstablishmentPercentage = GetEstablishmentPercentage(establishmentPerformance),
-            LocalAuthorityPercentage = GetLocalAuthorityPercentage(laPerformance),
-            EnglandPercentage = GetEnglandPercentage(englandPerformance)
+            EstablishmentPercentageMeetingOrExceeding = GetEstablishmentPercentageMeetingOrExceeding(establishmentPerformance),
+            LocalAuthorityPercentageMeetingOrExceeding = GetLocalAuthorityPercentageMeetingOrExceeding(laPerformance),
+            EnglandPercentageMeetingOrExceeding = GetEnglandPercentageMeetingOrExceeding(englandPerformance),
+            EstablishmentPercentageExceeding = GetEstablishmentPercentageExceeding(establishmentPerformance),
+            LocalAuthorityPercentageExceeding = GetLocalAuthorityPercentageExceeding(laPerformance),
+            EnglandPercentageExceeding = GetEnglandPercentageExceeding(englandPerformance)
         };
+
     }
 
-    private static RelativeYearValues<CodedDouble> GetEnglandPercentage(KS2EnglandPerformance englandPerformance)
+    private static RelativeYearValues<CodedDouble> GetEnglandPercentageMeetingOrExceeding(KS2EnglandPerformance englandPerformance)
     {
         return new RelativeYearValues<CodedDouble>
         {
@@ -46,7 +50,7 @@ public class KS2MeetingOrExceedingStandardsService(
         };
     }
 
-    private static RelativeYearValues<CodedDouble> GetLocalAuthorityPercentage(KS2LAPerformance laPerformance)
+    private static RelativeYearValues<CodedDouble> GetLocalAuthorityPercentageMeetingOrExceeding(KS2LAPerformance laPerformance)
     {
         return new RelativeYearValues<CodedDouble>
         {
@@ -56,13 +60,43 @@ public class KS2MeetingOrExceedingStandardsService(
         };
     }
 
-    private static RelativeYearValues<CodedDouble> GetEstablishmentPercentage(KS2EstablishmentPerformance establishmentPerformance)
+    private static RelativeYearValues<CodedDouble> GetEstablishmentPercentageMeetingOrExceeding(KS2EstablishmentPerformance establishmentPerformance)
     {
         return new RelativeYearValues<CodedDouble>
         {
             CurrentYear = establishmentPerformance.PTRWM_EXP_Est_Current_Pct_Coded,
             PreviousYear = establishmentPerformance.PTRWM_EXP_Est_Previous_Pct_Coded,
             TwoYearsAgo = establishmentPerformance.PTRWM_EXP_Est_Previous2_Pct_Coded
+        };
+    }
+
+    private static RelativeYearValues<CodedDouble> GetEnglandPercentageExceeding(KS2EnglandPerformance englandPerformance)
+    {
+        return new RelativeYearValues<CodedDouble>
+        {
+            CurrentYear = englandPerformance.PTRWM_HIGH_Eng_Current_Pct_Coded,
+            PreviousYear = englandPerformance.PTRWM_HIGH_Eng_Previous_Pct_Coded,
+            TwoYearsAgo = englandPerformance.PTRWM_HIGH_Eng_Previous2_Pct_Coded
+        };
+    }
+
+    private static RelativeYearValues<CodedDouble> GetLocalAuthorityPercentageExceeding(KS2LAPerformance laPerformance)
+    {
+        return new RelativeYearValues<CodedDouble>
+        {
+            CurrentYear = laPerformance.PTRWM_HIGH_LA_Current_Pct_Coded,
+            PreviousYear = laPerformance.PTRWM_HIGH_LA_Previous_Pct_Coded,
+            TwoYearsAgo = laPerformance.PTRWM_HIGH_LA_Previous2_Pct_Coded
+        };
+    }
+
+    private static RelativeYearValues<CodedDouble> GetEstablishmentPercentageExceeding(KS2EstablishmentPerformance establishmentPerformance)
+    {
+        return new RelativeYearValues<CodedDouble>
+        {
+            CurrentYear = establishmentPerformance.PTRWM_HIGH_Est_Current_Pct_Coded,
+            PreviousYear = establishmentPerformance.PTRWM_HIGH_Est_Previous_Pct_Coded,
+            TwoYearsAgo = establishmentPerformance.PTRWM_HIGH_Est_Previous2_Pct_Coded
         };
     }
 }

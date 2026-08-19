@@ -12,45 +12,49 @@ public class AcademicPerformanceMeetingOrExceedingStandardsViewModel : BaseViewM
 
     public required DataOverTimeViewModel AllMeetingExceedingStandardsOverTimeData { get; set; }
 
+    public required DataViewModel AllExceedingStandardsData { get; set; }
+
+    public required DataOverTimeViewModel AllExceedingStandardsOverTimeData { get; set; }
+
     public static AcademicPerformanceMeetingOrExceedingStandardsViewModel Map(
         EstablishmentServiceModel establishment,
         KS2MeetingOrExceedingStandardsModel kS2MeetingOrExceedingStandardsModel)
     {
         var laAverageLabel = CommonHelper.GetLocalAuthorityDisplayName(establishment.LAName);
 
-        var allPercentageData = new DataViewModel
+        var allPercentageDataMeetingOrExceeding = new DataViewModel
         {
             Labels = ["School", laAverageLabel, "England average"],
             Data =
             [
-                kS2MeetingOrExceedingStandardsModel.EstablishmentPercentage.CurrentYear.Value,
-                kS2MeetingOrExceedingStandardsModel.LocalAuthorityPercentage.CurrentYear.Value,
-                kS2MeetingOrExceedingStandardsModel.EnglandPercentage.CurrentYear.Value
+                kS2MeetingOrExceedingStandardsModel.EstablishmentPercentageMeetingOrExceeding.CurrentYear.Value,
+                kS2MeetingOrExceedingStandardsModel.LocalAuthorityPercentageMeetingOrExceeding.CurrentYear.Value,
+                kS2MeetingOrExceedingStandardsModel.EnglandPercentageMeetingOrExceeding.CurrentYear.Value
             ],
         };
 
-        var allPercentageDataOverTimeData = new DataOverTimeViewModel
+        var allPercentageDataExceeding = new DataViewModel
         {
-            Labels = ["2022 to 2023", "2023 to 2024", "2024 to 2025"], // TODO - Need academic year to calculate current, previous and TwoYearsAgo
-            Datasets =
+            Labels = ["School", laAverageLabel, "England average"],
+            Data =
             [
-                new DatasetViewModel
-                {
-                    Label = "School",
-                    Data = [kS2MeetingOrExceedingStandardsModel.EstablishmentPercentage.TwoYearsAgo.Value, kS2MeetingOrExceedingStandardsModel.EstablishmentPercentage.PreviousYear.Value, kS2MeetingOrExceedingStandardsModel.EstablishmentPercentage.CurrentYear.Value],
-                },
-                new DatasetViewModel
-                {
-                    Label = laAverageLabel,
-                    Data = [kS2MeetingOrExceedingStandardsModel.LocalAuthorityPercentage.TwoYearsAgo.Value, kS2MeetingOrExceedingStandardsModel.LocalAuthorityPercentage.PreviousYear.Value, kS2MeetingOrExceedingStandardsModel.LocalAuthorityPercentage.CurrentYear.Value],
-                },
-                new DatasetViewModel
-                {
-                    Label = "England average",
-                    Data = [kS2MeetingOrExceedingStandardsModel.EnglandPercentage.TwoYearsAgo.Value, kS2MeetingOrExceedingStandardsModel.EnglandPercentage.PreviousYear.Value, kS2MeetingOrExceedingStandardsModel.EnglandPercentage.CurrentYear.Value],
-                }
+                kS2MeetingOrExceedingStandardsModel.EstablishmentPercentageExceeding.CurrentYear.Value,
+                kS2MeetingOrExceedingStandardsModel.LocalAuthorityPercentageExceeding.CurrentYear.Value,
+                kS2MeetingOrExceedingStandardsModel.EnglandPercentageExceeding.CurrentYear.Value
             ],
         };
+
+        var allPercentageDataOverTimeDataMeetingOrExceeding = GetDataOverTimeViewModel(
+            kS2MeetingOrExceedingStandardsModel.EstablishmentPercentageMeetingOrExceeding.TwoYearsAgo.Value, kS2MeetingOrExceedingStandardsModel.EstablishmentPercentageMeetingOrExceeding.PreviousYear.Value, kS2MeetingOrExceedingStandardsModel.EstablishmentPercentageMeetingOrExceeding.CurrentYear.Value,
+            kS2MeetingOrExceedingStandardsModel.LocalAuthorityPercentageMeetingOrExceeding.TwoYearsAgo.Value, kS2MeetingOrExceedingStandardsModel.LocalAuthorityPercentageMeetingOrExceeding.PreviousYear.Value, kS2MeetingOrExceedingStandardsModel.LocalAuthorityPercentageMeetingOrExceeding.CurrentYear.Value,
+            kS2MeetingOrExceedingStandardsModel.EnglandPercentageMeetingOrExceeding.TwoYearsAgo.Value, kS2MeetingOrExceedingStandardsModel.EnglandPercentageMeetingOrExceeding.PreviousYear.Value, kS2MeetingOrExceedingStandardsModel.EnglandPercentageMeetingOrExceeding.CurrentYear.Value,
+            laAverageLabel);
+
+        var allPercentageDataOverTimeDataExceeding = GetDataOverTimeViewModel(
+            kS2MeetingOrExceedingStandardsModel.EstablishmentPercentageExceeding.TwoYearsAgo.Value, kS2MeetingOrExceedingStandardsModel.EstablishmentPercentageExceeding.PreviousYear.Value, kS2MeetingOrExceedingStandardsModel.EstablishmentPercentageExceeding.CurrentYear.Value,
+            kS2MeetingOrExceedingStandardsModel.LocalAuthorityPercentageExceeding.TwoYearsAgo.Value, kS2MeetingOrExceedingStandardsModel.LocalAuthorityPercentageExceeding.PreviousYear.Value, kS2MeetingOrExceedingStandardsModel.LocalAuthorityPercentageExceeding.CurrentYear.Value,
+            kS2MeetingOrExceedingStandardsModel.EnglandPercentageExceeding.TwoYearsAgo.Value, kS2MeetingOrExceedingStandardsModel.EnglandPercentageExceeding.PreviousYear.Value, kS2MeetingOrExceedingStandardsModel.EnglandPercentageExceeding.CurrentYear.Value,
+            laAverageLabel);
 
         return new AcademicPerformanceMeetingOrExceedingStandardsViewModel
         {
@@ -59,8 +63,10 @@ public class AcademicPerformanceMeetingOrExceedingStandardsViewModel : BaseViewM
             IsKS2 = establishment.IsKS2,
             IsKS4 = establishment.IsKS4,
             IsKS5 = establishment.IsKS5,
-            AllMeetingExceedingStandardsData = allPercentageData,
-            AllMeetingExceedingStandardsOverTimeData = allPercentageDataOverTimeData,
+            AllMeetingExceedingStandardsData = allPercentageDataMeetingOrExceeding,
+            AllMeetingExceedingStandardsOverTimeData = allPercentageDataOverTimeDataMeetingOrExceeding,
+            AllExceedingStandardsData = allPercentageDataExceeding,
+            AllExceedingStandardsOverTimeData = allPercentageDataOverTimeDataExceeding,
         };
     }
 }

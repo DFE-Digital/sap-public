@@ -174,18 +174,30 @@ public class KS2ControllerTests : BaseProfilesTests
         var model = Assert.IsType<AcademicPerformanceMeetingOrExceedingStandardsViewModel>(result?.Model);
         Assert.Equal(fakeEstablishment.URN, model.URN);
         Assert.True(model.IsKS2);
-        Assert.Equal(expectedModel.EstablishmentPercentage.CurrentYear.Value, model.AllMeetingExceedingStandardsData!.Data[0]!.Value);
-        Assert.Equal(expectedModel.LocalAuthorityPercentage.CurrentYear.Value, model.AllMeetingExceedingStandardsData!.Data[1]!.Value);
-        Assert.Equal(expectedModel.EnglandPercentage.CurrentYear.Value, model.AllMeetingExceedingStandardsData!.Data[2]!.Value);
-        Assert.Equal(expectedModel.EstablishmentPercentage.TwoYearsAgo.Value, model.AllMeetingExceedingStandardsOverTimeData!.Datasets[0].Data[0]!.Value);
-        Assert.Equal(expectedModel.EstablishmentPercentage.PreviousYear.Value, model.AllMeetingExceedingStandardsOverTimeData!.Datasets[0].Data[1]!.Value);
-        Assert.Equal(expectedModel.EstablishmentPercentage.CurrentYear.Value, model.AllMeetingExceedingStandardsOverTimeData!.Datasets[0].Data[2]!.Value);
-        Assert.Equal(expectedModel.LocalAuthorityPercentage.TwoYearsAgo.Value, model.AllMeetingExceedingStandardsOverTimeData!.Datasets[1].Data[0]!.Value);
-        Assert.Equal(expectedModel.LocalAuthorityPercentage.PreviousYear.Value, model.AllMeetingExceedingStandardsOverTimeData!.Datasets[1].Data[1]!.Value);
-        Assert.Equal(expectedModel.LocalAuthorityPercentage.CurrentYear.Value, model.AllMeetingExceedingStandardsOverTimeData!.Datasets[1].Data[2]!.Value);
-        Assert.Equal(expectedModel.EnglandPercentage.TwoYearsAgo.Value, model.AllMeetingExceedingStandardsOverTimeData!.Datasets[2].Data[0]!.Value);
-        Assert.Equal(expectedModel.EnglandPercentage.PreviousYear.Value, model.AllMeetingExceedingStandardsOverTimeData!.Datasets[2].Data[1]!.Value);
-        Assert.Equal(expectedModel.EnglandPercentage.CurrentYear.Value, model.AllMeetingExceedingStandardsOverTimeData!.Datasets[2].Data[2]!.Value);
+        Assert.Equal(expectedModel.EstablishmentPercentageMeetingOrExceeding.CurrentYear.Value, model.AllMeetingExceedingStandardsData!.Data[0]!.Value);
+        Assert.Equal(expectedModel.LocalAuthorityPercentageMeetingOrExceeding.CurrentYear.Value, model.AllMeetingExceedingStandardsData!.Data[1]!.Value);
+        Assert.Equal(expectedModel.EnglandPercentageMeetingOrExceeding.CurrentYear.Value, model.AllMeetingExceedingStandardsData!.Data[2]!.Value);
+        Assert.Equal(expectedModel.EstablishmentPercentageMeetingOrExceeding.TwoYearsAgo.Value, model.AllMeetingExceedingStandardsOverTimeData!.Datasets[0].Data[0]!.Value);
+        Assert.Equal(expectedModel.EstablishmentPercentageMeetingOrExceeding.PreviousYear.Value, model.AllMeetingExceedingStandardsOverTimeData!.Datasets[0].Data[1]!.Value);
+        Assert.Equal(expectedModel.EstablishmentPercentageMeetingOrExceeding.CurrentYear.Value, model.AllMeetingExceedingStandardsOverTimeData!.Datasets[0].Data[2]!.Value);
+        Assert.Equal(expectedModel.LocalAuthorityPercentageMeetingOrExceeding.TwoYearsAgo.Value, model.AllMeetingExceedingStandardsOverTimeData!.Datasets[1].Data[0]!.Value);
+        Assert.Equal(expectedModel.LocalAuthorityPercentageMeetingOrExceeding.PreviousYear.Value, model.AllMeetingExceedingStandardsOverTimeData!.Datasets[1].Data[1]!.Value);
+        Assert.Equal(expectedModel.LocalAuthorityPercentageMeetingOrExceeding.CurrentYear.Value, model.AllMeetingExceedingStandardsOverTimeData!.Datasets[1].Data[2]!.Value);
+        Assert.Equal(expectedModel.EnglandPercentageMeetingOrExceeding.TwoYearsAgo.Value, model.AllMeetingExceedingStandardsOverTimeData!.Datasets[2].Data[0]!.Value);
+        Assert.Equal(expectedModel.EnglandPercentageMeetingOrExceeding.PreviousYear.Value, model.AllMeetingExceedingStandardsOverTimeData!.Datasets[2].Data[1]!.Value);
+        Assert.Equal(expectedModel.EnglandPercentageMeetingOrExceeding.CurrentYear.Value, model.AllMeetingExceedingStandardsOverTimeData!.Datasets[2].Data[2]!.Value);
+        Assert.Equal(expectedModel.EstablishmentPercentageExceeding.CurrentYear.Value, model.AllExceedingStandardsData!.Data[0]!.Value);
+        Assert.Equal(expectedModel.LocalAuthorityPercentageExceeding.CurrentYear.Value, model.AllExceedingStandardsData!.Data[1]!.Value);
+        Assert.Equal(expectedModel.EnglandPercentageExceeding.CurrentYear.Value, model.AllExceedingStandardsData!.Data[2]!.Value);
+        Assert.Equal(expectedModel.EstablishmentPercentageExceeding.TwoYearsAgo.Value, model.AllExceedingStandardsOverTimeData!.Datasets[0].Data[0]!.Value);
+        Assert.Equal(expectedModel.EstablishmentPercentageExceeding.PreviousYear.Value, model.AllExceedingStandardsOverTimeData!.Datasets[0].Data[1]!.Value);
+        Assert.Equal(expectedModel.EstablishmentPercentageExceeding.CurrentYear.Value, model.AllExceedingStandardsOverTimeData!.Datasets[0].Data[2]!.Value);
+        Assert.Equal(expectedModel.LocalAuthorityPercentageExceeding.TwoYearsAgo.Value, model.AllExceedingStandardsOverTimeData!.Datasets[1].Data[0]!.Value);
+        Assert.Equal(expectedModel.LocalAuthorityPercentageExceeding.PreviousYear.Value, model.AllExceedingStandardsOverTimeData!.Datasets[1].Data[1]!.Value);
+        Assert.Equal(expectedModel.LocalAuthorityPercentageExceeding.CurrentYear.Value, model.AllExceedingStandardsOverTimeData!.Datasets[1].Data[2]!.Value);
+        Assert.Equal(expectedModel.EnglandPercentageExceeding.TwoYearsAgo.Value, model.AllExceedingStandardsOverTimeData!.Datasets[2].Data[0]!.Value);
+        Assert.Equal(expectedModel.EnglandPercentageExceeding.PreviousYear.Value, model.AllExceedingStandardsOverTimeData!.Datasets[2].Data[1]!.Value);
+        Assert.Equal(expectedModel.EnglandPercentageExceeding.CurrentYear.Value, model.AllExceedingStandardsOverTimeData!.Datasets[2].Data[2]!.Value);
 
         _mockKS2MeetingOrExceedingStandardsService
             .Verify(a => a.GetMeetingOrExceedingStandardsPercentages(fakeEstablishment.URN, CancellationToken.None), Times.Once);
@@ -195,24 +207,43 @@ public class KS2ControllerTests : BaseProfilesTests
     {
         return new KS2MeetingOrExceedingStandardsModel
         {
-            EstablishmentPercentage = new RelativeYearValues<CodedDouble>
+            EstablishmentPercentageMeetingOrExceeding = new RelativeYearValues<CodedDouble>
             {
                 CurrentYear = new CodedDouble(1, string.Empty, "1"),
                 PreviousYear = new CodedDouble(2, string.Empty, "2"),
                 TwoYearsAgo = new CodedDouble(3, string.Empty, "3")
             },
 
-            LocalAuthorityPercentage = new RelativeYearValues<CodedDouble>
+            LocalAuthorityPercentageMeetingOrExceeding = new RelativeYearValues<CodedDouble>
             {
                 CurrentYear = new CodedDouble(4, string.Empty, "4"),
                 PreviousYear = new CodedDouble(5, string.Empty, "5"),
                 TwoYearsAgo = new CodedDouble(6, string.Empty, "6")
             },
-            EnglandPercentage = new RelativeYearValues<CodedDouble>
+            EnglandPercentageMeetingOrExceeding = new RelativeYearValues<CodedDouble>
             {
                 CurrentYear = new CodedDouble(7, string.Empty, "7"),
                 PreviousYear = new CodedDouble(8, string.Empty, "8"),
                 TwoYearsAgo = new CodedDouble(9, string.Empty, "9")
+            },
+            EstablishmentPercentageExceeding = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = new CodedDouble(10, string.Empty, "10"),
+                PreviousYear = new CodedDouble(11, string.Empty, "11"),
+                TwoYearsAgo = new CodedDouble(12, string.Empty, "12")
+            },
+            LocalAuthorityPercentageExceeding = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = new CodedDouble(13, string.Empty, "13"),
+                PreviousYear = new CodedDouble(14, string.Empty, "14"),
+                TwoYearsAgo = new CodedDouble(15, string.Empty, "15")
+            },
+
+            EnglandPercentageExceeding = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = new CodedDouble(16, string.Empty, "16"),
+                PreviousYear = new CodedDouble(17, string.Empty, "17"),
+                TwoYearsAgo = new CodedDouble(18, string.Empty, "18")
             }
         };
     }

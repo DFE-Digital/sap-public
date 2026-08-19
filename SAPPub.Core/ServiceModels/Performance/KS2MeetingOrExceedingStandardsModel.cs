@@ -5,7 +5,10 @@ namespace SAPPub.Core.ServiceModels.Performance;
 
 public class KS2MeetingOrExceedingStandardsModel
 {
-    public required RelativeYearValues<CodedDouble> EstablishmentPercentage { get; init; }
-    public required RelativeYearValues<CodedDouble> LocalAuthorityPercentage { get; init; }
-    public required RelativeYearValues<CodedDouble> EnglandPercentage { get; init; }
+    public required RelativeYearValues<CodedDouble> EstablishmentPercentageMeetingOrExceeding { get; init; }
+    public required RelativeYearValues<CodedDouble> LocalAuthorityPercentageMeetingOrExceeding { get; init; }
+    public required RelativeYearValues<CodedDouble> EnglandPercentageMeetingOrExceeding { get; init; }
+    public required RelativeYearValues<CodedDouble> EstablishmentPercentageExceeding { get; init; }
+    public required RelativeYearValues<CodedDouble> LocalAuthorityPercentageExceeding { get; init; }
+    public required RelativeYearValues<CodedDouble> EnglandPercentageExceeding { get; init; }
 }
