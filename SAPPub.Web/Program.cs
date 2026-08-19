@@ -1,5 +1,3 @@
-using Autofac.Core;
-using Dapper.Extensions.MiniProfiler;
 using Dfe.Analytics;
 using Dfe.Analytics.AspNetCore;
 using GovUk.Frontend.AspNetCore;
@@ -73,11 +71,6 @@ public partial class Program
         if (builder.Environment.IsDevelopment())
         {
             builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
-            builder.Services.AddMiniProfiler(options =>
-            {
-                options.SqlFormatter = new StackExchange.Profiling.SqlFormatters.InlineFormatter();
-            });
-            builder.Services.AddMiniProfilerForDapper();
         }
         else
         {
@@ -153,7 +146,6 @@ public partial class Program
         builder.Services.AddSingleton<MyMemoryCache>();
 
         var app = builder.Build();
-        app.UseMiniProfiler();
         app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
         //Configure the HTTP request pipeline.
