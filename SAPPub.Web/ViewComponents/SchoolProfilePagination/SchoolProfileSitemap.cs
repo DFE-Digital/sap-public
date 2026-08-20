@@ -103,7 +103,7 @@ public static class SchoolProfileSitemap
             Key: "SecondaryAcademicPerformanceEnglishAndMathsResults",
             Route: RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults,
             Phase: SchoolPhase.Secondary,
-            GetLabel: _ => $"Secondary academic performance: {PageTitleConstants.SecondarySchoolPageTitles.EnglishAndMathsResults}",
+            GetLabel: _ => $"Secondary academic performance: {PageTitleConstants.SecondarySchoolPageTitles.EnglishAndMathsResultsTab}",
             IsAvailable: IsSecondaryAvailable),
 
         new(
@@ -165,7 +165,7 @@ public static class SchoolProfileSitemap
             Key: "SixteenToNineteenDestinations",
             Route: RouteConstants.KS5Destinations,
             Phase: SchoolPhase.SixteenToNineteen,
-            GetLabel: _ => "16 to 19: Education, apprenticeships or work",
+            GetLabel: _ => $"16 to 19: {PageTitleConstants.KS5SchoolPageTitles.DestinationsShortTitle}",
             IsAvailable: IsSixteenToNineteenAvailable,
             IsVariable: true),
 
@@ -173,7 +173,7 @@ public static class SchoolProfileSitemap
             Key: "SixteenToNineteenDestinationsHigher",
             Route: RouteConstants.KS5DestinationsHigher,
             Phase: SchoolPhase.SixteenToNineteen,
-            GetLabel: _ => "16 to 19: Higher level study",
+            GetLabel: _ => $"16 to 19: {PageTitleConstants.KS5SchoolPageTitles.DestinationsHigherShortTitle}",
             IsAvailable: IsSixteenToNineteenAvailable,
             IsVariable: true),
     };

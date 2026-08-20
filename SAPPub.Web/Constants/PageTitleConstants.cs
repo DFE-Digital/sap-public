@@ -4,7 +4,7 @@ public class PageTitleConstants
 {
     public static class PageTitles
     {
-        public const string AboutYourSchools = "About your schools";
+        public const string About = "About";
         public const string Attendance = "Attendance";
         public const string Admissions = "Admissions";
         public const string Curriculum = "Curriculum and extra-curricular activities";
@@ -23,7 +23,8 @@ public class PageTitleConstants
 
     public static class SecondarySchoolPageTitles
     {
-        public const string EnglishAndMathsResults = "English and maths results";
+        public const string EnglishAndMathsResultsTab = "English and maths results";
+        public const string EnglishAndMathsResults = "Secondary English and maths";
         public const string ProgressAndAttainment = "Progress and attainment";
         public const string PupilAttainment = "Pupil attainment";
         public const string AdditionalMeasures = "Additional measures";
@@ -63,9 +64,11 @@ public class PageTitleConstants
         public const string SubjectsEntered = "Subjects entered";
 
         public const string Destinations = "Destinations";
-        public const string DestinationsFullTitle = "Education, apprenticeships or work (2023 leavers)";
+        public const string DestinationsShortTitle = "Education, apprenticeships or work";
+        public const string DestinationsFullTitle = $"{DestinationsShortTitle} (2023 leavers)";
         public const string DestinationsUrl = "16 to 19 Destinations";
-        public const string DestinationsHigherFullTitle = "Higher-level study (2022 leavers)";
+        public const string DestinationsHigherShortTitle = "Higher-level study";
+        public const string DestinationsHigherFullTitle = $"{DestinationsHigherShortTitle} (2022 leavers)";
         public const string DestinationsHigherUrl = "16 to 19 Destinations to higher-level study";
     }
 }

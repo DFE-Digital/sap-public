@@ -404,7 +404,7 @@ public class SchoolProfilePaginationResolverTests
 
         Assert.NotNull(result.Next);
         Assert.Equal(
-            $"{PageTitleConstants.KS5SchoolPageTitles.PhaseTitle}: Education, apprenticeships or work",
+            $"{PageTitleConstants.KS5SchoolPageTitles.PhaseTitle}: {PageTitleConstants.KS5SchoolPageTitles.DestinationsShortTitle}",
             result.Next!.Label);
     }
 

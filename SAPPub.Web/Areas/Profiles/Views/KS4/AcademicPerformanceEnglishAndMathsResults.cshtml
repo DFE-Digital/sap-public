@@ -7,8 +7,8 @@
 
 @{
     ViewData["Header"] = "Academic performance";
-    ViewData["SubHeader"] = PageTitleConstants.SecondarySchoolPageTitles.EnglishAndMathsResults;
-    ViewData["Title"] = $"{Model.SchoolName} - Secondary English and maths";
+    ViewData["SubHeader"] = PageTitleConstants.SecondarySchoolPageTitles.EnglishAndMathsResultsTab;
+    ViewData["Title"] = $"{Model.SchoolName} - {PageTitleConstants.SecondarySchoolPageTitles.EnglishAndMathsResults}";
 }
 
 <div class="govuk-grid-row">
@@ -36,7 +36,7 @@
                     <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress" asp-all-route-data="@Model.RouteAttributes">@SecondarySchoolPageTitles.ProgressAndAttainment</a>
                 </li>
                 <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" aria-current="page" asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults" asp-all-route-data="@Model.RouteAttributes">@SecondarySchoolPageTitles.EnglishAndMathsResults</a>
+                    <a class="moj-sub-navigation__link" aria-current="page" asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults" asp-all-route-data="@Model.RouteAttributes">@SecondarySchoolPageTitles.EnglishAndMathsResultsTab</a>
                 </li>
                 <li class="moj-sub-navigation__item">
                     <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">@SecondarySchoolPageTitles.SubjectsEntered</a>

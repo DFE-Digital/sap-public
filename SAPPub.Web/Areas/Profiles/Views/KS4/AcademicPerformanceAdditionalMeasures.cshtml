@@ -38,7 +38,7 @@
                     <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress" asp-all-route-data="@Model.RouteAttributes">@SecondarySchoolPageTitles.ProgressAndAttainment</a>
                 </li>
                 <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults" asp-all-route-data="@Model.RouteAttributes">@SecondarySchoolPageTitles.EnglishAndMathsResults</a>
+                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults" asp-all-route-data="@Model.RouteAttributes">@SecondarySchoolPageTitles.EnglishAndMathsResultsTab</a>
                 </li>
                 <li class="moj-sub-navigation__item">
                     <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">@SecondarySchoolPageTitles.SubjectsEntered</a>
@@ -50,7 +50,7 @@
             </ul>
         </nav>
 
-        <h2 class="govuk-heading-l">Additional measures</h2>
+        <h2 class="govuk-heading-l">@ViewData["SubHeader"]</h2>
 
         <p class="govuk-body">
             Information in this section is for the 2024 to 2025 academic year.
