@@ -94,26 +94,6 @@ export default function (data) {
       homepageJourney(environment, config)
       ks4MySchools(environment, config)
     }
-
-
-    // if (journeyChoice < 0.51) {
-    //   // 51% - Search operations (enhanced filtering patterns)
-    //   searchAndFilterJourney(environment, config)
-    //   paginationJourney(environment, config)
-    // } else if (journeyChoice < 0.93) {
-    //   // 42% - Course page views (detailed browsing)
-    //   courseDetailsJourney(environment, config)
-    // } else {
-    //   // 7% - Apply button clicks (conversion actions - full journey)
-    //   group('Full load User Journey', function () {
-    //     homepageJourney(environment, config)
-    //     searchAndFilterJourney(environment, config)
-    //     courseDetailsJourney(environment, config)
-    //   })
-    // }
-    
-    //ks5FullJourney(environment, config)
-
   })
 
   // Think time between actions (2-5 seconds)
