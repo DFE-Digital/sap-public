@@ -180,7 +180,79 @@ public class AttendancePageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task AttendancePage_DisplaysPagination()
+    public async Task AttendancePage_DisplaysBottomPagination_WithCorrectDestinations_WhenKS2Only()
+    {
+        // Arrange
+        var urn = "143034";
+        var establishmentName = "Loreto High School Chorlton";
+        _serviceMock
+            .Setup(service => service.GetAttendenceDetailsAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new AttendanceModel()
+            {
+                Urn = urn,
+                SchoolName = establishmentName,
+                IsKS2 = true,
+                IsKS4 = false,
+                IsKS5 = false
+            });
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
+
+        // Assert
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
+
+        var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.NotNull(previousLink);
+        Assert.Contains("/curriculum/primary", previousLink.GetAttribute("href"));
+
+        Assert.NotNull(nextLink);
+        Assert.Contains("/primary-performance/pupil-progress", nextLink.GetAttribute("href"));
+    }
+
+    [Fact]
+    public async Task AttendancePage_DisplaysBottomPagination_WithCorrectDestinations_WhenKS4Only()
+    {
+        // Arrange
+        var urn = "143034";
+        var establishmentName = "Loreto High School Chorlton";
+        _serviceMock
+            .Setup(service => service.GetAttendenceDetailsAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new AttendanceModel()
+            {
+                Urn = urn,
+                SchoolName = establishmentName,
+                IsKS2 = false,
+                IsKS4 = true,
+                IsKS5 = false
+            });
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
+
+        // Assert
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
+
+        var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.NotNull(previousLink);
+        Assert.Contains("/curriculum/secondary", previousLink.GetAttribute("href"));
+
+        Assert.NotNull(nextLink);
+        Assert.Contains("/secondary-performance/progress-attainment", nextLink.GetAttribute("href"));
+    }
+
+    [Fact]
+    public async Task AttendancePage_DisplaysBottomPagination_WithCorrectDestinations_WhenKS2AndKS4()
     {
         // Arrange
         var urn = "143034";
@@ -201,22 +273,18 @@ public class AttendancePageTests : PageTestsBase
         // Act
         var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
 
-        // Act
+        // Assert
         var pagination = doc.QuerySelector("nav.govuk-pagination");
         Assert.NotNull(pagination);
 
-        // Act
-        var previousPaginationLink = pagination.QuerySelector(".govuk-pagination__prev a");
-        var nextPaginationLink = pagination.QuerySelector(".govuk-pagination__next a");
+        var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
 
-        var previousPaginationText = previousPaginationLink?.TextContent;
-        var nextPaginationText = nextPaginationLink?.TextContent;
+        Assert.NotNull(previousLink);
+        Assert.Contains("/curriculum/secondary", previousLink.GetAttribute("href"));
 
-        // Assert
-        Assert.NotNull(previousPaginationText);
-        Assert.Contains("Secondary: Curriculum", previousPaginationText?.Trim());        
-        Assert.NotNull(nextPaginationText);
-        Assert.Contains("Primary academic performance: Pupil progress", nextPaginationText?.Trim());
+        Assert.NotNull(nextLink);
+        Assert.Contains("/primary-performance/pupil-progress", nextLink.GetAttribute("href"));
     }
 
     [Fact]
