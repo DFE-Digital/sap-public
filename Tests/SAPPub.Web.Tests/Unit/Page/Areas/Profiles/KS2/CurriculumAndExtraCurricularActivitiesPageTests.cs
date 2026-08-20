@@ -66,7 +66,7 @@ public class CurriculumAndExtraCurricularActivitiesPageTests : PageTestsBase
     [Fact]
     public async Task CurriculumAndExtraCurricularActivitiesPage_Displays_VerticalNavigation()
     {
-        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, _pageRoute);
+        var url = BuildUrl(_urn, _schoolName, _pageRoute);
 
         // Act
         var doc = await Fixture.BrowseToPage(url);
@@ -110,16 +110,7 @@ public class CurriculumAndExtraCurricularActivitiesPageTests : PageTestsBase
     public async Task CurriculumPage_Displays_SubNavigation_WhenMultiplePhases()
     {
         // Arrange
-        var multiPhaseEstablishment = new EstablishmentTestBuilder()
-            .WithURN(_urnMultiPhase)
-            .WithEstablishmentName(_schoolNameMultiPhase)
-            .WithIsKeyStage2(true)
-            .WithIsKeyStage4(true)
-            .BuildServiceModel();
-
-        _mockEstablishmentService
-            .Setup(a => a.GetEstablishmentAsync(_urnMultiPhase, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(multiPhaseEstablishment);
+        ConfigureMultiPhaseSchool();
 
         var url = BuildUrl(_urnMultiPhase, _schoolNameMultiPhase, _pageRoute);
 
@@ -135,17 +126,7 @@ public class CurriculumAndExtraCurricularActivitiesPageTests : PageTestsBase
     public async Task CurriculumPage_SubNavigation_HasCorrectLinks_WhenMultiplePhases()
     {
         // Arrange
-        var multiPhaseEstablishment = new EstablishmentTestBuilder()
-            .WithURN(_urnMultiPhase)
-            .WithEstablishmentName(_schoolNameMultiPhase)
-            .WithIsKeyStage2(true)
-            .WithIsKeyStage4(true)
-            .BuildServiceModel();
-
-        _mockEstablishmentService
-            .Setup(a => a.GetEstablishmentAsync(_urnMultiPhase, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(multiPhaseEstablishment);
-
+        ConfigureMultiPhaseSchool();
         var url = BuildUrl(_urnMultiPhase, _schoolNameMultiPhase, _pageRoute);
 
         // Act
@@ -244,5 +225,65 @@ public class CurriculumAndExtraCurricularActivitiesPageTests : PageTestsBase
         var contactSchoolInfo = doc.QuerySelector("[data-testid='contact-school-info-extra']");
         Assert.NotNull(contactSchoolInfo);
         Assert.Contains("Contact the school", contactSchoolInfo.TextContent);
+    }
+
+    [Fact]
+    public async Task AdmissionsPage_DisplaysBottomPagination_WithCorrectDestinations()
+    {
+        // Arrange
+        var url = BuildUrl(_urn, _schoolName, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
+
+        var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.NotNull(previousLink);
+        Assert.Contains("/admissions/primary", previousLink.GetAttribute("href"));
+
+        Assert.NotNull(nextLink);
+        Assert.Contains("/attendance", nextLink.GetAttribute("href"));
+    }
+
+    [Fact]
+    public async Task AdmissionsPage_DisplaysBottomPagination_WithCorrectDestinations_WhenMultiplePhases()
+    {
+        // Arrange
+        ConfigureMultiPhaseSchool();
+        var url = BuildUrl(_urnMultiPhase, _schoolNameMultiPhase, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
+
+        var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.NotNull(previousLink);
+        Assert.Contains("/admissions/secondary", previousLink.GetAttribute("href"));
+
+        Assert.NotNull(nextLink);
+        Assert.Contains("/curriculum/secondary", nextLink.GetAttribute("href"));
+    }
+
+    private void ConfigureMultiPhaseSchool()
+    {
+        var multiPhaseEstablishment = new EstablishmentTestBuilder()
+            .WithURN(_urnMultiPhase)
+            .WithEstablishmentName(_schoolNameMultiPhase)
+            .WithIsKeyStage2(true)
+            .WithIsKeyStage4(true)
+            .BuildServiceModel();
+        _mockEstablishmentService
+            .Setup(a => a.GetEstablishmentAsync(_urnMultiPhase, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(multiPhaseEstablishment);
     }
 }
