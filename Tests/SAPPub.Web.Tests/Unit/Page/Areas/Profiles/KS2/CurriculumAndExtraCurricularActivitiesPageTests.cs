@@ -298,5 +298,15 @@ public class CurriculumAndExtraCurricularActivitiesPageTests : PageTestsBase
         _mockEstablishmentService
             .Setup(a => a.GetEstablishmentAsync(_urnMultiPhase, It.IsAny<CancellationToken>()))
             .ReturnsAsync(multiPhaseEstablishment);
+
+        var multiPhaseEstablishmentMinimum = new EstablishmentMinimumTestBuilder()
+            .WithURN(_urnMultiPhase)
+            .WithEstablishmentName(_schoolNameMultiPhase)
+            .WithIsKeyStage2(true)
+            .WithIsKeyStage4(true)
+            .BuildServiceModel();
+        _mockEstablishmentService
+            .Setup(a => a.GetEstablishmentMinimumAsync(_urnMultiPhase, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(multiPhaseEstablishmentMinimum);
     }
 }

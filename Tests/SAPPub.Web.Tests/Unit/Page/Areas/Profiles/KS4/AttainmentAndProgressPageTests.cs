@@ -204,4 +204,41 @@ public class AttainmentAndProgressPageTests : PageTestsBase
         Assert.NotNull(doc.QuerySelector("[data-testid='progress8-custom-card']"));
         Assert.Null(doc.QuerySelector("[data-testid='progress8-no-establishment-data-card']"));
     }
+
+    [Fact]
+    public async Task AcademicPerformanceAttainmentAndProgressPage_DisplaysBottomPagination_WithCorrectDestinations()
+    {
+        // Arrange
+        var urn = "143034";
+        var establishmentName = "Loreto High School Chorlton";
+        _serviceMock
+            .Setup(service => service.GetAttainmentAndProgressAsync(
+                It.IsAny<string>(),
+                It.IsAny<AcademicYearSelection>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new AttainmentAndProgressModel()
+            {
+                Urn = urn,
+                SchoolName = establishmentName,
+                IsKS2 = false,
+                IsKS4 = true,
+                IsKS5 = false
+            });
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, $"{_pageRoute}/{AcademicYearSelection.Current.ToRouteSegment()}"));
+
+        // Assert
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
+
+        var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.NotNull(previousLink);
+        Assert.Contains("/attendance", previousLink.GetAttribute("href"));
+
+        Assert.NotNull(nextLink);
+        Assert.Contains("/secondary-performance/english-and-maths", nextLink.GetAttribute("href"));
+    }
 }

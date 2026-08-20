@@ -5,6 +5,7 @@ using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
+using SAPPub.Web.ViewComponents.Pagination;
 
 namespace SAPPub.Web.Tests.Unit.Page.Areas.Profiles.KS4;
 
@@ -124,10 +125,15 @@ public class AdditionalMeasuresTests : PageTestsBase
         var nextPaginationText = nextPaginationLink?.TextContent;
 
         // Assert
-        Assert.NotNull(previousPaginationText);
-        Assert.Contains("Secondary academic performance: Subjects entered", previousPaginationText?.Trim());
-        Assert.NotNull(nextPaginationText);
-        Assert.Contains("Destinations", nextPaginationText?.Trim());
+        var previousLink = bottomPagination.QuerySelector(".govuk-pagination__prev a");
+        var nextLink = bottomPagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.NotNull(previousLink);
+        Assert.Contains("/secondary-performance/subjects-entered", previousLink.GetAttribute("href"));
+
+        Assert.NotNull(nextLink);
+        Assert.Contains("/destinations/secondary", nextLink.GetAttribute("href"));
+
     }
 
     [Fact]
