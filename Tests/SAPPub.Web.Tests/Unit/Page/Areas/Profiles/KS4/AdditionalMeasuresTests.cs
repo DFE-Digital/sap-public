@@ -23,11 +23,11 @@ public class AdditionalMeasuresTests : PageTestsBase
         _serviceMock = UseMock<IAdditionalMeasuresService>();
         _establishmentServiceMock = UseMock<IEstablishmentService>();
         _establishmentServiceMock
-            .Setup(service => service.GetEstablishmentAsync(
+            .Setup(service => service.GetEstablishmentMinimumAsync(
                 _urn,
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(
-                new EstablishmentTestBuilder()
+                new EstablishmentMinimumTestBuilder()
                     .WithURN(_urn)
                     .WithEstablishmentName(_establishmentName)
                     .WithIsKeyStage4(true)

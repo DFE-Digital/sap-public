@@ -65,6 +65,11 @@
         @* Average result *@
         <partial name="_AverageResult" model="@Model.AverageResult" view-data='new ViewDataDictionary(ViewData) { ["QualificationLevel"] = Model.Level2Qualification, ["LAName"] = Model.LAName }' />
 
+        @* Student retention *@
+        <h3 class="govuk-heading-m">Student retention</h3>
+        <div id="student-retention" class="govuk-inset-text">
+            Measures on student retention will be available shortly in a future release.
+        </div>
         @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.KS5AcademicPerformanceLevel2))
 
     </div>

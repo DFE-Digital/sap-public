@@ -4,6 +4,8 @@ using Npgsql;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Infrastructure.Mapping.ValueCodes;
 using SAPPub.Infrastructure.Repositories.Helpers;
+using StackExchange.Profiling;
+using StackExchange.Profiling.Data;
 
 namespace SAPPub.Infrastructure.Repositories.Generic
 {
@@ -46,7 +48,8 @@ namespace SAPPub.Infrastructure.Repositories.Generic
             if (string.IsNullOrWhiteSpace(sql))
                 throw new NotSupportedException($"No ReadMultiple query for {typeof(T).Name}");
 
-            await using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
+
+            using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
 
             var cmd = new DapperCommandBuilder()
                     .WithCommandText(sql)
@@ -68,7 +71,7 @@ namespace SAPPub.Infrastructure.Repositories.Generic
                 if (string.IsNullOrWhiteSpace(sql))
                     throw new NotSupportedException($"No ReadMultiple query for {typeof(T).Name}");
 
-                await using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
+                using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
 
                 var cmd = new DapperCommandBuilder()
                     .WithCommandText(sql)
@@ -104,7 +107,7 @@ namespace SAPPub.Infrastructure.Repositories.Generic
                 if (string.IsNullOrWhiteSpace(sql))
                     throw new NotSupportedException($"No ReadSingle query for {typeof(T).Name}");
 
-                await using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
+                using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
 
                 var cmd = new DapperCommandBuilder()
                     .WithCommandText(sql)
@@ -211,7 +214,7 @@ namespace SAPPub.Infrastructure.Repositories.Generic
                 if (string.IsNullOrWhiteSpace(sql))
                     throw new NotSupportedException($"No ReadMany query for {typeof(T).Name}");
 
-                await using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
+                using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
 
                 var cmd = new DapperCommandBuilder()
                     .WithCommandText(sql)

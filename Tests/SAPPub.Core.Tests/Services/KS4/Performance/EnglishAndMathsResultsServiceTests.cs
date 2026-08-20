@@ -15,11 +15,10 @@ namespace SAPPub.Core.Tests.Services.KS4.Performance
         private readonly Mock<IEnglandPerformanceService> _mockEnglandPerformanceService;
         private readonly EnglishAndMathsResultsService _service;
 
-        private readonly EstablishmentServiceModel fakeEstablishment = new()
+        private readonly EstablishmentMinimumServiceModel fakeEstablishment = new()
         {
             URN = "123456",
             EstablishmentName = "Test Establishment",
-            PhaseOfEducationName = "Secondary School",
             LAName = "Council",
             LAId = "E09000001"
         };
@@ -91,7 +90,7 @@ namespace SAPPub.Core.Tests.Services.KS4.Performance
             };
 
             _mockEstablishmentService
-                .Setup(r => r.GetEstablishmentAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Setup(r => r.GetEstablishmentMinimumAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(fakeEstablishment);
 
             _mockEstablishmentPerformanceService
@@ -192,8 +191,8 @@ namespace SAPPub.Core.Tests.Services.KS4.Performance
             // Arrange
             var urn = "99999";
             _mockEstablishmentService
-                .Setup(r => r.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new EstablishmentServiceModel()); // not found
+                .Setup(r => r.GetEstablishmentMinimumAsync(urn, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new EstablishmentMinimumServiceModel()); // not found
 
             // Act
             var result = await _service.GetEnglishAndMathsResultsAsync(urn, 4, CancellationToken.None);

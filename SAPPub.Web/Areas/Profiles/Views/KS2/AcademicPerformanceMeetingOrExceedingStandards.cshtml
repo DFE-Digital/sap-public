@@ -67,7 +67,7 @@
             <p class="govuk-body">
                 Pupils achieve the expected standard when they:
             </p>
-            <ul>
+            <ul class="govuk-list govuk-list--bullet">
                 <li>achieve a scaled score of 100 or higher in reading and maths</li>
                 <li>are assessed by their teacher as working at the expected standard or greater depth for writing</li>
             </ul>
@@ -88,6 +88,36 @@
                 })
         </div>
 
+        <div class="data-container">
+
+            <h3 class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">
+                Achieving a higher standard in reading, writing and maths
+            </h3>
+            <p class="govuk-body">
+                Pupils achieve the higher standard when they:
+            </p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>achieve a scaled score of 110 or higher in reading and maths</li>
+                <li>are assessed by their teacher as working at greater depth for writing</li>
+            </ul>
+
+            <p class="govuk-body">
+                Compare this school with state-funded local and national averages.
+            </p>
+
+            @await Component.InvokeAsync("ChartWithTableToggle", new ChartWithTableToggleModel
+                {
+                    IdPrefix = "exs",
+                    ChartPrefix = "all-exs",
+                    CurrentData = Model.AllExceedingStandardsData,
+                    OverTimeData = Model.AllExceedingStandardsOverTimeData,
+                    HasEstablishmentData = true,
+                    IsScaled = false,
+                    IsPercentageData = true
+                })
+        </div>
+
+   
         @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.PrimaryAcademicPerformanceMeetingOrExceedingStandards))
 
     </div>

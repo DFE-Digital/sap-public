@@ -36,7 +36,7 @@ public class AcademicPerformancePupilProgressViewModel : BaseViewModel
 
     public static AcademicPerformancePupilProgressViewModel Map(
         KS2PupilPerformance ks2PupilPerformance,
-        EstablishmentServiceModel establishment, 
+        EstablishmentMinimumServiceModel establishment, 
         AcademicYearSelection selectedAcademicYear,
         UrlLinksOptions urlLinksOptions)
     {

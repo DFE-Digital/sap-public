@@ -89,7 +89,7 @@ public class KS4Controller(IEstablishmentService establishmentService) : Control
         string schoolName,
         CancellationToken ct)
     {
-        var establishmentDetails = await establishmentService.GetEstablishmentAsync(urn, ct);
+        var establishmentDetails = await establishmentService.GetEstablishmentMinimumAsync(urn, ct);
 
         if (string.IsNullOrWhiteSpace(establishmentDetails?.URN))
         {
@@ -114,7 +114,7 @@ public class KS4Controller(IEstablishmentService establishmentService) : Control
         [FromServices] IAdditionalMeasuresService additionalMeasuresService,
         string urn, string schoolName, CancellationToken ct)
     {
-        var establishmentDetails = await establishmentService.GetEstablishmentAsync(urn, ct);
+        var establishmentDetails = await establishmentService.GetEstablishmentMinimumAsync(urn, ct);
         var additionalMeasures = await additionalMeasuresService.GetAsync(urn, establishmentDetails.LAId, ct);
 
         var model = AcademicPerformanceAdditionalMeasuresViewModel.MapToMeasuresInTableFormat(additionalMeasures, establishmentDetails);

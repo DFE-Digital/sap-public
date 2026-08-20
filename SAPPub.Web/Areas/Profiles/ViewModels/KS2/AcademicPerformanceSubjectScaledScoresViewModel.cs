@@ -21,7 +21,7 @@ public class AcademicPerformanceSubjectScaledScoresViewModel : BaseViewModel
     public required DisplayField<bool> HasMathsEstablishmentData { get; set; }
 
 
-    public static AcademicPerformanceSubjectScaledScoresViewModel Map(EstablishmentServiceModel establishment, KS2ScaledScoreModel scaledScoreModel)
+    public static AcademicPerformanceSubjectScaledScoresViewModel Map(EstablishmentMinimumServiceModel establishment, KS2ScaledScoreModel scaledScoreModel)
     {
         var laAverageLabel = CommonHelper.GetLocalAuthorityDisplayName(establishment.LAName);
 
@@ -77,24 +77,6 @@ public class AcademicPerformanceSubjectScaledScoresViewModel : BaseViewModel
             AllMathsOverTimeData = allMathsOverTimeData,
             HasReadEstablishmentData = hasReadEstablishmentData.ToDisplayField(),
             HasMathsEstablishmentData = hasMathsEstablishmentData.ToDisplayField()
-        };
-    }
-
-    private static DataOverTimeViewModel GetDataOverTimeViewModel(
-        double? estPrevious2, double? estPrevious, double? estCurrent,
-        double? laPrevious2, double? laPrevious, double? laCurrent,
-        double? engPrevious2, double? engPrevious, double? engCurrent,
-        string laAverageLabel)
-    {
-        return new DataOverTimeViewModel
-        {
-            Labels = ["2022 to 2023", "2023 to 2024", "2024 to 2025"], // TODO - Need academic year to calculate current, previous and TwoYearsAgo
-            Datasets =
-            [
-                new DatasetViewModel { Label = "School", Data = [estPrevious2, estPrevious, estCurrent] },
-                new DatasetViewModel { Label = laAverageLabel, Data = [laPrevious2, laPrevious, laCurrent] },
-                new DatasetViewModel { Label = "England average", Data = [engPrevious2, engPrevious, engCurrent] }
-            ],
         };
     }
 }

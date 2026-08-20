@@ -15,7 +15,7 @@ public class EnglishAndMathsQualificationsService(
     {
         ct.ThrowIfCancellationRequested();
 
-        var establishment = await establishmentService.GetEstablishmentAsync(urn, ct);
+        var establishment = await establishmentService.GetEstablishmentMinimumAsync(urn, ct);
         
         var establishmentPerformanceTask = ks5PerformanceRepository.GetEstablishmentPerformanceAsync(urn, ct);
         var englandPerformanceTask = ks5PerformanceRepository.GetEnglandPerformanceAsync(ct);
