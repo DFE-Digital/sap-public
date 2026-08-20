@@ -241,7 +241,7 @@ public class CurriculumAndExtraCurricularActivitiesPageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task AdmissionsPage_DisplaysBottomPagination_WithCorrectDestinations()
+    public async Task CurriculumPage_DisplaysBottomPagination_WithCorrectDestinations()
     {
         // Arrange
         var url = BuildUrl(_urn, _schoolName, _pageRoute);
@@ -264,7 +264,7 @@ public class CurriculumAndExtraCurricularActivitiesPageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task AdmissionsPage_DisplaysBottomPagination_WithCorrectDestinations_WhenMultiplePhases()
+    public async Task CurriculumPage_DisplaysBottomPagination_WithCorrectDestinations_WhenMultiplePhases()
     {
         // Arrange
         ConfigureMultiPhaseSchool();
