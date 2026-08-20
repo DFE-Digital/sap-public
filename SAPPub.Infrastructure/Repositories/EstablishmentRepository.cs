@@ -125,8 +125,7 @@ namespace SAPPub.Infrastructure.Repositories
                 FROM v_establishment
                 {parts.WhereClause};";
 
-            await using var npgsqlConn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
-            using var conn = new ProfiledDbConnection(npgsqlConn, MiniProfiler.Current);
+            using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
             var results = await conn.QueryAsync<Establishment>(sql, parts.Parameters);
             var totalCount = await conn.ExecuteScalarAsync<int>(countSql, parts.Parameters);
 
