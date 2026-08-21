@@ -29,7 +29,7 @@ public class KS2ControllerTests : BaseProfilesTests
         });
 
         _mockKS2AdditionalMeasuresService = new Mock<IKS2AdditionalMeasuresService>();
-        _controller = new(opts) { Establishment = fakeEstablishment };
+        _controller = new(opts) { Establishment = fakeMinimumEstablishment };
     }
 
     [Fact]
@@ -73,14 +73,14 @@ public class KS2ControllerTests : BaseProfilesTests
         // Arrange
         var expectedModel = GetKS2PupilPerformance();
         _mockKS2PupilProgressService
-            .Setup(a => a.GetPupilProgressAsync(fakeEstablishment.URN, AcademicYearSelection.Previous2, CancellationToken.None))
+            .Setup(a => a.GetPupilProgressAsync(fakeMinimumEstablishment.URN, AcademicYearSelection.Previous2, CancellationToken.None))
             .ReturnsAsync(expectedModel);
 
         //Act
         var result = await _controller.AcademicPerformancePupilProgress(
             _mockKS2PupilProgressService.Object,
-            fakeEstablishment.URN,
-            fakeEstablishment.EstablishmentName,
+            fakeMinimumEstablishment.URN,
+            fakeMinimumEstablishment.EstablishmentName,
             AcademicYearSelection.Previous2.ToString().ToLower(),
             CancellationToken.None) as ViewResult;
 
@@ -113,7 +113,7 @@ public class KS2ControllerTests : BaseProfilesTests
         Assert.Equal(AcademicYearSelection.Previous2, model.SelectedAcademicYear);
 
         _mockKS2PupilProgressService
-            .Verify(a => a.GetPupilProgressAsync(fakeEstablishment.URN, AcademicYearSelection.Previous2, It.IsAny<CancellationToken>()), Times.Once);
+            .Verify(a => a.GetPupilProgressAsync(fakeMinimumEstablishment.URN, AcademicYearSelection.Previous2, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -123,19 +123,19 @@ public class KS2ControllerTests : BaseProfilesTests
         var expectedModel = GetKS2AdditionalMeasuresModel();
 
         _mockKS2AdditionalMeasuresService
-            .Setup(a => a.GetAdditionalMeasures(fakeEstablishment.URN, CancellationToken.None))
+            .Setup(a => a.GetAdditionalMeasures(fakeMinimumEstablishment.URN, CancellationToken.None))
             .ReturnsAsync(expectedModel);
 
         // Act
         var result = await _controller.AcademicPerformanceAdditionalMeasures(
              _mockKS2AdditionalMeasuresService.Object,
-             fakeEstablishment.URN,
-             fakeEstablishment.EstablishmentName,
+             fakeMinimumEstablishment.URN,
+             fakeMinimumEstablishment.EstablishmentName,
              CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
         var model = Assert.IsType<AcademicPerformanceAdditionalMeasuresViewModel>(result?.Model);
-        Assert.Equal(fakeEstablishment.URN, model.URN);
+        Assert.Equal(fakeMinimumEstablishment.URN, model.URN);
         Assert.True(model.IsKS2);
         Assert.Equal(expectedModel.EstablishmentGrammarAtExpectedStandard, model.EstablishmentGrammarAtExpectedStandard.Value);
         Assert.Equal(expectedModel.EstablishmentGrammarAtHigherStandard, model.EstablishmentGrammarAtHigherStandard.Value);
@@ -149,7 +149,7 @@ public class KS2ControllerTests : BaseProfilesTests
         Assert.Equal(expectedModel.EnglandSENSupportPopulation, model.EnglandSENSupportPopulation.Value);
        
         _mockKS2AdditionalMeasuresService
-            .Verify(a => a.GetAdditionalMeasures(fakeEstablishment.URN, CancellationToken.None), Times.Once);
+            .Verify(a => a.GetAdditionalMeasures(fakeMinimumEstablishment.URN, CancellationToken.None), Times.Once);
     }
 
 
@@ -160,19 +160,19 @@ public class KS2ControllerTests : BaseProfilesTests
         var expectedModel = GetMeetingOrExceedingStandardsModel();
 
         _mockKS2MeetingOrExceedingStandardsService
-            .Setup(a => a.GetMeetingOrExceedingStandardsPercentages(fakeEstablishment.URN, CancellationToken.None))
+            .Setup(a => a.GetMeetingOrExceedingStandardsPercentages(fakeMinimumEstablishment.URN, CancellationToken.None))
             .ReturnsAsync(expectedModel);
 
         // Act
         var result = await _controller.AcademicPerformanceMeetingOrExceedingStandards(
              _mockKS2MeetingOrExceedingStandardsService.Object,
-             fakeEstablishment.URN,
-             fakeEstablishment.EstablishmentName,
+             fakeMinimumEstablishment.URN,
+             fakeMinimumEstablishment.EstablishmentName,
              CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
         var model = Assert.IsType<AcademicPerformanceMeetingOrExceedingStandardsViewModel>(result?.Model);
-        Assert.Equal(fakeEstablishment.URN, model.URN);
+        Assert.Equal(fakeMinimumEstablishment.URN, model.URN);
         Assert.True(model.IsKS2);
         Assert.Equal(expectedModel.EstablishmentPercentageMeetingOrExceeding.CurrentYear.Value, model.AllMeetingExceedingStandardsData!.Data[0]!.Value);
         Assert.Equal(expectedModel.LocalAuthorityPercentageMeetingOrExceeding.CurrentYear.Value, model.AllMeetingExceedingStandardsData!.Data[1]!.Value);
@@ -200,7 +200,7 @@ public class KS2ControllerTests : BaseProfilesTests
         Assert.Equal(expectedModel.EnglandPercentageExceeding.CurrentYear.Value, model.AllExceedingStandardsOverTimeData!.Datasets[2].Data[2]!.Value);
 
         _mockKS2MeetingOrExceedingStandardsService
-            .Verify(a => a.GetMeetingOrExceedingStandardsPercentages(fakeEstablishment.URN, CancellationToken.None), Times.Once);
+            .Verify(a => a.GetMeetingOrExceedingStandardsPercentages(fakeMinimumEstablishment.URN, CancellationToken.None), Times.Once);
     }
 
     private static KS2MeetingOrExceedingStandardsModel GetMeetingOrExceedingStandardsModel()
@@ -269,7 +269,7 @@ public class KS2ControllerTests : BaseProfilesTests
     {
         return new KS2PupilPerformance
         {
-            Urn = fakeEstablishment.URN,
+            Urn = fakeMinimumEstablishment.URN,
             EstablishmentReadingScore = new CodedDouble(1, "", ""),
             EstablishmentReadingDescription = new CodedString("2", "", ""),
             EstablishmentReadingConfidenceUpper = new CodedDouble(3, "", ""),

@@ -19,36 +19,13 @@ public class CurriculumControllerTests
     private readonly Mock<IFeatureManager> _mockFeatureManager = new();
     private readonly Mock<ILogger<CurriculumController>> _mockLogger = new();
     private readonly CurriculumController _controller;
-    private EstablishmentServiceModel _fakeEstablishment;
+    private EstablishmentMinimumServiceModel _fakeEstablishment;
 
     public CurriculumControllerTests()
     {
-        _fakeEstablishment = new EstablishmentTestBuilder()
-            .WithTrustName("Trust")
+        _fakeEstablishment = new EstablishmentMinimumTestBuilder()
+            .WithEstablishmentName("cool school")
             .WithWebsite("https://www.gov.uk/")
-            .WithTelephoneNum("012154896")
-            .WithAddressStreet("Street")
-            .WithAddressLocality("Locality")
-            .WithAddressTown("Town")
-            .WithAddressPostcode("Postcode")
-            .WithLAName("Sheffield")
-            .WithLAGssCode("123")
-            .WithTypeOfEstablishmentName("EstablishmentName")
-            .WithHeadteacherTitle("Title")
-            .WithHeadteacherFirstName("FirstName")
-            .WithHeadteacherLastName("LastName")
-            .WithAgeRangeLow("11")
-            .WithAgeRangeHigh("18")
-            .WithTotalPupils("1117")
-            .WithGenderName("GenderName")
-            .WithReligiousCharacterName("ReligiousCharacter")
-            .WithSixthForm(false)
-            .WithResourcedProvisionName("Resourced provision")
-            .WithEstablishmentTypeGroupId((int)EstablishmentTypeGroup.Colleges)
-            .WithStatusCode(1)
-            .WithOpenReasonId(10)
-            .WithOpenDate()
-            .WithSenTypes("VI - Visual Impairment, HI - Hearing Impairment")
             .WithIsKeyStage2(true)
             .WithIsKeyStage4(true)
             .BuildServiceModel();
@@ -56,7 +33,7 @@ public class CurriculumControllerTests
         _mockEstablishmentService = new();
 
         _mockEstablishmentService
-            .Setup(es => es.GetEstablishmentAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Setup(es => es.GetEstablishmentMinimumAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(_fakeEstablishment);
 
         var tempPath = Path.Combine(Path.GetTempPath(), "SAPPubTests", Guid.NewGuid().ToString());

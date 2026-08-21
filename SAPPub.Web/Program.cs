@@ -142,8 +142,10 @@ public partial class Program
         // Add feature management abilility
         builder.Services.AddFeatureManagement();
 
-        var app = builder.Build();
+        // Add caching
+        builder.Services.AddSingleton<MyMemoryCache>();
 
+        var app = builder.Build();
         app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
         //Configure the HTTP request pipeline.

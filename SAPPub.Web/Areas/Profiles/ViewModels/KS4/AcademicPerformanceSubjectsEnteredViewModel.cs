@@ -12,7 +12,7 @@ public class AcademicPerformanceSubjectsEnteredViewModel : SubjectsEnteredBaseMo
 
     public List<SubjectsEnteredDetailViewModel>? OtherSubjects { get; set; }
 
-    public static AcademicPerformanceSubjectsEnteredViewModel Map(EstablishmentServiceModel establishment, 
+    public static AcademicPerformanceSubjectsEnteredViewModel Map(EstablishmentMinimumServiceModel establishment, 
         IEnumerable<SubjectsEnteredModel> gcseSubjectEntries, 
         IEnumerable<SubjectsEnteredModel> vocationalSubjectEntries, 
         IEnumerable<SubjectsEnteredModel> otherSubjectEntries)

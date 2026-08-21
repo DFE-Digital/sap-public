@@ -16,14 +16,14 @@ public class CurriculumAndExtraCurricularActivitiesPageTests : PageTestsBase
     private string _schoolName = "St Paul's Church of England Academy";
     private string _schoolNameMultiPhase = "Abraham Moss Community School";
     private string _urnMultiPhase = "150009";
-    private readonly EstablishmentServiceModel _establishment = new();
+    private readonly EstablishmentMinimumServiceModel _establishment = new();
     private readonly Mock<IEstablishmentService> _mockEstablishmentService;
 
     public CurriculumAndExtraCurricularActivitiesPageTests(WebAppFixture fixture) : base(fixture)
     {
         _mockEstablishmentService = UseMock<IEstablishmentService>();
 
-        _establishment = new EstablishmentTestBuilder()
+        _establishment = new EstablishmentMinimumTestBuilder()
             .WithURN(_urn)
             .WithEstablishmentName(_schoolName)
             .WithIsKeyStage2(false)
@@ -31,7 +31,7 @@ public class CurriculumAndExtraCurricularActivitiesPageTests : PageTestsBase
             .BuildServiceModel();
 
         _mockEstablishmentService
-            .Setup(a => a.GetEstablishmentAsync(_urn, It.IsAny<CancellationToken>()))
+            .Setup(a => a.GetEstablishmentMinimumAsync(_urn, It.IsAny<CancellationToken>()))
             .ReturnsAsync(_establishment);
     }
 
@@ -70,7 +70,7 @@ public class CurriculumAndExtraCurricularActivitiesPageTests : PageTestsBase
     [InlineData(true, false, 6)] // ks4 only school
     public async Task CurriculumAndExtraCurricularActivitiesPage_Displays_VerticalNavigation(bool isKs4, bool isKs2, int expectedItemCount)
     {
-        var establishment = new EstablishmentTestBuilder()
+        var establishment = new EstablishmentMinimumTestBuilder()
         .WithURN(_urnMultiPhase)
         .WithEstablishmentName(_schoolNameMultiPhase)
         .WithIsKeyStage2(isKs2)
@@ -78,7 +78,7 @@ public class CurriculumAndExtraCurricularActivitiesPageTests : PageTestsBase
         .BuildServiceModel();
 
         _mockEstablishmentService
-            .Setup(a => a.GetEstablishmentAsync(_urnMultiPhase, It.IsAny<CancellationToken>()))
+            .Setup(a => a.GetEstablishmentMinimumAsync(_urnMultiPhase, It.IsAny<CancellationToken>()))
             .ReturnsAsync(establishment);
 
         var url = BuildUrl(_urnMultiPhase, _schoolNameMultiPhase, _pageRoute);
@@ -126,7 +126,7 @@ public class CurriculumAndExtraCurricularActivitiesPageTests : PageTestsBase
     public async Task CurriculumPage_Displays_SubNavigation_WhenMultiplePhases()
     {
         // Arrange
-        var multiPhaseEstablishment = new EstablishmentTestBuilder()
+        var multiPhaseEstablishment = new EstablishmentMinimumTestBuilder()
             .WithURN(_urnMultiPhase)
             .WithEstablishmentName(_schoolNameMultiPhase)
             .WithIsKeyStage2(true)
@@ -134,7 +134,7 @@ public class CurriculumAndExtraCurricularActivitiesPageTests : PageTestsBase
             .BuildServiceModel();
 
         _mockEstablishmentService
-            .Setup(a => a.GetEstablishmentAsync(_urnMultiPhase, It.IsAny<CancellationToken>()))
+            .Setup(a => a.GetEstablishmentMinimumAsync(_urnMultiPhase, It.IsAny<CancellationToken>()))
             .ReturnsAsync(multiPhaseEstablishment);
 
         var url = BuildUrl(_urnMultiPhase, _schoolNameMultiPhase, _pageRoute);
@@ -156,7 +156,7 @@ public class CurriculumAndExtraCurricularActivitiesPageTests : PageTestsBase
             .Setup(f => f.IsEnabledAsync(Constants.Constants.EnablePrimary))
             .ReturnsAsync(false);
 
-        var multiPhaseEstablishment = new EstablishmentTestBuilder()
+        var multiPhaseEstablishment = new EstablishmentMinimumTestBuilder()
                 .WithURN(_urnMultiPhase)
                 .WithEstablishmentName(_schoolNameMultiPhase)
                 .WithIsKeyStage2(true)
@@ -164,7 +164,7 @@ public class CurriculumAndExtraCurricularActivitiesPageTests : PageTestsBase
                 .BuildServiceModel();
 
         _mockEstablishmentService
-            .Setup(a => a.GetEstablishmentAsync(_urnMultiPhase, It.IsAny<CancellationToken>()))
+            .Setup(a => a.GetEstablishmentMinimumAsync(_urnMultiPhase, It.IsAny<CancellationToken>()))
             .ReturnsAsync(multiPhaseEstablishment);
 
         var url = BuildUrl(_urnMultiPhase, _schoolNameMultiPhase, _pageRoute);
@@ -182,7 +182,7 @@ public class CurriculumAndExtraCurricularActivitiesPageTests : PageTestsBase
     public async Task CurriculumPage_SubNavigation_HasCorrectLinks_WhenMultiplePhases()
     {
         // Arrange
-        var multiPhaseEstablishment = new EstablishmentTestBuilder()
+        var multiPhaseEstablishment = new EstablishmentMinimumTestBuilder()
             .WithURN(_urnMultiPhase)
             .WithEstablishmentName(_schoolNameMultiPhase)
             .WithIsKeyStage2(true)
@@ -190,7 +190,7 @@ public class CurriculumAndExtraCurricularActivitiesPageTests : PageTestsBase
             .BuildServiceModel();
 
         _mockEstablishmentService
-            .Setup(a => a.GetEstablishmentAsync(_urnMultiPhase, It.IsAny<CancellationToken>()))
+            .Setup(a => a.GetEstablishmentMinimumAsync(_urnMultiPhase, It.IsAny<CancellationToken>()))
             .ReturnsAsync(multiPhaseEstablishment);
 
         var url = BuildUrl(_urnMultiPhase, _schoolNameMultiPhase, _pageRoute);

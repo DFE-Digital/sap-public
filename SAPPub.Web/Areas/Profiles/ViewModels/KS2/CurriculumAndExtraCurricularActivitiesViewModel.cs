@@ -8,7 +8,7 @@ public class CurriculumAndExtraCurricularActivitiesViewModel : BaseViewModel
 {
     public required DisplayField<string> SchoolWebsite { get; set; }
 
-    public static CurriculumAndExtraCurricularActivitiesViewModel Map(EstablishmentServiceModel establishment)
+    public static CurriculumAndExtraCurricularActivitiesViewModel Map(EstablishmentMinimumServiceModel establishment)
     {
         return new CurriculumAndExtraCurricularActivitiesViewModel
         {

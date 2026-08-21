@@ -27,7 +27,7 @@ public class AcademicPerformanceSubjectScaledScoresViewModel : BaseViewModel
     public required ScaledScoresViewModel DisadvantagedPupils { get; set; }
     public required ScaledScoresViewModel NonDisadvantagedPupils { get; set; }
 
-    public static AcademicPerformanceSubjectScaledScoresViewModel Map(EstablishmentServiceModel establishment, KS2ScaledScoreModel scaledScoreModel)
+    public static AcademicPerformanceSubjectScaledScoresViewModel Map(EstablishmentMinimumServiceModel establishment, KS2ScaledScoreModel scaledScoreModel)
     {
         var laAverageLabel = CommonHelper.GetLocalAuthorityDisplayName(establishment.LAName);
 

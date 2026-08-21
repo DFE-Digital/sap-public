@@ -17,7 +17,7 @@ public class KS2ScaledScoresService(
         ArgumentException.ThrowIfNullOrWhiteSpace(urn);
         ct.ThrowIfCancellationRequested();
 
-        var establishment = await establishmentService.GetEstablishmentAsync(urn, ct);
+        var establishment = await establishmentService.GetEstablishmentMinimumAsync(urn, ct);
         var establishmentPerformanceTask = ks2PerformanceRepository.GetEstablishmentPerformanceAsync(urn, ct);
         var localAuthorityPerformanceTask = ks2PerformanceRepository.GetLaPerformanceAsync(establishment.LAId, ct);
         var englandPerformanceTask = ks2PerformanceRepository.GetEnglandPerformanceAsync(ct);

@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.FeatureManagement;
 using Npgsql;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Helpers;
@@ -7,6 +8,8 @@ using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.ServiceModels.Search.InputModels;
 using SAPPub.Core.Specifications;
+using StackExchange.Profiling;
+using StackExchange.Profiling.Data;
 
 namespace SAPPub.Infrastructure.Repositories
 {
@@ -106,6 +109,7 @@ namespace SAPPub.Infrastructure.Repositories
 
         public async Task<(IEnumerable<Establishment> Results, int TotalCount)> SearchAsync(SearchQuery query, int maxResults = 10, CancellationToken ct = default)
         {
+
             var visibilitySpec = await _searchVisibilityPolicy.GetVisibilitySpecificationAsync(ct);
             var parts = BuildSearchSqlParts(query, maxResults, visibilitySpec);
 
@@ -121,7 +125,7 @@ namespace SAPPub.Infrastructure.Repositories
                 FROM v_establishment
                 {parts.WhereClause};";
 
-            await using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
+            using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
             var results = await conn.QueryAsync<Establishment>(sql, parts.Parameters);
             var totalCount = await conn.ExecuteScalarAsync<int>(countSql, parts.Parameters);
 

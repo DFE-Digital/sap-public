@@ -62,8 +62,8 @@ public class KS2MeetingOrExceedingStandardsServiceTests
         var expectedModel = GetKS2MeetingOrExceedingStandardsModel();
 
         _establishmentService
-            .Setup(a => a.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new EstablishmentServiceModel { URN = urn, LAId = laId });
+            .Setup(a => a.GetEstablishmentMinimumAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EstablishmentMinimumServiceModel { URN = urn, LAId = laId });
 
         _ks2PerformanceRepository
             .Setup(a => a.GetEstablishmentPerformanceAsync(urn, It.IsAny<CancellationToken>()))
