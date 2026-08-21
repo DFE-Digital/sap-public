@@ -1,12 +1,12 @@
 ﻿using Moq;
-using SAPPub.Core.Entities;
 using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Absence;
 using SAPPub.Core.ServiceModels;
-using SAPPub.Core.Services.KS4.Attendance;
+using SAPPub.Core.Services;
+using SAPPub.Core.ValueObjects;
 
-namespace SAPPub.Core.Tests.Services.KS4.Attendance;
+namespace SAPPub.Core.Tests.Services;
 
 public class AttendanceServiceTests
 {
@@ -26,15 +26,15 @@ public class AttendanceServiceTests
 
     public static IEnumerable<object[]> AttendanceData => 
         [
-            [(est: (double?)5.55, la: (double?)10.25, eng: (double?)15.55), (est: (double?)94.4, la: (double?)89.8, eng: (double?)84.4)],
-            [(est: (double?)10.12, la: (double?)3.45, eng: (double?)7.35), (est: (double?)89.9, la: (double?)96.6, eng: (double?)92.6)],
+            [(est: (double?)5.55, la: (double?)10.25, eng: (double?)15.55), (est: (double?)94.45, la: (double?)89.75, eng: (double?)84.45)],
+            [(est: (double?)10.12, la: (double?)3.45, eng: (double?)7.35), (est: (double?)89.88, la: (double?)96.55, eng: (double?)92.65)],
             [(est: (double?)null, la: (double?)null, eng: (double?)null), (est: (double?)null, la: (double?)null, eng: (double?)null)],
         ];
 
     public static IEnumerable<object[]> AbsenceData =>
         [
-            [(est: (double?)5.45, la: (double?)11.25, eng: (double?)12.55), (est: (double?)5.4, la: (double?)11.2, eng: (double?)12.6)],
-            [(est: (double?)10.12, la: (double?)7.45, eng: (double?)8.35), (est: (double?)10.1, la: (double?)7.4, eng: (double?)8.4)],
+            [(est: (double?)5.45, la: (double?)11.25, eng: (double?)12.55), (est: (double?)5.45, la: (double?)11.25, eng: (double?)12.55)],
+            [(est: (double?)10.12, la: (double?)7.45, eng: (double?)8.35), (est: (double?)10.12, la: (double?)7.45, eng: (double?)8.35)],
             [(est: (double?)null, la: (double?)null, eng: (double?)null), (est: (double?)null, la: (double?)null, eng: (double?)null)],
         ];
 
@@ -70,34 +70,36 @@ public class AttendanceServiceTests
         Assert.Equal(urn, result.Urn);
         Assert.Null(result.SchoolName);
         Assert.Null(result.LocalAuthority);
-        Assert.Null(result.EstablishmentAttendance);
-        Assert.Null(result.LocalAuthorityAttendance);
-        Assert.Null(result.EnglandAttendance);
+        Assert.False(result.EstablishmentAttendance.HasValue);
+        Assert.False(result.LocalAuthorityAttendance.HasValue);
+        Assert.False(result.EnglandAttendance.HasValue);
     }
 
     [Theory]
     [MemberData(nameof(AttendanceData))]
-    public async Task GetAttendenceDetailsAsync_ShouldReturnData(
+    public async Task GetAttendenceDetailsAsync_ShouldReturn_KS4_Attendance_Data(
         (double? est, double? la, double? eng) absence,
         (double? est, double? la, double? eng) expected)
     {
         // Arrange
+        fakeEstablishment.IsKS4 = true;
+
         var establishmentAbsence = new EstablishmentAbsence
         {
             Id = fakeEstablishment.URN,
-            Abs_Tot_Est_Current_Pct = absence.est
+            Abs_Tot_Est_Current_Pct_Coded = new CodedDouble(absence.est, string.Empty, absence.est.ToString()!)
         };
 
         var lAAbsence = new LAAbsence
         {
             Id = fakeEstablishment.LAId,
-            Abs_Tot_LA_Current_Pct = absence.la
+            Abs_Tot_LA_Current_Pct_Coded = new CodedDouble(absence.la, string.Empty, absence.la.ToString()!)
         };
 
         var englandAbsence = new EnglandAbsence
         {
             Id = fakeEstablishment.LAId,
-            Abs_Tot_Eng_Current_Pct = absence.eng
+            Abs_Tot_Eng_Current_Pct_Coded = new CodedDouble(absence.eng, string.Empty, absence.eng.ToString()!)
         };
 
         _mockEstablishmentService
@@ -125,14 +127,14 @@ public class AttendanceServiceTests
         Assert.Equal(fakeEstablishment.EstablishmentName, result.SchoolName);
         Assert.Equal(fakeEstablishment.LAName, result.LocalAuthority);
 
-        Assert.Equal(expected.est, result.EstablishmentAttendance);
-        Assert.Equal(expected.la, result.LocalAuthorityAttendance);
-        Assert.Equal(expected.eng, result.EnglandAttendance);
+        Assert.Equal(expected.est, result.EstablishmentAttendance.Value);
+        Assert.Equal(expected.la, result.LocalAuthorityAttendance.Value);
+        Assert.Equal(expected.eng, result.EnglandAttendance.Value);
     }
 
     [Theory]
     [MemberData(nameof(AbsenceData))]
-    public async Task GetAttendenceDetailsAsync_ShouldReturn_Absence_Data(
+    public async Task GetAttendenceDetailsAsync_ShouldReturn_KS4_Absence_Data(
         (double? est, double? la, double? eng) absence,
         (double? est, double? la, double? eng) expected)
     {
@@ -140,24 +142,26 @@ public class AttendanceServiceTests
         var enrolmentsTotal = 1200;
         var absenceTotal = 120;
 
+        fakeEstablishment.IsKS4 = true;
+
         var establishmentAbsence = new EstablishmentAbsence
         {
             Id = fakeEstablishment.URN,
-            Abs_Persistent_Est_Current_Pct = absence.est,
-            Enrolments_Tot_Est_Current_Num = enrolmentsTotal,
-            Abs_Persistent_Est_Current_Num = absenceTotal
+            Abs_Persistent_Est_Current_Pct_Coded = new CodedDouble(absence.est, "", absence.eng.ToString()!),
+            Enrolments_Tot_Est_Current_Num_Coded = new CodedDouble(enrolmentsTotal, "", enrolmentsTotal.ToString()),
+            Abs_Persistent_Est_Current_Num_Coded = new CodedDouble(absenceTotal, "", absenceTotal.ToString())
         };
 
         var lAAbsence = new LAAbsence
         {
             Id = fakeEstablishment.LAId,
-            Abs_Persistent_LA_Current_Pct = absence.la
+            Abs_Persistent_LA_Current_Pct_Coded = new CodedDouble(absence.la, "", absence.la.ToString()!),
         };
 
         var englandAbsence = new EnglandAbsence
         {
             Id = fakeEstablishment.LAId,
-            Abs_Persistent_Eng_Current_Pct = absence.eng
+            Abs_Persistent_Eng_Current_Pct_Coded = new CodedDouble(absence.eng, "", absence.eng.ToString()!),
         };
 
         _mockEstablishmentService
@@ -185,11 +189,11 @@ public class AttendanceServiceTests
         Assert.Equal(fakeEstablishment.EstablishmentName, result.SchoolName);
         Assert.Equal(fakeEstablishment.LAName, result.LocalAuthority);
 
-        Assert.Equal(expected.est, result.EstablishmentPersistentAbsence);
-        Assert.Equal(expected.la, result.LocalAuthorityPersistentAbsence);
-        Assert.Equal(expected.eng, result.EnglandPersistentAbsence);
+        Assert.Equal(expected.est, result.EstablishmentPersistentAbsence.Value);
+        Assert.Equal(expected.la, result.LocalAuthorityPersistentAbsence.Value);
+        Assert.Equal(expected.eng, result.EnglandPersistentAbsence.Value);
 
-        Assert.Equal(enrolmentsTotal, result.EstablishmentEnrolmentsTotal);
-        Assert.Equal(absenceTotal, result.EstablishmentPersistentAbsenceTotal);
+        Assert.Equal(enrolmentsTotal, result.EstablishmentEnrolmentsTotal.Value);
+        Assert.Equal(absenceTotal, result.EstablishmentPersistentAbsenceTotal.Value);
     }
 }

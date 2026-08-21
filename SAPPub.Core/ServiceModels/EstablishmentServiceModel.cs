@@ -6,7 +6,7 @@ using SAPPub.Core.Helpers;
 
 namespace SAPPub.Core.ServiceModels;
 
-public class EstablishmentServiceModel
+public class EstablishmentServiceModel : EstablishmentServiceModelBase
 {
     public string URN { get; set; } = string.Empty;
 
@@ -81,7 +81,6 @@ public class EstablishmentServiceModel
 
     public string TotalPupils { get; set; } = string.Empty;
 
-    public TypeOfEstablishment TypeOfEstablishment { get; set; }
 
     public string TypeOfEstablishmentName { get; set; } = string.Empty;
 
@@ -122,20 +121,6 @@ public class EstablishmentServiceModel
     public bool IsKS4 { get; set; }
 
     public bool IsKS5 { get; set; }
-
-    public bool IsSpecialSchool => TypeOfEstablishment is
-        TypeOfEstablishment.CommunitySpecialSchool or
-        TypeOfEstablishment.NonMaintainedSpecialSchool or
-        TypeOfEstablishment.OtherIndependentSpecialSchool or
-        TypeOfEstablishment.FoundationSpecialSchool or
-        TypeOfEstablishment.AcademySpecialSponsorLed or
-        TypeOfEstablishment.FreeSchoolsSpecial or
-        TypeOfEstablishment.AcademySpecialConverter;
-
-    public bool IsIndependentSchool => TypeOfEstablishment is
-        TypeOfEstablishment.OtherIndependentSchool or
-        TypeOfEstablishment.OtherIndependentSpecialSchool;
-
 
     public EstablishmentPerformance KS4Performance { get; set; } = new();
 

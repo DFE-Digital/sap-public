@@ -73,14 +73,6 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "NurseryProvisionName"
           """;
 
-        private const string EstablishmentAbsenceColumns = """
-          "Id",
-          "Enrolments_Tot_Est_Current_Num_Coded",
-          "Abs_Persistent_Est_Current_Num_Coded",
-          "Abs_Persistent_Est_Current_Pct_Coded",
-          "Abs_Tot_Est_Current_Pct_Coded"
-          """;
-
         private const string EstablishmentDestinationsColumns = """
           "Id",
           "AllDest_Tot_Est_Current_Pct_Coded",
@@ -217,13 +209,11 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
         private const string EnglandAbsenceColumns = """
           "Id",
           "Abs_Persistent_Eng_Current_Pct_Coded",
-          "Abs_Tot_Eng_Current_Pct_Coded"
-          """;
-
-        private const string LAAbsenceColumns = """
-          "Id",
-          "Abs_Persistent_LA_Current_Pct_Coded",
-          "Abs_Tot_LA_Current_Pct_Coded"
+          "Abs_Tot_Eng_Current_Pct_Coded",
+          "Abs_PersistentKS2_Eng_Current_Pct_Coded", 
+          "Abs_PersistentSPE_Eng_Current_Pct_Coded", 
+          "Abs_TotKS2_Eng_Current_Pct_Coded", 
+          "Abs_TotSPE_Eng_Current_Pct_Coded"
           """;
 
         private const string LaUrlsColumns = """
@@ -476,7 +466,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                     """ + DapperHelpers.GetOrderBy(typeof(Establishment)),
 
                 nameof(EstablishmentAbsence) =>
-                    SelectFrom(EstablishmentAbsenceColumns, "v_establishment_absence"),
+                    SelectAllFromWhereId("v_establishment_absence"),
 
                 nameof(KS4EstablishmentDestinations) =>
                     SelectFrom(EstablishmentDestinationsColumns, "v_establishment_destinations"),
@@ -485,7 +475,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                     SelectFrom(EstablishmentPerformanceColumns, "v_establishment_performance"),
 
                 nameof(LAAbsence) =>
-                    SelectFrom(LAAbsenceColumns, "v_la_absence"),
+                    SelectAllFromWhereId("v_la_absence"),
 
                 nameof(KS4LADestinations) =>
                     SelectFrom(LADestinationsColumns, "v_la_destinations"),
@@ -537,7 +527,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                     SelectFromWhereUrn(EstablishmentColumns, "v_establishment"),
 
                 nameof(EstablishmentAbsence) =>
-                    SelectFromWhereId(EstablishmentAbsenceColumns, "v_establishment_absence"),
+                    SelectAllFromWhereId("v_establishment_absence"),
 
                 nameof(KS4EstablishmentDestinations) =>
                     SelectFromWhereId(EstablishmentDestinationsColumns, "v_establishment_destinations"),
@@ -546,7 +536,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                     SelectFromWhereId(EstablishmentPerformanceColumns, "v_establishment_performance"),
 
                 nameof(LAAbsence) =>
-                    SelectFromWhereId(LAAbsenceColumns, "v_la_absence"),
+                    SelectAllFromWhereId("v_la_absence"),
 
                 nameof(KS4LADestinations) =>
                     SelectFromWhereId(LADestinationsColumns, "v_la_destinations"),

@@ -1,12 +1,8 @@
-﻿using SAPPub.Core.Entities.Destinations;
-using SAPPub.Core.Entities.KS4.Absence;
-using SAPPub.Core.Entities.KS4.Performance;
-using SAPPub.Core.Enums;
-using SAPPub.Core.Helpers;
+﻿using SAPPub.Core.Helpers;
 
 namespace SAPPub.Core.ServiceModels;
 
-public class EstablishmentMinimumServiceModel
+public class EstablishmentMinimumServiceModel : EstablishmentServiceModelBase
 {
     public string URN { get; set; } = string.Empty;
 
