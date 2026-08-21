@@ -4,15 +4,17 @@ public class PageTitleConstants
 {
     public static class PageTitles
     {
-        public const string About = "About";
+        public const string About = "About the school";
         public const string Attendance = "Attendance";
         public const string Admissions = "Admissions";
         public const string Curriculum = "Curriculum and extra-curricular activities";
         public const string AcademicPerformance = "Academic performance";
+        public const string Performance = "Performance";
     }
 
     public static class PrimarySchoolPageTitles
     {
+        public const string PhaseTitle = "Primary";
         public const string PupilProgress = "Pupil progress";
         public const string MeetingOrExceedingStandards = "Meeting or exceeding standards";
         public const string SubjectScaledScores = "Subject scaled scores";
@@ -23,6 +25,7 @@ public class PageTitleConstants
 
     public static class SecondarySchoolPageTitles
     {
+        public const string PhaseTitle = "Secondary";
         public const string EnglishAndMathsResultsTab = "English and maths results";
         public const string EnglishAndMathsResults = "Secondary English and maths";
         public const string ProgressAndAttainment = "Progress and attainment";
@@ -46,6 +49,7 @@ public class PageTitleConstants
 
     public static class KS5SchoolPageTitles
     {
+        public const string About = "About the school or college";
         public const string PhaseTitle = "16 to 19";
         public const string Performance = "Academic performance";
 

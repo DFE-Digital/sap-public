@@ -10,7 +10,7 @@ namespace SAPPub.Web.ViewComponents.SchoolProfilePagination;
 public static class SchoolProfileSitemap
 {
     private static string AboutSchoolLabel(PaginationContext ctx) =>
-        ctx.IsKS5 ? "About the school or college" : "About the school";
+        ctx.IsKS5 ? PageTitleConstants.KS5SchoolPageTitles.About : PageTitleConstants.PageTitles.About;
 
     private static bool IsPrimaryAvailable(PaginationContext ctx) => ctx.IsPrimaryEnabled && ctx.IsKS2;
 
@@ -33,28 +33,28 @@ public static class SchoolProfileSitemap
             Key: "PrimaryAdmissions",
             Route: RouteConstants.PrimaryAdmissions,
             Phase: SchoolPhase.Primary,
-            GetLabel: _ => "Primary: Admissions",
+            GetLabel: _ => $"{PageTitleConstants.PrimarySchoolPageTitles.PhaseTitle}: {PageTitleConstants.PageTitles.Admissions}",
             IsAvailable: IsPrimaryAvailable),
 
         new(
             Key: "SecondaryAdmissions",
             Route: RouteConstants.SecondaryAdmissions,
             Phase: SchoolPhase.Secondary,
-            GetLabel: _ => "Secondary: Admissions",
+            GetLabel: _ => $"{PageTitleConstants.SecondarySchoolPageTitles.PhaseTitle}: {PageTitleConstants.PageTitles.Admissions}",
             IsAvailable: IsSecondaryAvailable),
 
         new(
             Key: "PrimaryCurriculum",
             Route: RouteConstants.PrimaryCurriculumAndExtraCurricularActivities,
             Phase: SchoolPhase.Primary,
-            GetLabel: _ => "Primary: Curriculum",
+            GetLabel: _ => $"{PageTitleConstants.PrimarySchoolPageTitles.PhaseTitle}: {PageTitleConstants.PageTitles.Curriculum}",
             IsAvailable: IsPrimaryAvailable),
 
         new(
             Key: "SecondaryCurriculum",
             Route: RouteConstants.SecondaryCurriculumAndExtraCurricularActivities,
             Phase: SchoolPhase.Secondary,
-            GetLabel: _ => "Secondary: Curriculum",
+            GetLabel: _ => $"{PageTitleConstants.SecondarySchoolPageTitles.PhaseTitle}: {PageTitleConstants.PageTitles.Curriculum}",
             IsAvailable: IsSecondaryAvailable),
 
         new(
@@ -69,28 +69,28 @@ public static class SchoolProfileSitemap
             Key: "PrimaryAcademicPerformancePupilProgress",
             Route: RouteConstants.PrimaryAcademicPerformancePupilProgress,
             Phase: SchoolPhase.Primary,
-            GetLabel: _ => $"Primary academic performance: {PageTitleConstants.PrimarySchoolPageTitles.PupilProgress}",
+            GetLabel: _ => $"{PageTitleConstants.PrimarySchoolPageTitles.PhaseTitle} {PageTitleConstants.PageTitles.AcademicPerformance.ToLower()}: {PageTitleConstants.PrimarySchoolPageTitles.PupilProgress}",
             IsAvailable: IsPrimaryAvailable),
 
         new(
             Key: "PrimaryAcademicPerformanceMeetingOrExceedingStandards",
             Route: RouteConstants.PrimaryAcademicPerformanceMeetingOrExceedingStandards,
             Phase: SchoolPhase.Primary,
-            GetLabel: _ => $"Primary academic performance: {PageTitleConstants.PrimarySchoolPageTitles.MeetingOrExceedingStandards}",
+            GetLabel: _ => $"{PageTitleConstants.PrimarySchoolPageTitles.PhaseTitle} {PageTitleConstants.PageTitles.AcademicPerformance.ToLower()}: {PageTitleConstants.PrimarySchoolPageTitles.MeetingOrExceedingStandards}",
             IsAvailable: IsPrimaryAvailable),
 
         new(
             Key: "PrimaryAcademicPerformanceSubjectScaledScores",
             Route: RouteConstants.PrimaryAcademicPerformanceSubjectScaledScores,
             Phase: SchoolPhase.Primary,
-            GetLabel: _ => $"Primary academic performance: {PageTitleConstants.PrimarySchoolPageTitles.SubjectScaledScores}",
+            GetLabel: _ => $"{PageTitleConstants.PrimarySchoolPageTitles.PhaseTitle} {PageTitleConstants.PageTitles.AcademicPerformance.ToLower()}: {PageTitleConstants.PrimarySchoolPageTitles.SubjectScaledScores}",
             IsAvailable: IsPrimaryAvailable),
 
         new(
             Key: "PrimaryAcademicPerformanceAdditionalMeasures",
             Route: RouteConstants.PrimaryAcademicPerformanceAdditionalMeasures,
             Phase: SchoolPhase.Primary,
-            GetLabel: _ => $"Primary academic performance: {PageTitleConstants.PrimarySchoolPageTitles.AdditionalMeasures}",
+            GetLabel: _ => $"{PageTitleConstants.PrimarySchoolPageTitles.PhaseTitle} {PageTitleConstants.PageTitles.AcademicPerformance.ToLower()}: {PageTitleConstants.PrimarySchoolPageTitles.AdditionalMeasures}",
             IsAvailable: IsPrimaryAvailable),
 
         // Secondary academic performance (fixed set of 4 sub-tabs)
@@ -98,28 +98,28 @@ public static class SchoolProfileSitemap
             Key: "SecondaryAcademicPerformanceAttainmentAndProgress",
             Route: RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress,
             Phase: SchoolPhase.Secondary,
-            GetLabel: _ => $"Secondary academic performance: {PageTitleConstants.SecondarySchoolPageTitles.ProgressAndAttainment}",
+            GetLabel: _ => $"{PageTitleConstants.SecondarySchoolPageTitles.PhaseTitle} {PageTitleConstants.PageTitles.AcademicPerformance.ToLower()}: {PageTitleConstants.SecondarySchoolPageTitles.ProgressAndAttainment}",
             IsAvailable: IsSecondaryAvailable),
 
         new(
             Key: "SecondaryAcademicPerformanceEnglishAndMathsResults",
             Route: RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults,
             Phase: SchoolPhase.Secondary,
-            GetLabel: _ => $"Secondary academic performance: {PageTitleConstants.SecondarySchoolPageTitles.EnglishAndMathsResultsTab}",
+            GetLabel: _ => $"{PageTitleConstants.SecondarySchoolPageTitles.PhaseTitle} {PageTitleConstants.PageTitles.AcademicPerformance.ToLower()}: {PageTitleConstants.SecondarySchoolPageTitles.EnglishAndMathsResultsTab}",
             IsAvailable: IsSecondaryAvailable),
 
         new(
             Key: "SecondaryAcademicPerformanceSubjectsEntered",
             Route: RouteConstants.SecondaryAcademicPerformanceSubjectsEntered,
             Phase: SchoolPhase.Secondary,
-            GetLabel: _ => $"Secondary academic performance: {PageTitleConstants.SecondarySchoolPageTitles.SubjectsEntered}",
+            GetLabel: _ => $"{PageTitleConstants.SecondarySchoolPageTitles.PhaseTitle} {PageTitleConstants.PageTitles.AcademicPerformance.ToLower()}: {PageTitleConstants.SecondarySchoolPageTitles.SubjectsEntered}",
             IsAvailable: IsSecondaryAvailable),
 
         new(
             Key: "SecondaryAcademicPerformanceAdditionalMeasures",
             Route: RouteConstants.SecondaryAcademicPerformanceAdditionalMeasures,
             Phase: SchoolPhase.Secondary,
-            GetLabel: _ => $"Secondary academic performance: {PageTitleConstants.SecondarySchoolPageTitles.AdditionalMeasures}",
+            GetLabel: _ => $"{PageTitleConstants.SecondarySchoolPageTitles.PhaseTitle} {PageTitleConstants.PageTitles.AcademicPerformance.ToLower()}: {PageTitleConstants.SecondarySchoolPageTitles.AdditionalMeasures}",
             IsAvailable: IsSecondaryAvailable),
 
         // 16-19 academic performance (variable sub-tabs)
@@ -127,7 +127,7 @@ public static class SchoolProfileSitemap
             Key: "SixteenToNineteenLevel3",
             Route: RouteConstants.KS5AcademicPerformanceLevel3,
             Phase: SchoolPhase.SixteenToNineteen,
-            GetLabel: _ => $"16 to 19 performance: {PageTitleConstants.KS5SchoolPageTitles.Level3Qualifications}",
+            GetLabel: _ => $"{PageTitleConstants.KS5SchoolPageTitles.PhaseTitle} {PageTitleConstants.PageTitles.Performance.ToLower()}: {PageTitleConstants.KS5SchoolPageTitles.Level3Qualifications}",
             IsAvailable: IsSixteenToNineteenAvailable,
             IsVariable: true),
 
@@ -135,7 +135,7 @@ public static class SchoolProfileSitemap
             Key: "SixteenToNineteenLevel2",
             Route: RouteConstants.KS5AcademicPerformanceLevel2,
             Phase: SchoolPhase.SixteenToNineteen,
-            GetLabel: _ => $"16 to 19 performance: {PageTitleConstants.KS5SchoolPageTitles.Level2Qualifications}",
+            GetLabel: _ => $"{PageTitleConstants.KS5SchoolPageTitles.PhaseTitle} {PageTitleConstants.PageTitles.Performance.ToLower()}: {PageTitleConstants.KS5SchoolPageTitles.Level2Qualifications}",
             IsAvailable: IsSixteenToNineteenAvailable,
             IsVariable: true),
 
@@ -143,21 +143,21 @@ public static class SchoolProfileSitemap
             Key: "SixteenToNineteenEnglishAndMaths",
             Route: RouteConstants.KS5AcademicPerformanceEnglishMaths,
             Phase: SchoolPhase.SixteenToNineteen,
-            GetLabel: _ => $"16 to 19 performance: {PageTitleConstants.KS5SchoolPageTitles.EnglishAndMaths}",
+            GetLabel: _ => $"{PageTitleConstants.KS5SchoolPageTitles.PhaseTitle} {PageTitleConstants.PageTitles.Performance.ToLower()}: {PageTitleConstants.KS5SchoolPageTitles.EnglishAndMaths}",
             IsAvailable: IsSixteenToNineteenAvailable),
 
         new(
             Key: "SixteenToNineteenSubjectsEntered",
             Route: RouteConstants.KS5AcademicPerformanceSubjectsEntered,
             Phase: SchoolPhase.SixteenToNineteen,
-            GetLabel: _ => $"16 to 19 performance: {PageTitleConstants.KS5SchoolPageTitles.SubjectsEntered}",
+            GetLabel: _ => $"{PageTitleConstants.KS5SchoolPageTitles.PhaseTitle} {PageTitleConstants.PageTitles.Performance.ToLower()}: {PageTitleConstants.KS5SchoolPageTitles.SubjectsEntered}",
             IsAvailable: IsSixteenToNineteenAvailable),
 
         new(
             Key: "SecondaryDestinations",
             Route: RouteConstants.SecondaryDestinations,
             Phase: SchoolPhase.Secondary,
-            GetLabel: _ => $"Secondary: {PageTitleConstants.SecondarySchoolPageTitles.Destinations}",
+            GetLabel: _ => $"{PageTitleConstants.SecondarySchoolPageTitles.PhaseTitle}: {PageTitleConstants.SecondarySchoolPageTitles.Destinations}",
             IsAvailable: IsSecondaryAvailable),
 
         // 16-19 destinations (up to two variable sub-tabs)
@@ -165,14 +165,14 @@ public static class SchoolProfileSitemap
             Key: "SixteenToNineteenDestinations",
             Route: RouteConstants.KS5Destinations,
             Phase: SchoolPhase.SixteenToNineteen,
-            GetLabel: _ => $"16 to 19: {PageTitleConstants.KS5SchoolPageTitles.DestinationsShortTitle}",
+            GetLabel: _ => $"{PageTitleConstants.KS5SchoolPageTitles.PhaseTitle}: {PageTitleConstants.KS5SchoolPageTitles.DestinationsShortTitle}",
             IsAvailable: IsSixteenToNineteenAvailable),
 
         new(
             Key: "SixteenToNineteenDestinationsHigher",
             Route: RouteConstants.KS5DestinationsHigher,
             Phase: SchoolPhase.SixteenToNineteen,
-            GetLabel: _ => $"16 to 19: {PageTitleConstants.KS5SchoolPageTitles.DestinationsHigherShortTitle}",
+            GetLabel: _ => $"{PageTitleConstants.KS5SchoolPageTitles.PhaseTitle}: {PageTitleConstants.KS5SchoolPageTitles.DestinationsHigherShortTitle}",
             IsAvailable: IsSixteenToNineteenAvailable),
     };
 }

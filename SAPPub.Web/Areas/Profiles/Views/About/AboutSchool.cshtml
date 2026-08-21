@@ -9,7 +9,7 @@
 @using static SAPPub.Web.Constants.Constants;
 
 @{
-    ViewData["Header"] = Model.IsExclusivelyKS5 ? "About the school or college" : "About the school";
+    ViewData["Header"] = Model.IsExclusivelyKS5 ? PageTitleConstants.KS5SchoolPageTitles.About : PageTitleConstants.PageTitles.About;
     ViewData["Title"] = $"{Model.SchoolName} - {ViewData["Header"]}";
 }
 
