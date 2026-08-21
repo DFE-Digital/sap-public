@@ -346,7 +346,7 @@ public class SchoolProfilePaginationResolverTests
         var result = _resolver.Resolve(RouteConstants.Attendance, context);
 
         Assert.NotNull(result.Next);
-        Assert.Equal($"Secondary academic performance: {PageTitleConstants.SecondarySchoolPageTitles.ProgressAndAttainment}", result.Next!.Label);
+        Assert.Equal($"Secondary academic performance: Progress and attainment", result.Next!.Label);
     }
 
     [Fact]
@@ -357,7 +357,7 @@ public class SchoolProfilePaginationResolverTests
         var result = _resolver.Resolve(RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults, context);
 
         Assert.NotNull(result.Next);
-        Assert.Equal($"Secondary academic performance: {PageTitleConstants.SecondarySchoolPageTitles.SubjectsEntered}", result.Next!.Label);
+        Assert.Equal($"Secondary academic performance: Subjects entered", result.Next!.Label);
     }
 
     [Fact]
@@ -369,7 +369,7 @@ public class SchoolProfilePaginationResolverTests
 
         Assert.NotNull(result.Next);
         Assert.Equal(
-            $"{PageTitleConstants.KS5SchoolPageTitles.PhaseTitle} performance: {PageTitleConstants.KS5SchoolPageTitles.Level3Qualifications}",
+            $"16 to 19 performance: Level 3 qualifications",
             result.Next!.Label);
     }
 
@@ -382,7 +382,7 @@ public class SchoolProfilePaginationResolverTests
 
         Assert.NotNull(result.Next);
         Assert.Equal(
-            $"{PageTitleConstants.KS5SchoolPageTitles.PhaseTitle}: {PageTitleConstants.KS5SchoolPageTitles.DestinationsShortTitle}",
+            $"16 to 19: Education, apprenticeships or work",
             result.Next!.Label);
     }
 
