@@ -114,6 +114,77 @@
             })
         </div>
 
+        <govuk-accordion id="scaled-scores-by-pupil-characteristic-accordion" heading-level="3">
+            <govuk-accordion-item expanded="false">
+                <govuk-accordion-item-heading>Average scaled scores in reading and maths by pupil characteristic</govuk-accordion-item-heading>
+                <govuk-accordion-item-content>
+                    <h4 class="govuk-heading-m">Girls and boys</h4>
+                    @await Html.PartialAsync("_AverageScaledScores", Model.GirlsAndBoys, new ViewDataDictionary(ViewData) { { "id", "girls-boys-table" } })
+
+                  
+                    <h4 class="govuk-heading-m">English as an additional language (EAL)</h4>
+                    <p class="govuk-body">
+                        A child is recorded as having English as an additional language (EAL) if they hear or use a language other than
+                        English at home. This does not show how well a child speaks English and does not mean they are new to the UK. 
+                    </p>
+                    @await Html.PartialAsync("_AverageScaledScores", Model.EnglishAsAnAdditionalLanguage, new ViewDataDictionary(ViewData) { { "id", "eal-table" } })
+
+                    <h4 class="govuk-heading-m">Non-mobile pupils</h4>
+                    <p class="govuk-body">
+                        Non‑mobile pupils are pupils who were at the same school throughout both year 5 and 6.
+                    </p>
+                    @await Html.PartialAsync("_AverageScaledScores", Model.NonMobilePupils, new ViewDataDictionary(ViewData) { { "id", "nonmobile-pupils-table" } })
+
+                    
+                    <h4 class="govuk-heading-m">Disadvantaged pupils </h4>
+                    <p class="govuk-body">
+                        Pupils identified as disadvantaged are those who either:
+                        <ul class="govuk-list govuk-list--bullet">
+                            <li>were eligible for free school meals at any time during the last 6 years</li>
+                            <li>have been in the care of the local council for a day or more</li>
+                            <li>have been adopted from care</li>
+                        </ul>
+                    </p>
+                    <p class="govuk-body">
+                        Compare the average progress of disadvantaged pupils at this school or college, with disadvantaged pupils at state‑funded schools and colleges locally and across England.
+                    </p>
+                    @await Html.PartialAsync("_AverageScaledScores", Model.DisadvantagedPupils, new ViewDataDictionary(ViewData) { { "id", "disadvantaged-pupils-table" } })
+
+
+                    <details class="govuk-details" id="details-pupil-progress">
+                        <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text">
+                                Compare with non-disadvantaged pupils
+                            </span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            <h4 class="govuk-heading-m">Non-disadvantaged pupils</h4>
+                            @await Html.PartialAsync("_AverageScaledScores", Model.NonDisadvantagedPupils, new ViewDataDictionary(ViewData) { { "id", "non-disadvantaged-pupils-table" } })
+                        </div>
+                    </details>
+
+                    <h4 class="govuk-heading-m">Low, medium and high prior attainers</h4>
+                    <p class="govuk-body">
+                        At the end of key stage 1 (year 2), most pupils are assessed in English reading, English writing and maths.
+                    </p>
+                    <p class="govuk-body">
+                        Pupils are given a combined average point score across reading, writing and maths between 0 and 10 and are then allocated a group:
+                    </p>  
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>Low prior attainers achieved an average point score of below</li>
+                        <li>Middle prior attainers achieved a point score of 7 or higher but less than or equal to 8</li>
+                        <li>High prior attainers achieved an average score higher than 8</li>
+                    </ul>
+                    <p class="govuk-body">
+                        There is no KS2 measures by prior attainment for academic years 2023 to 24 and 2024 to 25. 
+                        This is because there is no KS1 prior attainment data available for these pupils due to COVID-19 disruption.
+                    </p>
+
+                </govuk-accordion-item-content>
+            </govuk-accordion-item>
+        </govuk-accordion>
+
+
         <govuk-pagination id="bottom-pagination">
             <govuk-pagination-previous asp-route="@RouteConstants.PrimaryAcademicPerformancePupilProgress" asp-all-route-data="@Model.RouteAttributes">Primary academic performance: Pupil progress</govuk-pagination-previous>
             @if (Model.IsKS4)
