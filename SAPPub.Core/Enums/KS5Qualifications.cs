@@ -11,16 +11,12 @@ namespace SAPPub.Core.Enums.KS5Qualifications
         [Display(Name = "Applied general qualifications")]
         AppliedGeneral = 3,
         [Display(Name = "Tech levels")]
-        TechLevel = 4,
-        [Display(Name = "Apprenticeship")]
-        Apprenticeship = 5
+        TechLevel = 4
     }
 
     public enum Level2
     {
         [Display(Name = "Technical certificates")]
-        TechCert = 1,
-        [Display(Name = "Apprenticeship")]
-        Apprenticeship = 2
+        TechCert = 1        
     }
 }
