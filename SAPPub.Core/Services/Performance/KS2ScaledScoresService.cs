@@ -12,7 +12,6 @@ public class KS2ScaledScoresService(
     IEstablishmentService establishmentService,
     IKS2PerformanceRepository ks2PerformanceRepository) : IKS2ScaledScoreService
 {
-
     public async Task<KS2ScaledScoreModel> GetScaledScoreModel(string urn, CancellationToken ct = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(urn);
@@ -31,12 +30,39 @@ public class KS2ScaledScoresService(
 
         return new KS2ScaledScoreModel
         {
+            LAName = establishment.LAName,
             ReadAverageEstablishment = GetEstablishmentReadAverage(establishmentPerformance),
             ReadAverageEngland = GetEngReadAverage(englandPerformance),
             ReadAverageLA = GetLAReadAverage(laPerformance),
             MathsAverageEstablishment = GetEstablishmentMathsAverage(establishmentPerformance),
             MathsAverageEngland = GetEngMathsAverage(englandPerformance),
-            MathsAverageLA = GetLAMAthsAverage(laPerformance)
+            MathsAverageLA = GetLAMathsAverage(laPerformance),
+            GirlsAverageReading = establishmentPerformance.READ_AVERAGE_G_Est_Current_Num_Coded,
+            GirlsAverageMaths = establishmentPerformance.MAT_AVERAGE_G_Est_Current_Num_Coded,
+            BoysAverageReading = establishmentPerformance.READ_AVERAGE_B_Est_Current_Num_Coded,
+            BoysAverageMaths = establishmentPerformance.MAT_AVERAGE_B_Est_Current_Num_Coded,
+            AllPupilsAverageReading = establishmentPerformance.READ_AVERAGE_Est_Current_Num_Coded,
+            AllPupilsAverageMaths = establishmentPerformance.MAT_AVERAGE_Est_Current_Num_Coded,
+
+            EALAverageReading = establishmentPerformance.READ_AVERAGE_EAL_Est_Current_Num_Coded,
+            EALAverageMaths = establishmentPerformance.MAT_AVERAGE_EAL_Est_Current_Num_Coded,
+            EALTotalAverageReading = establishmentPerformance.READ_AVERAGE_Est_Current_Num_Coded,
+            EALTotalAverageMaths = establishmentPerformance.MAT_AVERAGE_Est_Current_Num_Coded,
+
+            NonMobileAverageReading = establishmentPerformance.READ_AVERAGE_MOBN_Est_Current_Num_Coded,
+            NonMobileAverageMaths = establishmentPerformance.MAT_AVERAGE_MOBN_Est_Current_Num_Coded,
+
+            DisadvantagedAverageReadingEstablishment = establishmentPerformance.READ_AVERAGE_FSM6CLA1A_Est_Current_Num_Coded,
+            DisadvantagedAverageMathsEstablishment = establishmentPerformance.MAT_AVERAGE_FSM6CLA1A_Est_Current_Num_Coded,
+            DisadvantagedAverageReadingLA = laPerformance.READ_AVERAGE_FSM6CLA1A_LA_Current_Num_Coded,
+            DisadvantagedAverageMathsLA = laPerformance.MAT_AVERAGE_FSM6CLA1A_LA_Current_Num_Coded,
+            DisadvantagedAverageReadingEngland = englandPerformance.READ_AVERAGE_FSM6CLA1A_ENG_Current_Num_Coded,
+            DisadvantagedAverageMathsEngland = englandPerformance.MAT_AVERAGE_FSM6CLA1A_ENG_Current_Num_Coded,
+
+            NonDisadvantagedAverageReadingLA = laPerformance.READ_AVERAGE_NOTFSM6CLA1A_LA_Current_Num_Coded,
+            NonDisadvantagedAverageMathsLA = laPerformance.MAT_AVERAGE_NOTFSM6CLA1A_LA_Current_Num_Coded,
+            NonDisadvantagedAverageReadingEngland = englandPerformance.READ_AVERAGE_NOTFSM6CLA1A_Eng_Current_Num_Coded,
+            NonDisadvantagedAverageMathsEngland = englandPerformance.MAT_AVERAGE_NOTFSM6CLA1A_Eng_Current_Num_Coded,
         };
     }
 
@@ -80,7 +106,7 @@ public class KS2ScaledScoresService(
         };
     }
 
-    private static RelativeYearValues<CodedDouble> GetLAMAthsAverage(KS2LAPerformance performance)
+    private static RelativeYearValues<CodedDouble> GetLAMathsAverage(KS2LAPerformance performance)
     {
         return new RelativeYearValues<CodedDouble>
         {

@@ -1,0 +1,21 @@
+﻿@model SAPPub.Web.Areas.Profiles.ViewModels.Performance.ScaledScoresViewModel
+
+<table class="govuk-table"id="@ViewData["id"]">
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header govuk-!-width-one-half">@Model.Column1Title</th>
+            <th scope="col" class="govuk-table__header">Average score in reading</th>
+            <th scope="col" class="govuk-table__header">Average score in maths</th>
+        </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+        @foreach (var row in Model.Rows)
+        {
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">@row.RowTitle</th>
+                <td class="govuk-table__cell">@row.AverageReadingScore.DisplayNumber()</td>
+                <td class="govuk-table__cell">@row.AverageMathsScore.DisplayNumber()</td>
+            </tr>
+        }
+    </tbody>
+</table>

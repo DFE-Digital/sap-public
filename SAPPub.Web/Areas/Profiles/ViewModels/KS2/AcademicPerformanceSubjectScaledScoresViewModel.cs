@@ -1,5 +1,6 @@
 ﻿using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.Performance;
+using SAPPub.Web.Areas.Profiles.ViewModels.Performance;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models;
 using SAPPub.Web.Models.Charts;
@@ -20,6 +21,11 @@ public class AcademicPerformanceSubjectScaledScoresViewModel : BaseViewModel
 
     public required DisplayField<bool> HasMathsEstablishmentData { get; set; }
 
+    public required ScaledScoresViewModel GirlsAndBoys { get; set; }
+    public required ScaledScoresViewModel EnglishAsAnAdditionalLanguage { get; set; }
+    public required ScaledScoresViewModel NonMobilePupils { get; set; }
+    public required ScaledScoresViewModel DisadvantagedPupils { get; set; }
+    public required ScaledScoresViewModel NonDisadvantagedPupils { get; set; }
 
     public static AcademicPerformanceSubjectScaledScoresViewModel Map(EstablishmentServiceModel establishment, KS2ScaledScoreModel scaledScoreModel)
     {
@@ -43,7 +49,7 @@ public class AcademicPerformanceSubjectScaledScoresViewModel : BaseViewModel
         var allReadData = new DataViewModel
         {
             Labels = ["School", laAverageLabel, "England average"],
-            Data = [ scaledScoreModel.ReadAverageEstablishment.CurrentYear.Value, scaledScoreModel.ReadAverageLA.CurrentYear.Value, scaledScoreModel.ReadAverageEngland.CurrentYear.Value ],
+            Data = [scaledScoreModel.ReadAverageEstablishment.CurrentYear.Value, scaledScoreModel.ReadAverageLA.CurrentYear.Value, scaledScoreModel.ReadAverageEngland.CurrentYear.Value],
         };
 
         var allMathsData = new DataViewModel
@@ -76,7 +82,50 @@ public class AcademicPerformanceSubjectScaledScoresViewModel : BaseViewModel
             AllMathsData = allMathsData,
             AllMathsOverTimeData = allMathsOverTimeData,
             HasReadEstablishmentData = hasReadEstablishmentData.ToDisplayField(),
-            HasMathsEstablishmentData = hasMathsEstablishmentData.ToDisplayField()
+            HasMathsEstablishmentData = hasMathsEstablishmentData.ToDisplayField(),
+            GirlsAndBoys = GetScaledScoresViewModel("Pupil group", 
+                [
+                    new() { RowTitle = "Girls", AverageMathsScore =  scaledScoreModel.GirlsAverageMaths.ToDisplayField(), AverageReadingScore =  scaledScoreModel.GirlsAverageReading.ToDisplayField()  },
+                    new() { RowTitle = "Boys", AverageMathsScore =  scaledScoreModel.BoysAverageMaths.ToDisplayField(), AverageReadingScore =  scaledScoreModel.BoysAverageReading.ToDisplayField()  },
+                    new() { RowTitle = "All pupils at the school", AverageMathsScore =  scaledScoreModel.AllPupilsAverageMaths.ToDisplayField(), AverageReadingScore =  scaledScoreModel.AllPupilsAverageReading.ToDisplayField() },
+                ]),
+
+            EnglishAsAnAdditionalLanguage = GetScaledScoresViewModel("Pupil group",
+                [
+                    new() { RowTitle = "Pupils with EAL", AverageMathsScore =  scaledScoreModel.EALAverageMaths.ToDisplayField(), AverageReadingScore =  scaledScoreModel.EALAverageReading.ToDisplayField() },
+                    new() { RowTitle = "All pupils at the school", AverageMathsScore =  scaledScoreModel.EALTotalAverageMaths.ToDisplayField(), AverageReadingScore =  scaledScoreModel.EALTotalAverageReading.ToDisplayField() },
+                ]),
+            NonMobilePupils = GetScaledScoresViewModel("Pupil group",
+                [
+                    new() { RowTitle = "Non-mobile pupils", AverageMathsScore =  scaledScoreModel.NonMobileAverageMaths.ToDisplayField(), AverageReadingScore =  scaledScoreModel.NonMobileAverageReading.ToDisplayField() },
+                    new() { RowTitle = "All pupils at the school", AverageMathsScore =  scaledScoreModel.AllPupilsAverageMaths.ToDisplayField(), AverageReadingScore =  scaledScoreModel.AllPupilsAverageReading.ToDisplayField() },
+                ]),
+            DisadvantagedPupils = GetScaledScoresViewModel("Pupil group (Disadvantaged)",
+                [
+                    new() { RowTitle = "School", AverageMathsScore =  scaledScoreModel.DisadvantagedAverageMathsEstablishment.ToDisplayField(), AverageReadingScore =  scaledScoreModel.DisadvantagedAverageReadingEstablishment.ToDisplayField() },
+                    new() { RowTitle = $"{scaledScoreModel.LAName} average", AverageMathsScore =  scaledScoreModel.DisadvantagedAverageMathsLA.ToDisplayField(), AverageReadingScore =  scaledScoreModel.DisadvantagedAverageReadingLA.ToDisplayField() },
+                    new() { RowTitle = $"England average", AverageMathsScore =  scaledScoreModel.DisadvantagedAverageMathsEngland.ToDisplayField(), AverageReadingScore =  scaledScoreModel.DisadvantagedAverageReadingEngland.ToDisplayField() },
+                ]),
+            NonDisadvantagedPupils = GetScaledScoresViewModel("Pupil group (Non-disadvantaged)",
+                [
+                    new() { RowTitle = $"{scaledScoreModel.LAName} average", AverageMathsScore =  scaledScoreModel.NonDisadvantagedAverageMathsLA.ToDisplayField(), AverageReadingScore =  scaledScoreModel.NonDisadvantagedAverageReadingLA.ToDisplayField() },
+                    new() { RowTitle = $"England average", AverageMathsScore =  scaledScoreModel.NonDisadvantagedAverageMathsEngland.ToDisplayField(), AverageReadingScore =  scaledScoreModel.NonDisadvantagedAverageReadingEngland.ToDisplayField() },
+                ]),
+         };
+    }
+
+    private static ScaledScoresViewModel GetScaledScoresViewModel(string column1Title, List<ScaledScoresDetailViewModel> scaledScoresDetailViewModels) // string rowTitle, CodedDouble maths, CodedDouble reading)
+    {
+        return new ScaledScoresViewModel
+        {
+            Column1Title = column1Title,
+            Rows = scaledScoresDetailViewModels.Select(a =>
+                    new ScaledScoresDetailViewModel
+                    {
+                        RowTitle = a.RowTitle,
+                        AverageMathsScore = a.AverageMathsScore,
+                        AverageReadingScore = a.AverageReadingScore
+                    })
         };
     }
 }

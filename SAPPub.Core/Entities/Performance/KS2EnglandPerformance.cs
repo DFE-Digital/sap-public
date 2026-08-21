@@ -12,6 +12,7 @@ public class KS2EnglandPerformance
     public CodedDouble MAT_AVERAGE_Eng_Previous2_Num_Coded { get; set; }
     public CodedDouble MAT_AVERAGE_Eng_Previous_Num_Coded { get; set; }
     public CodedDouble MAT_AVERAGE_3YR_Eng_Current_Num_Coded { get; set; }
+    public CodedDouble MAT_AVERAGE_FSM6CLA1A_ENG_Current_Num_Coded { get; set; }
     public CodedDouble MAT_AVERAGE_NOTFSM6CLA1A_Eng_Current_Num_Coded { get; set; }
     public CodedDouble PTGPS_EXP_Eng_Current_Pct_Coded { get; set; }
     public CodedDouble PTGPS_HIGH_Eng_Current_Pct_Coded { get; set; }
@@ -30,6 +31,7 @@ public class KS2EnglandPerformance
     public CodedDouble READ_AVERAGE_Eng_Previous2_Num_Coded { get; set; }
     public CodedDouble READ_AVERAGE_Eng_Previous_Num_Coded { get; set; }
     public CodedDouble READ_AVERAGE_3YR_Eng_Current_Num_Coded { get; set; }
+    public CodedDouble READ_AVERAGE_FSM6CLA1A_ENG_Current_Num_Coded { get; set; }
     public CodedDouble READ_AVERAGE_NOTFSM6CLA1A_Eng_Current_Num_Coded { get; set; }
     public CodedDouble TFSM6CLA1A_Eng_Current_Num_Coded { get; set; }
     public CodedDouble TNOTFSM6CLA1A_Eng_Current_Num_Coded { get; set; }
