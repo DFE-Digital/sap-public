@@ -10,7 +10,7 @@ public class SchoolProfilePaginationComponentTests
     private static SAPPub.Web.ViewComponents.SchoolProfilePagination.SchoolProfilePagination CreateComponent(
         ISchoolProfilePaginationResolver? resolver = null,
         IFeatureManager? featureManager = null) =>
-        new(resolver ?? new SchoolProfilePaginationResolver(), featureManager ?? new FakeFeatureManager(true, true));
+        new(resolver ?? new SchoolProfilePaginationResolver(new SchoolProfileSitemapProvider()), featureManager ?? new FakeFeatureManager(true, true));
 
     [Fact]
     public async Task InvokeAsync_ReturnsDefaultViewWithResolvedResult()

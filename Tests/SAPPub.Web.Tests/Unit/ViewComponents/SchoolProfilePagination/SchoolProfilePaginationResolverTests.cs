@@ -10,7 +10,7 @@ namespace SAPPub.Web.Tests.Unit.ViewComponents.SchoolProfilePagination;
 /// </summary>
 public class SchoolProfilePaginationResolverTests
 {
-    private readonly SchoolProfilePaginationResolver _resolver = new();
+    private readonly SchoolProfilePaginationResolver _resolver = new(new SchoolProfileSitemapProvider());
 
     private static PaginationContext PrimaryOnly() => new()
     {
@@ -72,11 +72,7 @@ public class SchoolProfilePaginationResolverTests
     private static Dictionary<string, bool> AllSixteenToNineteenTabsAvailable() => new()
     {
         ["SixteenToNineteenLevel3"] = true,
-        ["SixteenToNineteenLevel2"] = true,
-        ["SixteenToNineteenEnglishAndMaths"] = true,
-        ["SixteenToNineteenSubjectsEntered"] = true,
-        ["SixteenToNineteenDestinations"] = true,
-        ["SixteenToNineteenDestinationsHigher"] = true
+        ["SixteenToNineteenLevel2"] = true
     };
 
     [Fact]
@@ -325,25 +321,7 @@ public class SchoolProfilePaginationResolverTests
 
         Assert.NotNull(result.Next);
         Assert.Equal(RouteConstants.KS5AcademicPerformanceEnglishMaths, result.Next!.Route);
-    }
-
-    [Fact]
-    public void VariableSixteenToNineteenDestinationSubTab_ExcludedWhenNotAvailable()
-    {
-        var variable = AllSixteenToNineteenTabsAvailable();
-        variable["SixteenToNineteenDestinationsHigher"] = false;
-
-        var context = SecondaryAndSixteenToNineteen(variable);
-
-        var result = _resolver.Resolve(RouteConstants.SecondaryDestinations, context);
-
-        Assert.NotNull(result.Next);
-        Assert.Equal(RouteConstants.KS5Destinations, result.Next!.Route);
-
-        // Confirm that from the remaining KS5 destination there is no Next (higher is unavailable)
-        var next = _resolver.Resolve(RouteConstants.KS5Destinations, context);
-        Assert.Null(next.Next);
-    }
+    }    
 
     [Theory]
     [InlineData(true, "About the school or college")]

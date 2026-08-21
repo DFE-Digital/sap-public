@@ -12,11 +12,13 @@ public interface ISchoolProfilePaginationResolver
 }
 
 /// <summary>
-/// Config-driven resolver: filters <see cref="SchoolProfileSitemap.Destinations"/>
+/// Config-driven resolver: filters the destinations supplied by an <see cref="ISitemapProvider"/>
 /// to those available for the given context, then returns the entries immediately
 /// before/after the current one. Adding new destinations only requires changes to the sitemap configuration.
+/// Accepting the sitemap via <see cref="ISitemapProvider"/> allows the same resolver to be reused
+/// for other pagination flows (e.g. a future comparison-pages sitemap) by registering a different provider.
 /// </summary>
-public sealed class SchoolProfilePaginationResolver : ISchoolProfilePaginationResolver
+public sealed class SchoolProfilePaginationResolver(ISitemapProvider sitemapProvider) : ISchoolProfilePaginationResolver
 {
     public SchoolProfilePaginationResult Resolve(string currentRoute, PaginationContext context)
     {
@@ -27,7 +29,7 @@ public sealed class SchoolProfilePaginationResolver : ISchoolProfilePaginationRe
             return SchoolProfilePaginationResult.Empty;
         }
 
-        var available = SchoolProfileSitemap.Destinations
+        var available = sitemapProvider.Destinations
             .Where(d => d.IsAvailableFor(context))
             .ToList();
 

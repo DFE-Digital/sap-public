@@ -135,6 +135,7 @@ namespace SAPPub.Web.Middleware
             services.AddScoped<DfEAnalyticsAddPhaseTagFilter>();
 
             // School profile pagination (stateless config-driven resolver)
+            services.AddSingleton<ISitemapProvider, SchoolProfileSitemapProvider>();
             services.AddSingleton<ISchoolProfilePaginationResolver, SchoolProfilePaginationResolver>();
 
             // Mapper

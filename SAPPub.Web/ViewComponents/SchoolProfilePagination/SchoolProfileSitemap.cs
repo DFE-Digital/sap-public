@@ -20,6 +20,8 @@ public static class SchoolProfileSitemap
 
     public static readonly IReadOnlyList<PaginationDestination> Destinations = new List<PaginationDestination>
     {
+        //add overview here when 'at-a-glance' is implemented
+
         new(
             Key: "AboutSchool",
             Route: RouteConstants.AboutTheSchool,
@@ -142,16 +144,14 @@ public static class SchoolProfileSitemap
             Route: RouteConstants.KS5AcademicPerformanceEnglishMaths,
             Phase: SchoolPhase.SixteenToNineteen,
             GetLabel: _ => $"16 to 19 performance: {PageTitleConstants.KS5SchoolPageTitles.EnglishAndMaths}",
-            IsAvailable: IsSixteenToNineteenAvailable,
-            IsVariable: true),
+            IsAvailable: IsSixteenToNineteenAvailable),
 
         new(
             Key: "SixteenToNineteenSubjectsEntered",
             Route: RouteConstants.KS5AcademicPerformanceSubjectsEntered,
             Phase: SchoolPhase.SixteenToNineteen,
             GetLabel: _ => $"16 to 19 performance: {PageTitleConstants.KS5SchoolPageTitles.SubjectsEntered}",
-            IsAvailable: IsSixteenToNineteenAvailable,
-            IsVariable: true),
+            IsAvailable: IsSixteenToNineteenAvailable),
 
         new(
             Key: "SecondaryDestinations",
@@ -166,15 +166,13 @@ public static class SchoolProfileSitemap
             Route: RouteConstants.KS5Destinations,
             Phase: SchoolPhase.SixteenToNineteen,
             GetLabel: _ => $"16 to 19: {PageTitleConstants.KS5SchoolPageTitles.DestinationsShortTitle}",
-            IsAvailable: IsSixteenToNineteenAvailable,
-            IsVariable: true),
+            IsAvailable: IsSixteenToNineteenAvailable),
 
         new(
             Key: "SixteenToNineteenDestinationsHigher",
             Route: RouteConstants.KS5DestinationsHigher,
             Phase: SchoolPhase.SixteenToNineteen,
             GetLabel: _ => $"16 to 19: {PageTitleConstants.KS5SchoolPageTitles.DestinationsHigherShortTitle}",
-            IsAvailable: IsSixteenToNineteenAvailable,
-            IsVariable: true),
+            IsAvailable: IsSixteenToNineteenAvailable),
     };
 }
