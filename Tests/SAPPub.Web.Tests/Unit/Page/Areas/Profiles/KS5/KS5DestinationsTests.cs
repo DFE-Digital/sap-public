@@ -71,4 +71,23 @@ public class KS5DestinationsTests : PageTestsBase
         Assert.Equal(77, allDestData.Data[1]);
         Assert.Equal(55, allDestData.Data[2]);
     }
+
+    [Fact]
+    public async Task KS5Destinations_Has_Breakdown_Including_Disadvantaged_Students_Inset_Text()
+    {
+        // Arrange/Act
+        var url = BuildUrl(_urn, _establishmentName, _pageRoute);
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var h2Elements = doc.GetElementsByTagName("h2");        
+        var breakdownDisadvantagedStudentsInset = doc.QuerySelector("#breakdown-disadvantaged-students-inset-text");
+        var findStatisticsLink = doc.QuerySelector("#find-statistics-link");
+
+        Assert.Equal("Breakdown of all students, including disadvantaged students", h2Elements[2].InnerHtml.Trim());
+        Assert.NotNull(breakdownDisadvantagedStudentsInset);
+
+        Assert.NotNull(findStatisticsLink);
+        Assert.Contains("https://explore-education-statistics.service.gov.uk/find-statistics", findStatisticsLink.GetAttribute("href"));
+    }
 }
