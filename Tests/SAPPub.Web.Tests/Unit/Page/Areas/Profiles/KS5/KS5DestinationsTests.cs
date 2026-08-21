@@ -71,4 +71,67 @@ public class KS5DestinationsTests : PageTestsBase
         Assert.Equal(77, allDestData.Data[1]);
         Assert.Equal(55, allDestData.Data[2]);
     }
+
+    [Fact]
+    public async Task KS5Destinations_DisplaysBottomPagination_WithCorrectDestinations()
+    {
+        // Arrange
+        var url = BuildUrl(_urn, _establishmentName, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
+
+        var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.NotNull(previousLink);
+        Assert.Contains("/16-to-19-performance/subjects-entered", previousLink.GetAttribute("href"));
+
+        Assert.NotNull(nextLink);
+        Assert.Contains("/destinations/16-to-19-higher-level-study", nextLink.GetAttribute("href"));
+    }
+
+    [Fact]
+    public async Task KS5Destinations_DisplaysBottomPagination_WithCorrectDestinations_WhenMultiplePhases()
+    {
+        _mockDestinationsService
+            .Setup(a => a.GetKS5DestinationsDetailsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Core.ServiceModels.Destinations.KS5DestinationsDetails
+            {
+                SchoolName = _establishmentName,
+                LocalAuthorityName = _laName,
+                EnglandOverall = _englandTotalOverall,
+                EstablishmentTotalCohortFor = _stablishmentTotalCohortFor,
+                EstablishmentTotalOverall = _establishmentTotalOverall,
+                LATotalOverall = _laTotalOverall,
+                Urn = "123456",
+                IsKS2 = false,
+                IsKS4 = true,
+                IsKS5 = true
+
+            });
+
+        // Arrange
+        var url = BuildUrl(_urn, _establishmentName, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
+
+        var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.NotNull(previousLink);
+        Assert.Contains("/destinations/secondary", previousLink.GetAttribute("href"));
+
+        Assert.NotNull(nextLink);
+        Assert.Contains("/destinations/16-to-19-higher-level-study", nextLink.GetAttribute("href"));
+    }
 }

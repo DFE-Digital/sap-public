@@ -161,6 +161,29 @@ public class EnglishMathsAcademicPerformancePageTests : PageTestsBase
 
     }
 
+    [Fact]
+    public async Task EnglishMathsQualificationsPage_DisplaysBottomPagination_WithCorrectDestinations()
+    {
+        // Arrange
+        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
+
+        var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.NotNull(previousLink);
+        Assert.Contains("/16-to-19-performance/level-2-qualifications", previousLink.GetAttribute("href"));
+
+        Assert.NotNull(nextLink);
+        Assert.Contains("/16-to-19-performance/subjects-entered", nextLink.GetAttribute("href"));
+    }
+
     private EnglishMathsQualificationModel GetEnglishMathsQualificationModel()
     {
         return new EnglishMathsQualificationModel

@@ -1,6 +1,7 @@
 ﻿@model AcademicPerformancePupilProgressViewModel;
 @using SAPPub.Web.Areas.Profiles.ViewModels.KS2
 @using SAPPub.Web.Constants
+@using SAPPub.Web.ViewComponents.SchoolProfilePagination
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 @using static SAPPub.Web.Constants.PageTitleConstants
 
@@ -231,10 +232,7 @@
 
             </div>
         }
+        @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.PrimaryAcademicPerformancePupilProgress))
 
-        <govuk-pagination id="bottom-pagination">
-            <govuk-pagination-previous asp-route="@RouteConstants.Attendance" asp-all-route-data="@Model.RouteAttributes">Attendance</govuk-pagination-previous>
-            <govuk-pagination-next asp-route="@RouteConstants.PrimaryAcademicPerformanceAdditionalMeasures" asp-all-route-data="@Model.RouteAttributes">Primary academic performance: Additional measures</govuk-pagination-next>
-        </govuk-pagination>
     </div>
 </div>

@@ -1,6 +1,6 @@
 ﻿@using SAPPub.Web.Constants
+@using SAPPub.Web.ViewComponents.SchoolProfilePagination
 @using SAPPub.Web.ViewComponents.VerticalNavigation
-@using System.Globalization
 @model SAPPub.Web.Areas.Profiles.ViewModels.KS5.EnglishMathsQualificationsViewModel
 
 
@@ -231,17 +231,7 @@
             </govuk-accordion-item>
         </govuk-accordion>
 
+    @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.KS5AcademicPerformanceEnglishMaths))
 
-
-
-
-
-
-
-
-        <govuk-pagination id="academic-performance-level-2-pagination">
-            <govuk-pagination-previous asp-route="@RouteConstants.KS5AcademicPerformanceLevel2" asp-all-route-data="@Model.RouteAttributes">Academic performance: Level 2 qualifications</govuk-pagination-previous>
-            <govuk-pagination-next asp-route="@RouteConstants.KS5AcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">Academic performance: Subjects entered</govuk-pagination-next>
-        </govuk-pagination>
     </div>
 </div>
