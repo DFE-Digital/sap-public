@@ -12,7 +12,9 @@ namespace SAPPub.Core.Tests.Services;
 
 public class AttendanceServiceTests
 {
-    private const int EnrolmentsTotal = 1200;
+    private const int SpeEnrolmentsTotal = 1000;
+    private const int KS2EnrolmentsTotal = 1100;
+    private const int KS4EnrolmentsTotal = 1200;
     private const int PersistentAbsenceTotal = 120;
 
     private readonly Mock<IEstablishmentService> _mockEstablishmentService;
@@ -103,8 +105,8 @@ public class AttendanceServiceTests
         {
             Id = fakeEstablishment.URN,
             Abs_Tot_Est_Current_Pct_Coded = CreateCoded(absence.est),
+            Abs_TotSPE_Est_Current_Pct_Coded = CreateCoded(absence.est),
             Abs_TotKS2_Est_Current_Pct_Coded = CreateCoded(absence.est),
-            Abs_TotSPE_Est_Current_Pct_Coded = CreateCoded(absence.est)
         };
 
         var lAAbsence = new LAAbsence
@@ -153,7 +155,9 @@ public class AttendanceServiceTests
         var establishmentAbsence = new EstablishmentAbsence
         {
             Id = fakeEstablishment.URN,
-            Enrolments_Tot_Est_Current_Num_Coded = CreateCoded(EnrolmentsTotal),
+            Enrolments_Tot_Est_Current_Num_Coded = CreateCoded(KS4EnrolmentsTotal),
+            Enrolments_TotKS2_Est_Current_Num_Coded = CreateCoded(KS2EnrolmentsTotal),
+            Enrolments_TotSPE_Est_Current_Num_Coded = CreateCoded(SpeEnrolmentsTotal),
             Abs_Persistent_Est_Current_Pct_Coded = CreateCoded(absence.est),
             Abs_PersistentKS2_Est_Current_Pct_Coded = CreateCoded(absence.est),
             Abs_PersistentSPE_Est_Current_Pct_Coded = CreateCoded(absence.est),
@@ -189,10 +193,23 @@ public class AttendanceServiceTests
         Assert.Equal(absence.est, result.EstablishmentPersistentAbsence.Value);
         Assert.Equal(absence.la, result.LocalAuthorityPersistentAbsence.Value);
         Assert.Equal(absence.eng, result.EnglandPersistentAbsence.Value);
-        Assert.Equal(EnrolmentsTotal, result.EstablishmentEnrolmentsTotal.Value);
+        
         Assert.Equal(PersistentAbsenceTotal, result.EstablishmentPersistentAbsenceTotal.Value);
         Assert.Equal(isKS2, result.IsKS2);
         Assert.Equal(isKS4, result.IsKS4);
+
+        if (isKS2)
+        {
+            Assert.Equal(KS2EnrolmentsTotal, result.EstablishmentEnrolmentsTotal.Value);
+        }
+        if (isKS4)
+        {
+            Assert.Equal(KS4EnrolmentsTotal, result.EstablishmentEnrolmentsTotal.Value);
+        }
+        if (isSpecialSchool)
+        {
+            Assert.Equal(SpeEnrolmentsTotal, result.EstablishmentEnrolmentsTotal.Value);
+        }
     }
 
     private void SeupMocks(
@@ -228,7 +245,7 @@ public class AttendanceServiceTests
             LAId= "123",
             IsKS2 = isKS2,
             IsKS4 = isKS4,
-            TypeOfEstablishment = isSpecialSchool ? TypeOfEstablishment.CommunitySchool : TypeOfEstablishment.CommunitySchool
+            TypeOfEstablishment = isSpecialSchool ? TypeOfEstablishment.CommunitySpecialSchool : TypeOfEstablishment.CommunitySchool
         };
     }
 

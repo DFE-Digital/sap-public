@@ -44,10 +44,15 @@ public sealed class AttendanceService(
             IsKS5 = est.IsKS5,
             Website = est.Website,
             LocalAuthority = est.LAName,
-            EstablishmentEnrolmentsTotal = estAbs.Enrolments_Tot_Est_Current_Num_Coded,
+            EstablishmentEnrolmentsTotal =
+                GetCodedValue(est,
+                estAbs.Enrolments_TotSPE_Est_Current_Num_Coded,
+                estAbs.Enrolments_Tot_Est_Current_Num_Coded,
+                estAbs.Enrolments_TotKS2_Est_Current_Num_Coded,
+                false),
             EstablishmentAttendance =
                 GetCodedValue(est,
-                    estAbs.Abs_PersistentSPE_Est_Current_Pct_Coded,
+                    estAbs.Abs_TotSPE_Est_Current_Pct_Coded,
                     estAbs.Abs_Tot_Est_Current_Pct_Coded,
                     estAbs.Abs_TotKS2_Est_Current_Pct_Coded,
                     true),

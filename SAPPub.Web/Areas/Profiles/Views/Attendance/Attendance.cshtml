@@ -1,10 +1,8 @@
-﻿@model AttendanceViewModel;
-@using SAPPub.Core.Extensions
-
-@using SAPPub.Web.Areas.Profiles.ViewModels.Attendance
-
+﻿@using SAPPub.Web.Areas.Profiles.ViewModels.Attendance
 @using SAPPub.Web.Constants
 @using SAPPub.Web.ViewComponents.VerticalNavigation
+
+@model AttendanceViewModel;
 
 @{
     ViewData["Header"] = "Attendance";
@@ -29,11 +27,11 @@
         <h1 class="govuk-heading-xl">@ViewData["Header"]</h1>
 
         <p class="govuk-body">
-            Good attendance helps support pupils’ learning, well-being and wider development.
+            Good attendance helps support pupils' learning, well-being and wider development.
         </p>
         <p class="govuk-body">
-            You can only allow your child to miss school if they’re too ill to go in or you have advance permission from the school, 
-            for example due to a child’s medical needs.
+            You can only allow your child to miss school if they're too ill to go in or you have advance permission from the school, 
+            for example due to a child's medical needs.
         </p>
 
         <div id="attendance-policy-summary" class="govuk-summary-card">
@@ -133,7 +131,6 @@
                         else
                         {
                             @Model.EstablishmentAttendance.DisplayText()
-                            ;
                         }
                     </td>
                 </tr>
@@ -148,7 +145,6 @@
                         else
                         {
                             @Model.LocalAuthorityAttendance.DisplayText()
-                            ;
                         }
                     </td>
                 </tr>
@@ -163,7 +159,6 @@
                         else
                         {
                             @Model.EnglandAttendance.DisplayText()
-                            ;
                         }
                     </td>
                 </tr>
@@ -204,7 +199,6 @@
                         else
                         {
                             @Model.EstablishmentPersistentAbsence.DisplayText()
-                            ;
                         }
                     </td>
                 </tr>
@@ -219,7 +213,6 @@
                         else
                         {
                             @Model.LocalAuthorityPersistentAbsence.DisplayText()
-                            ;
                         }
                     </td>
                 </tr>
@@ -234,7 +227,6 @@
                         else
                         {
                             @Model.EnglandPersistentAbsence.DisplayText()
-                            ;
                         }
                     </td>
                 </tr>
