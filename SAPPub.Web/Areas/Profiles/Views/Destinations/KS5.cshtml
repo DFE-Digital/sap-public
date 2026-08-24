@@ -102,9 +102,34 @@
                     <div class="govuk-button-group">
                         <button id="all-ks5-dest-data-show-btn" class="govuk-button govuk-button--secondary">Show as a table</button>
                     </div>
-                </div>
-            
+                </div>            
         </div>
+
+        <h2 class="govuk-heading-l">
+            Breakdown of all students, including disadvantaged students
+        </h2>
+
+        <govuk-inset-text id="breakdown-disadvantaged-students-inset-text">
+            <p class="govuk-body">
+                Destination measures including disadvantaged and non-disadvantaged students are not currently available.
+                We plan to make this information available in a future release.
+            </p>
+
+            <p class="govuk-body">
+                The measures will cover students who completed 16 to 19 study in the 2022 to 2023 academic year
+                at levels 3, 2 and 1, and entry level.
+            </p>
+
+            <p class="govuk-body">
+                <a id="find-statistics-link"
+                   class="govuk-link"
+                   rel="noreferrer noopener"
+                   target="_blank"
+                   href="https://explore-education-statistics.service.gov.uk/find-statistics">
+                    Find out more about statistics and data <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                </a>.
+            </p>
+        </govuk-inset-text>
 
         <govuk-pagination id="destinations-pagination">
             @if (Model.IsKS4 == true)
