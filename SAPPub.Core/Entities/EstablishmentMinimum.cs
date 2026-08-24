@@ -2,13 +2,11 @@
 using SAPPub.Core.Enums;
 using SAPPub.Core.ServiceModels;
 using System.Diagnostics.CodeAnalysis;
-using System.Net.WebSockets;
-using System.Runtime.Serialization;
 
 namespace SAPPub.Core.Entities;
 
 [ExcludeFromCodeCoverage]
-public class EstablishmentMinimum
+public class EstablishmentMinimum : EstablishmentServiceModelBase
 {
     public string URN { get; set; } = string.Empty;
 
@@ -29,7 +27,6 @@ public class EstablishmentMinimum
 
     public string Website { get; set; } = string.Empty;
 
-
     public static EstablishmentMinimumServiceModel MapToServiceModel(Establishment e)
     {
         return new()
@@ -42,6 +39,9 @@ public class EstablishmentMinimum
             IsKS4 = e.IsKS4,
             IsKS5 = e.IsKS5,
             Website = e.Website,
+            TypeOfEstablishment = e.TypeOfEstablishmentId is int id && Enum.IsDefined(typeof(TypeOfEstablishment), id)
+                ? (TypeOfEstablishment)e.TypeOfEstablishmentId
+                : TypeOfEstablishment.Unknown,
         };
     }
 }

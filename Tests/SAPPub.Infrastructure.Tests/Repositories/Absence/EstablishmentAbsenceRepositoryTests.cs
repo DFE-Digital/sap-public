@@ -2,6 +2,7 @@
 using Moq;
 using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Interfaces.Repositories.Generic;
+using SAPPub.Core.ValueObjects;
 using SAPPub.Infrastructure.Repositories.KS4.Absence;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,8 +32,8 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Absence
             // Arrange
             var expected = new List<EstablishmentAbsence>
             {
-                new() { Id = "1", Abs_Tot_Est_Current_Pct = 99.99 },
-                new() { Id = "2", Abs_Tot_Est_Current_Pct = 88.88 }
+                new() { Id = "1", Abs_Tot_Est_Current_Pct_Coded = new CodedDouble(99.99, string.Empty, "99.99") },
+                new() { Id = "2", Abs_Tot_Est_Current_Pct_Coded = new CodedDouble(88.88, string.Empty, "88.88") }
             };
 
             _mockGenericRepo
@@ -74,7 +75,7 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Absence
         {
             // Arrange
             var urn = "1";
-            var expected = new EstablishmentAbsence { Id = urn, Abs_Tot_Est_Current_Pct = 99.99 };
+            var expected = new EstablishmentAbsence { Id = urn, Abs_Tot_Est_Current_Pct_Coded = new CodedDouble(99.99, string.Empty, "99.99") };
 
             _mockGenericRepo
                 .Setup(r => r.ReadAsync(urn, It.IsAny<CancellationToken>()))
@@ -86,7 +87,7 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Absence
             // Assert
             Assert.NotNull(result);
             Assert.Equal(urn, result.Id);
-            Assert.Equal(99.99, result.Abs_Tot_Est_Current_Pct);
+            Assert.Equal(99.99, result.Abs_Tot_Est_Current_Pct_Coded.Value);
 
             _mockGenericRepo.Verify(r => r.ReadAsync(urn, It.IsAny<CancellationToken>()), Times.Once);
         }
