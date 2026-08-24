@@ -1,4 +1,6 @@
-﻿namespace SAPPub.Core.ServiceModels.KS4.Attendance;
+﻿using SAPPub.Core.ValueObjects;
+
+namespace SAPPub.Core.ServiceModels.KS4.Attendance;
 
 public record AttendanceModel
 {
@@ -13,19 +15,19 @@ public record AttendanceModel
 
     public string? LocalAuthority { get; set; }
 
-    public double? EstablishmentAttendance { get; init; }
+    public CodedDouble EstablishmentAttendance { get; init; }
 
-    public double? EnglandAttendance { get; init; }
+    public CodedDouble EnglandAttendance { get; init; }
 
-    public double? LocalAuthorityAttendance { get; init; }
+    public CodedDouble LocalAuthorityAttendance { get; init; }
 
-    public double? EstablishmentPersistentAbsence { get; init; }
+    public CodedDouble EstablishmentPersistentAbsence { get; init; }
 
-    public double? EnglandPersistentAbsence { get; init; }
+    public CodedDouble EnglandPersistentAbsence { get; init; }
 
-    public double? LocalAuthorityPersistentAbsence { get; init; }
+    public CodedDouble LocalAuthorityPersistentAbsence { get; init; }
 
-    public double? EstablishmentEnrolmentsTotal { get; init; }
+    public CodedDouble EstablishmentEnrolmentsTotal { get; init; }
 
-    public double? EstablishmentPersistentAbsenceTotal { get; init; }
+    public CodedDouble EstablishmentPersistentAbsenceTotal { get; init; }
 }

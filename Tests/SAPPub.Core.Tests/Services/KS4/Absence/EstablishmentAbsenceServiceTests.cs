@@ -2,6 +2,7 @@
 using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Interfaces.Repositories.KS4.Absence;
 using SAPPub.Core.Services.KS4.Absence;
+using SAPPub.Core.ValueObjects;
 
 namespace SAPPub.Core.Tests.Services.KS4.Absence
 {
@@ -22,8 +23,8 @@ namespace SAPPub.Core.Tests.Services.KS4.Absence
             // Arrange
             var expectedAbsences = new List<EstablishmentAbsence>
             {
-                new() { Id = "100", Abs_Tot_Est_Current_Pct = 99.99 },
-                new() { Id = "101", Abs_Tot_Est_Current_Pct = 90.00 }
+                new() { Id = "100", Abs_Tot_Est_Current_Pct_Coded = new CodedDouble(99.99, string.Empty, "99.99") },
+                new() { Id = "101", Abs_Tot_Est_Current_Pct_Coded = new CodedDouble(90.00, string.Empty, "90.00") }
             };
 
             _mockRepo
@@ -36,8 +37,8 @@ namespace SAPPub.Core.Tests.Services.KS4.Absence
             // Assert
             Assert.NotNull(result);
             Assert.Equal(2, result.Count());
-            Assert.Contains(result, a => a.Abs_Tot_Est_Current_Pct == 99.99);
-            Assert.Contains(result, a => a.Abs_Tot_Est_Current_Pct == 90.00);
+            Assert.Contains(result, a => a.Abs_Tot_Est_Current_Pct_Coded.Value == 99.99);
+            Assert.Contains(result, a => a.Abs_Tot_Est_Current_Pct_Coded.Value == 90.00);
         }
 
         [Fact]
@@ -61,7 +62,7 @@ namespace SAPPub.Core.Tests.Services.KS4.Absence
         {
             // Arrange
             var urn = "100";
-            var expectedAbsence = new EstablishmentAbsence { Id = urn, Abs_Tot_Est_Current_Pct = 100 };
+            var expectedAbsence = new EstablishmentAbsence { Id = urn, Abs_Tot_Est_Current_Pct_Coded = new CodedDouble(100, string.Empty, "100") };
 
             _mockRepo
                 .Setup(r => r.GetEstablishmentAbsenceAsync(urn, It.IsAny<CancellationToken>()))
@@ -73,7 +74,7 @@ namespace SAPPub.Core.Tests.Services.KS4.Absence
             // Assert
             Assert.NotNull(result);
             Assert.Equal(urn, result.Id);
-            Assert.Equal(100, result.Abs_Tot_Est_Current_Pct);
+            Assert.Equal(100, result.Abs_Tot_Est_Current_Pct_Coded.Value);
         }
 
         [Fact]

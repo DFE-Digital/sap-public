@@ -1,46 +1,24 @@
 ﻿using SAPPub.Core.ValueObjects;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.Serialization;
 
-namespace SAPPub.Core.Entities.KS4.Absence
+namespace SAPPub.Core.Entities.KS4.Absence;
+
+[ExcludeFromCodeCoverage]
+public class EstablishmentAbsence
 {
-    [ExcludeFromCodeCoverage]
-    public class EstablishmentAbsence
-    {
-        // Keys / context
-        public string Id { get; set; } = string.Empty;
+    // Keys / context
+    public string Id { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Total Enrolments
-        /// </summary>
-        public CodedDouble Enrolments_Tot_Est_Current_Num_Coded { get; set; } = new();
-        [IgnoreDataMember]
-        public double? Enrolments_Tot_Est_Current_Num { get; set; }
-        [IgnoreDataMember]
-        public string? Enrolments_Tot_Est_Current_Num_Reason { get; set; }
-
-        //
-        // Persistent absence %
-        //
-        public CodedDouble Abs_Persistent_Est_Current_Num_Coded { get; set; } = new();
-        [IgnoreDataMember]
-        public double? Abs_Persistent_Est_Current_Num { get; set; }
-        [IgnoreDataMember]
-        public string? Abs_Persistent_Est_Current_Num_Reason { get; set; }
-
-        public CodedDouble Abs_Persistent_Est_Current_Pct_Coded { get; set; } = new();
-        [IgnoreDataMember]
-        public double? Abs_Persistent_Est_Current_Pct { get; set; }
-        [IgnoreDataMember]
-        public string? Abs_Persistent_Est_Current_Pct_Reason { get; set; }
-
-        //
-        // Overall absence %
-        //
-        public CodedDouble Abs_Tot_Est_Current_Pct_Coded { get; set; } = new();
-        [IgnoreDataMember]
-        public double? Abs_Tot_Est_Current_Pct { get; set; }
-        [IgnoreDataMember]
-        public string? Abs_Tot_Est_Current_Pct_Reason { get; set; }
-    }
+    public CodedDouble Enrolments_Tot_Est_Current_Num_Coded { get; set; }   // Total Enrolments
+    public CodedDouble Abs_Persistent_Est_Current_Num_Coded { get; set; }   // Persistent absence %
+    public CodedDouble Abs_Persistent_Est_Current_Pct_Coded { get; set; }
+    public CodedDouble Abs_Tot_Est_Current_Pct_Coded { get; set; }          // Overall absence %
+    public CodedDouble Abs_PersistentKS2_Est_Current_Num_Coded { get; set; }
+    public CodedDouble Abs_PersistentKS2_Est_Current_Pct_Coded { get; set; }
+    public CodedDouble Abs_PersistentSPE_Est_Current_Num_Coded { get; set; }
+    public CodedDouble Abs_PersistentSPE_Est_Current_Pct_Coded { get; set; }
+    public CodedDouble Abs_TotKS2_Est_Current_Pct_Coded { get; set; }
+    public CodedDouble Abs_TotSPE_Est_Current_Pct_Coded { get; set; }
+    public CodedDouble Enrolments_TotKS2_Est_Current_Num_Coded { get; set; }
+    public CodedDouble Enrolments_TotSPE_Est_Current_Num_Coded { get; set; }
 }

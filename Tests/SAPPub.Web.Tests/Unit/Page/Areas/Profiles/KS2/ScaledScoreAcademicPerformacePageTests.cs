@@ -165,6 +165,81 @@ public class ScaledScoresAcademicPerformacePageTests : PageTestsBase
     }
 
     [Fact]
+    public async Task ScaledScore_ByPupilCharacteristic_DisplaysCorrectInformation()
+    {
+        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        var accordion = doc.GetElementById("scaled-scores-by-pupil-characteristic-accordion");
+
+        Assert.NotNull(accordion);
+
+        var accordionSectionHeaders = accordion.GetElementsByTagName("h4");
+        Assert.Contains("Girls and boys", accordionSectionHeaders[0].TextContent);
+        Assert.Contains("English as an additional language (EAL)", accordionSectionHeaders[1].TextContent);
+        Assert.Contains("Non-mobile pupils", accordionSectionHeaders[2].TextContent);
+        Assert.Contains("Disadvantaged pupils", accordionSectionHeaders[3].TextContent);
+        Assert.Contains("Non-disadvantaged pupils", accordionSectionHeaders[4].TextContent);
+
+        Assert.Contains("Pupil group", doc.GetTableHeaderContentByIdAndIndex("girls-boys-table", 0, 0));
+        Assert.Contains("Average score in reading", doc.GetTableHeaderContentByIdAndIndex("girls-boys-table", 0, 1));
+        Assert.Contains("Average score in maths", doc.GetTableHeaderContentByIdAndIndex("girls-boys-table", 0,2 ));
+        Assert.Contains("Girls", doc.GetTableHeaderContentByIdAndIndex("girls-boys-table", 1, 0));
+        Assert.Contains("33", doc.GetTableCellContentByIdAndIndex("girls-boys-table", 1,0));
+        Assert.Contains("32", doc.GetTableCellContentByIdAndIndex("girls-boys-table", 1, 1));
+        Assert.Contains("Boys", doc.GetTableHeaderContentByIdAndIndex("girls-boys-table", 2, 0));
+        Assert.Contains("22", doc.GetTableCellContentByIdAndIndex("girls-boys-table", 2, 0));
+        Assert.Contains("21", doc.GetTableCellContentByIdAndIndex("girls-boys-table", 2, 1));
+        Assert.Contains("All pupils at the school", doc.GetTableHeaderContentByIdAndIndex("girls-boys-table", 3, 0));
+        Assert.Contains("35", doc.GetTableCellContentByIdAndIndex("girls-boys-table", 3, 0));
+        Assert.Contains("19", doc.GetTableCellContentByIdAndIndex("girls-boys-table", 3, 1));
+
+        Assert.Contains("Pupil group", doc.GetTableHeaderContentByIdAndIndex("eal-table", 0, 0));
+        Assert.Contains("Average score in reading", doc.GetTableHeaderContentByIdAndIndex("eal-table", 0, 1));
+        Assert.Contains("Average score in maths", doc.GetTableHeaderContentByIdAndIndex("eal-table", 0, 2));
+        Assert.Contains("Pupils with EAL", doc.GetTableHeaderContentByIdAndIndex("eal-table", 1, 0));
+        Assert.Contains("30", doc.GetTableCellContentByIdAndIndex("eal-table", 1, 0));
+        Assert.Contains("29", doc.GetTableCellContentByIdAndIndex("eal-table", 1, 1));
+        Assert.Contains("All pupils at the school", doc.GetTableHeaderContentByIdAndIndex("eal-table", 2, 0));
+        Assert.Contains("20", doc.GetTableCellContentByIdAndIndex("eal-table", 2, 0));
+        Assert.Contains("31", doc.GetTableCellContentByIdAndIndex("eal-table", 2, 1));
+
+        Assert.Contains("Pupil group", doc.GetTableHeaderContentByIdAndIndex("nonmobile-pupils-table", 0, 0));
+        Assert.Contains("Average score in reading", doc.GetTableHeaderContentByIdAndIndex("nonmobile-pupils-table", 0, 1));
+        Assert.Contains("Average score in maths", doc.GetTableHeaderContentByIdAndIndex("nonmobile-pupils-table", 0, 2));
+        Assert.Contains("Non-mobile pupils", doc.GetTableHeaderContentByIdAndIndex("nonmobile-pupils-table", 1, 0));
+        Assert.Contains("40", doc.GetTableCellContentByIdAndIndex("nonmobile-pupils-table", 1, 0));
+        Assert.Contains("39", doc.GetTableCellContentByIdAndIndex("nonmobile-pupils-table", 1, 1));
+        Assert.Contains("All pupils at the school", doc.GetTableHeaderContentByIdAndIndex("nonmobile-pupils-table", 2, 0));
+        Assert.Contains("35", doc.GetTableCellContentByIdAndIndex("nonmobile-pupils-table", 2, 0));
+        Assert.Contains("19", doc.GetTableCellContentByIdAndIndex("nonmobile-pupils-table", 2, 1));
+
+        Assert.Contains("Pupil group (Disadvantaged)", doc.GetTableHeaderContentByIdAndIndex("disadvantaged-pupils-table", 0, 0));
+        Assert.Contains("Average score in reading", doc.GetTableHeaderContentByIdAndIndex("disadvantaged-pupils-table", 0, 1));
+        Assert.Contains("Average score in maths", doc.GetTableHeaderContentByIdAndIndex("disadvantaged-pupils-table", 0, 2));
+        Assert.Contains("School", doc.GetTableHeaderContentByIdAndIndex("disadvantaged-pupils-table", 1, 0));
+        Assert.Contains("27", doc.GetTableCellContentByIdAndIndex("disadvantaged-pupils-table", 1, 0));
+        Assert.Contains("24", doc.GetTableCellContentByIdAndIndex("disadvantaged-pupils-table", 1, 1));
+        Assert.Contains("TEST LA average", doc.GetTableHeaderContentByIdAndIndex("disadvantaged-pupils-table", 2, 0));
+        Assert.Contains("28", doc.GetTableCellContentByIdAndIndex("disadvantaged-pupils-table", 2, 0));
+        Assert.Contains("25", doc.GetTableCellContentByIdAndIndex("disadvantaged-pupils-table", 2, 1));
+        Assert.Contains("England average", doc.GetTableHeaderContentByIdAndIndex("disadvantaged-pupils-table", 3, 0));
+        Assert.Contains("26", doc.GetTableCellContentByIdAndIndex("disadvantaged-pupils-table", 3, 0));
+        Assert.Contains("23", doc.GetTableCellContentByIdAndIndex("disadvantaged-pupils-table", 3, 1));
+
+        Assert.Contains("Pupil group (Non-disadvantaged)", doc.GetTableHeaderContentByIdAndIndex("non-disadvantaged-pupils-table", 0, 0));
+        Assert.Contains("Average score in reading", doc.GetTableHeaderContentByIdAndIndex("non-disadvantaged-pupils-table", 0, 1));
+        Assert.Contains("Average score in maths", doc.GetTableHeaderContentByIdAndIndex("non-disadvantaged-pupils-table", 0, 2));
+        Assert.Contains("TEST LA average", doc.GetTableHeaderContentByIdAndIndex("non-disadvantaged-pupils-table", 1, 0));
+        Assert.Contains("38", doc.GetTableCellContentByIdAndIndex("non-disadvantaged-pupils-table", 1, 0));
+        Assert.Contains("36", doc.GetTableCellContentByIdAndIndex("non-disadvantaged-pupils-table", 1, 1));
+        Assert.Contains("England average", doc.GetTableHeaderContentByIdAndIndex("non-disadvantaged-pupils-table", 2, 0));
+        Assert.Contains("37", doc.GetTableCellContentByIdAndIndex("non-disadvantaged-pupils-table", 2, 0));
+        Assert.Contains("34", doc.GetTableCellContentByIdAndIndex("non-disadvantaged-pupils-table", 2, 1));
+    }
+    [Fact]
     public async Task ScaledScorePage_DisplaysBottomPagination_WithCorrectDestinations()
     {
         // Arrange
@@ -191,6 +266,7 @@ public class ScaledScoresAcademicPerformacePageTests : PageTestsBase
     {
         return new KS2ScaledScoreModel
         {
+            LAName = "TEST LA",
             ReadAverageEstablishment = new Core.Entities.RelativeYearValues<CodedDouble>()
             {
                 CurrentYear = new CodedDouble(1, string.Empty, "1"),
@@ -226,7 +302,29 @@ public class ScaledScoresAcademicPerformacePageTests : PageTestsBase
                 CurrentYear = new CodedDouble(1.5, string.Empty, "1.5"),
                 PreviousYear = new CodedDouble(2.5, string.Empty, "2.5"),
                 TwoYearsAgo = new CodedDouble(3.5, string.Empty, "3.5"),
-            }
+            },
+            AllPupilsAverageMaths = new CodedDouble(19, string.Empty, "19"),
+            EALTotalAverageReading = new CodedDouble(20, string.Empty, "20"),
+            BoysAverageMaths = new CodedDouble(21, string.Empty, "21"),
+            BoysAverageReading = new CodedDouble(22, string.Empty, "22"),
+            DisadvantagedAverageMathsEngland = new CodedDouble(23, string.Empty, "23"),
+            DisadvantagedAverageMathsEstablishment = new CodedDouble(24, string.Empty, "24"),
+            DisadvantagedAverageMathsLA = new CodedDouble(25, string.Empty, "25"),
+            DisadvantagedAverageReadingEngland = new CodedDouble(26, string.Empty, "26"),
+            DisadvantagedAverageReadingEstablishment = new CodedDouble(27, string.Empty, "27"),
+            DisadvantagedAverageReadingLA = new CodedDouble(28, string.Empty, "28"),
+            EALAverageMaths = new CodedDouble(29, string.Empty, "29"),
+            EALAverageReading = new CodedDouble(30, string.Empty, "30"),
+            EALTotalAverageMaths = new CodedDouble(31, string.Empty, "31"),
+            GirlsAverageMaths = new CodedDouble(32, string.Empty, "32"),
+            GirlsAverageReading = new CodedDouble(33, string.Empty, "33"),
+            NonDisadvantagedAverageMathsEngland = new CodedDouble(34, string.Empty, "34"),
+            AllPupilsAverageReading = new CodedDouble(35, string.Empty, "35"),
+            NonDisadvantagedAverageMathsLA = new CodedDouble(36, string.Empty, "36"),
+            NonDisadvantagedAverageReadingEngland = new CodedDouble(37, string.Empty, "37"),
+            NonDisadvantagedAverageReadingLA = new CodedDouble(38, string.Empty, "38"),
+            NonMobileAverageMaths = new CodedDouble(39, string.Empty, "39"),
+            NonMobileAverageReading = new CodedDouble(40, string.Empty, "40"),
         };
     }
 }

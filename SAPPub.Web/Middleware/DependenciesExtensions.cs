@@ -22,7 +22,6 @@ using SAPPub.Core.Services.Gateway;
 using SAPPub.Core.Services.KS4.AboutSchool;
 using SAPPub.Core.Services.KS4.Absence;
 using SAPPub.Core.Services.KS4.Admissions;
-using SAPPub.Core.Services.KS4.Attendance;
 using SAPPub.Core.Services.KS4.Destinations;
 using SAPPub.Core.Services.KS4.Performance;
 using SAPPub.Core.Services.Performance;

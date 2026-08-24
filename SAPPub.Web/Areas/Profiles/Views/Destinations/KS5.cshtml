@@ -66,9 +66,12 @@
             Compare this school or college with state-funded local and national averages.
         </p>
 
-        <p class="govuk-tag govuk-tag--full-width govuk-tag--grey">
-            Number of students from this school or college included in the measure: @Model.NumberOfStudentsIncludedInMeasure.Value
-        </p>
+        @if (Model.NumberOfStudentsIncludedInMeasure.IsAvailable)
+        {
+            <p id="no-of-students-included-in-measure" class="govuk-tag govuk-tag--full-width govuk-tag--grey">
+                Number of students from this school or college included in the measure: @Model.NumberOfStudentsIncludedInMeasure.Value
+            </p>
+        }
 
         <div class="data-container">
             <h3 class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">

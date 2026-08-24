@@ -1,6 +1,7 @@
 ﻿using Moq;
 using SAPPub.Core.Interfaces.Services.KS4.Attendance;
 using SAPPub.Core.ServiceModels.KS4.Attendance;
+using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
 using static SAPPub.Web.Constants.Constants;
@@ -114,9 +115,9 @@ public class AttendancePageTests : PageTestsBase
             {
                 Urn = urn,
                 SchoolName = establishmentName,
-                EstablishmentAttendance = null,
-                LocalAuthorityAttendance = null,
-                EnglandAttendance = null,
+                EstablishmentAttendance = CodedDouble.Empty,
+                LocalAuthorityAttendance = CodedDouble.Empty,
+                EnglandAttendance = CodedDouble.Empty,
                 IsKS2 = false,
                 IsKS4 = true,
                 IsKS5 = false
@@ -357,9 +358,9 @@ public class AttendancePageTests : PageTestsBase
                 Urn = urn,
                 SchoolName = establishmentName,
                 LocalAuthority = "Sheffield",
-                EstablishmentAttendance = 50.5,
-                LocalAuthorityAttendance = 70.9,
-                EnglandAttendance = 65.7,
+                EstablishmentAttendance = new CodedDouble(50.5, string.Empty, "50.5"),
+                LocalAuthorityAttendance = new CodedDouble(70.9, string.Empty, "70.9"),
+                EnglandAttendance = new CodedDouble(65.7, string.Empty, "65.7"),
                 IsKS2 = true,
                 IsKS4 = true,
                 IsKS5 = false
@@ -391,9 +392,9 @@ public class AttendancePageTests : PageTestsBase
             {
                 Urn = urn,
                 SchoolName = establishmentName,
-                EstablishmentAttendance = null,
-                LocalAuthorityAttendance = null,
-                EnglandAttendance = null,
+                EstablishmentAttendance = CodedDouble.Empty,
+                LocalAuthorityAttendance = CodedDouble.Empty,
+                EnglandAttendance = CodedDouble.Empty,
                 IsKS2 = true,
                 IsKS4 = true,
                 IsKS5 = false
@@ -428,11 +429,11 @@ public class AttendancePageTests : PageTestsBase
                 Urn = urn,
                 SchoolName = establishmentName,
                 LocalAuthority = "Sheffield",
-                EstablishmentPersistentAbsence = 10.3,
-                LocalAuthorityPersistentAbsence = 5.9,
-                EnglandPersistentAbsence = 6.7,
-                EstablishmentEnrolmentsTotal = enrolmentsTotal,
-                EstablishmentPersistentAbsenceTotal = absenceTotal,
+                EstablishmentPersistentAbsence = new CodedDouble(10.3, string.Empty, "10.3"),
+                LocalAuthorityPersistentAbsence = new CodedDouble(5.9, string.Empty, "5.9"),
+                EnglandPersistentAbsence = new CodedDouble(6.7, string.Empty, "6.7"),
+                EstablishmentEnrolmentsTotal = new CodedDouble(enrolmentsTotal, string.Empty, enrolmentsTotal.ToString()),
+                EstablishmentPersistentAbsenceTotal = new CodedDouble(absenceTotal, string.Empty, absenceTotal.ToString()),
                 IsKS2 = true,
                 IsKS4 = true,
                 IsKS5 = false
@@ -470,9 +471,9 @@ public class AttendancePageTests : PageTestsBase
             {
                 Urn = urn,
                 SchoolName = establishmentName,
-                EstablishmentAttendance = null,
-                LocalAuthorityAttendance = null,
-                EnglandAttendance = null,
+                EstablishmentAttendance = CodedDouble.Empty,
+                LocalAuthorityAttendance = CodedDouble.Empty,
+                EnglandAttendance = CodedDouble.Empty,
                 IsKS2 = true,
                 IsKS4 = true,
                 IsKS5 = false
