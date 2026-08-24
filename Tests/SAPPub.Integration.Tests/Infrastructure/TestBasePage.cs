@@ -5,24 +5,19 @@ namespace SAPPub.Integration.Tests;
 
 public abstract class BasePageTest : PageTest
 {
-    private readonly WebApplicationSetupFixture _fixture;
-
-    // ReSharper disable once ConvertToPrimaryConstructor
-    protected BasePageTest(WebApplicationSetupFixture fixture)
-    {
-        _fixture = fixture;
-
-        if (_fixture.IsHeaded())
-        {
-            Environment.SetEnvironmentVariable("HEADED", "1");
-        }
-    }
-
     public override BrowserNewContextOptions ContextOptions()
     {
+        var baseUrl = Environment.GetEnvironmentVariable("BASE_URL");
+
+        if (string.IsNullOrWhiteSpace(baseUrl))
+        {
+            throw new InvalidOperationException(
+                "BASE_URL environment variable has not been configured.");
+        }
+
         return new BrowserNewContextOptions
         {
-            BaseURL = _fixture.BaseUrl.TrimEnd('/'),
+            BaseURL = baseUrl.TrimEnd('/'),
             IgnoreHTTPSErrors = true,
             ViewportSize = new() { Width = 1280, Height = 720 },
             Locale = "en-GB",

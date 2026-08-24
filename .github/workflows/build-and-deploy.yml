@@ -71,7 +71,7 @@ jobs:
   # TESTS: UNIT, INTEGRATION, UI
   # ---------------------------
   test:
-    name: Run Unit, Integration and UI Tests
+    name: Run Unit, Partial Integration and UI Tests
     if: ${{ github.event_name != 'workflow_dispatch' }}
     permissions:
       pull-requests: write
@@ -110,12 +110,12 @@ jobs:
         working-directory: SAPPub.Web
         run: npm ci
 
-      - name: Run All Tests with Coverage
+      - name: Run Tests with Coverage
         env:
           HEADED: 0
           PLAYWRIGHT_IGNORE_HTTPS_ERRORS: true
         run: |
-          TEST_PROJECTS=$(find ./Tests -type f -name "*.Tests.csproj" | sort)
+          TEST_PROJECTS=$(find ./Tests -type f -name "*.Tests.csproj" ! -path "*/SAPPub.Integration.Tests/*" | sort)
 
           for proj in $TEST_PROJECTS; do
             echo "=== Running tests in $proj ==="
@@ -210,6 +210,8 @@ jobs:
     name: Deployment To Review (no refresh)
     concurrency: deploy_review_${{ github.event.pull_request.number }}
     needs: [build, test]
+    outputs:
+      environment_url: ${{ steps.deploy_review.outputs.environment_url }}
     if: ${{ github.event_name == 'pull_request'
       && (
       github.event.action == 'labeled' ||
@@ -397,6 +399,8 @@ jobs:
     name: Deployment To Review (before refresh)
     concurrency: deploy_review_${{ github.event.pull_request.number }}
     needs: [build, test]
+    outputs:
+      environment_url: ${{ steps.deploy_review.outputs.environment_url }}
     if: ${{ github.event_name == 'pull_request'
       && (
       github.event.action == 'labeled' ||
@@ -432,9 +436,30 @@ jobs:
           gcp-wip: ${{ vars.GCP_WIP }}
           gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
 
+  # ---------------------------
+  # INTEGRATION TESTS (POST DEPLOYMENT)
+  # ---------------------------         
+  integration-tests:
+    name: Integration Tests (Post Deployment)
+    needs: [deploy-review-app]
+    uses: ./.github/workflows/integration-tests.yml
+    with:
+      environment: review
+      base_url: ${{ needs.deploy-review-app.outputs.environment_url }}
 
   # ---------------------------
-  # DEPLOY TEST (AUTO)
+  # INTEGRATION TESTS (POST DEPLOYMENT)
+  # ---------------------------         
+  integration-tests_with_refresh:
+    name: Integration Tests (Post Deployment)
+    needs: [deploy-review-app-with-refresh]
+    uses: ./.github/workflows/integration-tests.yml
+    with:
+      environment: review
+      base_url: ${{ needs.deploy-review-app-with-refresh.outputs.environment_url }}
+
+  # ---------------------------
+  # DEPLOY TO TEST (AUTO)
   # ---------------------------
   deploy:
     name: Deploy to Test
@@ -474,7 +499,7 @@ jobs:
           gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
 
   # ---------------------------
-  # REFRESH TEST DATABSE (AUTO - IF REQUIRED)
+  # REFRESH TEST DATABASE (AUTO - IF REQUIRED)
   # ---------------------------
 
   detect-refresh-data-on-merge:
@@ -530,74 +555,6 @@ jobs:
       id-token: write
       actions: read
       packages: write
-
-
-  post-deploy-tests:
-    name: Run Integration Tests on Deployed Test Environment
-    needs: deploy
-    if: ${{ matrix.environment == 'test' }}
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      # Set up .NET
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
-
-      - name: Restore dependencies
-        run: dotnet restore
-      - name: Install Playwright browsers (.NET)
-        run: pwsh ./Tests/SAPPub.Integration.Tests/bin/Release/net8.0/playwright.ps1 install
-
-      - name: Run Integration Tests with Coverage
-        env:
-          HEADED: 0
-          PLAYWRIGHT_IGNORE_HTTPS_ERRORS: true
-          ASPNETCORE_ENVIRONMENT: CI
-        run:
-            dotnet test Tests/SAPPub.Integration.Tests/SAPPub.IntegrationTests.csproj \
-              --no-build \
-              --configuration Release \
-              --results-directory "TestResults" \
-              --logger "trx;LogFileName=$(basename "$proj" .csproj).trx" \
-              --collect "XPlat Code Coverage"\
-              /p:CollectCoverage=true \
-              /p:CoverletOutputFormat=cobertura \
-              /p:DeterministicReport=true \
-              /p:UseSourceLink=true \
-              /p:Exclude='[*]AspNetCoreGeneratedDocument.*%2c[*]AspNetCore.Views.*' \
-              /p:ExcludeByAttribute='GeneratedCodeAttribute*%2cObsoleteAttribute*%2cExcludeFromCodeCoverage' \
-              --verbosity normal
-          done
-
-      - name: Upload Test Result Files
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: test-results 
-          path: "**/TestResults/**/*"
-          retention-days: 5
-
-      - name: Upload UI artifacts on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: ui-test-artifacts
-          path: |
-            **/test-artifacts/screenshots/**
-            **/test-artifacts/videos/**
-            **/test-artifacts/traces/**
-
-      - name: Publish Test Results
-        uses: dorny/test-reporter@v2
-        if: always()
-        with:
-          reporter: 'dotnet-trx'
-          path: "**/TestResults/**/*.trx"
-          name: 'Test Results'
 
   # ---------------------------
   # MANUAL DEPLOY
