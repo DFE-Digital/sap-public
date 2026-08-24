@@ -5,7 +5,7 @@ using SAPPub.Web.Helpers;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
-namespace SAPPub.Web.Tests.UI.Areas.KS2;
+namespace SAPPub.Web.Tests.UI.Areas.Profiles.KS2;
 
 [Collection("Playwright Tests")]
 public class PupilProgressTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)

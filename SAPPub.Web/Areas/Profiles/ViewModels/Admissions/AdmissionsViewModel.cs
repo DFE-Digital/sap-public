@@ -5,7 +5,7 @@ using SAPPub.Web.Models;
 
 namespace SAPPub.Web.Areas.Profiles.ViewModels.Admissions;
 
-public class AdmissionsViewModel : BaseViewModel
+public class AdmissionsViewModel : ProfileBaseViewModel
 {
     public required DisplayField<string> SchoolWebsite { get; init; }
 

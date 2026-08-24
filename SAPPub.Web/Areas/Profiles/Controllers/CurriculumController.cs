@@ -38,7 +38,7 @@ public class CurriculumController(ILogger<CurriculumController> logger, IFeature
     [HttpGet]
     [FeatureGate(Constants.Constants.EnablePrimary)]
     [ServiceFilter(typeof(PrimaryQueryValidationFilter))]
-    [Route("school/{urn}/{schoolName}/curriculum/primary", Name = RouteConstants.PrimaryCurriculum)]
+    [Route("school/{urn}/{schoolName}/curriculum/primary", Name = RouteConstants.PrimaryCurriculumAndExtraCurricularActivities)]
     public async Task<IActionResult> KS2(
         [FromServices] IEstablishmentService establishmentService,
         string urn, string schoolName, CancellationToken ct)

@@ -2,7 +2,7 @@
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
-namespace SAPPub.Web.Tests.UI.Areas.KS2;
+namespace SAPPub.Web.Tests.UI.Areas.Profiles.KS2;
 
 [Collection("Playwright Tests")]
 public class ScaledScoresTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)

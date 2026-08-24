@@ -1,5 +1,6 @@
 ﻿@model SAPPub.Web.Areas.Profiles.ViewModels.AboutSchool.AboutSchoolViewModel;
 @using SAPPub.Web.Constants
+@using SAPPub.Web.ViewComponents.SchoolProfilePagination
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 
 @{
@@ -53,18 +54,8 @@
 
 
 
-        <govuk-pagination id="destinations-pagination">
-            @if (Model.IsKS4 == true)
-            {
-                <govuk-pagination-previous asp-route="@RouteConstants.SecondaryDestinations" asp-all-route-data="@Model.RouteAttributes">Destinations</govuk-pagination-previous>
-            }
-            else
-            {
-                <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">Academic performance: Subjects entered</govuk-pagination-previous>
-            }
-            <govuk-pagination-next asp-route="@RouteConstants.KS5DestinationsHigher" asp-all-route-data="@Model.RouteAttributes">Student destinations after 16 to 19 study</govuk-pagination-next>
+        @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.KS5DestinationsHigher))
 
-        </govuk-pagination>
     </div>
 </div>
 

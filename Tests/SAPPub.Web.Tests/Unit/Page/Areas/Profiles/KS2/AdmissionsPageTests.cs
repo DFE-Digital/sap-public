@@ -282,6 +282,47 @@ public class AdmissionsPageTests : PageTestsBase
         Assert.Null(contactSchoolInfo);
     }
 
+    [Fact]
+    public async Task AdmissionsPage_DisplaysBottomPagination_WithCorrectDestinations()
+    {
+        // Arrange
+        var url = BuildUrl(_urn, _schoolName, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
+
+        var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.NotNull(previousLink);
+        Assert.Contains("/about", previousLink.GetAttribute("href"));
+
+        Assert.NotNull(nextLink);
+        Assert.Contains("/curriculum/primary", nextLink.GetAttribute("href"));
+    }
+
+    [Fact]
+    public async Task AdmissionsPage_DisplaysBottomPagination_WithCorrectDestinations_WhenMultiplePhases()
+    {
+        // Arrange
+        ConfigureMultiPhaseSchool();
+        var url = BuildUrl(_urnMultiPhase, _schoolNameMultiPhase, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
+
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
+        Assert.NotNull(nextLink);
+        Assert.Contains("/admissions/secondary", nextLink.GetAttribute("href"));
+    }
     private void ConfigureMultiPhaseSchool()
     {
         var multiPhaseEstablishment = new EstablishmentMinimumTestBuilder()

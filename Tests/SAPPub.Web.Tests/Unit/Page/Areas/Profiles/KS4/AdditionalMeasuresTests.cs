@@ -5,6 +5,7 @@ using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
+using SAPPub.Web.ViewComponents.Pagination;
 
 namespace SAPPub.Web.Tests.Unit.Page.Areas.Profiles.KS4;
 
@@ -113,18 +114,26 @@ public class AdditionalMeasuresTests : PageTestsBase
         var doc = await Fixture.BrowseToPage(BuildUrl(_urn, _establishmentName, _pageRoute));
 
         // Act
-        var bottomPagination = doc.GetElementById("bottom-pagination");
+        var bottomPagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(bottomPagination);
+
 
         // Act
-        var previousPaginationLink = doc.QuerySelector("#bottom-pagination .govuk-pagination__prev a");
-        var nextPaginationLink = doc.QuerySelector("#bottom-pagination .govuk-pagination__next a");
+        var previousPaginationLink = bottomPagination.QuerySelector(".govuk-pagination__prev a");
+        var nextPaginationLink = bottomPagination.QuerySelector(".govuk-pagination__next a");
         var previousPaginationText = previousPaginationLink?.TextContent;
         var nextPaginationText = nextPaginationLink?.TextContent;
 
         // Assert
-        Assert.NotNull(bottomPagination);
-        Assert.Equal("Secondary academic performance: Subjects entered", previousPaginationText?.Trim());
-        Assert.Equal("Destinations", nextPaginationText?.Trim());
+        var previousLink = bottomPagination.QuerySelector(".govuk-pagination__prev a");
+        var nextLink = bottomPagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.NotNull(previousLink);
+        Assert.Contains("/secondary-performance/subjects-entered", previousLink.GetAttribute("href"));
+
+        Assert.NotNull(nextLink);
+        Assert.Contains("/destinations/secondary", nextLink.GetAttribute("href"));
+
     }
 
     [Fact]

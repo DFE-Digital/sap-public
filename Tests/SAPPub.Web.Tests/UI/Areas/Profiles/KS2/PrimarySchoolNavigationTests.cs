@@ -3,7 +3,7 @@ using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 using static SAPPub.Web.Constants.PageTitleConstants;
 
-namespace SAPPub.Web.Tests.UI.Areas.KS2;
+namespace SAPPub.Web.Tests.UI.Areas.Profiles.KS2;
 
 [Collection("Playwright Tests")]
 public class PrimarySchoolNavigationTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
@@ -91,74 +91,7 @@ public class PrimarySchoolNavigationTests(WebApplicationSetupFixture fixture) : 
         title = await Page.TitleAsync();
         Assert.Contains(PrimarySchoolPageTitles.AdditionalMeasures, title);
     }
-
-    [Fact(Skip = "Bottom pagination not implented fully")]
-    public async Task NavigateThroughPaginationNav_ShowsExpectedPages()
-    {
-        // Act
-        var response = await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
-        var nav = new PaginationNavigationHelper(Page);
-
-        // Assert
-        var title = await Page.TitleAsync();
-        Assert.Contains("About", title);
-
-        // Act
-        await nav.ClickNextLinkAsync();
-
-        // Assert
-        title = await Page.TitleAsync();
-        Assert.Contains("Admissions", title);
-
-        // Act
-        await nav.ClickNextLinkAsync();
-
-        // Assert
-        title = await Page.TitleAsync();
-        Assert.Contains("Curriculum", title);
-
-        // Act
-        await nav.ClickNextLinkAsync();
-
-        // Assert
-        title = await Page.TitleAsync();
-        Assert.Contains("Attendance", title);
-
-        // CML TODO - attendance page is the secondary one at the moment so the pagination isn't updated.
-
-        // Act
-        //await nav.ClickNextLinkAsync();
-
-        //// Assert
-        //title = await Page.TitleAsync();
-        ////Assert.Contains("Primary", title);
-        //Assert.Contains("Pupil progress", title);
-
-        //// Act
-        //await nav.ClickNextLinkAsync();
-
-        //// Assert
-        //title = await Page.TitleAsync();
-        //Assert.Contains("TODO", title);
-
-        //// Act
-        //await nav.ClickNextLinkAsync();
-
-        // Assert
-        //title = await Page.TitleAsync();
-        //Assert.Contains("Subject scaled scores", title);
-
-        //// Act
-        //await nav.ClickNextLinkAsync();
-
-        // Assert
-        //title = await Page.TitleAsync();
-        //Assert.Contains("Additional measures", title);
-
-        //// Act
-        //await nav.ClickNextLinkAsync();
-    }
-
+  
     private static Task ClickAcademicPerformanceNavItemAsync(
         IPage page,
         string itemName)

@@ -1,5 +1,6 @@
 ﻿@using SAPPub.Core.Enums.KS5Qualifications
 @using SAPPub.Web.Constants
+@using SAPPub.Web.ViewComponents.SchoolProfilePagination
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 @model SAPPub.Web.Areas.Profiles.ViewModels.KS5.Level3QualificationViewModel
 
@@ -144,9 +145,7 @@
             </govuk-details>
         }
 
-        <govuk-pagination id="academic-performance-level-3-pagination">
-            <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress" asp-all-route-data="@Model.RouteAttributes">Academic performance: Progress and Attainment</govuk-pagination-previous>
-            <govuk-pagination-next asp-route="@RouteConstants.KS5AcademicPerformanceLevel2" asp-all-route-data="@Model.RouteAttributes">Academic performance: Level 2 qualifications</govuk-pagination-next>
-        </govuk-pagination>
+             @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.KS5AcademicPerformanceLevel3))
+
     </div>
 </div>
