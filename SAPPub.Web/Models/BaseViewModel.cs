@@ -32,8 +32,6 @@ public class BaseViewModel
                     return PageTitleConstants.KS5SchoolPageTitles.Level3QualificationsAppliedGeneral;
                 case Level3.TechLevel:
                     return PageTitleConstants.KS5SchoolPageTitles.Level3QualificationsTechLevel;
-                case Level3.Apprenticeship:
-                    return PageTitleConstants.KS5SchoolPageTitles.Level3QualificationsApprenticeship;
             }
         }
         if (level2 != default)
@@ -42,8 +40,6 @@ public class BaseViewModel
             {
                 case Level2.TechCert:
                     return PageTitleConstants.KS5SchoolPageTitles.Level2QualificationsTechCert;
-                case Level2.Apprenticeship:
-                    return PageTitleConstants.KS5SchoolPageTitles.Level2QualificationsApprenticeship;
             }
         }
         return string.Empty;
