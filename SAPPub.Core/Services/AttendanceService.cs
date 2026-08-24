@@ -1,6 +1,7 @@
 ﻿using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Absence;
 using SAPPub.Core.Interfaces.Services.KS4.Attendance;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.KS4.Attendance;
 using SAPPub.Core.ValueObjects;
 
@@ -30,11 +31,11 @@ public sealed class AttendanceService(
 
         await Task.WhenAll(establishmentAbsenceTask, laAbsenceTask, englandAbsenceTask);
 
-        var estAbsence = await establishmentAbsenceTask;
-        var laAbsence = await laAbsenceTask;
-        var engAbsence = await englandAbsenceTask;
+        var estAbs = await establishmentAbsenceTask;
+        var laAbs = await laAbsenceTask;
+        var engAbs = await englandAbsenceTask;
 
-        return  new AttendanceModel
+        return new AttendanceModel
         {
             Urn = est.URN,
             SchoolName = est.EstablishmentName,
@@ -43,32 +44,73 @@ public sealed class AttendanceService(
             IsKS5 = est.IsKS5,
             Website = est.Website,
             LocalAuthority = est.LAName,
-            EstablishmentAttendance = GetAttendanceValue(est.IsSpecialSchool
-                ? estAbsence.Abs_PersistentSPE_Est_Current_Pct_Coded
-                : est.IsKS4 ? estAbsence.Abs_Tot_Est_Current_Pct_Coded : estAbsence.Abs_TotKS2_Est_Current_Pct_Coded),
-            EstablishmentEnrolmentsTotal = estAbsence.Enrolments_Tot_Est_Current_Num_Coded,
-            EstablishmentPersistentAbsence = est.IsSpecialSchool
-                ? estAbsence.Abs_PersistentSPE_Est_Current_Pct_Coded
-                : est.IsKS4 ? estAbsence.Abs_Persistent_Est_Current_Pct_Coded : estAbsence.Abs_PersistentKS2_Est_Current_Pct_Coded,
-            EstablishmentPersistentAbsenceTotal = est.IsSpecialSchool
-                ? estAbsence.Abs_PersistentSPE_Est_Current_Num_Coded
-                : est.IsKS4 ? estAbsence.Abs_Persistent_Est_Current_Num_Coded : estAbsence.Abs_PersistentKS2_Est_Current_Num_Coded,
-            EnglandAttendance = GetAttendanceValue(est.IsSpecialSchool
-                ? engAbsence.Abs_TotSPE_Eng_Current_Pct_Coded 
-                : est.IsKS4 ? engAbsence.Abs_Tot_Eng_Current_Pct_Coded : engAbsence.Abs_TotKS2_Eng_Current_Pct_Coded),
-            EnglandPersistentAbsence = est.IsSpecialSchool ? 
-                engAbsence.Abs_PersistentSPE_Eng_Current_Pct_Coded
-                : est.IsKS4 ? engAbsence.Abs_Persistent_Eng_Current_Pct_Coded : engAbsence.Abs_PersistentKS2_Eng_Current_Pct_Coded,
-            LocalAuthorityAttendance = GetAttendanceValue(est.IsSpecialSchool ?
-                laAbsence.Abs_TotSPE_LA_Current_Pct_Coded
-                : est.IsKS4 ? laAbsence.Abs_Tot_LA_Current_Pct_Coded : laAbsence.Abs_TotKS2_LA_Current_Pct_Coded),
-            LocalAuthorityPersistentAbsence = est.IsSpecialSchool ?
-                laAbsence.Abs_PersistentSPE_LA_Current_Pct_Coded
-                : est.IsKS4 ? laAbsence.Abs_Persistent_LA_Current_Pct_Coded : laAbsence.Abs_PersistentKS2_LA_Current_Pct_Coded
+            EstablishmentEnrolmentsTotal = estAbs.Enrolments_Tot_Est_Current_Num_Coded,
+            EstablishmentAttendance =
+                GetCodedValue(est,
+                    estAbs.Abs_PersistentSPE_Est_Current_Pct_Coded,
+                    estAbs.Abs_Tot_Est_Current_Pct_Coded,
+                    estAbs.Abs_TotKS2_Est_Current_Pct_Coded,
+                    true),
+            EstablishmentPersistentAbsence =
+                GetCodedValue(est,
+                    estAbs.Abs_PersistentSPE_Est_Current_Pct_Coded, 
+                    estAbs.Abs_Persistent_Est_Current_Pct_Coded, 
+                    estAbs.Abs_PersistentKS2_Est_Current_Pct_Coded, 
+                    false),
+            EstablishmentPersistentAbsenceTotal = 
+                GetCodedValue(est, 
+                    estAbs.Abs_PersistentSPE_Est_Current_Num_Coded, 
+                    estAbs.Abs_Persistent_Est_Current_Num_Coded, 
+                    estAbs.Abs_PersistentKS2_Est_Current_Num_Coded, 
+                    false),
+            EnglandAttendance = 
+                GetCodedValue(est, 
+                    engAbs.Abs_TotSPE_Eng_Current_Pct_Coded, 
+                    engAbs.Abs_Tot_Eng_Current_Pct_Coded, 
+                    engAbs.Abs_TotKS2_Eng_Current_Pct_Coded, 
+                    true),
+            EnglandPersistentAbsence = 
+                GetCodedValue(est, 
+                    engAbs.Abs_PersistentSPE_Eng_Current_Pct_Coded, 
+                    engAbs.Abs_Persistent_Eng_Current_Pct_Coded, 
+                    engAbs.Abs_PersistentKS2_Eng_Current_Pct_Coded, 
+                    false),
+            LocalAuthorityAttendance = 
+                GetCodedValue(est, 
+                    laAbs.Abs_TotSPE_LA_Current_Pct_Coded, 
+                    laAbs.Abs_Tot_LA_Current_Pct_Coded, 
+                    laAbs.Abs_TotKS2_LA_Current_Pct_Coded, 
+                    true),
+            LocalAuthorityPersistentAbsence =
+                GetCodedValue(est, 
+                    laAbs.Abs_PersistentSPE_LA_Current_Pct_Coded, 
+                    laAbs.Abs_Persistent_LA_Current_Pct_Coded, 
+                    laAbs.Abs_PersistentKS2_LA_Current_Pct_Coded, 
+                    false)
         };
     }
-    private static CodedDouble GetAttendanceValue(CodedDouble codedDouble)
+
+    /// <summary>
+    /// Use to get the property value for the coded double in the model based on school type/phase.
+    /// Data selection follows the following precedence order:
+    /// - Special School
+    /// - KS4
+    /// - KS2 only school
+    /// </summary>
+    /// <param name="est">Establishment details</param>
+    /// <param name="specSchoolVal">Database column name to map if we're taking the value for a special school</param>
+    /// <param name="ks4Val">Database column name to map if we're taking the value for a KS4 phase school</param>
+    /// <param name="ks2Val">Database column name to map if we're taking the value for a KS2-only phase school</param>
+    /// <param name="isAttendanceVal">If true, we invert the value so we have the attendance value (rather than the absence value)</param>
+    /// <returns></returns>
+    private static CodedDouble GetCodedValue(EstablishmentMinimumServiceModel est, CodedDouble specSchoolVal, CodedDouble ks4Val, CodedDouble ks2Val, bool isAttendanceVal)
     {
-        return new CodedDouble(100 - codedDouble.Value, codedDouble.Reason, codedDouble.Raw);
+        var retVal = est.IsSpecialSchool ? specSchoolVal : est.IsKS4 ? ks4Val : ks2Val;
+        if (isAttendanceVal)
+        {
+            return new CodedDouble(100 - retVal.Value, retVal.Reason, retVal.Raw);
+        }
+
+        return retVal;
     }
 }
