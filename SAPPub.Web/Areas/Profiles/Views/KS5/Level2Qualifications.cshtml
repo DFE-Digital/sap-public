@@ -1,4 +1,5 @@
 ﻿@using SAPPub.Web.Constants
+@using SAPPub.Web.ViewComponents.SchoolProfilePagination
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 @model SAPPub.Web.Areas.Profiles.ViewModels.KS5.Level2QualificationViewModel
 
@@ -122,10 +123,7 @@
         <div id="student-retention" class="govuk-inset-text">
             Measures on student retention will be available shortly in a future release.
         </div>
+        @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.KS5AcademicPerformanceLevel2))
 
-        <govuk-pagination id="academic-performance-level-2-pagination">
-            <govuk-pagination-previous asp-route="@RouteConstants.KS5AcademicPerformanceLevel2" asp-all-route-data="@Model.RouteAttributes">Academic performance: Level 3 qualifications</govuk-pagination-previous>
-            <govuk-pagination-next asp-route="@RouteConstants.KS5AcademicPerformanceEnglishMaths" asp-all-route-data="@Model.RouteAttributes">Academic performance: English and maths</govuk-pagination-next>
-        </govuk-pagination>
     </div>
 </div>

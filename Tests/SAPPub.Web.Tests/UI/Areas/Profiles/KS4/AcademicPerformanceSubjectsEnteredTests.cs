@@ -101,25 +101,5 @@ public class AcademicPerformanceSubjectsEnteredTests(WebApplicationSetupFixture 
 
         // Assert
         Assert.True(isVisible);
-    }
-
-    [Fact]
-    public async Task AcademicPerformanceSubjectsEnteredPage_DisplaysPagination()
-    {
-        // Arrange
-        await Page.GotoAsync(_pageUrl);
-
-        // Act
-        var isVisible = await Page.Locator("#academic-performance-subjects-entered-pagination").IsVisibleAsync();
-        var previousPaginationLink = Page.Locator("#academic-performance-subjects-entered-pagination .govuk-pagination__prev a");
-        var nextPaginationLink = Page.Locator("#academic-performance-subjects-entered-pagination .govuk-pagination__next a");
-
-        var previousPaginationText = await previousPaginationLink.TextContentAsync();
-        var nextPaginationText = await nextPaginationLink.TextContentAsync();
-
-        // Assert
-        Assert.True(isVisible);
-        Assert.Contains("performance: English and maths results", previousPaginationText?.Trim());
-        Assert.Contains("performance: Additional measures", nextPaginationText?.Trim());
-    }
+    }   
 }

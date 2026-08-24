@@ -1,6 +1,7 @@
 ﻿@model KS4DestinationsViewModel;
 @using SAPPub.Web.Areas.Profiles.ViewModels.Destinations
 @using SAPPub.Web.Constants
+@using SAPPub.Web.ViewComponents.SchoolProfilePagination
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 @using static SAPPub.Web.Constants.Constants;
 
@@ -226,9 +227,8 @@
             </div>
         </div> *@
 
-        <govuk-pagination id="destinations-pagination">
-            <govuk-pagination-previous asp-route="@RouteConstants.SecondaryAcademicPerformanceAdditionalMeasures" asp-all-route-data="@Model.RouteAttributes">Secondary academic performance: Additional measures</govuk-pagination-previous>
-        </govuk-pagination>
+        @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.SecondaryDestinations))
+
     </div>
 </div>
 

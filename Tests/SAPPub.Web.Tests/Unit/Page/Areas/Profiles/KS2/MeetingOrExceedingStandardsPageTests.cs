@@ -182,6 +182,29 @@ public class MeetingOrExceedingStandardsPageTests : PageTestsBase
         Assert.NotNull(tableDataOverTime);
     }
 
+    [Fact]
+    public async Task MeetingOrExceedingStandardsPage_DisplaysBottomPagination_WithCorrectDestinations()
+    {
+        // Arrange
+        var url = BuildUrl(_urn, _schoolName, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
+
+        var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.NotNull(previousLink);
+        Assert.Contains("/primary-performance/pupil-progress", previousLink.GetAttribute("href"));
+
+        Assert.NotNull(nextLink);
+        Assert.Contains("/primary-performance/subject-scaled-scores", nextLink.GetAttribute("href"));
+    }  
+
     private void ConfigureMultiPhaseSchool()
     {
         var multiPhaseEstablishment = new EstablishmentMinimumTestBuilder()

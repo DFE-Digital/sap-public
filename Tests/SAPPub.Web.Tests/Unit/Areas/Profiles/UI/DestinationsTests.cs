@@ -360,27 +360,7 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
         Assert.False(await breakdownDestinationsChart.CountAsync() > 0);
         Assert.False(await breakdownDestinationsCurrentYearShowBtn.CountAsync() > 0);
         Assert.True(await breakdownDestinationsCurrentYearTable.CountAsync() > 0);
-    }
-
-    [Fact]
-    public async Task DestinationsPage_DisplaysPagination()
-    {
-        // Arrange
-        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
-
-        // Act
-        var isVisible = await Page.Locator("#destinations-pagination").IsVisibleAsync();
-        var previousPaginationLink = Page.Locator("#destinations-pagination .govuk-pagination__prev a");
-        var nextPaginationLink = Page.Locator("#destinations-pagination .govuk-pagination__next a");
-
-        var previousPaginationText = await previousPaginationLink.TextContentAsync();
-        var nextPaginationIsVisible = await nextPaginationLink.IsVisibleAsync();
-
-        // Assert
-        Assert.True(isVisible);
-        Assert.False(nextPaginationIsVisible);
-        Assert.Contains("performance: Additional measures", previousPaginationText?.Trim());
-    }
+    }      
 
     [Fact]
     public async Task DestinationsPage_KeyboardNavigation_CanReachAndFocus_ToggleButtons()

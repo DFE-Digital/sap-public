@@ -1,7 +1,8 @@
 ﻿@model SAPPub.Web.Areas.Profiles.ViewModels.KS2.AcademicPerformanceAdditionalMeasuresViewModel
 @using SAPPub.Web.Constants
-@using static SAPPub.Web.Constants.PageTitleConstants
+@using SAPPub.Web.ViewComponents.SchoolProfilePagination
 @using SAPPub.Web.ViewComponents.VerticalNavigation
+@using static SAPPub.Web.Constants.PageTitleConstants
 
 @{
     ViewData["Header"] = "Academic performance";
@@ -170,13 +171,7 @@
             </govuk-accordion-item>
         </govuk-accordion>
 
+        @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.PrimaryAcademicPerformanceAdditionalMeasures))
 
-        <govuk-pagination id="bottom-pagination">
-            <govuk-pagination-previous asp-route="@RouteConstants.PrimaryAcademicPerformancePupilProgress" asp-all-route-data="@Model.RouteAttributes">Primary academic performance: Pupil progress</govuk-pagination-previous>
-            @if (Model.IsKS4)
-            {
-                <govuk-pagination-next asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress" asp-all-route-data="@Model.RouteAttributes">Secondary academic performance: Progress and attainment</govuk-pagination-next>
-            }
-        </govuk-pagination>
     </div>
 </div>

@@ -239,9 +239,30 @@ public class ScaledScoresAcademicPerformacePageTests : PageTestsBase
         Assert.Contains("37", doc.GetTableCellContentByIdAndIndex("non-disadvantaged-pupils-table", 2, 0));
         Assert.Contains("34", doc.GetTableCellContentByIdAndIndex("non-disadvantaged-pupils-table", 2, 1));
     }
+    [Fact]
+    public async Task ScaledScorePage_DisplaysBottomPagination_WithCorrectDestinations()
+    {
+        // Arrange
+        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, _pageRoute);
 
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
 
-    private static KS2ScaledScoreModel GetScaledScoreModel()
+        // Assert
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
+
+        var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.NotNull(previousLink);
+        Assert.Contains("/primary-performance/meeting-or-exceeding-standards", previousLink.GetAttribute("href"));
+
+        Assert.NotNull(nextLink);
+        Assert.Contains("/primary-performance/additional-measures", nextLink.GetAttribute("href"));
+    }
+
+    private KS2ScaledScoreModel GetScaledScoreModel()
     {
         return new KS2ScaledScoreModel
         {

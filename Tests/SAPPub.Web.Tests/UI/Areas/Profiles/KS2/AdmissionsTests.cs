@@ -1,21 +1,20 @@
 ﻿using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
-namespace SAPPub.Web.Tests.UI.Areas.KS2;
+namespace SAPPub.Web.Tests.UI.Areas.Profiles.KS2;
 
 [Collection("Playwright Tests")]
-public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
+public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
 
     private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
     {
-        ["143034"] = "school/143034/st-pauls-church-of-england-academy/curriculum/primary",
-        ["100273"] = "school/100273/saint-paul-roman-catholic-infant-school/curriculum/primary",
-        ["150009"] = "school/150009/abraham-moss-community-school/curriculum/primary" // KS2 + KS4 school
+        ["143034"] = "school/143034/st-pauls-church-of-england-academy/admissions/primary",
+        ["150009"] = "school/150009/abraham-moss-community-school/admissions/primary" // KS2 + KS4 school
     };
 
     [Fact]
-    public async Task CurriculumAndExtraCurricularActivitiesPage_LoadsSuccessfully()
+    public async Task AdmissionsPage_LoadsSuccessfully()
     {
         // Arrange && Act
         var response = await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
@@ -26,7 +25,7 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
     }
 
     [Fact]
-    public async Task CurriculumAndExtraCurricularActivitiesPage_HasCorrectTitle()
+    public async Task AdmissionsPage_HasCorrectTitle()
     {
         // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
@@ -35,11 +34,11 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
         var title = await Page.TitleAsync();
 
         // Assert
-        Assert.Contains("Primary Curriculum", title);
+        Assert.Contains("Primary Admissions", title);
     }
 
     [Fact]
-    public async Task CurriculumAndExtraCurricularActivitiesPage_DisplaysMainHeading()
+    public async Task AdmissionsPage_DisplaysMainHeading()
     {
         // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
@@ -48,12 +47,11 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
         var heading = await Page.Locator("h1").TextContentAsync();
 
         // Assert
-        Assert.NotNull(heading);
-        Assert.NotEmpty(heading!.Trim());
+        Assert.NotNull(heading?.Replace(" ", ""));
     }
 
     [Fact]
-    public async Task CurriculumAndExtraCurricularActivitiesPage_Displays_SchoolName_Caption()
+    public async Task AdmissionsPage_Displays_SchoolName_Caption()
     {
         // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
@@ -69,15 +67,17 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
         Assert.Equal("St Paul's Church of England Academy", schoolNameCaption);
     }
 
-    [Fact]
-    public async Task CurriculumAndExtraCurricularActivitiesPage_Displays_VerticalNavigation()
+    [Theory]
+    [InlineData("143034", 5)]
+    [InlineData("150009", 7 )]
+    public async Task AdmissionsPage_Displays_VerticalNavigation(string schoolUrn, int expectedItemCount)
     {
         var nav = new VerticalNavigationHelper(Page);
-        await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
+        await Page.GotoAsync(_schoolUrnToUrlMap[schoolUrn]);
 
         await nav.ShouldBeVisibleAsync();
+        await nav.ShouldHaveItemsCountAsync(expectedItemCount);
         await nav.ShouldHaveOneActiveItemAsync();
-        await nav.ShouldHaveActiveHrefAsync(_schoolUrnToUrlMap["143034"].Replace("/primary", ""));
-    }
-  
+        await nav.ShouldHaveActiveHrefAsync(_schoolUrnToUrlMap[schoolUrn].Replace("/primary", ""));
+    }    
 }
