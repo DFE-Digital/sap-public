@@ -138,7 +138,7 @@ public class KS5DestinationsTests : PageTestsBase
                 SchoolName = _establishmentName,
                 LocalAuthorityName = _laName,
                 EnglandOverall = _englandTotalOverall,
-                EstablishmentTotalCohortFor = _stablishmentTotalCohortFor,
+                EstablishmentTotalCohortFor = _establishmentTotalCohortFor,
                 EstablishmentTotalOverall = _establishmentTotalOverall,
                 LATotalOverall = _laTotalOverall,
                 Urn = "123456",
