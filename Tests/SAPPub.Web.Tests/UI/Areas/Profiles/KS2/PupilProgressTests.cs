@@ -69,7 +69,7 @@ public class PupilProgressTests(WebApplicationSetupFixture fixture) : BasePageTe
         // Assert
         Assert.True(await academicYearSelector.IsVisibleAsync());
         Assert.True(await academicYearInfo.IsVisibleAsync());
-        Assert.True(await pupilProgressContent.IsVisibleAsync());
+        Assert.False(await pupilProgressContent.IsVisibleAsync());
         Assert.True(await dataNotAvailable.IsVisibleAsync());
         Assert.False(await readingInformation.IsVisibleAsync());
         Assert.False(await writingInformation.IsVisibleAsync());
