@@ -10,14 +10,8 @@ public class AboutSchoolPageTests() : BasePageTest()
     [Fact]
     public async Task AboutSchoolPage_LoadsSuccessfully()
     {
-        var baseUrl = Environment.GetEnvironmentVariable("BASE_URL");
-
+        // Act
         var response = await Page.GotoAsync("/school/105574");
-
-        Console.WriteLine($"Final URL = {Page.Url}");
-        Console.WriteLine($"Status = {response?.Status}");
-        // Arrange && Act
-        //var response = await Page.GotoAsync(PageUrl("105574"));
 
         // Assert
         Assert.NotNull(response);
