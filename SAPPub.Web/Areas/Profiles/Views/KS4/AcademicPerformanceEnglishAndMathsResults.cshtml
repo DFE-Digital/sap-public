@@ -4,6 +4,8 @@
 @using SAPPub.Web.ViewComponents.SchoolProfilePagination
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 @using static SAPPub.Web.Constants.PageTitleConstants
+@using static SAPPub.Web.Constants.Constants;
+@inject Microsoft.FeatureManagement.IFeatureManager FeatureManager
 
 @{
     ViewData["Header"] = "Academic performance";
@@ -86,6 +88,10 @@
                     <govuk-select-label class="govuk-label--s govuk-!-margin-right-2 select-inline-label">Choose the grade you want to see results for</govuk-select-label>
                     <govuk-select-item value=@GcseGradeDataSelection.Grade4AndAbove selected="@Model.SelectedGrade == GcseGradeDataSelection.Grade4AndAbove">@GcseGradeDataSelection.Grade4AndAbove.GetDisplayName()</govuk-select-item>
                     <govuk-select-item value=@GcseGradeDataSelection.Grade5AndAbove selected="!@Model.SelectedGrade.HasValue || @Model.SelectedGrade == GcseGradeDataSelection.Grade5AndAbove">@GcseGradeDataSelection.Grade5AndAbove.GetDisplayName()</govuk-select-item>
+                    @if (await FeatureManager.IsEnabledAsync(EnableSecondaryYear2526Publication))
+                    {
+                        <govuk-select-item value=@GcseGradeDataSelection.Grade7AndAbove selected="!@Model.SelectedGrade.HasValue || @Model.SelectedGrade == GcseGradeDataSelection.Grade7AndAbove">@GcseGradeDataSelection.Grade7AndAbove.GetDisplayName()</govuk-select-item>
+                    }
                 </govuk-select>
                 <govuk-button type="submit" class="govuk-!-margin-bottom-0 govuk-!-margin-left-2">Show results</govuk-button>
             </form>

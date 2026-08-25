@@ -83,6 +83,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "AllDest_Tot_Est_Previous2_Pct_Coded"
           """;
 
+        // CML TODO  add the Grade 7 columns when they're available
         private const string EstablishmentPerformanceColumns = """
           "Id",
           "Attainment8_Tot_Est_Current_Num_Coded",

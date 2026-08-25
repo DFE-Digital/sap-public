@@ -73,6 +73,33 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public string? EngMaths59_Tot_Est_Current_Pct_Reason { get; set; }
 
         /// <summary>
+        /// English and Maths grades 7 to 9 Boys filtered by Establishment for Current year
+        /// </summary>
+        public CodedDouble EngMaths79_Boy_Est_Current_Pct_Coded { get; set; } = new();
+        [IgnoreDataMember]
+        public double? EngMaths79_Boy_Est_Current_Pct { get; set; }
+        [IgnoreDataMember]
+        public string? EngMaths79_Boy_Est_Current_Pct_Reason { get; set; }
+
+        /// <summary>
+        /// English and Maths grades 7 to 9 Girls filtered by Establishment for Current year
+        /// </summary>
+        public CodedDouble EngMaths79_Grl_Est_Current_Pct_Coded { get; set; } = new();
+        [IgnoreDataMember]
+        public double? EngMaths79_Grl_Est_Current_Pct { get; set; }
+        [IgnoreDataMember]
+        public string? EngMaths79_Grl_Est_Current_Pct_Reason { get; set; }
+
+        /// <summary>
+        /// English and Maths grades 7 to 9 Total filtered by Establishment for Current year
+        /// </summary>
+        public CodedDouble EngMaths79_Tot_Est_Current_Pct_Coded { get; set; } = new();
+        [IgnoreDataMember]
+        public double? EngMaths79_Tot_Est_Current_Pct { get; set; }
+        [IgnoreDataMember]
+        public string? EngMaths79_Tot_Est_Current_Pct_Reason { get; set; }
+
+        /// <summary>
         /// Attainment 8 Total filtered by Establishment for Previous year
         /// </summary>
         public CodedDouble Attainment8_Tot_Est_Previous_Num_Coded { get; set; } = new();
@@ -98,6 +125,15 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public double? EngMaths59_Tot_Est_Previous_Pct { get; set; }
         [IgnoreDataMember]
         public string? EngMaths59_Tot_Est_Previous_Pct_Reason { get; set; }
+
+        /// <summary>
+        /// English and Maths grades 7 to 9 Total filtered by Establishment for Previous year
+        /// </summary>
+        public CodedDouble EngMaths79_Tot_Est_Previous_Pct_Coded { get; set; } = new();
+        [IgnoreDataMember]
+        public double? EngMaths79_Tot_Est_Previous_Pct { get; set; }
+        [IgnoreDataMember]
+        public string? EngMaths79_Tot_Est_Previous_Pct_Reason { get; set; }
 
         /// <summary>
         /// Progress 8 Average filtered by Establishment for Previous year
@@ -178,6 +214,15 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public string? EngMaths59_Tot_Est_Previous2_Pct_Reason { get; set; }
 
         /// <summary>
+        /// English and Maths grades 7 to 9 Total filtered by Establishment for Previous2 year
+        /// </summary>
+        public CodedDouble EngMaths79_Tot_Est_Previous2_Pct_Coded { get; set; } = new();
+        [IgnoreDataMember]
+        public double? EngMaths79_Tot_Est_Previous2_Pct { get; set; }
+        [IgnoreDataMember]
+        public string? EngMaths79_Tot_Est_Previous2_Pct_Reason { get; set; }
+
+        /// <summary>
         /// Progress 8 Average filtered by Establishment for Previous2 year
         /// </summary>
         public CodedDouble Prog8_Tot_Est_Previous2_Num_Coded { get; set; } = new();
@@ -245,5 +290,66 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public CodedDouble ExamEntriesGSCE_Tot_Est_Current_Num_Coded { get; set; }
         // Exam entries per pupil, all KS4 qualifications
         public CodedDouble ExamEntriesKS4_Tot_Est_Current_Num_Coded { get; set; }
+
+
+        public static RelativeYearValues<double?> AllEnglishAndMaths(EstablishmentPerformance establishmentPerformance, int selectedGrade)
+        {
+            return new RelativeYearValues<double?>
+            {
+                CurrentYear = selectedGrade switch
+                {
+                    4 => establishmentPerformance.EngMaths49_Tot_Est_Current_Pct,
+                    5 => establishmentPerformance.EngMaths59_Tot_Est_Current_Pct,
+                    7 => establishmentPerformance.EngMaths79_Tot_Est_Current_Pct,
+                    _ => null
+                },
+                PreviousYear = selectedGrade switch
+                {
+                    4 => establishmentPerformance.EngMaths49_Tot_Est_Previous_Pct,
+                    5 => establishmentPerformance.EngMaths59_Tot_Est_Previous_Pct,
+                    7 => establishmentPerformance.EngMaths79_Tot_Est_Previous_Pct,
+                    _ => null
+                },
+                TwoYearsAgo = selectedGrade switch
+                {
+                    4 => establishmentPerformance.EngMaths49_Tot_Est_Previous2_Pct,
+                    5 => establishmentPerformance.EngMaths59_Tot_Est_Previous2_Pct,
+                    7 => establishmentPerformance.EngMaths79_Tot_Est_Previous2_Pct,
+                    _ => null
+                }
+            };
+        }
+
+        public static RelativeYearValues<double?> GirlsEnglishAndMathsPerformance(EstablishmentPerformance establishmentPerformance, int selectedGrade)
+        {
+            return new RelativeYearValues<double?>
+            {
+                CurrentYear = selectedGrade switch
+                {
+                    4 => establishmentPerformance.EngMaths49_Grl_Est_Current_Pct,
+                    5 => establishmentPerformance.EngMaths59_Grl_Est_Current_Pct,
+                    7 => establishmentPerformance.EngMaths79_Grl_Est_Current_Pct,
+                    _ => null
+                },
+                PreviousYear = null,
+                TwoYearsAgo = null
+            };
+        }
+
+        public static RelativeYearValues<double?> BoysEnglishAndMathsPerformance(EstablishmentPerformance establishmentPerformance, int selectedGrade)
+        {
+            return new RelativeYearValues<double?>
+            {
+                CurrentYear = selectedGrade switch
+                {
+                    4 => establishmentPerformance.EngMaths49_Boy_Est_Current_Pct,
+                    5 => establishmentPerformance.EngMaths59_Boy_Est_Current_Pct,
+                    7 => establishmentPerformance.EngMaths79_Boy_Est_Current_Pct,
+                    _ => null
+                },
+                PreviousYear = null,
+                TwoYearsAgo = null
+            };
+        }
     }
 }
