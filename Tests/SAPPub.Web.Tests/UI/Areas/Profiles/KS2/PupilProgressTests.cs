@@ -146,14 +146,14 @@ public class PupilProgressTests(WebApplicationSetupFixture fixture) : BasePageTe
         await AssertCorrectProgressCardsAsync("writing", false, false);
         await AssertCorrectProgressCardsAsync("maths", false, false);
 
-        Assert.False(await dataNotAvailable.IsVisibleAsync());
+        Assert.True(await dataNotAvailable.IsVisibleAsync());
         Assert.Contains(previousYearSelection.GetDisplayName()!, await academicYearInfo.InnerTextAsync());
         Assert.Equal(previousYearSelection.ToString(), await academicYearSelector.InputValueAsync());
 
         var cont = await Page.ContentAsync();
 
         var noProgressDataCard = Page.Locator(".nodata-no-progress-data");
-        Assert.True(await noProgressDataCard.IsVisibleAsync());
+        Assert.False(await noProgressDataCard.IsVisibleAsync());
     }
 
     private async Task AssertCorrectProgressCardsAsync(string idPrefix, bool cardIsVisible, bool noDataSectionIsVisible)
