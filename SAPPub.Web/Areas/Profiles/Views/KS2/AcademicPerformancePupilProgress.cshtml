@@ -72,6 +72,27 @@
             <li>A negative score means pupils made less progress than similar pupils across England.</li>
         </ul>
 
+
+        @if (Model.ShowDataNotAvailableInfo)
+        {
+            <div class="custom-card" id="data-not-available-custom-card">
+                <div class="info__icon"></div>
+                <div class="custom-card__content">
+                    <p class="govuk-body">
+                        There are no Progress scores available for reading, writing and maths for the academic years 2023 to 2024 and 2024 to 2025.
+                        This is because there is no KS1 baseline available to calculate progress measures for these years due to COVID-19 disruption.
+                    </p>
+                </div>
+            </div>
+        }
+        else if (!Model.ShowReadingScore && !Model.ShowMathsScore && !Model.ShowWritingScore)
+        {
+            @await Html.PartialAsync("_NoProgressData", "nodata")
+        }
+
+        else
+        {
+            
         <govuk-details id="details-pupil-progress">
             <govuk-details-summary>
                 Find out more about progress scores and confidence intervals
@@ -101,25 +122,6 @@
             </govuk-details-text>
         </govuk-details>
 
-        @if (Model.ShowDataNotAvailableInfo)
-        {
-            <div class="custom-card" id="data-not-available-custom-card">
-                <div class="info__icon"></div>
-                <div class="custom-card__content">
-                    <p class="govuk-body">
-                        There are no Progress scores available for reading, writing and maths for the academic years 2024 to 2025 and 2025 to 2026.
-                        This is because there is no KS1 baseline available to calculate progress measures for these years due to COVID-19 disruption.
-                    </p>
-                </div>
-            </div>
-        }
-        else if (!Model.ShowReadingScore && !Model.ShowMathsScore && !Model.ShowWritingScore)
-        {
-            @await Html.PartialAsync("_NoProgressData", "nodata")
-        }
-
-        else
-        {
             <div id="reading-information">
                 <h3 class="govuk-heading-m">Reading</h3>
                 @if (!Model.ShowReadingScore)
