@@ -111,14 +111,12 @@ public partial class Program
             // Only required for real runtime environments
             if (builder.Environment.IsDevelopment() || builder.Environment.IsProduction() || builder.Environment.IsStaging())
                 throw new InvalidOperationException("Connection string 'PostgresConnectionString' is not configured.");
+
+            // For Testing/UITests: use a harmless dummy so nothing accidentally connects
+            connectionString = "Host=127.0.0.1;Port=1;Database=x;Username=x;Password=x;Timeout=1;Command Timeout=1";
         }
 
-        builder.Services.AddSingleton<NpgsqlDataSource>(_ =>
-        {
-            var builder = new NpgsqlDataSourceBuilder(connectionString);
-            builder.EnableParameterLogging();
-            return builder.Build();
-        });
+        builder.Services.AddSingleton<NpgsqlDataSource>(_ => NpgsqlDataSource.Create(connectionString));
 
         // Big Query client configuration
         builder.Services.AddDfeAnalytics().AddAspNetCoreIntegration(options =>
@@ -151,15 +149,15 @@ public partial class Program
         app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
         //Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseDeveloperExceptionPage(new DeveloperExceptionPageOptions { SourceCodeLineCount = 1 });
-        }
-        else
-        {
-            app.UseExceptionHandler("/Error/500");
-            app.UseHsts();
-        }
+        //if (app.Environment.IsDevelopment())
+        //{
+        app.UseDeveloperExceptionPage(new DeveloperExceptionPageOptions { SourceCodeLineCount = 1 });
+        //}
+        //else
+        //{
+        //    app.UseExceptionHandler("/Error/500");
+        //    app.UseHsts();
+        //}
 
         // Security headers middleware - MUST come before static files
         app.UseSecurityHeaders();

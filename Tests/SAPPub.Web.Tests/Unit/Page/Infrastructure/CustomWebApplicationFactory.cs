@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.FeatureManagement;
 using Moq;
-using SAPPub.Core.Interfaces;
 using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
@@ -99,8 +98,7 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 });
                 services.AddTransient<IEstablishmentService>(provider =>
                 {
-                    var accessor = provider.GetRequiredService<MockAccessor<IEstablishmentService>>();
-                    return accessor.GetOrCreate().Object; // provide default for Lucene search initialisation background service
+                    return provider.GetRequiredService<MockAccessor<IEstablishmentService>>().Get()?.Object!;
                 });
                 services.AddTransient(provider =>
                     {
