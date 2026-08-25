@@ -1,5 +1,4 @@
-﻿using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.Playwright;
+﻿using Microsoft.Playwright;
 using SAPPub.Core.Enums;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Tests.UI.Helpers;
