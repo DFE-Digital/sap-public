@@ -16,7 +16,7 @@ public static class PageHelpers
     {
         var section = Page.Locator($"[data-testid='{dataTestid}']");
         var p = section.Locator("p.govuk-body", new() { HasTextString = textString });
-        Assert.Equal(1, await p.CountAsync());
+        Assert.True(await p.CountAsync() == 1, $"Paragraph count mismatch: {textString}");
         var input = await p.InnerTextAsync();
         var match = Regex.Matches(input, @"[+-]?\d+(?:\.\d+)?")
                  .Cast<Match>();
