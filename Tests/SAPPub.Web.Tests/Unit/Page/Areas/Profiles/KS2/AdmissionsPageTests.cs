@@ -192,7 +192,7 @@ public class AdmissionsPageTests : PageTestsBase
         // Assert
         var summaryCard = doc.QuerySelector("[data-testid='starting-primary-school-summary']");
         Assert.NotNull(summaryCard);
-        var independentSummaryCard = doc.QuerySelector("[data-testid='independent-primary-school-summary']");
+        var independentSummaryCard = doc.QuerySelector("[data-testid='independent-school-summary']");
         Assert.Null(independentSummaryCard);
 
         var schoolWebsiteLink = summaryCard.QuerySelector("[data-testid='school-website-link']");
@@ -227,7 +227,7 @@ public class AdmissionsPageTests : PageTestsBase
         var doc = await Fixture.BrowseToPage(url);
 
         // Assert
-        var independentSummaryCard = doc.QuerySelector("[data-testid='independent-primary-school-summary']");
+        var independentSummaryCard = doc.QuerySelector("[data-testid='independent-school-summary']");
         Assert.NotNull(independentSummaryCard);
         var summaryCard = doc.QuerySelector("[data-testid='starting-primary-school-summary']");
         Assert.Null(summaryCard);
