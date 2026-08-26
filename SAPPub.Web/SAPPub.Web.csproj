@@ -49,9 +49,5 @@
 	  <None Remove="Areas\Compare\Models\**" />
 	  <None Remove="Areas\Profiles\Data\**" />
 	  <None Remove="Areas\Profiles\Models\**" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Areas\Profiles\Views\KS2\CommonContent\" />
 	</ItemGroup>	
 </Project>
