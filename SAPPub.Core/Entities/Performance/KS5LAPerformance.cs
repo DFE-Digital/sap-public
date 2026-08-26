@@ -77,4 +77,43 @@ public class KS5LAPerformance
     // Maths - Not Dis.
     public CodedDouble T_SCOPEEX_M_NOTDIS_LA_Current_Num_Coded { get; set; }
 
+    // A Level DisAdvantaged
+
+    // Number of students for LA - Disadvantaged - A Level
+    public CodedDouble TALLPUP_ALEV_1618_DIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress score for LA - Disadvantaged - A Level
+    public CodedDouble VA_INS_ALEV_DIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for LA upper - Disadvantaged - A Level
+    public CodedDouble UCI_INS_ALEV_DIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for LA lower - Disadvantaged - A Level
+    public CodedDouble LCI_INS_ALEV_DIS_LA_Current_Num_Coded { get; set; }
+
+    // Grade for LA - Disadvantaged - A Level
+    public CodedString TALLPPEGRD_ALEV_DIS_LA_Current { get; set; }
+
+    // Points for LA - Disadvantaged - A Level
+    public CodedDouble TALLPPE_ALEV_1618_DIS_LA_Current_Num_Coded { get; set; }
+
+    // A Level Non-DisAdvantaged
+
+    // Number of students for LA - Non-Disadvantaged - A Level
+    public CodedDouble TALLPUP_ALEV_1618_NOTDIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress score for LA - Non-Disadvantaged - A Level
+    public CodedDouble VA_INS_ALEV_NOTDIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for LA upper - Non-Disadvantaged - A Level
+    public CodedDouble UCI_INS_ALEV_NOTDIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for LA lower - Non-Disadvantaged - A Level
+    public CodedDouble LCI_INS_ALEV_NOTDIS_LA_Current_Num_Coded { get; set; }
+
+    // Grade for LA - Non-Disadvantaged - A Level
+    public CodedString TALLPPEGRD_ALEV_NOTDIS_LA_Current { get; set; }
+
+    // Points for LA - Non-Disadvantaged - A Level
+    public CodedDouble TALLPPE_ALEV_1618_NOTDIS_LA_Current_Num_Coded { get; set; }
 }

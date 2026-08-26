@@ -1,0 +1,124 @@
+﻿@using SAPPub.Core.Enums.KS5Qualifications
+@model SAPPub.Web.Areas.Profiles.ViewModels.KS5.PerformanceGroupsViewModel
+
+@{
+    var laName = ViewData["LAName"];
+}
+
+<govuk-accordion id="disadvantaged-students-info-accordion" hide-all-sections-text="Hide all sections" show-all-sections-text="Show all sections" hide-section-text="Hide" show-section-text="Show more">
+    <govuk-accordion-item>
+        <govuk-accordion-item-heading>Disadvantaged students</govuk-accordion-item-heading>
+        <govuk-accordion-item-summary></govuk-accordion-item-summary>
+        <govuk-accordion-item-content>
+            <p class="govuk-body">
+                Disadvantaged students are those who attract pupil premium funding at the end of key stage 4.
+            </p>
+
+            <p class="govuk-body">
+                This includes students who:
+            </p>
+
+            <ol class="govuk-list govuk-list--bullet">
+                <li>have been eligible for free school meals at any time in the last 6 years</li>
+                <li>are, or have been, in the care of a local authority (including those adopted from care)</li>
+                <li>Calculating the average across all eligible students at the school or college.</li>
+            </ol>
+
+            <p class="govuk-body">
+                Compare the average progress of disadvantaged students at this school or college,
+                with non-disadvantaged students at state‑funded schools and colleges locally and across England.
+            </p>
+
+            <table id="disadvantaged-students-table" class="govuk-table">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header"></th>
+                        <th scope="col" class="govuk-table__header">School or college</th>
+                        <th scope="col" class="govuk-table__header">@laName</th>
+                        <th scope="col" class="govuk-table__header">England average</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Number of students</th>
+                        <td class="govuk-table__cell">@Model.DisadvantagedStudents.Establishment!.NumberOfStudents.DisplayNumber(format: "N0")</td>
+                        <td class="govuk-table__cell">@Model.DisadvantagedStudents.LocalAuthority.NumberOfStudents.DisplayNumber(format: "N0")</td>
+                        <td class="govuk-table__cell">@Model.DisadvantagedStudents.England.NumberOfStudents.DisplayNumber(format: "N0")</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Progress score</th>
+                        <td class="govuk-table__cell">@Model.DisadvantagedStudents.Establishment.ProgressScore.DisplayText()</td>
+                        <td class="govuk-table__cell">@Model.DisadvantagedStudents.LocalAuthority.ProgressScore.DisplayText()</td>
+                        <td class="govuk-table__cell">@Model.DisadvantagedStudents.England.ProgressScore.DisplayText()</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Confidence interval</th>
+                        <td class="govuk-table__cell">@Model.DisadvantagedStudents.Establishment.ConfidenceInterval.DisplayText()</td>
+                        <td class="govuk-table__cell">@Model.DisadvantagedStudents.LocalAuthority.ConfidenceInterval.DisplayText()</td>
+                        <td class="govuk-table__cell">@Model.DisadvantagedStudents.England.ConfidenceInterval.DisplayText()</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Grade</th>
+                        <td class="govuk-table__cell">@Model.DisadvantagedStudents.Establishment.Grade.DisplayText()</td>
+                        <td class="govuk-table__cell">@Model.DisadvantagedStudents.LocalAuthority.Grade.DisplayText()</td>
+                        <td class="govuk-table__cell">@Model.DisadvantagedStudents.England.Grade.DisplayText()</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Points</th>
+                        <td class="govuk-table__cell">@Model.DisadvantagedStudents.Establishment.Points.DisplayText()</td>
+                        <td class="govuk-table__cell">@Model.DisadvantagedStudents.LocalAuthority.Points.DisplayText()</td>
+                        <td class="govuk-table__cell">@Model.DisadvantagedStudents.England.Points.DisplayText()</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <govuk-details id="non-disadvantaged-students-details">
+                <govuk-details-summary>
+                    Compare non-disadvantaged students
+                </govuk-details-summary>
+                <govuk-details-text>
+
+                    <h3 class="govuk-heading-m">Non-disadvantaged students</h3>
+
+                    <table id="non-disadvantaged-students-table" class="govuk-table">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header"></th>
+                                <th scope="col" class="govuk-table__header">@laName</th>
+                                <th scope="col" class="govuk-table__header">England average</th>
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">Number of students</th>
+                                <td class="govuk-table__cell">@Model.NonDisadvantagedStudents.LocalAuthority.NumberOfStudents.DisplayNumber(format: "N0")</td>
+                                <td class="govuk-table__cell">@Model.NonDisadvantagedStudents.England.NumberOfStudents.DisplayNumber(format: "N0")</td>
+                            </tr>
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">Progress score</th>
+                                <td class="govuk-table__cell">@Model.NonDisadvantagedStudents.LocalAuthority.ProgressScore.DisplayText()</td>
+                                <td class="govuk-table__cell">@Model.NonDisadvantagedStudents.England.ProgressScore.DisplayText()</td>
+                            </tr>
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">Confidence interval</th>
+                                <td class="govuk-table__cell">@Model.NonDisadvantagedStudents.LocalAuthority.ConfidenceInterval.DisplayText()</td>
+                                <td class="govuk-table__cell">@Model.NonDisadvantagedStudents.England.ConfidenceInterval.DisplayText()</td>
+                            </tr>
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">Grade</th>
+                                <td class="govuk-table__cell">@Model.NonDisadvantagedStudents.LocalAuthority.Grade.DisplayText()</td>
+                                <td class="govuk-table__cell">@Model.NonDisadvantagedStudents.England.Grade.DisplayText()</td>
+                            </tr>
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">Points</th>
+                                <td class="govuk-table__cell">@Model.NonDisadvantagedStudents.LocalAuthority.Points.DisplayText()</td>
+                                <td class="govuk-table__cell">@Model.NonDisadvantagedStudents.England.Points.DisplayText()</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </govuk-details-text>
+            </govuk-details>
+        </govuk-accordion-item-content>
+    </govuk-accordion-item>    
+</govuk-accordion>
