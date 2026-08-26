@@ -30,6 +30,7 @@ public class KS2MeetingOrExceedingStandardsService(
 
         return new KS2MeetingOrExceedingStandardsModel
         {
+            LAName = establishment.LAName,
             EstablishmentPercentageMeetingOrExceeding = GetEstablishmentPercentageMeetingOrExceeding(establishmentPerformance),
             LocalAuthorityPercentageMeetingOrExceeding = GetLocalAuthorityPercentageMeetingOrExceeding(laPerformance),
             EnglandPercentageMeetingOrExceeding = GetEnglandPercentageMeetingOrExceeding(englandPerformance),
@@ -37,38 +38,34 @@ public class KS2MeetingOrExceedingStandardsService(
             LocalAuthorityPercentageExceeding = GetLocalAuthorityPercentageExceeding(laPerformance),
             EnglandPercentageExceeding = GetEnglandPercentageExceeding(englandPerformance),
 
-            GirlsMeetingExpectedStandard     = establishmentPerformance.PTRWM_EXP_G_Est_Current_Pct_Coded,
+            GirlsMeetingExpectedStandard = establishmentPerformance.PTRWM_EXP_G_Est_Current_Pct_Coded,
             GirlsExceedingExpectedStandard = establishmentPerformance.PTRWM_HIGH_G_Est_Current_Pct_Coded,
             BoysMeetingExpectedStandard = establishmentPerformance.PTRWM_EXP_B_Est_Current_Pct_Coded,
             BoysExceedingExpectedStandard = establishmentPerformance.PTRWM_HIGH_B_Est_Current_Pct_Coded,
-            AllPupilsMeetingExpectedStandard     = establishmentPerformance.PTRWM_EXP_Est_Current_Pct_Coded,
+            AllPupilsMeetingExpectedStandard = establishmentPerformance.PTRWM_EXP_Est_Current_Pct_Coded,
             AllPupilsExceedingExpectedStandard = establishmentPerformance.PTRWM_HIGH_Est_Current_Pct_Coded,
 
             /* EAL */
             EALMeetingExpectedStandard = establishmentPerformance.PTRWM_EXP_EAL_Est_Current_Pct_Coded,
             EALExceedingExpectedStandard = establishmentPerformance.PTRWM_HIGH_EAL_Est_Current_Pct_Coded,
-            AllEALPupilsMeetingExpectedStandard = establishmentPerformance.PTRWM_EXP_Est_Current_Pct_Coded,
-            AllEALPupilsExceedingExpectedStandard = establishmentPerformance.PTRWM_HIGH_Est_Current_Pct_Coded,
-
+           
             /* Non-mobile pupils */
             NonMobileMeetingExpectedStandard = establishmentPerformance.PTRWM_EXP_MOBN_Est_Current_Pct_Coded,
             NonMobileExceedingExpectedStandard = establishmentPerformance.PTRWM_HIGH_MOBN_Est_Current_Pct_Coded,
-            AllNonMobilePupilsMeetingExpectedStandard = establishmentPerformance.PTRWM_EXP_Est_Current_Pct_Coded,
-            AllNonMobilePupilsExceedingExpectedStandard = establishmentPerformance.PTRWM_HIGH_Est_Current_Pct_Coded,
 
             /* Disadvantaged pupils */
             EstablishmentDisadvantagedMeetingExpectedStandard = establishmentPerformance.PTRWM_EXP_FSM6CLA1A_Est_Current_Pct_Coded,
             EstablishmentDisadvantagedExceedingExpectedStandard = establishmentPerformance.PTRWM_HIGH_FSM6CLA1A_Est_Current_Pct_Coded,
             LocalAuthorityDisadvantagedMeetingExpectedStandard = laPerformance.PTRWM_EXP_FSM6CLA1A_LA_Current_Pct_Coded,
             LocalAuthorityDisadvantagedExceedingExpectedStandard = laPerformance.PTRWM_HIGH_FSM6CLA1A_LA_Current_Pct_Coded,
-            EnglandAuthorityDisadvantagedMeetingExpectedStandard = englandPerformance.PTRWM_EXP_FSM6CLA1A_Eng_Current_Pct_Coded,
-            EnglandAuthorityDisadvantagedExceedingExpectedStandard = englandPerformance.PTRWM_HIGH_FSM6CLA1A_Eng_Current_Pct,
+            EnglandDisadvantagedMeetingExpectedStandard = englandPerformance.PTRWM_EXP_FSM6CLA1A_Eng_Current_Pct_Coded,
+            EnglandDisadvantagedExceedingExpectedStandard = englandPerformance.PTRWM_HIGH_FSM6CLA1A_Eng_Current_Pct_Coded,
 
             /* Non-disadvantaged pupils */
             LocalAuthorityNonDisadvantagedMeetingExpectedStandard = laPerformance.PTRWM_EXP_NOTFSM6CLA1A_LA_Current_Pct_Coded,
             LocalAuthorityNonDisadvantagedExceedingExpectedStandard = laPerformance.PTRWM_HIGH_NOTFSM6CLA1A_LA_Current_Pct_Coded,
-            EnglandAuthorityNonDisadvantagedMeetingExpectedStandard = englandPerformance.PTRWM_EXP_NOTFSM6CLA1A_Eng_Current_Pct_Coded,
-            EnglandAuthorityNonDisadvantagedExceedingExpectedStandard = englandPerformance.PTRWM_HIGH_NOTFSM6CLA1A_Eng_Current_Pct_Coded
+            EnglandNonDisadvantagedMeetingExpectedStandard = englandPerformance.PTRWM_EXP_NOTFSM6CLA1A_Eng_Current_Pct_Coded,
+            EnglandNonDisadvantagedExceedingExpectedStandard = englandPerformance.PTRWM_HIGH_NOTFSM6CLA1A_Eng_Current_Pct_Coded
         };
 
     }

@@ -5,6 +5,7 @@ namespace SAPPub.Core.ServiceModels.Performance;
 
 public class KS2MeetingOrExceedingStandardsModel
 {
+    public required string LAName { get; init; }
     public required RelativeYearValues<CodedDouble> EstablishmentPercentageMeetingOrExceeding { get; init; }
     public required RelativeYearValues<CodedDouble> LocalAuthorityPercentageMeetingOrExceeding { get; init; }
     public required RelativeYearValues<CodedDouble> EnglandPercentageMeetingOrExceeding { get; init; }
@@ -23,26 +24,22 @@ public class KS2MeetingOrExceedingStandardsModel
     /* EAL */
     public required CodedDouble EALMeetingExpectedStandard { get; init; }
     public required CodedDouble EALExceedingExpectedStandard { get; init; }
-    public required CodedDouble AllEALPupilsMeetingExpectedStandard { get; init; }
-    public required CodedDouble AllEALPupilsExceedingExpectedStandard { get; init; }
 
     /* Non-mobile pupils */
     public required CodedDouble NonMobileMeetingExpectedStandard { get; init; }
     public required CodedDouble NonMobileExceedingExpectedStandard { get; init; }
-    public required CodedDouble AllNonMobilePupilsMeetingExpectedStandard { get; init; }
-    public required CodedDouble AllNonMobilePupilsExceedingExpectedStandard { get; init; }
    
     /* Disadvantaged pupils */
     public required CodedDouble EstablishmentDisadvantagedMeetingExpectedStandard { get; init; }
     public required CodedDouble EstablishmentDisadvantagedExceedingExpectedStandard { get; init; }
     public required CodedDouble LocalAuthorityDisadvantagedMeetingExpectedStandard { get; init; }
     public required CodedDouble LocalAuthorityDisadvantagedExceedingExpectedStandard { get; init; }
-    public required CodedDouble EnglandAuthorityDisadvantagedMeetingExpectedStandard { get; init; }
-    public required CodedDouble EnglandAuthorityDisadvantagedExceedingExpectedStandard { get; init; }
+    public required CodedDouble EnglandDisadvantagedMeetingExpectedStandard { get; init; }
+    public required CodedDouble EnglandDisadvantagedExceedingExpectedStandard { get; init; }
     
     /* Non-disadvantaged pupils */
     public required CodedDouble LocalAuthorityNonDisadvantagedMeetingExpectedStandard { get; init; }
     public required CodedDouble LocalAuthorityNonDisadvantagedExceedingExpectedStandard { get; init; }
-    public required CodedDouble EnglandAuthorityNonDisadvantagedMeetingExpectedStandard { get; init; }
-    public required CodedDouble EnglandAuthorityNonDisadvantagedExceedingExpectedStandard { get; init; }
+    public required CodedDouble EnglandNonDisadvantagedMeetingExpectedStandard { get; init; }
+    public required CodedDouble EnglandNonDisadvantagedExceedingExpectedStandard { get; init; }
 }
