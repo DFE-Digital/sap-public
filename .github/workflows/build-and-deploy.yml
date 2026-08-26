@@ -14,7 +14,7 @@ on:
           - test
           - production
       docker-image-tag:
-        description: "Docker image tag to deploy (optional)"
+        description: "Docker image tag to deploy"
         required: true
         type: string
       pull-request-number:
@@ -597,20 +597,20 @@ jobs:
   integration-tests-manual:
     name: Integration Tests (Manual Deployment)
     needs: [manual_deploy]
-    if: ${{ inputs.environment == 'test' }}
+    if: ${{ inputs.environment == 'review' || inputs.environment == 'test' }}
     uses: ./.github/workflows/integration-tests.yml
     with:
-      environment: test
+      environment: ${{ inputs.environment }}
       base_url: ${{ needs.manual_deploy.outputs.environment_url }}
 
   # on review app environment (no refresh)
-  integration-tests-review-app:
-    name: Integration Tests (Post Deployment)
-    needs: [deploy-review-app]
-    uses: ./.github/workflows/integration-tests.yml
-    with:
-      environment: review
-      base_url: ${{ needs.deploy-review-app.outputs.environment_url }}
+  # integration-tests-review-app:
+  #   name: Integration Tests (Post Deployment)
+  #   needs: [deploy-review-app]
+  #   uses: ./.github/workflows/integration-tests.yml
+  #   with:
+  #     environment: review
+  #     base_url: ${{ needs.deploy-review-app.outputs.environment_url }}
 
   # on review app environment (with refresh)
   # integration-tests_with_refresh:
