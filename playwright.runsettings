@@ -3,7 +3,7 @@
     <RunConfiguration>
         <EnvironmentVariables>
             <HEADED>1</HEADED>
-            <BASE_URL>http://localhost:5013</BASE_URL>
+            <BASE_URL>https://sap-public-pr-493.test.teacherservices.cloud</BASE_URL>
         </EnvironmentVariables>
     </RunConfiguration>
 </RunSettings>
