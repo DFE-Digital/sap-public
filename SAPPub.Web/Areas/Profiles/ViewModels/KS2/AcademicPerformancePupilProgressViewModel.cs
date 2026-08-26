@@ -14,7 +14,7 @@ public class AcademicPerformancePupilProgressViewModel : BaseViewModel
     private const AcademicYearSelection _currentAcademicYear = AcademicYearSelection.Current;
     public string? AcademicYearInfoParagraph => $"Information in this section is for the {SelectedAcademicYear.GetDisplayName()} academic year.";
     public AcademicYearSelection SelectedAcademicYear { get; set; } = _currentAcademicYear;
-    public bool ShowDataNotAvailableInfo => SelectedAcademicYear == _currentAcademicYear;
+    public bool ShowDataNotAvailableInfo => SelectedAcademicYear == _currentAcademicYear || SelectedAcademicYear == AcademicYearSelection.Previous;
     public bool ShowReadingScore => EstablishmentReadingScore.Score.HasValue;
     public bool ShowWritingScore => EstablishmentWritingScore.Score.HasValue;
     public bool ShowMathsScore => EstablishmentMathsScore.Score.HasValue;

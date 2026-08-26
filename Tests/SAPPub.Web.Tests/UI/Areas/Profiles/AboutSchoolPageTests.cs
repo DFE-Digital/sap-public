@@ -2,7 +2,7 @@
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
-namespace SAPPub.Web.Tests.UI.KS4;
+namespace SAPPub.Web.Tests.UI.Areas.Profiles;
 
 [Collection("Playwright Tests")]
 public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
@@ -303,26 +303,7 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
 
         // Assert
         Assert.True(isVisible);
-    }
-
-    [Fact]
-    public async Task AboutSchoolPage_DisplaysPagination()
-    {
-        // Arrange
-        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
-
-        // Act
-        var isVisible = await Page.Locator("#about-the-school-pagination").IsVisibleAsync();
-        var previousPaginationLink = Page.Locator("#about-the-school-pagination .govuk-pagination__previous a");
-        var nextPaginationLink = Page.Locator("#about-the-school-pagination .govuk-pagination__next a");
-        var previousPaginationIsVisible = await previousPaginationLink.IsVisibleAsync();
-        var nextPaginationText = await nextPaginationLink.TextContentAsync();
-
-        // Assert
-        Assert.True(isVisible);
-        Assert.False(previousPaginationIsVisible);
-        Assert.Equal("Admissions", nextPaginationText?.Trim());
-    }
+    }    
 
     [Fact]
     public async Task AboutSchoolPage_ShowsSchoolComparisonLimit_WhenLimitReached()

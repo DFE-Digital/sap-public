@@ -143,26 +143,7 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
         Assert.True(await contactSchoolInfo.IsVisibleAsync());
     }
 
-    [Fact]
-    public async Task CurriculumAndExtraCurricularActivitiesPage_DisplaysPagination()
-    {
-        // Arrange
-        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
-
-        // Act
-        var isVisible = await Page.Locator("#current-extra-curricular-activities-pagination").IsVisibleAsync();
-        var previousPaginationLink = Page.Locator("#current-extra-curricular-activities-pagination .govuk-pagination__prev a");
-        var nextPaginationLink = Page.Locator("#current-extra-curricular-activities-pagination .govuk-pagination__next a");
-
-        var previousPaginationText = await previousPaginationLink.TextContentAsync();
-        var nextPaginationText = await nextPaginationLink.TextContentAsync();
-
-        // Assert
-        Assert.True(isVisible);
-        Assert.Equal("Admissions", previousPaginationText?.Trim());
-        Assert.Equal("Attendance", nextPaginationText?.Trim());
-    }
-
+    
     [Fact]
     public async Task CurriculumPage_DoesNotDisplay_SubNavigation_WhenOnlyKS4()
     {

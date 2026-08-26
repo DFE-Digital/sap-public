@@ -1,7 +1,7 @@
 ﻿using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
-namespace SAPPub.Web.Tests.UI.KS4;
+namespace SAPPub.Web.Tests.UI.Areas.Profiles;
 
 [Collection("Playwright Tests")]
 public class AttendancePageTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)

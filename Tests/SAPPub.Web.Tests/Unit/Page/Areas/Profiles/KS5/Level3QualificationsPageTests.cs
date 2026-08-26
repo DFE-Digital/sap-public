@@ -17,9 +17,11 @@ public class Level3QualificationsPageTests : PageTestsBase
 {
     private string _pageRoute = "/16-to-19-performance/level-3-qualifications";
     private string _urn = "100279";
+    private string _urnMultiPhase = "150009";
     private Level3 _qualificationType;
     private Level3QualificationModel _level3QualificationModel = null!;
-    private readonly EstablishmentServiceModel _establishment = new();
+    private readonly EstablishmentServiceModel _establishment = new();    
+    private  EstablishmentServiceModel _multiPhaseEstablishment = new();
     private readonly Mock<ILevel3QualificationsService> _level3QualificationsService = new();
 
     public Level3QualificationsPageTests(WebAppFixture fixture) : base(fixture)
@@ -38,12 +40,37 @@ public class Level3QualificationsPageTests : PageTestsBase
         _qualificationType = qualification;
         _level3QualificationModel = new Level3QualificationsModelBuilder()
             .WithUrn(_urn)
+            .WithEstablishmentName($"School{_urn}")
             .WithQualificationType(_qualificationType)
             .WithKS5(true)
             .Build();
 
         _level3QualificationsService.Setup(s => s.GetLevel3QualificationDetailsAsync(_urn, _qualificationType, It.IsAny<CancellationToken>()))
             .ReturnsAsync(_level3QualificationModel);
+    }
+
+    private void SetupMultiPhaseMocks(Level3 qualification = Level3.ALevel)
+    {
+        _qualificationType = qualification;
+        _multiPhaseEstablishment = new EstablishmentTestBuilder()
+            .WithURN(_urnMultiPhase)
+            .WithEstablishmentName($"School{_urnMultiPhase}")
+            .WithIsKeyStage4(true)
+            .WithIsKeyStage5(true)
+            .WithSixthForm(true)
+            .BuildServiceModel();     
+
+        var multiPhaseModel = new Level3QualificationsModelBuilder()
+            .WithUrn(_urnMultiPhase)
+            .WithEstablishmentName($"School{_urnMultiPhase}")
+            .WithQualificationType(qualification)
+            .WithKS4(true)
+            .WithKS5(true)
+            .Build();
+
+        _level3QualificationsService
+            .Setup(s => s.GetLevel3QualificationDetailsAsync(_urnMultiPhase, qualification, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(multiPhaseModel);
     }
 
     [Theory]
@@ -474,6 +501,56 @@ public class Level3QualificationsPageTests : PageTestsBase
 
         Assert.NotNull(studentRetentionInsetText);
         Assert.Equal("Measures on student retention will be available shortly in a future release.", studentRetentionInsetText.TextContent.Trim());
+    }
+
+    [Fact]
+    public async Task Level3QualificationsPage_DisplaysBottomPagination_WithCorrectDestinations()
+    {
+        // Arrange
+        SetupMocks();
+        var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
+        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
+
+        var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.NotNull(previousLink);
+        Assert.Contains("/about", previousLink.GetAttribute("href"));
+
+        Assert.NotNull(nextLink);
+        Assert.Contains("/16-to-19-performance/level-2-qualifications", nextLink.GetAttribute("href"));
+    }
+
+    [Fact]
+    public async Task Level3QualificationsPage_DisplaysBottomPagination_WithCorrectDestinations_WhenMultiplePhases()
+    {
+        // Arrange
+        SetupMultiPhaseMocks();
+        var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
+        var url = BuildUrl(_multiPhaseEstablishment.URN, _multiPhaseEstablishment.EstablishmentName, pageRouteUrl);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
+
+        var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.NotNull(previousLink);
+        Assert.Contains("/secondary-performance/additional-measures", previousLink.GetAttribute("href"));
+
+        Assert.NotNull(nextLink);
+        Assert.Contains("/16-to-19-performance/level-2-qualifications", nextLink.GetAttribute("href"));
     }
 
     [Theory]

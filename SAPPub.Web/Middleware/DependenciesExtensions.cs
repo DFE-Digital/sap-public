@@ -37,6 +37,7 @@ using SAPPub.Infrastructure.Repositories.KS4.Performance;
 using SAPPub.Infrastructure.Repositories.Performance;
 using SAPPub.Web.Areas.Compare.Filters;
 using SAPPub.Web.Areas.Profiles.Filters;
+using SAPPub.Web.ViewComponents.SchoolProfilePagination;
 
 namespace SAPPub.Web.Middleware
 {
@@ -131,6 +132,10 @@ namespace SAPPub.Web.Middleware
             services.AddScoped<SecondaryComparisonQueryValidationFilter>();
             services.AddScoped<PrimaryQueryValidationFilter>();
             services.AddScoped<DfEAnalyticsAddPhaseTagFilter>();
+
+            // School profile pagination (stateless config-driven resolver)
+            services.AddSingleton<ISitemapProvider, SchoolProfileSitemapProvider>();
+            services.AddSingleton<ISchoolProfilePaginationResolver, SchoolProfilePaginationResolver>();
 
             // Mapper
             services.AddSingleton<ICodedValueMapper, ReflectionCodedValueMapper>();

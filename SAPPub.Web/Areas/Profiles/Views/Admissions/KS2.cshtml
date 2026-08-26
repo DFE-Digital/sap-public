@@ -1,6 +1,7 @@
 ﻿@model AdmissionsViewModel
 @using SAPPub.Web.Areas.Profiles.ViewModels.Admissions
 @using SAPPub.Web.Constants
+@using SAPPub.Web.ViewComponents.SchoolProfilePagination
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 
 @{
@@ -257,17 +258,6 @@
                         </govuk-accordion>
         }
 
-
-        <govuk-pagination id="admissions-pagination">
-            <govuk-pagination-previous asp-route="@RouteConstants.AboutTheSchool" asp-all-route-data="@Model.RouteAttributes">About the school</govuk-pagination-previous>
-            @if(Model.IsKS4)
-            {
-                <govuk-pagination-next asp-route="@RouteConstants.SecondaryAdmissions" asp-all-route-data="@Model.RouteAttributes">Secondary admissions</govuk-pagination-next>
-            }
-            else
-            {
-                <govuk-pagination-next asp-route="@RouteConstants.PrimaryCurriculum" asp-all-route-data="@Model.RouteAttributes">Curriculum and extra-curricular activities</govuk-pagination-next>
-            }
-        </govuk-pagination>
+        @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.PrimaryAdmissions))
     </div>
 </div>

@@ -13,6 +13,8 @@ public class Level3QualificationsModelBuilder
     private string? _establishmentName;
     private string? _laName;
     private bool _isKs5;
+    private bool _isKs4 = false;
+
     private Level3? _qualificationType;
     private double? _totalNoOfStudentsCompletedQualification;
     private double? _progressScore;
@@ -48,6 +50,12 @@ public class Level3QualificationsModelBuilder
         return this;
     }
 
+    public Level3QualificationsModelBuilder WithKS4(bool isKS4)
+    {
+        _isKs4 = isKS4;
+        return this;
+    }
+
     public Level3QualificationsModelBuilder WithQualificationType(Level3 qualificationType)
     {
         _qualificationType = qualificationType;
@@ -77,7 +85,7 @@ public class Level3QualificationsModelBuilder
             SchoolName = _establishmentName ?? string.Empty,
             LAName = _laName ?? string.Empty,
             IsKS2 = false,
-            IsKS4 = false,
+            IsKS4 = _isKs4,
             IsKS5 = _isKs5,
             QualificationType = _qualificationType ?? Level3.ALevel,
             TotalNoOfStudentCompletedQualification = new CodedDouble(Value: _totalNoOfStudentsCompletedQualification ?? 150, string.Empty, string.Empty),

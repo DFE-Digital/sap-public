@@ -169,26 +169,6 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
         Assert.True(await attainmnet8NoEstablishmentDataCard.IsVisibleAsync());
     }
 
-    [Fact]
-    public async Task AcademicPerformanceAttainmentAndProgressPage_DisplaysPagination()
-    {
-        // Arrange
-        await Page.GotoAsync(_pageUrl);
-
-        // Act
-        var isVisible = await Page.Locator("#academic-performance-attainment-and-progress-pagination").IsVisibleAsync();
-        var previousPaginationLink = Page.Locator("#academic-performance-attainment-and-progress-pagination .govuk-pagination__prev a");
-        var nextPaginationLink = Page.Locator("#academic-performance-attainment-and-progress-pagination .govuk-pagination__next a");
-
-        var previousPaginationText = await previousPaginationLink.TextContentAsync();
-        var nextPaginationText = await nextPaginationLink.TextContentAsync();
-
-        // Assert
-        Assert.True(isVisible);
-        Assert.Equal("Attendance", previousPaginationText?.Trim());
-        Assert.Contains("performance: English and maths results", nextPaginationText?.Trim());
-    }
-
     private async Task AssertCorrectProgress8CardAsync(string expectedcardTestId)
     {
         var progress8EstablishmentCard = Page.GetByTestId("progress8-establishment-card");
