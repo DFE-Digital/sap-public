@@ -225,6 +225,7 @@ namespace SAPPub.Core.Entities.KS4.Performance
                 {
                     4 => englandPerformance.EngMaths49_Boy_Eng_Current_Pct,
                     5 => englandPerformance.EngMaths59_Boy_Eng_Current_Pct,
+                    7 => englandPerformance.EngMaths79_Boy_Eng_Current_Pct,
                     _ => null
                 },
                 PreviousYear = null,
@@ -240,6 +241,7 @@ namespace SAPPub.Core.Entities.KS4.Performance
                 {
                     4 => englandPerformance.EngMaths49_Grl_Eng_Current_Pct,
                     5 => englandPerformance.EngMaths59_Grl_Eng_Current_Pct,
+                    7 => englandPerformance.EngMaths79_Grl_Eng_Current_Pct,
                     _ => null
                 },
                 PreviousYear = null,

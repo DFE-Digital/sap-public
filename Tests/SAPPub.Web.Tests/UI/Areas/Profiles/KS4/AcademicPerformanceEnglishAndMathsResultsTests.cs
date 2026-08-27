@@ -144,23 +144,10 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
         chartHeading = Page.Locator("#chartHeading");
         chartHeadingText = await chartHeading.TextContentAsync();
         Assert.Contains("Grade 4 and above", chartHeadingText);
-    }
-
-    [Fact]
-    public async Task AcademicPerformanceEnglishAndMathsResultsPage_ChangeToGrade7Selected()
-    {
-        // Arrange
-        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
-
-        // Assert
-        var chartHeading = Page.Locator("#chartHeading");
-        var chartHeadingText = await chartHeading.TextContentAsync();
-        Assert.Contains("Grade 5 and above", chartHeadingText);
 
         // Act
-        var gradeSelector = Page.Locator("#gradeSelector");
         await gradeSelector.SelectOptionAsync([GcseGradeDataSelection.Grade7AndAbove.GetDisplayName()!]);
-        var buttonSelector = Page.Locator("button:has-text(\"Show results\")");
+        buttonSelector = Page.Locator("button:has-text(\"Show results\")");
         await buttonSelector.ClickAsync();
 
         // Assert
