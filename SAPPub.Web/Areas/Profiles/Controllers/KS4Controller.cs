@@ -72,7 +72,7 @@ public class KS4Controller(IEstablishmentService establishmentService, IFeatureM
         CancellationToken ct = default)
     {
         var grade = GcseGradeSelectionExtensions.FromRouteSegment(gradeName);
-        if (!grade.HasValue || grade == GcseGradeDataSelection.Grade7AndAbove && !await featureManager.IsEnabledAsync(Constants.Constants.EnableSecondaryYear2526Publication))
+        if (!grade.HasValue || grade == GcseGradeDataSelection.Grade7AndAbove && !await featureManager.IsEnabledAsync(Constants.Constants.EnableSecondaryGrade7))
         {
             return NotFound();
         }

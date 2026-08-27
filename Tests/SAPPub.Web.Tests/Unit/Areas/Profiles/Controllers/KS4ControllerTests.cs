@@ -322,7 +322,7 @@ public class KS4ControllerTests
     {
         // enable grade 7 feature flag for this test
         _mockFeatureManager
-            .Setup(fm => fm.IsEnabledAsync(Constants.Constants.EnableSecondaryYear2526Publication))
+            .Setup(fm => fm.IsEnabledAsync(Constants.Constants.EnableSecondaryGrade7))
             .ReturnsAsync(true);
 
         var expectedResult = EnglishAndMathsResults(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, _fakeEstablishment.LAName);
