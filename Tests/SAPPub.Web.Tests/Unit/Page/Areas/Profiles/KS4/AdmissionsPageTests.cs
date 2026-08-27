@@ -81,8 +81,8 @@ public class AdmissionsPageTests : PageTestsBase
     }
 
     [Theory]
-    [InlineData("143034", "St Paul's Church of England Academy", 6)]
-    [InlineData("150009", "Abraham Moss Community School", 7)]
+    [InlineData("143034", "St Paul's Church of England Academy", 7)]
+    [InlineData("150009", "Abraham Moss Community School", 8)]
     public async Task AdmissionsPage_Displays_VerticalNavigation(string urn, string schoolName, int expectedItemCount)
     {
         // Arrange

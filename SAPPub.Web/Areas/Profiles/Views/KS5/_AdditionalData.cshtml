@@ -1,6 +1,11 @@
 ﻿@using SAPPub.Core.Enums.KS5Qualifications
 @model SAPPub.Web.Areas.Profiles.ViewModels.KS5.AdditionalDataViewModel
 
+@if (Model is null)
+{
+    return;
+}
+
 @{
     var laName = ViewData["LAName"];
 }

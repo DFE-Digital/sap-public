@@ -18,13 +18,15 @@ public class Level3QualificationViewModel : BaseViewModel
 
     public required DisplayField<CodedDouble> TotalNoOfStudentCompletedQualification { get; init; }
 
-    public required ProgressScoreViewModel ProgressScore { get; set; }
+    public required ProgressScoreViewModel ProgressScore { get; init; }
 
-    public required AverageResultViewModel AverageResult { get; set; }
+    public required AverageResultViewModel AverageResult { get; init; }
 
-    public AdditionalDataViewModel? AdditionalData { get; set; }
+    public AdditionalDataViewModel? AdditionalData { get; init; }
 
-    public SimpleCodedDoubleTableViewModel? AdvancedLevelMathsQualificationData { get; set; }
+    public SimpleCodedDoubleTableViewModel? AdvancedLevelMathsQualificationData { get; init; }
+
+    public required PerformanceGroupsViewModel PerformanceGroupsData { get; init; }
 
     public static Level3QualificationViewModel Map(Level3QualificationModel model)
     {
@@ -41,7 +43,8 @@ public class Level3QualificationViewModel : BaseViewModel
             ProgressScore = ProgressScoreViewModel.Map(model.ProgressScore),
             AverageResult = AverageResultViewModel.Map(model.AverageResult),
             AdditionalData = model.AdditionalData != null ? AdditionalDataViewModel.Map(model.AdditionalData) : null,
-            AdvancedLevelMathsQualificationData = model.AdvancedLevelMathsQualificationData != null ? SimpleCodedDoubleTableViewModel.Map(model.AdvancedLevelMathsQualificationData) : null
+            AdvancedLevelMathsQualificationData = model.AdvancedLevelMathsQualificationData != null ? SimpleCodedDoubleTableViewModel.Map(model.AdvancedLevelMathsQualificationData) : null,
+            PerformanceGroupsData = PerformanceGroupsViewModel.Map(model.DisadvantagedStudentsData, model.NonDisadvantagedStudentsData)
         };
     }
 }

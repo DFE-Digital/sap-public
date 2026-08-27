@@ -272,7 +272,13 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "T_SCOPEEX_E_DIS_Est_Current_Num_Coded",
           "PROGEX_E_DIS_Est_Current_Num_Coded",
           "T_SCOPEEX_M_DIS_Est_Current_Num_Coded",
-          "PROGEX_M_DIS_Est_Current_Num_Coded"
+          "PROGEX_M_DIS_Est_Current_Num_Coded",
+          "TALLPUP_ALEV_1618_DIS_Est_Current_Num_Coded",
+          "VA_INS_ALEV_DIS_Est_Current_Num_Coded",
+          "UCI_INS_ALEV_DIS_Est_Current_Num_Coded",
+          "LCI_INS_ALEV_DIS_Est_Current_Num_Coded",
+          "TALLPPEGRD_ALEV_DIS_Est_Current",
+          "TALLPPE_ALEV_1618_DIS_Est_Current_Num_Coded"
           """;
 
         private const string KS5EnglandPerformanceColumns = """
@@ -306,7 +312,19 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "T_SCOPEEX_E_DIS_Eng_Current_Num_Coded",
           "T_SCOPEEX_E_NOTDIS_Eng_Current_Num_Coded",
           "T_SCOPEEX_M_DIS_Eng_Current_Num_Coded",
-          "T_SCOPEEX_M_NOTDIS_Eng_Current_Num_Coded"
+          "T_SCOPEEX_M_NOTDIS_Eng_Current_Num_Coded",
+          "TALLPUP_ALEV_1618_DIS_Eng_Current_Num_Coded",
+          "VA_INS_ALEV_DIS_Eng_Current_Num_Coded",
+          "UCI_INS_ALEV_DIS_Eng_Current_Num_Coded",
+          "LCI_INS_ALEV_DIS_Eng_Current_Num_Coded",
+          "TALLPPEGRD_ALEV_DIS_Eng_Current",
+          "TALLPPE_ALEV_1618_DIS_Eng_Current_Num_Coded",
+          "TALLPUP_ALEV_1618_NOTDIS_Eng_Current_Num_Coded",
+          "VA_INS_ALEV_NOTDIS_Eng_Current_Num_Coded",
+          "UCI_INS_ALEV_NOTDIS_Eng_Current_Num_Coded",
+          "LCI_INS_ALEV_NOTDIS_Eng_Current_Num_Coded",
+          "TALLPPEGRD_ALEV_NOTDIS_Eng_Current",
+          "TALLPPE_ALEV_1618_NOTDIS_Eng_Current_Num_Coded"
           """;
 
         private const string KS5LAPerformanceColumns = """
@@ -335,7 +353,19 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "T_SCOPEEX_E_DIS_LA_Current_Num_Coded",
           "T_SCOPEEX_E_NOTDIS_LA_Current_Num_Coded",
           "T_SCOPEEX_M_DIS_LA_Current_Num_Coded",
-          "T_SCOPEEX_M_NOTDIS_LA_Current_Num_Coded"
+          "T_SCOPEEX_M_NOTDIS_LA_Current_Num_Coded",
+          "TALLPUP_ALEV_1618_DIS_LA_Current_Num_Coded",
+          "VA_INS_ALEV_DIS_LA_Current_Num_Coded",
+          "UCI_INS_ALEV_DIS_LA_Current_Num_Coded",
+          "LCI_INS_ALEV_DIS_LA_Current_Num_Coded",
+          "TALLPPEGRD_ALEV_DIS_LA_Current",
+          "TALLPPE_ALEV_1618_DIS_LA_Current_Num_Coded",
+          "TALLPUP_ALEV_1618_NOTDIS_LA_Current_Num_Coded",
+          "VA_INS_ALEV_NOTDIS_LA_Current_Num_Coded",
+          "UCI_INS_ALEV_NOTDIS_LA_Current_Num_Coded",
+          "LCI_INS_ALEV_NOTDIS_LA_Current_Num_Coded",
+          "TALLPPEGRD_ALEV_NOTDIS_LA_Current",
+          "TALLPPE_ALEV_1618_NOTDIS_LA_Current_Num_Coded"
           """;
 
         private const string GatewayLAColumns = """

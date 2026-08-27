@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Bogus;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using SAPPub.Core.Enums;
@@ -114,6 +115,40 @@ public class KS5ControllerTests : BaseProfilesTests
             Assert.Null(model.AdvancedLevelMathsQualificationData?.LocalAuthority.Value);
             Assert.Null(model.AdvancedLevelMathsQualificationData?.England.Value);
         }
+
+        // Assert Disadvantaged and NonDisadvantaged students data
+        if (qualification == Level3.ALevel)
+        {
+            Assert.Equal(expectedResult.DisadvantagedStudentsData.Establishment!.NumberOfStudents, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.NumberOfStudents.Value);
+            Assert.Equal(expectedResult.DisadvantagedStudentsData.Establishment!.ProgressScore, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.ProgressScore.Value);
+            Assert.Equal($"{expectedResult.DisadvantagedStudentsData.Establishment!.ConfidenceLevelLower.Value} to {expectedResult.DisadvantagedStudentsData.Establishment!.ConfidenceLevelUpper.Value}", model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.ConfidenceInterval.Value);
+            Assert.Equal(expectedResult.DisadvantagedStudentsData.Establishment!.Result.Points, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.Points.Value);
+            Assert.Equal(expectedResult.DisadvantagedStudentsData.Establishment!.Result.Grade, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.Grade.Value);
+
+            Assert.Equal(expectedResult.DisadvantagedStudentsData.LocalAuthority.NumberOfStudents, model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.NumberOfStudents.Value);
+            Assert.Equal(expectedResult.DisadvantagedStudentsData.LocalAuthority.ProgressScore, model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.ProgressScore.Value);
+            Assert.Equal($"{expectedResult.DisadvantagedStudentsData.LocalAuthority.ConfidenceLevelLower.Value} to {expectedResult.DisadvantagedStudentsData.LocalAuthority.ConfidenceLevelUpper.Value}", model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.ConfidenceInterval.Value);
+            Assert.Equal(expectedResult.DisadvantagedStudentsData.LocalAuthority.Result.Points, model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.Points.Value);
+            Assert.Equal(expectedResult.DisadvantagedStudentsData.LocalAuthority.Result.Grade, model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.Grade.Value);
+
+            Assert.Equal(expectedResult.DisadvantagedStudentsData.England.NumberOfStudents, model.PerformanceGroupsData.DisadvantagedStudents.England.NumberOfStudents.Value);
+            Assert.Equal(expectedResult.DisadvantagedStudentsData.England.ProgressScore, model.PerformanceGroupsData.DisadvantagedStudents.England.ProgressScore.Value);
+            Assert.Equal($"{expectedResult.DisadvantagedStudentsData.England.ConfidenceLevelLower.Value} to {expectedResult.DisadvantagedStudentsData.England.ConfidenceLevelUpper.Value}", model.PerformanceGroupsData.DisadvantagedStudents.England.ConfidenceInterval.Value);
+            Assert.Equal(expectedResult.DisadvantagedStudentsData.England.Result.Points, model.PerformanceGroupsData.DisadvantagedStudents.England.Points.Value);
+            Assert.Equal(expectedResult.DisadvantagedStudentsData.England.Result.Grade, model.PerformanceGroupsData.DisadvantagedStudents.England.Grade.Value);
+
+            Assert.Equal(expectedResult.NonDisadvantagedStudentsData.LocalAuthority.NumberOfStudents, model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.NumberOfStudents.Value);
+            Assert.Equal(expectedResult.NonDisadvantagedStudentsData.LocalAuthority.ProgressScore, model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.ProgressScore.Value);
+            Assert.Equal($"{expectedResult.NonDisadvantagedStudentsData.LocalAuthority.ConfidenceLevelLower.Value} to {expectedResult.NonDisadvantagedStudentsData.LocalAuthority.ConfidenceLevelUpper.Value}", model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.ConfidenceInterval.Value);
+            Assert.Equal(expectedResult.NonDisadvantagedStudentsData.LocalAuthority.Result.Points, model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.Points.Value);
+            Assert.Equal(expectedResult.NonDisadvantagedStudentsData.LocalAuthority.Result.Grade, model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.Grade.Value);
+
+            Assert.Equal(expectedResult.NonDisadvantagedStudentsData.England.NumberOfStudents, model.PerformanceGroupsData.NonDisadvantagedStudents.England.NumberOfStudents.Value);
+            Assert.Equal(expectedResult.NonDisadvantagedStudentsData.England.ProgressScore, model.PerformanceGroupsData.NonDisadvantagedStudents.England.ProgressScore.Value);
+            Assert.Equal($"{expectedResult.NonDisadvantagedStudentsData.England.ConfidenceLevelLower.Value} to {expectedResult.NonDisadvantagedStudentsData.England.ConfidenceLevelUpper.Value}", model.PerformanceGroupsData.NonDisadvantagedStudents.England.ConfidenceInterval.Value);
+            Assert.Equal(expectedResult.NonDisadvantagedStudentsData.England.Result.Points, model.PerformanceGroupsData.NonDisadvantagedStudents.England.Points.Value);
+            Assert.Equal(expectedResult.NonDisadvantagedStudentsData.England.Result.Grade, model.PerformanceGroupsData.NonDisadvantagedStudents.England.Grade.Value);
+        }
     }
 
     [Theory]
@@ -159,94 +194,72 @@ public class KS5ControllerTests : BaseProfilesTests
                 LocalAuthority = new CodedDouble(null, "Redacted for confidentiality", "c"),
                 England = new CodedDouble(null, "Not available", "x")
             },
-        };
-
-        _mockLevel3QualificationsService
-            .Setup(es => es.GetLevel3QualificationDetailsAsync(fakeEstablishment.URN, qualification, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(expectedResult);
-
-        var result = await _controller.Level3Qualifications(
-            _mockLevel3QualificationsService.Object,
-            expectedResult.Urn,
-            expectedResult.SchoolName,
-            qualification,
-            CancellationToken.None) as ViewResult;
-
-        Assert.NotNull(result);
-        Assert.NotNull(result.Model);
-
-        var model = result.Model as Level3QualificationViewModel;
-        Assert.NotNull(model);
-        Assert.Equal(expectedResult.Urn, model.URN);
-        Assert.Equal(expectedResult.SchoolName, model.SchoolName);
-        Assert.Equal($"{expectedResult.LAName} average", model.LAName);
-        Assert.Equal(expectedResult.IsKS2, model.IsKS2);
-        Assert.Equal(expectedResult.IsKS4, model.IsKS4);
-        Assert.Equal(expectedResult.IsKS5, model.IsKS5);
-
-        Assert.Equal(NotAvailable, model.TotalNoOfStudentCompletedQualification.DisplayText());
-        Assert.Equal(NotAvailable, model.ProgressScore.Score.DisplayText());
-        Assert.Equal(NotAvailable, model.ProgressScore.BandingRating.DisplayText());
-        Assert.Equal(NotAvailable, model.ProgressScore.ConfidenceLevelLower.DisplayText());
-        Assert.Equal(NotAvailable, model.ProgressScore.ConfidenceLevelUpper.DisplayText());
-        Assert.Equal(NotAvailable, model.ProgressScore.EnglandAverageScore.DisplayText());
-        Assert.Equal(NotAvailable, model.ProgressScore.Progress8BandingContextDescription.DisplayText());
-
-        Assert.Equal(NotAvailable, model.AverageResult.EstablishmentPoints.DisplayText());
-        Assert.Equal(NotAvailable, model.AverageResult.EstablishmentGrade.DisplayText());
-        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthorityPoints.DisplayText());
-        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthorityGrade.DisplayText());
-        Assert.Equal(NotAvailable, model.AverageResult.EnglandPoints.DisplayText());
-        Assert.Equal(NotAvailable, model.AverageResult.EnglandGrade.DisplayText());
-
-        Assert.Equal(NotAvailable, model.AdditionalData?.TotalNoOfStudentsIncludedInThisMeasure.DisplayText());
-        Assert.Equal(NotAvailable, model.AdditionalData?.EstablishmentPoints.DisplayText());
-        Assert.Equal(NotAvailable, model.AdditionalData?.EstablishmentGrade.DisplayText());
-        Assert.Equal(NotAvailable, model.AdditionalData?.LocalAuthorityPoints.DisplayText());
-        Assert.Equal(NotAvailable, model.AdditionalData?.LocalAuthorityGrade.DisplayText());
-        Assert.Equal(NotAvailable, model.AdditionalData?.EnglandPoints.DisplayText());
-        Assert.Equal(NotAvailable, model.AdditionalData?.EnglandGrade.DisplayText());
-
-        Assert.Equal(NotAvailable, model.AdvancedLevelMathsQualificationData?.SchoolOrCollege.DisplayText());
-        Assert.Equal(NotAvailable, model.AdvancedLevelMathsQualificationData?.LocalAuthority.DisplayText());
-        Assert.Equal(NotAvailable, model.AdvancedLevelMathsQualificationData?.England.DisplayText());
-    }
-
-    [Theory]
-    [InlineData(Level3.ALevel)]
-    [InlineData(Level3.Academic)]
-    [InlineData(Level3.AppliedGeneral)]
-    [InlineData(Level3.TechLevel)]
-    public async Task Get_Level3Qualifications_Info_With_No_Data_ReturnsOk(Level3 qualification)
-    {
-        var expectedResult = new Level3QualificationModel
-        {
-            Urn = fakeEstablishment.URN,
-            SchoolName = fakeEstablishment.EstablishmentName,
-            LAName = fakeEstablishment.LAName,
-            IsKS2 = true,
-            IsKS4 = true,
-            IsKS5 = true,
-            QualificationType = qualification,
-            ProgressScore = new ProgressScoreModel(),
-            AverageResult = new AverageResultModel
+            DisadvantagedStudentsData = new PerformanceSummaryModel
             {
-                Establishment = new(),
-                LocalAuthority = new(),
-                England = new(),
+                Establishment = new PerformanceData
+                {
+                    NumberOfStudents = new CodedDouble(null, "Not applicable", "z"),
+                    ProgressScore = new CodedDouble(null, "Not applicable", "z"),
+                    ConfidenceLevelLower = new CodedDouble(null, "Not applicable", "z"),
+                    ConfidenceLevelUpper = new CodedDouble(null, "Not applicable", "z"),
+                    Result = new PerformanceResult
+                    {
+                        Grade = new CodedString(null, "Not applicable", "z"),
+                        Points = new CodedDouble(null, "Not applicable", "z"),
+                    }
+                },
+                LocalAuthority = new PerformanceData
+                {
+                    NumberOfStudents = new CodedDouble(null, "Redacted for confidentiality", "c"),
+                    ProgressScore = new CodedDouble(null, "Redacted for confidentiality", "c"),
+                    ConfidenceLevelLower = new CodedDouble(null, "Redacted for confidentiality", "c"),
+                    ConfidenceLevelUpper = new CodedDouble(null, "Redacted for confidentiality", "c"),
+                    Result = new PerformanceResult
+                    {
+                        Grade = new CodedString(null, "Redacted for confidentiality", "c"),
+                        Points = new CodedDouble(null, "Redacted for confidentiality", "c")
+                    }
+                },
+                England = new PerformanceData
+                {
+                    NumberOfStudents = new CodedDouble(null, "Not available", "x"),
+                    ProgressScore = new CodedDouble(null, "Not available", "x"),
+                    ConfidenceLevelLower = new CodedDouble(null, "Not available", "x"),
+                    ConfidenceLevelUpper = new CodedDouble(null, "Not available", "x"),
+                    Result = new PerformanceResult
+                    {
+                        Grade = new CodedString(null, "Not available", "x"),
+                        Points = new CodedDouble(null, "Not available", "x")
+                    }
+                }
             },
-            AdditionalData = new AdditionalDataModel
+            NonDisadvantagedStudentsData = new PerformanceSummaryModel
             {
-                TotalNoOfStudentsIncludedInThisMeasure = CodedDouble.Empty,
-                Establishment = new(),
-                LocalAuthority = new(),
-                England = new(),
-            },
-            AdvancedLevelMathsQualificationData = new SimpleCodedDoubleTableModel
-            {
-                SchoolOrCollege = new(),
-                LocalAuthority = new(),
-                England = new()
+                Establishment = null,
+                LocalAuthority = new PerformanceData
+                {
+                    NumberOfStudents = new CodedDouble(null, "Not available", "x"),
+                    ProgressScore = new CodedDouble(null, "Not available", "x"),
+                    ConfidenceLevelLower = new CodedDouble(null, "Not available", "x"),
+                    ConfidenceLevelUpper = new CodedDouble(null, "Not available", "x"),
+                    Result = new PerformanceResult
+                    {
+                        Grade = new CodedString(null, "Not available", "x"),
+                        Points = new CodedDouble(null, "Not available", "x")
+                    }
+                },
+                England = new PerformanceData
+                {
+                    NumberOfStudents = new CodedDouble(null, "Redacted for confidentiality", "c"),
+                    ProgressScore = new CodedDouble(null, "Redacted for confidentiality", "c"),
+                    ConfidenceLevelLower = new CodedDouble(null, "Redacted for confidentiality", "c"),
+                    ConfidenceLevelUpper = new CodedDouble(null, "Redacted for confidentiality", "c"),
+                    Result = new PerformanceResult
+                    {
+                        Grade = new CodedString(null, "Redacted for confidentiality", "c"),
+                        Points = new CodedDouble(null, "Redacted for confidentiality", "c")
+                    }
+                }
             }
         };
 
@@ -299,6 +312,201 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.Equal(NotAvailable, model.AdvancedLevelMathsQualificationData?.SchoolOrCollege.DisplayText());
         Assert.Equal(NotAvailable, model.AdvancedLevelMathsQualificationData?.LocalAuthority.DisplayText());
         Assert.Equal(NotAvailable, model.AdvancedLevelMathsQualificationData?.England.DisplayText());
+
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.NumberOfStudents.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.ProgressScore.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.ConfidenceInterval.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.Grade.DisplayText());
+
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.NumberOfStudents.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.ProgressScore.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.ConfidenceInterval.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.Grade.DisplayText());
+
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.England.NumberOfStudents.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.England.ProgressScore.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.England.ConfidenceInterval.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.England.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.England.Grade.DisplayText());
+
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.NumberOfStudents.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.ProgressScore.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.ConfidenceInterval.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.Grade.DisplayText());
+
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.England.NumberOfStudents.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.England.ProgressScore.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.England.ConfidenceInterval.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.England.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.England.Grade.DisplayText());
+    }
+
+    [Theory]
+    [InlineData(Level3.ALevel)]
+    [InlineData(Level3.Academic)]
+    [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
+    public async Task Get_Level3Qualifications_Info_With_No_Data_ReturnsOk(Level3 qualification)
+    {
+        var expectedResult = new Level3QualificationModel
+        {
+            Urn = fakeEstablishment.URN,
+            SchoolName = fakeEstablishment.EstablishmentName,
+            LAName = fakeEstablishment.LAName,
+            IsKS2 = true,
+            IsKS4 = true,
+            IsKS5 = true,
+            QualificationType = qualification,
+            ProgressScore = new ProgressScoreModel(),
+            AverageResult = new AverageResultModel
+            {
+                Establishment = new(),
+                LocalAuthority = new(),
+                England = new(),
+            },
+            AdditionalData = new AdditionalDataModel
+            {
+                TotalNoOfStudentsIncludedInThisMeasure = CodedDouble.Empty,
+                Establishment = new(),
+                LocalAuthority = new(),
+                England = new(),
+            },
+            AdvancedLevelMathsQualificationData = new SimpleCodedDoubleTableModel
+            {
+                SchoolOrCollege = new(),
+                LocalAuthority = new(),
+                England = new()
+            },
+            DisadvantagedStudentsData = new PerformanceSummaryModel
+            {
+                Establishment = new PerformanceData
+                {
+                    NumberOfStudents = new(),
+                    ProgressScore = new(),
+                    ConfidenceLevelUpper = new(),
+                    ConfidenceLevelLower = new(),
+                    Result = new PerformanceResult()
+                },
+                LocalAuthority = new PerformanceData
+                {
+                    NumberOfStudents = new(),
+                    ProgressScore = new(),
+                    ConfidenceLevelUpper = new(),
+                    ConfidenceLevelLower = new(),
+                    Result = new PerformanceResult()
+                },
+                England = new PerformanceData
+                {
+                    NumberOfStudents = new(),
+                    ProgressScore = new(),
+                    ConfidenceLevelUpper = new(),
+                    ConfidenceLevelLower = new(),
+                    Result = new PerformanceResult()
+                }
+            },
+            NonDisadvantagedStudentsData = new PerformanceSummaryModel
+            {
+                LocalAuthority = new PerformanceData
+                {
+                    NumberOfStudents = new(),
+                    ProgressScore = new(),
+                    ConfidenceLevelUpper = new(),
+                    ConfidenceLevelLower = new(),
+                    Result = new PerformanceResult()
+                },
+                England = new PerformanceData
+                {
+                    NumberOfStudents = new(),
+                    ProgressScore = new(),
+                    ConfidenceLevelUpper = new(),
+                    ConfidenceLevelLower = new(),
+                    Result = new PerformanceResult()
+                }
+            }
+        };
+
+        _mockLevel3QualificationsService
+            .Setup(es => es.GetLevel3QualificationDetailsAsync(fakeEstablishment.URN, qualification, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.Level3Qualifications(
+            _mockLevel3QualificationsService.Object,
+            expectedResult.Urn,
+            expectedResult.SchoolName,
+            qualification,
+            CancellationToken.None) as ViewResult;
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as Level3QualificationViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(expectedResult.Urn, model.URN);
+        Assert.Equal(expectedResult.SchoolName, model.SchoolName);
+        Assert.Equal($"{expectedResult.LAName} average", model.LAName);
+        Assert.Equal(expectedResult.IsKS2, model.IsKS2);
+        Assert.Equal(expectedResult.IsKS4, model.IsKS4);
+        Assert.Equal(expectedResult.IsKS5, model.IsKS5);
+
+        Assert.Equal(NotAvailable, model.TotalNoOfStudentCompletedQualification.DisplayText());
+        Assert.Equal(NotAvailable, model.ProgressScore.Score.DisplayText());
+        Assert.Equal(NotAvailable, model.ProgressScore.BandingRating.DisplayText());
+        Assert.Equal(NotAvailable, model.ProgressScore.ConfidenceLevelLower.DisplayText());
+        Assert.Equal(NotAvailable, model.ProgressScore.ConfidenceLevelUpper.DisplayText());
+        Assert.Equal(NotAvailable, model.ProgressScore.EnglandAverageScore.DisplayText());
+        Assert.Equal(NotAvailable, model.ProgressScore.Progress8BandingContextDescription.DisplayText());
+
+        Assert.Equal(NotAvailable, model.AverageResult.EstablishmentPoints.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.EstablishmentGrade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthorityPoints.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthorityGrade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.EnglandPoints.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.EnglandGrade.DisplayText());
+
+        Assert.Equal(NotAvailable, model.AdditionalData?.TotalNoOfStudentsIncludedInThisMeasure.DisplayText());
+        Assert.Equal(NotAvailable, model.AdditionalData?.EstablishmentPoints.DisplayText());
+        Assert.Equal(NotAvailable, model.AdditionalData?.EstablishmentGrade.DisplayText());
+        Assert.Equal(NotAvailable, model.AdditionalData?.LocalAuthorityPoints.DisplayText());
+        Assert.Equal(NotAvailable, model.AdditionalData?.LocalAuthorityGrade.DisplayText());
+        Assert.Equal(NotAvailable, model.AdditionalData?.EnglandPoints.DisplayText());
+        Assert.Equal(NotAvailable, model.AdditionalData?.EnglandGrade.DisplayText());
+
+        Assert.Equal(NotAvailable, model.AdvancedLevelMathsQualificationData?.SchoolOrCollege.DisplayText());
+        Assert.Equal(NotAvailable, model.AdvancedLevelMathsQualificationData?.LocalAuthority.DisplayText());
+        Assert.Equal(NotAvailable, model.AdvancedLevelMathsQualificationData?.England.DisplayText());
+
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.NumberOfStudents.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.ProgressScore.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.ConfidenceInterval.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.Grade.DisplayText());
+
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.NumberOfStudents.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.ProgressScore.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.ConfidenceInterval.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.Grade.DisplayText());
+
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.England.NumberOfStudents.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.England.ProgressScore.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.England.ConfidenceInterval.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.England.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.England.Grade.DisplayText());
+
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.NumberOfStudents.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.ProgressScore.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.ConfidenceInterval.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.Grade.DisplayText());
+
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.England.NumberOfStudents.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.England.ProgressScore.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.England.ConfidenceInterval.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.England.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.England.Grade.DisplayText());
     }
 
     [Theory]
@@ -876,7 +1084,74 @@ public class KS5ControllerTests : BaseProfilesTests
                 SchoolOrCollege = new CodedDouble(95.12, string.Empty, string.Empty),
                 LocalAuthority = new CodedDouble(82.45, string.Empty, string.Empty),
                 England = new CodedDouble(79.37, string.Empty, string.Empty),
-            } : null
+            } : null,
+            DisadvantagedStudentsData = new PerformanceSummaryModel
+            {
+                Establishment = new PerformanceData
+                {
+                    NumberOfStudents = new CodedDouble(255, string.Empty, string.Empty),
+                    ProgressScore = new CodedDouble(85.23, string.Empty, string.Empty),
+                    ConfidenceLevelLower = new CodedDouble(1.0, string.Empty, string.Empty),
+                    ConfidenceLevelUpper = new CodedDouble(5.5, string.Empty, string.Empty),
+                    Result = new PerformanceResult
+                    {
+                        Grade = new CodedString("A", string.Empty, string.Empty),
+                        Points = new CodedDouble(85.25, string.Empty, string.Empty)
+                    }
+                },
+                LocalAuthority = new PerformanceData
+                {
+                    NumberOfStudents = new CodedDouble(450, string.Empty, string.Empty),
+                    ProgressScore = new CodedDouble(78.32, string.Empty, string.Empty),
+                    ConfidenceLevelLower = new CodedDouble(0.5, string.Empty, string.Empty),
+                    ConfidenceLevelUpper = new CodedDouble(3.4, string.Empty, string.Empty),
+                    Result = new PerformanceResult
+                    {
+                        Grade = new CodedString("C", string.Empty, string.Empty),
+                        Points = new CodedDouble(51.25, string.Empty, string.Empty)
+                    }
+                },
+                England = new PerformanceData
+                {
+                    NumberOfStudents = new CodedDouble(805, string.Empty, string.Empty),
+                    ProgressScore = new CodedDouble(77.31, string.Empty, string.Empty),
+                    ConfidenceLevelLower = new CodedDouble(1.2, string.Empty, string.Empty),
+                    ConfidenceLevelUpper = new CodedDouble(4.9, string.Empty, string.Empty),
+                    Result = new PerformanceResult
+                    {
+                        Grade = new CodedString("B", string.Empty, string.Empty),
+                        Points = new CodedDouble(65.12, string.Empty, string.Empty)
+                    }
+                }
+            },
+            NonDisadvantagedStudentsData = new PerformanceSummaryModel
+            {
+                Establishment = null,
+                LocalAuthority = new PerformanceData
+                {
+                    NumberOfStudents = new CodedDouble(500, string.Empty, string.Empty),
+                    ProgressScore = new CodedDouble(81.56, string.Empty, string.Empty),
+                    ConfidenceLevelLower = new CodedDouble(1.1, string.Empty, string.Empty),
+                    ConfidenceLevelUpper = new CodedDouble(4.3, string.Empty, string.Empty),
+                    Result = new PerformanceResult
+                    {
+                        Grade = new CodedString("A", string.Empty, string.Empty),
+                        Points = new CodedDouble(81.69, string.Empty, string.Empty)
+                    }
+                },
+                England = new PerformanceData
+                {
+                    NumberOfStudents = new CodedDouble(700, string.Empty, string.Empty),
+                    ProgressScore = new CodedDouble(81.59, string.Empty, string.Empty),
+                    ConfidenceLevelLower = new CodedDouble(0.2, string.Empty, string.Empty),
+                    ConfidenceLevelUpper = new CodedDouble(2.5, string.Empty, string.Empty),
+                    Result = new PerformanceResult
+                    {
+                        Grade = new CodedString("B", string.Empty, string.Empty),
+                        Points = new CodedDouble(69.15, string.Empty, string.Empty)
+                    }
+                }
+            }
         };
     }
 

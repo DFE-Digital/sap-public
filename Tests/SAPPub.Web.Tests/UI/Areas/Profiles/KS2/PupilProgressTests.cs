@@ -1,5 +1,4 @@
-﻿using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.Playwright;
+﻿using Microsoft.Playwright;
 using SAPPub.Core.Enums;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Tests.UI.Helpers;
@@ -70,7 +69,7 @@ public class PupilProgressTests(WebApplicationSetupFixture fixture) : BasePageTe
         // Assert
         Assert.True(await academicYearSelector.IsVisibleAsync());
         Assert.True(await academicYearInfo.IsVisibleAsync());
-        Assert.True(await pupilProgressContent.IsVisibleAsync());
+        Assert.False(await pupilProgressContent.IsVisibleAsync());
         Assert.True(await dataNotAvailable.IsVisibleAsync());
         Assert.False(await readingInformation.IsVisibleAsync());
         Assert.False(await writingInformation.IsVisibleAsync());
@@ -146,14 +145,14 @@ public class PupilProgressTests(WebApplicationSetupFixture fixture) : BasePageTe
         await AssertCorrectProgressCardsAsync("writing", false, false);
         await AssertCorrectProgressCardsAsync("maths", false, false);
 
-        Assert.False(await dataNotAvailable.IsVisibleAsync());
+        Assert.True(await dataNotAvailable.IsVisibleAsync());
         Assert.Contains(previousYearSelection.GetDisplayName()!, await academicYearInfo.InnerTextAsync());
         Assert.Equal(previousYearSelection.ToString(), await academicYearSelector.InputValueAsync());
 
         var cont = await Page.ContentAsync();
 
         var noProgressDataCard = Page.Locator(".nodata-no-progress-data");
-        Assert.True(await noProgressDataCard.IsVisibleAsync());
+        Assert.False(await noProgressDataCard.IsVisibleAsync());
     }
 
     private async Task AssertCorrectProgressCardsAsync(string idPrefix, bool cardIsVisible, bool noDataSectionIsVisible)

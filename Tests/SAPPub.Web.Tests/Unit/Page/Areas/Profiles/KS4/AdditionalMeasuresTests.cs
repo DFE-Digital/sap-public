@@ -88,7 +88,7 @@ public class AdditionalMeasuresTests : PageTestsBase
         var nav = new VerticalNavigationAssertHelper(doc);
 
         nav.ShouldBeVisibleAsync();
-        nav.ShouldHaveItemsCountAsync(6);
+        nav.ShouldHaveItemsCountAsync(7);
         nav.ShouldHaveOneActiveItemAsync();
     }
 
