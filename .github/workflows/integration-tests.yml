@@ -32,18 +32,6 @@ jobs:
       - name: Install Playwright browsers
         run: pwsh ./Tests/SAPPub.Integration.Tests/bin/Release/net8.0/playwright.ps1 install
 
-      - name: Display integration test base URL
-        shell: bash
-        env:
-          BASE_URL: ${{ inputs.base_url }}
-        run: |
-          set -euo pipefail
-          if [ -z "${BASE_URL}" ]; then
-            echo "BASE_URL is empty"
-            exit 1
-          fi
-          echo "BASE_URL=${BASE_URL}"
-
       - name: Run integration tests
         env:
           HEADED: 0
