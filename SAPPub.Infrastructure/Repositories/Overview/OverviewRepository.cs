@@ -131,7 +131,7 @@ public class OverviewRepository(
             .WithParameters(new { Urn = urn })
             .Build(ct);
 
-        using var result = await connection.QueryMultipleAsync(command).ConfigureAwait(false);
+        using var result = await connection.QueryMultipleAsync(command).ConfigureAwait(false); //only hit database once
 
         var establishment = await result.ReadSingleOrDefaultAsync<Establishment>();
 
