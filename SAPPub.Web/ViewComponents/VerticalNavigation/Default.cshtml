@@ -12,6 +12,14 @@
     <div class="govuk-grid-column-one-quarter">
         <nav class="moj-side-navigation" aria-label="Side navigation">
             <ul class="moj-side-navigation__list">
+
+                @if ((await FeatureManager.IsEnabledAsync(EnableOverview) ))
+                {
+                    <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.Overview ? "moj-side-navigation__item--active" : "")">
+                        <a asp-route="@RouteConstants.Overview" asp-all-route-data="routeAttributes">Overview</a>
+                    </li>
+                }
+
                 <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.AboutTheSchool ? "moj-side-navigation__item--active" : "")">
                     <a asp-route="@RouteConstants.AboutTheSchool" asp-all-route-data="routeAttributes">
                         @if (Model.IsKS5)

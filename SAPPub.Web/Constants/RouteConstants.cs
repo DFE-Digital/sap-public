@@ -3,6 +3,7 @@
 public static class RouteConstants
 {
     // Shared
+    public const string Overview = "Overview";
     public const string AboutTheSchool = "AboutTheSchool";
     public const string DestinationsRoot = "DestinationsRoot";
     public const string Attendance = "Attendance";
