@@ -1,11 +1,12 @@
 ﻿using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.Helpers;
+using SAPPub.Web.Areas.Profiles.ViewModels;
 using SAPPub.Web.Constants;
 using SAPPub.Web.Models.Charts;
 
 namespace SAPPub.Web.Models;
 
-public class BaseViewModel
+public class BaseViewModel 
 {
     public required string URN { get; set; }
     public required string SchoolName { get; set; }

@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement;
 using SAPPub.Core.Helpers;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Web.Constants;
 
 namespace SAPPub.Web.Controllers
 {
-    public class SchoolController(IEstablishmentService establishmentService) : Controller
+    public class SchoolController(IEstablishmentService establishmentService, IFeatureManager featureManager) : Controller
     {
         private readonly IEstablishmentService _establishmentService = establishmentService;
 
@@ -15,16 +16,24 @@ namespace SAPPub.Web.Controllers
         {
             var schoolDetails = await _establishmentService.GetEstablishmentAsync(urn, ct);
 
-            return RedirectToRoute(
-                RouteConstants.AboutTheSchool,
-                new { urn, schoolName = schoolDetails.EstablishmentNameClean });
+            var route = await featureManager.IsEnabledAsync(
+                Constants.Constants.EnableOverview)
+                ? RouteConstants.Overview
+                : RouteConstants.AboutTheSchool;
+
+            return RedirectToRoute(route, new { urn, schoolDetails.EstablishmentNameClean });
         }
 
         [HttpGet]
         [Route("school/{urn}/{schoolName}")]
-        public IActionResult Index(string urn, string schoolName)
+        public async Task<IActionResult> Index(string urn, string schoolName)
         {
-            return RedirectToRoute(RouteConstants.AboutTheSchool, new { urn, schoolName });
+            var route = await featureManager.IsEnabledAsync(
+                Constants.Constants.EnableOverview)
+                ? RouteConstants.Overview
+                : RouteConstants.AboutTheSchool;
+
+            return RedirectToRoute(route, new { urn, schoolName });
         }
 
         [HttpGet("/map/schools/{urn}")]

@@ -113,6 +113,16 @@
     }
 }
 
+.school-profile-banner {
+    background-color: #1d70b8;
+    padding-top: 20px;
+    padding-bottom: 20px;
+
+    &__name {
+        color: #ffffff;
+    }
+}
+
 /* Vertical navigation */
 .moj-side-navigation {
     padding: 0;

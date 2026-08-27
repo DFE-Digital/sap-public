@@ -1,0 +1,26 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var schoolName = ViewData["SchoolName"]?.ToString();
+}
+
+@section SchoolProfileBanner {
+    @if (!string.IsNullOrWhiteSpace(schoolName))
+    {
+        <div class="school-profile-banner">
+            <div class="govuk-width-container app-width-container">
+                <p class="school-profile-banner__name
+                                  govuk-heading-l
+                                  govuk-!-margin-bottom-0">
+                    @schoolName
+                </p>
+            </div>
+        </div>
+    }
+}
+
+@RenderBody()
+
+@section Scripts {
+    @await RenderSectionAsync("Scripts", required: false)
+}

@@ -21,6 +21,12 @@ public static class SchoolProfileSitemap
     public static readonly IReadOnlyList<PaginationDestination> Destinations = new List<PaginationDestination>
     {
         //add overview here when 'at-a-glance' is implemented
+        new(
+            Key: "Overview",
+            Route: RouteConstants.Overview,
+            Phase: SchoolPhase.None,
+            GetLabel: _ => "Overview",
+            IsAvailable: ctx => ctx.IsOverviewEnabled),
 
         new(
             Key: "AboutSchool",
