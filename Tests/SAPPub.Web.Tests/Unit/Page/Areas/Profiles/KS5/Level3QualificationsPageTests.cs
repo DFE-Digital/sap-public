@@ -159,7 +159,7 @@ public class Level3QualificationsPageTests : PageTestsBase
 
         // Assert
         Assert.NotNull(doc.QuerySelector(".moj-side-navigation"));
-        Assert.Equal(3, doc.QuerySelectorAll(".moj-side-navigation__item").Length);
+        Assert.Equal(4, doc.QuerySelectorAll(".moj-side-navigation__item").Length);
         Assert.Single(doc.QuerySelectorAll(".moj-side-navigation__item--active"));
     }
 

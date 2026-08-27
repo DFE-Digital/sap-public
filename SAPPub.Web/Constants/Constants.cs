@@ -45,4 +45,5 @@ public static class Constants
     public const string EstablishmentComparisonEnabled = "EstablishmentComparisonEnabled";
     public const string Enable16to19 = "Enable16to19";
     public const string EnablePrimary = "EnablePrimary";
+    public const string EnableOverview = "EnableOverview";
 }

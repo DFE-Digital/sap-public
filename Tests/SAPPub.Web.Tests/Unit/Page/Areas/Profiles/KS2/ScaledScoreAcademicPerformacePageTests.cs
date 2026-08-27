@@ -84,7 +84,7 @@ public class ScaledScoresAcademicPerformacePageTests : PageTestsBase
 
         // Assert
         Assert.NotNull(doc.QuerySelector(".moj-side-navigation"));
-        Assert.Equal(5, doc.QuerySelectorAll(".moj-side-navigation__item").Length);
+        Assert.Equal(6, doc.QuerySelectorAll(".moj-side-navigation__item").Length);
         Assert.Single(doc.QuerySelectorAll(".moj-side-navigation__item--active"));
     }
 
