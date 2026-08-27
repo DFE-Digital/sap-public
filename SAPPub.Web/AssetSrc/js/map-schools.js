@@ -133,7 +133,7 @@
         const icon = getIconForIndex(i);
         const popupContent = document.createElement("strong");
         popupContent.textContent = p.name;
-        const marker = L.marker(ll, { icon })
+        const marker = L.marker(ll, { icon, alt: p.name })
             .bindPopup(popupContent)
             .addTo(map);
 
