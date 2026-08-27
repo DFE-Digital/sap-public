@@ -94,4 +94,44 @@ public class KS5EnglandPerformance
     public CodedDouble T_SCOPEEX_M_DIS_Eng_Current_Num_Coded { get; set; }
     // Maths - Not Dis.
     public CodedDouble T_SCOPEEX_M_NOTDIS_Eng_Current_Num_Coded { get; set; }
+
+    // A Level DisAdvantaged
+
+    // Number of students for England - Disadvantaged - A Level
+    public CodedDouble TALLPUP_ALEV_1618_DIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress score for England - Disadvantaged - A Level
+    public CodedDouble VA_INS_ALEV_DIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for England upper - Disadvantaged - A Level
+    public CodedDouble UCI_INS_ALEV_DIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for England lower - Disadvantaged - A Level
+    public CodedDouble LCI_INS_ALEV_DIS_Eng_Current_Num_Coded { get; set; }
+
+    // Grade for England - Disadvantaged - A Level
+    public CodedString TALLPPEGRD_ALEV_DIS_Eng_Current { get; set; }
+
+    // Points for England - Disadvantaged - A Level
+    public CodedDouble TALLPPE_ALEV_1618_DIS_Eng_Current_Num_Coded { get; set; }
+
+    // A Level Non-DisAdvantaged
+
+    // Number of students for England - Non-Disadvantaged - A Level
+    public CodedDouble TALLPUP_ALEV_1618_NOTDIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress score for England - Non-Disadvantaged - A Level
+    public CodedDouble VA_INS_ALEV_NOTDIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for England upper - Non-Disadvantaged - A Level
+    public CodedDouble UCI_INS_ALEV_NOTDIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for England lower - Non-Disadvantaged - A Level
+    public CodedDouble LCI_INS_ALEV_NOTDIS_Eng_Current_Num_Coded { get; set; }
+
+    // Grade for England - Non-Disadvantaged - A Level
+    public CodedString TALLPPEGRD_ALEV_NOTDIS_Eng_Current { get; set; }
+
+    // Points for England - Non-Disadvantaged - A Level
+    public CodedDouble TALLPPE_ALEV_1618_NOTDIS_Eng_Current_Num_Coded { get; set; }
 }

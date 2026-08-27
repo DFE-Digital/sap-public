@@ -68,8 +68,8 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
     }
 
     [Theory]
-    [InlineData("143034", 5)]
-    [InlineData("150009", 7 )]
+    [InlineData("143034", 6)]
+    [InlineData("150009", 8 )]
     public async Task AdmissionsPage_Displays_VerticalNavigation(string schoolUrn, int expectedItemCount)
     {
         var nav = new VerticalNavigationHelper(Page);

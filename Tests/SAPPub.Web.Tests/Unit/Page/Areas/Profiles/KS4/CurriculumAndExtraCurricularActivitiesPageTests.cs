@@ -66,8 +66,8 @@ public class CurriculumAndExtraCurricularActivitiesPageTests : PageTestsBase
     }
 
     [Theory]
-    [InlineData(true, true, 7)] // Multi-phase school (KS2 and KS4)
-    [InlineData(true, false, 6)] // ks4 only school
+    [InlineData(true, true, 8)] // Multi-phase school (KS2 and KS4)
+    [InlineData(true, false, 7)] // ks4 only school
     public async Task CurriculumAndExtraCurricularActivitiesPage_Displays_VerticalNavigation(bool isKs4, bool isKs2, int expectedItemCount)
     {
         var establishment = new EstablishmentMinimumTestBuilder()

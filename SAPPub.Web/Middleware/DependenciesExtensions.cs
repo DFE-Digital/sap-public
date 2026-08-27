@@ -5,6 +5,7 @@ using SAPPub.Core.Interfaces.Repositories.Gateway;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Repositories.KS4.Absence;
 using SAPPub.Core.Interfaces.Repositories.KS4.Performance;
+using SAPPub.Core.Interfaces.Repositories.Overview;
 using SAPPub.Core.Interfaces.Repositories.Performance;
 using SAPPub.Core.Interfaces.Repositories.SubjectEntries;
 using SAPPub.Core.Interfaces.Services;
@@ -15,6 +16,7 @@ using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.Interfaces.Services.KS4.Attendance;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
+using SAPPub.Core.Interfaces.Services.Overview;
 using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.Services;
@@ -24,6 +26,7 @@ using SAPPub.Core.Services.KS4.Absence;
 using SAPPub.Core.Services.KS4.Admissions;
 using SAPPub.Core.Services.KS4.Destinations;
 using SAPPub.Core.Services.KS4.Performance;
+using SAPPub.Core.Services.Overview;
 using SAPPub.Core.Services.Performance;
 using SAPPub.Core.Services.Search;
 using SAPPub.Infrastructure.Mapping.ValueCodes;
@@ -34,6 +37,7 @@ using SAPPub.Infrastructure.Repositories.Gateway;
 using SAPPub.Infrastructure.Repositories.Generic;
 using SAPPub.Infrastructure.Repositories.KS4.Absence;
 using SAPPub.Infrastructure.Repositories.KS4.Performance;
+using SAPPub.Infrastructure.Repositories.Overview;
 using SAPPub.Infrastructure.Repositories.Performance;
 using SAPPub.Web.Areas.Compare.Filters;
 using SAPPub.Web.Areas.Profiles.Filters;
@@ -49,6 +53,9 @@ namespace SAPPub.Web.Middleware
         {
             // Core repos/services
             services.AddTransient(typeof(IGenericRepository<>), typeof(DapperRepository<>));
+
+            services.AddTransient<IOverviewRepository, OverviewRepository>();
+            services.AddTransient<IOverviewService, OverviewService>();
 
             services.AddTransient<IEstablishmentRepository, EstablishmentRepository>();
             services.AddTransient<IEstablishmentService, EstablishmentService>();
