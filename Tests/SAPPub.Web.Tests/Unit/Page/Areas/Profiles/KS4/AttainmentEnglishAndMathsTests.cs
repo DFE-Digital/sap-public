@@ -108,9 +108,9 @@ public class AttainmentEnglishAndMathsTests : PageTestsBase
         Assert.Contains($"{expectedModel.LAName} average", doc.GetTableHeaderContentByIdAndIndex("all-gcse-data-overtime-table", 2, 0));
         Assert.Contains($"England average", doc.GetTableHeaderContentByIdAndIndex("all-gcse-data-overtime-table", 3, 0));
         // current year data
-        Assert.Equal($"{expectedModel.EstablishmentAll.CurrentYear.Value.ToString("F1")}%", doc.GetTableCellContentByIdAndIndex("all-gcse-data-overtime-table", 1, 2));
-        Assert.Equal($"{expectedModel.LocalAuthorityAll.CurrentYear.Value.ToString("F1")}%", doc.GetTableCellContentByIdAndIndex("all-gcse-data-overtime-table", 2, 2));
-        Assert.Equal($"{expectedModel.EnglandAll.CurrentYear.Value.ToString("F1")}%", doc.GetTableCellContentByIdAndIndex("all-gcse-data-overtime-table", 3, 2));
+        Assert.Equal($"{expectedModel.EstablishmentAll.CurrentYear.Value.ToString()}%", doc.GetTableCellContentByIdAndIndex("all-gcse-data-overtime-table", 1, 2));
+        Assert.Equal($"{expectedModel.LocalAuthorityAll.CurrentYear.Value.ToString()}%", doc.GetTableCellContentByIdAndIndex("all-gcse-data-overtime-table", 2, 2));
+        Assert.Equal($"{expectedModel.EnglandAll.CurrentYear.Value.ToString()}%", doc.GetTableCellContentByIdAndIndex("all-gcse-data-overtime-table", 3, 2));
         // previous years data
         Assert.Equal("Not available", doc.GetTableCellContentByIdAndIndex("all-gcse-data-overtime-table", 1, 0));
         Assert.Equal("Not available", doc.GetTableCellContentByIdAndIndex("all-gcse-data-overtime-table", 1, 1));
@@ -122,11 +122,11 @@ public class AttainmentEnglishAndMathsTests : PageTestsBase
         Assert.Contains($"School", doc.GetTableHeaderContentByIdAndIndex("breakdown-gcse-current-year-table", 1, 0));
         Assert.Contains($"{expectedModel.LAName} average", doc.GetTableHeaderContentByIdAndIndex("breakdown-gcse-current-year-table", 2, 0));
         Assert.Contains($"England average", doc.GetTableHeaderContentByIdAndIndex("breakdown-gcse-current-year-table", 3, 0));
-        Assert.Equal($"{expectedModel.EstablishmentGirls.CurrentYear.Value.ToString("F1")}%", doc.GetTableCellContentByIdAndIndex("breakdown-gcse-current-year-table", 1, 0));
-        Assert.Equal($"{expectedModel.EstablishmentBoys.CurrentYear.Value.ToString("F1")}%", doc.GetTableCellContentByIdAndIndex("breakdown-gcse-current-year-table", 1, 1));
-        Assert.Equal($"{expectedModel.LocalAuthorityGirls.CurrentYear.Value.ToString("F1")}%", doc.GetTableCellContentByIdAndIndex("breakdown-gcse-current-year-table", 2, 0));
-        Assert.Equal($"{expectedModel.LocalAuthorityBoys.CurrentYear.Value.ToString("F1")}%", doc.GetTableCellContentByIdAndIndex("breakdown-gcse-current-year-table", 2, 1));
-        Assert.Equal($"{expectedModel.EnglandGirls.CurrentYear.Value.ToString("F1")}%", doc.GetTableCellContentByIdAndIndex("breakdown-gcse-current-year-table", 3, 0));
-        Assert.Equal($"{expectedModel.EnglandBoys.CurrentYear.Value.ToString("F1")}%", doc.GetTableCellContentByIdAndIndex("breakdown-gcse-current-year-table", 3, 1));
+        Assert.Equal($"{expectedModel.EstablishmentGirls.CurrentYear.Value.ToString()}%", doc.GetTableCellContentByIdAndIndex("breakdown-gcse-current-year-table", 1, 0));
+        Assert.Equal($"{expectedModel.EstablishmentBoys.CurrentYear.Value.ToString()}%", doc.GetTableCellContentByIdAndIndex("breakdown-gcse-current-year-table", 1, 1));
+        Assert.Equal($"{expectedModel.LocalAuthorityGirls.CurrentYear.Value.ToString()}%", doc.GetTableCellContentByIdAndIndex("breakdown-gcse-current-year-table", 2, 0));
+        Assert.Equal($"{expectedModel.LocalAuthorityBoys.CurrentYear.Value.ToString()}%", doc.GetTableCellContentByIdAndIndex("breakdown-gcse-current-year-table", 2, 1));
+        Assert.Equal($"{expectedModel.EnglandGirls.CurrentYear.Value.ToString()}%", doc.GetTableCellContentByIdAndIndex("breakdown-gcse-current-year-table", 3, 0));
+        Assert.Equal($"{expectedModel.EnglandBoys.CurrentYear.Value.ToString()}%", doc.GetTableCellContentByIdAndIndex("breakdown-gcse-current-year-table", 3, 1));
     }
 }
