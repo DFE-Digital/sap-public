@@ -2,3 +2,4 @@
 FeatureManagement__EstablishmentComparisonEnabled: "true"
 FeatureManagement__Enable16to19: "true"
 FeatureManagement__EnablePrimary: "true"
+FeatureManagement__EnableOverview: "true"
