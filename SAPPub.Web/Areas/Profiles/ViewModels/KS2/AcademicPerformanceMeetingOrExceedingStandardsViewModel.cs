@@ -93,13 +93,13 @@ public class AcademicPerformanceMeetingOrExceedingStandardsViewModel : BaseViewM
             DisadvantagedPupils = GetMeetingExceedingStandardsViewModel($"{PupilGroup} (Disadvantaged)",
                 [
                     new() { RowTitle = "School", MeetingStandard = ks2MESModel.EstablishmentDisadvantagedMeetingExpectedStandard.ToDisplayField(), ExceedingStandard = ks2MESModel.EstablishmentDisadvantagedExceedingExpectedStandard.ToDisplayField() },
-                    new() { RowTitle = $"{ks2MESModel.LAName} average", MeetingStandard = ks2MESModel.LocalAuthorityDisadvantagedMeetingExpectedStandard.ToDisplayField(), ExceedingStandard = ks2MESModel.LocalAuthorityDisadvantagedExceedingExpectedStandard.ToDisplayField() },
+                    new() { RowTitle = $"{establishment.LAName} average", MeetingStandard = ks2MESModel.LocalAuthorityDisadvantagedMeetingExpectedStandard.ToDisplayField(), ExceedingStandard = ks2MESModel.LocalAuthorityDisadvantagedExceedingExpectedStandard.ToDisplayField() },
                     new() { RowTitle = Constants.Constants.EnglandAverage,  MeetingStandard = ks2MESModel.EnglandDisadvantagedMeetingExpectedStandard.ToDisplayField(), ExceedingStandard = ks2MESModel.EnglandDisadvantagedExceedingExpectedStandard.ToDisplayField() },
 
                 ]),
             NonDisadvantagedPupils = GetMeetingExceedingStandardsViewModel($"{PupilGroup} (Non-disadvantaged)",
                 [
-                    new() { RowTitle = $"{ks2MESModel.LAName} average", MeetingStandard = ks2MESModel.LocalAuthorityNonDisadvantagedMeetingExpectedStandard.ToDisplayField(), ExceedingStandard = ks2MESModel.LocalAuthorityNonDisadvantagedExceedingExpectedStandard.ToDisplayField() },
+                    new() { RowTitle = $"{establishment.LAName} average", MeetingStandard = ks2MESModel.LocalAuthorityNonDisadvantagedMeetingExpectedStandard.ToDisplayField(), ExceedingStandard = ks2MESModel.LocalAuthorityNonDisadvantagedExceedingExpectedStandard.ToDisplayField() },
                     new() { RowTitle = Constants.Constants.EnglandAverage, MeetingStandard = ks2MESModel.EnglandNonDisadvantagedMeetingExpectedStandard.ToDisplayField(), ExceedingStandard = ks2MESModel.EnglandNonDisadvantagedExceedingExpectedStandard.ToDisplayField() },
                 ])
         };

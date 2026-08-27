@@ -5,7 +5,6 @@ namespace SAPPub.Core.ServiceModels.Performance;
 
 public class KS2MeetingOrExceedingStandardsModel
 {
-    public required string LAName { get; init; }
     public required RelativeYearValues<CodedDouble> EstablishmentPercentageMeetingOrExceeding { get; init; }
     public required RelativeYearValues<CodedDouble> LocalAuthorityPercentageMeetingOrExceeding { get; init; }
     public required RelativeYearValues<CodedDouble> EnglandPercentageMeetingOrExceeding { get; init; }
@@ -28,7 +27,7 @@ public class KS2MeetingOrExceedingStandardsModel
     /* Non-mobile pupils */
     public required CodedDouble NonMobileMeetingExpectedStandard { get; init; }
     public required CodedDouble NonMobileExceedingExpectedStandard { get; init; }
-   
+
     /* Disadvantaged pupils */
     public required CodedDouble EstablishmentDisadvantagedMeetingExpectedStandard { get; init; }
     public required CodedDouble EstablishmentDisadvantagedExceedingExpectedStandard { get; init; }
@@ -36,7 +35,7 @@ public class KS2MeetingOrExceedingStandardsModel
     public required CodedDouble LocalAuthorityDisadvantagedExceedingExpectedStandard { get; init; }
     public required CodedDouble EnglandDisadvantagedMeetingExpectedStandard { get; init; }
     public required CodedDouble EnglandDisadvantagedExceedingExpectedStandard { get; init; }
-    
+
     /* Non-disadvantaged pupils */
     public required CodedDouble LocalAuthorityNonDisadvantagedMeetingExpectedStandard { get; init; }
     public required CodedDouble LocalAuthorityNonDisadvantagedExceedingExpectedStandard { get; init; }

@@ -16,7 +16,7 @@ public class KS2MeetingOrExceedingStandardsServiceTests
 
     public KS2MeetingOrExceedingStandardsServiceTests()
     {
-        _service = new KS2MeetingOrExceedingStandardsService(_establishmentService.Object, _ks2PerformanceRepository.Object);
+        _service = new KS2MeetingOrExceedingStandardsService(_ks2PerformanceRepository.Object);
     }
 
     [Theory]
@@ -25,8 +25,9 @@ public class KS2MeetingOrExceedingStandardsServiceTests
     [InlineData(" ")]
     public async Task GetMeetingOrExceedingStandardsPercentages_ThrowsForInvalidUrn(string? urn)
     {
+        var laId = "1234";
         var ex = await Assert.ThrowsAnyAsync<ArgumentException>(() =>
-            _service.GetMeetingOrExceedingStandardsPercentages(urn!, CancellationToken.None));
+            _service.GetMeetingOrExceedingStandardsPercentages(urn!, laId, CancellationToken.None));
 
         Assert.Equal("urn", ex.ParamName);
     }
@@ -41,7 +42,7 @@ public class KS2MeetingOrExceedingStandardsServiceTests
 
         // Act
         await Assert.ThrowsAnyAsync<ArgumentException>(() =>
-            _service.GetMeetingOrExceedingStandardsPercentages(It.IsAny<string>(), cts.Token));
+            _service.GetMeetingOrExceedingStandardsPercentages(It.IsAny<string>(), It.IsAny<string>(), cts.Token));
 
         // Assert
         _establishmentService.Verify(a => a.GetEstablishmentAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
@@ -64,9 +65,9 @@ public class KS2MeetingOrExceedingStandardsServiceTests
 
         _ks2PerformanceRepository
             .Setup(a => a.GetEstablishmentPerformanceAsync(urn, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new KS2EstablishmentPerformance 
-            { 
-                PTRWM_EXP_Est_Current_Pct_Coded = GetCodedDouble(1), 
+            .ReturnsAsync(new KS2EstablishmentPerformance
+            {
+                PTRWM_EXP_Est_Current_Pct_Coded = GetCodedDouble(1),
                 PTRWM_EXP_Est_Previous_Pct_Coded = GetCodedDouble(2),
                 PTRWM_EXP_Est_Previous2_Pct_Coded = GetCodedDouble(3),
                 PTRWM_HIGH_Est_Current_Pct_Coded = GetCodedDouble(4),
@@ -86,7 +87,7 @@ public class KS2MeetingOrExceedingStandardsServiceTests
 
         _ks2PerformanceRepository
             .Setup(a => a.GetLaPerformanceAsync(laId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new KS2LAPerformance 
+            .ReturnsAsync(new KS2LAPerformance
             {
                 PTRWM_EXP_LA_Current_Pct_Coded = GetCodedDouble(7),
                 PTRWM_EXP_LA_Previous_Pct_Coded = GetCodedDouble(8),
@@ -102,7 +103,7 @@ public class KS2MeetingOrExceedingStandardsServiceTests
 
         _ks2PerformanceRepository
             .Setup(a => a.GetEnglandPerformanceAsync(It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new KS2EnglandPerformance 
+            .ReturnsAsync(new KS2EnglandPerformance
             {
                 PTRWM_EXP_Eng_Current_Pct_Coded = GetCodedDouble(13),
                 PTRWM_EXP_Eng_Previous_Pct_Coded = GetCodedDouble(14),
@@ -117,7 +118,7 @@ public class KS2MeetingOrExceedingStandardsServiceTests
             });
 
         // Act
-        var result = await _service.GetMeetingOrExceedingStandardsPercentages(urn, CancellationToken.None);
+        var result = await _service.GetMeetingOrExceedingStandardsPercentages(urn, laId, CancellationToken.None);
 
         // Assert
         Assert.Equal(GetCodedDouble(1), result.EstablishmentPercentageMeetingOrExceeding.CurrentYear);
@@ -125,7 +126,7 @@ public class KS2MeetingOrExceedingStandardsServiceTests
         Assert.Equal(GetCodedDouble(3), result.EstablishmentPercentageMeetingOrExceeding.TwoYearsAgo);
         Assert.Equal(GetCodedDouble(7), result.LocalAuthorityPercentageMeetingOrExceeding.CurrentYear);
         Assert.Equal(GetCodedDouble(8), result.LocalAuthorityPercentageMeetingOrExceeding.PreviousYear);
-        Assert.Equal(GetCodedDouble(9), result.LocalAuthorityPercentageMeetingOrExceeding.TwoYearsAgo); 
+        Assert.Equal(GetCodedDouble(9), result.LocalAuthorityPercentageMeetingOrExceeding.TwoYearsAgo);
         Assert.Equal(GetCodedDouble(13), result.EnglandPercentageMeetingOrExceeding.CurrentYear);
         Assert.Equal(GetCodedDouble(14), result.EnglandPercentageMeetingOrExceeding.PreviousYear);
         Assert.Equal(GetCodedDouble(15), result.EnglandPercentageMeetingOrExceeding.TwoYearsAgo);
@@ -154,7 +155,7 @@ public class KS2MeetingOrExceedingStandardsServiceTests
         Assert.Equal(GetCodedDouble(26), result.NonMobileExceedingExpectedStandard);
         Assert.Equal(GetCodedDouble(27), result.EstablishmentDisadvantagedMeetingExpectedStandard);
         Assert.Equal(GetCodedDouble(28), result.EstablishmentDisadvantagedExceedingExpectedStandard);
-        
+
         Assert.Equal(GetCodedDouble(29), result.LocalAuthorityDisadvantagedMeetingExpectedStandard);
         Assert.Equal(GetCodedDouble(30), result.LocalAuthorityDisadvantagedExceedingExpectedStandard);
         Assert.Equal(GetCodedDouble(31), result.LocalAuthorityNonDisadvantagedMeetingExpectedStandard);

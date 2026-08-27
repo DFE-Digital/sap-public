@@ -1,7 +1,6 @@
 ﻿using SAPPub.Core.Entities;
 using SAPPub.Core.Entities.Performance;
 using SAPPub.Core.Interfaces.Repositories.Performance;
-using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.ValueObjects;
@@ -9,17 +8,15 @@ using SAPPub.Core.ValueObjects;
 namespace SAPPub.Core.Services.Performance;
 
 public class KS2MeetingOrExceedingStandardsService(
-    IEstablishmentService establishmentService,
     IKS2PerformanceRepository ks2PerformanceRepository) : IKS2MeetingOrExceedingStandardsService
 {
-    public async Task<KS2MeetingOrExceedingStandardsModel> GetMeetingOrExceedingStandardsPercentages(string urn, CancellationToken ct = default)
+    public async Task<KS2MeetingOrExceedingStandardsModel> GetMeetingOrExceedingStandardsPercentages(string urn, string LAId, CancellationToken ct = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(urn);
         ct.ThrowIfCancellationRequested();
 
-        var establishment = await establishmentService.GetEstablishmentMinimumAsync(urn, ct);
         var establishmentPerformanceTask = ks2PerformanceRepository.GetEstablishmentPerformanceAsync(urn, ct);
-        var localAuthorityPerformanceTask = ks2PerformanceRepository.GetLaPerformanceAsync(establishment.LAId, ct);
+        var localAuthorityPerformanceTask = ks2PerformanceRepository.GetLaPerformanceAsync(LAId, ct);
         var englandPerformanceTask = ks2PerformanceRepository.GetEnglandPerformanceAsync(ct);
 
         await Task.WhenAll(establishmentPerformanceTask, localAuthorityPerformanceTask, englandPerformanceTask);
@@ -30,7 +27,6 @@ public class KS2MeetingOrExceedingStandardsService(
 
         return new KS2MeetingOrExceedingStandardsModel
         {
-            LAName = establishment.LAName,
             EstablishmentPercentageMeetingOrExceeding = GetEstablishmentPercentageMeetingOrExceeding(establishmentPerformance),
             LocalAuthorityPercentageMeetingOrExceeding = GetLocalAuthorityPercentageMeetingOrExceeding(laPerformance),
             EnglandPercentageMeetingOrExceeding = GetEnglandPercentageMeetingOrExceeding(englandPerformance),
@@ -48,7 +44,7 @@ public class KS2MeetingOrExceedingStandardsService(
             /* EAL */
             EALMeetingExpectedStandard = establishmentPerformance.PTRWM_EXP_EAL_Est_Current_Pct_Coded,
             EALExceedingExpectedStandard = establishmentPerformance.PTRWM_HIGH_EAL_Est_Current_Pct_Coded,
-           
+
             /* Non-mobile pupils */
             NonMobileMeetingExpectedStandard = establishmentPerformance.PTRWM_EXP_MOBN_Est_Current_Pct_Coded,
             NonMobileExceedingExpectedStandard = establishmentPerformance.PTRWM_HIGH_MOBN_Est_Current_Pct_Coded,

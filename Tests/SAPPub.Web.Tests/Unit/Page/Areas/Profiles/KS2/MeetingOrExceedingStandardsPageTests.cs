@@ -44,6 +44,7 @@ public class MeetingOrExceedingStandardsPageTests : PageTestsBase
             .WithIsKeyStage4(false)
             .WithWebsite("https://www.stpaulsacademy.co.uk")
             .WithEstablishmentTypeGroupId((int)EstablishmentTypeGroup.Academies)
+            .WithLAName("TEST LA")
             .BuildServiceModel();
 
         _establishmentMinimum = new EstablishmentMinimumTestBuilder()
@@ -52,11 +53,8 @@ public class MeetingOrExceedingStandardsPageTests : PageTestsBase
             .WithIsKeyStage2(true)
             .WithIsKeyStage4(false)
             .WithWebsite("https://www.stpaulsacademy.co.uk")
+            .WithLAName("TEST LA")
             .BuildServiceModel();
-
-        _mockEstablishmentService
-            .Setup(a => a.GetEstablishmentAsync(_urn, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(_establishment);
 
         _mockEstablishmentService
             .Setup(a => a.GetEstablishmentMinimumAsync(_urn, It.IsAny<CancellationToken>()))
@@ -68,10 +66,10 @@ public class MeetingOrExceedingStandardsPageTests : PageTestsBase
             .Setup(s => s.GetAdmissionsDetailsAsync(_urn, It.IsAny<CancellationToken>()))
             .ReturnsAsync(_admissionsServiceModel);
 
-        _kS2MeetingOrExceedingStandardsModel = GetMeetingOrExceedingStandardsModel("TEST LA");
+        _kS2MeetingOrExceedingStandardsModel = GetMeetingOrExceedingStandardsModel();
 
         _mockKS2MeetingOrExceedingStandardsService
-            .Setup(s => s.GetMeetingOrExceedingStandardsPercentages(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Setup(s => s.GetMeetingOrExceedingStandardsPercentages(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(_kS2MeetingOrExceedingStandardsModel);
     }
 
@@ -293,7 +291,7 @@ public class MeetingOrExceedingStandardsPageTests : PageTestsBase
 
         Assert.NotNull(nextLink);
         Assert.Contains("/primary-performance/subject-scaled-scores", nextLink.GetAttribute("href"));
-    }  
+    }
 
     private void ConfigureMultiPhaseSchool()
     {
@@ -334,36 +332,35 @@ public class MeetingOrExceedingStandardsPageTests : PageTestsBase
         };
     }
 
-    private static KS2MeetingOrExceedingStandardsModel GetMeetingOrExceedingStandardsModel(string laName) => new()
-        {
-            LAName = laName,
-            EstablishmentPercentageMeetingOrExceeding = new RelativeYearValues<CodedDouble> { CurrentYear = GetCodedDouble(1) },
-            LocalAuthorityPercentageMeetingOrExceeding = new RelativeYearValues<CodedDouble> { CurrentYear = GetCodedDouble(2) },
-            EnglandPercentageMeetingOrExceeding = new RelativeYearValues<CodedDouble> { CurrentYear = GetCodedDouble(3) },
-            EstablishmentPercentageExceeding = new RelativeYearValues<CodedDouble> { CurrentYear = GetCodedDouble(4) },
-            LocalAuthorityPercentageExceeding = new RelativeYearValues<CodedDouble> { CurrentYear = GetCodedDouble(5) },
-            EnglandPercentageExceeding = new RelativeYearValues<CodedDouble> { CurrentYear = GetCodedDouble(6) },
-            GirlsMeetingExpectedStandard = GetCodedDouble(7),
-            GirlsExceedingExpectedStandard = GetCodedDouble(8),
-            BoysMeetingExpectedStandard = GetCodedDouble(9),
-            BoysExceedingExpectedStandard = GetCodedDouble(10),
-            AllPupilsMeetingExpectedStandard = GetCodedDouble(11),
-            AllPupilsExceedingExpectedStandard = GetCodedDouble(12),
-            EALMeetingExpectedStandard = GetCodedDouble(13),
-            EALExceedingExpectedStandard = GetCodedDouble(14),
-            NonMobileMeetingExpectedStandard = GetCodedDouble(15),
-            NonMobileExceedingExpectedStandard = GetCodedDouble(16),
-            EstablishmentDisadvantagedMeetingExpectedStandard = GetCodedDouble(17),
-            EstablishmentDisadvantagedExceedingExpectedStandard = GetCodedDouble(18),
-            LocalAuthorityDisadvantagedMeetingExpectedStandard = GetCodedDouble(19),
-            LocalAuthorityDisadvantagedExceedingExpectedStandard = GetCodedDouble(20),
-            EnglandDisadvantagedMeetingExpectedStandard = GetCodedDouble(21),
-            EnglandDisadvantagedExceedingExpectedStandard = GetCodedDouble(22),
-            LocalAuthorityNonDisadvantagedMeetingExpectedStandard = GetCodedDouble(23),
-            LocalAuthorityNonDisadvantagedExceedingExpectedStandard = GetCodedDouble(24),
-            EnglandNonDisadvantagedMeetingExpectedStandard = GetCodedDouble(25),
-            EnglandNonDisadvantagedExceedingExpectedStandard = GetCodedDouble(26),
-        };
+    private static KS2MeetingOrExceedingStandardsModel GetMeetingOrExceedingStandardsModel() => new()
+    {
+        EstablishmentPercentageMeetingOrExceeding = new RelativeYearValues<CodedDouble> { CurrentYear = GetCodedDouble(1) },
+        LocalAuthorityPercentageMeetingOrExceeding = new RelativeYearValues<CodedDouble> { CurrentYear = GetCodedDouble(2) },
+        EnglandPercentageMeetingOrExceeding = new RelativeYearValues<CodedDouble> { CurrentYear = GetCodedDouble(3) },
+        EstablishmentPercentageExceeding = new RelativeYearValues<CodedDouble> { CurrentYear = GetCodedDouble(4) },
+        LocalAuthorityPercentageExceeding = new RelativeYearValues<CodedDouble> { CurrentYear = GetCodedDouble(5) },
+        EnglandPercentageExceeding = new RelativeYearValues<CodedDouble> { CurrentYear = GetCodedDouble(6) },
+        GirlsMeetingExpectedStandard = GetCodedDouble(7),
+        GirlsExceedingExpectedStandard = GetCodedDouble(8),
+        BoysMeetingExpectedStandard = GetCodedDouble(9),
+        BoysExceedingExpectedStandard = GetCodedDouble(10),
+        AllPupilsMeetingExpectedStandard = GetCodedDouble(11),
+        AllPupilsExceedingExpectedStandard = GetCodedDouble(12),
+        EALMeetingExpectedStandard = GetCodedDouble(13),
+        EALExceedingExpectedStandard = GetCodedDouble(14),
+        NonMobileMeetingExpectedStandard = GetCodedDouble(15),
+        NonMobileExceedingExpectedStandard = GetCodedDouble(16),
+        EstablishmentDisadvantagedMeetingExpectedStandard = GetCodedDouble(17),
+        EstablishmentDisadvantagedExceedingExpectedStandard = GetCodedDouble(18),
+        LocalAuthorityDisadvantagedMeetingExpectedStandard = GetCodedDouble(19),
+        LocalAuthorityDisadvantagedExceedingExpectedStandard = GetCodedDouble(20),
+        EnglandDisadvantagedMeetingExpectedStandard = GetCodedDouble(21),
+        EnglandDisadvantagedExceedingExpectedStandard = GetCodedDouble(22),
+        LocalAuthorityNonDisadvantagedMeetingExpectedStandard = GetCodedDouble(23),
+        LocalAuthorityNonDisadvantagedExceedingExpectedStandard = GetCodedDouble(24),
+        EnglandNonDisadvantagedMeetingExpectedStandard = GetCodedDouble(25),
+        EnglandNonDisadvantagedExceedingExpectedStandard = GetCodedDouble(26),
+    };
 
     private static CodedDouble GetCodedDouble(double val)
     {

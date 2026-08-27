@@ -8,7 +8,6 @@ using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Areas.Profiles.Controllers;
 using SAPPub.Web.Areas.Profiles.ViewModels.KS2;
-using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.Config;
 
 namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers;
@@ -148,7 +147,7 @@ public class KS2ControllerTests : BaseProfilesTests
         Assert.Equal(expectedModel.EnglandGrammarAtHigherStandard, model.EnglandGrammarAtHigherStandard.Value);
         Assert.Equal(expectedModel.EnglandEHCPPopulation, model.EnglandEHCPPopulation.Value);
         Assert.Equal(expectedModel.EnglandSENSupportPopulation, model.EnglandSENSupportPopulation.Value);
-       
+
         _mockKS2AdditionalMeasuresService
             .Verify(a => a.GetAdditionalMeasures(fakeMinimumEstablishment.URN, CancellationToken.None), Times.Once);
     }
@@ -161,7 +160,7 @@ public class KS2ControllerTests : BaseProfilesTests
         var expectedModel = GetKS2MeetingOrExceedingStandardsModel();
 
         _mockKS2MeetingOrExceedingStandardsService
-            .Setup(a => a.GetMeetingOrExceedingStandardsPercentages(fakeMinimumEstablishment.URN, CancellationToken.None))
+            .Setup(a => a.GetMeetingOrExceedingStandardsPercentages(fakeMinimumEstablishment.URN, fakeMinimumEstablishment.LAId, CancellationToken.None))
             .ReturnsAsync(expectedModel);
 
         // Act
@@ -231,7 +230,7 @@ public class KS2ControllerTests : BaseProfilesTests
 
 
         _mockKS2MeetingOrExceedingStandardsService
-            .Verify(a => a.GetMeetingOrExceedingStandardsPercentages(fakeMinimumEstablishment.URN, CancellationToken.None), Times.Once);
+            .Verify(a => a.GetMeetingOrExceedingStandardsPercentages(fakeMinimumEstablishment.URN, fakeMinimumEstablishment.LAId, CancellationToken.None), Times.Once);
     }
 
     private static KS2MeetingOrExceedingStandardsModel GetKS2MeetingOrExceedingStandardsModel()
@@ -290,7 +289,6 @@ public class KS2ControllerTests : BaseProfilesTests
             EstablishmentDisadvantagedMeetingExpectedStandard = GetCodedDouble(30),
             GirlsExceedingExpectedStandard = GetCodedDouble(31),
             GirlsMeetingExpectedStandard = GetCodedDouble(32),
-            LAName = "TEST LA",
             LocalAuthorityDisadvantagedExceedingExpectedStandard = GetCodedDouble(33),
             LocalAuthorityDisadvantagedMeetingExpectedStandard = GetCodedDouble(34),
             LocalAuthorityNonDisadvantagedExceedingExpectedStandard = GetCodedDouble(35),
@@ -313,7 +311,7 @@ public class KS2ControllerTests : BaseProfilesTests
             EstablishmentGrammarAtExpectedStandard = GetCodedDouble(1),
             EstablishmentGrammarAtHigherStandard = GetCodedDouble(2),
             EstablishmentEHCPPopulation = GetCodedDouble(7),
-            EstablishmentSENSupportPopulation = GetCodedDouble(8),        
+            EstablishmentSENSupportPopulation = GetCodedDouble(8),
             LAGrammarAtExpectedStandard = GetCodedDouble(3),
             LAGrammarAtHigherStandard = GetCodedDouble(4),
             EnglandGrammarAtExpectedStandard = GetCodedDouble(5),
