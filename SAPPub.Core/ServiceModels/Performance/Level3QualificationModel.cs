@@ -29,4 +29,8 @@ public class Level3QualificationModel
     public AdditionalDataModel? AdditionalData { get; init; }
 
     public SimpleCodedDoubleTableModel? AdvancedLevelMathsQualificationData { get; init; }
+
+    public required PerformanceSummaryModel DisadvantagedStudentsData {  get; init; }
+
+    public required PerformanceSummaryModel NonDisadvantagedStudentsData { get; init; }
 }

@@ -1,7 +1,7 @@
 ﻿using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
-namespace SAPPub.Web.Tests.UI.KS5;
+namespace SAPPub.Web.Tests.UI.Areas.Profiles.KS5;
 
 
 [Collection("Playwright Tests")]
@@ -99,42 +99,5 @@ public class KS5SubjectsEnteredTests(WebApplicationSetupFixture fixture) : BaseP
         var content = await Page.ContentAsync();
         Assert.DoesNotContain("A level Mathematics", content);
         Assert.DoesNotContain("A level Biology", content);
-    }
-
-    [Fact]
-    public async Task KS5SubjectsEnteredPage_DisplaysPagination()
-    {
-        // Arrange
-        await Page.GotoAsync(_basePageUrl);
-
-        // Act
-        Assert.True(await Page.Locator("#subjects-entered-pagination").IsVisibleAsync());
-
-    }
-
-    [Fact]
-    public async Task KS5SubjectsEnteredPage_PaginationPrevious_PointsToEnglishAndMaths()
-    {
-        // Arrange
-        await Page.GotoAsync(_basePageUrl);
-
-        // Act
-        var prevLink = Page.Locator("#subjects-entered-pagination .govuk-pagination__prev a");
-        var text = await prevLink.TextContentAsync();
-
-        Assert.Contains("English and maths", text?.Trim());
-    }
-
-    [Fact]
-    public async Task KS5SubjectsEnteredPage_PaginationNext_PointsToDestinations()
-    {
-        // Arrange
-        await Page.GotoAsync(_basePageUrl);
-
-        // Act
-        var prevLink = Page.Locator("#subjects-entered-pagination .govuk-pagination__next a");
-        var text = await prevLink.TextContentAsync();
-
-        Assert.Contains("Destinations", text?.Trim());
-    }
+    }   
 }

@@ -1,6 +1,7 @@
 ﻿using Moq;
 using SAPPub.Core.Interfaces.Services.KS4.Attendance;
 using SAPPub.Core.ServiceModels.KS4.Attendance;
+using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
 using static SAPPub.Web.Constants.Constants;
@@ -114,9 +115,9 @@ public class AttendancePageTests : PageTestsBase
             {
                 Urn = urn,
                 SchoolName = establishmentName,
-                EstablishmentAttendance = null,
-                LocalAuthorityAttendance = null,
-                EnglandAttendance = null,
+                EstablishmentAttendance = CodedDouble.Empty,
+                LocalAuthorityAttendance = CodedDouble.Empty,
+                EnglandAttendance = CodedDouble.Empty,
                 IsKS2 = false,
                 IsKS4 = true,
                 IsKS5 = false
@@ -180,7 +181,79 @@ public class AttendancePageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task AttendancePage_DisplaysPagination()
+    public async Task AttendancePage_DisplaysBottomPagination_WithCorrectDestinations_WhenKS2Only()
+    {
+        // Arrange
+        var urn = "143034";
+        var establishmentName = "Loreto High School Chorlton";
+        _serviceMock
+            .Setup(service => service.GetAttendenceDetailsAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new AttendanceModel()
+            {
+                Urn = urn,
+                SchoolName = establishmentName,
+                IsKS2 = true,
+                IsKS4 = false,
+                IsKS5 = false
+            });
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
+
+        // Assert
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
+
+        var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.NotNull(previousLink);
+        Assert.Contains("/curriculum/primary", previousLink.GetAttribute("href"));
+
+        Assert.NotNull(nextLink);
+        Assert.Contains("/primary-performance/pupil-progress", nextLink.GetAttribute("href"));
+    }
+
+    [Fact]
+    public async Task AttendancePage_DisplaysBottomPagination_WithCorrectDestinations_WhenKS4Only()
+    {
+        // Arrange
+        var urn = "143034";
+        var establishmentName = "Loreto High School Chorlton";
+        _serviceMock
+            .Setup(service => service.GetAttendenceDetailsAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new AttendanceModel()
+            {
+                Urn = urn,
+                SchoolName = establishmentName,
+                IsKS2 = false,
+                IsKS4 = true,
+                IsKS5 = false
+            });
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
+
+        // Assert
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
+
+        var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.NotNull(previousLink);
+        Assert.Contains("/curriculum/secondary", previousLink.GetAttribute("href"));
+
+        Assert.NotNull(nextLink);
+        Assert.Contains("/secondary-performance/progress-attainment", nextLink.GetAttribute("href"));
+    }
+
+    [Fact]
+    public async Task AttendancePage_DisplaysBottomPagination_WithCorrectDestinations_WhenKS2AndKS4()
     {
         // Arrange
         var urn = "143034";
@@ -201,20 +274,18 @@ public class AttendancePageTests : PageTestsBase
         // Act
         var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
 
-        // Act
-        var attendancePagination = doc.GetElementById("attendance-pagination");
-
-        // Act
-        var previousPaginationLink = doc.QuerySelector("#attendance-pagination .govuk-pagination__prev a");
-        var nextPaginationLink = doc.QuerySelector("#attendance-pagination .govuk-pagination__next a");
-
-        var previousPaginationText = previousPaginationLink?.TextContent;
-        var nextPaginationText = nextPaginationLink?.TextContent;
-
         // Assert
-        Assert.NotNull(attendancePagination);
-        Assert.Equal("Curriculum and extra-curricular activities", previousPaginationText?.Trim());
-        Assert.Equal("Secondary academic performance: Progress and attainment", nextPaginationText?.Trim());
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
+
+        var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.NotNull(previousLink);
+        Assert.Contains("/curriculum/secondary", previousLink.GetAttribute("href"));
+
+        Assert.NotNull(nextLink);
+        Assert.Contains("/primary-performance/pupil-progress", nextLink.GetAttribute("href"));
     }
 
     [Fact]
@@ -287,9 +358,9 @@ public class AttendancePageTests : PageTestsBase
                 Urn = urn,
                 SchoolName = establishmentName,
                 LocalAuthority = "Sheffield",
-                EstablishmentAttendance = 50.5,
-                LocalAuthorityAttendance = 70.9,
-                EnglandAttendance = 65.7,
+                EstablishmentAttendance = new CodedDouble(50.5, string.Empty, "50.5"),
+                LocalAuthorityAttendance = new CodedDouble(70.9, string.Empty, "70.9"),
+                EnglandAttendance = new CodedDouble(65.7, string.Empty, "65.7"),
                 IsKS2 = true,
                 IsKS4 = true,
                 IsKS5 = false
@@ -321,9 +392,9 @@ public class AttendancePageTests : PageTestsBase
             {
                 Urn = urn,
                 SchoolName = establishmentName,
-                EstablishmentAttendance = null,
-                LocalAuthorityAttendance = null,
-                EnglandAttendance = null,
+                EstablishmentAttendance = CodedDouble.Empty,
+                LocalAuthorityAttendance = CodedDouble.Empty,
+                EnglandAttendance = CodedDouble.Empty,
                 IsKS2 = true,
                 IsKS4 = true,
                 IsKS5 = false
@@ -358,11 +429,11 @@ public class AttendancePageTests : PageTestsBase
                 Urn = urn,
                 SchoolName = establishmentName,
                 LocalAuthority = "Sheffield",
-                EstablishmentPersistentAbsence = 10.3,
-                LocalAuthorityPersistentAbsence = 5.9,
-                EnglandPersistentAbsence = 6.7,
-                EstablishmentEnrolmentsTotal = enrolmentsTotal,
-                EstablishmentPersistentAbsenceTotal = absenceTotal,
+                EstablishmentPersistentAbsence = new CodedDouble(10.3, string.Empty, "10.3"),
+                LocalAuthorityPersistentAbsence = new CodedDouble(5.9, string.Empty, "5.9"),
+                EnglandPersistentAbsence = new CodedDouble(6.7, string.Empty, "6.7"),
+                EstablishmentEnrolmentsTotal = new CodedDouble(enrolmentsTotal, string.Empty, enrolmentsTotal.ToString()),
+                EstablishmentPersistentAbsenceTotal = new CodedDouble(absenceTotal, string.Empty, absenceTotal.ToString()),
                 IsKS2 = true,
                 IsKS4 = true,
                 IsKS5 = false
@@ -400,9 +471,9 @@ public class AttendancePageTests : PageTestsBase
             {
                 Urn = urn,
                 SchoolName = establishmentName,
-                EstablishmentAttendance = null,
-                LocalAuthorityAttendance = null,
-                EnglandAttendance = null,
+                EstablishmentAttendance = CodedDouble.Empty,
+                LocalAuthorityAttendance = CodedDouble.Empty,
+                EnglandAttendance = CodedDouble.Empty,
                 IsKS2 = true,
                 IsKS4 = true,
                 IsKS5 = false

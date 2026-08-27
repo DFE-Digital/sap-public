@@ -2,6 +2,7 @@
 using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Interfaces.Repositories.KS4.Absence;
 using SAPPub.Core.Services.KS4.Absence;
+using SAPPub.Core.ValueObjects;
 
 namespace SAPPub.Core.Tests.Services.KS4.Absence;
 
@@ -21,7 +22,7 @@ public class LAAbsenceServiceTests
     {
         // Arrange
         var laCode = "100";
-        var expected = new LAAbsence { Id = laCode, Abs_Tot_LA_Current_Pct = 5.5 };
+        var expected = new LAAbsence { Id = laCode, Abs_Tot_LA_Current_Pct_Coded = new CodedDouble(5.5, string.Empty, "5.5") };
 
         _mockRepo
             .Setup(r => r.GetLAAbsenceAsync(laCode, It.IsAny<CancellationToken>()))
@@ -33,7 +34,7 @@ public class LAAbsenceServiceTests
         // Assert
         Assert.NotNull(result);
         Assert.Equal(laCode, result.Id);
-        Assert.Equal(expected.Abs_Tot_LA_Current_Pct, result.Abs_Tot_LA_Current_Pct);
+        Assert.Equal(expected.Abs_Tot_LA_Current_Pct_Coded.Value, result.Abs_Tot_LA_Current_Pct_Coded.Value);
     }
 
     [Fact]
@@ -51,7 +52,7 @@ public class LAAbsenceServiceTests
 
         // Assert
         Assert.NotNull(result);
-        Assert.Null(result.Abs_Tot_LA_Current_Pct);
+        Assert.False(result.Abs_Tot_LA_Current_Pct_Coded.HasValue);
     }
 
     [Fact]

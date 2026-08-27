@@ -10,6 +10,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\KS4\Destinations\**" />
+    <EmbeddedResource Remove="Services\KS4\Destinations\**" />
+    <None Remove="Services\KS4\Destinations\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Bogus" Version="35.6.5" />
     <PackageReference Include="coverlet.collector" Version="6.0.4">
       <PrivateAssets>all</PrivateAssets>
@@ -37,10 +43,6 @@
 
   <ItemGroup>
     <Using Include="Xunit" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\KS4\Destinations\" />
   </ItemGroup>
 
 </Project>

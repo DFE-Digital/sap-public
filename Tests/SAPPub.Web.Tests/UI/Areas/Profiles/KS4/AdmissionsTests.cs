@@ -193,28 +193,7 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
         // Assert
         Assert.True(isVisible);
     }
-
-    [Fact]
-    public async Task AdmissionsPage_DisplaysPagination()
-    {
-        // Arrange
-        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
-
-        // Act
-        var isVisible = await Page.Locator("#admissions-pagination").IsVisibleAsync();
-
-        // Act
-        var previousPaginationLink = Page.Locator("#admissions-pagination .govuk-pagination__prev a");
-        var nextPaginationLink = Page.Locator("#admissions-pagination .govuk-pagination__next a");
-
-        var previousPaginationText = await previousPaginationLink.TextContentAsync();
-        var nextPaginationText = await nextPaginationLink.TextContentAsync();
-
-        // Assert
-        Assert.True(isVisible);
-        Assert.Equal("About the school", previousPaginationText?.Trim());
-        Assert.Equal("Curriculum and extra-curricular activities", nextPaginationText?.Trim());
-    }
+      
 
     [Fact]
     public async Task AdmissionsPage_DoesNotDisplay_SubNavigation_WhenOnlyKS4()

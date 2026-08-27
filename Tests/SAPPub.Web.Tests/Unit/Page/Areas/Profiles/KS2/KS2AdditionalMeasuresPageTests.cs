@@ -205,6 +205,65 @@ public class KS2AdditionalMeasuresPageTests : PageTestsBase
         Assert.Contains("Not available", doc.GetTableCellContentByIdAndIndex("sen-population-table", 1, 1));
     }
 
+    [Fact]
+    public async Task AdditionalMeasuresPage_DisplaysBottomPagination_WithCorrectDestinations()
+    {
+        // Arrange
+        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
+
+        var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.NotNull(previousLink);
+        Assert.Contains("/primary-performance/subject-scaled-scores", previousLink.GetAttribute("href"));
+
+        Assert.Null(nextLink);
+    }
+
+
+    [Fact]
+    public async Task AdditionalMeasuresPage_DisplaysBottomPagination_WithCorrectDestinations_WhenMultiplePhases()
+    {
+        // Arrange
+       var multiPhaseEstablishment = new EstablishmentMinimumTestBuilder()
+          .WithURN(_urn)
+          .WithEstablishmentName($"School{_urn}")
+          .WithIsKeyStage2(true)
+          .WithIsKeyStage4(true)
+          .WithLAName(_laName)
+          .BuildServiceModel();
+
+
+        _mockEstablishmentService
+           .Setup(a => a.GetEstablishmentMinimumAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+           .ReturnsAsync(multiPhaseEstablishment);
+
+        var url = BuildUrl(multiPhaseEstablishment.URN, multiPhaseEstablishment.EstablishmentName, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
+
+        var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.NotNull(previousLink);
+        Assert.Contains("/primary-performance/subject-scaled-scores", previousLink.GetAttribute("href"));
+
+        Assert.NotNull(nextLink);
+        Assert.Contains("/secondary-performance/progress-attainment", nextLink.GetAttribute("href"));
+    }
+
     private static KS2AdditionalMeasuresModel GetKS2AdditionalMeasuresModel()
     {
         return new KS2AdditionalMeasuresModel

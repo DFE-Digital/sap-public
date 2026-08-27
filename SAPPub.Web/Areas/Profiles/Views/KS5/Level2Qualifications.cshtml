@@ -1,4 +1,5 @@
 ﻿@using SAPPub.Web.Constants
+@using SAPPub.Web.ViewComponents.SchoolProfilePagination
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 @model SAPPub.Web.Areas.Profiles.ViewModels.KS5.Level2QualificationViewModel
 
@@ -24,6 +25,41 @@
         <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
         <h1 class="govuk-heading-xl">@ViewData["Header"]</h1>
 
+        <p class="govuk-body">
+            Choose the type of qualifications you want to see.
+        </p>
+
+        <ul class="govuk-list govuk-list--bullet">
+            <li>
+                Level 2 qualifications include GCSEs, Technical certificates and other level 2 qualifications.
+            </li>
+            <li>
+                Level 3 qualifications include A levels, Tech levels, and other level 3 qualifications.
+            </li>
+        </ul>
+
+        <p class="govuk-body">
+            Some establishments offer apprenticeships.
+            <br />
+            To view apprenticeship statistics, visit 
+            <a id="find-statistics-link"
+               class="govuk-link"
+               rel="noreferrer noopener"
+               target="_blank"
+               href="https://explore-education-statistics.service.gov.uk/find-statistics">
+                Find statistics and data <span class="govuk-visually-hidden">(opens in a new tab)</span>
+            </a>.
+            <br />
+            To find and apply for an apprenticeship, visit 
+            <a id="find-apprenticeship-link"
+               class="govuk-link"
+               rel="noreferrer noopener"
+               target="_blank"
+               href="https://www.gov.uk/apply-apprenticeship">
+                Find an apprenticeship <span class="govuk-visually-hidden">(opens in a new tab)</span>
+            </a>.
+        </p>
+
         <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
             <ul class="moj-sub-navigation__list">
                 <li class="moj-sub-navigation__item">
@@ -41,22 +77,40 @@
             </ul>
         </nav>
 
-        <form method="get" asp-route="KS5AcademicPerformanceLevel2" asp-all-route-data="@Model.RouteAttributes">
+        @* Commented below code as we have currently only 1 qualification. Will have more in the future *@
+        @* <form method="get" asp-route="KS5AcademicPerformanceLevel2" asp-all-route-data="@Model.RouteAttributes">
             <div id="filterSection" class="select-filter">
                 <label for="qualificationSelector" class="govuk-label govuk-!-font-weight-bold">Choose qualification</label>
                 <select id="qualificationSelector" asp-for="@Model.Level2Qualification" class="govuk-select" asp-items="Html.GetEnumSelectList<SAPPub.Core.Enums.KS5Qualifications.Level2>()"></select>
                 <govuk-button type="submit">Show results</govuk-button>
             </div>
-        </form>
+        </form> *@
 
         <h2 class="govuk-heading-l">@Model.Level2Qualification.GetDisplayName()</h2>
 
         @* Qualification Info *@
         <partial name="_QualificationInfo" view-data='new ViewDataDictionary(ViewData) { ["QualificationLevel"] = Model.Level2Qualification }' />
 
+        <govuk-inset-text id="tech-cert-inset-text">
+            <p class="govuk-body">
+                New Level 2 qualifications will be available from 2027.
+            </p>
+
+            <p class="govuk-body">
+                Foundation Certificate is a one-year level 2 qualification for students who want to progress
+                to a level 3 qualification after GCSEs.
+            </p>
+
+            <p class="govuk-body">
+                Occupational Certificate is a two-year level 2 qualification for students who know the type of work
+                they want to do and need job-focused preparation after GCSEs.
+            </p>
+
+        </govuk-inset-text>
+
         <p id="no-of-students-completed-qulification-info" class="govuk-tag govuk-tag--full-width govuk-tag--grey govuk-!-margin-bottom-4">
             Number of students from this school or college included in the measure: @Model.TotalNoOfStudentCompletedQualification.DisplayText()
-        </p>
+        </p>        
 
         @* ProgressScore Info *@
         <partial name="_ProgressScore" model="@Model.ProgressScore" view-data='new ViewDataDictionary(ViewData) { ["QualificationLevel"] = Model.Level2Qualification }' />
@@ -69,10 +123,7 @@
         <div id="student-retention" class="govuk-inset-text">
             Measures on student retention will be available shortly in a future release.
         </div>
+        @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.KS5AcademicPerformanceLevel2))
 
-        <govuk-pagination id="academic-performance-level-2-pagination">
-            <govuk-pagination-previous asp-route="@RouteConstants.KS5AcademicPerformanceLevel2" asp-all-route-data="@Model.RouteAttributes">Academic performance: Level 3 qualifications</govuk-pagination-previous>
-            <govuk-pagination-next asp-route="@RouteConstants.KS5AcademicPerformanceEnglishMaths" asp-all-route-data="@Model.RouteAttributes">Academic performance: English and maths</govuk-pagination-next>
-        </govuk-pagination>
     </div>
 </div>

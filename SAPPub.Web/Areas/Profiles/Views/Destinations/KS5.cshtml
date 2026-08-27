@@ -1,6 +1,7 @@
 ﻿@model KS5DestinationsViewModel;
 @using SAPPub.Web.Areas.Profiles.ViewModels.Destinations
 @using SAPPub.Web.Constants
+@using SAPPub.Web.ViewComponents.SchoolProfilePagination
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 @using static SAPPub.Web.Constants.Constants;
 
@@ -65,9 +66,12 @@
             Compare this school or college with state-funded local and national averages.
         </p>
 
-        <p class="govuk-tag govuk-tag--full-width govuk-tag--grey">
-            Number of students from this school or college included in the measure: @Model.NumberOfStudentsIncludedInMeasure.Value
-        </p>
+        @if (Model.NumberOfStudentsIncludedInMeasure.IsAvailable)
+        {
+            <p id="no-of-students-included-in-measure" class="govuk-tag govuk-tag--full-width govuk-tag--grey">
+                Number of students from this school or college included in the measure: @Model.NumberOfStudentsIncludedInMeasure.Value
+            </p>
+        }
 
         <div class="data-container">
             <h3 class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">
@@ -102,25 +106,40 @@
                     <div class="govuk-button-group">
                         <button id="all-ks5-dest-data-show-btn" class="govuk-button govuk-button--secondary">Show as a table</button>
                     </div>
-                </div>
-            
+                </div>            
         </div>
 
-        <govuk-pagination id="destinations-pagination">
-            @if (Model.IsKS4 == true)
-            {
-                <govuk-pagination-previous asp-route="@RouteConstants.SecondaryDestinations" asp-all-route-data="@Model.RouteAttributes">Destinations</govuk-pagination-previous>
-            }
-            else
-            {
-                <govuk-pagination-previous asp-route="@RouteConstants.KS5AcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">Academic performance: Subjects entered</govuk-pagination-previous>
-            }
-            <govuk-pagination-next asp-route="@RouteConstants.KS5DestinationsHigher" asp-all-route-data="@Model.RouteAttributes">Student destinations after 16 to 19 study</govuk-pagination-next>
+        <h2 class="govuk-heading-l">
+            Breakdown of all students, including disadvantaged students
+        </h2>
 
-        </govuk-pagination>
+        <govuk-inset-text id="breakdown-disadvantaged-students-inset-text">
+            <p class="govuk-body">
+                Destination measures including disadvantaged and non-disadvantaged students are not currently available.
+                We plan to make this information available in a future release.
+            </p>
+
+            <p class="govuk-body">
+                The measures will cover students who completed 16 to 19 study in the 2022 to 2023 academic year
+                at levels 3, 2 and 1, and entry level.
+            </p>
+
+            <p class="govuk-body">
+                <a id="find-statistics-link"
+                   class="govuk-link"
+                   rel="noreferrer noopener"
+                   target="_blank"
+                   href="https://explore-education-statistics.service.gov.uk/find-statistics">
+                    Find out more about statistics and data <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                </a>.
+            </p>
+        </govuk-inset-text>
+
+        @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.KS5Destinations))
+
     </div>
 </div>
-
+`
 @section Scripts {
     <script src="~/js/chart.umd.js"></script>
     <script src="~/js/chartjs-plugin-datalabels.min.js"></script>

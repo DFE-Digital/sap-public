@@ -1,14 +1,15 @@
 ﻿@model SAPPub.Web.Areas.Profiles.ViewModels.AboutSchool.AboutSchoolViewModel;
 @inject IMySchoolsListService mySchoolsListService;
-@using SAPPub.Web.Constants
 @using SAPPub.Core.Helpers
 @using SAPPub.Core.Interfaces.Services
+@using SAPPub.Web.Constants
 @using SAPPub.Web.Models.Banner
+@using SAPPub.Web.ViewComponents.SchoolProfilePagination
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 @using static SAPPub.Web.Constants.Constants;
 
 @{
-    ViewData["Header"] = Model.IsExclusivelyKS5 ? "About the school or college" : "About the school";
+    ViewData["Header"] = Model.IsExclusivelyKS5 ? PageTitleConstants.KS5SchoolPageTitles.About : PageTitleConstants.PageTitles.About;
     ViewData["Title"] = $"{Model.SchoolName} - {ViewData["Header"]}";
 }
 
@@ -508,11 +509,7 @@
                 </div>
             </div>
         }
-
-
-        <govuk-pagination id="about-the-school-pagination">
-            <govuk-pagination-next asp-route="@RouteConstants.SecondaryAdmissions" asp-all-route-data="@Model.RouteAttributes">Admissions</govuk-pagination-next>
-        </govuk-pagination>
+        @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.AboutTheSchool))
     </div>
 </div>
 @section Scripts {

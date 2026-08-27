@@ -12,7 +12,7 @@ public static class RouteConstants
 
     // Primary School
     public const string PrimaryAdmissions = "PrimaryAdmissions";
-    public const string PrimaryCurriculum = "PrimaryCurriculum";
+    public const string PrimaryCurriculumAndExtraCurricularActivities  = "PrimaryCurriculumAndExtraCurricularActivities";
     public const string PrimaryAcademicPerformancePupilProgress = "PrimaryAcademicPerformancePupilProgress";
     public const string PrimaryAcademicPerformanceMeetingOrExceedingStandards = "PrimaryAcademicPerformanceMeetingOrExceedingStandards";
     public const string PrimaryAcademicPerformanceSubjectScaledScores = "PrimaryAcademicPerformanceSubjectScaledScores";

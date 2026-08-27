@@ -1,48 +1,38 @@
 ﻿using SAPPub.Core.ValueObjects;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.Serialization;
 
-namespace SAPPub.Core.Entities.KS4.Absence
+namespace SAPPub.Core.Entities.KS4.Absence;
+
+[ExcludeFromCodeCoverage]
+public class LAAbsence
 {
-    [ExcludeFromCodeCoverage]
-    public class LAAbsence
-    {
-        public string Id { get; set; } = string.Empty;
+    public string Id { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Persistent Absence Total filtered by LA for Current year
-        /// </summary>
-        public CodedDouble Abs_Persistent_LA_Current_Pct_Coded { get; set; } = new();
-        [IgnoreDataMember]
-        public double? Abs_Persistent_LA_Current_Pct { get; set; }
-        [IgnoreDataMember]
-        public string Abs_Persistent_LA_Current_Pct_Reason { get; set; } = string.Empty;
+    /// <summary>
+    /// Persistent Absence Total filtered by LA for Current year
+    /// </summary>
+    public CodedDouble Abs_Persistent_LA_Current_Pct_Coded { get; set; }
 
-        /// <summary>
-        /// Absence Total filtered by LA for Current year
-        /// </summary>
-        public CodedDouble Abs_Tot_LA_Current_Pct_Coded { get; set; } = new();
-        [IgnoreDataMember]
-        public double? Abs_Tot_LA_Current_Pct { get; set; }
-        [IgnoreDataMember]
-        public string Abs_Tot_LA_Current_Pct_Reason { get; set; } = string.Empty;
+    /// <summary>
+    /// Absence Total filtered by LA for Current year
+    /// </summary>
+    public CodedDouble Abs_Tot_LA_Current_Pct_Coded { get; set; }
 
-        /// <summary>
-        /// Auth Absence Total filtered by LA for Current year 
-        /// </summary>
-        public CodedDouble Auth_Tot_LA_Current_Pct_Coded { get; set; } = new();
-        [IgnoreDataMember]
-        public double? Auth_Tot_LA_Current_Pct { get; set; }
-        [IgnoreDataMember]
-        public string Auth_Tot_LA_Current_Pct_Reason { get; set; } = string.Empty;
+    /// <summary>
+    /// Auth Absence Total filtered by LA for Current year 
+    /// </summary>
+    public CodedDouble Auth_Tot_LA_Current_Pct_Coded { get; set; }
 
-        /// <summary>
-        /// UnAuth Absence Total filtered by LA for Current year 
-        /// </summary>
-        public CodedDouble UnAuth_Tot_LA_Current_Pct_Coded { get; set; } = new();
-        [IgnoreDataMember]
-        public double? UnAuth_Tot_LA_Current_Pct { get; set; }
-        [IgnoreDataMember]
-        public string UnAuth_Tot_LA_Current_Pct_Reason { get; set; } = string.Empty;
-    }
+    /// <summary>
+    /// UnAuth Absence Total filtered by LA for Current year 
+    /// </summary>
+    public CodedDouble UnAuth_Tot_LA_Current_Pct_Coded { get; set; }
+
+    public CodedDouble Abs_TotKS2_LA_Current_Pct_Coded { get; set; }
+
+    public CodedDouble Abs_PersistentKS2_LA_Current_Pct_Coded { get; set; }
+
+    public CodedDouble Abs_TotSPE_LA_Current_Pct_Coded { get; set; }
+
+    public CodedDouble Abs_PersistentSPE_LA_Current_Pct_Coded { get; set; }
 }

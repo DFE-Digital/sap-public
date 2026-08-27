@@ -36,6 +36,7 @@ public class Level2QualificationsPageTests : PageTestsBase
         _qualificationType = qualification;
         _level2QualificationModel = new Level2QualificationsModelBuilder()
             .WithUrn(_urn)
+            .WithEstablishmentName($"School{_urn}")
             .WithQualificationType(_qualificationType)
             .WithKS5(true)
             .Build();
@@ -141,6 +142,29 @@ public class Level2QualificationsPageTests : PageTestsBase
 
     [Theory]
     [InlineData(Level2.TechCert)]
+    public async Task Level2QualificationsPage_Displays_Apprenticeships_Related_Links(Level2 qualification)
+    {
+        // Arrange
+        SetupMocks(qualification);
+        var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
+        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var findStatisticsLink = doc.QuerySelector("#find-statistics-link");
+        var findApprenticeshipLink = doc.QuerySelector("#find-apprenticeship-link");
+
+        Assert.NotNull(findStatisticsLink);
+        Assert.Contains("https://explore-education-statistics.service.gov.uk/find-statistics", findStatisticsLink.GetAttribute("href"));
+
+        Assert.NotNull(findApprenticeshipLink);
+        Assert.Contains("https://www.gov.uk/apply-apprenticeship", findApprenticeshipLink.GetAttribute("href"));
+    }
+
+    [Theory]
+    [InlineData(Level2.TechCert)]
     public async Task Level2QualificationsPage_DisplaysProgressScoreHeading(Level2 qualification)
     {
         // Arrange
@@ -181,6 +205,23 @@ public class Level2QualificationsPageTests : PageTestsBase
         {
             Assert.Null(techVocationalQualificationsLink);
         }
+    }
+
+    [Theory]
+    [InlineData(Level2.TechCert)]
+    public async Task Level2QualificationsPage_Displays_Inset_Text(Level2 qualification)
+    {
+        // Arrange
+        SetupMocks(qualification);
+        var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
+        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var techCertInsetText = doc.QuerySelector("#tech-cert-inset-text");
+        Assert.NotNull(techCertInsetText);
     }
 
     [Theory]
@@ -280,5 +321,31 @@ public class Level2QualificationsPageTests : PageTestsBase
 
         Assert.NotNull(studentRetentionInsetText);
         Assert.Equal("Measures on student retention will be available shortly in a future release.", studentRetentionInsetText.TextContent.Trim());
+    }
+
+
+    [Fact]
+    public async Task Level2QualificationsPage_DisplaysBottomPagination_WithCorrectDestinations()
+    {
+        // Arrange
+        SetupMocks();
+        var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
+        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
+
+        var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.NotNull(previousLink);
+        Assert.Contains("/16-to-19-performance/level-3-qualifications", previousLink.GetAttribute("href"));
+
+        Assert.NotNull(nextLink);
+        Assert.Contains("/16-to-19-performance/english-and-maths", nextLink.GetAttribute("href"));
     }
 }

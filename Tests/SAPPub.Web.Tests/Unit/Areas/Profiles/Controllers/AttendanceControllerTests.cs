@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using NuGet.Protocol.Plugins;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services.KS4.Attendance;
 using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.KS4.Attendance;
 using SAPPub.Core.Tests.TestBuilders;
+using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Areas.Profiles.Controllers;
 using SAPPub.Web.Areas.Profiles.ViewModels.Attendance;
 using SAPPub.Web.Constants;
@@ -74,9 +76,9 @@ public class AttendanceControllerTests
                 Urn = _fakeEstablishment.URN,
                 SchoolName = _fakeEstablishment.EstablishmentName,
                 LocalAuthority = _fakeEstablishment.LAName,
-                EstablishmentAttendance = estAttendance,
-                LocalAuthorityAttendance = laAttendance,
-                EnglandAttendance = engAttendance,
+                EstablishmentAttendance = new CodedDouble(estAttendance,string.Empty, estAttendance?.ToString()!),
+                LocalAuthorityAttendance = new CodedDouble(laAttendance, string.Empty, laAttendance?.ToString()!),
+                EnglandAttendance = new CodedDouble(engAttendance, string.Empty, engAttendance?.ToString()!),
                 IsKS2 = false,
                 IsKS4 = true,
                 IsKS5 = false
@@ -107,7 +109,7 @@ public class AttendanceControllerTests
     }
 
     [Theory]
-    [InlineData(5.5, 7.81, 10.2)]
+    [InlineData(5.5, 7.8, 10.2)]
     [InlineData(null, null, null)]
     public async Task Get_Attendance_Absence_Info_ReturnsOk(double? estAbsence, double? laAbsence, double? engAbsence)
     {
@@ -120,11 +122,11 @@ public class AttendanceControllerTests
                 Urn = _fakeEstablishment.URN,
                 SchoolName = _fakeEstablishment.EstablishmentName,
                 LocalAuthority = _fakeEstablishment.LAName,
-                EstablishmentPersistentAbsence = estAbsence,
-                LocalAuthorityPersistentAbsence = laAbsence,
-                EnglandPersistentAbsence = engAbsence,
-                EstablishmentEnrolmentsTotal = enrolmentsTotal,
-                EstablishmentPersistentAbsenceTotal = absenceTotal,
+                EstablishmentPersistentAbsence = new CodedDouble(estAbsence, string.Empty, estAbsence?.ToString()!),
+                LocalAuthorityPersistentAbsence = new CodedDouble(laAbsence, string.Empty, laAbsence?.ToString()!),
+                EnglandPersistentAbsence = new CodedDouble(engAbsence, string.Empty, engAbsence?.ToString()!),
+                EstablishmentEnrolmentsTotal = new CodedDouble(enrolmentsTotal, string.Empty, enrolmentsTotal.ToString()!),
+                EstablishmentPersistentAbsenceTotal = new CodedDouble(absenceTotal, string.Empty, absenceTotal.ToString()!),
                 IsKS2 = false,
                 IsKS4 = true,
                 IsKS5 = false

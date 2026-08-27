@@ -109,28 +109,7 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
         // Assert
         Assert.True(isVisible);
     }
-
-    [Fact]
-    public async Task AcademicPerformanceEnglishAndMathsResultsPage_DisplaysPagination()
-    {
-        // Arrange
-        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
-
-        // Act
-        var isVisible = await Page.Locator("#academic-performance-english-and-maths-results-pagination").IsVisibleAsync();
-
-        var previousPaginationLink = Page.Locator("#academic-performance-english-and-maths-results-pagination .govuk-pagination__prev a");
-        var nextPaginationLink = Page.Locator("#academic-performance-english-and-maths-results-pagination .govuk-pagination__next a");
-
-        var previousPaginationText = await previousPaginationLink.TextContentAsync();
-        var nextPaginationText = await nextPaginationLink.TextContentAsync();
-
-        // Assert
-        Assert.True(isVisible);
-        Assert.Contains("performance: Progress and attainment", previousPaginationText?.Trim());
-        Assert.Contains("performance: Subjects entered", nextPaginationText?.Trim());
-    }
-
+    
     [Fact]
     public async Task AcademicPerformanceEnglishAndMathsResultsPage_DisplaysGradeSelectorForDataDisplayed()
     {

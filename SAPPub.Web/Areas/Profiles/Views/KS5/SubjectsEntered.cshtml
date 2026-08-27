@@ -1,5 +1,6 @@
 ﻿@using SAPPub.Core.Enums
 @using SAPPub.Web.Constants
+@using SAPPub.Web.ViewComponents.SchoolProfilePagination
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 @model SAPPub.Web.Areas.Profiles.ViewModels.KS5.Ks5SubjectEnteredViewModel
 
@@ -100,10 +101,7 @@
                 }
             </tbody>
         </table>
+        @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.KS5AcademicPerformanceSubjectsEntered))
 
-        <govuk-pagination id="subjects-entered-pagination">
-            <govuk-pagination-previous asp-route="@RouteConstants.KS5AcademicPerformanceEnglishMaths" asp-all-route-data="@Model.RouteAttributes">Academic performance: English and maths</govuk-pagination-previous>
-            <govuk-pagination-next asp-route="@RouteConstants.SecondaryDestinations" asp-all-route-data="@Model.RouteAttributes">Destinations</govuk-pagination-next>
-        </govuk-pagination>
     </div>
 </div>

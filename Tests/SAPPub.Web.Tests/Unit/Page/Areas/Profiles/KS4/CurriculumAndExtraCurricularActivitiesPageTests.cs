@@ -126,16 +126,7 @@ public class CurriculumAndExtraCurricularActivitiesPageTests : PageTestsBase
     public async Task CurriculumPage_Displays_SubNavigation_WhenMultiplePhases()
     {
         // Arrange
-        var multiPhaseEstablishment = new EstablishmentMinimumTestBuilder()
-            .WithURN(_urnMultiPhase)
-            .WithEstablishmentName(_schoolNameMultiPhase)
-            .WithIsKeyStage2(true)
-            .WithIsKeyStage4(true)
-            .BuildServiceModel();
-
-        _mockEstablishmentService
-            .Setup(a => a.GetEstablishmentMinimumAsync(_urnMultiPhase, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(multiPhaseEstablishment);
+        ConfigureMultiPhaseSchool();
 
         var url = BuildUrl(_urnMultiPhase, _schoolNameMultiPhase, _pageRoute);
 
@@ -156,16 +147,7 @@ public class CurriculumAndExtraCurricularActivitiesPageTests : PageTestsBase
             .Setup(f => f.IsEnabledAsync(Constants.Constants.EnablePrimary))
             .ReturnsAsync(false);
 
-        var multiPhaseEstablishment = new EstablishmentMinimumTestBuilder()
-                .WithURN(_urnMultiPhase)
-                .WithEstablishmentName(_schoolNameMultiPhase)
-                .WithIsKeyStage2(true)
-                .WithIsKeyStage4(true)
-                .BuildServiceModel();
-
-        _mockEstablishmentService
-            .Setup(a => a.GetEstablishmentMinimumAsync(_urnMultiPhase, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(multiPhaseEstablishment);
+        ConfigureMultiPhaseSchool();
 
         var url = BuildUrl(_urnMultiPhase, _schoolNameMultiPhase, _pageRoute);
 
@@ -182,16 +164,7 @@ public class CurriculumAndExtraCurricularActivitiesPageTests : PageTestsBase
     public async Task CurriculumPage_SubNavigation_HasCorrectLinks_WhenMultiplePhases()
     {
         // Arrange
-        var multiPhaseEstablishment = new EstablishmentMinimumTestBuilder()
-            .WithURN(_urnMultiPhase)
-            .WithEstablishmentName(_schoolNameMultiPhase)
-            .WithIsKeyStage2(true)
-            .WithIsKeyStage4(true)
-            .BuildServiceModel();
-
-        _mockEstablishmentService
-            .Setup(a => a.GetEstablishmentMinimumAsync(_urnMultiPhase, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(multiPhaseEstablishment);
+        ConfigureMultiPhaseSchool();
 
         var url = BuildUrl(_urnMultiPhase, _schoolNameMultiPhase, _pageRoute);
 
@@ -209,5 +182,66 @@ public class CurriculumAndExtraCurricularActivitiesPageTests : PageTestsBase
         Assert.NotNull(secondaryLink);
         Assert.Contains("Primary Curriculum", primaryLink.TextContent.Trim());
         Assert.Contains("Secondary Curriculum", secondaryLink.TextContent.Trim());
-    }    
+    }
+
+    [Fact]
+    public async Task CurriculumPage_DisplaysBottomPagination_WithCorrectDestinations()
+    {
+        // Arrange
+        var url = BuildUrl(_urn, _schoolName, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
+
+        var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.NotNull(previousLink);
+        Assert.Contains("/admissions/secondary", previousLink.GetAttribute("href"));
+
+        Assert.NotNull(nextLink);
+        Assert.Contains("/attendance", nextLink.GetAttribute("href"));
+    }
+
+    [Fact]
+    public async Task CurriculumPage_DisplaysBottomPagination_WithCorrectDestinations_WhenMultiplePhases()
+    {
+        // Arrange
+        ConfigureMultiPhaseSchool();
+        var url = BuildUrl(_urnMultiPhase, _schoolNameMultiPhase, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
+
+        var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.NotNull(previousLink);
+        Assert.Contains("/curriculum/primary", previousLink.GetAttribute("href"));
+
+        Assert.NotNull(nextLink);
+        Assert.Contains("/attendance", nextLink.GetAttribute("href"));
+    }
+
+    private void ConfigureMultiPhaseSchool()
+    {
+        var multiPhaseEstablishment = new EstablishmentMinimumTestBuilder()
+           .WithURN(_urnMultiPhase)
+           .WithEstablishmentName(_schoolNameMultiPhase)
+           .WithIsKeyStage2(true)
+           .WithIsKeyStage4(true)
+           .BuildServiceModel();
+
+        _mockEstablishmentService
+            .Setup(a => a.GetEstablishmentMinimumAsync(_urnMultiPhase, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(multiPhaseEstablishment);
+    }
 }

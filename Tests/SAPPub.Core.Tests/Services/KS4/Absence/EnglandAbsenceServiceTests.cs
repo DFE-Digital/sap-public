@@ -2,6 +2,7 @@
 using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Interfaces.Repositories.KS4.Absence;
 using SAPPub.Core.Services.KS4.Absence;
+using SAPPub.Core.ValueObjects;
 
 namespace SAPPub.Core.Tests.Services.KS4.Absence;
 
@@ -21,7 +22,7 @@ public class EnglandAbsenceServiceTests
     public async Task GetEnglandAbsenceAsync_ShouldReturnData()
     {
         // Arrange
-        var expected = new EnglandAbsence { Abs_Tot_Eng_Current_Pct = 10.99 };
+        var expected = new EnglandAbsence { Abs_Tot_Eng_Current_Pct_Coded = new CodedDouble(10.99, string.Empty, "10.99") };
 
         _mockRepo
             .Setup(r => r.GetEnglandAbsenceAsync(It.IsAny<CancellationToken>()))
@@ -32,7 +33,7 @@ public class EnglandAbsenceServiceTests
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(expected.Abs_Tot_Eng_Current_Pct, result.Abs_Tot_Eng_Current_Pct);
+        Assert.Equal(expected.Abs_Tot_Eng_Current_Pct_Coded.Value, result.Abs_Tot_Eng_Current_Pct_Coded.Value);
     }
 
     [Fact]

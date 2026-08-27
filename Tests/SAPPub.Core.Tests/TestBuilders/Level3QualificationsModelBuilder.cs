@@ -13,6 +13,8 @@ public class Level3QualificationsModelBuilder
     private string? _establishmentName;
     private string? _laName;
     private bool _isKs5;
+    private bool _isKs4 = false;
+
     private Level3? _qualificationType;
     private double? _totalNoOfStudentsCompletedQualification;
     private double? _progressScore;
@@ -48,6 +50,12 @@ public class Level3QualificationsModelBuilder
         return this;
     }
 
+    public Level3QualificationsModelBuilder WithKS4(bool isKS4)
+    {
+        _isKs4 = isKS4;
+        return this;
+    }
+
     public Level3QualificationsModelBuilder WithQualificationType(Level3 qualificationType)
     {
         _qualificationType = qualificationType;
@@ -77,7 +85,7 @@ public class Level3QualificationsModelBuilder
             SchoolName = _establishmentName ?? string.Empty,
             LAName = _laName ?? string.Empty,
             IsKS2 = false,
-            IsKS4 = false,
+            IsKS4 = _isKs4,
             IsKS5 = _isKs5,
             QualificationType = _qualificationType ?? Level3.ALevel,
             TotalNoOfStudentCompletedQualification = new CodedDouble(Value: _totalNoOfStudentsCompletedQualification ?? 150, string.Empty, string.Empty),
@@ -131,7 +139,74 @@ public class Level3QualificationsModelBuilder
                 SchoolOrCollege = new CodedDouble(78.94, string.Empty, string.Empty),
                 LocalAuthority = new CodedDouble(61.96, string.Empty, string.Empty),
                 England = new CodedDouble(73.45, string.Empty, string.Empty),
-            } : null
+            } : null,
+            DisadvantagedStudentsData = new PerformanceSummaryModel
+            {
+                Establishment = new PerformanceData 
+                {
+                    NumberOfStudents = new CodedDouble(255, string.Empty, string.Empty),
+                    ProgressScore = new CodedDouble(Value: _progressScore ?? 95.55, string.Empty, string.Empty),
+                    ConfidenceLevelLower = new CodedDouble(1.0, string.Empty, string.Empty),
+                    ConfidenceLevelUpper = new CodedDouble(5.5, string.Empty, string.Empty),
+                    Result = new PerformanceResult
+                    {
+                        Grade = new CodedString("A", string.Empty, string.Empty),
+                        Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
+                    }
+                },
+                LocalAuthority = new PerformanceData
+                {
+                    NumberOfStudents = new CodedDouble(450, string.Empty, string.Empty),
+                    ProgressScore = new CodedDouble(Value: _progressScore ?? 78.32, string.Empty, string.Empty),
+                    ConfidenceLevelLower = new CodedDouble(0.5, string.Empty, string.Empty),
+                    ConfidenceLevelUpper = new CodedDouble(3.4, string.Empty, string.Empty),
+                    Result = new PerformanceResult
+                    {
+                        Grade = new CodedString("C", string.Empty, string.Empty),
+                        Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
+                    }
+                },
+                England = new PerformanceData
+                {
+                    NumberOfStudents = new CodedDouble(805, string.Empty, string.Empty),
+                    ProgressScore = new CodedDouble(Value: _progressScore ?? 77.31, string.Empty, string.Empty),
+                    ConfidenceLevelLower = new CodedDouble(1.2, string.Empty, string.Empty),
+                    ConfidenceLevelUpper = new CodedDouble(4.9, string.Empty, string.Empty),
+                    Result = new PerformanceResult
+                    {
+                        Grade = new CodedString("B", string.Empty, string.Empty),
+                        Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
+                    }
+                }
+            },
+            NonDisadvantagedStudentsData = new PerformanceSummaryModel
+            {
+                Establishment = null,
+                LocalAuthority = new PerformanceData
+                {
+                    NumberOfStudents = new CodedDouble(500, string.Empty, string.Empty),
+                    ProgressScore = new CodedDouble(Value: _progressScore ?? 81.56, string.Empty, string.Empty),
+                    ConfidenceLevelLower = new CodedDouble(1.1, string.Empty, string.Empty),
+                    ConfidenceLevelUpper = new CodedDouble(4.3, string.Empty, string.Empty),
+                    Result = new PerformanceResult
+                    {
+                        Grade = new CodedString("A", string.Empty, string.Empty),
+                        Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
+                    }
+                },
+                England = new PerformanceData
+                {
+                    NumberOfStudents = new CodedDouble(700, string.Empty, string.Empty),
+                    ProgressScore = new CodedDouble(Value: _progressScore ?? 81.59, string.Empty, string.Empty),
+                    ConfidenceLevelLower = new CodedDouble(0.2, string.Empty, string.Empty),
+                    ConfidenceLevelUpper = new CodedDouble(2.5, string.Empty, string.Empty),
+                    Result = new PerformanceResult
+                    {
+                        Grade = new CodedString("B", string.Empty, string.Empty),
+                        Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
+                    }
+                }
+            }
         };
     }
 }

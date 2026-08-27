@@ -350,6 +350,74 @@ public class AboutPageTests : PageTestsBase
 
 
     [Fact]
+    public async Task AboutPage_DisplaysBottomPagination_WithCorrectDestinations_WhenKS2Only()
+    {
+        // Arrange
+        var aboutSchoolModel = new AboutSchoolModel()
+        {
+            Urn = "143034",
+            SchoolName = "St David's Church of England Academy",
+            IsKS2 = true,
+            IsKS4 = false,
+            IsKS5 = false
+        };
+        _about
+            .Setup(service => service.GetAboutSchoolDetailsAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(aboutSchoolModel);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(aboutSchoolModel.Urn, aboutSchoolModel.SchoolName, _pageRoute));
+
+        // Assert
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
+
+        var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.Null(previousLink);
+
+        Assert.NotNull(nextLink);
+        Assert.Contains("/admissions/primary", nextLink.GetAttribute("href"));
+    }
+
+    [Fact]
+    public async Task AboutPage_DisplaysBottomPagination_WithCorrectDestinations_WhenKS4Only()
+    {
+        // Arrange
+        var aboutSchoolModel = new AboutSchoolModel()
+        {
+            Urn = "143034",
+            SchoolName = "St David's Church of England Academy",
+            IsKS2 = false,
+            IsKS4 = true,
+            IsKS5 = false
+        };
+        _about
+            .Setup(service => service.GetAboutSchoolDetailsAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(aboutSchoolModel);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(aboutSchoolModel.Urn, aboutSchoolModel.SchoolName, _pageRoute));
+
+        // Assert
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
+
+        var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.Null(previousLink);
+
+        Assert.NotNull(nextLink);
+        Assert.Contains("/admissions/secondary", nextLink.GetAttribute("href"));
+    }
+
+    [Fact]
     public async Task AboutPage_ShowsKS5OnlyElements()
     {
         // Arrange
@@ -380,6 +448,42 @@ public class AboutPageTests : PageTestsBase
         Assert.Equal("About the school or college", h1Elements[0].TextContent);
         Assert.Equal("Key features", h2Elements[2].TextContent);
         Assert.Equal("Policies", h2Elements[3].TextContent);
+    }
+
+    [Fact]
+    public async Task AboutPage_DisplaysBottomPagination_WithCorrectDestinations_WhenKS5Only()
+    {
+        // Arrange
+        var aboutSchoolModel = new AboutSchoolModel()
+        {
+            Urn = "143034",
+            SchoolName = "St David's Church of England Academy",
+            Address = "Some address",
+            LocalAuthority = "Bury",
+            IsKS2 = false,
+            IsKS4 = false,
+            IsKS5 = true
+        };
+        _about
+            .Setup(service => service.GetAboutSchoolDetailsAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(aboutSchoolModel);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(aboutSchoolModel.Urn, aboutSchoolModel.SchoolName, _pageRoute));
+
+        // Assert
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
+
+        var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.Null(previousLink);
+
+        Assert.NotNull(nextLink);
+        Assert.Contains("level-3-qualifications", nextLink.GetAttribute("href"));
     }
 
     [Fact]
@@ -500,4 +604,6 @@ public class AboutPageTests : PageTestsBase
         // Assert
         Assert.Null(doc.GetElementById("primary-school-features-summary"));
     }
+
+
 }

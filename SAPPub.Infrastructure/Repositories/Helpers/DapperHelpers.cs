@@ -73,14 +73,6 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "NurseryProvisionName"
           """;
 
-        private const string EstablishmentAbsenceColumns = """
-          "Id",
-          "Enrolments_Tot_Est_Current_Num_Coded",
-          "Abs_Persistent_Est_Current_Num_Coded",
-          "Abs_Persistent_Est_Current_Pct_Coded",
-          "Abs_Tot_Est_Current_Pct_Coded"
-          """;
-
         private const string EstablishmentDestinationsColumns = """
           "Id",
           "AllDest_Tot_Est_Current_Pct_Coded",
@@ -217,13 +209,11 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
         private const string EnglandAbsenceColumns = """
           "Id",
           "Abs_Persistent_Eng_Current_Pct_Coded",
-          "Abs_Tot_Eng_Current_Pct_Coded"
-          """;
-
-        private const string LAAbsenceColumns = """
-          "Id",
-          "Abs_Persistent_LA_Current_Pct_Coded",
-          "Abs_Tot_LA_Current_Pct_Coded"
+          "Abs_Tot_Eng_Current_Pct_Coded",
+          "Abs_PersistentKS2_Eng_Current_Pct_Coded", 
+          "Abs_PersistentSPE_Eng_Current_Pct_Coded", 
+          "Abs_TotKS2_Eng_Current_Pct_Coded", 
+          "Abs_TotSPE_Eng_Current_Pct_Coded"
           """;
 
         private const string LaUrlsColumns = """
@@ -282,7 +272,13 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "T_SCOPEEX_E_DIS_Est_Current_Num_Coded",
           "PROGEX_E_DIS_Est_Current_Num_Coded",
           "T_SCOPEEX_M_DIS_Est_Current_Num_Coded",
-          "PROGEX_M_DIS_Est_Current_Num_Coded"
+          "PROGEX_M_DIS_Est_Current_Num_Coded",
+          "TALLPUP_ALEV_1618_DIS_Est_Current_Num_Coded",
+          "VA_INS_ALEV_DIS_Est_Current_Num_Coded",
+          "UCI_INS_ALEV_DIS_Est_Current_Num_Coded",
+          "LCI_INS_ALEV_DIS_Est_Current_Num_Coded",
+          "TALLPPEGRD_ALEV_DIS_Est_Current",
+          "TALLPPE_ALEV_1618_DIS_Est_Current_Num_Coded"
           """;
 
         private const string KS5EnglandPerformanceColumns = """
@@ -316,7 +312,19 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "T_SCOPEEX_E_DIS_Eng_Current_Num_Coded",
           "T_SCOPEEX_E_NOTDIS_Eng_Current_Num_Coded",
           "T_SCOPEEX_M_DIS_Eng_Current_Num_Coded",
-          "T_SCOPEEX_M_NOTDIS_Eng_Current_Num_Coded"
+          "T_SCOPEEX_M_NOTDIS_Eng_Current_Num_Coded",
+          "TALLPUP_ALEV_1618_DIS_Eng_Current_Num_Coded",
+          "VA_INS_ALEV_DIS_Eng_Current_Num_Coded",
+          "UCI_INS_ALEV_DIS_Eng_Current_Num_Coded",
+          "LCI_INS_ALEV_DIS_Eng_Current_Num_Coded",
+          "TALLPPEGRD_ALEV_DIS_Eng_Current",
+          "TALLPPE_ALEV_1618_DIS_Eng_Current_Num_Coded",
+          "TALLPUP_ALEV_1618_NOTDIS_Eng_Current_Num_Coded",
+          "VA_INS_ALEV_NOTDIS_Eng_Current_Num_Coded",
+          "UCI_INS_ALEV_NOTDIS_Eng_Current_Num_Coded",
+          "LCI_INS_ALEV_NOTDIS_Eng_Current_Num_Coded",
+          "TALLPPEGRD_ALEV_NOTDIS_Eng_Current",
+          "TALLPPE_ALEV_1618_NOTDIS_Eng_Current_Num_Coded"
           """;
 
         private const string KS5LAPerformanceColumns = """
@@ -345,7 +353,19 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "T_SCOPEEX_E_DIS_LA_Current_Num_Coded",
           "T_SCOPEEX_E_NOTDIS_LA_Current_Num_Coded",
           "T_SCOPEEX_M_DIS_LA_Current_Num_Coded",
-          "T_SCOPEEX_M_NOTDIS_LA_Current_Num_Coded"
+          "T_SCOPEEX_M_NOTDIS_LA_Current_Num_Coded",
+          "TALLPUP_ALEV_1618_DIS_LA_Current_Num_Coded",
+          "VA_INS_ALEV_DIS_LA_Current_Num_Coded",
+          "UCI_INS_ALEV_DIS_LA_Current_Num_Coded",
+          "LCI_INS_ALEV_DIS_LA_Current_Num_Coded",
+          "TALLPPEGRD_ALEV_DIS_LA_Current",
+          "TALLPPE_ALEV_1618_DIS_LA_Current_Num_Coded",
+          "TALLPUP_ALEV_1618_NOTDIS_LA_Current_Num_Coded",
+          "VA_INS_ALEV_NOTDIS_LA_Current_Num_Coded",
+          "UCI_INS_ALEV_NOTDIS_LA_Current_Num_Coded",
+          "LCI_INS_ALEV_NOTDIS_LA_Current_Num_Coded",
+          "TALLPPEGRD_ALEV_NOTDIS_LA_Current",
+          "TALLPPE_ALEV_1618_NOTDIS_LA_Current_Num_Coded"
           """;
 
         private const string GatewayLAColumns = """
@@ -476,7 +496,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                     """ + DapperHelpers.GetOrderBy(typeof(Establishment)),
 
                 nameof(EstablishmentAbsence) =>
-                    SelectFrom(EstablishmentAbsenceColumns, "v_establishment_absence"),
+                    SelectAllFromWhereId("v_establishment_absence"),
 
                 nameof(KS4EstablishmentDestinations) =>
                     SelectFrom(EstablishmentDestinationsColumns, "v_establishment_destinations"),
@@ -485,7 +505,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                     SelectFrom(EstablishmentPerformanceColumns, "v_establishment_performance"),
 
                 nameof(LAAbsence) =>
-                    SelectFrom(LAAbsenceColumns, "v_la_absence"),
+                    SelectAllFromWhereId("v_la_absence"),
 
                 nameof(KS4LADestinations) =>
                     SelectFrom(LADestinationsColumns, "v_la_destinations"),
@@ -537,7 +557,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                     SelectFromWhereUrn(EstablishmentColumns, "v_establishment"),
 
                 nameof(EstablishmentAbsence) =>
-                    SelectFromWhereId(EstablishmentAbsenceColumns, "v_establishment_absence"),
+                    SelectAllFromWhereId("v_establishment_absence"),
 
                 nameof(KS4EstablishmentDestinations) =>
                     SelectFromWhereId(EstablishmentDestinationsColumns, "v_establishment_destinations"),
@@ -546,7 +566,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
                     SelectFromWhereId(EstablishmentPerformanceColumns, "v_establishment_performance"),
 
                 nameof(LAAbsence) =>
-                    SelectFromWhereId(LAAbsenceColumns, "v_la_absence"),
+                    SelectAllFromWhereId("v_la_absence"),
 
                 nameof(KS4LADestinations) =>
                     SelectFromWhereId(LADestinationsColumns, "v_la_destinations"),
