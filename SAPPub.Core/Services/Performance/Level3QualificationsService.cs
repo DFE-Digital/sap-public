@@ -43,6 +43,8 @@ public class Level3QualificationsService(
             AverageResult = GetAverageResultModel(level3Qualification, establishmentPerformance, laPerformance, englandPerformance),
             AdditionalData = GetAdditionalData(level3Qualification, establishmentPerformance, laPerformance, englandPerformance),
             AdvancedLevelMathsQualificationData = AdvancedLevelMathsQualificationData(level3Qualification, establishmentPerformance, laPerformance, englandPerformance),
+            DisadvantagedStudentsData = GetDisadvantagedStudentsData(level3Qualification, establishmentPerformance, laPerformance, englandPerformance),
+            NonDisadvantagedStudentsData = GetNonDisadvantagedStudentsData(level3Qualification, laPerformance, englandPerformance)
         };
     }
 
@@ -106,7 +108,7 @@ public class Level3QualificationsService(
                 Level3.AppliedGeneral => englandPerformance.VA_INS_AGEN_Eng_Current_Num_Coded,
                 Level3.TechLevel => englandPerformance.VA_INS_TLEV_Eng_Current_Num_Coded,
                 _ => CodedDouble.Empty,
-            },
+            }
         };
     }
 
@@ -135,7 +137,7 @@ public class Level3QualificationsService(
                     Level3.AppliedGeneral => establishmentPerformance.TALLPPEGRD_AGEN_Est_Current,
                     Level3.TechLevel => establishmentPerformance.TALLPPEGRD_TLEV_Est_Current,
                     _ => CodedString.Empty,
-                },                
+                }             
             },
             LocalAuthority = new PerformanceResult
             {
@@ -154,7 +156,7 @@ public class Level3QualificationsService(
                     Level3.AppliedGeneral => laPerformance.TALLPPEGRD_AGEN_LA_Current,
                     Level3.TechLevel => laPerformance.TALLPPEGRD_TLEV_LA_Current,
                     _ => CodedString.Empty,
-                },                
+                }              
             },
             England = new PerformanceResult
             {
@@ -173,7 +175,7 @@ public class Level3QualificationsService(
                     Level3.AppliedGeneral => englandPerformance.TALLPPEGRD_AGEN_Eng_Current,
                     Level3.TechLevel => englandPerformance.TALLPPEGRD_TLEV_Eng_Current,
                     _ => CodedString.Empty,
-                },                
+                }               
             }
         };
     }
@@ -222,6 +224,207 @@ public class Level3QualificationsService(
             SchoolOrCollege = establishmentPerformance.L3M_PER_Est_Current_Pct_Coded,
             LocalAuthority = laPerformance.L3M_PER_LA_Current_Pct_Coded,
             England = englandPerformance.L3M_PER_Eng_Current_Pct_Coded
+        };
+    }
+
+    private static PerformanceSummaryModel GetDisadvantagedStudentsData(
+        Level3 level3Qualification,
+        KS5EstablishmentPerformance establishmentPerformance,
+        KS5LAPerformance laPerformance,
+        KS5EnglandPerformance englandPerformance)
+    {
+        return new PerformanceSummaryModel
+        {
+            Establishment = new PerformanceData
+            {
+                NumberOfStudents = level3Qualification switch
+                {
+                    Level3.ALevel => establishmentPerformance.TALLPUP_ALEV_1618_DIS_Est_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ProgressScore = level3Qualification switch
+                {
+                    Level3.ALevel => establishmentPerformance.VA_INS_ALEV_DIS_Est_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ConfidenceLevelUpper = level3Qualification switch
+                {
+                    Level3.ALevel => establishmentPerformance.UCI_INS_ALEV_DIS_Est_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ConfidenceLevelLower = level3Qualification switch
+                {
+                    Level3.ALevel => establishmentPerformance.LCI_INS_ALEV_DIS_Est_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                Result = new PerformanceResult
+                {
+                    Points = level3Qualification switch
+                    {
+                        Level3.ALevel => establishmentPerformance.TALLPPE_ALEV_1618_DIS_Est_Current_Num_Coded,
+                        _ => CodedDouble.Empty,
+                    },
+                    Grade = level3Qualification switch
+                    {
+                        Level3.ALevel => establishmentPerformance.TALLPPEGRD_ALEV_DIS_Est_Current,
+                        _ => CodedString.Empty,
+                    }
+                }
+            },
+            LocalAuthority = new PerformanceData
+            {
+                NumberOfStudents = level3Qualification switch
+                {
+                    Level3.ALevel => laPerformance.TALLPUP_ALEV_1618_DIS_LA_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ProgressScore = level3Qualification switch
+                {
+                    Level3.ALevel => laPerformance.VA_INS_ALEV_DIS_LA_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ConfidenceLevelUpper = level3Qualification switch
+                {
+                    Level3.ALevel => laPerformance.UCI_INS_ALEV_DIS_LA_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ConfidenceLevelLower = level3Qualification switch
+                {
+                    Level3.ALevel => laPerformance.LCI_INS_ALEV_DIS_LA_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                Result = new PerformanceResult
+                {
+                    Points = level3Qualification switch
+                    {
+                        Level3.ALevel => laPerformance.TALLPPE_ALEV_1618_DIS_LA_Current_Num_Coded,
+                        _ => CodedDouble.Empty,
+                    },
+                    Grade = level3Qualification switch
+                    {
+                        Level3.ALevel => laPerformance.TALLPPEGRD_ALEV_DIS_LA_Current,
+                        _ => CodedString.Empty,
+                    }
+                }
+            },
+            England = new PerformanceData
+            {
+                NumberOfStudents = level3Qualification switch
+                {
+                    Level3.ALevel => englandPerformance.TALLPUP_ALEV_1618_DIS_Eng_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ProgressScore = level3Qualification switch
+                {
+                    Level3.ALevel => englandPerformance.VA_INS_ALEV_DIS_Eng_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ConfidenceLevelUpper = level3Qualification switch
+                {
+                    Level3.ALevel => englandPerformance.UCI_INS_ALEV_DIS_Eng_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ConfidenceLevelLower = level3Qualification switch
+                {
+                    Level3.ALevel => englandPerformance.LCI_INS_ALEV_DIS_Eng_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                Result = new PerformanceResult
+                {
+                    Points = level3Qualification switch
+                    {
+                        Level3.ALevel => englandPerformance.TALLPPE_ALEV_1618_DIS_Eng_Current_Num_Coded,
+                        _ => CodedDouble.Empty,
+                    },
+                    Grade = level3Qualification switch
+                    {
+                        Level3.ALevel => englandPerformance.TALLPPEGRD_ALEV_DIS_Eng_Current,
+                        _ => CodedString.Empty,
+                    }
+                }
+            },
+        };
+    }
+
+    private static PerformanceSummaryModel GetNonDisadvantagedStudentsData(
+        Level3 level3Qualification,
+        KS5LAPerformance laPerformance,
+        KS5EnglandPerformance englandPerformance)
+    {
+        return new PerformanceSummaryModel
+        {
+            LocalAuthority = new PerformanceData
+            {
+                NumberOfStudents = level3Qualification switch
+                {
+                    Level3.ALevel => laPerformance.TALLPUP_ALEV_1618_NOTDIS_LA_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ProgressScore = level3Qualification switch
+                {
+                    Level3.ALevel => laPerformance.VA_INS_ALEV_NOTDIS_LA_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ConfidenceLevelUpper = level3Qualification switch
+                {
+                    Level3.ALevel => laPerformance.UCI_INS_ALEV_NOTDIS_LA_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ConfidenceLevelLower = level3Qualification switch
+                {
+                    Level3.ALevel => laPerformance.LCI_INS_ALEV_NOTDIS_LA_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                Result = new PerformanceResult
+                {
+                    Points = level3Qualification switch
+                    {
+                        Level3.ALevel => laPerformance.TALLPPE_ALEV_1618_NOTDIS_LA_Current_Num_Coded,
+                        _ => CodedDouble.Empty,
+                    },
+                    Grade = level3Qualification switch
+                    {
+                        Level3.ALevel => laPerformance.TALLPPEGRD_ALEV_NOTDIS_LA_Current,
+                        _ => CodedString.Empty,
+                    }
+                }
+            },
+            England = new PerformanceData
+            {
+                NumberOfStudents = level3Qualification switch
+                {
+                    Level3.ALevel => englandPerformance.TALLPUP_ALEV_1618_NOTDIS_Eng_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ProgressScore = level3Qualification switch
+                {
+                    Level3.ALevel => englandPerformance.VA_INS_ALEV_NOTDIS_Eng_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ConfidenceLevelUpper = level3Qualification switch
+                {
+                    Level3.ALevel => englandPerformance.UCI_INS_ALEV_NOTDIS_Eng_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ConfidenceLevelLower = level3Qualification switch
+                {
+                    Level3.ALevel => englandPerformance.LCI_INS_ALEV_NOTDIS_Eng_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                Result = new PerformanceResult
+                {
+                    Points = level3Qualification switch
+                    {
+                        Level3.ALevel => englandPerformance.TALLPPE_ALEV_1618_NOTDIS_Eng_Current_Num_Coded,
+                        _ => CodedDouble.Empty,
+                    },
+                    Grade = level3Qualification switch
+                    {
+                        Level3.ALevel => englandPerformance.TALLPPEGRD_ALEV_NOTDIS_Eng_Current,
+                        _ => CodedString.Empty,
+                    }
+                }
+            },
         };
     }
 }

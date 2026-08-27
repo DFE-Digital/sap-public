@@ -1,6 +1,11 @@
 ﻿@using SAPPub.Core.Enums.KS5Qualifications
 @model SAPPub.Web.Areas.Profiles.ViewModels.KS5.AverageResultViewModel
 
+@if (Model is null)
+{
+    return;
+}
+
 @{
     var qualification = ViewData["QualificationLevel"];
     var laName = ViewData["LAName"];
