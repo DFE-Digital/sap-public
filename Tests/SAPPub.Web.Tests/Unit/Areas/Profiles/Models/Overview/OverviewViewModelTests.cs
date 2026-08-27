@@ -133,7 +133,6 @@ public class OverviewViewModelTests
         var result = OverviewViewModel.Map(model);
 
         Assert.True(result.Attainment8.IsAvailable);
-        Assert.NotNull(result.Attainment8.Value);
 
         Assert.Null(result.Attainment8.Value.Value);
         Assert.Equal("Not available", result.Attainment8.Value.Reason);

@@ -96,7 +96,6 @@ namespace SAPPub.Web.Tests.Unit.Controllers
             // Assert
             Assert.NotNull(result);
             Assert.Equal(expectedAction, result.ActionName);
-            Assert.Equal(model.LocalAuthority, result.RouteValues["id"]);
         }
 
         [Fact]

@@ -169,70 +169,70 @@ public class OverviewServiceTests
             KS4Performance = new EstablishmentPerformance
             {
                 Attainment8_Tot_Est_Current_Num_Coded =
-                    new CodedDouble(52.3, null, null),
+                    new CodedDouble(52.3, "", ""),
 
                 EngMaths59_Tot_Est_Current_Pct_Coded =
-                    new CodedDouble(61.2, null, null),
+                    new CodedDouble(61.2, "", ""),
 
                 More1FL_Tot_Est_Current_Pct_Coded =
-                    new CodedDouble(25.4, null, null)
+                    new CodedDouble(25.4, "", "")
             },
 
             KS4LAPerformance = new LAPerformance
             {
                 EngMaths59_Tot_LA_Current_Pct_Coded =
-                    new CodedDouble(55.1, null, null)
+                    new CodedDouble(55.1, "", "")
             },
 
             KS4EnglandPerformance = new EnglandPerformance
             {
                 EngMaths59_Tot_Eng_Current_Pct_Coded =
-                    new CodedDouble(57.8, null, null)
+                    new CodedDouble(57.8, "", "")
             },
 
             Destinations = new KS4EstablishmentDestinations
             {
                 AllDest_Tot_Est_Current_Pct_Coded =
-                    new CodedDouble(91.2, null, null)
+                    new CodedDouble(91.2, "", "")
             },
 
             LADestinations = new KS4LADestinations
             {
                 AllDest_Tot_LA_Current_Pct_Coded =
-                    new CodedDouble(89.3, null, null)
+                    new CodedDouble(89.3, "", "")
             },
 
             EnglandDestinations = new KS4EnglandDestinations
             {
                 AllDest_Tot_Eng_Current_Pct_Coded =
-                    new CodedDouble(90.1, null, null)
+                    new CodedDouble(90.1, "", "")
             },
 
             KS2Performance = new KS2EstablishmentPerformance
             {
                 PTRWM_EXP_Est_Current_Pct_Coded =
-                    new CodedDouble(72.1, null, null),
+                    new CodedDouble(72.1, "", ""),
 
                 PTRWM_HIGH_Est_Current_Pct_Coded =
-                    new CodedDouble(15.2, null, null)
+                    new CodedDouble(15.2, "", "")
             },
 
             KS2LAPerformance = new KS2LAPerformance
             {
                 PTRWM_EXP_LA_Current_Pct_Coded =
-                    new CodedDouble(68.4, null, null),
+                    new CodedDouble(68.4, "", ""),
 
                 PTRWM_HIGH_LA_Current_Pct_Coded =
-                    new CodedDouble(12.7, null, null)
+                    new CodedDouble(12.7, "", "")
             },
 
             KS2EnglandPerformance = new KS2EnglandPerformance
             {
                 PTRWM_EXP_Eng_Current_Pct_Coded =
-                    new CodedDouble(70.0, null, null),
+                    new CodedDouble(70.0, "", ""),
 
                 PTRWM_HIGH_Eng_Current_Pct_Coded =
-                    new CodedDouble(13.5, null, null)
+                    new CodedDouble(13.5, "", "")
             }
         };
 
