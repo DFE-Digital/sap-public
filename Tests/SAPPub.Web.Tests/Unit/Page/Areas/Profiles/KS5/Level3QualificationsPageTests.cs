@@ -1,6 +1,4 @@
-﻿using AngleSharp.Dom;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
-using Moq;
+﻿using Moq;
 using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.ServiceModels;
@@ -600,6 +598,9 @@ public class Level3QualificationsPageTests : PageTestsBase
 
     [Theory]
     [InlineData(Level3.ALevel)]
+    [InlineData(Level3.Academic)]
+    [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
     public async Task Level3QualificationsPage_Displays_Disadvantaged_Students_Info(Level3 qualification)
     {
         // Arrange
@@ -615,7 +616,8 @@ public class Level3QualificationsPageTests : PageTestsBase
         var tableId = "disadvantaged-students-table";
         var disadavantagedStudentsTable = doc.QuerySelector($"#{tableId}");
 
-        if (qualification == Level3.ALevel)
+        if (qualification == Level3.ALevel ||
+            qualification == Level3.Academic)
         {
             // Assert disadvantaged students info accordion
             Assert.NotNull(disadvantagedStudentsAccordion);
@@ -657,6 +659,9 @@ public class Level3QualificationsPageTests : PageTestsBase
 
     [Theory]
     [InlineData(Level3.ALevel)]
+    [InlineData(Level3.Academic)]
+    [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
     public async Task Level3QualificationsPage_Displays_NonDisadvantaged_Students_Info(Level3 qualification)
     {
         // Arrange
@@ -671,7 +676,8 @@ public class Level3QualificationsPageTests : PageTestsBase
         var tableId = "non-disadvantaged-students-table";
         var nonDisadavantagedStudentsTable = doc.QuerySelector($"#{tableId}");
 
-        if (qualification == Level3.ALevel)
+        if (qualification == Level3.ALevel ||
+            qualification == Level3.Academic)
         {
             // Assert nondisadvantaged students info accordion
             Assert.NotNull(nonDisadvantagedStudentsDetails);
