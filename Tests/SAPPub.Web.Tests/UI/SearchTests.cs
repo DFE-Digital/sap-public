@@ -494,6 +494,53 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
         Assert.True(isLimitNotificationBannerVisible);
     }
 
+    [Fact]
+    public async Task SearchResults_SchoolLinkNavigatesToOverview_WhenOverviewEnabled()
+    {
+        await Page.GotoAsync("search");
+
+        await Page.FillAsync(
+            "#NameSearchTerm",
+            "St Paul's Church of England Academy");
+
+        await Page.ClickAsync("#search");
+
+        await Page.WaitForLoadStateAsync(
+            LoadState.NetworkIdle);
+
+        var schoolLink =
+            Page.GetByRole(
+                AriaRole.Link,
+                new()
+                {
+                    Name = "St Paul's Church of England Academy",
+                    Exact = true
+                })
+            .First;
+
+        await schoolLink.ClickAsync();
+
+        await Page.WaitForLoadStateAsync(
+            LoadState.DOMContentLoaded);
+
+        await Expect(Page)
+            .ToHaveURLAsync(
+                new System.Text.RegularExpressions.Regex(
+                    @"/school/143034/st-pauls-church-of-england-academy/overview/?$"));
+    }
+
+    [Fact]
+    public async Task SchoolEntryRoute_RedirectsToOverview_WhenOverviewEnabled()
+    {
+        await Page.GotoAsync(
+            "school/143034/st-pauls-church-of-england-academy");
+
+        await Expect(Page)
+            .ToHaveURLAsync(
+                new System.Text.RegularExpressions.Regex(
+                    @"/school/143034/st-pauls-church-of-england-academy/overview/?$"));
+    }
+
     private static string GenerateCookieValue(int cookiesCount = 100)
     {
         return string.Join(",", Enumerable.Range(1, cookiesCount).Select(a => a.ToString()).ToList());

@@ -113,6 +113,7 @@
     }
 }
 
+/* Banner */
 .school-profile-banner {
     background-color: #1d70b8;
     padding-top: 20px;
@@ -120,6 +121,25 @@
 
     &__name {
         color: #ffffff;
+    }
+}
+
+.govuk-template--rebranded {
+    .govuk-service-navigation {
+        background-color: #1d70b8;
+        border-top: 1px solid #ffffff;
+        border-bottom: 1px solid #ffffff;
+
+        .govuk-service-navigation__container {
+            background-color: #1d70b8;
+        }
+
+        .govuk-service-navigation__service-name,
+        .govuk-service-navigation__service-name a,
+        .govuk-service-navigation__link,
+        .govuk-service-navigation__link:visited {
+            color: #ffffff;
+        }
     }
 }
 

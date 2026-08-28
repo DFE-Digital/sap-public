@@ -1,22 +1,25 @@
-﻿@{
+﻿@using SAPPub.Web.Areas.Profiles.ViewModels
+
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 
-    var schoolName = ViewData["SchoolName"]?.ToString();
+    if (Model is not ISchoolProfileViewModel profileModel)
+    {
+        throw new InvalidOperationException(
+            $"{Model?.GetType().Name ?? "Unknown model"} must implement {nameof(ISchoolProfileViewModel)}.");
+    }
 }
 
 @section SchoolProfileBanner {
-    @if (!string.IsNullOrWhiteSpace(schoolName))
-    {
-        <div class="school-profile-banner">
-            <div class="govuk-width-container app-width-container">
-                <p class="school-profile-banner__name
-                                  govuk-heading-l
-                                  govuk-!-margin-bottom-0">
-                    @schoolName
-                </p>
-            </div>
+    <div class="school-profile-banner">
+        <div class="govuk-width-container app-width-container">
+            <h1 class="school-profile-banner__name
+                          govuk-heading-l
+                          govuk-!-margin-bottom-0">
+                @profileModel.SchoolName
+            </h1>
         </div>
-    }
+    </div>
 }
 
 @RenderBody()

@@ -6,7 +6,7 @@ using SAPPub.Web.Models.Charts;
 
 namespace SAPPub.Web.Models;
 
-public class BaseViewModel 
+public class BaseViewModel : ISchoolProfileViewModel
 {
     public required string URN { get; set; }
     public required string SchoolName { get; set; }

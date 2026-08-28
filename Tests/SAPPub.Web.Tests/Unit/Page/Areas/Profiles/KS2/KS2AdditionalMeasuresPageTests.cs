@@ -73,8 +73,8 @@ public class KS2AdditionalMeasuresPageTests : PageTestsBase
 
         // Assert
         var heading = doc.QuerySelectorAll("h2");
-        Assert.NotNull(heading[1]);
-        Assert.Contains("Additional measures", heading[1].TextContent.Trim());
+        Assert.NotNull(heading[2]);
+        Assert.Contains("Additional measures", heading[2].TextContent.Trim());
     }
 
     [Fact]

@@ -8,7 +8,6 @@
 @{
     ViewData["Header"] = "Overview";
     ViewData["Title"] = $"{Model.SchoolName} - {ViewData["Header"]}";
-    ViewData["SchoolName"] = Model.SchoolName;
 }
 
 
@@ -27,15 +26,14 @@
 
     <div class="govuk-grid-column-three-quarters">
 
-        <h1 class="govuk-heading-xl">
-            @Model.SchoolName overview
-        </h1>
-
-        <h1 class="govuk-heading-xl">
+        <h2 class="govuk-heading-xl">
             @ViewData["Header"]
-        </h1>
+        </h2>
+        
+        <!-- THE FOLOWING MARKUP IS FROM STORY 0 TESTING AND HAS ALL THE DATA REQUIRED FOR THE PAGE.  
+             IT HAS BEEN LEFT IN BECAUSE IT MAY BE USEFUL FOR THE OTHER AT A GLANCE STORIES -->
 
-        <h2 class="govuk-heading-l">
+@*         <h2 class="govuk-heading-l">
             School information
         </h2>
 
@@ -442,7 +440,7 @@
                 </table>
             }
         }
-
+ *@
     </div>
 </div>
 

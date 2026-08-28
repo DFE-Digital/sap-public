@@ -46,22 +46,6 @@ public class AcademicPerformanceSubjectsEnteredTests(WebApplicationSetupFixture 
         Assert.NotEmpty(heading!.Trim());
     }
 
-    [Fact]
-    public async Task AcademicPerformanceSubjectsEnteredPage_Displays_SchoolName_Caption()
-    {
-        // Arrange
-        await Page.GotoAsync(_pageUrl);
-
-        // Act
-        var schoolNameCaptionLocator = Page.Locator("#school-name-caption");
-        var isVisible = await schoolNameCaptionLocator.IsVisibleAsync();
-        var schoolNameCaption = await schoolNameCaptionLocator.TextContentAsync();
-
-        // Assert
-        Assert.True(isVisible);
-        Assert.NotNull(schoolNameCaption);
-        Assert.Equal("Loreto High School Chorlton", schoolNameCaption);
-    }
 
     [Fact]
     public async Task AcademicPerformanceSubjectsEnteredPage_Displays_VerticalNavigation()

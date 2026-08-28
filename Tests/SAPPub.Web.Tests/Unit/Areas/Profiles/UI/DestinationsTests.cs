@@ -54,23 +54,6 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
     }
 
     [Fact]
-    public async Task DestinationsPage_Displays_SchoolName_Caption()
-    {
-        // Arrange
-        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
-
-        // Act
-        var schoolNameCaptionLocator = Page.Locator("#school-name-caption");
-        var isVisible = await schoolNameCaptionLocator.IsVisibleAsync();
-        var schoolNameCaption = await schoolNameCaptionLocator.TextContentAsync();
-
-        // Assert
-        Assert.True(isVisible);
-        Assert.NotNull(schoolNameCaption);
-        Assert.Equal("Loreto High School Chorlton", schoolNameCaption);
-    }
-
-    [Fact]
     public async Task DestinationsPage_Displays_VerticalNavigation()
     {
         var nav = new VerticalNavigationHelper(Page);

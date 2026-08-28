@@ -4,7 +4,7 @@ using SAPPub.Web.Models;
 
 namespace SAPPub.Web.Areas.Profiles.ViewModels;
 
-public class ProfileBaseViewModel 
+public class ProfileBaseViewModel : ISchoolProfileViewModel
 {
     public required string URN { get; set; }
 

@@ -70,24 +70,11 @@ public class PupilProgressPageTests : PageTestsBase
         var doc = await Fixture.BrowseToPage(url);
 
         // Assert
-        var heading = doc.QuerySelector("h1");
-        Assert.NotNull(heading);
-        Assert.Equal("Academic performance", heading.TextContent.Trim());
-    }
+        var h2Elements = doc.GetElementsByTagName("h2");
 
-    [Fact]
-    public async Task PupilProgressPage_Displays_SchoolName_Caption()
-    {
-        // Arrange
-        var url = BuildUrl(_urn, _schoolName, _pageRoute);
-
-        // Act
-        var doc = await Fixture.BrowseToPage(url);
-
-        // Assert
-        var schoolNameCaption = doc.GetElementById("school-name-caption");
-        Assert.NotNull(schoolNameCaption);
-        Assert.Equal(_schoolName, schoolNameCaption.TextContent.Trim());
+        Assert.Contains(
+            h2Elements,
+            x => x.TextContent.Trim() == "Academic performance");
     }
 
     [Fact]

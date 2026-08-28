@@ -52,22 +52,6 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
         Assert.NotEmpty(heading!.Trim());
     }
 
-    [Fact]
-    public async Task CurriculumAndExtraCurricularActivitiesPage_Displays_SchoolName_Caption()
-    {
-        // Arrange
-        await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
-
-        // Act
-        var schoolNameCaptionLocator = Page.Locator("#school-name-caption");
-        var isVisible = await schoolNameCaptionLocator.IsVisibleAsync();
-        var schoolNameCaption = await schoolNameCaptionLocator.TextContentAsync();
-
-        // Assert
-        Assert.True(isVisible);
-        Assert.NotNull(schoolNameCaption);
-        Assert.Equal("St Paul's Church of England Academy", schoolNameCaption);
-    }
 
     [Fact]
     public async Task CurriculumAndExtraCurricularActivitiesPage_Displays_VerticalNavigation()
