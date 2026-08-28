@@ -107,11 +107,15 @@
             Measures on student retention will be available shortly in a future release.
         </div>
         
-        @if (Model.Level3Qualification == Level3.ALevel)
+        @if(Model.Level3Qualification == Level3.ALevel || 
+            Model.Level3Qualification == Level3.Academic)
         {
             @* Performance Summary *@
             <partial name="_PerformanceSummary" model="@Model.PerformanceGroupsData" view-data='new ViewDataDictionary(ViewData) { ["LAName"] = Model.LAName }' />
+        }
 
+        @if (Model.Level3Qualification == Level3.ALevel)
+        {            
             @* Additional data *@
             <partial name="_AdditionalData" model="@Model.AdditionalData" view-data='new ViewDataDictionary(ViewData) { ["LAName"] = Model.LAName }' />
         }

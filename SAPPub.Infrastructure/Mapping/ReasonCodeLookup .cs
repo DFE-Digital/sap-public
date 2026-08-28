@@ -6,7 +6,7 @@ public sealed class ReasonCodeLookup : IReasonCodeLookup
 {
     private readonly Dictionary<string, string> _map;
     public ReasonCodeLookup(Dictionary<string, string> map) =>
-        _map = new Dictionary<string, string>(map, StringComparer.OrdinalIgnoreCase);
+        _map = new Dictionary<string, string>(map);
 
     public bool TryGet(string code, out string reasonText) =>
         _map.TryGetValue(code, out reasonText!);
