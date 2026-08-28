@@ -49,6 +49,7 @@ public partial class Program
         builder.Services.AddHttpClient<IPostcodeLookupService, PostcodeLookupService>();
         builder.Services.AddGovUkFrontend(options =>
         {
+            //options.Rebrand = true;
             options.GetCspNonceForRequest = context =>
             {
                 return CSPHelper.RandomCharacters;
