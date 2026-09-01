@@ -12,6 +12,7 @@ public class AccessibilityTests(WebApplicationSetupFixture fixture) : BasePageTe
     private List<string> _pageUrls = new List<string>
     {
         // common pages
+        "school/105574/loreto-high-school-chorlton/overview",
         "school/105574/loreto-high-school-chorlton/about",
         "school/137552/stewards-academy-science-specialist-harlow/about",
         "school/100273/saint-paul-roman-catholic-infant-school/about",
