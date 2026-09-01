@@ -13,6 +13,11 @@ public class AccessibilityTests(WebApplicationSetupFixture fixture) : BasePageTe
     {
         // common pages
         "school/105574/loreto-high-school-chorlton/overview",
+        "school/137552/stewards-academy-science-specialist-harlow/overview",
+        "school/100273/saint-paul-roman-catholic-infant-school/overview",
+        "school/107564/todmorden-high-school/overview",
+        "school/145744/abbey-park-school/overview",
+
         "school/105574/loreto-high-school-chorlton/about",
         "school/137552/stewards-academy-science-specialist-harlow/about",
         "school/100273/saint-paul-roman-catholic-infant-school/about",
