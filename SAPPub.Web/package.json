@@ -9,14 +9,14 @@
   },
   "keywords": [],
   "dependencies": {
-    "@ministryofjustice/frontend": "^7.1.1",
+    "@ministryofjustice/frontend": "^11.0.0",
     "async": "^3.2.6",
     "chart.js": "^4.5.1",
     "chartjs-plugin-datalabels": "^2.2.0",
     "classnames": "^2.5.1",
     "dfe-frontend": "^2.0.1",
     "file-saver": "^2.0.5",
-    "govuk-frontend": "^5.13.0",
+    "govuk-frontend": "^6.5.0",
     "leaflet": "^1.9.4",
     "leaflet-gesture-handling": "^1.2.2",
     "moment": "^2.30.1"
