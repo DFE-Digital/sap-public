@@ -90,7 +90,7 @@ public class KS2Controller(IOptions<UrlLinksOptions> urlLinksOptions) : Controll
         string schoolName,
         CancellationToken ct)
     {
-        var additionalServicesModel = await kS2AdditionalMeasuresService.GetAdditionalMeasures(urn, ct);
+        var additionalServicesModel = await kS2AdditionalMeasuresService.GetAdditionalMeasures(urn, Establishment.LAId, ct);
 
         var model = AcademicPerformanceAdditionalMeasuresViewModel.Map(Establishment, additionalServicesModel);
         return View(model);

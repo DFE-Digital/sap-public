@@ -50,7 +50,7 @@
         <h2 class="govuk-heading-l">@PrimarySchoolPageTitles.AdditionalMeasures</h2>
 
         <p class="govuk-body">
-            Information in this section is for the 2024 to 2025 academic year.
+            Information in this section is for the @Model.CurrentYear academic year.
         </p>
 
         <p class="govuk-body">
@@ -120,12 +120,203 @@
             </tbody>
         </table>
 
+
+        <h2 class="govuk-heading-l govuk-!-margin-top-9">Number of pupils at the end of key stage 2</h2>
+            <table id="sen-population-table" class="govuk-table">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header">Pupil group</th>
+                        <th scope="col" class="govuk-table__header">School</th>
+                        <th scope="col" class="govuk-table__header">@Model.LAName</th>
+                        <th scope="col" class="govuk-table__header">England</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">Number of pupils at the end of KS2</th>
+                        <td class="govuk-table__cell">@Model.EstablishmentNumPupilsEndOfKS2.DisplayNumber()</td>
+                        <td class="govuk-table__cell">@Model.LANumPupilsEndOfKS2.DisplayNumber()</td>
+                        <td class="govuk-table__cell">@Model.EnglandNumPupilsEndOfKS2.DisplayNumber()</td>
+                    </tr>
+                </tbody>
+            </table>
+
         <govuk-accordion id="pupil-population-accordion" heading-level="3">
             <govuk-accordion-item expanded="false">
-                <govuk-accordion-item-heading>Pupil population</govuk-accordion-item-heading>
+                <govuk-accordion-item-heading>Further population data for ends of KS2</govuk-accordion-item-heading>
                 <govuk-accordion-item-content>
+                    <section id="pupils-with-sen-support-section">
+                        <h4 class="govuk-heading-m">Number of Pupils by characteristics</h4>
+
+                        <p class="govuk-body">
+                            Compare the number of pupils by characteristics at this school or college, with pupils at state‑funded school locally and across England.
+
+                        </p>
+
+                        <!--TODOL:id-->
+                        <govuk-details id="details-gcse-grades-explained">
+                            <govuk-details-summary>
+                                More information about the pupil characteristics
+                            </govuk-details-summary>
+                            <govuk-details-text>
+                                <h4>English as an additional language (EAL)</h4>
+                                <p class="govuk-body">
+                                    A child is recorded as having English as an additional language (EAL) if they hear or use a language other than English at home. 
+                                    This does not show how well a child speaks English and does not mean they are new to the UK.
+                                </p>
+
+                                <h4>Non-mobile pupils</h4>
+                                <p class="govuk-body">
+                                    Non-mobile pupils are pupils who were at the school throughout both year 5 and year 6.
+                                </p>
+
+                                <h4>Disadvantaged pupils </h4>
+                                <p class="govuk-body">
+                                    Pupils identified as disadvantaged are those who either:
+                                 
+
+                                </p>
+                                <ul class="govuk-list govuk-list--bullet">
+                                    <li>were eligible for free school meals at any time during the last 6 years</li>
+                                    <li>have been in the care of the local council for a day or more</li>
+                                    <li>have been adopted from care</li>
+                                </ul>
+
+                            </govuk-details-text>
+                        </govuk-details>
+
+                        <table id="ks2-population-breakdown-table" class="govuk-table">
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header"></th>
+                                    <th scope="col" class="govuk-table__header">School</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                <tr class="govuk-table__row">
+                                    <th scope="row" class="govuk-table__header">Girls</th>
+                                    <td class="govuk-table__cell">@Model.EstablishmentNumGirlsEndOfKS2.DisplayNumber()</td>
+                                </tr>
+                                <tr class="govuk-table__row">
+                                    <th scope="row" class="govuk-table__header">Boys</th>
+                                    <td class="govuk-table__cell">@Model.EstablishmentNumBoysEndOfKS2.DisplayNumber()</td>
+                                </tr>
+                                <tr class="govuk-table__row">
+                                    <th scope="row" class="govuk-table__header">English as an additional language (EAL)</th>
+                                    <td class="govuk-table__cell">@Model.EstablishmentNumEALEndOfKS2.DisplayNumber()</td>
+                                </tr>
+                                <tr class="govuk-table__row">
+                                    <th scope="row" class="govuk-table__header">Non-mobile pupils</th>
+                                    <td class="govuk-table__cell">@Model.EstablishmentNumNonMobileEndOfKS2.DisplayNumber()</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </section>
                     <section id="pupils-with-ehcp-section">
-                        <h4 class="govuk-heading-m">Pupils with an EHCP</h4>
+                        <h4 class="govuk-heading-m">Disadvantaged pupils</h4>
+                        <table id="ehcp-population-table" class="govuk-table">
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header"></th>
+                                    <th scope="col" class="govuk-table__header">School</th>
+                                    <th scope="col" class="govuk-table__header">@Model.LAName</th>
+                                    <th scope="col" class="govuk-table__header">England</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                <tr class="govuk-table__row">
+                                    <th scope="row" class="govuk-table__header">Number of disadvantaged pupils</th>
+                                    <td class="govuk-table__cell">@Model.EstablishmentNumDisadvantagedEndOfKS2.DisplayNumber()</td>
+                                    <td class="govuk-table__cell">@Model.LANumDisadvantagedEndOfKS2.DisplayNumber()</td>
+                                    <td class="govuk-table__cell">@Model.EnglandNumDisadvantagedEndOfKS2.DisplayNumber()</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- TODO: id -->
+                    <govuk-details id="details-gcse-grades-explained">
+                        <govuk-details-summary>
+                            Compare with non-disadvantaged pupils
+                        </govuk-details-summary>
+                        <govuk-details-text>
+                            <h4>Non-disadvantaged pupils</h4>
+                            <table id="ehcp-population-table" class="govuk-table">          <!-- TODO: id-->
+                                <thead class="govuk-table__head">
+                                    <tr class="govuk-table__row">
+                                        <th scope="col" class="govuk-table__header"></th>
+                                        <th scope="col" class="govuk-table__header">@Model.LAName</th>
+                                        <th scope="col" class="govuk-table__header">England</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="govuk-table__body">
+                                    <tr class="govuk-table__row">
+                                        <th scope="row" class="govuk-table__header">Number of non-disadvantaged pupils</th>
+                                        <td class="govuk-table__cell">@Model.LANumNonDisadvantagedEndOfKS2.DisplayNumber()</td>
+                                        <td class="govuk-table__cell">@Model.EnglandNumNonDisadvantagedEndOfKS2.DisplayNumber()</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </govuk-details-text>
+                    </govuk-details>
+
+                </govuk-accordion-item-content>
+            </govuk-accordion-item>
+        </govuk-accordion>
+
+        <!-- TODO: Table ids -->
+
+
+
+        <h2 class="govuk-heading-l  govuk-!-margin-top-9">Number of pupils at the whole school</h2>
+        <table id="sen-population-table" class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Pupil group</th>
+                    <th scope="col" class="govuk-table__header">School</th>
+                    <th scope="col" class="govuk-table__header">England mainstream schools</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Number of pupils on roll</th>
+                    <td class="govuk-table__cell">@Model.EstablishmentNumberOfPupils.DisplayText()</td>
+                    <td class="govuk-table__cell">@Model.EnglandNumberOfPupils.DisplayNumber()</td>
+                </tr>
+            </tbody>
+        </table>
+
+
+        <govuk-accordion id="pupil-population-accordion" heading-level="3">
+            <govuk-accordion-item expanded="false">
+                <govuk-accordion-item-heading>Further population data for the whole school</govuk-accordion-item-heading>
+                <govuk-accordion-item-content>
+                    <section id="pupils-with-sen-support-section">
+                        <h4 class="govuk-heading-m">Pupils with Special Educational Needs (SEN) support</h4>
+                        <p class="govuk-body">
+                            Pupils with special educational needs who receive extra support than other children of the same age in school but do not have an EHCP.
+                        </p>
+                        <table id="sen-population-table" class="govuk-table">
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header govuk-!-width-one-half"></th>
+                                    <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">School</th>
+                                    <th scope="col" class="govuk-table__header">England mainstream schools</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                <tr class="govuk-table__row">
+                                    <th scope="row" class="govuk-table__header">Pupils with SEN support</th>
+                                    <td class="govuk-table__cell">@Model.EstablishmentSENSupportPopulation.DisplayPercentage()</td>
+                                    <td class="govuk-table__cell">@Model.EnglandSENSupportPopulation.DisplayPercentage()</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </section>
+                    <section id="pupils-with-ehcp-section">
+                        <h4 class="govuk-heading-m">Pupils with an Education, Health and Care Plan (EHCP)</h4>
                         <p class="govuk-body">
                             An EHCP is a legal document for children and young people aged up to 25 who need more support than is available through special educational needs (SEN) support.  
                         </p>
@@ -135,38 +326,21 @@
                         <table id="ehcp-population-table" class="govuk-table">
                             <thead class="govuk-table__head">
                                 <tr class="govuk-table__row">
-                                    <th scope="col" class="govuk-table__header govuk-!-width-one-half">School</th>
-                                    <th scope="col" class="govuk-table__header">England - mainstream primary schools</th>
+                                    <th scope="col" class="govuk-table__header govuk-!-width-one-half"></th>
+                                    <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">School</th>
+                                    <th scope="col" class="govuk-table__header">England mainstream schools</th>
                                 </tr>
                             </thead>
                             <tbody class="govuk-table__body">
                                 <tr class="govuk-table__row">
+                                    <th scope="row" class="govuk-table__header">Pupils with EHCPs</th>
                                     <td class="govuk-table__cell">@Model.EstablishmentEHCPPopulation.DisplayPercentage()</td>
                                     <td class="govuk-table__cell">@Model.EnglandEHCPPopulation.DisplayPercentage()</td>
-                                </tr>                                
-                            </tbody>
-                        </table>
-                    </section>
-                    <section id="pupils-with-sen-support-section">
-                        <h4 class="govuk-heading-m">Pupils with SEN support</h4>
-                        <p class="govuk-body">
-                            Pupils with special educational needs who receive extra support in school but do not have an EHCP. 
-                        </p>
-                        <table id="sen-population-table" class="govuk-table">
-                            <thead class="govuk-table__head">
-                                <tr class="govuk-table__row">
-                                    <th scope="col" class="govuk-table__header govuk-!-width-one-half">School</th>
-                                    <th scope="col" class="govuk-table__header">England</th>
-                                </tr>
-                            </thead>
-                            <tbody class="govuk-table__body">
-                                <tr class="govuk-table__row">
-                                    <td class="govuk-table__cell">@Model.EstablishmentSENSupportPopulation.DisplayPercentage()</td>
-                                    <td class="govuk-table__cell">@Model.EnglandSENSupportPopulation.DisplayPercentage()</td>
                                 </tr>
                             </tbody>
                         </table>
                     </section>
+
                 </govuk-accordion-item-content>
             </govuk-accordion-item>
         </govuk-accordion>
