@@ -36,13 +36,12 @@ k6 run -e SESSION_ID=<gatewaycookieid> --env SCENARIO=stress load-test.js
 k6 run -e SESSION_ID=<gatewaycookieid> --env SCENARIO=quick load-test.js
 ```
 
-## Test Scenarios
+## Test Scenarios - TBC
 
 ### Baseline Test
-- **Users**: 250 concurrent
+- **Users**: 200 concurrent
 - **Duration**: 14 minutes
 - **Purpose**: Normal operations validation
-- **Target RPS**: 5-10 sustained
 
 ### Peak Surge Test
 - **Users**: 3000 concurrent at peak
@@ -69,7 +68,7 @@ k6 run -e SESSION_ID=<gatewaycookieid> --env SCENARIO=quick load-test.js
 
 ***
 
-## Key Metrics
+## Key Metrics - TBC
 
 - **Response Time**: <3s for 95% of requests
 - **Error Rate**: <1% during normal load
