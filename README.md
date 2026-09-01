@@ -94,10 +94,10 @@ This repository is an internal artefact store and not a public interface.
 <!-- GETTING STARTED -->
 ## Prerequisites
 
-- [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
-- [Node.js 22.x](https://nodejs.org/) (for building frontend assets)
+- [.NET 10.0 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
+- [Node.js 24.x](https://nodejs.org/) (for building frontend assets)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop) (optional, for containerized development)
-- [Visual Studio 2022](https://visualstudio.microsoft.com/) or [Visual Studio Code](https://code.visualstudio.com/) (recommended)
+- [Visual Studio 2026](https://visualstudio.microsoft.com/) or [Visual Studio Code](https://code.visualstudio.com/) (recommended)
 
 ## Getting Started
 
