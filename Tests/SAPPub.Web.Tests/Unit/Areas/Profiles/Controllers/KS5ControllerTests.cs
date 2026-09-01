@@ -115,7 +115,8 @@ public class KS5ControllerTests : BaseProfilesTests
 
         // Assert Disadvantaged and NonDisadvantaged students data
         if (qualification == Level3.ALevel ||
-            qualification == Level3.Academic)
+            qualification == Level3.Academic ||
+            qualification == Level3.AppliedGeneral)
         {
             // Disadvantaged - Establishment
             Assert.Equal(expectedResult.DisadvantagedStudentsData.Establishment!.NumberOfStudents, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.NumberOfStudents.Value);

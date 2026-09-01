@@ -192,4 +192,24 @@ public class KS5EstablishmentPerformance
 
     // Points for establishment - Disadvantaged - Academic qualifications
     public CodedDouble TALLPPE_ACAD_1618_DIS_Est_Current_Num_Coded { get; set; }
+
+    // Applied general qualifications DisAdvantaged
+
+    // Number of students for establishment - Disadvantaged - Applied general qualifications
+    public CodedDouble TALLPUP_AGEN_DIS_Est_Current_Num_Coded { get; set; }
+
+    // Progress score for establishment - Disadvantaged - Applied general qualifications
+    public CodedDouble VA_INS_AGEN_DIS_Est_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for establishment upper - Disadvantaged - Applied general qualifications
+    public CodedDouble UCI_INS_AGEN_DIS_Est_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for establishment lower - Disadvantaged - Applied general qualifications
+    public CodedDouble LCI_INS_AGEN_DIS_Est_Current_Num_Coded { get; set; }
+
+    // Grade for establishment - Disadvantaged - Applied general qualifications
+    public CodedString TALLPPEGRD_AGEN_DIS_Est_Current { get; set; }
+
+    // Points for establishment - Disadvantaged - Applied general qualifications
+    public CodedDouble TALLPPE_AGEN_DIS_Est_Current_Num_Coded { get; set; }
 }

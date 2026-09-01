@@ -60,7 +60,7 @@ public class KS2Controller(IOptions<UrlLinksOptions> urlLinksOptions) : Controll
         string schoolName,
         CancellationToken ct)
     {
-        var meetingOrExceedingStandardsModel = await ks2MeetingOrExceedingStandardsService.GetMeetingOrExceedingStandardsPercentages(urn, ct);
+        var meetingOrExceedingStandardsModel = await ks2MeetingOrExceedingStandardsService.GetMeetingOrExceedingStandardsPercentages(urn, Establishment.LAId, ct);
 
         var model = AcademicPerformanceMeetingOrExceedingStandardsViewModel.Map(Establishment, meetingOrExceedingStandardsModel);
         return View(model);
