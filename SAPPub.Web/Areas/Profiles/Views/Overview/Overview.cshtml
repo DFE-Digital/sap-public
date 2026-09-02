@@ -3,11 +3,13 @@
 @using SAPPub.Web.Constants
 @using SAPPub.Web.Helpers
 @using SAPPub.Web.ViewComponents.VerticalNavigation
+@using SAPPub.Web.ViewComponents.SchoolProfilePagination
 
 @{
     ViewData["Header"] = "Overview";
     ViewData["Title"] = $"{Model.SchoolName} - {ViewData["Header"]}";
 }
+
 
 <div class="govuk-grid-row">
     @await Component.InvokeAsync(
@@ -24,15 +26,14 @@
 
     <div class="govuk-grid-column-three-quarters">
 
-        <span class="govuk-caption-xl">
-            @Model.SchoolName
-        </span>
-
-        <h1 class="govuk-heading-xl">
+        <h2 class="govuk-heading-xl">
             @ViewData["Header"]
-        </h1>
+        </h2>
+        
+        <!-- THE FOLOWING MARKUP IS FROM STORY 0 TESTING AND HAS ALL THE DATA REQUIRED FOR THE PAGE.  
+             IT HAS BEEN LEFT IN BECAUSE IT MAY BE USEFUL FOR THE OTHER AT A GLANCE STORIES -->
 
-        <h2 class="govuk-heading-l">
+@*         <h2 class="govuk-heading-l">
             School information
         </h2>
 
@@ -439,9 +440,15 @@
                 </table>
             }
         }
-
+ *@
     </div>
 </div>
+
+@await Component.InvokeAsync(
+"SchoolProfilePagination",
+    SchoolProfilePaginationModel.From(
+        Model,
+        RouteConstants.Overview))
 
 @section Scripts {
     <script nonce="@Html.ScriptNonce().ToString()"

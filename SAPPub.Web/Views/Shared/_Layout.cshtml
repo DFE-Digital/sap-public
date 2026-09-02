@@ -116,6 +116,8 @@
         </govuk-service-navigation-nav>
     </govuk-service-navigation>
 
+    @await RenderSectionAsync("SchoolProfileBanner", required: false)
+
     <div class="govuk-width-container app-width-container">
         @await Html.PartialAsync("_PhaseBanner")
         @if (!string.IsNullOrWhiteSpace(ViewBag.BackUrl))

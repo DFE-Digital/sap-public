@@ -64,23 +64,6 @@ public class MeetingOrExceedingStandardsTests(WebApplicationSetupFixture fixture
     }
 
     [Fact]
-    public async Task MeetingOrExceedingStandardsResultsPage_Displays_SchoolName_Caption()
-    {
-        // Arrange
-        await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
-
-        // Act
-        var schoolNameCaptionLocator = Page.Locator("#school-name-caption");
-        var isVisible = await schoolNameCaptionLocator.IsVisibleAsync();
-        var schoolNameCaption = await schoolNameCaptionLocator.TextContentAsync();
-
-        // Assert
-        Assert.True(isVisible);
-        Assert.NotNull(schoolNameCaption);
-        Assert.Equal("St Paul's Church of England Academy", schoolNameCaption);
-    }
-
-    [Fact]
     public async Task MeetingOrExceedingStandardsResultsPage_Displays_VerticalNavigation()
     {
         var performancePage = "school/143034/st-pauls-church-of-england-academy/primary-performance/pupil-progress";

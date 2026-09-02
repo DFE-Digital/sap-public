@@ -52,23 +52,6 @@ public class ScaledScoresTests(WebApplicationSetupFixture fixture) : BasePageTes
     }
 
     [Fact]
-    public async Task SubjectScaledScoresResultsPage_Displays_SchoolName_Caption()
-    {
-        // Arrange
-        await Page.GotoAsync(_schoolUrnToUrlMap["149976"]);
-
-        // Act
-        var schoolNameCaptionLocator = Page.Locator("#school-name-caption");
-        var isVisible = await schoolNameCaptionLocator.IsVisibleAsync();
-        var schoolNameCaption = await schoolNameCaptionLocator.TextContentAsync();
-
-        // Assert
-        Assert.True(isVisible);
-        Assert.NotNull(schoolNameCaption);
-        Assert.Equal("Four Elms Primary School", schoolNameCaption);
-    }
-
-    [Fact]
     public async Task SubjectScaledScoresResultsPage_Displays_VerticalNavigation()
     {
         var performancePage = "school/149976/four-elms-primary-school/primary-performance/pupil-progress";

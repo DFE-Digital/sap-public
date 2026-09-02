@@ -70,8 +70,8 @@ public class ScaledScoresAcademicPerformacePageTests : PageTestsBase
 
         // Assert
         var heading = doc.QuerySelectorAll("h2");
-        Assert.NotNull(heading[1]);
-        Assert.Contains("Scaled scores", heading[1].TextContent.Trim());
+        Assert.NotNull(heading[2]);
+        Assert.Contains("Scaled scores", heading[2].TextContent.Trim());
     }
 
     [Fact]

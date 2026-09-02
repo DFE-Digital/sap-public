@@ -377,8 +377,6 @@ public class AboutPageTests : PageTestsBase
         var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
         var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
 
-        Assert.Null(previousLink);
-
         Assert.NotNull(nextLink);
         Assert.Contains("/admissions/primary", nextLink.GetAttribute("href"));
     }
@@ -408,13 +406,21 @@ public class AboutPageTests : PageTestsBase
         var pagination = doc.QuerySelector("nav.govuk-pagination");
         Assert.NotNull(pagination);
 
-        var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
-        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
+        var previousLink =
+            pagination.QuerySelector(".govuk-pagination__prev a");
 
-        Assert.Null(previousLink);
+        var nextLink =
+            pagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.NotNull(previousLink);
+        Assert.Contains(
+            "/overview",
+            previousLink.GetAttribute("href"));
 
         Assert.NotNull(nextLink);
-        Assert.Contains("/admissions/secondary", nextLink.GetAttribute("href"));
+        Assert.Contains(
+            "/admissions/secondary",
+            nextLink.GetAttribute("href"));
     }
 
     [Fact]
@@ -440,21 +446,57 @@ public class AboutPageTests : PageTestsBase
         var doc = await Fixture.BrowseToPage(BuildUrl(aboutSchoolModel.Urn, aboutSchoolModel.SchoolName, _pageRoute));
 
         // Assert
-        Assert.Null(doc.GetRowContentByIdAndKey("school-features-summary", "Value and ethos"));
-        Assert.Null(doc.GetRowContentByIdAndKey("school-features-summary", "Headteacher"));
-        Assert.NotNull(doc.GetRowContentByIdAndKey("school-features-summary", "Headteacher, principal, or chief executive"));
-        var h1Elements = doc.GetElementsByTagName("h1");
-        var h2Elements = doc.GetElementsByTagName("h2");
-        Assert.Equal("About the school or college", h1Elements[0].TextContent);
-        Assert.Equal("Key features", h2Elements[2].TextContent);
-        Assert.Equal("Policies", h2Elements[3].TextContent);
+        Assert.Null(
+            doc.GetRowContentByIdAndKey(
+                "school-features-summary",
+                "Value and ethos"));
+
+        Assert.Null(
+            doc.GetRowContentByIdAndKey(
+                "school-features-summary",
+                "Headteacher"));
+
+        Assert.NotNull(
+            doc.GetRowContentByIdAndKey(
+                "school-features-summary",
+                "Headteacher, principal, or chief executive"));
+
+        var h1 = doc
+            .GetElementsByTagName("h1")
+            .SingleOrDefault(x =>
+                x.TextContent.Trim() ==
+                "St David's Church of England Academy");
+
+        Assert.NotNull(h1);
+
+        var aboutHeading = doc
+            .GetElementsByTagName("h2")
+            .SingleOrDefault(x =>
+                x.TextContent.Trim() ==
+                "About the school or college");
+
+        var keyFeaturesHeading = doc
+            .GetElementsByTagName("h2")
+            .SingleOrDefault(x =>
+                x.TextContent.Trim() ==
+                "Key features");
+
+        var policiesHeading = doc
+            .GetElementsByTagName("h2")
+            .SingleOrDefault(x =>
+                x.TextContent.Trim() ==
+                "Policies");
+
+        Assert.NotNull(aboutHeading);
+        Assert.NotNull(keyFeaturesHeading);
+        Assert.NotNull(policiesHeading);
     }
 
     [Fact]
     public async Task AboutPage_DisplaysBottomPagination_WithCorrectDestinations_WhenKS5Only()
     {
         // Arrange
-        var aboutSchoolModel = new AboutSchoolModel()
+        var aboutSchoolModel = new AboutSchoolModel
         {
             Urn = "143034",
             SchoolName = "St David's Church of England Academy",
@@ -464,6 +506,7 @@ public class AboutPageTests : PageTestsBase
             IsKS4 = false,
             IsKS5 = true
         };
+
         _about
             .Setup(service => service.GetAboutSchoolDetailsAsync(
                 It.IsAny<string>(),
@@ -471,21 +514,32 @@ public class AboutPageTests : PageTestsBase
             .ReturnsAsync(aboutSchoolModel);
 
         // Act
-        var doc = await Fixture.BrowseToPage(BuildUrl(aboutSchoolModel.Urn, aboutSchoolModel.SchoolName, _pageRoute));
+        var doc = await Fixture.BrowseToPage(
+            BuildUrl(
+                aboutSchoolModel.Urn,
+                aboutSchoolModel.SchoolName,
+                _pageRoute));
 
         // Assert
         var pagination = doc.QuerySelector("nav.govuk-pagination");
         Assert.NotNull(pagination);
 
-        var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
-        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
+        var previousLink =
+            pagination.QuerySelector(".govuk-pagination__prev a");
 
-        Assert.Null(previousLink);
+        var nextLink =
+            pagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.NotNull(previousLink);
+        Assert.Contains(
+            "/overview",
+            previousLink.GetAttribute("href"));
 
         Assert.NotNull(nextLink);
-        Assert.Contains("level-3-qualifications", nextLink.GetAttribute("href"));
+        Assert.Contains(
+            "level-3-qualifications",
+            nextLink.GetAttribute("href"));
     }
-
     [Fact]
     public async Task AboutPage_ShowsKS2OnlyElements()
     {
