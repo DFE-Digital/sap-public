@@ -70,8 +70,8 @@ public class ScaledScoresAcademicPerformacePageTests : PageTestsBase
 
         // Assert
         var heading = doc.QuerySelectorAll("h2");
-        Assert.NotNull(heading[1]);
-        Assert.Contains("Scaled scores", heading[1].TextContent.Trim());
+        Assert.NotNull(heading[2]);
+        Assert.Contains("Scaled scores", heading[2].TextContent.Trim());
     }
 
     [Fact]
@@ -239,6 +239,7 @@ public class ScaledScoresAcademicPerformacePageTests : PageTestsBase
         Assert.Contains("37", doc.GetTableCellContentByIdAndIndex("non-disadvantaged-pupils-table", 2, 0));
         Assert.Contains("34", doc.GetTableCellContentByIdAndIndex("non-disadvantaged-pupils-table", 2, 1));
     }
+
     [Fact]
     public async Task ScaledScorePage_DisplaysBottomPagination_WithCorrectDestinations()
     {

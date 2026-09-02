@@ -23,8 +23,7 @@
     })
 
     <div class="govuk-grid-column-three-quarters">
-        <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
-        <h1 class="govuk-heading-xl">@ViewData["Header"]</h1>
+        <h2 class="govuk-heading-xl">@ViewData["Header"]</h2>
 
         <p class="govuk-body">
             Choose the type of qualifications you want to see.
@@ -107,11 +106,16 @@
             Measures on student retention will be available shortly in a future release.
         </div>
         
-        @if (Model.Level3Qualification == Level3.ALevel)
+        @if(Model.Level3Qualification == Level3.ALevel || 
+            Model.Level3Qualification == Level3.Academic || 
+            Model.Level3Qualification == Level3.AppliedGeneral)
         {
             @* Performance Summary *@
             <partial name="_PerformanceSummary" model="@Model.PerformanceGroupsData" view-data='new ViewDataDictionary(ViewData) { ["LAName"] = Model.LAName }' />
+        }
 
+        @if (Model.Level3Qualification == Level3.ALevel)
+        {            
             @* Additional data *@
             <partial name="_AdditionalData" model="@Model.AdditionalData" view-data='new ViewDataDictionary(ViewData) { ["LAName"] = Model.LAName }' />
         }

@@ -1,6 +1,4 @@
-﻿using AngleSharp.Dom;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
-using Moq;
+﻿using Moq;
 using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.ServiceModels;
@@ -109,41 +107,86 @@ public class Level3QualificationsPageTests : PageTestsBase
     [InlineData(Level3.Academic)]
     [InlineData(Level3.AppliedGeneral)]
     [InlineData(Level3.TechLevel)]
-    public async Task Level3QualificationsPage_DisplaysMainHeading(Level3 qualification)
+    public async Task Level3QualificationsPage_DisplaysExpectedMainHeadings(
+        Level3 qualification)
     {
         // Arrange
         SetupMocks(qualification);
-        var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
-        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
+
+        var pageRouteUrl =
+            $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
+
+        var url = BuildUrl(
+            _establishment.URN,
+            _establishment.EstablishmentName,
+            pageRouteUrl);
 
         // Act
         var doc = await Fixture.BrowseToPage(url);
 
-        // Assert
-        var heading = doc.QuerySelector("h1");
-        Assert.NotNull(heading);
-        Assert.Contains(PageTitleConstants.KS5SchoolPageTitles.Performance, heading.TextContent.Trim());
-    }
+        // Assert - school name is H1
+        var h1Elements = doc.GetElementsByTagName("h1");
 
+        Assert.Contains(
+            h1Elements,
+            x => x.TextContent.Trim() ==
+                 _establishment.EstablishmentName);
+
+        // Assert - page title is H2
+        var h2Elements = doc.GetElementsByTagName("h2");
+
+        Assert.Contains(
+            h2Elements,
+            x => x.TextContent.Trim() ==
+                 PageTitleConstants.KS5SchoolPageTitles.Performance);
+    }
     [Theory]
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
     [InlineData(Level3.AppliedGeneral)]
     [InlineData(Level3.TechLevel)]
-    public async Task Level3QualificationsPage_DisplaysHeading(Level3 qualification)
+    public async Task Level3QualificationsPage_DisplaysExpectedHeadings(
+        Level3 qualification)
     {
         // Arrange
         SetupMocks(qualification);
-        var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
-        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
+
+        var pageRouteUrl =
+            $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
+
+        var url = BuildUrl(
+            _establishment.URN,
+            _establishment.EstablishmentName,
+            pageRouteUrl);
 
         // Act
         var doc = await Fixture.BrowseToPage(url);
 
-        // Assert
-        var heading = doc.GetElementsByTagName("h2")[1];
-        Assert.NotNull(heading);
-        Assert.Contains(qualification.GetDisplayName()!, heading.TextContent.Trim());
+        // Assert - school name is H1
+        var h1Elements = doc.GetElementsByTagName("h1");
+
+        Assert.Contains(
+            h1Elements,
+            x => x.TextContent.Trim() ==
+                 _establishment.EstablishmentName);
+
+        // Assert - page headings are H2
+        var h2Elements = doc.GetElementsByTagName("h2");
+
+        Assert.Contains(
+            h2Elements,
+            x => x.TextContent.Trim() ==
+                 PageTitleConstants.KS5SchoolPageTitles.Performance);
+
+        var qualificationHeading =
+            qualification.GetDisplayName();
+
+        Assert.NotNull(qualificationHeading);
+
+        Assert.Contains(
+            h2Elements,
+            x => x.TextContent.Trim().Contains(
+                qualificationHeading!));
     }
 
     [Fact]
@@ -555,6 +598,9 @@ public class Level3QualificationsPageTests : PageTestsBase
 
     [Theory]
     [InlineData(Level3.ALevel)]
+    [InlineData(Level3.Academic)]
+    [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
     public async Task Level3QualificationsPage_Displays_Disadvantaged_Students_Info(Level3 qualification)
     {
         // Arrange
@@ -570,7 +616,9 @@ public class Level3QualificationsPageTests : PageTestsBase
         var tableId = "disadvantaged-students-table";
         var disadavantagedStudentsTable = doc.QuerySelector($"#{tableId}");
 
-        if (qualification == Level3.ALevel)
+        if (qualification == Level3.ALevel ||
+            qualification == Level3.Academic ||
+            qualification == Level3.AppliedGeneral)
         {
             // Assert disadvantaged students info accordion
             Assert.NotNull(disadvantagedStudentsAccordion);
@@ -612,6 +660,9 @@ public class Level3QualificationsPageTests : PageTestsBase
 
     [Theory]
     [InlineData(Level3.ALevel)]
+    [InlineData(Level3.Academic)]
+    [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
     public async Task Level3QualificationsPage_Displays_NonDisadvantaged_Students_Info(Level3 qualification)
     {
         // Arrange
@@ -626,7 +677,9 @@ public class Level3QualificationsPageTests : PageTestsBase
         var tableId = "non-disadvantaged-students-table";
         var nonDisadavantagedStudentsTable = doc.QuerySelector($"#{tableId}");
 
-        if (qualification == Level3.ALevel)
+        if (qualification == Level3.ALevel ||
+            qualification == Level3.Academic ||
+            qualification == Level3.AppliedGeneral)
         {
             // Assert nondisadvantaged students info accordion
             Assert.NotNull(nonDisadvantagedStudentsDetails);

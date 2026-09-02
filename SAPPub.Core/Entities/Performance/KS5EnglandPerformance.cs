@@ -134,4 +134,84 @@ public class KS5EnglandPerformance
 
     // Points for England - Non-Disadvantaged - A Level
     public CodedDouble TALLPPE_ALEV_1618_NOTDIS_Eng_Current_Num_Coded { get; set; }
+
+    // Academic qualifications DisAdvantaged
+
+    // Number of students for England - Disadvantaged - Academic qualifications
+    public CodedDouble TALLPUP_ACAD_1618_DIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress score for England - Disadvantaged - Academic qualifications
+    public CodedDouble VA_INS_ACAD_DIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for England upper - Disadvantaged - Academic qualifications
+    public CodedDouble UCI_INS_ACAD_DIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for England lower - Disadvantaged - Academic qualifications
+    public CodedDouble LCI_INS_ACAD_DIS_Eng_Current_Num_Coded { get; set; }
+
+    // Grade for England - Disadvantaged - Academic qualifications
+    public CodedString TALLPPEGRD_ACAD_DIS_Eng_Current { get; set; }
+
+    // Points for England - Disadvantaged - Academic qualifications
+    public CodedDouble TALLPPE_ACAD_1618_DIS_Eng_Current_Num_Coded { get; set; }
+
+    // Academic qualifications Non-DisAdvantaged
+
+    // Number of students for England - Non-Disadvantaged - Academic qualifications
+    public CodedDouble TALLPUP_ACAD_1618_NOTDIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress score for England - Non-Disadvantaged - Academic qualifications
+    public CodedDouble VA_INS_ACAD_NOTDIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for England upper - Non-Disadvantaged - Academic qualifications
+    public CodedDouble UCI_INS_ACAD_NOTDIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for England lower - Non-Disadvantaged - Academic qualifications
+    public CodedDouble LCI_INS_ACAD_NOTDIS_Eng_Current_Num_Coded { get; set; }
+
+    // Grade for England - Non-Disadvantaged - Academic qualifications
+    public CodedString TALLPPEGRD_ACAD_NOTDIS_Eng_Current { get; set; }
+
+    // Points for England - Non-Disadvantaged - Academic qualifications
+    public CodedDouble TALLPPE_ACAD_1618_NOTDIS_Eng_Current_Num_Coded { get; set; }
+
+    // Applied general qualifications DisAdvantaged
+
+    // Number of students for England - Disadvantaged - Applied general qualifications
+    public CodedDouble TALLPUP_AGEN_DIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress score for England - Disadvantaged - Academic qualifications
+    public CodedDouble VA_INS_AGEN_DIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for England upper - Disadvantaged - Applied general qualifications
+    public CodedDouble UCI_INS_AGEN_DIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for England lower - Disadvantaged - Applied general qualifications
+    public CodedDouble LCI_INS_AGEN_DIS_Eng_Current_Num_Coded { get; set; }
+
+    // Grade for England - Disadvantaged - Applied general qualifications
+    public CodedString TALLPPEGRD_AGEN_DIS_Eng_Current { get; set; }
+
+    // Points for England - Disadvantaged - Applied general qualifications
+    public CodedDouble TALLPPE_AGEN_DIS_Eng_Current_Num_Coded { get; set; }
+
+    // Applied general qualifications Non-DisAdvantaged
+
+    // Number of students for England - Non-Disadvantaged - Applied general qualifications
+    public CodedDouble TALLPUP_AGEN_NOTDIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress score for England - Non-Disadvantaged - Applied general qualifications
+    public CodedDouble VA_INS_AGEN_NOTDIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for England upper - Non-Disadvantaged - Applied general qualifications
+    public CodedDouble UCI_INS_AGEN_NOTDIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for England lower - Non-Disadvantaged - Applied general qualifications
+    public CodedDouble LCI_INS_AGEN_NOTDIS_Eng_Current_Num_Coded { get; set; }
+
+    // Grade for England - Non-Disadvantaged - Applied general qualifications
+    public CodedString TALLPPEGRD_AGEN_NOTDIS_Eng_Current { get; set; }
+
+    // Points for England - Non-Disadvantaged - Applied general qualifications
+    public CodedDouble TALLPPE_AGEN_NOTDIS_Eng_Current_Num_Coded { get; set; }
 }

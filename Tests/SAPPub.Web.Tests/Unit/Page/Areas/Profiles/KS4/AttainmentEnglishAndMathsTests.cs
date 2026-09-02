@@ -1,4 +1,5 @@
 ﻿using Moq;
+using SAPPub.Core.Entities;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Tests.TestBuilders;

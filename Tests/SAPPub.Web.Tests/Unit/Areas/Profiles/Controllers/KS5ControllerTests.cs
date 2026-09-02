@@ -1,15 +1,12 @@
-﻿using Bogus;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.Interfaces.Services;
-using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.Common;
-using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Areas.Profiles.Controllers;
@@ -117,32 +114,39 @@ public class KS5ControllerTests : BaseProfilesTests
         }
 
         // Assert Disadvantaged and NonDisadvantaged students data
-        if (qualification == Level3.ALevel)
+        if (qualification == Level3.ALevel ||
+            qualification == Level3.Academic ||
+            qualification == Level3.AppliedGeneral)
         {
+            // Disadvantaged - Establishment
             Assert.Equal(expectedResult.DisadvantagedStudentsData.Establishment!.NumberOfStudents, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.NumberOfStudents.Value);
             Assert.Equal(expectedResult.DisadvantagedStudentsData.Establishment!.ProgressScore, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.ProgressScore.Value);
             Assert.Equal($"{expectedResult.DisadvantagedStudentsData.Establishment!.ConfidenceLevelLower.Value} to {expectedResult.DisadvantagedStudentsData.Establishment!.ConfidenceLevelUpper.Value}", model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.ConfidenceInterval.Value);
             Assert.Equal(expectedResult.DisadvantagedStudentsData.Establishment!.Result.Points, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.Points.Value);
             Assert.Equal(expectedResult.DisadvantagedStudentsData.Establishment!.Result.Grade, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.Grade.Value);
 
+            // Disadvantaged - Local Authority
             Assert.Equal(expectedResult.DisadvantagedStudentsData.LocalAuthority.NumberOfStudents, model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.NumberOfStudents.Value);
             Assert.Equal(expectedResult.DisadvantagedStudentsData.LocalAuthority.ProgressScore, model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.ProgressScore.Value);
             Assert.Equal($"{expectedResult.DisadvantagedStudentsData.LocalAuthority.ConfidenceLevelLower.Value} to {expectedResult.DisadvantagedStudentsData.LocalAuthority.ConfidenceLevelUpper.Value}", model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.ConfidenceInterval.Value);
             Assert.Equal(expectedResult.DisadvantagedStudentsData.LocalAuthority.Result.Points, model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.Points.Value);
             Assert.Equal(expectedResult.DisadvantagedStudentsData.LocalAuthority.Result.Grade, model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.Grade.Value);
 
+            // Disadvantaged - England
             Assert.Equal(expectedResult.DisadvantagedStudentsData.England.NumberOfStudents, model.PerformanceGroupsData.DisadvantagedStudents.England.NumberOfStudents.Value);
             Assert.Equal(expectedResult.DisadvantagedStudentsData.England.ProgressScore, model.PerformanceGroupsData.DisadvantagedStudents.England.ProgressScore.Value);
             Assert.Equal($"{expectedResult.DisadvantagedStudentsData.England.ConfidenceLevelLower.Value} to {expectedResult.DisadvantagedStudentsData.England.ConfidenceLevelUpper.Value}", model.PerformanceGroupsData.DisadvantagedStudents.England.ConfidenceInterval.Value);
             Assert.Equal(expectedResult.DisadvantagedStudentsData.England.Result.Points, model.PerformanceGroupsData.DisadvantagedStudents.England.Points.Value);
             Assert.Equal(expectedResult.DisadvantagedStudentsData.England.Result.Grade, model.PerformanceGroupsData.DisadvantagedStudents.England.Grade.Value);
 
+            // Non-Disadvantaged - Local Authority
             Assert.Equal(expectedResult.NonDisadvantagedStudentsData.LocalAuthority.NumberOfStudents, model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.NumberOfStudents.Value);
             Assert.Equal(expectedResult.NonDisadvantagedStudentsData.LocalAuthority.ProgressScore, model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.ProgressScore.Value);
             Assert.Equal($"{expectedResult.NonDisadvantagedStudentsData.LocalAuthority.ConfidenceLevelLower.Value} to {expectedResult.NonDisadvantagedStudentsData.LocalAuthority.ConfidenceLevelUpper.Value}", model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.ConfidenceInterval.Value);
             Assert.Equal(expectedResult.NonDisadvantagedStudentsData.LocalAuthority.Result.Points, model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.Points.Value);
             Assert.Equal(expectedResult.NonDisadvantagedStudentsData.LocalAuthority.Result.Grade, model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.Grade.Value);
 
+            // Non-Disadvantaged - England
             Assert.Equal(expectedResult.NonDisadvantagedStudentsData.England.NumberOfStudents, model.PerformanceGroupsData.NonDisadvantagedStudents.England.NumberOfStudents.Value);
             Assert.Equal(expectedResult.NonDisadvantagedStudentsData.England.ProgressScore, model.PerformanceGroupsData.NonDisadvantagedStudents.England.ProgressScore.Value);
             Assert.Equal($"{expectedResult.NonDisadvantagedStudentsData.England.ConfidenceLevelLower.Value} to {expectedResult.NonDisadvantagedStudentsData.England.ConfidenceLevelUpper.Value}", model.PerformanceGroupsData.NonDisadvantagedStudents.England.ConfidenceInterval.Value);
@@ -313,30 +317,35 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.Equal(NotAvailable, model.AdvancedLevelMathsQualificationData?.LocalAuthority.DisplayText());
         Assert.Equal(NotAvailable, model.AdvancedLevelMathsQualificationData?.England.DisplayText());
 
+        // Disadvantaged - Establishment
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.NumberOfStudents.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.ProgressScore.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.ConfidenceInterval.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.Points.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.Grade.DisplayText());
 
+        // Disadvantaged - Local Authority
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.NumberOfStudents.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.ProgressScore.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.ConfidenceInterval.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.Points.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.Grade.DisplayText());
 
+        // Disadvantaged - England
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.England.NumberOfStudents.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.England.ProgressScore.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.England.ConfidenceInterval.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.England.Points.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.England.Grade.DisplayText());
 
+        // Disadvantaged - Local Authority
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.NumberOfStudents.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.ProgressScore.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.ConfidenceInterval.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.Points.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.Grade.DisplayText());
 
+        // Non-Disadvantaged - England
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.England.NumberOfStudents.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.England.ProgressScore.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.England.ConfidenceInterval.DisplayText());
@@ -478,30 +487,35 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.Equal(NotAvailable, model.AdvancedLevelMathsQualificationData?.LocalAuthority.DisplayText());
         Assert.Equal(NotAvailable, model.AdvancedLevelMathsQualificationData?.England.DisplayText());
 
+        // Disadvantaged - Establishment
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.NumberOfStudents.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.ProgressScore.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.ConfidenceInterval.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.Points.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.Grade.DisplayText());
 
+        // Disadvantaged - Local Authority
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.NumberOfStudents.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.ProgressScore.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.ConfidenceInterval.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.Points.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.LocalAuthority.Grade.DisplayText());
 
+        // Disadvantaged - England
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.England.NumberOfStudents.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.England.ProgressScore.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.England.ConfidenceInterval.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.England.Points.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.England.Grade.DisplayText());
 
+        // Non-Disadvantaged - Local Authority
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.NumberOfStudents.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.ProgressScore.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.ConfidenceInterval.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.Points.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.LocalAuthority.Grade.DisplayText());
 
+        // Non-Disadvantaged - England
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.England.NumberOfStudents.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.England.ProgressScore.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.England.ConfidenceInterval.DisplayText());

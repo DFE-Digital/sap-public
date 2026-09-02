@@ -116,4 +116,84 @@ public class KS5LAPerformance
 
     // Points for LA - Non-Disadvantaged - A Level
     public CodedDouble TALLPPE_ALEV_1618_NOTDIS_LA_Current_Num_Coded { get; set; }
+
+    // Academic qualifications DisAdvantaged
+
+    // Number of students for LA - Disadvantaged - Academic qualifications
+    public CodedDouble TALLPUP_ACAD_1618_DIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress score for LA - Disadvantaged - Academic qualifications
+    public CodedDouble VA_INS_ACAD_DIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for LA upper - Disadvantaged - Academic qualifications
+    public CodedDouble UCI_INS_ACAD_DIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for LA lower - Disadvantaged - Academic qualifications
+    public CodedDouble LCI_INS_ACAD_DIS_LA_Current_Num_Coded { get; set; }
+
+    // Grade for LA - Disadvantaged - Academic qualifications
+    public CodedString TALLPPEGRD_ACAD_DIS_LA_Current { get; set; }
+
+    // Points for LA - Disadvantaged - Academic qualifications
+    public CodedDouble TALLPPE_ACAD_1618_DIS_LA_Current_Num_Coded { get; set; }
+
+    // Academic qualifications Non-DisAdvantaged
+
+    // Number of students for LA - Non-Disadvantaged - Academic qualifications
+    public CodedDouble TALLPUP_ACAD_1618_NOTDIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress score for LA - Non-Disadvantaged - Academic qualifications
+    public CodedDouble VA_INS_ACAD_NOTDIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for LA upper - Non-Disadvantaged - Academic qualifications
+    public CodedDouble UCI_INS_ACAD_NOTDIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for LA lower - Non-Disadvantaged - Academic qualifications
+    public CodedDouble LCI_INS_ACAD_NOTDIS_LA_Current_Num_Coded { get; set; }
+
+    // Grade for LA - Non-Disadvantaged - Academic qualifications
+    public CodedString TALLPPEGRD_ACAD_NOTDIS_LA_Current { get; set; }
+
+    // Points for LA - Non-Disadvantaged - Academic qualifications
+    public CodedDouble TALLPPE_ACAD_1618_NOTDIS_LA_Current_Num_Coded { get; set; }
+
+    // Applied general qualifications DisAdvantaged
+
+    // Number of students for LA - Disadvantaged - Applied general qualifications
+    public CodedDouble TALLPUP_AGEN_DIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress score for LA - Disadvantaged - Applied general qualifications
+    public CodedDouble VA_INS_AGEN_DIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for LA upper - Disadvantaged - Applied general qualifications
+    public CodedDouble UCI_INS_AGEN_DIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for LA lower - Disadvantaged - Applied general qualifications
+    public CodedDouble LCI_INS_AGEN_DIS_LA_Current_Num_Coded { get; set; }
+
+    // Grade for LA - Disadvantaged - Applied general qualifications
+    public CodedString TALLPPEGRD_AGEN_DIS_LA_Current { get; set; }
+
+    // Points for LA - Disadvantaged - Applied general qualifications
+    public CodedDouble TALLPPE_AGEN_DIS_LA_Current_Num_Coded { get; set; }
+
+    // Applied general qualifications Non-DisAdvantaged
+
+    // Number of students for LA - Non-Disadvantaged - Applied general qualifications
+    public CodedDouble TALLPUP_AGEN_NOTDIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress score for LA - Non-Disadvantaged - Applied general qualifications
+    public CodedDouble VA_INS_AGEN_NOTDIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for LA upper - Non-Disadvantaged - Applied general qualifications
+    public CodedDouble UCI_INS_AGEN_NOTDIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for LA lower - Non-Disadvantaged - Applied general qualifications
+    public CodedDouble LCI_INS_AGEN_NOTDIS_LA_Current_Num_Coded { get; set; }
+
+    // Grade for LA - Non-Disadvantaged - Applied general qualifications
+    public CodedString TALLPPEGRD_AGEN_NOTDIS_LA_Current { get; set; }
+
+    // Points for LA - Non-Disadvantaged - Applied general qualifications
+    public CodedDouble TALLPPE_AGEN_NOTDIS_LA_Current_Num_Coded { get; set; }
 }
