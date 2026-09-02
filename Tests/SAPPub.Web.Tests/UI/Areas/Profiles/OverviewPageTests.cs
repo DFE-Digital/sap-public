@@ -2,6 +2,7 @@
 using Microsoft.Playwright;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
+using SAPPub.Web.Tests;
 
 namespace SAPPub.Web.Tests.UI.Areas.Profiles;
 
@@ -12,12 +13,13 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
     private const string Urn = "143034";
     private const string SchoolName = "St Paul's Church of England Academy";
     private const string SchoolSlug = "st-pauls-church-of-england-academy";
-
-    private const string OverviewUrl =
-        $"school/{Urn}/{SchoolSlug}/overview";
-
-    private const string AboutUrl =
-        $"school/{Urn}/{SchoolSlug}/about";
+    private const string OverviewUrl = $"school/{Urn}/{SchoolSlug}/overview";
+    private const string AboutUrl = $"school/{Urn}/{SchoolSlug}/about";
+    private const string Address = "Grove Lane, Handsworth, Birmingham, B21 9ET";
+    private const string MissingDataUrn = "137552";
+    private const string MissingDataSchoolName = "Stewards Academy - Science Specialist, Harlow";
+    private const string MissingDataSlug = "stewards-academy-science-specialist-harlow";
+    private const string MissingDataOverviewUrl = $"school/{MissingDataUrn}/{MissingDataSlug}/overview";
 
     [Fact]
     public async Task OverviewPage_LoadsSuccessfully()
@@ -482,8 +484,399 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                 Page.Locator(
                     ".moj-side-navigation"))
             .ToBeVisibleAsync();
+
+        await Expect(
+                Page.Locator(
+                    ".map-address"))
+                .ToBeVisibleAsync();
+
+        await Expect(
+                Page.Locator(
+                    ".ataglance-address-row"))
+                .ToContainTextAsync(Address);
+
+        await Expect(
+                Page.Locator(
+                    "#overview-school-information"))
+                .ToBeVisibleAsync();
+
+        await Expect(
+                Page.GetByRole(
+                    AriaRole.Link,
+                    new()
+                    {
+                        NameRegex =
+                            new Regex(
+                                "Find out more about the school",
+                                RegexOptions.IgnoreCase)
+                    }))
+                .ToBeVisibleAsync();
     }
 
+    [Fact]
+    public async Task OverviewPage_DisplaysAvailableSchoolInformation()
+    {
+        await GoToOverviewAsync();
+
+        var information = Page.Locator("#overview-school-information");
+
+        await Expect(information).ToBeVisibleAsync();
+        await Expect(information).ToContainTextAsync("Phase of education");
+        await Expect(information).ToContainTextAsync("Primary");
+        await Expect(information).ToContainTextAsync("Age range");
+        await Expect(information).ToContainTextAsync("2 to 11");
+        await Expect(information).ToContainTextAsync("Number of pupils");
+        await Expect(information).ToContainTextAsync("661");
+        await Expect(information).ToContainTextAsync("Type of SEN provision");
+        await Expect(information).ToContainTextAsync("ASD - Autistic Spectrum Disorder");
+        await Expect(information).ToContainTextAsync("Phone");
+        await Expect(information).ToContainTextAsync("01424 424530");
+        await Expect(information).ToContainTextAsync("Website");
+        await Expect(information).ToContainTextAsync("Ofsted report");
+    }
+
+    [Fact]
+    public async Task OverviewPage_DisplaysSchoolAddressBelowMap()
+    {
+        await GoToOverviewAsync();
+
+        var address = Page.Locator(".ataglance-address-row");
+
+        await Expect(address).ToBeVisibleAsync();
+        await Expect(address).ToContainTextAsync("Address");
+        await Expect(address).ToContainTextAsync(Address);
+    }
+
+    [Fact]
+    public async Task OverviewPage_MapInitialises()
+    {
+        await GoToOverviewAsync();
+
+        var map = Page.Locator("#map");
+
+        await Expect(map).ToBeVisibleAsync();
+
+        // Loading placeholder should have gone.
+        await Expect(
+            map.Locator(".map-loading"))
+            .ToHaveCountAsync(0);
+
+        // Leaflet adds this class to the map host when initialised.
+        await Expect(map)
+            .ToHaveClassAsync(
+                new Regex(@"\bleaflet-container\b"));
+
+        // Interactive Leaflet controls prove the map is active.
+        await Expect(
+            map.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    Name = "Zoom in",
+                    Exact = true
+                }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            map.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    Name = "Zoom out",
+                    Exact = true
+                }))
+            .ToBeVisibleAsync();
+
+        // School marker should also have been created.
+        await Expect(
+            map.Locator(".leaflet-marker-icon"))
+            .ToHaveCountAsync(1);
+    }
+
+    [Fact]
+    public async Task OverviewPage_MapDisplaysSchoolMarker()
+    {
+        await GoToOverviewAsync();
+
+        var marker = Page.Locator("#map .leaflet-marker-icon");
+
+        await Expect(marker).ToHaveCountAsync(1);
+        await Expect(Page.GetByRole(AriaRole.Button, new() { Name = SchoolName, Exact = true })).ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_MapProvidesZoomControls()
+    {
+        await GoToOverviewAsync();
+
+        var map = Page.Locator("#map");
+
+        await Expect(map.GetByRole(AriaRole.Button, new() { Name = "Zoom in", Exact = true })).ToBeVisibleAsync();
+        await Expect(map.GetByRole(AriaRole.Button, new() { Name = "Zoom out", Exact = true })).ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_WebsiteLink_OpensInNewTab()
+    {
+        await GoToOverviewAsync();
+
+        var websiteLink =
+            Page.GetByRole(
+                AriaRole.Link,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            @"View .*website",
+                            RegexOptions.IgnoreCase)
+                });
+
+        await Expect(websiteLink)
+            .ToBeVisibleAsync();
+
+        await Expect(websiteLink)
+            .ToHaveAttributeAsync(
+                "target",
+                "_blank");
+
+        await Expect(websiteLink)
+            .ToHaveAttributeAsync(
+                "rel",
+                new Regex(@"noopener"));
+
+        await Expect(websiteLink)
+            .ToHaveAttributeAsync(
+                "href",
+                new Regex(@"^https://"));
+    }
+
+    [Fact]
+    public async Task OverviewPage_DisplaysOfstedReportLink()
+    {
+        await GoToOverviewAsync();
+
+        var ofstedLink =
+            Page.GetByRole(
+                AriaRole.Link,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            "Ofsted report",
+                            RegexOptions.IgnoreCase)
+                });
+
+        await Expect(ofstedLink)
+            .ToBeVisibleAsync();
+
+        await Expect(ofstedLink)
+            .ToHaveAttributeAsync(
+                "href",
+                new Regex(Urn));
+
+        await Expect(ofstedLink)
+            .ToHaveAttributeAsync(
+                "target",
+                "_blank");
+    }
+
+    [Fact]
+    public async Task OverviewPage_AboutLink_NavigatesToSameSchoolInSameTab()
+    {
+        await GoToOverviewAsync();
+
+        var aboutLink =
+            Page.GetByRole(
+                AriaRole.Link,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            "Find out more about the school",
+                            RegexOptions.IgnoreCase)
+                });
+
+        await Expect(aboutLink)
+            .ToBeVisibleAsync();
+
+        await Expect(aboutLink)
+            .ToHaveAttributeAsync(
+                "href",
+                $"/school/{Urn}/{SchoolSlug}/about");
+
+        Assert.Null(
+            await aboutLink.GetAttributeAsync(
+                "target"));
+    }
+
+    [Fact]
+    public async Task OverviewPage_WhenSchoolInformationIsMissing_DisplaysNotAvailable()
+    {
+        var response =
+            await Page.GotoAsync(
+                MissingDataOverviewUrl);
+
+        Assert.NotNull(response);
+
+        Assert.True(
+            response.Ok,
+            await GetFailureMessageAsync(
+                "Missing-data overview page failed to load",
+                response));
+
+        var information =
+            Page.Locator("#overview-school-information");
+
+        await Expect(information)
+            .ToBeVisibleAsync();
+
+        await AssertRowDisplaysNotAvailableAsync(
+            "#overview-age-range",
+            "Age range");
+
+        await AssertRowDisplaysNotAvailableAsync(
+            "#overview-pupil-count",
+            "Number of pupils");
+
+        await AssertRowDisplaysNotAvailableAsync(
+            "#overview-sen",
+            "Type of SEN provision");
+
+        await AssertRowDisplaysNotAvailableAsync(
+            "#overview-phone",
+            "Phone");
+
+        await AssertRowDisplaysNotAvailableAsync(
+            "#overview-website",
+            "Website");
+    }
+
+    [Fact]
+    public async Task OverviewPage_WhenAddressIsMissing_DisplaysNotAvailable()
+    {
+        var response =
+            await Page.GotoAsync(
+                MissingDataOverviewUrl);
+
+        Assert.NotNull(response);
+
+        Assert.True(
+            response.Ok,
+            await GetFailureMessageAsync(
+                "Missing-data overview page failed to load",
+                response));
+
+        var address =
+            Page.Locator(".ataglance-address-row");
+
+        await Expect(address)
+            .ToBeVisibleAsync();
+
+        await Expect(address)
+            .ToContainTextAsync("Address");
+
+        await Expect(address)
+            .ToContainTextAsync("Not available");
+    }
+
+    [Fact]
+    public async Task OverviewPage_WhenJavaScriptDisabled_HidesMapButKeepsContentAvailable()
+    {
+        var context =
+            await Browser.NewContextAsync(
+                new BrowserNewContextOptions
+                {
+                    BaseURL = BaseUrl.TrimEnd('/'),
+                    IgnoreHTTPSErrors = true,
+                    ViewportSize =
+                        new ViewportSize
+                        {
+                            Width = 1280,
+                            Height = 720
+                        },
+                    Locale = "en-GB",
+                    TimezoneId = "Europe/London",
+                    JavaScriptEnabled = false
+                });
+
+        try
+        {
+            var page =
+                await context.NewPageAsync();
+
+            var response =
+                await page.GotoAsync(
+                    OverviewUrl);
+
+            Assert.NotNull(response);
+            Assert.True(response.Ok);
+
+            await Expect(
+                page.Locator(
+                    ".map-container"))
+                .ToHaveClassAsync(
+                    new Regex(
+                        @"\bgovuk-visually-hidden\b"));
+
+            await Expect(
+                page.Locator(
+                    ".ataglance-address-row"))
+                .ToContainTextAsync(Address);
+
+            await Expect(
+                page.Locator(
+                    "#overview-school-information"))
+                .ToBeVisibleAsync();
+
+            await Expect(
+                page.GetByText(
+                    "Primary",
+                    new() { Exact = true }))
+                .ToBeVisibleAsync();
+
+            await Expect(
+                page.GetByText(
+                    "2 to 11",
+                    new() { Exact = true }))
+                .ToBeVisibleAsync();
+        }
+        finally
+        {
+            await context.CloseAsync();
+        }
+    }
+
+    [Fact]
+    public async Task OverviewPage_MapHasAccessibleName()
+    {
+        await GoToOverviewAsync();
+
+        await Expect(
+            Page.GetByRole(
+                AriaRole.Region,
+                new()
+                {
+                    Name = $"Map showing the location of {SchoolName}",
+                    Exact = true
+                }))
+            .ToBeVisibleAsync();
+    }
+
+    private async Task AssertRowDisplaysNotAvailableAsync(
+    string selector,
+    string label)
+    {
+        var row = Page.Locator(selector);
+
+        await Expect(row)
+            .ToBeVisibleAsync();
+
+        await Expect(row)
+            .ToContainTextAsync(label);
+
+        await Expect(row)
+            .ToContainTextAsync("Not available");
+    }
 
     private async Task<IResponse> GoToOverviewAsync()
     {

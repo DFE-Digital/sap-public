@@ -2,16 +2,16 @@
 
 @using SAPPub.Web.Constants
 @using SAPPub.Web.Helpers
-@using SAPPub.Web.ViewComponents.VerticalNavigation
 @using SAPPub.Web.ViewComponents.SchoolProfilePagination
+@using SAPPub.Web.ViewComponents.VerticalNavigation
 
 @{
     ViewData["Header"] = "Overview";
     ViewData["Title"] = $"{Model.SchoolName} - {ViewData["Header"]}";
 }
 
-
 <div class="govuk-grid-row">
+
     @await Component.InvokeAsync(
     "VerticalNavigation",
         new VerticalNavigationModel
@@ -26,429 +26,208 @@
 
     <div class="govuk-grid-column-three-quarters">
 
-        <h2 class="govuk-heading-xl">
-            @ViewData["Header"]
-        </h2>
-        
-        <!-- THE FOLOWING MARKUP IS FROM STORY 0 TESTING AND HAS ALL THE DATA REQUIRED FOR THE PAGE.  
-             IT HAS BEEN LEFT IN BECAUSE IT MAY BE USEFUL FOR THE OTHER AT A GLANCE STORIES -->
-
-@*         <h2 class="govuk-heading-l">
-            School information
+        <h2 class="govuk-heading-xl govuk-!-margin-bottom-4">
+            Overview
         </h2>
 
-        <div id="map"
-             data-radius-miles="3"
-             data-fixed-zoom="14"
-             data-lat="@Model.Latitude"
-             data-lon="@Model.Longitude"
-             data-name="@Model.SchoolName"
-             role="region"
-             aria-label="Map showing @Model.SchoolName">
-            <div class="map-loading">Loading map…</div>
-        </div>
-        <div class="legend">
-            <div class="legend-item">
-                <img src="~/assets/images/marker-school-target.svg" alt="" />
-                <span>@Model.SchoolName</span>
+        @*
+            Map and address
+            The map container starts visually hidden so that with JavaScript
+            disabled the map is not shown. map-schools.js reveals it when
+            the map can be initialised.
+        *@
+        <div class="map-address govuk-!-margin-bottom-5">
+
+            <div class="map-container govuk-visually-hidden">
+                <div id="map"
+                     data-radius-miles="3"
+                     data-fixed-zoom="14"
+                     data-lat="@Model.Latitude"
+                     data-lon="@Model.Longitude"
+                     data-name="@Model.SchoolName"
+                     role="region"
+                     aria-label="Map showing the location of @Model.SchoolName">
+                    <div class="map-loading">Loading Map…</div>
+                </div>
             </div>
+
+            <div class="ataglance-address-row">
+                <div class="ataglance-address-row__key">
+                    Address
+                </div>
+
+                <div class="ataglance-address-row__value">
+                    @Model.Address.DisplayText()
+                </div>
+            </div>
+
         </div>
 
-        <govuk-summary-list id="overview-school-information">
 
-            <govuk-summary-list-row>
-                <govuk-summary-list-row-key>
-                    Establishment name
-                </govuk-summary-list-row-key>
-                <govuk-summary-list-row-value>
-                    @Model.SchoolName
-                </govuk-summary-list-row-value>
-            </govuk-summary-list-row>
+        <div class="ataglance-card">
 
-            <govuk-summary-list-row>
-                <govuk-summary-list-row-key>
-                    Phase of education
-                </govuk-summary-list-row-key>
-                <govuk-summary-list-row-value>
-                    @Model.EducationPhase
-                </govuk-summary-list-row-value>
-            </govuk-summary-list-row>
+            <govuk-summary-list id="overview-school-information">
 
-            <govuk-summary-list-row>
-                <govuk-summary-list-row-key>
-                    Age range
-                </govuk-summary-list-row-key>
-                <govuk-summary-list-row-value>
-                    @Model.AgeRange.DisplayText()
-                </govuk-summary-list-row-value>
-            </govuk-summary-list-row>
+                <govuk-summary-list-row id="overview-phase">
+                    <govuk-summary-list-row-key>
+                        Phase of education
+                    </govuk-summary-list-row-key>
+                    <govuk-summary-list-row-value>
+                        @Model.EducationPhase.DisplayText()
+                    </govuk-summary-list-row-value>
+                </govuk-summary-list-row>
 
-            <govuk-summary-list-row>
-                <govuk-summary-list-row-key>
-                    Number of pupils
-                </govuk-summary-list-row-key>
-                <govuk-summary-list-row-value>
-                    @Model.NumberOfPupils.DisplayText()
-                </govuk-summary-list-row-value>
-            </govuk-summary-list-row>
+                <govuk-summary-list-row id="overview-age-range">
+                    <govuk-summary-list-row-key>
+                        Age range
+                    </govuk-summary-list-row-key>
+                    <govuk-summary-list-row-value>
+                        @Model.AgeRange.DisplayText()
+                    </govuk-summary-list-row-value>
+                </govuk-summary-list-row>
 
-            <govuk-summary-list-row>
-                <govuk-summary-list-row-key>
-                    Type of SEN provision
-                </govuk-summary-list-row-key>
-                <govuk-summary-list-row-value>
-                    @Model.SenTypes.DisplayText()
-                </govuk-summary-list-row-value>
-            </govuk-summary-list-row>
+                <govuk-summary-list-row id="overview-pupil-count">
+                    <govuk-summary-list-row-key>
+                        Number of pupils
+                    </govuk-summary-list-row-key>
+                    <govuk-summary-list-row-value>
+                        @Model.NumberOfPupils.DisplayText()
+                    </govuk-summary-list-row-value>
+                </govuk-summary-list-row>
 
-            <govuk-summary-list-row>
-                <govuk-summary-list-row-key>
-                    Phone
-                </govuk-summary-list-row-key>
-                <govuk-summary-list-row-value>
+                <govuk-summary-list-row id="overview-sen">
+                    <govuk-summary-list-row-key>
+                        Type of SEN provision
+                    </govuk-summary-list-row-key>
+                    <govuk-summary-list-row-value>
+                        @Model.SenTypes.DisplayText()
+                    </govuk-summary-list-row-value>
+                </govuk-summary-list-row>
 
-                    @if (Model.Telephone.IsAvailable)
-                    {
+                <govuk-summary-list-row id="overview-phone">
+                    <govuk-summary-list-row-key>
+                        Phone
+                    </govuk-summary-list-row-key>
+                    <govuk-summary-list-row-value>
+                        @if (Model.Telephone.IsAvailable)
+                        {
+                            <a class="govuk-link govuk-link--no-visited-state"
+                               href="tel:@Model.Telephone.Value">
+                                @Model.Telephone.Value
+                            </a>
+                        }
+                        else
+                        {
+                            @Model.Telephone.DisplayText()
+                        }
+                    </govuk-summary-list-row-value>
+                </govuk-summary-list-row>
+
+                <govuk-summary-list-row id="overview-website">
+                    <govuk-summary-list-row-key>
+                        Website
+                    </govuk-summary-list-row-key>
+                    <govuk-summary-list-row-value>
+                        @if (Model.SchoolWebsite.IsAvailable)
+                        {
+                            <a class="govuk-link govuk-link--no-visited-state"
+                               href="@Model.SchoolWebsite.DisplayText(UrlHelper.EnsureHttpsUrl)"
+                               target="_blank"
+                               rel="noreferrer noopener">
+                                View @Model.SchoolName's website
+                                <span class="govuk-visually-hidden">
+                                    (opens in a new tab)
+                                </span>
+                            </a>
+                        }
+                        else
+                        {
+                            @Model.SchoolWebsite.DisplayText()
+                        }
+                    </govuk-summary-list-row-value>
+                </govuk-summary-list-row>
+
+                <govuk-summary-list-row>
+                    <govuk-summary-list-row-key>
+                        Ofsted report
+                    </govuk-summary-list-row-key>
+                    <govuk-summary-list-row-value>
                         <a class="govuk-link govuk-link--no-visited-state"
-                           href="tel:@Model.Telephone.Value">
-                            @Model.Telephone.Value
-                        </a>
-                    }
-                    else
-                    {
-                        @Model.Telephone.DisplayText()
-                    }
-
-                </govuk-summary-list-row-value>
-            </govuk-summary-list-row>
-
-            <govuk-summary-list-row>
-                <govuk-summary-list-row-key>
-                    Website
-                </govuk-summary-list-row-key>
-                <govuk-summary-list-row-value>
-
-                    @if (Model.SchoolWebsite.IsAvailable)
-                    {
-                        <a class="govuk-link govuk-link--no-visited-state"
-                           href="@Model.SchoolWebsite.DisplayText(UrlHelper.EnsureHttpsUrl)"
+                           href="@Model.OfstedReportUrl"
                            target="_blank"
                            rel="noreferrer noopener">
-                            @Model.SchoolWebsite.Value
+                            View the latest Ofsted report
                             <span class="govuk-visually-hidden">
                                 (opens in a new tab)
                             </span>
                         </a>
-                    }
-                    else
-                    {
-                        @Model.SchoolWebsite.DisplayText()
-                    }
+                    </govuk-summary-list-row-value>
+                </govuk-summary-list-row>
 
-                </govuk-summary-list-row-value>
-            </govuk-summary-list-row>
+            </govuk-summary-list>
 
-            <govuk-summary-list-row>
-                <govuk-summary-list-row-key>
-                    Ofsted report
-                </govuk-summary-list-row-key>
-                <govuk-summary-list-row-value>
+            <div class="govuk-body govuk-!-margin-top-5">
 
-                    <a class="govuk-link govuk-link--no-visited-state"
-                       href="@Model.OfstedReportUrl"
-                       target="_blank"
-                       rel="noreferrer noopener">
-                        View the school's Ofsted report
-                        <span class="govuk-visually-hidden">
-                            (opens in a new tab)
-                        </span>
-                    </a>
+                <a asp-route="@RouteConstants.AboutTheSchool"
+                   asp-all-route-data="@Model.RouteAttributes"
+                   class="ataglance-link__link govuk-!-font-weight-bold govuk-link govuk-link--no-visited-state">
 
-                </govuk-summary-list-row-value>
-            </govuk-summary-list-row>
+                    <span class="ataglance-link__iconbox"
+                          aria-hidden="true">
 
-        </govuk-summary-list>
+                        <svg class="ataglance-link__icon"
+                             width="32"
+                             height="32"
+                             viewBox="0 0 32 32"
+                             focusable="false"
+                             aria-hidden="true">
+                            <circle cx="16"
+                                    cy="16"
+                                    r="15"
+                                    fill="currentColor" />
+                            <path d="M9 15h10.2l-4.1-4.1 1.9-1.9 7.3 7-7.3 7-1.9-1.9 4.1-4.1H9z"
+                                  fill="#ffffff" />
+                        </svg>
 
+                    </span>
 
-        @if (Model.IsKS2)
-        {
-            <h2 class="govuk-heading-l">
-                Key stage 2 academic performance
-            </h2>
+                    <span class="ataglance-link__text">
+                        @if (Model.IsExclusivelyKS5)
+                        {
+                            <text>
+                                Find out more about the school or college, including policies on school uniform and SEN
+                            </text>
+                        }
+                        else
+                        {
+                            <text>
+                                Find out more about the school, including policies on school uniform and SEN
+                            </text>
+                        }
+                    </span>
 
-            @if (Model.ReadingWritingMathsExpected is not null)
-            {
-                <h3 class="govuk-heading-m">
-                    Reading, writing and maths at the expected standard
-                </h3>
+                </a>
 
-                <table id="overview-ks2-expected-standard"
-                       class="govuk-table">
+            </div>
 
-                    <thead class="govuk-table__head">
-                        <tr class="govuk-table__row">
-                            <th scope="col"
-                                class="govuk-table__header">
-                                Area
-                            </th>
-                            <th scope="col"
-                                class="govuk-table__header govuk-table__header--numeric">
-                                Pupils meeting the expected standard
-                            </th>
-                        </tr>
-                    </thead>
-
-                    <tbody class="govuk-table__body">
-
-                        <tr class="govuk-table__row">
-                            <th scope="row"
-                                class="govuk-table__header">
-                                School
-                            </th>
-                            <td class="govuk-table__cell govuk-table__cell--numeric">
-                                @Model.ReadingWritingMathsExpected.SchoolOrCollege.DisplayPercentage()
-                            </td>
-                        </tr>
-
-                        <tr class="govuk-table__row">
-                            <th scope="row"
-                                class="govuk-table__header">
-                                Local authority average
-                            </th>
-                            <td class="govuk-table__cell govuk-table__cell--numeric">
-                                @Model.ReadingWritingMathsExpected.LocalAuthority.DisplayPercentage()
-                            </td>
-                        </tr>
-
-                        <tr class="govuk-table__row">
-                            <th scope="row"
-                                class="govuk-table__header">
-                                England average
-                            </th>
-                            <td class="govuk-table__cell govuk-table__cell--numeric">
-                                @Model.ReadingWritingMathsExpected.England.DisplayPercentage()
-                            </td>
-                        </tr>
-
-                    </tbody>
-                </table>
-            }
+        </div>
 
 
-            @if (Model.ReadingWritingMathsHigher is not null)
-            {
-                <h3 class="govuk-heading-m">
-                    Reading, writing and maths at the higher standard
-                </h3>
-
-                <table id="overview-ks2-higher-standard"
-                       class="govuk-table">
-
-                    <thead class="govuk-table__head">
-                        <tr class="govuk-table__row">
-                            <th scope="col"
-                                class="govuk-table__header">
-                                Area
-                            </th>
-                            <th scope="col"
-                                class="govuk-table__header govuk-table__header--numeric">
-                                Pupils meeting the higher standard
-                            </th>
-                        </tr>
-                    </thead>
-
-                    <tbody class="govuk-table__body">
-
-                        <tr class="govuk-table__row">
-                            <th scope="row"
-                                class="govuk-table__header">
-                                School
-                            </th>
-                            <td class="govuk-table__cell govuk-table__cell--numeric">
-                                @Model.ReadingWritingMathsHigher.SchoolOrCollege.DisplayPercentage()
-                            </td>
-                        </tr>
-
-                        <tr class="govuk-table__row">
-                            <th scope="row"
-                                class="govuk-table__header">
-                                Local authority average
-                            </th>
-                            <td class="govuk-table__cell govuk-table__cell--numeric">
-                                @Model.ReadingWritingMathsHigher.LocalAuthority.DisplayPercentage()
-                            </td>
-                        </tr>
-
-                        <tr class="govuk-table__row">
-                            <th scope="row"
-                                class="govuk-table__header">
-                                England average
-                            </th>
-                            <td class="govuk-table__cell govuk-table__cell--numeric">
-                                @Model.ReadingWritingMathsHigher.England.DisplayPercentage()
-                            </td>
-                        </tr>
-
-                    </tbody>
-                </table>
-            }
-        }
+        @*
+            Phase-specific "at a glance" accordions will be added here
+            in the subsequent content stories.
+        *@
 
 
-        @if (Model.IsKS4)
-        {
-            <h2 class="govuk-heading-l">
-                Key stage 4 academic performance
-            </h2>
+        @await Component.InvokeAsync(
+        "SchoolProfilePagination",
+                SchoolProfilePaginationModel.From(
+                Model,
+                RouteConstants.Overview))
 
-            <h3 class="govuk-heading-m">
-                Attainment 8
-            </h3>
-
-            <p class="govuk-body">
-                @Model.Attainment8.DisplayNumber("0.0")
-            </p>
-
-
-            @if (Model.EnglishAndMathsGrade5 is not null)
-            {
-                <h3 class="govuk-heading-m">
-                    Grade 5 or above in English and maths GCSEs
-                </h3>
-
-                <table id="overview-english-maths-grade-5"
-                       class="govuk-table">
-
-                    <thead class="govuk-table__head">
-                        <tr class="govuk-table__row">
-                            <th scope="col"
-                                class="govuk-table__header">
-                                Area
-                            </th>
-                            <th scope="col"
-                                class="govuk-table__header govuk-table__header--numeric">
-                                Pupils achieving grade 5 or above
-                            </th>
-                        </tr>
-                    </thead>
-
-                    <tbody class="govuk-table__body">
-
-                        <tr class="govuk-table__row">
-                            <th scope="row"
-                                class="govuk-table__header">
-                                School
-                            </th>
-                            <td class="govuk-table__cell govuk-table__cell--numeric">
-                                @Model.EnglishAndMathsGrade5.SchoolOrCollege.DisplayPercentage()
-                            </td>
-                        </tr>
-
-                        <tr class="govuk-table__row">
-                            <th scope="row"
-                                class="govuk-table__header">
-                                Local authority average
-                            </th>
-                            <td class="govuk-table__cell govuk-table__cell--numeric">
-                                @Model.EnglishAndMathsGrade5.LocalAuthority.DisplayPercentage()
-                            </td>
-                        </tr>
-
-                        <tr class="govuk-table__row">
-                            <th scope="row"
-                                class="govuk-table__header">
-                                England average
-                            </th>
-                            <td class="govuk-table__cell govuk-table__cell--numeric">
-                                @Model.EnglishAndMathsGrade5.England.DisplayPercentage()
-                            </td>
-                        </tr>
-
-                    </tbody>
-                </table>
-            }
-
-
-            <h3 class="govuk-heading-m">
-                Pupils entered for more than one foreign language
-            </h3>
-
-            <p class="govuk-body">
-                @Model.MoreThanOneForeignLanguage.DisplayPercentage()
-            </p>
-
-
-            @if (Model.Destinations is not null)
-            {
-                <h2 class="govuk-heading-l">
-                    Destinations
-                </h2>
-
-                <h3 class="govuk-heading-m">
-                    Staying in education, employment or apprenticeships
-                </h3>
-
-                <table id="overview-destinations"
-                       class="govuk-table">
-
-                    <thead class="govuk-table__head">
-                        <tr class="govuk-table__row">
-                            <th scope="col"
-                                class="govuk-table__header">
-                                Area
-                            </th>
-                            <th scope="col"
-                                class="govuk-table__header govuk-table__header--numeric">
-                                Pupils staying in education, employment or apprenticeships
-                            </th>
-                        </tr>
-                    </thead>
-
-                    <tbody class="govuk-table__body">
-
-                        <tr class="govuk-table__row">
-                            <th scope="row"
-                                class="govuk-table__header">
-                                School
-                            </th>
-                            <td class="govuk-table__cell govuk-table__cell--numeric">
-                                @Model.Destinations.SchoolOrCollege.DisplayPercentage()
-                            </td>
-                        </tr>
-
-                        <tr class="govuk-table__row">
-                            <th scope="row"
-                                class="govuk-table__header">
-                                Local authority average
-                            </th>
-                            <td class="govuk-table__cell govuk-table__cell--numeric">
-                                @Model.Destinations.LocalAuthority.DisplayPercentage()
-                            </td>
-                        </tr>
-
-                        <tr class="govuk-table__row">
-                            <th scope="row"
-                                class="govuk-table__header">
-                                England average
-                            </th>
-                            <td class="govuk-table__cell govuk-table__cell--numeric">
-                                @Model.Destinations.England.DisplayPercentage()
-                            </td>
-                        </tr>
-
-                    </tbody>
-                </table>
-            }
-        }
- *@
     </div>
 </div>
 
-@await Component.InvokeAsync(
-"SchoolProfilePagination",
-    SchoolProfilePaginationModel.From(
-        Model,
-        RouteConstants.Overview))
 
 @section Scripts {
     <script nonce="@Html.ScriptNonce().ToString()"
