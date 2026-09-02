@@ -617,7 +617,8 @@ public class Level3QualificationsPageTests : PageTestsBase
         var disadavantagedStudentsTable = doc.QuerySelector($"#{tableId}");
 
         if (qualification == Level3.ALevel ||
-            qualification == Level3.Academic)
+            qualification == Level3.Academic ||
+            qualification == Level3.AppliedGeneral)
         {
             // Assert disadvantaged students info accordion
             Assert.NotNull(disadvantagedStudentsAccordion);
@@ -677,7 +678,8 @@ public class Level3QualificationsPageTests : PageTestsBase
         var nonDisadavantagedStudentsTable = doc.QuerySelector($"#{tableId}");
 
         if (qualification == Level3.ALevel ||
-            qualification == Level3.Academic)
+            qualification == Level3.Academic ||
+            qualification == Level3.AppliedGeneral)
         {
             // Assert nondisadvantaged students info accordion
             Assert.NotNull(nonDisadvantagedStudentsDetails);

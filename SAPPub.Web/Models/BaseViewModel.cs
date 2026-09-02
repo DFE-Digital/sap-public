@@ -8,6 +8,9 @@ namespace SAPPub.Web.Models;
 
 public class BaseViewModel : ISchoolProfileViewModel
 {
+    protected const string PupilGroup = "Pupil group";
+    protected const string AllPupilsAtTheSchool = "All pupils at the school";
+
     public required string URN { get; set; }
     public required string SchoolName { get; set; }
     public required bool IsKS2 { get; set; }

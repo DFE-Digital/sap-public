@@ -221,7 +221,58 @@ public class AdmissionsPageTests : PageTestsBase
         Assert.Contains("/curriculum/primary", nextLink.GetAttribute("href"));
     }
 
+    [Fact]
+    public async Task AdmissionsPage_DisplaysStartingPrimarySchoolSummaryCard()
+    {
+        // Arrange
+        var url = BuildUrl(_urn, _schoolName, _pageRoute);
 
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var summaryCard = doc.QuerySelector("[data-testid='starting-secondary-school-summary']");
+        Assert.NotNull(summaryCard);
+        var independentSummaryCard = doc.QuerySelector("[data-testid='independent-school-summary']");
+        Assert.Null(independentSummaryCard);
+
+        var schoolWebsiteLink = summaryCard.QuerySelector("[data-testid='school-website-link']");
+        var laWebsiteLink = summaryCard.QuerySelector("[data-testid='la-website-link']");
+
+        Assert.NotNull(schoolWebsiteLink);
+        Assert.NotNull(laWebsiteLink);
+        Assert.NotNull(schoolWebsiteLink.GetAttribute("href"));
+        Assert.NotNull(schoolWebsiteLink.TextContent.Trim());
+        Assert.NotNull(laWebsiteLink.GetAttribute("href"));
+        Assert.NotNull(laWebsiteLink.TextContent.Trim());
+    }
+
+    [Fact]
+    public async Task AdmissionsPage_DisplaysIndependentPrimarySchoolSummaryCard()
+    {
+        // Arrange
+        var independentPrimaryAdmissionsServiceModel = GetAdmissionsServiceModel(
+            _schoolName,
+            isKs2: true,
+            isKs4: false,
+            schoolWebsite: "https://www.independentprimaryschool.co.uk",
+            isIndependentSchool: true);
+
+        _mockAdmissionsService
+          .Setup(s => s.GetAdmissionsDetailsAsync(_urn, It.IsAny<CancellationToken>()))
+          .ReturnsAsync(independentPrimaryAdmissionsServiceModel);
+
+        var url = BuildUrl(_urn, _schoolName, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var independentSummaryCard = doc.QuerySelector("[data-testid='independent-school-summary']");
+        Assert.NotNull(independentSummaryCard);
+        var summaryCard = doc.QuerySelector("[data-testid='starting-secondary-school-summary']");
+        Assert.Null(summaryCard);
+    }
 
     private void ConfigureMultiPhaseSchool()
     {

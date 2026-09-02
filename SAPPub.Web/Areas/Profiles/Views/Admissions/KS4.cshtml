@@ -25,206 +25,213 @@
     <div class="govuk-grid-column-three-quarters">
         <h2 class="govuk-heading-xl">@ViewData["Header"]</h2>
         <feature name="EnablePrimary">
-        @if (Model.IsKS2)
-        {
-            <nav id="sub-navigation-admissions" class="moj-sub-navigation" aria-label="Sub navigation">
-            <ul class="moj-sub-navigation__list">      
-                <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.PrimaryAdmissions" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.PrimarySchoolPageTitles.Admissions</a>
-                </li>
-                <li class="moj-sub-navigation__item">
-                        <a class="moj-sub-navigation__link" aria-current="page" asp-route="@RouteConstants.SecondaryAdmissions" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.SecondarySchoolPageTitles.Admissions</a>
-                </li>
-            </ul>
-        </nav>
-        }
+            @if (Model.IsKS2)
+            {
+                <nav id="sub-navigation-admissions" class="moj-sub-navigation" aria-label="Sub navigation">
+                    <ul class="moj-sub-navigation__list">
+                        <li class="moj-sub-navigation__item">
+                            <a class="moj-sub-navigation__link" asp-route="@RouteConstants.PrimaryAdmissions" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.PrimarySchoolPageTitles.Admissions</a>
+                        </li>
+                        <li class="moj-sub-navigation__item">
+                            <a class="moj-sub-navigation__link" aria-current="page" asp-route="@RouteConstants.SecondaryAdmissions" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.SecondarySchoolPageTitles.Admissions</a>
+                        </li>
+                    </ul>
+                </nav>
+            }
         </feature>
         <h2 class="govuk-heading-l">Moving from primary to secondary school</h2>
-        <div class="govuk-summary-card" data-testid="starting-secondary-school-summary">
-            <div class="govuk-summary-card__title-wrapper">
-                <h3 class="govuk-summary-card__title">
-                    Starting secondary school in September 2027
-                </h3>
-            </div>
-            <div class="govuk-summary-card__content">
-                <p class="govuk-body">
-                    If your child is in year 5, they will be due to start secondary school
-                    in September 2027. You must apply for your child to get a place at
-                    secondary school.
-                </p>
-                <p class="govuk-body">
-                    The application window for starting secondary school in September 2027
-                    will open in summer 2026. You’ll need to apply for a place by 31
-                    October 2026. You can do this by following your local council’s
-                    secondary school application process.
-                </p>
 
-                <govuk-summary-list>
-                    <govuk-summary-list-row>
-                        <govuk-summary-list-row-key>
-                            Admissions policies
-                        </govuk-summary-list-row-key>
-                        <govuk-summary-list-row-value>
-                            @if (Model.IsSchoolClosed)
-                            {
-                                <span data-testId="cannot-apply-info">You cannot apply for a place at this school because it is closed.</span>
-                            }
-                            else if (Model.SchoolWebsite.IsAvailable)
-                            {
-                                <a data-testid="school-website-link"
-                                class="govuk-link govuk-link--no-visited-state"
-                                href="@Model.SchoolWebsite.DisplayText(UrlHelper.EnsureHttpsUrl)"
-                                target="_blank"
-                                rel="noopener noreferrer">
-                                    View the school website to view the admissions
-                                    policies
+        @if (Model.IsIndependentSchool)
+        {
+            @await Html.PartialAsync("_AdmissionsPolicy", Model)
+        }
+        else
+        {
+
+            <div class="govuk-summary-card" data-testid="starting-secondary-school-summary">
+                <div class="govuk-summary-card__title-wrapper">
+                    <h3 class="govuk-summary-card__title">
+                        Starting secondary school in September 2027
+                    </h3>
+                </div>
+                <div class="govuk-summary-card__content">
+                    <p class="govuk-body">
+                        If your child is in year 5, they will be due to start secondary school
+                        in September 2027. You must apply for your child to get a place at
+                        secondary school.
+                    </p>
+                    <p class="govuk-body">
+                        The application window for starting secondary school in September 2027
+                        will open in summer 2026. You’ll need to apply for a place by 31
+                        October 2026. You can do this by following your local council’s
+                        secondary school application process.
+                    </p>
+
+                    <govuk-summary-list>
+                        <govuk-summary-list-row>
+                            <govuk-summary-list-row-key>
+                                Admissions policies
+                            </govuk-summary-list-row-key>
+                            <govuk-summary-list-row-value>
+                                @if (Model.IsSchoolClosed)
+                                {
+                                    <span data-testId="cannot-apply-info">You cannot apply for a place at this school because it is closed.</span>
+                                }
+                                else if (Model.SchoolWebsite.IsAvailable)
+                                {
+                                    <a data-testid="school-website-link"
+                                       class="govuk-link govuk-link--no-visited-state"
+                                       href="@Model.SchoolWebsite.DisplayText(UrlHelper.EnsureHttpsUrl)"
+                                       target="_blank"
+                                       rel="noopener noreferrer">
+                                        View the school website to view the admissions
+                                        policies
+                                        <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span data-testId="contact-school-info">Contact the school for more information</span>
+                                }
+                            </govuk-summary-list-row-value>
+                        </govuk-summary-list-row>
+                        <govuk-summary-list-row>
+                            <govuk-summary-list-row-key>
+                                Applying for a school place
+                            </govuk-summary-list-row-key>
+                            <govuk-summary-list-row-value>
+                                <a data-testid="la-website-link"
+                                   class="govuk-link govuk-link--no-visited-state"
+                                   href="@UrlHelper.EnsureHttpsUrl(Model.LASchoolAdmissionsLinkUrl)"
+                                   target="_blank"
+                                   rel="noopener noreferrer">
+                                    Visit the local council's website for more information on
+                                    applying for a school place
                                     <span class="govuk-visually-hidden">(opens in a new tab)</span>
                                 </a>
-                            }
-                            else
-                            {
-                                <span data-testId="contact-school-info">Contact the school for more information</span>
-                            }
-                        </govuk-summary-list-row-value>
-                    </govuk-summary-list-row>
-                    <govuk-summary-list-row>
-                        <govuk-summary-list-row-key>
-                            Applying for a school place
-                        </govuk-summary-list-row-key>
-                        <govuk-summary-list-row-value>
-                            <a data-testid="la-website-link"
-                               class="govuk-link govuk-link--no-visited-state" 
-                               href="@UrlHelper.EnsureHttpsUrl(Model.LASchoolAdmissionsLinkUrl)"
-                               target="_blank"
-                               rel="noopener noreferrer">
-                                Visit the local council's website for more information on
-                                applying for a school place
-                                <span class="govuk-visually-hidden">(opens in a new tab)</span>
-                            </a>
-                        </govuk-summary-list-row-value>
-                    </govuk-summary-list-row>
-                </govuk-summary-list>
+                            </govuk-summary-list-row-value>
+                        </govuk-summary-list-row>
+                    </govuk-summary-list>
+                </div>
             </div>
-        </div>
 
-        <h3 class="govuk-heading-m">Starting secondary school in September 2026</h3>
-        <p class="govuk-body">
-            If your child is in year 6, they’ll start secondary school in September
-            2026. Applications for starting secondary school in September 2026 closed
-            on 31 October 2025.
-        </p>
-        <p class="govuk-body">
-            If you missed the application deadline, you can still apply for a school
-            place. You can do this by following your local council’s secondary school
-            application process.
-        </p>
-        <p class="govuk-body">
-            If you apply for a school place after the deadline for applications, your
-            child may be less likely to be offered a place at your preferred school.
-        </p>
+            <h3 class="govuk-heading-m">Starting secondary school in September 2026</h3>
+            <p class="govuk-body">
+                If your child is in year 6, they’ll start secondary school in September
+                2026. Applications for starting secondary school in September 2026 closed
+                on 31 October 2025.
+            </p>
+            <p class="govuk-body">
+                If you missed the application deadline, you can still apply for a school
+                place. You can do this by following your local council’s secondary school
+                application process.
+            </p>
+            <p class="govuk-body">
+                If you apply for a school place after the deadline for applications, your
+                child may be less likely to be offered a place at your preferred school.
+            </p>
 
-        <h3 class="govuk-heading-m">Starting secondary school in September 2028</h3>
-        <p class="govuk-body">
-            If your child is in year 4, they will be due to start secondary school in
-            September 2028. The application window for starting secondary school in
-            September 2028 will open in summer 2027. You’ll need to apply for a place
-            by 31 October 2027.
-        </p>
-        <p class="govuk-body">
-            Schools must publish their policies for starting school in September 2028
-            by March 2027.
-        </p>
+            <h3 class="govuk-heading-m">Starting secondary school in September 2028</h3>
+            <p class="govuk-body">
+                If your child is in year 4, they will be due to start secondary school in
+                September 2028. The application window for starting secondary school in
+                September 2028 will open in summer 2027. You’ll need to apply for a place
+                by 31 October 2027.
+            </p>
+            <p class="govuk-body">
+                Schools must publish their policies for starting school in September 2028
+                by March 2027.
+            </p>
 
-        <h2 class="govuk-heading-l">Moving schools during the school year</h2>
+            <h2 class="govuk-heading-l">Moving schools during the school year</h2>
 
-        <div class="govuk-summary-card" data-testid="moving-schools-during-year-summary-card">
-            <div class="govuk-summary-card__title-wrapper">
-                <h3 class="govuk-summary-card__title">
-                    Moving schools during the school year
-                </h3>
-            </div>
-            <div class="govuk-summary-card__content">
-                <p class="govuk-body">
-                    If your child is joining a school after the school year has started in
-                    September, you’ll need to make an in-year application.
-                </p>
-                <p class="govuk-body">
-                    Depending on the school you’re applying for, you’ll either need to: 
-                </p>
-                <ul class="govuk-list govuk-list--bullet">
-                    <li>make an in-year application through your local council </li>
-                    <li>apply directly to the school </li>
-                </ul>
-                <p class="govuk-body">
-                    You can find information on which schools you’ll need to apply
-                    directly to on your local council’s website.  
-                </p>
-                <p class="govuk-body">
-                    <a 
-                       href="@UrlHelper.EnsureHttpsUrl(Model.LASchoolAdmissionsLinkUrl)"
-                       target="_blank"
-                       rel="noopener noreferrer"
-                       class="govuk-link"
-                       data-testid="link">
-                        @($"View {Model.LAName}’s in-year application process")
-                        <span class="govuk-visually-hidden">(opens in a new tab)</span>
-                    </a>
-                </p>
-            </div>
-        </div>
-
-        <h2 class="govuk-heading-l">More information on secondary school admissions</h2>
-        <govuk-accordion id="more-info-on-secondary-school-admissions-accordion" hide-all-sections-text="Hide all sections" show-all-sections-text="Show all sections" hide-section-text="Hide" show-section-text="Show more">
-            <govuk-accordion-item>
-                <govuk-accordion-item-heading>Find out more about school admissions policies</govuk-accordion-item-heading>
-                <govuk-accordion-item-summary></govuk-accordion-item-summary>
-                <govuk-accordion-item-content>
+            <div class="govuk-summary-card" data-testid="moving-schools-during-year-summary-card">
+                <div class="govuk-summary-card__title-wrapper">
+                    <h3 class="govuk-summary-card__title">
+                        Moving schools during the school year
+                    </h3>
+                </div>
+                <div class="govuk-summary-card__content">
                     <p class="govuk-body">
-                        All schools have admissions policies that explain how school places are allocated.
-                        These policies are either set by the local council or the school.  
+                        If your child is joining a school after the school year has started in
+                        September, you’ll need to make an in-year application.
                     </p>
                     <p class="govuk-body">
-                        Admissions policies are different for every school. As part of their admissions policies,
-                        some schools may give priority to children who live in a designated catchment area, but they do not have to.
+                        Depending on the school you’re applying for, you’ll either need to: 
+                    </p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>make an in-year application through your local council </li>
+                        <li>apply directly to the school </li>
+                    </ul>
+                    <p class="govuk-body">
+                        You can find information on which schools you’ll need to apply
+                        directly to on your local council’s website.  
                     </p>
                     <p class="govuk-body">
-                        Schools do not have to have catchment areas. Some schools may use distance from the school instead.
-                    </p>
-                    <p class="govuk-body">
-                        <a href="https://www.gov.uk/schools-admissions"
+                        <a href="@UrlHelper.EnsureHttpsUrl(Model.LASchoolAdmissionsLinkUrl)"
                            target="_blank"
                            rel="noopener noreferrer"
-                           class="govuk-link">
-                            Find out more about school admission criteria
+                           class="govuk-link"
+                           data-testid="link">
+                            @($"View {Model.LAName}’s in-year application process")
                             <span class="govuk-visually-hidden">(opens in a new tab)</span>
                         </a>
                     </p>
-                    <p class="govuk-body">
-                        Further details about school’s admissions policies
-                        can be found on the school’s website or on the council’s website.
-                    </p>
-                </govuk-accordion-item-content>
-            </govuk-accordion-item>
+                </div>
+            </div>
 
-            <govuk-accordion-item>
-                <govuk-accordion-item-heading>Further information schools may ask for</govuk-accordion-item-heading>
-                <govuk-accordion-item-summary></govuk-accordion-item-summary>
-                <govuk-accordion-item-content>
-                    <p class="govuk-body">
-                        Some schools, for example faith schools, may require a Supplementary Information Form (SIF)
-                        to be submitted as part of the school application process. SIFs request additional information
-                        and are used to determine whether a child meets the school’s admission criteria.
-                    </p>
-                    <p class="govuk-body">
-                        Some types of schools, for example grammar schools or partially selective schools,
-                        require children to take a test after making an application to help decide which children get places.
-                        For example, this could be a music aptitude test. Grammar schools may require children to take a selection test.
-                        The school’s admission arrangements should explain what is required.  
-                    </p>
-                </govuk-accordion-item-content>
-            </govuk-accordion-item>
-        </govuk-accordion>
+            <h2 class="govuk-heading-l">More information on secondary school admissions</h2>
+            <govuk-accordion id="more-info-on-secondary-school-admissions-accordion" hide-all-sections-text="Hide all sections" show-all-sections-text="Show all sections" hide-section-text="Hide" show-section-text="Show more">
+                <govuk-accordion-item>
+                    <govuk-accordion-item-heading>Find out more about school admissions policies</govuk-accordion-item-heading>
+                    <govuk-accordion-item-summary></govuk-accordion-item-summary>
+                    <govuk-accordion-item-content>
+                        <p class="govuk-body">
+                            All schools have admissions policies that explain how school places are allocated.
+                            These policies are either set by the local council or the school.  
+                        </p>
+                        <p class="govuk-body">
+                            Admissions policies are different for every school. As part of their admissions policies,
+                            some schools may give priority to children who live in a designated catchment area, but they do not have to.
+                        </p>
+                        <p class="govuk-body">
+                            Schools do not have to have catchment areas. Some schools may use distance from the school instead.
+                        </p>
+                        <p class="govuk-body">
+                            <a href="https://www.gov.uk/schools-admissions"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="govuk-link">
+                                Find out more about school admission criteria
+                                <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                            </a>
+                        </p>
+                        <p class="govuk-body">
+                            Further details about school’s admissions policies
+                            can be found on the school’s website or on the council’s website.
+                        </p>
+                    </govuk-accordion-item-content>
+                </govuk-accordion-item>
 
+                <govuk-accordion-item>
+                    <govuk-accordion-item-heading>Further information schools may ask for</govuk-accordion-item-heading>
+                    <govuk-accordion-item-summary></govuk-accordion-item-summary>
+                    <govuk-accordion-item-content>
+                        <p class="govuk-body">
+                            Some schools, for example faith schools, may require a Supplementary Information Form (SIF)
+                            to be submitted as part of the school application process. SIFs request additional information
+                            and are used to determine whether a child meets the school’s admission criteria.
+                        </p>
+                        <p class="govuk-body">
+                            Some types of schools, for example grammar schools or partially selective schools,
+                            require children to take a test after making an application to help decide which children get places.
+                            For example, this could be a music aptitude test. Grammar schools may require children to take a selection test.
+                            The school’s admission arrangements should explain what is required.  
+                        </p>
+                    </govuk-accordion-item-content>
+                </govuk-accordion-item>
+            </govuk-accordion>
+        }
         @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.SecondaryAdmissions))
 
     </div>
