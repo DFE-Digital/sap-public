@@ -36,4 +36,22 @@ public static class PageHelper
 
         return row.Locator("td").AllInnerTextsAsync();
     }
+
+    public static Task ExpandAccordionAsync(this IPage page, string label)
+    {
+        return page.GetByRole(AriaRole.Button, new()
+        {
+            Name = label
+        }).ClickAsync();
+    }
+
+    public static Task ExpandDetailsAsync(this IPage page, string summaryText)
+    {
+        var summary = page
+            .Locator("summary.govuk-details__summary")
+            .Filter(new() { HasText = summaryText });
+
+        return summary.ClickAsync();
+    }
+
 }
