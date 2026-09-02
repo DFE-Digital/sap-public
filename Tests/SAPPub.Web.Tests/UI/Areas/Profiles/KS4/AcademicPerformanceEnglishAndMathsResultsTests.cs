@@ -133,6 +133,8 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
         var chartHeading = Page.Locator("#chartHeading");
         var chartHeadingText = await chartHeading.TextContentAsync();
         Assert.Contains("Grade 5 and above", chartHeadingText);
+        var chartGradeExplainerText = await Page.Locator("#chartHeading + p").InnerTextAsync();
+        Assert.Contains("Grade 5", chartGradeExplainerText);
 
         // Act
         var gradeSelector = Page.Locator("#gradeSelector");
@@ -144,6 +146,8 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
         chartHeading = Page.Locator("#chartHeading");
         chartHeadingText = await chartHeading.TextContentAsync();
         Assert.Contains("Grade 4 and above", chartHeadingText);
+        chartGradeExplainerText = await Page.Locator("#chartHeading + p").InnerTextAsync();
+        Assert.Contains("grade 4", chartGradeExplainerText);
 
         // Act
         await gradeSelector.SelectOptionAsync([GcseGradeDataSelection.Grade7AndAbove.GetDisplayName()!]);
@@ -154,6 +158,8 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
         chartHeading = Page.Locator("#chartHeading");
         chartHeadingText = await chartHeading.TextContentAsync();
         Assert.Contains("Grade 7 and above", chartHeadingText);
+        chartGradeExplainerText = await Page.Locator("#chartHeading + p").InnerTextAsync();
+        Assert.Contains("grade 7", chartGradeExplainerText);
     }
 
     [Fact]
