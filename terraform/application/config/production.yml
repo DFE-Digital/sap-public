@@ -1,4 +1,5 @@
 FeatureManagement__EstablishmentComparisonEnabled: "true"
 FeatureManagement__Enable16to19: "false"
 FeatureManagement__EnablePrimary: "false"
+FeatureManagement__EnableSecondaryGrade7: "false"
 FeatureManagement__EnableOverview: "false"

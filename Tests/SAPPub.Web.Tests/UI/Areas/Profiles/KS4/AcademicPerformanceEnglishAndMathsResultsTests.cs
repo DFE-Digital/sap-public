@@ -109,7 +109,7 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
         // Assert
         Assert.True(isVisible);
     }
-    
+
     [Fact]
     public async Task AcademicPerformanceEnglishAndMathsResultsPage_DisplaysGradeSelectorForDataDisplayed()
     {
@@ -144,6 +144,16 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
         chartHeading = Page.Locator("#chartHeading");
         chartHeadingText = await chartHeading.TextContentAsync();
         Assert.Contains("Grade 4 and above", chartHeadingText);
+
+        // Act
+        await gradeSelector.SelectOptionAsync([GcseGradeDataSelection.Grade7AndAbove.GetDisplayName()!]);
+        buttonSelector = Page.Locator("button:has-text(\"Show results\")");
+        await buttonSelector.ClickAsync();
+
+        // Assert
+        chartHeading = Page.Locator("#chartHeading");
+        chartHeadingText = await chartHeading.TextContentAsync();
+        Assert.Contains("Grade 7 and above", chartHeadingText);
     }
 
     [Fact]

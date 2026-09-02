@@ -5,9 +5,6 @@ using SAPPub.Core.Entities;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.ServiceModels.KS4.Performance;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SAPPub.Core.Services.KS4.Performance;
 
@@ -51,143 +48,17 @@ public sealed class EnglishAndMathsResultsService(
             IsKS4 = establishment.IsKS4,
             IsKS5 = establishment.IsKS5,
 
-            EstablishmentAll = new RelativeYearValues<double?>
-            {
-                CurrentYear = selectedGrade switch
-                {
-                    4 => establishmentPerformance.EngMaths49_Tot_Est_Current_Pct,
-                    5 => establishmentPerformance.EngMaths59_Tot_Est_Current_Pct,
-                    _ => null
-                },
-                PreviousYear = selectedGrade switch
-                {
-                    4 => establishmentPerformance.EngMaths49_Tot_Est_Previous_Pct,
-                    5 => establishmentPerformance.EngMaths59_Tot_Est_Previous_Pct,
-                    _ => null
-                },
-                TwoYearsAgo = selectedGrade switch
-                {
-                    4 => establishmentPerformance.EngMaths49_Tot_Est_Previous2_Pct,
-                    5 => establishmentPerformance.EngMaths59_Tot_Est_Previous2_Pct,
-                    _ => null
-                },
-            },
+            EstablishmentAll = Entities.KS4.Performance.EstablishmentPerformance.AllEnglishAndMaths(establishmentPerformance, selectedGrade),
+            LocalAuthorityAll = Entities.KS4.Performance.LAPerformance.AllEnglishAndMaths(laPerformance, selectedGrade),
+            EnglandAll = Entities.KS4.Performance.EnglandPerformance.AllEnglishAndMaths(englandPerformance, selectedGrade),
 
-            LocalAuthorityAll = new RelativeYearValues<double?>
-            {
-                CurrentYear = selectedGrade switch
-                {
-                    4 => laPerformance.EngMaths49_Tot_LA_Current_Pct,
-                    5 => laPerformance.EngMaths59_Tot_LA_Current_Pct,
-                    _ => null
-                },
-                PreviousYear = selectedGrade switch
-                {
-                    4 => laPerformance.EngMaths49_Tot_LA_Previous_Pct,
-                    5 => laPerformance.EngMaths59_Tot_LA_Previous_Pct,
-                    _ => null
-                },
-                TwoYearsAgo = selectedGrade switch
-                {
-                    4 => laPerformance.EngMaths49_Tot_LA_Previous2_Pct,
-                    5 => laPerformance.EngMaths59_Tot_LA_Previous2_Pct,
-                    _ => null
-                },
-            },
+            EstablishmentBoys = Entities.KS4.Performance.EstablishmentPerformance.BoysEnglishAndMathsPerformance(establishmentPerformance, selectedGrade),
+            LocalAuthorityBoys = Entities.KS4.Performance.LAPerformance.BoysEnglishAndMaths(laPerformance, selectedGrade),
+            EnglandBoys = Entities.KS4.Performance.EnglandPerformance.BoysEnglishAndMaths(englandPerformance, selectedGrade),
 
-            EnglandAll = new RelativeYearValues<double?>
-            {
-                CurrentYear = selectedGrade switch
-                {
-                    4 => englandPerformance.EngMaths49_Tot_Eng_Current_Pct,
-                    5 => englandPerformance.EngMaths59_Tot_Eng_Current_Pct,
-                    _ => null
-                },
-                PreviousYear = selectedGrade switch
-                {
-                    4 => englandPerformance.EngMaths49_Tot_Eng_Previous_Pct,
-                    5 => englandPerformance.EngMaths59_Tot_Eng_Previous_Pct,
-                    _ => null
-                },
-                TwoYearsAgo = selectedGrade switch
-                {
-                    4 => englandPerformance.EngMaths49_Tot_Eng_Previous2_Pct,
-                    5 => englandPerformance.EngMaths59_Tot_Eng_Previous2_Pct,
-                    _ => null
-                },
-            },
-
-            EstablishmentBoys = new RelativeYearValues<double?>
-            {
-                CurrentYear = selectedGrade switch
-                {
-                    4 => establishmentPerformance.EngMaths49_Boy_Est_Current_Pct,
-                    5 => establishmentPerformance.EngMaths59_Boy_Est_Current_Pct,
-                    _ => null
-                },
-                PreviousYear = null,
-                TwoYearsAgo = null
-            },
-
-            LocalAuthorityBoys = new RelativeYearValues<double?>
-            {
-                CurrentYear = selectedGrade switch
-                {
-                    4 => laPerformance.EngMaths49_Boy_LA_Current_Pct,
-                    5 => laPerformance.EngMaths59_Boy_LA_Current_Pct,
-                    _ => null
-                },
-                PreviousYear = null,
-                TwoYearsAgo = null
-            },
-
-            EnglandBoys = new RelativeYearValues<double?>
-            {
-                CurrentYear = selectedGrade switch
-                {
-                    4 => englandPerformance.EngMaths49_Boy_Eng_Current_Pct,
-                    5 => englandPerformance.EngMaths59_Boy_Eng_Current_Pct,
-                    _ => null
-                },
-                PreviousYear = null,
-                TwoYearsAgo = null
-            },
-
-            EstablishmentGirls = new RelativeYearValues<double?>
-            {
-                CurrentYear = selectedGrade switch
-                {
-                    4 => establishmentPerformance.EngMaths49_Grl_Est_Current_Pct,
-                    5 => establishmentPerformance.EngMaths59_Grl_Est_Current_Pct,
-                    _ => null
-                },
-                PreviousYear = null,
-                TwoYearsAgo = null
-            },
-
-            LocalAuthorityGirls = new RelativeYearValues<double?>
-            {
-                CurrentYear = selectedGrade switch
-                {
-                    4 => laPerformance.EngMaths49_Grl_LA_Current_Pct,
-                    5 => laPerformance.EngMaths59_Grl_LA_Current_Pct,
-                    _ => null
-                },
-                PreviousYear = null,
-                TwoYearsAgo = null
-            },
-
-            EnglandGirls = new RelativeYearValues<double?>
-            {
-                CurrentYear = selectedGrade switch
-                {
-                    4 => englandPerformance.EngMaths49_Grl_Eng_Current_Pct,
-                    5 => englandPerformance.EngMaths59_Grl_Eng_Current_Pct,
-                    _ => null
-                },
-                PreviousYear = null,
-                TwoYearsAgo = null
-            },
+            EstablishmentGirls = Entities.KS4.Performance.EstablishmentPerformance.GirlsEnglishAndMathsPerformance(establishmentPerformance, selectedGrade),
+            LocalAuthorityGirls = Entities.KS4.Performance.LAPerformance.GirlsEnglishAndMaths(laPerformance, selectedGrade),
+            EnglandGirls = Entities.KS4.Performance.EnglandPerformance.GirlsEnglishAndMaths(englandPerformance, selectedGrade),
         };
     }
 

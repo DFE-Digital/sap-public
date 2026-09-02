@@ -57,7 +57,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
         {
             URN = "105574",
             EstablishmentName = "Loreto High School Chorlton",
-            LAId = "999",
+            LAId = "9991",
             LAName = "Test LA",
             EstablishmentNumber = "9999",
             PhaseOfEducationId = "4",
@@ -295,12 +295,17 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             Attainment8_Tot_Est_Previous2_Num = null,
             Prog8_Tot_Est_Previous_Num = 0.1,
             Prog8_Tot_Est_Previous2_Num = null,
-            EngMaths49_Tot_Est_Current_Pct = 50,
-            EngMaths59_Tot_Est_Current_Pct = 60,
-            EngMaths49_Tot_Est_Previous_Pct = 65,
-            EngMaths59_Tot_Est_Previous_Pct = 70,
-            EngMaths49_Tot_Est_Previous2_Pct = 75,
-            EngMaths59_Tot_Est_Previous2_Pct = 80,
+            EngMaths49_Tot_Est_Current_Pct = 71,
+            EngMaths59_Tot_Est_Current_Pct = 61,
+            EngMaths79_Tot_Est_Current_Pct = 21,
+            EngMaths49_Tot_Est_Previous_Pct = 75,
+            EngMaths59_Tot_Est_Previous_Pct = 60,
+            EngMaths79_Tot_Est_Previous_Pct = 20,
+            EngMaths49_Tot_Est_Previous2_Pct = 74,
+            EngMaths59_Tot_Est_Previous2_Pct = 64,
+            EngMaths79_Tot_Est_Previous2_Pct = 16,
+            EngMaths79_Boy_Est_Current_Pct = 21.1,
+            EngMaths79_Grl_Est_Current_Pct = 22.1,
             // additional measures
             AnyQual_Tot_Est_Current_Pct_Coded = new CodedDouble(90, "", ""),
             TripSci_Tot_Est_Current_Pct_Coded = new CodedDouble(80, "", ""),
@@ -386,6 +391,34 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             AllDest_Tot_Eng_Current_Pct = null
         }
     };
+
+    private static readonly Dictionary<string, LAPerformance> KS4LaPerformances = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["9991"] = new LAPerformance
+        {
+            Id = "9991",
+            EngMaths49_Tot_LA_Current_Pct = 55.1,
+            EngMaths59_Tot_LA_Current_Pct = 22.2,
+            EngMaths79_Tot_LA_Current_Pct = 11.1,
+            EngMaths79_Boy_LA_Current_Pct = 10.1,
+            EngMaths79_Grl_LA_Current_Pct = 12.1,
+            EngMaths79_Tot_LA_Previous_Pct = 20.1,
+            EngMaths79_Tot_LA_Previous2_Pct = 30.1
+        }
+    };
+
+    private static readonly EnglandPerformance KS4EnglandPerformance =
+        new EnglandPerformance
+        {
+            Id = "105574",
+            EngMaths49_Tot_Eng_Current_Pct = 54.1,
+            EngMaths59_Tot_Eng_Current_Pct = 24.2,
+            EngMaths79_Tot_Eng_Current_Pct = 14.1,
+            EngMaths79_Boy_Eng_Current_Pct = 14.1,
+            EngMaths79_Grl_Eng_Current_Pct = 14.1,
+            EngMaths79_Tot_Eng_Previous_Pct = 24.1,
+            EngMaths79_Tot_Eng_Previous2_Pct = 34.1
+        };
 
     private static readonly Dictionary<string, KS5EstablishmentDestinations> KS5EstablishmentDestinations = new(StringComparer.OrdinalIgnoreCase)
     {
@@ -517,6 +550,18 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             return Task.FromResult<T?>((T)(object)KS2EnglandPerformances[0]);
         }
 
+        if (typeof(T) == typeof(LAPerformance))
+        {
+            var id = GetPropertyString(parameters, "Id");
+            if (!string.IsNullOrWhiteSpace(id) && KS4LaPerformances.TryGetValue(id, out var est))
+                return Task.FromResult<T?>((T)(object)est);
+        }
+
+        if (typeof(T) == typeof(EnglandPerformance))
+        {
+            return Task.FromResult<T?>((T)(object)KS4EnglandPerformance);
+        }
+
         if (typeof(T) == typeof(KS4EstablishmentDestinations))
         {
             var id = GetPropertyString(parameters, "Id");
@@ -566,6 +611,14 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
                 return Task.FromResult(Enumerable.Empty<T>());
 
             return Task.FromResult(EstablishmentPerformances.Values.Where(e => ids.Contains(e.Id)).Select(e => (T)(object)e));
+        }
+
+        if (typeof(T) == typeof(LAPerformance))
+        {
+            var ids = GetPropertyAsStringArray(parameters, "Ids");
+            if (ids == null)
+                return Task.FromResult(Enumerable.Empty<T>());
+            return Task.FromResult(KS4LaPerformances.Values.Where(e => ids.Contains(e.Id)).Select(e => (T)(object)e));
         }
 
         if (typeof(T) == typeof(KS4EstablishmentSubjectEntryRow))
@@ -628,9 +681,9 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
         return Task.FromResult(Enumerable.Empty<T>());
     }
 
-    private KS5EstablishmentSubjectEntryRow MakeKS5Row(string urn, string subject, string qualDetailed, string qualLevel, string count, string examCohort) 
+    private KS5EstablishmentSubjectEntryRow MakeKS5Row(string urn, string subject, string qualDetailed, string qualLevel, string count, string examCohort)
         => new()
-        { 
+        {
             subject = subject,
             entries_count = count,
             qualification_detailed = qualDetailed,
