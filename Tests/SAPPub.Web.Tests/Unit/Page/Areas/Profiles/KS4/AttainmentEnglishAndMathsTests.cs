@@ -1,5 +1,4 @@
 ﻿using Moq;
-using SAPPub.Core.Entities;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Tests.TestBuilders;
@@ -55,6 +54,39 @@ public class AttainmentEnglishAndMathsTests : PageTestsBase
     }
 
     [Fact]
+    public async Task NonDisadvantagedBreakdownTable_DataAvailable_ShowsExpectedValues()
+    {
+        // Arrange
+        var urn = "143034";
+        var gradeSelection = GcseGradeDataSelection.Grade5AndAbove;
+        var grade = gradeSelection.ToGradeValue();
+        var establishmentName = "St Paul's Church of England Academy";
+        var expectedModel = new EnglishAndMathsResultsModelBuilder()
+            .WithUrn(urn)
+            .WithEstablishmentName(establishmentName)
+            .WithLaName("Durham")
+            .WithIsKS4(true)
+            .WithCurrentYearData()
+            .Build();
+
+        _serviceMock
+            .Setup(service => service.GetEnglishAndMathsResultsAsync(
+                urn,
+                grade,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedModel);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, $"{_pageRoute}/{gradeSelection.ToRouteSegment()}"));
+
+        // Assert
+        Assert.Contains("Durham average", doc.GetTableHeaderContentByIdAndIndex("breakdown-non-disadvantaged-table", 1, 0));
+        Assert.Contains("England average", doc.GetTableHeaderContentByIdAndIndex("breakdown-non-disadvantaged-table", 2, 0));
+        Assert.Equal($"{expectedModel.LocalAuthorityNonDisadvantaged.CurrentYear!.Value.ToString()}%", doc.GetTableCellContentByIdAndIndex("breakdown-non-disadvantaged-table", 1, 0));
+        Assert.Equal($"{expectedModel.EnglandNonDisadvantaged.CurrentYear!.Value.ToString()}%", doc.GetTableCellContentByIdAndIndex("breakdown-non-disadvantaged-table", 2, 0));
+    }
+
+    [Fact]
     public async Task DisadvantagedBreakdownTable_NoDataAvailable_ShowsExpectedValues()
     {
         // Arrange
@@ -86,6 +118,38 @@ public class AttainmentEnglishAndMathsTests : PageTestsBase
         Assert.Equal("Not available", doc.GetTableCellContentByIdAndIndex("breakdown-disadvantaged-table", 1, 0));
         Assert.Equal("Not available", doc.GetTableCellContentByIdAndIndex("breakdown-disadvantaged-table", 2, 0));
         Assert.Equal("Not available", doc.GetTableCellContentByIdAndIndex("breakdown-disadvantaged-table", 3, 0));
+    }
+
+    [Fact]
+    public async Task NonDisadvantagedBreakdownTable_NoDataAvailable_ShowsExpectedValues()
+    {
+        // Arrange
+        var urn = "143034";
+        var gradeSelection = GcseGradeDataSelection.Grade5AndAbove;
+        var grade = gradeSelection.ToGradeValue();
+        var establishmentName = "St Paul's Church of England Academy";
+        var expectedModel = new EnglishAndMathsResultsModelBuilder()
+            .WithUrn(urn)
+            .WithEstablishmentName(establishmentName)
+            .WithLaName("Durham")
+            .WithIsKS4(true)
+            .Build();
+
+        _serviceMock
+            .Setup(service => service.GetEnglishAndMathsResultsAsync(
+                urn,
+                grade,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedModel);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, $"{_pageRoute}/{gradeSelection.ToRouteSegment()}"));
+
+        // Assert
+        Assert.Contains("Durham average", doc.GetTableHeaderContentByIdAndIndex("breakdown-non-disadvantaged-table", 1, 0));
+        Assert.Contains("England average", doc.GetTableHeaderContentByIdAndIndex("breakdown-non-disadvantaged-table", 2, 0));
+        Assert.Equal("Not available", doc.GetTableCellContentByIdAndIndex("breakdown-non-disadvantaged-table", 1, 0));
+        Assert.Equal("Not available", doc.GetTableCellContentByIdAndIndex("breakdown-non-disadvantaged-table", 2, 0));
     }
 
     [Fact]
