@@ -535,6 +535,15 @@ public class KS4ControllerTests
         );
 
         Assert.Equal(new[] { "Percentage who achieved Grade 5 and above in English and maths" }, viewModel.BreakdownDisadvantaged.Labels);
+
+        Assert.Equal(
+            expectedResult.LocalAuthorityNonDisadvantaged.CurrentYear!.Value,
+            viewModel.BreakdownNonDisadvantaged.Datasets[0].Data.Single()
+        );
+        Assert.Equal(
+            expectedResult.EnglandNonDisadvantaged.CurrentYear!.Value,
+            viewModel.BreakdownNonDisadvantaged.Datasets[1].Data.Single()
+        );
     }
 
     [Fact]
