@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36915.13
+# Visual Studio Version 18
+VisualStudioVersion = 18.9.12120.119 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAPPub.Web", "SAPPub.Web\SAPPub.Web.csproj", "{24624574-4DE4-4A91-8273-7AE3EEE13537}"
 EndProject
@@ -29,7 +29,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAPData", "SAPData\SAPData.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAPData.Unit.Tests", "Tests\SAPData.Tests.Unit\SAPData.Unit.Tests.csproj", "{292387F8-1210-7181-8056-86EC3D855329}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAPPub.IntegrationTests", "Tests\SAPPub.Integration.Tests\SAPPub.IntegrationTests.csproj", "{ED5E323F-D68B-19A8-8610-2937CB187D88}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAPPub.Integration.Tests", "Tests\SAPPub.Integration.Tests\SAPPub.Integration.Tests.csproj", "{ED5E323F-D68B-19A8-8610-2937CB187D88}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
