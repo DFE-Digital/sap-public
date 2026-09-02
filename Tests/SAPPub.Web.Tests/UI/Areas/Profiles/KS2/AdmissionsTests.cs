@@ -1,4 +1,5 @@
-﻿using SAPPub.Web.Tests.UI.Helpers;
+﻿using Microsoft.Playwright;
+using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
 namespace SAPPub.Web.Tests.UI.Areas.Profiles.KS2;
@@ -37,34 +38,36 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
         Assert.Contains("Primary Admissions", title);
     }
 
-    [Fact]
-    public async Task AdmissionsPage_DisplaysMainHeading()
-    {
-        // Arrange
-        await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
-
-        // Act
-        var heading = await Page.Locator("h1").TextContentAsync();
-
-        // Assert
-        Assert.NotNull(heading?.Replace(" ", ""));
-    }
 
     [Fact]
-    public async Task AdmissionsPage_Displays_SchoolName_Caption()
+    public async Task AdmissionsPage_DisplaysExpectedHeadings()
     {
-        // Arrange
+        // Arrange / Act
         await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
 
-        // Act
-        var schoolNameCaptionLocator = Page.Locator("#school-name-caption");
-        var isVisible = await schoolNameCaptionLocator.IsVisibleAsync();
-        var schoolNameCaption = await schoolNameCaptionLocator.TextContentAsync();
+        // Assert - school name is the H1
+        await Expect(
+            Page.GetByRole(
+                AriaRole.Heading,
+                new()
+                {
+                    Level = 1,
+                    Name = "St Paul's Church of England Academy",
+                    Exact = true
+                }))
+            .ToBeVisibleAsync();
 
-        // Assert
-        Assert.True(isVisible);
-        Assert.NotNull(schoolNameCaption);
-        Assert.Equal("St Paul's Church of England Academy", schoolNameCaption);
+        // Assert - page title is an H2
+        await Expect(
+            Page.GetByRole(
+                AriaRole.Heading,
+                new()
+                {
+                    Level = 2,
+                    Name = "Admissions",
+                    Exact = true
+                }))
+            .ToBeVisibleAsync();
     }
 
     [Theory]

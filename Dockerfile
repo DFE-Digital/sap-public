@@ -1,7 +1,7 @@
 # =====================================================
 # Stage 0: Set version arguments
 # =====================================================
-ARG DOTNET_VERSION=8.0
+ARG DOTNET_VERSION=10.0
 ARG NODEJS_VERSION_MAJOR=22
 
 
@@ -67,7 +67,7 @@ RUN mkdir -p /keys && chmod -R 777 /keys
 # =====================================================
 # Stage 3: Runtime image (chiseled)
 # =====================================================
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-noble-chiseled AS final
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-noble-chiseled AS final
 WORKDIR /app
 
 # Copy app & assets with correct ownership; no shell, so no RUN here

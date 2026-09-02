@@ -126,21 +126,6 @@ public class MeetingOrExceedingStandardsPageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task MeetingOrExceedingStandardsPage_Displays_SchoolName_Caption()
-    {
-        // Arrange
-        var url = BuildUrl(_urn, _schoolName, _pageRoute);
-
-        // Act
-        var doc = await Fixture.BrowseToPage(url);
-
-        // Assert
-        var schoolNameCaption = doc.QuerySelector("#school-name-caption");
-        Assert.NotNull(schoolNameCaption);
-        Assert.Equal(_schoolName, schoolNameCaption.TextContent.Trim());
-    }
-
-    [Fact]
     public async Task MeetingOrExceedingStandardsPage_Displays_SubNavigation()
     {
         // Arrange

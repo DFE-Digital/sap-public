@@ -10,12 +10,12 @@ public class ProfilePaginationTests(WebApplicationSetupFixture fixture) : BasePa
 {
     private readonly Dictionary<string, string> _schoolUrnToUrlMap = new()
     {
-        ["135600"] = "school/135600/ark-academy/about", //KS2 + KS4 + KS5
-        ["150009"] = "school/150009/abraham-moss-community-school/about", //KS2 + KS4
-        ["137552"] = "school/137552/stewards-academy-science-specialist-harlow/about", //KS4
-        ["149328"] = "school/149328/king-edward-vi-high-school/about", //KS4 + KS5
-        ["130499"] = "school/130499/holy-cross-college/about", //KS5
-        ["143034"] = "school/143034/st-pauls-church-of-england-academy/about", //KS2
+        ["135600"] = "school/135600/ark-academy/overview", //KS2 + KS4 + KS5
+        ["150009"] = "school/150009/abraham-moss-community-school/overview", //KS2 + KS4
+        ["137552"] = "school/137552/stewards-academy-science-specialist-harlow/overview", //KS4
+        ["149328"] = "school/149328/king-edward-vi-high-school/overview", //KS4 + KS5
+        ["130499"] = "school/130499/holy-cross-college/overview", //KS5
+        ["143034"] = "school/143034/st-pauls-church-of-england-academy/overview", //KS2
     };
 
     [Fact]
@@ -24,6 +24,7 @@ public class ProfilePaginationTests(WebApplicationSetupFixture fixture) : BasePa
         await NavigateAndAssertPaginationSequenceAsync(
             "143034",
             [
+                PageTitles.Overview,
                 PageTitles.About,
                 PrimarySchoolPageTitles.Admissions,
                 PrimarySchoolPageTitles.Curriculum,
@@ -41,6 +42,7 @@ public class ProfilePaginationTests(WebApplicationSetupFixture fixture) : BasePa
         await NavigateAndAssertPaginationSequenceAsync(
             "137552",
             [
+                PageTitles.Overview,
                 PageTitles.About,
                 SecondarySchoolPageTitles.Admissions,
                 SecondarySchoolPageTitles.Curriculum,
@@ -59,6 +61,7 @@ public class ProfilePaginationTests(WebApplicationSetupFixture fixture) : BasePa
         await NavigateAndAssertPaginationSequenceAsync(
             "130499",
             [
+                PageTitles.Overview,
                 PageTitles.About,
                 KS5SchoolPageTitles.Level3Qualifications,
                 KS5SchoolPageTitles.Level2Qualifications,
@@ -75,6 +78,7 @@ public class ProfilePaginationTests(WebApplicationSetupFixture fixture) : BasePa
         await NavigateAndAssertPaginationSequenceAsync(
             "150009",
             [
+                PageTitles.Overview,
                 PageTitles.About,
                 PrimarySchoolPageTitles.Admissions,
                 SecondarySchoolPageTitles.Admissions,
@@ -99,6 +103,7 @@ public class ProfilePaginationTests(WebApplicationSetupFixture fixture) : BasePa
         await NavigateAndAssertPaginationSequenceAsync(
             "149328",
             [
+                PageTitles.Overview,
                 PageTitles.About,
                 SecondarySchoolPageTitles.Admissions,
                 SecondarySchoolPageTitles.Curriculum,
@@ -123,6 +128,7 @@ public class ProfilePaginationTests(WebApplicationSetupFixture fixture) : BasePa
         await NavigateAndAssertPaginationSequenceAsync(
             "135600",
             [
+                PageTitles.Overview,
                 PageTitles.About,
                 PrimarySchoolPageTitles.Admissions,
                 SecondarySchoolPageTitles.Admissions,
@@ -153,7 +159,7 @@ public class ProfilePaginationTests(WebApplicationSetupFixture fixture) : BasePa
         await Page.GotoAsync(_schoolUrnToUrlMap[urn]);
         var nav = new PaginationNavigationHelper(Page);
 
-        // Assert first page (About)
+        // Assert first page (Overview)
         var title = await Page.TitleAsync();
         Assert.Contains(expectedTitleSubstrings[0], title);
 

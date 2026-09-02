@@ -83,6 +83,12 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "AllDest_Tot_Est_Previous2_Pct_Coded"
           """;
 
+        // TODO for EnableSecondaryGrade7 feature - add these Grade 7 columns when they're available
+        //"EngMaths79_Boy_Est_Current_Pct_Coded",
+        //"EngMaths79_Grl_Est_Current_Pct_Coded",
+        //"EngMaths79_Tot_Est_Current_Pct_Coded",
+        //"EngMaths79_Tot_Est_Previous_Pct_Coded",
+        //"EngMaths79_Tot_Est_Previous2_Pct_Coded",
         private const string EstablishmentPerformanceColumns = """
           "Id",
           "Attainment8_Tot_Est_Current_Num_Coded",
@@ -118,6 +124,12 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Pup_Tot_Est_Current_Num_Coded"
           """;
 
+        // TODO for EnableSecondaryGrade7 feature - add these Grade 7 columns when they're available
+        //"EngMaths79_Boy_LA_Current_Pct_Coded",
+        //"EngMaths79_Grl_LA_Current_Pct_Coded",
+        //"EngMaths79_Tot_LA_Current_Pct_Coded",
+        //"EngMaths79_Tot_LA_Previous_Pct_Coded",
+        //"EngMaths79_Tot_LA_Previous2_Pct_Coded",
         private const string LAPerformanceColumns = """
           "Id",
           "Attainment8_Tot_LA_Current_Num_Coded",
@@ -153,6 +165,12 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "AllDest_Tot_LA_Previous2_Pct_Coded"
           """;
 
+        // TODO for EnableSecondaryGrade7 feature - add these Grade 7 columns when they're available
+        //"EngMaths79_Boy_Eng_Current_Pct_Coded",
+        //"EngMaths79_Grl_Eng_Current_Pct_Coded",
+        //"EngMaths79_Tot_Eng_Current_Pct_Coded",
+        //"EngMaths79_Tot_Eng_Previous_Pct_Coded",
+        //"EngMaths79_Tot_Eng_Previous2_Pct_Coded",
         private const string EnglandPerformanceColumns = """
           "Id",
           "Attainment8_Tot_Eng_Current_Num_Coded",

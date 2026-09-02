@@ -72,20 +72,38 @@ public class Level2QualificationsPageTests : PageTestsBase
 
     [Theory]
     [InlineData(Level2.TechCert)]
-    public async Task Level2QualificationsPage_DisplaysMainHeading(Level2 qualification)
+    public async Task Level2QualificationsPage_DisplaysExpectedHeadings(
+    Level2 qualification)
     {
         // Arrange
         SetupMocks(qualification);
-        var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
-        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
+
+        var pageRouteUrl =
+            $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
+
+        var url = BuildUrl(
+            _establishment.URN,
+            _establishment.EstablishmentName,
+            pageRouteUrl);
 
         // Act
         var doc = await Fixture.BrowseToPage(url);
 
-        // Assert
-        var heading = doc.QuerySelector("h1");
-        Assert.NotNull(heading);
-        Assert.Contains(PageTitleConstants.KS5SchoolPageTitles.Performance, heading.TextContent.Trim());
+        // Assert - school name is H1
+        var h1Elements = doc.GetElementsByTagName("h1");
+
+        Assert.Contains(
+            h1Elements,
+            x => x.TextContent.Trim() ==
+                 _establishment.EstablishmentName);
+
+        // Assert - page title is H2
+        var h2Elements = doc.GetElementsByTagName("h2");
+
+        Assert.Contains(
+            h2Elements,
+            x => x.TextContent.Trim().Contains(
+                PageTitleConstants.KS5SchoolPageTitles.Performance));
     }
 
     [Theory]
@@ -101,7 +119,7 @@ public class Level2QualificationsPageTests : PageTestsBase
         var doc = await Fixture.BrowseToPage(url);
 
         // Assert
-        var heading = doc.GetElementsByTagName("h2")[1];
+        var heading = doc.GetElementsByTagName("h2")[2];
         Assert.NotNull(heading);
         Assert.Contains(qualification.GetDisplayName()!, heading.TextContent.Trim());
     }
