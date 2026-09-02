@@ -1,5 +1,9 @@
-﻿using Microsoft.Playwright;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Playwright;
+using SAPPub.Core.Entities;
+using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Enums;
+using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
@@ -7,13 +11,26 @@ using SAPPub.Web.Tests.UI.Infrastructure;
 namespace SAPPub.Web.Tests.UI.KS4;
 
 [Collection("Playwright Tests")]
-public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
+public class AcademicPerformanceEnglishAndMathsResults : BasePageTest
 {
     private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
     {
         ["105574"] = "school/105574/loreto-high-school-chorlton/secondary-performance/english-and-maths",
         ["100273"] = "school/100273/saint-paul-roman-catholic-infant-school/secondary-performance/english-and-maths",
     };
+
+    private readonly IGenericRepository<Establishment> _establishmentRepo;
+    private readonly IGenericRepository<EstablishmentPerformance> _establishmentPerformanceRepo;
+    private readonly IGenericRepository<LAPerformance> _laPerformanceRepo;
+    private readonly IGenericRepository<EnglandPerformance> _englandPerformanceRepo;
+
+    public AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixture fixture) : base(fixture)
+    {
+        _establishmentRepo = fixture.Services.GetRequiredService<IGenericRepository<Establishment>>();
+        _establishmentPerformanceRepo = fixture.Services.GetRequiredService<IGenericRepository<EstablishmentPerformance>>();
+        _laPerformanceRepo = fixture.Services.GetRequiredService<IGenericRepository<LAPerformance>>();
+        _englandPerformanceRepo = fixture.Services.GetRequiredService<IGenericRepository<EnglandPerformance>>();
+    }
 
     [Fact]
     public async Task AcademicPerformanceEnglishAndMathsResultsPage_LoadsSuccessfully()
@@ -124,7 +141,24 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
     }
 
     [Fact]
-    public async Task AcademicPerformanceEnglishAndMathsResultsPage_ChangeGradeSelected()
+    public async Task AcademicPerformanceEnglishAndMathsResultsPage_ChangeGradeSelected_ShowsExpectedDisadvantagedData()
+    {
+        // Arrange
+        var urn = "105574";
+        var establishmentExpected = await _establishmentRepo.ReadAsync(urn, CancellationToken.None);
+        var establishmentPerformanceExpected = await _establishmentPerformanceRepo.ReadAsync(urn, CancellationToken.None);
+        var laPerformanceExpected = await _laPerformanceRepo.ReadAsync(establishmentExpected!.LAId, CancellationToken.None);
+        var englandPerformanceExpected = await _englandPerformanceRepo.ReadAsync("", CancellationToken.None);
+
+        // Act
+        await Page.GotoAsync(_schoolUrnToUrlMap[urn]);
+
+        // Assert
+        var values = await Page.GetTableRowValuesAsync("breakdown-disadvantaged-table", "School");
+    }
+
+    [Fact]
+    public async Task AcademicPerformanceEnglishAndMathsResultsPage_ChangeGradeSelected_ShowsExpectedChartTitleAndGradeExplanation()
     {
         // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);

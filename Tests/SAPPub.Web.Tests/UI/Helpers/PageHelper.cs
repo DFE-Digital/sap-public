@@ -22,4 +22,18 @@ public static class PageHelper
             .Locator(".govuk-error-summary")
             .CountAsync() > 0;
     }
+
+    public static Task<IReadOnlyList<string>> GetTableRowValuesAsync(
+        this IPage page,
+        string tableId,
+        string rowHeader)
+    {
+        var row = page.Locator($"#{tableId} tbody tr")
+            .Filter(new()
+            {
+                Has = page.Locator($"th:has-text('{rowHeader}')")
+            });
+
+        return row.Locator("td").AllInnerTextsAsync();
+    }
 }
