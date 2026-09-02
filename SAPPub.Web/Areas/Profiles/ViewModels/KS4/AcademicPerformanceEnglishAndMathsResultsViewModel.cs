@@ -15,13 +15,15 @@ public class AcademicPerformanceEnglishAndMathsResultsViewModel : BaseViewModel
 
     public required SeriesViewModel BreakdownGcseData { get; set; }
 
+    public required SeriesViewModel BreakdownDisadvantaged { get; set; }
+
     public required DisplayField<bool> HasEstablishmentData { get; set; }
 
     public static AcademicPerformanceEnglishAndMathsResultsViewModel Map(EnglishAndMathsResultsModel englishAndMathsResultsModel, GcseGradeDataSelection selectedGrade)
     {
         var laAverageLabel = CommonHelper.GetLocalAuthorityDisplayName(englishAndMathsResultsModel.LAName);
 
-        var hasEstablishmentData = new[] 
+        var hasEstablishmentData = new[]
         {
             englishAndMathsResultsModel.EstablishmentAll.CurrentYear,
             englishAndMathsResultsModel.EstablishmentAll.PreviousYear,
@@ -31,7 +33,7 @@ public class AcademicPerformanceEnglishAndMathsResultsViewModel : BaseViewModel
         var allGcseData = new DataViewModel
         {
             Labels = ["School", laAverageLabel, "England average"],
-            Data = 
+            Data =
             [
                 englishAndMathsResultsModel.EstablishmentAll.CurrentYear,
                 englishAndMathsResultsModel.LocalAuthorityAll.CurrentYear,
@@ -82,6 +84,25 @@ public class AcademicPerformanceEnglishAndMathsResultsViewModel : BaseViewModel
                 ],
         };
 
+        var disadvantagedBreakdownGcseData = new SeriesViewModel
+        {
+            Labels = [$"Percentage who achieved {selectedGrade.GetDisplayName()} in English and maths"],
+            Datasets =
+                [
+                    new DataSeriesViewModel {
+                        Label = "School",
+                        Data = [englishAndMathsResultsModel.EstablishmentDisadvantaged.CurrentYear]
+                    },
+                    new DataSeriesViewModel {
+                        Label = laAverageLabel,
+                        Data = [englishAndMathsResultsModel.LocalAuthorityDisadvantaged.CurrentYear]
+                    },
+                    new DataSeriesViewModel {
+                        Label = "England average",
+                        Data = [englishAndMathsResultsModel.EnglandDisadvantaged.CurrentYear]
+                    },
+                ],
+        };
 
         return new AcademicPerformanceEnglishAndMathsResultsViewModel
         {
@@ -94,6 +115,7 @@ public class AcademicPerformanceEnglishAndMathsResultsViewModel : BaseViewModel
             AllGcseData = allGcseData,
             AllGcseOverTimeData = allGcseOverTimeData,
             BreakdownGcseData = breakdownGcseData,
+            BreakdownDisadvantaged = disadvantagedBreakdownGcseData,
             HasEstablishmentData = hasEstablishmentData.ToDisplayField(),
         };
     }

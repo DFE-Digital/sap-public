@@ -206,7 +206,7 @@
 
         <div class="data-container">
             <h3 class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">
-                Results by pupil types for @Model.SelectedGrade!.GetDisplayName() in English and maths GCSEs
+                @Model.SelectedGrade!.GetDisplayName() in English and maths GCSEs by girls and boys
             </h3>
             <p class="govuk-body">
                 @(Model.SelectedGrade == GcseGradeDataSelection.Grade5AndAbove
@@ -268,7 +268,49 @@
                 }
             </div>
         </div>
-
+        
+        <govuk-accordion id="other-pupil-characteristics-accordion" hide-all-sections-text="Hide all sections" show-all-sections-text="Show all sections" hide-section-text="Hide" show-section-text="Show more">
+            <govuk-accordion-item>
+                <govuk-accordion-item-heading>@Model.SelectedGrade!.GetDisplayName() in English and maths GCSEs by other pupil characteristics</govuk-accordion-item-heading>
+                <govuk-accordion-item-summary></govuk-accordion-item-summary>
+                <govuk-accordion-item-content>
+                    <h2 class="govuk-heading-s">
+                        Disadvantaged pupils
+                    </h2>
+                    <p class="govuk-body">Pupils identified as disadvantaged are those who either:
+                    <ul>
+                        <li>were eligible for free school meals at any time during the last 6 years</li>
+                        <li>have been in the care of the local council for a day or more</li>
+                        <li>have been adopted from care</li>
+                    </ul>
+                    </p>
+                    <p>Compare the average progress of disadvantaged students at this school or college, with disadvantaged students at state‑funded schools and colleges locally and across England.</p>
+                    <table id="breakdown-disadvantaged-table" class="govuk-table">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header">Pupil group (Disadvantaged)</th>
+                                @foreach (var label in Model.BreakdownDisadvantaged.Labels)
+                                {
+                                    <th scope="col" class="govuk-table__header">@label</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            @foreach (var dataset in Model.BreakdownDisadvantaged.Datasets)
+                            {
+                                <tr class="govuk-table__row">
+                                    <th scope="row" class="govuk-table__header">@dataset.Label</th>
+                                    @foreach (var data in dataset.Data)
+                                    {
+                                        <td class="govuk-table__cell">@(data.HasValue? data + "%" : Constants.NotAvailable)</td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </govuk-accordion-item-content>
+            </govuk-accordion-item>
+        </govuk-accordion>
         @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults))
 
     </div>

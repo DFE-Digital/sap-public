@@ -59,6 +59,13 @@ public sealed class EnglishAndMathsResultsService(
             EstablishmentGirls = Entities.KS4.Performance.EstablishmentPerformance.GirlsEnglishAndMathsPerformance(establishmentPerformance, selectedGrade),
             LocalAuthorityGirls = Entities.KS4.Performance.LAPerformance.GirlsEnglishAndMaths(laPerformance, selectedGrade),
             EnglandGirls = Entities.KS4.Performance.EnglandPerformance.GirlsEnglishAndMaths(englandPerformance, selectedGrade),
+
+            EstablishmentDisadvantaged = Entities.KS4.Performance.EstablishmentPerformance.DisadvantagedEnglishAndMathsPerformance(establishmentPerformance, selectedGrade),
+            LocalAuthorityDisadvantaged = Entities.KS4.Performance.LAPerformance.DisadvantagedEnglishAndMaths(laPerformance, selectedGrade),
+            EnglandDisadvantaged = Entities.KS4.Performance.EnglandPerformance.DisadvantagedEnglishAndMaths(englandPerformance, selectedGrade),
+
+            LocalAuthorityNonDisadvantaged = Entities.KS4.Performance.LAPerformance.NonDisadvantagedEnglishAndMaths(laPerformance, selectedGrade),
+            EnglandNonDisadvantaged = Entities.KS4.Performance.EnglandPerformance.NonDisadvantagedEnglishAndMaths(englandPerformance, selectedGrade)
         };
     }
 
@@ -88,6 +95,12 @@ public sealed class EnglishAndMathsResultsService(
             EstablishmentGirls = EmptyYears(),
             LocalAuthorityGirls = EmptyYears(),
             EnglandGirls = EmptyYears(),
+
+            EstablishmentDisadvantaged = EmptyYears(),
+            LocalAuthorityDisadvantaged = EmptyYears(),
+            EnglandDisadvantaged = EmptyYears(),
+            LocalAuthorityNonDisadvantaged = EmptyYears(),
+            EnglandNonDisadvantaged = EmptyYears(),
 
             IsKS2 = false,
             IsKS4 = false,

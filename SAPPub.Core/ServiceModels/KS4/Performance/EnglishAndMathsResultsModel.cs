@@ -31,4 +31,14 @@ public class EnglishAndMathsResultsModel
     public required RelativeYearValues<double?> LocalAuthorityGirls { get; init; }
 
     public required RelativeYearValues<double?> EnglandGirls { get; init; }
+
+    public required RelativeYearValues<double?> EstablishmentDisadvantaged { get; init; }
+
+    public required RelativeYearValues<double?> LocalAuthorityDisadvantaged { get; init; }
+
+    public required RelativeYearValues<double?> EnglandDisadvantaged { get; init; }
+
+    public required RelativeYearValues<double?> LocalAuthorityNonDisadvantaged { get; init; }
+
+    public required RelativeYearValues<double?> EnglandNonDisadvantaged { get; init; }
 }

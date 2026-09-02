@@ -552,9 +552,9 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
         Assert.True(reachedShowDataOverTimeButton);
     }
 
-    private async Task<bool> IsElementCheckedAsync(string elementId)
+    private Task<bool> IsElementCheckedAsync(string elementId)
     {
-        return await Page.EvaluateAsync<bool>("id => !!document.getElementById(id)?.checked", elementId);
+        return Page.EvaluateAsync<bool>("id => !!document.getElementById(id)?.checked", elementId);
     }
 
     private async Task<bool> WaitForFocusedElementAsync(string expectedElementId, int timeoutMs = 1000)
@@ -591,9 +591,9 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
         return false;
     }
 
-    private async Task<bool> HasVisibleFocusAsync(string selector)
+    private Task<bool> HasVisibleFocusAsync(string selector)
     {
-        return await Page.Locator(selector).EvaluateAsync<bool>("""
+        return Page.Locator(selector).EvaluateAsync<bool>("""
             element => {
                 const styles = window.getComputedStyle(element);
                 return styles.boxShadow !== 'none' || (styles.outlineStyle !== 'none' && styles.outlineWidth !== '0px');
