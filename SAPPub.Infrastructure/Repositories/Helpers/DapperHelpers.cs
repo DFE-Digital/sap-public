@@ -308,7 +308,13 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "UCI_INS_AGEN_DIS_Est_Current_Num_Coded",
           "LCI_INS_AGEN_DIS_Est_Current_Num_Coded",
           "TALLPPEGRD_AGEN_DIS_Est_Current",
-          "TALLPPE_AGEN_DIS_Est_Current_Num_Coded"          
+          "TALLPPE_AGEN_DIS_Est_Current_Num_Coded",
+          "TALLPUP_TLEV_DIS_Est_Current_Num_Coded",
+          "VA_INS_TLEV_DIS_Est_Current_Num_Coded",
+          "UCI_INS_TLEV_DIS_Est_Current_Num_Coded",
+          "LCI_INS_TLEV_DIS_Est_Current_Num_Coded",
+          "TALLPPEGRD_TLEV_DIS_Est_Current",
+          "TALLPPE_TLEV_DIS_Est_Current_Num_Coded"
           """;
 
         private const string KS5EnglandPerformanceColumns = """
@@ -378,7 +384,19 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "UCI_INS_AGEN_NOTDIS_Eng_Current_Num_Coded",
           "LCI_INS_AGEN_NOTDIS_Eng_Current_Num_Coded",
           "TALLPPEGRD_AGEN_NOTDIS_Eng_Current",
-          "TALLPPE_AGEN_NOTDIS_Eng_Current_Num_Coded"
+          "TALLPPE_AGEN_NOTDIS_Eng_Current_Num_Coded",
+          "TALLPUP_TLEV_DIS_Eng_Current_Num_Coded",
+          "VA_INS_TLEV_DIS_Eng_Current_Num_Coded",
+          "UCI_INS_TLEV_DIS_Eng_Current_Num_Coded",
+          "LCI_INS_TLEV_DIS_Eng_Current_Num_Coded",
+          "TALLPPEGRD_TLEV_DIS_Eng_Current",
+          "TALLPPE_TLEV_DIS_Eng_Current_Num_Coded",
+          "TALLPUP_TLEV_NOTDIS_Eng_Current_Num_Coded",
+          "VA_INS_TLEV_NOTDIS_Eng_Current_Num_Coded",
+          "UCI_INS_TLEV_NOTDIS_Eng_Current_Num_Coded",
+          "LCI_INS_TLEV_NOTDIS_Eng_Current_Num_Coded",
+          "TALLPPEGRD_TLEV_NOTDIS_Eng_Current",
+          "TALLPPE_TLEV_NOTDIS_Eng_Current_Num_Coded"
           """;
 
         private const string KS5LAPerformanceColumns = """
@@ -443,7 +461,19 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "UCI_INS_AGEN_NOTDIS_LA_Current_Num_Coded",
           "LCI_INS_AGEN_NOTDIS_LA_Current_Num_Coded",
           "TALLPPEGRD_AGEN_NOTDIS_LA_Current",
-          "TALLPPE_AGEN_NOTDIS_LA_Current_Num_Coded"
+          "TALLPPE_AGEN_NOTDIS_LA_Current_Num_Coded",
+          "TALLPUP_TLEV_DIS_LA_Current_Num_Coded",
+          "VA_INS_TLEV_DIS_LA_Current_Num_Coded",
+          "UCI_INS_TLEV_DIS_LA_Current_Num_Coded",
+          "LCI_INS_TLEV_DIS_LA_Current_Num_Coded",
+          "TALLPPEGRD_TLEV_DIS_LA_Current",
+          "TALLPPE_TLEV_DIS_LA_Current_Num_Coded",
+          "TALLPUP_TLEV_NOTDIS_LA_Current_Num_Coded",
+          "VA_INS_TLEV_NOTDIS_LA_Current_Num_Coded",
+          "UCI_INS_TLEV_NOTDIS_LA_Current_Num_Coded",
+          "LCI_INS_TLEV_NOTDIS_LA_Current_Num_Coded",
+          "TALLPPEGRD_TLEV_NOTDIS_LA_Current",
+          "TALLPPE_TLEV_NOTDIS_LA_Current_Num_Coded"
           """;
 
         private const string GatewayLAColumns = """
