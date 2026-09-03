@@ -68,6 +68,10 @@ public class OverviewServiceTests
         Assert.False(result.IsKS2);
         Assert.True(result.IsKS4);
         Assert.False(result.IsKS5);
+        Assert.Equal("Grove Lane, Handsworth, Birmingham, B21 9ET", result.Address);
+
+        Assert.Equal("405900", result.Easting);
+        Assert.Equal("289500", result.Northing);
 
         AssertCodedDouble(result.Attainment8, 52.1);
         AssertCodedDouble(result.EnglishAndMathsGrade5Establishment, 61.2);
@@ -338,7 +342,14 @@ public class OverviewServiceTests
                 Website = "https://school.example",
                 IsKS2 = false,
                 IsKS4 = true,
-                IsKS5 = false
+                IsKS5 = false,
+                AddressStreet = "Grove Lane",
+                AddressLocality = "Handsworth",
+                AddressAddress3 = "",
+                AddressTown = "Birmingham",
+                AddressPostcode = "B21 9ET",
+                Easting = "405900",
+                Northing = "289500",
             },
             KS4Performance = new EstablishmentPerformance
             {
@@ -382,6 +393,74 @@ public class OverviewServiceTests
                 PTRWM_HIGH_Eng_Current_Pct_Coded = Coded(10.3)
             }
         };
+    }
+
+    [Fact]
+    public async Task GetOverviewAsync_MapsAddressFromEstablishmentAddressFields()
+    {
+        var overview = new OverviewEntity
+        {
+            Establishment = new Establishment
+            {
+                URN = "123456",
+                EstablishmentName = "Test School",
+                AddressStreet = "Grove Lane",
+                AddressLocality = "Handsworth",
+                AddressAddress3 = "West Midlands",
+                AddressTown = "Birmingham",
+                AddressPostcode = "B21 9ET"
+            }
+        };
+
+        _repository
+            .Setup(r => r.GetOverviewAsync(
+                "123456",
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(overview);
+
+        var result = await _sut.GetOverviewAsync(
+            "123456",
+            CancellationToken.None);
+
+        Assert.NotNull(result);
+
+        Assert.Equal(
+            "Grove Lane, Handsworth, West Midlands, Birmingham, B21 9ET",
+            result.Address);
+    }
+
+    [Fact]
+    public async Task GetOverviewAsync_WhenSomeAddressFieldsAreMissing_MapsOnlyAvailableAddressFields()
+    {
+        var overview = new OverviewEntity
+        {
+            Establishment = new Establishment
+            {
+                URN = "123456",
+                EstablishmentName = "Test School",
+                AddressStreet = "Grove Lane",
+                AddressLocality = "",
+                AddressAddress3 = "",
+                AddressTown = "Birmingham",
+                AddressPostcode = "B21 9ET"
+            }
+        };
+
+        _repository
+            .Setup(r => r.GetOverviewAsync(
+                "123456",
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(overview);
+
+        var result = await _sut.GetOverviewAsync(
+            "123456",
+            CancellationToken.None);
+
+        Assert.NotNull(result);
+
+        Assert.Equal(
+            "Grove Lane, Birmingham, B21 9ET",
+            result.Address);
     }
 
     private static CodedDouble Coded(double value) =>

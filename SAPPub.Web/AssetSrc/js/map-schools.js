@@ -155,6 +155,10 @@
         if (mapContainers) {
             for (let i = 0; i < mapContainers.length; i++) {
                 mapContainers[i].classList.remove("govuk-visually-hidden");
+
+                requestAnimationFrame(() => {
+                    map.invalidateSize();
+                });
             }
         }
     }

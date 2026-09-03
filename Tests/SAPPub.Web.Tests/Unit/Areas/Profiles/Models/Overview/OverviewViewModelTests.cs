@@ -18,7 +18,16 @@ public class OverviewViewModelTests
         Assert.True(result.IsKS2);
         Assert.True(result.IsKS4);
         Assert.False(result.IsKS5);
-        Assert.Equal("Primary and Secondary", result.EducationPhase);
+        Assert.Equal("Primary and Secondary", result.EducationPhase.Value);
+
+        Assert.True(result.Address.IsAvailable);
+
+        Assert.Equal(
+            "Grove Lane, Handsworth, Birmingham, B21 9ET",
+            result.Address.Value);
+
+        Assert.False(string.IsNullOrWhiteSpace(result.Latitude));
+        Assert.False(string.IsNullOrWhiteSpace(result.Longitude));
 
         Assert.True(result.AgeRange.IsAvailable);
         Assert.Equal("11 to 16", result.AgeRange.Value);
@@ -138,6 +147,106 @@ public class OverviewViewModelTests
         Assert.Equal("Not available", result.Attainment8.Value.Reason);
     }
 
+    [Fact]
+    public void Map_AddressIsAvailable_WhenAddressExists()
+    {
+        var model = CreateMinimalModel(
+            address: "Grove Lane, Handsworth, Birmingham, B21 9ET");
+
+        var result = OverviewViewModel.Map(model);
+
+        Assert.True(result.Address.IsAvailable);
+
+        Assert.Equal(
+            "Grove Lane, Handsworth, Birmingham, B21 9ET",
+            result.Address.Value);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData(" ")]
+    public void Map_AddressIsNotAvailable_WhenAddressIsMissing(
+        string address)
+    {
+        var model = CreateMinimalModel(
+            address: address);
+
+        var result = OverviewViewModel.Map(model);
+
+        Assert.True(result.Address.IsNotAvailable);
+
+        Assert.Equal(
+            "Not available",
+            result.Address.DisplayText());
+    }
+
+    [Fact]
+    public void Map_ValidEastingAndNorthing_ProducesLatitudeAndLongitude()
+    {
+        var model = CreateMinimalModel(
+            easting: "405900",
+            northing: "289500");
+
+        var result = OverviewViewModel.Map(model);
+
+        Assert.False(
+            string.IsNullOrWhiteSpace(result.Latitude));
+
+        Assert.False(
+            string.IsNullOrWhiteSpace(result.Longitude));
+    }
+
+    [Theory]
+    [InlineData("", "")]
+    [InlineData(" ", " ")]
+    [InlineData("not-a-number", "289500")]
+    [InlineData("405900", "not-a-number")]
+    public void Map_InvalidLocationData_DoesNotProduceLatitudeOrLongitude(
+        string easting,
+        string northing)
+    {
+        var model = CreateMinimalModel(
+            easting: easting,
+            northing: northing);
+
+        var result = OverviewViewModel.Map(model);
+
+        Assert.True(
+            string.IsNullOrWhiteSpace(result.Latitude));
+
+        Assert.True(
+            string.IsNullOrWhiteSpace(result.Longitude));
+    }
+
+    [Fact]
+    public void Map_MissingSchoolDetails_AreMappedAsNotAvailable()
+    {
+        var model = CreateMinimalModel(
+            ageRangeLow: "",
+            ageRangeHigh: "",
+            numberOfPupils: "",
+            senProvision: null,
+            phone: "",
+            website: "",
+            address: "");
+
+        var result = OverviewViewModel.Map(model);
+
+        Assert.True(result.AgeRange.IsNotAvailable);
+        Assert.True(result.NumberOfPupils.IsNotAvailable);
+        Assert.True(result.SenTypes.IsNotAvailable);
+        Assert.True(result.Telephone.IsNotAvailable);
+        Assert.True(result.SchoolWebsite.IsNotAvailable);
+        Assert.True(result.Address.IsNotAvailable);
+
+        Assert.Equal("Not available", result.AgeRange.DisplayText());
+        Assert.Equal("Not available", result.NumberOfPupils.DisplayText());
+        Assert.Equal("Not available", result.SenTypes.DisplayText());
+        Assert.Equal("Not available", result.Telephone.DisplayText());
+        Assert.Equal("Not available", result.SchoolWebsite.DisplayText());
+        Assert.Equal("Not available", result.Address.DisplayText());
+    }
+
     private static OverviewModel CreateCompleteModel() => new()
     {
         Urn = "123456",
@@ -151,6 +260,9 @@ public class OverviewViewModelTests
         IsKS2 = true,
         IsKS4 = true,
         IsKS5 = false,
+        Address = "Grove Lane, Handsworth, Birmingham, B21 9ET",
+        Easting = "405900",
+        Northing = "289500",
         Attainment8 = Coded(52.1),
         MoreThanOneForeignLanguage = Coded(42.5),
         EnglishAndMathsGrade5Establishment = Coded(61.2),
@@ -174,26 +286,40 @@ public class OverviewViewModelTests
         string? senProvision = null,
         string phone = "",
         string website = "",
+        string address = "",
+        string easting = "",
+        string northing = "",
         CodedDouble? attainment8 = null,
         CodedDouble? moreThanOneForeignLanguage = null,
         CodedDouble? englishAndMathsGrade5Establishment = null,
         CodedDouble? englishAndMathsGrade5LA = null,
         CodedDouble? englishAndMathsGrade5England = null) => new()
-    {
-        Urn = "123456",
-        SchoolName = "Test School",
-        AgeRangeLow = ageRangeLow,
-        AgeRangeHigh = ageRangeHigh,
-        NumberOfPupils = numberOfPupils,
-        SenProvision = senProvision,
-        Phone = phone,
-        Website = website,
-        Attainment8 = attainment8,
-        MoreThanOneForeignLanguage = moreThanOneForeignLanguage,
-        EnglishAndMathsGrade5Establishment = englishAndMathsGrade5Establishment,
-        EnglishAndMathsGrade5LA = englishAndMathsGrade5LA,
-        EnglishAndMathsGrade5England = englishAndMathsGrade5England
-    };
+        {
+            Urn = "123456",
+            SchoolName = "Test School",
+
+            AgeRangeLow = ageRangeLow,
+            AgeRangeHigh = ageRangeHigh,
+            NumberOfPupils = numberOfPupils,
+            SenProvision = senProvision,
+            Phone = phone,
+            Website = website,
+            Address = address,
+            Easting = easting,
+            Northing = northing,
+
+            Attainment8 = attainment8,
+            MoreThanOneForeignLanguage = moreThanOneForeignLanguage,
+
+            EnglishAndMathsGrade5Establishment =
+            englishAndMathsGrade5Establishment,
+
+            EnglishAndMathsGrade5LA =
+            englishAndMathsGrade5LA,
+
+            EnglishAndMathsGrade5England =
+            englishAndMathsGrade5England
+        };
 
     private static CodedDouble Coded(double value) =>
         new(value, string.Empty, value.ToString(System.Globalization.CultureInfo.InvariantCulture));
