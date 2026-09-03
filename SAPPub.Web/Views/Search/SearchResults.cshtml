@@ -46,8 +46,10 @@
             <div class="govuk-!-padding-bottom-2">
                 <govuk-fieldset>
                     <govuk-fieldset-legend is-page-heading="false" class="govuk-visually-hidden">Search ordering and filtering</govuk-fieldset-legend>
-
-                    <p><strong>@(Model.SearchParams.LocationSearchTerm != null ? "Sorted by distance" : "Sorted alphabetically")</strong></p>
+                    @if (Model.SearchResultsCount != 0)
+                    {
+                        <p><strong>@(Model.SearchParams.LocationSearchTerm != null ? "Sorted by distance" : "Sorted alphabetically")</strong></p>
+                    }
                     @if (Model.SearchParams.LocationSearchTerm is not null)
                     {
                         <div>
@@ -68,12 +70,17 @@
             </div>
             <input type="hidden" name="pageNumber" value="@Model.SearchParams.PageNumber" />
         </form>
-
-        <p>Search for schools and colleges to explore their profiles. From a school's profile, you can save it to your schools list, where you can shortlist schools and compare them side by side.</p>
+        @if (Model.SearchResultsCount != 0)
+        {
+            <p>Search for schools and colleges to explore their profiles. From a school's profile, you can save it to your schools list, where you can shortlist schools and compare them side by side.</p>
+        }
     </div>
 </div>
 <div class="govuk-grid-row">
-    @await Html.PartialAsync("_SchoolSearchFilter", Model.SearchParams)
+    @if (Model.SearchResultsCount != 0)
+    {
+        @await Html.PartialAsync("_SchoolSearchFilter", Model.SearchParams)
+    }
     <div class="govuk-grid-column-two-thirds">
 
         @foreach (var modelItem in Model.SearchResults)

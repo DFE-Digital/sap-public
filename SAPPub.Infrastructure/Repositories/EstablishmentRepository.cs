@@ -91,24 +91,7 @@ namespace SAPPub.Infrastructure.Repositories
 
             if (query.EstablishmentTypes is not null && query.EstablishmentTypes.Length != 0)
             {
-                //var typesQueryList = string.Empty;
-                //foreach (var typeQuery in from type in query.EstablishmentTypes
-                //                           let typeQuery = type.ToLower() switch
-                //                           {
-                //                               "maintained school" => "1,2,3,5,",
-                //                               "academy" => "28,34,35,40,41,45,46,",
-                //                               "college" => "18,21,39,56,",
-                //                               "independent school" => "6,11,",
-                //                               "special school" => "7,8,10,12,33,36,44,",
-                //                               _ => ""
-                //                           }
-                //                           select typeQuery)
-                //{
-                //    typesQueryList += typeQuery;
-                //}
-                //whereClauses.Add(@"""TypeOfEstablishmentId"" IN (" + typesQueryList.TrimEnd(',') + ")");
                 var typesQueryList = query.EstablishmentTypes
-
                 .SelectMany(type => (type.ToLower() switch
                 {
                     "maintained school" => "1,2,3,5",
