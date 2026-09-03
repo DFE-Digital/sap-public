@@ -11,4 +11,10 @@ public class SearchParamsModel
     public string? LocationSearchTerm { get; set; }
     public int Distance { get; set; } = 3;
     public int? PageNumber { get; set; }
+    public string[]? Phase { get; set; }
+    public string[]? SchoolType { get; set; }
+
+
+    public string[] PhasesOfEducation { get; set; } = new[] { "Primary", "Secondary", "16 to 19", "All-through" };
+    public string[] TypesOfSchool { get; set; } = new[] { "Academy", "Maintained school", "Independent schools", "Special school", "College" };
 }

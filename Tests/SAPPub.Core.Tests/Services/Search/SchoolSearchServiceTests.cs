@@ -94,8 +94,8 @@ public class SchoolSearchServiceTests
                 Assert.Equal(establishment1.URN, item.URN);
                 Assert.Equal(establishment1.EstablishmentName, item.EstablishmentName);
                 Assert.Equal(establishment1.Address, item.Address);
-                Assert.Equal(establishment1.GenderName, item.GenderName);
-                Assert.Equal(establishment1.ReligiousCharacterName, item.ReligiousCharacterName);
+                //Assert.Equal(establishment1.GenderName, item.GenderName);
+                //Assert.Equal(establishment1.ReligiousCharacterName, item.ReligiousCharacterName);
                 Assert.True(item.IsKS4);
             },
             item =>
@@ -103,8 +103,8 @@ public class SchoolSearchServiceTests
                 Assert.Equal(establishment2.URN, item.URN);
                 Assert.Equal(establishment2.EstablishmentName, item.EstablishmentName);
                 Assert.Equal(establishment2.Address, item.Address);
-                Assert.Equal(establishment2.GenderName, item.GenderName);
-                Assert.Equal(establishment2.ReligiousCharacterName, item.ReligiousCharacterName);
+                //Assert.Equal(establishment2.GenderName, item.GenderName);
+                //Assert.Equal(establishment2.ReligiousCharacterName, item.ReligiousCharacterName);
                 Assert.False(item.IsKS4);
             });
     }
@@ -258,8 +258,8 @@ public class SchoolSearchServiceTests
         Assert.True(string.IsNullOrEmpty(singleResult.URN));
         Assert.True(string.IsNullOrEmpty(singleResult.EstablishmentName));
         Assert.True(string.IsNullOrEmpty(singleResult.Address));
-        Assert.True(string.IsNullOrEmpty(singleResult.GenderName));
-        Assert.True(string.IsNullOrEmpty(singleResult.ReligiousCharacterName));
+        //Assert.True(string.IsNullOrEmpty(singleResult.GenderName));
+        //Assert.True(string.IsNullOrEmpty(singleResult.ReligiousCharacterName));
         Assert.False(singleResult.IsKS4);
     }
 }

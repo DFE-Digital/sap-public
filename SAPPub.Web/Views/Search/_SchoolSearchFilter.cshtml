@@ -1,0 +1,184 @@
+﻿@model SAPPub.Web.Models.Search.SearchParamsModel
+
+<div class="govuk-grid-column-one-third app-filter__column">
+    @{
+        var hasSelectedFilters = Model.Phase?.Any() == true || Model.SchoolType?.Any() == true;
+        var panelVisibleClass = hasSelectedFilters ? "app-filter-panel--visible" : "";
+    }
+    <button type="button" class="govuk-button govuk-button--secondary app-filter-toggle" data-module="app-filter-toggle" aria-expanded="false" aria-controls="app-filter-panel">
+        <span class="app-filter-toggle__show">Show filters</span>
+        <span class="app-filter-toggle__hide">Hide filters</span>
+    </button>
+
+    <div id="app-filter-panel" class="app-filter-panel @panelVisibleClass">
+        <input type="hidden" name="NameSearchTerm" value="@Model.NameSearchTerm" />
+        <input type="hidden" name="Distance" value="@Model.Distance" />
+        <input type="hidden" name="LocationSearchTerm" value="@Model.LocationSearchTerm" />
+
+        <div class="moj-filter app-filter">
+            <div class="moj-filter__header app-filter__header">
+                <div class="moj-filter__header-title">
+                    <h2 class="govuk-heading-m">Filters</h2>
+                </div>
+            </div>
+
+            <div class="moj-filter__content">
+                @if (hasSelectedFilters)
+                {
+                    <div class="moj-filter__selected app-filter__selected">
+                        <div class="moj-filter__selected-heading app-filter__selected-heading">
+                            <div class="moj-filter__heading-title">
+                                <h2 class="govuk-heading-s">Selected filters</h2>
+                            </div>
+                            <div class="moj-filter__heading-action">
+                            </div>
+                        </div>
+
+                        <ul class="moj-filter-tags app-filter__tags">
+                            @if (Model.Phase != null)
+                            {
+                                @foreach (var phase in Model.Phase)
+                                {
+                                    var remainingFilters = Model.Phase.Where(x => x != phase).ToArray();
+                                    var removeUrl = Url.Action("Results", "Search", new
+                                    {
+                                        nameSearchTerm = Model.NameSearchTerm,
+                                        phase = remainingFilters,
+                                        schoolType = Model.SchoolType,
+                                        distance = Model.Distance,
+                                        locationsearchterm = Model.LocationSearchTerm
+
+                                    });
+                                    <li>
+                                        <a class="moj-filter__tag app-filter__tag" href="@removeUrl">
+                                            <span class="govuk-visually-hidden">Remove this filter</span> @phase
+                                        </a>
+                                    </li>
+                                }
+                            }
+                            @if (Model.SchoolType != null)
+                            {
+                                @foreach (var schoolType in Model.SchoolType)
+                                {
+                                    var remainingFilters = Model.SchoolType.Where(x => x != schoolType).ToArray();
+                                    var removeUrl = Url.Action("Results", "Search", new
+                                    {
+                                        nameSearchTerm = Model.NameSearchTerm,
+                                        phase = Model.Phase,
+                                        schoolType = remainingFilters,
+                                        distance = Model.Distance,
+                                        locationsearchterm = Model.LocationSearchTerm
+                                    });
+                                    <li>
+                                        <a class="moj-filter__tag app-filter__tag" href="@removeUrl">
+                                            <span class="govuk-visually-hidden">Remove this filter</span> @schoolType
+                                        </a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+
+                        <p class="govuk-!-margin-top-2 govuk-!-margin-bottom-0 app-clear-filters-spacing">
+                            <a class="govuk-link govuk-link--no-visited-state"
+                               href="@Url.Action("Results", "Search", new { nameSearchTerm = Model.NameSearchTerm })">
+                                Clear filters
+                            </a>
+                        </p>
+                    </div>
+                }
+
+                <div class="moj-filter__options app-filter__options">
+                    <button type="submit" class="govuk-button app-filter__apply-button" data-module="govuk-button">
+                        <span class="app-button-spinner" aria-hidden="true"></span>
+                        <span class="app-button-text">Apply filters</span>
+                    </button>
+
+                    <div class="govuk-form-group">
+                        <fieldset class="govuk-fieldset app-filter__fieldset">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                                School characteristics
+                            </legend>
+
+                            <div class="app-filter-section" data-module="app-filter-section">
+                                <button type="button"
+                                        class="app-filter-section__toggle"
+                                        aria-expanded="true"
+                                        aria-controls="filter-phase">
+                                    <span class="app-filter-section__title">Phase of education</span>
+                                    <span class="app-filter-section__indicator">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M11.9999 10.5177L17.7928 16.3105L19.207 14.8963L11.9999 7.68923L4.79282 14.8963L6.20703 16.3105L11.9999 10.5177Z" fill="currentColor"></path>
+                                        </svg>
+                                    </span>
+                                </button>
+
+                                <div class="app-filter-section__content" id="filter-phase">
+                                    <div class="govuk-checkboxes govuk-checkboxes--small">
+                                        @foreach (var phase in Model.PhasesOfEducation)
+                                        {
+                                            var isChecked = Model.Phase?.Contains(phase) == true;
+                                            var inputId = $"phase-{phase.Replace(" ", "-").Replace("(", "").Replace(")", "").ToLower()}";
+                                            <div class="govuk-checkboxes__item">
+                                                <input class="govuk-checkboxes__input"
+                                                       id="@inputId"
+                                                       name="phase"
+                                                       type="checkbox"
+                                                       value="@phase"
+                                                @(isChecked ? "checked" : "")>
+                                                <label class="govuk-label govuk-checkboxes__label" for="@inputId">
+                                                    @phase
+                                                </label>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="app-filter-section" data-module="app-filter-section">
+                                <button type="button"
+                                        class="app-filter-section__toggle"
+                                        aria-expanded="true"
+                                        aria-controls="filter-school-type">
+                                    <span class="app-filter-section__title">School type</span>
+                                    <span class="app-filter-section__indicator">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M11.9999 10.5177L17.7928 16.3105L19.207 14.8963L11.9999 7.68923L4.79282 14.8963L6.20703 16.3105L11.9999 10.5177Z" fill="currentColor"></path>
+                                        </svg>
+                                    </span>
+                                </button>
+
+                                <div class="app-filter-section__content" id="filter-school-type">
+                                    <div class="govuk-checkboxes govuk-checkboxes--small">
+                                        @foreach (var schoolType in Model.TypesOfSchool)
+                                        {
+                                            var isChecked = Model.SchoolType?.Contains(schoolType) == true;
+                                            var inputId = $"schooltype-{schoolType.Replace(" ", "-").Replace("(", "").Replace(")", "").ToLower()}";
+                                            <div class="govuk-checkboxes__item">
+                                                <input class="govuk-checkboxes__input"
+                                                       id="@inputId"
+                                                       name="schoolType"
+                                                       type="checkbox"
+                                                       value="@schoolType"
+                                                @(isChecked ? "checked" : "")>
+                                                <label class="govuk-label govuk-checkboxes__label" for="@inputId">
+                                                    @schoolType
+                                                </label>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <button type="submit" class="govuk-button app-filter__apply-button" data-module="govuk-button">
+                        <span class="app-button-spinner" aria-hidden="true"></span>
+                        <span class="app-button-text">Apply filters</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script nonce="@Html.ScriptNonce()" src="/js/searchFilter.js"></script>

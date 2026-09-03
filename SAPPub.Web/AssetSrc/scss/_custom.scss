@@ -284,7 +284,6 @@
 //search results
 /* Mobile first: stacked, full width */
 .distance-filter {
-    display: flex;
     flex-direction: column;
     gap: govuk-spacing(3);
 }
@@ -297,7 +296,6 @@
 /* Tablet and up: inline */
 @include govuk-media-query($from: tablet) {
     .distance-filter {
-        flex-direction: row;
         align-items: flex-end;
     }
 
@@ -312,7 +310,6 @@
     }
     /* Inline label + select */
     .distance-filter .govuk-form-group {
-        display: flex;
         align-items: center;
         gap: govuk-spacing(3);
         margin-bottom: 0;
@@ -347,4 +344,8 @@
 
 .dataview-button {
     display: none;
+}
+
+.govuk-tag-width-override{
+    max-width: inherit; 
 }

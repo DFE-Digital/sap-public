@@ -23,9 +23,11 @@ public record SchoolSearchResultServiceModel
     public string? URN { get; init; }
     public string? EstablishmentName { get; init; }
     public string? Address { get; init; }
-    public string? GenderName { get; init; }
-    public string? ReligiousCharacterName { get; init; }
+    public int? TypeOfEstablishmentId { get; init; }
+    public string? Phase { get; init; }
     public DateOnly? ClosedDate { get; set; }
     public EstablishmentStatus? EstablishmentStatus { get; set; }
+    public bool IsKS2 { get; init; }
     public bool IsKS4 { get; init; }
+    public bool IsKS5 { get; init; }
 }

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.DataProtection;
 
-namespace SAPSec.Web.Setup;
+namespace SAPPub.Web.Setup;
 
 public static class WebApplicationBuilderExtensions
 {

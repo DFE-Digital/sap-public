@@ -26,12 +26,35 @@ public class SearchResultsViewModel
         var searchResults = searchResultsServiceModel?.PagedResponse.Records;
         var pagerInfo = searchResultsServiceModel?.PagedResponse.PagerInfo;
 
+        var routeAttributes = new Dictionary<string, string?>
+        {
+            { nameof(searchModel.NameSearchTerm), searchModel?.NameSearchTerm },
+            { nameof(searchModel.LocationSearchTerm), searchModel?.LocationSearchTerm },
+            { nameof(searchModel.Distance), searchModel?.Distance.ToString() },
+        };
+        if (searchModel?.SchoolType != null)
+        {
+            for (int i = 0; i < searchModel.SchoolType.Length; i++)
+            {
+                routeAttributes.Add($"{nameof(searchModel.SchoolType)}[{i}]", searchModel.SchoolType[i]);
+            }
+        }
+
+        if (searchModel?.Phase != null)
+        {
+            for (int i = 0; i < searchModel.Phase.Length; i++)
+            {
+                routeAttributes.Add($"{nameof(searchModel.Phase)}[{i}]", searchModel.Phase[i]);
+            }
+        }
+
+
         return new SearchResultsViewModel
         {
             SearchParams = searchModel,
             SearchResultsCount = pagerInfo?.TotalItems ?? 0,
             SearchResults = searchResults != null ? [.. searchResults.Select(SearchResult.FromServiceModel)] : [],
-            Pagination = pagerInfo != null ? new PaginationModel 
+            Pagination = pagerInfo != null ? new PaginationModel
             {
                 PagerInfo = new Common.PagerViewModel
                 {
@@ -41,12 +64,7 @@ public class SearchResultsViewModel
                     TotalPages = pagerInfo.TotalPages,
                 },
                 RouteName = RouteConstants.SearchResults,
-                RouteAttributes = new Dictionary<string, string?>
-                {
-                    { nameof(searchModel.NameSearchTerm), searchModel?.NameSearchTerm },
-                    { nameof(searchModel.LocationSearchTerm), searchModel?.LocationSearchTerm },
-                    { nameof(searchModel.Distance), searchModel?.Distance.ToString() }
-                }
+                RouteAttributes = routeAttributes
             } : null
         };
     }
