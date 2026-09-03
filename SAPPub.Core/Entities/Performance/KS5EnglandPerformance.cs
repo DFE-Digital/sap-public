@@ -214,4 +214,44 @@ public class KS5EnglandPerformance
 
     // Points for England - Non-Disadvantaged - Applied general qualifications
     public CodedDouble TALLPPE_AGEN_NOTDIS_Eng_Current_Num_Coded { get; set; }
+
+    // Tech Levels DisAdvantaged
+
+    // Number of students for England - Disadvantaged - Tech Levels
+    public CodedDouble TALLPUP_TLEV_DIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress score for England - Disadvantaged - Academic qualifications
+    public CodedDouble VA_INS_TLEV_DIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for England upper - Disadvantaged - Tech Levels
+    public CodedDouble UCI_INS_TLEV_DIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for England lower - Disadvantaged - Tech Levels
+    public CodedDouble LCI_INS_TLEV_DIS_Eng_Current_Num_Coded { get; set; }
+
+    // Grade for England - Disadvantaged - Tech Levels
+    public CodedString TALLPPEGRD_TLEV_DIS_Eng_Current { get; set; }
+
+    // Points for England - Disadvantaged - Tech Levels
+    public CodedDouble TALLPPE_TLEV_DIS_Eng_Current_Num_Coded { get; set; }
+
+    // Tech Levels Non-DisAdvantaged
+
+    // Number of students for England - Non-Disadvantaged - Tech Levels
+    public CodedDouble TALLPUP_TLEV_NOTDIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress score for England - Non-Disadvantaged - Tech Levels
+    public CodedDouble VA_INS_TLEV_NOTDIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for England upper - Non-Disadvantaged - Tech Levels
+    public CodedDouble UCI_INS_TLEV_NOTDIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for England lower - Non-Disadvantaged - Tech Levels
+    public CodedDouble LCI_INS_TLEV_NOTDIS_Eng_Current_Num_Coded { get; set; }
+
+    // Grade for England - Non-Disadvantaged - Tech Levels
+    public CodedString TALLPPEGRD_TLEV_NOTDIS_Eng_Current { get; set; }
+
+    // Points for England - Non-Disadvantaged - Tech Levels
+    public CodedDouble TALLPPE_TLEV_NOTDIS_Eng_Current_Num_Coded { get; set; }
 }

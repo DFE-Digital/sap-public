@@ -242,6 +242,7 @@ public class Level3QualificationsService(
                     Level3.ALevel => establishmentPerformance.TALLPUP_ALEV_1618_DIS_Est_Current_Num_Coded,
                     Level3.Academic => establishmentPerformance.TALLPUP_ACAD_1618_DIS_Est_Current_Num_Coded,
                     Level3.AppliedGeneral => establishmentPerformance.TALLPUP_AGEN_DIS_Est_Current_Num_Coded,
+                    Level3.TechLevel => establishmentPerformance.TALLPUP_TLEV_DIS_Est_Current_Num_Coded,
                     _ => CodedDouble.Empty,
                 },
                 ProgressScore = level3Qualification switch
@@ -249,6 +250,7 @@ public class Level3QualificationsService(
                     Level3.ALevel => establishmentPerformance.VA_INS_ALEV_DIS_Est_Current_Num_Coded,
                     Level3.Academic => establishmentPerformance.VA_INS_ACAD_DIS_Est_Current_Num_Coded,
                     Level3.AppliedGeneral => establishmentPerformance.VA_INS_AGEN_DIS_Est_Current_Num_Coded,
+                    Level3.TechLevel => establishmentPerformance.VA_INS_TLEV_DIS_Est_Current_Num_Coded,
                     _ => CodedDouble.Empty,
                 },
                 ConfidenceLevelUpper = level3Qualification switch
@@ -256,6 +258,7 @@ public class Level3QualificationsService(
                     Level3.ALevel => establishmentPerformance.UCI_INS_ALEV_DIS_Est_Current_Num_Coded,
                     Level3.Academic => establishmentPerformance.UCI_INS_ACAD_DIS_Est_Current_Num_Coded,
                     Level3.AppliedGeneral => establishmentPerformance.UCI_INS_AGEN_DIS_Est_Current_Num_Coded,
+                    Level3.TechLevel => establishmentPerformance.UCI_INS_TLEV_DIS_Est_Current_Num_Coded,
                     _ => CodedDouble.Empty,
                 },
                 ConfidenceLevelLower = level3Qualification switch
@@ -263,6 +266,7 @@ public class Level3QualificationsService(
                     Level3.ALevel => establishmentPerformance.LCI_INS_ALEV_DIS_Est_Current_Num_Coded,
                     Level3.Academic => establishmentPerformance.LCI_INS_ACAD_DIS_Est_Current_Num_Coded,
                     Level3.AppliedGeneral => establishmentPerformance.LCI_INS_AGEN_DIS_Est_Current_Num_Coded,
+                    Level3.TechLevel => establishmentPerformance.LCI_INS_TLEV_DIS_Est_Current_Num_Coded,
                     _ => CodedDouble.Empty,
                 },
                 Result = new PerformanceResult
@@ -272,6 +276,7 @@ public class Level3QualificationsService(
                         Level3.ALevel => establishmentPerformance.TALLPPE_ALEV_1618_DIS_Est_Current_Num_Coded,
                         Level3.Academic => establishmentPerformance.TALLPPE_ACAD_1618_DIS_Est_Current_Num_Coded,
                         Level3.AppliedGeneral => establishmentPerformance.TALLPPE_AGEN_DIS_Est_Current_Num_Coded,
+                        Level3.TechLevel => establishmentPerformance.TALLPPE_TLEV_DIS_Est_Current_Num_Coded,
                         _ => CodedDouble.Empty,
                     },
                     Grade = level3Qualification switch
@@ -279,6 +284,7 @@ public class Level3QualificationsService(
                         Level3.ALevel => establishmentPerformance.TALLPPEGRD_ALEV_DIS_Est_Current,
                         Level3.Academic => establishmentPerformance.TALLPPEGRD_ACAD_DIS_Est_Current,
                         Level3.AppliedGeneral => establishmentPerformance.TALLPPEGRD_AGEN_DIS_Est_Current,
+                        Level3.TechLevel => establishmentPerformance.TALLPPEGRD_TLEV_DIS_Est_Current,
                         _ => CodedString.Empty,
                     }
                 }
@@ -290,6 +296,7 @@ public class Level3QualificationsService(
                     Level3.ALevel => laPerformance.TALLPUP_ALEV_1618_DIS_LA_Current_Num_Coded,
                     Level3.Academic => laPerformance.TALLPUP_ACAD_1618_DIS_LA_Current_Num_Coded,
                     Level3.AppliedGeneral => laPerformance.TALLPUP_AGEN_DIS_LA_Current_Num_Coded,
+                    Level3.TechLevel => laPerformance.TALLPUP_TLEV_DIS_LA_Current_Num_Coded,
                     _ => CodedDouble.Empty,
                 },
                 ProgressScore = level3Qualification switch
@@ -297,6 +304,7 @@ public class Level3QualificationsService(
                     Level3.ALevel => laPerformance.VA_INS_ALEV_DIS_LA_Current_Num_Coded,
                     Level3.Academic => laPerformance.VA_INS_ACAD_DIS_LA_Current_Num_Coded,
                     Level3.AppliedGeneral => laPerformance.VA_INS_AGEN_DIS_LA_Current_Num_Coded,
+                    Level3.TechLevel => laPerformance.VA_INS_TLEV_DIS_LA_Current_Num_Coded,
                     _ => CodedDouble.Empty,
                 },
                 ConfidenceLevelUpper = level3Qualification switch
@@ -304,6 +312,7 @@ public class Level3QualificationsService(
                     Level3.ALevel => laPerformance.UCI_INS_ALEV_DIS_LA_Current_Num_Coded,
                     Level3.Academic => laPerformance.UCI_INS_ACAD_DIS_LA_Current_Num_Coded,
                     Level3.AppliedGeneral => laPerformance.UCI_INS_AGEN_DIS_LA_Current_Num_Coded,
+                    Level3.TechLevel => laPerformance.UCI_INS_TLEV_DIS_LA_Current_Num_Coded,
                     _ => CodedDouble.Empty,
                 },
                 ConfidenceLevelLower = level3Qualification switch
@@ -311,6 +320,7 @@ public class Level3QualificationsService(
                     Level3.ALevel => laPerformance.LCI_INS_ALEV_DIS_LA_Current_Num_Coded,
                     Level3.Academic => laPerformance.LCI_INS_ACAD_DIS_LA_Current_Num_Coded,
                     Level3.AppliedGeneral => laPerformance.LCI_INS_AGEN_DIS_LA_Current_Num_Coded,
+                    Level3.TechLevel => laPerformance.LCI_INS_TLEV_DIS_LA_Current_Num_Coded,
                     _ => CodedDouble.Empty,
                 },
                 Result = new PerformanceResult
@@ -320,6 +330,7 @@ public class Level3QualificationsService(
                         Level3.ALevel => laPerformance.TALLPPE_ALEV_1618_DIS_LA_Current_Num_Coded,
                         Level3.Academic => laPerformance.TALLPPE_ACAD_1618_DIS_LA_Current_Num_Coded,
                         Level3.AppliedGeneral => laPerformance.TALLPPE_AGEN_DIS_LA_Current_Num_Coded,
+                        Level3.TechLevel => laPerformance.TALLPPE_TLEV_DIS_LA_Current_Num_Coded,
                         _ => CodedDouble.Empty,
                     },
                     Grade = level3Qualification switch
@@ -327,6 +338,7 @@ public class Level3QualificationsService(
                         Level3.ALevel => laPerformance.TALLPPEGRD_ALEV_DIS_LA_Current,
                         Level3.Academic => laPerformance.TALLPPEGRD_ACAD_DIS_LA_Current,
                         Level3.AppliedGeneral => laPerformance.TALLPPEGRD_AGEN_DIS_LA_Current,
+                        Level3.TechLevel => laPerformance.TALLPPEGRD_TLEV_DIS_LA_Current,
                         _ => CodedString.Empty,
                     }
                 }
@@ -338,6 +350,7 @@ public class Level3QualificationsService(
                     Level3.ALevel => englandPerformance.TALLPUP_ALEV_1618_DIS_Eng_Current_Num_Coded,
                     Level3.Academic => englandPerformance.TALLPUP_ACAD_1618_DIS_Eng_Current_Num_Coded,
                     Level3.AppliedGeneral => englandPerformance.TALLPUP_AGEN_DIS_Eng_Current_Num_Coded,
+                    Level3.TechLevel => englandPerformance.TALLPUP_TLEV_DIS_Eng_Current_Num_Coded,
                     _ => CodedDouble.Empty,
                 },
                 ProgressScore = level3Qualification switch
@@ -345,6 +358,7 @@ public class Level3QualificationsService(
                     Level3.ALevel => englandPerformance.VA_INS_ALEV_DIS_Eng_Current_Num_Coded,
                     Level3.Academic => englandPerformance.VA_INS_ACAD_DIS_Eng_Current_Num_Coded,
                     Level3.AppliedGeneral => englandPerformance.VA_INS_AGEN_DIS_Eng_Current_Num_Coded,
+                    Level3.TechLevel => englandPerformance.VA_INS_TLEV_DIS_Eng_Current_Num_Coded,
                     _ => CodedDouble.Empty,
                 },
                 ConfidenceLevelUpper = level3Qualification switch
@@ -352,6 +366,7 @@ public class Level3QualificationsService(
                     Level3.ALevel => englandPerformance.UCI_INS_ALEV_DIS_Eng_Current_Num_Coded,
                     Level3.Academic => englandPerformance.UCI_INS_ACAD_DIS_Eng_Current_Num_Coded,
                     Level3.AppliedGeneral => englandPerformance.UCI_INS_AGEN_DIS_Eng_Current_Num_Coded,
+                    Level3.TechLevel => englandPerformance.UCI_INS_TLEV_DIS_Eng_Current_Num_Coded,
                     _ => CodedDouble.Empty,
                 },
                 ConfidenceLevelLower = level3Qualification switch
@@ -359,6 +374,7 @@ public class Level3QualificationsService(
                     Level3.ALevel => englandPerformance.LCI_INS_ALEV_DIS_Eng_Current_Num_Coded,
                     Level3.Academic => englandPerformance.LCI_INS_ACAD_DIS_Eng_Current_Num_Coded,
                     Level3.AppliedGeneral => englandPerformance.LCI_INS_AGEN_DIS_Eng_Current_Num_Coded,
+                    Level3.TechLevel => englandPerformance.LCI_INS_TLEV_DIS_Eng_Current_Num_Coded,
                     _ => CodedDouble.Empty,
                 },
                 Result = new PerformanceResult
@@ -368,6 +384,7 @@ public class Level3QualificationsService(
                         Level3.ALevel => englandPerformance.TALLPPE_ALEV_1618_DIS_Eng_Current_Num_Coded,
                         Level3.Academic => englandPerformance.TALLPPE_ACAD_1618_DIS_Eng_Current_Num_Coded,
                         Level3.AppliedGeneral => englandPerformance.TALLPPE_AGEN_DIS_Eng_Current_Num_Coded,
+                        Level3.TechLevel => englandPerformance.TALLPPE_TLEV_DIS_Eng_Current_Num_Coded,
                         _ => CodedDouble.Empty,
                     },
                     Grade = level3Qualification switch
@@ -375,6 +392,7 @@ public class Level3QualificationsService(
                         Level3.ALevel => englandPerformance.TALLPPEGRD_ALEV_DIS_Eng_Current,
                         Level3.Academic => englandPerformance.TALLPPEGRD_ACAD_DIS_Eng_Current,
                         Level3.AppliedGeneral => englandPerformance.TALLPPEGRD_AGEN_DIS_Eng_Current,
+                        Level3.TechLevel => englandPerformance.TALLPPEGRD_TLEV_DIS_Eng_Current,
                         _ => CodedString.Empty,
                     }
                 }
@@ -396,6 +414,7 @@ public class Level3QualificationsService(
                     Level3.ALevel => laPerformance.TALLPUP_ALEV_1618_NOTDIS_LA_Current_Num_Coded,
                     Level3.Academic => laPerformance.TALLPUP_ACAD_1618_NOTDIS_LA_Current_Num_Coded,
                     Level3.AppliedGeneral => laPerformance.TALLPUP_AGEN_NOTDIS_LA_Current_Num_Coded,
+                    Level3.TechLevel => laPerformance.TALLPUP_TLEV_NOTDIS_LA_Current_Num_Coded,
                     _ => CodedDouble.Empty,
                 },
                 ProgressScore = level3Qualification switch
@@ -403,6 +422,7 @@ public class Level3QualificationsService(
                     Level3.ALevel => laPerformance.VA_INS_ALEV_NOTDIS_LA_Current_Num_Coded,
                     Level3.Academic => laPerformance.VA_INS_ACAD_NOTDIS_LA_Current_Num_Coded,
                     Level3.AppliedGeneral => laPerformance.VA_INS_AGEN_NOTDIS_LA_Current_Num_Coded,
+                    Level3.TechLevel => laPerformance.VA_INS_TLEV_NOTDIS_LA_Current_Num_Coded,
                     _ => CodedDouble.Empty,
                 },
                 ConfidenceLevelUpper = level3Qualification switch
@@ -410,6 +430,7 @@ public class Level3QualificationsService(
                     Level3.ALevel => laPerformance.UCI_INS_ALEV_NOTDIS_LA_Current_Num_Coded,
                     Level3.Academic => laPerformance.UCI_INS_ACAD_NOTDIS_LA_Current_Num_Coded,
                     Level3.AppliedGeneral => laPerformance.UCI_INS_AGEN_NOTDIS_LA_Current_Num_Coded,
+                    Level3.TechLevel => laPerformance.UCI_INS_TLEV_NOTDIS_LA_Current_Num_Coded,
                     _ => CodedDouble.Empty,
                 },
                 ConfidenceLevelLower = level3Qualification switch
@@ -417,6 +438,7 @@ public class Level3QualificationsService(
                     Level3.ALevel => laPerformance.LCI_INS_ALEV_NOTDIS_LA_Current_Num_Coded,
                     Level3.Academic => laPerformance.LCI_INS_ACAD_NOTDIS_LA_Current_Num_Coded,
                     Level3.AppliedGeneral => laPerformance.LCI_INS_AGEN_NOTDIS_LA_Current_Num_Coded,
+                    Level3.TechLevel => laPerformance.LCI_INS_TLEV_NOTDIS_LA_Current_Num_Coded,
                     _ => CodedDouble.Empty,
                 },
                 Result = new PerformanceResult
@@ -426,6 +448,7 @@ public class Level3QualificationsService(
                         Level3.ALevel => laPerformance.TALLPPE_ALEV_1618_NOTDIS_LA_Current_Num_Coded,
                         Level3.Academic => laPerformance.TALLPPE_ACAD_1618_NOTDIS_LA_Current_Num_Coded,
                         Level3.AppliedGeneral => laPerformance.TALLPPE_AGEN_NOTDIS_LA_Current_Num_Coded,
+                        Level3.TechLevel => laPerformance.TALLPPE_TLEV_NOTDIS_LA_Current_Num_Coded,
                         _ => CodedDouble.Empty,
                     },
                     Grade = level3Qualification switch
@@ -433,6 +456,7 @@ public class Level3QualificationsService(
                         Level3.ALevel => laPerformance.TALLPPEGRD_ALEV_NOTDIS_LA_Current,
                         Level3.Academic => laPerformance.TALLPPEGRD_ACAD_NOTDIS_LA_Current,
                         Level3.AppliedGeneral => laPerformance.TALLPPEGRD_AGEN_NOTDIS_LA_Current,
+                        Level3.TechLevel => laPerformance.TALLPPEGRD_TLEV_NOTDIS_LA_Current,
                         _ => CodedString.Empty,
                     }
                 }
@@ -444,6 +468,7 @@ public class Level3QualificationsService(
                     Level3.ALevel => englandPerformance.TALLPUP_ALEV_1618_NOTDIS_Eng_Current_Num_Coded,
                     Level3.Academic => englandPerformance.TALLPUP_ACAD_1618_NOTDIS_Eng_Current_Num_Coded,
                     Level3.AppliedGeneral => englandPerformance.TALLPUP_AGEN_NOTDIS_Eng_Current_Num_Coded,
+                    Level3.TechLevel => englandPerformance.TALLPUP_TLEV_NOTDIS_Eng_Current_Num_Coded,
                     _ => CodedDouble.Empty,
                 },
                 ProgressScore = level3Qualification switch
@@ -451,6 +476,7 @@ public class Level3QualificationsService(
                     Level3.ALevel => englandPerformance.VA_INS_ALEV_NOTDIS_Eng_Current_Num_Coded,
                     Level3.Academic => englandPerformance.VA_INS_ACAD_NOTDIS_Eng_Current_Num_Coded,
                     Level3.AppliedGeneral => englandPerformance.VA_INS_AGEN_NOTDIS_Eng_Current_Num_Coded,
+                    Level3.TechLevel => englandPerformance.VA_INS_TLEV_NOTDIS_Eng_Current_Num_Coded,
                     _ => CodedDouble.Empty,
                 },
                 ConfidenceLevelUpper = level3Qualification switch
@@ -458,6 +484,7 @@ public class Level3QualificationsService(
                     Level3.ALevel => englandPerformance.UCI_INS_ALEV_NOTDIS_Eng_Current_Num_Coded,
                     Level3.Academic => englandPerformance.UCI_INS_ACAD_NOTDIS_Eng_Current_Num_Coded,
                     Level3.AppliedGeneral => englandPerformance.UCI_INS_AGEN_NOTDIS_Eng_Current_Num_Coded,
+                    Level3.TechLevel => englandPerformance.UCI_INS_TLEV_NOTDIS_Eng_Current_Num_Coded,
                     _ => CodedDouble.Empty,
                 },
                 ConfidenceLevelLower = level3Qualification switch
@@ -465,6 +492,7 @@ public class Level3QualificationsService(
                     Level3.ALevel => englandPerformance.LCI_INS_ALEV_NOTDIS_Eng_Current_Num_Coded,
                     Level3.Academic => englandPerformance.LCI_INS_ACAD_NOTDIS_Eng_Current_Num_Coded,
                     Level3.AppliedGeneral => englandPerformance.LCI_INS_AGEN_NOTDIS_Eng_Current_Num_Coded,
+                    Level3.TechLevel => englandPerformance.LCI_INS_TLEV_NOTDIS_Eng_Current_Num_Coded,
                     _ => CodedDouble.Empty,
                 },
                 Result = new PerformanceResult
@@ -474,6 +502,7 @@ public class Level3QualificationsService(
                         Level3.ALevel => englandPerformance.TALLPPE_ALEV_1618_NOTDIS_Eng_Current_Num_Coded,
                         Level3.Academic => englandPerformance.TALLPPE_ACAD_1618_NOTDIS_Eng_Current_Num_Coded,
                         Level3.AppliedGeneral => englandPerformance.TALLPPE_AGEN_NOTDIS_Eng_Current_Num_Coded,
+                        Level3.TechLevel => englandPerformance.TALLPPE_TLEV_NOTDIS_Eng_Current_Num_Coded,
                         _ => CodedDouble.Empty,
                     },
                     Grade = level3Qualification switch
@@ -481,6 +510,7 @@ public class Level3QualificationsService(
                         Level3.ALevel => englandPerformance.TALLPPEGRD_ALEV_NOTDIS_Eng_Current,
                         Level3.Academic => englandPerformance.TALLPPEGRD_ACAD_NOTDIS_Eng_Current,
                         Level3.AppliedGeneral => englandPerformance.TALLPPEGRD_AGEN_NOTDIS_Eng_Current,
+                        Level3.TechLevel => englandPerformance.TALLPPEGRD_TLEV_NOTDIS_Eng_Current,
                         _ => CodedString.Empty,
                     }
                 }

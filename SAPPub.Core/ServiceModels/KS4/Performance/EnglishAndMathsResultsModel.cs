@@ -1,4 +1,5 @@
 ﻿using SAPPub.Core.Entities;
+using SAPPub.Core.ValueObjects;
 
 namespace SAPPub.Core.ServiceModels.KS4.Performance;
 
@@ -31,4 +32,14 @@ public class EnglishAndMathsResultsModel
     public required RelativeYearValues<double?> LocalAuthorityGirls { get; init; }
 
     public required RelativeYearValues<double?> EnglandGirls { get; init; }
+
+    public required RelativeYearValues<CodedDouble> EstablishmentDisadvantaged { get; init; }
+
+    public required RelativeYearValues<CodedDouble> LocalAuthorityDisadvantaged { get; init; }
+
+    public required RelativeYearValues<CodedDouble> EnglandDisadvantaged { get; init; }
+
+    public required RelativeYearValues<CodedDouble> LocalAuthorityNonDisadvantaged { get; init; }
+
+    public required RelativeYearValues<CodedDouble> EnglandNonDisadvantaged { get; init; }
 }

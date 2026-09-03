@@ -22,4 +22,36 @@ public static class PageHelper
             .Locator(".govuk-error-summary")
             .CountAsync() > 0;
     }
+
+    public static Task<IReadOnlyList<string>> GetTableRowValuesAsync(
+        this IPage page,
+        string tableId,
+        string rowHeader)
+    {
+        var row = page.Locator($"#{tableId} tbody tr")
+            .Filter(new()
+            {
+                Has = page.Locator($"th:has-text('{rowHeader}')")
+            });
+
+        return row.Locator("td").AllInnerTextsAsync();
+    }
+
+    public static Task ExpandAccordionAsync(this IPage page, string label)
+    {
+        return page.GetByRole(AriaRole.Button, new()
+        {
+            Name = label
+        }).ClickAsync();
+    }
+
+    public static Task ExpandDetailsAsync(this IPage page, string summaryText)
+    {
+        var summary = page
+            .Locator("summary.govuk-details__summary")
+            .Filter(new() { HasText = summaryText });
+
+        return summary.ClickAsync();
+    }
+
 }
