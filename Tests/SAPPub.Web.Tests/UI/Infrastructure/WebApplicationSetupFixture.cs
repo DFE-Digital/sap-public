@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using SAPPub.Web.Tests.UI.Helpers;
-using System.Configuration;
 
 namespace SAPPub.Web.Tests.UI.Infrastructure
 {
@@ -22,6 +21,8 @@ namespace SAPPub.Web.Tests.UI.Infrastructure
 
         public string BaseUrl { get; private set; } = null!;
         public IConfiguration Configuration { get; private set; } = null!;
+
+        public IServiceProvider Services => _factory?.Services ?? throw new InvalidOperationException("Test Server not started");
 
         public Task InitializeAsync()
         {
