@@ -1,9 +1,11 @@
-﻿using Azure;
-using Moq;
+﻿using Moq;
 using SAPPub.Core.Interfaces.Services;
+using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.ServiceModels;
+using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels.Performance;
+using SAPPub.Core.Services.KS4.AboutSchool;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
@@ -16,33 +18,41 @@ public class KS2AdditionalMeasuresPageTests : PageTestsBase
     private readonly string _pageRoute = "/primary-performance/additional-measures";
     private readonly string _urn = "149976";
     private readonly string _laName = "Test LA";
+    private readonly string _laId = "123";
 
     private readonly EstablishmentMinimumServiceModel _establishment = new();
     private readonly Mock<IEstablishmentService> _mockEstablishmentService;
 
     private readonly KS2AdditionalMeasuresModel _ks2AdditionalMeasuresModel;
     private readonly Mock<IKS2AdditionalMeasuresService> _ks2AdditionalMeasuresService = new();
-
+    private readonly Mock<IAboutSchoolService> _aboutSchoolService = new();
 
     public KS2AdditionalMeasuresPageTests(WebAppFixture fixture) : base(fixture)
     {
         _ks2AdditionalMeasuresService = UseMock<IKS2AdditionalMeasuresService>();
         _mockEstablishmentService = UseMock<IEstablishmentService>();
+        _aboutSchoolService = UseMock<IAboutSchoolService>();
+
         _establishment = new EstablishmentMinimumTestBuilder()
             .WithURN(_urn)
             .WithEstablishmentName($"School{_urn}")
             .WithIsKeyStage2(true)
             .WithLAName(_laName)
+            .WithLAId(_laId)
             .BuildServiceModel();
 
         _ks2AdditionalMeasuresModel = GetKS2AdditionalMeasuresModel();
+
+        _aboutSchoolService
+            .Setup(a => a.GetAboutSchoolDetailsAsync(It.IsAny<string>(), CancellationToken.None))
+            .ReturnsAsync(new AboutSchoolModel { SchoolName = _establishment.EstablishmentName, NumberOfPupils = "100", Urn = _establishment.URN });
 
         _mockEstablishmentService
            .Setup(a => a.GetEstablishmentMinimumAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
            .ReturnsAsync(_establishment);
 
         _ks2AdditionalMeasuresService
-            .Setup(s => s.GetAdditionalMeasures(_urn, It.IsAny<CancellationToken>()))
+            .Setup(s => s.GetAdditionalMeasures(_urn, _laId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(_ks2AdditionalMeasuresModel);
     }
 
@@ -125,7 +135,7 @@ public class KS2AdditionalMeasuresPageTests : PageTestsBase
         Assert.Equal(expectedModel.EstablishmentGrammarAtHigherStandard!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("additional-measures-breakdown-table", 1, 1));
 
         Assert.Equal($"{_laName} average", doc.GetTableHeaderContentByIdAndIndex("additional-measures-breakdown-table", 2, 0));
-        Assert.Equal(expectedModel.LAGrammarAtExpectedStandard!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("additional-measures-breakdown-table",2, 0));
+        Assert.Equal(expectedModel.LAGrammarAtExpectedStandard!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("additional-measures-breakdown-table", 2, 0));
         Assert.Equal(expectedModel.LAGrammarAtHigherStandard!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("additional-measures-breakdown-table", 2, 1));
 
         Assert.Equal("England average", doc.GetTableHeaderContentByIdAndIndex("additional-measures-breakdown-table", 3, 0));
@@ -149,7 +159,7 @@ public class KS2AdditionalMeasuresPageTests : PageTestsBase
         var senSupportSection = doc.QuerySelector("#pupils-with-sen-support-section");
         var ehcpTable = doc.QuerySelector("#ehcp-population-table");
         var senTable = doc.QuerySelector("#sen-population-table");
-      
+
 
         //Assert
         Assert.NotNull(accordion);
@@ -159,7 +169,7 @@ public class KS2AdditionalMeasuresPageTests : PageTestsBase
         Assert.NotNull(senTable);
 
         Assert.Equal("School", doc.GetTableHeaderContentByIdAndIndex("ehcp-population-table", 0, 0));
-        Assert.Equal("England - mainstream primary schools", doc.GetTableHeaderContentByIdAndIndex("ehcp-population-table",0, 1));
+        Assert.Equal("England - mainstream primary schools", doc.GetTableHeaderContentByIdAndIndex("ehcp-population-table", 0, 1));
         Assert.Equal(expectedModel.EstablishmentEHCPPopulation!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("ehcp-population-table", 1, 0));
         Assert.Equal(expectedModel.EnglandEHCPPopulation!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("ehcp-population-table", 1, 1));
 
@@ -177,20 +187,39 @@ public class KS2AdditionalMeasuresPageTests : PageTestsBase
         // Arrange
         var modelWithNoData = new KS2AdditionalMeasuresModel
         {
-            EnglandGrammarAtExpectedStandard = new CodedDouble(1, string.Empty, "1"),
-            EnglandGrammarAtHigherStandard = new CodedDouble(1, string.Empty, "2"),
-            EstablishmentGrammarAtExpectedStandard = new CodedDouble(1, string.Empty, "3"),
-            EstablishmentGrammarAtHigherStandard = new CodedDouble(1, string.Empty, "4"),
-            LAGrammarAtExpectedStandard = new CodedDouble(1, string.Empty, "7"),
-            LAGrammarAtHigherStandard = new CodedDouble(1, string.Empty, "8"),
+            EnglandGrammarAtExpectedStandard = GetCodedDouble(1),
+            EnglandGrammarAtHigherStandard = GetCodedDouble(2),
+            EstablishmentGrammarAtExpectedStandard = GetCodedDouble(3),
+            EstablishmentGrammarAtHigherStandard = GetCodedDouble(4),
+            LAGrammarAtExpectedStandard = GetCodedDouble(7),
+            LAGrammarAtHigherStandard = GetCodedDouble(8),
             EstablishmentEHCPPopulation = CodedDouble.Empty,
             EnglandEHCPPopulation = new CodedDouble(null, "Redacted for confidentiality", "c"),
-            EstablishmentSENSupportPopulation = new CodedDouble(null, "Not applicable", "z"),      
-            EnglandSENSupportPopulation = new CodedDouble(null, "Not available", "x")
+            EstablishmentSENSupportPopulation = new CodedDouble(null, "Not applicable", "z"),
+            EnglandSENSupportPopulation = new CodedDouble(null, "Not available", "x"),
+
+            EstablishmentNumPupilsEndOfKS2 = GetCodedDouble(10),
+            LANumPupilsEndOfKS2 = GetCodedDouble(11),
+            EnglandNumPupilsEndOfKS2 = GetCodedDouble(12),
+            EstablishmentNumGirlsEndOfKS2 = GetCodedDouble(13),
+            EstablishmentNumBoysEndOfKS2 = GetCodedDouble(14),
+            EstablishmentNumEALEndOfKS2 = GetCodedDouble(15),
+            EstablishmentNumNonMobileEndOfKS2 = GetCodedDouble(16),
+            EstablishmentNumDisadvantagedEndOfKS2 = GetCodedDouble(17),
+
+            LANumDisadvantagedEndOfKS2 = GetCodedDouble(18),
+            EnglandNumDisadvantagedEndOfKS2 = GetCodedDouble(19),
+            LANumNonDisadvantagedEndOfKS2 = GetCodedDouble(20),
+            EnglandNumNonDisadvantagedEndOfKS2 = GetCodedDouble(21),
+
+
+            EstablishmentPupilTotal = "22",
+            EnglandPupilTotal = GetCodedDouble(23)
+
         };
 
         _ks2AdditionalMeasuresService
-            .Setup(s => s.GetAdditionalMeasures(_urn, It.IsAny<CancellationToken>()))
+            .Setup(s => s.GetAdditionalMeasures(_urn, "12", It.IsAny<CancellationToken>()))
             .ReturnsAsync(modelWithNoData);
 
         var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, _pageRoute);
@@ -232,13 +261,13 @@ public class KS2AdditionalMeasuresPageTests : PageTestsBase
     public async Task AdditionalMeasuresPage_DisplaysBottomPagination_WithCorrectDestinations_WhenMultiplePhases()
     {
         // Arrange
-       var multiPhaseEstablishment = new EstablishmentMinimumTestBuilder()
-          .WithURN(_urn)
-          .WithEstablishmentName($"School{_urn}")
-          .WithIsKeyStage2(true)
-          .WithIsKeyStage4(true)
-          .WithLAName(_laName)
-          .BuildServiceModel();
+        var multiPhaseEstablishment = new EstablishmentMinimumTestBuilder()
+           .WithURN(_urn)
+           .WithEstablishmentName($"School{_urn}")
+           .WithIsKeyStage2(true)
+           .WithIsKeyStage4(true)
+           .WithLAName(_laName)
+           .BuildServiceModel();
 
 
         _mockEstablishmentService
@@ -264,20 +293,37 @@ public class KS2AdditionalMeasuresPageTests : PageTestsBase
         Assert.Contains("/secondary-performance/progress-attainment", nextLink.GetAttribute("href"));
     }
 
+    private static CodedDouble GetCodedDouble(double val) => new(val, string.Empty, val.ToString());
+
     private static KS2AdditionalMeasuresModel GetKS2AdditionalMeasuresModel()
     {
         return new KS2AdditionalMeasuresModel
         {
-            EnglandGrammarAtExpectedStandard = new CodedDouble(1, string.Empty, "1"),
-            EnglandGrammarAtHigherStandard = new CodedDouble(1, string.Empty, "2"),
-            EnglandEHCPPopulation = new CodedDouble(1, string.Empty, "3"),
-            EnglandSENSupportPopulation = new CodedDouble(1, string.Empty, "4"),
-            EstablishmentGrammarAtExpectedStandard  = new CodedDouble(1, string.Empty, "3"),
-            EstablishmentGrammarAtHigherStandard = new CodedDouble(1, string.Empty, "4"),
-            EstablishmentEHCPPopulation = new CodedDouble(1, string.Empty, "5"),
-            EstablishmentSENSupportPopulation = new CodedDouble(1, string.Empty, "6"),
-            LAGrammarAtExpectedStandard = new CodedDouble(1, string.Empty, "7"),
-            LAGrammarAtHigherStandard = new CodedDouble(1, string.Empty, "8")
+            EnglandGrammarAtExpectedStandard = GetCodedDouble(1),
+            EnglandGrammarAtHigherStandard = GetCodedDouble(2),
+            EnglandEHCPPopulation = GetCodedDouble(3),
+            EnglandSENSupportPopulation = GetCodedDouble(4),
+            EstablishmentGrammarAtExpectedStandard = GetCodedDouble(3),
+            EstablishmentGrammarAtHigherStandard = GetCodedDouble(4),
+            EstablishmentEHCPPopulation = GetCodedDouble(5),
+            EstablishmentSENSupportPopulation = GetCodedDouble(6),
+            LAGrammarAtExpectedStandard = GetCodedDouble(7),
+            LAGrammarAtHigherStandard = GetCodedDouble(8),
+            EstablishmentNumPupilsEndOfKS2 = GetCodedDouble(10),
+            LANumPupilsEndOfKS2 = GetCodedDouble(11),
+            EnglandNumPupilsEndOfKS2 = GetCodedDouble(12),
+            EstablishmentNumGirlsEndOfKS2 = GetCodedDouble(13),
+            EstablishmentNumBoysEndOfKS2 = GetCodedDouble(14),
+            EstablishmentNumEALEndOfKS2 = GetCodedDouble(15),
+            EstablishmentNumNonMobileEndOfKS2 = GetCodedDouble(16),
+            EstablishmentNumDisadvantagedEndOfKS2 = GetCodedDouble(17),
+
+            LANumDisadvantagedEndOfKS2 = GetCodedDouble(18),
+            EnglandNumDisadvantagedEndOfKS2 = GetCodedDouble(19),
+            LANumNonDisadvantagedEndOfKS2 = GetCodedDouble(20),
+            EnglandNumNonDisadvantagedEndOfKS2 = GetCodedDouble(21),
+            EstablishmentPupilTotal = "22",
+            EnglandPupilTotal = GetCodedDouble(23)
         };
     }
 }

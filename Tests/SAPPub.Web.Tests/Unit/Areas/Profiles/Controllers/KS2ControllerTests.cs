@@ -123,7 +123,7 @@ public class KS2ControllerTests : BaseProfilesTests
         var expectedModel = GetKS2AdditionalMeasuresModel();
 
         _mockKS2AdditionalMeasuresService
-            .Setup(a => a.GetAdditionalMeasures(fakeMinimumEstablishment.URN, CancellationToken.None))
+            .Setup(a => a.GetAdditionalMeasures(fakeMinimumEstablishment.URN, fakeMinimumEstablishment.LAId, CancellationToken.None))
             .ReturnsAsync(expectedModel);
 
         // Act
@@ -148,8 +148,24 @@ public class KS2ControllerTests : BaseProfilesTests
         Assert.Equal(expectedModel.EnglandEHCPPopulation, model.EnglandEHCPPopulation.Value);
         Assert.Equal(expectedModel.EnglandSENSupportPopulation, model.EnglandSENSupportPopulation.Value);
 
+        Assert.Equal(expectedModel.EstablishmentNumPupilsEndOfKS2, model.EstablishmentNumPupilsEndOfKS2.Value);
+        Assert.Equal(expectedModel.LANumPupilsEndOfKS2, model.LANumPupilsEndOfKS2.Value);
+        Assert.Equal(expectedModel.EnglandNumPupilsEndOfKS2, model.EnglandNumPupilsEndOfKS2.Value);
+        Assert.Equal(expectedModel.EstablishmentNumGirlsEndOfKS2, model.EstablishmentNumGirlsEndOfKS2.Value);
+        Assert.Equal(expectedModel.EstablishmentNumBoysEndOfKS2, model.EstablishmentNumBoysEndOfKS2.Value);
+        Assert.Equal(expectedModel.EstablishmentNumEALEndOfKS2, model.EstablishmentNumEALEndOfKS2.Value);
+        Assert.Equal(expectedModel.EstablishmentNumNonMobileEndOfKS2, model.EstablishmentNumNonMobileEndOfKS2.Value);
+        Assert.Equal(expectedModel.EstablishmentNumDisadvantagedEndOfKS2, model.EstablishmentNumDisadvantagedEndOfKS2.Value);
+        Assert.Equal(expectedModel.LANumDisadvantagedEndOfKS2, model.LANumDisadvantagedEndOfKS2.Value);
+        Assert.Equal(expectedModel.EnglandNumDisadvantagedEndOfKS2, model.EnglandNumDisadvantagedEndOfKS2.Value);
+
+        Assert.Equal(expectedModel.LANumNonDisadvantagedEndOfKS2, model.LANumNonDisadvantagedEndOfKS2.Value);
+        Assert.Equal(expectedModel.EnglandNumNonDisadvantagedEndOfKS2, model.EnglandNumNonDisadvantagedEndOfKS2.Value);
+        Assert.Equal(expectedModel.EstablishmentPupilTotal, model.EstablishmentNumberOfPupils.Value);
+        Assert.Equal(expectedModel.EnglandPupilTotal, model.EnglandNumberOfPupils.Value);
+
         _mockKS2AdditionalMeasuresService
-            .Verify(a => a.GetAdditionalMeasures(fakeMinimumEstablishment.URN, CancellationToken.None), Times.Once);
+            .Verify(a => a.GetAdditionalMeasures(fakeMinimumEstablishment.URN, fakeMinimumEstablishment.LAId, CancellationToken.None), Times.Once);
     }
 
 
@@ -299,48 +315,56 @@ public class KS2ControllerTests : BaseProfilesTests
 
     }
 
-    private static CodedDouble GetCodedDouble(double val)
-    {
-        return new CodedDouble(val, string.Empty, val.ToString());
-    }
+    private static CodedDouble GetCodedDouble(double val) => new(val, string.Empty, val.ToString());
+    
 
-    private static KS2AdditionalMeasuresModel GetKS2AdditionalMeasuresModel()
+    private static KS2AdditionalMeasuresModel GetKS2AdditionalMeasuresModel() => new()
     {
-        return new KS2AdditionalMeasuresModel
-        {
-            EstablishmentGrammarAtExpectedStandard = GetCodedDouble(1),
-            EstablishmentGrammarAtHigherStandard = GetCodedDouble(2),
-            EstablishmentEHCPPopulation = GetCodedDouble(7),
-            EstablishmentSENSupportPopulation = GetCodedDouble(8),
-            LAGrammarAtExpectedStandard = GetCodedDouble(3),
-            LAGrammarAtHigherStandard = GetCodedDouble(4),
-            EnglandGrammarAtExpectedStandard = GetCodedDouble(5),
-            EnglandGrammarAtHigherStandard = GetCodedDouble(6),
-            EnglandEHCPPopulation = GetCodedDouble(9),
-            EnglandSENSupportPopulation = GetCodedDouble(10),
-        };
-    }
+        EstablishmentGrammarAtExpectedStandard = GetCodedDouble(1),
+        EstablishmentGrammarAtHigherStandard = GetCodedDouble(2),
+        EstablishmentEHCPPopulation = GetCodedDouble(7),
+        EstablishmentSENSupportPopulation = GetCodedDouble(8),
+        LAGrammarAtExpectedStandard = GetCodedDouble(3),
+        LAGrammarAtHigherStandard = GetCodedDouble(4),
+        EnglandGrammarAtExpectedStandard = GetCodedDouble(5),
+        EnglandGrammarAtHigherStandard = GetCodedDouble(6),
+        EnglandEHCPPopulation = GetCodedDouble(9),
+        EnglandSENSupportPopulation = GetCodedDouble(10),
 
-    private KS2PupilPerformance GetKS2PupilPerformance()
+        EstablishmentNumPupilsEndOfKS2 = GetCodedDouble(11),
+        LANumPupilsEndOfKS2 = CodedDouble.Empty,
+        EnglandNumPupilsEndOfKS2 = CodedDouble.Empty,
+        EstablishmentNumGirlsEndOfKS2 = GetCodedDouble(12),
+        EstablishmentNumBoysEndOfKS2 = GetCodedDouble(13),
+        EstablishmentNumEALEndOfKS2 = GetCodedDouble(14),
+        EstablishmentNumNonMobileEndOfKS2 = GetCodedDouble(15),
+        EstablishmentNumDisadvantagedEndOfKS2 = GetCodedDouble(16),
+        LANumDisadvantagedEndOfKS2 = GetCodedDouble(17),
+        EnglandNumDisadvantagedEndOfKS2 = GetCodedDouble(18),
+        LANumNonDisadvantagedEndOfKS2 = GetCodedDouble(19),
+        EnglandNumNonDisadvantagedEndOfKS2 = GetCodedDouble(20),
+        EstablishmentPupilTotal = "20",
+        EnglandPupilTotal = CodedDouble.Empty
+    };
+
+    private KS2PupilPerformance GetKS2PupilPerformance() => new()
     {
-        return new KS2PupilPerformance
-        {
-            Urn = fakeMinimumEstablishment.URN,
-            EstablishmentReadingScore = GetCodedDouble(1),
-            EstablishmentReadingDescription = new CodedString("2", "", ""),
-            EstablishmentReadingConfidenceUpper = GetCodedDouble(3),
-            EstablishmentReadingConfidenceLower = GetCodedDouble(4),
-            LaReadingScore = GetCodedDouble(5),
-            EstablishmentWritingScore = GetCodedDouble(6),
-            EstablishmentWritingDescription = new CodedString("7", "", ""),
-            EstablishmentWritingConfidenceUpper = GetCodedDouble(8),
-            EstablishmentWritingConfidenceLower = GetCodedDouble(9),
-            LaWritingScore = GetCodedDouble(10),
-            EstablishmentMathsScore = GetCodedDouble(11),
-            EstablishmentMathsDescription = new CodedString("12", "", ""),
-            EstablishmentMathsConfidenceUpper = GetCodedDouble(13),
-            EstablishmentMathsConfidenceLower = GetCodedDouble(14),
-            LaMathsScore = GetCodedDouble(15),
-        };
-    }
+        Urn = fakeMinimumEstablishment.URN,
+        EstablishmentReadingScore = GetCodedDouble(1),
+        EstablishmentReadingDescription = new CodedString("2", "", ""),
+        EstablishmentReadingConfidenceUpper = GetCodedDouble(3),
+        EstablishmentReadingConfidenceLower = GetCodedDouble(4),
+        LaReadingScore = GetCodedDouble(5),
+        EstablishmentWritingScore = GetCodedDouble(6),
+        EstablishmentWritingDescription = new CodedString("7", "", ""),
+        EstablishmentWritingConfidenceUpper = GetCodedDouble(8),
+        EstablishmentWritingConfidenceLower = GetCodedDouble(9),
+        LaWritingScore = GetCodedDouble(10),
+        EstablishmentMathsScore = GetCodedDouble(11),
+        EstablishmentMathsDescription = new CodedString("12", "", ""),
+        EstablishmentMathsConfidenceUpper = GetCodedDouble(13),
+        EstablishmentMathsConfidenceLower = GetCodedDouble(14),
+        LaMathsScore = GetCodedDouble(15),
+    };
+
 }
