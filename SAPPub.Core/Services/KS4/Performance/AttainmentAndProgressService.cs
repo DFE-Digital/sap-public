@@ -2,6 +2,7 @@
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.ServiceModels.KS4.Performance;
+using SAPPub.Core.ValueObjects;
 
 namespace SAPPub.Core.Services.KS4.Performance;
 
@@ -74,6 +75,13 @@ public class AttainmentAndProgressService(
                 AcademicYearSelection.Previous2 => establishmentPerformance.Attainment8_Tot_Est_Previous2_Num,
                 _ => null,
             },
+            EstablishmentAttainment8DisadvantagedScore = selectedYear switch
+            {
+                AcademicYearSelection.Current => establishmentPerformance.Attainment8_Dis_Est_Current_Num_Coded,
+                AcademicYearSelection.Previous => establishmentPerformance.Attainment8_Dis_Est_Previous_Num_Coded,
+                AcademicYearSelection.Previous2 => establishmentPerformance.Attainment8_Dis_Est_Previous2_Num_Coded,
+                _ => new CodedDouble(),
+            },
             LocalAuthorityAttainment8Score = selectedYear switch
             {
                 AcademicYearSelection.Current => laPerformance.Attainment8_Tot_LA_Current_Num,
@@ -81,12 +89,26 @@ public class AttainmentAndProgressService(
                 AcademicYearSelection.Previous2 => laPerformance.Attainment8_Tot_LA_Previous2_Num,
                 _ => null,
             },
+            LocalAuthorityAttainment8DisadvantagedScore = selectedYear switch
+            {
+                AcademicYearSelection.Current => laPerformance.Attainment8_Dis_LA_Current_Num_Coded,
+                AcademicYearSelection.Previous => laPerformance.Attainment8_Dis_LA_Previous_Num_Coded,
+                AcademicYearSelection.Previous2 => laPerformance.Attainment8_Dis_LA_Previous2_Num_Coded,
+                _ => new CodedDouble(),
+            },
             EnglandAttainment8Score = selectedYear switch
             {
                 AcademicYearSelection.Current => englandPerformance.Attainment8_Tot_Eng_Current_Num,
                 AcademicYearSelection.Previous => englandPerformance.Attainment8_Tot_Eng_Previous_Num,
                 AcademicYearSelection.Previous2 => englandPerformance.Attainment8_Tot_Eng_Previous2_Num,
                 _ => null,
+            },
+            EnglandAttainment8DisadvantagedScore = selectedYear switch
+            {
+                AcademicYearSelection.Current => englandPerformance.Attainment8_Dis_Eng_Current_Num_Coded,
+                AcademicYearSelection.Previous => englandPerformance.Attainment8_Dis_Eng_Previous_Num_Coded,
+                AcademicYearSelection.Previous2 => englandPerformance.Attainment8_Dis_Eng_Previous2_Num_Coded,
+                _ => new CodedDouble(),
             },
             EstablishmentProgress8TotalPupils = selectedYear switch
             {
@@ -100,6 +122,8 @@ public class AttainmentAndProgressService(
                 AcademicYearSelection.Previous2 => establishmentPerformance.Pup_Tot_Est_Previous2_Num,
                 _ => null,
             },
+            LocalAuthorityAttainment8NonDisadvantagedScore = laPerformance.Attainment8_NDi_LA_Current_Num_Coded,
+            EnglandAttainment8NonDisadvantagedScore = englandPerformance.Attainment8_NDi_Eng_Current_Num_Coded,
         };
     }
 }

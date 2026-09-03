@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using SAPPub.Core.Enums;
 using SAPPub.Core.ServiceModels.KS4.Performance;
+using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models;
 
@@ -31,12 +32,17 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : BaseViewModel
     public double? LocalAuthorityProgress8Score { get; init; }
 
     public double? EstablishmentAttainment8Score { get; init; }
+    public required DisplayField<CodedDouble> EstablishmentAttainment8DisadvantagedScore { get; init; }
     public required DisplayField<string> EstablishmentAttainment8ScoreContextDescription { get; init; }
 
     public double? LocalAuthorityAttainment8Score { get; init; }
+    public required DisplayField<CodedDouble> LocalAuthorityAttainment8DisadvantagedScore { get; init; }
+    public required DisplayField<CodedDouble> LocalAuthorityAttainment8NonDisadvantagedScore { get; init; }
     public required DisplayField<string> LocalAuthorityAttainment8ScoreContextDescription { get; init; }
 
     public double? EnglandAttainment8Score { get; init; }
+    public required DisplayField<CodedDouble> EnglandAttainment8DisadvantagedScore { get; init; }
+    public required DisplayField<CodedDouble> EnglandAttainment8NonDisadvantagedScore { get; init; }
     public required DisplayField<string> EnglandAttainment8ScoreContextDescription { get; init; }
 
     public double? EstablishmentProgress8TotalPupils { get; init; }
@@ -71,6 +77,11 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : BaseViewModel
             EstablishmentProgress8BandingContextDescription = establishmentProgress8BandingContextDescription,
             LocalAuthorityProgress8Score = attainmentAndProgressModel.LocalAuthorityProgress8Score,
             EstablishmentAttainment8Score = attainmentAndProgressModel.EstablishmentAttainment8Score,
+            EstablishmentAttainment8DisadvantagedScore = attainmentAndProgressModel.EstablishmentAttainment8DisadvantagedScore.ToDisplayField(),
+            LocalAuthorityAttainment8DisadvantagedScore = attainmentAndProgressModel.LocalAuthorityAttainment8DisadvantagedScore.ToDisplayField(),
+            EnglandAttainment8DisadvantagedScore = attainmentAndProgressModel.EnglandAttainment8DisadvantagedScore.ToDisplayField(),
+            LocalAuthorityAttainment8NonDisadvantagedScore = attainmentAndProgressModel.LocalAuthorityAttainment8NonDisadvantagedScore.ToDisplayField(),
+            EnglandAttainment8NonDisadvantagedScore = attainmentAndProgressModel.EnglandAttainment8NonDisadvantagedScore.ToDisplayField(),
             EstablishmentAttainment8ScoreContextDescription = establishmentAttainment8ContextSentence != null
                 ? $"This means that pupils generally scored the equivalent of {establishmentAttainment8ContextSentence} in their 8 best GCSE-level subjects.".ToDisplayField()
                 : DisplayField<string>.NotAvailable(),

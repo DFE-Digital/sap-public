@@ -67,6 +67,7 @@ public class AttainmentAndProgressServiceTests
     [InlineData(AcademicYearSelection.Previous2)]
     public async Task AttainmentAndProgressAsync_ShouldReturnData(AcademicYearSelection academicYearSelection)
     {
+        throw new NotImplementedException("This test is not updated with disadvantaged yet");
         // Arrange
         var establishmentPerformance = new EstablishmentPerformance
         {

@@ -1,4 +1,6 @@
-﻿namespace SAPPub.Core.ServiceModels.KS4.Performance;
+﻿using SAPPub.Core.ValueObjects;
+
+namespace SAPPub.Core.ServiceModels.KS4.Performance;
 
 public class AttainmentAndProgressModel
 {
@@ -21,12 +23,18 @@ public class AttainmentAndProgressModel
     public double? LocalAuthorityProgress8Score { get; init; }
 
     public double? EstablishmentAttainment8Score { get; init; }
+    public CodedDouble EstablishmentAttainment8DisadvantagedScore { get; init; }
 
     public double? LocalAuthorityAttainment8Score { get; init; }
+    public CodedDouble LocalAuthorityAttainment8DisadvantagedScore { get; init; }
 
     public double? EnglandAttainment8Score { get; init; }
+    public CodedDouble EnglandAttainment8DisadvantagedScore { get; init; }
 
     public double? EstablishmentProgress8TotalPupils { get; init; }
 
     public double? EstablishmentTotalPupils { get; init; }
+
+    public CodedDouble LocalAuthorityAttainment8NonDisadvantagedScore { get; init; }
+    public CodedDouble EnglandAttainment8NonDisadvantagedScore { get; init; }
 }
