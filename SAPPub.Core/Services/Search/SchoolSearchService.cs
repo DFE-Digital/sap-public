@@ -65,7 +65,9 @@ public class SchoolSearchService(ISchoolSearchIndexReader schoolSearchIndexReade
             Longitude = (float?)longitude,
             Distance = query.Distance,
             Page = pageNumber,
-            PageSize = Constants.PageSize
+            PageSize = Constants.PageSize,
+            EstablishmentPhases = query.EstablishmentPhases,
+            EstablishmentTypes = query.EstablishmentTypes
         };
 
         var results = await schoolSearchIndexReader.SearchAsync(searchQuery, Constants.PageSize);

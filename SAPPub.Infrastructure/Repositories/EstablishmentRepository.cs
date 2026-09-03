@@ -10,6 +10,7 @@ using SAPPub.Core.ServiceModels.Search.InputModels;
 using SAPPub.Core.Specifications;
 using StackExchange.Profiling;
 using StackExchange.Profiling.Data;
+using System.Linq;
 
 namespace SAPPub.Infrastructure.Repositories
 {
@@ -69,6 +70,7 @@ namespace SAPPub.Infrastructure.Repositories
             parameters.Add("offset", offset);
 
             var whereClauses = new List<string>();
+            var phaseWhereClauses = new List<string>();
             bool hasName = !string.IsNullOrWhiteSpace(query.Name);
             bool hasLocation = query.Latitude.HasValue && query.Longitude.HasValue && query.Distance.HasValue;
 
@@ -87,13 +89,75 @@ namespace SAPPub.Infrastructure.Repositories
                 parameters.Add("distance", MappingHelper.MilesToMeters(query.Distance!.Value));
             }
 
+            if (query.EstablishmentTypes is not null && query.EstablishmentTypes.Length != 0)
+            {
+                //var typesQueryList = string.Empty;
+                //foreach (var typeQuery in from type in query.EstablishmentTypes
+                //                           let typeQuery = type.ToLower() switch
+                //                           {
+                //                               "maintained school" => "1,2,3,5,",
+                //                               "academy" => "28,34,35,40,41,45,46,",
+                //                               "college" => "18,21,39,56,",
+                //                               "independent school" => "6,11,",
+                //                               "special school" => "7,8,10,12,33,36,44,",
+                //                               _ => ""
+                //                           }
+                //                           select typeQuery)
+                //{
+                //    typesQueryList += typeQuery;
+                //}
+                //whereClauses.Add(@"""TypeOfEstablishmentId"" IN (" + typesQueryList.TrimEnd(',') + ")");
+                var typesQueryList = query.EstablishmentTypes
+
+                .SelectMany(type => (type.ToLower() switch
+                {
+                    "maintained school" => "1,2,3,5",
+                    "academy" => "28,34,35,40,41,45,46",
+                    "college" => "18,21,39,56",
+                    "independent schools" => "6,11",
+                    "special school" => "7,8,10,12,33,36,44",
+                    _ => string.Empty
+                }).Split(',', StringSplitOptions.RemoveEmptyEntries))
+                .Distinct();
+
+                whereClauses.Add($@"""TypeOfEstablishmentId"" IN ({string.Join(",", typesQueryList)})");
+            }
+
+            if (query.EstablishmentPhases is not null && query.EstablishmentPhases.Length != 0)
+            {
+                foreach (var phase in query.EstablishmentPhases)
+                {
+                    if (phase.Contains("all-through", StringComparison.OrdinalIgnoreCase))
+                    {
+                        phaseWhereClauses.Add(@"(""ISKS2"" IS true AND ""ISKS4"" IS true AND ""ISKS5"" IS true)");
+                    }
+                    if (phase.Contains("primary", StringComparison.OrdinalIgnoreCase))
+                    {
+                        phaseWhereClauses.Add(@"(""ISKS2"" IS true AND ""ISKS4"" IS false AND ""ISKS5"" IS false)");
+                    }
+                    if (phase.Contains("secondary", StringComparison.OrdinalIgnoreCase))
+                    {
+                        phaseWhereClauses.Add(@"(""ISKS2"" IS false AND ""ISKS4"" IS true AND ""ISKS5"" IS false)");
+                    }
+                    if (phase.Contains("16", StringComparison.OrdinalIgnoreCase))
+                    {
+                        phaseWhereClauses.Add(@"(""ISKS2"" IS false AND ""ISKS4"" IS false AND ""ISKS5"" IS true)");
+                    }
+                }
+                if (phaseWhereClauses.Count > 0)
+                {
+                    whereClauses.Add("(" + string.Join(" OR ", phaseWhereClauses) + ")");
+                }
+            }
+
             whereClauses.Add(visibilitySpec.ToSqlPredicate());
+
 
             string orderBy = hasLocation
                 ? @"""Distance"" ASC, ""EstablishmentName"" ASC"
                 : @"""EstablishmentName"" ASC";
 
-            string selectFields = @"""URN"", ""EstablishmentName"", ""AddressStreet"", ""AddressLocality"", ""AddressAddress3"", ""AddressTown"", ""AddressPostcode"", ""GenderName"", ""ReligiousCharacterName"", ""StatusCode"", ""ClosedDate"", ""ISKS4""";
+            string selectFields = @"""URN"", ""EstablishmentName"", ""AddressStreet"", ""AddressLocality"", ""AddressAddress3"", ""AddressTown"", ""AddressPostcode"", ""TypeOfEstablishmentId"", ""StatusCode"", ""ClosedDate"", ""ISKS2"", ""ISKS4"", ""ISKS5""";
 
             if (hasLocation)
             {

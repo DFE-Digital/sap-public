@@ -3,9 +3,11 @@
 @import "custom";
 @import "destinations";
 @import "english-maths-results";
+
 @import "scaled-scores-results";
 @import "_establishment-comparison";
 @import "_chart_table_toggle";
+@import "_app_filter";
 @import "_map";
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {

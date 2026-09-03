@@ -13,11 +13,12 @@ public static class EstablishmentExtensions
             URN = e.URN,
             EstablishmentName = e.EstablishmentName,
             Address = e.Address,
-            GenderName = e.GenderName,
-            ReligiousCharacterName = e.ReligiousCharacterName,
+            TypeOfEstablishmentId = (int)e.TypeOfEstablishment,
             ClosedDate = e.ClosedDate.ToDateOnly(),
             StatusCode = e.StatusCode,
-            IsKS4 = e.IsKS4
+            IsKS4 = e.IsKS4,
+            IsKS2 = e.IsKS2,
+            IsKS5 = e.IsKS5
         };
     }
 }

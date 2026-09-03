@@ -12,11 +12,12 @@ public static class SchoolSearchDocumentExtensions
             URN = doc.URN,
             EstablishmentName = doc.EstablishmentName,
             Address = doc.Address,
-            GenderName = doc.GenderName,
-            ReligiousCharacterName = doc.ReligiousCharacterName,
+            TypeOfEstablishmentId = doc.TypeOfEstablishmentId,
             EstablishmentStatus = doc.StatusCode.ToStatus(),
             ClosedDate = doc.ClosedDate,
-            IsKS4 = doc.IsKS4
+            IsKS2 = doc.IsKS2,
+            IsKS4 = doc.IsKS4,
+            IsKS5 = doc.IsKS5
         };
     }
 }

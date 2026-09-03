@@ -1,0 +1,223 @@
+/************* FILTERS *****************/
+
+.app-filter {
+    box-shadow: none;
+    border: 1px solid #b1b4b6;
+}
+
+.app-filter__column {
+    width: 310px;
+}
+
+.app-filter__results-column {
+    width: calc(100% - 310px);
+}
+
+.app-filter-toggle {
+    display: none;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.app-filter-toggle__hide {
+    display: none;
+}
+
+.app-filter-toggle[aria-expanded="true"] .app-filter-toggle__show {
+    display: none;
+}
+
+.app-filter-toggle[aria-expanded="true"] .app-filter-toggle__hide {
+    display: inline;
+}
+
+.app-filter__header {
+    box-shadow: none;
+    padding: 15px;
+    border-bottom: 1px solid #b1b4b6;
+    background: #dbdbdb;
+}
+
+.app-filter__selected {
+    box-shadow: none;
+    padding: 20px 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #b1b4b6;
+}
+
+.app-filter__selected-heading h2 {
+    margin-bottom: 5px;
+}
+
+.app-filter__selected ul:last-of-type {
+    margin-bottom: 15px;
+}
+
+.app-filter__tag:after {
+    position: relative;
+    top: -1px;
+}
+
+.app-filter__options {
+    box-shadow: none;
+    padding: 20px 15px;
+}
+
+.app-filter__fieldset {
+    margin-top: 30px;
+}
+
+    .app-filter__fieldset:first-of-type {
+        margin-top: 15px;
+    }
+
+.app-filter-section {
+    border-bottom: 1px solid #b1b4b6;
+}
+
+    .app-filter-section:last-of-type {
+        border-bottom: none;
+    }
+
+.app-filter-section__toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: govuk-spacing(2) 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    @include govuk-font($size: 19);
+    color: govuk-colour("blue");
+
+    &:hover {
+        color: govuk-colour("dark-blue");
+    }
+
+    &:focus {
+        outline: 2px solid govuk-colour("blue");
+        outline-offset: 2px;
+    }
+
+        &:focus:not(:focus-visible) {
+            outline: none; // Remove outline for mouse clicks, keep for keyboard
+        }
+}
+
+.app-filter-section__title {
+    @include govuk-font($size: 19);
+}
+
+.app-filter-section__indicator {
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s ease;
+    color: #0B0C0C;
+}
+
+.app-filter-section__toggle[aria-expanded="false"] .app-filter-section__indicator {
+    transform: rotate(180deg);
+}
+
+.app-filter-section__content {
+    padding-bottom: govuk-spacing(3);
+}
+
+    .app-filter-section__content[hidden] {
+        display: none;
+    }
+
+.app-filter-section .govuk-form-group {
+    margin-bottom: 0;
+}
+
+.app-filter-section .govuk-inset-text {
+    background-color: #f4f8fb;
+    border-left: 0;
+    font-size: 16px;
+}
+
+.app-filter-range {
+    display: flex;
+    padding-bottom: 10px;
+
+    .app-filter-range__input {
+        display: flex;
+
+        &:after {
+            content: '%';
+            display: block;
+            background-color: #f3f2f1;
+            border: 2px solid #0b0c0c;
+            border-left: none;
+            text-align: center;
+            font-size: 20px;
+            padding: 4px 8px 5px 8px;
+        }
+
+        &:has(.govuk-input--error):after {
+            border-color: #d4351c;
+        }
+    }
+
+    .app-filter-range__from {
+        margin-right: 15px;
+    }
+
+    .app-filter-range__to {
+    }
+
+    .app-filter-range__percent-marker {
+        display: block;
+    }
+}
+
+.app-filter__apply-button:last-child {
+    margin-top: 30px;
+    margin-bottom: 0;
+}
+
+@media (max-width: 40.0625em) {
+    .app-filter {
+        display: block;
+    }
+
+    .app-filter__column {
+        width: unset;
+    }
+
+    .app-filter__results-column {
+        width: unset;
+    }
+
+    .app-filter-toggle {
+        display: block !important;
+    }
+
+    .app-filter-panel {
+        display: none !important;
+        width: 100%;
+        max-width: 100%;
+        padding: 0;
+        box-sizing: border-box;
+        margin-bottom: 30px;
+    }
+
+        .app-filter-panel .app-filter__apply-button {
+            width: 100% !important;
+        }
+
+    .app-filter-panel--visible {
+        display: block !important;
+    }
+
+    .app-filter__options .govuk-button {
+        width: auto !important;
+    }
+
+    .app-school-results-count, #mapCount {
+        font-size: 14px !important;
+    }
+}

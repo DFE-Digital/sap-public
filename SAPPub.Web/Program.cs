@@ -14,7 +14,7 @@ using SAPPub.Web.Areas.Profiles.Filters;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Middleware;
 using SAPPub.Web.Models.Config;
-using SAPSec.Web.Setup;
+using SAPPub.Web.Setup;
 using Serilog;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
