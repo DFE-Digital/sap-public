@@ -14,6 +14,7 @@ public sealed class OverviewModel
     public string? SenProvision { get; init; }
     public string Phone { get; init; } = string.Empty;
     public string Website { get; init; } = string.Empty;
+    public string Address { get; init; } = string.Empty;
     public string Easting { get; init; } = string.Empty;
     public string Northing { get; init; } = string.Empty;
 

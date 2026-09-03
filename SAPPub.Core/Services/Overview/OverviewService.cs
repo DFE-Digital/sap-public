@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SAPPub.Core.Helpers;
 
 namespace SAPPub.Core.Services.Overview
 {
@@ -33,6 +34,14 @@ namespace SAPPub.Core.Services.Overview
                 SenProvision = overview.Establishment.SenTypes,
                 Phone = overview.Establishment.TelephoneNum,
                 Website = overview.Establishment.Website,
+                Address = TextHelpers.ConcatListToString(
+                [
+                    overview.Establishment.AddressStreet,
+                    overview.Establishment.AddressLocality,
+                    overview.Establishment.AddressAddress3,
+                    overview.Establishment.AddressTown,
+                    overview.Establishment.AddressPostcode
+                ]),
                 Easting = overview.Establishment.Easting,
                 Northing = overview.Establishment.Northing,
 
