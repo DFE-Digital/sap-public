@@ -27,7 +27,7 @@ jobs:
         run: dotnet restore
 
       - name: Build integration tests
-        run: dotnet build Tests/SAPPub.Integration.Tests/SAPPub.IntegrationTests.csproj --configuration Release
+        run: dotnet build Tests/SAPPub.Integration.Tests/SAPPub.Integration.Tests.csproj --configuration Release
 
       - name: Install Playwright browsers
         run: pwsh ./Tests/SAPPub.Integration.Tests/bin/Release/net10.0/playwright.ps1 install
@@ -39,7 +39,7 @@ jobs:
           ASPNETCORE_ENVIRONMENT: CI
           BASE_URL: ${{ inputs.base_url }}
         run: |
-          dotnet test Tests/SAPPub.Integration.Tests/SAPPub.IntegrationTests.csproj \
+          dotnet test Tests/SAPPub.Integration.Tests/SAPPub.Integration.Tests.csproj \
             --no-build \
             --configuration Release \
             --results-directory "TestResults" \
