@@ -133,9 +133,9 @@
                 <tbody class="govuk-table__body">
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">Number of pupils at the end of KS2</th>
-                        <td class="govuk-table__cell">@Model.EstablishmentNumPupilsEndOfKS2.DisplayNumber()</td>
-                        <td class="govuk-table__cell">@Model.LANumPupilsEndOfKS2.DisplayNumber()</td>
-                        <td class="govuk-table__cell">@Model.EnglandNumPupilsEndOfKS2.DisplayNumber()</td>
+                        <td class="govuk-table__cell">@Model.EstablishmentNumPupilsEndOfKS2.DisplayNumber(format: "N0")</td>
+                        <td class="govuk-table__cell">@Model.LANumPupilsEndOfKS2.DisplayNumber(format: "N0")</td>
+                        <td class="govuk-table__cell">@Model.EnglandNumPupilsEndOfKS2.DisplayNumber(format: "N0")</td>
                     </tr>
                 </tbody>
             </table>
@@ -170,8 +170,6 @@
                                 <h4>Disadvantaged pupils </h4>
                                 <p class="govuk-body">
                                     Pupils identified as disadvantaged are those who either:
-                                 
-
                                 </p>
                                 <ul class="govuk-list govuk-list--bullet">
                                     <li>were eligible for free school meals at any time during the last 6 years</li>
@@ -224,9 +222,9 @@
                             <tbody class="govuk-table__body">
                                 <tr class="govuk-table__row">
                                     <th scope="row" class="govuk-table__header">Number of disadvantaged pupils</th>
-                                    <td class="govuk-table__cell">@Model.EstablishmentNumDisadvantagedEndOfKS2.DisplayNumber()</td>
-                                    <td class="govuk-table__cell">@Model.LANumDisadvantagedEndOfKS2.DisplayNumber()</td>
-                                    <td class="govuk-table__cell">@Model.EnglandNumDisadvantagedEndOfKS2.DisplayNumber()</td>
+                                    <td class="govuk-table__cell">@Model.EstablishmentNumDisadvantagedEndOfKS2.DisplayNumber(format:"N0")</td>
+                                    <td class="govuk-table__cell">@Model.LANumDisadvantagedEndOfKS2.DisplayNumber(format: "N0")</td>
+                                    <td class="govuk-table__cell">@Model.EnglandNumDisadvantagedEndOfKS2.DisplayNumber(format: "N0")</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -276,7 +274,7 @@
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">Number of pupils on roll</th>
                     <td class="govuk-table__cell">@Model.EstablishmentNumberOfPupils.DisplayText()</td>
-                    <td class="govuk-table__cell">@Model.EnglandNumberOfPupils.DisplayNumber()</td>
+                    <td class="govuk-table__cell">@Model.EnglandNumberOfPupils.DisplayNumber(format: "N0")</td>
                 </tr>
             </tbody>
         </table>
