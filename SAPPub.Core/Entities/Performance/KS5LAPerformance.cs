@@ -196,4 +196,44 @@ public class KS5LAPerformance
 
     // Points for LA - Non-Disadvantaged - Applied general qualifications
     public CodedDouble TALLPPE_AGEN_NOTDIS_LA_Current_Num_Coded { get; set; }
+
+    // Tech Levels DisAdvantaged
+
+    // Number of students for LA - Disadvantaged - Tech Levels
+    public CodedDouble TALLPUP_TLEV_DIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress score for LA - Disadvantaged - Tech Levels
+    public CodedDouble VA_INS_TLEV_DIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for LA upper - Disadvantaged - Tech Levels
+    public CodedDouble UCI_INS_TLEV_DIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for LA lower - Disadvantaged - Tech Levels
+    public CodedDouble LCI_INS_TLEV_DIS_LA_Current_Num_Coded { get; set; }
+
+    // Grade for LA - Disadvantaged - Tech Levels
+    public CodedString TALLPPEGRD_TLEV_DIS_LA_Current { get; set; }
+
+    // Points for LA - Disadvantaged - Tech Levels
+    public CodedDouble TALLPPE_TLEV_DIS_LA_Current_Num_Coded { get; set; }
+
+    // Tech Levels Non-DisAdvantaged
+
+    // Number of students for LA - Non-Disadvantaged - Tech Levels
+    public CodedDouble TALLPUP_TLEV_NOTDIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress score for LA - Non-Disadvantaged - Tech Levels
+    public CodedDouble VA_INS_TLEV_NOTDIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for LA upper - Non-Disadvantaged - Tech Levels
+    public CodedDouble UCI_INS_TLEV_NOTDIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for LA lower - Non-Disadvantaged - Tech Levels
+    public CodedDouble LCI_INS_TLEV_NOTDIS_LA_Current_Num_Coded { get; set; }
+
+    // Grade for LA - Non-Disadvantaged - Tech Levels
+    public CodedString TALLPPEGRD_TLEV_NOTDIS_LA_Current { get; set; }
+
+    // Points for LA - Non-Disadvantaged - Tech Levels
+    public CodedDouble TALLPPE_TLEV_NOTDIS_LA_Current_Num_Coded { get; set; }
 }
