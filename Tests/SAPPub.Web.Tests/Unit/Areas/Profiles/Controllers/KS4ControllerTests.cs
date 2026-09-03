@@ -124,7 +124,7 @@ public class KS4ControllerTests
     [InlineData(AcademicYearSelection.Current, true)]
     [InlineData(AcademicYearSelection.Previous, false)]
     [InlineData(AcademicYearSelection.Previous2, false)]
-    public async Task Get_AcademicPerformanceAttainmentAndProgress_Info_ReturnsOk(AcademicYearSelection academicYearSelection, bool expectedShowProgress8NotAvailableInfo)
+    public async Task Get_AcademicPerformanceAttainmentAndProgress_Info_ReturnsExpectedProgressData(AcademicYearSelection academicYearSelection, bool expectedShowProgress8NotAvailableInfo)
     {
         var expectedResult = new AttainmentAndProgressModel
         {
@@ -201,7 +201,7 @@ public class KS4ControllerTests
     [InlineData(AcademicYearSelection.Current, true)]
     [InlineData(AcademicYearSelection.Previous, false)]
     [InlineData(AcademicYearSelection.Previous2, false)]
-    public async Task Get_AcademicPerformanceAttainmentAndProgress_Display_Attainment8_Data(
+    public async Task Get_AcademicPerformanceAttainmentAndProgress_ReturnsExpectedAttainment8Data(
         AcademicYearSelection academicYearSelection,
         bool expectedShowAttainment8Info)
     {
@@ -245,6 +245,51 @@ public class KS4ControllerTests
         Assert.Equal(3, model.AcademicYearsSelectList.Count);
         Assert.Equal(academicYearSelection, model.SelectedAcademicYear);
         Assert.Equal(expectedShowAttainment8Info, model.ShowAttainment8Info);
+    }
+
+    [Theory]
+    [InlineData(AcademicYearSelection.Current)]
+    [InlineData(AcademicYearSelection.Previous)]
+    [InlineData(AcademicYearSelection.Previous2)]
+    public async Task Get_AcademicPerformanceAttainmentAndProgress_ReturnsExpectedAttainment8DisadvantagedData(
+        AcademicYearSelection academicYearSelection)
+    {
+        var expectedResult = new AttainmentAndProgressModel
+        {
+            Urn = _fakeEstablishment.URN,
+            SchoolName = _fakeEstablishment.EstablishmentName,
+            EstablishmentAttainment8DisadvantagedScore = CodedDoubleFactory.Create(0.5),
+            LocalAuthorityAttainment8DisadvantagedScore = CodedDoubleFactory.Create(0.6),
+            EnglandAttainment8DisadvantagedScore = CodedDoubleFactory.Create(0.7),
+            EnglandAttainment8NonDisadvantagedScore = CodedDoubleFactory.Create(0.8),
+            LocalAuthorityAttainment8NonDisadvantagedScore = CodedDoubleFactory.Create(0.9),
+            EstablishmentTotalPupils = 95,
+            IsKS2 = false,
+            IsKS4 = true,
+            IsKS5 = false
+        };
+
+        _mockAttainmentAndProgressService
+            .Setup(s => s.GetAttainmentAndProgressAsync(_fakeEstablishment.URN, academicYearSelection, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.AcademicPerformanceAttainmentAndProgress(
+            _mockAttainmentAndProgressService.Object,
+            _fakeEstablishment.URN,
+            _fakeEstablishment.EstablishmentName,
+            academicYearSelection.ToRouteSegment()!,
+            CancellationToken.None) as ViewResult;
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as AcademicPerformanceAttainmentAndProgressViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(expectedResult.EstablishmentAttainment8DisadvantagedScore.ToString(), model.EstablishmentAttainment8DisadvantagedScore.DisplayText());
+        Assert.Equal(expectedResult.LocalAuthorityAttainment8DisadvantagedScore.ToString(), model.LocalAuthorityAttainment8DisadvantagedScore.DisplayText());
+        Assert.Equal(expectedResult.EnglandAttainment8DisadvantagedScore.ToString(), model.EnglandAttainment8DisadvantagedScore.DisplayText());
+        Assert.Equal(expectedResult.EnglandAttainment8NonDisadvantagedScore.ToString(), model.EnglandAttainment8NonDisadvantagedScore.DisplayText());
+        Assert.Equal(expectedResult.LocalAuthorityAttainment8NonDisadvantagedScore.ToString(), model.LocalAuthorityAttainment8NonDisadvantagedScore.DisplayText());
     }
 
     [Fact]

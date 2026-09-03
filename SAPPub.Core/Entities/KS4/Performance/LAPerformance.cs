@@ -19,6 +19,18 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public string? Attainment8_Tot_LA_Current_Num_Reason { get; set; }
 
         /// <summary>
+        /// Attainment 8 non-disadvantaged filtered by LA for current year
+        /// <summary>
+        public CodedDouble Attainment8_NDi_LA_Current_Num_Coded { get; set; } = new();
+
+        /// <summary>
+        /// Attainment 8 disadvantaged filtered by LA for each year
+        /// <summary>
+        public CodedDouble Attainment8_Dis_LA_Current_Num_Coded { get; set; } = new();
+        public CodedDouble Attainment8_Dis_LA_Previous_Num_Coded { get; set; } = new();
+        public CodedDouble Attainment8_Dis_LA_Previous2_Num_Coded { get; set; } = new();
+
+        /// <summary>
         /// English and Maths grades 4 to 9 Boys filtered by LA for Current year
         /// <summary>
         public CodedDouble EngMaths49_Boy_LA_Current_Pct_Coded { get; set; } = new();
