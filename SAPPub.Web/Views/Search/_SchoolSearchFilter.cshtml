@@ -5,12 +5,12 @@
         var hasSelectedFilters = Model.Phase?.Any() == true || Model.SchoolType?.Any() == true;
         var panelVisibleClass = hasSelectedFilters ? "app-filter-panel--visible" : "";
     }
-    <button type="button" class="govuk-button govuk-button--secondary app-filter-toggle" data-module="app-filter-toggle" aria-expanded="true" aria-controls="app-filter-panel">
+    <button type="button" class="govuk-button govuk-button--secondary app-filter-toggle" data-module="app-filter-toggle" aria-expanded="false" aria-controls="app-filter-panel">
         <span class="app-filter-toggle__show">Show filters</span>
         <span class="app-filter-toggle__hide">Hide filters</span>
     </button>
 
-    <form method="get" id="app-filter-panel" class="app-filter-panel @panelVisibleClass">
+    <div id="app-filter-panel" class="app-filter-panel @panelVisibleClass">
         <input type="hidden" name="NameSearchTerm" value="@Model.NameSearchTerm" />
         <input type="hidden" name="Distance" value="@Model.Distance" />
         <input type="hidden" name="LocationSearchTerm" value="@Model.LocationSearchTerm" />
@@ -178,7 +178,7 @@
                 </div>
             </div>
         </div>
-    </form>
+    </div>
 </div>
 
 <script nonce="@Html.ScriptNonce()" src="/js/searchFilter.js"></script>

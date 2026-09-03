@@ -116,7 +116,7 @@ namespace SAPPub.Infrastructure.Repositories
                     }
                     if (phase.Contains("primary", StringComparison.OrdinalIgnoreCase))
                     {
-                        phaseWhereClauses.Add(@"(""ISKS2"" IS true");
+                        phaseWhereClauses.Add(@"""ISKS2"" IS true");
                     }
                     if (phase.Contains("secondary", StringComparison.OrdinalIgnoreCase))
                     {

@@ -34,7 +34,7 @@
                         <govuk-input-hint>For example, St Joseph's secondary school</govuk-input-hint>
                     </govuk-input>
 
-                    <govuk-input input-class="govuk-input govuk-!-width-one-quarter" input-placeholder="Search by postcode" for=@Model.SearchParams.LocationSearchTerm name="LocationSearchTerm" data-testid="searchByLocationInput">
+                    <govuk-input input-class="govuk-input govuk-!-width-three-quarters" input-placeholder="Search by postcode" for=@Model.SearchParams.LocationSearchTerm name="LocationSearchTerm" data-testid="searchByLocationInput">
                         <govuk-input-label is-page-heading="false" class="govuk-label--s" id="location">Postcode</govuk-input-label>
                         <govuk-input-hint>For example, LS28 8EU</govuk-input-hint>
                     </govuk-input>
@@ -43,6 +43,14 @@
 
                 </govuk-fieldset>
             </div>
+            <input type="hidden" name="pageNumber" value="@Model.SearchParams.PageNumber" />
+        </form>
+
+    </div>
+</div>
+<div class="govuk-grid-row">
+    <form method="get">
+        <div class="govuk-grid-column-full">
             <div class="govuk-!-padding-bottom-2">
                 <govuk-fieldset>
                     <govuk-fieldset-legend is-page-heading="false" class="govuk-visually-hidden">Search ordering and filtering</govuk-fieldset-legend>
@@ -63,24 +71,21 @@
                                 <govuk-select-item value="10" selected="@(Model.SearchParams.Distance == 10)">10 miles</govuk-select-item>
                             </govuk-select>
 
-                            <govuk-button class="govuk-button govuk-button--secondary" id="show-results" type="submit">Show results</govuk-button>
+                            <govuk-button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" id="show-results" type="submit">Show results</govuk-button>
                         </div>
                     }
                 </govuk-fieldset>
             </div>
-            <input type="hidden" name="pageNumber" value="@Model.SearchParams.PageNumber" />
-        </form>
         @if (Model.SearchResultsCount != 0)
         {
             <p>Search for schools and colleges to explore their profiles. From a school's profile, you can save it to your schools list, where you can shortlist schools and compare them side by side.</p>
         }
-    </div>
-</div>
-<div class="govuk-grid-row">
-    @if (Model.SearchResultsCount != 0)
-    {
-        @await Html.PartialAsync("_SchoolSearchFilter", Model.SearchParams)
-    }
+        </div>
+        @if (Model.SearchResultsCount != 0)
+        {
+            @await Html.PartialAsync("_SchoolSearchFilter", Model.SearchParams)
+        }
+    </form>
     <div class="govuk-grid-column-two-thirds">
 
         @foreach (var modelItem in Model.SearchResults)
