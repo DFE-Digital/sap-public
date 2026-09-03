@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using SAPPub.Core.Entities;
 using SAPPub.Core.ServiceModels.KS4.Performance;
+using SAPPub.Core.ValueObjects;
 
 namespace SAPPub.Core.Tests.TestBuilders;
 
@@ -83,26 +84,11 @@ public class EnglishAndMathsResultsModelBuilder
     {
         CurrentYear = null
     };
-    private RelativeYearValues<double?> _EstablishmentDisadvantaged { get; set; } = new RelativeYearValues<double?>
-    {
-        CurrentYear = null
-    };
-    private RelativeYearValues<double?> _LocalAuthorityDisadvantaged { get; set; } = new RelativeYearValues<double?>
-    {
-        CurrentYear = null
-    };
-    private RelativeYearValues<double?> _EnglandDisadvantaged { get; set; } = new RelativeYearValues<double?>
-    {
-        CurrentYear = null
-    };
-    private RelativeYearValues<double?> _LocalAuthorityNonDisadvantaged { get; set; } = new RelativeYearValues<double?>
-    {
-        CurrentYear = null
-    };
-    private RelativeYearValues<double?> _EnglandNonDisadvantaged { get; set; } = new RelativeYearValues<double?>
-    {
-        CurrentYear = null
-    };
+    private RelativeYearValues<CodedDouble> _EstablishmentDisadvantaged { get; set; } = CodedYearNoValue("z");
+    private RelativeYearValues<CodedDouble> _LocalAuthorityDisadvantaged { get; set; } = CodedYearNoValue("z");
+    private RelativeYearValues<CodedDouble> _EnglandDisadvantaged { get; set; } = CodedYearNoValue("z");
+    private RelativeYearValues<CodedDouble> _LocalAuthorityNonDisadvantaged { get; set; } = CodedYearNoValue("z");
+    private RelativeYearValues<CodedDouble> _EnglandNonDisadvantaged { get; set; } = CodedYearNoValue("z");
 
     public EnglishAndMathsResultsModelBuilder WithCurrentYearData()
     {
@@ -142,26 +128,14 @@ public class EnglishAndMathsResultsModelBuilder
         {
             CurrentYear = Math.Round(_faker.Random.Double(0, 80), 1),
         };
-        _EstablishmentDisadvantaged = new RelativeYearValues<double?>
+        _EstablishmentDisadvantaged = new RelativeYearValues<CodedDouble>
         {
-            CurrentYear = Math.Round(_faker.Random.Double(0, 80), 1)
+            CurrentYear = new CodedDouble(Math.Round(_faker.Random.Double(0, 80), 1), string.Empty, string.Empty)
         };
-        _LocalAuthorityDisadvantaged = new RelativeYearValues<double?>
-        {
-            CurrentYear = Math.Round(_faker.Random.Double(0, 80), 1),
-        };
-        _EnglandDisadvantaged = new RelativeYearValues<double?>
-        {
-            CurrentYear = Math.Round(_faker.Random.Double(0, 80), 1),
-        };
-        _LocalAuthorityNonDisadvantaged = new RelativeYearValues<double?>
-        {
-            CurrentYear = Math.Round(_faker.Random.Double(0, 80), 1),
-        };
-        _EnglandNonDisadvantaged = new RelativeYearValues<double?>
-        {
-            CurrentYear = Math.Round(_faker.Random.Double(0, 80), 1),
-        };
+        _LocalAuthorityDisadvantaged = RandomCodedYearValue();
+        _EnglandDisadvantaged = RandomCodedYearValue();
+        _LocalAuthorityNonDisadvantaged = RandomCodedYearValue();
+        _EnglandNonDisadvantaged = RandomCodedYearValue();
         return this;
     }
 
@@ -209,26 +183,11 @@ public class EnglishAndMathsResultsModelBuilder
         {
             CurrentYear = Math.Round(_faker.Random.Double(0, 80), 1),
         };
-        _EstablishmentDisadvantaged = new RelativeYearValues<double?>
-        {
-            CurrentYear = Math.Round(_faker.Random.Double(0, 80), 1)
-        };
-        _LocalAuthorityDisadvantaged = new RelativeYearValues<double?>
-        {
-            CurrentYear = Math.Round(_faker.Random.Double(0, 80), 1),
-        };
-        _EnglandDisadvantaged = new RelativeYearValues<double?>
-        {
-            CurrentYear = Math.Round(_faker.Random.Double(0, 80), 1),
-        };
-        _LocalAuthorityNonDisadvantaged = new RelativeYearValues<double?>
-        {
-            CurrentYear = Math.Round(_faker.Random.Double(0, 80), 1),
-        };
-        _EnglandNonDisadvantaged = new RelativeYearValues<double?>
-        {
-            CurrentYear = Math.Round(_faker.Random.Double(0, 80), 1),
-        };
+        _EstablishmentDisadvantaged = RandomCodedYearValue();
+        _LocalAuthorityDisadvantaged = RandomCodedYearValue();
+        _EnglandDisadvantaged = RandomCodedYearValue();
+        _LocalAuthorityNonDisadvantaged = RandomCodedYearValue();
+        _EnglandNonDisadvantaged = RandomCodedYearValue();
         return this;
     }
 
@@ -257,6 +216,25 @@ public class EnglishAndMathsResultsModelBuilder
             IsKS2 = _isKS2,
             IsKS4 = _isKS4,
             IsKS5 = _isKS5
+        };
+    }
+
+    private RelativeYearValues<CodedDouble> RandomCodedYearValue()
+    {
+        var value = Math.Round(_faker.Random.Double(0, 80), 1);
+
+        return new RelativeYearValues<CodedDouble>
+        {
+            CurrentYear = new CodedDouble(value, string.Empty, value.ToString())
+        };
+    }
+
+    // CML TODO this needs to simulate the possible reason codes and values and go into a builder
+    private static RelativeYearValues<CodedDouble> CodedYearNoValue(string reasonCode)
+    {
+        return new RelativeYearValues<CodedDouble>
+        {
+            CurrentYear = new CodedDouble(null, "Not applicable", reasonCode)
         };
     }
 }

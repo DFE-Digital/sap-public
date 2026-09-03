@@ -151,22 +151,25 @@ public class AcademicPerformanceEnglishAndMathsResults : BasePageTest
         var establishmentValue = (await Page.GetTableRowValuesAsync("breakdown-disadvantaged-table", "School")).First();
         var laValue = (await Page.GetTableRowValuesAsync("breakdown-disadvantaged-table", $"{establishmentExpected.LAName} average")).First();
         var englandValue = (await Page.GetTableRowValuesAsync("breakdown-disadvantaged-table", "England average")).First();
+
+        var temp = establishmentPerformanceExpected!.EngMaths49_Dis_Est_Current_Pct_Coded.Value;
+        var temp2 = establishmentPerformanceExpected!.EngMaths49_Dis_Est_Current_Pct_Coded;
         switch (grade)
         {
             case GcseGradeDataSelection.Grade4AndAbove:
-                Assert.Equal($"{establishmentPerformanceExpected!.EngMaths49_Dis_Est_Current_Pct.ToString()}%", establishmentValue);
-                Assert.Equal($"{laPerformanceExpected!.EngMaths49_Dis_LA_Current_Pct.ToString()}%", laValue);
-                Assert.Equal($"{englandPerformanceExpected!.EngMaths49_Dis_Eng_Current_Pct.ToString()}%", englandValue);
+                Assert.Equal($"{establishmentPerformanceExpected!.EngMaths49_Dis_Est_Current_Pct_Coded.Value.ToString()}%", establishmentValue);
+                Assert.Equal($"{laPerformanceExpected!.EngMaths49_Dis_LA_Current_Pct_Coded.ToString()}%", laValue);
+                Assert.Equal($"{englandPerformanceExpected!.EngMaths49_Dis_Eng_Current_Pct_Coded.ToString()}%", englandValue);
                 break;
             case GcseGradeDataSelection.Grade5AndAbove:
-                Assert.Equal($"{establishmentPerformanceExpected!.EngMaths59_Dis_Est_Current_Pct.ToString()}%", establishmentValue);
-                Assert.Equal($"{laPerformanceExpected!.EngMaths59_Dis_LA_Current_Pct.ToString()}%", laValue);
-                Assert.Equal($"{englandPerformanceExpected!.EngMaths59_Dis_Eng_Current_Pct.ToString()}%", englandValue);
+                Assert.Equal($"{establishmentPerformanceExpected!.EngMaths59_Dis_Est_Current_Pct_Coded.ToString()}%", establishmentValue);
+                Assert.Equal($"{laPerformanceExpected!.EngMaths59_Dis_LA_Current_Pct_Coded.ToString()}%", laValue);
+                Assert.Equal($"{englandPerformanceExpected!.EngMaths59_Dis_Eng_Current_Pct_Coded.ToString()}%", englandValue);
                 break;
             case GcseGradeDataSelection.Grade7AndAbove:
-                Assert.Equal($"{establishmentPerformanceExpected!.EngMaths79_Dis_Est_Current_Pct.ToString()}%", establishmentValue);
-                Assert.Equal($"{laPerformanceExpected!.EngMaths79_Dis_LA_Current_Pct.ToString()}%", laValue);
-                Assert.Equal($"{englandPerformanceExpected!.EngMaths79_Dis_Eng_Current_Pct.ToString()}%", englandValue);
+                Assert.Equal($"{establishmentPerformanceExpected!.EngMaths79_Dis_Est_Current_Pct_Coded.ToString()}%", establishmentValue);
+                Assert.Equal($"{laPerformanceExpected!.EngMaths79_Dis_LA_Current_Pct_Coded.ToString()}%", laValue);
+                Assert.Equal($"{englandPerformanceExpected!.EngMaths79_Dis_Eng_Current_Pct_Coded.ToString()}%", englandValue);
                 break;
             default: throw new ArgumentOutOfRangeException(nameof(grade), grade, null);
         }
@@ -176,16 +179,16 @@ public class AcademicPerformanceEnglishAndMathsResults : BasePageTest
         switch (grade)
         {
             case GcseGradeDataSelection.Grade4AndAbove:
-                Assert.Equal($"{laPerformanceExpected!.EngMaths49_NDi_LA_Current_Pct.ToString()}%", laValue);
-                Assert.Equal($"{englandPerformanceExpected!.EngMaths49_NDi_Eng_Current_Pct.ToString()}%", englandValue);
+                Assert.Equal($"{laPerformanceExpected!.EngMaths49_NDi_LA_Current_Pct_Coded.ToString()}%", laValue);
+                Assert.Equal($"{englandPerformanceExpected!.EngMaths49_NDi_Eng_Current_Pct_Coded.ToString()}%", englandValue);
                 break;
             case GcseGradeDataSelection.Grade5AndAbove:
-                Assert.Equal($"{laPerformanceExpected!.EngMaths59_NDi_LA_Current_Pct.ToString()}%", laValue);
-                Assert.Equal($"{englandPerformanceExpected!.EngMaths59_NDi_Eng_Current_Pct.ToString()}%", englandValue);
+                Assert.Equal($"{laPerformanceExpected!.EngMaths59_NDi_LA_Current_Pct_Coded.ToString()}%", laValue);
+                Assert.Equal($"{englandPerformanceExpected!.EngMaths59_NDi_Eng_Current_Pct_Coded.ToString()}%", englandValue);
                 break;
             case GcseGradeDataSelection.Grade7AndAbove:
-                Assert.Equal($"{laPerformanceExpected!.EngMaths79_NDi_LA_Current_Pct.ToString()}%", laValue);
-                Assert.Equal($"{englandPerformanceExpected!.EngMaths79_NDi_Eng_Current_Pct.ToString()}%", englandValue);
+                Assert.Equal($"{laPerformanceExpected!.EngMaths79_NDi_LA_Current_Pct_Coded.ToString()}%", laValue);
+                Assert.Equal($"{englandPerformanceExpected!.EngMaths79_NDi_Eng_Current_Pct_Coded.ToString()}%", englandValue);
                 break;
             default: throw new ArgumentOutOfRangeException(nameof(grade), grade, null);
         }

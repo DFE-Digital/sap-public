@@ -40,19 +40,11 @@ namespace SAPPub.Core.Entities.KS4.Performance
         /// English and Maths grades 4 to 9 Disadvantaged filtered by LA for Current year
         /// <summary>
         public CodedDouble EngMaths49_Dis_LA_Current_Pct_Coded { get; set; } = new();
-        [IgnoreDataMember]
-        public double? EngMaths49_Dis_LA_Current_Pct { get; set; }
-        [IgnoreDataMember]
-        public string? EngMaths49_Dis_LA_Current_Pct_Reason { get; set; }
 
         /// <summary>
         /// English and Maths grades 4 to 9 non-disadvantaged filtered by LA for Current year
         /// <summary>
         public CodedDouble EngMaths49_NDi_LA_Current_Pct_Coded { get; set; } = new();
-        [IgnoreDataMember]
-        public double? EngMaths49_NDi_LA_Current_Pct { get; set; }
-        [IgnoreDataMember]
-        public string? EngMaths49_NDi_LA_Current_Pct_Reason { get; set; }
 
         /// <summary>
         /// English and Maths grades 4 to 9 Total filtered by LA for Current year
@@ -85,19 +77,11 @@ namespace SAPPub.Core.Entities.KS4.Performance
         /// English and Maths grades 5 to 9 Disadvantaged filtered by LA for Current year
         /// <summary>
         public CodedDouble EngMaths59_Dis_LA_Current_Pct_Coded { get; set; } = new();
-        [IgnoreDataMember]
-        public double? EngMaths59_Dis_LA_Current_Pct { get; set; }
-        [IgnoreDataMember]
-        public string? EngMaths59_Dis_LA_Current_Pct_Reason { get; set; }
 
         /// <summary>
         /// English and Maths grades 5 to 9 non-disadvantaged filtered by LA for Current year
         /// <summary>
         public CodedDouble EngMaths59_NDi_LA_Current_Pct_Coded { get; set; } = new();
-        [IgnoreDataMember]
-        public double? EngMaths59_NDi_LA_Current_Pct { get; set; }
-        [IgnoreDataMember]
-        public string? EngMaths59_NDi_LA_Current_Pct_Reason { get; set; }
 
         /// <summary>
         /// English and Maths grades 5 to 9 Total filtered by LA for Current year
@@ -130,19 +114,11 @@ namespace SAPPub.Core.Entities.KS4.Performance
         /// English and Maths grades 7 to 9 Disadvantaged filtered by LA for Current year
         /// <summary>
         public CodedDouble EngMaths79_Dis_LA_Current_Pct_Coded { get; set; } = new();
-        [IgnoreDataMember]
-        public double? EngMaths79_Dis_LA_Current_Pct { get; set; }
-        [IgnoreDataMember]
-        public string? EngMaths79_Dis_LA_Current_Pct_Reason { get; set; }
 
         /// <summary>
         /// English and Maths grades 7 to 9 non-disadvantaged filtered by LA for Current year
         /// <summary>
         public CodedDouble EngMaths79_NDi_LA_Current_Pct_Coded { get; set; } = new();
-        [IgnoreDataMember]
-        public double? EngMaths79_NDi_LA_Current_Pct { get; set; }
-        [IgnoreDataMember]
-        public string? EngMaths79_NDi_LA_Current_Pct_Reason { get; set; }
 
         /// <summary>
         /// English and Maths grades 7 to 9 Total filtered by LA for Current year
@@ -259,97 +235,5 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public CodedDouble ExamEntriesGSCE_Tot_LA_Current_Num_Coded { get; set; }
         // Exam entries per pupil, all KS4 qualifications
         public CodedDouble ExamEntriesKS4_Tot_LA_Current_Num_Coded { get; set; }
-
-        public static RelativeYearValues<double?> GirlsEnglishAndMaths(LAPerformance laPerformance, int selectedGrade)
-        {
-            return new RelativeYearValues<double?>
-            {
-                CurrentYear = selectedGrade switch
-                {
-                    4 => laPerformance.EngMaths49_Grl_LA_Current_Pct,
-                    5 => laPerformance.EngMaths59_Grl_LA_Current_Pct,
-                    7 => laPerformance.EngMaths79_Grl_LA_Current_Pct,
-                    _ => null
-                },
-                PreviousYear = null,
-                TwoYearsAgo = null
-            };
-        }
-
-        public static RelativeYearValues<double?> BoysEnglishAndMaths(LAPerformance laPerformance, int selectedGrade)
-        {
-            return new RelativeYearValues<double?>
-            {
-                CurrentYear = selectedGrade switch
-                {
-                    4 => laPerformance.EngMaths49_Boy_LA_Current_Pct,
-                    5 => laPerformance.EngMaths59_Boy_LA_Current_Pct,
-                    7 => laPerformance.EngMaths79_Boy_LA_Current_Pct,
-                    _ => null
-                },
-                PreviousYear = null,
-                TwoYearsAgo = null
-            };
-        }
-
-        public static RelativeYearValues<double?> DisadvantagedEnglishAndMaths(LAPerformance laPerformance, int selectedGrade)
-        {
-            return new RelativeYearValues<double?>
-            {
-                CurrentYear = selectedGrade switch
-                {
-                    4 => laPerformance.EngMaths49_Dis_LA_Current_Pct,
-                    5 => laPerformance.EngMaths59_Dis_LA_Current_Pct,
-                    7 => laPerformance.EngMaths79_Dis_LA_Current_Pct,
-                    _ => null
-                },
-                PreviousYear = null,
-                TwoYearsAgo = null
-            };
-        }
-
-        public static RelativeYearValues<double?> NonDisadvantagedEnglishAndMaths(LAPerformance laPerformance, int selectedGrade)
-        {
-            return new RelativeYearValues<double?>
-            {
-                CurrentYear = selectedGrade switch
-                {
-                    4 => laPerformance.EngMaths49_NDi_LA_Current_Pct,
-                    5 => laPerformance.EngMaths59_NDi_LA_Current_Pct,
-                    7 => laPerformance.EngMaths79_NDi_LA_Current_Pct,
-                    _ => null
-                },
-                PreviousYear = null,
-                TwoYearsAgo = null
-            };
-        }
-
-        public static RelativeYearValues<double?> AllEnglishAndMaths(LAPerformance laPerformance, int selectedGrade)
-        {
-            return new RelativeYearValues<double?>
-            {
-                CurrentYear = selectedGrade switch
-                {
-                    4 => laPerformance.EngMaths49_Tot_LA_Current_Pct,
-                    5 => laPerformance.EngMaths59_Tot_LA_Current_Pct,
-                    7 => laPerformance.EngMaths79_Tot_LA_Current_Pct,
-                    _ => null
-                },
-                PreviousYear = selectedGrade switch
-                {
-                    4 => laPerformance.EngMaths49_Tot_LA_Previous_Pct,
-                    5 => laPerformance.EngMaths59_Tot_LA_Previous_Pct,
-                    7 => laPerformance.EngMaths79_Tot_LA_Previous_Pct,
-                    _ => null
-                },
-                TwoYearsAgo = selectedGrade switch
-                {
-                    4 => laPerformance.EngMaths49_Tot_LA_Previous2_Pct,
-                    5 => laPerformance.EngMaths59_Tot_LA_Previous2_Pct,
-                    7 => laPerformance.EngMaths79_Tot_LA_Previous2_Pct,
-                    _ => null
-                }
-            };
-        }
     }
 }

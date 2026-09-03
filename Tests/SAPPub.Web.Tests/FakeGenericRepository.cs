@@ -309,9 +309,9 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             EngMaths79_Tot_Est_Previous2_Pct = 16,
             EngMaths79_Boy_Est_Current_Pct = 21.1,
             EngMaths79_Grl_Est_Current_Pct = 22.1,
-            EngMaths49_Dis_Est_Current_Pct = 23.1,
-            EngMaths59_Dis_Est_Current_Pct = 24.1,
-            EngMaths79_Dis_Est_Current_Pct = 25.1,
+            EngMaths49_Dis_Est_Current_Pct_Coded = new CodedDouble(23.1, string.Empty, "23.1"),
+            EngMaths59_Dis_Est_Current_Pct_Coded = new CodedDouble(24.1, string.Empty, "24.1"),
+            EngMaths79_Dis_Est_Current_Pct_Coded = new CodedDouble(25.1, string.Empty, "25.1"),
             // additional measures
             AnyQual_Tot_Est_Current_Pct_Coded = new CodedDouble(90, "", ""),
             TripSci_Tot_Est_Current_Pct_Coded = new CodedDouble(80, "", ""),
@@ -410,16 +410,16 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             EngMaths79_Tot_LA_Previous2_Pct = 30.1,
             EngMaths49_Boy_LA_Current_Pct = 44.1,
             EngMaths49_Grl_LA_Current_Pct = 44.2,
-            EngMaths49_Dis_LA_Current_Pct = 44.3,
+            EngMaths49_Dis_LA_Current_Pct_Coded = new CodedDouble(44.3, string.Empty, "44.3"),
             EngMaths59_Boy_LA_Current_Pct = 45.1,
             EngMaths59_Grl_LA_Current_Pct = 45.2,
-            EngMaths59_Dis_LA_Current_Pct = 45.3,
+            EngMaths59_Dis_LA_Current_Pct_Coded = new CodedDouble(45.3, string.Empty, "45.3"),
             EngMaths79_Boy_LA_Current_Pct = 47.1,
             EngMaths79_Grl_LA_Current_Pct = 47.2,
-            EngMaths79_Dis_LA_Current_Pct = 47.3,
-            EngMaths49_NDi_LA_Current_Pct = 54.3,
-            EngMaths59_NDi_LA_Current_Pct = 55.3,
-            EngMaths79_NDi_LA_Current_Pct = 57.3
+            EngMaths79_Dis_LA_Current_Pct_Coded = new CodedDouble(47.3, string.Empty, "47.3"),
+            EngMaths49_NDi_LA_Current_Pct_Coded = new CodedDouble(54.3, string.Empty, "54.3"),
+            EngMaths59_NDi_LA_Current_Pct_Coded = new CodedDouble(55.3, string.Empty, "55.3"),
+            EngMaths79_NDi_LA_Current_Pct_Coded = new CodedDouble(57.3, string.Empty, "57.3")
         }
     };
 
@@ -434,12 +434,12 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             EngMaths79_Grl_Eng_Current_Pct = 17.1,
             EngMaths79_Tot_Eng_Previous_Pct = 24.1,
             EngMaths79_Tot_Eng_Previous2_Pct = 34.1,
-            EngMaths49_Dis_Eng_Current_Pct = 14.9,
-            EngMaths59_Dis_Eng_Current_Pct = 15.9,
-            EngMaths79_Dis_Eng_Current_Pct = 16.9,
-            EngMaths49_NDi_Eng_Current_Pct = 54.4,
-            EngMaths59_NDi_Eng_Current_Pct = 55.4,
-            EngMaths79_NDi_Eng_Current_Pct = 57.4
+            EngMaths49_Dis_Eng_Current_Pct_Coded = new CodedDouble(14.9, string.Empty, "14.9"),
+            EngMaths59_Dis_Eng_Current_Pct_Coded = new CodedDouble(15.9, string.Empty, "15.9"),
+            EngMaths79_Dis_Eng_Current_Pct_Coded = new CodedDouble(16.9, string.Empty, "16.9"),
+            EngMaths49_NDi_Eng_Current_Pct_Coded = new CodedDouble(54.4, string.Empty, "54.4"),
+            EngMaths59_NDi_Eng_Current_Pct_Coded = new CodedDouble(55.4, string.Empty, "55.4"),
+            EngMaths79_NDi_Eng_Current_Pct_Coded = new CodedDouble(57.4, string.Empty, "57.4")
         };
 
     private static readonly Dictionary<string, KS5EstablishmentDestinations> KS5EstablishmentDestinations = new(StringComparer.OrdinalIgnoreCase)

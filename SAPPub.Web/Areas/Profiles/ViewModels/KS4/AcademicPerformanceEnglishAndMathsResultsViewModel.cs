@@ -15,9 +15,9 @@ public class AcademicPerformanceEnglishAndMathsResultsViewModel : BaseViewModel
 
     public required SeriesViewModel BreakdownGcseData { get; set; }
 
-    public required SeriesViewModel BreakdownDisadvantaged { get; set; }
+    public required SeriesCodedDoubleViewModel BreakdownDisadvantaged { get; set; }
 
-    public required SeriesViewModel BreakdownNonDisadvantaged { get; set; }
+    public required SeriesCodedDoubleViewModel BreakdownNonDisadvantaged { get; set; }
 
     public required DisplayField<bool> HasEstablishmentData { get; set; }
 
@@ -86,36 +86,36 @@ public class AcademicPerformanceEnglishAndMathsResultsViewModel : BaseViewModel
                 ],
         };
 
-        var disadvantagedBreakdownGcseData = new SeriesViewModel
+        var disadvantagedBreakdownGcseData = new SeriesCodedDoubleViewModel
         {
             Labels = [$"Percentage who achieved {selectedGrade.GetDisplayName()} in English and maths"],
             Datasets =
                 [
-                    new DataSeriesViewModel {
+                    new DatasetCodedDoubleViewModel {
                         Label = "School",
                         Data = [englishAndMathsResultsModel.EstablishmentDisadvantaged.CurrentYear]
                     },
-                    new DataSeriesViewModel {
+                    new DatasetCodedDoubleViewModel {
                         Label = laAverageLabel,
                         Data = [englishAndMathsResultsModel.LocalAuthorityDisadvantaged.CurrentYear]
                     },
-                    new DataSeriesViewModel {
+                    new DatasetCodedDoubleViewModel {
                         Label = "England average",
                         Data = [englishAndMathsResultsModel.EnglandDisadvantaged.CurrentYear]
                     },
                 ],
         };
 
-        var nonDisadvantagedBreakdownGcseData = new SeriesViewModel
+        var nonDisadvantagedBreakdownGcseData = new SeriesCodedDoubleViewModel
         {
             Labels = [$"Percentage who achieved {selectedGrade.GetDisplayName()} in English and maths"],
             Datasets =
                     [
-                        new DataSeriesViewModel {
+                        new DatasetCodedDoubleViewModel {
                             Label = laAverageLabel,
                             Data = [englishAndMathsResultsModel.LocalAuthorityNonDisadvantaged.CurrentYear]
                         },
-                        new DataSeriesViewModel {
+                        new DatasetCodedDoubleViewModel {
                             Label = "England average",
                             Data = [englishAndMathsResultsModel.EnglandNonDisadvantaged.CurrentYear]
                         },

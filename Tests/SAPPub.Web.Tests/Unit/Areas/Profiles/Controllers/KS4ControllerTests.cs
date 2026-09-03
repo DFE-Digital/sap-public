@@ -522,26 +522,26 @@ public class KS4ControllerTests
 
         Assert.Equal("School", viewModel.BreakdownDisadvantaged.Datasets[0].Label);
         Assert.Equal(
-            expectedResult.EstablishmentDisadvantaged.CurrentYear!.Value,
+            expectedResult.EstablishmentDisadvantaged.CurrentYear,
             viewModel.BreakdownDisadvantaged.Datasets[0].Data.Single()
         );
         Assert.Equal(
-            expectedResult.LocalAuthorityDisadvantaged.CurrentYear!.Value,
+            expectedResult.LocalAuthorityDisadvantaged.CurrentYear,
             viewModel.BreakdownDisadvantaged.Datasets[1].Data.Single()
         );
         Assert.Equal(
-            expectedResult.EnglandDisadvantaged.CurrentYear!.Value,
+            expectedResult.EnglandDisadvantaged.CurrentYear,
             viewModel.BreakdownDisadvantaged.Datasets[2].Data.Single()
         );
 
         Assert.Equal(new[] { "Percentage who achieved Grade 5 and above in English and maths" }, viewModel.BreakdownDisadvantaged.Labels);
 
         Assert.Equal(
-            expectedResult.LocalAuthorityNonDisadvantaged.CurrentYear!.Value,
+            expectedResult.LocalAuthorityNonDisadvantaged.CurrentYear,
             viewModel.BreakdownNonDisadvantaged.Datasets[0].Data.Single()
         );
         Assert.Equal(
-            expectedResult.EnglandNonDisadvantaged.CurrentYear!.Value,
+            expectedResult.EnglandNonDisadvantaged.CurrentYear,
             viewModel.BreakdownNonDisadvantaged.Datasets[1].Data.Single()
         );
     }

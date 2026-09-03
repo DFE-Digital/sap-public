@@ -268,22 +268,14 @@
             </div>
         </div>
         
-        <govuk-accordion id="other-pupil-characteristics-accordion" hide-all-sections-text="Hide all sections" show-all-sections-text="Show all sections" hide-section-text="Hide" show-section-text="Show more">
+        <govuk-accordion heading-level="3" id="other-pupil-characteristics-accordion" hide-all-sections-text="Hide all sections" show-all-sections-text="Show all sections" hide-section-text="Hide" show-section-text="Show more">
             <govuk-accordion-item>
                 <govuk-accordion-item-heading>@Model.SelectedGrade!.GetDisplayName() in English and maths GCSEs by other pupil characteristics</govuk-accordion-item-heading>
                 <govuk-accordion-item-summary></govuk-accordion-item-summary>
                 <govuk-accordion-item-content>
-                    <h3 class="govuk-heading-s">
-                        Disadvantaged pupils
-                    </h3>
-                    <p class="govuk-body">Pupils identified as disadvantaged are those who either:
-                    <ul>
-                        <li>were eligible for free school meals at any time during the last 6 years</li>
-                        <li>have been in the care of the local council for a day or more</li>
-                        <li>have been adopted from care</li>
-                    </ul>
-                    </p>
-                    <p>Compare the average progress of disadvantaged students at this school or college, with disadvantaged students at state‑funded schools and colleges locally and across England.</p>
+
+                    @await Html.PartialAsync("_DisadvantagedPupils")
+
                     <table id="breakdown-disadvantaged-table" class="govuk-table">
                         <thead class="govuk-table__head">
                             <tr class="govuk-table__row">
@@ -312,7 +304,7 @@
                             Compare state-funded local and national averages for non-disadvantaged pupils
                         </govuk-details-summary>
                         <govuk-details-text>
-                            <h3 class="govuk-heading-s">Non-disadvantaged pupils</h3>
+                            <h4 class="govuk-heading-s">Non-disadvantaged pupils</h4>
                             <table id="breakdown-non-disadvantaged-table" class="govuk-table">
                                 <thead class="govuk-table__head">
                                     <tr class="govuk-table__row">
