@@ -116,15 +116,15 @@ namespace SAPPub.Infrastructure.Repositories
                     }
                     if (phase.Contains("primary", StringComparison.OrdinalIgnoreCase))
                     {
-                        phaseWhereClauses.Add(@"(""ISKS2"" IS true AND ""ISKS4"" IS false AND ""ISKS5"" IS false)");
+                        phaseWhereClauses.Add(@"(""ISKS2"" IS true");
                     }
                     if (phase.Contains("secondary", StringComparison.OrdinalIgnoreCase))
                     {
-                        phaseWhereClauses.Add(@"(""ISKS2"" IS false AND ""ISKS4"" IS true AND ""ISKS5"" IS false)");
+                        phaseWhereClauses.Add(@"(""ISKS4"" IS true)");
                     }
                     if (phase.Contains("16", StringComparison.OrdinalIgnoreCase))
                     {
-                        phaseWhereClauses.Add(@"(""ISKS2"" IS false AND ""ISKS4"" IS false AND ""ISKS5"" IS true)");
+                        phaseWhereClauses.Add(@"(""ISKS5"" IS true)");
                     }
                 }
                 if (phaseWhereClauses.Count > 0)

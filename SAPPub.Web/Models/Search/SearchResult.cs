@@ -1,4 +1,5 @@
 ﻿using SAPPub.Core.Enums;
+using SAPPub.Core.Extensions;
 using SAPPub.Core.Helpers;
 using SAPPub.Core.ServiceModels.Search.Results;
 using SAPPub.Web.Helpers;
@@ -28,10 +29,7 @@ public class SearchResult
 
     public static SearchResult FromServiceModel(SchoolSearchResultServiceModel serviceModel)
     {
-        var phaseDescription = serviceModel.IsKS2 && serviceModel.IsKS4 && serviceModel.IsKS5 ? "All-through" :
-            serviceModel.IsKS2 ? "Primary" :
-            serviceModel.IsKS4 ? "Secondary" :
-            serviceModel.IsKS5 ? "16 to 19" : null;
+        var phaseDescription = EducationPhaseFormatter.Format(serviceModel.IsKS2, serviceModel.IsKS4, serviceModel.IsKS5);
 
         var estabType = serviceModel.TypeOfEstablishmentId switch
         {

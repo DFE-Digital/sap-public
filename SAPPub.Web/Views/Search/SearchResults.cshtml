@@ -98,7 +98,7 @@
                     <p class="govuk-body-l govuk-!-margin-bottom-0">
                         <a class="govuk-link" href="@Url.Action("Index", "School", new { urn = modelItem.URN, schoolName = modelItem.EstablishmentNameClean })">@modelItem.EstablishmentName</a>
                     </p>
-                    @await Component.InvokeAsync("AddSchoolButton", new { urn = modelItem.URN, isSearchPage = true, isKS4 = modelItem.IsKS4 })
+                    @* @await Component.InvokeAsync("AddSchoolButton", new { urn = modelItem.URN, isSearchPage = true, isKS4 = modelItem.IsKS4 }) *@
                 </div>
 
 
