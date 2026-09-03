@@ -152,8 +152,6 @@ public class AcademicPerformanceEnglishAndMathsResults : BasePageTest
         var laValue = (await Page.GetTableRowValuesAsync("breakdown-disadvantaged-table", $"{establishmentExpected.LAName} average")).First();
         var englandValue = (await Page.GetTableRowValuesAsync("breakdown-disadvantaged-table", "England average")).First();
 
-        var temp = establishmentPerformanceExpected!.EngMaths49_Dis_Est_Current_Pct_Coded.Value;
-        var temp2 = establishmentPerformanceExpected!.EngMaths49_Dis_Est_Current_Pct_Coded;
         switch (grade)
         {
             case GcseGradeDataSelection.Grade4AndAbove:

@@ -229,9 +229,10 @@ public class EnglishAndMathsResultsModelBuilder
         };
     }
 
-    // CML TODO this needs to simulate the possible reason codes and values and go into a builder
     private static RelativeYearValues<CodedDouble> CodedYearNoValue(string reasonCode)
     {
+        // this should do something cleverer with the reason code and be somewhere everyone can use it
+        // but we're not using different reasons so it can be this basic for now
         return new RelativeYearValues<CodedDouble>
         {
             CurrentYear = new CodedDouble(null, "Not applicable", reasonCode)
