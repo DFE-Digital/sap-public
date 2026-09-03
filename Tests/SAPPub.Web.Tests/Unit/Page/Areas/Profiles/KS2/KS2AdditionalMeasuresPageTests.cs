@@ -5,7 +5,6 @@ using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Core.ServiceModels.Performance;
-using SAPPub.Core.Services.KS4.AboutSchool;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
@@ -150,16 +149,16 @@ public class KS2AdditionalMeasuresPageTests : PageTestsBase
         // Arrange
         var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, _pageRoute);
         var expectedModel = GetKS2AdditionalMeasuresModel();
-
+        var ehcpTableSelector = "ehcp-population-table";
+        var senTableSelector = "sen-population-table";
 
         // Act
         var doc = await Fixture.BrowseToPage(url);
         var accordion = doc.QuerySelector("#pupil-population-accordion");
         var ehcpSection = doc.QuerySelector("#pupils-with-ehcp-section");
         var senSupportSection = doc.QuerySelector("#pupils-with-sen-support-section");
-        var ehcpTable = doc.QuerySelector("#ehcp-population-table");
-        var senTable = doc.QuerySelector("#sen-population-table");
-
+        var ehcpTable = doc.QuerySelector($"#{ehcpTableSelector}");
+        var senTable = doc.QuerySelector($"#{senTableSelector}");
 
         //Assert
         Assert.NotNull(accordion);
@@ -168,18 +167,21 @@ public class KS2AdditionalMeasuresPageTests : PageTestsBase
         Assert.NotNull(ehcpTable);
         Assert.NotNull(senTable);
 
-        Assert.Equal("School", doc.GetTableHeaderContentByIdAndIndex("ehcp-population-table", 0, 0));
-        Assert.Equal("England - mainstream primary schools", doc.GetTableHeaderContentByIdAndIndex("ehcp-population-table", 0, 1));
-        Assert.Equal(expectedModel.EstablishmentEHCPPopulation!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("ehcp-population-table", 1, 0));
-        Assert.Equal(expectedModel.EnglandEHCPPopulation!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("ehcp-population-table", 1, 1));
+        Assert.Equal(string.Empty, doc.GetTableHeaderContentByIdAndIndex(ehcpTableSelector, 0, 0));
+        Assert.Equal("School", doc.GetTableHeaderContentByIdAndIndex(ehcpTableSelector, 0, 1));
+        Assert.Equal("England mainstream schools", doc.GetTableHeaderContentByIdAndIndex(ehcpTableSelector, 0, 2));
+        Assert.Equal("Pupils with EHCPs", doc.GetTableHeaderContentByIdAndIndex(ehcpTableSelector, 1, 0));
+        Assert.Equal(expectedModel.EstablishmentEHCPPopulation!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex(ehcpTableSelector, 1, 0));
+        Assert.Equal(expectedModel.EnglandEHCPPopulation!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex(ehcpTableSelector, 1, 1));
 
-        Assert.Equal("School", doc.GetTableHeaderContentByIdAndIndex("sen-population-table", 0, 0));
-        Assert.Equal("England", doc.GetTableHeaderContentByIdAndIndex("sen-population-table", 0, 1));
-        Assert.Equal(expectedModel.EstablishmentSENSupportPopulation!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("sen-population-table", 1, 0));
-        Assert.Equal(expectedModel.EnglandSENSupportPopulation!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("sen-population-table", 1, 1));
+        Assert.Equal(string.Empty, doc.GetTableHeaderContentByIdAndIndex(senTableSelector, 0, 0));
+        Assert.Equal("School", doc.GetTableHeaderContentByIdAndIndex(senTableSelector, 0, 1));
+        Assert.Equal("England mainstream schools", doc.GetTableHeaderContentByIdAndIndex(senTableSelector, 0, 2));
+        Assert.Equal("Pupils with SEN support", doc.GetTableHeaderContentByIdAndIndex(senTableSelector, 1, 0));
+        Assert.Equal(expectedModel.EstablishmentSENSupportPopulation!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex(senTableSelector, 1, 0));
+        Assert.Equal(expectedModel.EnglandSENSupportPopulation!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex(senTableSelector, 1, 1));
 
     }
-
 
     [Fact]
     public async Task AdditionalMeasures_PupilPopulationAccordion_DataNotAvailable_ShowsTableValuesAsNotAvailable()
@@ -219,7 +221,7 @@ public class KS2AdditionalMeasuresPageTests : PageTestsBase
         };
 
         _ks2AdditionalMeasuresService
-            .Setup(s => s.GetAdditionalMeasures(_urn, "12", It.IsAny<CancellationToken>()))
+            .Setup(s => s.GetAdditionalMeasures(_urn, _establishment.LAId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(modelWithNoData);
 
         var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, _pageRoute);
@@ -256,18 +258,18 @@ public class KS2AdditionalMeasuresPageTests : PageTestsBase
         Assert.Null(nextLink);
     }
 
-
     [Fact]
     public async Task AdditionalMeasuresPage_DisplaysBottomPagination_WithCorrectDestinations_WhenMultiplePhases()
     {
         // Arrange
         var multiPhaseEstablishment = new EstablishmentMinimumTestBuilder()
-           .WithURN(_urn)
-           .WithEstablishmentName($"School{_urn}")
-           .WithIsKeyStage2(true)
-           .WithIsKeyStage4(true)
-           .WithLAName(_laName)
-           .BuildServiceModel();
+            .WithURN(_urn)
+            .WithEstablishmentName($"School{_urn}")
+            .WithIsKeyStage2(true)
+            .WithIsKeyStage4(true)
+            .WithLAName(_laName)
+            .WithLAId(_laId)
+            .BuildServiceModel();
 
 
         _mockEstablishmentService
@@ -292,6 +294,126 @@ public class KS2AdditionalMeasuresPageTests : PageTestsBase
         Assert.NotNull(nextLink);
         Assert.Contains("/secondary-performance/progress-attainment", nextLink.GetAttribute("href"));
     }
+
+    [Fact]
+    public async Task AdditionalMeasures_DisplaysNumberOfPupilsAtEndOfKS2()
+    {
+        // Arrange
+        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, _pageRoute);
+        var expectedModel = GetKS2AdditionalMeasuresModel();
+        var eoKS2TableSelector = "pupils-eoks2-table";
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var table = doc.QuerySelector($"#{eoKS2TableSelector}");
+        Assert.NotNull(table);
+
+        Assert.Equal("Pupil group", doc.GetTableHeaderContentByIdAndIndex(eoKS2TableSelector, 0, 0));
+        Assert.Equal("School", doc.GetTableHeaderContentByIdAndIndex(eoKS2TableSelector, 0, 1));
+        Assert.Equal(_laName, doc.GetTableHeaderContentByIdAndIndex(eoKS2TableSelector, 0, 2));
+        Assert.Equal("England", doc.GetTableHeaderContentByIdAndIndex(eoKS2TableSelector, 0, 3));
+
+        Assert.Equal("Number of pupils at the end of KS2", doc.GetTableHeaderContentByIdAndIndex(eoKS2TableSelector, 1, 0));
+        Assert.Equal(expectedModel.EstablishmentNumPupilsEndOfKS2!.Value.ToString(), doc.GetTableCellContentByIdAndIndex(eoKS2TableSelector, 1, 0));
+        Assert.Equal(expectedModel.LANumPupilsEndOfKS2!.Value.ToString(), doc.GetTableCellContentByIdAndIndex(eoKS2TableSelector, 1, 1));
+        Assert.Equal(expectedModel.EnglandNumPupilsEndOfKS2!.Value.ToString(), doc.GetTableCellContentByIdAndIndex(eoKS2TableSelector, 1, 2));
+    }
+
+    [Fact]
+    public async Task AdditionalMeasures_ShowsPupilCharacteristicsBreakdown()
+    {
+        // Arrange
+        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, _pageRoute);
+        var expectedModel = GetKS2AdditionalMeasuresModel();
+        var detailsSelector = "pupils-by-characteristics";
+        var tableSelector = "ks2-population-breakdown-table";
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var details = doc.QuerySelector($"#{detailsSelector}");
+        var table = doc.QuerySelector($"#{tableSelector}");
+        Assert.NotNull(details);
+        Assert.NotNull(table);
+
+        Assert.Equal("School", doc.GetTableHeaderContentByIdAndIndex(tableSelector, 0, 1));
+        Assert.Equal("Girls", doc.GetTableHeaderContentByIdAndIndex(tableSelector, 1, 0));
+        Assert.Equal(expectedModel.EstablishmentNumGirlsEndOfKS2!.Value.ToString(), doc.GetTableCellContentByIdAndIndex(tableSelector, 1, 0));
+        Assert.Equal("Boys", doc.GetTableHeaderContentByIdAndIndex(tableSelector, 2, 0));
+        Assert.Equal(expectedModel.EstablishmentNumBoysEndOfKS2!.Value.ToString(), doc.GetTableCellContentByIdAndIndex(tableSelector, 2, 0));
+        Assert.Equal("English as an additional language (EAL)", doc.GetTableHeaderContentByIdAndIndex(tableSelector, 3, 0));
+        Assert.Equal(expectedModel.EstablishmentNumEALEndOfKS2!.Value.ToString(), doc.GetTableCellContentByIdAndIndex(tableSelector, 3, 0));
+        Assert.Equal("Non-mobile pupils", doc.GetTableHeaderContentByIdAndIndex(tableSelector, 4, 0));
+        Assert.Equal(expectedModel.EstablishmentNumNonMobileEndOfKS2!.Value.ToString(), doc.GetTableCellContentByIdAndIndex(tableSelector, 4, 0));
+    }
+
+    [Fact]
+    public async Task AdditionalMeasures_ShowsDisadvantagedAndNonDisadvantangedPupilTables()
+    {
+        // Arrange
+        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, _pageRoute);
+        var expectedModel = GetKS2AdditionalMeasuresModel();
+        var disadvantagedSectionSelector = "disadvantaged-pupils-section";
+        var disadvantagedTableSelector = "disadvantaged-pupils-population-table";
+        var nonDisadvantagedDetailsSelector = "details-compare-non-disadvantaged-pupils-explained";
+        var nonDisadvantagedTableSelector = "non-disadvantaged-pupils-compare-table";
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var disadvantagedSection = doc.QuerySelector($"#{disadvantagedSectionSelector}");
+        var disadvantagedTable = doc.QuerySelector($"#{disadvantagedTableSelector}");
+        var nonDisadvantagedDetails = doc.QuerySelector($"#{nonDisadvantagedDetailsSelector}");
+        var nonDisadvantagedTable = doc.QuerySelector($"#{nonDisadvantagedTableSelector}");
+
+        Assert.NotNull(disadvantagedSection);
+        Assert.NotNull(disadvantagedTable);
+        Assert.NotNull(nonDisadvantagedDetails);
+        Assert.NotNull(nonDisadvantagedTable);
+
+        Assert.Equal("School", doc.GetTableHeaderContentByIdAndIndex(disadvantagedTableSelector, 0, 1));
+        Assert.Equal(_laName, doc.GetTableHeaderContentByIdAndIndex(disadvantagedTableSelector, 0, 2));
+        Assert.Equal("England", doc.GetTableHeaderContentByIdAndIndex(disadvantagedTableSelector, 0, 3));
+        Assert.Equal(expectedModel.EstablishmentNumDisadvantagedEndOfKS2!.Value.ToString(), doc.GetTableCellContentByIdAndIndex(disadvantagedTableSelector, 1, 0));
+        Assert.Equal(expectedModel.LANumDisadvantagedEndOfKS2!.Value.ToString(), doc.GetTableCellContentByIdAndIndex(disadvantagedTableSelector, 1, 1));
+        Assert.Equal(expectedModel.EnglandNumDisadvantagedEndOfKS2!.Value.ToString(), doc.GetTableCellContentByIdAndIndex(disadvantagedTableSelector, 1, 2));
+
+        Assert.Equal(_laName, doc.GetTableHeaderContentByIdAndIndex(nonDisadvantagedTableSelector, 0, 1));
+        Assert.Equal("England", doc.GetTableHeaderContentByIdAndIndex(nonDisadvantagedTableSelector, 0, 2));
+        Assert.Equal(expectedModel.LANumNonDisadvantagedEndOfKS2!.Value.ToString(), doc.GetTableCellContentByIdAndIndex(nonDisadvantagedTableSelector, 1, 0));
+        Assert.Equal(expectedModel.EnglandNumNonDisadvantagedEndOfKS2!.Value.ToString(), doc.GetTableCellContentByIdAndIndex(nonDisadvantagedTableSelector, 1, 1));
+
+    }
+
+    [Fact]
+    public async Task AdditionalMeasures_DisplaysWholeSchoolPupilPopulationTable()
+    {
+        // Arrange
+        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, _pageRoute);
+        var expectedModel = GetKS2AdditionalMeasuresModel();
+        var tableSelector = "whole-school-population-table";
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var table = doc.QuerySelector($"#{tableSelector}");
+
+        Assert.NotNull(table);
+        
+        Assert.Equal("Pupil group", doc.GetTableHeaderContentByIdAndIndex(tableSelector, 0, 0));
+        Assert.Equal("School", doc.GetTableHeaderContentByIdAndIndex(tableSelector, 0, 1));
+        Assert.Equal("England mainstream schools", doc.GetTableHeaderContentByIdAndIndex(tableSelector, 0, 2));
+
+        Assert.Equal("Number of pupils on roll", doc.GetTableHeaderContentByIdAndIndex(tableSelector, 1, 0));
+        Assert.Equal(expectedModel.EstablishmentPupilTotal, doc.GetTableCellContentByIdAndIndex(tableSelector, 1, 0));
+        Assert.Equal(expectedModel.EnglandPupilTotal!.Value.ToString(), doc.GetTableCellContentByIdAndIndex(tableSelector, 1, 1));
+    }
+
 
     private static CodedDouble GetCodedDouble(double val) => new(val, string.Empty, val.ToString());
 
