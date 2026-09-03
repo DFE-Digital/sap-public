@@ -25,7 +25,10 @@ public class SchoolSearchServiceTests
         AddressStreet = "123 Test Street",
         GenderName = "Mixed",
         ReligiousCharacterName = "None",
-        IsKS4 = true
+        IsKS4 = true,
+        IsKS2 = true,
+        IsKS5 = true,
+        TypeOfEstablishmentId = 28
     };
 
     private readonly EstablishmentServiceModel establishment2 = new()
@@ -35,7 +38,10 @@ public class SchoolSearchServiceTests
         AddressStreet = "123 Test Street 2",
         GenderName = "Girls",
         ReligiousCharacterName = "Muslim",
-        IsKS4 = false
+        IsKS4 = false,
+        IsKS2 = true,
+        IsKS5 = false,
+        TypeOfEstablishmentId = 1
     };
 
     private List<EstablishmentServiceModel> CreateSearchResults(int count)
@@ -94,18 +100,20 @@ public class SchoolSearchServiceTests
                 Assert.Equal(establishment1.URN, item.URN);
                 Assert.Equal(establishment1.EstablishmentName, item.EstablishmentName);
                 Assert.Equal(establishment1.Address, item.Address);
-                //Assert.Equal(establishment1.GenderName, item.GenderName);
-                //Assert.Equal(establishment1.ReligiousCharacterName, item.ReligiousCharacterName);
+                Assert.Equal((int)establishment1.TypeOfEstablishment, item.TypeOfEstablishmentId);
                 Assert.True(item.IsKS4);
+                Assert.True(item.IsKS2);
+                Assert.True(item.IsKS5);
             },
             item =>
             {
                 Assert.Equal(establishment2.URN, item.URN);
                 Assert.Equal(establishment2.EstablishmentName, item.EstablishmentName);
                 Assert.Equal(establishment2.Address, item.Address);
-                //Assert.Equal(establishment2.GenderName, item.GenderName);
-                //Assert.Equal(establishment2.ReligiousCharacterName, item.ReligiousCharacterName);
+                Assert.Equal((int)establishment2.TypeOfEstablishment, item.TypeOfEstablishmentId);
                 Assert.False(item.IsKS4);
+                Assert.True(item.IsKS2);
+                Assert.False(item.IsKS5);
             });
     }
 
@@ -258,8 +266,8 @@ public class SchoolSearchServiceTests
         Assert.True(string.IsNullOrEmpty(singleResult.URN));
         Assert.True(string.IsNullOrEmpty(singleResult.EstablishmentName));
         Assert.True(string.IsNullOrEmpty(singleResult.Address));
-        //Assert.True(string.IsNullOrEmpty(singleResult.GenderName));
-        //Assert.True(string.IsNullOrEmpty(singleResult.ReligiousCharacterName));
         Assert.False(singleResult.IsKS4);
+        Assert.False(singleResult.IsKS2);
+        Assert.False(singleResult.IsKS5);
     }
 }

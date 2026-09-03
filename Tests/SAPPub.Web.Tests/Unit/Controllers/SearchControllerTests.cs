@@ -21,21 +21,23 @@ public class SearchControllerTests
         URN = "123456",
         EstablishmentName = "Test School",
         Address = "123 Test Street",
-        //GenderName = "Mixed",
-        //ReligiousCharacterName = "None",
         EstablishmentStatus = EstablishmentStatus.Open,
-        IsKS4 = true
+        IsKS4 = true,
+        IsKS2 = true,
+        IsKS5 = true,
+        TypeOfEstablishmentId = 28
     };
     private readonly SchoolSearchResultServiceModel _schoolSearchResult2 = new()
     {
         URN = "223456",
         EstablishmentName = "A Test School 2",
         Address = "123 Test Street 2",
-        //GenderName = "Female",
-        //ReligiousCharacterName = "Muslim",
         EstablishmentStatus = EstablishmentStatus.Closed,
         ClosedDate = new DateOnly(2026, 01, 01),
-        IsKS4 = false
+        IsKS4 = false,
+        IsKS2 = true,
+        IsKS5 = false,
+        TypeOfEstablishmentId = 1
     };
 
     private List<SchoolSearchResultServiceModel> CreateSearchResults(int count)
@@ -48,8 +50,10 @@ public class SearchControllerTests
                 URN = i.ToString(),
                 EstablishmentName = $"A Test School {i}",
                 Address = $"123 Test Street {1}",
-                //GenderName = "Girls",
-                //ReligiousCharacterName = "None",
+                TypeOfEstablishmentId = 7,
+                IsKS2 = true,
+                IsKS4 = false,
+                IsKS5 = false
             };
             results.Add(searchResult);
         }
@@ -102,8 +106,8 @@ public class SearchControllerTests
                 Assert.Equal(_schoolSearchResult1.URN, item.URN);
                 Assert.Equal(_schoolSearchResult1.EstablishmentName, item.EstablishmentName);
                 Assert.Equal(_schoolSearchResult1.Address, item.Address);
-                //Assert.Equal(_schoolSearchResult1.GenderName, item.GenderName);
-                //Assert.Equal(_schoolSearchResult1.ReligiousCharacterName, item.ReligiousCharacter);
+                Assert.Equal("Primary, Secondary and 16 to 19", item.PhaseDescription);
+                Assert.Equal(_schoolSearchResult1.TypeOfEstablishmentId, item.TypeOfEstablishmentId);
                 Assert.Equal(_schoolSearchResult1.EstablishmentStatus, item.EstablishmentStatus);
                 Assert.Null(_schoolSearchResult1.ClosedDate);
                 Assert.True(item.IsKS4);
@@ -113,8 +117,8 @@ public class SearchControllerTests
                 Assert.Equal(_schoolSearchResult2.URN, item.URN);
                 Assert.Equal(_schoolSearchResult2.EstablishmentName, item.EstablishmentName);
                 Assert.Equal(_schoolSearchResult2.Address, item.Address);
-                //Assert.Equal(_schoolSearchResult2.GenderName, item.GenderName);
-                //Assert.Equal(_schoolSearchResult2.ReligiousCharacterName, item.ReligiousCharacter);
+                Assert.Equal("Primary", item.PhaseDescription);
+                Assert.Equal(_schoolSearchResult2.TypeOfEstablishmentId, item.TypeOfEstablishmentId);
                 Assert.Equal(_schoolSearchResult2.EstablishmentStatus, item.EstablishmentStatus);
                 Assert.Equal(_schoolSearchResult2.ClosedDate!.Value, item.ClosedDate.Value);
                 Assert.True(item.ClosedDate.IsAvailable);
@@ -171,8 +175,8 @@ public class SearchControllerTests
             Assert.Equal(expectedSearchResult.URN, searchResult.URN);
             Assert.Equal(expectedSearchResult.EstablishmentName, searchResult.EstablishmentName);
             Assert.Equal(expectedSearchResult.Address, searchResult.Address);
-            //Assert.Equal(expectedSearchResult.GenderName, searchResult.GenderName);
-            //Assert.Equal(expectedSearchResult.ReligiousCharacterName, searchResult.ReligiousCharacter);
+            Assert.Equal("Primary", searchResult.PhaseDescription);
+            Assert.Equal(expectedSearchResult.TypeOfEstablishmentId, searchResult.TypeOfEstablishmentId);
             Assert.Equal(expectedSearchResult.EstablishmentStatus, searchResult.EstablishmentStatus);
             Assert.Null(expectedSearchResult.ClosedDate);
         }
@@ -223,8 +227,8 @@ public class SearchControllerTests
                 Assert.Equal(_schoolSearchResult1.URN, item.URN);
                 Assert.Equal(_schoolSearchResult1.EstablishmentName, item.EstablishmentName);
                 Assert.Equal(_schoolSearchResult1.Address, item.Address);
-                //Assert.Equal(_schoolSearchResult1.GenderName, item.GenderName);
-                //Assert.Equal(_schoolSearchResult1.ReligiousCharacterName, item.ReligiousCharacter);
+                Assert.Equal("Primary, Secondary and 16 to 19", item.PhaseDescription);
+                Assert.Equal(_schoolSearchResult1.TypeOfEstablishmentId, item.TypeOfEstablishmentId);
                 Assert.True(item.IsKS4);
             },
             item =>
@@ -232,8 +236,8 @@ public class SearchControllerTests
                 Assert.Equal(_schoolSearchResult2.URN, item.URN);
                 Assert.Equal(_schoolSearchResult2.EstablishmentName, item.EstablishmentName);
                 Assert.Equal(_schoolSearchResult2.Address, item.Address);
-                //Assert.Equal(_schoolSearchResult2.GenderName, item.GenderName);
-                //Assert.Equal(_schoolSearchResult2.ReligiousCharacterName, item.ReligiousCharacter);
+                Assert.Equal("Primary", item.PhaseDescription);
+                Assert.Equal(_schoolSearchResult2.TypeOfEstablishmentId, item.TypeOfEstablishmentId);
                 Assert.False(item.IsKS4);
             });
 
@@ -248,7 +252,7 @@ public class SearchControllerTests
         Assert.Equal(searchParamsModel.Distance.ToString(), viewModel.Pagination.RouteAttributes[nameof(searchParamsModel.Distance)]);
     }
 
- 
+
 
     [Fact]
     public async Task Get_SearchResults_SearchByInvalidPostcode_ReturnsSchoolResultsViewModel()
@@ -291,9 +295,10 @@ public class SearchControllerTests
                         URN = null,
                         EstablishmentName = null,
                         Address = null,
-                        //GenderName = null,
-                        //ReligiousCharacterName = null,
-                        IsKS4 = false
+                        TypeOfEstablishmentId = null,
+                        IsKS4 = false,
+                        IsKS5 = false,
+                        IsKS2 = false
                     }
                 ],
                 PagerInfo = new Pager(1, 1, 10)
@@ -313,8 +318,8 @@ public class SearchControllerTests
         Assert.Equal(string.Empty, item.URN);
         Assert.Equal(string.Empty, item.EstablishmentName);
         Assert.Equal(string.Empty, item.Address);
-        //Assert.Equal(string.Empty, item.GenderName);
-        //Assert.Equal(string.Empty, item.ReligiousCharacter);
+        Assert.Null(item.PhaseDescription);
+        Assert.Null(item.TypeOfEstablishmentId);
         Assert.False(item.IsKS4);
 
         Assert.NotNull(viewModel.Pagination);

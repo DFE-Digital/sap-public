@@ -24,7 +24,6 @@ public record SchoolSearchResultServiceModel
     public string? EstablishmentName { get; init; }
     public string? Address { get; init; }
     public int? TypeOfEstablishmentId { get; init; }
-    public string? Phase { get; init; }
     public DateOnly? ClosedDate { get; set; }
     public EstablishmentStatus? EstablishmentStatus { get; set; }
     public bool IsKS2 { get; init; }
