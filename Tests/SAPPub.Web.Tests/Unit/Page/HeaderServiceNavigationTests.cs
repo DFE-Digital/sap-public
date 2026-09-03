@@ -31,7 +31,8 @@ public class HeaderServiceNavigationTests(WebAppFixture fixture) : PageTestsBase
         var doc = await Fixture.BrowseToPage(_pageUrl);
 
         // Act
-        var mySchoolsViewLink = doc.QuerySelector("#my-schools-view-link");
+        var mySchoolsViewLinkWrapper = doc.QuerySelector("#my-schools-view-link");
+        var mySchoolsViewLink = mySchoolsViewLinkWrapper?.QuerySelector("a");
         var text = mySchoolsViewLink?.TextContent.Trim();
         var href = mySchoolsViewLink?.GetAttribute("href");
 

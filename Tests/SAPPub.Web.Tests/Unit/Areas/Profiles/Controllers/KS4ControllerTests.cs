@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement;
 using Moq;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Enums;
@@ -25,6 +26,7 @@ public class KS4ControllerTests
     private readonly Mock<IKS4EstablishmentSubjectEntriesService> _mockEstablishmentSubjectEntriesService = new();
     private readonly Mock<IAcademicPerformanceEnglishAndMathsResultsService> _mockEnglishAndMathsResultsService = new();
     private readonly Mock<IAttainmentAndProgressService> _mockAttainmentAndProgressService = new();
+    private readonly Mock<IFeatureManager> _mockFeatureManager = new();
     private readonly KS4Controller _controller;
     private EstablishmentMinimumServiceModel _fakeEstablishment;
 
@@ -151,7 +153,7 @@ public class KS4ControllerTests
         var tempPath = Path.Combine(Path.GetTempPath(), "SAPPubTests", Guid.NewGuid().ToString());
         Directory.CreateDirectory(tempPath);
 
-        _controller = new KS4Controller(_mockEstablishmentService.Object);
+        _controller = new KS4Controller(_mockEstablishmentService.Object, _mockFeatureManager.Object);
 
         _controller.ControllerContext = new ControllerContext
         {
@@ -315,8 +317,14 @@ public class KS4ControllerTests
     [Theory]
     [InlineData(GcseGradeDataSelection.Grade4AndAbove)]
     [InlineData(GcseGradeDataSelection.Grade5AndAbove)]
+    [InlineData(GcseGradeDataSelection.Grade7AndAbove)]
     public async Task Get_AcademicPerformance_EnglishAndMathsResults_ReturnsOk(GcseGradeDataSelection grade)
     {
+        // enable grade 7 feature flag for this test
+        _mockFeatureManager
+            .Setup(fm => fm.IsEnabledAsync(Constants.Constants.EnableSecondaryGrade7))
+            .ReturnsAsync(true);
+
         var expectedResult = EnglishAndMathsResults(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, _fakeEstablishment.LAName);
         var gradeName = grade.ToRouteSegment();
 
@@ -524,6 +532,21 @@ public class KS4ControllerTests
 
         var actualBreakdownGcseDataLabels = model.BreakdownGcseData.Datasets.Select(s => s.Label).ToArray();
         Assert.Equal(actualBreakdownGcseDataLabels, expectedBreakdownGcseDataLabels);
+    }
+
+    [Fact]
+    public async Task Get_AcademicPerformance_EnglishAndMathsResults_Grade7_FeatureFlagNotEnabled_ReturnsNotFound()
+    {
+        // Act
+        var result = await _controller.AcademicPerformanceEnglishAndMathsResults(
+            _mockEnglishAndMathsResultsService.Object,
+            _fakeEstablishment.URN,
+            _fakeEstablishment.EstablishmentName,
+            GcseGradeDataSelection.Grade7AndAbove.ToRouteSegment()!,
+            CancellationToken.None);
+
+        // Assert
+        Assert.IsType<NotFoundResult>(result);
     }
 
     [Fact]

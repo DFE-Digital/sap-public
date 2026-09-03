@@ -58,7 +58,8 @@ public class HeaderServiceNavigationTests(WebApplicationSetupFixture fixture) : 
         await Page.GotoAsync(string.Empty);
 
         // Act
-        var mySchoolsViewLink = Page.Locator("#my-schools-view-link");
+        var mySchoolsViewLinkWrapper = Page.Locator("#my-schools-view-link");
+        var mySchoolsViewLink = mySchoolsViewLinkWrapper.Locator("a").First;
         var isVisible = await mySchoolsViewLink.IsVisibleAsync();
         var text = await mySchoolsViewLink.InnerTextAsync();
         var href = await mySchoolsViewLink.GetAttributeAsync("href");
