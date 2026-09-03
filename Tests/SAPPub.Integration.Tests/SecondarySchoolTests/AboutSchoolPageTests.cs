@@ -1,4 +1,6 @@
-﻿using SAPPub.Integration.Tests;
+﻿using Microsoft.Playwright;
+using SAPPub.Integration.Tests;
+using SAPPub.Playwright.Testing;
 
 namespace SAPPub.IntegrationTests.SecondarySchoolTests;
 
@@ -12,6 +14,9 @@ public class AboutSchoolPageTests() : BasePageTest()
     {
         // Act
         var response = await Page.GotoAsync("/school/105574");
+        var nav = new VerticalNavigationHelper(Page);
+        var navItem = nav.GetItem("About the school");
+        await navItem.ClickAsync();
 
         // Assert
         Assert.NotNull(response);
@@ -25,6 +30,9 @@ public class AboutSchoolPageTests() : BasePageTest()
     {
         // Act
         await Page.GotoAsync(PageUrl(urn));
+        var nav = new VerticalNavigationHelper(Page);
+        var navItem = nav.GetItem("About the school");
+        await navItem.ClickAsync();
 
         // Assert
         var schoolClosedCard = Page.GetByTestId("school-closed-custom-card");
@@ -49,6 +57,9 @@ public class AboutSchoolPageTests() : BasePageTest()
     {
         // Act
         await Page.GotoAsync(PageUrl(urn));
+        var nav = new VerticalNavigationHelper(Page);
+        var navItem = nav.GetItem("About the school");
+        await navItem.ClickAsync();
 
         // Assert
         var detailsSummary = Page.Locator("#school-details-summary");

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Playwright;
 
-namespace SAPPub.Web.Tests.UI.Helpers;
+namespace SAPPub.Playwright.Testing;
 
 public static class PageHelper
 {

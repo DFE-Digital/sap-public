@@ -1,4 +1,5 @@
 ﻿using Microsoft.Playwright;
+using SAPPub.Playwright.Testing;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
@@ -17,17 +18,6 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         ["178965"] = "school/178965/predecessor-1-to-abbey-park-school/about",
         ["178966"] = "school/178966/predecessor-2-to-abbey-park-school/about"
     };
-
-    [Fact]
-    public async Task Index_ReRoutesToValidPage()
-    {
-        // Arrange && Act
-        var response = await Page.GotoAsync("school/105574");
-
-        // Assert
-        Assert.NotNull(response);
-        Assert.Equal(200, response.Status);
-    }
 
     [Fact]
     public async Task AboutSchoolPage_LoadsSuccessfully()
