@@ -862,6 +862,111 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
             .ToBeVisibleAsync();
     }
 
+    [Fact]
+    public async Task OverviewPage_SecondarySchool_DisplaysSecondaryAtAGlanceSection()
+    {
+        const string url =
+            "school/137552/stewards-academy-science-specialist-harlow/overview";
+
+        var response = await Page.GotoAsync(url);
+
+        Assert.NotNull(response);
+        Assert.True(response.Ok);
+
+        await Expect(
+            Page.GetByRole(
+                AriaRole.Heading,
+                new()
+                {
+                    Level = 2,
+                    Name = "Secondary school profile at a glance",
+                    Exact = true
+                }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex("Pupil progress")
+                }))
+            .ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_PupilProgressAccordion_IsClosedByDefault()
+    {
+        const string url =
+            "school/137552/stewards-academy-science-specialist-harlow/overview";
+
+        await Page.GotoAsync(url);
+
+        var accordionButton =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex("Pupil progress")
+                });
+
+        await Expect(accordionButton)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "false");
+
+        await Expect(
+            Page.GetByText(
+                "Progress 8 measures the progress pupils make",
+                new() { Exact = false }))
+            .Not.ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_PupilProgressAccordion_CanBeExpandedAndClosed()
+    {
+        const string url =
+            "school/137552/stewards-academy-science-specialist-harlow/overview";
+
+        await Page.GotoAsync(url);
+
+        var accordionButton =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex("Pupil progress")
+                });
+
+        await accordionButton.ClickAsync();
+
+        await Expect(accordionButton)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "true");
+
+        await Expect(
+            Page.GetByText(
+                "Progress 8 measures the progress pupils make",
+                new() { Exact = false }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            Page.GetByText(
+                "2024 to 2025 and 2025 to 2026",
+                new() { Exact = false }))
+            .ToBeVisibleAsync();
+
+        await accordionButton.ClickAsync();
+
+        await Expect(accordionButton)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "false");
+    }
+
+
+
     private async Task AssertRowDisplaysNotAvailableAsync(
     string selector,
     string label)
@@ -903,6 +1008,79 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
             .ToBeVisibleAsync();
 
         return response;
+    }
+
+    [Fact]
+    public async Task OverviewPage_PupilProgressLink_NavigatesToSameSchoolProgressAndAttainmentPage()
+    {
+        const string urn = "137552";
+        const string slug =
+            "stewards-academy-science-specialist-harlow";
+
+        await Page.GotoAsync(
+            $"school/{urn}/{slug}/overview");
+
+        var accordionButton =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex("Pupil progress")
+                });
+
+        await accordionButton.ClickAsync();
+
+        var link =
+            Page.GetByRole(
+                AriaRole.Link,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            "Find out more about the progress pupils make",
+                            RegexOptions.IgnoreCase)
+                });
+
+        await Expect(link)
+            .ToHaveAttributeAsync(
+                "href",
+                $"/school/{urn}/{slug}/secondary-performance/progress-attainment");
+
+        Assert.Null(
+            await link.GetAttributeAsync("target"));
+
+        await link.ClickAsync();
+
+        await Expect(Page)
+            .ToHaveURLAsync(
+                new Regex(
+                    $@"/school/{urn}/{slug}/secondary-performance/progress-attainment(?:/current)?/?$"));
+    }
+
+    [Fact]
+    public async Task OverviewPage_PrimaryOnlySchool_DoesNotDisplaySecondaryAtAGlanceSection()
+    {
+        await GoToOverviewAsync();
+
+        await Expect(
+            Page.GetByRole(
+                AriaRole.Heading,
+                new()
+                {
+                    Level = 2,
+                    Name = "Secondary school profile at a glance",
+                    Exact = true
+                }))
+            .ToHaveCountAsync(0);
+
+        await Expect(
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex("Pupil progress")
+                }))
+            .ToHaveCountAsync(0);
     }
 
     private async Task<string> GetFailureMessageAsync(
