@@ -36,8 +36,9 @@ public class OverviewViewModelTests
         Assert.Equal("ASD", result.SenTypes.Value);
         Assert.Equal("0114 123 4567", result.Telephone.Value);
         Assert.Equal("https://school.example", result.SchoolWebsite.Value);
-
-        Assert.Equal(52.1, result.Attainment8.Value.Value);
+        Assert.Equal( 52.1, result.Attainment8.Value.Value);
+        Assert.Equal(43.4, result.Attainment8LA.Value.Value);
+        Assert.Equal(45.2, result.Attainment8England.Value.Value);
         Assert.Equal(42.5, result.MoreThanOneForeignLanguage.Value.Value);
 
         AssertComparison(result.EnglishAndMathsGrade5, 61.2, 58.3, 59.4);
@@ -48,6 +49,10 @@ public class OverviewViewModelTests
         Assert.Equal(
             "http://reports.ofsted.gov.uk/inspection-reports/find-inspection-report/provider/ELS/123456",
             result.OfstedReportUrl);
+
+        Assert.Equal(
+            "just above grade 5",
+            result.Attainment8Context.Value);
     }
 
     [Theory]
@@ -247,6 +252,79 @@ public class OverviewViewModelTests
         Assert.Equal("Not available", result.Address.DisplayText());
     }
 
+    [Fact]
+    public void Map_Attainment8_MapsAverageResultAndContext()
+    {
+        var model = CreateMinimalModel(
+            attainment8: Coded(49.9));
+
+        var result = OverviewViewModel.Map(model);
+
+        Assert.True(result.Attainment8.IsAvailable);
+
+        Assert.Equal(
+            49.9,
+            result.Attainment8.Value.Value);
+
+        Assert.True(result.Attainment8Context.IsAvailable);
+
+        Assert.Equal(
+            "just below grade 5",
+            result.Attainment8Context.Value);
+    }
+
+    [Fact]
+    public void Map_MissingAttainment8_MapsResultAndContextAsNotAvailable()
+    {
+        var model = CreateMinimalModel(
+            attainment8: null);
+
+        var result = OverviewViewModel.Map(model);
+
+        Assert.True(result.Attainment8.IsNotAvailable);
+
+        Assert.True(result.Attainment8Context.IsNotAvailable);
+        Assert.Null(result.Attainment8Context.Value);
+    }
+
+    [Fact]
+    public void Map_Attainment8Comparison_MapsSchoolLAAndEngland()
+    {
+        var model = CreateMinimalModel(
+            attainment8: Coded(49.9),
+            attainment8LA: Coded(43.4),
+            attainment8England: Coded(45.2));
+
+        var result = OverviewViewModel.Map(model);
+
+        Assert.Equal(
+            49.9,
+            result.Attainment8.Value.Value);
+
+        Assert.Equal(
+            43.4,
+            result.Attainment8LA.Value.Value);
+
+        Assert.Equal(
+            45.2,
+            result.Attainment8England.Value.Value);
+    }
+
+    [Fact]
+    public void Map_MissingAttainment8ComparisonValues_MapAsNotAvailable()
+    {
+        var model = CreateMinimalModel(
+            attainment8: null,
+            attainment8LA: null,
+            attainment8England: null);
+
+        var result = OverviewViewModel.Map(model);
+
+        Assert.True(result.Attainment8.IsNotAvailable);
+        Assert.True(result.Attainment8LA.IsNotAvailable);
+        Assert.True(result.Attainment8England.IsNotAvailable);
+    }
+
     private static OverviewModel CreateCompleteModel() => new()
     {
         Urn = "123456",
@@ -264,6 +342,8 @@ public class OverviewViewModelTests
         Easting = "405900",
         Northing = "289500",
         Attainment8 = Coded(52.1),
+        Attainment8LA = Coded(43.4),
+        Attainment8England = Coded(45.2),
         MoreThanOneForeignLanguage = Coded(42.5),
         EnglishAndMathsGrade5Establishment = Coded(61.2),
         EnglishAndMathsGrade5LA = Coded(58.3),
@@ -290,6 +370,8 @@ public class OverviewViewModelTests
         string easting = "",
         string northing = "",
         CodedDouble? attainment8 = null,
+        CodedDouble? attainment8LA = null,
+        CodedDouble? attainment8England = null,
         CodedDouble? moreThanOneForeignLanguage = null,
         CodedDouble? englishAndMathsGrade5Establishment = null,
         CodedDouble? englishAndMathsGrade5LA = null,
@@ -309,6 +391,8 @@ public class OverviewViewModelTests
             Northing = northing,
 
             Attainment8 = attainment8,
+            Attainment8LA = attainment8LA,
+            Attainment8England = attainment8England,
             MoreThanOneForeignLanguage = moreThanOneForeignLanguage,
 
             EnglishAndMathsGrade5Establishment =

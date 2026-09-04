@@ -10,11 +10,10 @@
     ViewData["Title"] = $"{Model.SchoolName} - {ViewData["Header"]}";
 }
 
-
 <div class="govuk-grid-row">
 
     @await Component.InvokeAsync(
-    "VerticalNavigation",
+        "VerticalNavigation",
         new VerticalNavigationModel
         {
             URN = Model.URN,
@@ -32,7 +31,7 @@
         </h2>
 
         @*
-            Map and address
+            Map and address.
             The map container starts visually hidden so that with JavaScript
             disabled the map is not shown. map-schools.js reveals it when
             the map can be initialised.
@@ -48,11 +47,16 @@
                      data-name="@Model.SchoolName"
                      role="region"
                      aria-label="Map showing the location of @Model.SchoolName">
-                    <div class="map-loading">Loading Map…</div>
+
+                    <div class="map-loading">
+                        Loading Map…
+                    </div>
+
                 </div>
             </div>
 
             <div class="ataglance-address-row">
+
                 <div class="ataglance-address-row__key">
                     Address
                 </div>
@@ -60,11 +64,13 @@
                 <div class="ataglance-address-row__value">
                     @Model.Address.DisplayText()
                 </div>
+
             </div>
 
         </div>
 
 
+        @* School information *@
         <div class="ataglance-card">
 
             <govuk-summary-list id="overview-school-information">
@@ -110,6 +116,7 @@
                         Phone
                     </govuk-summary-list-row-key>
                     <govuk-summary-list-row-value>
+
                         @if (Model.Telephone.IsAvailable)
                         {
                             <a class="govuk-link govuk-link--no-visited-state"
@@ -121,6 +128,7 @@
                         {
                             @Model.Telephone.DisplayText()
                         }
+
                     </govuk-summary-list-row-value>
                 </govuk-summary-list-row>
 
@@ -129,22 +137,27 @@
                         Website
                     </govuk-summary-list-row-key>
                     <govuk-summary-list-row-value>
+
                         @if (Model.SchoolWebsite.IsAvailable)
                         {
                             <a class="govuk-link govuk-link--no-visited-state"
                                href="@Model.SchoolWebsite.DisplayText(UrlHelper.EnsureHttpsUrl)"
                                target="_blank"
                                rel="noreferrer noopener">
+
                                 View @Model.SchoolName's website
+
                                 <span class="govuk-visually-hidden">
                                     (opens in a new tab)
                                 </span>
+
                             </a>
                         }
                         else
                         {
                             @Model.SchoolWebsite.DisplayText()
                         }
+
                     </govuk-summary-list-row-value>
                 </govuk-summary-list-row>
 
@@ -153,15 +166,20 @@
                         Ofsted report
                     </govuk-summary-list-row-key>
                     <govuk-summary-list-row-value>
+
                         <a class="govuk-link govuk-link--no-visited-state"
                            href="@Model.OfstedReportUrl"
                            target="_blank"
                            rel="noreferrer noopener">
+
                             View the latest Ofsted report
+
                             <span class="govuk-visually-hidden">
                                 (opens in a new tab)
                             </span>
+
                         </a>
+
                     </govuk-summary-list-row-value>
                 </govuk-summary-list-row>
 
@@ -182,17 +200,21 @@
                              viewBox="0 0 32 32"
                              focusable="false"
                              aria-hidden="true">
+
                             <circle cx="16"
                                     cy="16"
                                     r="15"
                                     fill="currentColor" />
+
                             <path d="M9 15h10.2l-4.1-4.1 1.9-1.9 7.3 7-7.3 7-1.9-1.9 4.1-4.1H9z"
                                   fill="#ffffff" />
+
                         </svg>
 
                     </span>
 
                     <span class="ataglance-link__text">
+
                         @if (Model.IsExclusivelyKS5)
                         {
                             <text>
@@ -205,6 +227,7 @@
                                 Find out more about the school, including policies on school uniform and SEN
                             </text>
                         }
+
                     </span>
 
                 </a>
@@ -214,19 +237,354 @@
         </div>
 
 
-        @*
-            Phase-specific "at a glance" accordions will be added here
-            in the subsequent content stories.
-        *@
+        @* Secondary school at a glance *@
+        @if (Model.IsKS4)
+        {
+            <section aria-labelledby="secondary-at-a-glance-heading"
+                     class="govuk-!-margin-top-7">
+
+                <h2 id="secondary-at-a-glance-heading"
+                    class="govuk-heading-l">
+                    Secondary school profile at a glance
+                </h2>
+
+                <div class="ataglance-accordion govuk-accordion"
+                     data-module="govuk-accordion"
+                     id="secondary-at-a-glance-accordion">
+
+
+                    @* Pupil progress *@
+                    <div class="govuk-accordion__section">
+
+                        <div class="govuk-accordion__section-header">
+
+                            <span id="accordion-iconbox__progress"
+                                  class="ataglance-accordion-iconbox"
+                                  aria-hidden="true">
+
+                                <svg class="ataglance-accordion-iconbox__icon"
+                                     viewBox="0 0 48 48"
+                                     focusable="false"
+                                     aria-hidden="true">
+
+                                    <circle cx="10"
+                                            cy="15"
+                                            r="4"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="4" />
+
+                                    <circle cx="38"
+                                            cy="38"
+                                            r="6"
+                                            fill="currentColor" />
+
+                                    <path d="M14 15h10
+                                             c4.5 0 7 2.5 7 6
+                                             s-2.5 6-7 6h-5
+                                             c-4.5 0-7 2.5-7 6
+                                             s2.5 6 7 6h15"
+                                          fill="none"
+                                          stroke="currentColor"
+                                          stroke-width="4"
+                                          stroke-linecap="round"
+                                          stroke-linejoin="round" />
+
+                                </svg>
+
+                            </span>
+
+                            <h3 class="govuk-accordion__section-heading">
+                                <span class="govuk-accordion__section-button"
+                                      id="accordion-progress-heading">
+                                    Pupil progress
+                                </span>
+                            </h3>
+
+                        </div>
+
+                        <div id="accordion-progress-content"
+                             class="govuk-accordion__section-content">
+
+                            <div class="govuk-body">
+
+                                <div class="ataglance-summary-card govuk-summary-card">
+
+                                    <div class="govuk-summary-card__title-wrapper">
+
+                                        <h4 class="govuk-summary-card__title">
+                                            How pupils performed between the end of primary school and the end of key stage 4 (year 11)
+                                        </h4>
+
+                                    </div>
+
+                                    <div class="govuk-summary-card__content">
+
+                                        <p class="govuk-body">
+                                            Progress scores are not available for the academic years 2024 to 2025 and 2025 to 2026 due to COVID-19 disruption.
+                                        </p>
+
+                                        <p class="govuk-body">
+                                            You can view progress results from previous years on the school's full profile.
+                                        </p>
+
+                                        <div class="govuk-body">
+
+                                            <a asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress"
+                                               asp-all-route-data="@Model.RouteAttributes"
+                                               class="ataglance-link__link govuk-!-font-weight-bold govuk-link govuk-link--no-visited-state">
+
+                                                <span class="ataglance-link__iconbox"
+                                                      aria-hidden="true">
+
+                                                    <svg class="ataglance-link__icon"
+                                                         viewBox="0 0 32 32"
+                                                         focusable="false"
+                                                         aria-hidden="true">
+
+                                                        <circle cx="16"
+                                                                cy="16"
+                                                                r="14"
+                                                                fill="currentColor" />
+
+                                                        <path d="M9 15h9.5l-3.5-3.5 1.8-1.8L23 16l-6.2 6.3-1.8-1.8 3.5-3.5H9z"
+                                                              fill="#ffffff" />
+
+                                                    </svg>
+
+                                                </span>
+
+                                                <span class="ataglance-link__text">
+                                                    Find out more about the progress pupils make at this school for previous years
+                                                </span>
+
+                                            </a>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    @* Average pupil achievement - open by default *@
+                    <div class="govuk-accordion__section govuk-accordion__section--expanded">
+
+                        <div class="govuk-accordion__section-header">
+
+                            <span id="accordion-iconbox__attainment"
+                                  class="ataglance-accordion-iconbox"
+                                  aria-hidden="true">
+
+                                <img src="~/assets/images/assignment-icon.svg"
+                                     class="ataglance-accordion-iconbox__icon"
+                                     alt="" />
+
+                            </span>
+
+                            <h3 class="govuk-accordion__section-heading">
+                                <span class="govuk-accordion__section-button"
+                                      id="accordion-attainment-heading">
+                                    Average pupil achievement
+                                </span>
+                            </h3>
+
+                        </div>
+
+                        <div id="accordion-attainment-content"
+                             class="govuk-accordion__section-content">
+
+                            <div class="govuk-body">
+
+                                <div class="ataglance-summary-card govuk-summary-card">
+
+                                    <div class="govuk-summary-card__title-wrapper">
+
+                                        <h4 class="govuk-summary-card__title">
+                                            Average results across 8 GCSE-level qualifications
+                                        </h4>
+
+                                    </div>
+
+                                    <div class="govuk-summary-card__content">
+
+                                        <p class="govuk-body">
+                                            Attainment 8 is used to assess a pupil's average achievement across 8 GCSEs and equivalent subjects.
+                                        </p>
+
+                                        <p class="govuk-body">
+                                            The qualifications included in this average result may include GCSEs and approved technical and vocational qualifications.
+                                        </p>
+
+                                        <p class="govuk-body">
+                                            This data is for the 2024 to 2025 academic year.
+                                        </p>
+
+
+                                        @* Establishment result *@
+                                        <dl class="govuk-summary-list govuk-!-margin-bottom-5">
+
+                                            <div class="govuk-summary-list__row">
+
+                                                <dt class="govuk-summary-list__key">
+                                                    Average result
+                                                </dt>
+
+                                                <dd class="govuk-summary-list__value">
+
+                                                    @if (Model.Attainment8.IsAvailable &&
+                                                         Model.Attainment8.Value.Value is double attainment8)
+                                                    {
+                                                        @attainment8.ToString("0.0")
+                                                    }
+                                                    else
+                                                    {
+                                                        <text>Not available</text>
+                                                    }
+
+                                                </dd>
+
+                                            </div>
+
+                                        </dl>
+
+
+                                        @* Explanation of establishment result *@
+                                        @if (Model.Attainment8.IsAvailable &&
+                                             Model.Attainment8.Value.Value.HasValue &&
+                                             Model.Attainment8Context.IsAvailable)
+                                        {
+                                            <div class="ataglance-card govuk-!-margin-bottom-5">
+
+                                                <h5 class="ataglance-card__heading govuk-heading-s">
+                                                    What does this mean?
+                                                </h5>
+
+                                                <p class="govuk-body govuk-!-margin-bottom-0">
+                                                    This means that pupils generally scored the equivalent of
+                                                    @Model.Attainment8Context.DisplayText()
+                                                    in their 8 subjects.
+                                                </p>
+
+                                            </div>
+                                        }
+
+
+                                        @* Local authority and England comparison results *@
+                                        <dl class="govuk-summary-list govuk-!-margin-bottom-5">
+
+                                            <div class="govuk-summary-list__row">
+
+                                                <dt class="govuk-summary-list__key">
+                                                    @Model.LocalAuthorityName average
+                                                </dt>
+
+                                                <dd class="govuk-summary-list__value">
+
+                                                    @if (Model.Attainment8LA.IsAvailable &&
+                                                         Model.Attainment8LA.Value.Value is double attainment8LA)
+                                                    {
+                                                        @attainment8LA.ToString("0.0")
+                                                    }
+                                                    else
+                                                    {
+                                                        <text>Not available</text>
+                                                    }
+
+                                                </dd>
+
+                                            </div>
+
+                                            <div class="govuk-summary-list__row">
+
+                                                <dt class="govuk-summary-list__key">
+                                                    England average
+                                                </dt>
+
+                                                <dd class="govuk-summary-list__value">
+
+                                                    @if (Model.Attainment8England.IsAvailable &&
+                                                         Model.Attainment8England.Value.Value is double attainment8England)
+                                                    {
+                                                        @attainment8England.ToString("0.0")
+                                                    }
+                                                    else
+                                                    {
+                                                        <text>Not available</text>
+                                                    }
+
+                                                </dd>
+
+                                            </div>
+
+                                        </dl>
+
+
+                                        @* Link to full Progress and attainment page *@
+                                        <div class="govuk-body">
+
+                                            <a asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress"
+                                               asp-all-route-data="@Model.RouteAttributes"
+                                               class="ataglance-link__link govuk-!-font-weight-bold govuk-link govuk-link--no-visited-state">
+
+                                                <span class="ataglance-link__iconbox"
+                                                      aria-hidden="true">
+
+                                                    <svg class="ataglance-link__icon"
+                                                         viewBox="0 0 32 32"
+                                                         focusable="false"
+                                                         aria-hidden="true">
+
+                                                        <circle cx="16"
+                                                                cy="16"
+                                                                r="14"
+                                                                fill="currentColor" />
+
+                                                        <path d="M9 15h9.5l-3.5-3.5 1.8-1.8L23 16l-6.2 6.3-1.8-1.8 3.5-3.5H9z"
+                                                              fill="#ffffff" />
+
+                                                    </svg>
+
+                                                </span>
+
+                                                <span class="ataglance-link__text">
+                                                    Find out more about pupil achievement at this school
+                                                </span>
+
+                                            </a>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+        }
 
 
         @await Component.InvokeAsync(
-        "SchoolProfilePagination",
-                SchoolProfilePaginationModel.From(
+            "SchoolProfilePagination",
+            SchoolProfilePaginationModel.From(
                 Model,
                 RouteConstants.Overview))
 
     </div>
+
 </div>
 
 

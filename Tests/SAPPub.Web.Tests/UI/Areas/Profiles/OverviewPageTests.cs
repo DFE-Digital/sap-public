@@ -21,6 +21,10 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
     private const string MissingDataSchoolName = "Stewards Academy - Science Specialist, Harlow";
     private const string MissingDataSlug = "stewards-academy-science-specialist-harlow";
     private const string MissingDataOverviewUrl = $"school/{MissingDataUrn}/{MissingDataSlug}/overview";
+    private const string AchievementUrn = "149328";
+    private const string AchievementSchoolName = "King Edward VI High School";
+    private const string AchievementSlug = "king-edward-vi-high-school";
+    private const string AchievementOverviewUrl = $"school/{AchievementUrn}/{AchievementSlug}/overview";
 
     [Fact]
     public async Task OverviewPage_LoadsSuccessfully()
@@ -863,6 +867,374 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
             .ToBeVisibleAsync();
     }
 
+    [Fact]
+    public async Task OverviewPage_SecondarySchool_DisplaysSecondaryAtAGlanceSection()
+    {
+        const string url =
+            "school/137552/stewards-academy-science-specialist-harlow/overview";
+
+        var response = await Page.GotoAsync(url);
+
+        Assert.NotNull(response);
+        Assert.True(response.Ok);
+
+        await Expect(
+            Page.GetByRole(
+                AriaRole.Heading,
+                new()
+                {
+                    Level = 2,
+                    Name = "Secondary school profile at a glance",
+                    Exact = true
+                }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex("Pupil progress")
+                }))
+            .ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_PupilProgressAccordion_IsClosedByDefault()
+    {
+        const string url =
+            "school/137552/stewards-academy-science-specialist-harlow/overview";
+
+        await Page.GotoAsync(url);
+
+        var accordionButton =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex("Pupil progress")
+                });
+
+        await Expect(accordionButton)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "false");
+
+        await Expect(
+            Page.GetByText(
+                "Progress 8 measures the progress pupils make",
+                new() { Exact = false }))
+            .Not.ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_PupilProgressAccordion_CanBeExpandedAndClosed()
+    {
+        const string url =
+            "school/137552/stewards-academy-science-specialist-harlow/overview";
+
+        await Page.GotoAsync(url);
+
+        var pupilProgressSection =
+            Page.Locator(
+                "#secondary-at-a-glance-accordion .govuk-accordion__section")
+            .Filter(
+                new LocatorFilterOptions
+                {
+                    Has = Page.Locator(
+                        "#accordion-progress-heading")
+                });
+
+        var accordionButton =
+            pupilProgressSection.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            "Pupil progress",
+                            RegexOptions.IgnoreCase)
+                });
+
+        var content =
+            Page.Locator("#accordion-progress-content");
+
+        // Closed by default.
+        await Expect(accordionButton)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "false");
+
+        await Expect(content)
+            .Not.ToBeVisibleAsync();
+
+        // Expand.
+        await accordionButton.ClickAsync();
+
+        await Expect(accordionButton)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "true");
+
+        await Expect(content)
+            .ToBeVisibleAsync();
+
+        await Expect(
+            content.GetByText(
+                "Progress scores are not available for the academic years 2024 to 2025 and 2025 to 2026 due to COVID-19 disruption.",
+                new() { Exact = true }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            content.GetByText(
+                "You can view progress results from previous years on the school's full profile.",
+                new() { Exact = true }))
+            .ToBeVisibleAsync();
+
+        // Close.
+        await accordionButton.ClickAsync();
+
+        await Expect(accordionButton)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "false");
+
+        await Expect(content)
+            .Not.ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_SecondarySchool_DisplaysAveragePupilAchievementAfterPupilProgress()
+    {
+        await Page.GotoAsync(AchievementOverviewUrl);
+
+        var sections =
+            Page.Locator(
+                "#secondary-at-a-glance-accordion .govuk-accordion__section");
+
+        await Expect(sections)
+            .ToHaveCountAsync(2);
+
+        await Expect(
+            sections.Nth(0)
+                .GetByRole(
+                    AriaRole.Button,
+                    new()
+                    {
+                        NameRegex =
+                            new Regex("Pupil progress")
+                    }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            sections.Nth(1)
+                .GetByRole(
+                    AriaRole.Button,
+                    new()
+                    {
+                        NameRegex =
+                            new Regex(
+                                "Average pupil achievement")
+                    }))
+            .ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_AveragePupilAchievementAccordion_IsOpenByDefault()
+    {
+        await Page.GotoAsync(AchievementOverviewUrl);
+
+        var button =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            "Average pupil achievement")
+                });
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "true");
+
+        await Expect(
+            Page.GetByText(
+                "Average results across 8 GCSE-level qualifications",
+                new() { Exact = true }))
+            .ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_AveragePupilAchievementAccordion_CanBeClosedAndExpanded()
+    {
+        await Page.GotoAsync(AchievementOverviewUrl);
+
+        var button =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            "Average pupil achievement")
+                });
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "true");
+
+        await button.ClickAsync();
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "false");
+
+        await Expect(
+            Page.GetByText(
+                "Average results across 8 GCSE-level qualifications",
+                new() { Exact = true }))
+            .Not.ToBeVisibleAsync();
+
+        await button.ClickAsync();
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "true");
+    }
+
+    [Fact]
+    public async Task OverviewPage_AveragePupilAchievement_DisplaysResultAndExplanation()
+    {
+        await Page.GotoAsync(AchievementOverviewUrl);
+
+        await Expect(
+            Page.GetByText(
+                "Attainment 8 is used to assess a pupil's average achievement across 8 GCSEs and equivalent subjects.",
+                new() { Exact = true }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            Page.GetByText(
+                "The qualifications included in this average result may include GCSEs and approved technical and vocational qualifications.",
+                new() { Exact = true }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            Page.GetByText(
+                "Average result",
+                new() { Exact = true }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            Page.GetByText(
+                "49.9",
+                new() { Exact = true }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            Page.GetByText(
+                "This means that pupils generally scored the equivalent of just below grade 5 in their 8 subjects.",
+                new() { Exact = true }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            Page.GetByText(
+                "49.9",
+                new() { Exact = true }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            Page.GetByText(
+                "Sheffield average",
+                new() { Exact = true }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            Page.GetByText(
+                "43.4",
+                new() { Exact = true }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            Page.GetByText(
+                "England average",
+                new() { Exact = true }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            Page.GetByText(
+                "45.2",
+                new() { Exact = true }))
+            .ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_AveragePupilAchievement_WhenResultUnavailable_DisplaysNotAvailable()
+    {
+        const string url =
+            "school/137552/stewards-academy-science-specialist-harlow/overview";
+
+        await Page.GotoAsync(url);
+
+        var attainmentSection =
+            Page.Locator("#accordion-attainment-content");
+
+        await Expect(attainmentSection)
+            .ToBeVisibleAsync();
+
+        await Expect(
+            attainmentSection.GetByText(
+                "Average result",
+                new() { Exact = true }))
+            .ToBeVisibleAsync();
+
+        var notAvailableValues =
+            attainmentSection.GetByText(
+                "Not available",
+                new() { Exact = true });
+
+        await Expect(notAvailableValues)
+            .ToHaveCountAsync(3);
+    }
+
+    [Fact]
+    public async Task OverviewPage_AveragePupilAchievementLink_NavigatesToSameSchoolProgressAndAttainmentPage()
+    {
+        await Page.GotoAsync(AchievementOverviewUrl);
+
+        var link =
+            Page.GetByRole(
+                AriaRole.Link,
+                new()
+                {
+                    Name =
+                        "Find out more about pupil achievement at this school",
+                    Exact = true
+                });
+
+        await Expect(link)
+            .ToHaveAttributeAsync(
+                "href",
+                $"/school/{AchievementUrn}/{AchievementSlug}/secondary-performance/progress-attainment");
+
+        Assert.Null(
+            await link.GetAttributeAsync("target"));
+
+        await link.ClickAsync();
+
+        await Expect(Page)
+            .ToHaveURLAsync(
+                new Regex(
+                    $@"/school/{AchievementUrn}/{AchievementSlug}/secondary-performance/progress-attainment(?:/current)?/?$"));
+    }
+
+
+
     private async Task AssertRowDisplaysNotAvailableAsync(
     string selector,
     string label)
@@ -904,6 +1276,90 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
             .ToBeVisibleAsync();
 
         return response;
+    }
+
+    [Fact]
+    public async Task OverviewPage_PupilProgressLink_NavigatesToSameSchoolProgressAndAttainmentPage()
+    {
+        const string urn = "137552";
+        const string slug =
+            "stewards-academy-science-specialist-harlow";
+
+        await Page.GotoAsync(
+            $"school/{urn}/{slug}/overview");
+
+        var accordionButton =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex("Pupil progress")
+                });
+
+        await accordionButton.ClickAsync();
+
+        var link =
+            Page.GetByRole(
+                AriaRole.Link,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            "Find out more about the progress pupils make",
+                            RegexOptions.IgnoreCase)
+                });
+
+        await Expect(link)
+            .ToHaveAttributeAsync(
+                "href",
+                $"/school/{urn}/{slug}/secondary-performance/progress-attainment");
+
+        Assert.Null(
+            await link.GetAttributeAsync("target"));
+
+        await link.ClickAsync();
+
+        await Expect(Page)
+            .ToHaveURLAsync(
+                new Regex(
+                    $@"/school/{urn}/{slug}/secondary-performance/progress-attainment(?:/current)?/?$"));
+    }
+
+    [Fact]
+    public async Task OverviewPage_PrimaryOnlySchool_DoesNotDisplaySecondaryAtAGlanceSection()
+    {
+        await GoToOverviewAsync();
+
+        await Expect(
+            Page.GetByRole(
+                AriaRole.Heading,
+                new()
+                {
+                    Level = 2,
+                    Name = "Secondary school profile at a glance",
+                    Exact = true
+                }))
+            .ToHaveCountAsync(0);
+
+        await Expect(
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex("Pupil progress")
+                }))
+            .ToHaveCountAsync(0);
+
+        await Expect(
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            "Average pupil achievement")
+                }))
+            .ToHaveCountAsync(0);
     }
 
     private async Task<string> GetFailureMessageAsync(
