@@ -472,24 +472,24 @@
         max-width: none;
     }
 }
-//search results
+// Search results
+
 /* Mobile first: stacked, full width */
 .distance-filter {
     display: flex;
     flex-direction: column;
     gap: govuk-spacing(3);
 }
-}
-.distance-filter .govuk-select,
-.distance-filter .govuk-button {
-    width: 100%;
-}
+
+    .distance-filter .govuk-select,
+    .distance-filter .govuk-button {
+        width: 100%;
+    }
+
 /* Tablet and up: inline */
 @include govuk-media-query($from: tablet) {
     .distance-filter {
         flex-direction: row;
-        align-items: flex-end;
-    }
         align-items: flex-end;
     }
 
@@ -514,29 +514,29 @@
             margin-bottom: 0;
             white-space: nowrap;
         }
-    }
+}
 
-    .school-header {
-        display: flex;
-        align-items: center;
-    }
+.school-header {
+    display: flex;
+    align-items: center;
+}
 
     .school-header form {
-    > button {
-        padding: 4px;
-    }
-}
-/*
-Leaflet css override for accessibility warnings.
-Note: No licensing found on the leaflet website regarding changing styles etc.
-/*
-    Leaflet css override for accessibility warnings.
-    Note: No licensing found on the leaflet website regarding changing styles etc.
-*/
-    .leaflet-container a {
-        text-decoration: underline !important;
+        margin-left: auto;
+
+        > button {
+            padding: 4px;
+        }
     }
 
-    .dataview-button {
-        display: none;
-    }
+/*
+    Leaflet CSS override for accessibility warnings.
+    Note: No licensing found on the Leaflet website regarding changing styles etc.
+*/
+.leaflet-container a {
+    text-decoration: underline !important;
+}
+
+.dataview-button {
+    display: none;
+}
