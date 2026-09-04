@@ -1,5 +1,9 @@
-﻿using Microsoft.Playwright;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Playwright;
+using SAPPub.Core.Entities;
+using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Enums;
+using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
@@ -7,13 +11,26 @@ using SAPPub.Web.Tests.UI.Infrastructure;
 namespace SAPPub.Web.Tests.UI.KS4;
 
 [Collection("Playwright Tests")]
-public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
+public class AcademicPerformanceEnglishAndMathsResults : BasePageTest
 {
     private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
     {
         ["105574"] = "school/105574/loreto-high-school-chorlton/secondary-performance/english-and-maths",
         ["100273"] = "school/100273/saint-paul-roman-catholic-infant-school/secondary-performance/english-and-maths",
     };
+
+    private readonly IGenericRepository<Establishment> _establishmentRepo;
+    private readonly IGenericRepository<EstablishmentPerformance> _establishmentPerformanceRepo;
+    private readonly IGenericRepository<LAPerformance> _laPerformanceRepo;
+    private readonly IGenericRepository<EnglandPerformance> _englandPerformanceRepo;
+
+    public AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixture fixture) : base(fixture)
+    {
+        _establishmentRepo = fixture.Services.GetRequiredService<IGenericRepository<Establishment>>();
+        _establishmentPerformanceRepo = fixture.Services.GetRequiredService<IGenericRepository<EstablishmentPerformance>>();
+        _laPerformanceRepo = fixture.Services.GetRequiredService<IGenericRepository<LAPerformance>>();
+        _englandPerformanceRepo = fixture.Services.GetRequiredService<IGenericRepository<EnglandPerformance>>();
+    }
 
     [Fact]
     public async Task AcademicPerformanceEnglishAndMathsResultsPage_LoadsSuccessfully()
@@ -106,8 +123,77 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
         Assert.True(isVisible);
     }
 
+    [Theory]
+    [InlineData(GcseGradeDataSelection.Grade4AndAbove)]
+    [InlineData(GcseGradeDataSelection.Grade5AndAbove)]
+    [InlineData(GcseGradeDataSelection.Grade7AndAbove)]
+    public async Task AcademicPerformanceEnglishAndMathsResultsPage_ChangeGradeSelected_ShowsExpectedDisadvantagedData(GcseGradeDataSelection grade)
+    {
+        // Arrange
+        var urn = "105574";
+        var establishmentExpected = await _establishmentRepo.ReadAsync(urn, CancellationToken.None);
+        var establishmentPerformanceExpected = await _establishmentPerformanceRepo.ReadAsync(urn, CancellationToken.None);
+        var laPerformanceExpected = await _laPerformanceRepo.ReadAsync(establishmentExpected!.LAId, CancellationToken.None);
+        var englandPerformanceExpected = await _englandPerformanceRepo.ReadAsync("", CancellationToken.None);
+
+        // Act
+        await Page.GotoAsync(_schoolUrnToUrlMap[urn]);
+
+        var gradeSelector = Page.Locator("#gradeSelector");
+        await gradeSelector.SelectOptionAsync([grade.GetDisplayName()!]);
+        var buttonSelector = Page.Locator("button:has-text(\"Show results\")");
+        await buttonSelector.ClickAsync();
+
+        await Page.ExpandAccordionAsync($"{grade.GetDisplayName()} in English and maths GCSEs by other pupil characteristics");
+        await Page.ExpandDetailsAsync("Compare state-funded local and national averages for non-disadvantaged pupils");
+
+        // Assert
+        var establishmentValue = (await Page.GetTableRowValuesAsync("breakdown-disadvantaged-table", "School")).First();
+        var laValue = (await Page.GetTableRowValuesAsync("breakdown-disadvantaged-table", $"{establishmentExpected.LAName} average")).First();
+        var englandValue = (await Page.GetTableRowValuesAsync("breakdown-disadvantaged-table", "England average")).First();
+
+        switch (grade)
+        {
+            case GcseGradeDataSelection.Grade4AndAbove:
+                Assert.Equal($"{establishmentPerformanceExpected!.EngMaths49_Dis_Est_Current_Pct_Coded.Value.ToString()}%", establishmentValue);
+                Assert.Equal($"{laPerformanceExpected!.EngMaths49_Dis_LA_Current_Pct_Coded.ToString()}%", laValue);
+                Assert.Equal($"{englandPerformanceExpected!.EngMaths49_Dis_Eng_Current_Pct_Coded.ToString()}%", englandValue);
+                break;
+            case GcseGradeDataSelection.Grade5AndAbove:
+                Assert.Equal($"{establishmentPerformanceExpected!.EngMaths59_Dis_Est_Current_Pct_Coded.ToString()}%", establishmentValue);
+                Assert.Equal($"{laPerformanceExpected!.EngMaths59_Dis_LA_Current_Pct_Coded.ToString()}%", laValue);
+                Assert.Equal($"{englandPerformanceExpected!.EngMaths59_Dis_Eng_Current_Pct_Coded.ToString()}%", englandValue);
+                break;
+            case GcseGradeDataSelection.Grade7AndAbove:
+                Assert.Equal($"{establishmentPerformanceExpected!.EngMaths79_Dis_Est_Current_Pct_Coded.ToString()}%", establishmentValue);
+                Assert.Equal($"{laPerformanceExpected!.EngMaths79_Dis_LA_Current_Pct_Coded.ToString()}%", laValue);
+                Assert.Equal($"{englandPerformanceExpected!.EngMaths79_Dis_Eng_Current_Pct_Coded.ToString()}%", englandValue);
+                break;
+            default: throw new ArgumentOutOfRangeException(nameof(grade), grade, null);
+        }
+
+        laValue = (await Page.GetTableRowValuesAsync("breakdown-non-disadvantaged-table", $"{establishmentExpected.LAName} average")).First();
+        englandValue = (await Page.GetTableRowValuesAsync("breakdown-non-disadvantaged-table", "England average")).First();
+        switch (grade)
+        {
+            case GcseGradeDataSelection.Grade4AndAbove:
+                Assert.Equal($"{laPerformanceExpected!.EngMaths49_NDi_LA_Current_Pct_Coded.ToString()}%", laValue);
+                Assert.Equal($"{englandPerformanceExpected!.EngMaths49_NDi_Eng_Current_Pct_Coded.ToString()}%", englandValue);
+                break;
+            case GcseGradeDataSelection.Grade5AndAbove:
+                Assert.Equal($"{laPerformanceExpected!.EngMaths59_NDi_LA_Current_Pct_Coded.ToString()}%", laValue);
+                Assert.Equal($"{englandPerformanceExpected!.EngMaths59_NDi_Eng_Current_Pct_Coded.ToString()}%", englandValue);
+                break;
+            case GcseGradeDataSelection.Grade7AndAbove:
+                Assert.Equal($"{laPerformanceExpected!.EngMaths79_NDi_LA_Current_Pct_Coded.ToString()}%", laValue);
+                Assert.Equal($"{englandPerformanceExpected!.EngMaths79_NDi_Eng_Current_Pct_Coded.ToString()}%", englandValue);
+                break;
+            default: throw new ArgumentOutOfRangeException(nameof(grade), grade, null);
+        }
+    }
+
     [Fact]
-    public async Task AcademicPerformanceEnglishAndMathsResultsPage_ChangeGradeSelected()
+    public async Task AcademicPerformanceEnglishAndMathsResultsPage_ChangeGradeSelected_ShowsExpectedChartTitleAndGradeExplanation()
     {
         // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
@@ -116,6 +202,8 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
         var chartHeading = Page.Locator("#chartHeading");
         var chartHeadingText = await chartHeading.TextContentAsync();
         Assert.Contains("Grade 5 and above", chartHeadingText);
+        var chartGradeExplainerText = await Page.Locator("#chartHeading + p").InnerTextAsync();
+        Assert.Contains("Grade 5", chartGradeExplainerText);
 
         // Act
         var gradeSelector = Page.Locator("#gradeSelector");
@@ -127,6 +215,8 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
         chartHeading = Page.Locator("#chartHeading");
         chartHeadingText = await chartHeading.TextContentAsync();
         Assert.Contains("Grade 4 and above", chartHeadingText);
+        chartGradeExplainerText = await Page.Locator("#chartHeading + p").InnerTextAsync();
+        Assert.Contains("grade 4", chartGradeExplainerText);
 
         // Act
         await gradeSelector.SelectOptionAsync([GcseGradeDataSelection.Grade7AndAbove.GetDisplayName()!]);
@@ -137,6 +227,8 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
         chartHeading = Page.Locator("#chartHeading");
         chartHeadingText = await chartHeading.TextContentAsync();
         Assert.Contains("Grade 7 and above", chartHeadingText);
+        chartGradeExplainerText = await Page.Locator("#chartHeading + p").InnerTextAsync();
+        Assert.Contains("grade 7", chartGradeExplainerText);
     }
 
     [Fact]
@@ -535,9 +627,9 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
         Assert.True(reachedShowDataOverTimeButton);
     }
 
-    private async Task<bool> IsElementCheckedAsync(string elementId)
+    private Task<bool> IsElementCheckedAsync(string elementId)
     {
-        return await Page.EvaluateAsync<bool>("id => !!document.getElementById(id)?.checked", elementId);
+        return Page.EvaluateAsync<bool>("id => !!document.getElementById(id)?.checked", elementId);
     }
 
     private async Task<bool> WaitForFocusedElementAsync(string expectedElementId, int timeoutMs = 1000)
@@ -574,9 +666,9 @@ public class AcademicPerformanceEnglishAndMathsResults(WebApplicationSetupFixtur
         return false;
     }
 
-    private async Task<bool> HasVisibleFocusAsync(string selector)
+    private Task<bool> HasVisibleFocusAsync(string selector)
     {
-        return await Page.Locator(selector).EvaluateAsync<bool>("""
+        return Page.Locator(selector).EvaluateAsync<bool>("""
             element => {
                 const styles = window.getComputedStyle(element);
                 return styles.boxShadow !== 'none' || (styles.outlineStyle !== 'none' && styles.outlineWidth !== '0px');

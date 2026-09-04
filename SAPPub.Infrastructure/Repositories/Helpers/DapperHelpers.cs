@@ -83,20 +83,23 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "AllDest_Tot_Est_Previous2_Pct_Coded"
           """;
 
-        // TODO for EnableSecondaryGrade7 feature - add these Grade 7 columns when they're available
+        // TODO for EnableSecondaryGrade7 feature - add these fields for the Grade 7 columns when they're available
         //"EngMaths79_Boy_Est_Current_Pct_Coded",
         //"EngMaths79_Grl_Est_Current_Pct_Coded",
         //"EngMaths79_Tot_Est_Current_Pct_Coded",
         //"EngMaths79_Tot_Est_Previous_Pct_Coded",
         //"EngMaths79_Tot_Est_Previous2_Pct_Coded",
+        //"EngMaths79_Dis_Est_Current_Pct_Coded",
         private const string EstablishmentPerformanceColumns = """
           "Id",
           "Attainment8_Tot_Est_Current_Num_Coded",
           "EngMaths49_Boy_Est_Current_Pct_Coded",
           "EngMaths49_Grl_Est_Current_Pct_Coded",
+          "EngMaths49_Dis_Est_Current_Pct_Coded",
           "EngMaths49_Tot_Est_Current_Pct_Coded",
           "EngMaths59_Boy_Est_Current_Pct_Coded",
           "EngMaths59_Grl_Est_Current_Pct_Coded",
+          "EngMaths59_Dis_Est_Current_Pct_Coded",
           "EngMaths59_Tot_Est_Current_Pct_Coded",
           "Attainment8_Tot_Est_Previous_Num_Coded",
           "EngMaths49_Tot_Est_Previous_Pct_Coded",
@@ -124,20 +127,26 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Pup_Tot_Est_Current_Num_Coded"
           """;
 
-        // TODO for EnableSecondaryGrade7 feature - add these Grade 7 columns when they're available
+        // TODO for EnableSecondaryGrade7 feature - add these fields for the Grade 7 columns when they're available
         //"EngMaths79_Boy_LA_Current_Pct_Coded",
         //"EngMaths79_Grl_LA_Current_Pct_Coded",
         //"EngMaths79_Tot_LA_Current_Pct_Coded",
         //"EngMaths79_Tot_LA_Previous_Pct_Coded",
         //"EngMaths79_Tot_LA_Previous2_Pct_Coded",
+        //"EngMaths79_Dis_LA_Current_Pct_Coded"
+        //"EngMaths79_NDi_LA_Current_Pct_Coded"
         private const string LAPerformanceColumns = """
           "Id",
           "Attainment8_Tot_LA_Current_Num_Coded",
           "EngMaths49_Boy_LA_Current_Pct_Coded",
           "EngMaths49_Grl_LA_Current_Pct_Coded",
+          "EngMaths49_Dis_LA_Current_Pct_Coded",
+          "EngMaths49_NDi_LA_Current_Pct_Coded",
           "EngMaths49_Tot_LA_Current_Pct_Coded",
           "EngMaths59_Boy_LA_Current_Pct_Coded",
           "EngMaths59_Grl_LA_Current_Pct_Coded",
+          "EngMaths59_Dis_LA_Current_Pct_Coded",
+          "EngMaths59_NDi_LA_Current_Pct_Coded",
           "EngMaths59_Tot_LA_Current_Pct_Coded",
           "Attainment8_Tot_LA_Previous_Num_Coded",
           "EngMaths49_Tot_LA_Previous_Pct_Coded",
@@ -165,7 +174,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "AllDest_Tot_LA_Previous2_Pct_Coded"
           """;
 
-        // TODO for EnableSecondaryGrade7 feature - add these Grade 7 columns when they're available
+        // TODO for EnableSecondaryGrade7 feature - add these fields for the Grade 7 columns when they're available
         //"EngMaths79_Boy_Eng_Current_Pct_Coded",
         //"EngMaths79_Grl_Eng_Current_Pct_Coded",
         //"EngMaths79_Tot_Eng_Current_Pct_Coded",
@@ -176,9 +185,13 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Attainment8_Tot_Eng_Current_Num_Coded",
           "EngMaths49_Boy_Eng_Current_Pct_Coded",
           "EngMaths49_Grl_Eng_Current_Pct_Coded",
+          "EngMaths49_Dis_Eng_Current_Pct_Coded",
+          "EngMaths49_NDi_Eng_Current_Pct_Coded",
           "EngMaths49_Tot_Eng_Current_Pct_Coded",
           "EngMaths59_Boy_Eng_Current_Pct_Coded",
           "EngMaths59_Grl_Eng_Current_Pct_Coded",
+          "EngMaths59_Dis_Eng_Current_Pct_Coded",
+          "EngMaths59_NDi_Eng_Current_Pct_Coded",
           "EngMaths59_Tot_Eng_Current_Pct_Coded",
           "Attainment8_Tot_Eng_Previous_Num_Coded",
           "EngMaths49_Tot_Eng_Previous_Pct_Coded",
@@ -308,7 +321,13 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "UCI_INS_AGEN_DIS_Est_Current_Num_Coded",
           "LCI_INS_AGEN_DIS_Est_Current_Num_Coded",
           "TALLPPEGRD_AGEN_DIS_Est_Current",
-          "TALLPPE_AGEN_DIS_Est_Current_Num_Coded"          
+          "TALLPPE_AGEN_DIS_Est_Current_Num_Coded",
+          "TALLPUP_TLEV_DIS_Est_Current_Num_Coded",
+          "VA_INS_TLEV_DIS_Est_Current_Num_Coded",
+          "UCI_INS_TLEV_DIS_Est_Current_Num_Coded",
+          "LCI_INS_TLEV_DIS_Est_Current_Num_Coded",
+          "TALLPPEGRD_TLEV_DIS_Est_Current",
+          "TALLPPE_TLEV_DIS_Est_Current_Num_Coded"
           """;
 
         private const string KS5EnglandPerformanceColumns = """
@@ -378,7 +397,19 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "UCI_INS_AGEN_NOTDIS_Eng_Current_Num_Coded",
           "LCI_INS_AGEN_NOTDIS_Eng_Current_Num_Coded",
           "TALLPPEGRD_AGEN_NOTDIS_Eng_Current",
-          "TALLPPE_AGEN_NOTDIS_Eng_Current_Num_Coded"
+          "TALLPPE_AGEN_NOTDIS_Eng_Current_Num_Coded",
+          "TALLPUP_TLEV_DIS_Eng_Current_Num_Coded",
+          "VA_INS_TLEV_DIS_Eng_Current_Num_Coded",
+          "UCI_INS_TLEV_DIS_Eng_Current_Num_Coded",
+          "LCI_INS_TLEV_DIS_Eng_Current_Num_Coded",
+          "TALLPPEGRD_TLEV_DIS_Eng_Current",
+          "TALLPPE_TLEV_DIS_Eng_Current_Num_Coded",
+          "TALLPUP_TLEV_NOTDIS_Eng_Current_Num_Coded",
+          "VA_INS_TLEV_NOTDIS_Eng_Current_Num_Coded",
+          "UCI_INS_TLEV_NOTDIS_Eng_Current_Num_Coded",
+          "LCI_INS_TLEV_NOTDIS_Eng_Current_Num_Coded",
+          "TALLPPEGRD_TLEV_NOTDIS_Eng_Current",
+          "TALLPPE_TLEV_NOTDIS_Eng_Current_Num_Coded"
           """;
 
         private const string KS5LAPerformanceColumns = """
@@ -443,7 +474,19 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "UCI_INS_AGEN_NOTDIS_LA_Current_Num_Coded",
           "LCI_INS_AGEN_NOTDIS_LA_Current_Num_Coded",
           "TALLPPEGRD_AGEN_NOTDIS_LA_Current",
-          "TALLPPE_AGEN_NOTDIS_LA_Current_Num_Coded"
+          "TALLPPE_AGEN_NOTDIS_LA_Current_Num_Coded",
+          "TALLPUP_TLEV_DIS_LA_Current_Num_Coded",
+          "VA_INS_TLEV_DIS_LA_Current_Num_Coded",
+          "UCI_INS_TLEV_DIS_LA_Current_Num_Coded",
+          "LCI_INS_TLEV_DIS_LA_Current_Num_Coded",
+          "TALLPPEGRD_TLEV_DIS_LA_Current",
+          "TALLPPE_TLEV_DIS_LA_Current_Num_Coded",
+          "TALLPUP_TLEV_NOTDIS_LA_Current_Num_Coded",
+          "VA_INS_TLEV_NOTDIS_LA_Current_Num_Coded",
+          "UCI_INS_TLEV_NOTDIS_LA_Current_Num_Coded",
+          "LCI_INS_TLEV_NOTDIS_LA_Current_Num_Coded",
+          "TALLPPEGRD_TLEV_NOTDIS_LA_Current",
+          "TALLPPE_TLEV_NOTDIS_LA_Current_Num_Coded"
           """;
 
         private const string GatewayLAColumns = """
