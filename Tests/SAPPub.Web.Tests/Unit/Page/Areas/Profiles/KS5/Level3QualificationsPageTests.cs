@@ -18,8 +18,8 @@ public class Level3QualificationsPageTests : PageTestsBase
     private string _urnMultiPhase = "150009";
     private Level3 _qualificationType;
     private Level3QualificationModel _level3QualificationModel = null!;
-    private readonly EstablishmentServiceModel _establishment = new();    
-    private  EstablishmentServiceModel _multiPhaseEstablishment = new();
+    private readonly EstablishmentServiceModel _establishment = new();
+    private EstablishmentServiceModel _multiPhaseEstablishment = new();
     private readonly Mock<ILevel3QualificationsService> _level3QualificationsService = new();
 
     public Level3QualificationsPageTests(WebAppFixture fixture) : base(fixture)
@@ -56,7 +56,7 @@ public class Level3QualificationsPageTests : PageTestsBase
             .WithIsKeyStage4(true)
             .WithIsKeyStage5(true)
             .WithSixthForm(true)
-            .BuildServiceModel();     
+            .BuildServiceModel();
 
         var multiPhaseModel = new Level3QualificationsModelBuilder()
             .WithUrn(_urnMultiPhase)
@@ -616,46 +616,36 @@ public class Level3QualificationsPageTests : PageTestsBase
         var tableId = "disadvantaged-students-table";
         var disadavantagedStudentsTable = doc.QuerySelector($"#{tableId}");
 
-        if (qualification == Level3.ALevel ||
-            qualification == Level3.Academic ||
-            qualification == Level3.AppliedGeneral)
-        {
-            // Assert disadvantaged students info accordion
-            Assert.NotNull(disadvantagedStudentsAccordion);
+        // Assert disadvantaged students info accordion
+        Assert.NotNull(disadvantagedStudentsAccordion);
 
-            // Assert disadvantaged students table
-            Assert.NotNull(disadavantagedStudentsTable);
+        // Assert disadvantaged students table
+        Assert.NotNull(disadavantagedStudentsTable);
 
-            Assert.Contains("Number of students", doc.GetTableHeaderContentByIdAndIndex(tableId, 1, 0));
-            Assert.Contains(_level3QualificationModel.DisadvantagedStudentsData.Establishment!.NumberOfStudents.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 1, 0));
-            Assert.Contains(_level3QualificationModel.DisadvantagedStudentsData.LocalAuthority.NumberOfStudents.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 1, 1));
-            Assert.Contains(_level3QualificationModel.DisadvantagedStudentsData.England.NumberOfStudents.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 1, 2));
+        Assert.Contains("Number of students", doc.GetTableHeaderContentByIdAndIndex(tableId, 1, 0));
+        Assert.Contains(_level3QualificationModel.DisadvantagedStudentsData.Establishment!.NumberOfStudents.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 1, 0));
+        Assert.Contains(_level3QualificationModel.DisadvantagedStudentsData.LocalAuthority.NumberOfStudents.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 1, 1));
+        Assert.Contains(_level3QualificationModel.DisadvantagedStudentsData.England.NumberOfStudents.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 1, 2));
 
-            Assert.Contains("Progress score", doc.GetTableHeaderContentByIdAndIndex(tableId, 2, 0));
-            Assert.Contains(_level3QualificationModel.DisadvantagedStudentsData.Establishment!.ProgressScore.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 2, 0));
-            Assert.Contains(_level3QualificationModel.DisadvantagedStudentsData.LocalAuthority.ProgressScore.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 2, 1));
-            Assert.Contains(_level3QualificationModel.DisadvantagedStudentsData.England.ProgressScore.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 2, 2));
+        Assert.Contains("Progress score", doc.GetTableHeaderContentByIdAndIndex(tableId, 2, 0));
+        Assert.Contains(_level3QualificationModel.DisadvantagedStudentsData.Establishment!.ProgressScore.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 2, 0));
+        Assert.Contains(_level3QualificationModel.DisadvantagedStudentsData.LocalAuthority.ProgressScore.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 2, 1));
+        Assert.Contains(_level3QualificationModel.DisadvantagedStudentsData.England.ProgressScore.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 2, 2));
 
-            Assert.Contains("Confidence interval", doc.GetTableHeaderContentByIdAndIndex(tableId, 3, 0));
-            Assert.Contains($"{_level3QualificationModel.DisadvantagedStudentsData.Establishment!.ConfidenceLevelLower.ToString()} to {_level3QualificationModel.DisadvantagedStudentsData.Establishment!.ConfidenceLevelUpper.ToString()}", doc.GetTableCellContentByIdAndIndex(tableId, 3, 0));
-            Assert.Contains($"{_level3QualificationModel.DisadvantagedStudentsData.LocalAuthority.ConfidenceLevelLower.ToString()} to {_level3QualificationModel.DisadvantagedStudentsData.LocalAuthority.ConfidenceLevelUpper.ToString()}", doc.GetTableCellContentByIdAndIndex(tableId, 3, 1));
-            Assert.Contains($"{_level3QualificationModel.DisadvantagedStudentsData.England.ConfidenceLevelLower.ToString()} to {_level3QualificationModel.DisadvantagedStudentsData.England.ConfidenceLevelUpper.ToString()}", doc.GetTableCellContentByIdAndIndex(tableId, 3, 2));
+        Assert.Contains("Confidence interval", doc.GetTableHeaderContentByIdAndIndex(tableId, 3, 0));
+        Assert.Contains($"{_level3QualificationModel.DisadvantagedStudentsData.Establishment!.ConfidenceLevelLower.ToString()} to {_level3QualificationModel.DisadvantagedStudentsData.Establishment!.ConfidenceLevelUpper.ToString()}", doc.GetTableCellContentByIdAndIndex(tableId, 3, 0));
+        Assert.Contains($"{_level3QualificationModel.DisadvantagedStudentsData.LocalAuthority.ConfidenceLevelLower.ToString()} to {_level3QualificationModel.DisadvantagedStudentsData.LocalAuthority.ConfidenceLevelUpper.ToString()}", doc.GetTableCellContentByIdAndIndex(tableId, 3, 1));
+        Assert.Contains($"{_level3QualificationModel.DisadvantagedStudentsData.England.ConfidenceLevelLower.ToString()} to {_level3QualificationModel.DisadvantagedStudentsData.England.ConfidenceLevelUpper.ToString()}", doc.GetTableCellContentByIdAndIndex(tableId, 3, 2));
 
-            Assert.Contains("Grade", doc.GetTableHeaderContentByIdAndIndex(tableId, 4, 0));
-            Assert.Contains(_level3QualificationModel.DisadvantagedStudentsData.Establishment!.Result.Grade.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 4, 0));
-            Assert.Contains(_level3QualificationModel.DisadvantagedStudentsData.LocalAuthority.Result.Grade.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 4, 1));
-            Assert.Contains(_level3QualificationModel.DisadvantagedStudentsData.England.Result.Grade.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 4, 2));
+        Assert.Contains("Grade", doc.GetTableHeaderContentByIdAndIndex(tableId, 4, 0));
+        Assert.Contains(_level3QualificationModel.DisadvantagedStudentsData.Establishment!.Result.Grade.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 4, 0));
+        Assert.Contains(_level3QualificationModel.DisadvantagedStudentsData.LocalAuthority.Result.Grade.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 4, 1));
+        Assert.Contains(_level3QualificationModel.DisadvantagedStudentsData.England.Result.Grade.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 4, 2));
 
-            Assert.Contains("Points", doc.GetTableHeaderContentByIdAndIndex(tableId, 5, 0));
-            Assert.Contains(_level3QualificationModel.DisadvantagedStudentsData.Establishment!.Result.Points.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 5, 0));
-            Assert.Contains(_level3QualificationModel.DisadvantagedStudentsData.LocalAuthority.Result.Points.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 5, 1));
-            Assert.Contains(_level3QualificationModel.DisadvantagedStudentsData.England.Result.Points.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 5, 2));
-        }
-        else
-        {
-            Assert.Null(disadvantagedStudentsAccordion);
-            Assert.Null(disadavantagedStudentsTable);
-        }
+        Assert.Contains("Points", doc.GetTableHeaderContentByIdAndIndex(tableId, 5, 0));
+        Assert.Contains(_level3QualificationModel.DisadvantagedStudentsData.Establishment!.Result.Points.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 5, 0));
+        Assert.Contains(_level3QualificationModel.DisadvantagedStudentsData.LocalAuthority.Result.Points.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 5, 1));
+        Assert.Contains(_level3QualificationModel.DisadvantagedStudentsData.England.Result.Points.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 5, 2));
     }
 
     [Theory]
@@ -677,40 +667,30 @@ public class Level3QualificationsPageTests : PageTestsBase
         var tableId = "non-disadvantaged-students-table";
         var nonDisadavantagedStudentsTable = doc.QuerySelector($"#{tableId}");
 
-        if (qualification == Level3.ALevel ||
-            qualification == Level3.Academic ||
-            qualification == Level3.AppliedGeneral)
-        {
-            // Assert nondisadvantaged students info accordion
-            Assert.NotNull(nonDisadvantagedStudentsDetails);
+        // Assert nondisadvantaged students info accordion
+        Assert.NotNull(nonDisadvantagedStudentsDetails);
 
-            // Assert nondisadvantaged students table
-            Assert.NotNull(nonDisadavantagedStudentsTable);
+        // Assert nondisadvantaged students table
+        Assert.NotNull(nonDisadavantagedStudentsTable);
 
-            Assert.Contains("Number of students", doc.GetTableHeaderContentByIdAndIndex(tableId, 1, 0));
-            Assert.Contains(_level3QualificationModel.NonDisadvantagedStudentsData.LocalAuthority.NumberOfStudents.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 1, 0));
-            Assert.Contains(_level3QualificationModel.NonDisadvantagedStudentsData.England.NumberOfStudents.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 1, 1));
+        Assert.Contains("Number of students", doc.GetTableHeaderContentByIdAndIndex(tableId, 1, 0));
+        Assert.Contains(_level3QualificationModel.NonDisadvantagedStudentsData.LocalAuthority.NumberOfStudents.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 1, 0));
+        Assert.Contains(_level3QualificationModel.NonDisadvantagedStudentsData.England.NumberOfStudents.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 1, 1));
 
-            Assert.Contains("Progress score", doc.GetTableHeaderContentByIdAndIndex(tableId, 2, 0));
-            Assert.Contains(_level3QualificationModel.NonDisadvantagedStudentsData.LocalAuthority.ProgressScore.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 2, 0));
-            Assert.Contains(_level3QualificationModel.NonDisadvantagedStudentsData.England.ProgressScore.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 2, 1));
+        Assert.Contains("Progress score", doc.GetTableHeaderContentByIdAndIndex(tableId, 2, 0));
+        Assert.Contains(_level3QualificationModel.NonDisadvantagedStudentsData.LocalAuthority.ProgressScore.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 2, 0));
+        Assert.Contains(_level3QualificationModel.NonDisadvantagedStudentsData.England.ProgressScore.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 2, 1));
 
-            Assert.Contains("Confidence interval", doc.GetTableHeaderContentByIdAndIndex(tableId, 3, 0));
-            Assert.Contains($"{_level3QualificationModel.NonDisadvantagedStudentsData.LocalAuthority.ConfidenceLevelLower.ToString()} to {_level3QualificationModel.NonDisadvantagedStudentsData.LocalAuthority.ConfidenceLevelUpper.ToString()}", doc.GetTableCellContentByIdAndIndex(tableId, 3, 0));
-            Assert.Contains($"{_level3QualificationModel.NonDisadvantagedStudentsData.England.ConfidenceLevelLower.ToString()} to {_level3QualificationModel.NonDisadvantagedStudentsData.England.ConfidenceLevelUpper.ToString()}", doc.GetTableCellContentByIdAndIndex(tableId, 3, 1));
+        Assert.Contains("Confidence interval", doc.GetTableHeaderContentByIdAndIndex(tableId, 3, 0));
+        Assert.Contains($"{_level3QualificationModel.NonDisadvantagedStudentsData.LocalAuthority.ConfidenceLevelLower.ToString()} to {_level3QualificationModel.NonDisadvantagedStudentsData.LocalAuthority.ConfidenceLevelUpper.ToString()}", doc.GetTableCellContentByIdAndIndex(tableId, 3, 0));
+        Assert.Contains($"{_level3QualificationModel.NonDisadvantagedStudentsData.England.ConfidenceLevelLower.ToString()} to {_level3QualificationModel.NonDisadvantagedStudentsData.England.ConfidenceLevelUpper.ToString()}", doc.GetTableCellContentByIdAndIndex(tableId, 3, 1));
 
-            Assert.Contains("Grade", doc.GetTableHeaderContentByIdAndIndex(tableId, 4, 0));
-            Assert.Contains(_level3QualificationModel.NonDisadvantagedStudentsData.LocalAuthority.Result.Grade.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 4, 0));
-            Assert.Contains(_level3QualificationModel.NonDisadvantagedStudentsData.England.Result.Grade.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 4, 1));
+        Assert.Contains("Grade", doc.GetTableHeaderContentByIdAndIndex(tableId, 4, 0));
+        Assert.Contains(_level3QualificationModel.NonDisadvantagedStudentsData.LocalAuthority.Result.Grade.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 4, 0));
+        Assert.Contains(_level3QualificationModel.NonDisadvantagedStudentsData.England.Result.Grade.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 4, 1));
 
-            Assert.Contains("Points", doc.GetTableHeaderContentByIdAndIndex(tableId, 5, 0));
-            Assert.Contains(_level3QualificationModel.NonDisadvantagedStudentsData.LocalAuthority.Result.Points.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 5, 0));
-            Assert.Contains(_level3QualificationModel.NonDisadvantagedStudentsData.England.Result.Points.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 5, 1));
-        }
-        else
-        {
-            Assert.Null(nonDisadvantagedStudentsDetails);
-            Assert.Null(nonDisadavantagedStudentsTable);
-        }
+        Assert.Contains("Points", doc.GetTableHeaderContentByIdAndIndex(tableId, 5, 0));
+        Assert.Contains(_level3QualificationModel.NonDisadvantagedStudentsData.LocalAuthority.Result.Points.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 5, 0));
+        Assert.Contains(_level3QualificationModel.NonDisadvantagedStudentsData.England.Result.Points.ToString(), doc.GetTableCellContentByIdAndIndex(tableId, 5, 1));
     }
 }

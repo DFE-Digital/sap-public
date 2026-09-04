@@ -21,7 +21,7 @@ namespace SAPPub.Web.Controllers
                 ? RouteConstants.Overview
                 : RouteConstants.AboutTheSchool;
 
-            return RedirectToRoute(route, new { urn, schoolDetails.EstablishmentNameClean });
+            return RedirectToRoute(route, new { urn = urn, schoolName = schoolDetails.EstablishmentNameClean });
         }
 
         [HttpGet]

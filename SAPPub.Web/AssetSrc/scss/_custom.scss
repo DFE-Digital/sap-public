@@ -479,7 +479,7 @@
     flex-direction: column;
     gap: govuk-spacing(3);
 }
-
+}
 .distance-filter .govuk-select,
 .distance-filter .govuk-button {
     width: 100%;
@@ -490,38 +490,38 @@
         flex-direction: row;
         align-items: flex-end;
     }
-
-    .distance-filter .govuk-select {
-        width: auto;
-        min-width: 10rem;
+        align-items: flex-end;
     }
 
-    .distance-filter .govuk-button {
-        width: auto;
-        margin-bottom: 0;
+        .distance-filter .govuk-select {
+            width: auto;
+            min-width: 10rem;
+        }
+
+        .distance-filter .govuk-button {
+            width: auto;
+            margin-bottom: 0;
+        }
+        /* Inline label + select */
+        .distance-filter .govuk-form-group {
+            display: flex;
+            align-items: center;
+            gap: govuk-spacing(3);
+            margin-bottom: 0;
+        }
+
+        .distance-filter .govuk-label {
+            margin-bottom: 0;
+            white-space: nowrap;
+        }
     }
-    /* Inline label + select */
-    .distance-filter .govuk-form-group {
+
+    .school-header {
         display: flex;
         align-items: center;
-        gap: govuk-spacing(3);
-        margin-bottom: 0;
     }
 
-    .distance-filter .govuk-label {
-        margin-bottom: 0;
-        white-space: nowrap;
-    }
-}
-
-.school-header {
-    display: flex;
-    align-items: center;
-}
-
-.school-header form {
-    margin-left: auto;
-
+    .school-header form {
     > button {
         padding: 4px;
     }
@@ -529,11 +529,14 @@
 /*
 Leaflet css override for accessibility warnings.
 Note: No licensing found on the leaflet website regarding changing styles etc.
+/*
+    Leaflet css override for accessibility warnings.
+    Note: No licensing found on the leaflet website regarding changing styles etc.
 */
-.leaflet-container a {
-    text-decoration: underline !important;
-}
+    .leaflet-container a {
+        text-decoration: underline !important;
+    }
 
-.dataview-button {
-    display: none;
-}
+    .dataview-button {
+        display: none;
+    }

@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Bogus;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement;
 using Moq;
-using SAPPub.Core.Entities;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
@@ -22,6 +22,7 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers;
 
 public class KS4ControllerTests
 {
+    private readonly Faker _faker = new();
     private readonly Mock<IEstablishmentService> _mockEstablishmentService;
     private readonly Mock<IKS4EstablishmentSubjectEntriesService> _mockEstablishmentSubjectEntriesService = new();
     private readonly Mock<IAcademicPerformanceEnglishAndMathsResultsService> _mockEnglishAndMathsResultsService = new();
@@ -80,61 +81,6 @@ public class KS4ControllerTests
                 TotalNumberOfEntries = "10",
             }
     };
-
-    private EnglishAndMathsResultsModel EnglishAndMathsResults(
-        string urn = "123456",
-        string establishmentName = "School Name",
-        string laName = "Sheffield") => new()
-        {
-            Urn = urn,
-            SchoolName = establishmentName,
-            LAName = laName,
-            EstablishmentAll = new RelativeYearValues<double?>
-            {
-                CurrentYear = 60,
-                PreviousYear = 80,
-                TwoYearsAgo = 60
-            },
-            LocalAuthorityAll = new RelativeYearValues<double?>
-            {
-                CurrentYear = 80,
-                PreviousYear = 70,
-                TwoYearsAgo = 80
-            },
-            EnglandAll = new RelativeYearValues<double?>
-            {
-                CurrentYear = 70,
-                PreviousYear = 70,
-                TwoYearsAgo = 80
-            },
-            EstablishmentBoys = new RelativeYearValues<double?>
-            {
-                CurrentYear = 50
-            },
-            LocalAuthorityBoys = new RelativeYearValues<double?>
-            {
-                CurrentYear = 70,
-            },
-            EnglandBoys = new RelativeYearValues<double?>
-            {
-                CurrentYear = 60,
-            },
-            EstablishmentGirls = new RelativeYearValues<double?>
-            {
-                CurrentYear = 80
-            },
-            LocalAuthorityGirls = new RelativeYearValues<double?>
-            {
-                CurrentYear = 70,
-            },
-            EnglandGirls = new RelativeYearValues<double?>
-            {
-                CurrentYear = 90,
-            },
-            IsKS2 = false,
-            IsKS4 = true,
-            IsKS5 = false
-        };
 
     public KS4ControllerTests()
     {
@@ -325,7 +271,13 @@ public class KS4ControllerTests
             .Setup(fm => fm.IsEnabledAsync(Constants.Constants.EnableSecondaryGrade7))
             .ReturnsAsync(true);
 
-        var expectedResult = EnglishAndMathsResults(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, _fakeEstablishment.LAName);
+        var expectedResult = new EnglishAndMathsResultsModelBuilder()
+            .WithUrn(_fakeEstablishment.URN)
+            .WithEstablishmentName(_fakeEstablishment.EstablishmentName)
+            .WithLaName(_fakeEstablishment.LAName)
+            .WithData()
+            .Build();
+
         var gradeName = grade.ToRouteSegment();
 
         _mockEnglishAndMathsResultsService
@@ -421,24 +373,12 @@ public class KS4ControllerTests
         var gradeSelection = GcseGradeDataSelection.Grade4AndAbove;
         var gradeName = gradeSelection.ToRouteSegment();
 
-        EnglishAndMathsResultsModel serviceModel = new()
-        {
-            Urn = _fakeEstablishment.URN,
-            SchoolName = _fakeEstablishment.EstablishmentName,
-            LAName = _fakeEstablishment.LAName,
-            EstablishmentAll = new RelativeYearValues<double?> { CurrentYear = null },
-            LocalAuthorityAll = new RelativeYearValues<double?> { CurrentYear = null },
-            EnglandAll = new RelativeYearValues<double?> { CurrentYear = null },
-            EstablishmentBoys = new RelativeYearValues<double?> { CurrentYear = null },
-            LocalAuthorityBoys = new RelativeYearValues<double?> { CurrentYear = null },
-            EnglandBoys = new RelativeYearValues<double?> { CurrentYear = null },
-            EstablishmentGirls = new RelativeYearValues<double?> { CurrentYear = null },
-            LocalAuthorityGirls = new RelativeYearValues<double?> { CurrentYear = null },
-            EnglandGirls = new RelativeYearValues<double?> { CurrentYear = null },
-            IsKS2 = false,
-            IsKS4 = true,
-            IsKS5 = false
-        };
+        EnglishAndMathsResultsModel serviceModel = new EnglishAndMathsResultsModelBuilder()
+            .WithUrn(_fakeEstablishment.URN)
+            .WithEstablishmentName(_fakeEstablishment.EstablishmentName)
+            .WithLaName(_fakeEstablishment.LAName)
+            .WithIsKS4(true)
+            .Build();
 
         _mockEnglishAndMathsResultsService
             .Setup(s => s.GetEnglishAndMathsResultsAsync(_fakeEstablishment.URN, (int)gradeSelection, It.IsAny<CancellationToken>()))
@@ -499,7 +439,11 @@ public class KS4ControllerTests
         _fakeEstablishment.LAName = localCouncilName;
         var grade = GcseGradeDataSelection.Grade4AndAbove;
         var gradeName = grade.ToRouteSegment();
-        var expectedResult = EnglishAndMathsResults(_fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, _fakeEstablishment.LAName);
+        var expectedResult = new EnglishAndMathsResultsModelBuilder()
+            .WithUrn(_fakeEstablishment.URN)
+            .WithEstablishmentName(_fakeEstablishment.EstablishmentName)
+            .WithLaName(_fakeEstablishment.LAName)
+            .Build();
 
         _mockEnglishAndMathsResultsService
             .Setup(s => s.GetEnglishAndMathsResultsAsync(_fakeEstablishment.URN, (int)grade, It.IsAny<CancellationToken>()))
@@ -547,6 +491,59 @@ public class KS4ControllerTests
 
         // Assert
         Assert.IsType<NotFoundResult>(result);
+    }
+
+    [Fact]
+    public async Task Get_AcademicPerformance_EnglishAndMathsResults_Disadvantaged_ReturnsExpectedData()
+    {
+        // Arrange
+        var expectedResult = new EnglishAndMathsResultsModelBuilder()
+            .WithUrn(_fakeEstablishment.URN)
+            .WithEstablishmentName(_fakeEstablishment.EstablishmentName)
+            .WithLaName(_fakeEstablishment.LAName)
+            .WithData()
+            .Build();
+        _mockEnglishAndMathsResultsService.Setup(x => x.GetEnglishAndMathsResultsAsync(_fakeEstablishment.URN, (int)GcseGradeDataSelection.Grade5AndAbove, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        // Act
+        var result = await _controller.AcademicPerformanceEnglishAndMathsResults(
+            _mockEnglishAndMathsResultsService.Object,
+            _fakeEstablishment.URN,
+            _fakeEstablishment.EstablishmentName,
+            GcseGradeDataSelection.Grade5AndAbove.ToRouteSegment()!,
+            CancellationToken.None);
+
+        // Assert
+        Assert.IsType<ViewResult>(result);
+
+        var viewModel = (result as ViewResult)!.Model as AcademicPerformanceEnglishAndMathsResultsViewModel;
+        Assert.NotNull(viewModel);
+
+        Assert.Equal("School", viewModel.BreakdownDisadvantaged.Datasets[0].Label);
+        Assert.Equal(
+            expectedResult.EstablishmentDisadvantaged.CurrentYear,
+            viewModel.BreakdownDisadvantaged.Datasets[0].Data.Single()
+        );
+        Assert.Equal(
+            expectedResult.LocalAuthorityDisadvantaged.CurrentYear,
+            viewModel.BreakdownDisadvantaged.Datasets[1].Data.Single()
+        );
+        Assert.Equal(
+            expectedResult.EnglandDisadvantaged.CurrentYear,
+            viewModel.BreakdownDisadvantaged.Datasets[2].Data.Single()
+        );
+
+        Assert.Equal(new[] { "Percentage who achieved Grade 5 and above in English and maths" }, viewModel.BreakdownDisadvantaged.Labels);
+
+        Assert.Equal(
+            expectedResult.LocalAuthorityNonDisadvantaged.CurrentYear,
+            viewModel.BreakdownNonDisadvantaged.Datasets[0].Data.Single()
+        );
+        Assert.Equal(
+            expectedResult.EnglandNonDisadvantaged.CurrentYear,
+            viewModel.BreakdownNonDisadvantaged.Datasets[1].Data.Single()
+        );
     }
 
     [Fact]

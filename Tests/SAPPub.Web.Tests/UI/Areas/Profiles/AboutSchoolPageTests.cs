@@ -19,6 +19,17 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
     };
 
     [Fact]
+    public async Task Index_ReRoutesToValidPage()
+    {
+        // Arrange && Act
+        var response = await Page.GotoAsync("school/105574");
+
+        // Assert
+        Assert.NotNull(response);
+        Assert.Equal(200, response.Status);
+    }
+
+    [Fact]
     public async Task AboutSchoolPage_LoadsSuccessfully()
     {
         // Arrange && Act
