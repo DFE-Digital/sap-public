@@ -81,7 +81,7 @@ public class AcademicPerformanceSubjectsEnteredTests(WebApplicationSetupFixture 
         await Page.GotoAsync(_pageUrl);
 
         // Act
-        var isVisible = await Page.Locator("#details-academic-performance").IsVisibleAsync();
+        var isVisible = await Page.Locator("#details-academic-performance-avg-exams-entered").IsVisibleAsync();
 
         // Assert
         Assert.True(isVisible);

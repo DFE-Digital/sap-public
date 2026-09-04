@@ -124,7 +124,16 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "More1FL_Tot_Est_Current_Pct_Coded",
           "ExamEntriesGSCE_Tot_Est_Current_Num_Coded",
           "ExamEntriesKS4_Tot_Est_Current_Num_Coded",
-          "Pup_Tot_Est_Current_Num_Coded"
+          "ExamEntriesGSCE_Dis_Est_Current_Num_Coded",
+          "ExamEntriesKS4_Dis_Est_Current_Num_Coded",
+          "Pup_Tot_Est_Current_Num_Coded",
+          "Pup_Grl_Est_Current_Num_Coded",
+          "Pup_Boy_Est_Current_Num_Coded",
+          "Pup_EAL_Est_Current_Num_Coded",
+          "Pup_NMo_Est_Current_Num_Coded",
+          "Pup_Dis_Est_Current_Num_Coded",
+          "PupSEN_Tot_Est_Current_Pct_Coded",
+          "PupEHCP_Tot_Est_Current_Pct_Coded"
           """;
 
         // TODO for EnableSecondaryGrade7 feature - add these fields for the Grade 7 columns when they're available
@@ -161,7 +170,13 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "More1FL_Tot_LA_Current_Pct_Coded",
           "ExamEntriesGSCE_Tot_LA_Current_Num_Coded",
           "ExamEntriesKS4_Tot_LA_Current_Num_Coded",
-          "Pup_Tot_LA_Current_Num_Coded"
+          "ExamEntriesGSCE_Dis_LA_Current_Num_Coded",
+          "ExamEntriesKS4_Dis_LA_Current_Num_Coded",
+          "ExamEntriesGSCE_NDi_LA_Current_Num_Coded",
+          "ExamEntriesKS4_NDi_LA_Current_Num_Coded",
+          "Pup_Tot_LA_Current_Num_Coded",
+          "Pup_Dis_LA_Current_Num_Coded",
+          "Pup_NDi_LA_Current_Num_Coded"
           """;
 
         private const string LADestinationsColumns = """
@@ -204,7 +219,13 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "More1FL_Tot_Eng_Current_Pct_Coded",
           "ExamEntriesGSCE_Tot_Eng_Current_Num_Coded",
           "ExamEntriesKS4_Tot_Eng_Current_Num_Coded",
-          "Pup_Tot_Eng_Current_Num_Coded"
+          "ExamEntriesGSCE_Dis_Eng_Current_Num_Coded",
+          "ExamEntriesKS4_Dis_Eng_Current_Num_Coded",
+          "ExamEntriesGSCE_NDi_Eng_Current_Num_Coded",
+          "ExamEntriesKS4_NDi_Eng_Current_Num_Coded",
+          "Pup_Tot_Eng_Current_Num_Coded",
+          "Pup_Dis_Eng_Current_Num_Coded",
+          "Pup_NDi_Eng_Current_Num_Coded"
           """;
 
         private const string EnglandDestinationsColumns = """

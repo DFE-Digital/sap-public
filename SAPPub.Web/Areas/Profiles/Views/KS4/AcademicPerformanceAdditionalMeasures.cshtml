@@ -1,4 +1,4 @@
-﻿@model SAPPub.Web.Models.SecondarySchool.AcademicPerformanceAdditionalMeasuresViewModel;
+﻿@model SAPPub.Web.Areas.Profiles.ViewModels.KS4.AcademicPerformanceAdditionalMeasuresViewModel;
 @using SAPPub.Web.Constants
 @using SAPPub.Web.Models.SecondarySchool
 @using SAPPub.Web.ViewComponents.SchoolProfilePagination
@@ -8,7 +8,6 @@
 
 @{
     ViewData["Header"] = "Academic performance";
-    ViewData["SubHeader"] = PageTitleConstants.SecondarySchoolPageTitles.AdditionalMeasures;
     ViewData["Title"] = $"{Model.SchoolName} - Secondary {ViewData["SubHeader"]}";
 }
 
@@ -49,8 +48,6 @@
             </ul>
         </nav>
 
-        <h2 class="govuk-heading-l">@ViewData["SubHeader"]</h2>
-
         <p class="govuk-body">
             Information in this section is for the 2024 to 2025 academic year.
         </p>
@@ -58,115 +55,486 @@
             Compare additional performance measures for this school with performance at state-funded schools at local authority and national level.
         </p>
 
-        <govuk-details id="details-academic-performance">
-            <govuk-details-summary>
-                More information about the additional measures
-            </govuk-details-summary>
-            <govuk-details-text>
-                <h3 class="govuk-heading-s">
-                    Pupils achieving at least one qualification
-                </h3>
+        <div id="section-average-number-of-exams-entered-per-pupil">
+            <h2 class="govuk-heading-l">Average number of exams entered per pupil</h2>
 
-                <p class="govuk-body">
-                    The total number of pupils achieving at least one qualification approved for inclusion in performance measures at end of key stage 4.
-                </p>
+            <govuk-details id="details-academic-performance-avg-exams-entered">
+                <govuk-details-summary>
+                    More information about the average number of exams entered per pupil
+                </govuk-details-summary>
+                <govuk-details-text>
+                    <h3 class="govuk-heading-s">
+                        GCSE qualifications
+                    </h3>
 
-                <h3 class="govuk-heading-s">
-                    Pupils entering for biology, chemistry and physics
-                </h3>
+                    <p class="govuk-body">
+                        The average number of GCSEs taken by pupils at the end of KS4.
+                    </p>
 
-                <p class="govuk-body">
-                    The percentage of pupils taking biology, chemistry and physics GCSEs at end of key stage 4.
-                </p>
+                    <h3 class="govuk-heading-s">
+                        All KS4 qualifications
+                    </h3>
 
-                <h3 class="govuk-heading-s">
-                    Pupils entering more than one foreign language
-                </h3>
+                    <p class="govuk-body">
+                        The average number of GCSEs and technical awards taken by pupils at the end of KS4.
+                    </p>
 
-                <p class="govuk-body">
-                    The percentage of pupils taking more than one foreign language at the end of KS4.
-                </p>
+                
+                </govuk-details-text>
+            </govuk-details>
 
-                <h3 class="govuk-heading-s">
-                    Exam entries per pupil, GCSEs
-                </h3>
-
-                <p class="govuk-body">
-                    The average number of GCSEs taken by pupils at the end of KS4.
-                </p>
-
-                <h3 class="govuk-heading-s">
-                    Exam entries per pupil, all KS4 qualifications
-                </h3>
-
-                <p class="govuk-body">
-                    The average number of GCSE and technical awards taken by pupils at the end of KS4.
-                </p>
-
-                <h3 class="govuk-heading-s">
-                    Number of pupils at the end of KS4
-                </h3>
-
-                <p class="govuk-body">
-                    The total number of pupils at the end of KS4.
-                </p>
-            </govuk-details-text>
-        </govuk-details>
-
-        <table id="additional-measures-table" class="govuk-table">
-            <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">
-                Other performance measures
-            </caption>
-            <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header govuk-!-width-one-third">Measure</th>
-                    <th scope="col" class="govuk-table__header">School</th>
-                    <th scope="col" class="govuk-table__header">Local authority</th>
-                    <th scope="col" class="govuk-table__header">England</th>
-                </tr>
-            </thead>
-            <tbody class="govuk-table__body">
-                @foreach (var row in Model.MeasuresInTableFormat)
-                {
+            <!-- TODO: caption text -->
+            <table id="additional-measures-exams-entered-table" class="govuk-table">
+                <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">
+                    Other performance measures
+                </caption>
+                <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
-                        <th class="govuk-table__header">@row.MeasureName</th>
-                        <td class="govuk-table__cell">
-                            @{
-                                var displayText = row.MeasureFormat switch
-                                {
-                                    MeasureFormat.Percent => row.EstablishmentCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:F1}%" : Constants.NotAvailable),
-                                    MeasureFormat.Int => row.EstablishmentCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:N0}" : Constants.NotAvailable),
-                                    _ => row.EstablishmentCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:F1}" : Constants.NotAvailable)
-                                };
-                            }
-                            @displayText
-                        </td>
-                        <td class="govuk-table__cell">
-                            @{
-                                displayText = row.MeasureFormat switch
-                                {
-                                    MeasureFormat.Percent => row.LocalAuthorityCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:F1}%" : Constants.NotAvailable),
-                                    MeasureFormat.Int => row.LocalAuthorityCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:N0}" : Constants.NotAvailable),
-                                    _ => row.LocalAuthorityCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:F1}" : Constants.NotAvailable),
-                                };
-                            }
-                            @displayText
-                        </td>
-                        <td class="govuk-table__cell">
-                            @{
-                                displayText = row.MeasureFormat switch
-                                {
-                                    MeasureFormat.Percent => row.EnglandCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:F1}%" : Constants.NotAvailable),
-                                    MeasureFormat.Int => row.EnglandCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:N0}" : Constants.NotAvailable),
-                                    _ => row.EnglandCurrentYear.DisplayText(d => d.HasValue ? $"{d.Value:F1}" : Constants.NotAvailable)
-                                };
-                            }
-                            @displayText
-                        </td>
+                        <th scope="col" class="govuk-table__header govuk-!-width-one-third">Measure</th>
+                        <th scope="col" class="govuk-table__header">School</th>
+                        <th scope="col" class="govuk-table__header">@Model.LAName</th>
+                        <th scope="col" class="govuk-table__header">England</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody class="govuk-table__body">
+                    @foreach (var row in Model.AverageExamsEnteredPerPupil)
+                    {
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header">@row.MeasureName</th>
+                            <td class="govuk-table__cell">
+                                @(row.MeasureFormat == MeasureFormat.Percent ? row.EstablishmentCurrentYear.DisplayPercentage() : row.EstablishmentCurrentYear.DisplayNumber(format: "N1"))
+                            </td>
+                            <td class="govuk-table__cell">
+                                @(row.MeasureFormat == MeasureFormat.Percent ? row.LocalAuthorityCurrentYear.DisplayPercentage() : row.LocalAuthorityCurrentYear.DisplayNumber(format: "N1"))
+                            </td>
+                            <td class="govuk-table__cell">
+                                @(row.MeasureFormat == MeasureFormat.Percent ? row.EnglandCurrentYear.DisplayPercentage() : row.EnglandCurrentYear.DisplayNumber(format: "N1"))
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <govuk-accordion id="average-numexams-entered-by-pupil-char" heading-level="3">
+                <govuk-accordion-item expanded="false">
+                    <govuk-accordion-item-heading>Average number of exams entered by pupil characteristics</govuk-accordion-item-heading>
+                    <govuk-accordion-item-content>
+                        <section id="average-numexams-entered-disadvantaged">
+                            @await Html.PartialAsync("_DisadvantagedPupils")
+
+                            <!-- TODO: caption text -->
+                            <table id="additional-measures-exams-entered-disadvantaged-table" class="govuk-table">
+                                <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">
+                                    Other performance measures
+                                </caption>
+                                <thead class="govuk-table__head">
+                                    <tr class="govuk-table__row">
+                                        <th scope="col" class="govuk-table__header govuk-!-width-one-third">Measure</th>
+                                        <th scope="col" class="govuk-table__header">School</th>
+                                        <th scope="col" class="govuk-table__header">@Model.LAName</th>
+                                        <th scope="col" class="govuk-table__header">England</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="govuk-table__body">
+                                    @foreach (var row in Model.AverageExamsEnteredPerDisadvantagedPupil)
+                                    {
+                                        <tr class="govuk-table__row">
+                                            <th class="govuk-table__header">@row.MeasureName</th>
+                                            <td class="govuk-table__cell">
+                                                @(row.MeasureFormat == MeasureFormat.Percent ? row.EstablishmentCurrentYear.DisplayPercentage() : row.EstablishmentCurrentYear.DisplayNumber(format: "N1"))
+                                            </td>
+                                            <td class="govuk-table__cell">
+                                                @(row.MeasureFormat == MeasureFormat.Percent ? row.LocalAuthorityCurrentYear.DisplayPercentage() : row.LocalAuthorityCurrentYear.DisplayNumber(format: "N1"))
+                                            </td>
+                                            <td class="govuk-table__cell">
+                                                @(row.MeasureFormat == MeasureFormat.Percent ? row.EnglandCurrentYear.DisplayPercentage() : row.EnglandCurrentYear.DisplayNumber(format: "N1"))
+
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </section>
+
+                        <details class="govuk-details" id="details-exams-entered-non-disadvantaged">
+                            <summary class="govuk-details__summary">
+                                <span class="govuk-details__summary-text">
+                                    Compare with non-disadvantaged pupils
+                                </span>
+                            </summary>
+                            <div class="govuk-details__text">
+                                <h4 class="govuk-heading-s">Non-disadvantaged pupils</h4>
+                                <!-- TODO: caption text -->
+                                <table id="additional-measures-exams-entered-disadvantaged-table" class="govuk-table">
+                                    <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">
+                                        Other performance measures
+                                    </caption>
+                                    <thead class="govuk-table__head">
+                                        <tr class="govuk-table__row">
+                                            <th scope="col" class="govuk-table__header govuk-!-width-one-third">Measure</th>
+                                            <th scope="col" class="govuk-table__header">@Model.LAName</th>
+                                            <th scope="col" class="govuk-table__header">England</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="govuk-table__body">
+                                        @foreach (var row in Model.AverageExamsEnteredPerNonDisadvantagedPupil)
+                                        {
+                                            <tr class="govuk-table__row">
+                                                <th class="govuk-table__header">@row.MeasureName</th>
+                                                <td class="govuk-table__cell">
+                                                    @(row.MeasureFormat == MeasureFormat.Percent ? row.LocalAuthorityCurrentYear.DisplayPercentage() : row.LocalAuthorityCurrentYear.DisplayNumber(format: "N1"))
+                                                </td>
+                                                <td class="govuk-table__cell">
+                                                    @(row.MeasureFormat == MeasureFormat.Percent ? row.EnglandCurrentYear.DisplayPercentage() : row.EnglandCurrentYear.DisplayNumber(format: "N1"))
+
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </details>
+
+                    </govuk-accordion-item-content>
+                </govuk-accordion-item>
+            </govuk-accordion>
+        </div>
+
+        <div id="section-additional-entry-and-achievement-measures">
+            <h2 class="govuk-heading-l">Additional entry and achievement measures </h2>
+
+            <govuk-details id="details-moreinfo-additional-eanda-measures">
+                <govuk-details-summary>
+                    More information about the additional entry and achievement measures
+                </govuk-details-summary>
+                <govuk-details-text>
+                    <h3 class="govuk-heading-s">
+                        Pupils who achieved at least one qualification
+                    </h3>
+                    <p class="govuk-body">
+                        The percentage of pupils who achieved at least one qualification approved for inclusion in performance measures at the end of key stage 4.
+                    </p>
+
+                    <h3 class="govuk-heading-s">
+                        Pupils entered for biology, chemistry and physics
+                    </h3>
+                    <p class="govuk-body">
+                        The percentage of pupils who took biology, chemistry and physics GCSEs at the end of key stage 4.
+                    </p>
+
+                    <h3 class="govuk-heading-s">
+                        Pupils entered for more than one foreign language
+                    </h3>
+                    <p class="govuk-body">
+                        The percentage of pupils who took more than one foreign language at the end of KS4.
+                    </p>
+
+                </govuk-details-text>
+            </govuk-details>
+
+            <!-- TODO: caption text -->
+            <table id="additional-eanda-measures-table" class="govuk-table">
+                <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">
+                    Other performance measures
+                </caption>
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header govuk-!-width-one-third">Measure</th>
+                        <th scope="col" class="govuk-table__header">School</th>
+                        <th scope="col" class="govuk-table__header">@Model.LAName</th>
+                        <th scope="col" class="govuk-table__header">England</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                    @foreach (var row in Model.MeasuresInTableFormat)
+                    {
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header">@row.MeasureName</th>
+                            <td class="govuk-table__cell">
+                                @(row.MeasureFormat == MeasureFormat.Percent ? row.EstablishmentCurrentYear.DisplayPercentage() : row.EstablishmentCurrentYear.DisplayNumber(format: "N1"))
+                            </td>
+                            <td class="govuk-table__cell">
+                                @(row.MeasureFormat == MeasureFormat.Percent ? row.LocalAuthorityCurrentYear.DisplayPercentage() : row.LocalAuthorityCurrentYear.DisplayNumber(format: "N1"))
+                            </td>
+                            <td class="govuk-table__cell">
+                                @(row.MeasureFormat == MeasureFormat.Percent ? row.EnglandCurrentYear.DisplayPercentage() : row.EnglandCurrentYear.DisplayNumber(format: "N1"))
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+
+        <div id="section-numberpupils-eofks4">
+            <h2 class="govuk-heading-l">Number of pupils at the end of key stage 4</h2>
+
+            <!-- TODO: caption text -->
+            <table id="num-pupil-eofks4-table" class="govuk-table">
+                <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">
+                    Other performance measures
+                </caption>
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header govuk-!-width-one-third">Measure</th>
+                        <th scope="col" class="govuk-table__header">School</th>
+                        <th scope="col" class="govuk-table__header">@Model.LAName</th>
+                        <th scope="col" class="govuk-table__header">England</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                    @foreach (var row in Model.NumberOfPupilsEndOfKS4)
+                    {
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header">@row.MeasureName</th>
+                            <td class="govuk-table__cell">
+                                @(row.MeasureFormat == MeasureFormat.Percent ? row.EstablishmentCurrentYear.DisplayPercentage() : row.EstablishmentCurrentYear.DisplayNumber(format: "N0"))
+                            </td>
+                            <td class="govuk-table__cell">
+                                @(row.MeasureFormat == MeasureFormat.Percent ? row.LocalAuthorityCurrentYear.DisplayPercentage() : row.LocalAuthorityCurrentYear.DisplayNumber(format: "N0"))
+                            </td>
+                            <td class="govuk-table__cell">
+                                @(row.MeasureFormat == MeasureFormat.Percent ? row.EnglandCurrentYear.DisplayPercentage() : row.EnglandCurrentYear.DisplayNumber(format: "N0"))
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <govuk-accordion id="further-pop-data-eoks4" heading-level="3">
+                <govuk-accordion-item expanded="false">
+                    <govuk-accordion-item-heading>Further population data for the end of KS4</govuk-accordion-item-heading>
+                    <govuk-accordion-item-content>
+
+                        <h4 class="govuk-heading-s">Number of Pupils by characteristics</h4>
+                        <p class="govuk-body">
+                            Compare the number of pupils by characteristics at this school or college, with pupils at state‑funded schools and colleges locally and across England.
+                        </p>
+
+                        <govuk-details id="details-moreinfo-pupil-chars">
+                            <govuk-details-summary>
+                                More information about the pupil characteristics
+                            </govuk-details-summary>
+                            <govuk-details-text>
+                                <h3 class="govuk-heading-s">
+                                    English as an additional language (EAL)
+                                </h3>
+                                <p class="govuk-body">
+                                    A child is recorded as having English as an additional language (EAL) if they hear or use a language other than English at home.
+                                    This does not show how well a child speaks English and does not mean they are new to the UK.
+                                </p>
+
+                                <h3 class="govuk-heading-s">
+                                    Non-mobile pupils
+                                </h3>
+                                <p class="govuk-body">
+                                    Non-mobile pupils are pupils who were at the school throughout both year 10 and year 11.
+                                </p>
+
+                                <h3 class="govuk-heading-s">
+                                    Disadvantaged pupils
+                                </h3>
+                                <p class="govuk-body">
+                                    Pupils identified as disadvantaged are those who either:
+                                    <ul class="govuk-list govuk-list--bullet">
+                                        <li>were eligible for free school meals at any time during the last 6 years</li>
+                                        <li>have been in the care of the local council for a day or more</li>
+                                        <li>have been adopted from care</li>
+                                    </ul>
+                                </p>
+
+                            </govuk-details-text>
+                        </govuk-details>
+
+                        <!-- TODO: caption text -->
+                        <table id="num-pupil-eofks4-breakdown-table" class="govuk-table">
+                            <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">
+                                Other performance measures
+                            </caption>
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header govuk-\!-width-one-half"></th>
+                                    <th scope="col" class="govuk-table__header">School</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                <tr class="govuk-table__row">
+                                    <th class="govuk-table__header">Girls</th>
+                                    <td class="govuk-table__cell">@Model.EstablishmentGirlsEndOfKS4.DisplayNumber()</td>
+                                </tr>
+                                <tr class="govuk-table__row">
+                                    <th class="govuk-table__header">Boys</th>
+                                    <td class="govuk-table__cell">@Model.EstablishmentBoysEndOfKS4.DisplayNumber()</td>
+                                </tr>
+                                <tr class="govuk-table__row">
+                                    <th class="govuk-table__header">English as an additional language (EAL)</th>
+                                    <td class="govuk-table__cell">@Model.EstablishmentEALEndOfKS4.DisplayNumber()</td>
+                                </tr>
+                                <tr class="govuk-table__row">
+                                    <th class="govuk-table__header">Non-mobile pupils</th>
+                                    <td class="govuk-table__cell">@Model.EstablishmentNonMobilePupilsEndOfKS4.DisplayNumber()</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4 class="govuk-heading-s">Disadvantaged pupils</h4>
+
+                        <!-- TODO: caption text -->
+                        <table id="num-pupil-eofks4-disadvantaged-table" class="govuk-table">
+                            <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">
+                                Other performance measures
+                            </caption>
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header"></th>
+                                    <th scope="col" class="govuk-table__header">School</th>
+                                    <th scope="col" class="govuk-table__header">@Model.LAName</th>
+                                    <th scope="col" class="govuk-table__header">England</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                <tr class="govuk-table__row">
+                                    <th class="govuk-table__header">Number of disadvantaged pupils</th>
+                                    <td class="govuk-table__cell">@Model.EstablishmentDisadvantagedPupilsEndOfKS4.DisplayNumber()</td>
+                                    <td class="govuk-table__cell">@Model.LocalAuthorityDisadvantagedPupilsEndOfKS4.DisplayNumber()</td>
+                                    <td class="govuk-table__cell">@Model.EnglandDisadvantagedPupilsEndOfKS4.DisplayNumber()</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <details class="govuk-details" id="details-exams-entered-non-disadvantaged">
+                            <summary class="govuk-details__summary">
+                                <span class="govuk-details__summary-text">
+                                    Compare with non-disadvantaged pupils
+                                </span>
+                            </summary>
+                            <div class="govuk-details__text">
+                                <h4 class="govuk-heading-s">Non-disadvantaged pupils</h4>
+                                <!-- TODO: caption text -->
+                                <table id="num-pupil-eofks4-non-disadvantaged-table" class="govuk-table">
+                                    <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">
+                                        Other performance measures
+                                    </caption>
+                                    <thead class="govuk-table__head">
+                                        <tr class="govuk-table__row">
+                                            <th scope="col" class="govuk-table__header govuk-!-width-one-third"></th>
+                                            <th scope="col" class="govuk-table__header">@Model.LAName</th>
+                                            <th scope="col" class="govuk-table__header">England</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="govuk-table__body">
+
+                                        <tr class="govuk-table__row">
+                                            <th class="govuk-table__header">Number of non-disadvantaged pupils</th>
+                                            <td class="govuk-table__cell">@Model.LocalAuthorityNonDisadvantagedPupilsEndOfKS4.DisplayNumber(format: "N0")</td>
+                                            <td class="govuk-table__cell">@Model.EnglandNonDisadvantagedPupilsEndOfKS4.DisplayNumber(format: "N0")</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </details>
+
+                    </govuk-accordion-item-content>
+                </govuk-accordion-item>
+            </govuk-accordion>
+
+        </div>
+
+        <div id="section-numberpupils-wholeschool">
+            <h2 class="govuk-heading-l">Number of pupils at the whole school </h2>
+
+
+            <!-- TODO: caption text -->
+            <table id="num-pupil-eofks4-table" class="govuk-table">
+                <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">
+                    Other performance measures
+                </caption>
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header govuk-!-width-one-third">Pupil group</th>
+                        <th scope="col" class="govuk-table__header">School</th>
+                        <th scope="col" class="govuk-table__header">England mainstream schools</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                    @foreach (var row in Model.NumberOfPupilsEndOfKS4)
+                    {
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header">Number of pupils on roll </th>
+                            <td class="govuk-table__cell">@Model.EstablishmentTotalPupils.DisplayNumber(format: "N0")</td>
+                            <td class="govuk-table__cell">@Model.EnglandTotalPupils.DisplayNumber(format: "N0")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+
+            <govuk-accordion id="further-pop-data-wholeschool" heading-level="3">
+                <govuk-accordion-item expanded="false">
+                    <govuk-accordion-item-heading>Further population data for the whole school</govuk-accordion-item-heading>
+                    <govuk-accordion-item-content>
+                        <h4 class="govuk-heading-s">Pupils with Special Educational Needs (SEN) support</h4>
+                        <p class="govuk-body">
+                            Pupils with special educational needs who receive extra support than other children of the same age in school but do not have an EHCP.
+                        </p>
+
+                        <table id="num-pupil-whole-school-sen-table" class="govuk-table">
+                            <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">
+                                Pupils with Special Educational Needs (SEN) support
+                            </caption>
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header govuk-!-width-one-third"></th>
+                                    <th scope="col" class="govuk-table__header">School</th>
+                                    <th scope="col" class="govuk-table__header">England mainstream schools</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                <tr class="govuk-table__row">
+                                    <th class="govuk-table__header">Pupils with SEN support</th>
+                                    <td class="govuk-table__cell">@Model.EstablishmentTotalSENPupils.DisplayPercentage()</td>
+                                    <td class="govuk-table__cell">TODO</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4 class="govuk-heading-s">Pupils with an Education, Health and Care Plan (EHCP)</h4>
+                        <p class="govuk-body">
+                            An EHCP is a legal document for children and young people aged up to 25 who need more support than is available through special educational needs (SEN) support.
+                        </p>
+                        <p class="govuk-body">
+                            EHCPs identify educational, health and social care needs and set out the additional support to meet those needs.
+                        </p>
+
+                        <table id="num-pupil-whole-school-sen-table" class="govuk-table">
+                            <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">
+                                Pupils with an Education, Health and Care Plan (EHCP)
+                            </caption>
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header govuk-!-width-one-third"></th>
+                                    <th scope="col" class="govuk-table__header">School</th>
+                                    <th scope="col" class="govuk-table__header">England mainstream schools</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                <tr class="govuk-table__row">
+                                    <th class="govuk-table__header">Pupils with EHCPs</th>
+                                    <td class="govuk-table__cell">@Model.EstablishmentTotalEHCPPupils.DisplayPercentage()</td>
+                                    <td class="govuk-table__cell">TODO</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </govuk-accordion-item-content>
+                </govuk-accordion-item>
+            </govuk-accordion>
+
+        </div>
+
         @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.SecondaryAcademicPerformanceAdditionalMeasures))
 
     </div>

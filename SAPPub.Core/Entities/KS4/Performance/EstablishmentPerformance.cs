@@ -305,6 +305,16 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public CodedDouble ExamEntriesGSCE_Tot_Est_Current_Num_Coded { get; set; }
         // Exam entries per pupil, all KS4 qualifications
         public CodedDouble ExamEntriesKS4_Tot_Est_Current_Num_Coded { get; set; }
-
+        // Exam entries per pupil, GCSEs (Dsiadvantaged)
+        public CodedDouble ExamEntriesGSCE_Dis_Est_Current_Num_Coded { get; set; }
+        // Exam entries per pupil, all KS4 qualifications
+        public CodedDouble ExamEntriesKS4_Dis_Est_Current_Num_Coded { get; set; }
+        public CodedDouble Pup_Grl_Est_Current_Num_Coded { get; set; }
+        public CodedDouble Pup_Boy_Est_Current_Num_Coded { get; set; }
+        public CodedDouble Pup_EAL_Est_Current_Num_Coded { get; set; }
+        public CodedDouble Pup_NMo_Est_Current_Num_Coded { get; set; }
+        public CodedDouble Pup_Dis_Est_Current_Num_Coded { get; set; }
+        public CodedDouble PupSEN_Est_Current_Num_Coded { get; set; }
+        public CodedDouble PupEHCP_Est_Current_Num_Coded { get; set; }
     }
 }
