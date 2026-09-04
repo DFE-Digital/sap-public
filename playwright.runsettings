@@ -3,6 +3,7 @@
     <RunConfiguration>
         <EnvironmentVariables>
             <HEADED>0</HEADED>
+            <BASE_URL>http://localhost:5013</BASE_URL>
         </EnvironmentVariables>
     </RunConfiguration>
 </RunSettings>
