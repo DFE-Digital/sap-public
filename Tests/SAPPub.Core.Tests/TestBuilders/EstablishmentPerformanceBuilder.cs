@@ -113,7 +113,6 @@ public class EstablishmentPerformanceBuilder
             Attainment8_Tot_Est_Current_Num_Coded = CreateCodedDouble(_attainment8_Tot_Est_Current_Num),
             Attainment8_Tot_Est_Previous_Num = _attainment8_Tot_Est_Previous_Num,
             Attainment8_Tot_Est_Previous_Num_Coded = CreateCodedDouble(_attainment8_Tot_Est_Previous_Num),
-            Attainment8_Tot_Est_Previous2_Num = _attainment8_Tot_Est_Previous2_Num,
             Attainment8_Tot_Est_Previous2_Num_Coded = CreateCodedDouble(_attainment8_Tot_Est_Previous2_Num),
 
             // progress 8
@@ -123,22 +122,15 @@ public class EstablishmentPerformanceBuilder
             Prog8_CI_Lower_Est_Current_Num_Coded = CreateCodedDouble(_prog8_CI_Lower_Est_Current_Num_Coded),
             Prog8_CI_Upper_Est_Current_Num_Coded = CreateCodedDouble(_prog8_CI_Upper_Est_Current_Num_Coded),
 
-            Prog8_TotPup_Est_Previous_Num = _prog8_TotPup_Est_Previous_Num,
-            Prog8_Tot_Est_Previous_Num = _prog8_Tot_Est_Previous_Num,
+            Prog8_TotPup_Est_Previous_Num_Coded = CreateCodedDouble(_prog8_TotPup_Est_Previous_Num),
             Prog8_Tot_Est_Previous_Num_Coded = CreateCodedDouble(_prog8_Tot_Est_Previous_Num),
             Prog8_Banding_Est_Previous = _prog8_Banding_Est_Previous,
-            Prog8_CI_Lower_Est_Previous_Num = _prog8_CI_Lower_Est_Previous_Num,
             Prog8_CI_Lower_Est_Previous_Num_Coded = CreateCodedDouble(_prog8_CI_Lower_Est_Previous_Num),
-            Prog8_CI_Upper_Est_Previous_Num = _prog8_CI_Upper_Est_Previous_Num,
             Prog8_CI_Upper_Est_Previous_Num_Coded = CreateCodedDouble(_prog8_CI_Upper_Est_Previous_Num),
 
-            Prog8_TotPup_Est_Previous2_Num = _prog8_TotPup_Est_Previous2_Num,
-            Prog8_Tot_Est_Previous2_Num = _prog8_Tot_Est_Previous2_Num,
             Prog8_Tot_Est_Previous2_Num_Coded = CreateCodedDouble(_prog8_Tot_Est_Previous2_Num),
             Prog8_Banding_Est_Previous2 = _prog8_Banding_Est_Previous2,
-            Prog8_CI_Lower_Est_Previous2_Num = _prog8_CI_Lower_Est_Previous2_Num,
             Prog8_CI_Lower_Est_Previous2_Num_Coded = CreateCodedDouble(_prog8_CI_Lower_Est_Previous2_Num),
-            Prog8_CI_Upper_Est_Previous2_Num = _prog8_CI_Upper_Est_Previous2_Num,
             Prog8_CI_Upper_Est_Previous2_Num_Coded = CreateCodedDouble(_prog8_CI_Upper_Est_Previous2_Num),
 
             // english and maths
