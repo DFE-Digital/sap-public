@@ -14,7 +14,7 @@ namespace SAPPub.Core.Entities.KS4.Performance
         /// </summary>
         public CodedDouble Attainment8_Tot_Est_Current_Num_Coded { get; set; } = new();
         [IgnoreDataMember]
-        public double? Attainment8_Tot_Est_Current_Num { get; set; }
+        public double? Attainment8_Tot_Est_Current_Num { get; set; } // still used for comparison page
         [IgnoreDataMember]
         public string? Attainment8_Tot_Est_Current_Num_Reason { get; set; }
 
@@ -158,17 +158,21 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public string? EngMaths79_Tot_Est_Previous_Pct_Reason { get; set; }
 
         /// <summary>
-        /// Progress 8 Average filtered by Establishment for Previous year
+        /// Progress 8 Average filtered by Establishment and year
         /// </summary>
+        public CodedDouble Prog8_Tot_Est_Current_Num_Coded { get; set; } = new();
         public CodedDouble Prog8_Tot_Est_Previous_Num_Coded { get; set; } = new();
         [IgnoreDataMember]
         public double? Prog8_Tot_Est_Previous_Num { get; set; }
         [IgnoreDataMember]
         public string? Prog8_Tot_Est_Previous_Num_Reason { get; set; }
 
+
         /// <summary>
-        /// Progress 8 Confidence Interval Lower filtered by Establishment for Previous year
+        /// Progress 8 Confidence Interval Lower filtered by Establishment and year
         /// </summary>
+        public CodedDouble Prog8_CI_Lower_Est_Current_Num_Coded { get; set; } = new();
+
         public CodedDouble Prog8_CI_Lower_Est_Previous_Num_Coded { get; set; } = new();
         [IgnoreDataMember]
         public double? Prog8_CI_Lower_Est_Previous_Num { get; set; }
@@ -176,8 +180,10 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public string? Prog8_CI_Lower_Est_Previous_Num_Reason { get; set; }
 
         /// <summary>
-        /// Progress 8 Confidence Interval Upper filtered by Establishment for Previous year
+        /// Progress 8 Confidence Interval Upper filtered by Establishment and year
         /// </summary>
+
+        public CodedDouble Prog8_CI_Upper_Est_Current_Num_Coded { get; set; } = new();
         public CodedDouble Prog8_CI_Upper_Est_Previous_Num_Coded { get; set; } = new();
         [IgnoreDataMember]
         public double? Prog8_CI_Upper_Est_Previous_Num { get; set; }
@@ -185,9 +191,18 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public string? Prog8_CI_Upper_Est_Previous_Num_Reason { get; set; }
 
         /// <summary>
+        /// Progress 8 Confidence Banding filtered by Establishment for Current year
+        /// </summary>
+        public string? Prog8_Banding_Est_Current { get; set; }
+        /// <summary>
         /// Progress 8 Confidence Banding filtered by Establishment for Previous year
         /// </summary>
         public string? Prog8_Banding_Est_Previous { get; set; }
+
+        /// <summary>
+        /// Progress 8 Total pupil for Current year
+        /// </summary>
+        public CodedDouble Prog8_TotPup_Est_Current_Num_Coded { get; set; } = new();
 
         /// <summary>
         /// Progress 8 Total pupil for Previous year
@@ -203,10 +218,10 @@ namespace SAPPub.Core.Entities.KS4.Performance
         /// Pupil Total for Previous year
         /// </summary>
         public CodedDouble Pup_Tot_Est_Previous_Num_Coded { get; set; } = new();
-        [IgnoreDataMember]
-        public double? Pup_Tot_Est_Previous_Num { get; set; }
-        [IgnoreDataMember]
-        public string? Pup_Tot_Est_Previous_Num_Reason { get; set; }
+        //[IgnoreDataMember]
+        //public double? Pup_Tot_Est_Previous_Num { get; set; }
+        //[IgnoreDataMember]
+        //public string? Pup_Tot_Est_Previous_Num_Reason { get; set; }
 
         /// <summary>
         /// Attainment 8 Total filtered by Establishment for Previous2 year
@@ -291,10 +306,10 @@ namespace SAPPub.Core.Entities.KS4.Performance
         /// Pupil Total for Previous year
         /// </summary>
         public CodedDouble Pup_Tot_Est_Previous2_Num_Coded { get; set; } = new();
-        [IgnoreDataMember]
-        public double? Pup_Tot_Est_Previous2_Num { get; set; }
-        [IgnoreDataMember]
-        public string? Pup_Tot_Est_Previous2_Num_Reason { get; set; }
+        //[IgnoreDataMember]
+        //public double? Pup_Tot_Est_Previous2_Num { get; set; }
+        //[IgnoreDataMember]
+        //public string? Pup_Tot_Est_Previous2_Num_Reason { get; set; }
 
         // Number of pupils at the end of KS4
         public CodedDouble Pup_Tot_Est_Current_Num_Coded { get; set; }

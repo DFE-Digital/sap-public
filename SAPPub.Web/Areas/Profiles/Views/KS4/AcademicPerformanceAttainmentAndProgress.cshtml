@@ -137,14 +137,14 @@
                 <div class="assignment__icon"></div>
                 <div class="custom-card__content">
                     <p class="govuk-body">
-                        Pupils at this school score @Model.EstablishmentProgress8Score.
-                        @if (Model.EstablishmentProgress8BandingContextDescription.IsAvailable)
+                        Pupils at this school score @Model.SelectedYearValues.EstablishmentProgress8Score.
+                        @if (Model.SelectedYearValues.EstablishmentProgress8BandingContextDescription.IsAvailable)
                         {
-                            <span>@Model.EstablishmentProgress8BandingContextDescription.DisplayText()</span>
+                            <span>@Model.SelectedYearValues.EstablishmentProgress8BandingContextDescription.DisplayText()</span>
                         }
                     </p>
                     <p class="govuk-body">
-                        The confidence interval is @Model.EstablishmentProgress8CILower to @Model.EstablishmentProgress8CIUpper.
+                        The confidence interval is @Model.SelectedYearValues.EstablishmentProgress8CILower to @Model.SelectedYearValues.EstablishmentProgress8CIUpper.
                     </p>
                 </div>
             </div>
@@ -155,7 +155,7 @@
                 </govuk-details-summary>
                 <govuk-details-text>
                     <p class="govuk-body">
-                        @Model.EstablishmentProgress8TotalPupils out of @Model.EstablishmentTotalPupils pupils were included in this measure.
+                        @Model.SelectedYearValues.EstablishmentProgress8TotalPupils out of @Model.SelectedYearValues.EstablishmentTotalPupils pupils were included in this measure.
                     </p>
                 </govuk-details-text>
             </govuk-details>
@@ -163,7 +163,7 @@
             <div class="custom-card" data-testid="progress8-localauthority-card">
                 <div class="custom-card__content">
                     <p class="govuk-body">
-                        The local authority average is @Model.LocalAuthorityProgress8Score.
+                        The local authority average is @Model.SelectedYearValues.LocalAuthorityProgress8Score.
                     </p>
                 </div>
                 <div class="bar-chart__icon"></div>
@@ -214,12 +214,12 @@
                 <div class="assignment__icon"></div>
                 <div class="custom-card__content">
                     <p class="govuk-body">
-                        The Attainment 8 score for this school is @($"{Model.EstablishmentAttainment8Score:0.0}").
+                        The Attainment 8 score for this school is @($"{Model.SelectedYearValues.EstablishmentAttainment8Score:0.0}").
                     </p>
-                    @if (Model.EstablishmentAttainment8ScoreContextDescription.IsAvailable)
+                    @if (Model.SelectedYearValues.EstablishmentAttainment8ScoreContextDescription.IsAvailable)
                     {
                         <p class="govuk-body">
-                            @Model.EstablishmentAttainment8ScoreContextDescription.DisplayText()
+                            @Model.SelectedYearValues.EstablishmentAttainment8ScoreContextDescription.DisplayText()
                         </p>
                     }
                 </div>
@@ -227,21 +227,90 @@
 
             <div class="custom-card" data-testid="attainment8-localauthority-and-national-card">
                 <div class="custom-card__content">
-                    @if (Model.LocalAuthorityAttainment8ScoreContextDescription.IsAvailable)
+                    @if (Model.SelectedYearValues.LocalAuthorityAttainment8ScoreContextDescription.IsAvailable)
                     {
                         <p class="govuk-body">
-                            @Model.LocalAuthorityAttainment8ScoreContextDescription.DisplayText()
+                            @Model.SelectedYearValues.LocalAuthorityAttainment8ScoreContextDescription.DisplayText()
                         </p>
                     }
-                    @if (Model.EnglandAttainment8ScoreContextDescription.IsAvailable)
+                    @if (Model.SelectedYearValues.EnglandAttainment8ScoreContextDescription.IsAvailable)
                     {
                         <p class="govuk-body">
-                            @Model.EnglandAttainment8ScoreContextDescription.DisplayText()
+                            @Model.SelectedYearValues.EnglandAttainment8ScoreContextDescription.DisplayText()
                         </p>
                     }
                 </div>
                 <div class="bar-chart__icon"></div>
             </div>
+
+            @if (Model.SelectedAcademicYear == SAPPub.Core.Enums.AcademicYearSelection.Current)
+            {
+                <govuk-accordion heading-level="3" id="other-pupil-characteristics-accordion" hide-all-sections-text="Hide all sections" show-all-sections-text="Show all sections" hide-section-text="Hide" show-section-text="Show more">
+                    <govuk-accordion-item>
+                        <govuk-accordion-item-heading>Attainment 8 by pupil characteristic</govuk-accordion-item-heading>
+                        <govuk-accordion-item-summary></govuk-accordion-item-summary>
+                        <govuk-accordion-item-content>
+
+                            @await Html.PartialAsync("_DisadvantagedPupils")
+
+                            <table id="breakdown-disadvantaged-table" class="govuk-table">
+                                <thead class="govuk-table__head">
+                                    <tr class="govuk-table__row">
+                                        <th scope="col" class="govuk-table__header">Pupil group (disadvantaged)</th>
+                                        @foreach (var label in Model.YearValues.CurrentYear.BreakdownDisadvantaged.Labels)
+                                        {
+                                            <th scope="col" class="govuk-table__header">@label</th>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody class="govuk-table__body">
+                                    @foreach (var dataset in Model.YearValues.CurrentYear.BreakdownDisadvantaged.Datasets)
+                                    {
+                                        <tr class="govuk-table__row">
+                                            <th scope="row" class="govuk-table__header">@dataset.Label</th>
+                                            @foreach (var data in dataset.Data)
+                                            {
+                                                <td class="govuk-table__cell">@(data.HasValue ? data : Constants.NotAvailable)</td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                            <govuk-details>
+                                <govuk-details-summary>
+                                    Compare state-funded local and national averages for non-disadvantaged pupils
+                                </govuk-details-summary>
+                                <govuk-details-text>
+                                    <h4 class="govuk-heading-s">Non-disadvantaged pupils</h4>
+                                    <table id="breakdown-non-disadvantaged-table" class="govuk-table">
+                                        <thead class="govuk-table__head">
+                                            <tr class="govuk-table__row">
+                                                <th scope="col" class="govuk-table__header">Pupil group (non-disadvantaged)</th>
+                                                @foreach (var label in Model.YearValues.CurrentYear.BreakdownNonDisadvantaged.Labels)
+                                                {
+                                                    <th scope="col" class="govuk-table__header">@label</th>
+                                                }
+                                            </tr>
+                                        </thead>
+                                        <tbody class="govuk-table__body">
+                                            @foreach (var dataset in Model.YearValues.CurrentYear.BreakdownNonDisadvantaged.Datasets)
+                                            {
+                                                <tr class="govuk-table__row">
+                                                    <th scope="row" class="govuk-table__header">@dataset.Label</th>
+                                                    @foreach (var data in dataset.Data)
+                                                    {
+                                                        <td class="govuk-table__cell">@(data.HasValue ? data + "%" : Constants.NotAvailable)</td>
+                                                    }
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </govuk-details-text>
+                            </govuk-details>
+                        </govuk-accordion-item-content>
+                    </govuk-accordion-item>
+                </govuk-accordion>
+            }
         }
         else
         {
@@ -254,6 +323,7 @@
                 </div>
             </div>
         }
+
         @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress))
 
     </div>

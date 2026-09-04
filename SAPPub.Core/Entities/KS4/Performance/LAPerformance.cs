@@ -178,6 +178,10 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public string? EngMaths79_Tot_LA_Previous_Pct_Reason { get; set; }
 
         /// <summary>
+        /// Progress 8 Average filtered by LA for Current year
+        /// <summary>
+        public CodedDouble Prog8_Avg_LA_Current_Num_Coded { get; set; } = new();
+        /// <summary>
         /// Progress 8 Average filtered by LA for Previous year
         /// <summary>
         public CodedDouble Prog8_Avg_LA_Previous_Num_Coded { get; set; } = new();
