@@ -89,7 +89,7 @@ namespace SAPPub.Infrastructure.Repositories
                 parameters.Add("distance", MappingHelper.MilesToMeters(query.Distance!.Value));
             }
 
-            if (query.EstablishmentTypes is not null && query.EstablishmentTypes.Length != 0)
+            if (query.EstablishmentTypes is not null && query.EstablishmentTypes.Length != 0 && query.EstablishmentTypes.All(t => !string.IsNullOrWhiteSpace(t)))
             {
                 var typesQueryList = query.EstablishmentTypes
                 .SelectMany(type => (type.ToLower() switch
@@ -106,7 +106,7 @@ namespace SAPPub.Infrastructure.Repositories
                 whereClauses.Add($@"""TypeOfEstablishmentId"" IN ({string.Join(",", typesQueryList)})");
             }
 
-            if (query.EstablishmentPhases is not null && query.EstablishmentPhases.Length != 0)
+            if (query.EstablishmentPhases is not null && query.EstablishmentPhases.Length != 0 && query.EstablishmentPhases.All(t => !string.IsNullOrWhiteSpace(t)))
             {
                 foreach (var phase in query.EstablishmentPhases)
                 {
@@ -116,7 +116,7 @@ namespace SAPPub.Infrastructure.Repositories
                     }
                     if (phase.Contains("primary", StringComparison.OrdinalIgnoreCase))
                     {
-                        phaseWhereClauses.Add(@"""ISKS2"" IS true");
+                        phaseWhereClauses.Add(@"(""ISKS2"" IS true)");
                     }
                     if (phase.Contains("secondary", StringComparison.OrdinalIgnoreCase))
                     {

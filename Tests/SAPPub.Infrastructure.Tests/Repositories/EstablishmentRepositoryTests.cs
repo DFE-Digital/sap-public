@@ -246,6 +246,71 @@ namespace SAPPub.Infrastructure.Tests.Repositories
             Assert.Equal(2, parts.Parameters.Get<int>("offset"));
         }
 
+        [Theory]
+        [InlineData(new string[] { "Maintained school" }, @"""TypeOfEstablishmentId"" IN (1,2,3,5)")]
+        [InlineData(new string[] { "Academy" }, @"""TypeOfEstablishmentId"" IN (28,34,35,40,41,45,46)")]
+        [InlineData(new string[] { "College" }, @"""TypeOfEstablishmentId"" IN (18,21,39,56)")]
+        [InlineData(new string[] { "Independent schools" }, @"""TypeOfEstablishmentId"" IN (6,11)")]
+        [InlineData(new string[] { "special school" }, @"""TypeOfEstablishmentId"" IN (7,8,10,12,33,36,44)")]
+        [InlineData(new string[] { "Maintained school", "Academy" }, @"""TypeOfEstablishmentId"" IN (1,2,3,5,28,34,35,40,41,45,46)")]
+        public void BuildSearchSqlParts_IncludeEstablishmentTypes(string[] establishmentTypes, string expectedResult)
+        {
+            var query = new SearchQuery { Name = "test", EstablishmentTypes = establishmentTypes };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKS2: true);
+
+            var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
+            var expectedPredicate = visibilitySpec.ToSqlPredicate();
+
+            Assert.Contains(expectedPredicate, parts.WhereClause, StringComparison.Ordinal);
+            Assert.Contains(expectedResult, parts.WhereClause, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void BuildSearchSqlParts_IncludeEstablishmentTypes_NullCheck()
+        {
+            var query = new SearchQuery { Name = "test", EstablishmentTypes = new string[] { "" } };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKS2: true);
+
+            var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
+            var expectedPredicate = visibilitySpec.ToSqlPredicate();
+
+            Assert.Contains(expectedPredicate, parts.WhereClause, StringComparison.Ordinal);
+            Assert.DoesNotContain("TypeOfEstablishmentId", parts.WhereClause, StringComparison.Ordinal);
+        }
+
+        [Theory]
+        [InlineData(new string[] { "all-through" }, @"(""ISKS2"" IS true AND ""ISKS4"" IS true AND ""ISKS5"" IS true)")]
+        [InlineData(new string[] { "primary" }, @"""ISKS2"" IS true")]
+        [InlineData(new string[] { "secondary" }, @"""ISKS4"" IS true")]
+        [InlineData(new string[] { "16" }, @"""ISKS5"" IS true")]
+        [InlineData(new string[] { "primary", "secondary" }, @"((""ISKS2"" IS true) OR (""ISKS4"" IS true))")]
+        public void BuildSearchSqlParts_IncludeEstablishmentPhases(string[] establishmentPhases, string expectedResult)
+        {
+            var query = new SearchQuery { Name = "test", EstablishmentPhases = establishmentPhases };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKS2: true);
+
+            var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
+            var expectedPredicate = visibilitySpec.ToSqlPredicate();
+
+            Assert.Contains(expectedPredicate, parts.WhereClause, StringComparison.Ordinal);
+            Assert.Contains(expectedResult, parts.WhereClause, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void BuildSearchSqlParts_IncludeEstablishmentPhases_NullCheck()
+        {
+            var query = new SearchQuery { Name = "test", EstablishmentPhases = new string[] { "" } };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKS2: true);
+
+            var parts = EstablishmentRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
+            var expectedPredicate = visibilitySpec.ToSqlPredicate();
+
+            Assert.Contains(expectedPredicate, parts.WhereClause, StringComparison.Ordinal);
+            Assert.DoesNotContain("ISKS2", parts.WhereClause, StringComparison.Ordinal);
+            Assert.DoesNotContain("ISKS4", parts.WhereClause, StringComparison.Ordinal);
+            Assert.DoesNotContain("ISKS5", parts.WhereClause, StringComparison.Ordinal);
+        }
+
         [Fact]
         public async Task GetEstablishmentsAsync_ReturnsCorrectItemsWhenUrnExists()
         {

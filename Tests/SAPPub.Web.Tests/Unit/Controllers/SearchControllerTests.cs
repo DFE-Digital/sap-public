@@ -25,7 +25,8 @@ public class SearchControllerTests
         IsKS4 = true,
         IsKS2 = true,
         IsKS5 = true,
-        TypeOfEstablishmentId = 28
+        TypeOfEstablishmentId = 28 //Academy
+
     };
     private readonly SchoolSearchResultServiceModel _schoolSearchResult2 = new()
     {
@@ -37,7 +38,7 @@ public class SearchControllerTests
         IsKS4 = false,
         IsKS2 = true,
         IsKS5 = false,
-        TypeOfEstablishmentId = 1
+        TypeOfEstablishmentId = 1 //Maintained
     };
 
     private List<SchoolSearchResultServiceModel> CreateSearchResults(int count)
@@ -367,5 +368,71 @@ public class SearchControllerTests
         Assert.Equal(searchParamsModel.NameSearchTerm, viewModel.Pagination.RouteAttributes[nameof(searchParamsModel.NameSearchTerm)]);
         Assert.Equal(searchParamsModel.LocationSearchTerm, viewModel.Pagination.RouteAttributes[nameof(searchParamsModel.LocationSearchTerm)]);
         Assert.Equal(searchParamsModel.Distance.ToString(), viewModel.Pagination.RouteAttributes[nameof(searchParamsModel.Distance)]);
+    }
+
+    [Fact]
+    public async Task Get_SearchResults_SearchByName_FilterByEstablishmentTypes_ReturnsSchoolResultsViewModel()
+    {
+        // arrange
+        var searchQuery = new SchoolSearchServiceQuery() { Name = "test school", EstablishmentTypes = new string[] { "Academy", "Maintained school" } };
+        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
+        {
+            PagedResponse = new PagedResponse<SchoolSearchResultServiceModel>
+            {
+                TotalRecords = 2,
+                Records =
+                [
+                    _schoolSearchResult1,
+                    _schoolSearchResult2
+                ],
+                PagerInfo = new Pager(2, 1, 10)
+            }
+        });
+
+        var searchParamsModel = new SearchParamsModel() { NameSearchTerm = searchQuery.Name, LocationSearchTerm = searchQuery.Location, SchoolType = searchQuery.EstablishmentTypes };
+
+        // act
+        var result = await _controller.SearchResults(searchParamsModel);
+        var viewModel = ((ViewResult)result).Model as SearchResultsViewModel;
+
+        // assert
+        Assert.NotNull(viewModel);
+        Assert.Equal(searchQuery.Name, viewModel.SearchParams.NameSearchTerm);
+        Assert.NotNull(viewModel.Pagination);
+        Assert.Equal("Academy", viewModel.Pagination.RouteAttributes[$"{nameof(searchParamsModel.SchoolType)}[0]"]);
+        Assert.Equal("Maintained school", viewModel.Pagination.RouteAttributes[$"{nameof(searchParamsModel.SchoolType)}[1]"]);
+    }
+
+    [Fact]
+    public async Task Get_SearchResults_SearchByName_FilterByPhaseTypes_ReturnsSchoolResultsViewModel()
+    {
+        // arrange
+        var searchQuery = new SchoolSearchServiceQuery() { Name = "test school", EstablishmentPhases = new string[] { "Primary", "Secondary" } };
+        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
+        {
+            PagedResponse = new PagedResponse<SchoolSearchResultServiceModel>
+            {
+                TotalRecords = 2,
+                Records =
+                [
+                    _schoolSearchResult1,
+                    _schoolSearchResult2
+                ],
+                PagerInfo = new Pager(2, 1, 10)
+            }
+        });
+
+        var searchParamsModel = new SearchParamsModel() { NameSearchTerm = searchQuery.Name, LocationSearchTerm = searchQuery.Location, Phase = searchQuery.EstablishmentPhases };
+
+        // act
+        var result = await _controller.SearchResults(searchParamsModel);
+        var viewModel = ((ViewResult)result).Model as SearchResultsViewModel;
+
+        // assert
+        Assert.NotNull(viewModel);
+        Assert.Equal(searchQuery.Name, viewModel.SearchParams.NameSearchTerm);
+        Assert.NotNull(viewModel.Pagination);
+        Assert.Equal("Primary", viewModel.Pagination.RouteAttributes[$"{nameof(searchParamsModel.Phase)}[0]"]);
+        Assert.Equal("Secondary", viewModel.Pagination.RouteAttributes[$"{nameof(searchParamsModel.Phase)}[1]"]);
     }
 }
