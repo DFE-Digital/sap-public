@@ -31,10 +31,10 @@
     gap: .5rem;
 }
 
-.legend-item img {
-    width: 22px;
-    height: auto;
-}
+    .legend-item img {
+        width: 22px;
+        height: auto;
+    }
 
 .marker-focus:focus {
     outline: 2px solid #2563eb;
@@ -62,9 +62,9 @@
     }
 }
 
-.select-filter > * {
-    margin: 0;
-}
+    .select-filter > * {
+        margin: 0;
+    }
 
 .app-highlight-grey {
     background-color: govuk-colour("light-grey");
@@ -87,7 +87,7 @@
 }
 
 .info__icon {
-    content: url(/assets/images/custom-info-icon.svg);    
+    content: url(/assets/images/custom-info-icon.svg);
 }
 
 .assignment__icon {
@@ -226,10 +226,10 @@
         margin-bottom: 8px;
     }
 
-    .moj-side-navigation__item > a {
-        border-bottom: none !important;
-        padding: 8px 15px 8px 15px !important;
-    }
+        .moj-side-navigation__item > a {
+            border-bottom: none !important;
+            padding: 8px 15px 8px 15px !important;
+        }
 
     .moj-side-navigation__item--active {
         border-left: 0.25em solid govuk-colour("blue");
@@ -256,10 +256,10 @@
         }
     }
 
-    .select-filter > * {
-        width: 100%;
-        margin-bottom: 15px;
-    }
+        .select-filter > * {
+            width: 100%;
+            margin-bottom: 15px;
+        }
 
     .info__icon,
     .assignment__icon,
@@ -269,11 +269,11 @@
     }
 }
 
-    // Map and address
+// Map and address
 
-    .map-address {
-        width: 100%;
-    }
+.map-address {
+    width: 100%;
+}
 
     .map-address .map-container {
         width: 100%;
@@ -291,23 +291,23 @@
         border-top: 1px solid #b1b4b6;
     }
 
-    .ataglance-address-row {
-        display: grid;
-        grid-template-columns: 30% 70%;
-        box-sizing: border-box;
-        padding: 15px 20px;
-        border-left: 1px solid #b1b4b6;
-        border-right: 1px solid #b1b4b6;
-        border-bottom: 1px solid #b1b4b6;
-    }
+.ataglance-address-row {
+    display: grid;
+    grid-template-columns: 30% 70%;
+    box-sizing: border-box;
+    padding: 15px 20px;
+    border-left: 1px solid #b1b4b6;
+    border-right: 1px solid #b1b4b6;
+    border-bottom: 1px solid #b1b4b6;
+}
 
-    .ataglance-address-row__key {
-        font-weight: 700;
-    }
+.ataglance-address-row__key {
+    font-weight: 700;
+}
 
-    .ataglance-address-row__value {
-        min-width: 0;
-    }
+.ataglance-address-row__value {
+    min-width: 0;
+}
 
 /*    .ataglance-address {
         padding-left: 20px;
@@ -315,15 +315,15 @@
         padding-bottom: 20px;
     }*/
 
-    // School information card
+// School information card
 
-    .ataglance-card {
-        box-sizing: border-box;
-        background-color: #f4f8fb;
-        width: 100%;
-        padding: 15px 20px 5px;
-        margin-bottom: 30px;
-    }
+.ataglance-card {
+    box-sizing: border-box;
+    background-color: #f4f8fb;
+    width: 100%;
+    padding: 15px 20px 5px;
+    margin-bottom: 30px;
+}
 
     .ataglance-card .govuk-summary-list {
         margin-bottom: 0;
@@ -332,77 +332,77 @@
     .ataglance-card .govuk-summary-list__key {
         width: 30%;
     }
-    // Signposted About link
+// Signposted About link
 
-    .ataglance-link__link {
-        display: grid;
-        grid-template-columns: 2rem auto;
-        gap: 5px;
-        align-items: center;
+.ataglance-link__link {
+    display: grid;
+    grid-template-columns: 2rem auto;
+    gap: 5px;
+    align-items: center;
+}
+
+.ataglance-link__iconbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ataglance-link__icon {
+    display: block;
+    width: 2rem;
+    height: 2rem;
+}
+
+.ataglance-link__text {
+    align-self: center;
+}
+
+@media (max-width: 40.0525em) {
+    .map-address #map {
+        height: 240px;
     }
 
-    .ataglance-link__iconbox {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .ataglance-link__icon {
+    .ataglance-address-row {
         display: block;
-        width: 2rem;
-        height: 2rem;
+        padding: 15px;
     }
 
-    .ataglance-link__text {
-        align-self: center;
+    .ataglance-address-row__key {
+        margin-bottom: 5px;
     }
 
-    @media (max-width: 40.0525em) {
-        .map-address #map {
-            height: 240px;
-        }
-
-        .ataglance-address-row {
-            display: block;
-            padding: 15px;
-        }
-
-        .ataglance-address-row__key {
-            margin-bottom: 5px;
-        }
-
-        .ataglance-card {
-            padding-left: 15px;
-            padding-right: 15px;
-        }
+    .ataglance-card {
+        padding-left: 15px;
+        padding-right: 15px;
     }
-    // tag with extra spacing for use in My schools list
-    .govuk-tag.tag--block {
-        margin-top: 6px;
-        max-width: none
-    }
+}
+// tag with extra spacing for use in My schools list
+.govuk-tag.tag--block {
+    margin-top: 6px;
+    max-width: none
+}
 
 .govuk-tag {
     &--full-width {
         max-width: none;
     }
 }
-
 //search results
 /* Mobile first: stacked, full width */
 .distance-filter {
+    display: flex;
     flex-direction: column;
     gap: govuk-spacing(3);
 }
 
-.distance-filter .govuk-select,
-.distance-filter .govuk-button {
-    width: 100%;
-}
-
+    .distance-filter .govuk-select,
+    .distance-filter .govuk-button {
+        width: 100%;
+    }
 /* Tablet and up: inline */
 @include govuk-media-query($from: tablet) {
     .distance-filter {
+        flex-direction: row;
         align-items: flex-end;
     }
 
@@ -411,27 +411,28 @@
             min-width: 10rem;
         }
 
-    .distance-filter .govuk-button {
-        width: auto;
-        margin-bottom: 0;
-    }
-    /* Inline label + select */
-    .distance-filter .govuk-form-group {
-        align-items: center;
-        gap: govuk-spacing(3);
-        margin-bottom: 0;
-    }
+        .distance-filter .govuk-button {
+            width: auto;
+            margin-bottom: 0;
+        }
+        /* Inline label + select */
+        .distance-filter .govuk-form-group {
+            display: flex;
+            align-items: center;
+            gap: govuk-spacing(3);
+            margin-bottom: 0;
+        }
 
         .distance-filter .govuk-label {
             margin-bottom: 0;
             white-space: nowrap;
         }
-    }
+}
 
-    .school-header {
-        display: flex;
-        align-items: center;
-    }
+.school-header {
+    display: flex;
+    align-items: center;
+}
 
     .school-header form {
         margin-left: auto;
@@ -440,18 +441,18 @@
             padding: 4px;
         }
     }
-    /*
+/*
     Leaflet css override for accessibility warnings.
     Note: No licensing found on the leaflet website regarding changing styles etc.
 */
-    .leaflet-container a {
-        text-decoration: underline !important;
-    }
+.leaflet-container a {
+    text-decoration: underline !important;
+}
 
 .dataview-button {
     display: none;
 }
 
-.govuk-tag-width-override{
-    max-width: inherit; 
+.govuk-tag-width-override {
+    max-width: inherit;
 }
