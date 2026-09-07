@@ -94,8 +94,8 @@ public class AttainmentAndProgressPageTests : PageTestsBase
 
     [Theory]
     [InlineData(AcademicYearSelection.Current)]
-    //[InlineData(AcademicYearSelection.Previous)]
-    //[InlineData(AcademicYearSelection.Previous2)]
+    [InlineData(AcademicYearSelection.Previous)]
+    [InlineData(AcademicYearSelection.Previous2)]
     public async Task ShowsDisadvantagedTableValues(AcademicYearSelection yearSelection)
     {
         // Arrange
@@ -116,13 +116,20 @@ public class AttainmentAndProgressPageTests : PageTestsBase
 
         // Assert
         // CML TODO get local authority name and Assert
-        Assert.Contains("School", doc.GetTableHeaderContentByIdAndIndex("breakdown-disadvantaged-table", 1, 0));
-        Assert.Contains("Local council average", doc.GetTableHeaderContentByIdAndIndex("breakdown-disadvantaged-table", 2, 0));
-        Assert.Contains("England average", doc.GetTableHeaderContentByIdAndIndex("breakdown-disadvantaged-table", 3, 0));
-        Assert.Equal(expected.EstablishmentAttainment8DisadvantagedScore.CurrentYear!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("breakdown-disadvantaged-table", 1, 0));
-        Assert.Equal(expected.LocalAuthorityAttainment8DisadvantagedScore.CurrentYear!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("breakdown-disadvantaged-table", 2, 0));
-        Assert.Equal(expected.EnglandAttainment8DisadvantagedScore.CurrentYear!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("breakdown-disadvantaged-table", 3, 0));
+        Assert.Contains("School", doc.GetTableHeaderContentByIdAndIndex("breakdown-disadvantaged-table-0", 1, 0));
+        Assert.Contains("Local council average", doc.GetTableHeaderContentByIdAndIndex("breakdown-disadvantaged-table-0", 2, 0));
+        Assert.Contains("England average", doc.GetTableHeaderContentByIdAndIndex("breakdown-disadvantaged-table-0", 3, 0));
+        Assert.Equal(expected.EstablishmentAttainment8DisadvantagedScore.CurrentYear!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("breakdown-disadvantaged-table-0", 1, 0));
+        Assert.Equal(expected.LocalAuthorityAttainment8DisadvantagedScore.CurrentYear!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("breakdown-disadvantaged-table-0", 2, 0));
+        Assert.Equal(expected.EnglandAttainment8DisadvantagedScore.CurrentYear!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("breakdown-disadvantaged-table-0", 3, 0));
 
+        Assert.Equal(expected.EstablishmentAttainment8DisadvantagedScore.PreviousYear!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("breakdown-disadvantaged-table-1", 1, 0));
+        Assert.Equal(expected.LocalAuthorityAttainment8DisadvantagedScore.PreviousYear!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("breakdown-disadvantaged-table-1", 2, 0));
+        Assert.Equal(expected.EnglandAttainment8DisadvantagedScore.PreviousYear!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("breakdown-disadvantaged-table-1", 3, 0));
+
+        Assert.Equal(expected.EstablishmentAttainment8DisadvantagedScore.TwoYearsAgo!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("breakdown-disadvantaged-table-2", 1, 0));
+        Assert.Equal(expected.LocalAuthorityAttainment8DisadvantagedScore.TwoYearsAgo!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("breakdown-disadvantaged-table-2", 2, 0));
+        Assert.Equal(expected.EnglandAttainment8DisadvantagedScore.TwoYearsAgo!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("breakdown-disadvantaged-table-2", 3, 0));
     }
 
     [Theory]
