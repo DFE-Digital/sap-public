@@ -432,6 +432,30 @@
     color: #0f385c;
 }
 
+.ataglance-accordion
+.govuk-accordion__section-header
+#accordion-iconbox__english-maths {
+    background-color: #fff7bf;
+    color: #594d00;
+}
+
+.ataglance-accordion
+.govuk-accordion__section-header:hover
+#accordion-iconbox__english-maths {
+    background-color: #fff2a8;
+}
+
+.ataglance-results-chart {
+    width: 100%;
+    min-height: 260px;
+}
+
+@media (max-width: 40.0525em) {
+    .ataglance-results-chart {
+        min-height: 300px;
+    }
+}
+
 @media (max-width: 40.0525em) {
     .ataglance-card .govuk-summary-list__key {
         display: block;

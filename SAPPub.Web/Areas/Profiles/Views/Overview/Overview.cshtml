@@ -571,6 +571,111 @@
 
                     </div>
 
+
+                    @* English and maths GCSE results - closed by default *@
+                    <div class="govuk-accordion__section">
+
+                        <div class="govuk-accordion__section-header">
+
+                            <span id="accordion-iconbox__english-maths"
+                                  class="ataglance-accordion-iconbox"
+                                  aria-hidden="true">
+
+                                <img src="~/assets/images/bar-chart-icon.svg"
+                                     class="ataglance-accordion-iconbox__icon"
+                                     alt="" />
+
+                            </span>
+
+                            <h3 class="govuk-accordion__section-heading">
+                                <span class="govuk-accordion__section-button"
+                                      id="accordion-english-maths-heading">
+                                    English and maths GCSE results
+                                </span>
+                            </h3>
+
+                        </div>
+
+                        <div id="secondary-at-a-glance-accordion-content-3"
+                             class="govuk-accordion__section-content">
+
+                            <div class="govuk-body">
+
+                                <div class="ataglance-summary-card govuk-summary-card">
+
+                                    <div class="govuk-summary-card__title-wrapper">
+
+                                        <h4 class="govuk-summary-card__title">
+                                            Percentage of pupils achieving grade 5 and above in English and maths GCSEs
+                                        </h4>
+
+                                    </div>
+
+                                    <div class="govuk-summary-card__content">
+
+                                        <p class="govuk-body">
+                                            Grade 5 is comparable to the top of the old grade C.
+                                        </p>
+
+                                        <p class="govuk-body">
+                                            This data is for the 2024 to 2025 academic year.
+                                        </p>
+
+                                        <div id="overview-english-maths-chart-container"
+                                             class="chart-container ataglance-results-chart">
+
+                                            <canvas id="overview-english-maths-chart"
+                                                    class="js-chart"
+                                                    data-type="bar"
+                                                    data-chart='@Html.Raw(Json.Serialize(Model.EnglishAndMathsGrade5Chart))'
+                                                    data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
+                                            </canvas>
+
+                                        </div>
+
+                                        <div class="govuk-body">
+
+                                            <a asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults"
+                                               asp-all-route-data="@Model.RouteAttributes"
+                                               class="ataglance-link__link govuk-!-font-weight-bold govuk-link govuk-link--no-visited-state">
+
+                                                <span class="ataglance-link__iconbox"
+                                                      aria-hidden="true">
+
+                                                    <svg class="ataglance-link__icon"
+                                                         viewBox="0 0 32 32"
+                                                         focusable="false"
+                                                         aria-hidden="true">
+
+                                                        <circle cx="16"
+                                                                cy="16"
+                                                                r="14"
+                                                                fill="currentColor" />
+
+                                                        <path d="M9 15h9.5l-3.5-3.5 1.8-1.8L23 16l-6.2 6.3-1.8-1.8 3.5-3.5H9z"
+                                                              fill="#ffffff" />
+
+                                                    </svg>
+
+                                                </span>
+
+                                                <span class="ataglance-link__text">
+                                                    Find out more about English and maths results at this school
+                                                </span>
+
+                                            </a>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
                 </div>
 
             </section>
@@ -591,4 +696,13 @@
 @section Scripts {
     <script nonce="@Html.ScriptNonce().ToString()"
             src="~/js/map-schools.js"></script>
+
+    <script nonce="@Html.ScriptNonce().ToString()"
+            src="~/js/chart.umd.js"></script>
+
+    <script nonce="@Html.ScriptNonce().ToString()"
+            src="~/js/chartjs-plugin-datalabels.min.js"></script>
+
+    <script nonce="@Html.ScriptNonce().ToString()"
+            src="~/js/chart-factory.js"></script>
 }
