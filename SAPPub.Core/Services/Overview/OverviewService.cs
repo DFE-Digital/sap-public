@@ -27,6 +27,7 @@ namespace SAPPub.Core.Services.Overview
             {
                 Urn = overview.Establishment.URN,
                 SchoolName = overview.Establishment.EstablishmentName,
+                LocalAuthorityName = overview.Establishment.LAName,
                 PhaseOfEducation = overview.Establishment.PhaseOfEducationName,
                 AgeRangeLow = overview.Establishment.AgeRangeLow,
                 AgeRangeHigh = overview.Establishment.AgeRangeHigh,
@@ -50,6 +51,8 @@ namespace SAPPub.Core.Services.Overview
                 IsKS5 = overview.Establishment.IsKS5,
 
                 Attainment8 = overview.KS4Performance?.Attainment8_Tot_Est_Current_Num_Coded,
+                Attainment8LA = overview.KS4LAPerformance?.Attainment8_Tot_LA_Current_Num_Coded,
+                Attainment8England = overview.KS4EnglandPerformance?.Attainment8_Tot_Eng_Current_Num_Coded,
                 EnglishAndMathsGrade5Establishment =  overview.KS4Performance?.EngMaths59_Tot_Est_Current_Pct_Coded,
                 EnglishAndMathsGrade5LA = overview.KS4LAPerformance?.EngMaths59_Tot_LA_Current_Pct_Coded,
                 EnglishAndMathsGrade5England = overview.KS4EnglandPerformance?.EngMaths59_Tot_Eng_Current_Pct_Coded,

@@ -406,6 +406,19 @@
 }
 
 .ataglance-accordion
+.govuk-accordion__section-header
+#accordion-iconbox__attainment {
+    background-color: #d2e2f1;
+    color: #0f385c;
+}
+
+.ataglance-accordion
+.govuk-accordion__section-header:hover
+#accordion-iconbox__attainment {
+    background-color: #8eb8dc;
+}
+
+.ataglance-accordion
 .govuk-accordion__section-header:hover {
     color: #0b0c0c;
     background: #f3f3f3;
@@ -413,6 +426,10 @@
 
 .ataglance-summary-card .govuk-summary-card__title-wrapper {
     background-color: #f4f8fb;
+}
+
+.ataglance-card__heading {
+    color: #0f385c;
 }
 
 @media (max-width: 40.0525em) {
