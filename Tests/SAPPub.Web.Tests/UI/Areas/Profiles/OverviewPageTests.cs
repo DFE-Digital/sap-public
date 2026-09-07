@@ -957,7 +957,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                 });
 
         var content =
-            Page.Locator("#accordion-progress-content");
+            Page.Locator("#secondary-at-a-glance-accordion-content-1");
 
         // Closed by default.
         await Expect(accordionButton)
@@ -1182,7 +1182,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
         await Page.GotoAsync(url);
 
         var attainmentSection =
-            Page.Locator("#accordion-attainment-content");
+            Page.Locator("#secondary-at-a-glance-accordion-content-2");
 
         await Expect(attainmentSection)
             .ToBeVisibleAsync();
