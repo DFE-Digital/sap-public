@@ -389,9 +389,9 @@
                             <tbody class="govuk-table__body">
                                 <tr class="govuk-table__row">
                                     <th scope="row" class="govuk-table__header">Number of disadvantaged pupils</th>
-                                    <td class="govuk-table__cell">@Model.EstablishmentDisadvantagedPupilsEndOfKS4.DisplayNumber()</td>
-                                    <td class="govuk-table__cell">@Model.LocalAuthorityDisadvantagedPupilsEndOfKS4.DisplayNumber()</td>
-                                    <td class="govuk-table__cell">@Model.EnglandDisadvantagedPupilsEndOfKS4.DisplayNumber()</td>
+                                    <td class="govuk-table__cell">@Model.EstablishmentDisadvantagedPupilsEndOfKS4.DisplayNumber(format: "N0")</td>
+                                    <td class="govuk-table__cell">@Model.LocalAuthorityDisadvantagedPupilsEndOfKS4.DisplayNumber(format: "N0")</td>
+                                    <td class="govuk-table__cell">@Model.EnglandDisadvantagedPupilsEndOfKS4.DisplayNumber(format: "N0")</td>
                                 </tr>
                             </tbody>
                         </table>
