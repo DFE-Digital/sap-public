@@ -1,9 +1,10 @@
 ﻿using SAPPub.Core.Extensions;
+using SAPPub.Core.Helpers;
 using SAPPub.Core.ServiceModels.Common;
 using SAPPub.Core.ServiceModels.Overview;
 using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Helpers;
-using SAPPub.Core.Helpers;
+using SAPPub.Web.Models.Charts;
 
 namespace SAPPub.Web.Areas.Profiles.ViewModels.Overview;
 
@@ -46,6 +47,14 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
     public required SimpleCodedDoubleTableViewModel? ReadingWritingMathsExpected { get; init; }
 
     public required SimpleCodedDoubleTableViewModel? ReadingWritingMathsHigher { get; init; }
+
+    public required DisplayField<CodedDouble> EnglishAndMathsGrade5Establishment { get; init; }
+
+    public required DisplayField<CodedDouble> EnglishAndMathsGrade5LA { get; init; }
+
+    public required DisplayField<CodedDouble> EnglishAndMathsGrade5England { get; init; }
+
+    public required DataViewModel EnglishAndMathsGrade5Chart { get; init; }
 
     public required string LocalAuthorityName { get; init; }
 
@@ -109,7 +118,32 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
             ReadingWritingMathsHigher = MapComparison(
                 model.ReadingWritingMathsHigherEstablishment,
                 model.ReadingWritingMathsHigherLA,
-                model.ReadingWritingMathsHigherEngland)
+                model.ReadingWritingMathsHigherEngland),
+
+            EnglishAndMathsGrade5Establishment =
+                model.EnglishAndMathsGrade5Establishment.ToDisplayField(),
+
+                        EnglishAndMathsGrade5LA =
+                model.EnglishAndMathsGrade5LA.ToDisplayField(),
+
+                        EnglishAndMathsGrade5England =
+                model.EnglishAndMathsGrade5England.ToDisplayField(),
+
+                EnglishAndMathsGrade5Chart = new DataViewModel
+                {
+                    Labels =
+                [
+                    "School",
+                    $"{model.LocalAuthorityName} average",
+                    "England average"
+                ],
+                            Data =
+                [
+                    model.EnglishAndMathsGrade5Establishment?.Value,
+                    model.EnglishAndMathsGrade5LA?.Value,
+                    model.EnglishAndMathsGrade5England?.Value
+                ]
+            },
         };
     }
 

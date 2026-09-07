@@ -136,7 +136,19 @@ public sealed class FakeOverviewService : IOverviewService
 
             Attainment8 = null,
             Attainment8LA = null,
-            Attainment8England = null
+            Attainment8England = null,
+
+            EnglishAndMathsGrade5Establishment = new CodedDouble(
+                63,
+                string.Empty,
+                "63"),
+
+            EnglishAndMathsGrade5LA = null,
+
+            EnglishAndMathsGrade5England = new CodedDouble(
+                54,
+                string.Empty,
+                "54"),
         };
     }
 
@@ -197,7 +209,22 @@ public sealed class FakeOverviewService : IOverviewService
             Attainment8England = new CodedDouble(
                 45.2,
                 string.Empty,
-                "45.2")
+                "45.2"),
+
+            EnglishAndMathsGrade5Establishment = new CodedDouble(
+                63,
+                string.Empty,
+                "63"),
+
+            EnglishAndMathsGrade5LA = new CodedDouble(
+                50,
+                string.Empty,
+                "50"),
+
+            EnglishAndMathsGrade5England = new CodedDouble(
+                54,
+                string.Empty,
+                "54"),
         };
     }
 

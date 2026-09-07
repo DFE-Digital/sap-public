@@ -1013,7 +1013,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                 "#secondary-at-a-glance-accordion .govuk-accordion__section");
 
         await Expect(sections)
-            .ToHaveCountAsync(2);
+            .ToHaveCountAsync(3);
 
         await Expect(
             sections.Nth(0)
@@ -1022,7 +1022,9 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                     new()
                     {
                         NameRegex =
-                            new Regex("Pupil progress")
+                            new Regex(
+                                "Pupil progress",
+                                RegexOptions.IgnoreCase)
                     }))
             .ToBeVisibleAsync();
 
@@ -1034,10 +1036,25 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                     {
                         NameRegex =
                             new Regex(
-                                "Average pupil achievement")
+                                "Average pupil achievement",
+                                RegexOptions.IgnoreCase)
+                    }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            sections.Nth(2)
+                .GetByRole(
+                    AriaRole.Button,
+                    new()
+                    {
+                        NameRegex =
+                            new Regex(
+                                "English and maths GCSE results",
+                                RegexOptions.IgnoreCase)
                     }))
             .ToBeVisibleAsync();
     }
+
 
     [Fact]
     public async Task OverviewPage_AveragePupilAchievementAccordion_IsOpenByDefault()
@@ -1360,7 +1377,375 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                             "Average pupil achievement")
                 }))
             .ToHaveCountAsync(0);
+
+        await Expect(
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            "English and maths GCSE results",
+                            RegexOptions.IgnoreCase)
+                }))
+            .ToHaveCountAsync(0);
     }
+
+    [Fact]
+    public async Task OverviewPage_SecondarySchool_DisplaysEnglishAndMathsGcseResultsAfterAveragePupilAchievement()
+    {
+        await Page.GotoAsync(AchievementOverviewUrl);
+
+        var sections =
+            Page.Locator(
+                "#secondary-at-a-glance-accordion .govuk-accordion__section");
+
+        await Expect(sections)
+            .ToHaveCountAsync(3);
+
+        await Expect(
+            sections.Nth(2)
+                .GetByRole(
+                    AriaRole.Button,
+                    new()
+                    {
+                        NameRegex =
+                            new Regex(
+                                "English and maths GCSE results",
+                                RegexOptions.IgnoreCase)
+                    }))
+            .ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_EnglishAndMathsGcseResultsAccordion_IsClosedByDefault()
+    {
+        await Page.GotoAsync(AchievementOverviewUrl);
+
+        var button =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            "English and maths GCSE results",
+                            RegexOptions.IgnoreCase)
+                });
+
+        var content =
+            Page.Locator(
+                "#secondary-at-a-glance-accordion-content-3");
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "false");
+
+        await Expect(content)
+            .Not.ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_EnglishAndMathsGcseResultsAccordion_CanBeExpandedAndClosed()
+    {
+        await Page.GotoAsync(AchievementOverviewUrl);
+
+        var button =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            "English and maths GCSE results",
+                            RegexOptions.IgnoreCase)
+                });
+
+        var content =
+            Page.Locator(
+                "#secondary-at-a-glance-accordion-content-3");
+
+        // Closed by default.
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "false");
+
+        await Expect(content)
+            .Not.ToBeVisibleAsync();
+
+        // Expand.
+        await button.ClickAsync();
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "true");
+
+        await Expect(content)
+            .ToBeVisibleAsync();
+
+        // Close.
+        await button.ClickAsync();
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "false");
+
+        await Expect(content)
+            .Not.ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_EnglishAndMathsGcseResults_DisplaysExpectedContent()
+    {
+        await Page.GotoAsync(AchievementOverviewUrl);
+
+        var button =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            "English and maths GCSE results",
+                            RegexOptions.IgnoreCase)
+                });
+
+        await button.ClickAsync();
+
+        var content =
+            Page.Locator(
+                "#secondary-at-a-glance-accordion-content-3");
+
+        await Expect(content)
+            .ToBeVisibleAsync();
+
+        await Expect(
+            content.GetByRole(
+                AriaRole.Heading,
+                new()
+                {
+                    Name =
+                        "Percentage of pupils achieving grade 5 and above in English and maths GCSEs",
+                    Exact = true
+                }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            content.GetByText(
+                "Grade 5 is comparable to the top of the old grade C.",
+                new() { Exact = true }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            content.GetByText(
+                "This data is for the 2024 to 2025 academic year.",
+                new() { Exact = true }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            content.Locator(
+                "#overview-english-maths-chart"))
+            .ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_EnglishAndMathsGcseResultsChart_ContainsExpectedComparisonData()
+    {
+        await Page.GotoAsync(AchievementOverviewUrl);
+
+        var button =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            "English and maths GCSE results",
+                            RegexOptions.IgnoreCase)
+                });
+
+        await button.ClickAsync();
+
+        var chart =
+            Page.Locator(
+                "#overview-english-maths-chart");
+
+        await Expect(chart)
+            .ToBeVisibleAsync();
+
+        var chartData =
+            await chart.GetAttributeAsync(
+                "data-chart");
+
+        Assert.NotNull(chartData);
+
+        Assert.Contains(
+            "School",
+            chartData,
+            StringComparison.Ordinal);
+
+        Assert.Contains(
+            "Sheffield average",
+            chartData,
+            StringComparison.Ordinal);
+
+        Assert.Contains(
+            "England average",
+            chartData,
+            StringComparison.Ordinal);
+
+        Assert.Contains(
+            "63",
+            chartData,
+            StringComparison.Ordinal);
+
+        Assert.Contains(
+            "50",
+            chartData,
+            StringComparison.Ordinal);
+
+        Assert.Contains(
+            "54",
+            chartData,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task OverviewPage_EnglishAndMathsGcseResults_WhenComparisonResultUnavailable_DoesNotSuppressAvailableResults()
+    {
+        await Page.GotoAsync(
+            MissingDataOverviewUrl);
+
+        var button =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            "English and maths GCSE results",
+                            RegexOptions.IgnoreCase)
+                });
+
+        await button.ClickAsync();
+
+        var chart =
+            Page.Locator(
+                "#overview-english-maths-chart");
+
+        await Expect(chart)
+            .ToBeVisibleAsync();
+
+        var chartData =
+            await chart.GetAttributeAsync(
+                "data-chart");
+
+        Assert.NotNull(chartData);
+
+        Assert.Contains(
+            "63",
+            chartData,
+            StringComparison.Ordinal);
+
+        Assert.Contains(
+            "54",
+            chartData,
+            StringComparison.Ordinal);
+
+        Assert.Contains(
+            "null",
+            chartData,
+            StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task OverviewPage_EnglishAndMathsGcseResultsLink_NavigatesToSameSchoolResultsPage()
+    {
+        await Page.GotoAsync(
+            AchievementOverviewUrl);
+
+        var button =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            "English and maths GCSE results",
+                            RegexOptions.IgnoreCase)
+                });
+
+        await button.ClickAsync();
+
+        var link =
+            Page.GetByRole(
+                AriaRole.Link,
+                new()
+                {
+                    Name =
+                        "Find out more about English and maths results at this school",
+                    Exact = true
+                });
+
+        await Expect(link)
+            .ToBeVisibleAsync();
+
+        Assert.Null(
+            await link.GetAttributeAsync(
+                "target"));
+
+        await Expect(link)
+            .ToHaveAttributeAsync(
+                "href",
+                new Regex(
+                    $@"/school/{AchievementUrn}/{AchievementSlug}/secondary-performance/.*english.*maths",
+                    RegexOptions.IgnoreCase));
+
+        await link.ClickAsync();
+
+        await Expect(Page)
+            .ToHaveURLAsync(
+                new Regex(
+                    $@"/school/{AchievementUrn}/{AchievementSlug}/secondary-performance/.*english.*maths.*",
+                    RegexOptions.IgnoreCase));
+    }
+
+
+    [Fact]
+    public async Task OverviewPage_EnglishAndMathsAccordion_HasValidAriaControlsReference()
+    {
+        await Page.GotoAsync(
+            AchievementOverviewUrl);
+
+        var button =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            "English and maths GCSE results",
+                            RegexOptions.IgnoreCase)
+                });
+
+        var ariaControls =
+            await button.GetAttributeAsync(
+                "aria-controls");
+
+        Assert.Equal(
+            "secondary-at-a-glance-accordion-content-3",
+            ariaControls);
+
+        await Expect(
+            Page.Locator(
+                $"#{ariaControls}"))
+            .ToHaveCountAsync(1);
+    }
+
 
     private async Task<string> GetFailureMessageAsync(
         string message,
