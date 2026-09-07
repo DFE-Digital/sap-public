@@ -28,11 +28,11 @@ public class SearchResultsViewModel
 
         var routeAttributes = new Dictionary<string, string?>
         {
-            { nameof(searchModel.NameSearchTerm), searchModel?.NameSearchTerm },
-            { nameof(searchModel.LocationSearchTerm), searchModel?.LocationSearchTerm },
-            { nameof(searchModel.Distance), searchModel?.Distance.ToString() },
+            { nameof(searchModel.NameSearchTerm), searchModel.NameSearchTerm },
+            { nameof(searchModel.LocationSearchTerm), searchModel.LocationSearchTerm },
+            { nameof(searchModel.Distance), searchModel.Distance.ToString() },
         };
-        if (searchModel?.SchoolType != null)
+        if (searchModel.SchoolType != null)
         {
             for (int i = 0; i < searchModel.SchoolType.Length; i++)
             {
@@ -40,7 +40,7 @@ public class SearchResultsViewModel
             }
         }
 
-        if (searchModel?.Phase != null)
+        if (searchModel.Phase != null)
         {
             for (int i = 0; i < searchModel.Phase.Length; i++)
             {
