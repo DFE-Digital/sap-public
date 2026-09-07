@@ -69,15 +69,21 @@ public class AcademicPerformanceAttainmentAndProgressSingleYearViewModel
                 [
                     new DatasetMeasureViewModel {
                         Label = "School",
-                        Data = [new Measure { Value = attainmentAndProgressModel.EstablishmentAttainment8DisadvantagedScore.GetValueForYear(year), Unit = DataUnit.Score }]
+                        Data = [
+                            new Measure { Value = attainmentAndProgressModel.EstablishmentAttainment8DisadvantagedScore.GetValueForYear(year), Unit = DataUnit.Score }
+                        ]
                     },
                     new DatasetMeasureViewModel {
                         Label = laAverageLabel,
-                        Data = [new Measure { Value = attainmentAndProgressModel.LocalAuthorityAttainment8DisadvantagedScore.GetValueForYear(year), Unit = DataUnit.Score }]
+                        Data = [
+                            new Measure { Value = attainmentAndProgressModel.LocalAuthorityAttainment8DisadvantagedScore.GetValueForYear(year), Unit = DataUnit.Score }
+                        ]
                     },
                     new DatasetMeasureViewModel {
                         Label = "England average",
-                        Data = [new Measure { Value = attainmentAndProgressModel.EnglandAttainment8DisadvantagedScore.GetValueForYear(year), Unit = DataUnit.Score }]
+                        Data = [
+                            new Measure { Value = attainmentAndProgressModel.EnglandAttainment8DisadvantagedScore.GetValueForYear(year), Unit = DataUnit.Score }
+                        ]
                     },
                 ],
         };

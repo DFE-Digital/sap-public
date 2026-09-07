@@ -252,14 +252,14 @@
                         <govuk-accordion-item-content>
 
                             @await Html.PartialAsync("_DisadvantagedPupils")
-                            @await Html.PartialAsync("_SeriesViewTable", Model.YearValues.CurrentYear.BreakdownDisadvantaged)
+                            @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.YearValues.CurrentYear.BreakdownDisadvantaged)
                             <govuk-details>
                                 <govuk-details-summary>
                                     Compare state-funded local and national averages for non-disadvantaged pupils
                                 </govuk-details-summary>
                                 <govuk-details-text>
                                     <h4 class="govuk-heading-s">Non-disadvantaged pupils</h4>
-                                    @await Html.PartialAsync("_SeriesViewTable", Model.BreakdownNonDisadvantaged)
+                                    @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.BreakdownNonDisadvantaged)
                                 </govuk-details-text>
                             </govuk-details>
                             
@@ -269,9 +269,9 @@
                                 </govuk-details-summary>
                                 <govuk-details-text>
                                     <h4 class="govuk-heading-s">2023 to 2024 academic year</h4>
-                                    @await Html.PartialAsync("_SeriesViewTable", Model.YearValues.PreviousYear.BreakdownDisadvantaged)
+                                    @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.YearValues.PreviousYear.BreakdownDisadvantaged)
                                     <h4 class="govuk-heading-s">2022 to 2023 academic year</h4>
-                                    @await Html.PartialAsync("_SeriesViewTable", Model.YearValues.TwoYearsAgo.BreakdownDisadvantaged)
+                                    @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.YearValues.TwoYearsAgo.BreakdownDisadvantaged)
                                 </govuk-details-text>
                             </govuk-details>
                         </govuk-accordion-item-content>
