@@ -267,9 +267,9 @@
                             </govuk-details-summary>
                             <govuk-details-text>
                                 <h4 class="govuk-heading-s">2023 to 2024 academic year</h4>
-                                @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.YearValues.PreviousYear.BreakdownDisadvantaged)
+                                @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.YearValues.PreviousYear?.BreakdownDisadvantaged)
                                 <h4 class="govuk-heading-s">2022 to 2023 academic year</h4>
-                                @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.YearValues.TwoYearsAgo.BreakdownDisadvantaged)
+                                @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.YearValues.TwoYearsAgo?.BreakdownDisadvantaged)
                             </govuk-details-text>
                         </govuk-details>
                     </govuk-accordion-item-content>
