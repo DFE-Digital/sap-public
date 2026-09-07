@@ -15,6 +15,7 @@ public class BaseProfilesTests
     public BaseProfilesTests()
     {
         fakeEstablishment = new EstablishmentTestBuilder()
+            .WithLAId("TST123")
             .WithTrustName("Trust")
             .WithWebsite("https://www.gov.uk/")
             .WithTelephoneNum("012154896")

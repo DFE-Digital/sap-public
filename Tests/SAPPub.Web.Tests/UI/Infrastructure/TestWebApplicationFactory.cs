@@ -10,15 +10,18 @@ using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.Services.Search;
+using SAPPub.Core.Interfaces.Services.Overview;
+using SAPPub.Web.Tests;
 
 namespace SAPPub.Web.Tests.UI.Infrastructure;
 
-public class TestWebApplicationFactory : WebApplicationFactory<Program>
+public class TestWebApplicationFactory(bool enableOverview = true) : WebApplicationFactory<Program>
 {
     private IHost? _host;
     public IConfiguration Configuration { get; private set; } = null!;
     private readonly static string EnvironmentName = "Testing";
     private static string? _cachedWebProjectPath;
+    private readonly bool _enableOverview = enableOverview;
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -62,6 +65,8 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
                 services.AddSingleton<IEstablishmentLinksRepository, FakeEstablishmentLinksRepository>();
                 services.RemoveAll(typeof(IEstablishmentRepository));
                 services.AddSingleton<IEstablishmentRepository, FakeEstablishmentRepository>();
+                services.RemoveAll(typeof(IOverviewService));
+                services.AddSingleton<IOverviewService, FakeOverviewService>();
             });
 
 
@@ -185,12 +190,13 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
 
     #region Configuration
 
-    private static Dictionary<string, string?> CreateConfigurationValues(string testDataFilePath)
+    private Dictionary<string, string?> CreateConfigurationValues(string testDataFilePath)
     {
         return new Dictionary<string, string?>
         {
             { "Establishments:CsvPath", testDataFilePath },
-            { "FeatureManagement:EstablishmentComparisonEnabled", "true" }
+            { "FeatureManagement:EstablishmentComparisonEnabled", "true" },
+            { "FeatureManagement:EnableOverview", _enableOverview.ToString() }
         };
     }
 

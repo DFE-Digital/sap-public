@@ -26,6 +26,11 @@ public class PaginationContext
     public bool Is16To19Enabled { get; set; }
 
     /// <summary>
+    /// Reflects the "Overview" feature flag. 
+    /// </summary>
+    public bool IsOverviewEnabled { get; set; }
+
+    /// <summary>
     /// Variable sub-tab/page availability flags, keyed by the destination Key in
     /// <see cref="SchoolProfileSitemap"/>. A destination with a variable flag is only
     /// included when its key is present here with a true value. Destinations that are

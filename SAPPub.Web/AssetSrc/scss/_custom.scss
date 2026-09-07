@@ -113,6 +113,36 @@
     }
 }
 
+/* Banner */
+.school-profile-banner {
+    background-color: #1d70b8;
+    padding-top: 20px;
+    padding-bottom: 20px;
+
+    &__name {
+        color: #ffffff;
+    }
+}
+
+.govuk-template--rebranded {
+    .govuk-service-navigation {
+        background-color: #1d70b8;
+        border-top: 1px solid #ffffff;
+        border-bottom: 1px solid #ffffff;
+
+        .govuk-service-navigation__container {
+            background-color: #1d70b8;
+        }
+
+        .govuk-service-navigation__service-name,
+        .govuk-service-navigation__service-name a,
+        .govuk-service-navigation__link,
+        .govuk-service-navigation__link:visited {
+            color: #ffffff;
+        }
+    }
+}
+
 /* Vertical navigation */
 .moj-side-navigation {
     padding: 0;
@@ -239,11 +269,118 @@
     }
 }
 
-// tag with extra spacing for use in My schools list
-.govuk-tag.tag--block {
-    margin-top: 6px;
-    max-width: none
-}
+    // Map and address
+
+    .map-address {
+        width: 100%;
+    }
+
+    .map-address .map-container {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .map-address #map {
+        box-sizing: border-box;
+        height: 200px;
+        min-height: 200px;
+        width: 100%;
+        border-radius: 0px;
+        border-left: 1px solid #b1b4b6;
+        border-right: 1px solid #b1b4b6;
+        border-top: 1px solid #b1b4b6;
+    }
+
+    .ataglance-address-row {
+        display: grid;
+        grid-template-columns: 30% 70%;
+        box-sizing: border-box;
+        padding: 15px 20px;
+        border-left: 1px solid #b1b4b6;
+        border-right: 1px solid #b1b4b6;
+        border-bottom: 1px solid #b1b4b6;
+    }
+
+    .ataglance-address-row__key {
+        font-weight: 700;
+    }
+
+    .ataglance-address-row__value {
+        min-width: 0;
+    }
+
+/*    .ataglance-address {
+        padding-left: 20px;
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }*/
+
+    // School information card
+
+    .ataglance-card {
+        box-sizing: border-box;
+        background-color: #f4f8fb;
+        width: 100%;
+        padding: 15px 20px 5px;
+        margin-bottom: 30px;
+    }
+
+    .ataglance-card .govuk-summary-list {
+        margin-bottom: 0;
+    }
+
+    .ataglance-card .govuk-summary-list__key {
+        width: 30%;
+    }
+    // Signposted About link
+
+    .ataglance-link__link {
+        display: grid;
+        grid-template-columns: 2rem auto;
+        gap: 5px;
+        align-items: center;
+    }
+
+    .ataglance-link__iconbox {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .ataglance-link__icon {
+        display: block;
+        width: 2rem;
+        height: 2rem;
+    }
+
+    .ataglance-link__text {
+        align-self: center;
+    }
+
+    @media (max-width: 40.0525em) {
+        .map-address #map {
+            height: 240px;
+        }
+
+        .ataglance-address-row {
+            display: block;
+            padding: 15px;
+        }
+
+        .ataglance-address-row__key {
+            margin-bottom: 5px;
+        }
+
+        .ataglance-card {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+    }
+    // tag with extra spacing for use in My schools list
+    .govuk-tag.tag--block {
+        margin-top: 6px;
+        max-width: none
+    }
 
 .govuk-tag {
     &--full-width {
@@ -269,10 +406,10 @@
         align-items: flex-end;
     }
 
-    .distance-filter .govuk-select {
-        width: auto;
-        min-width: 10rem;
-    }
+        .distance-filter .govuk-select {
+            width: auto;
+            min-width: 10rem;
+        }
 
     .distance-filter .govuk-button {
         width: auto;
@@ -285,32 +422,31 @@
         margin-bottom: 0;
     }
 
-    .distance-filter .govuk-label {
-        margin-bottom: 0;
-        white-space: nowrap;
+        .distance-filter .govuk-label {
+            margin-bottom: 0;
+            white-space: nowrap;
+        }
     }
-}
 
-.school-header {
-    display: flex;
-    align-items: center;
-}
-
-.school-header form {
-    margin-left: auto;
-
-    > button {
-        padding: 4px;
+    .school-header {
+        display: flex;
+        align-items: center;
     }
-}
 
-/*
+    .school-header form {
+        margin-left: auto;
+
+        > button {
+            padding: 4px;
+        }
+    }
+    /*
     Leaflet css override for accessibility warnings.
     Note: No licensing found on the leaflet website regarding changing styles etc.
 */
-.leaflet-container a {
-    text-decoration: underline !important;
-}
+    .leaflet-container a {
+        text-decoration: underline !important;
+    }
 
 .dataview-button {
     display: none;

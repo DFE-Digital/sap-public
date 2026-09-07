@@ -9,8 +9,7 @@ namespace SAPPub.Web.Areas.Profiles.ViewModels.KS2;
 
 public class AcademicPerformanceSubjectScaledScoresViewModel : BaseViewModel
 {
-    private const string PupilGroup = "Pupil group";
-    private const string AllPupilsAtTheSchool= "All pupils at the school";
+
 
     public required DataViewModel AllReadData { get; set; }
 

@@ -1,4 +1,5 @@
-﻿using SAPPub.Web.Tests.UI.Helpers;
+﻿using SAPPub.Playwright.Testing;
+using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
 namespace SAPPub.Web.Tests.UI.KS4;
@@ -50,23 +51,6 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
 
         // Assert
         Assert.NotNull(heading?.Replace(" ", ""));
-    }
-
-    [Fact]
-    public async Task AdmissionsPage_Displays_SchoolName_Caption()
-    {
-        // Arrange
-        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
-
-        // Act
-        var schoolNameCaptionLocator = Page.Locator("#school-name-caption");
-        var isVisible = await schoolNameCaptionLocator.IsVisibleAsync();
-        var schoolNameCaption = await schoolNameCaptionLocator.TextContentAsync();
-
-        // Assert
-        Assert.True(isVisible);
-        Assert.NotNull(schoolNameCaption);
-        Assert.Equal("Loreto High School Chorlton", schoolNameCaption);
     }
 
     [Fact]

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
@@ -11,7 +12,7 @@ using SAPPub.Web.Models.SecondarySchool;
 namespace SAPPub.Web.Areas.Profiles.Controllers;
 
 [Area("Profiles")]
-public class KS4Controller(IEstablishmentService establishmentService) : Controller
+public class KS4Controller(IEstablishmentService establishmentService, IFeatureManager featureManager) : Controller
 {
     [HttpGet]
     [Route("school/{urn}/{schoolName}/secondary-performance/progress-attainment", Name = RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress)]
@@ -71,7 +72,7 @@ public class KS4Controller(IEstablishmentService establishmentService) : Control
         CancellationToken ct = default)
     {
         var grade = GcseGradeSelectionExtensions.FromRouteSegment(gradeName);
-        if (!grade.HasValue)
+        if (!grade.HasValue || grade == GcseGradeDataSelection.Grade7AndAbove && !await featureManager.IsEnabledAsync(Constants.Constants.EnableSecondaryGrade7))
         {
             return NotFound();
         }

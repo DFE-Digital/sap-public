@@ -33,7 +33,7 @@ public class HeaderServiceNavigationTests(WebApplicationSetupFixture fixture) : 
 
         // Act
         // Locate the GOV.UK homepage link in the header
-        var govUkLink = Page.Locator("a.govuk-header__link--homepage");
+        var govUkLink = Page.Locator("a.govuk-header__homepage-link");
         var href = await govUkLink.GetAttributeAsync("href");
 
         // Assert
@@ -58,7 +58,8 @@ public class HeaderServiceNavigationTests(WebApplicationSetupFixture fixture) : 
         await Page.GotoAsync(string.Empty);
 
         // Act
-        var mySchoolsViewLink = Page.Locator("#my-schools-view-link");
+        var mySchoolsViewLinkWrapper = Page.Locator("#my-schools-view-link");
+        var mySchoolsViewLink = mySchoolsViewLinkWrapper.Locator("a").First;
         var isVisible = await mySchoolsViewLink.IsVisibleAsync();
         var text = await mySchoolsViewLink.InnerTextAsync();
         var href = await mySchoolsViewLink.GetAttributeAsync("href");

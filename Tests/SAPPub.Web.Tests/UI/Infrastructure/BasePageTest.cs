@@ -21,7 +21,7 @@ public abstract class BasePageTest : PageTest
         {
             BaseURL = _fixture.BaseUrl.TrimEnd('/'),
             IgnoreHTTPSErrors = true,
-            ViewportSize = new() { Width = 1280, Height = 720 },
+            ViewportSize = new() { Width = 1280, Height = 1080 },
             Locale = "en-GB",
             TimezoneId = "Europe/London",
             JavaScriptEnabled = true
@@ -42,7 +42,7 @@ public abstract class BasePageTest : PageTest
         await Page.WaitForSelectorAsync(selector, new() { Timeout = timeoutMs });
         await Page.WaitForTimeoutAsync(100);
     }
-    
+
     public async Task<ILocator> GetQueryInputLocatorAsync(int checkTimeoutMs = 1000)
     {
         var jsLocator = Page.Locator("input[name='__Query']");

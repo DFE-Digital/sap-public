@@ -39,7 +39,7 @@ public class OverviewControllerTests
         Assert.Null(viewResult.ViewName);
         Assert.Equal("123456", model.URN);
         Assert.Equal("Test School", model.SchoolName);
-        Assert.Equal("Secondary", model.EducationPhase);
+        Assert.Equal("Secondary", model.EducationPhase.Value);
         Assert.Equal("11 to 16", model.AgeRange.Value);
         Assert.Equal("1,234", model.NumberOfPupils.Value);
     }

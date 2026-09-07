@@ -147,7 +147,7 @@ public class KS2ControllerTests : BaseProfilesTests
         Assert.Equal(expectedModel.EnglandGrammarAtHigherStandard, model.EnglandGrammarAtHigherStandard.Value);
         Assert.Equal(expectedModel.EnglandEHCPPopulation, model.EnglandEHCPPopulation.Value);
         Assert.Equal(expectedModel.EnglandSENSupportPopulation, model.EnglandSENSupportPopulation.Value);
-       
+
         _mockKS2AdditionalMeasuresService
             .Verify(a => a.GetAdditionalMeasures(fakeMinimumEstablishment.URN, CancellationToken.None), Times.Once);
     }
@@ -157,10 +157,10 @@ public class KS2ControllerTests : BaseProfilesTests
     public async Task Get_AcademicPerformanceMeetingOrExceedingStandards_ReturnsValidViewModel()
     {
         // Arrange
-        var expectedModel = GetMeetingOrExceedingStandardsModel();
+        var expectedModel = GetKS2MeetingOrExceedingStandardsModel();
 
         _mockKS2MeetingOrExceedingStandardsService
-            .Setup(a => a.GetMeetingOrExceedingStandardsPercentages(fakeMinimumEstablishment.URN, CancellationToken.None))
+            .Setup(a => a.GetMeetingOrExceedingStandardsPercentages(fakeMinimumEstablishment.URN, fakeMinimumEstablishment.LAId, CancellationToken.None))
             .ReturnsAsync(expectedModel);
 
         // Act
@@ -199,69 +199,125 @@ public class KS2ControllerTests : BaseProfilesTests
         Assert.Equal(expectedModel.EnglandPercentageExceeding.PreviousYear.Value, model.AllExceedingStandardsOverTimeData!.Datasets[2].Data[1]!.Value);
         Assert.Equal(expectedModel.EnglandPercentageExceeding.CurrentYear.Value, model.AllExceedingStandardsOverTimeData!.Datasets[2].Data[2]!.Value);
 
+        Assert.Equal(expectedModel.GirlsMeetingExpectedStandard.Value.ToString(), model.GirlsAndBoys.Rows.First().MeetingStandard.Value.ToString());
+        Assert.Equal(expectedModel.GirlsExceedingExpectedStandard.Value.ToString(), model.GirlsAndBoys.Rows.First().ExceedingStandard.Value.ToString());
+        Assert.Equal(expectedModel.BoysMeetingExpectedStandard.Value.ToString(), model.GirlsAndBoys.Rows.Skip(1).First().MeetingStandard.Value.ToString());
+        Assert.Equal(expectedModel.BoysExceedingExpectedStandard.Value.ToString(), model.GirlsAndBoys.Rows.Skip(1).First().ExceedingStandard.Value.ToString());
+        Assert.Equal(expectedModel.AllPupilsMeetingExpectedStandard.Value.ToString(), model.GirlsAndBoys.Rows.Skip(2).First().MeetingStandard.Value.ToString());
+        Assert.Equal(expectedModel.AllPupilsExceedingExpectedStandard.Value.ToString(), model.GirlsAndBoys.Rows.Skip(2).First().ExceedingStandard.Value.ToString());
+
+        Assert.Equal(expectedModel.EALMeetingExpectedStandard.Value.ToString(), model.EnglishAsAnAdditionalLanguage.Rows.First().MeetingStandard.Value.ToString());
+        Assert.Equal(expectedModel.EALExceedingExpectedStandard.Value.ToString(), model.EnglishAsAnAdditionalLanguage.Rows.First().ExceedingStandard.Value.ToString());
+        Assert.Equal(expectedModel.AllPupilsMeetingExpectedStandard.Value.ToString(), model.EnglishAsAnAdditionalLanguage.Rows.Skip(1).First().MeetingStandard.Value.ToString());
+        Assert.Equal(expectedModel.AllPupilsExceedingExpectedStandard.Value.ToString(), model.EnglishAsAnAdditionalLanguage.Rows.Skip(1).First().ExceedingStandard.Value.ToString());
+
+        Assert.Equal(expectedModel.NonMobileMeetingExpectedStandard.Value.ToString(), model.NonMobilePupils.Rows.First().MeetingStandard.Value.ToString());
+        Assert.Equal(expectedModel.NonMobileExceedingExpectedStandard.Value.ToString(), model.NonMobilePupils.Rows.First().ExceedingStandard.Value.ToString());
+        Assert.Equal(expectedModel.AllPupilsMeetingExpectedStandard.Value.ToString(), model.NonMobilePupils.Rows.Skip(1).First().MeetingStandard.Value.ToString());
+        Assert.Equal(expectedModel.AllPupilsExceedingExpectedStandard.Value.ToString(), model.NonMobilePupils.Rows.Skip(1).First().ExceedingStandard.Value.ToString());
+
+        Assert.Equal(expectedModel.EstablishmentDisadvantagedMeetingExpectedStandard.Value.ToString(), model.DisadvantagedPupils.Rows.First().MeetingStandard.Value.ToString());
+        Assert.Equal(expectedModel.EstablishmentDisadvantagedExceedingExpectedStandard.Value.ToString(), model.DisadvantagedPupils.Rows.First().ExceedingStandard.Value.ToString());
+        Assert.Equal(expectedModel.LocalAuthorityDisadvantagedMeetingExpectedStandard.Value.ToString(), model.DisadvantagedPupils.Rows.Skip(1).First().MeetingStandard.Value.ToString());
+        Assert.Equal(expectedModel.LocalAuthorityDisadvantagedExceedingExpectedStandard.Value.ToString(), model.DisadvantagedPupils.Rows.Skip(1).First().ExceedingStandard.Value.ToString());
+        Assert.Equal(expectedModel.EnglandDisadvantagedMeetingExpectedStandard.Value.ToString(), model.DisadvantagedPupils.Rows.Skip(2).First().MeetingStandard.Value.ToString());
+        Assert.Equal(expectedModel.EnglandDisadvantagedExceedingExpectedStandard.Value.ToString(), model.DisadvantagedPupils.Rows.Skip(2).First().ExceedingStandard.Value.ToString());
+
+        Assert.Equal(expectedModel.LocalAuthorityNonDisadvantagedMeetingExpectedStandard.Value.ToString(), model.NonDisadvantagedPupils.Rows.First().MeetingStandard.Value.ToString());
+        Assert.Equal(expectedModel.LocalAuthorityNonDisadvantagedExceedingExpectedStandard.Value.ToString(), model.NonDisadvantagedPupils.Rows.First().ExceedingStandard.Value.ToString());
+        Assert.Equal(expectedModel.EnglandNonDisadvantagedMeetingExpectedStandard.Value.ToString(), model.NonDisadvantagedPupils.Rows.Skip(1).First().MeetingStandard.Value.ToString());
+        Assert.Equal(expectedModel.EnglandNonDisadvantagedExceedingExpectedStandard.Value.ToString(), model.NonDisadvantagedPupils.Rows.Skip(1).First().ExceedingStandard.Value.ToString());
+
+
         _mockKS2MeetingOrExceedingStandardsService
-            .Verify(a => a.GetMeetingOrExceedingStandardsPercentages(fakeMinimumEstablishment.URN, CancellationToken.None), Times.Once);
+            .Verify(a => a.GetMeetingOrExceedingStandardsPercentages(fakeMinimumEstablishment.URN, fakeMinimumEstablishment.LAId, CancellationToken.None), Times.Once);
     }
 
-    private static KS2MeetingOrExceedingStandardsModel GetMeetingOrExceedingStandardsModel()
+    private static KS2MeetingOrExceedingStandardsModel GetKS2MeetingOrExceedingStandardsModel()
     {
         return new KS2MeetingOrExceedingStandardsModel
         {
             EstablishmentPercentageMeetingOrExceeding = new RelativeYearValues<CodedDouble>
             {
-                CurrentYear = new CodedDouble(1, string.Empty, "1"),
-                PreviousYear = new CodedDouble(2, string.Empty, "2"),
-                TwoYearsAgo = new CodedDouble(3, string.Empty, "3")
+                CurrentYear = GetCodedDouble(1),
+                PreviousYear = GetCodedDouble(2),
+                TwoYearsAgo = GetCodedDouble(3)
             },
-
             LocalAuthorityPercentageMeetingOrExceeding = new RelativeYearValues<CodedDouble>
             {
-                CurrentYear = new CodedDouble(4, string.Empty, "4"),
-                PreviousYear = new CodedDouble(5, string.Empty, "5"),
-                TwoYearsAgo = new CodedDouble(6, string.Empty, "6")
+                CurrentYear = GetCodedDouble(4),
+                PreviousYear = GetCodedDouble(5),
+                TwoYearsAgo = GetCodedDouble(6)
             },
+
             EnglandPercentageMeetingOrExceeding = new RelativeYearValues<CodedDouble>
             {
-                CurrentYear = new CodedDouble(7, string.Empty, "7"),
-                PreviousYear = new CodedDouble(8, string.Empty, "8"),
-                TwoYearsAgo = new CodedDouble(9, string.Empty, "9")
+                CurrentYear = GetCodedDouble(7),
+                PreviousYear = GetCodedDouble(8),
+                TwoYearsAgo = GetCodedDouble(9)
             },
             EstablishmentPercentageExceeding = new RelativeYearValues<CodedDouble>
             {
-                CurrentYear = new CodedDouble(10, string.Empty, "10"),
-                PreviousYear = new CodedDouble(11, string.Empty, "11"),
-                TwoYearsAgo = new CodedDouble(12, string.Empty, "12")
+                CurrentYear = GetCodedDouble(10),
+                PreviousYear = GetCodedDouble(11),
+                TwoYearsAgo = GetCodedDouble(12)
             },
             LocalAuthorityPercentageExceeding = new RelativeYearValues<CodedDouble>
             {
-                CurrentYear = new CodedDouble(13, string.Empty, "13"),
-                PreviousYear = new CodedDouble(14, string.Empty, "14"),
-                TwoYearsAgo = new CodedDouble(15, string.Empty, "15")
+                CurrentYear = GetCodedDouble(13),
+                PreviousYear = GetCodedDouble(14),
+                TwoYearsAgo = GetCodedDouble(15)
             },
 
             EnglandPercentageExceeding = new RelativeYearValues<CodedDouble>
             {
-                CurrentYear = new CodedDouble(16, string.Empty, "16"),
-                PreviousYear = new CodedDouble(17, string.Empty, "17"),
-                TwoYearsAgo = new CodedDouble(18, string.Empty, "18")
-            }
+                CurrentYear = GetCodedDouble(16),
+                PreviousYear = GetCodedDouble(17),
+                TwoYearsAgo = GetCodedDouble(18)
+            },
+            AllPupilsExceedingExpectedStandard = GetCodedDouble(19),
+            AllPupilsMeetingExpectedStandard = GetCodedDouble(20),
+            BoysExceedingExpectedStandard = GetCodedDouble(21),
+            BoysMeetingExpectedStandard = GetCodedDouble(22),
+            EALExceedingExpectedStandard = GetCodedDouble(23),
+            EALMeetingExpectedStandard = GetCodedDouble(24),
+            EnglandDisadvantagedExceedingExpectedStandard = GetCodedDouble(25),
+            EnglandDisadvantagedMeetingExpectedStandard = GetCodedDouble(26),
+            EnglandNonDisadvantagedExceedingExpectedStandard = GetCodedDouble(27),
+            EnglandNonDisadvantagedMeetingExpectedStandard = GetCodedDouble(28),
+            EstablishmentDisadvantagedExceedingExpectedStandard = GetCodedDouble(29),
+            EstablishmentDisadvantagedMeetingExpectedStandard = GetCodedDouble(30),
+            GirlsExceedingExpectedStandard = GetCodedDouble(31),
+            GirlsMeetingExpectedStandard = GetCodedDouble(32),
+            LocalAuthorityDisadvantagedExceedingExpectedStandard = GetCodedDouble(33),
+            LocalAuthorityDisadvantagedMeetingExpectedStandard = GetCodedDouble(34),
+            LocalAuthorityNonDisadvantagedExceedingExpectedStandard = GetCodedDouble(35),
+            LocalAuthorityNonDisadvantagedMeetingExpectedStandard = GetCodedDouble(36),
+            NonMobileExceedingExpectedStandard = GetCodedDouble(37),
+            NonMobileMeetingExpectedStandard = GetCodedDouble(38)
         };
+
+    }
+
+    private static CodedDouble GetCodedDouble(double val)
+    {
+        return new CodedDouble(val, string.Empty, val.ToString());
     }
 
     private static KS2AdditionalMeasuresModel GetKS2AdditionalMeasuresModel()
     {
         return new KS2AdditionalMeasuresModel
         {
-            EstablishmentGrammarAtExpectedStandard = new CodedDouble(1, string.Empty, "1"),
-            EstablishmentGrammarAtHigherStandard = new CodedDouble(1, string.Empty, "2"),
-            EstablishmentEHCPPopulation = new CodedDouble(1, string.Empty, "7"),
-            EstablishmentSENSupportPopulation = new CodedDouble(1, string.Empty, "8"),        
-            LAGrammarAtExpectedStandard = new CodedDouble(1, string.Empty, "3"),
-            LAGrammarAtHigherStandard = new CodedDouble(1, string.Empty, "4"),
-            EnglandGrammarAtExpectedStandard = new CodedDouble(1, string.Empty, "5"),
-            EnglandGrammarAtHigherStandard = new CodedDouble(1, string.Empty, "6"),
-            EnglandEHCPPopulation = new CodedDouble(1, string.Empty, "9"),
-            EnglandSENSupportPopulation = new CodedDouble(1, string.Empty, "10"),
+            EstablishmentGrammarAtExpectedStandard = GetCodedDouble(1),
+            EstablishmentGrammarAtHigherStandard = GetCodedDouble(2),
+            EstablishmentEHCPPopulation = GetCodedDouble(7),
+            EstablishmentSENSupportPopulation = GetCodedDouble(8),
+            LAGrammarAtExpectedStandard = GetCodedDouble(3),
+            LAGrammarAtHigherStandard = GetCodedDouble(4),
+            EnglandGrammarAtExpectedStandard = GetCodedDouble(5),
+            EnglandGrammarAtHigherStandard = GetCodedDouble(6),
+            EnglandEHCPPopulation = GetCodedDouble(9),
+            EnglandSENSupportPopulation = GetCodedDouble(10),
         };
     }
 
@@ -270,21 +326,21 @@ public class KS2ControllerTests : BaseProfilesTests
         return new KS2PupilPerformance
         {
             Urn = fakeMinimumEstablishment.URN,
-            EstablishmentReadingScore = new CodedDouble(1, "", ""),
+            EstablishmentReadingScore = GetCodedDouble(1),
             EstablishmentReadingDescription = new CodedString("2", "", ""),
-            EstablishmentReadingConfidenceUpper = new CodedDouble(3, "", ""),
-            EstablishmentReadingConfidenceLower = new CodedDouble(4, "", ""),
-            LaReadingScore = new CodedDouble(5, "", ""),
-            EstablishmentWritingScore = new CodedDouble(6, "", ""),
+            EstablishmentReadingConfidenceUpper = GetCodedDouble(3),
+            EstablishmentReadingConfidenceLower = GetCodedDouble(4),
+            LaReadingScore = GetCodedDouble(5),
+            EstablishmentWritingScore = GetCodedDouble(6),
             EstablishmentWritingDescription = new CodedString("7", "", ""),
-            EstablishmentWritingConfidenceUpper = new CodedDouble(8, "", ""),
-            EstablishmentWritingConfidenceLower = new CodedDouble(9, "", ""),
-            LaWritingScore = new CodedDouble(10, "", ""),
-            EstablishmentMathsScore = new CodedDouble(11, "", ""),
+            EstablishmentWritingConfidenceUpper = GetCodedDouble(8),
+            EstablishmentWritingConfidenceLower = GetCodedDouble(9),
+            LaWritingScore = GetCodedDouble(10),
+            EstablishmentMathsScore = GetCodedDouble(11),
             EstablishmentMathsDescription = new CodedString("12", "", ""),
-            EstablishmentMathsConfidenceUpper = new CodedDouble(13, "", ""),
-            EstablishmentMathsConfidenceLower = new CodedDouble(14, "", ""),
-            LaMathsScore = new CodedDouble(15, "", ""),
+            EstablishmentMathsConfidenceUpper = GetCodedDouble(13),
+            EstablishmentMathsConfidenceLower = GetCodedDouble(14),
+            LaMathsScore = GetCodedDouble(15),
         };
     }
 }

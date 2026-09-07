@@ -1,4 +1,5 @@
 ﻿using Microsoft.Playwright;
+using SAPPub.Playwright.Testing;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
@@ -17,6 +18,17 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         ["178965"] = "school/178965/predecessor-1-to-abbey-park-school/about",
         ["178966"] = "school/178966/predecessor-2-to-abbey-park-school/about"
     };
+
+    [Fact]
+    public async Task Index_ReRoutesToValidPage()
+    {
+        // Arrange && Act
+        var response = await Page.GotoAsync("school/105574");
+
+        // Assert
+        Assert.NotNull(response);
+        Assert.Equal(200, response.Status);
+    }
 
     [Fact]
     public async Task AboutSchoolPage_LoadsSuccessfully()
@@ -43,35 +55,39 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
     }
 
     [Fact]
-    public async Task AboutSchoolPage_DisplaysMainHeading()
+    public async Task AboutSchoolPage_DisplaysSchoolNameAsMainHeading()
     {
-        // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
-        // Act
-        var heading = await Page.Locator("h1").TextContentAsync();
+        var heading = Page.GetByRole(
+            AriaRole.Heading,
+            new()
+            {
+                Level = 1,
+                Name = "Loreto High School Chorlton",
+                Exact = true
+            });
 
-        // Assert
-        Assert.NotNull(heading);
-        Assert.NotEmpty(heading!.Trim());
+        await Expect(heading).ToBeVisibleAsync();
     }
 
     [Fact]
-    public async Task AboutSchoolPage_Displays_SchoolName_Caption()
+    public async Task AboutSchoolPage_DisplaysSectionHeading()
     {
-        // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
-        // Act
-        var schoolNameCaptionLocator = Page.Locator("#school-name-caption");
-        var isVisible = await schoolNameCaptionLocator.IsVisibleAsync();
-        var schoolNameCaption = await schoolNameCaptionLocator.TextContentAsync();
+        var heading = Page.GetByRole(
+            AriaRole.Heading,
+            new()
+            {
+                Level = 2,
+                Name = "About the school",
+                Exact = true
+            });
 
-        // Assert
-        Assert.True(isVisible);
-        Assert.NotNull(schoolNameCaption);
-        Assert.Equal("Loreto High School Chorlton", schoolNameCaption);
+        await Expect(heading).ToBeVisibleAsync();
     }
+
 
     [Fact]
     public async Task AboutSchoolPage_DoesNotShowAddButton_ForNonKs4School()
@@ -118,14 +134,13 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
             links[0].ClickAsync()
         );
 
-        var schoolNameCaptionLocator = Page.Locator("#school-name-caption");
-        var isVisible = await schoolNameCaptionLocator.IsVisibleAsync();
-        var schoolNameCaption = await schoolNameCaptionLocator.TextContentAsync();
-
         // Assert
-        Assert.True(isVisible);
-        Assert.NotNull(schoolNameCaption);
-        Assert.Equal("Abbey Park School", schoolNameCaption);
+        await Expect(Page.GetByRole(AriaRole.Heading, new()
+                    {
+                        Level = 1,
+                        Name = "Abbey Park School",
+                        Exact = true
+                    })).ToBeVisibleAsync();
     }
 
     [Theory]
@@ -177,14 +192,14 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
             links[0].ClickAsync()
         );
 
-        var schoolNameCaptionLocator = Page.Locator("#school-name-caption");
-        var isVisible = await schoolNameCaptionLocator.IsVisibleAsync();
-        var schoolNameCaption = await schoolNameCaptionLocator.TextContentAsync();
-
         // Assert
-        Assert.True(isVisible);
-        Assert.NotNull(schoolNameCaption);
-        Assert.Equal("Predecessor 1 to Abbey Park School", schoolNameCaption);
+        await Expect(Page.GetByRole(AriaRole.Heading,
+        new()
+        {
+            Level = 1,
+            Name = "Predecessor 1 to Abbey Park School",
+            Exact = true
+        })).ToBeVisibleAsync();
     }
 
     [Theory]

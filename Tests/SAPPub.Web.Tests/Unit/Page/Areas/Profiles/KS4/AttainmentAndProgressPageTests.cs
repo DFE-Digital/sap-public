@@ -48,35 +48,6 @@ public class AttainmentAndProgressPageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task AcademicPerformanceAttainmentAndProgressPage_Displays_SchoolName_Caption()
-    {
-        // Arrange
-        var urn = "123456";
-        var establishmentName = "Loreto High School Chorlton";
-        _serviceMock
-            .Setup(service => service.GetAttainmentAndProgressAsync(
-                It.IsAny<string>(),
-                It.IsAny<AcademicYearSelection>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new AttainmentAndProgressModel()
-            {
-                Urn = urn,
-                SchoolName = establishmentName,
-                IsKS2 = false,
-                IsKS4 = true,
-                IsKS5 = false
-            });
-
-        // Act
-        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, $"{_pageRoute}/{AcademicYearSelection.Current.ToRouteSegment()}"));
-        var schoolNameCaptionElement = doc.GetElementById("school-name-caption");
-        var schoolNameCaption = schoolNameCaptionElement?.TextContent;
-
-        // Assert
-        Assert.Equal("Loreto High School Chorlton", schoolNameCaption);
-    }
-
-    [Fact]
     public async Task ShowsAttainmentValues()
     {
         // Arrange

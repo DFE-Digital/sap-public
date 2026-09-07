@@ -26,32 +26,91 @@ public class KS5DestinationsTests : PageTestsBase
         SetupMock();
     }
 
+
     [Fact]
     public async Task KS5Destinations_HasCorrectPageElements()
     {
-        // Arrange/Act
+        // Arrange / Act
         var url = BuildUrl(_urn, _establishmentName, _pageRoute);
         var doc = await Fixture.BrowseToPage(url);
 
-        // Assert
+        // Assert - headings
+        var h1Elements = doc.GetElementsByTagName("h1");
+
+        Assert.Contains(
+            h1Elements,
+            x => x.TextContent.Trim() == _establishmentName);
+
         var h2Elements = doc.GetElementsByTagName("h2");
-        var tag = doc.QuerySelector(".govuk-tag.govuk-tag--full-width.govuk-tag--grey");
-        var chartContainer = doc.QuerySelector("#all-ks5-dest-data-chart-container");
-        var tableContainer = doc.QuerySelector("#all-ks5-dest-data-table-container");
+
+        Assert.Contains(
+            h2Elements,
+            x => x.TextContent.Trim() ==
+                 "Student destinations after 16 to 19 study (2023 leavers)");
+
+        // Assert - page elements
+        var tag =
+            doc.QuerySelector(
+                ".govuk-tag.govuk-tag--full-width.govuk-tag--grey");
+
+        var chartContainer =
+            doc.QuerySelector("#all-ks5-dest-data-chart-container");
+
+        var tableContainer =
+            doc.QuerySelector("#all-ks5-dest-data-table-container");
+
         Assert.NotNull(tag);
         Assert.NotNull(chartContainer);
         Assert.NotNull(tableContainer);
-        Assert.Equal("Student destinations after 16 to 19 study (2023 leavers)", h2Elements[1].InnerHtml);
-        Assert.Equal($"Number of students from this school or college included in the measure: {_establishmentTotalCohortFor}", tag!.InnerHtml.Trim());
-        Assert.Contains($"{_establishmentTotalOverall}%", doc.GetTableCellContentByIdAndIndex("all-ks5-dest-data-table-container", 0, 0));
-        Assert.Contains($"{_laTotalOverall}%", doc.GetTableCellContentByIdAndIndex("all-ks5-dest-data-table-container", 1, 0));
-        Assert.Contains($"{_englandTotalOverall}%", doc.GetTableCellContentByIdAndIndex("all-ks5-dest-data-table-container", 2, 0));
 
-        var allDestData = JsonSerializer.Deserialize<DataViewModel>(chartContainer.Children[0].GetAttribute("data-chart")!, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        Assert.Equal(
+            $"Number of students from this school or college included in the measure: {_establishmentTotalCohortFor}",
+            tag!.TextContent.Trim());
+
+        Assert.Contains(
+            $"{_establishmentTotalOverall}%",
+            doc.GetTableCellContentByIdAndIndex(
+                "all-ks5-dest-data-table-container",
+                0,
+                0));
+
+        Assert.Contains(
+            $"{_laTotalOverall}%",
+            doc.GetTableCellContentByIdAndIndex(
+                "all-ks5-dest-data-table-container",
+                1,
+                0));
+
+        Assert.Contains(
+            $"{_englandTotalOverall}%",
+            doc.GetTableCellContentByIdAndIndex(
+                "all-ks5-dest-data-table-container",
+                2,
+                0));
+
+        // Assert - chart data
+        var allDestData =
+            JsonSerializer.Deserialize<DataViewModel>(
+                chartContainer!.Children[0].GetAttribute("data-chart")!,
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
         Assert.NotNull(allDestData);
-        Assert.Equal("School or College", allDestData.Labels[0]);
-        Assert.Equal($"{_laName} average", allDestData.Labels[1]);
-        Assert.Equal("England average", allDestData.Labels[2]);
+
+        Assert.Equal(
+            "School or College",
+            allDestData!.Labels[0]);
+
+        Assert.Equal(
+            $"{_laName} average",
+            allDestData.Labels[1]);
+
+        Assert.Equal(
+            "England average",
+            allDestData.Labels[2]);
+
         Assert.Equal(66, allDestData.Data[0]);
         Assert.Equal(77, allDestData.Data[1]);
         Assert.Equal(55, allDestData.Data[2]);
@@ -69,7 +128,7 @@ public class KS5DestinationsTests : PageTestsBase
         var breakdownDisadvantagedStudentsInset = doc.QuerySelector("#breakdown-disadvantaged-students-inset-text");
         var findStatisticsLink = doc.QuerySelector("#find-statistics-link");
 
-        Assert.Equal("Breakdown of all students, including disadvantaged students", h2Elements[2].InnerHtml.Trim());
+        Assert.Equal("Breakdown of all students, including disadvantaged students", h2Elements[3].InnerHtml.Trim());
         Assert.NotNull(breakdownDisadvantagedStudentsInset);
 
         Assert.NotNull(findStatisticsLink);

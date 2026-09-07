@@ -1,9 +1,10 @@
 ﻿using Moq;
-using SAPPub.Core.Entities.KS4.Performance;
+using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.ServiceModels;
 using SAPPub.Core.Services.KS4.Performance;
+using SAPPub.Core.Tests.TestBuilders;
 
 namespace SAPPub.Core.Tests.Services.KS4.Performance
 {
@@ -15,7 +16,7 @@ namespace SAPPub.Core.Tests.Services.KS4.Performance
         private readonly Mock<IEnglandPerformanceService> _mockEnglandPerformanceService;
         private readonly EnglishAndMathsResultsService _service;
 
-        private readonly EstablishmentMinimumServiceModel fakeEstablishment = new()
+        private readonly EstablishmentMinimumServiceModel _fakeEstablishment = new()
         {
             URN = "123456",
             EstablishmentName = "Test Establishment",
@@ -38,67 +39,28 @@ namespace SAPPub.Core.Tests.Services.KS4.Performance
         }
 
         [Theory]
-        [InlineData(4)]
-        [InlineData(5)]
-        [InlineData(6)]
-        public async Task GetEnglishAndMathsResultsAsync_ShouldReturnData(int selectedGrade)
+        [InlineData(GcseGradeDataSelection.Grade4AndAbove)]
+        [InlineData(GcseGradeDataSelection.Grade5AndAbove)]
+        [InlineData(GcseGradeDataSelection.Grade7AndAbove)]
+        public async Task GetEnglishAndMathsResultsAsync_ShouldReturnData(GcseGradeDataSelection selectedGradeEnum)
         {
             // Arrange
-            var establishmentPerformance = new EstablishmentPerformance
-            {
-                Id = fakeEstablishment.URN,
-                EngMaths49_Tot_Est_Current_Pct = 100,
-                EngMaths59_Tot_Est_Current_Pct = 90,
-                EngMaths49_Boy_Est_Current_Pct = 80,
-                EngMaths59_Boy_Est_Current_Pct = 70,
-                EngMaths49_Grl_Est_Current_Pct = 90,
-                EngMaths59_Grl_Est_Current_Pct = 80,
-                EngMaths49_Tot_Est_Previous_Pct = 70,
-                EngMaths59_Tot_Est_Previous_Pct = 80,
-                EngMaths49_Tot_Est_Previous2_Pct = 60,
-                EngMaths59_Tot_Est_Previous2_Pct = 90,
-            };
+            var selectedGrade = Convert.ToInt32(selectedGradeEnum);
+            var establishmentPerformance = new EstablishmentPerformanceBuilder().WithUrn(_fakeEstablishment.URN).Build();
+            var lAPerformance = new LaPerformanceBuilder().WithId(_fakeEstablishment.LAId).Build();
 
-            var lAPerformance = new LAPerformance
-            {
-                Id = fakeEstablishment.LAId,
-                EngMaths49_Tot_LA_Current_Pct = 50,
-                EngMaths59_Tot_LA_Current_Pct = 80,
-                EngMaths49_Boy_LA_Current_Pct = 70,
-                EngMaths59_Boy_LA_Current_Pct = 80,
-                EngMaths49_Grl_LA_Current_Pct = 80,
-                EngMaths59_Grl_LA_Current_Pct = 60,
-                EngMaths49_Tot_LA_Previous_Pct = 80,
-                EngMaths59_Tot_LA_Previous_Pct = 50,
-                EngMaths49_Tot_LA_Previous2_Pct = 80,
-                EngMaths59_Tot_LA_Previous2_Pct = 70,
-            };
-
-            var englandPerformance = new EnglandPerformance
-            {
-                Id = "National",
-                EngMaths49_Tot_Eng_Current_Pct = 70,
-                EngMaths59_Tot_Eng_Current_Pct = 90,
-                EngMaths49_Boy_Eng_Current_Pct = 90,
-                EngMaths59_Boy_Eng_Current_Pct = 70,
-                EngMaths49_Grl_Eng_Current_Pct = 50,
-                EngMaths59_Grl_Eng_Current_Pct = 70,
-                EngMaths49_Tot_Eng_Previous_Pct = 70,
-                EngMaths59_Tot_Eng_Previous_Pct = 90,
-                EngMaths49_Tot_Eng_Previous2_Pct = 70,
-                EngMaths59_Tot_Eng_Previous2_Pct = 90,
-            };
+            var englandPerformance = new EnglandPerformanceBuilder().Build();
 
             _mockEstablishmentService
-                .Setup(r => r.GetEstablishmentMinimumAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(fakeEstablishment);
+                .Setup(r => r.GetEstablishmentMinimumAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(_fakeEstablishment);
 
             _mockEstablishmentPerformanceService
-                .Setup(r => r.GetEstablishmentPerformanceAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Setup(r => r.GetEstablishmentPerformanceAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(establishmentPerformance);
 
             _mockLAPerformanceService
-                .Setup(r => r.GetLAPerformanceAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Setup(r => r.GetLAPerformanceAsync(_fakeEstablishment.LAId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(lAPerformance);
 
             _mockEnglandPerformanceService
@@ -106,15 +68,15 @@ namespace SAPPub.Core.Tests.Services.KS4.Performance
                 .ReturnsAsync(englandPerformance);
 
             // Act
-            var result = await _service.GetEnglishAndMathsResultsAsync(fakeEstablishment.URN, selectedGrade, CancellationToken.None);
+            var result = await _service.GetEnglishAndMathsResultsAsync(_fakeEstablishment.URN, selectedGrade, CancellationToken.None);
 
             // Assert (common)
             Assert.NotNull(result);
-            Assert.Equal(fakeEstablishment.URN, result.Urn);
-            Assert.Equal(fakeEstablishment.EstablishmentName, result.SchoolName);
-            Assert.Equal(fakeEstablishment.LAName, result.LAName);
+            Assert.Equal(_fakeEstablishment.URN, result.Urn);
+            Assert.Equal(_fakeEstablishment.EstablishmentName, result.SchoolName);
+            Assert.Equal(_fakeEstablishment.LAName, result.LAName);
 
-            if (selectedGrade == 4)
+            if (selectedGradeEnum == GcseGradeDataSelection.Grade4AndAbove)
             {
                 Assert.Equal(establishmentPerformance.EngMaths49_Tot_Est_Current_Pct, result.EstablishmentAll.CurrentYear);
                 Assert.Equal(establishmentPerformance.EngMaths49_Tot_Est_Previous_Pct, result.EstablishmentAll.PreviousYear);
@@ -137,7 +99,7 @@ namespace SAPPub.Core.Tests.Services.KS4.Performance
                 Assert.Equal(englandPerformance.EngMaths49_Boy_Eng_Current_Pct, result.EnglandBoys.CurrentYear);
                 Assert.Equal(englandPerformance.EngMaths49_Grl_Eng_Current_Pct, result.EnglandGirls.CurrentYear);
             }
-            else if (selectedGrade == 5)
+            else if (selectedGradeEnum == GcseGradeDataSelection.Grade5AndAbove)
             {
                 Assert.Equal(establishmentPerformance.EngMaths59_Tot_Est_Current_Pct, result.EstablishmentAll.CurrentYear);
                 Assert.Equal(establishmentPerformance.EngMaths59_Tot_Est_Previous_Pct, result.EstablishmentAll.PreviousYear);
@@ -159,6 +121,26 @@ namespace SAPPub.Core.Tests.Services.KS4.Performance
 
                 Assert.Equal(englandPerformance.EngMaths59_Boy_Eng_Current_Pct, result.EnglandBoys.CurrentYear);
                 Assert.Equal(englandPerformance.EngMaths59_Grl_Eng_Current_Pct, result.EnglandGirls.CurrentYear);
+            }
+            else if (selectedGradeEnum == GcseGradeDataSelection.Grade7AndAbove)
+            {
+                Assert.Equal(establishmentPerformance.EngMaths79_Tot_Est_Current_Pct, result.EstablishmentAll.CurrentYear);
+                Assert.Equal(establishmentPerformance.EngMaths79_Tot_Est_Previous_Pct, result.EstablishmentAll.PreviousYear);
+                Assert.Equal(establishmentPerformance.EngMaths79_Tot_Est_Previous2_Pct, result.EstablishmentAll.TwoYearsAgo);
+                Assert.Equal(lAPerformance.EngMaths79_Tot_LA_Current_Pct, result.LocalAuthorityAll.CurrentYear);
+                Assert.Equal(lAPerformance.EngMaths79_Tot_LA_Previous_Pct, result.LocalAuthorityAll.PreviousYear);
+                Assert.Equal(lAPerformance.EngMaths79_Tot_LA_Previous2_Pct, result.LocalAuthorityAll.TwoYearsAgo);
+
+                Assert.Equal(englandPerformance.EngMaths79_Tot_Eng_Current_Pct, result.EnglandAll.CurrentYear);
+                Assert.Equal(englandPerformance.EngMaths79_Tot_Eng_Previous_Pct, result.EnglandAll.PreviousYear);
+                Assert.Equal(englandPerformance.EngMaths79_Tot_Eng_Previous2_Pct, result.EnglandAll.TwoYearsAgo);
+                Assert.Equal(establishmentPerformance.EngMaths79_Boy_Est_Current_Pct, result.EstablishmentBoys.CurrentYear);
+                Assert.Equal(establishmentPerformance.EngMaths79_Grl_Est_Current_Pct, result.EstablishmentGirls.CurrentYear);
+
+                Assert.Equal(lAPerformance.EngMaths79_Boy_LA_Current_Pct, result.LocalAuthorityBoys.CurrentYear);
+                Assert.Equal(lAPerformance.EngMaths79_Grl_LA_Current_Pct, result.LocalAuthorityGirls.CurrentYear);
+                Assert.Equal(englandPerformance.EngMaths79_Boy_Eng_Current_Pct, result.EnglandBoys.CurrentYear);
+                Assert.Equal(englandPerformance.EngMaths79_Grl_Eng_Current_Pct, result.EnglandGirls.CurrentYear);
             }
             else
             {

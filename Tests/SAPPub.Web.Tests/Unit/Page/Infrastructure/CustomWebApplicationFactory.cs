@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.FeatureManagement;
 using Moq;
-using SAPPub.Core.Interfaces;
 using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
@@ -62,7 +61,7 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.RemoveAll(typeof(IKS2AdditionalMeasuresService));
                 services.RemoveAll(typeof(IKS2PupilProgressService));
                 services.RemoveAll(typeof(IFeatureManager));
-
+                services.RemoveAll(typeof(IKS2MeetingOrExceedingStandardsService));
 
                 services.AddSingleton<MockAccessor<IAboutSchoolService>>();
                 services.AddSingleton<MockAccessor<IAttainmentAndProgressService>>();
@@ -89,7 +88,7 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.AddSingleton<MockAccessor<IKS2AdditionalMeasuresService>>();
                 services.AddSingleton<MockAccessor<IKS2PupilProgressService>>();
                 services.AddSingleton<MockAccessor<IFeatureManager>>();
-
+                services.AddSingleton<MockAccessor<IKS2MeetingOrExceedingStandardsService>>();
 
                 services.AddTransient(provider =>
                 {
@@ -203,6 +202,10 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                     }
 
                     return accessor.Object;
+                });
+                services.AddTransient(provider =>
+                {
+                    return provider.GetRequiredService<MockAccessor<IKS2MeetingOrExceedingStandardsService>>().Get()?.Object!;
                 });
             });
     }

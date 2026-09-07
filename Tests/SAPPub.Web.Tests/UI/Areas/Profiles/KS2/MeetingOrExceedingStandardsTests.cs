@@ -1,4 +1,5 @@
 ﻿using Microsoft.Playwright;
+using SAPPub.Playwright.Testing;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
@@ -61,23 +62,6 @@ public class MeetingOrExceedingStandardsTests(WebApplicationSetupFixture fixture
         // Assert
         Assert.NotNull(heading);
         Assert.NotEmpty(heading!.Trim());
-    }
-
-    [Fact]
-    public async Task MeetingOrExceedingStandardsResultsPage_Displays_SchoolName_Caption()
-    {
-        // Arrange
-        await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
-
-        // Act
-        var schoolNameCaptionLocator = Page.Locator("#school-name-caption");
-        var isVisible = await schoolNameCaptionLocator.IsVisibleAsync();
-        var schoolNameCaption = await schoolNameCaptionLocator.TextContentAsync();
-
-        // Assert
-        Assert.True(isVisible);
-        Assert.NotNull(schoolNameCaption);
-        Assert.Equal("St Paul's Church of England Academy", schoolNameCaption);
     }
 
     [Fact]

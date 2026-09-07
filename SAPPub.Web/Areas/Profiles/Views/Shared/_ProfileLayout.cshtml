@@ -1,0 +1,29 @@
+﻿@using SAPPub.Web.Areas.Profiles.ViewModels
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    if (Model is not ISchoolProfileViewModel profileModel)
+    {
+        throw new InvalidOperationException(
+            $"{Model?.GetType().Name ?? "Unknown model"} must implement {nameof(ISchoolProfileViewModel)}.");
+    }
+}
+
+@section SchoolProfileBanner {
+    <div class="school-profile-banner">
+        <div class="govuk-width-container app-width-container">
+            <h1 class="school-profile-banner__name
+                          govuk-heading-l
+                          govuk-!-margin-bottom-0">
+                @profileModel.SchoolName
+            </h1>
+        </div>
+    </div>
+}
+
+@RenderBody()
+
+@section Scripts {
+    @await RenderSectionAsync("Scripts", required: false)
+}

@@ -4,6 +4,8 @@
 @using SAPPub.Web.ViewComponents.SchoolProfilePagination
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 @using static SAPPub.Web.Constants.PageTitleConstants
+@using static SAPPub.Web.Constants.Constants;
+@inject Microsoft.FeatureManagement.IFeatureManager FeatureManager
 
 @{
     ViewData["Header"] = "Academic performance";
@@ -24,8 +26,7 @@
     })
 
     <div class="govuk-grid-column-three-quarters">
-        <span id="school-name-caption" class="govuk-caption-xl">@Model.SchoolName</span>
-        <h1 class="govuk-heading-xl">@ViewData["Header"]</h1>
+        <h2 class="govuk-heading-xl">@ViewData["Header"]</h2>
         <p class="govuk-body">
             Looking at school performance data is one way to see how well a school is doing.
             You should look at a range of information about a school before deciding if it’s the right fit for your child.
@@ -86,6 +87,10 @@
                     <govuk-select-label class="govuk-label--s govuk-!-margin-right-2 select-inline-label">Choose the grade you want to see results for</govuk-select-label>
                     <govuk-select-item value=@GcseGradeDataSelection.Grade4AndAbove selected="@Model.SelectedGrade == GcseGradeDataSelection.Grade4AndAbove">@GcseGradeDataSelection.Grade4AndAbove.GetDisplayName()</govuk-select-item>
                     <govuk-select-item value=@GcseGradeDataSelection.Grade5AndAbove selected="!@Model.SelectedGrade.HasValue || @Model.SelectedGrade == GcseGradeDataSelection.Grade5AndAbove">@GcseGradeDataSelection.Grade5AndAbove.GetDisplayName()</govuk-select-item>
+                    @if (await FeatureManager.IsEnabledAsync(EnableSecondaryGrade7))
+                    {
+                        <govuk-select-item value=@GcseGradeDataSelection.Grade7AndAbove selected="!@Model.SelectedGrade.HasValue || @Model.SelectedGrade == GcseGradeDataSelection.Grade7AndAbove">@GcseGradeDataSelection.Grade7AndAbove.GetDisplayName()</govuk-select-item>
+                    }
                 </govuk-select>
                 <govuk-button type="submit" class="govuk-!-margin-bottom-0 govuk-!-margin-left-2">Show results</govuk-button>
             </form>
@@ -96,7 +101,11 @@
                 @Model.SelectedGrade!.GetDisplayName() in English and maths GCSEs
             </h3>
             <p class="govuk-body">
-                @(Model.SelectedGrade == GcseGradeDataSelection.Grade5AndAbove ? "Grade 5 is comparable to the top of the old grade C." : "The bottom of grade 4 is comparable to the bottom of the old grade C")
+                @(Model.SelectedGrade == GcseGradeDataSelection.Grade5AndAbove 
+                    ? "Grade 5 is comparable to the top of the old grade C."
+                    : Model.SelectedGrade == GcseGradeDataSelection.Grade4AndAbove 
+                        ? "The bottom of grade 4 is comparable to the bottom of the old grade C."
+                        : "The bottom of grade 7 is comparable to the bottom of the old grade A.")
             </p>
 
             <input type="radio" name="dataView" id="current-view" class="govuk-visually-hidden dataview-button" aria-labelledby="all-gcse-show-current-data-btn" checked />
@@ -196,10 +205,14 @@
 
         <div class="data-container">
             <h3 class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">
-                Results by pupil types for @Model.SelectedGrade!.GetDisplayName() in English and maths GCSEs
+                @Model.SelectedGrade!.GetDisplayName() in English and maths GCSEs by girls and boys
             </h3>
             <p class="govuk-body">
-                @(Model.SelectedGrade == GcseGradeDataSelection.Grade5AndAbove ? "Grade 5 is comparable to the top of the old grade C." : "The bottom of grade 4 is comparable to the bottom of the old grade C")
+                @(Model.SelectedGrade == GcseGradeDataSelection.Grade5AndAbove
+                    ? "Grade 5 is comparable to the top of the old grade C." 
+                    : Model.SelectedGrade == GcseGradeDataSelection.Grade4AndAbove 
+                        ? "The bottom of grade 4 is comparable to the bottom of the old grade C."
+                        : "The bottom of grade 7 is comparable to the bottom of the old grade A.")
             </p>
 
             <div id="breakdown-gcse-current-year-data-container" class="breakdown-gcse-current-year-data-container">
@@ -254,7 +267,72 @@
                 }
             </div>
         </div>
+        
+        <govuk-accordion heading-level="3" id="other-pupil-characteristics-accordion" hide-all-sections-text="Hide all sections" show-all-sections-text="Show all sections" hide-section-text="Hide" show-section-text="Show more">
+            <govuk-accordion-item>
+                <govuk-accordion-item-heading>@Model.SelectedGrade!.GetDisplayName() in English and maths GCSEs by other pupil characteristics</govuk-accordion-item-heading>
+                <govuk-accordion-item-summary></govuk-accordion-item-summary>
+                <govuk-accordion-item-content>
 
+                    @await Html.PartialAsync("_DisadvantagedPupils")
+
+                    <table id="breakdown-disadvantaged-table" class="govuk-table">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header">Pupil group (disadvantaged)</th>
+                                @foreach (var label in Model.BreakdownDisadvantaged.Labels)
+                                {
+                                    <th scope="col" class="govuk-table__header">@label</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            @foreach (var dataset in Model.BreakdownDisadvantaged.Datasets)
+                            {
+                                <tr class="govuk-table__row">
+                                    <th scope="row" class="govuk-table__header">@dataset.Label</th>
+                                    @foreach (var data in dataset.Data)
+                                    {
+                                        <td class="govuk-table__cell">@(data.HasValue? data + "%" : Constants.NotAvailable)</td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <govuk-details>
+                        <govuk-details-summary>
+                            Compare state-funded local and national averages for non-disadvantaged pupils
+                        </govuk-details-summary>
+                        <govuk-details-text>
+                            <h4 class="govuk-heading-s">Non-disadvantaged pupils</h4>
+                            <table id="breakdown-non-disadvantaged-table" class="govuk-table">
+                                <thead class="govuk-table__head">
+                                    <tr class="govuk-table__row">
+                                        <th scope="col" class="govuk-table__header">Pupil group (non-disadvantaged)</th>
+                                        @foreach (var label in Model.BreakdownNonDisadvantaged.Labels)
+                                        {
+                                            <th scope="col" class="govuk-table__header">@label</th>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody class="govuk-table__body">
+                                    @foreach (var dataset in Model.BreakdownNonDisadvantaged.Datasets)
+                                    {
+                                        <tr class="govuk-table__row">
+                                            <th scope="row" class="govuk-table__header">@dataset.Label</th>
+                                            @foreach (var data in dataset.Data)
+                                            {
+                                                <td class="govuk-table__cell">@(data.HasValue? data + "%" : Constants.NotAvailable)</td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </govuk-details-text>
+                    </govuk-details>
+                </govuk-accordion-item-content>
+            </govuk-accordion-item>
+        </govuk-accordion>
         @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults))
 
     </div>

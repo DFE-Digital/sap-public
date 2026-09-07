@@ -9,7 +9,7 @@ namespace SAPPub.Web.Areas.Profiles.ViewModels.Overview;
 
 public sealed class OverviewViewModel : ProfileBaseViewModel
 {
-    public string? EducationPhase { get; init; }
+    public required DisplayField<string> EducationPhase { get; init; }
 
     public required DisplayField<string> AgeRange { get; init; }
 
@@ -20,6 +20,8 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
     public required DisplayField<string> Telephone { get; init; }
 
     public required DisplayField<string> SchoolWebsite { get; init; }
+
+    public required DisplayField<string> Address { get; init; }
 
     public string Longitude { get; set; } = string.Empty;
 
@@ -47,6 +49,7 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
         {
             URN = model.Urn,
             SchoolName = model.SchoolName,
+            Address = model.Address.ToDisplayField(),
 
             Latitude = latLong?.Latitude.ToString() ?? string.Empty,
             Longitude = latLong?.Longitude.ToString() ?? string.Empty,
@@ -58,7 +61,8 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
             EducationPhase = EducationPhaseFormatter.Format(
                 model.IsKS2,
                 model.IsKS4,
-                model.IsKS5),
+                model.IsKS5)
+                .ToDisplayField(),
 
             AgeRange = GetAgeRange(
                 model.AgeRangeLow,

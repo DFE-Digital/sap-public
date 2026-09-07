@@ -4,6 +4,7 @@ public class PageTitleConstants
 {
     public static class PageTitles
     {
+        public const string Overview = "Overview";
         public const string About = "About the school";
         public const string Attendance = "Attendance";
         public const string Admissions = "Admissions";

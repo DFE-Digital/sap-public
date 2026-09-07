@@ -114,21 +114,6 @@ public class AdmissionsPageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task AdmissionsPage_Displays_SchoolName_Caption()
-    {
-        // Arrange
-        var url = BuildUrl(_urn, _schoolName, _pageRoute);
-
-        // Act
-        var doc = await Fixture.BrowseToPage(url);
-
-        // Assert
-        var schoolNameCaption = doc.QuerySelector("#school-name-caption");
-        Assert.NotNull(schoolNameCaption);
-        Assert.Equal(_schoolName, schoolNameCaption.TextContent.Trim());
-    }
-
-    [Fact]
     public async Task AdmissionsPage_DoesNotDisplay_SubNavigation_WhenOnlyKS2()
     {
         // Arrange
@@ -192,7 +177,7 @@ public class AdmissionsPageTests : PageTestsBase
         // Assert
         var summaryCard = doc.QuerySelector("[data-testid='starting-primary-school-summary']");
         Assert.NotNull(summaryCard);
-        var independentSummaryCard = doc.QuerySelector("[data-testid='independent-primary-school-summary']");
+        var independentSummaryCard = doc.QuerySelector("[data-testid='independent-school-summary']");
         Assert.Null(independentSummaryCard);
 
         var schoolWebsiteLink = summaryCard.QuerySelector("[data-testid='school-website-link']");
@@ -227,7 +212,7 @@ public class AdmissionsPageTests : PageTestsBase
         var doc = await Fixture.BrowseToPage(url);
 
         // Assert
-        var independentSummaryCard = doc.QuerySelector("[data-testid='independent-primary-school-summary']");
+        var independentSummaryCard = doc.QuerySelector("[data-testid='independent-school-summary']");
         Assert.NotNull(independentSummaryCard);
         var summaryCard = doc.QuerySelector("[data-testid='starting-primary-school-summary']");
         Assert.Null(summaryCard);

@@ -28,6 +28,23 @@ public class EnglandPerformanceBuilder
     {
         return new EnglandPerformance()
         {
+            Id = "National",
+            EngMaths49_Tot_Eng_Current_Pct = Math.Round(_faker.Random.Double(10, 100), 1),
+            EngMaths59_Tot_Eng_Current_Pct = Math.Round(_faker.Random.Double(10, 100), 1),
+            EngMaths79_Tot_Eng_Current_Pct = Math.Round(_faker.Random.Double(10, 100), 1),
+            EngMaths49_Boy_Eng_Current_Pct = Math.Round(_faker.Random.Double(10, 100), 1),
+            EngMaths59_Boy_Eng_Current_Pct = Math.Round(_faker.Random.Double(10, 100), 1),
+            EngMaths79_Boy_Eng_Current_Pct = Math.Round(_faker.Random.Double(10, 100), 1),
+            EngMaths49_Grl_Eng_Current_Pct = Math.Round(_faker.Random.Double(10, 100), 1),
+            EngMaths59_Grl_Eng_Current_Pct = Math.Round(_faker.Random.Double(10, 100), 1),
+            EngMaths79_Grl_Eng_Current_Pct = Math.Round(_faker.Random.Double(10, 100), 1),
+            EngMaths49_Tot_Eng_Previous_Pct = Math.Round(_faker.Random.Double(10, 100), 1),
+            EngMaths59_Tot_Eng_Previous_Pct = Math.Round(_faker.Random.Double(10, 100), 1),
+            EngMaths79_Tot_Eng_Previous_Pct = Math.Round(_faker.Random.Double(10, 100), 1),
+            EngMaths49_Tot_Eng_Previous2_Pct = Math.Round(_faker.Random.Double(10, 100), 1),
+            EngMaths59_Tot_Eng_Previous2_Pct = Math.Round(_faker.Random.Double(10, 100), 1),
+            EngMaths79_Tot_Eng_Previous2_Pct = Math.Round(_faker.Random.Double(10, 100), 1),
+
             // Pupils achieving at least 1 qualification
             AnyQual_Tot_Eng_Current_Pct_Coded = new CodedDouble(_anyQual_Tot_Current_Pct, "", _anyQual_Tot_Current_Pct.ToString() ?? ""),
             // Pupils entering for triple science

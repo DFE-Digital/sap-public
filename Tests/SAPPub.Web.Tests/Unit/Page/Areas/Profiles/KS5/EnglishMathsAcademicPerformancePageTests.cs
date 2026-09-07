@@ -72,8 +72,8 @@ public class EnglishMathsAcademicPerformancePageTests : PageTestsBase
 
         // Assert
         var heading = doc.QuerySelectorAll("h2");
-        Assert.NotNull(heading[1]);
-        Assert.Contains("English and maths", heading[1].TextContent.Trim());
+        Assert.NotNull(heading[2]);
+        Assert.Contains("English and maths", heading[2].TextContent.Trim());
     }
 
     [Fact]

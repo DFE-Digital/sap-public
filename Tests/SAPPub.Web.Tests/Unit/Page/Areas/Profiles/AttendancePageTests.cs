@@ -69,36 +69,13 @@ public class AttendancePageTests : PageTestsBase
         var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
 
         // Assert
-        var heading = doc.QuerySelector("h1")?.TextContent.Trim();
-        Assert.Equal("Attendance", heading);
-    }
+        var heading = doc
+            .QuerySelectorAll("h2")
+            .SingleOrDefault(x =>
+                x.TextContent.Trim() == "Attendance");
 
-    [Fact]
-    public async Task AttendancePage_Displays_SchoolName_Caption()
-    {
-        // Arrange
-        var urn = "143034";
-        var establishmentName = "Loreto High School Chorlton";
-        _serviceMock
-            .Setup(service => service.GetAttendenceDetailsAsync(
-                It.IsAny<string>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new AttendanceModel()
-            {
-                Urn = urn,
-                SchoolName = establishmentName,
-                IsKS2 = true,
-                IsKS4 = true,
-                IsKS5 = false
-            });
-
-        // Act
-        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, _pageRoute));
-        var schoolNameCaptionElement = doc.GetElementById("school-name-caption");
-        var schoolNameCaption = schoolNameCaptionElement?.TextContent;
-
-        // Assert
-        Assert.Equal("Loreto High School Chorlton", schoolNameCaption);
+        Assert.NotNull(heading);
+        Assert.Equal("Attendance", heading!.TextContent.Trim());
     }
 
     [Fact]

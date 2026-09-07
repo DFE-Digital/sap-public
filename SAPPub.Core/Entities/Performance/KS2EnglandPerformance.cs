@@ -20,6 +20,7 @@ public class KS2EnglandPerformance
     public CodedDouble PTRWM_EXP_Eng_Previous2_Pct_Coded { get; set; }
     public CodedDouble PTRWM_EXP_Eng_Previous_Pct_Coded { get; set; }
     public CodedDouble PTRWM_EXP_3YR_Eng_Current_Pct_Coded { get; set; }
+    public CodedDouble PTRWM_HIGH_FSM6CLA1A_Eng_Current_Pct_Coded { get; set; }
     public CodedDouble PTRWM_EXP_FSM6CLA1A_Eng_Current_Pct_Coded { get; set; }
     public CodedDouble PTRWM_EXP_NOTFSM6CLA1A_Eng_Current_Pct_Coded { get; set; }
     public CodedDouble PTRWM_HIGH_Eng_Current_Pct_Coded { get; set; }

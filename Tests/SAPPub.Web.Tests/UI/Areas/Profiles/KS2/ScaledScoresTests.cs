@@ -1,4 +1,5 @@
 ﻿using Microsoft.Playwright;
+using SAPPub.Playwright.Testing;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
@@ -49,23 +50,6 @@ public class ScaledScoresTests(WebApplicationSetupFixture fixture) : BasePageTes
         // Assert
         Assert.NotNull(heading);
         Assert.NotEmpty(heading!.Trim());
-    }
-
-    [Fact]
-    public async Task SubjectScaledScoresResultsPage_Displays_SchoolName_Caption()
-    {
-        // Arrange
-        await Page.GotoAsync(_schoolUrnToUrlMap["149976"]);
-
-        // Act
-        var schoolNameCaptionLocator = Page.Locator("#school-name-caption");
-        var isVisible = await schoolNameCaptionLocator.IsVisibleAsync();
-        var schoolNameCaption = await schoolNameCaptionLocator.TextContentAsync();
-
-        // Assert
-        Assert.True(isVisible);
-        Assert.NotNull(schoolNameCaption);
-        Assert.Equal("Four Elms Primary School", schoolNameCaption);
     }
 
     [Fact]

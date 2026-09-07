@@ -30,6 +30,7 @@ public class SchoolProfilePagination : ViewComponent
             // Feature-flag state is resolved centrally
             var isPrimaryEnabled = await _featureManager.IsEnabledAsync(Constants.Constants.EnablePrimary);
             var is16To19Enabled = await _featureManager.IsEnabledAsync(Constants.Constants.Enable16to19);
+            var isOverviewEnabled = await _featureManager.IsEnabledAsync(Constants.Constants.EnableOverview);
 
             var context = new PaginationContext
             {
@@ -38,6 +39,7 @@ public class SchoolProfilePagination : ViewComponent
                 IsKS5 = model.IsKS5,
                 IsPrimaryEnabled = isPrimaryEnabled,
                 Is16To19Enabled = is16To19Enabled,
+                IsOverviewEnabled = isOverviewEnabled,
                 VariableDestinationAvailability = model.VariableDestinationAvailability ?? new Dictionary<string, bool>()
             };
 
