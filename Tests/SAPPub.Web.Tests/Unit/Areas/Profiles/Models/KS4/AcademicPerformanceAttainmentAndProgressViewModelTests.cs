@@ -318,10 +318,11 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
             .WithAttainment8Data()
             .WithEstablishmentProgress8Data()
             .WithLaProgressData()
+            .WithEstablishmentProgress8Banding(banding)
             .Build();
 
         // Act
-        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map("", testdata, AcademicYearSelection.Current);
+        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map("local authority name", testdata, AcademicYearSelection.Current);
 
         // Assert
         Assert.Equal(isAvailable, viewModel.YearValues.CurrentYear.EstablishmentProgress8BandingContextDescription.IsAvailable);

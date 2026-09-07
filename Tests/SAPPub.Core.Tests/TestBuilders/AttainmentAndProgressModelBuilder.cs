@@ -77,6 +77,17 @@ public class AttainmentAndProgressModelBuilder
         return this;
     }
 
+    public AttainmentAndProgressModelBuilder WithEstablishmentProgress8Banding(string? banding)
+    {
+        _establishmentProgress8Banding = new RelativeYearValues<string?>
+        {
+            CurrentYear = banding,
+            PreviousYear = banding,
+            TwoYearsAgo = banding
+        };
+        return this;
+    }
+
     public AttainmentAndProgressModelBuilder WithEstablishmentProgress8Data()
     {
         _establishmentProgress8Score = new RelativeYearValues<CodedDouble>
