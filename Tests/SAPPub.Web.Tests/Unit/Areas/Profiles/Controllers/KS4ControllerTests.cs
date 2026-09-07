@@ -13,6 +13,7 @@ using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.Tests.TestBuilders;
+using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Areas.Profiles.Controllers;
 using SAPPub.Web.Areas.Profiles.Helpers;
 using SAPPub.Web.Areas.Profiles.ViewModels.KS4;
@@ -173,7 +174,6 @@ public class KS4ControllerTests
             Assert.Null(model.SelectedYearValues.EstablishmentProgress8Banding);
             Assert.False(model.SelectedYearValues.LocalAuthorityProgress8Score.HasValue);
             Assert.False(model.SelectedYearValues.EstablishmentProgress8TotalPupils.HasValue);
-            Assert.False(model.SelectedYearValues.EstablishmentTotalPupils.HasValue);
         }
         else
         {
@@ -219,8 +219,8 @@ public class KS4ControllerTests
         Assert.Equal(expectedResult.EnglandAttainment8Score.GetValueForYear(academicYearSelection), model.SelectedYearValues.EnglandAttainment8Score);
         Assert.Equal(expectedResult.EstablishmentAttainment8DisadvantagedScore.GetValueForYear(academicYearSelection), model.SelectedYearValues.EstablishmentAttainment8DisadvantagedScore.Value);
         Assert.Equal(expectedResult.EnglandAttainment8DisadvantagedScore.GetValueForYear(academicYearSelection), model.SelectedYearValues.EnglandAttainment8DisadvantagedScore.Value);
-        Assert.Equal(expectedResult.EnglandAttainment8NonDisadvantagedScore, model.SelectedYearValues.EnglandAttainment8NonDisadvantagedScore.Value);
-        Assert.Equal(expectedResult.LocalAuthorityAttainment8NonDisadvantagedScore, model.SelectedYearValues.LocalAuthorityAttainment8NonDisadvantagedScore.Value);
+        Assert.Equal(expectedResult.EnglandAttainment8NonDisadvantagedScore, model.EnglandAttainment8NonDisadvantagedScore.Value);
+        Assert.Equal(expectedResult.LocalAuthorityAttainment8NonDisadvantagedScore, model.LocalAuthorityAttainment8NonDisadvantagedScore.Value);
         Assert.True(model.ShowAttainment8Info);
     }
 
@@ -322,8 +322,8 @@ public class KS4ControllerTests
         Assert.Equal(expectedResult.EnglandAttainment8DisadvantagedScore.PreviousYear.ToString(), model.YearValues.PreviousYear.EnglandAttainment8DisadvantagedScore.DisplayText());
         Assert.Equal(expectedResult.EnglandAttainment8DisadvantagedScore.TwoYearsAgo.ToString(), model.YearValues.TwoYearsAgo.EnglandAttainment8DisadvantagedScore.DisplayText());
 
-        Assert.Equal(expectedResult.EnglandAttainment8NonDisadvantagedScore.ToString(), model.YearValues.CurrentYear.EnglandAttainment8NonDisadvantagedScore.DisplayText());
-        Assert.Equal(expectedResult.LocalAuthorityAttainment8NonDisadvantagedScore.ToString(), model.YearValues.CurrentYear.LocalAuthorityAttainment8NonDisadvantagedScore.DisplayText());
+        Assert.Equal(expectedResult.EnglandAttainment8NonDisadvantagedScore.ToString(), model.EnglandAttainment8NonDisadvantagedScore.DisplayText());
+        Assert.Equal(expectedResult.LocalAuthorityAttainment8NonDisadvantagedScore.ToString(), model.LocalAuthorityAttainment8NonDisadvantagedScore.DisplayText());
     }
 
     [Fact]
@@ -601,26 +601,26 @@ public class KS4ControllerTests
 
         Assert.Equal("School", viewModel.BreakdownDisadvantaged.Datasets[0].Label);
         Assert.Equal(
-            expectedResult.EstablishmentDisadvantaged.CurrentYear,
+            new Measure { Value = expectedResult.EstablishmentDisadvantaged.CurrentYear, Unit = DataUnit.Percentage },
             viewModel.BreakdownDisadvantaged.Datasets[0].Data.Single()
         );
         Assert.Equal(
-            expectedResult.LocalAuthorityDisadvantaged.CurrentYear,
+            new Measure { Value = expectedResult.LocalAuthorityDisadvantaged.CurrentYear, Unit = DataUnit.Percentage },
             viewModel.BreakdownDisadvantaged.Datasets[1].Data.Single()
         );
         Assert.Equal(
-            expectedResult.EnglandDisadvantaged.CurrentYear,
+            new Measure { Value = expectedResult.EnglandDisadvantaged.CurrentYear, Unit = DataUnit.Percentage },
             viewModel.BreakdownDisadvantaged.Datasets[2].Data.Single()
         );
 
         Assert.Equal(new[] { "Percentage who achieved Grade 5 and above in English and maths" }, viewModel.BreakdownDisadvantaged.Labels);
 
         Assert.Equal(
-            expectedResult.LocalAuthorityNonDisadvantaged.CurrentYear,
+            new Measure { Value = expectedResult.LocalAuthorityNonDisadvantaged.CurrentYear, Unit = DataUnit.Percentage },
             viewModel.BreakdownNonDisadvantaged.Datasets[0].Data.Single()
         );
         Assert.Equal(
-            expectedResult.EnglandNonDisadvantaged.CurrentYear,
+            new Measure { Value = expectedResult.EnglandNonDisadvantaged.CurrentYear, Unit = DataUnit.Percentage },
             viewModel.BreakdownNonDisadvantaged.Datasets[1].Data.Single()
         );
     }

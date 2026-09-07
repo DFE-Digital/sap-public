@@ -29,20 +29,20 @@ public class AcademicPerformanceAttainmentAndProgressSingleYearViewModel
 
     public CodedDouble LocalAuthorityAttainment8Score { get; init; }
     public required DisplayField<CodedDouble> LocalAuthorityAttainment8DisadvantagedScore { get; init; }
-    public required DisplayField<CodedDouble> LocalAuthorityAttainment8NonDisadvantagedScore { get; init; }
+
     public required DisplayField<string> LocalAuthorityAttainment8ScoreContextDescription { get; init; }
 
     public CodedDouble EnglandAttainment8Score { get; init; }
     public required DisplayField<CodedDouble> EnglandAttainment8DisadvantagedScore { get; init; }
-    public required DisplayField<CodedDouble> EnglandAttainment8NonDisadvantagedScore { get; init; }
+
     public required DisplayField<string> EnglandAttainment8ScoreContextDescription { get; init; }
 
     public CodedDouble EstablishmentProgress8TotalPupils { get; init; }
 
     public CodedDouble EstablishmentTotalPupils { get; init; }
 
-    public required SeriesCodedDoubleViewModel BreakdownDisadvantaged { get; init; }
-    public required SeriesCodedDoubleViewModel BreakdownNonDisadvantaged { get; init; }
+    public required SeriesMeasureViewModel BreakdownDisadvantaged { get; init; }
+
 
     public static AcademicPerformanceAttainmentAndProgressSingleYearViewModel Map(string laName, AcademicYearSelection year, AttainmentAndProgressModel attainmentAndProgressModel)
     {
@@ -52,7 +52,7 @@ public class AcademicPerformanceAttainmentAndProgressSingleYearViewModel
         var englandAttainment8ContextSentence 
             = AttainmentHelper.NationalAttainment8ContextStatement(
                 nationalScore: attainmentAndProgressModel.EnglandAttainment8Score.GetValueForYear(year).Value,
-                schoolScore: attainmentAndProgressModel.EstablishmentAttainment8Score.GetValueForYear(year).Value); // TODO use the CodedDouble, niot the double?
+                schoolScore: attainmentAndProgressModel.EstablishmentAttainment8Score.GetValueForYear(year).Value);
         var localAuthorityAttainment8ContextSentence 
             = AttainmentHelper.LocalAuthorityAttainment8ContextStatement(
                 localAuthorityScore: attainmentAndProgressModel.LocalAuthorityAttainment8Score.GetValueForYear(year).Value,
@@ -60,40 +60,26 @@ public class AcademicPerformanceAttainmentAndProgressSingleYearViewModel
         var establishmentProgress8BandingContextDescription 
             = AttainmentHelper.EstablishmentProgress8BandingContextStatement(attainmentAndProgressModel.EstablishmentProgress8Banding.GetValueForYear(year));
 
-        var disadvantagedBreakdownGcseData = new SeriesCodedDoubleViewModel
+        var disadvantagedBreakdownData = new SeriesMeasureViewModel
         {
+            TableId = "breakdown-disadvantaged-table",
+            TableHeader = "Pupil group (disadvantaged)",
             Labels = ["Score", "Pupils' average grade across 8 GCSE and equivalent subjects"],
             Datasets =
                 [
-                    new DatasetCodedDoubleViewModel {
+                    new DatasetMeasureViewModel {
                         Label = "School",
-                        Data = [attainmentAndProgressModel.EstablishmentAttainment8DisadvantagedScore.GetValueForYear(year)]
+                        Data = [new Measure { Value = attainmentAndProgressModel.EstablishmentAttainment8DisadvantagedScore.GetValueForYear(year), Unit = DataUnit.Score }]
                     },
-                    new DatasetCodedDoubleViewModel {
+                    new DatasetMeasureViewModel {
                         Label = laAverageLabel,
-                        Data = [attainmentAndProgressModel.LocalAuthorityAttainment8DisadvantagedScore.GetValueForYear(year)]
+                        Data = [new Measure { Value = attainmentAndProgressModel.LocalAuthorityAttainment8DisadvantagedScore.GetValueForYear(year), Unit = DataUnit.Score }]
                     },
-                    new DatasetCodedDoubleViewModel {
+                    new DatasetMeasureViewModel {
                         Label = "England average",
-                        Data = [attainmentAndProgressModel.EnglandAttainment8DisadvantagedScore.GetValueForYear(year)]
+                        Data = [new Measure { Value = attainmentAndProgressModel.EnglandAttainment8DisadvantagedScore.GetValueForYear(year), Unit = DataUnit.Score }]
                     },
                 ],
-        };
-
-        var nonDisadvantagedBreakdownGcseData = new SeriesCodedDoubleViewModel
-        {
-            Labels = ["Score", "Pupils' average grade across their 8 best GCSE-level subjects"],
-            Datasets =
-            [
-                new DatasetCodedDoubleViewModel {
-                            Label = laAverageLabel,
-                            Data = [attainmentAndProgressModel.LocalAuthorityAttainment8NonDisadvantagedScore]
-                        },
-                        new DatasetCodedDoubleViewModel {
-                            Label = "England average",
-                            Data = [attainmentAndProgressModel.EnglandAttainment8NonDisadvantagedScore]
-                        },
-                    ],
         };
 
         return new AcademicPerformanceAttainmentAndProgressSingleYearViewModel
@@ -108,8 +94,6 @@ public class AcademicPerformanceAttainmentAndProgressSingleYearViewModel
             EstablishmentAttainment8DisadvantagedScore = attainmentAndProgressModel.EstablishmentAttainment8DisadvantagedScore.GetValueForYear(year).ToDisplayField(),
             LocalAuthorityAttainment8DisadvantagedScore = attainmentAndProgressModel.LocalAuthorityAttainment8DisadvantagedScore.GetValueForYear(year).ToDisplayField(),
             EnglandAttainment8DisadvantagedScore = attainmentAndProgressModel.EnglandAttainment8DisadvantagedScore.GetValueForYear(year).ToDisplayField(),
-            LocalAuthorityAttainment8NonDisadvantagedScore = attainmentAndProgressModel.LocalAuthorityAttainment8NonDisadvantagedScore.ToDisplayField(),
-            EnglandAttainment8NonDisadvantagedScore = attainmentAndProgressModel.EnglandAttainment8NonDisadvantagedScore.ToDisplayField(),
             EstablishmentAttainment8ScoreContextDescription = establishmentAttainment8ContextSentence != null
                 ? $"This means that pupils generally scored the equivalent of {establishmentAttainment8ContextSentence} in their 8 best GCSE-level subjects.".ToDisplayField()
                 : DisplayField<string>.NotAvailable(),
@@ -123,8 +107,7 @@ public class AcademicPerformanceAttainmentAndProgressSingleYearViewModel
             EnglandAttainment8Score = attainmentAndProgressModel.EnglandAttainment8Score.GetValueForYear(year),
             EstablishmentProgress8TotalPupils = attainmentAndProgressModel.EstablishmentProgress8TotalPupils.GetValueForYear(year),
             EstablishmentTotalPupils = attainmentAndProgressModel.EstablishmentTotalPupils.GetValueForYear(year),
-            BreakdownDisadvantaged = disadvantagedBreakdownGcseData,
-            BreakdownNonDisadvantaged = nonDisadvantagedBreakdownGcseData
+            BreakdownDisadvantaged = disadvantagedBreakdownData
         };
     }
 }
@@ -143,6 +126,11 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : BaseViewModel
     public AcademicPerformanceAttainmentAndProgressSingleYearViewModel SelectedYearValues => YearValues.GetValueForYear(SelectedAcademicYear);
     public RelativeYearValues<AcademicPerformanceAttainmentAndProgressSingleYearViewModel> YearValues { get; init; }
 
+    public required DisplayField<CodedDouble> LocalAuthorityAttainment8NonDisadvantagedScore { get; init; }
+    public required DisplayField<CodedDouble> EnglandAttainment8NonDisadvantagedScore { get; init; }
+
+    public required SeriesMeasureViewModel BreakdownNonDisadvantaged { get; init; }
+
     public List<SelectListItem> AcademicYearsSelectList => [.. Enum.GetValues(typeof(AcademicYearSelection)).Cast<AcademicYearSelection>().Select(x => new SelectListItem
     {
         Text = x.GetDisplayName(),
@@ -152,7 +140,27 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : BaseViewModel
     public static AcademicPerformanceAttainmentAndProgressViewModel Map(string laName, AttainmentAndProgressModel attainmentAndProgressModel, AcademicYearSelection selectedAcademicYear)
     {
         var laAverageLabel = CommonHelper.GetLocalAuthorityDisplayName(laName);
- 
+
+        var nonDisadvantagedBreakdownData = new SeriesMeasureViewModel
+        {
+            TableId = "breakdown-non-disadvantaged-table",
+            TableHeader = "Pupil group (non-disadvantaged)",
+            Labels = ["Score", "Pupils' average grade across their 8 best GCSE-level subjects"],
+            Datasets =
+                [
+                    new DatasetMeasureViewModel {
+                        Label = laAverageLabel,
+                        Data = [new Measure
+                            {
+                                Value = attainmentAndProgressModel.LocalAuthorityAttainment8NonDisadvantagedScore, Unit = DataUnit.Score}]
+                            },
+                    new DatasetMeasureViewModel {
+                        Label = "England average",
+                        Data = [new Measure { Value = attainmentAndProgressModel.EnglandAttainment8NonDisadvantagedScore, Unit = DataUnit.Score }]
+                    },
+                ],
+        };
+
         return new AcademicPerformanceAttainmentAndProgressViewModel
         {
             URN = attainmentAndProgressModel.Urn,
@@ -161,12 +169,15 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : BaseViewModel
             IsKS4 = attainmentAndProgressModel.IsKS4,
             IsKS5 = attainmentAndProgressModel.IsKS5,
             SelectedAcademicYear = selectedAcademicYear,
+            LocalAuthorityAttainment8NonDisadvantagedScore = attainmentAndProgressModel.LocalAuthorityAttainment8NonDisadvantagedScore.ToDisplayField(),
+            EnglandAttainment8NonDisadvantagedScore = attainmentAndProgressModel.EnglandAttainment8NonDisadvantagedScore.ToDisplayField(),
             YearValues = new RelativeYearValues<AcademicPerformanceAttainmentAndProgressSingleYearViewModel>
             {
                 CurrentYear = AcademicPerformanceAttainmentAndProgressSingleYearViewModel.Map(laName, AcademicYearSelection.Current, attainmentAndProgressModel),
                 PreviousYear = AcademicPerformanceAttainmentAndProgressSingleYearViewModel.Map(laName, AcademicYearSelection.Previous, attainmentAndProgressModel),
                 TwoYearsAgo = AcademicPerformanceAttainmentAndProgressSingleYearViewModel.Map(laName, AcademicYearSelection.Previous2, attainmentAndProgressModel)
             },
+            BreakdownNonDisadvantaged = nonDisadvantagedBreakdownData
         };
     }
 }

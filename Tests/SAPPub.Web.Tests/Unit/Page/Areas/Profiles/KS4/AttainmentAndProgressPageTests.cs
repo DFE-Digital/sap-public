@@ -93,6 +93,39 @@ public class AttainmentAndProgressPageTests : PageTestsBase
     }
 
     [Theory]
+    [InlineData(AcademicYearSelection.Current)]
+    //[InlineData(AcademicYearSelection.Previous)]
+    //[InlineData(AcademicYearSelection.Previous2)]
+    public async Task ShowsDisadvantagedTableValues(AcademicYearSelection yearSelection)
+    {
+        // Arrange
+        var expected = new AttainmentAndProgressModelBuilder()
+            .WithAttainment8Data()
+            .WithAttainmentNonDisadvantaged8Data()
+            .Build();
+        var urn = expected.Urn;
+        var establishmentName = expected.SchoolName;
+        _serviceMock
+            .Setup(service => service.GetAttainmentAndProgressAsync(
+                urn,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expected);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName!, $"{_pageRoute}/{yearSelection.ToRouteSegment()}"));
+
+        // Assert
+        // CML TODO get local authority name and Assert
+        Assert.Contains("School", doc.GetTableHeaderContentByIdAndIndex("breakdown-disadvantaged-table", 1, 0));
+        Assert.Contains("Local council average", doc.GetTableHeaderContentByIdAndIndex("breakdown-disadvantaged-table", 2, 0));
+        Assert.Contains("England average", doc.GetTableHeaderContentByIdAndIndex("breakdown-disadvantaged-table", 3, 0));
+        Assert.Equal(expected.EstablishmentAttainment8DisadvantagedScore.CurrentYear!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("breakdown-disadvantaged-table", 1, 0));
+        Assert.Equal(expected.LocalAuthorityAttainment8DisadvantagedScore.CurrentYear!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("breakdown-disadvantaged-table", 2, 0));
+        Assert.Equal(expected.EnglandAttainment8DisadvantagedScore.CurrentYear!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("breakdown-disadvantaged-table", 3, 0));
+
+    }
+
+    [Theory]
     [InlineData(AcademicYearSelection.Previous)]
     [InlineData(AcademicYearSelection.Previous2)]
     public async Task NoProgress8DataForSchool_ShowsNoProgress8Content(AcademicYearSelection yearSelection) // progress data not available for this school (non-covid year)
@@ -195,4 +228,5 @@ public class AttainmentAndProgressPageTests : PageTestsBase
         Assert.NotNull(nextLink);
         Assert.Contains("/secondary-performance/english-and-maths", nextLink.GetAttribute("href"));
     }
+
 }

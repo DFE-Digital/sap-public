@@ -1,4 +1,4 @@
-﻿@model AcademicPerformanceAttainmentAndProgressViewModel;
+﻿@model AcademicPerformanceAttainmentAndProgressViewModel
 @using SAPPub.Web.Areas.Profiles.ViewModels.KS4
 @using SAPPub.Web.Constants
 @using SAPPub.Web.ViewComponents.SchoolProfilePagination
@@ -252,59 +252,26 @@
                         <govuk-accordion-item-content>
 
                             @await Html.PartialAsync("_DisadvantagedPupils")
-
-                            <table id="breakdown-disadvantaged-table" class="govuk-table">
-                                <thead class="govuk-table__head">
-                                    <tr class="govuk-table__row">
-                                        <th scope="col" class="govuk-table__header">Pupil group (disadvantaged)</th>
-                                        @foreach (var label in Model.YearValues.CurrentYear.BreakdownDisadvantaged.Labels)
-                                        {
-                                            <th scope="col" class="govuk-table__header">@label</th>
-                                        }
-                                    </tr>
-                                </thead>
-                                <tbody class="govuk-table__body">
-                                    @foreach (var dataset in Model.YearValues.CurrentYear.BreakdownDisadvantaged.Datasets)
-                                    {
-                                        <tr class="govuk-table__row">
-                                            <th scope="row" class="govuk-table__header">@dataset.Label</th>
-                                            @foreach (var data in dataset.Data)
-                                            {
-                                                <td class="govuk-table__cell">@(data.HasValue ? data : Constants.NotAvailable)</td>
-                                            }
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
+                            @await Html.PartialAsync("_SeriesViewTable", Model.YearValues.CurrentYear.BreakdownDisadvantaged)
                             <govuk-details>
                                 <govuk-details-summary>
                                     Compare state-funded local and national averages for non-disadvantaged pupils
                                 </govuk-details-summary>
                                 <govuk-details-text>
                                     <h4 class="govuk-heading-s">Non-disadvantaged pupils</h4>
-                                    <table id="breakdown-non-disadvantaged-table" class="govuk-table">
-                                        <thead class="govuk-table__head">
-                                            <tr class="govuk-table__row">
-                                                <th scope="col" class="govuk-table__header">Pupil group (non-disadvantaged)</th>
-                                                @foreach (var label in Model.YearValues.CurrentYear.BreakdownNonDisadvantaged.Labels)
-                                                {
-                                                    <th scope="col" class="govuk-table__header">@label</th>
-                                                }
-                                            </tr>
-                                        </thead>
-                                        <tbody class="govuk-table__body">
-                                            @foreach (var dataset in Model.YearValues.CurrentYear.BreakdownNonDisadvantaged.Datasets)
-                                            {
-                                                <tr class="govuk-table__row">
-                                                    <th scope="row" class="govuk-table__header">@dataset.Label</th>
-                                                    @foreach (var data in dataset.Data)
-                                                    {
-                                                        <td class="govuk-table__cell">@(data.HasValue ? data + "%" : Constants.NotAvailable)</td>
-                                                    }
-                                                </tr>
-                                            }
-                                        </tbody>
-                                    </table>
+                                    @await Html.PartialAsync("_SeriesViewTable", Model.BreakdownNonDisadvantaged)
+                                </govuk-details-text>
+                            </govuk-details>
+                            
+                            <govuk-details>
+                                <govuk-details-summary>
+                                    Show previous years data for disadvantaged pupils
+                                </govuk-details-summary>
+                                <govuk-details-text>
+                                    <h4 class="govuk-heading-s">2023 to 2024 academic year</h4>
+                                    @await Html.PartialAsync("_SeriesViewTable", Model.YearValues.PreviousYear.BreakdownDisadvantaged)
+                                    <h4 class="govuk-heading-s">2022 to 2023 academic year</h4>
+                                    @await Html.PartialAsync("_SeriesViewTable", Model.YearValues.TwoYearsAgo.BreakdownDisadvantaged)
                                 </govuk-details-text>
                             </govuk-details>
                         </govuk-accordion-item-content>
