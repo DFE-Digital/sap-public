@@ -102,6 +102,73 @@ public class Level2QualificationsModelBuilder
                     Grade = new CodedString("A", string.Empty, string.Empty),
                     Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
                 }
+            },
+            DisadvantagedStudentsData = new PerformanceSummaryModel
+            {
+                Establishment = new PerformanceData
+                {
+                    NumberOfStudents = new CodedDouble(200, string.Empty, string.Empty),
+                    ProgressScore = new CodedDouble(Value: _progressScore ?? 95.55, string.Empty, string.Empty),
+                    ConfidenceLevelLower = new CodedDouble(0.5, string.Empty, string.Empty),
+                    ConfidenceLevelUpper = new CodedDouble(3.0, string.Empty, string.Empty),
+                    Result = new PerformanceResult
+                    {
+                        Grade = new CodedString("A", string.Empty, string.Empty),
+                        Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
+                    }
+                },
+                LocalAuthority = new PerformanceData
+                {
+                    NumberOfStudents = new CodedDouble(290, string.Empty, string.Empty),
+                    ProgressScore = new CodedDouble(Value: _progressScore ?? 66.15, string.Empty, string.Empty),
+                    ConfidenceLevelLower = new CodedDouble(0.5, string.Empty, string.Empty),
+                    ConfidenceLevelUpper = new CodedDouble(2.5, string.Empty, string.Empty),
+                    Result = new PerformanceResult
+                    {
+                        Grade = new CodedString("C", string.Empty, string.Empty),
+                        Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
+                    }
+                },
+                England = new PerformanceData
+                {
+                    NumberOfStudents = new CodedDouble(500, string.Empty, string.Empty),
+                    ProgressScore = new CodedDouble(Value: _progressScore ?? 71.55, string.Empty, string.Empty),
+                    ConfidenceLevelLower = new CodedDouble(1.5, string.Empty, string.Empty),
+                    ConfidenceLevelUpper = new CodedDouble(4.7, string.Empty, string.Empty),
+                    Result = new PerformanceResult
+                    {
+                        Grade = new CodedString("B", string.Empty, string.Empty),
+                        Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
+                    }
+                }
+            },
+            NonDisadvantagedStudentsData = new PerformanceSummaryModel
+            {
+                Establishment = null,
+                LocalAuthority = new PerformanceData
+                {
+                    NumberOfStudents = new CodedDouble(350, string.Empty, string.Empty),
+                    ProgressScore = new CodedDouble(Value: _progressScore ?? 87.46, string.Empty, string.Empty),
+                    ConfidenceLevelLower = new CodedDouble(1, string.Empty, string.Empty),
+                    ConfidenceLevelUpper = new CodedDouble(4, string.Empty, string.Empty),
+                    Result = new PerformanceResult
+                    {
+                        Grade = new CodedString("A", string.Empty, string.Empty),
+                        Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
+                    }
+                },
+                England = new PerformanceData
+                {
+                    NumberOfStudents = new CodedDouble(650, string.Empty, string.Empty),
+                    ProgressScore = new CodedDouble(Value: _progressScore ?? 83.28, string.Empty, string.Empty),
+                    ConfidenceLevelLower = new CodedDouble(0.3, string.Empty, string.Empty),
+                    ConfidenceLevelUpper = new CodedDouble(2.9, string.Empty, string.Empty),
+                    Result = new PerformanceResult
+                    {
+                        Grade = new CodedString("A", string.Empty, string.Empty),
+                        Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
+                    }
+                }
             }
         };
     }

@@ -254,4 +254,44 @@ public class KS5EnglandPerformance
 
     // Points for England - Non-Disadvantaged - Tech Levels
     public CodedDouble TALLPPE_TLEV_NOTDIS_Eng_Current_Num_Coded { get; set; }
+
+    // Tech Certificates DisAdvantaged
+
+    // Number of students for England - Disadvantaged - Tech Certificates
+    public CodedDouble TALLPUP_TECHCERT_DIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress score for England - Disadvantaged - Tech Certificates
+    public CodedDouble VA_INS_TECHCERT_DIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for England upper - Disadvantaged - Tech Certificates
+    public CodedDouble UCI_INS_TECHCERT_DIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for England lower - Disadvantaged - Tech Certificates
+    public CodedDouble LCI_INS_TECHCERT_DIS_Eng_Current_Num_Coded { get; set; }
+
+    // Grade for England - Disadvantaged - Tech Certificates
+    public CodedString TALLPPEGRD_TECHCERT_DIS_Eng_Current { get; set; }
+
+    // Points for England - Disadvantaged - Tech Certificates
+    public CodedDouble TALLPPE_TECHCERT_DIS_Eng_Current_Num_Coded { get; set; }
+
+    // Tech Certificates Non-DisAdvantaged
+
+    // Number of students for England - Non-Disadvantaged - Tech Certificates
+    public CodedDouble TALLPUP_TECHCERT_NOTDIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress score for England - Non-Disadvantaged - Tech Certificates
+    public CodedDouble VA_INS_TECHCERT_NOTDIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for England upper - Non-Disadvantaged - Tech Certificates
+    public CodedDouble UCI_INS_TECHCERT_NOTDIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for England lower - Non-Disadvantaged - Tech Certificates
+    public CodedDouble LCI_INS_TECHCERT_NOTDIS_Eng_Current_Num_Coded { get; set; }
+
+    // Grade for England - Non-Disadvantaged - Tech Certificates
+    public CodedString TALLPPEGRD_TECHCERT_NOTDIS_Eng_Current { get; set; }
+
+    // Points for England - Non-Disadvantaged - Tech Certificates
+    public CodedDouble TALLPPE_TECHCERT_NOTDIS_Eng_Current_Num_Coded { get; set; }
 }
