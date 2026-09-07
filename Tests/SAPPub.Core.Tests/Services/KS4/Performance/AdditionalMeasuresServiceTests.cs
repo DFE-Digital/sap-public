@@ -6,6 +6,7 @@ using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Core.Services.KS4.Performance;
 using SAPPub.Core.Tests.TestBuilders;
+using SAPPub.Core.ValueObjects;
 
 namespace SAPPub.Core.Tests.Services.KS4.Performance;
 
@@ -47,13 +48,47 @@ public class AdditionalMeasuresServiceTests
         var laPerformance = new LaPerformanceBuilder().WithAdditionalMeasures().Build();
         var englandPerformance = new EnglandPerformanceBuilder().WithAdditionalMeasures().Build();
 
-        _mockEstablishmentService.Setup(s => s.GetEstablishmentAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+        establishmentPerformance.ExamEntriesGSCE_Dis_Est_Current_Num_Coded = GetCodedDouble(2);
+        establishmentPerformance.ExamEntriesKS4_Dis_Est_Current_Num_Coded = GetCodedDouble(2);
+        establishmentPerformance.Pup_Grl_Est_Current_Num_Coded = GetCodedDouble(3);
+        establishmentPerformance.Pup_Boy_Est_Current_Num_Coded = GetCodedDouble(4);
+        establishmentPerformance.Pup_EAL_Est_Current_Num_Coded = GetCodedDouble(5);
+        establishmentPerformance.Pup_NMo_Est_Current_Num_Coded = GetCodedDouble(6);
+        establishmentPerformance.Pup_Dis_Est_Current_Num_Coded = GetCodedDouble(7);
+        establishmentPerformance.PupSEN_Est_Current_Num_Coded = GetCodedDouble(8);
+        establishmentPerformance.PupEHCP_Est_Current_Num_Coded = GetCodedDouble(9);
+
+        laPerformance.ExamEntriesGSCE_Dis_LA_Current_Num_Coded = GetCodedDouble(10);
+        laPerformance.ExamEntriesKS4_Dis_LA_Current_Num_Coded = GetCodedDouble(11);
+        laPerformance.ExamEntriesGSCE_NDi_LA_Current_Num_Coded = GetCodedDouble(12);
+        laPerformance.ExamEntriesKS4_Dis_LA_Current_Num_Coded = GetCodedDouble(13);
+        laPerformance.Pup_Dis_LA_Current_Num_Coded = GetCodedDouble(14);
+        laPerformance.Pup_NDi_LA_Current_Num_Coded = GetCodedDouble(15);
+
+        englandPerformance.ExamEntriesGSCE_Dis_Eng_Current_Num_Coded = GetCodedDouble(16);
+        englandPerformance.ExamEntriesKS4_Dis_Eng_Current_Num_Coded = GetCodedDouble(17);
+        englandPerformance.ExamEntriesGSCE_NDi_Eng_Current_Num_Coded = GetCodedDouble(18);
+        englandPerformance.ExamEntriesKS4_Dis_Eng_Current_Num_Coded = GetCodedDouble(19);
+        englandPerformance.Pup_Dis_Eng_Current_Num_Coded = GetCodedDouble(20);
+        englandPerformance.Pup_NDi_Eng_Current_Num_Coded = GetCodedDouble(21);
+        englandPerformance.PupSEN_Tot_Eng_Current_Pct_Coded = GetCodedDouble(22);
+        englandPerformance.PupEHCP_Tot_Eng_Current_Pct_Coded = GetCodedDouble(23);
+
+
+        _mockEstablishmentService
+            .Setup(s => s.GetEstablishmentAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>()))
             .ReturnsAsync(fakeEstablishment);
-        _mockEstablishmentPerformanceService.Setup(s => s.GetEstablishmentPerformanceAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+
+        _mockEstablishmentPerformanceService
+            .Setup(s => s.GetEstablishmentPerformanceAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>()))
             .ReturnsAsync(establishmentPerformance);
-        _mockLAPerformanceService.Setup(s => s.GetLAPerformanceAsync(fakeEstablishment.LAId, It.IsAny<CancellationToken>()))
+
+        _mockLAPerformanceService
+            .Setup(s => s.GetLAPerformanceAsync(fakeEstablishment.LAId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(laPerformance);
-        _mockEnglandPerformanceService.Setup(s => s.GetEnglandPerformanceAsync(It.IsAny<CancellationToken>()))
+
+        _mockEnglandPerformanceService
+            .Setup(s => s.GetEnglandPerformanceAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(englandPerformance);
 
         // Act
@@ -64,7 +99,9 @@ public class AdditionalMeasuresServiceTests
         AssertEstablishmentAdditionalMeasuresData(establishmentPerformance, result.EstablishmentCurrentYear);
         AssertLaAdditionalMeasuresData(laPerformance, result.LocalAuthorityCurrentYear);
         AssertEnglandAdditionalMeasuresData(englandPerformance, result.EnglandCurrentYear);
+        AssertPupilCharacteristicsData(establishmentPerformance, laPerformance, englandPerformance, result);
     }
+
 
     [Fact]
     public async Task GetAsync_EstablishmentPerformanceDataNotAvailable_ReturnsExpectedModel()
@@ -144,39 +181,84 @@ public class AdditionalMeasuresServiceTests
         AssertNullAdditionalMeasuresData(result.EnglandCurrentYear);
     }
 
-    private void AssertEstablishmentAdditionalMeasuresData(EstablishmentPerformance establishmentPerformance, AdditionalMeasures result)
+    private static void AssertEstablishmentAdditionalMeasuresData(EstablishmentPerformance establishmentPerformance, AdditionalMeasures result)
     {
         Assert.Equal(establishmentPerformance.AnyQual_Tot_Est_Current_Pct_Coded.Value, result.PercentAchievingAtLeastOneQualification.Value);
         Assert.Equal(establishmentPerformance.TripSci_Tot_Est_Current_Pct_Coded.Value, result.PercentEnteredForTripleScience.Value);
         Assert.Equal(establishmentPerformance.More1FL_Tot_Est_Current_Pct_Coded.Value, result.PercentEnteredMoreThanOneForeignLanguage.Value);
         Assert.Equal(establishmentPerformance.ExamEntriesGSCE_Tot_Est_Current_Num_Coded.Value, result.AverageGCSEExamEntriesPerPupil.Value);
         Assert.Equal(establishmentPerformance.ExamEntriesKS4_Tot_Est_Current_Num_Coded.Value, result.AverageAllKS4QualificationsExamEntriesPerPupil.Value);
+        Assert.Equal(establishmentPerformance.ExamEntriesGSCE_Dis_Est_Current_Num_Coded.Value, result.AverageGCSEExamEntriesPerDisadvantagedPupil.Value);
+        Assert.Equal(establishmentPerformance.ExamEntriesKS4_Dis_Est_Current_Num_Coded.Value, result.AverageAllKS4QualificationsExamEntriesPerDisadvantagedPupil.Value);
+        Assert.Equal(establishmentPerformance.Pup_Tot_Est_Current_Num_Coded.Value, result.NumberOfPupilsAtTheEndOfKS4.Value);
     }
 
-    private void AssertLaAdditionalMeasuresData(LAPerformance laPerformance, AdditionalMeasures result)
+    private static void AssertLaAdditionalMeasuresData(LAPerformance laPerformance, AdditionalMeasures result)
     {
         Assert.Equal(laPerformance.AnyQual_Tot_LA_Current_Pct_Coded.Value, result.PercentAchievingAtLeastOneQualification.Value);
         Assert.Equal(laPerformance.TripSci_Tot_LA_Current_Pct_Coded.Value, result.PercentEnteredForTripleScience.Value);
         Assert.Equal(laPerformance.More1FL_Tot_LA_Current_Pct_Coded.Value, result.PercentEnteredMoreThanOneForeignLanguage.Value);
         Assert.Equal(laPerformance.ExamEntriesGSCE_Tot_LA_Current_Num_Coded.Value, result.AverageGCSEExamEntriesPerPupil.Value);
         Assert.Equal(laPerformance.ExamEntriesKS4_Tot_LA_Current_Num_Coded.Value, result.AverageAllKS4QualificationsExamEntriesPerPupil.Value);
+        Assert.Equal(laPerformance.ExamEntriesGSCE_Dis_LA_Current_Num_Coded.Value, result.AverageGCSEExamEntriesPerDisadvantagedPupil.Value);
+        Assert.Equal(laPerformance.ExamEntriesKS4_Dis_LA_Current_Num_Coded.Value, result.AverageAllKS4QualificationsExamEntriesPerDisadvantagedPupil.Value);
+        Assert.Equal(laPerformance.ExamEntriesGSCE_NDi_LA_Current_Num_Coded.Value, result.AverageGCSEExamEntriesPerNonDisadvantagedPupil.Value);
+        Assert.Equal(laPerformance.ExamEntriesKS4_NDi_LA_Current_Num_Coded.Value, result.AverageAllKS4QualificationsExamEntriesPerNonDisadvantagedPupil.Value);
+        Assert.Equal(laPerformance.Pup_Tot_LA_Current_Num_Coded.Value, result.NumberOfPupilsAtTheEndOfKS4.Value);
     }
 
-    private void AssertEnglandAdditionalMeasuresData(EnglandPerformance englandPerformance, AdditionalMeasures result)
+    private static void AssertEnglandAdditionalMeasuresData(EnglandPerformance englandPerformance, AdditionalMeasures result)
     {
         Assert.Equal(englandPerformance.AnyQual_Tot_Eng_Current_Pct_Coded.Value, result.PercentAchievingAtLeastOneQualification.Value);
         Assert.Equal(englandPerformance.TripSci_Tot_Eng_Current_Pct_Coded.Value, result.PercentEnteredForTripleScience.Value);
         Assert.Equal(englandPerformance.More1FL_Tot_Eng_Current_Pct_Coded.Value, result.PercentEnteredMoreThanOneForeignLanguage.Value);
         Assert.Equal(englandPerformance.ExamEntriesGSCE_Tot_Eng_Current_Num_Coded.Value, result.AverageGCSEExamEntriesPerPupil.Value);
         Assert.Equal(englandPerformance.ExamEntriesKS4_Tot_Eng_Current_Num_Coded.Value, result.AverageAllKS4QualificationsExamEntriesPerPupil.Value);
+        Assert.Equal(englandPerformance.ExamEntriesGSCE_Dis_Eng_Current_Num_Coded.Value, result.AverageGCSEExamEntriesPerDisadvantagedPupil.Value);
+        Assert.Equal(englandPerformance.ExamEntriesKS4_Dis_Eng_Current_Num_Coded.Value, result.AverageAllKS4QualificationsExamEntriesPerDisadvantagedPupil.Value);
+        Assert.Equal(englandPerformance.ExamEntriesGSCE_NDi_Eng_Current_Num_Coded.Value, result.AverageGCSEExamEntriesPerNonDisadvantagedPupil.Value);
+        Assert.Equal(englandPerformance.ExamEntriesKS4_NDi_Eng_Current_Num_Coded.Value, result.AverageAllKS4QualificationsExamEntriesPerNonDisadvantagedPupil.Value);
+        Assert.Equal(englandPerformance.Pup_Tot_Eng_Current_Num_Coded.Value, result.NumberOfPupilsAtTheEndOfKS4.Value);
     }
 
-    private void AssertNullAdditionalMeasuresData(AdditionalMeasures result)
+    private static void AssertNullAdditionalMeasuresData(AdditionalMeasures result)
     {
         Assert.Null(result.PercentAchievingAtLeastOneQualification.Value);
         Assert.Null(result.PercentEnteredForTripleScience.Value);
         Assert.Null(result.PercentEnteredMoreThanOneForeignLanguage.Value);
         Assert.Null(result.AverageGCSEExamEntriesPerPupil.Value);
         Assert.Null(result.AverageAllKS4QualificationsExamEntriesPerPupil.Value);
+    }
+
+    private static void AssertPupilCharacteristicsData(
+        EstablishmentPerformance establishmentPerformance,
+        LAPerformance lAPerformance,
+        EnglandPerformance englandPerformance,
+        AdditionalMeasuresModel result)
+    {
+        Assert.Equal(establishmentPerformance.Pup_Grl_Est_Current_Num_Coded.Value, result.EstablishmentGirlsEndOfKS4.Value);
+        Assert.Equal(establishmentPerformance.Pup_Boy_Est_Current_Num_Coded.Value, result.EstablishmentBoysEndOfKS4.Value);
+        Assert.Equal(establishmentPerformance.Pup_EAL_Est_Current_Num_Coded.Value, result.EstablishmentEALEndOfKS4.Value);
+        Assert.Equal(establishmentPerformance.Pup_NMo_Est_Current_Num_Coded.Value, result.EstablishmentNonMobilePupilsEndOfKS4.Value);
+        Assert.Equal(establishmentPerformance.Pup_Dis_Est_Current_Num_Coded.Value, result.EstablishmentDisadvantagedPupilsEndOfKS4.Value);
+
+        Assert.Equal(lAPerformance.Pup_Dis_LA_Current_Num_Coded.Value, result.LocalAuthorityDisadvantagedPupilsEndOfKS4.Value);
+        Assert.Equal(englandPerformance.Pup_Dis_Eng_Current_Num_Coded.Value, result.EnglandDisadvantagedPupilsEndOfKS4.Value);
+
+        Assert.Equal(lAPerformance.Pup_NDi_LA_Current_Num_Coded.Value, result.LocalAuthorityNonDisadvantagedPupilsEndOfKS4.Value);
+        Assert.Equal(englandPerformance.Pup_NDi_Eng_Current_Num_Coded.Value, result.EnglandNonDisadvantagedPupilsEndOfKS4.Value);
+
+        Assert.Equal(establishmentPerformance.Pup_Tot_Est_Current_Num_Coded.Value, result.EstablishmentTotalPupils.Value);
+        Assert.Equal(englandPerformance.Pup_Tot_Eng_Current_Num_Coded.Value, result.EnglandTotalPupils.Value);
+
+        Assert.Equal(establishmentPerformance.PupSEN_Est_Current_Num_Coded.Value, result.EstablishmentTotalSENPupils.Value);
+        Assert.Equal(establishmentPerformance.PupEHCP_Est_Current_Num_Coded.Value, result.EstablishmentTotalEHCPPupils.Value);
+        Assert.Equal(englandPerformance.PupSEN_Tot_Eng_Current_Pct_Coded.Value, result.EnglandTotalSENPupils.Value);
+        Assert.Equal(englandPerformance.PupEHCP_Tot_Eng_Current_Pct_Coded.Value, result.EnglandTotalEHCPPupils.Value);
+    }
+
+    private static CodedDouble GetCodedDouble(double val)
+    {
+        return new CodedDouble(val, string.Empty, val.ToString());
     }
 }

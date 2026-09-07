@@ -8,7 +8,7 @@
 
 @{
     ViewData["Header"] = "Academic performance";
-    ViewData["Title"] = $"{Model.SchoolName} - Secondary {ViewData["SubHeader"]}";
+    ViewData["Title"] = $"{Model.SchoolName} - Secondary {PageTitleConstants.SecondarySchoolPageTitles.AdditionalMeasures}";
 }
 
 <div class="govuk-grid-row">
@@ -83,10 +83,9 @@
                 </govuk-details-text>
             </govuk-details>
 
-            <!-- TODO: caption text -->
             <table id="additional-measures-exams-entered-table" class="govuk-table">
                 <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">
-                    Other performance measures
+                    Average number of exams entered per pupil
                 </caption>
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
@@ -100,7 +99,7 @@
                     @foreach (var row in Model.AverageExamsEnteredPerPupil)
                     {
                         <tr class="govuk-table__row">
-                            <th class="govuk-table__header">@row.MeasureName</th>
+                            <th scope="row" class="govuk-table__cell">@row.MeasureName</th>
                             <td class="govuk-table__cell">
                                 @(row.MeasureFormat == MeasureFormat.Percent ? row.EstablishmentCurrentYear.DisplayPercentage() : row.EstablishmentCurrentYear.DisplayNumber(format: "N1"))
                             </td>
@@ -123,10 +122,9 @@
                         <section id="average-numexams-entered-disadvantaged">
                             @await Html.PartialAsync("_DisadvantagedPupils")
 
-                            <!-- TODO: caption text -->
                             <table id="additional-measures-exams-entered-disadvantaged-table" class="govuk-table">
                                 <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">
-                                    Other performance measures
+                                    Average number of exams entered by pupil characteristics (disadvantaged)
                                 </caption>
                                 <thead class="govuk-table__head">
                                     <tr class="govuk-table__row">
@@ -140,7 +138,7 @@
                                     @foreach (var row in Model.AverageExamsEnteredPerDisadvantagedPupil)
                                     {
                                         <tr class="govuk-table__row">
-                                            <th class="govuk-table__header">@row.MeasureName</th>
+                                            <th scope="row" class="govuk-table__header">@row.MeasureName</th>
                                             <td class="govuk-table__cell">
                                                 @(row.MeasureFormat == MeasureFormat.Percent ? row.EstablishmentCurrentYear.DisplayPercentage() : row.EstablishmentCurrentYear.DisplayNumber(format: "N1"))
                                             </td>
@@ -163,12 +161,13 @@
                                     Compare with non-disadvantaged pupils
                                 </span>
                             </summary>
+                            
                             <div class="govuk-details__text">
                                 <h4 class="govuk-heading-s">Non-disadvantaged pupils</h4>
-                                <!-- TODO: caption text -->
-                                <table id="additional-measures-exams-entered-disadvantaged-table" class="govuk-table">
+
+                                <table id="additional-measures-exams-entered-non-disadvantaged-table" class="govuk-table">
                                     <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">
-                                        Other performance measures
+                                        Non-disadvantaged pupils
                                     </caption>
                                     <thead class="govuk-table__head">
                                         <tr class="govuk-table__row">
@@ -181,7 +180,7 @@
                                         @foreach (var row in Model.AverageExamsEnteredPerNonDisadvantagedPupil)
                                         {
                                             <tr class="govuk-table__row">
-                                                <th class="govuk-table__header">@row.MeasureName</th>
+                                                <th scope="row" class="govuk-table__header">@row.MeasureName</th>
                                                 <td class="govuk-table__cell">
                                                     @(row.MeasureFormat == MeasureFormat.Percent ? row.LocalAuthorityCurrentYear.DisplayPercentage() : row.LocalAuthorityCurrentYear.DisplayNumber(format: "N1"))
                                                 </td>
@@ -233,10 +232,9 @@
                 </govuk-details-text>
             </govuk-details>
 
-            <!-- TODO: caption text -->
             <table id="additional-eanda-measures-table" class="govuk-table">
                 <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">
-                    Other performance measures
+                    Additional entry and achievement measures
                 </caption>
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
@@ -250,7 +248,7 @@
                     @foreach (var row in Model.MeasuresInTableFormat)
                     {
                         <tr class="govuk-table__row">
-                            <th class="govuk-table__header">@row.MeasureName</th>
+                            <th scope="row" class="govuk-table__header">@row.MeasureName</th>
                             <td class="govuk-table__cell">
                                 @(row.MeasureFormat == MeasureFormat.Percent ? row.EstablishmentCurrentYear.DisplayPercentage() : row.EstablishmentCurrentYear.DisplayNumber(format: "N1"))
                             </td>
@@ -269,12 +267,9 @@
         </div>
 
         <div id="section-numberpupils-eofks4">
-            <h2 class="govuk-heading-l">Number of pupils at the end of key stage 4</h2>
-
-            <!-- TODO: caption text -->
             <table id="num-pupil-eofks4-table" class="govuk-table">
-                <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">
-                    Other performance measures
+                <caption class="govuk-table__caption govuk-table__caption--l ">
+                    Number of pupils at the end of key stage 4
                 </caption>
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
@@ -288,7 +283,7 @@
                     @foreach (var row in Model.NumberOfPupilsEndOfKS4)
                     {
                         <tr class="govuk-table__row">
-                            <th class="govuk-table__header">@row.MeasureName</th>
+                            <th scope="row" class="govuk-table__header">@row.MeasureName</th>
                             <td class="govuk-table__cell">
                                 @(row.MeasureFormat == MeasureFormat.Percent ? row.EstablishmentCurrentYear.DisplayPercentage() : row.EstablishmentCurrentYear.DisplayNumber(format: "N0"))
                             </td>
@@ -339,20 +334,19 @@
                                 </h3>
                                 <p class="govuk-body">
                                     Pupils identified as disadvantaged are those who either:
-                                    <ul class="govuk-list govuk-list--bullet">
-                                        <li>were eligible for free school meals at any time during the last 6 years</li>
-                                        <li>have been in the care of the local council for a day or more</li>
-                                        <li>have been adopted from care</li>
-                                    </ul>
                                 </p>
 
+                                <ul class="govuk-list govuk-list--bullet">
+                                    <li>were eligible for free school meals at any time during the last 6 years</li>
+                                    <li>have been in the care of the local council for a day or more</li>
+                                    <li>have been adopted from care</li>
+                                </ul>
                             </govuk-details-text>
                         </govuk-details>
 
-                        <!-- TODO: caption text -->
                         <table id="num-pupil-eofks4-breakdown-table" class="govuk-table">
                             <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">
-                                Other performance measures
+                                Number of Pupils by characteristics
                             </caption>
                             <thead class="govuk-table__head">
                                 <tr class="govuk-table__row">
@@ -362,30 +356,27 @@
                             </thead>
                             <tbody class="govuk-table__body">
                                 <tr class="govuk-table__row">
-                                    <th class="govuk-table__header">Girls</th>
+                                    <th scope="row" class="govuk-table__header">Girls</th>
                                     <td class="govuk-table__cell">@Model.EstablishmentGirlsEndOfKS4.DisplayNumber()</td>
                                 </tr>
                                 <tr class="govuk-table__row">
-                                    <th class="govuk-table__header">Boys</th>
+                                    <th scope="row" class="govuk-table__header">Boys</th>
                                     <td class="govuk-table__cell">@Model.EstablishmentBoysEndOfKS4.DisplayNumber()</td>
                                 </tr>
                                 <tr class="govuk-table__row">
-                                    <th class="govuk-table__header">English as an additional language (EAL)</th>
+                                    <th scope="row" class="govuk-table__header">English as an additional language (EAL)</th>
                                     <td class="govuk-table__cell">@Model.EstablishmentEALEndOfKS4.DisplayNumber()</td>
                                 </tr>
                                 <tr class="govuk-table__row">
-                                    <th class="govuk-table__header">Non-mobile pupils</th>
+                                    <th scope="row" class="govuk-table__header">Non-mobile pupils</th>
                                     <td class="govuk-table__cell">@Model.EstablishmentNonMobilePupilsEndOfKS4.DisplayNumber()</td>
                                 </tr>
                             </tbody>
                         </table>
 
-                        <h4 class="govuk-heading-s">Disadvantaged pupils</h4>
-
-                        <!-- TODO: caption text -->
                         <table id="num-pupil-eofks4-disadvantaged-table" class="govuk-table">
-                            <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">
-                                Other performance measures
+                            <caption class="govuk-table__caption govuk-table__caption--m">
+                                Disadvantaged pupils
                             </caption>
                             <thead class="govuk-table__head">
                                 <tr class="govuk-table__row">
@@ -397,7 +388,7 @@
                             </thead>
                             <tbody class="govuk-table__body">
                                 <tr class="govuk-table__row">
-                                    <th class="govuk-table__header">Number of disadvantaged pupils</th>
+                                    <th scope="row" class="govuk-table__header">Number of disadvantaged pupils</th>
                                     <td class="govuk-table__cell">@Model.EstablishmentDisadvantagedPupilsEndOfKS4.DisplayNumber()</td>
                                     <td class="govuk-table__cell">@Model.LocalAuthorityDisadvantagedPupilsEndOfKS4.DisplayNumber()</td>
                                     <td class="govuk-table__cell">@Model.EnglandDisadvantagedPupilsEndOfKS4.DisplayNumber()</td>
@@ -405,18 +396,16 @@
                             </tbody>
                         </table>
 
-                        <details class="govuk-details" id="details-exams-entered-non-disadvantaged">
+                        <details class="govuk-details" id="details-eofks4-non-disadvantaged">
                             <summary class="govuk-details__summary">
                                 <span class="govuk-details__summary-text">
                                     Compare with non-disadvantaged pupils
                                 </span>
                             </summary>
                             <div class="govuk-details__text">
-                                <h4 class="govuk-heading-s">Non-disadvantaged pupils</h4>
-                                <!-- TODO: caption text -->
                                 <table id="num-pupil-eofks4-non-disadvantaged-table" class="govuk-table">
-                                    <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">
-                                        Other performance measures
+                                    <caption class="govuk-table__caption govuk-table__caption--m">
+                                        Non-disadvantaged pupils
                                     </caption>
                                     <thead class="govuk-table__head">
                                         <tr class="govuk-table__row">
@@ -426,9 +415,8 @@
                                         </tr>
                                     </thead>
                                     <tbody class="govuk-table__body">
-
                                         <tr class="govuk-table__row">
-                                            <th class="govuk-table__header">Number of non-disadvantaged pupils</th>
+                                            <th scope="row" class="govuk-table__header">Number of non-disadvantaged pupils</th>
                                             <td class="govuk-table__cell">@Model.LocalAuthorityNonDisadvantagedPupilsEndOfKS4.DisplayNumber(format: "N0")</td>
                                             <td class="govuk-table__cell">@Model.EnglandNonDisadvantagedPupilsEndOfKS4.DisplayNumber(format: "N0")</td>
                                         </tr>
@@ -444,13 +432,9 @@
         </div>
 
         <div id="section-numberpupils-wholeschool">
-            <h2 class="govuk-heading-l">Number of pupils at the whole school </h2>
-
-
-            <!-- TODO: caption text -->
-            <table id="num-pupil-eofks4-table" class="govuk-table">
-                <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">
-                    Other performance measures
+            <table id="num-pupil-wholsechool-table" class="govuk-table">
+                <caption class="govuk-table__caption govuk-table__caption--l">
+                    Number of pupils at the whole school
                 </caption>
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
@@ -463,7 +447,7 @@
                     @foreach (var row in Model.NumberOfPupilsEndOfKS4)
                     {
                         <tr class="govuk-table__row">
-                            <th class="govuk-table__header">Number of pupils on roll </th>
+                            <th scope="row" class="govuk-table__header">Number of pupils on roll </th>
                             <td class="govuk-table__cell">@Model.EstablishmentTotalPupils.DisplayNumber(format: "N0")</td>
                             <td class="govuk-table__cell">@Model.EnglandTotalPupils.DisplayNumber(format: "N0")</td>
                         </tr>
@@ -476,7 +460,7 @@
                 <govuk-accordion-item expanded="false">
                     <govuk-accordion-item-heading>Further population data for the whole school</govuk-accordion-item-heading>
                     <govuk-accordion-item-content>
-                        <h4 class="govuk-heading-s">Pupils with Special Educational Needs (SEN) support</h4>
+                        <h4 class="govuk-heading-m">Pupils with Special Educational Needs (SEN) support</h4>
                         <p class="govuk-body">
                             Pupils with special educational needs who receive extra support than other children of the same age in school but do not have an EHCP.
                         </p>
@@ -494,14 +478,14 @@
                             </thead>
                             <tbody class="govuk-table__body">
                                 <tr class="govuk-table__row">
-                                    <th class="govuk-table__header">Pupils with SEN support</th>
-                                    <td class="govuk-table__cell">@Model.EstablishmentTotalSENPupils.DisplayPercentage()</td>
-                                    <td class="govuk-table__cell">TODO</td>
+                                    <th scope="row" class="govuk-table__header">Pupils with SEN support</th>
+                                    <td class="govuk-table__cell">@Model.EstablishmentTotalSENPupils.Round().DisplayPercentage()</td>
+                                    <td class="govuk-table__cell">@Model.EnglandTotalSENPupils.Round().DisplayPercentage()</td>
                                 </tr>
                             </tbody>
                         </table>
 
-                        <h4 class="govuk-heading-s">Pupils with an Education, Health and Care Plan (EHCP)</h4>
+                        <h4 class="govuk-heading-m">Pupils with an Education, Health and Care Plan (EHCP)</h4>
                         <p class="govuk-body">
                             An EHCP is a legal document for children and young people aged up to 25 who need more support than is available through special educational needs (SEN) support.
                         </p>
@@ -509,7 +493,7 @@
                             EHCPs identify educational, health and social care needs and set out the additional support to meet those needs.
                         </p>
 
-                        <table id="num-pupil-whole-school-sen-table" class="govuk-table">
+                        <table id="num-pupil-whole-school-ehcp-table" class="govuk-table">
                             <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">
                                 Pupils with an Education, Health and Care Plan (EHCP)
                             </caption>
@@ -523,8 +507,8 @@
                             <tbody class="govuk-table__body">
                                 <tr class="govuk-table__row">
                                     <th class="govuk-table__header">Pupils with EHCPs</th>
-                                    <td class="govuk-table__cell">@Model.EstablishmentTotalEHCPPupils.DisplayPercentage()</td>
-                                    <td class="govuk-table__cell">TODO</td>
+                                    <td class="govuk-table__cell">@Model.EstablishmentTotalEHCPPupils.Round().DisplayPercentage()</td>
+                                    <td class="govuk-table__cell">@Model.EnglandTotalEHCPPupils.Round().DisplayPercentage()</td>
                                 </tr>
                             </tbody>
                         </table>

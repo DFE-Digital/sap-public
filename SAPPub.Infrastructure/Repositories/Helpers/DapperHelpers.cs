@@ -225,7 +225,9 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "ExamEntriesKS4_NDi_Eng_Current_Num_Coded",
           "Pup_Tot_Eng_Current_Num_Coded",
           "Pup_Dis_Eng_Current_Num_Coded",
-          "Pup_NDi_Eng_Current_Num_Coded"
+          "Pup_NDi_Eng_Current_Num_Coded",
+          "PupSEN_Tot_Eng_Current_Pct_Coded",
+          "PupEHCP_Tot_Eng_Current_Pct_Coded"
           """;
 
         private const string EnglandDestinationsColumns = """

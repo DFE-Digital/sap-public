@@ -39,6 +39,8 @@ public class AcademicPerformanceAdditionalMeasuresViewModel : BaseViewModel
 
     public required DisplayField<CodedDouble> EstablishmentTotalSENPupils { get; set; }
     public required DisplayField<CodedDouble> EstablishmentTotalEHCPPupils { get; set; }
+    public required DisplayField<CodedDouble> EnglandTotalSENPupils { get; set; }
+    public required DisplayField<CodedDouble> EnglandTotalEHCPPupils { get; set; }
 
     public static AcademicPerformanceAdditionalMeasuresViewModel MapToMeasuresInTableFormat(AdditionalMeasuresModel additionalMeasuresModel, EstablishmentMinimumServiceModel establishmentDetails)
     {
@@ -63,6 +65,8 @@ public class AcademicPerformanceAdditionalMeasuresViewModel : BaseViewModel
             EnglandTotalPupils = additionalMeasuresModel.EnglandTotalPupils.ToDisplayField(),
             EstablishmentTotalSENPupils = additionalMeasuresModel.EstablishmentTotalSENPupils.ToDisplayField(),
             EstablishmentTotalEHCPPupils = additionalMeasuresModel.EstablishmentTotalEHCPPupils.ToDisplayField(),
+            EnglandTotalSENPupils = additionalMeasuresModel.EnglandTotalSENPupils.ToDisplayField(),
+            EnglandTotalEHCPPupils = additionalMeasuresModel.EnglandTotalEHCPPupils.ToDisplayField(),
             MeasuresInTableFormat =
             [
                 new (){

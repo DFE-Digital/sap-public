@@ -27,6 +27,9 @@ public record AdditionalMeasuresModel
     public required CodedDouble EstablishmentTotalSENPupils { get; set; }
     public required CodedDouble EstablishmentTotalEHCPPupils { get; set; }
 
+    public required CodedDouble EnglandTotalSENPupils { get; set; }
+    public required CodedDouble EnglandTotalEHCPPupils { get; set; }
+
     public static AdditionalMeasuresModel Map(
         EstablishmentPerformance performanceMeasures,
         LAPerformance laPeformanceMeasures,
@@ -37,7 +40,7 @@ public record AdditionalMeasuresModel
             EstablishmentGirlsEndOfKS4 = performanceMeasures.Pup_Grl_Est_Current_Num_Coded,
             EstablishmentBoysEndOfKS4 = performanceMeasures.Pup_Boy_Est_Current_Num_Coded,
             EstablishmentEALEndOfKS4 = performanceMeasures.Pup_EAL_Est_Current_Num_Coded,
-            EstablishmentNonMobilePupilsEndOfKS4 = performanceMeasures.Pup_Dis_Est_Current_Num_Coded,
+            EstablishmentNonMobilePupilsEndOfKS4 = performanceMeasures.Pup_NMo_Est_Current_Num_Coded,
             EstablishmentDisadvantagedPupilsEndOfKS4 = performanceMeasures.Pup_Dis_Est_Current_Num_Coded,
             LocalAuthorityDisadvantagedPupilsEndOfKS4 = laPeformanceMeasures.Pup_Dis_LA_Current_Num_Coded,
             EnglandDisadvantagedPupilsEndOfKS4 = englandPerformanceMeasures.Pup_Dis_Eng_Current_Num_Coded,
@@ -47,6 +50,8 @@ public record AdditionalMeasuresModel
             EnglandTotalPupils = englandPerformanceMeasures.Pup_Tot_Eng_Current_Num_Coded,
             EstablishmentTotalSENPupils = performanceMeasures.PupSEN_Est_Current_Num_Coded,
             EstablishmentTotalEHCPPupils = performanceMeasures.PupEHCP_Est_Current_Num_Coded,
+            EnglandTotalSENPupils = englandPerformanceMeasures.PupSEN_Tot_Eng_Current_Pct_Coded,
+            EnglandTotalEHCPPupils = englandPerformanceMeasures.PupEHCP_Tot_Eng_Current_Pct_Coded,
 
             EstablishmentCurrentYear = new()
             {
@@ -70,7 +75,6 @@ public record AdditionalMeasuresModel
                 AverageAllKS4QualificationsExamEntriesPerDisadvantagedPupil = laPeformanceMeasures.ExamEntriesKS4_Dis_LA_Current_Num_Coded,
                 AverageGCSEExamEntriesPerNonDisadvantagedPupil = laPeformanceMeasures.ExamEntriesGSCE_NDi_LA_Current_Num_Coded,
                 AverageAllKS4QualificationsExamEntriesPerNonDisadvantagedPupil = laPeformanceMeasures.ExamEntriesKS4_NDi_LA_Current_Num_Coded,
-
                 NumberOfPupilsAtTheEndOfKS4 = laPeformanceMeasures.Pup_Tot_LA_Current_Num_Coded
             },
             EnglandCurrentYear = new()

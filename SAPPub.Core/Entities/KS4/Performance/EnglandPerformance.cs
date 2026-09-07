@@ -230,5 +230,7 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public CodedDouble ExamEntriesKS4_NDi_Eng_Current_Num_Coded { get; set; }
         public CodedDouble Pup_Dis_Eng_Current_Num_Coded { get; set; }
         public CodedDouble Pup_NDi_Eng_Current_Num_Coded { get; set; }
+        public CodedDouble PupSEN_Tot_Eng_Current_Pct_Coded { get; set; }
+        public CodedDouble PupEHCP_Tot_Eng_Current_Pct_Coded { get; set; }
     }
 }
