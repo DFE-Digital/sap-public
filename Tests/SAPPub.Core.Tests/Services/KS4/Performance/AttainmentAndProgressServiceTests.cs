@@ -66,19 +66,6 @@ public class AttainmentAndProgressServiceTests
     public async Task AttainmentAndProgressAsync_ShouldReturnData()
     {
         // Arrange
-        //var establishmentPerformance = new EstablishmentPerformance
-        //{
-        //    Id = fakeEstablishment.URN,
-        //    Prog8_Tot_Est_Previous_Num = 0.3,
-        //    Prog8_Tot_Est_Previous2_Num = 2,
-        //    Attainment8_Tot_Est_Current_Num = 40,
-        //    Attainment8_Tot_Est_Previous_Num = 50,
-        //    Attainment8_Tot_Est_Previous2_Num = 55,
-        //    Prog8_TotPup_Est_Previous_Num = 95,
-        //    Prog8_TotPup_Est_Previous2_Num = 65,
-        //    Pup_Tot_Est_Previous_Num = 100,
-        //    Pup_Tot_Est_Previous2_Num = 90
-        //};
         var establishmentPerformance = new EstablishmentPerformanceBuilder()
             .WithDisadvantagedMeasures()
             .WithAdditionalMeasures()

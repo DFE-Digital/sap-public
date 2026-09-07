@@ -1,5 +1,4 @@
 ﻿using SAPPub.Core.Enums;
-using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Areas.Profiles.ViewModels.KS4;
 
@@ -11,24 +10,6 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
     public void Map_MapsDataAsExpected()
     {
         // Arrange
-        //var testdata = new AttainmentAndProgressModel()
-        //{
-        //    Urn = "123456",
-        //    SchoolName = "Test School",
-        //    EstablishmentProgress8Score = 0.5,
-        //    EstablishmentProgress8CILower = -0.2,
-        //    EstablishmentProgress8CIUpper = 1.2,
-        //    EstablishmentProgress8Banding = "Average",
-        //    LocalAuthorityProgress8Score = 0.3,
-        //    EstablishmentAttainment8Score = 45.0,
-        //    LocalAuthorityAttainment8Score = 40.0,
-        //    EnglandAttainment8Score = 50.0,
-        //    EstablishmentProgress8TotalPupils = 100,
-        //    EstablishmentTotalPupils = 150,
-        //    IsKS2 = false,
-        //    IsKS4 = true,
-        //    IsKS5 = false
-        //};
         var testdata = new AttainmentAndProgressModelBuilder()
             .WithAttainment8Data()
             .WithEstablishmentProgress8Data()
@@ -73,6 +54,50 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
         Assert.Equal(testdata.EnglandAttainment8Score.TwoYearsAgo, viewModel.YearValues.TwoYearsAgo.EnglandAttainment8Score);
         Assert.Equal(testdata.EstablishmentProgress8TotalPupils.TwoYearsAgo, viewModel.YearValues.TwoYearsAgo.EstablishmentProgress8TotalPupils);
         Assert.Equal(testdata.EstablishmentTotalPupils.TwoYearsAgo, viewModel.YearValues.TwoYearsAgo.EstablishmentTotalPupils);
+
+        // disadvantaged breakdown data
+        Assert.Equal(testdata.LocalAuthorityAttainment8NonDisadvantagedScore, viewModel.LocalAuthorityAttainment8NonDisadvantagedScore.Value);
+        Assert.Equal(testdata.EnglandAttainment8NonDisadvantagedScore, viewModel.EnglandAttainment8NonDisadvantagedScore.Value);
+
+        Assert.Equal(testdata.EstablishmentAttainment8DisadvantagedScore.CurrentYear, viewModel.YearValues.CurrentYear.EstablishmentAttainment8DisadvantagedScore.Value);
+        Assert.Equal(testdata.LocalAuthorityAttainment8DisadvantagedScore.CurrentYear, viewModel.YearValues.CurrentYear.LocalAuthorityAttainment8DisadvantagedScore.Value);
+        Assert.Equal(testdata.EnglandAttainment8DisadvantagedScore.CurrentYear, viewModel.YearValues.CurrentYear.EnglandAttainment8DisadvantagedScore.Value);
+
+
+        Assert.Equal(testdata.EstablishmentAttainment8DisadvantagedScore.PreviousYear, viewModel.YearValues.PreviousYear.EstablishmentAttainment8DisadvantagedScore.Value);
+        Assert.Equal(testdata.LocalAuthorityAttainment8DisadvantagedScore.PreviousYear, viewModel.YearValues.PreviousYear.LocalAuthorityAttainment8DisadvantagedScore.Value);
+        Assert.Equal(testdata.EnglandAttainment8DisadvantagedScore.PreviousYear, viewModel.YearValues.PreviousYear.EnglandAttainment8DisadvantagedScore.Value);
+
+        Assert.Equal(testdata.EstablishmentAttainment8DisadvantagedScore.TwoYearsAgo, viewModel.YearValues.TwoYearsAgo.EstablishmentAttainment8DisadvantagedScore.Value);
+        Assert.Equal(testdata.LocalAuthorityAttainment8DisadvantagedScore.TwoYearsAgo, viewModel.YearValues.TwoYearsAgo.LocalAuthorityAttainment8DisadvantagedScore.Value);
+        Assert.Equal(testdata.EnglandAttainment8DisadvantagedScore.TwoYearsAgo, viewModel.YearValues.TwoYearsAgo.EnglandAttainment8DisadvantagedScore.Value);
+
+        // disadvantaged table data
+        Assert.Equal(testdata.EstablishmentAttainment8DisadvantagedScore.CurrentYear, viewModel.YearValues.CurrentYear.BreakdownDisadvantaged.Datasets[0].Data[0].Value);
+        Assert.Equal(DataUnit.Score, viewModel.YearValues.CurrentYear.BreakdownDisadvantaged.Datasets[0].Data[0].Unit);
+        Assert.Equal(testdata.LocalAuthorityAttainment8DisadvantagedScore.CurrentYear, viewModel.YearValues.CurrentYear.BreakdownDisadvantaged.Datasets[1].Data[0].Value);
+        Assert.Equal(DataUnit.Score, viewModel.YearValues.CurrentYear.BreakdownDisadvantaged.Datasets[1].Data[0].Unit);
+        Assert.Equal(testdata.EnglandAttainment8DisadvantagedScore.CurrentYear, viewModel.YearValues.CurrentYear.BreakdownDisadvantaged.Datasets[2].Data[0].Value);
+        Assert.Equal(DataUnit.Score, viewModel.YearValues.CurrentYear.BreakdownDisadvantaged.Datasets[2].Data[0].Unit);
+
+        Assert.Equal(testdata.EstablishmentAttainment8DisadvantagedScore.PreviousYear, viewModel.YearValues.PreviousYear.BreakdownDisadvantaged.Datasets[0].Data[0].Value);
+        Assert.Equal(DataUnit.Score, viewModel.YearValues.PreviousYear.BreakdownDisadvantaged.Datasets[0].Data[0].Unit);
+        Assert.Equal(testdata.LocalAuthorityAttainment8DisadvantagedScore.PreviousYear, viewModel.YearValues.PreviousYear.BreakdownDisadvantaged.Datasets[1].Data[0].Value);
+        Assert.Equal(DataUnit.Score, viewModel.YearValues.PreviousYear.BreakdownDisadvantaged.Datasets[1].Data[0].Unit);
+        Assert.Equal(testdata.EnglandAttainment8DisadvantagedScore.PreviousYear, viewModel.YearValues.PreviousYear.BreakdownDisadvantaged.Datasets[2].Data[0].Value);
+        Assert.Equal(DataUnit.Score, viewModel.YearValues.PreviousYear.BreakdownDisadvantaged.Datasets[2].Data[0].Unit);
+
+        Assert.Equal(testdata.EstablishmentAttainment8DisadvantagedScore.TwoYearsAgo, viewModel.YearValues.TwoYearsAgo.BreakdownDisadvantaged.Datasets[0].Data[0].Value);
+        Assert.Equal(DataUnit.Score, viewModel.YearValues.TwoYearsAgo.BreakdownDisadvantaged.Datasets[0].Data[0].Unit);
+        Assert.Equal(testdata.LocalAuthorityAttainment8DisadvantagedScore.TwoYearsAgo, viewModel.YearValues.TwoYearsAgo.BreakdownDisadvantaged.Datasets[1].Data[0].Value);
+        Assert.Equal(DataUnit.Score, viewModel.YearValues.TwoYearsAgo.BreakdownDisadvantaged.Datasets[1].Data[0].Unit);
+        Assert.Equal(testdata.EnglandAttainment8DisadvantagedScore.TwoYearsAgo, viewModel.YearValues.TwoYearsAgo.BreakdownDisadvantaged.Datasets[2].Data[0].Value);
+        Assert.Equal(DataUnit.Score, viewModel.YearValues.TwoYearsAgo.BreakdownDisadvantaged.Datasets[2].Data[0].Unit);
+
+        Assert.Equal(testdata.LocalAuthorityAttainment8NonDisadvantagedScore, viewModel.BreakdownNonDisadvantaged.Datasets[0].Data[0].Value);
+        Assert.Equal(DataUnit.Score, viewModel.BreakdownNonDisadvantaged.Datasets[0].Data[0].Unit);
+        Assert.Equal(testdata.EnglandAttainment8NonDisadvantagedScore, viewModel.BreakdownNonDisadvantaged.Datasets[1].Data[0].Value);
+        Assert.Equal(DataUnit.Score, viewModel.BreakdownNonDisadvantaged.Datasets[1].Data[0].Unit);
     }
 
     [Theory]
@@ -149,22 +174,6 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
     public void Map_EstablishmentAttainment8ScoreDescription_IsExpected(double establishmentAttainment8Score, string expected)
     {
         //// Arrange
-        //var testdata = new AttainmentAndProgressModel()
-        //{
-        //    Urn = "123456",
-        //    SchoolName = "Test School",
-        //    EstablishmentProgress8Score = 0.5,
-        //    LocalAuthorityProgress8Score = 0.3,
-        //    EstablishmentAttainment8Score = establishmentAttainment8Score,
-        //    LocalAuthorityAttainment8Score = 40.0,
-        //    EnglandAttainment8Score = 50.0,
-        //    EstablishmentProgress8TotalPupils = 100,
-        //    EstablishmentTotalPupils = 150,
-        //    IsKS2 = false,
-        //    IsKS4 = true,
-        //    IsKS5 = false
-        //};
-
         var testdata = new AttainmentAndProgressModelBuilder()
             .WithAttainment8Data()
             .WithEstablishmentProgress8Data()
@@ -210,17 +219,6 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
     public void Map_LocalAuthorityAttainment8ScoreDescription_IsExpected(double? establishmentAttainment8Score, double? localAuthorityAttainment8Score, string expected1, string expected2)
     {
         // Arrange
-        //var testdata = new AttainmentAndProgressModel()
-        //{
-        //    Urn = "123456",
-        //    SchoolName = "Test School",
-        //    EstablishmentAttainment8Score = establishmentAttainment8Score,
-        //    LocalAuthorityAttainment8Score = localAuthorityAttainment8Score,
-        //    IsKS2 = false,
-        //    IsKS4 = true,
-        //    IsKS5 = false
-        //};
-
         var testdata = new AttainmentAndProgressModelBuilder()
             .WithAttainment8Data()
             .WithEstablishmentProgress8Data()
@@ -271,18 +269,6 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
     public void Map_NationalAttainment8ScoreDescription_IsExpected(double? establishmentAttainment8Score, double? nationalAttainment8Score, string expected1, string expected2)
     {
         // Arrange
-        //var testdata = new AttainmentAndProgressModel()
-        //{
-        //    Urn = "123456",
-        //    SchoolName = "Test School",
-        //    EstablishmentAttainment8Score = establishmentAttainment8Score,
-        //    EnglandAttainment8Score = nationalAttainment8Score,
-        //    IsKS2 = false,
-        //    IsKS4 = true,
-        //    IsKS5 = false
-        //};
-
-
         var testdata = new AttainmentAndProgressModelBuilder()
             .WithAttainment8Data()
             .WithEstablishmentProgress8Data()
@@ -315,35 +301,31 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
         }
     }
 
-    //[Theory]
-    //[InlineData(null, false, true, "Not available")]
-    //[InlineData("Well above average", true, false, "This is well above average.")]
-    //[InlineData("Above average", true, false, "This is above average.")]
-    //[InlineData("Average", true, false, "This is average.")]
-    //[InlineData("Below average", true, false, "This is below average.")]
-    //[InlineData("Well below average", true, false, "This is well below average.")]
-    //[InlineData("Not available", false, true, "Not available")]
-    //[InlineData("SUPP", false, true, "Not available")]
+    [Theory]
+    [InlineData(null, false, true, "Not available")]
+    [InlineData("Well above average", true, false, "This is well above average.")]
+    [InlineData("Above average", true, false, "This is above average.")]
+    [InlineData("Average", true, false, "This is average.")]
+    [InlineData("Below average", true, false, "This is below average.")]
+    [InlineData("Well below average", true, false, "This is well below average.")]
+    [InlineData("Not available", false, true, "Not available")]
+    [InlineData("SUPP", false, true, "Not available")]
 
-    //public void Map_EstablishmentProgress8BandingContextDescription_IsExpected(string? banding, bool isAvailable, bool isNotAvailable, string expectedText)
-    //{
-    //    // Arrange
-    //    var testdata = new AttainmentAndProgressModel()
-    //    {
-    //        Urn = "123456",
-    //        SchoolName = "Test School",
-    //        EstablishmentProgress8Banding = banding,
-    //        IsKS2 = false,
-    //        IsKS4 = true,
-    //        IsKS5 = false
-    //    };
+    public void Map_EstablishmentProgress8BandingContextDescription_IsExpected(string? banding, bool isAvailable, bool isNotAvailable, string expectedText)
+    {
+        // Arrange
+        var testdata = new AttainmentAndProgressModelBuilder()
+            .WithAttainment8Data()
+            .WithEstablishmentProgress8Data()
+            .WithLaProgressData()
+            .Build();
 
-    //    // Act
-    //    var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map("", testdata, AcademicYearSelection.Current);
+        // Act
+        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map("", testdata, AcademicYearSelection.Current);
 
-    //    // Assert
-    //    Assert.Equal(isAvailable, viewModel.EstablishmentProgress8BandingContextDescription.IsAvailable);
-    //    Assert.Equal(isNotAvailable, viewModel.EstablishmentProgress8BandingContextDescription.IsNotAvailable);
-    //    Assert.Contains(expectedText, viewModel.EstablishmentProgress8BandingContextDescription.DisplayText());
-    //}
+        // Assert
+        Assert.Equal(isAvailable, viewModel.YearValues.CurrentYear.EstablishmentProgress8BandingContextDescription.IsAvailable);
+        Assert.Equal(isNotAvailable, viewModel.YearValues.CurrentYear.EstablishmentProgress8BandingContextDescription.IsNotAvailable);
+        Assert.Contains(expectedText, viewModel.YearValues.CurrentYear.EstablishmentProgress8BandingContextDescription.DisplayText());
+    }
 }
