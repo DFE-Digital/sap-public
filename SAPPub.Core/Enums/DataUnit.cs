@@ -4,5 +4,6 @@ public enum DataUnit
 {
     Count,
     Percentage,
-    Score
+    Score,
+    Text
 }
