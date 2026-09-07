@@ -486,17 +486,7 @@
                                                 </dt>
 
                                                 <dd class="govuk-summary-list__value">
-
-                                                    @if (Model.Attainment8LA.IsAvailable &&
-                                                         Model.Attainment8LA.Value.Value is double attainment8LA)
-                                                    {
-                                                        @attainment8LA.ToString("0.0")
-                                                    }
-                                                    else
-                                                    {
-                                                        <text>Not available</text>
-                                                    }
-
+                                                    @Model.Attainment8LA.DisplayNumber(format:"N1")
                                                 </dd>
 
                                             </div>
