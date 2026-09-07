@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using Microsoft.FeatureManagement;
 using Npgsql;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Helpers;
@@ -8,9 +7,6 @@ using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.ServiceModels.Search.InputModels;
 using SAPPub.Core.Specifications;
-using StackExchange.Profiling;
-using StackExchange.Profiling.Data;
-using System.Linq;
 
 namespace SAPPub.Infrastructure.Repositories
 {
