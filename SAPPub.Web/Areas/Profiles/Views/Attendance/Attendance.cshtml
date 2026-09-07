@@ -212,7 +212,7 @@
                     <td class="govuk-table__cell">
                         @if (Model.LocalAuthorityPersistentAbsence.IsAvailable)
                         {
-                            <text>Out of the total number of pupils in @Model.LocalAuthority.DisplayText() in schools of this type, have a @Model.LocalAuthorityPersistentAbsence.DisplayPercentage() were persistently absent.</text>
+                            <text>Out of the total number of pupils in @Model.LocalAuthority.DisplayText() in schools of this type, @Model.LocalAuthorityPersistentAbsence.DisplayPercentage() were persistently absent.</text>
                         }
                         else
                         {
