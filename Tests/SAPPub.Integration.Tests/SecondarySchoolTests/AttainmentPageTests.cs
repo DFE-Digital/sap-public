@@ -126,7 +126,7 @@ public class AttainmentPageTests() : BasePageTest()
 
     private async Task AssertSchoolAttainmentData(IPage Page, double expectedAttainmentSchool)
     {
-        var schoolAttainment8 = await Page.GetScoreFromParagraphAsync("attainment8-establishment-card", "The attainment 8 score for this school is");
+        var schoolAttainment8 = await Page.GetScoreFromParagraphAsync("attainment8-establishment-card", "The Attainment 8 score for this school is");
         Assert.NotNull(schoolAttainment8);
         Assert.Equal(expectedAttainmentSchool.ToString("F1"), schoolAttainment8.Last());
     }

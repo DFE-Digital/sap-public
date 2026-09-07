@@ -275,21 +275,21 @@
     width: 100%;
 }
 
-    .map-address .map-container {
-        width: 100%;
-        box-sizing: border-box;
-    }
+.map-address .map-container {
+    width: 100%;
+    box-sizing: border-box;
+}
 
-    .map-address #map {
-        box-sizing: border-box;
-        height: 200px;
-        min-height: 200px;
-        width: 100%;
-        border-radius: 0px;
-        border-left: 1px solid #b1b4b6;
-        border-right: 1px solid #b1b4b6;
-        border-top: 1px solid #b1b4b6;
-    }
+.map-address #map {
+    box-sizing: border-box;
+    height: 200px;
+    min-height: 200px;
+    width: 100%;
+    border-radius: 0px;
+    border-left: 1px solid #b1b4b6;
+    border-right: 1px solid #b1b4b6;
+    border-top: 1px solid #b1b4b6;
+}
 
 .ataglance-address-row {
     display: grid;
@@ -309,12 +309,6 @@
     min-width: 0;
 }
 
-/*    .ataglance-address {
-        padding-left: 20px;
-        padding-top: 20px;
-        padding-bottom: 20px;
-    }*/
-
 // School information card
 
 .ataglance-card {
@@ -325,36 +319,144 @@
     margin-bottom: 30px;
 }
 
-    .ataglance-card .govuk-summary-list {
-        margin-bottom: 0;
-    }
+.ataglance-card .govuk-summary-list {
+    margin-bottom: 0;
+}
 
-    .ataglance-card .govuk-summary-list__key {
-        width: 30%;
-    }
+.ataglance-card .govuk-summary-list__key {
+    width: 30%;
+}
+
 // Signposted About link
 
 .ataglance-link__link {
     display: grid;
-    grid-template-columns: 2rem auto;
-    gap: 5px;
-    align-items: center;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    column-gap: 8px;
+    align-items: start;
+    width: fit-content;
 }
 
 .ataglance-link__iconbox {
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 2rem;
+    height: 2rem;
 }
 
 .ataglance-link__icon {
     display: block;
     width: 2rem;
     height: 2rem;
+    color: #1d70b8;
 }
 
 .ataglance-link__text {
     align-self: center;
+}
+
+// At a glance accordions
+
+.ataglance-accordion {
+    margin-bottom: 30px;
+}
+
+    .ataglance-accordion .govuk-accordion__section-header {
+        display: grid;
+        grid-template-columns: 7rem auto;
+        align-items: center;
+        padding: 0;
+        border-top: 1px solid #b1b4b6;
+    }
+
+    .ataglance-accordion
+    .govuk-accordion__section
+    .govuk-accordion__section-button {
+        border-top: 0 !important;
+        padding-left: 10px !important;
+    }
+
+.ataglance-accordion-iconbox {
+    cursor: pointer;
+    display: flex;
+    align-self: stretch;
+    justify-content: center;
+    align-items: center;
+    width: 7rem;
+}
+
+.ataglance-accordion-iconbox__icon {
+    display: block;
+    width: 54px;
+    height: 54px;
+}
+
+.ataglance-accordion
+.govuk-accordion__section-header
+#accordion-iconbox__progress {
+    background-color: #cfe4dc;
+    color: #083d29;
+}
+
+.ataglance-accordion
+.govuk-accordion__section-header:hover
+#accordion-iconbox__progress {
+    background-color: #87bca8;
+}
+
+.ataglance-accordion
+.govuk-accordion__section-header
+#accordion-iconbox__attainment {
+    background-color: #d2e2f1;
+    color: #0f385c;
+}
+
+.ataglance-accordion
+.govuk-accordion__section-header:hover
+#accordion-iconbox__attainment {
+    background-color: #8eb8dc;
+}
+
+.ataglance-accordion
+.govuk-accordion__section-header:hover {
+    color: #0b0c0c;
+    background: #f3f3f3;
+}
+
+.ataglance-summary-card .govuk-summary-card__title-wrapper {
+    background-color: #f4f8fb;
+}
+
+.ataglance-card__heading {
+    color: #0f385c;
+}
+
+@media (max-width: 40.0525em) {
+    .ataglance-card .govuk-summary-list__key {
+        display: block;
+        width: 100%;
+        max-width: none;
+        padding-bottom: 5px;
+    }
+
+    .ataglance-card .govuk-summary-list__value {
+        display: block;
+        width: 100%;
+    }
+
+    .ataglance-accordion .govuk-accordion__section-header {
+        grid-template-columns: 5rem auto;
+    }
+
+    .ataglance-accordion-iconbox {
+        width: 5rem;
+    }
+
+    .ataglance-accordion-iconbox__icon {
+        width: 44px;
+        height: 44px;
+    }
 }
 
 @media (max-width: 40.0525em) {
@@ -387,7 +489,8 @@
         max-width: none;
     }
 }
-//search results
+// Search results
+
 /* Mobile first: stacked, full width */
 .distance-filter {
     display: flex;
@@ -399,6 +502,7 @@
     .distance-filter .govuk-button {
         width: 100%;
     }
+
 /* Tablet and up: inline */
 @include govuk-media-query($from: tablet) {
     .distance-filter {
@@ -441,9 +545,10 @@
             padding: 4px;
         }
     }
+
 /*
-    Leaflet css override for accessibility warnings.
-    Note: No licensing found on the leaflet website regarding changing styles etc.
+    Leaflet CSS override for accessibility warnings.
+    Note: No licensing found on the Leaflet website regarding changing styles etc.
 */
 .leaflet-container a {
     text-decoration: underline !important;
