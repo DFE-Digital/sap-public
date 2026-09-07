@@ -44,10 +44,12 @@ public class KS4Controller(IEstablishmentService establishmentService, IFeatureM
         {
             return NotFound();
         }
+        var establishmentDetails = await establishmentService.GetEstablishmentMinimumAsync(urn, ct);
+
         var results = await attainmentAndProgressService.GetAttainmentAndProgressAsync(urn, ct);
 
         // CML TODO get LaName
-        var model = AcademicPerformanceAttainmentAndProgressViewModel.Map("", results, selectedAcademicYear.Value);
+        var model = AcademicPerformanceAttainmentAndProgressViewModel.Map(establishmentDetails.LAName, results, selectedAcademicYear.Value);
         return View(model);
     }
 

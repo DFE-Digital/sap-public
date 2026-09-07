@@ -1,7 +1,8 @@
 ﻿using Moq;
 using SAPPub.Core.Enums;
+using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
-using SAPPub.Core.ServiceModels.KS4.Performance;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Areas.Profiles.Helpers;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
@@ -13,10 +14,12 @@ public class AttainmentAndProgressPageTests : PageTestsBase
 {
     private static string _pageRoute = "/secondary-performance/progress-attainment";
     private readonly Mock<IAttainmentAndProgressService> _serviceMock;
+    private readonly Mock<IEstablishmentService> _establishmentServiceMock;
 
     public AttainmentAndProgressPageTests(WebAppFixture fixture) : base(fixture)
     {
         _serviceMock = UseMock<IAttainmentAndProgressService>();
+        _establishmentServiceMock = UseMock<IEstablishmentService>();
     }
 
     [Fact]
@@ -27,6 +30,12 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             .Build();
         var urn = expected.Urn;
         var establishmentName = expected.SchoolName;
+        _establishmentServiceMock.Setup(service => service.GetEstablishmentMinimumAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EstablishmentMinimumServiceModel(){
+                EstablishmentName = establishmentName!,
+                URN = urn,
+                IsKS4 = true
+                });
         _serviceMock
             .Setup(service => service.GetAttainmentAndProgressAsync(
                 It.IsAny<string>(),
@@ -51,6 +60,13 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             .Build();
         var urn = expected.Urn;
         var establishmentName = expected.SchoolName;
+        _establishmentServiceMock.Setup(service => service.GetEstablishmentMinimumAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EstablishmentMinimumServiceModel()
+            {
+                EstablishmentName = establishmentName!,
+                URN = urn,
+                IsKS4 = true
+            });
         _serviceMock
             .Setup(service => service.GetAttainmentAndProgressAsync(
                 It.IsAny<string>(),
@@ -77,6 +93,13 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             .Build();
         var urn = expected.Urn;
         var establishmentName = expected.SchoolName;
+        _establishmentServiceMock.Setup(service => service.GetEstablishmentMinimumAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EstablishmentMinimumServiceModel()
+            {
+                EstablishmentName = establishmentName!,
+                URN = urn,
+                IsKS4 = true
+            });
         _serviceMock
             .Setup(service => service.GetAttainmentAndProgressAsync(
                 It.IsAny<string>(),
@@ -105,6 +128,14 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             .Build();
         var urn = expected.Urn;
         var establishmentName = expected.SchoolName;
+        _establishmentServiceMock.Setup(service => service.GetEstablishmentMinimumAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EstablishmentMinimumServiceModel()
+            {
+                EstablishmentName = establishmentName!,
+                URN = urn,
+                IsKS4 = true,
+                LAName = "Test council"
+            });
         _serviceMock
             .Setup(service => service.GetAttainmentAndProgressAsync(
                 urn,
@@ -115,9 +146,8 @@ public class AttainmentAndProgressPageTests : PageTestsBase
         var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName!, $"{_pageRoute}/{yearSelection.ToRouteSegment()}"));
 
         // Assert
-        // CML TODO get local authority name and Assert
         Assert.Contains("School", doc.GetTableHeaderContentByIdAndIndex("breakdown-disadvantaged-table-0", 1, 0));
-        Assert.Contains("Local council average", doc.GetTableHeaderContentByIdAndIndex("breakdown-disadvantaged-table-0", 2, 0));
+        Assert.Contains("Test council average", doc.GetTableHeaderContentByIdAndIndex("breakdown-disadvantaged-table-0", 2, 0));
         Assert.Contains("England average", doc.GetTableHeaderContentByIdAndIndex("breakdown-disadvantaged-table-0", 3, 0));
         Assert.Equal(expected.EstablishmentAttainment8DisadvantagedScore.CurrentYear!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("breakdown-disadvantaged-table-0", 1, 0));
         Assert.Equal(expected.LocalAuthorityAttainment8DisadvantagedScore.CurrentYear!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("breakdown-disadvantaged-table-0", 2, 0));
@@ -142,6 +172,13 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             .Build();
         var urn = expected.Urn;
         var establishmentName = expected.SchoolName;
+        _establishmentServiceMock.Setup(service => service.GetEstablishmentMinimumAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EstablishmentMinimumServiceModel()
+            {
+                EstablishmentName = establishmentName!,
+                URN = urn,
+                IsKS4 = true
+            });
         _serviceMock
             .Setup(service => service.GetAttainmentAndProgressAsync(
                 It.IsAny<string>(),
@@ -167,6 +204,13 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             .Build();
         var urn = expected.Urn;
         var establishmentName = expected.SchoolName;
+        _establishmentServiceMock.Setup(service => service.GetEstablishmentMinimumAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EstablishmentMinimumServiceModel()
+            {
+                EstablishmentName = establishmentName!,
+                URN = urn,
+                IsKS4 = true
+            });
         _serviceMock
             .Setup(service => service.GetAttainmentAndProgressAsync(
                 It.IsAny<string>(),
@@ -190,6 +234,13 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             .Build();
         var urn = expected.Urn;
         var establishmentName = expected.SchoolName;
+        _establishmentServiceMock.Setup(service => service.GetEstablishmentMinimumAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EstablishmentMinimumServiceModel()
+            {
+                EstablishmentName = establishmentName!,
+                URN = urn,
+                IsKS4 = true
+            });
         _serviceMock
             .Setup(service => service.GetAttainmentAndProgressAsync(
                 It.IsAny<string>(),
@@ -213,6 +264,13 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             .Build();
         var urn = expected.Urn;
         var establishmentName = expected.SchoolName;
+        _establishmentServiceMock.Setup(service => service.GetEstablishmentMinimumAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EstablishmentMinimumServiceModel()
+            {
+                EstablishmentName = establishmentName!,
+                URN = urn,
+                IsKS4 = true
+            });
         _serviceMock
             .Setup(service => service.GetAttainmentAndProgressAsync(
                 It.IsAny<string>(),
@@ -235,5 +293,4 @@ public class AttainmentAndProgressPageTests : PageTestsBase
         Assert.NotNull(nextLink);
         Assert.Contains("/secondary-performance/english-and-maths", nextLink.GetAttribute("href"));
     }
-
 }
