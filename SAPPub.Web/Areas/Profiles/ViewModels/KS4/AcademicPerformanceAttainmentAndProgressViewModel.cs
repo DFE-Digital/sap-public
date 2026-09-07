@@ -62,7 +62,7 @@ public class AcademicPerformanceAttainmentAndProgressSingleYearViewModel
 
         var disadvantagedBreakdownData = new SeriesMeasureViewModel
         {
-            TableId = "breakdown-disadvantaged-table",
+            TableId = $"breakdown-disadvantaged-table-{(int)year}",
             TableHeader = "Pupil group (disadvantaged)",
             Labels = ["Score", "Pupils' average grade across 8 GCSE and equivalent subjects"],
             Datasets =

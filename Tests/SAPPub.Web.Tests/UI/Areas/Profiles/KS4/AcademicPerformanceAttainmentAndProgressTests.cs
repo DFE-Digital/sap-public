@@ -84,6 +84,20 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
         var attainment8EstablishmentCard = Page.GetByTestId("attainment8-establishment-card");
         var attainment8LocalAuthorityAndNationalCard = Page.GetByTestId("attainment8-localauthority-and-national-card");
         var attainment8NoEstablishmentDataCard = Page.GetByTestId("attainment8-no-establishment-data-card");
+        var otherPupilCharacteristicsAccordion = Page.Locator("#other-pupil-characteristics-accordion");
+
+        await otherPupilCharacteristicsAccordion.ClickAsync();
+
+        var nonDisadvantagedAdditionalInfoDetails = Page.Locator("#non-disadvantaged-details");
+        await nonDisadvantagedAdditionalInfoDetails.ClickAsync();
+        var nonDisadvantagedTableCurrentYear = Page.Locator("#breakdown-non-disadvantaged-table");
+
+        var disadvantagedAdditionalInfoDetails = Page.Locator("#disadvantaged-previous-years-details");
+        await disadvantagedAdditionalInfoDetails.ClickAsync();
+
+        var disadvantagedTableCurrentYear = Page.Locator("#breakdown-disadvantaged-table-0");
+        var disadvantagedTablePreviousYear = Page.Locator("#breakdown-disadvantaged-table-1");
+        var disadvantagedTableTwoYearsAgo = Page.Locator("#breakdown-disadvantaged-table-2");
 
         // Assert
         Assert.True(await academicYearSelector.IsVisibleAsync());
@@ -91,6 +105,11 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
         Assert.True(await attainment8EstablishmentCard.IsVisibleAsync());
         Assert.True(await attainment8LocalAuthorityAndNationalCard.IsVisibleAsync());
         Assert.False(await attainment8NoEstablishmentDataCard.IsVisibleAsync());
+        Assert.True(await otherPupilCharacteristicsAccordion.IsVisibleAsync());
+        Assert.True(await disadvantagedTableCurrentYear.IsVisibleAsync());
+        Assert.True(await disadvantagedTablePreviousYear.IsVisibleAsync());
+        Assert.True(await disadvantagedTableTwoYearsAgo.IsVisibleAsync());
+        Assert.True(await nonDisadvantagedTableCurrentYear.IsVisibleAsync());
     }
 
     [Fact]

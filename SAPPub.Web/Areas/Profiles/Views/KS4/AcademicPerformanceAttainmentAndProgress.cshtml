@@ -243,41 +243,38 @@
                 <div class="bar-chart__icon"></div>
             </div>
 
-            @if (Model.SelectedAcademicYear == SAPPub.Core.Enums.AcademicYearSelection.Current)
-            {
-                <govuk-accordion heading-level="3" id="other-pupil-characteristics-accordion" hide-all-sections-text="Hide all sections" show-all-sections-text="Show all sections" hide-section-text="Hide" show-section-text="Show more">
-                    <govuk-accordion-item>
-                        <govuk-accordion-item-heading>Attainment 8 by pupil characteristic</govuk-accordion-item-heading>
-                        <govuk-accordion-item-summary></govuk-accordion-item-summary>
-                        <govuk-accordion-item-content>
+            <govuk-accordion heading-level="3" id="other-pupil-characteristics-accordion" hide-all-sections-text="Hide all sections" show-all-sections-text="Show all sections" hide-section-text="Hide" show-section-text="Show more">
+                <govuk-accordion-item>
+                    <govuk-accordion-item-heading>Attainment 8 by pupil characteristic</govuk-accordion-item-heading>
+                    <govuk-accordion-item-summary></govuk-accordion-item-summary>
+                    <govuk-accordion-item-content>
 
-                            @await Html.PartialAsync("_DisadvantagedPupils")
-                            @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.YearValues.CurrentYear.BreakdownDisadvantaged)
-                            <govuk-details>
-                                <govuk-details-summary>
-                                    Compare state-funded local and national averages for non-disadvantaged pupils
-                                </govuk-details-summary>
-                                <govuk-details-text>
-                                    <h4 class="govuk-heading-s">Non-disadvantaged pupils</h4>
-                                    @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.BreakdownNonDisadvantaged)
-                                </govuk-details-text>
-                            </govuk-details>
+                        @await Html.PartialAsync("_DisadvantagedPupils")
+                        @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.YearValues.CurrentYear.BreakdownDisadvantaged)
+                        <govuk-details id="non-disadvantaged-details">
+                            <govuk-details-summary>
+                                Compare state-funded local and national averages for non-disadvantaged pupils
+                            </govuk-details-summary>
+                            <govuk-details-text>
+                                <h4 class="govuk-heading-s">Non-disadvantaged pupils</h4>
+                                @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.BreakdownNonDisadvantaged)
+                            </govuk-details-text>
+                        </govuk-details>
                             
-                            <govuk-details>
-                                <govuk-details-summary>
-                                    Show previous years data for disadvantaged pupils
-                                </govuk-details-summary>
-                                <govuk-details-text>
-                                    <h4 class="govuk-heading-s">2023 to 2024 academic year</h4>
-                                    @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.YearValues.PreviousYear.BreakdownDisadvantaged)
-                                    <h4 class="govuk-heading-s">2022 to 2023 academic year</h4>
-                                    @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.YearValues.TwoYearsAgo.BreakdownDisadvantaged)
-                                </govuk-details-text>
-                            </govuk-details>
-                        </govuk-accordion-item-content>
-                    </govuk-accordion-item>
-                </govuk-accordion>
-            }
+                        <govuk-details id="disadvantaged-previous-years-details">
+                            <govuk-details-summary>
+                                Show previous years data for disadvantaged pupils
+                            </govuk-details-summary>
+                            <govuk-details-text>
+                                <h4 class="govuk-heading-s">2023 to 2024 academic year</h4>
+                                @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.YearValues.PreviousYear.BreakdownDisadvantaged)
+                                <h4 class="govuk-heading-s">2022 to 2023 academic year</h4>
+                                @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.YearValues.TwoYearsAgo.BreakdownDisadvantaged)
+                            </govuk-details-text>
+                        </govuk-details>
+                    </govuk-accordion-item-content>
+                </govuk-accordion-item>
+            </govuk-accordion>
         }
         else
         {
