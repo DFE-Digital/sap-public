@@ -1,5 +1,5 @@
 ﻿using Microsoft.Playwright;
-using SAPPub.Web.Tests.UI.Helpers;
+using SAPPub.Playwright.Testing;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
 namespace SAPPub.Web.Tests.UI;

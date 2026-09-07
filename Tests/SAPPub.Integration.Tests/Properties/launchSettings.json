@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "PlaywrightTests": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "BASE_URL": "https://localhost:5001"
+      }
+    }
+  }
+}

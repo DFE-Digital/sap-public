@@ -3,6 +3,7 @@ using Microsoft.Playwright;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 using SAPPub.Web.Tests;
+using SAPPub.Playwright.Testing;
 
 namespace SAPPub.Web.Tests.UI.Areas.Profiles;
 
