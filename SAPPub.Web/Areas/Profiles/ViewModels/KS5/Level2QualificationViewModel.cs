@@ -22,6 +22,8 @@ public class Level2QualificationViewModel : BaseViewModel
 
     public required AverageResultViewModel AverageResult { get; set; }
 
+    public required PerformanceGroupsViewModel PerformanceGroupsData { get; init; }
+
     public static Level2QualificationViewModel Map(Level2QualificationModel model)
     {
         return new Level2QualificationViewModel
@@ -35,7 +37,8 @@ public class Level2QualificationViewModel : BaseViewModel
             Level2Qualification = model.QualificationType,
             TotalNoOfStudentCompletedQualification = model.TotalNoOfStudentCompletedQualification.ToDisplayField(),
             ProgressScore = ProgressScoreViewModel.Map(model.ProgressScore),
-            AverageResult = AverageResultViewModel.Map(model.AverageResult)
+            AverageResult = AverageResultViewModel.Map(model.AverageResult),
+            PerformanceGroupsData = PerformanceGroupsViewModel.Map(model.DisadvantagedStudentsData, model.NonDisadvantagedStudentsData)
         };
     }
 }

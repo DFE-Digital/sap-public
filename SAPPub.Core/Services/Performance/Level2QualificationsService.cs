@@ -40,6 +40,8 @@ public class Level2QualificationsService(
             TotalNoOfStudentCompletedQualification = GetTotalNoOfStudentsCompletedQualification(level2Qualification, establishmentPerformance),
             ProgressScore = GetProgressScoreModel(level2Qualification, establishmentPerformance, englandPerformance),
             AverageResult = GetAverageResultModel(level2Qualification, establishmentPerformance, englandPerformance, laPerformance),
+            DisadvantagedStudentsData = GetDisadvantagedStudentsData(level2Qualification, establishmentPerformance, laPerformance, englandPerformance),
+            NonDisadvantagedStudentsData = GetNonDisadvantagedStudentsData(level2Qualification, laPerformance, englandPerformance)
         };
     }
 
@@ -136,6 +138,207 @@ public class Level2QualificationsService(
                     _ => CodedString.Empty,
                 },
             }
+        };
+    }
+
+    private static PerformanceSummaryModel GetDisadvantagedStudentsData(
+        Level2 level2Qualification,
+        KS5EstablishmentPerformance establishmentPerformance,
+        KS5LAPerformance laPerformance,
+        KS5EnglandPerformance englandPerformance)
+    {
+        return new PerformanceSummaryModel
+        {
+            Establishment = new PerformanceData
+            {
+                NumberOfStudents = level2Qualification switch
+                {
+                    Level2.TechCert => establishmentPerformance.TALLPUP_TECHCERT_DIS_Est_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ProgressScore = level2Qualification switch
+                {
+                    Level2.TechCert => establishmentPerformance.VA_INS_TECHCERT_DIS_Est_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ConfidenceLevelUpper = level2Qualification switch
+                {
+                    Level2.TechCert => establishmentPerformance.UCI_INS_TECHCERT_DIS_Est_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ConfidenceLevelLower = level2Qualification switch
+                {
+                    Level2.TechCert => establishmentPerformance.LCI_INS_TECHCERT_DIS_Est_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                Result = new PerformanceResult
+                {
+                    Points = level2Qualification switch
+                    {
+                        Level2.TechCert => establishmentPerformance.TALLPPE_TECHCERT_DIS_Est_Current_Num_Coded,
+                        _ => CodedDouble.Empty,
+                    },
+                    Grade = level2Qualification switch
+                    {
+                        Level2.TechCert => establishmentPerformance.TALLPPEGRD_TECHCERT_DIS_Est_Current,
+                        _ => CodedString.Empty,
+                    }
+                }
+            },
+            LocalAuthority = new PerformanceData
+            {
+                NumberOfStudents = level2Qualification switch
+                {
+                    Level2.TechCert => laPerformance.TALLPUP_TECHCERT_DIS_LA_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ProgressScore = level2Qualification switch
+                {
+                    Level2.TechCert => laPerformance.VA_INS_TECHCERT_DIS_LA_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ConfidenceLevelUpper = level2Qualification switch
+                {
+                    Level2.TechCert => laPerformance.UCI_INS_TECHCERT_DIS_LA_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ConfidenceLevelLower = level2Qualification switch
+                {
+                    Level2.TechCert => laPerformance.LCI_INS_TECHCERT_DIS_LA_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                Result = new PerformanceResult
+                {
+                    Points = level2Qualification switch
+                    {
+                        Level2.TechCert => laPerformance.TALLPPE_TECHCERT_DIS_LA_Current_Num_Coded,
+                        _ => CodedDouble.Empty,
+                    },
+                    Grade = level2Qualification switch
+                    {
+                        Level2.TechCert => laPerformance.TALLPPEGRD_TECHCERT_DIS_LA_Current,
+                        _ => CodedString.Empty,
+                    }
+                }
+            },
+            England = new PerformanceData
+            {
+                NumberOfStudents = level2Qualification switch
+                {
+                    Level2.TechCert => englandPerformance.TALLPUP_TECHCERT_DIS_Eng_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ProgressScore = level2Qualification switch
+                {
+                    Level2.TechCert => englandPerformance.VA_INS_TECHCERT_DIS_Eng_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ConfidenceLevelUpper = level2Qualification switch
+                {
+                    Level2.TechCert => englandPerformance.UCI_INS_TECHCERT_DIS_Eng_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ConfidenceLevelLower = level2Qualification switch
+                {
+                    Level2.TechCert => englandPerformance.LCI_INS_TECHCERT_DIS_Eng_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                Result = new PerformanceResult
+                {
+                    Points = level2Qualification switch
+                    {
+                        Level2.TechCert => englandPerformance.TALLPPE_TECHCERT_DIS_Eng_Current_Num_Coded,
+                        _ => CodedDouble.Empty,
+                    },
+                    Grade = level2Qualification switch
+                    {
+                        Level2.TechCert => englandPerformance.TALLPPEGRD_TECHCERT_DIS_Eng_Current,
+                        _ => CodedString.Empty,
+                    }
+                }
+            },
+        };
+    }
+
+    private static PerformanceSummaryModel GetNonDisadvantagedStudentsData(
+        Level2 level2Qualification,
+        KS5LAPerformance laPerformance,
+        KS5EnglandPerformance englandPerformance)
+    {
+        return new PerformanceSummaryModel
+        {
+            LocalAuthority = new PerformanceData
+            {
+                NumberOfStudents = level2Qualification switch
+                {
+                    Level2.TechCert => laPerformance.TALLPUP_TECHCERT_NOTDIS_LA_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ProgressScore = level2Qualification switch
+                {
+                    Level2.TechCert => laPerformance.VA_INS_TECHCERT_NOTDIS_LA_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ConfidenceLevelUpper = level2Qualification switch
+                {
+                    Level2.TechCert => laPerformance.UCI_INS_TECHCERT_NOTDIS_LA_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ConfidenceLevelLower = level2Qualification switch
+                {
+                    Level2.TechCert => laPerformance.LCI_INS_TECHCERT_NOTDIS_LA_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                Result = new PerformanceResult
+                {
+                    Points = level2Qualification switch
+                    {
+                        Level2.TechCert => laPerformance.TALLPPE_TECHCERT_NOTDIS_LA_Current_Num_Coded,
+                        _ => CodedDouble.Empty,
+                    },
+                    Grade = level2Qualification switch
+                    {
+                        Level2.TechCert => laPerformance.TALLPPEGRD_TECHCERT_NOTDIS_LA_Current,
+                        _ => CodedString.Empty,
+                    }
+                }
+            },
+            England = new PerformanceData
+            {
+                NumberOfStudents = level2Qualification switch
+                {
+                    Level2.TechCert => englandPerformance.TALLPUP_TECHCERT_NOTDIS_Eng_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ProgressScore = level2Qualification switch
+                {
+                    Level2.TechCert => englandPerformance.VA_INS_TECHCERT_NOTDIS_Eng_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ConfidenceLevelUpper = level2Qualification switch
+                {
+                    Level2.TechCert => englandPerformance.UCI_INS_TECHCERT_NOTDIS_Eng_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                ConfidenceLevelLower = level2Qualification switch
+                {
+                    Level2.TechCert => englandPerformance.LCI_INS_TECHCERT_NOTDIS_Eng_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                Result = new PerformanceResult
+                {
+                    Points = level2Qualification switch
+                    {
+                        Level2.TechCert => englandPerformance.TALLPPE_TECHCERT_NOTDIS_Eng_Current_Num_Coded,
+                        _ => CodedDouble.Empty,
+                    },
+                    Grade = level2Qualification switch
+                    {
+                        Level2.TechCert => englandPerformance.TALLPPEGRD_TECHCERT_NOTDIS_Eng_Current,
+                        _ => CodedString.Empty,
+                    }
+                }
+            },
         };
     }
 }
