@@ -149,6 +149,18 @@ public sealed class FakeOverviewService : IOverviewService
                 54,
                 string.Empty,
                 "54"),
+
+            DestinationsEstablishment = new CodedDouble(
+                95,
+                string.Empty,
+                "95"),
+
+            DestinationsLA = null,
+
+            DestinationsEngland = new CodedDouble(
+                87,
+                string.Empty,
+                "87"),
         };
     }
 
@@ -225,6 +237,21 @@ public sealed class FakeOverviewService : IOverviewService
                 54,
                 string.Empty,
                 "54"),
+
+            DestinationsEstablishment = new CodedDouble(
+                95,
+                string.Empty,
+                "95"),
+
+            DestinationsLA = new CodedDouble(
+                92,
+                string.Empty,
+                "92"),
+
+            DestinationsEngland = new CodedDouble(
+                87,
+                string.Empty,
+                "87"),
         };
     }
 

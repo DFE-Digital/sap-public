@@ -656,6 +656,154 @@
                         </div>
 
                     </div>
+
+
+                    @* What pupils did after year 11 - closed by default *@
+                    <div class="govuk-accordion__section">
+
+                        <div class="govuk-accordion__section-header">
+
+                            <span id="accordion-iconbox__destinations"
+                                  class="ataglance-accordion-iconbox"
+                                  aria-hidden="true">
+
+                                <img src="~/assets/images/at-a-glance-destinations-icon.svg"
+                                     class="ataglance-accordion-iconbox__icon"
+                                     alt="" />
+
+                            </span>
+
+                            <h3 class="govuk-accordion__section-heading">
+                                <span class="govuk-accordion__section-button"
+                                      id="accordion-destinations-heading">
+                                    What pupils did after year 11
+                                </span>
+                            </h3>
+
+                        </div>
+
+                        <div id="secondary-at-a-glance-accordion-content-4"
+                             class="govuk-accordion__section-content">
+
+                            <div class="govuk-body">
+
+                                <div class="ataglance-summary-card govuk-summary-card">
+
+                                    <div class="govuk-summary-card__title-wrapper">
+
+                                        <h4 class="govuk-summary-card__title">
+                                            Percentage of pupils who either stayed in education, went into an apprenticeship or entered employment for at least 6 months after finishing year 11 (key stage 4)
+                                        </h4>
+
+                                    </div>
+
+                                    <div class="govuk-summary-card__content">
+
+                                        <p class="govuk-body">
+                                            This data is for pupils who finished year 11 in the 2022 to 2023 academic year.
+                                        </p>
+
+                                        <div id="overview-destinations-current-year-data-container"
+                                             class="overview-destinations-current-year-data-container">
+
+                                            <div class="govuk-button-group">
+                                                <govuk-button id="overview-destinations-current-year-show-btn"
+                                                              type="button"
+                                                              class="govuk-button--secondary overview-destinations-current-year-show-btn">
+                                                    Show as a table
+                                                </govuk-button>
+                                            </div>
+
+                                            <div id="overview-destinations-current-year-chart-container"
+                                                 class="chart-container overview-destinations-current-year-chart-container">
+
+                                                <canvas id="overview-destinations-chart"
+                                                        class="js-chart"
+                                                        data-type="bar"
+                                                        data-not-available-text="@Constants.NotAvailable"
+                                                        data-chart='@Html.Raw(Json.Serialize(Model.DestinationsChart))'
+                                                        data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
+                                                </canvas>
+
+                                            </div>
+
+                                            <div id="overview-destinations-current-year-table-container"
+                                                 class="overview-destinations-current-year-table-container">
+
+                                                <table id="overview-destinations-current-year-table"
+                                                       class="govuk-table">
+
+                                                    <tbody class="govuk-table__body">
+
+                                                        @foreach (var label in Model.DestinationsChart.Labels.Select((value, i) => (value, i)))
+                                                        {
+                                                            <tr class="govuk-table__row">
+
+                                                                <th scope="row"
+                                                                    class="govuk-table__header">
+                                                                    @label.value
+                                                                </th>
+
+                                                                <td class="govuk-table__cell">
+                                                                    @(Model.DestinationsChart.Data[label.i].HasValue
+                                                                        ? $"{Model.DestinationsChart.Data[label.i]}%"
+                                                                        : Constants.NotAvailable)
+                                                                </td>
+
+                                                            </tr>
+                                                        }
+
+                                                    </tbody>
+
+                                                </table>
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="govuk-body">
+
+                                            <a asp-route="@RouteConstants.SecondaryDestinations"
+                                               asp-all-route-data="@Model.RouteAttributes"
+                                               class="ataglance-link__link govuk-!-font-weight-bold govuk-link govuk-link--no-visited-state">
+
+                                                <span class="ataglance-link__iconbox"
+                                                      aria-hidden="true">
+
+                                                    <svg class="ataglance-link__icon"
+                                                         viewBox="0 0 32 32"
+                                                         focusable="false"
+                                                         aria-hidden="true">
+
+                                                        <circle cx="16"
+                                                                cy="16"
+                                                                r="14"
+                                                                fill="currentColor" />
+
+                                                        <path d="M9 15h9.5l-3.5-3.5 1.8-1.8L23 16l-6.2 6.3-1.8-1.8 3.5-3.5H9z"
+                                                              fill="#ffffff" />
+
+                                                    </svg>
+
+                                                </span>
+
+                                                <span class="ataglance-link__text">
+                                                    View breakdowns of pupils in education, apprenticeships or employment
+                                                </span>
+
+                                            </a>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
                 </div>
 
             </section>
@@ -685,4 +833,7 @@
 
     <script nonce="@Html.ScriptNonce().ToString()"
             src="~/js/chart-factory.js"></script>
+
+    <script nonce="@Html.ScriptNonce().ToString()"
+        src="~/js/overview-destinations.js"></script>
 }

@@ -17,14 +17,22 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
     private const string OverviewUrl = $"school/{Urn}/{SchoolSlug}/overview";
     private const string AboutUrl = $"school/{Urn}/{SchoolSlug}/about";
     private const string Address = "Grove Lane, Handsworth, Birmingham, B21 9ET";
+
     private const string MissingDataUrn = "137552";
-    private const string MissingDataSchoolName = "Stewards Academy - Science Specialist, Harlow";
-    private const string MissingDataSlug = "stewards-academy-science-specialist-harlow";
-    private const string MissingDataOverviewUrl = $"school/{MissingDataUrn}/{MissingDataSlug}/overview";
+    private const string MissingDataSchoolName =
+        "Stewards Academy - Science Specialist, Harlow";
+    private const string MissingDataSlug =
+        "stewards-academy-science-specialist-harlow";
+    private const string MissingDataOverviewUrl =
+        $"school/{MissingDataUrn}/{MissingDataSlug}/overview";
+
     private const string AchievementUrn = "149328";
-    private const string AchievementSchoolName = "King Edward VI High School";
-    private const string AchievementSlug = "king-edward-vi-high-school";
-    private const string AchievementOverviewUrl = $"school/{AchievementUrn}/{AchievementSlug}/overview";
+    private const string AchievementSchoolName =
+        "King Edward VI High School";
+    private const string AchievementSlug =
+        "king-edward-vi-high-school";
+    private const string AchievementOverviewUrl =
+        $"school/{AchievementUrn}/{AchievementSlug}/overview";
 
     [Fact]
     public async Task OverviewPage_LoadsSuccessfully()
@@ -141,7 +149,6 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
 
         var viewportWidth = Page.ViewportSize!.Width;
 
-        // Allow a small tolerance for browser rendering/sub-pixel rounding.
         Assert.InRange(
             bannerBox!.Width,
             viewportWidth - 4,
@@ -164,9 +171,9 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
         await Expect(navigation).ToBeVisibleAsync();
 
         await Expect(
-                navigation.GetByRole(
-                    AriaRole.Link,
-                    new() { Name = "School Profiles" }))
+            navigation.GetByRole(
+                AriaRole.Link,
+                new() { Name = "School Profiles" }))
             .ToBeVisibleAsync();
     }
 
@@ -323,10 +330,9 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
         await Expect(pagination)
             .ToBeVisibleAsync();
 
-        // Overview is the first page, so it must not have a Previous link.
         await Expect(
-                pagination.Locator(
-                    ".govuk-pagination__prev"))
+            pagination.Locator(
+                ".govuk-pagination__prev"))
             .ToHaveCountAsync(0);
 
         var next =
@@ -337,12 +343,12 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
             .ToBeVisibleAsync();
 
         await Expect(
-                next.Locator(
-                    ".govuk-pagination__link-label"))
+            next.Locator(
+                ".govuk-pagination__link-label"))
             .ToHaveTextAsync("About the school");
 
         await Expect(
-                next.Locator("a"))
+            next.Locator("a"))
             .ToHaveAttributeAsync(
                 "href",
                 $"/school/{Urn}/{SchoolSlug}/about");
@@ -371,6 +377,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
             await Page.GotoAsync(AboutUrl);
 
         Assert.NotNull(response);
+
         Assert.True(
             response.Ok,
             await GetFailureMessageAsync(
@@ -385,12 +392,12 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
             .ToBeVisibleAsync();
 
         await Expect(
-                previous.Locator(
-                    ".govuk-pagination__link-label"))
+            previous.Locator(
+                ".govuk-pagination__link-label"))
             .ToHaveTextAsync("Overview");
 
         await Expect(
-                previous.Locator("a"))
+            previous.Locator("a"))
             .ToHaveAttributeAsync(
                 "href",
                 $"/school/{Urn}/{SchoolSlug}/overview");
@@ -403,6 +410,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
             await Page.GotoAsync(AboutUrl);
 
         Assert.NotNull(response);
+
         Assert.True(
             response.Ok,
             await GetFailureMessageAsync(
@@ -430,30 +438,30 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
         await GoToOverviewAsync();
 
         await Expect(
-                Page.GetByRole(
-                    AriaRole.Heading,
-                    new()
-                    {
-                        Level = 1,
-                        Name = SchoolName,
-                        Exact = true
-                    }))
+            Page.GetByRole(
+                AriaRole.Heading,
+                new()
+                {
+                    Level = 1,
+                    Name = SchoolName,
+                    Exact = true
+                }))
             .ToBeVisibleAsync();
 
         await Expect(
-                Page.GetByRole(
-                    AriaRole.Heading,
-                    new()
-                    {
-                        Level = 2,
-                        Name = "Overview",
-                        Exact = true
-                    }))
+            Page.GetByRole(
+                AriaRole.Heading,
+                new()
+                {
+                    Level = 2,
+                    Name = "Overview",
+                    Exact = true
+                }))
             .ToBeVisibleAsync();
 
         await Expect(
-                Page.Locator(
-                    ".school-profile-banner"))
+            Page.Locator(
+                ".school-profile-banner"))
             .ToBeVisibleAsync();
 
         var pageWidth =
@@ -481,41 +489,41 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
         await GoToOverviewAsync();
 
         await Expect(
-                Page.Locator(
-                    ".school-profile-banner"))
+            Page.Locator(
+                ".school-profile-banner"))
             .ToBeVisibleAsync();
 
         await Expect(
-                Page.Locator(
-                    ".moj-side-navigation"))
+            Page.Locator(
+                ".moj-side-navigation"))
             .ToBeVisibleAsync();
 
         await Expect(
-                Page.Locator(
-                    ".map-address"))
-                .ToBeVisibleAsync();
+            Page.Locator(
+                ".map-address"))
+            .ToBeVisibleAsync();
 
         await Expect(
-                Page.Locator(
-                    ".ataglance-address-row"))
-                .ToContainTextAsync(Address);
+            Page.Locator(
+                ".ataglance-address-row"))
+            .ToContainTextAsync(Address);
 
         await Expect(
-                Page.Locator(
-                    "#overview-school-information"))
-                .ToBeVisibleAsync();
+            Page.Locator(
+                "#overview-school-information"))
+            .ToBeVisibleAsync();
 
         await Expect(
-                Page.GetByRole(
-                    AriaRole.Link,
-                    new()
-                    {
-                        NameRegex =
-                            new Regex(
-                                "Find out more about the school",
-                                RegexOptions.IgnoreCase)
-                    }))
-                .ToBeVisibleAsync();
+            Page.GetByRole(
+                AriaRole.Link,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            "Find out more about the school",
+                            RegexOptions.IgnoreCase)
+                }))
+            .ToBeVisibleAsync();
     }
 
     [Fact]
@@ -523,7 +531,8 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
     {
         await GoToOverviewAsync();
 
-        var information = Page.Locator("#overview-school-information");
+        var information =
+            Page.Locator("#overview-school-information");
 
         await Expect(information).ToBeVisibleAsync();
         await Expect(information).ToContainTextAsync("Phase of education");
@@ -545,7 +554,8 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
     {
         await GoToOverviewAsync();
 
-        var address = Page.Locator(".ataglance-address-row");
+        var address =
+            Page.Locator(".ataglance-address-row");
 
         await Expect(address).ToBeVisibleAsync();
         await Expect(address).ToContainTextAsync("Address");
@@ -561,17 +571,14 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
 
         await Expect(map).ToBeVisibleAsync();
 
-        // Loading placeholder should have gone.
         await Expect(
             map.Locator(".map-loading"))
             .ToHaveCountAsync(0);
 
-        // Leaflet adds this class to the map host when initialised.
         await Expect(map)
             .ToHaveClassAsync(
                 new Regex(@"\bleaflet-container\b"));
 
-        // Interactive Leaflet controls prove the map is active.
         await Expect(
             map.GetByRole(
                 AriaRole.Button,
@@ -592,7 +599,6 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                 }))
             .ToBeVisibleAsync();
 
-        // School marker should also have been created.
         await Expect(
             map.Locator(".leaflet-marker-icon"))
             .ToHaveCountAsync(1);
@@ -603,10 +609,20 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
     {
         await GoToOverviewAsync();
 
-        var marker = Page.Locator("#map .leaflet-marker-icon");
+        var marker =
+            Page.Locator("#map .leaflet-marker-icon");
 
         await Expect(marker).ToHaveCountAsync(1);
-        await Expect(Page.GetByRole(AriaRole.Button, new() { Name = SchoolName, Exact = true })).ToBeVisibleAsync();
+
+        await Expect(
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    Name = SchoolName,
+                    Exact = true
+                }))
+            .ToBeVisibleAsync();
     }
 
     [Fact]
@@ -616,8 +632,25 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
 
         var map = Page.Locator("#map");
 
-        await Expect(map.GetByRole(AriaRole.Button, new() { Name = "Zoom in", Exact = true })).ToBeVisibleAsync();
-        await Expect(map.GetByRole(AriaRole.Button, new() { Name = "Zoom out", Exact = true })).ToBeVisibleAsync();
+        await Expect(
+            map.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    Name = "Zoom in",
+                    Exact = true
+                }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            map.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    Name = "Zoom out",
+                    Exact = true
+                }))
+            .ToBeVisibleAsync();
     }
 
     [Fact]
@@ -861,7 +894,8 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                 AriaRole.Region,
                 new()
                 {
-                    Name = $"Map showing the location of {SchoolName}",
+                    Name =
+                        $"Map showing the location of {SchoolName}",
                     Exact = true
                 }))
             .ToBeVisibleAsync();
@@ -873,7 +907,8 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
         const string url =
             "school/137552/stewards-academy-science-specialist-harlow/overview";
 
-        var response = await Page.GotoAsync(url);
+        var response =
+            await Page.GotoAsync(url);
 
         Assert.NotNull(response);
         Assert.True(response.Ok);
@@ -884,7 +919,8 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                 new()
                 {
                     Level = 2,
-                    Name = "Secondary school profile at a glance",
+                    Name =
+                        "Secondary school profile at a glance",
                     Exact = true
                 }))
             .ToBeVisibleAsync();
@@ -894,7 +930,8 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                 AriaRole.Button,
                 new()
                 {
-                    NameRegex = new Regex("Pupil progress")
+                    NameRegex =
+                        new Regex("Pupil progress")
                 }))
             .ToBeVisibleAsync();
     }
@@ -912,7 +949,8 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                 AriaRole.Button,
                 new()
                 {
-                    NameRegex = new Regex("Pupil progress")
+                    NameRegex =
+                        new Regex("Pupil progress")
                 });
 
         await Expect(accordionButton)
@@ -937,13 +975,13 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
 
         var pupilProgressSection =
             Page.Locator(
-                "#secondary-at-a-glance-accordion .govuk-accordion__section")
-            .Filter(
-                new LocatorFilterOptions
-                {
-                    Has = Page.Locator(
-                        "#accordion-progress-heading")
-                });
+                    "#secondary-at-a-glance-accordion .govuk-accordion__section")
+                .Filter(
+                    new LocatorFilterOptions
+                    {
+                        Has = Page.Locator(
+                            "#accordion-progress-heading")
+                    });
 
         var accordionButton =
             pupilProgressSection.GetByRole(
@@ -957,9 +995,9 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                 });
 
         var content =
-            Page.Locator("#secondary-at-a-glance-accordion-content-1");
+            Page.Locator(
+                "#secondary-at-a-glance-accordion-content-1");
 
-        // Closed by default.
         await Expect(accordionButton)
             .ToHaveAttributeAsync(
                 "aria-expanded",
@@ -968,7 +1006,6 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
         await Expect(content)
             .Not.ToBeVisibleAsync();
 
-        // Expand.
         await accordionButton.ClickAsync();
 
         await Expect(accordionButton)
@@ -991,7 +1028,6 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                 new() { Exact = true }))
             .ToBeVisibleAsync();
 
-        // Close.
         await accordionButton.ClickAsync();
 
         await Expect(accordionButton)
@@ -1004,16 +1040,17 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
     }
 
     [Fact]
-    public async Task OverviewPage_SecondarySchool_DisplaysAveragePupilAchievementAfterPupilProgress()
+    public async Task OverviewPage_SecondarySchool_DisplaysAtAGlanceSectionsInExpectedOrder()
     {
-        await Page.GotoAsync(AchievementOverviewUrl);
+        await Page.GotoAsync(
+            AchievementOverviewUrl);
 
         var sections =
             Page.Locator(
                 "#secondary-at-a-glance-accordion .govuk-accordion__section");
 
         await Expect(sections)
-            .ToHaveCountAsync(3);
+            .ToHaveCountAsync(4);
 
         await Expect(
             sections.Nth(0)
@@ -1053,13 +1090,26 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                                 RegexOptions.IgnoreCase)
                     }))
             .ToBeVisibleAsync();
-    }
 
+        await Expect(
+            sections.Nth(3)
+                .GetByRole(
+                    AriaRole.Button,
+                    new()
+                    {
+                        NameRegex =
+                            new Regex(
+                                "What pupils did after year 11",
+                                RegexOptions.IgnoreCase)
+                    }))
+            .ToBeVisibleAsync();
+    }
 
     [Fact]
     public async Task OverviewPage_AveragePupilAchievementAccordion_IsOpenByDefault()
     {
-        await Page.GotoAsync(AchievementOverviewUrl);
+        await Page.GotoAsync(
+            AchievementOverviewUrl);
 
         var button =
             Page.GetByRole(
@@ -1086,7 +1136,8 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
     [Fact]
     public async Task OverviewPage_AveragePupilAchievementAccordion_CanBeClosedAndExpanded()
     {
-        await Page.GotoAsync(AchievementOverviewUrl);
+        await Page.GotoAsync(
+            AchievementOverviewUrl);
 
         var button =
             Page.GetByRole(
@@ -1129,62 +1180,63 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
     {
         await Page.GotoAsync(AchievementOverviewUrl);
 
+        var attainmentSection =
+            Page.Locator(
+                "#secondary-at-a-glance-accordion-content-2");
+
+        await Expect(attainmentSection)
+            .ToBeVisibleAsync();
+
         await Expect(
-            Page.GetByText(
+            attainmentSection.GetByText(
                 "Attainment 8 is used to assess a pupil's average achievement across 8 GCSEs and equivalent subjects.",
                 new() { Exact = true }))
             .ToBeVisibleAsync();
 
         await Expect(
-            Page.GetByText(
+            attainmentSection.GetByText(
                 "The qualifications included in this average result may include GCSEs and approved technical and vocational qualifications.",
                 new() { Exact = true }))
             .ToBeVisibleAsync();
 
         await Expect(
-            Page.GetByText(
+            attainmentSection.GetByText(
                 "Average result",
                 new() { Exact = true }))
             .ToBeVisibleAsync();
 
         await Expect(
-            Page.GetByText(
+            attainmentSection.GetByText(
                 "49.9",
                 new() { Exact = true }))
             .ToBeVisibleAsync();
 
         await Expect(
-            Page.GetByText(
+            attainmentSection.GetByText(
                 "This means that pupils generally scored the equivalent of just below grade 5 in their 8 subjects.",
                 new() { Exact = true }))
             .ToBeVisibleAsync();
 
         await Expect(
-            Page.GetByText(
-                "49.9",
-                new() { Exact = true }))
-            .ToBeVisibleAsync();
-
-        await Expect(
-            Page.GetByText(
+            attainmentSection.GetByText(
                 "Sheffield average",
                 new() { Exact = true }))
             .ToBeVisibleAsync();
 
         await Expect(
-            Page.GetByText(
+            attainmentSection.GetByText(
                 "43.4",
                 new() { Exact = true }))
             .ToBeVisibleAsync();
 
         await Expect(
-            Page.GetByText(
+            attainmentSection.GetByText(
                 "England average",
                 new() { Exact = true }))
             .ToBeVisibleAsync();
 
         await Expect(
-            Page.GetByText(
+            attainmentSection.GetByText(
                 "45.2",
                 new() { Exact = true }))
             .ToBeVisibleAsync();
@@ -1199,7 +1251,8 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
         await Page.GotoAsync(url);
 
         var attainmentSection =
-            Page.Locator("#secondary-at-a-glance-accordion-content-2");
+            Page.Locator(
+                "#secondary-at-a-glance-accordion-content-2");
 
         await Expect(attainmentSection)
             .ToBeVisibleAsync();
@@ -1222,7 +1275,8 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
     [Fact]
     public async Task OverviewPage_AveragePupilAchievementLink_NavigatesToSameSchoolProgressAndAttainmentPage()
     {
-        await Page.GotoAsync(AchievementOverviewUrl);
+        await Page.GotoAsync(
+            AchievementOverviewUrl);
 
         var link =
             Page.GetByRole(
@@ -1240,7 +1294,8 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                 $"/school/{AchievementUrn}/{AchievementSlug}/secondary-performance/progress-attainment");
 
         Assert.Null(
-            await link.GetAttributeAsync("target"));
+            await link.GetAttributeAsync(
+                "target"));
 
         await link.ClickAsync();
 
@@ -1248,51 +1303,6 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
             .ToHaveURLAsync(
                 new Regex(
                     $@"/school/{AchievementUrn}/{AchievementSlug}/secondary-performance/progress-attainment(?:/current)?/?$"));
-    }
-
-
-
-    private async Task AssertRowDisplaysNotAvailableAsync(
-    string selector,
-    string label)
-    {
-        var row = Page.Locator(selector);
-
-        await Expect(row)
-            .ToBeVisibleAsync();
-
-        await Expect(row)
-            .ToContainTextAsync(label);
-
-        await Expect(row)
-            .ToContainTextAsync("Not available");
-    }
-
-    private async Task<IResponse> GoToOverviewAsync()
-    {
-        var response =
-            await Page.GotoAsync(OverviewUrl);
-
-        Assert.NotNull(response);
-
-        Assert.True(
-            response.Ok,
-            await GetFailureMessageAsync(
-                "Overview page failed to load",
-                response));
-
-        await Expect(
-            Page.GetByRole(
-                AriaRole.Heading,
-                new()
-                {
-                    Level = 1,
-                    Name = SchoolName,
-                    Exact = true
-                }))
-            .ToBeVisibleAsync();
-
-        return response;
     }
 
     [Fact]
@@ -1310,7 +1320,8 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                 AriaRole.Button,
                 new()
                 {
-                    NameRegex = new Regex("Pupil progress")
+                    NameRegex =
+                        new Regex("Pupil progress")
                 });
 
         await accordionButton.ClickAsync();
@@ -1332,7 +1343,8 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                 $"/school/{urn}/{slug}/secondary-performance/progress-attainment");
 
         Assert.Null(
-            await link.GetAttributeAsync("target"));
+            await link.GetAttributeAsync(
+                "target"));
 
         await link.ClickAsync();
 
@@ -1353,7 +1365,8 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                 new()
                 {
                     Level = 2,
-                    Name = "Secondary school profile at a glance",
+                    Name =
+                        "Secondary school profile at a glance",
                     Exact = true
                 }))
             .ToHaveCountAsync(0);
@@ -1363,7 +1376,8 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                 AriaRole.Button,
                 new()
                 {
-                    NameRegex = new Regex("Pupil progress")
+                    NameRegex =
+                        new Regex("Pupil progress")
                 }))
             .ToHaveCountAsync(0);
 
@@ -1389,19 +1403,32 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                             RegexOptions.IgnoreCase)
                 }))
             .ToHaveCountAsync(0);
+
+        await Expect(
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            "What pupils did after year 11",
+                            RegexOptions.IgnoreCase)
+                }))
+            .ToHaveCountAsync(0);
     }
 
     [Fact]
     public async Task OverviewPage_SecondarySchool_DisplaysEnglishAndMathsGcseResultsAfterAveragePupilAchievement()
     {
-        await Page.GotoAsync(AchievementOverviewUrl);
+        await Page.GotoAsync(
+            AchievementOverviewUrl);
 
         var sections =
             Page.Locator(
                 "#secondary-at-a-glance-accordion .govuk-accordion__section");
 
         await Expect(sections)
-            .ToHaveCountAsync(3);
+            .ToHaveCountAsync(4);
 
         await Expect(
             sections.Nth(2)
@@ -1420,7 +1447,8 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
     [Fact]
     public async Task OverviewPage_EnglishAndMathsGcseResultsAccordion_IsClosedByDefault()
     {
-        await Page.GotoAsync(AchievementOverviewUrl);
+        await Page.GotoAsync(
+            AchievementOverviewUrl);
 
         var button =
             Page.GetByRole(
@@ -1449,7 +1477,8 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
     [Fact]
     public async Task OverviewPage_EnglishAndMathsGcseResultsAccordion_CanBeExpandedAndClosed()
     {
-        await Page.GotoAsync(AchievementOverviewUrl);
+        await Page.GotoAsync(
+            AchievementOverviewUrl);
 
         var button =
             Page.GetByRole(
@@ -1466,7 +1495,6 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
             Page.Locator(
                 "#secondary-at-a-glance-accordion-content-3");
 
-        // Closed by default.
         await Expect(button)
             .ToHaveAttributeAsync(
                 "aria-expanded",
@@ -1475,7 +1503,6 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
         await Expect(content)
             .Not.ToBeVisibleAsync();
 
-        // Expand.
         await button.ClickAsync();
 
         await Expect(button)
@@ -1486,7 +1513,6 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
         await Expect(content)
             .ToBeVisibleAsync();
 
-        // Close.
         await button.ClickAsync();
 
         await Expect(button)
@@ -1501,7 +1527,8 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
     [Fact]
     public async Task OverviewPage_EnglishAndMathsGcseResults_DisplaysExpectedContent()
     {
-        await Page.GotoAsync(AchievementOverviewUrl);
+        await Page.GotoAsync(
+            AchievementOverviewUrl);
 
         var button =
             Page.GetByRole(
@@ -1555,7 +1582,8 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
     [Fact]
     public async Task OverviewPage_EnglishAndMathsGcseResultsChart_ContainsExpectedComparisonData()
     {
-        await Page.GotoAsync(AchievementOverviewUrl);
+        await Page.GotoAsync(
+            AchievementOverviewUrl);
 
         var button =
             Page.GetByRole(
@@ -1714,7 +1742,6 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                     RegexOptions.IgnoreCase));
     }
 
-
     [Fact]
     public async Task OverviewPage_EnglishAndMathsAccordion_HasValidAriaControlsReference()
     {
@@ -1746,6 +1773,369 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
             .ToHaveCountAsync(1);
     }
 
+    [Fact]
+    public async Task OverviewPage_DestinationsAccordion_IsClosedByDefault()
+    {
+        await Page.GotoAsync(
+            AchievementOverviewUrl);
+
+        var button =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            "What pupils did after year 11",
+                            RegexOptions.IgnoreCase)
+                });
+
+        var content =
+            Page.Locator(
+                "#secondary-at-a-glance-accordion-content-4");
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "false");
+
+        await Expect(content)
+            .Not.ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_DestinationsAccordion_CanBeExpandedAndClosed()
+    {
+        await Page.GotoAsync(
+            AchievementOverviewUrl);
+
+        var button =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            "What pupils did after year 11",
+                            RegexOptions.IgnoreCase)
+                });
+
+        var content =
+            Page.Locator(
+                "#secondary-at-a-glance-accordion-content-4");
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "false");
+
+        await Expect(content)
+            .Not.ToBeVisibleAsync();
+
+        await button.ClickAsync();
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "true");
+
+        await Expect(content)
+            .ToBeVisibleAsync();
+
+        await button.ClickAsync();
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "false");
+
+        await Expect(content)
+            .Not.ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_Destinations_DisplaysExpectedContent()
+    {
+        await Page.GotoAsync(
+            AchievementOverviewUrl);
+
+        var button =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            "What pupils did after year 11",
+                            RegexOptions.IgnoreCase)
+                });
+
+        await button.ClickAsync();
+
+        var content =
+            Page.Locator(
+                "#secondary-at-a-glance-accordion-content-4");
+
+        await Expect(content)
+            .ToBeVisibleAsync();
+
+        await Expect(
+            content.GetByRole(
+                AriaRole.Heading,
+                new()
+                {
+                    Name =
+                        "Percentage of pupils who either stayed in education, went into an apprenticeship or entered employment for at least 6 months after finishing year 11 (key stage 4)",
+                    Exact = true
+                }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            content.GetByText(
+                "This data is for pupils who finished year 11 in the 2022 to 2023 academic year.",
+                new() { Exact = true }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            content.Locator(
+                "#overview-destinations-chart"))
+            .ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_DestinationsChart_ContainsExpectedComparisonData()
+    {
+        await Page.GotoAsync(
+            AchievementOverviewUrl);
+
+        var button =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            "What pupils did after year 11",
+                            RegexOptions.IgnoreCase)
+                });
+
+        await button.ClickAsync();
+
+        var chart =
+            Page.Locator(
+                "#overview-destinations-chart");
+
+        await Expect(chart)
+            .ToBeVisibleAsync();
+
+        var chartData =
+            await chart.GetAttributeAsync(
+                "data-chart");
+
+        Assert.NotNull(chartData);
+
+        Assert.Contains(
+            "School",
+            chartData,
+            StringComparison.Ordinal);
+
+        Assert.Contains(
+            "Sheffield average",
+            chartData,
+            StringComparison.Ordinal);
+
+        Assert.Contains(
+            "England average",
+            chartData,
+            StringComparison.Ordinal);
+
+        Assert.Contains(
+            "95",
+            chartData,
+            StringComparison.Ordinal);
+
+        Assert.Contains(
+            "92",
+            chartData,
+            StringComparison.Ordinal);
+
+        Assert.Contains(
+            "87",
+            chartData,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task OverviewPage_Destinations_WhenComparisonResultUnavailable_DoesNotSuppressAvailableResults()
+    {
+        await Page.GotoAsync(
+            MissingDataOverviewUrl);
+
+        var button =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            "What pupils did after year 11",
+                            RegexOptions.IgnoreCase)
+                });
+
+        await button.ClickAsync();
+
+        var chart =
+            Page.Locator(
+                "#overview-destinations-chart");
+
+        await Expect(chart)
+            .ToBeVisibleAsync();
+
+        var chartData =
+            await chart.GetAttributeAsync(
+                "data-chart");
+
+        Assert.NotNull(chartData);
+
+        Assert.Contains(
+            "95",
+            chartData,
+            StringComparison.Ordinal);
+
+        Assert.Contains(
+            "87",
+            chartData,
+            StringComparison.Ordinal);
+
+        Assert.Contains(
+            "null",
+            chartData,
+            StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task OverviewPage_DestinationsLink_NavigatesToSameSchoolDestinationsPage()
+    {
+        await Page.GotoAsync(
+            AchievementOverviewUrl);
+
+        var button =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            "What pupils did after year 11",
+                            RegexOptions.IgnoreCase)
+                });
+
+        await button.ClickAsync();
+
+        var link =
+            Page.GetByRole(
+                AriaRole.Link,
+                new()
+                {
+                    Name =
+                        "View breakdowns of pupils in education, apprenticeships or employment",
+                    Exact = true
+                });
+
+        await Expect(link)
+            .ToBeVisibleAsync();
+
+        await Expect(link)
+            .ToHaveAttributeAsync(
+                "href",
+                $"/school/{AchievementUrn}/{AchievementSlug}/destinations/secondary");
+
+        Assert.Null(
+            await link.GetAttributeAsync(
+                "target"));
+
+        await link.ClickAsync();
+
+        await Expect(Page)
+            .ToHaveURLAsync(
+                new Regex(
+                    $@"/school/{AchievementUrn}/{AchievementSlug}/destinations/secondary/?$"));
+    }
+
+    [Fact]
+    public async Task OverviewPage_DestinationsAccordion_HasValidAriaControlsReference()
+    {
+        await Page.GotoAsync(
+            AchievementOverviewUrl);
+
+        var button =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            "What pupils did after year 11",
+                            RegexOptions.IgnoreCase)
+                });
+
+        var ariaControls =
+            await button.GetAttributeAsync(
+                "aria-controls");
+
+        Assert.Equal(
+            "secondary-at-a-glance-accordion-content-4",
+            ariaControls);
+
+        await Expect(
+            Page.Locator(
+                $"#{ariaControls}"))
+            .ToHaveCountAsync(1);
+    }
+
+    private async Task AssertRowDisplaysNotAvailableAsync(
+        string selector,
+        string label)
+    {
+        var row = Page.Locator(selector);
+
+        await Expect(row)
+            .ToBeVisibleAsync();
+
+        await Expect(row)
+            .ToContainTextAsync(label);
+
+        await Expect(row)
+            .ToContainTextAsync("Not available");
+    }
+
+    private async Task<IResponse> GoToOverviewAsync()
+    {
+        var response =
+            await Page.GotoAsync(
+                OverviewUrl);
+
+        Assert.NotNull(response);
+
+        Assert.True(
+            response.Ok,
+            await GetFailureMessageAsync(
+                "Overview page failed to load",
+                response));
+
+        await Expect(
+            Page.GetByRole(
+                AriaRole.Heading,
+                new()
+                {
+                    Level = 1,
+                    Name = SchoolName,
+                    Exact = true
+                }))
+            .ToBeVisibleAsync();
+
+        return response;
+    }
 
     private async Task<string> GetFailureMessageAsync(
         string message,
