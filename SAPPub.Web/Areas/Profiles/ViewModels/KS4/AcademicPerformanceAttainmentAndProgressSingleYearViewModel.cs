@@ -1,5 +1,5 @@
-﻿using SAPPub.Core.Entities;
-using SAPPub.Core.Enums;
+﻿using SAPPub.Core.Enums;
+using SAPPub.Core.Extensions;
 using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Helpers;

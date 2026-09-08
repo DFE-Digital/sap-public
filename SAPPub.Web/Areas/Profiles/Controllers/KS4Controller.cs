@@ -48,7 +48,6 @@ public class KS4Controller(IEstablishmentService establishmentService, IFeatureM
 
         var results = await attainmentAndProgressService.GetAttainmentAndProgressAsync(urn, ct);
 
-        // CML TODO get LaName
         var model = AcademicPerformanceAttainmentAndProgressViewModel.Map(establishmentDetails.LAName, results, selectedAcademicYear.Value);
         return View(model);
     }
