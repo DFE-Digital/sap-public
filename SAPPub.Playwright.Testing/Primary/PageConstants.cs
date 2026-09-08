@@ -15,6 +15,10 @@ public class PageConstants
                 ["dataOverTimeShowAsTableBtn"] = "#mes-data-over-time-show-btn",
                 ["showCurrentDataBtn"] = "#mes-show-current-data-btn",
                 ["dataOverTimeTable"] = "#mes-data-overtime-table",
-                ["exsDataOverTimeTable"] = "#exs-data-overtime-table"
+                ["exsDataOverTimeTable"] = "#exs-data-overtime-table",
+                ["girls-boys-table"] = "#girls-boys-table",
+                ["eal-table"] = "#eal-table",
+                ["non-mobile-table"] = "#nonmobile-pupils-table",
+                ["disadvantaged-pupils-table"] = "#disadvantaged-pupils-table"
             };
 }
