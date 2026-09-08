@@ -254,8 +254,7 @@ Curated data is then shaped into materialised views, which are the query surface
 | EES                     | Attainment and comparison metrics | Attainment 8, Progress 8, subject measures              | PostgreSQL                    | Detail and comparison   | Periodic            |
 | EES                     | Destination outcomes              | education, employment, apprenticeships                  | PostgreSQL                    | Detail and comparison   | Periodic            |
 | EES                     | Attendance and absence            | absence %, authorised %, unauthorised %                 | PostgreSQL                    | Detail and comparison   | Periodic            |
-| Ofsted                  | Comparative cohorts               | groupings, peer metrics, derived values                 | PostgreSQL, generated assets  | Comparison              | Periodic            |
-| Derived search data     | Search index data                 | normalised names, compound lookups, indexed fields      | In-memory index, per replica  | Search                  | Rebuilt at pod start |
+| Derived search data     | Text search  index data                 | school names, postcode lookups, indexed fields      | PostgreSQL text-search  | Search                  | Periodic           
 
 
 ## 6.5 Analytics and third-party data flows
