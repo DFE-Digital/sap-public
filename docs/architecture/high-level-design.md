@@ -116,9 +116,9 @@ The main user groups are:
 
 ### Authentication model
 
-No Authenication is requited.
+No Authenication is required.
 
-Pleote:- Only to support Beta testing, Gateway page have been developed which allow registered users to access application bases on their email address. This check will be removed before go live and users which registered during beta testing will be removed from system along with their data.
+Note:- Only to support Beta testing, Gateway page have been developed which allow registered users to access application bases on their email address. This check will be removed before go live and users which registered during beta testing will be removed from system along with their data.
 
 ### Operational users
 
@@ -152,7 +152,7 @@ What follows from that:
 
 **There is no ORM and no EF Core code-first model.** The application does not use entity tracking, lazy loading, navigation properties or EF-managed migrations.
 
-**Read models are generated rather than hand-written.** A JSON description of each view's shape is produced, and the read model is generated from that serialised structure. This keeps the model in step with the views the pipeline produces.
+**Read models are hand-written.** A Read models are aligned manually if any changes happen to underline views. This keeps the model in step with the views the pipeline produces.
 
 **Schema change is a pipeline concern.** A change to the shape of the data is made in the pipeline metadata, which flows through to regenerated SQL, refreshed views and regenerated read models. There is no runtime migration step in the application.
 
@@ -276,19 +276,17 @@ The cookies page documents the cookies each of these sets, and integration tests
 
 The diagram below is the main stakeholder-facing view of the service. It shows the user groups, the authentication boundary, the hosted application, the search and persistence technologies, the supporting services and the data pipeline.
 
-![SAP Sector High-Level Architecture](../_assets/HLD.png)
+![SAP Public High-Level Architecture](../_assets/HLD.png)
 
 *Figure 1. SAP Public high-level architecture overview.*
 
 ### Diagram explanation
 
-At the top are the main public-facing application (SAPPub.Web) which also have list of primary technology stack which used to build this application. Application don't require any Authenication or Authrization, but to support Beta testing currently Gateway page have been put in place which allow user to access by registering with their email address. Gateway page check will be removed when application is ready to release to Live.
+At the top is the main public-facing application (SAPPub.Web) which also contains the primary technology stack which is used to build this application. The application doesn't require any Authentication or Authorisation, but to support Beta testing currently a Gateway journey has been put in place which allows user access via registration with their email address. The Gateway journey will be removed when the application is ready to release to Live.
 
-SAPPub.Web depends on SAPPub.Core which defined the domain model and business services. SAPPub.Core exposes various Business Services interfaces. SAPPub.Core don't drectly call database instead it use Repositry layer interfaces which are defined in SAPPub.Infrastrcute r. All these depdencies all internal depdencies and code for all these Projects build and deployed as single unit.
+SAPPub.Web depends on SAPPub.Core which defines the domain model and business services. SAPPub.Core exposes various Business Services interfaces. SAPPub.Core doesn't directly call the database instead it uses Repository layer interfaces which are defined in SAPPub.Infrastructure. All these dependencies all internal dependencies and code for all these Projects is build and deployed as single unit.
 
-SAPPub.Infrastrcute also expose calls to 3rd party APIs using Repositry design ppattern, so application makes call to Postcode.io to prerform postcode lookup.
-
-
+SAPPub.Infrastructure also exposes calls to 3rd party APIs using Repository design pattern, for example, the application makes calls to Postcode.io to perform postcode lookups.
 
 The runtime application is hosted in Azure Kubernetes Service and is shown as a single web application. How it is layered internally is an implementation concern and is covered in the [LLD](./low-level-design.md).
 
