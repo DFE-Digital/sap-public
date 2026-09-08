@@ -4,6 +4,8 @@ using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.Performance;
+using SAPPub.Core.ServiceModels;
+using SAPPub.Web.Areas.Profiles.Filters;
 using SAPPub.Web.Areas.Profiles.Helpers;
 using SAPPub.Web.Areas.Profiles.ViewModels.KS4;
 using SAPPub.Web.Constants;
@@ -42,9 +44,11 @@ public class KS4Controller(IEstablishmentService establishmentService, IFeatureM
         {
             return NotFound();
         }
-        var results = await attainmentAndProgressService.GetAttainmentAndProgressAsync(urn, selectedAcademicYear!.Value, ct);
+        var establishmentDetails = await establishmentService.GetEstablishmentMinimumAsync(urn, ct);
 
-        var model = AcademicPerformanceAttainmentAndProgressViewModel.Map(results, selectedAcademicYear!.Value);
+        var results = await attainmentAndProgressService.GetAttainmentAndProgressAsync(urn, ct);
+
+        var model = AcademicPerformanceAttainmentAndProgressViewModel.Map(establishmentDetails.LAName, results, selectedAcademicYear.Value);
         return View(model);
     }
 

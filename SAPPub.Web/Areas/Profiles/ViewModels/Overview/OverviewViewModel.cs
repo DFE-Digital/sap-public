@@ -54,6 +54,14 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
 
     public required DisplayField<CodedDouble> EnglishAndMathsGrade5England { get; init; }
 
+    public required DisplayField<CodedDouble> DestinationsEstablishment { get; init; }
+
+    public required DisplayField<CodedDouble> DestinationsLA { get; init; }
+
+    public required DisplayField<CodedDouble> DestinationsEngland { get; init; }
+
+    public required DataViewModel DestinationsChart { get; init; }
+
     public required DataViewModel EnglishAndMathsGrade5Chart { get; init; }
 
     public required string LocalAuthorityName { get; init; }
@@ -142,6 +150,32 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
                     model.EnglishAndMathsGrade5Establishment?.Value,
                     model.EnglishAndMathsGrade5LA?.Value,
                     model.EnglishAndMathsGrade5England?.Value
+                ],
+
+            },
+
+            DestinationsEstablishment =
+                model.DestinationsEstablishment.ToDisplayField(),
+
+                        DestinationsLA =
+                model.DestinationsLA.ToDisplayField(),
+
+                        DestinationsEngland =
+                model.DestinationsEngland.ToDisplayField(),
+
+                        DestinationsChart = new DataViewModel
+                        {
+                            Labels =
+                [
+                    "School",
+                    $"{model.LocalAuthorityName} average",
+                    "England average"
+                ],
+                            Data =
+                [
+                    model.DestinationsEstablishment?.Value,
+                    model.DestinationsLA?.Value,
+                    model.DestinationsEngland?.Value
                 ]
             },
         };

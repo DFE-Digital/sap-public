@@ -14,6 +14,12 @@ public class EnglandPerformanceBuilder
     private double? _examEntriesGSCE_Tot_Current_Num;
     private double? _examEntriesKS4_Tot_Current_Num;
 
+    // disadvantaged and non-disadvantaged measures
+    private double? _attainment8_Dis_Eng_Current_Num;
+    private double? _attainment8_Dis_Eng_Previous_Num;
+    private double? _attainment8_Dis_Eng_Previous2_Num;
+    private double? _attainment8_NDi_Eng_Current_Num;
+
     public EnglandPerformanceBuilder WithAdditionalMeasures()
     {
         _anyQual_Tot_Current_Pct = Math.Round(_faker.Random.Double(10, 100), 1);
@@ -21,6 +27,15 @@ public class EnglandPerformanceBuilder
         _more1FL_Tot_Current_Pct = Math.Round(_faker.Random.Double(10, 100), 1);
         _examEntriesGSCE_Tot_Current_Num = Math.Round(_faker.Random.Double(50, 300), 0);
         _examEntriesKS4_Tot_Current_Num = Math.Round(_faker.Random.Double(50, 300), 0);
+        return this;
+    }
+
+    public EnglandPerformanceBuilder WithDisadvantagedMeasures()
+    {
+        _attainment8_Dis_Eng_Current_Num = Math.Round(_faker.Random.Double(30, 80),1);
+        _attainment8_Dis_Eng_Previous_Num = Math.Round(_faker.Random.Double(30, 80),1);
+        _attainment8_Dis_Eng_Previous2_Num = Math.Round(_faker.Random.Double(30, 80),1);
+        _attainment8_NDi_Eng_Current_Num = Math.Round(_faker.Random.Double(30, 80),1);
         return this;
     }
 
@@ -54,7 +69,20 @@ public class EnglandPerformanceBuilder
             // Exam entries per pupil, GCSEs
             ExamEntriesGSCE_Tot_Eng_Current_Num_Coded = new CodedDouble(_examEntriesGSCE_Tot_Current_Num, "", _examEntriesGSCE_Tot_Current_Num.ToString() ?? ""),
             // Exam entries per pupil, all KS4 qualifications
-            ExamEntriesKS4_Tot_Eng_Current_Num_Coded = new CodedDouble(_examEntriesKS4_Tot_Current_Num, "", _examEntriesKS4_Tot_Current_Num.ToString() ?? "")
+            ExamEntriesKS4_Tot_Eng_Current_Num_Coded = new CodedDouble(_examEntriesKS4_Tot_Current_Num, "", _examEntriesKS4_Tot_Current_Num.ToString() ?? ""),
+
+            // disadvantaged and non-disadvantaged measures
+            Attainment8_Dis_Eng_Current_Num_Coded = CreateCodedDouble(_attainment8_Dis_Eng_Current_Num),
+            Attainment8_Dis_Eng_Previous_Num_Coded = CreateCodedDouble(_attainment8_Dis_Eng_Previous_Num),
+            Attainment8_Dis_Eng_Previous2_Num_Coded = CreateCodedDouble(_attainment8_Dis_Eng_Previous2_Num),
+            Attainment8_NDi_Eng_Current_Num_Coded = CreateCodedDouble(_attainment8_NDi_Eng_Current_Num)
         };
+    }
+
+    private static CodedDouble CreateCodedDouble(double? value)
+    {
+        if (value != null)
+            return new CodedDouble(value, "", value?.ToString() ?? "");
+        else return new CodedDouble(null, "Not available", "z");
     }
 }
