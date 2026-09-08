@@ -602,18 +602,18 @@
                                         </p>
 
                                         <div id="overview-english-maths-current-year-data-container"
-                                             class="overview-english-maths-current-year-data-container">
+                                             class="overview-chart-table">
 
                                             <div class="govuk-button-group">
                                                 <govuk-button id="overview-english-maths-current-year-show-btn"
                                                               type="button"
-                                                              class="govuk-button--secondary overview-english-maths-current-year-show-btn">
+                                                              class="govuk-button--secondary overview-chart-table__toggle govuk-!-display-none">
                                                     Show as a table
                                                 </govuk-button>
                                             </div>
 
                                             <div id="overview-english-maths-current-year-chart-container"
-                                                 class="chart-container ataglance-results-chart">
+                                                 class="chart-container ataglance-results-chart overview-chart-table__chart govuk-!-display-none">
 
                                                 <canvas id="overview-english-maths-chart"
                                                         class="js-chart"
@@ -622,25 +622,20 @@
                                                         data-chart='@Html.Raw(Json.Serialize(Model.EnglishAndMathsGrade5Chart))'
                                                         data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
                                                 </canvas>
-
                                             </div>
 
                                             <div id="overview-english-maths-current-year-table-container"
-                                                 class="overview-english-maths-current-year-table-container">
+                                                 class="overview-chart-table__table">
 
                                                 <table id="overview-english-maths-current-year-table"
                                                        class="govuk-table">
-
                                                     <tbody class="govuk-table__body">
-
                                                         @foreach (var label in Model.EnglishAndMathsGrade5Chart.Labels.Select((value, i) => (value, i)))
                                                         {
                                                             <tr class="govuk-table__row">
-                                                                <th scope="row"
-                                                                    class="govuk-table__header">
+                                                                <th scope="row" class="govuk-table__header">
                                                                     @label.value
                                                                 </th>
-
                                                                 <td class="govuk-table__cell">
                                                                     @(Model.EnglishAndMathsGrade5Chart.Data[label.i].HasValue
                                                                         ? $"{Model.EnglishAndMathsGrade5Chart.Data[label.i]}%"
@@ -648,15 +643,11 @@
                                                                 </td>
                                                             </tr>
                                                         }
-
                                                     </tbody>
-
                                                 </table>
 
                                             </div>
-
                                         </div>
-
                                         <div class="govuk-body">
 
                                             <a asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults"
@@ -748,18 +739,18 @@
                                         </p>
 
                                         <div id="overview-destinations-current-year-data-container"
-                                             class="overview-destinations-current-year-data-container">
+                                             class="overview-chart-table">
 
                                             <div class="govuk-button-group">
                                                 <govuk-button id="overview-destinations-current-year-show-btn"
                                                               type="button"
-                                                              class="govuk-button--secondary overview-destinations-current-year-show-btn">
+                                                              class="govuk-button--secondary overview-chart-table__toggle govuk-!-display-none">
                                                     Show as a table
                                                 </govuk-button>
                                             </div>
 
                                             <div id="overview-destinations-current-year-chart-container"
-                                                 class="chart-container overview-destinations-current-year-chart-container">
+                                                 class="chart-container ataglance-results-chart overview-chart-table__chart govuk-!-display-none">
 
                                                 <canvas id="overview-destinations-chart"
                                                         class="js-chart"
@@ -768,43 +759,32 @@
                                                         data-chart='@Html.Raw(Json.Serialize(Model.DestinationsChart))'
                                                         data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
                                                 </canvas>
-
                                             </div>
 
                                             <div id="overview-destinations-current-year-table-container"
-                                                 class="overview-destinations-current-year-table-container">
+                                                 class="overview-chart-table__table">
 
                                                 <table id="overview-destinations-current-year-table"
                                                        class="govuk-table">
-
                                                     <tbody class="govuk-table__body">
-
                                                         @foreach (var label in Model.DestinationsChart.Labels.Select((value, i) => (value, i)))
                                                         {
                                                             <tr class="govuk-table__row">
-
-                                                                <th scope="row"
-                                                                    class="govuk-table__header">
+                                                                <th scope="row" class="govuk-table__header">
                                                                     @label.value
                                                                 </th>
-
                                                                 <td class="govuk-table__cell">
                                                                     @(Model.DestinationsChart.Data[label.i].HasValue
                                                                         ? $"{Model.DestinationsChart.Data[label.i]}%"
                                                                         : Constants.NotAvailable)
                                                                 </td>
-
                                                             </tr>
                                                         }
-
                                                     </tbody>
-
                                                 </table>
 
                                             </div>
-
                                         </div>
-
                                         <div class="govuk-body">
 
                                             <a asp-route="@RouteConstants.SecondaryDestinations"

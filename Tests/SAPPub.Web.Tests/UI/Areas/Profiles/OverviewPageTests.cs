@@ -2193,6 +2193,44 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
         return response;
     }
 
+    [Fact]
+    public async Task OverviewPage_WithoutJavaScript_DisplaysTablesInsteadOfChartControls()
+    {
+        await using var context = await Browser.NewContextAsync(
+            new BrowserNewContextOptions
+            {
+                JavaScriptEnabled = false
+            });
+
+        var page = await context.NewPageAsync();
+
+        await page.GotoAsync(AchievementOverviewUrl);
+
+        await Expect(
+            page.Locator("#overview-english-maths-current-year-table"))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            page.Locator("#overview-destinations-current-year-table"))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            page.Locator("#overview-english-maths-current-year-show-btn"))
+            .Not.ToBeVisibleAsync();
+
+        await Expect(
+            page.Locator("#overview-destinations-current-year-show-btn"))
+            .Not.ToBeVisibleAsync();
+
+        await Expect(
+            page.Locator("#overview-english-maths-current-year-chart-container"))
+            .Not.ToBeVisibleAsync();
+
+        await Expect(
+            page.Locator("#overview-destinations-current-year-chart-container"))
+            .Not.ToBeVisibleAsync();
+    }
+
     private async Task<string> GetFailureMessageAsync(
         string message,
         IResponse response)

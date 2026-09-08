@@ -12,21 +12,29 @@ function initialiseChartTableToggle(prefix) {
         return;
     }
 
+    // JavaScript is available, so switch from the fallback table
+    // to the enhanced chart view.
+    button.classList.remove('govuk-!-display-none');
+    chartContainer.classList.remove('govuk-!-display-none');
+    tableContainer.classList.add('govuk-!-display-none');
+
     button.setAttribute('aria-expanded', 'false');
 
     button.addEventListener('click', () => {
-        const showingTable =
-            tableContainer.style.display === 'block';
+        const tableIsVisible =
+            !tableContainer.classList.contains('govuk-!-display-none');
 
-        if (showingTable) {
-            tableContainer.style.display = 'none';
-            chartContainer.style.display = 'block';
+        if (tableIsVisible) {
+            // Table -> chart
+            tableContainer.classList.add('govuk-!-display-none');
+            chartContainer.classList.remove('govuk-!-display-none');
 
             button.textContent = 'Show as a table';
             button.setAttribute('aria-expanded', 'false');
         } else {
-            chartContainer.style.display = 'none';
-            tableContainer.style.display = 'block';
+            // Chart -> table
+            chartContainer.classList.add('govuk-!-display-none');
+            tableContainer.classList.remove('govuk-!-display-none');
 
             button.textContent = 'Show as a chart';
             button.setAttribute('aria-expanded', 'true');
