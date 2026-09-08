@@ -83,10 +83,12 @@ namespace SAPPub.Integration.Tests.Search
             var resultsHeading = Page.GetByTestId("search-results-heading");
             var noResultsId = Page.GetByTestId("no-results-heading");
 
+            var headingResultText = await resultsHeading.First.InnerTextAsync();
+
             Assert.NotNull(response);
             Assert.Equal(200, response.Status);
             Assert.NotNull(resultsHeading);
-            Assert.DoesNotContain("0 results", await resultsHeading.First.InnerTextAsync());
+            Assert.DoesNotContain("0 results", headingResultText[..8]);
             Assert.NotNull(noResultsId);
         }
     }
