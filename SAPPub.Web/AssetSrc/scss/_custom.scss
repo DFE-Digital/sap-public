@@ -450,6 +450,23 @@
     min-height: 260px;
 }
 
+.ataglance-accordion
+.govuk-accordion__section-header
+#accordion-iconbox__destinations {
+    background-color: #fbe2d5;
+    color: #6f3016;
+}
+
+.ataglance-accordion
+.govuk-accordion__section-header:hover
+#accordion-iconbox__destinations {
+    background-color: #f4c4ac;
+}
+
+.overview-destinations-current-year-table-container {
+    display: none;
+}
+
 @media (max-width: 40.0525em) {
     .ataglance-results-chart {
         min-height: 300px;
