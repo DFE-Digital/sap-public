@@ -1,5 +1,6 @@
 ﻿using Microsoft.Playwright;
 using SAPPub.Playwright.Testing;
+using SAPPub.Playwright.Testing.Primary.Performance;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
@@ -11,19 +12,6 @@ public class MeetingOrExceedingStandardsTests(WebApplicationSetupFixture fixture
     private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
     {
         ["143034"] = "school/143034/st-pauls-church-of-england-academy/primary-performance/meeting-or-exceeding-standards",
-    };
-
-    private Dictionary<string, string> _pageElements = new Dictionary<string, string>
-    {
-        ["currentYearShowAsTableBtn"] = "#mes-current-year-show-btn",
-        ["currentYearChartContainer"] = "#mes-current-year-chart-container",
-        ["currentYearTableContainer"] = "#mes-current-year-table-container",
-        ["showDataOverTimeBtn"] = "#mes-show-data-over-time-btn",
-        ["dataOverTimeChartContainer"] = "#mes-data-over-time-chart-container",
-        ["dataOverTimeTableContainer"] = "#mes-data-over-time-table-container",
-        ["dataOverTimeChartLegend"] = "#mes-data-overtime-chart-legend",
-        ["dataOverTimeShowAsTableBtn"] = "#mes-data-over-time-show-btn",
-        ["showCurrentDataBtn"] = "#mes-show-current-data-btn"
     };
 
     [Fact]
@@ -98,10 +86,10 @@ public class MeetingOrExceedingStandardsTests(WebApplicationSetupFixture fixture
         await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
 
         // Act
-        var chart = Page.Locator(_pageElements["currentYearChartContainer"]);
-        var table = Page.Locator(_pageElements["currentYearTableContainer"]);
-        var showAsTableBtn = Page.Locator(_pageElements["currentYearShowAsTableBtn"]);
-        var showDataOverTimeBtn = Page.Locator(_pageElements["showDataOverTimeBtn"]);
+        var chart = Page.Locator(PageConstants.ContentIds["currentYearChartContainer"]);
+        var table = Page.Locator(PageConstants.ContentIds["currentYearTableContainer"]);
+        var showAsTableBtn = Page.Locator(PageConstants.ContentIds["currentYearShowAsTableBtn"]);
+        var showDataOverTimeBtn = Page.Locator(PageConstants.ContentIds["showDataOverTimeBtn"]);
 
         var isChartVisible = await chart.IsVisibleAsync();
         var isTableVisible = await table.IsVisibleAsync();
@@ -128,12 +116,12 @@ public class MeetingOrExceedingStandardsTests(WebApplicationSetupFixture fixture
 
         // Act
         // Click Show as a table button
-        await Page.ClickAsync(_pageElements["currentYearShowAsTableBtn"]);
+        await Page.ClickAsync(PageConstants.ContentIds["currentYearShowAsTableBtn"]);
 
-        var showAsTableBtn = Page.Locator(_pageElements["currentYearShowAsTableBtn"]);
-        var showDataOverTimeBtn = Page.Locator(_pageElements["showDataOverTimeBtn"]);
-        var chart = Page.Locator(_pageElements["currentYearChartContainer"]);
-        var table = Page.Locator(_pageElements["currentYearTableContainer"]);
+        var showAsTableBtn = Page.Locator(PageConstants.ContentIds["currentYearShowAsTableBtn"]);
+        var showDataOverTimeBtn = Page.Locator(PageConstants.ContentIds["showDataOverTimeBtn"]);
+        var chart = Page.Locator(PageConstants.ContentIds["currentYearChartContainer"]);
+        var table = Page.Locator(PageConstants.ContentIds["currentYearTableContainer"]);
 
         var isChartVisible = await chart.IsVisibleAsync();
         var isTableVisible = await table.IsVisibleAsync();
@@ -159,14 +147,14 @@ public class MeetingOrExceedingStandardsTests(WebApplicationSetupFixture fixture
 
         // Act
         // Click Show data over time button
-        await Page.ClickAsync(_pageElements["showDataOverTimeBtn"]);
+        await Page.ClickAsync(PageConstants.ContentIds["showDataOverTimeBtn"]);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
-        var chart = Page.Locator(_pageElements["dataOverTimeChartContainer"]);
-        var table = Page.Locator(_pageElements["dataOverTimeTableContainer"]);
-        var chartLegend = Page.Locator(_pageElements["dataOverTimeChartLegend"]);
-        var showAsTableBtn = Page.Locator(_pageElements["dataOverTimeShowAsTableBtn"]);
-        var showCurrentDataBtn = Page.Locator(_pageElements["showCurrentDataBtn"]);
+        var chart = Page.Locator(PageConstants.ContentIds["dataOverTimeChartContainer"]);
+        var table = Page.Locator(PageConstants.ContentIds["dataOverTimeTableContainer"]);
+        var chartLegend = Page.Locator(PageConstants.ContentIds["dataOverTimeChartLegend"]);
+        var showAsTableBtn = Page.Locator(PageConstants.ContentIds["dataOverTimeShowAsTableBtn"]);
+        var showCurrentDataBtn = Page.Locator(PageConstants.ContentIds["showCurrentDataBtn"]);
 
         var isChartVisible = await chart.IsVisibleAsync();
         var isTableVisible = await table.IsVisibleAsync();
@@ -195,16 +183,16 @@ public class MeetingOrExceedingStandardsTests(WebApplicationSetupFixture fixture
 
         // Act
         // Click Show data over time button
-        await Page.ClickAsync(_pageElements["showDataOverTimeBtn"]);
+        await Page.ClickAsync(PageConstants.ContentIds["showDataOverTimeBtn"]);
 
         // and click Show as a table button
-        await Page.ClickAsync(_pageElements["dataOverTimeShowAsTableBtn"]);
+        await Page.ClickAsync(PageConstants.ContentIds["dataOverTimeShowAsTableBtn"]);
 
-        var chart = Page.Locator(_pageElements["dataOverTimeChartContainer"]);
-        var table = Page.Locator(_pageElements["dataOverTimeTableContainer"]);
-        var chartLegend = Page.Locator(_pageElements["dataOverTimeChartLegend"]);
-        var showAsTableBtn = Page.Locator(_pageElements["dataOverTimeShowAsTableBtn"]);
-        var showCurrentDataBtn = Page.Locator(_pageElements["showCurrentDataBtn"]);
+        var chart = Page.Locator(PageConstants.ContentIds["dataOverTimeChartContainer"]);
+        var table = Page.Locator(PageConstants.ContentIds["dataOverTimeTableContainer"]);
+        var chartLegend = Page.Locator(PageConstants.ContentIds["dataOverTimeChartLegend"]);
+        var showAsTableBtn = Page.Locator(PageConstants.ContentIds["dataOverTimeShowAsTableBtn"]);
+        var showCurrentDataBtn = Page.Locator(PageConstants.ContentIds["showCurrentDataBtn"]);
 
         var isChartVisible = await chart.IsVisibleAsync();
         var isTableVisible = await table.IsVisibleAsync();
@@ -233,14 +221,14 @@ public class MeetingOrExceedingStandardsTests(WebApplicationSetupFixture fixture
 
         // Act
         // Click Show data over time button
-        await Page.ClickAsync(_pageElements["showDataOverTimeBtn"]);
+        await Page.ClickAsync(PageConstants.ContentIds["showDataOverTimeBtn"]);
 
         // and click Show current data button
-        await Page.ClickAsync(_pageElements["showCurrentDataBtn"]);
+        await Page.ClickAsync(PageConstants.ContentIds["showCurrentDataBtn"]);
 
-        var chart = Page.Locator(_pageElements["currentYearChartContainer"]);
-        var showAsTableBtn = Page.Locator(_pageElements["currentYearShowAsTableBtn"]);
-        var showDataOverTimeBtn = Page.Locator(_pageElements["showDataOverTimeBtn"]);
+        var chart = Page.Locator(PageConstants.ContentIds["currentYearChartContainer"]);
+        var showAsTableBtn = Page.Locator(PageConstants.ContentIds["currentYearShowAsTableBtn"]);
+        var showDataOverTimeBtn = Page.Locator(PageConstants.ContentIds["showDataOverTimeBtn"]);
 
         var isChartVisible = await chart.IsVisibleAsync();
         var isShowAsTableBtnVisible = await showAsTableBtn.IsVisibleAsync();
@@ -264,14 +252,14 @@ public class MeetingOrExceedingStandardsTests(WebApplicationSetupFixture fixture
         await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
 
         // Act
-        var reachedShowAsTableButton = await FocusElementByTabAsync(_pageElements["currentYearShowAsTableBtn"].Replace("#", ""));
+        var reachedShowAsTableButton = await FocusElementByTabAsync(PageConstants.ContentIds["currentYearShowAsTableBtn"].Replace("#", ""));
         Assert.True(reachedShowAsTableButton);
 
-        var hasVisibleFocusOnShowAsTable = await HasVisibleFocusAsync(_pageElements["currentYearShowAsTableBtn"]);
+        var hasVisibleFocusOnShowAsTable = await HasVisibleFocusAsync(PageConstants.ContentIds["currentYearShowAsTableBtn"]);
 
         await Page.Keyboard.PressAsync("Tab");
         var focusedElementId = await Page.EvaluateAsync<string>("() => document.activeElement?.id ?? ''");
-        var hasVisibleFocusOnShowDataOverTime = await HasVisibleFocusAsync(_pageElements["showDataOverTimeBtn"]);
+        var hasVisibleFocusOnShowDataOverTime = await HasVisibleFocusAsync(PageConstants.ContentIds["showDataOverTimeBtn"]);
 
         // Assert
         Assert.True(hasVisibleFocusOnShowAsTable);
@@ -291,13 +279,13 @@ public class MeetingOrExceedingStandardsTests(WebApplicationSetupFixture fixture
         await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
 
         // Act - Enter switches to table view
-        var reachedShowAsTableButton = await FocusElementByTabAsync(_pageElements["currentYearShowAsTableBtn"].Replace("#", ""));
+        var reachedShowAsTableButton = await FocusElementByTabAsync(PageConstants.ContentIds["currentYearShowAsTableBtn"].Replace("#", ""));
         Assert.True(reachedShowAsTableButton);
 
         await Page.Keyboard.PressAsync("Enter");
 
-        var chart = Page.Locator(_pageElements["currentYearChartContainer"]);
-        var table = Page.Locator(_pageElements["currentYearTableContainer"]);
+        var chart = Page.Locator(PageConstants.ContentIds["currentYearChartContainer"]);
+        var table = Page.Locator(PageConstants.ContentIds["currentYearTableContainer"]);
         Assert.False(await chart.IsVisibleAsync());
         Assert.True(await table.IsVisibleAsync());
 
@@ -316,7 +304,7 @@ public class MeetingOrExceedingStandardsTests(WebApplicationSetupFixture fixture
         await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
 
         // Act - Enter on show data over time
-        await Page.Locator(_pageElements["showDataOverTimeBtn"]).FocusAsync();
+        await Page.Locator(PageConstants.ContentIds["showDataOverTimeBtn"]).FocusAsync();
         await Page.Keyboard.PressAsync("Enter");
 
         // Assert
@@ -324,7 +312,7 @@ public class MeetingOrExceedingStandardsTests(WebApplicationSetupFixture fixture
         Assert.False(await IsElementCheckedAsync("mes-current-view"));
 
         // Act - Space on show current data
-        await Page.Locator(_pageElements["showCurrentDataBtn"]).FocusAsync();
+        await Page.Locator(PageConstants.ContentIds["showCurrentDataBtn"]).FocusAsync();
         await Page.Keyboard.PressAsync("Space");
 
         // Assert
@@ -332,7 +320,7 @@ public class MeetingOrExceedingStandardsTests(WebApplicationSetupFixture fixture
         Assert.False(await IsElementCheckedAsync("mes-data-overtime-view"));
 
         // Act - Space on show data over time
-        await Page.Locator(_pageElements["showDataOverTimeBtn"]).FocusAsync();
+        await Page.Locator(PageConstants.ContentIds["showDataOverTimeBtn"]).FocusAsync();
         await Page.Keyboard.PressAsync("Space");
 
         // Assert
@@ -340,7 +328,7 @@ public class MeetingOrExceedingStandardsTests(WebApplicationSetupFixture fixture
         Assert.False(await IsElementCheckedAsync("mes-current-view"));
 
         // Act - Enter on show current data
-        await Page.Locator(_pageElements["showCurrentDataBtn"]).FocusAsync();
+        await Page.Locator(PageConstants.ContentIds["showCurrentDataBtn"]).FocusAsync();
         await Page.Keyboard.PressAsync("Enter");
 
         // Assert
@@ -354,7 +342,7 @@ public class MeetingOrExceedingStandardsTests(WebApplicationSetupFixture fixture
         // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
 
-        var reachedShowAsTableButton = await FocusElementByTabAsync(_pageElements["currentYearShowAsTableBtn"].Replace("#", ""));
+        var reachedShowAsTableButton = await FocusElementByTabAsync(PageConstants.ContentIds["currentYearShowAsTableBtn"].Replace("#", ""));
         Assert.True(reachedShowAsTableButton);
 
         await Page.Keyboard.PressAsync("Tab");
@@ -363,7 +351,7 @@ public class MeetingOrExceedingStandardsTests(WebApplicationSetupFixture fixture
         await Page.Keyboard.PressAsync("Enter");
 
         // Assert
-        var focusedElementMoved = await WaitForFocusedElementAsync(_pageElements["showCurrentDataBtn"].Replace("#", ""));
+        var focusedElementMoved = await WaitForFocusedElementAsync(PageConstants.ContentIds["showCurrentDataBtn"].Replace("#", ""));
         Assert.True(focusedElementMoved);
     }
 
@@ -373,26 +361,26 @@ public class MeetingOrExceedingStandardsTests(WebApplicationSetupFixture fixture
         // Arrange
         await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
 
-        var reachedShowAsTableButton = await FocusElementByTabAsync(_pageElements["currentYearShowAsTableBtn"].Replace("#", ""));
+        var reachedShowAsTableButton = await FocusElementByTabAsync(PageConstants.ContentIds["currentYearShowAsTableBtn"].Replace("#", ""));
         Assert.True(reachedShowAsTableButton);
 
         await Page.Keyboard.PressAsync("Tab");
         await Page.Keyboard.PressAsync("Enter");
 
-        var focusedOnShowCurrentData = await WaitForFocusedElementAsync(_pageElements["showCurrentDataBtn"].Replace("#", ""));
+        var focusedOnShowCurrentData = await WaitForFocusedElementAsync(PageConstants.ContentIds["showCurrentDataBtn"].Replace("#", ""));
         Assert.True(focusedOnShowCurrentData);
 
         // Act
         await Page.Keyboard.PressAsync("Enter");
 
         // Assert
-        var reachedShowDataOverTimeButton = await FocusElementByTabAsync(_pageElements["showDataOverTimeBtn"].Replace("#", ""), 120);
+        var reachedShowDataOverTimeButton = await FocusElementByTabAsync(PageConstants.ContentIds["showDataOverTimeBtn"].Replace("#", ""), 120);
         Assert.True(reachedShowDataOverTimeButton);
     }
 
-    private async Task<bool> IsElementCheckedAsync(string elementId)
+    private Task<bool> IsElementCheckedAsync(string elementId)
     {
-        return await Page.EvaluateAsync<bool>("id => !!document.getElementById(id)?.checked", elementId);
+        return Page.EvaluateAsync<bool>("id => !!document.getElementById(id)?.checked", elementId);
     }
 
     private async Task<bool> WaitForFocusedElementAsync(string expectedElementId, int timeoutMs = 1000)
@@ -429,9 +417,9 @@ public class MeetingOrExceedingStandardsTests(WebApplicationSetupFixture fixture
         return false;
     }
 
-    private async Task<bool> HasVisibleFocusAsync(string selector)
+    private Task<bool> HasVisibleFocusAsync(string selector)
     {
-        return await Page.Locator(selector).EvaluateAsync<bool>("""
+        return Page.Locator(selector).EvaluateAsync<bool>("""
             element => {
                 const styles = window.getComputedStyle(element);
                 return styles.boxShadow !== 'none' || (styles.outlineStyle !== 'none' && styles.outlineWidth !== '0px');
