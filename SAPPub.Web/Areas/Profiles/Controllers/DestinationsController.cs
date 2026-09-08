@@ -63,9 +63,8 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
             // This all needs to be refactored into a model, but this gets the structure up
             var destinationDetails = await destinationsService.GetKS5DestinationsDetailsAsync(urn, ct);
 
-            if (string.IsNullOrWhiteSpace(destinationDetails.Urn))
+            if (!destinationDetails.IsKS5)
             {
-                logger.LogWarning("No establishment details found for URN: {URN}", urn);
                 return View("Error");
             }
 
@@ -75,24 +74,20 @@ namespace SAPPub.Web.Areas.Profiles.Controllers
 
         [FeatureGate("Enable16to19")]
         [Route("school/{urn}/{schoolName}/destinations/16-to-19-higher-level-study", Name = RouteConstants.KS5DestinationsHigher)]
-        public async Task<IActionResult> KS5HigherLevel([FromServices] IAboutSchoolService aboutSchoolService,
+        public async Task<IActionResult> KS5HigherLevel(
+            [FromServices] IDestinationsService destinationsService,
             string urn, string schoolName,
             CancellationToken ct)
         {
             // This all needs to be refactored into a model, but this gets the structure up
-            var schoolDetails = await aboutSchoolService.GetAboutSchoolDetailsAsync(urn, ct);
+            var destinationDetails = await destinationsService.GetKS5DestinationsDetailsAsync(urn, ct);
 
-            if (string.IsNullOrWhiteSpace(schoolDetails.Urn))
-            {
-                logger.LogWarning("No establishment details found for URN: {URN}", urn);
-                return View("Error");
-            }
-
-            if (!schoolDetails.IsKS5)
+            if (!destinationDetails.IsKS5)
             {
                 return View("Error");
             }
-            var model = AboutSchoolViewModel.Map(schoolDetails);
+
+            var model = KS5DestinationsViewModel.Map(destinationDetails);
             return View(model);
         }
     }
