@@ -2196,10 +2196,16 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
     [Fact]
     public async Task OverviewPage_WithoutJavaScript_DisplaysTablesInsteadOfChartControls()
     {
+        await Page.GotoAsync(AchievementOverviewUrl);
+
+        var baseUri = new Uri(Page.Url);
+        var baseUrl = $"{baseUri.Scheme}://{baseUri.Authority}";
+
         await using var context = await Browser.NewContextAsync(
             new BrowserNewContextOptions
             {
-                JavaScriptEnabled = false
+                JavaScriptEnabled = false,
+                BaseURL = baseUrl
             });
 
         var page = await context.NewPageAsync();
@@ -2230,7 +2236,6 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
             page.Locator("#overview-destinations-current-year-chart-container"))
             .Not.ToBeVisibleAsync();
     }
-
     private async Task<string> GetFailureMessageAsync(
         string message,
         IResponse response)
