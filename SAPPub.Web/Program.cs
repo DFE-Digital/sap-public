@@ -43,7 +43,7 @@ public partial class Program
         builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("Email"));
         builder.Services.Configure<UrlLinksOptions>(builder.Configuration.GetSection("UrlLinks"));
 
-        var enableGateway = true;//builder.Configuration.GetValue<bool>("Gateway:Enabled"); //FORCED FOR review app. Remove before deploy to main.
+        var enableGateway = builder.Configuration.GetValue<bool>("Gateway:Enabled");
         var emailAPIKey = builder.Configuration.GetValue<string>("Email:ApiKey");
 
         builder.Services.AddHttpClient<IPostcodeLookupService, PostcodeLookupService>();
