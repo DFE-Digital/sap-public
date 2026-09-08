@@ -601,15 +601,59 @@
                                             This data is for the 2024 to 2025 academic year.
                                         </p>
 
-                                        <div id="overview-english-maths-chart-container"
-                                             class="chart-container ataglance-results-chart">
+                                        <div id="overview-english-maths-current-year-data-container"
+                                             class="overview-english-maths-current-year-data-container">
 
-                                            <canvas id="overview-english-maths-chart"
-                                                    class="js-chart"
-                                                    data-type="bar"
-                                                    data-chart='@Html.Raw(Json.Serialize(Model.EnglishAndMathsGrade5Chart))'
-                                                    data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
-                                            </canvas>
+                                            <div class="govuk-button-group">
+                                                <govuk-button id="overview-english-maths-current-year-show-btn"
+                                                              type="button"
+                                                              class="govuk-button--secondary overview-english-maths-current-year-show-btn">
+                                                    Show as a table
+                                                </govuk-button>
+                                            </div>
+
+                                            <div id="overview-english-maths-current-year-chart-container"
+                                                 class="chart-container ataglance-results-chart">
+
+                                                <canvas id="overview-english-maths-chart"
+                                                        class="js-chart"
+                                                        data-type="bar"
+                                                        data-not-available-text="@Constants.NotAvailable"
+                                                        data-chart='@Html.Raw(Json.Serialize(Model.EnglishAndMathsGrade5Chart))'
+                                                        data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
+                                                </canvas>
+
+                                            </div>
+
+                                            <div id="overview-english-maths-current-year-table-container"
+                                                 class="overview-english-maths-current-year-table-container">
+
+                                                <table id="overview-english-maths-current-year-table"
+                                                       class="govuk-table">
+
+                                                    <tbody class="govuk-table__body">
+
+                                                        @foreach (var label in Model.EnglishAndMathsGrade5Chart.Labels.Select((value, i) => (value, i)))
+                                                        {
+                                                            <tr class="govuk-table__row">
+                                                                <th scope="row"
+                                                                    class="govuk-table__header">
+                                                                    @label.value
+                                                                </th>
+
+                                                                <td class="govuk-table__cell">
+                                                                    @(Model.EnglishAndMathsGrade5Chart.Data[label.i].HasValue
+                                                                        ? $"{Model.EnglishAndMathsGrade5Chart.Data[label.i]}%"
+                                                                        : Constants.NotAvailable)
+                                                                </td>
+                                                            </tr>
+                                                        }
+
+                                                    </tbody>
+
+                                                </table>
+
+                                            </div>
 
                                         </div>
 
@@ -835,5 +879,5 @@
             src="~/js/chart-factory.js"></script>
 
     <script nonce="@Html.ScriptNonce().ToString()"
-        src="~/js/overview-destinations.js"></script>
+        src="~/js/overview.js"></script>
 }
