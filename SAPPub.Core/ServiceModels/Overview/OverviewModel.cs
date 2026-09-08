@@ -6,6 +6,7 @@ public sealed class OverviewModel
 {
     public required string Urn { get; init; }
     public required string SchoolName { get; init; }
+    public string LocalAuthorityName { get; init; } = string.Empty;
 
     public string PhaseOfEducation { get; init; } = string.Empty;
     public string AgeRangeLow { get; init; } = string.Empty;
@@ -23,6 +24,10 @@ public sealed class OverviewModel
     public bool IsKS5 { get; init; }
 
     public CodedDouble? Attainment8 { get; init; }
+
+    public CodedDouble? Attainment8LA { get; init; }
+
+    public CodedDouble? Attainment8England { get; init; }
 
     public CodedDouble? EnglishAndMathsGrade5Establishment { get; init; }
     public CodedDouble? EnglishAndMathsGrade5LA { get; init; }

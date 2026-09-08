@@ -14,7 +14,7 @@ on:
           - test
           - production
       docker-image-tag:
-        description: "Docker image tag to deploy (optional)"
+        description: "Docker image tag to deploy"
         required: true
         type: string
       pull-request-number:
@@ -71,7 +71,7 @@ jobs:
   # TESTS: UNIT, INTEGRATION, UI
   # ---------------------------
   test:
-    name: Run Unit, Integration and UI Tests
+    name: Run Unit, Partial Integration and UI Tests
     if: ${{ github.event_name != 'workflow_dispatch' }}
     permissions:
       pull-requests: write
@@ -110,12 +110,12 @@ jobs:
         working-directory: SAPPub.Web
         run: npm ci
 
-      - name: Run All Tests with Coverage
+      - name: Run Tests with Coverage
         env:
           HEADED: 0
           PLAYWRIGHT_IGNORE_HTTPS_ERRORS: true
         run: |
-          TEST_PROJECTS=$(find ./Tests -type f -name "*.Tests.csproj" | sort)
+          TEST_PROJECTS=$(find ./Tests -type f -name "*.Tests.csproj" ! -path "*/SAPPub.Integration.Tests/*" | sort)
 
           for proj in $TEST_PROJECTS; do
             echo "=== Running tests in $proj ==="
@@ -210,6 +210,8 @@ jobs:
     name: Deployment To Review (no refresh)
     concurrency: deploy_review_${{ github.event.pull_request.number }}
     needs: [build, test]
+    outputs:
+      environment_url: ${{ steps.deploy_review.outputs.environment_url }}
     if: ${{ github.event_name == 'pull_request'
       && (
       github.event.action == 'labeled' ||
@@ -397,6 +399,8 @@ jobs:
     name: Deployment To Review (before refresh)
     concurrency: deploy_review_${{ github.event.pull_request.number }}
     needs: [build, test]
+    outputs:
+      environment_url: ${{ steps.deploy_review.outputs.environment_url }}
     if: ${{ github.event_name == 'pull_request'
       && (
       github.event.action == 'labeled' ||
@@ -432,14 +436,15 @@ jobs:
           gcp-wip: ${{ vars.GCP_WIP }}
           gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
 
-
   # ---------------------------
-  # DEPLOY TEST (AUTO)
+  # DEPLOY TO TEST (AUTO)
   # ---------------------------
   deploy:
     name: Deploy to Test
     if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
     needs: [build, test]
+    outputs:
+      environment_url: ${{ steps.deploy_app.outputs.environment_url }}
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -474,9 +479,8 @@ jobs:
           gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
 
   # ---------------------------
-  # REFRESH TEST DATABSE (AUTO - IF REQUIRED)
+  # REFRESH TEST DATABASE (AUTO - IF REQUIRED)
   # ---------------------------
-
   detect-refresh-data-on-merge:
     name: Detect refresh-data label on merged PR
     if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
@@ -538,6 +542,8 @@ jobs:
   manual_deploy:
     name: Manual deploy
     if: ${{ github.event_name == 'workflow_dispatch' }}
+    outputs:
+      environment_url: ${{ steps.deploy_manual.outputs.environment_url }}
     environment:
       name: ${{ inputs.environment }}
       url: ${{ steps.deploy_manual.outputs.environment_url }}
@@ -562,10 +568,63 @@ jobs:
           teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
           service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
           smoke-test: false
-          db-seed: ${{ inputs.environment == 'review' && 'true' || 'false' }}
+          db-seed: false
           gcp-wip: ${{ vars.GCP_WIP }}
           gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
 
+  # ---------------------------
+  # INTEGRATION TESTS (POST DEPLOYMENT)
+  # ---------------------------  
+  # on Test environnment
+  # integration-tests-no-refresh:
+  #   name: Integration Tests (Post Deployment)
+  #   needs: [deploy, detect-refresh-data-on-merge]
+  #   if: ${{ needs.detect-refresh-data-on-merge.outputs.should-refresh != 'true' }}
+  #   uses: ./.github/workflows/integration-tests.yml
+  #   with:
+  #     environment: test
+  #     base_url: ${{ needs.deploy.outputs.environment_url }}
+  
+  # integration-tests-after-refresh:
+  #   name: Integration Tests (Post Deployment)
+  #   needs: [deploy, refresh-data-test-after-merge]
+  #   if: ${{ needs.refresh-data-test-after-merge.result == 'success' }}
+  #   uses: ./.github/workflows/integration-tests.yml
+  #   with:
+  #     environment: test
+  #     base_url: ${{ needs.deploy.outputs.environment_url }}
+
+  integration-tests-manual:
+    name: Integration Tests (Manual Deployment)
+    needs: [manual_deploy]
+    if: ${{ inputs.environment == 'review' || inputs.environment == 'test' }}
+    uses: ./.github/workflows/integration-tests.yml
+    with:
+      environment: ${{ inputs.environment }}
+      base_url: ${{ needs.manual_deploy.outputs.environment_url }}
+
+  # on review app environment (no refresh)
+  integration-tests-review-app:
+    name: Integration Tests (Post Deployment)
+    needs: [deploy-review-app]
+    uses: ./.github/workflows/integration-tests.yml
+    with:
+      environment: review
+      base_url: ${{ needs.deploy-review-app.outputs.environment_url }}
+
+  # on review app environment (with refresh)
+  integration-tests_with_refresh:
+    name: Integration Tests (Post Deployment)
+    needs: [deploy-review-app-with-refresh]
+    uses: ./.github/workflows/integration-tests.yml
+    with:
+      environment: review
+      base_url: ${{ needs.deploy-review-app-with-refresh.outputs.environment_url }}
+
+  # ---------------------------
+  # INFRA TEAM DEPLOYMENTS -  NOT DEPENDENT ON WHETHER WE DEPLOY THE APP OR NOT.
+  # These are infrastructure changes that need to be deployed regardless of whether the app is deployed or not.
+  # ---------------------------        
   deploy_domains_infra:
     name: Deploy Domains Infrastructure
     runs-on: ubuntu-latest

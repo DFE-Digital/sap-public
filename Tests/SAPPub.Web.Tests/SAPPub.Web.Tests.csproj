@@ -37,6 +37,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\SAPPub.Playwright.Testing\SAPPub.Playwright.Testing.csproj" />
 		<ProjectReference Include="..\..\SAPPub.Web\SAPPub.Web.csproj" />
 		<ProjectReference Include="..\SAPPub.Core.Tests\SAPPub.Core.Tests.csproj" />
 	</ItemGroup>
