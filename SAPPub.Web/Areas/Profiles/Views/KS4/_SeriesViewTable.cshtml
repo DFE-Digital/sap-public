@@ -1,0 +1,27 @@
+﻿@using SAPPub.Web.Constants
+@using SAPPub.Web.Models.Charts
+@model SeriesMeasureViewModel
+
+<table id="@Model.TableId" class="govuk-table">
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">@Model.TableHeader</th>
+            @foreach (var label in Model.Labels)
+            {
+                <th scope="col" class="govuk-table__header">@label</th>
+            }
+        </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+        @foreach (var dataset in Model.Datasets)
+        {
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">@dataset.Label</th>
+                @foreach (var data in dataset.Data)
+                {
+                    <td class="govuk-table__cell">@(data.Value.HasValue ? data.Value + (data.Unit == SAPPub.Core.Enums.DataUnit.Percentage ? "%" : "") : Constants.NotAvailable)</td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
