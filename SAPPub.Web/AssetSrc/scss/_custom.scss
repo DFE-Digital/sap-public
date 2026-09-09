@@ -480,6 +480,44 @@
     background-color: #d7eaec;
 }
 
+// Next steps 
+
+#overview-next-steps {
+
+    .govuk-summary-card {
+        margin-bottom: govuk-spacing(6);
+    }
+
+    .ataglance-next-step:last-child {
+        margin-bottom: 0;
+    }
+
+    .ataglance-next-step h4 {
+        margin-bottom: govuk-spacing(1);
+    }
+
+    .ataglance-next-step p {
+        margin-bottom: govuk-spacing(5);
+    }
+
+    .govuk-summary-card__content {
+        padding-top: govuk-spacing(5);
+        padding-bottom: govuk-spacing(5);
+    }
+
+    @include govuk-media-query($until: tablet) {
+
+        .govuk-summary-card__content {
+            padding-top: govuk-spacing(4);
+            padding-bottom: govuk-spacing(4);
+        }
+
+        .ataglance-next-step p {
+            margin-bottom: govuk-spacing(4);
+        }
+    }
+}
+
 @media (max-width: 40.0525em) {
     .ataglance-results-chart {
         min-height: 300px;
