@@ -1,16 +1,12 @@
 ﻿@model SAPPub.Web.Models.Search.SearchParamsModel
 
 <div class="govuk-grid-column-one-third app-filter__column">
-    @{
-        var hasSelectedFilters = Model.Phase?.Any() == true || Model.SchoolType?.Any() == true;
-        var panelVisibleClass = hasSelectedFilters ? "app-filter-panel--visible" : "";
-    }
-    <button type="button" class="govuk-button govuk-button--secondary app-filter-toggle" data-module="app-filter-toggle" aria-expanded="false" aria-controls="app-filter-panel">
+    <button type="button" class="govuk-button govuk-button--secondary app-filter-toggle hidden" data-module="app-filter-toggle" aria-expanded="true" aria-controls="app-filter-panel">
         <span class="app-filter-toggle__show">Show filters</span>
         <span class="app-filter-toggle__hide">Hide filters</span>
     </button>
 
-    <div id="app-filter-panel" class="app-filter-panel @panelVisibleClass">
+    <div id="app-filter-panel" class="app-filter-panel app-filter-panel--visible">
         <input type="hidden" name="NameSearchTerm" value="@Model.NameSearchTerm" />
         <input type="hidden" name="Distance" value="@Model.Distance" />
         <input type="hidden" name="LocationSearchTerm" value="@Model.LocationSearchTerm" />
@@ -23,69 +19,66 @@
             </div>
 
             <div class="moj-filter__content">
-                @if (hasSelectedFilters)
-                {
-                    <div class="moj-filter__selected app-filter__selected">
-                        <div class="moj-filter__selected-heading app-filter__selected-heading">
-                            <div class="moj-filter__heading-title">
-                                <h2 class="govuk-heading-s">Selected filters</h2>
-                            </div>
-                            <div class="moj-filter__heading-action">
-                            </div>
+                <div class="moj-filter__selected app-filter__selected">
+                    <div class="moj-filter__selected-heading app-filter__selected-heading">
+                        <div class="moj-filter__heading-title">
+                            <h2 class="govuk-heading-s">Selected filters</h2>
                         </div>
-
-                        <ul class="moj-filter-tags app-filter__tags">
-                            @if (Model.Phase != null)
-                            {
-                                @foreach (var phase in Model.Phase)
-                                {
-                                    var remainingFilters = Model.Phase.Where(x => x != phase).ToArray();
-                                    var removeUrl = Url.Action("Results", "Search", new
-                                    {
-                                        nameSearchTerm = Model.NameSearchTerm,
-                                        phase = remainingFilters,
-                                        schoolType = Model.SchoolType,
-                                        distance = Model.Distance,
-                                        locationsearchterm = Model.LocationSearchTerm
-
-                                    });
-                                    <li>
-                                        <a class="moj-filter__tag app-filter__tag" href="@removeUrl">
-                                            <span class="govuk-visually-hidden">Remove this filter</span> @phase
-                                        </a>
-                                    </li>
-                                }
-                            }
-                            @if (Model.SchoolType != null)
-                            {
-                                @foreach (var schoolType in Model.SchoolType)
-                                {
-                                    var remainingFilters = Model.SchoolType.Where(x => x != schoolType).ToArray();
-                                    var removeUrl = Url.Action("Results", "Search", new
-                                    {
-                                        nameSearchTerm = Model.NameSearchTerm,
-                                        phase = Model.Phase,
-                                        schoolType = remainingFilters,
-                                        distance = Model.Distance,
-                                        locationsearchterm = Model.LocationSearchTerm
-                                    });
-                                    <li>
-                                        <a class="moj-filter__tag app-filter__tag" href="@removeUrl">
-                                            <span class="govuk-visually-hidden">Remove this filter</span> @schoolType
-                                        </a>
-                                    </li>
-                                }
-                            }
-                        </ul>
-
-                        <p class="govuk-!-margin-top-2 govuk-!-margin-bottom-0 app-clear-filters-spacing">
-                            <a class="govuk-link govuk-link--no-visited-state"
-                               href="@Url.Action("Results", "Search", new { nameSearchTerm = Model.NameSearchTerm })">
-                                Clear filters
-                            </a>
-                        </p>
+                        <div class="moj-filter__heading-action">
+                        </div>
                     </div>
-                }
+
+                    <ul class="moj-filter-tags app-filter__tags">
+                        @if (Model.Phase != null)
+                        {
+                            @foreach (var phase in Model.Phase)
+                            {
+                                var remainingFilters = Model.Phase.Where(x => x != phase).ToArray();
+                                var removeUrl = Url.Action("Results", "Search", new
+                                {
+                                    nameSearchTerm = Model.NameSearchTerm,
+                                    phase = remainingFilters,
+                                    schoolType = Model.SchoolType,
+                                    distance = Model.Distance,
+                                    locationsearchterm = Model.LocationSearchTerm
+
+                                });
+                                <li>
+                                    <a class="moj-filter__tag app-filter__tag" href="@removeUrl">
+                                        <span class="govuk-visually-hidden">Remove this filter</span> @phase
+                                    </a>
+                                </li>
+                            }
+                        }
+                        @if (Model.SchoolType != null)
+                        {
+                            @foreach (var schoolType in Model.SchoolType)
+                            {
+                                var remainingFilters = Model.SchoolType.Where(x => x != schoolType).ToArray();
+                                var removeUrl = Url.Action("Results", "Search", new
+                                {
+                                    nameSearchTerm = Model.NameSearchTerm,
+                                    phase = Model.Phase,
+                                    schoolType = remainingFilters,
+                                    distance = Model.Distance,
+                                    locationsearchterm = Model.LocationSearchTerm
+                                });
+                                <li>
+                                    <a class="moj-filter__tag app-filter__tag" href="@removeUrl">
+                                        <span class="govuk-visually-hidden">Remove this filter</span> @schoolType
+                                    </a>
+                                </li>
+                            }
+                        }
+                    </ul>
+
+                    <p class="govuk-!-margin-top-2 govuk-!-margin-bottom-0 app-clear-filters-spacing">
+                        <a class="govuk-link govuk-link--no-visited-state"
+                           href="@Url.Action("Results", "Search", new { nameSearchTerm = Model.NameSearchTerm, LocationSearchTerm = Model.LocationSearchTerm, distance = Model.Distance })">
+                            Clear filters
+                        </a>
+                    </p>
+                </div>
 
                 <div class="moj-filter__options app-filter__options">
                     <button type="submit" class="govuk-button app-filter__apply-button" data-module="govuk-button" id="filterSubmit1">

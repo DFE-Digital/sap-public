@@ -193,6 +193,10 @@
     }
 
     .app-filter-toggle {
+        display: none;
+    }
+
+    body.js-enabled .app-filter-toggle {
         display: block !important;
     }
 
