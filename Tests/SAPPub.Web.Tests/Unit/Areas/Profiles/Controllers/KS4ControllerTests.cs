@@ -33,6 +33,7 @@ public class KS4ControllerTests
     private readonly Mock<IFeatureManager> _mockFeatureManager = new();
     private readonly KS4Controller _controller;
     private EstablishmentMinimumServiceModel _fakeEstablishment;
+    private EstablishmentServiceModel _fakeEstablishmentFull;
 
     private List<SubjectsEnteredModel> GcseSubjects =
         new()
@@ -93,20 +94,32 @@ public class KS4ControllerTests
             .WithIsKeyStage4(true)
             .BuildServiceModel();
 
+        _fakeEstablishmentFull = new EstablishmentTestBuilder()
+            .WithLAName("Sheffield")
+            .WithIsKeyStage2(true)
+            .WithIsKeyStage4(true)
+            .BuildServiceModel();
+
         _mockEstablishmentService = new();
 
         _mockEstablishmentService
             .Setup(es => es.GetEstablishmentMinimumAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(_fakeEstablishment);
 
+        _mockEstablishmentService
+            .Setup(es => es.GetEstablishmentAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_fakeEstablishmentFull);
+
+
         var tempPath = Path.Combine(Path.GetTempPath(), "SAPPubTests", Guid.NewGuid().ToString());
         Directory.CreateDirectory(tempPath);
 
-        _controller = new KS4Controller(_mockEstablishmentService.Object, _mockFeatureManager.Object);
-
-        _controller.ControllerContext = new ControllerContext
+        _controller = new KS4Controller(_mockEstablishmentService.Object, _mockFeatureManager.Object)
         {
-            HttpContext = new DefaultHttpContext()
+            ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            }
         };
     }
 
@@ -185,6 +198,45 @@ public class KS4ControllerTests
             Assert.Equal(expectedResult.EstablishmentProgress8TotalPupils.GetValueForYear(academicYearSelection), model.SelectedYearValues.EstablishmentProgress8TotalPupils);
             Assert.Equal(expectedResult.EstablishmentTotalPupils.GetValueForYear(academicYearSelection), model.SelectedYearValues.EstablishmentTotalPupils);
         }
+    }
+
+    [Theory]
+    [InlineData(TypeOfEstablishment.UniversityTechnicalCollege, "11", true, false, false)]
+    [InlineData(TypeOfEstablishment.StudioSchools, "11", false, true, false)]
+    [InlineData(TypeOfEstablishment.FurtherEducation, "11", false, false, true)]
+    [InlineData(TypeOfEstablishment.FurtherEducation, "12", false, false, true)]
+    [InlineData(TypeOfEstablishment.CommunitySchool, "12", false, false, true)]
+    [InlineData(TypeOfEstablishment.CommunitySchool, "11", false, false, false)]
+    public async Task Get_AcademicPerformanceAttainmentAndProgress_Info_ShowsCorrectProgress8Caveats(TypeOfEstablishment typeOfEstablishment, string ageRangeLow, bool expectedShowUTCCaveat, bool expectedShowStudioSchoolCaveat, bool expectedShowFECaveat)
+    {
+        // builder creates a model with no progress 8 data for current year, and with progress 8 data for previous years
+        var expectedResult = new AttainmentAndProgressModelBuilder()
+            .WithEstablishmentProgress8Data()
+            .WithLaProgressData()
+            .Build();
+
+        _fakeEstablishmentFull.TypeOfEstablishment = typeOfEstablishment;
+        _fakeEstablishmentFull.AgeRangeLow = ageRangeLow;
+
+        _mockAttainmentAndProgressService
+            .Setup(s => s.GetAttainmentAndProgressAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.AcademicPerformanceAttainmentAndProgress(
+            _mockAttainmentAndProgressService.Object,
+            _fakeEstablishment.URN,
+            _fakeEstablishment.EstablishmentName,
+            AcademicYearSelection.Current.ToRouteSegment()!,
+            CancellationToken.None) as ViewResult;
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as AcademicPerformanceAttainmentAndProgressViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(expectedShowUTCCaveat, model.ShowUTCCaveat);
+        Assert.Equal(expectedShowStudioSchoolCaveat, model.ShowStudioSchoolCaveat);
+        Assert.Equal(expectedShowFECaveat, model.ShowFurtherEducationCaveat);
     }
 
     [Theory]

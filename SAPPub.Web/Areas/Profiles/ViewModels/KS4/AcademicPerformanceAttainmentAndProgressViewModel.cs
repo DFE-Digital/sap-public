@@ -29,13 +29,24 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : BaseViewModel
 
     public required SeriesMeasureViewModel BreakdownNonDisadvantaged { get; init; }
 
+    public bool ShowUTCCaveat { get; set; }
+
+    public bool ShowStudioSchoolCaveat { get; set; }
+
+    public bool ShowFurtherEducationCaveat { get; set; }
+
     public List<SelectListItem> AcademicYearsSelectList => [.. Enum.GetValues(typeof(AcademicYearSelection)).Cast<AcademicYearSelection>().Select(x => new SelectListItem
     {
         Text = x.GetDisplayName(),
         Value = x.ToString(),
     })];
 
-    public static AcademicPerformanceAttainmentAndProgressViewModel Map(string laName, AttainmentAndProgressModel attainmentAndProgressModel, AcademicYearSelection selectedAcademicYear)
+    public static AcademicPerformanceAttainmentAndProgressViewModel Map(
+        string laName,
+        string ageRangeFrom,
+        TypeOfEstablishment typeOfEstablishment,
+        AttainmentAndProgressModel attainmentAndProgressModel,
+        AcademicYearSelection selectedAcademicYear)
     {
         var laAverageLabel = CommonHelper.GetLocalAuthorityDisplayName(laName);
 
@@ -59,6 +70,8 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : BaseViewModel
                 ],
         };
 
+        int.TryParse(ageRangeFrom, out int ageFrom);
+
         return new AcademicPerformanceAttainmentAndProgressViewModel
         {
             URN = attainmentAndProgressModel.Urn,
@@ -75,7 +88,16 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : BaseViewModel
                 PreviousYear = AcademicPerformanceAttainmentAndProgressSingleYearViewModel.Map(laName, AcademicYearSelection.Previous, attainmentAndProgressModel),
                 TwoYearsAgo = AcademicPerformanceAttainmentAndProgressSingleYearViewModel.Map(laName, AcademicYearSelection.Previous2, attainmentAndProgressModel)
             },
-            BreakdownNonDisadvantaged = nonDisadvantagedBreakdownData
+            BreakdownNonDisadvantaged = nonDisadvantagedBreakdownData,
+            ShowUTCCaveat = typeOfEstablishment == TypeOfEstablishment.UniversityTechnicalCollege,
+            ShowStudioSchoolCaveat = typeOfEstablishment == TypeOfEstablishment.StudioSchools,
+            ShowFurtherEducationCaveat 
+                = typeOfEstablishment == TypeOfEstablishment.FurtherEducation
+                || (typeOfEstablishment != TypeOfEstablishment.UniversityTechnicalCollege
+                    && typeOfEstablishment != TypeOfEstablishment.StudioSchools
+                    && typeOfEstablishment != TypeOfEstablishment.FurtherEducation
+                    && ageFrom>=12)
+
         };
     }
 }
