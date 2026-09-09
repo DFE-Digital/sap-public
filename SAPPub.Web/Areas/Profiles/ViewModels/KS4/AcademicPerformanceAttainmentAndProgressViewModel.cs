@@ -45,7 +45,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : BaseViewModel
         string laName,
         string ageRangeFrom,
         TypeOfEstablishment typeOfEstablishment,
-        AttainmentAndProgressModel attainmentAndProgressModel,
+        AttainmentAndProgressModel attainmentAndProgressModel, 
         AcademicYearSelection selectedAcademicYear)
     {
         var laAverageLabel = CommonHelper.GetLocalAuthorityDisplayName(laName);
@@ -91,13 +91,12 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : BaseViewModel
             BreakdownNonDisadvantaged = nonDisadvantagedBreakdownData,
             ShowUTCCaveat = typeOfEstablishment == TypeOfEstablishment.UniversityTechnicalCollege,
             ShowStudioSchoolCaveat = typeOfEstablishment == TypeOfEstablishment.StudioSchools,
-            ShowFurtherEducationCaveat 
+            ShowFurtherEducationCaveat
                 = typeOfEstablishment == TypeOfEstablishment.FurtherEducation
                 || (typeOfEstablishment != TypeOfEstablishment.UniversityTechnicalCollege
                     && typeOfEstablishment != TypeOfEstablishment.StudioSchools
                     && typeOfEstablishment != TypeOfEstablishment.FurtherEducation
-                    && ageFrom>=12)
-
+                    && ageFrom >= 12)
         };
     }
 }

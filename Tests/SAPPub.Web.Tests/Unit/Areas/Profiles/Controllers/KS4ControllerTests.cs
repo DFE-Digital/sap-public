@@ -201,6 +201,43 @@ public class KS4ControllerTests
     }
 
     [Theory]
+    [InlineData(AcademicYearSelection.Current)]
+    [InlineData(AcademicYearSelection.Previous)]
+    [InlineData(AcademicYearSelection.Previous2)]
+    public async Task Get_AcademicPerformanceAttainmentAndProgress_ReturnsExpectedSelectedYearAttainment8Data(AcademicYearSelection academicYearSelection)
+    {
+        var expectedResult = new AttainmentAndProgressModelBuilder()
+            .WithAttainment8Data()
+            .WithAttainmentNonDisadvantaged8Data()
+            .Build();
+
+        _mockAttainmentAndProgressService
+            .Setup(s => s.GetAttainmentAndProgressAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedResult);
+
+        var result = await _controller.AcademicPerformanceAttainmentAndProgress(
+            _mockAttainmentAndProgressService.Object,
+            _fakeEstablishment.URN,
+            _fakeEstablishment.EstablishmentName,
+            academicYearSelection.ToRouteSegment()!,
+            CancellationToken.None) as ViewResult;
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Model);
+
+        var model = result.Model as AcademicPerformanceAttainmentAndProgressViewModel;
+        Assert.NotNull(model);
+        Assert.Equal(expectedResult.EstablishmentAttainment8Score.GetValueForYear(academicYearSelection), model.SelectedYearValues.EstablishmentAttainment8Score);
+        Assert.Equal(expectedResult.LocalAuthorityAttainment8Score.GetValueForYear(academicYearSelection), model.SelectedYearValues.LocalAuthorityAttainment8Score);
+        Assert.Equal(expectedResult.EnglandAttainment8Score.GetValueForYear(academicYearSelection), model.SelectedYearValues.EnglandAttainment8Score);
+        Assert.Equal(expectedResult.EstablishmentAttainment8DisadvantagedScore.GetValueForYear(academicYearSelection), model.SelectedYearValues.EstablishmentAttainment8DisadvantagedScore.Value);
+        Assert.Equal(expectedResult.EnglandAttainment8DisadvantagedScore.GetValueForYear(academicYearSelection), model.SelectedYearValues.EnglandAttainment8DisadvantagedScore.Value);
+        Assert.Equal(expectedResult.EnglandAttainment8NonDisadvantagedScore, model.EnglandAttainment8NonDisadvantagedScore.Value);
+        Assert.Equal(expectedResult.LocalAuthorityAttainment8NonDisadvantagedScore, model.LocalAuthorityAttainment8NonDisadvantagedScore.Value);
+        Assert.True(model.ShowAttainment8Info);
+    }
+
+    [Theory]
     [InlineData(TypeOfEstablishment.UniversityTechnicalCollege, "11", true, false, false)]
     [InlineData(TypeOfEstablishment.StudioSchools, "11", false, true, false)]
     [InlineData(TypeOfEstablishment.FurtherEducation, "11", false, false, true)]
@@ -237,43 +274,6 @@ public class KS4ControllerTests
         Assert.Equal(expectedShowUTCCaveat, model.ShowUTCCaveat);
         Assert.Equal(expectedShowStudioSchoolCaveat, model.ShowStudioSchoolCaveat);
         Assert.Equal(expectedShowFECaveat, model.ShowFurtherEducationCaveat);
-    }
-
-    [Theory]
-    [InlineData(AcademicYearSelection.Current)]
-    [InlineData(AcademicYearSelection.Previous)]
-    [InlineData(AcademicYearSelection.Previous2)]
-    public async Task Get_AcademicPerformanceAttainmentAndProgress_ReturnsExpectedSelectedYearAttainment8Data(AcademicYearSelection academicYearSelection)
-    {
-        var expectedResult = new AttainmentAndProgressModelBuilder()
-            .WithAttainment8Data()
-            .WithAttainmentNonDisadvantaged8Data()
-            .Build();
-
-        _mockAttainmentAndProgressService
-            .Setup(s => s.GetAttainmentAndProgressAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(expectedResult);
-
-        var result = await _controller.AcademicPerformanceAttainmentAndProgress(
-            _mockAttainmentAndProgressService.Object,
-            _fakeEstablishment.URN,
-            _fakeEstablishment.EstablishmentName,
-            academicYearSelection.ToRouteSegment()!,
-            CancellationToken.None) as ViewResult;
-
-        Assert.NotNull(result);
-        Assert.NotNull(result.Model);
-
-        var model = result.Model as AcademicPerformanceAttainmentAndProgressViewModel;
-        Assert.NotNull(model);
-        Assert.Equal(expectedResult.EstablishmentAttainment8Score.GetValueForYear(academicYearSelection), model.SelectedYearValues.EstablishmentAttainment8Score);
-        Assert.Equal(expectedResult.LocalAuthorityAttainment8Score.GetValueForYear(academicYearSelection), model.SelectedYearValues.LocalAuthorityAttainment8Score);
-        Assert.Equal(expectedResult.EnglandAttainment8Score.GetValueForYear(academicYearSelection), model.SelectedYearValues.EnglandAttainment8Score);
-        Assert.Equal(expectedResult.EstablishmentAttainment8DisadvantagedScore.GetValueForYear(academicYearSelection), model.SelectedYearValues.EstablishmentAttainment8DisadvantagedScore.Value);
-        Assert.Equal(expectedResult.EnglandAttainment8DisadvantagedScore.GetValueForYear(academicYearSelection), model.SelectedYearValues.EnglandAttainment8DisadvantagedScore.Value);
-        Assert.Equal(expectedResult.EnglandAttainment8NonDisadvantagedScore, model.EnglandAttainment8NonDisadvantagedScore.Value);
-        Assert.Equal(expectedResult.LocalAuthorityAttainment8NonDisadvantagedScore, model.LocalAuthorityAttainment8NonDisadvantagedScore.Value);
-        Assert.True(model.ShowAttainment8Info);
     }
 
     [Fact]

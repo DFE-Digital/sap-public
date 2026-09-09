@@ -1,4 +1,5 @@
-﻿@model SAPPub.Web.Areas.Profiles.ViewModels.AboutSchool.AboutSchoolViewModel;
+﻿@model KS5DestinationsViewModel;
+@using SAPPub.Web.Areas.Profiles.ViewModels.Destinations
 @using SAPPub.Web.Constants
 @using SAPPub.Web.ViewComponents.SchoolProfilePagination
 @using SAPPub.Web.ViewComponents.VerticalNavigation
@@ -47,11 +48,43 @@
             </ul>
         </nav>
 
-        <h2 class="govuk-heading-l">@ViewData["Header"]</h2>
+        <h2 class="govuk-heading-l">
+            Breakdown of all students, including disadvantaged students
+        </h2>
 
+        <govuk-inset-text id="breakdown-disadvantaged-students-inset-text">
+            <p class="govuk-body">
+                Destination measures including disadvantaged and non-disadvantaged students are not currently available.
+                We plan to make this information available in a future release.
+            </p>
 
+            <p class="govuk-body">
+                The measures will cover students who completed 16 to 19 study in 2021 to 2022 and then 
+                progressed to either:
+            </p>
 
+            <ul class="govuk-list govuk-list--bullet">
+                <li>
+                    a degree
+                </li>
+                <li>
+                    a higher apprenticeship
+                </li>
+                <li>
+                    other level 4 or above study 
+                </li>            
+            </ul>
 
+            <p class="govuk-body">
+                <a id="find-statistics-link"
+                   class="govuk-link"
+                   rel="noreferrer noopener"
+                   target="_blank"
+                   href="https://explore-education-statistics.service.gov.uk/find-statistics">
+                    Find out more about statistics and data <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                </a>.
+            </p>
+        </govuk-inset-text>
 
         @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.KS5DestinationsHigher))
 

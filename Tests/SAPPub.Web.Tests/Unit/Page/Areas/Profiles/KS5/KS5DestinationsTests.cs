@@ -10,9 +10,10 @@ namespace SAPPub.Web.Tests.Unit.Page.Areas.Profiles.KS5;
 [Collection("WebAppCollection")]
 public class KS5DestinationsTests : PageTestsBase
 {
-    private readonly string _urn = "105574";
+    private readonly string _urn = "144962";
     private readonly string _pageRoute = "/destinations/16-to-19";
-    private readonly string _establishmentName = "Loreto High School Chorlton";
+    private readonly string _higherLevelStudyPageRoute = "/destinations/16-to-19-higher-level-study";
+    private readonly string _establishmentName = "City of London Academy Highbury Grove";
     private readonly string _laName = "Test LA";
     private readonly double? _englandTotalOverall = 55;
     private readonly double? _establishmentTotalCohortFor = 1020;
@@ -227,6 +228,38 @@ public class KS5DestinationsTests : PageTestsBase
         Assert.Contains("/destinations/16-to-19-higher-level-study", nextLink.GetAttribute("href"));
     }
 
+    [Fact]
+    public async Task KS5Destinations_HigherLevelStudy_HasCorrectPageElements()
+    {
+        // Arrange
+        var url = BuildUrl(_urn, _establishmentName, _higherLevelStudyPageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert - headings
+        var h2Elements = doc.GetElementsByTagName("h2");
+
+        Assert.Contains(h2Elements, x => x.TextContent.Trim() == "Breakdown of all students, including disadvantaged students");
+
+        var breakdownDisadvantagedStudentsInset = doc.QuerySelector("#breakdown-disadvantaged-students-inset-text");
+        var findStatisticsLink = doc.QuerySelector("#find-statistics-link");
+
+        Assert.NotNull(breakdownDisadvantagedStudentsInset);
+        Assert.NotNull(findStatisticsLink);
+        Assert.Contains("https://explore-education-statistics.service.gov.uk/find-statistics", findStatisticsLink.GetAttribute("href"));
+
+        var pagination = doc.QuerySelector("nav.govuk-pagination");
+        Assert.NotNull(pagination);
+
+        var previousLink = pagination.QuerySelector(".govuk-pagination__prev a");
+        var nextLink = pagination.QuerySelector(".govuk-pagination__next a");
+
+        Assert.NotNull(previousLink);
+        Assert.Contains("destinations/16-to-19", previousLink.GetAttribute("href"));
+        Assert.Null(nextLink);
+    }
+
     private void SetupMock(bool hasEstablishmentTotalCohort = true)
     {
         _mockDestinationsService
@@ -239,7 +272,7 @@ public class KS5DestinationsTests : PageTestsBase
                         EstablishmentTotalCohortFor = hasEstablishmentTotalCohort ? _establishmentTotalCohortFor : null,
                         EstablishmentTotalOverall = _establishmentTotalOverall,
                         LATotalOverall = _laTotalOverall,
-                        Urn = "123456",
+                        Urn = _urn,
                         IsKS2 = false,
                         IsKS4 = false,
                         IsKS5 = true
