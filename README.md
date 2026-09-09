@@ -1,4 +1,4 @@
-# SAP Public - School Profile (Public Facing)
+# Find and Compare School and College Profiles
 
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
@@ -15,7 +15,7 @@
     <img src="docs/_assets/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-<h3 align="center">School Improvement Programme - School Profiles (working title)</h3>
+<h3 align="center">Find and Compare School and College Profiles</h3>
 
   <p align="center">
     Public facing school profile service built ASP.NET Core Razor Pages.
@@ -62,8 +62,8 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-This repository contains the Schools Profiles service for the School Improvement Programme (SIP).
-It is a .NET 8 solution with a Razor Pages application and supporting class libraries for code/domain logic, infrastructure and data processing.
+This repository contains the Find and Compare School and College Profiles service for the School Improvement Programme (SIP).
+It is a .NET 10 solution with a Razor Pages application and supporting class libraries for code/domain logic, infrastructure and data processing.
 This repository is an internal artefact store and not a public interface.
 
 | Environment | Internal URL | Public URL | Status 
@@ -98,6 +98,7 @@ This repository is an internal artefact store and not a public interface.
 - [Node.js 24.x](https://nodejs.org/) (for building frontend assets)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop) (optional, for containerized development)
 - [Visual Studio 2026](https://visualstudio.microsoft.com/) or [Visual Studio Code](https://code.visualstudio.com/) (recommended)
+- [PostgreSQL](https://www.postgresql.org/)
 
 ## Getting Started
 

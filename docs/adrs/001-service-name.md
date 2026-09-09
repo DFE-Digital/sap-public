@@ -1,6 +1,6 @@
-# 001 - Build the service, without a GDS-aligned name
+# 001 - Build the service, without a GDS-aligned name (Deprecated)
 
-**Status**: Accepted
+**Status**: Deprecated superseded by [ADR-023](023-new-name.md)
 **Deciders**: Dan Murfitt
 **Date**:  2025-09-10
 
