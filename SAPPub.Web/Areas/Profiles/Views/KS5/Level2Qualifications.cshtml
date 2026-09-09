@@ -122,6 +122,10 @@
         <div id="student-retention" class="govuk-inset-text">
             Measures on student retention will be available shortly in a future release.
         </div>
+
+        @* Performance Summary *@
+        <partial name="_PerformanceSummary" model="@Model.PerformanceGroupsData" view-data='new ViewDataDictionary(ViewData) { ["LAName"] = Model.LAName }' />
+
         @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.KS5AcademicPerformanceLevel2))
 
     </div>

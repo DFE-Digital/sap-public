@@ -287,7 +287,7 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
                 SchoolName = _fakeEstablishment.EstablishmentName,
                 IsKS2 = false,
                 IsKS4 = false,
-                IsKS5 = false,
+                IsKS5 = true,
                 EstablishmentTotalOverall = 88,
                 LATotalOverall = 77,
                 EnglandOverall = 66
@@ -305,6 +305,54 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
                 .ReturnsAsync(destinationsDetails);
 
             var result = await _controller.KS5(_mockDestinationsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
+
+            string[] expectedAllDestDataLabels = ["School or College", $"{_fakeEstablishment.LAName} average", "England average"];
+
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Model);
+
+            var model = result.Model as KS5DestinationsViewModel;
+            Assert.NotNull(model);
+            Assert.Equal(_fakeEstablishment.URN, model.URN);
+            Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
+
+            Assert.Equal(expectedAllDestDataLabels, model.AllDestinationsData.Labels);
+            Assert.Equal(expectedAllDestData, model.AllDestinationsData.Data);
+
+            Assert.Equal(2, model.RouteAttributes.Count);
+            Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
+            Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
+        }
+
+        [Fact]
+        public async Task Get_KS5Destinations_HigherLevelStudy_Info_ReturnsOk()
+        {
+            var destinationsDetails = new KS5DestinationsDetails
+            {
+                Urn = _fakeEstablishment.URN,
+                LocalAuthorityName = _fakeEstablishment.LAName,
+                SchoolName = _fakeEstablishment.EstablishmentName,
+                IsKS2 = false,
+                IsKS4 = false,
+                IsKS5 = true,
+                EstablishmentTotalOverall = 88,
+                LATotalOverall = 77,
+                EnglandOverall = 66
+            };
+
+            double?[] expectedAllDestData =
+            [
+                destinationsDetails.EstablishmentTotalOverall = 88,
+                destinationsDetails.LATotalOverall = 66,
+                destinationsDetails.EnglandOverall = 77,
+            ];
+
+            _mockDestinationsService
+                .Setup(es => es.GetKS5DestinationsDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(destinationsDetails);
+
+            var result = await _controller.KS5HigherLevel(_mockDestinationsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
             string[] expectedAllDestDataLabels = ["School or College", $"{_fakeEstablishment.LAName} average", "England average"];
 

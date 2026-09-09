@@ -236,4 +236,44 @@ public class KS5LAPerformance
 
     // Points for LA - Non-Disadvantaged - Tech Levels
     public CodedDouble TALLPPE_TLEV_NOTDIS_LA_Current_Num_Coded { get; set; }
+
+    // Tech Certificates DisAdvantaged
+
+    // Number of students for LA - Disadvantaged - Tech Certificates
+    public CodedDouble TALLPUP_TECHCERT_DIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress score for LA - Disadvantaged - Tech Certificates
+    public CodedDouble VA_INS_TECHCERT_DIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for LA upper - Disadvantaged - Tech Certificates
+    public CodedDouble UCI_INS_TECHCERT_DIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for LA lower - Disadvantaged - Tech Certificates
+    public CodedDouble LCI_INS_TECHCERT_DIS_LA_Current_Num_Coded { get; set; }
+
+    // Grade for LA - Disadvantaged - Tech Certificates
+    public CodedString TALLPPEGRD_TECHCERT_DIS_LA_Current { get; set; }
+
+    // Points for LA - Disadvantaged - Tech Certificates
+    public CodedDouble TALLPPE_TECHCERT_DIS_LA_Current_Num_Coded { get; set; }
+
+    // Tech Certificates Non-DisAdvantaged
+
+    // Number of students for LA - Non-Disadvantaged - Tech Certificates
+    public CodedDouble TALLPUP_TECHCERT_NOTDIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress score for LA - Non-Disadvantaged - Tech Certificates
+    public CodedDouble VA_INS_TECHCERT_NOTDIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for LA upper - Non-Disadvantaged - Tech Certificates
+    public CodedDouble UCI_INS_TECHCERT_NOTDIS_LA_Current_Num_Coded { get; set; }
+
+    // Progress confidence interval for LA lower - Non-Disadvantaged - Tech Certificates
+    public CodedDouble LCI_INS_TECHCERT_NOTDIS_LA_Current_Num_Coded { get; set; }
+
+    // Grade for LA - Non-Disadvantaged - Tech Certificates
+    public CodedString TALLPPEGRD_TECHCERT_NOTDIS_LA_Current { get; set; }
+
+    // Points for LA - Non-Disadvantaged - Tech Certificates
+    public CodedDouble TALLPPE_TECHCERT_NOTDIS_LA_Current_Num_Coded { get; set; }
 }

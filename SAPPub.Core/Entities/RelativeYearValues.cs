@@ -1,4 +1,6 @@
-﻿namespace SAPPub.Core.Entities;
+﻿using SAPPub.Core.Enums;
+
+namespace SAPPub.Core.Entities;
 
 public record RelativeYearValues<T>
 {

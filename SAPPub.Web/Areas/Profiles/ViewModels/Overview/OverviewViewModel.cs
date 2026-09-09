@@ -1,9 +1,10 @@
 ﻿using SAPPub.Core.Extensions;
+using SAPPub.Core.Helpers;
 using SAPPub.Core.ServiceModels.Common;
 using SAPPub.Core.ServiceModels.Overview;
 using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Helpers;
-using SAPPub.Core.Helpers;
+using SAPPub.Web.Models.Charts;
 
 namespace SAPPub.Web.Areas.Profiles.ViewModels.Overview;
 
@@ -31,6 +32,12 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
 
     public required DisplayField<CodedDouble> Attainment8 { get; init; }
 
+    public required DisplayField<CodedDouble> Attainment8LA { get; init; }
+
+    public required DisplayField<CodedDouble> Attainment8England { get; init; }
+
+    public required DisplayField<string> Attainment8Context { get; init; }
+
     public required DisplayField<CodedDouble> MoreThanOneForeignLanguage { get; init; }
 
     public required SimpleCodedDoubleTableViewModel? EnglishAndMathsGrade5 { get; init; }
@@ -41,6 +48,24 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
 
     public required SimpleCodedDoubleTableViewModel? ReadingWritingMathsHigher { get; init; }
 
+    public required DisplayField<CodedDouble> EnglishAndMathsGrade5Establishment { get; init; }
+
+    public required DisplayField<CodedDouble> EnglishAndMathsGrade5LA { get; init; }
+
+    public required DisplayField<CodedDouble> EnglishAndMathsGrade5England { get; init; }
+
+    public required DisplayField<CodedDouble> DestinationsEstablishment { get; init; }
+
+    public required DisplayField<CodedDouble> DestinationsLA { get; init; }
+
+    public required DisplayField<CodedDouble> DestinationsEngland { get; init; }
+
+    public required DataViewModel DestinationsChart { get; init; }
+
+    public required DataViewModel EnglishAndMathsGrade5Chart { get; init; }
+
+    public required string LocalAuthorityName { get; init; }
+
     public static OverviewViewModel Map(OverviewModel model)
     {
         var latLong = MappingHelper.ConvertToLatLon(model.Easting, model.Northing);
@@ -49,6 +74,7 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
         {
             URN = model.Urn,
             SchoolName = model.SchoolName,
+            LocalAuthorityName = model.LocalAuthorityName,
             Address = model.Address.ToDisplayField(),
 
             Latitude = latLong?.Latitude.ToString() ?? string.Empty,
@@ -77,6 +103,9 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
             Telephone = model.Phone.ToDisplayField(),
             SchoolWebsite = model.Website.ToDisplayField(),
             Attainment8 = model.Attainment8.ToDisplayField(),
+            Attainment8LA = model.Attainment8LA.ToDisplayField(),
+            Attainment8England = model.Attainment8England.ToDisplayField(),
+            Attainment8Context = AttainmentHelper.EstablishmentAttainment8ContextStatement(model.Attainment8?.Value).ToDisplayField(),
             MoreThanOneForeignLanguage = model.MoreThanOneForeignLanguage.ToDisplayField(),
 
             EnglishAndMathsGrade5 = MapComparison(
@@ -97,7 +126,58 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
             ReadingWritingMathsHigher = MapComparison(
                 model.ReadingWritingMathsHigherEstablishment,
                 model.ReadingWritingMathsHigherLA,
-                model.ReadingWritingMathsHigherEngland)
+                model.ReadingWritingMathsHigherEngland),
+
+            EnglishAndMathsGrade5Establishment =
+                model.EnglishAndMathsGrade5Establishment.ToDisplayField(),
+
+                        EnglishAndMathsGrade5LA =
+                model.EnglishAndMathsGrade5LA.ToDisplayField(),
+
+                        EnglishAndMathsGrade5England =
+                model.EnglishAndMathsGrade5England.ToDisplayField(),
+
+                EnglishAndMathsGrade5Chart = new DataViewModel
+                {
+                    Labels =
+                [
+                    "School",
+                    $"{model.LocalAuthorityName} average",
+                    "England average"
+                ],
+                            Data =
+                [
+                    model.EnglishAndMathsGrade5Establishment?.Value,
+                    model.EnglishAndMathsGrade5LA?.Value,
+                    model.EnglishAndMathsGrade5England?.Value
+                ],
+
+            },
+
+            DestinationsEstablishment =
+                model.DestinationsEstablishment.ToDisplayField(),
+
+                        DestinationsLA =
+                model.DestinationsLA.ToDisplayField(),
+
+                        DestinationsEngland =
+                model.DestinationsEngland.ToDisplayField(),
+
+                        DestinationsChart = new DataViewModel
+                        {
+                            Labels =
+                [
+                    "School",
+                    $"{model.LocalAuthorityName} average",
+                    "England average"
+                ],
+                            Data =
+                [
+                    model.DestinationsEstablishment?.Value,
+                    model.DestinationsLA?.Value,
+                    model.DestinationsEngland?.Value
+                ]
+            },
         };
     }
 
