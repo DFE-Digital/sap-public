@@ -1042,66 +1042,68 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
     [Fact]
     public async Task OverviewPage_SecondarySchool_DisplaysAtAGlanceSectionsInExpectedOrder()
     {
-        await Page.GotoAsync(
-            AchievementOverviewUrl);
+        await Page.GotoAsync(AchievementOverviewUrl);
 
         var sections =
             Page.Locator(
                 "#secondary-at-a-glance-accordion .govuk-accordion__section");
 
         await Expect(sections)
-            .ToHaveCountAsync(4);
+            .ToHaveCountAsync(5);
 
         await Expect(
-            sections.Nth(0)
-                .GetByRole(
-                    AriaRole.Button,
-                    new()
-                    {
-                        NameRegex =
-                            new Regex(
-                                "Pupil progress",
-                                RegexOptions.IgnoreCase)
-                    }))
+            sections.Nth(0).GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex(
+                        "Pupil progress",
+                        RegexOptions.IgnoreCase)
+                }))
             .ToBeVisibleAsync();
 
         await Expect(
-            sections.Nth(1)
-                .GetByRole(
-                    AriaRole.Button,
-                    new()
-                    {
-                        NameRegex =
-                            new Regex(
-                                "Average pupil achievement",
-                                RegexOptions.IgnoreCase)
-                    }))
+            sections.Nth(1).GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex(
+                        "Average pupil achievement",
+                        RegexOptions.IgnoreCase)
+                }))
             .ToBeVisibleAsync();
 
         await Expect(
-            sections.Nth(2)
-                .GetByRole(
-                    AriaRole.Button,
-                    new()
-                    {
-                        NameRegex =
-                            new Regex(
-                                "English and maths GCSE results",
-                                RegexOptions.IgnoreCase)
-                    }))
+            sections.Nth(2).GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex(
+                        "English and maths GCSE results",
+                        RegexOptions.IgnoreCase)
+                }))
             .ToBeVisibleAsync();
 
         await Expect(
-            sections.Nth(3)
-                .GetByRole(
-                    AriaRole.Button,
-                    new()
-                    {
-                        NameRegex =
-                            new Regex(
-                                "What pupils did after year 11",
-                                RegexOptions.IgnoreCase)
-                    }))
+            sections.Nth(3).GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex(
+                        "What pupils did after year 11",
+                        RegexOptions.IgnoreCase)
+                }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            sections.Nth(4).GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex(
+                        "Extra-curricular activities",
+                        RegexOptions.IgnoreCase)
+                }))
             .ToBeVisibleAsync();
     }
 
@@ -1415,6 +1417,17 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                             RegexOptions.IgnoreCase)
                 }))
             .ToHaveCountAsync(0);
+
+        await Expect(
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex(
+                        "Extra-curricular activities",
+                        RegexOptions.IgnoreCase)
+                }))
+            .ToHaveCountAsync(0);
     }
 
     [Fact]
@@ -1428,7 +1441,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                 "#secondary-at-a-glance-accordion .govuk-accordion__section");
 
         await Expect(sections)
-            .ToHaveCountAsync(4);
+            .ToHaveCountAsync(5);
 
         await Expect(
             sections.Nth(2)
@@ -2237,6 +2250,154 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
         await Expect(
             page.Locator("#overview-destinations-current-year-chart-container"))
             .Not.ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_ExtraCurricularAccordion_IsClosedByDefault()
+    {
+        await Page.GotoAsync(AchievementOverviewUrl);
+
+        var button =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex(
+                        "Extra-curricular activities",
+                        RegexOptions.IgnoreCase)
+                });
+
+        var content =
+            Page.Locator(
+                "#secondary-at-a-glance-accordion-content-5");
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "false");
+
+        await Expect(content)
+            .Not.ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_ExtraCurricularAccordion_CanBeExpandedAndClosed()
+    {
+        await Page.GotoAsync(AchievementOverviewUrl);
+
+        var button =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex(
+                        "Extra-curricular activities",
+                        RegexOptions.IgnoreCase)
+                });
+
+        var content =
+            Page.Locator(
+                "#secondary-at-a-glance-accordion-content-5");
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "false");
+
+        await button.ClickAsync();
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "true");
+
+        await Expect(content)
+            .ToBeVisibleAsync();
+
+        await button.ClickAsync();
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "false");
+
+        await Expect(content)
+            .Not.ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_ExtraCurricular_DisplaysExpectedContent()
+    {
+        await Page.GotoAsync(AchievementOverviewUrl);
+
+        var button =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex(
+                        "Extra-curricular activities",
+                        RegexOptions.IgnoreCase)
+                });
+
+        await button.ClickAsync();
+
+        var content =
+            Page.Locator(
+                "#secondary-at-a-glance-accordion-content-5");
+
+        await Expect(
+            content.GetByRole(
+                AriaRole.Heading,
+                new()
+                {
+                    Name = "Find out more about upcoming information on extra-curricular activities",
+                    Exact = true
+                }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            content.GetByText(
+                "Information on extra-curricular opportunities will be available in the future.",
+                new() { Exact = true }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            content.GetByRole(
+                AriaRole.Link,
+                new()
+                {
+                    Name = "Find out more about what types of activities pupils can take part in and where to find this information",
+                    Exact = true
+                }))
+            .ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_ExtraCurricularAccordion_HasValidAriaControlsReference()
+    {
+        await Page.GotoAsync(AchievementOverviewUrl);
+
+        var button =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex(
+                        "Extra-curricular activities",
+                        RegexOptions.IgnoreCase)
+                });
+
+        var ariaControls =
+            await button.GetAttributeAsync("aria-controls");
+
+        Assert.Equal(
+            "secondary-at-a-glance-accordion-content-5",
+            ariaControls);
+
+        await Expect(
+            Page.Locator($"#{ariaControls}"))
+            .ToHaveCountAsync(1);
     }
 
     private async Task<string> GetFailureMessageAsync(
