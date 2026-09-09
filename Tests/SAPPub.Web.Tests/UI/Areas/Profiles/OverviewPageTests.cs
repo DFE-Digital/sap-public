@@ -2093,6 +2093,63 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
             .ToHaveCountAsync(1);
     }
 
+
+    [Fact]
+    public async Task OverviewPage_EnglishAndMathsChart_CanBeShownAsTableAndChart()
+    {
+        await Page.GotoAsync(AchievementOverviewUrl);
+
+        var accordionButton = Page.GetByRole(
+            AriaRole.Button,
+            new()
+            {
+                NameRegex = new Regex(
+                    "English and maths GCSE results",
+                    RegexOptions.IgnoreCase)
+            });
+
+        await accordionButton.ClickAsync();
+
+        var button = Page.Locator(
+            "#overview-english-maths-current-year-show-btn");
+
+        var chart = Page.Locator(
+            "#overview-english-maths-current-year-chart-container");
+
+        var table = Page.Locator(
+            "#overview-english-maths-current-year-table-container");
+
+        await Expect(button).ToHaveTextAsync("Show as a table");
+        await Expect(chart).ToBeVisibleAsync();
+        await Expect(table).Not.ToBeVisibleAsync();
+
+        // Show table
+        await button.ClickAsync();
+
+        await Expect(button).ToHaveTextAsync("Show as a chart");
+        await Expect(chart).Not.ToBeVisibleAsync();
+        await Expect(table).ToBeVisibleAsync();
+
+        await Expect(
+            table.GetByText("School", new() { Exact = true }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            table.GetByText("Sheffield average", new() { Exact = true }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            table.GetByText("England average", new() { Exact = true }))
+            .ToBeVisibleAsync();
+
+        // Return to chart
+        await button.ClickAsync();
+
+        await Expect(button).ToHaveTextAsync("Show as a table");
+        await Expect(chart).ToBeVisibleAsync();
+        await Expect(table).Not.ToBeVisibleAsync();
+    }
+
     private async Task AssertRowDisplaysNotAvailableAsync(
         string selector,
         string label)
@@ -2135,6 +2192,51 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
             .ToBeVisibleAsync();
 
         return response;
+    }
+
+    [Fact]
+    public async Task OverviewPage_WithoutJavaScript_DisplaysTablesInsteadOfChartControls()
+    {
+        await Page.GotoAsync(AchievementOverviewUrl);
+
+        var baseUri = new Uri(Page.Url);
+        var baseUrl = $"{baseUri.Scheme}://{baseUri.Authority}";
+
+        await using var context = await Browser.NewContextAsync(
+            new BrowserNewContextOptions
+            {
+                JavaScriptEnabled = false,
+                IgnoreHTTPSErrors = true,
+                BaseURL = baseUrl
+            });
+
+        var page = await context.NewPageAsync();
+
+        await page.GotoAsync(AchievementOverviewUrl);
+
+        await Expect(
+            page.Locator("#overview-english-maths-current-year-table"))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            page.Locator("#overview-destinations-current-year-table"))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            page.Locator("#overview-english-maths-current-year-show-btn"))
+            .Not.ToBeVisibleAsync();
+
+        await Expect(
+            page.Locator("#overview-destinations-current-year-show-btn"))
+            .Not.ToBeVisibleAsync();
+
+        await Expect(
+            page.Locator("#overview-english-maths-current-year-chart-container"))
+            .Not.ToBeVisibleAsync();
+
+        await Expect(
+            page.Locator("#overview-destinations-current-year-chart-container"))
+            .Not.ToBeVisibleAsync();
     }
 
     private async Task<string> GetFailureMessageAsync(
