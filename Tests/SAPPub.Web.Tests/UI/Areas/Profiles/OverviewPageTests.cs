@@ -2296,6 +2296,34 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
     }
 
     [Fact]
+    public async Task OverviewPage_ExtraCurricularAccordion_IsClosedByDefault()
+    {
+        await Page.GotoAsync(AchievementOverviewUrl);
+
+        var button =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex(
+                        "Extra-curricular activities",
+                        RegexOptions.IgnoreCase)
+                });
+
+        var content =
+            Page.Locator(
+                "#secondary-at-a-glance-accordion-content-5");
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "false");
+
+        await Expect(content)
+            .Not.ToBeVisibleAsync();
+    }
+
+    [Fact]
     public async Task OverviewPage_ExtraCurricularAccordion_CanBeExpandedAndClosed()
     {
         await Page.GotoAsync(AchievementOverviewUrl);
