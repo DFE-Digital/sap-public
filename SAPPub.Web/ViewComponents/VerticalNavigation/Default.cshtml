@@ -22,7 +22,7 @@
 
                 <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.AboutTheSchool ? "moj-side-navigation__item--active" : "")">
                     <a asp-route="@RouteConstants.AboutTheSchool" asp-all-route-data="routeAttributes">
-                        @if (Model.IsKS5)
+                        @if (Model.IsExclusivelyKS5)
                         {
                             <text>About the school or college</text>
                         }

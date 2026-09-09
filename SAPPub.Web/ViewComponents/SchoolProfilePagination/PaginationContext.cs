@@ -13,6 +13,8 @@ public class PaginationContext
 
     public required bool IsKS5 { get; set; }
 
+    public bool IsExclusivelyKS5 => !IsKS2 && !IsKS4 && IsKS5;
+
     /// <summary>
     /// Reflects the "EnablePrimary" feature flag. Primary destinations are excluded
     /// from pagination entirely while this is false, regardless of IsKS2.
