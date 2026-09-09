@@ -1,6 +1,4 @@
 ﻿using Microsoft.Playwright;
-using SAPPub.Integration.Tests;
-using SAPPub.Integration.Tests.Primary;
 using SAPPub.IntegrationTests.Helpers;
 
 namespace SAPPub.Integration.Tests.Primary;
@@ -35,6 +33,31 @@ public class PupilProgressTests() : BasePageTest()
         await AssertSchoolProgressData(Page, "writing-establishment-card", expectedWritingScore, expectedWritingLowerBand, expectedWritingHigherBand);
     }
 
+    [Theory]
+    [InlineData("100019", "1.9", "2", "1.5")]
+    [InlineData("100241", "0.6", "1.6", "0.8")]
+    [InlineData("100353", "2", "2.1", "2.3")]
+    [InlineData("100448", "0", "0.7", "0.5")]
+    [InlineData("100500", "1.5", "1.8", "2.4")]
+    [InlineData("100674", "0.3", "-0.4", "0.3")]
+    [InlineData("100684", "0.3", "-0.4", "0.3")]
+    public async Task LaProgressData_Expected(
+        string urn,
+        string readScore,
+        string writeScore,
+        string mathsScore)
+    {
+        // Arrange && Act
+        var _ = await Page.GotoAsync(PageUrl(urn));
+        var response = await Page.ClickAcademicPerformanceLinkAsync();
+        _ = await Page.GotoAcademicPerformanceSelectedYearLink(response!.Url, "previous2");
+
+        // Assert
+        await AssertLaProgressData(Page, "maths-localauthority-card", mathsScore);
+        await AssertLaProgressData(Page, "reading-localauthority-card", readScore);
+        await AssertLaProgressData(Page, "writing-localauthority-card", writeScore);
+    }
+
     private async Task AssertSchoolProgressData(IPage Page, string cardId, string expectedSchoolScore, string expectedLowerBanding, string expectedUpperBanding)
     {
         var schoolScore = await Page.GetScoreFromParagraphAsync(cardId, "Pupils at this school score");
@@ -45,5 +68,12 @@ public class PupilProgressTests() : BasePageTest()
         Assert.NotNull(banding);
         Assert.Equal(expectedLowerBanding, banding.First());
         Assert.Equal(expectedUpperBanding, banding.Last());
+    }
+
+    private async Task AssertLaProgressData(IPage Page, string cardId, string expectedScore)
+    {
+        var score = await Page.GetScoreFromParagraphAsync(cardId, "The local authority average is");
+        Assert.NotNull(score);
+        Assert.Equal(expectedScore, score.First());
     }
 }

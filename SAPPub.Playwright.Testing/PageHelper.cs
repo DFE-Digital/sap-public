@@ -38,6 +38,18 @@ public static class PageHelper
         return row.Locator("td").AllInnerTextsAsync();
     }
 
+    public static Task<IReadOnlyList<string>> GetTableRowValuesAsync(
+        this IPage page,
+        string tableId,
+        int rowNumber)
+    {
+        var id = tableId.StartsWith("#") ? tableId : $"#{tableId}";
+        var row = page.Locator($"{id} tbody tr")
+            .Nth(rowNumber);
+
+        return row.Locator("td").AllInnerTextsAsync();
+    }
+
     public static Task ExpandAccordionAsync(this IPage page, string label)
     {
         return page.GetByRole(AriaRole.Button, new()

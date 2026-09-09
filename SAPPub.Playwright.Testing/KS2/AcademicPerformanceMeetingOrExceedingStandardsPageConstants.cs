@@ -19,6 +19,7 @@ public class PageConstants
                 ["girls-boys-table"] = "#girls-boys-table",
                 ["eal-table"] = "#eal-table",
                 ["non-mobile-table"] = "#nonmobile-pupils-table",
-                ["disadvantaged-pupils-table"] = "#disadvantaged-pupils-table"
+                ["disadvantaged-pupils-table"] = "#disadvantaged-pupils-table",
+                ["non-disadvantaged-pupils-table"] = "#non-disadvantaged-pupils-table"
             };
 }
