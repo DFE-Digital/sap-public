@@ -1,6 +1,6 @@
 ﻿using Microsoft.Playwright;
 using SAPPub.Playwright.Testing;
-using SAPPub.Playwright.Testing.Primary.Performance;
+using SAPPub.Playwright.Testing.KS2.Performance.MeetingOrExceedingStandards;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 

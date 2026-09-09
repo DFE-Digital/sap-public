@@ -3,7 +3,7 @@ using SAPPub.Integration.Tests;
 using SAPPub.Integration.Tests.Primary;
 using SAPPub.IntegrationTests.Helpers;
 
-namespace SAPPub.IntegrationTests.Primary;
+namespace SAPPub.Integration.Tests.Primary;
 
 [Collection("Integration Tests")]
 public class PupilProgressTests() : BasePageTest()

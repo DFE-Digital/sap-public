@@ -1,4 +1,4 @@
-﻿namespace SAPPub.Playwright.Testing.Primary.Performance;
+﻿namespace SAPPub.Playwright.Testing.KS2.Performance.MeetingOrExceedingStandards;
 
 public class PageConstants
 {

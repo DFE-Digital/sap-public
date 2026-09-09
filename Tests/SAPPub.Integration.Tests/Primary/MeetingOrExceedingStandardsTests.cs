@@ -1,6 +1,6 @@
 ﻿using Microsoft.Playwright;
 using SAPPub.Playwright.Testing;
-using SAPPub.Playwright.Testing.Primary.Performance;
+using SAPPub.Playwright.Testing.KS2.Performance.MeetingOrExceedingStandards;
 
 namespace SAPPub.Integration.Tests.Primary;
 
@@ -34,8 +34,6 @@ public class MeetingOrExceedingStandardsTests() : BasePageTest()
 
         // and click Show as a table button
         await Page.ClickAsync(PageConstants.ContentIds["dataOverTimeShowAsTableBtn"]);
-
-        var table = Page.Locator(PageConstants.ContentIds["dataOverTimeTableContainer"]);
 
         var schoolData = await Page.GetTableRowValuesAsync(PageConstants.ContentIds["dataOverTimeTable"], "School");
         Assert.Equal($"{expectedPrevious2}%", schoolData[0]);
@@ -73,8 +71,6 @@ public class MeetingOrExceedingStandardsTests() : BasePageTest()
         // Act
         await Page.ExpandAccordionAsync("Meeting and exceeding expected standards by pupil characteristics");
         await Page.ExpandDetailsAsync("Compare with non-disadvantaged pupils");
-
-        //var table = Page.Locator(PageConstants.ContentIds["dataOverTimeTableContainer"]);
 
         var schoolData = await Page.GetTableRowValuesAsync(PageConstants.ContentIds["girls-boys-table"], "Girls");
         Assert.Equal($"{expectedGirls}%", schoolData[0]);
