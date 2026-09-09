@@ -2206,6 +2206,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
             new BrowserNewContextOptions
             {
                 JavaScriptEnabled = false,
+                IgnoreHTTPSErrors = true,
                 BaseURL = baseUrl
             });
 
@@ -2237,6 +2238,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
             page.Locator("#overview-destinations-current-year-chart-container"))
             .Not.ToBeVisibleAsync();
     }
+
     private async Task<string> GetFailureMessageAsync(
         string message,
         IResponse response)
