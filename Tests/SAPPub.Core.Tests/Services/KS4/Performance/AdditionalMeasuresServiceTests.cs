@@ -35,6 +35,7 @@ public class AdditionalMeasuresServiceTests
         _mockEnglandPerformanceService = new();
 
         _service = new AdditionalMeasuresService(
+            _mockEstablishmentService.Object,
             _mockEstablishmentPerformanceService.Object,
             _mockLAPerformanceService.Object,
             _mockEnglandPerformanceService.Object);
@@ -74,6 +75,7 @@ public class AdditionalMeasuresServiceTests
         englandPerformance.PupSEN_Tot_Eng_Current_Pct_Coded = GetCodedDouble(22);
         englandPerformance.PupEHCP_Tot_Eng_Current_Pct_Coded = GetCodedDouble(23);
 
+        fakeEstablishment.TotalPupils = "100";
 
         _mockEstablishmentService
             .Setup(s => s.GetEstablishmentAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>()))
@@ -99,7 +101,7 @@ public class AdditionalMeasuresServiceTests
         AssertEstablishmentAdditionalMeasuresData(establishmentPerformance, result.EstablishmentCurrentYear);
         AssertLaAdditionalMeasuresData(laPerformance, result.LocalAuthorityCurrentYear);
         AssertEnglandAdditionalMeasuresData(englandPerformance, result.EnglandCurrentYear);
-        AssertPupilCharacteristicsData(establishmentPerformance, laPerformance, englandPerformance, result);
+        AssertPupilCharacteristicsData(fakeEstablishment, establishmentPerformance, laPerformance, englandPerformance, result);
     }
 
 
@@ -231,6 +233,7 @@ public class AdditionalMeasuresServiceTests
     }
 
     private static void AssertPupilCharacteristicsData(
+        EstablishmentServiceModel establishmentServiceModel,
         EstablishmentPerformance establishmentPerformance,
         LAPerformance lAPerformance,
         EnglandPerformance englandPerformance,
@@ -248,7 +251,7 @@ public class AdditionalMeasuresServiceTests
         Assert.Equal(lAPerformance.Pup_NDi_LA_Current_Num_Coded.Value, result.LocalAuthorityNonDisadvantagedPupilsEndOfKS4.Value);
         Assert.Equal(englandPerformance.Pup_NDi_Eng_Current_Num_Coded.Value, result.EnglandNonDisadvantagedPupilsEndOfKS4.Value);
 
-        Assert.Equal(establishmentPerformance.Pup_Tot_Est_Current_Num_Coded.Value, result.EstablishmentTotalPupils.Value);
+        Assert.Equal(establishmentServiceModel.TotalPupils, result.EstablishmentTotalPupils);
         Assert.Equal(englandPerformance.Pup_Tot_Eng_Current_Num_Coded.Value, result.EnglandTotalPupils.Value);
 
         Assert.Equal(establishmentPerformance.PupSEN_Est_Current_Num_Coded.Value, result.EstablishmentTotalSENPupils.Value);

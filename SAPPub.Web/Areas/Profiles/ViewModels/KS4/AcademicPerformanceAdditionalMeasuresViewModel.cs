@@ -61,7 +61,7 @@ public class AcademicPerformanceAdditionalMeasuresViewModel : BaseViewModel
             EnglandDisadvantagedPupilsEndOfKS4 = additionalMeasuresModel.EnglandDisadvantagedPupilsEndOfKS4.ToDisplayField(),
             LocalAuthorityNonDisadvantagedPupilsEndOfKS4 = additionalMeasuresModel.LocalAuthorityNonDisadvantagedPupilsEndOfKS4.ToDisplayField(),
             EnglandNonDisadvantagedPupilsEndOfKS4 = additionalMeasuresModel.EnglandNonDisadvantagedPupilsEndOfKS4.ToDisplayField(),
-            EstablishmentTotalPupils = additionalMeasuresModel.EstablishmentTotalPupils.ToDisplayField(),
+            EstablishmentTotalPupils = GetCodedDouble(additionalMeasuresModel.EstablishmentTotalPupils).ToDisplayField(),
             EnglandTotalPupils = additionalMeasuresModel.EnglandTotalPupils.ToDisplayField(),
             EstablishmentTotalSENPupils = additionalMeasuresModel.EstablishmentTotalSENPupils.ToDisplayField(),
             EstablishmentTotalEHCPPupils = additionalMeasuresModel.EstablishmentTotalEHCPPupils.ToDisplayField(),
@@ -159,5 +159,15 @@ public class AcademicPerformanceAdditionalMeasuresViewModel : BaseViewModel
                 },
             ]
         };
+    }
+
+    private static CodedDouble GetCodedDouble(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return CodedDouble.Empty;
         }
+
+        return double.TryParse(value.Trim(), out var parsedValue) ? new CodedDouble(parsedValue, string.Empty, value.Trim()) : CodedDouble.Empty;
+    }
 }

@@ -496,7 +496,7 @@ public class AdditionalMeasuresTests : PageTestsBase
         var tableId = "num-pupil-wholsechool-table";
 
         Assert.Contains("Number of pupils on roll", doc.GetTableHeaderContentByIdAndIndex(tableId, 1, 0));
-        Assert.Contains(FormatNumber(additionalMeasuresModel.EstablishmentTotalPupils), doc.GetTableCellContentByIdAndIndex(tableId, 1, 0));
+        Assert.Contains(additionalMeasuresModel.EstablishmentTotalPupils, doc.GetTableCellContentByIdAndIndex(tableId, 1, 0));
         Assert.Contains(FormatNumber(additionalMeasuresModel.EnglandTotalPupils), doc.GetTableCellContentByIdAndIndex(tableId, 1, 1));
     }
 
@@ -574,7 +574,7 @@ public class AdditionalMeasuresTests : PageTestsBase
             EnglandDisadvantagedPupilsEndOfKS4 = GetCodedDouble(7),
             LocalAuthorityNonDisadvantagedPupilsEndOfKS4 = GetCodedDouble(8),
             EnglandNonDisadvantagedPupilsEndOfKS4 = GetCodedDouble(9),
-            EstablishmentTotalPupils = GetCodedDouble(10),
+            EstablishmentTotalPupils = "10",
             EnglandTotalPupils = GetCodedDouble(11),
             EstablishmentTotalSENPupils = GetCodedDouble(12),
             EstablishmentTotalEHCPPupils = GetCodedDouble(13),

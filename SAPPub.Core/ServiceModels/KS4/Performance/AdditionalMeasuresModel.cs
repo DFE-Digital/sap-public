@@ -21,7 +21,7 @@ public record AdditionalMeasuresModel
     public required CodedDouble LocalAuthorityNonDisadvantagedPupilsEndOfKS4 { get; set; }
     public required CodedDouble EnglandNonDisadvantagedPupilsEndOfKS4 { get; set; }
 
-    public required CodedDouble EstablishmentTotalPupils { get; set; }
+    public required string? EstablishmentTotalPupils { get; set; }
     public required CodedDouble EnglandTotalPupils { get; set; }
 
     public required CodedDouble EstablishmentTotalSENPupils { get; set; }
@@ -31,6 +31,7 @@ public record AdditionalMeasuresModel
     public required CodedDouble EnglandTotalEHCPPupils { get; set; }
 
     public static AdditionalMeasuresModel Map(
+        EstablishmentServiceModel establishmentServiceModel,
         EstablishmentPerformance performanceMeasures,
         LAPerformance laPeformanceMeasures,
         EnglandPerformance englandPerformanceMeasures)
@@ -46,8 +47,8 @@ public record AdditionalMeasuresModel
             EnglandDisadvantagedPupilsEndOfKS4 = englandPerformanceMeasures.Pup_Dis_Eng_Current_Num_Coded,
             LocalAuthorityNonDisadvantagedPupilsEndOfKS4 = laPeformanceMeasures.Pup_NDi_LA_Current_Num_Coded,
             EnglandNonDisadvantagedPupilsEndOfKS4 = englandPerformanceMeasures.Pup_NDi_Eng_Current_Num_Coded,
-            EstablishmentTotalPupils = performanceMeasures.Pup_Tot_Est_Current_Num_Coded,
-            EnglandTotalPupils = englandPerformanceMeasures.Pup_Tot_Eng_Current_Num_Coded,
+            EstablishmentTotalPupils = establishmentServiceModel.TotalPupils,
+            EnglandTotalPupils = CodedDouble.Empty,              // This is to be fixed as part of ticket 8ci
             EstablishmentTotalSENPupils = performanceMeasures.PupSEN_Est_Current_Num_Coded,
             EstablishmentTotalEHCPPupils = performanceMeasures.PupEHCP_Est_Current_Num_Coded,
             EnglandTotalSENPupils = englandPerformanceMeasures.PupSEN_Tot_Eng_Current_Pct_Coded,
