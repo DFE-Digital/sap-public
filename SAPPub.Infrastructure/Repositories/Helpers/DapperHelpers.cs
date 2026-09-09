@@ -124,7 +124,10 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "More1FL_Tot_Est_Current_Pct_Coded",
           "ExamEntriesGSCE_Tot_Est_Current_Num_Coded",
           "ExamEntriesKS4_Tot_Est_Current_Num_Coded",
-          "Pup_Tot_Est_Current_Num_Coded"
+          "Pup_Tot_Est_Current_Num_Coded",
+          "Attainment8_Dis_Est_Current_Num_Coded",
+          "Attainment8_Dis_Est_Previous_Num_Coded",
+          "Attainment8_Dis_Est_Previous2_Num_Coded"
           """;
 
         // TODO for EnableSecondaryGrade7 feature - add these fields for the Grade 7 columns when they're available
@@ -161,7 +164,11 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "More1FL_Tot_LA_Current_Pct_Coded",
           "ExamEntriesGSCE_Tot_LA_Current_Num_Coded",
           "ExamEntriesKS4_Tot_LA_Current_Num_Coded",
-          "Pup_Tot_LA_Current_Num_Coded"
+          "Pup_Tot_LA_Current_Num_Coded",
+          "Attainment8_NDi_LA_Current_Num_Coded",
+          "Attainment8_Dis_LA_Current_Num_Coded",
+          "Attainment8_Dis_LA_Previous_Num_Coded",
+          "Attainment8_Dis_LA_Previous2_Num_Coded"
           """;
 
         private const string LADestinationsColumns = """
@@ -204,7 +211,11 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "More1FL_Tot_Eng_Current_Pct_Coded",
           "ExamEntriesGSCE_Tot_Eng_Current_Num_Coded",
           "ExamEntriesKS4_Tot_Eng_Current_Num_Coded",
-          "Pup_Tot_Eng_Current_Num_Coded"
+          "Pup_Tot_Eng_Current_Num_Coded",
+          "Attainment8_NDi_Eng_Current_Num_Coded",
+          "Attainment8_Dis_Eng_Current_Num_Coded",
+          "Attainment8_Dis_Eng_Previous_Num_Coded",
+          "Attainment8_Dis_Eng_Previous2_Num_Coded"
           """;
 
         private const string EnglandDestinationsColumns = """
@@ -327,7 +338,13 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "UCI_INS_TLEV_DIS_Est_Current_Num_Coded",
           "LCI_INS_TLEV_DIS_Est_Current_Num_Coded",
           "TALLPPEGRD_TLEV_DIS_Est_Current",
-          "TALLPPE_TLEV_DIS_Est_Current_Num_Coded"
+          "TALLPPE_TLEV_DIS_Est_Current_Num_Coded",
+          "TALLPUP_TECHCERT_DIS_Est_Current_Num_Coded",
+          "VA_INS_TECHCERT_DIS_Est_Current_Num_Coded",
+          "UCI_INS_TECHCERT_DIS_Est_Current_Num_Coded",
+          "LCI_INS_TECHCERT_DIS_Est_Current_Num_Coded",
+          "TALLPPEGRD_TECHCERT_DIS_Est_Current",
+          "TALLPPE_TECHCERT_DIS_Est_Current_Num_Coded"
           """;
 
         private const string KS5EnglandPerformanceColumns = """
@@ -409,7 +426,19 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "UCI_INS_TLEV_NOTDIS_Eng_Current_Num_Coded",
           "LCI_INS_TLEV_NOTDIS_Eng_Current_Num_Coded",
           "TALLPPEGRD_TLEV_NOTDIS_Eng_Current",
-          "TALLPPE_TLEV_NOTDIS_Eng_Current_Num_Coded"
+          "TALLPPE_TLEV_NOTDIS_Eng_Current_Num_Coded",
+          "TALLPUP_TECHCERT_DIS_Eng_Current_Num_Coded",
+          "VA_INS_TECHCERT_DIS_Eng_Current_Num_Coded",
+          "UCI_INS_TECHCERT_DIS_Eng_Current_Num_Coded",
+          "LCI_INS_TECHCERT_DIS_Eng_Current_Num_Coded",
+          "TALLPPEGRD_TECHCERT_DIS_Eng_Current",
+          "TALLPPE_TECHCERT_DIS_Eng_Current_Num_Coded",
+          "TALLPUP_TECHCERT_NOTDIS_Eng_Current_Num_Coded",
+          "VA_INS_TECHCERT_NOTDIS_Eng_Current_Num_Coded",
+          "UCI_INS_TECHCERT_NOTDIS_Eng_Current_Num_Coded",
+          "LCI_INS_TECHCERT_NOTDIS_Eng_Current_Num_Coded",
+          "TALLPPEGRD_TECHCERT_NOTDIS_Eng_Current",
+          "TALLPPE_TECHCERT_NOTDIS_Eng_Current_Num_Coded"
           """;
 
         private const string KS5LAPerformanceColumns = """
@@ -486,7 +515,19 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "UCI_INS_TLEV_NOTDIS_LA_Current_Num_Coded",
           "LCI_INS_TLEV_NOTDIS_LA_Current_Num_Coded",
           "TALLPPEGRD_TLEV_NOTDIS_LA_Current",
-          "TALLPPE_TLEV_NOTDIS_LA_Current_Num_Coded"
+          "TALLPPE_TLEV_NOTDIS_LA_Current_Num_Coded",
+          "TALLPUP_TECHCERT_DIS_LA_Current_Num_Coded",
+          "VA_INS_TECHCERT_DIS_LA_Current_Num_Coded",
+          "UCI_INS_TECHCERT_DIS_LA_Current_Num_Coded",
+          "LCI_INS_TECHCERT_DIS_LA_Current_Num_Coded",
+          "TALLPPEGRD_TECHCERT_DIS_LA_Current",
+          "TALLPPE_TECHCERT_DIS_LA_Current_Num_Coded",
+          "TALLPUP_TECHCERT_NOTDIS_LA_Current_Num_Coded",
+          "VA_INS_TECHCERT_NOTDIS_LA_Current_Num_Coded",
+          "UCI_INS_TECHCERT_NOTDIS_LA_Current_Num_Coded",
+          "LCI_INS_TECHCERT_NOTDIS_LA_Current_Num_Coded",
+          "TALLPPEGRD_TECHCERT_NOTDIS_LA_Current",
+          "TALLPPE_TECHCERT_NOTDIS_LA_Current_Num_Coded"
           """;
 
         private const string GatewayLAColumns = """

@@ -24,4 +24,8 @@ public class Level2QualificationModel
     public required ProgressScoreModel ProgressScore { get; init; }
 
     public required AverageResultModel AverageResult { get; init; }
+
+    public required PerformanceSummaryModel DisadvantagedStudentsData { get; init; }
+
+    public required PerformanceSummaryModel NonDisadvantagedStudentsData { get; init; }
 }

@@ -1,4 +1,5 @@
 ﻿using Moq;
+using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.Performance;
 using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.Interfaces.Repositories.Performance;
@@ -76,6 +77,43 @@ public class Level2QualificationsServiceTests
         Assert.Null(result.AverageResult.LocalAuthority.Points.Value);
         Assert.Null(result.AverageResult.England.Grade.Value);
         Assert.Null(result.AverageResult.England.Points.Value);
+
+        Assert.Null(result.DisadvantagedStudentsData.Establishment!.NumberOfStudents.Value);
+        Assert.Null(result.DisadvantagedStudentsData.Establishment!.ProgressScore.Value);
+        Assert.Null(result.DisadvantagedStudentsData.Establishment!.ConfidenceLevelUpper.Value);
+        Assert.Null(result.DisadvantagedStudentsData.Establishment!.ConfidenceLevelLower.Value);
+        Assert.Null(result.DisadvantagedStudentsData.Establishment!.Result.Grade.Value);
+        Assert.Null(result.DisadvantagedStudentsData.Establishment!.Result.Points.Value);
+
+        Assert.Null(result.DisadvantagedStudentsData.LocalAuthority.NumberOfStudents.Value);
+        Assert.Null(result.DisadvantagedStudentsData.LocalAuthority.ProgressScore.Value);
+        Assert.Null(result.DisadvantagedStudentsData.LocalAuthority.ConfidenceLevelUpper.Value);
+        Assert.Null(result.DisadvantagedStudentsData.LocalAuthority.ConfidenceLevelLower.Value);
+        Assert.Null(result.DisadvantagedStudentsData.LocalAuthority.Result.Grade.Value);
+        Assert.Null(result.DisadvantagedStudentsData.LocalAuthority.Result.Points.Value);
+
+        Assert.Null(result.DisadvantagedStudentsData.England.NumberOfStudents.Value);
+        Assert.Null(result.DisadvantagedStudentsData.England.ProgressScore.Value);
+        Assert.Null(result.DisadvantagedStudentsData.England.ConfidenceLevelUpper.Value);
+        Assert.Null(result.DisadvantagedStudentsData.England.ConfidenceLevelLower.Value);
+        Assert.Null(result.DisadvantagedStudentsData.England.Result.Grade.Value);
+        Assert.Null(result.DisadvantagedStudentsData.England.Result.Points.Value);
+
+        Assert.Null(result.NonDisadvantagedStudentsData.Establishment);
+
+        Assert.Null(result.NonDisadvantagedStudentsData.LocalAuthority.NumberOfStudents.Value);
+        Assert.Null(result.NonDisadvantagedStudentsData.LocalAuthority.ProgressScore.Value);
+        Assert.Null(result.NonDisadvantagedStudentsData.LocalAuthority.ConfidenceLevelUpper.Value);
+        Assert.Null(result.NonDisadvantagedStudentsData.LocalAuthority.ConfidenceLevelLower.Value);
+        Assert.Null(result.NonDisadvantagedStudentsData.LocalAuthority.Result.Grade.Value);
+        Assert.Null(result.NonDisadvantagedStudentsData.LocalAuthority.Result.Points.Value);
+
+        Assert.Null(result.NonDisadvantagedStudentsData.England.NumberOfStudents.Value);
+        Assert.Null(result.NonDisadvantagedStudentsData.England.ProgressScore.Value);
+        Assert.Null(result.NonDisadvantagedStudentsData.England.ConfidenceLevelUpper.Value);
+        Assert.Null(result.NonDisadvantagedStudentsData.England.ConfidenceLevelLower.Value);
+        Assert.Null(result.NonDisadvantagedStudentsData.England.Result.Grade.Value);
+        Assert.Null(result.NonDisadvantagedStudentsData.England.Result.Points.Value);
     }
 
     [Theory]
@@ -97,6 +135,13 @@ public class Level2QualificationsServiceTests
             LCI_INS_TECHCERT_Est_Current_Num_Coded = new CodedDouble(0.3, string.Empty, string.Empty),
             TALLPPE_TECHCERT_Est_Current_Num_Coded = new CodedDouble(15.23, string.Empty, string.Empty),
             TALLPPEGRD_TECHCERT_Est_Current = new CodedString("A", string.Empty, string.Empty),
+            // Tech certs - Disadvantaged
+            TALLPUP_TECHCERT_DIS_Est_Current_Num_Coded = new CodedDouble(310, string.Empty, string.Empty),
+            VA_INS_TECHCERT_DIS_Est_Current_Num_Coded = new CodedDouble(59.58, string.Empty, string.Empty),
+            UCI_INS_TECHCERT_DIS_Est_Current_Num_Coded = new CodedDouble(2, string.Empty, string.Empty),
+            LCI_INS_TECHCERT_DIS_Est_Current_Num_Coded = new CodedDouble(0.5, string.Empty, string.Empty),
+            TALLPPE_TECHCERT_DIS_Est_Current_Num_Coded = new CodedDouble(13.79, string.Empty, string.Empty),
+            TALLPPEGRD_TECHCERT_DIS_Est_Current = new CodedString("B", string.Empty, string.Empty),
         };
 
         var englandPerformance = new KS5EnglandPerformance
@@ -105,12 +150,44 @@ public class Level2QualificationsServiceTests
             VA_INS_TECHCERT_Eng_Current_Num_Coded = new CodedDouble(59.56, string.Empty, string.Empty),
             TALLPPE_TECHCERT_Eng_Current_Num_Coded = new CodedDouble(35.11, string.Empty, string.Empty),
             TALLPPEGRD_TECHCERT_Eng_Current = new CodedString("C", string.Empty, string.Empty),
+
+            // Tech certs - Disadvantaged
+            TALLPUP_TECHCERT_DIS_Eng_Current_Num_Coded = new CodedDouble(150, string.Empty, string.Empty),
+            VA_INS_TECHCERT_DIS_Eng_Current_Num_Coded = new CodedDouble(51.47, string.Empty, string.Empty),
+            UCI_INS_TECHCERT_DIS_Eng_Current_Num_Coded = new CodedDouble(2, string.Empty, string.Empty),
+            LCI_INS_TECHCERT_DIS_Eng_Current_Num_Coded = new CodedDouble(1, string.Empty, string.Empty),
+            TALLPPE_TECHCERT_DIS_Eng_Current_Num_Coded = new CodedDouble(21.75, string.Empty, string.Empty),
+            TALLPPEGRD_TECHCERT_DIS_Eng_Current = new CodedString("C", string.Empty, string.Empty),
+
+            // Tech certs - Non-Disadvantaged
+            TALLPUP_TECHCERT_NOTDIS_Eng_Current_Num_Coded = new CodedDouble(220, string.Empty, string.Empty),
+            VA_INS_TECHCERT_NOTDIS_Eng_Current_Num_Coded = new CodedDouble(83.79, string.Empty, string.Empty),
+            UCI_INS_TECHCERT_NOTDIS_Eng_Current_Num_Coded = new CodedDouble(4, string.Empty, string.Empty),
+            LCI_INS_TECHCERT_NOTDIS_Eng_Current_Num_Coded = new CodedDouble(1, string.Empty, string.Empty),
+            TALLPPE_TECHCERT_NOTDIS_Eng_Current_Num_Coded = new CodedDouble(37.53, string.Empty, string.Empty),
+            TALLPPEGRD_TECHCERT_NOTDIS_Eng_Current = new CodedString("A", string.Empty, string.Empty),
         };
 
         var laPerformance = new KS5LAPerformance
         {
             TALLPPE_TECHCERT_LA_Current_Num_Coded = new CodedDouble(21.85, string.Empty, string.Empty),
             TALLPPEGRD_TECHCERT_LA_Current = new CodedString("C", string.Empty, string.Empty),
+
+            // Tech certs - Disadvantaged
+            TALLPUP_TECHCERT_DIS_LA_Current_Num_Coded = new CodedDouble(315, string.Empty, string.Empty),
+            VA_INS_TECHCERT_DIS_LA_Current_Num_Coded = new CodedDouble(35.13, string.Empty, string.Empty),
+            UCI_INS_TECHCERT_DIS_LA_Current_Num_Coded = new CodedDouble(2, string.Empty, string.Empty),
+            LCI_INS_TECHCERT_DIS_LA_Current_Num_Coded = new CodedDouble(1, string.Empty, string.Empty),
+            TALLPPE_TECHCERT_DIS_LA_Current_Num_Coded = new CodedDouble(14.78, string.Empty, string.Empty),
+            TALLPPEGRD_TECHCERT_DIS_LA_Current = new CodedString("C", string.Empty, string.Empty),
+
+            // Tech certs - Non-Disadvantaged
+            TALLPUP_TECHCERT_NOTDIS_LA_Current_Num_Coded = new CodedDouble(195, string.Empty, string.Empty),
+            VA_INS_TECHCERT_NOTDIS_LA_Current_Num_Coded = new CodedDouble(89.41, string.Empty, string.Empty),
+            UCI_INS_TECHCERT_NOTDIS_LA_Current_Num_Coded = new CodedDouble(4, string.Empty, string.Empty),
+            LCI_INS_TECHCERT_NOTDIS_LA_Current_Num_Coded = new CodedDouble(2, string.Empty, string.Empty),
+            TALLPPE_TECHCERT_NOTDIS_LA_Current_Num_Coded = new CodedDouble(13.45, string.Empty, string.Empty),
+            TALLPPEGRD_TECHCERT_NOTDIS_LA_Current = new CodedString("A", string.Empty, string.Empty),
         };
 
         _mockKs5PerformanceRepository
@@ -149,6 +226,46 @@ public class Level2QualificationsServiceTests
 
             Assert.Equal(laPerformance.TALLPPE_TECHCERT_LA_Current_Num_Coded, result.AverageResult.LocalAuthority.Points);
             Assert.Equal(laPerformance.TALLPPEGRD_TECHCERT_LA_Current, result.AverageResult.LocalAuthority.Grade);
+
+            // Disadvantaged students - Establishment
+            Assert.Equal(establishmentPerformance.TALLPUP_TECHCERT_DIS_Est_Current_Num_Coded, result.DisadvantagedStudentsData.Establishment!.NumberOfStudents);
+            Assert.Equal(establishmentPerformance.VA_INS_TECHCERT_DIS_Est_Current_Num_Coded, result.DisadvantagedStudentsData.Establishment!.ProgressScore);
+            Assert.Equal(establishmentPerformance.UCI_INS_TECHCERT_DIS_Est_Current_Num_Coded, result.DisadvantagedStudentsData.Establishment!.ConfidenceLevelUpper);
+            Assert.Equal(establishmentPerformance.LCI_INS_TECHCERT_DIS_Est_Current_Num_Coded, result.DisadvantagedStudentsData.Establishment!.ConfidenceLevelLower);
+            Assert.Equal(establishmentPerformance.TALLPPE_TECHCERT_DIS_Est_Current_Num_Coded, result.DisadvantagedStudentsData.Establishment!.Result.Points);
+            Assert.Equal(establishmentPerformance.TALLPPEGRD_TECHCERT_DIS_Est_Current, result.DisadvantagedStudentsData.Establishment!.Result.Grade);
+
+            // Disadvantaged students - LocalAuthority
+            Assert.Equal(laPerformance.TALLPUP_TECHCERT_DIS_LA_Current_Num_Coded, result.DisadvantagedStudentsData.LocalAuthority.NumberOfStudents);
+            Assert.Equal(laPerformance.VA_INS_TECHCERT_DIS_LA_Current_Num_Coded, result.DisadvantagedStudentsData.LocalAuthority.ProgressScore);
+            Assert.Equal(laPerformance.UCI_INS_TECHCERT_DIS_LA_Current_Num_Coded, result.DisadvantagedStudentsData.LocalAuthority.ConfidenceLevelUpper);
+            Assert.Equal(laPerformance.LCI_INS_TECHCERT_DIS_LA_Current_Num_Coded, result.DisadvantagedStudentsData.LocalAuthority.ConfidenceLevelLower);
+            Assert.Equal(laPerformance.TALLPPE_TECHCERT_DIS_LA_Current_Num_Coded, result.DisadvantagedStudentsData.LocalAuthority.Result.Points);
+            Assert.Equal(laPerformance.TALLPPEGRD_TECHCERT_DIS_LA_Current, result.DisadvantagedStudentsData.LocalAuthority.Result.Grade);
+
+            // Disadvantaged students - England
+            Assert.Equal(englandPerformance.TALLPUP_TECHCERT_DIS_Eng_Current_Num_Coded, result.DisadvantagedStudentsData.England.NumberOfStudents);
+            Assert.Equal(englandPerformance.VA_INS_TECHCERT_DIS_Eng_Current_Num_Coded, result.DisadvantagedStudentsData.England.ProgressScore);
+            Assert.Equal(englandPerformance.UCI_INS_TECHCERT_DIS_Eng_Current_Num_Coded, result.DisadvantagedStudentsData.England.ConfidenceLevelUpper);
+            Assert.Equal(englandPerformance.LCI_INS_TECHCERT_DIS_Eng_Current_Num_Coded, result.DisadvantagedStudentsData.England.ConfidenceLevelLower);
+            Assert.Equal(englandPerformance.TALLPPE_TECHCERT_DIS_Eng_Current_Num_Coded, result.DisadvantagedStudentsData.England.Result.Points);
+            Assert.Equal(englandPerformance.TALLPPEGRD_TECHCERT_DIS_Eng_Current, result.DisadvantagedStudentsData.England.Result.Grade);
+
+            // NonDisadvantaged students - LocalAuthority
+            Assert.Equal(laPerformance.TALLPUP_TECHCERT_NOTDIS_LA_Current_Num_Coded, result.NonDisadvantagedStudentsData.LocalAuthority.NumberOfStudents);
+            Assert.Equal(laPerformance.VA_INS_TECHCERT_NOTDIS_LA_Current_Num_Coded, result.NonDisadvantagedStudentsData.LocalAuthority.ProgressScore);
+            Assert.Equal(laPerformance.UCI_INS_TECHCERT_NOTDIS_LA_Current_Num_Coded, result.NonDisadvantagedStudentsData.LocalAuthority.ConfidenceLevelUpper);
+            Assert.Equal(laPerformance.LCI_INS_TECHCERT_NOTDIS_LA_Current_Num_Coded, result.NonDisadvantagedStudentsData.LocalAuthority.ConfidenceLevelLower);
+            Assert.Equal(laPerformance.TALLPPE_TECHCERT_NOTDIS_LA_Current_Num_Coded, result.NonDisadvantagedStudentsData.LocalAuthority.Result.Points);
+            Assert.Equal(laPerformance.TALLPPEGRD_TECHCERT_NOTDIS_LA_Current, result.NonDisadvantagedStudentsData.LocalAuthority.Result.Grade);
+
+            // NonDisadvantaged students - England
+            Assert.Equal(englandPerformance.TALLPUP_TECHCERT_NOTDIS_Eng_Current_Num_Coded, result.NonDisadvantagedStudentsData.England.NumberOfStudents);
+            Assert.Equal(englandPerformance.VA_INS_TECHCERT_NOTDIS_Eng_Current_Num_Coded, result.NonDisadvantagedStudentsData.England.ProgressScore);
+            Assert.Equal(englandPerformance.UCI_INS_TECHCERT_NOTDIS_Eng_Current_Num_Coded, result.NonDisadvantagedStudentsData.England.ConfidenceLevelUpper);
+            Assert.Equal(englandPerformance.LCI_INS_TECHCERT_NOTDIS_Eng_Current_Num_Coded, result.NonDisadvantagedStudentsData.England.ConfidenceLevelLower);
+            Assert.Equal(englandPerformance.TALLPPE_TECHCERT_NOTDIS_Eng_Current_Num_Coded, result.NonDisadvantagedStudentsData.England.Result.Points);
+            Assert.Equal(englandPerformance.TALLPPEGRD_TECHCERT_NOTDIS_Eng_Current, result.NonDisadvantagedStudentsData.England.Result.Grade);
         }
     }
 }

@@ -73,7 +73,7 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
     }
 
     [Fact]
-    public async Task AcademicPerformanceAttainmentAndProgressPage_Displays_AcademicYear_Selector()
+    public async Task AcademicPerformanceAttainmentAndProgressPage_DisplaysExpectedSections()
     {
         // Arrange
         await Page.GotoAsync(_pageUrl);
@@ -84,14 +84,33 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
 
         var attainment8EstablishmentCard = Page.GetByTestId("attainment8-establishment-card");
         var attainment8LocalAuthorityAndNationalCard = Page.GetByTestId("attainment8-localauthority-and-national-card");
-        var attainmnet8NoEstablishmentDataCard = Page.GetByTestId("attainment8-no-establishment-data-card");
+        var attainment8NoEstablishmentDataCard = Page.GetByTestId("attainment8-no-establishment-data-card");
+        var otherPupilCharacteristicsAccordion = Page.Locator("#other-pupil-characteristics-accordion");
+
+        await otherPupilCharacteristicsAccordion.ClickAsync();
+
+        var nonDisadvantagedAdditionalInfoDetails = Page.Locator("#non-disadvantaged-details");
+        await nonDisadvantagedAdditionalInfoDetails.ClickAsync();
+        var nonDisadvantagedTableCurrentYear = Page.Locator("#breakdown-non-disadvantaged-table");
+
+        var disadvantagedAdditionalInfoDetails = Page.Locator("#disadvantaged-previous-years-details");
+        await disadvantagedAdditionalInfoDetails.ClickAsync();
+
+        var disadvantagedTableCurrentYear = Page.Locator("#breakdown-disadvantaged-table-0");
+        var disadvantagedTablePreviousYear = Page.Locator("#breakdown-disadvantaged-table-1");
+        var disadvantagedTableTwoYearsAgo = Page.Locator("#breakdown-disadvantaged-table-2");
 
         // Assert
         Assert.True(await academicYearSelector.IsVisibleAsync());
         Assert.True(await progress8CustomCard.IsVisibleAsync());
         Assert.True(await attainment8EstablishmentCard.IsVisibleAsync());
         Assert.True(await attainment8LocalAuthorityAndNationalCard.IsVisibleAsync());
-        Assert.False(await attainmnet8NoEstablishmentDataCard.IsVisibleAsync());
+        Assert.False(await attainment8NoEstablishmentDataCard.IsVisibleAsync());
+        Assert.True(await otherPupilCharacteristicsAccordion.IsVisibleAsync());
+        Assert.True(await disadvantagedTableCurrentYear.IsVisibleAsync());
+        Assert.True(await disadvantagedTablePreviousYear.IsVisibleAsync());
+        Assert.True(await disadvantagedTableTwoYearsAgo.IsVisibleAsync());
+        Assert.True(await nonDisadvantagedTableCurrentYear.IsVisibleAsync());
     }
 
     [Fact]
