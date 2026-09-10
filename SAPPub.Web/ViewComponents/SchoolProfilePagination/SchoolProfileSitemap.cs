@@ -10,7 +10,7 @@ namespace SAPPub.Web.ViewComponents.SchoolProfilePagination;
 public static class SchoolProfileSitemap
 {
     private static string AboutSchoolLabel(PaginationContext ctx) =>
-        ctx.IsKS5 ? PageTitleConstants.KS5SchoolPageTitles.About : PageTitleConstants.PageTitles.About;
+        ctx.IsExclusivelyKS5 ? PageTitleConstants.KS5SchoolPageTitles.About : PageTitleConstants.PageTitles.About;
 
     private static bool IsPrimaryAvailable(PaginationContext ctx) => ctx.IsPrimaryEnabled && ctx.IsKS2;
 
