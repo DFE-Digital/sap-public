@@ -63,7 +63,7 @@ public class ProfilePaginationTests(WebApplicationSetupFixture fixture) : BasePa
             "130499",
             [
                 PageTitles.Overview,
-                PageTitles.About,
+                KS5SchoolPageTitles.About,
                 KS5SchoolPageTitles.Level3Qualifications,
                 KS5SchoolPageTitles.Level2Qualifications,
                 KS5SchoolPageTitles.EnglishAndMaths,
