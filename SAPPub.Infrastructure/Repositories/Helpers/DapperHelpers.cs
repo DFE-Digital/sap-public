@@ -76,6 +76,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
         private const string EstablishmentDestinationsColumns = """
           "Id",
           "AllDest_Tot_Est_Current_Pct_Coded",
+          "AllDest_Dis_Est_Current_Pct_Coded",          
           "Education_Tot_Est_Current_Pct_Coded",
           "Employment_Tot_Est_Current_Pct_Coded",
           "Apprentice_Tot_Est_Current_Pct_Coded",
@@ -174,6 +175,8 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
         private const string LADestinationsColumns = """
           "Id",
           "AllDest_Tot_LA_Current_Pct_Coded",
+          "AllDest_Dis_LA_Current_Pct_Coded",    
+          "AllDest_Ndis_LA_Current_Pct_Coded", 
           "Education_Tot_LA_Current_Pct_Coded",
           "Employment_Tot_LA_Current_Pct_Coded",
           "Apprentice_Tot_LA_Current_Pct_Coded",
@@ -221,6 +224,8 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
         private const string EnglandDestinationsColumns = """
           "Id",
           "AllDest_Tot_Eng_Current_Pct_Coded",
+          "AllDest_Dis_Eng_Current_Pct_Coded",   
+          "AllDest_Ndis_Eng_Current_Pct_Coded", 
           "Education_Tot_Eng_Current_Pct_Coded",
           "Employment_Tot_Eng_Current_Pct_Coded",
           "Apprentice_Tot_Eng_Current_Pct_Coded",

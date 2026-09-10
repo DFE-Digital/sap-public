@@ -19,6 +19,24 @@ public class KS4EnglandDestinations
     public string? AllDest_Tot_Eng_Current_Pct_Reason { get; set; }
 
     //
+    // All Disadvantaged Destinations Total filtered by England for Current year
+    //
+    public CodedDouble AllDest_Dis_Eng_Current_Pct_Coded { get; set; } = new();
+    [IgnoreDataMember]
+    public double? AllDest_Dis_Eng_Current_Pct { get; set; }
+    [IgnoreDataMember]
+    public string? AllDest_Dis_Eng_Current_Pct_Reason { get; set; }
+
+    //
+    // All Non-disadvantaged Destinations Total filtered by England for Current year
+    //
+    public CodedDouble AllDest_Ndis_Eng_Current_Pct_Coded { get; set; } = new();
+    [IgnoreDataMember]
+    public double? AllDest_Ndis_Eng_Current_Pct { get; set; }
+    [IgnoreDataMember]
+    public string? AllDest_Ndis_Eng_Current_Pct_Reason { get; set; }
+
+    //
     // All Education Total filtered by England for Current year
     //
     public CodedDouble Education_Tot_Eng_Current_Pct_Coded { get; set; } = new();

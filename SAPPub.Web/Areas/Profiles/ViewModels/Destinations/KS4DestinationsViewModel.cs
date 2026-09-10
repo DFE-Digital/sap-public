@@ -7,6 +7,8 @@ namespace SAPPub.Web.Areas.Profiles.ViewModels.Destinations;
 public class KS4DestinationsViewModel : ProfileBaseViewModel
 {
     public required DataViewModel AllDestinationsData { get; set; }
+    public required DataViewModel AllDestinationsDisadvantagedData { get; set; }
+    public required DataViewModel AllDestinationsNonDisadvantagedData { get; set; }
 
     public required DataOverTimeViewModel AllDestinationsOverTimeData { get; set; }
 
@@ -35,6 +37,17 @@ public class KS4DestinationsViewModel : ProfileBaseViewModel
             AllDestinationsData = new DataViewModel    {
                 Labels = ["School", laAverageLabel, "England average"],
                 Data = [destinationsDetails.SchoolAll.CurrentYear, destinationsDetails.LocalAuthorityAll.CurrentYear, destinationsDetails.EnglandAll.CurrentYear],
+            },
+            AllDestinationsDisadvantagedData = new DataViewModel
+            {
+                Labels = ["School", laAverageLabel, "England average"],
+                Data = [destinationsDetails.SchoolDisadvantagedAll.CurrentYear, destinationsDetails.LocalAuthorityDisadvantagedAll.CurrentYear, destinationsDetails.EnglandDisadvantagedAll.CurrentYear],
+            },
+            AllDestinationsNonDisadvantagedData = new DataViewModel
+            {
+                Labels = [laAverageLabel, "England average"],
+                Data = [destinationsDetails.LocalAuthorityNonDisadvantagedAll.CurrentYear, destinationsDetails.EnglandNonDisadvantagedAll.CurrentYear],
+
             },
             AllDestinationsOverTimeData = new DataOverTimeViewModel
             {

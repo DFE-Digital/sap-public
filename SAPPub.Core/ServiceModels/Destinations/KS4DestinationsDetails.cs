@@ -20,6 +20,15 @@ public record KS4DestinationsDetails
 
     public required RelativeYearValues<double?> EnglandAll { get; init; }
 
+    public required RelativeYearValues<double?> SchoolDisadvantagedAll { get; init; }
+
+    public required RelativeYearValues<double?> LocalAuthorityDisadvantagedAll { get; init; }
+
+    public required RelativeYearValues<double?> EnglandDisadvantagedAll { get; init; }
+    public required RelativeYearValues<double?> LocalAuthorityNonDisadvantagedAll { get; init; }
+
+    public required RelativeYearValues<double?> EnglandNonDisadvantagedAll { get; init; }
+
     public required RelativeYearValues<double?> SchoolEducation { get; init; }
 
     public required RelativeYearValues<double?> LocalAuthorityEducation { get; init; }

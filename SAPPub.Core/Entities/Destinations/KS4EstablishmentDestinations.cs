@@ -19,6 +19,15 @@ public class KS4EstablishmentDestinations
     public string AllDest_Tot_Est_Current_Pct_Reason { get; set; } = string.Empty;
 
     /// <summary>
+    /// All Disadvantaged Destinations Total filtered by Establishment for Current year
+    /// </summary>
+    public CodedDouble AllDest_Dis_Est_Current_Pct_Coded { get; set; }
+    [IgnoreDataMember]
+    public double? AllDest_Dis_Est_Current_Pct { get; set; }
+    [IgnoreDataMember]
+    public string AllDest_Dis_Est_Current_Pct_Reason { get; set; } = string.Empty;
+
+    /// <summary>
     /// All Education Total filtered by Establishment for Current year
     /// </summary>
     public CodedDouble Education_Tot_Est_Current_Pct_Coded { get; set; }

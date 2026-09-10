@@ -63,7 +63,26 @@ public class DestinationsService(
                 PreviousYear = englandDestinations.AllDest_Tot_Eng_Previous_Pct,
                 TwoYearsAgo = englandDestinations.AllDest_Tot_Eng_Previous2_Pct,
             },
-
+            SchoolDisadvantagedAll = new RelativeYearValues<double?>
+            {
+                CurrentYear = establishmentDestinations.AllDest_Dis_Est_Current_Pct
+            },
+            LocalAuthorityDisadvantagedAll = new RelativeYearValues<double?>
+            {
+                CurrentYear = lADestinations.AllDest_Dis_LA_Current_Pct
+            },
+            EnglandDisadvantagedAll = new RelativeYearValues<double?>
+            {
+                CurrentYear = englandDestinations.AllDest_Dis_Eng_Current_Pct
+            },
+            LocalAuthorityNonDisadvantagedAll = new RelativeYearValues<double?>
+            {
+                CurrentYear = lADestinations.AllDest_Ndis_LA_Current_Pct
+            },
+            EnglandNonDisadvantagedAll = new RelativeYearValues<double?>
+            {
+                CurrentYear = englandDestinations.AllDest_Ndis_Eng_Current_Pct
+            },
             SchoolEducation = new RelativeYearValues<double?>
             {
                 CurrentYear = establishmentDestinations.Education_Tot_Est_Current_Pct
@@ -177,6 +196,13 @@ public class DestinationsService(
             SchoolAll = EmptyYears(),
             LocalAuthorityAll = EmptyYears(),
             EnglandAll = EmptyYears(),
+
+            SchoolDisadvantagedAll = EmptyYears(),
+            LocalAuthorityDisadvantagedAll = EmptyYears(),
+            EnglandDisadvantagedAll = EmptyYears(),
+
+            LocalAuthorityNonDisadvantagedAll = EmptyYears(),
+            EnglandNonDisadvantagedAll = EmptyYears(),
 
             SchoolEducation = EmptyYears(),
             LocalAuthorityEducation = EmptyYears(),

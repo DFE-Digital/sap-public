@@ -19,6 +19,25 @@ public class KS4LADestinations
     public string AllDest_Tot_LA_Current_Pct_Reason { get; set; } = string.Empty;
 
     /// <summary>
+    /// All Disadvantaged Destinations Total filtered by LA for Current year
+    /// </summary>
+    public CodedDouble AllDest_Dis_LA_Current_Pct_Coded { get; set; }
+    [IgnoreDataMember]
+    public double? AllDest_Dis_LA_Current_Pct { get; set; }
+    [IgnoreDataMember]
+    public string AllDest_Dis_LA_Current_Pct_Reason { get; set; } = string.Empty;
+
+
+    /// <summary>
+    /// All Non-disadvantaged Destinations Total filtered by LA for Current year
+    /// </summary>
+    public CodedDouble AllDest_Ndis_LA_Current_Pct_Coded { get; set; }
+    [IgnoreDataMember]
+    public double? AllDest_Ndis_LA_Current_Pct { get; set; }
+    [IgnoreDataMember]
+    public string AllDest_Ndis_LA_Current_Pct_Reason { get; set; } = string.Empty;
+
+    /// <summary>
     /// All Education Total filtered by LA for Current year
     /// </summary>
     public CodedDouble Education_Tot_LA_Current_Pct_Coded { get; set; }

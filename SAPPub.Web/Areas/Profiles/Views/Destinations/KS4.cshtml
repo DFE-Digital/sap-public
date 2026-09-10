@@ -226,6 +226,65 @@
             </div>
         </div> *@
 
+        <govuk-accordion heading-level="3" id="disadvantaged-destinations-accordion" hide-all-sections-text="Hide all sections" show-all-sections-text="Show all sections" hide-section-text="Hide" show-section-text="Show more">
+            <govuk-accordion-item>
+                <govuk-accordion-item-heading>Staying in education, employment and apprenticeships for disadvantaged pupils</govuk-accordion-item-heading>
+                <govuk-accordion-item-summary></govuk-accordion-item-summary>
+                <govuk-accordion-item-content>
+
+                    @await Html.PartialAsync("_DisadvantagedPupils")
+
+                    <table id="all-dest-disadvantaged-current-year-table" class="govuk-table">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header govuk-!-width-one-third">Pupil group (Disadvantaged)</th>
+                                <th scope="col" class="govuk-table__header">In education, apprenticeships or employed for 6 months after KS4 (2023 leavers)</th>                                                                        
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            @foreach (var label in Model.AllDestinationsDisadvantagedData.Labels.Select((value, i) => (value, i)))
+                            {
+                                <tr class="govuk-table__row">
+                                    <th scope="row" class="govuk-table__header">@label.value</th>
+                                    <td class="govuk-table__cell">@Model.AllDestinationsDisadvantagedData.Data[label.i]%</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <details class="govuk-details" id="details-all-dest-non-disadvantaged">
+                        <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text">
+                                Compare with non-disadvantaged pupils
+                            </span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            <h4 class="govuk-heading-m">Non-disadvantaged pupils</h4>
+                            <table id="all-dest-disadvantaged-current-year-table" class="govuk-table">
+                                <thead class="govuk-table__head">
+                                    <tr class="govuk-table__row">
+                                        <th scope="col" class="govuk-table__header govuk-!-width-one-third">Pupil group (Non-Disadvantaged)</th>
+                                        <th scope="col" class="govuk-table__header">In education, apprenticeships or employed for 6 months after KS4 (2023 leavers)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="govuk-table__body">
+                                    @foreach (var label in Model.AllDestinationsNonDisadvantagedData.Labels.Select((value, i) => (value, i)))
+                                    {
+                                        <tr class="govuk-table__row">
+                                            <th scope="row" class="govuk-table__header">@label.value</th>
+                                            <td class="govuk-table__cell">@Model.AllDestinationsNonDisadvantagedData.Data[label.i]%</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </details>
+
+                   
+                </govuk-accordion-item-content>
+            </govuk-accordion-item>
+        </govuk-accordion>
+
         @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.SecondaryDestinations))
 
     </div>
