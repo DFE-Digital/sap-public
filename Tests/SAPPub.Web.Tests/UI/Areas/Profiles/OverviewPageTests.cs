@@ -2197,15 +2197,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
             .ToBeVisibleAsync();
 
         await Expect(
-            page.Locator("#overview-destinations-current-year-table"))
-            .ToBeVisibleAsync();
-
-        await Expect(
             page.Locator("#overview-english-maths-current-year-show-btn"))
-            .Not.ToBeVisibleAsync();
-
-        await Expect(
-            page.Locator("#overview-destinations-current-year-show-btn"))
             .Not.ToBeVisibleAsync();
 
         await Expect(
@@ -2213,8 +2205,77 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
             .Not.ToBeVisibleAsync();
 
         await Expect(
+            page.Locator("#overview-destinations-current-year-table"))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            page.Locator("#overview-destinations-current-year-show-btn"))
+            .Not.ToBeVisibleAsync();
+
+        await Expect(
             page.Locator("#overview-destinations-current-year-chart-container"))
             .Not.ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_PrimaryExpectedStandard_WithoutJavaScript_DisplaysTableOnly()
+    {
+        await Page.GotoAsync(PrimaryOnlyOverviewUrl);
+
+        var currentUri = new Uri(Page.Url);
+        var baseUrl = $"{currentUri.Scheme}://{currentUri.Authority}";
+
+        await using var context =
+            await Browser.NewContextAsync(
+                new BrowserNewContextOptions
+                {
+                    JavaScriptEnabled = false,
+                    IgnoreHTTPSErrors = true,
+                    BaseURL = baseUrl
+                });
+
+        var page = await context.NewPageAsync();
+
+        await page.GotoAsync(PrimaryOnlyOverviewUrl);
+
+        var table =
+            page.Locator(
+                "#overview-primary-expected-standard-current-year-table");
+
+        var button =
+            page.Locator(
+                "#overview-primary-expected-standard-current-year-show-btn");
+
+        var chart =
+            page.Locator(
+                "#overview-primary-expected-standard-current-year-chart-container");
+
+        await Expect(table)
+            .ToBeVisibleAsync();
+
+        await Expect(button)
+            .Not.ToBeVisibleAsync();
+
+        await Expect(chart)
+            .Not.ToBeVisibleAsync();
+
+        await Expect(table)
+            .ToContainTextAsync("School");
+
+        await Expect(table)
+            .ToContainTextAsync("70%");
+
+        await Expect(table)
+            .ToContainTextAsync("Birmingham average");
+
+        await Expect(table)
+            .ToContainTextAsync("73%");
+
+        await Expect(table)
+            .ToContainTextAsync("England average");
+
+        await Expect(table)
+            .ToContainTextAsync("77%");
     }
 
     [Fact]
@@ -3476,6 +3537,273 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
         await Expect(
             Page.Locator("#secondary-at-a-glance-accordion"))
             .ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_PrimaryExpectedStandardAccordion_IsSecondAndOpenByDefault()
+    {
+        await Page.GotoAsync(PrimaryOnlyOverviewUrl);
+
+        var sections =
+            Page.Locator(
+                "#primary-at-a-glance-accordion .govuk-accordion__section");
+
+        await Expect(sections)
+            .ToHaveCountAsync(2);
+
+        var secondSection = sections.Nth(1);
+
+        var button =
+            secondSection.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex(
+                        "Meeting expected standard in reading, writing and maths",
+                        RegexOptions.IgnoreCase)
+                });
+
+        await Expect(button)
+            .ToBeVisibleAsync();
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "true");
+
+        await Expect(
+            Page.Locator(
+                "#primary-at-a-glance-accordion-content-2"))
+            .ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_PrimaryExpectedStandardAccordion_CanBeClosedAndExpanded()
+    {
+        await Page.GotoAsync(PrimaryOnlyOverviewUrl);
+
+        var button =
+            Page.Locator("#primary-at-a-glance-accordion")
+                .GetByRole(
+                    AriaRole.Button,
+                    new()
+                    {
+                        NameRegex = new Regex(
+                            "Meeting expected standard in reading, writing and maths",
+                            RegexOptions.IgnoreCase)
+                    });
+
+        var content =
+            Page.Locator(
+                "#primary-at-a-glance-accordion-content-2");
+
+        await Expect(content)
+            .ToBeVisibleAsync();
+
+        await button.ClickAsync();
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "false");
+
+        await Expect(content)
+            .Not.ToBeVisibleAsync();
+
+        await button.ClickAsync();
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "true");
+
+        await Expect(content)
+            .ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_PrimaryExpectedStandardChart_ContainsExpectedData()
+    {
+        await Page.GotoAsync(PrimaryOnlyOverviewUrl);
+
+        var chart =
+            Page.Locator(
+                "#overview-primary-expected-standard-chart");
+
+        await Expect(chart)
+            .ToBeVisibleAsync();
+
+        var chartData =
+            await chart.GetAttributeAsync(
+                "data-chart");
+
+        Assert.NotNull(chartData);
+
+        Assert.Contains(
+            "\"School\"",
+            chartData);
+
+        Assert.Contains(
+            "\"Birmingham average\"",
+            chartData);
+
+        Assert.Contains(
+            "\"England average\"",
+            chartData);
+
+        Assert.Contains(
+            "70",
+            chartData);
+
+        Assert.Contains(
+            "73",
+            chartData);
+
+        Assert.Contains(
+            "77",
+            chartData);
+    }
+
+    [Fact]
+    public async Task OverviewPage_PrimaryExpectedStandardChart_CanBeShownAsTableAndChart()
+    {
+        await Page.GotoAsync(PrimaryOnlyOverviewUrl);
+
+        var button =
+            Page.Locator(
+                "#overview-primary-expected-standard-current-year-show-btn");
+
+        var chart =
+            Page.Locator(
+                "#overview-primary-expected-standard-current-year-chart-container");
+
+        var table =
+            Page.Locator(
+                "#overview-primary-expected-standard-current-year-table-container");
+
+        await Expect(button)
+            .ToHaveTextAsync(
+                "Show as a table");
+
+        await Expect(chart)
+            .ToBeVisibleAsync();
+
+        await Expect(table)
+            .Not.ToBeVisibleAsync();
+
+        await button.ClickAsync();
+
+        await Expect(button)
+            .ToHaveTextAsync(
+                "Show as a chart");
+
+        await Expect(chart)
+            .Not.ToBeVisibleAsync();
+
+        await Expect(table)
+            .ToBeVisibleAsync();
+
+        await Expect(table)
+            .ToContainTextAsync(
+                "School");
+
+        await Expect(table)
+            .ToContainTextAsync(
+                "70%");
+
+        await Expect(table)
+            .ToContainTextAsync(
+                "Birmingham average");
+
+        await Expect(table)
+            .ToContainTextAsync(
+                "73%");
+
+        await Expect(table)
+            .ToContainTextAsync(
+                "England average");
+
+        await Expect(table)
+            .ToContainTextAsync(
+                "77%");
+
+        await button.ClickAsync();
+
+        await Expect(button)
+            .ToHaveTextAsync(
+                "Show as a table");
+
+        await Expect(chart)
+            .ToBeVisibleAsync();
+
+        await Expect(table)
+            .Not.ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_PrimaryExpectedStandard_LinkNavigatesToMeetingOrExceedingStandardsPage()
+    {
+        await Page.GotoAsync(PrimaryOnlyOverviewUrl);
+
+        var link =
+            Page.Locator(
+                    "#primary-at-a-glance-accordion-content-2")
+                .GetByRole(
+                    AriaRole.Link,
+                    new()
+                    {
+                        Name =
+                            "Find out more about what pupils achieved at this school",
+                        Exact = true
+                    });
+
+        await Expect(link)
+            .ToHaveAttributeAsync(
+                "href",
+                "/school/143034/st-pauls-church-of-england-academy/primary-performance/meeting-or-exceeding-standards");
+
+        Assert.Null(
+            await link.GetAttributeAsync(
+                "target"));
+
+        await link.ClickAsync();
+
+        await Expect(Page)
+            .ToHaveURLAsync(
+                new Regex(
+                    @"/school/143034/st-pauls-church-of-england-academy/primary-performance/meeting-or-exceeding-standards(?:/current)?/?$"));
+    }
+
+    [Fact]
+    public async Task OverviewPage_PrimaryExpectedStandardAccordion_HasValidAriaControlsReference()
+    {
+        await Page.GotoAsync(
+            PrimaryOnlyOverviewUrl);
+
+        var button =
+            Page.Locator("#primary-at-a-glance-accordion")
+                .GetByRole(
+                    AriaRole.Button,
+                    new()
+                    {
+                        NameRegex =
+                            new Regex(
+                                "Meeting expected standard in reading, writing and maths",
+                                RegexOptions.IgnoreCase)
+                    });
+
+        var ariaControls =
+            await button.GetAttributeAsync(
+                "aria-controls");
+
+        Assert.Equal(
+            "primary-at-a-glance-accordion-content-2",
+            ariaControls);
+
+        await Expect(
+            Page.Locator(
+                $"#{ariaControls}"))
+            .ToHaveCountAsync(1);
     }
 
     private async Task<string> GetFailureMessageAsync(
