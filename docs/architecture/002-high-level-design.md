@@ -25,6 +25,7 @@
 11. [Assumptions and constraints](#11-assumptions-and-constraints)
 12. [References](#12-references)
 13. [Glossary](#13-glossary)
+14. [Gateway](#14-gateway)
 
 ---
 
