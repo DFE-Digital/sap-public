@@ -63,7 +63,7 @@ The aim is that both technical and non-technical readers can understand the syst
 
 ### Out of scope
 
-These are covered in the [LLD](./low-level-design.md) and the [ERD](./entity-relationship-diagram.md):
+These are covered in the [LLD](./low-level-design.md) and the [ERD](./004-entity-relationship-diagram.md):
 
 - application project structure, layers and internal components
 - class-level implementation, patterns and API signatures
@@ -165,7 +165,7 @@ Why it is done this way:
 - generating the schema deterministically from metadata makes data refreshes repeatable and auditable
 - keeping writes out of the runtime removes a class of runtime failure, and means application deployment does not depend on data refresh
 
-The view definitions, the generated model structure and the query patterns are in the [LLD](./low-level-design.md) and the [ERD](./entity-relationship-diagram.md).
+The view definitions, the generated model structure and the query patterns are in the [LLD](./low-level-design.md) and the [ERD](./004-entity-relationship-diagram.md).
 
 ### 5.2 Authoritative application data
 
