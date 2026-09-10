@@ -44,11 +44,17 @@ public class KS4Controller(IEstablishmentService establishmentService, IFeatureM
         {
             return NotFound();
         }
-        var establishmentDetails = await establishmentService.GetEstablishmentMinimumAsync(urn, ct);
+        var establishmentDetails = await establishmentService.GetEstablishmentAsync(urn, ct);
 
         var results = await attainmentAndProgressService.GetAttainmentAndProgressAsync(urn, ct);
 
-        var model = AcademicPerformanceAttainmentAndProgressViewModel.Map(establishmentDetails.LAName, results, selectedAcademicYear.Value);
+        var model = AcademicPerformanceAttainmentAndProgressViewModel.Map(
+            establishmentDetails.LAName, 
+            establishmentDetails.AgeRangeLow, 
+            establishmentDetails.TypeOfEstablishment, 
+            results, 
+            selectedAcademicYear.Value);
+       
         return View(model);
     }
 
