@@ -185,20 +185,6 @@ KS2Controller.AcademicPerformanceMeetingOrExceedingStandards(urn)
 
 Other journeys are similar, or will be being moved into this pattern. 
 
-### 6.2 Other journeys (ToDo)
-
-The remaining journeys named in the HLD are covered elsewhere in this document rather than repeated as traces:
-
-| Journey                          | Where it is described                                   |
-| -------------------------------- | -------------------------------------------------------- |
-| Search schools                   | Section 4, and the class diagram in section 18.1         |
-| View school details              | Section 8, `SchoolDetails` actions                       |
-| Compare schools                  | Section 8, comparison controllers, and section 10        |
-| Similar schools                  | Section 10, `FindPrimarySimilarSchoolsUseCase`           |
-| Authentication and access        | Section 3                                                |
-| Operational health and deployment | Section 15, and the workflow files listed in the HLD    |
-
----
 
 ## 7. C4 Level 3, component view
 
@@ -269,514 +255,813 @@ The layering matters here. Controllers never talk to a repository directly. Serv
 
 ## 8. Controllers
 
-Both phases use the same structural approach: `[Authorize]`, `[RequireSchoolPhase]`, use-case injection, `PopulateViewData()` or `SetSchoolViewData()`, and `MeasureViewModel` mapping.
 
-### Primary `SchoolController`, `[Route("school/primary/{urn}")]`
+### HomeController
 
-Additional filters: `[RequireFeatureFlag(FeatureFlags.EnablePrimarySchools)]` and `[RequireSchoolPhase(ExpectedSchoolPhase.Primary)]`.
+|Action|Route|Model returned|
+|---|---|---|
+|Index|(default)|View() — no model|
 
-| Action                   | Route suffix                | Returns                                            |
-| ------------------------ | --------------------------- | -------------------------------------------------- |
-| `Index`                  | *(none)*                    | `SchoolInfoViewModel`                              |
-| `Ks2PerformanceMeasures` | `/ks2`                      | `Ks2MeasuresPageViewModel` (6x `MeasureViewModel`) |
-| `Attendance`             | `/attendance`               | `AttendanceMeasuresPageViewModel`                  |
-| `ViewSimilarSchools`     | `/view-similar-schools`     | `PrimarySimilarSchoolsPageViewModel`               |
-| `SchoolDetails`          | `/school-details`           | via `IRequestSchoolAccessor`                       |
-| `WhatIsASimilarSchool`   | `/what-is-a-similar-school` | `SchoolInfoViewModel`                              |
+### CookiesController
 
-### Secondary `SchoolController`, `[Route("school/secondary/{urn}")]`
+|Action|Route|Model returned|
+|---|---|---|
+|Preferences (GET)|/Cookies/Preferences|CookiesViewModel (View)|
+|CookieSettings (POST)|/Cookies/CookieSettings|RedirectResult|
+|HideBanner|/Cookies/HideBanner|RedirectResult|
 
-Filter: `[RequireSchoolPhase(ExpectedSchoolPhase.Secondary)]`. No feature flag filter.
+### ErrorController
+|Action|Route|Model returned|
+|---|---|---|
+|Throw|/Error/Throw|NotFound() or throws exception|
+|HandleErrorCode|/error/{statusCode:int}|View("PageNotFound" / "ProblemWithService")|
+HealthController (API)
+|Action|Route|Model returned|
+|GetAsync (GET)|/Health|HealthCheckResponse (JSON) — Ok(...) or 500 with HealthCheckResponse|
 
-| Action                    | Route suffix                  | Returns                                      |
-| ------------------------- | ----------------------------- | -------------------------------------------- |
-| `Index`                   | *(none)*                      | `SchoolDetails` via `IRequestSchoolAccessor` |
-| `Ks4HeadlineMeasures`     | `/ks4-headline-measures`      | `Ks4HeadlineMeasuresPageViewModel`           |
-| `Ks4HeadlineMeasuresData` | `/ks4-headline-measures/data` | JSON, legacy                                 |
-| `Ks4CoreSubjects`         | `/ks4-core-subjects`          | `Ks4CoreSubjectsPageViewModel`               |
-| `Ks4CoreSubjectsData`     | `/ks4-core-subjects/data`     | JSON, legacy                                 |
-| `Attendance`              | `/attendance`                 | `SchoolAttendancePageViewModel`              |
-| `AttendanceData`          | `/attendance-data`            | JSON, legacy                                 |
-| `SchoolDetails`           | `/school-details`             | via `IRequestSchoolAccessor`                 |
-| `WhatIsASimilarSchool`    | `/what-is-a-similar-school`   | via `IRequestSchoolAccessor`                 |
 
-### Comparison controllers
+### HelpController
+|Action|Route|Model returned|
+|---|---|---|
+|TermsAndConditions|/terms-and-conditions|View() — no model|
 
-Both phases have a `SimilarSchoolsComparisonController`. Primary applies `[RequireSchoolPhase]` to both `urn` and `similarSchoolUrn`. Secondary applies it to the current school only.
+### MySchoolsController
 
-|                  | Primary                                                   | Secondary                                                                   |
-| ---------------- | --------------------------------------------------------- | --------------------------------------------------------------------------- |
-| Base route       | `/school/primary/{urn}/view-similar-schools/{similarUrn}` | `/school/secondary/{urn}/view-similar-schools/{similarUrn}`                 |
-| Comparison pages | Similarity, KS2, Attendance, SchoolDetails                | Similarity, KS4HeadlineMeasures, KS4CoreSubjects, Attendance, SchoolDetails |
-| Measure pattern  | Fully implemented                                         | Being adopted, legacy bespoke fields still in places                        |
+|Action|Route|Model returned|
+|---|---|---|
+|Index (GET)|/my-schools/view (RouteConstants.MySchoolsView)|
+MySchoolsListViewModel (View)|
+|NoSchoolsAdded (GET)|/my-schools/no-schools-added (RouteConstants.MySchoolsNoSchoolsView)|View() — no model|
+|Index (POST)|/my-schools/view (POST)|RedirectResult or View(MySchoolsListViewModel)|
+|RemoveConfirm (GET)|/my-schools/remove-confirm (RouteConstants.MySchoolsRemoveConfirm)|RemoveSchoolsConfirmationViewModel (View)|
+|ConfirmRemove (POST)|/my-schools/remove-confirm (POST)|RedirectResult|
 
----
+### MySchoolsListController
+|Action|Route|Model returned|
+|---|---|---|
+|ToggleSaveEstablishment (POST)|/MySchoolsList/ToggleSaveEstablishment|JsonResult (AJAX) or RedirectResult|
 
-## 9. Measure components and ViewModels
+### SchoolController
+|Action|Route|Model returned|
+|---|---|---|
+|Index (urn only)|/school/{urn}|RedirectToRoute (overview/about)|
+|Index (urn + schoolName)|/school/{urn}/{schoolName}|RedirectToRoute|
+|Schools|/map/schools/{urn}|Json { name, lat, lon } (JsonResult)|
 
-A unified component model. It is fully in place for primary, and in place for the secondary school pages. The secondary comparison pages are still being brought across. All new measure work should follow this pattern.
+### SearchController
+|Action|Route|Model returned|
+|---|---|---|
+|Index (GET)|/search (RouteConstants.Search)|SearchResultsViewModel (View)|
+|Index (POST)|/search (POST)|RedirectToAction or View(SearchResultsViewModel)|
+|SearchResults (GET)|/search/results (RouteConstants.SearchResults)|SearchResultsViewModel (View)|
 
-### The `Measure` domain type
+### GatewayController (Area: Gateway)
+|Action|Route|Model returned|
+|---|---|---|
+|Welcome (GET)|/gateway/welcome/{id}|GatewayWelcomeViewModel (View)|
+|Welcome (POST)|/gateway/welcome/{id} (POST)|View(GatewayWelcomeViewModel) or Redirect|
+|Returning (GET)|/gateway/returning/{id}|GatewayReturningViewModel (View)|
+|Returning (POST)|/gateway/returning/{id} (POST)|View(GatewayReturningViewModel) or Redirect|
+|NewVisitor (GET)|/gateway/newvisitor/{id}|GatewayNewUserViewModel (View)|
+|NewVisitor (POST)|/gateway/newvisitor/{id} (POST)|View(GatewayNewUserViewModel) or Redirect|
 
-```
-public record Measure(
-    string Key,
-    string Name,
-    MeasureDataType DataType,
-    IEnumerable<MeasureAvailableFilter> Filters,
-    IEnumerable<SubMeasure> SubMeasures);
-```
+### AboutController (Area: Profiles)
+|Action|Route|Model returned|
+|---|---|---|
+|AboutSchool|/school/{urn}/{schoolName}/about (RouteConstants.AboutTheSchool)|AboutSchoolViewModel (View)|
 
-Constructed through:
+### AdmissionsController (Area: Profiles)
+|Action|Route|Model returned|
+|---|---|---|
+|Index|/school/{urn}/{schoolName}/admissions (RouteConstants.AdmissionsRoot)|Redirect to KS2/KS4 or View("Error")|
+|KS2 (GET)|/school/{urn}/{schoolName}/admissions/primary (RouteConstants.PrimaryAdmissions)|AdmissionsViewModel (View)|
+|KS4 (GET)|/school/{urn}/{schoolName}/admissions/secondary (RouteConstants.SecondaryAdmissions)|AdmissionsViewModel (View)|
 
-- `Measure.ForSchool(...)` for the school page, comparing against similar schools average, LA and England
-- `Measure.ForSchoolComparison(...)` for the comparison page, comparing two schools side by side
 
-SubMeasure types:
+### AttendanceController (Area: Profiles)
+|Action|Route|Model returned|
+|---|---|---|
+|Attendance|/school/{urn}/{schoolName}/attendance (RouteConstants.Attendance)|AttendanceViewModel (View)|
 
-| Type                         | Content                                           | Included in                                |
-| ---------------------------- | ------------------------------------------------- | ------------------------------------------ |
-| `ThreeYearAverageSubMeasure` | `IEnumerable<decimal?>`, one value per comparator | Both `ForSchool` and `ForSchoolComparison` |
-| `TopPerformersSubMeasure`    | Top 3 schools by three-year average               | `ForSchool` only                           |
-| `YearByYearSubMeasure`       | Current, Previous and Previous2 series per comparator | Both                                    |
+### CurriculumController (Area: Profiles)
+|Action|Route|Model returned|
+|---|---|---|
+|Index|/school/{urn}/{schoolName}/curriculum (RouteConstants.CurriculumRoot)|Redirect to KS2/KS4 or View("Error")|
+|KS2 (GET)|/school/{urn}/{schoolName}/curriculum/primary (RouteConstants.PrimaryCurriculumAndExtraCurricularActivities)|CurriculumAndExtraCurricularActivitiesViewModel (KS2) (View)|
+|KS4 (GET)|/school/{urn}/{schoolName}/curriculum/secondary (RouteConstants.SecondaryCurriculumAndExtraCurricularActivities)|CurriculumAndExtraCurricularActivitiesViewModel (KS4) (View)|
 
-`SchoolData` is the input record that bundles everything a measure needs:
 
-```
-internal sealed record SchoolData(
-    string Urn,
-    string Name,
-    Ks4PerformanceData? PerformanceData,
-    Ks4DestinationsData? DestinationsData);
-```
+### DestinationsController (Area: Profiles)
+|Action|Route|Model returned|
+|---|---|---|
+|Index|/school/{urn}/{schoolName}/destinations (RouteConstants.DestinationsRoot)|Redirect to KS4/KS5 or View("Error")|
+|KS4|/school/{urn}/{schoolName}/destinations/secondary (RouteConstants.SecondaryDestinations)|KS4DestinationsViewModel (View)|
+|KS5|/school/{urn}/{schoolName}/destinations/16-to-19 (RouteConstants.KS5Destinations)|KS5DestinationsViewModel (View)|
+|KS5Higher|/school/{urn}/{schoolName}/destinations/16-to-19-higher-level-study (RouteConstants.KS5DestinationsHigher)|AboutSchoolViewModel (View)|
+OverviewController (Area: Profiles)
+|Action|Route|Model returned|
+|Overview|/school/{urn}/{schoolName}/overview (RouteConstants.Overview)|OverviewViewModel (View)|
 
-For primary, `Ks2PerformanceData` is used through `MeasureFieldSelector<Ks2PerformanceData>` in the same way.
+### KS2Controller (Area: Profiles)
+|Action|Route|Model returned|
+|---|---|---|
+|AcademicPerformancePupilProgress (GET redirect)|/school/{urn}/{schoolName}/primary-performance/pupil-progress (RouteConstants.PrimaryAcademicPerformancePupilProgress)|Redirect to action with year route segment|
+|AcademicPerformancePupilProgress (GET)|/school/{urn}/{schoolName}/primary-performance/pupil-progress/{selectedAcademicYearName}|AcademicPerformancePupilProgressViewModel (View)|
+|AcademicPerformanceMeetingOrExceedingStandards|/school/{urn}/{schoolName}/primary-performance/meeting-or-exceeding-standards (RouteConstants.PrimaryAcademicPerformanceMeetingOrExceedingStandards)|AcademicPerformanceMeetingOrExceedingStandardsViewModel (View)|
+|AcademicPerformanceSubjectScaledScores|/school/{urn}/{schoolName}/primary-performance/subject-scaled-scores (RouteConstants.PrimaryAcademicPerformanceSubjectScaledScores)|AcademicPerformanceSubjectScaledScoresViewModel (View)|
+|AcademicPerformanceAdditionalMeasures|/school/{urn}/{schoolName}/primary-performance/additional-measures (RouteConstants.PrimaryAcademicPerformanceAdditionalMeasures)|AcademicPerformanceAdditionalMeasuresViewModel (View)|
 
-### `MeasureViewModel`
+### KS4Controller (Area: Profiles)
+|Action|Route|Model returned|
+|---|---|---|
+|AcademicPerformanceAttainmentAndProgress (redirect)|/school/{urn}/{schoolName}/secondary-performance/progress-attainment (RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress)|Redirect to route with year segment|
+|AcademicPerformanceAttainmentAndProgress (GET)|/school/{urn}/{schoolName}/secondary-performance/progress-attainment/{selectedAcademicYearName}|AcademicPerformanceAttainmentAndProgressViewModel (View)|
+|AcademicPerformanceEnglishAndMathsResults (redirect)|/school/{urn}/{schoolName}/secondary-performance/english-and-maths (RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults)|Redirect to filtered route|
+|AcademicPerformanceEnglishAndMathsResults (GET)|/school/{urn}/{schoolName}/secondary-performance/english-and-maths/{gradeName}|AcademicPerformanceEnglishAndMathsResultsViewModel (View)|
+|AcademicPerformanceSubjectsEntered|/school/{urn}/{schoolName}/secondary-performance/subjects-entered (RouteConstants.SecondaryAcademicPerformanceSubjectsEntered)|AcademicPerformanceSubjectsEnteredViewModel (View)|
+|AcademicPerformanceAdditionalMeasures|/school/{urn}/{schoolName}/secondary-performance/additional-measures (RouteConstants.SecondaryAcademicPerformanceAdditionalMeasures)|AcademicPerformanceAdditionalMeasuresViewModel (View)|
 
-Wraps a `Measure` for the view layer. Used by both phases.
+### KS5Controller (Area: Profiles)
+|Action|Route|Model returned|
+|---|---|---|
+|Index|/school/{urn}/{schoolName}/16-to-19-performance (RouteConstants.KS5AcademicPerformanceRoot)|Redirect to Level3Qualifications|
+|Level3QualificationsRedirect|/school/{urn}/{schoolName}/16-to-19-performance/level-3-qualifications (RouteConstants.KS5AcademicPerformanceLevel3)|Redirect|
+|Level3Qualifications|/school/{urn}/{schoolName}/16-to-19-performance/level-3-qualifications/{qualification} (RouteConstants.KS5AcademicPerformanceLevel3Filter)|Level3QualificationViewModel (View)|
+|Level2QualificationsRedirect|/school/{urn}/{schoolName}/16-to-19-performance/level-2-qualifications (RouteConstants.KS5AcademicPerformanceLevel2)|Redirect|
+|Level2Qualifications|/school/{urn}/{schoolName}/16-to-19-performance/level-2-qualifications/{qualification} (RouteConstants.KS5AcademicPerformanceLevel2Filter)|Level2QualificationViewModel (View)|
+|EnglishAndMaths|/school/{urn}/{schoolName}/16-to-19-performance/english-and-maths (RouteConstants.KS5AcademicPerformanceEnglishMaths)|EnglishMathsQualificationsViewModel (View)|
+|SubjectsEnteredRedirect|/school/{urn}/{schoolName}/16-to-19-performance/subjects-entered (RouteConstants.KS5AcademicPerformanceSubjectsEntered)|Redirect|
+|SubjectsEntered|/school/{urn}/{schoolName}/16-to-19-performance/subjects-entered/{qualification} (RouteConstants.KS5AcademicPerformanceSubjectsEnteredFilter)|Ks5SubjectEnteredViewModel (View)|
 
-```
-MeasureViewModel.FromMeasure(measure, schoolDetails, labels[])
-```
+### Compare -> SecondaryController (Area: Compare)
+|Action|Route|Model returned|
+|---|---|---|
+|AboutYourSchools|/compare/secondary/about-your-schools (RouteConstants.CompareSecondaryAboutYourSchools)|CompareAboutYourSchoolsViewModel (View)|
+|AcademicPerformancePupilAttainment|/compare/secondary/pupil-attainment (RouteConstants.CompareSecondaryAcademicPerformancePupilAttainment)|CompareAcademicPerformancePupilAttainmentViewModel (View)|
+|AcademicPerformanceEnglishAndMathsResults|/compare/secondary/english-and-maths-results (RouteConstants.CompareSecondaryAcademicPerformanceEnglishAndMathsResults)|CompareAcademicPerformanceEnglishAndMathsResultsViewModel (View)|
+|NextSteps|/compare/secondary/next-steps (RouteConstants.CompareSecondaryNextSteps)|CompareNextStepsViewModel (View)|
+|Destinations|/compare/secondary/destinations-after-year-11 (RouteConstants.CompareSecondaryDestinations)|CompareDestinationsViewModel (View)|
 
-Labels come from the controller, for example `["School name", "Similar schools average", "Local authority schools average", "Schools in England average"]`.
 
-### View components (partials)
 
-| Partial                         | Purpose                                                      |
-| ------------------------------- | ------------------------------------------------------------ |
-| `_Measure`                      | Renders a complete measure with all its sub-measures as tabs |
-| `_MeasureFilters`               | Renders filter dropdowns for a measure dynamically           |
-| `_MeasureThreeYearAverageChart` | Bar chart for the three-year average sub-measure             |
-| `_MeasureTopPerformers`         | Top performers panel                                         |
-| `_MeasureYearByYearChart`       | Year-by-year line chart                                      |
-| `_MeasureTable`                 | Data table view                                              |
-
-### `<tabbed-view>` tag helper
-
-`TabbedViewTagHelper` and `TabbedContentTagHelper` produce GOV.UK tabs markup from Razor without repeating the tab list and panel structure:
-
-```
-<tabbed-view html-prefix="attainment8">
-  <tab-content id="chart" name="Three year average">...</tab-content>
-  <tab-content id="top-performers" name="Top performers">...</tab-content>
-  <tab-content id="year-by-year" name="Year by year">...</tab-content>
-</tabbed-view>
-```
-
-### JavaScript modules
-
-| Module                     | Purpose                                                                                                                       |
-| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `chart-factory.js`         | ES module with `init(element)` and `initAll()`. `init` scopes chart setup to a DOM subtree for partial refreshes              |
-| `measure-filters.js`       | Intercepts filter `<select>` changes, fetches the updated partial over AJAX, swaps the measure section, then re-initialises charts and tabs |
-| `mobile-collapsed-tabs.js` | Extends GOV.UK `Tabs`. Always renders collapsed on mobile, and adds `selectTabById()` to restore tab state after a partial refresh |
-
----
-
-## 10. Use cases and business rules
-
-All use cases implement `IUseCase<TRequest, TResponse>` with `Execute(TRequest)` returning `Task<TResponse>`.
-
-`GetSchoolInfoUseCase` is used on every page in both phases and fetches school info from `v_establishment`.
-
-### Primary use cases (`SAPSec.Core/Features/Primary/`)
-
-`GetSchoolKs2PerformanceMeasuresUseCase`
-
-- fetches the similar schools group, then KS2 performance for all those schools
-- applies `FilterBy` case-insensitively, for example the subject filter
-- returns 6 `Measure` objects through `Ks2PerformanceMeasures.*.ForSchool()`
-
-`GetSchoolKs2PerformanceComparisonUseCase`
-
-- fetches only the two schools, with no group lookup
-- returns 6 `Measure` objects through `Ks2PerformanceMeasures.*.ForSchoolComparison()`
-
-`GetSchoolAttendanceMeasuresUseCase` returns one `Measure`, either overall or persistent absence.
-
-`FindPrimarySimilarSchoolsUseCase`
-
-- loads the group and its characteristic values
-- applies `SimilarSchoolsFilters`: location, region, urban or rural, school type, admissions, gender, nursery, resourced provision, sixth form, attendance and school characteristics
-- validates filters, returning `ValidationErrors` but still rendering the page rather than an error
-- sorts by the chosen KS2 metric, default `RwmExpected`, tie-breaking on display value then alphabetically
-- paginates to `ResultsPerPage`, default 10, and returns the full result set separately for the map
-
-Sort options: `RwmExpected` (default), `RwmHigher`, `ReadingScaledScore`, `MathsScaledScore`, `GpsExpected`, `GpsHigher`.
-
-`GetPrimarySimilarSchoolDetailsUseCase` coordinates both schools and pulls GIAS detail for the similar school.
-
-### Secondary use cases (`SAPSec.Core/Features/Secondary/` and `SAPSec.Core/Features/`)
-
-`GetSchoolKs4HeadlineMeasures` returns KS4 performance covering Attainment 8, English and Maths, and Destinations, as `Measure` objects.
-
-`GetSchoolKs4CoreSubjects` returns 7 subjects (English Language, English Literature, Biology, Chemistry, Physics, Maths, Combined Science) with a grade filter of 4, 5 or 7, as `IReadOnlyCollection<Measure>`.
-
-`GetFilteredSchoolKs4CoreSubject` serves the legacy `/data` JSON endpoints.
-
-`FindSimilarSchools` handles secondary similar schools. It does not implement `IUseCase<T,R>` and uses inline LINQ rather than data providers. It will be refactored to match `FindPrimarySimilarSchoolsUseCase`.
-
-`GetSchoolComparisonKs4HeadlineMeasures` serves the comparison page and returns a `Measure`-based response.
-
-`GetSchoolComparisonKs4CoreSubjects` serves the comparison page and returns `IReadOnlyCollection<Measure>`.
-
-`GetAttendanceMeasures` is shared across both phases and returns the attendance series and top performers.
 
 ---
 
-## 11. Performance measures domain model
+## 9. Services
 
-### Primary, KS2 (`SAPSec.Core/Features/Primary/Ks2PerformanceMeasures.cs`)
+### Conventions (applies to all services)
 
-Six static inner classes, each with `ForSchool()` and `ForSchoolComparison()`. They use `MeasureFieldSelector<Ks2PerformanceData>` selecting Current, Previous and Previous2 across Establishment, LA and England.
+- Language / runtime: C# 14 / .NET 10.
+- Pattern: DI-injected, stateless services that orchestrate repositories, gateway clients and other services. Services return ServiceModel types defined under SAPPub.Core.ServiceModels.
+- Async: Public APIs use async Task/Task<T> and accept CancellationToken. Methods should check ct.ThrowIfCancellationRequested() early and pass the token to downstream calls.
+- Validation: Validate inputs (ArgumentException.ThrowIfNullOrWhiteSpace, etc.). Some services return empty service models when not found; others throw NotFoundException. LLD recommends standardizing behavior.
+- Value objects: Use CodedDouble, CodedString and other value objects to represent coded/suppressed/missing values and original raw values.
+- Parallel calls: Use Task.WhenAll for independent repository/gateway calls to reduce latency.
+- Observability: Add ILogger<T> to long-running/orchestration services. Log start/end, unexpected conditions and exceptions.
+- Testing: Unit tests should mock repositories/gateways. Cover happy path, not-found, cancellation and error bubbling.
 
-| Measure                      | Data type         | Subject filter                       |
-| ---------------------------- | ----------------- | ------------------------------------ |
-| `MeetingExpectedStandardRwm` | `GradePercentage` | Yes, Reading, Writing, Maths, Combined |
-| `AchievedHigherStandardRwm`  | `GradePercentage` | Yes, Reading, Writing, Maths, Combined |
-| `AverageScaledScoreReading`  | `ScaledScore`     | No                                   |
-| `AverageScaledScoreMaths`    | `ScaledScore`     | No                                   |
-| `MeetingExpectedStandardGps` | `GradePercentage` | No                                   |
-| `AchievedHigherStandardGps`  | `GradePercentage` | No                                   |
+### Inventory (key services documented here)
 
-### Secondary, KS4 (`SAPSec.Core/Features/Measures/`)
-
-KS4 measures use the same `Measure.ForSchool()` and `ForSchoolComparison()` factories, through `SAPSec.Core/Features/Measures/Ks4HeadlineMeasures.cs` and `Ks4CoreSubjects.cs`.
-
-| Namespace             | Measures                                                                                                                                  |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| `Ks4HeadlineMeasures` | `Attainment8`, `EnglishAndMaths` (grade 4 or 5 filter), `Destinations` (all, education or employment filter)                              |
-| `Ks4CoreSubjects`     | `EnglishLanguage`, `EnglishLiterature`, `Biology`, `Chemistry`, `Physics`, `Mathematics`, `CombinedScience`, all with a grade 4, 5 or 7 filter |
-
-`MeasureHelper`, which replaces `Ks4HeadlineMeasuresCalculator`, provides the shared `AverageFrom()`, `SeriesFrom()` and `ParseNullableDecimal()`.
-
----
-
-## 12. Repositories and data sources
-
-### Phase-specific
-
-| Repository                                  | Interface                            | Views or source                                                                                 | Phase     |
-| ------------------------------------------- | ------------------------------------ | ----------------------------------------------------------------------------------------------- | --------- |
-| `PostgresSimilarSchoolsPrimaryRepository`   | `ISimilarSchoolsPrimaryRepository`   | `v_similar_schools_primary_groups`, `v_similar_schools_primary_values`                          | Primary   |
-| `PostgresSimilarSchoolsSecondaryRepository` | `ISimilarSchoolsSecondaryRepository` | `v_similar_schools_secondary_groups`, `v_similar_schools_secondary_values`                      | Secondary |
-| `JsonKs2PerformanceRepository`              | `IKs2PerformanceRepository`          | JSON files: `establishment_performance.json`, `la_performance.json`, `england_performance.json` | Primary, interim |
-| `PostgresKs4PerformanceRepository`          | `IKs4PerformanceRepository`          | `v_establishment_performance`, `v_la_performance`, `v_england_performance`                      | Secondary |
-| `PostgresKs4DestinationsRepository`         | `IKs4DestinationsRepository`         | `v_establishment_destinations`, `v_la_destinations`, `v_england_destinations`                   | Secondary |
-
-KS2 performance is the one place that does not read from PostgreSQL. It is served from JSON files for now, and will move onto database views in the same way as KS4. See section 15.
-
-### Shared across both phases
-
-`PostgresEstablishmentRepository` reading `v_establishment`, `PostgresAbsenceRepository`, `ISchoolDetailsService` and `PostgresEstablishmentEmailRepository`.
-
-### How the DTOs are generated
-
-The DTOs are not written by hand. The chain is:
-
-1. the `SAPData` project generates the SQL scripts
-2. running `run-all.sql` against a local PostgreSQL database builds the views and writes out a JSON file per view
-3. `SAPSec.DtoGenerator` reads those JSON files and generates the C# DTOs
-
-The JSON files are produced anyway, because the automated tests use them as fixtures. Generating the DTOs from files that already exist is simpler than connecting to the database and reading catalogue metadata to do the same thing.
-
-This replaced an earlier approach where the JSON files and the DTOs were kept in step with the views by hand, which was error-prone.
-
-Two things to know when working on this:
-
-- **The generator has to be run at the right time.** If a view changes and nobody reruns `SAPSec.DtoGenerator`, the DTOs drift from the database and nothing warns you. This is the main weakness of the approach. It is comparable to remembering to regenerate EF models, except EF can warn when its models no longer match the local database.
-- **These JSON files are not a runtime data source.** They exist for DTO generation and tests. The exception is KS2 performance, covered in section 15.
+- EstablishmentService
+- LAService
+- AttendanceService
+- EmailService
+- MySchoolsListService
+- OverviewService
+- SchoolSearchService
+- GatewayUserService
+- KS2PupilProgressService
+- KS2AdditionalMeasuresService
+- KS2MeetingOrExceedingStandardsService
+- KS2ScaledScoresService
 
 ---
 
-## 13. Error handling
+### Service: EstablishmentService
 
-`NotFoundException` thrown by any use case is caught by `NotFoundExceptionHandler`, registered through `services.AddExceptionHandler<NotFoundExceptionHandler>()`:
+- File: SAPPub.Core/Services/EstablishmentService.cs
+- Purpose: Provide establishment metadata and lightweight cached minimum information.
+- Responsibilities:
+  - Query IEstablishmentRepository for establishment entities.
+  - Map entities to EstablishmentServiceModel or EstablishmentMinimumServiceModel.
+  - Cache results for minimum model using IMemoryCache.
+- Dependencies: IEstablishmentRepository, IMemoryCache
+- Public methods:
+  - Task<IEnumerable<EstablishmentServiceModel>> GetEstablishmentsAsync(int page, int take, CancellationToken ct = default)
+  - Task<EstablishmentServiceModel> GetEstablishmentAsync(string urn, CancellationToken ct = default)
+  - Task<IEnumerable<EstablishmentServiceModel>> GetEstablishmentsAsync(IEnumerable<string> urns, CancellationToken ct = default)
+  - Task<EstablishmentMinimumServiceModel> GetEstablishmentMinimumAsync(string urn, CancellationToken ct = default)
+- Data flow: Input URN → repository lookup → map to service model → (cache minimum when requested).
+- Error handling: Throws NotFoundException when establishment not found for methods that require an existing establishment.
+- Testing notes: Unit tests should mock repository to return a valid entity, null (to trigger NotFoundException) and validate cache behavior for GetEstablishmentMinimumAsync.
 
-- logs a warning
-- sets HTTP 404 and rewrites the path to `/error/404`
-- outside production, surfaces `ex.Message` for debugging
+---
 
-`ErrorController` sits at `[Route("error")]` with `[AllowAnonymous]`. 401 and 403 render `AccessDenied.cshtml`, 404 renders `NotFound.cshtml`, and anything else renders `Problem.cshtml`.
+### Service: LAService
 
-Middleware pipeline order, relevant excerpt:
+- File: SAPPub.Core/Services/LAService.cs
+- Purpose: Resolve Local Authority (LA) URLs/metadata using primary and fallback identifiers (GSS LA code and DistrictAdministrativeId).
+- Responsibilities:
+  - Query ILaUrlsRepository by GSS LA code and fallback to DistrictAdministrativeId when missing.
+  - Aggregate LA URL results for lists of establishments efficiently.
+- Dependencies: ILaUrlsRepository
+- Public methods:
+  - Task<LaUrls?> GetLaUrlsAsync(EstablishmentServiceModel establishment, CancellationToken ct)
+  - Task<IEnumerable<LaUrls?>> GetLaUrlsListForEstablishmentsAsync(IEnumerable<EstablishmentServiceModel> establishments, CancellationToken ct)
+- Data flow: EstablishmentModel → try GSS code → fallback district id → return LaUrls or null.
+- Error handling: Returns null when LA not found; caller must handle nulls.
+- Testing notes: Cover both primary and fallback paths; test returned union of results for multiple establishments.
 
+---
+
+### Service: AttendanceService
+
+- File: SAPPub.Core/Services/AttendanceService.cs
+- Purpose: Orchestrate attendance/absence data for an establishment, LA and England and produce AttendanceModel for the UI.
+- Responsibilities:
+  - Validate URN and cancellation token.
+  - Fetch establishment minimum model and absence data for establishment, LA and England in parallel.
+  - Map coded numeric values into AttendanceModel fields, selecting the correct column based on school phase and special-school status.
+- Dependencies: IEstablishmentService, IEstablishmentAbsenceService, IEnglandAbsenceService, ILAAbsenceService
+- Public methods:
+  - Task<AttendanceModel> GetAttendenceDetailsAsync(string urn, CancellationToken ct = default)
+- Data flow: URN → EstablishmentMinimum → parallel absence repository calls → map columns based on phase → AttendanceModel
+- Error handling: Returns an AttendanceModel with Urn set and flags false for missing establishment (empty URN case). Unexpected repository exceptions bubble upward.
+- Testing notes: Validate special-school, KS4 and KS2 precedence logic via GetCodedValue; cover cancellation.
+
+---
+
+### Service: EmailService
+
+- File: SAPPub.Core/Services/EmailService.cs
+- Purpose: Thin wrapper to send gateway emails via IEmailRepository.
+- Responsibilities:
+  - Validate email address and local authority name.
+  - Delegate sending to repository and log errors.
+- Dependencies: IEmailRepository, ILogger<EmailService>
+- Public methods:
+  - void SendGatewayEmail(string emailAddress, string localAuthorityName)
+- Data flow: input parameters → validate → repository.SendGatewayEmail
+- Error handling: Throws ArgumentException for missing inputs and logs errors before throwing.
+- Testing notes: Unit test should verify that invalid inputs cause an exception and that repository is invoked for valid inputs.
+
+---
+
+### Service: MySchoolsListService
+
+- File: SAPPub.Core/Services/MySchoolsListService.cs
+- Purpose: Manage cookie-backed "My schools" list for UI comparison features.
+- Responsibilities:
+  - Read cookie header or Request.Cookies.
+  - Provide operations to GetSavedEstablishments, Toggle, Remove, RemoveAll and check list limit.
+- Dependencies: IHttpContextAccessor
+- Public methods:
+  - IReadOnlyCollection<string> GetSavedEstablishments()
+  - bool IsSaved(string urn)
+  - void RemoveAll()
+  - bool Toggle(string urn)
+  - void Remove(IEnumerable<string> urns)
+  - bool IsListLimitReached()
+- Data flow: Cookie header → parse list → return or modify cookie via Response.Cookies.Append
+- Error handling: Silent (no exceptions) for missing context; ensure header parsing is resilient.
+- Testing notes: Mock IHttpContextAccessor to simulate request/response cookies and cookie headers.
+
+---
+
+### Service: OverviewService
+
+- File: SAPPub.Core/Services/Overview/OverviewService.cs
+- Purpose: Aggregate overview information for an establishment (overview, KS2/KS4/KS4 LA/England, destinations).
+- Responsibilities:
+  - Query overview repository for establishment and related performance records.
+  - Map returned entity to OverviewModel for the UI.
+- Dependencies: IOverviewRepository
+- Public methods:
+  - Task<OverviewModel?> GetOverviewAsync(string urn, CancellationToken ct = default)
+- Data flow: URN → overviewRepository.GetOverviewAsync → map to OverviewModel
+- Error handling: Returns null when overview or establishment is null.
+- Testing notes: Test mapping of fields, null handling.
+
+---
+
+### Service: SchoolSearchService
+
+- File: SAPPub.Core/Services/Search/SchoolSearchService.cs
+- Purpose: Validate search inputs, optionally resolve postcode to lat/long, and query the school search index reader.
+- Responsibilities:
+  - Validate postcode format with regex.
+  - Use IPostcodeLookupService to get coordinates when postcode provided.
+  - Build SearchQuery and call ISchoolSearchIndexReader.SearchAsync.
+  - Return SchoolSearchResultsServiceModel with paging and a status code enum for common error cases.
+- Dependencies: ISchoolSearchIndexReader, IPostcodeLookupService
+- Public methods:
+  - Task<SchoolSearchResultsServiceModel> SearchAsync(SchoolSearchServiceQuery query)
+- Data flow: Query → validate postcode → optional postcode lookup → index reader search → map results → return PagedResponse
+- Error handling: Returns SchoolSearchStatus.InvalidPostcode, PostcodeNotFound or PostcodeServiceError as appropriate rather than throwing.
+- Testing notes: Cover invalid postcode, postcode service error, empty results and successful mapping.
+
+---
+
+### Service: GatewayUserService
+
+- File: SAPPub.Core/Services/Gateway/GatewayUserService.cs
+- Purpose: Provide lookup and management operations for GatewayUser entities used for gateway registration flows.
+- Responsibilities:
+  - CRUD-like operations via IGatewayUserRepository.
+  - Expiry logic for provisional registrations using configured AllowedDays.
+- Dependencies: IGatewayUserRepository, ILogger<GatewayUserService>, IOptions<GatewayOptions>
+- Public methods:
+  - Task<GatewayUser?> GetByEmailAsync(string email)
+  - Task<GatewayUser?> GetById(Guid id)
+  - Task<bool> IsUserExpiredAsync(Guid id)
+  - Task<Guid> InsertAsync(GatewayUser user)
+  - Task<IEnumerable<GatewayUser>> GetAllAsync()
+- Data flow: Caller → repository → transform/find → return
+- Error handling: Throws exception when Insert fails or when checking expiry for nonexistent users.
+- Testing notes: Mock IGatewayUserRepository, test expiry calculation and Insert flow.
+
+---
+
+### Service: KS2PupilProgressService
+
+- File: SAPPub.Core/Services/Performance/KS2PupilProgressService.cs
+- Purpose: Build KS2PupilPerformance for an establishment URN and selected academic year selection (e.g., Previous2).
+- Responsibilities:
+  - Validate URN, propagate cancellation.
+  - Query establishment metadata and KS2 performance repository for establishment and LA values in parallel.
+  - Map repository fields to KS2PupilPerformance service model using AcademicYearSelection to select the proper relative-year fields.
+- Dependencies: IEstablishmentService, IKS2PerformanceRepository
+- Public methods:
+  - Task<KS2PupilPerformance> GetPupilProgressAsync(string urn, AcademicYearSelection selectedYear, CancellationToken ct = default)
+- Data flow: URN → EstablishmentService.GetEstablishmentAsync → if found then parallel repo calls for establishment & LA → map fields based on selectedYear → return service model.
+- Error handling: Throws ArgumentException for invalid URN; returns KS2PupilPerformance with Urn set to input when establishment not found; repository exceptions bubble.
+- Testing notes: Mock IEstablishmentService and IKS2PerformanceRepository; test mapping for each AcademicYearSelection and cancellation.
+
+---
+
+### Service: KS2AdditionalMeasuresService
+
+- File: SAPPub.Core/Services/Performance/KS2AdditionalMeasuresService.cs
+- Purpose: Return grammar and SEN related additional measures for establishment, LA and England.
+- Responsibilities:
+  - Fetch establishment minimum and KS2 establishment/LA/England performance in parallel.
+  - Map fields to KS2AdditionalMeasuresModel.
+- Dependencies: IEstablishmentService, IKS2PerformanceRepository
+- Public methods:
+  - Task<KS2AdditionalMeasuresModel> GetAdditionalMeasures(string urn, CancellationToken ct = default)
+- Testing notes: Validate mapping for each measure and null/empty behavior.
+
+---
+
+### Service: KS2MeetingOrExceedingStandardsService
+
+- File: SAPPub.Core/Services/Performance/KS2MeetingOrExceedingStandardsService.cs
+- Purpose: Provide percentages meeting or exceeding expected standards across establishment, LA and England with demographic breakdowns.
+- Responsibilities:
+  - Fetch KS2 establishment/LA/England performance in parallel.
+  - Wrap relative-year values into RelativeYearValues<T> where appropriate.
+- Dependencies: IKS2PerformanceRepository
+- Public methods:
+  - Task<KS2MeetingOrExceedingStandardsModel> GetMeetingOrExceedingStandardsPercentages(string urn, string LAId, CancellationToken ct = default)
+- Testing notes: Validate relative-year grouping and demographic fields.
+
+---
+
+### Service: KS2ScaledScoresService
+
+- File: SAPPub.Core/Services/Performance/KS2ScaledScoresService.cs
+- Purpose: Provide scaled-score averages (reading/maths) for establishment, LA and England across relative years and demographics.
+- Responsibilities:
+  - Fetch performance data in parallel and build RelativeYearValues<CodedDouble> for each axis.
+- Dependencies: IEstablishmentService, IKS2PerformanceRepository
+- Public methods:
+  - Task<KS2ScaledScoreModel> GetScaledScoreModel(string urn, CancellationToken ct = default)
+- Testing notes: Validate grouping into Current/Previous/TwoYearsAgo and special demographic averages.
+
+---
+
+### KS2PupilProgressService flow
+
+```mermaid
+sequenceDiagram
+	participant Caller
+	participant KS2PupilProgressService
+	participant IEstablishmentService
+	participant IKS2PerformanceRepository
+
+	Caller->>KS2PupilProgressService: GetPupilProgressAsync(urn, selectedYear)
+	KS2PupilProgressService->>IEstablishmentService: GetEstablishmentAsync(urn, ct)
+	IEstablishmentService-->>KS2PupilProgressService: Establishment (LAId, URN)
+	alt establishment not found
+		KS2PupilProgressService-->>Caller: KS2PupilPerformance { Urn = urn }
+	else
+		KS2PupilProgressService->>IKS2PerformanceRepository: GetEstablishmentPerformanceAsync(urn)
+		KS2PupilProgressService->>IKS2PerformanceRepository: GetLaPerformanceAsync(LAId)
+		IKS2PerformanceRepository-->>KS2PupilProgressService: EstablishmentPerformance
+		IKS2PerformanceRepository-->>KS2PupilProgressService: LaPerformance
+		KS2PupilProgressService-->>Caller: KS2PupilPerformance (mapped fields)
+	end
 ```
-UseStatusCodePagesWithReExecute("/error/{0}")
-UseDeveloperExceptionPage | UseExceptionHandler  ← triggers NotFoundExceptionHandler
-UseMiddleware<SecurityHeadersMiddleware>
-UseAuthentication / UseAuthorization
-MapControllers
+
+---
+
+### SchoolSearchService flow
+
+```mermaid
+sequenceDiagram
+	participant Caller
+	participant SchoolSearchService
+	participant IPostcodeLookupService
+	participant ISchoolSearchIndexReader
+
+	Caller->>SchoolSearchService: SearchAsync(query)
+	alt query.Location invalid
+		SchoolSearchService-->>Caller: SchoolSearchResultsServiceModel (InvalidPostcode)
+	else
+		SchoolSearchService->>IPostcodeLookupService: GetLatitudeAndLongitudeAsync(location)
+		alt postcode error
+			SchoolSearchService-->>Caller: SchoolSearchResultsServiceModel (PostcodeNotFound|ServiceError)
+		else
+			SchoolSearchService->>ISchoolSearchIndexReader: SearchAsync(searchQuery)
+			ISchoolSearchIndexReader-->>SchoolSearchService: Results
+			SchoolSearchService-->>Caller: SchoolSearchResultsServiceModel (Success + PagedResponse)
+		end
+	end
 ```
 
 ---
 
-## 14. School layout and side navigation
+### GatewayUserService GetByEmail flow
 
-Both phases call a `SetSchoolViewData()` or `PopulateViewData()` helper on every action. It sets `ViewData["SchoolNavigation"]` using phase-specific factories:
+```mermaid
+sequenceDiagram
+	participant Caller
+	participant GatewayUserService
+	participant IGatewayUserRepository
 
-- `SchoolSideNavigationViewModel.CreatePrimary(Url, urn, actionName)` gives Overview, KS2, Attendance, View similar schools, School details
-- `SchoolSideNavigationViewModel.CreateSecondary(Url, urn, actionName)` gives Overview, KS4 Headline Measures, KS4 Core Subjects, Attendance, View similar schools, School details
+	Caller->>GatewayUserService: GetByEmailAsync(email)
+	GatewayUserService->>IGatewayUserRepository: GetAllAsync()
+	IGatewayUserRepository-->>GatewayUserService: IEnumerable<GatewayUser>
+	GatewayUserService-->>GatewayUserService: FirstOrDefault by Email
+	GatewayUserService-->>Caller: GatewayUser? (found or null)
+```
 
-Comparison layouts in both phases read `ViewData["ComparisonSchool"]` to render the comparison header and sub-navigation.
+
+
+## 12. Repositories
+
+## Conventions & Patterns (applies across repository implementations)
+
+- Purpose: Repositories provide data access to backing stores (Postgres, JSON files, external APIs) and expose typed entities used by services.
+- DI: Repositories are registered in DI and injected into services. Keep repositories stateless.
+- Cancellation: Public async methods accept CancellationToken and pass it to DB/IO calls.
+- SQL access: Use NpgsqlDataSource for Postgres connections. Prefer parameterized queries and Dapper for mapping.
+- Generic repository: IGenericRepository<T> implemented by DapperRepository<T> centralizes common read/write patterns and coded-value mapping.
+- Coded values: Infrastructure layer maps database coded fields into value semantics using ICodedValueMapper to populate CodedDouble/CodedString pairs.
+- Profiling: Some implementations use MiniProfiler (StackExchange.Profiling) to instrument DB calls.
+- Resilience: Keep SQL simple; avoid client-side retries at repo layer unless necessary. Let upper layers handle retry/backoff when calling external services.
+- Logging: Repositories log errors but do not swallow OperationCanceledException. Avoid logging sensitive data.
+- Single query for multiple resultsets: Use Dapper's QueryMultipleAsync to fetch related records in a single round trip (OverviewRepository pattern).
+- Read vs write semantics: Generic repository exposes Read/ReadMany/ReadAll/ReadPage/Write/Update semantics.
+
+---
+
+## Inventory (selected repository implementations)
+
+- Generic
+  - Generic/DapperRepository.cs
+  - Generic/JSONRepository.cs
+  - Generic/DapperCommandBuilder.cs
+  - Helpers/DapperHelpers.cs
+- Establishment & Search
+  - EstablishmentRepository.cs
+  - PostgresSearch/PostgresSchoolSearchIndexReader.cs (implements ISchoolSearchIndexReader)
+- LA & URL
+  - LaUrlsRepository.cs
+- Overview
+  - Overview/OverviewRepository.cs
+- Performance
+  - Performance/Ks2PerformanceRepository.cs
+  - Performance/Ks5PerformanceRepository.cs
+  - Performance/KS4EstablishmentSubjectEntriesRepository.cs
+  - Performance/KS5EstablishmentSubjectEntriesRepository.cs
+- KS4 Absence & Performance
+  - KS4/Absence/EnglandAbsenceRepository.cs
+  - KS4/Absence/EstablishmentAbsenceRepository.cs
+  - KS4/Absence/LAAbsenceRepository.cs
+  - KS4/Performance/EstablishmentPerformanceRepository.cs
+  - KS4/Performance/LAPerformanceRepository.cs
+  - KS4/Performance/EnglandPerformanceRepository.cs
+- Destinations
+  - Destinations/KS4DestinationsRepository.cs
+  - Destinations/KS5DestinationsRepository.cs
+- Gateway
+  - Gateway/GatewayUserRepository.cs
+  - Gateway/GatewayUserAuditRepository.cs
+  - Gateway/GatewayLocalAuthorityRepository.cs
+- Misc
+  - EstablishmentLinksRepository.cs
+  - EmailRepository.cs
+
+This inventory lists the files present in the codebase at time of writing.
+
+---
+
+## Per-repository LLD (selected files)
+
+### Generic: DapperRepository<T>
+- File: SAPPub.Infrastructure/Repositories/Generic/DapperRepository.cs
+- Purpose: Central implementation of IGenericRepository<T> using Dapper and Npgsql for Postgres-backed entities.
+- Responsibilities:
+  - Read single entities, read pages, read all, read many, write and update entities using SQL commands provided by DapperHelpers and DapperCommandBuilder.
+  - Apply ICodedValueMapper to results to map coded fields into typed value objects.
+  - Provide safe logging and propagate cancellations.
+- Dependencies: NpgsqlDataSource, ILogger<DapperRepository<T>>, ICodedValueMapper
+- Public methods (signatures):
+  - Task<T?> ReadAsync(string id, CancellationToken ct = default)
+  - Task<IEnumerable<T>> ReadPageAsync(int page, int take, CancellationToken ct = default)
+  - Task<IEnumerable<T>> ReadAllAsync(CancellationToken ct = default)
+  - Task<T?> ReadSingleAsync(object parameters, CancellationToken ct = default)
+  - Task<bool> WriteAsync(object? writeObject, CancellationToken ct = default)
+  - Task<bool> UpdateAsync(object? updateObject, CancellationToken ct = default)
+- Data flow: Caller -> DapperHelpers to get SQL -> build DapperCommand (with parameters) -> open Npgsql connection -> Query/Execute -> map coded values -> return typed entity/boolean.
+- Error handling: Logs unexpected exceptions and returns default/empty values (except for cancellations which are rethrown).
+- Notes: DapperHelpers holds per-entity SQL snippets (ReadSingle/ReadMultiple/Write/Update); ensure these SQL templates exist for each entity type using this generic repo.
+
+
+### Generic: JSONRepository<T>
+- File: SAPPub.Infrastructure/Repositories/Generic/JSONRepository.cs
+- Purpose: File-backed repository used for static test or fallback data stored as JSON files in /Data/Files.
+- Responsibilities:
+  - Read a typed JSON file and deserialize into IEnumerable<T>.
+- Public methods (signatures):
+  - Task<IEnumerable<T>> ReadAll() (synchronous variant exists)
+  - Task<IEnumerable<T>> ReadAllAsync(CancellationToken ct = default) (throws NotImplementedException in current impl)
+  - Other generic methods are NotImplemented (ReadAsync, ReadManyAsync, ReadSingleAsync, WriteAsync, UpdateAsync)
+- Error handling: Logs file IO errors and returns an empty collection.
+- Notes: Use for small static datasets only; not suitable for large datasets or production writes without implementation.
+
+
+### EstablishmentRepository
+- File: SAPPub.Infrastructure/Repositories/EstablishmentRepository.cs
+- Purpose: Data access for establishment entities and search index queries against v_establishment view.
+- Responsibilities:
+  - Read establishment by URN (via IGenericRepository.ReadAsync)
+  - Read many establishments by URNs
+  - Read pages of establishments
+  - Search with full-text and spatial filters, applying SearchVisibilityPolicy
+- Dependencies: IGenericRepository<Establishment>, NpgsqlDataSource, ISearchVisibilityPolicy
+- Public methods (signatures):
+  - Task<IEnumerable<Establishment>> GetEstablishmentsAsync(int page, int take, CancellationToken ct = default)
+  - Task<Establishment?> GetEstablishmentAsync(string urn, CancellationToken ct = default)
+  - Task<IEnumerable<Establishment>?> GetEstablishmentsAsync(IEnumerable<string> urns, CancellationToken ct = default)
+  - Task<(IEnumerable<Establishment> Results, int TotalCount)> SearchAsync(SearchQuery query, int maxResults = 10, CancellationToken ct = default)
+- Data flow (SearchAsync):
+  - Build visibility specification via ISearchVisibilityPolicy
+  - Build dynamic parameters (search term, coords, distance, page size, offset)
+  - Construct SQL select + where + order by
+  - Execute QueryAsync and ExecuteScalarAsync for total count
+  - Return results and count
+- Notes: Use of ST_DWithin and spatial functions requires PostGIS. SearchSqlParts builder isolates SQL generation for testability.
+
+
+### PostgresSchoolSearchIndexReader
+- File: SAPPub.Infrastructure/PostgresSearch/PostgresSearchIndexReader.cs
+- Purpose: Implements ISchoolSearchIndexReader against the EstablishmentRepository; translates Establishment entities into search documents.
+- Public methods:
+  - Task<SchoolSearchResults> SearchAsync(SearchQuery query, int maxResults = 10)
+- Data flow: Delegates to IEstablishmentRepository.SearchAsync then maps entities to SchoolSearchDocument using Establishment.MapToServiceModel().ToSchoolSearchDocument().
+
+
+### OverviewRepository
+- File: SAPPub.Infrastructure/Repositories/Overview/OverviewRepository.cs
+- Purpose: Aggregate overview data (establishment + KS4/KS2 performance + destinations) in a single DB call using Dapper's QueryMultipleAsync.
+- Public methods:
+  - Task<Core.Entities.Overview.Overview?> GetOverviewAsync(string urn, CancellationToken ct = default)
+- Data flow:
+  - Single SQL with multiple SELECT statements retrieving establishment, KS4 performance, LA & England performance, destinations, KS2 performance and LA/England parallels.
+  - Use QueryMultipleAsync to read result sets in order and assemble Overview entity.
+- Error handling: Throws NotFoundException when establishment not found.
+- Notes: Efficient single round-trip; must keep SELECT order and mapping in sync with result reading.
+
+
+### KS2PerformanceRepository
+- File: SAPPub.Infrastructure/Repositories/Performance/Ks2PerformanceRepository.cs
+- Purpose: Provide tailored accessors for KS2 performance entities (establishment, LA, England) using generic repos.
+- Public methods:
+  - Task<KS2EnglandPerformance> GetEnglandPerformanceAsync(CancellationToken ct = default)
+  - Task<KS2EstablishmentPerformance> GetEstablishmentPerformanceAsync(string urn, CancellationToken ct = default)
+  - Task<KS2LAPerformance> GetLaPerformanceAsync(string laCode, CancellationToken ct = default)
+- Notes: Returns default instances when input is invalid or record not found to simplify service layer mapping.
+
+
+### LaUrlsRepository
+- File: SAPPub.Infrastructure/Repositories/LaUrlsRepository.cs
+- Purpose: Provide LA URL records lookup and bulk retrieval for establishment GSS LA codes.
+- Public methods:
+  - Task<IEnumerable<LaUrls>> GetAllLAsAsync(CancellationToken ct = default)
+  - Task<LaUrls?> GetLaAsync(string laGssCode, CancellationToken ct = default)
+  - Task<IEnumerable<LaUrls?>> GetLaUrlsForEstablishmentsAsync(IEnumerable<string?> gssLaCodeList, CancellationToken ct)
+
+
+### EmailRepository
+- File: SAPPub.Infrastructure/Repositories/EmailRepository.cs
+- Purpose: Wrapper around GOV.UK Notify (Notify.Client) to send templated notification emails.
+- Public methods:
+  - void SendGatewayEmail(string emailAddress, string localAuthorityName)
+- Data flow: Build personalisation dictionary and call INotificationClient.SendEmail; log successes/failures.
+- Notes: Repository catches exceptions and logs them; callers (EmailService) validate inputs.
+
+
+### Gateway Repositories (summary)
+- GatewayUserRepository: CRUD for GatewayUser entities (used by GatewayUserService).
+- GatewayUserAuditRepository: Records audit logs for gateway actions.
+- GatewayLocalAuthorityRepository: Lookup mappings between gateway local authorities and application LAs.
+
+(See repository files under SAPPub.Infrastructure/Repositories/Gateway for concrete method signatures.)
+
+---
+
+## Typical repository data flows (Mermaid sequence diagrams)
+
+### DapperRepository.ReadSingleAsync
+
+```mermaid
+sequenceDiagram
+  participant Caller
+  participant DapperRepository
+  participant NpgsqlDataSource
+
+  Caller->>DapperRepository: ReadSingleAsync(parameters, ct)
+  DapperRepository->>DapperHelpers: GetReadSingle(typeof(T))
+  DapperRepository->>NpgsqlDataSource: OpenConnectionAsync(ct)
+  NpgsqlDataSource-->>DapperRepository: DbConnection
+  DapperRepository->>DbConnection: QuerySingleOrDefaultAsync<T>(cmd)
+  DbConnection-->>DapperRepository: T or null
+  DapperRepository->>ICodedValueMapper: Apply(item) (if not null)
+  DapperRepository-->>Caller: T?
+```
+
+
+### EstablishmentRepository.SearchAsync
+
+```mermaid
+sequenceDiagram
+  participant Caller
+  participant EstablishmentRepository
+  participant ISearchVisibilityPolicy
+  participant NpgsqlDataSource
+
+  Caller->>EstablishmentRepository: SearchAsync(query, maxResults)
+  EstablishmentRepository->>ISearchVisibilityPolicy: GetVisibilitySpecificationAsync(ct)
+  ISearchVisibilityPolicy-->>EstablishmentRepository: visibilitySpec
+  EstablishmentRepository->>EstablishmentRepository: BuildSearchSqlParts(query, maxResults, visibilitySpec)
+  EstablishmentRepository->>NpgsqlDataSource: OpenConnectionAsync(ct)
+  NpgsqlDataSource-->>EstablishmentRepository: DbConnection
+  EstablishmentRepository->>DbConnection: QueryAsync<Establishment>(sql, params)
+  EstablishmentRepository->>DbConnection: ExecuteScalarAsync<int>(countSql, params)
+  DbConnection-->>EstablishmentRepository: Results + totalCount
+  EstablishmentRepository-->>Caller: (Results, totalCount)
+```
+
+
+### OverviewRepository.GetOverviewAsync
+
+```mermaid
+sequenceDiagram
+  participant Caller
+  participant OverviewRepository
+  participant NpgsqlDataSource
+
+  Caller->>OverviewRepository: GetOverviewAsync(urn)
+  OverviewRepository->>NpgsqlDataSource: OpenConnectionAsync(ct)
+  NpgsqlDataSource-->>OverviewRepository: DbConnection
+  OverviewRepository->>DbConnection: QueryMultipleAsync(command)
+  DbConnection-->>OverviewRepository: GridReader
+  OverviewRepository->>GridReader: ReadSingleOrDefaultAsync<Establishment>()
+  OverviewRepository->>GridReader: ReadSingleOrDefaultAsync<EstablishmentPerformance>()
+  ...
+  OverviewRepository-->>Caller: Overview object composed from result sets
+```
 
 ---
 
 ## 15. Data pipeline dependency
 
-Most data is read live from PostgreSQL on each request. KS2 performance is the exception.
+All data is read live from PostgreSQL on each request.
 
-### Packaged into the deployment artefact
+Data is generated in the SAPData project, using the DataMap.csv described fully in the [documentation](../sap-data/01-overview.md).
 
-The KS2 JSON files (`establishment_performance.json`, `la_performance.json`, `england_performance.json`) are generated by SAPData and shipped with the build. Updated KS2 data therefore needs a redeploy to take effect.
+The current list of materialised views map to the `SAPData/SQL/run_all.sql` file:
 
-This is deliberate for now rather than a permanent design. KS2 will move onto PostgreSQL views in the same way as KS4, at which point the redeploy dependency goes away.
+`
+\ir 04_v_england_absence.sql
+\ir 04_v_england_destinations.sql
+\ir 04_v_england_performance.sql
+\ir 04_v_england_ks5_destinations.sql
+\ir 04_v_england_ks5_performance.sql
+\ir 04_v_england_ks2_attainment.sql
+\ir 04_v_establishment.sql
+\ir 04_v_establishment_links.sql
+\ir 04_v_establishment_group_links.sql
+\ir 04_v_establishment_absence.sql
+\ir 04_v_establishment_destinations.sql
+\ir 04_v_establishment_performance.sql
+\ir 04_v_establishment_ks5_destinations.sql
+\ir 04_v_establishment_ks5_performance.sql
+\ir 04_v_establishment_ks2_attainment.sql
+\ir 04_v_establishment_subject_entries.sql
+\ir 04_v_establishment_ks5_subject_entries.sql
+\ir 04_v_la_absence.sql
+\ir 04_v_la_destinations.sql
+\ir 04_v_la_performance.sql
+\ir 04_v_la_ks5_destinations.sql
+\ir 04_v_la_ks5_performance.sql
+\ir 04_v_la_ks2_attainment.sql
+\ir 04_v_la_subject_entries.sql
+\ir 04_v_la_urls.sql
+`
 
-### Read live from PostgreSQL
+With each sql query populating the view from the raw tables, and formatting into the way defined in DataMap.csv
 
-- `v_similar_schools_primary_groups` and `v_similar_schools_primary_values`, primary similar schools
-- `v_similar_schools_secondary_groups` and `v_similar_schools_secondary_values`, secondary similar schools
-- `v_establishment_performance`, `v_la_performance`, `v_england_performance`, KS4 performance
-- `v_establishment_destinations`, `v_la_destinations`, `v_england_destinations`, KS4 destinations
-- `v_establishment`, all school info
 
 ---
 
 ## 16. Test coverage
 
-| Project                                 | Scope                                                                                                                                                                                                    |
-| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Tests/SAPSec.Core.Tests`               | Unit. All KS2 measures (6 measures, all filter variations), `FindPrimarySimilarSchoolsUseCase` (all sort keys, tie-breaking, pagination, filter validation, `NotFoundException`), KS4 headline and core subject use cases, `EstablishmentExtensions.CanSearch`, `SchoolSearchService` phase and flag behaviour |
-| `Tests/SAPSec.Web.Tests`                | Unit. Controllers (primary redirect, feature flag off), `NotFoundExceptionHandler` (404 with warning log, 500 with error log)                                                                            |
-| `Tests/SAPSec.Infrastructure.Tests`     | Unit. Lucene abbreviation expansion (`St` to `Saint`), multi-token search, prefix matching                                                                                                               |
-| `Tests/SAPSec.Test.InMemoryIntegration` | Integration with in-memory repositories and no database. All primary and secondary routes return 200, feature flag off gives 404 for primary, KS2 and KS4 measures with correct table data and filter behaviour, similar schools filter, sort and pagination, comparison measures and accessibility assertions |
-| `Tests/SAPSec.Test.EndToEnd`            | Playwright. Full user journeys, search through school detail through comparison, for both phases                                                                                                         |
-| `Tests/SAPSec.Test.Accessibility`       | Playwright with axe-core, WCAG 2.1 AA. All pages in both phases including all comparison sub-pages                                                                                                       |
-
-`SAPSec.Test.InMemoryIntegration` was previously named `SAPSec.Test.Integration`. It uses in-memory repository doubles such as `InMemoryKs2PerformanceRepository`, `InMemorySimilarSchoolsPrimaryRepository` and `InMemoryKs4PerformanceRepository`, and needs no database.
-
-Test builders live in `Tests/SAPSec.Test.Common`:
-
-- `Build.Establishment("urn", "name", x => x.Primary().Open().InLA("001"))` and `.Secondary()`
-- `Build.PrimaryGroup(urn, neighbourUrns[])` and `Build.SecondaryGroup(...)`
-- `Build.Ks2Performance.Establishment(urn, x => x.WithRwmExpected(current, prev, prev2))`
+| Project | Scope |
+|---|---|
+| Tests\SAPPub.Core.Tests | Unit tests for domain and service layer: core business logic, service methods, helpers, mapping, builders and value-object behaviour. Focuses on KS2/KS4/KS5 services, search, attendance, email, LA services and many test builders. |
+| Tests\SAPPub.Infrastructure.Tests | Unit tests for infrastructure: repository unit tests, DapperHelpers, generic repository behaviour, Postgres search index reader, mapping helpers and reason-code lookups. Covers repo SQL mapping logic via test doubles in some cases. |
+| Tests\SAPPub.Web.Tests | Unit tests, integration tests and Playwright UI tests for the web project. Contains controllers, page / razor page tests, view components, cookie/feature-flag tests, accessibility tests, and Playwright UI coverage for critical pages. Contains test helpers and fake repos used in controller/page testing. |
+| Tests\SAPPub.Integration.Tests | Integration tests (server + browser) and Playwright test suites for end-to-end flows and full-stack scenarios. Includes page-level tests for representative flows (About school, Attainment, etc.). Uses Microsoft.AspNetCore.Mvc.Testing and Playwright. |
+| Tests\SAPData.Tests.Unit | Unit tests for the SAPData project (SQL/data generation tooling). Tests include SQL view/filter providers, raw table generation and indexing script behaviours (program path discovery). |
+| SAPPub.Playwright.Testing (ProjectReference) | Shared Playwright test utilities / fixtures used by UI/Integration projects (test harness). Not a test project itself, but referenced by test projects for WebApp factory and fixtures. |
 
 ---
 
-## 17. Phase comparison and refactoring notes
+### Test types and frameworks observed
 
-| Aspect                                        | Primary                                                                             | Secondary                                                                                                     |
-| --------------------------------------------- | ----------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Performance data source                       | JSON files through `JsonKs2PerformanceRepository`, interim                          | PostgreSQL through `PostgresKs4PerformanceRepository`                                                          |
-| Performance data type                         | `Ks2PerformanceData`                                                                | `Ks4PerformanceData`                                                                                           |
-| Measure domain classes                        | `Ks2PerformanceMeasures`, 6 measures                                                | `Ks4HeadlineMeasures`, `Ks4CoreSubjects`                                                                       |
-| `Measure` and `SubMeasure` pattern            | Fully implemented                                                                   | In place on school pages, comparison pages still being brought across                                          |
-| View components (`_Measure`, `<tabbed-view>`) | Fully implemented                                                                   | Being adopted                                                                                                  |
-| JSON `/data` endpoints                        | Not used                                                                            | Still routed, legacy, being removed                                                                            |
-| Similar schools repository                    | `ISimilarSchoolsPrimaryRepository`                                                  | `ISimilarSchoolsSecondaryRepository`                                                                           |
-| Find similar schools use case                 | `FindPrimarySimilarSchoolsUseCase`, implements `IUseCase<T,R>`, uses data providers | `FindSimilarSchools`, does not implement `IUseCase`, inline LINQ, will be refactored to match primary          |
-| Feature flag                                  | `EnablePrimarySchools` gates all routes                                             | No equivalent flag                                                                                             |
-| Side nav                                      | Overview, KS2, Attendance, Similar schools, School details                          | Overview, KS4 Headline, KS4 Core Subjects, Attendance, Similar schools, School details                         |
+- Unit tests:
+  - Framework: xUnit (primary across all test projects).
+  - Mocking: Moq used for service and repo mocking.
+  - Coverage: coverlet.collector and coverlet.msbuild packages are configured for coverage collection.
 
-Shared across both phases: `GetSchoolInfoUseCase`, `GetAttendanceMeasures`, `IEstablishmentRepository`, `IAbsenceRepository`, `SimilarSchoolsFilters`, `SchoolSearchController` and `SchoolSearchService`, `Measure`, `SubMeasure` and `MeasureViewModel`, `ISimilarSchoolsPageViewModel`, `ISimilarSchoolRowViewModel`, `NotFoundExceptionHandler`, DSI authentication and `SecurityHeadersMiddleware`.
+- Integration tests:
+  - Microsoft.AspNetCore.Mvc.Testing for TestServer/WebApplicationFactory-based integration tests.
+  - SAPPub.Integration.Tests provides higher-level integration scenarios.
 
----
+- UI / End-to-end tests:
+  - Playwright (Microsoft.Playwright and Microsoft.Playwright.Xunit) used to drive browser tests.
+  - Tests located under Tests\SAPPub.Web.Tests\UI and Tests\SAPPub.Integration.Tests folders.
+  - Accessibility tests: Deque.AxeCore.Playwright used in the web tests.
 
-## 18. Class diagrams
+- Infrastructure / Repository tests:
+  - Dapper repository helpers and mapping tests in Tests\SAPPub.Infrastructure.Tests.
+  - Verify SQL mapping, coded-value mapping and QueryMultiple handling.
 
-### 18.1 Search pipeline and phase-aware filtering
-
-```mermaid
-classDiagram
-    class ISchoolSearchService {
-        <<interface>>
-        +SearchAsync(query) Task~IReadOnlyList~SchoolSearchResult~~
-        +SearchByNumberAsync(number) Task~Establishment~
-        +SuggestAsync(queryPart) Task~IReadOnlyList~SchoolSearchResult~~
-    }
-
-    class SchoolSearchService {
-        -ISchoolSearchIndexReader _indexReader
-        -IEstablishmentRepository _establishmentRepository
-        -IFeatureFlagService _featureFlagService
-        +SearchAsync(query)
-        +SearchByNumberAsync(number)
-        +SuggestAsync(queryPart)
-        -SearchInternalAsync(query, maxResults, includeCoordinates)
-    }
-
-    class ISchoolSearchIndexReader {
-        <<interface>>
-        +SearchAsync(query, maxResults) Task~IList~(int urn, string resultText)~~
-    }
-
-    class LuceneShoolSearchIndexReader {
-        -LuceneIndexContext context
-        -LuceneTokeniser tokeniser
-        -LuceneHighlighter highlighter
-        +SearchAsync(query, maxResults)
-    }
-
-    class LuceneIndexContext {
-        +Directory RAMDirectory
-        +Analyzer LuceneTokenAnalyser
-        +Writer IndexWriter
-        +SearcherManager SearcherManager
-    }
-
-    class EstablishmentExtensions {
-        <<static>>
-        +CanIndexForSearch(establishment) bool
-        +CanSearch(establishment, primaryEnabled) bool
-    }
-
-    class PhaseOfEducationValues {
-        <<static>>
-        +PrimaryId = "2"
-        +AllThroughId = "7"
-        +SecondaryId = "4"
-        +IsPrimaryOrAllThrough(phase) bool
-        +IsSearchableSearchPhaseId(phaseId, primaryEnabled) bool
-    }
-
-    class SchoolSearchController {
-        +Index() IActionResult
-        +Search(query, localAuthorities, page)
-        +Suggest(queryPart)
-        -BuildSchoolUrl(urn, phase) string
-    }
-
-    SchoolSearchService ..|> ISchoolSearchService
-    SchoolSearchService --> ISchoolSearchIndexReader
-    SchoolSearchService --> IFeatureFlagService
-    SchoolSearchService --> EstablishmentExtensions : CanSearch()
-    LuceneShoolSearchIndexReader ..|> ISchoolSearchIndexReader
-    LuceneShoolSearchIndexReader --> LuceneIndexContext
-    EstablishmentExtensions --> PhaseOfEducationValues
-    SchoolSearchController --> ISchoolSearchService
-    SchoolSearchController --> PhaseOfEducationValues : IsPrimaryOrAllThrough()
-```
+- Data/SQL tests (SAPData):
+  - Unit tests for SQL generation tooling under Tests\SAPData.Tests.Unit.
 
 ---
 
-### 18.2 Measure domain model, both phases
+### High-level counts and structure (approximate)
 
-```mermaid
-classDiagram
-    class Measure {
-        +Key string
-        +Name string
-        +DataType MeasureDataType
-        +Filters IEnumerable~MeasureAvailableFilter~
-        +SubMeasures IEnumerable~SubMeasure~
-        +ForSchool(...)$
-        +ForSchoolComparison(...)$
-    }
+> Output from CoPilot analysis
 
-    class SubMeasure {
-        <<abstract>>
-    }
+(This is an approximate summary of the number of test source files detected in the repo. Exact numbers can shift; run `git ls-files "Tests/**" | wc -l` locally for exact counts.)
 
-    class ThreeYearAverageSubMeasure {
-        +Averages IEnumerable~decimal~~
-        +ForSchool(schoolData, similarSchools, selector)$
-        +ForSchoolComparison(current, similar, selector)$
-    }
+- SAPPub.Web.Tests: ~140+ test files (unit + UI + integration helpers + Playwright fixtures).
+- SAPPub.Core.Tests: ~60+ test files (service & helper unit tests, builders).
+- SAPPub.Infrastructure.Tests: ~40+ test files (repository tests, mapping, helpers).
+- SAPPub.Integration.Tests: ~10+ test files (end-to-end/page-level tests).
+- SAPData.Tests.Unit: ~8 test files (SQL tooling unit tests).
 
-    class TopPerformersSubMeasure {
-        +TopPerformers IEnumerable~TopPerformer~
-        +ForSchool(schoolData, similarSchools, selector)$
-    }
+Total test files: ~260+ (approximate, includes UI fixtures and helper classes).
 
-    class YearByYearSubMeasure {
-        +Series IEnumerable~YearByYearSeries~
-        +ForSchool(schoolData, similarSchools, selector)$
-        +ForSchoolComparison(current, similar, selector)$
-    }
+---
 
-    class Ks2PerformanceMeasures {
-        <<static, primary>>
-        +MeetingExpectedStandardRwm ForSchool() / ForSchoolComparison()
-        +AchievedHigherStandardRwm ForSchool() / ForSchoolComparison()
-        +AverageScaledScoreReading ForSchool() / ForSchoolComparison()
-        +AverageScaledScoreMaths ForSchool() / ForSchoolComparison()
-        +MeetingExpectedStandardGps ForSchool() / ForSchoolComparison()
-        +AchievedHigherStandardGps ForSchool() / ForSchoolComparison()
-    }
+### Overall test summary
 
-    class Ks4HeadlineMeasures {
-        <<static, secondary>>
-        +Attainment8 ForSchool() / ForSchoolComparison()
-        +EnglishAndMaths ForSchool() / ForSchoolComparison()
-        +Destinations ForSchool() / ForSchoolComparison()
-    }
+- Web UI coverage (Playwright):
+  - Tests cover: Overview page, KS2/KS4/KS5 profile pages, Search, MySchools, cookie banner, navigation, and accessibility.
+  - Playwright fixtures: Tests reference custom test collections and WebApplicationFactory fixtures for headless browser runs.
+  - Accessibility tests integrated with Axe via Deque.AxeCore.Playwright.
 
-    class Ks4CoreSubjects {
-        <<static, secondary>>
-        +EnglishLanguage ForSchool() / ForSchoolComparison()
-        +EnglishLiterature ForSchool() / ForSchoolComparison()
-        +Biology / Chemistry / Physics / Mathematics / CombinedScience
-    }
+- Controller & Page unit tests:
+  - Tests use fake repositories and fake services to exercise page models and controller actions without hitting the database.
+  - Extensive tests for page view-model mapping and page-level behaviour across KS2/KS4/KS5 pages.
 
-    class MeasureViewModel {
-        +Key string
-        +Name string
-        +SubMeasureViewModels IEnumerable~SubMeasureViewModel~
-        +AvailableFilters IEnumerable~MeasureAvailableFilterViewModel~
-        +FromMeasure(measure, schoolDetails, labels[])$
-    }
+- Core services:
+  - Unit tests exercise KS2/KS4 services (progress, scaled scores, meeting/exceeding standards, attainment and progress), attendance and overview services.
+  - Test builders used to create complex model inputs in a readable way (TestBuilders folder). This improves maintainability of service tests.
 
-    class IUseCase~TReq_TResp~ {
-        <<interface>>
-        +Execute(request) Task~TResp~
-    }
+- Infrastructure tests:
+  - DapperHelpers tests validate SQL templates and extraction used by generic repository.
+  - DapperRepository tests exercise mapping and error/cancellation behaviour.
+  - Repositories tests (EstablishmentRepository, OverviewRepository, Performance repositories) validate QueryMultiple and SQL behaviour against mocked or in-memory connections when possible.
 
-    class GetSchoolKs2PerformanceMeasuresUseCase {
-        +Execute() 6x Measure
-    }
+- SAPData unit tests:
+  - Validate SQL generation for views and scripts; presence and correctness of SQL script building blocks.
 
-    class GetSchoolKs4HeadlineMeasures {
-        +Execute() 3x Measure
-    }
-
-    SubMeasure <|-- ThreeYearAverageSubMeasure
-    SubMeasure <|-- TopPerformersSubMeasure
-    SubMeasure <|-- YearByYearSubMeasure
-    Measure "1" *-- "many" SubMeasure
-
-    Ks2PerformanceMeasures ..> Measure : creates
-    Ks4HeadlineMeasures ..> Measure : creates
-    Ks4CoreSubjects ..> Measure : creates
-
-    MeasureViewModel ..> Measure : wraps
-
-    GetSchoolKs2PerformanceMeasuresUseCase ..|> IUseCase
-    GetSchoolKs2PerformanceMeasuresUseCase ..> Ks2PerformanceMeasures
-    GetSchoolKs2PerformanceMeasuresUseCase ..> Measure : returns
-
-    GetSchoolKs4HeadlineMeasures ..|> IUseCase
-    GetSchoolKs4HeadlineMeasures ..> Ks4HeadlineMeasures
-    GetSchoolKs4HeadlineMeasures ..> Measure : returns
-```
+---
