@@ -22,9 +22,9 @@ public class KS4DestinationsViewModel : ProfileBaseViewModel
 
         var hasEstablishmentData = new[]
         {
-            destinationsDetails.SchoolAll.CurrentYear,
-            destinationsDetails.SchoolAll.PreviousYear,
-            destinationsDetails.SchoolAll.TwoYearsAgo,
+            destinationsDetails.SchoolAll.CurrentYear.Value,
+            destinationsDetails.SchoolAll.PreviousYear.Value,
+            destinationsDetails.SchoolAll.TwoYearsAgo.Value,
         }.All(d => d is double v && v != 0);
 
         return new KS4DestinationsViewModel
@@ -36,17 +36,17 @@ public class KS4DestinationsViewModel : ProfileBaseViewModel
             IsKS5 = destinationsDetails.IsKS5,
             AllDestinationsData = new DataViewModel    {
                 Labels = ["School", laAverageLabel, "England average"],
-                Data = [destinationsDetails.SchoolAll.CurrentYear, destinationsDetails.LocalAuthorityAll.CurrentYear, destinationsDetails.EnglandAll.CurrentYear],
+                Data = [destinationsDetails.SchoolAll.CurrentYear.Value, destinationsDetails.LocalAuthorityAll.CurrentYear.Value, destinationsDetails.EnglandAll.CurrentYear.Value],
             },
             AllDestinationsDisadvantagedData = new DataViewModel
             {
                 Labels = ["School", laAverageLabel, "England average"],
-                Data = [destinationsDetails.SchoolDisadvantagedAll.CurrentYear, destinationsDetails.LocalAuthorityDisadvantagedAll.CurrentYear, destinationsDetails.EnglandDisadvantagedAll.CurrentYear],
+                Data = [destinationsDetails.SchoolDisadvantagedAll.CurrentYear.Value, destinationsDetails.LocalAuthorityDisadvantagedAll.CurrentYear.Value, destinationsDetails.EnglandDisadvantagedAll.CurrentYear.Value],
             },
             AllDestinationsNonDisadvantagedData = new DataViewModel
             {
                 Labels = [laAverageLabel, "England average"],
-                Data = [destinationsDetails.LocalAuthorityNonDisadvantagedAll.CurrentYear, destinationsDetails.EnglandNonDisadvantagedAll.CurrentYear],
+                Data = [destinationsDetails.LocalAuthorityNonDisadvantagedAll.CurrentYear.Value, destinationsDetails.EnglandNonDisadvantagedAll.CurrentYear.Value],
 
             },
             AllDestinationsOverTimeData = new DataOverTimeViewModel
@@ -57,17 +57,17 @@ public class KS4DestinationsViewModel : ProfileBaseViewModel
                     new DatasetViewModel
                     {
                         Label = "School",
-                        Data = [destinationsDetails.SchoolAll.TwoYearsAgo, destinationsDetails.SchoolAll.PreviousYear, destinationsDetails.SchoolAll.CurrentYear],
+                        Data = [destinationsDetails.SchoolAll.TwoYearsAgo.Value, destinationsDetails.SchoolAll.PreviousYear.Value, destinationsDetails.SchoolAll.CurrentYear.Value],
                     },
                     new DatasetViewModel
                     {
                         Label = laAverageLabel,
-                        Data = [destinationsDetails.LocalAuthorityAll.TwoYearsAgo, destinationsDetails.LocalAuthorityAll.PreviousYear, destinationsDetails.LocalAuthorityAll.CurrentYear],
+                        Data = [destinationsDetails.LocalAuthorityAll.TwoYearsAgo.Value, destinationsDetails.LocalAuthorityAll.PreviousYear.Value, destinationsDetails.LocalAuthorityAll.CurrentYear.Value],
                     },
                     new DatasetViewModel
                     {
                         Label = "England average",
-                        Data = [destinationsDetails.EnglandAll.TwoYearsAgo, destinationsDetails.EnglandAll.PreviousYear, destinationsDetails.EnglandAll.CurrentYear],
+                        Data = [destinationsDetails.EnglandAll.TwoYearsAgo.Value, destinationsDetails.EnglandAll.PreviousYear.Value, destinationsDetails.EnglandAll.CurrentYear.Value],
                     }
                 ],               
             },
@@ -77,15 +77,15 @@ public class KS4DestinationsViewModel : ProfileBaseViewModel
                 [
                     new DataSeriesViewModel {
                         Label = "School",
-                        Data = [destinationsDetails.SchoolEducation.CurrentYear, CommonHelper.AddNullable(destinationsDetails.SchoolEmployment.CurrentYear, destinationsDetails.SchoolApprentice.CurrentYear)]
+                        Data = [destinationsDetails.SchoolEducation.CurrentYear.Value, CommonHelper.AddNullable(destinationsDetails.SchoolEmployment.CurrentYear.Value, destinationsDetails.SchoolApprentice.CurrentYear.Value)]
                     },
                     new DataSeriesViewModel {
                         Label = laAverageLabel,
-                        Data = [destinationsDetails.LocalAuthorityEducation.CurrentYear, CommonHelper.AddNullable(destinationsDetails.LocalAuthorityEmployment.CurrentYear, destinationsDetails.LocalAuthorityApprentice.CurrentYear)]
+                        Data = [destinationsDetails.LocalAuthorityEducation.CurrentYear.Value, CommonHelper.AddNullable(destinationsDetails.LocalAuthorityEmployment.CurrentYear.Value, destinationsDetails.LocalAuthorityApprentice.CurrentYear.Value)]
                     },
                     new DataSeriesViewModel {
                         Label = "England average",
-                        Data = [destinationsDetails.EnglandEducation.CurrentYear, CommonHelper.AddNullable(destinationsDetails.EnglandEmployment.CurrentYear, destinationsDetails.EnglandApprentice.CurrentYear)]
+                        Data = [destinationsDetails.EnglandEducation.CurrentYear.Value, CommonHelper.AddNullable(destinationsDetails.EnglandEmployment.CurrentYear.Value, destinationsDetails.EnglandApprentice.CurrentYear.Value)]
                     },
                 ],
             },

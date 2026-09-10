@@ -351,33 +351,27 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
         ["105574"] = new KS4EstablishmentDestinations
         {
             Id = "105574",
-            AllDest_Tot_Est_Current_Pct = 50,
-            AllDest_Tot_Est_Previous_Pct = 20,
-            AllDest_Tot_Est_Previous2_Pct = 30,
-            Education_Tot_Est_Current_Pct = 47,
-            Employment_Tot_Est_Current_Pct = 2,
-            Apprentice_Tot_Est_Current_Pct = 1,
+            AllDest_Tot_Est_Current_Pct_Coded = new CodedDouble(50, string.Empty, "50"),
+            AllDest_Tot_Est_Previous_Pct_Coded = new CodedDouble(20, string.Empty, "20"),
+            AllDest_Tot_Est_Previous2_Pct_Coded = new CodedDouble(30, string.Empty, "30"),
+            Education_Tot_Est_Current_Pct_Coded = new CodedDouble(47, string.Empty, "47"),
+            Employment_Tot_Est_Current_Pct_Coded = new CodedDouble(2, string.Empty, "2"),
+            Apprentice_Tot_Est_Current_Pct_Coded = new CodedDouble(1, string.Empty, "1"),
 
         },
         ["100279"] = new KS4EstablishmentDestinations
         {
             Id = "100279",
-            AllDest_Tot_Est_Current_Pct = 50,
-            AllDest_Tot_Est_Previous_Pct = 20,
-            AllDest_Tot_Est_Previous2_Pct = 30,
-            Education_Tot_Est_Current_Pct = 47,
-            Employment_Tot_Est_Current_Pct = 2,
-            Apprentice_Tot_Est_Current_Pct = 1,
+            AllDest_Tot_Est_Current_Pct_Coded = new CodedDouble(50, string.Empty, "50"),
+            AllDest_Tot_Est_Previous_Pct_Coded = new CodedDouble(20, string.Empty, "20"),
+            AllDest_Tot_Est_Previous2_Pct_Coded = new CodedDouble(30, string.Empty, "30"),
+            Education_Tot_Est_Current_Pct_Coded = new CodedDouble(47, string.Empty, "47"),
+            Employment_Tot_Est_Current_Pct_Coded = new CodedDouble(2, string.Empty, "2"),
+            Apprentice_Tot_Est_Current_Pct_Coded = new CodedDouble(1, string.Empty, "1"),
         },
         ["149328"] = new KS4EstablishmentDestinations
         {
             Id = "149328",
-            AllDest_Tot_Est_Current_Pct = null,
-            AllDest_Tot_Est_Previous_Pct = null,
-            AllDest_Tot_Est_Previous2_Pct = null,
-            Education_Tot_Est_Current_Pct = null,
-            Employment_Tot_Est_Current_Pct = null,
-            Apprentice_Tot_Est_Current_Pct = null,
         },
     };
 
@@ -386,17 +380,16 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
         ["105574"] = new KS4EnglandDestinations
         {
             Id = "105574",
-            AllDest_Tot_Eng_Current_Pct = 50
+            AllDest_Tot_Eng_Current_Pct_Coded = new CodedDouble(50, string.Empty, "50")
         },
         ["100279"] = new KS4EnglandDestinations
         {
             Id = "100279",
-            AllDest_Tot_Eng_Current_Pct = 50
+            AllDest_Tot_Eng_Current_Pct_Coded = new CodedDouble(50, string.Empty, "50")
         },
         ["149328"] = new KS4EnglandDestinations
         {
             Id = "149328",
-            AllDest_Tot_Eng_Current_Pct = null
         }
     };
 

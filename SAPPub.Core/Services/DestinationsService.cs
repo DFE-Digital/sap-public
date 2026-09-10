@@ -3,6 +3,7 @@ using SAPPub.Core.Entities.Destinations;
 using SAPPub.Core.Interfaces.Repositories.Destinations;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.ServiceModels.Destinations;
+using SAPPub.Core.ValueObjects;
 
 namespace SAPPub.Core.Services;
 
@@ -45,81 +46,81 @@ public class DestinationsService(
             IsKS2 = establishment.IsKS2,
             IsKS4 = establishment.IsKS4,
             IsKS5 = establishment.IsKS5,
-            SchoolAll = new RelativeYearValues<double?>
+            SchoolAll = new RelativeYearValues<CodedDouble>
             {
-                CurrentYear = establishmentDestinations.AllDest_Tot_Est_Current_Pct,
-                PreviousYear = establishmentDestinations.AllDest_Tot_Est_Previous_Pct,
-                TwoYearsAgo = establishmentDestinations.AllDest_Tot_Est_Previous2_Pct,
+                CurrentYear = establishmentDestinations.AllDest_Tot_Est_Current_Pct_Coded,
+                PreviousYear = establishmentDestinations.AllDest_Tot_Est_Previous_Pct_Coded,
+                TwoYearsAgo = establishmentDestinations.AllDest_Tot_Est_Previous2_Pct_Coded,
             },
-            LocalAuthorityAll = new RelativeYearValues<double?>
+            LocalAuthorityAll = new RelativeYearValues<CodedDouble>
             {
-                CurrentYear = lADestinations.AllDest_Tot_LA_Current_Pct,
-                PreviousYear = lADestinations.AllDest_Tot_LA_Previous_Pct,
-                TwoYearsAgo = lADestinations.AllDest_Tot_LA_Previous2_Pct,
+                CurrentYear = lADestinations.AllDest_Tot_LA_Current_Pct_Coded,
+                PreviousYear = lADestinations.AllDest_Tot_LA_Previous_Pct_Coded,
+                TwoYearsAgo = lADestinations.AllDest_Tot_LA_Previous2_Pct_Coded,
             },
-            EnglandAll = new RelativeYearValues<double?>
+            EnglandAll = new RelativeYearValues<CodedDouble>
             {
-                CurrentYear = englandDestinations.AllDest_Tot_Eng_Current_Pct,
-                PreviousYear = englandDestinations.AllDest_Tot_Eng_Previous_Pct,
-                TwoYearsAgo = englandDestinations.AllDest_Tot_Eng_Previous2_Pct,
+                CurrentYear = englandDestinations.AllDest_Tot_Eng_Current_Pct_Coded,
+                PreviousYear = englandDestinations.AllDest_Tot_Eng_Previous_Pct_Coded,
+                TwoYearsAgo = englandDestinations.AllDest_Tot_Eng_Previous2_Pct_Coded,
             },
-            SchoolDisadvantagedAll = new RelativeYearValues<double?>
+            SchoolDisadvantagedAll = new RelativeYearValues<CodedDouble>
             {
-                CurrentYear = establishmentDestinations.AllDest_Dis_Est_Current_Pct
+                CurrentYear = establishmentDestinations.AllDest_Dis_Est_Current_Pct_Coded
             },
-            LocalAuthorityDisadvantagedAll = new RelativeYearValues<double?>
+            LocalAuthorityDisadvantagedAll = new RelativeYearValues<CodedDouble>
             {
-                CurrentYear = lADestinations.AllDest_Dis_LA_Current_Pct
+                CurrentYear = lADestinations.AllDest_Dis_LA_Current_Pct_Coded
             },
-            EnglandDisadvantagedAll = new RelativeYearValues<double?>
+            EnglandDisadvantagedAll = new RelativeYearValues<CodedDouble>
             {
-                CurrentYear = englandDestinations.AllDest_Dis_Eng_Current_Pct
+                CurrentYear = englandDestinations.AllDest_Dis_Eng_Current_Pct_Coded
             },
-            LocalAuthorityNonDisadvantagedAll = new RelativeYearValues<double?>
+            LocalAuthorityNonDisadvantagedAll = new RelativeYearValues<CodedDouble>
             {
-                CurrentYear = lADestinations.AllDest_Ndis_LA_Current_Pct
+                CurrentYear = lADestinations.AllDest_Ndis_LA_Current_Pct_Coded
             },
-            EnglandNonDisadvantagedAll = new RelativeYearValues<double?>
+            EnglandNonDisadvantagedAll = new RelativeYearValues<CodedDouble>
             {
-                CurrentYear = englandDestinations.AllDest_Ndis_Eng_Current_Pct
+                CurrentYear = englandDestinations.AllDest_Ndis_Eng_Current_Pct_Coded
             },
-            SchoolEducation = new RelativeYearValues<double?>
+            SchoolEducation = new RelativeYearValues<CodedDouble>
             {
-                CurrentYear = establishmentDestinations.Education_Tot_Est_Current_Pct
+                CurrentYear = establishmentDestinations.Education_Tot_Est_Current_Pct_Coded
             },
-            LocalAuthorityEducation = new RelativeYearValues<double?>
+            LocalAuthorityEducation = new RelativeYearValues<CodedDouble>
             {
-                CurrentYear = lADestinations.Education_Tot_LA_Current_Pct
+                CurrentYear = lADestinations.Education_Tot_LA_Current_Pct_Coded
             },
-            EnglandEducation = new RelativeYearValues<double?>
+            EnglandEducation = new RelativeYearValues<CodedDouble>
             {
-                CurrentYear = englandDestinations.Education_Tot_Eng_Current_Pct
-            },
-
-            SchoolEmployment = new RelativeYearValues<double?>
-            {
-                CurrentYear = establishmentDestinations.Employment_Tot_Est_Current_Pct
-            },
-            LocalAuthorityEmployment = new RelativeYearValues<double?>
-            {
-                CurrentYear = lADestinations.Employment_Tot_LA_Current_Pct
-            },
-            EnglandEmployment = new RelativeYearValues<double?>
-            {
-                CurrentYear = englandDestinations.Employment_Tot_Eng_Current_Pct
+                CurrentYear = englandDestinations.Education_Tot_Eng_Current_Pct_Coded
             },
 
-            SchoolApprentice = new RelativeYearValues<double?>
+            SchoolEmployment = new RelativeYearValues<CodedDouble>
             {
-                CurrentYear = establishmentDestinations.Apprentice_Tot_Est_Current_Pct
+                CurrentYear = establishmentDestinations.Employment_Tot_Est_Current_Pct_Coded
             },
-            LocalAuthorityApprentice = new RelativeYearValues<double?>
+            LocalAuthorityEmployment = new RelativeYearValues<CodedDouble>
             {
-                CurrentYear = lADestinations.Apprentice_Tot_LA_Current_Pct
+                CurrentYear = lADestinations.Employment_Tot_LA_Current_Pct_Coded
             },
-            EnglandApprentice = new RelativeYearValues<double?>
+            EnglandEmployment = new RelativeYearValues<CodedDouble>
             {
-                CurrentYear = englandDestinations.Apprentice_Tot_Eng_Current_Pct
+                CurrentYear = englandDestinations.Employment_Tot_Eng_Current_Pct_Coded
+            },
+
+            SchoolApprentice = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = establishmentDestinations.Apprentice_Tot_Est_Current_Pct_Coded
+            },
+            LocalAuthorityApprentice = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = lADestinations.Apprentice_Tot_LA_Current_Pct_Coded
+            },
+            EnglandApprentice = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = englandDestinations.Apprentice_Tot_Eng_Current_Pct_Coded
             },
         };
     }
@@ -180,11 +181,11 @@ public class DestinationsService(
 
     private static KS4DestinationsDetails CreateEmpty(string? urn)
     {
-        static RelativeYearValues<double?> EmptyYears() => new()
+        static RelativeYearValues<CodedDouble> EmptyYears() => new()
         {
-            CurrentYear = null,
-            PreviousYear = null,
-            TwoYearsAgo = null
+            CurrentYear = CodedDouble.Empty,
+            PreviousYear = CodedDouble.Empty,
+            TwoYearsAgo = CodedDouble.Empty
         };
 
         return new KS4DestinationsDetails

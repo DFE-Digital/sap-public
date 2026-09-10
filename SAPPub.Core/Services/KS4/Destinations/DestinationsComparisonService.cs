@@ -19,12 +19,12 @@ public class DestinationsComparisonService(IKS4DestinationsRepository kS4Destina
         var schoolDetails = urns.Select(urn => new SchoolDestinationDetails
         {
             URN = urn,
-            PercentInEducationEmploymentOrTraining = establishmentDestinations.FirstOrDefault(x => x.Id == urn)?.AllDest_Tot_Est_Current_Pct
+            PercentInEducationEmploymentOrTraining = establishmentDestinations.FirstOrDefault(x => x.Id == urn)?.AllDest_Tot_Est_Current_Pct_Coded.Value
         });
         return new DestinationsComparisonResultModel
         {
             SchoolDetails = schoolDetails,
-            EnglandPercentage = englandDestinations.AllDest_Tot_Eng_Current_Pct
+            EnglandPercentage = englandDestinations.AllDest_Tot_Eng_Current_Pct_Coded.Value
         };
     }
 }
