@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using SAPPub.Core.ServiceModels.KS4.Performance;
+using SAPPub.Core.ValueObjects;
 
 namespace SAPPub.Core.Tests.TestBuilders;
 
@@ -13,6 +14,10 @@ public class AdditionalMeasuresBuilder
     private double? _gcseExamEntriesPerPupilNum;
     private double? _allKS4QualificationsExamEntriesPerPupilNum;
     private double? _pupilsAtTheEndOfKS4Num;
+    private double? _averageGCSEExamEntriesPerDisadvantagedPupil;
+    private double? _averageKS4ExamEntriesPerDisadvantagedPupil;
+    private double? _averageGCSEExamEntriesPerNonDisadvantagedPupil;
+    private double? _averageKS4ExamEntriesPerNonDisadvantagedPupil;
 
     public AdditionalMeasuresBuilder WithAchievingAtLeastOneQualification(double? value)
     {
@@ -58,6 +63,10 @@ public class AdditionalMeasuresBuilder
         _gcseExamEntriesPerPupilNum = _faker.Random.Double(0, 11);
         _allKS4QualificationsExamEntriesPerPupilNum = Math.Round(_faker.Random.Double(0, 11), 1);
         _pupilsAtTheEndOfKS4Num = Math.Round(_faker.Random.Double(1, 240), 0);
+        _averageGCSEExamEntriesPerDisadvantagedPupil = Math.Round(_faker.Random.Double(10, 100), 1);
+        _averageKS4ExamEntriesPerDisadvantagedPupil = Math.Round(_faker.Random.Double(10, 100), 1);
+        _averageGCSEExamEntriesPerNonDisadvantagedPupil = Math.Round(_faker.Random.Double(10, 100), 1);
+        _averageKS4ExamEntriesPerNonDisadvantagedPupil = Math.Round(_faker.Random.Double(10, 100), 1);
         return this;
     }
 
@@ -65,12 +74,21 @@ public class AdditionalMeasuresBuilder
     {
         return new AdditionalMeasures
         {
-            PercentAchievingAtLeastOneQualification = new ValueObjects.CodedDouble(Value: _achievingAtLeastOneQualificationPct, "", ""),
-            PercentEnteredForTripleScience = new ValueObjects.CodedDouble(Value: _enteredForTripleSciencePct, "", ""),
-            PercentEnteredMoreThanOneForeignLanguage = new ValueObjects.CodedDouble(Value: _enteredMoreThanOneForeignLanguagePct, "", ""),
-            AverageGCSEExamEntriesPerPupil = new ValueObjects.CodedDouble(Value: _gcseExamEntriesPerPupilNum, "", ""),
-            AverageAllKS4QualificationsExamEntriesPerPupil = new ValueObjects.CodedDouble(Value: _allKS4QualificationsExamEntriesPerPupilNum, "", ""),
-            NumberOfPupilsAtTheEndOfKS4 = new ValueObjects.CodedDouble(Value: _pupilsAtTheEndOfKS4Num, "", "")
+            PercentAchievingAtLeastOneQualification = GetCodedDouble(_achievingAtLeastOneQualificationPct),
+            PercentEnteredForTripleScience = GetCodedDouble(_enteredForTripleSciencePct),
+            PercentEnteredMoreThanOneForeignLanguage = GetCodedDouble(_enteredMoreThanOneForeignLanguagePct),
+            AverageGCSEExamEntriesPerPupil = GetCodedDouble(_gcseExamEntriesPerPupilNum),
+            AverageAllKS4QualificationsExamEntriesPerPupil = GetCodedDouble(_allKS4QualificationsExamEntriesPerPupilNum),
+            NumberOfPupilsAtTheEndOfKS4 = GetCodedDouble(_pupilsAtTheEndOfKS4Num),
+            AverageGCSEExamEntriesPerDisadvantagedPupil = GetCodedDouble(_averageGCSEExamEntriesPerDisadvantagedPupil),
+            AverageAllKS4QualificationsExamEntriesPerDisadvantagedPupil = GetCodedDouble(_averageKS4ExamEntriesPerDisadvantagedPupil),
+            AverageGCSEExamEntriesPerNonDisadvantagedPupil = GetCodedDouble(_averageGCSEExamEntriesPerNonDisadvantagedPupil),
+            AverageAllKS4QualificationsExamEntriesPerNonDisadvantagedPupil = GetCodedDouble(_averageKS4ExamEntriesPerNonDisadvantagedPupil)
         };
+    }
+
+    private static CodedDouble GetCodedDouble(double? val)
+    {
+        return new CodedDouble(val!, string.Empty, val is null ? null! : val.ToString()!);
     }
 }
