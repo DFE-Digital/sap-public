@@ -50,6 +50,13 @@ public static class PageHelper
         return row.Locator("td").AllInnerTextsAsync();
     }
 
+    public static Task ExpandAccordionByIdAsync(this IPage page, string id)
+    {
+        var sectionLocator = page.Locator($"#{id}");
+        var button = sectionLocator.Locator(".govuk-accordion__show-all");
+        return button.ClickAsync();
+    }
+     
     public static Task ExpandAccordionAsync(this IPage page, string label)
     {
         return page.GetByRole(AriaRole.Button, new()
