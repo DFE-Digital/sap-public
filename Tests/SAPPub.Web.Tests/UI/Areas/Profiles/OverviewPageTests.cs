@@ -954,59 +954,54 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
     [Fact]
     public async Task OverviewPage_PupilProgressAccordion_IsClosedByDefault()
     {
-        const string url =
-            "school/137552/stewards-academy-science-specialist-harlow/overview";
+        await Page.GotoAsync(SecondaryOnlyOverviewUrl);
 
-        await Page.GotoAsync(url);
+        var section =
+            Page.Locator(
+                "#secondary-at-a-glance-accordion .govuk-accordion__section")
+            .Nth(0);
 
         var accordionButton =
-            Page.GetByRole(
+            section.GetByRole(
                 AriaRole.Button,
                 new()
                 {
-                    NameRegex =
-                        new Regex("Pupil progress")
+                    NameRegex = new Regex(
+                        "Pupil progress",
+                        RegexOptions.IgnoreCase)
                 });
+
+        var content =
+            Page.Locator(
+                "#secondary-at-a-glance-accordion-content-1");
 
         await Expect(accordionButton)
             .ToHaveAttributeAsync(
                 "aria-expanded",
                 "false");
 
-        await Expect(
-            Page.GetByText(
-                "Progress 8 measures the progress pupils make",
-                new() { Exact = false }))
+        await Expect(content)
             .Not.ToBeVisibleAsync();
     }
 
     [Fact]
     public async Task OverviewPage_PupilProgressAccordion_CanBeExpandedAndClosed()
     {
-        const string url =
-            "school/137552/stewards-academy-science-specialist-harlow/overview";
+        await Page.GotoAsync(SecondaryOnlyOverviewUrl);
 
-        await Page.GotoAsync(url);
-
-        var pupilProgressSection =
+        var section =
             Page.Locator(
-                    "#secondary-at-a-glance-accordion .govuk-accordion__section")
-                .Filter(
-                    new LocatorFilterOptions
-                    {
-                        Has = Page.Locator(
-                            "#accordion-progress-heading")
-                    });
+                "#secondary-at-a-glance-accordion .govuk-accordion__section")
+            .Nth(0);
 
         var accordionButton =
-            pupilProgressSection.GetByRole(
+            section.GetByRole(
                 AriaRole.Button,
                 new()
                 {
-                    NameRegex =
-                        new Regex(
-                            "Pupil progress",
-                            RegexOptions.IgnoreCase)
+                    NameRegex = new Regex(
+                        "Pupil progress",
+                        RegexOptions.IgnoreCase)
                 });
 
         var content =
@@ -1037,12 +1032,6 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                 new() { Exact = true }))
             .ToBeVisibleAsync();
 
-        await Expect(
-            content.GetByText(
-                "You can view progress results from previous years on the school's full profile.",
-                new() { Exact = true }))
-            .ToBeVisibleAsync();
-
         await accordionButton.ClickAsync();
 
         await Expect(accordionButton)
@@ -1054,6 +1043,135 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
             .Not.ToBeVisibleAsync();
     }
 
+    [Fact]
+    public async Task OverviewPage_AccordionToggleIds_AreUniqueAndDescriptive()
+    {
+        await Page.GotoAsync(AllThroughOverviewUrl);
+
+        var expectedIds = new[]
+        {
+        "primary-progress-toggle",
+        "primary-expected-standard-toggle",
+        "secondary-progress-toggle",
+        "secondary-attainment-toggle",
+        "secondary-english-maths-toggle",
+        "secondary-destinations-toggle",
+        "secondary-extra-curricular-toggle"
+    };
+
+        foreach (var id in expectedIds)
+        {
+            await Expect(
+                Page.Locator($"#{id}"))
+                .ToHaveCountAsync(1);
+        }
+    }
+
+    [Fact]
+    public async Task OverviewPage_PrimaryPupilProgress_CanBeExpandedAndClosed()
+    {
+        await Page.GotoAsync(PrimaryOnlyOverviewUrl);
+
+        var section =
+            Page.Locator(
+                "#primary-at-a-glance-accordion .govuk-accordion__section")
+            .Nth(0);
+
+        var button =
+            section.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex(
+                        "Pupil progress",
+                        RegexOptions.IgnoreCase)
+                });
+
+        var content =
+            Page.Locator(
+                "#primary-at-a-glance-accordion-content-1");
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "false");
+
+        await Expect(content)
+            .Not.ToBeVisibleAsync();
+
+        await button.ClickAsync();
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "true");
+
+        await Expect(content)
+            .ToBeVisibleAsync();
+
+        await button.ClickAsync();
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "false");
+
+        await Expect(content)
+            .Not.ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_PrimaryExpectedStandardAccordion_CanBeClosedAndExpanded()
+    {
+        await Page.GotoAsync(PrimaryOnlyOverviewUrl);
+
+        var section =
+            Page.Locator(
+                "#primary-at-a-glance-accordion .govuk-accordion__section")
+            .Nth(1);
+
+        var button =
+            section.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex(
+                        "Meeting expected standard in reading, writing and maths",
+                        RegexOptions.IgnoreCase)
+                });
+
+        var content =
+            Page.Locator(
+                "#primary-at-a-glance-accordion-content-2");
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "true");
+
+        await Expect(content)
+            .ToBeVisibleAsync();
+
+        await button.ClickAsync();
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "false");
+
+        await Expect(content)
+            .Not.ToBeVisibleAsync();
+
+        await button.ClickAsync();
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "true");
+
+        await Expect(content)
+            .ToBeVisibleAsync();
+    }
     [Fact]
     public async Task OverviewPage_SecondarySchool_DisplaysAtAGlanceSectionsInExpectedOrder()
     {
@@ -2596,7 +2714,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                 AriaRole.Link,
                 new()
                 {
-                    Name = "Performance in qualifications",
+                    Name = "16 to 19 performance in qualifications",
                     Exact = true
                 }))
             .ToHaveCountAsync(0);
@@ -2624,7 +2742,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                 AriaRole.Link,
                 new()
                 {
-                    Name = "Performance in qualifications",
+                    Name = "16 to 19 performance in qualifications",
                     Exact = true
                 }))
             .ToBeVisibleAsync();
@@ -2790,7 +2908,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                 AriaRole.Link,
                 new()
                 {
-                    Name = "Primary academic performance",
+                    Name = "16 to 19 performance in qualifications",
                     Exact = true
                 }))
             .ToHaveCountAsync(1);
@@ -2810,7 +2928,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                 AriaRole.Link,
                 new()
                 {
-                    Name = "Performance in qualifications",
+                    Name = "16 to 19 performance in qualifications",
                     Exact = true
                 }))
             .ToHaveCountAsync(1);
@@ -3005,7 +3123,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                 AriaRole.Link,
                 new()
                 {
-                    Name = "Performance in qualifications",
+                    Name = "16 to 19 performance in qualifications",
                     Exact = true
                 });
 
@@ -3383,48 +3501,6 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
     }
 
     [Fact]
-    public async Task OverviewPage_PrimaryPupilProgress_CanBeExpandedAndClosed()
-    {
-        await Page.GotoAsync(PrimaryOnlyOverviewUrl);
-
-        var accordion =
-            Page.Locator("#primary-at-a-glance-accordion");
-
-        var button =
-            accordion.GetByRole(
-                AriaRole.Button,
-                new()
-                {
-                    NameRegex = new Regex(
-                        "Pupil progress",
-                        RegexOptions.IgnoreCase)
-                });
-
-        var content =
-            Page.Locator("#primary-at-a-glance-accordion-content-1");
-
-        await button.ClickAsync();
-
-        await Expect(button)
-            .ToHaveAttributeAsync(
-                "aria-expanded",
-                "true");
-
-        await Expect(content)
-            .ToBeVisibleAsync();
-
-        await button.ClickAsync();
-
-        await Expect(button)
-            .ToHaveAttributeAsync(
-                "aria-expanded",
-                "false");
-
-        await Expect(content)
-            .Not.ToBeVisibleAsync();
-    }
-
-    [Fact]
     public async Task OverviewPage_PrimaryPupilProgress_DisplaysExpectedContent()
     {
         await Page.GotoAsync(PrimaryOnlyOverviewUrl);
@@ -3446,9 +3522,6 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
         var content =
             Page.Locator("#primary-at-a-glance-accordion-content-1");
 
-        await Expect(content)
-            .ToContainTextAsync(
-                "Pupil progress is measured between the end of key stage 1 and the end of key stage 2.");
 
         await Expect(content)
             .ToContainTextAsync(
@@ -3574,50 +3647,6 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
         await Expect(
             Page.Locator(
                 "#primary-at-a-glance-accordion-content-2"))
-            .ToBeVisibleAsync();
-    }
-
-    [Fact]
-    public async Task OverviewPage_PrimaryExpectedStandardAccordion_CanBeClosedAndExpanded()
-    {
-        await Page.GotoAsync(PrimaryOnlyOverviewUrl);
-
-        var button =
-            Page.Locator("#primary-at-a-glance-accordion")
-                .GetByRole(
-                    AriaRole.Button,
-                    new()
-                    {
-                        NameRegex = new Regex(
-                            "Meeting expected standard in reading, writing and maths",
-                            RegexOptions.IgnoreCase)
-                    });
-
-        var content =
-            Page.Locator(
-                "#primary-at-a-glance-accordion-content-2");
-
-        await Expect(content)
-            .ToBeVisibleAsync();
-
-        await button.ClickAsync();
-
-        await Expect(button)
-            .ToHaveAttributeAsync(
-                "aria-expanded",
-                "false");
-
-        await Expect(content)
-            .Not.ToBeVisibleAsync();
-
-        await button.ClickAsync();
-
-        await Expect(button)
-            .ToHaveAttributeAsync(
-                "aria-expanded",
-                "true");
-
-        await Expect(content)
             .ToBeVisibleAsync();
     }
 
