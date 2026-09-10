@@ -1374,73 +1374,23 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
     [Fact]
     public async Task OverviewPage_PrimaryOnlySchool_DoesNotDisplaySecondaryAtAGlanceSection()
     {
-        await GoToOverviewAsync();
+        await Page.GotoAsync(PrimaryOnlyOverviewUrl);
+
+        await Expect(
+            Page.Locator("#primary-at-a-glance-accordion"))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            Page.Locator("#secondary-at-a-glance-accordion"))
+            .ToHaveCountAsync(0);
 
         await Expect(
             Page.GetByRole(
                 AriaRole.Heading,
                 new()
                 {
-                    Level = 2,
-                    Name =
-                        "Secondary school profile at a glance",
+                    Name = "Secondary school profile at a glance",
                     Exact = true
-                }))
-            .ToHaveCountAsync(0);
-
-        await Expect(
-            Page.GetByRole(
-                AriaRole.Button,
-                new()
-                {
-                    NameRegex =
-                        new Regex("Pupil progress")
-                }))
-            .ToHaveCountAsync(0);
-
-        await Expect(
-            Page.GetByRole(
-                AriaRole.Button,
-                new()
-                {
-                    NameRegex =
-                        new Regex(
-                            "Average pupil achievement")
-                }))
-            .ToHaveCountAsync(0);
-
-        await Expect(
-            Page.GetByRole(
-                AriaRole.Button,
-                new()
-                {
-                    NameRegex =
-                        new Regex(
-                            "English and maths GCSE results",
-                            RegexOptions.IgnoreCase)
-                }))
-            .ToHaveCountAsync(0);
-
-        await Expect(
-            Page.GetByRole(
-                AriaRole.Button,
-                new()
-                {
-                    NameRegex =
-                        new Regex(
-                            "What pupils did after year 11",
-                            RegexOptions.IgnoreCase)
-                }))
-            .ToHaveCountAsync(0);
-
-        await Expect(
-            Page.GetByRole(
-                AriaRole.Button,
-                new()
-                {
-                    NameRegex = new Regex(
-                        "Extra-curricular activities",
-                        RegexOptions.IgnoreCase)
                 }))
             .ToHaveCountAsync(0);
     }
@@ -3285,6 +3235,246 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                     Name = "Save to my schools list",
                     Exact = true
                 }))
+            .ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_PrimaryAtAGlance_DisplaysForPrimarySchool()
+    {
+        await Page.GotoAsync(PrimaryOnlyOverviewUrl);
+
+        await Expect(
+            Page.GetByRole(
+                AriaRole.Heading,
+                new()
+                {
+                    Name = "Primary school profile at a glance",
+                    Exact = true
+                }))
+            .ToBeVisibleAsync();
+
+        var accordion =
+            Page.Locator("#primary-at-a-glance-accordion");
+
+        await Expect(accordion)
+            .ToBeVisibleAsync();
+
+        await Expect(
+            accordion.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex(
+                        "Pupil progress",
+                        RegexOptions.IgnoreCase)
+                }))
+            .ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_PrimaryPupilProgress_IsFirstAccordion()
+    {
+        await Page.GotoAsync(PrimaryOnlyOverviewUrl);
+
+        var firstSection =
+            Page.Locator(
+                    "#primary-at-a-glance-accordion .govuk-accordion__section")
+                .First;
+
+        await Expect(
+            firstSection.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex(
+                        "Pupil progress",
+                        RegexOptions.IgnoreCase)
+                }))
+            .ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_PrimaryPupilProgress_IsClosedByDefault()
+    {
+        await Page.GotoAsync(PrimaryOnlyOverviewUrl);
+
+        var accordion =
+            Page.Locator("#primary-at-a-glance-accordion");
+
+        var button =
+            accordion.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex(
+                        "Pupil progress",
+                        RegexOptions.IgnoreCase)
+                });
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "false");
+
+        await Expect(
+            Page.Locator("#primary-at-a-glance-accordion-content-1"))
+            .Not.ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_PrimaryPupilProgress_CanBeExpandedAndClosed()
+    {
+        await Page.GotoAsync(PrimaryOnlyOverviewUrl);
+
+        var accordion =
+            Page.Locator("#primary-at-a-glance-accordion");
+
+        var button =
+            accordion.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex(
+                        "Pupil progress",
+                        RegexOptions.IgnoreCase)
+                });
+
+        var content =
+            Page.Locator("#primary-at-a-glance-accordion-content-1");
+
+        await button.ClickAsync();
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "true");
+
+        await Expect(content)
+            .ToBeVisibleAsync();
+
+        await button.ClickAsync();
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "false");
+
+        await Expect(content)
+            .Not.ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_PrimaryPupilProgress_DisplaysExpectedContent()
+    {
+        await Page.GotoAsync(PrimaryOnlyOverviewUrl);
+
+        var accordion =
+            Page.Locator("#primary-at-a-glance-accordion");
+
+        await accordion
+            .GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex(
+                        "Pupil progress",
+                        RegexOptions.IgnoreCase)
+                })
+            .ClickAsync();
+
+        var content =
+            Page.Locator("#primary-at-a-glance-accordion-content-1");
+
+        await Expect(content)
+            .ToContainTextAsync(
+                "Pupil progress is measured between the end of key stage 1 and the end of key stage 2.");
+
+        await Expect(content)
+            .ToContainTextAsync(
+                "Progress scores are not available for the academic years 2024 to 2025 and 2025 to 2026 due to COVID-19 disruption.");
+
+        await Expect(content)
+            .ToContainTextAsync(
+                "You can view progress results from previous years on the school's full profile.");
+    }
+
+    [Fact]
+    public async Task OverviewPage_PrimaryPupilProgress_LinkNavigatesToPupilProgressPage()
+    {
+        await Page.GotoAsync(PrimaryOnlyOverviewUrl);
+
+        var accordion =
+            Page.Locator("#primary-at-a-glance-accordion");
+
+        await accordion
+            .GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex(
+                        "Pupil progress",
+                        RegexOptions.IgnoreCase)
+                })
+            .ClickAsync();
+
+        var link =
+            Page.Locator("#primary-at-a-glance-accordion-content-1")
+                .GetByRole(
+                    AriaRole.Link,
+                    new()
+                    {
+                        Name =
+                            "Find out more about the progress pupils make at this school for previous years",
+                        Exact = true
+                    });
+
+        await Expect(link)
+            .ToHaveAttributeAsync(
+                "href",
+                "/school/143034/st-pauls-church-of-england-academy/primary-performance/pupil-progress");
+
+        Assert.Null(
+            await link.GetAttributeAsync("target"));
+
+        await link.ClickAsync();
+
+        await Expect(Page)
+            .ToHaveURLAsync(
+                new Regex(
+                    @"/school/143034/st-pauls-church-of-england-academy/primary-performance/pupil-progress(?:/current)?/?$"));
+    }
+
+    [Fact]
+    public async Task OverviewPage_PrimaryAtAGlance_DoesNotDisplayForSecondaryOnlySchool()
+    {
+        await Page.GotoAsync(SecondaryOnlyOverviewUrl);
+
+        await Expect(
+            Page.GetByRole(
+                AriaRole.Heading,
+                new()
+                {
+                    Name = "Primary school profile at a glance",
+                    Exact = true
+                }))
+            .ToHaveCountAsync(0);
+
+        await Expect(
+            Page.Locator("#primary-at-a-glance-accordion"))
+            .ToHaveCountAsync(0);
+    }
+
+    [Fact]
+    public async Task OverviewPage_PrimaryAndSecondarySchool_DisplaysBothAtAGlanceSections()
+    {
+        await Page.GotoAsync(PrimarySecondaryOverviewUrl);
+
+        await Expect(
+            Page.Locator("#primary-at-a-glance-accordion"))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            Page.Locator("#secondary-at-a-glance-accordion"))
             .ToBeVisibleAsync();
     }
 
