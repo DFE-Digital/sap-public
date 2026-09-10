@@ -81,6 +81,7 @@ public class EstablishmentServiceModel : EstablishmentServiceModelBase
 
     public string TotalPupils { get; set; } = string.Empty;
 
+    public int? TypeOfEstablishmentId { get; set; }
 
     public string TypeOfEstablishmentName { get; set; } = string.Empty;
 

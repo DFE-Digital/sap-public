@@ -6,4 +6,7 @@ public record SchoolSearchServiceQuery
     public string? Location { get; init; }
     public int? Distance { get; init; }
     public int? PageNumber { get; init; }
+
+    public string[]? EstablishmentPhases { get; init; } 
+    public string[]? EstablishmentTypes { get; init; }
 }
