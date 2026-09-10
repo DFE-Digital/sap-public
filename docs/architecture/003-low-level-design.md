@@ -12,21 +12,15 @@
 
 1. [Purpose and scope](#1-purpose-and-scope)
 2. [Route map](#2-route-map)
-3. [Search and phase routing](#3-search-and-phase-routing)
+3. [Search](#3-search)
 4. [Feature flag behaviour](#4-feature-flag-behaviour)
 5. [Request flows](#5-request-flows)
 6. [C4 Level 3, component view](#6-c4-level-3-component-view)
 7. [Controllers](#7-controllers)
-8. [Measure components and ViewModels](#8-measure-components-and-viewmodels)
-9. [Use cases and business rules](#9-use-cases-and-business-rules)
-10. [Performance measures domain model](#10-performance-measures-domain-model)
-11. [Repositories and data sources](#11-repositories-and-data-sources)
-12. [Error handling](#12-error-handling)
-13. [School layout and side navigation](#13-school-layout-and-side-navigation)
-14. [Data pipeline dependency](#14-data-pipeline-dependency)
-15. [Test coverage](#15-test-coverage)
-16. [Phase comparison and refactoring notes](#16-phase-comparison-and-refactoring-notes)
-17. [Class diagrams](#17-class-diagrams)
+8. [Services](#8-services)
+9. [Repositories](#9-repositories)
+10. [Data pipeline dependency](#10-data-pipeline-dependency)
+11. [Test coverage](#11-test-coverage)
 
 ---
 
@@ -131,7 +125,7 @@ In the SapData project, we calculate if an establishment has a KS2, KS4, and/or 
 
 ---
 
-## 5. Feature flag behaviour
+## 4. Feature flag behaviour
 
 The flags are currently `Enable16to19` and `EnablePrimary`, managed through `Microsoft.FeatureManagement`. Secondary has no equivalent flag.
 
@@ -144,7 +138,7 @@ These flags will be removed as we progress towards go-live as they were intended
 
 ---
 
-## 6. Request flows
+## 5. Request flows
 
 ### 6.1 KS2 performance page
 
@@ -186,7 +180,7 @@ KS2Controller.AcademicPerformanceMeetingOrExceedingStandards(urn)
 Other journeys are similar, or will be being moved into this pattern. 
 
 
-## 7. C4 Level 3, component view
+## 6. C4 Level 3, component view
 
 This is the component view of the web application. The container view sits in the HLD.
 
@@ -253,7 +247,7 @@ The layering matters here. Controllers never talk to a repository directly. Serv
 
 ---
 
-## 8. Controllers
+## 7. Controllers
 
 
 ### HomeController
@@ -407,7 +401,7 @@ OverviewController (Area: Profiles)
 
 ---
 
-## 9. Services
+## 8. Services
 
 ### Conventions (applies to all services)
 
@@ -708,9 +702,9 @@ sequenceDiagram
 
 
 
-## 12. Repositories
+## 9. Repositories
 
-## Conventions & Patterns (applies across repository implementations)
+### Conventions & Patterns (applies across repository implementations)
 
 - Purpose: Repositories provide data access to backing stores (Postgres, JSON files, external APIs) and expose typed entities used by services.
 - DI: Repositories are registered in DI and injected into services. Keep repositories stateless.
@@ -726,7 +720,7 @@ sequenceDiagram
 
 ---
 
-## Inventory (selected repository implementations)
+#### Inventory (selected repository implementations)
 
 - Generic
   - Generic/DapperRepository.cs
@@ -767,9 +761,7 @@ This inventory lists the files present in the codebase at time of writing.
 
 ---
 
-## Per-repository LLD (selected files)
-
-### Generic: DapperRepository<T>
+#### Generic: DapperRepository<T>
 - File: SAPPub.Infrastructure/Repositories/Generic/DapperRepository.cs
 - Purpose: Central implementation of IGenericRepository<T> using Dapper and Npgsql for Postgres-backed entities.
 - Responsibilities:
@@ -789,7 +781,7 @@ This inventory lists the files present in the codebase at time of writing.
 - Notes: DapperHelpers holds per-entity SQL snippets (ReadSingle/ReadMultiple/Write/Update); ensure these SQL templates exist for each entity type using this generic repo.
 
 
-### Generic: JSONRepository<T>
+#### Generic: JSONRepository<T>
 - File: SAPPub.Infrastructure/Repositories/Generic/JSONRepository.cs
 - Purpose: File-backed repository used for static test or fallback data stored as JSON files in /Data/Files.
 - Responsibilities:
@@ -802,7 +794,7 @@ This inventory lists the files present in the codebase at time of writing.
 - Notes: Use for small static datasets only; not suitable for large datasets or production writes without implementation.
 
 
-### EstablishmentRepository
+#### EstablishmentRepository
 - File: SAPPub.Infrastructure/Repositories/EstablishmentRepository.cs
 - Purpose: Data access for establishment entities and search index queries against v_establishment view.
 - Responsibilities:
@@ -825,7 +817,7 @@ This inventory lists the files present in the codebase at time of writing.
 - Notes: Use of ST_DWithin and spatial functions requires PostGIS. SearchSqlParts builder isolates SQL generation for testability.
 
 
-### PostgresSchoolSearchIndexReader
+#### PostgresSchoolSearchIndexReader
 - File: SAPPub.Infrastructure/PostgresSearch/PostgresSearchIndexReader.cs
 - Purpose: Implements ISchoolSearchIndexReader against the EstablishmentRepository; translates Establishment entities into search documents.
 - Public methods:
@@ -833,7 +825,7 @@ This inventory lists the files present in the codebase at time of writing.
 - Data flow: Delegates to IEstablishmentRepository.SearchAsync then maps entities to SchoolSearchDocument using Establishment.MapToServiceModel().ToSchoolSearchDocument().
 
 
-### OverviewRepository
+#### OverviewRepository
 - File: SAPPub.Infrastructure/Repositories/Overview/OverviewRepository.cs
 - Purpose: Aggregate overview data (establishment + KS4/KS2 performance + destinations) in a single DB call using Dapper's QueryMultipleAsync.
 - Public methods:
@@ -845,7 +837,7 @@ This inventory lists the files present in the codebase at time of writing.
 - Notes: Efficient single round-trip; must keep SELECT order and mapping in sync with result reading.
 
 
-### KS2PerformanceRepository
+#### KS2PerformanceRepository
 - File: SAPPub.Infrastructure/Repositories/Performance/Ks2PerformanceRepository.cs
 - Purpose: Provide tailored accessors for KS2 performance entities (establishment, LA, England) using generic repos.
 - Public methods:
@@ -855,7 +847,7 @@ This inventory lists the files present in the codebase at time of writing.
 - Notes: Returns default instances when input is invalid or record not found to simplify service layer mapping.
 
 
-### LaUrlsRepository
+#### LaUrlsRepository
 - File: SAPPub.Infrastructure/Repositories/LaUrlsRepository.cs
 - Purpose: Provide LA URL records lookup and bulk retrieval for establishment GSS LA codes.
 - Public methods:
@@ -864,7 +856,7 @@ This inventory lists the files present in the codebase at time of writing.
   - Task<IEnumerable<LaUrls?>> GetLaUrlsForEstablishmentsAsync(IEnumerable<string?> gssLaCodeList, CancellationToken ct)
 
 
-### EmailRepository
+#### EmailRepository
 - File: SAPPub.Infrastructure/Repositories/EmailRepository.cs
 - Purpose: Wrapper around GOV.UK Notify (Notify.Client) to send templated notification emails.
 - Public methods:
@@ -873,7 +865,7 @@ This inventory lists the files present in the codebase at time of writing.
 - Notes: Repository catches exceptions and logs them; callers (EmailService) validate inputs.
 
 
-### Gateway Repositories (summary)
+#### Gateway Repositories (summary)
 - GatewayUserRepository: CRUD for GatewayUser entities (used by GatewayUserService).
 - GatewayUserAuditRepository: Records audit logs for gateway actions.
 - GatewayLocalAuthorityRepository: Lookup mappings between gateway local authorities and application LAs.
@@ -882,7 +874,7 @@ This inventory lists the files present in the codebase at time of writing.
 
 ---
 
-## Typical repository data flows (Mermaid sequence diagrams)
+### Typical repository data flows (Mermaid sequence diagrams)
 
 ### DapperRepository.ReadSingleAsync
 
@@ -946,7 +938,7 @@ sequenceDiagram
 
 ---
 
-## 15. Data pipeline dependency
+## 10. Data pipeline dependency
 
 All data is read live from PostgreSQL on each request.
 
@@ -987,7 +979,7 @@ With each sql query populating the view from the raw tables, and formatting into
 
 ---
 
-## 16. Test coverage
+## 11. Test coverage
 
 | Project | Scope |
 |---|---|
