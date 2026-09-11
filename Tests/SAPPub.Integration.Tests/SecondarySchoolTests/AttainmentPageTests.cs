@@ -1,6 +1,7 @@
 ﻿using Microsoft.Playwright;
 using SAPPub.Integration.Tests;
 using SAPPub.IntegrationTests.Helpers;
+using SAPPub.Playwright.Testing;
 
 namespace SAPPub.IntegrationTests.SecondarySchoolTests;
 
@@ -19,7 +20,8 @@ public class AttainmentPageTests() : BasePageTest()
     {
         // Arrange && Act
         var _ = await Page.GotoAsync(PageUrl(urn));
-        var response = await ClickAcademicPerformanceLinkAsync();
+        var navigationHelper = new VerticalNavigationHelper(Page);
+        var response = await navigationHelper.ClickSecondaryAcademicPerformanceAsync();
 
         // Assert
         await AssertSchoolAttainmentData(Page, expectedAttainmentSchool);
@@ -44,7 +46,8 @@ public class AttainmentPageTests() : BasePageTest()
     {
         // Arrange && Act
         var _ = await Page.GotoAsync($"school/{urn}");
-        var response = await ClickAcademicPerformanceLinkAsync();
+        var navigationHelper = new VerticalNavigationHelper(Page);
+        var response = await navigationHelper.ClickSecondaryAcademicPerformanceAsync();
         _ = await GotoAcademicPerformanceLink(response!.Url, "previous");
 
         // Assert
@@ -70,24 +73,14 @@ public class AttainmentPageTests() : BasePageTest()
     {
         // Arrange && Act
         var _ = await Page.GotoAsync($"school/{urn}");
-        var response = await ClickAcademicPerformanceLinkAsync();
+        var navItem = new VerticalNavigationHelper(Page);
+
+        var response = await navItem.ClickSecondaryAcademicPerformanceAsync();
         _ = await GotoAcademicPerformanceLink(response!.Url, "previous2");
 
         // Assert
         await AssertSchoolProgressData(Page, expectedProgressSchool, expectedBandingLower, expectedBandingHigher, totalPupils, pupilsInProgressMeasure);
         await AssertSchoolAttainmentData(Page, expectedAttainmentSchool);
-    }
-
-    private Task<IResponse> ClickAcademicPerformanceLinkAsync()
-    {
-        var response = Page.RunAndWaitForResponseAsync(
-            async () =>
-            {
-                await Page.GetByRole(AriaRole.Link, new() { Name = "Secondary academic performance" }).ClickAsync();
-            },
-            response => response.Url.Contains("/secondary-performance/progress-attainment/current") && response.Status == 200
-        );
-        return response;
     }
 
     private Task<IResponse?> GotoAcademicPerformanceLink(string urlstring, string year = "current")

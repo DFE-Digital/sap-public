@@ -17,7 +17,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
             .Build();
 
         // Act
-        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map("", testdata, AcademicYearSelection.Current);
+        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map("", "", TypeOfEstablishment.CommunitySchool, testdata, AcademicYearSelection.Current);
 
         // Assert
         Assert.Equal(testdata.Urn, viewModel.URN);
@@ -182,7 +182,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
             .Build();
 
         // Act
-        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map("", testdata, AcademicYearSelection.Current);
+        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map("", "", TypeOfEstablishment.CommunitySchool, testdata, AcademicYearSelection.Current);
 
         // Assert
         var expectedContextStatement = expected != "Not available" ?
@@ -228,7 +228,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
             .Build();
 
         // Act
-        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map("", testdata, AcademicYearSelection.Current);
+        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map("", "", TypeOfEstablishment.CommunitySchool, testdata, AcademicYearSelection.Current);
 
         // Assert
         var expectedContextStatement1 = expected1 != "Not available" ?
@@ -278,7 +278,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
             .Build();
 
         // Act
-        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map("", testdata, AcademicYearSelection.Current);
+        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map("", "", TypeOfEstablishment.CommunitySchool, testdata, AcademicYearSelection.Current);
 
         // Assert
         var expectedContextStatement1 = expected1 != "Not available" ?
@@ -322,7 +322,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
             .Build();
 
         // Act
-        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map("local authority name", testdata, AcademicYearSelection.Current);
+        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map("local authority name", "", TypeOfEstablishment.CommunitySchool, testdata, AcademicYearSelection.Current);
 
         // Assert
         Assert.Equal(isAvailable, viewModel.YearValues.CurrentYear.EstablishmentProgress8BandingContextDescription.IsAvailable);

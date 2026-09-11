@@ -17,4 +17,16 @@ public class VerticalNavigationHelper(IPage page)
     public ILocator GetItem(string label) => Nav.Locator(".moj-side-navigation__item a").Filter(new() { HasText = label });
 
     public Task<string?> GetActiveHrefAsync() => ActiveLink.GetAttributeAsync("href");
+
+    public Task<IResponse> ClickSecondaryAcademicPerformanceAsync()
+    {
+        var response = _page.RunAndWaitForResponseAsync(
+            async () =>
+            {
+                await _page.Locator("#secondary-academic-performance-side-nav").ClickAsync();
+            },
+            response => response.Url.Contains("/secondary-performance/progress-attainment/current") && response.Status == 200
+        );
+        return response;
+    }
 }

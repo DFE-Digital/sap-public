@@ -31,10 +31,10 @@
     gap: .5rem;
 }
 
-.legend-item img {
-    width: 22px;
-    height: auto;
-}
+    .legend-item img {
+        width: 22px;
+        height: auto;
+    }
 
 .marker-focus:focus {
     outline: 2px solid #2563eb;
@@ -62,9 +62,9 @@
     }
 }
 
-.select-filter > * {
-    margin: 0;
-}
+    .select-filter > * {
+        margin: 0;
+    }
 
 .app-highlight-grey {
     background-color: govuk-colour("light-grey");
@@ -87,7 +87,7 @@
 }
 
 .info__icon {
-    content: url(/assets/images/custom-info-icon.svg);    
+    content: url(/assets/images/custom-info-icon.svg);
 }
 
 .assignment__icon {
@@ -226,10 +226,10 @@
         margin-bottom: 8px;
     }
 
-    .moj-side-navigation__item > a {
-        border-bottom: none !important;
-        padding: 8px 15px 8px 15px !important;
-    }
+        .moj-side-navigation__item > a {
+            border-bottom: none !important;
+            padding: 8px 15px 8px 15px !important;
+        }
 
     .moj-side-navigation__item--active {
         border-left: 0.25em solid govuk-colour("blue");
@@ -256,10 +256,10 @@
         }
     }
 
-    .select-filter > * {
-        width: 100%;
-        margin-bottom: 15px;
-    }
+        .select-filter > * {
+            width: 100%;
+            margin-bottom: 15px;
+        }
 
     .info__icon,
     .assignment__icon,
@@ -674,4 +674,8 @@
 
 .dataview-button {
     display: none;
+}
+
+.govuk-tag-width-override {
+    max-width: inherit !important;
 }

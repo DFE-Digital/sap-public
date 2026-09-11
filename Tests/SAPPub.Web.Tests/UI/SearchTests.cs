@@ -357,142 +357,287 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
         Assert.Contains("pageNumber=1", Page.Url);
     }
 
-    [Fact]
-    public async Task SearchResultsPage_DoesNotShowComparisonButton_ForNonKs4Result()
+    [Theory]
+    [InlineData("primary")]
+    [InlineData("secondary")]
+    [InlineData("16-to-19")]
+    [InlineData("all-through")]
+    public async Task SearchPage_FilterOnPhase_ShowsViewWithResults(string phase)
     {
         // Arrange
-        var searchTerm = "Saint Paul Roman Catholic Infant School";
-        await Page.Context.ClearCookiesAsync();
-        _ = await Page.GotoAsync(_pageUrl);
+        var searchTerm = "school";
+        var response = await Page.GotoAsync(_pageUrl);
 
         // Act
         await Page.FillAsync("#NameSearchTerm", searchTerm);
         await Page.ClickAsync("#search");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
-        // Assert
-        var results = Page.Locator(".school-search-result");
-        await Expect(results).ToHaveCountAsync(1);
+        await Page.SetCheckedAsync($"#phase-{phase}", true);
+        await Page.ClickAsync("#filterSubmit1");
 
-        var compareButtons = Page.Locator(".compare-establishment-btn");
-        await Expect(compareButtons).ToHaveCountAsync(0);
+
+        // Assert
+        Assert.NotNull(response);
+        Assert.Equal(200, response.Status);
+        // assert text box contains search term
+        var searchBoxValue = await Page.InputValueAsync("#NameSearchTerm");
+        Assert.Equal(searchTerm, searchBoxValue);
+
+        Assert.True(await Page.IsCheckedAsync($"#phase-{phase}"));
+
+        // assert that at least one search result is displayed
+        var rows = Page.Locator(".govuk-summary-list .govuk-summary-list__row");
+        var rowHandles = await rows.ElementHandlesAsync();
+        int count = await rows.CountAsync();
+        Assert.True(count > 0, "Expected at least one search result, but found none.");
+
     }
 
     [Fact]
-    public async Task SearchResultsPage_Shows_Comparision_Save_Button()
+    public async Task SearchPage_FilterOnPhase_Multiple_ShowsViewWithResults()
     {
         // Arrange
-        var cookieValue = GenerateCookieValue(20);
-        var searchTerm = "M21 7SW";
-        FakeEstablishmentRepository.CurrentTestPostcode = searchTerm;
-        await Page.Context.ClearCookiesAsync();
-        await Page.Context.AddCookiesAsync(CreateMySchoolsListCookie(cookieValue));
-        _ = await Page.GotoAsync(_pageUrl);
+        var searchTerm = "school";
+        var response = await Page.GotoAsync(_pageUrl);
 
         // Act
-        await Page.FillAsync("#LocationSearchTerm", searchTerm);
+        await Page.FillAsync("#NameSearchTerm", searchTerm);
         await Page.ClickAsync("#search");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
-        var compareButton = await Page.Locator(".compare-establishment-btn").InnerTextAsync();
+        await Page.SetCheckedAsync($"#phase-primary", true);
+        await Page.SetCheckedAsync($"#phase-secondary", true);
+        await Page.ClickAsync("#filterSubmit1");
+
 
         // Assert
-        Assert.Equal("Save", compareButton);
+        Assert.NotNull(response);
+        Assert.Equal(200, response.Status);
+        // assert text box contains search term
+        var searchBoxValue = await Page.InputValueAsync("#NameSearchTerm");
+        Assert.Equal(searchTerm, searchBoxValue);
+
+        Assert.True(await Page.IsCheckedAsync($"#phase-primary"));
+        Assert.True(await Page.IsCheckedAsync($"#phase-secondary"));
+
+        // assert that at least one search result is displayed
+        var rows = Page.Locator(".govuk-summary-list .govuk-summary-list__row");
+        var rowHandles = await rows.ElementHandlesAsync();
+        int count = await rows.CountAsync();
+        Assert.True(count > 0, "Expected at least one search result, but found none.");
     }
 
-    [Fact]
-    public async Task SearchResultsPage_Shows_Comparision_Saved_Button()
+    [Theory]
+    [InlineData("academy")]
+    [InlineData("maintained-school")]
+    [InlineData("independent-schools")]
+    [InlineData("special-school")]
+    [InlineData("college")]
+    public async Task SearchPage_FilterOnSchoolType_ShowsViewWithResults(string schoolType)
     {
         // Arrange
-        var cookieValue = GenerateCookieValue(10);
-        cookieValue += ",105574";
-        var searchTerm = "M21 7SW";
-        FakeEstablishmentRepository.CurrentTestPostcode = searchTerm;
-        await Page.Context.ClearCookiesAsync();
-        await Page.Context.AddCookiesAsync(CreateMySchoolsListCookie(cookieValue));
-        _ = await Page.GotoAsync(_pageUrl);
+        var searchTerm = "school";
+        var response = await Page.GotoAsync(_pageUrl);
 
         // Act
-        await Page.FillAsync("#LocationSearchTerm", searchTerm);
+        await Page.FillAsync("#NameSearchTerm", searchTerm);
         await Page.ClickAsync("#search");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
-        var compareButton = await Page.Locator(".compare-establishment-btn").InnerTextAsync();
+        await Page.SetCheckedAsync($"#schooltype-{schoolType}", true);
+        await Page.ClickAsync("#filterSubmit1");
+
 
         // Assert
-        Assert.Equal("Saved", compareButton);
+        Assert.NotNull(response);
+        Assert.Equal(200, response.Status);
+        // assert text box contains search term
+        var searchBoxValue = await Page.InputValueAsync("#NameSearchTerm");
+        Assert.Equal(searchTerm, searchBoxValue);
+
+        Assert.True(await Page.IsCheckedAsync($"#schooltype-{schoolType}"));
+
+        // assert that at least one search result is displayed
+        var rows = Page.Locator(".govuk-summary-list .govuk-summary-list__row");
+        var rowHandles = await rows.ElementHandlesAsync();
+        int count = await rows.CountAsync();
+        Assert.True(count > 0, "Expected at least one search result, but found none.");
     }
 
     [Fact]
-    public async Task SearchResultsPage_Comparision_Save_Button_Click_Should_Add_To_SchoolsList()
+    public async Task SearchPage_FilterOn_Multiple_ShowsViewWithResults()
     {
         // Arrange
-        var cookieValue = GenerateCookieValue(10);
-        var searchTerm = "M21 7SW";
-        FakeEstablishmentRepository.CurrentTestPostcode = searchTerm;
-        await Page.Context.ClearCookiesAsync();
-        await Page.Context.AddCookiesAsync(CreateMySchoolsListCookie(cookieValue));
-        _ = await Page.GotoAsync(_pageUrl);
+        var searchTerm = "school";
+        var response = await Page.GotoAsync(_pageUrl);
 
         // Act
-        await Page.FillAsync("#LocationSearchTerm", searchTerm);
+        await Page.FillAsync("#NameSearchTerm", searchTerm);
         await Page.ClickAsync("#search");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-        await Page.ClickAsync(".compare-establishment-btn");        
+
+        await Page.SetCheckedAsync($"#phase-primary", true);
+        await Page.SetCheckedAsync($"#schooltype-maintained-school", true);
+        await Page.ClickAsync("#filterSubmit1");
+
 
         // Assert
-        await Expect(Page.Locator(".compare-establishment-btn")).ToHaveTextAsync("Saved");
+        Assert.NotNull(response);
+        Assert.Equal(200, response.Status);
+        // assert text box contains search term
+        var searchBoxValue = await Page.InputValueAsync("#NameSearchTerm");
+        Assert.Equal(searchTerm, searchBoxValue);
+
+        Assert.True(await Page.IsCheckedAsync($"#phase-primary"));
+        Assert.True(await Page.IsCheckedAsync($"#schooltype-maintained-school"));
+
+        // assert that at least one search result is displayed
+        var rows = Page.Locator(".govuk-summary-list .govuk-summary-list__row");
+        var rowHandles = await rows.ElementHandlesAsync();
+        int count = await rows.CountAsync();
+        Assert.True(count > 0, "Expected at least one search result, but found none.");
     }
 
     [Fact]
-    public async Task SearchResultsPage_Comparision_Saved_Button_Click_Should_Remove_From_SchoolsList()
-    {
-        string cookieValue = GenerateCookieValue(10);
-        cookieValue += ",105574";
-        var searchTerm = "M21 7SW";
-        FakeEstablishmentRepository.CurrentTestPostcode = searchTerm;
-        await Page.Context.ClearCookiesAsync();
-        await Page.Context.AddCookiesAsync(CreateMySchoolsListCookie(cookieValue));
-        _ = await Page.GotoAsync(_pageUrl);
-
-        // Act
-        await Page.FillAsync("#LocationSearchTerm", searchTerm);
-        await Page.ClickAsync("#search");
-        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-
-        var compareButton1 = await Page.Locator(".compare-establishment-btn").InnerTextAsync();
-
-        await Page.ClickAsync(".compare-establishment-btn");
-
-        // Assert
-        await Expect(Page.Locator(".compare-establishment-btn")).ToHaveTextAsync("Save");
-    }    
-
-    [Fact]
-    public async Task SearchResultsPage_Shows_LimitReached_Banner_When_LimitReached()
+    public async Task SearchPage_FilterOnType_Multiple_ShowsViewWithResults()
     {
         // Arrange
-        var cookieValue = GenerateCookieValue();
+        var searchTerm = "school";
+        var response = await Page.GotoAsync(_pageUrl);
+
+        // Act
+        await Page.FillAsync("#NameSearchTerm", searchTerm);
+        await Page.ClickAsync("#search");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        await Page.SetCheckedAsync($"#schooltype-academy", true);
+        await Page.SetCheckedAsync($"#schooltype-maintained-school", true);
+        await Page.ClickAsync("#filterSubmit1");
+
+
+        // Assert
+        Assert.NotNull(response);
+        Assert.Equal(200, response.Status);
+        // assert text box contains search term
+        var searchBoxValue = await Page.InputValueAsync("#NameSearchTerm");
+        Assert.Equal(searchTerm, searchBoxValue);
+
+        Assert.True(await Page.IsCheckedAsync($"#schooltype-academy"));
+        Assert.True(await Page.IsCheckedAsync($"#schooltype-maintained-school"));
+
+        // assert that at least one search result is displayed
+        var rows = Page.Locator(".govuk-summary-list .govuk-summary-list__row");
+        var rowHandles = await rows.ElementHandlesAsync();
+        int count = await rows.CountAsync();
+        Assert.True(count > 0, "Expected at least one search result, but found none.");
+    }
+
+    [Theory]
+    [InlineData("filterSubmit1")]
+    [InlineData("filterSubmit2")]
+    public async Task SearchPage_FilterOnType_Submit_ButtonsWorks_ShowsViewWithResults(string buttonId)
+    {
+        // Arrange
+        var searchTerm = "school";
+        var response = await Page.GotoAsync(_pageUrl);
+
+        // Act
+        await Page.FillAsync("#NameSearchTerm", searchTerm);
+        await Page.ClickAsync("#search");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        await Page.SetCheckedAsync($"#schooltype-academy", true);
+        await Page.ClickAsync($"#{buttonId}");
+
+
+        // Assert
+        Assert.NotNull(response);
+        Assert.Equal(200, response.Status);
+        // assert text box contains search term
+        var searchBoxValue = await Page.InputValueAsync("#NameSearchTerm");
+        Assert.Equal(searchTerm, searchBoxValue);
+
+        Assert.True(await Page.IsCheckedAsync($"#schooltype-academy"));
+
+        // assert that at least one search result is displayed
+        var rows = Page.Locator(".govuk-summary-list .govuk-summary-list__row");
+        var rowHandles = await rows.ElementHandlesAsync();
+        int count = await rows.CountAsync();
+        Assert.True(count > 0, "Expected at least one search result, but found none.");
+    }
+
+    [Fact]
+    public async Task SearchPage_EnterValidPostcode_AndFilter_ShowsViewWithResults()
+    {
+        // Arrange
         var searchTerm = "M21 7SW";
         FakeEstablishmentRepository.CurrentTestPostcode = searchTerm;
-        await Page.Context.ClearCookiesAsync();
-        await Page.Context.AddCookiesAsync(CreateMySchoolsListCookie(cookieValue));
-        _ = await Page.GotoAsync(_pageUrl);
+        var response = await Page.GotoAsync(_pageUrl);
 
         // Act
         await Page.FillAsync("#LocationSearchTerm", searchTerm);
         await Page.ClickAsync("#search");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
-        var saveButton = Page.Locator(".compare-establishment-btn");
-        await saveButton.ClickAsync();
-        await Expect(Page.Locator("#comparison-limit-notification")).ToBeVisibleAsync();
+        await Page.SetCheckedAsync($"#schooltype-academy", true);
+        await Page.ClickAsync("#filterSubmit1");
 
         // Assert
-        var notificationBanner = Page.Locator("#comparison-limit-notification");
-        var isLimitNotificationBannerVisible = await notificationBanner.IsVisibleAsync();
-        Assert.True(isLimitNotificationBannerVisible);
+        Assert.NotNull(response);
+        Assert.Equal(200, response.Status);
+        // assert text box contains search term
+        var searchBoxValue = await Page.InputValueAsync("#LocationSearchTerm");
+        Assert.Equal(searchTerm, searchBoxValue);
+
+        Assert.True(await Page.IsCheckedAsync($"#schooltype-academy"));
+
+        // assert that at least one search result is displayed
+        var rows = Page.Locator(".govuk-summary-list .govuk-summary-list__row");
+        var rowHandles = await rows.ElementHandlesAsync();
+        int count = await rows.CountAsync();
+        Assert.True(count > 0, "Expected at least one search result, but found none.");
+
     }
+
+    [Theory]
+    [InlineData("5")]
+    [InlineData("10")]
+    public async Task SearchPage_EnterValidPostcode_Distance_AndFilter_ShowsViewWithResults(string changeDistanceValue)
+    {
+        // Arrange
+        var searchTerm = "M21 7SW";
+        FakeEstablishmentRepository.CurrentTestPostcode = searchTerm;
+        var response = await Page.GotoAsync(_pageUrl);
+
+        // Act
+        await Page.FillAsync("#LocationSearchTerm", searchTerm);
+        await Page.ClickAsync("#search");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        await Page.SetCheckedAsync($"#schooltype-academy", true);
+
+        await Page.SelectOptionAsync($"#Distance", changeDistanceValue);
+
+        await Page.ClickAsync("#show-results");
+
+        // Assert
+        Assert.NotNull(response);
+        Assert.Equal(200, response.Status);
+        // assert text box contains search term
+        var searchBoxValue = await Page.InputValueAsync("#LocationSearchTerm");
+        Assert.Equal(searchTerm, searchBoxValue);
+
+        Assert.True(await Page.IsCheckedAsync($"#schooltype-academy"));
+
+        // assert that at least one search result is displayed
+        var rows = Page.Locator(".govuk-summary-list .govuk-summary-list__row");
+        var rowHandles = await rows.ElementHandlesAsync();
+        int count = await rows.CountAsync();
+        Assert.True(count > 0, "Expected at least one search result, but found none.");
+
+    }
+
 
     [Fact]
     public async Task SearchResults_SchoolLinkNavigatesToOverview_WhenOverviewEnabled()

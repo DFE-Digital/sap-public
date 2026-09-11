@@ -16,7 +16,8 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         ["107564"] = "school/107564/todmorden-high-school/about",
         ["145744"] = "school/145744/abbey-park-school/about",
         ["178965"] = "school/178965/predecessor-1-to-abbey-park-school/about",
-        ["178966"] = "school/178966/predecessor-2-to-abbey-park-school/about"
+        ["178966"] = "school/178966/predecessor-2-to-abbey-park-school/about",
+        ["130499"] = "school/130499/holy-cross-college/about",
     };
 
     [Fact]
@@ -71,17 +72,19 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         await Expect(heading).ToBeVisibleAsync();
     }
 
-    [Fact]
-    public async Task AboutSchoolPage_DisplaysSectionHeading()
+    [Theory]
+    [InlineData("105574", "About the school")]
+    [InlineData("130499", "About the school or college")]
+    public async Task AboutSchoolPage_DisplaysSectionHeading(string urn, string expectedHeading)
     {
-        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+        await Page.GotoAsync(_schoolUrnToUrlMap[urn]);
 
         var heading = Page.GetByRole(
             AriaRole.Heading,
             new()
             {
                 Level = 2,
-                Name = "About the school",
+                Name = expectedHeading,
                 Exact = true
             });
 
@@ -100,15 +103,20 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         await Expect(compareButtons).ToHaveCountAsync(0);
     }
 
-    [Fact]
-    public async Task AboutSchoolPage_Displays_VerticalNavigation()
+    [Theory]
+    [InlineData("105574", "About the school")]
+    [InlineData("130499", "About the school or college")]
+    public async Task AboutSchoolPage_Displays_VerticalNavigation(string urn, string expectedHeading)
     {
         var nav = new VerticalNavigationHelper(Page);
-        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+        await Page.GotoAsync(_schoolUrnToUrlMap[urn]);
 
         await nav.ShouldBeVisibleAsync();
         await nav.ShouldHaveOneActiveItemAsync();
-        await nav.ShouldHaveActiveHrefAsync(_schoolUrnToUrlMap["105574"]);
+        await nav.ShouldHaveActiveHrefAsync(_schoolUrnToUrlMap[urn]);
+
+        var navItem = nav.GetItem(expectedHeading);
+        Assert.NotNull(navItem);
     }
 
     [Theory]
