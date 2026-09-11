@@ -47,3 +47,21 @@ function initialiseChartTableToggle(prefix) {
         }
     });
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const notification =
+        document.querySelector(
+            '[id$="-add-success"], [id$="-remove-success"]');
+
+    if (!notification) {
+        return;
+    }
+
+    notification.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+    });
+
+    notification.setAttribute('tabindex', '-1');
+    notification.focus({ preventScroll: true });
+});

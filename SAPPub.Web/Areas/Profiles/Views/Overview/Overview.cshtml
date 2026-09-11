@@ -1374,24 +1374,4 @@
 
     <script nonce="@Html.ScriptNonce().ToString()"
             src="~/js/overview.js"></script>
-
-    <script nonce="@Html.ScriptNonce().ToString()">
-        document.addEventListener('DOMContentLoaded', () => {
-            const notification =
-                document.querySelector(
-                    '[id$="-add-success"], [id$="-remove-success"]');
-
-            if (!notification) {
-                return;
-            }
-
-            notification.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-
-            notification.setAttribute('tabindex', '-1');
-            notification.focus({ preventScroll: true });
-        });
-    </script>
 }
