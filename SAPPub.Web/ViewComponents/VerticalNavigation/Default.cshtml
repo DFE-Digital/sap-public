@@ -15,7 +15,7 @@
 
                 @if ((await FeatureManager.IsEnabledAsync(EnableOverview) ))
                 {
-                    <li id="school-overview-side-nav"class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.Overview ? "moj-side-navigation__item--active" : "")">
+                    <li id="school-overview-side-nav" class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.Overview ? "moj-side-navigation__item--active" : "")">
                         <a asp-route="@RouteConstants.Overview" asp-all-route-data="routeAttributes">Overview</a>
                     </li>
                 }

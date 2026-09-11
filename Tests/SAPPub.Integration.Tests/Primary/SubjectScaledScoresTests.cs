@@ -1,5 +1,6 @@
 ﻿using Microsoft.Playwright;
 using SAPPub.Playwright.Testing;
+using SAPPub.Playwright.Testing.KS2.Performance.SubjectScaledScores;
 using SubjectScaledScores = SAPPub.Playwright.Testing.KS2.Performance.SubjectScaledScores;
 
 namespace SAPPub.Integration.Tests.Primary;
@@ -31,22 +32,22 @@ public class SubjectScaledScoresTests() : BasePageTest()
 
         // Act
         // 'reading' table
-        await Page.ClickAsync(SubjectScaledScores.PageConstants.ContentIds["readShowDataOverTimeBtn"]);
+        await Page.ClickAsync(SubjectScaledScores.PageConstants.ReadShowDataOverTimeBtnId);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-        await Page.ClickAsync(SubjectScaledScores.PageConstants.ContentIds["readDataOverTimeShowAsTableBtn"]);
+        await Page.ClickAsync(SubjectScaledScores.PageConstants.ReadDataOverTimeShowAsTableBtnId);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         // 'maths' table
-        await Page.ClickAsync(SubjectScaledScores.PageConstants.ContentIds["mathsShowDataOverTimeBtn"]);
+        await Page.ClickAsync(SubjectScaledScores.PageConstants.MathsShowDataOverTimeBtnId);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-        await Page.ClickAsync(SubjectScaledScores.PageConstants.ContentIds["mathsDataOverTimeShowAsTableBtn"]);
+        await Page.ClickAsync(SubjectScaledScores.PageConstants.MathsDataOverTimeShowAsTableBtnId);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
-        var schoolData = await Page.GetTableRowValuesAsync(SubjectScaledScores.PageConstants.ContentIds["read-data-over-time-table"], "School");
+        var schoolData = await Page.GetTableRowValuesAsync(SubjectScaledScores.PageConstants.ReadDataOverTimeTableId, "School");
         Assert.Equal(readingPrevious2, schoolData[0]);
         Assert.Equal(readingPrevious1, schoolData[1]);
         Assert.Equal(readingCurrent, schoolData[2]);
 
-        schoolData = await Page.GetTableRowValuesAsync(SubjectScaledScores.PageConstants.ContentIds["maths-data-over-time-table"], "School");
+        schoolData = await Page.GetTableRowValuesAsync(SubjectScaledScores.PageConstants.MathsDataOverTimeTableId, "School");
         Assert.Equal(mathsPrevious2, schoolData[0]);
         Assert.Equal(mathsPrevious1, schoolData[1]);
         Assert.Equal(mathsCurrent, schoolData[2]);
@@ -73,26 +74,26 @@ public class SubjectScaledScoresTests() : BasePageTest()
         var _ = await Page.GotoPage(response.Url, pageUnderTest);
 
         // Act
-        await Page.ExpandAccordionAsync("Average scaled scores in reading and maths by pupil characteristic");
+        await Page.ExpandAccordionByIdAsync(SubjectScaledScores.PageConstants.ScaledScoresByPupilCharacteristicAccordionId);
         await Page.ExpandDetailsAsync("Compare with non-disadvantaged pupils");
 
-        var schoolData = await Page.GetTableRowValuesAsync(SubjectScaledScores.PageConstants.ContentIds["girls-boys-table"], "Girls");
+        var schoolData = await Page.GetTableRowValuesAsync(SubjectScaledScores.PageConstants.GirlsBoysTableId, "Girls");
         Assert.Equal(readingGirls, schoolData[0]);
         Assert.Equal(mathsGirls, schoolData[1]);
 
-        schoolData = await Page.GetTableRowValuesAsync(SubjectScaledScores.PageConstants.ContentIds["girls-boys-table"], "Boys");
+        schoolData = await Page.GetTableRowValuesAsync(SubjectScaledScores.PageConstants.GirlsBoysTableId, "Boys");
         Assert.Equal(readingBoys, schoolData[0]);
         Assert.Equal(mathsBoys, schoolData[1]);
 
-        schoolData = await Page.GetTableRowValuesAsync(SubjectScaledScores.PageConstants.ContentIds["eal-table"], "Pupils with EAL");
+        schoolData = await Page.GetTableRowValuesAsync(SubjectScaledScores.PageConstants.EalTableId, "Pupils with EAL");
         Assert.Equal(readingEAL, schoolData[0]);
         Assert.Equal(mathsEAL, schoolData[1]);
 
-        schoolData = await Page.GetTableRowValuesAsync(SubjectScaledScores.PageConstants.ContentIds["non-mobile-table"], "Non-mobile pupils");
+        schoolData = await Page.GetTableRowValuesAsync(SubjectScaledScores.PageConstants.NonMobileTableId, "Non-mobile pupils");
         Assert.Equal(readingNonMobile, schoolData[0]);
         Assert.Equal(mathsNonMobile, schoolData[1]);
 
-        schoolData = await Page.GetTableRowValuesAsync(SubjectScaledScores.PageConstants.ContentIds["disadvantaged-pupils-table"], "School");
+        schoolData = await Page.GetTableRowValuesAsync(SubjectScaledScores.PageConstants.DisadvantagedPupilsTableId, "School");
         Assert.Equal(readingDisadvantaged, schoolData[0]);
         Assert.Equal(mathsDisadvantaged, schoolData[1]);
     }
