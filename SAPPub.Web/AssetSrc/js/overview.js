@@ -1,6 +1,12 @@
 ﻿document.addEventListener('DOMContentLoaded', () => {
-    initialiseChartTableToggle('overview-english-maths-current-year');
-    initialiseChartTableToggle('overview-destinations-current-year');
+    initialiseChartTableToggle(
+        'overview-primary-expected-standard-current-year');
+
+    initialiseChartTableToggle(
+        'overview-english-maths-current-year');
+
+    initialiseChartTableToggle(
+        'overview-destinations-current-year');
 });
 
 function initialiseChartTableToggle(prefix) {

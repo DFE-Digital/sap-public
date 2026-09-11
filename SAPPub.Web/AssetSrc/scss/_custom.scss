@@ -518,6 +518,32 @@
     }
 }
 
+.ataglance-accordion
+.govuk-accordion__section-header
+.primary-ataglance-progress-iconbox {
+    background-color: #cfe4dc;
+    color: #083d29;
+}
+
+.ataglance-accordion
+.govuk-accordion__section-header:hover
+.primary-ataglance-progress-iconbox {
+    background-color: #87bca8;
+}
+
+.ataglance-accordion
+.govuk-accordion__section-header
+.primary-ataglance-expected-standard-iconbox {
+    background-color: #fff3b5;
+    color: #0b0c0c;
+}
+
+.ataglance-accordion
+.govuk-accordion__section-header:hover
+.primary-ataglance-expected-standard-iconbox {
+    background-color: #ffea8a;
+}
+
 @media (max-width: 40.0525em) {
     .ataglance-results-chart {
         min-height: 300px;
