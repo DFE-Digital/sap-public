@@ -1,9 +1,12 @@
 ﻿@model SAPPub.Web.Areas.Profiles.ViewModels.Overview.OverviewViewModel
 
+@using SAPPub.Core.Helpers
 @using SAPPub.Web.Constants
+@using SAPPub.Web.Models.Banner
 @using SAPPub.Web.Helpers
 @using SAPPub.Web.ViewComponents.SchoolProfilePagination
 @using SAPPub.Web.ViewComponents.VerticalNavigation
+@using WebConstants = SAPPub.Web.Constants.Constants
 
 @{
     ViewData["Header"] = "Overview";
@@ -25,6 +28,46 @@
         })
 
     <div class="govuk-grid-column-three-quarters">
+
+        @if (TempData.Get<bool>(WebConstants.BannerAddSuccess))
+        {
+            var bodyContent =
+                $"<div class=\"govuk-body\">" +
+                $"<p>{Model.SchoolName}</p>" +
+                $"<p>You can compare up to 6 schools at a time. " +
+                $"<a class=\"govuk-link\" href=\"{Url.RouteUrl(RouteConstants.MySchoolsView)}\">" +
+                $"View your schools list</a></p>" +
+                $"</div>";
+
+            @await Component.InvokeAsync(
+                "Banner",
+                new BannerViewModel
+                {
+                    Title = "Success",
+                    HeaderContent = "School added to your schools list",
+                    BodyContent = bodyContent,
+                    IsRawHtml = true,
+                    Id = $"establishment-comparison-{Model.URN}-add-success",
+                    Role = "status",
+                    Type = "Success"
+                })
+        }
+
+        @if (TempData.Get<bool>(WebConstants.BannerRemoveSuccess))
+        {
+            @await Component.InvokeAsync(
+                "Banner",
+                new BannerViewModel
+                {
+                    Title = "Success",
+                    HeaderContent = "School removed from your schools list",
+                    BodyContent = $"<p class=\"govuk-body\">{Model.SchoolName}</p>",
+                    IsRawHtml = true,
+                    Id = $"establishment-comparison-{Model.URN}-remove-success",
+                    Role = "status",
+                    Type = "Success"
+                })
+        }
 
         <h2 class="govuk-heading-xl govuk-!-margin-bottom-4">
             Overview
@@ -618,9 +661,9 @@
                                                 <canvas id="overview-english-maths-chart"
                                                         class="js-chart"
                                                         data-type="bar"
-                                                        data-not-available-text="@Constants.NotAvailable"
+                                                        data-not-available-text="@WebConstants.NotAvailable"
                                                         data-chart='@Html.Raw(Json.Serialize(Model.EnglishAndMathsGrade5Chart))'
-                                                        data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
+                                                        data-colors='@Html.Raw(Json.Serialize(WebConstants.ChartColours))'>
                                                 </canvas>
                                             </div>
 
@@ -639,7 +682,7 @@
                                                                 <td class="govuk-table__cell">
                                                                     @(Model.EnglishAndMathsGrade5Chart.Data[label.i].HasValue
                                                                         ? $"{Model.EnglishAndMathsGrade5Chart.Data[label.i]}%"
-                                                                        : Constants.NotAvailable)
+                                                                        : WebConstants.NotAvailable)
                                                                 </td>
                                                             </tr>
                                                         }
@@ -755,9 +798,9 @@
                                                 <canvas id="overview-destinations-chart"
                                                         class="js-chart"
                                                         data-type="bar"
-                                                        data-not-available-text="@Constants.NotAvailable"
+                                                        data-not-available-text="@WebConstants.NotAvailable"
                                                         data-chart='@Html.Raw(Json.Serialize(Model.DestinationsChart))'
-                                                        data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
+                                                        data-colors='@Html.Raw(Json.Serialize(WebConstants.ChartColours))'>
                                                 </canvas>
                                             </div>
 
@@ -776,7 +819,7 @@
                                                                 <td class="govuk-table__cell">
                                                                     @(Model.DestinationsChart.Data[label.i].HasValue
                                                                         ? $"{Model.DestinationsChart.Data[label.i]}%"
-                                                                        : Constants.NotAvailable)
+                                                                        : WebConstants.NotAvailable)
                                                                 </td>
                                                             </tr>
                                                         }
@@ -921,6 +964,77 @@
             </section>
         }
 
+        @* Next steps *@
+        <section class="govuk-!-margin-top-8" id="overview-next-steps">
+
+            <h2 class="govuk-heading-xl">
+                Next steps
+            </h2>
+
+            <div class="govuk-summary-card">
+
+                <div class="govuk-summary-card__title-wrapper">
+                    <h3 class="govuk-summary-card__title">
+                        Continue exploring this school’s profile
+                    </h3>
+                </div>
+
+                <div class="govuk-summary-card__content">
+
+                    @foreach (var link in Model.NextStepLinks)
+                    {
+                        <div class="ataglance-next-step">
+
+                            <h4 class="govuk-heading-s govuk-!-margin-bottom-1">
+                                <a asp-route="@link.RouteName"
+                                   asp-all-route-data="@Model.RouteAttributes"
+                                   class="govuk-link govuk-link--no-visited-state">
+                                    @link.Title
+                                </a>
+                            </h4>
+
+                            <p class="govuk-body govuk-!-margin-bottom-5">
+                                @link.Description
+                            </p>
+
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+
+            @if (Model.IsKS4)
+            {
+                <div class="govuk-summary-card govuk-!-margin-top-6">
+
+                    <div class="govuk-summary-card__title-wrapper">
+                        <h3 class="govuk-summary-card__title">
+                            Save this school to my schools list
+                        </h3>
+                    </div>
+
+                    <div class="govuk-summary-card__content">
+
+                        <p class="govuk-body">
+                            Save a school to your schools list to find it again later, create a shortlist, and compare it with other saved schools.
+                        </p>
+
+                        @await Component.InvokeAsync(
+                            "AddSchoolButton",
+                            new
+                            {
+                                urn = Model.URN,
+                                isKS4 = Model.IsKS4
+                            })
+
+                    </div>
+
+                </div>
+            }
+
+        </section>
+
 
         @await Component.InvokeAsync(
             "SchoolProfilePagination",
@@ -947,5 +1061,25 @@
             src="~/js/chart-factory.js"></script>
 
     <script nonce="@Html.ScriptNonce().ToString()"
-        src="~/js/overview.js"></script>
+            src="~/js/overview.js"></script>
+
+    <script nonce="@Html.ScriptNonce().ToString()">
+        document.addEventListener('DOMContentLoaded', () => {
+            const notification =
+                document.querySelector(
+                    '[id$="-add-success"], [id$="-remove-success"]');
+
+            if (!notification) {
+                return;
+            }
+
+            notification.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+
+            notification.setAttribute('tabindex', '-1');
+            notification.focus({ preventScroll: true });
+        });
+    </script>
 }

@@ -3,6 +3,7 @@ using SAPPub.Core.Helpers;
 using SAPPub.Core.ServiceModels.Common;
 using SAPPub.Core.ServiceModels.Overview;
 using SAPPub.Core.ValueObjects;
+using SAPPub.Web.Constants;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.Charts;
 
@@ -65,6 +66,8 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
     public required DataViewModel EnglishAndMathsGrade5Chart { get; init; }
 
     public required string LocalAuthorityName { get; init; }
+
+    public required IReadOnlyList<NextStepLinkViewModel> NextStepLinks { get; init; }
 
     public static OverviewViewModel Map(OverviewModel model)
     {
@@ -178,6 +181,8 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
                     model.DestinationsEngland?.Value
                 ]
             },
+
+            NextStepLinks = BuildNextStepLinks(model),
         };
     }
 
@@ -226,4 +231,132 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
                 England = england.Value
             });
     }
+
+    private static IReadOnlyList<NextStepLinkViewModel> BuildNextStepLinks(OverviewModel model)
+    {
+        var links = new List<NextStepLinkViewModel>();
+
+        void Add(
+            string title,
+            string description,
+            string routeName)
+        {
+            if (links.Any(x =>
+                    string.Equals(
+                        x.Title,
+                        title,
+                        StringComparison.OrdinalIgnoreCase)))
+            {
+                return;
+            }
+
+            links.Add(
+                new NextStepLinkViewModel(
+                    title,
+                    description,
+                    routeName));
+        }
+
+        // About
+        Add(
+            model.IsKS5 && !model.IsKS2 && !model.IsKS4
+                ? "About the school or college"
+                : "About the school",
+            model.IsKS5 && !model.IsKS2 && !model.IsKS4
+                ? "Find out more about the school or college, including policies on school uniform and SEN."
+                : "Find out more about the school, including policies on school uniform and SEN.",
+            RouteConstants.AboutTheSchool);
+
+        // Admissions
+        // Primary comes before Secondary in the established profile order.
+        if (model.IsKS2)
+        {
+            Add(
+                "Admissions",
+                "Find important dates and learn about the school admissions process.",
+                RouteConstants.PrimaryAdmissions);
+        }
+        else if (model.IsKS4)
+        {
+            Add(
+                "Admissions",
+                "Find important dates and learn about the school admissions process.",
+                RouteConstants.SecondaryAdmissions);
+        }
+
+        // Curriculum and extra-curricular activities
+        // Primary comes before Secondary in the established profile order.
+        if (model.IsKS2)
+        {
+            Add(
+                "Curriculum and extra-curricular activities",
+                "What pupils learn at this school and the activities they can take part in.",
+                RouteConstants.PrimaryCurriculumAndExtraCurricularActivities);
+        }
+        else if (model.IsKS4)
+        {
+            Add(
+                "Curriculum and extra-curricular activities",
+                "What pupils learn at this school and the activities they can take part in.",
+                RouteConstants.SecondaryCurriculumAndExtraCurricularActivities);
+        }
+
+        // Attendance is shared between Primary and Secondary.
+        if (model.IsKS2 || model.IsKS4)
+        {
+            Add(
+                "Attendance",
+                "Find out more about attendance rates at this school.",
+                RouteConstants.Attendance);
+        }
+
+        // Primary academic performance
+        if (model.IsKS2)
+        {
+            Add(
+                "Primary academic performance",
+                "Find out more about this school’s pupil progress, attainment and results.",
+                RouteConstants.PrimaryAcademicPerformancePupilProgress);
+        }
+
+        // Secondary academic performance
+        if (model.IsKS4)
+        {
+            Add(
+                "Secondary academic performance",
+                "Find out more about this school’s pupil progress, achievement and results.",
+                RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress);
+        }
+
+        // 16 to 19 performance.
+        // The root route redirects to the first Level 3 qualifications page.
+        if (model.IsKS5)
+        {
+            Add(
+                "Performance in qualifications",
+                "Find out more about this school or college’s performance in qualifications.",
+                RouteConstants.KS5AcademicPerformanceRoot);
+        }
+
+        // Destinations is displayed once.
+        // Secondary destinations come before KS5 destinations in the established
+        // profile order, so use Secondary when both phases are present.
+        if (model.IsKS4)
+        {
+            Add(
+                "Destinations",
+                "Find out more about where pupils went after year 11 after leaving this school.",
+                RouteConstants.SecondaryDestinations);
+        }
+        else if (model.IsKS5)
+        {
+            Add(
+                "Destinations",
+                "Find out more about where students went after leaving this school or college.",
+                RouteConstants.KS5Destinations);
+        }
+
+        return links;
+    }
+
 }
