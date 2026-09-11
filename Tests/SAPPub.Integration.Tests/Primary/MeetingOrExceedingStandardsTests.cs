@@ -8,7 +8,7 @@ namespace SAPPub.Integration.Tests.Primary;
 public class MeetingOrExceedingStandardsTests() : BasePageTest()
 {
     private string BasePageUrl(string urn) => $"/school/{urn}";
-    private string ThisPage => "primary-performance/meeting-or-exceeding-standards";
+    private string pageUnderTest => "primary-performance/meeting-or-exceeding-standards";
 
     // TODO :
     // England average for the tables
@@ -29,7 +29,7 @@ public class MeetingOrExceedingStandardsTests() : BasePageTest()
         // Arrange && Act
         var response = await Page.GotoAsync(BasePageUrl(urn));
         Assert.NotNull(response);
-        var _ = await Page.GotoPage(response.Url, ThisPage);
+        var _ = await Page.GotoPage(response.Url, pageUnderTest);
 
         // Act
         // Click Show data over time button
@@ -67,7 +67,7 @@ public class MeetingOrExceedingStandardsTests() : BasePageTest()
         // Arrange && Act
         var response = await Page.GotoAsync(BasePageUrl(urn));
         Assert.NotNull(response);
-        var _ = await Page.GotoPage(response.Url, ThisPage);
+        var _ = await Page.GotoPage(response.Url, pageUnderTest);
 
         // Act
         // Click Show data over time button
@@ -109,7 +109,7 @@ public class MeetingOrExceedingStandardsTests() : BasePageTest()
         // Arrange && Act
         var response = await Page.GotoAsync(BasePageUrl(urn));
         Assert.NotNull(response);
-        var _ = await Page.GotoPage(response.Url, ThisPage);
+        var _ = await Page.GotoPage(response.Url, pageUnderTest);
 
         // Act
         await Page.ExpandAccordionAsync("Meeting and exceeding expected standards by pupil characteristics");
@@ -149,7 +149,7 @@ public class MeetingOrExceedingStandardsTests() : BasePageTest()
         // Arrange && Act
         var response = await Page.GotoAsync(BasePageUrl(urn));
         Assert.NotNull(response);
-        var _ = await Page.GotoPage(response.Url, ThisPage);
+        var _ = await Page.GotoPage(response.Url, pageUnderTest);
 
         // Act
         await Page.ExpandAccordionAsync("Meeting and exceeding expected standards by pupil characteristics");

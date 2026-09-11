@@ -8,7 +8,7 @@ namespace SAPPub.Integration.Tests.Primary;
 public class SubjectScaledScoresTests() : BasePageTest()
 {
     private string BasePageUrl(string urn) => $"/school/{urn}";
-    private string ThisPage => "primary-performance/subject-scaled-scores";
+    private string pageUnderTest => "primary-performance/subject-scaled-scores";
 
     [Theory]
     [InlineData("100019", "110", "107", "109", "109", "110", "109")]
@@ -27,7 +27,7 @@ public class SubjectScaledScoresTests() : BasePageTest()
         // Arrange && Act
         var response = await Page.GotoAsync(BasePageUrl(urn));
         Assert.NotNull(response);
-        var _ = await Page.GotoPage(response.Url, ThisPage);
+        var _ = await Page.GotoPage(response.Url, pageUnderTest);
 
         // Act
         // 'reading' table
@@ -70,7 +70,7 @@ public class SubjectScaledScoresTests() : BasePageTest()
         // Arrange && Act
         var response = await Page.GotoAsync(BasePageUrl(urn));
         Assert.NotNull(response);
-        var _ = await Page.GotoPage(response.Url, ThisPage);
+        var _ = await Page.GotoPage(response.Url, pageUnderTest);
 
         // Act
         await Page.ExpandAccordionAsync("Average scaled scores in reading and maths by pupil characteristic");
