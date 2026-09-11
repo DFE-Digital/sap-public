@@ -2,9 +2,57 @@
 
 SAPPub currently uses the following approach to architecture: 
 
-![High-level Diagram](../_assets/HLD.png "High Level Diagram showing all major components")
+```mermaid
+flowchart TB
 
-The main entry point to the application is as an ASPNet application (net8 as of first writing), exposing MVC web endpoints. 
+    SchoolUsers["Public"]
+    
+
+
+    SchoolUsers --> WebApp
+
+
+    subgraph AKS["Azure Kubernetes Service (AKS)"]
+        direction TB
+
+        WebApp["Web Application"]
+
+    end
+
+    subgraph Azure["Azure Hosted services"]
+        Blob["Azure Blob Storage"]
+        Postgres["(PostgreSQL<br/>Primary DB<br/>Materialised Views)"]
+    end
+
+
+    StatusCake["StatusCake Monitoring"]
+
+    Analytics["DfE Analytics<br/>Google Analytics<br/>Microsoft Clarity"]
+
+    StatusCake -.->|health checks| WebApp
+    WebApp -->|read keys| Blob
+    Blob -->|write keys| WebApp
+    WebApp -.->|usage events| Analytics
+    WebApp -->|Query| Postcodes.io
+
+
+
+    WebApp -->|read only| Postgres
+
+    subgraph Github["Github"]
+        ETL["SAPPData ETL Pipeline<br/>owns schema - raw / staging / curated<br/>generates SQL, tables and materialised views"]
+    end
+    ETL -->|writes / owns schema| Postgres
+
+    GIAS["GIAS<br/>School Metadata"]
+    EES["Explore Education Statistics<br/>Performance Data"]
+
+    GIAS --> ETL
+
+    EES --> ETL
+```
+
+The main entry point to the application is as an ASPNet application (.net10), exposing MVC web endpoints. 
 
 The SAPPub application is intended as an almost entirely read-only public-facing website, hence no API, or Authentication mechanism. 
 A caveat to this exists in the Gateway which uses email and timers to restirct access in the private beta phase, this will be removed when the application goes Public Beta. 
