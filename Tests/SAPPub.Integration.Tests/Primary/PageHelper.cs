@@ -5,18 +5,6 @@ namespace SAPPub.Integration.Tests.Primary;
 
 public static class PageHelper
 {
-    public static Task<IResponse> ClickAcademicPerformanceLinkAsync(this IPage Page)
-    {
-        var response = Page.RunAndWaitForResponseAsync(
-            async () =>
-            {
-                await Page.GetByRole(AriaRole.Link, new() { Name = "Primary academic performance" }).ClickAsync();
-            },
-            response => response.Url.Contains("/primary-performance/pupil-progress/current") && response.Status == 200
-        );
-        return response;
-    }
-
     public static Task<IResponse?> GotoAcademicPerformanceSelectedYearLink(this IPage Page, string urlstring, string year = "current")
     {
         const string marker = "school/";
@@ -30,7 +18,7 @@ public static class PageHelper
     {
         const string marker = "/";
         var i = urlstring.LastIndexOf(marker);
-        var previousYearPerformanceUrl = urlstring.Substring(0, i);
-        return Page.GotoAsync($"{previousYearPerformanceUrl}/{page}");
+        var urlStem = urlstring.Substring(0, i);
+        return Page.GotoAsync($"{urlStem}/{page}");
     }
 }
