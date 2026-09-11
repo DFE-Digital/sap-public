@@ -1,0 +1,57 @@
+﻿@using SAPPub.Web.Areas.Profiles.ViewModels.KS4
+@model AcademicPerformanceAttainmentAndProgressSingleYearViewModel
+
+@if (Model is null)
+{
+    return;
+}
+
+@if (!Model.ShowProgress8Info)
+{
+    <div class="custom-card" id="no-data-@ViewData["Id"]">
+        <div class="info__icon"></div>
+        <div class="custom-card__content">
+            <p class="govuk-body">
+                There is no Progress 8 data for this school.
+            </p>
+        </div>
+    </div>
+}
+else
+{
+    <div class="custom-card" id="@ViewData["Id"]">
+        <div class="assignment__icon"></div>
+        <div class="custom-card__content">
+            <p class="govuk-body">
+                Pupils at this school score @Model.EstablishmentProgress8Score.
+                @if (Model.EstablishmentProgress8BandingContextDescription.IsAvailable)
+                {
+                    <span>@Model.EstablishmentProgress8BandingContextDescription.DisplayText()</span>
+                }
+            </p>
+            <p class="govuk-body">
+                The confidence interval is @Model.EstablishmentProgress8CILower to @Model.EstablishmentProgress8CIUpper.
+            </p>
+        </div>
+    </div>
+
+    <govuk-details id="pupil-details-@ViewData["Id"]">
+        <govuk-details-summary>
+            Pupils included in this measure
+        </govuk-details-summary>
+        <govuk-details-text>
+            <p class="govuk-body">
+                @Model.EstablishmentProgress8TotalPupils out of @Model.EstablishmentTotalPupils pupils were included in this measure.
+            </p>
+        </govuk-details-text>
+    </govuk-details>
+
+    <div class="custom-card" id="@ViewData["Id"]-localauthority-card">
+        <div class="custom-card__content">
+            <p class="govuk-body">
+                The local authority average is @Model.LocalAuthorityProgress8Score.
+            </p>
+        </div>
+        <div class="bar-chart__icon"></div>
+    </div>
+}

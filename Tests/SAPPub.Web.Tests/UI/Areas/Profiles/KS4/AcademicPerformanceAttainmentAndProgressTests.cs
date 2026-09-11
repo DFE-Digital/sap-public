@@ -10,6 +10,7 @@ namespace SAPPub.Web.Tests.UI.KS4;
 public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
     private string _pageUrl = "school/105574/loreto-high-school-chorlton/secondary-performance/progress-attainment";
+    private string _pageUrl2 = "school/107564/todmorden-high-school/secondary-performance/progress-attainment";
 
     [Fact]
     public async Task AcademicPerformanceAttainmentAndProgressPage_LoadsSuccessfully()
@@ -75,18 +76,39 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
     [Fact]
     public async Task AcademicPerformanceAttainmentAndProgressPage_DisplaysExpectedSections()
     {
+
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        var attainment8CurrentYearId = "attainment8-scores-current";
+        var attainment8PrevYearId = "attainment8-scores-prev";
+        var attainment8Prev2YearId = "attainment8-scores-prev2";
+
+        var progress8CurrentYearId = "progress8-scores-current";
+        var progress8PrevYearId = "progress8-scores-prev";
+        var progress8Prev2YearId = "progress8-scores-prev2";
+
+        await Page.GotoAsync(_pageUrl2);
+        var content = await Page.ContentAsync();
 
         // Act
         var academicYearSelector = Page.Locator("#academicYearSelector");
-        var progress8CustomCard = Page.GetByTestId("progress8-custom-card");
 
-        var attainment8EstablishmentCard = Page.GetByTestId("attainment8-establishment-card");
-        var attainment8LocalAuthorityAndNationalCard = Page.GetByTestId("attainment8-localauthority-and-national-card");
+        // Setup Progress 8 Assertion Objects
+        var progress8CustomCardCurrentYear = Page.GetByTestId(progress8CurrentYearId);
+
+
+        // Setup Attainment 8 Assertions Objects
+        var attainment8EstablishmentCardCurrentYear = Page.GetByTestId(attainment8CurrentYearId);
+        var attainment8LocalAuthorityAndNationalCardCurrentYear = Page.GetByTestId($"{attainment8CurrentYearId}-localauthority-and-national-card");
+
+        var attainment8PreviousYearsAccordion = Page.Locator("#attainment8-previous-years-accordion");
+        await attainment8PreviousYearsAccordion.ClickAsync();
+        var attainment8EstablishmentCardCurrentPrev = Page.GetByTestId(attainment8PrevYearId);
+        var attainment8EstablishmentCardCurrentPrev2 = Page.GetByTestId(attainment8Prev2YearId);
         var attainment8NoEstablishmentDataCard = Page.GetByTestId("attainment8-no-establishment-data-card");
-        var otherPupilCharacteristicsAccordion = Page.Locator("#other-pupil-characteristics-accordion");
 
+
+
+        var otherPupilCharacteristicsAccordion = Page.Locator("#other-pupil-characteristics-accordion");
         await otherPupilCharacteristicsAccordion.ClickAsync();
 
         var nonDisadvantagedAdditionalInfoDetails = Page.Locator("#non-disadvantaged-details");
@@ -102,9 +124,11 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
 
         // Assert
         Assert.True(await academicYearSelector.IsVisibleAsync());
-        Assert.True(await progress8CustomCard.IsVisibleAsync());
-        Assert.True(await attainment8EstablishmentCard.IsVisibleAsync());
-        Assert.True(await attainment8LocalAuthorityAndNationalCard.IsVisibleAsync());
+        Assert.True(await progress8CustomCardCurrentYear.IsVisibleAsync());
+        Assert.True(await attainment8EstablishmentCardCurrentYear.IsVisibleAsync());
+        Assert.True(await attainment8EstablishmentCardCurrentPrev.IsVisibleAsync());
+        Assert.True(await attainment8EstablishmentCardCurrentPrev2.IsVisibleAsync());
+        Assert.True(await attainment8LocalAuthorityAndNationalCardCurrentYear.IsVisibleAsync());
         Assert.False(await attainment8NoEstablishmentDataCard.IsVisibleAsync());
         Assert.True(await otherPupilCharacteristicsAccordion.IsVisibleAsync());
         Assert.True(await disadvantagedTableCurrentYear.IsVisibleAsync());

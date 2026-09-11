@@ -13,13 +13,10 @@ namespace SAPPub.Web.Areas.Profiles.ViewModels.KS4;
 public class AcademicPerformanceAttainmentAndProgressViewModel : BaseViewModel
 {
     private const AcademicYearSelection _currentAcademicYear = AcademicYearSelection.Current;
-    public string? AcademicYearInfoParagraph => $"Information in this section is for the {SelectedAcademicYear.GetDisplayName()} academic year.";
+    public string? AcademicYearInfoParagraph => $"Information in this section is for the {_currentAcademicYear.GetDisplayName()} academic year.";
     public AcademicYearSelection SelectedAcademicYear { get; set; } = _currentAcademicYear;
 
     public bool ShowProgress8NotAvailableInfo => SelectedAcademicYear == _currentAcademicYear;
-
-    public bool ShowAttainment8Info => SelectedYearValues?.EstablishmentAttainment8Score.HasValue ?? false;
-    public bool ShowProgress8Info => SelectedYearValues?.EstablishmentProgress8Score.HasValue ?? false;
 
     public AcademicPerformanceAttainmentAndProgressSingleYearViewModel SelectedYearValues => YearValues.GetValueForYear(SelectedAcademicYear) ?? AcademicPerformanceAttainmentAndProgressSingleYearViewModel.Empty;
     public required RelativeYearValues<AcademicPerformanceAttainmentAndProgressSingleYearViewModel> YearValues { get; init; }

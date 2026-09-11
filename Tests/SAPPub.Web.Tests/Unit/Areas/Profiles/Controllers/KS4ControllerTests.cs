@@ -234,7 +234,6 @@ public class KS4ControllerTests
         Assert.Equal(expectedResult.EnglandAttainment8DisadvantagedScore.GetValueForYear(academicYearSelection), model.SelectedYearValues.EnglandAttainment8DisadvantagedScore.Value);
         Assert.Equal(expectedResult.EnglandAttainment8NonDisadvantagedScore, model.EnglandAttainment8NonDisadvantagedScore.Value);
         Assert.Equal(expectedResult.LocalAuthorityAttainment8NonDisadvantagedScore, model.LocalAuthorityAttainment8NonDisadvantagedScore.Value);
-        Assert.True(model.ShowAttainment8Info);
     }
 
     [Theory]
@@ -307,31 +306,6 @@ public class KS4ControllerTests
         Assert.Equal(TextHelpers.CleanForUrl(expectedResult.SchoolName!), model.RouteAttributes[RouteConstants.SchoolName]);
         Assert.Equal(3, model.AcademicYearsSelectList.Count);
         Assert.Equal(AcademicYearSelection.Current, model.SelectedAcademicYear);
-    }
-
-    [Fact]
-    public async Task Get_AcademicPerformanceAttainmentAndProgress_NoAttainment8Data_ReturnsExpected()
-    {
-        var expectedResult = new AttainmentAndProgressModelBuilder()
-            .Build();
-
-        _mockAttainmentAndProgressService
-            .Setup(s => s.GetAttainmentAndProgressAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(expectedResult);
-
-        var result = await _controller.AcademicPerformanceAttainmentAndProgress(
-            _mockAttainmentAndProgressService.Object,
-            _fakeEstablishment.URN,
-            _fakeEstablishment.EstablishmentName,
-            AcademicYearSelection.Current.ToRouteSegment()!,
-            CancellationToken.None) as ViewResult;
-
-        Assert.NotNull(result);
-        Assert.NotNull(result.Model);
-
-        var model = result.Model as AcademicPerformanceAttainmentAndProgressViewModel;
-        Assert.NotNull(model);
-        Assert.False(model.ShowAttainment8Info);
     }
 
     [Theory]

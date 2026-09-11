@@ -77,24 +77,24 @@
             </li>
         </ul>
 
-        @if(Model.ShowUTCCaveat)
+        @if (Model.ShowUTCCaveat)
         {
             <govuk-inset-text id="utc-caveat-inset-text">
                 <p class="govuk-body">
-                    Some schools start educating pupils partway through the 5-year period covered by Progress 8, which should be taken into account when comparing their results with schools that start at Key Stage 3. 
+                    Some schools start educating pupils partway through the 5-year period covered by Progress 8, which should be taken into account when comparing their results with schools that start at Key Stage 3.
                 </p>
                 <p class="govuk-body">
-                Progress 8 is not the most appropriate performance measure for university technical colleges, studio schools and some further education colleges. These establishments typically start educating pupils at age 14, with a focus on preparing pupils for their future careers by providing an integrated academic and professional education. Other headline measures, particularly pupil destinations, are more important for these establishments.
+                    Progress 8 is not the most appropriate performance measure for university technical colleges, studio schools and some further education colleges. These establishments typically start educating pupils at age 14, with a focus on preparing pupils for their future careers by providing an integrated academic and professional education. Other headline measures, particularly pupil destinations, are more important for these establishments.
                 </p>
 
                 <p class="govuk-body">
-                University Technical Colleges (UTCs) are state-funded mainstream schools that focus on technical qualifications from age 14 alongside core academic subjects, including maths, English and science.
-                Employers are closely involved in the design and delivery of technical education at UTCs.
+                    University Technical Colleges (UTCs) are state-funded mainstream schools that focus on technical qualifications from age 14 alongside core academic subjects, including maths, English and science.
+                    Employers are closely involved in the design and delivery of technical education at UTCs.
                 </p>
             </govuk-inset-text>
         }
 
-        @if(Model.ShowStudioSchoolCaveat)
+        @if (Model.ShowStudioSchoolCaveat)
         {
             <govuk-inset-text id="studioschool-caveat-inset-text">
                 <p class="govuk-body">
@@ -102,7 +102,7 @@
                 </p>
                 <p class="govuk-body">
                     Progress 8 is not the most appropriate performance measure for university technical colleges, studio schools and some further education colleges.
-                    These establishments typically start educating pupils at age 14, with a focus on preparing pupils for their future careers by providing an 
+                    These establishments typically start educating pupils at age 14, with a focus on preparing pupils for their future careers by providing an
                     integrated academic and professional education. Other headline measures, particularly pupil destinations, are more important for these establishments.
                 </p>
                 <p class="govuk-body">
@@ -112,11 +112,11 @@
             </govuk-inset-text>
         }
 
-        @if(Model.ShowFurtherEducationCaveat)
+        @if (Model.ShowFurtherEducationCaveat)
         {
             <govuk-inset-text id="fe-caveat-inset-text">
                 <p class="govuk-body">
-                    Some schools start educating pupils partway through the 5-year period covered by Progress 8, which should be taken into account when comparing their results with schools that start at Key Stage 3. 
+                    Some schools start educating pupils partway through the 5-year period covered by Progress 8, which should be taken into account when comparing their results with schools that start at Key Stage 3.
                 </p>
                 <p class="govuk-body">
                     Progress 8 is not the most appropriate performance measure for university technical colleges, studio schools and some further education colleges. These establishments typically start educating pupils at age 14, with a focus on preparing pupils for their future careers by providing an integrated academic and professional education. Other headline measures, particularly pupil destinations, are more important for these establishments.
@@ -168,56 +168,27 @@
                 </div>
             </div>
         }
-        else if (!Model.ShowProgress8Info)
-        {
-            <div class="custom-card" data-testid="progress8-no-establishment-data-card">
-                <div class="info__icon"></div>
-                <div class="custom-card__content">
-                    <p class="govuk-body">
-                        There is no Progress 8 data for this school.
-                    </p>
-                </div>
-            </div>
-        }
         else
         {
-            <div class="custom-card" data-testid="progress8-establishment-card">
-                <div class="assignment__icon"></div>
-                <div class="custom-card__content">
-                    <p class="govuk-body">
-                        Pupils at this school score @Model.SelectedYearValues.EstablishmentProgress8Score.
-                        @if (Model.SelectedYearValues.EstablishmentProgress8BandingContextDescription.IsAvailable)
-                        {
-                            <span>@Model.SelectedYearValues.EstablishmentProgress8BandingContextDescription.DisplayText()</span>
-                        }
-                    </p>
-                    <p class="govuk-body">
-                        The confidence interval is @Model.SelectedYearValues.EstablishmentProgress8CILower to @Model.SelectedYearValues.EstablishmentProgress8CIUpper.
-                    </p>
-                </div>
-            </div>
-
-            <govuk-details id="pupil-details-progress8" data-testid="pupil-details-progress8">
-                <govuk-details-summary>
-                    Pupils included in this measure
-                </govuk-details-summary>
-                <govuk-details-text>
-                    <p class="govuk-body">
-                        @Model.SelectedYearValues.EstablishmentProgress8TotalPupils out of @Model.SelectedYearValues.EstablishmentTotalPupils pupils were included in this measure.
-                    </p>
-                </govuk-details-text>
-            </govuk-details>
-
-            <div class="custom-card" data-testid="progress8-localauthority-card">
-                <div class="custom-card__content">
-                    <p class="govuk-body">
-                        The local authority average is @Model.SelectedYearValues.LocalAuthorityProgress8Score.
-                    </p>
-                </div>
-                <div class="bar-chart__icon"></div>
-            </div>
+            @await Html.PartialAsync("_Progress8Scores", Model.YearValues.CurrentYear, new ViewDataDictionary(ViewData) { { "id", "prog8-scores-current" } })
         }
 
+        <govuk-accordion id="prog8-previous-years-accordion" heading-level="3" hide-all-sections-text="Hide all sections" show-all-sections-text="Show all sections" hide-section-text="Hide" show-section-text="Show more">
+            <govuk-accordion-item expanded="false">
+                <govuk-accordion-item-heading>Progress 8 for previous years</govuk-accordion-item-heading>
+                <govuk-accordion-item-content>
+
+                    <h4 class="govuk-heading-m">@Model.YearValues.PreviousYear!.AcademicYearSelection.GetDisplayName() academic year</h4>
+                    @await Html.PartialAsync("_Progress8Scores", Model.YearValues.PreviousYear, new ViewDataDictionary(ViewData) { { "id", "prog8-scores-prev" } })
+
+                    <h4 class="govuk-heading-m">@Model.YearValues.TwoYearsAgo!.AcademicYearSelection.GetDisplayName() academic year</h4>
+                    @await Html.PartialAsync("_Progress8Scores", Model.YearValues.TwoYearsAgo, new ViewDataDictionary(ViewData) { { "id", "prog8-scores-prev2" } })
+
+                </govuk-accordion-item-content>
+            </govuk-accordion-item>
+        </govuk-accordion>
+
+        
         <h3 class="govuk-heading-m">Attainment 8</h3>
 
         <p class="govuk-body">
@@ -256,85 +227,56 @@
             </govuk-details-text>
         </govuk-details>
 
-        @if (Model.ShowAttainment8Info)
-        {
-            <div class="custom-card" data-testid="attainment8-establishment-card">
-                <div class="assignment__icon"></div>
-                <div class="custom-card__content">
-                    <p class="govuk-body">
-                        The Attainment 8 score for this school is @($"{Model.SelectedYearValues.EstablishmentAttainment8Score.Value:0.0}").
-                    </p>
-                    @if (Model.SelectedYearValues.EstablishmentAttainment8ScoreContextDescription.IsAvailable)
-                    {
-                        <p class="govuk-body">
-                            @Model.SelectedYearValues.EstablishmentAttainment8ScoreContextDescription.DisplayText()
-                        </p>
-                    }
-                </div>
-            </div>
+        @await Html.PartialAsync("_Attainment8Scores", Model.YearValues.CurrentYear, new ViewDataDictionary(ViewData) { { "id", "attainment8-scores-current" } })
+            
+        <govuk-accordion id="attainment8-previous-years-accordion" heading-level="3" hide-all-sections-text="Hide all sections" show-all-sections-text="Show all sections" hide-section-text="Hide" show-section-text="Show more">
+            <govuk-accordion-item expanded="false">
+                <govuk-accordion-item-heading>Attainment 8 for previous years</govuk-accordion-item-heading>
+                <govuk-accordion-item-content>
 
-            <div class="custom-card" data-testid="attainment8-localauthority-and-national-card">
-                <div class="custom-card__content">
-                    @if (Model.SelectedYearValues.LocalAuthorityAttainment8ScoreContextDescription.IsAvailable)
-                    {
-                        <p class="govuk-body">
-                            @Model.SelectedYearValues.LocalAuthorityAttainment8ScoreContextDescription.DisplayText()
-                        </p>
-                    }
-                    @if (Model.SelectedYearValues.EnglandAttainment8ScoreContextDescription.IsAvailable)
-                    {
-                        <p class="govuk-body">
-                            @Model.SelectedYearValues.EnglandAttainment8ScoreContextDescription.DisplayText()
-                        </p>
-                    }
-                </div>
-                <div class="bar-chart__icon"></div>
-            </div>
+                    <h4 class="govuk-heading-m">@Model.YearValues.PreviousYear!.AcademicYearSelection.GetDisplayName() academic year</h4>
+                    @await Html.PartialAsync("_Attainment8Scores", Model.YearValues.PreviousYear, new ViewDataDictionary(ViewData) { { "id", "attainment8-scores-prev" } })
+                    <h4 class="govuk-heading-m">@Model.YearValues.TwoYearsAgo!.AcademicYearSelection.GetDisplayName() academic year</h4>
+                    @await Html.PartialAsync("_Attainment8Scores", Model.YearValues.TwoYearsAgo, new ViewDataDictionary(ViewData) { { "id", "attainment8-scores-prev2" } })
 
-            <govuk-accordion heading-level="3" id="other-pupil-characteristics-accordion" hide-all-sections-text="Hide all sections" show-all-sections-text="Show all sections" hide-section-text="Hide" show-section-text="Show more">
-                <govuk-accordion-item>
-                    <govuk-accordion-item-heading>Attainment 8 by pupil characteristic</govuk-accordion-item-heading>
-                    <govuk-accordion-item-summary></govuk-accordion-item-summary>
-                    <govuk-accordion-item-content>
+                </govuk-accordion-item-content>
+            </govuk-accordion-item>
+        </govuk-accordion>
 
-                        @await Html.PartialAsync("_DisadvantagedPupils")
-                        @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.YearValues.CurrentYear.BreakdownDisadvantaged)
-                        <govuk-details id="non-disadvantaged-details">
-                            <govuk-details-summary>
-                                Compare state-funded local and national averages for non-disadvantaged pupils
-                            </govuk-details-summary>
-                            <govuk-details-text>
-                                <h4 class="govuk-heading-s">Non-disadvantaged pupils</h4>
-                                @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.BreakdownNonDisadvantaged)
-                            </govuk-details-text>
-                        </govuk-details>
-                            
-                        <govuk-details id="disadvantaged-previous-years-details">
-                            <govuk-details-summary>
-                                Show previous years data for disadvantaged pupils
-                            </govuk-details-summary>
-                            <govuk-details-text>
-                                <h4 class="govuk-heading-s">2023 to 2024 academic year</h4>
-                                @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.YearValues.PreviousYear?.BreakdownDisadvantaged)
-                                <h4 class="govuk-heading-s">2022 to 2023 academic year</h4>
-                                @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.YearValues.TwoYearsAgo?.BreakdownDisadvantaged)
-                            </govuk-details-text>
-                        </govuk-details>
-                    </govuk-accordion-item-content>
-                </govuk-accordion-item>
-            </govuk-accordion>
-        }
-        else
-        {
-            <div class="custom-card" data-testid="attainment8-no-establishment-data-card">
-                <div class="info__icon"></div>
-                <div class="custom-card__content">
-                    <p class="govuk-body">
-                        There is no Attainment 8 data for this school.
-                    </p>
-                </div>
-            </div>
-        }
+           
+        <govuk-accordion heading-level="3" id="other-pupil-characteristics-accordion" hide-all-sections-text="Hide all sections" show-all-sections-text="Show all sections" hide-section-text="Hide" show-section-text="Show more">
+            <govuk-accordion-item>
+                <govuk-accordion-item-heading>Attainment 8 by pupil characteristic</govuk-accordion-item-heading>
+                <govuk-accordion-item-summary></govuk-accordion-item-summary>
+                <govuk-accordion-item-content>
+
+                    @await Html.PartialAsync("_DisadvantagedPupils")
+                    @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.YearValues.CurrentYear.BreakdownDisadvantaged)
+                    <govuk-details id="non-disadvantaged-details">
+                        <govuk-details-summary>
+                            Compare state-funded local and national averages for non-disadvantaged pupils
+                        </govuk-details-summary>
+                        <govuk-details-text>
+                            <h4 class="govuk-heading-s">Non-disadvantaged pupils</h4>
+                            @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.BreakdownNonDisadvantaged)
+                        </govuk-details-text>
+                    </govuk-details>
+
+                    <govuk-details id="disadvantaged-previous-years-details">
+                        <govuk-details-summary>
+                            Show previous years data for disadvantaged pupils
+                        </govuk-details-summary>
+                        <govuk-details-text>
+                            <h4 class="govuk-heading-s">@Model.YearValues.PreviousYear!.AcademicYearSelection.GetDisplayName() academic year</h4>
+                            @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.YearValues.PreviousYear?.BreakdownDisadvantaged)
+                            <h4 class="govuk-heading-s">@Model.YearValues.TwoYearsAgo!.AcademicYearSelection.GetDisplayName() academic year</h4>
+                            @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.YearValues.TwoYearsAgo?.BreakdownDisadvantaged)
+                        </govuk-details-text>
+                    </govuk-details>
+                </govuk-accordion-item-content>
+            </govuk-accordion-item>
+        </govuk-accordion>
+
 
         @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress))
 
