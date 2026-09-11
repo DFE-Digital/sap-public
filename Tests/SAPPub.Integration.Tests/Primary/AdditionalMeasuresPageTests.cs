@@ -1,8 +1,5 @@
 ﻿using SAPPub.Playwright.Testing;
 using SAPPub.Playwright.Testing.KS2.Performance.AdditionalMeasures;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SAPPub.Integration.Tests.Primary;
 
@@ -27,7 +24,7 @@ public class AdditionalMeasuresPageTests : BasePageTest
         response = await Page.GotoPage(response.Url, pageUnderTest);
 
         // Assert
-        var gpsSchoolData = await Page.GetTableRowValuesAsync(PageConstants.ContentIds["additional-measures-breakdown-table"], 0);
+        var gpsSchoolData = await Page.GetTableRowValuesAsync(PageConstants.AdditionalMeasuresTableId, 0);
         Assert.Equal($"{expectedPercent}%", gpsSchoolData[0]);
         Assert.Equal($"{higherPercent}%", gpsSchoolData[1]);
     }
@@ -57,32 +54,32 @@ public class AdditionalMeasuresPageTests : BasePageTest
         response = await Page.GotoPage(response.Url, pageUnderTest);
 
         // Assert
-        var schoolNumberPupilsEndKS2Data = await Page.GetTableRowValuesAsync(PageConstants.ContentIds["pupils-eoks2-table"], 0);
+        var schoolNumberPupilsEndKS2Data = await Page.GetTableRowValuesAsync(PageConstants.PupilPopulationTableId, 0);
         Assert.Equal(telig, schoolNumberPupilsEndKS2Data[0]);
 
-        await Page.ExpandAccordionByIdAsync(PageConstants.ContentIds["pupil-population-accordion-by-characteristics"]);
+        await Page.ExpandAccordionByIdAsync(PageConstants.PupilPopulationAccordionByCharacteristicsId);
 
-        var schoolNumberPupilsBreakdownData = await Page.GetTableRowValuesAsync(PageConstants.ContentIds["ks2-population-breakdown-table"], "Girls");
+        var schoolNumberPupilsBreakdownData = await Page.GetTableRowValuesAsync(PageConstants.Ks2PopulationBreakdownTableId, "Girls");
         Assert.Equal(gelig, schoolNumberPupilsBreakdownData[0]);
-        schoolNumberPupilsBreakdownData = await Page.GetTableRowValuesAsync(PageConstants.ContentIds["ks2-population-breakdown-table"], "Boys");
+        schoolNumberPupilsBreakdownData = await Page.GetTableRowValuesAsync(PageConstants.Ks2PopulationBreakdownTableId, "Boys");
         Assert.Equal(belig, schoolNumberPupilsBreakdownData[0]);
-        schoolNumberPupilsBreakdownData = await Page.GetTableRowValuesAsync(PageConstants.ContentIds["ks2-population-breakdown-table"], 2);
+        schoolNumberPupilsBreakdownData = await Page.GetTableRowValuesAsync(PageConstants.Ks2PopulationBreakdownTableId, 2);
         Assert.Equal(tealgrp2, schoolNumberPupilsBreakdownData[0]);
-        schoolNumberPupilsBreakdownData = await Page.GetTableRowValuesAsync(PageConstants.ContentIds["ks2-population-breakdown-table"], 3);
+        schoolNumberPupilsBreakdownData = await Page.GetTableRowValuesAsync(PageConstants.Ks2PopulationBreakdownTableId, 3);
         Assert.Equal(tmobn, schoolNumberPupilsBreakdownData[0]);
 
-        var disadvantagedPupilsData = await Page.GetTableRowValuesAsync(PageConstants.ContentIds["disadvantaged-pupils-population-table"], 0);
+        var disadvantagedPupilsData = await Page.GetTableRowValuesAsync(PageConstants.DisadvantagedPupilsPopulationTableId, 0);
         Assert.Equal(tfsm6cla1a, disadvantagedPupilsData[0]);
 
-        // not checking this value as it comes from the main establishment info data source (GIAS) and should be tested on the 'about the school page'
-        var numPupilsTable = await Page.GetTableRowValuesAsync(PageConstants.ContentIds["whole-school-population-table"], 0);
+        // not checking the "whole-school-population-table" values as it comes from the main establishment info data source (GIAS)
+        // and should be tested on the 'about the school page'
 
-        await Page.ExpandAccordionByIdAsync(PageConstants.ContentIds["pupil-population-accordion"]);
+        await Page.ExpandAccordionByIdAsync(PageConstants.PupilPopulationAccordionId);
 
-        var senData = await Page.GetTableRowValuesAsync(PageConstants.ContentIds["sen-population-table"], 0);
+        var senData = await Page.GetTableRowValuesAsync(PageConstants.SenPopulationTableId, 0);
         Assert.Equal($"{psenelk}%", senData[0]);
 
-        var ehcpData = await Page.GetTableRowValuesAsync(PageConstants.ContentIds["ehcp-population-table"], 0);
+        var ehcpData = await Page.GetTableRowValuesAsync(PageConstants.EhcpPopulationTableId, 0);
         Assert.Equal($"{psenele}%", ehcpData[0]);
     }
 }

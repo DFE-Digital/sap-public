@@ -50,19 +50,16 @@ public static class PageHelper
         return row.Locator("td").AllInnerTextsAsync();
     }
 
-    public static Task ExpandAccordionByIdAsync(this IPage page, string id)
+    public static async Task ExpandAccordionByIdAsync(this IPage page, string id)
     {
-        var sectionLocator = page.Locator($"#{id}");
+        id = id.StartsWith("#") ? id : $"#{id}";
+        var sectionLocator = page.Locator($"{id}");
         var button = sectionLocator.Locator(".govuk-accordion__show-all");
-        return button.ClickAsync();
-    }
-     
-    public static Task ExpandAccordionAsync(this IPage page, string label)
-    {
-        return page.GetByRole(AriaRole.Button, new()
+        var isExpanded = await button.GetAttributeAsync("aria-expanded");
+        if (isExpanded != "true")
         {
-            Name = label
-        }).ClickAsync();
+            await button.ClickAsync();
+        }
     }
 
     public static Task ExpandDetailsAsync(this IPage page, string summaryText)
