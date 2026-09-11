@@ -2837,7 +2837,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                 "#primary-at-a-glance-accordion .govuk-accordion__section");
 
         await Expect(sections)
-            .ToHaveCountAsync(2);
+            .ToHaveCountAsync(3);
 
         var secondSection = sections.Nth(1);
 
@@ -3048,6 +3048,212 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
             Page.Locator(
                 $"#{ariaControls}"))
             .ToHaveCountAsync(1);
+    }
+
+    [Fact]
+    public async Task OverviewPage_PrimaryExtraCurricularAccordion_IsClosedByDefault()
+    {
+        await Page.GotoAsync(PrimaryOnlyOverviewUrl);
+
+        var accordion =
+            Page.Locator("#primary-at-a-glance-accordion");
+
+        var button =
+            accordion.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex(
+                        "Extra-curricular activities",
+                        RegexOptions.IgnoreCase)
+                });
+
+        var content =
+            Page.Locator(
+                "#primary-at-a-glance-accordion-content-3");
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "false");
+
+        await Expect(content)
+            .Not.ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_PrimaryExtraCurricularAccordion_CanBeExpandedAndClosed()
+    {
+        await Page.GotoAsync(PrimaryOnlyOverviewUrl);
+
+        var accordion =
+            Page.Locator("#primary-at-a-glance-accordion");
+
+        var button =
+            accordion.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex(
+                        "Extra-curricular activities",
+                        RegexOptions.IgnoreCase)
+                });
+
+        var content =
+            Page.Locator(
+                "#primary-at-a-glance-accordion-content-3");
+
+        await button.ClickAsync();
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "true");
+
+        await Expect(content)
+            .ToBeVisibleAsync();
+
+        await button.ClickAsync();
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "false");
+
+        await Expect(content)
+            .Not.ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_PrimaryExtraCurricular_DisplaysExpectedContent()
+    {
+        await Page.GotoAsync(PrimaryOnlyOverviewUrl);
+
+        var accordion =
+            Page.Locator("#primary-at-a-glance-accordion");
+
+        await accordion
+            .GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex(
+                        "Extra-curricular activities",
+                        RegexOptions.IgnoreCase)
+                })
+            .ClickAsync();
+
+        var content =
+            Page.Locator(
+                "#primary-at-a-glance-accordion-content-3");
+
+        await Expect(
+            content.GetByRole(
+                AriaRole.Heading,
+                new()
+                {
+                    Name = "Find out more about upcoming information on extra-curricular activities",
+                    Exact = true
+                }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            content.GetByText(
+                "Information on extra-curricular opportunities will be available in the future.",
+                new() { Exact = true }))
+            .ToBeVisibleAsync();
+
+        await Expect(
+            content.GetByRole(
+                AriaRole.Link,
+                new()
+                {
+                    Name = "Find out more about what types of activities pupils can take part in and where to find this information",
+                    Exact = true
+                }))
+            .ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_PrimaryExtraCurricular_LinkOpensPrimaryCurriculumPageInSameTab()
+    {
+        await Page.GotoAsync(PrimaryOnlyOverviewUrl);
+
+        var accordion =
+            Page.Locator("#primary-at-a-glance-accordion");
+
+        await accordion
+            .GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex = new Regex(
+                        "Extra-curricular activities",
+                        RegexOptions.IgnoreCase)
+                })
+            .ClickAsync();
+
+        var link =
+            Page
+                .Locator("#primary-at-a-glance-accordion-content-3")
+                .GetByRole(
+                    AriaRole.Link,
+                    new()
+                    {
+                        Name = "Find out more about what types of activities pupils can take part in and where to find this information",
+                        Exact = true
+                    });
+
+        await Expect(link)
+            .Not.ToHaveAttributeAsync(
+                "target",
+                "_blank");
+
+        await link.ClickAsync();
+
+        await Expect(Page)
+            .ToHaveURLAsync(
+                new Regex(
+                    @"/school/143034/st-pauls-church-of-england-academy/curriculum/primary/?$"));
+    }
+
+    [Fact]
+    public async Task OverviewPage_PrimaryExtraCurricularAccordion_HasValidAriaControlsReference()
+    {
+        await Page.GotoAsync(PrimaryOnlyOverviewUrl);
+
+        var button =
+            Page
+                .Locator("#primary-at-a-glance-accordion")
+                .GetByRole(
+                    AriaRole.Button,
+                    new()
+                    {
+                        NameRegex = new Regex(
+                            "Extra-curricular activities",
+                            RegexOptions.IgnoreCase)
+                    });
+
+        var ariaControls =
+            await button.GetAttributeAsync("aria-controls");
+
+        Assert.Equal(
+            "primary-at-a-glance-accordion-content-3",
+            ariaControls);
+
+        await Expect(
+            Page.Locator($"#{ariaControls}"))
+            .ToHaveCountAsync(1);
+    }
+
+    [Fact]
+    public async Task OverviewPage_SecondaryOnlySchool_DoesNotDisplayPrimaryExtraCurricularAccordion()
+    {
+        await Page.GotoAsync(SecondaryOnlyOverviewUrl);
+
+        await Expect(
+            Page.Locator("#primary-extra-curricular-toggle"))
+            .ToHaveCountAsync(0);
     }
 
     private async Task<string> GetFailureMessageAsync(
