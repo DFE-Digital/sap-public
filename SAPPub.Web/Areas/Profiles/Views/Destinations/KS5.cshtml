@@ -1,4 +1,5 @@
 ﻿@model KS5DestinationsViewModel;
+@using SAPPub.Core.Extensions
 @using SAPPub.Web.Areas.Profiles.ViewModels.Destinations
 @using SAPPub.Web.Constants
 @using SAPPub.Web.ViewComponents.SchoolProfilePagination
@@ -95,7 +96,7 @@
                                 {
                                     <tr class="govuk-table__row">
                                         <th scope="row" class="govuk-table__header">@label.value</th>
-                                    <td class="govuk-table__cell">@(Model.AllDestinationsData.Data[label.i] is null ? NotAvailable : $"{Model.AllDestinationsData.Data[label.i]}%")</td>
+                                    <td class="govuk-table__cell">@(Model.AllDestinationsData.Data[label.i] is { } value ? value.AsPercentage() : NotAvailable)</td>
                                     </tr>
                                 }
                             </tbody>

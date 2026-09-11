@@ -47,4 +47,40 @@ public record KS4DestinationsDetails
     public required RelativeYearValues<CodedDouble> LocalAuthorityApprentice { get; init; }
 
     public required RelativeYearValues<CodedDouble> EnglandApprentice { get; init; }
+
+    public required RelativeYearValues<CodedDouble> SchoolFurtherEducation { get; init; }
+
+    public required RelativeYearValues<CodedDouble> LocalAuthorityFurtherEducation { get; init; }
+
+    public required RelativeYearValues<CodedDouble> EnglandFurtherEducation { get; init; }
+
+    public required RelativeYearValues<CodedDouble> SchoolSchoolSixthForm { get; init; }
+
+    public required RelativeYearValues<CodedDouble> LocalAuthoritySchoolSixthForm { get; init; }
+
+    public required RelativeYearValues<CodedDouble> EnglandSchoolSixthForm { get; init; }
+
+    public required RelativeYearValues<CodedDouble> SchoolCollegeSixthForm { get; init; }
+
+    public required RelativeYearValues<CodedDouble> LocalAuthorityCollegeSixthForm { get; init; }
+
+    public required RelativeYearValues<CodedDouble> EnglandCollegeSixthForm { get; init; }
+
+    public required RelativeYearValues<CodedDouble> SchoolOtherEducation { get; init; }
+
+    public required RelativeYearValues<CodedDouble> LocalAuthorityOtherEducation { get; init; }
+
+    public required RelativeYearValues<CodedDouble> EnglandOtherEducation { get; init; }
+
+    public required RelativeYearValues<CodedDouble> SchoolNotSustained { get; init; }
+
+    public required RelativeYearValues<CodedDouble> LocalAuthorityNotSustained { get; init; }
+
+    public required RelativeYearValues<CodedDouble> EnglandNotSustained { get; init; }
+
+    public required RelativeYearValues<CodedDouble> SchoolUnknown { get; init; }
+
+    public required RelativeYearValues<CodedDouble> LocalAuthorityUnknown { get; init; }
+
+    public required RelativeYearValues<CodedDouble> EnglandUnknown { get; init; }
 }

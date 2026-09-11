@@ -80,6 +80,12 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Education_Tot_Est_Current_Pct_Coded",
           "Employment_Tot_Est_Current_Pct_Coded",
           "Apprentice_Tot_Est_Current_Pct_Coded",
+          "FurtherEd_Tot_Est_Current_Pct_Coded",
+          "SchSixthForm_Tot_Est_Current_Pct_Coded",
+          "ColSixthForm_Tot_Est_Current_Pct_Coded",
+          "OtherEd_Tot_Est_Current_Pct_Coded",
+          "NotSus_Tot_Est_Current_Pct_Coded",
+          "Unknown_Tot_Est_Current_Pct_Coded",
           "AllDest_Tot_Est_Previous_Pct_Coded",
           "AllDest_Tot_Est_Previous2_Pct_Coded"
           """;
@@ -180,6 +186,12 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Education_Tot_LA_Current_Pct_Coded",
           "Employment_Tot_LA_Current_Pct_Coded",
           "Apprentice_Tot_LA_Current_Pct_Coded",
+          "FurtherEd_Tot_LA_Current_Pct_Coded",
+          "SchSixthForm_Tot_LA_Current_Pct_Coded",
+          "ColSixthForm_Tot_LA_Current_Pct_Coded",
+          "OtherEd_Tot_LA_Current_Pct_Coded",
+          "NotSus_Tot_LA_Current_Pct_Coded",
+          "Unknown_Tot_LA_Current_Pct_Coded",
           "AllDest_Tot_LA_Previous_Pct_Coded",
           "AllDest_Tot_LA_Previous2_Pct_Coded"
           """;
@@ -229,6 +241,12 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Education_Tot_Eng_Current_Pct_Coded",
           "Employment_Tot_Eng_Current_Pct_Coded",
           "Apprentice_Tot_Eng_Current_Pct_Coded",
+          "FurtherEd_Tot_Eng_Current_Pct_Coded",
+          "SchSixthForm_Tot_Eng_Current_Pct_Coded",
+          "ColSixthForm_Tot_Eng_Current_Pct_Coded",
+          "OtherEd_Tot_Eng_Current_Pct_Coded",
+          "NotSus_Tot_Eng_Current_Pct_Coded",
+          "Unknown_Tot_Eng_Current_Pct_Coded",
           "AllDest_Tot_Eng_Previous_Pct_Coded",
           "AllDest_Tot_Eng_Previous2_Pct_Coded"
           """;

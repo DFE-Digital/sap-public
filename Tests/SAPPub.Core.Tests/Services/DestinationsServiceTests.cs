@@ -52,6 +52,13 @@ public class DestinationsServiceTests
             Employment_Tot_Est_Current_Pct_Coded = new CodedDouble(90, "", "90"),
 
             Apprentice_Tot_Est_Current_Pct_Coded = new CodedDouble(50, "", "50"),
+
+            FurtherEd_Tot_Est_Current_Pct_Coded = new CodedDouble(20, "", "20"),
+            SchSixthForm_Tot_Est_Current_Pct_Coded = new CodedDouble(15, "", "15"),
+            ColSixthForm_Tot_Est_Current_Pct_Coded = new CodedDouble(10, "", "10"),
+            OtherEd_Tot_Est_Current_Pct_Coded = new CodedDouble(5, "", "5"),
+            NotSus_Tot_Est_Current_Pct_Coded = new CodedDouble(8, "", "8"),
+            Unknown_Tot_Est_Current_Pct_Coded = new CodedDouble(2, "", "2"),
         };
 
         var lADestinations = new KS4LADestinations
@@ -65,7 +72,14 @@ public class DestinationsServiceTests
 
             Employment_Tot_LA_Current_Pct_Coded = new CodedDouble(80, "", "80"),
 
-            Apprentice_Tot_LA_Current_Pct_Coded = new CodedDouble(65, "", "65")
+            Apprentice_Tot_LA_Current_Pct_Coded = new CodedDouble(65, "", "65"),
+
+            FurtherEd_Tot_LA_Current_Pct_Coded = new CodedDouble(18, "", "18"),
+            SchSixthForm_Tot_LA_Current_Pct_Coded = new CodedDouble(14, "", "14"),
+            ColSixthForm_Tot_LA_Current_Pct_Coded = new CodedDouble(9, "", "9"),
+            OtherEd_Tot_LA_Current_Pct_Coded = new CodedDouble(4, "", "4"),
+            NotSus_Tot_LA_Current_Pct_Coded = new CodedDouble(7, "", "7"),
+            Unknown_Tot_LA_Current_Pct_Coded = new CodedDouble(3, "", "3"),
         };
 
         var englandDestinations = new KS4EnglandDestinations
@@ -79,7 +93,14 @@ public class DestinationsServiceTests
 
             Employment_Tot_Eng_Current_Pct_Coded = new CodedDouble(70, "", "70"),
 
-            Apprentice_Tot_Eng_Current_Pct_Coded = new CodedDouble(45, "", "45")
+            Apprentice_Tot_Eng_Current_Pct_Coded = new CodedDouble(45, "", "45"),
+
+            FurtherEd_Tot_Eng_Current_Pct_Coded = new CodedDouble(17, "", "17"),
+            SchSixthForm_Tot_Eng_Current_Pct_Coded = new CodedDouble(13, "", "13"),
+            ColSixthForm_Tot_Eng_Current_Pct_Coded = new CodedDouble(11, "", "11"),
+            OtherEd_Tot_Eng_Current_Pct_Coded = new CodedDouble(6, "", "6"),
+            NotSus_Tot_Eng_Current_Pct_Coded = new CodedDouble(9, "", "9"),
+            Unknown_Tot_Eng_Current_Pct_Coded = new CodedDouble(4, "", "4"),
         };
 
         _mockEstablishmentService
@@ -133,6 +154,32 @@ public class DestinationsServiceTests
         Assert.Equal(englandDestinations.Education_Tot_Eng_Current_Pct_Coded.Value, result.EnglandEducation.CurrentYear.Value);
         Assert.Equal(englandDestinations.Employment_Tot_Eng_Current_Pct_Coded.Value, result.EnglandEmployment.CurrentYear.Value);
         Assert.Equal(englandDestinations.Apprentice_Tot_Eng_Current_Pct_Coded.Value, result.EnglandApprentice.CurrentYear.Value);
+
+        // Assert where pupils studied data
+        Assert.Equal(establishmentDestinations.FurtherEd_Tot_Est_Current_Pct_Coded.Value, result.SchoolFurtherEducation.CurrentYear.Value);
+        Assert.Equal(lADestinations.FurtherEd_Tot_LA_Current_Pct_Coded.Value, result.LocalAuthorityFurtherEducation.CurrentYear.Value);
+        Assert.Equal(englandDestinations.FurtherEd_Tot_Eng_Current_Pct_Coded.Value, result.EnglandFurtherEducation.CurrentYear.Value);
+
+        Assert.Equal(establishmentDestinations.SchSixthForm_Tot_Est_Current_Pct_Coded.Value, result.SchoolSchoolSixthForm.CurrentYear.Value);
+        Assert.Equal(lADestinations.SchSixthForm_Tot_LA_Current_Pct_Coded.Value, result.LocalAuthoritySchoolSixthForm.CurrentYear.Value);
+        Assert.Equal(englandDestinations.SchSixthForm_Tot_Eng_Current_Pct_Coded.Value, result.EnglandSchoolSixthForm.CurrentYear.Value);
+
+        Assert.Equal(establishmentDestinations.ColSixthForm_Tot_Est_Current_Pct_Coded.Value, result.SchoolCollegeSixthForm.CurrentYear.Value);
+        Assert.Equal(lADestinations.ColSixthForm_Tot_LA_Current_Pct_Coded.Value, result.LocalAuthorityCollegeSixthForm.CurrentYear.Value);
+        Assert.Equal(englandDestinations.ColSixthForm_Tot_Eng_Current_Pct_Coded.Value, result.EnglandCollegeSixthForm.CurrentYear.Value);
+
+        Assert.Equal(establishmentDestinations.OtherEd_Tot_Est_Current_Pct_Coded.Value, result.SchoolOtherEducation.CurrentYear.Value);
+        Assert.Equal(lADestinations.OtherEd_Tot_LA_Current_Pct_Coded.Value, result.LocalAuthorityOtherEducation.CurrentYear.Value);
+        Assert.Equal(englandDestinations.OtherEd_Tot_Eng_Current_Pct_Coded.Value, result.EnglandOtherEducation.CurrentYear.Value);
+
+        // Assert did not stay in education or employment data
+        Assert.Equal(establishmentDestinations.NotSus_Tot_Est_Current_Pct_Coded.Value, result.SchoolNotSustained.CurrentYear.Value);
+        Assert.Equal(lADestinations.NotSus_Tot_LA_Current_Pct_Coded.Value, result.LocalAuthorityNotSustained.CurrentYear.Value);
+        Assert.Equal(englandDestinations.NotSus_Tot_Eng_Current_Pct_Coded.Value, result.EnglandNotSustained.CurrentYear.Value);
+
+        Assert.Equal(establishmentDestinations.Unknown_Tot_Est_Current_Pct_Coded.Value, result.SchoolUnknown.CurrentYear.Value);
+        Assert.Equal(lADestinations.Unknown_Tot_LA_Current_Pct_Coded.Value, result.LocalAuthorityUnknown.CurrentYear.Value);
+        Assert.Equal(englandDestinations.Unknown_Tot_Eng_Current_Pct_Coded.Value, result.EnglandUnknown.CurrentYear.Value);
     }
 
     [Fact]

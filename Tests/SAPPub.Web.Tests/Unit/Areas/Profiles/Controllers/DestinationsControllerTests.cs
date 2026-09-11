@@ -175,6 +175,62 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
                 Assert.Equal(expectedDataset.Data, actualDatset.Data);
             }
 
+            string[] expectedTableColumnLabels = ["School", $"{_fakeEstablishment.LAName} average", "England average"];
+
+            Assert.Equal(expectedTableColumnLabels, model.StayedInEducationTable.Labels);
+            var stayedInEducationRow = Assert.Single(model.StayedInEducationTable.Datasets);
+            Assert.Equal("Pupils who stayed in education", stayedInEducationRow.Label);
+            Assert.Equal(
+                [destinationsDetails.SchoolEducation.CurrentYear.Value, destinationsDetails.LocalAuthorityEducation.CurrentYear.Value, destinationsDetails.EnglandEducation.CurrentYear.Value],
+                stayedInEducationRow.Data.Select(d => d.Value.Value));
+
+            Assert.Equal(expectedTableColumnLabels, model.WherePupilsStudiedTable.Labels);
+            Assert.Equal(
+                ["Further education provider", "School sixth form", "Sixth form college", "Other education destinations"],
+                model.WherePupilsStudiedTable.Datasets.Select(d => d.Label));
+
+            var furtherEdRow = model.WherePupilsStudiedTable.Datasets.Single(d => d.Label == "Further education provider");
+            Assert.Equal(
+                [destinationsDetails.SchoolFurtherEducation.CurrentYear.Value, destinationsDetails.LocalAuthorityFurtherEducation.CurrentYear.Value, destinationsDetails.EnglandFurtherEducation.CurrentYear.Value],
+                furtherEdRow.Data.Select(d => d.Value.Value));
+
+            var schoolSixthFormRow = model.WherePupilsStudiedTable.Datasets.Single(d => d.Label == "School sixth form");
+            Assert.Equal(
+                [destinationsDetails.SchoolSchoolSixthForm.CurrentYear.Value, destinationsDetails.LocalAuthoritySchoolSixthForm.CurrentYear.Value, destinationsDetails.EnglandSchoolSixthForm.CurrentYear.Value],
+                schoolSixthFormRow.Data.Select(d => d.Value.Value));
+
+            var collegeSixthFormRow = model.WherePupilsStudiedTable.Datasets.Single(d => d.Label == "Sixth form college");
+            Assert.Equal(
+                [destinationsDetails.SchoolCollegeSixthForm.CurrentYear.Value, destinationsDetails.LocalAuthorityCollegeSixthForm.CurrentYear.Value, destinationsDetails.EnglandCollegeSixthForm.CurrentYear.Value],
+                collegeSixthFormRow.Data.Select(d => d.Value.Value));
+
+            var otherEdRow = model.WherePupilsStudiedTable.Datasets.Single(d => d.Label == "Other education destinations");
+            Assert.Equal(
+                [destinationsDetails.SchoolOtherEducation.CurrentYear.Value, destinationsDetails.LocalAuthorityOtherEducation.CurrentYear.Value, destinationsDetails.EnglandOtherEducation.CurrentYear.Value],
+                otherEdRow.Data.Select(d => d.Value.Value));
+
+            Assert.Equal(expectedTableColumnLabels, model.ApprenticeshipsOrEmploymentTable.Labels);
+            var employmentRow = model.ApprenticeshipsOrEmploymentTable.Datasets.Single(d => d.Label == "Pupils who stayed in employment for at least 2 terms");
+            Assert.Equal(
+                [destinationsDetails.SchoolEmployment.CurrentYear.Value, destinationsDetails.LocalAuthorityEmployment.CurrentYear.Value, destinationsDetails.EnglandEmployment.CurrentYear.Value],
+                employmentRow.Data.Select(d => d.Value.Value));
+
+            var apprenticeRow = model.ApprenticeshipsOrEmploymentTable.Datasets.Single(d => d.Label == "Pupils who stayed in an apprenticeship for at least 6 months");
+            Assert.Equal(
+                [destinationsDetails.SchoolApprentice.CurrentYear.Value, destinationsDetails.LocalAuthorityApprentice.CurrentYear.Value, destinationsDetails.EnglandApprentice.CurrentYear.Value],
+                apprenticeRow.Data.Select(d => d.Value.Value));
+
+            Assert.Equal(expectedTableColumnLabels, model.DidNotStayInEducationOrEmploymentTable.Labels);
+            var notSustainedRow = model.DidNotStayInEducationOrEmploymentTable.Datasets.Single(d => d.Label == "Pupils who did not stay in education or employment for at least 2 terms");
+            Assert.Equal(
+                [destinationsDetails.SchoolNotSustained.CurrentYear.Value, destinationsDetails.LocalAuthorityNotSustained.CurrentYear.Value, destinationsDetails.EnglandNotSustained.CurrentYear.Value],
+                notSustainedRow.Data.Select(d => d.Value.Value));
+
+            var unknownRow = model.DidNotStayInEducationOrEmploymentTable.Datasets.Single(d => d.Label == "Destination unknown");
+            Assert.Equal(
+                [destinationsDetails.SchoolUnknown.CurrentYear.Value, destinationsDetails.LocalAuthorityUnknown.CurrentYear.Value, destinationsDetails.EnglandUnknown.CurrentYear.Value],
+                unknownRow.Data.Select(d => d.Value.Value));
+
             Assert.Equal(2, model.RouteAttributes.Count);
             Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
             Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
@@ -235,6 +291,20 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
 
             Assert.Equal("England average", model.BreakdownDestinationData.Datasets[2].Label);
             Assert.Equal([null, null], model.BreakdownDestinationData.Datasets[2].Data);
+
+            string[] expectedTableColumnLabels = ["School", $"{_fakeEstablishment.LAName} average", "England average"];
+
+            Assert.Equal(expectedTableColumnLabels, model.StayedInEducationTable.Labels);
+            Assert.All(model.StayedInEducationTable.Datasets.SelectMany(d => d.Data), m => Assert.False(m.Value.HasValue));
+
+            Assert.Equal(expectedTableColumnLabels, model.WherePupilsStudiedTable.Labels);
+            Assert.All(model.WherePupilsStudiedTable.Datasets.SelectMany(d => d.Data), m => Assert.False(m.Value.HasValue));
+
+            Assert.Equal(expectedTableColumnLabels, model.ApprenticeshipsOrEmploymentTable.Labels);
+            Assert.All(model.ApprenticeshipsOrEmploymentTable.Datasets.SelectMany(d => d.Data), m => Assert.False(m.Value.HasValue));
+
+            Assert.Equal(expectedTableColumnLabels, model.DidNotStayInEducationOrEmploymentTable.Labels);
+            Assert.All(model.DidNotStayInEducationOrEmploymentTable.Datasets.SelectMany(d => d.Data), m => Assert.False(m.Value.HasValue));
         }
 
         [Theory]

@@ -122,6 +122,84 @@ public class DestinationsService(
             {
                 CurrentYear = englandDestinations.Apprentice_Tot_Eng_Current_Pct_Coded
             },
+
+            SchoolFurtherEducation = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = establishmentDestinations.FurtherEd_Tot_Est_Current_Pct_Coded
+            },
+            LocalAuthorityFurtherEducation = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = lADestinations.FurtherEd_Tot_LA_Current_Pct_Coded
+            },
+            EnglandFurtherEducation = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = englandDestinations.FurtherEd_Tot_Eng_Current_Pct_Coded
+            },
+
+            SchoolSchoolSixthForm = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = establishmentDestinations.SchSixthForm_Tot_Est_Current_Pct_Coded
+            },
+            LocalAuthoritySchoolSixthForm = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = lADestinations.SchSixthForm_Tot_LA_Current_Pct_Coded
+            },
+            EnglandSchoolSixthForm = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = englandDestinations.SchSixthForm_Tot_Eng_Current_Pct_Coded
+            },
+
+            SchoolCollegeSixthForm = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = establishmentDestinations.ColSixthForm_Tot_Est_Current_Pct_Coded
+            },
+            LocalAuthorityCollegeSixthForm = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = lADestinations.ColSixthForm_Tot_LA_Current_Pct_Coded
+            },
+            EnglandCollegeSixthForm = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = englandDestinations.ColSixthForm_Tot_Eng_Current_Pct_Coded
+            },
+
+            SchoolOtherEducation = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = establishmentDestinations.OtherEd_Tot_Est_Current_Pct_Coded
+            },
+            LocalAuthorityOtherEducation = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = lADestinations.OtherEd_Tot_LA_Current_Pct_Coded
+            },
+            EnglandOtherEducation = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = englandDestinations.OtherEd_Tot_Eng_Current_Pct_Coded
+            },
+
+            SchoolNotSustained = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = establishmentDestinations.NotSus_Tot_Est_Current_Pct_Coded
+            },
+            LocalAuthorityNotSustained = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = lADestinations.NotSus_Tot_LA_Current_Pct_Coded
+            },
+            EnglandNotSustained = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = englandDestinations.NotSus_Tot_Eng_Current_Pct_Coded
+            },
+
+            SchoolUnknown = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = establishmentDestinations.Unknown_Tot_Est_Current_Pct_Coded
+            },
+            LocalAuthorityUnknown = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = lADestinations.Unknown_Tot_LA_Current_Pct_Coded
+            },
+            EnglandUnknown = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = englandDestinations.Unknown_Tot_Eng_Current_Pct_Coded
+            },
         };
     }
 
@@ -216,6 +294,30 @@ public class DestinationsService(
             SchoolApprentice = EmptyYears(),
             LocalAuthorityApprentice = EmptyYears(),
             EnglandApprentice = EmptyYears(),
+
+            SchoolFurtherEducation = EmptyYears(),
+            LocalAuthorityFurtherEducation = EmptyYears(),
+            EnglandFurtherEducation = EmptyYears(),
+
+            SchoolSchoolSixthForm = EmptyYears(),
+            LocalAuthoritySchoolSixthForm = EmptyYears(),
+            EnglandSchoolSixthForm = EmptyYears(),
+
+            SchoolCollegeSixthForm = EmptyYears(),
+            LocalAuthorityCollegeSixthForm = EmptyYears(),
+            EnglandCollegeSixthForm = EmptyYears(),
+
+            SchoolOtherEducation = EmptyYears(),
+            LocalAuthorityOtherEducation = EmptyYears(),
+            EnglandOtherEducation = EmptyYears(),
+
+            SchoolNotSustained = EmptyYears(),
+            LocalAuthorityNotSustained = EmptyYears(),
+            EnglandNotSustained = EmptyYears(),
+
+            SchoolUnknown = EmptyYears(),
+            LocalAuthorityUnknown = EmptyYears(),
+            EnglandUnknown = EmptyYears(),
 
             IsKS2 = false,
             IsKS4 = false,

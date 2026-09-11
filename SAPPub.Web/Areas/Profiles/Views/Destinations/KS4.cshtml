@@ -220,6 +220,132 @@
             </govuk-accordion-item>
         </govuk-accordion>
 
+        
+        <h2 class="govuk-heading-l">Education destinations for pupils after year 11 (2022 to 2023 leavers)</h2>
+
+        <div>
+            <h3 class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">
+                Pupils who stayed in education after KS4
+            </h3>
+            <p class="govuk-body">
+               The percentage of pupils who stayed in education for at least 6 months after finishing KS4.
+            </p>
+            @await Html.PartialAsync("_SeriesViewTable", Model.StayedInEducationTable)
+        </div>
+
+        
+        <div>
+            <h3 class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">
+                Where pupils studied after KS4
+            </h3>
+            <p class="govuk-body">
+                <details class="govuk-details" id="details-all-dest-non-disadvantaged">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            More information about where pupils studied after KS4
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <h4 class="govuk-heading-m">Further education provider</h4>
+                        <p class="govuk-body">
+                            Includes pupils who studied at further education providers only. School sixt forms and sixth-form college are not included in this data.
+                        </p>
+                        <h4 class="govuk-heading-m">Other education destinations</h4>
+                        <p class="govuk-body">
+                            Includes pupils who studied for 6 months in:
+                        </p>
+                        <ul class="govuk-list govuk-list--bullet">
+                            <li>higher education providers, such as universities</li>
+                            <li>special schools and special post-16 providers</li>
+                            <li>alternative provision such as pupil referral unit</li>
+                            <li>independent schools or colleges</li>
+                        </ul>
+                        <p class="govuk-body">
+                            The data includes pupils who moved between different types of education provider.
+                        </p>
+                    </div>
+                    </details>
+                    @await Html.PartialAsync("_SeriesViewTable", Model.WherePupilsStudiedTable)
+                    </p>
+        </div>
+
+        <h2 class="govuk-heading-l">Pupils in apprenticeships or employment after year 11 (2022 to 2023 leavers)</h2>
+
+        <div>          
+            <p class="govuk-body">
+                The percentage of pupils who either went into an apprenticeship or entered employment for at least 6 months after finishing KS4.
+            </p>
+            <p class="govuk-body">
+                <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href=" https://explore-education-statistics.service.gov.uk/methodology/key-stage-4-destination-measures-methodology#content-section-1-content-17">
+                    Find out how pupils are grouped in these categories
+                    <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                </a>
+            </p>
+            <details class="govuk-details" id="details-all-dest-non-disadvantaged">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        More information about pupils in apprenticeships or employment
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <h4 class="govuk-heading-m">Pupils who stayed in employment for at least 6 months after key stage 4 </h4>
+                    <p class="govuk-body">
+                        Includes pupils who were employed in a job for 6 months, rather than staying in education or doing an apprenticeship. This data also includes pupils who did a combination of employment and education for 6 months.
+                    </p>
+                    <h4 class="govuk-heading-m">Pupils who stayed in apprenticeships for at least 6 months</h4>
+                    <p class="govuk-body">
+                        Includes pupils who stayed in apprenticeships for at least 6 months after key stage 4 (KS4).
+                    </p>
+                </div>
+                </details>
+                @await Html.PartialAsync("_SeriesViewTable", Model.ApprenticeshipsOrEmploymentTable)
+            </div>
+
+        <h2 class="govuk-heading-l">Pupils who did not stay in education or employment after year 11 (2022 to 2023 leavers)</h2>
+
+        <div>
+            <p class="govuk-body">
+                The percentage of pupils who after finishing key stage 4 did not go onto education, apprenticeship or employment for at least 6 months.
+            </p>         
+            <details class="govuk-details" id="details-all-dest-non-disadvantaged">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        More information about pupils who did not stay in education or employment
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <h4 class="govuk-heading-m">Pupils who did not stay in education or employment for at least 6 months after key stage 4 </h4>
+                    <p class="govuk-body">
+                        Includes pupils finishing key stage 4 who did not go onto education, apprenticeship or employment for at least 6 months.
+                    </p>
+                    <p class="govuk-body">
+                        These pupils may have:
+                    </p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>been enrolled on a course or been employed for part of this time, but then stopped, for example they dropped out</li>
+                        <li>have claimed out-of-work benefits in the year</li>
+                        <li>have been reported as not in education, employment or training by their local council</li>
+                    </ul>
+                    <h4 class="govuk-heading-m">Destination unknown</h4>
+                    <p class="govuk-body">
+                        Unknown destination after key stage 4
+                    </p>
+                    <p class="govuk-body">
+                        Includes pupils finishing key stage 4 (KS4) who have no activity records for the following year. Reasons for this could be because the young person was:
+                    </p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>not in education, employment or training</li>
+                        <li>living, working or studying overseas</li>
+                        <li>attending a Scottish, Welsh or Northern Irish school or college</li>
+                        <li>doing an activity other than paid employment or study in the UK</li>
+                        <li>not matched to a record in our data sources</li>
+                    </ul>
+                </div>
+            </details>
+            @await Html.PartialAsync("_SeriesViewTable", Model.DidNotStayInEducationOrEmploymentTable)
+        </div>
+
+
         @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.SecondaryDestinations))
 
     </div>

@@ -34,6 +34,36 @@ public class KS4EstablishmentDestinations
     public CodedDouble Apprentice_Tot_Est_Current_Pct_Coded { get; set; }
 
     /// <summary>
+    /// Further Education Total filtered by Establishment for Current year
+    /// </summary>
+    public CodedDouble FurtherEd_Tot_Est_Current_Pct_Coded { get; set; }
+
+    /// <summary>
+    /// School Sixth Form Total filtered by Establishment for Current year
+    /// </summary>
+    public CodedDouble SchSixthForm_Tot_Est_Current_Pct_Coded { get; set; }
+
+    /// <summary>
+    /// Sixth Form College Total filtered by Establishment for Current year
+    /// </summary>
+    public CodedDouble ColSixthForm_Tot_Est_Current_Pct_Coded { get; set; }
+
+    /// <summary>
+    /// Other Education Destinations Total filtered by Establishment for Current year
+    /// </summary>
+    public CodedDouble OtherEd_Tot_Est_Current_Pct_Coded { get; set; }
+
+    /// <summary>
+    /// Not Sustained Total filtered by Establishment for Current year
+    /// </summary>
+    public CodedDouble NotSus_Tot_Est_Current_Pct_Coded { get; set; }
+
+    /// <summary>
+    /// Unknown Destination Total filtered by Establishment for Current year
+    /// </summary>
+    public CodedDouble Unknown_Tot_Est_Current_Pct_Coded { get; set; }
+
+    /// <summary>
     /// All Destinations Total filtered by Establishment for Previous year
     /// </summary>
     public CodedDouble AllDest_Tot_Est_Previous_Pct_Coded { get; set; }

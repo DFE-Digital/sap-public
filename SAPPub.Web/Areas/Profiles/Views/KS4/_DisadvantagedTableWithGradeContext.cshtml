@@ -1,5 +1,6 @@
 ﻿@using SAPPub.Web.Constants
-@using SAPPub.Web.Models.Charts 
+@using SAPPub.Web.Models.Charts
+@using SAPPub.Core.Extensions
 @model SeriesMeasureViewModel
 
 <table id="@Model.TableId" class="govuk-table">
@@ -19,7 +20,7 @@
                 <th scope="row" class="govuk-table__header">@dataset.Label</th>
                 @foreach (var data in dataset.Data)
                 {
-                    <td class="govuk-table__cell">@(data.Value.HasValue ? data.Value + (data.Unit == SAPPub.Core.Enums.DataUnit.Percentage ? "%" : "") : Constants.NotAvailable)</td>
+                    <td class="govuk-table__cell">@data.DisplayText(Constants.NotAvailable)</td>
                     <td class="govuk-table__cell">
                         @{
                             var statement = AttainmentHelper.EstablishmentAttainment8ContextStatement(data.Value.Value);
