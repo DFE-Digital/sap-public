@@ -69,6 +69,8 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
 
     public required IReadOnlyList<NextStepLinkViewModel> NextStepLinks { get; init; }
 
+    public required DataViewModel ReadingWritingMathsExpectedChart { get; init; }
+
     public static OverviewViewModel Map(OverviewModel model)
     {
         var latLong = MappingHelper.ConvertToLatLon(model.Easting, model.Northing);
@@ -183,6 +185,22 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
             },
 
             NextStepLinks = BuildNextStepLinks(model),
+
+            ReadingWritingMathsExpectedChart = new DataViewModel
+            {
+                Labels =
+                    [
+                        "School",
+                        $"{model.LocalAuthorityName} average",
+                        "England average"
+                    ],
+                                Data =
+                    [
+                        model.ReadingWritingMathsExpectedEstablishment?.Value,
+                        model.ReadingWritingMathsExpectedLA?.Value,
+                        model.ReadingWritingMathsExpectedEngland?.Value
+                    ]
+                            },
         };
     }
 
@@ -333,7 +351,7 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
         if (model.IsKS5)
         {
             Add(
-                "Performance in qualifications",
+                "16 to 19 performance in qualifications",
                 "Find out more about this school or college’s performance in qualifications.",
                 RouteConstants.KS5AcademicPerformanceRoot);
         }
