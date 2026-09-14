@@ -460,7 +460,7 @@
 .ataglance-accordion
 .govuk-accordion__section-header:hover
 #accordion-iconbox__destinations {
-    background-color: #f4c4ac;
+    background-color: #fabb9c;
 }
 
 .overview-destinations-current-year-table-container {
@@ -477,7 +477,71 @@
 .ataglance-accordion
 .govuk-accordion__section-header:hover
 #accordion-iconbox__extra-curricular {
-    background-color: #d7eaec;
+    background-color: #8ac0c3;
+}
+
+// Next steps 
+
+#overview-next-steps {
+
+    .govuk-summary-card {
+        margin-bottom: govuk-spacing(6);
+    }
+
+    .ataglance-next-step:last-child {
+        margin-bottom: 0;
+    }
+
+    .ataglance-next-step h4 {
+        margin-bottom: govuk-spacing(1);
+    }
+
+    .ataglance-next-step p {
+        margin-bottom: govuk-spacing(5);
+    }
+
+    .govuk-summary-card__content {
+        padding-top: govuk-spacing(5);
+        padding-bottom: govuk-spacing(5);
+    }
+
+    @include govuk-media-query($until: tablet) {
+
+        .govuk-summary-card__content {
+            padding-top: govuk-spacing(4);
+            padding-bottom: govuk-spacing(4);
+        }
+
+        .ataglance-next-step p {
+            margin-bottom: govuk-spacing(4);
+        }
+    }
+}
+
+.ataglance-accordion
+.govuk-accordion__section-header
+.primary-ataglance-progress-iconbox {
+    background-color: #cfe4dc;
+    color: #083d29;
+}
+
+.ataglance-accordion
+.govuk-accordion__section-header:hover
+.primary-ataglance-progress-iconbox {
+    background-color: #87bca8;
+}
+
+.ataglance-accordion
+.govuk-accordion__section-header
+.primary-ataglance-expected-standard-iconbox {
+    background-color: #fff3b5;
+    color: #0b0c0c;
+}
+
+.ataglance-accordion
+.govuk-accordion__section-header:hover
+.primary-ataglance-expected-standard-iconbox {
+    background-color: #ffea8a;
 }
 
 // Next steps 
