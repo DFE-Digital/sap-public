@@ -40,6 +40,7 @@ public abstract class BasePageTest : PageTest
         await Page.WaitForSelectorAsync(selector, new() { Timeout = timeoutMs });
         await Page.WaitForTimeoutAsync(100);
     }
+
     public async Task<ILocator> GetQueryInputLocatorAsync(int checkTimeoutMs = 1000)
     {
         var jsLocator = Page.Locator("input[name='__Query']");

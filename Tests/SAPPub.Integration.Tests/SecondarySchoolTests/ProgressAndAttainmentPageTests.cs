@@ -1,24 +1,50 @@
 ﻿using Microsoft.Playwright;
+using SAPPub.Integration.Tests;
 using SAPPub.Integration.Tests.Helpers;
+using SAPPub.IntegrationTests.Helpers;
 using SAPPub.Playwright.Testing;
+using System.Text.Json;
 
 namespace SAPPub.Integration.Tests.SecondarySchoolTests;
 
 [Collection("Integration Tests")]
-public class AttainmentPageTests() : BasePageTest()
+public class ProgressAndAttainmentPageTests : BasePageTest
 {
     private string PageUrl(string urn) => $"/school/{urn}";
 
+    public record AttainmentTestCase(
+        string Urn,
+        double ExpectedAttainmentSchool,
+        double ExpectedAttainmentLA,
+        double ExpectedAttainmentEngland);
+
+
+    public static TheoryData<AttainmentTestCase> GetAttainmentTestData()
+    {
+        var testdata =  TestDataLoader.GetTestData("KS4", "EstablishmentAttainment");
+        var theoryData = new TheoryData<AttainmentTestCase>();
+        if (testdata != null)
+        {
+            foreach (var row in testdata)
+            {
+                theoryData.Add(new AttainmentTestCase(
+                    row[0].GetString() ?? string.Empty,
+                    row[1].GetDouble(),
+                    row[2].GetDouble(),
+                    row[3].GetDouble()
+                ));
+            }
+        }
+        return theoryData;
+    }
+
     [Theory]
-    [InlineData("136745", 39.8, 44.1, 46.1)]
-    [InlineData("137638", 44.2, 44.1, 46.1)]
-    [InlineData("142894", 39.2, 44.1, 46.1)]
-    [InlineData("144496", 49.6, 44.1, 46.1)]
-    [InlineData("144991", 45.6, 44.1, 46.1)]
-    public async Task SecondaryAcademicPerformanceProgressAndAttainment_Current_ShowsExpectedAttainmentData(string urn, double expectedAttainmentSchool, double expectedAttainmentLA, double expectedAttainmentEngland)
+    [MemberData(nameof(GetAttainmentTestData))]
+    public async Task CurrentYearSelected_ShowsExpectedAttainmentData_Memberdata(
+        AttainmentTestCase testCase)
     {
         // Arrange && Act
-        var _ = await Page.GotoAsync(PageUrl(urn));
+        var _ = await Page.GotoAsync(PageUrl(testCase.Urn));
         var navigationHelper = new VerticalNavigationHelper(Page);
         _ = await navigationHelper.ClickSecondaryAcademicPerformanceAsync();
 
@@ -26,28 +52,49 @@ public class AttainmentPageTests() : BasePageTest()
         await Page.Locator("#attainment8-previous-years-accordion").ClickAsync();
 
         // Assert
+        await AssertSchoolAttainmentData(Page, testCase.ExpectedAttainmentSchool);
+        await AssertLAAndEnglandAttainmentData(Page, testCase.ExpectedAttainmentLA, testCase.ExpectedAttainmentEngland);
         await AssertSchoolAttainmentData(Page, expectedAttainmentSchool, "current");
         await AssertLAAndEnglandAttainmentData(Page, expectedAttainmentLA, expectedAttainmentEngland, "current");
     }
 
-    [Theory]
-    [InlineData("100054", 119, 65.4, 109, "0.62", "0.36", "0.89")]
-    [InlineData("142894", 121, 36.1, 96, "-0.99", "-1.27", "-0.71")]
-    [InlineData("114308", 136, 48.1, 129, "0.15", "-0.09", "0.4")]
-    [InlineData("137228", 142, 44.6, 137, "-0.1", "-0.34", "0.14")]
-    [InlineData("143362", 185, 43.4, 176, "-0.13", "-0.34", "0.08")]
-    public async Task SecondaryAcademicPerformanceProgressAndAttainment_Previous_ShowsExpectedSchoolData(
+    public record ProgressAndAttainmentTestCase(
         string urn,
         double totalPupils,
         double expectedAttainmentSchool,
         double pupilsInProgressMeasure,
         string expectedProgressSchool,
         string expectedBandingLower,
-        string expectedBandingHigher
-        )
+        string expectedBandingHigher);
+
+    public static TheoryData<ProgressAndAttainmentTestCase> GetProgressAndAttainmentTestData(string filename)
+    {
+        var testdata = TestDataLoader.GetTestData("KS4", filename);
+        var theoryData = new TheoryData<ProgressAndAttainmentTestCase>();
+        if (testdata != null)
+        {
+            foreach (var row in testdata)
+            {
+                theoryData.Add(new ProgressAndAttainmentTestCase(
+                    row[0].GetString() ?? string.Empty,
+                    row[1].GetDouble(),
+                    row[2].GetDouble(),
+                    row[3].GetDouble(),
+                    row[4].GetString() ?? string.Empty,
+                    row[5].GetString() ?? string.Empty,
+                    row[6].GetString() ?? string.Empty
+                ));
+            }
+        }
+        return theoryData;
+    }
+
+    [Theory]
+    [MemberData(nameof(GetProgressAndAttainmentTestData), "EstablishmentPreviousYearProgressAndAttainment")]
+    public async Task PreviousYearSelected_ShowsExpectedAttainmentAndProgressSchoolData(ProgressAndAttainmentTestCase testData)
     {
         // Arrange && Act
-        var _ = await Page.GotoAsync($"school/{urn}");
+        var _ = await Page.GotoAsync($"school/{testData.urn}");
         var navigationHelper = new VerticalNavigationHelper(Page);
         _ = await navigationHelper.ClickSecondaryAcademicPerformanceAsync();
 
@@ -60,23 +107,11 @@ public class AttainmentPageTests() : BasePageTest()
     }
 
     [Theory]
-    [InlineData("100054", 116, 65.8, 103, "0.77", "0.5", "1.04")]
-    [InlineData("142894", 143, 33.7, 141, "-1.2", "-1.44", "-0.97")]
-    [InlineData("114308", 152, 51.7, 148, "0.42", "0.19", "0.65")]
-    [InlineData("137228", 154, 46.9, 154, "0.14", "-0.08", "0.37")]
-    [InlineData("143362", 175, 40, 170, "-0.23", "-0.44", "-0.01")]
-    public async Task SecondaryAcademicPerformanceProgressAndAttainment_Previous2_ShowsExpectedSchoolData(
-    string urn,
-    double totalPupils,
-    double expectedAttainmentSchool,
-    double pupilsInProgressMeasure,
-    string expectedProgressSchool,
-    string expectedBandingLower,
-    string expectedBandingHigher
-    )
+    [MemberData(nameof(GetProgressAndAttainmentTestData), "EstablishmentPrevious2YearProgressAndAttainment")]
+    public async Task Previous2YearSelected_ShowsExpectedAttainmentAndProgressSchoolData(ProgressAndAttainmentTestCase testData)
     {
         // Arrange && Act
-        var _ = await Page.GotoAsync($"school/{urn}");
+        var _ = await Page.GotoAsync($"school/{testData.urn}");
         var navItem = new VerticalNavigationHelper(Page);
         _ = await navItem.ClickSecondaryAcademicPerformanceAsync();
         
