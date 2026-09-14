@@ -160,9 +160,9 @@ public class AttainmentAndProgressPageTests : PageTestsBase
     }
 
     [Theory]
-    [InlineData(AcademicYearSelection.Previous, "prev")]
-    [InlineData(AcademicYearSelection.Previous2, "prev2")]
-    public async Task NoProgress8DataForSchool_ShowsNoProgress8Content(AcademicYearSelection yearSelection, string year) // progress data not available for this school (non-covid year)
+    [InlineData("prev")]
+    [InlineData("prev2")]
+    public async Task NoProgress8DataForSchool_ShowsNoProgress8Content(string year) // progress data not available for this school (non-covid year)
     {
         // Arrange
         var expected = new AttainmentAndProgressModelBuilder()
@@ -191,10 +191,10 @@ public class AttainmentAndProgressPageTests : PageTestsBase
     }
 
     [Theory]
-    [InlineData(AcademicYearSelection.Current, "current")]
-    [InlineData(AcademicYearSelection.Previous, "prev")]
-    [InlineData(AcademicYearSelection.Previous2, "prev2")]
-    public async Task NoAttainment8DataForSchool_ShowsNoAttainment8Content(AcademicYearSelection yearSelection, string year) // progress data not available for this school (non-covid year)
+    [InlineData("current")]
+    [InlineData("prev")]
+    [InlineData("prev2")]
+    public async Task NoAttainment8DataForSchool_ShowsNoAttainment8Content(string year) // progress data not available for this school (non-covid year)
     {
         // Arrange
         var expected = new AttainmentAndProgressModelBuilder()

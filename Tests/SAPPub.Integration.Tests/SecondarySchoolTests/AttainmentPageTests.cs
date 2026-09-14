@@ -1,5 +1,6 @@
 ﻿using Microsoft.Playwright;
 using SAPPub.Integration.Tests.Helpers;
+using SAPPub.Playwright.Testing;
 
 namespace SAPPub.Integration.Tests.SecondarySchoolTests;
 
@@ -18,7 +19,8 @@ public class AttainmentPageTests() : BasePageTest()
     {
         // Arrange && Act
         var _ = await Page.GotoAsync(PageUrl(urn));
-        var response = await ClickAcademicPerformanceLinkAsync();
+        var navigationHelper = new VerticalNavigationHelper(Page);
+        var response = await navigationHelper.ClickSecondaryAcademicPerformanceAsync();
 
         // Assert
         await AssertSchoolAttainmentData(Page, expectedAttainmentSchool, "current");
@@ -43,7 +45,10 @@ public class AttainmentPageTests() : BasePageTest()
     {
         // Arrange && Act
         var _ = await Page.GotoAsync($"school/{urn}");
-        _ = await ClickAcademicPerformanceLinkAsync();
+        var content = await Page.ContentAsync();
+        var navigationHelper = new VerticalNavigationHelper(Page);
+        var response = await navigationHelper.ClickSecondaryAcademicPerformanceAsync();
+
         await Page.Locator("#prog8-previous-years-accordion").ClickAsync();
         await Page.Locator("#attainment8-previous-years-accordion").ClickAsync();
 
@@ -69,8 +74,10 @@ public class AttainmentPageTests() : BasePageTest()
     )
     {
         // Arrange && Act
-        _ = await Page.GotoAsync($"school/{urn}");
-        _ = await ClickAcademicPerformanceLinkAsync();
+        var _ = await Page.GotoAsync($"school/{urn}");
+        var navItem = new VerticalNavigationHelper(Page);
+
+        var response = await navItem.ClickSecondaryAcademicPerformanceAsync();
         await Page.Locator("#prog8-previous-years-accordion").ClickAsync();
         await Page.Locator("#attainment8-previous-years-accordion").ClickAsync();
 
@@ -79,19 +86,8 @@ public class AttainmentPageTests() : BasePageTest()
         await AssertSchoolAttainmentData(Page, expectedAttainmentSchool, "prev2");
     }
 
-    private Task<IResponse> ClickAcademicPerformanceLinkAsync()
-    {
-        var response = Page.RunAndWaitForResponseAsync(
-            async () =>
-            {
-                await Page.GetByRole(AriaRole.Link, new() { Name = "Secondary academic performance" }).ClickAsync();
-            },
-            response => response.Url.Contains("/secondary-performance/progress-attainment") && response.Status == 200
-        );
-        return response;
-    }
-
-    private async Task AssertSchoolProgressData(IPage Page, 
+    private static async Task AssertSchoolProgressData(
+        IPage Page, 
         string expectedProgressSchool, 
         string expectedBandingLower, 
         string expectedBandingHigher, 
@@ -100,19 +96,17 @@ public class AttainmentPageTests() : BasePageTest()
         string year)
     {
         var pupilDetailsProgress8Selector = $"pupil-details-prog8-scores-{year}";
-        var prog8ScoresSelector = $"prog8-scores-{year}";
+        var prog8ScoreSelector = $"prog8-scores-{year}";
 
-        var schoolProgress8 = await Page.GetScoreFromParagraphAsync(prog8ScoresSelector, "Pupils at this school score");
-        var content = await Page.ContentAsync();
+        var schoolProgress8 = await Page.GetScoreFromParagraphAsync(prog8ScoreSelector, "Pupils at this school score");
         Assert.NotNull(schoolProgress8);
         Assert.Equal(expectedProgressSchool, schoolProgress8.Last());
 
-        var progress8Banding = await Page.GetScoreFromParagraphAsync(prog8ScoresSelector, "The confidence interval is");
+        var progress8Banding = await Page.GetScoreFromParagraphAsync(prog8ScoreSelector, "The confidence interval is");
         Assert.NotNull(progress8Banding);
         Assert.Equal(expectedBandingLower, progress8Banding.First());
         Assert.Equal(expectedBandingHigher, progress8Banding.Last());
 
-        
         await Page.ExpandElement(pupilDetailsProgress8Selector);
         var pupilsInMeasure = await Page.GetScoreFromParagraphAsync(pupilDetailsProgress8Selector, "pupils were included");
         Assert.NotNull(pupilsInMeasure);

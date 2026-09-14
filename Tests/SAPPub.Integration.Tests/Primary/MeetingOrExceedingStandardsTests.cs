@@ -8,7 +8,7 @@ namespace SAPPub.Integration.Tests.Primary;
 public class MeetingOrExceedingStandardsTests() : BasePageTest()
 {
     private string BasePageUrl(string urn) => $"/school/{urn}";
-    private string ThisPage => "primary-performance/meeting-or-exceeding-standards";
+    private string pageUnderTest => "primary-performance/meeting-or-exceeding-standards";
 
     // TODO :
     // England average for the tables
@@ -29,22 +29,22 @@ public class MeetingOrExceedingStandardsTests() : BasePageTest()
         // Arrange && Act
         var response = await Page.GotoAsync(BasePageUrl(urn));
         Assert.NotNull(response);
-        var _ = await Page.GotoPage(response.Url, ThisPage);
+        var _ = await Page.GotoPage(response.Url, pageUnderTest);
 
         // Act
         // Click Show data over time button
-        await Page.ClickAsync(PageConstants.ContentIds["showDataOverTimeBtn"]);
+        await Page.ClickAsync(PageConstants.ShowDataOverTimeBtnId);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
         // and click Show as a table button
-        await Page.ClickAsync(PageConstants.ContentIds["dataOverTimeShowAsTableBtn"]);
+        await Page.ClickAsync(PageConstants.DataOverTimeShowAsTableBtnId);
 
-        var schoolData = await Page.GetTableRowValuesAsync(PageConstants.ContentIds["dataOverTimeTable"], "School");
+        var schoolData = await Page.GetTableRowValuesAsync(PageConstants.DataOverTimeTableId, "School");
         Assert.Equal($"{expectedPrevious2}%", schoolData[0]);
         Assert.Equal($"{expectedPrevious}%", schoolData[1]);
         Assert.Equal($"{expectedCurrent}%", schoolData[2]);
 
-        schoolData = await Page.GetTableRowValuesAsync(PageConstants.ContentIds["exsDataOverTimeTable"], "School");
+        schoolData = await Page.GetTableRowValuesAsync(PageConstants.ExsDataOverTimeTableId, "School");
         Assert.Equal($"{higherPrevious2}%", schoolData[0]);
         Assert.Equal($"{higherPrevious}%", schoolData[1]);
         Assert.Equal($"{higherCurrent}%", schoolData[2]);
@@ -67,22 +67,22 @@ public class MeetingOrExceedingStandardsTests() : BasePageTest()
         // Arrange && Act
         var response = await Page.GotoAsync(BasePageUrl(urn));
         Assert.NotNull(response);
-        var _ = await Page.GotoPage(response.Url, ThisPage);
+        var _ = await Page.GotoPage(response.Url, pageUnderTest);
 
         // Act
         // Click Show data over time button
-        await Page.ClickAsync(PageConstants.ContentIds["showDataOverTimeBtn"]);
+        await Page.ClickAsync(PageConstants.ShowDataOverTimeBtnId);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
         // and click Show as a table button
-        await Page.ClickAsync(PageConstants.ContentIds["dataOverTimeShowAsTableBtn"]);
+        await Page.ClickAsync(PageConstants.DataOverTimeShowAsTableBtnId);
 
-        var laData = await Page.GetTableRowValuesAsync(PageConstants.ContentIds["dataOverTimeTable"], 1);
+        var laData = await Page.GetTableRowValuesAsync(PageConstants.DataOverTimeTableId, 1);
         Assert.Equal($"{expectedPrevious2}%", laData[0]);
         Assert.Equal($"{expectedPrevious}%", laData[1]);
         Assert.Equal($"{expectedCurrent}%", laData[2]);
 
-        laData = await Page.GetTableRowValuesAsync(PageConstants.ContentIds["exsDataOverTimeTable"], 1);
+        laData = await Page.GetTableRowValuesAsync(PageConstants.ExsDataOverTimeTableId, 1);
         Assert.Equal($"{higherPrevious2}%", laData[0]);
         Assert.Equal($"{higherPrevious}%", laData[1]);
         Assert.Equal($"{higherCurrent}%", laData[2]);
@@ -109,29 +109,29 @@ public class MeetingOrExceedingStandardsTests() : BasePageTest()
         // Arrange && Act
         var response = await Page.GotoAsync(BasePageUrl(urn));
         Assert.NotNull(response);
-        var _ = await Page.GotoPage(response.Url, ThisPage);
+        var _ = await Page.GotoPage(response.Url, pageUnderTest);
 
         // Act
-        await Page.ExpandAccordionAsync("Meeting and exceeding expected standards by pupil characteristics");
+        await Page.ExpandAccordionByIdAsync(PageConstants.MeetingOrExceedingStandardsByPupilCharacteristicAccordionId);
         await Page.ExpandDetailsAsync("Compare with non-disadvantaged pupils");
 
-        var schoolData = await Page.GetTableRowValuesAsync(PageConstants.ContentIds["girls-boys-table"], "Girls");
+        var schoolData = await Page.GetTableRowValuesAsync(PageConstants.GirlsBoysTableId, "Girls");
         Assert.Equal($"{expectedGirls}%", schoolData[0]);
         Assert.Equal($"{higherGirls}%", schoolData[1]);
 
-        schoolData = await Page.GetTableRowValuesAsync(PageConstants.ContentIds["girls-boys-table"], "Boys");
+        schoolData = await Page.GetTableRowValuesAsync(PageConstants.GirlsBoysTableId, "Boys");
         Assert.Equal($"{expectedBoys}%", schoolData[0]);
         Assert.Equal($"{higherBoys}%", schoolData[1]);
 
-        schoolData = await Page.GetTableRowValuesAsync(PageConstants.ContentIds["eal-table"], "Pupils with EAL");
+        schoolData = await Page.GetTableRowValuesAsync(PageConstants.EalTableId, "Pupils with EAL");
         Assert.Equal($"{expectedEAL}%", schoolData[0]);
         Assert.Equal($"{higherEAL}%", schoolData[1]);
 
-        schoolData = await Page.GetTableRowValuesAsync(PageConstants.ContentIds["non-mobile-table"], "Non-mobile pupils");
+        schoolData = await Page.GetTableRowValuesAsync(PageConstants.NonMobileTableId, "Non-mobile pupils");
         Assert.Equal($"{expectedNonMobile}%", schoolData[0]);
         Assert.Equal($"{higherNonMobile}%", schoolData[1]);
 
-        schoolData = await Page.GetTableRowValuesAsync(PageConstants.ContentIds["disadvantaged-pupils-table"], "School");
+        schoolData = await Page.GetTableRowValuesAsync(PageConstants.DisadvantagedPupilsTableId, "School");
         Assert.Equal($"{expectedDisadvantaged}%", schoolData[0]);
         Assert.Equal($"{higherDisadvantaged}%", schoolData[1]);
     }
@@ -149,13 +149,13 @@ public class MeetingOrExceedingStandardsTests() : BasePageTest()
         // Arrange && Act
         var response = await Page.GotoAsync(BasePageUrl(urn));
         Assert.NotNull(response);
-        var _ = await Page.GotoPage(response.Url, ThisPage);
+        var _ = await Page.GotoPage(response.Url, pageUnderTest);
 
         // Act
-        await Page.ExpandAccordionAsync("Meeting and exceeding expected standards by pupil characteristics");
+        await Page.ExpandAccordionByIdAsync(PageConstants.MeetingOrExceedingStandardsByPupilCharacteristicAccordionId);
         await Page.ExpandDetailsAsync("Compare with non-disadvantaged pupils");
 
-        var laData = await Page.GetTableRowValuesAsync(PageConstants.ContentIds["non-disadvantaged-pupils-table"], 0);
+        var laData = await Page.GetTableRowValuesAsync(PageConstants.NonDisadvantagedPupilsTableId, 0);
         Assert.Equal($"{expected}%", laData[0]);
         Assert.Equal($"{higher}%", laData[1]);
     }

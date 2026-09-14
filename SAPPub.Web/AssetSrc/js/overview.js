@@ -1,6 +1,12 @@
 ﻿document.addEventListener('DOMContentLoaded', () => {
-    initialiseChartTableToggle('overview-english-maths-current-year');
-    initialiseChartTableToggle('overview-destinations-current-year');
+    initialiseChartTableToggle(
+        'overview-primary-expected-standard-current-year');
+
+    initialiseChartTableToggle(
+        'overview-english-maths-current-year');
+
+    initialiseChartTableToggle(
+        'overview-destinations-current-year');
 });
 
 function initialiseChartTableToggle(prefix) {
@@ -41,3 +47,21 @@ function initialiseChartTableToggle(prefix) {
         }
     });
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const notification =
+        document.querySelector(
+            '[id$="-add-success"], [id$="-remove-success"]');
+
+    if (!notification) {
+        return;
+    }
+
+    notification.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+    });
+
+    notification.setAttribute('tabindex', '-1');
+    notification.focus({ preventScroll: true });
+});

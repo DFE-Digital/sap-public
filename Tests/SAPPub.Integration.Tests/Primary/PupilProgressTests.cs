@@ -7,6 +7,7 @@ namespace SAPPub.Integration.Tests.Primary;
 public class PupilProgressTests() : BasePageTest()
 {
     private string PageUrl(string urn) => $"/school/{urn}";
+    private string pageUnderTest => "primary-performance/pupil-progress";
 
     [Theory]
     [InlineData("100019", "1.9", "-0.4", "4.3", "4.4", "1.9", "6.8", "3.5", "1.2", "5.9")]
@@ -23,8 +24,10 @@ public class PupilProgressTests() : BasePageTest()
         string expectedWritingScore, string expectedWritingLowerBand, string expectedWritingHigherBand)
     {
         // Arrange && Act
-        var _ = await Page.GotoAsync(PageUrl(urn));
-        var response = await Page.ClickAcademicPerformanceLinkAsync();
+        var response = await Page.GotoAsync(PageUrl(urn));
+        Assert.NotNull(response);
+        response = await Page.GotoPage(response.Url, pageUnderTest);
+
         _ = await Page.GotoAcademicPerformanceSelectedYearLink(response!.Url, "previous2");
 
         // Assert
@@ -48,8 +51,10 @@ public class PupilProgressTests() : BasePageTest()
         string mathsScore)
     {
         // Arrange && Act
-        var _ = await Page.GotoAsync(PageUrl(urn));
-        var response = await Page.ClickAcademicPerformanceLinkAsync();
+        var response = await Page.GotoAsync(PageUrl(urn));
+        Assert.NotNull(response);
+        response = await Page.GotoPage(response.Url, pageUnderTest);
+
         _ = await Page.GotoAcademicPerformanceSelectedYearLink(response!.Url, "previous2");
 
         // Assert
