@@ -22,7 +22,7 @@ public class AboutSchoolPageTests() : BasePageTest()
     }
 
     [Theory]
-    [InlineData("114311", true, "31 December 2022")]
+    [InlineData("100178", true, "31 August 2024")]
     [InlineData("149251", false, null)]
     public async Task AboutSchoolPage_DisplaysSchoolClosedInfo(string urn, bool isSchoolClosed, string? date)
     {
