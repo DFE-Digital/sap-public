@@ -157,6 +157,17 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
             Assert.Equal(expectedAllDestCurrentDataLabels, model.AllDestinationsData.Labels);
             Assert.Equal(expectedAllDestCurrentData, model.AllDestinationsData.Data);
 
+            Assert.Equal(expectedAllDestCurrentDataLabels, model.AllDestinationsDisadvantagedData.Labels);
+            Assert.Equal(
+                [destinationsDetails.SchoolDisadvantagedAll.CurrentYear.Value, destinationsDetails.LocalAuthorityDisadvantagedAll.CurrentYear.Value, destinationsDetails.EnglandDisadvantagedAll.CurrentYear.Value],
+                model.AllDestinationsDisadvantagedData.Data);
+
+            string[] expectedAllDestNonDisadvantagedDataLabels = [$"{_fakeEstablishment.LAName} average", "England average"];
+            Assert.Equal(expectedAllDestNonDisadvantagedDataLabels, model.AllDestinationsNonDisadvantagedData.Labels);
+            Assert.Equal(
+                [destinationsDetails.LocalAuthorityNonDisadvantagedAll.CurrentYear.Value, destinationsDetails.EnglandNonDisadvantagedAll.CurrentYear.Value],
+                model.AllDestinationsNonDisadvantagedData.Data);
+
             Assert.Equal(expectedDataOverTime.Labels, model.AllDestinationsOverTimeData.Labels);
             foreach (var expectedDataset in expectedDataOverTime.Datasets)
             {
@@ -265,6 +276,12 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
 
             Assert.Equal(expectedAllDestCurrentDataLabels, model.AllDestinationsData.Labels);
             Assert.Equal([null, null, null], model.AllDestinationsData.Data);
+
+            Assert.Equal(expectedAllDestCurrentDataLabels, model.AllDestinationsDisadvantagedData.Labels);
+            Assert.Equal([null, null, null], model.AllDestinationsDisadvantagedData.Data);
+
+            Assert.Equal([$"{_fakeEstablishment.LAName} average", "England average"], model.AllDestinationsNonDisadvantagedData.Labels);
+            Assert.Equal([null, null], model.AllDestinationsNonDisadvantagedData.Data);
 
             Assert.Equal(3, model.AllDestinationsOverTimeData.Datasets.Count);
             Assert.Equal("School", model.AllDestinationsOverTimeData.Datasets[0].Label);

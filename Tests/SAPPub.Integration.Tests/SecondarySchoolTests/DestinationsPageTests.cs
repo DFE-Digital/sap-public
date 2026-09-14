@@ -116,4 +116,43 @@ public class DestinationsPageTests() : BasePageTest()
         Assert.Equal(unknownLA, unknownRow[1]);
         Assert.Equal(unknownEngland, unknownRow[2]);
     }
+
+    // TODO: replace values (percentages, current year 2022 to 2023) for each URN from source data.
+    [Theory(Skip = "Until data populated")]
+    [InlineData("105574", /* school */ "0%", /* LA */ "0%", /* England */ "0%")]
+    public async Task DestinationsPage_DisadvantagedDestinationsTable_ShowsExpectedData(string urn, string expectedSchool, string expectedLA, string expectedEngland)
+    {
+        // Arrange & Act
+        await Page.GotoAsync(BasePageUrl(urn));
+        await Page.ExpandAccordionAsync("Staying in education, employment and apprenticeships for disadvantaged pupils");
+
+        // Assert
+        var row = await Page.GetTableRowValuesAsync("all-dest-disadvantaged-current-year-table", "School");
+        Assert.Equal(expectedSchool, row[0]);
+        Assert.Equal(expectedLA, row[1]);
+        Assert.Equal(expectedEngland, row[2]);
+    }
+
+    // TODO: replace values (percentages, current year 2022 to 2023) for each URN from source data.
+    [Theory(Skip = "Until data populated")]
+    [InlineData("105574", /* LA */ "0%", /* England */ "0%")]
+    public async Task DestinationsPage_NonDisadvantagedDestinationsTable_ShowsExpectedData(string urn, string expectedLA, string expectedEngland)
+    {
+        // Arrange & Act
+        await Page.GotoAsync(BasePageUrl(urn));
+        await Page.ExpandAccordionAsync("Staying in education, employment and apprenticeships for disadvantaged pupils");
+        await Page.ExpandDetailsAsync("Compare with non-disadvantaged pupils");
+
+        // Assert
+        var tables = Page.Locator("#disadvantaged-destinations-accordion #all-dest-disadvantaged-current-year-table");
+        var nonDisadvantagedTable = tables.Nth(1);
+
+        var englandRow = nonDisadvantagedTable.Locator("tbody tr").Filter(new() { Has = Page.Locator("th:has-text('England average')") });
+        var englandValues = await englandRow.Locator("td").AllInnerTextsAsync();
+        Assert.Equal(expectedEngland, englandValues[0]);
+
+        var laRow = nonDisadvantagedTable.Locator("tbody tr").First;
+        var laValues = await laRow.Locator("td").AllInnerTextsAsync();
+        Assert.Equal(expectedLA, laValues[0]);
+    }
 }
