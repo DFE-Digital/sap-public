@@ -34,7 +34,6 @@ public class AccessibilityTests(WebApplicationSetupFixture fixture) : BasePageTe
 
         // secondary pages
         "school/105574/loreto-high-school-chorlton/secondary-performance/progress-attainment",
-        "school/105574/loreto-high-school-chorlton/secondary-performance/progress-attainment/current",
         "school/105574/loreto-high-school-chorlton/secondary-performance/english-and-maths",
         "school/105574/loreto-high-school-chorlton/secondary-performance/english-and-maths/grade-5-and-above",
         "school/100273/saint-paul-roman-catholic-infant-school/secondary-performance/english-and-maths",

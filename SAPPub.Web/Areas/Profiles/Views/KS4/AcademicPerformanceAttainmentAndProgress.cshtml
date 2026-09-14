@@ -51,14 +51,6 @@
 
         <p class="govuk-body" data-testid="academic-year-info">@Model.AcademicYearInfoParagraph</p>
 
-        <form method="get" asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress" asp-all-route-data="@Model.RouteAttributes">
-            <div id="filterSection" class="select-filter">
-                <label for="academicYearSelector" class="govuk-label govuk-!-font-weight-bold">Choose the academic year you want to see results for</label>
-                <select id="academicYearSelector" class="govuk-select" asp-for="SelectedAcademicYear" asp-items="Model.AcademicYearsSelectList"></select>
-                <govuk-button type="submit">Show results</govuk-button>
-            </div>
-        </form>
-
         <h3 class="govuk-heading-m">Progress 8</h3>
 
         <p class="govuk-body">
@@ -159,7 +151,7 @@
 
         @if (Model.ShowProgress8NotAvailableInfo)
         {
-            <div class="custom-card" data-testid="progress8-custom-card">
+            <div class="custom-card" data-testid="prog8-custom-card">
                 <div class="info__icon"></div>
                 <div class="custom-card__content">
                     <p class="govuk-body">

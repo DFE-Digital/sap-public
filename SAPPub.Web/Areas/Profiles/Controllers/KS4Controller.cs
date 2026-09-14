@@ -16,32 +16,12 @@ public class KS4Controller(IEstablishmentService establishmentService, IFeatureM
 {
     [HttpGet]
     [Route("school/{urn}/{schoolName}/secondary-performance/progress-attainment", Name = RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress)]
-    public IActionResult AcademicPerformanceAttainmentAndProgressRedirect(
-        [FromServices] IAttainmentAndProgressService attainmentAndProgressService,
-        string urn,
-        string schoolName,
-        AcademicYearSelection selectedAcademicYear = AcademicYearSelection.Current,
-        CancellationToken ct = default)
-    {
-        var selectedYearName = AcademicYearSelectionExtensions.ToRouteSegment(selectedAcademicYear);
-
-        return RedirectToAction(nameof(AcademicPerformanceAttainmentAndProgress), new { urn, schoolName, selectedAcademicYearName = selectedYearName });
-    }
-
-    [HttpGet]
-    [Route("school/{urn}/{schoolName}/secondary-performance/progress-attainment/{selectedAcademicYearName}")]
     public async Task<IActionResult> AcademicPerformanceAttainmentAndProgress(
         [FromServices] IAttainmentAndProgressService attainmentAndProgressService,
         string urn,
         string schoolName,
-        string selectedAcademicYearName,
         CancellationToken ct = default)
     {
-        var selectedAcademicYear = AcademicYearSelectionExtensions.FromRouteSegment(selectedAcademicYearName);
-        if (!selectedAcademicYear.HasValue)
-        {
-            return NotFound();
-        }
         var establishmentDetails = await establishmentService.GetEstablishmentAsync(urn, ct);
 
         var results = await attainmentAndProgressService.GetAttainmentAndProgressAsync(urn, ct);
@@ -50,8 +30,7 @@ public class KS4Controller(IEstablishmentService establishmentService, IFeatureM
             establishmentDetails.LAName, 
             establishmentDetails.AgeRangeLow, 
             establishmentDetails.TypeOfEstablishment, 
-            results, 
-            selectedAcademicYear.Value);
+            results);
        
         return View(model);
     }

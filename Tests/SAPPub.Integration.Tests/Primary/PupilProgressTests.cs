@@ -1,5 +1,5 @@
 ﻿using Microsoft.Playwright;
-using SAPPub.IntegrationTests.Helpers;
+using SAPPub.Integration.Tests.Helpers;
 
 namespace SAPPub.Integration.Tests.Primary;
 
