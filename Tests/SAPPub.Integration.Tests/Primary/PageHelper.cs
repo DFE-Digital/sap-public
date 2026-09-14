@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Playwright;
+﻿using Microsoft.Playwright;
 
 namespace SAPPub.Integration.Tests.Primary;
 

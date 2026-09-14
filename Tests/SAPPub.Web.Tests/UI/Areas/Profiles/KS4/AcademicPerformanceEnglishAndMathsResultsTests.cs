@@ -145,7 +145,7 @@ public class AcademicPerformanceEnglishAndMathsResults : BasePageTest
         var buttonSelector = Page.Locator("button:has-text(\"Show results\")");
         await buttonSelector.ClickAsync();
 
-        await Page.ExpandAccordionAsync($"{grade.GetDisplayName()} in English and maths GCSEs by other pupil characteristics");
+        await Page.ExpandAccordionByIdAsync("#other-pupil-characteristics-accordion");
         await Page.ExpandDetailsAsync("Compare state-funded local and national averages for non-disadvantaged pupils");
 
         // Assert
