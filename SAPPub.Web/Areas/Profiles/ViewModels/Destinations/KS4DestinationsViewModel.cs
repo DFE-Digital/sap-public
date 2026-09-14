@@ -14,8 +14,6 @@ public class KS4DestinationsViewModel : ProfileBaseViewModel
 
     public required DataOverTimeViewModel AllDestinationsOverTimeData { get; set; }
 
-    public required SeriesViewModel BreakdownDestinationData { get; set; }
-
     public required SeriesMeasureViewModel StayedInEducationTable { get; set; }
 
     public required SeriesMeasureViewModel WherePupilsStudiedTable { get; set; }
@@ -80,24 +78,6 @@ public class KS4DestinationsViewModel : ProfileBaseViewModel
                         Data = [destinationsDetails.EnglandAll.TwoYearsAgo.Value, destinationsDetails.EnglandAll.PreviousYear.Value, destinationsDetails.EnglandAll.CurrentYear.Value],
                     }
                 ],               
-            },
-            BreakdownDestinationData = new SeriesViewModel {
-                Labels = ["Staying in education", "Entering employment and apprenticeships"],
-                Datasets =
-                [
-                    new DataSeriesViewModel {
-                        Label = "School",
-                        Data = [destinationsDetails.SchoolEducation.CurrentYear.Value, CommonHelper.AddNullable(destinationsDetails.SchoolEmployment.CurrentYear.Value, destinationsDetails.SchoolApprentice.CurrentYear.Value)]
-                    },
-                    new DataSeriesViewModel {
-                        Label = laAverageLabel,
-                        Data = [destinationsDetails.LocalAuthorityEducation.CurrentYear.Value, CommonHelper.AddNullable(destinationsDetails.LocalAuthorityEmployment.CurrentYear.Value, destinationsDetails.LocalAuthorityApprentice.CurrentYear.Value)]
-                    },
-                    new DataSeriesViewModel {
-                        Label = "England average",
-                        Data = [destinationsDetails.EnglandEducation.CurrentYear.Value, CommonHelper.AddNullable(destinationsDetails.EnglandEmployment.CurrentYear.Value, destinationsDetails.EnglandApprentice.CurrentYear.Value)]
-                    },
-                ],
             },
             StayedInEducationTable = new SeriesMeasureViewModel
             {

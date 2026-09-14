@@ -175,16 +175,7 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
                 Assert.NotNull(actualDatset);
                 Assert.Equal(expectedDataset.Label, actualDatset.Label);
                 Assert.Equal(expectedDataset.Data, actualDatset.Data);
-            }
-
-            Assert.Equal(expectedBreakdownCurrentYearDataLabels, model.BreakdownDestinationData.Labels);
-            foreach (var expectedDataset in expectedBreakdownCurrentYearData.Datasets)
-            {
-                var actualDatset = model.BreakdownDestinationData.Datasets.FirstOrDefault(s => s.Label == expectedDataset.Label);
-                Assert.NotNull(actualDatset);
-                Assert.Equal(expectedDataset.Label, actualDatset.Label);
-                Assert.Equal(expectedDataset.Data, actualDatset.Data);
-            }
+            }        
 
             string[] expectedTableColumnLabels = ["School", $"{_fakeEstablishment.LAName} average", "England average"];
 
@@ -295,20 +286,6 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
 
             Assert.Equal(["2020 to 2021", "2021 to 2022", "2022 to 2023"], model.AllDestinationsOverTimeData.Labels);
 
-            // Breakdown gcse data assert
-            Assert.Equal(["Staying in education", "Entering employment and apprenticeships"], model.BreakdownDestinationData.Labels);
-
-            Assert.Equal(3, model.BreakdownDestinationData.Datasets.Count);
-
-            Assert.Equal("School", model.BreakdownDestinationData.Datasets[0].Label);
-            Assert.Equal([null, null], model.BreakdownDestinationData.Datasets[0].Data);
-
-            Assert.Equal($"{_fakeEstablishment.LAName} average", model.BreakdownDestinationData.Datasets[1].Label);
-            Assert.Equal([null, null], model.BreakdownDestinationData.Datasets[1].Data);
-
-            Assert.Equal("England average", model.BreakdownDestinationData.Datasets[2].Label);
-            Assert.Equal([null, null], model.BreakdownDestinationData.Datasets[2].Data);
-
             string[] expectedTableColumnLabels = ["School", $"{_fakeEstablishment.LAName} average", "England average"];
 
             Assert.Equal(expectedTableColumnLabels, model.StayedInEducationTable.Labels);
@@ -359,9 +336,6 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
 
             var actualDataOvertimeDataLabels = model.AllDestinationsOverTimeData.Datasets.Select(s => s.Label).ToArray();
             Assert.Equal(expectedDataOvertimeDataLabels, actualDataOvertimeDataLabels);
-
-            var actualBreakdownDataLabels = model.BreakdownDestinationData.Datasets.Select(s => s.Label).ToArray();
-            Assert.Equal(expectedBreakdownDataLabels, actualBreakdownDataLabels);
         }
 
         [Fact]
