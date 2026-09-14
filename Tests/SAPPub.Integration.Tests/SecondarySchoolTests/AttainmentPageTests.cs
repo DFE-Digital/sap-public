@@ -45,9 +45,8 @@ public class AttainmentPageTests() : BasePageTest()
     {
         // Arrange && Act
         var _ = await Page.GotoAsync($"school/{urn}");
-        var content = await Page.ContentAsync();
         var navigationHelper = new VerticalNavigationHelper(Page);
-        var response = await navigationHelper.ClickSecondaryAcademicPerformanceAsync();
+        _ = await navigationHelper.ClickSecondaryAcademicPerformanceAsync();
 
         await Page.Locator("#prog8-previous-years-accordion").ClickAsync();
         await Page.Locator("#attainment8-previous-years-accordion").ClickAsync();
@@ -76,8 +75,8 @@ public class AttainmentPageTests() : BasePageTest()
         // Arrange && Act
         var _ = await Page.GotoAsync($"school/{urn}");
         var navItem = new VerticalNavigationHelper(Page);
-
-        var response = await navItem.ClickSecondaryAcademicPerformanceAsync();
+        _ = await navItem.ClickSecondaryAcademicPerformanceAsync();
+        
         await Page.Locator("#prog8-previous-years-accordion").ClickAsync();
         await Page.Locator("#attainment8-previous-years-accordion").ClickAsync();
 
