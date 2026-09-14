@@ -2740,7 +2740,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
 
         await Expect(content)
             .ToContainTextAsync(
-                "Progress scores are not available for the academic years 2024 to 2025 and 2025 to 2026 due to COVID-19 disruption.");
+                "Progress scores are not available for the academic years 2023 to 2024 and 2024 to 2025 due to COVID-19 disruption.");
 
         await Expect(content)
             .ToContainTextAsync(
