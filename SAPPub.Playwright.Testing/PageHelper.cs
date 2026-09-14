@@ -28,21 +28,38 @@ public static class PageHelper
         string tableId,
         string rowHeader)
     {
-        var row = page.Locator($"#{tableId} tbody tr")
+        var id = tableId.StartsWith("#") ? tableId : $"#{tableId}";
+        var row = page.Locator($"{id} tbody tr")
             .Filter(new()
             {
-                Has = page.Locator($"th:has-text('{rowHeader}')")
+                HasText = rowHeader
             });
 
         return row.Locator("td").AllInnerTextsAsync();
     }
 
-    public static Task ExpandAccordionAsync(this IPage page, string label)
+    public static Task<IReadOnlyList<string>> GetTableRowValuesAsync(
+        this IPage page,
+        string tableId,
+        int rowNumber)
     {
-        return page.GetByRole(AriaRole.Button, new()
+        var id = tableId.StartsWith("#") ? tableId : $"#{tableId}";
+        var row = page.Locator($"{id} tbody tr")
+            .Nth(rowNumber);
+
+        return row.Locator("td").AllInnerTextsAsync();
+    }
+
+    public static async Task ExpandAccordionByIdAsync(this IPage page, string id)
+    {
+        id = id.StartsWith("#") ? id : $"#{id}";
+        var sectionLocator = page.Locator($"{id}");
+        var button = sectionLocator.Locator(".govuk-accordion__show-all");
+        var isExpanded = await button.GetAttributeAsync("aria-expanded");
+        if (isExpanded != "true")
         {
-            Name = label
-        }).ClickAsync();
+            await button.ClickAsync();
+        }
     }
 
     public static Task ExpandDetailsAsync(this IPage page, string summaryText)

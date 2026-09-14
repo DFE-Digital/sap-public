@@ -30,8 +30,8 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             .Build();
         var urn = expected.Urn;
         var establishmentName = expected.SchoolName;
-        _establishmentServiceMock.Setup(service => service.GetEstablishmentMinimumAsync(urn, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new EstablishmentMinimumServiceModel(){
+        _establishmentServiceMock.Setup(service => service.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EstablishmentServiceModel(){
                 EstablishmentName = establishmentName!,
                 URN = urn,
                 IsKS4 = true
@@ -60,8 +60,8 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             .Build();
         var urn = expected.Urn;
         var establishmentName = expected.SchoolName;
-        _establishmentServiceMock.Setup(service => service.GetEstablishmentMinimumAsync(urn, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new EstablishmentMinimumServiceModel()
+        _establishmentServiceMock.Setup(service => service.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EstablishmentServiceModel()
             {
                 EstablishmentName = establishmentName!,
                 URN = urn,
@@ -93,8 +93,8 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             .Build();
         var urn = expected.Urn;
         var establishmentName = expected.SchoolName;
-        _establishmentServiceMock.Setup(service => service.GetEstablishmentMinimumAsync(urn, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new EstablishmentMinimumServiceModel()
+        _establishmentServiceMock.Setup(service => service.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EstablishmentServiceModel()
             {
                 EstablishmentName = establishmentName!,
                 URN = urn,
@@ -128,8 +128,8 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             .Build();
         var urn = expected.Urn;
         var establishmentName = expected.SchoolName;
-        _establishmentServiceMock.Setup(service => service.GetEstablishmentMinimumAsync(urn, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new EstablishmentMinimumServiceModel()
+        _establishmentServiceMock.Setup(service => service.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EstablishmentServiceModel()
             {
                 EstablishmentName = establishmentName!,
                 URN = urn,
@@ -172,8 +172,8 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             .Build();
         var urn = expected.Urn;
         var establishmentName = expected.SchoolName;
-        _establishmentServiceMock.Setup(service => service.GetEstablishmentMinimumAsync(urn, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new EstablishmentMinimumServiceModel()
+        _establishmentServiceMock.Setup(service => service.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EstablishmentServiceModel()
             {
                 EstablishmentName = establishmentName!,
                 URN = urn,
@@ -204,8 +204,8 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             .Build();
         var urn = expected.Urn;
         var establishmentName = expected.SchoolName;
-        _establishmentServiceMock.Setup(service => service.GetEstablishmentMinimumAsync(urn, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new EstablishmentMinimumServiceModel()
+        _establishmentServiceMock.Setup(service => service.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EstablishmentServiceModel()
             {
                 EstablishmentName = establishmentName!,
                 URN = urn,
@@ -234,8 +234,8 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             .Build();
         var urn = expected.Urn;
         var establishmentName = expected.SchoolName;
-        _establishmentServiceMock.Setup(service => service.GetEstablishmentMinimumAsync(urn, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new EstablishmentMinimumServiceModel()
+        _establishmentServiceMock.Setup(service => service.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EstablishmentServiceModel()
             {
                 EstablishmentName = establishmentName!,
                 URN = urn,
@@ -264,8 +264,8 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             .Build();
         var urn = expected.Urn;
         var establishmentName = expected.SchoolName;
-        _establishmentServiceMock.Setup(service => service.GetEstablishmentMinimumAsync(urn, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new EstablishmentMinimumServiceModel()
+        _establishmentServiceMock.Setup(service => service.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EstablishmentServiceModel()
             {
                 EstablishmentName = establishmentName!,
                 URN = urn,
@@ -292,5 +292,59 @@ public class AttainmentAndProgressPageTests : PageTestsBase
 
         Assert.NotNull(nextLink);
         Assert.Contains("/secondary-performance/english-and-maths", nextLink.GetAttribute("href"));
+    }
+
+    [Theory]
+    [InlineData(TypeOfEstablishment.UniversityTechnicalCollege, "11", true, false, false)]
+    [InlineData(TypeOfEstablishment.StudioSchools, "11", false, true, false)]
+    [InlineData(TypeOfEstablishment.FurtherEducation, "11", false, false, true)]
+    [InlineData(TypeOfEstablishment.FurtherEducation, "12", false, false, true)]
+    [InlineData(TypeOfEstablishment.CommunitySchool, "12", false, false, true)]
+    [InlineData(TypeOfEstablishment.CommunitySchool, "11", false, false, false)]
+    public async Task AcademicPerformanceAttainmentAndProgressPage_DisplaysCorrectProgress8Caveats(TypeOfEstablishment typeOfEstablishment, string ageRangeLow, bool expectedShowUTCCaveat, bool expectedShowStudioSchoolCaveat, bool expectedShowFECaveat)
+    {
+        // Arrange
+        // Arrange
+        var expected = new AttainmentAndProgressModelBuilder()
+            .WithAttainment8Data()
+            .Build();
+        var urn = expected.Urn;
+        var establishmentName = expected.SchoolName;
+        
+        _establishmentServiceMock
+            .Setup(service => service.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EstablishmentServiceModel()
+            {
+                EstablishmentName = establishmentName!,
+                URN = urn,
+                IsKS4 = true,
+                TypeOfEstablishment = typeOfEstablishment,
+                AgeRangeLow = ageRangeLow
+            });
+
+        _serviceMock
+            .Setup(service => service.GetAttainmentAndProgressAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expected);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName!, $"{_pageRoute}/{AcademicYearSelection.Current.ToRouteSegment()}"));
+
+        // Assert
+        var utcCaveatElement = doc.QuerySelector("#utc-caveat-inset-text");
+        var studioSchoolCaveatElement = doc.QuerySelector("#studioschool-caveat-inset-text");
+        var feCaveatElement = doc.QuerySelector("#fe-caveat-inset-text");
+
+        if (expectedShowUTCCaveat)
+        {
+            Assert.NotNull(utcCaveatElement);
+        }
+        if (expectedShowStudioSchoolCaveat)
+        {
+            Assert.NotNull(studioSchoolCaveatElement);
+        }
+        if (expectedShowFECaveat)
+        {
+            Assert.NotNull(feCaveatElement);
+        }
     }
 }

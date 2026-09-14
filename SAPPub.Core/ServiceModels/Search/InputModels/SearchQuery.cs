@@ -8,5 +8,7 @@ public record SearchQuery
     public string? Name { get; init; }
     public int? Page { get; init; } = 1;
     public int? PageSize { get; init; } = 10;
+    public string[]? EstablishmentPhases {  get; init; }
+    public string[]? EstablishmentTypes { get; init; }
 
 }

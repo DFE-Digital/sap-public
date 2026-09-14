@@ -4,11 +4,10 @@ using SAPPub.Core.Interfaces.Repositories.Performance;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.ServiceModels;
 using SAPPub.Core.Services.Performance;
-using SAPPub.Core.ValueObjects;
 
 namespace SAPPub.Core.Tests.Services.Performance;
 
-public class KS2MeetingOrExceedingStandardsServiceTests
+public class KS2MeetingOrExceedingStandardsServiceTests : ServiceTestBase
 {
     private readonly Mock<IEstablishmentService> _establishmentService = new();
     private readonly Mock<IKS2PerformanceRepository> _ks2PerformanceRepository = new();
@@ -41,8 +40,8 @@ public class KS2MeetingOrExceedingStandardsServiceTests
         cts.Cancel();
 
         // Act
-        await Assert.ThrowsAnyAsync<ArgumentException>(() =>
-            _service.GetMeetingOrExceedingStandardsPercentages(It.IsAny<string>(), It.IsAny<string>(), cts.Token));
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
+            _service.GetMeetingOrExceedingStandardsPercentages("123456", It.IsAny<string>(), cts.Token));
 
         // Assert
         _establishmentService.Verify(a => a.GetEstablishmentAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
@@ -165,12 +164,5 @@ public class KS2MeetingOrExceedingStandardsServiceTests
         Assert.Equal(GetCodedDouble(34), result.EnglandDisadvantagedExceedingExpectedStandard);
         Assert.Equal(GetCodedDouble(35), result.EnglandNonDisadvantagedMeetingExpectedStandard);
         Assert.Equal(GetCodedDouble(36), result.EnglandNonDisadvantagedExceedingExpectedStandard);
-
-
-    }
-
-    private static CodedDouble GetCodedDouble(double val)
-    {
-        return new CodedDouble(val, string.Empty, val.ToString());
     }
 }

@@ -187,7 +187,7 @@ public class MeetingOrExceedingStandardsPageTests : PageTestsBase
         // Act
         var doc = await Fixture.BrowseToPage(url);
 
-        var accordion = doc.GetElementById("meeting-or-exceeing-standards-by-pupil-characteristic-accordion");
+        var accordion = doc.GetElementById("meeting-or-exceeding-standards-by-pupil-characteristic-accordion");
 
         Assert.NotNull(accordion);
 

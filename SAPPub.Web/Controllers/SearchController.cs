@@ -53,6 +53,9 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
             Location = searchLocation,
             Distance = searchLocation != null ? model.Distance : null,
             PageNumber = model.PageNumber,
+            EstablishmentPhases = model.Phase,
+            EstablishmentTypes = model.SchoolType
+            
         };
 
         SchoolSearchResultsServiceModel? searchResults = null;

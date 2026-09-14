@@ -96,7 +96,25 @@ public sealed class FakeOverviewService : IOverviewService
 
             IsKS2 = true,
             IsKS4 = false,
-            IsKS5 = false
+            IsKS5 = false,
+
+            ReadingWritingMathsExpectedEstablishment =
+                new CodedDouble(
+                    70,
+                    string.Empty,
+                    "70"),
+
+            ReadingWritingMathsExpectedLA =
+                new CodedDouble(
+                    73,
+                    string.Empty,
+                    "73"),
+
+            ReadingWritingMathsExpectedEngland =
+                new CodedDouble(
+                    77,
+                    string.Empty,
+                    "77"),
         };
     }
 
@@ -252,6 +270,24 @@ public sealed class FakeOverviewService : IOverviewService
                 87,
                 string.Empty,
                 "87"),
+
+            ReadingWritingMathsExpectedEstablishment =
+                new CodedDouble(
+                    70,
+                    string.Empty,
+                    "70"),
+
+            ReadingWritingMathsExpectedLA =
+                new CodedDouble(
+                    73,
+                    string.Empty,
+                    "73"),
+
+            ReadingWritingMathsExpectedEngland =
+                new CodedDouble(
+                    77,
+                    string.Empty,
+                    "77"),
         };
     }
 

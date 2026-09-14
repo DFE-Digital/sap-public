@@ -77,6 +77,54 @@
             </li>
         </ul>
 
+        @if(Model.ShowUTCCaveat)
+        {
+            <govuk-inset-text id="utc-caveat-inset-text">
+                <p class="govuk-body">
+                    Some schools start educating pupils partway through the 5-year period covered by Progress 8, which should be taken into account when comparing their results with schools that start at Key Stage 3. 
+                </p>
+                <p class="govuk-body">
+                Progress 8 is not the most appropriate performance measure for university technical colleges, studio schools and some further education colleges. These establishments typically start educating pupils at age 14, with a focus on preparing pupils for their future careers by providing an integrated academic and professional education. Other headline measures, particularly pupil destinations, are more important for these establishments.
+                </p>
+
+                <p class="govuk-body">
+                University Technical Colleges (UTCs) are state-funded mainstream schools that focus on technical qualifications from age 14 alongside core academic subjects, including maths, English and science.
+                Employers are closely involved in the design and delivery of technical education at UTCs.
+                </p>
+            </govuk-inset-text>
+        }
+
+        @if(Model.ShowStudioSchoolCaveat)
+        {
+            <govuk-inset-text id="studioschool-caveat-inset-text">
+                <p class="govuk-body">
+                    Some schools start educating pupils partway through the 5-year period covered by Progress 8, which should be taken into account when comparing their results with schools that start at Key Stage 3.
+                </p>
+                <p class="govuk-body">
+                    Progress 8 is not the most appropriate performance measure for university technical colleges, studio schools and some further education colleges.
+                    These establishments typically start educating pupils at age 14, with a focus on preparing pupils for their future careers by providing an 
+                    integrated academic and professional education. Other headline measures, particularly pupil destinations, are more important for these establishments.
+                </p>
+                <p class="govuk-body">
+                    Studio Schools are state-funded mainstream schools that focus on vocational qualifications from age 14 alongside core academic subjects, including maths, English and science.
+                    Studio schools have an emphasis on developing employability skills taught through project based learning.
+                </p>
+            </govuk-inset-text>
+        }
+
+        @if(Model.ShowFurtherEducationCaveat)
+        {
+            <govuk-inset-text id="fe-caveat-inset-text">
+                <p class="govuk-body">
+                    Some schools start educating pupils partway through the 5-year period covered by Progress 8, which should be taken into account when comparing their results with schools that start at Key Stage 3. 
+                </p>
+                <p class="govuk-body">
+                    Progress 8 is not the most appropriate performance measure for university technical colleges, studio schools and some further education colleges. These establishments typically start educating pupils at age 14, with a focus on preparing pupils for their future careers by providing an integrated academic and professional education. Other headline measures, particularly pupil destinations, are more important for these establishments.
+
+                </p>
+            </govuk-inset-text>
+        }
+
         <govuk-details id="details-progress8">
             <govuk-details-summary>
                 Find out more about Progress 8 confidence intervals

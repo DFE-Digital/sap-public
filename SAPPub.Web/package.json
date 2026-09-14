@@ -9,7 +9,7 @@
   },
   "keywords": [],
   "dependencies": {
-    "@ministryofjustice/frontend": "^11.0.0",
+    "@ministryofjustice/frontend": "^11.0.1",
     "async": "^3.2.6",
     "chart.js": "^4.5.1",
     "chartjs-plugin-datalabels": "^2.2.0",
@@ -31,6 +31,11 @@
     "gulp-rename": "^2.1.0",
     "gulp-sourcemaps": "^3.0.0",
     "mkdirp": "^3.0.1"
+  },
+  "overrides": {
+    "immutable": "^5.1.9",
+    "postcss": "^8.5.6",
+    "decode-uri-component": "^0.5.0"
   },
   "author": "",
   "license": "MIT",
