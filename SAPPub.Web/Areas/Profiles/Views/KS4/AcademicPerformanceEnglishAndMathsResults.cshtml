@@ -273,6 +273,13 @@
                 <govuk-accordion-item-heading>@Model.SelectedGrade!.GetDisplayName() in English and maths GCSEs by other pupil characteristics</govuk-accordion-item-heading>
                 <govuk-accordion-item-summary></govuk-accordion-item-summary>
                 <govuk-accordion-item-content>
+                    <h4 class="govuk-heading-m">English as an additional language (EAL)</h4>
+                    <p class="govuk-body">A child is recorded as having English as an additional language (EAL) if they hear or use a language other than English at home. This does not show how well a child speaks English and does not mean they are new to the UK.</p>
+                    @await Html.PartialAsync("_SeriesViewTable", Model.BreakdownEAL)
+
+                    <h4 class="govuk-heading-m">Non-mobile pupils</h4>
+                    <p class="govuk-body">Non‑mobile pupils are pupils who stayed at the same school for their final 2 years of secondary school, years 10 and 11.</p>
+                    @await Html.PartialAsync("_SeriesViewTable", Model.BreakdownNonMobile)
 
                     @await Html.PartialAsync("_DisadvantagedPupils")
                     @await Html.PartialAsync("_SeriesViewTable", Model.BreakdownDisadvantaged)
