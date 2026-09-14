@@ -59,4 +59,4 @@ Do not mix concerns:
 - Domain models → Core
 - DTOs → Core
 - ViewModels → Web
-- Persistence models → Infrastructure
+- Persistence models → Core (currently)

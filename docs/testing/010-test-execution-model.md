@@ -145,11 +145,6 @@ It provides a single, clear view of test execution and ownership, complementing 
 
 ## 9. Unit Testing Quality: Mutation Testing and Coverage
 
-**Mutation testing:**
-- Considered as a **targeted approach** rather than a blanket requirement
-- Initially applied to high-value or complex logic (e.g. calculations, mappings, reusable domain logic)
-- Intended to validate that unit tests are asserting meaningful behaviour
-- Proposed as a pilot activity, to be revisited when the team is fully available
 
 **Code and branch coverage:**
 - Used as a **visibility and guardrail metric**, not a primary quality target

@@ -34,6 +34,7 @@ It is a public-facing ASP.NET Core MVC application.
 - **Web**: controllers, views, UI concerns
 - **Core**: domain logic and application services
 - **Infrastructure**: database, search, external integrations
+- **Data**: database creation/population scripts, datamap
 
 Controllers → Services → Repositories / Search
 

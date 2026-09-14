@@ -13,9 +13,6 @@ These tests verify:
 
 The application uses Dapper with a PostgreSQL database.
 
-Dapper queries are tested against a faked database to ensure:
-- Queries execute successfully
-- Parameters are applied correctly
-- Paging and filtering behave as expected
+Currently we are building an End-to-end testing process for the whole pipeline to ensure data access is accurate and legitimate. 
 
 

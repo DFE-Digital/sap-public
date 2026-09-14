@@ -21,7 +21,7 @@
 ## Playwright
 
 - test user journeys
-- prefer role/text selectors
+- prefer id selectors
 - avoid sleeps and brittle selectors
 
 For testing decisions, see:

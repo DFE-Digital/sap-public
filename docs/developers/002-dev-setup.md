@@ -209,3 +209,30 @@ dotnet run
 ---
 
 If issues persist, share the **first startup error or stack trace** with the team.
+
+
+## Running the tests
+In Visual Studio, you can run the tests using the Test Explorer.
+
+
+### Running Playwright tests in headed mode
+
+To run the Playwright tests in **headed mode**, configure your test run to use the `playwright.runsettings` file.
+
+In Visual Studio:
+1. Open the **Test** menu
+2. Select **Configure Run Settings**
+3. Choose **Select Solution Wide Run Settings File**
+4. Select `playwright.runsettings`
+
+### Integration Tests
+
+We have the beginnings of integration tests that run against a deployed review app and its database.
+They use Playwright to test the application in a browser, scrape the data displayed on the page and compare it to expected values. 
+These tests are located in the `SAPPub.Integration.Tests` project.
+
+To run locally:
+in VS menu: Tests->Configure run settings-> select the playwright.runsettings file from the solution root folder
+1. run the web app in a terminal: `dotnet run --project SAPPub.Web --no-build`
+2. run the tests in a separate terminal: `dotnet test Tests/SAPPub.Integration.Tests --no-build`
+ *or* (my preferred) - run them from test explorer (ensuring you've followed the steps above for configuring playwright.runsettings')

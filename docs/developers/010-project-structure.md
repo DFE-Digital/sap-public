@@ -6,9 +6,8 @@ This document describes **how the project is currently structured** and **where 
 
 ## Current structure
 
-The Web project **does not use feature folders**.
 
-Code is organised by technical concern and should continue to follow the existing layout:
+Code is organised by technical concern and (we are moving towards) feature grouping, and should continue to follow the existing layout:
 
 - `Controllers/` – MVC controllers and HTTP endpoints
 - `ViewModels/` – View-specific models
@@ -16,7 +15,9 @@ Code is organised by technical concern and should continue to follow the existin
 - `Services/` – Web-layer services
 - `Helpers/` – Small, reusable web utilities
 
-Do **not** introduce feature folders or new structural patterns unless agreed by the team.
+These exist in either the root, or the new Areas (Profiles/Gateway etc), to group functionality togethers.
+
+Do **not** introduce new structural patterns unless agreed by the team.
 
 ---
 
