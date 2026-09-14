@@ -1,8 +1,6 @@
-﻿using Microsoft.Playwright;
-using SAPPub.Integration.Tests;
-using SAPPub.Playwright.Testing;
+﻿using SAPPub.Playwright.Testing;
 
-namespace SAPPub.IntegrationTests.SecondarySchoolTests;
+namespace SAPPub.Integration.Tests.SecondarySchoolTests;
 
 [Collection("Integration Tests")]
 public class AboutSchoolPageTests() : BasePageTest()

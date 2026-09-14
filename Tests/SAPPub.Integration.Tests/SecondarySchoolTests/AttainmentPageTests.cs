@@ -20,7 +20,10 @@ public class AttainmentPageTests() : BasePageTest()
         // Arrange && Act
         var _ = await Page.GotoAsync(PageUrl(urn));
         var navigationHelper = new VerticalNavigationHelper(Page);
-        var response = await navigationHelper.ClickSecondaryAcademicPerformanceAsync();
+        _ = await navigationHelper.ClickSecondaryAcademicPerformanceAsync();
+
+        await Page.Locator("#prog8-previous-years-accordion").ClickAsync();
+        await Page.Locator("#attainment8-previous-years-accordion").ClickAsync();
 
         // Assert
         await AssertSchoolAttainmentData(Page, expectedAttainmentSchool, "current");
