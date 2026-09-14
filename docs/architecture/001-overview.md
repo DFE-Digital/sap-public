@@ -4,7 +4,7 @@ SAPPub currently uses the following approach to architecture:
 
 ![High-level Diagram](../_assets/HLD.png "High Level Diagram showing all major components")
 
-The main entry point to the application is as an ASPNet application (net8 as of first writing), exposing MVC web endpoints. 
+The main entry point to the application is as an ASPNet application (net10 as of first writing), exposing MVC web endpoints. 
 
 The SAPPub application is intended as an almost entirely read-only public-facing website, hence no API, or Authentication mechanism. 
 A caveat to this exists in the Gateway which uses email and timers to restirct access in the private beta phase, this will be removed when the application goes Public Beta. 
