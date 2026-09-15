@@ -1,9 +1,6 @@
 ﻿using Microsoft.Playwright;
-using SAPPub.Integration.Tests;
 using SAPPub.Integration.Tests.Helpers;
-using SAPPub.IntegrationTests.Helpers;
 using SAPPub.Playwright.Testing;
-using System.Text.Json;
 
 namespace SAPPub.Integration.Tests.SecondarySchoolTests;
 
@@ -52,10 +49,10 @@ public class ProgressAndAttainmentPageTests : BasePageTest
         await Page.Locator("#attainment8-previous-years-accordion").ClickAsync();
 
         // Assert
-        await AssertSchoolAttainmentData(Page, testCase.ExpectedAttainmentSchool);
-        await AssertLAAndEnglandAttainmentData(Page, testCase.ExpectedAttainmentLA, testCase.ExpectedAttainmentEngland);
-        await AssertSchoolAttainmentData(Page, expectedAttainmentSchool, "current");
-        await AssertLAAndEnglandAttainmentData(Page, expectedAttainmentLA, expectedAttainmentEngland, "current");
+        await AssertSchoolAttainmentData(Page, testCase.ExpectedAttainmentSchool, "current");
+        await AssertLAAndEnglandAttainmentData(Page, testCase.ExpectedAttainmentLA, testCase.ExpectedAttainmentEngland, "current");
+        await AssertSchoolAttainmentData(Page, testCase.ExpectedAttainmentSchool, "current");
+        await AssertLAAndEnglandAttainmentData(Page, testCase.ExpectedAttainmentLA, testCase.ExpectedAttainmentEngland, "current");
     }
 
     public record ProgressAndAttainmentTestCase(
@@ -98,12 +95,12 @@ public class ProgressAndAttainmentPageTests : BasePageTest
         var navigationHelper = new VerticalNavigationHelper(Page);
         _ = await navigationHelper.ClickSecondaryAcademicPerformanceAsync();
 
-        await Page.Locator("#prog8-previous-years-accordion").ClickAsync();
-        await Page.Locator("#attainment8-previous-years-accordion").ClickAsync();
+        await Page.ExpandAccordionByIdAsync("prog8-previous-years-accordion");
+        await Page.ExpandAccordionByIdAsync("attainment8-previous-years-accordion");
 
         // Assert
-        await AssertSchoolProgressData(Page, expectedProgressSchool, expectedBandingLower, expectedBandingHigher, totalPupils, pupilsInProgressMeasure, "prev");
-        await AssertSchoolAttainmentData(Page, expectedAttainmentSchool, "prev");
+        await AssertSchoolProgressData(Page, testData.expectedProgressSchool, testData.expectedBandingLower, testData.expectedBandingHigher, testData.totalPupils, testData.pupilsInProgressMeasure, "prev");
+        await AssertSchoolAttainmentData(Page, testData.expectedAttainmentSchool, "prev");
     }
 
     [Theory]
@@ -115,12 +112,12 @@ public class ProgressAndAttainmentPageTests : BasePageTest
         var navItem = new VerticalNavigationHelper(Page);
         _ = await navItem.ClickSecondaryAcademicPerformanceAsync();
         
-        await Page.Locator("#prog8-previous-years-accordion").ClickAsync();
-        await Page.Locator("#attainment8-previous-years-accordion").ClickAsync();
+        await Page.ExpandAccordionByIdAsync("prog8-previous-years-accordion");
+        await Page.ExpandAccordionByIdAsync("attainment8-previous-years-accordion");
 
         // Assert
-        await AssertSchoolProgressData(Page, expectedProgressSchool, expectedBandingLower, expectedBandingHigher, totalPupils, pupilsInProgressMeasure, "prev2");
-        await AssertSchoolAttainmentData(Page, expectedAttainmentSchool, "prev2");
+        await AssertSchoolProgressData(Page, testData.expectedProgressSchool, testData.expectedBandingLower, testData.expectedBandingHigher, testData.totalPupils, testData.pupilsInProgressMeasure, "prev2");
+        await AssertSchoolAttainmentData(Page, testData.expectedAttainmentSchool, "prev2");
     }
 
     private static async Task AssertSchoolProgressData(
