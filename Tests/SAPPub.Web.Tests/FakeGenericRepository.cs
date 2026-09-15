@@ -344,6 +344,31 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             ExamEntriesKS4_Tot_Est_Current_Num_Coded = new CodedDouble(null, "", ""),
             Pup_Tot_Est_Current_Num_Coded = new CodedDouble(null, "", ""),
         },
+        ["107564"] = new EstablishmentPerformance
+        {
+            Id = "107564",
+            Attainment8_Tot_Est_Current_Num_Coded = new CodedDouble(0.11, string.Empty, "0.11"),
+            Attainment8_Tot_Est_Previous_Num_Coded = new CodedDouble(0.12, string.Empty, "0.12"),
+            Attainment8_Tot_Est_Previous2_Num_Coded = new CodedDouble(0.13, string.Empty, "0.13"),
+            Prog8_Tot_Est_Current_Num_Coded = new CodedDouble(0.21, string.Empty, "0.21"),
+            Prog8_Tot_Est_Previous_Num_Coded = new CodedDouble(0.22, string.Empty, "0.22"),
+            Prog8_Tot_Est_Previous2_Num_Coded = new CodedDouble(0.23, string.Empty, "0.23"),
+            EngMaths49_Tot_Est_Current_Pct = 70,
+            EngMaths59_Tot_Est_Current_Pct = 50,
+            EngMaths49_Tot_Est_Previous_Pct = 55,
+            EngMaths59_Tot_Est_Previous_Pct = 60,
+            EngMaths49_Tot_Est_Previous2_Pct = 55,
+            EngMaths59_Tot_Est_Previous2_Pct = 70,
+            // additional measures
+            AnyQual_Tot_Est_Current_Pct_Coded = new CodedDouble(null, "", ""),
+            TripSci_Tot_Est_Current_Pct_Coded = new CodedDouble(null, "", ""),
+            More1FL_Tot_Est_Current_Pct_Coded = new CodedDouble(null, "", ""),
+            ExamEntriesGSCE_Tot_Est_Current_Num_Coded = new CodedDouble(null, "", ""),
+            ExamEntriesKS4_Tot_Est_Current_Num_Coded = new CodedDouble(null, "", ""),
+            Pup_Tot_Est_Current_Num_Coded = new CodedDouble(null, "", ""),
+        },
+
+
     };
 
     private static readonly Dictionary<string, KS4EstablishmentDestinations> EstablishmentDestinations = new(StringComparer.OrdinalIgnoreCase)

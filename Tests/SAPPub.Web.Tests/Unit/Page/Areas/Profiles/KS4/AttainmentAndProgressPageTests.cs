@@ -44,7 +44,7 @@ public class AttainmentAndProgressPageTests : PageTestsBase
 
 
         // Act
-        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName!, $"{_pageRoute}/{AcademicYearSelection.Current.ToRouteSegment()}"));
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName!,_pageRoute));
 
         // Assert
         var title = doc.Title;
@@ -74,10 +74,10 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             .ReturnsAsync(expected);
 
         // Act
-        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName!, $"{_pageRoute}/{AcademicYearSelection.Current.ToRouteSegment()}"));
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName!, _pageRoute));
 
         // Assert
-        var schoolAttainmentCard = doc.QuerySelector("[data-testid='attainment8-establishment-card']");
+        var schoolAttainmentCard = doc.QuerySelector("[data-testid='attainment8-scores-current']");
         var text = schoolAttainmentCard?.QuerySelector("p")?.TextContent.Trim();
         Assert.Contains(expected.EstablishmentAttainment8Score.CurrentYear.ToString(), text);
     }
@@ -107,19 +107,16 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             .ReturnsAsync(expected);
 
         // Act
-        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName!, $"{_pageRoute}/{AcademicYearSelection.Previous.ToRouteSegment()}"));
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName!, _pageRoute));
 
         // Assert
-        var schoolProgressCard = doc.QuerySelector("[data-testid='progress8-establishment-card']");
+        var schoolProgressCard = doc.QuerySelector("[data-testid='prog8-scores-prev']");
         var text = schoolProgressCard?.QuerySelector("p")?.TextContent.Trim();
         Assert.Contains(expected.EstablishmentProgress8Score.CurrentYear.ToString(), text);
     }
 
-    [Theory]
-    [InlineData(AcademicYearSelection.Current)]
-    [InlineData(AcademicYearSelection.Previous)]
-    [InlineData(AcademicYearSelection.Previous2)]
-    public async Task ShowsDisadvantagedTableValues(AcademicYearSelection yearSelection)
+    [Fact]
+    public async Task ShowsDisadvantagedTableValues()
     {
         // Arrange
         var expected = new AttainmentAndProgressModelBuilder()
@@ -143,7 +140,7 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             .ReturnsAsync(expected);
 
         // Act
-        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName!, $"{_pageRoute}/{yearSelection.ToRouteSegment()}"));
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName!, _pageRoute));
 
         // Assert
         Assert.Contains("School", doc.GetTableHeaderContentByIdAndIndex("breakdown-disadvantaged-table-0", 1, 0));
@@ -163,9 +160,9 @@ public class AttainmentAndProgressPageTests : PageTestsBase
     }
 
     [Theory]
-    [InlineData(AcademicYearSelection.Previous)]
-    [InlineData(AcademicYearSelection.Previous2)]
-    public async Task NoProgress8DataForSchool_ShowsNoProgress8Content(AcademicYearSelection yearSelection) // progress data not available for this school (non-covid year)
+    [InlineData("prev")]
+    [InlineData("prev2")]
+    public async Task NoProgress8DataForSchool_ShowsNoProgress8Content(string year) // progress data not available for this school (non-covid year)
     {
         // Arrange
         var expected = new AttainmentAndProgressModelBuilder()
@@ -186,18 +183,18 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             .ReturnsAsync(expected);
 
         // Act
-        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName!, $"{_pageRoute}/{yearSelection.ToRouteSegment()}"));
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName!, _pageRoute));
 
         // Assert
-        Assert.NotNull(doc.QuerySelector("[data-testid='progress8-no-establishment-data-card']"));
-        Assert.Null(doc.QuerySelector("[data-testid='progress8-custom-card']"));
+        Assert.NotNull(doc.QuerySelector($"[data-testid='no-data-prog8-scores-{year}']"));
+        Assert.Null(doc.QuerySelector($"[data-testid='prog8-scores-{year}']"));
     }
 
     [Theory]
-    [InlineData(AcademicYearSelection.Current)]
-    [InlineData(AcademicYearSelection.Previous)]
-    [InlineData(AcademicYearSelection.Previous2)]
-    public async Task NoAttainment8DataForSchool_ShowsNoAttainment8Content(AcademicYearSelection yearSelection) // progress data not available for this school (non-covid year)
+    [InlineData("current")]
+    [InlineData("prev")]
+    [InlineData("prev2")]
+    public async Task NoAttainment8DataForSchool_ShowsNoAttainment8Content(string year) // progress data not available for this school (non-covid year)
     {
         // Arrange
         var expected = new AttainmentAndProgressModelBuilder()
@@ -218,42 +215,13 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             .ReturnsAsync(expected);
 
         // Act
-        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName!, $"{_pageRoute}/{yearSelection.ToRouteSegment()}"));
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName!, _pageRoute));
 
         // Assert
-        Assert.NotNull(doc.QuerySelector("[data-testid='attainment8-no-establishment-data-card']"));
-        Assert.Null(doc.QuerySelector("[data-testid='attainment8-establishment-card']"));
+        Assert.NotNull(doc.QuerySelector($"[data-testid='attainment8-scores-{year}-no-establishment-data-card']"));
+        Assert.Null(doc.QuerySelector($"[data-testid='attainment8-scores-{year}']"));
     }
 
-    [Fact]
-    public async Task NoProgress8DataForCurrentYear_ShowsNoProgress8ForCurrentYearContent() // content for covid years
-    {
-        // Arrange
-        var expected = new AttainmentAndProgressModelBuilder()
-            .WithAttainment8Data()
-            .Build();
-        var urn = expected.Urn;
-        var establishmentName = expected.SchoolName;
-        _establishmentServiceMock.Setup(service => service.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new EstablishmentServiceModel()
-            {
-                EstablishmentName = establishmentName!,
-                URN = urn,
-                IsKS4 = true
-            });
-        _serviceMock
-            .Setup(service => service.GetAttainmentAndProgressAsync(
-                It.IsAny<string>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(expected);
-
-        // Act
-        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName!, $"{_pageRoute}/{AcademicYearSelection.Current.ToRouteSegment()}"));
-
-        // Assert
-        Assert.NotNull(doc.QuerySelector("[data-testid='progress8-custom-card']"));
-        Assert.Null(doc.QuerySelector("[data-testid='progress8-no-establishment-data-card']"));
-    }
 
     [Fact]
     public async Task AcademicPerformanceAttainmentAndProgressPage_DisplaysBottomPagination_WithCorrectDestinations()
@@ -278,7 +246,7 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             .ReturnsAsync(expected);
 
         // Act
-        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName!, $"{_pageRoute}/{AcademicYearSelection.Current.ToRouteSegment()}"));
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName!, _pageRoute));
 
         // Assert
         var pagination = doc.QuerySelector("nav.govuk-pagination");
@@ -327,7 +295,7 @@ public class AttainmentAndProgressPageTests : PageTestsBase
             .ReturnsAsync(expected);
 
         // Act
-        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName!, $"{_pageRoute}/{AcademicYearSelection.Current.ToRouteSegment()}"));
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName!, _pageRoute));
 
         // Assert
         var utcCaveatElement = doc.QuerySelector("#utc-caveat-inset-text");

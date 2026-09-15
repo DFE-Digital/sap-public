@@ -41,6 +41,12 @@ public class AcademicPerformanceAttainmentAndProgressSingleYearViewModel
 
     public required SeriesMeasureViewModel BreakdownDisadvantaged { get; init; }
 
+    public bool ShowProgress8Info => EstablishmentProgress8Score.HasValue;
+
+    public bool ShowAttainment8Info => EstablishmentAttainment8Score.HasValue;
+
+    public AcademicYearSelection AcademicYearSelection { get; init; }
+
     public static AcademicPerformanceAttainmentAndProgressSingleYearViewModel Map(string laName, AcademicYearSelection year, AttainmentAndProgressModel attainmentAndProgressModel)
     {
         var laAverageLabel = CommonHelper.GetLocalAuthorityDisplayName(laName);
@@ -110,7 +116,8 @@ public class AcademicPerformanceAttainmentAndProgressSingleYearViewModel
             EnglandAttainment8Score = attainmentAndProgressModel.EnglandAttainment8Score.GetValueForYear(year),
             EstablishmentProgress8TotalPupils = attainmentAndProgressModel.EstablishmentProgress8TotalPupils.GetValueForYear(year),
             EstablishmentTotalPupils = attainmentAndProgressModel.EstablishmentTotalPupils.GetValueForYear(year),
-            BreakdownDisadvantaged = disadvantagedBreakdownData
+            BreakdownDisadvantaged = disadvantagedBreakdownData,
+            AcademicYearSelection = year
         };
     }
 
