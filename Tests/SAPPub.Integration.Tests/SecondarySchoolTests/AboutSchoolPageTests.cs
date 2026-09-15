@@ -2,7 +2,6 @@
 
 namespace SAPPub.Integration.Tests.SecondarySchoolTests;
 
-[Collection("Integration Tests")]
 public class AboutSchoolPageTests() : BasePageTest()
 {
     private string PageUrl(string urn) => $"/school/{urn}";

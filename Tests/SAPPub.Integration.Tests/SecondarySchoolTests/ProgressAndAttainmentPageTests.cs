@@ -4,7 +4,6 @@ using SAPPub.Playwright.Testing;
 
 namespace SAPPub.Integration.Tests.SecondarySchoolTests;
 
-[Collection("Integration Tests")]
 public class ProgressAndAttainmentPageTests : BasePageTest
 {
     private string PageUrl(string urn) => $"/school/{urn}";

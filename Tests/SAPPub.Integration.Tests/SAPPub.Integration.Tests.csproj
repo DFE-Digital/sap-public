@@ -51,6 +51,9 @@
     <None Update="TestData\2425\KS4\EstablishmentPreviousYearProgressAndAttainment.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="TestData\2425\KS4\SubjectsEntered.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
