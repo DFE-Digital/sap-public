@@ -1,5 +1,6 @@
 ﻿using SAPPub.Core.Entities;
 using SAPPub.Core.ServiceModels.Destinations;
+using SAPPub.Core.ValueObjects;
 
 namespace SAPPub.Core.Tests.TestBuilders;
 
@@ -56,6 +57,13 @@ public class KS4DestinationsDetailsBuilder
     public KS4DestinationsDetails Build()
     {
         var faker = new Bogus.Faker();
+        RelativeYearValues<CodedDouble> RandomYears() => new()
+        {
+            CurrentYear = CodedDoubleFactory.Create(Math.Round(faker.Random.Double(5, 100), 1)),
+            PreviousYear = CodedDoubleFactory.Create(Math.Round(faker.Random.Double(5, 100), 1)),
+            TwoYearsAgo = CodedDoubleFactory.Create(Math.Round(faker.Random.Double(5, 100), 1))
+        };
+
         return new KS4DestinationsDetails
         {
             Urn = _urn ?? string.Empty,
@@ -64,83 +72,58 @@ public class KS4DestinationsDetailsBuilder
             IsKS4 = _isKs4,
             IsKS5 = _isKs5,
             LocalAuthorityName = _laName ?? string.Empty,
-            SchoolAll = new RelativeYearValues<double?>
+            SchoolAll = RandomYears(),
+            LocalAuthorityAll = new RelativeYearValues<CodedDouble>
             {
-                CurrentYear = Math.Round(faker.Random.Double(5, 100), 1),
-                PreviousYear = Math.Round(faker.Random.Double(5, 100), 1),
-                TwoYearsAgo = Math.Round(faker.Random.Double(5, 100), 1)
+                CurrentYear = CodedDoubleFactory.Create(_laPercentage.IsSet ? _laPercentage.Value : Math.Round(faker.Random.Double(5, 100), 1)),
+                PreviousYear = CodedDoubleFactory.Create(Math.Round(faker.Random.Double(5, 100), 1)),
+                TwoYearsAgo = CodedDoubleFactory.Create(Math.Round(faker.Random.Double(5, 100), 1))
             },
-            LocalAuthorityAll = new RelativeYearValues<double?>
+            EnglandAll = new RelativeYearValues<CodedDouble>
             {
-                CurrentYear = _laPercentage.IsSet ? _laPercentage.Value : Math.Round(faker.Random.Double(5, 100), 1),
-                PreviousYear = Math.Round(faker.Random.Double(5, 100), 1),
-                TwoYearsAgo = Math.Round(faker.Random.Double(5, 100), 1)
+                CurrentYear = CodedDoubleFactory.Create(_englandPercentage.IsSet ? _englandPercentage.Value : Math.Round(faker.Random.Double(5, 100), 1)),
+                PreviousYear = CodedDoubleFactory.Create(Math.Round(faker.Random.Double(5, 100), 1)),
+                TwoYearsAgo = CodedDoubleFactory.Create(Math.Round(faker.Random.Double(5, 100), 1))
             },
-            EnglandAll = new RelativeYearValues<double?>
-            {
-                CurrentYear = _englandPercentage.IsSet ? _englandPercentage.Value : Math.Round(faker.Random.Double(5, 100), 1),
-                PreviousYear = Math.Round(faker.Random.Double(5, 100), 1),
-                TwoYearsAgo = Math.Round(faker.Random.Double(5, 100), 1)
-            },
-            SchoolEducation = new RelativeYearValues<double?>
-            {
-                CurrentYear = Math.Round(faker.Random.Double(5, 100), 1),
-                PreviousYear = Math.Round(faker.Random.Double(5, 100), 1),
-                TwoYearsAgo = Math.Round(faker.Random.Double(5, 100), 1)
-            },
-            LocalAuthorityEducation = new RelativeYearValues<double?>
-            {
-                CurrentYear = Math.Round(faker.Random.Double(5, 100), 1),
-                PreviousYear = Math.Round(faker.Random.Double(5, 100), 1),
-                TwoYearsAgo = Math.Round(faker.Random.Double(5, 100), 1)
-            },
-            EnglandEducation = new RelativeYearValues<double?>
-            {
-                CurrentYear = Math.Round(faker.Random.Double(5, 100), 1),
-                PreviousYear = Math.Round(faker.Random.Double(5, 100), 1),
-                TwoYearsAgo = Math.Round(faker.Random.Double(5, 100), 1)
-            },
-            SchoolEmployment = new RelativeYearValues<double?>
-            {
-                CurrentYear = Math.Round(faker.Random.Double(5, 100), 1),
-                PreviousYear = Math.Round(faker.Random.Double(5, 100), 1),
-                TwoYearsAgo = Math.Round(faker.Random.Double(5, 100), 1)
-            },
-            LocalAuthorityEmployment = new RelativeYearValues<double?>
-            {
-                CurrentYear = Math.Round(faker.Random.Double(5, 100), 1),
-                PreviousYear = Math.Round(faker.Random.Double(5, 100), 1),
-                TwoYearsAgo = Math.Round(faker.Random.Double(5, 100), 1)
-            },
-            EnglandEmployment = new RelativeYearValues<double?>
-            {
-                CurrentYear = Math.Round(faker.Random.Double(5, 100), 1),
-                PreviousYear = Math.Round(faker.Random.Double(5, 100), 1),
-                TwoYearsAgo = Math.Round(faker.Random.Double(5, 100), 1)
-            },
-            SchoolApprentice = new RelativeYearValues<double?>
-            {
-                CurrentYear = Math.Round(faker.Random.Double(5, 100), 1),
-                PreviousYear = Math.Round(faker.Random.Double(5, 100), 1),
-                TwoYearsAgo = Math.Round(faker.Random.Double(5, 100), 1)
-            },
-            LocalAuthorityApprentice = new RelativeYearValues<double?>
-            {
-                CurrentYear = Math.Round(faker.Random.Double(5, 100), 1),
-                PreviousYear = Math.Round(faker.Random.Double(5, 100), 1),
-                TwoYearsAgo = Math.Round(faker.Random.Double(5, 100), 1)
-            },
-            EnglandApprentice = new RelativeYearValues<double?>
-            {
-                CurrentYear = Math.Round(faker.Random.Double(5, 100), 1),
-                PreviousYear = Math.Round(faker.Random.Double(5, 100), 1),
-                TwoYearsAgo = Math.Round(faker.Random.Double(5, 100), 1)
-            },
+            SchoolDisadvantagedAll = RandomYears(),
+            LocalAuthorityDisadvantagedAll = RandomYears(),
+            EnglandDisadvantagedAll = RandomYears(),
+            LocalAuthorityNonDisadvantagedAll = RandomYears(),
+            EnglandNonDisadvantagedAll = RandomYears(),
+            SchoolEducation = RandomYears(),
+            LocalAuthorityEducation = RandomYears(),
+            EnglandEducation = RandomYears(),
+            SchoolEmployment = RandomYears(),
+            LocalAuthorityEmployment = RandomYears(),
+            EnglandEmployment = RandomYears(),
+            SchoolApprentice = RandomYears(),
+            LocalAuthorityApprentice = RandomYears(),
+            EnglandApprentice = RandomYears(),
+            SchoolFurtherEducation = RandomYears(),
+            LocalAuthorityFurtherEducation = RandomYears(),
+            EnglandFurtherEducation = RandomYears(),
+            SchoolSchoolSixthForm = RandomYears(),
+            LocalAuthoritySchoolSixthForm = RandomYears(),
+            EnglandSchoolSixthForm = RandomYears(),
+            SchoolCollegeSixthForm = RandomYears(),
+            LocalAuthorityCollegeSixthForm = RandomYears(),
+            EnglandCollegeSixthForm = RandomYears(),
+            SchoolOtherEducation = RandomYears(),
+            LocalAuthorityOtherEducation = RandomYears(),
+            EnglandOtherEducation = RandomYears(),
+            SchoolNotSustained = RandomYears(),
+            LocalAuthorityNotSustained = RandomYears(),
+            EnglandNotSustained = RandomYears(),
+            SchoolUnknown = RandomYears(),
+            LocalAuthorityUnknown = RandomYears(),
+            EnglandUnknown = RandomYears(),
         };
     }
 
     public KS4DestinationsDetails BuildResultsNotAvailable()
     {
+        RelativeYearValues<CodedDouble> NoValue() => new() { CurrentYear = CodedDoubleFactory.Create(null) };
+
         return new KS4DestinationsDetails
         {
             Urn = _urn ?? string.Empty,
@@ -149,18 +132,41 @@ public class KS4DestinationsDetailsBuilder
             IsKS4 = true,
             IsKS5 = true,
             LocalAuthorityName = _laName ?? string.Empty,
-            SchoolAll = new RelativeYearValues<double?> { CurrentYear = null },
-            LocalAuthorityAll = new RelativeYearValues<double?> { CurrentYear = null },
-            EnglandAll = new RelativeYearValues<double?> { CurrentYear = null },
-            SchoolEducation = new RelativeYearValues<double?> { CurrentYear = null },
-            LocalAuthorityEducation = new RelativeYearValues<double?> { CurrentYear = null },
-            EnglandEducation = new RelativeYearValues<double?> { CurrentYear = null },
-            SchoolEmployment = new RelativeYearValues<double?> { CurrentYear = null },
-            LocalAuthorityEmployment = new RelativeYearValues<double?> { CurrentYear = null },
-            EnglandEmployment = new RelativeYearValues<double?> { CurrentYear = null },
-            SchoolApprentice = new RelativeYearValues<double?> { CurrentYear = null },
-            LocalAuthorityApprentice = new RelativeYearValues<double?> { CurrentYear = null },
-            EnglandApprentice = new RelativeYearValues<double?> { CurrentYear = null },
+            SchoolAll = NoValue(),
+            LocalAuthorityAll = NoValue(),
+            EnglandAll = NoValue(),
+            SchoolDisadvantagedAll = NoValue(),
+            LocalAuthorityDisadvantagedAll = NoValue(),
+            EnglandDisadvantagedAll = NoValue(),
+            LocalAuthorityNonDisadvantagedAll = NoValue(),
+            EnglandNonDisadvantagedAll = NoValue(),
+            SchoolEducation = NoValue(),
+            LocalAuthorityEducation = NoValue(),
+            EnglandEducation = NoValue(),
+            SchoolEmployment = NoValue(),
+            LocalAuthorityEmployment = NoValue(),
+            EnglandEmployment = NoValue(),
+            SchoolApprentice = NoValue(),
+            LocalAuthorityApprentice = NoValue(),
+            EnglandApprentice = NoValue(),
+            SchoolFurtherEducation = NoValue(),
+            LocalAuthorityFurtherEducation = NoValue(),
+            EnglandFurtherEducation = NoValue(),
+            SchoolSchoolSixthForm = NoValue(),
+            LocalAuthoritySchoolSixthForm = NoValue(),
+            EnglandSchoolSixthForm = NoValue(),
+            SchoolCollegeSixthForm = NoValue(),
+            LocalAuthorityCollegeSixthForm = NoValue(),
+            EnglandCollegeSixthForm = NoValue(),
+            SchoolOtherEducation = NoValue(),
+            LocalAuthorityOtherEducation = NoValue(),
+            EnglandOtherEducation = NoValue(),
+            SchoolNotSustained = NoValue(),
+            LocalAuthorityNotSustained = NoValue(),
+            EnglandNotSustained = NoValue(),
+            SchoolUnknown = NoValue(),
+            LocalAuthorityUnknown = NoValue(),
+            EnglandUnknown = NoValue(),
         };
     }
 }

@@ -5,6 +5,7 @@ using SAPPub.Core.Interfaces.Repositories.Destinations;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.ServiceModels;
 using SAPPub.Core.Services;
+using SAPPub.Core.ValueObjects;
 
 namespace SAPPub.Core.Tests.Services;
 
@@ -42,43 +43,64 @@ public class DestinationsServiceTests
         var establishmentDestinations = new KS4EstablishmentDestinations
         {
             Id = fakeEstablishment.URN,
-            AllDest_Tot_Est_Current_Pct = 100,
-            AllDest_Tot_Est_Previous_Pct = 90,
-            AllDest_Tot_Est_Previous2_Pct = 80,
+            AllDest_Tot_Est_Current_Pct_Coded = new CodedDouble(100, "", "100"),
+            AllDest_Tot_Est_Previous_Pct_Coded = new CodedDouble(90, "", "90"),
+            AllDest_Tot_Est_Previous2_Pct_Coded = new CodedDouble(80, "", "80"),
 
-            Education_Tot_Est_Current_Pct = 50,
+            Education_Tot_Est_Current_Pct_Coded = new CodedDouble(50, "", "50"),
 
-            Employment_Tot_Est_Current_Pct = 90,
+            Employment_Tot_Est_Current_Pct_Coded = new CodedDouble(90, "", "90"),
 
-            Apprentice_Tot_Est_Current_Pct = 50,
+            Apprentice_Tot_Est_Current_Pct_Coded = new CodedDouble(50, "", "50"),
+
+            FurtherEd_Tot_Est_Current_Pct_Coded = new CodedDouble(20, "", "20"),
+            SchSixthForm_Tot_Est_Current_Pct_Coded = new CodedDouble(15, "", "15"),
+            ColSixthForm_Tot_Est_Current_Pct_Coded = new CodedDouble(10, "", "10"),
+            OtherEd_Tot_Est_Current_Pct_Coded = new CodedDouble(5, "", "5"),
+            NotSus_Tot_Est_Current_Pct_Coded = new CodedDouble(8, "", "8"),
+            Unknown_Tot_Est_Current_Pct_Coded = new CodedDouble(2, "", "2"),
         };
 
         var lADestinations = new KS4LADestinations
         {
             Id = fakeEstablishment.LAId,
-            AllDest_Tot_LA_Current_Pct = 70,
-            AllDest_Tot_LA_Previous_Pct = 60,
-            AllDest_Tot_LA_Previous2_Pct = 80,
+            AllDest_Tot_LA_Current_Pct_Coded = new CodedDouble(70, "", "70"),
+            AllDest_Tot_LA_Previous_Pct_Coded = new CodedDouble(60, "", "60"),
+            AllDest_Tot_LA_Previous2_Pct_Coded = new CodedDouble(80, "", "80"),
 
-            Education_Tot_LA_Current_Pct = 40,
+            Education_Tot_LA_Current_Pct_Coded = new CodedDouble(40, "", "40"),
 
-            Employment_Tot_LA_Current_Pct = 80,
+            Employment_Tot_LA_Current_Pct_Coded = new CodedDouble(80, "", "80"),
 
-            Apprentice_Tot_LA_Current_Pct = 65
+            Apprentice_Tot_LA_Current_Pct_Coded = new CodedDouble(65, "", "65"),
+
+            FurtherEd_Tot_LA_Current_Pct_Coded = new CodedDouble(18, "", "18"),
+            SchSixthForm_Tot_LA_Current_Pct_Coded = new CodedDouble(14, "", "14"),
+            ColSixthForm_Tot_LA_Current_Pct_Coded = new CodedDouble(9, "", "9"),
+            OtherEd_Tot_LA_Current_Pct_Coded = new CodedDouble(4, "", "4"),
+            NotSus_Tot_LA_Current_Pct_Coded = new CodedDouble(7, "", "7"),
+            Unknown_Tot_LA_Current_Pct_Coded = new CodedDouble(3, "", "3"),
         };
 
         var englandDestinations = new KS4EnglandDestinations
         {
             Id = "National",
-            AllDest_Tot_Eng_Current_Pct = 50,
-            AllDest_Tot_Eng_Previous_Pct = 60,
-            AllDest_Tot_Eng_Previous2_Pct = 70,
+            AllDest_Tot_Eng_Current_Pct_Coded = new CodedDouble(50, "", "50"),
+            AllDest_Tot_Eng_Previous_Pct_Coded = new CodedDouble(60, "", "60"),
+            AllDest_Tot_Eng_Previous2_Pct_Coded = new CodedDouble(70, "", "70"),
 
-            Education_Tot_Eng_Current_Pct = 60,
+            Education_Tot_Eng_Current_Pct_Coded = new CodedDouble(60, "", "60"),
 
-            Employment_Tot_Eng_Current_Pct = 70,
+            Employment_Tot_Eng_Current_Pct_Coded = new CodedDouble(70, "", "70"),
 
-            Apprentice_Tot_Eng_Current_Pct = 45
+            Apprentice_Tot_Eng_Current_Pct_Coded = new CodedDouble(45, "", "45"),
+
+            FurtherEd_Tot_Eng_Current_Pct_Coded = new CodedDouble(17, "", "17"),
+            SchSixthForm_Tot_Eng_Current_Pct_Coded = new CodedDouble(13, "", "13"),
+            ColSixthForm_Tot_Eng_Current_Pct_Coded = new CodedDouble(11, "", "11"),
+            OtherEd_Tot_Eng_Current_Pct_Coded = new CodedDouble(6, "", "6"),
+            NotSus_Tot_Eng_Current_Pct_Coded = new CodedDouble(9, "", "9"),
+            Unknown_Tot_Eng_Current_Pct_Coded = new CodedDouble(4, "", "4"),
         };
 
         _mockEstablishmentService
@@ -107,31 +129,57 @@ public class DestinationsServiceTests
         Assert.Equal(fakeEstablishment.LAName, result.LocalAuthorityName);
 
         // Assert school data
-        Assert.Equal(establishmentDestinations.AllDest_Tot_Est_Current_Pct, result.SchoolAll.CurrentYear);
-        Assert.Equal(establishmentDestinations.AllDest_Tot_Est_Previous_Pct, result.SchoolAll.PreviousYear);
-        Assert.Equal(establishmentDestinations.AllDest_Tot_Est_Previous2_Pct, result.SchoolAll.TwoYearsAgo);
+        Assert.Equal(establishmentDestinations.AllDest_Tot_Est_Current_Pct_Coded.Value, result.SchoolAll.CurrentYear.Value);
+        Assert.Equal(establishmentDestinations.AllDest_Tot_Est_Previous_Pct_Coded.Value, result.SchoolAll.PreviousYear.Value);
+        Assert.Equal(establishmentDestinations.AllDest_Tot_Est_Previous2_Pct_Coded.Value, result.SchoolAll.TwoYearsAgo.Value);
 
-        Assert.Equal(establishmentDestinations.Education_Tot_Est_Current_Pct, result.SchoolEducation.CurrentYear);
-        Assert.Equal(establishmentDestinations.Employment_Tot_Est_Current_Pct, result.SchoolEmployment.CurrentYear);
-        Assert.Equal(establishmentDestinations.Apprentice_Tot_Est_Current_Pct, result.SchoolApprentice.CurrentYear);
+        Assert.Equal(establishmentDestinations.Education_Tot_Est_Current_Pct_Coded.Value, result.SchoolEducation.CurrentYear.Value);
+        Assert.Equal(establishmentDestinations.Employment_Tot_Est_Current_Pct_Coded.Value, result.SchoolEmployment.CurrentYear.Value);
+        Assert.Equal(establishmentDestinations.Apprentice_Tot_Est_Current_Pct_Coded.Value, result.SchoolApprentice.CurrentYear.Value);
 
         // Assert local authority data
-        Assert.Equal(lADestinations.AllDest_Tot_LA_Current_Pct, result.LocalAuthorityAll.CurrentYear);
-        Assert.Equal(lADestinations.AllDest_Tot_LA_Previous_Pct, result.LocalAuthorityAll.PreviousYear);
-        Assert.Equal(lADestinations.AllDest_Tot_LA_Previous2_Pct, result.LocalAuthorityAll.TwoYearsAgo);
+        Assert.Equal(lADestinations.AllDest_Tot_LA_Current_Pct_Coded.Value, result.LocalAuthorityAll.CurrentYear.Value);
+        Assert.Equal(lADestinations.AllDest_Tot_LA_Previous_Pct_Coded.Value, result.LocalAuthorityAll.PreviousYear.Value);
+        Assert.Equal(lADestinations.AllDest_Tot_LA_Previous2_Pct_Coded.Value, result.LocalAuthorityAll.TwoYearsAgo.Value);
 
-        Assert.Equal(lADestinations.Education_Tot_LA_Current_Pct, result.LocalAuthorityEducation.CurrentYear);
-        Assert.Equal(lADestinations.Employment_Tot_LA_Current_Pct, result.LocalAuthorityEmployment.CurrentYear);
-        Assert.Equal(lADestinations.Apprentice_Tot_LA_Current_Pct, result.LocalAuthorityApprentice.CurrentYear);
+        Assert.Equal(lADestinations.Education_Tot_LA_Current_Pct_Coded.Value, result.LocalAuthorityEducation.CurrentYear.Value);
+        Assert.Equal(lADestinations.Employment_Tot_LA_Current_Pct_Coded.Value, result.LocalAuthorityEmployment.CurrentYear.Value);
+        Assert.Equal(lADestinations.Apprentice_Tot_LA_Current_Pct_Coded.Value, result.LocalAuthorityApprentice.CurrentYear.Value);
 
         // Assert england data
-        Assert.Equal(englandDestinations.AllDest_Tot_Eng_Current_Pct, result.EnglandAll.CurrentYear);
-        Assert.Equal(englandDestinations.AllDest_Tot_Eng_Previous_Pct, result.EnglandAll.PreviousYear);
-        Assert.Equal(englandDestinations.AllDest_Tot_Eng_Previous2_Pct, result.EnglandAll.TwoYearsAgo);
+        Assert.Equal(englandDestinations.AllDest_Tot_Eng_Current_Pct_Coded.Value, result.EnglandAll.CurrentYear.Value);
+        Assert.Equal(englandDestinations.AllDest_Tot_Eng_Previous_Pct_Coded.Value, result.EnglandAll.PreviousYear.Value);
+        Assert.Equal(englandDestinations.AllDest_Tot_Eng_Previous2_Pct_Coded.Value, result.EnglandAll.TwoYearsAgo.Value);
 
-        Assert.Equal(englandDestinations.Education_Tot_Eng_Current_Pct, result.EnglandEducation.CurrentYear);
-        Assert.Equal(englandDestinations.Employment_Tot_Eng_Current_Pct, result.EnglandEmployment.CurrentYear);
-        Assert.Equal(englandDestinations.Apprentice_Tot_Eng_Current_Pct, result.EnglandApprentice.CurrentYear);
+        Assert.Equal(englandDestinations.Education_Tot_Eng_Current_Pct_Coded.Value, result.EnglandEducation.CurrentYear.Value);
+        Assert.Equal(englandDestinations.Employment_Tot_Eng_Current_Pct_Coded.Value, result.EnglandEmployment.CurrentYear.Value);
+        Assert.Equal(englandDestinations.Apprentice_Tot_Eng_Current_Pct_Coded.Value, result.EnglandApprentice.CurrentYear.Value);
+
+        // Assert where pupils studied data
+        Assert.Equal(establishmentDestinations.FurtherEd_Tot_Est_Current_Pct_Coded.Value, result.SchoolFurtherEducation.CurrentYear.Value);
+        Assert.Equal(lADestinations.FurtherEd_Tot_LA_Current_Pct_Coded.Value, result.LocalAuthorityFurtherEducation.CurrentYear.Value);
+        Assert.Equal(englandDestinations.FurtherEd_Tot_Eng_Current_Pct_Coded.Value, result.EnglandFurtherEducation.CurrentYear.Value);
+
+        Assert.Equal(establishmentDestinations.SchSixthForm_Tot_Est_Current_Pct_Coded.Value, result.SchoolSchoolSixthForm.CurrentYear.Value);
+        Assert.Equal(lADestinations.SchSixthForm_Tot_LA_Current_Pct_Coded.Value, result.LocalAuthoritySchoolSixthForm.CurrentYear.Value);
+        Assert.Equal(englandDestinations.SchSixthForm_Tot_Eng_Current_Pct_Coded.Value, result.EnglandSchoolSixthForm.CurrentYear.Value);
+
+        Assert.Equal(establishmentDestinations.ColSixthForm_Tot_Est_Current_Pct_Coded.Value, result.SchoolCollegeSixthForm.CurrentYear.Value);
+        Assert.Equal(lADestinations.ColSixthForm_Tot_LA_Current_Pct_Coded.Value, result.LocalAuthorityCollegeSixthForm.CurrentYear.Value);
+        Assert.Equal(englandDestinations.ColSixthForm_Tot_Eng_Current_Pct_Coded.Value, result.EnglandCollegeSixthForm.CurrentYear.Value);
+
+        Assert.Equal(establishmentDestinations.OtherEd_Tot_Est_Current_Pct_Coded.Value, result.SchoolOtherEducation.CurrentYear.Value);
+        Assert.Equal(lADestinations.OtherEd_Tot_LA_Current_Pct_Coded.Value, result.LocalAuthorityOtherEducation.CurrentYear.Value);
+        Assert.Equal(englandDestinations.OtherEd_Tot_Eng_Current_Pct_Coded.Value, result.EnglandOtherEducation.CurrentYear.Value);
+
+        // Assert did not stay in education or employment data
+        Assert.Equal(establishmentDestinations.NotSus_Tot_Est_Current_Pct_Coded.Value, result.SchoolNotSustained.CurrentYear.Value);
+        Assert.Equal(lADestinations.NotSus_Tot_LA_Current_Pct_Coded.Value, result.LocalAuthorityNotSustained.CurrentYear.Value);
+        Assert.Equal(englandDestinations.NotSus_Tot_Eng_Current_Pct_Coded.Value, result.EnglandNotSustained.CurrentYear.Value);
+
+        Assert.Equal(establishmentDestinations.Unknown_Tot_Est_Current_Pct_Coded.Value, result.SchoolUnknown.CurrentYear.Value);
+        Assert.Equal(lADestinations.Unknown_Tot_LA_Current_Pct_Coded.Value, result.LocalAuthorityUnknown.CurrentYear.Value);
+        Assert.Equal(englandDestinations.Unknown_Tot_Eng_Current_Pct_Coded.Value, result.EnglandUnknown.CurrentYear.Value);
     }
 
     [Fact]
@@ -149,18 +197,25 @@ public class DestinationsServiceTests
         Assert.Equal(string.Empty, result.Urn);
         Assert.Equal(string.Empty, result.SchoolName);
         Assert.Equal(string.Empty, result.LocalAuthorityName);
-        Assert.Equal(new RelativeYearValues<double?>() { CurrentYear = null }, result.SchoolAll);
-        Assert.Equal(new RelativeYearValues<double?>() { CurrentYear = null }, result.LocalAuthorityAll);
-        Assert.Equal(new RelativeYearValues<double?>() { CurrentYear = null }, result.EnglandAll);
-        Assert.Equal(new RelativeYearValues<double?>() { CurrentYear = null }, result.SchoolEducation);
-        Assert.Equal(new RelativeYearValues<double?>() { CurrentYear = null }, result.LocalAuthorityEducation);
-        Assert.Equal(new RelativeYearValues<double?>() { CurrentYear = null }, result.EnglandEducation);
-        Assert.Equal(new RelativeYearValues<double?>() { CurrentYear = null }, result.SchoolEmployment);
-        Assert.Equal(new RelativeYearValues<double?>() { CurrentYear = null }, result.LocalAuthorityEmployment);
-        Assert.Equal(new RelativeYearValues<double?>() { CurrentYear = null }, result.EnglandEmployment);
-        Assert.Equal(new RelativeYearValues<double?>() { CurrentYear = null }, result.SchoolApprentice);
-        Assert.Equal(new RelativeYearValues<double?>() { CurrentYear = null }, result.LocalAuthorityApprentice);
-        Assert.Equal(new RelativeYearValues<double?>() { CurrentYear = null }, result.EnglandApprentice);
+        var expectedEmptyYears = new RelativeYearValues<CodedDouble>
+        {
+            CurrentYear = CodedDouble.Empty,
+            PreviousYear = CodedDouble.Empty,
+            TwoYearsAgo = CodedDouble.Empty
+        };
+
+        Assert.Equal(expectedEmptyYears, result.SchoolAll);
+        Assert.Equal(expectedEmptyYears, result.LocalAuthorityAll);
+        Assert.Equal(expectedEmptyYears, result.EnglandAll);
+        Assert.Equal(expectedEmptyYears, result.SchoolEducation);
+        Assert.Equal(expectedEmptyYears, result.LocalAuthorityEducation);
+        Assert.Equal(expectedEmptyYears, result.EnglandEducation);
+        Assert.Equal(expectedEmptyYears, result.SchoolEmployment);
+        Assert.Equal(expectedEmptyYears, result.LocalAuthorityEmployment);
+        Assert.Equal(expectedEmptyYears, result.EnglandEmployment);
+        Assert.Equal(expectedEmptyYears, result.SchoolApprentice);
+        Assert.Equal(expectedEmptyYears, result.LocalAuthorityApprentice);
+        Assert.Equal(expectedEmptyYears, result.EnglandApprentice);
         Assert.False(result.IsKS2);
         Assert.False(result.IsKS4);
         Assert.False(result.IsKS5);
