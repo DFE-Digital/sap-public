@@ -1,4 +1,4 @@
-# SAP Public - School Profile (Public Facing)
+# Find and Compare School and College Profiles
 
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
@@ -15,7 +15,7 @@
     <img src="docs/_assets/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-<h3 align="center">School Improvement Programme - School Profiles (working title)</h3>
+<h3 align="center">Find and Compare School and College Profiles</h3>
 
   <p align="center">
     Public facing school profile service built ASP.NET Core Razor Pages.
@@ -62,8 +62,8 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-This repository contains the Schools Profiles service for the School Improvement Programme (SIP).
-It is a .NET 8 solution with a Razor Pages application and supporting class libraries for code/domain logic, infrastructure and data processing.
+This repository contains the Find and Compare School and College Profiles service for the School Improvement Programme (SIP).
+It is a .NET 10 solution with a Razor Pages application and supporting class libraries for code/domain logic, infrastructure and data processing.
 This repository is an internal artefact store and not a public interface.
 
 | Environment | Internal URL | Public URL | Status 
@@ -98,106 +98,11 @@ This repository is an internal artefact store and not a public interface.
 - [Node.js 24.x](https://nodejs.org/) (for building frontend assets)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop) (optional, for containerized development)
 - [Visual Studio 2026](https://visualstudio.microsoft.com/) or [Visual Studio Code](https://code.visualstudio.com/) (recommended)
+- [PostgreSQL](https://www.postgresql.org/)
 
 ## Getting Started
 
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/DFE-Digital/sap-public.git
-cd sap-public
-```
-
-### 2. Install .NET dependencies
-
-```bash
-dotnet restore
-```
-
-### 3. Install Node.js dependencies (for frontend assets)
-
-```bash
-cd SAPPub.Web
-npm install
-cd ..
-```
-
-The `npm install` command automatically runs a `postinstall` script that copies GOV.UK Frontend and required libraries from `node_modules` to `wwwroot/lib/`.
-
-## Running Locally
-
-### Option 1: Using .NET CLI
-
-```bash
-cd SAPPub.Web
-dotnet run
-```
-
-The application will be available at `http://localhost:3000`
-
-### Option 2: Using Visual Studio
-
-1. Open `sap-public.sln` in Visual Studio
-2. Press `F5` to run with debugging (or `Ctrl+F5` without debugging)
-3. The application will launch in your default browser
-
-### Option 3: Using VS Code
-
-1. Open the project folder in VS Code
-2. Press `F5` to start debugging
-3. Select ".NET Core Launch (web)" configuration
-4. Navigate to `http://localhost:3000`
-
-## Running with Docker
-
-### Build the Docker image
-
-```bash
-docker build -t sappub:latest .
-```
-
-The Docker build process:
-1. **Assets stage**: Builds frontend assets using Node.js
-2. **Build stage**: Compiles .NET application
-3. **Final stage**: Creates minimal runtime image
-
-### Run the container
-
-```bash
-docker run -p 3000:3000 sappub:latest
-```
-
-The application will be available at `http://localhost:3000`
-
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-## Running the tests
-In Visual Studio, you can run the tests using the Test Explorer.
-
-
-### Running Playwright tests in headed mode
-
-To run the Playwright tests in **headed mode**, configure your test run to use the `playwright.runsettings` file.
-
-In Visual Studio:
-1. Open the **Test** menu
-2. Select **Configure Run Settings**
-3. Choose **Select Solution Wide Run Settings File**
-4. Select `playwright.runsettings`
-
-### Integration Tests
-
-We have the beginnings of integration tests that run against a deployed review app and its database.
-They use Playwright to test the application in a browser, scrape the data displayed on the page and compare it to expected values. 
-These tests are located in the `SAPPub.Integration.Tests` project.
-
-To run locally:
-in VS menu: Tests->Configure run settings-> select the playwright.runsettings file from the solution root folder
-1. run the web app in a terminal: `dotnet run --project SAPPub.Web --no-build`
-2. run the tests in a separate terminal: `dotnet test Tests/SAPPub.Integration.Tests --no-build`
- *or* (my preferred) - run them from test explorer (ensuring you've followed the steps above for configuring playwright.runsettings')
-
+See [documentation](docs/developers/002-dev-setup.md)
 
 <!-- CONTRIBUTING -->
 ## Contributing

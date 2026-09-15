@@ -5,6 +5,7 @@ ADR taken from https://github.com/DFE-Digital/sts-plan-technology-for-your-schoo
 **Status**: Accepted  
 **Deciders**: Dan Murfitt  
 **Date**: 2025-10-15
+**Updated** - 2026-09-10
 
 ## Context and Problem Statement
 
@@ -33,6 +34,7 @@ We could also use the [A11y Github Action](https://github.com/marketplace/action
 ## Decision Outcome
 
 * We will manually test each component when built, using browser tools like Axe/Wave. 
-* We will eventually run the A11y github action (above) to check each page as part of the UI tests. 
-    * [Work not started](https://trello.com/c/0lffhrED/121-automated-testing) but in story breakdown.
+* ~~We will eventually run the A11y github action (above) to check each page as part of the UI tests. ~~
+    * ~~[Work not started](https://trello.com/c/0lffhrED/121-automated-testing) but in story breakdown.~~
+* This is now implemented `\sap-public\Tests\SAPPub.Web.Tests\UI\AccessibilityTests.cs` using Axe Core.
 
