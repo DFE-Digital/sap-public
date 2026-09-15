@@ -4,6 +4,7 @@
         <EnvironmentVariables>
             <HEADED>0</HEADED>
             <BASE_URL>http://localhost:5013</BASE_URL>
+            <TEST_DATA_VERSION>2425</TEST_DATA_VERSION>
         </EnvironmentVariables>
     </RunConfiguration>
 </RunSettings>
