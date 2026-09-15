@@ -144,6 +144,7 @@ This is your existing process.
 
 ### Stream 2 — Long-running feature development
 This is the new process for work that is too large or takes too long to go directly into main.
+- Long running feature branch process only will be used for changes which can't be put behind feature flag and impact running data pipelines and application against old data sets.
 
 1. Create a Long-Running Feature Branch
 Start from main and create something like:
