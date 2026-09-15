@@ -11,8 +11,10 @@ public static class TestDataLoader
 
         var testDataFilePath = Path.Combine(
             AppContext.BaseDirectory,
-            $"TestData\\{testDataVersion}",
-            $"{folder}\\{fileName}.json");
+            "TestData",
+            testDataVersion,
+            folder,
+            $"{fileName}.json");
 
         if (!File.Exists(testDataFilePath))
         {
