@@ -754,7 +754,7 @@
                                     <div class="govuk-summary-card__title-wrapper">
 
                                         <h4 class="govuk-summary-card__title">
-                                            How pupils performed between the end of primary school and the end of key stage 4 (year 11)
+                                            Pupil performance between the end of primary school and the end of key stage 4 (year 11)
                                         </h4>
 
                                     </div>
@@ -1135,6 +1135,250 @@
                     </div>
 
 
+                    @* Exam subjects taken - closed by default *@
+                    <div class="govuk-accordion__section">
+
+                        <div class="govuk-accordion__section-header">
+
+                            <span id="accordion-iconbox__exam-subjects"
+                                  class="ataglance-accordion-iconbox"
+                                  aria-hidden="true">
+
+                                <svg class="ataglance-accordion-iconbox__icon"
+                                     viewBox="0 0 48 48"
+                                     focusable="false"
+                                     aria-hidden="true">
+
+                                    <path d="M12 11
+                                             c0-3 2-5 5-5
+                                             h22
+                                             v29
+                                             h-22
+                                             c-3 0-5 2-5 5
+                                             m0-29
+                                             v29
+                                             c0 3 2 5 5 5
+                                             h22"
+                                          fill="none"
+                                          stroke="currentColor"
+                                          stroke-width="4"
+                                          stroke-linecap="round"
+                                          stroke-linejoin="round" />
+
+                                    <path d="M20 7v27"
+                                          fill="none"
+                                          stroke="currentColor"
+                                          stroke-width="4" />
+
+                                    <path d="M35 35v8"
+                                          fill="none"
+                                          stroke="currentColor"
+                                          stroke-width="4"
+                                          stroke-linecap="round" />
+
+                                </svg>
+
+                            </span>
+
+                            <h3 class="govuk-accordion__section-heading">
+                                <span class="govuk-accordion__section-button"
+                                      id="secondary-exam-subjects-toggle">
+                                    Exam subjects taken
+                                </span>
+                            </h3>
+
+                        </div>
+
+                        <div id="secondary-at-a-glance-accordion-content-4"
+                             class="govuk-accordion__section-content">
+
+                            <div class="govuk-body">
+
+                                <div class="ataglance-summary-card govuk-summary-card">
+
+                                    <div class="govuk-summary-card__title-wrapper">
+
+                                        <h4 class="govuk-summary-card__title">
+                                            Exam subjects overview
+                                        </h4>
+
+                                    </div>
+
+                                    <div class="govuk-summary-card__content">
+
+                                        <p class="govuk-body">
+                                            This data is for the 2024 to 2025 academic year.
+                                        </p>
+
+                                        <div class="overview-exam-subject-counts">
+
+                                            <div class="overview-exam-subject-count">
+
+                                                <div id="overview-gcse-subject-count" class="govuk-heading-l govuk-!-margin-bottom-1">
+                                                    @Model.GcseSubjectsEntered.DisplayNumber(format: "N0")
+                                                </div>
+
+                                                <p class="govuk-body">
+                                                    Number of GCSE subjects taken
+                                                </p>
+
+                                            </div>
+
+                                            <div class="overview-exam-subject-count">
+
+                                                <div id="overview-technical-subject-count" class="govuk-heading-l govuk-!-margin-bottom-1">
+                                                    @Model.TechnicalSubjectsEntered.DisplayNumber(format: "N0")
+                                                </div>
+
+                                                <p class="govuk-body">
+                                                    Number of technical award subjects taken
+                                                </p>
+
+                                            </div>
+
+                                        </div>
+
+                                        <hr class="govuk-section-break
+                                                   govuk-section-break--l
+                                                   govuk-section-break--visible" />
+
+                                        <h4 class="govuk-body govuk-!-margin-bottom-4">
+                                            Top technical subjects taken at this school by percentage of pupils who took the exam at the end of key stage 4 (usually year 11)
+                                        </h4>
+
+                                    @if (Model.TopTechnicalSubjects.Count == 0)
+                                    {
+                                        <p id="overview-exam-subjects-not-available"
+                                            class="govuk-body">
+                                            @WebConstants.NotAvailable
+                                        </p>
+                                    }
+                                    else
+                                    {
+                                        <div id="overview-exam-subjects-current-year-data-container"
+                                                class="overview-chart-table">
+
+                                            <div class="govuk-button-group">
+
+                                                <govuk-button
+                                                    id="overview-exam-subjects-current-year-show-btn"
+                                                    type="button"
+                                                    class="govuk-button--secondary overview-chart-table__toggle govuk-!-display-none">
+                                                    Show as a table
+                                                </govuk-button>
+
+                                            </div>
+
+                                            <div id="overview-exam-subjects-current-year-chart-container"
+                                                    class="chart-container ataglance-results-chart overview-chart-table__chart govuk-!-display-none">
+
+                                                <canvas id="overview-exam-subjects-chart"
+                                                        class="js-chart"
+                                                        data-type="bar"
+                                                        data-max="100"
+                                                        data-axis-title="Percentage of pupils"
+                                                        data-not-available-text="@WebConstants.NotAvailable"
+                                                        data-chart='@Html.Raw(Json.Serialize(Model.TopTechnicalSubjectsChart))'
+                                                        data-colors='@Html.Raw(Json.Serialize(new[] { WebConstants.ChartColours[0] }))'>
+                                                </canvas>
+
+                                            </div>
+
+                                            <div id="overview-exam-subjects-current-year-table-container"
+                                                    class="overview-chart-table__table">
+
+                                                <table id="overview-exam-subjects-current-year-table"
+                                                        class="govuk-table">
+
+                                                    <thead class="govuk-table__head">
+                                                        <tr class="govuk-table__row">
+
+                                                            <th scope="col"
+                                                                class="govuk-table__header">
+                                                                Subject
+                                                            </th>
+
+                                                            <th scope="col"
+                                                                class="govuk-table__header govuk-table__header--numeric">
+                                                                Percentage of pupils
+                                                            </th>
+
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody class="govuk-table__body">
+
+                                                        @foreach (var subject in Model.TopTechnicalSubjects)
+                                                        {
+                                                            <tr class="govuk-table__row">
+
+                                                                <th scope="row"
+                                                                    class="govuk-table__header">
+                                                                    @subject.SubjectName
+                                                                </th>
+
+                                                                <td class="govuk-table__cell govuk-table__cell--numeric">
+                                                                    @(subject.PercentageEntering.HasValue
+                                                                        ? $"{subject.PercentageEntering}%"
+                                                                        : WebConstants.NotAvailable)
+                                                                </td>
+
+                                                            </tr>
+                                                        }
+
+                                                    </tbody>
+
+                                                </table>
+
+                                            </div>
+
+                                        </div>
+                                    }
+                                        <div class="govuk-body">
+
+                                            <a asp-route="@RouteConstants.SecondaryAcademicPerformanceSubjectsEntered"
+                                               asp-all-route-data="@Model.RouteAttributes"
+                                               class="ataglance-link__link govuk-!-font-weight-bold govuk-link govuk-link--no-visited-state">
+
+                                                <span class="ataglance-link__iconbox"
+                                                      aria-hidden="true">
+
+                                                    <svg class="ataglance-link__icon"
+                                                         viewBox="0 0 32 32"
+                                                         focusable="false"
+                                                         aria-hidden="true">
+
+                                                        <circle cx="16"
+                                                                cy="16"
+                                                                r="14"
+                                                                fill="currentColor" />
+
+                                                        <path d="M9 15h9.5l-3.5-3.5 1.8-1.8L23 16l-6.2 6.3-1.8-1.8 3.5-3.5H9z"
+                                                              fill="#ffffff" />
+
+                                                    </svg>
+
+                                                </span>
+
+                                                <span class="ataglance-link__text">
+                                                    Find out more about the qualifications taken at this school
+                                                </span>
+
+                                            </a>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
                     @* What pupils did after year 11 - closed by default *@
                     <div class="govuk-accordion__section">
 
@@ -1159,7 +1403,7 @@
 
                         </div>
 
-                        <div id="secondary-at-a-glance-accordion-content-4"
+                        <div id="secondary-at-a-glance-accordion-content-5"
                              class="govuk-accordion__section-content">
 
                             <div class="govuk-body">
@@ -1296,7 +1540,7 @@
 
                         </div>
 
-                        <div id="secondary-at-a-glance-accordion-content-5"
+                        <div id="secondary-at-a-glance-accordion-content-6"
                              class="govuk-accordion__section-content">
 
                             <div class="govuk-body">
