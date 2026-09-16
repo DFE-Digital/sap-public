@@ -47,7 +47,7 @@ public sealed class GenerateViews
         new("v_establishment_links", "Establishment", "Establishment"),
         new("v_establishment_group_links", "Establishment", "Establishment"),
         new("v_establishment_subject_entries", "Establishment", "KS4_Performance"),
-        new("v_establishment_top3_technical_subject_entries", "Establishment", "KS4_Performance"),
+        new("v_establishment_top3_technical_subject_entries", "Establishment", "KS4_TopTechnicalSubjects"),
         new("v_establishment_absence", "Establishment", "PupilAbsence"),
 
         new("v_establishment_destinations", "Establishment", "KS4_Destinations"), //Todo - Rename to KS4
@@ -287,9 +287,12 @@ public sealed class GenerateViews
             }
             else if (view.ViewName.Equals("v_establishment_top3_technical_subject_entries", StringComparison.OrdinalIgnoreCase))
             {
-                if (!TryResolveRawTable(tableMap, "ks4_top3_technical_subject_entries_final", out var rawTable) || string.IsNullOrWhiteSpace(rawTable))
+                var sourceRow = _rows.FirstOrDefault(r => r.Range.Equals(view.Range, StringComparison.OrdinalIgnoreCase) && 
+                                    r.Type.Equals(view.Type, StringComparison.OrdinalIgnoreCase));
+
+                if (sourceRow == null || string.IsNullOrWhiteSpace(sourceRow.FileName) || !TryResolveRawTable(tableMap, sourceRow.FileName, out var rawTable) || string.IsNullOrWhiteSpace(rawTable))
                 {
-                    sql = BuildSkippedSql(view.ViewName, "Could not resolve raw table for ks4_top3_technical_subject_entries_final.");
+                    sql = BuildSkippedSql(view.ViewName, $"Could not resolve raw table from DataMap for {view.Type}.");
 
                     Write(view.ViewName, sql);
                     continue;
