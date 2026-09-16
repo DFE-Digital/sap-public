@@ -42,3 +42,8 @@ body:not(.js-enabled) .all-dest-data-over-time-data-container {
 #data-overtime-view:checked ~ .all-dest-data-over-time-data-container {
     display: block;
 }
+
+/* Hide the "number of students included in the measure" tag when the data over time view is active. */
+.govuk-grid-column-three-quarters:has(#data-overtime-view:checked) #no-of-students-included-in-measure {
+    display: none;
+}
