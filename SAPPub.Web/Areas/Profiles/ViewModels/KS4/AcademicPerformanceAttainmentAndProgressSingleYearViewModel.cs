@@ -9,6 +9,8 @@ namespace SAPPub.Web.Areas.Profiles.ViewModels.KS4;
 
 public class AcademicPerformanceAttainmentAndProgressSingleYearViewModel
 {
+
+
     public CodedDouble EstablishmentProgress8Score { get; init; }
 
     public CodedDouble EstablishmentProgress8CILower { get; init; }
@@ -47,7 +49,10 @@ public class AcademicPerformanceAttainmentAndProgressSingleYearViewModel
 
     public AcademicYearSelection AcademicYearSelection { get; init; }
 
-    public static AcademicPerformanceAttainmentAndProgressSingleYearViewModel Map(string laName, AcademicYearSelection year, AttainmentAndProgressModel attainmentAndProgressModel)
+    public static AcademicPerformanceAttainmentAndProgressSingleYearViewModel Map(
+        string laName, 
+        AcademicYearSelection year, 
+        AttainmentAndProgressModel attainmentAndProgressModel)
     {
         var laAverageLabel = CommonHelper.GetLocalAuthorityDisplayName(laName);
         var establishmentAttainment8ContextSentence
@@ -91,6 +96,7 @@ public class AcademicPerformanceAttainmentAndProgressSingleYearViewModel
                 ],
         };
 
+
         return new AcademicPerformanceAttainmentAndProgressSingleYearViewModel
         {
             EstablishmentProgress8Score = attainmentAndProgressModel.EstablishmentProgress8Score.GetValueForYear(year),
@@ -120,32 +126,4 @@ public class AcademicPerformanceAttainmentAndProgressSingleYearViewModel
             AcademicYearSelection = year
         };
     }
-
-    public static AcademicPerformanceAttainmentAndProgressSingleYearViewModel Empty => new AcademicPerformanceAttainmentAndProgressSingleYearViewModel
-    {
-        EstablishmentProgress8Score = CodedDouble.Empty,
-        EstablishmentProgress8CILower = CodedDouble.Empty,
-        EstablishmentProgress8CIUpper = CodedDouble.Empty,
-        EstablishmentProgress8Banding = string.Empty,
-        EstablishmentProgress8BandingContextDescription = DisplayField<string>.NotAvailable(),
-        LocalAuthorityProgress8Score = CodedDouble.Empty,
-        EstablishmentAttainment8Score = CodedDouble.Empty,
-        EstablishmentAttainment8DisadvantagedScore = DisplayField<CodedDouble>.NotAvailable(),
-        LocalAuthorityAttainment8DisadvantagedScore = DisplayField<CodedDouble>.NotAvailable(),
-        EnglandAttainment8DisadvantagedScore = DisplayField<CodedDouble>.NotAvailable(),
-        EstablishmentAttainment8ScoreContextDescription = DisplayField<string>.NotAvailable(),
-        LocalAuthorityAttainment8ScoreContextDescription = DisplayField<string>.NotAvailable(),
-        EnglandAttainment8ScoreContextDescription = DisplayField<string>.NotAvailable(),
-        LocalAuthorityAttainment8Score = CodedDouble.Empty,
-        EnglandAttainment8Score = CodedDouble.Empty,
-        EstablishmentProgress8TotalPupils = CodedDouble.Empty,
-        EstablishmentTotalPupils = CodedDouble.Empty,
-        BreakdownDisadvantaged = new SeriesMeasureViewModel
-        {
-            TableId = "breakdown-disadvantaged-table-empty",
-            TableHeader = "Pupil group (disadvantaged)",
-            Labels = ["Score", "Pupils' average grade across 8 GCSE and equivalent subjects"],
-            Datasets = []
-        }
-    };
 }

@@ -1,6 +1,5 @@
 ﻿using Moq;
 using SAPPub.Core.Entities.KS4.Performance;
-using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.ServiceModels;
@@ -160,6 +159,7 @@ public class AttainmentAndProgressServiceTests
         var establishmentPerformance = new EstablishmentPerformanceBuilder()
             .WithUrn(fakeEstablishment.URN)
             .WithDisadvantagedMeasures()
+            .WithAttainment8PupilCharacteristics()
             .Build();
 
         var lAPerformance = new LaPerformanceBuilder()
@@ -203,5 +203,10 @@ public class AttainmentAndProgressServiceTests
         Assert.Equal(establishmentPerformance.Attainment8_Dis_Est_Previous2_Num_Coded, result.EstablishmentAttainment8DisadvantagedScore.TwoYearsAgo);
         Assert.Equal(lAPerformance.Attainment8_Dis_LA_Previous2_Num_Coded, result.LocalAuthorityAttainment8DisadvantagedScore.TwoYearsAgo);
         Assert.Equal(englandPerformance.Attainment8_Dis_Eng_Previous2_Num_Coded, result.EnglandAttainment8DisadvantagedScore.TwoYearsAgo);
+
+        Assert.Equal(establishmentPerformance.Attainment8_Grl_Est_Current_Num_Coded, result.EstablishmentAttainment8GirlsScore);
+        Assert.Equal(establishmentPerformance.Attainment8_Boy_Est_Current_Num_Coded, result.EstablishmentAttainment8BoysScore);
+        Assert.Equal(establishmentPerformance.Attainment8_EAL_Est_Current_Num_Coded, result.EstablishmentAttainment8EALScore);
+        Assert.Equal(establishmentPerformance.Attainment8_NMo_Est_Current_Num_Coded, result.EstablishmentAttainment8NonMobileScore);
     }
 }

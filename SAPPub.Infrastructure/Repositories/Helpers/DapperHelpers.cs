@@ -136,7 +136,11 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "PupEHCP_Tot_Est_Current_Pct_Coded",
           "Attainment8_Dis_Est_Current_Num_Coded",
           "Attainment8_Dis_Est_Previous_Num_Coded",
-          "Attainment8_Dis_Est_Previous2_Num_Coded"
+          "Attainment8_Dis_Est_Previous2_Num_Coded",
+          "Attainment8_Grl_Est_Current_Num_Coded",
+          "Attainment8_Boy_Est_Current_Num_Coded",
+          "Attainment8_EAL_Est_Current_Num_Coded",
+          "Attainment8_NMo_Est_Current_Num_Coded"
           """;
 
         // TODO for EnableSecondaryGrade7 feature - add these fields for the Grade 7 columns when they're available
