@@ -3,7 +3,7 @@
     "PlaywrightTests": {
       "commandName": "Project",
       "environmentVariables": {
-        "BASE_URL": "https://localhost:5001"
+        "BASE_URL": "https://localhost:3000"
       }
     }
   }

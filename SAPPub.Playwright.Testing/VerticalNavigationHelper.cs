@@ -25,7 +25,7 @@ public class VerticalNavigationHelper(IPage page)
             {
                 await _page.Locator("#secondary-academic-performance-side-nav").ClickAsync();
             },
-            response => response.Url.Contains("/secondary-performance/progress-attainment/current") && response.Status == 200
+            response => response.Url.Contains("/secondary-performance/progress-attainment") && response.Status == 200
         );
         return response;
     }

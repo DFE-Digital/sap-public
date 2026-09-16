@@ -1,9 +1,8 @@
 ﻿using Microsoft.Playwright;
-using SAPPub.Integration.Tests;
-using SAPPub.IntegrationTests.Helpers;
+using SAPPub.Integration.Tests.Helpers;
 using SAPPub.Playwright.Testing;
 
-namespace SAPPub.IntegrationTests.SecondarySchoolTests;
+namespace SAPPub.Integration.Tests.SecondarySchoolTests;
 
 [Collection("Integration Tests")]
 public class AttainmentPageTests() : BasePageTest()
@@ -21,11 +20,14 @@ public class AttainmentPageTests() : BasePageTest()
         // Arrange && Act
         var _ = await Page.GotoAsync(PageUrl(urn));
         var navigationHelper = new VerticalNavigationHelper(Page);
-        var response = await navigationHelper.ClickSecondaryAcademicPerformanceAsync();
+        _ = await navigationHelper.ClickSecondaryAcademicPerformanceAsync();
+
+        await Page.Locator("#prog8-previous-years-accordion").ClickAsync();
+        await Page.Locator("#attainment8-previous-years-accordion").ClickAsync();
 
         // Assert
-        await AssertSchoolAttainmentData(Page, expectedAttainmentSchool);
-        await AssertLAAndEnglandAttainmentData(Page, expectedAttainmentLA, expectedAttainmentEngland);
+        await AssertSchoolAttainmentData(Page, expectedAttainmentSchool, "current");
+        await AssertLAAndEnglandAttainmentData(Page, expectedAttainmentLA, expectedAttainmentEngland, "current");
     }
 
     [Theory]
@@ -47,12 +49,14 @@ public class AttainmentPageTests() : BasePageTest()
         // Arrange && Act
         var _ = await Page.GotoAsync($"school/{urn}");
         var navigationHelper = new VerticalNavigationHelper(Page);
-        var response = await navigationHelper.ClickSecondaryAcademicPerformanceAsync();
-        _ = await GotoAcademicPerformanceLink(response!.Url, "previous");
+        _ = await navigationHelper.ClickSecondaryAcademicPerformanceAsync();
+
+        await Page.Locator("#prog8-previous-years-accordion").ClickAsync();
+        await Page.Locator("#attainment8-previous-years-accordion").ClickAsync();
 
         // Assert
-        await AssertSchoolProgressData(Page, expectedProgressSchool, expectedBandingLower, expectedBandingHigher, totalPupils, pupilsInProgressMeasure);
-        await AssertSchoolAttainmentData(Page, expectedAttainmentSchool);
+        await AssertSchoolProgressData(Page, expectedProgressSchool, expectedBandingLower, expectedBandingHigher, totalPupils, pupilsInProgressMeasure, "prev");
+        await AssertSchoolAttainmentData(Page, expectedAttainmentSchool, "prev");
     }
 
     [Theory]
@@ -74,59 +78,54 @@ public class AttainmentPageTests() : BasePageTest()
         // Arrange && Act
         var _ = await Page.GotoAsync($"school/{urn}");
         var navItem = new VerticalNavigationHelper(Page);
-
-        var response = await navItem.ClickSecondaryAcademicPerformanceAsync();
-        _ = await GotoAcademicPerformanceLink(response!.Url, "previous2");
+        _ = await navItem.ClickSecondaryAcademicPerformanceAsync();
+        
+        await Page.Locator("#prog8-previous-years-accordion").ClickAsync();
+        await Page.Locator("#attainment8-previous-years-accordion").ClickAsync();
 
         // Assert
-        await AssertSchoolProgressData(Page, expectedProgressSchool, expectedBandingLower, expectedBandingHigher, totalPupils, pupilsInProgressMeasure);
-        await AssertSchoolAttainmentData(Page, expectedAttainmentSchool);
+        await AssertSchoolProgressData(Page, expectedProgressSchool, expectedBandingLower, expectedBandingHigher, totalPupils, pupilsInProgressMeasure, "prev2");
+        await AssertSchoolAttainmentData(Page, expectedAttainmentSchool, "prev2");
     }
 
-    private Task<IResponse?> GotoAcademicPerformanceLink(string urlstring, string year = "current")
+    private static async Task AssertSchoolProgressData(
+        IPage Page, 
+        string expectedProgressSchool, 
+        string expectedBandingLower, 
+        string expectedBandingHigher, 
+        double expectedTotalPupils, 
+        double expectedPupilsInMeasure,
+        string year)
     {
-        const string marker = "school/";
-        var i = urlstring.IndexOf(marker);
-        var j = urlstring.LastIndexOf('/');
-        var previousYearPerformanceUrl = urlstring.Substring(i, j - i);
-        return Page.GotoAsync($"{previousYearPerformanceUrl}/{year}");
-    }
+        var pupilDetailsProgress8Selector = $"pupil-details-prog8-scores-{year}";
+        var prog8ScoreSelector = $"prog8-scores-{year}";
 
-    private async Task AssertSchoolProgressData(IPage Page, string expectedProgressSchool, string expectedBandingLower, string expectedBandingHigher, double expectedTotalPupils, double expectedPupilsInMeasure)
-    {
-        var schoolProgress8 = await Page.GetScoreFromParagraphAsync("progress8-establishment-card", "Pupils at this school score");
+        var schoolProgress8 = await Page.GetScoreFromParagraphAsync(prog8ScoreSelector, "Pupils at this school score");
         Assert.NotNull(schoolProgress8);
         Assert.Equal(expectedProgressSchool, schoolProgress8.Last());
 
-        var progress8Banding = await Page.GetScoreFromParagraphAsync("progress8-establishment-card", "The confidence interval is");
+        var progress8Banding = await Page.GetScoreFromParagraphAsync(prog8ScoreSelector, "The confidence interval is");
         Assert.NotNull(progress8Banding);
         Assert.Equal(expectedBandingLower, progress8Banding.First());
         Assert.Equal(expectedBandingHigher, progress8Banding.Last());
 
-        await Page.ExpandElement("pupil-details-progress8");
-        var pupilsInMeasure = await Page.GetScoreFromParagraphAsync("pupil-details-progress8", "pupils were included");
+        await Page.ExpandElement(pupilDetailsProgress8Selector);
+        var pupilsInMeasure = await Page.GetScoreFromParagraphAsync(pupilDetailsProgress8Selector, "pupils were included");
         Assert.NotNull(pupilsInMeasure);
         Assert.Equal(expectedPupilsInMeasure.ToString("F0"), pupilsInMeasure.First());
         Assert.Equal(expectedTotalPupils.ToString("F0"), pupilsInMeasure.Last());
     }
 
-    private async Task AssertLAProgressData(IPage Page, double expectedProgressLA)
+    private async Task AssertSchoolAttainmentData(IPage Page, double expectedAttainmentSchool, string year)
     {
-        var laProgress8 = await Page.GetScoreFromParagraphAsync("progress8-localauthority-card", "The local authority average is");
-        Assert.NotNull(laProgress8);
-        Assert.Equal(expectedProgressLA.ToString("F2"), laProgress8.Last());
-    }
-
-    private async Task AssertSchoolAttainmentData(IPage Page, double expectedAttainmentSchool)
-    {
-        var schoolAttainment8 = await Page.GetScoreFromParagraphAsync("attainment8-establishment-card", "The Attainment 8 score for this school is");
+        var schoolAttainment8 = await Page.GetScoreFromParagraphAsync($"attainment8-scores-{year}", "The Attainment 8 score for this school is");
         Assert.NotNull(schoolAttainment8);
         Assert.Equal(expectedAttainmentSchool.ToString("F1"), schoolAttainment8.Last());
     }
 
-    private async Task AssertLAAndEnglandAttainmentData(IPage Page, double expectedAttainmentLA, double expectedAttainmentEngland)
+    private async Task AssertLAAndEnglandAttainmentData(IPage Page, double expectedAttainmentLA, double expectedAttainmentEngland, string year)
     {
-        var englandAttainment8 = await Page.GetScoreFromParagraphAsync("attainment8-localauthority-and-national-card", "the national average of");
+        var englandAttainment8 = await Page.GetScoreFromParagraphAsync($"attainment8-scores-{year}-localauthority-and-national-card", "the national average of");
         Assert.NotNull(englandAttainment8);
         Assert.Equal(expectedAttainmentEngland.ToString("F1"), englandAttainment8.Last());
     }
