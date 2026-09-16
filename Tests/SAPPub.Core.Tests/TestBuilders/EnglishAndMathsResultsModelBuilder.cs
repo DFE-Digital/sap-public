@@ -138,6 +138,14 @@ public class EnglishAndMathsResultsModelBuilder
         _EnglandDisadvantaged = RandomCodedYearValue();
         _LocalAuthorityNonDisadvantaged = RandomCodedYearValue();
         _EnglandNonDisadvantaged = RandomCodedYearValue();
+        _EstablishmentEAL = new RelativeYearValues<CodedDouble>
+        {
+            CurrentYear = new CodedDouble(Math.Round(_faker.Random.Double(0, 80), 1), string.Empty, string.Empty)
+        };
+        _EstablishmentNonMobile = new RelativeYearValues<CodedDouble>
+        {
+            CurrentYear = new CodedDouble(Math.Round(_faker.Random.Double(0, 80), 1), string.Empty, string.Empty)
+        };
         return this;
     }
 
