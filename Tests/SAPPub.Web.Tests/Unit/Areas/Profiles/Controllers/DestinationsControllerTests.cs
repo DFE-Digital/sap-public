@@ -233,6 +233,8 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
                 [destinationsDetails.SchoolUnknown.CurrentYear.Value, destinationsDetails.LocalAuthorityUnknown.CurrentYear.Value, destinationsDetails.EnglandUnknown.CurrentYear.Value],
                 unknownRow.Data.Select(d => d.Value.Value));
 
+            Assert.Equal(destinationsDetails.EstablishmentTotalCohortFor.Value, model.NumberOfStudentsIncludedInMeasure.Value);
+
             Assert.Equal(2, model.RouteAttributes.Count);
             Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
             Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);

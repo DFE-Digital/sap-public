@@ -83,4 +83,6 @@ public record KS4DestinationsDetails
     public required RelativeYearValues<CodedDouble> LocalAuthorityUnknown { get; init; }
 
     public required RelativeYearValues<CodedDouble> EnglandUnknown { get; init; }
+
+    public required CodedDouble EstablishmentTotalCohortFor { get; init; }
 }

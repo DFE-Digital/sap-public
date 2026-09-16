@@ -73,4 +73,9 @@ public class KS4EstablishmentDestinations
     /// </summary>
     public CodedDouble AllDest_Tot_Est_Previous2_Pct_Coded { get; set; }
 
+    /// <summary>
+    /// Number of students from this establishment included in the measure for Current year
+    /// </summary>
+    public CodedDouble Cohort_Tot_Est_Current_Num_Coded { get; set; }
+
 }

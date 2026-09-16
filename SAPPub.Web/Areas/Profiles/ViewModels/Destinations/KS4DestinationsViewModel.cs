@@ -24,6 +24,8 @@ public class KS4DestinationsViewModel : ProfileBaseViewModel
 
     public required DisplayField<bool> HasEstablishmentData { get; set; }
 
+    public required DisplayField<double> NumberOfStudentsIncludedInMeasure { get; set; }
+
     public static KS4DestinationsViewModel Map(KS4DestinationsDetails destinationsDetails)
     {
         var laAverageLabel = CommonHelper.GetLocalAuthorityDisplayName(destinationsDetails.LocalAuthorityName);
@@ -202,6 +204,7 @@ public class KS4DestinationsViewModel : ProfileBaseViewModel
                 ],
             },
             HasEstablishmentData = hasEstablishmentData.ToDisplayField(),
+            NumberOfStudentsIncludedInMeasure = destinationsDetails.EstablishmentTotalCohortFor.Value.ToDisplayField(),
         };
     }    
 }

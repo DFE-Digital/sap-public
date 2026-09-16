@@ -59,6 +59,7 @@ public class DestinationsServiceTests
             OtherEd_Tot_Est_Current_Pct_Coded = new CodedDouble(5, "", "5"),
             NotSus_Tot_Est_Current_Pct_Coded = new CodedDouble(8, "", "8"),
             Unknown_Tot_Est_Current_Pct_Coded = new CodedDouble(2, "", "2"),
+            Cohort_Tot_Est_Current_Num_Coded = new CodedDouble(1002, "", "1002"),
         };
 
         var lADestinations = new KS4LADestinations
@@ -180,6 +181,8 @@ public class DestinationsServiceTests
         Assert.Equal(establishmentDestinations.Unknown_Tot_Est_Current_Pct_Coded.Value, result.SchoolUnknown.CurrentYear.Value);
         Assert.Equal(lADestinations.Unknown_Tot_LA_Current_Pct_Coded.Value, result.LocalAuthorityUnknown.CurrentYear.Value);
         Assert.Equal(englandDestinations.Unknown_Tot_Eng_Current_Pct_Coded.Value, result.EnglandUnknown.CurrentYear.Value);
+
+        Assert.Equal(establishmentDestinations.Cohort_Tot_Est_Current_Num_Coded.Value, result.EstablishmentTotalCohortFor.Value);
     }
 
     [Fact]
@@ -219,6 +222,7 @@ public class DestinationsServiceTests
         Assert.False(result.IsKS2);
         Assert.False(result.IsKS4);
         Assert.False(result.IsKS5);
+        Assert.Equal(CodedDouble.Empty, result.EstablishmentTotalCohortFor);
     }
 
 

@@ -13,6 +13,7 @@ public class KS4DestinationsDetailsBuilder
     private bool _isKs5;
     private Optional<double?> _englandPercentage = new Optional<double?>();
     private Optional<double?> _laPercentage = new Optional<double?>();
+    private Optional<double?> _establishmentTotalCohortFor = new Optional<double?>();
 
     public KS4DestinationsDetailsBuilder WithUrn(string urn)
     {
@@ -51,6 +52,12 @@ public class KS4DestinationsDetailsBuilder
     public KS4DestinationsDetailsBuilder WithKS5(bool isKS5)
     {
         _isKs5 = isKS5;
+        return this;
+    }
+
+    public KS4DestinationsDetailsBuilder WithEstablishmentTotalCohortFor(double? establishmentTotalCohortFor)
+    {
+        _establishmentTotalCohortFor.SetValue(establishmentTotalCohortFor);
         return this;
     }
 
@@ -117,6 +124,7 @@ public class KS4DestinationsDetailsBuilder
             SchoolUnknown = RandomYears(),
             LocalAuthorityUnknown = RandomYears(),
             EnglandUnknown = RandomYears(),
+            EstablishmentTotalCohortFor = CodedDoubleFactory.Create(_establishmentTotalCohortFor.IsSet ? _establishmentTotalCohortFor.Value : Math.Round(faker.Random.Double(5, 100), 1)),
         };
     }
 
@@ -167,6 +175,7 @@ public class KS4DestinationsDetailsBuilder
             SchoolUnknown = NoValue(),
             LocalAuthorityUnknown = NoValue(),
             EnglandUnknown = NoValue(),
+            EstablishmentTotalCohortFor = CodedDoubleFactory.Create(null),
         };
     }
 }

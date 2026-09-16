@@ -56,6 +56,13 @@
 
         <h2 class="govuk-heading-l">Destinations of pupils who finished year 11 in the 2022 to 2023 academic year</h2>
 
+        @if (Model.NumberOfStudentsIncludedInMeasure.IsAvailable && Model.HasEstablishmentData.IsAvailable)
+        {
+            <p id="no-of-students-included-in-measure" class="govuk-tag govuk-tag--full-width govuk-tag--grey">
+                Number of students from this school or college included in the measure: @Model.NumberOfStudentsIncludedInMeasure.Value
+            </p>
+        }
+
         <div class="data-container">
             <h3 class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">
                 Staying in education, employment and apprenticeships

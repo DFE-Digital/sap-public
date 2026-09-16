@@ -253,6 +253,28 @@ public class DestinationsPageTests : PageTestsBase
     }
 
     [Fact]
+    public async Task Destinations_Displays_NumberOfStudentsIncludedInMeasure_Text()
+    {
+        // Arrange
+        var destinationsDetails = BuildDetails()
+            .WithEstablishmentTotalCohortFor(1020)
+            .Build();
+        _mockDestinationsService
+            .Setup(s => s.GetKS4DestinationsDetailsAsync(_urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(destinationsDetails);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(_urn, _establishmentName, _pageRoute));
+
+        // Assert
+        var noOfStudentsIncludedInMeasure = doc.QuerySelector("#no-of-students-included-in-measure");
+        Assert.NotNull(noOfStudentsIncludedInMeasure);
+        Assert.Equal(
+            "Number of students from this school or college included in the measure: 1020",
+            noOfStudentsIncludedInMeasure.TextContent.Trim());
+    }
+
+    [Fact]
     public async Task Destinations_ResultsNotAvailable_ShowsNotAvailableText()
     {
         // Arrange

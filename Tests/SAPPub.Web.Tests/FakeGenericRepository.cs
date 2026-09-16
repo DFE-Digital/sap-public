@@ -357,6 +357,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             Education_Tot_Est_Current_Pct_Coded = new CodedDouble(47, string.Empty, "47"),
             Employment_Tot_Est_Current_Pct_Coded = new CodedDouble(2, string.Empty, "2"),
             Apprentice_Tot_Est_Current_Pct_Coded = new CodedDouble(1, string.Empty, "1"),
+            Cohort_Tot_Est_Current_Num_Coded = new CodedDouble(1020, string.Empty, "1020"),
 
         },
         ["100279"] = new KS4EstablishmentDestinations
@@ -368,6 +369,7 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             Education_Tot_Est_Current_Pct_Coded = new CodedDouble(47, string.Empty, "47"),
             Employment_Tot_Est_Current_Pct_Coded = new CodedDouble(2, string.Empty, "2"),
             Apprentice_Tot_Est_Current_Pct_Coded = new CodedDouble(1, string.Empty, "1"),
+            Cohort_Tot_Est_Current_Num_Coded = new CodedDouble(1020, string.Empty, "1020"),
         },
         ["149328"] = new KS4EstablishmentDestinations
         {

@@ -87,7 +87,8 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "NotSus_Tot_Est_Current_Pct_Coded",
           "Unknown_Tot_Est_Current_Pct_Coded",
           "AllDest_Tot_Est_Previous_Pct_Coded",
-          "AllDest_Tot_Est_Previous2_Pct_Coded"
+          "AllDest_Tot_Est_Previous2_Pct_Coded",
+          "Cohort_Tot_Est_Current_Num_Coded"
           """;
 
         // TODO for EnableSecondaryGrade7 feature - add these fields for the Grade 7 columns when they're available

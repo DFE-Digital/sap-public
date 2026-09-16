@@ -200,6 +200,7 @@ public class DestinationsService(
             {
                 CurrentYear = englandDestinations.Unknown_Tot_Eng_Current_Pct_Coded
             },
+            EstablishmentTotalCohortFor = establishmentDestinations.Cohort_Tot_Est_Current_Num_Coded,
         };
     }
 
@@ -318,6 +319,8 @@ public class DestinationsService(
             SchoolUnknown = EmptyYears(),
             LocalAuthorityUnknown = EmptyYears(),
             EnglandUnknown = EmptyYears(),
+
+            EstablishmentTotalCohortFor = CodedDouble.Empty,
 
             IsKS2 = false,
             IsKS4 = false,
