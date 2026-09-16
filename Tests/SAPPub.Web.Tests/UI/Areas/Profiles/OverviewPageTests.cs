@@ -1050,14 +1050,15 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
 
         var expectedIds = new[]
         {
-        "primary-progress-toggle",
-        "primary-expected-standard-toggle",
-        "secondary-progress-toggle",
-        "secondary-attainment-toggle",
-        "secondary-english-maths-toggle",
-        "secondary-destinations-toggle",
-        "secondary-extra-curricular-toggle"
-    };
+            "primary-progress-toggle",
+            "primary-expected-standard-toggle",
+            "secondary-progress-toggle",
+            "secondary-attainment-toggle",
+            "secondary-english-maths-toggle",
+            "secondary-exam-subjects-toggle",
+            "secondary-destinations-toggle",
+            "secondary-extra-curricular-toggle"
+        };
 
         foreach (var id in expectedIds)
         {
@@ -1182,61 +1183,60 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                 "#secondary-at-a-glance-accordion .govuk-accordion__section");
 
         await Expect(sections)
-            .ToHaveCountAsync(5);
+            .ToHaveCountAsync(6);
 
-        await Expect(
-            sections.Nth(0).GetByRole(
-                AriaRole.Button,
-                new()
-                {
-                    NameRegex = new Regex(
-                        "Pupil progress",
-                        RegexOptions.IgnoreCase)
-                }))
+        await Expect(sections.Nth(0)
+    .GetByRole(AriaRole.Button, new()
+    {
+        NameRegex = new Regex(
+            "Pupil progress",
+            RegexOptions.IgnoreCase)
+    }))
+    .ToBeVisibleAsync();
+
+        await Expect(sections.Nth(1)
+            .GetByRole(AriaRole.Button, new()
+            {
+                NameRegex = new Regex(
+                    "Average pupil achievement",
+                    RegexOptions.IgnoreCase)
+            }))
             .ToBeVisibleAsync();
 
-        await Expect(
-            sections.Nth(1).GetByRole(
-                AriaRole.Button,
-                new()
-                {
-                    NameRegex = new Regex(
-                        "Average pupil achievement",
-                        RegexOptions.IgnoreCase)
-                }))
+        await Expect(sections.Nth(2)
+            .GetByRole(AriaRole.Button, new()
+            {
+                NameRegex = new Regex(
+                    "English and maths GCSE results",
+                    RegexOptions.IgnoreCase)
+            }))
             .ToBeVisibleAsync();
 
-        await Expect(
-            sections.Nth(2).GetByRole(
-                AriaRole.Button,
-                new()
-                {
-                    NameRegex = new Regex(
-                        "English and maths GCSE results",
-                        RegexOptions.IgnoreCase)
-                }))
+        await Expect(sections.Nth(3)
+            .GetByRole(AriaRole.Button, new()
+            {
+                NameRegex = new Regex(
+                    "Exam subjects taken",
+                    RegexOptions.IgnoreCase)
+            }))
             .ToBeVisibleAsync();
 
-        await Expect(
-            sections.Nth(3).GetByRole(
-                AriaRole.Button,
-                new()
-                {
-                    NameRegex = new Regex(
-                        "What pupils did after year 11",
-                        RegexOptions.IgnoreCase)
-                }))
+        await Expect(sections.Nth(4)
+            .GetByRole(AriaRole.Button, new()
+            {
+                NameRegex = new Regex(
+                    "What pupils did after year 11",
+                    RegexOptions.IgnoreCase)
+            }))
             .ToBeVisibleAsync();
 
-        await Expect(
-            sections.Nth(4).GetByRole(
-                AriaRole.Button,
-                new()
-                {
-                    NameRegex = new Regex(
-                        "Extra-curricular activities",
-                        RegexOptions.IgnoreCase)
-                }))
+        await Expect(sections.Nth(5)
+            .GetByRole(AriaRole.Button, new()
+            {
+                NameRegex = new Regex(
+                    "Extra-curricular activities",
+                    RegexOptions.IgnoreCase)
+            }))
             .ToBeVisibleAsync();
     }
 
@@ -1524,7 +1524,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                 "#secondary-at-a-glance-accordion .govuk-accordion__section");
 
         await Expect(sections)
-            .ToHaveCountAsync(5);
+            .ToHaveCountAsync(6);
 
         await Expect(
             sections.Nth(2)
@@ -1888,7 +1888,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
 
         var content =
             Page.Locator(
-                "#secondary-at-a-glance-accordion-content-4");
+                "#secondary-at-a-glance-accordion-content-5");
 
         await Expect(button)
             .ToHaveAttributeAsync(
@@ -1918,7 +1918,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
 
         var content =
             Page.Locator(
-                "#secondary-at-a-glance-accordion-content-4");
+                "#secondary-at-a-glance-accordion-content-5");
 
         await Expect(button)
             .ToHaveAttributeAsync(
@@ -1970,7 +1970,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
 
         var content =
             Page.Locator(
-                "#secondary-at-a-glance-accordion-content-4");
+                "#secondary-at-a-glance-accordion-content-5");
 
         await Expect(content)
             .ToBeVisibleAsync();
@@ -2180,7 +2180,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                 "aria-controls");
 
         Assert.Equal(
-            "secondary-at-a-glance-accordion-content-4",
+            "secondary-at-a-glance-accordion-content-5",
             ariaControls);
 
         await Expect(
@@ -2413,7 +2413,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
 
         var content =
             Page.Locator(
-                "#secondary-at-a-glance-accordion-content-5");
+                "#secondary-at-a-glance-accordion-content-6");
 
         await Expect(button)
             .ToHaveAttributeAsync(
@@ -2441,7 +2441,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
 
         var content =
             Page.Locator(
-                "#secondary-at-a-glance-accordion-content-5");
+                "#secondary-at-a-glance-accordion-content-6");
 
         await Expect(button)
             .ToHaveAttributeAsync(
@@ -2488,7 +2488,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
 
         var content =
             Page.Locator(
-                "#secondary-at-a-glance-accordion-content-5");
+                "#secondary-at-a-glance-accordion-content-6");
 
         await Expect(
             content.GetByRole(
@@ -2536,7 +2536,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
             await button.GetAttributeAsync("aria-controls");
 
         Assert.Equal(
-            "secondary-at-a-glance-accordion-content-5",
+            "secondary-at-a-glance-accordion-content-6",
             ariaControls);
 
         await Expect(
@@ -3254,6 +3254,529 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
         await Expect(
             Page.Locator("#primary-extra-curricular-toggle"))
             .ToHaveCountAsync(0);
+    }
+
+    [Fact]
+    public async Task OverviewPage_ExamSubjectsAccordion_IsClosedByDefault()
+    {
+        await Page.GotoAsync(AchievementOverviewUrl);
+
+        var button =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            "Exam subjects taken",
+                            RegexOptions.IgnoreCase)
+                });
+
+        var content =
+            Page.Locator(
+                "#secondary-at-a-glance-accordion-content-4");
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "false");
+
+        await Expect(content)
+            .Not.ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_ExamSubjectsAccordion_CanBeExpandedAndClosed()
+    {
+        await Page.GotoAsync(AchievementOverviewUrl);
+
+        var button =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            "Exam subjects taken",
+                            RegexOptions.IgnoreCase)
+                });
+
+        var content =
+            Page.Locator(
+                "#secondary-at-a-glance-accordion-content-4");
+
+        await button.ClickAsync();
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "true");
+
+        await Expect(content)
+            .ToBeVisibleAsync();
+
+        await button.ClickAsync();
+
+        await Expect(button)
+            .ToHaveAttributeAsync(
+                "aria-expanded",
+                "false");
+
+        await Expect(content)
+            .Not.ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_ExamSubjects_DisplaysExpectedContent()
+    {
+        await Page.GotoAsync(AchievementOverviewUrl);
+
+        await ExpandExamSubjectsAsync();
+
+        var content =
+            Page.Locator(
+                "#secondary-at-a-glance-accordion-content-4");
+
+        await Expect(content)
+            .ToContainTextAsync("Exam subjects overview");
+
+        await Expect(content)
+            .ToContainTextAsync(
+                "Number of GCSE subjects taken");
+
+        await Expect(content)
+            .ToContainTextAsync(
+                "Number of technical award subjects taken");
+
+        await Expect(
+            Page.Locator("#overview-gcse-subject-count"))
+            .ToHaveTextAsync("31");
+
+        await Expect(
+            Page.Locator("#overview-technical-subject-count"))
+            .ToHaveTextAsync("4");
+    }
+
+    [Fact]
+    public async Task OverviewPage_ExamSubjects_WhenMoreThanThreeSubjects_SelectsTopThree()
+    {
+        await Page.GotoAsync(AchievementOverviewUrl);
+
+        await ExpandExamSubjectsAsync();
+
+        var table =
+            Page.Locator(
+                "#overview-exam-subjects-current-year-table");
+
+        var rows =
+            table.Locator("tbody tr");
+
+        await Expect(rows)
+            .ToHaveCountAsync(3);
+
+        await Expect(rows.Nth(0))
+            .ToContainTextAsync("Health studies");
+
+        await Expect(rows.Nth(0))
+            .ToContainTextAsync("63%");
+
+        await Expect(rows.Nth(1))
+            .ToContainTextAsync("Sports / Movement science");
+
+        await Expect(rows.Nth(1))
+            .ToContainTextAsync("50%");
+
+        await Expect(rows.Nth(2))
+            .ToContainTextAsync("Hospitality and Catering");
+
+        await Expect(rows.Nth(2))
+            .ToContainTextAsync("38%");
+    }
+
+    [Fact]
+    public async Task OverviewPage_ExamSubjects_WhenThirdPlaceIsTied_SelectsSubjectAlphabetically()
+    {
+        await Page.GotoAsync(AchievementOverviewUrl);
+
+        await ExpandExamSubjectsAsync();
+
+        var table =
+            Page.Locator(
+                "#overview-exam-subjects-current-year-table");
+
+        await Expect(table)
+            .ToContainTextAsync(
+                "Hospitality and Catering");
+
+        await Expect(table)
+            .Not.ToContainTextAsync(
+                "Tourism");
+
+        await Expect(table)
+            .Not.ToContainTextAsync(
+                "Engineering");
+    }
+
+    [Fact]
+    public async Task OverviewPage_ExamSubjects_LongSubjectName_IsFullInTableAndLimitedTo19CharactersInChart()
+    {
+        await Page.GotoAsync(AchievementOverviewUrl);
+
+        await ExpandExamSubjectsAsync();
+
+        var table =
+            Page.Locator(
+                "#overview-exam-subjects-current-year-table");
+
+        await Expect(table)
+            .ToContainTextAsync(
+                "Hospitality and Catering");
+
+        var chart =
+            Page.Locator(
+                "#overview-exam-subjects-chart");
+
+        var chartData =
+            await chart.GetAttributeAsync(
+                "data-chart");
+
+        Assert.NotNull(chartData);
+
+        Assert.Contains(
+            "Hospitality and Cat",
+            chartData,
+            StringComparison.Ordinal);
+
+        Assert.DoesNotContain(
+            "Hospitality and Catering",
+            chartData,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task OverviewPage_ExamSubjectsChart_ContainsOnlyTopThreeSubjects()
+    {
+        await Page.GotoAsync(AchievementOverviewUrl);
+
+        await ExpandExamSubjectsAsync();
+
+        var chart =
+            Page.Locator(
+                "#overview-exam-subjects-chart");
+
+        var chartData =
+            await chart.GetAttributeAsync(
+                "data-chart");
+
+        Assert.NotNull(chartData);
+
+        Assert.Contains(
+            "Health studies",
+            chartData,
+            StringComparison.Ordinal);
+
+        Assert.Contains(
+            "Sports / Movement s",
+            chartData,
+            StringComparison.Ordinal);
+
+        Assert.Contains(
+            "Hospitality and Cat",
+            chartData,
+            StringComparison.Ordinal);
+
+        Assert.DoesNotContain(
+            "Tourism",
+            chartData,
+            StringComparison.Ordinal);
+
+        Assert.DoesNotContain(
+            "Engineering",
+            chartData,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task OverviewPage_ExamSubjects_WhenGcseSubjectCountMissing_DisplaysNotAvailableWithoutSuppressingOtherData()
+    {
+        await Page.GotoAsync(
+            MissingDataOverviewUrl);
+
+        await ExpandExamSubjectsAsync();
+
+        await Expect(
+            Page.Locator("#overview-gcse-subject-count"))
+            .ToHaveTextAsync("Not available");
+
+        await Expect(
+            Page.Locator("#overview-technical-subject-count"))
+            .ToHaveTextAsync("4");
+
+        var table =
+            Page.Locator(
+                "#overview-exam-subjects-current-year-table");
+
+        await Expect(table)
+            .ToContainTextAsync("Health studies");
+
+        await Expect(table)
+            .ToContainTextAsync("Sports studies");
+
+        await Expect(table)
+            .ToContainTextAsync("Tourism");
+    }
+
+    [Fact]
+    public async Task OverviewPage_ExamSubjects_WhenIndividualSubjectPercentageMissing_DisplaysNotAvailableWithoutSuppressingOtherSubjects()
+    {
+        await Page.GotoAsync(
+            MissingDataOverviewUrl);
+
+        await ExpandExamSubjectsAsync();
+
+        var table =
+            Page.Locator(
+                "#overview-exam-subjects-current-year-table");
+
+        var rows =
+            table.Locator("tbody tr");
+
+        await Expect(rows)
+            .ToHaveCountAsync(3);
+
+        await Expect(rows.Nth(0))
+            .ToContainTextAsync("Health studies");
+
+        await Expect(rows.Nth(0))
+            .ToContainTextAsync("63%");
+
+        await Expect(rows.Nth(1))
+            .ToContainTextAsync("Tourism");
+
+        await Expect(rows.Nth(1))
+            .ToContainTextAsync("38%");
+
+        await Expect(rows.Nth(2))
+            .ToContainTextAsync("Sports studies");
+
+        await Expect(rows.Nth(2))
+            .ToContainTextAsync("Not available");
+    }
+
+    [Fact]
+    public async Task OverviewPage_ExamSubjects_WhenIndividualSubjectPercentageMissing_ChartRetainsSubjectWithNullValue()
+    {
+        await Page.GotoAsync(
+            MissingDataOverviewUrl);
+
+        await ExpandExamSubjectsAsync();
+
+        var chart =
+            Page.Locator(
+                "#overview-exam-subjects-chart");
+
+        var chartData =
+            await chart.GetAttributeAsync(
+                "data-chart");
+
+        Assert.NotNull(chartData);
+
+        Assert.Contains(
+            "Health studies",
+            chartData,
+            StringComparison.Ordinal);
+
+        Assert.Contains(
+            "Tourism",
+            chartData,
+            StringComparison.Ordinal);
+
+        Assert.Contains(
+            "Sports studies",
+            chartData,
+            StringComparison.Ordinal);
+
+        Assert.Contains(
+            "null",
+            chartData,
+            StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task OverviewPage_ExamSubjectsChart_CanBeShownAsTableAndChart()
+    {
+        await Page.GotoAsync(AchievementOverviewUrl);
+
+        await ExpandExamSubjectsAsync();
+
+        var button =
+            Page.Locator(
+                "#overview-exam-subjects-current-year-show-btn");
+
+        var chart =
+            Page.Locator(
+                "#overview-exam-subjects-current-year-chart-container");
+
+        var table =
+            Page.Locator(
+                "#overview-exam-subjects-current-year-table-container");
+
+        await Expect(button)
+            .ToHaveTextAsync("Show as a table");
+
+        await Expect(chart)
+            .ToBeVisibleAsync();
+
+        await Expect(table)
+            .Not.ToBeVisibleAsync();
+
+        await button.ClickAsync();
+
+        await Expect(button)
+            .ToHaveTextAsync("Show as a chart");
+
+        await Expect(chart)
+            .Not.ToBeVisibleAsync();
+
+        await Expect(table)
+            .ToBeVisibleAsync();
+
+        await button.ClickAsync();
+
+        await Expect(button)
+            .ToHaveTextAsync("Show as a table");
+
+        await Expect(chart)
+            .ToBeVisibleAsync();
+
+        await Expect(table)
+            .Not.ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_ExamSubjects_WhenJavaScriptDisabled_DisplaysTableOnly()
+    {
+        var context =
+            await Browser.NewContextAsync(
+                new BrowserNewContextOptions
+                {
+                    BaseURL = BaseUrl.TrimEnd('/'),
+                    IgnoreHTTPSErrors = true,
+                    ViewportSize =
+                        new ViewportSize
+                        {
+                            Width = 1280,
+                            Height = 720
+                        },
+                    Locale = "en-GB",
+                    TimezoneId = "Europe/London",
+                    JavaScriptEnabled = false
+                });
+
+        try
+        {
+            var page =
+                await context.NewPageAsync();
+
+            var response =
+                await page.GotoAsync(
+                    AchievementOverviewUrl);
+
+            Assert.NotNull(response);
+            Assert.True(response.Ok);
+
+            var table =
+                page.Locator(
+                    "#overview-exam-subjects-current-year-table");
+
+            await Expect(table)
+                .ToBeVisibleAsync();
+
+            await Expect(table)
+                .ToContainTextAsync(
+                    "Hospitality and Catering");
+
+            await Expect(
+                page.Locator(
+                    "#overview-exam-subjects-current-year-show-btn"))
+                .ToBeHiddenAsync();
+        }
+        finally
+        {
+            await context.CloseAsync();
+        }
+    }
+
+    [Fact]
+    public async Task OverviewPage_ExamSubjectsLink_NavigatesToSubjectsEnteredPage()
+    {
+        await Page.GotoAsync(AchievementOverviewUrl);
+
+        await ExpandExamSubjectsAsync();
+
+        var link =
+            Page.GetByRole(
+                AriaRole.Link,
+                new()
+                {
+                    Name =
+                        "Find out more about the qualifications taken at this school",
+                    Exact = true
+                });
+
+        await Expect(link)
+            .ToHaveAttributeAsync(
+                "href",
+                $"/school/{AchievementUrn}/{AchievementSlug}/secondary-performance/subjects-entered");
+
+        Assert.Null(
+            await link.GetAttributeAsync(
+                "target"));
+
+        await link.ClickAsync();
+
+        await Expect(Page)
+            .ToHaveURLAsync(
+                new Regex(
+                    $@"/school/{AchievementUrn}/{AchievementSlug}/secondary-performance/subjects-entered/?$"));
+    }
+
+    private async Task ExpandExamSubjectsAsync()
+    {
+        var button =
+            Page.GetByRole(
+                AriaRole.Button,
+                new()
+                {
+                    NameRegex =
+                        new Regex(
+                            "Exam subjects taken",
+                            RegexOptions.IgnoreCase)
+                });
+
+        await Expect(button)
+            .ToBeVisibleAsync(
+                new LocatorAssertionsToBeVisibleOptions
+                {
+                    Timeout = 5000
+                });
+
+        var expanded =
+            await button.GetAttributeAsync(
+                "aria-expanded");
+
+        if (!string.Equals(
+                expanded,
+                "true",
+                StringComparison.OrdinalIgnoreCase))
+        {
+            await button.ClickAsync();
+        }
+
+        await Expect(
+            Page.Locator(
+                "#secondary-at-a-glance-accordion-content-4"))
+            .ToBeVisibleAsync();
     }
 
     private async Task<string> GetFailureMessageAsync(

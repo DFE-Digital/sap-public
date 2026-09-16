@@ -480,6 +480,37 @@
     background-color: #8ac0c3;
 }
 
+.ataglance-accordion
+.govuk-accordion__section-header
+#accordion-iconbox__exam-subjects {
+    background-color: #e1eccb;
+    color: #344f1f;
+}
+
+.ataglance-accordion
+.govuk-accordion__section-header:hover
+#accordion-iconbox__exam-subjects {
+    background-color: #c7d9a5;
+}
+
+.overview-exam-subject-counts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.overview-exam-subject-count p {
+    margin-bottom: 0;
+}
+
+@media (max-width: 40.0525em) {
+    .overview-exam-subject-counts {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
+
 // Next steps 
 
 #overview-next-steps {
