@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using SAPPub.Core.Entities;
 using SAPPub.Core.Enums;
-using SAPPub.Core.Extensions;
 using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Helpers;
@@ -13,15 +12,11 @@ namespace SAPPub.Web.Areas.Profiles.ViewModels.KS4;
 public class AcademicPerformanceAttainmentAndProgressViewModel : BaseViewModel
 {
     private const AcademicYearSelection _currentAcademicYear = AcademicYearSelection.Current;
-    public string? AcademicYearInfoParagraph => $"Information in this section is for the {SelectedAcademicYear.GetDisplayName()} academic year.";
-    public AcademicYearSelection SelectedAcademicYear { get; set; } = _currentAcademicYear;
+    public string? AcademicYearInfoParagraph => $"Information in this section is for the {_currentAcademicYear.GetDisplayName()} academic year.";
 
-    public bool ShowProgress8NotAvailableInfo => SelectedAcademicYear == _currentAcademicYear;
+    // No Progress 8 scores available for the academic years 2024 to 2025 and 2025 to 2026 as no KS2 baseline available (due to covid)
+    public bool ShowProgress8NotAvailableInfo => _currentAcademicYear.GetDisplayName() is "2024 to 2025" or "2025 to 2026";
 
-    public bool ShowAttainment8Info => SelectedYearValues?.EstablishmentAttainment8Score.HasValue ?? false;
-    public bool ShowProgress8Info => SelectedYearValues?.EstablishmentProgress8Score.HasValue ?? false;
-
-    public AcademicPerformanceAttainmentAndProgressSingleYearViewModel SelectedYearValues => YearValues.GetValueForYear(SelectedAcademicYear) ?? AcademicPerformanceAttainmentAndProgressSingleYearViewModel.Empty;
     public required RelativeYearValues<AcademicPerformanceAttainmentAndProgressSingleYearViewModel> YearValues { get; init; }
 
     public required DisplayField<CodedDouble> LocalAuthorityAttainment8NonDisadvantagedScore { get; init; }
@@ -45,8 +40,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : BaseViewModel
         string laName,
         string ageRangeFrom,
         TypeOfEstablishment typeOfEstablishment,
-        AttainmentAndProgressModel attainmentAndProgressModel, 
-        AcademicYearSelection selectedAcademicYear)
+        AttainmentAndProgressModel attainmentAndProgressModel)
     {
         var laAverageLabel = CommonHelper.GetLocalAuthorityDisplayName(laName);
 
@@ -79,7 +73,6 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : BaseViewModel
             IsKS2 = attainmentAndProgressModel.IsKS2,
             IsKS4 = attainmentAndProgressModel.IsKS4,
             IsKS5 = attainmentAndProgressModel.IsKS5,
-            SelectedAcademicYear = selectedAcademicYear,
             LocalAuthorityAttainment8NonDisadvantagedScore = attainmentAndProgressModel.LocalAuthorityAttainment8NonDisadvantagedScore.ToDisplayField(),
             EnglandAttainment8NonDisadvantagedScore = attainmentAndProgressModel.EnglandAttainment8NonDisadvantagedScore.ToDisplayField(),
             YearValues = new RelativeYearValues<AcademicPerformanceAttainmentAndProgressSingleYearViewModel>

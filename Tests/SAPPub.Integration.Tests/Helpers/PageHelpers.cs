@@ -1,7 +1,7 @@
 ﻿using Microsoft.Playwright;
 using System.Text.RegularExpressions;
 
-namespace SAPPub.IntegrationTests.Helpers;
+namespace SAPPub.Integration.Tests.Helpers;
 
 public static class PageHelpers
 {
