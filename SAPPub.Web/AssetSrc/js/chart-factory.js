@@ -205,7 +205,13 @@
         }
     }
 
-    function buildChartOptions(type, gdsStyles, notAvailableText, isScaled) {
+    function buildChartOptions(
+        type,
+        gdsStyles,
+        notAvailableText,
+        isScaled,
+        axisMax,
+        axisTitle) {
         const common = {
             responsive: true,
             maintainAspectRatio: false,
@@ -227,24 +233,52 @@
                 scales: {
                     x: {
                         beginAtZero: !isScaled,
-                        ...(isScaled ? { min: 80, max: 120 } : {}),
-                        //max: 100,
+
+                        ...(isScaled
+                            ? { min: 80, max: 120 }
+                            : {}),
+
+                        ...(!isScaled && axisMax !== null
+                            ? { max: axisMax }
+                            : {}),
+
                         grid: {
                             display: true,
                             drawBorder: false,
                             color: (context) => {
-                                return context.tick.value === 0 ? '#000' : '#ccc';
+                                return context.tick.value === 0
+                                    ? '#000'
+                                    : '#ccc';
                             },
                             lineWidth: (context) => {
-                                return context.tick.value === 0 ? 2 : 1;
+                                return context.tick.value === 0
+                                    ? 2
+                                    : 1;
                             }
                         },
-                        border: { display: false },
+
+                        border: {
+                            display: false
+                        },
+
                         ticks: {
                             color: gdsStyles.text,
                             font: fonts,
-                            stepSize: isScaled ? 10 : CHART_CONFIG.defaults.axisStepSize,
-                            callback: (value) => isScaled ? getScaledLabels(value) : `${value}${axisSuffix}`
+                            stepSize: isScaled
+                                ? 10
+                                : CHART_CONFIG.defaults.axisStepSize,
+
+                            callback: (value) =>
+                                isScaled
+                                    ? getScaledLabels(value)
+                                    : `${value}${axisSuffix}`
+                        },
+
+                        title: {
+                            display: !!axisTitle,
+                            text: axisTitle,
+                            color: gdsStyles.text,
+                            font: fonts
                         }
                     },
                     y: {
@@ -335,6 +369,8 @@
             const chartData = JSON.parse(canvas.dataset.chart);
             const type = canvas.dataset.type;
             const isScaled = canvas.dataset.scaled === "true";
+            const axisMax = canvas.dataset.max ? Number(canvas.dataset.max) : null;
+            const axisTitle = canvas.dataset.axisTitle || '';
             const showLegend = canvas.dataset.showLegend === "true";
             const notAvailableText = canvas.dataset.notAvailableText || CHART_CONFIG.bar.noData.text;
 
@@ -348,7 +384,7 @@
                     labels: chartData.labels,
                     datasets: buildDatasets(type, chartData, colors)
                 },
-                options: buildChartOptions(type, gdsStyles, notAvailableText, isScaled),
+                options: buildChartOptions(type, gdsStyles, notAvailableText, isScaled, axisMax, axisTitle),
                 plugins: [ChartDataLabels]
             };
 

@@ -33,6 +33,9 @@ public sealed class OverviewModel
     public CodedDouble? EnglishAndMathsGrade5LA { get; init; }
     public CodedDouble? EnglishAndMathsGrade5England { get; init; }
     public CodedDouble? MoreThanOneForeignLanguage { get; init; }
+    public CodedDouble? GcseSubjectsEntered { get; init; }
+    public CodedDouble? TechnicalSubjectsEntered { get; init; }
+    public IReadOnlyList<TechnicalSubjectModel> TopTechnicalSubjects { get; init; } = Array.Empty<TechnicalSubjectModel>();
 
     public CodedDouble? DestinationsEstablishment { get; init; }
     public CodedDouble? DestinationsLA { get; init; }

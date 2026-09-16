@@ -1,4 +1,5 @@
-﻿using SAPPub.Core.Extensions;
+﻿using Microsoft.DotNet.Scaffolding.Shared;
+using SAPPub.Core.Extensions;
 using SAPPub.Core.Helpers;
 using SAPPub.Core.ServiceModels.Common;
 using SAPPub.Core.ServiceModels.Overview;
@@ -71,9 +72,20 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
 
     public required DataViewModel ReadingWritingMathsExpectedChart { get; init; }
 
+    public required DisplayField<CodedDouble> GcseSubjectsEntered { get; init; }
+
+    public required DisplayField<CodedDouble> TechnicalSubjectsEntered { get; init; }
+
+    public required DataViewModel TopTechnicalSubjectsChart { get; init; }
+
+    public required IReadOnlyList<TechnicalSubjectModel> TopTechnicalSubjects { get; init; }
+
+
     public static OverviewViewModel Map(OverviewModel model)
     {
         var latLong = MappingHelper.ConvertToLatLon(model.Easting, model.Northing);
+
+        var topTechnicalSubjects = GetTopTechnicalSubjects(model.TopTechnicalSubjects);
 
         return new OverviewViewModel
         {
@@ -112,6 +124,10 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
             Attainment8England = model.Attainment8England.ToDisplayField(),
             Attainment8Context = AttainmentHelper.EstablishmentAttainment8ContextStatement(model.Attainment8?.Value).ToDisplayField(),
             MoreThanOneForeignLanguage = model.MoreThanOneForeignLanguage.ToDisplayField(),
+            GcseSubjectsEntered = model.GcseSubjectsEntered.ToDisplayField(),
+            TechnicalSubjectsEntered = model.TechnicalSubjectsEntered.ToDisplayField(),
+            TopTechnicalSubjects = topTechnicalSubjects,
+            TopTechnicalSubjectsChart = MapTopTechnicalSubjectsChart(topTechnicalSubjects),
 
             EnglishAndMathsGrade5 = MapComparison(
                 model.EnglishAndMathsGrade5Establishment,
@@ -136,13 +152,13 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
             EnglishAndMathsGrade5Establishment =
                 model.EnglishAndMathsGrade5Establishment.ToDisplayField(),
 
-                        EnglishAndMathsGrade5LA =
+            EnglishAndMathsGrade5LA =
                 model.EnglishAndMathsGrade5LA.ToDisplayField(),
 
-                        EnglishAndMathsGrade5England =
+            EnglishAndMathsGrade5England =
                 model.EnglishAndMathsGrade5England.ToDisplayField(),
 
-                EnglishAndMathsGrade5Chart = new DataViewModel
+            EnglishAndMathsGrade5Chart = new DataViewModel
                 {
                     Labels =
                 [
@@ -162,10 +178,10 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
             DestinationsEstablishment =
                 model.DestinationsEstablishment.ToDisplayField(),
 
-                        DestinationsLA =
+            DestinationsLA =
                 model.DestinationsLA.ToDisplayField(),
 
-                        DestinationsEngland =
+            DestinationsEngland =
                 model.DestinationsEngland.ToDisplayField(),
 
                         DestinationsChart = new DataViewModel
@@ -200,8 +216,47 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
                         model.ReadingWritingMathsExpectedLA?.Value,
                         model.ReadingWritingMathsExpectedEngland?.Value
                     ]
-                            },
+            },
         };
+    }
+
+    private static IReadOnlyList<TechnicalSubjectModel> GetTopTechnicalSubjects(
+        IReadOnlyList<TechnicalSubjectModel> subjects)
+    {
+        return subjects
+            .OrderByDescending(x => x.PercentageEntering.HasValue)
+            .ThenByDescending(x => x.PercentageEntering)
+            .ThenBy(x => x.SubjectName, StringComparer.OrdinalIgnoreCase)
+            .Take(3)
+            .ToList();
+    }
+
+    private static DataViewModel MapTopTechnicalSubjectsChart(
+        IReadOnlyList<TechnicalSubjectModel> subjects)
+    {
+        return new DataViewModel
+        {
+            Labels = subjects
+                .Select(x => TruncateSubjectName(x.SubjectName, 19))
+                .ToList(),
+
+            Data = subjects
+                .Select(x => x.PercentageEntering)
+                .ToList()
+        };
+    }
+
+    private static string TruncateSubjectName(
+        string subjectName,
+        int maximumLength)
+    {
+        if (string.IsNullOrEmpty(subjectName) ||
+            subjectName.Length <= maximumLength)
+        {
+            return subjectName;
+        }
+
+        return subjectName[..maximumLength];
     }
 
     private static string? GetAgeRange(
