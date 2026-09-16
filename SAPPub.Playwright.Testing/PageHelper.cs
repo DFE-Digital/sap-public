@@ -23,6 +23,28 @@ public static class PageHelper
             .CountAsync() > 0;
     }
 
+    public static async Task<List<IReadOnlyList<string>>> GetTableRowsValuesByTableCaptionAsync(
+    this IPage page,
+    string captionText)
+    {
+        var table = page.Locator("table")
+            .Filter(new()
+            {
+                Has = page.Locator($"caption:text-is('{captionText}')")
+            });
+
+        var rows = table.Locator("tbody tr");
+        var rowCount = await rows.CountAsync();
+        var result = new List<IReadOnlyList<string>>();
+        for (var i = 0; i < rowCount; i++)
+        {
+            var row = rows.Nth(i);
+            result.Add(await rows.Nth(i).Locator("td").AllInnerTextsAsync());
+        }
+
+        return result;
+    }
+
     public static Task<IReadOnlyList<string>> GetTableRowValuesAsync(
         this IPage page,
         string tableId,
