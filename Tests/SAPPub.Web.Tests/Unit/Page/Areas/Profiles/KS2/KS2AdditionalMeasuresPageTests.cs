@@ -68,7 +68,7 @@ public class KS2AdditionalMeasuresPageTests : PageTestsBase
         var title = doc.QuerySelector("title");
         Assert.NotNull(title);
 
-        var expectedTitle = $"School149976 - Primary Additional measures - School Profiles - GOV.UK";
+        var expectedTitle = $"School149976 - Primary Additional measures - Find and compare school and college profiles - GOV.UK";
         Assert.Contains(expectedTitle, title.TextContent.Trim());
     }
 

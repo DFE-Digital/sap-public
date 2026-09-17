@@ -26,7 +26,7 @@ public class HomePageTests(WebApplicationSetupFixture fixture) : BasePageTest(fi
         var title = await Page.TitleAsync();
 
         // Assert
-        Assert.Contains("School Profiles", title);
+        Assert.Contains("Find and compare school and college profiles", title);
     }
 
     [Fact]

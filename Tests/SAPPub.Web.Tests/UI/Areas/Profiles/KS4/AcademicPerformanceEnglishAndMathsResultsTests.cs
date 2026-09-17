@@ -54,7 +54,7 @@ public class AcademicPerformanceEnglishAndMathsResults : BasePageTest
         var title = await Page.TitleAsync();
 
         // Assert
-        Assert.Contains("Loreto High School Chorlton - Secondary English and maths - School Profiles - GOV.UK", title);
+        Assert.Contains("Loreto High School Chorlton - Secondary English and maths - Find and compare school and college profiles - GOV.UK", title);
     }
 
     [Fact]

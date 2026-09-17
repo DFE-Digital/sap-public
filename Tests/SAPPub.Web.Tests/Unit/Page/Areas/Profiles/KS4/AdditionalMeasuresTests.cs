@@ -58,7 +58,7 @@ public class AdditionalMeasuresTests : PageTestsBase
 
         // Assert
         var title = doc.Title;
-        Assert.Contains("Loreto High School Chorlton - Secondary Additional measures - School Profiles - GOV.UK", title);
+        Assert.Contains("Loreto High School Chorlton - Secondary Additional measures - Find and compare school and college profiles - GOV.UK", title);
     }
 
     [Fact]
