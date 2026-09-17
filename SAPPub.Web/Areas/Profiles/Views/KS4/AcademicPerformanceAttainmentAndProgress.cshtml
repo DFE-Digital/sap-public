@@ -27,7 +27,7 @@
         <h2 class="govuk-heading-xl">@ViewData["Header"]</h2>
         <p class="govuk-body">
             Looking at school performance data is one way to see how well a school is doing.
-            You should look at a range of information about a school before deciding if it’s the right fit for your child.
+            You should look at a range of information about a school before deciding if it's the right fit for your child.
         </p>
 
         <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
@@ -54,7 +54,7 @@
         <h3 class="govuk-heading-m">Progress 8</h3>
 
         <p class="govuk-body">
-            Progress 8 measures a school’s performance. It shows how much progress pupils make from the end of primary school (KS2) to the end of secondary school (KS4), across 8 qualifications.
+            Progress 8 measures a school's performance. It shows how much progress pupils make from the end of primary school (KS2) to the end of secondary school (KS4), across 8 qualifications.
         </p>
 
         <ul class="govuk-list govuk-list--bullet">
@@ -127,7 +127,7 @@
                 </p>
 
                 <p class="govuk-body">
-                    If the confidence intervals for two schools overlap, it means we cannot be sure that one school’s Progress 8 score is better than the other.
+                    If the confidence intervals for two schools overlap, it means we cannot be sure that one school's Progress 8 score is better than the other.
                 </p>
 
                 <p class="govuk-body">
@@ -184,7 +184,7 @@
         <h3 class="govuk-heading-m">Attainment 8</h3>
 
         <p class="govuk-body">
-            Attainment 8 is used to assess a pupil’s average achievement across their 8 best GCSE-level subjects.
+            Attainment 8 is used to assess a pupil's average achievement across their 8 best GCSE-level subjects.
         </p>
 
         <govuk-details id="details-attainment8">
@@ -243,30 +243,30 @@
 
                 <govuk-accordion-item-content>
                     <h4 class="govuk-heading-m">Girls and boys</h4>
-                    @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.BreakdownGirlsBoys)
+                    @await Html.PartialAsync("_SeriesMeasureTableWithGradeContext", Model.BreakdownGirlsBoys)
 
                     <h4 class="govuk-heading-m">English as an additional language (EAL)</h4>
                     <p class="govuk-body">
                         A child is recorded as having English as an additional language (EAL) if they hear or use a language other than English at home.
                         This does not show how well a child speaks English and does not mean they are new to the UK.
                     </p>
-                    @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.BreakdownEAL)
+                    @await Html.PartialAsync("_SeriesMeasureTableWithGradeContext", Model.BreakdownEAL)
 
                     <h4 class="govuk-heading-m">Non-mobile pupils</h4>
                     <p class="govuk-body">
                         Non‑mobile pupils are pupils who stayed at the same school for their final 2 years of secondary school, years 10 and 11.
                     </p>
-                    @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.BreakdownNonMobile)
+                    @await Html.PartialAsync("_SeriesMeasureTableWithGradeContext", Model.BreakdownNonMobile)
 
                     @await Html.PartialAsync("_DisadvantagedPupils")
-                    @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.YearValues.CurrentYear.BreakdownDisadvantaged)
+                    @await Html.PartialAsync("_SeriesMeasureTableWithGradeContext", Model.YearValues.CurrentYear.BreakdownDisadvantaged)
                     <govuk-details id="non-disadvantaged-details">
                         <govuk-details-summary>
                             Compare state-funded local and national averages for non-disadvantaged pupils
                         </govuk-details-summary>
                         <govuk-details-text>
                             <h4 class="govuk-heading-s">Non-disadvantaged pupils</h4>
-                            @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.BreakdownNonDisadvantaged)
+                            @await Html.PartialAsync("_SeriesMeasureTableWithGradeContext", Model.BreakdownNonDisadvantaged)
                         </govuk-details-text>
                     </govuk-details>
 
@@ -276,16 +276,16 @@
                         </govuk-details-summary>
                         <govuk-details-text>
                             <h4 class="govuk-heading-s">@Model.YearValues.PreviousYear!.AcademicYearSelection.GetDisplayName() academic year</h4>
-                            @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.YearValues.PreviousYear?.BreakdownDisadvantaged)
+                            @await Html.PartialAsync("_SeriesMeasureTableWithGradeContext", Model.YearValues.PreviousYear?.BreakdownDisadvantaged)
                             <h4 class="govuk-heading-s">@Model.YearValues.TwoYearsAgo!.AcademicYearSelection.GetDisplayName() academic year</h4>
-                            @await Html.PartialAsync("_DisadvantagedTableWithGradeContext", Model.YearValues.TwoYearsAgo?.BreakdownDisadvantaged)
+                            @await Html.PartialAsync("_SeriesMeasureTableWithGradeContext", Model.YearValues.TwoYearsAgo?.BreakdownDisadvantaged)
                         </govuk-details-text>
                     </govuk-details>
 
 
                     <h4 class="govuk-heading-m">Low, medium and high prior attainers</h4>
                     <p class="govuk-body">
-                        Prior attainment is based on a pupil’s attainment in English reading and maths national curriculum tests at the end of KS2.At the end of key stage 1 (year 2), most pupils are assessed in English reading, English writing and maths.
+                        Prior attainment is based on a pupil's attainment in English reading and maths national curriculum tests at the end of KS2.At the end of key stage 1 (year 2), most pupils are assessed in English reading, English writing and maths.
                     </p>
                     <p class="govuk-body">
                         Pupils can achieve a score between 80 to 120.

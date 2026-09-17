@@ -12,8 +12,6 @@ namespace SAPPub.Web.Areas.Profiles.ViewModels.KS4;
 
 public class AcademicPerformanceAttainmentAndProgressViewModel : BaseViewModel
 {
-    private const string PupilGroup = "Pupil group";
-    private const string AllPupilsAtTheSchool = "All pupils at the school";
     private const string PupilsAverageLabel = "Pupils' average grade across 8 GCSE and equivalent subjects";
 
     private const AcademicYearSelection _currentAcademicYear = AcademicYearSelection.Current;

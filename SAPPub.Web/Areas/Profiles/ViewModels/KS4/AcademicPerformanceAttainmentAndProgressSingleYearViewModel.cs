@@ -9,8 +9,6 @@ namespace SAPPub.Web.Areas.Profiles.ViewModels.KS4;
 
 public class AcademicPerformanceAttainmentAndProgressSingleYearViewModel
 {
-
-
     public CodedDouble EstablishmentProgress8Score { get; init; }
 
     public CodedDouble EstablishmentProgress8CILower { get; init; }
