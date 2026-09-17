@@ -1,8 +1,10 @@
-﻿using SAPPub.Core.Extensions;
+﻿using Microsoft.DotNet.Scaffolding.Shared;
+using SAPPub.Core.Extensions;
 using SAPPub.Core.Helpers;
 using SAPPub.Core.ServiceModels.Common;
 using SAPPub.Core.ServiceModels.Overview;
 using SAPPub.Core.ValueObjects;
+using SAPPub.Web.Constants;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.Charts;
 
@@ -54,13 +56,36 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
 
     public required DisplayField<CodedDouble> EnglishAndMathsGrade5England { get; init; }
 
+    public required DisplayField<CodedDouble> DestinationsEstablishment { get; init; }
+
+    public required DisplayField<CodedDouble> DestinationsLA { get; init; }
+
+    public required DisplayField<CodedDouble> DestinationsEngland { get; init; }
+
+    public required DataViewModel DestinationsChart { get; init; }
+
     public required DataViewModel EnglishAndMathsGrade5Chart { get; init; }
 
     public required string LocalAuthorityName { get; init; }
 
+    public required IReadOnlyList<NextStepLinkViewModel> NextStepLinks { get; init; }
+
+    public required DataViewModel ReadingWritingMathsExpectedChart { get; init; }
+
+    public required DisplayField<CodedDouble> GcseSubjectsEntered { get; init; }
+
+    public required DisplayField<CodedDouble> TechnicalSubjectsEntered { get; init; }
+
+    public required DataViewModel TopTechnicalSubjectsChart { get; init; }
+
+    public required IReadOnlyList<TechnicalSubjectModel> TopTechnicalSubjects { get; init; }
+
+
     public static OverviewViewModel Map(OverviewModel model)
     {
         var latLong = MappingHelper.ConvertToLatLon(model.Easting, model.Northing);
+
+        var topTechnicalSubjects = GetTopTechnicalSubjects(model.TopTechnicalSubjects);
 
         return new OverviewViewModel
         {
@@ -99,6 +124,10 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
             Attainment8England = model.Attainment8England.ToDisplayField(),
             Attainment8Context = AttainmentHelper.EstablishmentAttainment8ContextStatement(model.Attainment8?.Value).ToDisplayField(),
             MoreThanOneForeignLanguage = model.MoreThanOneForeignLanguage.ToDisplayField(),
+            GcseSubjectsEntered = model.GcseSubjectsEntered.ToDisplayField(),
+            TechnicalSubjectsEntered = model.TechnicalSubjectsEntered.ToDisplayField(),
+            TopTechnicalSubjects = topTechnicalSubjects,
+            TopTechnicalSubjectsChart = MapTopTechnicalSubjectsChart(topTechnicalSubjects),
 
             EnglishAndMathsGrade5 = MapComparison(
                 model.EnglishAndMathsGrade5Establishment,
@@ -123,13 +152,13 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
             EnglishAndMathsGrade5Establishment =
                 model.EnglishAndMathsGrade5Establishment.ToDisplayField(),
 
-                        EnglishAndMathsGrade5LA =
+            EnglishAndMathsGrade5LA =
                 model.EnglishAndMathsGrade5LA.ToDisplayField(),
 
-                        EnglishAndMathsGrade5England =
+            EnglishAndMathsGrade5England =
                 model.EnglishAndMathsGrade5England.ToDisplayField(),
 
-                EnglishAndMathsGrade5Chart = new DataViewModel
+            EnglishAndMathsGrade5Chart = new DataViewModel
                 {
                     Labels =
                 [
@@ -142,9 +171,92 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
                     model.EnglishAndMathsGrade5Establishment?.Value,
                     model.EnglishAndMathsGrade5LA?.Value,
                     model.EnglishAndMathsGrade5England?.Value
+                ],
+
+            },
+
+            DestinationsEstablishment =
+                model.DestinationsEstablishment.ToDisplayField(),
+
+            DestinationsLA =
+                model.DestinationsLA.ToDisplayField(),
+
+            DestinationsEngland =
+                model.DestinationsEngland.ToDisplayField(),
+
+                        DestinationsChart = new DataViewModel
+                        {
+                            Labels =
+                [
+                    "School",
+                    $"{model.LocalAuthorityName} average",
+                    "England average"
+                ],
+                            Data =
+                [
+                    model.DestinationsEstablishment?.Value,
+                    model.DestinationsLA?.Value,
+                    model.DestinationsEngland?.Value
                 ]
             },
+
+            NextStepLinks = BuildNextStepLinks(model),
+
+            ReadingWritingMathsExpectedChart = new DataViewModel
+            {
+                Labels =
+                    [
+                        "School",
+                        $"{model.LocalAuthorityName} average",
+                        "England average"
+                    ],
+                                Data =
+                    [
+                        model.ReadingWritingMathsExpectedEstablishment?.Value,
+                        model.ReadingWritingMathsExpectedLA?.Value,
+                        model.ReadingWritingMathsExpectedEngland?.Value
+                    ]
+            },
         };
+    }
+
+    private static IReadOnlyList<TechnicalSubjectModel> GetTopTechnicalSubjects(
+        IReadOnlyList<TechnicalSubjectModel> subjects)
+    {
+        return subjects
+            .OrderByDescending(x => x.PercentageEntering.HasValue)
+            .ThenByDescending(x => x.PercentageEntering)
+            .ThenBy(x => x.SubjectName, StringComparer.OrdinalIgnoreCase)
+            .Take(3)
+            .ToList();
+    }
+
+    private static DataViewModel MapTopTechnicalSubjectsChart(
+        IReadOnlyList<TechnicalSubjectModel> subjects)
+    {
+        return new DataViewModel
+        {
+            Labels = subjects
+                .Select(x => TruncateSubjectName(x.SubjectName, 19))
+                .ToList(),
+
+            Data = subjects
+                .Select(x => x.PercentageEntering)
+                .ToList()
+        };
+    }
+
+    private static string TruncateSubjectName(
+        string subjectName,
+        int maximumLength)
+    {
+        if (string.IsNullOrEmpty(subjectName) ||
+            subjectName.Length <= maximumLength)
+        {
+            return subjectName;
+        }
+
+        return subjectName[..maximumLength];
     }
 
     private static string? GetAgeRange(
@@ -192,4 +304,132 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
                 England = england.Value
             });
     }
+
+    private static IReadOnlyList<NextStepLinkViewModel> BuildNextStepLinks(OverviewModel model)
+    {
+        var links = new List<NextStepLinkViewModel>();
+
+        void Add(
+            string title,
+            string description,
+            string routeName)
+        {
+            if (links.Any(x =>
+                    string.Equals(
+                        x.Title,
+                        title,
+                        StringComparison.OrdinalIgnoreCase)))
+            {
+                return;
+            }
+
+            links.Add(
+                new NextStepLinkViewModel(
+                    title,
+                    description,
+                    routeName));
+        }
+
+        // About
+        Add(
+            model.IsKS5 && !model.IsKS2 && !model.IsKS4
+                ? "About the school or college"
+                : "About the school",
+            model.IsKS5 && !model.IsKS2 && !model.IsKS4
+                ? "Find out more about the school or college, including policies on school uniform and SEN."
+                : "Find out more about the school, including policies on school uniform and SEN.",
+            RouteConstants.AboutTheSchool);
+
+        // Admissions
+        // Primary comes before Secondary in the established profile order.
+        if (model.IsKS2)
+        {
+            Add(
+                "Admissions",
+                "Find important dates and learn about the school admissions process.",
+                RouteConstants.PrimaryAdmissions);
+        }
+        else if (model.IsKS4)
+        {
+            Add(
+                "Admissions",
+                "Find important dates and learn about the school admissions process.",
+                RouteConstants.SecondaryAdmissions);
+        }
+
+        // Curriculum and extra-curricular activities
+        // Primary comes before Secondary in the established profile order.
+        if (model.IsKS2)
+        {
+            Add(
+                "Curriculum and extra-curricular activities",
+                "What pupils learn at this school and the activities they can take part in.",
+                RouteConstants.PrimaryCurriculumAndExtraCurricularActivities);
+        }
+        else if (model.IsKS4)
+        {
+            Add(
+                "Curriculum and extra-curricular activities",
+                "What pupils learn at this school and the activities they can take part in.",
+                RouteConstants.SecondaryCurriculumAndExtraCurricularActivities);
+        }
+
+        // Attendance is shared between Primary and Secondary.
+        if (model.IsKS2 || model.IsKS4)
+        {
+            Add(
+                "Attendance",
+                "Find out more about attendance rates at this school.",
+                RouteConstants.Attendance);
+        }
+
+        // Primary academic performance
+        if (model.IsKS2)
+        {
+            Add(
+                "Primary academic performance",
+                "Find out more about this school’s pupil progress, attainment and results.",
+                RouteConstants.PrimaryAcademicPerformancePupilProgress);
+        }
+
+        // Secondary academic performance
+        if (model.IsKS4)
+        {
+            Add(
+                "Secondary academic performance",
+                "Find out more about this school’s pupil progress, achievement and results.",
+                RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress);
+        }
+
+        // 16 to 19 performance.
+        // The root route redirects to the first Level 3 qualifications page.
+        if (model.IsKS5)
+        {
+            Add(
+                "16 to 19 performance in qualifications",
+                "Find out more about this school or college’s performance in qualifications.",
+                RouteConstants.KS5AcademicPerformanceRoot);
+        }
+
+        // Destinations is displayed once.
+        // Secondary destinations come before KS5 destinations in the established
+        // profile order, so use Secondary when both phases are present.
+        if (model.IsKS4)
+        {
+            Add(
+                "Destinations",
+                "Find out more about where pupils went after year 11 after leaving this school.",
+                RouteConstants.SecondaryDestinations);
+        }
+        else if (model.IsKS5)
+        {
+            Add(
+                "Destinations",
+                "Find out more about where students went after leaving this school or college.",
+                RouteConstants.KS5Destinations);
+        }
+
+        return links;
+    }
+
 }

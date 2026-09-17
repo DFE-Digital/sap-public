@@ -93,9 +93,9 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
             string[] expectedAllDestCurrentDataLabels = ["School", $"{_fakeEstablishment.LAName} average", "England average"];
             double?[] expectedAllDestCurrentData =
             [
-                destinationsDetails.SchoolAll.CurrentYear,
-            destinationsDetails.LocalAuthorityAll.CurrentYear,
-            destinationsDetails.EnglandAll.CurrentYear
+                destinationsDetails.SchoolAll.CurrentYear.Value,
+            destinationsDetails.LocalAuthorityAll.CurrentYear.Value,
+            destinationsDetails.EnglandAll.CurrentYear.Value
             ];
 
             var expectedDataOverTime = new DataOverTimeViewModel
@@ -106,17 +106,17 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
                 new DatasetViewModel
             {
                 Label = "School",
-                Data = [destinationsDetails.SchoolAll.TwoYearsAgo, destinationsDetails.SchoolAll.PreviousYear, destinationsDetails.SchoolAll.CurrentYear],
+                Data = [destinationsDetails.SchoolAll.TwoYearsAgo.Value, destinationsDetails.SchoolAll.PreviousYear.Value, destinationsDetails.SchoolAll.CurrentYear.Value],
             },
             new DatasetViewModel
             {
                 Label = $"{destinationsDetails.LocalAuthorityName} average",
-                Data = [destinationsDetails.LocalAuthorityAll.TwoYearsAgo, destinationsDetails.LocalAuthorityAll.PreviousYear, destinationsDetails.LocalAuthorityAll.CurrentYear],
+                Data = [destinationsDetails.LocalAuthorityAll.TwoYearsAgo.Value, destinationsDetails.LocalAuthorityAll.PreviousYear.Value, destinationsDetails.LocalAuthorityAll.CurrentYear.Value],
             },
             new DatasetViewModel
             {
                 Label = "England average",
-                Data = [destinationsDetails.EnglandAll.TwoYearsAgo, destinationsDetails.EnglandAll.PreviousYear, destinationsDetails.EnglandAll.CurrentYear],
+                Data = [destinationsDetails.EnglandAll.TwoYearsAgo.Value, destinationsDetails.EnglandAll.PreviousYear.Value, destinationsDetails.EnglandAll.CurrentYear.Value],
             },
         ],
             };
@@ -131,17 +131,17 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
                 new DataSeriesViewModel
             {
                 Label = "School",
-                Data = [destinationsDetails.SchoolEducation.CurrentYear, CommonHelper.AddNullable(destinationsDetails.SchoolEmployment.CurrentYear, destinationsDetails.SchoolApprentice.CurrentYear)]
+                Data = [destinationsDetails.SchoolEducation.CurrentYear.Value, CommonHelper.AddNullable(destinationsDetails.SchoolEmployment.CurrentYear.Value, destinationsDetails.SchoolApprentice.CurrentYear.Value)]
             },
             new DataSeriesViewModel
             {
                 Label = $"{destinationsDetails.LocalAuthorityName} average",
-                Data = [destinationsDetails.LocalAuthorityEducation.CurrentYear, CommonHelper.AddNullable(destinationsDetails.LocalAuthorityEmployment.CurrentYear, destinationsDetails.LocalAuthorityApprentice.CurrentYear)]
+                Data = [destinationsDetails.LocalAuthorityEducation.CurrentYear.Value, CommonHelper.AddNullable(destinationsDetails.LocalAuthorityEmployment.CurrentYear.Value, destinationsDetails.LocalAuthorityApprentice.CurrentYear.Value)]
             },
             new DataSeriesViewModel
             {
                 Label = "England average",
-                Data = [destinationsDetails.EnglandEducation.CurrentYear, CommonHelper.AddNullable(destinationsDetails.EnglandEmployment.CurrentYear, destinationsDetails.EnglandApprentice.CurrentYear)]
+                Data = [destinationsDetails.EnglandEducation.CurrentYear.Value, CommonHelper.AddNullable(destinationsDetails.EnglandEmployment.CurrentYear.Value, destinationsDetails.EnglandApprentice.CurrentYear.Value)]
             },
         ],
             };
@@ -157,6 +157,17 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
             Assert.Equal(expectedAllDestCurrentDataLabels, model.AllDestinationsData.Labels);
             Assert.Equal(expectedAllDestCurrentData, model.AllDestinationsData.Data);
 
+            Assert.Equal(expectedAllDestCurrentDataLabels, model.AllDestinationsDisadvantagedData.Labels);
+            Assert.Equal(
+                [destinationsDetails.SchoolDisadvantagedAll.CurrentYear.Value, destinationsDetails.LocalAuthorityDisadvantagedAll.CurrentYear.Value, destinationsDetails.EnglandDisadvantagedAll.CurrentYear.Value],
+                model.AllDestinationsDisadvantagedData.Data);
+
+            string[] expectedAllDestNonDisadvantagedDataLabels = [$"{_fakeEstablishment.LAName} average", "England average"];
+            Assert.Equal(expectedAllDestNonDisadvantagedDataLabels, model.AllDestinationsNonDisadvantagedData.Labels);
+            Assert.Equal(
+                [destinationsDetails.LocalAuthorityNonDisadvantagedAll.CurrentYear.Value, destinationsDetails.EnglandNonDisadvantagedAll.CurrentYear.Value],
+                model.AllDestinationsNonDisadvantagedData.Data);
+
             Assert.Equal(expectedDataOverTime.Labels, model.AllDestinationsOverTimeData.Labels);
             foreach (var expectedDataset in expectedDataOverTime.Datasets)
             {
@@ -164,16 +175,65 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
                 Assert.NotNull(actualDatset);
                 Assert.Equal(expectedDataset.Label, actualDatset.Label);
                 Assert.Equal(expectedDataset.Data, actualDatset.Data);
-            }
+            }        
 
-            Assert.Equal(expectedBreakdownCurrentYearDataLabels, model.BreakdownDestinationData.Labels);
-            foreach (var expectedDataset in expectedBreakdownCurrentYearData.Datasets)
-            {
-                var actualDatset = model.BreakdownDestinationData.Datasets.FirstOrDefault(s => s.Label == expectedDataset.Label);
-                Assert.NotNull(actualDatset);
-                Assert.Equal(expectedDataset.Label, actualDatset.Label);
-                Assert.Equal(expectedDataset.Data, actualDatset.Data);
-            }
+            string[] expectedTableColumnLabels = ["School", $"{_fakeEstablishment.LAName} average", "England average"];
+
+            Assert.Equal(expectedTableColumnLabels, model.StayedInEducationTable.Labels);
+            var stayedInEducationRow = Assert.Single(model.StayedInEducationTable.Datasets);
+            Assert.Equal("Pupils who stayed in education", stayedInEducationRow.Label);
+            Assert.Equal(
+                [destinationsDetails.SchoolEducation.CurrentYear.Value, destinationsDetails.LocalAuthorityEducation.CurrentYear.Value, destinationsDetails.EnglandEducation.CurrentYear.Value],
+                stayedInEducationRow.Data.Select(d => d.Value.Value));
+
+            Assert.Equal(expectedTableColumnLabels, model.WherePupilsStudiedTable.Labels);
+            Assert.Equal(
+                ["Further education provider", "School sixth form", "Sixth form college", "Other education destinations"],
+                model.WherePupilsStudiedTable.Datasets.Select(d => d.Label));
+
+            var furtherEdRow = model.WherePupilsStudiedTable.Datasets.Single(d => d.Label == "Further education provider");
+            Assert.Equal(
+                [destinationsDetails.SchoolFurtherEducation.CurrentYear.Value, destinationsDetails.LocalAuthorityFurtherEducation.CurrentYear.Value, destinationsDetails.EnglandFurtherEducation.CurrentYear.Value],
+                furtherEdRow.Data.Select(d => d.Value.Value));
+
+            var schoolSixthFormRow = model.WherePupilsStudiedTable.Datasets.Single(d => d.Label == "School sixth form");
+            Assert.Equal(
+                [destinationsDetails.SchoolSchoolSixthForm.CurrentYear.Value, destinationsDetails.LocalAuthoritySchoolSixthForm.CurrentYear.Value, destinationsDetails.EnglandSchoolSixthForm.CurrentYear.Value],
+                schoolSixthFormRow.Data.Select(d => d.Value.Value));
+
+            var collegeSixthFormRow = model.WherePupilsStudiedTable.Datasets.Single(d => d.Label == "Sixth form college");
+            Assert.Equal(
+                [destinationsDetails.SchoolCollegeSixthForm.CurrentYear.Value, destinationsDetails.LocalAuthorityCollegeSixthForm.CurrentYear.Value, destinationsDetails.EnglandCollegeSixthForm.CurrentYear.Value],
+                collegeSixthFormRow.Data.Select(d => d.Value.Value));
+
+            var otherEdRow = model.WherePupilsStudiedTable.Datasets.Single(d => d.Label == "Other education destinations");
+            Assert.Equal(
+                [destinationsDetails.SchoolOtherEducation.CurrentYear.Value, destinationsDetails.LocalAuthorityOtherEducation.CurrentYear.Value, destinationsDetails.EnglandOtherEducation.CurrentYear.Value],
+                otherEdRow.Data.Select(d => d.Value.Value));
+
+            Assert.Equal(expectedTableColumnLabels, model.ApprenticeshipsOrEmploymentTable.Labels);
+            var employmentRow = model.ApprenticeshipsOrEmploymentTable.Datasets.Single(d => d.Label == "Pupils who stayed in employment for at least 2 terms");
+            Assert.Equal(
+                [destinationsDetails.SchoolEmployment.CurrentYear.Value, destinationsDetails.LocalAuthorityEmployment.CurrentYear.Value, destinationsDetails.EnglandEmployment.CurrentYear.Value],
+                employmentRow.Data.Select(d => d.Value.Value));
+
+            var apprenticeRow = model.ApprenticeshipsOrEmploymentTable.Datasets.Single(d => d.Label == "Pupils who stayed in an apprenticeship for at least 6 months");
+            Assert.Equal(
+                [destinationsDetails.SchoolApprentice.CurrentYear.Value, destinationsDetails.LocalAuthorityApprentice.CurrentYear.Value, destinationsDetails.EnglandApprentice.CurrentYear.Value],
+                apprenticeRow.Data.Select(d => d.Value.Value));
+
+            Assert.Equal(expectedTableColumnLabels, model.DidNotStayInEducationOrEmploymentTable.Labels);
+            var notSustainedRow = model.DidNotStayInEducationOrEmploymentTable.Datasets.Single(d => d.Label == "Pupils who did not stay in education or employment for at least 2 terms");
+            Assert.Equal(
+                [destinationsDetails.SchoolNotSustained.CurrentYear.Value, destinationsDetails.LocalAuthorityNotSustained.CurrentYear.Value, destinationsDetails.EnglandNotSustained.CurrentYear.Value],
+                notSustainedRow.Data.Select(d => d.Value.Value));
+
+            var unknownRow = model.DidNotStayInEducationOrEmploymentTable.Datasets.Single(d => d.Label == "Destination unknown");
+            Assert.Equal(
+                [destinationsDetails.SchoolUnknown.CurrentYear.Value, destinationsDetails.LocalAuthorityUnknown.CurrentYear.Value, destinationsDetails.EnglandUnknown.CurrentYear.Value],
+                unknownRow.Data.Select(d => d.Value.Value));
+
+            Assert.Equal(destinationsDetails.EstablishmentTotalCohortFor.Value, model.NumberOfStudentsIncludedInMeasure.Value);
 
             Assert.Equal(2, model.RouteAttributes.Count);
             Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
@@ -210,6 +270,12 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
             Assert.Equal(expectedAllDestCurrentDataLabels, model.AllDestinationsData.Labels);
             Assert.Equal([null, null, null], model.AllDestinationsData.Data);
 
+            Assert.Equal(expectedAllDestCurrentDataLabels, model.AllDestinationsDisadvantagedData.Labels);
+            Assert.Equal([null, null, null], model.AllDestinationsDisadvantagedData.Data);
+
+            Assert.Equal([$"{_fakeEstablishment.LAName} average", "England average"], model.AllDestinationsNonDisadvantagedData.Labels);
+            Assert.Equal([null, null], model.AllDestinationsNonDisadvantagedData.Data);
+
             Assert.Equal(3, model.AllDestinationsOverTimeData.Datasets.Count);
             Assert.Equal("School", model.AllDestinationsOverTimeData.Datasets[0].Label);
             Assert.Equal([null, null, null], model.AllDestinationsOverTimeData.Datasets[0].Data);
@@ -222,19 +288,19 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
 
             Assert.Equal(["2020 to 2021", "2021 to 2022", "2022 to 2023"], model.AllDestinationsOverTimeData.Labels);
 
-            // Breakdown gcse data assert
-            Assert.Equal(["Staying in education", "Entering employment and apprenticeships"], model.BreakdownDestinationData.Labels);
+            string[] expectedTableColumnLabels = ["School", $"{_fakeEstablishment.LAName} average", "England average"];
 
-            Assert.Equal(3, model.BreakdownDestinationData.Datasets.Count);
+            Assert.Equal(expectedTableColumnLabels, model.StayedInEducationTable.Labels);
+            Assert.All(model.StayedInEducationTable.Datasets.SelectMany(d => d.Data), m => Assert.False(m.Value.HasValue));
 
-            Assert.Equal("School", model.BreakdownDestinationData.Datasets[0].Label);
-            Assert.Equal([null, null], model.BreakdownDestinationData.Datasets[0].Data);
+            Assert.Equal(expectedTableColumnLabels, model.WherePupilsStudiedTable.Labels);
+            Assert.All(model.WherePupilsStudiedTable.Datasets.SelectMany(d => d.Data), m => Assert.False(m.Value.HasValue));
 
-            Assert.Equal($"{_fakeEstablishment.LAName} average", model.BreakdownDestinationData.Datasets[1].Label);
-            Assert.Equal([null, null], model.BreakdownDestinationData.Datasets[1].Data);
+            Assert.Equal(expectedTableColumnLabels, model.ApprenticeshipsOrEmploymentTable.Labels);
+            Assert.All(model.ApprenticeshipsOrEmploymentTable.Datasets.SelectMany(d => d.Data), m => Assert.False(m.Value.HasValue));
 
-            Assert.Equal("England average", model.BreakdownDestinationData.Datasets[2].Label);
-            Assert.Equal([null, null], model.BreakdownDestinationData.Datasets[2].Data);
+            Assert.Equal(expectedTableColumnLabels, model.DidNotStayInEducationOrEmploymentTable.Labels);
+            Assert.All(model.DidNotStayInEducationOrEmploymentTable.Datasets.SelectMany(d => d.Data), m => Assert.False(m.Value.HasValue));
         }
 
         [Theory]
@@ -272,9 +338,6 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
 
             var actualDataOvertimeDataLabels = model.AllDestinationsOverTimeData.Datasets.Select(s => s.Label).ToArray();
             Assert.Equal(expectedDataOvertimeDataLabels, actualDataOvertimeDataLabels);
-
-            var actualBreakdownDataLabels = model.BreakdownDestinationData.Datasets.Select(s => s.Label).ToArray();
-            Assert.Equal(expectedBreakdownDataLabels, actualBreakdownDataLabels);
         }
 
         [Fact]
@@ -287,7 +350,7 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
                 SchoolName = _fakeEstablishment.EstablishmentName,
                 IsKS2 = false,
                 IsKS4 = false,
-                IsKS5 = false,
+                IsKS5 = true,
                 EstablishmentTotalOverall = 88,
                 LATotalOverall = 77,
                 EnglandOverall = 66
@@ -305,6 +368,54 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
                 .ReturnsAsync(destinationsDetails);
 
             var result = await _controller.KS5(_mockDestinationsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
+
+            string[] expectedAllDestDataLabels = ["School or College", $"{_fakeEstablishment.LAName} average", "England average"];
+
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Model);
+
+            var model = result.Model as KS5DestinationsViewModel;
+            Assert.NotNull(model);
+            Assert.Equal(_fakeEstablishment.URN, model.URN);
+            Assert.Equal(_fakeEstablishment.EstablishmentName, model.SchoolName);
+
+            Assert.Equal(expectedAllDestDataLabels, model.AllDestinationsData.Labels);
+            Assert.Equal(expectedAllDestData, model.AllDestinationsData.Data);
+
+            Assert.Equal(2, model.RouteAttributes.Count);
+            Assert.Equal(_fakeEstablishment.URN, model.RouteAttributes[RouteConstants.URN]);
+            Assert.Equal(_fakeEstablishment.EstablishmentNameClean, model.RouteAttributes[RouteConstants.SchoolName]);
+        }
+
+        [Fact]
+        public async Task Get_KS5Destinations_HigherLevelStudy_Info_ReturnsOk()
+        {
+            var destinationsDetails = new KS5DestinationsDetails
+            {
+                Urn = _fakeEstablishment.URN,
+                LocalAuthorityName = _fakeEstablishment.LAName,
+                SchoolName = _fakeEstablishment.EstablishmentName,
+                IsKS2 = false,
+                IsKS4 = false,
+                IsKS5 = true,
+                EstablishmentTotalOverall = 88,
+                LATotalOverall = 77,
+                EnglandOverall = 66
+            };
+
+            double?[] expectedAllDestData =
+            [
+                destinationsDetails.EstablishmentTotalOverall = 88,
+                destinationsDetails.LATotalOverall = 66,
+                destinationsDetails.EnglandOverall = 77,
+            ];
+
+            _mockDestinationsService
+                .Setup(es => es.GetKS5DestinationsDetailsAsync(_fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(destinationsDetails);
+
+            var result = await _controller.KS5HigherLevel(_mockDestinationsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
             string[] expectedAllDestDataLabels = ["School or College", $"{_fakeEstablishment.LAName} average", "England average"];
 

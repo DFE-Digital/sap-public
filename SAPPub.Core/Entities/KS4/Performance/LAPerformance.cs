@@ -19,6 +19,18 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public string? Attainment8_Tot_LA_Current_Num_Reason { get; set; }
 
         /// <summary>
+        /// Attainment 8 non-disadvantaged filtered by LA for current year
+        /// <summary>
+        public CodedDouble Attainment8_NDi_LA_Current_Num_Coded { get; set; } = new();
+
+        /// <summary>
+        /// Attainment 8 disadvantaged filtered by LA for each year
+        /// <summary>
+        public CodedDouble Attainment8_Dis_LA_Current_Num_Coded { get; set; } = new();
+        public CodedDouble Attainment8_Dis_LA_Previous_Num_Coded { get; set; } = new();
+        public CodedDouble Attainment8_Dis_LA_Previous2_Num_Coded { get; set; } = new();
+
+        /// <summary>
         /// English and Maths grades 4 to 9 Boys filtered by LA for Current year
         /// <summary>
         public CodedDouble EngMaths49_Boy_LA_Current_Pct_Coded { get; set; } = new();
@@ -166,6 +178,10 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public string? EngMaths79_Tot_LA_Previous_Pct_Reason { get; set; }
 
         /// <summary>
+        /// Progress 8 Average filtered by LA for Current year
+        /// <summary>
+        public CodedDouble Prog8_Avg_LA_Current_Num_Coded { get; set; } = new();
+        /// <summary>
         /// Progress 8 Average filtered by LA for Previous year
         /// <summary>
         public CodedDouble Prog8_Avg_LA_Previous_Num_Coded { get; set; } = new();
@@ -235,5 +251,16 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public CodedDouble ExamEntriesGSCE_Tot_LA_Current_Num_Coded { get; set; }
         // Exam entries per pupil, all KS4 qualifications
         public CodedDouble ExamEntriesKS4_Tot_LA_Current_Num_Coded { get; set; }
+
+        // Exam entries per pupil, GCSEs (Disadvantaged)
+        public CodedDouble ExamEntriesGSCE_Dis_LA_Current_Num_Coded { get; set; }
+        // Exam entries per pupil, all KS4 qualifications (Disadvantaged)
+        public CodedDouble ExamEntriesKS4_Dis_LA_Current_Num_Coded { get; set; }
+        // Exam entries per pupil, GCSEs (Non-Disadvantaged)
+        public CodedDouble ExamEntriesGSCE_NDi_LA_Current_Num_Coded { get; set; }
+        // Exam entries per pupil, all KS4 qualifications (Non-Disadvantaged)
+        public CodedDouble ExamEntriesKS4_NDi_LA_Current_Num_Coded { get; set; }
+        public CodedDouble Pup_Dis_LA_Current_Num_Coded { get; set; }
+        public CodedDouble Pup_NDi_LA_Current_Num_Coded { get; set; }
     }
 }

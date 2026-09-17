@@ -1,5 +1,6 @@
 ﻿using SAPPub.Core.Enums;
 using SAPPub.Core.ServiceModels.KS4.Performance;
+using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.Charts;
 
@@ -15,9 +16,9 @@ public class AcademicPerformanceEnglishAndMathsResultsViewModel : BaseViewModel
 
     public required SeriesViewModel BreakdownGcseData { get; set; }
 
-    public required SeriesCodedDoubleViewModel BreakdownDisadvantaged { get; set; }
+    public required SeriesMeasureViewModel BreakdownDisadvantaged { get; set; }
 
-    public required SeriesCodedDoubleViewModel BreakdownNonDisadvantaged { get; set; }
+    public required SeriesMeasureViewModel BreakdownNonDisadvantaged { get; set; }
 
     public required DisplayField<bool> HasEstablishmentData { get; set; }
 
@@ -86,38 +87,42 @@ public class AcademicPerformanceEnglishAndMathsResultsViewModel : BaseViewModel
                 ],
         };
 
-        var disadvantagedBreakdownGcseData = new SeriesCodedDoubleViewModel
+        var disadvantagedBreakdownData = new SeriesMeasureViewModel
         {
+            TableId = "breakdown-disadvantaged-table",
+            TableHeader = "Pupil group (disadvantaged)",
             Labels = [$"Percentage who achieved {selectedGrade.GetDisplayName()} in English and maths"],
             Datasets =
                 [
-                    new DatasetCodedDoubleViewModel {
+                    new DatasetMeasureViewModel {
                         Label = "School",
-                        Data = [englishAndMathsResultsModel.EstablishmentDisadvantaged.CurrentYear]
+                        Data = [ new Measure { Value = englishAndMathsResultsModel.EstablishmentDisadvantaged.CurrentYear, Unit = DataUnit.Percentage }]
                     },
-                    new DatasetCodedDoubleViewModel {
+                    new DatasetMeasureViewModel {
                         Label = laAverageLabel,
-                        Data = [englishAndMathsResultsModel.LocalAuthorityDisadvantaged.CurrentYear]
+                        Data = [ new Measure { Value = englishAndMathsResultsModel.LocalAuthorityDisadvantaged.CurrentYear, Unit = DataUnit.Percentage }]
                     },
-                    new DatasetCodedDoubleViewModel {
+                    new DatasetMeasureViewModel {
                         Label = "England average",
-                        Data = [englishAndMathsResultsModel.EnglandDisadvantaged.CurrentYear]
+                        Data = [ new Measure { Value = englishAndMathsResultsModel.EnglandDisadvantaged.CurrentYear, Unit = DataUnit.Percentage }]
                     },
                 ],
         };
 
-        var nonDisadvantagedBreakdownGcseData = new SeriesCodedDoubleViewModel
+        var nonDisadvantagedBreakdownData = new SeriesMeasureViewModel
         {
+            TableId = "breakdown-non-disadvantaged-table",
+            TableHeader = "Pupil group (non-disadvantaged)",
             Labels = [$"Percentage who achieved {selectedGrade.GetDisplayName()} in English and maths"],
             Datasets =
                     [
-                        new DatasetCodedDoubleViewModel {
+                        new DatasetMeasureViewModel {
                             Label = laAverageLabel,
-                            Data = [englishAndMathsResultsModel.LocalAuthorityNonDisadvantaged.CurrentYear]
+                            Data = [ new Measure { Value = englishAndMathsResultsModel.LocalAuthorityNonDisadvantaged.CurrentYear, Unit = DataUnit.Percentage }]
                         },
-                        new DatasetCodedDoubleViewModel {
+                        new DatasetMeasureViewModel {
                             Label = "England average",
-                            Data = [englishAndMathsResultsModel.EnglandNonDisadvantaged.CurrentYear]
+                            Data = [ new Measure { Value = englishAndMathsResultsModel.EnglandNonDisadvantaged.CurrentYear, Unit = DataUnit.Percentage }]
                         },
                     ],
         };
@@ -133,8 +138,8 @@ public class AcademicPerformanceEnglishAndMathsResultsViewModel : BaseViewModel
             AllGcseData = allGcseData,
             AllGcseOverTimeData = allGcseOverTimeData,
             BreakdownGcseData = breakdownGcseData,
-            BreakdownDisadvantaged = disadvantagedBreakdownGcseData,
-            BreakdownNonDisadvantaged = nonDisadvantagedBreakdownGcseData,
+            BreakdownDisadvantaged = disadvantagedBreakdownData,
+            BreakdownNonDisadvantaged = nonDisadvantagedBreakdownData,
             HasEstablishmentData = hasEstablishmentData.ToDisplayField(),
         };
     }

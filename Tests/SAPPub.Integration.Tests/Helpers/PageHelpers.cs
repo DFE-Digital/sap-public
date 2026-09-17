@@ -1,7 +1,7 @@
 ﻿using Microsoft.Playwright;
 using System.Text.RegularExpressions;
 
-namespace SAPPub.IntegrationTests.Helpers;
+namespace SAPPub.Integration.Tests.Helpers;
 
 public static class PageHelpers
 {
@@ -15,6 +15,10 @@ public static class PageHelpers
     public static async Task<IEnumerable<string>?> GetScoreFromParagraphAsync(this IPage Page, string dataTestid, string textString)
     {
         var section = Page.Locator($"[data-testid='{dataTestid}']");
+        if(await section.CountAsync() == 0)
+        {
+            section = Page.Locator($"#{dataTestid}");
+        }
         var p = section.Locator("p.govuk-body", new() { HasTextString = textString });
         var pCount = await p.CountAsync();
         Assert.True(pCount == 1, $"Paragraph count mismatch looking for paragraph text: {textString}. Actual count: {pCount}, expected 1");

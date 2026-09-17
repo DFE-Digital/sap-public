@@ -2,9 +2,9 @@
 
 namespace SAPPub.Web.Models.Charts;
 
-public record DatasetCodedDoubleViewModel
+public record DatasetMeasureViewModel
 {
     public string? Label { get; set; }
 
-    public required List<CodedDouble> Data { get; init; }
+    public required List<Measure> Data { get; init; }
 }

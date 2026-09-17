@@ -12,7 +12,7 @@
         @foreach (var row in Model.Rows)
         {
             <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header">@row.RowTitle</th>
+                <th scope="row" class="govuk-table__header">@row.RowTitle</th>
                 <td class="govuk-table__cell">@row.MeetingStandard.DisplayPercentage()</td>
                 <td class="govuk-table__cell">@row.ExceedingStandard.DisplayPercentage()</td>
             </tr>

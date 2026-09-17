@@ -23,26 +23,65 @@ public static class PageHelper
             .CountAsync() > 0;
     }
 
+    public static async Task<List<IReadOnlyList<string>>> GetTableRowsValuesByTableCaptionAsync(
+    this IPage page,
+    string captionText)
+    {
+        var table = page.Locator("table")
+            .Filter(new()
+            {
+                Has = page.Locator($"caption:text-is('{captionText}')")
+            });
+
+        var rows = table.Locator("tbody tr");
+        var rowCount = await rows.CountAsync();
+        var result = new List<IReadOnlyList<string>>();
+        for (var i = 0; i < rowCount; i++)
+        {
+            var row = rows.Nth(i);
+            result.Add(await rows.Nth(i).Locator("td").AllInnerTextsAsync());
+        }
+
+        return result;
+    }
+
     public static Task<IReadOnlyList<string>> GetTableRowValuesAsync(
         this IPage page,
         string tableId,
         string rowHeader)
     {
-        var row = page.Locator($"#{tableId} tbody tr")
+        var id = tableId.StartsWith("#") ? tableId : $"#{tableId}";
+        var row = page.Locator($"{id} tbody tr")
             .Filter(new()
             {
-                Has = page.Locator($"th:has-text('{rowHeader}')")
+                HasText = rowHeader
             });
 
         return row.Locator("td").AllInnerTextsAsync();
     }
 
-    public static Task ExpandAccordionAsync(this IPage page, string label)
+    public static Task<IReadOnlyList<string>> GetTableRowValuesAsync(
+        this IPage page,
+        string tableId,
+        int rowNumber)
     {
-        return page.GetByRole(AriaRole.Button, new()
+        var id = tableId.StartsWith("#") ? tableId : $"#{tableId}";
+        var row = page.Locator($"{id} tbody tr")
+            .Nth(rowNumber);
+
+        return row.Locator("td").AllInnerTextsAsync();
+    }
+
+    public static async Task ExpandAccordionByIdAsync(this IPage page, string id)
+    {
+        id = id.StartsWith("#") ? id : $"#{id}";
+        var sectionLocator = page.Locator($"{id}");
+        var button = sectionLocator.Locator(".govuk-accordion__show-all");
+        var isExpanded = await button.GetAttributeAsync("aria-expanded");
+        if (isExpanded != "true")
         {
-            Name = label
-        }).ClickAsync();
+            await button.ClickAsync();
+        }
     }
 
     public static Task ExpandDetailsAsync(this IPage page, string summaryText)

@@ -294,10 +294,12 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
         {
             Id = "105574",
             Attainment8_Tot_Est_Current_Num = 10,
+            Attainment8_Tot_Est_Current_Num_Coded = new CodedDouble(10, string.Empty, "10"),
             Attainment8_Tot_Est_Previous_Num = 20,
-            Attainment8_Tot_Est_Previous2_Num = null,
-            Prog8_Tot_Est_Previous_Num = 0.1,
-            Prog8_Tot_Est_Previous2_Num = null,
+            Attainment8_Tot_Est_Previous_Num_Coded = new CodedDouble(20, string.Empty, "20"),
+            Attainment8_Tot_Est_Previous2_Num_Coded = new CodedDouble(null, string.Empty, "z"),
+            Prog8_Tot_Est_Previous_Num_Coded = new CodedDouble(0.1, string.Empty, "0.1"),
+            Prog8_Tot_Est_Previous2_Num_Coded = new CodedDouble(null, string.Empty, "z"),
             EngMaths49_Tot_Est_Current_Pct = 71,
             EngMaths59_Tot_Est_Current_Pct = 61,
             EngMaths79_Tot_Est_Current_Pct = 21,
@@ -325,9 +327,9 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             Id = "137020",
             Attainment8_Tot_Est_Current_Num = 20,
             Attainment8_Tot_Est_Previous_Num = 10,
-            Attainment8_Tot_Est_Previous2_Num = null,
-            Prog8_Tot_Est_Previous_Num = 0.5,
-            Prog8_Tot_Est_Previous2_Num = null,
+            Attainment8_Tot_Est_Previous2_Num_Coded = new CodedDouble(null, string.Empty, "z"),
+            Prog8_Tot_Est_Previous_Num_Coded = new CodedDouble(0.5, string.Empty, "0.5"),
+            Prog8_Tot_Est_Previous2_Num_Coded = new CodedDouble(null, string.Empty, "z"),
             EngMaths49_Tot_Est_Current_Pct = 70,
             EngMaths59_Tot_Est_Current_Pct = 50,
             EngMaths49_Tot_Est_Previous_Pct = 55,
@@ -342,6 +344,31 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             ExamEntriesKS4_Tot_Est_Current_Num_Coded = new CodedDouble(null, "", ""),
             Pup_Tot_Est_Current_Num_Coded = new CodedDouble(null, "", ""),
         },
+        ["107564"] = new EstablishmentPerformance
+        {
+            Id = "107564",
+            Attainment8_Tot_Est_Current_Num_Coded = new CodedDouble(0.11, string.Empty, "0.11"),
+            Attainment8_Tot_Est_Previous_Num_Coded = new CodedDouble(0.12, string.Empty, "0.12"),
+            Attainment8_Tot_Est_Previous2_Num_Coded = new CodedDouble(0.13, string.Empty, "0.13"),
+            Prog8_Tot_Est_Current_Num_Coded = new CodedDouble(0.21, string.Empty, "0.21"),
+            Prog8_Tot_Est_Previous_Num_Coded = new CodedDouble(0.22, string.Empty, "0.22"),
+            Prog8_Tot_Est_Previous2_Num_Coded = new CodedDouble(0.23, string.Empty, "0.23"),
+            EngMaths49_Tot_Est_Current_Pct = 70,
+            EngMaths59_Tot_Est_Current_Pct = 50,
+            EngMaths49_Tot_Est_Previous_Pct = 55,
+            EngMaths59_Tot_Est_Previous_Pct = 60,
+            EngMaths49_Tot_Est_Previous2_Pct = 55,
+            EngMaths59_Tot_Est_Previous2_Pct = 70,
+            // additional measures
+            AnyQual_Tot_Est_Current_Pct_Coded = new CodedDouble(null, "", ""),
+            TripSci_Tot_Est_Current_Pct_Coded = new CodedDouble(null, "", ""),
+            More1FL_Tot_Est_Current_Pct_Coded = new CodedDouble(null, "", ""),
+            ExamEntriesGSCE_Tot_Est_Current_Num_Coded = new CodedDouble(null, "", ""),
+            ExamEntriesKS4_Tot_Est_Current_Num_Coded = new CodedDouble(null, "", ""),
+            Pup_Tot_Est_Current_Num_Coded = new CodedDouble(null, "", ""),
+        },
+
+
     };
 
     private static readonly Dictionary<string, KS4EstablishmentDestinations> EstablishmentDestinations = new(StringComparer.OrdinalIgnoreCase)
@@ -349,33 +376,29 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
         ["105574"] = new KS4EstablishmentDestinations
         {
             Id = "105574",
-            AllDest_Tot_Est_Current_Pct = 50,
-            AllDest_Tot_Est_Previous_Pct = 20,
-            AllDest_Tot_Est_Previous2_Pct = 30,
-            Education_Tot_Est_Current_Pct = 47,
-            Employment_Tot_Est_Current_Pct = 2,
-            Apprentice_Tot_Est_Current_Pct = 1,
+            AllDest_Tot_Est_Current_Pct_Coded = new CodedDouble(50, string.Empty, "50"),
+            AllDest_Tot_Est_Previous_Pct_Coded = new CodedDouble(20, string.Empty, "20"),
+            AllDest_Tot_Est_Previous2_Pct_Coded = new CodedDouble(30, string.Empty, "30"),
+            Education_Tot_Est_Current_Pct_Coded = new CodedDouble(47, string.Empty, "47"),
+            Employment_Tot_Est_Current_Pct_Coded = new CodedDouble(2, string.Empty, "2"),
+            Apprentice_Tot_Est_Current_Pct_Coded = new CodedDouble(1, string.Empty, "1"),
+            Cohort_Tot_Est_Current_Num_Coded = new CodedDouble(1020, string.Empty, "1020"),
 
         },
         ["100279"] = new KS4EstablishmentDestinations
         {
             Id = "100279",
-            AllDest_Tot_Est_Current_Pct = 50,
-            AllDest_Tot_Est_Previous_Pct = 20,
-            AllDest_Tot_Est_Previous2_Pct = 30,
-            Education_Tot_Est_Current_Pct = 47,
-            Employment_Tot_Est_Current_Pct = 2,
-            Apprentice_Tot_Est_Current_Pct = 1,
+            AllDest_Tot_Est_Current_Pct_Coded = new CodedDouble(50, string.Empty, "50"),
+            AllDest_Tot_Est_Previous_Pct_Coded = new CodedDouble(20, string.Empty, "20"),
+            AllDest_Tot_Est_Previous2_Pct_Coded = new CodedDouble(30, string.Empty, "30"),
+            Education_Tot_Est_Current_Pct_Coded = new CodedDouble(47, string.Empty, "47"),
+            Employment_Tot_Est_Current_Pct_Coded = new CodedDouble(2, string.Empty, "2"),
+            Apprentice_Tot_Est_Current_Pct_Coded = new CodedDouble(1, string.Empty, "1"),
+            Cohort_Tot_Est_Current_Num_Coded = new CodedDouble(1020, string.Empty, "1020"),
         },
         ["149328"] = new KS4EstablishmentDestinations
         {
             Id = "149328",
-            AllDest_Tot_Est_Current_Pct = null,
-            AllDest_Tot_Est_Previous_Pct = null,
-            AllDest_Tot_Est_Previous2_Pct = null,
-            Education_Tot_Est_Current_Pct = null,
-            Employment_Tot_Est_Current_Pct = null,
-            Apprentice_Tot_Est_Current_Pct = null,
         },
     };
 
@@ -384,17 +407,16 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
         ["105574"] = new KS4EnglandDestinations
         {
             Id = "105574",
-            AllDest_Tot_Eng_Current_Pct = 50
+            AllDest_Tot_Eng_Current_Pct_Coded = new CodedDouble(50, string.Empty, "50")
         },
         ["100279"] = new KS4EnglandDestinations
         {
             Id = "100279",
-            AllDest_Tot_Eng_Current_Pct = 50
+            AllDest_Tot_Eng_Current_Pct_Coded = new CodedDouble(50, string.Empty, "50")
         },
         ["149328"] = new KS4EnglandDestinations
         {
             Id = "149328",
-            AllDest_Tot_Eng_Current_Pct = null
         }
     };
 

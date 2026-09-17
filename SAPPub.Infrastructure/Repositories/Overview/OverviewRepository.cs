@@ -7,6 +7,7 @@ using SAPPub.Core.Entities.Performance;
 using SAPPub.Core.Exceptions;
 using SAPPub.Core.Interfaces.Repositories.Overview;
 using SAPPub.Infrastructure.Repositories.Generic;
+using SAPPub.Core.Entities.Overview;
 
 namespace SAPPub.Infrastructure.Repositories.Overview;
 
@@ -53,7 +54,9 @@ public class OverviewRepository(
                 p."Id",
                 p."Attainment8_Tot_Est_Current_Num_Coded",
                 p."EngMaths59_Tot_Est_Current_Pct_Coded",
-                p."More1FL_Tot_Est_Current_Pct_Coded"
+                p."More1FL_Tot_Est_Current_Pct_Coded",
+                p."GCSESubjectEnteredSum_Est_Current_Num_Coded",
+                p."TechSubjectEnteredSum_Est_Current_Num_Coded"
             FROM public.v_establishment e
             LEFT JOIN public.v_establishment_performance p
                 ON p."Id" = e."URN"
@@ -129,6 +132,16 @@ public class OverviewRepository(
                 eng."PTRWM_HIGH_Eng_Current_Pct_Coded"
             FROM public.v_england_ks2_attainment eng
             WHERE eng."Id" = 'National';
+
+            -- 11. Top technical subjects
+            SELECT
+                s."SubjectName",
+                s."PercentageEntering"
+            FROM public.v_establishment_top3_technical_subject_entries s
+            WHERE s."URN" = @Urn
+            ORDER BY
+                s."PercentageEntering" DESC NULLS LAST,
+                s."SubjectName";
             """;
 
         await using var connection = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
@@ -163,6 +176,8 @@ public class OverviewRepository(
 
         var ks2EnglandPerformance = await result.ReadSingleOrDefaultAsync<KS2EnglandPerformance>();
 
+        var topTechnicalSubjects = (await result.ReadAsync<TechnicalSubjectEntry>()).ToList();
+
         return new Core.Entities.Overview.Overview
         {
             Establishment = establishment,
@@ -177,7 +192,9 @@ public class OverviewRepository(
 
             KS2Performance = ks2Performance,
             KS2LAPerformance = ks2LAPerformance,
-            KS2EnglandPerformance = ks2EnglandPerformance
+            KS2EnglandPerformance = ks2EnglandPerformance,
+
+            TopTechnicalSubjects = topTechnicalSubjects
         };
     }
 }

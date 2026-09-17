@@ -1,0 +1,128 @@
+[
+  [
+    "124856",
+    [
+      [ "Arabic", 1 ],
+      [ "Art & Design", 46 ],
+      [ "Biology", 56 ],
+      [ "Business Studies", 75 ],
+      [ "Chemistry (General)", 56 ],
+      [ "Computer Science", 15 ],
+      [ "D & T", 37 ],
+      [ "Economics", 17 ],
+      [ "English Language", 222 ],
+      [ "English Literature", 217 ],
+      [ "Food Technology", 36 ],
+      [ "French Language", 25 ],
+      [ "Geography", 114 ],
+      [ "German", 2 ],
+      [ "History", 109 ],
+      [ "Japanese Language", 1 ],
+      [ "Mathematics (General)", 222 ],
+      [ "Media Studies", 23 ],
+      [ "Music Studies (General)", 20 ],
+      [ "Photography", 48 ],
+      [ "Physics (General)", 56 ],
+      [ "Polish", 4 ],
+      [ "Psychology (General)", 71 ],
+      [ "Religious Studies", 25 ],
+      [ "Russian", 3 ],
+      [ "Science Double Award", 165 ],
+      [ "Sociology", 50 ],
+      [ "Spanish", 19 ],
+      [ "Speech & Drama", 18 ],
+      [ "Sports Studies", 25 ],
+      [ "Turkish", 1 ]
+    ],
+    [
+      [ "Childcare Skills", 23 ],
+      [ "Engineering Studies", 33 ]
+    ]
+  ],
+  [
+    "136489",
+    [
+      [ "Spanish", 36 ],
+      [ "Business Studies", 74 ],
+      [ "Chemistry (General)", 64 ],
+      [ "Computer Science", 15 ],
+      [ "D & T", 54 ],
+      [ "Religious Studies", 19 ],
+      [ "Speech & Drama", 20 ],
+      [ "English Language", 212 ],
+      [ "English Literature", 210 ],
+      [ "History", 149 ],
+      [ "Geography", 90 ],
+      [ "German", 46 ],
+      [ "Mathematics (General)", 212 ],
+      [ "Music Studies (General)", 21 ],
+      [ "Polish", 1 ],
+      [ "Sports Studies", 48 ],
+      [ "Physics (General)", 64 ],
+      [ "Food Technology", 57 ],
+      [ "Science Double Award", 144 ],
+      [ "Art & Design", 51 ],
+      [ "Biology", 67 ]
+    ],
+    [
+      [ "Business Studies", 21 ],
+      [ "Computer Appreciation / Introduction", 10 ],
+      [ "Health Studies", 40 ],
+      [ "Multimedia", 34 ],
+      [ "Sports Studies", 21 ]
+    ]
+  ],
+  [
+    "137205",
+    [
+      [ "Art & Design", 44 ],
+      [ "Biology", 49 ],
+      [ "Business Studies", 1 ],
+      [ "Chemistry (General)", 49 ],
+      [ "Computer Science", 35 ],
+      [ "D & T", 56 ],
+      [ "English Language", 179 ],
+      [ "English Literature", 179 ],
+      [ "French Language", 20 ],
+      [ "Geography", 78 ],
+      [ "History", 71 ],
+      [ "Mathematics (General)", 179 ],
+      [ "Music Studies (General)", 10 ],
+      [ "Physics (General)", 49 ],
+      [ "Polish", 3 ],
+      [ "Psychology (General)", 1 ],
+      [ "Religious Studies", 42 ],
+      [ "Science Double Award", 130 ],
+      [ "Spanish", 47 ],
+      [ "Speech & Drama", 19 ],
+      [ "Sports Studies", 32 ]
+    ],
+    [
+      [ "Business Studies", 73 ],
+      [ "Health Studies", 20 ],
+      [ "Hospitality / Catering Studies", 35 ],
+      [ "Multimedia", 36 ],
+      [ "Multimedia", 32 ]
+    ]
+  ],
+  [
+    "136791",
+    [
+      [ "Physics (General)", 47 ],
+      [ "Music Studies (General)", 12 ],
+      [ "Mathematics (General)", 212 ],
+      [ "History", 116 ],
+      [ "Geography", 97 ],
+      [ "French Language", 43 ],
+      [ "Spanish", 33 ],
+      [ "English Literature", 212 ],
+      [ "D & T", 63 ],
+      [ "Computer Science", 29 ]
+    ],
+    [
+      [ "Engineering Studies", 62 ],
+      [ "Hospitality / Catering Studies", 60 ],
+      [ "Sports Studies", 49 ]
+    ]
+  ]
+]

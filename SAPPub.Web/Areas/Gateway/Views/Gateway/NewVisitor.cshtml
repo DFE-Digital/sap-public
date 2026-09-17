@@ -15,10 +15,10 @@
                 @Html.HiddenFor(x => x.LocalAuthorityId)
 
                 <govuk-input name="EmailAddress" spellcheck="false" value="@Html.ValueFor(x => x.EmailAddress)">
-                    <govuk-input-label is-page-heading="true" class="govuk-label--l" for="EmailAddress">Enter your email address</govuk-input-label>
+                    <govuk-input-label is-page-heading="true" class="govuk-label--l">Enter your email address</govuk-input-label>
                     @if (ViewData.ModelState[Html.NameFor(x => x.EmailAddress)]?.Errors.Count() > 0)
                     {
-                        <govuk-input-error-message for="EmailAddress"> @Html.ValidationMessageFor(m => m.EmailAddress)</govuk-input-error-message>
+                        <govuk-input-error-message> @Html.ValidationMessageFor(m => m.EmailAddress)</govuk-input-error-message>
                     }
 
 

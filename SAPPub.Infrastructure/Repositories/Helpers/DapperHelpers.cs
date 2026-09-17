@@ -76,11 +76,19 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
         private const string EstablishmentDestinationsColumns = """
           "Id",
           "AllDest_Tot_Est_Current_Pct_Coded",
+          "AllDest_Dis_Est_Current_Pct_Coded",          
           "Education_Tot_Est_Current_Pct_Coded",
           "Employment_Tot_Est_Current_Pct_Coded",
           "Apprentice_Tot_Est_Current_Pct_Coded",
+          "FurtherEd_Tot_Est_Current_Pct_Coded",
+          "SchSixthForm_Tot_Est_Current_Pct_Coded",
+          "ColSixthForm_Tot_Est_Current_Pct_Coded",
+          "OtherEd_Tot_Est_Current_Pct_Coded",
+          "NotSus_Tot_Est_Current_Pct_Coded",
+          "Unknown_Tot_Est_Current_Pct_Coded",
           "AllDest_Tot_Est_Previous_Pct_Coded",
-          "AllDest_Tot_Est_Previous2_Pct_Coded"
+          "AllDest_Tot_Est_Previous2_Pct_Coded",
+          "Cohort_Tot_Est_Current_Num_Coded"
           """;
 
         // TODO for EnableSecondaryGrade7 feature - add these fields for the Grade 7 columns when they're available
@@ -124,7 +132,19 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "More1FL_Tot_Est_Current_Pct_Coded",
           "ExamEntriesGSCE_Tot_Est_Current_Num_Coded",
           "ExamEntriesKS4_Tot_Est_Current_Num_Coded",
-          "Pup_Tot_Est_Current_Num_Coded"
+          "ExamEntriesGSCE_Dis_Est_Current_Num_Coded",
+          "ExamEntriesKS4_Dis_Est_Current_Num_Coded",
+          "Pup_Tot_Est_Current_Num_Coded",
+          "Pup_Grl_Est_Current_Num_Coded",
+          "Pup_Boy_Est_Current_Num_Coded",
+          "Pup_EAL_Est_Current_Num_Coded",
+          "Pup_NMo_Est_Current_Num_Coded",
+          "Pup_Dis_Est_Current_Num_Coded",
+          "PupSEN_Tot_Est_Current_Pct_Coded",
+          "PupEHCP_Tot_Est_Current_Pct_Coded",
+          "Attainment8_Dis_Est_Current_Num_Coded",
+          "Attainment8_Dis_Est_Previous_Num_Coded",
+          "Attainment8_Dis_Est_Previous2_Num_Coded"
           """;
 
         // TODO for EnableSecondaryGrade7 feature - add these fields for the Grade 7 columns when they're available
@@ -161,15 +181,33 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "More1FL_Tot_LA_Current_Pct_Coded",
           "ExamEntriesGSCE_Tot_LA_Current_Num_Coded",
           "ExamEntriesKS4_Tot_LA_Current_Num_Coded",
-          "Pup_Tot_LA_Current_Num_Coded"
+          "ExamEntriesGSCE_Dis_LA_Current_Num_Coded",
+          "ExamEntriesKS4_Dis_LA_Current_Num_Coded",
+          "ExamEntriesGSCE_NDi_LA_Current_Num_Coded",
+          "ExamEntriesKS4_NDi_LA_Current_Num_Coded",
+          "Pup_Tot_LA_Current_Num_Coded",
+          "Pup_Dis_LA_Current_Num_Coded",
+          "Pup_NDi_LA_Current_Num_Coded",
+          "Attainment8_NDi_LA_Current_Num_Coded",
+          "Attainment8_Dis_LA_Current_Num_Coded",
+          "Attainment8_Dis_LA_Previous_Num_Coded",
+          "Attainment8_Dis_LA_Previous2_Num_Coded"
           """;
 
         private const string LADestinationsColumns = """
           "Id",
           "AllDest_Tot_LA_Current_Pct_Coded",
+          "AllDest_Dis_LA_Current_Pct_Coded",    
+          "AllDest_Ndis_LA_Current_Pct_Coded", 
           "Education_Tot_LA_Current_Pct_Coded",
           "Employment_Tot_LA_Current_Pct_Coded",
           "Apprentice_Tot_LA_Current_Pct_Coded",
+          "FurtherEd_Tot_LA_Current_Pct_Coded",
+          "SchSixthForm_Tot_LA_Current_Pct_Coded",
+          "ColSixthForm_Tot_LA_Current_Pct_Coded",
+          "OtherEd_Tot_LA_Current_Pct_Coded",
+          "NotSus_Tot_LA_Current_Pct_Coded",
+          "Unknown_Tot_LA_Current_Pct_Coded",
           "AllDest_Tot_LA_Previous_Pct_Coded",
           "AllDest_Tot_LA_Previous2_Pct_Coded"
           """;
@@ -204,15 +242,35 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "More1FL_Tot_Eng_Current_Pct_Coded",
           "ExamEntriesGSCE_Tot_Eng_Current_Num_Coded",
           "ExamEntriesKS4_Tot_Eng_Current_Num_Coded",
-          "Pup_Tot_Eng_Current_Num_Coded"
+          "ExamEntriesGSCE_Dis_Eng_Current_Num_Coded",
+          "ExamEntriesKS4_Dis_Eng_Current_Num_Coded",
+          "ExamEntriesGSCE_NDi_Eng_Current_Num_Coded",
+          "ExamEntriesKS4_NDi_Eng_Current_Num_Coded",
+          "Pup_Tot_Eng_Current_Num_Coded",
+          "Pup_Dis_Eng_Current_Num_Coded",
+          "Pup_NDi_Eng_Current_Num_Coded",
+          "PupSEN_Tot_Eng_Current_Pct_Coded",
+          "PupEHCP_Tot_Eng_Current_Pct_Coded",
+          "Attainment8_NDi_Eng_Current_Num_Coded",
+          "Attainment8_Dis_Eng_Current_Num_Coded",
+          "Attainment8_Dis_Eng_Previous_Num_Coded",
+          "Attainment8_Dis_Eng_Previous2_Num_Coded"
           """;
 
         private const string EnglandDestinationsColumns = """
           "Id",
           "AllDest_Tot_Eng_Current_Pct_Coded",
+          "AllDest_Dis_Eng_Current_Pct_Coded",   
+          "AllDest_Ndis_Eng_Current_Pct_Coded", 
           "Education_Tot_Eng_Current_Pct_Coded",
           "Employment_Tot_Eng_Current_Pct_Coded",
           "Apprentice_Tot_Eng_Current_Pct_Coded",
+          "FurtherEd_Tot_Eng_Current_Pct_Coded",
+          "SchSixthForm_Tot_Eng_Current_Pct_Coded",
+          "ColSixthForm_Tot_Eng_Current_Pct_Coded",
+          "OtherEd_Tot_Eng_Current_Pct_Coded",
+          "NotSus_Tot_Eng_Current_Pct_Coded",
+          "Unknown_Tot_Eng_Current_Pct_Coded",
           "AllDest_Tot_Eng_Previous_Pct_Coded",
           "AllDest_Tot_Eng_Previous2_Pct_Coded"
           """;

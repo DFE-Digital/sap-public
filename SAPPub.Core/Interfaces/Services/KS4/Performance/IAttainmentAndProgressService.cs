@@ -5,5 +5,5 @@ namespace SAPPub.Core.Interfaces.Services.KS4.Performance;
 
 public interface IAttainmentAndProgressService
 {
-    Task<AttainmentAndProgressModel> GetAttainmentAndProgressAsync(string urn, AcademicYearSelection selectedYear, CancellationToken ct = default);
+    Task<AttainmentAndProgressModel> GetAttainmentAndProgressAsync(string urn, CancellationToken ct = default);
 }

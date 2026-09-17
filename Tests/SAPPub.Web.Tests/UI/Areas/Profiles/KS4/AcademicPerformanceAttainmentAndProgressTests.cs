@@ -10,6 +10,7 @@ namespace SAPPub.Web.Tests.UI.KS4;
 public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
     private string _pageUrl = "school/105574/loreto-high-school-chorlton/secondary-performance/progress-attainment";
+    private string _pageUrl2 = "school/107564/todmorden-high-school/secondary-performance/progress-attainment";
 
     [Fact]
     public async Task AcademicPerformanceAttainmentAndProgressPage_LoadsSuccessfully()
@@ -73,153 +74,84 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
     }
 
     [Fact]
-    public async Task AcademicPerformanceAttainmentAndProgressPage_Displays_AcademicYear_Selector()
+    public async Task AcademicPerformanceAttainmentAndProgressPage_DisplaysExpectedSections()
     {
         // Arrange
-        await Page.GotoAsync(_pageUrl);
+        var progress8CurrentYearId = "prog8-scores-current";
+        var progress8PrevYearId = "prog8-scores-prev";
+        var progress8Prev2YearId = "prog8-scores-prev2";
+
+        var attainment8CurrentYearId = "attainment8-scores-current";
+        var attainment8PrevYearId = "attainment8-scores-prev";
+        var attainment8Prev2YearId = "attainment8-scores-prev2";
 
         // Act
-        var academicYearSelector = Page.Locator("#academicYearSelector");
-        var progress8CustomCard = Page.GetByTestId("progress8-custom-card");
+        await Page.GotoAsync(_pageUrl2);
+        var content = await Page.ContentAsync();
 
-        var attainment8EstablishmentCard = Page.GetByTestId("attainment8-establishment-card");
-        var attainment8LocalAuthorityAndNationalCard = Page.GetByTestId("attainment8-localauthority-and-national-card");
-        var attainmnet8NoEstablishmentDataCard = Page.GetByTestId("attainment8-no-establishment-data-card");
+        // Setup Progress 8 Assertion Objects
+        var progress8PreviousYearsAccordion = Page.Locator("#prog8-previous-years-accordion");
+        await progress8PreviousYearsAccordion.ClickAsync();
 
-        // Assert
-        Assert.True(await academicYearSelector.IsVisibleAsync());
-        Assert.True(await progress8CustomCard.IsVisibleAsync());
-        Assert.True(await attainment8EstablishmentCard.IsVisibleAsync());
-        Assert.True(await attainment8LocalAuthorityAndNationalCard.IsVisibleAsync());
-        Assert.False(await attainmnet8NoEstablishmentDataCard.IsVisibleAsync());
-    }
+        var progress8CardCurrentYear = Page.GetByTestId(progress8CurrentYearId);
+        var progress8EstablishmentCardPrevYear = Page.GetByTestId(progress8PrevYearId);
+        var progress8EstablishmentCardPrev2Year = Page.GetByTestId(progress8Prev2YearId);
+        var progress8LocalAuthorityAndNationalCardCurrentYear = Page.GetByTestId($"{progress8CurrentYearId}-localauthority-card");
+        var progress8LocalAuthorityAndNationalCardPrevYear = Page.GetByTestId($"{progress8PrevYearId}-localauthority-card");
+        var progress8LocalAuthorityAndNationalCardPrev2Year = Page.GetByTestId($"{progress8Prev2YearId}-localauthority-card");
+        var progress8NoEstablishmentDataCard = Page.GetByTestId($"{progress8CurrentYearId}-no-establishment-data-card");
 
-    [Fact]
-    public async Task AcademicPerformanceAttainmentAndProgressPage_ChangeAcademicYear_ChangesRelevantContent()
-    {
-        // Arrange
-        await Page.GotoAsync(_pageUrl);
+        // Setup Attainment 8 Assertions Objects
+        var attainment8PreviousYearsAccordion = Page.Locator("#attainment8-previous-years-accordion");
+        await attainment8PreviousYearsAccordion.ClickAsync();
 
-        // Act, Assert
-        await AssertCorrectProgress8CardAsync("progress8-custom-card");
-        await AssertCorrectAttainmentCardAsync("attainment8-establishment-card");
+        var attainment8EstablishmentCardCurrentYear = Page.GetByTestId(attainment8CurrentYearId);
+        var attainment8EstablishmentCardPrevYear = Page.GetByTestId(attainment8PrevYearId);
+        var attainment8EstablishmentCardPrev2Year = Page.GetByTestId(attainment8Prev2YearId);
+        var attainment8LocalAuthorityAndNationalCardCurrentYear = Page.GetByTestId($"{attainment8CurrentYearId}-localauthority-and-national-card");
+        var attainment8LocalAuthorityAndNationalCardPrevYear = Page.GetByTestId($"{attainment8PrevYearId}-localauthority-and-national-card");
+        var attainment8LocalAuthorityAndNationalCardPrev2Year = Page.GetByTestId($"{attainment8Prev2YearId}-localauthority-and-national-card");
+        var attainment8NoEstablishmentDataCard = Page.GetByTestId($"{attainment8CurrentYearId}-no-establishment-data-card");
 
-        // select previous year
-        var academicYearSelection = AcademicYearSelection.Previous; // establishment has previous year's data
 
-        var academicyearSelector = Page.Locator("#academicYearSelector");
-        await academicyearSelector.SelectOptionAsync([academicYearSelection.GetDisplayName()!]);
-        var buttonSelector = Page.Locator("button:has-text(\"Show results\")");
-        await buttonSelector.ClickAsync();
+        var otherPupilCharacteristicsAccordion = Page.Locator("#other-pupil-characteristics-accordion");
+        await otherPupilCharacteristicsAccordion.ClickAsync();
 
-        // Assert
-        await AssertCorrectProgress8CardAsync("progress8-establishment-card");
-        await AssertCorrectAttainmentCardAsync("attainment8-establishment-card");
+        var nonDisadvantagedAdditionalInfoDetails = Page.Locator("#non-disadvantaged-details");
+        await nonDisadvantagedAdditionalInfoDetails.ClickAsync();
+        var nonDisadvantagedTableCurrentYear = Page.Locator("#breakdown-non-disadvantaged-table");
 
-        var progress8PupilDetails = Page.Locator("#pupil-details-progress8");
-        Assert.True(await progress8PupilDetails.IsVisibleAsync());
+        var disadvantagedAdditionalInfoDetails = Page.Locator("#disadvantaged-previous-years-details");
+        await disadvantagedAdditionalInfoDetails.ClickAsync();
 
-        var progress8LocalAuthorityCard = Page.GetByTestId("progress8-localauthority-card");
-        Assert.True(await progress8LocalAuthorityCard.IsVisibleAsync());
-
-        var attainment8EstablishmentCard = Page.GetByTestId("attainment8-establishment-card");
-        Assert.True(await attainment8EstablishmentCard.IsVisibleAsync());
-
-        var attainment8LocalAuthorityAndNationlCard = Page.GetByTestId("attainment8-localauthority-and-national-card");
-        Assert.True(await attainment8LocalAuthorityAndNationlCard.IsVisibleAsync());
-
-        var paragraphStatingYear = Page.GetByTestId("academic-year-info");
-        Assert.True(await paragraphStatingYear.IsVisibleAsync());
-        Assert.Contains(academicYearSelection.GetDisplayName()!, await paragraphStatingYear.InnerTextAsync());
-        var attainmnet8NoEstablishmentDataCard = Page.GetByTestId("attainment8-no-establishment-data-card");
-        Assert.False(await attainmnet8NoEstablishmentDataCard.IsVisibleAsync());
-
-        // select previous2 year
-        academicYearSelection = AcademicYearSelection.Previous2; // establishment has no previous2 year's data
-        await academicyearSelector.SelectOptionAsync([academicYearSelection.GetDisplayName()!]);
-        buttonSelector = Page.Locator("button:has-text(\"Show results\")");
-        await buttonSelector.ClickAsync();
+        var disadvantagedTableCurrentYear = Page.Locator("#breakdown-disadvantaged-table-0");
+        var disadvantagedTablePreviousYear = Page.Locator("#breakdown-disadvantaged-table-1");
+        var disadvantagedTableTwoYearsAgo = Page.Locator("#breakdown-disadvantaged-table-2");
 
         // Assert
-        await AssertCorrectProgress8CardAsync("progress8-no-establishment-data-card");
-        await AssertCorrectAttainmentCardAsync("attainment8-no-establishment-data-card");
+        Assert.False(await progress8CardCurrentYear.IsVisibleAsync());
+        Assert.True(await progress8EstablishmentCardPrevYear.IsVisibleAsync());
+        Assert.True(await progress8EstablishmentCardPrev2Year.IsVisibleAsync());
+        Assert.False(await progress8LocalAuthorityAndNationalCardCurrentYear.IsVisibleAsync());
+        Assert.True(await progress8LocalAuthorityAndNationalCardPrevYear.IsVisibleAsync());
+        Assert.True(await progress8LocalAuthorityAndNationalCardPrev2Year.IsVisibleAsync());
 
-        paragraphStatingYear = Page.GetByTestId("academic-year-info");
-        Assert.True(await paragraphStatingYear.IsVisibleAsync());
-        Assert.Contains(academicYearSelection.GetDisplayName()!, await paragraphStatingYear.InnerTextAsync());
+
+        Assert.False(await progress8NoEstablishmentDataCard.IsVisibleAsync());
+
+        Assert.True(await attainment8EstablishmentCardCurrentYear.IsVisibleAsync());
+        Assert.True(await attainment8EstablishmentCardPrevYear.IsVisibleAsync());
+        Assert.True(await attainment8EstablishmentCardPrev2Year.IsVisibleAsync());
+        Assert.True(await attainment8LocalAuthorityAndNationalCardCurrentYear.IsVisibleAsync());
+        Assert.True(await attainment8LocalAuthorityAndNationalCardPrevYear.IsVisibleAsync());
+        Assert.True(await attainment8LocalAuthorityAndNationalCardPrev2Year.IsVisibleAsync());
+        Assert.False(await attainment8NoEstablishmentDataCard.IsVisibleAsync());
+        
+        Assert.True(await otherPupilCharacteristicsAccordion.IsVisibleAsync());
+        Assert.True(await disadvantagedTableCurrentYear.IsVisibleAsync());
+        Assert.True(await disadvantagedTablePreviousYear.IsVisibleAsync());
+        Assert.True(await disadvantagedTableTwoYearsAgo.IsVisibleAsync());
+        Assert.True(await nonDisadvantagedTableCurrentYear.IsVisibleAsync());
     }
 
-    [Theory]
-    [InlineData(AcademicYearSelection.Current)]
-    [InlineData(AcademicYearSelection.Previous)]
-    [InlineData(AcademicYearSelection.Previous2)]
-    public async Task AcademicPerformanceAttainmentAndProgressPage_Display_No_Attainment8_Info(AcademicYearSelection academicYearSelection)
-    {
-        // Arrange
-        _pageUrl = "school/100273/Saint%20Paul%20Roman%20Catholic%20Infant%20School/secondary-performance/progress-attainment";
-        await Page.GotoAsync(_pageUrl);
-
-        // Act
-        var academicyearSelector = Page.Locator("#academicYearSelector");
-        await academicyearSelector.SelectOptionAsync([academicYearSelection.GetDisplayName()!]);
-        var buttonSelector = Page.Locator("button:has-text(\"Show results\")");
-        await buttonSelector.ClickAsync();
-
-        // Assert        
-        var attainmnet8NoEstablishmentDataCard = Page.GetByTestId("attainment8-no-establishment-data-card");
-        Assert.True(await attainmnet8NoEstablishmentDataCard.IsVisibleAsync());
-    }
-
-    private async Task AssertCorrectProgress8CardAsync(string expectedcardTestId)
-    {
-        var progress8EstablishmentCard = Page.GetByTestId("progress8-establishment-card");
-        var progress8LocalAuthorityCard = Page.GetByTestId("progress8-localauthority-card");
-        var progress8CustomCard = Page.GetByTestId("progress8-custom-card");
-        var progress8NoEstablishmentDataCard = Page.GetByTestId("progress8-no-establishment-data-card");
-        var progress8EstablishmentCardVisible = await progress8EstablishmentCard.IsVisibleAsync();
-        var progress8LocalAuthorityCardVisible = await progress8LocalAuthorityCard.IsVisibleAsync();
-        var progress8CustomCardVisible = await progress8CustomCard.IsVisibleAsync();
-        var progress8NoEstablishmentDataCardVisible = await progress8NoEstablishmentDataCard.IsVisibleAsync();
-        Assert.True(expectedcardTestId switch
-        {
-            "progress8-establishment-card" =>
-                progress8EstablishmentCardVisible
-                    && progress8LocalAuthorityCardVisible
-                    && !progress8CustomCardVisible
-                    && !progress8NoEstablishmentDataCardVisible,
-            "progress8-custom-card" =>
-                !progress8EstablishmentCardVisible
-                    && !progress8LocalAuthorityCardVisible
-                    && progress8CustomCardVisible
-                    && !progress8NoEstablishmentDataCardVisible,
-            "progress8-no-establishment-data-card" =>
-                !progress8EstablishmentCardVisible
-                    && !progress8LocalAuthorityCardVisible
-                    && !progress8CustomCardVisible
-                    && progress8NoEstablishmentDataCardVisible,
-            _ => false
-        });
-    }
-
-    private async Task AssertCorrectAttainmentCardAsync(string expectedCardTestId)
-    {
-        var attainment8EstablishmentCard = Page.GetByTestId("attainment8-establishment-card");
-        var attainment8LocalAuthorityCard = Page.GetByTestId("attainment8-localauthority-and-national-card");
-        var attainment8NoEstablishmentDataCard = Page.GetByTestId("attainment8-no-establishment-data-card");
-        var attainment8EstablishmentCardVisible = await attainment8EstablishmentCard.IsVisibleAsync();
-        var attainment8LocalAuthorityCardVisible = await attainment8LocalAuthorityCard.IsVisibleAsync();
-        var attainment8NoEstablishmentDataCardVisible = await attainment8NoEstablishmentDataCard.IsVisibleAsync();
-        Assert.True(expectedCardTestId switch
-        {
-            "attainment8-establishment-card" =>
-                attainment8EstablishmentCardVisible
-                    && attainment8LocalAuthorityCardVisible
-                    && !attainment8NoEstablishmentDataCardVisible,
-            "attainment8-no-establishment-data-card" =>
-                !attainment8EstablishmentCardVisible
-                    && !attainment8LocalAuthorityCardVisible
-                    && attainment8NoEstablishmentDataCardVisible,
-            _ => false
-        });
-    }
 }

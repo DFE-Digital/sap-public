@@ -6,7 +6,7 @@ namespace SAPPub.Web.Tests.UI.Areas.Profiles;
 [Collection("Playwright Tests")]
 public class DestinationsTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
-    private readonly string _url = "school/105574/loreto-high-school-chorlton/destinations/16-to-19";
+    private readonly string _url = "school/135600/ark-academy/destinations/16-to-19";
     
     [Fact]
     public async Task KS5DestinationsPage_LoadsSuccessfully()
