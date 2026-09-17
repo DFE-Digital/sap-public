@@ -602,6 +602,7 @@ jobs:
     with:
       environment: ${{ inputs.environment }}
       base_url: ${{ needs.manual_deploy.outputs.environment_url }}
+      test_data_version: '2425'
 
   # on review app environment (no refresh)
   integration-tests-review-app:
@@ -611,6 +612,7 @@ jobs:
     with:
       environment: review
       base_url: ${{ needs.deploy-review-app.outputs.environment_url }}
+      test_data_version: '2425'
 
   # on review app environment (with refresh)
   integration-tests_with_refresh:
@@ -620,6 +622,7 @@ jobs:
     with:
       environment: review
       base_url: ${{ needs.deploy-review-app-with-refresh.outputs.environment_url }}
+      test_data_version: '2425'
 
   # ---------------------------
   # INFRA TEAM DEPLOYMENTS -  NOT DEPENDENT ON WHETHER WE DEPLOY THE APP OR NOT.
