@@ -34,6 +34,13 @@ public class KS2MeetingOrExceedingStandardsService(
             LocalAuthorityPercentageExceeding = GetLocalAuthorityPercentageExceeding(laPerformance),
             EnglandPercentageExceeding = GetEnglandPercentageExceeding(englandPerformance),
 
+            EstablishmentPercentageMeetingOrExceedingThreeYearAverage = establishmentPerformance.PTRWM_EXP_3YR_Est_Current_Pct_Coded,
+            LocalAuthorityPercentageMeetingOrExceedingThreeYearAverage = laPerformance.PTRWM_EXP_3YR_LA_Current_Pct_Coded,
+            EnglandPercentageMeetingOrExceedingThreeYearAverage = englandPerformance.PTRWM_EXP_3YR_Eng_Current_Pct_Coded,
+            EstablishmentPercentageExceedingThreeYearAverage = establishmentPerformance.PTRWM_HIGH_3YR_Est_Current_Pct_Coded,
+            LocalAuthorityPercentageExceedingThreeYearAverage = laPerformance.PTRWM_HIGH_3YR_LA_Current_Pct_Coded,
+            EnglandPercentageExceedingThreeYearAverage = englandPerformance.PTRWM_HIGH_3YR_Eng_Current_Pct_Coded,
+
             GirlsMeetingExpectedStandard = establishmentPerformance.PTRWM_EXP_G_Est_Current_Pct_Coded,
             GirlsExceedingExpectedStandard = establishmentPerformance.PTRWM_HIGH_G_Est_Current_Pct_Coded,
             BoysMeetingExpectedStandard = establishmentPerformance.PTRWM_EXP_B_Est_Current_Pct_Coded,

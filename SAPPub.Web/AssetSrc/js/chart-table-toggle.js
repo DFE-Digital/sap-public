@@ -20,6 +20,10 @@
         const dataOverTimeTableContainer = root.querySelector(`#${idPrefix}-data-over-time-table-container`);
         const dataOverTimeShowAsTableBtn = root.querySelector(`#${idPrefix}-data-over-time-show-btn`);
 
+        // three year average related elements (optional)
+        const threeYearAverageChartContainer = root.querySelector(`#${idPrefix}-three-year-average-chart-container`);
+        const threeYearAverageTableContainer = root.querySelector(`#${idPrefix}-three-year-average-table-container`);
+
         const currentViewRadio = root.querySelector(`#${idPrefix}-current-view`);
         const dataOvertimeViewRadio = root.querySelector(`#${idPrefix}-data-overtime-view`);
         const showCurrentDataBtn = root.querySelector(`#${idPrefix}-show-current-data-btn`);
@@ -40,6 +44,7 @@
 
                 var chartVisible = currentYearChartContainer.style.display !== 'none';
                 setTooggleState(dataOverTimeChartContainer, dataOverTimeTableContainer, !chartVisible, dataOverTimeShowAsTableBtn);
+                setTooggleState(threeYearAverageChartContainer, threeYearAverageTableContainer, !chartVisible, null);
                 blurElementIfFocused(showDataOverTimeBtn);
                 moveFocusToElement(showCurrentDataBtn);
             });
@@ -50,6 +55,7 @@
             dataOverTimeShowAsTableBtn.addEventListener('click', () => {
                 const dataOverTimeChartVisible = dataOverTimeChartContainer.style.display !== 'none';
                 setTooggleState(dataOverTimeChartContainer, dataOverTimeTableContainer, dataOverTimeChartVisible, dataOverTimeShowAsTableBtn);
+                setTooggleState(threeYearAverageChartContainer, threeYearAverageTableContainer, dataOverTimeChartVisible, null);
             });
         }
 
@@ -131,6 +137,10 @@
     }
 
     function setTooggleState(chartContainer, tableContainer, isChartVisible, btnShow) {
+        if (!chartContainer || !tableContainer) {
+            return;
+        }
+
         chartContainer.style.display = isChartVisible ? 'none' : 'block';
         tableContainer.style.display = isChartVisible ? 'block' : 'none';
 

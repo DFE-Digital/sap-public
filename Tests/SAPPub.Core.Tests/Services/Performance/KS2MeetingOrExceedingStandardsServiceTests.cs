@@ -81,7 +81,9 @@ public class KS2MeetingOrExceedingStandardsServiceTests : ServiceTestBase
                 PTRWM_EXP_MOBN_Est_Current_Pct_Coded = GetCodedDouble(25),
                 PTRWM_HIGH_MOBN_Est_Current_Pct_Coded = GetCodedDouble(26),
                 PTRWM_EXP_FSM6CLA1A_Est_Current_Pct_Coded = GetCodedDouble(27),
-                PTRWM_HIGH_FSM6CLA1A_Est_Current_Pct_Coded = GetCodedDouble(28)
+                PTRWM_HIGH_FSM6CLA1A_Est_Current_Pct_Coded = GetCodedDouble(28),
+                PTRWM_EXP_3YR_Est_Current_Pct_Coded = GetCodedDouble(37),
+                PTRWM_HIGH_3YR_Est_Current_Pct_Coded = GetCodedDouble(38)
             });
 
         _ks2PerformanceRepository
@@ -97,7 +99,9 @@ public class KS2MeetingOrExceedingStandardsServiceTests : ServiceTestBase
                 PTRWM_EXP_FSM6CLA1A_LA_Current_Pct_Coded = GetCodedDouble(29),
                 PTRWM_HIGH_FSM6CLA1A_LA_Current_Pct_Coded = GetCodedDouble(30),
                 PTRWM_EXP_NOTFSM6CLA1A_LA_Current_Pct_Coded = GetCodedDouble(31),
-                PTRWM_HIGH_NOTFSM6CLA1A_LA_Current_Pct_Coded = GetCodedDouble(32)
+                PTRWM_HIGH_NOTFSM6CLA1A_LA_Current_Pct_Coded = GetCodedDouble(32),
+                PTRWM_EXP_3YR_LA_Current_Pct_Coded = GetCodedDouble(39),
+                PTRWM_HIGH_3YR_LA_Current_Pct_Coded = GetCodedDouble(40)
             });
 
         _ks2PerformanceRepository
@@ -113,7 +117,9 @@ public class KS2MeetingOrExceedingStandardsServiceTests : ServiceTestBase
                 PTRWM_EXP_FSM6CLA1A_Eng_Current_Pct_Coded = GetCodedDouble(33),
                 PTRWM_HIGH_FSM6CLA1A_Eng_Current_Pct_Coded = GetCodedDouble(34),
                 PTRWM_EXP_NOTFSM6CLA1A_Eng_Current_Pct_Coded = GetCodedDouble(35),
-                PTRWM_HIGH_NOTFSM6CLA1A_Eng_Current_Pct_Coded = GetCodedDouble(36)
+                PTRWM_HIGH_NOTFSM6CLA1A_Eng_Current_Pct_Coded = GetCodedDouble(36),
+                PTRWM_EXP_3YR_Eng_Current_Pct_Coded = GetCodedDouble(41),
+                PTRWM_HIGH_3YR_Eng_Current_Pct_Coded = GetCodedDouble(42)
             });
 
         // Act
@@ -164,5 +170,12 @@ public class KS2MeetingOrExceedingStandardsServiceTests : ServiceTestBase
         Assert.Equal(GetCodedDouble(34), result.EnglandDisadvantagedExceedingExpectedStandard);
         Assert.Equal(GetCodedDouble(35), result.EnglandNonDisadvantagedMeetingExpectedStandard);
         Assert.Equal(GetCodedDouble(36), result.EnglandNonDisadvantagedExceedingExpectedStandard);
+
+        Assert.Equal(GetCodedDouble(37), result.EstablishmentPercentageMeetingOrExceedingThreeYearAverage);
+        Assert.Equal(GetCodedDouble(38), result.EstablishmentPercentageExceedingThreeYearAverage);
+        Assert.Equal(GetCodedDouble(39), result.LocalAuthorityPercentageMeetingOrExceedingThreeYearAverage);
+        Assert.Equal(GetCodedDouble(40), result.LocalAuthorityPercentageExceedingThreeYearAverage);
+        Assert.Equal(GetCodedDouble(41), result.EnglandPercentageMeetingOrExceedingThreeYearAverage);
+        Assert.Equal(GetCodedDouble(42), result.EnglandPercentageExceedingThreeYearAverage);
     }
 }
