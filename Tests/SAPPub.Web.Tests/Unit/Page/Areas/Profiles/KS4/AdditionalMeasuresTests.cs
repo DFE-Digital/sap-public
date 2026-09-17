@@ -496,7 +496,7 @@ public class AdditionalMeasuresTests : PageTestsBase
         var tableId = "num-pupil-wholsechool-table";
 
         Assert.Contains("Number of pupils on roll", doc.GetTableHeaderContentByIdAndIndex(tableId, 1, 0));
-        Assert.Contains(additionalMeasuresModel.EstablishmentTotalPupils, doc.GetTableCellContentByIdAndIndex(tableId, 1, 0));
+        Assert.Contains(additionalMeasuresModel.EstablishmentTotalPupils!, doc.GetTableCellContentByIdAndIndex(tableId, 1, 0));
         Assert.Contains(FormatNumber(additionalMeasuresModel.EnglandTotalPupils), doc.GetTableCellContentByIdAndIndex(tableId, 1, 1));
     }
 
