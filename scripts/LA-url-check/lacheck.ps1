@@ -2,12 +2,16 @@ $inputCsv = "manual_la_urls.csv"
 $outputCsv = "url-statuses.csv"
 
 $headers = @{
-    'User-Agent' = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0 Safari/537.36'
+    'User-Agent'      = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0 Safari/537.36'
+    'Accept'          = 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8'
+    'Accept-Language' = 'en-GB,en;q=0.9'
 }
 
 $results = Import-Csv $inputCsv | ForEach-Object {
 
     $croppedUrl = $_.'Cropped URL'
+    $gss = $_.'GSS'
+    $authority = $_.'Authority Name'
 
     $statusCode = $null
     $testedUrl = $null
@@ -16,13 +20,16 @@ $results = Import-Csv $inputCsv | ForEach-Object {
     $errorMessage = $null
 
     $testUrls = @(
-        "https://$croppedUrl"
-        "https://www.$croppedUrl"
-        "http://$croppedUrl"
-        "http://www.$croppedUrl"
+    "$croppedUrl"
+    #    "https://$croppedUrl"
+    #    "https://www.$croppedUrl"
+    #    "http://$croppedUrl"
+    #   "http://www.$croppedUrl"
     )
 
     foreach ($url in $testUrls) {
+
+        #$url = ([uri]$url).GetLeftPart([System.UriPartial]::Authority)
 
         Write-Host "Testing $url"
 
@@ -94,10 +101,9 @@ $results = Import-Csv $inputCsv | ForEach-Object {
     }
 
     [PSCustomObject]@{
-        CroppedURL = $croppedUrl
+        GSS       = $gss
+        'Authority Name' = $authority
         TestedUrl  = $testedUrl
-        FinalUrl   = $finalUrl
-        FinalHost  = $finalHost
         StatusCode = $statusCode
         Error      = $errorMessage
     }

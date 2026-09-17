@@ -1,7 +1,0 @@
-"CroppedURL","TestedUrl","FinalUrl","FinalHost","StatusCode","Error"
-"new.devon.gov.uk",,,,"403","The remote name could not be resolved: 'www.new.devon.gov.uk'"
-"essex.gov.uk",,,,,"The request was aborted: Could not create SSL/TLS secure channel."
-"gateshead.gov.uk",,,,"403","The remote server returned an error: (403) Forbidden."
-"gloucestershire.gov.uk","https://gloucestershire.gov.uk","https://gloucestershire.gov.uk/","gloucestershire.gov.uk","200",
-"www3.halton.gov.uk","https://www3.halton.gov.uk","https://www3.halton.gov.uk/Pages/Home.aspx","www3.halton.gov.uk","200",
-"hants.gov.uk",,,,,"The request was aborted: The connection was closed unexpectedly."

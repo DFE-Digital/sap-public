@@ -45,8 +45,8 @@ function csvEscape(value) {
     for (const row of data) {
 
         const host = row['Cropped URL'];
-
-        let testedUrl = `https://${host}`;
+``
+        let testedUrl = `${host}`;
         let finalUrl = '';
         let finalHost = '';
         let statusCode = '';
