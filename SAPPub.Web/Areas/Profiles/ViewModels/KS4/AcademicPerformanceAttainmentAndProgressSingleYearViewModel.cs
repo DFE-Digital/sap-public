@@ -70,7 +70,7 @@ public class AcademicPerformanceAttainmentAndProgressSingleYearViewModel
         {
             TableId = $"breakdown-disadvantaged-table-{(int)year}",
             TableHeader = "Pupil group (disadvantaged)",
-            Labels = ["Score", "Pupils' average grade across 8 GCSE and equivalent subjects"],
+            Labels = ["Score", "Pupils' average grade across 8 GCSEs and equivalent subjects"],
             Datasets =
                 [
                     new DatasetMeasureViewModel {

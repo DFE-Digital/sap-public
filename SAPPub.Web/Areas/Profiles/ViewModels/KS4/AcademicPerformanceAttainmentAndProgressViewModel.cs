@@ -12,7 +12,7 @@ namespace SAPPub.Web.Areas.Profiles.ViewModels.KS4;
 
 public class AcademicPerformanceAttainmentAndProgressViewModel : BaseViewModel
 {
-    private const string PupilsAverageLabel = "Pupils' average grade across 8 GCSE and equivalent subjects";
+    private const string PupilsAverageLabel = "Pupils' average grade across 8 GCSEs and equivalent subjects";
 
     private const AcademicYearSelection _currentAcademicYear = AcademicYearSelection.Current;
 
@@ -53,7 +53,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : BaseViewModel
         {
             TableId = "breakdown-non-disadvantaged-table",
             TableHeader = "Pupil group (non-disadvantaged)",
-            Labels = ["Score", "Pupils' average grade across their 8 best GCSE-level subjects"],
+            Labels = ["Score", PupilsAverageLabel],
             Datasets =
                 [
                     new DatasetMeasureViewModel {
