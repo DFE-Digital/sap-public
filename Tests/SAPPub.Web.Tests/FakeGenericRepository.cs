@@ -314,6 +314,12 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             EngMaths49_Dis_Est_Current_Pct_Coded = new CodedDouble(23.1, string.Empty, "23.1"),
             EngMaths59_Dis_Est_Current_Pct_Coded = new CodedDouble(24.1, string.Empty, "24.1"),
             EngMaths79_Dis_Est_Current_Pct_Coded = new CodedDouble(25.1, string.Empty, "25.1"),
+            EngMaths49_EAL_Est_Current_Pct_Coded = new CodedDouble(33.1, string.Empty, "33.1"),
+            EngMaths59_EAL_Est_Current_Pct_Coded = new CodedDouble(34.1, string.Empty, "34.1"),
+            EngMaths79_EAL_Est_Current_Pct_Coded = new CodedDouble(35.1, string.Empty, "35.1"),
+            EngMaths49_NMo_Est_Current_Pct_Coded = new CodedDouble(43.1, string.Empty, "43.1"),
+            EngMaths59_NMo_Est_Current_Pct_Coded = new CodedDouble(44.1, string.Empty, "44.1"),
+            EngMaths79_NMo_Est_Current_Pct_Coded = new CodedDouble(45.1, string.Empty, "45.1"),
             // additional measures
             AnyQual_Tot_Est_Current_Pct_Coded = new CodedDouble(90, "", ""),
             TripSci_Tot_Est_Current_Pct_Coded = new CodedDouble(80, "", ""),
