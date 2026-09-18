@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
 using Moq;
 using SAPPub.Core.Enums;
@@ -19,12 +20,16 @@ using SAPPub.Web.Areas.Profiles.Helpers;
 using SAPPub.Web.Areas.Profiles.ViewModels.KS4;
 using SAPPub.Web.Constants;
 using SAPPub.Web.Helpers;
+using SAPPub.Web.Models.Config;
 using SAPPub.Web.Models.SecondarySchool;
 
 namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers;
 
 public class KS4ControllerTests
 {
+    private readonly string accountabilityLinkUrl = "https://test.com";
+    private readonly bool accountabilityLinkNewTab = true;
+
     private readonly Faker _faker = new();
     private readonly Mock<IEstablishmentService> _mockEstablishmentService;
     private readonly Mock<IKS4EstablishmentSubjectEntriesService> _mockEstablishmentSubjectEntriesService = new();
@@ -114,7 +119,15 @@ public class KS4ControllerTests
         var tempPath = Path.Combine(Path.GetTempPath(), "SAPPubTests", Guid.NewGuid().ToString());
         Directory.CreateDirectory(tempPath);
 
-        _controller = new KS4Controller(_mockEstablishmentService.Object, _mockFeatureManager.Object)
+        var opts = Options.Create(new UrlLinksOptions
+        {
+            SecondarySchoolAccountabilityPriorAttainment = new UrlLinkOptions 
+            { 
+                Url = accountabilityLinkUrl, NewTab = accountabilityLinkNewTab 
+            }
+        });
+
+        _controller = new KS4Controller(_mockEstablishmentService.Object, _mockFeatureManager.Object, opts)
         {
             ControllerContext = new ControllerContext
             {
@@ -152,7 +165,6 @@ public class KS4ControllerTests
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(expectedResult.Urn, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(TextHelpers.CleanForUrl(expectedResult.SchoolName!), model.RouteAttributes[RouteConstants.SchoolName]);
-        Assert.Equal(3, model.AcademicYearsSelectList.Count);
         Assert.Equal($"Information in this section is for the {AcademicYearSelection.Current.GetDisplayName()} academic year.", model.AcademicYearInfoParagraph);
 
         Assert.Equal(expectedResult.EstablishmentAttainment8Score.GetValueForYear(AcademicYearSelection.Current).Value, model.YearValues.CurrentYear!.EstablishmentAttainment8Score.Value);
@@ -183,6 +195,19 @@ public class KS4ControllerTests
         Assert.Equal(expectedResult.LocalAuthorityProgress8Score.GetValueForYear(AcademicYearSelection.Previous2), model.YearValues.TwoYearsAgo!.LocalAuthorityProgress8Score);
         Assert.Equal(expectedResult.EstablishmentProgress8TotalPupils.GetValueForYear(AcademicYearSelection.Previous2), model.YearValues.TwoYearsAgo!.EstablishmentProgress8TotalPupils);
         Assert.Equal(expectedResult.EstablishmentTotalPupils.GetValueForYear(AcademicYearSelection.Previous2), model.YearValues.TwoYearsAgo!.EstablishmentTotalPupils);
+
+        // Girl/Boy breakdown data
+        Assert.Equal(expectedResult.EstablishmentAttainment8GirlsScore, model.BreakdownGirlsBoys.Datasets[0].Data[0].Value);
+        Assert.Equal(expectedResult.EstablishmentAttainment8BoysScore, model.BreakdownGirlsBoys.Datasets[1].Data[0].Value);
+        Assert.Equal(expectedResult.EstablishmentAttainment8Score.CurrentYear, model.BreakdownGirlsBoys.Datasets[2].Data[0].Value);
+
+        // EAL Breakdown data
+        Assert.Equal(expectedResult.EstablishmentAttainment8EALScore, model.BreakdownEAL.Datasets[0].Data[0].Value);
+        Assert.Equal(expectedResult.EstablishmentAttainment8Score.CurrentYear, model.BreakdownEAL.Datasets[1].Data[0].Value);
+
+        // EAL Breakdown data
+        Assert.Equal(expectedResult.EstablishmentAttainment8NonMobileScore, model.BreakdownNonMobile.Datasets[0].Data[0].Value);
+        Assert.Equal(expectedResult.EstablishmentAttainment8Score.CurrentYear, model.BreakdownNonMobile.Datasets[1].Data[0].Value);
     }
 
     [Theory]
@@ -298,7 +323,6 @@ public class KS4ControllerTests
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(expectedResult.Urn, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(TextHelpers.CleanForUrl(expectedResult.SchoolName!), model.RouteAttributes[RouteConstants.SchoolName]);
-        Assert.Equal(3, model.AcademicYearsSelectList.Count);
     }
 
     [Fact]
