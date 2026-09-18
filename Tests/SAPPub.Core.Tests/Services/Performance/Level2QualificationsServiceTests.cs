@@ -1,5 +1,4 @@
 ﻿using Moq;
-using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.Performance;
 using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.Interfaces.Repositories.Performance;
@@ -71,12 +70,12 @@ public class Level2QualificationsServiceTests
         Assert.Null(result.ProgressScore.ConfidenceLevelLower.Value);
         Assert.Null(result.ProgressScore.EnglandAverageScore.Value);
 
-        Assert.Null(result.AverageResult.Establishment.Grade.Value);
-        Assert.Null(result.AverageResult.Establishment.Points.Value);
-        Assert.Null(result.AverageResult.LocalAuthority.Grade.Value);
-        Assert.Null(result.AverageResult.LocalAuthority.Points.Value);
-        Assert.Null(result.AverageResult.England.Grade.Value);
-        Assert.Null(result.AverageResult.England.Points.Value);
+        Assert.Null(result.AverageResult.Establishment.CurrentYear.Grade.Value);
+        Assert.Null(result.AverageResult.Establishment.CurrentYear.Points.Value);
+        Assert.Null(result.AverageResult.LocalAuthority.CurrentYear.Grade.Value);
+        Assert.Null(result.AverageResult.LocalAuthority.CurrentYear.Points.Value);
+        Assert.Null(result.AverageResult.England.CurrentYear.Grade.Value);
+        Assert.Null(result.AverageResult.England.CurrentYear.Points.Value);
 
         Assert.Null(result.DisadvantagedStudentsData.Establishment!.NumberOfStudents.Value);
         Assert.Null(result.DisadvantagedStudentsData.Establishment!.ProgressScore.Value);
@@ -217,15 +216,15 @@ public class Level2QualificationsServiceTests
             Assert.Equal(establishmentPerformance.PROGRESS_BAND_TECHCERT_Est_Current, result.ProgressScore.BandingRating);
             Assert.Equal(establishmentPerformance.UCI_INS_TECHCERT_Est_Current_Num_Coded, result.ProgressScore.ConfidenceLevelUpper);
             Assert.Equal(establishmentPerformance.LCI_INS_TECHCERT_Est_Current_Num_Coded, result.ProgressScore.ConfidenceLevelLower);
-            Assert.Equal(establishmentPerformance.TALLPPE_TECHCERT_Est_Current_Num_Coded, result.AverageResult.Establishment.Points);
-            Assert.Equal(establishmentPerformance.TALLPPEGRD_TECHCERT_Est_Current, result.AverageResult.Establishment.Grade);
+            Assert.Equal(establishmentPerformance.TALLPPE_TECHCERT_Est_Current_Num_Coded, result.AverageResult.Establishment.CurrentYear.Points);
+            Assert.Equal(establishmentPerformance.TALLPPEGRD_TECHCERT_Est_Current, result.AverageResult.Establishment.CurrentYear.Grade);
 
             Assert.Equal(englandPerformance.VA_INS_TECHCERT_Eng_Current_Num_Coded, result.ProgressScore.EnglandAverageScore);
-            Assert.Equal(englandPerformance.TALLPPE_TECHCERT_Eng_Current_Num_Coded, result.AverageResult.England.Points);
-            Assert.Equal(englandPerformance.TALLPPEGRD_TECHCERT_Eng_Current, result.AverageResult.England.Grade);
+            Assert.Equal(englandPerformance.TALLPPE_TECHCERT_Eng_Current_Num_Coded, result.AverageResult.England.CurrentYear.Points);
+            Assert.Equal(englandPerformance.TALLPPEGRD_TECHCERT_Eng_Current, result.AverageResult.England.CurrentYear.Grade);
 
-            Assert.Equal(laPerformance.TALLPPE_TECHCERT_LA_Current_Num_Coded, result.AverageResult.LocalAuthority.Points);
-            Assert.Equal(laPerformance.TALLPPEGRD_TECHCERT_LA_Current, result.AverageResult.LocalAuthority.Grade);
+            Assert.Equal(laPerformance.TALLPPE_TECHCERT_LA_Current_Num_Coded, result.AverageResult.LocalAuthority.CurrentYear.Points);
+            Assert.Equal(laPerformance.TALLPPEGRD_TECHCERT_LA_Current, result.AverageResult.LocalAuthority.CurrentYear.Grade);
 
             // Disadvantaged students - Establishment
             Assert.Equal(establishmentPerformance.TALLPUP_TECHCERT_DIS_Est_Current_Num_Coded, result.DisadvantagedStudentsData.Establishment!.NumberOfStudents);

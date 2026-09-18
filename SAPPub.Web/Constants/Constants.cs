@@ -12,6 +12,10 @@ public static class Constants
     public const string ActionCompare = "Compare";
     public const string ActionRemove = "Remove";
 
+    public const string CurrentYear = "2024 to 2025";
+    public const string PreviousYear = "2023 to 2024";
+    public const string TwoYearsAgo = "2022 to 2023";
+
     // TempData Key Constants
     public const string CookiesConfirmation = "CookiesConfirmation";
     public const string BannerAddSuccess = "BannerAddSuccess";

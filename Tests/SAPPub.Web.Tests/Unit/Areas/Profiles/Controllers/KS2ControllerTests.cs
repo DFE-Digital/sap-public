@@ -315,9 +315,6 @@ public class KS2ControllerTests : BaseProfilesTests
 
     }
 
-    private static CodedDouble GetCodedDouble(double val) => new(val, string.Empty, val.ToString());
-    
-
     private static KS2AdditionalMeasuresModel GetKS2AdditionalMeasuresModel() => new()
     {
         EstablishmentGrammarAtExpectedStandard = GetCodedDouble(1),
