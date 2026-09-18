@@ -17,6 +17,10 @@ public class AcademicPerformanceMeetingOrExceedingStandardsViewModel : BaseViewM
 
     public required DataOverTimeViewModel AllExceedingStandardsOverTimeData { get; set; }
 
+    public required DataViewModel AllMeetingExceedingStandardsThreeYearAverageData { get; set; }
+
+    public required DataViewModel AllExceedingStandardsThreeYearAverageData { get; set; }
+
     public required MeetingExceedingStandardsViewModel GirlsAndBoys { get; set; }
     public required MeetingExceedingStandardsViewModel EnglishAsAnAdditionalLanguage { get; set; }
     public required MeetingExceedingStandardsViewModel NonMobilePupils { get; set; }
@@ -63,6 +67,28 @@ public class AcademicPerformanceMeetingOrExceedingStandardsViewModel : BaseViewM
             ks2MESModel.EnglandPercentageExceeding.TwoYearsAgo.Value, ks2MESModel.EnglandPercentageExceeding.PreviousYear.Value, ks2MESModel.EnglandPercentageExceeding.CurrentYear.Value,
             laAverageLabel);
 
+        var allPercentageDataMeetingOrExceedingThreeYearAverage = new DataViewModel
+        {
+            Labels = ["School", laAverageLabel, "England average"],
+            Data =
+            [
+                ks2MESModel.EstablishmentPercentageMeetingOrExceedingThreeYearAverage.Value,
+                ks2MESModel.LocalAuthorityPercentageMeetingOrExceedingThreeYearAverage.Value,
+                ks2MESModel.EnglandPercentageMeetingOrExceedingThreeYearAverage.Value
+            ],
+        };
+
+        var allPercentageDataExceedingThreeYearAverage = new DataViewModel
+        {
+            Labels = ["School", laAverageLabel, "England average"],
+            Data =
+            [
+                ks2MESModel.EstablishmentPercentageExceedingThreeYearAverage.Value,
+                ks2MESModel.LocalAuthorityPercentageExceedingThreeYearAverage.Value,
+                ks2MESModel.EnglandPercentageExceedingThreeYearAverage.Value
+            ],
+        };
+
         return new AcademicPerformanceMeetingOrExceedingStandardsViewModel
         {
             URN = establishment.URN,
@@ -74,6 +100,8 @@ public class AcademicPerformanceMeetingOrExceedingStandardsViewModel : BaseViewM
             AllMeetingExceedingStandardsOverTimeData = allPercentageDataOverTimeDataMeetingOrExceeding,
             AllExceedingStandardsData = allPercentageDataExceeding,
             AllExceedingStandardsOverTimeData = allPercentageDataOverTimeDataExceeding,
+            AllMeetingExceedingStandardsThreeYearAverageData = allPercentageDataMeetingOrExceedingThreeYearAverage,
+            AllExceedingStandardsThreeYearAverageData = allPercentageDataExceedingThreeYearAverage,
             GirlsAndBoys = GetMeetingExceedingStandardsViewModel(PupilGroup,
                 [
                     new() { RowTitle = "Girls", MeetingStandard = ks2MESModel.GirlsMeetingExpectedStandard.ToDisplayField() , ExceedingStandard = ks2MESModel.GirlsExceedingExpectedStandard.ToDisplayField() },

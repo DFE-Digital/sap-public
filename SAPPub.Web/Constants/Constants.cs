@@ -11,6 +11,8 @@ public static class Constants
     public const string NotAvailable = "Not available";
     public const string ActionCompare = "Compare";
     public const string ActionRemove = "Remove";
+    public const string ThreeYearAverageHeading = "Three year average";
+    public const string ThreeYearAverageDescription = "The three-year average helps show a school's performance over time. It reduces the impact of variations in individual years, such as a small class size, by being weighted by the number of pupils in each year.";
 
     public const string CurrentYear = "2024 to 2025";
     public const string PreviousYear = "2023 to 2024";

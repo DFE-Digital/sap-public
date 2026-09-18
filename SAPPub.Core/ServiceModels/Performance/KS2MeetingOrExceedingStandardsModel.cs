@@ -12,6 +12,14 @@ public class KS2MeetingOrExceedingStandardsModel
     public required RelativeYearValues<CodedDouble> LocalAuthorityPercentageExceeding { get; init; }
     public required RelativeYearValues<CodedDouble> EnglandPercentageExceeding { get; init; }
 
+    /* Three year averages */
+    public required CodedDouble EstablishmentPercentageMeetingOrExceedingThreeYearAverage { get; init; }
+    public required CodedDouble LocalAuthorityPercentageMeetingOrExceedingThreeYearAverage { get; init; }
+    public required CodedDouble EnglandPercentageMeetingOrExceedingThreeYearAverage { get; init; }
+    public required CodedDouble EstablishmentPercentageExceedingThreeYearAverage { get; init; }
+    public required CodedDouble LocalAuthorityPercentageExceedingThreeYearAverage { get; init; }
+    public required CodedDouble EnglandPercentageExceedingThreeYearAverage { get; init; }
+
     /* Girls and boys */
     public required CodedDouble GirlsMeetingExpectedStandard { get; init; }
     public required CodedDouble GirlsExceedingExpectedStandard { get; init; }

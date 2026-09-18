@@ -20,6 +20,7 @@
                         class="js-chart"
                         data-type="bar"
                         data-scaled="@Model.IsScaled.ToString().ToLower()"
+                        data-max='@(Model.IsPercentageData && !Model.IsScaled ? "100" : "")'
                         data-chart='@Html.Raw(Json.Serialize(Model.CurrentData))'
                         data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
                 </canvas>
@@ -63,6 +64,7 @@
                             data-type="bar"
                             data-show-legend="true"
                             data-scaled="@Model.IsScaled.ToString().ToLower()"
+                            data-max='@(Model.IsPercentageData && !Model.IsScaled ? "100" : "")'
                             data-chart='@Html.Raw(Json.Serialize(Model.OverTimeData))'
                             data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
                     </canvas>
@@ -94,6 +96,39 @@
                 </tbody>
             </table>
         </div>
+
+        @if (Model.ThreeYearAverageData is not null)
+        {
+            <h4 class="govuk-heading-s govuk-!-margin-top-6">@Model.ThreeYearAverageHeading</h4>
+            <div class="govuk-body">@Model.ThreeYearAverageDescription</div>
+            <div id="@(idPrefix)-three-year-average-chart-container" class="chart-container chart-table-toggle__three-year-average-chart-container @(idPrefix)-three-year-average-chart-container">
+                <canvas id="@(chartIdPrefix)-three-year-average-chart"
+                        class="js-chart"
+                        data-type="bar"
+                        data-scaled="@Model.IsScaled.ToString().ToLower()"
+                        data-max='@(Model.IsPercentageData && !Model.IsScaled ? "100" : "")'
+                        data-chart='@Html.Raw(Json.Serialize(Model.ThreeYearAverageData))'
+                        data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
+                </canvas>
+            </div>
+
+            <div id="@(idPrefix)-three-year-average-table-container" class="chart-table-toggle__three-year-average-table-container @(idPrefix)-three-year-average-table-container">
+                <table id="@(idPrefix)-three-year-average-table" class="govuk-table">
+                    <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">@Model.ThreeYearAverageHeading</caption>
+                    <tbody class="govuk-table__body">
+                        @foreach (var label in Model.ThreeYearAverageData.Labels.Select((value, i) => (value, i)))
+                        {
+                            <tr class="govuk-table__row">
+                                <th scope="row" class="govuk-table__header">@label.value</th>
+                                <td class="govuk-table__cell">
+                                    @(Model.ThreeYearAverageData.Data[label.i].HasValue ? $"{Model.ThreeYearAverageData.Data[label.i]}{percentageSign}" : Constants.NotAvailable)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
          @if (Model.HasEstablishmentData)
         {
             <div class="govuk-button-group">
