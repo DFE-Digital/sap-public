@@ -34,7 +34,7 @@ public class Level3QualificationsTests(WebApplicationSetupFixture fixture) : Bas
         var title = await Page.TitleAsync();
 
         // Assert
-        Assert.Equal($"{_schoolDisplayName} - 16 to 19 - Level 3 qualifications - A Level - School Profiles - GOV.UK", title);
+        Assert.Equal($"{_schoolDisplayName} - 16 to 19 - Level 3 qualifications - A Level - Find and compare school and college profiles - GOV.UK", title);
     }
 
     [Fact]
