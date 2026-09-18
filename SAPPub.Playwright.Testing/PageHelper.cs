@@ -93,4 +93,14 @@ public static class PageHelper
         return summary.ClickAsync();
     }
 
+    public static async Task ExpandDetailsByIdAsync(this IPage page, string id)
+    {
+        id = id.StartsWith("#") ? id : $"#{id}";
+        var sectionLocator = page.Locator($"details{id}");
+
+        if (!await sectionLocator.GetAttributeAsync("open").ContinueWith(t => t.Result != null))
+        {
+            await sectionLocator.Locator("summary").ClickAsync();
+        }
+    }
 }

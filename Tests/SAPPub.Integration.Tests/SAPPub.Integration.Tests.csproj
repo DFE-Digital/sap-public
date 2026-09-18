@@ -42,6 +42,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="TestData\2425\KS4\202425_performance_tables_schools_final_Disadvantaged_Current_Year.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\2425\KS4\202425_performance_tables_schools_final_Total_Current_Year.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\2425\KS4\202425_performance_tables_schools_final_Total_Previous_Year.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\2425\KS4\AdditionalMeasures.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="TestData\2425\KS4\EstablishmentAttainment.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
