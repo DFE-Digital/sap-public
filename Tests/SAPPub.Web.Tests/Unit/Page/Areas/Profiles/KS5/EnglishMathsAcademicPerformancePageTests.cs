@@ -58,7 +58,7 @@ public class EnglishMathsAcademicPerformancePageTests : PageTestsBase
         var title = doc.QuerySelector("title");
         Assert.NotNull(title);
 
-        var expectedTitle = $"School100279 - 16 to 19 - English and maths - School Profiles - GOV.UK";
+        var expectedTitle = $"School100279 - 16 to 19 - English and maths - Find and compare school and college profiles - GOV.UK";
         Assert.Contains(expectedTitle, title.TextContent.Trim());
     }
 

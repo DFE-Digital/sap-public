@@ -48,7 +48,7 @@ public class AttainmentAndProgressPageTests : PageTestsBase
 
         // Assert
         var title = doc.Title;
-        Assert.Contains($"{establishmentName} - Secondary Progress and attainment - School Profiles - GOV.UK", title);
+        Assert.Contains($"{establishmentName} - Secondary Progress and attainment - Find and compare school and college profiles - GOV.UK", title);
     }
 
     [Fact]

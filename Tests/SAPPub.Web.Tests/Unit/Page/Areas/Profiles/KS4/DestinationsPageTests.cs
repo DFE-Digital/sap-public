@@ -39,7 +39,7 @@ public class DestinationsPageTests : PageTestsBase
         var doc = await Fixture.BrowseToPage(BuildUrl(_urn, _establishmentName, _pageRoute));
 
         // Assert
-        Assert.Contains($"{_establishmentName} - Destinations after year 11 - School Profiles - GOV.UK", doc.Title);
+        Assert.Contains($"{_establishmentName} - Destinations after year 11 - Find and compare school and college profiles - GOV.UK", doc.Title);
     }
 
     [Fact]

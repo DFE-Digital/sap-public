@@ -17,6 +17,6 @@ public class HomePageTests : PageTestsBase
 
         // Assert
         var h1 = document.QuerySelector("h1");
-        Assert.Contains("School Profiles", h1?.TextContent.Trim());
+        Assert.Contains("Find and compare school and college profiles", h1?.TextContent.Trim());
     }
 }

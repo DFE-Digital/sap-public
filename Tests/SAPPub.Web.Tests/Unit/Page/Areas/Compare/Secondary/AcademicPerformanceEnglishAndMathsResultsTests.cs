@@ -69,7 +69,7 @@ public class AcademicPerformanceEnglishAndMathsResultsTests : PageTestsBase
         // Assert
         var title = doc.QuerySelector("title");
         Assert.NotNull(title);
-        Assert.Equal("Compare - English and maths results - School Profiles - GOV.UK", title.TextContent.Trim());
+        Assert.Equal("Compare - English and maths results - Find and compare school and college profiles - GOV.UK", title.TextContent.Trim());
     }
 
     [Fact]

@@ -35,7 +35,7 @@ public class MeetingOrExceedingStandardsTests(WebApplicationSetupFixture fixture
         var title = await Page.TitleAsync();
 
         // Assert
-        Assert.Contains("St Paul's Church of England Academy - Primary Meeting or exceeding standards - School Profiles - GOV.UK", title);
+        Assert.Contains("St Paul's Church of England Academy - Primary Meeting or exceeding standards - Find and compare school and college profiles - GOV.UK", title);
     }
 
     [Fact]
