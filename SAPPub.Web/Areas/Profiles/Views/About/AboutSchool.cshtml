@@ -179,7 +179,7 @@
                     @if (Model.LocalAuthority.IsAvailable)
                     {
                         <span class="govuk-clear">
-                            <a href="@($"https://www.{Model.LocalAuthorityWebsite}")"
+                            <a href="@($"{Model.LocalAuthorityWebsite}")"
                                target="_blank"
                                rel="noopener noreferrer"
                                class="govuk-link govuk-link--no-visited-state"
@@ -484,7 +484,7 @@
                                 <td class="govuk-table__cell">This policy sets out when a school will make charges and the circumstances in which costs will be waived for some pupils. Schools may charge for optional extras but not education provided during school hours.</td>
                             </tr>
                             <tr class="govuk-table__row">
-                                <th scope="row" class="govuk-table__header">Compliants policy</th>
+                                <th scope="row" class="govuk-table__header">Complaints policy</th>
                                 <td class="govuk-table__cell">
                                     @(Model.IsLocalAuthoritySchool
                                     ? "A complaints policy shows how to raise concerns with a school and how to make a complaint."

@@ -6,6 +6,9 @@
         'overview-english-maths-current-year');
 
     initialiseChartTableToggle(
+        'overview-exam-subjects-current-year');
+
+    initialiseChartTableToggle(
         'overview-destinations-current-year');
 });
 

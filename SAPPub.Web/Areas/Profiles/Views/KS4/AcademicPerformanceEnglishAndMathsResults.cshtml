@@ -1,5 +1,6 @@
 ﻿@model SAPPub.Web.Models.SecondarySchool.AcademicPerformanceEnglishAndMathsResultsViewModel;
 @using SAPPub.Core.Enums
+@using SAPPub.Core.Extensions
 @using SAPPub.Web.Constants
 @using SAPPub.Web.ViewComponents.SchoolProfilePagination
 @using SAPPub.Web.ViewComponents.VerticalNavigation
@@ -182,7 +183,7 @@
                                     <th scope="row" class="govuk-table__header">@dataset.value.Label</th>
                                     @foreach (var data in dataset.value.Data)
                                     {
-                                        <td class="govuk-table__cell">@(data.HasValue ? data + "%" : Constants.NotAvailable)</td>
+                                        <td class="govuk-table__cell">@(data.HasValue ? data.Value.AsPercentage() : Constants.NotAvailable)</td>
                                     }
                                 </tr>
                             }
@@ -251,7 +252,7 @@
                                     <th scope="row" class="govuk-table__header">@dataset.Label</th>
                                     @foreach (var data in dataset.Data)
                                     {
-                                        <td class="govuk-table__cell">@(data.HasValue ? data + "%" : Constants.NotAvailable)</td>
+                                        <td class="govuk-table__cell">@(data.HasValue ? data.Value.AsPercentage() : Constants.NotAvailable)</td>
                                     }
                                 </tr>
                             }
