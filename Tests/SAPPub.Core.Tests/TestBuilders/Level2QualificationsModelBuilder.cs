@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using SAPPub.Core.Entities;
 using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.ValueObjects;
@@ -87,20 +88,65 @@ public class Level2QualificationsModelBuilder
             },
             AverageResult = new AverageResultModel
             {
-                Establishment = new PerformanceResult
+                NumberOfStudents = new RelativeYearValues<CodedDouble>
                 {
-                    Grade = new CodedString("C", string.Empty, string.Empty),
-                    Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
+                    CurrentYear = new CodedDouble(100, string.Empty, "100"),
+                    PreviousYear = new CodedDouble(120, string.Empty, "120"),
+                    TwoYearsAgo = new CodedDouble(130, string.Empty, "130")
                 },
-                LocalAuthority = new PerformanceResult
+                Establishment = new RelativeYearValues<PerformanceResult>
                 {
-                    Grade = new CodedString("B", string.Empty, string.Empty),
-                    Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
+                    CurrentYear = new PerformanceResult
+                    {
+                        Grade = new CodedString("A", string.Empty, string.Empty),
+                        Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
+                    },
+                    PreviousYear = new PerformanceResult
+                    {
+                        Grade = new CodedString("C", string.Empty, string.Empty),
+                        Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
+                    },
+                    TwoYearsAgo = new PerformanceResult
+                    {
+                        Grade = new CodedString("B", string.Empty, string.Empty),
+                        Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
+                    }
                 },
-                England = new PerformanceResult
+                LocalAuthority = new RelativeYearValues<PerformanceResult>
                 {
-                    Grade = new CodedString("A", string.Empty, string.Empty),
-                    Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
+                    CurrentYear = new PerformanceResult
+                    {
+                        Grade = new CodedString("B", string.Empty, string.Empty),
+                        Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
+                    },
+                    PreviousYear = new PerformanceResult
+                    {
+                        Grade = new CodedString("A", string.Empty, string.Empty),
+                        Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
+                    },
+                    TwoYearsAgo = new PerformanceResult
+                    {
+                        Grade = new CodedString("C", string.Empty, string.Empty),
+                        Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
+                    }
+                },
+                England = new RelativeYearValues<PerformanceResult>
+                {
+                    CurrentYear = new PerformanceResult
+                    {
+                        Grade = new CodedString("C", string.Empty, string.Empty),
+                        Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
+                    },
+                    PreviousYear = new PerformanceResult
+                    {
+                        Grade = new CodedString("B", string.Empty, string.Empty),
+                        Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
+                    },
+                    TwoYearsAgo = new PerformanceResult
+                    {
+                        Grade = new CodedString("A", string.Empty, string.Empty),
+                        Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
+                    }
                 }
             },
             DisadvantagedStudentsData = new PerformanceSummaryModel
