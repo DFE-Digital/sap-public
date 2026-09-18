@@ -382,7 +382,7 @@ public class SchoolProfilePaginationResolverTests
 
         Assert.NotNull(result.Next);
         Assert.Equal(
-            $"16 to 19: Education, apprenticeships or work (2023 leavers)",
+            $"16 to 19: Education, apprenticeships or work",
             result.Next!.Label);
     }
 
