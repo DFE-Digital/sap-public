@@ -1,0 +1,51 @@
+[
+  {
+    "school_urn": "136791",
+    "progress8_banding": "z",
+    "attainment8_diffn": "-23.3",
+    "sen_with_ehcp_pupil_percent": "0.9",
+    "sen_no_ehcp_pupil_percent": "16.7"
+  },
+  {
+    "school_urn": "124856",
+    "progress8_banding": "z",
+    "attainment8_diffn": "-19.3",
+    "sen_with_ehcp_pupil_percent": "3.1",
+    "sen_no_ehcp_pupil_percent": "10.5"
+  },
+  {
+    "school_urn": "138765",
+    "progress8_banding": "z",
+    "attainment8_diffn": "-10.6",
+    "sen_with_ehcp_pupil_percent": "1.7",
+    "sen_no_ehcp_pupil_percent": "15"
+  },
+  {
+    "school_urn": "140424",
+    "progress8_banding": "z",
+    "attainment8_diffn": "-20",
+    "sen_with_ehcp_pupil_percent": "3.4",
+    "sen_no_ehcp_pupil_percent": "9"
+  },
+  {
+    "school_urn": "136489",
+    "progress8_banding": "z",
+    "attainment8_diffn": "-15",
+    "sen_with_ehcp_pupil_percent": "2.8",
+    "sen_no_ehcp_pupil_percent": "17.9"
+  },
+  {
+    "school_urn": "137252",
+    "progress8_banding": "z",
+    "attainment8_diffn": "-22.4",
+    "sen_with_ehcp_pupil_percent": "2.4",
+    "sen_no_ehcp_pupil_percent": "10.6"
+  },
+  {
+    "school_urn": "137205",
+    "progress8_banding": "z",
+    "attainment8_diffn": "-9.9",
+    "sen_with_ehcp_pupil_percent": "1.1",
+    "sen_no_ehcp_pupil_percent": "10.6"
+  }
+]

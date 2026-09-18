@@ -19,10 +19,16 @@ public static class AssertHelpers
     int precision = 2)
     {
         actual = actual.Trim().TrimEnd('%');
+        var expectedParseSuccess = double.TryParse(expected, CultureInfo.InvariantCulture, out var expectedValue);
+        var actualParseSuccess = double.TryParse(actual, CultureInfo.InvariantCulture, out var actualValue);
 
+        if(!expectedParseSuccess || !actualParseSuccess)
+        {
+            throw new ArgumentException($"Unable to parse value to double. Expected: '{expected}', Actual: '{actual}'");
+        }
         Assert.Equal(
-            double.Parse(expected, CultureInfo.InvariantCulture),
-            double.Parse(actual, CultureInfo.InvariantCulture),
+            expectedValue,
+            actualValue,
             precision);
     }
 }

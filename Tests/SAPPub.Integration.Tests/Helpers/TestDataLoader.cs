@@ -60,6 +60,16 @@ public static class TestDataLoader
                ?? [];
     }
 
+    public static TheoryData<T> ConvertToTheoryData<T>(List<T> items)
+    {
+        var theoryData = new TheoryData<T>();
+        foreach (var item in items)
+        {
+            theoryData.Add(item);
+        }
+        return theoryData;
+    }
+
     public static TheoryData<T> LoadTheoryData<T>(
     string folder,
     string fileName)

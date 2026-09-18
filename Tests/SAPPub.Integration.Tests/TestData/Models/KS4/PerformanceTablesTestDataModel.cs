@@ -2,7 +2,7 @@
 
 using System.Text.Json.Serialization;
 
-public sealed class PerformanceTablesTestDataModel
+public class PerformanceTablesTestDataModel
 {
     [JsonPropertyName("school_urn")]
     public string SchoolUrn { get; set; } = string.Empty;
