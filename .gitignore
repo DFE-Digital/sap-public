@@ -504,7 +504,7 @@ wwwroot/**/*.min.js
 **/wwwroot/lib/
 /TestCoverageReport
 **/wwwroot/*
-**/wwwroot/*
+**/wwwroot/**
 /coveragereport
 
 # Data Protection key ring (allow only the placeholder)
