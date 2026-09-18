@@ -218,11 +218,11 @@ This is the new process for work that is too large or takes too long to go direc
     - The team reviews the PR just as they do with the normal process.
     
     >   If changes are required:
-    
+    >
     >   - Developer → makes changes → PR reviewed again
-
+    >
     >   If everything is approved:
-    
+    >
     >   - feature-A → long-running-feature
 
     - The feature is merged into the long-running branch.
