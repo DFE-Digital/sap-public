@@ -426,7 +426,7 @@
             {
                 <p>
                     <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite.DisplayText(UrlHelper.EnsureHttpsUrl)">
-                        @($"Review {Model.SchoolName}'s policies on their website")
+                        @($"Review {Model.SchoolName}'s policies on their website.")
                         <span class="govuk-visually-hidden"></span>
                     </a>
                 </p>
@@ -453,7 +453,7 @@
                         @if (Model.SchoolWebsite.IsAvailable)
                         {
                             <a class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank" href="@Model.SchoolWebsite.DisplayText(UrlHelper.EnsureHttpsUrl)">
-                                Visit the school website to view their policies
+                                Visit the school website to view their policies.
                                 <span class="govuk-visually-hidden">(opens in a new tab)</span>
                             </a>
                         }
