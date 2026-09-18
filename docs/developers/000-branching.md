@@ -109,9 +109,9 @@ This is your existing process.
 
 2. Developer creates a feature branch
     
-    - For example:
-
-      main ---> feature/customer-search
+    > - For example:
+    >
+    >       main ---> feature/customer-search
 
 3. Developer does their work
     
@@ -151,11 +151,11 @@ This is the new process for work that is too large or takes too long to go direc
    
    - Start from main and create something like:
         
-        main → long-running-feature
-        
-        - Think of this branch as a temporary version of main dedicated to a larger piece of work.
-        
-        - It may contain multiple features developed by multiple developers.
+    >    main → long-running-feature
+    >    
+    >    - Think of this branch as a temporary version of main dedicated to a larger piece of work.
+    >    
+    >    - It may contain multiple features developed by multiple developers.
 
 2. Keep the Long-Running Branch updated
     
