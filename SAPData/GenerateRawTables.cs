@@ -96,7 +96,7 @@ public class GenerateRawTables
         if (headerLine == null)
             throw new InvalidOperationException($"Missing header: {csvPath}");
 
-        var headers = ParseCsvLine(headerLine);
+        var headers = ParseCsvLine(headerLine).Select(NormaliseField).ToList();
         int columnCount = headers.Count;
 
         writer.WriteLine(string.Join(",", headers.Select(EscapeCsv)));
@@ -110,7 +110,7 @@ public class GenerateRawTables
             if (string.IsNullOrWhiteSpace(line))
                 continue;
 
-            var row = ParseCsvLine(line);
+            var row = ParseCsvLine(line).Select(NormaliseField).ToList();
 
             if (row.Count < columnCount)
             {
@@ -155,6 +155,25 @@ public class GenerateRawTables
         copyLocalSql.AppendLine(
             $"\\copy {tableName} FROM '{cleanCsvPath.Replace("\\", "/")}' CSV HEADER;");
         copyLocalSql.AppendLine();
+    }
+
+    // =====================================================
+    // =====================================================
+    // FIELD NORMALISATION
+    // =====================================================
+    // Normalises non-breaking spaces (which can otherwise show up as "Â " artifacts
+    // if a file is later mis-decoded) and trims leading/trailing whitespace so values
+    // such as school names are consistent for downstream joins/lookups.
+    private static string NormaliseField(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return value;
+        }
+
+        return value
+            .Replace('\u00A0', ' ')
+            .Trim();
     }
 
     // =====================================================
