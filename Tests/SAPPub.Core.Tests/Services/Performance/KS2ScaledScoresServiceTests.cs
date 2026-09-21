@@ -83,7 +83,10 @@ public class KS2ScaledScoresServiceTests
                 READ_AVERAGE_MOBN_Est_Current_Num_Coded = new CodedDouble(6.7, string.Empty, "6.7"),
                 MAT_AVERAGE_MOBN_Est_Current_Num_Coded = new CodedDouble(6.8, string.Empty, "6.8"),
                 READ_AVERAGE_FSM6CLA1A_Est_Current_Num_Coded = new CodedDouble(6.9, string.Empty, "6.9"),
-                MAT_AVERAGE_FSM6CLA1A_Est_Current_Num_Coded = new CodedDouble(6.10, string.Empty, "6.10")
+                MAT_AVERAGE_FSM6CLA1A_Est_Current_Num_Coded = new CodedDouble(6.10, string.Empty, "6.10"),
+
+                READ_AVERAGE_3YR_Est_Current_Num_Coded = new CodedDouble(6.11, string.Empty, "6.11"),
+                MAT_AVERAGE_3YR_Est_Current_Num_Coded = new CodedDouble(6.12, string.Empty, "6.12"),
             });
 
         _ks2PerformanceRepository
@@ -100,6 +103,9 @@ public class KS2ScaledScoresServiceTests
                 MAT_AVERAGE_FSM6CLA1A_LA_Current_Num_Coded = new CodedDouble(12.1, string.Empty, "12.1"),
                 READ_AVERAGE_NOTFSM6CLA1A_LA_Current_Num_Coded = new CodedDouble(12.2, string.Empty, "12.2"),
                 MAT_AVERAGE_NOTFSM6CLA1A_LA_Current_Num_Coded = new CodedDouble(12.3, string.Empty, "12.3"),
+
+                READ_AVERAGE_3YR_LA_Current_Num_Coded = new CodedDouble(12.4, string.Empty, "12.4"),
+                MAT_AVERAGE_3YR_LA_Current_Num_Coded = new CodedDouble(12.5, string.Empty, "12.5"),
             });
 
         _ks2PerformanceRepository
@@ -116,6 +122,8 @@ public class KS2ScaledScoresServiceTests
                 MAT_AVERAGE_FSM6CLA1A_ENG_Current_Num_Coded = new CodedDouble(18.2, string.Empty, "18.2"),
                 READ_AVERAGE_NOTFSM6CLA1A_Eng_Current_Num_Coded = new CodedDouble(18.3, string.Empty, "18.3"),
                 MAT_AVERAGE_NOTFSM6CLA1A_Eng_Current_Num_Coded = new CodedDouble(18.4, string.Empty, "18.4"),
+                READ_AVERAGE_3YR_Eng_Current_Num_Coded = new CodedDouble(18.5, string.Empty, "18.5"),
+                MAT_AVERAGE_3YR_Eng_Current_Num_Coded = new CodedDouble(18.6, string.Empty, "18.6"),
             });
 
         // Act
@@ -131,6 +139,9 @@ public class KS2ScaledScoresServiceTests
         Assert.Equal(expectedModel.ReadAverageEngland.CurrentYear, result.ReadAverageEngland.CurrentYear);
         Assert.Equal(expectedModel.ReadAverageEngland.PreviousYear, result.ReadAverageEngland.PreviousYear);
         Assert.Equal(expectedModel.ReadAverageEngland.TwoYearsAgo, result.ReadAverageEngland.TwoYearsAgo);
+        Assert.Equal(expectedModel.EnglandReadThreeYearAverage, result.EnglandReadThreeYearAverage);
+        Assert.Equal(expectedModel.EstablishmentReadThreeYearAverage, result.EstablishmentReadThreeYearAverage);
+        Assert.Equal(expectedModel.LocalAuthorityReadThreeYearAverage, result.LocalAuthorityReadThreeYearAverage);
 
         Assert.Equal(expectedModel.MathsAverageEstablishment.CurrentYear, result.MathsAverageEstablishment.CurrentYear);
         Assert.Equal(expectedModel.MathsAverageEstablishment.PreviousYear, result.MathsAverageEstablishment.PreviousYear);
@@ -141,6 +152,9 @@ public class KS2ScaledScoresServiceTests
         Assert.Equal(expectedModel.MathsAverageEngland.CurrentYear, result.MathsAverageEngland.CurrentYear);
         Assert.Equal(expectedModel.MathsAverageEngland.PreviousYear, result.MathsAverageEngland.PreviousYear);
         Assert.Equal(expectedModel.MathsAverageEngland.TwoYearsAgo, result.MathsAverageEngland.TwoYearsAgo);
+        Assert.Equal(expectedModel.EnglandMathsThreeYearAverage, result.EnglandMathsThreeYearAverage);
+        Assert.Equal(expectedModel.EstablishmentMathsThreeYearAverage, result.EstablishmentMathsThreeYearAverage);
+        Assert.Equal(expectedModel.LocalAuthorityMathsThreeYearAverage, result.LocalAuthorityMathsThreeYearAverage);
 
         Assert.Equal(expectedModel.GirlsAverageReading, result.GirlsAverageReading);
         Assert.Equal(expectedModel.GirlsAverageMaths, result.GirlsAverageMaths);
@@ -228,6 +242,13 @@ public class KS2ScaledScoresServiceTests
             NonDisadvantagedAverageReadingLA            = new CodedDouble(12.2, string.Empty, "12.2"),
             NonMobileAverageMaths                       = new CodedDouble(6.8, string.Empty, "6.8"),
             NonMobileAverageReading                     = new CodedDouble(6.7, string.Empty, "6.7"),
+            EstablishmentReadThreeYearAverage           = new CodedDouble(6.11, string.Empty, "6.11"),
+            LocalAuthorityReadThreeYearAverage          = new CodedDouble(12.4, string.Empty, "12.4"),
+            EnglandReadThreeYearAverage                 = new CodedDouble(18.5, string.Empty, "18.5"),
+            EstablishmentMathsThreeYearAverage          = new CodedDouble(6.12, string.Empty, "6.12"),
+            LocalAuthorityMathsThreeYearAverage         = new CodedDouble(12.5, string.Empty, "12.5"),
+            EnglandMathsThreeYearAverage                = new CodedDouble(18.6, string.Empty, "18.6")
+            
         };
     }
 }
