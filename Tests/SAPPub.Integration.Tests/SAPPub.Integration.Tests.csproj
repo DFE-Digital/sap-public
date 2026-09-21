@@ -51,10 +51,10 @@
     <None Update="TestData\2425\KS4\202425_performance_tables_schools_final_EAL_Current_Year.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TestData\2425\KS4\202425_performance_tables_schools_final_Girls_Current_Year.json">
+    <None Update="TestData\2425\KS4\202425_performance_tables_schools_final_Boys_Current_Year.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TestData\2425\KS4\202425_performance_tables_schools_final_Boys_Current_Year.json">
+    <None Update="TestData\2425\KS4\202425_performance_tables_schools_final_Girls_Current_Year.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="TestData\2425\KS4\202425_performance_tables_schools_final_Disadvantaged_Current_Year.json">
