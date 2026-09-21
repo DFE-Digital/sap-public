@@ -135,6 +135,7 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<IKS2AdditionalMeasuresService,  KS2AdditionalMeasuresService>();
             services.AddTransient<IKS2MeetingOrExceedingStandardsService, KS2MeetingOrExceedingStandardsService>();
             services.AddTransient<IKS2PupilProgressService, KS2PupilProgressService>();
+            services.AddSingleton<ITimeService, TimeService>();
 
             services.AddScoped<SecondaryComparisonQueryValidationFilter>();
             services.AddScoped<PrimaryQueryValidationFilter>();

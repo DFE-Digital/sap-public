@@ -20,15 +20,17 @@ public class AdmissionsPageTests : PageTestsBase
     private string _urnMultiPhase = "150009";
     private readonly EstablishmentServiceModel _establishment = new();
     private readonly Mock<IEstablishmentService> _mockEstablishmentService;
+    private readonly Mock<ITimeService> _mockTimeService;
 
     private readonly AdmissionsServiceModel _admissionsServiceModel;
     private readonly Mock<IAdmissionsService> _mockAdmissionsService;
 
-    
+
     public AdmissionsPageTests(WebAppFixture fixture) : base(fixture)
     {
         _mockEstablishmentService = UseMock<IEstablishmentService>();
         _mockAdmissionsService = UseMock<IAdmissionsService>();
+        _mockTimeService = UseMock<ITimeService>();
 
         _establishment = new EstablishmentTestBuilder()
             .WithURN(_urn)
@@ -272,6 +274,213 @@ public class AdmissionsPageTests : PageTestsBase
         Assert.NotNull(independentSummaryCard);
         var summaryCard = doc.QuerySelector("[data-testid='starting-secondary-school-summary']");
         Assert.Null(summaryCard);
+    }
+
+    [Theory]
+    [InlineData(2026)]
+    [InlineData(2027)]
+    [InlineData(2028)]
+    [InlineData(2029)]
+    public async Task AdmissionsPage_DisplaysCorrectAdmissionsContentForJulyToOctober(int year)
+    {
+        // Arrange
+        int month = 7;
+        var childYear = 6;
+
+        var admissionsServiceModel = GetAdmissionsServiceModel(
+            _schoolName,
+            isKs2: false,
+            isKs4: true,
+            schoolWebsite: "https://www.independentsecondaryschool.co.uk",
+            isIndependentSchool: false);
+
+        _mockAdmissionsService
+          .Setup(s => s.GetAdmissionsDetailsAsync(_urn, It.IsAny<CancellationToken>()))
+          .ReturnsAsync(admissionsServiceModel);
+
+        _mockTimeService
+            .Setup(s => s.GetUKTime())
+            .Returns(new DateTime(year, month, 2));
+
+        var url = BuildUrl(_urn, _schoolName, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var summaryCard = doc.QuerySelector("[data-testid='starting-secondary-school-summary']");
+        var currentHeader = summaryCard!.QuerySelector("h3")!.InnerHtml;
+        var currentPElements = summaryCard.QuerySelectorAll("p");
+
+        var startingSecondaryNextContentBlock = doc.QuerySelector("[data-testid='starting-secondary-school-next']");
+        var nextContentHeader = startingSecondaryNextContentBlock!.QuerySelector("h3")!.InnerHtml;
+        var nextContentPElements = startingSecondaryNextContentBlock.QuerySelectorAll("p");
+
+        var startingSecondaryAfterNextContentBlock = doc.QuerySelector("[data-testid='starting-secondary-school-afternext']");
+        var afterNextContentHeader = startingSecondaryAfterNextContentBlock!.QuerySelector("h3")!.InnerHtml;
+        var afterNextContentPElements = startingSecondaryAfterNextContentBlock.QuerySelectorAll("p");
+
+        // Current
+        Assert.Contains((year + 1).ToString(), currentHeader);
+        Assert.Contains($"year {childYear}", currentPElements[0].InnerHtml);
+        Assert.Contains($"September {year + 1}", currentPElements[0].InnerHtml);
+        Assert.Contains($"The application window for starting secondary school in September {year + 1}", currentPElements[1].InnerHtml);
+        Assert.Contains($"open in summer {year}", currentPElements[1].InnerHtml);
+        Assert.Contains($"You'll need to apply for a place by 31 October {year}", currentPElements[1].InnerHtml);
+
+        // Next
+        Assert.Contains((year + 2).ToString(), nextContentHeader);
+        Assert.Contains($"Admissions for starting secondary school in September {year + 2}", nextContentPElements[0].InnerHtml);
+        Assert.Contains($"open in summer {year + 1}", nextContentPElements[0].InnerHtml);
+        Assert.Contains($"year {childYear - 1}", nextContentPElements[1].InnerHtml);
+        Assert.Contains($"start secondary school in September {year + 2}", nextContentPElements[1].InnerHtml);
+        Assert.Contains($"The application window for starting secondary school in September {year + 2}", nextContentPElements[1].InnerHtml);
+        Assert.Contains($"will open in summer {year + 1}", nextContentPElements[1].InnerHtml);
+        Assert.Contains($"for a place by 31 October {year + 1}", nextContentPElements[1].InnerHtml);
+
+        // AfterNext
+        Assert.Contains((year + 3).ToString(), afterNextContentHeader);
+        Assert.Contains($"year {childYear - 2}", afterNextContentPElements[0].InnerHtml);
+        Assert.Contains($"start secondary school in September {year + 3}", afterNextContentPElements[0].InnerHtml);
+        Assert.Contains($"starting secondary school in September {year + 3}", afterNextContentPElements[0].InnerHtml);
+        Assert.Contains($"open in summer {year + 2}", afterNextContentPElements[0].InnerHtml);
+        Assert.Contains($"apply for a place by 31 October {year + 2}", afterNextContentPElements[0].InnerHtml);
+        Assert.Contains($"September {year + 3} by March {year + 2}", afterNextContentPElements[1].InnerHtml);
+    }
+
+    [Theory]
+    [InlineData(2026)]
+    [InlineData(2027)]
+    [InlineData(2028)]
+    [InlineData(2029)]
+    public async Task AdmissionsPage_DisplaysCorrectAdmissionsContentForNovemberToDecember(int year)
+    {
+        // Arrange
+        int month = 11;
+        var childYear = 5;
+
+        var admissionsServiceModel = GetAdmissionsServiceModel(
+            _schoolName,
+            isKs2: false,
+            isKs4: true,
+            schoolWebsite: "https://www.independentsecondaryschool.co.uk",
+            isIndependentSchool: false);
+
+        _mockAdmissionsService
+          .Setup(s => s.GetAdmissionsDetailsAsync(_urn, It.IsAny<CancellationToken>()))
+          .ReturnsAsync(admissionsServiceModel);
+
+        _mockTimeService
+            .Setup(s => s.GetUKTime())
+            .Returns(new DateTime(year, month, 2));
+
+        var url = BuildUrl(_urn, _schoolName, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var summaryCard = doc.QuerySelector("[data-testid='starting-secondary-school-summary']");
+        var currentHeader = summaryCard!.QuerySelector("h3")!.InnerHtml;
+        var currentPElements = summaryCard.QuerySelectorAll("p");
+
+        var startingSecondaryNextContentBlock = doc.QuerySelector("[data-testid='starting-secondary-school-next']");
+        var nextContentHeader = startingSecondaryNextContentBlock!.QuerySelector("h3")!.InnerHtml;
+        var nextContentPElements = startingSecondaryNextContentBlock.QuerySelectorAll("p");
+
+        var startingSecondaryAfterNextContentBlock = doc.QuerySelector("[data-testid='starting-secondary-school-afternext']");
+        var afterNextContentHeader = startingSecondaryAfterNextContentBlock!.QuerySelector("h3")!.InnerHtml;
+        var afterNextContentPElements = startingSecondaryAfterNextContentBlock.QuerySelectorAll("p");
+
+        // Current
+        Assert.Contains((year + 2).ToString(), currentHeader);
+        Assert.Contains($"year {childYear}", currentPElements[0].InnerHtml);
+        Assert.Contains($"September {year + 2}", currentPElements[0].InnerHtml);
+        Assert.Contains($"The application window for starting secondary school in September {year + 2}", currentPElements[1].InnerHtml);
+        Assert.Contains($"open in summer {year + 1}", currentPElements[1].InnerHtml);
+        Assert.Contains($"for a place by 31 October {year + 1}", currentPElements[1].InnerHtml);
+
+        // Next
+        Assert.Contains((year + 1).ToString(), nextContentHeader);
+        Assert.Contains($"year {childYear + 1}", nextContentPElements[0].InnerHtml);
+        Assert.Contains($"start secondary school in September {year + 1}", nextContentPElements[0].InnerHtml);
+        Assert.Contains($"Applications for starting secondary school in September {year + 1}", nextContentPElements[0].InnerHtml);
+        Assert.Contains($"closed on 31 October {year}", nextContentPElements[0].InnerHtml);
+
+        // AfterNext
+        Assert.Contains((year + 3).ToString(), afterNextContentHeader);
+        Assert.Contains($"year {childYear - 1}", afterNextContentPElements[0].InnerHtml);
+        Assert.Contains($"start secondary school in September {year + 3}", afterNextContentPElements[0].InnerHtml);
+        Assert.Contains($"window for starting secondary school in September {year + 3}", afterNextContentPElements[0].InnerHtml);
+        Assert.Contains($"open in summer {year + 2}", afterNextContentPElements[0].InnerHtml);
+        Assert.Contains($"for a place by 31 October {year + 2}", afterNextContentPElements[0].InnerHtml);
+    }
+
+    [Theory]
+    [InlineData(2027)]
+    [InlineData(2028)]
+    [InlineData(2029)]
+    public async Task AdmissionsPage_DisplaysCorrectAdmissionsContentForJanuaryToJune(int year)
+    {
+        // Arrange
+        int month = 1;
+        var childYear = 5;
+
+        var admissionsServiceModel = GetAdmissionsServiceModel(
+            _schoolName,
+            isKs2: false,
+            isKs4: true,
+            schoolWebsite: "https://www.independentsecondaryschool.co.uk",
+            isIndependentSchool: false);
+
+        _mockAdmissionsService
+          .Setup(s => s.GetAdmissionsDetailsAsync(_urn, It.IsAny<CancellationToken>()))
+          .ReturnsAsync(admissionsServiceModel);
+
+        _mockTimeService
+            .Setup(s => s.GetUKTime())
+            .Returns(new DateTime(year, month, 2));
+
+        var url = BuildUrl(_urn, _schoolName, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var summaryCard = doc.QuerySelector("[data-testid='starting-secondary-school-summary']");
+        var currentHeader = summaryCard!.QuerySelector("h3")!.InnerHtml;
+        var currentPElements = summaryCard.QuerySelectorAll("p");
+
+        var startingSecondaryNextContentBlock = doc.QuerySelector("[data-testid='starting-secondary-school-next']");
+        var nextContentHeader = startingSecondaryNextContentBlock!.QuerySelector("h3")!.InnerHtml;
+        var nextContentPElements = startingSecondaryNextContentBlock.QuerySelectorAll("p");
+
+        var startingSecondaryAfterNextContentBlock = doc.QuerySelector("[data-testid='starting-secondary-school-afternext']");
+        var afterNextContentHeader = startingSecondaryAfterNextContentBlock!.QuerySelector("h3")!.InnerHtml;
+        var afterNextContentPElements = startingSecondaryAfterNextContentBlock.QuerySelectorAll("p");
+
+        // Current
+        Assert.Contains((year + 1).ToString(), currentHeader);
+        Assert.Contains($"year {childYear}", currentPElements[0].InnerHtml);
+        Assert.Contains($"September {year + 1}", currentPElements[0].InnerHtml);
+        Assert.Contains($"The application window for starting secondary school in September {year + 1}", currentPElements[1].InnerHtml);
+        Assert.Contains($"open in summer {year}", currentPElements[1].InnerHtml);
+        Assert.Contains($"for a place by 31 October {year}", currentPElements[1].InnerHtml);
+
+        // Next
+        Assert.Contains(year.ToString(), nextContentHeader);
+        Assert.Contains($"year {childYear + 1}", nextContentPElements[0].InnerHtml);
+        Assert.Contains($"start secondary school in September {year}", nextContentPElements[0].InnerHtml);
+        Assert.Contains($"Applications for starting secondary school in September {year}", nextContentPElements[0].InnerHtml);
+        Assert.Contains($"closed on 31 October {year - 1}", nextContentPElements[0].InnerHtml);
+
+        // AfterNext
+        Assert.Contains((year + 2).ToString(), afterNextContentHeader);
+        Assert.Contains($"year {childYear - 1}", afterNextContentPElements[0].InnerHtml);
+        Assert.Contains($"start secondary school in September {year + 2}", afterNextContentPElements[0].InnerHtml);
+        Assert.Contains($"window for starting secondary school in September {year + 2}", afterNextContentPElements[0].InnerHtml);
+        Assert.Contains($"open in summer {year + 1}", afterNextContentPElements[0].InnerHtml);
+        Assert.Contains($"for a place by 31 October {year + 1}", afterNextContentPElements[0].InnerHtml);
     }
 
     private void ConfigureMultiPhaseSchool()
