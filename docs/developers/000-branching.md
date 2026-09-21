@@ -5,6 +5,7 @@ This document explain current Standard feature development workflow and also usi
 1. Standard feature flow — developer branches directly from main and merges back into main using PR process.
 
 2. Long-running feature flow — a long-running branch is created from main; developers branch from it, merge back into it using PR process, and eventually the long-running branch is merged into main using PR Process.
+   - Long running feature branch process only will be used for changes which can't be put behind feature flag and impact running data pipelines and application against old data sets.
 
 ```mermaid
 gitGraph
