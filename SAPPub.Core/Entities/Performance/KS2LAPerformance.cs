@@ -38,5 +38,6 @@ public class KS2LAPerformance
     public CodedDouble WRITPROG_LA_Previous2_Num_Coded { get; set; }
     public CodedDouble TFSM6CLA1A_LA_Current_Num_Coded { get; set; }
     public CodedDouble TNOTFSM6CLA1A_LA_Current_Num_Coded { get; set; }
+    public CodedDouble TELIG_LA_Current_Num_Coded { get; set; }
 
 }

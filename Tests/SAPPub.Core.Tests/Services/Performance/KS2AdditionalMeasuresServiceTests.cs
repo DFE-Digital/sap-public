@@ -89,7 +89,8 @@ public class KS2AdditionalMeasuresServiceTests : ServiceTestBase
                 PTGPS_EXP_LA_Current_Pct_Coded = GetCodedDouble(5),
                 PTGPS_HIGH_LA_Current_Pct_Coded = GetCodedDouble(6),
                 TFSM6CLA1A_LA_Current_Num_Coded = GetCodedDouble(17),
-                TNOTFSM6CLA1A_LA_Current_Num_Coded = GetCodedDouble(19)
+                TNOTFSM6CLA1A_LA_Current_Num_Coded = GetCodedDouble(19),
+                TELIG_LA_Current_Num_Coded = GetCodedDouble(22)
             });
 
         _ks2PerformanceRepository
@@ -101,7 +102,9 @@ public class KS2AdditionalMeasuresServiceTests : ServiceTestBase
                 PSENELE_Eng_Current_Pct_Coded = GetCodedDouble(9),
                 PSENELK_Eng_Current_Pct_Coded = GetCodedDouble(10),
                 TFSM6CLA1A_Eng_Current_Num_Coded = GetCodedDouble(18),
-                TNOTFSM6CLA1A_Eng_Current_Num_Coded = GetCodedDouble(20)
+                TNOTFSM6CLA1A_Eng_Current_Num_Coded = GetCodedDouble(20),
+                TOTPUPS_Eng_Current_Num_Coded = GetCodedDouble(21),
+                TELIG_Eng_Current_Num_Coded = GetCodedDouble(23)
             });
 
         // Act
@@ -153,8 +156,8 @@ public class KS2AdditionalMeasuresServiceTests : ServiceTestBase
             EnglandSENSupportPopulation = GetCodedDouble(10),
 
             EstablishmentNumPupilsEndOfKS2 = GetCodedDouble(11),
-            LANumPupilsEndOfKS2 = CodedDouble.Empty,
-            EnglandNumPupilsEndOfKS2 = CodedDouble.Empty,
+            LANumPupilsEndOfKS2 = GetCodedDouble(22),
+            EnglandNumPupilsEndOfKS2 = GetCodedDouble(23),
             EstablishmentNumGirlsEndOfKS2 = GetCodedDouble(12),
             EstablishmentNumBoysEndOfKS2 = GetCodedDouble(13),
             EstablishmentNumEALEndOfKS2 = GetCodedDouble(14),
@@ -165,6 +168,6 @@ public class KS2AdditionalMeasuresServiceTests : ServiceTestBase
             LANumNonDisadvantagedEndOfKS2 = GetCodedDouble(19),
             EnglandNumNonDisadvantagedEndOfKS2 = GetCodedDouble(20),
             EstablishmentPupilTotal = "20",
-            EnglandPupilTotal = CodedDouble.Empty
+            EnglandPupilTotal = GetCodedDouble(21)
         };
 }
