@@ -40,8 +40,8 @@ public class KS2AdditionalMeasuresService(IKS2PerformanceRepository ks2Performan
             EnglandSENSupportPopulation = englandPerformance.PSENELK_Eng_Current_Pct_Coded,
 
             EstablishmentNumPupilsEndOfKS2 = establishmentPerformance.TELIG_Est_Current_Num_Coded,
-            LANumPupilsEndOfKS2 = CodedDouble.Empty,                // TODO in ticket 8c.i (needs to be mapped)
-            EnglandNumPupilsEndOfKS2 = CodedDouble.Empty,           // TODO in ticket 8c.i (needs to be mapped)
+            LANumPupilsEndOfKS2 = laPerformance.TELIG_LA_Current_Num_Coded,
+            EnglandNumPupilsEndOfKS2 = englandPerformance.TELIG_Eng_Current_Num_Coded,
             EstablishmentNumGirlsEndOfKS2 = establishmentPerformance.GELIG_Est_Current_Num_Coded,
             EstablishmentNumBoysEndOfKS2 = establishmentPerformance.BELIG_Est_Current_Num_Coded,
             EstablishmentNumEALEndOfKS2 = establishmentPerformance.TEALGRP2_Est_Current_Num_Coded,
@@ -55,7 +55,7 @@ public class KS2AdditionalMeasuresService(IKS2PerformanceRepository ks2Performan
             EnglandNumNonDisadvantagedEndOfKS2 = englandPerformance.TNOTFSM6CLA1A_Eng_Current_Num_Coded,
 
             EstablishmentPupilTotal = aboutSchool.NumberOfPupils,
-            EnglandPupilTotal = CodedDouble.Empty                   //  TODO in ticket 8c.i (needs to be mapped)
+            EnglandPupilTotal = englandPerformance.TOTPUPS_Eng_Current_Num_Coded
         };
     }
 }
