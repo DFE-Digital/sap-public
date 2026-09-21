@@ -17,6 +17,14 @@ public class GenerateRawTables
 
     private readonly Dictionary<string, string> _tableMappings = new(StringComparer.OrdinalIgnoreCase);
 
+    static GenerateRawTables()
+    {
+        // Windows-1252 ("ANSI") is not included by default in .NET Core / .NET.
+        // Registering the code pages provider lets us fall back to it for
+        // source CSVs that aren't valid UTF-8 (e.g. contain a raw 0xB0 degree symbol).
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+    }
+
     public GenerateRawTables(string inputDir, string cleanDir, string sqlDir)
     {
         _inputDir = inputDir;
@@ -86,7 +94,9 @@ public class GenerateRawTables
 
         Console.WriteLine($"Processing: {fileKey}");
 
-        using var reader = new StreamReader(csvPath, Encoding.UTF8, true);
+        Encoding sourceEncoding = DetectSourceEncoding(csvPath);
+
+        using var reader = new StreamReader(csvPath, sourceEncoding, detectEncodingFromByteOrderMarks: true);
         using var writer = new StreamWriter(cleanCsvPath, false, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
 
         // -----------------------------
@@ -155,6 +165,59 @@ public class GenerateRawTables
         copyLocalSql.AppendLine(
             $"\\copy {tableName} FROM '{cleanCsvPath.Replace("\\", "/")}' CSV HEADER;");
         copyLocalSql.AppendLine();
+    }
+
+    // =====================================================
+    // =====================================================
+    // ENCODING DETECTION
+    // =====================================================
+    // Some source CSVs are Windows-1252 rather than UTF-8. Detect via BOM, then a
+    // strict UTF-8 validity check (streamed, so large files aren't loaded fully into
+    // memory), falling back to Windows-1252 if invalid.
+    private static Encoding DetectSourceEncoding(string path)
+    {
+        using var stream = File.OpenRead(path);
+
+        Span<byte> bom = stackalloc byte[3];
+        int bomBytesRead = stream.ReadAtLeast(bom, bom.Length, throwOnEndOfStream: false);
+
+        if (bomBytesRead >= 3 && bom[0] == 0xEF && bom[1] == 0xBB && bom[2] == 0xBF)
+            return Encoding.UTF8;
+
+        if (bomBytesRead >= 2 && ((bom[0] == 0xFF && bom[1] == 0xFE) || (bom[0] == 0xFE && bom[1] == 0xFF)))
+            return Encoding.Unicode;
+
+        stream.Seek(0, SeekOrigin.Begin);
+
+        return IsValidUtf8(stream) ? Encoding.UTF8 : Encoding.GetEncoding(1252);
+    }
+
+    // A strict UTF-8 decoder (throwOnInvalidBytes: true) is used purely to validate
+    // the file's byte content; if it throws, the file isn't valid UTF-8 and we fall
+    // back to Windows-1252 in DetectSourceEncoding above.
+    private static readonly UTF8Encoding StrictUtf8 = new(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
+
+    private static bool IsValidUtf8(Stream stream)
+    {
+        var decoder = StrictUtf8.GetDecoder();
+        Span<byte> buffer = stackalloc byte[4096];
+        Span<char> chars = stackalloc char[4096];
+
+        try
+        {
+            int bytesRead;
+            while ((bytesRead = stream.Read(buffer)) > 0)
+            {
+                decoder.GetChars(buffer[..bytesRead], chars, flush: false);
+            }
+
+            decoder.GetChars([], chars, flush: true);
+            return true;
+        }
+        catch (DecoderFallbackException)
+        {
+            return false;
+        }
     }
 
     // =====================================================
