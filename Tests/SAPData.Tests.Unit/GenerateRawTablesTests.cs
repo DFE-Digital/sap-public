@@ -144,4 +144,16 @@ public class GenerateRawTablesTests : IDisposable
 
         Assert.NotEqual(new byte[] { 0xEF, 0xBB, 0xBF }, bytes.Take(3).ToArray());
     }
+
+    [Fact]
+    public void Trims_and_normalises_whitespace_in_fields()
+    {
+        WriteCsv("whitespacetest", "name\n  School Name\u00A0 ");
+
+        new GenerateRawTables(_input, _clean, _sql).Run();
+
+        var cleaned = File.ReadAllLines(Path.Combine(_clean, "whitespacetest.clean.csv"));
+
+        Assert.Equal("School Name", cleaned[1]);
+    }
 }
