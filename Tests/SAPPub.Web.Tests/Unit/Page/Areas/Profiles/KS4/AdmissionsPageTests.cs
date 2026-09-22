@@ -299,7 +299,7 @@ public class AdmissionsPageTests : PageTestsBase
           .ReturnsAsync(admissionsServiceModel);
 
         _mockTimeService
-            .Setup(s => s.GetUKTime())
+            .Setup(s => s.GetUTCTime())
             .Returns(new DateTime(year, month, 2));
 
         var url = BuildUrl(_urn, _schoolName, _pageRoute);
@@ -371,7 +371,7 @@ public class AdmissionsPageTests : PageTestsBase
           .ReturnsAsync(admissionsServiceModel);
 
         _mockTimeService
-            .Setup(s => s.GetUKTime())
+            .Setup(s => s.GetUTCTime())
             .Returns(new DateTime(year, month, 2));
 
         var url = BuildUrl(_urn, _schoolName, _pageRoute);
@@ -438,7 +438,7 @@ public class AdmissionsPageTests : PageTestsBase
           .ReturnsAsync(admissionsServiceModel);
 
         _mockTimeService
-            .Setup(s => s.GetUKTime())
+            .Setup(s => s.GetUTCTime())
             .Returns(new DateTime(year, month, 2));
 
         var url = BuildUrl(_urn, _schoolName, _pageRoute);

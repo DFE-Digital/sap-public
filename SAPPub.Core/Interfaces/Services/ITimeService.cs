@@ -2,5 +2,5 @@
 
 public interface ITimeService
 {
-    DateTimeOffset GetUKTime();
+    DateTimeOffset GetUTCTime();
 }

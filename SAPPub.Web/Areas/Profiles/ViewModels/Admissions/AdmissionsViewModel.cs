@@ -2,6 +2,7 @@
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.ServiceModels.KS4.Admissions;
 using SAPPub.Web.Helpers;
+using System.ComponentModel;
 
 namespace SAPPub.Web.Areas.Profiles.ViewModels.Admissions;
 
@@ -19,7 +20,7 @@ public class AdmissionsViewModel : ProfileBaseViewModel
 
     public int CurrentAcademicYear { get; set; }
 
-    public int UpcomingAcadmeicYear { get; set; }
+    public int UpcomingAcademicYear { get; set; }
    
     public int YearAfterUpcomingAcademicYear { get; set; }
 
@@ -27,7 +28,17 @@ public class AdmissionsViewModel : ProfileBaseViewModel
 
     public int YearChild { get; set; }
 
-    public SecondaryAdmissionsSectionType SecondaryAdmissionsSectionType { get; set; } = SecondaryAdmissionsSectionType.Upcoming;
+    public int UpcomingStartChildYear => YearChild;
+
+    public int CurrentStartChildYear => YearChild + 1;
+
+    public int NextStartChildYear => YearChild - 1;
+
+    public int FollowingStartChildYear => YearChild - 2;
+
+    public int PreviousAcademicYear => CurrentAcademicYear - 1;
+
+    public AdmissionsSectionType SecondaryAdmissionsSectionType { get; set; } = AdmissionsSectionType.Upcoming;
 
     public static AdmissionsViewModel MapFrom(AdmissionsServiceModel serviceModel, string urn)
     {
@@ -37,40 +48,16 @@ public class AdmissionsViewModel : ProfileBaseViewModel
     public static AdmissionsViewModel MapFrom(
         AdmissionsServiceModel serviceModel, 
         string urn,
-        ITimeService timeService)
+        AdmissionsContent admissionsContent)
     {
         var admissionsViewModel = Map(serviceModel, urn);
 
-        var now = timeService.GetUKTime();
-
-        var upComingAcademicYear = now.Month switch
-        {
-            >= 1 and <= 10 => now.Year + 1,
-            >= 11 and <= 12 => now.Year + 2,
-            _ => throw new NotImplementedException()
-        };
-        var yearChild = now.Month switch
-        {
-            >= 1 and <= 6 => 5,
-            >= 7 and <= 10 => 6,
-            >= 11 and <= 12 => 5,
-            _ => throw new NotImplementedException()
-        };
-
-        var secondaryAdmissionsSectionType = now.Month switch
-        {
-            >= 1 and <= 6 => SecondaryAdmissionsSectionType.TwoYearsAfterUpcoming,
-            >= 7 and <= 10 => SecondaryAdmissionsSectionType.Upcoming,
-            >= 11 and <= 12 => SecondaryAdmissionsSectionType.YearAfterUpcoming,
-            _ => SecondaryAdmissionsSectionType.TwoYearsAfterUpcoming
-        };
-
-        admissionsViewModel.CurrentAcademicYear = upComingAcademicYear - 1;
-        admissionsViewModel.UpcomingAcadmeicYear = upComingAcademicYear;
-        admissionsViewModel.YearAfterUpcomingAcademicYear = upComingAcademicYear + 1;
-        admissionsViewModel.TwoYearsAfterUpcomingAcademicYear = upComingAcademicYear + 2;
-        admissionsViewModel.YearChild = yearChild;
-        admissionsViewModel.SecondaryAdmissionsSectionType = secondaryAdmissionsSectionType;
+        admissionsViewModel.CurrentAcademicYear = admissionsContent.CurrentAcademicYear;
+        admissionsViewModel.UpcomingAcademicYear = admissionsContent.UpcomingAcademicYear;
+        admissionsViewModel.YearAfterUpcomingAcademicYear = admissionsContent.YearAfterUpcomingAcademicYear;
+        admissionsViewModel.TwoYearsAfterUpcomingAcademicYear = admissionsContent.TwoYearsAfterUpcomingAcademicYear;
+        admissionsViewModel.YearChild = admissionsContent.YearChild;
+        admissionsViewModel.SecondaryAdmissionsSectionType = admissionsContent.AdmissionsSectionType;
 
         return admissionsViewModel;
     }

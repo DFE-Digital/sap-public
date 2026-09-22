@@ -5,10 +5,12 @@ using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
 using Moq;
 using SAPPub.Core.Entities;
+using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.ServiceModels;
+using SAPPub.Core.ServiceModels.KS4.Admissions;
 using SAPPub.Core.Services;
 using SAPPub.Core.Services.KS4.Admissions;
 using SAPPub.Core.Tests.TestBuilders;
@@ -25,8 +27,8 @@ public class AdmissionsTests
     private readonly Mock<ILogger<AdmissionsController>> _mockLogger = new();
     private readonly Mock<IFeatureManager> _featureManager = new();
     private readonly Mock<IMemoryCache> _mockMemoryCache = new();
-    private readonly Mock<ITimeService> _mockTimeService = new();
-
+    private readonly Mock<IAdmissionsContentService> _mockAdmissionsContentService = new();
+     
     private readonly IEstablishmentService _establishmentService;
     private readonly IAdmissionsService _admissionsService;
     private readonly AdmissionsController _controller;
@@ -45,11 +47,26 @@ public class AdmissionsTests
 
         _establishmentService = new EstablishmentService(_mockEstablishmentRepository.Object, _mockMemoryCache.Object);
         _admissionsService = new EstablishmentAdmissionsService(_establishmentService, _mockLaService.Object);
-        _controller = new AdmissionsController(_mockLogger.Object, _featureManager.Object);
 
-        _controller.ControllerContext = new ControllerContext
+        _mockAdmissionsContentService
+            .Setup(s => s.GetContent())
+            .Returns(new AdmissionsContent 
+            { 
+                CurrentAcademicYear = 2025,
+                UpcomingAcademicYear = 2026,
+                YearAfterUpcomingAcademicYear = 2027,
+                TwoYearsAfterUpcomingAcademicYear = 2028,
+                YearChild = 6,
+                AdmissionsSectionType = AdmissionsSectionType.Upcoming
+            
+            });
+
+        _controller = new AdmissionsController(_mockLogger.Object, _featureManager.Object)
         {
-            HttpContext = new DefaultHttpContext()
+            ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            }
         };
     }
 
@@ -109,12 +126,8 @@ public class AdmissionsTests
                 LAMainUrl = lASchoolAdmissionsUrl
             });
 
-        _mockTimeService
-            .Setup(r => r.GetUKTime())
-            .Returns(DateTime.Now);
-
         // Act
-        var result = await _controller.KS4(_admissionsService, _mockTimeService.Object, _establishment.URN, _establishment.EstablishmentName, CancellationToken.None) as ViewResult;
+        var result = await _controller.KS4(_admissionsService, _mockAdmissionsContentService.Object, _establishment.URN, _establishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
         // Assert
         Assert.NotNull(result);
@@ -148,12 +161,8 @@ public class AdmissionsTests
                 LAMainUrl = lASchoolAdmissionsUrl
             });
 
-        _mockTimeService
-            .Setup(r => r.GetUKTime())
-            .Returns(DateTime.Now);
-
         // Act
-        var result = await _controller.KS4(_admissionsService, _mockTimeService.Object, _establishment.URN, _establishment.EstablishmentName, CancellationToken.None) as ViewResult;
+        var result = await _controller.KS4(_admissionsService, _mockAdmissionsContentService.Object, _establishment.URN, _establishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
         // Assert
         Assert.NotNull(result);
@@ -174,12 +183,8 @@ public class AdmissionsTests
             .Setup(r => r.GetEstablishmentAsync(establishment.URN, It.IsAny<CancellationToken>()))
             .ReturnsAsync(establishment);
 
-        _mockTimeService
-            .Setup(r => r.GetUKTime())
-            .Returns(DateTime.Now);
-
         // Act
-        var result = await _controller.KS4(_admissionsService, _mockTimeService.Object, establishment.URN, establishment.EstablishmentName, CancellationToken.None) as ViewResult;
+        var result = await _controller.KS4(_admissionsService, _mockAdmissionsContentService.Object, establishment.URN, establishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
         // Assert
         Assert.NotNull(result);
@@ -202,12 +207,8 @@ public class AdmissionsTests
             .Setup(r => r.GetLaUrlsAsync(_establishmentServiceModel!, It.IsAny<CancellationToken>()))
             .ReturnsAsync((LaUrls?)null);
 
-        _mockTimeService
-            .Setup(r => r.GetUKTime())
-            .Returns(DateTime.Now);
-
         // Act
-        var result = await _controller.KS4(_admissionsService, _mockTimeService.Object, _establishment.URN, _establishment.EstablishmentName, CancellationToken.None) as ViewResult;
+        var result = await _controller.KS4(_admissionsService, _mockAdmissionsContentService.Object, _establishment.URN, _establishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
         // Assert
         Assert.NotNull(result);

@@ -48,13 +48,17 @@
         }
         else
         {
-            if (Model.SecondaryAdmissionsSectionType == SecondaryAdmissionsSectionType.Upcoming)
+            switch (Model.SecondaryAdmissionsSectionType)
             {
-                await Html.RenderPartialAsync("_AdmissionsUpcomingYear");
-            }
-            else
-            {
-                await Html.RenderPartialAsync("_AdmissionsYearAfterUpcoming");
+                case AdmissionsSectionType.Upcoming:
+                    await Html.RenderPartialAsync("_AdmissionsUpcomingYear");
+                    break;
+                case AdmissionsSectionType.YearAfterUpcoming:
+                case AdmissionsSectionType.TwoYearsAfterUpcoming:
+                    await Html.RenderPartialAsync("_AdmissionsYearAfterUpcoming");
+                    break;
+                default:
+                    throw new InvalidOperationException($"Unsupported admissions section type {Model.SecondaryAdmissionsSectionType}");
             }
         }
 

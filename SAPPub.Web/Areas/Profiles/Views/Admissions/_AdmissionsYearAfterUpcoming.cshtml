@@ -4,16 +4,16 @@
 <div class="govuk-summary-card" data-testid="starting-secondary-school-summary">
     <div class="govuk-summary-card__title-wrapper">
         <h3 class="govuk-summary-card__title">
-            Starting secondary school in September @Model.UpcomingAcadmeicYear
+            Starting secondary school in September @Model.UpcomingAcademicYear
         </h3>
     </div>
     <div class="govuk-summary-card__content">
         <p class="govuk-body">
-            Children in year @Model.YearChild, they will be due to start secondary school in September @Model.UpcomingAcadmeicYear.
+            Children in year @Model.UpcomingStartChildYear, they will be due to start secondary school in September @Model.UpcomingAcademicYear.
             You must apply for your child to get a place at secondary school.
         </p>
         <p class="govuk-body">
-            The application window for starting secondary school in September @Model.UpcomingAcadmeicYear will open in summer @Model.CurrentAcademicYear.
+            The application window for starting secondary school in September @Model.UpcomingAcademicYear will open in summer @Model.CurrentAcademicYear.
             You'll need to apply for a place by 31 October @Model.CurrentAcademicYear.
             You can do this by following your local council's secondary school application process.
         </p>
@@ -68,8 +68,8 @@
 <div data-testid="starting-secondary-school-next">
     <h3 class="govuk-heading-m">Starting secondary school in September @Model.CurrentAcademicYear</h3>
     <p class="govuk-body">
-        Children in year @(Model.YearChild + 1), should start secondary school in September @Model.CurrentAcademicYear.
-        Applications for starting secondary school in September @Model.CurrentAcademicYear closed on 31 October @(Model.CurrentAcademicYear - 1).
+        Children in year @Model.CurrentStartChildYear, should start secondary school in September @Model.CurrentAcademicYear.
+        Applications for starting secondary school in September @Model.CurrentAcademicYear closed on 31 October @Model.PreviousAcademicYear.
     </p>
     <p class="govuk-body">
         If you missed the application deadline, you can still apply for a school place.
@@ -84,12 +84,12 @@
 <div data-testid="starting-secondary-school-afternext">
     <h3 class="govuk-heading-m">Starting secondary school in September @Model.YearAfterUpcomingAcademicYear</h3>
     <p class="govuk-body">
-        Children in year @(Model.YearChild - 1), should start secondary school in September @Model.YearAfterUpcomingAcademicYear.
-        The application window for starting secondary school in September @Model.YearAfterUpcomingAcademicYear will open in summer @Model.UpcomingAcadmeicYear.
-        You'll need to apply for a place by 31 October @Model.UpcomingAcadmeicYear.
+        Children in year @Model.NextStartChildYear, should start secondary school in September @Model.YearAfterUpcomingAcademicYear.
+        The application window for starting secondary school in September @Model.YearAfterUpcomingAcademicYear will open in summer @Model.UpcomingAcademicYear.
+        You'll need to apply for a place by 31 October @Model.UpcomingAcademicYear.
     </p>
     <p class="govuk-body">
-        Schools must publish their policies for starting school in September @Model.YearAfterUpcomingAcademicYear by March @Model.UpcomingAcadmeicYear.
+        Schools must publish their policies for starting school in September @Model.YearAfterUpcomingAcademicYear by March @Model.UpcomingAcademicYear.
     </p>
 </div>
 

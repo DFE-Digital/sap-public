@@ -4,8 +4,8 @@ namespace SAPPub.Core.Services;
 
 public class TimeService : ITimeService
 {
-    public DateTimeOffset GetUKTime()
+    public DateTimeOffset GetUTCTime()
     {
-        return DateTimeOffset.UtcNow;       // utc or bst ¯\_(ツ)_/¯ ?
+        return DateTimeOffset.UtcNow;
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace SAPPub.Core.Enums;
 
-public enum SecondaryAdmissionsSectionType
+public enum AdmissionsSectionType
 {
     YearAfterUpcoming,
     Upcoming,
