@@ -72,6 +72,8 @@
                 <div id="all-dest-current-year-chart-container" class="chart-container all-dest-current-year-chart-container">
                     <canvas id="all-destinations-chart"
                             class="js-chart"
+                            aria-labelledby="all-destinations-current-year-table"
+                            role="img"
                             data-type="bar"
                             data-not-available-text="@(NotAvailable)"
                             data-chart='@Html.Raw(Json.Serialize(Model.AllDestinationsData))'
