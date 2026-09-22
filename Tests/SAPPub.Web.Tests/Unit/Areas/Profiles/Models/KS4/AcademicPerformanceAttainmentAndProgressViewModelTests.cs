@@ -346,6 +346,8 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
     public void Map_EstablishmentProgress8BandingContextDescription_IncludesReasonWhenAvailable()
     {
         // Arrange
+        var linkOptions = new UrlLinksOptions();
+
         var reason = new CodedString("schools performed well overall", "", "");
         var testdata = new AttainmentAndProgressModelBuilder()
             .WithAttainment8Data()
@@ -361,7 +363,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
             .Build();
 
         // Act
-        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map("local authority name", "", TypeOfEstablishment.CommunitySchool, testdata);
+        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map("local authority name", "", TypeOfEstablishment.CommunitySchool, testdata, linkOptions);
 
         // Assert
         Assert.Equal("This is well above average because schools performed well overall.", viewModel.YearValues.CurrentYear.EstablishmentProgress8BandingContextDescription.DisplayText());
