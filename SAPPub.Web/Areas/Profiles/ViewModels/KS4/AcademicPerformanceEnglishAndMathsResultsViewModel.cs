@@ -20,6 +20,10 @@ public class AcademicPerformanceEnglishAndMathsResultsViewModel : BaseViewModel
 
     public required SeriesMeasureViewModel BreakdownNonDisadvantaged { get; set; }
 
+    public required SeriesMeasureViewModel BreakdownEAL { get; set; }
+
+    public required SeriesMeasureViewModel BreakdownNonMobile { get; set; }
+
     public required DisplayField<bool> HasEstablishmentData { get; set; }
 
     public static AcademicPerformanceEnglishAndMathsResultsViewModel Map(EnglishAndMathsResultsModel englishAndMathsResultsModel, GcseGradeDataSelection selectedGrade)
@@ -109,6 +113,42 @@ public class AcademicPerformanceEnglishAndMathsResultsViewModel : BaseViewModel
                 ],
         };
 
+        var breakdownEALData = new SeriesMeasureViewModel
+        {
+            TableId = "breakdown-eal-table",
+            TableHeader = "Pupil group",
+            Labels = [$"Percentage who achieved {selectedGrade.GetDisplayName()} in English and maths"],
+            Datasets =
+                [
+                    new DatasetMeasureViewModel {
+                        Label = "Pupils with EAL",
+                        Data = [ new Measure { Value = englishAndMathsResultsModel.EstablishmentEAL.CurrentYear, Unit = DataUnit.Percentage }]
+                    },
+                    new DatasetMeasureViewModel {
+                        Label = "All pupils at the school",
+                        Data = [ new Measure { Value = new CodedDouble(englishAndMathsResultsModel.EstablishmentAll.CurrentYear, string.Empty, englishAndMathsResultsModel.EstablishmentAll.CurrentYear?.ToString() ?? string.Empty), Unit = DataUnit.Percentage }]
+                    },
+                ],
+        };
+
+        var breakdownNonMobileData = new SeriesMeasureViewModel
+        {
+            TableId = "breakdown-non-mobile-table",
+            TableHeader = "Pupil group",
+            Labels = [$"Percentage who achieved {selectedGrade.GetDisplayName()} in English and maths"],
+            Datasets =
+                [
+                    new DatasetMeasureViewModel {
+                        Label = "Non-mobile pupils",
+                        Data = [ new Measure { Value = englishAndMathsResultsModel.EstablishmentNonMobile.CurrentYear, Unit = DataUnit.Percentage }]
+                    },
+                    new DatasetMeasureViewModel {
+                        Label = "All pupils at the school",
+                        Data = [ new Measure { Value = new CodedDouble(englishAndMathsResultsModel.EstablishmentAll.CurrentYear, string.Empty, englishAndMathsResultsModel.EstablishmentAll.CurrentYear?.ToString() ?? string.Empty), Unit = DataUnit.Percentage }]
+                    },
+                ],
+        };
+
         var nonDisadvantagedBreakdownData = new SeriesMeasureViewModel
         {
             TableId = "breakdown-non-disadvantaged-table",
@@ -140,6 +180,8 @@ public class AcademicPerformanceEnglishAndMathsResultsViewModel : BaseViewModel
             BreakdownGcseData = breakdownGcseData,
             BreakdownDisadvantaged = disadvantagedBreakdownData,
             BreakdownNonDisadvantaged = nonDisadvantagedBreakdownData,
+            BreakdownEAL = breakdownEALData,
+            BreakdownNonMobile = breakdownNonMobileData,
             HasEstablishmentData = hasEstablishmentData.ToDisplayField(),
         };
     }

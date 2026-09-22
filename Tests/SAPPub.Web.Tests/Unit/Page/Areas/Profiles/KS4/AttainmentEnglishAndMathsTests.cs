@@ -153,6 +153,136 @@ public class AttainmentEnglishAndMathsTests : PageTestsBase
     }
 
     [Fact]
+    public async Task EALBreakdownTable_DataAvailable_ShowsExpectedValues()
+    {
+        // Arrange
+        var urn = "143034";
+        var gradeSelection = GcseGradeDataSelection.Grade5AndAbove;
+        var grade = gradeSelection.ToGradeValue();
+        var establishmentName = "St Paul's Church of England Academy";
+        var expectedModel = new EnglishAndMathsResultsModelBuilder()
+            .WithUrn(urn)
+            .WithEstablishmentName(establishmentName)
+            .WithLaName("Durham")
+            .WithIsKS4(true)
+            .WithCurrentYearData()
+            .Build();
+
+        _serviceMock
+            .Setup(service => service.GetEnglishAndMathsResultsAsync(
+                urn,
+                grade,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedModel);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, $"{_pageRoute}/{gradeSelection.ToRouteSegment()}"));
+
+        // Assert
+        Assert.Contains("Pupils with EAL", doc.GetTableHeaderContentByIdAndIndex("breakdown-eal-table", 1, 0));
+        Assert.Contains("All pupils at the school", doc.GetTableHeaderContentByIdAndIndex("breakdown-eal-table", 2, 0));
+        Assert.Equal($"{expectedModel.EstablishmentEAL.CurrentYear!.Value.ToString()}%", doc.GetTableCellContentByIdAndIndex("breakdown-eal-table", 1, 0));
+        Assert.Equal($"{expectedModel.EstablishmentAll.CurrentYear!.Value.ToString()}%", doc.GetTableCellContentByIdAndIndex("breakdown-eal-table", 2, 0));
+    }
+
+    [Fact]
+    public async Task EALBreakdownTable_NoDataAvailable_ShowsExpectedValues()
+    {
+        // Arrange
+        var urn = "143034";
+        var gradeSelection = GcseGradeDataSelection.Grade5AndAbove;
+        var grade = gradeSelection.ToGradeValue();
+        var establishmentName = "St Paul's Church of England Academy";
+        var expectedModel = new EnglishAndMathsResultsModelBuilder()
+            .WithUrn(urn)
+            .WithEstablishmentName(establishmentName)
+            .WithLaName("Durham")
+            .WithIsKS4(true)
+            .Build();
+
+        _serviceMock
+            .Setup(service => service.GetEnglishAndMathsResultsAsync(
+                urn,
+                grade,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedModel);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, $"{_pageRoute}/{gradeSelection.ToRouteSegment()}"));
+
+        // Assert
+        Assert.Contains("Pupils with EAL", doc.GetTableHeaderContentByIdAndIndex("breakdown-eal-table", 1, 0));
+        Assert.Contains("All pupils at the school", doc.GetTableHeaderContentByIdAndIndex("breakdown-eal-table", 2, 0));
+        Assert.Equal("Not available", doc.GetTableCellContentByIdAndIndex("breakdown-eal-table", 1, 0));
+        Assert.Equal("Not available", doc.GetTableCellContentByIdAndIndex("breakdown-eal-table", 2, 0));
+    }
+
+    [Fact]
+    public async Task NonMobileBreakdownTable_DataAvailable_ShowsExpectedValues()
+    {
+        // Arrange
+        var urn = "143034";
+        var gradeSelection = GcseGradeDataSelection.Grade5AndAbove;
+        var grade = gradeSelection.ToGradeValue();
+        var establishmentName = "St Paul's Church of England Academy";
+        var expectedModel = new EnglishAndMathsResultsModelBuilder()
+            .WithUrn(urn)
+            .WithEstablishmentName(establishmentName)
+            .WithLaName("Durham")
+            .WithIsKS4(true)
+            .WithCurrentYearData()
+            .Build();
+
+        _serviceMock
+            .Setup(service => service.GetEnglishAndMathsResultsAsync(
+                urn,
+                grade,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedModel);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, $"{_pageRoute}/{gradeSelection.ToRouteSegment()}"));
+
+        // Assert
+        Assert.Contains("Non-mobile pupils", doc.GetTableHeaderContentByIdAndIndex("breakdown-non-mobile-table", 1, 0));
+        Assert.Contains("All pupils at the school", doc.GetTableHeaderContentByIdAndIndex("breakdown-non-mobile-table", 2, 0));
+        Assert.Equal($"{expectedModel.EstablishmentNonMobile.CurrentYear!.Value.ToString()}%", doc.GetTableCellContentByIdAndIndex("breakdown-non-mobile-table", 1, 0));
+        Assert.Equal($"{expectedModel.EstablishmentAll.CurrentYear!.Value.ToString()}%", doc.GetTableCellContentByIdAndIndex("breakdown-non-mobile-table", 2, 0));
+    }
+
+    [Fact]
+    public async Task NonMobileBreakdownTable_NoDataAvailable_ShowsExpectedValues()
+    {
+        // Arrange
+        var urn = "143034";
+        var gradeSelection = GcseGradeDataSelection.Grade5AndAbove;
+        var grade = gradeSelection.ToGradeValue();
+        var establishmentName = "St Paul's Church of England Academy";
+        var expectedModel = new EnglishAndMathsResultsModelBuilder()
+            .WithUrn(urn)
+            .WithEstablishmentName(establishmentName)
+            .WithLaName("Durham")
+            .WithIsKS4(true)
+            .Build();
+
+        _serviceMock
+            .Setup(service => service.GetEnglishAndMathsResultsAsync(
+                urn,
+                grade,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedModel);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName, $"{_pageRoute}/{gradeSelection.ToRouteSegment()}"));
+
+        // Assert
+        Assert.Contains("Non-mobile pupils", doc.GetTableHeaderContentByIdAndIndex("breakdown-non-mobile-table", 1, 0));
+        Assert.Contains("All pupils at the school", doc.GetTableHeaderContentByIdAndIndex("breakdown-non-mobile-table", 2, 0));
+        Assert.Equal("Not available", doc.GetTableCellContentByIdAndIndex("breakdown-non-mobile-table", 1, 0));
+        Assert.Equal("Not available", doc.GetTableCellContentByIdAndIndex("breakdown-non-mobile-table", 2, 0));
+    }
+
+    [Fact]
     public async Task Year7Selected_TableShowsExpectedValues()
     {
         // Arrange
