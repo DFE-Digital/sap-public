@@ -48,7 +48,7 @@ public class AttainmentAndProgressPageTests : PageTestsBase
 
         // Assert
         var title = doc.Title;
-        Assert.Contains($"{establishmentName} - Secondary Progress and attainment - School Profiles - GOV.UK", title);
+        Assert.Contains($"{establishmentName} - Secondary Progress and attainment - Find and compare school and college profiles - GOV.UK", title);
     }
 
     [Fact]
@@ -113,6 +113,56 @@ public class AttainmentAndProgressPageTests : PageTestsBase
         var schoolProgressCard = doc.QuerySelector("[data-testid='prog8-scores-prev']");
         var text = schoolProgressCard?.QuerySelector("p")?.TextContent.Trim();
         Assert.Contains(expected.EstablishmentProgress8Score.CurrentYear.ToString(), text);
+    }
+
+    [Fact]
+    public async Task ShowsPupilCharacteristicTableValues()
+    {
+        // Arrange
+        var expected = new AttainmentAndProgressModelBuilder()
+            .WithAttainment8Data()
+            .WithAttainment8PupilCharacteristics()
+            .Build();
+
+        var urn = expected.Urn;
+        var establishmentName = expected.SchoolName;
+        _establishmentServiceMock.Setup(service => service.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EstablishmentServiceModel()
+            {
+                EstablishmentName = establishmentName!,
+                URN = urn,
+                IsKS4 = true,
+                LAName = "Test council"
+            });
+        _serviceMock
+            .Setup(service => service.GetAttainmentAndProgressAsync(
+                urn,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expected);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName!, _pageRoute));
+
+        // Assert
+        var tableSelectorGirlBoy = "characteristics-girlboy-table";
+        Assert.Contains("Girls", doc.GetTableHeaderContentByIdAndIndex(tableSelectorGirlBoy, 1, 0));
+        Assert.Contains("Boys", doc.GetTableHeaderContentByIdAndIndex(tableSelectorGirlBoy, 2, 0));
+        Assert.Contains("All pupils at the school", doc.GetTableHeaderContentByIdAndIndex(tableSelectorGirlBoy, 3, 0));
+        Assert.Equal(expected.EstablishmentAttainment8GirlsScore!.Value.ToString(), doc.GetTableCellContentByIdAndIndex(tableSelectorGirlBoy, 1, 0));
+        Assert.Equal(expected.EstablishmentAttainment8BoysScore!.Value.ToString(), doc.GetTableCellContentByIdAndIndex(tableSelectorGirlBoy, 2, 0));
+        Assert.Equal(expected.EstablishmentAttainment8Score.CurrentYear!.Value.ToString(), doc.GetTableCellContentByIdAndIndex(tableSelectorGirlBoy, 3, 0));
+
+        var tableSelectorEal = "characteristics-eal-table";
+        Assert.Contains("Pupils with EAL", doc.GetTableHeaderContentByIdAndIndex(tableSelectorEal, 1, 0));
+        Assert.Contains("All pupils at the school", doc.GetTableHeaderContentByIdAndIndex(tableSelectorEal, 2, 0));
+        Assert.Equal(expected.EstablishmentAttainment8EALScore!.Value.ToString(), doc.GetTableCellContentByIdAndIndex(tableSelectorEal, 1, 0));
+        Assert.Equal(expected.EstablishmentAttainment8Score.CurrentYear!.Value.ToString(), doc.GetTableCellContentByIdAndIndex(tableSelectorEal, 2, 0));
+
+        var tableSelectorNonMobile = "characteristics-nonmobile-table";
+        Assert.Contains("Non-mobile pupils", doc.GetTableHeaderContentByIdAndIndex(tableSelectorNonMobile, 1, 0));
+        Assert.Contains("All pupils at the school", doc.GetTableHeaderContentByIdAndIndex(tableSelectorNonMobile, 2, 0));
+        Assert.Equal(expected.EstablishmentAttainment8NonMobileScore!.Value.ToString(), doc.GetTableCellContentByIdAndIndex(tableSelectorNonMobile, 1, 0));
+        Assert.Equal(expected.EstablishmentAttainment8Score.CurrentYear!.Value.ToString(), doc.GetTableCellContentByIdAndIndex(tableSelectorNonMobile, 2, 0));
     }
 
     [Fact]

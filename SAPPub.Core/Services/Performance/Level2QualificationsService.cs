@@ -1,4 +1,5 @@
-﻿using SAPPub.Core.Entities.Performance;
+﻿using SAPPub.Core.Entities;
+using SAPPub.Core.Entities.Performance;
 using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.Interfaces.Repositories.Performance;
 using SAPPub.Core.Interfaces.Services;
@@ -99,45 +100,47 @@ public class Level2QualificationsService(
     {
         return new AverageResultModel
         {
-            Establishment = new PerformanceResult
+            NumberOfStudents = new RelativeYearValues<CodedDouble>
             {
-                Points = level2Qualification switch
+                CurrentYear = level2Qualification switch
                 {
-                    Level2.TechCert => establishmentPerformance.TALLPPE_TECHCERT_Est_Current_Num_Coded,
-                    _ => CodedDouble.Empty,
-                },
-                Grade = level2Qualification switch
-                {
-                    Level2.TechCert => establishmentPerformance.TALLPPEGRD_TECHCERT_Est_Current,
-                    _ => CodedString.Empty,
-                },
+                    Level2.TechCert => establishmentPerformance.TALLPUP_TECHCERT_Est_Current_Num_Coded,
+                    _ => CodedDouble.Empty
+                }
             },
-            LocalAuthority = new PerformanceResult
+            Establishment = new RelativeYearValues<PerformanceResult>
             {
-                Points = level2Qualification switch
+                CurrentYear = level2Qualification switch
                 {
-                    Level2.TechCert => laPerformance.TALLPPE_TECHCERT_LA_Current_Num_Coded,
-                    _ => CodedDouble.Empty,
-                },
-                Grade = level2Qualification switch
-                {
-                    Level2.TechCert => laPerformance.TALLPPEGRD_TECHCERT_LA_Current,
-                    _ => CodedString.Empty,
-                },
+                    Level2.TechCert => MapPerformanceResult(establishmentPerformance.TALLPPEGRD_TECHCERT_Est_Current, establishmentPerformance.TALLPPE_TECHCERT_Est_Current_Num_Coded),
+                    _ => MapPerformanceResult(CodedString.Empty, CodedDouble.Empty)
+                }
             },
-            England = new PerformanceResult
+            LocalAuthority = new RelativeYearValues<PerformanceResult>
             {
-                Points = level2Qualification switch
+                CurrentYear = level2Qualification switch
                 {
-                    Level2.TechCert => englandPerformance.TALLPPE_TECHCERT_Eng_Current_Num_Coded,
-                    _ => CodedDouble.Empty,
-                },
-                Grade = level2Qualification switch
+                    Level2.TechCert => MapPerformanceResult(laPerformance.TALLPPEGRD_TECHCERT_LA_Current, laPerformance.TALLPPE_TECHCERT_LA_Current_Num_Coded),
+                    _ => MapPerformanceResult(CodedString.Empty, CodedDouble.Empty)
+                }                
+            },
+            England = new RelativeYearValues<PerformanceResult>
+            {
+                CurrentYear = level2Qualification switch
                 {
-                    Level2.TechCert => englandPerformance.TALLPPEGRD_TECHCERT_Eng_Current,
-                    _ => CodedString.Empty,
-                },
+                    Level2.TechCert => MapPerformanceResult(englandPerformance.TALLPPEGRD_TECHCERT_Eng_Current, englandPerformance.TALLPPE_TECHCERT_Eng_Current_Num_Coded),
+                    _ => MapPerformanceResult(CodedString.Empty, CodedDouble.Empty)
+                }
             }
+        };
+    }
+
+    private static PerformanceResult MapPerformanceResult(CodedString grade, CodedDouble points)
+    {
+        return new PerformanceResult
+        {
+            Grade = grade,
+            Points = points
         };
     }
 

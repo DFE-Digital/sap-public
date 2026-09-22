@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
+using SAPPub.Core.Entities;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.Interfaces.Services;
@@ -72,12 +73,26 @@ public class KS5ControllerTests : BaseProfilesTests
         var expectedProgressBandingDescription = AttainmentHelper.EstablishmentProgress8BandingContextStatement(model.ProgressScore.BandingRating.Value.Value);
         Assert.Equal(expectedProgressBandingDescription.Value, model.ProgressScore.Progress8BandingContextDescription.DisplayText());
 
-        Assert.Equal(expectedResult.AverageResult.Establishment.Points, model.AverageResult.EstablishmentPoints.Value);
-        Assert.Equal(expectedResult.AverageResult.Establishment.Grade.ToString(), model.AverageResult.EstablishmentGrade.DisplayText());
-        Assert.Equal(expectedResult.AverageResult.Establishment.Points, model.AverageResult.EstablishmentPoints.Value);
-        Assert.Equal(expectedResult.AverageResult.Establishment.Grade.ToString(), model.AverageResult.EstablishmentGrade.DisplayText());
-        Assert.Equal(expectedResult.AverageResult.Establishment.Points, model.AverageResult.EstablishmentPoints.Value);
-        Assert.Equal(expectedResult.AverageResult.Establishment.Grade.ToString(), model.AverageResult.EstablishmentGrade.DisplayText());
+        Assert.Equal(expectedResult.AverageResult.Establishment.CurrentYear.Points, model.AverageResult.Establishment.CurrentYear.Points.Value);
+        Assert.Equal(expectedResult.AverageResult.Establishment.PreviousYear!.Points, model.AverageResult.Establishment.PreviousYear!.Points.Value);
+        Assert.Equal(expectedResult.AverageResult.Establishment.TwoYearsAgo!.Points, model.AverageResult.Establishment.TwoYearsAgo!.Points.Value);
+        Assert.Equal(expectedResult.AverageResult.Establishment.CurrentYear.Grade.ToString(), model.AverageResult.Establishment.CurrentYear.Grade.DisplayText());
+        Assert.Equal(expectedResult.AverageResult.Establishment.PreviousYear!.Grade.ToString(), model.AverageResult.Establishment.PreviousYear!.Grade.DisplayText());
+        Assert.Equal(expectedResult.AverageResult.Establishment.TwoYearsAgo!.Grade.ToString(), model.AverageResult.Establishment.TwoYearsAgo!.Grade.DisplayText());
+        Assert.Equal(expectedResult.AverageResult.LocalAuthority.CurrentYear.Points, model.AverageResult.LocalAuthority.CurrentYear.Points.Value);
+        Assert.Equal(expectedResult.AverageResult.LocalAuthority.PreviousYear!.Points, model.AverageResult.LocalAuthority.PreviousYear!.Points.Value);
+        Assert.Equal(expectedResult.AverageResult.LocalAuthority.TwoYearsAgo!.Points, model.AverageResult.LocalAuthority.TwoYearsAgo!.Points.Value);
+        Assert.Equal(expectedResult.AverageResult.LocalAuthority.CurrentYear.Grade.ToString(), model.AverageResult.LocalAuthority.CurrentYear.Grade.DisplayText());
+        Assert.Equal(expectedResult.AverageResult.LocalAuthority.PreviousYear!.Grade.ToString(), model.AverageResult.LocalAuthority.PreviousYear!.Grade.DisplayText());
+        Assert.Equal(expectedResult.AverageResult.LocalAuthority.TwoYearsAgo!.Grade.ToString(), model.AverageResult.LocalAuthority.TwoYearsAgo!.Grade.DisplayText());
+        Assert.Equal(expectedResult.AverageResult.England.CurrentYear.Points, model.AverageResult.England.CurrentYear.Points.Value);
+        Assert.Equal(expectedResult.AverageResult.England.PreviousYear!.Points, model.AverageResult.England.PreviousYear!.Points.Value);
+        Assert.Equal(expectedResult.AverageResult.England.TwoYearsAgo!.Points, model.AverageResult.England.TwoYearsAgo!.Points.Value);
+
+        Assert.Equal(expectedResult.AverageResult.England.CurrentYear.Grade.ToString(), model.AverageResult.England.CurrentYear.Grade.DisplayText());
+        Assert.Equal(expectedResult.AverageResult.England.PreviousYear!.Grade.ToString(), model.AverageResult.England.PreviousYear!.Grade.DisplayText());
+        Assert.Equal(expectedResult.AverageResult.England.TwoYearsAgo!.Grade.ToString(), model.AverageResult.England.TwoYearsAgo!.Grade.DisplayText());
+
 
         if (qualification == Level3.ALevel)
         {
@@ -177,9 +192,66 @@ public class KS5ControllerTests : BaseProfilesTests
             },
             AverageResult = new AverageResultModel
             {
-                Establishment = new() { Grade = new CodedString(null, "Not applicable", "z"), Points = new CodedDouble(null, "Not applicable", "z") },
-                LocalAuthority = new() { Grade = new CodedString(null, "Redacted for confidentiality", "c"), Points = new CodedDouble(null, "Redacted for confidentiality", "c") },
-                England = new() { Grade = new CodedString(null, "Not available", "x"), Points = new CodedDouble(null, "Not available", "x") },
+                NumberOfStudents = new RelativeYearValues<CodedDouble>
+                {
+                    CurrentYear = new CodedDouble(null, "Not applicable", "z"),
+                    PreviousYear = new CodedDouble(null, "Redacted for confidentiality", "c"),
+                    TwoYearsAgo = new CodedDouble(null, "Not available", "x"),
+                },
+                Establishment = new RelativeYearValues<PerformanceResult>
+                { 
+                    CurrentYear = new PerformanceResult
+                    {
+                        Grade = new CodedString(null, "Not applicable", "z"),
+                        Points = new CodedDouble(null, "Not applicable", "z")
+                    },
+                    PreviousYear = new PerformanceResult
+                    {
+                        Grade = new CodedString(null, "Not available", "x"),
+                        Points = new CodedDouble(null, "Not available", "x")
+                    },
+                    TwoYearsAgo = new PerformanceResult
+                    {
+                        Grade = new CodedString(null, "Redacted for confidentiality", "c"),
+                        Points = new CodedDouble(null, "Redacted for confidentiality", "c")
+                    },
+                },
+                LocalAuthority = new RelativeYearValues<PerformanceResult>
+                {
+                    CurrentYear = new PerformanceResult
+                    {
+                        Grade = new CodedString(null, "Redacted for confidentiality", "c"),
+                        Points = new CodedDouble(null, "Redacted for confidentiality", "c")                        
+                    },
+                    PreviousYear = new PerformanceResult
+                    {
+                        Grade = new CodedString(null, "Not applicable", "z"),
+                        Points = new CodedDouble(null, "Not applicable", "z")                        
+                    },
+                    TwoYearsAgo = new PerformanceResult
+                    {
+                        Grade = new CodedString(null, "Not available", "x"),
+                        Points = new CodedDouble(null, "Not available", "x")
+                    },
+                },
+                England = new RelativeYearValues<PerformanceResult>
+                {
+                    CurrentYear = new PerformanceResult
+                    {
+                        Grade = new CodedString(null, "Not available", "x"),
+                        Points = new CodedDouble(null, "Not available", "x")                        
+                    },
+                    PreviousYear = new PerformanceResult
+                    {
+                        Grade = new CodedString(null, "Redacted for confidentiality", "c"),
+                        Points = new CodedDouble(null, "Redacted for confidentiality", "c")
+                    },
+                    TwoYearsAgo = new PerformanceResult
+                    {
+                        Grade = new CodedString(null, "Not applicable", "z"),
+                        Points = new CodedDouble(null, "Not applicable", "z")
+                    },
+                }
             },
             AdditionalData = new AdditionalDataModel
             {
@@ -294,12 +366,29 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.Equal(NotAvailable, model.ProgressScore.EnglandAverageScore.DisplayText());
         Assert.Equal(NotAvailable, model.ProgressScore.Progress8BandingContextDescription.DisplayText());
 
-        Assert.Equal(NotAvailable, model.AverageResult.EstablishmentPoints.DisplayText());
-        Assert.Equal(NotAvailable, model.AverageResult.EstablishmentGrade.DisplayText());
-        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthorityPoints.DisplayText());
-        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthorityGrade.DisplayText());
-        Assert.Equal(NotAvailable, model.AverageResult.EnglandPoints.DisplayText());
-        Assert.Equal(NotAvailable, model.AverageResult.EnglandGrade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.Establishment.CurrentYear.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.Establishment.PreviousYear!.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.Establishment.TwoYearsAgo!.Points.DisplayText());
+
+        Assert.Equal(NotAvailable, model.AverageResult.Establishment.CurrentYear.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.Establishment.PreviousYear!.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.Establishment.TwoYearsAgo!.Grade.DisplayText());
+
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthority.CurrentYear.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthority.PreviousYear!.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthority.TwoYearsAgo!.Points.DisplayText());
+
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthority.CurrentYear.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthority.PreviousYear!.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthority.TwoYearsAgo!.Grade.DisplayText());
+
+        Assert.Equal(NotAvailable, model.AverageResult.England.CurrentYear.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.England.PreviousYear!.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.England.TwoYearsAgo!.Points.DisplayText());
+
+        Assert.Equal(NotAvailable, model.AverageResult.England.CurrentYear.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.England.PreviousYear!.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.England.TwoYearsAgo!.Grade.DisplayText());
 
         Assert.Equal(NotAvailable, model.AdditionalData?.TotalNoOfStudentsIncludedInThisMeasure.DisplayText());
         Assert.Equal(NotAvailable, model.AdditionalData?.EstablishmentPoints.DisplayText());
@@ -368,9 +457,30 @@ public class KS5ControllerTests : BaseProfilesTests
             ProgressScore = new ProgressScoreModel(),
             AverageResult = new AverageResultModel
             {
-                Establishment = new(),
-                LocalAuthority = new(),
-                England = new(),
+                NumberOfStudents = new RelativeYearValues<CodedDouble>()
+                {
+                    CurrentYear = new(),
+                    PreviousYear = new(),
+                    TwoYearsAgo = new()
+                },
+                Establishment = new RelativeYearValues<PerformanceResult>()
+                {
+                    CurrentYear = new(),
+                    PreviousYear = new(),
+                    TwoYearsAgo = new()
+                },
+                LocalAuthority = new RelativeYearValues<PerformanceResult>()
+                {
+                    CurrentYear = new(),
+                    PreviousYear = new(),
+                    TwoYearsAgo = new()
+                },
+                England = new RelativeYearValues<PerformanceResult>()
+                {
+                    CurrentYear = new(),
+                    PreviousYear = new(),
+                    TwoYearsAgo = new()
+                },
             },
             AdditionalData = new AdditionalDataModel
             {
@@ -464,12 +574,24 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.Equal(NotAvailable, model.ProgressScore.EnglandAverageScore.DisplayText());
         Assert.Equal(NotAvailable, model.ProgressScore.Progress8BandingContextDescription.DisplayText());
 
-        Assert.Equal(NotAvailable, model.AverageResult.EstablishmentPoints.DisplayText());
-        Assert.Equal(NotAvailable, model.AverageResult.EstablishmentGrade.DisplayText());
-        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthorityPoints.DisplayText());
-        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthorityGrade.DisplayText());
-        Assert.Equal(NotAvailable, model.AverageResult.EnglandPoints.DisplayText());
-        Assert.Equal(NotAvailable, model.AverageResult.EnglandGrade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.Establishment.CurrentYear.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.Establishment.PreviousYear!.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.Establishment.TwoYearsAgo!.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.Establishment.CurrentYear.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.Establishment.PreviousYear!.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.Establishment.TwoYearsAgo!.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthority.CurrentYear.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthority.PreviousYear!.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthority.TwoYearsAgo!.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthority.CurrentYear.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthority.PreviousYear!.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthority.TwoYearsAgo!.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.England.CurrentYear.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.England.PreviousYear!.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.England.TwoYearsAgo!.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.England.CurrentYear.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.England.PreviousYear!.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.England.TwoYearsAgo!.Grade.DisplayText());
 
         Assert.Equal(NotAvailable, model.AdditionalData?.TotalNoOfStudentsIncludedInThisMeasure.DisplayText());
         Assert.Equal(NotAvailable, model.AdditionalData?.EstablishmentPoints.DisplayText());
@@ -557,12 +679,24 @@ public class KS5ControllerTests : BaseProfilesTests
         var expectedProgressBandingDescription = AttainmentHelper.EstablishmentProgress8BandingContextStatement(model.ProgressScore.BandingRating.Value.Value);
         Assert.Equal(expectedProgressBandingDescription.Value, model.ProgressScore.Progress8BandingContextDescription.DisplayText());
 
-        Assert.Equal(expectedResult.AverageResult.Establishment.Points, model.AverageResult.EstablishmentPoints.Value);
-        Assert.Equal(expectedResult.AverageResult.Establishment.Grade.ToString(), model.AverageResult.EstablishmentGrade.DisplayText());
-        Assert.Equal(expectedResult.AverageResult.Establishment.Points, model.AverageResult.EstablishmentPoints.Value);
-        Assert.Equal(expectedResult.AverageResult.Establishment.Grade.ToString(), model.AverageResult.EstablishmentGrade.DisplayText());
-        Assert.Equal(expectedResult.AverageResult.Establishment.Points, model.AverageResult.EstablishmentPoints.Value);
-        Assert.Equal(expectedResult.AverageResult.Establishment.Grade.ToString(), model.AverageResult.EstablishmentGrade.DisplayText());
+        Assert.Equal(expectedResult.AverageResult.Establishment.CurrentYear.Points, model.AverageResult.Establishment.CurrentYear.Points.Value);
+        Assert.Equal(expectedResult.AverageResult.Establishment.PreviousYear!.Points, model.AverageResult.Establishment.PreviousYear!.Points.Value);
+        Assert.Equal(expectedResult.AverageResult.Establishment.TwoYearsAgo!.Points, model.AverageResult.Establishment.TwoYearsAgo!.Points.Value);
+        Assert.Equal(expectedResult.AverageResult.Establishment.CurrentYear.Grade.ToString(), model.AverageResult.Establishment.CurrentYear.Grade.DisplayText());
+        Assert.Equal(expectedResult.AverageResult.Establishment.PreviousYear!.Grade.ToString(), model.AverageResult.Establishment.PreviousYear!.Grade.DisplayText());
+        Assert.Equal(expectedResult.AverageResult.Establishment.TwoYearsAgo!.Grade.ToString(), model.AverageResult.Establishment.TwoYearsAgo!.Grade.DisplayText());
+        Assert.Equal(expectedResult.AverageResult.LocalAuthority.CurrentYear.Points, model.AverageResult.LocalAuthority.CurrentYear.Points.Value);
+        Assert.Equal(expectedResult.AverageResult.LocalAuthority.PreviousYear!.Points, model.AverageResult.LocalAuthority.PreviousYear!.Points.Value);
+        Assert.Equal(expectedResult.AverageResult.LocalAuthority.TwoYearsAgo!.Points, model.AverageResult.LocalAuthority.TwoYearsAgo!.Points.Value);
+        Assert.Equal(expectedResult.AverageResult.LocalAuthority.CurrentYear.Grade.ToString(), model.AverageResult.LocalAuthority.CurrentYear.Grade.DisplayText());
+        Assert.Equal(expectedResult.AverageResult.LocalAuthority.PreviousYear!.Grade.ToString(), model.AverageResult.LocalAuthority.PreviousYear!.Grade.DisplayText());
+        Assert.Equal(expectedResult.AverageResult.LocalAuthority.TwoYearsAgo!.Grade.ToString(), model.AverageResult.LocalAuthority.TwoYearsAgo!.Grade.DisplayText());
+        Assert.Equal(expectedResult.AverageResult.England.CurrentYear.Points, model.AverageResult.England.CurrentYear.Points.Value);
+        Assert.Equal(expectedResult.AverageResult.England.PreviousYear!.Points, model.AverageResult.England.PreviousYear!.Points.Value);
+        Assert.Equal(expectedResult.AverageResult.England.TwoYearsAgo!.Points, model.AverageResult.England.TwoYearsAgo!.Points.Value);
+        Assert.Equal(expectedResult.AverageResult.England.CurrentYear.Grade.ToString(), model.AverageResult.England.CurrentYear.Grade.DisplayText());
+        Assert.Equal(expectedResult.AverageResult.England.PreviousYear!.Grade.ToString(), model.AverageResult.England.PreviousYear!.Grade.DisplayText());
+        Assert.Equal(expectedResult.AverageResult.England.TwoYearsAgo!.Grade.ToString(), model.AverageResult.England.TwoYearsAgo!.Grade.DisplayText());
 
         // Assert Disadvantaged and NonDisadvantaged students data
 
@@ -626,9 +760,66 @@ public class KS5ControllerTests : BaseProfilesTests
             },
             AverageResult = new AverageResultModel
             {
-                Establishment = new() { Grade = new CodedString(null, "Not applicable", "z"), Points = new CodedDouble(null, "Not applicable", "z") },
-                LocalAuthority = new() { Grade = new CodedString(null, "Redacted for confidentiality", "c"), Points = new CodedDouble(null, "Redacted for confidentiality", "c") },
-                England = new() { Grade = new CodedString(null, "Not available", "x"), Points = new CodedDouble(null, "Not available", "x") },
+                NumberOfStudents = new RelativeYearValues<CodedDouble>
+                {
+                    CurrentYear = new CodedDouble(null, "Not applicable", "z"),
+                    PreviousYear = new CodedDouble(null, "Redacted for confidentiality", "c"),
+                    TwoYearsAgo = new CodedDouble(null, "Not available", "x"),
+                },
+                Establishment = new RelativeYearValues<PerformanceResult>
+                {
+                    CurrentYear = new PerformanceResult
+                    {
+                        Grade = new CodedString(null, "Not applicable", "z"),
+                        Points = new CodedDouble(null, "Not applicable", "z")
+                    },
+                    PreviousYear = new PerformanceResult
+                    {
+                        Grade = new CodedString(null, "Not available", "x"),
+                        Points = new CodedDouble(null, "Not available", "x")
+                    },
+                    TwoYearsAgo = new PerformanceResult
+                    {
+                        Grade = new CodedString(null, "Redacted for confidentiality", "c"),
+                        Points = new CodedDouble(null, "Redacted for confidentiality", "c")
+                    },
+                },
+                LocalAuthority = new RelativeYearValues<PerformanceResult>
+                {
+                    CurrentYear = new PerformanceResult
+                    {
+                        Grade = new CodedString(null, "Redacted for confidentiality", "c"),
+                        Points = new CodedDouble(null, "Redacted for confidentiality", "c")
+                    },
+                    PreviousYear = new PerformanceResult
+                    {
+                        Grade = new CodedString(null, "Not applicable", "z"),
+                        Points = new CodedDouble(null, "Not applicable", "z")
+                    },
+                    TwoYearsAgo = new PerformanceResult
+                    {
+                        Grade = new CodedString(null, "Not available", "x"),
+                        Points = new CodedDouble(null, "Not available", "x")
+                    },
+                },
+                England = new RelativeYearValues<PerformanceResult>
+                {
+                    CurrentYear = new PerformanceResult
+                    {
+                        Grade = new CodedString(null, "Not available", "x"),
+                        Points = new CodedDouble(null, "Not available", "x")
+                    },
+                    PreviousYear = new PerformanceResult
+                    {
+                        Grade = new CodedString(null, "Redacted for confidentiality", "c"),
+                        Points = new CodedDouble(null, "Redacted for confidentiality", "c")
+                    },
+                    TwoYearsAgo = new PerformanceResult
+                    {
+                        Grade = new CodedString(null, "Not applicable", "z"),
+                        Points = new CodedDouble(null, "Not applicable", "z")
+                    },
+                }
             },
             DisadvantagedStudentsData = new PerformanceSummaryModel
             {
@@ -730,12 +921,24 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.Equal(NotAvailable, model.ProgressScore.EnglandAverageScore.DisplayText());
         Assert.Equal(NotAvailable, model.ProgressScore.Progress8BandingContextDescription.DisplayText());
 
-        Assert.Equal(NotAvailable, model.AverageResult.EstablishmentPoints.DisplayText());
-        Assert.Equal(NotAvailable, model.AverageResult.EstablishmentGrade.DisplayText());
-        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthorityPoints.DisplayText());
-        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthorityGrade.DisplayText());
-        Assert.Equal(NotAvailable, model.AverageResult.EnglandPoints.DisplayText());
-        Assert.Equal(NotAvailable, model.AverageResult.EnglandGrade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.Establishment.CurrentYear.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.Establishment.PreviousYear!.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.Establishment.TwoYearsAgo!.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.Establishment.CurrentYear.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.Establishment.PreviousYear!.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.Establishment.TwoYearsAgo!.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthority.CurrentYear.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthority.PreviousYear!.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthority.TwoYearsAgo!.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthority.CurrentYear.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthority.PreviousYear!.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthority.TwoYearsAgo!.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.England.CurrentYear.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.England.PreviousYear!.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.England.TwoYearsAgo!.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.England.CurrentYear.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.England.PreviousYear!.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.England.TwoYearsAgo!.Grade.DisplayText());
 
         // Disadvantaged - Establishment
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.NumberOfStudents.DisplayText());
@@ -789,9 +992,30 @@ public class KS5ControllerTests : BaseProfilesTests
             ProgressScore = new ProgressScoreModel(),
             AverageResult = new AverageResultModel
             {
-                Establishment = new(),
-                LocalAuthority = new(),
-                England = new(),
+                NumberOfStudents = new RelativeYearValues<CodedDouble>()
+                {
+                    CurrentYear = new(),
+                    PreviousYear = new(),
+                    TwoYearsAgo = new()
+                },
+                Establishment = new RelativeYearValues<PerformanceResult>()
+                {
+                    CurrentYear = new(),
+                    PreviousYear = new(),
+                    TwoYearsAgo = new()
+                },
+                LocalAuthority = new RelativeYearValues<PerformanceResult>()
+                {
+                    CurrentYear = new(),
+                    PreviousYear = new(),
+                    TwoYearsAgo = new()
+                },
+                England = new RelativeYearValues<PerformanceResult>()
+                {
+                    CurrentYear = new(),
+                    PreviousYear = new(),
+                    TwoYearsAgo = new()
+                },
             },
             DisadvantagedStudentsData = new PerformanceSummaryModel
             {
@@ -872,12 +1096,24 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.Equal(NotAvailable, model.ProgressScore.EnglandAverageScore.DisplayText());
         Assert.Equal(NotAvailable, model.ProgressScore.Progress8BandingContextDescription.DisplayText());
 
-        Assert.Equal(NotAvailable, model.AverageResult.EstablishmentPoints.DisplayText());
-        Assert.Equal(NotAvailable, model.AverageResult.EstablishmentGrade.DisplayText());
-        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthorityPoints.DisplayText());
-        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthorityGrade.DisplayText());
-        Assert.Equal(NotAvailable, model.AverageResult.EnglandPoints.DisplayText());
-        Assert.Equal(NotAvailable, model.AverageResult.EnglandGrade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.Establishment.CurrentYear.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.Establishment.PreviousYear!.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.Establishment.TwoYearsAgo!.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.Establishment.CurrentYear.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.Establishment.PreviousYear!.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.Establishment.TwoYearsAgo!.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthority.CurrentYear.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthority.PreviousYear!.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthority.TwoYearsAgo!.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthority.CurrentYear.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthority.PreviousYear!.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.LocalAuthority.TwoYearsAgo!.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.England.CurrentYear.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.England.PreviousYear!.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.England.TwoYearsAgo!.Points.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.England.CurrentYear.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.England.PreviousYear!.Grade.DisplayText());
+        Assert.Equal(NotAvailable, model.AverageResult.England.TwoYearsAgo!.Grade.DisplayText());
 
         // Disadvantaged - Establishment
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.DisadvantagedStudents.Establishment!.NumberOfStudents.DisplayText());
@@ -1288,70 +1524,127 @@ public class KS5ControllerTests : BaseProfilesTests
             IsKS4 = true,
             IsKS5 = true,
             QualificationType = qualification,
-            TotalNoOfStudentCompletedQualification = new CodedDouble(100, string.Empty, string.Empty),
+            TotalNoOfStudentCompletedQualification = GetCodedDouble(100),
             ProgressScore = new ProgressScoreModel
             {
-                Score = new CodedDouble(75.55, string.Empty, string.Empty),
-                BandingRating = new CodedString("Average", string.Empty, string.Empty),
-                ConfidenceLevelLower = new CodedDouble(1.0, string.Empty, string.Empty),
-                ConfidenceLevelUpper = new CodedDouble(5.5, string.Empty, string.Empty),
-                EnglandAverageScore = new CodedDouble(85.11, string.Empty, string.Empty)
+                Score = GetCodedDouble(75.55),
+                BandingRating = GetCodedString("Average"),
+                ConfidenceLevelLower = GetCodedDouble(1.0),
+                ConfidenceLevelUpper = GetCodedDouble(5.5),
+                EnglandAverageScore = GetCodedDouble(85.11)
             },
             AverageResult = new AverageResultModel
             {
-                Establishment = new() { Grade = new CodedString("B", string.Empty, string.Empty), Points = new CodedDouble(21.45, string.Empty, string.Empty) },
-                LocalAuthority = new() { Grade = new CodedString("A", string.Empty, string.Empty), Points = new CodedDouble(35.28, string.Empty, string.Empty) },
-                England = new() { Grade = new CodedString("B", string.Empty, string.Empty), Points = new CodedDouble(29.75, string.Empty, string.Empty) },
+                NumberOfStudents = new RelativeYearValues<CodedDouble> 
+                { 
+                    CurrentYear = GetCodedDouble(100),
+                    PreviousYear = GetCodedDouble(120),
+                    TwoYearsAgo = GetCodedDouble(150)
+                },
+                Establishment = new RelativeYearValues<PerformanceResult>
+                {
+                    CurrentYear = new PerformanceResult 
+                    {
+                        Grade = GetCodedString("B"),
+                        Points = GetCodedDouble(21.45)
+                    },
+                    PreviousYear = new PerformanceResult
+                    {
+                        Grade = GetCodedString("A"),
+                        Points = GetCodedDouble(71.22)
+                    },
+                    TwoYearsAgo = new PerformanceResult
+                    {
+                        Grade = GetCodedString("B"),
+                        Points = GetCodedDouble(50.36)
+                    }
+                },
+                LocalAuthority = new RelativeYearValues<PerformanceResult>
+                {
+                    CurrentYear = new PerformanceResult
+                    {
+                        Grade = GetCodedString("C"),
+                        Points = GetCodedDouble(31.54)
+                    },
+                    PreviousYear = new PerformanceResult
+                    {
+                        Grade = GetCodedString("A"),
+                        Points = GetCodedDouble(75.32)
+                    },
+                    TwoYearsAgo = new PerformanceResult
+                    {
+                        Grade = GetCodedString("B"),
+                        Points = GetCodedDouble(50.15)
+                    }
+                },
+                England = new RelativeYearValues<PerformanceResult>
+                {
+                    CurrentYear = new PerformanceResult
+                    {
+                        Grade = GetCodedString("D"),
+                        Points = GetCodedDouble(51.75)
+                    },
+                    PreviousYear = new PerformanceResult
+                    {
+                        Grade = GetCodedString("A"),
+                        Points = GetCodedDouble(83.79)
+                    },
+                    TwoYearsAgo = new PerformanceResult
+                    {
+                        Grade = GetCodedString("C"),
+                        Points = GetCodedDouble(35.79)
+                    }
+                },
             },
             AdditionalData = isALevelQual ? new AdditionalDataModel
             {
-                TotalNoOfStudentsIncludedInThisMeasure = new CodedDouble(100, string.Empty, string.Empty),
-                Establishment = new() { Grade = new CodedString("A", string.Empty, string.Empty), Points = new CodedDouble(19.52, string.Empty, string.Empty) },
-                LocalAuthority = new() { Grade = new CodedString("B", string.Empty, string.Empty), Points = new CodedDouble(29.53, string.Empty, string.Empty) },
-                England = new() { Grade = new CodedString("B", string.Empty, string.Empty), Points = new CodedDouble(31.75, string.Empty, string.Empty) },
+                TotalNoOfStudentsIncludedInThisMeasure = GetCodedDouble(100),
+                Establishment = new() { Grade = GetCodedString("A"), Points = GetCodedDouble(19.52) },
+                LocalAuthority = new() { Grade = GetCodedString("B"), Points = GetCodedDouble(29.53) },
+                England = new() { Grade = GetCodedString("B"), Points = GetCodedDouble(31.75) },
             } : null,
             AdvancedLevelMathsQualificationData = isAcademicQual ? new SimpleCodedDoubleTableModel
             {
-                SchoolOrCollege = new CodedDouble(95.12, string.Empty, string.Empty),
-                LocalAuthority = new CodedDouble(82.45, string.Empty, string.Empty),
-                England = new CodedDouble(79.37, string.Empty, string.Empty),
+                SchoolOrCollege = GetCodedDouble(95.12),
+                LocalAuthority = GetCodedDouble(82.45),
+                England = GetCodedDouble(79.37),
             } : null,
             DisadvantagedStudentsData = new PerformanceSummaryModel
             {
                 Establishment = new PerformanceData
                 {
-                    NumberOfStudents = new CodedDouble(255, string.Empty, string.Empty),
-                    ProgressScore = new CodedDouble(85.23, string.Empty, string.Empty),
-                    ConfidenceLevelLower = new CodedDouble(1.0, string.Empty, string.Empty),
-                    ConfidenceLevelUpper = new CodedDouble(5.5, string.Empty, string.Empty),
+                    NumberOfStudents = GetCodedDouble(255),
+                    ProgressScore = GetCodedDouble(85.23),
+                    ConfidenceLevelLower = GetCodedDouble(1.0),
+                    ConfidenceLevelUpper = GetCodedDouble(5.5),
                     Result = new PerformanceResult
                     {
-                        Grade = new CodedString("A", string.Empty, string.Empty),
-                        Points = new CodedDouble(85.25, string.Empty, string.Empty)
+                        Grade = GetCodedString("A"),
+                        Points = GetCodedDouble(85.25)
                     }
                 },
                 LocalAuthority = new PerformanceData
                 {
-                    NumberOfStudents = new CodedDouble(450, string.Empty, string.Empty),
-                    ProgressScore = new CodedDouble(78.32, string.Empty, string.Empty),
-                    ConfidenceLevelLower = new CodedDouble(0.5, string.Empty, string.Empty),
-                    ConfidenceLevelUpper = new CodedDouble(3.4, string.Empty, string.Empty),
+                    NumberOfStudents = GetCodedDouble(450),
+                    ProgressScore = GetCodedDouble(78.32),
+                    ConfidenceLevelLower = GetCodedDouble(0.5),
+                    ConfidenceLevelUpper = GetCodedDouble(3.4),
                     Result = new PerformanceResult
                     {
-                        Grade = new CodedString("C", string.Empty, string.Empty),
-                        Points = new CodedDouble(51.25, string.Empty, string.Empty)
+                        Grade = GetCodedString("C"),
+                        Points = GetCodedDouble(51.25)
                     }
                 },
                 England = new PerformanceData
                 {
-                    NumberOfStudents = new CodedDouble(805, string.Empty, string.Empty),
-                    ProgressScore = new CodedDouble(77.31, string.Empty, string.Empty),
-                    ConfidenceLevelLower = new CodedDouble(1.2, string.Empty, string.Empty),
-                    ConfidenceLevelUpper = new CodedDouble(4.9, string.Empty, string.Empty),
+                    NumberOfStudents = GetCodedDouble(805),
+                    ProgressScore = GetCodedDouble(77.31),
+                    ConfidenceLevelLower = GetCodedDouble(1.2),
+                    ConfidenceLevelUpper = GetCodedDouble(4.9),
                     Result = new PerformanceResult
                     {
-                        Grade = new CodedString("B", string.Empty, string.Empty),
-                        Points = new CodedDouble(65.12, string.Empty, string.Empty)
+                        Grade = GetCodedString("B"),
+                        Points = GetCodedDouble(65.12)
                     }
                 }
             },
@@ -1360,26 +1653,26 @@ public class KS5ControllerTests : BaseProfilesTests
                 Establishment = null,
                 LocalAuthority = new PerformanceData
                 {
-                    NumberOfStudents = new CodedDouble(500, string.Empty, string.Empty),
-                    ProgressScore = new CodedDouble(81.56, string.Empty, string.Empty),
-                    ConfidenceLevelLower = new CodedDouble(1.1, string.Empty, string.Empty),
-                    ConfidenceLevelUpper = new CodedDouble(4.3, string.Empty, string.Empty),
+                    NumberOfStudents = GetCodedDouble(500),
+                    ProgressScore = GetCodedDouble(81.56),
+                    ConfidenceLevelLower = GetCodedDouble(1.1),
+                    ConfidenceLevelUpper = GetCodedDouble(4.3),
                     Result = new PerformanceResult
                     {
-                        Grade = new CodedString("A", string.Empty, string.Empty),
-                        Points = new CodedDouble(81.69, string.Empty, string.Empty)
+                        Grade = GetCodedString("A"),
+                        Points = GetCodedDouble(81.69)
                     }
                 },
                 England = new PerformanceData
                 {
-                    NumberOfStudents = new CodedDouble(700, string.Empty, string.Empty),
-                    ProgressScore = new CodedDouble(81.59, string.Empty, string.Empty),
-                    ConfidenceLevelLower = new CodedDouble(0.2, string.Empty, string.Empty),
-                    ConfidenceLevelUpper = new CodedDouble(2.5, string.Empty, string.Empty),
+                    NumberOfStudents = GetCodedDouble(700),
+                    ProgressScore = GetCodedDouble(81.59),
+                    ConfidenceLevelLower = GetCodedDouble(0.2),
+                    ConfidenceLevelUpper = GetCodedDouble(2.5),
                     Result = new PerformanceResult
                     {
-                        Grade = new CodedString("B", string.Empty, string.Empty),
-                        Points = new CodedDouble(69.15, string.Empty, string.Empty)
+                        Grade = GetCodedString("B"),
+                        Points = GetCodedDouble(69.15)
                     }
                 }
             }
@@ -1397,57 +1690,114 @@ public class KS5ControllerTests : BaseProfilesTests
             IsKS4 = true,
             IsKS5 = true,
             QualificationType = qualification,
-            TotalNoOfStudentCompletedQualification = new CodedDouble(120, string.Empty, string.Empty),
+            TotalNoOfStudentCompletedQualification = GetCodedDouble(120),
             ProgressScore = new ProgressScoreModel
             {
-                Score = new CodedDouble(83.37, string.Empty, string.Empty),
-                BandingRating = new CodedString("Average", string.Empty, string.Empty),
-                ConfidenceLevelLower = new CodedDouble(0.3, string.Empty, string.Empty),
-                ConfidenceLevelUpper = new CodedDouble(4.2, string.Empty, string.Empty),
-                EnglandAverageScore = new CodedDouble(71.59, string.Empty, string.Empty)
+                Score = GetCodedDouble(83.37),
+                BandingRating = GetCodedString("Average"),
+                ConfidenceLevelLower = GetCodedDouble(0.3),
+                ConfidenceLevelUpper = GetCodedDouble(4.2),
+                EnglandAverageScore = GetCodedDouble(71.59)
             },
             AverageResult = new AverageResultModel
             {
-                Establishment = new() { Grade = new CodedString("A", string.Empty, string.Empty), Points = new CodedDouble(15.33, string.Empty, string.Empty) },
-                LocalAuthority = new() { Grade = new CodedString("B", string.Empty, string.Empty), Points = new CodedDouble(29.85, string.Empty, string.Empty) },
-                England = new() { Grade = new CodedString("C", string.Empty, string.Empty), Points = new CodedDouble(33.91, string.Empty, string.Empty) },
-            },
+                NumberOfStudents = new RelativeYearValues<CodedDouble>
+                {
+                    CurrentYear = GetCodedDouble(100),
+                    PreviousYear = GetCodedDouble(120),
+                    TwoYearsAgo = GetCodedDouble(150)
+                },
+                Establishment = new RelativeYearValues<PerformanceResult>
+                {
+                    CurrentYear = new PerformanceResult
+                    {
+                        Grade = GetCodedString("A"),
+                        Points = GetCodedDouble(74.33)
+                    },
+                    PreviousYear = new PerformanceResult
+                    {
+                        Grade = GetCodedString("C"),
+                        Points = GetCodedDouble(31.22)
+                    },
+                    TwoYearsAgo = new PerformanceResult
+                    {
+                        Grade = GetCodedString("B"),
+                        Points = GetCodedDouble(55.17)
+                    }
+                },
+                LocalAuthority = new RelativeYearValues<PerformanceResult>
+                {
+                    CurrentYear = new PerformanceResult
+                    {
+                        Grade = GetCodedString("B"),
+                        Points = GetCodedDouble(52.32)
+                    },
+                    PreviousYear = new PerformanceResult
+                    {
+                        Grade = GetCodedString("A"),
+                        Points = GetCodedDouble(72.25)
+                    },
+                    TwoYearsAgo = new PerformanceResult
+                    {
+                        Grade = GetCodedString("C"),
+                        Points = GetCodedDouble(35.77)
+                    }
+                },
+                England = new RelativeYearValues<PerformanceResult>
+                {
+                    CurrentYear = new PerformanceResult
+                    {
+                        Grade = GetCodedString("D"),
+                        Points = GetCodedDouble(55.47)
+                    },
+                    PreviousYear = new PerformanceResult
+                    {
+                        Grade = GetCodedString("B"),
+                        Points = GetCodedDouble(48.85)
+                    },
+                    TwoYearsAgo = new PerformanceResult
+                    {
+                        Grade = GetCodedString("C"),
+                        Points = GetCodedDouble(33.64)
+                    }
+                },
+            },            
             DisadvantagedStudentsData = new PerformanceSummaryModel
             {
                 Establishment = new PerformanceData
                 {
-                    NumberOfStudents = new CodedDouble(150, string.Empty, string.Empty),
-                    ProgressScore = new CodedDouble(81.66, string.Empty, string.Empty),
-                    ConfidenceLevelLower = new CodedDouble(2.0, string.Empty, string.Empty),
-                    ConfidenceLevelUpper = new CodedDouble(5.0, string.Empty, string.Empty),
+                    NumberOfStudents = GetCodedDouble(150),
+                    ProgressScore = GetCodedDouble(81.66),
+                    ConfidenceLevelLower = GetCodedDouble(2.0),
+                    ConfidenceLevelUpper = GetCodedDouble(5.0),
                     Result = new PerformanceResult
                     {
-                        Grade = new CodedString("A", string.Empty, string.Empty),
-                        Points = new CodedDouble(83.59, string.Empty, string.Empty)
+                        Grade = GetCodedString("A"),
+                        Points = GetCodedDouble(83.59)
                     }
                 },
                 LocalAuthority = new PerformanceData
                 {
-                    NumberOfStudents = new CodedDouble(240, string.Empty, string.Empty),
-                    ProgressScore = new CodedDouble(51.54, string.Empty, string.Empty),
-                    ConfidenceLevelLower = new CodedDouble(1.0, string.Empty, string.Empty),
-                    ConfidenceLevelUpper = new CodedDouble(3.0, string.Empty, string.Empty),
+                    NumberOfStudents = GetCodedDouble(240),
+                    ProgressScore = GetCodedDouble(51.54),
+                    ConfidenceLevelLower = GetCodedDouble(1.0),
+                    ConfidenceLevelUpper = GetCodedDouble(3.0),
                     Result = new PerformanceResult
                     {
-                        Grade = new CodedString("C", string.Empty, string.Empty),
-                        Points = new CodedDouble(50.76, string.Empty, string.Empty)
+                        Grade = GetCodedString("C"),
+                        Points = GetCodedDouble(50.76)
                     }
                 },
                 England = new PerformanceData
                 {
-                    NumberOfStudents = new CodedDouble(1200, string.Empty, string.Empty),
-                    ProgressScore = new CodedDouble(72.56, string.Empty, string.Empty),
-                    ConfidenceLevelLower = new CodedDouble(1.1, string.Empty, string.Empty),
-                    ConfidenceLevelUpper = new CodedDouble(4.5, string.Empty, string.Empty),
+                    NumberOfStudents = GetCodedDouble(1200),
+                    ProgressScore = GetCodedDouble(72.56),
+                    ConfidenceLevelLower = GetCodedDouble(1.1),
+                    ConfidenceLevelUpper = GetCodedDouble(4.5),
                     Result = new PerformanceResult
                     {
-                        Grade = new CodedString("B", string.Empty, string.Empty),
-                        Points = new CodedDouble(66.79, string.Empty, string.Empty)
+                        Grade = GetCodedString("B"),
+                        Points = GetCodedDouble(66.79)
                     }
                 }
             },
@@ -1456,26 +1806,26 @@ public class KS5ControllerTests : BaseProfilesTests
                 Establishment = null,
                 LocalAuthority = new PerformanceData
                 {
-                    NumberOfStudents = new CodedDouble(450, string.Empty, string.Empty),
-                    ProgressScore = new CodedDouble(80.79, string.Empty, string.Empty),
-                    ConfidenceLevelLower = new CodedDouble(1.2, string.Empty, string.Empty),
-                    ConfidenceLevelUpper = new CodedDouble(4.3, string.Empty, string.Empty),
+                    NumberOfStudents = GetCodedDouble(450),
+                    ProgressScore = GetCodedDouble(80.79),
+                    ConfidenceLevelLower = GetCodedDouble(1.2),
+                    ConfidenceLevelUpper = GetCodedDouble(4.3),
                     Result = new PerformanceResult
                     {
-                        Grade = new CodedString("A", string.Empty, string.Empty),
-                        Points = new CodedDouble(85.42, string.Empty, string.Empty)
+                        Grade = GetCodedString("A"),
+                        Points = GetCodedDouble(85.42)
                     }
                 },
                 England = new PerformanceData
                 {
-                    NumberOfStudents = new CodedDouble(550, string.Empty, string.Empty),
-                    ProgressScore = new CodedDouble(87.46, string.Empty, string.Empty),
-                    ConfidenceLevelLower = new CodedDouble(0.4, string.Empty, string.Empty),
-                    ConfidenceLevelUpper = new CodedDouble(2.9, string.Empty, string.Empty),
+                    NumberOfStudents = GetCodedDouble(550),
+                    ProgressScore = GetCodedDouble(87.46),
+                    ConfidenceLevelLower = GetCodedDouble(0.4),
+                    ConfidenceLevelUpper = GetCodedDouble(2.9),
                     Result = new PerformanceResult
                     {
-                        Grade = new CodedString("B", string.Empty, string.Empty),
-                        Points = new CodedDouble(67.23, string.Empty, string.Empty)
+                        Grade = GetCodedString("B"),
+                        Points = GetCodedDouble(67.23)
                     }
                 }
             }

@@ -56,7 +56,7 @@ public class ScaledScoresAcademicPerformacePageTests : PageTestsBase
         var title = doc.QuerySelector("title");
         Assert.NotNull(title);
 
-        var expectedTitle = $"School149976 - Primary Subject scaled scores - School Profiles - GOV.UK";
+        var expectedTitle = $"School149976 - Primary Subject scaled scores - Find and compare school and college profiles - GOV.UK";
         Assert.Contains(expectedTitle, title.TextContent.Trim());
     }
 

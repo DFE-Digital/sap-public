@@ -310,13 +310,16 @@ public class KS2ControllerTests : BaseProfilesTests
             LocalAuthorityNonDisadvantagedExceedingExpectedStandard = GetCodedDouble(35),
             LocalAuthorityNonDisadvantagedMeetingExpectedStandard = GetCodedDouble(36),
             NonMobileExceedingExpectedStandard = GetCodedDouble(37),
-            NonMobileMeetingExpectedStandard = GetCodedDouble(38)
+            NonMobileMeetingExpectedStandard = GetCodedDouble(38),
+            EstablishmentPercentageMeetingOrExceedingThreeYearAverage = GetCodedDouble(39),
+            LocalAuthorityPercentageMeetingOrExceedingThreeYearAverage = GetCodedDouble(40),
+            EnglandPercentageMeetingOrExceedingThreeYearAverage = GetCodedDouble(41),
+            EstablishmentPercentageExceedingThreeYearAverage = GetCodedDouble(42),
+            LocalAuthorityPercentageExceedingThreeYearAverage = GetCodedDouble(43),
+            EnglandPercentageExceedingThreeYearAverage = GetCodedDouble(44)
         };
 
     }
-
-    private static CodedDouble GetCodedDouble(double val) => new(val, string.Empty, val.ToString());
-    
 
     private static KS2AdditionalMeasuresModel GetKS2AdditionalMeasuresModel() => new()
     {

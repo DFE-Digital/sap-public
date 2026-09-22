@@ -42,4 +42,8 @@ public class EnglishAndMathsResultsModel
     public required RelativeYearValues<CodedDouble> LocalAuthorityNonDisadvantaged { get; init; }
 
     public required RelativeYearValues<CodedDouble> EnglandNonDisadvantaged { get; init; }
+
+    public required RelativeYearValues<CodedDouble> EstablishmentEAL { get; init; }
+
+    public required RelativeYearValues<CodedDouble> EstablishmentNonMobile { get; init; }
 }

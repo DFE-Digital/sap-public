@@ -310,16 +310,16 @@ public class Level2QualificationsPageTests : PageTestsBase
         Assert.Equal("https://www.gov.uk/government/publications/performance-points-a-practical-guide-to-key-stage-4-and-5-points", performancePointsLink.GetAttribute("href"));
         
         Assert.Contains("School or college", doc.GetTableHeaderContentByIdAndIndex("average-result-current-year-table", 1, 0));
-        Assert.Contains(_level2QualificationModel.AverageResult.Establishment.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 1, 0));
-        Assert.Contains(_level2QualificationModel.AverageResult.Establishment.Points.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 1, 1));
+        Assert.Contains(_level2QualificationModel.AverageResult.Establishment.CurrentYear.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 1, 0));
+        Assert.Contains(_level2QualificationModel.AverageResult.Establishment.CurrentYear.Points.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 1, 1));
 
         Assert.Contains($"{_level2QualificationModel.LAName} average", doc.GetTableHeaderContentByIdAndIndex("average-result-current-year-table", 2, 0));
-        Assert.Contains(_level2QualificationModel.AverageResult.LocalAuthority.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 2, 0));
-        Assert.Contains(_level2QualificationModel.AverageResult.LocalAuthority.Points.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 2, 1));
+        Assert.Contains(_level2QualificationModel.AverageResult.LocalAuthority.CurrentYear.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 2, 0));
+        Assert.Contains(_level2QualificationModel.AverageResult.LocalAuthority.CurrentYear.Points.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 2, 1));
 
         Assert.Contains("England average", doc.GetTableHeaderContentByIdAndIndex("average-result-current-year-table", 3, 0));
-        Assert.Contains(_level2QualificationModel.AverageResult.England.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 3, 0));
-        Assert.Contains(_level2QualificationModel.AverageResult.England.Points.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 3, 1));
+        Assert.Contains(_level2QualificationModel.AverageResult.England.CurrentYear.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 3, 0));
+        Assert.Contains(_level2QualificationModel.AverageResult.England.CurrentYear.Points.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 3, 1));
     }
 
     [Theory]
