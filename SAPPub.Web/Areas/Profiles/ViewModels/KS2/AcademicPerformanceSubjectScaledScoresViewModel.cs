@@ -23,6 +23,10 @@ public class AcademicPerformanceSubjectScaledScoresViewModel : BaseViewModel
 
     public required DisplayField<bool> HasMathsEstablishmentData { get; set; }
 
+    public required DataViewModel ReadThreeYearAverageData { get; set; }
+
+    public required DataViewModel MathsThreeYearAverageData { get; set; }
+
     public required ScaledScoresViewModel GirlsAndBoys { get; set; }
     public required ScaledScoresViewModel EnglishAsAnAdditionalLanguage { get; set; }
     public required ScaledScoresViewModel NonMobilePupils { get; set; }
@@ -72,6 +76,28 @@ public class AcademicPerformanceSubjectScaledScoresViewModel : BaseViewModel
             scaledScoreModel.MathsAverageEngland.TwoYearsAgo.Value, scaledScoreModel.MathsAverageEngland.PreviousYear.Value, scaledScoreModel.MathsAverageEngland.CurrentYear.Value,
             laAverageLabel);
 
+        var readThreeYearAverage = new DataViewModel
+        {
+            Labels = ["School", laAverageLabel, "England average"],
+            Data =
+            [
+                scaledScoreModel.EstablishmentReadThreeYearAverage.Value,
+                scaledScoreModel.LocalAuthorityReadThreeYearAverage.Value,
+                scaledScoreModel.EnglandReadThreeYearAverage.Value
+            ],
+        };
+
+        var mathsThreeYearAverage = new DataViewModel
+        {
+            Labels = ["School", laAverageLabel, "England average"],
+            Data =
+            [
+                scaledScoreModel.EstablishmentMathsThreeYearAverage.Value,
+                scaledScoreModel.LocalAuthorityMathsThreeYearAverage.Value,
+                scaledScoreModel.EnglandMathsThreeYearAverage.Value
+            ],
+        };
+
         return new AcademicPerformanceSubjectScaledScoresViewModel
         {
             URN = establishment.URN,
@@ -85,6 +111,8 @@ public class AcademicPerformanceSubjectScaledScoresViewModel : BaseViewModel
             AllMathsOverTimeData = allMathsOverTimeData,
             HasReadEstablishmentData = hasReadEstablishmentData.ToDisplayField(),
             HasMathsEstablishmentData = hasMathsEstablishmentData.ToDisplayField(),
+            MathsThreeYearAverageData = mathsThreeYearAverage,
+            ReadThreeYearAverageData = readThreeYearAverage,
             GirlsAndBoys = GetScaledScoresViewModel(PupilGroup, 
                 [
                     new() { RowTitle = "Girls", AverageMathsScore =  scaledScoreModel.GirlsAverageMaths.ToDisplayField(), AverageReadingScore =  scaledScoreModel.GirlsAverageReading.ToDisplayField()  },
