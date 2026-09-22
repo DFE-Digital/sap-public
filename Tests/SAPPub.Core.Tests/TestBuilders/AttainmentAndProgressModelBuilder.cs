@@ -28,6 +28,10 @@ public class AttainmentAndProgressModelBuilder
 
     private CodedDouble? _localAuthorityAttainment8NonDisadvantagedScore;
     private CodedDouble? _englandAttainment8NonDisadvantagedScore;
+    private CodedDouble? _establishmentAttainment8GirlScore;
+    private CodedDouble? _establishmentAttainment8BoyScore;
+    private CodedDouble? _establishmentAttainment8EALScore;
+    private CodedDouble? _establishmentAttainment8NonMobileScore;
 
     public AttainmentAndProgressModelBuilder WithIsKS2(bool isKS)
     {
@@ -194,6 +198,15 @@ public class AttainmentAndProgressModelBuilder
         return this;
     }
 
+    public AttainmentAndProgressModelBuilder WithAttainment8PupilCharacteristics()
+    {
+        _establishmentAttainment8GirlScore = CodedDoubleFactory.Create(Math.Round(_faker.Random.Double(20, 80), 1));
+        _establishmentAttainment8BoyScore = CodedDoubleFactory.Create(Math.Round(_faker.Random.Double(20, 80), 1));
+        _establishmentAttainment8EALScore = CodedDoubleFactory.Create(Math.Round(_faker.Random.Double(20, 80), 1));
+        _establishmentAttainment8NonMobileScore = CodedDoubleFactory.Create(Math.Round(_faker.Random.Double(20, 80), 1));
+        return this;
+    }
+
     public AttainmentAndProgressModel Build()
     {
         return new AttainmentAndProgressModel
@@ -223,7 +236,11 @@ public class AttainmentAndProgressModelBuilder
                 PreviousYear = CodedDoubleFactory.Create(_faker.Random.Double(20,200)),
                 TwoYearsAgo = CodedDoubleFactory.Create(_faker.Random.Double(20,200))
             },
-            LocalAuthorityProgress8Score = _localAuthorityProgress8Score ?? CreateEmptyRelativeYearValues()
+            LocalAuthorityProgress8Score = _localAuthorityProgress8Score ?? CreateEmptyRelativeYearValues(),
+            EstablishmentAttainment8GirlsScore = _establishmentAttainment8GirlScore ?? CodedDouble.Empty,
+            EstablishmentAttainment8BoysScore = _establishmentAttainment8BoyScore ?? CodedDouble.Empty,
+            EstablishmentAttainment8EALScore = _establishmentAttainment8EALScore ?? CodedDouble.Empty,
+            EstablishmentAttainment8NonMobileScore = _establishmentAttainment8NonMobileScore ?? CodedDouble.Empty
         };
     }
 

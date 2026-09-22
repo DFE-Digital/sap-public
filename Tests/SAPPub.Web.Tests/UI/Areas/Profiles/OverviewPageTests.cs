@@ -76,7 +76,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
 
         await Expect(Page)
             .ToHaveTitleAsync(
-                $"{SchoolName} - Overview - School Profiles - GOV.UK");
+                $"{SchoolName} - Overview - Find and compare school and college profiles - GOV.UK");
     }
 
     [Fact]
@@ -188,7 +188,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
         await Expect(
             navigation.GetByRole(
                 AriaRole.Link,
-                new() { Name = "School Profiles" }))
+                new() { Name = "Find and compare school and college profiles" }))
             .ToBeVisibleAsync();
     }
 

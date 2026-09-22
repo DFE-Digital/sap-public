@@ -37,4 +37,8 @@ public class AttainmentAndProgressModel
 
     public CodedDouble LocalAuthorityAttainment8NonDisadvantagedScore { get; init; }
     public CodedDouble EnglandAttainment8NonDisadvantagedScore { get; init; }
+    public required CodedDouble EstablishmentAttainment8GirlsScore { get; init; }
+    public required CodedDouble EstablishmentAttainment8BoysScore { get; init; }
+    public required CodedDouble EstablishmentAttainment8EALScore { get; init; }
+    public required CodedDouble EstablishmentAttainment8NonMobileScore { get; init; }
 }

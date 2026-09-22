@@ -20,7 +20,7 @@ public class HeaderServiceNavigationTests(WebAppFixture fixture) : PageTestsBase
 
         // Assert
         Assert.NotNull(serviceLink);
-        Assert.Equal("School Profiles", text?.Trim());
+        Assert.Equal("Find and compare school and college profiles", text?.Trim());
         Assert.Equal("/search", href, ignoreCase: true);
     }
 

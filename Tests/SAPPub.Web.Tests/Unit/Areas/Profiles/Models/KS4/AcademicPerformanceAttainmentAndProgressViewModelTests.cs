@@ -2,6 +2,7 @@
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Areas.Profiles.ViewModels.KS4;
+using SAPPub.Web.Models.Config;
 
 namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Models.KS4;
 
@@ -11,6 +12,8 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
     public void Map_MapsDataAsExpected()
     {
         // Arrange
+        var linkOptions = new UrlLinksOptions();
+
         var testdata = new AttainmentAndProgressModelBuilder()
             .WithAttainment8Data()
             .WithEstablishmentProgress8Data()
@@ -18,7 +21,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
             .Build();
 
         // Act
-        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map("", "", TypeOfEstablishment.CommunitySchool, testdata);
+        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map("", "", TypeOfEstablishment.CommunitySchool, testdata, linkOptions);
 
         // Assert
         Assert.Equal(testdata.Urn, viewModel.URN);
@@ -99,7 +102,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
         Assert.Equal(DataUnit.Score, viewModel.BreakdownNonDisadvantaged.Datasets[0].Data[0].Unit);
         Assert.Equal(testdata.EnglandAttainment8NonDisadvantagedScore, viewModel.BreakdownNonDisadvantaged.Datasets[1].Data[0].Value);
         Assert.Equal(DataUnit.Score, viewModel.BreakdownNonDisadvantaged.Datasets[1].Data[0].Unit);
-    }
+   }
 
     [Theory]
     [InlineData(-1, "Not available")]
@@ -174,7 +177,9 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
     [InlineData(90.0, "grade 9")]
     public void Map_EstablishmentAttainment8ScoreDescription_IsExpected(double establishmentAttainment8Score, string expected)
     {
-        //// Arrange
+        // Arrange
+        var linkOptions = new UrlLinksOptions();
+        
         var testdata = new AttainmentAndProgressModelBuilder()
             .WithAttainment8Data()
             .WithEstablishmentProgress8Data()
@@ -183,7 +188,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
             .Build();
 
         // Act
-        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map("", "", TypeOfEstablishment.CommunitySchool, testdata);
+        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map("", "", TypeOfEstablishment.CommunitySchool, testdata, linkOptions);
 
         // Assert
         var expectedContextStatement = expected != "Not available" ?
@@ -220,6 +225,8 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
     public void Map_LocalAuthorityAttainment8ScoreDescription_IsExpected(double? establishmentAttainment8Score, double? localAuthorityAttainment8Score, string expected1, string expected2)
     {
         // Arrange
+        var linkOptions = new UrlLinksOptions();
+
         var testdata = new AttainmentAndProgressModelBuilder()
             .WithAttainment8Data()
             .WithEstablishmentProgress8Data()
@@ -229,7 +236,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
             .Build();
 
         // Act
-        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map("", "", TypeOfEstablishment.CommunitySchool, testdata);
+        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map("", "", TypeOfEstablishment.CommunitySchool, testdata, linkOptions);
 
         // Assert
         var expectedContextStatement1 = expected1 != "Not available" ?
@@ -270,6 +277,8 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
     public void Map_NationalAttainment8ScoreDescription_IsExpected(double? establishmentAttainment8Score, double? nationalAttainment8Score, string expected1, string expected2)
     {
         // Arrange
+        var linkOptions = new UrlLinksOptions();
+
         var testdata = new AttainmentAndProgressModelBuilder()
             .WithAttainment8Data()
             .WithEstablishmentProgress8Data()
@@ -279,7 +288,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
             .Build();
 
         // Act
-        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map("", "", TypeOfEstablishment.CommunitySchool, testdata);
+        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map("", "", TypeOfEstablishment.CommunitySchool, testdata, linkOptions);
 
         // Assert
         var expectedContextStatement1 = expected1 != "Not available" ?
@@ -315,6 +324,8 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
     public void Map_EstablishmentProgress8BandingContextDescription_IsExpected(string? banding, bool isAvailable, bool isNotAvailable, string expectedText)
     {
         // Arrange
+        var linkOptions = new UrlLinksOptions();
+
         var testdata = new AttainmentAndProgressModelBuilder()
             .WithAttainment8Data()
             .WithEstablishmentProgress8Data()
@@ -323,7 +334,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
             .Build();
 
         // Act
-        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map("local authority name", "", TypeOfEstablishment.CommunitySchool, testdata);
+        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map("local authority name", "", TypeOfEstablishment.CommunitySchool, testdata, linkOptions);
 
         // Assert
         Assert.Equal(isAvailable, viewModel.YearValues.CurrentYear.EstablishmentProgress8BandingContextDescription.IsAvailable);

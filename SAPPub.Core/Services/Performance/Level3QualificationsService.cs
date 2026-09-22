@@ -1,4 +1,5 @@
-﻿using SAPPub.Core.Entities.Performance;
+﻿using SAPPub.Core.Entities;
+using SAPPub.Core.Entities.Performance;
 using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.Interfaces.Repositories.Performance;
 using SAPPub.Core.Interfaces.Services;
@@ -148,63 +149,107 @@ public class Level3QualificationsService(
     {
         return new AverageResultModel
         {
-            Establishment = new PerformanceResult
-            {
-                Points = level3Qualification switch
+            NumberOfStudents = new RelativeYearValues<CodedDouble> 
+            { 
+                CurrentYear = level3Qualification switch
                 {
-                    Level3.ALevel => establishmentPerformance.TALLPPE_ALEV_1618_Est_Current_Num_Coded,
-                    Level3.Academic => establishmentPerformance.TALLPPE_ACAD_1618_Est_Current_Num_Coded,
-                    Level3.AppliedGeneral => establishmentPerformance.TALLPPE_AGEN_Est_Current_Num_Coded,
-                    Level3.TechLevel => establishmentPerformance.TALLPPE_TLEV_Est_Current_Num_Coded,
-                    _ => CodedDouble.Empty,
+                    Level3.ALevel => establishmentPerformance.TALLPUP_ALEV_1618_Est_Current_Num_Coded,
+                    Level3.Academic => establishmentPerformance.TALLPUP_ACAD_1618_Est_Current_Num_Coded,
+                    Level3.AppliedGeneral => establishmentPerformance.TALLPUP_AGEN_Est_Current_Num_Coded,
+                    Level3.TechLevel => establishmentPerformance.TALLPUP_TLEV_Est_Current_Num_Coded,
+                    _ => CodedDouble.Empty
                 },
-                Grade = level3Qualification switch
+                PreviousYear = level3Qualification switch
                 {
-                    Level3.ALevel => establishmentPerformance.TALLPPEGRD_ALEV_1618_Est_Current,
-                    Level3.Academic => establishmentPerformance.TALLPPEGRD_ACAD_1618_Est_Current,
-                    Level3.AppliedGeneral => establishmentPerformance.TALLPPEGRD_AGEN_Est_Current,
-                    Level3.TechLevel => establishmentPerformance.TALLPPEGRD_TLEV_Est_Current,
-                    _ => CodedString.Empty,
-                }             
+                    Level3.ALevel => establishmentPerformance.TALLPUP_ALEV_1618_24_Est_Previous_Num_Coded,
+                    Level3.Academic => establishmentPerformance.TALLPUP_ACAD_1618_24_Est_Previous_Num_Coded,
+                    _ => CodedDouble.Empty
+                },
+                TwoYearsAgo = level3Qualification switch
+                {
+                    Level3.ALevel => establishmentPerformance.TALLPUP_ALEV_1618_23_Est_Previous2_Num_Coded,
+                    Level3.Academic => establishmentPerformance.TALLPUP_ACAD_1618_23_Est_Previous2_Num_Coded,
+                    _ => CodedDouble.Empty
+                }
             },
-            LocalAuthority = new PerformanceResult
+            Establishment = new RelativeYearValues<PerformanceResult>
             {
-                Points = level3Qualification switch
+                CurrentYear = level3Qualification switch
                 {
-                    Level3.ALevel => laPerformance.TALLPPE_ALEV_1618_LA_Current_Num_Coded,
-                    Level3.Academic => laPerformance.TALLPPE_ACAD_1618_LA_Current_Num_Coded,
-                    Level3.AppliedGeneral => laPerformance.TALLPPE_AGEN_LA_Current_Num_Coded,
-                    Level3.TechLevel => laPerformance.TALLPPE_TLEV_LA_Current_Num_Coded,
-                    _ => CodedDouble.Empty,
+                    Level3.ALevel =>  MapPerformanceResult(establishmentPerformance.TALLPPEGRD_ALEV_1618_Est_Current, establishmentPerformance.TALLPPE_ALEV_1618_Est_Current_Num_Coded),
+                    Level3.Academic => MapPerformanceResult(establishmentPerformance.TALLPPEGRD_ACAD_1618_Est_Current, establishmentPerformance.TALLPPE_ACAD_1618_Est_Current_Num_Coded),
+                    Level3.AppliedGeneral => MapPerformanceResult(establishmentPerformance.TALLPPEGRD_AGEN_Est_Current, establishmentPerformance.TALLPPE_AGEN_Est_Current_Num_Coded),
+                    Level3.TechLevel => MapPerformanceResult(establishmentPerformance.TALLPPEGRD_TLEV_Est_Current, establishmentPerformance.TALLPPE_TLEV_Est_Current_Num_Coded),
+                    _ => MapPerformanceResult(CodedString.Empty, CodedDouble.Empty),
                 },
-                Grade = level3Qualification switch
+                PreviousYear = level3Qualification switch
                 {
-                    Level3.ALevel => laPerformance.TALLPPEGRD_ALEV_1618_LA_Current,
-                    Level3.Academic => laPerformance.TALLPPEGRD_ACAD_1618_LA_Current,
-                    Level3.AppliedGeneral => laPerformance.TALLPPEGRD_AGEN_LA_Current,
-                    Level3.TechLevel => laPerformance.TALLPPEGRD_TLEV_LA_Current,
-                    _ => CodedString.Empty,
-                }              
+                    Level3.ALevel => MapPerformanceResult(establishmentPerformance.TALLPPEGRD_ALEV_1618_24_Est_Previous, establishmentPerformance.TALLPPE_ALEV_1618_24_Est_Previous_Num_Coded),
+                    Level3.Academic => MapPerformanceResult(establishmentPerformance.TALLPPEGRD_ACAD_1618_24_Est_Previous, establishmentPerformance.TALLPPE_ACAD_1618_24_Est_Previous_Num_Coded),
+                    _ => MapPerformanceResult(CodedString.Empty, CodedDouble.Empty),
+                },
+                TwoYearsAgo = level3Qualification switch
+                {
+                    Level3.ALevel => MapPerformanceResult(establishmentPerformance.TALLPPEGRD_ALEV_1618_23_Est_Previous2, establishmentPerformance.TALLPPE_ALEV_1618_23_Est_Previous2_Num_Coded),
+                    Level3.Academic => MapPerformanceResult(establishmentPerformance.TALLPPEGRD_ACAD_1618_23_Est_Previous2, establishmentPerformance.TALLPPE_ACAD_1618_23_Est_Previous2_Num_Coded),
+                    _ => MapPerformanceResult(CodedString.Empty, CodedDouble.Empty),
+                }
             },
-            England = new PerformanceResult
+            LocalAuthority = new RelativeYearValues<PerformanceResult>
             {
-                Points = level3Qualification switch
+                CurrentYear = level3Qualification switch
                 {
-                    Level3.ALevel => englandPerformance.TALLPPE_ALEV_1618_Eng_Current_Num_Coded,
-                    Level3.Academic => englandPerformance.TALLPPE_ACAD_1618_Eng_Current_Num_Coded,
-                    Level3.AppliedGeneral => englandPerformance.TALLPPE_AGEN_Eng_Current_Num_Coded,
-                    Level3.TechLevel => englandPerformance.TALLPPE_TLEV_Eng_Current_Num_Coded,
-                    _ => CodedDouble.Empty,
+                    Level3.ALevel => MapPerformanceResult(laPerformance.TALLPPEGRD_ALEV_1618_LA_Current, laPerformance.TALLPPE_ALEV_1618_LA_Current_Num_Coded),
+                    Level3.Academic => MapPerformanceResult(laPerformance.TALLPPEGRD_ACAD_1618_LA_Current, laPerformance.TALLPPE_ACAD_1618_LA_Current_Num_Coded),
+                    Level3.AppliedGeneral => MapPerformanceResult(laPerformance.TALLPPEGRD_AGEN_LA_Current, laPerformance.TALLPPE_AGEN_LA_Current_Num_Coded),
+                    Level3.TechLevel => MapPerformanceResult(laPerformance.TALLPPEGRD_TLEV_LA_Current, laPerformance.TALLPPE_TLEV_LA_Current_Num_Coded),
+                    _ => MapPerformanceResult(CodedString.Empty, CodedDouble.Empty),
                 },
-                Grade = level3Qualification switch
+                PreviousYear = level3Qualification switch
                 {
-                    Level3.ALevel => englandPerformance.TALLPPEGRD_ALEV_1618_Eng_Current,
-                    Level3.Academic => englandPerformance.TALLPPEGRD_ACAD_1618_Eng_Current,
-                    Level3.AppliedGeneral => englandPerformance.TALLPPEGRD_AGEN_Eng_Current,
-                    Level3.TechLevel => englandPerformance.TALLPPEGRD_TLEV_Eng_Current,
-                    _ => CodedString.Empty,
-                }               
+                    Level3.ALevel => MapPerformanceResult(laPerformance.TALLPPEGRD_ALEV_1618_24_LA_Previous, laPerformance.TALLPPE_ALEV_1618_24_LA_Previous_Num_Coded),
+                    Level3.Academic => MapPerformanceResult(laPerformance.TALLPPEGRD_ACAD_1618_24_LA_Previous, laPerformance.TALLPPE_ACAD_1618_24_LA_Previous_Num_Coded),
+                    _ => MapPerformanceResult(CodedString.Empty, CodedDouble.Empty),
+                },
+                TwoYearsAgo = level3Qualification switch
+                {
+                    Level3.ALevel => MapPerformanceResult(laPerformance.TALLPPEGRD_ALEV_1618_23_LA_Previous2, laPerformance.TALLPPE_ALEV_1618_23_LA_Previous2_Num_Coded),
+                    Level3.Academic => MapPerformanceResult(laPerformance.TALLPPEGRD_ACAD_1618_23_LA_Previous2, laPerformance.TALLPPE_ACAD_1618_23_LA_Previous2_Num_Coded),
+                    _ => MapPerformanceResult(CodedString.Empty, CodedDouble.Empty),
+                }
+            },
+            England = new RelativeYearValues<PerformanceResult>
+            {
+                CurrentYear = level3Qualification switch
+                {
+                    Level3.ALevel => MapPerformanceResult(englandPerformance.TALLPPEGRD_ALEV_1618_Eng_Current, englandPerformance.TALLPPE_ALEV_1618_Eng_Current_Num_Coded),
+                    Level3.Academic => MapPerformanceResult(englandPerformance.TALLPPEGRD_ACAD_1618_Eng_Current, englandPerformance.TALLPPE_ACAD_1618_Eng_Current_Num_Coded),
+                    Level3.AppliedGeneral => MapPerformanceResult(englandPerformance.TALLPPEGRD_AGEN_Eng_Current, englandPerformance.TALLPPE_AGEN_Eng_Current_Num_Coded),
+                    Level3.TechLevel => MapPerformanceResult(englandPerformance.TALLPPEGRD_TLEV_Eng_Current, englandPerformance.TALLPPE_TLEV_Eng_Current_Num_Coded),
+                    _ => MapPerformanceResult(CodedString.Empty, CodedDouble.Empty)
+                },
+                PreviousYear = level3Qualification switch
+                {
+                    Level3.ALevel => MapPerformanceResult(englandPerformance.TALLPPEGRD_ALEV_1618_24_Eng_Previous, englandPerformance.TALLPPE_ALEV_1618_24_Eng_Previous_Num_Coded),
+                    Level3.Academic => MapPerformanceResult(englandPerformance.TALLPPEGRD_ACAD_1618_24_Eng_Previous, englandPerformance.TALLPPE_ACAD_1618_24_Eng_Previous_Num_Coded),
+                    _ => MapPerformanceResult(CodedString.Empty, CodedDouble.Empty)
+                },
+                TwoYearsAgo = level3Qualification switch
+                {
+                    Level3.ALevel => MapPerformanceResult(englandPerformance.TALLPPEGRD_ALEV_1618_23_Eng_Previous2, englandPerformance.TALLPPE_ALEV_1618_23_Eng_Previous2_Num_Coded),
+                    Level3.Academic => MapPerformanceResult(englandPerformance.TALLPPEGRD_ACAD_1618_23_Eng_Previous2, englandPerformance.TALLPPE_ACAD_1618_23_Eng_Previous2_Num_Coded),
+                    _ => MapPerformanceResult(CodedString.Empty, CodedDouble.Empty)
+                }
             }
+        };
+    }
+
+    private static PerformanceResult MapPerformanceResult(CodedString grade, CodedDouble points)
+    {
+        return new PerformanceResult
+        {
+            Grade = grade,
+            Points = points
         };
     }
 

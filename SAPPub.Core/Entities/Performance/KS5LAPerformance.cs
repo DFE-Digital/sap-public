@@ -6,17 +6,41 @@ public class KS5LAPerformance
 {
     public string Id { get; set; } = string.Empty;
 
-    // A level Average result (points) for the LA state-funded schools / colleges
+    // A level Average result (points) for the LA state-funded schools / colleges - Current
     public CodedDouble TALLPPE_ALEV_1618_LA_Current_Num_Coded { get; set; }
 
-    // A level Average result (grade) for the LA state-funded schools / colleges
+    // A level Average result (points) for the LA state-funded schools / colleges - Previous
+    public CodedDouble TALLPPE_ALEV_1618_24_LA_Previous_Num_Coded { get; set; }
+
+    // A level Average result (points) for the LA state-funded schools / colleges - TwoYearsAgo
+    public CodedDouble TALLPPE_ALEV_1618_23_LA_Previous2_Num_Coded { get; set; }
+
+    // A level Average result (grade) for the LA state-funded schools / colleges - Current
     public CodedString TALLPPEGRD_ALEV_1618_LA_Current { get; set; }
 
-    // Academic qualification Average result (points) for the LA state-funded schools / colleges
+    // A level Average result (grade) for the LA state-funded schools / colleges - Previous
+    public CodedString TALLPPEGRD_ALEV_1618_24_LA_Previous { get; set; }
+
+    // A level Average result (grade) for the LA state-funded schools / colleges - TwoYearsAgo
+    public CodedString TALLPPEGRD_ALEV_1618_23_LA_Previous2 { get; set; }
+
+    // Academic qualification Average result (points) for the LA state-funded schools / college - Current
     public CodedDouble TALLPPE_ACAD_1618_LA_Current_Num_Coded { get; set; }
 
-    // Academic qualification Average result (grade) for the LA state-funded schools / colleges
+    // Academic qualification Average result (points) for the LA state-funded schools / college - Previous
+    public CodedDouble TALLPPE_ACAD_1618_24_LA_Previous_Num_Coded { get; set; }
+
+    // Academic qualification Average result (points) for the LA state-funded schools / college - Previous2
+    public CodedDouble TALLPPE_ACAD_1618_23_LA_Previous2_Num_Coded { get; set; }
+
+    // Academic qualification Average result (grade) for the LA state-funded schools / college - Current
     public CodedString TALLPPEGRD_ACAD_1618_LA_Current { get; set; }
+
+    // Academic qualification Average result (grade) for the LA state-funded schools / college - Previous
+    public CodedString TALLPPEGRD_ACAD_1618_24_LA_Previous { get; set; }
+
+    // Academic qualification Average result (grade) for the LA state-funded schools / college - Previous2
+    public CodedString TALLPPEGRD_ACAD_1618_23_LA_Previous2 { get; set; }
 
     // Applied general qualifications Average result (points) for the LA state-funded schools / colleges
     public CodedDouble TALLPPE_AGEN_LA_Current_Num_Coded { get; set; }

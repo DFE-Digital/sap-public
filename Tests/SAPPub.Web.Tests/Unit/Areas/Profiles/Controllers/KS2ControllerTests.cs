@@ -18,6 +18,7 @@ public class KS2ControllerTests : BaseProfilesTests
     private readonly bool primarySchoolAccountabilityLinkNewTab = true;
     private readonly Mock<IKS2AdditionalMeasuresService> _mockKS2AdditionalMeasuresService = new();
     private readonly Mock<IKS2PupilProgressService> _mockKS2PupilProgressService = new();
+    private readonly Mock<IKS2ScaledScoreService> _mockKS2ScaledScoreService = new();
     private readonly Mock<IKS2MeetingOrExceedingStandardsService> _mockKS2MeetingOrExceedingStandardsService = new();
     private readonly KS2Controller _controller;
 
@@ -249,6 +250,86 @@ public class KS2ControllerTests : BaseProfilesTests
             .Verify(a => a.GetMeetingOrExceedingStandardsPercentages(fakeMinimumEstablishment.URN, fakeMinimumEstablishment.LAId, CancellationToken.None), Times.Once);
     }
 
+    [Fact]
+    public async Task Get_AcademicPerformanceSubjectScaledScores_ReturnsCorrectData()
+    {
+        // Arrange
+        var expectedModel = GetKS2ScaledScore();
+        _mockKS2ScaledScoreService
+            .Setup(a => a.GetScaledScoreModel(fakeMinimumEstablishment.URN, CancellationToken.None))
+            .ReturnsAsync(expectedModel);
+
+        //Act
+        var result = await _controller.AcademicPerformanceSubjectScaledScores(
+            _mockKS2ScaledScoreService.Object,
+            fakeMinimumEstablishment.URN,
+            fakeMinimumEstablishment.EstablishmentName,
+            CancellationToken.None) as ViewResult;
+
+        // Assert
+        Assert.NotNull(result);
+        var model = Assert.IsType<AcademicPerformanceSubjectScaledScoresViewModel>(result?.Model);
+        Assert.Equal(expectedModel.ReadAverageEstablishment.CurrentYear.Value, model.AllReadOverTimeData!.Datasets[0]!.Data[2]!.Value);
+        Assert.Equal(expectedModel.ReadAverageEstablishment.PreviousYear.Value, model.AllReadOverTimeData!.Datasets[0]!.Data[1]!.Value);
+        Assert.Equal(expectedModel.ReadAverageEstablishment.TwoYearsAgo.Value, model.AllReadOverTimeData!.Datasets[0]!.Data[0]!.Value);
+        Assert.Equal(expectedModel.ReadAverageLA.CurrentYear.Value, model.AllReadOverTimeData!.Datasets[1]!.Data[2]!.Value);
+        Assert.Equal(expectedModel.ReadAverageLA.PreviousYear.Value, model.AllReadOverTimeData!.Datasets[1]!.Data[1]!.Value);
+        Assert.Equal(expectedModel.ReadAverageLA.TwoYearsAgo.Value, model.AllReadOverTimeData!.Datasets[1]!.Data[0]!.Value);
+        Assert.Equal(expectedModel.ReadAverageEngland.CurrentYear.Value, model.AllReadOverTimeData!.Datasets[2]!.Data[2]!.Value);
+        Assert.Equal(expectedModel.ReadAverageEngland.PreviousYear.Value, model.AllReadOverTimeData!.Datasets[2]!.Data[1]!.Value);
+        Assert.Equal(expectedModel.ReadAverageEngland.TwoYearsAgo.Value, model.AllReadOverTimeData!.Datasets[2]!.Data[0]!.Value);
+        Assert.Equal(expectedModel.MathsAverageEstablishment.CurrentYear.Value, model.AllMathsOverTimeData!.Datasets[0]!.Data[2]!.Value);
+        Assert.Equal(expectedModel.MathsAverageEstablishment.PreviousYear.Value, model.AllMathsOverTimeData!.Datasets[0]!.Data[1]!.Value);
+        Assert.Equal(expectedModel.MathsAverageEstablishment.TwoYearsAgo.Value, model.AllMathsOverTimeData!.Datasets[0]!.Data[0]!.Value);
+        Assert.Equal(expectedModel.MathsAverageLA.CurrentYear.Value, model.AllMathsOverTimeData!.Datasets[1]!.Data[2]!.Value);
+        Assert.Equal(expectedModel.MathsAverageLA.PreviousYear.Value, model.AllMathsOverTimeData!.Datasets[1]!.Data[1]!.Value);
+        Assert.Equal(expectedModel.MathsAverageLA.TwoYearsAgo.Value, model.AllMathsOverTimeData!.Datasets[1]!.Data[0]!.Value);
+        Assert.Equal(expectedModel.MathsAverageEngland.CurrentYear.Value, model.AllMathsOverTimeData!.Datasets[2]!.Data[2]!.Value);
+        Assert.Equal(expectedModel.MathsAverageEngland.PreviousYear.Value, model.AllMathsOverTimeData!.Datasets[2]!.Data[1]!.Value);
+        Assert.Equal(expectedModel.MathsAverageEngland.TwoYearsAgo.Value, model.AllMathsOverTimeData!.Datasets[2]!.Data[0]!.Value);
+
+        Assert.Equal(expectedModel.EstablishmentReadThreeYearAverage.Value, model.ReadThreeYearAverageData.Data[0]!.Value);
+        Assert.Equal(expectedModel.LocalAuthorityReadThreeYearAverage.Value, model.ReadThreeYearAverageData.Data[1]!.Value);
+        Assert.Equal(expectedModel.EnglandReadThreeYearAverage.Value, model.ReadThreeYearAverageData.Data[2]!.Value);
+        Assert.Equal(expectedModel.EstablishmentMathsThreeYearAverage.Value, model.MathsThreeYearAverageData.Data[0]!.Value);
+        Assert.Equal(expectedModel.LocalAuthorityMathsThreeYearAverage.Value, model.MathsThreeYearAverageData.Data[1]!.Value);
+        Assert.Equal(expectedModel.EnglandMathsThreeYearAverage.Value, model.MathsThreeYearAverageData.Data[2]!.Value);
+
+        Assert.Equal(expectedModel.GirlsAverageReading, model.GirlsAndBoys.Rows.ToList()[0].AverageReadingScore.Value);
+        Assert.Equal(expectedModel.GirlsAverageMaths, model.GirlsAndBoys.Rows.ToList()[0].AverageMathsScore.Value);
+        Assert.Equal(expectedModel.BoysAverageReading, model.GirlsAndBoys.Rows.ToList()[1].AverageReadingScore.Value);
+        Assert.Equal(expectedModel.BoysAverageMaths, model.GirlsAndBoys.Rows.ToList()[1].AverageMathsScore.Value);
+        Assert.Equal(expectedModel.AllPupilsAverageReading, model.GirlsAndBoys.Rows.ToList()[2].AverageReadingScore.Value);
+        Assert.Equal(expectedModel.AllPupilsAverageMaths, model.GirlsAndBoys.Rows.ToList()[2].AverageMathsScore.Value);
+
+        Assert.Equal(expectedModel.EALAverageReading, model.EnglishAsAnAdditionalLanguage.Rows.ToList()[0].AverageReadingScore.Value);
+        Assert.Equal(expectedModel.EALAverageMaths, model.EnglishAsAnAdditionalLanguage.Rows.ToList()[0].AverageMathsScore.Value);
+        Assert.Equal(expectedModel.EALTotalAverageReading, model.EnglishAsAnAdditionalLanguage.Rows.ToList()[1].AverageReadingScore.Value);
+        Assert.Equal(expectedModel.EALTotalAverageMaths, model.EnglishAsAnAdditionalLanguage.Rows.ToList()[1].AverageMathsScore.Value);
+
+        Assert.Equal(expectedModel.NonMobileAverageReading, model.NonMobilePupils.Rows.ToList()[0].AverageReadingScore.Value);
+        Assert.Equal(expectedModel.NonMobileAverageMaths, model.NonMobilePupils.Rows.ToList()[0].AverageMathsScore.Value);
+
+        Assert.Equal(expectedModel.DisadvantagedAverageReadingEstablishment, model.DisadvantagedPupils.Rows.ToList()[0].AverageReadingScore.Value);
+        Assert.Equal(expectedModel.DisadvantagedAverageMathsEstablishment, model.DisadvantagedPupils.Rows.ToList()[0].AverageMathsScore.Value);
+        Assert.Equal(expectedModel.DisadvantagedAverageReadingLA, model.DisadvantagedPupils.Rows.ToList()[1].AverageReadingScore.Value);
+        Assert.Equal(expectedModel.DisadvantagedAverageMathsLA, model.DisadvantagedPupils.Rows.ToList()[1].AverageMathsScore.Value);
+        Assert.Equal(expectedModel.DisadvantagedAverageReadingEngland, model.DisadvantagedPupils.Rows.ToList()[2].AverageReadingScore.Value);
+        Assert.Equal(expectedModel.DisadvantagedAverageMathsEngland, model.DisadvantagedPupils.Rows.ToList()[2].AverageMathsScore.Value);
+
+        Assert.Equal(expectedModel.NonDisadvantagedAverageMathsLA, model.NonDisadvantagedPupils.Rows.ToList()[0].AverageMathsScore.Value);
+        Assert.Equal(expectedModel.NonDisadvantagedAverageReadingLA, model.NonDisadvantagedPupils.Rows.ToList()[0].AverageReadingScore.Value);
+        Assert.Equal(expectedModel.NonDisadvantagedAverageMathsEngland, model.NonDisadvantagedPupils.Rows.ToList()[1].AverageMathsScore.Value);
+        Assert.Equal(expectedModel.NonDisadvantagedAverageReadingEngland, model.NonDisadvantagedPupils.Rows.ToList()[1].AverageReadingScore.Value);
+
+
+        _mockKS2ScaledScoreService
+            .Verify(a => a.GetScaledScoreModel(fakeMinimumEstablishment.URN,It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+
+
+
     private static KS2MeetingOrExceedingStandardsModel GetKS2MeetingOrExceedingStandardsModel()
     {
         return new KS2MeetingOrExceedingStandardsModel
@@ -310,13 +391,16 @@ public class KS2ControllerTests : BaseProfilesTests
             LocalAuthorityNonDisadvantagedExceedingExpectedStandard = GetCodedDouble(35),
             LocalAuthorityNonDisadvantagedMeetingExpectedStandard = GetCodedDouble(36),
             NonMobileExceedingExpectedStandard = GetCodedDouble(37),
-            NonMobileMeetingExpectedStandard = GetCodedDouble(38)
+            NonMobileMeetingExpectedStandard = GetCodedDouble(38),
+            EstablishmentPercentageMeetingOrExceedingThreeYearAverage = GetCodedDouble(39),
+            LocalAuthorityPercentageMeetingOrExceedingThreeYearAverage = GetCodedDouble(40),
+            EnglandPercentageMeetingOrExceedingThreeYearAverage = GetCodedDouble(41),
+            EstablishmentPercentageExceedingThreeYearAverage = GetCodedDouble(42),
+            LocalAuthorityPercentageExceedingThreeYearAverage = GetCodedDouble(43),
+            EnglandPercentageExceedingThreeYearAverage = GetCodedDouble(44)
         };
 
     }
-
-    private static CodedDouble GetCodedDouble(double val) => new(val, string.Empty, val.ToString());
-    
 
     private static KS2AdditionalMeasuresModel GetKS2AdditionalMeasuresModel() => new()
     {
@@ -365,6 +449,60 @@ public class KS2ControllerTests : BaseProfilesTests
         EstablishmentMathsConfidenceUpper = GetCodedDouble(13),
         EstablishmentMathsConfidenceLower = GetCodedDouble(14),
         LaMathsScore = GetCodedDouble(15),
+    };
+
+    private static KS2ScaledScoreModel GetKS2ScaledScore() => new()
+    {
+
+        LAName = "",
+        ReadAverageEstablishment = new RelativeYearValues<CodedDouble> { CurrentYear = GetCodedDouble(1.1), PreviousYear = GetCodedDouble(1.2), TwoYearsAgo = GetCodedDouble(1.3) },
+        ReadAverageLA = new RelativeYearValues<CodedDouble> { CurrentYear = GetCodedDouble(2.1), PreviousYear = GetCodedDouble(2.2), TwoYearsAgo = GetCodedDouble(2.3) },
+        ReadAverageEngland = new RelativeYearValues<CodedDouble> { CurrentYear = GetCodedDouble(3.1), PreviousYear = GetCodedDouble(3.2), TwoYearsAgo = GetCodedDouble(3.3) },
+        MathsAverageEstablishment = new RelativeYearValues<CodedDouble> { CurrentYear = GetCodedDouble(4.1), PreviousYear = GetCodedDouble(4.2), TwoYearsAgo = GetCodedDouble(4.3) },
+        MathsAverageLA = new RelativeYearValues<CodedDouble> { CurrentYear = GetCodedDouble(5.1), PreviousYear = GetCodedDouble(5.2), TwoYearsAgo = GetCodedDouble(5.3) },
+        MathsAverageEngland = new RelativeYearValues<CodedDouble> { CurrentYear = GetCodedDouble(6.1), PreviousYear = GetCodedDouble(6.2), TwoYearsAgo = GetCodedDouble(6.3) },
+
+        /* Three year averages */
+        EstablishmentReadThreeYearAverage = GetCodedDouble(7),
+        LocalAuthorityReadThreeYearAverage = GetCodedDouble(8),
+        EnglandReadThreeYearAverage = GetCodedDouble(9),
+        EstablishmentMathsThreeYearAverage = GetCodedDouble(10),
+        LocalAuthorityMathsThreeYearAverage = GetCodedDouble(11),
+        EnglandMathsThreeYearAverage = GetCodedDouble(12),
+
+
+        /* Girls and boys breakdown */
+        GirlsAverageReading = GetCodedDouble(13),
+        GirlsAverageMaths = GetCodedDouble(14),
+        BoysAverageReading = GetCodedDouble(15),
+        BoysAverageMaths = GetCodedDouble(16),
+        AllPupilsAverageReading = GetCodedDouble(17),
+        AllPupilsAverageMaths = GetCodedDouble(18),
+
+        /* English as an additional language */
+        EALAverageReading = GetCodedDouble(19),
+        EALAverageMaths = GetCodedDouble(20),
+        EALTotalAverageReading = GetCodedDouble(21),
+        EALTotalAverageMaths = GetCodedDouble(22),
+
+        /* Non-mobile pupils */
+        NonMobileAverageReading = GetCodedDouble(23),
+        NonMobileAverageMaths = GetCodedDouble(24),
+
+
+        /* Disadvantaged pupils */
+        DisadvantagedAverageReadingEstablishment = GetCodedDouble(25),
+        DisadvantagedAverageMathsEstablishment = GetCodedDouble(26),
+        DisadvantagedAverageReadingLA = GetCodedDouble(27),
+        DisadvantagedAverageMathsLA = GetCodedDouble(28),
+        DisadvantagedAverageReadingEngland = GetCodedDouble(29),
+        DisadvantagedAverageMathsEngland = GetCodedDouble(30),
+
+        /* Non-disadvantaged pupils */
+        NonDisadvantagedAverageReadingLA = GetCodedDouble(31),
+        NonDisadvantagedAverageMathsLA = GetCodedDouble(32),
+        NonDisadvantagedAverageReadingEngland = GetCodedDouble(33),
+        NonDisadvantagedAverageMathsEngland = GetCodedDouble(34)
     };
 
 }

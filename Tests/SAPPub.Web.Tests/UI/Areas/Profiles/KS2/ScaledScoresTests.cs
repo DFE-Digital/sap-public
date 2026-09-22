@@ -35,7 +35,7 @@ public class ScaledScoresTests(WebApplicationSetupFixture fixture) : BasePageTes
         var title = await Page.TitleAsync();
 
         // Assert
-        Assert.Contains("Four Elms Primary School - Primary Subject scaled scores - School Profiles - GOV.U", title);
+        Assert.Contains("Four Elms Primary School - Primary Subject scaled scores - Find and compare school and college profiles - GOV.U", title);
     }
 
     [Fact]

@@ -11,20 +11,44 @@ public class KS5EnglandPerformance
     // A level Progress score for England average
     public CodedDouble VA_INS_ALEV_Eng_Current_Num_Coded { get; set; }
 
-    // Alevel Average result points for England
+    // Alevel Average result points for England - Current
     public CodedDouble TALLPPE_ALEV_1618_Eng_Current_Num_Coded { get; set; }
 
-    // A level Average result grade for England
+    // Alevel Average result points for England - Previous
+    public CodedDouble TALLPPE_ALEV_1618_24_Eng_Previous_Num_Coded { get; set; }
+
+    // Alevel Average result points for England - TwoYearsAgo
+    public CodedDouble TALLPPE_ALEV_1618_23_Eng_Previous2_Num_Coded { get; set; }
+
+    // A level Average result grade for England - Current
     public CodedString TALLPPEGRD_ALEV_1618_Eng_Current { get; set; }
+
+    // A level Average result grade for England - Previous
+    public CodedString TALLPPEGRD_ALEV_1618_24_Eng_Previous { get; set; }
+
+    // A level Average result grade for England - TwoYearsAgo
+    public CodedString TALLPPEGRD_ALEV_1618_23_Eng_Previous2 { get; set; }
 
     // Academic qualifications Progress score for England average
     public CodedDouble VA_INS_ACAD_Eng_Current_Num_Coded { get; set; }
 
-    // Academic qualifications Average result points for England
+    // Academic qualifications Average result points for England - Current
     public CodedDouble TALLPPE_ACAD_1618_Eng_Current_Num_Coded { get; set; }
 
-    // Academic qualifications Average result grade for England
+    // Academic qualifications Average result points for England - Previous
+    public CodedDouble TALLPPE_ACAD_1618_24_Eng_Previous_Num_Coded { get; set; }
+
+    // Academic qualifications Average result points for England - Previous2
+    public CodedDouble TALLPPE_ACAD_1618_23_Eng_Previous2_Num_Coded { get; set; }
+
+    // Academic qualifications Average result grade for England - Current
     public CodedString TALLPPEGRD_ACAD_1618_Eng_Current { get; set; }
+
+    // Academic qualifications Average result grade for England - Previous
+    public CodedString TALLPPEGRD_ACAD_1618_24_Eng_Previous { get; set; }
+
+    // Academic qualifications Average result grade for England - Previous2
+    public CodedString TALLPPEGRD_ACAD_1618_23_Eng_Previous2 { get; set; }
 
     // Applied general qualifications Progress score for England average
     public CodedDouble VA_INS_AGEN_Eng_Current_Num_Coded { get; set; }
