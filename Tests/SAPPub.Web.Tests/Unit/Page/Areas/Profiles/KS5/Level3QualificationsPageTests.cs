@@ -428,7 +428,8 @@ public class Level3QualificationsPageTests : PageTestsBase
         Assert.Contains(_level3QualificationModel.AverageResult.England.CurrentYear.Points.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 3, 1));
 
         // Assert DataOverTime data
-        if (qualification == Level3.ALevel)
+        if (qualification == Level3.ALevel ||
+            qualification == Level3.Academic)
         {
             Assert.Contains("Number of students", doc.GetTableHeaderContentByIdAndIndex("average-result-data-overtime-table", 1, 0));
             Assert.Contains(_level3QualificationModel.AverageResult.NumberOfStudents.TwoYearsAgo.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 1, 0));

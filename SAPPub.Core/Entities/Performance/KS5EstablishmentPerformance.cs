@@ -45,8 +45,14 @@ public class KS5EstablishmentPerformance
     // A level Average result grade for the school / college - TwoYearsAgo
     public CodedString TALLPPEGRD_ALEV_1618_23_Est_Previous2 { get; set; }
 
-    // Academic qualifications Total number of students who completed at least one of this qualification type
+    // Academic qualifications Total number of students who completed at least one of this qualification type - Current
     public CodedDouble TALLPUP_ACAD_1618_Est_Current_Num_Coded { get; set; }
+
+    // Academic qualifications Total number of students who completed at least one of this qualification type - Previous
+    public CodedDouble TALLPUP_ACAD_1618_24_Est_Previous_Num_Coded { get; set; }
+
+    // Academic qualifications Total number of students who completed at least one of this qualification type - Previous2
+    public CodedDouble TALLPUP_ACAD_1618_23_Est_Previous2_Num_Coded { get; set; }
 
     // Academic qualifications Progress score for the school / college
     public CodedDouble VA_INS_ACAD_Est_Current_Num_Coded { get; set; }
@@ -60,11 +66,23 @@ public class KS5EstablishmentPerformance
     // Academic qualifications Progress confidence interval for the school / college lower
     public CodedDouble LCI_INS_ACAD_Est_Current_Num_Coded { get; set; }
 
-    // Academic qualifications Average result points for the school / college lower
+    // Academic qualifications Average result points for the school / college - Current
     public CodedDouble TALLPPE_ACAD_1618_Est_Current_Num_Coded { get; set; }
 
-    // Academic qualifications Average result grade for the school / college
+    // Academic qualifications Average result points for the school / college - Previous
+    public CodedDouble TALLPPE_ACAD_1618_24_Est_Previous_Num_Coded { get; set; }
+
+    // Academic qualifications Average result points for the school / college - Previous2
+    public CodedDouble TALLPPE_ACAD_1618_23_Est_Previous2_Num_Coded { get; set; }
+
+    // Academic qualifications Average result grade for the school / college - Current
     public CodedString TALLPPEGRD_ACAD_1618_Est_Current { get; set; }
+
+    // Academic qualifications Average result grade for the school / college - Previous
+    public CodedString TALLPPEGRD_ACAD_1618_24_Est_Previous { get; set; }
+
+    // Academic qualifications Average result grade for the school / college - Previous2
+    public CodedString TALLPPEGRD_ACAD_1618_23_Est_Previous2 { get; set; }
 
     // Applied general qualifications Total number of students who completed at least one of this qualification type
     public CodedDouble TALLPUP_AGEN_Est_Current_Num_Coded { get; set; }

@@ -134,11 +134,13 @@ public class Level3QualificationsService(
                 PreviousYear = level3Qualification switch
                 {
                     Level3.ALevel => establishmentPerformance.TALLPUP_ALEV_1618_24_Est_Previous_Num_Coded,
+                    Level3.Academic => establishmentPerformance.TALLPUP_ACAD_1618_24_Est_Previous_Num_Coded,
                     _ => CodedDouble.Empty
                 },
                 TwoYearsAgo = level3Qualification switch
                 {
                     Level3.ALevel => establishmentPerformance.TALLPUP_ALEV_1618_23_Est_Previous2_Num_Coded,
+                    Level3.Academic => establishmentPerformance.TALLPUP_ACAD_1618_23_Est_Previous2_Num_Coded,
                     _ => CodedDouble.Empty
                 }
             },
@@ -155,11 +157,13 @@ public class Level3QualificationsService(
                 PreviousYear = level3Qualification switch
                 {
                     Level3.ALevel => MapPerformanceResult(establishmentPerformance.TALLPPEGRD_ALEV_1618_24_Est_Previous, establishmentPerformance.TALLPPE_ALEV_1618_24_Est_Previous_Num_Coded),
+                    Level3.Academic => MapPerformanceResult(establishmentPerformance.TALLPPEGRD_ACAD_1618_24_Est_Previous, establishmentPerformance.TALLPPE_ACAD_1618_24_Est_Previous_Num_Coded),
                     _ => MapPerformanceResult(CodedString.Empty, CodedDouble.Empty),
                 },
                 TwoYearsAgo = level3Qualification switch
                 {
                     Level3.ALevel => MapPerformanceResult(establishmentPerformance.TALLPPEGRD_ALEV_1618_23_Est_Previous2, establishmentPerformance.TALLPPE_ALEV_1618_23_Est_Previous2_Num_Coded),
+                    Level3.Academic => MapPerformanceResult(establishmentPerformance.TALLPPEGRD_ACAD_1618_23_Est_Previous2, establishmentPerformance.TALLPPE_ACAD_1618_23_Est_Previous2_Num_Coded),
                     _ => MapPerformanceResult(CodedString.Empty, CodedDouble.Empty),
                 }
             },
@@ -176,11 +180,13 @@ public class Level3QualificationsService(
                 PreviousYear = level3Qualification switch
                 {
                     Level3.ALevel => MapPerformanceResult(laPerformance.TALLPPEGRD_ALEV_1618_24_LA_Previous, laPerformance.TALLPPE_ALEV_1618_24_LA_Previous_Num_Coded),
+                    Level3.Academic => MapPerformanceResult(laPerformance.TALLPPEGRD_ACAD_1618_24_LA_Previous, laPerformance.TALLPPE_ACAD_1618_24_LA_Previous_Num_Coded),
                     _ => MapPerformanceResult(CodedString.Empty, CodedDouble.Empty),
                 },
                 TwoYearsAgo = level3Qualification switch
                 {
                     Level3.ALevel => MapPerformanceResult(laPerformance.TALLPPEGRD_ALEV_1618_23_LA_Previous2, laPerformance.TALLPPE_ALEV_1618_23_LA_Previous2_Num_Coded),
+                    Level3.Academic => MapPerformanceResult(laPerformance.TALLPPEGRD_ACAD_1618_23_LA_Previous2, laPerformance.TALLPPE_ACAD_1618_23_LA_Previous2_Num_Coded),
                     _ => MapPerformanceResult(CodedString.Empty, CodedDouble.Empty),
                 }
             },
@@ -197,11 +203,13 @@ public class Level3QualificationsService(
                 PreviousYear = level3Qualification switch
                 {
                     Level3.ALevel => MapPerformanceResult(englandPerformance.TALLPPEGRD_ALEV_1618_24_Eng_Previous, englandPerformance.TALLPPE_ALEV_1618_24_Eng_Previous_Num_Coded),
+                    Level3.Academic => MapPerformanceResult(englandPerformance.TALLPPEGRD_ACAD_1618_24_Eng_Previous, englandPerformance.TALLPPE_ACAD_1618_24_Eng_Previous_Num_Coded),
                     _ => MapPerformanceResult(CodedString.Empty, CodedDouble.Empty)
                 },
                 TwoYearsAgo = level3Qualification switch
                 {
                     Level3.ALevel => MapPerformanceResult(englandPerformance.TALLPPEGRD_ALEV_1618_23_Eng_Previous2, englandPerformance.TALLPPE_ALEV_1618_23_Eng_Previous2_Num_Coded),
+                    Level3.Academic => MapPerformanceResult(englandPerformance.TALLPPEGRD_ACAD_1618_23_Eng_Previous2, englandPerformance.TALLPPE_ACAD_1618_23_Eng_Previous2_Num_Coded),
                     _ => MapPerformanceResult(CodedString.Empty, CodedDouble.Empty)
                 }
             }

@@ -1,4 +1,5 @@
-﻿using SAPPub.Playwright.Testing;
+﻿using SAPPub.Core.Enums.KS5Qualifications;
+using SAPPub.Playwright.Testing;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 using PageConstants = SAPPub.Playwright.Testing.KS5.AcademicPerformanceLevel3QualificationsPageConstants;
@@ -11,37 +12,44 @@ public class Level3QualificationsTests(WebApplicationSetupFixture fixture) : Bas
     private const string _urn = "130499";
     private const string _schoolName = "holy-cross-college";
     private const string _schoolDisplayName = "Holy Cross College";
-    private const string _basePageUrl = $"school/{_urn}/{_schoolName}/16-to-19-performance/level-3-qualifications/alevel";
 
-    [Fact]
-    public async Task Level3QualificationsPage_LoadsSuccessfully()
+    private static string GetPageUrl(Level3 level3Qualification) => $"school/{_urn}/{_schoolName}/16-to-19-performance/level-3-qualifications/{level3Qualification.ToString().ToLower()}";
+
+    [Theory]
+    [InlineData(Level3.ALevel)]
+    [InlineData(Level3.Academic)]
+    public async Task Level3QualificationsPage_LoadsSuccessfully(Level3 level3Qualification)
     {
         // Arrange && Act
-        var response = await Page.GotoAsync(_basePageUrl);
+        var response = await Page.GotoAsync(GetPageUrl(level3Qualification));
 
         // Assert
         Assert.NotNull(response);
         Assert.Equal(200, response.Status);
     }
 
-    [Fact]
-    public async Task Level3QualificationsPage_HasCorrectTitle()
+    [Theory]
+    [InlineData(Level3.ALevel, "A Level")]
+    [InlineData(Level3.Academic, "Academic")]
+    public async Task Level3QualificationsPage_HasCorrectTitle(Level3 level3Qualification, string qualTitle)
     {
         // Arrange
-        await Page.GotoAsync(_basePageUrl);
+        await Page.GotoAsync(GetPageUrl(level3Qualification));
 
         // Act
         var title = await Page.TitleAsync();
 
         // Assert
-        Assert.Equal($"{_schoolDisplayName} - 16 to 19 - Level 3 qualifications - A Level - Find and compare school and college profiles - GOV.UK", title);
+        Assert.Equal($"{_schoolDisplayName} - 16 to 19 - Level 3 qualifications - {qualTitle} - Find and compare school and college profiles - GOV.UK", title);
     }
 
-    [Fact]
-    public async Task Level3Qualifications_DisplaysMainHeading()
+    [Theory]
+    [InlineData(Level3.ALevel)]
+    [InlineData(Level3.Academic)]
+    public async Task Level3Qualifications_DisplaysMainHeading(Level3 level3Qualification)
     {
         // Arrange
-        await Page.GotoAsync(_basePageUrl);
+        await Page.GotoAsync(GetPageUrl(level3Qualification));
 
         // Act
         var heading = await Page.Locator("h1").TextContentAsync();
@@ -51,21 +59,25 @@ public class Level3QualificationsTests(WebApplicationSetupFixture fixture) : Bas
         Assert.NotEmpty(heading.Trim());
     }
 
-    [Fact]
-    public async Task Level3Qualifications_Displays_VerticalNavigation()
+    [Theory]
+    [InlineData(Level3.ALevel)]
+    [InlineData(Level3.Academic)]
+    public async Task Level3Qualifications_Displays_VerticalNavigation(Level3 level3Qualification)
     {
         var nav = new VerticalNavigationHelper(Page);
-        await Page.GotoAsync(_basePageUrl);
+        await Page.GotoAsync(GetPageUrl(level3Qualification));
 
         await nav.ShouldBeVisibleAsync();
         await nav.ShouldHaveOneActiveItemAsync();
     }
 
-    [Fact]
-    public async Task Level3Qualifications_Displays_Sub_Navigation()
+    [Theory]
+    [InlineData(Level3.ALevel)]
+    [InlineData(Level3.Academic)]
+    public async Task Level3Qualifications_Displays_Sub_Navigation(Level3 level3Qualification)
     {
         // Arrange
-        await Page.GotoAsync(_basePageUrl);
+        await Page.GotoAsync(GetPageUrl(level3Qualification));
 
         // Act
         var isVisible = await Page.Locator("#sub-navigation-academic-performance").IsVisibleAsync();
@@ -74,11 +86,13 @@ public class Level3QualificationsTests(WebApplicationSetupFixture fixture) : Bas
         Assert.True(isVisible);
     }
 
-    [Fact]
-    public async Task Level3Qualifications_Displays_CurrentYear_Table()
+    [Theory]
+    [InlineData(Level3.ALevel)]
+    [InlineData(Level3.Academic)]
+    public async Task Level3Qualifications_Displays_CurrentYear_Table(Level3 level3Qualification)
     {
         // Arrange
-        await Page.GotoAsync(_basePageUrl);
+        await Page.GotoAsync(GetPageUrl(level3Qualification));
 
         // Act        
         var table = Page.Locator(PageConstants.AverageResultCurrentYearTableContainerId);
@@ -98,11 +112,13 @@ public class Level3QualificationsTests(WebApplicationSetupFixture fixture) : Bas
         Assert.Equal("Show data over time", showDataOverTimeBtnText);
     }
 
-    [Fact]
-    public async Task Level3Qualifications_Displays_DataOverTime_Table()
+    [Theory]
+    [InlineData(Level3.ALevel)]
+    [InlineData(Level3.Academic)]
+    public async Task Level3Qualifications_Displays_DataOverTime_Table(Level3 level3Qualification)
     {
         // Arrange
-        await Page.GotoAsync(_basePageUrl);
+        await Page.GotoAsync(GetPageUrl(level3Qualification));
 
         // Act
         // Click Show data over time button
