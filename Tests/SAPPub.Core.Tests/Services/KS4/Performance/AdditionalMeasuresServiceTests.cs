@@ -56,8 +56,8 @@ public class AdditionalMeasuresServiceTests
         establishmentPerformance.Pup_EAL_Est_Current_Num_Coded = GetCodedDouble(5);
         establishmentPerformance.Pup_NMo_Est_Current_Num_Coded = GetCodedDouble(6);
         establishmentPerformance.Pup_Dis_Est_Current_Num_Coded = GetCodedDouble(7);
-        establishmentPerformance.PupSEN_Est_Current_Num_Coded = GetCodedDouble(8);
-        establishmentPerformance.PupEHCP_Est_Current_Num_Coded = GetCodedDouble(9);
+        establishmentPerformance.PupSEN_Tot_Est_Current_Pct_Coded = GetCodedDouble(8);
+        establishmentPerformance.PupEHCP_Tot_Est_Current_Pct_Coded = GetCodedDouble(9);
 
         laPerformance.ExamEntriesGSCE_Dis_LA_Current_Num_Coded = GetCodedDouble(10);
         laPerformance.ExamEntriesKS4_Dis_LA_Current_Num_Coded = GetCodedDouble(11);
@@ -254,8 +254,8 @@ public class AdditionalMeasuresServiceTests
         Assert.Equal(establishmentServiceModel.TotalPupils, result.EstablishmentTotalPupils);
         Assert.Equal(englandPerformance.Pup_Tot_Eng_Current_Num_Coded.Value, result.EnglandTotalPupils.Value);
 
-        Assert.Equal(establishmentPerformance.PupSEN_Est_Current_Num_Coded.Value, result.EstablishmentTotalSENPupils.Value);
-        Assert.Equal(establishmentPerformance.PupEHCP_Est_Current_Num_Coded.Value, result.EstablishmentTotalEHCPPupils.Value);
+        Assert.Equal(establishmentPerformance.PupSEN_Tot_Est_Current_Pct_Coded.Value, result.EstablishmentTotalSENPupils.Value);
+        Assert.Equal(establishmentPerformance.PupEHCP_Tot_Est_Current_Pct_Coded.Value, result.EstablishmentTotalEHCPPupils.Value);
         Assert.Equal(englandPerformance.PupSEN_Tot_Eng_Current_Pct_Coded.Value, result.EnglandTotalSENPupils.Value);
         Assert.Equal(englandPerformance.PupEHCP_Tot_Eng_Current_Pct_Coded.Value, result.EnglandTotalEHCPPupils.Value);
     }
