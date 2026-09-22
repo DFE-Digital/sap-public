@@ -13,6 +13,15 @@ public class KS2ScaledScoreModel
     public required RelativeYearValues<CodedDouble> MathsAverageLA { get; init; }
     public required RelativeYearValues<CodedDouble> MathsAverageEngland { get; init; }
 
+    /* Three year averages */
+    public required CodedDouble EstablishmentReadThreeYearAverage { get; init; }
+    public required CodedDouble LocalAuthorityReadThreeYearAverage { get; init; }
+    public required CodedDouble EnglandReadThreeYearAverage { get; init; }
+    public required CodedDouble EstablishmentMathsThreeYearAverage { get; init; }
+    public required CodedDouble LocalAuthorityMathsThreeYearAverage { get; init; }
+    public required CodedDouble EnglandMathsThreeYearAverage { get; init; }
+
+
     /* Girls and boys breakdown */
     public required CodedDouble GirlsAverageReading { get; init; }
     public required CodedDouble GirlsAverageMaths { get; init; }
