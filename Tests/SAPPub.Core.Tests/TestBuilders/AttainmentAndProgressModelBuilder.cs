@@ -16,6 +16,7 @@ public class AttainmentAndProgressModelBuilder
     private RelativeYearValues<CodedDouble>? _establishmentProgress8CILower;
     private RelativeYearValues<CodedDouble>? _establishmentProgress8CIUpper;
     private RelativeYearValues<string?>? _establishmentProgress8Banding;
+    private RelativeYearValues<ProgressBandingDescriptions>? _progress8BandingDescriptions;
     private RelativeYearValues<CodedDouble>? _localAuthorityProgress8Score;
     private RelativeYearValues<CodedDouble>? _establishmentAttainment8Score;
     private RelativeYearValues<CodedDouble>? _establishmentAttainment8DisadvantagedScore;
@@ -84,6 +85,17 @@ public class AttainmentAndProgressModelBuilder
             CurrentYear = banding,
             PreviousYear = banding,
             TwoYearsAgo = banding
+        };
+        return this;
+    }
+
+    public AttainmentAndProgressModelBuilder WithProgress8BandingDescriptions(ProgressBandingDescriptions descriptions)
+    {
+        _progress8BandingDescriptions = new RelativeYearValues<ProgressBandingDescriptions>
+        {
+            CurrentYear = descriptions,
+            PreviousYear = descriptions,
+            TwoYearsAgo = descriptions
         };
         return this;
     }
@@ -200,6 +212,7 @@ public class AttainmentAndProgressModelBuilder
             EnglandAttainment8DisadvantagedScore = _englandAttainment8DisadvantagedScore ?? CreateEmptyRelativeYearValues(),
             EnglandAttainment8NonDisadvantagedScore = _englandAttainment8NonDisadvantagedScore.HasValue ? _englandAttainment8NonDisadvantagedScore.Value : CodedDoubleFactory.Create(),
             EstablishmentProgress8Banding = _establishmentProgress8Banding ?? new RelativeYearValues<string?> { CurrentYear = null, PreviousYear = null, TwoYearsAgo = null },
+            Progress8BandingDescriptions = _progress8BandingDescriptions ?? new RelativeYearValues<ProgressBandingDescriptions> { CurrentYear = ProgressBandingDescriptions.Empty },
             EstablishmentProgress8Score = _establishmentProgress8Score ?? CreateEmptyRelativeYearValues(),
             EstablishmentProgress8CILower = _establishmentProgress8CILower ?? CreateEmptyRelativeYearValues(),
             EstablishmentProgress8CIUpper = _establishmentProgress8CIUpper ?? CreateEmptyRelativeYearValues(),

@@ -1,5 +1,6 @@
 ﻿using SAPPub.Core.Enums;
 using SAPPub.Core.Tests.TestBuilders;
+using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Areas.Profiles.ViewModels.KS4;
 
 namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Models.KS4;
@@ -328,5 +329,30 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
         Assert.Equal(isAvailable, viewModel.YearValues.CurrentYear.EstablishmentProgress8BandingContextDescription.IsAvailable);
         Assert.Equal(isNotAvailable, viewModel.YearValues.CurrentYear.EstablishmentProgress8BandingContextDescription.IsNotAvailable);
         Assert.Contains(expectedText, viewModel.YearValues.CurrentYear.EstablishmentProgress8BandingContextDescription.DisplayText());
+    }
+
+    [Fact]
+    public void Map_EstablishmentProgress8BandingContextDescription_IncludesReasonWhenAvailable()
+    {
+        // Arrange
+        var reason = new CodedString("schools performed well overall", "", "");
+        var testdata = new AttainmentAndProgressModelBuilder()
+            .WithAttainment8Data()
+            .WithEstablishmentProgress8Data()
+            .WithLaProgressData()
+            .WithEstablishmentProgress8Banding("Well above average")
+            .WithProgress8BandingDescriptions(new ProgressBandingDescriptions(
+                WellAboveAverage: reason,
+                AboveAverage: CodedString.Empty,
+                Average: CodedString.Empty,
+                BelowAverage: CodedString.Empty,
+                WellBelowAverage: CodedString.Empty))
+            .Build();
+
+        // Act
+        var viewModel = AcademicPerformanceAttainmentAndProgressViewModel.Map("local authority name", "", TypeOfEstablishment.CommunitySchool, testdata);
+
+        // Assert
+        Assert.Equal("This is well above average because schools performed well overall.", viewModel.YearValues.CurrentYear.EstablishmentProgress8BandingContextDescription.DisplayText());
     }
 }

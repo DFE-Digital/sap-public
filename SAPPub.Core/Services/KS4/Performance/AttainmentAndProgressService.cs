@@ -30,6 +30,7 @@ public class AttainmentAndProgressService(
                 EstablishmentAttainment8DisadvantagedScore = EmptyRelativeYearValues,
                 EstablishmentAttainment8Score = EmptyRelativeYearValues,
                 EstablishmentProgress8Banding = new RelativeYearValues<string?> { CurrentYear = null, PreviousYear = null, TwoYearsAgo = null },
+                Progress8BandingDescriptions = new RelativeYearValues<ProgressBandingDescriptions> { CurrentYear = ProgressBandingDescriptions.Empty },
                 EstablishmentProgress8CILower = EmptyRelativeYearValues,
                 EstablishmentProgress8CIUpper = EmptyRelativeYearValues,
                 EstablishmentProgress8Score = EmptyRelativeYearValues,
@@ -78,6 +79,22 @@ public class AttainmentAndProgressService(
                 CurrentYear = establishmentPerformance.Prog8_Banding_Est_Current,
                 PreviousYear = establishmentPerformance.Prog8_Banding_Est_Previous,
                 TwoYearsAgo = establishmentPerformance.Prog8_Banding_Est_Previous2,
+            },
+            Progress8BandingDescriptions = new RelativeYearValues<ProgressBandingDescriptions>
+            {
+                CurrentYear = ProgressBandingDescriptions.Empty,
+                PreviousYear = new ProgressBandingDescriptions(
+                    WellAboveAverage: englandPerformance.Prog8Band_Band1_Eng_Previous_Desc,
+                    AboveAverage: englandPerformance.Prog8Band_Band2_Eng_Previous_Desc,
+                    Average: englandPerformance.Prog8Band_Band3_Eng_Previous_Desc,
+                    BelowAverage: englandPerformance.Prog8Band_Band4_Eng_Previous_Desc,
+                    WellBelowAverage: englandPerformance.Prog8Band_Band5_Eng_Previous_Desc),
+                TwoYearsAgo = new ProgressBandingDescriptions(
+                    WellAboveAverage: englandPerformance.Prog8Band_Band1_Eng_Previous2_Desc,
+                    AboveAverage: englandPerformance.Prog8Band_Band2_Eng_Previous2_Desc,
+                    Average: englandPerformance.Prog8Band_Band3_Eng_Previous2_Desc,
+                    BelowAverage: englandPerformance.Prog8Band_Band4_Eng_Previous2_Desc,
+                    WellBelowAverage: englandPerformance.Prog8Band_Band5_Eng_Previous2_Desc),
             },
             LocalAuthorityProgress8Score = new RelativeYearValues<CodedDouble>
             {

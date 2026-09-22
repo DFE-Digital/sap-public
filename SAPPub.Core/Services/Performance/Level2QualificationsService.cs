@@ -88,6 +88,16 @@ public class Level2QualificationsService(
                 Level2.TechCert => englandPerformance.VA_INS_TECHCERT_Eng_Current_Num_Coded,
                 _ => CodedDouble.Empty,
             },
+            BandingDescriptions = level2Qualification switch
+            {
+                Level2.TechCert => new ProgressBandingDescriptions(
+                    WellAboveAverage: englandPerformance.ProgBand_Techcert_Band1_Eng_Current_Desc,
+                    AboveAverage: englandPerformance.ProgBand_Techcert_Band2_Eng_Current_Desc,
+                    Average: englandPerformance.ProgBand_Techcert_Band3_Eng_Current_Desc,
+                    BelowAverage: englandPerformance.ProgBand_Techcert_Band4_Eng_Current_Desc,
+                    WellBelowAverage: englandPerformance.ProgBand_Techcert_Band5_Eng_Current_Desc),
+                _ => ProgressBandingDescriptions.Empty,
+            },
         };
     }
 

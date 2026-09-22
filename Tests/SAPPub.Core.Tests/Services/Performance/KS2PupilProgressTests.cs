@@ -89,6 +89,15 @@ public class KS2PupilProgressTests
                 MATPROG_LA_Previous2_Num_Coded = new CodedDouble(32, string.Empty, "32")
             });
 
+        _ks2PerformanceRepository
+            .Setup(a => a.GetEnglandPerformanceAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new KS2EnglandPerformance
+            {
+                ProgBand_Read_Band1_Eng_Previous2_Desc = new CodedString("reading well above average reason", string.Empty, "reading well above average reason"),
+                ProgBand_Writ_Band1_Eng_Previous2_Desc = new CodedString("writing well above average reason", string.Empty, "writing well above average reason"),
+                ProgBand_Math_Band1_Eng_Previous2_Desc = new CodedString("maths well above average reason", string.Empty, "maths well above average reason")
+            });
+
         // Act
         var result = await _service.GetPupilProgressAsync(urn, AcademicYearSelection.Previous2, CancellationToken.None);
 
@@ -110,6 +119,10 @@ public class KS2PupilProgressTests
         Assert.Equal(30, result.LaReadingScore!.Value);
         Assert.Equal(31, result.LaWritingScore!.Value);
         Assert.Equal(32, result.LaMathsScore!.Value);
+
+        Assert.Equal("reading well above average reason", result.ReadingBandingDescriptions.WellAboveAverage.Value);
+        Assert.Equal("writing well above average reason", result.WritingBandingDescriptions.WellAboveAverage.Value);
+        Assert.Equal("maths well above average reason", result.MathsBandingDescriptions.WellAboveAverage.Value);
 
         _establishmentService
             .Verify(a => a.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()), Times.Once);

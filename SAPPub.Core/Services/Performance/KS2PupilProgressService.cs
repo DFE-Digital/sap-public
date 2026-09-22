@@ -25,11 +25,13 @@ public class KS2PupilProgressService(
 
         var ks2EstablishPerformanceTask = ks2PerformanceRepository.GetEstablishmentPerformanceAsync(urn, ct);
         var ks2LAPerformanceTask = ks2PerformanceRepository.GetLaPerformanceAsync(establishment.LAId, ct);
+        var ks2EnglandPerformanceTask = ks2PerformanceRepository.GetEnglandPerformanceAsync(ct);
 
-        await Task.WhenAll(ks2EstablishPerformanceTask, ks2LAPerformanceTask);
+        await Task.WhenAll(ks2EstablishPerformanceTask, ks2LAPerformanceTask, ks2EnglandPerformanceTask);
 
         var establishmentPerformance = await ks2EstablishPerformanceTask;
         var laPerformance = await ks2LAPerformanceTask;
+        var englandPerformance = await ks2EnglandPerformanceTask;
 
         return new KS2PupilPerformance
         {
@@ -59,6 +61,16 @@ public class KS2PupilProgressService(
                 AcademicYearSelection.Previous2 => laPerformance.READPROG_LA_Previous2_Num_Coded,
                 _ => CodedDouble.Empty
             },
+            ReadingBandingDescriptions = selectedYear switch
+            {
+                AcademicYearSelection.Previous2 => new ProgressBandingDescriptions(
+                    englandPerformance.ProgBand_Read_Band1_Eng_Previous2_Desc,
+                    englandPerformance.ProgBand_Read_Band2_Eng_Previous2_Desc,
+                    englandPerformance.ProgBand_Read_Band3_Eng_Previous2_Desc,
+                    englandPerformance.ProgBand_Read_Band4_Eng_Previous2_Desc,
+                    englandPerformance.ProgBand_Read_Band5_Eng_Previous2_Desc),
+                _ => ProgressBandingDescriptions.Empty
+            },
             EstablishmentWritingScore = selectedYear switch
             {
                 AcademicYearSelection.Previous2 => establishmentPerformance.WRITPROG_Est_Previous2_Num_Coded,
@@ -84,6 +96,16 @@ public class KS2PupilProgressService(
                 AcademicYearSelection.Previous2 => laPerformance.WRITPROG_LA_Previous2_Num_Coded,
                 _ => CodedDouble.Empty
             },
+            WritingBandingDescriptions = selectedYear switch
+            {
+                AcademicYearSelection.Previous2 => new ProgressBandingDescriptions(
+                    englandPerformance.ProgBand_Writ_Band1_Eng_Previous2_Desc,
+                    englandPerformance.ProgBand_Writ_Band2_Eng_Previous2_Desc,
+                    englandPerformance.ProgBand_Writ_Band3_Eng_Previous2_Desc,
+                    englandPerformance.ProgBand_Writ_Band4_Eng_Previous2_Desc,
+                    englandPerformance.ProgBand_Writ_Band5_Eng_Previous2_Desc),
+                _ => ProgressBandingDescriptions.Empty
+            },
             EstablishmentMathsScore = selectedYear switch
             {
                 AcademicYearSelection.Previous2 => establishmentPerformance.MATPROG_Est_Previous2_Num_Coded,
@@ -108,6 +130,16 @@ public class KS2PupilProgressService(
             {
                 AcademicYearSelection.Previous2 => laPerformance.MATPROG_LA_Previous2_Num_Coded,
                 _ => CodedDouble.Empty
+            },
+            MathsBandingDescriptions = selectedYear switch
+            {
+                AcademicYearSelection.Previous2 => new ProgressBandingDescriptions(
+                    englandPerformance.ProgBand_Math_Band1_Eng_Previous2_Desc,
+                    englandPerformance.ProgBand_Math_Band2_Eng_Previous2_Desc,
+                    englandPerformance.ProgBand_Math_Band3_Eng_Previous2_Desc,
+                    englandPerformance.ProgBand_Math_Band4_Eng_Previous2_Desc,
+                    englandPerformance.ProgBand_Math_Band5_Eng_Previous2_Desc),
+                _ => ProgressBandingDescriptions.Empty
             }
         };
     }

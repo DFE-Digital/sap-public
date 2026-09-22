@@ -7,15 +7,39 @@ public static class ProgressBandingHelper
 {
     public static DisplayField<string> ToBandingString(this CodedString codedString)
     {
-        if (!int.TryParse(codedString.Value, out int val))
+        return ToBandingString(codedString, ProgressBandingDescriptions.Empty);
+    }
+
+    public static DisplayField<string> ToBandingString(this CodedString codedString, ProgressBandingDescriptions bandingDescriptions)
+    {
+        if (!int.TryParse(codedString.Value, out int val) || !codedString.HasValue)
         {
-            return DisplayField<string>.NotAvailable();    
+            return DisplayField<string>.NotAvailable();
         }
 
-        ProgressBanding? bandingEnum = codedString.HasValue ? (ProgressBanding)val : null;
+        var bandingEnum = (ProgressBanding?)(ProgressBanding)val;
 
-        return bandingEnum is null
-            ? DisplayField<string>.NotAvailable()
-            : $"This is {bandingEnum.GetDisplayName()}.".ToDisplayField();
+        return bandingEnum.ToBandingContextStatement(bandingDescriptions);
+    }
+
+    public static DisplayField<string> ToBandingContextStatement(this string? progressBanding, ProgressBandingDescriptions bandingDescriptions)
+    {
+        return progressBanding.ToProgressBanding().ToBandingContextStatement(bandingDescriptions);
+    }
+
+    public static DisplayField<string> ToBandingContextStatement(this ProgressBanding? bandingEnum, ProgressBandingDescriptions bandingDescriptions)
+    {
+        if (bandingEnum is null)
+        {
+            return DisplayField<string>.NotAvailable();
+        }
+
+        var description = bandingDescriptions.GetDescriptionFor(bandingEnum);
+
+        var statement = description.HasValue
+            ? $"This is {bandingEnum.GetDisplayName()} because {description}."
+            : $"This is {bandingEnum.GetDisplayName()}.";
+
+        return statement.ToDisplayField();
     }
 }

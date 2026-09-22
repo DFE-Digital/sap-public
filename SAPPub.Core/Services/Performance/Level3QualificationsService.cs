@@ -108,6 +108,34 @@ public class Level3QualificationsService(
                 Level3.AppliedGeneral => englandPerformance.VA_INS_AGEN_Eng_Current_Num_Coded,
                 Level3.TechLevel => englandPerformance.VA_INS_TLEV_Eng_Current_Num_Coded,
                 _ => CodedDouble.Empty,
+            },
+            BandingDescriptions = level3Qualification switch
+            {
+                Level3.ALevel => new ProgressBandingDescriptions(
+                    WellAboveAverage: englandPerformance.ProgBand_Alev_Band1_Eng_Current_Desc,
+                    AboveAverage: englandPerformance.ProgBand_Alev_Band2_Eng_Current_Desc,
+                    Average: englandPerformance.ProgBand_Alev_Band3_Eng_Current_Desc,
+                    BelowAverage: englandPerformance.ProgBand_Alev_Band4_Eng_Current_Desc,
+                    WellBelowAverage: englandPerformance.ProgBand_Alev_Band5_Eng_Current_Desc),
+                Level3.Academic => new ProgressBandingDescriptions(
+                    WellAboveAverage: englandPerformance.ProgBand_Acad_Band1_Eng_Current_Desc,
+                    AboveAverage: englandPerformance.ProgBand_Acad_Band2_Eng_Current_Desc,
+                    Average: englandPerformance.ProgBand_Acad_Band3_Eng_Current_Desc,
+                    BelowAverage: englandPerformance.ProgBand_Acad_Band4_Eng_Current_Desc,
+                    WellBelowAverage: englandPerformance.ProgBand_Acad_Band5_Eng_Current_Desc),
+                Level3.AppliedGeneral => new ProgressBandingDescriptions(
+                    WellAboveAverage: englandPerformance.ProgBand_Agen_Band1_Eng_Current_Desc,
+                    AboveAverage: englandPerformance.ProgBand_Agen_Band2_Eng_Current_Desc,
+                    Average: englandPerformance.ProgBand_Agen_Band3_Eng_Current_Desc,
+                    BelowAverage: englandPerformance.ProgBand_Agen_Band4_Eng_Current_Desc,
+                    WellBelowAverage: englandPerformance.ProgBand_Agen_Band5_Eng_Current_Desc),
+                Level3.TechLevel => new ProgressBandingDescriptions(
+                    WellAboveAverage: englandPerformance.ProgBand_Tlev_Band1_Eng_Current_Desc,
+                    AboveAverage: englandPerformance.ProgBand_Tlev_Band2_Eng_Current_Desc,
+                    Average: englandPerformance.ProgBand_Tlev_Band3_Eng_Current_Desc,
+                    BelowAverage: englandPerformance.ProgBand_Tlev_Band4_Eng_Current_Desc,
+                    WellBelowAverage: englandPerformance.ProgBand_Tlev_Band5_Eng_Current_Desc),
+                _ => ProgressBandingDescriptions.Empty,
             }
         };
     }

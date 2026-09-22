@@ -110,11 +110,14 @@
 <div class="custom-card" id="progress-score-card">
     <div class="assignment__icon"></div>
     <div class="custom-card__content">
-        <p class="govuk-body">
-            Students at this school score @Model.Score.DisplayText()
-            @if (Model.Progress8BandingContextDescription.IsAvailable)
+            <p class="govuk-body">
+                Students at this school score @Model.Score.DisplayText()
+            </p>
+            @if (Model.ProgressBandingContextDescription.IsAvailable)
             {
-                <span>@Model.Progress8BandingContextDescription.DisplayText()</span>
+                <p class="govuk-body">
+                    @Model.ProgressBandingContextDescription.DisplayText()
+                </p>
             }
         <p class="govuk-body">
             The confidence interval is @Model.ConfidenceLevelLower.DisplayText() to @Model.ConfidenceLevelUpper.DisplayText().
