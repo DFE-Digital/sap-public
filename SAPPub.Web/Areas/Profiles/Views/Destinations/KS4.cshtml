@@ -90,6 +90,8 @@
                     <div id="all-dest-current-year-chart-container" class="chart-container all-dest-current-year-chart-container">
                         <canvas id="all-destinations-chart"
                                 class="js-chart"
+                                aria-labelledby="all-destinations-current-year-table"
+                                role="img"
                                 data-type="bar"
                                 data-not-available-text="@(NotAvailable)"
                                 data-chart='@Html.Raw(Json.Serialize(Model.AllDestinationsData))'
@@ -135,6 +137,8 @@
                         <div class="chart-container stacked">
                             <canvas id="all-destinations-data-overtime-chart"
                                     class="js-chart"
+                                    aria-labelledby="all-destinations-data-overtime-table"
+                                    role="img"
                                     data-type="bar"
                                     data-show-legend="true"
                                     data-chart='@Html.Raw(Json.Serialize(Model.AllDestinationsOverTimeData))'

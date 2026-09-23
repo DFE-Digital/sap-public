@@ -90,6 +90,8 @@
 
                     <canvas id="all-destinations-chart"
                             class="js-chart"
+                            aria-labelledby="all-destinations-current-year-table"
+                            role="img"
                             data-type="bar"
                             data-not-available-text="@(NotAvailable)"
                             data-chart='@Html.Raw(Json.Serialize(Model.AllDestinationsData))'

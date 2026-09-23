@@ -128,6 +128,8 @@
                         <p class="govuk-visually-hidden">@Constants.ScreenReaderUseTable</p>
 
                         <canvas id="all-gcse-chart"
+                                aria-labelledby="all-gcse-current-year-table"
+                                role="img"
                                 class="js-chart"
                                 data-type="bar"
                                 data-chart='@Html.Raw(Json.Serialize(Model.AllGcseData))'
@@ -173,6 +175,8 @@
                             <p class="govuk-visually-hidden">@Constants.ScreenReaderUseTable</p>
 
                             <canvas id="all-gcse-data-overtime-chart"
+                                    aria-labelledby="all-gcse-data-overtime-table" 
+                                    role="img"
                                     class="js-chart"
                                     data-type="bar"
                                     data-show-legend="true"
@@ -241,6 +245,8 @@
                         <div class="chart-container">
                             <canvas id="breakdown-gcse-chart"
                                     class="js-chart"
+                                    aria-labelledby="breakdown-gcse-current-year-table"
+                                    role="img"
                                     data-type="bar"
                                     data-show-legend="true"
                                     data-chart='@Html.Raw(Json.Serialize(Model.BreakdownGcseData))'
