@@ -57,18 +57,22 @@
                                    id="@($"establishment-{item.i}")"
                                    name="@nameof(Model.SelectedEstablishmentUrns)"
                                    value="@item.modelItem.Urn"
-                                   @(Model.SelectedEstablishmentUrns.Contains(item.modelItem.Urn) ? "checked" : "")
-                                   aria-label="@item.modelItem.Name">
-                            <label class="govuk-label govuk-checkboxes__label" for="@($"establishment-{item.i}")"><strong>@item.modelItem.Name</strong></label>
-                            <div class="govuk-checkboxes__hint">
-                                <div>@item.modelItem.Address</div>
-                                @if (item.modelItem.Status == EstablishmentStatus.Closed)
-                                {
-                                    <strong class="govuk-tag tag--block">
-                                        @(item.modelItem.ClosedDate.IsAvailable ? $"Closed in {item.modelItem.ClosedDate.DisplayText(d => d.ToString("MMMM yyyy"))}" : "Closed")
-                                    </strong>
-                                }
-                            </div>
+                                    @(Model.SelectedEstablishmentUrns.Contains(item.modelItem.Urn) ? "checked" : "")
+                                   aria-labelledby="@($"establishment-{item.i}")">
+                            <label class="govuk-label govuk-checkboxes__label" for="@($"establishment-{item.i}")">
+                                <strong>@item.modelItem.Name</strong>
+                                <div class="govuk-checkboxes__hint">
+                                    <div>@item.modelItem.Address</div>
+                                    @if (item.modelItem.Status == EstablishmentStatus.Closed)
+                                    {
+                                        <strong class="govuk-tag tag--block">
+                                            @(item.modelItem.ClosedDate.IsAvailable ? $"Closed in {item.modelItem.ClosedDate.DisplayText(d => d.ToString("MMMM yyyy"))}" : "Closed")
+                                        </strong>
+                                    }
+                                </div>
+
+                            </label>
+
                         </div>
                         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
                     }
