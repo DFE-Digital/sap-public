@@ -5,7 +5,7 @@
 @inject Microsoft.FeatureManagement.IFeatureManager FeatureManager
 
 @{
-    ViewBag.ServiceName = "School Profiles";
+    ViewBag.ServiceName = "Find and compare school and college profiles";
     var gtmId = analyticsOptions.Value.GoogleTagManagerId;
     var clarityId = analyticsOptions.Value.ClarityId;
     var loadAnalytics = Context?.Request?.Cookies["analytics_preference"] == "true" ? true : false;

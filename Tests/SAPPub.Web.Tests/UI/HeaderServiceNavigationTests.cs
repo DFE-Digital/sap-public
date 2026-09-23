@@ -48,7 +48,7 @@ public class HeaderServiceNavigationTests(WebApplicationSetupFixture fixture) : 
         var text = await serviceLink.InnerTextAsync();
         var href = await serviceLink.GetAttributeAsync("href");
 
-        Assert.Equal("School Profiles", text.Trim());
+        Assert.Equal("Find and compare school and college profiles", text.Trim());
         Assert.Equal("/search", href, ignoreCase: true);
     }
 

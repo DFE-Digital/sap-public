@@ -1,49 +1,32 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.Interfaces.Services.Performance;
-using SAPPub.Core.ServiceModels;
-using SAPPub.Web.Areas.Profiles.Filters;
 using SAPPub.Web.Areas.Profiles.Helpers;
 using SAPPub.Web.Areas.Profiles.ViewModels.KS4;
 using SAPPub.Web.Constants;
+using SAPPub.Web.Models.Config;
 using SAPPub.Web.Models.SecondarySchool;
 
 namespace SAPPub.Web.Areas.Profiles.Controllers;
 
 [Area("Profiles")]
-public class KS4Controller(IEstablishmentService establishmentService, IFeatureManager featureManager) : Controller
+public class KS4Controller(
+    IEstablishmentService establishmentService, 
+    IFeatureManager featureManager,
+    IOptions<UrlLinksOptions> urlLinksOptions) : Controller
 {
     [HttpGet]
     [Route("school/{urn}/{schoolName}/secondary-performance/progress-attainment", Name = RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress)]
-    public IActionResult AcademicPerformanceAttainmentAndProgressRedirect(
-        [FromServices] IAttainmentAndProgressService attainmentAndProgressService,
-        string urn,
-        string schoolName,
-        AcademicYearSelection selectedAcademicYear = AcademicYearSelection.Current,
-        CancellationToken ct = default)
-    {
-        var selectedYearName = AcademicYearSelectionExtensions.ToRouteSegment(selectedAcademicYear);
-
-        return RedirectToAction(nameof(AcademicPerformanceAttainmentAndProgress), new { urn, schoolName, selectedAcademicYearName = selectedYearName });
-    }
-
-    [HttpGet]
-    [Route("school/{urn}/{schoolName}/secondary-performance/progress-attainment/{selectedAcademicYearName}")]
     public async Task<IActionResult> AcademicPerformanceAttainmentAndProgress(
         [FromServices] IAttainmentAndProgressService attainmentAndProgressService,
         string urn,
         string schoolName,
-        string selectedAcademicYearName,
         CancellationToken ct = default)
     {
-        var selectedAcademicYear = AcademicYearSelectionExtensions.FromRouteSegment(selectedAcademicYearName);
-        if (!selectedAcademicYear.HasValue)
-        {
-            return NotFound();
-        }
         var establishmentDetails = await establishmentService.GetEstablishmentAsync(urn, ct);
 
         var results = await attainmentAndProgressService.GetAttainmentAndProgressAsync(urn, ct);
@@ -52,8 +35,8 @@ public class KS4Controller(IEstablishmentService establishmentService, IFeatureM
             establishmentDetails.LAName, 
             establishmentDetails.AgeRangeLow, 
             establishmentDetails.TypeOfEstablishment, 
-            results, 
-            selectedAcademicYear.Value);
+            results,
+            urlLinksOptions.Value);
        
         return View(model);
     }

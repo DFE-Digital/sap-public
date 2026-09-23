@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using SAPPub.Core.Entities;
+﻿using SAPPub.Core.Entities;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Extensions;
 using SAPPub.Core.ServiceModels.KS4.Performance;
@@ -7,27 +6,30 @@ using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models;
 using SAPPub.Web.Models.Charts;
+using SAPPub.Web.Models.Config;
 
 namespace SAPPub.Web.Areas.Profiles.ViewModels.KS4;
 
 public class AcademicPerformanceAttainmentAndProgressViewModel : BaseViewModel
 {
+    private const string PupilsAverageLabel = "Pupils' average grade across 8 GCSEs and equivalent subjects";
+
     private const AcademicYearSelection _currentAcademicYear = AcademicYearSelection.Current;
-    public string? AcademicYearInfoParagraph => $"Information in this section is for the {SelectedAcademicYear.GetDisplayName()} academic year.";
-    public AcademicYearSelection SelectedAcademicYear { get; set; } = _currentAcademicYear;
 
-    public bool ShowProgress8NotAvailableInfo => SelectedAcademicYear == _currentAcademicYear;
+    public string? AcademicYearInfoParagraph => $"Information in this section is for the {_currentAcademicYear.GetDisplayName()} academic year.";
 
-    public bool ShowAttainment8Info => SelectedYearValues?.EstablishmentAttainment8Score.HasValue ?? false;
-    public bool ShowProgress8Info => SelectedYearValues?.EstablishmentProgress8Score.HasValue ?? false;
+    // No Progress 8 scores available for the academic years 2024 to 2025 and 2025 to 2026 as no KS2 baseline available (due to covid)
+    public bool ShowProgress8NotAvailableInfo => _currentAcademicYear.GetDisplayName() is "2024 to 2025" or "2025 to 2026";
 
-    public AcademicPerformanceAttainmentAndProgressSingleYearViewModel SelectedYearValues => YearValues.GetValueForYear(SelectedAcademicYear) ?? AcademicPerformanceAttainmentAndProgressSingleYearViewModel.Empty;
     public required RelativeYearValues<AcademicPerformanceAttainmentAndProgressSingleYearViewModel> YearValues { get; init; }
 
     public required DisplayField<CodedDouble> LocalAuthorityAttainment8NonDisadvantagedScore { get; init; }
     public required DisplayField<CodedDouble> EnglandAttainment8NonDisadvantagedScore { get; init; }
 
     public required SeriesMeasureViewModel BreakdownNonDisadvantaged { get; init; }
+    public required SeriesMeasureViewModel BreakdownGirlsBoys { get; init; }
+    public required SeriesMeasureViewModel BreakdownEAL { get; init; }
+    public required SeriesMeasureViewModel BreakdownNonMobile { get; init; }
 
     public bool ShowUTCCaveat { get; set; }
 
@@ -35,18 +37,15 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : BaseViewModel
 
     public bool ShowFurtherEducationCaveat { get; set; }
 
-    public List<SelectListItem> AcademicYearsSelectList => [.. Enum.GetValues(typeof(AcademicYearSelection)).Cast<AcademicYearSelection>().Select(x => new SelectListItem
-    {
-        Text = x.GetDisplayName(),
-        Value = x.ToString(),
-    })];
+    public string? SecondarySchoolAccountabilityPriorAttainmentLinkUrl { get; set; }
+    public bool SecondarySchoolAccountabilityPriorAttainmentNewTab { get; set; }
 
     public static AcademicPerformanceAttainmentAndProgressViewModel Map(
         string laName,
         string ageRangeFrom,
         TypeOfEstablishment typeOfEstablishment,
-        AttainmentAndProgressModel attainmentAndProgressModel, 
-        AcademicYearSelection selectedAcademicYear)
+        AttainmentAndProgressModel attainmentAndProgressModel,
+        UrlLinksOptions urlLinksOptions)
     {
         var laAverageLabel = CommonHelper.GetLocalAuthorityDisplayName(laName);
 
@@ -54,7 +53,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : BaseViewModel
         {
             TableId = "breakdown-non-disadvantaged-table",
             TableHeader = "Pupil group (non-disadvantaged)",
-            Labels = ["Score", "Pupils' average grade across their 8 best GCSE-level subjects"],
+            Labels = ["Score", PupilsAverageLabel],
             Datasets =
                 [
                     new DatasetMeasureViewModel {
@@ -70,6 +69,80 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : BaseViewModel
                 ],
         };
 
+
+
+        var girlBoyBreakdownData = new SeriesMeasureViewModel
+        {
+            TableId = "characteristics-girlboy-table",
+            TableHeader = PupilGroup,
+            Labels = ["Score", PupilsAverageLabel],
+            Datasets =
+            [
+                new DatasetMeasureViewModel {
+                    Label = "Girls",
+                    Data = [
+                        new Measure { Value = attainmentAndProgressModel.EstablishmentAttainment8GirlsScore, Unit = DataUnit.Score }
+                    ]
+                },
+                new DatasetMeasureViewModel {
+                    Label = "Boys",
+                    Data = [
+                        new Measure { Value = attainmentAndProgressModel.EstablishmentAttainment8BoysScore, Unit = DataUnit.Score }
+                    ]
+                },
+                new DatasetMeasureViewModel {
+                    Label = AllPupilsAtTheSchool,
+                    Data = [
+                        new Measure { Value = attainmentAndProgressModel.EstablishmentAttainment8Score.GetValueForYear(AcademicYearSelection.Current), Unit = DataUnit.Score }
+                    ]
+                },
+            ]
+        };
+
+        var ealBreakdownData = new SeriesMeasureViewModel
+        {
+            TableId = "characteristics-eal-table",
+            TableHeader = PupilGroup,
+            Labels = ["Score", PupilsAverageLabel],
+            Datasets =
+            [
+            new DatasetMeasureViewModel {
+                    Label = "Pupils with EAL",
+                    Data = [
+                        new Measure { Value = attainmentAndProgressModel.EstablishmentAttainment8EALScore, Unit = DataUnit.Score }
+                    ]
+                },
+                new DatasetMeasureViewModel {
+                    Label = AllPupilsAtTheSchool,
+                    Data = [
+                        new Measure { Value = attainmentAndProgressModel.EstablishmentAttainment8Score.GetValueForYear(AcademicYearSelection.Current), Unit = DataUnit.Score }
+                    ]
+                },
+            ]
+
+        };
+
+        var nonMobileBreakdownData = new SeriesMeasureViewModel
+        {
+            TableId = "characteristics-nonmobile-table",
+            TableHeader = PupilGroup,
+            Labels = ["Score", PupilsAverageLabel],
+            Datasets =
+            [
+                new()
+                {
+                    Label = "Non-mobile pupils",
+                    Data = [ new() { Value = attainmentAndProgressModel.EstablishmentAttainment8NonMobileScore, Unit = DataUnit.Score } ]
+                },
+                new()
+                {
+                    Label = AllPupilsAtTheSchool,
+                    Data = [ new () { Value = attainmentAndProgressModel.EstablishmentAttainment8Score.GetValueForYear(AcademicYearSelection.Current), Unit = DataUnit.Score } ]
+                },
+            ]
+
+        };
+
         int.TryParse(ageRangeFrom, out int ageFrom);
 
         return new AcademicPerformanceAttainmentAndProgressViewModel
@@ -79,7 +152,6 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : BaseViewModel
             IsKS2 = attainmentAndProgressModel.IsKS2,
             IsKS4 = attainmentAndProgressModel.IsKS4,
             IsKS5 = attainmentAndProgressModel.IsKS5,
-            SelectedAcademicYear = selectedAcademicYear,
             LocalAuthorityAttainment8NonDisadvantagedScore = attainmentAndProgressModel.LocalAuthorityAttainment8NonDisadvantagedScore.ToDisplayField(),
             EnglandAttainment8NonDisadvantagedScore = attainmentAndProgressModel.EnglandAttainment8NonDisadvantagedScore.ToDisplayField(),
             YearValues = new RelativeYearValues<AcademicPerformanceAttainmentAndProgressSingleYearViewModel>
@@ -96,7 +168,12 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : BaseViewModel
                 || (typeOfEstablishment != TypeOfEstablishment.UniversityTechnicalCollege
                     && typeOfEstablishment != TypeOfEstablishment.StudioSchools
                     && typeOfEstablishment != TypeOfEstablishment.FurtherEducation
-                    && ageFrom >= 12)
+                    && ageFrom >= 12),
+            BreakdownGirlsBoys = girlBoyBreakdownData,
+            BreakdownEAL = ealBreakdownData,
+            BreakdownNonMobile = nonMobileBreakdownData,
+            SecondarySchoolAccountabilityPriorAttainmentLinkUrl = urlLinksOptions.SecondarySchoolAccountabilityPriorAttainment.Url,
+            SecondarySchoolAccountabilityPriorAttainmentNewTab = urlLinksOptions.SecondarySchoolAccountabilityPriorAttainment.NewTab
         };
     }
 }

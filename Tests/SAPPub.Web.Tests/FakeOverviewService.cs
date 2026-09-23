@@ -10,6 +10,8 @@ public sealed class FakeOverviewService : IOverviewService
 
     public const string MissingDataOverviewUrn = "137552";
 
+    public const string NoTopSubjectsOverviewUrn = "999001";
+
     private static readonly Dictionary<string, OverviewModel> Overviews =
         new()
         {
@@ -47,7 +49,9 @@ public sealed class FakeOverviewService : IOverviewService
                 localAuthorityName: "Bury",
                 isKS2: false,
                 isKS4: false,
-                isKS5: true)
+                isKS5: true),
+
+            //["999001"] = CreateNoTopSubjectsOverview(),
         };
 
     public Task<OverviewModel?> GetOverviewAsync(
@@ -96,7 +100,25 @@ public sealed class FakeOverviewService : IOverviewService
 
             IsKS2 = true,
             IsKS4 = false,
-            IsKS5 = false
+            IsKS5 = false,
+
+            ReadingWritingMathsExpectedEstablishment =
+                new CodedDouble(
+                    70,
+                    string.Empty,
+                    "70"),
+
+            ReadingWritingMathsExpectedLA =
+                new CodedDouble(
+                    73,
+                    string.Empty,
+                    "73"),
+
+            ReadingWritingMathsExpectedEngland =
+                new CodedDouble(
+                    77,
+                    string.Empty,
+                    "77"),
         };
     }
 
@@ -161,6 +183,34 @@ public sealed class FakeOverviewService : IOverviewService
                 87,
                 string.Empty,
                 "87"),
+
+            GcseSubjectsEntered = null,
+
+            TechnicalSubjectsEntered = new CodedDouble(
+                4,
+                string.Empty,
+                "4"),
+
+            TopTechnicalSubjects =
+            [
+                new TechnicalSubjectModel
+                {
+                    SubjectName = "Health studies",
+                    PercentageEntering = 63
+                },
+
+                new TechnicalSubjectModel
+                {
+                    SubjectName = "Sports studies",
+                    PercentageEntering = null
+                },
+
+                new TechnicalSubjectModel
+                {
+                    SubjectName = "Tourism",
+                    PercentageEntering = 38
+                }
+            ],
         };
     }
 
@@ -252,6 +302,67 @@ public sealed class FakeOverviewService : IOverviewService
                 87,
                 string.Empty,
                 "87"),
+
+            ReadingWritingMathsExpectedEstablishment =
+                new CodedDouble(
+                    70,
+                    string.Empty,
+                    "70"),
+
+            ReadingWritingMathsExpectedLA =
+                new CodedDouble(
+                    73,
+                    string.Empty,
+                    "73"),
+
+            ReadingWritingMathsExpectedEngland =
+                new CodedDouble(
+                    77,
+                    string.Empty,
+                    "77"),
+
+            GcseSubjectsEntered = new CodedDouble(
+                    31,
+                    string.Empty,
+                    "31"),
+
+            TechnicalSubjectsEntered = new CodedDouble(
+                    4,
+                    string.Empty,
+                    "4"),
+
+            TopTechnicalSubjects =
+            [
+                new TechnicalSubjectModel
+                {
+                    SubjectName = "Health studies",
+                    PercentageEntering = 63
+                },
+
+                new TechnicalSubjectModel
+                {
+                    SubjectName = "Sports / Movement science",
+                    PercentageEntering = 50
+                },
+
+                new TechnicalSubjectModel
+                {
+                    SubjectName = "Hospitality and Catering",
+                    PercentageEntering = 38
+                },
+
+                new TechnicalSubjectModel
+                {
+                    SubjectName = "Tourism",
+                    PercentageEntering = 38
+                },
+
+                new TechnicalSubjectModel
+                {
+                    SubjectName = "Engineering",
+                    PercentageEntering = 25
+                }
+            ],
         };
     }
 
@@ -291,5 +402,48 @@ public sealed class FakeOverviewService : IOverviewService
         }
 
         return string.Empty;
+    }
+
+    private static OverviewModel CreateNoTopSubjectsOverview()
+    {
+        return new OverviewModel
+        {
+            Urn = NoTopSubjectsOverviewUrn,
+
+            SchoolName = "No Top Subjects Test School",
+
+            LocalAuthorityName = "Test Authority",
+
+            PhaseOfEducation = "Secondary",
+
+            AgeRangeLow = "11",
+            AgeRangeHigh = "16",
+
+            NumberOfPupils = "500",
+
+            SenProvision = null,
+
+            Phone = "0121 555 1234",
+
+            Website = "www.example.com",
+
+            Address = "1 Test Street, Test Town, TE1 1ST",
+
+            Easting = "405900",
+            Northing = "289500",
+
+            IsKS2 = false,
+            IsKS4 = true,
+            IsKS5 = false,
+
+            GcseSubjectsEntered = null,
+
+            TechnicalSubjectsEntered = new CodedDouble(
+                4,
+                string.Empty,
+                "4"),
+
+            TopTechnicalSubjects = []
+        };
     }
 }

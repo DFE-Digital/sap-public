@@ -27,4 +27,6 @@ public class Overview
     public KS2LAPerformance? KS2LAPerformance { get; init; }
 
     public KS2EnglandPerformance? KS2EnglandPerformance { get; init; }
+
+    public IReadOnlyList<TechnicalSubjectEntry> TopTechnicalSubjects { get; init; } = Array.Empty<TechnicalSubjectEntry>();
 }

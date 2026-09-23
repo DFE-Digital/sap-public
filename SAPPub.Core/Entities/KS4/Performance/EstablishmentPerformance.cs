@@ -25,6 +25,12 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public CodedDouble Attainment8_Dis_Est_Previous_Num_Coded { get; set; } = new();
         public CodedDouble Attainment8_Dis_Est_Previous2_Num_Coded { get; set; } = new();
 
+        public CodedDouble Attainment8_Grl_Est_Current_Num_Coded { get; set; }
+        public CodedDouble Attainment8_Boy_Est_Current_Num_Coded { get; set; }
+        public CodedDouble Attainment8_EAL_Est_Current_Num_Coded { get; set; }
+        public CodedDouble Attainment8_NMo_Est_Current_Num_Coded { get; set; }
+
+
         /// <summary>
         /// English and Maths grades 4 to 9 Boys filtered by Establishment for Current year
         /// </summary>
@@ -47,6 +53,16 @@ namespace SAPPub.Core.Entities.KS4.Performance
         /// English and Maths grades 4 to 9 Disadvantaged filtered by Establishment for Current year
         /// </summary>
         public CodedDouble EngMaths49_Dis_Est_Current_Pct_Coded { get; set; } = new();
+
+        /// <summary>
+        /// English and Maths grades 4 to 9 EAL filtered by Establishment for Current year
+        /// </summary>
+        public CodedDouble EngMaths49_EAL_Est_Current_Pct_Coded { get; set; } = new();
+
+        /// <summary>
+        /// English and Maths grades 4 to 9 Non-Mobile filtered by Establishment for Current year
+        /// </summary>
+        public CodedDouble EngMaths49_NMo_Est_Current_Pct_Coded { get; set; } = new();
 
         /// <summary>
         /// English and Maths grades 4 to 9 Total filtered by Establishment for Current year
@@ -81,6 +97,16 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public CodedDouble EngMaths59_Dis_Est_Current_Pct_Coded { get; set; } = new();
 
         /// <summary>
+        /// English and Maths grades 5 to 9 EAL filtered by Establishment for Current year
+        /// </summary>
+        public CodedDouble EngMaths59_EAL_Est_Current_Pct_Coded { get; set; } = new();
+
+        /// <summary>
+        /// English and Maths grades 5 to 9 Non-Mobile filtered by Establishment for Current year
+        /// </summary>
+        public CodedDouble EngMaths59_NMo_Est_Current_Pct_Coded { get; set; } = new();
+
+        /// <summary>
         /// English and Maths grades 5 to 9 Total filtered by Establishment for Current year
         /// </summary>
         public CodedDouble EngMaths59_Tot_Est_Current_Pct_Coded { get; set; } = new();
@@ -111,6 +137,16 @@ namespace SAPPub.Core.Entities.KS4.Performance
         /// English and Maths grades 7 to 9 Disadvantaged filtered by Establishment for Current year
         /// </summary>
         public CodedDouble EngMaths79_Dis_Est_Current_Pct_Coded { get; set; } = new();
+
+        /// <summary>
+        /// English and Maths grades 7 to 9 EAL filtered by Establishment for Current year
+        /// </summary>
+        public CodedDouble EngMaths79_EAL_Est_Current_Pct_Coded { get; set; } = new();
+
+        /// <summary>
+        /// English and Maths grades 7 to 9 Non-Mobile filtered by Establishment for Current year
+        /// </summary>
+        public CodedDouble EngMaths79_NMo_Est_Current_Pct_Coded { get; set; } = new();
 
         /// <summary>
         /// English and Maths grades 7 to 9 Total filtered by Establishment for Current year
@@ -287,7 +323,9 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public CodedDouble Pup_EAL_Est_Current_Num_Coded { get; set; }
         public CodedDouble Pup_NMo_Est_Current_Num_Coded { get; set; }
         public CodedDouble Pup_Dis_Est_Current_Num_Coded { get; set; }
-        public CodedDouble PupSEN_Est_Current_Num_Coded { get; set; }
-        public CodedDouble PupEHCP_Est_Current_Num_Coded { get; set; }
+        public CodedDouble PupSEN_Tot_Est_Current_Pct_Coded { get; set; }
+        public CodedDouble PupEHCP_Tot_Est_Current_Pct_Coded { get; set; }
+        public CodedDouble? GCSESubjectEnteredSum_Est_Current_Num_Coded { get; set; }
+        public CodedDouble? TechSubjectEnteredSum_Est_Current_Num_Coded { get; set; }
     }
 }

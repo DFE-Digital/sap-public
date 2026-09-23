@@ -67,7 +67,11 @@ public sealed class EnglishAndMathsResultsService(
             EnglandDisadvantaged = DisadvantagedEnglishAndMaths(englandPerformance, selectedGrade),
 
             LocalAuthorityNonDisadvantaged = NonDisadvantagedEnglishAndMaths(laPerformance, selectedGrade),
-            EnglandNonDisadvantaged = NonDisadvantagedEnglishAndMaths(englandPerformance, selectedGrade)
+            EnglandNonDisadvantaged = NonDisadvantagedEnglishAndMaths(englandPerformance, selectedGrade),
+
+            EstablishmentEAL = EALEnglishAndMathsPerformance(establishmentPerformance, selectedGrade),
+
+            EstablishmentNonMobile = NonMobileEnglishAndMathsPerformance(establishmentPerformance, selectedGrade)
         };
     }
 
@@ -104,6 +108,8 @@ public sealed class EnglishAndMathsResultsService(
             EnglandDisadvantaged = EmptyYears<CodedDouble>(),
             LocalAuthorityNonDisadvantaged = EmptyYears<CodedDouble>(),
             EnglandNonDisadvantaged = EmptyYears<CodedDouble>(),
+            EstablishmentEAL = EmptyYears<CodedDouble>(),
+            EstablishmentNonMobile = EmptyYears<CodedDouble>(),
 
             IsKS2 = false,
             IsKS4 = false,
@@ -260,6 +266,38 @@ public sealed class EnglishAndMathsResultsService(
             },
             PreviousYear = null,
             TwoYearsAgo = null
+        };
+    }
+
+    public static RelativeYearValues<CodedDouble> EALEnglishAndMathsPerformance(EstablishmentPerformance establishmentPerformance, int selectedGrade)
+    {
+        return new RelativeYearValues<CodedDouble>
+        {
+            CurrentYear = selectedGrade switch
+            {
+                4 => establishmentPerformance.EngMaths49_EAL_Est_Current_Pct_Coded,
+                5 => establishmentPerformance.EngMaths59_EAL_Est_Current_Pct_Coded,
+                7 => establishmentPerformance.EngMaths79_EAL_Est_Current_Pct_Coded,
+                _ => new CodedDouble()
+            },
+            PreviousYear = new CodedDouble(),
+            TwoYearsAgo = new CodedDouble()
+        };
+    }
+
+    public static RelativeYearValues<CodedDouble> NonMobileEnglishAndMathsPerformance(EstablishmentPerformance establishmentPerformance, int selectedGrade)
+    {
+        return new RelativeYearValues<CodedDouble>
+        {
+            CurrentYear = selectedGrade switch
+            {
+                4 => establishmentPerformance.EngMaths49_NMo_Est_Current_Pct_Coded,
+                5 => establishmentPerformance.EngMaths59_NMo_Est_Current_Pct_Coded,
+                7 => establishmentPerformance.EngMaths79_NMo_Est_Current_Pct_Coded,
+                _ => new CodedDouble()
+            },
+            PreviousYear = new CodedDouble(),
+            TwoYearsAgo = new CodedDouble()
         };
     }
 

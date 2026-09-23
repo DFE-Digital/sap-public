@@ -47,6 +47,7 @@ public sealed class GenerateViews
         new("v_establishment_links", "Establishment", "Establishment"),
         new("v_establishment_group_links", "Establishment", "Establishment"),
         new("v_establishment_subject_entries", "Establishment", "KS4_Performance"),
+        new("v_establishment_top3_technical_subject_entries", "Establishment", "KS4_TopTechnicalSubjects"),
         new("v_establishment_absence", "Establishment", "PupilAbsence"),
 
         new("v_establishment_destinations", "Establishment", "KS4_Destinations"), //Todo - Rename to KS4
@@ -284,7 +285,21 @@ public sealed class GenerateViews
 
                 sql = GenerateMirrorMaterializedView(view.ViewName, rawTable);
             }
+            else if (view.ViewName.Equals("v_establishment_top3_technical_subject_entries", StringComparison.OrdinalIgnoreCase))
+            {
+                var sourceRow = _rows.FirstOrDefault(r => r.Range.Equals(view.Range, StringComparison.OrdinalIgnoreCase) && 
+                                    r.Type.Equals(view.Type, StringComparison.OrdinalIgnoreCase));
 
+                if (sourceRow == null || string.IsNullOrWhiteSpace(sourceRow.FileName) || !TryResolveRawTable(tableMap, sourceRow.FileName, out var rawTable) || string.IsNullOrWhiteSpace(rawTable))
+                {
+                    sql = BuildSkippedSql(view.ViewName, $"Could not resolve raw table from DataMap for {view.Type}.");
+
+                    Write(view.ViewName, sql);
+                    continue;
+                }
+
+                sql = GenerateTopTechnicalSubjectEntriesView(view.ViewName, rawTable);
+            }
             // 6) Everything else uses DataMap-driven materialized view generation
             else
             {
@@ -358,6 +373,51 @@ public sealed class GenerateViews
         var sb = new StringBuilder(s.Length);
         foreach (var ch in s)
             sb.Append(char.IsLetterOrDigit(ch) ? ch : '_');
+
+        return sb.ToString();
+    }
+
+    // =====================================================
+    // SUBJECTS ENTERED GENERATION
+    // =====================================================
+    private static string GenerateTopTechnicalSubjectEntriesView(
+    string viewName,
+    string rawTable)
+    {
+        var sb = new StringBuilder();
+
+        sb.AppendLine(
+            $"-- AUTO-GENERATED MATERIALIZED VIEW: {viewName}");
+
+        sb.AppendLine();
+        sb.AppendLine(
+            $"DROP MATERIALIZED VIEW IF EXISTS {viewName};");
+
+        sb.AppendLine();
+
+        sb.AppendLine(
+            $"CREATE MATERIALIZED VIEW {viewName} AS");
+
+        sb.AppendLine("SELECT");
+        sb.AppendLine(
+            "    t.\"school_urn\" AS \"URN\",");
+        sb.AppendLine(
+            "    t.\"subject_discount_group\" AS \"SubjectName\",");
+        sb.AppendLine(
+            "    clean_numeric(t.\"percentage_entering\") AS \"PercentageEntering\"");
+        sb.AppendLine(
+            $"FROM {rawTable} t");
+        sb.AppendLine(
+            "WHERE t.\"qualification_type\" = 'Vocational'");
+        sb.AppendLine(
+            "  AND t.\"time_period\" = '202425';");
+
+        sb.AppendLine();
+
+        sb.AppendLine(
+            $"CREATE INDEX idx_{viewName}_urn");
+        sb.AppendLine(
+            $"    ON {viewName} (\"URN\");");
 
         return sb.ToString();
     }

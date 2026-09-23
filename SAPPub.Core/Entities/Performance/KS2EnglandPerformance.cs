@@ -38,5 +38,7 @@ public class KS2EnglandPerformance
     public CodedDouble TNOTFSM6CLA1A_Eng_Current_Num_Coded { get; set; }
     public CodedDouble PSENELE_Eng_Current_Pct_Coded { get; set; }
     public CodedDouble PSENELK_Eng_Current_Pct_Coded { get; set; }
+    public CodedDouble TELIG_Eng_Current_Num_Coded { get; set; }
+    public CodedDouble TOTPUPS_Eng_Current_Num_Coded { get; set; }
 
 }

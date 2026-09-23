@@ -46,6 +46,13 @@ public class EstablishmentPerformanceBuilder
     private double? _attainment8_Dis_Est_Previous_Num;
     private double? _attainment8_Dis_Est_Previous2_Num;
 
+    // attainment 8 pupil characteristics
+    private double? _attainment8_Grl_Est_Current_Num;
+    private double? _attainment8_Boy_Est_Previous_Num;
+    private double? _attainment8_EAL_Est_Previous2_Num;
+    private double? _attainment8_NMo_Est_Previous2_Num;
+
+
     public EstablishmentPerformanceBuilder WithUrn(string id)
     {
         _id = id;
@@ -96,6 +103,15 @@ public class EstablishmentPerformanceBuilder
         _attainment8_Dis_Est_Current_Num = Math.Round(_faker.Random.Double(30, 80),1);
         _attainment8_Dis_Est_Previous_Num = Math.Round(_faker.Random.Double(30, 80),1);
         _attainment8_Dis_Est_Previous2_Num = Math.Round(_faker.Random.Double(30, 80),1);
+        return this;
+    }
+
+    public EstablishmentPerformanceBuilder WithAttainment8PupilCharacteristics()
+    {
+        _attainment8_Grl_Est_Current_Num = Math.Round(_faker.Random.Double(30, 80), 1);
+        _attainment8_Boy_Est_Previous_Num = Math.Round(_faker.Random.Double(30, 80), 1);
+        _attainment8_EAL_Est_Previous2_Num = Math.Round(_faker.Random.Double(30, 80), 1);
+        _attainment8_NMo_Est_Previous2_Num = Math.Round(_faker.Random.Double(30, 80), 1);
         return this;
     }
 
@@ -164,7 +180,11 @@ public class EstablishmentPerformanceBuilder
             // disadvantaged measures
             Attainment8_Dis_Est_Current_Num_Coded = CreateCodedDouble(_attainment8_Dis_Est_Current_Num),
             Attainment8_Dis_Est_Previous_Num_Coded = CreateCodedDouble(_attainment8_Dis_Est_Previous_Num),
-            Attainment8_Dis_Est_Previous2_Num_Coded = CreateCodedDouble(_attainment8_Dis_Est_Previous2_Num)
+            Attainment8_Dis_Est_Previous2_Num_Coded = CreateCodedDouble(_attainment8_Dis_Est_Previous2_Num),
+            Attainment8_Grl_Est_Current_Num_Coded = CreateCodedDouble(_attainment8_Grl_Est_Current_Num),
+            Attainment8_Boy_Est_Current_Num_Coded = CreateCodedDouble(_attainment8_Boy_Est_Previous_Num),
+            Attainment8_EAL_Est_Current_Num_Coded = CreateCodedDouble(_attainment8_EAL_Est_Previous2_Num),
+            Attainment8_NMo_Est_Current_Num_Coded = CreateCodedDouble(_attainment8_NMo_Est_Previous2_Num)
         };
     }
 

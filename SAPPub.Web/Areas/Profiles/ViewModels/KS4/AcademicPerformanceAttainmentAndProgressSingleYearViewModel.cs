@@ -41,7 +41,16 @@ public class AcademicPerformanceAttainmentAndProgressSingleYearViewModel
 
     public required SeriesMeasureViewModel BreakdownDisadvantaged { get; init; }
 
-    public static AcademicPerformanceAttainmentAndProgressSingleYearViewModel Map(string laName, AcademicYearSelection year, AttainmentAndProgressModel attainmentAndProgressModel)
+    public bool ShowProgress8Info => EstablishmentProgress8Score.HasValue;
+
+    public bool ShowAttainment8Info => EstablishmentAttainment8Score.HasValue;
+
+    public AcademicYearSelection AcademicYearSelection { get; init; }
+
+    public static AcademicPerformanceAttainmentAndProgressSingleYearViewModel Map(
+        string laName, 
+        AcademicYearSelection year, 
+        AttainmentAndProgressModel attainmentAndProgressModel)
     {
         var laAverageLabel = CommonHelper.GetLocalAuthorityDisplayName(laName);
         var establishmentAttainment8ContextSentence
@@ -61,7 +70,7 @@ public class AcademicPerformanceAttainmentAndProgressSingleYearViewModel
         {
             TableId = $"breakdown-disadvantaged-table-{(int)year}",
             TableHeader = "Pupil group (disadvantaged)",
-            Labels = ["Score", "Pupils' average grade across 8 GCSE and equivalent subjects"],
+            Labels = ["Score", "Pupils' average grade across 8 GCSEs and equivalent subjects"],
             Datasets =
                 [
                     new DatasetMeasureViewModel {
@@ -84,6 +93,7 @@ public class AcademicPerformanceAttainmentAndProgressSingleYearViewModel
                     },
                 ],
         };
+
 
         return new AcademicPerformanceAttainmentAndProgressSingleYearViewModel
         {
@@ -110,35 +120,8 @@ public class AcademicPerformanceAttainmentAndProgressSingleYearViewModel
             EnglandAttainment8Score = attainmentAndProgressModel.EnglandAttainment8Score.GetValueForYear(year),
             EstablishmentProgress8TotalPupils = attainmentAndProgressModel.EstablishmentProgress8TotalPupils.GetValueForYear(year),
             EstablishmentTotalPupils = attainmentAndProgressModel.EstablishmentTotalPupils.GetValueForYear(year),
-            BreakdownDisadvantaged = disadvantagedBreakdownData
+            BreakdownDisadvantaged = disadvantagedBreakdownData,
+            AcademicYearSelection = year
         };
     }
-
-    public static AcademicPerformanceAttainmentAndProgressSingleYearViewModel Empty => new AcademicPerformanceAttainmentAndProgressSingleYearViewModel
-    {
-        EstablishmentProgress8Score = CodedDouble.Empty,
-        EstablishmentProgress8CILower = CodedDouble.Empty,
-        EstablishmentProgress8CIUpper = CodedDouble.Empty,
-        EstablishmentProgress8Banding = string.Empty,
-        EstablishmentProgress8BandingContextDescription = DisplayField<string>.NotAvailable(),
-        LocalAuthorityProgress8Score = CodedDouble.Empty,
-        EstablishmentAttainment8Score = CodedDouble.Empty,
-        EstablishmentAttainment8DisadvantagedScore = DisplayField<CodedDouble>.NotAvailable(),
-        LocalAuthorityAttainment8DisadvantagedScore = DisplayField<CodedDouble>.NotAvailable(),
-        EnglandAttainment8DisadvantagedScore = DisplayField<CodedDouble>.NotAvailable(),
-        EstablishmentAttainment8ScoreContextDescription = DisplayField<string>.NotAvailable(),
-        LocalAuthorityAttainment8ScoreContextDescription = DisplayField<string>.NotAvailable(),
-        EnglandAttainment8ScoreContextDescription = DisplayField<string>.NotAvailable(),
-        LocalAuthorityAttainment8Score = CodedDouble.Empty,
-        EnglandAttainment8Score = CodedDouble.Empty,
-        EstablishmentProgress8TotalPupils = CodedDouble.Empty,
-        EstablishmentTotalPupils = CodedDouble.Empty,
-        BreakdownDisadvantaged = new SeriesMeasureViewModel
-        {
-            TableId = "breakdown-disadvantaged-table-empty",
-            TableHeader = "Pupil group (disadvantaged)",
-            Labels = ["Score", "Pupils' average grade across 8 GCSE and equivalent subjects"],
-            Datasets = []
-        }
-    };
 }

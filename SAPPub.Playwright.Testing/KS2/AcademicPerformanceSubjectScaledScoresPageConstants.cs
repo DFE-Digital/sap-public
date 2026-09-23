@@ -2,18 +2,15 @@
 
 public class PageConstants
 {
-    public static readonly IReadOnlyDictionary<string, string> ContentIds =
-    new Dictionary<string, string>()
-    {
-        ["readShowDataOverTimeBtn"] = "#read-show-data-over-time-btn",
-        ["readDataOverTimeShowAsTableBtn"] = "#read-data-over-time-show-btn",
-        ["read-data-over-time-table"] = "read-data-overtime-table",
-        ["mathsShowDataOverTimeBtn"] = "#maths-show-data-over-time-btn",
-        ["mathsDataOverTimeShowAsTableBtn"] = "#maths-data-over-time-show-btn",
-        ["maths-data-over-time-table"] = "maths-data-overtime-table",
-        ["girls-boys-table"] = "#girls-boys-table",
-        ["eal-table"] = "#eal-table",
-        ["non-mobile-table"] = "#nonmobile-pupils-table",
-        ["disadvantaged-pupils-table"] = "#disadvantaged-pupils-table"
-    };
+    public static readonly string ReadShowDataOverTimeBtnId = "#read-show-data-over-time-btn";
+    public static readonly string ReadDataOverTimeShowAsTableBtnId = "#read-data-over-time-show-btn";
+    public static readonly string ReadDataOverTimeTableId = "read-data-overtime-table";
+    public static readonly string MathsShowDataOverTimeBtnId = "#maths-show-data-over-time-btn";
+    public static readonly string MathsDataOverTimeShowAsTableBtnId = "#maths-data-over-time-show-btn";
+    public static readonly string MathsDataOverTimeTableId = "maths-data-overtime-table";
+    public static readonly string GirlsBoysTableId = "#girls-boys-table";
+    public static readonly string EalTableId = "#eal-table";
+    public static readonly string NonMobileTableId = "#nonmobile-pupils-table";
+    public static readonly string DisadvantagedPupilsTableId = "#disadvantaged-pupils-table";
+    public static readonly string ScaledScoresByPupilCharacteristicAccordionId = "#scaled-scores-by-pupil-characteristic-accordion";
 }

@@ -56,7 +56,7 @@ public class ScaledScoresAcademicPerformacePageTests : PageTestsBase
         var title = doc.QuerySelector("title");
         Assert.NotNull(title);
 
-        var expectedTitle = $"School149976 - Primary Subject scaled scores - School Profiles - GOV.UK";
+        var expectedTitle = $"School149976 - Primary Subject scaled scores - Find and compare school and college profiles - GOV.UK";
         Assert.Contains(expectedTitle, title.TextContent.Trim());
     }
 
@@ -263,6 +263,29 @@ public class ScaledScoresAcademicPerformacePageTests : PageTestsBase
         Assert.Contains("/primary-performance/additional-measures", nextLink.GetAttribute("href"));
     }
 
+    [Theory]
+    [InlineData("read")]
+    [InlineData("maths")]
+    public async Task ScaledScorePage_Displays_ThreeYearAverageData(string idPrefix)
+    {
+        // Arrange
+        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, _pageRoute); ;
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var chartDataThreeYearAverage = doc.QuerySelector($"#{idPrefix}-three-year-average-chart-container");
+        var tableDataThreeYearAverage = doc.QuerySelector($"#{idPrefix}-three-year-average-table-container");
+        Assert.NotNull(chartDataThreeYearAverage);
+        Assert.NotNull(tableDataThreeYearAverage);
+
+        Assert.Contains("Three year average", chartDataThreeYearAverage.ParentElement!.TextContent);
+        Assert.Contains(
+            "The three-year average helps show a school's performance over time. It reduces the impact of variations in individual years, such as a small class size, by being weighted by the number of pupils in each year.",
+            chartDataThreeYearAverage.ParentElement!.TextContent);
+    }
+
     private KS2ScaledScoreModel GetScaledScoreModel()
     {
         return new KS2ScaledScoreModel
@@ -326,6 +349,12 @@ public class ScaledScoresAcademicPerformacePageTests : PageTestsBase
             NonDisadvantagedAverageReadingLA = new CodedDouble(38, string.Empty, "38"),
             NonMobileAverageMaths = new CodedDouble(39, string.Empty, "39"),
             NonMobileAverageReading = new CodedDouble(40, string.Empty, "40"),
+            EstablishmentReadThreeYearAverage = new CodedDouble(41, string.Empty, "41"),
+            EstablishmentMathsThreeYearAverage = new CodedDouble(42, string.Empty, "42"),
+            LocalAuthorityMathsThreeYearAverage = new CodedDouble(43, string.Empty, "43"),
+            LocalAuthorityReadThreeYearAverage = new CodedDouble(44, string.Empty, "44"),
+            EnglandMathsThreeYearAverage = new CodedDouble(45, string.Empty, "45"),
+            EnglandReadThreeYearAverage = new CodedDouble(46, string.Empty, "46"),
         };
     }
 }

@@ -686,6 +686,74 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
                     @"/school/143034/st-pauls-church-of-england-academy/overview/?$"));
     }
 
+    [Fact]
+    public async Task SearchPage_MainContent_HasSingleMeaningfulH1AndNoEmptyHeadings()
+    {
+        // Act
+        var response = await Page.GotoAsync(_pageUrl);
+
+        // Assert
+        Assert.NotNull(response);
+        Assert.Equal(200, response.Status);
+
+        var main = Page.Locator("main");
+
+        // The page must contain exactly one H1 in its main content.
+        var h1Headings = main.Locator("h1");
+
+        await Expect(h1Headings).ToHaveCountAsync(1);
+
+        // The H1 must meaningfully identify the page.
+        await Expect(h1Headings)
+            .ToHaveTextAsync("Find schools and colleges in England");
+
+        // No headings in the page's main content should be empty.
+        var headings = main.Locator("h1, h2, h3, h4, h5, h6");
+        var headingCount = await headings.CountAsync();
+
+        for (var i = 0; i < headingCount; i++)
+        {
+            var headingText = await headings.Nth(i).TextContentAsync();
+
+            Assert.False(
+                string.IsNullOrWhiteSpace(headingText),
+                $"Heading {i + 1} in the main page content is empty.");
+        }
+    }
+
+    [Fact]
+    public async Task SearchPage_HasLogicalHeadingHierarchy()
+    {
+        // Arrange & Act
+        var response = await Page.GotoAsync(_pageUrl);
+
+        // Assert
+        Assert.NotNull(response);
+        Assert.Equal(200, response.Status);
+
+        var headings = Page.Locator("h1, h2, h3, h4, h5, h6");
+
+        var previousLevel = 0;
+
+        for (var i = 0; i < await headings.CountAsync(); i++)
+        {
+            var heading = headings.Nth(i);
+            var tagName = await heading.EvaluateAsync<string>(
+                "element => element.tagName");
+
+            var level = int.Parse(tagName[1..]);
+
+            if (previousLevel > 0)
+            {
+                Assert.True(
+                    level <= previousLevel + 1,
+                    $"Heading hierarchy skips from H{previousLevel} to H{level}.");
+            }
+
+            previousLevel = level;
+        }
+    }
+
     private static string GenerateCookieValue(int cookiesCount = 100)
     {
         return string.Join(",", Enumerable.Range(1, cookiesCount).Select(a => a.ToString()).ToList());

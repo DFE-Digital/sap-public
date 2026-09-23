@@ -83,7 +83,8 @@
                     OverTimeData = Model.AllMeetingExceedingStandardsOverTimeData,
                     HasEstablishmentData = true,
                     IsScaled = false,
-                    IsPercentageData = true
+                    IsPercentageData = true,
+                    ThreeYearAverageData = Model.AllMeetingExceedingStandardsThreeYearAverageData
                 })
         </div>
 
@@ -112,11 +113,12 @@
                     OverTimeData = Model.AllExceedingStandardsOverTimeData,
                     HasEstablishmentData = true,
                     IsScaled = false,
-                    IsPercentageData = true
+                    IsPercentageData = true,
+                    ThreeYearAverageData = Model.AllExceedingStandardsThreeYearAverageData
                 })
         </div>
 
-        <govuk-accordion id="meeting-or-exceeing-standards-by-pupil-characteristic-accordion" heading-level="3">
+        <govuk-accordion id="meeting-or-exceeding-standards-by-pupil-characteristic-accordion" heading-level="3">
             <govuk-accordion-item expanded="false">
                 <govuk-accordion-item-heading>Meeting and exceeding expected standards by pupil characteristics</govuk-accordion-item-heading>
                 <govuk-accordion-item-content>

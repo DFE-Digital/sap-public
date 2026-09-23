@@ -3,6 +3,7 @@ using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.ServiceModels;
 using SAPPub.Core.Tests.TestBuilders;
+using SAPPub.Core.ValueObjects;
 
 namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers;
 
@@ -63,4 +64,7 @@ public class BaseProfilesTests
             .ReturnsAsync(fakeMinimumEstablishment);
     }
 
+    public static CodedDouble GetCodedDouble(double val) => new(val, string.Empty, val.ToString());
+
+    public static CodedString GetCodedString(string val) => new(val, string.Empty, val.ToString());
 }

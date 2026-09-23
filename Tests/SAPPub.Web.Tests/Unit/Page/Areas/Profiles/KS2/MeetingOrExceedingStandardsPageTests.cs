@@ -179,6 +179,29 @@ public class MeetingOrExceedingStandardsPageTests : PageTestsBase
         Assert.NotNull(tableDataOverTime);
     }
 
+    [Theory]
+    [InlineData("mes")]
+    [InlineData("exs")]
+    public async Task MeetingOrExceedingStandardsPage_Displays_ThreeYearAverageData(string idPrefix)
+    {
+        // Arrange
+        var url = BuildUrl(_urn, _schoolName, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var chartDataThreeYearAverage = doc.QuerySelector($"#{idPrefix}-three-year-average-chart-container");
+        var tableDataThreeYearAverage = doc.QuerySelector($"#{idPrefix}-three-year-average-table-container");
+        Assert.NotNull(chartDataThreeYearAverage);
+        Assert.NotNull(tableDataThreeYearAverage);
+
+        Assert.Contains("Three year average", chartDataThreeYearAverage.ParentElement!.TextContent);
+        Assert.Contains(
+            "The three-year average helps show a school's performance over time. It reduces the impact of variations in individual years, such as a small class size, by being weighted by the number of pupils in each year.",
+            chartDataThreeYearAverage.ParentElement!.TextContent);
+    }
+
     [Fact]
     public async Task MeetingOrExceedingStandardsPage_ByPupilCharacteristic_DisplaysCorrectInformation()
     {
@@ -187,7 +210,7 @@ public class MeetingOrExceedingStandardsPageTests : PageTestsBase
         // Act
         var doc = await Fixture.BrowseToPage(url);
 
-        var accordion = doc.GetElementById("meeting-or-exceeing-standards-by-pupil-characteristic-accordion");
+        var accordion = doc.GetElementById("meeting-or-exceeding-standards-by-pupil-characteristic-accordion");
 
         Assert.NotNull(accordion);
 
@@ -345,6 +368,12 @@ public class MeetingOrExceedingStandardsPageTests : PageTestsBase
         LocalAuthorityNonDisadvantagedExceedingExpectedStandard = GetCodedDouble(24),
         EnglandNonDisadvantagedMeetingExpectedStandard = GetCodedDouble(25),
         EnglandNonDisadvantagedExceedingExpectedStandard = GetCodedDouble(26),
+        EstablishmentPercentageMeetingOrExceedingThreeYearAverage = GetCodedDouble(27),
+        LocalAuthorityPercentageMeetingOrExceedingThreeYearAverage = GetCodedDouble(28),
+        EnglandPercentageMeetingOrExceedingThreeYearAverage = GetCodedDouble(29),
+        EstablishmentPercentageExceedingThreeYearAverage = GetCodedDouble(30),
+        LocalAuthorityPercentageExceedingThreeYearAverage = GetCodedDouble(31),
+        EnglandPercentageExceedingThreeYearAverage = GetCodedDouble(32),
     };
 
     private static CodedDouble GetCodedDouble(double val)

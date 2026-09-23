@@ -89,6 +89,8 @@ public class EnglishAndMathsResultsModelBuilder
     private RelativeYearValues<CodedDouble> _EnglandDisadvantaged { get; set; } = CodedYearNoValue("z");
     private RelativeYearValues<CodedDouble> _LocalAuthorityNonDisadvantaged { get; set; } = CodedYearNoValue("z");
     private RelativeYearValues<CodedDouble> _EnglandNonDisadvantaged { get; set; } = CodedYearNoValue("z");
+    private RelativeYearValues<CodedDouble> _EstablishmentEAL { get; set; } = CodedYearNoValue("z");
+    private RelativeYearValues<CodedDouble> _EstablishmentNonMobile { get; set; } = CodedYearNoValue("z");
 
     public EnglishAndMathsResultsModelBuilder WithCurrentYearData()
     {
@@ -136,6 +138,14 @@ public class EnglishAndMathsResultsModelBuilder
         _EnglandDisadvantaged = RandomCodedYearValue();
         _LocalAuthorityNonDisadvantaged = RandomCodedYearValue();
         _EnglandNonDisadvantaged = RandomCodedYearValue();
+        _EstablishmentEAL = new RelativeYearValues<CodedDouble>
+        {
+            CurrentYear = new CodedDouble(Math.Round(_faker.Random.Double(0, 80), 1), string.Empty, string.Empty)
+        };
+        _EstablishmentNonMobile = new RelativeYearValues<CodedDouble>
+        {
+            CurrentYear = new CodedDouble(Math.Round(_faker.Random.Double(0, 80), 1), string.Empty, string.Empty)
+        };
         return this;
     }
 
@@ -188,6 +198,8 @@ public class EnglishAndMathsResultsModelBuilder
         _EnglandDisadvantaged = RandomCodedYearValue();
         _LocalAuthorityNonDisadvantaged = RandomCodedYearValue();
         _EnglandNonDisadvantaged = RandomCodedYearValue();
+        _EstablishmentEAL = RandomCodedYearValue();
+        _EstablishmentNonMobile = RandomCodedYearValue();
         return this;
     }
 
@@ -212,6 +224,8 @@ public class EnglishAndMathsResultsModelBuilder
             EnglandDisadvantaged = _EnglandDisadvantaged,
             LocalAuthorityNonDisadvantaged = _LocalAuthorityNonDisadvantaged,
             EnglandNonDisadvantaged = _EnglandNonDisadvantaged,
+            EstablishmentEAL = _EstablishmentEAL,
+            EstablishmentNonMobile = _EstablishmentNonMobile,
 
             IsKS2 = _isKS2,
             IsKS4 = _isKS4,

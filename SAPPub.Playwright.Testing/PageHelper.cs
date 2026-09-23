@@ -23,6 +23,28 @@ public static class PageHelper
             .CountAsync() > 0;
     }
 
+    public static async Task<List<IReadOnlyList<string>>> GetTableRowsValuesByTableCaptionAsync(
+    this IPage page,
+    string captionText)
+    {
+        var table = page.Locator("table")
+            .Filter(new()
+            {
+                Has = page.Locator($"caption:text-is('{captionText}')")
+            });
+
+        var rows = table.Locator("tbody tr");
+        var rowCount = await rows.CountAsync();
+        var result = new List<IReadOnlyList<string>>();
+        for (var i = 0; i < rowCount; i++)
+        {
+            var row = rows.Nth(i);
+            result.Add(await rows.Nth(i).Locator("td").AllInnerTextsAsync());
+        }
+
+        return result;
+    }
+
     public static Task<IReadOnlyList<string>> GetTableRowValuesAsync(
         this IPage page,
         string tableId,
@@ -50,12 +72,16 @@ public static class PageHelper
         return row.Locator("td").AllInnerTextsAsync();
     }
 
-    public static Task ExpandAccordionAsync(this IPage page, string label)
+    public static async Task ExpandAccordionByIdAsync(this IPage page, string id)
     {
-        return page.GetByRole(AriaRole.Button, new()
+        id = id.StartsWith("#") ? id : $"#{id}";
+        var sectionLocator = page.Locator($"{id}");
+        var button = sectionLocator.Locator(".govuk-accordion__show-all");
+        var isExpanded = await button.GetAttributeAsync("aria-expanded");
+        if (isExpanded != "true")
         {
-            Name = label
-        }).ClickAsync();
+            await button.ClickAsync();
+        }
     }
 
     public static Task ExpandDetailsAsync(this IPage page, string summaryText)
@@ -67,4 +93,14 @@ public static class PageHelper
         return summary.ClickAsync();
     }
 
+    public static async Task ExpandDetailsByIdAsync(this IPage page, string id)
+    {
+        id = id.StartsWith("#") ? id : $"#{id}";
+        var sectionLocator = page.Locator($"details{id}");
+
+        if (!await sectionLocator.GetAttributeAsync("open").ContinueWith(t => t.Result != null))
+        {
+            await sectionLocator.Locator("summary").ClickAsync();
+        }
+    }
 }

@@ -77,4 +77,12 @@ public static class DisplayFieldExtensions
 
         return prop;
     }
+
+    public static string DisplayPoints(
+        this DisplayField<CodedDouble> prop,
+        string notAvailableText = "Not available",
+        bool displayReason = false)
+    {
+        return prop.DisplayText(d => $"{d.Value!.Value} points", notAvailableText, displayReason);
+    }
 }

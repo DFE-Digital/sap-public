@@ -1,5 +1,4 @@
 ﻿using SAPPub.Core.Entities;
-using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.ServiceModels.KS4.Performance;
@@ -38,7 +37,11 @@ public class AttainmentAndProgressService(
                 EstablishmentTotalPupils = EmptyRelativeYearValues,
                 LocalAuthorityAttainment8DisadvantagedScore = EmptyRelativeYearValues,
                 LocalAuthorityAttainment8Score = EmptyRelativeYearValues,
-                LocalAuthorityProgress8Score = EmptyRelativeYearValues
+                LocalAuthorityProgress8Score = EmptyRelativeYearValues,
+                EstablishmentAttainment8BoysScore =  CodedDouble.Empty,
+                EstablishmentAttainment8EALScore = CodedDouble.Empty,
+                EstablishmentAttainment8GirlsScore = CodedDouble.Empty,
+                EstablishmentAttainment8NonMobileScore = CodedDouble.Empty
             };
 
         // Now we can run the remaining calls concurrently
@@ -136,6 +139,10 @@ public class AttainmentAndProgressService(
             },
             LocalAuthorityAttainment8NonDisadvantagedScore = laPerformance.Attainment8_NDi_LA_Current_Num_Coded,
             EnglandAttainment8NonDisadvantagedScore = englandPerformance.Attainment8_NDi_Eng_Current_Num_Coded,
+            EstablishmentAttainment8GirlsScore = establishmentPerformance.Attainment8_Grl_Est_Current_Num_Coded,
+            EstablishmentAttainment8BoysScore = establishmentPerformance.Attainment8_Boy_Est_Current_Num_Coded,
+            EstablishmentAttainment8EALScore = establishmentPerformance.Attainment8_EAL_Est_Current_Num_Coded,
+            EstablishmentAttainment8NonMobileScore = establishmentPerformance.Attainment8_NMo_Est_Current_Num_Coded
         };
     }
     private readonly RelativeYearValues<CodedDouble> EmptyRelativeYearValues = new RelativeYearValues<CodedDouble>
