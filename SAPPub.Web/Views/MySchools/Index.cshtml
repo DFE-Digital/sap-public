@@ -52,13 +52,14 @@
                     @foreach (var item in Model.MySchools.Select((modelItem, i) => new { modelItem, i }))
                     {
                         <div class="govuk-checkboxes__item">
+                            <label class="govuk-label govuk-checkboxes__label" for="@($"establishment-{item.i}")">
                             <input class="govuk-checkboxes__input"
                                    type="checkbox"
                                    id="@($"establishment-{item.i}")"
                                    name="@nameof(Model.SelectedEstablishmentUrns)"
                                    value="@item.modelItem.Urn"
                             @(Model.SelectedEstablishmentUrns.Contains(item.modelItem.Urn) ? "checked" : "")>
-                            <label class="govuk-label govuk-checkboxes__label" for="@($"establishment-{item.i}")">
+                            
                                 <strong>@item.modelItem.Name</strong>
                                 <div class="govuk-checkboxes__hint">
                                     <div>@item.modelItem.Address</div>
