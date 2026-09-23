@@ -44,6 +44,13 @@ public class KS2ScaledScoresService(
             AllPupilsAverageReading = establishmentPerformance.READ_AVERAGE_Est_Current_Num_Coded,
             AllPupilsAverageMaths = establishmentPerformance.MAT_AVERAGE_Est_Current_Num_Coded,
 
+            EnglandMathsThreeYearAverage = englandPerformance.MAT_AVERAGE_3YR_Eng_Current_Num_Coded,
+            EnglandReadThreeYearAverage = englandPerformance.READ_AVERAGE_3YR_Eng_Current_Num_Coded,
+            EstablishmentMathsThreeYearAverage = establishmentPerformance.MAT_AVERAGE_3YR_Est_Current_Num_Coded,
+            EstablishmentReadThreeYearAverage = establishmentPerformance.READ_AVERAGE_3YR_Est_Current_Num_Coded,
+            LocalAuthorityMathsThreeYearAverage = laPerformance.MAT_AVERAGE_3YR_LA_Current_Num_Coded,
+            LocalAuthorityReadThreeYearAverage= laPerformance.READ_AVERAGE_3YR_LA_Current_Num_Coded,
+
             EALAverageReading = establishmentPerformance.READ_AVERAGE_EAL_Est_Current_Num_Coded,
             EALAverageMaths = establishmentPerformance.MAT_AVERAGE_EAL_Est_Current_Num_Coded,
             EALTotalAverageReading = establishmentPerformance.READ_AVERAGE_Est_Current_Num_Coded,

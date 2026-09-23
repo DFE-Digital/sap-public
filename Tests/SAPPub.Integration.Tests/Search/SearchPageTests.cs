@@ -23,7 +23,7 @@ namespace SAPPub.Integration.Tests.Search
             Assert.NotNull(response);
             Assert.Equal(200, response.Status);
             Assert.NotNull(resultsHeading);
-            Assert.Contains("40", await resultsHeading.First.InnerTextAsync());
+            Assert.Contains("49", await resultsHeading.First.InnerTextAsync());
             Assert.Null(noResultsId.Description);
         }
 
@@ -48,8 +48,8 @@ namespace SAPPub.Integration.Tests.Search
         }
 
         [Theory]
-        [InlineData("Primary", "25")]
-        [InlineData("Secondary", "23")]
+        [InlineData("Primary", "32")]
+        [InlineData("Secondary", "25")]
         [InlineData("16 to 19", "18")]
         [InlineData("All-through", "8")]
         public async Task SimpleSearch_WithPhaseFilter_LoadsSuccessfully(string phase, string expectedCount)

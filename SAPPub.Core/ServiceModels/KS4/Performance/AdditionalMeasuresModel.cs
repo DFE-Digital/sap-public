@@ -49,8 +49,8 @@ public record AdditionalMeasuresModel
             EnglandNonDisadvantagedPupilsEndOfKS4 = englandPerformanceMeasures.Pup_NDi_Eng_Current_Num_Coded,
             EstablishmentTotalPupils = establishmentServiceModel.TotalPupils,
             EnglandTotalPupils = CodedDouble.Empty,              // This is to be fixed as part of ticket 8ci
-            EstablishmentTotalSENPupils = performanceMeasures.PupSEN_Est_Current_Num_Coded,
-            EstablishmentTotalEHCPPupils = performanceMeasures.PupEHCP_Est_Current_Num_Coded,
+            EstablishmentTotalSENPupils = performanceMeasures.PupSEN_Tot_Est_Current_Pct_Coded,
+            EstablishmentTotalEHCPPupils = performanceMeasures.PupEHCP_Tot_Est_Current_Pct_Coded,
             EnglandTotalSENPupils = englandPerformanceMeasures.PupSEN_Tot_Eng_Current_Pct_Coded,
             EnglandTotalEHCPPupils = englandPerformanceMeasures.PupEHCP_Tot_Eng_Current_Pct_Coded,
 
