@@ -15,7 +15,18 @@
     @if (Model.HasEstablishmentData)
     {
         <div id="@(idPrefix)-current-year-data-container" class="chart-table-toggle__current-year-data-container @(idPrefix)-current-year-data-container">
+            <div class="govuk-button-group">
+                <govuk-button id="@(idPrefix)-current-year-show-btn" type="button" class="govuk-button--secondary chart-table-toggle__current-year-show-btn @(idPrefix)-current-year-show-btn">Show as a table</govuk-button>
+            </div>
+
+            <div class="govuk-button-group">
+                <label id="@(idPrefix)-show-data-over-time-btn" for="@(idPrefix)-data-overtime-view" class="govuk-button govuk-button--secondary" tabindex="0">Show data over time</label>
+            </div>
+            
             <div id="@(idPrefix)-current-year-chart-container" class="chart-container chart-table-toggle__current-year-chart-container @(idPrefix)-current-year-chart-container">
+                
+                <p class="govuk-visually-hidden">@Constants.ScreenReaderUseTable</p>
+                
                 <canvas id="@(chartIdPrefix)-chart"
                         class="js-chart"
                         data-type="bar"
@@ -42,13 +53,6 @@
                 </table>
             </div>
 
-            <div class="govuk-button-group">
-                <govuk-button id="@(idPrefix)-current-year-show-btn" type="button" class="govuk-button--secondary chart-table-toggle__current-year-show-btn @(idPrefix)-current-year-show-btn">Show as a table</govuk-button>
-            </div>
-
-            <div class="govuk-button-group">
-                <label id="@(idPrefix)-show-data-over-time-btn" for="@(idPrefix)-data-overtime-view" class="govuk-button govuk-button--secondary" tabindex="0">Show data over time</label>
-            </div>
         </div>
     }
 
@@ -56,9 +60,23 @@
     <div id="@(idPrefix)-data-over-time-data-container" class="chart-table-toggle__data-over-time-data-container @(idPrefix)-data-over-time-data-container  @(Model.HasEstablishmentData ? "" : "govuk-!-display-block")">
         @if (Model.HasEstablishmentData)
         {
+            <div class="govuk-button-group">
+                <govuk-button id="@(idPrefix)-data-over-time-show-btn" type="button" class="govuk-button--secondary chart-table-toggle__data-over-time-show-btn @(idPrefix)-data-over-time-show-btn">Show as a table</govuk-button>
+            </div>
+
+            <div class="govuk-button-group">
+                <label id="@(idPrefix)-show-current-data-btn" for="@(idPrefix)-current-view" class="govuk-button govuk-button--secondary" tabindex="0">Show current data</label>
+            </div>
+
             <div id="@(idPrefix)-data-over-time-chart-container" class="chart-container chart-table-toggle__data-over-time-chart-container @(idPrefix)-data-over-time-chart-container">
+            
+                <p class="govuk-body" id="@(idPrefix)-data-over-time-legend-explainer">@Constants.LegendExplainer</p>
+                
                 <div id="@(idPrefix)-data-overtime-chart-legend" class="chart-legend" data-chart-id="@(chartIdPrefix)-data-overtime-chart"></div>
                 <div class="chart-container stacked">
+
+                    <p class="govuk-visually-hidden">@Constants.ScreenReaderUseTable</p>
+
                     <canvas id="@(chartIdPrefix)-data-overtime-chart"
                             class="js-chart"
                             data-type="bar"
@@ -101,7 +119,12 @@
         {
             <h4 class="govuk-heading-s govuk-!-margin-top-6">@Model.ThreeYearAverageHeading</h4>
             <div class="govuk-body">@Model.ThreeYearAverageDescription</div>
-            <div id="@(idPrefix)-three-year-average-chart-container" class="chart-container chart-table-toggle__three-year-average-chart-container @(idPrefix)-three-year-average-chart-container">
+            <div id="@(idPrefix)-three-year-average-chart-container" class="govuk-!-padding-bottom-9 chart-container chart-table-toggle__three-year-average-chart-container @(idPrefix)-three-year-average-chart-container">
+                
+                <p class="govuk-visually-hidden">@Constants.ScreenReaderUseTable</p>
+
+                <p class="govuk-body">@Constants.LegendExplainer</p>
+
                 <canvas id="@(chartIdPrefix)-three-year-average-chart"
                         class="js-chart"
                         data-type="bar"
@@ -129,16 +152,5 @@
                 </table>
             </div>
         }
-         @if (Model.HasEstablishmentData)
-        {
-            <div class="govuk-button-group">
-                <govuk-button id="@(idPrefix)-data-over-time-show-btn" type="button" class="govuk-button--secondary chart-table-toggle__data-over-time-show-btn @(idPrefix)-data-over-time-show-btn">Show as a table</govuk-button>
-            </div>
-
-            <div class="govuk-button-group">
-                <label id="@(idPrefix)-show-current-data-btn" for="@(idPrefix)-current-view" class="govuk-button govuk-button--secondary" tabindex="0">Show current data</label>
-            </div>
-        }
-
     </div>
 </div>

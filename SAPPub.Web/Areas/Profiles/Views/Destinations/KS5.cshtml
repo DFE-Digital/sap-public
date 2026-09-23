@@ -78,35 +78,41 @@
                 Students progressing to either education, apprenticeships or employment
             </h3>
 
-                <div id="all-ks5-dest-data-container">
-                    <div id="all-ks5-dest-data-chart-container" class="chart-container">
-                        <canvas id="all-destinations-chart"
-                                class="js-chart"
-                                data-type="bar"
-                                data-not-available-text="@(NotAvailable)"
-                                data-chart='@Html.Raw(Json.Serialize(Model.AllDestinationsData))'
-                                data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
-                        </canvas>
-                    </div>
+            <div id="all-ks5-dest-data-container">
 
-                    <div id="all-ks5-dest-data-table-container" class="all-ks5-dest-data-table-container">
-                        <table id="all-destinations-current-year-table" class="govuk-table">
-                            <tbody class="govuk-table__body">
-                                @foreach (var label in Model.AllDestinationsData.Labels.Select((value, i) => (value, i)))
-                                {
-                                    <tr class="govuk-table__row">
-                                        <th scope="row" class="govuk-table__header">@label.value</th>
+                <div class="govuk-button-group">
+                    <button id="all-ks5-dest-data-show-btn" class="govuk-button govuk-button--secondary">Show as a table</button>
+                </div>
+
+                <div id="all-ks5-dest-data-chart-container" class="chart-container">
+
+                    <p class="govuk-visually-hidden">@Constants.ScreenReaderUseTable</p>
+
+                    <canvas id="all-destinations-chart"
+                            class="js-chart"
+                            data-type="bar"
+                            data-not-available-text="@(NotAvailable)"
+                            data-chart='@Html.Raw(Json.Serialize(Model.AllDestinationsData))'
+                            data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
+                    </canvas>
+                </div>
+
+                <div id="all-ks5-dest-data-table-container" class="all-ks5-dest-data-table-container">
+                    <table id="all-destinations-current-year-table" class="govuk-table">
+                        <tbody class="govuk-table__body">
+                            @foreach (var label in Model.AllDestinationsData.Labels.Select((value, i) => (value, i)))
+                            {
+                                <tr class="govuk-table__row">
+                                    <th scope="row" class="govuk-table__header">@label.value</th>
                                     <td class="govuk-table__cell">@(Model.AllDestinationsData.Data[label.i] is { } value ? value.AsPercentage() : NotAvailable)</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
 
-                    <div class="govuk-button-group">
-                        <button id="all-ks5-dest-data-show-btn" class="govuk-button govuk-button--secondary">Show as a table</button>
-                    </div>
-                </div>            
+
+            </div>
         </div>
 
         <h2 class="govuk-heading-l">

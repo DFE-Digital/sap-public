@@ -154,6 +154,7 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
         var chart = Page.Locator("#all-destinations-data-overtime-chart");
         var table = Page.Locator("#all-destinations-data-overtime-table");
         var chartLegend = Page.Locator("#all-destinations-data-overtime-chart-legend");
+        var chartLegendExplainer = Page.Locator("#all-destinations-data-overtime-chart-legend-explainer");
         var showAsTableBtn = Page.Locator("#all-dest-data-over-time-show-btn");
         var showCurrentDataBtn = Page.Locator("#all-dest-show-current-data-btn");
 
@@ -171,6 +172,7 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
         Assert.True(isChartLegendVisible);
         Assert.True(isShowAsTableBtnVisible);
         Assert.True(isShowCurrentDataBtnVisible);
+        Assert.True(await chartLegendExplainer.IsVisibleAsync());
 
         Assert.Equal("Show as a table", showAsTableBtnText);
         Assert.Equal("Show current data", showCurrentDataBtnText);

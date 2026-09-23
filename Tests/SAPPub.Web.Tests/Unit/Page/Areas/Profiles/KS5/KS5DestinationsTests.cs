@@ -1,5 +1,4 @@
 ﻿using Moq;
-using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Web.Models.Charts;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
@@ -92,7 +91,7 @@ public class KS5DestinationsTests : PageTestsBase
         // Assert - chart data
         var allDestData =
             JsonSerializer.Deserialize<DataViewModel>(
-                chartContainer!.Children[0].GetAttribute("data-chart")!,
+                chartContainer!.Children[1].GetAttribute("data-chart")!,
                 new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true

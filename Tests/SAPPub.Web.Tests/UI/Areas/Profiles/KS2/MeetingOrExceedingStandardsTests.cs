@@ -1,6 +1,6 @@
 ﻿using Microsoft.Playwright;
 using SAPPub.Playwright.Testing;
-using SAPPub.Playwright.Testing.KS2.Performance.MeetingOrExceedingStandards;
+using SAPPub.Playwright.Testing.KS2;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
@@ -153,6 +153,7 @@ public class MeetingOrExceedingStandardsTests(WebApplicationSetupFixture fixture
         var chart = Page.Locator(PageConstants.DataOverTimeChartContainerId);
         var table = Page.Locator(PageConstants.DataOverTimeTableContainerId);
         var chartLegend = Page.Locator(PageConstants.DataOverTimeChartLegendId);
+        var chartLegendExplainer = Page.Locator(PageConstants.DataOverTimeLegendExplainer);
         var showAsTableBtn = Page.Locator(PageConstants.DataOverTimeShowAsTableBtnId);
         var showCurrentDataBtn = Page.Locator(PageConstants.ShowCurrentDataBtnId);
 
@@ -170,6 +171,7 @@ public class MeetingOrExceedingStandardsTests(WebApplicationSetupFixture fixture
         Assert.True(isChartLegendVisible);
         Assert.True(isShowAsTableBtnVisible);
         Assert.True(isShowCurrentDataBtnVisible);
+        Assert.True(await chartLegendExplainer.IsVisibleAsync());
 
         Assert.Equal("Show as a table", showAsTableBtnText);
         Assert.Equal("Show current data", showCurrentDataBtnText);

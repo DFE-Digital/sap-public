@@ -1,4 +1,4 @@
-﻿namespace SAPPub.Playwright.Testing.KS2.Performance.MeetingOrExceedingStandards;
+﻿namespace SAPPub.Playwright.Testing.KS2;
 
 public class PageConstants
 {
@@ -12,6 +12,7 @@ public class PageConstants
     public static readonly string DataOverTimeShowAsTableBtnId = "#mes-data-over-time-show-btn";
     public static readonly string ShowCurrentDataBtnId = "#mes-show-current-data-btn";
     public static readonly string DataOverTimeTableId = "#mes-data-overtime-table";
+    public static readonly string DataOverTimeLegendExplainer = "#mes-data-over-time-legend-explainer";
     public static readonly string ExsDataOverTimeTableId = "#exs-data-overtime-table";
     public static readonly string GirlsBoysTableId = "#girls-boys-table";
     public static readonly string EalTableId = "#eal-table";

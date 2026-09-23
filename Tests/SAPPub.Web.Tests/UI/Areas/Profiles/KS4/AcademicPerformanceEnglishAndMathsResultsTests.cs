@@ -304,6 +304,7 @@ public class AcademicPerformanceEnglishAndMathsResults : BasePageTest
         var chart = Page.Locator("#all-gcse-data-overtime-chart");
         var table = Page.Locator("#all-gcse-data-overtime-table");
         var chartLegend = Page.Locator("#all-gcse-data-overtime-chart-legend");
+        var chartLegendExplainer = Page.Locator("#all-gcse-data-over-time-legend-explainer");
         var showAsTableBtn = Page.Locator("#all-gcse-data-over-time-show-btn");
         var showCurrentDataBtn = Page.Locator("#all-gcse-show-current-data-btn");
 
@@ -321,6 +322,7 @@ public class AcademicPerformanceEnglishAndMathsResults : BasePageTest
         Assert.True(isChartLegendVisible);
         Assert.True(isShowAsTableBtnVisible);
         Assert.True(isShowCurrentDataBtnVisible);
+        Assert.True(await chartLegendExplainer.IsVisibleAsync());
 
         Assert.Equal("Show as a table", showAsTableBtnText);
         Assert.Equal("Show current data", showCurrentDataBtnText);
