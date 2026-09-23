@@ -57,11 +57,17 @@
                                    id="@($"establishment-{item.i}")"
                                    name="@nameof(Model.SelectedEstablishmentUrns)"
                                    value="@item.modelItem.Urn"
-                                    @(Model.SelectedEstablishmentUrns.Contains(item.modelItem.Urn) ? "checked" : "")
-                                   aria-labelledby="@($"establishment-{item.i}")">
-                            <label class="govuk-label govuk-checkboxes__label" for="@($"establishment-{item.i}")">
+                            @(Model.SelectedEstablishmentUrns.Contains(item.modelItem.Urn) ? "checked" : "")
+                                   aria-label="@item.modelItem.Name, @item.modelItem.Address
+                            @if (item.modelItem.Status == EstablishmentStatus.Closed)
+                            {
+                                @(item.modelItem.ClosedDate.IsAvailable ? $"Closed in {item.modelItem.ClosedDate.DisplayText(d => d.ToString("MMMM yyyy"))}" : "Closed")
+                            }">
+
+
+                            <label class="govuk-label govuk-checkboxes__label govuk-!-padding-top-0" for="@($"establishment-{item.i}")">
                                 <strong>@item.modelItem.Name</strong>
-                                <div class="govuk-checkboxes__hint">
+                                <div class="govuk-checkboxes__hint govuk-!-padding-left-0">
                                     <div>@item.modelItem.Address</div>
                                     @if (item.modelItem.Status == EstablishmentStatus.Closed)
                                     {
