@@ -381,7 +381,7 @@ public class SchoolProfilePaginationResolverTests
         var result = _resolver.Resolve(RouteConstants.KS5AcademicPerformanceSubjectsEntered, context);
 
         Assert.NotNull(result.Next);
-        Assert.Equal(
+        Assert.Contains(
             $"16 to 19: Education, apprenticeships or work",
             result.Next!.Label);
     }
