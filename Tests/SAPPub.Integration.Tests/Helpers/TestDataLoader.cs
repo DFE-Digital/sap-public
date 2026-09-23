@@ -30,7 +30,7 @@ public static class TestDataLoader
         return testCases;
     }
 
-    public static List<T> Load<T>(string folder, string fileName)
+    public static List<T> Load<T>(string folder, string fileName, JsonNamingPolicy? namingPolicy = null/* defaults to SnakeCaseLower */)
     {
         var testDataVersion =
             Environment.GetEnvironmentVariable("TEST_DATA_VERSION") ?? "2425";
@@ -55,7 +55,7 @@ public static class TestDataLoader
                    new JsonSerializerOptions
                    {
                        PropertyNameCaseInsensitive = true,
-                       PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
+                       PropertyNamingPolicy = namingPolicy ?? JsonNamingPolicy.SnakeCaseLower
                    })
                ?? [];
     }

@@ -2,6 +2,7 @@
 using SAPPub.Integration.Tests.Helpers;
 using SAPPub.Integration.Tests.TestData.Models.KS4;
 using SAPPub.Playwright.Testing;
+using System.Text.Json;
 
 namespace SAPPub.Integration.Tests.SecondarySchoolTests;
 
@@ -23,7 +24,8 @@ public class ProgressAndAttainmentPageTests : BasePageTest
 
     private static readonly IDictionary<string, AttainmentTestCase> _performanceLaAndEnglandAttainmentTestData = TestDataLoader.Load<AttainmentTestCase>(
         "KS4",
-        "LaAndEnglandAttainment").ToDictionary(x => x.Urn);
+        "LaAndEnglandAttainment",
+        JsonNamingPolicy.CamelCase).ToDictionary(x => x.Urn);
 
     public record AttainmentTestCase(
         string Urn,
