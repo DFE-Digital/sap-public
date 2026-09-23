@@ -42,11 +42,23 @@ public class KS5LAPerformance
     // Academic qualification Average result (grade) for the LA state-funded schools / college - Previous2
     public CodedString TALLPPEGRD_ACAD_1618_23_LA_Previous2 { get; set; }
 
-    // Applied general qualifications Average result (points) for the LA state-funded schools / colleges
+    // Applied general qualifications Average result (points) for the LA state-funded schools / colleges - Current
     public CodedDouble TALLPPE_AGEN_LA_Current_Num_Coded { get; set; }
 
-    // Applied general qualifications Average result (grade) for the LA state-funded schools / colleges
+    // Applied general qualifications Average result (points) for the LA state-funded schools / colleges - Previous
+    public CodedDouble TALLPPE_AGEN_24_LA_Previous_Num_Coded { get; set; }
+
+    // Applied general qualifications Average result (points) for the LA state-funded schools / colleges - Previous2
+    public CodedDouble TALLPPE_AGEN_23_LA_Previous2_Num_Coded { get; set; }
+
+    // Applied general qualifications Average result (grade) for the LA state-funded schools / colleges - Current
     public CodedString TALLPPEGRD_AGEN_LA_Current { get; set; }
+
+    // Applied general qualifications Average result (grade) for the LA state-funded schools / colleges - Previous
+    public CodedString TALLPPEGRD_AGEN_24_LA_Previous { get; set; }
+
+    // Applied general qualifications Average result (grade) for the LA state-funded schools / colleges - Previous2
+    public CodedString TALLPPEGRD_AGEN_23_LA_Previous2 { get; set; }
 
     // T level Average result (points) for the LA state-funded schools / colleges
     public CodedDouble TALLPPE_TLEV_LA_Current_Num_Coded { get; set; }

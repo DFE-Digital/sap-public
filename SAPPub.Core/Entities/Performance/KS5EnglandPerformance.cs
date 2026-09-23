@@ -53,11 +53,23 @@ public class KS5EnglandPerformance
     // Applied general qualifications Progress score for England average
     public CodedDouble VA_INS_AGEN_Eng_Current_Num_Coded { get; set; }
 
-    // Applied general qualifications Average result points for England
+    // Applied general qualifications Average result points for England - Current
     public CodedDouble TALLPPE_AGEN_Eng_Current_Num_Coded { get; set; }
 
-    // Applied general qualifications Average result grade for England
+    // Applied general qualifications Average result points for England - Previous
+    public CodedDouble TALLPPE_AGEN_24_Eng_Previous_Num_Coded { get; set; }
+
+    // Applied general qualifications Average result points for England - Previous2
+    public CodedDouble TALLPPE_AGEN_23_Eng_Previous2_Num_Coded { get; set; }
+
+    // Applied general qualifications Average result grade for England - Current
     public CodedString TALLPPEGRD_AGEN_Eng_Current { get; set; }
+
+    // Applied general qualifications Average result grade for England - Previous
+    public CodedString TALLPPEGRD_AGEN_24_Eng_Previous { get; set; }
+
+    // Applied general qualifications Average result grade for England - Previous2
+    public CodedString TALLPPEGRD_AGEN_23_Eng_Previous2 { get; set; }
 
     // Tech level Progress score for England average
     public CodedDouble VA_INS_TLEV_Eng_Current_Num_Coded { get; set; }
