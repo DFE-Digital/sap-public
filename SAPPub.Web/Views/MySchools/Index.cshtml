@@ -62,7 +62,8 @@
                             @if (item.modelItem.Status == EstablishmentStatus.Closed)
                             {
                                 @(item.modelItem.ClosedDate.IsAvailable ? $"Closed in {item.modelItem.ClosedDate.DisplayText(d => d.ToString("MMMM yyyy"))}" : "Closed")
-                            }">
+                            }
+                            " @* aria-label explicitly needed for Android Talkback*@>
 
 
                             <label class="govuk-label govuk-checkboxes__label govuk-!-padding-top-0" for="@($"establishment-{item.i}")">
