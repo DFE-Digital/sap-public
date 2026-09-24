@@ -53,4 +53,10 @@ public static class Constants
     public const string EnablePrimary = "EnablePrimary";
     public const string EnableSecondaryGrade7 = "EnableSecondaryGrade7";
     public const string EnableOverview = "EnableOverview";
+
+
+    // Accessibility
+    public const string ScreenReaderUseTable = "Screen reader users, please view this information as a table.";
+
+    public const string LegendExplainer = "The legend is the same order as the bars in each cluster";
 }

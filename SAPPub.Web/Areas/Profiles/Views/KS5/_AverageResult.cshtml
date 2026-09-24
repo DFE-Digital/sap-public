@@ -122,6 +122,11 @@ else if (qualification is Level2 level2Qualification)
         <input type="radio" name="dataView" id="data-overtime-view" class="govuk-visually-hidden dataview-button chart-table-toggle__radio--overtime" aria-labelledby="average-result-show-data-over-time-btn" />
 
         <div id="average-result-current-year-table-container" class="chart-table-toggle__current-year-data-container">
+
+            <div class="govuk-button-group govuk-!-margin-top-3 govuk-!-margin-bottom-0">
+                <label id="average-result-show-data-over-time-btn" for="data-overtime-view" class="govuk-button govuk-button--secondary" tabindex="0">Show data over time</label>
+            </div>
+
             <table id="average-result-current-year-table" class="govuk-table">
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
@@ -148,13 +153,14 @@ else if (qualification is Level2 level2Qualification)
                     </tr>
                 </tbody>
             </table>
-
-            <div class="govuk-button-group">
-                <label id="average-result-show-data-over-time-btn" for="data-overtime-view" class="govuk-button govuk-button--secondary" tabindex="0">Show data over time</label>
-            </div>
         </div>
 
         <div id="average-result-data-over-time-table-container" class="chart-table-toggle__data-over-time-data-container">
+
+            <div class="govuk-button-group govuk-!-margin-top-3 govuk-!-margin-bottom-0">
+                <label id="average-result-show-current-data-btn" for="current-view" class="govuk-button govuk-button--secondary" tabindex="0">Show current data</label>
+            </div>
+
             <table id="average-result-data-overtime-table" class="govuk-table">
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
@@ -237,9 +243,6 @@ else if (qualification is Level2 level2Qualification)
                 </tbody>
             </table>
 
-            <div class="govuk-button-group">
-                <label id="average-result-show-current-data-btn" for="current-view" class="govuk-button govuk-button--secondary" tabindex="0">Show current data</label>
-            </div>
         </div>
     </div>
 }

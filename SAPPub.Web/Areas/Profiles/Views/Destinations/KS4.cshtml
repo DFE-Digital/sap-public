@@ -52,8 +52,6 @@
         </feature>
 
 
-
-
         <h2 class="govuk-heading-l">Destinations of pupils who finished year 11 in the 2022 to 2023 academic year</h2>
 
         @if (Model.NumberOfStudentsIncludedInMeasure.IsAvailable && Model.HasEstablishmentData.IsAvailable)
@@ -79,6 +77,16 @@
             @if (Model.HasEstablishmentData.IsAvailable)
             {
                 <div id="all-dest-current-year-data-container" class="all-dest-current-year-data-container">
+                    <div class="govuk-button-group">
+                        <govuk-button id="all-dest-current-year-show-btn" type="button" class="govuk-button--secondary all-dest-current-year-show-btn">Show as a table</govuk-button>
+                    </div>
+
+                    <div class="govuk-button-group">
+                        <label id="all-dest-show-data-over-time-btn" for="data-overtime-view" class="govuk-button govuk-button--secondary" tabindex="0">Show data over time</label>
+                    </div>
+
+                    <p class="govuk-visually-hidden">@Constants.ScreenReaderUseTable</p>
+
                     <div id="all-dest-current-year-chart-container" class="chart-container all-dest-current-year-chart-container">
                         <canvas id="all-destinations-chart"
                                 class="js-chart"
@@ -104,22 +112,28 @@
                             </tbody>
                         </table>
                     </div>
-
-                    <div class="govuk-button-group">
-                        <govuk-button id="all-dest-current-year-show-btn" type="button" class="govuk-button--secondary all-dest-current-year-show-btn">Show as a table</govuk-button>
-                    </div>
-
-                    <div class="govuk-button-group">
-                        <label id="all-dest-show-data-over-time-btn" for="data-overtime-view" class="govuk-button govuk-button--secondary" tabindex="0">Show data over time</label>
-                    </div>
                 </div>
             }
 
             <div id="all-dest-data-over-time-data-container" class="all-dest-data-over-time-data-container @(Model.HasEstablishmentData.IsAvailable ? "" : "govuk-!-display-block")">
                 @if (Model.HasEstablishmentData.IsAvailable)
                 {
+                    <div class="govuk-button-group">
+                        <govuk-button id="all-dest-data-over-time-show-btn" type="button" class="govuk-button--secondary all-dest-data-over-time-show-btn">Show as a table</govuk-button>
+                    </div>
+
+                    <div class="govuk-button-group">
+                        <label id="all-dest-show-current-data-btn" for="current-view" class="govuk-button govuk-button--secondary" tabindex="0">Show current data</label>
+                    </div>
+
                     <div id="all-dest-data-over-time-chart-container" class="chart-container all-dest-data-over-time-chart-container">
+
+                        <p class="govuk-visually-hidden">@Constants.ScreenReaderUseTable</p>
+
+                        <p class="govuk-body" id="all-destinations-data-overtime-chart-legend-explainer">@Constants.LegendExplainer</p>
+
                         <div id="all-destinations-data-overtime-chart-legend" class="chart-legend" data-chart-id="all-destinations-data-overtime-chart"></div>
+
                         <div class="chart-container stacked">
                             <canvas id="all-destinations-data-overtime-chart"
                                     class="js-chart"
@@ -160,16 +174,6 @@
                     </table>
                 </div>
 
-                @if (Model.HasEstablishmentData.IsAvailable)
-                {
-                    <div class="govuk-button-group">
-                        <govuk-button id="all-dest-data-over-time-show-btn" type="button" class="govuk-button--secondary all-dest-data-over-time-show-btn">Show as a table</govuk-button>
-                    </div>
-
-                    <div class="govuk-button-group">
-                        <label id="all-dest-show-current-data-btn" for="current-view" class="govuk-button govuk-button--secondary" tabindex="0">Show current data</label>
-                    </div>
-                }
             </div>
         </div>
 
