@@ -13,6 +13,7 @@ using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Areas.Profiles.Controllers;
 using SAPPub.Web.Constants;
 using SAPPub.Web.Areas.Profiles.ViewModels.Admissions;
+using SAPPub.Core.Services.KS4.Admissions;
 
 namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers;
 
@@ -22,6 +23,7 @@ public class AdmissionsControllerTests
     private readonly Mock<IAdmissionsService> _mockAdmissionsService = new();
     private readonly Mock<IFeatureManager> _mockFeatureManager = new();
     private readonly Mock<ILogger<AdmissionsController>> _mockLogger = new();
+    private readonly Mock<IAdmissionsContentService> _mockAdmissionsContentService = new();
     private readonly AdmissionsController _controller;
     private EstablishmentServiceModel _fakeEstablishment;
 
@@ -63,6 +65,19 @@ public class AdmissionsControllerTests
             .Setup(es => es.GetEstablishmentAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(_fakeEstablishment);
 
+        _mockAdmissionsContentService
+            .Setup(s => s.GetContent())
+            .Returns(new AdmissionsContent
+            {
+                CurrentAcademicYear = 2025,
+                UpcomingAcademicYear = 2026,
+                YearAfterUpcomingAcademicYear = 2027,
+                TwoYearsAfterUpcomingAcademicYear = 2028,
+                YearChild = 6,
+                AdmissionsSectionType = AdmissionsSectionType.Upcoming
+
+        });
+
         var tempPath = Path.Combine(Path.GetTempPath(), "SAPPubTests", Guid.NewGuid().ToString());
         Directory.CreateDirectory(tempPath);
 
@@ -96,7 +111,7 @@ public class AdmissionsControllerTests
 
             });
 
-        var result = await _controller.KS4(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
+        var result = await _controller.KS4(_mockAdmissionsService.Object, _mockAdmissionsContentService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
@@ -142,7 +157,7 @@ public class AdmissionsControllerTests
                 IsIndependentSchool = false
             });
 
-        var result = await _controller.KS4(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
+        var result = await _controller.KS4(_mockAdmissionsService.Object, _mockAdmissionsContentService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
@@ -194,7 +209,7 @@ public class AdmissionsControllerTests
                 IsIndependentSchool = false
             });
 
-        var result = await _controller.KS4(_mockAdmissionsService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
+        var result = await _controller.KS4(_mockAdmissionsService.Object, _mockAdmissionsContentService.Object, _fakeEstablishment.URN, _fakeEstablishment.EstablishmentName, CancellationToken.None) as ViewResult;
 
         Assert.NotNull(result);
         Assert.NotNull(result.Model);
