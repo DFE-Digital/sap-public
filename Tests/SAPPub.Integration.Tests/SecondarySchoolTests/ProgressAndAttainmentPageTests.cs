@@ -1,6 +1,8 @@
 ﻿using Microsoft.Playwright;
 using SAPPub.Integration.Tests.Helpers;
+using SAPPub.Integration.Tests.TestData.Models.KS4;
 using SAPPub.Playwright.Testing;
+using System.Text.Json;
 
 namespace SAPPub.Integration.Tests.SecondarySchoolTests;
 
@@ -8,36 +10,80 @@ public class ProgressAndAttainmentPageTests : BasePageTest
 {
     private string PageUrl(string urn) => $"/school/{urn}";
 
+    private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceTotalsCurrentYearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
+        "KS4",
+        "202425_performance_tables_schools_final_Total_Current_Year").ToDictionary(x => x.SchoolUrn);
+
+    private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceTotalsPreviousYearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
+        "KS4",
+        "202425_performance_tables_schools_final_Total_Previous_Year").ToDictionary(x => x.SchoolUrn);
+
+    private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceTotalsPrevious2YearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
+        "KS4",
+        "202425_performance_tables_schools_final_Total_Previous2_Year").ToDictionary(x => x.SchoolUrn);
+
+    private static readonly IDictionary<string, AttainmentTestCase> _performanceLaAndEnglandAttainmentTestData = TestDataLoader.Load<AttainmentTestCase>(
+        "KS4",
+        "LaAndEnglandAttainment",
+        JsonNamingPolicy.CamelCase).ToDictionary(x => x.Urn);
+
     public record AttainmentTestCase(
         string Urn,
         double ExpectedAttainmentSchool,
         double ExpectedAttainmentLA,
         double ExpectedAttainmentEngland);
 
+    public record SchoolPerformance3YearData(
+        string urn,
+        PerformanceTablesTestDataModel CurrentYearData,
+        PerformanceTablesTestDataModel PreviousYearData,
+        PerformanceTablesTestDataModel Previous2YearData
+    );
 
-    public static TheoryData<AttainmentTestCase> GetAttainmentTestData()
+    public static TheoryData<SchoolPerformance3YearData> GetSchoolPerformance3YearTestData()
     {
-        var testdata =  TestDataLoader.GetTestData("KS4", "EstablishmentAttainment");
-        var theoryData = new TheoryData<AttainmentTestCase>();
-        if (testdata != null)
+        var urns = _performanceTotalsCurrentYearTestData.Keys
+            .Intersect(_performanceTotalsPreviousYearTestData.Keys)
+            .Intersect(_performanceTotalsPrevious2YearTestData.Keys);
+        if(!urns.Any())
         {
-            foreach (var row in testdata)
-            {
-                theoryData.Add(new AttainmentTestCase(
-                    row[0].GetString() ?? string.Empty,
-                    row[1].GetDouble(),
-                    row[2].GetDouble(),
-                    row[3].GetDouble()
-                ));
-            }
+            throw new InvalidOperationException("No common urns found across the three years of test data.");
         }
-        return theoryData;
+
+        return new TheoryData<SchoolPerformance3YearData>(urns.Select(urn => new SchoolPerformance3YearData(
+            urn,
+            _performanceTotalsCurrentYearTestData[urn],
+            _performanceTotalsPreviousYearTestData[urn],
+            _performanceTotalsPrevious2YearTestData[urn]
+        )).ToArray());
     }
 
     [Theory]
-    [MemberData(nameof(GetAttainmentTestData))]
-    public async Task CurrentYearSelected_ShowsExpectedAttainmentData_Memberdata(
-        AttainmentTestCase testCase)
+    [MemberData(nameof(GetSchoolPerformance3YearTestData))]
+    public async Task ShowsExpectedSchoolAttainmentData(
+        SchoolPerformance3YearData testCase)
+    {
+        // Arrange && Act
+        var _ = await Page.GotoAsync(PageUrl(testCase.urn));
+        var navigationHelper = new VerticalNavigationHelper(Page);
+        _ = await navigationHelper.ClickSecondaryAcademicPerformanceAsync();
+
+        await Page.Locator("#attainment8-previous-years-accordion").ClickAsync();
+
+        // Assert
+        await AssertSchoolAttainmentData(Page, testCase.CurrentYearData.Attainment8Average, "current");
+        await AssertSchoolAttainmentData(Page, testCase.PreviousYearData.Attainment8Average, "prev");
+        await AssertSchoolAttainmentData(Page, testCase.Previous2YearData.Attainment8Average, "prev2");
+    }
+
+    public static TheoryData<AttainmentTestCase> GetLaAndEnglandAttainmentTestData()
+    {
+        return new TheoryData<AttainmentTestCase>(_performanceLaAndEnglandAttainmentTestData.Values.ToArray());
+    }
+
+    [Theory]
+    [MemberData(nameof(GetLaAndEnglandAttainmentTestData))]
+    public async Task CurrentYearSelected_ShowsExpectedLaAndEnglandAttainmentData(AttainmentTestCase testCase)
     {
         // Arrange && Act
         var _ = await Page.GotoAsync(PageUrl(testCase.Urn));
@@ -48,46 +94,13 @@ public class ProgressAndAttainmentPageTests : BasePageTest
         await Page.Locator("#attainment8-previous-years-accordion").ClickAsync();
 
         // Assert
-        await AssertSchoolAttainmentData(Page, testCase.ExpectedAttainmentSchool, "current");
         await AssertLAAndEnglandAttainmentData(Page, testCase.ExpectedAttainmentLA, testCase.ExpectedAttainmentEngland, "current");
-        await AssertSchoolAttainmentData(Page, testCase.ExpectedAttainmentSchool, "current");
         await AssertLAAndEnglandAttainmentData(Page, testCase.ExpectedAttainmentLA, testCase.ExpectedAttainmentEngland, "current");
-    }
-
-    public record ProgressAndAttainmentTestCase(
-        string urn,
-        double totalPupils,
-        double expectedAttainmentSchool,
-        double pupilsInProgressMeasure,
-        string expectedProgressSchool,
-        string expectedBandingLower,
-        string expectedBandingHigher);
-
-    public static TheoryData<ProgressAndAttainmentTestCase> GetProgressAndAttainmentTestData(string filename)
-    {
-        var testdata = TestDataLoader.GetTestData("KS4", filename);
-        var theoryData = new TheoryData<ProgressAndAttainmentTestCase>();
-        if (testdata != null)
-        {
-            foreach (var row in testdata)
-            {
-                theoryData.Add(new ProgressAndAttainmentTestCase(
-                    row[0].GetString() ?? string.Empty,
-                    row[1].GetDouble(),
-                    row[2].GetDouble(),
-                    row[3].GetDouble(),
-                    row[4].GetString() ?? string.Empty,
-                    row[5].GetString() ?? string.Empty,
-                    row[6].GetString() ?? string.Empty
-                ));
-            }
-        }
-        return theoryData;
     }
 
     [Theory]
-    [MemberData(nameof(GetProgressAndAttainmentTestData), "EstablishmentPreviousYearProgressAndAttainment")]
-    public async Task PreviousYearSelected_ShowsExpectedAttainmentAndProgressSchoolData(ProgressAndAttainmentTestCase testData)
+    [MemberData(nameof(GetSchoolPerformance3YearTestData))]
+    public async Task ShowsExpectedProgressSchoolData(SchoolPerformance3YearData testData)
     {
         // Arrange && Act
         var _ = await Page.GotoAsync($"school/{testData.urn}");
@@ -95,37 +108,16 @@ public class ProgressAndAttainmentPageTests : BasePageTest
         _ = await navigationHelper.ClickSecondaryAcademicPerformanceAsync();
 
         await Page.ExpandAccordionByIdAsync("prog8-previous-years-accordion");
-        await Page.ExpandAccordionByIdAsync("attainment8-previous-years-accordion");
 
         // Assert
-        await AssertSchoolProgressData(Page, testData.expectedProgressSchool, testData.expectedBandingLower, testData.expectedBandingHigher, testData.totalPupils, testData.pupilsInProgressMeasure, "prev");
-        await AssertSchoolAttainmentData(Page, testData.expectedAttainmentSchool, "prev");
-    }
-
-    [Theory]
-    [MemberData(nameof(GetProgressAndAttainmentTestData), "EstablishmentPrevious2YearProgressAndAttainment")]
-    public async Task Previous2YearSelected_ShowsExpectedAttainmentAndProgressSchoolData(ProgressAndAttainmentTestCase testData)
-    {
-        // Arrange && Act
-        var _ = await Page.GotoAsync($"school/{testData.urn}");
-        var navItem = new VerticalNavigationHelper(Page);
-        _ = await navItem.ClickSecondaryAcademicPerformanceAsync();
-        
-        await Page.ExpandAccordionByIdAsync("prog8-previous-years-accordion");
-        await Page.ExpandAccordionByIdAsync("attainment8-previous-years-accordion");
-
-        // Assert
-        await AssertSchoolProgressData(Page, testData.expectedProgressSchool, testData.expectedBandingLower, testData.expectedBandingHigher, testData.totalPupils, testData.pupilsInProgressMeasure, "prev2");
-        await AssertSchoolAttainmentData(Page, testData.expectedAttainmentSchool, "prev2");
+        // no current year data ATM
+        await AssertSchoolProgressData(Page, testData.PreviousYearData, "prev");
+        await AssertSchoolProgressData(Page, testData.Previous2YearData, "prev2");
     }
 
     private static async Task AssertSchoolProgressData(
-        IPage Page, 
-        string expectedProgressSchool, 
-        string expectedBandingLower, 
-        string expectedBandingHigher, 
-        double expectedTotalPupils, 
-        double expectedPupilsInMeasure,
+        IPage Page,
+        PerformanceTablesTestDataModel yearData,
         string year)
     {
         var pupilDetailsProgress8Selector = $"pupil-details-prog8-scores-{year}";
@@ -133,25 +125,25 @@ public class ProgressAndAttainmentPageTests : BasePageTest
 
         var schoolProgress8 = await Page.GetScoreFromParagraphAsync(prog8ScoreSelector, "Pupils at this school score");
         Assert.NotNull(schoolProgress8);
-        Assert.Equal(expectedProgressSchool, schoolProgress8.Last());
+        Assert.Equal(yearData.Progress8Average, schoolProgress8.Last());
 
         var progress8Banding = await Page.GetScoreFromParagraphAsync(prog8ScoreSelector, "The confidence interval is");
         Assert.NotNull(progress8Banding);
-        Assert.Equal(expectedBandingLower, progress8Banding.First());
-        Assert.Equal(expectedBandingHigher, progress8Banding.Last());
+        AssertHelpers.AssertNumericEqual(yearData.Progress8Lower95Ci, progress8Banding.First());
+        AssertHelpers.AssertNumericEqual(yearData.Progress8Upper95Ci, progress8Banding.Last());
 
         await Page.ExpandElement(pupilDetailsProgress8Selector);
         var pupilsInMeasure = await Page.GetScoreFromParagraphAsync(pupilDetailsProgress8Selector, "pupils were included");
         Assert.NotNull(pupilsInMeasure);
-        Assert.Equal(expectedPupilsInMeasure.ToString("F0"), pupilsInMeasure.First());
-        Assert.Equal(expectedTotalPupils.ToString("F0"), pupilsInMeasure.Last());
+        AssertHelpers.AssertNumericEqual(yearData.Progress8PupilCount, pupilsInMeasure.First());
+        AssertHelpers.AssertNumericEqual(yearData.PupilCount, pupilsInMeasure.Last());
     }
 
-    private async Task AssertSchoolAttainmentData(IPage Page, double expectedAttainmentSchool, string year)
+    private async Task AssertSchoolAttainmentData(IPage Page, string expectedAttainmentSchool, string year)
     {
         var schoolAttainment8 = await Page.GetScoreFromParagraphAsync($"attainment8-scores-{year}", "The Attainment 8 score for this school is");
         Assert.NotNull(schoolAttainment8);
-        Assert.Equal(expectedAttainmentSchool.ToString("F1"), schoolAttainment8.Last());
+        AssertHelpers.AssertNumericEqual(expectedAttainmentSchool, schoolAttainment8.Last());
     }
 
     private async Task AssertLAAndEnglandAttainmentData(IPage Page, double expectedAttainmentLA, double expectedAttainmentEngland, string year)
