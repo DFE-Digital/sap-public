@@ -552,7 +552,12 @@ public class Level3QualificationsServiceTests
             UCI_INS_AGEN_Est_Current_Num_Coded = new CodedDouble(3, string.Empty, string.Empty),
             LCI_INS_AGEN_Est_Current_Num_Coded = new CodedDouble(0.2, string.Empty, string.Empty),
             TALLPPE_AGEN_Est_Current_Num_Coded = new CodedDouble(22.77, string.Empty, string.Empty),
+            TALLPPE_AGEN_24_Est_Previous_Num_Coded = new CodedDouble(20.39, string.Empty, string.Empty),
+            TALLPPE_AGEN_23_Est_Previous2_Num_Coded = new CodedDouble(25.78, string.Empty, string.Empty),
+
             TALLPPEGRD_AGEN_Est_Current = new CodedString("A", string.Empty, string.Empty),
+            TALLPPEGRD_AGEN_24_Est_Previous = new CodedString("C", string.Empty, string.Empty),
+            TALLPPEGRD_AGEN_23_Est_Previous2 = new CodedString("B", string.Empty, string.Empty),
 
             TALLPUP_TLEV_Est_Current_Num_Coded = new CodedDouble(55, string.Empty, string.Empty),
             VA_INS_TLEV_Est_Current_Num_Coded = new CodedDouble(61.55, string.Empty, string.Empty),
@@ -624,7 +629,12 @@ public class Level3QualificationsServiceTests
 
             VA_INS_AGEN_Eng_Current_Num_Coded = new CodedDouble(77.66, string.Empty, string.Empty),
             TALLPPE_AGEN_Eng_Current_Num_Coded = new CodedDouble(33.24, string.Empty, string.Empty),
+            TALLPPE_AGEN_24_Eng_Previous_Num_Coded = new CodedDouble(39.45, string.Empty, string.Empty),
+            TALLPPE_AGEN_23_Eng_Previous2_Num_Coded = new CodedDouble(29.31, string.Empty, string.Empty),
+
             TALLPPEGRD_AGEN_Eng_Current = new CodedString("B", string.Empty, string.Empty),
+            TALLPPEGRD_AGEN_24_Eng_Previous = new CodedString("C", string.Empty, string.Empty),
+            TALLPPEGRD_AGEN_23_Eng_Previous2 = new CodedString("A", string.Empty, string.Empty),
 
             VA_INS_TLEV_Eng_Current_Num_Coded = new CodedDouble(59.56, string.Empty, string.Empty),
             TALLPPE_TLEV_Eng_Current_Num_Coded = new CodedDouble(35.11, string.Empty, string.Empty),
@@ -719,7 +729,13 @@ public class Level3QualificationsServiceTests
             TALLPPEGRD_ACAD_1618_23_LA_Previous2 = new CodedString("A", string.Empty, string.Empty),
 
             TALLPPE_AGEN_LA_Current_Num_Coded = new CodedDouble(47.53, string.Empty, string.Empty),
+            TALLPPE_AGEN_24_LA_Previous_Num_Coded = new CodedDouble(39.12, string.Empty, string.Empty),
+            TALLPPE_AGEN_23_LA_Previous2_Num_Coded = new CodedDouble(45.74, string.Empty, string.Empty),
+
             TALLPPEGRD_AGEN_LA_Current = new CodedString("B", string.Empty, string.Empty),
+            TALLPPEGRD_AGEN_24_LA_Previous = new CodedString("C", string.Empty, string.Empty),
+            TALLPPEGRD_AGEN_23_LA_Previous2 = new CodedString("B", string.Empty, string.Empty),
+
             TALLPPE_TLEV_LA_Current_Num_Coded = new CodedDouble(21.85, string.Empty, string.Empty),
             TALLPPEGRD_TLEV_LA_Current = new CodedString("C", string.Empty, string.Empty),
             TB3PTSE_LA_Current_Num_Coded = isAlevelQual ? new CodedDouble(25.19, string.Empty, string.Empty) : CodedDouble.Empty,
