@@ -16,7 +16,7 @@ public class AttainmentAndProgressModelBuilder
     private RelativeYearValues<CodedDouble>? _establishmentProgress8CILower;
     private RelativeYearValues<CodedDouble>? _establishmentProgress8CIUpper;
     private RelativeYearValues<string?>? _establishmentProgress8Banding;
-    private RelativeYearValues<ProgressBandingDescriptions>? _progress8BandingDescriptions;
+    private RelativeYearValues<CodedString>? _progress8BandingContextDescription;
     private RelativeYearValues<CodedDouble>? _localAuthorityProgress8Score;
     private RelativeYearValues<CodedDouble>? _establishmentAttainment8Score;
     private RelativeYearValues<CodedDouble>? _establishmentAttainment8DisadvantagedScore;
@@ -93,13 +93,13 @@ public class AttainmentAndProgressModelBuilder
         return this;
     }
 
-    public AttainmentAndProgressModelBuilder WithProgress8BandingDescriptions(ProgressBandingDescriptions descriptions)
+    public AttainmentAndProgressModelBuilder WithProgress8BandingContextDescription(CodedString description)
     {
-        _progress8BandingDescriptions = new RelativeYearValues<ProgressBandingDescriptions>
+        _progress8BandingContextDescription = new RelativeYearValues<CodedString>
         {
-            CurrentYear = descriptions,
-            PreviousYear = descriptions,
-            TwoYearsAgo = descriptions
+            CurrentYear = description,
+            PreviousYear = description,
+            TwoYearsAgo = description
         };
         return this;
     }
@@ -225,7 +225,7 @@ public class AttainmentAndProgressModelBuilder
             EnglandAttainment8DisadvantagedScore = _englandAttainment8DisadvantagedScore ?? CreateEmptyRelativeYearValues(),
             EnglandAttainment8NonDisadvantagedScore = _englandAttainment8NonDisadvantagedScore.HasValue ? _englandAttainment8NonDisadvantagedScore.Value : CodedDoubleFactory.Create(),
             EstablishmentProgress8Banding = _establishmentProgress8Banding ?? new RelativeYearValues<string?> { CurrentYear = null, PreviousYear = null, TwoYearsAgo = null },
-            Progress8BandingDescriptions = _progress8BandingDescriptions ?? new RelativeYearValues<ProgressBandingDescriptions> { CurrentYear = ProgressBandingDescriptions.Empty },
+            Progress8BandingContextDescription = _progress8BandingContextDescription ?? new RelativeYearValues<CodedString> { CurrentYear = CodedString.Empty },
             EstablishmentProgress8Score = _establishmentProgress8Score ?? CreateEmptyRelativeYearValues(),
             EstablishmentProgress8CILower = _establishmentProgress8CILower ?? CreateEmptyRelativeYearValues(),
             EstablishmentProgress8CIUpper = _establishmentProgress8CIUpper ?? CreateEmptyRelativeYearValues(),

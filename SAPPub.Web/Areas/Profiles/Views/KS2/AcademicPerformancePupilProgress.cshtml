@@ -138,7 +138,7 @@
                             @if (Model.EstablishmentReadingScore.BandingRating.HasValue)
                             {
                                 <p class="govuk-body">
-                                    @Model.EstablishmentReadingScore.BandingRating.ToBandingString(Model.EstablishmentReadingScore.BandingDescriptions).DisplayText()
+                                    @Model.EstablishmentReadingScore.BandingRating.ToBandingContextStatement(Model.EstablishmentReadingScore.BandingContextDescription).DisplayText()
                                 </p>
                             }
                             <p class="govuk-body">
@@ -178,7 +178,7 @@
                             @if (Model.EstablishmentWritingScore.BandingRating.HasValue)
                             {
                                 <p class="govuk-body">
-                                    @Model.EstablishmentWritingScore.BandingRating.ToBandingString(Model.EstablishmentWritingScore.BandingDescriptions).DisplayText()
+                                    @Model.EstablishmentWritingScore.BandingRating.ToBandingContextStatement(Model.EstablishmentWritingScore.BandingContextDescription).DisplayText()
                                 </p>
                             }
                             <p class="govuk-body">
@@ -217,7 +217,7 @@
                             @if (Model.EstablishmentMathsScore.BandingRating.HasValue)
                             {
                                 <p class="govuk-body">
-                                    @Model.EstablishmentMathsScore.BandingRating.ToBandingString(Model.EstablishmentMathsScore.BandingDescriptions).DisplayText()
+                                    @Model.EstablishmentMathsScore.BandingRating.ToBandingContextStatement(Model.EstablishmentMathsScore.BandingContextDescription).DisplayText()
                                 </p>
                             }
                             <p class="govuk-body">

@@ -27,7 +27,7 @@ public class ProgressScoreViewModel
             ConfidenceLevelUpper = model.ConfidenceLevelUpper.ToDisplayField(),
             ConfidenceLevelLower = model.ConfidenceLevelLower.ToDisplayField(),
             EnglandAverageScore = model.EnglandAverageScore.ToDisplayField(),
-            ProgressBandingContextDescription = AttainmentHelper.EstablishmentProgress8BandingContextStatement(model.BandingRating.Value, model.BandingDescriptions)
+            ProgressBandingContextDescription = AttainmentHelper.EstablishmentProgressBandingContextStatement(model.BandingRating.Value, model.BandingContextDescription)
         };        
     }
 }

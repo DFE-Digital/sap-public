@@ -70,7 +70,7 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.Equal(expectedResult.ProgressScore.ConfidenceLevelUpper, model.ProgressScore.ConfidenceLevelUpper.Value);
         Assert.Equal(expectedResult.ProgressScore.EnglandAverageScore, model.ProgressScore.EnglandAverageScore.Value);
 
-        var expectedProgressBandingDescription = AttainmentHelper.EstablishmentProgress8BandingContextStatement(model.ProgressScore.BandingRating.Value.Value, ProgressBandingDescriptions.Empty);
+        var expectedProgressBandingDescription = AttainmentHelper.EstablishmentProgressBandingContextStatement(model.ProgressScore.BandingRating.Value.Value, expectedResult.ProgressScore.BandingContextDescription);
         Assert.Equal(expectedProgressBandingDescription.Value, model.ProgressScore.ProgressBandingContextDescription.DisplayText());
 
         Assert.Equal(expectedResult.AverageResult.Establishment.CurrentYear.Points, model.AverageResult.Establishment.CurrentYear.Points.Value);
@@ -676,7 +676,7 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.Equal(expectedResult.ProgressScore.ConfidenceLevelUpper, model.ProgressScore.ConfidenceLevelUpper.Value);
         Assert.Equal(expectedResult.ProgressScore.EnglandAverageScore, model.ProgressScore.EnglandAverageScore.Value);
 
-        var expectedProgressBandingDescription = AttainmentHelper.EstablishmentProgress8BandingContextStatement(model.ProgressScore.BandingRating.Value.Value, ProgressBandingDescriptions.Empty);
+        var expectedProgressBandingDescription = AttainmentHelper.EstablishmentProgressBandingContextStatement(model.ProgressScore.BandingRating.Value.Value, expectedResult.ProgressScore.BandingContextDescription);
         Assert.Equal(expectedProgressBandingDescription.Value, model.ProgressScore.ProgressBandingContextDescription.DisplayText());
 
         Assert.Equal(expectedResult.AverageResult.Establishment.CurrentYear.Points, model.AverageResult.Establishment.CurrentYear.Points.Value);

@@ -61,9 +61,9 @@ public class AttainmentHelper
         """;
     }
 
-    public static DisplayField<string> EstablishmentProgress8BandingContextStatement(string? progressBanding, ProgressBandingDescriptions bandingDescriptions)
+    public static DisplayField<string> EstablishmentProgressBandingContextStatement(string? progressBanding, CodedString bandingContextDescription)
     {
-        return progressBanding.ToBandingContextStatement(bandingDescriptions);
+        return progressBanding.ToBandingContextStatement(bandingContextDescription);
     }
 
     private static string? SentenceFirstClause(double contextualScore, double schoolScore)

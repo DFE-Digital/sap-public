@@ -1,4 +1,5 @@
 ﻿using SAPPub.Core.Entities;
+using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.ServiceModels.KS4.Performance;
@@ -30,7 +31,7 @@ public class AttainmentAndProgressService(
                 EstablishmentAttainment8DisadvantagedScore = EmptyRelativeYearValues,
                 EstablishmentAttainment8Score = EmptyRelativeYearValues,
                 EstablishmentProgress8Banding = new RelativeYearValues<string?> { CurrentYear = null, PreviousYear = null, TwoYearsAgo = null },
-                Progress8BandingDescriptions = new RelativeYearValues<ProgressBandingDescriptions> { CurrentYear = ProgressBandingDescriptions.Empty },
+                Progress8BandingContextDescription = new RelativeYearValues<CodedString> { CurrentYear = CodedString.Empty },
                 EstablishmentProgress8CILower = EmptyRelativeYearValues,
                 EstablishmentProgress8CIUpper = EmptyRelativeYearValues,
                 EstablishmentProgress8Score = EmptyRelativeYearValues,
@@ -84,21 +85,23 @@ public class AttainmentAndProgressService(
                 PreviousYear = establishmentPerformance.Prog8_Banding_Est_Previous,
                 TwoYearsAgo = establishmentPerformance.Prog8_Banding_Est_Previous2,
             },
-            Progress8BandingDescriptions = new RelativeYearValues<ProgressBandingDescriptions>
+            Progress8BandingContextDescription = new RelativeYearValues<CodedString>
             {
-                CurrentYear = ProgressBandingDescriptions.Empty,
-                PreviousYear = new ProgressBandingDescriptions(
-                    WellAboveAverage: englandPerformance.Prog8Band_Band1_Eng_Previous_Desc,
-                    AboveAverage: englandPerformance.Prog8Band_Band2_Eng_Previous_Desc,
-                    Average: englandPerformance.Prog8Band_Band3_Eng_Previous_Desc,
-                    BelowAverage: englandPerformance.Prog8Band_Band4_Eng_Previous_Desc,
-                    WellBelowAverage: englandPerformance.Prog8Band_Band5_Eng_Previous_Desc),
-                TwoYearsAgo = new ProgressBandingDescriptions(
-                    WellAboveAverage: englandPerformance.Prog8Band_Band1_Eng_Previous2_Desc,
-                    AboveAverage: englandPerformance.Prog8Band_Band2_Eng_Previous2_Desc,
-                    Average: englandPerformance.Prog8Band_Band3_Eng_Previous2_Desc,
-                    BelowAverage: englandPerformance.Prog8Band_Band4_Eng_Previous2_Desc,
-                    WellBelowAverage: englandPerformance.Prog8Band_Band5_Eng_Previous2_Desc),
+                CurrentYear = CodedString.Empty,
+                PreviousYear = establishmentPerformance.Prog8_Banding_Est_Previous.GetBandingDescription(
+                    new ProgressBandingDescriptions(
+                        WellAboveAverage: englandPerformance.Prog8Band_Band1_Eng_Previous_Desc,
+                        AboveAverage: englandPerformance.Prog8Band_Band2_Eng_Previous_Desc,
+                        Average: englandPerformance.Prog8Band_Band3_Eng_Previous_Desc,
+                        BelowAverage: englandPerformance.Prog8Band_Band4_Eng_Previous_Desc,
+                        WellBelowAverage: englandPerformance.Prog8Band_Band5_Eng_Previous_Desc)),
+                TwoYearsAgo = establishmentPerformance.Prog8_Banding_Est_Previous2.GetBandingDescription(
+                    new ProgressBandingDescriptions(
+                        WellAboveAverage: englandPerformance.Prog8Band_Band1_Eng_Previous2_Desc,
+                        AboveAverage: englandPerformance.Prog8Band_Band2_Eng_Previous2_Desc,
+                        Average: englandPerformance.Prog8Band_Band3_Eng_Previous2_Desc,
+                        BelowAverage: englandPerformance.Prog8Band_Band4_Eng_Previous2_Desc,
+                        WellBelowAverage: englandPerformance.Prog8Band_Band5_Eng_Previous2_Desc)),
             },
             LocalAuthorityProgress8Score = new RelativeYearValues<CodedDouble>
             {

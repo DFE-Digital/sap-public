@@ -78,42 +78,42 @@ public class ProgressBandingHelperTests
     }
 
     [Fact]
-    public void ToBandingString_CodedString_ReturnsNotAvailable_WhenValueIsNotNumeric()
+    public void ToBandingContextStatement_CodedString_ReturnsNotAvailable_WhenValueIsNotNumeric()
     {
         var codedString = new CodedString("SUPP", "Suppressed", "SUPP");
 
-        var result = codedString.ToBandingString(CreateDescriptions());
+        var result = codedString.ToBandingContextStatement(AverageDescription);
 
         Assert.True(result.IsNotAvailable);
     }
 
     [Fact]
-    public void ToBandingString_CodedString_ReturnsNotAvailable_WhenValueIsBlank()
+    public void ToBandingContextStatement_CodedString_ReturnsNotAvailable_WhenValueIsBlank()
     {
         var codedString = CodedString.Empty;
 
-        var result = codedString.ToBandingString(CreateDescriptions());
+        var result = codedString.ToBandingContextStatement(AverageDescription);
 
         Assert.True(result.IsNotAvailable);
     }
 
     [Fact]
-    public void ToBandingString_CodedString_ReturnsStatement_WhenValueIsValidBandingNumber()
+    public void ToBandingContextStatement_CodedString_ReturnsStatement_WhenValueIsValidBandingNumber()
     {
         var codedString = new CodedString(((int)ProgressBanding.Average).ToString(), "", "3");
 
-        var result = codedString.ToBandingString(CreateDescriptions());
+        var result = codedString.ToBandingContextStatement(AverageDescription);
 
         Assert.True(result.IsAvailable);
         Assert.Equal("This is average because Average description.", result.DisplayText());
     }
 
     [Fact]
-    public void ToBandingString_CodedString_WithoutDescriptions_UsesEmptyDescriptions()
+    public void ToBandingContextStatement_CodedString_WithoutDescriptions_UsesEmptyDescriptions()
     {
         var codedString = new CodedString(((int)ProgressBanding.AboveAverage).ToString(), "", "2");
 
-        var result = codedString.ToBandingString();
+        var result = codedString.ToBandingContextStatement(CodedString.Empty);
 
         Assert.True(result.IsAvailable);
         Assert.Equal("This is above average.", result.DisplayText());

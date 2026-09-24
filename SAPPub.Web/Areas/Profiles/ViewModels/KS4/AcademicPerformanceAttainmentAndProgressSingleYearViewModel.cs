@@ -64,9 +64,9 @@ public class AcademicPerformanceAttainmentAndProgressSingleYearViewModel
                 localAuthorityScore: attainmentAndProgressModel.LocalAuthorityAttainment8Score.GetValueForYear(year).Value,
                 schoolScore: attainmentAndProgressModel.EstablishmentAttainment8Score.GetValueForYear(year).Value);
         var establishmentProgress8BandingContextDescription
-            = AttainmentHelper.EstablishmentProgress8BandingContextStatement(
+            = AttainmentHelper.EstablishmentProgressBandingContextStatement(
                 attainmentAndProgressModel.EstablishmentProgress8Banding.GetValueForYear(year),
-                attainmentAndProgressModel.Progress8BandingDescriptions.GetValueForYear(year));
+                attainmentAndProgressModel.Progress8BandingContextDescription.GetValueForYear(year));
 
         var disadvantagedBreakdownData = new SeriesMeasureViewModel
         {

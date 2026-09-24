@@ -21,7 +21,7 @@ public class AttainmentAndProgressModel
 
     public required RelativeYearValues<string?> EstablishmentProgress8Banding { get; init; }
 
-    public required RelativeYearValues<ProgressBandingDescriptions> Progress8BandingDescriptions { get; init; }
+    public required RelativeYearValues<CodedString> Progress8BandingContextDescription { get; init; }
 
     public required RelativeYearValues<CodedDouble> LocalAuthorityProgress8Score { get; init; }
 

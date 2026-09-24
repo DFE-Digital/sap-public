@@ -1,5 +1,6 @@
 ﻿using SAPPub.Core.Entities;
 using SAPPub.Core.Entities.Performance;
+using SAPPub.Core.Enums;
 using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.Interfaces.Repositories.Performance;
 using SAPPub.Core.Interfaces.Services;
@@ -62,6 +63,22 @@ public class Level2QualificationsService(
         KS5EstablishmentPerformance establishmentPerformance,
         KS5EnglandPerformance englandPerformance)
     {
+        var bandingRating = level2Qualification switch
+        {
+            Level2.TechCert => establishmentPerformance.PROGRESS_BAND_TECHCERT_Est_Current,
+            _ => CodedString.Empty,
+        };
+        var bandingDescriptions = level2Qualification switch
+        {
+            Level2.TechCert => new ProgressBandingDescriptions(
+                WellAboveAverage: englandPerformance.ProgBand_Techcert_Band1_Eng_Current_Desc,
+                AboveAverage: englandPerformance.ProgBand_Techcert_Band2_Eng_Current_Desc,
+                Average: englandPerformance.ProgBand_Techcert_Band3_Eng_Current_Desc,
+                BelowAverage: englandPerformance.ProgBand_Techcert_Band4_Eng_Current_Desc,
+                WellBelowAverage: englandPerformance.ProgBand_Techcert_Band5_Eng_Current_Desc),
+            _ => ProgressBandingDescriptions.Empty,
+        };
+
         return new ProgressScoreModel
         {
             Score = level2Qualification switch
@@ -69,11 +86,7 @@ public class Level2QualificationsService(
                 Level2.TechCert => establishmentPerformance.VA_INS_TECHCERT_Est_Current_Num_Coded,
                 _ => CodedDouble.Empty,
             },
-            BandingRating = level2Qualification switch
-            {
-                Level2.TechCert => establishmentPerformance.PROGRESS_BAND_TECHCERT_Est_Current,
-                _ => CodedString.Empty,
-            },
+            BandingRating = bandingRating,
             ConfidenceLevelUpper = level2Qualification switch
             {
                 Level2.TechCert => establishmentPerformance.UCI_INS_TECHCERT_Est_Current_Num_Coded,
@@ -89,16 +102,7 @@ public class Level2QualificationsService(
                 Level2.TechCert => englandPerformance.VA_INS_TECHCERT_Eng_Current_Num_Coded,
                 _ => CodedDouble.Empty,
             },
-            BandingDescriptions = level2Qualification switch
-            {
-                Level2.TechCert => new ProgressBandingDescriptions(
-                    WellAboveAverage: englandPerformance.ProgBand_Techcert_Band1_Eng_Current_Desc,
-                    AboveAverage: englandPerformance.ProgBand_Techcert_Band2_Eng_Current_Desc,
-                    Average: englandPerformance.ProgBand_Techcert_Band3_Eng_Current_Desc,
-                    BelowAverage: englandPerformance.ProgBand_Techcert_Band4_Eng_Current_Desc,
-                    WellBelowAverage: englandPerformance.ProgBand_Techcert_Band5_Eng_Current_Desc),
-                _ => ProgressBandingDescriptions.Empty,
-            },
+            BandingContextDescription = bandingRating.Value.GetBandingDescription(bandingDescriptions),
         };
     }
 

@@ -354,12 +354,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
             .WithEstablishmentProgress8Data()
             .WithLaProgressData()
             .WithEstablishmentProgress8Banding("Well above average")
-            .WithProgress8BandingDescriptions(new ProgressBandingDescriptions(
-                WellAboveAverage: reason,
-                AboveAverage: CodedString.Empty,
-                Average: CodedString.Empty,
-                BelowAverage: CodedString.Empty,
-                WellBelowAverage: CodedString.Empty))
+            .WithProgress8BandingContextDescription(reason)
             .Build();
 
         // Act

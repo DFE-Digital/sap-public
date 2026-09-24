@@ -54,7 +54,7 @@ public class AcademicPerformancePupilProgressViewModel : BaseViewModel
                 ConfidenceLevelUpper = ks2PupilPerformance.EstablishmentReadingConfidenceUpper,
                 ConfidenceLevelLower = ks2PupilPerformance.EstablishmentReadingConfidenceLower,
                 BandingRating = ks2PupilPerformance.EstablishmentReadingDescription,
-                BandingDescriptions = ks2PupilPerformance.ReadingBandingDescriptions
+                BandingContextDescription = ks2PupilPerformance.EstablishmentReadingContextDescription
             },
             LaReadingAverage = ks2PupilPerformance.LaReadingScore,
             EstablishmentWritingScore = new ProgressScoreModel
@@ -63,7 +63,7 @@ public class AcademicPerformancePupilProgressViewModel : BaseViewModel
                 ConfidenceLevelUpper = ks2PupilPerformance.EstablishmentWritingConfidenceUpper,
                 ConfidenceLevelLower = ks2PupilPerformance.EstablishmentWritingConfidenceLower,
                 BandingRating = ks2PupilPerformance.EstablishmentWritingDescription,
-                BandingDescriptions = ks2PupilPerformance.WritingBandingDescriptions
+                BandingContextDescription = ks2PupilPerformance.EstablishmentWritingContextDescription
             },
             LaWritingAverage = ks2PupilPerformance.LaWritingScore,
             EstablishmentMathsScore = new ProgressScoreModel
@@ -72,7 +72,7 @@ public class AcademicPerformancePupilProgressViewModel : BaseViewModel
                 ConfidenceLevelUpper = ks2PupilPerformance.EstablishmentMathsConfidenceUpper,
                 ConfidenceLevelLower = ks2PupilPerformance.EstablishmentMathsConfidenceLower,
                 BandingRating = ks2PupilPerformance.EstablishmentMathsDescription,
-                BandingDescriptions = ks2PupilPerformance.MathsBandingDescriptions
+                BandingContextDescription = ks2PupilPerformance.EstablishmentMathsContextDescription
             },
             LaMathsAverage = ks2PupilPerformance.LaMathsScore,
             PrimarySchoolAccountabilityLinkUrl = urlLinksOptions.PrimarySchoolAccountability.Url,
