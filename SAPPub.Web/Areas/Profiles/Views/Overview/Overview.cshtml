@@ -486,6 +486,8 @@
 
                                             <canvas id="overview-primary-expected-standard-chart"
                                                     class="js-chart"
+                                                    aria-labelledby="overview-primary-expected-standard-current-year-table"
+                                                    role="img"
                                                     data-type="bar"
                                                     data-not-available-text="@WebConstants.NotAvailable"
                                                     data-chart='@Html.Raw(Json.Serialize(Model.ReadingWritingMathsExpectedChart))'
@@ -1059,6 +1061,8 @@
 
                                                 <canvas id="overview-english-maths-chart"
                                                         class="js-chart"
+                                                        aria-labelledby="overview-english-maths-current-year-table"
+                                                        role="img"
                                                         data-type="bar"
                                                         data-not-available-text="@WebConstants.NotAvailable"
                                                         data-chart='@Html.Raw(Json.Serialize(Model.EnglishAndMathsGrade5Chart))'
@@ -1275,6 +1279,8 @@
                                                 <canvas id="overview-exam-subjects-chart"
                                                         class="js-chart"
                                                         data-type="bar"
+                                                        aria-labelledby="overview-exam-subjects-current-year-table"
+                                                        role="img"
                                                         data-max="100"
                                                         data-axis-title="Percentage of pupils"
                                                         data-not-available-text="@WebConstants.NotAvailable"
@@ -1441,6 +1447,8 @@
                                                 <canvas id="overview-destinations-chart"
                                                         class="js-chart"
                                                         data-type="bar"
+                                                        aria-labelledby="overview-destinations-current-year-table"
+                                                        role="img"
                                                         data-not-available-text="@WebConstants.NotAvailable"
                                                         data-chart='@Html.Raw(Json.Serialize(Model.DestinationsChart))'
                                                         data-colors='@Html.Raw(Json.Serialize(WebConstants.ChartColours))'>

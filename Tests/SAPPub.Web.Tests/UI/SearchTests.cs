@@ -705,7 +705,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
 
         // The H1 must meaningfully identify the page.
         await Expect(h1Headings)
-            .ToHaveTextAsync("Search for secondary schools");
+            .ToHaveTextAsync("Find schools and colleges in England");
 
         // No headings in the page's main content should be empty.
         var headings = main.Locator("h1, h2, h3, h4, h5, h6");

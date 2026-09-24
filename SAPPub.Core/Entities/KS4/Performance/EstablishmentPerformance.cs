@@ -323,8 +323,8 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public CodedDouble Pup_EAL_Est_Current_Num_Coded { get; set; }
         public CodedDouble Pup_NMo_Est_Current_Num_Coded { get; set; }
         public CodedDouble Pup_Dis_Est_Current_Num_Coded { get; set; }
-        public CodedDouble PupSEN_Est_Current_Num_Coded { get; set; }
-        public CodedDouble PupEHCP_Est_Current_Num_Coded { get; set; }
+        public CodedDouble PupSEN_Tot_Est_Current_Pct_Coded { get; set; }
+        public CodedDouble PupEHCP_Tot_Est_Current_Pct_Coded { get; set; }
         public CodedDouble? GCSESubjectEnteredSum_Est_Current_Num_Coded { get; set; }
         public CodedDouble? TechSubjectEnteredSum_Est_Current_Num_Coded { get; set; }
     }
