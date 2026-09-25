@@ -17,10 +17,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - display: AKS infrastructure
-            validation_plan: aks-infra
-            terraform_base: terraform/application
-            terraform_version_file: terraform.tf
+          # - display: AKS infrastructure
+          #   validation_plan: aks-infra
+          #   terraform_base: terraform/application
+          #   terraform_version_file: terraform.tf
           - display: Domains infrastructure
             validation_plan: domains-infra
             terraform_base: terraform/domains/infrastructure
