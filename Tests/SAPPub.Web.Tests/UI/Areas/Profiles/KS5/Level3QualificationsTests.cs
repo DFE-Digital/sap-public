@@ -19,6 +19,7 @@ public class Level3QualificationsTests(WebApplicationSetupFixture fixture) : Bas
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
     [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
     public async Task Level3QualificationsPage_LoadsSuccessfully(Level3 level3Qualification)
     {
         // Arrange && Act
@@ -33,6 +34,7 @@ public class Level3QualificationsTests(WebApplicationSetupFixture fixture) : Bas
     [InlineData(Level3.ALevel, "A Level")]
     [InlineData(Level3.Academic, "Academic")]
     [InlineData(Level3.AppliedGeneral, "Applied General")]
+    [InlineData(Level3.TechLevel, "Tech Level")]
     public async Task Level3QualificationsPage_HasCorrectTitle(Level3 level3Qualification, string qualTitle)
     {
         // Arrange
@@ -49,6 +51,7 @@ public class Level3QualificationsTests(WebApplicationSetupFixture fixture) : Bas
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
     [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
     public async Task Level3Qualifications_DisplaysMainHeading(Level3 level3Qualification)
     {
         // Arrange
@@ -79,6 +82,7 @@ public class Level3QualificationsTests(WebApplicationSetupFixture fixture) : Bas
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
     [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
     public async Task Level3Qualifications_Displays_Sub_Navigation(Level3 level3Qualification)
     {
         // Arrange
@@ -95,6 +99,7 @@ public class Level3QualificationsTests(WebApplicationSetupFixture fixture) : Bas
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
     [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
     public async Task Level3Qualifications_Displays_CurrentYear_Table(Level3 level3Qualification)
     {
         // Arrange
@@ -122,6 +127,7 @@ public class Level3QualificationsTests(WebApplicationSetupFixture fixture) : Bas
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
     [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
     public async Task Level3Qualifications_Displays_DataOverTime_Table(Level3 level3Qualification)
     {
         // Arrange
