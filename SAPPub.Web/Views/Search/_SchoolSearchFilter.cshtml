@@ -117,7 +117,8 @@
                                                        name="phase"
                                                        type="checkbox"
                                                        value="@phase"
-                                                @(isChecked ? "checked" : "")>
+                                                @(isChecked ? "checked" : "")
+                                                aria-label="@phase" @* aria-label explicitly needed for Android Talkback*@>
                                                 <label class="govuk-label govuk-checkboxes__label" for="@inputId">
                                                     @phase
                                                 </label>
@@ -152,7 +153,8 @@
                                                        name="schoolType"
                                                        type="checkbox"
                                                        value="@schoolType"
-                                                @(isChecked ? "checked" : "")>
+                                                @(isChecked ? "checked" : "")
+                                                    aria-label="@schoolType" @* aria-label explicitly needed for Android Talkback*@>
                                                 <label class="govuk-label govuk-checkboxes__label" for="@inputId">
                                                     @schoolType
                                                 </label>
