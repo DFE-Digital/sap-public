@@ -22,7 +22,7 @@ public abstract class BasePageTest : PageTest
             ViewportSize = new() { Width = 1280, Height = 720 },
             Locale = "en-GB",
             TimezoneId = "Europe/London",
-            JavaScriptEnabled = true,
+            JavaScriptEnabled = false,
         };
     }
 
