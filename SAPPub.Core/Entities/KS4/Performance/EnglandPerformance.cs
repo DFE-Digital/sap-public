@@ -244,5 +244,33 @@ namespace SAPPub.Core.Entities.KS4.Performance
         public CodedDouble Pup_NDi_Eng_Current_Num_Coded { get; set; }
         public CodedDouble PupSEN_Tot_Eng_Current_Pct_Coded { get; set; }
         public CodedDouble PupEHCP_Tot_Eng_Current_Pct_Coded { get; set; }
+
+        ///
+        /// Progress 8 banding - historical percentage of schools in each banding, and
+        /// reasoning description for each banding 
+        /// Note: there is no "Current" year data available for these fields, presentation
+        /// expected to change once measure is published again
+        ///
+        public CodedDouble Prog8Band_Band1_Eng_Previous_Pct_Coded { get; set; }
+        public CodedString Prog8Band_Band1_Eng_Previous_Desc { get; set; }
+        public CodedDouble Prog8Band_Band2_Eng_Previous_Pct_Coded { get; set; }
+        public CodedString Prog8Band_Band2_Eng_Previous_Desc { get; set; }
+        public CodedDouble Prog8Band_Band3_Eng_Previous_Pct_Coded { get; set; }
+        public CodedString Prog8Band_Band3_Eng_Previous_Desc { get; set; }
+        public CodedDouble Prog8Band_Band4_Eng_Previous_Pct_Coded { get; set; }
+        public CodedString Prog8Band_Band4_Eng_Previous_Desc { get; set; }
+        public CodedDouble Prog8Band_Band5_Eng_Previous_Pct_Coded { get; set; }
+        public CodedString Prog8Band_Band5_Eng_Previous_Desc { get; set; }
+
+        public CodedDouble Prog8Band_Band1_Eng_Previous2_Pct_Coded { get; set; }
+        public CodedString Prog8Band_Band1_Eng_Previous2_Desc { get; set; }
+        public CodedDouble Prog8Band_Band2_Eng_Previous2_Pct_Coded { get; set; }
+        public CodedString Prog8Band_Band2_Eng_Previous2_Desc { get; set; }
+        public CodedDouble Prog8Band_Band3_Eng_Previous2_Pct_Coded { get; set; }
+        public CodedString Prog8Band_Band3_Eng_Previous2_Desc { get; set; }
+        public CodedDouble Prog8Band_Band4_Eng_Previous2_Pct_Coded { get; set; }
+        public CodedString Prog8Band_Band4_Eng_Previous2_Desc { get; set; }
+        public CodedDouble Prog8Band_Band5_Eng_Previous2_Pct_Coded { get; set; }
+        public CodedString Prog8Band_Band5_Eng_Previous2_Desc { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using SAPPub.Core.Enums;
+using SAPPub.Core.ValueObjects;
 
 namespace SAPPub.Web.Helpers;
 
@@ -60,13 +61,9 @@ public class AttainmentHelper
         """;
     }
 
-    public static DisplayField<string> EstablishmentProgress8BandingContextStatement(string? progressBanding)
+    public static DisplayField<string> EstablishmentProgressBandingContextStatement(string? progressBanding, CodedString bandingContextDescription)
     {
-        var bandingEnum = progressBanding.ToProgress8Banding();
-
-        return bandingEnum != Progress8Banding.NotAvailable
-            ? $"This is {bandingEnum.GetDisplayName()}.".ToDisplayField()
-            : DisplayField<string>.NotAvailable();
+        return progressBanding.ToBandingContextStatement(bandingContextDescription);
     }
 
     private static string? SentenceFirstClause(double contextualScore, double schoolScore)

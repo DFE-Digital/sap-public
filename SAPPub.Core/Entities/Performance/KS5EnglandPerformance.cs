@@ -330,4 +330,62 @@ public class KS5EnglandPerformance
 
     // Points for England - Non-Disadvantaged - Tech Certificates
     public CodedDouble TALLPPE_TECHCERT_NOTDIS_Eng_Current_Num_Coded { get; set; }
+
+    // Progress banding - percentage of providers in each banding, and reasoning
+    // description for each banding, per cohort
+    // Current year only
+    public CodedDouble ProgBand_Alev_Band1_Eng_Current_Pct_Coded { get; set; }
+    public CodedString ProgBand_Alev_Band1_Eng_Current_Desc { get; set; }
+    public CodedDouble ProgBand_Alev_Band2_Eng_Current_Pct_Coded { get; set; }
+    public CodedString ProgBand_Alev_Band2_Eng_Current_Desc { get; set; }
+    public CodedDouble ProgBand_Alev_Band3_Eng_Current_Pct_Coded { get; set; }
+    public CodedString ProgBand_Alev_Band3_Eng_Current_Desc { get; set; }
+    public CodedDouble ProgBand_Alev_Band4_Eng_Current_Pct_Coded { get; set; }
+    public CodedString ProgBand_Alev_Band4_Eng_Current_Desc { get; set; }
+    public CodedDouble ProgBand_Alev_Band5_Eng_Current_Pct_Coded { get; set; }
+    public CodedString ProgBand_Alev_Band5_Eng_Current_Desc { get; set; }
+
+    public CodedDouble ProgBand_Acad_Band1_Eng_Current_Pct_Coded { get; set; }
+    public CodedString ProgBand_Acad_Band1_Eng_Current_Desc { get; set; }
+    public CodedDouble ProgBand_Acad_Band2_Eng_Current_Pct_Coded { get; set; }
+    public CodedString ProgBand_Acad_Band2_Eng_Current_Desc { get; set; }
+    public CodedDouble ProgBand_Acad_Band3_Eng_Current_Pct_Coded { get; set; }
+    public CodedString ProgBand_Acad_Band3_Eng_Current_Desc { get; set; }
+    public CodedDouble ProgBand_Acad_Band4_Eng_Current_Pct_Coded { get; set; }
+    public CodedString ProgBand_Acad_Band4_Eng_Current_Desc { get; set; }
+    public CodedDouble ProgBand_Acad_Band5_Eng_Current_Pct_Coded { get; set; }
+    public CodedString ProgBand_Acad_Band5_Eng_Current_Desc { get; set; }
+
+    public CodedDouble ProgBand_Agen_Band1_Eng_Current_Pct_Coded { get; set; }
+    public CodedString ProgBand_Agen_Band1_Eng_Current_Desc { get; set; }
+    public CodedDouble ProgBand_Agen_Band2_Eng_Current_Pct_Coded { get; set; }
+    public CodedString ProgBand_Agen_Band2_Eng_Current_Desc { get; set; }
+    public CodedDouble ProgBand_Agen_Band3_Eng_Current_Pct_Coded { get; set; }
+    public CodedString ProgBand_Agen_Band3_Eng_Current_Desc { get; set; }
+    public CodedDouble ProgBand_Agen_Band4_Eng_Current_Pct_Coded { get; set; }
+    public CodedString ProgBand_Agen_Band4_Eng_Current_Desc { get; set; }
+    public CodedDouble ProgBand_Agen_Band5_Eng_Current_Pct_Coded { get; set; }
+    public CodedString ProgBand_Agen_Band5_Eng_Current_Desc { get; set; }
+
+    public CodedDouble ProgBand_Tlev_Band1_Eng_Current_Pct_Coded { get; set; }
+    public CodedString ProgBand_Tlev_Band1_Eng_Current_Desc { get; set; }
+    public CodedDouble ProgBand_Tlev_Band2_Eng_Current_Pct_Coded { get; set; }
+    public CodedString ProgBand_Tlev_Band2_Eng_Current_Desc { get; set; }
+    public CodedDouble ProgBand_Tlev_Band3_Eng_Current_Pct_Coded { get; set; }
+    public CodedString ProgBand_Tlev_Band3_Eng_Current_Desc { get; set; }
+    public CodedDouble ProgBand_Tlev_Band4_Eng_Current_Pct_Coded { get; set; }
+    public CodedString ProgBand_Tlev_Band4_Eng_Current_Desc { get; set; }
+    public CodedDouble ProgBand_Tlev_Band5_Eng_Current_Pct_Coded { get; set; }
+    public CodedString ProgBand_Tlev_Band5_Eng_Current_Desc { get; set; }
+
+    public CodedDouble ProgBand_Techcert_Band1_Eng_Current_Pct_Coded { get; set; }
+    public CodedString ProgBand_Techcert_Band1_Eng_Current_Desc { get; set; }
+    public CodedDouble ProgBand_Techcert_Band2_Eng_Current_Pct_Coded { get; set; }
+    public CodedString ProgBand_Techcert_Band2_Eng_Current_Desc { get; set; }
+    public CodedDouble ProgBand_Techcert_Band3_Eng_Current_Pct_Coded { get; set; }
+    public CodedString ProgBand_Techcert_Band3_Eng_Current_Desc { get; set; }
+    public CodedDouble ProgBand_Techcert_Band4_Eng_Current_Pct_Coded { get; set; }
+    public CodedString ProgBand_Techcert_Band4_Eng_Current_Desc { get; set; }
+    public CodedDouble ProgBand_Techcert_Band5_Eng_Current_Pct_Coded { get; set; }
+    public CodedString ProgBand_Techcert_Band5_Eng_Current_Desc { get; set; }
 }

@@ -70,8 +70,8 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.Equal(expectedResult.ProgressScore.ConfidenceLevelUpper, model.ProgressScore.ConfidenceLevelUpper.Value);
         Assert.Equal(expectedResult.ProgressScore.EnglandAverageScore, model.ProgressScore.EnglandAverageScore.Value);
 
-        var expectedProgressBandingDescription = AttainmentHelper.EstablishmentProgress8BandingContextStatement(model.ProgressScore.BandingRating.Value.Value);
-        Assert.Equal(expectedProgressBandingDescription.Value, model.ProgressScore.Progress8BandingContextDescription.DisplayText());
+        var expectedProgressBandingDescription = AttainmentHelper.EstablishmentProgressBandingContextStatement(model.ProgressScore.BandingRating.Value.Value, expectedResult.ProgressScore.BandingContextDescription);
+        Assert.Equal(expectedProgressBandingDescription.Value, model.ProgressScore.ProgressBandingContextDescription.DisplayText());
 
         Assert.Equal(expectedResult.AverageResult.Establishment.CurrentYear.Points, model.AverageResult.Establishment.CurrentYear.Points.Value);
         Assert.Equal(expectedResult.AverageResult.Establishment.PreviousYear!.Points, model.AverageResult.Establishment.PreviousYear!.Points.Value);
@@ -364,7 +364,7 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.Equal(NotAvailable, model.ProgressScore.ConfidenceLevelLower.DisplayText());
         Assert.Equal(NotAvailable, model.ProgressScore.ConfidenceLevelUpper.DisplayText());
         Assert.Equal(NotAvailable, model.ProgressScore.EnglandAverageScore.DisplayText());
-        Assert.Equal(NotAvailable, model.ProgressScore.Progress8BandingContextDescription.DisplayText());
+        Assert.Equal(NotAvailable, model.ProgressScore.ProgressBandingContextDescription.DisplayText());
 
         Assert.Equal(NotAvailable, model.AverageResult.Establishment.CurrentYear.Points.DisplayText());
         Assert.Equal(NotAvailable, model.AverageResult.Establishment.PreviousYear!.Points.DisplayText());
@@ -572,7 +572,7 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.Equal(NotAvailable, model.ProgressScore.ConfidenceLevelLower.DisplayText());
         Assert.Equal(NotAvailable, model.ProgressScore.ConfidenceLevelUpper.DisplayText());
         Assert.Equal(NotAvailable, model.ProgressScore.EnglandAverageScore.DisplayText());
-        Assert.Equal(NotAvailable, model.ProgressScore.Progress8BandingContextDescription.DisplayText());
+        Assert.Equal(NotAvailable, model.ProgressScore.ProgressBandingContextDescription.DisplayText());
 
         Assert.Equal(NotAvailable, model.AverageResult.Establishment.CurrentYear.Points.DisplayText());
         Assert.Equal(NotAvailable, model.AverageResult.Establishment.PreviousYear!.Points.DisplayText());
@@ -676,8 +676,8 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.Equal(expectedResult.ProgressScore.ConfidenceLevelUpper, model.ProgressScore.ConfidenceLevelUpper.Value);
         Assert.Equal(expectedResult.ProgressScore.EnglandAverageScore, model.ProgressScore.EnglandAverageScore.Value);
 
-        var expectedProgressBandingDescription = AttainmentHelper.EstablishmentProgress8BandingContextStatement(model.ProgressScore.BandingRating.Value.Value);
-        Assert.Equal(expectedProgressBandingDescription.Value, model.ProgressScore.Progress8BandingContextDescription.DisplayText());
+        var expectedProgressBandingDescription = AttainmentHelper.EstablishmentProgressBandingContextStatement(model.ProgressScore.BandingRating.Value.Value, expectedResult.ProgressScore.BandingContextDescription);
+        Assert.Equal(expectedProgressBandingDescription.Value, model.ProgressScore.ProgressBandingContextDescription.DisplayText());
 
         Assert.Equal(expectedResult.AverageResult.Establishment.CurrentYear.Points, model.AverageResult.Establishment.CurrentYear.Points.Value);
         Assert.Equal(expectedResult.AverageResult.Establishment.PreviousYear!.Points, model.AverageResult.Establishment.PreviousYear!.Points.Value);
@@ -919,7 +919,7 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.Equal(NotAvailable, model.ProgressScore.ConfidenceLevelLower.DisplayText());
         Assert.Equal(NotAvailable, model.ProgressScore.ConfidenceLevelUpper.DisplayText());
         Assert.Equal(NotAvailable, model.ProgressScore.EnglandAverageScore.DisplayText());
-        Assert.Equal(NotAvailable, model.ProgressScore.Progress8BandingContextDescription.DisplayText());
+        Assert.Equal(NotAvailable, model.ProgressScore.ProgressBandingContextDescription.DisplayText());
 
         Assert.Equal(NotAvailable, model.AverageResult.Establishment.CurrentYear.Points.DisplayText());
         Assert.Equal(NotAvailable, model.AverageResult.Establishment.PreviousYear!.Points.DisplayText());
@@ -1094,7 +1094,7 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.Equal(NotAvailable, model.ProgressScore.ConfidenceLevelLower.DisplayText());
         Assert.Equal(NotAvailable, model.ProgressScore.ConfidenceLevelUpper.DisplayText());
         Assert.Equal(NotAvailable, model.ProgressScore.EnglandAverageScore.DisplayText());
-        Assert.Equal(NotAvailable, model.ProgressScore.Progress8BandingContextDescription.DisplayText());
+        Assert.Equal(NotAvailable, model.ProgressScore.ProgressBandingContextDescription.DisplayText());
 
         Assert.Equal(NotAvailable, model.AverageResult.Establishment.CurrentYear.Points.DisplayText());
         Assert.Equal(NotAvailable, model.AverageResult.Establishment.PreviousYear!.Points.DisplayText());

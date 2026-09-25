@@ -1,5 +1,6 @@
 ﻿using SAPPub.Core.Entities;
 using SAPPub.Core.Entities.Performance;
+using SAPPub.Core.Enums;
 using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.Interfaces.Repositories.Performance;
 using SAPPub.Core.Interfaces.Services;
@@ -68,6 +69,43 @@ public class Level3QualificationsService(
         KS5EstablishmentPerformance establishmentPerformance,
         KS5EnglandPerformance englandPerformance)
     {
+        var bandingRating = level3Qualification switch
+        {
+            Level3.ALevel => establishmentPerformance.PROGRESS_BAND_ALEV_Est_Current,
+            Level3.Academic => establishmentPerformance.PROGRESS_BAND_ACAD_Est_Current,
+            Level3.AppliedGeneral => establishmentPerformance.PROGRESS_BAND_AGEN_Est_Current,
+            Level3.TechLevel => establishmentPerformance.PROGRESS_BAND_TLEV_Est_Current,
+            _ => CodedString.Empty,
+        };
+        var bandingDescriptions = level3Qualification switch
+        {
+            Level3.ALevel => new ProgressBandingDescriptions(
+                WellAboveAverage: englandPerformance.ProgBand_Alev_Band1_Eng_Current_Desc,
+                AboveAverage: englandPerformance.ProgBand_Alev_Band2_Eng_Current_Desc,
+                Average: englandPerformance.ProgBand_Alev_Band3_Eng_Current_Desc,
+                BelowAverage: englandPerformance.ProgBand_Alev_Band4_Eng_Current_Desc,
+                WellBelowAverage: englandPerformance.ProgBand_Alev_Band5_Eng_Current_Desc),
+            Level3.Academic => new ProgressBandingDescriptions(
+                WellAboveAverage: englandPerformance.ProgBand_Acad_Band1_Eng_Current_Desc,
+                AboveAverage: englandPerformance.ProgBand_Acad_Band2_Eng_Current_Desc,
+                Average: englandPerformance.ProgBand_Acad_Band3_Eng_Current_Desc,
+                BelowAverage: englandPerformance.ProgBand_Acad_Band4_Eng_Current_Desc,
+                WellBelowAverage: englandPerformance.ProgBand_Acad_Band5_Eng_Current_Desc),
+            Level3.AppliedGeneral => new ProgressBandingDescriptions(
+                WellAboveAverage: englandPerformance.ProgBand_Agen_Band1_Eng_Current_Desc,
+                AboveAverage: englandPerformance.ProgBand_Agen_Band2_Eng_Current_Desc,
+                Average: englandPerformance.ProgBand_Agen_Band3_Eng_Current_Desc,
+                BelowAverage: englandPerformance.ProgBand_Agen_Band4_Eng_Current_Desc,
+                WellBelowAverage: englandPerformance.ProgBand_Agen_Band5_Eng_Current_Desc),
+            Level3.TechLevel => new ProgressBandingDescriptions(
+                WellAboveAverage: englandPerformance.ProgBand_Tlev_Band1_Eng_Current_Desc,
+                AboveAverage: englandPerformance.ProgBand_Tlev_Band2_Eng_Current_Desc,
+                Average: englandPerformance.ProgBand_Tlev_Band3_Eng_Current_Desc,
+                BelowAverage: englandPerformance.ProgBand_Tlev_Band4_Eng_Current_Desc,
+                WellBelowAverage: englandPerformance.ProgBand_Tlev_Band5_Eng_Current_Desc),
+            _ => ProgressBandingDescriptions.Empty,
+        };
+
         return new ProgressScoreModel
         {
             Score = level3Qualification switch
@@ -78,14 +116,7 @@ public class Level3QualificationsService(
                 Level3.TechLevel => establishmentPerformance.VA_INS_TLEV_Est_Current_Num_Coded,
                 _ => CodedDouble.Empty,
             },
-            BandingRating = level3Qualification switch
-            {
-                Level3.ALevel => establishmentPerformance.PROGRESS_BAND_ALEV_Est_Current,
-                Level3.Academic => establishmentPerformance.PROGRESS_BAND_ACAD_Est_Current,
-                Level3.AppliedGeneral => establishmentPerformance.PROGRESS_BAND_AGEN_Est_Current,
-                Level3.TechLevel => establishmentPerformance.PROGRESS_BAND_TLEV_Est_Current,
-                _ => CodedString.Empty,
-            },
+            BandingRating = bandingRating,
             ConfidenceLevelUpper = level3Qualification switch
             {
                 Level3.ALevel => establishmentPerformance.UCI_INS_ALEV_Est_Current_Num_Coded,
@@ -109,7 +140,8 @@ public class Level3QualificationsService(
                 Level3.AppliedGeneral => englandPerformance.VA_INS_AGEN_Eng_Current_Num_Coded,
                 Level3.TechLevel => englandPerformance.VA_INS_TLEV_Eng_Current_Num_Coded,
                 _ => CodedDouble.Empty,
-            }
+            },
+            BandingContextDescription = bandingRating.Value.GetBandingDescription(bandingDescriptions)
         };
     }
 
