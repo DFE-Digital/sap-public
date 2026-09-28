@@ -24,7 +24,11 @@ public static class AssertHelpers
 
         if(!expectedParseSuccess || !actualParseSuccess)
         {
-            throw new ArgumentException($"Unable to parse value to double. Expected: '{expected}', Actual: '{actual}'");
+            if (expected == "c" || expected == "z")
+            {
+                Assert.Equal("Not available", actual);
+            }
+            else throw new ArgumentException($"Unable to parse value to double. Expected: '{expected}', Actual: '{actual}'");
         }
         Assert.Equal(
             expectedValue,

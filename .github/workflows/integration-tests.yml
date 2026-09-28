@@ -30,10 +30,10 @@ jobs:
         run: dotnet restore
 
       - name: Build integration tests
-        run: dotnet build Tests/SAPPub.Integration.Tests/SAPPub.Integration.Tests.csproj --configuration Release
+        run: dotnet build Tests/SAPPub.E2E.Tests/SAPPub.E2E.Tests.csproj --configuration Release
 
       - name: Install Playwright browsers
-        run: pwsh ./Tests/SAPPub.Integration.Tests/bin/Release/net10.0/playwright.ps1 install
+        run: pwsh ./Tests/SAPPub.E2E.Tests/bin/Release/net10.0/playwright.ps1 install
 
       - name: Run integration tests
         env:
@@ -43,11 +43,11 @@ jobs:
           BASE_URL: ${{ inputs.base_url }}
           TEST_DATA_VERSION: ${{ inputs.test_data_version }}
         run: |
-          dotnet test Tests/SAPPub.Integration.Tests/SAPPub.Integration.Tests.csproj \
+          dotnet test Tests/SAPPub.E2E.Tests/SAPPub.E2E.Tests.csproj \
             --no-build \
             --configuration Release \
             --results-directory "TestResults" \
-            --logger "trx;LogFileName=integration-tests.trx"
+            --logger "trx;LogFileName=E2Eintegration-tests.trx"
 
       - name: Upload Test Result Files
         uses: actions/upload-artifact@v4

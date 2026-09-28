@@ -19,6 +19,8 @@ public class EnglishAndMathsPageTests : BasePageTest
         public required AllStateFundedPupilsLaTestDataModel laCurrentYear { get; set; }
         public required AllStateFundedPupilsLaTestDataModel laPreviousYear { get; set; }
         public required AllStateFundedPupilsLaTestDataModel laPrevious2Year { get; set; }
+        public required AllStateFundedPupilsLaTestDataModel laGirlsCurrentYear { get; set; }
+        public required AllStateFundedPupilsLaTestDataModel laBoysCurrentYear { get; set; }
     }
 
     public class EnglishMathsBreakdownsPageTestDataModel
@@ -27,6 +29,8 @@ public class EnglishAndMathsPageTests : BasePageTest
         public required PerformanceTablesTestDataModel DisadvantagedCurrentYear { get; set; }
         public required PerformanceTablesTestDataModel EALCurrentYear { get; set; }
         public required PerformanceTablesTestDataModel NonMobileCurrentYear { get; set; }
+        public required AllStateFundedPupilsLaTestDataModel LaNonDisadvantagedCurrentYear { get; set; }
+        public required AllStateFundedPupilsLaTestDataModel LaDisadvantagedCurrentYear { get; set; }
     }
 
     private string BasePageUrl(string urn) => $"/school/{urn}";
@@ -76,6 +80,22 @@ public class EnglishAndMathsPageTests : BasePageTest
         "KS4",
         "202425_all_state_funded_pupils_characteristics_la_Total_Previous2").ToDictionary(x => x.Urn);
 
+    private static readonly IDictionary<string, AllStateFundedPupilsLaTestDataModel> _laPerformanceGirlsCurrentYearTestData = TestDataLoader.Load<AllStateFundedPupilsLaTestDataModel>(
+        "KS4",
+        "202425_all_state_funded_pupils_characteristics_la_Girls_Current").ToDictionary(x => x.Urn);
+
+    private static readonly IDictionary<string, AllStateFundedPupilsLaTestDataModel> _laPerformanceBoysCurrentYearTestData = TestDataLoader.Load<AllStateFundedPupilsLaTestDataModel>(
+        "KS4",
+        "202425_all_state_funded_pupils_characteristics_la_Boys_Current").ToDictionary(x => x.Urn);
+
+    private static readonly IDictionary<string, AllStateFundedPupilsLaTestDataModel> _laPerformanceDisadvantagedCurrentYearTestData = TestDataLoader.Load<AllStateFundedPupilsLaTestDataModel>(
+        "KS4",
+        "202425_all_state_funded_pupils_characteristics_la_Disadvantaged_Current").ToDictionary(x => x.Urn);
+
+    private static readonly IDictionary<string, AllStateFundedPupilsLaTestDataModel> _laPerformanceNonDisadvantagedCurrentYearTestData = TestDataLoader.Load<AllStateFundedPupilsLaTestDataModel>(
+        "KS4",
+        "202425_all_state_funded_pupils_characteristics_la_NonDisadvantaged_Current").ToDictionary(x => x.Urn);
+
     public static TheoryData<EnglishMathsPageTestDataModel> GetPerformanceData()
     {
         var urns = _performanceTotalsCurrentYearTestData.Keys
@@ -86,6 +106,8 @@ public class EnglishAndMathsPageTests : BasePageTest
             .Intersect(_laPerformanceCurrentYearTestData.Keys)
             .Intersect(_laPerformancePreviousYearTestData.Keys)
             .Intersect(_laPerformancePrevious2YearTestData.Keys)
+            .Intersect(_laPerformanceGirlsCurrentYearTestData.Keys)
+            .Intersect(_laPerformanceBoysCurrentYearTestData.Keys)
             .ToList();
 
         if (urns.Count == 0)
@@ -104,7 +126,9 @@ public class EnglishAndMathsPageTests : BasePageTest
                 laPreviousYear = _laPerformancePreviousYearTestData[currentYear.SchoolUrn],
                 laPrevious2Year = _laPerformancePrevious2YearTestData[currentYear.SchoolUrn],
                 GirlsCurrentYear = _performanceGirlsCurrentYearTestData[currentYear.SchoolUrn],
-                BoysCurrentYear = _performanceBoysCurrentYearTestData[currentYear.SchoolUrn]
+                BoysCurrentYear = _performanceBoysCurrentYearTestData[currentYear.SchoolUrn],
+                laGirlsCurrentYear = _laPerformanceGirlsCurrentYearTestData[currentYear.SchoolUrn],
+                laBoysCurrentYear = _laPerformanceBoysCurrentYearTestData[currentYear.SchoolUrn]
             }).ToArray());
     }
 
@@ -137,6 +161,8 @@ public class EnglishAndMathsPageTests : BasePageTest
         var urns = _performanceDisadvantagedCurrentYearTestData.Keys
             .Intersect(_performanceEALCurrentYearTestData.Keys)
             .Intersect(_performanceNonMobileCurrentYearTestData.Keys)
+            .Intersect(_laPerformanceNonDisadvantagedCurrentYearTestData.Keys)
+            .Intersect(_laPerformanceDisadvantagedCurrentYearTestData.Keys)
             .ToList();
 
         if (urns.Count == 0)
@@ -149,7 +175,9 @@ public class EnglishAndMathsPageTests : BasePageTest
             SchoolUrn = currentYear.SchoolUrn,
             DisadvantagedCurrentYear = currentYear,
             EALCurrentYear = _performanceEALCurrentYearTestData[currentYear.SchoolUrn],
-            NonMobileCurrentYear = _performanceNonMobileCurrentYearTestData[currentYear.SchoolUrn]
+            NonMobileCurrentYear = _performanceNonMobileCurrentYearTestData[currentYear.SchoolUrn],
+            LaDisadvantagedCurrentYear = _laPerformanceDisadvantagedCurrentYearTestData[currentYear.SchoolUrn],
+            LaNonDisadvantagedCurrentYear = _laPerformanceNonDisadvantagedCurrentYearTestData[currentYear.SchoolUrn]
         }).ToArray());
     }
 
@@ -169,6 +197,7 @@ public class EnglishAndMathsPageTests : BasePageTest
 
             // Act - expand the breakdowns section
             await Page.ExpandAccordionByIdAsync("other-pupil-characteristics-accordion");
+            await Page.ExpandDetailsByIdAsync("non-disadvantaged-details");
 
             await AssertBreakdownPerformanceData(pageOption, testData);
         }
@@ -176,26 +205,43 @@ public class EnglishAndMathsPageTests : BasePageTest
 
     private async Task AssertBreakdownPerformanceData(string pageOption, EnglishMathsBreakdownsPageTestDataModel expected)
     {
-        if (pageOption == "grade-5-and-above")
+        // TODO  for new data release (pageOption == "grade-7-and-above")
+        var expectedValuesForGrade = pageOption switch
         {
-            var schoolData = await Page.GetTableRowValuesAsync("#breakdown-eal-table", "Pupils with EAL");
-            AssertHelpers.AssertNumericEqual(expected.EALCurrentYear.EngMath95Percent, schoolData[0]);
-            schoolData = await Page.GetTableRowValuesAsync("#breakdown-non-mobile-table", "Non-mobile pupils");
-            AssertHelpers.AssertNumericEqual(expected.NonMobileCurrentYear.EngMath95Percent, schoolData[0]);
-            schoolData = await Page.GetTableRowValuesAsync("#breakdown-disadvantaged-table", "Disadvantaged pupils");
-            AssertHelpers.AssertNumericEqual(expected.DisadvantagedCurrentYear.EngMath95Percent, schoolData[0]);
-        }
-        else if (pageOption == "grade-4-and-above")
-        {
-            var schoolData = await Page.GetTableRowValuesAsync("#breakdown-gcse-current-year-table", "School");
-            AssertHelpers.AssertNumericEqual(expected.DisadvantagedCurrentYear.EngMath94Percent, schoolData[0]);
-            AssertHelpers.AssertNumericEqual(expected.EALCurrentYear.EngMath94Percent, schoolData[1]);
-            AssertHelpers.AssertNumericEqual(expected.NonMobileCurrentYear.EngMath94Percent, schoolData[2]);
-        }
+            "grade-5-and-above" => new
+            {
+                DisadvantagedCurrentYear = expected.DisadvantagedCurrentYear.EngMath95Percent,
+                EALCurrentYear = expected.EALCurrentYear.EngMath95Percent,
+                NonMobileCurrentYear = expected.NonMobileCurrentYear.EngMath95Percent,
+                LaDisadvantagedCurrentYear = expected.LaDisadvantagedCurrentYear.EngMath95Percent,
+                LaNonDisadvantagedCurrentYear = expected.LaNonDisadvantagedCurrentYear.EngMath95Percent
+            },
+            "grade-4-and-above" => new
+            {
+                DisadvantagedCurrentYear = expected.DisadvantagedCurrentYear.EngMath94Percent,
+                EALCurrentYear = expected.EALCurrentYear.EngMath94Percent,
+                NonMobileCurrentYear = expected.NonMobileCurrentYear.EngMath94Percent,
+                LaDisadvantagedCurrentYear = expected.LaDisadvantagedCurrentYear.EngMath94Percent,
+                LaNonDisadvantagedCurrentYear = expected.LaNonDisadvantagedCurrentYear.EngMath94Percent
+            },
+            _ => throw new ArgumentException($"Invalid page option: {pageOption}")
+        };
+
+        var schoolData = await Page.GetTableRowValuesAsync("#breakdown-eal-table", 0);
+        AssertHelpers.AssertNumericEqual(expectedValuesForGrade.EALCurrentYear, schoolData[0]);
+        schoolData = await Page.GetTableRowValuesAsync("#breakdown-non-mobile-table", 0);
+        AssertHelpers.AssertNumericEqual(expectedValuesForGrade.NonMobileCurrentYear, schoolData[0]);
+        schoolData = await Page.GetTableRowValuesAsync("#breakdown-disadvantaged-table", 0);
+        AssertHelpers.AssertNumericEqual(expectedValuesForGrade.DisadvantagedCurrentYear, schoolData[0]);
+        var laData = await Page.GetTableRowValuesAsync("#breakdown-disadvantaged-table", 1);
+        AssertHelpers.AssertNumericEqual(expectedValuesForGrade.LaDisadvantagedCurrentYear, laData[0]);
+        laData = await Page.GetTableRowValuesAsync("#breakdown-non-disadvantaged-table", 0);
+        AssertHelpers.AssertNumericEqual(expectedValuesForGrade.LaNonDisadvantagedCurrentYear, laData[0]);
     }
+
     private async Task AssertGradeXAndAboveTotalsPerformanceData(string pageOption, EnglishMathsPageTestDataModel expected)
     {
-        // TODO  for new data release if (pageOption == "grade-7-and-above")
+        // TODO  for new data release (pageOption == "grade-7-and-above")
         var expectedValuesForGrade = pageOption switch
         {
             "grade-5-and-above" => new
@@ -232,18 +278,31 @@ public class EnglishAndMathsPageTests : BasePageTest
 
     private async Task AssertGradeXAndAboveGirlsBoysPerformanceData(string pageOption, EnglishMathsPageTestDataModel expected)
     {
-        // TODO  for new data release if (pageOption == "grade-7-and-above")
-        if (pageOption == "grade-5-and-above")
+        var expectedValuesForGrade = pageOption switch
         {
-            var schoolDataByBreakdown = await Page.GetTableRowValuesAsync("#breakdown-gcse-current-year-table", "School");
-            AssertHelpers.AssertNumericEqual(expected.GirlsCurrentYear.EngMath95Percent, schoolDataByBreakdown[0]);
-            AssertHelpers.AssertNumericEqual(expected.BoysCurrentYear.EngMath95Percent, schoolDataByBreakdown[1]);
-        }
-        else if (pageOption == "grade-4-and-above")
-        {
-            var schoolDataByBreakdown = await Page.GetTableRowValuesAsync("#breakdown-gcse-current-year-table", "School");
-            AssertHelpers.AssertNumericEqual(expected.GirlsCurrentYear.EngMath94Percent, schoolDataByBreakdown[0]);
-            AssertHelpers.AssertNumericEqual(expected.BoysCurrentYear.EngMath94Percent, schoolDataByBreakdown[1]);
-        }
-    }
+            // TODO  for new data release if (pageOption == "grade-7-and-above")
+            "grade-5-and-above" => new
+            {
+                GirlsCurrentYear = expected.GirlsCurrentYear.EngMath95Percent,
+                BoysCurrentYear = expected.BoysCurrentYear.EngMath95Percent,
+                laGirlsCurrentYear = expected.laGirlsCurrentYear.EngMath95Percent,
+                laBoysCurrentYear = expected.laBoysCurrentYear.EngMath95Percent,
+            },
+            "grade-4-and-above" => new
+            {
+                GirlsCurrentYear = expected.GirlsCurrentYear.EngMath94Percent,
+                BoysCurrentYear = expected.BoysCurrentYear.EngMath94Percent,
+                laGirlsCurrentYear = expected.laGirlsCurrentYear.EngMath94Percent,
+                laBoysCurrentYear = expected.laBoysCurrentYear.EngMath94Percent,
+            },
+            _ => throw new ArgumentException($"Invalid page option: {pageOption}")
+        };
+
+        var schoolDataByBreakdown = await Page.GetTableRowValuesAsync("#breakdown-gcse-current-year-table", 0);
+        AssertHelpers.AssertNumericEqual(expectedValuesForGrade.GirlsCurrentYear, schoolDataByBreakdown[0]);
+        AssertHelpers.AssertNumericEqual(expectedValuesForGrade.BoysCurrentYear, schoolDataByBreakdown[1]);
+        var laDataByBreakdown = await Page.GetTableRowValuesAsync("#breakdown-gcse-current-year-table", 1);
+        AssertHelpers.AssertNumericEqual(expectedValuesForGrade.laGirlsCurrentYear, laDataByBreakdown[0]);
+        AssertHelpers.AssertNumericEqual(expectedValuesForGrade.laBoysCurrentYear, laDataByBreakdown[1]);
+     }
 }
