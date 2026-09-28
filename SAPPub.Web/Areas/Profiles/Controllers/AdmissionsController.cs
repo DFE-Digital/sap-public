@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement;
 using Microsoft.FeatureManagement.Mvc;
+using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Web.Areas.Profiles.Filters;
@@ -55,12 +56,14 @@ public class AdmissionsController(ILogger<AdmissionsController> logger, IFeature
     [Route("school/{urn}/{schoolName}/admissions/secondary", Name = RouteConstants.SecondaryAdmissions)]
     public async Task<IActionResult> KS4(
         [FromServices] IAdmissionsService admissionsService,
-        string urn,
+        [FromServices] IAdmissionsContentService admissionsContentService,
+        string urn, 
         string schoolName,
         CancellationToken ct)
     {
         var admissionsDetails = await admissionsService.GetAdmissionsDetailsAsync(urn, ct);
-        var model = AdmissionsViewModel.MapFrom(admissionsDetails, urn);
+        var admissionsContent = admissionsContentService.GetContent();
+        var model = AdmissionsViewModel.MapFrom(admissionsDetails, urn, admissionsContent);
         return View(model);
     }
 }

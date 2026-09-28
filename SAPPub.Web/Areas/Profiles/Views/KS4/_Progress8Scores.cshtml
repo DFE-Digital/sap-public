@@ -24,11 +24,13 @@ else
         <div class="custom-card__content">
             <p class="govuk-body">
                 Pupils at this school score @Model.EstablishmentProgress8Score.
-                @if (Model.EstablishmentProgress8BandingContextDescription.IsAvailable)
-                {
-                    <span>@Model.EstablishmentProgress8BandingContextDescription.DisplayText()</span>
-                }
             </p>
+            @if (Model.EstablishmentProgress8BandingContextDescription.IsAvailable)
+            {
+                <p class="govuk-body">
+                    @Model.EstablishmentProgress8BandingContextDescription.DisplayText()
+                </p>
+            }
             <p class="govuk-body">
                 The confidence interval is @Model.EstablishmentProgress8CILower to @Model.EstablishmentProgress8CIUpper.
             </p>

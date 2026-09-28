@@ -100,12 +100,16 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
         Assert.False(paginationIsVisible, "Pagination should not be visible when no results");
     }
 
-    [Fact]
-    public async Task SearchPage_EnterValidPostcode_ShowsViewWithResults()
+    [Theory]
+    [InlineData("M21 7SW")]
+    [InlineData("M21 7SW ")]
+    [InlineData(" M21 7SW")]
+    [InlineData(" M21 7SW ")]
+    [InlineData("    M21 7SW    ")]
+    public async Task SearchPage_EnterValidPostcode_ShowsViewWithResults(string searchTerm)
     {
         // Arrange
-        var searchTerm = "M21 7SW";
-        FakeEstablishmentRepository.CurrentTestPostcode = searchTerm;
+        FakeEstablishmentRepository.CurrentTestPostcode = searchTerm.Trim();
         var response = await Page.GotoAsync(_pageUrl);
 
         // Act
@@ -114,11 +118,13 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
         // Assert
+        var content = await Page.ContentAsync();
+        
         Assert.NotNull(response);
         Assert.Equal(200, response.Status);
         // assert text box contains search term
         var searchBoxValue = await Page.InputValueAsync("#LocationSearchTerm");
-        Assert.Equal(searchTerm, searchBoxValue);
+        Assert.Equal(searchTerm.Trim(), searchBoxValue);
 
         // assert that at least one search result is displayed
         var rows = Page.Locator(".govuk-summary-list .govuk-summary-list__row");

@@ -39,6 +39,14 @@ public class GenerateRawTablesTests : IDisposable
             new UTF8Encoding(false));
     }
 
+    private void WriteCsvWithEncoding(string name, string content, Encoding encoding)
+    {
+        File.WriteAllText(
+            Path.Combine(_input, name + ".csv"),
+            content,
+            encoding);
+    }
+
     // -------------------------------------------------------
     // TESTS
     // -------------------------------------------------------
@@ -143,5 +151,47 @@ public class GenerateRawTablesTests : IDisposable
         var bytes = File.ReadAllBytes(Path.Combine(_clean, "bomtest.clean.csv"));
 
         Assert.NotEqual(new byte[] { 0xEF, 0xBB, 0xBF }, bytes.Take(3).ToArray());
+    }
+
+    [Fact]
+    public void Trims_and_normalises_whitespace_in_fields()
+    {
+        WriteCsv("whitespacetest", "name\n  School Name\u00A0 ");
+
+        new GenerateRawTables(_input, _clean, _sql).Run();
+
+        var cleaned = File.ReadAllLines(Path.Combine(_clean, "whitespacetest.clean.csv"));
+
+        Assert.Equal("School Name", cleaned[1]);
+    }
+
+    [Fact]
+    public void Decodes_windows1252_encoded_file_correctly()
+    {
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        var windows1252 = Encoding.GetEncoding(1252);
+
+        WriteCsvWithEncoding(
+            "encodingtest",
+            "name,temperature\nMr Christian San Jos\u00e9,180\u00b0",
+            windows1252);
+
+        new GenerateRawTables(_input, _clean, _sql).Run();
+
+        var cleaned = File.ReadAllLines(Path.Combine(_clean, "encodingtest.clean.csv"), Encoding.UTF8);
+
+        Assert.Equal("Mr Christian San Jos\u00e9,180\u00b0", cleaned[1]);
+    }
+
+    [Fact]
+    public void Preserves_valid_multibyte_utf8_characters()
+    {
+        WriteCsv("utf8test", "name,temperature\nMr Christian San Jos\u00e9,180\u00b0");
+
+        new GenerateRawTables(_input, _clean, _sql).Run();
+
+        var cleaned = File.ReadAllLines(Path.Combine(_clean, "utf8test.clean.csv"), Encoding.UTF8);
+
+        Assert.Equal("Mr Christian San Jos\u00e9,180\u00b0", cleaned[1]);
     }
 }

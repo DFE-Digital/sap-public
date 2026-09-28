@@ -67,15 +67,15 @@ public class KS2PupilProgressTests
             .ReturnsAsync(new KS2EstablishmentPerformance 
             {
                 READPROG_Est_Previous2_Num_Coded = new CodedDouble(1, string.Empty, "1"),
-                READPROG_DESCR_Est_Previous2_Num_Coded = new CodedString("2", string.Empty, "2"),
+                READPROG_DESCR_Est_Previous2_Num_Coded = new CodedString("1", string.Empty, "1"),
                 READPROG_UPPER_Est_Previous2_Num_Coded = new CodedDouble(3, string.Empty, "3"),
                 READPROG_LOWER_Est_Previous2_Num_Coded = new CodedDouble(4, string.Empty, "4"),
                 WRITPROG_Est_Previous2_Num_Coded = new CodedDouble(5, string.Empty, "5"),
-                WRITPROG_DESCR_Est_Previous2_Num_Coded = new CodedString("6", string.Empty, "6"),
+                WRITPROG_DESCR_Est_Previous2_Num_Coded = new CodedString("1", string.Empty, "1"),
                 WRITPROG_UPPER_Est_Previous2_Num_Coded = new CodedDouble(7, string.Empty, "7"),
                 WRITPROG_LOWER_Est_Previous2_Num_Coded = new CodedDouble(8, string.Empty, "8"),
                 MATPROG_Est_Previous2_Num_Coded = new CodedDouble(9, string.Empty, "9"),
-                MATPROG_DESCR_Est_Previous2_Num_Coded = new CodedString("10", string.Empty, "10"),
+                MATPROG_DESCR_Est_Previous2_Num_Coded = new CodedString("1", string.Empty, "1"),
                 MATPROG_UPPER_Est_Previous2_Num_Coded = new CodedDouble(11, string.Empty, "11"),
                 MATPROG_LOWER_Est_Previous2_Num_Coded = new CodedDouble(12, string.Empty, "12")
             });
@@ -89,27 +89,40 @@ public class KS2PupilProgressTests
                 MATPROG_LA_Previous2_Num_Coded = new CodedDouble(32, string.Empty, "32")
             });
 
+        _ks2PerformanceRepository
+            .Setup(a => a.GetEnglandPerformanceAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new KS2EnglandPerformance
+            {
+                ProgBand_Read_Band1_Eng_Previous2_Desc = new CodedString("reading well above average reason", string.Empty, "reading well above average reason"),
+                ProgBand_Writ_Band1_Eng_Previous2_Desc = new CodedString("writing well above average reason", string.Empty, "writing well above average reason"),
+                ProgBand_Math_Band1_Eng_Previous2_Desc = new CodedString("maths well above average reason", string.Empty, "maths well above average reason")
+            });
+
         // Act
         var result = await _service.GetPupilProgressAsync(urn, AcademicYearSelection.Previous2, CancellationToken.None);
 
         // Assert
         Assert.Equal(urn, result.Urn);
         Assert.Equal(1, result.EstablishmentReadingScore!.Value);
-        Assert.Equal("2", result.EstablishmentReadingDescription!.Value);
+        Assert.Equal("1", result.EstablishmentReadingDescription!.Value);
         Assert.Equal(3, result.EstablishmentReadingConfidenceUpper!.Value);
         Assert.Equal(4, result.EstablishmentReadingConfidenceLower!.Value);
         Assert.Equal(5, result.EstablishmentWritingScore!.Value);
-        Assert.Equal("6", result.EstablishmentWritingDescription!.Value);
+        Assert.Equal("1", result.EstablishmentWritingDescription!.Value);
         Assert.Equal(7, result.EstablishmentWritingConfidenceUpper!.Value);
         Assert.Equal(8, result.EstablishmentWritingConfidenceLower!.Value);
         Assert.Equal(9, result.EstablishmentMathsScore!.Value);
-        Assert.Equal("10", result.EstablishmentMathsDescription!.Value);
+        Assert.Equal("1", result.EstablishmentMathsDescription!.Value);
         Assert.Equal(11, result.EstablishmentMathsConfidenceUpper!.Value);
         Assert.Equal(12, result.EstablishmentMathsConfidenceLower!.Value);
 
         Assert.Equal(30, result.LaReadingScore!.Value);
         Assert.Equal(31, result.LaWritingScore!.Value);
         Assert.Equal(32, result.LaMathsScore!.Value);
+
+        Assert.Equal("reading well above average reason", result.EstablishmentReadingContextDescription.Value);
+        Assert.Equal("writing well above average reason", result.EstablishmentWritingContextDescription.Value);
+        Assert.Equal("maths well above average reason", result.EstablishmentMathsContextDescription.Value);
 
         _establishmentService
             .Verify(a => a.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()), Times.Once);

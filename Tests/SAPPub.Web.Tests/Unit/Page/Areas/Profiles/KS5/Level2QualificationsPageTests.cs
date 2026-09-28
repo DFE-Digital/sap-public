@@ -273,8 +273,8 @@ public class Level2QualificationsPageTests : PageTestsBase
         var progresScoreCard = doc.QuerySelector("#progress-score-card");
         Assert.NotNull(progresScoreCard);
         Assert.Contains($"Students at this school score {_level2QualificationModel.ProgressScore.Score}", progresScoreCard.QuerySelectorAll("p")[0].TextContent);
-        Assert.Contains($"This is above average", progresScoreCard.QuerySelectorAll("p")[0].QuerySelector("span")?.TextContent);
-        Assert.Contains($"The confidence interval is {_level2QualificationModel.ProgressScore.ConfidenceLevelLower} to {_level2QualificationModel.ProgressScore.ConfidenceLevelUpper}.", progresScoreCard.QuerySelectorAll("p")[1].TextContent);
+        Assert.Contains($"This is above average", progresScoreCard.QuerySelectorAll("p")[1].TextContent);
+        Assert.Contains($"The confidence interval is {_level2QualificationModel.ProgressScore.ConfidenceLevelLower} to {_level2QualificationModel.ProgressScore.ConfidenceLevelUpper}.", progresScoreCard.QuerySelectorAll("p")[2].TextContent);
 
         // Assert progress england average
         var averageProgresScoreNationalCard = doc.QuerySelector("#average-progress-score-national-card");

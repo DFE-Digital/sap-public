@@ -365,8 +365,8 @@ public class Level3QualificationsPageTests : PageTestsBase
         var progresScoreCard = doc.QuerySelector("#progress-score-card");
         Assert.NotNull(progresScoreCard);
         Assert.Contains($"Students at this school score {_level3QualificationModel.ProgressScore.Score}", progresScoreCard.QuerySelectorAll("p")[0].TextContent);
-        Assert.Contains($"This is average", progresScoreCard.QuerySelectorAll("p")[0].QuerySelector("span")?.TextContent);
-        Assert.Contains($"The confidence interval is {_level3QualificationModel.ProgressScore.ConfidenceLevelLower} to {_level3QualificationModel.ProgressScore.ConfidenceLevelUpper}.", progresScoreCard.QuerySelectorAll("p")[1].TextContent);
+        Assert.Contains($"This is average", progresScoreCard.QuerySelectorAll("p")[1].TextContent);
+        Assert.Contains($"The confidence interval is {_level3QualificationModel.ProgressScore.ConfidenceLevelLower} to {_level3QualificationModel.ProgressScore.ConfidenceLevelUpper}.", progresScoreCard.QuerySelectorAll("p")[2].TextContent);
 
         // Assert progress england average
         var averageProgresScoreNationalCard = doc.QuerySelector("#average-progress-score-national-card");
@@ -429,7 +429,9 @@ public class Level3QualificationsPageTests : PageTestsBase
 
         // Assert DataOverTime data
         if (qualification == Level3.ALevel ||
-            qualification == Level3.Academic)
+            qualification == Level3.Academic ||
+            qualification == Level3.AppliedGeneral ||
+            qualification == Level3.TechLevel)
         {
             Assert.Contains("Number of students", doc.GetTableHeaderContentByIdAndIndex("average-result-data-overtime-table", 1, 0));
             Assert.Contains(_level3QualificationModel.AverageResult.NumberOfStudents.TwoYearsAgo.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 1, 0));

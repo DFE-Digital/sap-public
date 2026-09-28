@@ -51,7 +51,7 @@ public class ScaledScoresTests(WebApplicationSetupFixture fixture) : BasePageTes
         Assert.NotNull(heading);
         Assert.NotEmpty(heading!.Trim());
     }
-
+    
     [Fact]
     public async Task SubjectScaledScoresResultsPage_Displays_VerticalNavigation()
     {
@@ -212,6 +212,7 @@ public class ScaledScoresTests(WebApplicationSetupFixture fixture) : BasePageTes
         var chart = Page.Locator("#read-data-overtime-chart");
         var table = Page.Locator("#read-data-overtime-table");
         var chartLegend = Page.Locator("#read-data-overtime-chart-legend");
+        var chartLegendExplainer = Page.Locator("#read-data-over-time-legend-explainer");
         var showAsTableBtn = Page.Locator("#read-data-over-time-show-btn");
         var showCurrentDataBtn = Page.Locator("#read-show-current-data-btn");
 
@@ -229,6 +230,7 @@ public class ScaledScoresTests(WebApplicationSetupFixture fixture) : BasePageTes
         Assert.True(isChartLegendVisible);
         Assert.True(isShowAsTableBtnVisible);
         Assert.True(isShowCurrentDataBtnVisible);
+        Assert.True(await chartLegendExplainer.IsVisibleAsync());
 
         Assert.Equal("Show as a table", showAsTableBtnText);
         Assert.Equal("Show current data", showCurrentDataBtnText);

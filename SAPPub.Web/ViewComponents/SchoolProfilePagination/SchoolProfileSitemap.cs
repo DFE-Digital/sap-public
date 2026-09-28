@@ -171,14 +171,14 @@ public static class SchoolProfileSitemap
             Key: "SixteenToNineteenDestinations",
             Route: RouteConstants.KS5Destinations,
             Phase: SchoolPhase.SixteenToNineteen,
-            GetLabel: _ => $"{PageTitleConstants.KS5SchoolPageTitles.PhaseTitle}: {PageTitleConstants.KS5SchoolPageTitles.DestinationsShortTitle}",
+            GetLabel: _ => $"{PageTitleConstants.KS5SchoolPageTitles.PhaseTitle}: {PageTitleConstants.KS5SchoolPageTitles.DestinationsFullTitle}",
             IsAvailable: IsSixteenToNineteenAvailable),
 
         new(
             Key: "SixteenToNineteenDestinationsHigher",
             Route: RouteConstants.KS5DestinationsHigher,
             Phase: SchoolPhase.SixteenToNineteen,
-            GetLabel: _ => $"{PageTitleConstants.KS5SchoolPageTitles.PhaseTitle}: {PageTitleConstants.KS5SchoolPageTitles.DestinationsHigherShortTitle}",
+            GetLabel: _ => $"{PageTitleConstants.KS5SchoolPageTitles.PhaseTitle}: {PageTitleConstants.KS5SchoolPageTitles.DestinationsHigherFullTitle}",
             IsAvailable: IsSixteenToNineteenAvailable),
     };
 }

@@ -134,11 +134,13 @@
                         <div class="custom-card__content">
                             <p class="govuk-body">
                                 Pupils at this school score @Model.EstablishmentReadingScore.Score.
-                                @if (Model.EstablishmentReadingScore.BandingRating.HasValue)
-                                {
-                                    @Model.EstablishmentReadingScore.BandingRating.ToBandingString().DisplayText()
-                                }
                             </p>
+                            @if (Model.EstablishmentReadingScore.BandingRating.HasValue)
+                            {
+                                <p class="govuk-body">
+                                    @Model.EstablishmentReadingScore.BandingRating.ToBandingContextStatement(Model.EstablishmentReadingScore.BandingContextDescription).DisplayText()
+                                </p>
+                            }
                             <p class="govuk-body">
                                 The confidence interval is @Model.EstablishmentReadingScore.ConfidenceLevelLower to @Model.EstablishmentReadingScore.ConfidenceLevelUpper
                             </p>
@@ -172,11 +174,13 @@
                         <div class="custom-card__content">
                             <p class="govuk-body">
                                 Pupils at this school score @Model.EstablishmentWritingScore.Score.
-                                @if (Model.EstablishmentWritingScore.BandingRating.HasValue)
-                                {
-                                    @Model.EstablishmentWritingScore.BandingRating.ToBandingString().DisplayText()
-                                }
                             </p>
+                            @if (Model.EstablishmentWritingScore.BandingRating.HasValue)
+                            {
+                                <p class="govuk-body">
+                                    @Model.EstablishmentWritingScore.BandingRating.ToBandingContextStatement(Model.EstablishmentWritingScore.BandingContextDescription).DisplayText()
+                                </p>
+                            }
                             <p class="govuk-body">
                                 The confidence interval is @Model.EstablishmentWritingScore.ConfidenceLevelLower to @Model.EstablishmentWritingScore.ConfidenceLevelUpper
                             </p>
@@ -209,11 +213,13 @@
                         <div class="custom-card__content">
                             <p class="govuk-body">
                                 Pupils at this school score @Model.EstablishmentMathsScore.Score.
-                                @if (Model.EstablishmentMathsScore.BandingRating.HasValue)
-                                {
-                                    @Model.EstablishmentMathsScore.BandingRating.ToBandingString().DisplayText()
-                                }
                             </p>
+                            @if (Model.EstablishmentMathsScore.BandingRating.HasValue)
+                            {
+                                <p class="govuk-body">
+                                    @Model.EstablishmentMathsScore.BandingRating.ToBandingContextStatement(Model.EstablishmentMathsScore.BandingContextDescription).DisplayText()
+                                </p>
+                            }
                             <p class="govuk-body">
                                 The confidence interval is @Model.EstablishmentMathsScore.ConfidenceLevelLower to @Model.EstablishmentMathsScore.ConfidenceLevelUpper
                             </p>

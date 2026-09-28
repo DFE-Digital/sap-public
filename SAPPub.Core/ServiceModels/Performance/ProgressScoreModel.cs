@@ -13,4 +13,6 @@ public class ProgressScoreModel
     public CodedDouble ConfidenceLevelLower { get; init; }
 
     public CodedDouble EnglandAverageScore { get; init; }
+
+    public CodedString BandingContextDescription { get; init; }
 }
