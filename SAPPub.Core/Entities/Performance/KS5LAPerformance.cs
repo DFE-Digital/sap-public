@@ -78,11 +78,23 @@ public class KS5LAPerformance
     // T level Average result (grade) for the LA state-funded schools / colleges - Previous2
     public CodedString TALLPPEGRD_TLEV_23_LA_Previous2 { get; set; }
 
-    // Tech Cert Average result (points) for the LA state-funded schools / colleges
+    // Tech Cert Average result (points) for the LA state-funded schools / colleges - Current
     public CodedDouble TALLPPE_TECHCERT_LA_Current_Num_Coded { get; set; }
 
-    // Tech CertAverage result (grade) for the LA state-funded schools / colleges
+    // Tech Cert Average result (points) for the LA state-funded schools / colleges - Previous
+    public CodedDouble TALLPPE_TECHCERT_24_LA_Previous_Num_Coded { get; set; }
+
+    // Tech Cert Average result (points) for the LA state-funded schools / colleges - Previous2
+    public CodedDouble TALLPPE_TECHCERT_23_LA_Previous2_Num_Coded { get; set; }
+
+    // Tech CertAverage result (grade) for the LA state-funded schools / colleges - Current
     public CodedString TALLPPEGRD_TECHCERT_LA_Current { get; set; }
+
+    // Tech CertAverage result (grade) for the LA state-funded schools / colleges - Previous
+    public CodedString TALLPPEGRD_TECHCERT_24_LA_Previous { get; set; }
+
+    // Tech CertAverage result (grade) for the LA state-funded schools / colleges - Previous2
+    public CodedString TALLPPEGRD_TECHCERT_23_LA_Previous2 { get; set; }
 
     // A levels additional data LA points
     public CodedDouble TB3PTSE_LA_Current_Num_Coded { get; set; }

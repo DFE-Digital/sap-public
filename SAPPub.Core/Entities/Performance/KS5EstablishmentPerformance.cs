@@ -162,8 +162,14 @@ public class KS5EstablishmentPerformance
     // Tech level Average result grade for the school / college - Previous2
     public CodedString TALLPPEGRD_TLEV_23_Est_Previous2 { get; set; }
 
-    // Tech Cert Total number of students who completed at least one of this qualification type
+    // Tech Cert Total number of students who completed at least one of this qualification type - Current
     public CodedDouble TALLPUP_TECHCERT_Est_Current_Num_Coded { get; set; }
+
+    // Tech Cert Total number of students who completed at least one of this qualification type - Previous
+    public CodedDouble TALLPUP_TECHCERT_24_Est_Previous_Num_Coded { get; set; }
+
+    // Tech Cert Total number of students who completed at least one of this qualification type - Previous2
+    public CodedDouble TALLPUP_TECHCERT_23_Est_Previous2_Num_Coded { get; set; }
 
     // Tech Cert Progress score for the school / college
     public CodedDouble VA_INS_TECHCERT_Est_Current_Num_Coded { get; set; }
@@ -177,11 +183,23 @@ public class KS5EstablishmentPerformance
     // Tech Cert Progress confidence interval for the school / college lower
     public CodedDouble LCI_INS_TECHCERT_Est_Current_Num_Coded { get; set; }
 
-    // Tech Cert Average result points for the school / college lower
+    // Tech Cert Average result points for the school / college - Current
     public CodedDouble TALLPPE_TECHCERT_Est_Current_Num_Coded { get; set; }
 
-    // Tech Cert Average result grade for the school / college
+    // Tech Cert Average result points for the school / college - Previous
+    public CodedDouble TALLPPE_TECHCERT_24_Est_Previous_Num_Coded { get; set; }
+
+    // Tech Cert Average result points for the school / college - Previous2
+    public CodedDouble TALLPPE_TECHCERT_23_Est_Previous2_Num_Coded { get; set; }
+
+    // Tech Cert Average result grade for the school / college - Current
     public CodedString TALLPPEGRD_TECHCERT_Est_Current { get; set; }
+
+    // Tech Cert Average result grade for the school / college - Previous
+    public CodedString TALLPPEGRD_TECHCERT_24_Est_Previous { get; set; }
+
+    // Tech Cert Average result grade for the school / college - Previous2
+    public CodedString TALLPPEGRD_TECHCERT_23_Est_Previous2 { get; set; }
 
     // A level additional data Number of students
     public CodedDouble TINCLUDE_B3_Est_Current_Num_Coded { get; set; }

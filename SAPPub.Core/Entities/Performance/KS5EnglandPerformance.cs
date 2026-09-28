@@ -95,11 +95,23 @@ public class KS5EnglandPerformance
     // Tech Cert Progress score for England average
     public CodedDouble VA_INS_TECHCERT_Eng_Current_Num_Coded { get; set; }
 
-    // Tech Cert Average result points for England
+    // Tech Cert Average result points for England - Current
     public CodedDouble TALLPPE_TECHCERT_Eng_Current_Num_Coded { get; set; }
 
-    // Tech Cert Average result grade for England
+    // Tech Cert Average result points for England - Previous
+    public CodedDouble TALLPPE_TECHCERT_24_Eng_Previous_Num_Coded { get; set; }
+
+    // Tech Cert Average result points for England - Previous2
+    public CodedDouble TALLPPE_TECHCERT_23_Eng_Previous2_Num_Coded { get; set; }
+
+    // Tech Cert Average result grade for England - Current
     public CodedString TALLPPEGRD_TECHCERT_Eng_Current { get; set; }
+
+    // Tech Cert Average result grade for England - Previous
+    public CodedString TALLPPEGRD_TECHCERT_24_Eng_Previous { get; set; }
+
+    // Tech Cert Average result grade for England - Previous2
+    public CodedString TALLPPEGRD_TECHCERT_23_Eng_Previous2 { get; set; }
 
     // A levels additional data england points
     public CodedDouble TB3PTSE_Eng_Current_Num_Coded { get; set; }
