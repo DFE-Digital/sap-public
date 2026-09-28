@@ -4,6 +4,115 @@ This guide explains how to run the **SAPPub.Web** project locally.
 
 ---
 
+## Support Requests
+
+It will probably save time in the long run by submitting these requests before starting to set up the development environment, as some may take a number of days to be approved and then actioned.
+
+
+1. Request Local Admin privileges
+
+ - at: https://dfe.service-now.com/mydfe?id=dfe_ec_pro_dashboard
+
+ - search for 'Elevated Administrative Rights on DFE Device'
+
+ - fill out request
+
+   * Computer name: <computer_name>
+   * Access required until: 3/6 months
+   * Area of Business: Digital
+   * Reason elevated admin access is required: I am a new .Net developer on the sap-public team and need to install all the development tools to develop and test the database and code.
+
+---
+
+2. Request Visual Studio Subscription - (formerly Visual Studio with MSDN)
+
+ - at: https://dfe.service-now.com/mydfe?id=dfe_ec_pro_dashboard
+
+ - search for 'Visual Studio Subscription'
+
+ - fill out request
+
+   * Please describe your request, providing as much detail as possible.: I am a new .Net developer on the sap-public project and need Visual Studio 2026 to undertake development work.
+   * Please provide your full DfE email address: <your_dfe_email_address>
+   * Employee Type: <select_employee_type>
+   * Requested for: <your_name>
+   * Line Manager: <your_line_manager>
+   * Subscription Type: Visual Studio Professional
+   * How long do you require the licence for?: Ongoing
+
+---
+
+3. Request Windows Defender exclusion list
+
+ - at: https://dfe.service-now.com/mydfe?id=dfe_ec_pro_dashboard
+
+ - find form 'Please use this form if you cannot find the relevant request form in any other area of the portal'
+
+ - fill out request
+
+   * Requested for: <your_name>
+   * Please give a short description of your request: Windows Defender exclusion list
+   * Working from: <select_location>
+   * Contact Telephone Number: <your_phone_number>
+   * Select an appropriate Category: Non Standard
+   * Please describe your request in as much detail as possible. If there is not enough information, your request will be placed on hold until this is received : I am a new developer on the sap-public team and need to be able to run code on my laptop which is blocked by Windows Defender. Please could I be added to the exclusion list.
+   * Business Service: End User Computing
+   * Service Offering: End User Device Security (Windows Defender)
+
+---
+
+4. request access or remove access to Restricted Groups
+
+ - at: https://dfe.service-now.com/mydfe?id=dfe_ec_pro_dashboard
+
+ - search for 'request access or remove access to Restricted Groups'
+
+ - fill out request
+
+   * Requested By: <your_name>
+   * Requested for: <your_name>
+   * Do you want to add or remove access: Add Access
+   * Which Group(s) would you like to add the user to: Azure Internet Exclude Inspection PA approval
+   * Is there any other information you would like to provide?: Required to be able to install Playwright automated testing tool currently being used by the sap-public development team.
+
+---
+
+## Team Requests
+
+1. Request Azure permissions
+
+ - request a current team to raise a ticket for you for 'CIP Access'
+ - you should receive an email invite
+ - request a current team to raise a ticket for you to be added to the 'DfE Platform'
+ - access link: https://portal.azure.com/#servicemenu/Microsoft_Azure_Resources/ResourceManager/browseAll
+
+---
+
+2. Request GitHub permissions
+
+ - request a current team to have you added to the relevant repository for 'sap-public'
+
+---
+
+3. Figma access - screen designs
+
+ - request a current team invite you into Trello
+ - you should receive an email invite
+ - access link: https://www.figma.com/design/h21l6WwlWnMEUhJXAarMbW/Public-school-profiles---Private-beta?node-id=8839-7603&p=f
+
+4. Lucid access- work planning
+
+ - request a current team invite you into Lucid
+ - you should receive an email invite
+ - access link: https://lucid.app/users/login?returnUrlOverride=%2Flucidspark%2F6fd33fdc-b81c-49cc-93f4-cdcf67aedd14%2Fedit#/login?referredProduct=lucidspark
+
+5. Trello access - agile backlog, sprints and work items
+
+ - request a current team invite you into Lucid
+ - access link: https://trello.com/b/lJUZq6GT/school-profile-public-facing
+
+---
+
 ## Prerequisites
 
 Ensure the following are installed:
@@ -94,11 +203,23 @@ SAPPub.Web expects a local Postgres database populated using the **SAPData** pro
 
 Install Postgres on your machine (or run it via Docker) and make sure you can connect with `psql`.
 
-### 2) Create a local Postgres database
+### 2) Install postgis
+
+ - at: https://postgis.net/documentation/getting_started/install_windows
+ - download and install: https://download.osgeo.org/postgis/windows/pg18/postgis-bundle-pg18x64-setup-3.6.2-1.exe
+ - the version must match the version of Postgres installed
+ - this should also install PgAdmin which is required for viewing the db schema and data
+
+### 3) Install Postgres browser extensions
+
+ - Install Wave Extension for browser
+ - Install Axe Accessibility Tool Extension for browser
+
+### 4) Create a local Postgres database
 
 Create an empty database for local development.
 
-### 3) Get the CSV source data
+### 5) Get the CSV source data
 
 Download **all CSV files** from the **sap-public** storage account `s189t01sappubdptssa`, container `alldata`, into:
 
@@ -106,7 +227,7 @@ Download **all CSV files** from the **sap-public** storage account `s189t01sappu
 
 Do **not** check these files into git.
 
-### 4) Generate SQL scripts using SAPData
+### 6) Generate SQL scripts using SAPData
 
 From the repo root:
 
@@ -118,7 +239,7 @@ dotnet run
 
 This generates the SQL scripts used to create/populate tables and views.
 
-### 5) Run all SQL scripts via psql
+### 7) Run all SQL scripts via psql
 
 From the SQL script directory, run:
 
@@ -146,7 +267,7 @@ Re-run:
 \i run_all.sql
 ```
 
-### 6) Point SAPPub.Web at the local database
+### 8) Point SAPPub.Web at the local database
 
 Set the connection string in user secrets:
 
