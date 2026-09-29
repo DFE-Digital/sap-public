@@ -98,18 +98,18 @@ It will probably save time in the long run by submitting these requests before s
 
  - request a current team invite you into Trello
  - you should receive an email invite
- - access link: https://www.figma.com/design/h21l6WwlWnMEUhJXAarMbW/Public-school-profiles---Private-beta?node-id=8839-7603&p=f
+ - access link: https://www.figma.com
 
 4. Lucid access- work planning
 
  - request a current team invite you into Lucid
  - you should receive an email invite
- - access link: https://lucid.app/users/login?returnUrlOverride=%2Flucidspark%2F6fd33fdc-b81c-49cc-93f4-cdcf67aedd14%2Fedit#/login?referredProduct=lucidspark
+ - access link: https://lucid.app
 
 5. Trello access - agile backlog, sprints and work items
 
- - request a current team invite you into Lucid
- - access link: https://trello.com/b/lJUZq6GT/school-profile-public-facing
+ - request a current team invite you into Trello
+ - access link: https://trello.com
 
 ---
 
