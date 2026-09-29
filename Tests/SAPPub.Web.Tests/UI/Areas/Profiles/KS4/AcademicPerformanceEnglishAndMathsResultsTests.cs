@@ -665,7 +665,7 @@ public class AcademicPerformanceEnglishAndMathsResults : BasePageTest
         });
 
         var page = await context.NewPageAsync();
-        await page.GotoAsync(_schoolUrnToUrlMap["105574"], new PageGotoOptions { Timeout = 10000 });
+        await page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
         await page.GetByRole(AriaRole.Button, new() { Name = "Show data over time", Exact = true }).ClickAsync();

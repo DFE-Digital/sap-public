@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
-using NuGet.Protocol.Plugins;
 using SAPPub.Web.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace SAPPub.Web.Tests.UI.Helpers;
+namespace SAPPub.Web.Tests.Unit.Helpers;
 
 public class DataViewToggleHelperTests
 {
