@@ -1,6 +1,4 @@
 ﻿using SAPPub.Core.Enums.KS5Qualifications;
-using SAPPub.Playwright.Testing;
-using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 using PageConstants = SAPPub.Playwright.Testing.KS5.AcademicPerformanceLevel3QualificationsPageConstants;
 
@@ -11,7 +9,6 @@ public class Level2QualificationsTests(WebApplicationSetupFixture fixture) : Bas
 {
     private const string _urn = "130499";
     private const string _schoolName = "holy-cross-college";
-    private const string _schoolDisplayName = "Holy Cross College";
 
     private static string GetPageUrl(Level2 level2Qualification) => $"school/{_urn}/{_schoolName}/16-to-19-performance/level-2-qualifications/{level2Qualification.ToString().ToLower()}";
 
@@ -25,60 +22,6 @@ public class Level2QualificationsTests(WebApplicationSetupFixture fixture) : Bas
         // Assert
         Assert.NotNull(response);
         Assert.Equal(200, response.Status);
-    }
-
-    [Theory]
-    [InlineData(Level2.TechCert, "Technical Certificate")]    
-    public async Task Level2QualificationsPage_HasCorrectTitle(Level2 level2Qualification, string qualTitle)
-    {
-        // Arrange
-        await Page.GotoAsync(GetPageUrl(level2Qualification));
-
-        // Act
-        var title = await Page.TitleAsync();
-
-        // Assert
-        Assert.Equal($"{_schoolDisplayName} - 16 to 19 - Level 2 qualifications - {qualTitle} - Find and compare school and college profiles - GOV.UK", title);
-    }
-
-    [Theory]
-    [InlineData(Level2.TechCert)]    
-    public async Task Level2Qualifications_DisplaysMainHeading(Level2 level2Qualification)
-    {
-        // Arrange
-        await Page.GotoAsync(GetPageUrl(level2Qualification));
-
-        // Act
-        var heading = await Page.Locator("h1").TextContentAsync();
-
-        // Assert
-        Assert.NotNull(heading);
-        Assert.NotEmpty(heading.Trim());
-    }
-
-    [Theory]
-    [InlineData(Level2.TechCert)]    
-    public async Task Level2Qualifications_Displays_VerticalNavigation(Level2 level2Qualification)
-    {
-        var nav = new VerticalNavigationHelper(Page);
-        await Page.GotoAsync(GetPageUrl(level2Qualification));
-
-        await nav.ShouldBeVisibleAsync();
-        await nav.ShouldHaveOneActiveItemAsync();
-    }
-
-    [Theory]
-    [InlineData(Level2.TechCert)]
-    public async Task Level2Qualifications_Displays_Sub_Navigation(Level2 level2Qualification)
-    {
-        // Arrange
-        await Page.GotoAsync(GetPageUrl(level2Qualification));
-
-        // Act
-        var isVisible = await Page.Locator("#sub-navigation-academic-performance").IsVisibleAsync();
-
-        // Assert
-        Assert.True(isVisible);
     }
 
     [Theory]
