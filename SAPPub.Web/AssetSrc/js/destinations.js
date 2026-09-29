@@ -1,21 +1,5 @@
 ﻿(function () {
     document.addEventListener('DOMContentLoaded', () => {
-
-        // all destinations current year related elements
-        const allDestCurrentYearShowAsTableBtn = document.getElementById('all-dest-current-year-show-btn');
-        const allDestCurrentYearChartContainer = document.getElementById('all-dest-current-year-chart-container');
-        const allDestCurrentYearTableContainer = document.getElementById('all-dest-current-year-table-container');
-
-        // all destinations data over time related elements
-        const allDestShowDataOverTimeBtn = document.getElementById('all-dest-show-data-over-time-btn');
-        const allDestDataOverTimeChartContainer = document.getElementById('all-dest-data-over-time-chart-container');
-        const allDestDataOverTimeTableContainer = document.getElementById('all-dest-data-over-time-table-container');
-        const allDestDataOverTimeShowAsTableBtn = document.getElementById('all-dest-data-over-time-show-btn');
-
-        const currentViewRadio = document.getElementById('current-view');
-        const dataOvertimeViewRadio = document.getElementById('data-overtime-view');
-        const allDestShowCurrentDataBtn = document.getElementById('all-dest-show-current-data-btn');
-
         // KS5 destinations (edu, apprnship, work)
         const allKs5DestsShowAsTableBtn = document.getElementById('all-ks5-dest-data-show-btn');
         const allKs5DestChartContainer = document.getElementById('all-ks5-dest-data-chart-container');
@@ -25,58 +9,10 @@
         if (allKs5DestsShowAsTableBtn) {
             allKs5DestsShowAsTableBtn.addEventListener('click', () => {
                 const chartVisible = allKs5DestChartContainer.style.display !== 'none';
-                setTooggleState(allKs5DestChartContainer, allKs5DestTableContainer, chartVisible, allKs5DestsShowAsTableBtn);
+                setToggleState(allKs5DestChartContainer, allKs5DestTableContainer, chartVisible, allKs5DestsShowAsTableBtn);
             });
         }
-
-        setAriaAttribute(allDestCurrentYearShowAsTableBtn, 'false');
-        if (allDestCurrentYearShowAsTableBtn) {
-            allDestCurrentYearShowAsTableBtn.addEventListener('click', () => {
-                const chartVisible = allDestCurrentYearChartContainer.style.display !== 'none';
-                setTooggleState(allDestCurrentYearChartContainer, allDestCurrentYearTableContainer, chartVisible, allDestCurrentYearShowAsTableBtn);
-            });
-        }
-
-        if (allDestShowDataOverTimeBtn) {
-            allDestShowDataOverTimeBtn.addEventListener('click', () => {
-                if (dataOvertimeViewRadio) {
-                    dataOvertimeViewRadio.checked = true;
-                }
-
-                var chartVisible = allDestCurrentYearChartContainer.style.display !== 'none';
-                setTooggleState(allDestDataOverTimeChartContainer, allDestDataOverTimeTableContainer, !chartVisible, allDestDataOverTimeShowAsTableBtn);
-                blurElementIfFocused(allDestShowDataOverTimeBtn);
-                moveFocusToElement(allDestShowCurrentDataBtn);
-            });
-        }
-
-        setAriaAttribute(allDestDataOverTimeShowAsTableBtn, 'false');
-        if (allDestDataOverTimeShowAsTableBtn) {
-            allDestDataOverTimeShowAsTableBtn.addEventListener('click', () => {
-                const dataOverTimeChartVisible = allDestDataOverTimeChartContainer.style.display !== 'none';
-                setTooggleState(allDestDataOverTimeChartContainer, allDestDataOverTimeTableContainer, dataOverTimeChartVisible, allDestDataOverTimeShowAsTableBtn);
-            });
-        }
-
-        if (allDestShowCurrentDataBtn) {
-            allDestShowCurrentDataBtn.addEventListener('click', () => {
-                if (currentViewRadio) {
-                    currentViewRadio.checked = true;
-                }
-
-                var chartVisible = allDestDataOverTimeChartContainer.style.display !== 'none';
-                setTooggleState(allDestCurrentYearChartContainer, allDestCurrentYearTableContainer, !chartVisible, allDestCurrentYearShowAsTableBtn);
-                blurElementIfFocused(allDestShowCurrentDataBtn);
-                moveFocusToElement(allDestShowDataOverTimeBtn);
-            });
-        }
-
-        addKeyboardFocusTransfer(allDestShowDataOverTimeBtn, allDestShowCurrentDataBtn);
-        addKeyboardFocusTransfer(allDestShowCurrentDataBtn, allDestShowDataOverTimeBtn);
-
-        addEnterKeyHandler(allDestShowDataOverTimeBtn);
-        addEnterKeyHandler(allDestShowCurrentDataBtn);
-
+        
         const breakdownDestCurrentYearShowAsTableBtn = document.getElementById('breakdown-dest-current-year-show-btn');
         const breakdownDestCurrentYearChartContainer = document.getElementById('breakdown-dest-current-year-chart-container');
         const breakdownDestCurrentYearTableContainer = document.getElementById('breakdown-dest-current-year-table-container');
@@ -98,56 +34,7 @@
         if (toggle) toggle.setAttribute('aria-expanded', text);
     }
 
-    function blurElementIfFocused(element) {
-        if (!element || document.activeElement !== element) {
-            return;
-        }
-
-        element.blur();
-    }
-
-    function moveFocusToElement(element) {
-        if (!element) {
-            return;
-        }
-
-        [0, 50, 150, 300].forEach(delay => {
-            setTimeout(() => {
-                if (document.activeElement !== element) {
-                    element.focus();
-                }
-            }, delay);
-        });
-    }
-
-    function addKeyboardFocusTransfer(sourceElement, targetElement) {
-        if (!sourceElement || !targetElement) {
-            return;
-        }
-
-        sourceElement.addEventListener('keyup', (event) => {
-            if (event.key !== 'Enter' && event.key !== ' ') {
-                return;
-            }
-
-            moveFocusToElement(targetElement);
-        });
-    }
-
-    function addEnterKeyHandler(element) {
-        if (!element) {
-            return;
-        }
-
-        element.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault();
-                element.click();
-            }
-        });
-    }
-
-    function setTooggleState(chartContainer, tableContainer, isChartVisible, btnShow) {
+    function setToggleState(chartContainer, tableContainer, isChartVisible, btnShow) {
         chartContainer.style.display = isChartVisible ? 'none' : 'block';
         tableContainer.style.display = isChartVisible ? 'block' : 'none';
 
@@ -155,5 +42,4 @@
         setToggleText(btnShow, isTableVisible ? 'Show as a chart' : 'Show as a table')
         setAriaAttribute(btnShow, isChartVisible ? 'true' : 'false');
     }
-
 })();

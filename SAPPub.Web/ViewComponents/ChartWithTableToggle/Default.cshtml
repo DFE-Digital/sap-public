@@ -1,4 +1,5 @@
-﻿@using SAPPub.Web.ViewComponents.ChartWithTableToggle
+﻿@using SAPPub.Web.Helpers
+@using SAPPub.Web.ViewComponents.ChartWithTableToggle
 @model ChartWithTableToggleModel
 @using SAPPub.Web.Constants;
 @addTagHelper *, GovUk.Frontend.AspNetCore
@@ -7,39 +8,52 @@
     var idPrefix = Model.IdPrefix;
     var chartIdPrefix = Model.ChartPrefix;
     var percentageSign = Model.IsPercentageData ? "%" : "";
+    var chartMax = Model.IsPercentageData && !Model.IsScaled && Model.ShowFullPercentageAxis ? "100" : "";
+
+    var showOverTime = !Model.HasEstablishmentData || DataViewToggleHelper.IsOverTimeView(Context.Request, idPrefix);
+    var overTimeTableClass = Model.HasEstablishmentData ? "chart-table-toggle__table" : null;
 }
 
-<div class="chart-table-toggle" data-id-prefix="@idPrefix" data-chart-id-prefix="@chartIdPrefix">
-    <input type="radio" name="@(idPrefix)-dataView" id="@(idPrefix)-current-view" class="govuk-visually-hidden dataview-button chart-table-toggle__radio chart-table-toggle__radio-current" aria-labelledby="@(idPrefix)-show-current-data-btn" checked />
-    <input type="radio" name="@(idPrefix)-dataView" id="@(idPrefix)-data-overtime-view" class="govuk-visually-hidden dataview-button chart-table-toggle__radio--overtime chart-table-toggle__radio--overtime" aria-labelledby="@(idPrefix)-show-data-over-time-btn" />
+
+<div id="@DataViewToggleHelper.AnchorId(idPrefix)"
+     class="chart-table-toggle"
+     data-id-prefix="@idPrefix"
+     data-view-query-key="@DataViewToggleHelper.QueryKey(idPrefix)"
+     data-view="@(showOverTime ? DataViewToggleHelper.OverTimeView : DataViewToggleHelper.CurrentView)">
     @if (Model.HasEstablishmentData)
     {
-        <div id="@(idPrefix)-current-year-data-container" class="chart-table-toggle__current-year-data-container @(idPrefix)-current-year-data-container">
+        <div id="@(idPrefix)-current-year-data-container" data-view-panel="@DataViewToggleHelper.CurrentView" hidden="@showOverTime">
             <div class="govuk-button-group">
-                <govuk-button id="@(idPrefix)-current-year-show-btn" type="button" class="govuk-button--secondary chart-table-toggle__current-year-show-btn @(idPrefix)-current-year-show-btn">Show as a table</govuk-button>
+                <govuk-button id="@(idPrefix)-current-year-show-btn" type="button" class="govuk-button--secondary chart-table-toggle__table-btn">Show as a table</govuk-button>
             </div>
 
             <div class="govuk-button-group">
-                <label id="@(idPrefix)-show-data-over-time-btn" for="@(idPrefix)-data-overtime-view" class="govuk-button govuk-button--secondary" tabindex="0">Show data over time</label>
+                <a id="@(idPrefix)-show-data-over-time-btn"
+                   href="@DataViewToggleHelper.ViewUrl(Context.Request, idPrefix, overTime: true)"
+                   role="button"
+                   draggable="false"
+                   class="govuk-button govuk-button--secondary"
+                   data-module="govuk-button"
+                   data-show-view="@DataViewToggleHelper.OverTimeView">Show data over time</a>
             </div>
-            
-            <div id="@(idPrefix)-current-year-chart-container" class="chart-container chart-table-toggle__current-year-chart-container @(idPrefix)-current-year-chart-container">
-                
+
+            <div id="@(idPrefix)-current-year-chart-container" class="chart-container chart-table-toggle__chart">
+
                 <p class="govuk-visually-hidden">@Constants.ScreenReaderUseTable</p>
-                
+
                 <canvas id="@(chartIdPrefix)-chart"
                         class="js-chart"
                         aria-labelledby="@(idPrefix)-current-year-table"
                         role="img"
                         data-type="bar"
                         data-scaled="@Model.IsScaled.ToString().ToLower()"
-                        data-max='@(Model.IsPercentageData && !Model.IsScaled ? "100" : "")'
+                        data-max='@chartMax'
                         data-chart='@Html.Raw(Json.Serialize(Model.CurrentData))'
                         data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
                 </canvas>
             </div>
 
-            <div id="@(idPrefix)-current-year-table-container" class="chart-table-toggle__current-year-table-container @(idPrefix)-current-year-table-container">
+            <div id="@(idPrefix)-current-year-table-container" class="chart-table-toggle__table">
                 <table id="@(idPrefix)-current-year-table" class="govuk-table">
                     <tbody class="govuk-table__body">
                         @foreach (var label in Model.CurrentData.Labels.Select((value, i) => (value, i)))
@@ -54,26 +68,31 @@
                     </tbody>
                 </table>
             </div>
-
         </div>
     }
 
 
-    <div id="@(idPrefix)-data-over-time-data-container" class="chart-table-toggle__data-over-time-data-container @(idPrefix)-data-over-time-data-container  @(Model.HasEstablishmentData ? "" : "govuk-!-display-block")">
+    <div id="@(idPrefix)-data-over-time-data-container" data-view-panel="@DataViewToggleHelper.OverTimeView" hidden="@(!showOverTime)">
         @if (Model.HasEstablishmentData)
         {
             <div class="govuk-button-group">
-                <govuk-button id="@(idPrefix)-data-over-time-show-btn" type="button" class="govuk-button--secondary chart-table-toggle__data-over-time-show-btn @(idPrefix)-data-over-time-show-btn">Show as a table</govuk-button>
+                <govuk-button id="@(idPrefix)-data-over-time-show-btn" type="button" class="govuk-button--secondary chart-table-toggle__table-btn">Show as a table</govuk-button>
             </div>
 
             <div class="govuk-button-group">
-                <label id="@(idPrefix)-show-current-data-btn" for="@(idPrefix)-current-view" class="govuk-button govuk-button--secondary" tabindex="0">Show current data</label>
+                <a id="@(idPrefix)-show-current-data-btn"
+                   href="@DataViewToggleHelper.ViewUrl(Context.Request, idPrefix, overTime: false)"
+                   role="button"
+                   draggable="false"
+                   class="govuk-button govuk-button--secondary"
+                   data-module="govuk-button"
+                   data-show-view="@DataViewToggleHelper.CurrentView">Show current data</a>
             </div>
 
-            <div id="@(idPrefix)-data-over-time-chart-container" class="chart-container chart-table-toggle__data-over-time-chart-container @(idPrefix)-data-over-time-chart-container">
-            
+            <div id="@(idPrefix)-data-over-time-chart-container" class="chart-container chart-table-toggle__chart">
+
                 <p class="govuk-body" id="@(idPrefix)-data-over-time-legend-explainer">@Constants.LegendExplainer</p>
-                
+
                 <div id="@(idPrefix)-data-overtime-chart-legend" class="chart-legend" data-chart-id="@(chartIdPrefix)-data-overtime-chart"></div>
                 <div class="chart-container stacked">
 
@@ -86,14 +105,14 @@
                             role="img"
                             data-show-legend="true"
                             data-scaled="@Model.IsScaled.ToString().ToLower()"
-                            data-max='@(Model.IsPercentageData && !Model.IsScaled ? "100" : "")'
+                            data-max='@chartMax'
                             data-chart='@Html.Raw(Json.Serialize(Model.OverTimeData))'
                             data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
                     </canvas>
                 </div>
             </div>
         }
-        <div id="@(idPrefix)-data-over-time-table-container" class="chart-table-toggle__data-over-time-table-container @(idPrefix)-data-over-time-table-container">
+        <div id="@(idPrefix)-data-over-time-table-container" class="@overTimeTableClass">
             <table id="@(idPrefix)-data-overtime-table" class="govuk-table">
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
@@ -123,8 +142,8 @@
         {
             <h4 class="govuk-heading-s govuk-!-margin-top-6">@Model.ThreeYearAverageHeading</h4>
             <div class="govuk-body">@Model.ThreeYearAverageDescription</div>
-            <div id="@(idPrefix)-three-year-average-chart-container" class="govuk-!-padding-bottom-9 chart-container chart-table-toggle__three-year-average-chart-container @(idPrefix)-three-year-average-chart-container">
-                
+            <div id="@(idPrefix)-three-year-average-chart-container" class="govuk-!-padding-bottom-9 chart-container chart-table-toggle__chart">
+
                 <p class="govuk-visually-hidden">@Constants.ScreenReaderUseTable</p>
 
                 <p class="govuk-body">@Constants.LegendExplainer</p>
@@ -135,13 +154,13 @@
                         aria-labelledby="@(idPrefix)-three-year-average-table"
                         role="img"
                         data-scaled="@Model.IsScaled.ToString().ToLower()"
-                        data-max='@(Model.IsPercentageData && !Model.IsScaled ? "100" : "")'
+                        data-max='@chartMax'
                         data-chart='@Html.Raw(Json.Serialize(Model.ThreeYearAverageData))'
                         data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
                 </canvas>
             </div>
 
-            <div id="@(idPrefix)-three-year-average-table-container" class="chart-table-toggle__three-year-average-table-container @(idPrefix)-three-year-average-table-container">
+            <div id="@(idPrefix)-three-year-average-table-container" class="chart-table-toggle__table">
                 <table id="@(idPrefix)-three-year-average-table" class="govuk-table">
                     <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">@Model.ThreeYearAverageHeading</caption>
                     <tbody class="govuk-table__body">

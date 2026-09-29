@@ -40,4 +40,5 @@ public class ChartWithTableToggleModel
     /// </summary>
     public required bool IsPercentageData { get; set; } = false;
 
+    public bool ShowFullPercentageAxis { get; set; } = true;
 }

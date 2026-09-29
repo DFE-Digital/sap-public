@@ -26,8 +26,6 @@ public class DestinationsTests(WebApplicationSetupFixture fixture) : BasePageTes
         // Arrange
         await Page.GotoAsync(_url);
 
-        var content = await Page.ContentAsync();
-
         // Act
         await Page.ClickAsync("#all-ks5-dest-data-show-btn");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);

@@ -118,132 +118,148 @@ else if (qualification is Level2 level2Qualification)
      qualification is Level3.Academic ||
      qualification is Level3.AppliedGeneral)
 {
+    const string averageResultIdPrefix = "average-result";
+    var showAverageResultOverTime = DataViewToggleHelper.IsOverTimeView(Context.Request, averageResultIdPrefix);
+
     <div class="data-container">
-        <input type="radio" name="dataView" id="current-view" class="govuk-visually-hidden dataview-button chart-table-toggle__radio-current" aria-labelledby="average-result-show-current-data-btn" checked />
-        <input type="radio" name="dataView" id="data-overtime-view" class="govuk-visually-hidden dataview-button chart-table-toggle__radio--overtime" aria-labelledby="average-result-show-data-over-time-btn" />
 
-        <div id="average-result-current-year-table-container" class="chart-table-toggle__current-year-data-container">
+        
+        <div id="@DataViewToggleHelper.AnchorId(averageResultIdPrefix)"
+             class="chart-table-toggle"
+             data-id-prefix="@averageResultIdPrefix"
+             data-view-query-key="@DataViewToggleHelper.QueryKey(averageResultIdPrefix)"
+             data-view="@(showAverageResultOverTime ? DataViewToggleHelper.OverTimeView : DataViewToggleHelper.CurrentView)">
 
-            <div class="govuk-button-group govuk-!-margin-top-3 govuk-!-margin-bottom-0">
-                <label id="average-result-show-data-over-time-btn" for="data-overtime-view" class="govuk-button govuk-button--secondary" tabindex="0">Show data over time</label>
+            <div id="average-result-current-year-table-container" data-view-panel="@DataViewToggleHelper.CurrentView" hidden="@showAverageResultOverTime">
+
+                <a id="average-result-show-data-over-time-btn"
+                   href="@DataViewToggleHelper.ViewUrl(Context.Request, averageResultIdPrefix, overTime: true)"
+                   role="button"
+                   draggable="false"
+                   class="govuk-button govuk-button--secondary govuk-!-margin-top-3 govuk-!-margin-bottom-0"
+                   data-module="govuk-button"
+                   data-show-view="@DataViewToggleHelper.OverTimeView">Show data over time</a>
+
+                <table id="average-result-current-year-table" class="govuk-table">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header"></th>
+                            <th scope="col" class="govuk-table__header">Grade</th>
+                            <th scope="col" class="govuk-table__header">Points</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">School or college</th>
+                            <td class="govuk-table__cell">@Model.Establishment.CurrentYear.Grade.DisplayText()</td>
+                            <td class="govuk-table__cell">@Model.Establishment.CurrentYear.Points.DisplayText()</td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">@laName</th>
+                            <td class="govuk-table__cell">@Model.LocalAuthority.CurrentYear.Grade.DisplayText()</td>
+                            <td class="govuk-table__cell">@Model.LocalAuthority.CurrentYear.Points.DisplayText()</td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">England average</th>
+                            <td class="govuk-table__cell">@Model.England.CurrentYear.Grade.DisplayText()</td>
+                            <td class="govuk-table__cell">@Model.England.CurrentYear.Points.DisplayText()</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
-            <table id="average-result-current-year-table" class="govuk-table">
-                <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header"></th>
-                        <th scope="col" class="govuk-table__header">Grade</th>
-                        <th scope="col" class="govuk-table__header">Points</th>
-                    </tr>
-                </thead>
-                <tbody class="govuk-table__body">
-                    <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">School or college</th>
-                        <td class="govuk-table__cell">@Model.Establishment.CurrentYear.Grade.DisplayText()</td>
-                        <td class="govuk-table__cell">@Model.Establishment.CurrentYear.Points.DisplayText()</td>
-                    </tr>
-                    <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">@laName</th>
-                        <td class="govuk-table__cell">@Model.LocalAuthority.CurrentYear.Grade.DisplayText()</td>
-                        <td class="govuk-table__cell">@Model.LocalAuthority.CurrentYear.Points.DisplayText()</td>
-                    </tr>
-                    <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">England average</th>
-                        <td class="govuk-table__cell">@Model.England.CurrentYear.Grade.DisplayText()</td>
-                        <td class="govuk-table__cell">@Model.England.CurrentYear.Points.DisplayText()</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            <div id="average-result-data-over-time-table-container" data-view-panel="@DataViewToggleHelper.OverTimeView" hidden="@(!showAverageResultOverTime)">
 
-        <div id="average-result-data-over-time-table-container" class="chart-table-toggle__data-over-time-data-container">
+                <a id="average-result-show-current-data-btn"
+                   href="@DataViewToggleHelper.ViewUrl(Context.Request, averageResultIdPrefix, overTime: false)"
+                   role="button"
+                   draggable="false"
+                   class="govuk-button govuk-button--secondary govuk-!-margin-top-3 govuk-!-margin-bottom-0"
+                   data-module="govuk-button"
+                   data-show-view="@DataViewToggleHelper.CurrentView">Show current data</a>
 
-            <div class="govuk-button-group govuk-!-margin-top-3 govuk-!-margin-bottom-0">
-                <label id="average-result-show-current-data-btn" for="current-view" class="govuk-button govuk-button--secondary" tabindex="0">Show current data</label>
+                <table id="average-result-data-overtime-table" class="govuk-table">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header"></th>
+                            <th scope="col" class="govuk-table__header">@Model.AcademicYears.TwoYearsAgo</th>
+                            <th scope="col" class="govuk-table__header">@Model.AcademicYears.PreviousYear</th>
+                            <th scope="col" class="govuk-table__header">@Model.AcademicYears.CurrentYear</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">Number of students</th>
+                            <td class="govuk-table__cell">@Model.NumberOfStudents.TwoYearsAgo!.DisplayText()</td>
+                            <td class="govuk-table__cell">@Model.NumberOfStudents.PreviousYear!.DisplayText()</td>
+                            <td class="govuk-table__cell">@Model.NumberOfStudents.CurrentYear.DisplayText()</td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">School or college grade</th>
+                            <td class="govuk-table__cell">
+                                @Model.Establishment.TwoYearsAgo!.Grade.DisplayText()
+                                <div class="govuk-body-s">
+                                    (@Model.Establishment.TwoYearsAgo!.Points.DisplayPoints())
+                                </div>
+                            </td>
+                            <td class="govuk-table__cell">
+                                @Model.Establishment.PreviousYear!.Grade.DisplayText()
+                                <div class="govuk-body-s">
+                                    (@Model.Establishment.PreviousYear!.Points.DisplayPoints())
+                                </div>
+                            </td>
+                            <td class="govuk-table__cell">
+                                @Model.Establishment.CurrentYear.Grade.DisplayText()
+                                <div class="govuk-body-s">
+                                    (@Model.Establishment.CurrentYear.Points.DisplayPoints())
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">@laName grade</th>
+                            <td class="govuk-table__cell">
+                                @Model.LocalAuthority.TwoYearsAgo!.Grade.DisplayText()
+                                <div class="govuk-body-s">
+                                    (@Model.LocalAuthority.TwoYearsAgo!.Points.DisplayPoints())
+                                </div>
+                            </td>
+                            <td class="govuk-table__cell">
+                                @Model.LocalAuthority.PreviousYear!.Grade.DisplayText()
+                                <div class="govuk-body-s">
+                                    (@Model.LocalAuthority.PreviousYear!.Points.DisplayPoints())
+                                </div>
+                            </td>
+                            <td class="govuk-table__cell">
+                                @Model.LocalAuthority.CurrentYear.Grade.DisplayText()
+                                <div class="govuk-body-s">
+                                    (@Model.LocalAuthority.CurrentYear.Points.DisplayPoints())
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">England average grade</th>
+                            <td class="govuk-table__cell">
+                                @Model.England.TwoYearsAgo!.Grade.DisplayText()
+                                <div class="govuk-body-s">
+                                    (@Model.England.TwoYearsAgo!.Points.DisplayPoints())
+                                </div>
+                            </td>
+                            <td class="govuk-table__cell">
+                                @Model.England.PreviousYear!.Grade.DisplayText()
+                                <div class="govuk-body-s">
+                                    (@Model.England.PreviousYear!.Points.DisplayPoints())
+                                </div>
+                            </td>
+                            <td class="govuk-table__cell">
+                                @Model.England.CurrentYear.Grade.DisplayText()
+                                <div class="govuk-body-s">
+                                    (@Model.England.CurrentYear.Points.DisplayPoints())
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-
-            <table id="average-result-data-overtime-table" class="govuk-table">
-                <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header"></th>
-                        <th scope="col" class="govuk-table__header">@Model.AcademicYears.TwoYearsAgo</th>
-                        <th scope="col" class="govuk-table__header">@Model.AcademicYears.PreviousYear</th>
-                        <th scope="col" class="govuk-table__header">@Model.AcademicYears.CurrentYear</th>
-                    </tr>
-                </thead>
-                <tbody class="govuk-table__body">
-                    <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">Number of students</th>
-                        <td class="govuk-table__cell">@Model.NumberOfStudents.TwoYearsAgo!.DisplayText()</td>
-                        <td class="govuk-table__cell">@Model.NumberOfStudents.PreviousYear!.DisplayText()</td>
-                        <td class="govuk-table__cell">@Model.NumberOfStudents.CurrentYear.DisplayText()</td>
-                    </tr>
-                    <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">School or college grade</th>
-                        <td class="govuk-table__cell">
-                            @Model.Establishment.TwoYearsAgo!.Grade.DisplayText()
-                            <div class="govuk-body-s">
-                                (@Model.Establishment.TwoYearsAgo!.Points.DisplayPoints())
-                            </div>
-                        </td>
-                        <td class="govuk-table__cell">
-                            @Model.Establishment.PreviousYear!.Grade.DisplayText()
-                            <div class="govuk-body-s">
-                                (@Model.Establishment.PreviousYear!.Points.DisplayPoints())
-                            </div>
-                        </td>
-                        <td class="govuk-table__cell">
-                            @Model.Establishment.CurrentYear.Grade.DisplayText()
-                            <div class="govuk-body-s">
-                                (@Model.Establishment.CurrentYear.Points.DisplayPoints())
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">@laName grade</th>
-                        <td class="govuk-table__cell">
-                            @Model.LocalAuthority.TwoYearsAgo!.Grade.DisplayText()
-                            <div class="govuk-body-s">
-                                (@Model.LocalAuthority.TwoYearsAgo!.Points.DisplayPoints())
-                            </div>
-                        </td>
-                        <td class="govuk-table__cell">
-                            @Model.LocalAuthority.PreviousYear!.Grade.DisplayText()
-                            <div class="govuk-body-s">
-                                (@Model.LocalAuthority.PreviousYear!.Points.DisplayPoints())
-                            </div>
-                        </td>
-                        <td class="govuk-table__cell">
-                            @Model.LocalAuthority.CurrentYear.Grade.DisplayText()
-                            <div class="govuk-body-s">
-                                (@Model.LocalAuthority.CurrentYear.Points.DisplayPoints())
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">England average grade</th>
-                        <td class="govuk-table__cell">
-                            @Model.England.TwoYearsAgo!.Grade.DisplayText()
-                            <div class="govuk-body-s">
-                                (@Model.England.TwoYearsAgo!.Points.DisplayPoints())
-                            </div>
-                        </td>
-                        <td class="govuk-table__cell">
-                            @Model.England.PreviousYear!.Grade.DisplayText()
-                            <div class="govuk-body-s">
-                                (@Model.England.PreviousYear!.Points.DisplayPoints())
-                            </div>
-                        </td>
-                        <td class="govuk-table__cell">
-                            @Model.England.CurrentYear.Grade.DisplayText()
-                            <div class="govuk-body-s">
-                                (@Model.England.CurrentYear.Points.DisplayPoints())
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
         </div>
     </div>
 }
