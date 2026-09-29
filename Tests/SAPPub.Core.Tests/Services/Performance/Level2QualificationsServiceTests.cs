@@ -70,12 +70,27 @@ public class Level2QualificationsServiceTests
         Assert.Null(result.ProgressScore.ConfidenceLevelLower.Value);
         Assert.Null(result.ProgressScore.EnglandAverageScore.Value);
 
+        Assert.Null(result.AverageResult.NumberOfStudents.CurrentYear.Value);
+        Assert.Null(result.AverageResult.NumberOfStudents.PreviousYear!.Value);
+        Assert.Null(result.AverageResult.NumberOfStudents.TwoYearsAgo!.Value);
         Assert.Null(result.AverageResult.Establishment.CurrentYear.Grade.Value);
+        Assert.Null(result.AverageResult.Establishment.PreviousYear!.Grade.Value);
+        Assert.Null(result.AverageResult.Establishment.TwoYearsAgo!.Grade.Value);
         Assert.Null(result.AverageResult.Establishment.CurrentYear.Points.Value);
+        Assert.Null(result.AverageResult.Establishment.PreviousYear!.Points.Value);
+        Assert.Null(result.AverageResult.Establishment.TwoYearsAgo!.Points.Value);
         Assert.Null(result.AverageResult.LocalAuthority.CurrentYear.Grade.Value);
+        Assert.Null(result.AverageResult.LocalAuthority.PreviousYear!.Grade.Value);
+        Assert.Null(result.AverageResult.LocalAuthority.TwoYearsAgo!.Grade.Value);
         Assert.Null(result.AverageResult.LocalAuthority.CurrentYear.Points.Value);
+        Assert.Null(result.AverageResult.LocalAuthority.PreviousYear!.Points.Value);
+        Assert.Null(result.AverageResult.LocalAuthority.TwoYearsAgo!.Points.Value);
         Assert.Null(result.AverageResult.England.CurrentYear.Grade.Value);
+        Assert.Null(result.AverageResult.England.PreviousYear!.Grade.Value);
+        Assert.Null(result.AverageResult.England.TwoYearsAgo!.Grade.Value);
         Assert.Null(result.AverageResult.England.CurrentYear.Points.Value);
+        Assert.Null(result.AverageResult.England.PreviousYear!.Points.Value);
+        Assert.Null(result.AverageResult.England.TwoYearsAgo!.Points.Value);
 
         Assert.Null(result.DisadvantagedStudentsData.Establishment!.NumberOfStudents.Value);
         Assert.Null(result.DisadvantagedStudentsData.Establishment!.ProgressScore.Value);
@@ -128,12 +143,19 @@ public class Level2QualificationsServiceTests
         {
             Id = fakeEstablishment.URN,
             TALLPUP_TECHCERT_Est_Current_Num_Coded = new CodedDouble(55, string.Empty, string.Empty),
+            TALLPUP_TECHCERT_Est_Previous_Num_Coded = new CodedDouble(77, string.Empty, string.Empty),
+            TALLPUP_TECHCERT_Est_Previous2_Num_Coded = new CodedDouble(95, string.Empty, string.Empty),
             VA_INS_TECHCERT_Est_Current_Num_Coded = new CodedDouble(61.55, string.Empty, string.Empty),
             PROGRESS_BAND_TECHCERT_Est_Current = new CodedString("Average", string.Empty, string.Empty),
             UCI_INS_TECHCERT_Est_Current_Num_Coded = new CodedDouble(1, string.Empty, string.Empty),
             LCI_INS_TECHCERT_Est_Current_Num_Coded = new CodedDouble(0.3, string.Empty, string.Empty),
             TALLPPE_TECHCERT_Est_Current_Num_Coded = new CodedDouble(15.23, string.Empty, string.Empty),
+            TALLPPE_TECHCERT_Est_Previous_Num_Coded = new CodedDouble(29.55, string.Empty, string.Empty),
+            TALLPPE_TECHCERT_Est_Previous2_Num_Coded = new CodedDouble(45.97, string.Empty, string.Empty),
             TALLPPEGRD_TECHCERT_Est_Current = new CodedString("A", string.Empty, string.Empty),
+            TALLPPEGRD_TECHCERT_Est_Previous = new CodedString("C", string.Empty, string.Empty),
+            TALLPPEGRD_TECHCERT_Est_Previous2 = new CodedString("A", string.Empty, string.Empty),
+
             // Tech certs - Disadvantaged
             TALLPUP_TECHCERT_DIS_Est_Current_Num_Coded = new CodedDouble(310, string.Empty, string.Empty),
             VA_INS_TECHCERT_DIS_Est_Current_Num_Coded = new CodedDouble(59.58, string.Empty, string.Empty),
@@ -148,7 +170,11 @@ public class Level2QualificationsServiceTests
             Id = fakeEstablishment.LAId,
             VA_INS_TECHCERT_Eng_Current_Num_Coded = new CodedDouble(59.56, string.Empty, string.Empty),
             TALLPPE_TECHCERT_Eng_Current_Num_Coded = new CodedDouble(35.11, string.Empty, string.Empty),
+            TALLPPE_TECHCERT_Eng_Previous_Num_Coded = new CodedDouble(47.69, string.Empty, string.Empty),
+            TALLPPE_TECHCERT_Eng_Previous2_Num_Coded = new CodedDouble(55.75, string.Empty, string.Empty),
             TALLPPEGRD_TECHCERT_Eng_Current = new CodedString("C", string.Empty, string.Empty),
+            TALLPPEGRD_TECHCERT_Eng_Previous = new CodedString("B", string.Empty, string.Empty),
+            TALLPPEGRD_TECHCERT_Eng_Previous2 = new CodedString("A", string.Empty, string.Empty),
 
             // Tech certs - Disadvantaged
             TALLPUP_TECHCERT_DIS_Eng_Current_Num_Coded = new CodedDouble(150, string.Empty, string.Empty),
@@ -170,7 +196,11 @@ public class Level2QualificationsServiceTests
         var laPerformance = new KS5LAPerformance
         {
             TALLPPE_TECHCERT_LA_Current_Num_Coded = new CodedDouble(21.85, string.Empty, string.Empty),
+            TALLPPE_TECHCERT_LA_Previous_Num_Coded = new CodedDouble(35.69, string.Empty, string.Empty),
+            TALLPPE_TECHCERT_LA_Previous2_Num_Coded = new CodedDouble(40.12, string.Empty, string.Empty),
             TALLPPEGRD_TECHCERT_LA_Current = new CodedString("C", string.Empty, string.Empty),
+            TALLPPEGRD_TECHCERT_LA_Previous = new CodedString("B", string.Empty, string.Empty),
+            TALLPPEGRD_TECHCERT_LA_Previous2 = new CodedString("A", string.Empty, string.Empty),
 
             // Tech certs - Disadvantaged
             TALLPUP_TECHCERT_DIS_LA_Current_Num_Coded = new CodedDouble(315, string.Empty, string.Empty),
@@ -216,15 +246,36 @@ public class Level2QualificationsServiceTests
             Assert.Equal(establishmentPerformance.PROGRESS_BAND_TECHCERT_Est_Current, result.ProgressScore.BandingRating);
             Assert.Equal(establishmentPerformance.UCI_INS_TECHCERT_Est_Current_Num_Coded, result.ProgressScore.ConfidenceLevelUpper);
             Assert.Equal(establishmentPerformance.LCI_INS_TECHCERT_Est_Current_Num_Coded, result.ProgressScore.ConfidenceLevelLower);
+
+            Assert.Equal(establishmentPerformance.TALLPUP_TECHCERT_Est_Current_Num_Coded, result.AverageResult.NumberOfStudents.CurrentYear);
+            Assert.Equal(establishmentPerformance.TALLPUP_TECHCERT_Est_Previous_Num_Coded, result.AverageResult.NumberOfStudents.PreviousYear);
+            Assert.Equal(establishmentPerformance.TALLPUP_TECHCERT_Est_Previous2_Num_Coded, result.AverageResult.NumberOfStudents.TwoYearsAgo);
+
             Assert.Equal(establishmentPerformance.TALLPPE_TECHCERT_Est_Current_Num_Coded, result.AverageResult.Establishment.CurrentYear.Points);
+            Assert.Equal(establishmentPerformance.TALLPPE_TECHCERT_Est_Previous_Num_Coded, result.AverageResult.Establishment.PreviousYear!.Points);
+            Assert.Equal(establishmentPerformance.TALLPPE_TECHCERT_Est_Previous2_Num_Coded, result.AverageResult.Establishment.TwoYearsAgo!.Points);
+
             Assert.Equal(establishmentPerformance.TALLPPEGRD_TECHCERT_Est_Current, result.AverageResult.Establishment.CurrentYear.Grade);
+            Assert.Equal(establishmentPerformance.TALLPPEGRD_TECHCERT_Est_Previous, result.AverageResult.Establishment.PreviousYear!.Grade);
+            Assert.Equal(establishmentPerformance.TALLPPEGRD_TECHCERT_Est_Previous2, result.AverageResult.Establishment.TwoYearsAgo.Grade);
 
             Assert.Equal(englandPerformance.VA_INS_TECHCERT_Eng_Current_Num_Coded, result.ProgressScore.EnglandAverageScore);
+            
             Assert.Equal(englandPerformance.TALLPPE_TECHCERT_Eng_Current_Num_Coded, result.AverageResult.England.CurrentYear.Points);
+            Assert.Equal(englandPerformance.TALLPPE_TECHCERT_Eng_Previous_Num_Coded, result.AverageResult.England.PreviousYear!.Points);
+            Assert.Equal(englandPerformance.TALLPPE_TECHCERT_Eng_Previous2_Num_Coded, result.AverageResult.England.TwoYearsAgo!.Points);
+
             Assert.Equal(englandPerformance.TALLPPEGRD_TECHCERT_Eng_Current, result.AverageResult.England.CurrentYear.Grade);
+            Assert.Equal(englandPerformance.TALLPPEGRD_TECHCERT_Eng_Previous, result.AverageResult.England.PreviousYear!.Grade);
+            Assert.Equal(englandPerformance.TALLPPEGRD_TECHCERT_Eng_Previous2, result.AverageResult.England.TwoYearsAgo!.Grade);
 
             Assert.Equal(laPerformance.TALLPPE_TECHCERT_LA_Current_Num_Coded, result.AverageResult.LocalAuthority.CurrentYear.Points);
+            Assert.Equal(laPerformance.TALLPPE_TECHCERT_LA_Previous_Num_Coded, result.AverageResult.LocalAuthority.PreviousYear!.Points);
+            Assert.Equal(laPerformance.TALLPPE_TECHCERT_LA_Previous2_Num_Coded, result.AverageResult.LocalAuthority.TwoYearsAgo!.Points);
+
             Assert.Equal(laPerformance.TALLPPEGRD_TECHCERT_LA_Current, result.AverageResult.LocalAuthority.CurrentYear.Grade);
+            Assert.Equal(laPerformance.TALLPPEGRD_TECHCERT_LA_Previous, result.AverageResult.LocalAuthority.PreviousYear!.Grade);
+            Assert.Equal(laPerformance.TALLPPEGRD_TECHCERT_LA_Previous2, result.AverageResult.LocalAuthority.TwoYearsAgo!.Grade);
 
             // Disadvantaged students - Establishment
             Assert.Equal(establishmentPerformance.TALLPUP_TECHCERT_DIS_Est_Current_Num_Coded, result.DisadvantagedStudentsData.Establishment!.NumberOfStudents);
