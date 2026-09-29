@@ -74,11 +74,23 @@ public class KS5EnglandPerformance
     // Tech level Progress score for England average
     public CodedDouble VA_INS_TLEV_Eng_Current_Num_Coded { get; set; }
 
-    // Tech level Average result points for England
+    // Tech level Average result points for England - Current
     public CodedDouble TALLPPE_TLEV_Eng_Current_Num_Coded { get; set; }
 
-    // Tech level Average result grade for England
+    // Tech level Average result points for England - Previous
+    public CodedDouble TALLPPE_TLEV_24_Eng_Previous_Num_Coded { get; set; }
+
+    // Tech level Average result points for England - Previous2
+    public CodedDouble TALLPPE_TLEV_23_Eng_Previous2_Num_Coded { get; set; }
+
+    // Tech level Average result grade for England - Current
     public CodedString TALLPPEGRD_TLEV_Eng_Current { get; set; }
+
+    // Tech level Average result grade for England - Previous
+    public CodedString TALLPPEGRD_TLEV_24_Eng_Previous { get; set; }
+
+    // Tech level Average result grade for England - Previous2
+    public CodedString TALLPPEGRD_TLEV_23_Eng_Previous2 { get; set; }
 
     // Tech Cert Progress score for England average
     public CodedDouble VA_INS_TECHCERT_Eng_Current_Num_Coded { get; set; }

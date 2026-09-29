@@ -430,7 +430,8 @@ public class Level3QualificationsPageTests : PageTestsBase
         // Assert DataOverTime data
         if (qualification == Level3.ALevel ||
             qualification == Level3.Academic ||
-            qualification == Level3.AppliedGeneral)
+            qualification == Level3.AppliedGeneral ||
+            qualification == Level3.TechLevel)
         {
             Assert.Contains("Number of students", doc.GetTableHeaderContentByIdAndIndex("average-result-data-overtime-table", 1, 0));
             Assert.Contains(_level3QualificationModel.AverageResult.NumberOfStudents.TwoYearsAgo.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 1, 0));

@@ -24,17 +24,16 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
         {
             return RedirectToAction("SearchResults", model);
         }
-        else
+
+        if (!ModelState.IsValid)
         {
-            if (!ModelState.IsValid)
-            {
-                PrefixModelStateKeys("SearchParams");
-            }
-            return View(new SearchResultsViewModel()
-            {
-                SearchParams = model
-            });
+            PrefixModelStateKeys("SearchParams");
         }
+        
+        return View(new SearchResultsViewModel()
+        {
+            SearchParams = model
+        });
     }
 
     [HttpGet]
@@ -47,15 +46,15 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
         }
         var searchKeyWord = model.NameSearchTerm;
         var searchLocation = model.LocationSearchTerm;
-        var searchQuery = new SchoolSearchServiceQuery() 
-        { 
+        var searchQuery = new SchoolSearchServiceQuery()
+        {
             Name = searchKeyWord,
             Location = searchLocation,
             Distance = searchLocation != null ? model.Distance : null,
             PageNumber = model.PageNumber,
             EstablishmentPhases = model.Phase,
             EstablishmentTypes = model.SchoolType
-            
+
         };
 
         SchoolSearchResultsServiceModel? searchResults = null;
@@ -68,7 +67,7 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
                 ModelState.AddModelError(nameof(SearchParamsModel.LocationSearchTerm), "Enter a valid postcode");
             }
         }
-        
+
         var searchResultsModel = SearchResultsViewModel.FromServiceModel(model, searchResults);
         return View(searchResultsModel);
     }

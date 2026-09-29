@@ -83,8 +83,8 @@ For the system boundary, data flows and C4 levels 1 and 2, see the [High-Level D
 |  |  | Vocationalandtechnicalqualifications | /school/$urn/$school-name | /16-to-19-performance/subjects-entered/vocationalandtechnicalqualifications |
 | Destinations |  |  | /school/$urn/$school-name | /destinations |
 |  | Secondary |  | /school/$urn/$school-name | /destinations/secondary |
-|  | Education, apprenticeships or work (2023 leavers) |  | /school/$urn/$school-name | /destinations/16-to-19 |
-|  | Higher-level study (2022 leavers) |  | /school/$urn/$school-name | /destinations/16-to-19-higher-level-study |
+|  | Education, apprenticeships or work  |  | /school/$urn/$school-name | /destinations/16-to-19 |
+|  | Higher-level study  |  | /school/$urn/$school-name | /destinations/16-to-19-higher-level-study |
 | Search |  |  |  | /search |
 |  | Results |  |  | /search/results |
 
