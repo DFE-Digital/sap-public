@@ -8,13 +8,14 @@ using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
+using System.Text.RegularExpressions;
 
 namespace SAPPub.Web.Tests.UI.KS4;
 
 [Collection("Playwright Tests")]
 public class AcademicPerformanceEnglishAndMathsResults : BasePageTest
 {
-    private Dictionary<string, string> _schoolUrnToUrlMap = new Dictionary<string, string>
+    private readonly Dictionary<string, string> _schoolUrnToUrlMap = new()
     {
         ["105574"] = "school/105574/loreto-high-school-chorlton/secondary-performance/english-and-maths",
         ["100273"] = "school/100273/saint-paul-roman-catholic-infant-school/secondary-performance/english-and-maths",
@@ -625,6 +626,62 @@ public class AcademicPerformanceEnglishAndMathsResults : BasePageTest
         // Assert
         var reachedShowDataOverTimeButton = await FocusElementByTabAsync("all-gcse-show-data-over-time-btn", 120);
         Assert.True(reachedShowDataOverTimeButton);
+    }
+
+    [Fact]
+    public async Task EnglishAndMathsResultsPage_KeyboardActivation_ShowCurrentData_CanBeActivatedByAccessibleRoleAndName()
+    {
+        // Voice control software (eg Windows Voice Access) finds controls by their role, type and accessible name
+        // Arrange
+        await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
+        var pageUrl = Page.Url;
+
+        // Act
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Show data over time", Exact = true }).ClickAsync();
+
+        // Assert
+        Assert.Equal("over-time", await GetVisibleDataAsync("all-gcse"));
+        await Expect(Page.Locator("#all-gcse-data-overtime-chart")).ToBeVisibleAsync();
+        Assert.Equal(pageUrl, Page.Url);
+
+        // Act
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Show current data", Exact = true }).ClickAsync();
+
+        // Assert
+        Assert.Equal("current", await GetVisibleDataAsync("all-gcse"));
+        await Expect(Page.Locator("#all-gcse-chart")).ToBeVisibleAsync();
+        Assert.Equal(pageUrl, Page.Url);
+    }
+
+    [Fact]
+    public async Task EnglishAndMathsResultsPage_WithoutJavaSCript_ShowDataOverTimeAndShowCurrentData_SwitchView()
+    {
+        // Arrange
+        await using var context = await Browser.NewContextAsync(new BrowserNewContextOptions
+        {
+            BaseURL = BaseUrl.TrimEnd('/'),
+            IgnoreHTTPSErrors = true,
+            JavaScriptEnabled = false
+        });
+
+        var page = await context.NewPageAsync();
+        await page.GotoAsync(_schoolUrnToUrlMap["105574"], new PageGotoOptions { Timeout = 10000 });
+
+        // Act
+        await page.GetByRole(AriaRole.Button, new() { Name = "Show data over time", Exact = true }).ClickAsync();
+
+        // Assert
+        await Expect(page).ToHaveURLAsync(new Regex("all-gcse-view"));
+        await Expect(page.Locator("#all-gcse-data-overtime-table")).ToBeVisibleAsync();
+        await Expect(page.Locator("#all-gcse-current-year-table")).ToBeHiddenAsync();
+
+        // Act
+        await page.GetByRole(AriaRole.Button, new() { Name = "Show current data", Exact = true }).ClickAsync();
+
+        // Assert
+        await Expect(page).Not.ToHaveURLAsync(new Regex("all-gcse-view"));
+        await Expect(page.Locator("#all-gcse-data-overtime-table")).ToBeHiddenAsync();
+        await Expect(page.Locator("#all-gcse-current-year-table")).ToBeVisibleAsync();
     }
 
     private async Task<string> GetVisibleDataAsync(string idPrefix)

@@ -2,6 +2,8 @@
 
 body:not(.js-enabled) .all-dest-current-year-chart-container,
 body:not(.js-enabled) .all-dest-current-year-show-btn,
+body:not(.js-enabled) .all-ks5-dest-data-chart-container,
+body:not(.js-enabled) #all-ks5-dest-data-show-btn,
 body:not(.js-enabled) .breakdown-dest-current-year-chart-container,
 body:not(.js-enabled) .breakdown-dest-current-year-show-btn {
     display: none;

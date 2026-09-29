@@ -128,7 +128,6 @@ else if (qualification is Level2 level2Qualification)
         <div id="@DataViewToggleHelper.AnchorId(averageResultIdPrefix)"
              class="chart-table-toggle"
              data-id-prefix="@averageResultIdPrefix"
-             data-view-query-key="@DataViewToggleHelper.QueryKey(averageResultIdPrefix)"
              data-view="@(showAverageResultOverTime ? DataViewToggleHelper.OverTimeView : DataViewToggleHelper.CurrentView)">
 
             <div id="average-result-current-year-table-container" data-view-panel="@DataViewToggleHelper.CurrentView" hidden="@showAverageResultOverTime">

@@ -21,7 +21,7 @@
         if (breakdownDestCurrentYearShowAsTableBtn) {
             breakdownDestCurrentYearShowAsTableBtn.addEventListener('click', () => {
                 const chartVisible = breakdownDestCurrentYearChartContainer.style.display !== 'none';
-                setTooggleState(breakdownDestCurrentYearChartContainer, breakdownDestCurrentYearTableContainer, chartVisible, breakdownDestCurrentYearShowAsTableBtn);
+                setToggleState(breakdownDestCurrentYearChartContainer, breakdownDestCurrentYearTableContainer, chartVisible, breakdownDestCurrentYearShowAsTableBtn);
             });
         }
     });

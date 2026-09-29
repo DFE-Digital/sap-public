@@ -35,7 +35,7 @@ public class AcademicPerformanceEnglishAndMathsResultsTests(WebApplicationSetupF
         var chart = Page.Locator("#all-gcse-chart");
         var table = Page.Locator("#all-gcse-current-year-table");
         var showAsTableBtn = Page.Locator("#all-gcse-current-year-show-btn");
-        var showDataOverTimeBtn = Page.Locator("#all-gcse-data-over-time-btn");
+        var showDataOverTimeBtn = Page.Locator("#all-gcse-show-data-over-time-btn");
 
         var isChartVisible = await chart.IsVisibleAsync();
         var isTableVisible = await table.IsVisibleAsync();
@@ -68,7 +68,7 @@ public class AcademicPerformanceEnglishAndMathsResultsTests(WebApplicationSetupF
         await Page.ClickAsync("#all-gcse-current-year-show-btn");
 
         var showAsTableBtn = Page.Locator("#all-gcse-current-year-show-btn");
-        var showDataOverTimeBtn = Page.Locator("#all-gcse-data-over-time-btn");
+        var showDataOverTimeBtn = Page.Locator("#all-gcse-show-data-over-time-btn");
         var chart = Page.Locator("#all-gcse-chart");
         var table = Page.Locator("#all-gcse-current-year-table");
 
@@ -97,7 +97,7 @@ public class AcademicPerformanceEnglishAndMathsResultsTests(WebApplicationSetupF
 
         // Act
         // Click Show data over time button
-        await Page.ClickAsync("#all-gcse-data-over-time-btn");
+        await Page.ClickAsync("#all-gcse-show-data-over-time-btn");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
         var chart = Page.Locator("#all-gcse-data-overtime-chart");
@@ -136,7 +136,7 @@ public class AcademicPerformanceEnglishAndMathsResultsTests(WebApplicationSetupF
 
         // Act
         // Click Show data over time button
-        await Page.ClickAsync("#all-gcse-data-over-time-btn");
+        await Page.ClickAsync("#all-gcse-show-data-over-time-btn");
 
         // and click Show as a table button
         await Page.ClickAsync("#all-gcse-data-over-time-show-btn");
@@ -177,14 +177,14 @@ public class AcademicPerformanceEnglishAndMathsResultsTests(WebApplicationSetupF
 
         // Act
         // Click Show data over time button
-        await Page.ClickAsync("#all-gcse-data-over-time-btn");
+        await Page.ClickAsync("#all-gcse-show-data-over-time-btn");
 
         // and click Show current data button
         await Page.ClickAsync("#all-gcse-show-current-data-btn");
 
         var chart = Page.Locator("#all-gcse-chart");
         var showAsTableBtn = Page.Locator("#all-gcse-current-year-show-btn");
-        var showDataOverTimeBtn = Page.Locator("#all-gcse-data-over-time-btn");
+        var showDataOverTimeBtn = Page.Locator("#all-gcse-show-data-over-time-btn");
 
         var isChartVisible = await chart.IsVisibleAsync();
         var isShowAsTableBtnVisible = await showAsTableBtn.IsVisibleAsync();
@@ -216,11 +216,11 @@ public class AcademicPerformanceEnglishAndMathsResultsTests(WebApplicationSetupF
 
         await Page.Keyboard.PressAsync("Tab");
         var focusedElementId = await Page.EvaluateAsync<string>("() => document.activeElement?.id ?? ''");
-        var hasVisibleFocusOnShowDataOverTime = await HasVisibleFocusAsync("#all-gcse-data-over-time-btn");
+        var hasVisibleFocusOnShowDataOverTime = await HasVisibleFocusAsync("#all-gcse-show-data-over-time-btn");
 
         // Assert
         Assert.True(hasVisibleFocusOnShowAsTable);
-        Assert.Equal("all-gcse-data-over-time-btn", focusedElementId);
+        Assert.Equal("all-gcse-show-data-over-time-btn", focusedElementId);
         Assert.True(hasVisibleFocusOnShowDataOverTime);
 
         // Ensure reverse tab order is not trapped or skipped
@@ -263,7 +263,7 @@ public class AcademicPerformanceEnglishAndMathsResultsTests(WebApplicationSetupF
         _ = await Page.GotoAsync($"{_pageUrl}?{queryString}");
 
         // Act - Enter on show data over time
-        await Page.Locator("#all-gcse-data-over-time-btn").FocusAsync();
+        await Page.Locator("#all-gcse-show-data-over-time-btn").FocusAsync();
         await Page.Keyboard.PressAsync("Enter");
 
         // Assert
@@ -277,7 +277,7 @@ public class AcademicPerformanceEnglishAndMathsResultsTests(WebApplicationSetupF
         Assert.Equal("current", await GetVisibleDataAsync("all-gcse"));
 
         // Act - Space on show data over time
-        await Page.Locator("#all-gcse-data-over-time-btn").FocusAsync();
+        await Page.Locator("#all-gcse-show-data-over-time-btn").FocusAsync();
         await Page.Keyboard.PressAsync("Space");
 
         // Assert
@@ -331,7 +331,7 @@ public class AcademicPerformanceEnglishAndMathsResultsTests(WebApplicationSetupF
         await Page.Keyboard.PressAsync("Enter");
 
         // Assert
-        var reachedShowDataOverTimeButton = await FocusElementByTabAsync("all-gcse-data-over-time-btn", 120);
+        var reachedShowDataOverTimeButton = await FocusElementByTabAsync("all-gcse-show-data-over-time-btn", 120);
         Assert.True(reachedShowDataOverTimeButton);
     }
 
