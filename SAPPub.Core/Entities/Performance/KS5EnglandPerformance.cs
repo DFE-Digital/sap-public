@@ -15,19 +15,19 @@ public class KS5EnglandPerformance
     public CodedDouble TALLPPE_ALEV_1618_Eng_Current_Num_Coded { get; set; }
 
     // Alevel Average result points for England - Previous
-    public CodedDouble TALLPPE_ALEV_1618_24_Eng_Previous_Num_Coded { get; set; }
+    public CodedDouble TALLPPE_ALEV_1618_Eng_Previous_Num_Coded { get; set; }
 
     // Alevel Average result points for England - TwoYearsAgo
-    public CodedDouble TALLPPE_ALEV_1618_23_Eng_Previous2_Num_Coded { get; set; }
+    public CodedDouble TALLPPE_ALEV_1618_Eng_Previous2_Num_Coded { get; set; }
 
     // A level Average result grade for England - Current
     public CodedString TALLPPEGRD_ALEV_1618_Eng_Current { get; set; }
 
     // A level Average result grade for England - Previous
-    public CodedString TALLPPEGRD_ALEV_1618_24_Eng_Previous { get; set; }
+    public CodedString TALLPPEGRD_ALEV_1618_Eng_Previous { get; set; }
 
     // A level Average result grade for England - TwoYearsAgo
-    public CodedString TALLPPEGRD_ALEV_1618_23_Eng_Previous2 { get; set; }
+    public CodedString TALLPPEGRD_ALEV_1618_Eng_Previous2 { get; set; }
 
     // Academic qualifications Progress score for England average
     public CodedDouble VA_INS_ACAD_Eng_Current_Num_Coded { get; set; }
@@ -36,19 +36,19 @@ public class KS5EnglandPerformance
     public CodedDouble TALLPPE_ACAD_1618_Eng_Current_Num_Coded { get; set; }
 
     // Academic qualifications Average result points for England - Previous
-    public CodedDouble TALLPPE_ACAD_1618_24_Eng_Previous_Num_Coded { get; set; }
+    public CodedDouble TALLPPE_ACAD_1618_Eng_Previous_Num_Coded { get; set; }
 
     // Academic qualifications Average result points for England - Previous2
-    public CodedDouble TALLPPE_ACAD_1618_23_Eng_Previous2_Num_Coded { get; set; }
+    public CodedDouble TALLPPE_ACAD_1618_Eng_Previous2_Num_Coded { get; set; }
 
     // Academic qualifications Average result grade for England - Current
     public CodedString TALLPPEGRD_ACAD_1618_Eng_Current { get; set; }
 
     // Academic qualifications Average result grade for England - Previous
-    public CodedString TALLPPEGRD_ACAD_1618_24_Eng_Previous { get; set; }
+    public CodedString TALLPPEGRD_ACAD_1618_Eng_Previous { get; set; }
 
     // Academic qualifications Average result grade for England - Previous2
-    public CodedString TALLPPEGRD_ACAD_1618_23_Eng_Previous2 { get; set; }
+    public CodedString TALLPPEGRD_ACAD_1618_Eng_Previous2 { get; set; }
 
     // Applied general qualifications Progress score for England average
     public CodedDouble VA_INS_AGEN_Eng_Current_Num_Coded { get; set; }
@@ -57,19 +57,19 @@ public class KS5EnglandPerformance
     public CodedDouble TALLPPE_AGEN_Eng_Current_Num_Coded { get; set; }
 
     // Applied general qualifications Average result points for England - Previous
-    public CodedDouble TALLPPE_AGEN_24_Eng_Previous_Num_Coded { get; set; }
+    public CodedDouble TALLPPE_AGEN_Eng_Previous_Num_Coded { get; set; }
 
     // Applied general qualifications Average result points for England - Previous2
-    public CodedDouble TALLPPE_AGEN_23_Eng_Previous2_Num_Coded { get; set; }
+    public CodedDouble TALLPPE_AGEN_Eng_Previous2_Num_Coded { get; set; }
 
     // Applied general qualifications Average result grade for England - Current
     public CodedString TALLPPEGRD_AGEN_Eng_Current { get; set; }
 
     // Applied general qualifications Average result grade for England - Previous
-    public CodedString TALLPPEGRD_AGEN_24_Eng_Previous { get; set; }
+    public CodedString TALLPPEGRD_AGEN_Eng_Previous { get; set; }
 
     // Applied general qualifications Average result grade for England - Previous2
-    public CodedString TALLPPEGRD_AGEN_23_Eng_Previous2 { get; set; }
+    public CodedString TALLPPEGRD_AGEN_Eng_Previous2 { get; set; }
 
     // Tech level Progress score for England average
     public CodedDouble VA_INS_TLEV_Eng_Current_Num_Coded { get; set; }
@@ -78,19 +78,19 @@ public class KS5EnglandPerformance
     public CodedDouble TALLPPE_TLEV_Eng_Current_Num_Coded { get; set; }
 
     // Tech level Average result points for England - Previous
-    public CodedDouble TALLPPE_TLEV_24_Eng_Previous_Num_Coded { get; set; }
+    public CodedDouble TALLPPE_TLEV_Eng_Previous_Num_Coded { get; set; }
 
     // Tech level Average result points for England - Previous2
-    public CodedDouble TALLPPE_TLEV_23_Eng_Previous2_Num_Coded { get; set; }
+    public CodedDouble TALLPPE_TLEV_Eng_Previous2_Num_Coded { get; set; }
 
     // Tech level Average result grade for England - Current
     public CodedString TALLPPEGRD_TLEV_Eng_Current { get; set; }
 
     // Tech level Average result grade for England - Previous
-    public CodedString TALLPPEGRD_TLEV_24_Eng_Previous { get; set; }
+    public CodedString TALLPPEGRD_TLEV_Eng_Previous { get; set; }
 
     // Tech level Average result grade for England - Previous2
-    public CodedString TALLPPEGRD_TLEV_23_Eng_Previous2 { get; set; }
+    public CodedString TALLPPEGRD_TLEV_Eng_Previous2 { get; set; }
 
     // Tech Cert Progress score for England average
     public CodedDouble VA_INS_TECHCERT_Eng_Current_Num_Coded { get; set; }
@@ -99,19 +99,19 @@ public class KS5EnglandPerformance
     public CodedDouble TALLPPE_TECHCERT_Eng_Current_Num_Coded { get; set; }
 
     // Tech Cert Average result points for England - Previous
-    public CodedDouble TALLPPE_TECHCERT_24_Eng_Previous_Num_Coded { get; set; }
+    public CodedDouble TALLPPE_TECHCERT_Eng_Previous_Num_Coded { get; set; }
 
     // Tech Cert Average result points for England - Previous2
-    public CodedDouble TALLPPE_TECHCERT_23_Eng_Previous2_Num_Coded { get; set; }
+    public CodedDouble TALLPPE_TECHCERT_Eng_Previous2_Num_Coded { get; set; }
 
     // Tech Cert Average result grade for England - Current
     public CodedString TALLPPEGRD_TECHCERT_Eng_Current { get; set; }
 
     // Tech Cert Average result grade for England - Previous
-    public CodedString TALLPPEGRD_TECHCERT_24_Eng_Previous { get; set; }
+    public CodedString TALLPPEGRD_TECHCERT_Eng_Previous { get; set; }
 
     // Tech Cert Average result grade for England - Previous2
-    public CodedString TALLPPEGRD_TECHCERT_23_Eng_Previous2 { get; set; }
+    public CodedString TALLPPEGRD_TECHCERT_Eng_Previous2 { get; set; }
 
     // A levels additional data england points
     public CodedDouble TB3PTSE_Eng_Current_Num_Coded { get; set; }

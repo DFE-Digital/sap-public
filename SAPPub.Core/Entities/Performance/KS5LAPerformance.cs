@@ -10,91 +10,91 @@ public class KS5LAPerformance
     public CodedDouble TALLPPE_ALEV_1618_LA_Current_Num_Coded { get; set; }
 
     // A level Average result (points) for the LA state-funded schools / colleges - Previous
-    public CodedDouble TALLPPE_ALEV_1618_24_LA_Previous_Num_Coded { get; set; }
+    public CodedDouble TALLPPE_ALEV_1618_LA_Previous_Num_Coded { get; set; }
 
     // A level Average result (points) for the LA state-funded schools / colleges - TwoYearsAgo
-    public CodedDouble TALLPPE_ALEV_1618_23_LA_Previous2_Num_Coded { get; set; }
+    public CodedDouble TALLPPE_ALEV_1618_LA_Previous2_Num_Coded { get; set; }
 
     // A level Average result (grade) for the LA state-funded schools / colleges - Current
     public CodedString TALLPPEGRD_ALEV_1618_LA_Current { get; set; }
 
     // A level Average result (grade) for the LA state-funded schools / colleges - Previous
-    public CodedString TALLPPEGRD_ALEV_1618_24_LA_Previous { get; set; }
+    public CodedString TALLPPEGRD_ALEV_1618_LA_Previous { get; set; }
 
     // A level Average result (grade) for the LA state-funded schools / colleges - TwoYearsAgo
-    public CodedString TALLPPEGRD_ALEV_1618_23_LA_Previous2 { get; set; }
+    public CodedString TALLPPEGRD_ALEV_1618_LA_Previous2 { get; set; }
 
     // Academic qualification Average result (points) for the LA state-funded schools / college - Current
     public CodedDouble TALLPPE_ACAD_1618_LA_Current_Num_Coded { get; set; }
 
     // Academic qualification Average result (points) for the LA state-funded schools / college - Previous
-    public CodedDouble TALLPPE_ACAD_1618_24_LA_Previous_Num_Coded { get; set; }
+    public CodedDouble TALLPPE_ACAD_1618_LA_Previous_Num_Coded { get; set; }
 
     // Academic qualification Average result (points) for the LA state-funded schools / college - Previous2
-    public CodedDouble TALLPPE_ACAD_1618_23_LA_Previous2_Num_Coded { get; set; }
+    public CodedDouble TALLPPE_ACAD_1618_LA_Previous2_Num_Coded { get; set; }
 
     // Academic qualification Average result (grade) for the LA state-funded schools / college - Current
     public CodedString TALLPPEGRD_ACAD_1618_LA_Current { get; set; }
 
     // Academic qualification Average result (grade) for the LA state-funded schools / college - Previous
-    public CodedString TALLPPEGRD_ACAD_1618_24_LA_Previous { get; set; }
+    public CodedString TALLPPEGRD_ACAD_1618_LA_Previous { get; set; }
 
     // Academic qualification Average result (grade) for the LA state-funded schools / college - Previous2
-    public CodedString TALLPPEGRD_ACAD_1618_23_LA_Previous2 { get; set; }
+    public CodedString TALLPPEGRD_ACAD_1618_LA_Previous2 { get; set; }
 
     // Applied general qualifications Average result (points) for the LA state-funded schools / colleges - Current
     public CodedDouble TALLPPE_AGEN_LA_Current_Num_Coded { get; set; }
 
     // Applied general qualifications Average result (points) for the LA state-funded schools / colleges - Previous
-    public CodedDouble TALLPPE_AGEN_24_LA_Previous_Num_Coded { get; set; }
+    public CodedDouble TALLPPE_AGEN_LA_Previous_Num_Coded { get; set; }
 
     // Applied general qualifications Average result (points) for the LA state-funded schools / colleges - Previous2
-    public CodedDouble TALLPPE_AGEN_23_LA_Previous2_Num_Coded { get; set; }
+    public CodedDouble TALLPPE_AGEN_LA_Previous2_Num_Coded { get; set; }
 
     // Applied general qualifications Average result (grade) for the LA state-funded schools / colleges - Current
     public CodedString TALLPPEGRD_AGEN_LA_Current { get; set; }
 
     // Applied general qualifications Average result (grade) for the LA state-funded schools / colleges - Previous
-    public CodedString TALLPPEGRD_AGEN_24_LA_Previous { get; set; }
+    public CodedString TALLPPEGRD_AGEN_LA_Previous { get; set; }
 
     // Applied general qualifications Average result (grade) for the LA state-funded schools / colleges - Previous2
-    public CodedString TALLPPEGRD_AGEN_23_LA_Previous2 { get; set; }
+    public CodedString TALLPPEGRD_AGEN_LA_Previous2 { get; set; }
 
     // T level Average result (points) for the LA state-funded schools / colleges - Current
     public CodedDouble TALLPPE_TLEV_LA_Current_Num_Coded { get; set; }
 
     // T level Average result (points) for the LA state-funded schools / colleges - Previous
-    public CodedDouble TALLPPE_TLEV_24_LA_Previous_Num_Coded { get; set; }
+    public CodedDouble TALLPPE_TLEV_LA_Previous_Num_Coded { get; set; }
 
     // T level Average result (points) for the LA state-funded schools / colleges - Previous2
-    public CodedDouble TALLPPE_TLEV_23_LA_Previous2_Num_Coded { get; set; }
+    public CodedDouble TALLPPE_TLEV_LA_Previous2_Num_Coded { get; set; }
 
     // T level Average result (grade) for the LA state-funded schools / colleges - Current
     public CodedString TALLPPEGRD_TLEV_LA_Current { get; set; }
 
     // T level Average result (grade) for the LA state-funded schools / colleges - Previous
-    public CodedString TALLPPEGRD_TLEV_24_LA_Previous { get; set; }
+    public CodedString TALLPPEGRD_TLEV_LA_Previous { get; set; }
 
     // T level Average result (grade) for the LA state-funded schools / colleges - Previous2
-    public CodedString TALLPPEGRD_TLEV_23_LA_Previous2 { get; set; }
+    public CodedString TALLPPEGRD_TLEV_LA_Previous2 { get; set; }
 
     // Tech Cert Average result (points) for the LA state-funded schools / colleges - Current
     public CodedDouble TALLPPE_TECHCERT_LA_Current_Num_Coded { get; set; }
 
     // Tech Cert Average result (points) for the LA state-funded schools / colleges - Previous
-    public CodedDouble TALLPPE_TECHCERT_24_LA_Previous_Num_Coded { get; set; }
+    public CodedDouble TALLPPE_TECHCERT_LA_Previous_Num_Coded { get; set; }
 
     // Tech Cert Average result (points) for the LA state-funded schools / colleges - Previous2
-    public CodedDouble TALLPPE_TECHCERT_23_LA_Previous2_Num_Coded { get; set; }
+    public CodedDouble TALLPPE_TECHCERT_LA_Previous2_Num_Coded { get; set; }
 
     // Tech CertAverage result (grade) for the LA state-funded schools / colleges - Current
     public CodedString TALLPPEGRD_TECHCERT_LA_Current { get; set; }
 
     // Tech CertAverage result (grade) for the LA state-funded schools / colleges - Previous
-    public CodedString TALLPPEGRD_TECHCERT_24_LA_Previous { get; set; }
+    public CodedString TALLPPEGRD_TECHCERT_LA_Previous { get; set; }
 
     // Tech CertAverage result (grade) for the LA state-funded schools / colleges - Previous2
-    public CodedString TALLPPEGRD_TECHCERT_23_LA_Previous2 { get; set; }
+    public CodedString TALLPPEGRD_TECHCERT_LA_Previous2 { get; set; }
 
     // A levels additional data LA points
     public CodedDouble TB3PTSE_LA_Current_Num_Coded { get; set; }
