@@ -2,11 +2,8 @@
 
 using System.Text.Json.Serialization;
 
-public record AllStateFundedPupilsLaTestDataModel
+public record AllStateFundedPupilsTestDataModel
 {
-    [JsonPropertyName("urn")]
-    public string Urn { get; init; } = string.Empty;
-
     [JsonPropertyName("attainment8_average")]
     public string Attainment8Average { get; init; } = string.Empty;
 
@@ -33,4 +30,10 @@ public record AllStateFundedPupilsLaTestDataModel
 
     [JsonPropertyName("pupil_count")]
     public string PupilCount { get; init; } = string.Empty;
+}
+
+public record AllStateFundedPupilsLaTestDataModel : AllStateFundedPupilsTestDataModel
+{
+    [JsonPropertyName("urn")]
+    public string Urn { get; init; } = string.Empty;
 }
