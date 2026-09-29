@@ -336,6 +336,14 @@ If issues persist, share the **first startup error or stack trace** with the tea
 In Visual Studio, you can run the tests using the Test Explorer.
 
 
+### Install Playwright
+
+This is dependent on '4. request access or remove access to Restricted Groups' having been complete.
+
+In PowerShell:
+1. change directory to 'CD C:\dev\git\sap-public\Tests\SAPPub.Integration.Tests\bin\Debug\net10.0'
+2. run 'powershell -ExecutionPolicy Bypass -File playwright.ps1 install'
+
 ### Running Playwright tests in headed mode
 
 To run the Playwright tests in **headed mode**, configure your test run to use the `playwright.runsettings` file.
