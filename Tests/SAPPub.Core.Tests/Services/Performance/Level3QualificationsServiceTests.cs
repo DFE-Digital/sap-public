@@ -183,16 +183,16 @@ public class Level3QualificationsServiceTests
             Assert.Equal(_establishmentPerformance.LCI_INS_ALEV_Est_Current_Num_Coded, result.ProgressScore.ConfidenceLevelLower);
 
             Assert.Equal(_establishmentPerformance.TALLPUP_ALEV_1618_Est_Current_Num_Coded, result.AverageResult.NumberOfStudents.CurrentYear);
-            Assert.Equal(_establishmentPerformance.TALLPUP_ALEV_1618_24_Est_Previous_Num_Coded, result.AverageResult.NumberOfStudents.PreviousYear);
-            Assert.Equal(_establishmentPerformance.TALLPUP_ALEV_1618_23_Est_Previous2_Num_Coded, result.AverageResult.NumberOfStudents.TwoYearsAgo);
+            Assert.Equal(_establishmentPerformance.TALLPUP_ALEV_1618_Est_Previous_Num_Coded, result.AverageResult.NumberOfStudents.PreviousYear);
+            Assert.Equal(_establishmentPerformance.TALLPUP_ALEV_1618_Est_Previous2_Num_Coded, result.AverageResult.NumberOfStudents.TwoYearsAgo);
 
             Assert.Equal(_establishmentPerformance.TALLPPE_ALEV_1618_Est_Current_Num_Coded, result.AverageResult.Establishment.CurrentYear.Points);
-            Assert.Equal(_establishmentPerformance.TALLPPE_ALEV_1618_24_Est_Previous_Num_Coded, result.AverageResult.Establishment.PreviousYear!.Points);
-            Assert.Equal(_establishmentPerformance.TALLPPE_ALEV_1618_23_Est_Previous2_Num_Coded, result.AverageResult.Establishment.TwoYearsAgo!.Points);
+            Assert.Equal(_establishmentPerformance.TALLPPE_ALEV_1618_Est_Previous_Num_Coded, result.AverageResult.Establishment.PreviousYear!.Points);
+            Assert.Equal(_establishmentPerformance.TALLPPE_ALEV_1618_Est_Previous2_Num_Coded, result.AverageResult.Establishment.TwoYearsAgo!.Points);
 
             Assert.Equal(_establishmentPerformance.TALLPPEGRD_ALEV_1618_Est_Current, result.AverageResult.Establishment.CurrentYear.Grade);
-            Assert.Equal(_establishmentPerformance.TALLPPEGRD_ALEV_1618_24_Est_Previous, result.AverageResult.Establishment.PreviousYear!.Grade);
-            Assert.Equal(_establishmentPerformance.TALLPPEGRD_ALEV_1618_23_Est_Previous2, result.AverageResult.Establishment.TwoYearsAgo!.Grade);
+            Assert.Equal(_establishmentPerformance.TALLPPEGRD_ALEV_1618_Est_Previous, result.AverageResult.Establishment.PreviousYear!.Grade);
+            Assert.Equal(_establishmentPerformance.TALLPPEGRD_ALEV_1618_Est_Previous2, result.AverageResult.Establishment.TwoYearsAgo!.Grade);
 
             // Establishment Additional data
             Assert.Equal(_establishmentPerformance.TINCLUDE_B3_Est_Current_Num_Coded, result.AdditionalData!.TotalNoOfStudentsIncludedInThisMeasure);
@@ -203,25 +203,25 @@ public class Level3QualificationsServiceTests
 
             // England Average result data
             Assert.Equal(_englandPerformance.TALLPPE_ALEV_1618_Eng_Current_Num_Coded, result.AverageResult.England.CurrentYear.Points);
-            Assert.Equal(_englandPerformance.TALLPPE_ALEV_1618_24_Eng_Previous_Num_Coded, result.AverageResult.England.PreviousYear!.Points);
-            Assert.Equal(_englandPerformance.TALLPPE_ALEV_1618_23_Eng_Previous2_Num_Coded, result.AverageResult.England.TwoYearsAgo!.Points);
+            Assert.Equal(_englandPerformance.TALLPPE_ALEV_1618_Eng_Previous_Num_Coded, result.AverageResult.England.PreviousYear!.Points);
+            Assert.Equal(_englandPerformance.TALLPPE_ALEV_1618_Eng_Previous2_Num_Coded, result.AverageResult.England.TwoYearsAgo!.Points);
 
             Assert.Equal(_englandPerformance.TALLPPEGRD_ALEV_1618_Eng_Current, result.AverageResult.England.CurrentYear.Grade);
-            Assert.Equal(_englandPerformance.TALLPPEGRD_ALEV_1618_24_Eng_Previous, result.AverageResult.England.PreviousYear!.Grade);
-            Assert.Equal(_englandPerformance.TALLPPEGRD_ALEV_1618_23_Eng_Previous2, result.AverageResult.England.TwoYearsAgo!.Grade);
+            Assert.Equal(_englandPerformance.TALLPPEGRD_ALEV_1618_Eng_Previous, result.AverageResult.England.PreviousYear!.Grade);
+            Assert.Equal(_englandPerformance.TALLPPEGRD_ALEV_1618_Eng_Previous2, result.AverageResult.England.TwoYearsAgo!.Grade);
                         
             Assert.Equal(_englandPerformance.TB3PTSE_Eng_Current_Num_Coded, result.AdditionalData.England.Points);
             Assert.Equal(_englandPerformance.TB3PTSE_GRD_Eng_Current, result.AdditionalData.England.Grade);
 
             // LA Additional data
             Assert.Equal(_laPerformance.TALLPPE_ALEV_1618_LA_Current_Num_Coded, result.AverageResult.LocalAuthority.CurrentYear.Points);
-            Assert.Equal(_laPerformance.TALLPPE_ALEV_1618_24_LA_Previous_Num_Coded, result.AverageResult.LocalAuthority.PreviousYear!.Points);
-            Assert.Equal(_laPerformance.TALLPPE_ALEV_1618_23_LA_Previous2_Num_Coded, result.AverageResult.LocalAuthority.TwoYearsAgo!.Points);
+            Assert.Equal(_laPerformance.TALLPPE_ALEV_1618_LA_Previous_Num_Coded, result.AverageResult.LocalAuthority.PreviousYear!.Points);
+            Assert.Equal(_laPerformance.TALLPPE_ALEV_1618_LA_Previous2_Num_Coded, result.AverageResult.LocalAuthority.TwoYearsAgo!.Points);
 
             // LA Average result data
             Assert.Equal(_laPerformance.TALLPPEGRD_ALEV_1618_LA_Current, result.AverageResult.LocalAuthority.CurrentYear.Grade);
-            Assert.Equal(_laPerformance.TALLPPEGRD_ALEV_1618_24_LA_Previous, result.AverageResult.LocalAuthority.PreviousYear!.Grade);
-            Assert.Equal(_laPerformance.TALLPPEGRD_ALEV_1618_23_LA_Previous2, result.AverageResult.LocalAuthority.TwoYearsAgo!.Grade);
+            Assert.Equal(_laPerformance.TALLPPEGRD_ALEV_1618_LA_Previous, result.AverageResult.LocalAuthority.PreviousYear!.Grade);
+            Assert.Equal(_laPerformance.TALLPPEGRD_ALEV_1618_LA_Previous2, result.AverageResult.LocalAuthority.TwoYearsAgo!.Grade);
                         
             Assert.Equal(_laPerformance.TB3PTSE_LA_Current_Num_Coded, result.AdditionalData.LocalAuthority.Points);
             Assert.Equal(_laPerformance.TB3PTSE_GRD_LA_Current, result.AdditionalData.LocalAuthority.Grade);
@@ -280,16 +280,16 @@ public class Level3QualificationsServiceTests
             Assert.Equal(_establishmentPerformance.LCI_INS_ACAD_Est_Current_Num_Coded, result.ProgressScore.ConfidenceLevelLower);
 
             Assert.Equal(_establishmentPerformance.TALLPUP_ACAD_1618_Est_Current_Num_Coded, result.AverageResult.NumberOfStudents.CurrentYear);
-            Assert.Equal(_establishmentPerformance.TALLPUP_ACAD_1618_24_Est_Previous_Num_Coded, result.AverageResult.NumberOfStudents.PreviousYear);
-            Assert.Equal(_establishmentPerformance.TALLPUP_ACAD_1618_23_Est_Previous2_Num_Coded, result.AverageResult.NumberOfStudents.TwoYearsAgo);
+            Assert.Equal(_establishmentPerformance.TALLPUP_ACAD_1618_Est_Previous_Num_Coded, result.AverageResult.NumberOfStudents.PreviousYear);
+            Assert.Equal(_establishmentPerformance.TALLPUP_ACAD_1618_Est_Previous2_Num_Coded, result.AverageResult.NumberOfStudents.TwoYearsAgo);
 
             Assert.Equal(_establishmentPerformance.TALLPPE_ACAD_1618_Est_Current_Num_Coded, result.AverageResult.Establishment.CurrentYear.Points);
-            Assert.Equal(_establishmentPerformance.TALLPPE_ACAD_1618_24_Est_Previous_Num_Coded, result.AverageResult.Establishment.PreviousYear!.Points);
-            Assert.Equal(_establishmentPerformance.TALLPPE_ACAD_1618_23_Est_Previous2_Num_Coded, result.AverageResult.Establishment.TwoYearsAgo!.Points);
+            Assert.Equal(_establishmentPerformance.TALLPPE_ACAD_1618_Est_Previous_Num_Coded, result.AverageResult.Establishment.PreviousYear!.Points);
+            Assert.Equal(_establishmentPerformance.TALLPPE_ACAD_1618_Est_Previous2_Num_Coded, result.AverageResult.Establishment.TwoYearsAgo!.Points);
 
             Assert.Equal(_establishmentPerformance.TALLPPEGRD_ACAD_1618_Est_Current, result.AverageResult.Establishment.CurrentYear.Grade);
-            Assert.Equal(_establishmentPerformance.TALLPPEGRD_ACAD_1618_24_Est_Previous, result.AverageResult.Establishment.PreviousYear!.Grade);
-            Assert.Equal(_establishmentPerformance.TALLPPEGRD_ACAD_1618_23_Est_Previous2, result.AverageResult.Establishment.TwoYearsAgo!.Grade);
+            Assert.Equal(_establishmentPerformance.TALLPPEGRD_ACAD_1618_Est_Previous, result.AverageResult.Establishment.PreviousYear!.Grade);
+            Assert.Equal(_establishmentPerformance.TALLPPEGRD_ACAD_1618_Est_Previous2, result.AverageResult.Establishment.TwoYearsAgo!.Grade);
 
             // Establishment Additional data
             Assert.Null(result.AdditionalData?.TotalNoOfStudentsIncludedInThisMeasure);
@@ -299,12 +299,12 @@ public class Level3QualificationsServiceTests
             // England Average result data
             Assert.Equal(_englandPerformance.VA_INS_ACAD_Eng_Current_Num_Coded, result.ProgressScore.EnglandAverageScore);
             Assert.Equal(_englandPerformance.TALLPPE_ACAD_1618_Eng_Current_Num_Coded, result.AverageResult.England.CurrentYear.Points);
-            Assert.Equal(_englandPerformance.TALLPPE_ACAD_1618_24_Eng_Previous_Num_Coded, result.AverageResult.England.PreviousYear!.Points);
-            Assert.Equal(_englandPerformance.TALLPPE_ACAD_1618_23_Eng_Previous2_Num_Coded, result.AverageResult.England.TwoYearsAgo!.Points);
+            Assert.Equal(_englandPerformance.TALLPPE_ACAD_1618_Eng_Previous_Num_Coded, result.AverageResult.England.PreviousYear!.Points);
+            Assert.Equal(_englandPerformance.TALLPPE_ACAD_1618_Eng_Previous2_Num_Coded, result.AverageResult.England.TwoYearsAgo!.Points);
 
             Assert.Equal(_englandPerformance.TALLPPEGRD_ACAD_1618_Eng_Current, result.AverageResult.England.CurrentYear.Grade);
-            Assert.Equal(_englandPerformance.TALLPPEGRD_ACAD_1618_24_Eng_Previous, result.AverageResult.England.PreviousYear!.Grade);
-            Assert.Equal(_englandPerformance.TALLPPEGRD_ACAD_1618_23_Eng_Previous2, result.AverageResult.England.TwoYearsAgo!.Grade);
+            Assert.Equal(_englandPerformance.TALLPPEGRD_ACAD_1618_Eng_Previous, result.AverageResult.England.PreviousYear!.Grade);
+            Assert.Equal(_englandPerformance.TALLPPEGRD_ACAD_1618_Eng_Previous2, result.AverageResult.England.TwoYearsAgo!.Grade);
 
             // England Additional data
             Assert.Null(result.AdditionalData?.England.Points);
@@ -312,12 +312,12 @@ public class Level3QualificationsServiceTests
 
             // LA Average result data
             Assert.Equal(_laPerformance.TALLPPE_ACAD_1618_LA_Current_Num_Coded, result.AverageResult.LocalAuthority.CurrentYear.Points);
-            Assert.Equal(_laPerformance.TALLPPE_ACAD_1618_24_LA_Previous_Num_Coded, result.AverageResult.LocalAuthority.PreviousYear!.Points);
-            Assert.Equal(_laPerformance.TALLPPE_ACAD_1618_23_LA_Previous2_Num_Coded, result.AverageResult.LocalAuthority.TwoYearsAgo!.Points);
+            Assert.Equal(_laPerformance.TALLPPE_ACAD_1618_LA_Previous_Num_Coded, result.AverageResult.LocalAuthority.PreviousYear!.Points);
+            Assert.Equal(_laPerformance.TALLPPE_ACAD_1618_LA_Previous2_Num_Coded, result.AverageResult.LocalAuthority.TwoYearsAgo!.Points);
 
             Assert.Equal(_laPerformance.TALLPPEGRD_ACAD_1618_LA_Current, result.AverageResult.LocalAuthority.CurrentYear.Grade);
-            Assert.Equal(_laPerformance.TALLPPEGRD_ACAD_1618_24_LA_Previous, result.AverageResult.LocalAuthority.PreviousYear!.Grade);
-            Assert.Equal(_laPerformance.TALLPPEGRD_ACAD_1618_23_LA_Previous2, result.AverageResult.LocalAuthority.TwoYearsAgo!.Grade);
+            Assert.Equal(_laPerformance.TALLPPEGRD_ACAD_1618_LA_Previous, result.AverageResult.LocalAuthority.PreviousYear!.Grade);
+            Assert.Equal(_laPerformance.TALLPPEGRD_ACAD_1618_LA_Previous2, result.AverageResult.LocalAuthority.TwoYearsAgo!.Grade);
 
             // LA Additional data
             Assert.Null(result.AdditionalData?.LocalAuthority.Points);
@@ -377,16 +377,16 @@ public class Level3QualificationsServiceTests
             Assert.Equal(_establishmentPerformance.LCI_INS_AGEN_Est_Current_Num_Coded, result.ProgressScore.ConfidenceLevelLower);
 
             Assert.Equal(_establishmentPerformance.TALLPUP_AGEN_Est_Current_Num_Coded, result.AverageResult.NumberOfStudents.CurrentYear);
-            Assert.Equal(_establishmentPerformance.TALLPUP_AGEN_24_Est_Previous_Num_Coded, result.AverageResult.NumberOfStudents.PreviousYear);
-            Assert.Equal(_establishmentPerformance.TALLPUP_AGEN_23_Est_Previous2_Num_Coded, result.AverageResult.NumberOfStudents.TwoYearsAgo);
+            Assert.Equal(_establishmentPerformance.TALLPUP_AGEN_Est_Previous_Num_Coded, result.AverageResult.NumberOfStudents.PreviousYear);
+            Assert.Equal(_establishmentPerformance.TALLPUP_AGEN_Est_Previous2_Num_Coded, result.AverageResult.NumberOfStudents.TwoYearsAgo);
 
             Assert.Equal(_establishmentPerformance.TALLPPE_AGEN_Est_Current_Num_Coded, result.AverageResult.Establishment.CurrentYear.Points);
-            Assert.Equal(_establishmentPerformance.TALLPPE_AGEN_24_Est_Previous_Num_Coded, result.AverageResult.Establishment.PreviousYear!.Points);
-            Assert.Equal(_establishmentPerformance.TALLPPE_AGEN_23_Est_Previous2_Num_Coded, result.AverageResult.Establishment.TwoYearsAgo!.Points);
+            Assert.Equal(_establishmentPerformance.TALLPPE_AGEN_Est_Previous_Num_Coded, result.AverageResult.Establishment.PreviousYear!.Points);
+            Assert.Equal(_establishmentPerformance.TALLPPE_AGEN_Est_Previous2_Num_Coded, result.AverageResult.Establishment.TwoYearsAgo!.Points);
 
             Assert.Equal(_establishmentPerformance.TALLPPEGRD_AGEN_Est_Current, result.AverageResult.Establishment.CurrentYear.Grade);
-            Assert.Equal(_establishmentPerformance.TALLPPEGRD_AGEN_24_Est_Previous, result.AverageResult.Establishment.PreviousYear!.Grade);
-            Assert.Equal(_establishmentPerformance.TALLPPEGRD_AGEN_23_Est_Previous2, result.AverageResult.Establishment.TwoYearsAgo!.Grade);
+            Assert.Equal(_establishmentPerformance.TALLPPEGRD_AGEN_Est_Previous, result.AverageResult.Establishment.PreviousYear!.Grade);
+            Assert.Equal(_establishmentPerformance.TALLPPEGRD_AGEN_Est_Previous2, result.AverageResult.Establishment.TwoYearsAgo!.Grade);
 
             // Establishment Additional data
             Assert.Null(result.AdditionalData?.TotalNoOfStudentsIncludedInThisMeasure);
@@ -396,12 +396,12 @@ public class Level3QualificationsServiceTests
             // England Average result data
             Assert.Equal(_englandPerformance.VA_INS_AGEN_Eng_Current_Num_Coded, result.ProgressScore.EnglandAverageScore);
             Assert.Equal(_englandPerformance.TALLPPE_AGEN_Eng_Current_Num_Coded, result.AverageResult.England.CurrentYear.Points);
-            Assert.Equal(_englandPerformance.TALLPPE_AGEN_24_Eng_Previous_Num_Coded, result.AverageResult.England.PreviousYear!.Points);
-            Assert.Equal(_englandPerformance.TALLPPE_AGEN_23_Eng_Previous2_Num_Coded, result.AverageResult.England.TwoYearsAgo!.Points);
+            Assert.Equal(_englandPerformance.TALLPPE_AGEN_Eng_Previous_Num_Coded, result.AverageResult.England.PreviousYear!.Points);
+            Assert.Equal(_englandPerformance.TALLPPE_AGEN_Eng_Previous2_Num_Coded, result.AverageResult.England.TwoYearsAgo!.Points);
 
             Assert.Equal(_englandPerformance.TALLPPEGRD_AGEN_Eng_Current, result.AverageResult.England.CurrentYear.Grade);
-            Assert.Equal(_englandPerformance.TALLPPEGRD_AGEN_24_Eng_Previous, result.AverageResult.England.PreviousYear!.Grade);
-            Assert.Equal(_englandPerformance.TALLPPEGRD_AGEN_23_Eng_Previous2, result.AverageResult.England.TwoYearsAgo!.Grade);
+            Assert.Equal(_englandPerformance.TALLPPEGRD_AGEN_Eng_Previous, result.AverageResult.England.PreviousYear!.Grade);
+            Assert.Equal(_englandPerformance.TALLPPEGRD_AGEN_Eng_Previous2, result.AverageResult.England.TwoYearsAgo!.Grade);
 
             // England Additional data
             Assert.Null(result.AdditionalData?.England.Points);
@@ -409,12 +409,12 @@ public class Level3QualificationsServiceTests
 
             // LA Average result data
             Assert.Equal(_laPerformance.TALLPPE_AGEN_LA_Current_Num_Coded, result.AverageResult.LocalAuthority.CurrentYear.Points);
-            Assert.Equal(_laPerformance.TALLPPE_AGEN_24_LA_Previous_Num_Coded, result.AverageResult.LocalAuthority.PreviousYear!.Points);
-            Assert.Equal(_laPerformance.TALLPPE_AGEN_23_LA_Previous2_Num_Coded, result.AverageResult.LocalAuthority.TwoYearsAgo!.Points);
+            Assert.Equal(_laPerformance.TALLPPE_AGEN_LA_Previous_Num_Coded, result.AverageResult.LocalAuthority.PreviousYear!.Points);
+            Assert.Equal(_laPerformance.TALLPPE_AGEN_LA_Previous2_Num_Coded, result.AverageResult.LocalAuthority.TwoYearsAgo!.Points);
 
             Assert.Equal(_laPerformance.TALLPPEGRD_AGEN_LA_Current, result.AverageResult.LocalAuthority.CurrentYear.Grade);
-            Assert.Equal(_laPerformance.TALLPPEGRD_AGEN_24_LA_Previous, result.AverageResult.LocalAuthority.PreviousYear!.Grade);
-            Assert.Equal(_laPerformance.TALLPPEGRD_AGEN_23_LA_Previous2, result.AverageResult.LocalAuthority.TwoYearsAgo!.Grade);
+            Assert.Equal(_laPerformance.TALLPPEGRD_AGEN_LA_Previous, result.AverageResult.LocalAuthority.PreviousYear!.Grade);
+            Assert.Equal(_laPerformance.TALLPPEGRD_AGEN_LA_Previous2, result.AverageResult.LocalAuthority.TwoYearsAgo!.Grade);
 
             // LA Additional data
             Assert.Null(result.AdditionalData?.LocalAuthority.Points);
@@ -474,16 +474,16 @@ public class Level3QualificationsServiceTests
             Assert.Equal(_establishmentPerformance.LCI_INS_TLEV_Est_Current_Num_Coded, result.ProgressScore.ConfidenceLevelLower);
 
             Assert.Equal(_establishmentPerformance.TALLPUP_TLEV_Est_Current_Num_Coded, result.AverageResult.NumberOfStudents.CurrentYear);
-            Assert.Equal(_establishmentPerformance.TALLPUP_TLEV_24_Est_Previous_Num_Coded, result.AverageResult.NumberOfStudents.PreviousYear);
-            Assert.Equal(_establishmentPerformance.TALLPUP_TLEV_23_Est_Previous2_Num_Coded, result.AverageResult.NumberOfStudents.TwoYearsAgo);
+            Assert.Equal(_establishmentPerformance.TALLPUP_TLEV_Est_Previous_Num_Coded, result.AverageResult.NumberOfStudents.PreviousYear);
+            Assert.Equal(_establishmentPerformance.TALLPUP_TLEV_Est_Previous2_Num_Coded, result.AverageResult.NumberOfStudents.TwoYearsAgo);
 
             Assert.Equal(_establishmentPerformance.TALLPPE_TLEV_Est_Current_Num_Coded, result.AverageResult.Establishment.CurrentYear.Points);
-            Assert.Equal(_establishmentPerformance.TALLPPE_TLEV_24_Est_Previous_Num_Coded, result.AverageResult.Establishment.PreviousYear!.Points);
-            Assert.Equal(_establishmentPerformance.TALLPPE_TLEV_23_Est_Previous2_Num_Coded, result.AverageResult.Establishment.TwoYearsAgo!.Points);
+            Assert.Equal(_establishmentPerformance.TALLPPE_TLEV_Est_Previous_Num_Coded, result.AverageResult.Establishment.PreviousYear!.Points);
+            Assert.Equal(_establishmentPerformance.TALLPPE_TLEV_Est_Previous2_Num_Coded, result.AverageResult.Establishment.TwoYearsAgo!.Points);
 
             Assert.Equal(_establishmentPerformance.TALLPPEGRD_TLEV_Est_Current, result.AverageResult.Establishment.CurrentYear.Grade);
-            Assert.Equal(_establishmentPerformance.TALLPPEGRD_TLEV_24_Est_Previous, result.AverageResult.Establishment.PreviousYear!.Grade);
-            Assert.Equal(_establishmentPerformance.TALLPPEGRD_TLEV_23_Est_Previous2, result.AverageResult.Establishment.TwoYearsAgo!.Grade);
+            Assert.Equal(_establishmentPerformance.TALLPPEGRD_TLEV_Est_Previous, result.AverageResult.Establishment.PreviousYear!.Grade);
+            Assert.Equal(_establishmentPerformance.TALLPPEGRD_TLEV_Est_Previous2, result.AverageResult.Establishment.TwoYearsAgo!.Grade);
 
             // Establishment Additional data
             Assert.Null(result.AdditionalData?.TotalNoOfStudentsIncludedInThisMeasure);
@@ -493,12 +493,12 @@ public class Level3QualificationsServiceTests
             // England Average result data
             Assert.Equal(_englandPerformance.VA_INS_TLEV_Eng_Current_Num_Coded, result.ProgressScore.EnglandAverageScore);
             Assert.Equal(_englandPerformance.TALLPPE_TLEV_Eng_Current_Num_Coded, result.AverageResult.England.CurrentYear.Points);
-            Assert.Equal(_englandPerformance.TALLPPE_TLEV_24_Eng_Previous_Num_Coded, result.AverageResult.England.PreviousYear!.Points);
-            Assert.Equal(_englandPerformance.TALLPPE_TLEV_23_Eng_Previous2_Num_Coded, result.AverageResult.England.TwoYearsAgo!.Points);
+            Assert.Equal(_englandPerformance.TALLPPE_TLEV_Eng_Previous_Num_Coded, result.AverageResult.England.PreviousYear!.Points);
+            Assert.Equal(_englandPerformance.TALLPPE_TLEV_Eng_Previous2_Num_Coded, result.AverageResult.England.TwoYearsAgo!.Points);
 
             Assert.Equal(_englandPerformance.TALLPPEGRD_TLEV_Eng_Current, result.AverageResult.England.CurrentYear.Grade);
-            Assert.Equal(_englandPerformance.TALLPPEGRD_TLEV_24_Eng_Previous, result.AverageResult.England.PreviousYear!.Grade);
-            Assert.Equal(_englandPerformance.TALLPPEGRD_TLEV_23_Eng_Previous2, result.AverageResult.England.TwoYearsAgo!.Grade);
+            Assert.Equal(_englandPerformance.TALLPPEGRD_TLEV_Eng_Previous, result.AverageResult.England.PreviousYear!.Grade);
+            Assert.Equal(_englandPerformance.TALLPPEGRD_TLEV_Eng_Previous2, result.AverageResult.England.TwoYearsAgo!.Grade);
 
             // England Additional data
             Assert.Null(result.AdditionalData?.England.Points);
@@ -506,12 +506,12 @@ public class Level3QualificationsServiceTests
 
             // LA Average result data
             Assert.Equal(_laPerformance.TALLPPE_TLEV_LA_Current_Num_Coded, result.AverageResult.LocalAuthority.CurrentYear.Points);
-            Assert.Equal(_laPerformance.TALLPPE_TLEV_24_LA_Previous_Num_Coded, result.AverageResult.LocalAuthority.PreviousYear!.Points);
-            Assert.Equal(_laPerformance.TALLPPE_TLEV_23_LA_Previous2_Num_Coded, result.AverageResult.LocalAuthority.TwoYearsAgo!.Points);
+            Assert.Equal(_laPerformance.TALLPPE_TLEV_LA_Previous_Num_Coded, result.AverageResult.LocalAuthority.PreviousYear!.Points);
+            Assert.Equal(_laPerformance.TALLPPE_TLEV_LA_Previous2_Num_Coded, result.AverageResult.LocalAuthority.TwoYearsAgo!.Points);
 
             Assert.Equal(_laPerformance.TALLPPEGRD_TLEV_LA_Current, result.AverageResult.LocalAuthority.CurrentYear.Grade);
-            Assert.Equal(_laPerformance.TALLPPEGRD_TLEV_24_LA_Previous, result.AverageResult.LocalAuthority.PreviousYear!.Grade);
-            Assert.Equal(_laPerformance.TALLPPEGRD_TLEV_23_LA_Previous2, result.AverageResult.LocalAuthority.TwoYearsAgo!.Grade);
+            Assert.Equal(_laPerformance.TALLPPEGRD_TLEV_LA_Previous, result.AverageResult.LocalAuthority.PreviousYear!.Grade);
+            Assert.Equal(_laPerformance.TALLPPEGRD_TLEV_LA_Previous2, result.AverageResult.LocalAuthority.TwoYearsAgo!.Grade);
 
             // LA Additional data
             Assert.Null(result.AdditionalData?.LocalAuthority.Points);
@@ -574,65 +574,65 @@ public class Level3QualificationsServiceTests
         {
             Id = fakeEstablishment.URN,
             TALLPUP_ALEV_1618_Est_Current_Num_Coded = new CodedDouble(150, string.Empty, string.Empty),
-            TALLPUP_ALEV_1618_24_Est_Previous_Num_Coded = new CodedDouble(120, string.Empty, string.Empty),
-            TALLPUP_ALEV_1618_23_Est_Previous2_Num_Coded = new CodedDouble(170, string.Empty, string.Empty),
+            TALLPUP_ALEV_1618_Est_Previous_Num_Coded = new CodedDouble(120, string.Empty, string.Empty),
+            TALLPUP_ALEV_1618_Est_Previous2_Num_Coded = new CodedDouble(170, string.Empty, string.Empty),
 
             VA_INS_ALEV_Est_Current_Num_Coded = new CodedDouble(75.15, string.Empty, string.Empty),
             PROGRESS_BAND_ALEV_Est_Current = new CodedString("Average", string.Empty, string.Empty),
             UCI_INS_ALEV_Est_Current_Num_Coded = new CodedDouble(5, string.Empty, string.Empty),
             LCI_INS_ALEV_Est_Current_Num_Coded = new CodedDouble(1, string.Empty, string.Empty),
             TALLPPE_ALEV_1618_Est_Current_Num_Coded = new CodedDouble(15.57, string.Empty, string.Empty),
-            TALLPPE_ALEV_1618_24_Est_Previous_Num_Coded = new CodedDouble(13.15, string.Empty, string.Empty),
-            TALLPPE_ALEV_1618_23_Est_Previous2_Num_Coded = new CodedDouble(20.13, string.Empty, string.Empty),
+            TALLPPE_ALEV_1618_Est_Previous_Num_Coded = new CodedDouble(13.15, string.Empty, string.Empty),
+            TALLPPE_ALEV_1618_Est_Previous2_Num_Coded = new CodedDouble(20.13, string.Empty, string.Empty),
 
             TALLPPEGRD_ALEV_1618_Est_Current = new CodedString("B", string.Empty, string.Empty),
-            TALLPPEGRD_ALEV_1618_24_Est_Previous = new CodedString("C", string.Empty, string.Empty),
-            TALLPPEGRD_ALEV_1618_23_Est_Previous2 = new CodedString("A", string.Empty, string.Empty),
+            TALLPPEGRD_ALEV_1618_Est_Previous = new CodedString("C", string.Empty, string.Empty),
+            TALLPPEGRD_ALEV_1618_Est_Previous2 = new CodedString("A", string.Empty, string.Empty),
 
             TALLPUP_ACAD_1618_Est_Current_Num_Coded = new CodedDouble(125, string.Empty, string.Empty),
-            TALLPUP_ACAD_1618_24_Est_Previous_Num_Coded = new CodedDouble(67, string.Empty, string.Empty),
-            TALLPUP_ACAD_1618_23_Est_Previous2_Num_Coded = new CodedDouble(59, string.Empty, string.Empty),
+            TALLPUP_ACAD_1618_Est_Previous_Num_Coded = new CodedDouble(67, string.Empty, string.Empty),
+            TALLPUP_ACAD_1618_Est_Previous2_Num_Coded = new CodedDouble(59, string.Empty, string.Empty),
             VA_INS_ACAD_Est_Current_Num_Coded = new CodedDouble(50.55, string.Empty, string.Empty),
             PROGRESS_BAND_ACAD_Est_Current = new CodedString("Below Average", string.Empty, string.Empty),
             UCI_INS_ACAD_Est_Current_Num_Coded = new CodedDouble(3, string.Empty, string.Empty),
             LCI_INS_ACAD_Est_Current_Num_Coded = new CodedDouble(0.5, string.Empty, string.Empty),
             TALLPPE_ACAD_1618_Est_Current_Num_Coded = new CodedDouble(19.46, string.Empty, string.Empty),
-            TALLPPE_ACAD_1618_24_Est_Previous_Num_Coded = new CodedDouble(12.39, string.Empty, string.Empty),
-            TALLPPE_ACAD_1618_23_Est_Previous2_Num_Coded = new CodedDouble(23.75, string.Empty, string.Empty),
+            TALLPPE_ACAD_1618_Est_Previous_Num_Coded = new CodedDouble(12.39, string.Empty, string.Empty),
+            TALLPPE_ACAD_1618_Est_Previous2_Num_Coded = new CodedDouble(23.75, string.Empty, string.Empty),
 
             TALLPPEGRD_ACAD_1618_Est_Current = new CodedString("B", string.Empty, string.Empty),
-            TALLPPEGRD_ACAD_1618_24_Est_Previous = new CodedString("A", string.Empty, string.Empty),
-            TALLPPEGRD_ACAD_1618_23_Est_Previous2 = new CodedString("C", string.Empty, string.Empty),
+            TALLPPEGRD_ACAD_1618_Est_Previous = new CodedString("A", string.Empty, string.Empty),
+            TALLPPEGRD_ACAD_1618_Est_Previous2 = new CodedString("C", string.Empty, string.Empty),
 
             TALLPUP_AGEN_Est_Current_Num_Coded = new CodedDouble(45, string.Empty, string.Empty),
-            TALLPUP_AGEN_24_Est_Previous_Num_Coded = new CodedDouble(97, string.Empty, string.Empty),
-            TALLPUP_AGEN_23_Est_Previous2_Num_Coded = new CodedDouble(55, string.Empty, string.Empty),
+            TALLPUP_AGEN_Est_Previous_Num_Coded = new CodedDouble(97, string.Empty, string.Empty),
+            TALLPUP_AGEN_Est_Previous2_Num_Coded = new CodedDouble(55, string.Empty, string.Empty),
             VA_INS_AGEN_Est_Current_Num_Coded = new CodedDouble(66.29, string.Empty, string.Empty),
             PROGRESS_BAND_AGEN_Est_Current = new CodedString("Average", string.Empty, string.Empty),
             UCI_INS_AGEN_Est_Current_Num_Coded = new CodedDouble(3, string.Empty, string.Empty),
             LCI_INS_AGEN_Est_Current_Num_Coded = new CodedDouble(0.2, string.Empty, string.Empty),
             TALLPPE_AGEN_Est_Current_Num_Coded = new CodedDouble(22.77, string.Empty, string.Empty),
-            TALLPPE_AGEN_24_Est_Previous_Num_Coded = new CodedDouble(20.39, string.Empty, string.Empty),
-            TALLPPE_AGEN_23_Est_Previous2_Num_Coded = new CodedDouble(25.78, string.Empty, string.Empty),
+            TALLPPE_AGEN_Est_Previous_Num_Coded = new CodedDouble(20.39, string.Empty, string.Empty),
+            TALLPPE_AGEN_Est_Previous2_Num_Coded = new CodedDouble(25.78, string.Empty, string.Empty),
 
             TALLPPEGRD_AGEN_Est_Current = new CodedString("A", string.Empty, string.Empty),
-            TALLPPEGRD_AGEN_24_Est_Previous = new CodedString("C", string.Empty, string.Empty),
-            TALLPPEGRD_AGEN_23_Est_Previous2 = new CodedString("B", string.Empty, string.Empty),
+            TALLPPEGRD_AGEN_Est_Previous = new CodedString("C", string.Empty, string.Empty),
+            TALLPPEGRD_AGEN_Est_Previous2 = new CodedString("B", string.Empty, string.Empty),
 
             TALLPUP_TLEV_Est_Current_Num_Coded = new CodedDouble(55, string.Empty, string.Empty),
-            TALLPUP_TLEV_24_Est_Previous_Num_Coded = new CodedDouble(79, string.Empty, string.Empty),
-            TALLPUP_TLEV_23_Est_Previous2_Num_Coded = new CodedDouble(35, string.Empty, string.Empty),
+            TALLPUP_TLEV_Est_Previous_Num_Coded = new CodedDouble(79, string.Empty, string.Empty),
+            TALLPUP_TLEV_Est_Previous2_Num_Coded = new CodedDouble(35, string.Empty, string.Empty),
             VA_INS_TLEV_Est_Current_Num_Coded = new CodedDouble(61.55, string.Empty, string.Empty),
             PROGRESS_BAND_TLEV_Est_Current = new CodedString("Average", string.Empty, string.Empty),
             UCI_INS_TLEV_Est_Current_Num_Coded = new CodedDouble(1, string.Empty, string.Empty),
             LCI_INS_TLEV_Est_Current_Num_Coded = new CodedDouble(0.3, string.Empty, string.Empty),
             TALLPPE_TLEV_Est_Current_Num_Coded = new CodedDouble(15.23, string.Empty, string.Empty),
-            TALLPPE_TLEV_24_Est_Previous_Num_Coded = new CodedDouble(29.69, string.Empty, string.Empty),
-            TALLPPE_TLEV_23_Est_Previous2_Num_Coded = new CodedDouble(23.13, string.Empty, string.Empty),
+            TALLPPE_TLEV_Est_Previous_Num_Coded = new CodedDouble(29.69, string.Empty, string.Empty),
+            TALLPPE_TLEV_Est_Previous2_Num_Coded = new CodedDouble(23.13, string.Empty, string.Empty),
 
             TALLPPEGRD_TLEV_Est_Current = new CodedString("A", string.Empty, string.Empty),
-            TALLPPEGRD_TLEV_24_Est_Previous = new CodedString("B", string.Empty, string.Empty),
-            TALLPPEGRD_TLEV_23_Est_Previous2 = new CodedString("C", string.Empty, string.Empty),
+            TALLPPEGRD_TLEV_Est_Previous = new CodedString("B", string.Empty, string.Empty),
+            TALLPPEGRD_TLEV_Est_Previous2 = new CodedString("C", string.Empty, string.Empty),
 
             TINCLUDE_B3_Est_Current_Num_Coded = isAlevelQual ? new CodedDouble(100, string.Empty, string.Empty) : CodedDouble.Empty,
             TB3PTSE_Est_Current_Num_Coded = isAlevelQual ? new CodedDouble(85.27, string.Empty, string.Empty) : CodedDouble.Empty,
@@ -678,38 +678,38 @@ public class Level3QualificationsServiceTests
             Id = fakeEstablishment.LAId,
             VA_INS_ALEV_Eng_Current_Num_Coded = new CodedDouble(85.75, string.Empty, string.Empty),
             TALLPPE_ALEV_1618_Eng_Current_Num_Coded = new CodedDouble(25.79, string.Empty, string.Empty),
-            TALLPPE_ALEV_1618_24_Eng_Previous_Num_Coded = new CodedDouble(35.15, string.Empty, string.Empty),
-            TALLPPE_ALEV_1618_23_Eng_Previous2_Num_Coded = new CodedDouble(27.45, string.Empty, string.Empty),
+            TALLPPE_ALEV_1618_Eng_Previous_Num_Coded = new CodedDouble(35.15, string.Empty, string.Empty),
+            TALLPPE_ALEV_1618_Eng_Previous2_Num_Coded = new CodedDouble(27.45, string.Empty, string.Empty),
 
             TALLPPEGRD_ALEV_1618_Eng_Current = new CodedString("B", string.Empty, string.Empty),
-            TALLPPEGRD_ALEV_1618_24_Eng_Previous = new CodedString("C", string.Empty, string.Empty),
-            TALLPPEGRD_ALEV_1618_23_Eng_Previous2 = new CodedString("A", string.Empty, string.Empty),
+            TALLPPEGRD_ALEV_1618_Eng_Previous = new CodedString("C", string.Empty, string.Empty),
+            TALLPPEGRD_ALEV_1618_Eng_Previous2 = new CodedString("A", string.Empty, string.Empty),
 
             VA_INS_ACAD_Eng_Current_Num_Coded = new CodedDouble(67.35, string.Empty, string.Empty),
             TALLPPE_ACAD_1618_Eng_Current_Num_Coded = new CodedDouble(39.47, string.Empty, string.Empty),
-            TALLPPE_ACAD_1618_24_Eng_Previous_Num_Coded = new CodedDouble(32.79, string.Empty, string.Empty),
-            TALLPPE_ACAD_1618_23_Eng_Previous2_Num_Coded = new CodedDouble(25.39, string.Empty, string.Empty),
+            TALLPPE_ACAD_1618_Eng_Previous_Num_Coded = new CodedDouble(32.79, string.Empty, string.Empty),
+            TALLPPE_ACAD_1618_Eng_Previous2_Num_Coded = new CodedDouble(25.39, string.Empty, string.Empty),
 
             TALLPPEGRD_ACAD_1618_Eng_Current = new CodedString("C", string.Empty, string.Empty),
-            TALLPPEGRD_ACAD_1618_24_Eng_Previous = new CodedString("A", string.Empty, string.Empty),
-            TALLPPEGRD_ACAD_1618_23_Eng_Previous2 = new CodedString("B", string.Empty, string.Empty),
+            TALLPPEGRD_ACAD_1618_Eng_Previous = new CodedString("A", string.Empty, string.Empty),
+            TALLPPEGRD_ACAD_1618_Eng_Previous2 = new CodedString("B", string.Empty, string.Empty),
 
             VA_INS_AGEN_Eng_Current_Num_Coded = new CodedDouble(77.66, string.Empty, string.Empty),
             TALLPPE_AGEN_Eng_Current_Num_Coded = new CodedDouble(33.24, string.Empty, string.Empty),
-            TALLPPE_AGEN_24_Eng_Previous_Num_Coded = new CodedDouble(39.45, string.Empty, string.Empty),
-            TALLPPE_AGEN_23_Eng_Previous2_Num_Coded = new CodedDouble(29.31, string.Empty, string.Empty),
+            TALLPPE_AGEN_Eng_Previous_Num_Coded = new CodedDouble(39.45, string.Empty, string.Empty),
+            TALLPPE_AGEN_Eng_Previous2_Num_Coded = new CodedDouble(29.31, string.Empty, string.Empty),
 
             TALLPPEGRD_AGEN_Eng_Current = new CodedString("B", string.Empty, string.Empty),
-            TALLPPEGRD_AGEN_24_Eng_Previous = new CodedString("C", string.Empty, string.Empty),
-            TALLPPEGRD_AGEN_23_Eng_Previous2 = new CodedString("A", string.Empty, string.Empty),
+            TALLPPEGRD_AGEN_Eng_Previous = new CodedString("C", string.Empty, string.Empty),
+            TALLPPEGRD_AGEN_Eng_Previous2 = new CodedString("A", string.Empty, string.Empty),
 
             VA_INS_TLEV_Eng_Current_Num_Coded = new CodedDouble(59.56, string.Empty, string.Empty),
             TALLPPE_TLEV_Eng_Current_Num_Coded = new CodedDouble(35.11, string.Empty, string.Empty),
-            TALLPPE_TLEV_24_Eng_Previous_Num_Coded = new CodedDouble(55.14, string.Empty, string.Empty),
-            TALLPPE_TLEV_23_Eng_Previous2_Num_Coded = new CodedDouble(35.78, string.Empty, string.Empty),
+            TALLPPE_TLEV_Eng_Previous_Num_Coded = new CodedDouble(55.14, string.Empty, string.Empty),
+            TALLPPE_TLEV_Eng_Previous2_Num_Coded = new CodedDouble(35.78, string.Empty, string.Empty),
             TALLPPEGRD_TLEV_Eng_Current = new CodedString("C", string.Empty, string.Empty),
-            TALLPPEGRD_TLEV_24_Eng_Previous = new CodedString("B", string.Empty, string.Empty),
-            TALLPPEGRD_TLEV_23_Eng_Previous2 = new CodedString("A", string.Empty, string.Empty),
+            TALLPPEGRD_TLEV_Eng_Previous = new CodedString("B", string.Empty, string.Empty),
+            TALLPPEGRD_TLEV_Eng_Previous2 = new CodedString("A", string.Empty, string.Empty),
 
             TB3PTSE_Eng_Current_Num_Coded = isAlevelQual ? new CodedDouble(79.19, string.Empty, string.Empty) : CodedDouble.Empty,
             TB3PTSE_GRD_Eng_Current = isAlevelQual ? new CodedString("A", string.Empty, string.Empty) : CodedString.Empty,
@@ -784,35 +784,35 @@ public class Level3QualificationsServiceTests
         _laPerformance = new KS5LAPerformance
         {
             TALLPPE_ALEV_1618_LA_Current_Num_Coded = new CodedDouble(20.59, string.Empty, string.Empty),
-            TALLPPE_ALEV_1618_24_LA_Previous_Num_Coded = new CodedDouble(30.17, string.Empty, string.Empty),
-            TALLPPE_ALEV_1618_23_LA_Previous2_Num_Coded = new CodedDouble(35.25, string.Empty, string.Empty),
+            TALLPPE_ALEV_1618_LA_Previous_Num_Coded = new CodedDouble(30.17, string.Empty, string.Empty),
+            TALLPPE_ALEV_1618_LA_Previous2_Num_Coded = new CodedDouble(35.25, string.Empty, string.Empty),
 
             TALLPPEGRD_ALEV_1618_LA_Current = new CodedString("C", string.Empty, string.Empty),
-            TALLPPEGRD_ALEV_1618_24_LA_Previous = new CodedString("B", string.Empty, string.Empty),
-            TALLPPEGRD_ALEV_1618_23_LA_Previous2 = new CodedString("A", string.Empty, string.Empty),
+            TALLPPEGRD_ALEV_1618_LA_Previous = new CodedString("B", string.Empty, string.Empty),
+            TALLPPEGRD_ALEV_1618_LA_Previous2 = new CodedString("A", string.Empty, string.Empty),
 
             TALLPPE_ACAD_1618_LA_Current_Num_Coded = new CodedDouble(55.23, string.Empty, string.Empty),
-            TALLPPE_ACAD_1618_24_LA_Previous_Num_Coded = new CodedDouble(31.55, string.Empty, string.Empty),
-            TALLPPE_ACAD_1618_23_LA_Previous2_Num_Coded = new CodedDouble(71.35, string.Empty, string.Empty),
+            TALLPPE_ACAD_1618_LA_Previous_Num_Coded = new CodedDouble(31.55, string.Empty, string.Empty),
+            TALLPPE_ACAD_1618_LA_Previous2_Num_Coded = new CodedDouble(71.35, string.Empty, string.Empty),
 
             TALLPPEGRD_ACAD_1618_LA_Current = new CodedString("B", string.Empty, string.Empty),
-            TALLPPEGRD_ACAD_1618_24_LA_Previous = new CodedString("C", string.Empty, string.Empty),
-            TALLPPEGRD_ACAD_1618_23_LA_Previous2 = new CodedString("A", string.Empty, string.Empty),
+            TALLPPEGRD_ACAD_1618_LA_Previous = new CodedString("C", string.Empty, string.Empty),
+            TALLPPEGRD_ACAD_1618_LA_Previous2 = new CodedString("A", string.Empty, string.Empty),
 
             TALLPPE_AGEN_LA_Current_Num_Coded = new CodedDouble(47.53, string.Empty, string.Empty),
-            TALLPPE_AGEN_24_LA_Previous_Num_Coded = new CodedDouble(39.12, string.Empty, string.Empty),
-            TALLPPE_AGEN_23_LA_Previous2_Num_Coded = new CodedDouble(45.74, string.Empty, string.Empty),
+            TALLPPE_AGEN_LA_Previous_Num_Coded = new CodedDouble(39.12, string.Empty, string.Empty),
+            TALLPPE_AGEN_LA_Previous2_Num_Coded = new CodedDouble(45.74, string.Empty, string.Empty),
 
             TALLPPEGRD_AGEN_LA_Current = new CodedString("B", string.Empty, string.Empty),
-            TALLPPEGRD_AGEN_24_LA_Previous = new CodedString("C", string.Empty, string.Empty),
-            TALLPPEGRD_AGEN_23_LA_Previous2 = new CodedString("B", string.Empty, string.Empty),
+            TALLPPEGRD_AGEN_LA_Previous = new CodedString("C", string.Empty, string.Empty),
+            TALLPPEGRD_AGEN_LA_Previous2 = new CodedString("B", string.Empty, string.Empty),
 
             TALLPPE_TLEV_LA_Current_Num_Coded = new CodedDouble(21.85, string.Empty, string.Empty),
-            TALLPPE_TLEV_24_LA_Previous_Num_Coded = new CodedDouble(37.55, string.Empty, string.Empty),
-            TALLPPE_TLEV_23_LA_Previous2_Num_Coded = new CodedDouble(19.27, string.Empty, string.Empty),
+            TALLPPE_TLEV_LA_Previous_Num_Coded = new CodedDouble(37.55, string.Empty, string.Empty),
+            TALLPPE_TLEV_LA_Previous2_Num_Coded = new CodedDouble(19.27, string.Empty, string.Empty),
             TALLPPEGRD_TLEV_LA_Current = new CodedString("C", string.Empty, string.Empty),
-            TALLPPEGRD_TLEV_24_LA_Previous = new CodedString("A", string.Empty, string.Empty),
-            TALLPPEGRD_TLEV_23_LA_Previous2 = new CodedString("B", string.Empty, string.Empty),
+            TALLPPEGRD_TLEV_LA_Previous = new CodedString("A", string.Empty, string.Empty),
+            TALLPPEGRD_TLEV_LA_Previous2 = new CodedString("B", string.Empty, string.Empty),
             TB3PTSE_LA_Current_Num_Coded = isAlevelQual ? new CodedDouble(25.19, string.Empty, string.Empty) : CodedDouble.Empty,
             TB3PTSE_GRD_LA_Current = isAlevelQual ? new CodedString("C", string.Empty, string.Empty) : CodedString.Empty,
             L3M_PER_LA_Current_Pct_Coded = isAcademicQual ? new CodedDouble(67.58, string.Empty, string.Empty) : CodedDouble.Empty,

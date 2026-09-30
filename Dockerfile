@@ -40,7 +40,7 @@ RUN echo "=== Assets build output ===" && \
 # =====================================================
 # Stage 2: Build .NET project
 # =====================================================
-FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_VERSION} AS build
+FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_VERSION}-noble AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
@@ -67,8 +67,22 @@ RUN mkdir -p /keys && chmod -R 777 /keys
 # =====================================================
 # Stage 3: Runtime image (chiseled)
 # =====================================================
-FROM mcr.microsoft.com/dotnet/aspnet:10.0-noble-chiseled AS final
+FROM mcr.microsoft.com/dotnet/aspnet:${DOTNET_VERSION}-noble AS final
 WORKDIR /app
+
+RUN apt-get update && \
+    apt-get upgrade -y --no-install-recommends \
+        gnupg2 \
+        gpgv \
+        zlib1g \
+        libpam0g \
+        libpam-modules \
+        libpam-modules-bin \
+        libpam-runtime \
+        openssl \
+        libssl3t64 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Copy app & assets with correct ownership; no shell, so no RUN here
 COPY --from=publish --chown=app:app /app/publish .
