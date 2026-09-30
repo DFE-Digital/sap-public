@@ -7,6 +7,7 @@
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+    <UserSecretsId>995cdd5f-13fb-41f3-bf56-fbe540c1d24b</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -48,6 +49,12 @@
     <None Update="TestData\2425\KS4\202425_all_state_funded_pupils_characteristics_England_Total_Previous.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="TestData\2425\KS4\202425_all_state_funded_pupils_characteristics_la_Disadvantaged_Previous2.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\2425\KS4\202425_all_state_funded_pupils_characteristics_la_Disadvantaged_Previous.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="TestData\2425\KS4\202425_all_state_funded_pupils_characteristics_la_NonDisadvantaged_Current.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -70,6 +77,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="TestData\2425\KS4\202425_information_about_schools_final.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\2425\KS4\202425_performance_tables_schools_final_Disadvantaged_Previous_Year.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\2425\KS4\202425_performance_tables_schools_final_Disadvantaged_Previous2_Year.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="TestData\2425\KS4\202425_performance_tables_schools_final_NonMobile_Current_Year.json">
@@ -97,9 +110,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="TestData\2425\KS4\AdditionalMeasures.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TestData\2425\KS4\LaAndEnglandAttainment.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="TestData\2425\KS4\202425_all_state_funded_pupils_characteristics_la_Total_Current.json">

@@ -7,6 +7,9 @@ public record AllStateFundedPupilsTestDataModel
     [JsonPropertyName("attainment8_average")]
     public string Attainment8Average { get; init; } = string.Empty;
 
+    [JsonPropertyName("progress8_average")]
+    public string Progress8Average { get; init; } = string.Empty;
+
     [JsonPropertyName("gcse_91_percent")]
     public string Gcse91Percent { get; init; } = string.Empty;
 
