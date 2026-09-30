@@ -5,7 +5,7 @@ namespace SAPPub.E2E.Tests.Helpers;
 public static class AssertHelpers
 {
     /// <summary>
-    /// Convert the string values to doubles to 2 dp and compare them. 
+    /// Convert the string values to doubles to 2 dp and compare them and allow for values to be one of the known 'not available' codes. 
     /// This is to avoid issues with rounding differences when comparing string values.
     /// We can't compare the string values themselves because there is not a consistent pattern
     /// for the number of dps when displaying
@@ -27,6 +27,7 @@ public static class AssertHelpers
             if (expected == "c" || expected == "z")
             {
                 Assert.Equal("Not available", actual);
+                return;
             }
             else throw new ArgumentException($"Unable to parse value to double. Expected: '{expected}', Actual: '{actual}'");
         }

@@ -6,7 +6,6 @@ using System.Text;
 
 namespace SAPPub.E2E.Tests.Search
 {
-    [Collection("Integration Tests")]
     public class SearchPageTests() : BasePageTest()
     {
         private static readonly string _pageRoot = "/search/results";

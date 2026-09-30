@@ -1,4 +1,4 @@
-name: Integration Tests
+name: E2E Tests
 
 on:
   workflow_call:
@@ -14,7 +14,7 @@ on:
         type: string
 
 jobs:
-  integration-tests:
+  E2E-tests:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
 
@@ -29,13 +29,13 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Build integration tests
+      - name: Build E2E tests
         run: dotnet build Tests/SAPPub.E2E.Tests/SAPPub.E2E.Tests.csproj --configuration Release
 
       - name: Install Playwright browsers
         run: pwsh ./Tests/SAPPub.E2E.Tests/bin/Release/net10.0/playwright.ps1 install
 
-      - name: Run integration tests
+      - name: Run E2E tests
         env:
           HEADED: 0
           PLAYWRIGHT_IGNORE_HTTPS_ERRORS: true
@@ -47,16 +47,16 @@ jobs:
             --no-build \
             --configuration Release \
             --results-directory "TestResults" \
-            --logger "trx;LogFileName=E2Eintegration-tests.trx"
+            --logger "trx;LogFileName=E2E-tests.trx"
 
-      - name: Upload Test Result Files
+      - name: Upload E2E Test Result Files
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: post-deployment-test-results
+          name: e2e-test-results
           path: "**/TestResults/**/*"
 
-      - name: Publish Test Results
+      - name: Publish E2E Test Results
         uses: dorny/test-reporter@v2
         if: always()
         with:
