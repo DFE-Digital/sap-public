@@ -1,0 +1,30 @@
+﻿@using SAPPub.Web.Areas.Profiles.ViewModels.Performance
+@model ProgressBandingPercentageTableViewModel
+
+<govuk-details data-testid="percentages-@ViewData["Id"]">
+    <govuk-details-summary>
+        @Model.Summary
+    </govuk-details-summary>
+
+    <govuk-details-text>
+        <p>@Model.Description</p>       
+
+        <table data-testid="percentages-@ViewData["Id"]-table" class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Banding</th>
+                    <th scope="col" class="govuk-table__header">Percentage of schools</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                @foreach (var row in Model.Rows)
+                {
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">@row.Banding</td>
+                        <td class="govuk-table__cell">@row.Percentage</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </govuk-details-text>
+</govuk-details>

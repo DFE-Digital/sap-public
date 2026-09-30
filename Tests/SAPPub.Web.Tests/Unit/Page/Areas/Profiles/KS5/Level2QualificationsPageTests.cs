@@ -280,6 +280,29 @@ public class Level2QualificationsPageTests : PageTestsBase
         var averageProgresScoreNationalCard = doc.QuerySelector("#average-progress-score-national-card");
         Assert.NotNull(averageProgresScoreNationalCard);
         Assert.Contains($"Average progress score in England: {_level2QualificationModel.ProgressScore.EnglandAverageScore}", averageProgresScoreNationalCard.QuerySelector("p")?.TextContent);
+
+        //Assert progress banding percentages
+        var details = doc.QuerySelector($"[data-testid='percentages-progress-score']");
+
+        Assert.NotNull(details);
+        Assert.Contains(
+        "How many schools and colleges are in each banding?",
+        details.TextContent);
+        Assert.Contains(
+        "This shows the percentage of schools and colleges in England which are in each banding for this measure.",
+        details.TextContent);
+
+        var table = doc.QuerySelector($"[data-testid='percentages-progress-score-table']");
+
+        Assert.NotNull(table);
+        Assert.Contains("Banding", table.TextContent);
+        Assert.Contains("Percentage of schools", table.TextContent);
+        Assert.Contains("Well above average", table.TextContent);
+        Assert.Contains("Above average", table.TextContent);
+        Assert.Contains("Average", table.TextContent);
+        Assert.Contains("Below average", table.TextContent);
+        Assert.Contains("Well below average", table.TextContent);
+
     }
 
     [Theory]

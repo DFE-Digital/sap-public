@@ -32,6 +32,7 @@ public class AttainmentAndProgressService(
                 EstablishmentAttainment8Score = EmptyRelativeYearValues,
                 EstablishmentProgress8Banding = new RelativeYearValues<string?> { CurrentYear = null, PreviousYear = null, TwoYearsAgo = null },
                 Progress8BandingContextDescription = new RelativeYearValues<CodedString> { CurrentYear = CodedString.Empty },
+                ProgressBandingPercentages = new RelativeYearValues<CodedDouble[]> { CurrentYear = [], PreviousYear = [], TwoYearsAgo = [] },
                 EstablishmentProgress8CILower = EmptyRelativeYearValues,
                 EstablishmentProgress8CIUpper = EmptyRelativeYearValues,
                 EstablishmentProgress8Score = EmptyRelativeYearValues,
@@ -84,6 +85,25 @@ public class AttainmentAndProgressService(
                 CurrentYear = establishmentPerformance.Prog8_Banding_Est_Current,
                 PreviousYear = establishmentPerformance.Prog8_Banding_Est_Previous,
                 TwoYearsAgo = establishmentPerformance.Prog8_Banding_Est_Previous2,
+            },
+            ProgressBandingPercentages = new RelativeYearValues<CodedDouble[]>
+            {
+                CurrentYear = [],
+                PreviousYear = [
+                    englandPerformance.Prog8Band_Band1_Eng_Previous_Pct_Coded,
+                    englandPerformance.Prog8Band_Band2_Eng_Previous_Pct_Coded,
+                    englandPerformance.Prog8Band_Band3_Eng_Previous_Pct_Coded,
+                    englandPerformance.Prog8Band_Band4_Eng_Previous_Pct_Coded,
+                    englandPerformance.Prog8Band_Band5_Eng_Previous_Pct_Coded
+                ],
+                TwoYearsAgo = [
+                    englandPerformance.Prog8Band_Band1_Eng_Previous2_Pct_Coded,
+                    englandPerformance.Prog8Band_Band2_Eng_Previous2_Pct_Coded,
+                    englandPerformance.Prog8Band_Band3_Eng_Previous2_Pct_Coded,
+                    englandPerformance.Prog8Band_Band4_Eng_Previous2_Pct_Coded,
+                    englandPerformance.Prog8Band_Band5_Eng_Previous2_Pct_Coded
+                ],
+
             },
             Progress8BandingContextDescription = new RelativeYearValues<CodedString>
             {

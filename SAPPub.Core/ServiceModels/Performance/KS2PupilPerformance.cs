@@ -1,4 +1,5 @@
-﻿using SAPPub.Core.ValueObjects;
+﻿using SAPPub.Core.Entities;
+using SAPPub.Core.ValueObjects;
 
 namespace SAPPub.Core.ServiceModels.Performance;
 
@@ -11,16 +12,19 @@ public class KS2PupilPerformance
     public CodedDouble EstablishmentReadingConfidenceLower { get; set; }
     public CodedDouble LaReadingScore { get; init; }
     public CodedString EstablishmentReadingContextDescription { get; init; }
+    public CodedDouble[] ReadingProgressBandingPercentages { get; init; } = [];
     public CodedDouble EstablishmentWritingScore { get; init; }
     public CodedString EstablishmentWritingDescription { get; init; }
     public CodedDouble EstablishmentWritingConfidenceUpper { get; set; }
     public CodedDouble EstablishmentWritingConfidenceLower { get; set; }
     public CodedDouble LaWritingScore { get; init; }
     public CodedString EstablishmentWritingContextDescription { get; init; }
+    public CodedDouble[] WritingProgressBandingPercentages { get; init; } = [];
     public CodedDouble EstablishmentMathsScore { get; init; }
     public CodedString EstablishmentMathsDescription { get; init; }
     public CodedDouble EstablishmentMathsConfidenceUpper { get; set; }
     public CodedDouble EstablishmentMathsConfidenceLower { get; set; }
     public CodedDouble LaMathsScore { get; init; }
     public CodedString EstablishmentMathsContextDescription { get; init; }
+    public CodedDouble[] MathsProgressBandingPercentages { get; init; } = [];
 }

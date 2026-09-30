@@ -156,6 +156,9 @@
                         </div>
                         <div class="bar-chart__icon"></div>
                     </div>
+
+                    @await Html.PartialAsync("_ProgressBandingPercentageTable", Model.ReadingProgressBandingPercentages, new ViewDataDictionary(ViewData) { { "id", "reading-progress-score" } })
+
                 }
 
             </div>
@@ -194,6 +197,9 @@
                         </div>
                         <div class="bar-chart__icon"></div>
                     </div>
+
+                    @await Html.PartialAsync("_ProgressBandingPercentageTable", Model.WritingProgressBandingPercentages, new ViewDataDictionary(ViewData) { { "id", "writing-progress-score" } })
+
                 }
 
           
@@ -234,6 +240,8 @@
                         </div>
                         <div class="bar-chart__icon"></div>
                     </div>
+
+                    @await Html.PartialAsync("_ProgressBandingPercentageTable", Model.MathsProgressBandingPercentages, new ViewDataDictionary(ViewData) { { "id", "maths-progress-score" } })
 
                 }
 

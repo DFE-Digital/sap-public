@@ -79,6 +79,19 @@ public class Level2QualificationsService(
             _ => ProgressBandingDescriptions.Empty,
         };
 
+        var bandingPercentages = level2Qualification switch
+        {
+            Level2.TechCert => new CodedDouble[]
+            {
+                englandPerformance.ProgBand_Techcert_Band1_Eng_Current_Pct_Coded,
+                englandPerformance.ProgBand_Techcert_Band2_Eng_Current_Pct_Coded,
+                englandPerformance.ProgBand_Techcert_Band3_Eng_Current_Pct_Coded,
+                englandPerformance.ProgBand_Techcert_Band4_Eng_Current_Pct_Coded,
+                englandPerformance.ProgBand_Techcert_Band5_Eng_Current_Pct_Coded
+            },
+            _ => Array.Empty<CodedDouble>(),
+        };
+
         return new ProgressScoreModel
         {
             Score = level2Qualification switch
@@ -103,6 +116,7 @@ public class Level2QualificationsService(
                 _ => CodedDouble.Empty,
             },
             BandingContextDescription = bandingRating.Value.GetBandingDescription(bandingDescriptions),
+            ProgressBandingPercentages = bandingPercentages
         };
     }
 
