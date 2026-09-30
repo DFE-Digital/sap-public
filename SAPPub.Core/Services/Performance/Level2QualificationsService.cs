@@ -134,6 +134,16 @@ public class Level2QualificationsService(
                 {
                     Level2.TechCert => establishmentPerformance.TALLPUP_TECHCERT_Est_Current_Num_Coded,
                     _ => CodedDouble.Empty
+                },
+                PreviousYear = level2Qualification switch
+                {
+                    Level2.TechCert => establishmentPerformance.TALLPUP_TECHCERT_Est_Previous_Num_Coded,
+                    _ => CodedDouble.Empty
+                },
+                TwoYearsAgo = level2Qualification switch
+                {
+                    Level2.TechCert => establishmentPerformance.TALLPUP_TECHCERT_Est_Previous2_Num_Coded,
+                    _ => CodedDouble.Empty
                 }
             },
             Establishment = new RelativeYearValues<PerformanceResult>
@@ -141,6 +151,16 @@ public class Level2QualificationsService(
                 CurrentYear = level2Qualification switch
                 {
                     Level2.TechCert => MapPerformanceResult(establishmentPerformance.TALLPPEGRD_TECHCERT_Est_Current, establishmentPerformance.TALLPPE_TECHCERT_Est_Current_Num_Coded),
+                    _ => MapPerformanceResult(CodedString.Empty, CodedDouble.Empty)
+                },
+                PreviousYear = level2Qualification switch
+                {
+                    Level2.TechCert => MapPerformanceResult(establishmentPerformance.TALLPPEGRD_TECHCERT_Est_Previous, establishmentPerformance.TALLPPE_TECHCERT_Est_Previous_Num_Coded),
+                    _ => MapPerformanceResult(CodedString.Empty, CodedDouble.Empty)
+                },
+                TwoYearsAgo = level2Qualification switch
+                {
+                    Level2.TechCert => MapPerformanceResult(establishmentPerformance.TALLPPEGRD_TECHCERT_Est_Previous2, establishmentPerformance.TALLPPE_TECHCERT_Est_Previous2_Num_Coded),
                     _ => MapPerformanceResult(CodedString.Empty, CodedDouble.Empty)
                 }
             },
@@ -150,13 +170,33 @@ public class Level2QualificationsService(
                 {
                     Level2.TechCert => MapPerformanceResult(laPerformance.TALLPPEGRD_TECHCERT_LA_Current, laPerformance.TALLPPE_TECHCERT_LA_Current_Num_Coded),
                     _ => MapPerformanceResult(CodedString.Empty, CodedDouble.Empty)
-                }                
+                },
+                PreviousYear = level2Qualification switch
+                {
+                    Level2.TechCert => MapPerformanceResult(laPerformance.TALLPPEGRD_TECHCERT_LA_Previous, laPerformance.TALLPPE_TECHCERT_LA_Previous_Num_Coded),
+                    _ => MapPerformanceResult(CodedString.Empty, CodedDouble.Empty)
+                },
+                TwoYearsAgo = level2Qualification switch
+                {
+                    Level2.TechCert => MapPerformanceResult(laPerformance.TALLPPEGRD_TECHCERT_LA_Previous2, laPerformance.TALLPPE_TECHCERT_LA_Previous2_Num_Coded),
+                    _ => MapPerformanceResult(CodedString.Empty, CodedDouble.Empty)
+                }
             },
             England = new RelativeYearValues<PerformanceResult>
             {
                 CurrentYear = level2Qualification switch
                 {
                     Level2.TechCert => MapPerformanceResult(englandPerformance.TALLPPEGRD_TECHCERT_Eng_Current, englandPerformance.TALLPPE_TECHCERT_Eng_Current_Num_Coded),
+                    _ => MapPerformanceResult(CodedString.Empty, CodedDouble.Empty)
+                },
+                PreviousYear = level2Qualification switch
+                {
+                    Level2.TechCert => MapPerformanceResult(englandPerformance.TALLPPEGRD_TECHCERT_Eng_Previous, englandPerformance.TALLPPE_TECHCERT_Eng_Previous_Num_Coded),
+                    _ => MapPerformanceResult(CodedString.Empty, CodedDouble.Empty)
+                },
+                TwoYearsAgo = level2Qualification switch
+                {
+                    Level2.TechCert => MapPerformanceResult(englandPerformance.TALLPPEGRD_TECHCERT_Eng_Previous2, englandPerformance.TALLPPE_TECHCERT_Eng_Previous2_Num_Coded),
                     _ => MapPerformanceResult(CodedString.Empty, CodedDouble.Empty)
                 }
             }

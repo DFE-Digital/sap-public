@@ -1,29 +1,23 @@
 ﻿using SAPPub.Core.Enums.KS5Qualifications;
-using SAPPub.Playwright.Testing;
-using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 using PageConstants = SAPPub.Playwright.Testing.KS5.AcademicPerformanceLevel3QualificationsPageConstants;
 
 namespace SAPPub.Web.Tests.UI.Areas.Profiles.KS5;
 
 [Collection("Playwright Tests")]
-public class Level3QualificationsTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
+public class Level2QualificationsTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
     private const string _urn = "130499";
     private const string _schoolName = "holy-cross-college";
-    private const string _schoolDisplayName = "Holy Cross College";
 
-    private static string GetPageUrl(Level3 level3Qualification) => $"school/{_urn}/{_schoolName}/16-to-19-performance/level-3-qualifications/{level3Qualification.ToString().ToLower()}";
+    private static string GetPageUrl(Level2 level2Qualification) => $"school/{_urn}/{_schoolName}/16-to-19-performance/level-2-qualifications/{level2Qualification.ToString().ToLower()}";
 
     [Theory]
-    [InlineData(Level3.ALevel)]
-    [InlineData(Level3.Academic)]
-    [InlineData(Level3.AppliedGeneral)]
-    [InlineData(Level3.TechLevel)]
-    public async Task Level3QualificationsPage_LoadsSuccessfully(Level3 level3Qualification)
+    [InlineData(Level2.TechCert)]    
+    public async Task Level2QualificationsPage_LoadsSuccessfully(Level2 level2Qualification)
     {
         // Arrange && Act
-        var response = await Page.GotoAsync(GetPageUrl(level3Qualification));
+        var response = await Page.GotoAsync(GetPageUrl(level2Qualification));
 
         // Assert
         Assert.NotNull(response);
@@ -31,14 +25,11 @@ public class Level3QualificationsTests(WebApplicationSetupFixture fixture) : Bas
     }
 
     [Theory]
-    [InlineData(Level3.ALevel)]
-    [InlineData(Level3.Academic)]
-    [InlineData(Level3.AppliedGeneral)]
-    [InlineData(Level3.TechLevel)]
-    public async Task Level3Qualifications_Displays_CurrentYear_Table(Level3 level3Qualification)
+    [InlineData(Level2.TechCert)]    
+    public async Task Level2Qualifications_Displays_CurrentYear_Table(Level2 level2Qualification)
     {
         // Arrange
-        await Page.GotoAsync(GetPageUrl(level3Qualification));
+        await Page.GotoAsync(GetPageUrl(level2Qualification));
 
         // Act        
         var table = Page.Locator(PageConstants.AverageResultCurrentYearTableContainerId);
@@ -59,14 +50,11 @@ public class Level3QualificationsTests(WebApplicationSetupFixture fixture) : Bas
     }
 
     [Theory]
-    [InlineData(Level3.ALevel)]
-    [InlineData(Level3.Academic)]
-    [InlineData(Level3.AppliedGeneral)]
-    [InlineData(Level3.TechLevel)]
-    public async Task Level3Qualifications_Displays_DataOverTime_Table(Level3 level3Qualification)
+    [InlineData(Level2.TechCert)]    
+    public async Task Level2Qualifications_Displays_DataOverTime_Table(Level2 level2Qualification)
     {
         // Arrange
-        await Page.GotoAsync(GetPageUrl(level3Qualification));
+        await Page.GotoAsync(GetPageUrl(level2Qualification));
 
         // Act
         // Click Show data over time button
@@ -89,3 +77,4 @@ public class Level3QualificationsTests(WebApplicationSetupFixture fixture) : Bas
         Assert.Equal("Show current data", showCurrentDataBtnText);
     }
 }
+

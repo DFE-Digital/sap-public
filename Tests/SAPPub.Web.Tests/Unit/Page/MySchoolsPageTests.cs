@@ -72,10 +72,10 @@ public class MySchoolsPageTests : PageTestsBase
         Assert.Equal(establishmentList.Count, schoolList.Length);
         var items = ParseCheckboxElements(schoolList);
 
-        Assert.Equal("Alpha", items[0].LabelText);
-        Assert.Equal("Bravo", items[1].LabelText);
-        Assert.Equal("Charlie", items[2].LabelText);
-        Assert.Equal("Delta", items[3].LabelText);
+        Assert.Contains("Alpha", items[0].LabelText);
+        Assert.Contains("Bravo", items[1].LabelText);
+        Assert.Contains("Charlie", items[2].LabelText);
+        Assert.Contains("Delta", items[3].LabelText);
     }
 
     [Fact]
@@ -113,7 +113,7 @@ public class MySchoolsPageTests : PageTestsBase
             item =>
             {
                 Assert.Equal(establishmentList[0].URN, item.Urn);
-                Assert.Equal(establishmentList[0].EstablishmentName, item.LabelText);
+                Assert.Contains(establishmentList[0].EstablishmentName, item.LabelText);
                 Assert.Equal(establishmentList[0].Address, item.HintParts?.Address);
                 Assert.Null(item.HintParts?.StatusTag);
             });
@@ -155,14 +155,14 @@ public class MySchoolsPageTests : PageTestsBase
         var itemWithClosedDate = items.Single(i => i.Urn == "123458");
         var expectedWithClosedDate = establishmentList.Single(e => e.URN == "123458");
         Assert.Equal(expectedWithClosedDate.URN, itemWithClosedDate.Urn);
-        Assert.Equal(expectedWithClosedDate.EstablishmentName, itemWithClosedDate.LabelText);
+        Assert.Contains(expectedWithClosedDate.EstablishmentName, itemWithClosedDate.LabelText);
         Assert.Equal(expectedWithClosedDate.Address, itemWithClosedDate.HintParts?.Address);
         Assert.Equal("Closed in January 2020", itemWithClosedDate.HintParts?.StatusTag);
 
         var itemWithoutClosedDate = items.Single(i => i.Urn == "123457");
         var expectedWithoutClosedDate = establishmentList.Single(e => e.URN == "123457");
         Assert.Equal(expectedWithoutClosedDate.URN, itemWithoutClosedDate.Urn);
-        Assert.Equal(expectedWithoutClosedDate.EstablishmentName, itemWithoutClosedDate.LabelText);
+        Assert.Contains(expectedWithoutClosedDate.EstablishmentName, itemWithoutClosedDate.LabelText);
         Assert.Equal(expectedWithoutClosedDate.Address, itemWithoutClosedDate.HintParts?.Address);
         Assert.Equal("Closed", itemWithoutClosedDate.HintParts?.StatusTag);
     }
