@@ -1,4 +1,4 @@
-﻿namespace SAPPub.Integration.Tests.TestData.Models.KS4;
+﻿namespace SAPPub.E2E.Tests.TestData.Models.KS4;
 
 using System.Text.Json.Serialization;
 

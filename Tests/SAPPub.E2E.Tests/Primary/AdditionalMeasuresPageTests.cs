@@ -1,7 +1,8 @@
-﻿using SAPPub.Playwright.Testing;
+﻿using SAPPub.E2E.Tests.Infrastructure;
+using SAPPub.Playwright.Testing;
 using SAPPub.Playwright.Testing.KS2.Performance.AdditionalMeasures;
 
-namespace SAPPub.Integration.Tests.Primary;
+namespace SAPPub.E2E.Tests.Primary;
 
 public class AdditionalMeasuresPageTests : BasePageTest
 {

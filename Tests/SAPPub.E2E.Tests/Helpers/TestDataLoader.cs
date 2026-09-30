@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace SAPPub.Integration.Tests.Helpers;
+namespace SAPPub.E2E.Tests.Helpers;
 
 public static class TestDataLoader
 {

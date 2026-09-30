@@ -1,6 +1,7 @@
-﻿using SAPPub.Playwright.Testing;
+﻿using SAPPub.E2E.Tests.Infrastructure;
+using SAPPub.Playwright.Testing;
 
-namespace SAPPub.Integration.Tests.SecondarySchoolTests;
+namespace SAPPub.E2E.Tests.SecondarySchoolTests;
 
 public class AboutSchoolPageTests() : BasePageTest()
 {

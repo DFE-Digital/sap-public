@@ -1,9 +1,10 @@
-﻿using SAPPub.Playwright.Testing;
+﻿using SAPPub.E2E.Tests.Infrastructure;
+using SAPPub.Playwright.Testing;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SAPPub.Integration.Tests.Search
+namespace SAPPub.E2E.Tests.Search
 {
     [Collection("Integration Tests")]
     public class SearchPageTests() : BasePageTest()

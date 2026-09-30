@@ -1,9 +1,10 @@
 ﻿using Microsoft.Playwright;
+using SAPPub.E2E.Tests.Infrastructure;
 using SAPPub.Playwright.Testing;
 using SAPPub.Playwright.Testing.KS2.Performance.SubjectScaledScores;
 using SubjectScaledScores = SAPPub.Playwright.Testing.KS2.Performance.SubjectScaledScores;
 
-namespace SAPPub.Integration.Tests.Primary;
+namespace SAPPub.E2E.Tests.Primary;
 
 [Collection("Integration Tests")]
 public class SubjectScaledScoresTests() : BasePageTest()

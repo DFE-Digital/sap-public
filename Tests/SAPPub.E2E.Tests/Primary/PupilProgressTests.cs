@@ -1,7 +1,8 @@
 ﻿using Microsoft.Playwright;
-using SAPPub.Integration.Tests.Helpers;
+using SAPPub.E2E.Tests.Helpers;
+using SAPPub.E2E.Tests.Infrastructure;
 
-namespace SAPPub.Integration.Tests.Primary;
+namespace SAPPub.E2E.Tests.Primary;
 
 [Collection("Integration Tests")]
 public class PupilProgressTests() : BasePageTest()

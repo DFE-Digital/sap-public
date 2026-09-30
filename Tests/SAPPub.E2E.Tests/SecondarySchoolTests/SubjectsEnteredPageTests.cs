@@ -1,9 +1,10 @@
 ﻿using Microsoft.Playwright;
-using SAPPub.Integration.Tests.Helpers;
-using SAPPub.Integration.Tests.Primary;
+using SAPPub.E2E.Tests.Helpers;
+using SAPPub.E2E.Tests.Infrastructure;
+using SAPPub.E2E.Tests.Primary;
 using SAPPub.Playwright.Testing;
 
-namespace SAPPub.Integration.Tests.SecondarySchoolTests;
+namespace SAPPub.E2E.Tests.SecondarySchoolTests;
 
 public class SubjectsEnteredPageTests : BasePageTest
 {
