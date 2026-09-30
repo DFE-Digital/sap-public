@@ -70,6 +70,20 @@ RUN mkdir -p /keys && chmod -R 777 /keys
 FROM mcr.microsoft.com/dotnet/aspnet:10.0-noble AS final
 WORKDIR /app
 
+RUN apt-get update && \
+    apt-get upgrade -y --no-install-recommends \
+        gnupg2 \
+        gpgv \
+        zlib1g \
+        libpam0g \
+        libpam-modules \
+        libpam-modules-bin \
+        libpam-runtime \
+        openssl \
+        libssl3t64 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 # Copy app & assets with correct ownership; no shell, so no RUN here
 COPY --from=publish --chown=app:app /app/publish .
 COPY --from=assets  --chown=app:app /app/wwwroot ./wwwroot
