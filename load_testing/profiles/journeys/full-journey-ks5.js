@@ -19,7 +19,7 @@ const pages = [
   {
     urlSlug: "/about",
     pageTitle: "About",
-    checkHeading: "About the school",
+    checkHeading: "About the school or college",
   },
   {
     urlSlug: "/16-to-19-performance/level-3-qualifications/alevel",
@@ -45,6 +45,16 @@ const pages = [
     urlSlug: "/16-to-19-performance/level-2-qualifications/techcert",
     pageTitle: "Level 2 - Tech cert",
     checkHeading: "Technical Certificate"
+  },
+  {
+    urlSlug: "/16-to-19-performance/english-and-maths",
+    pageTitle: "English and Maths",
+    checkHeading: "English and maths"
+  },
+  {
+    urlSlug: "/16-to-19-performance/subjects-entered/allqualifications",
+    pageTitle: "Subjects entered",
+    checkHeading: "Subjects entered at 16 to 19"
   },
   {
     urlSlug: "/destinations/16-to-19",

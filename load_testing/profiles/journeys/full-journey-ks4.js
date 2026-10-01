@@ -37,7 +37,7 @@ const pages = [
     checkHeading: "Attendance"
   },
   {
-    urlSlug: "/secondary-performance/progress-attainment/current",
+    urlSlug: "/secondary-performance/progress-attainment",
     pageTitle: "Pupil Progress",
     checkHeading: "Pupil progress and attainment"
   },
