@@ -5,6 +5,7 @@ using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.ServiceModels;
 using SAPPub.Core.Services.KS4.Performance;
 using SAPPub.Core.Tests.TestBuilders;
+using SAPPub.Core.ValueObjects;
 
 namespace SAPPub.Core.Tests.Services.KS4.Performance;
 
@@ -88,6 +89,17 @@ public class AttainmentAndProgressServiceTests
             Attainment8_Tot_Eng_Current_Num = 60,
             Attainment8_Tot_Eng_Previous_Num = 70,
             Attainment8_Tot_Eng_Previous2_Num = 40,
+            Prog8Band_Band1_Eng_Previous_Pct_Coded = CodedDoubleFactory.Create(10),
+            Prog8Band_Band2_Eng_Previous_Pct_Coded = CodedDoubleFactory.Create(20),
+            Prog8Band_Band3_Eng_Previous_Pct_Coded = CodedDoubleFactory.Create(30),
+            Prog8Band_Band4_Eng_Previous_Pct_Coded = CodedDoubleFactory.Create(40),
+            Prog8Band_Band5_Eng_Previous_Pct_Coded = CodedDoubleFactory.Create(0),
+            Prog8Band_Band1_Eng_Previous2_Pct_Coded = CodedDoubleFactory.Create(15),
+            Prog8Band_Band2_Eng_Previous2_Pct_Coded = CodedDoubleFactory.Create(25),
+            Prog8Band_Band3_Eng_Previous2_Pct_Coded = CodedDoubleFactory.Create(35),
+            Prog8Band_Band4_Eng_Previous2_Pct_Coded = CodedDoubleFactory.Create(45),
+            Prog8Band_Band5_Eng_Previous2_Pct_Coded = CodedDoubleFactory.Create(0)  
+
         };
 
         _mockEstablishmentService
@@ -139,6 +151,7 @@ public class AttainmentAndProgressServiceTests
 
         Assert.Equal(establishmentPerformance.Prog8_TotPup_Est_Previous_Num_Coded, result.EstablishmentProgress8TotalPupils.PreviousYear);
         Assert.Equal(establishmentPerformance.Pup_Tot_Est_Previous_Num_Coded, result.EstablishmentTotalPupils.PreviousYear);
+        Assert.Equal(new CodedDouble[] {englandPerformance.Prog8Band_Band1_Eng_Previous_Pct_Coded, englandPerformance.Prog8Band_Band2_Eng_Previous_Pct_Coded, englandPerformance.Prog8Band_Band3_Eng_Previous_Pct_Coded, englandPerformance.Prog8Band_Band4_Eng_Previous_Pct_Coded, englandPerformance.Prog8Band_Band5_Eng_Previous_Pct_Coded}, result.ProgressBandingPercentages.PreviousYear);
 
         // previous 2 year data
         Assert.Equal(establishmentPerformance.Prog8_Tot_Est_Previous2_Num_Coded, result.EstablishmentProgress8Score.TwoYearsAgo);
@@ -150,6 +163,8 @@ public class AttainmentAndProgressServiceTests
 
         Assert.Equal(establishmentPerformance.Prog8_TotPup_Est_Previous2_Num_Coded, result.EstablishmentProgress8TotalPupils.TwoYearsAgo);
         Assert.Equal(establishmentPerformance.Pup_Tot_Est_Previous2_Num_Coded, result.EstablishmentTotalPupils.TwoYearsAgo);
+        Assert.Equal(new CodedDouble[] { englandPerformance.Prog8Band_Band1_Eng_Previous2_Pct_Coded, englandPerformance.Prog8Band_Band2_Eng_Previous2_Pct_Coded, englandPerformance.Prog8Band_Band3_Eng_Previous2_Pct_Coded, englandPerformance.Prog8Band_Band4_Eng_Previous2_Pct_Coded, englandPerformance.Prog8Band_Band5_Eng_Previous2_Pct_Coded }, result.ProgressBandingPercentages.TwoYearsAgo);
+
     }
 
     [Fact]

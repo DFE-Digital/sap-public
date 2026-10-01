@@ -1,4 +1,6 @@
-﻿@using SAPPub.Web.Areas.Profiles.ViewModels.KS4
+﻿@using SAPPub.Core.Enums
+@using SAPPub.Core.Extensions
+@using SAPPub.Web.Areas.Profiles.ViewModels.KS4
 @model AcademicPerformanceAttainmentAndProgressSingleYearViewModel
 
 @if (Model is null)
@@ -56,4 +58,6 @@ else
         </div>
         <div class="bar-chart__icon"></div>
     </div>
+ 
+    @await Html.PartialAsync("_ProgressBandingPercentageTable", Model.Progress8BandingPercentages)
 }

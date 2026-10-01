@@ -106,6 +106,43 @@ public class Level3QualificationsService(
             _ => ProgressBandingDescriptions.Empty,
         };
 
+        var bandingPercentages = level3Qualification switch
+        {
+            Level3.ALevel =>
+            [
+                englandPerformance.ProgBand_Alev_Band1_Eng_Current_Pct_Coded,
+                englandPerformance.ProgBand_Alev_Band2_Eng_Current_Pct_Coded,
+                englandPerformance.ProgBand_Alev_Band3_Eng_Current_Pct_Coded,
+                englandPerformance.ProgBand_Alev_Band4_Eng_Current_Pct_Coded,
+                englandPerformance.ProgBand_Alev_Band5_Eng_Current_Pct_Coded
+            ],
+            Level3.Academic =>
+            [
+                englandPerformance.ProgBand_Acad_Band1_Eng_Current_Pct_Coded,
+                englandPerformance.ProgBand_Acad_Band2_Eng_Current_Pct_Coded,
+                englandPerformance.ProgBand_Acad_Band3_Eng_Current_Pct_Coded,
+                englandPerformance.ProgBand_Acad_Band4_Eng_Current_Pct_Coded,
+                englandPerformance.ProgBand_Acad_Band5_Eng_Current_Pct_Coded
+            ],
+            Level3.AppliedGeneral =>
+            [
+                englandPerformance.ProgBand_Agen_Band1_Eng_Current_Pct_Coded,
+                englandPerformance.ProgBand_Agen_Band2_Eng_Current_Pct_Coded,
+                englandPerformance.ProgBand_Agen_Band3_Eng_Current_Pct_Coded,
+                englandPerformance.ProgBand_Agen_Band4_Eng_Current_Pct_Coded,
+                englandPerformance.ProgBand_Agen_Band5_Eng_Current_Pct_Coded
+            ],
+            Level3.TechLevel =>
+            [
+                englandPerformance.ProgBand_Tlev_Band1_Eng_Current_Pct_Coded,
+                englandPerformance.ProgBand_Tlev_Band2_Eng_Current_Pct_Coded,
+                englandPerformance.ProgBand_Tlev_Band3_Eng_Current_Pct_Coded,
+                englandPerformance.ProgBand_Tlev_Band4_Eng_Current_Pct_Coded,
+                englandPerformance.ProgBand_Tlev_Band5_Eng_Current_Pct_Coded
+            ],
+            _ => Array.Empty<CodedDouble>(),
+        };
+
         return new ProgressScoreModel
         {
             Score = level3Qualification switch
@@ -141,7 +178,8 @@ public class Level3QualificationsService(
                 Level3.TechLevel => englandPerformance.VA_INS_TLEV_Eng_Current_Num_Coded,
                 _ => CodedDouble.Empty,
             },
-            BandingContextDescription = bandingRating.Value.GetBandingDescription(bandingDescriptions)
+            BandingContextDescription = bandingRating.Value.GetBandingDescription(bandingDescriptions),
+            ProgressBandingPercentages = bandingPercentages
         };
     }
 

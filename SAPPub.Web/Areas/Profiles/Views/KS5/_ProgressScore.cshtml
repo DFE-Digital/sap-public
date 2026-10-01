@@ -133,3 +133,5 @@
     </div>
     <div class="bar-chart__icon"></div>
 </div>
+
+@await Html.PartialAsync("_ProgressBandingPercentageTable", Model.ProgressBandingPercentages, new ViewDataDictionary(ViewData) { { "id", "progress-score" } })

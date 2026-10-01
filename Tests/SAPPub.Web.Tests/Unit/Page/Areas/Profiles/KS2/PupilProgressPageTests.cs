@@ -166,6 +166,57 @@ public class PupilProgressPageTests : PageTestsBase
         Assert.Contains("Pupils at this school score 3.", mathsCard.TextContent);
     }
 
+    [Theory]
+    [InlineData("reading", "How many schools are in the Reading banding?")]
+    [InlineData("writing", "How many schools are in the Writing banding?")]
+    [InlineData("maths", "How many schools are in the Maths banding?")]
+    public async Task PupilProgressPage_Displays_BandingDetails(string subject, string expectedText)
+    {
+        // Arrange
+        var url = BuildUrl(_urn, _schoolName, "/primary-performance/pupil-progress/previous2");
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var details = doc.QuerySelector($"[data-testid='percentages-{subject}-progress-score']");
+
+        Assert.NotNull(details);
+        Assert.Contains(
+        expectedText,
+        details.TextContent);
+    
+        Assert.Contains(
+        "This shows the percentage of schools in England which are in each banding for this measure.",
+        details.TextContent);
+    }
+
+
+    [Theory]
+    [InlineData("reading")]
+    [InlineData("writing")]
+    [InlineData("maths")]
+    public async Task PupilProgressPage_Displays_BandingDetailsTable (string subject)
+    {
+        // Arrange
+        var url = BuildUrl(_urn, _schoolName, "/primary-performance/pupil-progress/previous2");
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var table = doc.QuerySelector($"[data-testid='percentages-{subject}-progress-score-table']");
+
+        Assert.NotNull(table);
+        Assert.Contains("Banding", table.TextContent);
+        Assert.Contains("Percentage of schools", table.TextContent);
+        Assert.Contains("Well above average", table.TextContent);
+        Assert.Contains("Above average", table.TextContent);
+        Assert.Contains("Average", table.TextContent);
+        Assert.Contains("Below average", table.TextContent);
+        Assert.Contains("Well below average", table.TextContent);
+    }
+
     [Fact]
     public async Task PupilProgressPage_DisplaysBottomPagination_WithCorrectDestinations()
     {
@@ -205,7 +256,31 @@ public class PupilProgressPageTests : PageTestsBase
             EstablishmentMathsScore = new CodedDouble(3, string.Empty, "3"),
             EstablishmentMathsConfidenceUpper = new CodedDouble(3.5, string.Empty, "3.5"),
             EstablishmentMathsConfidenceLower = new CodedDouble(2.5, string.Empty, "2.5"),
-            LaMathsScore = new CodedDouble(3.1, string.Empty, "3.1")
+            LaMathsScore = new CodedDouble(3.1, string.Empty, "3.1"),
+            ReadingProgressBandingPercentages =
+            [
+                new CodedDouble(10, string.Empty, "10"),
+                new CodedDouble(20, string.Empty, "20"),
+                new CodedDouble(30, string.Empty, "30"),
+                new CodedDouble(25, string.Empty, "25"),
+                new CodedDouble(15, string.Empty, "15")
+            ],
+            WritingProgressBandingPercentages =
+            [
+                new CodedDouble(10, string.Empty, "10"),
+                new CodedDouble(20, string.Empty, "20"),
+                new CodedDouble(30, string.Empty, "30"),
+                new CodedDouble(25, string.Empty, "25"),
+                new CodedDouble(15, string.Empty, "15")
+            ],
+            MathsProgressBandingPercentages =
+            [
+                new CodedDouble(10, string.Empty, "10"),
+                new CodedDouble(20, string.Empty, "20"),
+                new CodedDouble(30, string.Empty, "30"),
+                new CodedDouble(25, string.Empty, "25"),
+                new CodedDouble(15, string.Empty, "15")
+            ]
         };
     }
 }
