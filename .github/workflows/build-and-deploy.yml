@@ -115,7 +115,7 @@ jobs:
           HEADED: 0
           PLAYWRIGHT_IGNORE_HTTPS_ERRORS: true
         run: |
-          TEST_PROJECTS=$(find ./Tests -type f -name "*.Tests.csproj" ! -path "*/SAPPub.Integration.Tests/*" | sort)
+          TEST_PROJECTS=$(find ./Tests -type f -name "*.Tests.csproj" ! -path "*/SAPPub.E2E.Tests/*" | sort)
 
           for proj in $TEST_PROJECTS; do
             echo "=== Running tests in $proj ==="
@@ -576,49 +576,49 @@ jobs:
   # INTEGRATION TESTS (POST DEPLOYMENT)
   # ---------------------------  
   # on Test environnment
-  # integration-tests-no-refresh:
-  #   name: Integration Tests (Post Deployment)
+  # E2E-tests-no-refresh:
+  #   name: E2E Tests (Post Deployment)
   #   needs: [deploy, detect-refresh-data-on-merge]
   #   if: ${{ needs.detect-refresh-data-on-merge.outputs.should-refresh != 'true' }}
-  #   uses: ./.github/workflows/integration-tests.yml
+  #   uses: ./.github/workflows/e2e-tests.yml
   #   with:
   #     environment: test
   #     base_url: ${{ needs.deploy.outputs.environment_url }}
   
-  # integration-tests-after-refresh:
-  #   name: Integration Tests (Post Deployment)
+  # E2E-tests-after-refresh:
+  #   name: E2E Tests (Post Deployment)
   #   needs: [deploy, refresh-data-test-after-merge]
   #   if: ${{ needs.refresh-data-test-after-merge.result == 'success' }}
-  #   uses: ./.github/workflows/integration-tests.yml
+  #   uses: ./.github/workflows/e2e-tests.yml
   #   with:
   #     environment: test
   #     base_url: ${{ needs.deploy.outputs.environment_url }}
 
-  integration-tests-manual:
-    name: Integration Tests (Manual Deployment)
+  E2E-tests-manual:
+    name: E2E Tests (Manual Deployment)
     needs: [manual_deploy]
     if: ${{ inputs.environment == 'review' || inputs.environment == 'test' }}
-    uses: ./.github/workflows/integration-tests.yml
+    uses: ./.github/workflows/e2e-tests.yml
     with:
       environment: ${{ inputs.environment }}
       base_url: ${{ needs.manual_deploy.outputs.environment_url }}
       test_data_version: '2425'
 
   # on review app environment (no refresh)
-  integration-tests-review-app:
-    name: Integration Tests (Post Deployment)
+  E2E-tests-review-app:
+    name: E2E Tests (Post Deployment)
     needs: [deploy-review-app]
-    uses: ./.github/workflows/integration-tests.yml
+    uses: ./.github/workflows/e2e-tests.yml
     with:
       environment: review
       base_url: ${{ needs.deploy-review-app.outputs.environment_url }}
       test_data_version: '2425'
 
   # on review app environment (with refresh)
-  integration-tests_with_refresh:
-    name: Integration Tests (Post Deployment)
+  E2E-tests_with_refresh:
+    name: E2E Tests (Post Deployment)
     needs: [deploy-review-app-with-refresh]
-    uses: ./.github/workflows/integration-tests.yml
+    uses: ./.github/workflows/e2e-tests.yml
     with:
       environment: review
       base_url: ${{ needs.deploy-review-app-with-refresh.outputs.environment_url }}
