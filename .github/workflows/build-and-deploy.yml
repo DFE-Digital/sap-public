@@ -439,7 +439,7 @@ jobs:
   # ---------------------------
   # DEPLOY TO TEST (AUTO)
   # ---------------------------
-  deploy:
+  deploy-test:
     name: Deploy to Test
     if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
     needs: [build, test]
@@ -450,25 +450,19 @@ jobs:
       id-token: write
       pull-requests: write
 
-    strategy:
-      max-parallel: 1
-      matrix:
-        #environment: [test, production] //Commented out should we wish to reinstate auto deployment with the matrix.
-        environment: [test]
-
     environment:
-      name: ${{ matrix.environment }}
+      name: test
       url: ${{ steps.deploy_app.outputs.environment_url }}
 
     steps:
-      - name: Deploy app to ${{ matrix.environment }}
+      - name: Deploy app to test
         id: deploy_app
         uses: DFE-Digital/github-actions/deploy-to-aks@master
         with:
           azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
           azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          environment: ${{ matrix.environment }}
+          environment: test
           sha: ${{ needs.build.outputs.docker-image-tag }}
           terraform-base: ${{ env.TERRAFORM_BASE }}
           healthcheck: ${{ env.HEALTHCHECK_CMD }}
@@ -484,7 +478,7 @@ jobs:
   detect-refresh-data-on-merge:
     name: Detect refresh-data label on merged PR
     if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
-    needs: [deploy]
+    needs: [deploy-test]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -524,7 +518,7 @@ jobs:
   refresh-data-test-after-merge:
     name: Refresh data in test after merge
     if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' && needs.detect-refresh-data-on-merge.outputs.should-refresh == 'true' }}
-    needs: [deploy, detect-refresh-data-on-merge]
+    needs: [deploy-test, detect-refresh-data-on-merge]
     uses: ./.github/workflows/data-pipeline.yml
     secrets: inherit
     with:
@@ -535,6 +529,41 @@ jobs:
       actions: read
       packages: write
 
+# ---------------------------
+# DEPLOY TO PRODUCTION (AUTO)
+# ---------------------------
+  deploy-production:
+    name: Deploy to Production
+    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+    needs: [build, deploy-test]
+    outputs:
+      environment_url: ${{ steps.deploy_app.outputs.environment_url }}
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      pull-requests: write
+
+    environment:
+      name: production
+      url: ${{ steps.deploy_app.outputs.environment_url }}
+
+    steps:
+      - name: Deploy app to production
+        id: deploy_app
+        uses: DFE-Digital/github-actions/deploy-to-aks@master
+        with:
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          environment: production
+          sha: ${{ needs.build.outputs.docker-image-tag }}
+          terraform-base: ${{ env.TERRAFORM_BASE }}
+          healthcheck: ${{ env.HEALTHCHECK_CMD }}
+          teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
+          smoke-test: false
+          service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
+          gcp-wip: ${{ vars.GCP_WIP }}
+          gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
 
   # ---------------------------
   # MANUAL DEPLOY
