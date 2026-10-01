@@ -529,9 +529,9 @@ jobs:
       actions: read
       packages: write
 
-# ---------------------------
-# DEPLOY TO PRODUCTION (AUTO)
-# ---------------------------
+# ----------------------------------------
+# DEPLOY TO PRODUCTION (AUTO - AFTER TEST)
+# ----------------------------------------
   deploy-production:
     name: Deploy to Production
     if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
@@ -564,6 +564,25 @@ jobs:
           service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
           gcp-wip: ${{ vars.GCP_WIP }}
           gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
+
+  # ------------------------------------------------
+  # REFRESH PRODUCTION DATABASE (AUTO - IF REQUIRED)
+  # Uses the same 'refresh data' label as test, and only runs once the test refresh has succeeded.
+  # Pulls from the production Blob container. Maintenance mode is left enabled afterwards.
+  # ------------------------------------------------
+  refresh-data-production-after-merge:
+    name: Refresh data in production after merge
+    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' && needs.detect-refresh-data-on-merge.outputs.should-refresh == 'true' }}
+    needs: [deploy-production, detect-refresh-data-on-merge]
+    uses: ./.github/workflows/data-pipeline.yml
+    secrets: inherit
+    with:
+      environment: production
+    permissions:
+      contents: write
+      id-token: write
+      actions: read
+      packages: write
 
   # ---------------------------
   # MANUAL DEPLOY
