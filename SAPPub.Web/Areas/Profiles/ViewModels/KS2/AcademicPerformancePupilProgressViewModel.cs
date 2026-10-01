@@ -3,6 +3,7 @@ using SAPPub.Core.Enums;
 using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.ValueObjects;
+using SAPPub.Web.Areas.Profiles.ViewModels.Performance;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models;
 using SAPPub.Web.Models.Config;
@@ -22,7 +23,10 @@ public class AcademicPerformancePupilProgressViewModel : BaseViewModel
     public bool PrimarySchoolAccountabilityLinkNewTab { get; set; }
     public required ProgressScoreModel EstablishmentReadingScore { get; init; }
     public required ProgressScoreModel EstablishmentWritingScore { get; init; }
-    public required ProgressScoreModel EstablishmentMathsScore { get; init; }
+    public required ProgressScoreModel EstablishmentMathsScore { get; init; }    
+    public required ProgressBandingPercentageTableViewModel ReadingProgressBandingPercentages { get; init; }
+    public required ProgressBandingPercentageTableViewModel WritingProgressBandingPercentages { get; init; }
+    public required ProgressBandingPercentageTableViewModel MathsProgressBandingPercentages { get; init; }
     public CodedDouble LaReadingAverage { get; init; }
     public CodedDouble LaWritingAverage { get; init; }
     public CodedDouble LaMathsAverage { get; init; }
@@ -57,6 +61,7 @@ public class AcademicPerformancePupilProgressViewModel : BaseViewModel
                 BandingContextDescription = ks2PupilPerformance.EstablishmentReadingContextDescription
             },
             LaReadingAverage = ks2PupilPerformance.LaReadingScore,
+
             EstablishmentWritingScore = new ProgressScoreModel
             {
                 Score = ks2PupilPerformance.EstablishmentWritingScore,
@@ -76,7 +81,10 @@ public class AcademicPerformancePupilProgressViewModel : BaseViewModel
             },
             LaMathsAverage = ks2PupilPerformance.LaMathsScore,
             PrimarySchoolAccountabilityLinkUrl = urlLinksOptions.PrimarySchoolAccountability.Url,
-            PrimarySchoolAccountabilityLinkNewTab = urlLinksOptions.PrimarySchoolAccountability.NewTab
+            PrimarySchoolAccountabilityLinkNewTab = urlLinksOptions.PrimarySchoolAccountability.NewTab,
+            ReadingProgressBandingPercentages = ProgressBandingPercentageTableViewModel.Ks2ProgressReading(ks2PupilPerformance.ReadingProgressBandingPercentages),
+            WritingProgressBandingPercentages = ProgressBandingPercentageTableViewModel.Ks2ProgressWriting(ks2PupilPerformance.WritingProgressBandingPercentages),
+            MathsProgressBandingPercentages = ProgressBandingPercentageTableViewModel.Ks2ProgressMaths(ks2PupilPerformance.MathsProgressBandingPercentages),
         };
     }
 }

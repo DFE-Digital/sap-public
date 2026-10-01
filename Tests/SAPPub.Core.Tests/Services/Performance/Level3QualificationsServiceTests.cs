@@ -1,10 +1,12 @@
 ﻿using Moq;
+using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.Performance;
 using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.Interfaces.Repositories.Performance;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.ServiceModels;
 using SAPPub.Core.Services.Performance;
+using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Core.ValueObjects;
 
 namespace SAPPub.Core.Tests.Services.Performance;
@@ -74,6 +76,7 @@ public class Level3QualificationsServiceTests
         Assert.Null(result.ProgressScore.ConfidenceLevelUpper.Value);
         Assert.Null(result.ProgressScore.ConfidenceLevelLower.Value);
         Assert.Null(result.ProgressScore.EnglandAverageScore.Value);
+        Assert.All(result.ProgressScore.ProgressBandingPercentages, item => Assert.Null(item.Value));
 
         Assert.Null(result.AverageResult.NumberOfStudents.CurrentYear.Value);
         Assert.Null(result.AverageResult.NumberOfStudents.PreviousYear!.Value);
@@ -200,6 +203,8 @@ public class Level3QualificationsServiceTests
             Assert.Equal(_establishmentPerformance.TB3PTSE_GRD_Est_Current, result.AdditionalData.Establishment.Grade);
 
             Assert.Equal(_englandPerformance.VA_INS_ALEV_Eng_Current_Num_Coded, result.ProgressScore.EnglandAverageScore);
+            Assert.Equal(new CodedDouble[] { _englandPerformance.ProgBand_Alev_Band1_Eng_Current_Pct_Coded, _englandPerformance.ProgBand_Alev_Band2_Eng_Current_Pct_Coded, _englandPerformance.ProgBand_Alev_Band3_Eng_Current_Pct_Coded, _englandPerformance.ProgBand_Alev_Band4_Eng_Current_Pct_Coded, _englandPerformance.ProgBand_Alev_Band5_Eng_Current_Pct_Coded }, result.ProgressScore.ProgressBandingPercentages);
+
 
             // England Average result data
             Assert.Equal(_englandPerformance.TALLPPE_ALEV_1618_Eng_Current_Num_Coded, result.AverageResult.England.CurrentYear.Points);
@@ -298,6 +303,8 @@ public class Level3QualificationsServiceTests
 
             // England Average result data
             Assert.Equal(_englandPerformance.VA_INS_ACAD_Eng_Current_Num_Coded, result.ProgressScore.EnglandAverageScore);
+            Assert.Equal(new CodedDouble[] { _englandPerformance.ProgBand_Acad_Band1_Eng_Current_Pct_Coded, _englandPerformance.ProgBand_Acad_Band2_Eng_Current_Pct_Coded, _englandPerformance.ProgBand_Acad_Band3_Eng_Current_Pct_Coded, _englandPerformance.ProgBand_Acad_Band4_Eng_Current_Pct_Coded, _englandPerformance.ProgBand_Acad_Band5_Eng_Current_Pct_Coded }, result.ProgressScore.ProgressBandingPercentages);
+
             Assert.Equal(_englandPerformance.TALLPPE_ACAD_1618_Eng_Current_Num_Coded, result.AverageResult.England.CurrentYear.Points);
             Assert.Equal(_englandPerformance.TALLPPE_ACAD_1618_Eng_Previous_Num_Coded, result.AverageResult.England.PreviousYear!.Points);
             Assert.Equal(_englandPerformance.TALLPPE_ACAD_1618_Eng_Previous2_Num_Coded, result.AverageResult.England.TwoYearsAgo!.Points);
@@ -395,6 +402,8 @@ public class Level3QualificationsServiceTests
 
             // England Average result data
             Assert.Equal(_englandPerformance.VA_INS_AGEN_Eng_Current_Num_Coded, result.ProgressScore.EnglandAverageScore);
+            Assert.Equal(new CodedDouble[] { _englandPerformance.ProgBand_Agen_Band1_Eng_Current_Pct_Coded, _englandPerformance.ProgBand_Agen_Band2_Eng_Current_Pct_Coded, _englandPerformance.ProgBand_Agen_Band3_Eng_Current_Pct_Coded, _englandPerformance.ProgBand_Agen_Band4_Eng_Current_Pct_Coded, _englandPerformance.ProgBand_Agen_Band5_Eng_Current_Pct_Coded }, result.ProgressScore.ProgressBandingPercentages);
+
             Assert.Equal(_englandPerformance.TALLPPE_AGEN_Eng_Current_Num_Coded, result.AverageResult.England.CurrentYear.Points);
             Assert.Equal(_englandPerformance.TALLPPE_AGEN_Eng_Previous_Num_Coded, result.AverageResult.England.PreviousYear!.Points);
             Assert.Equal(_englandPerformance.TALLPPE_AGEN_Eng_Previous2_Num_Coded, result.AverageResult.England.TwoYearsAgo!.Points);
@@ -492,6 +501,8 @@ public class Level3QualificationsServiceTests
 
             // England Average result data
             Assert.Equal(_englandPerformance.VA_INS_TLEV_Eng_Current_Num_Coded, result.ProgressScore.EnglandAverageScore);
+            Assert.Equal(new CodedDouble[] { _englandPerformance.ProgBand_Tlev_Band1_Eng_Current_Pct_Coded, _englandPerformance.ProgBand_Tlev_Band2_Eng_Current_Pct_Coded, _englandPerformance.ProgBand_Tlev_Band3_Eng_Current_Pct_Coded, _englandPerformance.ProgBand_Tlev_Band4_Eng_Current_Pct_Coded, _englandPerformance.ProgBand_Tlev_Band5_Eng_Current_Pct_Coded }, result.ProgressScore.ProgressBandingPercentages);
+
             Assert.Equal(_englandPerformance.TALLPPE_TLEV_Eng_Current_Num_Coded, result.AverageResult.England.CurrentYear.Points);
             Assert.Equal(_englandPerformance.TALLPPE_TLEV_Eng_Previous_Num_Coded, result.AverageResult.England.PreviousYear!.Points);
             Assert.Equal(_englandPerformance.TALLPPE_TLEV_Eng_Previous2_Num_Coded, result.AverageResult.England.TwoYearsAgo!.Points);
@@ -680,6 +691,11 @@ public class Level3QualificationsServiceTests
             TALLPPE_ALEV_1618_Eng_Current_Num_Coded = new CodedDouble(25.79, string.Empty, string.Empty),
             TALLPPE_ALEV_1618_Eng_Previous_Num_Coded = new CodedDouble(35.15, string.Empty, string.Empty),
             TALLPPE_ALEV_1618_Eng_Previous2_Num_Coded = new CodedDouble(27.45, string.Empty, string.Empty),
+            ProgBand_Alev_Band1_Eng_Current_Pct_Coded = CodedDoubleFactory.Create(10),
+            ProgBand_Alev_Band2_Eng_Current_Pct_Coded = CodedDoubleFactory.Create(20),
+            ProgBand_Alev_Band3_Eng_Current_Pct_Coded = CodedDoubleFactory.Create(30),
+            ProgBand_Alev_Band4_Eng_Current_Pct_Coded = CodedDoubleFactory.Create(40),
+            ProgBand_Alev_Band5_Eng_Current_Pct_Coded = CodedDoubleFactory.Create(0),
 
             TALLPPEGRD_ALEV_1618_Eng_Current = new CodedString("B", string.Empty, string.Empty),
             TALLPPEGRD_ALEV_1618_Eng_Previous = new CodedString("C", string.Empty, string.Empty),
@@ -698,6 +714,11 @@ public class Level3QualificationsServiceTests
             TALLPPE_AGEN_Eng_Current_Num_Coded = new CodedDouble(33.24, string.Empty, string.Empty),
             TALLPPE_AGEN_Eng_Previous_Num_Coded = new CodedDouble(39.45, string.Empty, string.Empty),
             TALLPPE_AGEN_Eng_Previous2_Num_Coded = new CodedDouble(29.31, string.Empty, string.Empty),
+            ProgBand_Agen_Band1_Eng_Current_Pct_Coded = CodedDoubleFactory.Create(10),
+            ProgBand_Agen_Band2_Eng_Current_Pct_Coded = CodedDoubleFactory.Create(20),
+            ProgBand_Agen_Band3_Eng_Current_Pct_Coded = CodedDoubleFactory.Create(30),
+            ProgBand_Agen_Band4_Eng_Current_Pct_Coded = CodedDoubleFactory.Create(40),
+            ProgBand_Agen_Band5_Eng_Current_Pct_Coded = CodedDoubleFactory.Create(0),
 
             TALLPPEGRD_AGEN_Eng_Current = new CodedString("B", string.Empty, string.Empty),
             TALLPPEGRD_AGEN_Eng_Previous = new CodedString("C", string.Empty, string.Empty),
@@ -707,6 +728,12 @@ public class Level3QualificationsServiceTests
             TALLPPE_TLEV_Eng_Current_Num_Coded = new CodedDouble(35.11, string.Empty, string.Empty),
             TALLPPE_TLEV_Eng_Previous_Num_Coded = new CodedDouble(55.14, string.Empty, string.Empty),
             TALLPPE_TLEV_Eng_Previous2_Num_Coded = new CodedDouble(35.78, string.Empty, string.Empty),
+            ProgBand_Tlev_Band1_Eng_Current_Pct_Coded = CodedDoubleFactory.Create(10),
+            ProgBand_Tlev_Band2_Eng_Current_Pct_Coded = CodedDoubleFactory.Create(20),
+            ProgBand_Tlev_Band3_Eng_Current_Pct_Coded = CodedDoubleFactory.Create(30),
+            ProgBand_Tlev_Band4_Eng_Current_Pct_Coded = CodedDoubleFactory.Create(40),
+            ProgBand_Tlev_Band5_Eng_Current_Pct_Coded = CodedDoubleFactory.Create(0),
+
             TALLPPEGRD_TLEV_Eng_Current = new CodedString("C", string.Empty, string.Empty),
             TALLPPEGRD_TLEV_Eng_Previous = new CodedString("B", string.Empty, string.Empty),
             TALLPPEGRD_TLEV_Eng_Previous2 = new CodedString("A", string.Empty, string.Empty),

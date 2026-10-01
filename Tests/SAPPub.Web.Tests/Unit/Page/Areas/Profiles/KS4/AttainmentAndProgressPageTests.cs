@@ -112,7 +112,57 @@ public class AttainmentAndProgressPageTests : PageTestsBase
         // Assert
         var schoolProgressCard = doc.QuerySelector("[data-testid='prog8-scores-prev']");
         var text = schoolProgressCard?.QuerySelector("p")?.TextContent.Trim();
-        Assert.Contains(expected.EstablishmentProgress8Score.CurrentYear.ToString(), text);
+        Assert.Contains(expected.EstablishmentProgress8Score.PreviousYear.ToString(), text);
+    }
+
+    [Fact]
+    public async Task ShowsProgress8BandingPercentageValues()
+    {
+        // Arrange
+        var expected = new AttainmentAndProgressModelBuilder()
+            .WithAttainment8Data()
+            .WithEstablishmentProgress8Data()
+            .WithLaProgressData()
+            .Build();
+        var urn = expected.Urn;
+        var establishmentName = expected.SchoolName;
+        _establishmentServiceMock.Setup(service => service.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EstablishmentServiceModel()
+            {
+                EstablishmentName = establishmentName!,
+                URN = urn,
+                IsKS4 = true
+            });
+        _serviceMock
+            .Setup(service => service.GetAttainmentAndProgressAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expected);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName!, _pageRoute));
+
+        // Assert
+        var details = doc.QuerySelector($"[data-testid='percentages-prog8-scores-prev2']");
+        Assert.NotNull(details);
+        Assert.Contains(
+        "How many schools are in each banding?",
+        details.TextContent);
+
+        Assert.Contains(
+        "This shows the percentage of schools in England which are in each banding for this measure.",
+        details.TextContent);
+
+        var table = doc.QuerySelector($"[data-testid='percentages-prog8-scores-prev2-table']");
+
+        Assert.NotNull(table);
+        Assert.Contains("Banding", table.TextContent);
+        Assert.Contains("Percentage of schools", table.TextContent);
+        Assert.Contains("Well above average", table.TextContent);
+        Assert.Contains("Above average", table.TextContent);
+        Assert.Contains("Average", table.TextContent);
+        Assert.Contains("Below average", table.TextContent);
+        Assert.Contains("Well below average", table.TextContent);
     }
 
     [Fact]

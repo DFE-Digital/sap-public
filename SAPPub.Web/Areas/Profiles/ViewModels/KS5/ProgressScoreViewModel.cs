@@ -1,5 +1,6 @@
 ﻿using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.ValueObjects;
+using SAPPub.Web.Areas.Profiles.ViewModels.Performance;
 using SAPPub.Web.Helpers;
 
 namespace SAPPub.Web.Areas.Profiles.ViewModels.KS5;
@@ -18,6 +19,8 @@ public class ProgressScoreViewModel
 
     public required DisplayField<string> ProgressBandingContextDescription { get; init; }
 
+    public required ProgressBandingPercentageTableViewModel ProgressBandingPercentages { get; init; }
+
     public static ProgressScoreViewModel Map(ProgressScoreModel model)
     {
         return new ProgressScoreViewModel
@@ -27,7 +30,8 @@ public class ProgressScoreViewModel
             ConfidenceLevelUpper = model.ConfidenceLevelUpper.ToDisplayField(),
             ConfidenceLevelLower = model.ConfidenceLevelLower.ToDisplayField(),
             EnglandAverageScore = model.EnglandAverageScore.ToDisplayField(),
-            ProgressBandingContextDescription = AttainmentHelper.EstablishmentProgressBandingContextStatement(model.BandingRating.Value, model.BandingContextDescription)
+            ProgressBandingContextDescription = AttainmentHelper.EstablishmentProgressBandingContextStatement(model.BandingRating.Value, model.BandingContextDescription),
+            ProgressBandingPercentages = ProgressBandingPercentageTableViewModel.Ks5Progress(model.ProgressBandingPercentages)
         };        
     }
 }

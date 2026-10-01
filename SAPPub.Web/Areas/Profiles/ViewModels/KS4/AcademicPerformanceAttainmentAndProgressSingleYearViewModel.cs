@@ -2,6 +2,7 @@
 using SAPPub.Core.Extensions;
 using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Core.ValueObjects;
+using SAPPub.Web.Areas.Profiles.ViewModels.Performance;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.Charts;
 
@@ -19,9 +20,11 @@ public class AcademicPerformanceAttainmentAndProgressSingleYearViewModel
 
     public required DisplayField<string> EstablishmentProgress8BandingContextDescription { get; init; }
 
+    public ProgressBandingPercentageTableViewModel? Progress8BandingPercentages { get; init; }
     public CodedDouble LocalAuthorityProgress8Score { get; init; }
 
     public CodedDouble EstablishmentAttainment8Score { get; init; }
+
     public required DisplayField<CodedDouble> EstablishmentAttainment8DisadvantagedScore { get; init; }
     public required DisplayField<string> EstablishmentAttainment8ScoreContextDescription { get; init; }
 
@@ -96,6 +99,9 @@ public class AcademicPerformanceAttainmentAndProgressSingleYearViewModel
                 ],
         };
 
+        var percentages = attainmentAndProgressModel.ProgressBandingPercentages.GetValueForYear(year) ?? [];
+        var progress8BandingPercentages = ProgressBandingPercentageTableViewModel.Ks4Progress8(percentages);
+
 
         return new AcademicPerformanceAttainmentAndProgressSingleYearViewModel
         {
@@ -104,6 +110,7 @@ public class AcademicPerformanceAttainmentAndProgressSingleYearViewModel
             EstablishmentProgress8CIUpper = attainmentAndProgressModel.EstablishmentProgress8CIUpper.GetValueForYear(year),
             EstablishmentProgress8Banding = attainmentAndProgressModel.EstablishmentProgress8Banding.GetValueForYear(year),
             EstablishmentProgress8BandingContextDescription = establishmentProgress8BandingContextDescription,
+            Progress8BandingPercentages = progress8BandingPercentages,
             LocalAuthorityProgress8Score = attainmentAndProgressModel.LocalAuthorityProgress8Score.GetValueForYear(year),
             EstablishmentAttainment8Score = attainmentAndProgressModel.EstablishmentAttainment8Score.GetValueForYear(year),
             EstablishmentAttainment8DisadvantagedScore = attainmentAndProgressModel.EstablishmentAttainment8DisadvantagedScore.GetValueForYear(year).ToDisplayField(),
