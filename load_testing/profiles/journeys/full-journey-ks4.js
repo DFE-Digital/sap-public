@@ -12,6 +12,11 @@ const schoolDetails =
 
 const pages = [
   {
+    urlSlug: "/overview",
+    pageTitle: "Overview",
+    checkHeading: "Overview",
+  },
+  {
     urlSlug: "/about",
     pageTitle: "About",
     checkHeading: "About the school",
