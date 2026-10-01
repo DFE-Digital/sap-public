@@ -53,6 +53,6 @@ public static class ProgressBandingHelper
             ? $"This is {bandingEnum.GetDisplayName()} because {description}."
             : $"This is {bandingEnum.GetDisplayName()}.";
 
-        return statement.ToDisplayField();
+        return statement.Replace("..", ".").ToDisplayField();           // .Replace fixes data inconsistency in banding descriptions (some have a fullstop at the end, some don't)
     }
 }
