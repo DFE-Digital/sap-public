@@ -372,6 +372,28 @@ public class Level3QualificationsPageTests : PageTestsBase
         var averageProgresScoreNationalCard = doc.QuerySelector("#average-progress-score-national-card");
         Assert.NotNull(averageProgresScoreNationalCard);
         Assert.Contains($"Average progress score in England: {_level3QualificationModel.ProgressScore.EnglandAverageScore}", averageProgresScoreNationalCard.QuerySelector("p")?.TextContent);
+
+        //Assert progress banding percentages
+        var details = doc.QuerySelector($"[data-testid='percentages-progress-score']");
+
+        Assert.NotNull(details);
+        Assert.Contains(
+        "How many schools and colleges are in each banding?",
+        details.TextContent);
+        Assert.Contains(
+        "This shows the percentage of schools and colleges in England which are in each banding for this measure.",
+        details.TextContent);
+
+        var table = doc.QuerySelector($"[data-testid='percentages-progress-score-table']");
+
+        Assert.NotNull(table);
+        Assert.Contains("Banding", table.TextContent);
+        Assert.Contains("Percentage of schools", table.TextContent);
+        Assert.Contains("Well above average", table.TextContent);
+        Assert.Contains("Above average", table.TextContent);
+        Assert.Contains("Average", table.TextContent);
+        Assert.Contains("Below average", table.TextContent);
+        Assert.Contains("Well below average", table.TextContent);
     }
 
     [Theory]
@@ -428,43 +450,37 @@ public class Level3QualificationsPageTests : PageTestsBase
         Assert.Contains(_level3QualificationModel.AverageResult.England.CurrentYear.Points.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 3, 1));
 
         // Assert DataOverTime data
-        if (qualification == Level3.ALevel ||
-            qualification == Level3.Academic ||
-            qualification == Level3.AppliedGeneral ||
-            qualification == Level3.TechLevel)
-        {
-            Assert.Contains("Number of students", doc.GetTableHeaderContentByIdAndIndex("average-result-data-overtime-table", 1, 0));
-            Assert.Contains(_level3QualificationModel.AverageResult.NumberOfStudents.TwoYearsAgo.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 1, 0));
-            Assert.Contains(_level3QualificationModel.AverageResult.NumberOfStudents.PreviousYear.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 1, 1));
-            Assert.Contains(_level3QualificationModel.AverageResult.NumberOfStudents.CurrentYear.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 1, 2));            
+        Assert.Contains("Number of students", doc.GetTableHeaderContentByIdAndIndex("average-result-data-overtime-table", 1, 0));
+        Assert.Contains(_level3QualificationModel.AverageResult.NumberOfStudents.TwoYearsAgo.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 1, 0));
+        Assert.Contains(_level3QualificationModel.AverageResult.NumberOfStudents.PreviousYear.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 1, 1));
+        Assert.Contains(_level3QualificationModel.AverageResult.NumberOfStudents.CurrentYear.Value!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 1, 2));
 
-            Assert.Contains("School or college grade", doc.GetTableHeaderContentByIdAndIndex("average-result-data-overtime-table", 2, 0));
-            Assert.Contains(_level3QualificationModel.AverageResult.Establishment.TwoYearsAgo!.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 2, 0));
-            Assert.Contains(_level3QualificationModel.AverageResult.Establishment.PreviousYear!.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 2, 1));
-            Assert.Contains(_level3QualificationModel.AverageResult.Establishment.CurrentYear.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 2, 2));
+        Assert.Contains("School or college grade", doc.GetTableHeaderContentByIdAndIndex("average-result-data-overtime-table", 2, 0));
+        Assert.Contains(_level3QualificationModel.AverageResult.Establishment.TwoYearsAgo!.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 2, 0));
+        Assert.Contains(_level3QualificationModel.AverageResult.Establishment.PreviousYear!.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 2, 1));
+        Assert.Contains(_level3QualificationModel.AverageResult.Establishment.CurrentYear.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 2, 2));
 
-            Assert.Contains($"({_level3QualificationModel.AverageResult.Establishment.TwoYearsAgo!.Points.Value!.Value} points)", doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 2, 0));
-            Assert.Contains($"({_level3QualificationModel.AverageResult.Establishment.PreviousYear!.Points.Value!.Value} points)", doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 2, 1));
-            Assert.Contains($"({_level3QualificationModel.AverageResult.Establishment.CurrentYear.Points.Value!.Value} points)", doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 2, 2));
+        Assert.Contains($"({_level3QualificationModel.AverageResult.Establishment.TwoYearsAgo!.Points.Value!.Value} points)", doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 2, 0));
+        Assert.Contains($"({_level3QualificationModel.AverageResult.Establishment.PreviousYear!.Points.Value!.Value} points)", doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 2, 1));
+        Assert.Contains($"({_level3QualificationModel.AverageResult.Establishment.CurrentYear.Points.Value!.Value} points)", doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 2, 2));
 
-            Assert.Contains($"{_level3QualificationModel.LAName} average grade", doc.GetTableHeaderContentByIdAndIndex("average-result-data-overtime-table", 3, 0));
-            Assert.Contains(_level3QualificationModel.AverageResult.LocalAuthority.TwoYearsAgo!.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 3, 0));
-            Assert.Contains(_level3QualificationModel.AverageResult.LocalAuthority.PreviousYear!.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 3, 1));
-            Assert.Contains(_level3QualificationModel.AverageResult.LocalAuthority.CurrentYear.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 3, 2));
+        Assert.Contains($"{_level3QualificationModel.LAName} average grade", doc.GetTableHeaderContentByIdAndIndex("average-result-data-overtime-table", 3, 0));
+        Assert.Contains(_level3QualificationModel.AverageResult.LocalAuthority.TwoYearsAgo!.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 3, 0));
+        Assert.Contains(_level3QualificationModel.AverageResult.LocalAuthority.PreviousYear!.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 3, 1));
+        Assert.Contains(_level3QualificationModel.AverageResult.LocalAuthority.CurrentYear.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 3, 2));
 
-            Assert.Contains($"({_level3QualificationModel.AverageResult.LocalAuthority.TwoYearsAgo!.Points.Value!.Value} points)", doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 3, 0));
-            Assert.Contains($"({_level3QualificationModel.AverageResult.LocalAuthority.PreviousYear!.Points.Value!.Value} points)", doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 3, 1));
-            Assert.Contains($"({_level3QualificationModel.AverageResult.LocalAuthority.CurrentYear.Points.Value!.Value} points)", doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 3, 2));
+        Assert.Contains($"({_level3QualificationModel.AverageResult.LocalAuthority.TwoYearsAgo!.Points.Value!.Value} points)", doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 3, 0));
+        Assert.Contains($"({_level3QualificationModel.AverageResult.LocalAuthority.PreviousYear!.Points.Value!.Value} points)", doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 3, 1));
+        Assert.Contains($"({_level3QualificationModel.AverageResult.LocalAuthority.CurrentYear.Points.Value!.Value} points)", doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 3, 2));
 
-            Assert.Contains("England average grade", doc.GetTableHeaderContentByIdAndIndex("average-result-data-overtime-table", 4, 0));
-            Assert.Contains(_level3QualificationModel.AverageResult.England.TwoYearsAgo!.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 4, 0));
-            Assert.Contains(_level3QualificationModel.AverageResult.England.PreviousYear!.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 4, 1));
-            Assert.Contains(_level3QualificationModel.AverageResult.England.CurrentYear.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 4, 2));
+        Assert.Contains("England average grade", doc.GetTableHeaderContentByIdAndIndex("average-result-data-overtime-table", 4, 0));
+        Assert.Contains(_level3QualificationModel.AverageResult.England.TwoYearsAgo!.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 4, 0));
+        Assert.Contains(_level3QualificationModel.AverageResult.England.PreviousYear!.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 4, 1));
+        Assert.Contains(_level3QualificationModel.AverageResult.England.CurrentYear.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 4, 2));
 
-            Assert.Contains($"({_level3QualificationModel.AverageResult.England.TwoYearsAgo!.Points.Value!.Value} points)", doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 4, 0));
-            Assert.Contains($"({_level3QualificationModel.AverageResult.England.PreviousYear!.Points.Value!.Value} points)", doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 4, 1));
-            Assert.Contains($"({_level3QualificationModel.AverageResult.England.CurrentYear.Points.Value!.Value} points)", doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 4, 2));
-        }
+        Assert.Contains($"({_level3QualificationModel.AverageResult.England.TwoYearsAgo!.Points.Value!.Value} points)", doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 4, 0));
+        Assert.Contains($"({_level3QualificationModel.AverageResult.England.PreviousYear!.Points.Value!.Value} points)", doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 4, 1));
+        Assert.Contains($"({_level3QualificationModel.AverageResult.England.CurrentYear.Points.Value!.Value} points)", doc.GetTableCellContentByIdAndIndex("average-result-data-overtime-table", 4, 2));
     }
 
     [Theory]
