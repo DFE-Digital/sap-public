@@ -529,9 +529,9 @@ jobs:
       actions: read
       packages: write
 
-# ----------------------------------------
-# DEPLOY TO PRODUCTION (AUTO - AFTER TEST)
-# ----------------------------------------
+  # ----------------------------------------
+  # DEPLOY TO PRODUCTION (AUTO - AFTER TEST)
+  # ----------------------------------------
   deploy-production:
     name: Deploy to Production
     if: ${{ always() 
@@ -631,7 +631,7 @@ jobs:
   # on Test environnment
   # E2E-tests-no-refresh:
   #   name: E2E Tests (Post Deployment)
-  #   needs: [deploy, detect-refresh-data-on-merge]
+  #   needs: [deploy-test, detect-refresh-data-on-merge]
   #   if: ${{ needs.detect-refresh-data-on-merge.outputs.should-refresh != 'true' }}
   #   uses: ./.github/workflows/e2e-tests.yml
   #   with:
@@ -640,7 +640,7 @@ jobs:
   
   # E2E-tests-after-refresh:
   #   name: E2E Tests (Post Deployment)
-  #   needs: [deploy, refresh-data-test-after-merge]
+  #   needs: [deploy-test, refresh-data-test-after-merge]
   #   if: ${{ needs.refresh-data-test-after-merge.result == 'success' }}
   #   uses: ./.github/workflows/e2e-tests.yml
   #   with:
@@ -726,12 +726,12 @@ jobs:
 
     steps:
       - name: Deploy Domains Environment
-        id: deploy_domains_env        
+        id: deploy_domains_env
+        # Production currently stays in maintenance mode after a data refresh, so its healthcheck would fail - skip it for now.
         if: 
             ${{
-              matrix.domain_environment != 'test' ||
               needs.detect-refresh-data-on-merge.outputs.should-refresh != 'true' ||
-              needs.refresh-data-test-after-merge.result == 'success'
+              (matrix.domain_environment != 'test' && needs.refresh-data-test-after-merge.result == 'success')
             }}
         uses: DFE-Digital/github-actions/deploy-domains-env@master
         with:
