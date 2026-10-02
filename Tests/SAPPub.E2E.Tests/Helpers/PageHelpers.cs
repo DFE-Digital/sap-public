@@ -5,6 +5,23 @@ namespace SAPPub.E2E.Tests.Helpers;
 
 public static class PageHelpers
 {
+    public static Task<IResponse?> GotoPage(this IPage Page, string urlstring, string page)
+    {
+        const string marker = "/";
+        var i = urlstring.LastIndexOf(marker);
+        var urlStem = urlstring.Substring(0, i);
+        return Page.GotoAsync($"{urlStem}/{page}");
+    }
+
+    public static Task<IResponse?> GotoAcademicPerformanceSelectedYearLink(this IPage Page, string urlstring, string year = "current")
+    {
+        const string marker = "school/";
+        var i = urlstring.IndexOf(marker);
+        var j = urlstring.LastIndexOf('/');
+        var previousYearPerformanceUrl = urlstring.Substring(i, j - i);
+        return Page.GotoAsync($"{previousYearPerformanceUrl}/{year}");
+    }
+
     public static async Task ExpandElement(this IPage Page, string dataTestid)
     {
         var element = Page.Locator($"[data-testid='{dataTestid}']");
