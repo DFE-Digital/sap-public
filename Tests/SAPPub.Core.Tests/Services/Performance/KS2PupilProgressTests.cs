@@ -95,7 +95,22 @@ public class KS2PupilProgressTests
             {
                 ProgBand_Read_Band1_Eng_Previous2_Desc = new CodedString("reading well above average reason", string.Empty, "reading well above average reason"),
                 ProgBand_Writ_Band1_Eng_Previous2_Desc = new CodedString("writing well above average reason", string.Empty, "writing well above average reason"),
-                ProgBand_Math_Band1_Eng_Previous2_Desc = new CodedString("maths well above average reason", string.Empty, "maths well above average reason")
+                ProgBand_Math_Band1_Eng_Previous2_Desc = new CodedString("maths well above average reason", string.Empty, "maths well above average reason"),
+                ProgBand_Read_Band1_Eng_Previous2_Pct_Coded = new CodedDouble(5, string.Empty, "5"),
+                ProgBand_Read_Band2_Eng_Previous2_Pct_Coded = new CodedDouble(5, string.Empty, "5"),
+                ProgBand_Read_Band3_Eng_Previous2_Pct_Coded = new CodedDouble(5, string.Empty, "5"),
+                ProgBand_Read_Band4_Eng_Previous2_Pct_Coded = new CodedDouble(5, string.Empty, "5"),
+                ProgBand_Read_Band5_Eng_Previous2_Pct_Coded = new CodedDouble(5, string.Empty, "5"),
+                ProgBand_Writ_Band1_Eng_Previous2_Pct_Coded = new CodedDouble(6, string.Empty, "6"),
+                ProgBand_Writ_Band2_Eng_Previous2_Pct_Coded = new CodedDouble(6, string.Empty, "6"),
+                ProgBand_Writ_Band3_Eng_Previous2_Pct_Coded = new CodedDouble(6, string.Empty, "6"),
+                ProgBand_Writ_Band4_Eng_Previous2_Pct_Coded = new CodedDouble(6, string.Empty, "6"),
+                ProgBand_Writ_Band5_Eng_Previous2_Pct_Coded = new CodedDouble(6, string.Empty, "6"),
+                ProgBand_Math_Band1_Eng_Previous2_Pct_Coded = new CodedDouble(7, string.Empty, "7"),
+                ProgBand_Math_Band2_Eng_Previous2_Pct_Coded = new CodedDouble(7, string.Empty, "7"),
+                ProgBand_Math_Band3_Eng_Previous2_Pct_Coded = new CodedDouble(7, string.Empty, "7"),
+                ProgBand_Math_Band4_Eng_Previous2_Pct_Coded = new CodedDouble(7, string.Empty, "7"),
+                ProgBand_Math_Band5_Eng_Previous2_Pct_Coded = new CodedDouble(7, string.Empty, "7"),
             });
 
         // Act
@@ -123,6 +138,19 @@ public class KS2PupilProgressTests
         Assert.Equal("reading well above average reason", result.EstablishmentReadingContextDescription.Value);
         Assert.Equal("writing well above average reason", result.EstablishmentWritingContextDescription.Value);
         Assert.Equal("maths well above average reason", result.EstablishmentMathsContextDescription.Value);
+
+        Assert.Equal(5, result.ReadingProgressBandingPercentages.Length);
+        Assert.All(
+            result.ReadingProgressBandingPercentages,
+            x => Assert.Equal(5, x.Value));
+        Assert.Equal(5, result.WritingProgressBandingPercentages.Length);
+        Assert.All(
+            result.WritingProgressBandingPercentages,
+            x => Assert.Equal(6, x.Value));
+        Assert.Equal(5, result.MathsProgressBandingPercentages.Length); 
+        Assert.All(
+            result.MathsProgressBandingPercentages,
+            x => Assert.Equal(7, x.Value));
 
         _establishmentService
             .Verify(a => a.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()), Times.Once);

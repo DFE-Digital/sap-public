@@ -15,4 +15,6 @@ public class ProgressScoreModel
     public CodedDouble EnglandAverageScore { get; init; }
 
     public CodedString BandingContextDescription { get; init; }
+
+    public CodedDouble[] ProgressBandingPercentages { get; init; } = [];
 }

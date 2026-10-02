@@ -5,6 +5,7 @@ using SAPPub.Core.Interfaces.Repositories.Performance;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.ServiceModels;
 using SAPPub.Core.Services.Performance;
+using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Core.ValueObjects;
 
 namespace SAPPub.Core.Tests.Services.Performance;
@@ -69,6 +70,7 @@ public class Level2QualificationsServiceTests
         Assert.Null(result.ProgressScore.ConfidenceLevelUpper.Value);
         Assert.Null(result.ProgressScore.ConfidenceLevelLower.Value);
         Assert.Null(result.ProgressScore.EnglandAverageScore.Value);
+        Assert.All(result.ProgressScore.ProgressBandingPercentages, item => Assert.Null(item.Value));
 
         Assert.Null(result.AverageResult.NumberOfStudents.CurrentYear.Value);
         Assert.Null(result.AverageResult.NumberOfStudents.PreviousYear!.Value);
@@ -175,6 +177,12 @@ public class Level2QualificationsServiceTests
             TALLPPEGRD_TECHCERT_Eng_Current = new CodedString("C", string.Empty, string.Empty),
             TALLPPEGRD_TECHCERT_Eng_Previous = new CodedString("B", string.Empty, string.Empty),
             TALLPPEGRD_TECHCERT_Eng_Previous2 = new CodedString("A", string.Empty, string.Empty),
+            ProgBand_Techcert_Band1_Eng_Current_Pct_Coded = CodedDoubleFactory.Create(10),
+            ProgBand_Techcert_Band2_Eng_Current_Pct_Coded = CodedDoubleFactory.Create(20),
+            ProgBand_Techcert_Band3_Eng_Current_Pct_Coded = CodedDoubleFactory.Create(30),
+            ProgBand_Techcert_Band4_Eng_Current_Pct_Coded = CodedDoubleFactory.Create(40),
+            ProgBand_Techcert_Band5_Eng_Current_Pct_Coded = CodedDoubleFactory.Create(0),
+
 
             // Tech certs - Disadvantaged
             TALLPUP_TECHCERT_DIS_Eng_Current_Num_Coded = new CodedDouble(150, string.Empty, string.Empty),
@@ -268,6 +276,8 @@ public class Level2QualificationsServiceTests
             Assert.Equal(englandPerformance.TALLPPEGRD_TECHCERT_Eng_Current, result.AverageResult.England.CurrentYear.Grade);
             Assert.Equal(englandPerformance.TALLPPEGRD_TECHCERT_Eng_Previous, result.AverageResult.England.PreviousYear!.Grade);
             Assert.Equal(englandPerformance.TALLPPEGRD_TECHCERT_Eng_Previous2, result.AverageResult.England.TwoYearsAgo!.Grade);
+            Assert.Equal(new CodedDouble[] { englandPerformance.ProgBand_Techcert_Band1_Eng_Current_Pct_Coded, englandPerformance.ProgBand_Techcert_Band2_Eng_Current_Pct_Coded, englandPerformance.ProgBand_Techcert_Band3_Eng_Current_Pct_Coded, englandPerformance.ProgBand_Techcert_Band4_Eng_Current_Pct_Coded, englandPerformance.ProgBand_Techcert_Band5_Eng_Current_Pct_Coded }, result.ProgressScore.ProgressBandingPercentages);
+
 
             Assert.Equal(laPerformance.TALLPPE_TECHCERT_LA_Current_Num_Coded, result.AverageResult.LocalAuthority.CurrentYear.Points);
             Assert.Equal(laPerformance.TALLPPE_TECHCERT_LA_Previous_Num_Coded, result.AverageResult.LocalAuthority.PreviousYear!.Points);

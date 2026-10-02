@@ -207,6 +207,7 @@ public class AttainmentAndProgressModelBuilder
         return this;
     }
 
+ 
     public AttainmentAndProgressModel Build()
     {
         return new AttainmentAndProgressModel
@@ -226,6 +227,7 @@ public class AttainmentAndProgressModelBuilder
             EnglandAttainment8NonDisadvantagedScore = _englandAttainment8NonDisadvantagedScore.HasValue ? _englandAttainment8NonDisadvantagedScore.Value : CodedDoubleFactory.Create(),
             EstablishmentProgress8Banding = _establishmentProgress8Banding ?? new RelativeYearValues<string?> { CurrentYear = null, PreviousYear = null, TwoYearsAgo = null },
             Progress8BandingContextDescription = _progress8BandingContextDescription ?? new RelativeYearValues<CodedString> { CurrentYear = CodedString.Empty },
+            ProgressBandingPercentages = new RelativeYearValues<CodedDouble[]> { CurrentYear = [], PreviousYear = [], TwoYearsAgo = [] },
             EstablishmentProgress8Score = _establishmentProgress8Score ?? CreateEmptyRelativeYearValues(),
             EstablishmentProgress8CILower = _establishmentProgress8CILower ?? CreateEmptyRelativeYearValues(),
             EstablishmentProgress8CIUpper = _establishmentProgress8CIUpper ?? CreateEmptyRelativeYearValues(),

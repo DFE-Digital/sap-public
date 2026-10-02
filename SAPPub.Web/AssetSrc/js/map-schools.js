@@ -115,12 +115,12 @@
 
     const map = L.map(host, {
         scrollWheelZoom: true,
-        gestureHandling: true
+        gestureHandling: true,
+        attributionControl: false
     }).setView(initialLL, fixedZoom);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19,
-        attribution: "© OpenStreetMap contributors",
+        maxZoom: 19
     }).addTo(map);
 
     setTimeout(() => map.invalidateSize(), 0);
