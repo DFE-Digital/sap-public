@@ -81,8 +81,13 @@ jobs:
           echo "AKS_NAMESPACE=$(jq -r '.namespace' ${tf_vars_file})" >> $GITHUB_ENV
           echo "AKS_CLUSTER_NAME=$(jq -r '.cluster_name' ${tf_vars_file})" >> $GITHUB_ENV
           echo "AKS_RESOURCE_GROUP=$(jq -r '.cluster_rg' ${tf_vars_file})" >> $GITHUB_ENV
-          echo "STORAGE_ACCOUNT_NAME=${AZURE_RESOURCE_PREFIX}${SERVICE_SHORT}dp${CONFIG_SHORT}sa" >> $GITHUB_ENV
-          echo "RESOURCE_GROUP_NAME=${AZURE_RESOURCE_PREFIX}-${SERVICE_SHORT}-${CONFIG_SHORT}-rg" >> $GITHUB_ENV
+          # Review apps have no data storage account, so they use the test one:
+          storage_config_short=${CONFIG_SHORT}
+          if [ "${DEPLOY_ENV}" == "review"]; then
+            storage_config_short=ts
+          fi
+          echo "STORAGE_ACCOUNT_NAME=${AZURE_RESOURCE_PREFIX}${SERVICE_SHORT}dp${storage_config_short}sa" >> $GITHUB_ENV
+          echo "RESOURCE_GROUP_NAME=${AZURE_RESOURCE_PREFIX}-${SERVICE_SHORT}-${storage_config_short}-rg" >> $GITHUB_ENV
           echo "DB_SERVER=${AZURE_RESOURCE_PREFIX}-${SERVICE_SHORT}-${CONFIG_SHORT}-pg" >> $GITHUB_ENV
           if [ "${DEPLOY_ENV}" == "review" ]; then
             echo "KONDUIT_APP_NAME=$(jq -r '.app_prefix' ${tf_vars_file})${{env.PR_NUM}}" >> $GITHUB_ENV

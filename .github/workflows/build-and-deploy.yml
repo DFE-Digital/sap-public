@@ -641,7 +641,7 @@ jobs:
   #   uses: ./.github/workflows/e2e-tests.yml
   #   with:
   #     environment: test
-  #     base_url: ${{ needs.deploy.outputs.environment_url }}
+  #     base_url: ${{ needs.deploy-test.outputs.environment_url }}
   
   # E2E-tests-after-refresh:
   #   name: E2E Tests (Post Deployment)
@@ -650,7 +650,7 @@ jobs:
   #   uses: ./.github/workflows/e2e-tests.yml
   #   with:
   #     environment: test
-  #     base_url: ${{ needs.deploy.outputs.environment_url }}
+  #     base_url: ${{ needs.deploy-test.outputs.environment_url }}
 
   E2E-tests-manual:
     name: E2E Tests (Manual Deployment)
