@@ -534,8 +534,13 @@ jobs:
 # ----------------------------------------
   deploy-production:
     name: Deploy to Production
-    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
-    needs: [build, deploy-test]
+    if: ${{ always() 
+      && github.ref == 'refs/heads/main' && github.event_name == 'push'
+      && needs.deploy-test.result == 'success'
+      && needs.detect-refresh-data-on-merge.result == 'success'
+      && (needs.refresh-data-test-after-merge.result == 'success' || needs.refresh-data-test-after-merge.result == 'skipped')
+      }}
+    needs: [build, deploy-test, detect-refresh-data-on-merge, refresh-data-test-after-merge]
     outputs:
       environment_url: ${{ steps.deploy_app.outputs.environment_url }}
     runs-on: ubuntu-latest
