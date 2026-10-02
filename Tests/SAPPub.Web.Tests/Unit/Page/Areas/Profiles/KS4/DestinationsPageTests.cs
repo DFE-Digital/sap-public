@@ -92,15 +92,15 @@ public class DestinationsPageTests : PageTestsBase
         // Assert
         Assert.Contains(
             $"{destinationsDetails.SchoolAll.CurrentYear.Value}%",
-            doc.GetTableCellContentByIdAndIndex("all-destinations-current-year-table", 0, 0));
+            doc.GetTableCellContentByIdAndIndex("all-dest-current-year-table", 0, 0));
 
         Assert.Contains(
             $"{destinationsDetails.LocalAuthorityAll.CurrentYear.Value}%",
-            doc.GetTableCellContentByIdAndIndex("all-destinations-current-year-table", 1, 0));
+            doc.GetTableCellContentByIdAndIndex("all-dest-current-year-table", 1, 0));
 
         Assert.Contains(
             $"{destinationsDetails.EnglandAll.CurrentYear.Value}%",
-            doc.GetTableCellContentByIdAndIndex("all-destinations-current-year-table", 2, 0));
+            doc.GetTableCellContentByIdAndIndex("all-dest-current-year-table", 2, 0));
     }
 
     [Fact]
