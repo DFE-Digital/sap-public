@@ -8,7 +8,7 @@ export function homepageJourney (environment, config) {
       const response = http.get(`${environment.baseUrl}`)
       const isSuccess = loadPerformanceCheck(response, 'Homepage', config.expectedResponseTimes.homepage)
       if (isSuccess) {
-        loadContentCheck(response, 'main-heading', 'School Profiles')
+        loadContentCheck(response, 'main-heading', 'Find and compare school and college profiles')
         loadContentCheck(response, 'search-button', 'Start now')
       }
 
