@@ -310,12 +310,17 @@ jobs:
       - name: Download seed backup from Blob
         shell: bash
         env:
-          AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
-          AZURE_STORAGE_CONTAINER: ${{ secrets.AZURE_STORAGE_CONTAINER }}
+          AZURE_STORAGE_CONTAINER: alldata
         run: |
           set -euo pipefail
           BACKUP_BLOB="db-backups/sappub_review_seed_latest.sql.gz"
           BACKUP_FILE="seed.sql.gz"
+
+          source global_config/test.sh
+          STORAGE_ACCOUNT_NAME="${AZURE_RESOURCE_PREFIX}sappubdp${CONFIG_SHORT}sa"
+          RESOURCE_GROUP_NAME="${AZURE_RESOURCE_PREFIX}-sappub-${CONFIG_SHORT}-rg"
+          AZURE_STORAGE_CONNECTION_STRING=$(az storage account show-connection-string -g ${RESOURCE_GROUP_NAME} -n ${STORAGE_ACCOUNT_NAME} --query 'connectionString')
+          echo "::add-mask::${AZURE_STORAGE_CONNECTION_STRING}"
 
           az storage blob download \
             --container-name "${AZURE_STORAGE_CONTAINER}" \
@@ -731,7 +736,7 @@ jobs:
         if: 
             ${{
               needs.detect-refresh-data-on-merge.outputs.should-refresh != 'true' ||
-              (matrix.domain_environment != 'test' && needs.refresh-data-test-after-merge.result == 'success')
+              (matrix.domain_environment == 'test' && needs.refresh-data-test-after-merge.result == 'success')
             }}
         uses: DFE-Digital/github-actions/deploy-domains-env@master
         with:
