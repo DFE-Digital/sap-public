@@ -14,8 +14,9 @@ module "storage" {
 
   # Configure blob lifecycle management (default: delete after 7 days)
   container_delete_retention_days = var.storage_container_delete_retention_days
+  blob_delete_retention_days = var.storage_blob_delete_retention_days
   blob_delete_after_days          = 0
-
+    
   # Enable infrastructure encryption for additional security
   infrastructure_encryption_enabled = true
 
