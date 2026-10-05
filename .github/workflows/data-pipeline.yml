@@ -54,7 +54,7 @@ jobs:
       DEPLOY_ENV: ${{ inputs.environment || 'test'  }}
       PR_NUM: ${{ inputs.pr-number || ''  }}
 
-      # Blob (currently from GitHub secrets)
+      # Blob container
       AZURE_STORAGE_CONTAINER: alldata      # Could come from [env].tfvars.json
 
       # Sensitive source URLs (THREE endpoints in GitHub secrets)
@@ -83,7 +83,7 @@ jobs:
           echo "AKS_RESOURCE_GROUP=$(jq -r '.cluster_rg' ${tf_vars_file})" >> $GITHUB_ENV
           # Review apps have no data storage account, so they use the test one:
           storage_config_short=${CONFIG_SHORT}
-          if [ "${DEPLOY_ENV}" == "review"]; then
+          if [ "${DEPLOY_ENV}" == "review" ]; then
             storage_config_short=ts
           fi
           echo "STORAGE_ACCOUNT_NAME=${AZURE_RESOURCE_PREFIX}${SERVICE_SHORT}dp${storage_config_short}sa" >> $GITHUB_ENV
