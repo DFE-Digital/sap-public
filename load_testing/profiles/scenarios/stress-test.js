@@ -3,7 +3,7 @@ export const stressTestScenario = {
   startVUs: 100,
   stages: [
     { duration: '2m', target: 200 }, // Build up load
-    { duration: '5m', target: 1000 }, // Increase to stress level
+    { duration: '5m', target: 1250 }, // Increase to stress level
     { duration: '10m', target: 2000 }, // Maximum stress test
     { duration: '5m', target: 2000 }, // Sustain stress load
     { duration: '3m', target: 0 } // Gradual ramp down

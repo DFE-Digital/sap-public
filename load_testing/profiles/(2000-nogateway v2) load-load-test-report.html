@@ -1,0 +1,4366 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head> 
+    <meta charset="UTF-8" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" crossorigin="anonymous">
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/benc-uk/k6-reporter/main/assets/icon.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>School Profiles Load Test Report</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 2rem;
+        color: #2d3748;
+      }
+      
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+      }
+      
+      header {
+        background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+        padding: 1.5rem 2rem;
+        color: white;
+      }
+      
+      header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      
+      header h1 svg {
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+      }
+      
+      .content {
+        padding: 1.5rem;
+      }
+      
+      footer { 
+        text-align: center;
+        padding: 1.5rem;
+        color: #718096;
+        font-size: 0.875rem;
+        border-top: 1px solid #e2e8f0;
+        background: #f7fafc;
+      }
+      
+      footer a {
+        text-decoration: none;
+        color: #7c3aed;
+        font-weight: 500;
+        transition: color 0.2s;
+      }
+      
+      footer a:hover {
+        color: #5b21b6;
+      }
+      
+      /* Status classes */
+      .failed {
+        background: linear-gradient(135deg, #fc8181 0%, #f56565 100%) !important;
+        color: white !important;
+      }     
+      
+      .good {
+        background: linear-gradient(135deg, #68d391 0%, #48bb78 100%) !important;
+        color: white !important;
+      }   
+      
+      td.failed {
+        font-weight: 600;
+        color: #e53e3e;
+      }
+      
+      td.good {
+        font-weight: 600;
+        color: #38a169;
+      }
+      
+      h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 2rem 0 1rem 0;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid #e2e8f0;
+        color: #2d3748;
+      }
+      
+      h4 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin: 1.5rem 0 1rem 0;
+        color: #4a5568;
+      }
+      
+      /* Metric Cards */
+      .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin: 0;
+      }
+      
+      .metric-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+        border: 1px solid #e2e8f0;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      
+      .metric-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+      }
+      
+      .metric-card.primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+      
+      .metric-card.success {
+        background: linear-gradient(135deg, #68d391 0%, #48bb78 100%);
+        color: white;
+      }
+      
+      .metric-card.danger {
+        background: linear-gradient(135deg, #fc8181 0%, #f56565 100%);
+        color: white;
+      }
+      
+      .metric-card.warning {
+        background: linear-gradient(135deg, #f6ad55 0%, #ed8936 100%);
+        color: white;
+      }
+      
+      .metric-card .icon {
+        position: absolute;
+        top: 50%;
+        right: 1rem;
+        transform: translateY(-50%);
+        font-size: 4rem;
+        opacity: 0.15;
+      }
+      
+      .metric-card h4 {
+        margin: 0 0 0.5rem 0;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        opacity: 0.9;
+        position: relative;
+        z-index: 2;
+      }
+      
+      .metric-card.primary h4,
+      .metric-card.success h4,
+      .metric-card.danger h4,
+      .metric-card.warning h4 {
+        color: white;
+      }
+      
+      .metric-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        position: relative;
+        z-index: 2;
+      }
+      
+      .metric-subtext {
+        font-size: 0.875rem;
+        opacity: 0.8;
+        margin-top: 0.25rem;
+      }
+      
+      /* Tabs */
+      .tabs {
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+      }
+      
+      .tabs label {
+        order: 1;
+        display: block;
+        padding: 1rem 2rem;
+        cursor: pointer;
+        color: #718096;
+        background: #f7fafc;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+        margin-right: 0.25rem;
+        border: 2px solid transparent;
+        border-bottom: none;
+        font-size: 0.9rem;
+      }
+      
+      .tabs label:hover {
+        background: #edf2f7;
+        color: #4a5568;
+      }
+      
+      .tabs label i {
+        margin-right: 0.5rem;
+      }
+      
+      .tabs .tab {
+        order: 99;
+        flex-grow: 1;
+        width: 100%;
+        display: none;
+        padding: 2rem;
+        background: #ffffff;
+        border-radius: 0 12px 12px 12px;
+        border: 2px solid #e2e8f0;
+        min-height: 400px;
+      }
+      
+      .tabs input[type="radio"] {
+        display: none;
+      }
+      
+      .tabs input[type="radio"]:checked + label {
+        background: #ffffff;
+        color: #7c3aed;
+        border-color: #e2e8f0;
+        border-bottom-color: #ffffff;
+        position: relative;
+        bottom: -2px;
+      }
+      
+      .tabs input[type="radio"]:checked + label + .tab {
+        display: block;
+      }
+      
+      /* Tables */
+      table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin: 1rem 0;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+      
+      thead {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+      
+      thead th {
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      
+      tbody tr {
+        background: white;
+        transition: background 0.2s;
+      }
+      
+      tbody tr:nth-child(even) {
+        background: #f7fafc;
+      }
+      
+      tbody tr:hover {
+        background: #edf2f7;
+      }
+      
+      tbody td {
+        padding: 1rem;
+        border-bottom: 1px solid #e2e8f0;
+        font-size: 0.9rem;
+      }
+      
+      tbody tr:last-child td {
+        border-bottom: none;
+      }
+      
+      tbody td:first-child {
+        font-weight: 500;
+      }
+      
+      /* Detail boxes for Other Stats */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin: 1rem 0;
+      }
+      
+      .stat-box {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+        border: 1px solid #e2e8f0;
+        position: relative;
+        overflow: hidden;
+        color: white;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      
+      .stat-box:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+      }
+      
+      .stat-box h4 {
+        margin: 0 0 1rem 0;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        opacity: 0.9;
+        color: white;
+        position: relative;
+        z-index: 2;
+      }
+      
+      .stat-box .icon {
+        position: absolute;
+        top: 50%;
+        right: 1rem;
+        transform: translateY(-50%);
+        font-size: 4rem;
+        opacity: 0.15;
+      }
+      
+      .stat-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        position: relative;
+        z-index: 2;
+      }
+      
+      .stat-row:last-child {
+        border-bottom: none;
+      }
+      
+      .stat-label {
+        color: white;
+        font-weight: 400;
+        font-size: 0.875rem;
+        opacity: 0.9;
+      }
+      
+      .stat-value {
+        color: white;
+        font-weight: 700;
+        font-size: 1.5rem;
+      }
+      
+      /* Groups and Checks */
+      .group-header {
+        cursor: pointer;
+        user-select: none;
+        padding: 0.75rem 1rem;
+        background: #f7fafc;
+        border-radius: 8px;
+        margin: 1rem 0;
+        transition: background 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      
+      .group-header:hover {
+        background: #edf2f7;
+      }
+      
+      .group-header::before {
+        content: '▼';
+        font-size: 0.75rem;
+        transition: transform 0.2s;
+      }
+      
+      .sub-groups {
+        padding: 0 0 0 2rem;
+        margin-top: 1rem;
+      }
+      
+      .note {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        background: #edf2f7;
+        border-left: 4px solid #667eea;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        color: #4a5568;
+      }
+      
+      @media (max-width: 768px) {
+        body {
+          padding: 0.5rem;
+        }
+        
+        header {
+          padding: 1.5rem;
+        }
+        
+        header h1 {
+          font-size: 1.5rem;
+        }
+        
+        .content {
+          padding: 1rem;
+        }
+        
+        .metrics-grid {
+          grid-template-columns: 1fr;
+        }
+        
+        .tabs label {
+          padding: 0.75rem 1rem;
+          font-size: 0.8rem;
+        }
+        
+        .tabs .tab {
+          padding: 1rem;
+        }
+        
+        .metric-value {
+          font-size: 2rem;
+        }
+      }
+    </style>
+    <script> 
+      function tabClickHandler(e) {
+        let elemSubGroup = e.target.nextElementSibling;
+        if (!elemSubGroup) return;
+        
+        let display = elemSubGroup.style.display;
+        elemSubGroup.style.display = !display || display === "block" ? "none" : "block";
+      }
+    </script>
+  </head>
+
+  <body>
+    <div class="container">
+      <header>
+        <h1>
+          <svg width="50" height="45" viewBox="0 0 50 45" fill="none"><path d="M31.968 34.681a2.007 2.007 0 002.011-2.003c0-1.106-.9-2.003-2.011-2.003a2.007 2.007 0 00-2.012 2.003c0 1.106.9 2.003 2.012 2.003z" fill="white"></path><path d="M39.575 0L27.154 16.883 16.729 9.31 0 45h50L39.575 0zM23.663 37.17l-2.97-4.072v4.072h-2.751V22.038l2.75 1.989v7.66l3.659-5.014 2.086 1.51-3.071 4.21 3.486 4.776h-3.189v.001zm8.305.17c-2.586 0-4.681-2.088-4.681-4.662 0-1.025.332-1.972.896-2.743l4.695-6.435 2.086 1.51-2.239 3.07a4.667 4.667 0 013.924 4.6c0 2.572-2.095 4.66-4.681 4.66z" fill="white"></path></svg>
+          School Profiles Load Test Report
+        </h1>
+      </header>
+
+      <div class="content">
+        <!-- Main info boxes -->
+        <div class="metrics-grid">
+          <div class="metric-card primary">
+            <i class="fas fa-globe icon"></i>
+            <h4>Total Requests</h4>
+            <div class="metric-value">
+              511618
+              
+            </div>
+          </div>
+          
+          
+            <div class="metric-card danger">
+              <i class="fas fa-times-circle icon"></i>
+              <h4>Failed Requests</h4>
+              <div class="metric-value">823</div>
+            </div> 
+            
+          
+          <div class="metric-card danger">
+            <i class="fas fa-exclamation-triangle icon"></i>
+            <h4>Breached Thresholds</h4>
+            <div class="metric-value">1</div>
+          </div>
+          
+          <div class="metric-card danger">
+            <i class="fas fa-eye icon"></i>
+            <h4>Failed Checks</h4>
+            <div class="metric-value">12333</div>
+          </div>
+        </div>
+
+        <!-- Tabs Section -->
+        <div class="tabs">
+          <input type="radio" name="tabs" id="tabone" checked="checked">
+          <label for="tabone"><i class="fas fa-microscope"></i> Detailed Metrics</label>
+          <div class="tab">
+
+            
+              <h4><i class="fas fa-chart-line"></i> Trends & Times</h4>
+              <table class="pure-table pure-table-striped">
+                <thead>
+                  <tr>
+                    <th></th>
+                    
+                      <th>Avg</th>
+                    
+                      <th>Min</th>
+                    
+                      <th>Med</th>
+                    
+                      <th>Max</th>
+                    
+                      <th>P(90)</th>
+                    
+                      <th>P(95)</th>
+                     
+                  </tr>
+                </thead>
+                <tbody>
+                  
+                  <tr>
+                    <td><b>group_duration</b></td>
+                    
+                      <td class="">21058.63</td>
+                    
+                      <td class="">0.05</td>
+                    
+                      <td class="">18162.68</td>
+                    
+                      <td class="">167955.57</td>
+                    
+                      <td class="">44698.78</td>
+                    
+                      <td class="">50377.07</td>
+                     
+                  </tr>
+                  
+                  <tr>
+                    <td><b>http_req_blocked</b></td>
+                    
+                      <td class="">3.57</td>
+                    
+                      <td class="">0.00</td>
+                    
+                      <td class="">0.00</td>
+                    
+                      <td class="">8231.42</td>
+                    
+                      <td class="">0.00</td>
+                    
+                      <td class="">0.01</td>
+                     
+                  </tr>
+                  
+                  <tr>
+                    <td><b>http_req_connecting</b></td>
+                    
+                      <td class="">1.63</td>
+                    
+                      <td class="">0.00</td>
+                    
+                      <td class="">0.00</td>
+                    
+                      <td class="">8160.89</td>
+                    
+                      <td class="">0.00</td>
+                    
+                      <td class="">0.00</td>
+                     
+                  </tr>
+                  
+                  <tr>
+                    <td><b>http_req_duration</b></td>
+                    
+                      <td class="">390.19</td>
+                    
+                      <td class="">0.00</td>
+                    
+                      <td class="">109.98</td>
+                    
+                      <td class="">59956.62</td>
+                    
+                      <td class="">585.64</td>
+                    
+                      <td class="good">962.51</td>
+                     
+                  </tr>
+                  
+                  <tr>
+                    <td><b>http_req_receiving</b></td>
+                    
+                      <td class="">27.74</td>
+                    
+                      <td class="">0.00</td>
+                    
+                      <td class="">8.16</td>
+                    
+                      <td class="">13631.91</td>
+                    
+                      <td class="">66.85</td>
+                    
+                      <td class="">110.80</td>
+                     
+                  </tr>
+                  
+                  <tr>
+                    <td><b>http_req_sending</b></td>
+                    
+                      <td class="">1.69</td>
+                    
+                      <td class="">0.00</td>
+                    
+                      <td class="">0.16</td>
+                    
+                      <td class="">1476.81</td>
+                    
+                      <td class="">0.50</td>
+                    
+                      <td class="">0.98</td>
+                     
+                  </tr>
+                  
+                  <tr>
+                    <td><b>http_req_tls_handshaking</b></td>
+                    
+                      <td class="">1.85</td>
+                    
+                      <td class="">0.00</td>
+                    
+                      <td class="">0.00</td>
+                    
+                      <td class="">6315.21</td>
+                    
+                      <td class="">0.00</td>
+                    
+                      <td class="">0.00</td>
+                     
+                  </tr>
+                  
+                  <tr>
+                    <td><b>http_req_waiting</b></td>
+                    
+                      <td class="">360.77</td>
+                    
+                      <td class="">0.00</td>
+                    
+                      <td class="">90.13</td>
+                    
+                      <td class="">59956.43</td>
+                    
+                      <td class="">507.25</td>
+                    
+                      <td class="">887.43</td>
+                     
+                  </tr>
+                  
+                  <tr>
+                    <td><b>iteration_duration</b></td>
+                    
+                      <td class="">39359.59</td>
+                    
+                      <td class="">11832.47</td>
+                    
+                      <td class="">39500.76</td>
+                    
+                      <td class="">170997.21</td>
+                    
+                      <td class="">54477.00</td>
+                    
+                      <td class="">60645.09</td>
+                     
+                  </tr>
+                  
+                  <tr>
+                    <td><b>load_response_time_trend</b></td>
+                    
+                      <td class="">390.19</td>
+                    
+                      <td class="">0.00</td>
+                    
+                      <td class="">109.98</td>
+                    
+                      <td class="">59956.62</td>
+                    
+                      <td class="">585.64</td>
+                    
+                      <td class="">962.51</td>
+                     
+                  </tr>
+                  
+                </tbody>
+              </table>
+            
+
+            
+              <h4><i class="fas fa-percent"></i> Rates</h4>
+              <table class="pure-table pure-table-striped">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Rate %</th> 
+                    <th>Pass Count</th>
+                    <th>Fail Count</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  
+                  <tr>
+                    <td><b>http_req_failed</b></td>
+                    
+                      <td
+                        class="good"
+                        title="Failure rate (for *_failed metrics; aligns with Fail Count)"
+                      >0.16%</td>
+                      <td class="">510795.00</td>
+                      <td class="">823.00</td>
+                  </tr>
+                  
+                  <tr>
+                    <td><b>load_error_rate</b></td>
+                    
+                      <td
+                        class="failed"
+                        title="Success rate (aligns with Pass Count)"
+                      >2.00%</td>
+                      <td class="">10244.00</td>
+                      <td class="">501374.00</td>
+                  </tr>
+                  
+                  <tr>
+                    <td><b>load_errors_4xx</b></td>
+                    
+                      <td
+                        class=""
+                        title="Success rate (aligns with Pass Count)"
+                      >0.07%</td>
+                      <td class="">341.00</td>
+                      <td class="">511277.00</td>
+                  </tr>
+                  
+                  <tr>
+                    <td><b>load_errors_5xx</b></td>
+                    
+                      <td
+                        class=""
+                        title="Success rate (aligns with Pass Count)"
+                      >0.09%</td>
+                      <td class="">439.00</td>
+                      <td class="">511179.00</td>
+                  </tr>
+                  
+                  <tr>
+                    <td><b>load_rate_limited</b></td>
+                    
+                      <td
+                        class=""
+                        title="Success rate (aligns with Pass Count)"
+                      >0.00%</td>
+                      <td class="">0.00</td>
+                      <td class="">511618.00</td>
+                  </tr>
+                  
+                  <tr>
+                    <td><b>load_success_rate</b></td>
+                    
+                      <td
+                        class=""
+                        title="Success rate (aligns with Pass Count)"
+                      >98.00%</td>
+                      <td class="">501374.00</td>
+                      <td class="">10244.00</td>
+                  </tr>
+                  
+                  <tr>
+                    <td><b>load_timeouts</b></td>
+                    
+                      <td
+                        class=""
+                        title="Success rate (aligns with Pass Count)"
+                      >1.99%</td>
+                      <td class="">10164.00</td>
+                      <td class="">501454.00</td>
+                  </tr>
+                  
+                </tbody>
+              </table>
+            
+
+            
+              <h4><i class="fas fa-calculator"></i> Counters</h4>
+              <table class="pure-table pure-table-striped">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Count</th> 
+                  </tr>
+                </thead>
+                <tbody>
+                  
+                  <tr>
+                    <td><b>load_content_errors</b></td>
+                    
+                    
+                      <td class="">85.00</td>
+                      
+                  </tr>
+                  
+                </tbody>
+              </table>
+            
+
+            
+        
+          </div> 
+          <!-- ---- end tab ---- -->
+
+          <input type="radio" name="tabs" id="tabtwo">
+          <label for="tabtwo"><i class="fas fa-chart-pie"></i> Test Run Details</label>
+          <div class="tab">
+            <div class="stats-grid">
+              
+                <div class="stat-box">
+                  <h4>Checks</h4>
+                  <i class="fas fa-eye icon"></i>
+                  <div class="stat-row">
+                    <span class="stat-label">Passed</span>
+                    <span class="stat-value">6092437</span>
+                  </div>
+                  <div class="stat-row">
+                    <span class="stat-label">Failed</span>
+                    <span class="stat-value">12333</span>
+                  </div>
+                </div>
+              
+
+              
+                <div class="stat-box">
+                  <h4>Iterations</h4>
+                  <i class="fas fa-redo icon"></i>
+                  <div class="stat-row">
+                    <span class="stat-label">Total</span>
+                    <span class="stat-value">50815</span>
+                  </div>
+                  <div class="stat-row">
+                    <span class="stat-label">Rate</span>
+                    <span class="stat-value">33.22/s</span>
+                  </div>
+                </div>
+              
+
+              <div class="stat-box">
+                <h4>Virtual Users</h4>
+                <i class="fas fa-user icon"></i>
+                <div class="stat-row">
+                  <span class="stat-label">Min</span>
+                  <span class="stat-value">0</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-label">Max</span>
+                  <span class="stat-value">2000</span>
+                </div>
+              </div>
+
+              <div class="stat-box">
+                <h4>Requests</h4>
+                <i class="fas fa-globe icon"></i>
+                <div class="stat-row">
+                  <span class="stat-label">Total</span>
+                  <span class="stat-value">
+                    511618
+                    
+                  </span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-label">Rate</span>
+                  <span class="stat-value">
+                    334.43/s
+                    
+                  </span>
+                </div>
+              </div>
+
+              <div class="stat-box">
+                <h4>Data Received</h4>
+                <i class="fas fa-cloud-download-alt icon"></i>
+                <div class="stat-row">
+                  <span class="stat-label">Total</span>
+                  <span class="stat-value">18436.27 MB</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-label">Rate</span>
+                  <span class="stat-value">12.05 mB/s</span>
+                </div>
+              </div>
+
+              <div class="stat-box">
+                <h4>Data Sent</h4>
+                <i class="fas fa-cloud-upload-alt icon"></i>
+                <div class="stat-row">
+                  <span class="stat-label">Total</span>
+                  <span class="stat-value">105.97 MB</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-label">Rate</span>
+                  <span class="stat-value">0.07 mB/s</span>
+                </div>
+              </div>
+            </div>
+          </div>  
+          <!-- ---- end tab ---- -->     
+
+          <input type="radio" name="tabs" id="tabthree">
+          <label for="tabthree"><i class="fas fa-square-check"></i> Checks & Groups</label>
+          <div class="tab">
+            
+
+            
+              
+              <h2 class="group-header" onclick="tabClickHandler(event)">Group - User Journeys</h2>
+              <div>
+                
+                
+                  <div class="sub-groups">
+                    
+                      
+              <h2 class="group-header" onclick="tabClickHandler(event)">Group - profiles: Homepage</h2>
+              <div>
+                
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Check Name</th>
+                        <th>Passes</th>
+                        <th>Failures</th>
+                        <th>% Pass</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Homepage: status is 200</td>
+                          <td class="">51377</td>
+                          <td class="failed">13</td>
+                          <td class="failed">99.97</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Homepage: response time &lt; 2000ms</td>
+                          <td class="">51367</td>
+                          <td class="failed">23</td>
+                          <td class="failed">99.96</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Homepage: no server errors (5xx)</td>
+                          <td class="">51389</td>
+                          <td class="failed">1</td>
+                          <td class="failed">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Homepage: no client errors (4xx)</td>
+                          <td class="">51389</td>
+                          <td class="failed">1</td>
+                          <td class="failed">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Homepage: not rate limited (429)</td>
+                          <td class="good">51390</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Homepage: response size &gt; 0</td>
+                          <td class="">51378</td>
+                          <td class="failed">12</td>
+                          <td class="failed">99.98</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading: contains expected content</td>
+                          <td class="good">51355</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading: content length &gt; 100 chars</td>
+                          <td class="good">51355</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check search-button: contains expected content</td>
+                          <td class="good">51355</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check search-button: content length &gt; 100 chars</td>
+                          <td class="good">51355</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                    </tbody>
+                  </table>
+                
+                
+                  <div class="sub-groups">
+                    
+                      
+              <h2 class="group-header" onclick="tabClickHandler(event)">Group - load Error Analysis</h2>
+              <div>
+                
+                
+              </div>
+            
+                    
+                  </div>
+                
+              </div>
+            
+                    
+                      
+              <h2 class="group-header" onclick="tabClickHandler(event)">Group - search: Search and Filter Journey</h2>
+              <div>
+                
+                
+                  <div class="sub-groups">
+                    
+                      
+              <h2 class="group-header" onclick="tabClickHandler(event)">Group - Basic Search</h2>
+              <div>
+                
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Check Name</th>
+                        <th>Passes</th>
+                        <th>Failures</th>
+                        <th>% Pass</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Basic Search: status is 200</td>
+                          <td class="">12612</td>
+                          <td class="failed">35</td>
+                          <td class="failed">99.72</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Basic Search: response time &lt; 3000ms</td>
+                          <td class="">12379</td>
+                          <td class="failed">268</td>
+                          <td class="failed">97.88</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Basic Search: no server errors (5xx)</td>
+                          <td class="">12614</td>
+                          <td class="failed">33</td>
+                          <td class="failed">99.74</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Basic Search: no client errors (4xx)</td>
+                          <td class="">12614</td>
+                          <td class="failed">33</td>
+                          <td class="failed">99.74</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Basic Search: not rate limited (429)</td>
+                          <td class="good">12647</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Basic Search: response size &gt; 0</td>
+                          <td class="">12645</td>
+                          <td class="failed">2</td>
+                          <td class="failed">99.98</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check search-results: contains expected content</td>
+                          <td class="">12612</td>
+                          <td class="failed">33</td>
+                          <td class="failed">99.74</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check search-results: content length &gt; 100 chars</td>
+                          <td class="good">12645</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check has-result: contains expected content</td>
+                          <td class="">12612</td>
+                          <td class="failed">33</td>
+                          <td class="failed">99.74</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check has-result: content length &gt; 100 chars</td>
+                          <td class="good">12645</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                    </tbody>
+                  </table>
+                
+                
+                  <div class="sub-groups">
+                    
+                      
+              <h2 class="group-header" onclick="tabClickHandler(event)">Group - load Error Analysis</h2>
+              <div>
+                
+                
+              </div>
+            
+                    
+                  </div>
+                
+              </div>
+            
+                    
+                      
+              <h2 class="group-header" onclick="tabClickHandler(event)">Group - Multi-Page Search</h2>
+              <div>
+                
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Check Name</th>
+                        <th>Passes</th>
+                        <th>Failures</th>
+                        <th>% Pass</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Multi-Page Search: status is 200</td>
+                          <td class="">125806</td>
+                          <td class="failed">306</td>
+                          <td class="failed">99.76</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Multi-Page Search: response time &lt; 3000ms</td>
+                          <td class="">123411</td>
+                          <td class="failed">2701</td>
+                          <td class="failed">97.86</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Multi-Page Search: no server errors (5xx)</td>
+                          <td class="">125814</td>
+                          <td class="failed">298</td>
+                          <td class="failed">99.76</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Multi-Page Search: no client errors (4xx)</td>
+                          <td class="">125814</td>
+                          <td class="failed">298</td>
+                          <td class="failed">99.76</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Multi-Page Search: not rate limited (429)</td>
+                          <td class="good">126112</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Multi-Page Search: response size &gt; 0</td>
+                          <td class="">126104</td>
+                          <td class="failed">8</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check search-results: contains expected content</td>
+                          <td class="good">123384</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check search-results: content length &gt; 100 chars</td>
+                          <td class="good">123384</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check button-labels: contains expected content</td>
+                          <td class="good">234379</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check button-labels: content length &gt; 100 chars</td>
+                          <td class="good">234379</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                    </tbody>
+                  </table>
+                
+                
+                  <div class="sub-groups">
+                    
+                      
+              <h2 class="group-header" onclick="tabClickHandler(event)">Group - load Error Analysis</h2>
+              <div>
+                
+                
+              </div>
+            
+                    
+                  </div>
+                
+              </div>
+            
+                    
+                      
+              <h2 class="group-header" onclick="tabClickHandler(event)">Group - Advanced Filter Search</h2>
+              <div>
+                
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Check Name</th>
+                        <th>Passes</th>
+                        <th>Failures</th>
+                        <th>% Pass</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Advanced Filter Search: status is 200</td>
+                          <td class="">12437</td>
+                          <td class="failed">34</td>
+                          <td class="failed">99.73</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Advanced Filter Search: response time &lt; 3000ms</td>
+                          <td class="">12189</td>
+                          <td class="failed">282</td>
+                          <td class="failed">97.74</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Advanced Filter Search: no server errors (5xx)</td>
+                          <td class="">12437</td>
+                          <td class="failed">34</td>
+                          <td class="failed">99.73</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Advanced Filter Search: no client errors (4xx)</td>
+                          <td class="">12437</td>
+                          <td class="failed">34</td>
+                          <td class="failed">99.73</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Advanced Filter Search: not rate limited (429)</td>
+                          <td class="good">12471</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Advanced Filter Search: response size &gt; 0</td>
+                          <td class="good">12471</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check sort: contains expected content</td>
+                          <td class="good">12186</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check sort: content length &gt; 100 chars</td>
+                          <td class="good">12186</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check search-results: contains expected content</td>
+                          <td class="good">12186</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check search-results: content length &gt; 100 chars</td>
+                          <td class="good">12186</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check button-labels: contains expected content</td>
+                          <td class="good">12186</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check button-labels: content length &gt; 100 chars</td>
+                          <td class="good">12186</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check has-result: contains expected content</td>
+                          <td class="good">12186</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check has-result: content length &gt; 100 chars</td>
+                          <td class="good">12186</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                    </tbody>
+                  </table>
+                
+                
+                  <div class="sub-groups">
+                    
+                      
+              <h2 class="group-header" onclick="tabClickHandler(event)">Group - load Error Analysis</h2>
+              <div>
+                
+                
+              </div>
+            
+                    
+                  </div>
+                
+              </div>
+            
+                    
+                  </div>
+                
+              </div>
+            
+                    
+                      
+              <h2 class="group-header" onclick="tabClickHandler(event)">Group - profiles: Full Journey - KS2</h2>
+              <div>
+                
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Check Name</th>
+                        <th>Passes</th>
+                        <th>Failures</th>
+                        <th>% Pass</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Overview: status is 200</td>
+                          <td class="">7700</td>
+                          <td class="failed">22</td>
+                          <td class="failed">99.72</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Overview: response time &lt; 2000ms</td>
+                          <td class="">7541</td>
+                          <td class="failed">181</td>
+                          <td class="failed">97.66</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Overview: no server errors (5xx)</td>
+                          <td class="">7701</td>
+                          <td class="failed">21</td>
+                          <td class="failed">99.73</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Overview: no client errors (4xx)</td>
+                          <td class="">7701</td>
+                          <td class="failed">21</td>
+                          <td class="failed">99.73</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Overview: not rate limited (429)</td>
+                          <td class="good">7722</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Overview: response size &gt; 0</td>
+                          <td class="">7721</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Overview: contains expected content</td>
+                          <td class="good">7540</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Overview: content length &gt; 100 chars</td>
+                          <td class="good">7540</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Overview: contains expected content</td>
+                          <td class="good">7540</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Overview: content length &gt; 100 chars</td>
+                          <td class="good">7540</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">About: status is 200</td>
+                          <td class="">7700</td>
+                          <td class="failed">21</td>
+                          <td class="failed">99.73</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">About: response time &lt; 2000ms</td>
+                          <td class="">7568</td>
+                          <td class="failed">153</td>
+                          <td class="failed">98.02</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">About: no server errors (5xx)</td>
+                          <td class="">7720</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">About: no client errors (4xx)</td>
+                          <td class="">7700</td>
+                          <td class="failed">21</td>
+                          <td class="failed">99.73</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">About: not rate limited (429)</td>
+                          <td class="good">7721</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">About: response size &gt; 0</td>
+                          <td class="good">7721</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-About: contains expected content</td>
+                          <td class="good">7567</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-About: content length &gt; 100 chars</td>
+                          <td class="good">7567</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-About: contains expected content</td>
+                          <td class="good">7567</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-About: content length &gt; 100 chars</td>
+                          <td class="good">7567</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Primary Admissions: status is 200</td>
+                          <td class="">7703</td>
+                          <td class="failed">17</td>
+                          <td class="failed">99.78</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Primary Admissions: response time &lt; 2000ms</td>
+                          <td class="">7548</td>
+                          <td class="failed">172</td>
+                          <td class="failed">97.77</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Primary Admissions: no server errors (5xx)</td>
+                          <td class="good">7720</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Primary Admissions: no client errors (4xx)</td>
+                          <td class="">7704</td>
+                          <td class="failed">16</td>
+                          <td class="failed">99.79</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Primary Admissions: not rate limited (429)</td>
+                          <td class="good">7720</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Primary Admissions: response size &gt; 0</td>
+                          <td class="">7719</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Primary Admissions: contains expected content</td>
+                          <td class="good">7547</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Primary Admissions: content length &gt; 100 chars</td>
+                          <td class="good">7547</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Primary Admissions: contains expected content</td>
+                          <td class="good">7547</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Primary Admissions: content length &gt; 100 chars</td>
+                          <td class="good">7547</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Curriculum: status is 200</td>
+                          <td class="">7718</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Curriculum: response time &lt; 2000ms</td>
+                          <td class="">7714</td>
+                          <td class="failed">5</td>
+                          <td class="failed">99.94</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Curriculum: no server errors (5xx)</td>
+                          <td class="good">7719</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Curriculum: no client errors (4xx)</td>
+                          <td class="good">7719</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Curriculum: not rate limited (429)</td>
+                          <td class="good">7719</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Curriculum: response size &gt; 0</td>
+                          <td class="good">7719</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Curriculum: contains expected content</td>
+                          <td class="good">7714</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Curriculum: content length &gt; 100 chars</td>
+                          <td class="good">7714</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Curriculum: contains expected content</td>
+                          <td class="good">7714</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Curriculum: content length &gt; 100 chars</td>
+                          <td class="good">7714</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Attendance: status is 200</td>
+                          <td class="">7715</td>
+                          <td class="failed">3</td>
+                          <td class="failed">99.96</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Attendance: response time &lt; 2000ms</td>
+                          <td class="">7551</td>
+                          <td class="failed">167</td>
+                          <td class="failed">97.84</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Attendance: no server errors (5xx)</td>
+                          <td class="">7717</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Attendance: no client errors (4xx)</td>
+                          <td class="">7717</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Attendance: not rate limited (429)</td>
+                          <td class="good">7718</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Attendance: response size &gt; 0</td>
+                          <td class="">7716</td>
+                          <td class="failed">2</td>
+                          <td class="failed">99.97</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Attendance: contains expected content</td>
+                          <td class="good">7548</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Attendance: content length &gt; 100 chars</td>
+                          <td class="good">7548</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Attendance: contains expected content</td>
+                          <td class="good">7548</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Attendance: content length &gt; 100 chars</td>
+                          <td class="good">7548</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Pupil Progress: status is 200</td>
+                          <td class="">7697</td>
+                          <td class="failed">15</td>
+                          <td class="failed">99.81</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Pupil Progress: response time &lt; 2000ms</td>
+                          <td class="">7528</td>
+                          <td class="failed">184</td>
+                          <td class="failed">97.61</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Pupil Progress: no server errors (5xx)</td>
+                          <td class="good">7712</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Pupil Progress: no client errors (4xx)</td>
+                          <td class="">7697</td>
+                          <td class="failed">15</td>
+                          <td class="failed">99.81</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Pupil Progress: not rate limited (429)</td>
+                          <td class="good">7712</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Pupil Progress: response size &gt; 0</td>
+                          <td class="good">7712</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Pupil Progress: contains expected content</td>
+                          <td class="good">7528</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Pupil Progress: content length &gt; 100 chars</td>
+                          <td class="good">7528</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Pupil Progress: contains expected content</td>
+                          <td class="good">7528</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Pupil Progress: content length &gt; 100 chars</td>
+                          <td class="good">7528</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Meeting or Exceeding Standards: status is 200</td>
+                          <td class="">7708</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Meeting or Exceeding Standards: response time &lt; 2000ms</td>
+                          <td class="">7508</td>
+                          <td class="failed">201</td>
+                          <td class="failed">97.39</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Meeting or Exceeding Standards: no server errors (5xx)</td>
+                          <td class="good">7709</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Meeting or Exceeding Standards: no client errors (4xx)</td>
+                          <td class="good">7709</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Meeting or Exceeding Standards: not rate limited (429)</td>
+                          <td class="good">7709</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Meeting or Exceeding Standards: response size &gt; 0</td>
+                          <td class="">7708</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Meeting or Exceeding Standards: contains expected content</td>
+                          <td class="good">7507</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Meeting or Exceeding Standards: content length &gt; 100 chars</td>
+                          <td class="good">7507</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Meeting or Exceeding Standards: contains expected content</td>
+                          <td class="good">7507</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Meeting or Exceeding Standards: content length &gt; 100 chars</td>
+                          <td class="good">7507</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Subject Scaled Scores: status is 200</td>
+                          <td class="good">7701</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Subject Scaled Scores: response time &lt; 2000ms</td>
+                          <td class="">7516</td>
+                          <td class="failed">185</td>
+                          <td class="failed">97.60</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Subject Scaled Scores: no server errors (5xx)</td>
+                          <td class="good">7701</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Subject Scaled Scores: no client errors (4xx)</td>
+                          <td class="good">7701</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Subject Scaled Scores: not rate limited (429)</td>
+                          <td class="good">7701</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Subject Scaled Scores: response size &gt; 0</td>
+                          <td class="good">7701</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Subject Scaled Scores: contains expected content</td>
+                          <td class="good">7516</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Subject Scaled Scores: content length &gt; 100 chars</td>
+                          <td class="good">7516</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Subject Scaled Scores: contains expected content</td>
+                          <td class="good">7516</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Subject Scaled Scores: content length &gt; 100 chars</td>
+                          <td class="good">7516</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Additional Measures: status is 200</td>
+                          <td class="">7665</td>
+                          <td class="failed">22</td>
+                          <td class="failed">99.71</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Additional Measures: response time &lt; 2000ms</td>
+                          <td class="">7472</td>
+                          <td class="failed">215</td>
+                          <td class="failed">97.20</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Additional Measures: no server errors (5xx)</td>
+                          <td class="">7686</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Additional Measures: no client errors (4xx)</td>
+                          <td class="">7665</td>
+                          <td class="failed">22</td>
+                          <td class="failed">99.71</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Additional Measures: not rate limited (429)</td>
+                          <td class="good">7687</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Additional Measures: response size &gt; 0</td>
+                          <td class="good">7687</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Additional Measures: contains expected content</td>
+                          <td class="good">7470</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Additional Measures: content length &gt; 100 chars</td>
+                          <td class="good">7470</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Additional Measures: contains expected content</td>
+                          <td class="good">7470</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Additional Measures: content length &gt; 100 chars</td>
+                          <td class="good">7470</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                    </tbody>
+                  </table>
+                
+                
+                  <div class="sub-groups">
+                    
+                      
+              <h2 class="group-header" onclick="tabClickHandler(event)">Group - load Error Analysis</h2>
+              <div>
+                
+                
+              </div>
+            
+                    
+                  </div>
+                
+              </div>
+            
+                    
+                      
+              <h2 class="group-header" onclick="tabClickHandler(event)">Group - profiles: Full Journey - KS4</h2>
+              <div>
+                
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Check Name</th>
+                        <th>Passes</th>
+                        <th>Failures</th>
+                        <th>% Pass</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Overview: status is 200</td>
+                          <td class="">7751</td>
+                          <td class="failed">17</td>
+                          <td class="failed">99.78</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Overview: response time &lt; 2000ms</td>
+                          <td class="">7593</td>
+                          <td class="failed">175</td>
+                          <td class="failed">97.75</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Overview: no server errors (5xx)</td>
+                          <td class="">7753</td>
+                          <td class="failed">15</td>
+                          <td class="failed">99.81</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Overview: no client errors (4xx)</td>
+                          <td class="">7753</td>
+                          <td class="failed">15</td>
+                          <td class="failed">99.81</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Overview: not rate limited (429)</td>
+                          <td class="good">7768</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Overview: response size &gt; 0</td>
+                          <td class="">7766</td>
+                          <td class="failed">2</td>
+                          <td class="failed">99.97</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Overview: contains expected content</td>
+                          <td class="good">7591</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Overview: content length &gt; 100 chars</td>
+                          <td class="good">7591</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Overview: contains expected content</td>
+                          <td class="good">7591</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Overview: content length &gt; 100 chars</td>
+                          <td class="good">7591</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">About: status is 200</td>
+                          <td class="">7746</td>
+                          <td class="failed">20</td>
+                          <td class="failed">99.74</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">About: response time &lt; 2000ms</td>
+                          <td class="">7577</td>
+                          <td class="failed">189</td>
+                          <td class="failed">97.57</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">About: no server errors (5xx)</td>
+                          <td class="good">7766</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">About: no client errors (4xx)</td>
+                          <td class="">7748</td>
+                          <td class="failed">18</td>
+                          <td class="failed">99.77</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">About: not rate limited (429)</td>
+                          <td class="good">7766</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">About: response size &gt; 0</td>
+                          <td class="">7764</td>
+                          <td class="failed">2</td>
+                          <td class="failed">99.97</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-About: contains expected content</td>
+                          <td class="good">7575</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-About: content length &gt; 100 chars</td>
+                          <td class="good">7575</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-About: contains expected content</td>
+                          <td class="good">7575</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-About: content length &gt; 100 chars</td>
+                          <td class="good">7575</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Secondary Admissions: status is 200</td>
+                          <td class="">7745</td>
+                          <td class="failed">19</td>
+                          <td class="failed">99.76</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Secondary Admissions: response time &lt; 2000ms</td>
+                          <td class="">7568</td>
+                          <td class="failed">196</td>
+                          <td class="failed">97.48</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Secondary Admissions: no server errors (5xx)</td>
+                          <td class="good">7764</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Secondary Admissions: no client errors (4xx)</td>
+                          <td class="">7746</td>
+                          <td class="failed">18</td>
+                          <td class="failed">99.77</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Secondary Admissions: not rate limited (429)</td>
+                          <td class="good">7764</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Secondary Admissions: response size &gt; 0</td>
+                          <td class="">7763</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Secondary Admissions: contains expected content</td>
+                          <td class="good">7567</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Secondary Admissions: content length &gt; 100 chars</td>
+                          <td class="good">7567</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Secondary Admissions: contains expected content</td>
+                          <td class="good">7567</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Secondary Admissions: content length &gt; 100 chars</td>
+                          <td class="good">7567</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Curriculum: status is 200</td>
+                          <td class="good">7763</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Curriculum: response time &lt; 2000ms</td>
+                          <td class="">7759</td>
+                          <td class="failed">4</td>
+                          <td class="failed">99.95</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Curriculum: no server errors (5xx)</td>
+                          <td class="good">7763</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Curriculum: no client errors (4xx)</td>
+                          <td class="good">7763</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Curriculum: not rate limited (429)</td>
+                          <td class="good">7763</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Curriculum: response size &gt; 0</td>
+                          <td class="good">7763</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Curriculum: contains expected content</td>
+                          <td class="good">7759</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Curriculum: content length &gt; 100 chars</td>
+                          <td class="good">7759</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Curriculum: contains expected content</td>
+                          <td class="good">7759</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Curriculum: content length &gt; 100 chars</td>
+                          <td class="good">7759</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Attendance: status is 200</td>
+                          <td class="good">7762</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Attendance: response time &lt; 2000ms</td>
+                          <td class="">7580</td>
+                          <td class="failed">182</td>
+                          <td class="failed">97.66</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Attendance: no server errors (5xx)</td>
+                          <td class="good">7762</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Attendance: no client errors (4xx)</td>
+                          <td class="good">7762</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Attendance: not rate limited (429)</td>
+                          <td class="good">7762</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Attendance: response size &gt; 0</td>
+                          <td class="good">7762</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Attendance: contains expected content</td>
+                          <td class="good">7580</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Attendance: content length &gt; 100 chars</td>
+                          <td class="good">7580</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Attendance: contains expected content</td>
+                          <td class="good">7580</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Attendance: content length &gt; 100 chars</td>
+                          <td class="good">7580</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Pupil Progress: status is 200</td>
+                          <td class="">7737</td>
+                          <td class="failed">20</td>
+                          <td class="failed">99.74</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Pupil Progress: response time &lt; 2000ms</td>
+                          <td class="">7547</td>
+                          <td class="failed">210</td>
+                          <td class="failed">97.29</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Pupil Progress: no server errors (5xx)</td>
+                          <td class="">7756</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Pupil Progress: no client errors (4xx)</td>
+                          <td class="">7737</td>
+                          <td class="failed">20</td>
+                          <td class="failed">99.74</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Pupil Progress: not rate limited (429)</td>
+                          <td class="good">7757</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Pupil Progress: response size &gt; 0</td>
+                          <td class="good">7757</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Pupil Progress: contains expected content</td>
+                          <td class="good">7546</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Pupil Progress: content length &gt; 100 chars</td>
+                          <td class="good">7546</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Pupil Progress: contains expected content</td>
+                          <td class="good">7546</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Pupil Progress: content length &gt; 100 chars</td>
+                          <td class="good">7546</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">English and maths results: status is 200</td>
+                          <td class="">7750</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">English and maths results: response time &lt; 2000ms</td>
+                          <td class="">7569</td>
+                          <td class="failed">182</td>
+                          <td class="failed">97.65</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">English and maths results: no server errors (5xx)</td>
+                          <td class="">7750</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">English and maths results: no client errors (4xx)</td>
+                          <td class="">7750</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">English and maths results: not rate limited (429)</td>
+                          <td class="good">7751</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">English and maths results: response size &gt; 0</td>
+                          <td class="good">7751</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-English and maths results: contains expected content</td>
+                          <td class="good">7568</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-English and maths results: content length &gt; 100 chars</td>
+                          <td class="good">7568</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-English and maths results: contains expected content</td>
+                          <td class="good">7568</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-English and maths results: content length &gt; 100 chars</td>
+                          <td class="good">7568</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Subjects entered: status is 200</td>
+                          <td class="">7740</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Subjects entered: response time &lt; 2000ms</td>
+                          <td class="">7574</td>
+                          <td class="failed">167</td>
+                          <td class="failed">97.84</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Subjects entered: no server errors (5xx)</td>
+                          <td class="">7740</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Subjects entered: no client errors (4xx)</td>
+                          <td class="">7740</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Subjects entered: not rate limited (429)</td>
+                          <td class="good">7741</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Subjects entered: response size &gt; 0</td>
+                          <td class="good">7741</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Subjects entered: contains expected content</td>
+                          <td class="good">7573</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Subjects entered: content length &gt; 100 chars</td>
+                          <td class="good">7573</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Subjects entered: contains expected content</td>
+                          <td class="good">7573</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Subjects entered: content length &gt; 100 chars</td>
+                          <td class="good">7573</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Additional Measures: status is 200</td>
+                          <td class="">7718</td>
+                          <td class="failed">16</td>
+                          <td class="failed">99.79</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Additional Measures: response time &lt; 2000ms</td>
+                          <td class="">7558</td>
+                          <td class="failed">176</td>
+                          <td class="failed">97.72</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Additional Measures: no server errors (5xx)</td>
+                          <td class="good">7734</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Additional Measures: no client errors (4xx)</td>
+                          <td class="">7718</td>
+                          <td class="failed">16</td>
+                          <td class="failed">99.79</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Additional Measures: not rate limited (429)</td>
+                          <td class="good">7734</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Additional Measures: response size &gt; 0</td>
+                          <td class="good">7734</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Additional Measures: contains expected content</td>
+                          <td class="good">7558</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Additional Measures: content length &gt; 100 chars</td>
+                          <td class="good">7558</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Additional Measures: contains expected content</td>
+                          <td class="good">7558</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Additional Measures: content length &gt; 100 chars</td>
+                          <td class="good">7558</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Destinations: status is 200</td>
+                          <td class="good">7716</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Destinations: response time &lt; 2000ms</td>
+                          <td class="">7541</td>
+                          <td class="failed">175</td>
+                          <td class="failed">97.73</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Destinations: no server errors (5xx)</td>
+                          <td class="good">7716</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Destinations: no client errors (4xx)</td>
+                          <td class="good">7716</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Destinations: not rate limited (429)</td>
+                          <td class="good">7716</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Destinations: response size &gt; 0</td>
+                          <td class="good">7716</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Destinations: contains expected content</td>
+                          <td class="good">7541</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Destinations: content length &gt; 100 chars</td>
+                          <td class="good">7541</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Destinations: contains expected content</td>
+                          <td class="good">7541</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Destinations: content length &gt; 100 chars</td>
+                          <td class="good">7541</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                    </tbody>
+                  </table>
+                
+                
+                  <div class="sub-groups">
+                    
+                      
+              <h2 class="group-header" onclick="tabClickHandler(event)">Group - load Error Analysis</h2>
+              <div>
+                
+                
+              </div>
+            
+                    
+                  </div>
+                
+              </div>
+            
+                    
+                      
+              <h2 class="group-header" onclick="tabClickHandler(event)">Group - myschools: Full Journey - KS4</h2>
+              <div>
+                
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Check Name</th>
+                        <th>Passes</th>
+                        <th>Failures</th>
+                        <th>% Pass</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">About: status is 200</td>
+                          <td class="">15506</td>
+                          <td class="failed">44</td>
+                          <td class="failed">99.72</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">About: response time &lt; 2000ms</td>
+                          <td class="">15145</td>
+                          <td class="failed">405</td>
+                          <td class="failed">97.40</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">About: no server errors (5xx)</td>
+                          <td class="">15549</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">About: no client errors (4xx)</td>
+                          <td class="">15507</td>
+                          <td class="failed">43</td>
+                          <td class="failed">99.72</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">About: not rate limited (429)</td>
+                          <td class="good">15550</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">About: response size &gt; 0</td>
+                          <td class="">15549</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-About: contains expected content</td>
+                          <td class="good">15143</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-About: content length &gt; 100 chars</td>
+                          <td class="good">15143</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-About: contains expected content</td>
+                          <td class="good">15143</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-About: content length &gt; 100 chars</td>
+                          <td class="good">15143</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check About-contains-school-1: contains expected content</td>
+                          <td class="good">15143</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check About-contains-school-1: content length &gt; 100 chars</td>
+                          <td class="good">15143</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check About-contains-school-2: contains expected content</td>
+                          <td class="">15142</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check About-contains-school-2: content length &gt; 100 chars</td>
+                          <td class="good">15143</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check About-contains-school-3: contains expected content</td>
+                          <td class="">15142</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check About-contains-school-3: content length &gt; 100 chars</td>
+                          <td class="good">15143</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check About-contains-school-4: contains expected content</td>
+                          <td class="">15142</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check About-contains-school-4: content length &gt; 100 chars</td>
+                          <td class="good">15143</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check About-contains-school-5: contains expected content</td>
+                          <td class="">15140</td>
+                          <td class="failed">3</td>
+                          <td class="failed">99.98</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check About-contains-school-5: content length &gt; 100 chars</td>
+                          <td class="good">15143</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Attainment: status is 200</td>
+                          <td class="">15513</td>
+                          <td class="failed">35</td>
+                          <td class="failed">99.77</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Attainment: response time &lt; 2000ms</td>
+                          <td class="">15162</td>
+                          <td class="failed">386</td>
+                          <td class="failed">97.52</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Attainment: no server errors (5xx)</td>
+                          <td class="">15547</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Attainment: no client errors (4xx)</td>
+                          <td class="">15515</td>
+                          <td class="failed">33</td>
+                          <td class="failed">99.79</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Attainment: not rate limited (429)</td>
+                          <td class="good">15548</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Attainment: response size &gt; 0</td>
+                          <td class="">15546</td>
+                          <td class="failed">2</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Attainment: contains expected content</td>
+                          <td class="good">15159</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Attainment: content length &gt; 100 chars</td>
+                          <td class="good">15159</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Attainment: contains expected content</td>
+                          <td class="good">15159</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Attainment: content length &gt; 100 chars</td>
+                          <td class="good">15159</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Attainment-contains-school-1: contains expected content</td>
+                          <td class="good">15159</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Attainment-contains-school-1: content length &gt; 100 chars</td>
+                          <td class="good">15159</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Attainment-contains-school-2: contains expected content</td>
+                          <td class="">15158</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Attainment-contains-school-2: content length &gt; 100 chars</td>
+                          <td class="good">15159</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Attainment-contains-school-3: contains expected content</td>
+                          <td class="">15158</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Attainment-contains-school-3: content length &gt; 100 chars</td>
+                          <td class="good">15159</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Attainment-contains-school-4: contains expected content</td>
+                          <td class="">15158</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Attainment-contains-school-4: content length &gt; 100 chars</td>
+                          <td class="good">15159</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Attainment-contains-school-5: contains expected content</td>
+                          <td class="good">15159</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Attainment-contains-school-5: content length &gt; 100 chars</td>
+                          <td class="good">15159</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Curriculum: status is 200</td>
+                          <td class="">15490</td>
+                          <td class="failed">48</td>
+                          <td class="failed">99.69</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Curriculum: response time &lt; 2000ms</td>
+                          <td class="">15133</td>
+                          <td class="failed">405</td>
+                          <td class="failed">97.39</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Curriculum: no server errors (5xx)</td>
+                          <td class="good">15538</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Curriculum: no client errors (4xx)</td>
+                          <td class="">15490</td>
+                          <td class="failed">48</td>
+                          <td class="failed">99.69</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Curriculum: not rate limited (429)</td>
+                          <td class="good">15538</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Curriculum: response size &gt; 0</td>
+                          <td class="good">15538</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Curriculum: contains expected content</td>
+                          <td class="good">15133</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Curriculum: content length &gt; 100 chars</td>
+                          <td class="good">15133</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Curriculum: contains expected content</td>
+                          <td class="good">15133</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Curriculum: content length &gt; 100 chars</td>
+                          <td class="good">15133</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Curriculum-contains-school-1: contains expected content</td>
+                          <td class="good">15133</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Curriculum-contains-school-1: content length &gt; 100 chars</td>
+                          <td class="good">15133</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Curriculum-contains-school-2: contains expected content</td>
+                          <td class="good">15133</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Curriculum-contains-school-2: content length &gt; 100 chars</td>
+                          <td class="good">15133</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Curriculum-contains-school-3: contains expected content</td>
+                          <td class="good">15133</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Curriculum-contains-school-3: content length &gt; 100 chars</td>
+                          <td class="good">15133</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Curriculum-contains-school-4: contains expected content</td>
+                          <td class="">15132</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Curriculum-contains-school-4: content length &gt; 100 chars</td>
+                          <td class="good">15133</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Curriculum-contains-school-5: contains expected content</td>
+                          <td class="good">15133</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Curriculum-contains-school-5: content length &gt; 100 chars</td>
+                          <td class="good">15133</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Destinations: status is 200</td>
+                          <td class="">15505</td>
+                          <td class="failed">19</td>
+                          <td class="failed">99.88</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Destinations: response time &lt; 2000ms</td>
+                          <td class="">15174</td>
+                          <td class="failed">350</td>
+                          <td class="failed">97.75</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Destinations: no server errors (5xx)</td>
+                          <td class="good">15524</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Destinations: no client errors (4xx)</td>
+                          <td class="">15505</td>
+                          <td class="failed">19</td>
+                          <td class="failed">99.88</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Destinations: not rate limited (429)</td>
+                          <td class="good">15524</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Destinations: response size &gt; 0</td>
+                          <td class="good">15524</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Destinations: contains expected content</td>
+                          <td class="good">15174</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Destinations: content length &gt; 100 chars</td>
+                          <td class="good">15174</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Destinations: contains expected content</td>
+                          <td class="good">15174</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Destinations: content length &gt; 100 chars</td>
+                          <td class="good">15174</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Destinations-contains-school-1: contains expected content</td>
+                          <td class="">15173</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Destinations-contains-school-1: content length &gt; 100 chars</td>
+                          <td class="good">15174</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Destinations-contains-school-2: contains expected content</td>
+                          <td class="good">15174</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Destinations-contains-school-2: content length &gt; 100 chars</td>
+                          <td class="good">15174</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Destinations-contains-school-3: contains expected content</td>
+                          <td class="good">15174</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Destinations-contains-school-3: content length &gt; 100 chars</td>
+                          <td class="good">15174</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Destinations-contains-school-4: contains expected content</td>
+                          <td class="">15172</td>
+                          <td class="failed">2</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Destinations-contains-school-4: content length &gt; 100 chars</td>
+                          <td class="good">15174</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Destinations-contains-school-5: contains expected content</td>
+                          <td class="">15173</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Destinations-contains-school-5: content length &gt; 100 chars</td>
+                          <td class="good">15174</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Next: status is 200</td>
+                          <td class="">15491</td>
+                          <td class="failed">25</td>
+                          <td class="failed">99.84</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Next: response time &lt; 2000ms</td>
+                          <td class="">15169</td>
+                          <td class="failed">347</td>
+                          <td class="failed">97.76</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Next: no server errors (5xx)</td>
+                          <td class="good">15516</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Next: no client errors (4xx)</td>
+                          <td class="">15493</td>
+                          <td class="failed">23</td>
+                          <td class="failed">99.85</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Next: not rate limited (429)</td>
+                          <td class="good">15516</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Next: response size &gt; 0</td>
+                          <td class="">15514</td>
+                          <td class="failed">2</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Next: contains expected content</td>
+                          <td class="good">15167</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Next: content length &gt; 100 chars</td>
+                          <td class="good">15167</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Next: contains expected content</td>
+                          <td class="good">15167</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Next: content length &gt; 100 chars</td>
+                          <td class="good">15167</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Next-contains-school-1: contains expected content</td>
+                          <td class="good">15167</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Next-contains-school-1: content length &gt; 100 chars</td>
+                          <td class="good">15167</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Next-contains-school-2: contains expected content</td>
+                          <td class="">15165</td>
+                          <td class="failed">2</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Next-contains-school-2: content length &gt; 100 chars</td>
+                          <td class="good">15167</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Next-contains-school-3: contains expected content</td>
+                          <td class="">15165</td>
+                          <td class="failed">2</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Next-contains-school-3: content length &gt; 100 chars</td>
+                          <td class="good">15167</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Next-contains-school-4: contains expected content</td>
+                          <td class="good">15167</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Next-contains-school-4: content length &gt; 100 chars</td>
+                          <td class="good">15167</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Next-contains-school-5: contains expected content</td>
+                          <td class="">15166</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check Next-contains-school-5: content length &gt; 100 chars</td>
+                          <td class="good">15167</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                    </tbody>
+                  </table>
+                
+                
+                  <div class="sub-groups">
+                    
+                      
+              <h2 class="group-header" onclick="tabClickHandler(event)">Group - load Error Analysis</h2>
+              <div>
+                
+                
+              </div>
+            
+                    
+                  </div>
+                
+              </div>
+            
+                    
+                      
+              <h2 class="group-header" onclick="tabClickHandler(event)">Group - profiles: Full Journey - KS5</h2>
+              <div>
+                
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Check Name</th>
+                        <th>Passes</th>
+                        <th>Failures</th>
+                        <th>% Pass</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Overview: status is 200</td>
+                          <td class="">7668</td>
+                          <td class="failed">23</td>
+                          <td class="failed">99.70</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Overview: response time &lt; 2000ms</td>
+                          <td class="">7535</td>
+                          <td class="failed">156</td>
+                          <td class="failed">97.97</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Overview: no server errors (5xx)</td>
+                          <td class="">7668</td>
+                          <td class="failed">23</td>
+                          <td class="failed">99.70</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Overview: no client errors (4xx)</td>
+                          <td class="">7668</td>
+                          <td class="failed">23</td>
+                          <td class="failed">99.70</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Overview: not rate limited (429)</td>
+                          <td class="good">7691</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Overview: response size &gt; 0</td>
+                          <td class="good">7691</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Overview: contains expected content</td>
+                          <td class="good">7535</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Overview: content length &gt; 100 chars</td>
+                          <td class="good">7535</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Overview: contains expected content</td>
+                          <td class="good">7535</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Overview: content length &gt; 100 chars</td>
+                          <td class="good">7535</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">About: status is 200</td>
+                          <td class="">7670</td>
+                          <td class="failed">21</td>
+                          <td class="failed">99.73</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">About: response time &lt; 2000ms</td>
+                          <td class="">7524</td>
+                          <td class="failed">167</td>
+                          <td class="failed">97.83</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">About: no server errors (5xx)</td>
+                          <td class="good">7691</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">About: no client errors (4xx)</td>
+                          <td class="">7672</td>
+                          <td class="failed">19</td>
+                          <td class="failed">99.75</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">About: not rate limited (429)</td>
+                          <td class="good">7691</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">About: response size &gt; 0</td>
+                          <td class="">7689</td>
+                          <td class="failed">2</td>
+                          <td class="failed">99.97</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-About: contains expected content</td>
+                          <td class="good">7521</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-About: content length &gt; 100 chars</td>
+                          <td class="good">7521</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-About: contains expected content</td>
+                          <td class="good">7521</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-About: content length &gt; 100 chars</td>
+                          <td class="good">7521</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 3 - A Level: status is 200</td>
+                          <td class="good">7689</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 3 - A Level: response time &lt; 2000ms</td>
+                          <td class="">7519</td>
+                          <td class="failed">170</td>
+                          <td class="failed">97.79</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 3 - A Level: no server errors (5xx)</td>
+                          <td class="good">7689</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 3 - A Level: no client errors (4xx)</td>
+                          <td class="good">7689</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 3 - A Level: not rate limited (429)</td>
+                          <td class="good">7689</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 3 - A Level: response size &gt; 0</td>
+                          <td class="good">7689</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Level 3 - A Level: contains expected content</td>
+                          <td class="good">7519</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Level 3 - A Level: content length &gt; 100 chars</td>
+                          <td class="good">7519</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Level 3 - A Level: contains expected content</td>
+                          <td class="good">7519</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Level 3 - A Level: content length &gt; 100 chars</td>
+                          <td class="good">7519</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 3 - Academic: status is 200</td>
+                          <td class="">7687</td>
+                          <td class="failed">2</td>
+                          <td class="failed">99.97</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 3 - Academic: response time &lt; 2000ms</td>
+                          <td class="">7511</td>
+                          <td class="failed">178</td>
+                          <td class="failed">97.69</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 3 - Academic: no server errors (5xx)</td>
+                          <td class="">7688</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 3 - Academic: no client errors (4xx)</td>
+                          <td class="">7688</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 3 - Academic: not rate limited (429)</td>
+                          <td class="good">7689</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 3 - Academic: response size &gt; 0</td>
+                          <td class="">7688</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Level 3 - Academic: contains expected content</td>
+                          <td class="good">7509</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Level 3 - Academic: content length &gt; 100 chars</td>
+                          <td class="good">7509</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Level 3 - Academic: contains expected content</td>
+                          <td class="good">7509</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Level 3 - Academic: content length &gt; 100 chars</td>
+                          <td class="good">7509</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 3 - Applied General: status is 200</td>
+                          <td class="">7685</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 3 - Applied General: response time &lt; 2000ms</td>
+                          <td class="">7492</td>
+                          <td class="failed">194</td>
+                          <td class="failed">97.48</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 3 - Applied General: no server errors (5xx)</td>
+                          <td class="">7685</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 3 - Applied General: no client errors (4xx)</td>
+                          <td class="">7685</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 3 - Applied General: not rate limited (429)</td>
+                          <td class="good">7686</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 3 - Applied General: response size &gt; 0</td>
+                          <td class="good">7686</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Level 3 - Applied General: contains expected content</td>
+                          <td class="good">7491</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Level 3 - Applied General: content length &gt; 100 chars</td>
+                          <td class="good">7491</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Level 3 - Applied General: contains expected content</td>
+                          <td class="good">7491</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Level 3 - Applied General: content length &gt; 100 chars</td>
+                          <td class="good">7491</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 3 - Tech Level: status is 200</td>
+                          <td class="good">7685</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 3 - Tech Level: response time &lt; 2000ms</td>
+                          <td class="">7521</td>
+                          <td class="failed">164</td>
+                          <td class="failed">97.87</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 3 - Tech Level: no server errors (5xx)</td>
+                          <td class="good">7685</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 3 - Tech Level: no client errors (4xx)</td>
+                          <td class="good">7685</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 3 - Tech Level: not rate limited (429)</td>
+                          <td class="good">7685</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 3 - Tech Level: response size &gt; 0</td>
+                          <td class="good">7685</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Level 3 - Tech Level: contains expected content</td>
+                          <td class="good">7521</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Level 3 - Tech Level: content length &gt; 100 chars</td>
+                          <td class="good">7521</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Level 3 - Tech Level: contains expected content</td>
+                          <td class="good">7521</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Level 3 - Tech Level: content length &gt; 100 chars</td>
+                          <td class="good">7521</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 2 - Tech cert: status is 200</td>
+                          <td class="">7664</td>
+                          <td class="failed">15</td>
+                          <td class="failed">99.80</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 2 - Tech cert: response time &lt; 2000ms</td>
+                          <td class="">7496</td>
+                          <td class="failed">183</td>
+                          <td class="failed">97.62</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 2 - Tech cert: no server errors (5xx)</td>
+                          <td class="good">7679</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 2 - Tech cert: no client errors (4xx)</td>
+                          <td class="">7664</td>
+                          <td class="failed">15</td>
+                          <td class="failed">99.80</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 2 - Tech cert: not rate limited (429)</td>
+                          <td class="good">7679</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Level 2 - Tech cert: response size &gt; 0</td>
+                          <td class="good">7679</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Level 2 - Tech cert: contains expected content</td>
+                          <td class="good">7496</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Level 2 - Tech cert: content length &gt; 100 chars</td>
+                          <td class="good">7496</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Level 2 - Tech cert: contains expected content</td>
+                          <td class="good">7496</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Level 2 - Tech cert: content length &gt; 100 chars</td>
+                          <td class="good">7496</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">English and Maths: status is 200</td>
+                          <td class="">7668</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">English and Maths: response time &lt; 2000ms</td>
+                          <td class="">7493</td>
+                          <td class="failed">176</td>
+                          <td class="failed">97.71</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">English and Maths: no server errors (5xx)</td>
+                          <td class="">7668</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">English and Maths: no client errors (4xx)</td>
+                          <td class="">7668</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">English and Maths: not rate limited (429)</td>
+                          <td class="good">7669</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">English and Maths: response size &gt; 0</td>
+                          <td class="good">7669</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-English and Maths: contains expected content</td>
+                          <td class="good">7492</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-English and Maths: content length &gt; 100 chars</td>
+                          <td class="good">7492</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-English and Maths: contains expected content</td>
+                          <td class="good">7492</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-English and Maths: content length &gt; 100 chars</td>
+                          <td class="good">7492</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Subjects entered: status is 200</td>
+                          <td class="">7658</td>
+                          <td class="failed">2</td>
+                          <td class="failed">99.97</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Subjects entered: response time &lt; 2000ms</td>
+                          <td class="">7504</td>
+                          <td class="failed">156</td>
+                          <td class="failed">97.96</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Subjects entered: no server errors (5xx)</td>
+                          <td class="">7659</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Subjects entered: no client errors (4xx)</td>
+                          <td class="">7659</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Subjects entered: not rate limited (429)</td>
+                          <td class="good">7660</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Subjects entered: response size &gt; 0</td>
+                          <td class="">7659</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Subjects entered: contains expected content</td>
+                          <td class="good">7502</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Subjects entered: content length &gt; 100 chars</td>
+                          <td class="good">7502</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Subjects entered: contains expected content</td>
+                          <td class="good">7502</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Subjects entered: content length &gt; 100 chars</td>
+                          <td class="good">7502</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Destinations - 16 to 19: status is 200</td>
+                          <td class="">7643</td>
+                          <td class="failed">2</td>
+                          <td class="failed">99.97</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Destinations - 16 to 19: response time &lt; 2000ms</td>
+                          <td class="">7488</td>
+                          <td class="failed">157</td>
+                          <td class="failed">97.95</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Destinations - 16 to 19: no server errors (5xx)</td>
+                          <td class="">7644</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Destinations - 16 to 19: no client errors (4xx)</td>
+                          <td class="">7644</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Destinations - 16 to 19: not rate limited (429)</td>
+                          <td class="good">7645</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Destinations - 16 to 19: response size &gt; 0</td>
+                          <td class="">7644</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Destinations - 16 to 19: contains expected content</td>
+                          <td class="good">7486</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Destinations - 16 to 19: content length &gt; 100 chars</td>
+                          <td class="good">7486</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Destinations - 16 to 19: contains expected content</td>
+                          <td class="good">7486</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Destinations - 16 to 19: content length &gt; 100 chars</td>
+                          <td class="good">7486</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Destinations - Higher education: status is 200</td>
+                          <td class="">7606</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Destinations - Higher education: response time &lt; 2000ms</td>
+                          <td class="">7430</td>
+                          <td class="failed">177</td>
+                          <td class="failed">97.67</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Destinations - Higher education: no server errors (5xx)</td>
+                          <td class="">7606</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Destinations - Higher education: no client errors (4xx)</td>
+                          <td class="">7606</td>
+                          <td class="failed">1</td>
+                          <td class="failed">99.99</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Destinations - Higher education: not rate limited (429)</td>
+                          <td class="good">7607</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">Destinations - Higher education: response size &gt; 0</td>
+                          <td class="good">7607</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Destinations - Higher education: contains expected content</td>
+                          <td class="good">7429</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check main-heading-Destinations - Higher education: content length &gt; 100 chars</td>
+                          <td class="good">7429</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Destinations - Higher education: contains expected content</td>
+                          <td class="good">7429</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                        <tr class="checkDetails">
+                          <td width="50%">content-check page-heading-Destinations - Higher education: content length &gt; 100 chars</td>
+                          <td class="good">7429</td>
+                          <td class="">0</td>
+                          <td class="">100.00</td>
+                        </tr>
+                      
+                    </tbody>
+                  </table>
+                
+                
+                  <div class="sub-groups">
+                    
+                      
+              <h2 class="group-header" onclick="tabClickHandler(event)">Group - load Error Analysis</h2>
+              <div>
+                
+                
+              </div>
+            
+                    
+                  </div>
+                
+              </div>
+            
+                    
+                  </div>
+                
+              </div>
+            
+            
+
+            <h2>Other Checks</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Check Name</th>
+                  <th>Passes</th>
+                  <th>Failures</th>
+                  <th>% Pass</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+              </tbody>
+            </table>     
+          </div> 
+          <!-- ---- end tab ---- -->
+        </div>
+      </div>
+      
+      <footer>K6 Reporter v3.0.4 - Ben Coleman 2025 · <a href="https://github.com/benc-uk/k6-reporter">GitHub</a></footer>
+    </div>
+  </body>
+</html>
