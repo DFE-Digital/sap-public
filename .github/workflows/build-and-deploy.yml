@@ -675,7 +675,8 @@ jobs:
   # on review app environment (with refresh)
   E2E-tests_with_refresh:
     name: E2E Tests (Post Deployment)
-    needs: [deploy-review-app-with-refresh]
+    needs: [deploy-review-app-with-refresh, refresh-data]
+    if: ${{ needs.refresh-data.result == 'success' }}
     uses: ./.github/workflows/e2e-tests.yml
     with:
       environment: review
