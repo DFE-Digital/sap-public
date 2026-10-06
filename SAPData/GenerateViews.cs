@@ -58,7 +58,6 @@ public sealed class GenerateViews
         new("v_establishment_ks5_performance", "Establishment", "KS5_Performance"),
         new("v_establishment_ks5_subject_entries", "Establishment", "KS5_Performance"),
 
-
         new("v_england_destinations", "England", "KS4_Destinations"),
         new("v_england_ks5_destinations", "England", "KS5_Destinations"),
 
@@ -67,10 +66,6 @@ public sealed class GenerateViews
         new("v_england_ks5_performance", "England", "KS5_Performance"),
         new("v_england_absence", "England", "PupilAbsence"),
 
-
-
-
-
         new("v_la_destinations", "LA", "KS4_Destinations"),
         new("v_la_ks5_destinations", "LA", "KS5_Destinations"),
 
@@ -78,9 +73,7 @@ public sealed class GenerateViews
         new("v_la_performance", "LA", "KS4_Performance"),               //Todo - Rename to KS4
         new("v_la_ks5_performance", "LA", "KS5_Performance"),
 
-        new("v_la_subject_entries", "LA", "KS4_Performance"),
         new("v_la_absence", "LA", "PupilAbsence"),
-
         new("v_la_urls", "LA", "LaUrl")
     };
 
@@ -231,34 +224,7 @@ public sealed class GenerateViews
                 }
 
                 sql = GenerateMirrorMaterializedView(view.ViewName, rawTable);
-            }
-
-            // 5) Mirror view (EES: SubjectEntries = LA subject entries)
-            else if (view.ViewName.Equals("v_la_subject_entries", StringComparison.OrdinalIgnoreCase))
-            {
-                if (!TryResolveManagedDatasetKey(
-                        sources,
-                        tableMap,
-                        sourceOrg: "EES",
-                        type: "KS4_Performance",
-                        subtype: "SubjectEntries",
-                        year: "Current",
-                        out var datasetKey))
-                {
-                    sql = BuildSkippedSql(view.ViewName, "Could not resolve dataset key from raw_sources.json (EES/KS4_Performance/SubjectEntries/Current).");
-                    Write(view.ViewName, sql);
-                    continue;
-                }
-
-                if (!TryResolveRawTable(tableMap, datasetKey, out var rawTable))
-                {
-                    sql = BuildSkippedSql(view.ViewName, $"Could not resolve raw table mapping for datasetKey='{datasetKey}'.");
-                    Write(view.ViewName, sql);
-                    continue;
-                }
-
-                sql = GenerateMirrorMaterializedView(view.ViewName, rawTable);
-            }
+            }           
 
             else if (view.ViewName.Equals("v_establishment_ks5_subject_entries", StringComparison.OrdinalIgnoreCase))
             {

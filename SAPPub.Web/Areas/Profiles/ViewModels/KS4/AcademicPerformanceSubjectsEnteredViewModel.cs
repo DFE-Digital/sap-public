@@ -17,11 +17,6 @@ public class AcademicPerformanceSubjectsEnteredViewModel : SubjectsEnteredBaseMo
         IEnumerable<SubjectsEnteredModel> vocationalSubjectEntries, 
         IEnumerable<SubjectsEnteredModel> otherSubjectEntries)
     {
-        var gcseSubjects = GetSubjectsEntered(gcseSubjectEntries);
-        var vocationalSubjects = GetSubjectsEntered(vocationalSubjectEntries);
-        var otherSubjects = GetSubjectsEntered(otherSubjectEntries);
-
-
         return new AcademicPerformanceSubjectsEnteredViewModel
         {
             URN = establishment.URN,
