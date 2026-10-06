@@ -434,6 +434,42 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
         Assert.True(count > 0, "Expected at least one search result, but found none.");
     }
 
+    [Theory]
+    [InlineData("academy")]
+    [InlineData("maintained-school")]
+    [InlineData("special-school")]
+    [InlineData("college")]
+    public async Task SearchPage_FilterOnSchoolType_ShowsViewWithResults(string schoolType)
+    {
+        // Arrange
+        var searchTerm = "school";
+        var response = await Page.GotoAsync(_pageUrl);
+
+        // Act
+        await Page.FillAsync("#NameSearchTerm", searchTerm);
+        await Page.ClickAsync("#search");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        await Page.SetCheckedAsync($"#schooltype-{schoolType}", true);
+        await Page.ClickAsync("#filterSubmit1");
+
+
+        // Assert
+        Assert.NotNull(response);
+        Assert.Equal(200, response.Status);
+        // assert text box contains search term
+        var searchBoxValue = await Page.InputValueAsync("#NameSearchTerm");
+        Assert.Equal(searchTerm, searchBoxValue);
+
+        Assert.True(await Page.IsCheckedAsync($"#schooltype-{schoolType}"));
+
+        // assert that at least one search result is displayed
+        var rows = Page.Locator(".govuk-summary-list .govuk-summary-list__row");
+        var rowHandles = await rows.ElementHandlesAsync();
+        int count = await rows.CountAsync();
+        Assert.True(count > 0, "Expected at least one search result, but found none.");
+    }
+
     [Fact]
     public async Task SearchPage_FilterOn_Multiple_ShowsViewWithResults()
     {
