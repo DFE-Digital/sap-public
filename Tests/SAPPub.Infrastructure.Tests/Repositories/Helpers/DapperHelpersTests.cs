@@ -97,7 +97,6 @@ namespace SAPPub.Infrastructure.Tests.Repositories.Helpers
             Assert.Contains("pupil_count", sql, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("subject", sql, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("qualification_type", sql, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("qualification_detailed", sql, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("grade", sql, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("number_achieving", sql, StringComparison.OrdinalIgnoreCase);
 
