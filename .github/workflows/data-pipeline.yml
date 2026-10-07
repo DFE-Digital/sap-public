@@ -588,19 +588,14 @@ jobs:
           $toDownload = New-Object System.Collections.Generic.HashSet[string]([StringComparer]::OrdinalIgnoreCase)
           
           # --- Fetch file names that are not downloading from API --- #
-          # Fetch the files that has been set to false for FetchFromApi
-          
-          Write-Host "Source Files: $sources"          
-          $nonApi = $sources | Where-Object { $_.fetchFromApi -eq $false }
- 
+          # Fetch the files that has been set to false for FetchFromApi          
+          Write-Host "Source Files: $sources"
+          $nonApi = $sources | Where-Object { $_.fetchFromApi -eq $false } 
           Write-Host "Non API count: $($nonApi.Count)"
-          $nonApi | Format-Table fileName, fetchFromApi
-          
+          $nonApi | Format-Table fileName, fetchFromApi          
           $nonApiFiles = New-Object System.Collections.Generic.HashSet[string]([StringComparer]::OrdinalIgnoreCase)
-          $sources | Where-Object { $_.fetchFromApi -eq $false } | ForEach-Object {[void]$nonApiFiles.Add($_.fileName)}
-          
-          Write-Host "Filtered Non Api Files: $nonApiFiles"
-          
+          $sources | Where-Object { $_.fetchFromApi -eq $false } | ForEach-Object {[void]$nonApiFiles.Add($_.fileName)}          
+          Write-Host "Filtered Non Api Files: $nonApiFiles"          
           foreach ($blob in $blobNames) {
             if ([string]::IsNullOrWhiteSpace($blob)) { continue }
             $lower = $blob.ToLowerInvariant()
@@ -618,10 +613,8 @@ jobs:
                [void]$toDownload.Add($blob)
                continue
             }
-          }
-          
-          Write-Host "To Download Files: $toDownload"
-          
+          }          
+          Write-Host "To Download Files: $toDownload"          
           # Safety: ensure all latest managed files are included
           foreach ($mf in $latestManagedFiles) { [void]$toDownload.Add($mf) }
           if ($toDownload.Count -eq 0) { throw "No blobs selected for download." }
