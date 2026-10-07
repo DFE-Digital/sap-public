@@ -13,7 +13,11 @@
         <nav class="moj-side-navigation" aria-label="Side navigation">
             <ul class="moj-side-navigation__list">
 
-                @if ((await FeatureManager.IsEnabledAsync(EnableOverview) ))
+                <li id="school-overview-side-nav" class="moj-side-navigation__item @(Model.ActivePage == "moj-side-navigation__item--active")">
+                    <a data-module="govuk-skip-link" class="govuk-skip-link" href="#guide-contents">Skip contents</a>
+                </li>
+
+                @if ((await FeatureManager.IsEnabledAsync(EnableOverview)))
                 {
                     <li id="school-overview-side-nav" class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.Overview ? "moj-side-navigation__item--active" : "")">
                         <a asp-route="@RouteConstants.Overview" asp-all-route-data="routeAttributes">Overview</a>

@@ -66,8 +66,8 @@ public class CurriculumAndExtraCurricularActivitiesPageTests : PageTestsBase
     }
 
     [Theory]
-    [InlineData(true, true, 8)] // Multi-phase school (KS2 and KS4)
-    [InlineData(true, false, 7)] // ks4 only school
+    [InlineData(true, true, 9)] // Multi-phase school (KS2 and KS4)
+    [InlineData(true, false, 8)] // ks4 only school
     public async Task CurriculumAndExtraCurricularActivitiesPage_Displays_VerticalNavigation(bool isKs4, bool isKs2, int expectedItemCount)
     {
         var establishment = new EstablishmentMinimumTestBuilder()
@@ -89,6 +89,7 @@ public class CurriculumAndExtraCurricularActivitiesPageTests : PageTestsBase
         // Assert
         Assert.NotNull(doc.QuerySelector(".moj-side-navigation"));
         var list = doc.QuerySelectorAll(".moj-side-navigation__item");
+        //Assert.Equal(expectedItemCount, doc.QuerySelectorAll(".moj-side-navigation__item").ToList().Where(x => x.TextContent.Trim() != "Skip contents").Count());
         Assert.Equal(expectedItemCount, doc.QuerySelectorAll(".moj-side-navigation__item").Length);
         Assert.Single(doc.QuerySelectorAll(".moj-side-navigation__item--active"));
     }

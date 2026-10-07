@@ -28,6 +28,44 @@ public class PupilProgressTests(WebApplicationSetupFixture fixture) : BasePageTe
     }
 
     [Fact]
+    public async Task PupilProgressPage_KS2_AccessibilityNavigation()
+    {
+        // Arrange && Act
+        var response = await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
+
+        //bypass cookies
+        await Page.Keyboard.PressAsync("Tab");
+        await Page.Keyboard.PressAsync("Tab");
+        await Page.Keyboard.PressAsync("Tab");
+
+        //start of page - _Layout page
+        await Page.Keyboard.PressAsync("Tab");
+
+        var activeElement = await Page.EvaluateHandleAsync("document.activeElement");
+        var prop = await activeElement.GetPropertyAsync("textContent");
+        string textContent = await prop.JsonValueAsync<string>();
+        Assert.Equal("Skip to main content", textContent);
+
+        //start of content - Default page
+        await Page.Keyboard.PressAsync("Enter");
+        await Page.Keyboard.PressAsync("Tab");
+
+        activeElement = await Page.EvaluateHandleAsync("document.activeElement");
+        prop = await activeElement.GetPropertyAsync("textContent");
+        textContent = await prop.JsonValueAsync<string>();
+        Assert.Equal("Skip contents", textContent);
+
+        //start of right side content - PupilProgress KS2 page
+        await Page.Keyboard.PressAsync("Enter");
+        await Page.Keyboard.PressAsync("Tab");
+
+        activeElement = await Page.EvaluateHandleAsync("document.activeElement");
+        prop = await activeElement.GetPropertyAsync("href");
+        string href = await prop.JsonValueAsync<string>();
+        Assert.Contains("/school/143034/st-pauls-church-of-england-academy/primary-performance/pupil-progress", href);
+    }
+
+    [Fact]
     public async Task PupilProgressPage_Displays_VerticalNavigation()
     {
         var nav = new VerticalNavigationHelper(Page);

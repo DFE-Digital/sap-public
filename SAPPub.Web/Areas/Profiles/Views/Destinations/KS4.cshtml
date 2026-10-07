@@ -25,345 +25,347 @@
     })
 
     <div class="govuk-grid-column-three-quarters">
-        <h2 class="govuk-heading-xl govuk-!-margin-bottom-4">@ViewData["Header"]</h2>
+        <div id="guide-contents">
+            <h2 class="govuk-heading-xl govuk-!-margin-bottom-4">@ViewData["Header"]</h2>
 
-        <p class="govuk-body" data-testId="looking-at-school-performance-info">
-            Looking at school performance data is one way to see how well a school is doing.
-            You should look at a range of information about a school before deciding if it’s the right fit for your child.
-        </p>
-
-        <feature name="Enable16to19">
-            @if (Model.IsKS5 == true)
-            {
-                <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
-                    <ul class="moj-sub-navigation__list">
-                        <li class="moj-sub-navigation__item">
-                            <a class="moj-sub-navigation__link" aria-current="page" asp-route="@RouteConstants.SecondaryDestinations" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.SecondarySchoolPageTitles.Destinations</a>
-                        </li>
-                        <li class="moj-sub-navigation__item">
-                            <a class="moj-sub-navigation__link" asp-route="@RouteConstants.KS5Destinations" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.KS5SchoolPageTitles.DestinationsFullTitle</a>
-                        </li>
-                        <li class="moj-sub-navigation__item">
-                            <a class="moj-sub-navigation__link" asp-route="@RouteConstants.KS5DestinationsHigher" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.KS5SchoolPageTitles.DestinationsHigherFullTitle</a>
-                        </li>
-                    </ul>
-                </nav>
-            }
-        </feature>
-
-
-        <h2 class="govuk-heading-l">Destinations of pupils who finished year 11 in the 2022 to 2023 academic year</h2>
-
-        @if (Model.NumberOfStudentsIncludedInMeasure.IsAvailable && Model.HasEstablishmentData.IsAvailable)
-        {
-            <p id="no-of-students-included-in-measure" class="govuk-tag govuk-tag--full-width govuk-tag--grey">
-                Number of students from this school or college included in the measure: @Model.NumberOfStudentsIncludedInMeasure.Value
-            </p>
-        }
-
-        <div class="data-container">
-            <h3 class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">
-                Staying in education, employment and apprenticeships
-            </h3>
-            <p class="govuk-body">
-                This shows the percentage of pupils who either stayed in education,
-                went into an apprenticeship or entered employment for at least 6 months after finishing key stage 4 (KS4).
-                Pupils usually finish KS4 after year 11, when they are 16.
+            <p class="govuk-body" data-testId="looking-at-school-performance-info">
+                Looking at school performance data is one way to see how well a school is doing.
+                You should look at a range of information about a school before deciding if it’s the right fit for your child.
             </p>
 
-            <input type="radio" name="dataView" id="current-view" class="govuk-visually-hidden dataview-button" aria-labelledby="all-dest-show-current-data-btn" checked />
-            <input type="radio" name="dataView" id="data-overtime-view" class="govuk-visually-hidden dataview-button" aria-labelledby="all-dest-show-data-over-time-btn" />
+            <feature name="Enable16to19">
+                @if (Model.IsKS5 == true)
+                {
+                    <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
+                        <ul class="moj-sub-navigation__list">
+                            <li class="moj-sub-navigation__item">
+                                <a class="moj-sub-navigation__link" aria-current="page" asp-route="@RouteConstants.SecondaryDestinations" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.SecondarySchoolPageTitles.Destinations</a>
+                            </li>
+                            <li class="moj-sub-navigation__item">
+                                <a class="moj-sub-navigation__link" asp-route="@RouteConstants.KS5Destinations" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.KS5SchoolPageTitles.DestinationsFullTitle</a>
+                            </li>
+                            <li class="moj-sub-navigation__item">
+                                <a class="moj-sub-navigation__link" asp-route="@RouteConstants.KS5DestinationsHigher" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.KS5SchoolPageTitles.DestinationsHigherFullTitle</a>
+                            </li>
+                        </ul>
+                    </nav>
+                }
+            </feature>
 
-            @if (Model.HasEstablishmentData.IsAvailable)
+
+            <h2 class="govuk-heading-l">Destinations of pupils who finished year 11 in the 2022 to 2023 academic year</h2>
+
+            @if (Model.NumberOfStudentsIncludedInMeasure.IsAvailable && Model.HasEstablishmentData.IsAvailable)
             {
-                <div id="all-dest-current-year-data-container" class="all-dest-current-year-data-container">
-                    <div class="govuk-button-group">
-                        <govuk-button id="all-dest-current-year-show-btn" type="button" class="govuk-button--secondary all-dest-current-year-show-btn">Show as a table</govuk-button>
-                    </div>
-
-                    <div class="govuk-button-group">
-                        <label id="all-dest-show-data-over-time-btn" for="data-overtime-view" class="govuk-button govuk-button--secondary" tabindex="0">Show data over time</label>
-                    </div>
-
-                    <p class="govuk-visually-hidden">@Constants.ScreenReaderUseTable</p>
-
-                    <div id="all-dest-current-year-chart-container" class="chart-container all-dest-current-year-chart-container">
-                        <canvas id="all-destinations-chart"
-                                class="js-chart"
-                                aria-labelledby="all-destinations-current-year-table"
-                                role="img"
-                                data-type="bar"
-                                data-not-available-text="@(NotAvailable)"
-                                data-chart='@Html.Raw(Json.Serialize(Model.AllDestinationsData))'
-                                data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
-                        </canvas>
-                    </div>
-
-                    <div id="all-dest-current-year-table-container" class="all-dest-current-year-table-container">
-                        <table id="all-destinations-current-year-table" class="govuk-table">
-                            <tbody class="govuk-table__body">
-                                @foreach (var label in Model.AllDestinationsData.Labels.Select((value, i) => (value, i)))
-                                {
-                                    <tr class="govuk-table__row">
-                                        <th scope="row" class="govuk-table__header">@label.value</th>
-                                        <td class="govuk-table__cell">@Model.AllDestinationsData.Data[label.i]%</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                <p id="no-of-students-included-in-measure" class="govuk-tag govuk-tag--full-width govuk-tag--grey">
+                    Number of students from this school or college included in the measure: @Model.NumberOfStudentsIncludedInMeasure.Value
+                </p>
             }
 
-            <div id="all-dest-data-over-time-data-container" class="all-dest-data-over-time-data-container @(Model.HasEstablishmentData.IsAvailable ? "" : "govuk-!-display-block")">
+            <div class="data-container">
+                <h3 class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">
+                    Staying in education, employment and apprenticeships
+                </h3>
+                <p class="govuk-body">
+                    This shows the percentage of pupils who either stayed in education,
+                    went into an apprenticeship or entered employment for at least 6 months after finishing key stage 4 (KS4).
+                    Pupils usually finish KS4 after year 11, when they are 16.
+                </p>
+
+                <input type="radio" name="dataView" id="current-view" class="govuk-visually-hidden dataview-button" aria-labelledby="all-dest-show-current-data-btn" checked />
+                <input type="radio" name="dataView" id="data-overtime-view" class="govuk-visually-hidden dataview-button" aria-labelledby="all-dest-show-data-over-time-btn" />
+
                 @if (Model.HasEstablishmentData.IsAvailable)
                 {
-                    <div class="govuk-button-group">
-                        <govuk-button id="all-dest-data-over-time-show-btn" type="button" class="govuk-button--secondary all-dest-data-over-time-show-btn">Show as a table</govuk-button>
-                    </div>
+                    <div id="all-dest-current-year-data-container" class="all-dest-current-year-data-container">
+                        <div class="govuk-button-group">
+                            <govuk-button id="all-dest-current-year-show-btn" type="button" class="govuk-button--secondary all-dest-current-year-show-btn">Show as a table</govuk-button>
+                        </div>
 
-                    <div class="govuk-button-group">
-                        <label id="all-dest-show-current-data-btn" for="current-view" class="govuk-button govuk-button--secondary" tabindex="0">Show current data</label>
-                    </div>
-
-                    <div id="all-dest-data-over-time-chart-container" class="chart-container all-dest-data-over-time-chart-container">
+                        <div class="govuk-button-group">
+                            <label id="all-dest-show-data-over-time-btn" for="data-overtime-view" class="govuk-button govuk-button--secondary" tabindex="0">Show data over time</label>
+                        </div>
 
                         <p class="govuk-visually-hidden">@Constants.ScreenReaderUseTable</p>
 
-                        <p class="govuk-body" id="all-destinations-data-overtime-chart-legend-explainer">@Constants.LegendExplainer</p>
-
-                        <div id="all-destinations-data-overtime-chart-legend" class="chart-legend" data-chart-id="all-destinations-data-overtime-chart"></div>
-
-                        <div class="chart-container stacked">
-                            <canvas id="all-destinations-data-overtime-chart"
+                        <div id="all-dest-current-year-chart-container" class="chart-container all-dest-current-year-chart-container">
+                            <canvas id="all-destinations-chart"
                                     class="js-chart"
-                                    aria-labelledby="all-destinations-data-overtime-table"
+                                    aria-labelledby="all-destinations-current-year-table"
                                     role="img"
                                     data-type="bar"
-                                    data-show-legend="true"
-                                    data-chart='@Html.Raw(Json.Serialize(Model.AllDestinationsOverTimeData))'
+                                    data-not-available-text="@(NotAvailable)"
+                                    data-chart='@Html.Raw(Json.Serialize(Model.AllDestinationsData))'
                                     data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
                             </canvas>
                         </div>
-                    </div>
-                }
 
-                <div id="all-dest-data-over-time-table-container" class="all-dest-data-over-time-table-container">
-                    <table id="all-destinations-data-overtime-table" class="govuk-table">
-                        <thead class="govuk-table__head">
-                            <tr class="govuk-table__row">
-                                <th scope="col" class="govuk-table__header"></th>
-                                @foreach (var label in Model.AllDestinationsOverTimeData.Labels)
-                                {
-                                    <th scope="col" class="govuk-table__header">@label</th>
-                                }
-                            </tr>
-                        </thead>
-                        <tbody class="govuk-table__body">
-                            @foreach (var dataset in Model.AllDestinationsOverTimeData.Datasets.Select((value, i) => (value, i)))
-                            {
-                                <tr class="govuk-table__row">
-                                    <th scope="row" class="govuk-table__header">@dataset.value.Label</th>
-                                    @foreach (var data in dataset.value.Data)
-                                    {
-                                        <td class="govuk-table__cell">@(data.HasValue ? data.Value.AsPercentage() : Constants.NotAvailable)</td>
-                                    }
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-
-            </div>
-        </div>
-
-        <govuk-accordion heading-level="3" id="disadvantaged-destinations-accordion" hide-all-sections-text="Hide all sections" show-all-sections-text="Show all sections" hide-section-text="Hide" show-section-text="Show more">
-            <govuk-accordion-item>
-                <govuk-accordion-item-heading>Staying in education, employment and apprenticeships for disadvantaged pupils</govuk-accordion-item-heading>
-                <govuk-accordion-item-summary></govuk-accordion-item-summary>
-                <govuk-accordion-item-content>
-
-                    @await Html.PartialAsync("_DisadvantagedPupils")
-
-                    <table id="all-dest-disadvantaged-current-year-table" class="govuk-table">
-                        <thead class="govuk-table__head">
-                            <tr class="govuk-table__row">
-                                <th scope="col" class="govuk-table__header govuk-!-width-one-third">Pupil group (Disadvantaged)</th>
-                                <th scope="col" class="govuk-table__header">In education, apprenticeships or employed for 6 months after KS4 (2023 leavers)</th>
-                            </tr>
-                        </thead>
-                        <tbody class="govuk-table__body">
-                            @foreach (var label in Model.AllDestinationsDisadvantagedData.Labels.Select((value, i) => (value, i)))
-                            {
-                                <tr class="govuk-table__row">
-                                    <th scope="row" class="govuk-table__header">@label.value</th>
-                                    <td class="govuk-table__cell">@(Model.AllDestinationsDisadvantagedData.Data[label.i].HasValue ? Model.AllDestinationsDisadvantagedData.Data[label.i]!.Value.AsPercentage() : Constants.NotAvailable)</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-
-                    <details class="govuk-details" id="details-all-dest-non-disadvantaged">
-                        <summary class="govuk-details__summary">
-                            <span class="govuk-details__summary-text">
-                                Compare with non-disadvantaged pupils
-                            </span>
-                        </summary>
-                        <div class="govuk-details__text">
-                            <h4 class="govuk-heading-m">Non-disadvantaged pupils</h4>
-                            <table id="all-dest-disadvantaged-current-year-table" class="govuk-table">
-                                <thead class="govuk-table__head">
-                                    <tr class="govuk-table__row">
-                                        <th scope="col" class="govuk-table__header govuk-!-width-one-third">Pupil group (Non-Disadvantaged)</th>
-                                        <th scope="col" class="govuk-table__header">In education, apprenticeships or employed for 6 months after KS4 (2023 leavers)</th>
-                                    </tr>
-                                </thead>
+                        <div id="all-dest-current-year-table-container" class="all-dest-current-year-table-container">
+                            <table id="all-destinations-current-year-table" class="govuk-table">
                                 <tbody class="govuk-table__body">
-                                    @foreach (var label in Model.AllDestinationsNonDisadvantagedData.Labels.Select((value, i) => (value, i)))
+                                    @foreach (var label in Model.AllDestinationsData.Labels.Select((value, i) => (value, i)))
                                     {
                                         <tr class="govuk-table__row">
                                             <th scope="row" class="govuk-table__header">@label.value</th>
-                                            <td class="govuk-table__cell">@(Model.AllDestinationsNonDisadvantagedData.Data[label.i].HasValue ? Model.AllDestinationsNonDisadvantagedData.Data[label.i]!.Value.AsPercentage() : Constants.NotAvailable)</td>
+                                            <td class="govuk-table__cell">@Model.AllDestinationsData.Data[label.i]%</td>
                                         </tr>
                                     }
                                 </tbody>
                             </table>
                         </div>
-                    </details>
+                    </div>
+                }
+
+                <div id="all-dest-data-over-time-data-container" class="all-dest-data-over-time-data-container @(Model.HasEstablishmentData.IsAvailable ? "" : "govuk-!-display-block")">
+                    @if (Model.HasEstablishmentData.IsAvailable)
+                    {
+                        <div class="govuk-button-group">
+                            <govuk-button id="all-dest-data-over-time-show-btn" type="button" class="govuk-button--secondary all-dest-data-over-time-show-btn">Show as a table</govuk-button>
+                        </div>
+
+                        <div class="govuk-button-group">
+                            <label id="all-dest-show-current-data-btn" for="current-view" class="govuk-button govuk-button--secondary" tabindex="0">Show current data</label>
+                        </div>
+
+                        <div id="all-dest-data-over-time-chart-container" class="chart-container all-dest-data-over-time-chart-container">
+
+                            <p class="govuk-visually-hidden">@Constants.ScreenReaderUseTable</p>
+
+                            <p class="govuk-body" id="all-destinations-data-overtime-chart-legend-explainer">@Constants.LegendExplainer</p>
+
+                            <div id="all-destinations-data-overtime-chart-legend" class="chart-legend" data-chart-id="all-destinations-data-overtime-chart"></div>
+
+                            <div class="chart-container stacked">
+                                <canvas id="all-destinations-data-overtime-chart"
+                                        class="js-chart"
+                                        aria-labelledby="all-destinations-data-overtime-table"
+                                        role="img"
+                                        data-type="bar"
+                                        data-show-legend="true"
+                                        data-chart='@Html.Raw(Json.Serialize(Model.AllDestinationsOverTimeData))'
+                                        data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
+                                </canvas>
+                            </div>
+                        </div>
+                    }
+
+                    <div id="all-dest-data-over-time-table-container" class="all-dest-data-over-time-table-container">
+                        <table id="all-destinations-data-overtime-table" class="govuk-table">
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header"></th>
+                                    @foreach (var label in Model.AllDestinationsOverTimeData.Labels)
+                                    {
+                                        <th scope="col" class="govuk-table__header">@label</th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                @foreach (var dataset in Model.AllDestinationsOverTimeData.Datasets.Select((value, i) => (value, i)))
+                                {
+                                    <tr class="govuk-table__row">
+                                        <th scope="row" class="govuk-table__header">@dataset.value.Label</th>
+                                        @foreach (var data in dataset.value.Data)
+                                        {
+                                            <td class="govuk-table__cell">@(data.HasValue ? data.Value.AsPercentage() : Constants.NotAvailable)</td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+            <govuk-accordion heading-level="3" id="disadvantaged-destinations-accordion" hide-all-sections-text="Hide all sections" show-all-sections-text="Show all sections" hide-section-text="Hide" show-section-text="Show more">
+                <govuk-accordion-item>
+                    <govuk-accordion-item-heading>Staying in education, employment and apprenticeships for disadvantaged pupils</govuk-accordion-item-heading>
+                    <govuk-accordion-item-summary></govuk-accordion-item-summary>
+                    <govuk-accordion-item-content>
+
+                        @await Html.PartialAsync("_DisadvantagedPupils")
+
+                        <table id="all-dest-disadvantaged-current-year-table" class="govuk-table">
+                            <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header govuk-!-width-one-third">Pupil group (Disadvantaged)</th>
+                                    <th scope="col" class="govuk-table__header">In education, apprenticeships or employed for 6 months after KS4 (2023 leavers)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                @foreach (var label in Model.AllDestinationsDisadvantagedData.Labels.Select((value, i) => (value, i)))
+                                {
+                                    <tr class="govuk-table__row">
+                                        <th scope="row" class="govuk-table__header">@label.value</th>
+                                        <td class="govuk-table__cell">@(Model.AllDestinationsDisadvantagedData.Data[label.i].HasValue ? Model.AllDestinationsDisadvantagedData.Data[label.i]!.Value.AsPercentage() : Constants.NotAvailable)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                        <details class="govuk-details" id="details-all-dest-non-disadvantaged">
+                            <summary class="govuk-details__summary">
+                                <span class="govuk-details__summary-text">
+                                    Compare with non-disadvantaged pupils
+                                </span>
+                            </summary>
+                            <div class="govuk-details__text">
+                                <h4 class="govuk-heading-m">Non-disadvantaged pupils</h4>
+                                <table id="all-dest-disadvantaged-current-year-table" class="govuk-table">
+                                    <thead class="govuk-table__head">
+                                        <tr class="govuk-table__row">
+                                            <th scope="col" class="govuk-table__header govuk-!-width-one-third">Pupil group (Non-Disadvantaged)</th>
+                                            <th scope="col" class="govuk-table__header">In education, apprenticeships or employed for 6 months after KS4 (2023 leavers)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="govuk-table__body">
+                                        @foreach (var label in Model.AllDestinationsNonDisadvantagedData.Labels.Select((value, i) => (value, i)))
+                                        {
+                                            <tr class="govuk-table__row">
+                                                <th scope="row" class="govuk-table__header">@label.value</th>
+                                                <td class="govuk-table__cell">@(Model.AllDestinationsNonDisadvantagedData.Data[label.i].HasValue ? Model.AllDestinationsNonDisadvantagedData.Data[label.i]!.Value.AsPercentage() : Constants.NotAvailable)</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </details>
 
                    
-                </govuk-accordion-item-content>
-            </govuk-accordion-item>
-        </govuk-accordion>
+                    </govuk-accordion-item-content>
+                </govuk-accordion-item>
+            </govuk-accordion>
 
         
-        <h2 class="govuk-heading-l">Education destinations for pupils after year 11 (2022 to 2023 leavers)</h2>
+            <h2 class="govuk-heading-l">Education destinations for pupils after year 11 (2022 to 2023 leavers)</h2>
 
-        <div>
-            <h3 class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">
-                Pupils who stayed in education after KS4
-            </h3>
-            <p class="govuk-body">
-                The percentage of pupils who stayed in education for at least 6 months after finishing KS4.
-            </p>
-            @await Html.PartialAsync("_SeriesViewTable", Model.StayedInEducationTable)
-        </div>
+            <div>
+                <h3 class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">
+                    Pupils who stayed in education after KS4
+                </h3>
+                <p class="govuk-body">
+                    The percentage of pupils who stayed in education for at least 6 months after finishing KS4.
+                </p>
+                @await Html.PartialAsync("_SeriesViewTable", Model.StayedInEducationTable)
+            </div>
 
         
-        <div>
-            <h3 class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">
-                Where pupils studied after KS4
-            </h3>
-            <p class="govuk-body">
+            <div>
+                <h3 class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">
+                    Where pupils studied after KS4
+                </h3>
+                <p class="govuk-body">
+                    <details class="govuk-details" id="details-all-dest-non-disadvantaged">
+                        <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text">
+                                More information about where pupils studied after KS4
+                            </span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            <h4 class="govuk-heading-m">Further education provider</h4>
+                            <p class="govuk-body">
+                                Includes pupils who studied at further education providers only. School sixt forms and sixth-form college are not included in this data.
+                            </p>
+                            <h4 class="govuk-heading-m">Other education destinations</h4>
+                            <p class="govuk-body">
+                                Includes pupils who studied for 6 months in:
+                            </p>
+                            <ul class="govuk-list govuk-list--bullet">
+                                <li>higher education providers, such as universities</li>
+                                <li>special schools and special post-16 providers</li>
+                                <li>alternative provision such as pupil referral unit</li>
+                                <li>independent schools or colleges</li>
+                            </ul>
+                            <p class="govuk-body">
+                                The data includes pupils who moved between different types of education provider.
+                            </p>
+                        </div>
+                    </details>
+                    @await Html.PartialAsync("_SeriesViewTable", Model.WherePupilsStudiedTable)
+                </p>
+            </div>
+
+            <h2 class="govuk-heading-l">Pupils in apprenticeships or employment after year 11 (2022 to 2023 leavers)</h2>
+
+            <div>
+                <p class="govuk-body">
+                    The percentage of pupils who either went into an apprenticeship or entered employment for at least 6 months after finishing KS4.
+                </p>
+                <p class="govuk-body">
+                    <a class="govuk-link" rel="noreferrer noopener" target="_blank" href=" https://explore-education-statistics.service.gov.uk/methodology/key-stage-4-destination-measures-methodology#content-section-1-content-17">
+                        Find out how pupils are grouped in these categories
+                        <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                    </a>
+                </p>
                 <details class="govuk-details" id="details-all-dest-non-disadvantaged">
                     <summary class="govuk-details__summary">
                         <span class="govuk-details__summary-text">
-                            More information about where pupils studied after KS4
+                            More information about pupils in apprenticeships or employment
                         </span>
                     </summary>
                     <div class="govuk-details__text">
-                        <h4 class="govuk-heading-m">Further education provider</h4>
+                        <h4 class="govuk-heading-m">Pupils who stayed in employment for at least 6 months after key stage 4 </h4>
                         <p class="govuk-body">
-                            Includes pupils who studied at further education providers only. School sixt forms and sixth-form college are not included in this data.
+                            Includes pupils who were employed in a job for 6 months, rather than staying in education or doing an apprenticeship. This data also includes pupils who did a combination of employment and education for 6 months.
                         </p>
-                        <h4 class="govuk-heading-m">Other education destinations</h4>
+                        <h4 class="govuk-heading-m">Pupils who stayed in apprenticeships for at least 6 months</h4>
                         <p class="govuk-body">
-                            Includes pupils who studied for 6 months in:
-                        </p>
-                        <ul class="govuk-list govuk-list--bullet">
-                            <li>higher education providers, such as universities</li>
-                            <li>special schools and special post-16 providers</li>
-                            <li>alternative provision such as pupil referral unit</li>
-                            <li>independent schools or colleges</li>
-                        </ul>
-                        <p class="govuk-body">
-                            The data includes pupils who moved between different types of education provider.
+                            Includes pupils who stayed in apprenticeships for at least 6 months after key stage 4 (KS4).
                         </p>
                     </div>
                 </details>
-                @await Html.PartialAsync("_SeriesViewTable", Model.WherePupilsStudiedTable)
-            </p>
+                @await Html.PartialAsync("_SeriesViewTable", Model.ApprenticeshipsOrEmploymentTable)
+            </div>
+
+            <h2 class="govuk-heading-l">Pupils who did not stay in education or employment after year 11 (2022 to 2023 leavers)</h2>
+
+            <div>
+                <p class="govuk-body">
+                    The percentage of pupils who after finishing key stage 4 did not go onto education, apprenticeship or employment for at least 6 months.
+                </p>
+                <details class="govuk-details" id="details-all-dest-non-disadvantaged">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            More information about pupils who did not stay in education or employment
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <h4 class="govuk-heading-m">Pupils who did not stay in education or employment for at least 6 months after key stage 4 </h4>
+                        <p class="govuk-body">
+                            Includes pupils finishing key stage 4 who did not go onto education, apprenticeship or employment for at least 6 months.
+                        </p>
+                        <p class="govuk-body">
+                            These pupils may have:
+                        </p>
+                        <ul class="govuk-list govuk-list--bullet">
+                            <li>been enrolled on a course or been employed for part of this time, but then stopped, for example they dropped out</li>
+                            <li>have claimed out-of-work benefits in the year</li>
+                            <li>have been reported as not in education, employment or training by their local council</li>
+                        </ul>
+                        <h4 class="govuk-heading-m">Destination unknown</h4>
+                        <p class="govuk-body">
+                            Unknown destination after key stage 4
+                        </p>
+                        <p class="govuk-body">
+                            Includes pupils finishing key stage 4 (KS4) who have no activity records for the following year. Reasons for this could be because the young person was:
+                        </p>
+                        <ul class="govuk-list govuk-list--bullet">
+                            <li>not in education, employment or training</li>
+                            <li>living, working or studying overseas</li>
+                            <li>attending a Scottish, Welsh or Northern Irish school or college</li>
+                            <li>doing an activity other than paid employment or study in the UK</li>
+                            <li>not matched to a record in our data sources</li>
+                        </ul>
+                    </div>
+                </details>
+                @await Html.PartialAsync("_SeriesViewTable", Model.DidNotStayInEducationOrEmploymentTable)
+            </div>
+
+
+            @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.SecondaryDestinations))
+
         </div>
-
-        <h2 class="govuk-heading-l">Pupils in apprenticeships or employment after year 11 (2022 to 2023 leavers)</h2>
-
-        <div>
-            <p class="govuk-body">
-                The percentage of pupils who either went into an apprenticeship or entered employment for at least 6 months after finishing KS4.
-            </p>
-            <p class="govuk-body">
-                <a class="govuk-link" rel="noreferrer noopener" target="_blank" href=" https://explore-education-statistics.service.gov.uk/methodology/key-stage-4-destination-measures-methodology#content-section-1-content-17">
-                    Find out how pupils are grouped in these categories
-                    <span class="govuk-visually-hidden">(opens in a new tab)</span>
-                </a>
-            </p>
-            <details class="govuk-details" id="details-all-dest-non-disadvantaged">
-                <summary class="govuk-details__summary">
-                    <span class="govuk-details__summary-text">
-                        More information about pupils in apprenticeships or employment
-                    </span>
-                </summary>
-                <div class="govuk-details__text">
-                    <h4 class="govuk-heading-m">Pupils who stayed in employment for at least 6 months after key stage 4 </h4>
-                    <p class="govuk-body">
-                        Includes pupils who were employed in a job for 6 months, rather than staying in education or doing an apprenticeship. This data also includes pupils who did a combination of employment and education for 6 months.
-                    </p>
-                    <h4 class="govuk-heading-m">Pupils who stayed in apprenticeships for at least 6 months</h4>
-                    <p class="govuk-body">
-                        Includes pupils who stayed in apprenticeships for at least 6 months after key stage 4 (KS4).
-                    </p>
-                </div>
-            </details>
-            @await Html.PartialAsync("_SeriesViewTable", Model.ApprenticeshipsOrEmploymentTable)
-        </div>
-
-        <h2 class="govuk-heading-l">Pupils who did not stay in education or employment after year 11 (2022 to 2023 leavers)</h2>
-
-        <div>
-            <p class="govuk-body">
-                The percentage of pupils who after finishing key stage 4 did not go onto education, apprenticeship or employment for at least 6 months.
-            </p>
-            <details class="govuk-details" id="details-all-dest-non-disadvantaged">
-                <summary class="govuk-details__summary">
-                    <span class="govuk-details__summary-text">
-                        More information about pupils who did not stay in education or employment
-                    </span>
-                </summary>
-                <div class="govuk-details__text">
-                    <h4 class="govuk-heading-m">Pupils who did not stay in education or employment for at least 6 months after key stage 4 </h4>
-                    <p class="govuk-body">
-                        Includes pupils finishing key stage 4 who did not go onto education, apprenticeship or employment for at least 6 months.
-                    </p>
-                    <p class="govuk-body">
-                        These pupils may have:
-                    </p>
-                    <ul class="govuk-list govuk-list--bullet">
-                        <li>been enrolled on a course or been employed for part of this time, but then stopped, for example they dropped out</li>
-                        <li>have claimed out-of-work benefits in the year</li>
-                        <li>have been reported as not in education, employment or training by their local council</li>
-                    </ul>
-                    <h4 class="govuk-heading-m">Destination unknown</h4>
-                    <p class="govuk-body">
-                        Unknown destination after key stage 4
-                    </p>
-                    <p class="govuk-body">
-                        Includes pupils finishing key stage 4 (KS4) who have no activity records for the following year. Reasons for this could be because the young person was:
-                    </p>
-                    <ul class="govuk-list govuk-list--bullet">
-                        <li>not in education, employment or training</li>
-                        <li>living, working or studying overseas</li>
-                        <li>attending a Scottish, Welsh or Northern Irish school or college</li>
-                        <li>doing an activity other than paid employment or study in the UK</li>
-                        <li>not matched to a record in our data sources</li>
-                    </ul>
-                </div>
-            </details>
-            @await Html.PartialAsync("_SeriesViewTable", Model.DidNotStayInEducationOrEmploymentTable)
-        </div>
-
-
-        @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.SecondaryDestinations))
-
     </div>
 </div>
 

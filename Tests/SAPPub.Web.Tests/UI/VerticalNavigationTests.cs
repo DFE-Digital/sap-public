@@ -24,11 +24,11 @@ namespace SAPPub.Web.Tests.UI
 
 
         [Theory]
-        [InlineData("135600", 7, 9)] // KS2, KS4, KS5
-        [InlineData("150009", 7, 8)] // KS2, KS4
-        [InlineData("137552", 7, 7)] // KS4
-        [InlineData("149328", 7, 8)] // KS4, KS5
-        [InlineData("130499", 3, 4)] // KS5
+        [InlineData("135600", 7, 10)] // KS2, KS4, KS5
+        [InlineData("150009", 7, 9)] // KS2, KS4
+        [InlineData("137552", 7, 8)] // KS4
+        [InlineData("149328", 7, 9)] // KS4, KS5
+        [InlineData("130499", 3, 5)] // KS5
         [FeatureGate("Enable16to19")]
         public async Task VerticalNav_AboutSchool_DisplayNumberExpectedPerPhase_NoKS5(string urn, int shownNav, int showNavWithKs5)
         {
