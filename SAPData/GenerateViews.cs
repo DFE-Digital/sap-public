@@ -38,7 +38,8 @@ public sealed class GenerateViews
         string Subtype,
         string Year,
         string SourceOrg,
-        string FileName
+        string FileName,
+        bool FetchFromApi
     );
 
     private static readonly ViewSpec[] Views =
@@ -866,7 +867,7 @@ public sealed class GenerateViews
         if (src == null || string.IsNullOrWhiteSpace(src.FileName))
             return false;
 
-        var pattern = src.FileName.Trim();
+        var pattern = src.FetchFromApi ? src.FileName.Trim() : $"manual_{src.FileName.Trim()}";
 
         if (pattern.Contains("YYYYmmDD", StringComparison.OrdinalIgnoreCase))
         {
