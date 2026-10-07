@@ -239,18 +239,18 @@ jobs:
           # -----------------------------
           $sourcesRaw = Get-Content $sourcesPathRepo -Raw | ConvertFrom-Json
           if ($null -eq $sourcesRaw) { throw "raw_sources.json parsed to null." }
-          if ($sourcesRaw -isnot [System.Array]) { $sourcesRaw = @($sourcesRaw) }
-          $sourcesRaw = $sourcesRaw | Where-Object { $_.FetchFromApi -eq $true }
+          if ($sourcesRaw -isnot [System.Array]) { $sourcesRaw = @($sourcesRaw) }          
           $sources = @()
           foreach ($s in $sourcesRaw) {
-            $type     = [string]$s.Type
-            $sub      = [string]$s.Subtype
-            $year     = [string]$s.Year
-            $u        = [string]$s.Url
-            $org      = [string]$s.SourceOrg
-            $dsid     = [string]$s.DataSetId
-            $fileType = ([string]$s.FileType).ToLowerInvariant()
-            $fileName = [string]$s.FileName
+            $type         = [string]$s.Type
+            $sub          = [string]$s.Subtype
+            $year         = [string]$s.Year
+            $u            = [string]$s.Url
+            $org          = [string]$s.SourceOrg
+            $dsid         = [string]$s.DataSetId
+            $fileType     = ([string]$s.FileType).ToLowerInvariant()
+            $fileName     = [string]$s.FileName
+            $fetchFromApi = [bool]$s.FetchFromApi
             if ([string]::IsNullOrWhiteSpace($type) -or
                 [string]::IsNullOrWhiteSpace($sub)  -or
                 [string]::IsNullOrWhiteSpace($year) -or
@@ -267,15 +267,16 @@ jobs:
             $composite = "${type}_${sub}_${year}"
             $safeKey = ($composite -replace '[^a-zA-Z0-9_\-\.]', '_').ToLowerInvariant()
             $sources += [pscustomobject]@{
-              key       = $safeKey
-              url       = $u
-              type      = $type
-              subtype   = $sub
-              year      = $year
-              sourceOrg = $org
-              dataSetId = $dsid
-              fileType  = $fileType
-              fileName  = $fileName
+              key          = $safeKey
+              url          = $u
+              type         = $type
+              subtype      = $sub
+              year         = $year
+              sourceOrg    = $org
+              dataSetId    = $dsid
+              fileType     = $fileType
+              fileName     = $fileName
+              fetchFromApi = $fetchFromApi
             }
           }
           if ($sources.Count -eq 0) { throw "No sources found in raw_sources.json" }
@@ -360,7 +361,7 @@ jobs:
           $manifestChanged = $false
           $latestFiles = @{}
           try {
-            foreach ($src in $sources) {
+            foreach ($src in ($sources | Where-Object { $_.fetchFromApi -eq $true })) {
               $key         = [string]$src.key
               $org         = [string]$src.sourceOrg
               $dsid        = [string]$src.dataSetId
@@ -585,6 +586,12 @@ jobs:
           #   - Download if blob is exactly one of the latest managed filenames
           #   - Otherwise skip
           $toDownload = New-Object System.Collections.Generic.HashSet[string]([StringComparer]::OrdinalIgnoreCase)
+          
+          # --- Fetch file names that are not downloading from API --- #
+          # Fetch the files that has been set to false for FetchFromApi
+          $nonApiFiles = New-Object System.Collections.Generic.HashSet[string]([StringComparer]::OrdinalIgnoreCase)
+          $sources | Where-Object { $_.fetchFromApi -eq $false } | ForEach-Object {[void]$nonApiFiles.Add($_.fileName)}
+          
           foreach ($blob in $blobNames) {
             if ([string]::IsNullOrWhiteSpace($blob)) { continue }
             $lower = $blob.ToLowerInvariant()
@@ -595,6 +602,11 @@ jobs:
             if ($latestManagedFiles.Contains($blob)) {
               [void]$toDownload.Add($blob)
               continue
+            }
+            
+            if ($nonApiFiles.Contains($blob)) {
+               [void]$toDownload.Add($blob)
+               continue
             }
           }
           # Safety: ensure all latest managed files are included
