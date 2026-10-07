@@ -35,12 +35,12 @@ export function loadPerformanceCheck (response, name, threshold = 3000) {
   loadErrorRate.add(!isSuccess)
 
   check(response, {
-    [`${name}: status is 200`]: (r) => r.status === 200,
-    [`${name}: response time < ${threshold}ms`]: (r) => r.timings.duration < threshold,
-    [`${name}: no server errors (5xx)`]: (r) => r.status < 500,
-    [`${name}: no client errors (4xx)`]: (r) => r.status < 400,
-    [`${name}: not rate limited (429)`]: (r) => r.status !== 429,
-    [`${name}: response size > 0`]: (r) => r.body.length > 0
+    [`${name}: status is 200`]: (r) => r && r.status === 200,
+    [`${name}: response time < ${threshold}ms`]: (r) => r && r.timings.duration < threshold,
+    [`${name}: no server errors (5xx)`]: (r) => r && r.status < 500,
+    [`${name}: no client errors (4xx)`]: (r) => r && r.status < 400,
+    [`${name}: not rate limited (429)`]: (r) => r && r.status !== 429,
+    [`${name}: response size > 0`]: (r) => (r?.body?.length ?? 0) > 0
   }, {
     endpoint: name,
     service: 'school-profiles',
