@@ -598,13 +598,14 @@ jobs:
           $nonApi | Format-Table fileName, fetchFromApi
           
           $nonApiFiles = New-Object System.Collections.Generic.HashSet[string]([StringComparer]::OrdinalIgnoreCase)
-          $sources | Where-Object { $_.fetchFromApi -eq $false } | ForEach-Object {[void]$nonApiFiles.Add($_.fileName)}
-          
-          Write-Host "Filtered Non Api Files: $nonApiFiles"
-          
+          $sourcesRaw | Where-Object { $_.FetchFromApi -eq $false } | ForEach-Object {[void]$nonApiFiles.Add($_.FileName)}          
+          Write-Host "Non API Files Count: $($nonApiFiles.Count)"
+          $nonApiFiles | ForEach-Object { Write-Host "Non API File: $_" }          
           foreach ($blob in $blobNames) {
             if ([string]::IsNullOrWhiteSpace($blob)) { continue }
             $lower = $blob.ToLowerInvariant()
+            Write-Host "Blob name: $lower"
+            Write-Host "Blob name blod: $blob"
             if ($lower.StartsWith("manual_")) {
               [void]$toDownload.Add($blob)
               continue
