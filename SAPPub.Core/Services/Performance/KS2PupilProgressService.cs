@@ -1,4 +1,5 @@
-﻿using SAPPub.Core.Enums;
+﻿using SAPPub.Core.Entities;
+using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Repositories.Performance;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Performance;
@@ -81,6 +82,47 @@ public class KS2PupilProgressService(
             _ => ProgressBandingDescriptions.Empty
         };
 
+        var readingProgressBandingPercentages = selectedYear switch
+        {
+          
+            AcademicYearSelection.Previous2 => new CodedDouble[]
+            {
+                englandPerformance.ProgBand_Read_Band1_Eng_Previous2_Pct_Coded,
+                englandPerformance.ProgBand_Read_Band2_Eng_Previous2_Pct_Coded,
+                englandPerformance.ProgBand_Read_Band3_Eng_Previous2_Pct_Coded,
+                englandPerformance.ProgBand_Read_Band4_Eng_Previous2_Pct_Coded,
+                englandPerformance.ProgBand_Read_Band5_Eng_Previous2_Pct_Coded
+            },
+            _ => []
+        };
+        var writingProgressBandingPercentages = selectedYear switch
+        {
+
+            AcademicYearSelection.Previous2 => new CodedDouble[]
+            {
+                englandPerformance.ProgBand_Writ_Band1_Eng_Previous2_Pct_Coded,
+                englandPerformance.ProgBand_Writ_Band2_Eng_Previous2_Pct_Coded,
+                englandPerformance.ProgBand_Writ_Band3_Eng_Previous2_Pct_Coded,
+                englandPerformance.ProgBand_Writ_Band4_Eng_Previous2_Pct_Coded,
+                englandPerformance.ProgBand_Writ_Band5_Eng_Previous2_Pct_Coded
+            },
+            _ => []
+        };
+        var mathsProgressBandingPercentages = selectedYear switch
+        {
+
+            AcademicYearSelection.Previous2 => new CodedDouble[]
+            {
+                englandPerformance.ProgBand_Math_Band1_Eng_Previous2_Pct_Coded,
+                englandPerformance.ProgBand_Math_Band2_Eng_Previous2_Pct_Coded,
+                englandPerformance.ProgBand_Math_Band3_Eng_Previous2_Pct_Coded,
+                englandPerformance.ProgBand_Math_Band4_Eng_Previous2_Pct_Coded,
+                englandPerformance.ProgBand_Math_Band5_Eng_Previous2_Pct_Coded
+            },
+            _ => []
+        };
+            
+
         return new KS2PupilPerformance
         {
             Urn = establishment.URN,
@@ -149,7 +191,10 @@ public class KS2PupilProgressService(
                 AcademicYearSelection.Previous2 => laPerformance.MATPROG_LA_Previous2_Num_Coded,
                 _ => CodedDouble.Empty
             },
-            EstablishmentMathsContextDescription = establishmentMathsDescription.GetBandingDescription(mathsBandingDescriptions)
+            EstablishmentMathsContextDescription = establishmentMathsDescription.GetBandingDescription(mathsBandingDescriptions),
+            ReadingProgressBandingPercentages = readingProgressBandingPercentages,
+            WritingProgressBandingPercentages = writingProgressBandingPercentages,
+            MathsProgressBandingPercentages = mathsProgressBandingPercentages,
         };
     }
 }

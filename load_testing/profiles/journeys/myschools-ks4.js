@@ -49,7 +49,7 @@ export function ks4MySchools (environment, config) {
         const response = http.get(`${environment.baseUrl}${page.urlSlug}?${compareDetails.slug}`)
         const isSuccess = loadPerformanceCheck(response, `${page.pageTitle}`, config.expectedResponseTimes.homepage)
         if (isSuccess) {
-          loadContentCheck(response, `main-heading-${page.pageTitle}`, 'School Profiles')
+          loadContentCheck(response, `main-heading-${page.pageTitle}`, 'Find and compare school and college profiles')
           loadContentCheck(response, `page-heading-${page.pageTitle}`, `${page.checkHeading}`)
 
           loadContentCheck(response, `${page.pageTitle}-contains-school-1`, `${compareDetails.schoolName1}`)

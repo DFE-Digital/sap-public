@@ -1,6 +1,6 @@
 const loadEnvironments = {
   staging: {
-    baseUrl: 'https://sap-public-test.test.teacherservices.cloud',
+    baseUrl: 'https://test.schoolprofiles.education.gov.uk',
     name: 'staging-school-profiles',
     service: 'load'
   },

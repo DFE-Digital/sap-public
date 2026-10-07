@@ -21,4 +21,14 @@ public static class StringExtensions
 
         return DateOnly.TryParseExact(value, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out var date) ? date : null;
     }
+
+    public static string ToSentenceCase(this string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return value;
+        }
+
+        return char.ToUpperInvariant(value[0]) + value[1..];
+    }
 }
