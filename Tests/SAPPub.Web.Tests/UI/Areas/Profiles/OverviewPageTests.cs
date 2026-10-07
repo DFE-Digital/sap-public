@@ -317,6 +317,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
         await navigation.ShouldBeVisibleAsync();
     }
 
+    [Fact]
     public async Task OverviewPage_HighlightsOverviewNavigationItem()
     {
         await GoToOverviewAsync();
