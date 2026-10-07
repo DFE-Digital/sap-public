@@ -347,6 +347,13 @@ public sealed class GenerateViews
                     continue;
                 }
 
+                if (!_rebuildAllRawTables && ! _rawTableNamesToRebuild.Contains(rawTable))
+                {
+                    sql = BuildSkippedSql(view.ViewName, "No rebuilt raw tables affect this view.");
+                    Write(view.ViewName, sql);
+                    continue;
+                }
+
                 sql = GenerateTopTechnicalSubjectEntriesView(view.ViewName, rawTable);
             }
             // 6) Everything else uses DataMap-driven materialized view generation
@@ -495,7 +502,7 @@ public sealed class GenerateViews
                 sources,
                 sourceOrg: "EES",
                 type: "KS5_Performance",
-                subtype: "Establishment",
+                subtype: "SubjectEntries",
                 year: "Current");
         }
 

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace SAPData;
 
@@ -18,6 +14,9 @@ public class GenerateRawTables
     private readonly bool _rebuildAllRawTables;
 
     private readonly Dictionary<string, string> _tableMappings = new(StringComparer.OrdinalIgnoreCase);
+    private readonly HashSet<string> _rebuiltTableNames = new(StringComparer.OrdinalIgnoreCase);
+
+    public IReadOnlySet<string> RebuiltTableNames => _rebuiltTableNames;
 
     static GenerateRawTables()
     {
@@ -89,13 +88,6 @@ public class GenerateRawTables
 
         // Physical table name: prefix-free, based on logical identity (stable)
         string tableName = GenerateShortTableName(logicalKey);
-        bool rebuildTable = _rebuildAllRawTables || _logicalKeysToRebuild.Contains(logicalKey);
-
-        if (!rebuildTable)
-        {
-            Console.WriteLine($"Leaving table for logical key '{logicalKey}' ({tableName}) unchanged. Skipping DROP/CREATE/COPY.");
-            return;
-        }
 
         // Map BOTH keys to the same physical table
         // - DataMap will use logicalKey
@@ -105,6 +97,15 @@ public class GenerateRawTables
 
         _tableMappings[logicalKey] = tableName;
         _tableMappings[fileKey] = tableName;
+
+        bool rebuildTable = _rebuildAllRawTables || IsListedForRebuild(logicalKey);
+        if (!rebuildTable)
+        {
+            Console.WriteLine($"Leaving table for logical key '{logicalKey} ({tableName} unchanged. Skipping DROP/CREATE/COPY.");
+            return;
+        }
+
+        _rebuiltTableNames.Add(tableName);
 
         string cleanCsvPath = Path.Combine(_cleanDir, fileKey + ".clean.csv");
 
@@ -425,6 +426,45 @@ public class GenerateRawTables
     // =====================================================
     // HELPERS
     // =====================================================
+
+    /// <summary>
+    /// Matches a source file's logical key against the rebuild list. List entries may be:
+    /// - an exact logical key (eg a manual filename without the manual_ prefix)
+    /// - a GIAS filename template containing YYYYmmDD
+    /// - an EES filename without its version suffix (matches {entry}_v{version})
+    /// </summary>
+    private bool IsListedForRebuild(string logicalKey)
+    {
+        foreach (var entry in _logicalKeysToRebuild)
+        {
+            if (entry.Equals(logicalKey, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            string pattern;
+            const string dateToken = "YYYYmmDD";
+            int tokenIndex = entry.IndexOf(dateToken, StringComparison.OrdinalIgnoreCase);
+            if (tokenIndex >= 0)
+            {
+                pattern = "^" + Regex.Escape(entry[..tokenIndex]) + "\\d{8}" +
+                    Regex.Escape(entry[(tokenIndex + dateToken.Length)..]) + "$";
+            }
+            else
+            {
+                pattern = "^" + Regex.Escape(entry) + "_v[0-9]+(\\.[0-9]+){1,2}$";
+            }
+
+            if (Regex.IsMatch(logicalKey, pattern, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
     public static string GenerateShortTableName(string logicalKey)
     {
         using var sha1 = SHA1.Create();

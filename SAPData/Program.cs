@@ -47,21 +47,22 @@ internal class Program
         var logicalKeysToRebuild = rebuildAllRawTables
             ? new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             : LoadLogicalKeysToRebuild(rawTablesToRebuildPath);
-        WriteCleanupSql(
-            Path.Combine(sqlDir, "00_cleanup.sql"),
-            logicalKeysToRebuild.Select(GenerateRawTables.GenerateShortTableName),
-            rebuildAllRawTables);
+
 
         // -------------------------------------------------
         // 2. Generate raw tables + cleaned files + mapping
         // -------------------------------------------------
-        new GenerateRawTables(
+        var rawTables = new GenerateRawTables(
             rawInputDir,
             cleanedDir,
             sqlDir,
             logicalKeysToRebuild,
             rebuildAllRawTables
-        ).Run();
+        );
+
+        rawTables.Run();
+
+        WriteCleanupSql(Path.Combine(sqlDir, "00_cleanup.sql"), rawTables.RebuiltTableNames, rebuildAllRawTables);
 
         // -------------------------------------------------
         // 3. Generate views
@@ -96,6 +97,11 @@ internal class Program
         var resolvedPath = Path.IsPathRooted(configuredPath)
             ? configuredPath
             : Path.GetFullPath(Path.Combine(baseDir, configuredPath));
+
+        if (!File.Exists(resolvedPath))
+        {
+            throw new FileNotFoundException($"Configured raw table rebuild list not found (paths are relative to {baseDir}.", resolvedPath);
+        }
 
         Console.WriteLine($"Using raw table rebuild list from: {resolvedPath}");
         return resolvedPath;
@@ -148,7 +154,7 @@ internal class Program
         sql.AppendLine("-- Drops only explicitly listed raw tables before regeneration.");
         sql.AppendLine("-- Recreates helper functions used by generated views.");
         sql.AppendLine("-- ================================================================");
-        sql.AppendLine(@"\\echo 'Ensuring required PostgreSQL extensions...''");
+        sql.AppendLine(@"\echo 'Ensuring required PostgreSQL extensions...''");
         sql.AppendLine(@"CREATE EXTENSION IF NOT EXISTS postgis;");
         sql.AppendLine();
         sql.AppendLine(@"\echo 'Cleaning up listed raw tables and regenerating helper functions...'");

@@ -1,12 +1,21 @@
-# One logical dataset key per line to rebuild in the production environment.
+# One logical dataset key per line to rebuild.
 # Lines starting with # are ignored.
+#
+# Only the listed raw tables will be dropped, recreated and reloaded.
+# All other raw tables are left unchanged.
+#
+# Example:
+# gias_all_establishment_current
+# ees_ks4_performance_metadata_current_v1.0
 
-# GIAS sources
+# GIAS sources (refreshed daily by the pipeline)
 edubasealldataYYYYmmDD
 links_edubasealldataYYYYmmDD
 grouplinks_edubaseallacademiesandfreeYYYYmmDD
-school-email-addresses-24-08-2026
 
-# KS4 sources
-ees_ks4_202223_api
+# EES managed sources (new versions picked up by the pipeline)
+202425_subject_local_authority_pupil_entriesachievements_provisional
+202425_subject_school_all_exam_entriesgrades_provisional
+institution_subject_and_qualification_results_202425_API
 
+# Manual uploads - add only when a manual_ file has been reuploaded to storage
