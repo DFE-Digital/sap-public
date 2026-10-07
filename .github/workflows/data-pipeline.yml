@@ -588,17 +588,19 @@ jobs:
           $toDownload = New-Object System.Collections.Generic.HashSet[string]([StringComparer]::OrdinalIgnoreCase)
           
           # --- Fetch file names that are not downloading from API --- #
-          # Fetch the files that has been set to false for FetchFromApi          
-          Write-Host "Source Files: $sources"          
-          $nonApi = $sources | Where-Object { $_.fetchFromApi -eq $false } 
-          Write-Host "Non API count: $($nonApi.Count)"
-          $nonApi | Format-Table fileName, fetchFromApi          
+          # Fetch the files that has been set to false for FetchFromApi    
+          Write-Host "Source count: $($sources.Count)"
+          $sources | Format-List *
+          Write-Host "SourceRaw count: $($sourcesRaw.Count)"
+          $sourcesRaw | Format-List *    
           $nonApiFiles = New-Object System.Collections.Generic.HashSet[string]([StringComparer]::OrdinalIgnoreCase)
-          $sources | Where-Object { $_.fetchFromApi -eq $false } | ForEach-Object {[void]$nonApiFiles.Add($_.fileName)}          
-          Write-Host "Filtered Non Api Files: $nonApiFiles"          
+          $sourcesRaw | Where-Object { $_.FetchFromApi -eq $false } | ForEach-Object {[void]$nonApiFiles.Add($_.fileName)}          
+          Write-Host "Non API Files Count: $($nonApiFiles.Count)"
+          $nonApiFiles | ForEach-Object { Write-Host "Non API File: $_" }          
           foreach ($blob in $blobNames) {
             if ([string]::IsNullOrWhiteSpace($blob)) { continue }
             $lower = $blob.ToLowerInvariant()
+            Write-Host "Blob name: $lower"
             if ($lower.StartsWith("manual_")) {
               [void]$toDownload.Add($blob)
               continue
@@ -608,9 +610,9 @@ jobs:
               continue
             }
             
-            if ($nonApiFiles.Contains($blob)) {
+            if ($nonApiFiles.Contains($lower)) {
                 Write-Host "MATCHED: $blob"
-               [void]$toDownload.Add($blob)
+               [void]$toDownload.Add($lower)
                continue
             }
           }          
