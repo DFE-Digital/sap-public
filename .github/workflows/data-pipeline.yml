@@ -588,15 +588,11 @@ jobs:
           $toDownload = New-Object System.Collections.Generic.HashSet[string]([StringComparer]::OrdinalIgnoreCase)
           
           # --- Fetch file names that are not downloading from API --- #
-          # Fetch the files that has been set to false for FetchFromApi
-          
-          Write-Host "Source Files: $sources"
-          
-          $nonApi = $sources | Where-Object { $_.fetchFromApi -eq $false }
- 
-          Write-Host "Non API count: $($nonApi.Count)"
-          $nonApi | Format-Table fileName, fetchFromApi
-          
+          # Fetch the files that has been set to false for FetchFromApi    
+          Write-Host "Source count: $($sources.Count)"
+          $sources | Format-List *
+          Write-Host "SourceRaw count: $($sourcesRaw.Count)"
+          $sourcesRaw | Format-List *    
           $nonApiFiles = New-Object System.Collections.Generic.HashSet[string]([StringComparer]::OrdinalIgnoreCase)
           $sourcesRaw | Where-Object { $_.FetchFromApi -eq $false } | ForEach-Object {[void]$nonApiFiles.Add($_.FileName)}          
           Write-Host "Non API Files Count: $($nonApiFiles.Count)"
@@ -615,15 +611,13 @@ jobs:
               continue
             }
             
-            if ($nonApiFiles.Contains($blob)) {
+            if ($nonApiFiles.Contains($lower)) {
                 Write-Host "MATCHED: $blob"
-               [void]$toDownload.Add($blob)
+               [void]$toDownload.Add($lower)
                continue
             }
-          }
-          
-          Write-Host "To Download Files: $toDownload"
-          
+          }          
+          Write-Host "To Download Files: $toDownload"          
           # Safety: ensure all latest managed files are included
           foreach ($mf in $latestManagedFiles) { [void]$toDownload.Add($mf) }
           if ($toDownload.Count -eq 0) { throw "No blobs selected for download." }
