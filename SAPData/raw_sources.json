@@ -41,7 +41,7 @@
     "Url": "",
     "FileType": "csv",
     "FileName": "202526_subject_school_all_exam_entriesgrades_provisional",
-    "FetchFromApi":  false
+    "FetchFromApi": false
   },
   {
     "Type": "KS5_Performance",
