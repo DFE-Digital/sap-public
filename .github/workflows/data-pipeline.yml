@@ -590,8 +590,7 @@ jobs:
           # --- Fetch file names that are not downloading from API --- #
           # Fetch the files that has been set to false for FetchFromApi
           
-          Write-Host "Source Files: $sources"
-          
+          Write-Host "Source Files: $sources"          
           $nonApi = $sources | Where-Object { $_.fetchFromApi -eq $false }
  
           Write-Host "Non API count: $($nonApi.Count)"
