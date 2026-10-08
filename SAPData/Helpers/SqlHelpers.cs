@@ -38,16 +38,6 @@ internal static class SqlHelpers
         sql.AppendLine("BEGIN");
         sql.AppendLine("  EXECUTE format('SET search_path TO %I', v_schema);");
         sql.AppendLine();
-        sql.AppendLine("  -- 1) Drop generated materialized views (v_*)");
-        sql.AppendLine("  FOR r IN");
-        sql.AppendLine("    SELECT schemaname, matviewname");
-        sql.AppendLine("    FROM pg_matviews");
-        sql.AppendLine("    WHERE schemaname = v_schema");
-        sql.AppendLine("      AND matviewname LIKE 'v\\_%' ESCAPE '\\'");
-        sql.AppendLine("  LOOP");
-        sql.AppendLine("    EXECUTE format('DROP MATERIALIZED VIEW IF EXISTS %I.%I CASCADE', r.schemaname, r.matviewname);");
-        sql.AppendLine("  END LOOP;");
-        sql.AppendLine();
         sql.AppendLine("  -- Drop only listed raw tables (or all)");
         sql.AppendLine("  FOR r IN");
         sql.AppendLine("    SELECT schemaname, tablename");
