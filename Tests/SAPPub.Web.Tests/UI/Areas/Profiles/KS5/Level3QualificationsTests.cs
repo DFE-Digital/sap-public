@@ -62,7 +62,7 @@ public class Level3QualificationsTests(WebApplicationSetupFixture fixture) : Bas
         textContent = await prop.JsonValueAsync<string>();
         Assert.Equal("Skip contents", textContent);
 
-        //start of right side content - PupilProgress KS2 page
+        //start of right side content - Level3Qualifications KS5 page
         await Page.Keyboard.PressAsync("Enter");
         await Page.Keyboard.PressAsync("Tab");
 

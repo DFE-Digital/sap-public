@@ -1,18 +1,18 @@
-﻿using SAPPub.Core.Enums.KS5Qualifications;
+﻿using Microsoft.Playwright;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
 namespace SAPPub.Web.Tests.UI.Compare.Secondary;
 
 [Collection("Playwright Tests")]
-public class AcademicPerformanceProgressAndAttainmentTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
+public class DestinationsTests(WebApplicationSetupFixture fixture) : BasePageTest(fixture)
 {
-    private string _pageUrl = "compare/secondary/pupil-attainment";
+    private string _pageUrl = "compare/secondary/destinations-after-year-11";
 
     [Fact]
-    public async Task AcademicPerformanceProgressAndAttainmentTests_LoadsSuccessfully()
+    public async Task DestinationsPage_LoadsSuccessfully()
     {
         // Arrange
-        var queryString = "urns=100279&urns=145179";
+        var queryString = "urns=105574&urns=137020";
 
         // Act
         var response = await Page.GotoAsync($"{_pageUrl}?{queryString}");
@@ -23,10 +23,10 @@ public class AcademicPerformanceProgressAndAttainmentTests(WebApplicationSetupFi
     }
 
     [Fact]
-    public async Task AcademicPerformanceProgressAndAttainmentPage_AccessibilityNavigation()
+    public async Task DestinationsPage_AccessibilityNavigation()
     {
         // Arrange && Act
-        var queryString = "urns=100279&urns=145179";
+        var queryString = "urns=105574&urns=137020";
         var response = await Page.GotoAsync($"{_pageUrl}?{queryString}");
 
         //bypass cookies
@@ -51,27 +51,13 @@ public class AcademicPerformanceProgressAndAttainmentTests(WebApplicationSetupFi
         textContent = await prop.JsonValueAsync<string>();
         Assert.Equal("Skip contents", textContent);
 
-        //start of right side content - AcademicPerformanceProgressAndAttainment page
+        //start of right side content - Destinations page
         await Page.Keyboard.PressAsync("Enter");
         await Page.Keyboard.PressAsync("Tab");
 
         activeElement = await Page.EvaluateHandleAsync("document.activeElement");
-        prop = await activeElement.GetPropertyAsync("href");
-        string href = await prop.JsonValueAsync<string>();
-        Assert.Contains("/compare/secondary/pupil-attainment?urns=100279&urns=145179", href);
-    }
-
-    [Fact]
-    public async Task AcademicPerformanceProgressAndAttainmentTests_IgnoresInvalidUrnsAndLoadsSuccessfully()
-    {
-        // Arrange
-        var queryString = "urns=100279&urns=145179&urns=000000";
-
-        // Act
-        var response = await Page.GotoAsync($"{_pageUrl}?{queryString}");
-
-        // Assert
-        Assert.NotNull(response);
-        Assert.Equal(200, response.Status);
+        prop = await activeElement.GetPropertyAsync("id");
+        string id = await prop.JsonValueAsync<string>();
+        Assert.Equal("all-dest-current-year-show-btn", id);
     }
 }

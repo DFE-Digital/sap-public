@@ -23,6 +23,45 @@ public class AcademicPerformanceEnglishAndMathsResultsTests(WebApplicationSetupF
     }
 
     [Fact]
+    public async Task AcademicPerformanceEnglishAndMathsResultsPage_AccessibilityNavigation()
+    {
+        // Arrange && Act
+        var queryString = "urns=105574&urns=137020";
+        var response = await Page.GotoAsync($"{_pageUrl}?{queryString}");
+
+        //bypass cookies
+        await Page.Keyboard.PressAsync("Tab");
+        await Page.Keyboard.PressAsync("Tab");
+        await Page.Keyboard.PressAsync("Tab");
+
+        //start of page - _Layout page
+        await Page.Keyboard.PressAsync("Tab");
+
+        var activeElement = await Page.EvaluateHandleAsync("document.activeElement");
+        var prop = await activeElement.GetPropertyAsync("textContent");
+        string textContent = await prop.JsonValueAsync<string>();
+        Assert.Equal("Skip to main content", textContent);
+
+        //start of content - Default page
+        await Page.Keyboard.PressAsync("Enter");
+        await Page.Keyboard.PressAsync("Tab");
+
+        activeElement = await Page.EvaluateHandleAsync("document.activeElement");
+        prop = await activeElement.GetPropertyAsync("textContent");
+        textContent = await prop.JsonValueAsync<string>();
+        Assert.Equal("Skip contents", textContent);
+
+        //start of right side content - AcademicPerformanceEnglishAndMathsResults page
+        await Page.Keyboard.PressAsync("Enter");
+        await Page.Keyboard.PressAsync("Tab");
+
+        activeElement = await Page.EvaluateHandleAsync("document.activeElement");
+        prop = await activeElement.GetPropertyAsync("href");
+        string href = await prop.JsonValueAsync<string>();
+        Assert.Contains("/compare/secondary/pupil-attainment?urns=105574&urns=137020", href);
+    }
+
+    [Fact]
     public async Task EnglishAndMathsResultsPage_Displays_AllGcse_CurrentYear_Chart()
     {
         // Arrange
