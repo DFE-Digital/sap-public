@@ -36,7 +36,7 @@ public class CompareAcademicPerformancePupilAttainmentViewModel : CompareSeconda
             ListContainsNonSpecialSchool = establishments.Any(e => !e.IsSpecialSchool),
             EnglandPercentage = attainmentAndProgressComparisionResultsModel.EnglandAverage,
             EnglandAttainment8ScoreContextDescription = englandAttainment8ContextSentence != null
-                ? $"Pupils generally scored the equivalent of {englandAttainment8ContextSentence} in their 8 best GCSE-level subjects.".ToDisplayField()
+                ? $"Pupils generally scored the equivalent of {englandAttainment8ContextSentence} in their 8 GCSE-level subjects.".ToDisplayField()
                 : DisplayField<string>.NotAvailable(),
         };
     }
