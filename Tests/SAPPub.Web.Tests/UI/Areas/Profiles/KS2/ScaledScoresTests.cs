@@ -396,33 +396,28 @@ public class ScaledScoresTests(WebApplicationSetupFixture fixture) : BasePageTes
         await Page.Locator("#read-show-data-over-time-btn").FocusAsync();
         await Page.Keyboard.PressAsync("Enter");
 
-        // Assert
-        Assert.True(await IsElementCheckedAsync("read-data-overtime-view"));
-        Assert.False(await IsElementCheckedAsync("read-current-view"));
+        Assert.Equal("over-time", await GetVisibleDataAsync("read"));
 
         // Act - Space on show current data
         await Page.Locator("#read-show-current-data-btn").FocusAsync();
         await Page.Keyboard.PressAsync("Space");
 
         // Assert
-        Assert.True(await IsElementCheckedAsync("read-current-view"));
-        Assert.False(await IsElementCheckedAsync("data-overtime-view"));
+        Assert.Equal("current", await GetVisibleDataAsync("read"));
 
         // Act - Space on show data over time
         await Page.Locator("#read-show-data-over-time-btn").FocusAsync();
         await Page.Keyboard.PressAsync("Space");
 
         // Assert
-        Assert.True(await IsElementCheckedAsync("read-data-overtime-view"));
-        Assert.False(await IsElementCheckedAsync("current-view"));
+        Assert.Equal("over-time", await GetVisibleDataAsync("read"));
 
         // Act - Enter on show current data
         await Page.Locator("#read-show-current-data-btn").FocusAsync();
         await Page.Keyboard.PressAsync("Enter");
 
         // Assert
-        Assert.True(await IsElementCheckedAsync("read-current-view"));
-        Assert.False(await IsElementCheckedAsync("read-data-overtime-view"));
+        Assert.Equal("current", await GetVisibleDataAsync("read"));
     }
 
     [Fact]
@@ -467,9 +462,17 @@ public class ScaledScoresTests(WebApplicationSetupFixture fixture) : BasePageTes
         Assert.True(reachedShowDataOverTimeButton);
     }
 
-    private async Task<bool> IsElementCheckedAsync(string elementId)
+    private async Task<string> GetVisibleDataAsync(string idPrefix)
     {
-        return await Page.EvaluateAsync<bool>("id => !!document.getElementById(id)?.checked", elementId);
+        var isCurrentVisible = await Page.Locator($"#{idPrefix}-current-year-data-container").IsVisibleAsync();
+        var isOverTimeVisible = await Page.Locator($"#{idPrefix}-data-over-time-data-container").IsVisibleAsync();
+
+        return (isCurrentVisible, isOverTimeVisible) switch
+        {
+            (true, false) => "current",
+            (false, true) => "over-time",
+            _ => "none"
+        };
     }
 
     private async Task<bool> WaitForFocusedElementAsync(string expectedElementId, int timeoutMs = 1000)
