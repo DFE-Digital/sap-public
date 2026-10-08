@@ -829,6 +829,11 @@ public sealed class GenerateViews
         sb.AppendLine("CREATE INDEX idx_v_establishment_fts ON v_establishment USING GIN (\"EstablishmentNameFTS\");");
         sb.AppendLine("CREATE INDEX idx_v_establishment_geom ON v_establishment USING GIST (\"geom\");");
 
+        // Composite indexes for common filter combinations for search
+        sb.AppendLine("CREATE INDEX idx_v_establishment_type_phase ON v_establishment (\"TypeOfEstablishmentId\", \"ISKS2\", \"ISKS4\", \"ISKS5\");");
+        sb.AppendLine("CREATE INDEX idx_v_establishment_keystages ON v_establishment (\"ISKS2\", \"ISKS4\", \"ISKS5\");");
+        sb.AppendLine("CREATE INDEX idx_v_establishment_fts_type ON v_establishment (\"EstablishmentNameFTS\", \"TypeOfEstablishmentId\") WHERE \"StatusCode\" = 1;");
+
         return sb.ToString();
     }
 

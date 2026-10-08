@@ -12,6 +12,11 @@ const schoolDetails =
 
 const pages = [
   {
+    urlSlug: "/overview",
+    pageTitle: "Overview",
+    checkHeading: "Overview",
+  },
+  {
     urlSlug: "/about",
     pageTitle: "About",
     checkHeading: "About the school",
@@ -32,7 +37,7 @@ const pages = [
     checkHeading: "Attendance"
   },
   {
-    urlSlug: "/primary-performance/pupil-progress",
+    urlSlug: "/primary-performance/pupil-progress/current",
     pageTitle: "Pupil Progress",
     checkHeading: "Pupil progress"
   },
@@ -61,7 +66,7 @@ export function ks2FullJourney (environment, config) {
         const response = http.get(`${environment.baseUrl}/school/${schoolDetails.schoolUrn}/${schoolDetails.schoolUrl}${page.urlSlug}`)
         const isSuccess = loadPerformanceCheck(response, `${page.pageTitle}`, config.expectedResponseTimes.homepage)
         if (isSuccess) {
-          loadContentCheck(response, `main-heading-${page.pageTitle}`, 'School Profiles')
+          loadContentCheck(response, `main-heading-${page.pageTitle}`, 'Find and compare school and college profiles')
           loadContentCheck(response, `page-heading-${page.pageTitle}`, `${page.checkHeading}`)
         }
 
