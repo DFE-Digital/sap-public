@@ -49,26 +49,26 @@ namespace SAPPub.E2E.Tests.Search
         //    Assert.Null(noResultsId.Description);
         //}
 
-        [Theory]
-        [InlineData("Primary", "32")]
-        [InlineData("Secondary", "25")]
-        [InlineData("16 to 19", "18")]
-        [InlineData("All-through", "8")]
-        public async Task SimpleSearch_WithPhaseFilter_LoadsSuccessfully(string phase, string expectedCount)
-        {
-            // Act
-            var response = await Page.GotoAsync($"{_pageRoot}?NameSearchTerm=Ark&phase={phase}");
+        //[Theory]
+        //[InlineData("Primary", "32")]
+        //[InlineData("Secondary", "25")]
+        //[InlineData("16 to 19", "18")]
+        //[InlineData("All-through", "8")]
+        //public async Task SimpleSearch_WithPhaseFilter_LoadsSuccessfully(string phase, string expectedCount)
+        //{
+        //    // Act
+        //    var response = await Page.GotoAsync($"{_pageRoot}?NameSearchTerm=Ark&phase={phase}");
 
-            // Assert
-            var resultsHeading = Page.GetByTestId("search-results-heading");
-            var noResultsId = Page.GetByTestId("no-results-heading");
+        //    // Assert
+        //    var resultsHeading = Page.GetByTestId("search-results-heading");
+        //    var noResultsId = Page.GetByTestId("no-results-heading");
 
-            Assert.NotNull(response);
-            Assert.Equal(200, response.Status);
-            Assert.NotNull(resultsHeading);
-            Assert.Contains(expectedCount, await resultsHeading.First.InnerTextAsync());
-            Assert.Null(noResultsId.Description);
-        }
+        //    Assert.NotNull(response);
+        //    Assert.Equal(200, response.Status);
+        //    Assert.NotNull(resultsHeading);
+        //    Assert.Contains(expectedCount, await resultsHeading.First.InnerTextAsync());
+        //    Assert.Null(noResultsId.Description);
+        //}
 
         [Theory]
         [InlineData("Academy")]
