@@ -277,6 +277,64 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         }
     }
 
+    [Theory]
+    [InlineData("178965", true, "01 September 2025")]
+    [InlineData("105574", false, null)]
+    public async Task AboutSchoolPage_DisplaysSchoolClosedInfo(string urn, bool isSchoolClosed, string? date)
+    {
+        // Act
+        await Page.GotoAsync(_schoolUrnToUrlMap[urn]);
+        var nav = new VerticalNavigationHelper(Page);
+        var navItem = nav.GetItem("About the school");
+        await navItem.ClickAsync();
+
+        // Assert
+        var schoolClosedCard = Page.GetByTestId("school-closed-custom-card");
+
+        Assert.Equal(isSchoolClosed, await schoolClosedCard.IsVisibleAsync());
+
+        if (isSchoolClosed)
+        {
+            var schoolClosedPara = await schoolClosedCard.Locator("p").Filter(new() { HasText = "School closed" }).TextContentAsync();
+
+            var expectedText = date != null ? $"This school closed on {date}" : "Closed";
+
+            Assert.NotNull(schoolClosedPara);
+            Assert.Contains(expectedText, schoolClosedPara.Trim());
+        }
+    }
+
+    [Theory]
+    [InlineData("105574", null)]
+    [InlineData("137552", "THE PASSMORES CO-OPERATIVE LEARNING COMMUNITY")]
+    public async Task AboutSchoolPage_DisplaysTrustNameRow_WhenTrustNameNotNull(string urn, string? trustName)
+    {
+        // Act
+        await Page.GotoAsync(_schoolUrnToUrlMap[urn]);
+        var nav = new VerticalNavigationHelper(Page);
+        var navItem = nav.GetItem("About the school");
+        await navItem.ClickAsync();
+
+        // Assert
+        var detailsSummary = Page.Locator("#school-details-summary");
+
+        Assert.True(await detailsSummary.IsVisibleAsync());
+        var row = detailsSummary
+            .Locator(".govuk-summary-list__row")
+            .Filter(new() { Has = Page.Locator(".govuk-summary-list__key", new() { HasText = " Academy Trust " }) });
+
+        if (trustName != null)
+        {
+            var value = await row.Locator(".govuk-summary-list__value").TextContentAsync();
+            Assert.NotNull(value);
+            Assert.Equal(trustName, value.Trim());
+        }
+        else
+        {
+            Assert.False(await row.IsVisibleAsync());
+        }
+    }
+
     [Fact]
     public async Task AboutSchoolPage_DisplaysSchoolLocation()
     {
@@ -478,8 +536,6 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         // Act
         await Page.ClickAsync(".compare-establishment-btn");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-
-        var content = await Page.ContentAsync();
 
         var compareButtonText = await Page.Locator(".compare-establishment-btn").InnerTextAsync();
         var comparisonAddSuccessBanner =  Page.Locator($"#establishment-comparison-{urn}-add-success");

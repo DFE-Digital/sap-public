@@ -90,7 +90,7 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
 
         // Act
         var chart = Page.Locator("#all-destinations-chart");
-        var table = Page.Locator("#all-destinations-current-year-table");
+        var table = Page.Locator("#all-dest-current-year-table");
         var showAsTableBtn = Page.Locator("#all-dest-current-year-show-btn");
         var showDataOverTimeBtn = Page.Locator("#all-dest-show-data-over-time-btn");
 
@@ -124,7 +124,7 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
         var showAsTableBtn = Page.Locator("#all-dest-current-year-show-btn");
         var showDataOverTimeBtn = Page.Locator("#all-dest-show-data-over-time-btn");
         var chart = Page.Locator("#all-destinations-chart");
-        var table = Page.Locator("#all-destinations-current-year-table");
+        var table = Page.Locator("#all-dest-current-year-table");
 
         var isChartVisible = await chart.IsVisibleAsync();
         var isTableVisible = await table.IsVisibleAsync();
@@ -152,9 +152,9 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
         var chart = Page.Locator("#all-destinations-data-overtime-chart");
-        var table = Page.Locator("#all-destinations-data-overtime-table");
-        var chartLegend = Page.Locator("#all-destinations-data-overtime-chart-legend");
-        var chartLegendExplainer = Page.Locator("#all-destinations-data-overtime-chart-legend-explainer");
+        var table = Page.Locator("#all-dest-data-overtime-table");
+        var chartLegend = Page.Locator("#all-dest-data-overtime-chart-legend");
+        var chartLegendExplainer = Page.Locator("#all-dest-data-over-time-legend-explainer");
         var showAsTableBtn = Page.Locator("#all-dest-data-over-time-show-btn");
         var showCurrentDataBtn = Page.Locator("#all-dest-show-current-data-btn");
 
@@ -192,8 +192,8 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
         await Page.ClickAsync("#all-dest-data-over-time-show-btn");
 
         var chart = Page.Locator("#all-destinations-data-overtime-chart");
-        var table = Page.Locator("#all-destinations-data-overtime-table");
-        var chartLegend = Page.Locator("#all-destinations-data-overtime-chart-legend");
+        var table = Page.Locator("#all-dest-data-overtime-table");
+        var chartLegend = Page.Locator("#all-dest-data-overtime-chart-legend");
         var showAsTableBtn = Page.Locator("#all-dest-data-over-time-show-btn");
         var showCurrentDataBtn = Page.Locator("#all-dest-show-current-data-btn");
 
@@ -256,12 +256,12 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
 
         // Act       
         var destinationsChart = Page.Locator("#all-destinations-chart");
-        var destinationsCurrentYearTable = Page.Locator("#all-destinations-current-year-table");
+        var destinationsCurrentYearTable = Page.Locator("#all-dest-current-year-table");
         var destinationsCurrentYearShowBtn = Page.Locator("#all-dest-current-year-show-btn");
         var destinationsShowDataOverTimeBtn = Page.Locator("#all-dest-show-data-over-time-btn");
 
         var destinationsDataOverTimeChart = Page.Locator("#all-destinations-data-overtime-chart");
-        var destinationsDataOverTimeTable = Page.Locator("#all-destinations-data-overtime-table");
+        var destinationsDataOverTimeTable = Page.Locator("#all-dest-data-overtime-table");
         var destinationsDataOverTimeShowBtn = Page.Locator("#all-dest-data-over-time-show-btn");
         var destinationsShowCurrentDataBtn = Page.Locator("#all-dest-show-current-data-btn");
 
@@ -316,7 +316,7 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
         await Page.Keyboard.PressAsync("Enter");
 
         var chart = Page.Locator("#all-destinations-chart");
-        var table = Page.Locator("#all-destinations-current-year-table");
+        var table = Page.Locator("#all-dest-current-year-table");
         Assert.False(await chart.IsVisibleAsync());
         Assert.True(await table.IsVisibleAsync());
 
@@ -339,32 +339,28 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
         await Page.Keyboard.PressAsync("Enter");
 
         // Assert
-        Assert.True(await IsElementCheckedAsync("data-overtime-view"));
-        Assert.False(await IsElementCheckedAsync("current-view"));
+        Assert.Equal("over-time", await GetVisibleDataAsync("all-dest"));
 
         // Act - Space on show current data
         await Page.Locator("#all-dest-show-current-data-btn").FocusAsync();
         await Page.Keyboard.PressAsync("Space");
 
         // Assert
-        Assert.True(await IsElementCheckedAsync("current-view"));
-        Assert.False(await IsElementCheckedAsync("data-overtime-view"));
+        Assert.Equal("current", await GetVisibleDataAsync("all-dest"));
 
         // Act - Space on show data over time
         await Page.Locator("#all-dest-show-data-over-time-btn").FocusAsync();
         await Page.Keyboard.PressAsync("Space");
 
         // Assert
-        Assert.True(await IsElementCheckedAsync("data-overtime-view"));
-        Assert.False(await IsElementCheckedAsync("current-view"));
+        Assert.Equal("over-time", await GetVisibleDataAsync("all-dest"));
 
         // Act - Enter on show current data
         await Page.Locator("#all-dest-show-current-data-btn").FocusAsync();
         await Page.Keyboard.PressAsync("Enter");
 
         // Assert
-        Assert.True(await IsElementCheckedAsync("current-view"));
-        Assert.False(await IsElementCheckedAsync("data-overtime-view"));
+        Assert.Equal("current", await GetVisibleDataAsync("all-dest"));
     }
 
     [Fact]
@@ -409,9 +405,17 @@ public class DestinationsPageTests(WebApplicationSetupFixture fixture) : BasePag
         Assert.True(reachedShowDataOverTimeButton);
     }
         
-    private async Task<bool> IsElementCheckedAsync(string elementId)
+    private async Task<string> GetVisibleDataAsync(string idPrefix)
     {
-        return await Page.EvaluateAsync<bool>("id => !!document.getElementById(id)?.checked", elementId);
+        var isCurrentVisible = await Page.Locator($"#{idPrefix}-current-year-data-container").IsVisibleAsync();
+        var isOverTimeVisible = await Page.Locator($"#{idPrefix}-data-over-time-data-container").IsVisibleAsync();
+
+        return (isCurrentVisible, isOverTimeVisible) switch
+        {
+            (true, false) => "current",
+            (false, true) => "over-time",
+            _ => "none"
+        };
     }
 
     private async Task<bool> WaitForFocusedElementAsync(string expectedElementId, int timeoutMs = 1000)

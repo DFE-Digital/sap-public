@@ -437,7 +437,6 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     [Theory]
     [InlineData("academy")]
     [InlineData("maintained-school")]
-    [InlineData("independent-schools")]
     [InlineData("special-school")]
     [InlineData("college")]
     public async Task SearchPage_FilterOnSchoolType_ShowsViewWithResults(string schoolType)

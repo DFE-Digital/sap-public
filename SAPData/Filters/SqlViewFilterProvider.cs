@@ -2,6 +2,10 @@
 {
     public static class SqlViewFilterProvider
     {
+        // Ticket 1101. Currently excludes independent schools (type 10 & 11). This means they are not pulled into the database
+        // To add independent schools back into the mix, change the _establishmentTypes stinrg to include 10, 11
+        private static readonly string _establishmentTypes = "1, 2, 3, 5, 6, 7, 8, 12, 18, 26, 28, 31, 33, 34, 35, 36, 39, 40, 41, 44, 45, 46, 56";
+
         public static readonly Dictionary<string, Func<string, string>> KeyStageBaseConditions =
         new()
         {
@@ -37,23 +41,23 @@
 
 
         public static List<SqlViewFilter> GetEstablishmentFilters(
-    IEnumerable<string>? keyStages = null,
-    Dictionary<string, string>? keyStageUrnsSqlConditions = null,
-    IEnumerable<int>? excludedUrns = null)
+            IEnumerable<string>? keyStages = null,
+            Dictionary<string, string>? keyStageUrnsSqlConditions = null,
+            IEnumerable<int>? excludedUrns = null)
         {
             keyStages ??= KeyStageConstants.AllKeyStages;
 
             var filters = new List<SqlViewFilter>
-    {
-        new SqlViewFilter("ExcludeNurseries", tableAlias =>
-            $"clean_int({tableAlias}.\"phaseofeducation__code_\") <> 1"),
-        new SqlViewFilter("IncludeOnlyInScopeSchoolTypes", tableAlias =>
-            $"clean_int({tableAlias}.\"typeofestablishment__code_\") IN (1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 18, 26, 28, 31, 33, 34, 35, 36, 39, 40, 41, 44, 45, 46, 56)"),
-        new SqlViewFilter("ExcludeClosed3YrSchools", tableAlias =>
-            $"({tableAlias}.\"closedate\" IS NULL OR {tableAlias}.\"closedate\" = '' OR TO_DATE({tableAlias}.\"closedate\", 'DD/MM/YYYY') >= '{GetAcademicYearCutoffDate()}')"),
-        new SqlViewFilter("ExcludeProposedToOpen", tableAlias =>
-            $"clean_int({tableAlias}.\"establishmentstatus__code_\") <> 4")
-    };
+            {
+                new("ExcludeNurseries", tableAlias =>
+                    $"clean_int({tableAlias}.\"phaseofeducation__code_\") <> 1"),
+                new("IncludeOnlyInScopeSchoolTypes", tableAlias =>
+                    $"clean_int({tableAlias}.\"typeofestablishment__code_\") IN ({_establishmentTypes})"),        
+                new("ExcludeClosed3YrSchools", tableAlias =>
+                    $"({tableAlias}.\"closedate\" IS NULL OR {tableAlias}.\"closedate\" = '' OR TO_DATE({tableAlias}.\"closedate\", 'DD/MM/YYYY') >= '{GetAcademicYearCutoffDate()}')"),
+                new("ExcludeProposedToOpen", tableAlias =>
+                    $"clean_int({tableAlias}.\"establishmentstatus__code_\") <> 4")
+            };
 
             // Add excluded URNs filter (hospital schools, etc.)
             if (excludedUrns != null && excludedUrns.Any())

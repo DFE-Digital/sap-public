@@ -208,10 +208,10 @@ public partial class Program
         app.UseRouting();
         app.UseGovUkFrontend();
 
-        if (enableGateway == true)
-        {
-            app.UseMiddleware<GatewayMiddleware>();
-        }
+        //if (enableGateway == true)
+        //{
+        //    app.UseMiddleware<GatewayMiddleware>();
+        //}
 
 
         app.MapControllers();

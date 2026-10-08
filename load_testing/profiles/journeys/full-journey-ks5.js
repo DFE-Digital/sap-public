@@ -12,9 +12,14 @@ const schoolDetails =
 
 const pages = [
   {
+    urlSlug: "/overview",
+    pageTitle: "Overview",
+    checkHeading: "Overview",
+  },
+  {
     urlSlug: "/about",
     pageTitle: "About",
-    checkHeading: "About the school",
+    checkHeading: "About the school or college",
   },
   {
     urlSlug: "/16-to-19-performance/level-3-qualifications/alevel",
@@ -42,6 +47,16 @@ const pages = [
     checkHeading: "Technical Certificate"
   },
   {
+    urlSlug: "/16-to-19-performance/english-and-maths",
+    pageTitle: "English and Maths",
+    checkHeading: "English and maths"
+  },
+  {
+    urlSlug: "/16-to-19-performance/subjects-entered/allqualifications",
+    pageTitle: "Subjects entered",
+    checkHeading: "Subjects entered at 16 to 19"
+  },
+  {
     urlSlug: "/destinations/16-to-19",
     pageTitle: "Destinations - 16 to 19",
     checkHeading: "Student destinations after 16 to 19 study"
@@ -61,7 +76,7 @@ export function ks5FullJourney (environment, config) {
         const response = http.get(`${environment.baseUrl}/school/${schoolDetails.schoolUrn}/${schoolDetails.schoolUrl}${page.urlSlug}`)
         const isSuccess = loadPerformanceCheck(response, `${page.pageTitle}`, config.expectedResponseTimes.homepage)
         if (isSuccess) {
-          loadContentCheck(response, `main-heading-${page.pageTitle}`, 'School Profiles')
+          loadContentCheck(response, `main-heading-${page.pageTitle}`, 'Find and compare school and college profiles')
           loadContentCheck(response, `page-heading-${page.pageTitle}`, `${page.checkHeading}`)
         }
         if (!isSuccess) {

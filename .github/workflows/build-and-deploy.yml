@@ -310,12 +310,17 @@ jobs:
       - name: Download seed backup from Blob
         shell: bash
         env:
-          AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
-          AZURE_STORAGE_CONTAINER: ${{ secrets.AZURE_STORAGE_CONTAINER }}
+          AZURE_STORAGE_CONTAINER: alldata
         run: |
           set -euo pipefail
           BACKUP_BLOB="db-backups/sappub_review_seed_latest.sql.gz"
           BACKUP_FILE="seed.sql.gz"
+
+          source global_config/test.sh
+          STORAGE_ACCOUNT_NAME="${AZURE_RESOURCE_PREFIX}sappubdp${CONFIG_SHORT}sa"
+          RESOURCE_GROUP_NAME="${AZURE_RESOURCE_PREFIX}-sappub-${CONFIG_SHORT}-rg"
+          AZURE_STORAGE_CONNECTION_STRING=$(az storage account show-connection-string -g ${RESOURCE_GROUP_NAME} -n ${STORAGE_ACCOUNT_NAME} --query 'connectionString')
+          echo "::add-mask::${AZURE_STORAGE_CONNECTION_STRING}"
 
           az storage blob download \
             --container-name "${AZURE_STORAGE_CONTAINER}" \
@@ -439,7 +444,7 @@ jobs:
   # ---------------------------
   # DEPLOY TO TEST (AUTO)
   # ---------------------------
-  deploy:
+  deploy-test:
     name: Deploy to Test
     if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
     needs: [build, test]
@@ -450,25 +455,19 @@ jobs:
       id-token: write
       pull-requests: write
 
-    strategy:
-      max-parallel: 1
-      matrix:
-        #environment: [test, production] //Commented out should we wish to reinstate auto deployment with the matrix.
-        environment: [test]
-
     environment:
-      name: ${{ matrix.environment }}
+      name: test
       url: ${{ steps.deploy_app.outputs.environment_url }}
 
     steps:
-      - name: Deploy app to ${{ matrix.environment }}
+      - name: Deploy app to test
         id: deploy_app
         uses: DFE-Digital/github-actions/deploy-to-aks@master
         with:
           azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
           azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          environment: ${{ matrix.environment }}
+          environment: test
           sha: ${{ needs.build.outputs.docker-image-tag }}
           terraform-base: ${{ env.TERRAFORM_BASE }}
           healthcheck: ${{ env.HEALTHCHECK_CMD }}
@@ -484,7 +483,7 @@ jobs:
   detect-refresh-data-on-merge:
     name: Detect refresh-data label on merged PR
     if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
-    needs: [deploy]
+    needs: [deploy-test]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -524,7 +523,7 @@ jobs:
   refresh-data-test-after-merge:
     name: Refresh data in test after merge
     if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' && needs.detect-refresh-data-on-merge.outputs.should-refresh == 'true' }}
-    needs: [deploy, detect-refresh-data-on-merge]
+    needs: [deploy-test, detect-refresh-data-on-merge]
     uses: ./.github/workflows/data-pipeline.yml
     secrets: inherit
     with:
@@ -535,6 +534,65 @@ jobs:
       actions: read
       packages: write
 
+  # ----------------------------------------
+  # DEPLOY TO PRODUCTION (AUTO - AFTER TEST)
+  # ----------------------------------------
+  deploy-production:
+    name: Deploy to Production
+    if: ${{ always() 
+      && github.ref == 'refs/heads/main' && github.event_name == 'push'
+      && needs.deploy-test.result == 'success'
+      && needs.detect-refresh-data-on-merge.result == 'success'
+      && (needs.refresh-data-test-after-merge.result == 'success' || needs.refresh-data-test-after-merge.result == 'skipped')
+      }}
+    needs: [build, deploy-test, detect-refresh-data-on-merge, refresh-data-test-after-merge]
+    outputs:
+      environment_url: ${{ steps.deploy_app.outputs.environment_url }}
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      pull-requests: write
+
+    environment:
+      name: production
+      url: ${{ steps.deploy_app.outputs.environment_url }}
+
+    steps:
+      - name: Deploy app to production
+        id: deploy_app
+        uses: DFE-Digital/github-actions/deploy-to-aks@master
+        with:
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          environment: production
+          sha: ${{ needs.build.outputs.docker-image-tag }}
+          terraform-base: ${{ env.TERRAFORM_BASE }}
+          healthcheck: ${{ env.HEALTHCHECK_CMD }}
+          teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
+          smoke-test: false
+          service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
+          gcp-wip: ${{ vars.GCP_WIP }}
+          gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
+
+  # ------------------------------------------------
+  # REFRESH PRODUCTION DATABASE (AUTO - IF REQUIRED)
+  # Uses the same 'refresh data' label as test, and only runs once the test refresh has succeeded.
+  # Pulls from the production Blob container. Maintenance mode is left enabled afterwards.
+  # ------------------------------------------------
+  refresh-data-production-after-merge:
+    name: Refresh data in production after merge
+    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' && needs.detect-refresh-data-on-merge.outputs.should-refresh == 'true' }}
+    needs: [deploy-production, detect-refresh-data-on-merge]
+    uses: ./.github/workflows/data-pipeline.yml
+    secrets: inherit
+    with:
+      environment: production
+    permissions:
+      contents: write
+      id-token: write
+      actions: read
+      packages: write
 
   # ---------------------------
   # MANUAL DEPLOY
@@ -578,21 +636,21 @@ jobs:
   # on Test environnment
   # E2E-tests-no-refresh:
   #   name: E2E Tests (Post Deployment)
-  #   needs: [deploy, detect-refresh-data-on-merge]
+  #   needs: [deploy-test, detect-refresh-data-on-merge]
   #   if: ${{ needs.detect-refresh-data-on-merge.outputs.should-refresh != 'true' }}
   #   uses: ./.github/workflows/e2e-tests.yml
   #   with:
   #     environment: test
-  #     base_url: ${{ needs.deploy.outputs.environment_url }}
+  #     base_url: ${{ needs.deploy-test.outputs.environment_url }}
   
   # E2E-tests-after-refresh:
   #   name: E2E Tests (Post Deployment)
-  #   needs: [deploy, refresh-data-test-after-merge]
+  #   needs: [deploy-test, refresh-data-test-after-merge]
   #   if: ${{ needs.refresh-data-test-after-merge.result == 'success' }}
   #   uses: ./.github/workflows/e2e-tests.yml
   #   with:
   #     environment: test
-  #     base_url: ${{ needs.deploy.outputs.environment_url }}
+  #     base_url: ${{ needs.deploy-test.outputs.environment_url }}
 
   E2E-tests-manual:
     name: E2E Tests (Manual Deployment)
@@ -617,7 +675,8 @@ jobs:
   # on review app environment (with refresh)
   E2E-tests_with_refresh:
     name: E2E Tests (Post Deployment)
-    needs: [deploy-review-app-with-refresh]
+    needs: [deploy-review-app-with-refresh, refresh-data]
+    if: ${{ needs.refresh-data.result == 'success' }}
     uses: ./.github/workflows/e2e-tests.yml
     with:
       environment: review
@@ -633,7 +692,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     concurrency: deploy_domains_infra
-    needs: [deploy]
+    needs: [deploy-production]
     environment:
       name: production
     permissions:
@@ -673,12 +732,12 @@ jobs:
 
     steps:
       - name: Deploy Domains Environment
-        id: deploy_domains_env        
+        id: deploy_domains_env
+        # Production currently stays in maintenance mode after a data refresh, so its healthcheck would fail - skip it for now.
         if: 
             ${{
-              matrix.domain_environment != 'test' ||
               needs.detect-refresh-data-on-merge.outputs.should-refresh != 'true' ||
-              needs.refresh-data-test-after-merge.result == 'success'
+              (matrix.domain_environment == 'test' && needs.refresh-data-test-after-merge.result == 'success')
             }}
         uses: DFE-Digital/github-actions/deploy-domains-env@master
         with:

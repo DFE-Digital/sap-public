@@ -1,5 +1,6 @@
 ﻿using Microsoft.Playwright;
 using SAPPub.Web.Tests.UI.Infrastructure;
+using System.Text.RegularExpressions;
 
 namespace SAPPub.Web.Tests.UI.Areas.Profiles;
 
@@ -65,8 +66,6 @@ public class DestinationsTests(WebApplicationSetupFixture fixture) : BasePageTes
         // Arrange
         await Page.GotoAsync(_url);
 
-        var content = await Page.ContentAsync();
-
         // Act
         await Page.ClickAsync("#all-ks5-dest-data-show-btn");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
@@ -97,5 +96,26 @@ public class DestinationsTests(WebApplicationSetupFixture fixture) : BasePageTes
         Assert.True(isChartVisible);
         Assert.Equal("Show as a table", toggleButtonText);
 
+    }
+
+    [Fact]
+    public async Task KS5DestinationsPage_WithoutJavaScript_ShowsTableOnly_WithoutChartOrShowAsTableButton()
+    {
+        // Arrange 
+        await using var context = await Browser.NewContextAsync(new BrowserNewContextOptions
+        {
+            BaseURL = BaseUrl.TrimEnd('/'),
+            IgnoreHTTPSErrors = true,
+            JavaScriptEnabled = false
+        });
+
+        // Act
+        var page = await context.NewPageAsync();
+        await page.GotoAsync(_url);
+
+        // Assert
+        await Expect(page.Locator("#all-ks5-dest-data-table-container")).ToBeVisibleAsync();
+        await Expect(page.Locator("#all-ks5-dest-data-chart-container")).ToBeHiddenAsync();
+        await Expect(page.Locator("#all-ks5-dest-data-show-btn")).ToBeHiddenAsync();
     }
 }

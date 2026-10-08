@@ -68,19 +68,24 @@
                 If a pupil changes what they are doing before reaching sixth months they are not recorded in this data.
             </p>
 
-            <div class="data-container">
-                <div id="all-dest-current-year-data-container" class="all-dest-current-year-data-container">
-                    <div id="all-dest-current-year-chart-container" class="chart-container all-dest-current-year-chart-container">
-                        <canvas id="all-destinations-chart"
-                                class="js-chart"
-                                aria-labelledby="all-destinations-current-year-table"
-                                role="img"
-                                data-type="bar"
-                                data-not-available-text="@(NotAvailable)"
-                                data-chart='@Html.Raw(Json.Serialize(Model.AllDestinationsData))'
-                                data-colors='@Html.Raw(Json.Serialize(Model.AllDestinationsData.BackgroundColors))'>
-                        </canvas>
-                    </div>
+        <div class="data-container">
+            <div id="all-dest-current-year-data-container" class="all-dest-current-year-data-container">
+
+                <div class="govuk-button-group govuk-!-margin-top-3">
+                    <button id="all-dest-current-year-show-btn" class="govuk-button govuk-button--secondary all-dest-current-year-show-btn">Show as a table</button>
+                </div>
+
+                <div id="all-dest-current-year-chart-container" class="chart-container all-dest-current-year-chart-container">
+                    <canvas id="all-destinations-chart"
+                            class="js-chart"
+                            aria-labelledby="all-destinations-current-year-table"
+                            role="img"
+                            data-type="bar"
+                            data-not-available-text="@(NotAvailable)"
+                            data-chart='@Html.Raw(Json.Serialize(Model.AllDestinationsData))'
+                            data-colors='@Html.Raw(Json.Serialize(Model.AllDestinationsData.BackgroundColors))'>
+                    </canvas>
+                </div>
 
                     <div id="all-dest-current-year-table-container" class="all-dest-current-year-table-container">
                         <table id="all-destinations-current-year-table" class="govuk-table">
@@ -96,10 +101,6 @@
                         </table>
                     </div>
 
-                    <div class="govuk-button-group">
-                        <button id="all-dest-current-year-show-btn" class="govuk-button govuk-button--secondary all-dest-current-year-show-btn">Show as a table</button>
-                    </div>
-                </div>
             </div>
 
             <h3 class="govuk-heading-m">What you could ask schools about pupil destinations</h3>

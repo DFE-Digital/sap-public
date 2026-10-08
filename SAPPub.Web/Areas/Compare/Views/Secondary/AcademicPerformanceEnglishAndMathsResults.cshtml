@@ -42,50 +42,41 @@
                         <a class="moj-sub-navigation__link" aria-current="page" href="@Url.RouteUrl(RouteConstants.CompareSecondaryAcademicPerformanceEnglishAndMathsResults)@Model.RouteQueryString">@ViewData["SubHeader"]</a>
                     </li>
                 </ul>
-            </nav>
+            </govuk-details-text>
+        </govuk-details>
 
-            <h2 class="govuk-heading-l">Pupils achieving grades in English and maths GCSEs for the previous academic year</h2>
+        <h3 class="govuk-heading-m">Achieving grade 5 and above in English and maths GCSEs</h3>
 
-            <p class="govuk-body">
-                Information in this section is for the 2024 to 2025 academic year.
-            </p>
+        <p class="govuk-body">Grade 5 is comparable to the top of the old grade C.</p>
 
-            <govuk-details id="details-gcse-grades-explained">
-                <govuk-details-summary>
-                    GCSE grade 9 to 1 scale explained
-                </govuk-details-summary>
-                <govuk-details-text>
-                    <p class="govuk-body">
-                        GCSEs in England have been graded on a 9 to 1 scale since 2017. This replaced the previous A* to G scale. 
-                    </p>
-                    <p class="govuk-body">
-                        The number scale is not directly equivalent to the old letter one. But the old and current grading scales are comparable at the following points: 
-                    </p>
+        @{
+            const string allGcseIdPrefix = "all-gcse";
+            var showAllGcseOverTime = DataViewToggleHelper.IsOverTimeView(Context.Request, allGcseIdPrefix);
+        }
 
-                    <ul class="govuk-list govuk-list--bullet">
-                        <li>
-                            the bottom of a grade 7 is comparable to the bottom of the old grade A
-                        </li>
-                        <li>
-                            the bottom of grade 4 is comparable to the bottom of the old grade C 
-                        </li>
-                        <li>
-                            the bottom of grade 1 is comparable to the bottom of the old grade G
-                        </li>
-                    </ul>
-                </govuk-details-text>
-            </govuk-details>
+        <div class="data-container">
+            <div id="@DataViewToggleHelper.AnchorId(allGcseIdPrefix)"
+                 class="chart-table-toggle"
+                 data-id-prefix="@allGcseIdPrefix"
+                 data-view="@(showAllGcseOverTime ? DataViewToggleHelper.OverTimeView : DataViewToggleHelper.CurrentView)">
 
-            <h3 class="govuk-heading-m">Achieving grade 5 and above in English and maths GCSEs</h3>
+                <div id="all-gcse-current-year-data-container" data-view-panel="@DataViewToggleHelper.CurrentView" hidden="@showAllGcseOverTime">
 
-            <p class="govuk-body">Grade 5 is comparable to the top of the old grade C.</p>
+                    <div class="govuk-button-group govuk-!-margin-top-3">
+                        <govuk-button id="all-gcse-current-year-show-btn" type="button" class="govuk-button--secondary chart-table-toggle__table-btn">Show as a table</govuk-button>
+                    </div>
 
-            <div class="data-container">
-                <input type="radio" name="dataView" id="current-view" class="govuk-visually-hidden dataview-button" aria-labelledby="all-gcse-show-current-data-btn" checked />
-                <input type="radio" name="dataView" id="data-overtime-view" class="govuk-visually-hidden dataview-button" aria-labelledby="all-gcse-show-data-over-time-btn" />
+                    <div class="govuk-button-group">
+                        <a id="all-gcse-show-data-over-time-btn"
+                           href="@DataViewToggleHelper.ViewUrl(Context.Request, allGcseIdPrefix, overTime: true)"
+                           role="button"
+                           draggable="false"
+                           class="govuk-button govuk-button--secondary"
+                           data-module="govuk-button"
+                           data-show-view="@DataViewToggleHelper.OverTimeView">Show data over time</a>
+                    </div>
 
-                <div id="all-gcse-current-year-data-container" class="all-gcse-current-year-data-container">
-                    <div id="all-gcse-current-year-chart-container" class="chart-container all-gcse-current-year-chart-container">
+                    <div id="all-gcse-current-year-chart-container" class="chart-container chart-table-toggle__chart">
                         <canvas id="all-gcse-chart"
                                 class="js-chart"
                                 aria-labelledby="all-gcse-current-year-table"
@@ -97,7 +88,7 @@
                         </canvas>
                     </div>
 
-                    <div id="all-gcse-current-year-table-container" class="all-gcse-current-year-table-container">
+                    <div id="all-gcse-current-year-table-container" class="chart-table-toggle__table">
                         <table id="all-gcse-current-year-table" class="govuk-table">
                             <tbody class="govuk-table__body">
                                 @foreach (var label in Model.AllGcseData.Labels.Select((value, i) => (value, i)))
@@ -110,17 +101,25 @@
                             </tbody>
                         </table>
                     </div>
-
-                    <div class="govuk-button-group">
-                        <govuk-button id="all-gcse-current-year-show-btn" type="button" class="govuk-button--secondary all-gcse-current-year-show-btn">Show as a table</govuk-button>
-                    </div>
-                    <div class="govuk-button-group">
-                        <label id="all-gcse-show-data-over-time-btn" for="data-overtime-view" class="govuk-button govuk-button--secondary" tabindex="0">Show data over time</label>
-                    </div>
                 </div>
 
-                <div id="all-gcse-data-over-time-data-container" class="all-gcse-data-over-time-data-container">
-                    <div id="all-gcse-data-over-time-chart-container" class="chart-container all-gcse-data-over-time-chart-container">
+                <div id="all-gcse-data-over-time-data-container" data-view-panel="@DataViewToggleHelper.OverTimeView" hidden="@(!showAllGcseOverTime)">
+
+                    <div class="govuk-button-group govuk-!-margin-top-3">
+                        <govuk-button id="all-gcse-data-over-time-show-btn" type="button" class="govuk-button--secondary chart-table-toggle__table-btn">Show as a table</govuk-button>
+                    </div>
+
+                    <div class="govuk-button-group">
+                        <a id="all-gcse-show-current-data-btn"
+                           href="@DataViewToggleHelper.ViewUrl(Context.Request, allGcseIdPrefix, overTime: false)"
+                           role="button"
+                           draggable="false"
+                           class="govuk-button govuk-button--secondary"
+                           data-module="govuk-button"
+                           data-show-view="@DataViewToggleHelper.CurrentView">Show current data</a>
+                    </div>
+
+                    <div id="all-gcse-data-over-time-chart-container" class="chart-container chart-table-toggle__chart">
                         <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-2">
                             Academic year
                         </p>
@@ -138,7 +137,7 @@
                         </div>
                     </div>
 
-                    <div id="all-gcse-data-over-time-table-container" class="all-gcse-data-over-time-table-container">
+                    <div id="all-gcse-data-over-time-table-container" class="chart-table-toggle__table">
                         <table id="all-gcse-data-overtime-table" class="govuk-table">
                             <thead class="govuk-table__head">
                                 <tr class="govuk-table__row">
@@ -163,40 +162,31 @@
                             </tbody>
                         </table>
                     </div>
-
-                    <div class="govuk-button-group">
-                        <govuk-button id="all-gcse-data-over-time-show-btn" type="button" class="govuk-button--secondary all-gcse-data-over-time-show-btn">Show as a table</govuk-button>
-                    </div>
-
-                    <div class="govuk-button-group">
-                        <label id="all-gcse-show-current-data-btn" for="current-view" class="govuk-button govuk-button--secondary" tabindex="0">Show current data</label>
-                    </div>
                 </div>
             </div>
-
-            <h3 class="govuk-heading-m">What you could ask schools about Key stage 4 results</h3>
-
-            <p class="govuk-body">
-                When researching, contacting or visiting a school, you may want to ask:
-            </p>
-
-            <ul class="govuk-list govuk-list--bullet">
-                <li>
-                    how does the school help pupils who need extra support in English and maths?
-                </li>
-                <li>
-                    what are the reasons behind results improving or not improving over time?
-                </li>
-                <li>
-                    if results are low, how does the school plan to improve them?
-                </li>
-            </ul>
-
-            <govuk-pagination id="academic-performance-english-maths-pagination">
-                <govuk-pagination-previous href="@Url.RouteUrl(RouteConstants.CompareSecondaryAcademicPerformancePupilAttainment, new { urns = Model.URNs })">Academic performance: Pupil attainment</govuk-pagination-previous>
-                <govuk-pagination-next href="@Url.RouteUrl(RouteConstants.CompareSecondaryDestinations, new { urns = Model.URNs })">Destinations after year 11</govuk-pagination-next>
-            </govuk-pagination>
         </div>
+        <h3 class="govuk-heading-m">What you could ask schools about Key stage 4 results</h3>
+
+        <p class="govuk-body">
+            When researching, contacting or visiting a school, you may want to ask:
+        </p>
+
+        <ul class="govuk-list govuk-list--bullet">
+            <li>
+                how does the school help pupils who need extra support in English and maths?
+            </li>
+            <li>
+                what are the reasons behind results improving or not improving over time?
+            </li>
+            <li>
+                if results are low, how does the school plan to improve them?
+            </li>
+        </ul>
+
+        <govuk-pagination id="academic-performance-english-maths-pagination">
+            <govuk-pagination-previous href="@Url.RouteUrl(RouteConstants.CompareSecondaryAcademicPerformancePupilAttainment, new { urns = Model.URNs })">Academic performance: Pupil attainment</govuk-pagination-previous>
+            <govuk-pagination-next href="@Url.RouteUrl(RouteConstants.CompareSecondaryDestinations, new { urns = Model.URNs })">Destinations after year 11</govuk-pagination-next>
+        </govuk-pagination>
     </div>
 </div>
 
@@ -204,5 +194,5 @@
     <script src="~/js/chart.umd.js"></script>
     <script src="~/js/chartjs-plugin-datalabels.min.js"></script>
     <script src="~/js/chart-factory.js"></script>
-    <script src="~/js/compare-english-maths-results.js"></script>
+    <script src="~/js/chart-table-toggle.js"></script>
 }
