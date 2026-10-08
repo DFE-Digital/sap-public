@@ -192,7 +192,7 @@ public class AcademicPerformanceAttainmentAndProgressViewModelTests
 
         // Assert
         var expectedContextStatement = expected != "Not available" ?
-            $"This means that pupils generally scored the equivalent of {expected} in their 8 best GCSE-level subjects."
+            $"This means that pupils generally scored the equivalent of {expected} in their 8 GCSE-level subjects."
             : "Not available";
         Assert.Equal(expectedContextStatement, viewModel.YearValues.CurrentYear.EstablishmentAttainment8ScoreContextDescription.DisplayText());
         if (expected == "Not available")

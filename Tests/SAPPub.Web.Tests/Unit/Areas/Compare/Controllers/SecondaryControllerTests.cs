@@ -142,14 +142,14 @@ public class SecondaryControllerTests
             Assert.NotNull(expectedSchoolDetails);
 
             var attainment8ContextSentence = AttainmentHelper.EstablishmentAttainment8ContextStatement(expectedSchoolDetails.Attainment8Score);
-            var expectedAttainment8ScoreContextDescription = attainment8ContextSentence != null ? $"Pupils generally scored the equivalent of {attainment8ContextSentence} in their 8 best GCSE-level subjects." : "Not available";
+            var expectedAttainment8ScoreContextDescription = attainment8ContextSentence != null ? $"Pupils generally scored the equivalent of {attainment8ContextSentence} in their 8 GCSE-level subjects." : "Not available";
 
             Assert.Equal(expectedSchoolDetails.Attainment8Score, viewModel.SchoolDetails.ToList()[i].Attainment8Score);
             Assert.Equal(expectedAttainment8ScoreContextDescription, viewModel.SchoolDetails.ToList()[i].Attainment8ScoreContextDescription.DisplayText());
         }
 
         var englandAttainment8ContextSentence = AttainmentHelper.EstablishmentAttainment8ContextStatement(englandPercentage);
-        var expectedEnglandAttainment8ScoreContextDescription = $"Pupils generally scored the equivalent of {englandAttainment8ContextSentence} in their 8 best GCSE-level subjects.";
+        var expectedEnglandAttainment8ScoreContextDescription = $"Pupils generally scored the equivalent of {englandAttainment8ContextSentence} in their 8 GCSE-level subjects.";
 
         Assert.Equal(englandPercentage, viewModel.EnglandPercentage);
         Assert.Equal(expectedEnglandAttainment8ScoreContextDescription, viewModel.EnglandAttainment8ScoreContextDescription.Value);
