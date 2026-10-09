@@ -50,7 +50,7 @@ public class AcademicPerformanceEnglishAndMathsResultsViewModel : BaseViewModel
 
         var allGcseOverTimeData = new DataOverTimeViewModel
         {
-            Labels = ["2022 to 2023", "2023 to 2024", "2024 to 2025"], // TODO - Need academic year to calculate current, previous and TwoYearsAgo
+            Labels = ["2023 to 2024", "2024 to 2025", "2025 to 2026"], // TODO - Need academic year to calculate current, previous and TwoYearsAgo
             Datasets =
                 [
                     new DatasetViewModel

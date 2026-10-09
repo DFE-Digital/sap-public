@@ -61,7 +61,7 @@ public class KS4DestinationsViewModel : ProfileBaseViewModel
             },
             AllDestinationsOverTimeData = new DataOverTimeViewModel
             {
-                Labels = ["2020 to 2021", "2021 to 2022", "2022 to 2023"], // TODO - Need academic year to calculate current, previous and TwoYearsAgo
+                Labels = ["2021 to 2022", "2022 to 2023", "2023 to 2024"], // TODO - Need academic year to calculate current, previous and TwoYearsAgo
                 Datasets =
                 [
                     new DatasetViewModel
