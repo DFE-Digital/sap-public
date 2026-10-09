@@ -93,7 +93,7 @@ public sealed class GenerateViews
         _sqlDir = sqlDir;
         _rebuildAllRawTables = rebuildAllRawTables;
         _rawTableNamesToRebuild = new HashSet<string>(
-            (rawTableNamesToRebuild ?? Array.Empty<string>()).Select(GenerateRawTables.GenerateShortTableName),
+            (rawTableNamesToRebuild ?? Array.Empty<string>()),
             StringComparer.OrdinalIgnoreCase);
     }
 

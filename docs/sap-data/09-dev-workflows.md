@@ -11,6 +11,9 @@ Copy to SAPData/DataMap/SourceFiles in SAPData project.
 dotnet build SAPPub.sln
 dotnet run --project SAPData/SAPData.csproj
 
+By default, only the raw tables listed in SAPData/raw_tables_to_rebuild.txt are rebuilt. 
+For a full rebuild, or the first run against an empty database, set REBUILD_ALL_RAW_TABLES=true. See Selective Rebuild.
+
 ## Run SQL files against a local copy of PostgreSQL
 
 Requires:

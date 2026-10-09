@@ -346,4 +346,43 @@ public class GenerateViewsTests : IDisposable
         var excludeFilter = filters.FirstOrDefault(f => f.Name == "ExcludeSpecificUrns");
         Assert.Null(excludeFilter);
     }
+
+    [Fact]
+    public void SelectiveMode_RebuildsView_When_PhysicalRawTableWasBuilt()
+    {
+        // Arrange
+        WriteMapping(("ks4_dest", "raw_ks4_dest_abc"));
+
+        var rows = new List<DataMapRow>
+        {
+            Row("ks4_dest", "England", "KS4_Destinations", "Overall", "overall")
+        };
+
+        // Act
+        new GenerateViews(rows, _mappingPath, _sqlDir, rawTableNamesToRebuild: ["raw_ks4_dest_abc"]).Run();
+        var sql = File.ReadAllText(Path.Combine(_sqlDir, "04_v_england_destinations.sql"));
+
+        // Assert
+        Assert.Contains("CREATE MATERIALIZED VIEW v_england_destinations", sql);
+    }
+
+    [Fact]
+    public void SelectiveMode_SkipsView_When_RawTableWasNotRebuilt()
+    {
+        // Arrange
+        WriteMapping(("ks4_dest", "raw_ks4_dest_abc"));
+
+        var rows = new List<DataMapRow>
+        {
+            Row("ks4_dest", "England", "KS4_Destinations", "Overall", "overall")
+        };
+
+        // Act
+        new GenerateViews(rows, _mappingPath, _sqlDir, rawTableNamesToRebuild: ["raw_some_other_table"]).Run();
+        var sql = File.ReadAllText(Path.Combine(_sqlDir, "04_v_england_destinations.sql"));
+
+        // Assert
+        Assert.DoesNotContain("CREATE MATERIALIZED VIEW", sql);
+        Assert.Contains("No rebuilt raw tables affect this view", sql);
+    }
 }

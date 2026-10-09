@@ -21,6 +21,13 @@ Common causes:
 - DataMap mismatch - check filename in map match filenames in blob (minus 'manual_')
 - View dependency order
 
+## Skipped view does not exist
+
+`ERROR: Skipped view v_xxx does not exist in schema public, but it required for selective rebuild`
+
+The run is in selective mode and a view it chose not to regenerate is missing. 
+On an empty or restored database, run once with `REBUILD_ALL_RAW_TABLES=true`. Otherwise, see Selective Rebuild.
+
 ## SAPData project
 
 - 'Missing table mapping or missing data file for xxxxxxx' - usually missing data file
