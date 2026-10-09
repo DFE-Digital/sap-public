@@ -25,6 +25,45 @@ public class Level2QualificationsTests(WebApplicationSetupFixture fixture) : Bas
     }
 
     [Theory]
+    [InlineData(Level2.TechCert)]
+    public async Task Level2QualificationsPage_KS5_AccessibilityNavigation(Level2 level2Qualification)
+    {
+        // Arrange && Act
+        var response = await Page.GotoAsync(GetPageUrl(level2Qualification));
+
+        //bypass cookies
+        await Page.Keyboard.PressAsync("Tab");
+        await Page.Keyboard.PressAsync("Tab");
+        await Page.Keyboard.PressAsync("Tab");
+
+        //start of page - _Layout page
+        await Page.Keyboard.PressAsync("Tab");
+
+        var activeElement = await Page.EvaluateHandleAsync("document.activeElement");
+        var prop = await activeElement.GetPropertyAsync("textContent");
+        string textContent = await prop.JsonValueAsync<string>();
+        Assert.Equal("Skip to main content", textContent);
+
+        //start of content - Default page
+        await Page.Keyboard.PressAsync("Enter");
+        await Page.Keyboard.PressAsync("Tab");
+
+        activeElement = await Page.EvaluateHandleAsync("document.activeElement");
+        prop = await activeElement.GetPropertyAsync("textContent");
+        textContent = await prop.JsonValueAsync<string>();
+        Assert.Equal("Skip contents", textContent);
+
+        //start of right side content - Level2Qualifications KS5 page
+        await Page.Keyboard.PressAsync("Enter");
+        await Page.Keyboard.PressAsync("Tab");
+
+        activeElement = await Page.EvaluateHandleAsync("document.activeElement");
+        prop = await activeElement.GetPropertyAsync("href");
+        string href = await prop.JsonValueAsync<string>();
+        Assert.Equal("https://explore-education-statistics.service.gov.uk/find-statistics", href);
+    }
+
+    [Theory]
     [InlineData(Level2.TechCert)]    
     public async Task Level2Qualifications_Displays_CurrentYear_Table(Level2 level2Qualification)
     {

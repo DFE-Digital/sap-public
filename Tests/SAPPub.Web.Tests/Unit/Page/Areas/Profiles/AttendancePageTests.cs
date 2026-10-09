@@ -107,7 +107,7 @@ public class AttendancePageTests : PageTestsBase
         var nav = new VerticalNavigationAssertHelper(doc);
 
         nav.ShouldBeVisibleAsync();
-        nav.ShouldHaveItemsCountAsync(7);
+        nav.ShouldHaveItemsCountAsync(8);
         nav.ShouldHaveOneActiveItemAsync();
         nav.ShouldHaveActiveHrefAsync(pageUrl);
     }
