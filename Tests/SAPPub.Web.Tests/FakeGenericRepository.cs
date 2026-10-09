@@ -749,7 +749,6 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             pupil_count = cohort,
             subject = subject,
             qualification_type = qual,
-            qualification_detailed = null,
             grade = "All",
             number_achieving = count
         };

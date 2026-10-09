@@ -46,7 +46,7 @@ public class KS5DestinationsTests : PageTestsBase
         Assert.Contains(
             h2Elements,
             x => x.TextContent.Trim() ==
-                 "Student destinations after 16 to 19 study (2023 leavers)");
+                 "Student destinations after 16 to 19 study (2024 leavers)");
 
         // Assert - page elements
         var tag =

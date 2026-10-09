@@ -21,7 +21,7 @@ public class SchoolAttainmentDetailsViewModel
             SchoolName = establishmentDetails.EstablishmentName,
             Attainment8Score = attainmentDetails.Attainment8Score,
             Attainment8ScoreContextDescription = establishmentAttainment8ContextSentence != null
-                ? $"Pupils generally scored the equivalent of {establishmentAttainment8ContextSentence} in their 8 best GCSE-level subjects.".ToDisplayField()
+                ? $"Pupils generally scored the equivalent of {establishmentAttainment8ContextSentence} in their 8 GCSE-level subjects.".ToDisplayField()
                 : DisplayField<string>.NotAvailable(),
         };
     }

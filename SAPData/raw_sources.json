@@ -7,7 +7,8 @@
     "DataSetId": "",
     "Url": "__SECRET_URL__",
     "FileType": "csv",
-    "FileName": "edubasealldataYYYYmmDD"
+    "FileName": "edubasealldataYYYYmmDD",
+    "FetchFromApi": true
   },
   {
     "Type": "All establishment",
@@ -17,7 +18,8 @@
     "DataSetId": "",
     "Url": "__SECRET_ESTABLISHMENT_LINKS_URL__",
     "FileType": "csv",
-    "FileName": "links_edubasealldataYYYYmmDD"
+    "FileName": "links_edubasealldataYYYYmmDD",
+    "FetchFromApi": true
   },
   {
     "Type": "Academy sponsor and trust",
@@ -27,18 +29,9 @@
     "DataSetId": "",
     "Url": "__SECRET_MAT_LINKS_URL__",
     "FileType": "zip",
-    "FileName": "grouplinks_edubaseallacademiesandfreeYYYYmmDD"
-  },
-  {
-    "Type": "KS4_Performance",
-    "Subtype": "SubjectEntries",
-    "Year": "Current",
-    "SourceOrg": "EES",
-    "DataSetId": "1ae39901-c621-a274-a84b-393929221b9f",
-    "Url": "",
-    "FileType": "csv",
-    "FileName": "202425_subject_local_authority_pupil_entriesachievements_provisional"
-  },
+    "FileName": "grouplinks_edubaseallacademiesandfreeYYYYmmDD",
+    "FetchFromApi": true
+  },  
   {
     "Type": "KS4_Performance",
     "Subtype": "SubjectEntries_2",
@@ -47,7 +40,8 @@
     "DataSetId": "1ae39901-b462-df76-b108-640a078d7944",
     "Url": "",
     "FileType": "csv",
-    "FileName": "202425_subject_school_all_exam_entriesgrades_provisional"
+    "FileName": "202526_subject_school_all_exam_entriesgrades_provisional",
+    "FetchFromApi": false
   },
   {
     "Type": "KS5_Performance",
@@ -57,6 +51,7 @@
     "DataSetId": "019c2960-df54-772f-8ad4-a2bc3d3b134f",
     "Url": "",
     "FileType": "csv",
-    "FileName": "institution_subject_and_qualification_results_202425_API"
+    "FileName": "institution_subject_and_qualification_results_202425_API",
+    "FetchFromApi": true
   }
 ]

@@ -117,7 +117,7 @@ public class AcademicPerformanceAttainmentAndProgressSingleYearViewModel
             LocalAuthorityAttainment8DisadvantagedScore = attainmentAndProgressModel.LocalAuthorityAttainment8DisadvantagedScore.GetValueForYear(year).ToDisplayField(),
             EnglandAttainment8DisadvantagedScore = attainmentAndProgressModel.EnglandAttainment8DisadvantagedScore.GetValueForYear(year).ToDisplayField(),
             EstablishmentAttainment8ScoreContextDescription = establishmentAttainment8ContextSentence != null
-                ? $"This means that pupils generally scored the equivalent of {establishmentAttainment8ContextSentence} in their 8 best GCSE-level subjects.".ToDisplayField()
+                ? $"This means that pupils generally scored the equivalent of {establishmentAttainment8ContextSentence} in their 8 GCSE-level subjects.".ToDisplayField()
                 : DisplayField<string>.NotAvailable(),
             LocalAuthorityAttainment8ScoreContextDescription = localAuthorityAttainment8ContextSentence != null
                 ? $"{localAuthorityAttainment8ContextSentence}".ToDisplayField()

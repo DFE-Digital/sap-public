@@ -260,6 +260,7 @@ jobs:
           $sourcesRaw = Get-Content $sourcesPathRepo -Raw | ConvertFrom-Json
           if ($null -eq $sourcesRaw) { throw "raw_sources.json parsed to null." }
           if ($sourcesRaw -isnot [System.Array]) { $sourcesRaw = @($sourcesRaw) }
+          $sourcesRaw = $sourcesRaw | Where-Object { $_.FetchFromApi -eq $true }
           $sources = @()
           foreach ($s in $sourcesRaw) {
             $type     = [string]$s.Type
