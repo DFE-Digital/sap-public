@@ -23,50 +23,52 @@
     })
 
     <div class="govuk-grid-column-three-quarters">
-        <h2 class="govuk-heading-xl">@ViewData["Header"]</h2>
-        <p class="govuk-body">
-            Looking at school performance data is one way to see how well a school is doing.
-            You should look at a range of information about a school before deciding if it’s the right fit for your child.
-        </p>
-        <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
-            <ul class="moj-sub-navigation__list">
-                <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress" asp-all-route-data="@Model.RouteAttributes">@SecondarySchoolPageTitles.ProgressAndAttainment</a>
-                </li>
-                <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults" asp-all-route-data="@Model.RouteAttributes">@SecondarySchoolPageTitles.EnglishAndMathsResultsTab</a>
-                </li>
-                <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" aria-current="page" asp-route="@RouteConstants.SecondaryAcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">@SecondarySchoolPageTitles.SubjectsEntered</a>
-                </li>
-                <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceAdditionalMeasures" asp-all-route-data="@Model.RouteAttributes">@SecondarySchoolPageTitles.AdditionalMeasures</a>
-                </li>
+        <div id="guide-contents">
+            <h2 class="govuk-heading-xl">@ViewData["Header"]</h2>
+            <p class="govuk-body">
+                Looking at school performance data is one way to see how well a school is doing.
+                You should look at a range of information about a school before deciding if it’s the right fit for your child.
+            </p>
+            <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
+                <ul class="moj-sub-navigation__list">
+                    <li class="moj-sub-navigation__item">
+                        <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress" asp-all-route-data="@Model.RouteAttributes">@SecondarySchoolPageTitles.ProgressAndAttainment</a>
+                    </li>
+                    <li class="moj-sub-navigation__item">
+                        <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults" asp-all-route-data="@Model.RouteAttributes">@SecondarySchoolPageTitles.EnglishAndMathsResultsTab</a>
+                    </li>
+                    <li class="moj-sub-navigation__item">
+                        <a class="moj-sub-navigation__link" aria-current="page" asp-route="@RouteConstants.SecondaryAcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">@SecondarySchoolPageTitles.SubjectsEntered</a>
+                    </li>
+                    <li class="moj-sub-navigation__item">
+                        <a class="moj-sub-navigation__link" asp-route="@RouteConstants.SecondaryAcademicPerformanceAdditionalMeasures" asp-all-route-data="@Model.RouteAttributes">@SecondarySchoolPageTitles.AdditionalMeasures</a>
+                    </li>
 
-            </ul>
-        </nav>
+                </ul>
+            </nav>
 
-        <h2 class="govuk-heading-l">@ViewData["SubHeader"] for the previous academic year</h2>
+            <h2 class="govuk-heading-l">@ViewData["SubHeader"] for the previous academic year</h2>
 
-        <p class="govuk-body">
-            Information in this section is for the 2024 to 2025 academic year.
-        </p>
+            <p class="govuk-body">
+                Information in this section is for the 2024 to 2025 academic year.
+            </p>
 
-        <govuk-details id="details-academic-performance">
-            <govuk-details-summary>
-                What do the qualifications mean?
-            </govuk-details-summary>
-            <govuk-details-text>
-                <p>A GCSE is an academic qualification awarded for exams in England, usually taken at the age of 16.</p>
-                <p>Technical Awards are vocational qualifications which focus on broad job areas, like health and social care or travel and tourism. Pupils can take Technical Awards alongside GCSEs.</p>
-            </govuk-details-text>
-        </govuk-details>
+            <govuk-details id="details-academic-performance">
+                <govuk-details-summary>
+                    What do the qualifications mean?
+                </govuk-details-summary>
+                <govuk-details-text>
+                    <p>A GCSE is an academic qualification awarded for exams in England, usually taken at the age of 16.</p>
+                    <p>Technical Awards are vocational qualifications which focus on broad job areas, like health and social care or travel and tourism. Pupils can take Technical Awards alongside GCSEs.</p>
+                </govuk-details-text>
+            </govuk-details>
 
-        <partial name="_SubjectsEntered" model="Model.GcseSubjects" view-data='new ViewDataDictionary(ViewData) { ["Caption"] = "GCSE subjects entered" }' />
-        <partial name="_SubjectsEntered" model="Model.VocationalSubjects" view-data='new ViewDataDictionary(ViewData) { ["Caption"] = "Technical Award subjects entered" }' />
-        <partial name="_SubjectsEntered" model="Model.OtherSubjects" view-data='new ViewDataDictionary(ViewData) { ["Caption"] = "Other subjects entered" }' />
+            <partial name="_SubjectsEntered" model="Model.GcseSubjects" view-data='new ViewDataDictionary(ViewData) { ["Caption"] = "GCSE subjects entered" }' />
+            <partial name="_SubjectsEntered" model="Model.VocationalSubjects" view-data='new ViewDataDictionary(ViewData) { ["Caption"] = "Technical Award subjects entered" }' />
+            <partial name="_SubjectsEntered" model="Model.OtherSubjects" view-data='new ViewDataDictionary(ViewData) { ["Caption"] = "Other subjects entered" }' />
 
-        @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.SecondaryAcademicPerformanceSubjectsEntered))
+            @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.SecondaryAcademicPerformanceSubjectsEntered))
 
+        </div>
     </div>
 </div>

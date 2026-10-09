@@ -23,137 +23,139 @@
     })
 
     <div class="govuk-grid-column-three-quarters">
-        <h2 class="govuk-heading-xl">@ViewData["Header"]</h2>
+        <div id="guide-contents">
+            <h2 class="govuk-heading-xl">@ViewData["Header"]</h2>
 
-        <p class="govuk-body">
-            Choose the type of qualifications you want to see:
-        </p>
+            <p class="govuk-body">
+                Choose the type of qualifications you want to see:
+            </p>
 
-        <ul class="govuk-list govuk-list--bullet">
-            <li>
-                Level 2 qualifications include GCSEs, Technical certificates and other level 2 qualifications.
-            </li>
-            <li>
-                Level 3 qualifications include A levels, Tech levels, and other level 3 qualifications.
-            </li>            
-        </ul>
-        
-        <p class="govuk-body">
-            Some establishments offer apprenticeships.
-            <br />
-            To view apprenticeship statistics, visit 
-            <a id="find-statistics-link"
-               class="govuk-link"
-               rel="noreferrer noopener"
-               target="_blank"
-               href="https://explore-education-statistics.service.gov.uk/find-statistics">
-                Find statistics and data <span class="govuk-visually-hidden">(opens in a new tab)</span>
-            </a>
-            <br />
-            To find and apply for an apprenticeship, visit 
-            <a id="find-apprenticeship-link"
-               class="govuk-link"
-               rel="noreferrer noopener"
-               target="_blank"
-               href="https://www.gov.uk/apply-apprenticeship">
-                Find an apprenticeship <span class="govuk-visually-hidden">(opens in a new tab)</span>
-            </a>
-        </p>
-
-        <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
-            <ul class="moj-sub-navigation__list">
-                <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" aria-current="page" asp-route="@RouteConstants.KS5AcademicPerformanceLevel3" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.KS5SchoolPageTitles.Level3Qualifications</a>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>
+                    Level 2 qualifications include GCSEs, Technical certificates and other level 2 qualifications.
                 </li>
-                <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.KS5AcademicPerformanceLevel2" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.KS5SchoolPageTitles.Level2Qualifications</a>
-                </li>
-                <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.KS5AcademicPerformanceEnglishMaths" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.KS5SchoolPageTitles.EnglishAndMaths</a>
-                </li>
-                <li class="moj-sub-navigation__item">
-                    <a class="moj-sub-navigation__link" asp-route="@RouteConstants.KS5AcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.KS5SchoolPageTitles.SubjectsEntered</a>
+                <li>
+                    Level 3 qualifications include A levels, Tech levels, and other level 3 qualifications.
                 </li>
             </ul>
-        </nav>
 
-        <form method="get" asp-route="@RouteConstants.KS5AcademicPerformanceLevel3" asp-all-route-data="@Model.RouteAttributes">
-            <div id="filterSection" class="select-filter">
-                <label for="qualificationSelector" class="govuk-label govuk-!-font-weight-bold">Choose qualification</label>
-                <select id="qualificationSelector" asp-for="@Model.Level3Qualification" class="govuk-select" asp-items="Html.GetEnumSelectList<Level3>()"></select>
-                <govuk-button type="submit">Show results</govuk-button>
+            <p class="govuk-body">
+                Some establishments offer apprenticeships.
+                <br />
+                To view apprenticeship statistics, visit 
+                <a id="find-statistics-link"
+                   class="govuk-link"
+                   rel="noreferrer noopener"
+                   target="_blank"
+                   href="https://explore-education-statistics.service.gov.uk/find-statistics">
+                    Find statistics and data <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                </a>
+                <br />
+                To find and apply for an apprenticeship, visit 
+                <a id="find-apprenticeship-link"
+                   class="govuk-link"
+                   rel="noreferrer noopener"
+                   target="_blank"
+                   href="https://www.gov.uk/apply-apprenticeship">
+                    Find an apprenticeship <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                </a>
+            </p>
+
+            <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
+                <ul class="moj-sub-navigation__list">
+                    <li class="moj-sub-navigation__item">
+                        <a class="moj-sub-navigation__link" aria-current="page" asp-route="@RouteConstants.KS5AcademicPerformanceLevel3" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.KS5SchoolPageTitles.Level3Qualifications</a>
+                    </li>
+                    <li class="moj-sub-navigation__item">
+                        <a class="moj-sub-navigation__link" asp-route="@RouteConstants.KS5AcademicPerformanceLevel2" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.KS5SchoolPageTitles.Level2Qualifications</a>
+                    </li>
+                    <li class="moj-sub-navigation__item">
+                        <a class="moj-sub-navigation__link" asp-route="@RouteConstants.KS5AcademicPerformanceEnglishMaths" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.KS5SchoolPageTitles.EnglishAndMaths</a>
+                    </li>
+                    <li class="moj-sub-navigation__item">
+                        <a class="moj-sub-navigation__link" asp-route="@RouteConstants.KS5AcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">@PageTitleConstants.KS5SchoolPageTitles.SubjectsEntered</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <form method="get" asp-route="@RouteConstants.KS5AcademicPerformanceLevel3" asp-all-route-data="@Model.RouteAttributes">
+                <div id="filterSection" class="select-filter">
+                    <label for="qualificationSelector" class="govuk-label govuk-!-font-weight-bold">Choose qualification</label>
+                    <select id="qualificationSelector" asp-for="@Model.Level3Qualification" class="govuk-select" asp-items="Html.GetEnumSelectList<Level3>()"></select>
+                    <govuk-button type="submit">Show results</govuk-button>
+                </div>
+            </form>
+
+            <h2 class="govuk-heading-l">@Model.Level3Qualification.GetDisplayName()</h2>
+
+            @* Qualification Info *@
+            <partial name="_QualificationInfo" view-data='new ViewDataDictionary(ViewData) { ["QualificationLevel"] = Model.Level3Qualification }' />
+
+            <p id="no-of-students-completed-qualification-info" class="govuk-tag govuk-tag--full-width govuk-tag--grey govuk-!-margin-bottom-4">
+                Number of students from this school or college included in the measure: @Model.TotalNoOfStudentCompletedQualification.DisplayText()
+            </p>
+
+            @* ProgressScore Info *@
+            <partial name="_ProgressScore" model="@Model.ProgressScore" view-data='new ViewDataDictionary(ViewData) { ["QualificationLevel"] = Model.Level3Qualification }' />
+
+            @* Average result *@
+            <partial name="_AverageResult" model="@Model.AverageResult" view-data='new ViewDataDictionary(ViewData) { ["QualificationLevel"] = Model.Level3Qualification, ["LAName"] = Model.LAName }' />
+
+            @* Student retention *@
+            <h3 class="govuk-heading-m">Student retention</h3>
+            <div id="student-retention" class="govuk-inset-text">
+                Measures on student retention will be available shortly in a future release.
             </div>
-        </form>
 
-        <h2 class="govuk-heading-l">@Model.Level3Qualification.GetDisplayName()</h2>
+            @* Performance Summary *@
+            <partial name="_PerformanceSummary" model="@Model.PerformanceGroupsData" view-data='new ViewDataDictionary(ViewData) { ["LAName"] = Model.LAName }' />
 
-        @* Qualification Info *@
-        <partial name="_QualificationInfo" view-data='new ViewDataDictionary(ViewData) { ["QualificationLevel"] = Model.Level3Qualification }' />
+            @if (Model.Level3Qualification == Level3.ALevel)
+            {
+                @* Additional data *@
+                <partial name="_AdditionalData" model="@Model.AdditionalData" view-data='new ViewDataDictionary(ViewData) { ["LAName"] = Model.LAName }' />
+            }
 
-        <p id="no-of-students-completed-qualification-info" class="govuk-tag govuk-tag--full-width govuk-tag--grey govuk-!-margin-bottom-4">
-            Number of students from this school or college included in the measure: @Model.TotalNoOfStudentCompletedQualification.DisplayText()
-        </p>
+            @* Show Achieving advanced level maths qualifications if valid *@
+            @if (Model.Level3Qualification == Level3.Academic
+                    && Model.AdvancedLevelMathsQualificationData != null)
+            {
+                <govuk-details id="advanced-level-maths-qualifications-details">
+                    <govuk-details-summary>
+                        Achieving advanced level maths qualifications
+                    </govuk-details-summary>
+                    <govuk-details-text>
+                        <h3 class="govuk-heading-m">Achieving advanced level maths qualifications </h3>
+                        <p class="govuk-body">Compare this school or college with state-funded local and national averages.</p>
 
-        @* ProgressScore Info *@
-        <partial name="_ProgressScore" model="@Model.ProgressScore" view-data='new ViewDataDictionary(ViewData) { ["QualificationLevel"] = Model.Level3Qualification }' />
+                        <table id="advanced-level-maths-qualifications-table" class="govuk-table">
+                            <tbody class="govuk-table__body">
+                                <tr class="govuk-table__row">
+                                    <th scope="row" class="govuk-table__header">School or college</th>
+                                    <td class="govuk-table__cell">@Model.AdvancedLevelMathsQualificationData!.SchoolOrCollege.DisplayPercentage()</td>
+                                </tr>
+                                <tr class="govuk-table__row">
+                                    <th scope="row" class="govuk-table__header">@Model.LAName</th>
+                                    <td class="govuk-table__cell">@Model.AdvancedLevelMathsQualificationData!.LocalAuthority.DisplayPercentage()</td>
+                                </tr>
+                                <tr class="govuk-table__row">
+                                    <th scope="row" class="govuk-table__header">England average</th>
+                                    <td class="govuk-table__cell">@Model.AdvancedLevelMathsQualificationData!.England.DisplayPercentage()</td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-        @* Average result *@
-        <partial name="_AverageResult" model="@Model.AverageResult" view-data='new ViewDataDictionary(ViewData) { ["QualificationLevel"] = Model.Level3Qualification, ["LAName"] = Model.LAName }' />
+                    </govuk-details-text>
+                </govuk-details>
+            }
 
-        @* Student retention *@
-        <h3 class="govuk-heading-m">Student retention</h3>
-        <div id="student-retention" class="govuk-inset-text">
-            Measures on student retention will be available shortly in a future release.
+            @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.KS5AcademicPerformanceLevel3))
+
         </div>
-        
-        @* Performance Summary *@
-        <partial name="_PerformanceSummary" model="@Model.PerformanceGroupsData" view-data='new ViewDataDictionary(ViewData) { ["LAName"] = Model.LAName }' />
-
-        @if (Model.Level3Qualification == Level3.ALevel)
-        {            
-            @* Additional data *@
-            <partial name="_AdditionalData" model="@Model.AdditionalData" view-data='new ViewDataDictionary(ViewData) { ["LAName"] = Model.LAName }' />
-        }
-
-        @* Show Achieving advanced level maths qualifications if valid *@
-        @if (Model.Level3Qualification == Level3.Academic
-                && Model.AdvancedLevelMathsQualificationData != null)
-        {            
-            <govuk-details id="advanced-level-maths-qualifications-details">
-                <govuk-details-summary>
-                    Achieving advanced level maths qualifications
-                </govuk-details-summary>
-                <govuk-details-text>
-                    <h3 class="govuk-heading-m">Achieving advanced level maths qualifications </h3>
-                    <p class="govuk-body">Compare this school or college with state-funded local and national averages.</p>
-
-                    <table id="advanced-level-maths-qualifications-table" class="govuk-table">
-                        <tbody class="govuk-table__body">
-                            <tr class="govuk-table__row">
-                                <th scope="row" class="govuk-table__header">School or college</th>
-                                <td class="govuk-table__cell">@Model.AdvancedLevelMathsQualificationData!.SchoolOrCollege.DisplayPercentage()</td>
-                            </tr>
-                            <tr class="govuk-table__row">
-                                <th scope="row" class="govuk-table__header">@Model.LAName</th>
-                                <td class="govuk-table__cell">@Model.AdvancedLevelMathsQualificationData!.LocalAuthority.DisplayPercentage()</td>
-                            </tr>
-                            <tr class="govuk-table__row">
-                                <th scope="row" class="govuk-table__header">England average</th>
-                                <td class="govuk-table__cell">@Model.AdvancedLevelMathsQualificationData!.England.DisplayPercentage()</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                </govuk-details-text>
-            </govuk-details>
-        }
-
-             @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.KS5AcademicPerformanceLevel3))
-
     </div>
 </div>
 
-@section Scripts 
+@section Scripts
 {
     <script src="~/js/chart-table-toggle.js"></script>
 }

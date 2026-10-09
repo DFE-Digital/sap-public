@@ -59,6 +59,43 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
     }
 
     [Fact]
+    public async Task OverviewPage_AccessibilityNavigation()
+    {
+        await GoToOverviewAsync();
+
+        //bypass cookies
+        await Page.Keyboard.PressAsync("Tab");
+        await Page.Keyboard.PressAsync("Tab");
+        await Page.Keyboard.PressAsync("Tab");
+
+        //start of page - _Layout page
+        await Page.Keyboard.PressAsync("Tab");
+
+        var activeElement = await Page.EvaluateHandleAsync("document.activeElement");
+        var prop = await activeElement.GetPropertyAsync("textContent");
+        string textContent = await prop.JsonValueAsync<string>();
+        Assert.Equal("Skip to main content", textContent);
+
+        //start of content - Default page
+        await Page.Keyboard.PressAsync("Enter");
+        await Page.Keyboard.PressAsync("Tab");
+
+        activeElement = await Page.EvaluateHandleAsync("document.activeElement");
+        prop = await activeElement.GetPropertyAsync("textContent");
+        textContent = await prop.JsonValueAsync<string>();
+        Assert.Equal("Skip contents", textContent);
+
+        //start of right side content - Overview page
+        await Page.Keyboard.PressAsync("Enter");
+        await Page.Keyboard.PressAsync("Tab");
+
+        activeElement = await Page.EvaluateHandleAsync("document.activeElement");
+        prop = await activeElement.GetPropertyAsync("id");
+        string id = await prop.JsonValueAsync<string>();
+        Assert.Equal("map", id);
+    }
+
+    [Fact]
     public async Task OverviewPage_HasExpectedUrl()
     {
         await GoToOverviewAsync();

@@ -8,6 +8,9 @@
     <div class="govuk-grid-column-one-quarter">
         <nav class="moj-side-navigation" aria-label="Side navigation">
             <ul class="moj-side-navigation__list">
+                <li id="school-overview-side-nav" class="moj-side-navigation__item @(Model.ActivePage == "moj-side-navigation__item--active")">
+                    <a data-module="govuk-skip-link" class="govuk-skip-link" href="#guide-contents">Skip contents</a>
+                </li>
                 <li class="moj-side-navigation__item  @(Model.ActivePage == RouteConstants.CompareSecondaryAboutYourSchools ? "moj-side-navigation__item--active" : "")">
                     <a href="@Url.RouteUrl(RouteConstants.CompareSecondaryAboutYourSchools, new {urns = Model.URNs})">About your schools</a>
                 </li>

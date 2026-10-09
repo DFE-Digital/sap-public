@@ -27,6 +27,44 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
     }
 
     [Fact]
+    public async Task AdmissionsPage_KS2_AccessibilityNavigation()
+    {
+        // Arrange && Act
+        var response = await Page.GotoAsync(_schoolUrnToUrlMap["143034"]);
+
+        //bypass cookies
+        await Page.Keyboard.PressAsync("Tab");
+        await Page.Keyboard.PressAsync("Tab");
+        await Page.Keyboard.PressAsync("Tab");
+
+        //start of page - _Layout page
+        await Page.Keyboard.PressAsync("Tab");
+
+        var activeElement = await Page.EvaluateHandleAsync("document.activeElement");
+        var prop = await activeElement.GetPropertyAsync("textContent");
+        string textContent = await prop.JsonValueAsync<string>();
+        Assert.Equal("Skip to main content", textContent);
+
+        //start of content - Default page
+        await Page.Keyboard.PressAsync("Enter");
+        await Page.Keyboard.PressAsync("Tab");
+
+        activeElement = await Page.EvaluateHandleAsync("document.activeElement");
+        prop = await activeElement.GetPropertyAsync("textContent");
+        textContent = await prop.JsonValueAsync<string>();
+        Assert.Equal("Skip contents", textContent);
+
+        //start of right side content - Admissions KS2 page
+        await Page.Keyboard.PressAsync("Enter");
+        await Page.Keyboard.PressAsync("Tab");
+
+        activeElement = await Page.EvaluateHandleAsync("document.activeElement");
+        prop = await activeElement.GetPropertyAsync("href");
+        string href = await prop.JsonValueAsync<string>();
+        Assert.Equal("https://www.gov.uk/schools-admissions/school-starting-age", href);
+    }
+
+    [Fact]
     public async Task AdmissionsPage_HasCorrectTitle()
     {
         // Arrange
@@ -72,8 +110,8 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
     }
 
     [Theory]
-    [InlineData("143034", 6)]
-    [InlineData("150009", 8 )]
+    [InlineData("143034", 7)]
+    [InlineData("150009", 9 )]
     public async Task AdmissionsPage_Displays_VerticalNavigation(string schoolUrn, int expectedItemCount)
     {
         var nav = new VerticalNavigationHelper(Page);
