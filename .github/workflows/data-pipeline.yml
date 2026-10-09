@@ -54,9 +54,8 @@ jobs:
       DEPLOY_ENV: ${{ inputs.environment || 'test'  }}
       PR_NUM: ${{ inputs.pr-number || ''  }}
 
-      # Blob (currently from GitHub secrets)
-      AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
-      AZURE_STORAGE_CONTAINER: ${{ secrets.AZURE_STORAGE_CONTAINER }}
+      # Blob container
+      AZURE_STORAGE_CONTAINER: alldata      # Could come from [env].tfvars.json
 
       # Sensitive source URLs (THREE endpoints in GitHub secrets)
       SENSITIVE_DATASET_URL: ${{ secrets.SENSITIVE_DATASET_URL }}
@@ -82,7 +81,13 @@ jobs:
           echo "AKS_NAMESPACE=$(jq -r '.namespace' ${tf_vars_file})" >> $GITHUB_ENV
           echo "AKS_CLUSTER_NAME=$(jq -r '.cluster_name' ${tf_vars_file})" >> $GITHUB_ENV
           echo "AKS_RESOURCE_GROUP=$(jq -r '.cluster_rg' ${tf_vars_file})" >> $GITHUB_ENV
-          echo "STORAGE_ACCOUNT_NAME=${AZURE_RESOURCE_PREFIX}${SERVICE_SHORT}dp${CONFIG_SHORT}sa" >> $GITHUB_ENV
+          # Review apps have no data storage account, so they use the test one:
+          storage_config_short=${CONFIG_SHORT}
+          if [ "${DEPLOY_ENV}" == "review" ]; then
+            storage_config_short=ts
+          fi
+          echo "STORAGE_ACCOUNT_NAME=${AZURE_RESOURCE_PREFIX}${SERVICE_SHORT}dp${storage_config_short}sa" >> $GITHUB_ENV
+          echo "RESOURCE_GROUP_NAME=${AZURE_RESOURCE_PREFIX}-${SERVICE_SHORT}-${storage_config_short}-rg" >> $GITHUB_ENV
           echo "DB_SERVER=${AZURE_RESOURCE_PREFIX}-${SERVICE_SHORT}-${CONFIG_SHORT}-pg" >> $GITHUB_ENV
           if [ "${DEPLOY_ENV}" == "review" ]; then
             echo "KONDUIT_APP_NAME=$(jq -r '.app_prefix' ${tf_vars_file})${{env.PR_NUM}}" >> $GITHUB_ENV
@@ -120,6 +125,21 @@ jobs:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+
+      - name: Get blob storage connection string
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Using storage account ${STORAGE_ACCOUNT_NAME} (resource group ${RESOURCE_GROUP_NAME}), container ${AZURE_STORAGE_CONTAINER}"
+          conn=$(az storage account show-connection-string -g ${RESOURCE_GROUP_NAME} -n ${STORAGE_ACCOUNT_NAME} --query 'connectionString')
+          if [ -z "${conn}" ]; then
+            echo "::error::Could not get connection string for storage account ${STORAGE_ACCOUNT_NAME}"
+            exit 1
+          fi
+          echo "::add-mask::${conn}"
+          echo "AZURE_STORAGE_CONNECTION_STRING=${conn}" >> $GITHUB_ENV
+
 
       # ==============================
       # 4. AKS access + konduit install
@@ -811,11 +831,13 @@ jobs:
             exit 1
           fi
 
+  # Production is left in maintenance mode for now. To revert, see github history for 2nd condition of if below:
+  # && ((inputs.environment || 'test') == 'test' || inputs.environment == 'production')
   disable-maintenance:
     name: Disable maintenance mode
     needs: [enable-maintenance, ingest, health-check]
     if: ${{ always()
-      && ((inputs.environment || 'test') == 'test' || inputs.environment == 'production')
+      && (inputs.environment || 'test') == 'test'
       && needs.enable-maintenance.result == 'success'
       && needs.health-check.outputs.db-usable == 'true' }}
     uses: ./.github/workflows/maintenance.yml
