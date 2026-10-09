@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services.Search;
@@ -70,6 +71,128 @@ public class SearchControllerTests
                 HttpContext = new DefaultHttpContext()
             }
         };
+
+        _controller.TempData = new TempDataDictionary(_controller.HttpContext, Mock.Of<ITempDataProvider>());
+    }
+
+    [Theory]
+    [InlineData("school")]
+    [InlineData("School")]
+    [InlineData("SCHOOL")]
+    [InlineData(" school ")]
+    [InlineData("sChOoL")]
+    [InlineData("s c h o o l")]
+    public void Post_Index_SchoolOnlySearch_ShowsValidationErrorAndStaysOnMainPage(string nameSearchTerm)
+    {
+        // act
+        var result = _controller.Index(new SearchParamsModel { NameSearchTerm = nameSearchTerm });
+
+        // assert
+        var viewResult = Assert.IsType<ViewResult>(result);
+        var viewModel = Assert.IsType<SearchResultsViewModel>(viewResult.Model);
+
+        Assert.Equal(nameSearchTerm, viewModel.SearchParams.NameSearchTerm);
+        Assert.False(_controller.ModelState.IsValid);
+        Assert.Equal("Enter a school name or search by postcode", _controller.ModelState["SearchParams.NameSearchTerm"]?.Errors.Single().ErrorMessage);
+    }
+
+    [Fact]
+    public void Post_Index_SchoolWithPostcode_RedirectsToSearchResults()
+    {
+        // act
+        var result = _controller.Index(new SearchParamsModel
+        {
+            NameSearchTerm = "school",
+            LocationSearchTerm = "LS28 8EU"
+        });
+
+        // assert
+        var redirectResult = Assert.IsType<RedirectToActionResult>(result);
+        Assert.Equal("SearchResults", redirectResult.ActionName);
+    }
+
+    [Fact]
+    public async Task Get_SearchResults_SchoolOnlySearch_RedirectsToIndexAndDoesNotSearch()
+    {
+        // act
+        var result = await _controller.SearchResults(new SearchParamsModel { NameSearchTerm = " school " });
+
+        // assert
+        var redirectResult = Assert.IsType<RedirectToActionResult>(result);
+        Assert.Equal(nameof(SearchController.Index), redirectResult.ActionName);
+        Assert.Equal("Enter a school name or search by postcode", _controller.TempData["BroadSearchError"]);
+
+        _mockSchoolSearchService.Verify(x => x.SearchAsync(It.IsAny<SchoolSearchServiceQuery>()), Times.Never);
+    }
+
+    [Fact]
+    public void Get_Index_WithBroadSearchTempData_AddsValidationError()
+    {
+        // arrange
+        _controller.TempData["BroadSearchError"] = "Enter a school name or search by postcode";
+
+        // act
+        var result = _controller.Index();
+
+        // assert
+        Assert.IsType<ViewResult>(result);
+        Assert.False(_controller.ModelState.IsValid);
+        Assert.Equal("Enter a school name or search by postcode", _controller.ModelState["SearchParams.NameSearchTerm"]?.Errors.Single().ErrorMessage);
+    }
+
+    [Fact]
+    public async Task Get_SearchResults_SearchContainingSchoolWithOtherWords_ContinuesAsNormal()
+    {
+        // arrange
+        var searchQuery = new SchoolSearchServiceQuery { Name = "secondary school" };
+
+        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
+        {
+            Status = SchoolSearchStatus.Success,
+            PagedResponse = new PagedResponse<SchoolSearchResultServiceModel>
+            {
+                TotalRecords = 0,
+                Records = [],
+                PagerInfo = new Pager(0, 1, 10)
+            }
+        });
+
+        // act
+        var result = await _controller.SearchResults(new SearchParamsModel { NameSearchTerm = searchQuery.Name });
+
+        // assert
+        Assert.IsType<ViewResult>(result);
+        _mockSchoolSearchService.Verify(s => s.SearchAsync(searchQuery), Times.Once);
+    }
+
+    [Fact]
+    public async Task Get_SearchResults_SearchForSchoolsWithValidPostcode_ContinuesAsNormal()
+    {
+        // arrange
+        var searchQuery = new SchoolSearchServiceQuery { Name = "schools", Location = "LS28 8EU", Distance = 3 };
+
+        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
+        {
+            Status = SchoolSearchStatus.Success,
+            PagedResponse = new PagedResponse<SchoolSearchResultServiceModel>
+            {
+                TotalRecords = 0,
+                Records = [],
+                PagerInfo = new Pager(0, 1, 10)
+            }
+        });
+
+        // act
+        var result = await _controller.SearchResults(new SearchParamsModel
+        {
+            NameSearchTerm = searchQuery.Name,
+            LocationSearchTerm = searchQuery.Location,
+            Distance = searchQuery.Distance!.Value
+        });
+
+        // assert
+        Assert.IsType<ViewResult>(result);
+        _mockSchoolSearchService.Verify(s => s.SearchAsync(searchQuery), Times.Once);
     }
 
     [Fact]
