@@ -7,11 +7,11 @@ export function searchAndFilterJourney (environment, config) {
   group('search: Search and Filter Journey', function () {
     group('Basic Search', function () {
 
-      const response = http.get(`${environment.baseUrl}/search/results?NameSearchTerm=school&Distance=3&PageNumber=1`)
+      const response = http.get(`${environment.baseUrl}/search/results?NameSearchTerm=ark&Distance=3&PageNumber=1`)
       const isSuccess = loadPerformanceCheck(response, 'Basic Search', config.expectedResponseTimes.search)
 
       loadContentCheck(response, 'search-results', 'results for')
-      loadContentCheck(response, 'has-result', 'Abacus')
+      loadContentCheck(response, 'has-result', 'Ark')
 
       if (!isSuccess) {
         loadErrorHandler(response, 'Basic Search')
@@ -25,7 +25,7 @@ export function searchAndFilterJourney (environment, config) {
 
     for (let page = 1; page <= maxPages; page++) {
 
-        const response = http.get(`${environment.baseUrl}/search/results?NameSearchTerm=school&Distance=3&pageNumber=${page}`)
+        const response = http.get(`${environment.baseUrl}/search/results?NameSearchTerm=ark&Distance=3&pageNumber=${page}`)
         const isSuccess = loadPerformanceCheck(response, 'Multi-Page Search', config.expectedResponseTimes.search)
         if (isSuccess) {
           loadContentCheck(response, 'search-results', 'results for')
@@ -45,15 +45,15 @@ export function searchAndFilterJourney (environment, config) {
 
     group('Advanced Filter Search', function () {
 
-      const response = http.get(`${environment.baseUrl}/search/results?NameSearchTerm=school&LocationSearchTerm=N1C%204PF&Distance=3&pageNumber=1`)
+      const response = http.get(`${environment.baseUrl}/search/results?NameSearchTerm=ark&LocationSearchTerm=N1C%204PF&Distance=3&pageNumber=1`)
       const isSuccess = loadPerformanceCheck(response, 'Advanced Filter Search', config.expectedResponseTimes.search)
       if (isSuccess) {
         loadContentCheck(response, 'sort', 'Sorted by distance')
         loadContentCheck(response, 'search-results', 'results for')
         loadContentCheck(response, 'button-labels', 'Next')
-        loadContentCheck(response, 'has-result', 'Pancras')
+        loadContentCheck(response, 'has-result', 'Ark')
       }
-      if (!isSuccess) {
+      if (!isSuccess) {``
         loadErrorHandler(response, 'Advanced Filter Search')
       }
 
