@@ -18,6 +18,8 @@ public class GenerateRawTables
 
     public IReadOnlySet<string> RebuiltTableNames => _rebuiltTableNames;
 
+    public IReadOnlySet<string> KnownTableNames => _tableMappings.Values.ToHashSet(StringComparer.OrdinalIgnoreCase);
+
     static GenerateRawTables()
     {
         // Windows-1252 ("ANSI") is not included by default in .NET Core / .NET.

@@ -1,5 +1,6 @@
 ﻿using SAPData.Filters;
 using SAPData.Models;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -85,7 +86,7 @@ public sealed class GenerateViews
         IReadOnlyList<DataMapRow> rows, 
         string tableMappingPath, 
         string sqlDir,
-        IEnumerable<string>? logicalKeysToRebuild = null,
+        IEnumerable<string>? rawTableNamesToRebuild = null,
         bool rebuildAllRawTables = false)
     {
         _rows = rows;
@@ -93,7 +94,7 @@ public sealed class GenerateViews
         _sqlDir = sqlDir;
         _rebuildAllRawTables = rebuildAllRawTables;
         _rawTableNamesToRebuild = new HashSet<string>(
-            (logicalKeysToRebuild ?? Array.Empty<string>()).Select(GenerateRawTables.GenerateShortTableName),
+            (rawTableNamesToRebuild ?? Array.Empty<string>()).Select(GenerateRawTables.GenerateShortTableName),
             StringComparer.OrdinalIgnoreCase);
     }
 
@@ -116,7 +117,7 @@ public sealed class GenerateViews
                 if (!ShouldRebuildView(tableMap, sources, view.ViewName))
                 {
                     sql = BuildSkippedSql(view.ViewName, "No rebuilt raw tables affect this view.");
-                    WriteSql("03", view.ViewName, sql);
+                    WriteSql("04", view.ViewName, sql);
                     continue;
                 }
 
@@ -448,7 +449,8 @@ public sealed class GenerateViews
                 sourceOrg: "GIAS",
                 type: "All establishment",
                 subtype: "Metadata",
-                year: "Current");
+                year: "Current") ||
+                GetEstablishmentLookupRawTables(tableMap).Any(_rawTableNamesToRebuild.Contains);
         }
 
         if (viewName.Equals("v_establishment_links", StringComparison.OrdinalIgnoreCase))
@@ -544,6 +546,36 @@ public sealed class GenerateViews
 
         return false;
     }
+
+    /// <summary>
+    /// Raw tables v_establishment reads beside the GIAS dimension: the key stage URN CTEs,
+    /// the free breakfast club CTE and the wraparound care join
+    /// </summary>
+    /// <param name="tableMap"></param>
+    /// <returns></returns>
+    private IEnumerable<string> GetEstablishmentLookupRawTables(Dictionary<string, string> tableMap)
+    {
+        var lookupTypes = KeyStageConstants.AllKeyStages
+            .Select(KeyStageType)
+            .Append("BreakfastClub")
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        var datasetKeys = _rows
+            .Where(a => a.Range == "Establishment" && lookupTypes.Contains(a.Type))
+            .Select(a => (a.FileName ?? "").Trim())
+            .Where(a => !string.IsNullOrWhiteSpace(a))
+            .Append("ks2_wraparound_care")
+            .Distinct(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var datasetKey in datasetKeys)
+        {
+            if (TryResolveRawTable(tableMap, datasetKey, out var rawTable) && !string.IsNullOrWhiteSpace(rawTable))
+            {
+                yield return rawTable;
+            }
+        }
+    }
+
 
     private bool IsManagedSourceRebuilt(
         Dictionary<string, string> tableMap,
@@ -1389,8 +1421,7 @@ public sealed class GenerateViews
         {
             var cteName = $"{ks.ToLowerInvariant()}_urns";
             // KS2 uses "KS2_Attainment", while KS4 and KS5 use "Performance"
-            var keyStageType = ks == KeyStageConstants.KS2 ? $"{ks}_Attainment" : $"{ks}_Performance";
-            var cte = GenerateKeyStageUrnsCte(rows, tableMap, keyStageType, cteName);
+            var cte = GenerateKeyStageUrnsCte(rows, tableMap, KeyStageType(ks), cteName);
             if (!string.IsNullOrWhiteSpace(cte))
             {
                 ctes[ks] = cte;
@@ -1399,6 +1430,9 @@ public sealed class GenerateViews
         }
         return (ctes, filters);
     }
+
+    private static string KeyStageType(string ks) =>
+        ks == KeyStageConstants.KS2 ? $"{ks}_Attainment" : $"{ks}_Performance";
 
     private static string BuildSenTypes()
     {

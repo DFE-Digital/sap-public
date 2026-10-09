@@ -61,12 +61,12 @@ internal class Program
 
         rawTables.Run();
 
-        SqlHelpers.WriteCleanupSql(Path.Combine(sqlDir, "00_cleanup.sql"), rawTables.RebuiltTableNames, rebuildAllRawTables);
+        SqlHelpers.WriteCleanupSql(Path.Combine(sqlDir, "00_cleanup.sql"), rawTables.RebuiltTableNames, rawTables.KnownTableNames, rebuildAllRawTables);
 
         // -------------------------------------------------
         // 3. Generate views
         // -------------------------------------------------
-        new GenerateViews(dataMaps, tableMappingPath, sqlDir, logicalKeysToRebuild, rebuildAllRawTables).Run();
+        new GenerateViews(dataMaps, tableMappingPath, sqlDir, rawTables.RebuiltTableNames, rebuildAllRawTables).Run();
 
         // -------------------------------------------------
         // 4. Generate indexes

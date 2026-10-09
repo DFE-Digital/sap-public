@@ -67,7 +67,7 @@ public class GenerateViewsTests : IDisposable
         WriteMapping(("edubasealldata", "t_edubase_123abcdef01"), ("Free_breakfast_clubs_schools_on_the_programme", "t_free_breakfast_clubs_ac323eeb35"));
 
         var rows = new List<DataMapRow>();
-        new GenerateViews(rows, _mappingPath, _sqlDir).Run();
+        new GenerateViews(rows, _mappingPath, _sqlDir, rebuildAllRawTables: true).Run();
 
         var path = Path.Combine(_sqlDir, "04_v_establishment.sql");
         Assert.True(File.Exists(path));
@@ -92,7 +92,7 @@ public class GenerateViewsTests : IDisposable
         var filters = SqlViewFilterProvider.GetEstablishmentFilters();
 
         // Act
-        new GenerateViews(rows, _mappingPath, _sqlDir).Run();
+        new GenerateViews(rows, _mappingPath, _sqlDir, rebuildAllRawTables: true).Run();
 
         var sql = File.ReadAllText(Path.Combine(_sqlDir, "04_v_establishment.sql"));
 
@@ -124,7 +124,7 @@ public class GenerateViewsTests : IDisposable
         };
 
         // Act
-        new GenerateViews(rows, _mappingPath, _sqlDir).Run();
+        new GenerateViews(rows, _mappingPath, _sqlDir, rebuildAllRawTables: true).Run();
         var sql = File.ReadAllText(Path.Combine(_sqlDir, "04_v_establishment.sql"));
 
         // Assert: All keystage CTEs and columns should be present
@@ -160,7 +160,7 @@ public class GenerateViewsTests : IDisposable
         };
 
         // Act
-        new GenerateViews(rows, _mappingPath, _sqlDir).Run();
+        new GenerateViews(rows, _mappingPath, _sqlDir, rebuildAllRawTables: true).Run();
         var sql = File.ReadAllText(Path.Combine(_sqlDir, "04_v_establishment.sql"));
 
         // Assert: All keystage columns should always be present (using base conditions)
@@ -189,7 +189,7 @@ public class GenerateViewsTests : IDisposable
         );
 
         // Act
-        new GenerateViews(rows, _mappingPath, _sqlDir).Run();
+        new GenerateViews(rows, _mappingPath, _sqlDir, rebuildAllRawTables: true).Run();
         var sql = File.ReadAllText(Path.Combine(_sqlDir, "04_v_establishment.sql"));
 
         // Assert: Each filter's SQL is present
@@ -212,7 +212,7 @@ public class GenerateViewsTests : IDisposable
         };
 
         // Act
-        new GenerateViews(rows, _mappingPath, _sqlDir).Run();
+        new GenerateViews(rows, _mappingPath, _sqlDir, rebuildAllRawTables: true).Run();
         var sql = File.ReadAllText(Path.Combine(_sqlDir, "04_v_establishment.sql"));
 
         // Assert: CTE and ISKS4 logic present
@@ -234,7 +234,7 @@ public class GenerateViewsTests : IDisposable
             Row("ks4_dest", "England", "KS4_Destinations", "Overall", "overall")
         };
 
-        new GenerateViews(rows, _mappingPath, _sqlDir).Run();
+        new GenerateViews(rows, _mappingPath, _sqlDir, rebuildAllRawTables: true).Run();
 
         var path = Path.Combine(_sqlDir, "04_v_england_destinations.sql");
         Assert.True(File.Exists(path));
@@ -256,7 +256,7 @@ public class GenerateViewsTests : IDisposable
             Row("ks4_dest", "LA", "KS4_Performance", "P8", "p8")
         };
 
-        new GenerateViews(rows, _mappingPath, _sqlDir).Run();
+        new GenerateViews(rows, _mappingPath, _sqlDir, rebuildAllRawTables: true).Run();
 
         var path = Path.Combine(_sqlDir, "04_v_england_destinations.sql");
 
@@ -283,7 +283,7 @@ public class GenerateViewsTests : IDisposable
             Row("missing_file", "England", "KS4_Destinations", "Overall", "overall")
         };
 
-        Action act = () => new GenerateViews(rows, _mappingPath, _sqlDir).Run();
+        Action act = () => new GenerateViews(rows, _mappingPath, _sqlDir, rebuildAllRawTables: true).Run();
 
         var ex = Assert.Throws<InvalidOperationException>(act);
         Assert.Contains("Missing table mapping", ex.Message);
@@ -308,7 +308,7 @@ public class GenerateViewsTests : IDisposable
             Row("file2", "England", "KS4_Performance", "Att8", "att8")
         };
 
-        new GenerateViews(rows, _mappingPath, _sqlDir).Run();
+        new GenerateViews(rows, _mappingPath, _sqlDir, rebuildAllRawTables: true).Run();
 
         var sql = File.ReadAllText(
             Path.Combine(_sqlDir, "04_v_england_performance.sql"));
