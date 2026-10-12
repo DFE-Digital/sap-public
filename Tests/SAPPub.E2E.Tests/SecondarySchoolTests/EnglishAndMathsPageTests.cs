@@ -1,7 +1,6 @@
 ﻿using Microsoft.Playwright;
 using SAPPub.E2E.Tests.Helpers;
 using SAPPub.E2E.Tests.Infrastructure;
-using SAPPub.E2E.Tests.Primary;
 using SAPPub.E2E.Tests.TestData.Models.KS4;
 using SAPPub.Playwright.Testing;
 

@@ -1,4 +1,5 @@
-﻿using SAPPub.E2E.Tests.Infrastructure;
+﻿using SAPPub.E2E.Tests.Helpers;
+using SAPPub.E2E.Tests.Infrastructure;
 using SAPPub.Playwright.Testing;
 using SAPPub.Playwright.Testing.KS2.Performance.AdditionalMeasures;
 

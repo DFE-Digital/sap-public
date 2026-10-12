@@ -1,151 +1,55 @@
 ﻿(function () {
     document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll(".chart-table-toggle").forEach(initChartTableToggle);
+        document.querySelectorAll('.chart-table-toggle').forEach(initChartTableToggle);
     });
 
     function initChartTableToggle(root) {
-        const idPrefix = root.dataset.idPrefix;
-        if (!idPrefix) {
-            return;
-        }
+        initChartTableButtons(root);
 
-        // current year related elements
-        const currentYearShowAsTableBtn = root.querySelector(`#${idPrefix}-current-year-show-btn`);
-        const currentYearChartContainer = root.querySelector(`#${idPrefix}-current-year-chart-container`);
-        const currentYearTableContainer = root.querySelector(`#${idPrefix}-current-year-table-container`);
-
-        // data over time related elements
-        const showDataOverTimeBtn = root.querySelector(`#${idPrefix}-show-data-over-time-btn`);
-        const dataOverTimeChartContainer = root.querySelector(`#${idPrefix}-data-over-time-chart-container`);
-        const dataOverTimeTableContainer = root.querySelector(`#${idPrefix}-data-over-time-table-container`);
-        const dataOverTimeShowAsTableBtn = root.querySelector(`#${idPrefix}-data-over-time-show-btn`);
-
-        // three year average related elements (optional)
-        const threeYearAverageChartContainer = root.querySelector(`#${idPrefix}-three-year-average-chart-container`);
-        const threeYearAverageTableContainer = root.querySelector(`#${idPrefix}-three-year-average-table-container`);
-
-        const currentViewRadio = root.querySelector(`#${idPrefix}-current-view`);
-        const dataOvertimeViewRadio = root.querySelector(`#${idPrefix}-data-overtime-view`);
-        const showCurrentDataBtn = root.querySelector(`#${idPrefix}-show-current-data-btn`);
-
-        setAriaAttribute(currentYearShowAsTableBtn, 'false');
-        if (currentYearShowAsTableBtn) {
-            currentYearShowAsTableBtn.addEventListener('click', () => {
-                const chartVisible = currentYearChartContainer.style.display !== 'none';
-                setTooggleState(currentYearChartContainer, currentYearTableContainer, chartVisible, currentYearShowAsTableBtn);
-            });
-        }
-
-        if (showDataOverTimeBtn) {
-            showDataOverTimeBtn.addEventListener('click', () => {
-                if (dataOvertimeViewRadio) {
-                    dataOvertimeViewRadio.checked = true;
-                }
-
-                var chartVisible = currentYearChartContainer.style.display !== 'none';
-                setTooggleState(dataOverTimeChartContainer, dataOverTimeTableContainer, !chartVisible, dataOverTimeShowAsTableBtn);
-                setTooggleState(threeYearAverageChartContainer, threeYearAverageTableContainer, !chartVisible, null);
-                blurElementIfFocused(showDataOverTimeBtn);
-                moveFocusToElement(showCurrentDataBtn);
-            });
-        }
-
-        setAriaAttribute(dataOverTimeShowAsTableBtn, 'false');
-        if (dataOverTimeShowAsTableBtn) {
-            dataOverTimeShowAsTableBtn.addEventListener('click', () => {
-                const dataOverTimeChartVisible = dataOverTimeChartContainer.style.display !== 'none';
-                setTooggleState(dataOverTimeChartContainer, dataOverTimeTableContainer, dataOverTimeChartVisible, dataOverTimeShowAsTableBtn);
-                setTooggleState(threeYearAverageChartContainer, threeYearAverageTableContainer, dataOverTimeChartVisible, null);
-            });
-        }
-
-        if (showCurrentDataBtn) {
-            showCurrentDataBtn.addEventListener('click', () => {
-                if (currentViewRadio) {
-                    currentViewRadio.checked = true;
-                }
-
-                var chartVisible = dataOverTimeChartContainer.style.display !== 'none';
-                setTooggleState(currentYearChartContainer, currentYearTableContainer, !chartVisible, currentYearShowAsTableBtn);
-                blurElementIfFocused(showCurrentDataBtn);
-                moveFocusToElement(showDataOverTimeBtn);
-            });
-        }
-
-        addKeyboardFocusTransfer(showDataOverTimeBtn, showCurrentDataBtn);
-        addKeyboardFocusTransfer(showCurrentDataBtn, showDataOverTimeBtn);
-
-        addEnterKeyHandler(showDataOverTimeBtn);
-        addEnterKeyHandler(showCurrentDataBtn);
-    }
-
-    function setToggleText(toggle, text) {
-        if (toggle) toggle.textContent = text;
-    }
-
-    function setAriaAttribute(toggle, text) {
-        if (toggle) toggle.setAttribute('aria-expanded', text);
-    }
-
-    function blurElementIfFocused(element) {
-        if (!element || document.activeElement !== element) {
-            return;
-        }
-
-        element.blur();
-    }
-
-    function moveFocusToElement(element) {
-        if (!element) {
-            return;
-        }
-
-        [0, 50, 150, 300].forEach(delay => {
-            setTimeout(() => {
-                if (document.activeElement !== element) {
-                    element.focus();
-                }
-            }, delay);
-        });
-    }
-
-    function addKeyboardFocusTransfer(sourceElement, targetElement) {
-        if (!sourceElement || !targetElement) {
-            return;
-        }
-
-        sourceElement.addEventListener('keyup', (event) => {
-            if (event.key !== 'Enter' && event.key !== ' ') {
-                return;
-            }
-
-            moveFocusToElement(targetElement);
-        });
-    }
-
-    function addEnterKeyHandler(element) {
-        if (!element) {
-            return;
-        }
-
-        element.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter' || event.key === ' ') {
+        // Show data over time/Show current data are links that reload the page with the chosen view
+        // so they work without javascript. With javascript, switch the view in place instead:
+        root.querySelectorAll("[data-show-view]").forEach(link => {
+            link.addEventListener('click', (event) => {
                 event.preventDefault();
-                element.click();
-            }
+                showView(root, link.dataset.showView);
+            });
         });
     }
 
-    function setTooggleState(chartContainer, tableContainer, isChartVisible, btnShow) {
-        if (!chartContainer || !tableContainer) {
-            return;
+
+
+    function initChartTableButtons(root) {
+        const charts = root.querySelectorAll('.chart-table-toggle__chart');
+        const tables = root.querySelectorAll('.chart-table-toggle__table');
+        const buttons = root.querySelectorAll('.chart-table-toggle__table-btn');
+        let isTableVisible = false;
+
+        buttons.forEach(button => {
+            button.setAttribute('aria-expanded', 'false');
+
+            button.addEventListener('click', () => {
+                isTableVisible = !isTableVisible;
+
+                charts.forEach(chart => chart.style.display = isTableVisible ? 'none' : 'block');
+                tables.forEach(table => table.style.display = isTableVisible ? 'block' : 'none');
+                buttons.forEach(btn => {
+                    btn.textContent = isTableVisible ? 'Show as a chart' : 'Show as a table';
+                    btn.setAttribute('aria-expanded', String(isTableVisible));
+                });
+            });
+        });
+    }
+
+    function showView(root, view) {
+        root.dataset.view = view;
+
+        root.querySelectorAll('[data-view-panel]').forEach(panel => {
+            panel.hidden = panel.dataset.viewPanel !== view;
+        });
+
+        const switchBackLink = root.querySelector(`[data-view-panel="${view}"] [data-show-view]`);
+        if (switchBackLink) {
+            switchBackLink.focus();
         }
-
-        chartContainer.style.display = isChartVisible ? 'none' : 'block';
-        tableContainer.style.display = isChartVisible ? 'block' : 'none';
-
-        var isTableVisible = tableContainer.style.display === 'block';
-        setToggleText(btnShow, isTableVisible ? 'Show as a chart' : 'Show as a table')
-        setAriaAttribute(btnShow, isChartVisible ? 'true' : 'false');
     }
 })();
