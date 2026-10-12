@@ -27,36 +27,11 @@ public class DestinationsTests(WebApplicationSetupFixture fixture) : BasePageTes
     {
         // Arrange && Act
         var queryString = "urns=105574&urns=137020";
-        var response = await Page.GotoAsync($"{_pageUrl}?{queryString}");
+        await SkipContents_AccessibilityNavigation($"{_pageUrl}?{queryString}");
 
-        //bypass cookies
-        await Page.Keyboard.PressAsync("Tab");
-        await Page.Keyboard.PressAsync("Tab");
-        await Page.Keyboard.PressAsync("Tab");
-
-        //start of page - _Layout page
-        await Page.Keyboard.PressAsync("Tab");
-
+        // Assert
         var activeElement = await Page.EvaluateHandleAsync("document.activeElement");
-        var prop = await activeElement.GetPropertyAsync("textContent");
-        string textContent = await prop.JsonValueAsync<string>();
-        Assert.Equal("Skip to main content", textContent);
-
-        //start of content - Default page
-        await Page.Keyboard.PressAsync("Enter");
-        await Page.Keyboard.PressAsync("Tab");
-
-        activeElement = await Page.EvaluateHandleAsync("document.activeElement");
-        prop = await activeElement.GetPropertyAsync("textContent");
-        textContent = await prop.JsonValueAsync<string>();
-        Assert.Equal("Skip contents", textContent);
-
-        //start of right side content - Destinations page
-        await Page.Keyboard.PressAsync("Enter");
-        await Page.Keyboard.PressAsync("Tab");
-
-        activeElement = await Page.EvaluateHandleAsync("document.activeElement");
-        prop = await activeElement.GetPropertyAsync("id");
+        var prop = await activeElement.GetPropertyAsync("id");
         string id = await prop.JsonValueAsync<string>();
         Assert.Equal("all-dest-current-year-show-btn", id);
     }
