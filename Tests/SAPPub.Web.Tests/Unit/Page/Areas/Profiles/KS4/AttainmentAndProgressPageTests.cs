@@ -110,9 +110,9 @@ public class AttainmentAndProgressPageTests : PageTestsBase
         var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName!, _pageRoute));
 
         // Assert
-        var schoolProgressCard = doc.QuerySelector("[data-testid='prog8-scores-prev']");
+        var schoolProgressCard = doc.QuerySelector("[data-testid='prog8-scores-prev2']");
         var text = schoolProgressCard?.QuerySelector("p")?.TextContent.Trim();
-        Assert.Contains(expected.EstablishmentProgress8Score.PreviousYear.ToString(), text);
+        Assert.Contains(expected.EstablishmentProgress8Score.TwoYearsAgo.ToString(), text);
     }
 
     [Fact]
@@ -260,7 +260,6 @@ public class AttainmentAndProgressPageTests : PageTestsBase
     }
 
     [Theory]
-    [InlineData("prev")]
     [InlineData("prev2")]
     public async Task NoProgress8DataForSchool_ShowsNoProgress8Content(string year) // progress data not available for this school (non-covid year)
     {
@@ -287,6 +286,37 @@ public class AttainmentAndProgressPageTests : PageTestsBase
 
         // Assert
         Assert.NotNull(doc.QuerySelector($"[data-testid='no-data-prog8-scores-{year}']"));
+        Assert.Null(doc.QuerySelector($"[data-testid='prog8-scores-{year}']"));
+    }
+
+    [Theory]
+    [InlineData("current")]
+    [InlineData("prev")]
+    public async Task NoProgress8DataForSchool_ShowsNoProgress8CovidContent(string year) // progress data not available for this school (covid year)
+    {
+        // Arrange
+        var expected = new AttainmentAndProgressModelBuilder()
+            .Build();
+        var urn = expected.Urn;
+        var establishmentName = expected.SchoolName;
+        _establishmentServiceMock.Setup(service => service.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EstablishmentServiceModel()
+            {
+                EstablishmentName = establishmentName!,
+                URN = urn,
+                IsKS4 = true
+            });
+        _serviceMock
+            .Setup(service => service.GetAttainmentAndProgressAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expected);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(urn, establishmentName!, _pageRoute));
+
+        // Assert
+        Assert.NotNull(doc.QuerySelector($"[data-testid='prog8-custom-card-{year}']"));
         Assert.Null(doc.QuerySelector($"[data-testid='prog8-scores-{year}']"));
     }
 

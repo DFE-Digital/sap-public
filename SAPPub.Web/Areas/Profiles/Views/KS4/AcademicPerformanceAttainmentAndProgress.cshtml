@@ -151,7 +151,7 @@
 
         @if (Model.ShowProgress8NotAvailableInfo)
         {
-            @await Html.PartialAsync("_Progress8NotAvailableMessage", null, new ViewDataDictionary(ViewData) { { "dataTestId", "prog8-custom-card" } })
+            @await Html.PartialAsync("_Progress8NotAvailableMessage", null, new ViewDataDictionary(ViewData) { { "dataTestId", "prog8-custom-card-current" } })
         }
         else
         {

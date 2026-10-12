@@ -130,10 +130,10 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
 
         // Assert
         Assert.False(await progress8CardCurrentYear.IsVisibleAsync());
-        Assert.True(await progress8EstablishmentCardPrevYear.IsVisibleAsync());
+        Assert.False(await progress8EstablishmentCardPrevYear.IsVisibleAsync());
         Assert.True(await progress8EstablishmentCardPrev2Year.IsVisibleAsync());
         Assert.False(await progress8LocalAuthorityAndNationalCardCurrentYear.IsVisibleAsync());
-        Assert.True(await progress8LocalAuthorityAndNationalCardPrevYear.IsVisibleAsync());
+        Assert.False(await progress8LocalAuthorityAndNationalCardPrevYear.IsVisibleAsync());
         Assert.True(await progress8LocalAuthorityAndNationalCardPrev2Year.IsVisibleAsync());
 
 
