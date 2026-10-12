@@ -92,9 +92,7 @@ public sealed class GenerateViews
         _tableMappingPath = tableMappingPath;
         _sqlDir = sqlDir;
         _rebuildAllRawTables = rebuildAllRawTables;
-        _rawTableNamesToRebuild = new HashSet<string>(
-            (rawTableNamesToRebuild ?? Array.Empty<string>()),
-            StringComparer.OrdinalIgnoreCase);
+        _rawTableNamesToRebuild = new HashSet<string>(rawTableNamesToRebuild ?? [], StringComparer.OrdinalIgnoreCase);
     }
 
     public void Run()
@@ -429,16 +427,17 @@ public sealed class GenerateViews
         return sb.ToString();
     }
 
-    private bool ShouldRebuildView(
-    Dictionary<string, string> tableMap,
-    List<RawSource> sources,
-    string viewName)
+    private bool ShouldRebuildView(Dictionary<string, string> tableMap, List<RawSource> sources, string viewName)
     {
         if (_rebuildAllRawTables)
+        {
             return true;
+        }
 
         if (_rawTableNamesToRebuild.Count == 0)
+        {
             return false;
+        }
 
         if (viewName.Equals("v_establishment", StringComparison.OrdinalIgnoreCase))
         {
@@ -517,10 +516,15 @@ public sealed class GenerateViews
         bool rebuildEstablishmentDependentViews)
     {
         if (_rebuildAllRawTables)
+        {
             return true;
+        }
+
 
         if (_rawTableNamesToRebuild.Count == 0)
+        {
             return false;
+        }
 
         var groups = viewRows
             .Select(r => (r.FileName ?? "").Trim().TrimStart('\uFEFF'))
@@ -1340,9 +1344,6 @@ public sealed class GenerateViews
         };
     }
 
-
-
-
     private Dictionary<string, string> LoadTableMappings() =>
         File.ReadAllLines(_tableMappingPath)
             .Select(l => l.Trim())
@@ -1363,15 +1364,6 @@ public sealed class GenerateViews
             StringComparison.OrdinalIgnoreCase);
     }
 
-    private static bool IsEstablishmentFactView(string viewName) =>
-    viewName.StartsWith("v_establishment_", StringComparison.OrdinalIgnoreCase);
-
-    private static bool IsLaEstabId(string idCol) =>
-        idCol.Contains("laestab", StringComparison.OrdinalIgnoreCase);
-
-    private static string EstablishmentLaEstabKeySql() =>
-        // school_laestab values like 3717002 => LAId(3) + EstablishmentNumber(4, zero-padded)
-        "(e.\"LAId\"::text || LPAD(e.\"EstablishmentNumber\"::text, 4, '0'))";
 
     private static bool IsCoded(DataMapRow r)
     {
@@ -1462,7 +1454,7 @@ public sealed class GenerateViews
         StringBuilder sb,
         Dictionary<string, string>? keyStageUrnsSqlConditions = null)
     {
-        keyStageUrnsSqlConditions ??= new Dictionary<string, string>();
+        keyStageUrnsSqlConditions ??= [];
 
         for (int i = 0; i < KeyStageConstants.AllKeyStages.Count; i++)
         {
@@ -1482,7 +1474,6 @@ public sealed class GenerateViews
             Path.Combine(_sqlDir, fileName),
             sql,
             new UTF8Encoding(false));
-        //_sqlFiles.Add($"{prefix}_{viewName}.sql");
 
         Console.WriteLine($"Generated view script: {fileName}");
     }

@@ -103,7 +103,7 @@ public class GenerateRawTables
         bool rebuildTable = _rebuildAllRawTables || IsListedForRebuild(logicalKey);
         if (!rebuildTable)
         {
-            Console.WriteLine($"Leaving table for logical key '{logicalKey} ({tableName} unchanged. Skipping DROP/CREATE/COPY.");
+            Console.WriteLine($"Leaving table for logical key '{logicalKey} ({tableName} unchanged). Skipping DROP/CREATE/COPY.");
             return;
         }
 
