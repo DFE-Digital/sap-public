@@ -103,7 +103,7 @@ public class GenerateRawTables
         bool rebuildTable = _rebuildAllRawTables || IsListedForRebuild(logicalKey);
         if (!rebuildTable)
         {
-            Console.WriteLine($"Leaving table for logical key '{logicalKey} ({tableName}) unchanged. Skipping DROP/CREATE/COPY.");
+            Console.WriteLine($"Leaving table for logical key '{logicalKey}' ({tableName}) unchanged. Skipping DROP/CREATE/COPY.");
             AppendExistingTableGuard(createSql, tableName, logicalKey);
             return;
         }
@@ -429,7 +429,7 @@ public class GenerateRawTables
     // =====================================================
 
     /// <summary>
-    /// For a table that is not being rebuilt, fail fast with a clear message if it does exist
+    /// For a table that is not being rebuilt, fail fast with a clear message if it does not exist
     /// </summary>
     private static void AppendExistingTableGuard(StringBuilder createSql, string tableName, string logicalKey)
     {
