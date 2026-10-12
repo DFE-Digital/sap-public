@@ -377,7 +377,7 @@ public sealed class GenerateViews
         sb.AppendLine(
             "WHERE t.\"qualification_type\" = 'Vocational'");
         sb.AppendLine(
-            "  AND t.\"time_period\" = '202425';");
+            "  AND t.\"time_period\" = '202526';");
 
         sb.AppendLine();
 
