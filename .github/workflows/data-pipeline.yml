@@ -4,15 +4,15 @@ on:
   workflow_dispatch:
     inputs:
       rebuild-all-raw-tables:
-          description: Ignore the rebuild list and rebuild all raw tables
-          type: boolean
-          required: false
-          default: false
-        raw-tables-to-rebuild-path:
-          description: Optional override path to the raw tables rebuild list
-          type: string
-          required: false
-          default: ""
+        description: Ignore the rebuild list and rebuild all raw tables
+        type: boolean
+        required: false
+        default: false
+      raw-tables-to-rebuild-path:
+        description: Optional override path to the raw tables rebuild list
+        type: string
+        required: false
+        default: ""
   workflow_call:
     inputs:
       environment:
@@ -25,15 +25,15 @@ on:
         required: false
         default: ""
         type: string
-       rebuild-all-raw-tables:
-          description: Ignore the rebuild list and rebuild all raw tables
-          type: boolean
-          required: false
-          default: false
-        raw-tables-to-rebuild-path:
-          description: Optional override path to the raw tables rebuild list
-          type: string
-          required: false
+      rebuild-all-raw-tables:
+        description: Ignore the rebuild list and rebuild all raw tables
+        type: boolean
+        required: false
+        default: false
+      raw-tables-to-rebuild-path:
+        description: Optional override path to the raw tables rebuild list
+        type: string
+        required: false
   schedule:
     - cron: "0 5 * * *"   # every day at 05:00 UTC
 
