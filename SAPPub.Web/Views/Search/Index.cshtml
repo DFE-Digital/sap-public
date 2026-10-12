@@ -11,7 +11,7 @@
         </h2>
     </div>
     <div class="govuk-notification-banner__content">
-        <p class="govuk-notification-banner__heading">
+        <p class="govuk-notification-banner__heading govuk-notification-banner__heading-override">
             Help us improve this service by signing up to <a id="banner-link" class="govuk-link" href="https://forms.cloud.microsoft/pages/responsepage.aspx?id=yXfS-grGoU2187O4s0qC-bvgNBlcYPxAqCMfEzVBipNUMUVSQlFLS0hFMlFROTVQNFRZVEFOQ1NTMy4u&route=shorturl" rel="noreferrer noopener" target="_blank">take part in our research</a>.
         </p>
     </div>
@@ -27,16 +27,16 @@
                 Use this service to find information about schools and colleges in England. You can also save and compare secondary schools.
             </p>
             <div class="govuk-grid-column-one-half">
-            <govuk-input input-class="govuk-input" input-placeholder="Search by keyword" for=@Model.SearchParams.NameSearchTerm name="NameSearchTerm" data-testid="searchByNameInput">
-                <govuk-input-label is-page-heading="false" class="govuk-label--s" id="school-name">School name</govuk-input-label>
-                <govuk-input-hint>For example, St Joseph's secondary school</govuk-input-hint>
-            </govuk-input>
+                <govuk-input input-class="govuk-input" input-placeholder="Search by keyword" for=@Model.SearchParams.NameSearchTerm name="NameSearchTerm" data-testid="searchByNameInput">
+                    <govuk-input-label is-page-heading="false" class="govuk-label--s" id="school-name">School name</govuk-input-label>
+                    <govuk-input-hint>For example, St Joseph's secondary school</govuk-input-hint>
+                </govuk-input>
             </div>
             <div class="govuk-grid-column-one-half">
-            <govuk-input input-class="govuk-input" input-placeholder="Search by postcode" for=@Model.SearchParams.LocationSearchTerm name="LocationSearchTerm" data-testid="searchByLocationInput">
-                <govuk-input-label is-page-heading="false" class="govuk-label--s" id="location">Your postcode</govuk-input-label>
-                <govuk-input-hint>For example, LS28 8EU</govuk-input-hint>
-            </govuk-input>
+                <govuk-input input-class="govuk-input" input-placeholder="Search by postcode" for=@Model.SearchParams.LocationSearchTerm name="LocationSearchTerm" data-testid="searchByLocationInput">
+                    <govuk-input-label is-page-heading="false" class="govuk-label--s" id="location">Your postcode</govuk-input-label>
+                    <govuk-input-hint>For example, LS28 8EU</govuk-input-hint>
+                </govuk-input>
             </div>
             <govuk-button id="search" type="submit">Search</govuk-button>
         </govuk-fieldset>
