@@ -12,7 +12,7 @@ public class GenerateRawTables
     private readonly string _sqlDir;
     private readonly HashSet<string> _logicalKeysToRebuild;
     private readonly bool _rebuildAllRawTables;
-    private readonly List<string>? _existingRawTableNames;
+    private readonly HashSet<string>? _existingRawTableNames;
 
     private readonly Dictionary<string, string> _tableMappings = new(StringComparer.OrdinalIgnoreCase);
     private readonly HashSet<string> _rebuiltTableNames = new(StringComparer.OrdinalIgnoreCase);
@@ -30,12 +30,12 @@ public class GenerateRawTables
     }
 
     public GenerateRawTables(
-        string inputDir, 
-        string cleanDir, 
+        string inputDir,
+        string cleanDir,
         string sqlDir,
         IEnumerable<string>? logicalKeysToRebuild = null,
         bool rebuildAllRawTables = false,
-        List<string>? existingRawTableNames = null)
+        HashSet<string>? existingRawTableNames = null)
     {
         _inputDir = inputDir;
         _cleanDir = cleanDir;
@@ -104,7 +104,13 @@ public class GenerateRawTables
         _tableMappings[fileKey] = tableName;
 
         bool rebuildTable = _rebuildAllRawTables || IsListedForRebuild(logicalKey);
-        if (!rebuildTable && _existingRawTableNames!= null && !_existingRawTableNames.Contains(tableName))
+        if (!rebuildTable && _existingRawTableNames != null && !_existingRawTableNames.Contains(tableName))
+        {
+            Console.WriteLine($"Raw table {tableName} for '{logicalKey} does not exist in the database. Rebuilding it'");
+            rebuildTable = true;
+        }
+
+        if (!rebuildTable)
         {
             Console.WriteLine($"Leaving table for logical key '{logicalKey}' ({tableName}) unchanged. Skipping DROP/CREATE/COPY.");
             AppendExistingTableGuard(createSql, tableName, logicalKey);
@@ -153,7 +159,7 @@ public class GenerateRawTables
             else if (row.Count > columnCount)
             {
                 row = row.Take(columnCount).ToList();
-            }            
+            }
 
             writer.WriteLine(string.Join(",", row.Select(EscapeCsv)));
         }
@@ -572,6 +578,6 @@ public class GenerateRawTables
             return "\"" + value.Replace("\"", "\"\"") + "\"";
 
         return value;
-    }   
+    }
 }
 

@@ -62,7 +62,7 @@ internal static class SelectiveIngestionHelpers
         return keys;
     }
 
-    public static List<string>?LoadExistingRawTableNames(string baseDir, IConfiguration configuration)
+    public static HashSet<string>?LoadExistingRawTableNames(string baseDir, IConfiguration configuration)
     {
         var configurationPath = configuration["ExistingRawTablesPath"] ?? Environment.GetEnvironmentVariable("EXISTING_RAW_TABLES_PATH");
 
@@ -81,7 +81,7 @@ internal static class SelectiveIngestionHelpers
         var names = File.ReadAllLines(resolvedPath)
             .Select(line => line.Trim())
             .Where(line => !string.IsNullOrWhiteSpace(line))
-            .ToList();
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
         Console.WriteLine($"Loaded {names.Count} existing raw table name(s) from: {resolvedPath}");
         return names;

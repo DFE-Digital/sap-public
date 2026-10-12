@@ -670,29 +670,29 @@ jobs:
             out_file="$GITHUB_WORKSPACE/SAPData/existing_raw_tables.txt"
             query="select tablename from pg_tables where schemaname=current_schema() and tablename like 't\_%'"
 
-            max_attempts = 5
-            delay = 20
-            attempt = 1
+            max_attempts=5
+            delay=20
+            attempt=1
 
             while [ $attempt -le $max_attempts ]; do
               set +e
               "$GITHUB_WORKSPACE/konduit.sh" \
               -n "${{ env.AKS_NAMESPACE }}" \
               -x \
-             "${{ env.KONDUIT_APP_NAME }}" -- \
+              "${{ env.KONDUIT_APP_NAME }}" -- \
               psql -X -v ON_ERROR_STOP=1 -At -c "$query" > "$out_file.tmp"
               exit_code=${PIPESTATUS[0]}
 
               set -e
 
               if [ $exit_code -eq 0 ]; then
-                grep -E '^t_[a-z0-9+]+$' "$out_file.tmp" > "$out_file" || true
+                grep -E '^t_[a-z0-9_]+$' "$out_file.tmp" > "$out_file" || true
                 rm -f "$out_file.tmp"
-                echo "Found $(wc -l < "$out_file.tmp") existing raw tables(s)"
+                echo "Found $(wc -l < "$out_file") existing raw tables(s)"
                 exit 0
               fi
 
-              echo "Listing exsiting raw tables failed (attempt $attempt/$max_attempts). Retrying after ${delay}..."
+              echo "Listing existing raw tables failed (attempt $attempt/$max_attempts). Retrying after ${delay}..."
               sleep $delay
               delay=$((delay * 2))
               if [ $delay -gt 180 ]; then delay=180; fi
