@@ -679,7 +679,7 @@ jobs:
               "$GITHUB_WORKSPACE/konduit.sh" \
               -n "${{ env.AKS_NAMESPACE }}" \
               -x \
-              "${{ env.KONDUIT_APP_NAME }}" -- \
+              "${{ env.KONDUIT_APP_NAME }}" \
               psql -X -v ON_ERROR_STOP=1 -At -c "$query" > "$out_file.tmp"
               exit_code=${PIPESTATUS[0]}
 
