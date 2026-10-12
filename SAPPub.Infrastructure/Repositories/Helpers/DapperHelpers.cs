@@ -91,15 +91,6 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Cohort_Tot_Est_Current_Num_Coded"
           """;
 
-        // TODO for EnableSecondaryGrade7 feature - add these fields for the Grade 7 columns when they're available
-        //"EngMaths79_Boy_Est_Current_Pct_Coded",
-        //"EngMaths79_Grl_Est_Current_Pct_Coded",
-        //"EngMaths79_Tot_Est_Current_Pct_Coded",
-        //"EngMaths79_Tot_Est_Previous_Pct_Coded",
-        //"EngMaths79_Tot_Est_Previous2_Pct_Coded",
-        //"EngMaths79_Dis_Est_Current_Pct_Coded",
-        //"EngMaths79_EAL_Est_Current_Pct_Coded",
-        //"EngMaths79_NMo_Est_Current_Pct_Coded",
         private const string EstablishmentPerformanceColumns = """
           "Id",
           "Attainment8_Tot_Est_Current_Num_Coded",
@@ -115,6 +106,14 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "EngMaths59_EAL_Est_Current_Pct_Coded",
           "EngMaths59_NMo_Est_Current_Pct_Coded",
           "EngMaths59_Tot_Est_Current_Pct_Coded",
+          "EngMaths79_Boy_Est_Current_Pct_Coded",
+          "EngMaths79_Grl_Est_Current_Pct_Coded",
+          "EngMaths79_Tot_Est_Current_Pct_Coded",
+          "EngMaths79_Tot_Est_Previous_Pct_Coded",
+          "EngMaths79_Tot_Est_Previous2_Pct_Coded",
+          "EngMaths79_Dis_Est_Current_Pct_Coded",
+          "EngMaths79_EAL_Est_Current_Pct_Coded",
+          "EngMaths79_NMo_Est_Current_Pct_Coded",
           "Attainment8_Tot_Est_Previous_Num_Coded",
           "EngMaths49_Tot_Est_Previous_Pct_Coded",
           "EngMaths59_Tot_Est_Previous_Pct_Coded",
@@ -157,14 +156,6 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Attainment8_NMo_Est_Current_Num_Coded"
           """;
 
-        // TODO for EnableSecondaryGrade7 feature - add these fields for the Grade 7 columns when they're available
-        //"EngMaths79_Boy_LA_Current_Pct_Coded",
-        //"EngMaths79_Grl_LA_Current_Pct_Coded",
-        //"EngMaths79_Tot_LA_Current_Pct_Coded",
-        //"EngMaths79_Tot_LA_Previous_Pct_Coded",
-        //"EngMaths79_Tot_LA_Previous2_Pct_Coded",
-        //"EngMaths79_Dis_LA_Current_Pct_Coded"
-        //"EngMaths79_NDi_LA_Current_Pct_Coded"
         private const string LAPerformanceColumns = """
           "Id",
           "Attainment8_Tot_LA_Current_Num_Coded",
@@ -178,6 +169,13 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "EngMaths59_Dis_LA_Current_Pct_Coded",
           "EngMaths59_NDi_LA_Current_Pct_Coded",
           "EngMaths59_Tot_LA_Current_Pct_Coded",
+          "EngMaths79_Boy_LA_Current_Pct_Coded",
+          "EngMaths79_Grl_LA_Current_Pct_Coded",
+          "EngMaths79_Tot_LA_Current_Pct_Coded",
+          "EngMaths79_Tot_LA_Previous_Pct_Coded",
+          "EngMaths79_Tot_LA_Previous2_Pct_Coded",
+          "EngMaths79_Dis_LA_Current_Pct_Coded",
+          "EngMaths79_NDi_LA_Current_Pct_Coded",
           "Attainment8_Tot_LA_Previous_Num_Coded",
           "EngMaths49_Tot_LA_Previous_Pct_Coded",
           "EngMaths59_Tot_LA_Previous_Pct_Coded",
@@ -222,12 +220,6 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "AllDest_Tot_LA_Previous2_Pct_Coded"
           """;
 
-        // TODO for EnableSecondaryGrade7 feature - add these fields for the Grade 7 columns when they're available
-        //"EngMaths79_Boy_Eng_Current_Pct_Coded",
-        //"EngMaths79_Grl_Eng_Current_Pct_Coded",
-        //"EngMaths79_Tot_Eng_Current_Pct_Coded",
-        //"EngMaths79_Tot_Eng_Previous_Pct_Coded",
-        //"EngMaths79_Tot_Eng_Previous2_Pct_Coded",
         private const string EnglandPerformanceColumns = """
           "Id",
           "Attainment8_Tot_Eng_Current_Num_Coded",
@@ -247,6 +239,11 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "Attainment8_Tot_Eng_Previous2_Num_Coded",
           "EngMaths49_Tot_Eng_Previous2_Pct_Coded",
           "EngMaths59_Tot_Eng_Previous2_Pct_Coded",
+          "EngMaths79_Boy_Eng_Current_Pct_Coded",
+          "EngMaths79_Grl_Eng_Current_Pct_Coded",
+          "EngMaths79_Tot_Eng_Current_Pct_Coded",
+          "EngMaths79_Tot_Eng_Previous_Pct_Coded",
+          "EngMaths79_Tot_Eng_Previous2_Pct_Coded",
           "AnyQual_Tot_Eng_Current_Pct_Coded",
           "TripSci_Tot_Eng_Current_Pct_Coded",
           "More1FL_Tot_Eng_Current_Pct_Coded",
