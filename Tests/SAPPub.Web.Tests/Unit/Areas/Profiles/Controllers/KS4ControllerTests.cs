@@ -165,7 +165,7 @@ public class KS4ControllerTests
         Assert.Equal(2, model.RouteAttributes.Count);
         Assert.Equal(expectedResult.Urn, model.RouteAttributes[RouteConstants.URN]);
         Assert.Equal(TextHelpers.CleanForUrl(expectedResult.SchoolName!), model.RouteAttributes[RouteConstants.SchoolName]);
-        Assert.Equal($"Information in this section is for the {AcademicYearSelection.Current.GetDisplayName()} academic year.", model.AcademicYearInfoParagraph);
+        Assert.Equal($"Information in this section is for the {Ks4AcademicYearHelper.GetDisplayName(AcademicYearSelection.Current)} academic year.", model.AcademicYearInfoParagraph);
 
         Assert.Equal(expectedResult.EstablishmentAttainment8Score.GetValueForYear(AcademicYearSelection.Current).Value, model.YearValues.CurrentYear!.EstablishmentAttainment8Score.Value);
         Assert.Equal(expectedResult.LocalAuthorityAttainment8Score.GetValueForYear(AcademicYearSelection.Current).Value, model.YearValues.CurrentYear!.LocalAuthorityAttainment8Score.Value);

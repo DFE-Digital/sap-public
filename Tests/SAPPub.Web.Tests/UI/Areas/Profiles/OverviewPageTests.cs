@@ -1665,7 +1665,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
 
         await Expect(
             content.GetByText(
-                "This data is for the 2024 to 2025 academic year.",
+                "This data is for the 2025 to 2026 academic year.",
                 new() { Exact = true }))
             .ToBeVisibleAsync();
 

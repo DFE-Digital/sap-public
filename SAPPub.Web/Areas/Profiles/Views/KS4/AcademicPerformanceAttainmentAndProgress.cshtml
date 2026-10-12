@@ -170,10 +170,10 @@
                 <govuk-accordion-item-heading>Progress 8 for previous years</govuk-accordion-item-heading>
                 <govuk-accordion-item-content>
 
-                    <h4 class="govuk-heading-m">@Model.YearValues.PreviousYear!.AcademicYearSelection.GetDisplayName() academic year</h4>
+                    <h4 class="govuk-heading-m">@SAPPub.Web.Helpers.Ks4AcademicYearHelper.GetDisplayName(Model.YearValues.PreviousYear!.AcademicYearSelection) academic year</h4>
                     @await Html.PartialAsync("_Progress8Scores", Model.YearValues.PreviousYear, new ViewDataDictionary(ViewData) { { "id", "prog8-scores-prev" } })
 
-                    <h4 class="govuk-heading-m">@Model.YearValues.TwoYearsAgo!.AcademicYearSelection.GetDisplayName() academic year</h4>
+                    <h4 class="govuk-heading-m">@SAPPub.Web.Helpers.Ks4AcademicYearHelper.GetDisplayName(Model.YearValues.TwoYearsAgo!.AcademicYearSelection) academic year</h4>
                     @await Html.PartialAsync("_Progress8Scores", Model.YearValues.TwoYearsAgo, new ViewDataDictionary(ViewData) { { "id", "prog8-scores-prev2" } })
 
                 </govuk-accordion-item-content>
@@ -226,9 +226,9 @@
                 <govuk-accordion-item-heading>Attainment 8 for previous years</govuk-accordion-item-heading>
                 <govuk-accordion-item-content>
 
-                    <h4 class="govuk-heading-m">@Model.YearValues.PreviousYear!.AcademicYearSelection.GetDisplayName() academic year</h4>
+                    <h4 class="govuk-heading-m">@SAPPub.Web.Helpers.Ks4AcademicYearHelper.GetDisplayName(Model.YearValues.PreviousYear!.AcademicYearSelection) academic year</h4>
                     @await Html.PartialAsync("_Attainment8Scores", Model.YearValues.PreviousYear, new ViewDataDictionary(ViewData) { { "id", "attainment8-scores-prev" } })
-                    <h4 class="govuk-heading-m">@Model.YearValues.TwoYearsAgo!.AcademicYearSelection.GetDisplayName() academic year</h4>
+                    <h4 class="govuk-heading-m">@SAPPub.Web.Helpers.Ks4AcademicYearHelper.GetDisplayName(Model.YearValues.TwoYearsAgo!.AcademicYearSelection) academic year</h4>
                     @await Html.PartialAsync("_Attainment8Scores", Model.YearValues.TwoYearsAgo, new ViewDataDictionary(ViewData) { { "id", "attainment8-scores-prev2" } })
 
                 </govuk-accordion-item-content>
@@ -275,9 +275,9 @@
                             Show previous years data for disadvantaged pupils
                         </govuk-details-summary>
                         <govuk-details-text>
-                            <h4 class="govuk-heading-s">@Model.YearValues.PreviousYear!.AcademicYearSelection.GetDisplayName() academic year</h4>
+                            <h4 class="govuk-heading-s">@SAPPub.Web.Helpers.Ks4AcademicYearHelper.GetDisplayName(Model.YearValues.PreviousYear!.AcademicYearSelection) academic year</h4>
                             @await Html.PartialAsync("_SeriesMeasureTableWithGradeContext", Model.YearValues.PreviousYear?.BreakdownDisadvantaged)
-                            <h4 class="govuk-heading-s">@Model.YearValues.TwoYearsAgo!.AcademicYearSelection.GetDisplayName() academic year</h4>
+                            <h4 class="govuk-heading-s">@SAPPub.Web.Helpers.Ks4AcademicYearHelper.GetDisplayName(Model.YearValues.TwoYearsAgo!.AcademicYearSelection) academic year</h4>
                             @await Html.PartialAsync("_SeriesMeasureTableWithGradeContext", Model.YearValues.TwoYearsAgo?.BreakdownDisadvantaged)
                         </govuk-details-text>
                     </govuk-details>
