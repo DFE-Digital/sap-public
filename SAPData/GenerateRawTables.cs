@@ -103,7 +103,8 @@ public class GenerateRawTables
         bool rebuildTable = _rebuildAllRawTables || IsListedForRebuild(logicalKey);
         if (!rebuildTable)
         {
-            Console.WriteLine($"Leaving table for logical key '{logicalKey} ({tableName} unchanged). Skipping DROP/CREATE/COPY.");
+            Console.WriteLine($"Leaving table for logical key '{logicalKey} ({tableName}) unchanged. Skipping DROP/CREATE/COPY.");
+            AppendExistingTableGuard(createSql, tableName, logicalKey);
             return;
         }
 
@@ -157,8 +158,6 @@ public class GenerateRawTables
         // -----------------------------
         // CREATE TABLE
         // -----------------------------
-
-
         createSql.AppendLine($"DROP TABLE IF EXISTS {tableName};");
         createSql.AppendLine($"CREATE TABLE {tableName} (");
 
@@ -428,6 +427,23 @@ public class GenerateRawTables
     // =====================================================
     // HELPERS
     // =====================================================
+
+    /// <summary>
+    /// For a table that is not being rebuilt, fail fast with a clear message if it does exist
+    /// </summary>
+    private static void AppendExistingTableGuard(StringBuilder createSql, string tableName, string logicalKey)
+    {
+        string message = $"Raw table {tableName} for {logicalKey} does not exist and is not in the rebuild list. " +
+            "Add the key to the rebuild list or run with REBUILD_ALL_RAW_TABLES=true.";
+
+        createSql.AppendLine("DO $$");
+        createSql.AppendLine("BEGIN");
+        createSql.AppendLine($"  IF to_regclass(format('%I.%I', current_schema(), '{tableName}')) IS NULL THEN");
+        createSql.AppendLine($"     RAISE EXCEPTION '%', '{message.Replace("'", "''")}';");
+        createSql.AppendLine("   END IF;");
+        createSql.AppendLine("END $$;");
+        createSql.AppendLine();
+    }
 
     /// <summary>
     /// Matches a source file's logical key against the rebuild list. List entries may be:

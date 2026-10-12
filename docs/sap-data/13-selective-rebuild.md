@@ -87,6 +87,13 @@ ERROR: Skipped view v_establishment does not exist in schema public, but is requ
 
 The view was dropped by `CASCADE` in cleanup, but the generator decided it not need regenerating. Causes, in order of likelihood:
 
-- The databse was empty or was restored from before the view existed. Run with `REBUILD_ALL_RAW_TABLES=true`
+- The database was empty or was restored from before the view existed. Run with `REBUILD_ALL_RAW_TABLES=true`
 - The rebuild list entry does not match the filename in `SourceFiles`. Compare the list against `tablemapping.csv`
 - A code change in `GenerateViews` broke the match between rebuilt table names and the names it checks.
+
+```
+ERROR: Raw table t_xx for '[key]' does not exist and is not in the rebuild list.
+```
+
+A source file maps to a table that has never been loaded: a new manual file, an EES dataset where the name has changed etc.,
+or a GIAS/EES file whose key does not match any list entry. Add the key to the rebuild list, or run with `REBUILD_ALL_RAW_TABLES=true`.

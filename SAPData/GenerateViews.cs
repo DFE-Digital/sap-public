@@ -345,7 +345,7 @@ public sealed class GenerateViews
                     continue;
                 }
 
-                if (!_rebuildAllRawTables && ! _rawTableNamesToRebuild.Contains(rawTable))
+                if (!_rebuildAllRawTables && !_rawTableNamesToRebuild.Contains(rawTable))
                 {
                     sql = BuildSkippedSql(view.ViewName, "No rebuilt raw tables affect this view.");
                     Write(view.ViewName, sql);

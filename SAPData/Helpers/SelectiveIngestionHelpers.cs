@@ -22,7 +22,7 @@ internal static class SelectiveIngestionHelpers
 
         if (!File.Exists(resolvedPath))
         {
-            throw new FileNotFoundException($"Configured raw table rebuild list not found (paths are relative to {baseDir}.", resolvedPath);
+            throw new FileNotFoundException($"Configured raw table rebuild list not found (paths are relative to {baseDir}).", resolvedPath);
         }
 
         Console.WriteLine($"Using raw table rebuild list from: {resolvedPath}");

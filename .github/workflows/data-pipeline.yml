@@ -2,6 +2,15 @@ name: School Data Ingestion Pipeline
 
 on:
   workflow_dispatch:
+    rebuild-all-raw-tables:
+        description: Ignore the rebuild list and rebuild all raw tables
+        type: boolean
+        required: false
+        default: false
+      raw-tables-to-rebuild-path:
+        description: Optional override path to the raw tables rebuild list
+        type: string
+        required: false
   workflow_call:
     inputs:
       environment:
@@ -14,15 +23,6 @@ on:
         required: false
         default: ""
         type: string
-      rebuild-all-raw-tables:
-        description: Ignore the rebuild list and rebuild all raw tables
-        type: boolean
-        required: false
-        default: false
-      raw-tables-to-rebuild-path:
-        description: Optional override path to the raw tables rebuild list
-        type: string
-        required: false
   schedule:
     - cron: "0 5 * * *"   # every day at 05:00 UTC
 
@@ -62,7 +62,7 @@ jobs:
       # Terraform and service-related settings
       DEPLOY_ENV: ${{ inputs.environment || 'test'  }}
       PR_NUM: ${{ inputs.pr-number || ''  }}
-      DEFAULT_RAW_TABLES_TO_REBUILD_PATH: SAPData/raw_tables_to_rebuild.${{ inputs.environment || 'test' }}.txt
+      DEFAULT_RAW_TABLES_TO_REBUILD_PATH: raw_tables_to_rebuild.${{ inputs.environment || 'test' }}.txt
 
       # Blob container
       AZURE_STORAGE_CONTAINER: alldata      # Could come from [env].tfvars.json
@@ -651,8 +651,8 @@ jobs:
           dotnet build SAPPub.sln --configuration Release
       - name: Generate SQL Scripts
         env:
-          REBUILD_ALL_RAW_TABLES: ${{ github.event_name == 'workflow_dispatch' && inputs.rebuild-all-raw-tables || 'false' }}
-          RAW_TABLES_TO_REBUILD_PATH: ${{ github.event_name == 'workflow_dispatch' && inputs.raw-tables-to-rebuild-path || env.DEFAULT_RAW_TABLES_TO_REBUILD_PATH }}
+          REBUILD_ALL_RAW_TABLES: ${{ inputs.rebuild-all-raw-tables || 'false' }}
+          RAW_TABLES_TO_REBUILD_PATH: ${{ inputs.raw-tables-to-rebuild-path || env.DEFAULT_RAW_TABLES_TO_REBUILD_PATH }}
         run: |
           dotnet run --configuration Release --project SAPData/SAPData.csproj
           echo "Generated SQL scripts."
