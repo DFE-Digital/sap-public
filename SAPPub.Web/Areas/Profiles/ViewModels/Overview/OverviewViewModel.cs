@@ -83,6 +83,8 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
 
     public string Ks4CurrentAcademicYearDisplayName => Ks4AcademicYearHelper.GetDisplayName(AcademicYearSelection.Current);
 
+    public string Ks4DestinationsAcademicYearDisplayName => Ks4DestinationsAcademicYearHelper.GetDisplayName(AcademicYearSelection.Current);
+
     public static OverviewViewModel Map(OverviewModel model)
     {
         var latLong = MappingHelper.ConvertToLatLon(model.Easting, model.Northing);
