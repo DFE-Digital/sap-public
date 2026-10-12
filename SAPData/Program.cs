@@ -47,6 +47,8 @@ internal class Program
             ? new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             : SelectiveIngestionHelpers.LoadLogicalKeysToRebuild(rawTablesToRebuildPath);
 
+        var existingRawTableNames = rebuildAllRawTables ? null : SelectiveIngestionHelpers.LoadExistingRawTableNames(baseDir, configuration);
+
 
         // -------------------------------------------------
         // 2. Generate raw tables + cleaned files + mapping
@@ -56,7 +58,8 @@ internal class Program
             cleanedDir,
             sqlDir,
             logicalKeysToRebuild,
-            rebuildAllRawTables
+            rebuildAllRawTables,
+            existingRawTableNames
         );
 
         rawTables.Run();

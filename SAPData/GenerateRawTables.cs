@@ -12,6 +12,7 @@ public class GenerateRawTables
     private readonly string _sqlDir;
     private readonly HashSet<string> _logicalKeysToRebuild;
     private readonly bool _rebuildAllRawTables;
+    private readonly List<string>? _existingRawTableNames;
 
     private readonly Dictionary<string, string> _tableMappings = new(StringComparer.OrdinalIgnoreCase);
     private readonly HashSet<string> _rebuiltTableNames = new(StringComparer.OrdinalIgnoreCase);
@@ -33,13 +34,15 @@ public class GenerateRawTables
         string cleanDir, 
         string sqlDir,
         IEnumerable<string>? logicalKeysToRebuild = null,
-        bool rebuildAllRawTables = false)
+        bool rebuildAllRawTables = false,
+        List<string>? existingRawTableNames = null)
     {
         _inputDir = inputDir;
         _cleanDir = cleanDir;
         _sqlDir = sqlDir;
         _logicalKeysToRebuild = new HashSet<string>(logicalKeysToRebuild ?? [], StringComparer.OrdinalIgnoreCase);
         _rebuildAllRawTables = rebuildAllRawTables;
+        _existingRawTableNames = existingRawTableNames;
     }
 
     public void Run()
@@ -101,7 +104,7 @@ public class GenerateRawTables
         _tableMappings[fileKey] = tableName;
 
         bool rebuildTable = _rebuildAllRawTables || IsListedForRebuild(logicalKey);
-        if (!rebuildTable)
+        if (!rebuildTable && _existingRawTableNames!= null && !_existingRawTableNames.Contains(tableName))
         {
             Console.WriteLine($"Leaving table for logical key '{logicalKey}' ({tableName}) unchanged. Skipping DROP/CREATE/COPY.");
             AppendExistingTableGuard(createSql, tableName, logicalKey);

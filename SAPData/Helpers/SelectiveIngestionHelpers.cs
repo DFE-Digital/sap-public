@@ -62,4 +62,28 @@ internal static class SelectiveIngestionHelpers
         return keys;
     }
 
+    public static List<string>?LoadExistingRawTableNames(string baseDir, IConfiguration configuration)
+    {
+        var configurationPath = configuration["ExistingRawTablesPath"] ?? Environment.GetEnvironmentVariable("EXISTING_RAW_TABLES_PATH");
+
+        if (string.IsNullOrWhiteSpace(configurationPath))
+        {
+            return null;
+        }
+
+        var resolvedPath = Path.IsPathRooted(configurationPath) ? configurationPath : Path.GetFullPath(Path.Combine(baseDir, configurationPath));
+
+        if (!File.Exists(resolvedPath))
+        {
+            throw new FileNotFoundException($"Configured existing raw tables list not found: {baseDir}", resolvedPath);
+        }
+
+        var names = File.ReadAllLines(resolvedPath)
+            .Select(line => line.Trim())
+            .Where(line => !string.IsNullOrWhiteSpace(line))
+            .ToList();
+
+        Console.WriteLine($"Loaded {names.Count} existing raw table name(s) from: {resolvedPath}");
+        return names;
+    }
 }
