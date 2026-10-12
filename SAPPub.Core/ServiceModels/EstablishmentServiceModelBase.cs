@@ -6,17 +6,7 @@ public abstract class EstablishmentServiceModelBase
 {
     public TypeOfEstablishment TypeOfEstablishment { get; set; }
 
-    public bool IsSpecialSchool => TypeOfEstablishment is
-        TypeOfEstablishment.CommunitySpecialSchool or
-        TypeOfEstablishment.NonMaintainedSpecialSchool or
-        TypeOfEstablishment.OtherIndependentSpecialSchool or
-        TypeOfEstablishment.FoundationSpecialSchool or
-        TypeOfEstablishment.AcademySpecialSponsorLed or
-        TypeOfEstablishment.FreeSchoolsSpecial or
-        TypeOfEstablishment.AcademySpecialConverter;
+    public bool IsSpecialSchool => TypeOfEstablishment.IsSpecialSchool;
 
-    public bool IsIndependentSchool => TypeOfEstablishment is
-        TypeOfEstablishment.OtherIndependentSchool or
-        TypeOfEstablishment.OtherIndependentSpecialSchool;
-
+    public bool IsIndependentSchool => TypeOfEstablishment.IsIndependentSchool;
 }

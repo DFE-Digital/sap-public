@@ -16,10 +16,18 @@ public class AcademicPerformanceAttainmentAndProgressViewModel : BaseViewModel
 
     private const AcademicYearSelection _currentAcademicYear = AcademicYearSelection.Current;
 
-    public string? AcademicYearInfoParagraph => $"Information in this section is for the 2025 to 2026 academic year.";
+    private static string CurrentAcademicYearDisplayName => Ks4AcademicYearHelper.GetDisplayName(_currentAcademicYear);
+
+    public string? AcademicYearInfoParagraph => $"Information in this section is for the {CurrentAcademicYearDisplayName} academic year.";
 
     // No Progress 8 scores available for the academic years 2024 to 2025 and 2025 to 2026 as no KS2 baseline available (due to covid)
-    public bool ShowProgress8NotAvailableInfo => _currentAcademicYear.GetDisplayName() is "2024 to 2025" or "2025 to 2026";
+    public bool ShowProgress8NotAvailableInfo => CurrentAcademicYearDisplayName is "2024 to 2025" or "2025 to 2026";
+
+    public bool ShowProgress8NotAvailableInfoForPreviousYear =>
+        Ks4AcademicYearHelper.GetDisplayName(AcademicYearSelection.Previous) is "2024 to 2025" or "2025 to 2026";
+
+    public bool ShowProgress8NotAvailableInfoForTwoYearsAgo =>
+        Ks4AcademicYearHelper.GetDisplayName(AcademicYearSelection.Previous2) is "2024 to 2025" or "2025 to 2026";
 
     public required RelativeYearValues<AcademicPerformanceAttainmentAndProgressSingleYearViewModel> YearValues { get; init; }
 

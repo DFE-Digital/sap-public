@@ -21,6 +21,8 @@ public class SearchParamsModel
     public string[]? SchoolType { get; set; }
 
 
-    public string[] PhasesOfEducation { get; set; } = new[] { "Primary", "Secondary", "16 to 19", "All-through" };
-    public string[] TypesOfSchool { get; set; } = new[] { "Academy", "Maintained school", "Independent schools", "Special school", "College" };
+    public string[] PhasesOfEducation { get; set; } = ["Primary", "Secondary", "16 to 19", "All-through"];
+
+    // Ticket 1101. Currently excludes independent schools (type 10 & 11). This means they are not pulled into the database and the filter is not required for "Independent schools"
+    public string[] TypesOfSchool { get; set; } = ["Academy", "Maintained school", "Special school", "College"];
 }

@@ -156,23 +156,48 @@ namespace SAPPub.Infrastructure.Repositories
             var visibilitySpec = await _searchVisibilityPolicy.GetVisibilitySpecificationAsync(ct);
             var parts = BuildSearchSqlParts(query, maxResults, visibilitySpec);
 
+            // Combine SELECT and COUNT into a single query using window function
+            // This eliminates: 1) duplicate WHERE clause evaluation, 2) extra database round-trip, 3) network latency for count query  
             string sql = $@"
-                SELECT {parts.SelectFields}
-                FROM v_establishment
-                {parts.WhereClause}
-                ORDER BY {parts.OrderBy}
-                LIMIT @pageSize OFFSET @offset;";
-
-            string countSql = $@"
-                SELECT COUNT(*)
-                FROM v_establishment
-                {parts.WhereClause};";
+                WITH filtered_results AS (
+                    SELECT {parts.SelectFields}, COUNT(*) OVER() AS ""TotalCount""
+                    FROM v_establishment
+                    {parts.WhereClause}
+                    ORDER BY {parts.OrderBy}
+                    LIMIT @pageSize OFFSET @offset
+                )
+                SELECT * FROM filtered_results;";
 
             using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
-            var results = await conn.QueryAsync<Establishment>(sql, parts.Parameters);
-            var totalCount = await conn.ExecuteScalarAsync<int>(countSql, parts.Parameters);
+            var results = await conn.QueryAsync<dynamic>(sql, parts.Parameters);
+            var resultList = results.ToList();
 
-            return (results, totalCount);
+            if (resultList.Count == 0)
+            {
+                return (Array.Empty<Establishment>(), 0);
+            }
+
+            var totalCount = (int)resultList.First().TotalCount;
+
+            // Map dynamic results back to Establishment entities
+            var establishments = resultList.Select(r => new Establishment
+            {
+                URN = r.URN,
+                EstablishmentName = r.EstablishmentName,
+                AddressStreet = r.AddressStreet,
+                AddressLocality = r.AddressLocality,
+                AddressAddress3 = r.AddressAddress3,
+                AddressTown = r.AddressTown,
+                AddressPostcode = r.AddressPostcode,
+                TypeOfEstablishmentId = r.TypeOfEstablishmentId,
+                StatusCode = r.StatusCode,
+                ClosedDate = r.ClosedDate,
+                IsKS2 = r.ISKS2,
+                IsKS4 = r.ISKS4,
+                IsKS5 = r.ISKS5
+            });
+
+            return (establishments, totalCount);
         }
     }
 }

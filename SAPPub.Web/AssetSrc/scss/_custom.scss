@@ -67,7 +67,7 @@
     }
 
 .app-highlight-grey {
-    background-color: govuk-colour("light-grey");
+    background-color: govuk-colour("black", $variant: "tint-95");
     padding: 4px;
 }
 
@@ -157,9 +157,9 @@
     --gds-font-family: "GDS Transport", Arial, sans-serif;
     --gds-font-size: 19px;
     --gds-text: govuk-colour("black");
-    --gds-grey: govuk-colour("mid-grey");
-    --gds-label-bg: govuk-colour("light-grey");
-    --gds-label-border: govuk-colour("mid-grey");
+    --gds-grey: govuk-colour("black", $variant: "tint-80");
+    --gds-label-bg: govuk-colour("black", $variant: "tint-95");
+    --gds-label-border: govuk-colour("black", $variant: "tint-80");
     --gds-label-padding: 6;
     margin-bottom: 20px;
     font-family: "GDS Transport", Arial, sans-serif;
@@ -171,7 +171,7 @@
     margin-bottom: 20px;
     padding-left: 20px;
     padding-right: 20px;
-    border: 1px solid govuk-colour("mid-grey");
+    border: 1px solid govuk-colour("black", $variant: "tint-80");
 }
 
 /* Chart legend styles */
@@ -765,10 +765,6 @@
 */
 .leaflet-container a {
     text-decoration: underline !important;
-}
-
-.dataview-button {
-    display: none;
 }
 
 .govuk-tag-width-override {

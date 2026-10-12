@@ -377,7 +377,7 @@ public sealed class GenerateViews
         sb.AppendLine(
             "WHERE t.\"qualification_type\" = 'Vocational'");
         sb.AppendLine(
-            "  AND t.\"time_period\" = '202425';");
+            "  AND t.\"time_period\" = '202526';");
 
         sb.AppendLine();
 
@@ -594,6 +594,11 @@ public sealed class GenerateViews
         sb.AppendLine("CREATE UNIQUE INDEX idx_v_establishment_urn ON v_establishment (\"URN\");");
         sb.AppendLine("CREATE INDEX idx_v_establishment_fts ON v_establishment USING GIN (\"EstablishmentNameFTS\");");
         sb.AppendLine("CREATE INDEX idx_v_establishment_geom ON v_establishment USING GIST (\"geom\");");
+
+        // Composite indexes for common filter combinations for search
+        sb.AppendLine("CREATE INDEX idx_v_establishment_type_phase ON v_establishment (\"TypeOfEstablishmentId\", \"ISKS2\", \"ISKS4\", \"ISKS5\");");
+        sb.AppendLine("CREATE INDEX idx_v_establishment_keystages ON v_establishment (\"ISKS2\", \"ISKS4\", \"ISKS5\");");
+        sb.AppendLine("CREATE INDEX idx_v_establishment_fts_type ON v_establishment (\"EstablishmentNameFTS\", \"TypeOfEstablishmentId\") WHERE \"StatusCode\" = 1;");
 
         return sb.ToString();
     }

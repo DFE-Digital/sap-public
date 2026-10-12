@@ -151,14 +151,7 @@
 
         @if (Model.ShowProgress8NotAvailableInfo)
         {
-            <div class="custom-card" data-testid="prog8-custom-card">
-                <div class="info__icon"></div>
-                <div class="custom-card__content">
-                    <p class="govuk-body">
-                        There are no Progress 8 scores available for the academic years 2024 to 2025 and 2025 to 2026. This is because there is no KS2 baseline available to calculate secondary progress measures for these years due to COVID-19 disruption.
-                    </p>
-                </div>
-            </div>
+            @await Html.PartialAsync("_Progress8NotAvailableMessage", null, new ViewDataDictionary(ViewData) { { "dataTestId", "prog8-custom-card" } })
         }
         else
         {
@@ -170,11 +163,25 @@
                 <govuk-accordion-item-heading>Progress 8 for previous years</govuk-accordion-item-heading>
                 <govuk-accordion-item-content>
 
-                    <h4 class="govuk-heading-m">2024 to 2025 academic year</h4>
-                    @await Html.PartialAsync("_Progress8Scores", Model.YearValues.PreviousYear, new ViewDataDictionary(ViewData) { { "id", "prog8-scores-prev" } })
+                    <h4 class="govuk-heading-m">@SAPPub.Web.Helpers.Ks4AcademicYearHelper.GetDisplayName(Model.YearValues.PreviousYear!.AcademicYearSelection) academic year</h4>
+                    @if (Model.ShowProgress8NotAvailableInfoForPreviousYear)
+                    {
+                        @await Html.PartialAsync("_Progress8NotAvailableMessage", null, new ViewDataDictionary(ViewData) { { "dataTestId", "prog8-custom-card-prev" } })
+                    }
+                    else
+                    {
+                        @await Html.PartialAsync("_Progress8Scores", Model.YearValues.PreviousYear, new ViewDataDictionary(ViewData) { { "id", "prog8-scores-prev" } })
+                    }
 
-                    <h4 class="govuk-heading-m">2023 to 2024 academic year</h4>
-                    @await Html.PartialAsync("_Progress8Scores", Model.YearValues.TwoYearsAgo, new ViewDataDictionary(ViewData) { { "id", "prog8-scores-prev2" } })
+                    <h4 class="govuk-heading-m">@SAPPub.Web.Helpers.Ks4AcademicYearHelper.GetDisplayName(Model.YearValues.TwoYearsAgo!.AcademicYearSelection) academic year</h4>
+                    @if (Model.ShowProgress8NotAvailableInfoForTwoYearsAgo)
+                    {
+                        @await Html.PartialAsync("_Progress8NotAvailableMessage", null, new ViewDataDictionary(ViewData) { { "dataTestId", "prog8-custom-card-prev2" } })
+                    }
+                    else
+                    {
+                        @await Html.PartialAsync("_Progress8Scores", Model.YearValues.TwoYearsAgo, new ViewDataDictionary(ViewData) { { "id", "prog8-scores-prev2" } })
+                    }
 
                 </govuk-accordion-item-content>
             </govuk-accordion-item>
@@ -226,9 +233,9 @@
                 <govuk-accordion-item-heading>Attainment 8 for previous years</govuk-accordion-item-heading>
                 <govuk-accordion-item-content>
 
-                    <h4 class="govuk-heading-m">2024 to 2025 academic year</h4>
+                    <h4 class="govuk-heading-m">@SAPPub.Web.Helpers.Ks4AcademicYearHelper.GetDisplayName(Model.YearValues.PreviousYear!.AcademicYearSelection) academic year</h4>
                     @await Html.PartialAsync("_Attainment8Scores", Model.YearValues.PreviousYear, new ViewDataDictionary(ViewData) { { "id", "attainment8-scores-prev" } })
-                    <h4 class="govuk-heading-m">2023 to 2024 academic year</h4>
+                    <h4 class="govuk-heading-m">@SAPPub.Web.Helpers.Ks4AcademicYearHelper.GetDisplayName(Model.YearValues.TwoYearsAgo!.AcademicYearSelection) academic year</h4>
                     @await Html.PartialAsync("_Attainment8Scores", Model.YearValues.TwoYearsAgo, new ViewDataDictionary(ViewData) { { "id", "attainment8-scores-prev2" } })
 
                 </govuk-accordion-item-content>
@@ -275,9 +282,9 @@
                             Show previous years data for disadvantaged pupils
                         </govuk-details-summary>
                         <govuk-details-text>
-                            <h4 class="govuk-heading-s">2024 to 2025 academic year</h4>
+                            <h4 class="govuk-heading-s">@SAPPub.Web.Helpers.Ks4AcademicYearHelper.GetDisplayName(Model.YearValues.PreviousYear!.AcademicYearSelection) academic year</h4>
                             @await Html.PartialAsync("_SeriesMeasureTableWithGradeContext", Model.YearValues.PreviousYear?.BreakdownDisadvantaged)
-                            <h4 class="govuk-heading-s">2023 to 2024 academic year</h4>
+                            <h4 class="govuk-heading-s">@SAPPub.Web.Helpers.Ks4AcademicYearHelper.GetDisplayName(Model.YearValues.TwoYearsAgo!.AcademicYearSelection) academic year</h4>
                             @await Html.PartialAsync("_SeriesMeasureTableWithGradeContext", Model.YearValues.TwoYearsAgo?.BreakdownDisadvantaged)
                         </govuk-details-text>
                     </govuk-details>

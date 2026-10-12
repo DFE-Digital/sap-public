@@ -125,6 +125,12 @@ variable "storage_container_delete_retention_days" {
   description = "Number of days to retain deleted containers"
 }
 
+variable "storage_blob_delete_retention_days" {
+  type        = number
+  default     = null
+  description = "Number of days to retain deleted containers"
+}
+
 variable "replicas" {
   type        = number
   default     = 1

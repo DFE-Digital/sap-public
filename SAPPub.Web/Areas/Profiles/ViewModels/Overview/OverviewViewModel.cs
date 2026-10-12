@@ -1,4 +1,5 @@
 ﻿using Microsoft.DotNet.Scaffolding.Shared;
+using SAPPub.Core.Enums;
 using SAPPub.Core.Extensions;
 using SAPPub.Core.Helpers;
 using SAPPub.Core.ServiceModels.Common;
@@ -80,6 +81,9 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
 
     public required IReadOnlyList<TechnicalSubjectModel> TopTechnicalSubjects { get; init; }
 
+    public string Ks4CurrentAcademicYearDisplayName => Ks4AcademicYearHelper.GetDisplayName(AcademicYearSelection.Current);
+
+    public string Ks4DestinationsAcademicYearDisplayName => Ks4DestinationsAcademicYearHelper.GetDisplayName(AcademicYearSelection.Current);
 
     public static OverviewViewModel Map(OverviewModel model)
     {

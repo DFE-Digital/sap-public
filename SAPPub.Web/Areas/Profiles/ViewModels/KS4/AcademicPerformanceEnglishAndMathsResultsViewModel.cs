@@ -10,6 +10,8 @@ public class AcademicPerformanceEnglishAndMathsResultsViewModel : BaseViewModel
 {
     public GcseGradeDataSelection? SelectedGrade { get; set; }
 
+    public string CurrentAcademicYearDisplayName => Ks4AcademicYearHelper.GetDisplayName(SAPPub.Core.Enums.AcademicYearSelection.Current);
+
     public required DataViewModel AllGcseData { get; set; }
 
     public required DataOverTimeViewModel AllGcseOverTimeData { get; set; }

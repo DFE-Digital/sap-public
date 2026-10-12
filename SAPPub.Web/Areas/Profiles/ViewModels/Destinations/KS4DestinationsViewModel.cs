@@ -8,6 +8,8 @@ namespace SAPPub.Web.Areas.Profiles.ViewModels.Destinations;
 
 public class KS4DestinationsViewModel : ProfileBaseViewModel
 {
+    public string CurrentDestinationsAcademicYearDisplayName => Ks4DestinationsAcademicYearHelper.GetDisplayName(AcademicYearSelection.Current);
+
     public required DataViewModel AllDestinationsData { get; set; }
     public required DataViewModel AllDestinationsDisadvantagedData { get; set; }
     public required DataViewModel AllDestinationsNonDisadvantagedData { get; set; }
@@ -61,7 +63,11 @@ public class KS4DestinationsViewModel : ProfileBaseViewModel
             },
             AllDestinationsOverTimeData = new DataOverTimeViewModel
             {
-                Labels = ["2021 to 2022", "2022 to 2023", "2023 to 2024"], // TODO - Need academic year to calculate current, previous and TwoYearsAgo
+                Labels = [
+                    Ks4DestinationsAcademicYearHelper.GetDisplayName(AcademicYearSelection.Previous2),
+                    Ks4DestinationsAcademicYearHelper.GetDisplayName(AcademicYearSelection.Previous),
+                    Ks4DestinationsAcademicYearHelper.GetDisplayName(AcademicYearSelection.Current)
+                ],
                 Datasets =
                 [
                     new DatasetViewModel
