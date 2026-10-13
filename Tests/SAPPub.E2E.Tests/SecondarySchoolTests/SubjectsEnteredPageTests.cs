@@ -1,7 +1,6 @@
 ﻿using Microsoft.Playwright;
 using SAPPub.E2E.Tests.Helpers;
 using SAPPub.E2E.Tests.Infrastructure;
-using SAPPub.E2E.Tests.Primary;
 using SAPPub.Playwright.Testing;
 
 namespace SAPPub.E2E.Tests.SecondarySchoolTests;
@@ -46,7 +45,7 @@ public class SubjectsEnteredPageTests : BasePageTest
 
     [Theory]
     [MemberData(nameof(GetSubjectsEnteredTestData))]
-    public async Task CurrentYearSelected_ShowsExpectedAttainmentData_Memberdata(
+    public async Task CurrentYearSelected_ShowsExpectedSubjectsEntered(
         SubjectsEnteredTestCase testCase)
     {
         // Arrange && Act
@@ -75,7 +74,7 @@ public class SubjectsEnteredPageTests : BasePageTest
                 continue;
             }
             var subjectRow = subjectRows.FirstOrDefault();
-            Assert.NotNull(subjectRow);
+            Assert.True(subjectRow != null, $"Expected to find a row for subject '{expectedSubject.Item1}' with count '{expectedSubject.Item2}'");
             Assert.Equal(expectedSubject.Item2.ToString(), subjectRow[2]);
         }
     }
