@@ -79,6 +79,6 @@ public class HeaderServiceNavigationTests(WebApplicationSetupFixture fixture) : 
         var href = await feedBackLink.GetAttributeAsync("href");
 
         Assert.Equal("feedback", text.Trim());
-        Assert.Equal("https://forms.cloud.microsoft/pages/responsepage.aspx?id=yXfS-grGoU2187O4s0qC-bvgNBlcYPxAqCMfEzVBipNUMjBVV05XS1hPNjhGWjZXVTlHV0ZXTjZVWS4u", href, ignoreCase: true);
+        Assert.Equal("https://forms.cloud.microsoft/pages/responsepage.aspx?id=yXfS-grGoU2187O4s0qC-bvgNBlcYPxAqCMfEzVBipNUMUVSQlFLS0hFMlFROTVQNFRZVEFOQ1NTMy4u&route=shorturl", href, ignoreCase: true);
     }
 }
