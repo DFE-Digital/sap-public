@@ -53,7 +53,7 @@ public class AccessibilityTests(WebApplicationSetupFixture fixture) : BasePageTe
 
         // search pages
         "search",
-        "search/results?NameSearchTerm=school&Distance=3&PageNumber=1",
+        "search/results?NameSearchTerm=secondary%20school&Distance=3&PageNumber=1",
         "search/results?NameSearchTerm=xyz&Distance=3&PageNumber=1",
 
         // miscellaneous pages

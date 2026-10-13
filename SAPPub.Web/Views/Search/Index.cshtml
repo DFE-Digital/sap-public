@@ -26,19 +26,21 @@
             <p class="govuk-hint govuk-!-margin-top-2 govuk-!-margin-bottom-6">
                 Use this service to find information about schools and colleges in England. You can also save and compare secondary schools.
             </p>
-            <div class="govuk-grid-column-one-half">
-            <govuk-input input-class="govuk-input" input-placeholder="Search by keyword" for=@Model.SearchParams.NameSearchTerm name="NameSearchTerm" data-testid="searchByNameInput">
-                <govuk-input-label is-page-heading="false" class="govuk-label--s" id="school-name">School name</govuk-input-label>
-                <govuk-input-hint>For example, St Joseph's secondary school</govuk-input-hint>
-            </govuk-input>
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-one-half">
+                <govuk-input input-class="govuk-input" input-placeholder="Search by keyword" for=@Model.SearchParams.NameSearchTerm name="NameSearchTerm" data-testid="searchByNameInput">
+                    <govuk-input-label is-page-heading="false" class="govuk-label--s" id="school-name">School name</govuk-input-label>
+                    <govuk-input-hint>For example, St Joseph's secondary school</govuk-input-hint>
+                </govuk-input>
+                </div>
+                <div class="govuk-grid-column-one-half">
+                <govuk-input input-class="govuk-input" input-placeholder="Search by postcode" for=@Model.SearchParams.LocationSearchTerm name="LocationSearchTerm" data-testid="searchByLocationInput">
+                    <govuk-input-label is-page-heading="false" class="govuk-label--s" id="location">Your postcode</govuk-input-label>
+                    <govuk-input-hint>For example, LS28 8EU</govuk-input-hint>
+                </govuk-input>
+                </div>
             </div>
-            <div class="govuk-grid-column-one-half">
-            <govuk-input input-class="govuk-input" input-placeholder="Search by postcode" for=@Model.SearchParams.LocationSearchTerm name="LocationSearchTerm" data-testid="searchByLocationInput">
-                <govuk-input-label is-page-heading="false" class="govuk-label--s" id="location">Your postcode</govuk-input-label>
-                <govuk-input-hint>For example, LS28 8EU</govuk-input-hint>
-            </govuk-input>
-            </div>
-            <govuk-button id="search" type="submit">Search</govuk-button>
+                <govuk-button id="search" type="submit">Search</govuk-button>
         </govuk-fieldset>
     </form>
 </div>
