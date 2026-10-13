@@ -63,6 +63,7 @@ internal class Program
         }
     }
 
+
     private static string FindProjectDirectoryDownwards(string projectFileName)
     {
         var startDir = Directory.GetCurrentDirectory();
