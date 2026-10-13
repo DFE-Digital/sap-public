@@ -39,7 +39,8 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
         Assert.Equal("Help us improve this service by signing up to take part in our research.", bannerText);
 
         var locator = Page.Locator($"#banner-link");
-        string hrefValue = await locator.GetAttributeAsync("href");
+        string? hrefValue = await locator.GetAttributeAsync("href");
+        Assert.NotNull(hrefValue);
         Assert.Equal("https://forms.cloud.microsoft/pages/responsepage.aspx?id=yXfS-grGoU2187O4s0qC-bvgNBlcYPxAqCMfEzVBipNUMUVSQlFLS0hFMlFROTVQNFRZVEFOQ1NTMy4u&route=shorturl", hrefValue);
     }
 
