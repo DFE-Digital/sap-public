@@ -78,7 +78,7 @@ public class HeaderServiceNavigationTests(WebApplicationSetupFixture fixture) : 
         var text = await feedBackLink.InnerTextAsync();
         var href = await feedBackLink.GetAttributeAsync("href");
 
-        Assert.Equal("give your feedback (opens in new tab)", text.Trim());
+        Assert.Equal("feedback", text.Trim());
         Assert.Equal("https://forms.cloud.microsoft/pages/responsepage.aspx?id=yXfS-grGoU2187O4s0qC-bvgNBlcYPxAqCMfEzVBipNUMjBVV05XS1hPNjhGWjZXVTlHV0ZXTjZVWS4u", href, ignoreCase: true);
     }
 }
