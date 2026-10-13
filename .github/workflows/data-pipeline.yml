@@ -683,14 +683,12 @@ jobs:
             while [ $attempt -le $max_attempts ]; do
               set +e
               "$GITHUB_WORKSPACE/konduit.sh" \
-              -n "${{ env.AKS_NAMESPACE }}" \
-              -x \
-              -i "$query_file" \
-              "${{ env.KONDUIT_APP_NAME }}" \
-             
-              psql > "$out_file.tmp"
-              exit_code=${PIPESTATUS[0]}
-
+                -n "${{ env.AKS_NAMESPACE }}" \
+                -x \
+                -i "$query_file" \
+                "${{ env.KONDUIT_APP_NAME }}" -- \
+                psql > "$out_file.tmp"
+                exit_code=${PIPESTATUS[0]}
               set -e
 
               if [ $exit_code -eq 0 ]; then
