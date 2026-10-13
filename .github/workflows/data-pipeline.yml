@@ -668,10 +668,16 @@ jobs:
         run: |
             set -euo pipefail
             out_file="$GITHUB_WORKSPACE/SAPData/existing_raw_tables.txt"
-            query="select tablename from pg_tables where schemaname=current_schema() and tablename like 't\_%'"
-
+            query_file="$RUNNER_TEMP/existing_raw_tables.sql"
+            cat > "$query_file" << 'SQL'
+            \set ON_ERROR_STOP on
+            \pset format unaligned
+            \pset tuples_only on
+            select tablename from pg_tables where schemaname=current_schema() and tablename like 't\_%';
+            SQL
+            
             max_attempts=5
-            delay=20
+            delay=5
             attempt=1
 
             while [ $attempt -le $max_attempts ]; do
@@ -679,8 +685,10 @@ jobs:
               "$GITHUB_WORKSPACE/konduit.sh" \
               -n "${{ env.AKS_NAMESPACE }}" \
               -x \
+              -i "$query_file" \
               "${{ env.KONDUIT_APP_NAME }}" \
-              psql -X -v ON_ERROR_STOP=1 -At -c "$query" > "$out_file.tmp"
+             
+              psql > "$out_file.tmp"
               exit_code=${PIPESTATUS[0]}
 
               set -e
@@ -694,8 +702,6 @@ jobs:
 
               echo "Listing existing raw tables failed (attempt $attempt/$max_attempts). Retrying after ${delay}..."
               sleep $delay
-              delay=$((delay * 2))
-              if [ $delay -gt 180 ]; then delay=180; fi
               attempt=$((attempt + 1))
             done
 
