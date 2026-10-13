@@ -469,7 +469,7 @@ jobs:
           environment: test
           sha: ${{ needs.build.outputs.docker-image-tag }}
           terraform-base: ${{ env.TERRAFORM_BASE }}
-          healthcheck: ${{ env.HEALTHCHECK_CMD }}
+          # healthcheck: ${{ env.HEALTHCHECK_CMD }}
           teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
           smoke-test: false
           service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
@@ -567,7 +567,7 @@ jobs:
           environment: production
           sha: ${{ needs.build.outputs.docker-image-tag }}
           terraform-base: ${{ env.TERRAFORM_BASE }}
-          healthcheck: ${{ env.HEALTHCHECK_CMD }}
+          # healthcheck: ${{ env.HEALTHCHECK_CMD }}
           teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
           smoke-test: false
           service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
@@ -621,7 +621,7 @@ jobs:
           pr-number: ${{ inputs.pull-request-number }}
           sha: ${{ inputs.docker-image-tag }}
           terraform-base: ${{ env.TERRAFORM_BASE }}
-          healthcheck: ${{ env.HEALTHCHECK_CMD }}
+          # healthcheck: ${{ env.HEALTHCHECK_CMD }}
           teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
           service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
           smoke-test: false

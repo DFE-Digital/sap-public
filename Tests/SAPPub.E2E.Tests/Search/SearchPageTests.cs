@@ -79,7 +79,7 @@ namespace SAPPub.E2E.Tests.Search
         public async Task SimpleSearch_WithTypeFilter_LoadsSuccessfully(string type)
         {
             // Act
-            var response = await Page.GotoAsync($"{_pageRoot}?NameSearchTerm=school&schoolType={type}");
+            var response = await Page.GotoAsync($"{_pageRoot}?NameSearchTerm=secondary%20school&schoolType={type}");
 
             // Assert
             var resultsHeading = Page.GetByTestId("search-results-heading");

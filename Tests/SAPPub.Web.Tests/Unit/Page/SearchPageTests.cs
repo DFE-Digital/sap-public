@@ -110,7 +110,7 @@ public class SearchPageTests : IDisposable
             .ReturnsAsync(expectedResults);
 
         // Act
-        var response = await _client.GetAsync("/search/results?NameSearchTerm=school");
+        var response = await _client.GetAsync("/search/results?NameSearchTerm=secondary%20school");
         var html = await response.Content.ReadAsStringAsync();
 
         // Parse HTML with AngleSharp
@@ -157,7 +157,7 @@ public class SearchPageTests : IDisposable
             .ReturnsAsync(expectedResults);
 
         // Act
-        var response = await _client.GetAsync("/search/results?NameSearchTerm=school&PageNumber=1");
+        var response = await _client.GetAsync("/search/results?NameSearchTerm=secondary%20school&PageNumber=1");
         var html = await response.Content.ReadAsStringAsync();
         var context = BrowsingContext.New(Configuration.Default);
         var document = await context.OpenAsync(req => req.Content(html));
@@ -208,7 +208,7 @@ public class SearchPageTests : IDisposable
             .ReturnsAsync(expectedResults);
 
         // Act
-        var response = await _client.GetAsync("/search/results?NameSearchTerm=school&PageNumber=2");
+        var response = await _client.GetAsync("/search/results?NameSearchTerm=secondary%20school&PageNumber=2");
         var html = await response.Content.ReadAsStringAsync();
         var context = BrowsingContext.New(Configuration.Default);
         var document = await context.OpenAsync(req => req.Content(html));
