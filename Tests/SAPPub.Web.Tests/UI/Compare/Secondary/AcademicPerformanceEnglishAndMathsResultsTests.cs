@@ -23,6 +23,20 @@ public class AcademicPerformanceEnglishAndMathsResultsTests(WebApplicationSetupF
     }
 
     [Fact]
+    public async Task AcademicPerformanceProgressAndAttainmentPage_AccessibilityNavigation()
+    {
+        // Arrange && Act
+        var queryString = "urns=105574&urns=137020";
+        await SkipContents_AccessibilityNavigation($"{_pageUrl}?{queryString}");
+
+        // Assert
+        var activeElement = await Page.EvaluateHandleAsync("document.activeElement");
+        var prop = await activeElement.GetPropertyAsync("href");
+        string href = await prop.JsonValueAsync<string>();
+        Assert.Contains("/compare/secondary/pupil-attainment?urns=105574&urns=137020", href);
+    }
+
+    [Fact]
     public async Task EnglishAndMathsResultsPage_Displays_AllGcse_CurrentYear_Chart()
     {
         // Arrange

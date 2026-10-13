@@ -1,4 +1,5 @@
-﻿using SAPPub.Playwright.Testing;
+﻿using SAPPub.Core.Enums.KS5Qualifications;
+using SAPPub.Playwright.Testing;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
@@ -24,6 +25,19 @@ public class KS5SubjectsEnteredTests(WebApplicationSetupFixture fixture) : BaseP
 
         Assert.NotNull(response);
         Assert.Equal(200, response.Status);
+    }
+
+    [Fact]
+    public async Task KS5SubjectsEnteredPage_KS5_AccessibilityNavigation()
+    {
+        // Arrange && Act
+        await SkipContents_AccessibilityNavigation(_basePageUrl);
+
+        // Assert
+        var activeElement = await Page.EvaluateHandleAsync("document.activeElement");
+        var prop = await activeElement.GetPropertyAsync("href");
+        string href = await prop.JsonValueAsync<string>();
+        Assert.Contains("/school/130499/holy-cross-college/16-to-19-performance/level-3-qualifications", href);
     }
 
     [Fact]

@@ -88,7 +88,7 @@ public class PupilProgressPageTests : PageTestsBase
 
         // Assert
         Assert.NotNull(doc.QuerySelector(".moj-side-navigation"));
-        Assert.Equal(6, doc.QuerySelectorAll(".moj-side-navigation__item").Length);
+        Assert.Equal(7, doc.QuerySelectorAll(".moj-side-navigation__item").Length);
         Assert.Single(doc.QuerySelectorAll(".moj-side-navigation__item--active"));
     }
 

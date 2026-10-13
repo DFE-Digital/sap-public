@@ -28,6 +28,19 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
     }
 
     [Fact]
+    public async Task AdmissionsPage_KS4_AccessibilityNavigation()
+    {
+        // Arrange && Act
+        await SkipContents_AccessibilityNavigation(_schoolUrnToUrlMap["105574"]);
+
+        // Assert
+        var activeElement = await Page.EvaluateHandleAsync("document.activeElement");
+        var prop = await activeElement.GetPropertyAsync("href");
+        string href = await prop.JsonValueAsync<string>();
+        Assert.Equal("http://www.test.co.uk/", href);
+    }
+
+    [Fact]
     public async Task AdmissionsPage_HasCorrectTitle()
     {
         // Arrange
@@ -60,7 +73,7 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         await nav.ShouldBeVisibleAsync();
-        await nav.ShouldHaveItemsCountAsync(7);
+        await nav.ShouldHaveItemsCountAsync(8);
         await nav.ShouldHaveOneActiveItemAsync();
         await nav.ShouldHaveActiveHrefAsync(_schoolUrnToUrlMap["105574"].Replace("/secondary", ""));
     }

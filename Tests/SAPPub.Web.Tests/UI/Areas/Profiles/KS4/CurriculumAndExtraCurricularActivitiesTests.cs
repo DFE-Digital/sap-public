@@ -27,6 +27,19 @@ public class CurriculumAndExtraCurricularActivitiesTests(WebApplicationSetupFixt
     }
 
     [Fact]
+    public async Task CurriculumPage_KS4_AccessibilityNavigation()
+    {
+        // Arrange && Act
+        await SkipContents_AccessibilityNavigation(_schoolUrnToUrlMap["105574"]);
+
+        // Assert
+        var activeElement = await Page.EvaluateHandleAsync("document.activeElement");
+        var prop = await activeElement.GetPropertyAsync("href");
+        string href = await prop.JsonValueAsync<string>();
+        Assert.Equal("http://www.test.co.uk/", href);
+    }
+
+    [Fact]
     public async Task CurriculumAndExtraCurricularActivitiesPage_HasCorrectTitle()
     {
         // Arrange

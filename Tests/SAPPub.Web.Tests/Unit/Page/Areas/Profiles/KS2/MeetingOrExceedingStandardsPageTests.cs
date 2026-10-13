@@ -104,8 +104,8 @@ public class MeetingOrExceedingStandardsPageTests : PageTestsBase
     }
 
     [Theory]
-    [InlineData("143034", "St Paul's Church of England Academy", 6)]
-    [InlineData("150009", "Abraham Moss Community School", 8)]
+    [InlineData("143034", "St Paul's Church of England Academy", 7)]
+    [InlineData("150009", "Abraham Moss Community School", 9)]
     public async Task MeetingOrExceedingStandardsPage_Displays_VerticalNavigation(string urn, string schoolName, int expectedItemCount)
     {
         // Arrange

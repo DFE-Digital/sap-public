@@ -1,4 +1,5 @@
-﻿using Microsoft.Playwright;
+﻿using AngleSharp.Dom;
+using Microsoft.Playwright;
 using SAPPub.Playwright.Testing;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
@@ -24,6 +25,19 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
         // Assert
         Assert.NotNull(response);
         Assert.Equal(200, response.Status);
+    }
+
+    [Fact]
+    public async Task AdmissionsPage_KS2_AccessibilityNavigation()
+    {
+        // Arrange && Act
+        await SkipContents_AccessibilityNavigation(_schoolUrnToUrlMap["143034"]);
+
+        // Assert
+        var activeElement = await Page.EvaluateHandleAsync("document.activeElement");
+        var prop = await activeElement.GetPropertyAsync("href");
+        string href = await prop.JsonValueAsync<string>();
+        Assert.Equal("https://www.gov.uk/schools-admissions/school-starting-age", href);
     }
 
     [Fact]
@@ -72,8 +86,8 @@ public class AdmissionsPageTests(WebApplicationSetupFixture fixture) : BasePageT
     }
 
     [Theory]
-    [InlineData("143034", 6)]
-    [InlineData("150009", 8 )]
+    [InlineData("143034", 7)]
+    [InlineData("150009", 9 )]
     public async Task AdmissionsPage_Displays_VerticalNavigation(string schoolUrn, int expectedItemCount)
     {
         var nav = new VerticalNavigationHelper(Page);
