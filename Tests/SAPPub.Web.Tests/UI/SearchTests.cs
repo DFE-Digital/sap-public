@@ -47,7 +47,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     public async Task SearchPage_EnterSchoolName_ShowsViewWithResults()
     {
         // Arrange
-        var searchTerm = "school";
+        var searchTerm = "secondary school";
         var response = await Page.GotoAsync(_pageUrl);
 
         // Act
@@ -212,7 +212,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     public async Task SearchPage_Enter_SchoolName_Shows_Results_With_Pagination()
     {
         // Arrange
-        var searchTerm = "School";
+        var searchTerm = "Secondary school";
         var response = await Page.GotoAsync(_pageUrl);
 
         // Act
@@ -238,7 +238,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     public async Task SearchResultsPage_With_Pagination_Has_PageNumbers()
     {
         // Arrange
-        var searchTerm = "School";
+        var searchTerm = "Secondary school";
 
         // Act
         await Page.GotoAsync($"{_pageUrl}/results?NameSearchTerm={searchTerm}");
@@ -259,7 +259,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     public async Task SearchResultsPage_With_Pagination_FirstPage_HasNoPreviousLink()
     {
         // Arrange
-        var searchTerm = "School";
+        var searchTerm = "Secondary school";
         await Page.GotoAsync($"{_pageUrl}/results?NameSearchTerm={searchTerm}&PageNumber=1");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
@@ -278,7 +278,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     public async Task SearchResultsPage_With_Pagination_HasPreviousLink()
     {
         // Arrange
-        var searchTerm = "School";
+        var searchTerm = "Secondary school";
         await Page.GotoAsync($"{_pageUrl}/results?NameSearchTerm={searchTerm}&PageNumber=2");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
@@ -297,7 +297,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     public async Task SearchResultsPage_With_Pagination_HasNextLink()
     {
         // Arrange
-        var searchTerm = "School";
+        var searchTerm = "Secondary school";
         await Page.GotoAsync($"{_pageUrl}/results?NameSearchTerm={searchTerm}&PageNumber=1");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
@@ -316,7 +316,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     public async Task SearchResultsPage_With_Pagination_HasNoNextLink()
     {
         // Arrange
-        var searchTerm = "School";
+        var searchTerm = "Secondary school";
         await Page.GotoAsync($"{_pageUrl}/results?NameSearchTerm={searchTerm}&PageNumber=2");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
@@ -335,7 +335,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     public async Task SearchResultsPage_With_Pagination_Click_Next_Link()
     {
         // Arrange
-        var searchTerm = "School";
+        var searchTerm = "Secondary school";
         await Page.GotoAsync($"{_pageUrl}/results?NameSearchTerm={searchTerm}&PageNumber=1");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
@@ -353,7 +353,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     public async Task SearchResultsPage_With_Pagination_Click_Previous_Link()
     {
         // Arrange
-        var searchTerm = "School";
+        var searchTerm = "Secondary school";
         await Page.GotoAsync($"{_pageUrl}/results?NameSearchTerm={searchTerm}&PageNumber=2");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
@@ -375,7 +375,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     public async Task SearchPage_FilterOnPhase_ShowsViewWithResults(string phase)
     {
         // Arrange
-        var searchTerm = "school";
+        var searchTerm = "secondary school";
         var response = await Page.GotoAsync(_pageUrl);
 
         // Act
@@ -408,7 +408,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     public async Task SearchPage_FilterOnPhase_Multiple_ShowsViewWithResults()
     {
         // Arrange
-        var searchTerm = "school";
+        var searchTerm = "secondary school";
         var response = await Page.GotoAsync(_pageUrl);
 
         // Act
@@ -446,7 +446,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     public async Task SearchPage_FilterOnSchoolType_ShowsViewWithResults(string schoolType)
     {
         // Arrange
-        var searchTerm = "school";
+        var searchTerm = "secondary school";
         var response = await Page.GotoAsync(_pageUrl);
 
         // Act
@@ -478,7 +478,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     public async Task SearchPage_FilterOn_Multiple_ShowsViewWithResults()
     {
         // Arrange
-        var searchTerm = "school";
+        var searchTerm = "secondary school";
         var response = await Page.GotoAsync(_pageUrl);
 
         // Act
@@ -512,7 +512,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     public async Task SearchPage_FilterOnType_Multiple_ShowsViewWithResults()
     {
         // Arrange
-        var searchTerm = "school";
+        var searchTerm = "secondary school";
         var response = await Page.GotoAsync(_pageUrl);
 
         // Act
@@ -548,7 +548,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     public async Task SearchPage_FilterOnType_Submit_ButtonsWorks_ShowsViewWithResults(string buttonId)
     {
         // Arrange
-        var searchTerm = "school";
+        var searchTerm = "secondary school";
         var response = await Page.GotoAsync(_pageUrl);
 
         // Act
