@@ -7,158 +7,160 @@ using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Core.Interfaces.Services.Search;
 using SAPPub.Core.ServiceModels.Search.InputModels;
 using SAPPub.Core.Specifications;
+using SAPPub.Infrastructure.Repositories.Generic;
 
-namespace SAPPub.Infrastructure.Repositories
+namespace SAPPub.Infrastructure.Repositories;
+
+public sealed class EstablishmentRepository : IEstablishmentRepository
 {
-    public sealed class EstablishmentRepository : IEstablishmentRepository
+    private static readonly TimeSpan SearchCommandTimeout = TimeSpan.FromSeconds(10);
+
+    private readonly IGenericRepository<Establishment> _repo;
+    private readonly NpgsqlDataSource _dataSource;
+    private readonly ISearchVisibilityPolicy _searchVisibilityPolicy;
+
+    internal sealed record SearchSqlParts(
+        string SelectFields,
+        string WhereClause,
+        string OrderBy,
+        DynamicParameters Parameters);
+
+    public EstablishmentRepository(
+        IGenericRepository<Establishment> repo,
+        NpgsqlDataSource dataSource,
+        ISearchVisibilityPolicy searchVisibilityPolicy)
     {
-        private readonly IGenericRepository<Establishment> _repo;
-        private readonly NpgsqlDataSource _dataSource;
-        private readonly ISearchVisibilityPolicy _searchVisibilityPolicy;
+        _repo = repo ?? throw new ArgumentNullException(nameof(repo));
+        _dataSource = dataSource ?? throw new ArgumentNullException(nameof(dataSource));
+        _searchVisibilityPolicy = searchVisibilityPolicy ?? throw new ArgumentNullException(nameof(searchVisibilityPolicy));
+    }
 
-        internal sealed record SearchSqlParts(
-            string SelectFields,
-            string WhereClause,
-            string OrderBy,
-            DynamicParameters Parameters);
+    public Task<IEnumerable<Establishment>> GetEstablishmentsAsync(int page, int take, CancellationToken ct = default)
+    {
+        return _repo.ReadPageAsync(page, take, ct);
+    }
 
-        public EstablishmentRepository(
-            IGenericRepository<Establishment> repo,
-            NpgsqlDataSource dataSource,
-            ISearchVisibilityPolicy searchVisibilityPolicy)
+    public async Task<Establishment?> GetEstablishmentAsync(string urn, CancellationToken ct = default)
+    {
+        if (string.IsNullOrWhiteSpace(urn))
+            return null;
+
+        return await _repo.ReadAsync(urn, ct) ?? null;
+    }
+
+    public async Task<IEnumerable<Establishment>?> GetEstablishmentsAsync(IEnumerable<string> urns, CancellationToken ct = default)
+    {
+        if (urns is null || !urns.Any())
+            return null;
+
+        return await _repo.ReadManyAsync(new { Urns = urns }, ct) ?? null;
+    }
+
+    internal static SearchSqlParts BuildSearchSqlParts(SearchQuery query, int maxResults, IEstablishmentSearchSpecification visibilitySpec)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+        ArgumentNullException.ThrowIfNull(visibilitySpec);
+
+        var parameters = new DynamicParameters();
+        int requestedPageSize = query.PageSize ?? maxResults;
+        int pageSize = Math.Clamp(requestedPageSize, 1, maxResults);
+        int offset = ((query.Page ?? 1) - 1) * pageSize;
+        parameters.Add("pageSize", pageSize);
+        parameters.Add("offset", offset);
+
+        var whereClauses = new List<string>();
+        var phaseWhereClauses = new List<string>();
+        bool hasName = !string.IsNullOrWhiteSpace(query.Name);
+        bool hasLocation = query.Latitude.HasValue && query.Longitude.HasValue && query.Distance.HasValue;
+
+        if (hasName)
         {
-            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
-            _dataSource = dataSource ?? throw new ArgumentNullException(nameof(dataSource));
-            _searchVisibilityPolicy = searchVisibilityPolicy ?? throw new ArgumentNullException(nameof(searchVisibilityPolicy));
+            whereClauses.Add(@"""EstablishmentNameFTS"" @@ plainto_tsquery('english', normalize_text(@searchTerm))");
+            parameters.Add("searchTerm", query.Name);
         }
 
-        public Task<IEnumerable<Establishment>> GetEstablishmentsAsync(int page, int take, CancellationToken ct = default)
+        if (hasLocation)
         {
-            return _repo.ReadPageAsync(page, take, ct);
+            whereClauses.Add(@"""geom"" IS NOT NULL");
+            whereClauses.Add(@"ST_DWithin(""geom"", ST_SetSRID(ST_MakePoint(@lng, @lat), 4326)::geography, @distance)");
+            parameters.Add("lat", query.Latitude);
+            parameters.Add("lng", query.Longitude);
+            parameters.Add("distance", MappingHelper.MilesToMeters(query.Distance!.Value));
         }
 
-        public async Task<Establishment?> GetEstablishmentAsync(string urn, CancellationToken ct = default)
+        if (query.EstablishmentTypes is not null && query.EstablishmentTypes.Length != 0 && query.EstablishmentTypes.All(t => !string.IsNullOrWhiteSpace(t)))
         {
-            if (string.IsNullOrWhiteSpace(urn))
-                return null;
-
-            return await _repo.ReadAsync(urn, ct) ?? null;
-        }
-
-        public async Task<IEnumerable<Establishment>?> GetEstablishmentsAsync(IEnumerable<string> urns, CancellationToken ct = default)
-        {
-            if (urns is null || !urns.Any())
-                return null;
-
-            return await _repo.ReadManyAsync(new { Urns = urns }, ct) ?? null;
-        }
-
-        internal static SearchSqlParts BuildSearchSqlParts(SearchQuery query, int maxResults, IEstablishmentSearchSpecification visibilitySpec)
-        {
-            ArgumentNullException.ThrowIfNull(query);
-            ArgumentNullException.ThrowIfNull(visibilitySpec);
-
-            var parameters = new DynamicParameters();
-            int requestedPageSize = query.PageSize ?? maxResults;
-            int pageSize = Math.Clamp(requestedPageSize, 1, maxResults);
-            int offset = ((query.Page ?? 1) - 1) * pageSize;
-            parameters.Add("pageSize", pageSize);
-            parameters.Add("offset", offset);
-
-            var whereClauses = new List<string>();
-            var phaseWhereClauses = new List<string>();
-            bool hasName = !string.IsNullOrWhiteSpace(query.Name);
-            bool hasLocation = query.Latitude.HasValue && query.Longitude.HasValue && query.Distance.HasValue;
-
-            if (hasName)
+            var typesQueryList = query.EstablishmentTypes
+            .SelectMany(type => (type.ToLower() switch
             {
-                whereClauses.Add(@"""EstablishmentNameFTS"" @@ plainto_tsquery('english', normalize_text(@searchTerm))");
-                parameters.Add("searchTerm", query.Name);
-            }
+                "maintained school" => "1,2,3,5",
+                "academy" => "28,34,35,40,41,45,46",
+                "college" => "18,21,39,56",
+                "independent schools" => "6,11",
+                "special school" => "7,8,10,12,33,36,44",
+                _ => string.Empty
+            }).Split(',', StringSplitOptions.RemoveEmptyEntries))
+            .Distinct();
 
-            if (hasLocation)
-            {
-                whereClauses.Add(@"""geom"" IS NOT NULL");
-                whereClauses.Add(@"ST_DWithin(""geom"", ST_SetSRID(ST_MakePoint(@lng, @lat), 4326)::geography, @distance)");
-                parameters.Add("lat", query.Latitude);
-                parameters.Add("lng", query.Longitude);
-                parameters.Add("distance", MappingHelper.MilesToMeters(query.Distance!.Value));
-            }
+            whereClauses.Add($@"""TypeOfEstablishmentId"" IN ({string.Join(",", typesQueryList)})");
+        }
 
-            if (query.EstablishmentTypes is not null && query.EstablishmentTypes.Length != 0 && query.EstablishmentTypes.All(t => !string.IsNullOrWhiteSpace(t)))
+        if (query.EstablishmentPhases is not null && query.EstablishmentPhases.Length != 0 && query.EstablishmentPhases.All(t => !string.IsNullOrWhiteSpace(t)))
+        {
+            foreach (var phase in query.EstablishmentPhases)
             {
-                var typesQueryList = query.EstablishmentTypes
-                .SelectMany(type => (type.ToLower() switch
+                if (phase.Contains("all-through", StringComparison.OrdinalIgnoreCase))
                 {
-                    "maintained school" => "1,2,3,5",
-                    "academy" => "28,34,35,40,41,45,46",
-                    "college" => "18,21,39,56",
-                    "independent schools" => "6,11",
-                    "special school" => "7,8,10,12,33,36,44",
-                    _ => string.Empty
-                }).Split(',', StringSplitOptions.RemoveEmptyEntries))
-                .Distinct();
-
-                whereClauses.Add($@"""TypeOfEstablishmentId"" IN ({string.Join(",", typesQueryList)})");
-            }
-
-            if (query.EstablishmentPhases is not null && query.EstablishmentPhases.Length != 0 && query.EstablishmentPhases.All(t => !string.IsNullOrWhiteSpace(t)))
-            {
-                foreach (var phase in query.EstablishmentPhases)
-                {
-                    if (phase.Contains("all-through", StringComparison.OrdinalIgnoreCase))
-                    {
-                        phaseWhereClauses.Add(@"(""ISKS2"" IS true AND ""ISKS4"" IS true AND ""ISKS5"" IS true)");
-                    }
-                    if (phase.Contains("primary", StringComparison.OrdinalIgnoreCase))
-                    {
-                        phaseWhereClauses.Add(@"(""ISKS2"" IS true)");
-                    }
-                    if (phase.Contains("secondary", StringComparison.OrdinalIgnoreCase))
-                    {
-                        phaseWhereClauses.Add(@"(""ISKS4"" IS true)");
-                    }
-                    if (phase.Contains("16", StringComparison.OrdinalIgnoreCase))
-                    {
-                        phaseWhereClauses.Add(@"(""ISKS5"" IS true)");
-                    }
+                    phaseWhereClauses.Add(@"(""ISKS2"" IS true AND ""ISKS4"" IS true AND ""ISKS5"" IS true)");
                 }
-                if (phaseWhereClauses.Count > 0)
+                if (phase.Contains("primary", StringComparison.OrdinalIgnoreCase))
                 {
-                    whereClauses.Add("(" + string.Join(" OR ", phaseWhereClauses) + ")");
+                    phaseWhereClauses.Add(@"(""ISKS2"" IS true)");
+                }
+                if (phase.Contains("secondary", StringComparison.OrdinalIgnoreCase))
+                {
+                    phaseWhereClauses.Add(@"(""ISKS4"" IS true)");
+                }
+                if (phase.Contains("16", StringComparison.OrdinalIgnoreCase))
+                {
+                    phaseWhereClauses.Add(@"(""ISKS5"" IS true)");
                 }
             }
-
-            whereClauses.Add(visibilitySpec.ToSqlPredicate());
-
-
-            string orderBy = hasLocation
-                ? @"""Distance"" ASC, ""EstablishmentName"" ASC"
-                : @"""EstablishmentName"" ASC";
-
-            string selectFields = @"""URN"", ""EstablishmentName"", ""AddressStreet"", ""AddressLocality"", ""AddressAddress3"", ""AddressTown"", ""AddressPostcode"", ""TypeOfEstablishmentId"", ""StatusCode"", ""ClosedDate"", ""ISKS2"", ""ISKS4"", ""ISKS5""";
-
-            if (hasLocation)
+            if (phaseWhereClauses.Count > 0)
             {
-                selectFields += @", ST_Distance(""geom"", ST_SetSRID(ST_MakePoint(@lng, @lat), 4326)::geography) AS ""Distance""";
+                whereClauses.Add("(" + string.Join(" OR ", phaseWhereClauses) + ")");
             }
-
-            string whereClause = whereClauses.Count > 0
-                ? "WHERE " + string.Join(" AND ", whereClauses)
-                : string.Empty;
-
-            return new SearchSqlParts(selectFields, whereClause, orderBy, parameters);
         }
 
-        public async Task<(IEnumerable<Establishment> Results, int TotalCount)> SearchAsync(SearchQuery query, int maxResults = 10, CancellationToken ct = default)
+        whereClauses.Add(visibilitySpec.ToSqlPredicate());
+
+
+        string orderBy = hasLocation
+            ? @"""Distance"" ASC, ""EstablishmentName"" ASC"
+            : @"""EstablishmentName"" ASC";
+
+        string selectFields = @"""URN"", ""EstablishmentName"", ""AddressStreet"", ""AddressLocality"", ""AddressAddress3"", ""AddressTown"", ""AddressPostcode"", ""TypeOfEstablishmentId"", ""StatusCode"", ""ClosedDate"", ""ISKS2"", ""ISKS4"", ""ISKS5""";
+
+        if (hasLocation)
         {
+            selectFields += @", ST_Distance(""geom"", ST_SetSRID(ST_MakePoint(@lng, @lat), 4326)::geography) AS ""Distance""";
+        }
 
-            var visibilitySpec = await _searchVisibilityPolicy.GetVisibilitySpecificationAsync(ct);
-            var parts = BuildSearchSqlParts(query, maxResults, visibilitySpec);
+        string whereClause = whereClauses.Count > 0
+            ? "WHERE " + string.Join(" AND ", whereClauses)
+            : string.Empty;
 
-            // Combine SELECT and COUNT into a single query using window function
-            // This eliminates: 1) duplicate WHERE clause evaluation, 2) extra database round-trip, 3) network latency for count query  
-            string sql = $@"
+        return new SearchSqlParts(selectFields, whereClause, orderBy, parameters);
+    }
+
+    public async Task<(IEnumerable<Establishment> Results, int TotalCount)> SearchAsync(SearchQuery query, int maxResults = 10, CancellationToken ct = default)
+    {
+        var visibilitySpec = await _searchVisibilityPolicy.GetVisibilitySpecificationAsync(ct);
+        var parts = BuildSearchSqlParts(query, maxResults, visibilitySpec);
+
+        // Combine SELECT and COUNT into a single query using window function
+        // This eliminates: 1) duplicate WHERE clause evaluation, 2) extra database round-trip, 3) network latency for count query  
+        string sql = $@"
                 WITH filtered_results AS (
                     SELECT {parts.SelectFields}, COUNT(*) OVER() AS ""TotalCount""
                     FROM v_establishment
@@ -168,36 +170,41 @@ namespace SAPPub.Infrastructure.Repositories
                 )
                 SELECT * FROM filtered_results;";
 
-            using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
-            var results = await conn.QueryAsync<dynamic>(sql, parts.Parameters);
-            var resultList = results.ToList();
+        var cmd = new DapperCommandBuilder()
+            .WithCommandText(sql)
+            .WithParameters(parts.Parameters)
+            .WithTimeout(SearchCommandTimeout)
+            .Build(ct);
 
-            if (resultList.Count == 0)
-            {
-                return (Array.Empty<Establishment>(), 0);
-            }
+        using var conn = await _dataSource.OpenConnectionAsync(ct);
+        var results = await conn.QueryAsync<dynamic>(cmd);
+        var resultList = results.ToList();
 
-            var totalCount = (int)resultList.First().TotalCount;
-
-            // Map dynamic results back to Establishment entities
-            var establishments = resultList.Select(r => new Establishment
-            {
-                URN = r.URN,
-                EstablishmentName = r.EstablishmentName,
-                AddressStreet = r.AddressStreet,
-                AddressLocality = r.AddressLocality,
-                AddressAddress3 = r.AddressAddress3,
-                AddressTown = r.AddressTown,
-                AddressPostcode = r.AddressPostcode,
-                TypeOfEstablishmentId = r.TypeOfEstablishmentId,
-                StatusCode = r.StatusCode,
-                ClosedDate = r.ClosedDate,
-                IsKS2 = r.ISKS2,
-                IsKS4 = r.ISKS4,
-                IsKS5 = r.ISKS5
-            });
-
-            return (establishments, totalCount);
+        if (resultList.Count == 0)
+        {
+            return (Array.Empty<Establishment>(), 0);
         }
+
+        var totalCount = (int)resultList.First().TotalCount;
+
+        // Map dynamic results back to Establishment entities
+        var establishments = resultList.Select(r => new Establishment
+        {
+            URN = r.URN,
+            EstablishmentName = r.EstablishmentName,
+            AddressStreet = r.AddressStreet,
+            AddressLocality = r.AddressLocality,
+            AddressAddress3 = r.AddressAddress3,
+            AddressTown = r.AddressTown,
+            AddressPostcode = r.AddressPostcode,
+            TypeOfEstablishmentId = r.TypeOfEstablishmentId,
+            StatusCode = r.StatusCode,
+            ClosedDate = r.ClosedDate,
+            IsKS2 = r.ISKS2,
+            IsKS4 = r.ISKS4,
+            IsKS5 = r.ISKS5
+        });
+
+        return (establishments, totalCount);
     }
 }

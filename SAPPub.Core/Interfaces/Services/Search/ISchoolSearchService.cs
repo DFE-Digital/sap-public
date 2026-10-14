@@ -5,6 +5,6 @@ namespace SAPPub.Core.Interfaces.Services.Search;
 
 public interface ISchoolSearchService
 {
-    Task<SchoolSearchResultsServiceModel> SearchAsync(SchoolSearchServiceQuery query);
+    Task<SchoolSearchResultsServiceModel> SearchAsync(SchoolSearchServiceQuery query, CancellationToken cancellationToken);
 }
 
