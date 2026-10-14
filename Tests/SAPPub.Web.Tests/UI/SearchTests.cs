@@ -36,7 +36,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
         Assert.Equal(200, response.Status);
 
         Assert.True(isBannerVisible);
-        Assert.Equal("Help us improve this service by signing up to take part in our research.", bannerText);
+        Assert.Equal("Help us improve this service by signing up to take part in our research \n(opens in a new tab)\n.", bannerText);
 
         var locator = Page.Locator($"#banner-link");
         string? hrefValue = await locator.GetAttributeAsync("href");
