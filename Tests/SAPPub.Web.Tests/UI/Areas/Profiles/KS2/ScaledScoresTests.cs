@@ -26,6 +26,19 @@ public class ScaledScoresTests(WebApplicationSetupFixture fixture) : BasePageTes
     }
 
     [Fact]
+    public async Task SubjectScaledScoresResultsPage_KS2_AccessibilityNavigation()
+    {
+        // Arrange && Act
+        await SkipContents_AccessibilityNavigation(_schoolUrnToUrlMap["149976"]);
+
+        // Assert
+        var activeElement = await Page.EvaluateHandleAsync("document.activeElement");
+        var prop = await activeElement.GetPropertyAsync("href");
+        string href = await prop.JsonValueAsync<string>();
+        Assert.Contains("/school/149976/four-elms-primary-school/primary-performance/pupil-progress", href);
+    }
+
+    [Fact]
     public async Task SubjectScaledScoresResultsPage_HasCorrectTitle()
     {
         // Arrange

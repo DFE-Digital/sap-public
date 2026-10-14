@@ -25,6 +25,20 @@ public class Level2QualificationsTests(WebApplicationSetupFixture fixture) : Bas
     }
 
     [Theory]
+    [InlineData(Level2.TechCert)]
+    public async Task Level2QualificationsPage_KS5_AccessibilityNavigation(Level2 level2Qualification)
+    {
+        // Arrange && Act
+        await SkipContents_AccessibilityNavigation(GetPageUrl(level2Qualification));
+
+        // Assert
+        var activeElement = await Page.EvaluateHandleAsync("document.activeElement");
+        var prop = await activeElement.GetPropertyAsync("href");
+        string href = await prop.JsonValueAsync<string>();
+        Assert.Equal("https://explore-education-statistics.service.gov.uk/find-statistics", href);
+    }
+
+    [Theory]
     [InlineData(Level2.TechCert)]    
     public async Task Level2Qualifications_Displays_CurrentYear_Table(Level2 level2Qualification)
     {

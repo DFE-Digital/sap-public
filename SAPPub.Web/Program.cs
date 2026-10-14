@@ -208,12 +208,6 @@ public partial class Program
         app.UseRouting();
         app.UseGovUkFrontend();
 
-        if (enableGateway == true)
-        {
-            app.UseMiddleware<GatewayMiddleware>();
-        }
-
-
         app.MapControllers();
         app.MapRazorPages();
 

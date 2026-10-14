@@ -9,10 +9,18 @@ namespace SAPPub.Web.Controllers;
 
 public class SearchController(ISchoolSearchService schoolSearchService) : Controller
 {
+    private const string BroadSearchErrorMessage = "Enter a school name or search by postcode";
+    private const string BroadSearchErrorTempDataKey = "BroadSearchError";
+
     [HttpGet]
     [Route("search", Name = RouteConstants.Search)]
     public IActionResult Index()
     {
+        if (TempData.TryGetValue(BroadSearchErrorTempDataKey, out var broadSearchError) && broadSearchError is string)
+        {
+            AddBroadSearchValidationError($"{nameof(SearchResultsViewModel.SearchParams)}.{nameof(SearchParamsModel.NameSearchTerm)}");
+        }
+
         return View(new SearchResultsViewModel());
     }
 
@@ -20,6 +28,18 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
     public IActionResult Index(SearchParamsModel model)
     {
         model.PageNumber = 1; // always reset pagenumber, when searching
+
+        if (IsSchoolOnlySearchTerm(model.NameSearchTerm) && string.IsNullOrWhiteSpace(model.LocationSearchTerm))
+        {
+            AddBroadSearchValidationError(nameof(SearchParamsModel.NameSearchTerm));
+            PrefixModelStateKeys("SearchParams");
+
+            return View(new SearchResultsViewModel
+            {
+                SearchParams = model
+            });
+        }
+
         if (ModelState.IsValid)
         {
             return RedirectToAction("SearchResults", model);
@@ -40,6 +60,12 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
     [Route("search/results", Name = RouteConstants.SearchResults)]
     public async Task<IActionResult> SearchResults(SearchParamsModel model)
     {
+        if (IsSchoolOnlySearchTerm(model.NameSearchTerm) && string.IsNullOrWhiteSpace(model.LocationSearchTerm))
+        {
+            TempData[BroadSearchErrorTempDataKey] = BroadSearchErrorMessage;
+            return RedirectToAction(nameof(Index));
+        }
+
         if (!ModelState.IsValid)
         {
             PrefixModelStateKeys("SearchParams");
@@ -95,5 +121,21 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
             // 3. Remove the old key
             ModelState.Remove(oldKey);
         }
+    }
+
+    private static bool IsSchoolOnlySearchTerm(string? searchTerm)
+    {
+        if (string.IsNullOrWhiteSpace(searchTerm))
+        {
+            return false;
+        }
+
+        var normalizedSearchTerm = string.Concat(searchTerm.Where(c => !char.IsWhiteSpace(c)));
+        return string.Equals(normalizedSearchTerm, "school", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private void AddBroadSearchValidationError(string modelStateKey)
+    {
+        ModelState.AddModelError(modelStateKey, BroadSearchErrorMessage);
     }
 }

@@ -22,6 +22,19 @@ public class DestinationsTests(WebApplicationSetupFixture fixture) : BasePageTes
     }
 
     [Fact]
+    public async Task DestinationsPage_AccessibilityNavigation()
+    {
+        // Arrange && Act
+        await SkipContents_AccessibilityNavigation(_url);
+
+        // Assert
+        var activeElement = await Page.EvaluateHandleAsync("document.activeElement");
+        var prop = await activeElement.GetPropertyAsync("href");
+        string href = await prop.JsonValueAsync<string>();
+        Assert.Contains("/school/135600/ark-academy/destinations/secondary", href);
+    }
+
+    [Fact]
     public async Task KS5DestinationsPage_TogglesBetweenChart_And_Table()
     { 
         // Arrange

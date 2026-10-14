@@ -90,7 +90,7 @@ export default function (data) {
       homepageJourney(environment, config)
       searchAndFilterJourney(environment, config)
     }
-    else {
+  else {
       homepageJourney(environment, config)
       ks4MySchools(environment, config)
     }

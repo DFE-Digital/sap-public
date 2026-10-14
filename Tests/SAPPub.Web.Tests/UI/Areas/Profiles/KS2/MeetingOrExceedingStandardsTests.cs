@@ -26,6 +26,19 @@ public class MeetingOrExceedingStandardsTests(WebApplicationSetupFixture fixture
     }
 
     [Fact]
+    public async Task MeetingOrExceedingStandardsResultsPage_KS2_AccessibilityNavigation()
+    {
+        // Arrange && Act
+        await SkipContents_AccessibilityNavigation(_schoolUrnToUrlMap["143034"]);
+
+        // Assert
+        var activeElement = await Page.EvaluateHandleAsync("document.activeElement");
+        var prop = await activeElement.GetPropertyAsync("href");
+        string href = await prop.JsonValueAsync<string>();
+        Assert.Contains("/school/143034/st-pauls-church-of-england-academy/primary-performance/pupil-progress", href);
+    }
+
+    [Fact]
     public async Task MeetingOrExceedingStandardsResultsPage_HasCorrectTitle()
     {
         // Arrange

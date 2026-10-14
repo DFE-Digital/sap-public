@@ -77,7 +77,7 @@ public class AboutYourSchoolsPageTests : PageTestsBase
 
         // Assert
         Assert.NotNull(doc.QuerySelector(".moj-side-navigation"));
-        Assert.Equal(4, doc.QuerySelectorAll(".moj-side-navigation__item").Length);
+        Assert.Equal(5, doc.QuerySelectorAll(".moj-side-navigation__item").Length);
         Assert.Single(doc.QuerySelectorAll(".moj-side-navigation__item--active"));
     }
 
@@ -163,7 +163,7 @@ public class AboutYourSchoolsPageTests : PageTestsBase
         var doc = await Fixture.BrowseToPage(_pageUrl);
 
         // Assert
-        var heading = doc.QuerySelector(".govuk-grid-column-three-quarters > h2");
+        var heading = doc.QuerySelector(".govuk-grid-column-three-quarters");
         Assert.NotNull(heading);
         Assert.Contains("Location", heading.TextContent.Trim());
     }

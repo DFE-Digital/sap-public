@@ -24,6 +24,19 @@ public class AcademicPerformanceAttainmentAndProgressTests(WebApplicationSetupFi
     }
 
     [Fact]
+    public async Task AcademicPerformanceAttainmentAndProgress_KS4_AccessibilityNavigation()
+    {
+        // Arrange && Act
+        await SkipContents_AccessibilityNavigation(_pageUrl);
+
+        // Assert
+        var activeElement = await Page.EvaluateHandleAsync("document.activeElement");
+        var prop = await activeElement.GetPropertyAsync("href");
+        string href = await prop.JsonValueAsync<string>();
+        Assert.Contains("/school/105574/loreto-high-school-chorlton/secondary-performance/progress-attainment", href);
+    }
+
+    [Fact]
     public async Task AcademicPerformanceAttainmentAndProgressPage_Displays_VerticalNavigation()
     {
         var nav = new VerticalNavigationHelper(Page);
