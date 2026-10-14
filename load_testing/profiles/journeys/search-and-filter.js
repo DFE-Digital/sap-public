@@ -53,7 +53,7 @@ export function searchAndFilterJourney (environment, config) {
         loadContentCheck(response, 'button-labels', 'Next')
         loadContentCheck(response, 'has-result', 'Ark')
       }
-      if (!isSuccess) {``
+      if (!isSuccess) {
         loadErrorHandler(response, 'Advanced Filter Search')
       }
 
