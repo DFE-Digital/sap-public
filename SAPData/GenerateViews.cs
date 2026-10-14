@@ -11,7 +11,8 @@ public sealed class GenerateViews
     private readonly IReadOnlyList<DataMapRow> _rows;
     private readonly string _tableMappingPath;
     private readonly string _sqlDir;
-
+    private readonly HashSet<string> _rawTableNamesToRebuild;
+    private readonly bool _rebuildAllRawTables;
 
     // raw_sources.json path in repo
     private static readonly string[] RawSourcesCandidates =
@@ -58,7 +59,6 @@ public sealed class GenerateViews
         new("v_establishment_ks5_performance", "Establishment", "KS5_Performance"),
         new("v_establishment_ks5_subject_entries", "Establishment", "KS5_Performance"),
 
-
         new("v_england_destinations", "England", "KS4_Destinations"),
         new("v_england_ks5_destinations", "England", "KS5_Destinations"),
 
@@ -66,10 +66,6 @@ public sealed class GenerateViews
         new("v_england_performance", "England", "KS4_Performance"),     //Todo - Rename to KS4
         new("v_england_ks5_performance", "England", "KS5_Performance"),
         new("v_england_absence", "England", "PupilAbsence"),
-
-
-
-
 
         new("v_la_destinations", "LA", "KS4_Destinations"),
         new("v_la_ks5_destinations", "LA", "KS5_Destinations"),
@@ -85,11 +81,18 @@ public sealed class GenerateViews
     };
 
 
-    public GenerateViews(IReadOnlyList<DataMapRow> rows, string tableMappingPath, string sqlDir)
+    public GenerateViews(
+        IReadOnlyList<DataMapRow> rows, 
+        string tableMappingPath, 
+        string sqlDir,
+        IEnumerable<string>? rawTableNamesToRebuild = null,
+        bool rebuildAllRawTables = false)
     {
         _rows = rows;
         _tableMappingPath = tableMappingPath;
         _sqlDir = sqlDir;
+        _rebuildAllRawTables = rebuildAllRawTables;
+        _rawTableNamesToRebuild = new HashSet<string>(rawTableNamesToRebuild ?? [], StringComparer.OrdinalIgnoreCase);
     }
 
     public void Run()
@@ -99,6 +102,7 @@ public sealed class GenerateViews
         var tableMap = LoadTableMappings();
         var sources = LoadRawSources();
         var excludedUrns = LoadExcludedUrns();
+        bool rebuildEstablishmentDependentViews = ShouldRebuildView(tableMap, sources, "v_establishment");
 
         foreach (var view in Views)
         {
@@ -107,6 +111,13 @@ public sealed class GenerateViews
             // 1) Establishment dimension (GIAS edubasealldataYYYYmmDD)
             if (view.ViewName.Equals("v_establishment", StringComparison.OrdinalIgnoreCase))
             {
+                if (!ShouldRebuildView(tableMap, sources, view.ViewName))
+                {
+                    sql = BuildSkippedSql(view.ViewName, "No rebuilt raw tables affect this view.");
+                    WriteSql("04", view.ViewName, sql);
+                    continue;
+                }
+
                 if (!TryResolveManagedDatasetKey(
                         sources,
                         tableMap,
@@ -155,6 +166,13 @@ public sealed class GenerateViews
             // 2) Mirror view (GIAS: all establishment links)
             else if (view.ViewName.Equals("v_establishment_links", StringComparison.OrdinalIgnoreCase))
             {
+                if (!ShouldRebuildView(tableMap, sources, view.ViewName))
+                {
+                    sql = BuildSkippedSql(view.ViewName, "No rebuilt raw tables affect this view.");
+                    WriteSql("04", view.ViewName, sql);
+                    continue;
+                }
+
                 if (!TryResolveManagedDatasetKey(
                         sources,
                         tableMap,
@@ -182,6 +200,13 @@ public sealed class GenerateViews
             // 3) Mirror view (GIAS: academy sponsor/trust links)
             else if (view.ViewName.Equals("v_establishment_group_links", StringComparison.OrdinalIgnoreCase))
             {
+                if (!ShouldRebuildView(tableMap, sources, view.ViewName))
+                {
+                    sql = BuildSkippedSql(view.ViewName, "No rebuilt raw tables affect this view.");
+                    WriteSql("04", view.ViewName, sql);
+                    continue;
+                }
+
                 if (!TryResolveManagedDatasetKey(
                         sources,
                         tableMap,
@@ -209,6 +234,13 @@ public sealed class GenerateViews
             // 4) Mirror view (EES: SubjectEntries_2 = school / establishment subject entries)
             else if (view.ViewName.Equals("v_establishment_subject_entries", StringComparison.OrdinalIgnoreCase))
             {
+                if (!ShouldRebuildView(tableMap, sources, view.ViewName))
+                {
+                    sql = BuildSkippedSql(view.ViewName, "No rebuilt raw tables affect this view.");
+                    WriteSql("04", view.ViewName, sql);
+                    continue;
+                }
+
                 if (!TryResolveManagedDatasetKey(
                         sources,
                         tableMap,
@@ -236,6 +268,13 @@ public sealed class GenerateViews
             // 5) Mirror view (EES: SubjectEntries = LA subject entries)
             else if (view.ViewName.Equals("v_la_subject_entries", StringComparison.OrdinalIgnoreCase))
             {
+                if (!ShouldRebuildView(tableMap, sources, view.ViewName))
+                {
+                    sql = BuildSkippedSql(view.ViewName, "No rebuilt raw tables affect this view.");
+                    WriteSql("04", view.ViewName, sql);
+                    continue;
+                }
+
                 if (!TryResolveManagedDatasetKey(
                         sources,
                         tableMap,
@@ -262,6 +301,13 @@ public sealed class GenerateViews
 
             else if (view.ViewName.Equals("v_establishment_ks5_subject_entries", StringComparison.OrdinalIgnoreCase))
             {
+                if (!ShouldRebuildView(tableMap, sources, view.ViewName))
+                {
+                    sql = BuildSkippedSql(view.ViewName, "No rebuilt raw tables affect this view.");
+                    WriteSql("04", view.ViewName, sql);
+                    continue;
+                }
+
                 if (!TryResolveManagedDatasetKey(
                         sources,
                         tableMap,
@@ -285,6 +331,7 @@ public sealed class GenerateViews
 
                 sql = GenerateMirrorMaterializedView(view.ViewName, rawTable);
             }
+            
             else if (view.ViewName.Equals("v_establishment_top3_technical_subject_entries", StringComparison.OrdinalIgnoreCase))
             {
                 var sourceRow = _rows.FirstOrDefault(r => r.Range.Equals(view.Range, StringComparison.OrdinalIgnoreCase) && 
@@ -294,6 +341,13 @@ public sealed class GenerateViews
                 {
                     sql = BuildSkippedSql(view.ViewName, $"Could not resolve raw table from DataMap for {view.Type}.");
 
+                    Write(view.ViewName, sql);
+                    continue;
+                }
+
+                if (!_rebuildAllRawTables && !_rawTableNamesToRebuild.Contains(rawTable))
+                {
+                    sql = BuildSkippedSql(view.ViewName, "No rebuilt raw tables affect this view.");
                     Write(view.ViewName, sql);
                     continue;
                 }
@@ -331,6 +385,13 @@ public sealed class GenerateViews
                     continue;
                 }
 
+                if (!ShouldRebuildDataMapDrivenView(view.ViewName, viewRows, tableMap, rebuildEstablishmentDependentViews))
+                {
+                    sql = BuildSkippedSql(view.ViewName, "No rebuilt raw tables affect this view.");
+                    WriteSql("04", view.ViewName, sql);
+                    continue;
+                }
+
                 sql = GenerateMaterializedView(view.ViewName, viewRows, tableMap);
             }
 
@@ -352,12 +413,187 @@ public sealed class GenerateViews
         var sb = new StringBuilder();
         sb.AppendLine($"-- AUTO-GENERATED MATERIALIZED VIEW: {viewName}");
         sb.AppendLine("-- NOTE: This file was generated but the view SQL was skipped.");
+        sb.AppendLine("-- In selective rebuild mode, the existing materialized view must already exist.");
         sb.AppendLine($"-- REASON: {reason}");
         sb.AppendLine();
-        sb.AppendLine($"-- DROP MATERIALIZED VIEW IF EXISTS {viewName};");
-        sb.AppendLine($"-- CREATE MATERIALIZED VIEW {viewName} AS");
-        sb.AppendLine($"-- SELECT NULL::text AS \"Skipped\";");
+        sb.AppendLine("DO $$");
+        sb.AppendLine("DECLARE");
+        sb.AppendLine("  v_schema text := current_schema();");
+        sb.AppendLine("BEGIN");
+        sb.AppendLine($"  IF to_regclass(format('%I.%I', v_schema, '{viewName}')) IS NULL THEN");
+        sb.AppendLine($"    RAISE EXCEPTION 'Skipped view {viewName} does not exist in schema %, but is required for selective rebuild. {reason}', v_schema;");
+        sb.AppendLine("  END IF;");
+        sb.AppendLine("END $$;");
         return sb.ToString();
+    }
+
+    private bool ShouldRebuildView(Dictionary<string, string> tableMap, List<RawSource> sources, string viewName)
+    {
+        if (_rebuildAllRawTables)
+        {
+            return true;
+        }
+
+        if (_rawTableNamesToRebuild.Count == 0)
+        {
+            return false;
+        }
+
+        if (viewName.Equals("v_establishment", StringComparison.OrdinalIgnoreCase))
+        {
+            return IsManagedSourceRebuilt(
+                tableMap,
+                sources,
+                sourceOrg: "GIAS",
+                type: "All establishment",
+                subtype: "Metadata",
+                year: "Current") ||
+                GetEstablishmentLookupRawTables(tableMap).Any(_rawTableNamesToRebuild.Contains);
+        }
+
+        if (viewName.Equals("v_establishment_links", StringComparison.OrdinalIgnoreCase))
+        {
+            return IsManagedSourceRebuilt(
+                tableMap,
+                sources,
+                sourceOrg: "GIAS",
+                type: "All establishment",
+                subtype: "Links",
+                year: "Current");
+        }
+
+        if (viewName.Equals("v_establishment_group_links", StringComparison.OrdinalIgnoreCase))
+        {
+            return IsManagedSourceRebuilt(
+                tableMap,
+                sources,
+                sourceOrg: "GIAS",
+                type: "Academy sponsor and trust",
+                subtype: "Links",
+                year: "Current");
+        }
+
+        if (viewName.Equals("v_establishment_subject_entries", StringComparison.OrdinalIgnoreCase))
+        {
+            return IsManagedSourceRebuilt(
+                tableMap,
+                sources,
+                sourceOrg: "EES",
+                type: "KS4_Performance",
+                subtype: "SubjectEntries_2",
+                year: "Current");
+        }
+
+        if (viewName.Equals("v_la_subject_entries", StringComparison.OrdinalIgnoreCase))
+        {
+            return IsManagedSourceRebuilt(
+                tableMap,
+                sources,
+                sourceOrg: "EES",
+                type: "KS4_Performance",
+                subtype: "SubjectEntries",
+                year: "Current");
+        }
+
+        if (viewName.Equals("v_establishment_ks5_subject_entries", StringComparison.OrdinalIgnoreCase))
+        {
+            return IsManagedSourceRebuilt(
+                tableMap,
+                sources,
+                sourceOrg: "EES",
+                type: "KS5_Performance",
+                subtype: "SubjectEntries",
+                year: "Current");
+        }
+
+        return false;
+    }
+
+    private bool ShouldRebuildDataMapDrivenView(
+        string viewName,
+        List<DataMapRow> viewRows,
+        Dictionary<string, string> tableMap,
+        bool rebuildEstablishmentDependentViews)
+    {
+        if (_rebuildAllRawTables)
+        {
+            return true;
+        }
+
+
+        if (_rawTableNamesToRebuild.Count == 0)
+        {
+            return false;
+        }
+
+        var groups = viewRows
+            .Select(r => (r.FileName ?? "").Trim().TrimStart('\uFEFF'))
+            .Where(k => !string.IsNullOrWhiteSpace(k))
+            .Distinct(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var datasetKey in groups)
+        {
+            if (TryResolveRawTable(tableMap, datasetKey, out var rawTable) &&
+                !string.IsNullOrWhiteSpace(rawTable) &&
+                _rawTableNamesToRebuild.Contains(rawTable))
+            {
+                return true;
+            }
+        }
+
+        if (rebuildEstablishmentDependentViews &&
+            viewName.StartsWith("v_establishment_", StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Raw tables v_establishment reads beside the GIAS dimension: the key stage URN CTEs,
+    /// the free breakfast club CTE and the wraparound care join
+    /// </summary>
+    /// <param name="tableMap"></param>
+    /// <returns></returns>
+    private IEnumerable<string> GetEstablishmentLookupRawTables(Dictionary<string, string> tableMap)
+    {
+        var lookupTypes = KeyStageConstants.AllKeyStages
+            .Select(KeyStageType)
+            .Append("BreakfastClub")
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        var datasetKeys = _rows
+            .Where(a => a.Range == "Establishment" && lookupTypes.Contains(a.Type))
+            .Select(a => (a.FileName ?? "").Trim())
+            .Where(a => !string.IsNullOrWhiteSpace(a))
+            .Append("ks2_wraparound_care")
+            .Distinct(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var datasetKey in datasetKeys)
+        {
+            if (TryResolveRawTable(tableMap, datasetKey, out var rawTable) && !string.IsNullOrWhiteSpace(rawTable))
+            {
+                yield return rawTable;
+            }
+        }
+    }
+
+
+    private bool IsManagedSourceRebuilt(
+        Dictionary<string, string> tableMap,
+        List<RawSource> sources,
+        string sourceOrg,
+        string type,
+        string subtype,
+        string year)
+    {
+        if (!TryResolveManagedDatasetKey(sources, tableMap, sourceOrg, type, subtype, year, out var datasetKey))
+            return false;
+
+        return TryResolveRawTable(tableMap, datasetKey, out var rawTable) &&
+               !string.IsNullOrWhiteSpace(rawTable) &&
+               _rawTableNamesToRebuild.Contains(rawTable);
     }
 
     // =====================================================
@@ -1108,9 +1344,6 @@ public sealed class GenerateViews
         };
     }
 
-
-
-
     private Dictionary<string, string> LoadTableMappings() =>
         File.ReadAllLines(_tableMappingPath)
             .Select(l => l.Trim())
@@ -1131,15 +1364,6 @@ public sealed class GenerateViews
             StringComparison.OrdinalIgnoreCase);
     }
 
-    private static bool IsEstablishmentFactView(string viewName) =>
-    viewName.StartsWith("v_establishment_", StringComparison.OrdinalIgnoreCase);
-
-    private static bool IsLaEstabId(string idCol) =>
-        idCol.Contains("laestab", StringComparison.OrdinalIgnoreCase);
-
-    private static string EstablishmentLaEstabKeySql() =>
-        // school_laestab values like 3717002 => LAId(3) + EstablishmentNumber(4, zero-padded)
-        "(e.\"LAId\"::text || LPAD(e.\"EstablishmentNumber\"::text, 4, '0'))";
 
     private static bool IsCoded(DataMapRow r)
     {
@@ -1188,8 +1412,7 @@ public sealed class GenerateViews
         {
             var cteName = $"{ks.ToLowerInvariant()}_urns";
             // KS2 uses "KS2_Attainment", while KS4 and KS5 use "Performance"
-            var keyStageType = ks == KeyStageConstants.KS2 ? $"{ks}_Attainment" : $"{ks}_Performance";
-            var cte = GenerateKeyStageUrnsCte(rows, tableMap, keyStageType, cteName);
+            var cte = GenerateKeyStageUrnsCte(rows, tableMap, KeyStageType(ks), cteName);
             if (!string.IsNullOrWhiteSpace(cte))
             {
                 ctes[ks] = cte;
@@ -1198,6 +1421,9 @@ public sealed class GenerateViews
         }
         return (ctes, filters);
     }
+
+    private static string KeyStageType(string ks) =>
+        ks == KeyStageConstants.KS2 ? $"{ks}_Attainment" : $"{ks}_Performance";
 
     private static string BuildSenTypes()
     {
@@ -1228,7 +1454,7 @@ public sealed class GenerateViews
         StringBuilder sb,
         Dictionary<string, string>? keyStageUrnsSqlConditions = null)
     {
-        keyStageUrnsSqlConditions ??= new Dictionary<string, string>();
+        keyStageUrnsSqlConditions ??= [];
 
         for (int i = 0; i < KeyStageConstants.AllKeyStages.Count; i++)
         {
@@ -1238,5 +1464,17 @@ public sealed class GenerateViews
             var comma = i == KeyStageConstants.AllKeyStages.Count - 1 ? "" : ",";
             sb.AppendLine($"    CASE WHEN {fullCondition} THEN TRUE ELSE FALSE END AS \"IS{ks}\"{comma}");
         }
+    }
+
+    private void WriteSql(string prefix, string viewName, string sql)
+    {
+        var fileName = $"{prefix}_{viewName}.sql";
+
+        File.WriteAllText(
+            Path.Combine(_sqlDir, fileName),
+            sql,
+            new UTF8Encoding(false));
+
+        Console.WriteLine($"Generated view script: {fileName}");
     }
 }

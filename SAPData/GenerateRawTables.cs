@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace SAPData;
 
@@ -14,8 +10,16 @@ public class GenerateRawTables
     private readonly string _inputDir;
     private readonly string _cleanDir;
     private readonly string _sqlDir;
+    private readonly HashSet<string> _logicalKeysToRebuild;
+    private readonly bool _rebuildAllRawTables;
+    private readonly HashSet<string>? _existingRawTableNames;
 
     private readonly Dictionary<string, string> _tableMappings = new(StringComparer.OrdinalIgnoreCase);
+    private readonly HashSet<string> _rebuiltTableNames = new(StringComparer.OrdinalIgnoreCase);
+
+    public IReadOnlySet<string> RebuiltTableNames => _rebuiltTableNames;
+
+    public IReadOnlySet<string> KnownTableNames => _tableMappings.Values.ToHashSet(StringComparer.OrdinalIgnoreCase);
 
     static GenerateRawTables()
     {
@@ -25,11 +29,20 @@ public class GenerateRawTables
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
     }
 
-    public GenerateRawTables(string inputDir, string cleanDir, string sqlDir)
+    public GenerateRawTables(
+        string inputDir,
+        string cleanDir,
+        string sqlDir,
+        IEnumerable<string>? logicalKeysToRebuild = null,
+        bool rebuildAllRawTables = false,
+        HashSet<string>? existingRawTableNames = null)
     {
         _inputDir = inputDir;
         _cleanDir = cleanDir;
         _sqlDir = sqlDir;
+        _logicalKeysToRebuild = new HashSet<string>(logicalKeysToRebuild ?? [], StringComparer.OrdinalIgnoreCase);
+        _rebuildAllRawTables = rebuildAllRawTables;
+        _existingRawTableNames = existingRawTableNames;
     }
 
     public void Run()
@@ -90,6 +103,22 @@ public class GenerateRawTables
         _tableMappings[logicalKey] = tableName;
         _tableMappings[fileKey] = tableName;
 
+        bool rebuildTable = _rebuildAllRawTables || IsListedForRebuild(logicalKey);
+        if (!rebuildTable && _existingRawTableNames != null && !_existingRawTableNames.Contains(tableName))
+        {
+            Console.WriteLine($"Raw table {tableName} for '{logicalKey} does not exist in the database. Rebuilding it'");
+            rebuildTable = true;
+        }
+
+        if (!rebuildTable)
+        {
+            Console.WriteLine($"Leaving table for logical key '{logicalKey}' ({tableName}) unchanged. Skipping DROP/CREATE/COPY.");
+            AppendExistingTableGuard(createSql, tableName, logicalKey);
+            return;
+        }
+
+        _rebuiltTableNames.Add(tableName);
+
         string cleanCsvPath = Path.Combine(_cleanDir, fileKey + ".clean.csv");
 
         Console.WriteLine($"Processing: {fileKey}");
@@ -130,7 +159,7 @@ public class GenerateRawTables
             else if (row.Count > columnCount)
             {
                 row = row.Take(columnCount).ToList();
-            }            
+            }
 
             writer.WriteLine(string.Join(",", row.Select(EscapeCsv)));
         }
@@ -407,7 +436,63 @@ public class GenerateRawTables
     // =====================================================
     // HELPERS
     // =====================================================
-    private static string GenerateShortTableName(string logicalKey)
+
+    /// <summary>
+    /// For a table that is not being rebuilt, fail fast with a clear message if it does not exist
+    /// </summary>
+    private static void AppendExistingTableGuard(StringBuilder createSql, string tableName, string logicalKey)
+    {
+        string message = $"Raw table {tableName} for {logicalKey} does not exist and is not in the rebuild list. " +
+            "Add the key to the rebuild list or run with REBUILD_ALL_RAW_TABLES=true.";
+
+        createSql.AppendLine("DO $$");
+        createSql.AppendLine("BEGIN");
+        createSql.AppendLine($"  IF to_regclass(format('%I.%I', current_schema(), '{tableName}')) IS NULL THEN");
+        createSql.AppendLine($"     RAISE EXCEPTION '%', '{message.Replace("'", "''")}';");
+        createSql.AppendLine("   END IF;");
+        createSql.AppendLine("END $$;");
+        createSql.AppendLine();
+    }
+
+    /// <summary>
+    /// Matches a source file's logical key against the rebuild list. List entries may be:
+    /// - an exact logical key (eg a manual filename without the manual_ prefix)
+    /// - a GIAS filename template containing YYYYmmDD
+    /// - an EES filename without its version suffix (matches {entry}_v{version})
+    /// </summary>
+    private bool IsListedForRebuild(string logicalKey)
+    {
+        foreach (var entry in _logicalKeysToRebuild)
+        {
+            if (entry.Equals(logicalKey, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            string pattern;
+            const string dateToken = "YYYYmmDD";
+            int tokenIndex = entry.IndexOf(dateToken, StringComparison.OrdinalIgnoreCase);
+            if (tokenIndex >= 0)
+            {
+                pattern = "^" + Regex.Escape(entry[..tokenIndex]) + "\\d{8}" +
+                    Regex.Escape(entry[(tokenIndex + dateToken.Length)..]) + "$";
+            }
+            else
+            {
+                pattern = "^" + Regex.Escape(entry) + "_v[0-9]+(\\.[0-9]+){1,2}$";
+            }
+
+            if (Regex.IsMatch(logicalKey, pattern, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    public static string GenerateShortTableName(string logicalKey)
     {
         using var sha1 = SHA1.Create();
 
@@ -493,6 +578,6 @@ public class GenerateRawTables
             return "\"" + value.Replace("\"", "\"\"") + "\"";
 
         return value;
-    }   
+    }
 }
 

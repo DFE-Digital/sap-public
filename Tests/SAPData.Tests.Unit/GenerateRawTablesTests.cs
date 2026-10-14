@@ -56,7 +56,7 @@ public class GenerateRawTablesTests : IDisposable
     {
         WriteCsv("test-dataset", "a,b\n1,2");
 
-        new GenerateRawTables(_input, _clean, _sql).Run();
+        new GenerateRawTables(_input, _clean, _sql, rebuildAllRawTables: true).Run();
 
         Assert.True(File.Exists(Path.Combine(_sql, "02_create_raw_tables.sql")));
         Assert.True(File.Exists(Path.Combine(_sql, "03_copy_into_raw.sql")));
@@ -71,7 +71,7 @@ public class GenerateRawTablesTests : IDisposable
             "this-is-a-very-very-long-dataset-name-that-would-break-postgres",
             "a\n1");
 
-        new GenerateRawTables(_input, _clean, _sql).Run();
+        new GenerateRawTables(_input, _clean, _sql, rebuildAllRawTables: true).Run();
 
         var mapping = File.ReadAllText(Path.Combine(_sql, "tablemapping.csv"));
 
@@ -87,13 +87,13 @@ public class GenerateRawTablesTests : IDisposable
     {
         WriteCsv("dataset", "a\n1");
 
-        new GenerateRawTables(_input, _clean, _sql).Run();
+        new GenerateRawTables(_input, _clean, _sql, rebuildAllRawTables: true).Run();
         var first = File.ReadAllText(Path.Combine(_sql, "tablemapping.csv"));
 
         Directory.Delete(_sql, true);
         Directory.CreateDirectory(_sql);
 
-        new GenerateRawTables(_input, _clean, _sql).Run();
+        new GenerateRawTables(_input, _clean, _sql, rebuildAllRawTables: true).Run();
         var second = File.ReadAllText(Path.Combine(_sql, "tablemapping.csv"));
 
         Assert.Equal(first, second);
@@ -106,7 +106,7 @@ public class GenerateRawTablesTests : IDisposable
             "padtest",
             "a,b,c\n1,2");
 
-        new GenerateRawTables(_input, _clean, _sql).Run();
+        new GenerateRawTables(_input, _clean, _sql, rebuildAllRawTables: true).Run();
 
         var cleaned = File.ReadAllLines(Path.Combine(_clean, "padtest.clean.csv"));
         Assert.Equal("1,2,", cleaned[1]);
@@ -119,7 +119,7 @@ public class GenerateRawTablesTests : IDisposable
             "trunctest",
             "a,b\n1,2,3,4");
 
-        new GenerateRawTables(_input, _clean, _sql).Run();
+        new GenerateRawTables(_input, _clean, _sql, rebuildAllRawTables: true).Run();
 
         var cleaned = File.ReadAllLines(Path.Combine(_clean, "trunctest.clean.csv"));
         Assert.Equal("1,2", cleaned[1]);
@@ -132,7 +132,7 @@ public class GenerateRawTablesTests : IDisposable
             "sanitize",
             "LA-code,School-Name\n1,X");
 
-        new GenerateRawTables(_input, _clean, _sql).Run();
+        new GenerateRawTables(_input, _clean, _sql, rebuildAllRawTables: true).Run();
 
         var sql = File.ReadAllText(Path.Combine(_sql, "02_create_raw_tables.sql"));
 
@@ -146,7 +146,7 @@ public class GenerateRawTablesTests : IDisposable
     {
         WriteCsv("bomtest", "a\n1");
 
-        new GenerateRawTables(_input, _clean, _sql).Run();
+        new GenerateRawTables(_input, _clean, _sql, rebuildAllRawTables: true).Run();
 
         var bytes = File.ReadAllBytes(Path.Combine(_clean, "bomtest.clean.csv"));
 
@@ -158,7 +158,7 @@ public class GenerateRawTablesTests : IDisposable
     {
         WriteCsv("whitespacetest", "name\n  School Name\u00A0 ");
 
-        new GenerateRawTables(_input, _clean, _sql).Run();
+        new GenerateRawTables(_input, _clean, _sql, rebuildAllRawTables: true).Run();
 
         var cleaned = File.ReadAllLines(Path.Combine(_clean, "whitespacetest.clean.csv"));
 
@@ -176,7 +176,7 @@ public class GenerateRawTablesTests : IDisposable
             "name,temperature\nMr Christian San Jos\u00e9,180\u00b0",
             windows1252);
 
-        new GenerateRawTables(_input, _clean, _sql).Run();
+        new GenerateRawTables(_input, _clean, _sql, rebuildAllRawTables: true).Run();
 
         var cleaned = File.ReadAllLines(Path.Combine(_clean, "encodingtest.clean.csv"), Encoding.UTF8);
 
@@ -188,7 +188,7 @@ public class GenerateRawTablesTests : IDisposable
     {
         WriteCsv("utf8test", "name,temperature\nMr Christian San Jos\u00e9,180\u00b0");
 
-        new GenerateRawTables(_input, _clean, _sql).Run();
+        new GenerateRawTables(_input, _clean, _sql, rebuildAllRawTables: true).Run();
 
         var cleaned = File.ReadAllLines(Path.Combine(_clean, "utf8test.clean.csv"), Encoding.UTF8);
 

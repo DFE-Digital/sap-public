@@ -522,3 +522,6 @@ SAPPub.Web/keys/*
 /Tests/accessibility-results
 /SAPPub.Web/wwwroot/js/map-schools.js
 /playwright.runsettings
+
+# This sql is generated dynamically now
+/SAPData/Sql/00_cleanup.sql

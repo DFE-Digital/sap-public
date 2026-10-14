@@ -2,6 +2,17 @@ name: School Data Ingestion Pipeline
 
 on:
   workflow_dispatch:
+    inputs:
+      rebuild-all-raw-tables:
+        description: Ignore the rebuild list and rebuild all raw tables
+        type: boolean
+        required: false
+        default: false
+      raw-tables-to-rebuild-path:
+        description: Optional override path to the raw tables rebuild list
+        type: string
+        required: false
+        default: ""
   workflow_call:
     inputs:
       environment:
@@ -14,6 +25,15 @@ on:
         required: false
         default: ""
         type: string
+      rebuild-all-raw-tables:
+        description: Ignore the rebuild list and rebuild all raw tables
+        type: boolean
+        required: false
+        default: false
+      raw-tables-to-rebuild-path:
+        description: Optional override path to the raw tables rebuild list
+        type: string
+        required: false
   schedule:
     - cron: "0 5 * * *"   # every day at 05:00 UTC
 
@@ -53,6 +73,7 @@ jobs:
       # Terraform and service-related settings
       DEPLOY_ENV: ${{ inputs.environment || 'test'  }}
       PR_NUM: ${{ inputs.pr-number || ''  }}
+      DEFAULT_RAW_TABLES_TO_REBUILD_PATH: raw_tables_to_rebuild.${{ inputs.environment || 'test' }}.txt
 
       # Blob container
       AZURE_STORAGE_CONTAINER: alldata      # Could come from [env].tfvars.json
@@ -639,7 +660,57 @@ jobs:
       - name: Build SQL Generator
         run: |
           dotnet build SAPPub.sln --configuration Release
+
+      # Ensure raw tables missing from the database are rebuilt even if they're not in the rebuild list
+      # This step avoids discrepencies between environments/seed databases in review apps in particular
+      - name: Get list of existing raw tables via Konduit
+        shell: bash
+        run: |
+            set -euo pipefail
+            out_file="$GITHUB_WORKSPACE/SAPData/existing_raw_tables.txt"
+            query_file="$RUNNER_TEMP/existing_raw_tables.sql"
+            cat > "$query_file" << 'SQL'
+            \set ON_ERROR_STOP on
+            \pset format unaligned
+            \pset tuples_only on
+            select tablename from pg_tables where schemaname=current_schema() and tablename like 't\_%';
+            SQL
+            
+            max_attempts=5
+            delay=5
+            attempt=1
+
+            while [ $attempt -le $max_attempts ]; do
+              set +e
+              "$GITHUB_WORKSPACE/konduit.sh" \
+                -n "${{ env.AKS_NAMESPACE }}" \
+                -x \
+                -i "$query_file" \
+                "${{ env.KONDUIT_APP_NAME }}" -- \
+                psql > "$out_file.tmp"
+                exit_code=${PIPESTATUS[0]}
+              set -e
+
+              if [ $exit_code -eq 0 ]; then
+                grep -E '^t_[a-z0-9_]+$' "$out_file.tmp" > "$out_file" || true
+                rm -f "$out_file.tmp"
+                echo "Found $(wc -l < "$out_file") existing raw tables(s)"
+                exit 0
+              fi
+
+              echo "Listing existing raw tables failed (attempt $attempt/$max_attempts). Retrying after ${delay}..."
+              sleep $delay
+              attempt=$((attempt + 1))
+            done
+
+            echo "Failed to list existing raw tables after $max_attempts attempts."
+            exit 1
+
       - name: Generate SQL Scripts
+        env:
+          REBUILD_ALL_RAW_TABLES: ${{ inputs.rebuild-all-raw-tables || 'false' }}
+          RAW_TABLES_TO_REBUILD_PATH: ${{ inputs.raw-tables-to-rebuild-path || env.DEFAULT_RAW_TABLES_TO_REBUILD_PATH }}
+          EXISTING_RAW_TABLES_PATH: existing_raw_tables.txt
         run: |
           dotnet run --configuration Release --project SAPData/SAPData.csproj
           echo "Generated SQL scripts."

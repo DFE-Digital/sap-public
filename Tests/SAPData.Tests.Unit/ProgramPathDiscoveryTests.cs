@@ -151,11 +151,11 @@ public class ProgramPathDiscoveryTests
         var asm = LoadTargetAssembly();
 
         // Program is internal, so we locate it by name
-        var programType = asm.GetType("SAPData.Program", throwOnError: true)!;
+        var helperTypes = asm.GetType("SAPData.Helpers.DirectoryHelpers", throwOnError: true)!;
 
-        var method = programType.GetMethod(
+        var method = helperTypes.GetMethod(
             "FindProjectDirectoryDownwards",
-            BindingFlags.NonPublic | BindingFlags.Static);
+            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
 
         Assert.NotNull(method);
 

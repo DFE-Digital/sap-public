@@ -1,7 +1,8 @@
-﻿using SAPData.Models;
-using CsvHelper;
+﻿using CsvHelper;
+using Microsoft.Extensions.Configuration;
+using SAPData.Helpers;
+using SAPData.Models;
 using System.Globalization;
-using SAPData.Filters;
 
 namespace SAPData;
 
@@ -9,11 +10,16 @@ internal class Program
 {
     static void Main(string[] args)
     {
+        IConfiguration configuration = new ConfigurationBuilder()
+            .AddEnvironmentVariables()
+            .AddUserSecrets<Program>()
+            .Build();
+
         Console.WriteLine("Generating Raw Data Tables and Scripts...");
 
         // In CI the working directory is often the repo root.
         // Find SAPData.csproj anywhere under the current directory and use its folder.
-        string baseDir = FindProjectDirectoryDownwards("SAPData.csproj");
+        string baseDir = DirectoryHelpers.FindProjectDirectoryDownwards("SAPData.csproj");
 
         string dataMapDir = Path.Combine(baseDir, "DataMap");
         string rawInputDir = Path.Combine(dataMapDir, "SourceFiles");
@@ -21,6 +27,7 @@ internal class Program
         string dataMapCsv = Path.Combine(dataMapDir, "datamap.csv");
         string sqlDir = Path.Combine(baseDir, "Sql");
         string tableMappingPath = Path.Combine(sqlDir, "tablemapping.csv");
+        string rawTablesToRebuildPath = SelectiveIngestionHelpers.ResolveRawTablesToRebuildPath(baseDir, configuration);
 
         // -------------------------------------------------
         // 1. Load DataMap
@@ -35,19 +42,34 @@ internal class Program
 
         Console.WriteLine($"Loaded {dataMaps.Count} DataMap rows");
 
+        var rebuildAllRawTables = SelectiveIngestionHelpers.ShouldRebuildAllRawTables(configuration);
+        var logicalKeysToRebuild = rebuildAllRawTables
+            ? new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            : SelectiveIngestionHelpers.LoadLogicalKeysToRebuild(rawTablesToRebuildPath);
+
+        var existingRawTableNames = rebuildAllRawTables ? null : SelectiveIngestionHelpers.LoadExistingRawTableNames(baseDir, configuration);
+
+
         // -------------------------------------------------
         // 2. Generate raw tables + cleaned files + mapping
         // -------------------------------------------------
-        new GenerateRawTables(
+        var rawTables = new GenerateRawTables(
             rawInputDir,
             cleanedDir,
-            sqlDir
-        ).Run();
+            sqlDir,
+            logicalKeysToRebuild,
+            rebuildAllRawTables,
+            existingRawTableNames
+        );
+
+        rawTables.Run();
+
+        SqlHelpers.WriteCleanupSql(Path.Combine(sqlDir, "00_cleanup.sql"), rawTables.RebuiltTableNames, rawTables.KnownTableNames, rebuildAllRawTables);
 
         // -------------------------------------------------
         // 3. Generate views
         // -------------------------------------------------
-        new GenerateViews(dataMaps, tableMappingPath, sqlDir).Run();
+        new GenerateViews(dataMaps, tableMappingPath, sqlDir, rawTables.RebuiltTableNames, rebuildAllRawTables).Run();
 
         // -------------------------------------------------
         // 4. Generate indexes
@@ -62,67 +84,4 @@ internal class Program
             Console.ReadLine();
         }
     }
-
-    private static string FindProjectDirectoryDownwards(string projectFileName)
-    {
-        var startDir = Directory.GetCurrentDirectory();
-
-        // Fast path: if we're already in the project directory.
-        var direct = Path.Combine(startDir, projectFileName);
-        if (File.Exists(direct))
-            return startDir;
-
-        // Primary search (works in GitHub Actions)
-        var matches = Directory.GetFiles(startDir, projectFileName, SearchOption.AllDirectories);
-
-        if (matches.Length == 0)
-        {
-            // ---------- LOCAL FALLBACK ----------
-            // If running from bin/Debug/... or bin/Release/..., walk up until we exit /bin
-            var dir = new DirectoryInfo(startDir);
-            while (dir != null && dir.Name.Equals("bin", StringComparison.OrdinalIgnoreCase) == false)
-            {
-                dir = dir.Parent;
-            }
-
-            // If we found /bin, move one level up (project root candidate)
-            if (dir?.Parent != null)
-            {
-                var projectRootCandidate = dir.Parent.FullName;
-
-                var fallbackMatches = Directory.GetFiles(
-                    projectRootCandidate,
-                    projectFileName,
-                    SearchOption.AllDirectories);
-
-                if (fallbackMatches.Length > 0)
-                {
-                    var preferredFallback = fallbackMatches
-                        .FirstOrDefault(p =>
-                            string.Equals(
-                                new DirectoryInfo(Path.GetDirectoryName(p)!).Name,
-                                "SAPData",
-                                StringComparison.OrdinalIgnoreCase))
-                        ?? fallbackMatches[0];
-
-                    return Path.GetDirectoryName(preferredFallback)!;
-                }
-            }
-
-            throw new DirectoryNotFoundException(
-                $"Could not find {projectFileName} under {startDir} (including bin fallback)"
-            );
-        }
-
-        // Prefer SAPData project if multiple found
-        var preferred = matches
-            .FirstOrDefault(p =>
-                string.Equals(
-                    new DirectoryInfo(Path.GetDirectoryName(p)!).Name,
-                    "SAPData",
-                    StringComparison.OrdinalIgnoreCase))
-            ?? matches[0];
-
-        return Path.GetDirectoryName(preferred)!;
-    }  
 }
