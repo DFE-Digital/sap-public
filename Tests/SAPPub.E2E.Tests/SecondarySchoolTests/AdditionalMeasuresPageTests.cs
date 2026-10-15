@@ -36,7 +36,7 @@ public class AdditionalMeasuresPageTests : BasePageTest
 
     private static readonly IDictionary<string, InformationAboutSchoolsTestDataModel> _wholeSchoolTestData = TestDataLoader.Load<InformationAboutSchoolsTestDataModel>(
         "KS4",
-        "202425_information_about_schools_final").ToDictionary(x => x.SchoolUrn);
+        "information_about_schools").ToDictionary(x => x.SchoolUrn);
 
     public record AdditionalMeasuresTestData
     {
