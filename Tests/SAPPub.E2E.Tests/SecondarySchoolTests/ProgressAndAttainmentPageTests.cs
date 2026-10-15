@@ -52,37 +52,37 @@ public class ProgressAndAttainmentPageTests : BasePageTest
 
     private static readonly IDictionary<string, AllStateFundedPupilsLaTestDataModel> _laPerformanceCurrentYearTestData = TestDataLoader.Load<AllStateFundedPupilsLaTestDataModel>(
         "KS4",
-        "202425_all_state_funded_pupils_characteristics_la_Total_Current").ToDictionary(x => x.Urn);
+        "all_state_funded_pupils_characteristics_la_Total_Current").ToDictionary(x => x.Urn);
 
     private static readonly IDictionary<string, AllStateFundedPupilsLaTestDataModel> _laPerformancePreviousYearTestData = TestDataLoader.Load<AllStateFundedPupilsLaTestDataModel>(
         "KS4",
-        "202425_all_state_funded_pupils_characteristics_la_Total_Previous").ToDictionary(x => x.Urn);
+        "all_state_funded_pupils_characteristics_la_Total_Previous").ToDictionary(x => x.Urn);
 
     private static readonly IDictionary<string, AllStateFundedPupilsLaTestDataModel> _laPerformancePrevious2YearTestData = TestDataLoader.Load<AllStateFundedPupilsLaTestDataModel>(
         "KS4",
-        "202425_all_state_funded_pupils_characteristics_la_Total_Previous2").ToDictionary(x => x.Urn);
+        "all_state_funded_pupils_characteristics_la_Total_Previous2").ToDictionary(x => x.Urn);
 
     private static readonly IDictionary<string, AllStateFundedPupilsLaTestDataModel> _laPerformanceGirlsCurrentYearTestData = TestDataLoader.Load<AllStateFundedPupilsLaTestDataModel>(
         "KS4",
-        "202425_all_state_funded_pupils_characteristics_la_Girls_Current").ToDictionary(x => x.Urn);
+        "all_state_funded_pupils_characteristics_la_Girls_Current").ToDictionary(x => x.Urn);
 
     private static readonly IDictionary<string, AllStateFundedPupilsLaTestDataModel> _laPerformanceBoysCurrentYearTestData = TestDataLoader.Load<AllStateFundedPupilsLaTestDataModel>(
         "KS4",
-        "202425_all_state_funded_pupils_characteristics_la_Boys_Current").ToDictionary(x => x.Urn);
+        "all_state_funded_pupils_characteristics_la_Boys_Current").ToDictionary(x => x.Urn);
 
     private static readonly IDictionary<string, AllStateFundedPupilsLaTestDataModel> _laPerformanceDisadvantagedCurrentYearTestData = TestDataLoader.Load<AllStateFundedPupilsLaTestDataModel>(
         "KS4",
-        "202425_all_state_funded_pupils_characteristics_la_Disadvantaged_Current").ToDictionary(x => x.Urn);
+        "all_state_funded_pupils_characteristics_la_Disadvantaged_Current").ToDictionary(x => x.Urn);
     private static readonly IDictionary<string, AllStateFundedPupilsLaTestDataModel> _laPerformanceDisadvantagedPreviousYearTestData = TestDataLoader.Load<AllStateFundedPupilsLaTestDataModel>(
         "KS4",
-        "202425_all_state_funded_pupils_characteristics_la_Disadvantaged_Previous").ToDictionary(x => x.Urn);
+        "all_state_funded_pupils_characteristics_la_Disadvantaged_Previous").ToDictionary(x => x.Urn);
     private static readonly IDictionary<string, AllStateFundedPupilsLaTestDataModel> _laPerformanceDisadvantagedPrevious2YearTestData = TestDataLoader.Load<AllStateFundedPupilsLaTestDataModel>(
         "KS4",
-        "202425_all_state_funded_pupils_characteristics_la_Disadvantaged_Previous2").ToDictionary(x => x.Urn);
+        "all_state_funded_pupils_characteristics_la_Disadvantaged_Previous2").ToDictionary(x => x.Urn);
 
     private static readonly IDictionary<string, AllStateFundedPupilsLaTestDataModel> _laPerformanceNonDisadvantagedCurrentYearTestData = TestDataLoader.Load<AllStateFundedPupilsLaTestDataModel>(
         "KS4",
-        "202425_all_state_funded_pupils_characteristics_la_NonDisadvantaged_Current").ToDictionary(x => x.Urn);
+        "all_state_funded_pupils_characteristics_la_NonDisadvantaged_Current").ToDictionary(x => x.Urn);
 
     private static readonly List<AllStateFundedPupilsTestDataModel> _englandPerformanceCurrentYearTestData = TestDataLoader.Load<AllStateFundedPupilsTestDataModel>(
         "KS4",

@@ -51,31 +51,31 @@
     <None Update="TestData\2526\KS4\all_state_funded_pupils_characteristics_England_Total_Previous2.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TestData\2526\KS4\202425_all_state_funded_pupils_characteristics_la_Boys_Current.json">
+    <None Update="TestData\2526\KS4\all_state_funded_pupils_characteristics_la_Boys_Current.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TestData\2526\KS4\202425_all_state_funded_pupils_characteristics_la_Disadvantaged_Current.json">
+    <None Update="TestData\2526\KS4\all_state_funded_pupils_characteristics_la_Disadvantaged_Current.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TestData\2526\KS4\202425_all_state_funded_pupils_characteristics_la_Disadvantaged_Previous.json">
+    <None Update="TestData\2526\KS4\all_state_funded_pupils_characteristics_la_Disadvantaged_Previous.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TestData\2526\KS4\202425_all_state_funded_pupils_characteristics_la_Disadvantaged_Previous2.json">
+    <None Update="TestData\2526\KS4\all_state_funded_pupils_characteristics_la_Disadvantaged_Previous2.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TestData\2526\KS4\202425_all_state_funded_pupils_characteristics_la_Girls_Current.json">
+    <None Update="TestData\2526\KS4\all_state_funded_pupils_characteristics_la_Girls_Current.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TestData\2526\KS4\202425_all_state_funded_pupils_characteristics_la_NonDisadvantaged_Current.json">
+    <None Update="TestData\2526\KS4\all_state_funded_pupils_characteristics_la_NonDisadvantaged_Current.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TestData\2526\KS4\202425_all_state_funded_pupils_characteristics_la_Total_Current.json">
+    <None Update="TestData\2526\KS4\all_state_funded_pupils_characteristics_la_Total_Current.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TestData\2526\KS4\202425_all_state_funded_pupils_characteristics_la_Total_Previous.json">
+    <None Update="TestData\2526\KS4\all_state_funded_pupils_characteristics_la_Total_Previous.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TestData\2526\KS4\202425_all_state_funded_pupils_characteristics_la_Total_Previous2.json">
+    <None Update="TestData\2526\KS4\all_state_funded_pupils_characteristics_la_Total_Previous2.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="TestData\2526\KS4\202425_information_about_schools_final.json">
