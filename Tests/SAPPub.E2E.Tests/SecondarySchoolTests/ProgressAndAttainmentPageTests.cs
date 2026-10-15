@@ -86,15 +86,15 @@ public class ProgressAndAttainmentPageTests : BasePageTest
 
     private static readonly List<AllStateFundedPupilsTestDataModel> _englandPerformanceCurrentYearTestData = TestDataLoader.Load<AllStateFundedPupilsTestDataModel>(
         "KS4",
-        "202425_all_state_funded_pupils_characteristics_England_Total_Current");
+        "all_state_funded_pupils_characteristics_England_Total_Current");
 
     private static readonly List<AllStateFundedPupilsTestDataModel> _englandPerformancePreviousYearTestData = TestDataLoader.Load<AllStateFundedPupilsTestDataModel>(
         "KS4",
-        "202425_all_state_funded_pupils_characteristics_England_Total_Previous");
+        "all_state_funded_pupils_characteristics_England_Total_Previous");
 
     private static readonly List<AllStateFundedPupilsTestDataModel> _englandPerformancePrevious2YearTestData = TestDataLoader.Load<AllStateFundedPupilsTestDataModel>(
         "KS4",
-        "202425_all_state_funded_pupils_characteristics_England_Total_Previous2");
+        "all_state_funded_pupils_characteristics_England_Total_Previous2");
 
     public record AttainmentTestCase(
         string Urn,
