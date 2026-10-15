@@ -1,11 +1,15 @@
-﻿using SAPPub.Core.ServiceModels;
+﻿using SAPPub.Core.Enums;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Web.Areas.Profiles.ViewModels.Performance;
+using SAPPub.Web.Helpers;
 
 namespace SAPPub.Web.Areas.Profiles.ViewModels.KS4;
 
 public class AcademicPerformanceSubjectsEnteredViewModel : SubjectsEnteredBaseModel
 {
+    public string CurrentAcademicYearDisplayName => Ks4AcademicYearHelper.GetDisplayName(AcademicYearSelection.Current);
+
     public List<SubjectsEnteredDetailViewModel>? GcseSubjects { get; set; }
 
     public List<SubjectsEnteredDetailViewModel>? VocationalSubjects { get; set; }
@@ -17,11 +21,6 @@ public class AcademicPerformanceSubjectsEnteredViewModel : SubjectsEnteredBaseMo
         IEnumerable<SubjectsEnteredModel> vocationalSubjectEntries, 
         IEnumerable<SubjectsEnteredModel> otherSubjectEntries)
     {
-        var gcseSubjects = GetSubjectsEntered(gcseSubjectEntries);
-        var vocationalSubjects = GetSubjectsEntered(vocationalSubjectEntries);
-        var otherSubjects = GetSubjectsEntered(otherSubjectEntries);
-
-
         return new AcademicPerformanceSubjectsEnteredViewModel
         {
             URN = establishment.URN,

@@ -1,0 +1,86 @@
+[
+  {
+    "urn": "136489",
+    "attainment8_average": "42.9",
+    "gcse_91_percent": "95.8",
+    "engmath_94_percent": "61.3",
+    "engmath_95_percent": "40.7",
+    "lan_multiple_entering_percent": "1.8",
+    "sci_triple_entering_percent": "21.7",
+    "qual_entries_average": "7.8",
+    "gcse_entries_average": "7.3",
+    "pupil_count": "2592"
+  },
+  {
+    "urn": "137252",
+    "attainment8_average": "40.3",
+    "gcse_91_percent": "97",
+    "engmath_94_percent": "55.2",
+    "engmath_95_percent": "35",
+    "lan_multiple_entering_percent": "1.2",
+    "sci_triple_entering_percent": "24.3",
+    "qual_entries_average": "7.3",
+    "gcse_entries_average": "6.7",
+    "pupil_count": "1538"
+  },
+  {
+    "urn": "137205",
+    "attainment8_average": "43.4",
+    "gcse_91_percent": "96.3",
+    "engmath_94_percent": "60.3",
+    "engmath_95_percent": "40.9",
+    "lan_multiple_entering_percent": "0.7",
+    "sci_triple_entering_percent": "35.9",
+    "qual_entries_average": "8",
+    "gcse_entries_average": "7.4",
+    "pupil_count": "1301"
+  },
+  {
+    "urn": "136791",
+    "attainment8_average": "41.3",
+    "gcse_91_percent": "95.9",
+    "engmath_94_percent": "58.5",
+    "engmath_95_percent": "38.6",
+    "lan_multiple_entering_percent": "1.1",
+    "sci_triple_entering_percent": "18.7",
+    "qual_entries_average": "7.6",
+    "gcse_entries_average": "6.9",
+    "pupil_count": "2710"
+  },
+  {
+    "urn": "124856",
+    "attainment8_average": "41",
+    "gcse_91_percent": "95.5",
+    "engmath_94_percent": "58.3",
+    "engmath_95_percent": "38.5",
+    "lan_multiple_entering_percent": "1.4",
+    "sci_triple_entering_percent": "21.9",
+    "qual_entries_average": "7.7",
+    "gcse_entries_average": "7.1",
+    "pupil_count": "3928"
+  },
+  {
+    "urn": "138765",
+    "attainment8_average": "49",
+    "gcse_91_percent": "96.4",
+    "engmath_94_percent": "71.8",
+    "engmath_95_percent": "53.9",
+    "lan_multiple_entering_percent": "3.1",
+    "sci_triple_entering_percent": "24.3",
+    "qual_entries_average": "8.1",
+    "gcse_entries_average": "7.8",
+    "pupil_count": "6171"
+  },
+  {
+    "urn": "140424",
+    "attainment8_average": "44.1",
+    "gcse_91_percent": "95.8",
+    "engmath_94_percent": "65",
+    "engmath_95_percent": "44.1",
+    "lan_multiple_entering_percent": "1.4",
+    "sci_triple_entering_percent": "22.1",
+    "qual_entries_average": "7.7",
+    "gcse_entries_average": "7.2",
+    "pupil_count": "4662"
+  }
+]

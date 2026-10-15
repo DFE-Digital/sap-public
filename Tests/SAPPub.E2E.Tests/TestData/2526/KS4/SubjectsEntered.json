@@ -1,0 +1,108 @@
+[
+  [
+    "124856",
+    [
+      [ "Religious Studies", 25 ],
+      [ "English Literature", 217 ],
+      [ "Media Studies", 23 ],
+      [ "Food Technology", 36 ],
+      [ "French", 25 ],
+      [ "Geography", 114 ],
+      [ "German", 2 ],
+      [ "History", 109 ],
+      [ "Mathematics", 222 ],
+      [ "Music Studies", 20 ],
+      [ "English Language", 222 ],
+      [ "Polish", 4 ],
+      [ "Arabic", 1 ],
+      [ "Japanese", 1 ],
+      [ "Turkish", 1 ],
+      [ "Sports Studies", 25 ],
+      [ "Physics", 56 ],
+      [ "Psychology", 71 ],
+      [ "Sociology", 50 ],
+      [ "Spanish", 19 ],
+      [ "Combined Science", 165 ],
+      [ "Russian", 3 ],
+      [ "Economics", 17 ],
+      [ "Speech and Drama", 18 ],
+      [ "Computer Science", 15 ],
+      [ "Chemistry", 56 ],
+      [ "Business Studies", 75 ],
+      [ "Biology", 56 ],
+      [ "Photography", 48 ],
+      [ "Art and Design", 46 ],
+      [ "Design and Technology", 37 ]
+    ],
+    [
+      [ "Engineering Studies", 33 ],
+      [ "Childcare Skills", 23 ]
+    ]
+  ],
+  [
+    "136489",
+    [
+      [ "Spanish", 36 ],
+      [ "Business Studies", 74 ],
+      [ "Chemistry", 64 ],
+      [ "Computer Science", 15 ],
+      [ "Design and Technology", 54 ],
+      [ "Religious Studies", 19 ],
+      [ "Speech and Drama", 20 ],
+      [ "English Language", 212 ],
+      [ "English Literature", 210 ],
+      [ "History", 149 ],
+      [ "Geography", 90 ],
+      [ "German", 46 ],
+      [ "Mathematics", 212 ],
+      [ "Music Studies", 21 ],
+      [ "Polish", 1 ],
+      [ "Sports Studies", 48 ],
+      [ "Physics", 64 ],
+      [ "Food Technology", 57 ],
+      [ "Combined Science", 144 ],
+      [ "Art and Design", 51 ],
+      [ "Biology", 67 ]
+    ],
+    [
+      [ "Multimedia", 34 ],
+      [ "Computer Appreciation (Introduction)", 10 ],
+      [ "Sports Studies", 21 ],
+      [ "Health Studies", 40 ],
+      [ "Business Studies", 21 ]
+    ]
+  ],
+  [
+    "137205",
+    [
+      [ "Art and Design", 44 ],
+      [ "Biology", 49 ],
+      [ "Business Studies", 1 ],
+      [ "Chemistry", 49 ],
+      [ "Combined Science", 130 ],
+      [ "Computer Science", 35 ],
+      [ "Design and Technology", 56 ],
+      [ "English Language", 179 ],
+      [ "English Literature", 179 ],
+      [ "French", 20 ],
+      [ "Geography", 78 ],
+      [ "History", 71 ],
+      [ "Mathematics", 179 ],
+      [ "Music Studies", 10 ],
+      [ "Physics", 49 ],
+      [ "Polish", 3 ],
+      [ "Psychology", 1 ],
+      [ "Religious Studies", 42 ],
+      [ "Spanish", 47 ],
+      [ "Speech and Drama", 19 ],
+      [ "Sports Studies", 32 ]
+    ],
+    [
+      [ "Business Studies", 73 ],
+      [ "Health Studies", 20 ],
+      [ "Hospitality and Catering", 35 ],
+      [ "Multimedia", 36 ],
+      [ "Multimedia", 32 ]
+    ]
+  ]
+]

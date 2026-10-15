@@ -100,7 +100,7 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
 
             var expectedDataOverTime = new DataOverTimeViewModel
             {
-                Labels = ["2020 to 2021", "2021 to 2022", "2022 to 2023"],
+                Labels = ["2021 to 2022", "2022 to 2023", "2023 to 2024"],
                 Datasets =
             [
                 new DatasetViewModel
@@ -286,7 +286,7 @@ namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers
             Assert.Equal("England average", model.AllDestinationsOverTimeData.Datasets[2].Label);
             Assert.Equal(new double?[] { null, null, null }, model.AllDestinationsOverTimeData.Datasets[2].Data);
 
-            Assert.Equal(["2020 to 2021", "2021 to 2022", "2022 to 2023"], model.AllDestinationsOverTimeData.Labels);
+            Assert.Equal(["2021 to 2022", "2022 to 2023", "2023 to 2024"], model.AllDestinationsOverTimeData.Labels);
 
             string[] expectedTableColumnLabels = ["School", $"{_fakeEstablishment.LAName} average", "England average"];
 

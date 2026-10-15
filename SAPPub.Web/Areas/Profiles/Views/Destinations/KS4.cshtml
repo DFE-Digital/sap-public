@@ -28,10 +28,9 @@
         <div id="guide-contents">
             <h2 class="govuk-heading-xl govuk-!-margin-bottom-4">@ViewData["Header"]</h2>
 
-            <p class="govuk-body" data-testId="looking-at-school-performance-info">
-                Looking at school performance data is one way to see how well a school is doing.
-                You should look at a range of information about a school before deciding if it’s the right fit for your child.
-            </p>
+        <p class="govuk-body" data-testId="looking-at-school-performance-info">
+            Find out how pupils progressed after finishing year 11.
+        </p>
 
             <feature name="Enable16to19">
                 @if (Model.IsKS5 == true)
@@ -53,7 +52,7 @@
             </feature>
 
 
-            <h2 class="govuk-heading-l">Destinations of pupils who finished year 11 in the 2022 to 2023 academic year</h2>
+        <h2 class="govuk-heading-l">Destinations of pupils who finished year 11 in the @Model.CurrentDestinationsAcademicYearDisplayName academic year</h2>
 
             @if (Model.NumberOfStudentsIncludedInMeasure.IsAvailable && Model.HasEstablishmentData.IsAvailable)
             {
@@ -145,7 +144,7 @@
             </govuk-accordion>
 
         
-            <h2 class="govuk-heading-l">Education destinations for pupils after year 11 (2022 to 2023 leavers)</h2>
+        <h2 class="govuk-heading-l">Education destinations for pupils after year 11 (2023 to 2024 leavers)</h2>
 
             <div>
                 <h3 class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">
@@ -158,42 +157,42 @@
             </div>
 
         
-            <div>
-                <h3 class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">
-                    Where pupils studied after KS4
-                </h3>
-                <p class="govuk-body">
-                    <details class="govuk-details" id="details-all-dest-non-disadvantaged">
-                        <summary class="govuk-details__summary">
-                            <span class="govuk-details__summary-text">
-                                More information about where pupils studied after KS4
-                            </span>
-                        </summary>
-                        <div class="govuk-details__text">
-                            <h4 class="govuk-heading-m">Further education provider</h4>
-                            <p class="govuk-body">
-                                Includes pupils who studied at further education providers only. School sixt forms and sixth-form college are not included in this data.
-                            </p>
-                            <h4 class="govuk-heading-m">Other education destinations</h4>
-                            <p class="govuk-body">
-                                Includes pupils who studied for 6 months in:
-                            </p>
-                            <ul class="govuk-list govuk-list--bullet">
-                                <li>higher education providers, such as universities</li>
-                                <li>special schools and special post-16 providers</li>
-                                <li>alternative provision such as pupil referral unit</li>
-                                <li>independent schools or colleges</li>
-                            </ul>
-                            <p class="govuk-body">
-                                The data includes pupils who moved between different types of education provider.
-                            </p>
-                        </div>
-                    </details>
-                    @await Html.PartialAsync("_SeriesViewTable", Model.WherePupilsStudiedTable)
-                </p>
-            </div>
+        <div>
+            <h3 class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">
+                Where pupils studied after KS4
+            </h3>
+            <p class="govuk-body">
+                <details class="govuk-details" id="details-all-dest-non-disadvantaged">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            More information about where pupils studied after KS4
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <h4 class="govuk-heading-m">Further education provider</h4>
+                        <p class="govuk-body">
+                            Includes pupils who studied at further education providers only. School sixth forms and sixth-form colleges are not included in this data.
+                        </p>
+                        <h4 class="govuk-heading-m">Other education destinations</h4>
+                        <p class="govuk-body">
+                            Includes pupils who studied for 6 months in:
+                        </p>
+                        <ul class="govuk-list govuk-list--bullet">
+                            <li>higher education providers, such as universities</li>
+                            <li>special schools and special post-16 providers</li>
+                            <li>alternative provision such as pupil referral unit</li>
+                            <li>independent schools or colleges</li>
+                        </ul>
+                        <p class="govuk-body">
+                            The data includes pupils who moved between different types of education provider.
+                        </p>
+                    </div>
+                </details>
+                @await Html.PartialAsync("_SeriesViewTable", Model.WherePupilsStudiedTable)
+            </p>
+        </div>
 
-            <h2 class="govuk-heading-l">Pupils in apprenticeships or employment after year 11 (2022 to 2023 leavers)</h2>
+        <h2 class="govuk-heading-l">Pupils in apprenticeships or employment after year 11 (2023 to 2024 leavers)</h2>
 
             <div>
                 <p class="govuk-body">
@@ -225,7 +224,7 @@
                 @await Html.PartialAsync("_SeriesViewTable", Model.ApprenticeshipsOrEmploymentTable)
             </div>
 
-            <h2 class="govuk-heading-l">Pupils who did not stay in education or employment after year 11 (2022 to 2023 leavers)</h2>
+        <h2 class="govuk-heading-l">Pupils who did not stay in education or employment after year 11 (2023 to 2024 leavers)</h2>
 
             <div>
                 <p class="govuk-body">

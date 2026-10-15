@@ -54,7 +54,7 @@ public sealed class KS4EstablishmentSubjectEntriesRepository(IGenericRepository<
             .Select(r => new SubjectsEnteredModel
             {
                 Subject = r.subject_discount_group?.Trim(),
-                Qualification = r.qualification_type ?? r.qualification_detailed,
+                Qualification = r.qualification_type,
                 TotalNumberOfEntries = r.number_achieving
             })
             .OrderBy(r => r.Subject)

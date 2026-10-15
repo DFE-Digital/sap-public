@@ -1,4 +1,5 @@
-﻿using SAPPub.Core.ServiceModels;
+﻿using SAPPub.Core.Enums;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Helpers;
@@ -9,6 +10,8 @@ namespace SAPPub.Web.Areas.Profiles.ViewModels.KS4;
 
 public class AcademicPerformanceAdditionalMeasuresViewModel : BaseViewModel
 {
+    public string CurrentAcademicYearDisplayName => Ks4AcademicYearHelper.GetDisplayName(AcademicYearSelection.Current);
+
     public required IEnumerable<AcademicPerformanceAdditionalMeasureViewModel> MeasuresInTableFormat { get; set; }
 
     public required IEnumerable<AcademicPerformanceAdditionalMeasureViewModel> AverageExamsEnteredPerPupil { get; set; }

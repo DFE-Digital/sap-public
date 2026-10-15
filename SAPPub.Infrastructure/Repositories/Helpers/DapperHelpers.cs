@@ -310,8 +310,7 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           pupil_count,
           subject,
           subject_discount_group,
-          qualification_type,
-          qualification_detailed,
+          qualification_type,          
           grade,
           number_achieving
           """;

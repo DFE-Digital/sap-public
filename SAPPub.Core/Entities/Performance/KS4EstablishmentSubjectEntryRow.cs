@@ -10,7 +10,6 @@ namespace SAPPub.Core.Entities.Performance
         public string? subject { get; set; }
         public string? subject_discount_group { get; set; }
         public string? qualification_type { get; set; }
-        public string? qualification_detailed { get; set; }
         public string? grade { get; set; }
         public string? number_achieving { get; set; }
     }

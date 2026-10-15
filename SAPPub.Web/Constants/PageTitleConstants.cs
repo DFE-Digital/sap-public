@@ -68,10 +68,10 @@ public class PageTitleConstants
 
         public const string Destinations = "Destinations";
         public const string DestinationsShortTitle = "Education, apprenticeships or work";
-        public const string DestinationsFullTitle = $"{DestinationsShortTitle} (2023 leavers)";
+        public const string DestinationsFullTitle = $"{DestinationsShortTitle}";
         public const string DestinationsUrl = "16 to 19 Destinations";
         public const string DestinationsHigherShortTitle = "Higher-level study";
-        public const string DestinationsHigherFullTitle = $"{DestinationsHigherShortTitle} (2022 leavers)";
+        public const string DestinationsHigherFullTitle = $"{DestinationsHigherShortTitle}";
         public const string DestinationsHigherUrl = "16 to 19 Destinations to higher-level study";
     }
 }

@@ -1679,7 +1679,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
 
         await Expect(
             content.GetByText(
-                "This data is for the 2024 to 2025 academic year.",
+                "This data is for the 2025 to 2026 academic year.",
                 new() { Exact = true }))
             .ToBeVisibleAsync();
 
@@ -2002,7 +2002,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
 
         await Expect(
             content.GetByText(
-                "This data is for pupils who finished year 11 in the 2022 to 2023 academic year.",
+                "This data is for pupils who finished year 11 in the 2023 to 2024 academic year.",
                 new() { Exact = true }))
             .ToBeVisibleAsync();
 

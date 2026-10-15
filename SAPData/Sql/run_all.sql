@@ -35,7 +35,6 @@ BEGIN;
 \ir 04_v_la_ks5_destinations.sql
 \ir 04_v_la_ks5_performance.sql
 \ir 04_v_la_ks2_attainment.sql
-\ir 04_v_la_subject_entries.sql
 \ir 04_v_la_urls.sql
 \ir 05_indexes.sql
 \ir 06_gateway.sql
