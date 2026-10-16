@@ -319,6 +319,7 @@ public class ProgressAndAttainmentPageTests : BasePageTest
         AssertHelpers.AssertNumericEqual(yearData.Progress8Lower95Ci, progress8Banding.First());
         AssertHelpers.AssertNumericEqual(yearData.Progress8Upper95Ci, progress8Banding.Last());
 
+
         await Page.ExpandElement(pupilDetailsProgress8Selector);
         var pupilsInMeasure = await Page.GetScoreFromParagraphAsync(pupilDetailsProgress8Selector, "pupils were included");
         Assert.NotNull(pupilsInMeasure);
