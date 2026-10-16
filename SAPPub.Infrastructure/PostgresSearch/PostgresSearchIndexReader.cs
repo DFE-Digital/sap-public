@@ -16,9 +16,9 @@ public class PostgresSchoolSearchIndexReader : ISchoolSearchIndexReader
         _establishmentRepository = establishmentRepository;
     }
 
-    public async Task<SchoolSearchResults> SearchAsync(SearchQuery query, int maxResults = 10)
+    public async Task<SchoolSearchResults> SearchAsync(SearchQuery query, int maxResults = 10, CancellationToken cancellationToken = default)
     {
-        var (results, totalCount) = await _establishmentRepository.SearchAsync(query, maxResults);
+        var (results, totalCount) = await _establishmentRepository.SearchAsync(query, maxResults, cancellationToken);
 
         return new SchoolSearchResults(
             Count: totalCount,

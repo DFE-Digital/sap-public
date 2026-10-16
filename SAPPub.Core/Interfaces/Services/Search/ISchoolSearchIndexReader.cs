@@ -5,5 +5,5 @@ namespace SAPPub.Core.Interfaces.Services.Search;
 
 public interface ISchoolSearchIndexReader
 {
-    Task<SchoolSearchResults> SearchAsync(SearchQuery query, int maxResults = 10);
+    Task<SchoolSearchResults> SearchAsync(SearchQuery query, int maxResults = 10, CancellationToken cancellationToken = default);
 }
