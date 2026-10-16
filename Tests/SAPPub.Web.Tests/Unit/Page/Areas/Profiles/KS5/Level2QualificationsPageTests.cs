@@ -296,7 +296,7 @@ public class Level2QualificationsPageTests : PageTestsBase
 
         Assert.NotNull(table);
         Assert.Contains("Banding", table.TextContent);
-        Assert.Contains("Percentage of schools", table.TextContent);
+        Assert.Contains("Percentage of schools and colleges", table.TextContent);
         Assert.Contains("Well above average", table.TextContent);
         Assert.Contains("Above average", table.TextContent);
         Assert.Contains("Average", table.TextContent);
