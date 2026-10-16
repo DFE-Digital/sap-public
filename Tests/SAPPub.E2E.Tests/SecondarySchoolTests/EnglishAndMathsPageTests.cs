@@ -136,7 +136,7 @@ public class EnglishAndMathsPageTests : BasePageTest
     [MemberData(nameof(GetPerformanceData))]
     public async Task TotalsAndGirlsBoysData_Expected(EnglishMathsPageTestDataModel testData)
     {
-        var pageOptions = new string[] { "grade-5-and-above", "grade-4-and-above" };
+        var pageOptions = new string[] { "grade-7-and-above", "grade-5-and-above", "grade-4-and-above" };
 
         // Arrange && Act
         var response = await Page.GotoAsync(BasePageUrl(testData.SchoolUrn));
@@ -148,7 +148,8 @@ public class EnglishAndMathsPageTests : BasePageTest
 
             // Act
             // Click Show data over time button
-            await Page.ClickAsync("#all-gcse-show-data-over-time-btn");
+            await Page.EnglishAndMathsEnsureDataTableOverTimeVisible();
+            //await Page.ClickAsync("#all-gcse-show-data-over-time-btn");
             await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
             await AssertGradeXAndAboveTotalsPerformanceData(pageOption, testData);
@@ -244,6 +245,15 @@ public class EnglishAndMathsPageTests : BasePageTest
         // TODO  for new data release (pageOption == "grade-7-and-above")
         var expectedValuesForGrade = pageOption switch
         {
+            "grade-7-and-above" => new
+            {
+                SchoolCurrentYear = expected.CurrentYear.EngMath97Percent,
+                SchoolPreviousYear = expected.PreviousYear.EngMath97Percent,
+                SchoolPrevious2Year = expected.Previous2Year.EngMath97Percent,
+                LaCurrentYear = expected.laCurrentYear.EngMath97Percent,
+                LaPreviousYear = expected.laPreviousYear.EngMath97Percent,
+                LaPrevious2Year = expected.laPrevious2Year.EngMath97Percent,
+            },
             "grade-5-and-above" => new
             {
                 SchoolCurrentYear = expected.CurrentYear.EngMath95Percent,
@@ -281,6 +291,13 @@ public class EnglishAndMathsPageTests : BasePageTest
         var expectedValuesForGrade = pageOption switch
         {
             // TODO  for new data release if (pageOption == "grade-7-and-above")
+            "grade-7-and-above" => new
+            {
+                GirlsCurrentYear = expected.GirlsCurrentYear.EngMath97Percent,
+                BoysCurrentYear = expected.BoysCurrentYear.EngMath97Percent,
+                laGirlsCurrentYear = expected.laGirlsCurrentYear.EngMath97Percent,
+                laBoysCurrentYear = expected.laBoysCurrentYear.EngMath97Percent,
+            },
             "grade-5-and-above" => new
             {
                 GirlsCurrentYear = expected.GirlsCurrentYear.EngMath95Percent,

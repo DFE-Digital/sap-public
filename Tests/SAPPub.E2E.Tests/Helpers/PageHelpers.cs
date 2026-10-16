@@ -1,4 +1,5 @@
 ﻿using Microsoft.Playwright;
+using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
 
 namespace SAPPub.E2E.Tests.Helpers;
@@ -20,6 +21,16 @@ public static class PageHelpers
         var j = urlstring.LastIndexOf('/');
         var previousYearPerformanceUrl = urlstring.Substring(i, j - i);
         return Page.GotoAsync($"{previousYearPerformanceUrl}/{year}");
+    }
+
+    public static async Task EnglishAndMathsEnsureDataTableOverTimeVisible(this IPage Page)
+    {
+        string tableId = "#all-gcse-data-overtime-table";
+        var element = Page.Locator(tableId);
+        if (await element.CountAsync() == 0)
+        {
+            await Page.ClickAsync("#all-gcse-show-data-over-time-btn");
+        }
     }
 
     public static async Task ExpandElement(this IPage Page, string dataTestid)
