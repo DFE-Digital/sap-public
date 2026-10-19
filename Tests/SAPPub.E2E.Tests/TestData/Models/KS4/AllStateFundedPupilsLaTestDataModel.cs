@@ -19,6 +19,9 @@ public record AllStateFundedPupilsTestDataModel
     [JsonPropertyName("engmath_95_percent")]
     public string EngMath95Percent { get; init; } = string.Empty;
 
+    [JsonPropertyName("engmath_97_percent")]
+    public string EngMath97Percent { get; init; } = string.Empty;
+
     [JsonPropertyName("lan_multiple_entering_percent")]
     public string LanMultipleEnteringPercent { get; init; } = string.Empty;
 
