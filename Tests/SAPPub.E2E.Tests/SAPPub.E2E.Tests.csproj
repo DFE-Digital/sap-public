@@ -42,6 +42,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="TestData\2425\KS4\ees_ks4_202324_api_england.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\2425\KS4\ees_ks4_202324_api_la.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="TestData\2526\KS4\202425_all_state_funded_pupils_characteristics_England_Total_Current.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -76,6 +82,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="TestData\2526\KS4\202425_all_state_funded_pupils_characteristics_la_Total_Previous2.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\2425\KS4\ees_ks4_202324_api_establishment.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="TestData\2526\KS4\information_about_schools.json">

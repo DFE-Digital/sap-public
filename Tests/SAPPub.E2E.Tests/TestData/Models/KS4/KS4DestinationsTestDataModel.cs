@@ -1,4 +1,5 @@
 ﻿using Microsoft.Playwright;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
@@ -21,7 +22,7 @@ public record KS4DestinationsTestDataModel
     [JsonPropertyName("destination_group")]
     public string DestinationGroup { get; init; } = string.Empty;
 
-    [JsonPropertyName("cohort_group")]
+    [JsonPropertyName("destination_description")]
     public string DestinationDescription { get; init; } = string.Empty;
 
     [JsonPropertyName("cohort_count")]
@@ -41,6 +42,20 @@ public static class Ks4DestinationsTestDataExtensions
     public const string CurrentYear = "202324";
     public const string PreviousYear = "202223";
     public const string Previous2Year = "202122";
+
+    public static string AllDestinationsPercent(
+        this IEnumerable<KS4DestinationsTestDataModel> rows,
+        string timePeriod = CurrentYear,
+        string disadvantageStatus = "Total") =>
+            rows.Single(a => a.DestinationGroup == "Overall destination", timePeriod, disadvantageStatus, "Overall destination").PupilPercent;
+
+    public static string DestinationPercent(
+        this IEnumerable<KS4DestinationsTestDataModel> rows,
+        string destinationDescription,
+        string timePeriod = CurrentYear,
+        string disadvantageStatus = "Total") =>
+            rows.Single(a => a.DestinationDescription == destinationDescription, timePeriod, disadvantageStatus, destinationDescription).PupilPercent;
+
 
     public static string CohortCount(
         this IEnumerable<KS4DestinationsTestDataModel> rows,

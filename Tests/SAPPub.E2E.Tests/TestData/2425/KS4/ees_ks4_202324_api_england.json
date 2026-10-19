@@ -1,0 +1,54 @@
+[
+  {
+    "school_urn": "",
+    "old_la_code": "",
+    "time_period": "202324",
+    "disadvantage_status": "Total",
+    "destination_group": "Overall destination",
+    "destination_description": "Total",
+    "cohort_count": "629662",
+    "pupil_percent": "91.3"
+  },
+  {
+    "school_urn": "",
+    "old_la_code": "",
+    "time_period": "202324",
+    "disadvantage_status": "Disadvantaged",
+    "destination_group": "Overall destination",
+    "destination_description": "Sustained education, employment & apprenticeships",
+    "cohort_count": "166811",
+    "pupil_percent": "83.3"
+  },
+  {
+    "school_urn": "",
+    "old_la_code": "",
+    "time_period": "202324",
+    "disadvantage_status": "Not known to be disadvantaged",
+    "destination_group": "Overall destination",
+    "destination_description": "Sustained education, employment & apprenticeships",
+    "cohort_count": "462851",
+    "pupil_percent": "94.1"
+  },
+  {
+    "school_urn": "",
+    "old_la_code": "",
+    "time_period": "202223",
+    "disadvantage_status": "Total",
+    "destination_group": "Overall destination",
+    "destination_description": "Total",
+    "cohort_count": "556604",
+    "pupil_percent": "91.6"
+
+  },
+  {
+    "school_urn": "",
+    "old_la_code": "",
+    "time_period": "202122",
+    "disadvantage_status": "Total",
+    "destination_group": "Overall destination",
+    "destination_description": "Total",
+    "cohort_count": "541988",
+    "pupil_percent": "92.2"
+
+  }
+]

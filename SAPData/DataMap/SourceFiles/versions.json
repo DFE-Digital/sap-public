@@ -1,0 +1,62 @@
+{
+  "ks4_performance_performance_2_current": {
+    "latest": 1,
+    "lastSignature": "ees:19e39901-a96c-be76-b9c2-6af54ae076d2|version:1.0.2",
+    "eesLatestVersion": "1.0.2",
+    "lastFileName": "202425_performance_tables_schools_provisional_v1.0.2.csv"
+  },
+  "ks4_performance_subjectentries_2_current": {
+    "latest": 1,
+    "lastSignature": "ees:1ae39901-b462-df76-b108-640a078d7944|version:1.0.2",
+    "eesLatestVersion": "1.0.2",
+    "lastFileName": "202425_subject_school_all_exam_entriesgrades_provisional_v1.0.2.csv"
+  },
+  "ks4_performance_performance_rev_current": {
+    "latest": 1,
+    "lastSignature": "ees:b3e19901-5d2b-b676-bb4c-e60937d74725|version:1.0.1",
+    "eesLatestVersion": "1.0.1",
+    "lastFileName": "202425_all_state_funded_pupils_characteristics_and_geography_breakdowns_revised_v1.0.1.csv"
+  },
+  "all_establishment_metadata_current": {
+    "latest": 106,
+    "lastSignature": "giasDate:20261019",
+    "lastSuccessDate": "20261019",
+    "lastFileName": "edubasealldata20261019.csv"
+  },
+  "all_establishment_links_current": {
+    "latest": 106,
+    "lastSignature": "giasDate:20261019",
+    "lastSuccessDate": "20261019",
+    "lastFileName": "links_edubasealldata20261019.csv"
+  },
+  "ks4_performance_subjectentries_current": {
+    "latest": 1,
+    "lastSignature": "ees:1ae39901-c621-a274-a84b-393929221b9f|version:1.0.1",
+    "eesLatestVersion": "1.0.1",
+    "lastFileName": "202425_subject_local_authority_pupil_entriesachievements_provisional_v1.0.1.csv"
+  },
+  "academy_sponsor_and_trust_links_current": {
+    "latest": 105,
+    "lastSignature": "giasDate:20261019",
+    "lastSuccessDate": "20261019",
+    "lastFileName": "grouplinks_edubaseallacademiesandfree20261019.csv"
+  },
+  "ks4_performance_performance_2_rev_current": {
+    "latest": 1,
+    "lastSignature": "ees:19e39901-a96c-be76-b9c2-6af54ae076d2|version:1.0.2",
+    "eesLatestVersion": "1.0.2",
+    "lastFileName": "202425_performance_tables_schools_revised_v1.0.2.csv"
+  },
+  "ks4_performance_performance_current": {
+    "latest": 1,
+    "lastSignature": "ees:b3e19901-5d2b-b676-bb4c-e60937d74725|version:1.0.1",
+    "eesLatestVersion": "1.0.1",
+    "lastFileName": "202425_all_state_funded_pupils_characteristics_and_geography_breakdowns_provisional_v1.0.1.csv"
+  },
+  "ks5_performance_subjectentries_current": {
+    "latest": 1,
+    "lastFileName": "institution_subject_and_qualification_results_202425_API_v1.0.1.csv",
+    "lastSignature": "ees:019c2960-df54-772f-8ad4-a2bc3d3b134f|version:1.0.1",
+    "eesLatestVersion": "1.0.1"
+  }
+}

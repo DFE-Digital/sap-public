@@ -1,0 +1,42 @@
+[
+  {
+    "school_urn": "124856",
+    "old_la_code": "935",
+    "time_period": "202324",
+    "disadvantage_status": "Total",
+    "destination_group": "Overall destination",
+    "destination_description": "Sustained education, employment & apprenticeships",
+    "cohort_count": "234",
+    "pupil_percent": "95.3"
+  },
+  {
+    "school_urn": "124856",
+    "old_la_code": "935",
+    "time_period": "202324",
+    "disadvantage_status": "Disadvantaged",
+    "destination_group": "Overall destination",
+    "destination_description": "Sustained education, employment & apprenticeships",
+    "cohort_count": "47",
+    "pupil_percent": "89.4"
+  },
+  {
+    "school_urn": "124856",
+    "old_la_code": "935",
+    "time_period": "202223",
+    "disadvantage_status": "Total",
+    "destination_group": "Overall destination",
+    "destination_description": "Total",
+    "cohort_count": "239",
+    "pupil_percent": "95"
+  },
+  {
+    "school_urn": "124856",
+    "old_la_code": "935",
+    "time_period": "202122",
+    "disadvantage_status": "Total",
+    "destination_group": "Overall destination",
+    "destination_description": "Total",
+    "cohort_count": "237",
+    "pupil_percent": "95.8"
+  }
+]

@@ -1,7 +1,10 @@
-﻿using SAPPub.E2E.Tests.Helpers;
+﻿using Microsoft.Playwright;
+using SAPPub.E2E.Tests.Helpers;
 using SAPPub.E2E.Tests.Infrastructure;
 using SAPPub.E2E.Tests.TestData.Models.KS4;
+using SAPPub.Playwright.Testing;
 using System.Text.RegularExpressions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SAPPub.E2E.Tests.SecondarySchoolTests;
 
@@ -43,27 +46,100 @@ public class DestinationsPageTests : BasePageTest
             throw new InvalidOperationException("No matching URNs found across the KS4 destinations test data sets.");
         }
 
-        return new TheoryData<DestinationsTestData>(urns.Select(urn => new DestinationsTestData
+        return [.. urns.Select(urn => new DestinationsTestData
         {
             SchoolUrn = urn,
             School = _establishmentTestData[urn].ToList(),
             LocalAuthority = _laTestData[urn].ToList(),
             England = _englandTestData,
-        }));
+        })];
     
     }
 
     [Theory]
     [MemberData(nameof(GetDestinationsTestData))]
-    public async Task NumberOfStudentsIncludedInMeasure_ShowsExpected(DestinationsTestData testData)
+    public async Task AllDestinations_ShowsExpectedCurrentYearAndDataOverTime(DestinationsTestData testData)
+    {
+        // Arrange and act
+        await GotoDestinationsPage(testData.SchoolUrn);
+
+        // Assert - current year (school, la and England)
+        var currentYear = await GetTableColumnAsync("#all-dest-current-year-table");
+        AssertHelpers.AssertNumericEqual(testData.School.AllDestinationsPercent(), currentYear[0]);
+        AssertHelpers.AssertNumericEqual(testData.LocalAuthority.AllDestinationsPercent(), currentYear[1]);
+        AssertHelpers.AssertNumericEqual(testData.England.AllDestinationsPercent(), currentYear[2]);
+
+        await Page.ClickAsync("#all-dest-show-data-over-time-btn");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        await AssertOverTimeRow(0, testData.School);
+        await AssertOverTimeRow(1, testData.LocalAuthority);
+        await AssertOverTimeRow(2, testData.England);
+    }
+
+    [Theory]
+    [MemberData(nameof(GetDestinationsTestData))]
+    public async Task NumberOfStudensInlcudedInMeasure_ShowsExpected(DestinationsTestData testData)
+    {
+        // Arrange and act
+        await GotoDestinationsPage(testData.SchoolUrn);
+
+        // Assert - current year (school, la and England)
+        var text = await Page.Locator("#no-of-students-included-in-measure").InnerTextAsync();
+        var number = Regex.Match(text, @"[\d.]+\s*$").Value;
+        AssertHelpers.AssertNumericEqual(testData.School.CohortCount(), number);
+    }
+
+    [Theory]
+    [MemberData(nameof(GetDestinationsTestData))]
+    public async Task DisadvantagedDestinations_ShowsExpected(DestinationsTestData testData)
+    {
+        await Page.ExpandAccordionByIdAsync("disadvantaged-destinations-accordion");
+        await Page.ExpandDetailsAsync("Compare with non-disadvantaged pupils");
+
+        var disadvantaged = await GetTableColumnAsync("table#all-dest-disadvantaged-current-year-table", 0);
+        AssertHelpers.AssertNumericEqual(testData.School.AllDestinationsPercent(disadvantageStatus: "Disadvantaged"), disadvantaged[0]);
+        AssertHelpers.AssertNumericEqual(testData.LocalAuthority.AllDestinationsPercent(disadvantageStatus: "Disadvantaged"), disadvantaged[1]);
+        AssertHelpers.AssertNumericEqual(testData.England.AllDestinationsPercent(disadvantageStatus: "Disadvantaged"), disadvantaged[2]);
+
+        var nonDisadvantaged = await GetTableColumnAsync("table#all-dest-disadvantaged-current-year-table", 1);
+        AssertHelpers.AssertNumericEqual(testData.LocalAuthority.AllDestinationsPercent(disadvantageStatus: "Not known to be disadvantaged"), nonDisadvantaged[0]);
+        AssertHelpers.AssertNumericEqual(testData.England.AllDestinationsPercent(disadvantageStatus: "Not known to be disadvantaged"), nonDisadvantaged[1]);
+    }
+
+    [Theory]
+    [MemberData(nameof(GetDestinationsTestData))]
+    public async Task EducationDestinations_ShowsExpected(DestinationsTestData testData)
     {
         // Arrange and act
         await GotoDestinationsPage(testData.SchoolUrn);
 
         // Assert
-        var text = await Page.Locator("#no-of-students-included-in-measure").InnerTextAsync();
-        var number = Regex.Match(text, @"[\d.]+\s*$").Value;
-        AssertHelpers.AssertNumericEqual(testData.School.CohortCount(), number);
+        await AssertSeriesRow(testData, "stayed-in-education-table", "Pupils who stayed in education", "Sustained education destination");
+
+        await AssertSeriesRow(testData, "where-pupils-studied-table", "Further education provider", "Further education");
+        await AssertSeriesRow(testData, "where-pupils-studied-table", "School sixth form", "School sixth form");
+        await AssertSeriesRow(testData, "where-pupils-studied-table", "Sixth form college", "Sixth form college");
+        await AssertSeriesRow(testData, "where-pupils-studied-table", "Other education destinations", "Other education destination");
+    }
+
+
+    private async Task AssertOverTimeRow(int rowNumber, IReadOnlyList<KS4DestinationsTestDataModel> rows)
+    {
+        var values = await Page.GetTableRowValuesAsync("#all-dest-data-overtime-table", rowNumber);
+        Assert.Equal(3, values.Count);
+        AssertHelpers.AssertNumericEqual(rows.AllDestinationsPercent(Ks4DestinationsTestDataExtensions.Previous2Year), values[0]);
+        AssertHelpers.AssertNumericEqual(rows.AllDestinationsPercent(Ks4DestinationsTestDataExtensions.PreviousYear), values[1]);
+        AssertHelpers.AssertNumericEqual(rows.AllDestinationsPercent(Ks4DestinationsTestDataExtensions.CurrentYear), values[2]);
+    }
+
+    private async Task AssertSeriesRow(DestinationsTestData testData, string tableId, string rowHeader, string destinationDescription)
+    {
+        var values = await Page.GetTableRowValuesAsync(tableId, rowHeader);
+        Assert.Equal(3, values.Count);
+        AssertHelpers.AssertNumericEqual(testData.School.DestinationPercent(destinationDescription), values[0]);
+        AssertHelpers.AssertNumericEqual(testData.LocalAuthority.DestinationPercent(destinationDescription), values[1]);
+        AssertHelpers.AssertNumericEqual(testData.England.DestinationPercent(destinationDescription), values[2]);
     }
 
     private async Task GotoDestinationsPage(string schoolUrn)
@@ -71,5 +147,17 @@ public class DestinationsPageTests : BasePageTest
         var response = await Page.GotoAsync(BasePageUrl(schoolUrn));
         Assert.NotNull(response);
         _ = await Page.GotoPage(response.Url, pageUnderTest);
+    }
+
+    private async Task<IReadOnlyList<string>> GetTableColumnAsync(string tableSelector, int tableIndex = 0)
+    {
+        var rows = Page.Locator(tableSelector).Nth(tableIndex).Locator("tbody tr");
+        var values = new List<string>();
+        for (var i = 0; i < await rows.CountAsync(); i++)
+        {
+            values.Add(await rows.Nth(i).Locator("td").First.InnerTextAsync());
+        }
+
+        return values;
     }
 }
