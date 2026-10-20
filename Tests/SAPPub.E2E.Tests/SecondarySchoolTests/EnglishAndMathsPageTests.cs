@@ -242,7 +242,6 @@ public class EnglishAndMathsPageTests : BasePageTest
 
     private async Task AssertGradeXAndAboveTotalsPerformanceData(string pageOption, EnglishMathsPageTestDataModel expected)
     {
-        // TODO  for new data release (pageOption == "grade-7-and-above")
         var expectedValuesForGrade = pageOption switch
         {
             "grade-7-and-above" => new
