@@ -5,10 +5,31 @@
     "time_period": "202324",
     "disadvantage_status": "Total",
     "destination_group": "Overall destination",
-    "destination_description": "Total",
+    "destination_description": "Sustained education, employment & apprenticeships",
     "cohort_count": "7724",
     "pupil_percent": "92.7"
 
+  },
+  {
+    "school_urn": "124856",
+    "old_la_code": "935",
+    "time_period": "202223",
+    "disadvantage_status": "Total",
+    "destination_group": "Overall destination",
+    "destination_description": "Sustained education, employment & apprenticeships",
+    "cohort_count": "7591",
+    "pupil_percent": "93"
+
+  },
+  {
+    "school_urn": "124856",
+    "old_la_code": "935",
+    "time_period": "202122",
+    "disadvantage_status": "Total",
+    "destination_group": "Overall destination",
+    "destination_description": "Sustained education, employment & apprenticeships",
+    "cohort_count": "7402",
+    "pupil_percent": "93.4"
   },
   {
     "school_urn": "124856",
@@ -20,6 +41,9 @@
     "cohort_count": "1760",
     "pupil_percent": "84.4"
   },
+
+
+
   {
     "school_urn": "124856",
     "old_la_code": "935",
@@ -30,26 +54,259 @@
     "cohort_count": "5965",
     "pupil_percent": "95.2"
   },
+
+
   {
     "school_urn": "124856",
     "old_la_code": "935",
-    "time_period": "202223",
+    "time_period": "202324",
     "disadvantage_status": "Total",
-    "destination_group": "Overall destination",
-    "destination_description": "Total",
-    "cohort_count": "7591",
-    "pupil_percent": "93"
+    "destination_group": "Headline destinations",
+    "destination_description": "Sustained education destination",
+    "cohort_count": "n/a",
+    "pupil_percent": "86.8"
+  },
 
+  {
+    "school_urn": "124856",
+    "old_la_code": "935",
+    "time_period": "202324",
+    "disadvantage_status": "Total",
+    "destination_group": "Education destination breakdown",
+    "destination_description": "Further education",
+    "cohort_count": "n/a",
+    "pupil_percent": "43.6"
   },
   {
     "school_urn": "124856",
     "old_la_code": "935",
+    "time_period": "202324",
+    "disadvantage_status": "Total",
+    "destination_group": "Education destination breakdown",
+    "destination_description": "School sixth form",
+    "cohort_count": "n/a",
+    "pupil_percent": "37.1"
+  },
+  {
+    "school_urn": "124856",
+    "old_la_code": "935",
+    "time_period": "202324",
+    "disadvantage_status": "Total",
+    "destination_group": "Education destination breakdown",
+    "destination_description": "Sixth form college",
+    "cohort_count": "n/a",
+    "pupil_percent": "4.8"
+  },
+  {
+    "school_urn": "124856",
+    "old_la_code": "935",
+    "time_period": "202324",
+    "disadvantage_status": "Total",
+    "destination_group": "Education destination breakdown",
+    "destination_description": "Other education destination",
+    "cohort_count": "n/a",
+    "pupil_percent": "1.3"
+  },
+
+
+
+  {
+    "school_urn": "124856",
+    "old_la_code": "935",
+    "time_period": "202324",
+    "disadvantage_status": "Total",
+    "destination_group": "Headline destinations",
+    "destination_description": "Sustained employment destination",
+    "cohort_count": "7724",
+    "pupil_percent": "2.6"
+  },
+  {
+    "school_urn": "124856",
+    "old_la_code": "935",
+    "time_period": "202324",
+    "disadvantage_status": "Total",
+    "destination_group": "Headline destinations",
+    "destination_description": "Sustained apprenticeships",
+    "cohort_count": "7724",
+    "pupil_percent": "3.3"
+  },
+  {
+    "school_urn": "124856",
+    "old_la_code": "935",
+    "time_period": "202324",
+    "disadvantage_status": "Total",
+    "destination_group": "Headline destinations",
+    "destination_description": "Not recorded as a sustained destination",
+    "cohort_count": "7724",
+    "pupil_percent": "4.9"
+  },
+  {
+    "school_urn": "124856",
+    "old_la_code": "935",
+    "time_period": "202324",
+    "disadvantage_status": "Total",
+    "destination_group": "Headline destinations",
+    "destination_description": "Activity not captured",
+    "cohort_count": "7724",
+    "pupil_percent": "2.4"
+  },
+
+
+
+
+  {
+    "school_urn": "136489",
+    "old_la_code": "941",
+    "time_period": "202324",
+    "disadvantage_status": "Total",
+    "destination_group": "Overall destination",
+    "destination_description": "Sustained education, employment & apprenticeships",
+    "cohort_count": "4999",
+    "pupil_percent": "92.2"
+
+  },
+  {
+    "school_urn": "136489",
+    "old_la_code": "941",
+    "time_period": "202223",
+    "disadvantage_status": "Total",
+    "destination_group": "Overall destination",
+    "destination_description": "Sustained education, employment & apprenticeships",
+    "cohort_count": "4707",
+    "pupil_percent": "92.1"
+
+  },
+  {
+    "school_urn": "136489",
+    "old_la_code": "941",
     "time_period": "202122",
     "disadvantage_status": "Total",
     "destination_group": "Overall destination",
-    "destination_description": "Total",
-    "cohort_count": "7402",
-    "pupil_percent": "93.4"
+    "destination_description": "Sustained education, employment & apprenticeships",
+    "cohort_count": "4608",
+    "pupil_percent": "93.3"
 
+  },
+
+
+  {
+    "school_urn": "136489",
+    "old_la_code": "941",
+    "time_period": "202324",
+    "disadvantage_status": "Disadvantaged",
+    "destination_group": "Overall destination",
+    "destination_description": "Sustained education, employment & apprenticeships",
+    "cohort_count": "930",
+    "pupil_percent": "81.3"
+  },
+
+
+
+  {
+    "school_urn": "136489",
+    "old_la_code": "941",
+    "time_period": "202324",
+    "disadvantage_status": "Not known to be disadvantaged",
+    "destination_group": "Overall destination",
+    "destination_description": "Sustained education, employment & apprenticeships",
+    "cohort_count": "4070",
+    "pupil_percent": "94.7"
+  },
+
+
+  {
+    "school_urn": "136489",
+    "old_la_code": "941",
+    "time_period": "202324",
+    "disadvantage_status": "Total",
+    "destination_group": "Headline destinations",
+    "destination_description": "Sustained education destination",
+    "cohort_count": "4999",
+    "pupil_percent": "87.8"
+  },
+
+  {
+    "school_urn": "136489",
+    "old_la_code": "941",
+    "time_period": "202324",
+    "disadvantage_status": "Total",
+    "destination_group": "Education destination breakdown",
+    "destination_description": "Further education",
+    "cohort_count": "4999",
+    "pupil_percent": "46.1"
+  },
+  {
+    "school_urn": "136489",
+    "old_la_code": "941",
+    "time_period": "202324",
+    "disadvantage_status": "Total",
+    "destination_group": "Education destination breakdown",
+    "destination_description": "School sixth form",
+    "cohort_count": "4999",
+    "pupil_percent": "39.6"
+  },
+  {
+    "school_urn": "136489",
+    "old_la_code": "941",
+    "time_period": "202324",
+    "disadvantage_status": "Total",
+    "destination_group": "Education destination breakdown",
+    "destination_description": "Sixth form college",
+    "cohort_count": "4999",
+    "pupil_percent": "0.1"
+  },
+  {
+    "school_urn": "136489",
+    "old_la_code": "941",
+    "time_period": "202324",
+    "disadvantage_status": "Total",
+    "destination_group": "Education destination breakdown",
+    "destination_description": "Other education destination",
+    "cohort_count": "4999",
+    "pupil_percent": "2.1"
+  },
+
+
+
+  {
+    "school_urn": "136489",
+    "old_la_code": "941",
+    "time_period": "202324",
+    "disadvantage_status": "Total",
+    "destination_group": "Headline destinations",
+    "destination_description": "Sustained employment destination",
+    "cohort_count": "4999",
+    "pupil_percent": "1.9"
+  },
+  {
+    "school_urn": "136489",
+    "old_la_code": "941",
+    "time_period": "202324",
+    "disadvantage_status": "Total",
+    "destination_group": "Headline destinations",
+    "destination_description": "Sustained apprenticeships",
+    "cohort_count": "4999",
+    "pupil_percent": "2.5"
+  },
+  {
+    "school_urn": "136489",
+    "old_la_code": "941",
+    "time_period": "202324",
+    "disadvantage_status": "Total",
+    "destination_group": "Headline destinations",
+    "destination_description": "Not recorded as a sustained destination",
+    "cohort_count": "4999",
+    "pupil_percent": "5.4"
+  },
+  {
+    "school_urn": "136489",
+    "old_la_code": "941",
+    "time_period": "202324",
+    "disadvantage_status": "Total",
+    "destination_group": "Headline destinations",
+    "destination_description": "Activity not captured",
+    "cohort_count": "4999",
+    "pupil_percent": "2.3"
   }
+
 ]

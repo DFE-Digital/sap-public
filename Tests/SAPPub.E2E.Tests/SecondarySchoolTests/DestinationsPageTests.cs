@@ -94,9 +94,12 @@ public class DestinationsPageTests : BasePageTest
     [MemberData(nameof(GetDestinationsTestData))]
     public async Task DisadvantagedDestinations_ShowsExpected(DestinationsTestData testData)
     {
+        // Arrange and act
+        await GotoDestinationsPage(testData.SchoolUrn);
         await Page.ExpandAccordionByIdAsync("disadvantaged-destinations-accordion");
         await Page.ExpandDetailsAsync("Compare with non-disadvantaged pupils");
 
+        // Assert
         var disadvantaged = await GetTableColumnAsync("table#all-dest-disadvantaged-current-year-table", 0);
         AssertHelpers.AssertNumericEqual(testData.School.AllDestinationsPercent(disadvantageStatus: "Disadvantaged"), disadvantaged[0]);
         AssertHelpers.AssertNumericEqual(testData.LocalAuthority.AllDestinationsPercent(disadvantageStatus: "Disadvantaged"), disadvantaged[1]);
@@ -123,6 +126,20 @@ public class DestinationsPageTests : BasePageTest
         await AssertSeriesRow(testData, "where-pupils-studied-table", "Other education destinations", "Other education destination");
     }
 
+    [Theory]
+    [MemberData(nameof(GetDestinationsTestData))]
+    public async Task ApprenticeshipsEmploymentAndNotSustainedDestinations_ShowsExpected(DestinationsTestData testData)
+    {
+        // Arrange and act
+        await GotoDestinationsPage(testData.SchoolUrn);
+
+        // Assert
+        await AssertSeriesRow(testData, "apprenticeships-or-employment-table", "Pupils who stayed in employment for at least 2 terms", "Sustained employment destination");
+        await AssertSeriesRow(testData, "apprenticeships-or-employment-table", "Pupils who stayed in an apprenticeship for at least 6 months", "Sustained apprenticeships");
+        
+        await AssertSeriesRow(testData, "did-not-stay-in-education-or-employment-table", "Pupils who did not stay in education or employment for at least 2 terms", "Not recorded as a sustained destination");
+        await AssertSeriesRow(testData, "did-not-stay-in-education-or-employment-table", "Destination unknown", "Activity not captured");
+    }
 
     private async Task AssertOverTimeRow(int rowNumber, IReadOnlyList<KS4DestinationsTestDataModel> rows)
     {
