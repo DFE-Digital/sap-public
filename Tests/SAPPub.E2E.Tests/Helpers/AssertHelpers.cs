@@ -36,9 +36,4 @@ public static class AssertHelpers
             actualValue,
             precision);
     }
-
-    internal static void AssertNumericEqual(object value, string v)
-    {
-        throw new NotImplementedException();
-    }
 }
