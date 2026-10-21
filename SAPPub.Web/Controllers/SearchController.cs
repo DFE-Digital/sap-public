@@ -58,7 +58,7 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
 
     [HttpGet]
     [Route("search/results", Name = RouteConstants.SearchResults)]
-    public async Task<IActionResult> SearchResults(SearchParamsModel model)
+    public async Task<IActionResult> SearchResults(SearchParamsModel model, CancellationToken cancellationToken)
     {
         if (IsSchoolOnlySearchTerm(model.NameSearchTerm) && string.IsNullOrWhiteSpace(model.LocationSearchTerm))
         {
@@ -86,7 +86,7 @@ public class SearchController(ISchoolSearchService schoolSearchService) : Contro
         SchoolSearchResultsServiceModel? searchResults = null;
         if (searchKeyWord != null || searchLocation != null)
         {
-            searchResults = await schoolSearchService.SearchAsync(searchQuery);
+            searchResults = await schoolSearchService.SearchAsync(searchQuery, cancellationToken);
             if (searchResults.Status == SchoolSearchStatus.InvalidPostcode)
             {
                 // postcode may be a valid format but not be found by the postcode API
