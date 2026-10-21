@@ -58,7 +58,7 @@ public class SearchPageTests : IDisposable
         };
 
         _searchServiceMock
-            .Setup(s => s.SearchAsync(It.IsAny<SchoolSearchServiceQuery>()))
+            .Setup(s => s.SearchAsync(It.IsAny<SchoolSearchServiceQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(expectedResults);
 
         // Act
@@ -106,7 +106,7 @@ public class SearchPageTests : IDisposable
         };
 
         _searchServiceMock
-            .Setup(s => s.SearchAsync(It.IsAny<SchoolSearchServiceQuery>()))
+            .Setup(s => s.SearchAsync(It.IsAny<SchoolSearchServiceQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(expectedResults);
 
         // Act
@@ -153,7 +153,7 @@ public class SearchPageTests : IDisposable
         };
 
         _searchServiceMock
-            .Setup(s => s.SearchAsync(It.IsAny<SchoolSearchServiceQuery>()))
+            .Setup(s => s.SearchAsync(It.IsAny<SchoolSearchServiceQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(expectedResults);
 
         // Act
@@ -204,7 +204,7 @@ public class SearchPageTests : IDisposable
         };
 
         _searchServiceMock
-            .Setup(s => s.SearchAsync(It.IsAny<SchoolSearchServiceQuery>()))
+            .Setup(s => s.SearchAsync(It.IsAny<SchoolSearchServiceQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(expectedResults);
 
         // Act
@@ -244,7 +244,7 @@ public class SearchPageTests : IDisposable
         };
 
         _searchServiceMock
-            .Setup(s => s.SearchAsync(It.IsAny<SchoolSearchServiceQuery>()))
+            .Setup(s => s.SearchAsync(It.IsAny<SchoolSearchServiceQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(expectedResults);
 
         // Act
@@ -287,7 +287,7 @@ public class SearchPageTests : IDisposable
         };
 
         _searchServiceMock
-            .Setup(s => s.SearchAsync(It.IsAny<SchoolSearchServiceQuery>()))
+            .Setup(s => s.SearchAsync(It.IsAny<SchoolSearchServiceQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(expectedResults);
 
         // Act
@@ -320,7 +320,7 @@ public class SearchPageTests : IDisposable
         };
 
         _searchServiceMock
-            .Setup(s => s.SearchAsync(It.IsAny<SchoolSearchServiceQuery>()))
+            .Setup(s => s.SearchAsync(It.IsAny<SchoolSearchServiceQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(expectedResults);
 
         // Act

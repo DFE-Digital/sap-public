@@ -9,6 +9,7 @@ public class DapperCommandBuilder
     private object? _parameters;
     private CommandType _commandType = CommandType.Text;
     private CommandFlags _commandFlags = CommandFlags.Buffered | CommandFlags.NoCache;
+    private int? _commandTimeoutSeconds;
 
     public DapperCommandBuilder WithCommandText(string sql)
     {
@@ -22,6 +23,12 @@ public class DapperCommandBuilder
         return this;
     }
 
+    public DapperCommandBuilder WithTimeout(TimeSpan timeout)
+    {
+        _commandTimeoutSeconds = (int)Math.Ceiling(timeout.TotalSeconds);
+        return this;
+    }
+
     public CommandDefinition Build(CancellationToken ct)
     {
         if (_sql is null)
@@ -29,7 +36,7 @@ public class DapperCommandBuilder
         return new CommandDefinition(commandText: _sql,
                     parameters: _parameters,
                     transaction: null,
-                    commandTimeout: null,
+                    commandTimeout: _commandTimeoutSeconds,
                     commandType: _commandType,
                     flags: _commandFlags,
                     cancellationToken: ct);
