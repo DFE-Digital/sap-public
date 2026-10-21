@@ -244,6 +244,8 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "EngMaths79_Tot_Eng_Current_Pct_Coded",
           "EngMaths79_Tot_Eng_Previous_Pct_Coded",
           "EngMaths79_Tot_Eng_Previous2_Pct_Coded",
+          "EngMaths79_Dis_Eng_Current_Pct_Coded",
+          "EngMaths79_NDi_Eng_Current_Pct_Coded",
           "AnyQual_Tot_Eng_Current_Pct_Coded",
           "TripSci_Tot_Eng_Current_Pct_Coded",
           "More1FL_Tot_Eng_Current_Pct_Coded",
