@@ -87,7 +87,13 @@
     <None Update="TestData\2526\KS4\all_state_funded_pupils_characteristics_la_Total_Previous2.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TestData\2526\KS4\information_about_schools.json">
+    <None Update="TestData\2526\KS4\information_about_schools_Previous2.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\2526\KS4\information_about_schools_Previous.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\2526\KS4\information_about_schools_Current.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="TestData\2526\KS4\202425_performance_tables_schools_final_Boys_Current_Year.json">

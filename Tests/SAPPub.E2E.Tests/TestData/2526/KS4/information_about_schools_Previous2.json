@@ -1,0 +1,44 @@
+[
+  {
+    "school_urn": "124856",
+    "progress8_banding": "Average",
+    "attainment8_diff_national": "-18.5",
+    "sen_with_ehcp_pupil_percent": "4.7",
+    "sen_no_ehcp_pupil_percent": "9.4"
+  },
+  {
+    "school_urn": "138765",
+    "progress8_banding": "Average",
+    "attainment8_diff_national": "-16.1",
+    "sen_with_ehcp_pupil_percent": "1.9",
+    "sen_no_ehcp_pupil_percent": "5.8"
+  },
+  {
+    "school_urn": "140424",
+    "progress8_banding": "Average",
+    "attainment8_diff_national": "-15.6",
+    "sen_with_ehcp_pupil_percent": "1.7",
+    "sen_no_ehcp_pupil_percent": "13.5"
+  },
+  {
+    "school_urn": "136489",
+    "progress8_banding": "Average",
+    "attainment8_diff_national": "-20.9",
+    "sen_with_ehcp_pupil_percent": "2.7",
+    "sen_no_ehcp_pupil_percent": "18.9"
+  },
+  {
+    "school_urn": "137252",
+    "progress8_banding": "Average",
+    "attainment8_diff_national": "-15.9",
+    "sen_with_ehcp_pupil_percent": "1.3",
+    "sen_no_ehcp_pupil_percent": "11.2"
+  },
+  {
+    "school_urn": "137205",
+    "progress8_banding": "Below average",
+    "attainment8_diff_national": "-20.8",
+    "sen_with_ehcp_pupil_percent": "4.4",
+    "sen_no_ehcp_pupil_percent": "9.3"
+  }
+]
