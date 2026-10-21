@@ -31,6 +31,8 @@ public class EnglishAndMathsPageTests : BasePageTest
         public required PerformanceTablesTestDataModel NonMobileCurrentYear { get; set; }
         public required AllStateFundedPupilsLaTestDataModel LaNonDisadvantagedCurrentYear { get; set; }
         public required AllStateFundedPupilsLaTestDataModel LaDisadvantagedCurrentYear { get; set; }
+        public required AllStateFundedPupilsTestDataModel EnglandDisadvantagedCurrentYear { get; set; }
+        public required AllStateFundedPupilsTestDataModel EnglandNonDisadvantagedCurrentYear { get; set; }
     }
 
     private string BasePageUrl(string urn) => $"/school/{urn}";
@@ -38,35 +40,35 @@ public class EnglishAndMathsPageTests : BasePageTest
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceTotalsCurrentYearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_Total_Current_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_Total_Current_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceTotalsPreviousYearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_Total_Previous_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_Total_Previous_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceTotalsPrevious2YearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_Total_Previous2_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_Total_Previous2_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceGirlsCurrentYearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_Girls_Current_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_Girls_Current_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceBoysCurrentYearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_Boys_Current_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_Boys_Current_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceDisadvantagedCurrentYearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_Disadvantaged_Current_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_Disadvantaged_Current_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceEALCurrentYearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_EAL_Current_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_EAL_Current_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceNonMobileCurrentYearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_NonMobile_Current_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_NonMobile_Current_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, AllStateFundedPupilsLaTestDataModel> _laPerformanceCurrentYearTestData = TestDataLoader.Load<AllStateFundedPupilsLaTestDataModel>(
         "KS4",
@@ -96,6 +98,14 @@ public class EnglishAndMathsPageTests : BasePageTest
         "KS4",
         "all_state_funded_pupils_characteristics_la_NonDisadvantaged_Current").ToDictionary(x => x.Urn);
 
+    private static readonly AllStateFundedPupilsLaTestDataModel _englandPerformanceNonDisadvantagedCurrentYearTestData = TestDataLoader.Load<AllStateFundedPupilsLaTestDataModel>(
+        "KS4",
+        "all_state_funded_pupils_characteristics_England_NonDisadvantaged_Current").First();
+
+    private static readonly AllStateFundedPupilsLaTestDataModel _englandPerformanceDisadvantagedCurrentYearTestData = TestDataLoader.Load<AllStateFundedPupilsLaTestDataModel>(
+        "KS4",
+        "all_state_funded_pupils_characteristics_England_Disadvantaged_Current").First();
+
     public static TheoryData<EnglishMathsPageTestDataModel> GetPerformanceData()
     {
         var urns = _performanceTotalsCurrentYearTestData.Keys
@@ -115,20 +125,20 @@ public class EnglishAndMathsPageTests : BasePageTest
             throw new InvalidOperationException("No matching URNs found across all test data sets.");
         }
 
-        return new TheoryData<EnglishMathsPageTestDataModel>(_performanceTotalsCurrentYearTestData.Values.Select(
-            currentYear => new EnglishMathsPageTestDataModel
+        return new TheoryData<EnglishMathsPageTestDataModel>(urns.Select(
+            urn => new EnglishMathsPageTestDataModel
             {
-                SchoolUrn = currentYear.SchoolUrn,
-                CurrentYear = currentYear,
-                PreviousYear = _performanceTotalsPreviousYearTestData[currentYear.SchoolUrn],
-                Previous2Year = _performanceTotalsPrevious2YearTestData[currentYear.SchoolUrn],
-                laCurrentYear = _laPerformanceCurrentYearTestData[currentYear.SchoolUrn],
-                laPreviousYear = _laPerformancePreviousYearTestData[currentYear.SchoolUrn],
-                laPrevious2Year = _laPerformancePrevious2YearTestData[currentYear.SchoolUrn],
-                GirlsCurrentYear = _performanceGirlsCurrentYearTestData[currentYear.SchoolUrn],
-                BoysCurrentYear = _performanceBoysCurrentYearTestData[currentYear.SchoolUrn],
-                laGirlsCurrentYear = _laPerformanceGirlsCurrentYearTestData[currentYear.SchoolUrn],
-                laBoysCurrentYear = _laPerformanceBoysCurrentYearTestData[currentYear.SchoolUrn]
+                SchoolUrn = urn,
+                CurrentYear = _performanceTotalsCurrentYearTestData[urn],
+                PreviousYear = _performanceTotalsPreviousYearTestData[urn],
+                Previous2Year = _performanceTotalsPrevious2YearTestData[urn],
+                laCurrentYear = _laPerformanceCurrentYearTestData[urn],
+                laPreviousYear = _laPerformancePreviousYearTestData[urn],
+                laPrevious2Year = _laPerformancePrevious2YearTestData[urn],
+                GirlsCurrentYear = _performanceGirlsCurrentYearTestData[urn],
+                BoysCurrentYear = _performanceBoysCurrentYearTestData[urn],
+                laGirlsCurrentYear = _laPerformanceGirlsCurrentYearTestData[urn],
+                laBoysCurrentYear = _laPerformanceBoysCurrentYearTestData[urn]
             }).ToArray());
     }
 
@@ -136,7 +146,7 @@ public class EnglishAndMathsPageTests : BasePageTest
     [MemberData(nameof(GetPerformanceData))]
     public async Task TotalsAndGirlsBoysData_Expected(EnglishMathsPageTestDataModel testData)
     {
-        var pageOptions = new string[] { "grade-5-and-above", "grade-4-and-above" };
+        var pageOptions = new string[] { "grade-7-and-above", "grade-5-and-above", "grade-4-and-above" };
 
         // Arrange && Act
         var response = await Page.GotoAsync(BasePageUrl(testData.SchoolUrn));
@@ -148,7 +158,8 @@ public class EnglishAndMathsPageTests : BasePageTest
 
             // Act
             // Click Show data over time button
-            await Page.ClickAsync("#all-gcse-show-data-over-time-btn");
+            await Page.EnglishAndMathsEnsureDataTableOverTimeVisible();
+            //await Page.ClickAsync("#all-gcse-show-data-over-time-btn");
             await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
             await AssertGradeXAndAboveTotalsPerformanceData(pageOption, testData);
@@ -177,7 +188,9 @@ public class EnglishAndMathsPageTests : BasePageTest
             EALCurrentYear = _performanceEALCurrentYearTestData[currentYear.SchoolUrn],
             NonMobileCurrentYear = _performanceNonMobileCurrentYearTestData[currentYear.SchoolUrn],
             LaDisadvantagedCurrentYear = _laPerformanceDisadvantagedCurrentYearTestData[currentYear.SchoolUrn],
-            LaNonDisadvantagedCurrentYear = _laPerformanceNonDisadvantagedCurrentYearTestData[currentYear.SchoolUrn]
+            LaNonDisadvantagedCurrentYear = _laPerformanceNonDisadvantagedCurrentYearTestData[currentYear.SchoolUrn],
+            EnglandDisadvantagedCurrentYear = _englandPerformanceDisadvantagedCurrentYearTestData,
+            EnglandNonDisadvantagedCurrentYear = _englandPerformanceNonDisadvantagedCurrentYearTestData
         }).ToArray());
     }
 
@@ -185,7 +198,7 @@ public class EnglishAndMathsPageTests : BasePageTest
     [MemberData(nameof(GetBreakdownPerformanceData))]
     public async Task BreakdownData_Expected(EnglishMathsBreakdownsPageTestDataModel testData)
     {
-        var pageOptions = new string[] { /* grade-7-and-above", */ "grade-5-and-above", "grade-4-and-above" };
+        var pageOptions = new string[] { "grade-7-and-above", "grade-5-and-above", "grade-4-and-above" };
 
         // Arrange && Act
         var response = await Page.GotoAsync(BasePageUrl(testData.SchoolUrn));
@@ -205,16 +218,27 @@ public class EnglishAndMathsPageTests : BasePageTest
 
     private async Task AssertBreakdownPerformanceData(string pageOption, EnglishMathsBreakdownsPageTestDataModel expected)
     {
-        // TODO  for new data release (pageOption == "grade-7-and-above")
         var expectedValuesForGrade = pageOption switch
         {
+            "grade-7-and-above" => new
+            {
+                DisadvantagedCurrentYear = expected.DisadvantagedCurrentYear.EngMath97Percent,
+                EALCurrentYear = expected.EALCurrentYear.EngMath97Percent,
+                NonMobileCurrentYear = expected.NonMobileCurrentYear.EngMath97Percent,
+                LaDisadvantagedCurrentYear = expected.LaDisadvantagedCurrentYear.EngMath97Percent,
+                LaNonDisadvantagedCurrentYear = expected.LaNonDisadvantagedCurrentYear.EngMath97Percent,
+                EnglandDisadvantagedCurrentYear = expected.EnglandDisadvantagedCurrentYear.EngMath97Percent,
+                EnglandNonDisadvantagedCurrentYear = expected.EnglandNonDisadvantagedCurrentYear.EngMath97Percent
+            },
             "grade-5-and-above" => new
             {
                 DisadvantagedCurrentYear = expected.DisadvantagedCurrentYear.EngMath95Percent,
                 EALCurrentYear = expected.EALCurrentYear.EngMath95Percent,
                 NonMobileCurrentYear = expected.NonMobileCurrentYear.EngMath95Percent,
                 LaDisadvantagedCurrentYear = expected.LaDisadvantagedCurrentYear.EngMath95Percent,
-                LaNonDisadvantagedCurrentYear = expected.LaNonDisadvantagedCurrentYear.EngMath95Percent
+                LaNonDisadvantagedCurrentYear = expected.LaNonDisadvantagedCurrentYear.EngMath95Percent,
+                EnglandDisadvantagedCurrentYear = expected.EnglandDisadvantagedCurrentYear.EngMath95Percent,
+                EnglandNonDisadvantagedCurrentYear = expected.EnglandNonDisadvantagedCurrentYear.EngMath95Percent
             },
             "grade-4-and-above" => new
             {
@@ -222,7 +246,9 @@ public class EnglishAndMathsPageTests : BasePageTest
                 EALCurrentYear = expected.EALCurrentYear.EngMath94Percent,
                 NonMobileCurrentYear = expected.NonMobileCurrentYear.EngMath94Percent,
                 LaDisadvantagedCurrentYear = expected.LaDisadvantagedCurrentYear.EngMath94Percent,
-                LaNonDisadvantagedCurrentYear = expected.LaNonDisadvantagedCurrentYear.EngMath94Percent
+                LaNonDisadvantagedCurrentYear = expected.LaNonDisadvantagedCurrentYear.EngMath94Percent,
+                EnglandDisadvantagedCurrentYear = expected.EnglandDisadvantagedCurrentYear.EngMath94Percent,
+                EnglandNonDisadvantagedCurrentYear = expected.EnglandNonDisadvantagedCurrentYear.EngMath94Percent
             },
             _ => throw new ArgumentException($"Invalid page option: {pageOption}")
         };
@@ -237,13 +263,25 @@ public class EnglishAndMathsPageTests : BasePageTest
         AssertHelpers.AssertNumericEqual(expectedValuesForGrade.LaDisadvantagedCurrentYear, laData[0]);
         laData = await Page.GetTableRowValuesAsync("#breakdown-non-disadvantaged-table", 0);
         AssertHelpers.AssertNumericEqual(expectedValuesForGrade.LaNonDisadvantagedCurrentYear, laData[0]);
+        var englandData = await Page.GetTableRowValuesAsync("#breakdown-disadvantaged-table", 2);
+        AssertHelpers.AssertNumericEqual(expectedValuesForGrade.EnglandDisadvantagedCurrentYear, englandData[0]);
+        englandData = await Page.GetTableRowValuesAsync("#breakdown-non-disadvantaged-table", 1);
+        AssertHelpers.AssertNumericEqual(expectedValuesForGrade.EnglandNonDisadvantagedCurrentYear, englandData[0]);
     }
 
     private async Task AssertGradeXAndAboveTotalsPerformanceData(string pageOption, EnglishMathsPageTestDataModel expected)
     {
-        // TODO  for new data release (pageOption == "grade-7-and-above")
         var expectedValuesForGrade = pageOption switch
         {
+            "grade-7-and-above" => new
+            {
+                SchoolCurrentYear = expected.CurrentYear.EngMath97Percent,
+                SchoolPreviousYear = expected.PreviousYear.EngMath97Percent,
+                SchoolPrevious2Year = expected.Previous2Year.EngMath97Percent,
+                LaCurrentYear = expected.laCurrentYear.EngMath97Percent,
+                LaPreviousYear = expected.laPreviousYear.EngMath97Percent,
+                LaPrevious2Year = expected.laPrevious2Year.EngMath97Percent,
+            },
             "grade-5-and-above" => new
             {
                 SchoolCurrentYear = expected.CurrentYear.EngMath95Percent,
@@ -280,7 +318,13 @@ public class EnglishAndMathsPageTests : BasePageTest
     {
         var expectedValuesForGrade = pageOption switch
         {
-            // TODO  for new data release if (pageOption == "grade-7-and-above")
+            "grade-7-and-above" => new
+            {
+                GirlsCurrentYear = expected.GirlsCurrentYear.EngMath97Percent,
+                BoysCurrentYear = expected.BoysCurrentYear.EngMath97Percent,
+                laGirlsCurrentYear = expected.laGirlsCurrentYear.EngMath97Percent,
+                laBoysCurrentYear = expected.laBoysCurrentYear.EngMath97Percent,
+            },
             "grade-5-and-above" => new
             {
                 GirlsCurrentYear = expected.GirlsCurrentYear.EngMath95Percent,

@@ -12,43 +12,43 @@ public class ProgressAndAttainmentPageTests : BasePageTest
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceTotalsCurrentYearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_Total_Current_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_Total_Current_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceTotalsPreviousYearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_Total_Previous_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_Total_Previous_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceTotalsPrevious2YearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_Total_Previous2_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_Total_Previous2_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceGirlsCurrentYearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
     "KS4",
-    "202425_performance_tables_schools_final_Girls_Current_Year").ToDictionary(x => x.SchoolUrn);
+    "performance_tables_schools_final_Girls_Current_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceBoysCurrentYearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_Boys_Current_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_Boys_Current_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceDisadvantagedCurrentYearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_Disadvantaged_Current_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_Disadvantaged_Current_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceDisadvantagedPreviousYearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_Disadvantaged_Previous_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_Disadvantaged_Previous_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceDisadvantagedPrevious2YearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_Disadvantaged_Previous2_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_Disadvantaged_Previous2_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceEALCurrentYearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_EAL_Current_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_EAL_Current_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceNonMobileCurrentYearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_NonMobile_Current_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_NonMobile_Current_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, AllStateFundedPupilsLaTestDataModel> _laPerformanceCurrentYearTestData = TestDataLoader.Load<AllStateFundedPupilsLaTestDataModel>(
         "KS4",
