@@ -78,7 +78,7 @@
                 </ul>
             </nav>
 
-            <form method="get" asp-route="@RouteConstants.KS5AcademicPerformanceLevel3" asp-all-route-data="@Model.RouteAttributes">
+            <form method="get" asp-route="@RouteConstants.KS5AcademicPerformanceLevel3" asp-all-route-data="@Model.RouteAttributes" asp-fragment="filterSection">
                 <div id="filterSection" class="select-filter">
                     <label for="qualificationSelector" class="govuk-label govuk-!-font-weight-bold">Choose qualification</label>
                     <select id="qualificationSelector" asp-for="@Model.Level3Qualification" class="govuk-select" asp-items="Html.GetEnumSelectList<Level3>()"></select>
