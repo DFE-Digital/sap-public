@@ -1,5 +1,6 @@
 ﻿using Moq;
 using SAPPub.Core.Enums.KS5Qualifications;
+using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.Performance;
@@ -21,16 +22,33 @@ public class Level3QualificationsPageTests : PageTestsBase
     private readonly EstablishmentServiceModel _establishment = new();
     private EstablishmentServiceModel _multiPhaseEstablishment = new();
     private readonly Mock<ILevel3QualificationsService> _level3QualificationsService = new();
+    private readonly Mock<IEstablishmentService> _mockEstablishmentService;
+    private EstablishmentMinimumServiceModel fakeMinimumEstablishment;
+
 
     public Level3QualificationsPageTests(WebAppFixture fixture) : base(fixture)
     {
         _level3QualificationsService = UseMock<ILevel3QualificationsService>();
+        _mockEstablishmentService = UseMock<IEstablishmentService>();
+
         _establishment = new EstablishmentTestBuilder()
             .WithURN(_urn)
             .WithEstablishmentName($"School{_urn}")
             .WithIsKeyStage5(true)
             .WithSixthForm(true)
             .BuildServiceModel();
+
+        fakeMinimumEstablishment = new EstablishmentMinimumTestBuilder()
+            .WithIsKeyStage2(true)
+            .WithLAName("Sheffield")
+            .WithIsKeyStage4(true)
+            .WithIsKeyStage5(true)
+            .WithWebsite("https://www.gov.uk/")
+            .BuildServiceModel();
+
+        _mockEstablishmentService
+            .Setup(a => a.GetEstablishmentMinimumAsync(It.IsAny<string>(), CancellationToken.None))
+            .ReturnsAsync(fakeMinimumEstablishment);
     }
 
     private void SetupMocks(Level3 qualification = Level3.ALevel)
