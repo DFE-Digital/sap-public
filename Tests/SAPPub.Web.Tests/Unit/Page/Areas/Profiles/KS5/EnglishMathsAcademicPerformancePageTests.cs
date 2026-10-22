@@ -21,6 +21,8 @@ public class EnglishMathsAcademicPerformancePageTests : PageTestsBase
     private readonly Mock<IEnglishAndMathsQualificationsService> _englishAndMathsQualificationsService = new();
     private readonly Mock<IEstablishmentService> _mockEstablishmentService;
 
+    private EstablishmentMinimumServiceModel fakeMinimumEstablishment;
+
 
     public EnglishMathsAcademicPerformancePageTests(WebAppFixture fixture) : base(fixture)
     {
@@ -33,6 +35,18 @@ public class EnglishMathsAcademicPerformancePageTests : PageTestsBase
             .WithSixthForm(true)
             .WithLAName(_laName)
             .BuildServiceModel();
+
+        fakeMinimumEstablishment = new EstablishmentMinimumTestBuilder()
+            .WithIsKeyStage2(true)
+            .WithLAName("Sheffield")
+            .WithIsKeyStage4(true)
+            .WithIsKeyStage5(true)
+            .WithWebsite("https://www.gov.uk/")
+            .BuildServiceModel();
+
+        _mockEstablishmentService
+            .Setup(a => a.GetEstablishmentMinimumAsync(It.IsAny<string>(), CancellationToken.None))
+            .ReturnsAsync(fakeMinimumEstablishment);
 
         _englishMathsQualificationModel = GetEnglishMathsQualificationModel();
 
