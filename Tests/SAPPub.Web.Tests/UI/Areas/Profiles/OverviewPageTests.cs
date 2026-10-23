@@ -1,6 +1,7 @@
 ﻿using AngleSharp;
 using AngleSharp.Dom;
 using Microsoft.Playwright;
+using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Playwright.Testing;
 using SAPPub.Web.Tests;
 using SAPPub.Web.Tests.UI.Helpers;
@@ -806,11 +807,11 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
             "#overview-age-range",
             "Age range");
 
-        await AssertRowDisplaysNotAvailableAsync(
+        await AssertRowDisplaysNotRecordedAsync(
             "#overview-pupil-count",
             "Number of pupils");
 
-        await AssertRowDisplaysNotAvailableAsync(
+        await AssertRowDisplaysNotRecordedAsync(
             "#overview-sen",
             "Type of SEN provision");
 
@@ -970,8 +971,10 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
             .ToBeVisibleAsync();
     }
 
-    [Fact]
-    public async Task OverviewPage_NumberPupils_0_Displays_NotRecorded()
+    [Theory]
+    [InlineData("Number of pupils")]
+    [InlineData("Type of SEN provision")]
+    public async Task OverviewPage_NoData_Displays_NotRecorded(string fieldName)
     {
         var response = await Page.GotoAsync(NumberPupilsOverviewUrl);
         Assert.NotNull(response);
@@ -981,31 +984,12 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
         var context = BrowsingContext.New(Configuration.Default);
         var doc = await context.OpenAsync(req => req.Content(bodyHtml));
 
-        var dt = doc.QuerySelector("dt.govuk-summary-list__key:contains('Number of pupils')");
+        var dt = doc.QuerySelector("dt.govuk-summary-list__key:contains('" + fieldName + "')");
         var dd = dt?.NextElementSibling;
         var totalPupils = dd?.TextContent.Trim();
 
         // Assert
         Assert.Equal("Not recorded", totalPupils);
-    }
-
-    [Fact]
-    public async Task OverviewPage_SenTypes_NotAvailable_Displays_NotRecorded()
-    {
-        var response = await Page.GotoAsync(NumberPupilsOverviewUrl);
-        Assert.NotNull(response);
-        Assert.True(response.Ok, await GetFailureMessageAsync("Overview page failed to load", response));
-
-        var bodyHtml = await Page.EvaluateAsync<string>("() => document.body.innerHTML");
-        var context = BrowsingContext.New(Configuration.Default);
-        var doc = await context.OpenAsync(req => req.Content(bodyHtml));
-
-        var dt = doc.QuerySelector("dt.govuk-summary-list__key:contains('Type of SEN provision')");
-        var dd = dt?.NextElementSibling;
-        var senTypes = dd?.TextContent.Trim();
-
-        // Assert
-        Assert.Equal("Not recorded", senTypes);
     }
 
     [Fact]
@@ -2315,8 +2299,22 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
         await Expect(row)
             .ToContainTextAsync(label);
 
+        await Expect(row).ToContainTextAsync("Not available");
+    }
+
+    private async Task AssertRowDisplaysNotRecordedAsync(
+        string selector,
+        string label)
+    {
+        var row = Page.Locator(selector);
+
         await Expect(row)
-            .ToContainTextAsync("Not available");
+            .ToBeVisibleAsync();
+
+        await Expect(row)
+            .ToContainTextAsync(label);
+
+        await Expect(row).ToContainTextAsync("Not recorded");
     }
 
     private async Task<IResponse> GoToOverviewAsync()

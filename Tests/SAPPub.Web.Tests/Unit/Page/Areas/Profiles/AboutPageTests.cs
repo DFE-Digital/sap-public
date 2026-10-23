@@ -299,6 +299,7 @@ public class AboutPageTests : PageTestsBase
     {
         // Arrange
         var notAvailableContent = "Not available";
+        var notRecordedContent = "Not recorded";
         var aboutSchoolModel = new AboutSchoolModel()
         {
             Urn = "143034",
@@ -316,7 +317,7 @@ public class AboutPageTests : PageTestsBase
         // Assert
         Assert.Contains(notAvailableContent, doc.GetRowContentByIdAndKey("school-features-summary", "Headteacher"));
         Assert.Contains(notAvailableContent, doc.GetRowContentByIdAndKey("school-features-summary", "Age range"));
-        Assert.Contains(notAvailableContent, doc.GetRowContentByIdAndKey("school-features-summary", "Number of pupils"));
+        Assert.Contains(notRecordedContent, doc.GetRowContentByIdAndKey("school-features-summary", "Number of pupils"));
         Assert.Contains(notAvailableContent, doc.GetRowContentByIdAndKey("school-features-summary", "Pupil sex"));
         Assert.Contains(notAvailableContent, doc.GetRowContentByIdAndKey("school-features-summary", "Religious character"));
         Assert.Contains(notAvailableContent, doc.GetRowContentByIdAndKey("school-features-summary", "Sixth form"));
@@ -660,16 +661,17 @@ public class AboutPageTests : PageTestsBase
         Assert.Null(doc.GetElementById("primary-school-features-summary"));
     }
 
-    [Fact]
-    public async Task AboutPage_NumberOfPupils_0_Displays_NotRecorded()
+    [Theory]
+    [InlineData("Number of pupils")]
+    [InlineData("Type of SEN provision")]
+    public async Task AboutPage_NoData_Displays_NotRecorded(string fieldName)
     {
         // Arrange
+        var notRecordedContent = "Not recorded";
         var aboutSchoolModel = new AboutSchoolModel()
         {
             Urn = "138966",
             SchoolName = "Shooters Hill Sixth Form College",
-            AgeRange = "16-19",
-            HeadTeacher = _faker.Name.FullName(),
             NumberOfPupils = "0"
         };
         _about
@@ -680,39 +682,8 @@ public class AboutPageTests : PageTestsBase
 
         // Act
         var doc = await Fixture.BrowseToPage(BuildUrl(aboutSchoolModel.Urn, aboutSchoolModel.SchoolName, _pageRoute));
-        var dt = doc.QuerySelector("dt.govuk-summary-list__key:contains('Number of pupils')");
-        var dd = dt?.NextElementSibling;
-        var totalPupils = dd?.TextContent.Trim();
 
         // Assert
-        Assert.Equal("Not recorded", totalPupils);
-    }
-
-    [Fact]
-    public async Task AboutPage_SenTypes_NotAvailable_Displays_NotRecorded()
-    {
-        // Arrange
-        var aboutSchoolModel = new AboutSchoolModel()
-        {
-            Urn = "138966",
-            SchoolName = "Shooters Hill Sixth Form College",
-            AgeRange = "16-19",
-            HeadTeacher = _faker.Name.FullName(),
-            NumberOfPupils = "0"
-        };
-        _about
-            .Setup(service => service.GetAboutSchoolDetailsAsync(
-                It.IsAny<string>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(aboutSchoolModel);
-
-        // Act
-        var doc = await Fixture.BrowseToPage(BuildUrl(aboutSchoolModel.Urn, aboutSchoolModel.SchoolName, _pageRoute));
-        var dt = doc.QuerySelector("dt.govuk-summary-list__key:contains('Type of SEN provision')");
-        var dd = dt?.NextElementSibling;
-        var senTypes = dd?.TextContent.Trim();
-
-        // Assert
-        Assert.Equal("Not recorded", senTypes);
+        Assert.Contains(notRecordedContent, doc.GetRowContentByIdAndKey("school-features-summary", fieldName));
     }
 }
