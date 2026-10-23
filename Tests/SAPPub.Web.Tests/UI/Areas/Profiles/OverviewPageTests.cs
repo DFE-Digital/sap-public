@@ -1,4 +1,5 @@
-﻿using AngleSharp.Dom;
+﻿using AngleSharp;
+using AngleSharp.Dom;
 using Microsoft.Playwright;
 using SAPPub.Playwright.Testing;
 using SAPPub.Web.Tests;
@@ -49,6 +50,10 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
 
     private const string Ks5OnlyOverviewUrl =
         "school/130499/holy-cross-college/overview";
+
+    private const string NumberPupilsOverviewUrl =
+    "school/138966/shooters-hill-sixth-form-college/overview";
+
 
     [Fact]
     public async Task OverviewPage_LoadsSuccessfully()
@@ -963,6 +968,44 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                         new Regex("Pupil progress")
                 }))
             .ToBeVisibleAsync();
+    }
+
+    [Fact]
+    public async Task OverviewPage_NumberPupils_0_Displays_NotRecorded()
+    {
+        var response = await Page.GotoAsync(NumberPupilsOverviewUrl);
+        Assert.NotNull(response);
+        Assert.True(response.Ok, await GetFailureMessageAsync("Overview page failed to load", response));
+
+        var bodyHtml = await Page.EvaluateAsync<string>("() => document.body.innerHTML");
+        var context = BrowsingContext.New(Configuration.Default);
+        var doc = await context.OpenAsync(req => req.Content(bodyHtml));
+
+        var dt = doc.QuerySelector("dt.govuk-summary-list__key:contains('Number of pupils')");
+        var dd = dt?.NextElementSibling;
+        var totalPupils = dd?.TextContent.Trim();
+
+        // Assert
+        Assert.Equal("Not recorded", totalPupils);
+    }
+
+    [Fact]
+    public async Task OverviewPage_SenTypes_NotAvailable_Displays_NotRecorded()
+    {
+        var response = await Page.GotoAsync(NumberPupilsOverviewUrl);
+        Assert.NotNull(response);
+        Assert.True(response.Ok, await GetFailureMessageAsync("Overview page failed to load", response));
+
+        var bodyHtml = await Page.EvaluateAsync<string>("() => document.body.innerHTML");
+        var context = BrowsingContext.New(Configuration.Default);
+        var doc = await context.OpenAsync(req => req.Content(bodyHtml));
+
+        var dt = doc.QuerySelector("dt.govuk-summary-list__key:contains('Type of SEN provision')");
+        var dd = dt?.NextElementSibling;
+        var senTypes = dd?.TextContent.Trim();
+
+        // Assert
+        Assert.Equal("Not recorded", senTypes);
     }
 
     [Fact]
@@ -3064,7 +3107,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
             .ToHaveCountAsync(1);
     }
 
-    
+
     [Fact]
     public async Task OverviewPage_SecondaryOnlySchool_DoesNotDisplayPrimaryExtraCurricularAccordion()
     {

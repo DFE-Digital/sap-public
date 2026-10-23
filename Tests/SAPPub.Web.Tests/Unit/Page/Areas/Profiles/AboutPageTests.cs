@@ -1,4 +1,5 @@
-﻿using Microsoft.FeatureManagement;
+﻿using AngleSharp;
+using Microsoft.FeatureManagement;
 using Moq;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Extensions;
@@ -659,5 +660,59 @@ public class AboutPageTests : PageTestsBase
         Assert.Null(doc.GetElementById("primary-school-features-summary"));
     }
 
+    [Fact]
+    public async Task AboutPage_NumberOfPupils_0_Displays_NotRecorded()
+    {
+        // Arrange
+        var aboutSchoolModel = new AboutSchoolModel()
+        {
+            Urn = "138966",
+            SchoolName = "Shooters Hill Sixth Form College",
+            AgeRange = "16-19",
+            HeadTeacher = _faker.Name.FullName(),
+            NumberOfPupils = "0"
+        };
+        _about
+            .Setup(service => service.GetAboutSchoolDetailsAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(aboutSchoolModel);
 
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(aboutSchoolModel.Urn, aboutSchoolModel.SchoolName, _pageRoute));
+        var dt = doc.QuerySelector("dt.govuk-summary-list__key:contains('Number of pupils')");
+        var dd = dt?.NextElementSibling;
+        var totalPupils = dd?.TextContent.Trim();
+
+        // Assert
+        Assert.Equal("Not recorded", totalPupils);
+    }
+
+    [Fact]
+    public async Task AboutPage_SenTypes_NotAvailable_Displays_NotRecorded()
+    {
+        // Arrange
+        var aboutSchoolModel = new AboutSchoolModel()
+        {
+            Urn = "138966",
+            SchoolName = "Shooters Hill Sixth Form College",
+            AgeRange = "16-19",
+            HeadTeacher = _faker.Name.FullName(),
+            NumberOfPupils = "0"
+        };
+        _about
+            .Setup(service => service.GetAboutSchoolDetailsAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(aboutSchoolModel);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(aboutSchoolModel.Urn, aboutSchoolModel.SchoolName, _pageRoute));
+        var dt = doc.QuerySelector("dt.govuk-summary-list__key:contains('Type of SEN provision')");
+        var dd = dt?.NextElementSibling;
+        var senTypes = dd?.TextContent.Trim();
+
+        // Assert
+        Assert.Equal("Not recorded", senTypes);
+    }
 }
