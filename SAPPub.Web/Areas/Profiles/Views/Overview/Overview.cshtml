@@ -144,7 +144,7 @@
                         @{
                             var numberOfPupils = @Model.NumberOfPupils.DisplayText(notAvailableText: WebConstants.NotRecorded);
                             if (numberOfPupils == "0")
-                                numberOfPupils = "Not recorded";
+                                numberOfPupils = WebConstants.NotRecorded;
                             @numberOfPupils
                         }
                     </govuk-summary-list-row-value>
