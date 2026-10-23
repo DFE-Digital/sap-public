@@ -27,7 +27,7 @@ This document lists the column names found in each CSV file. This is autogenerat
 - number_achieving
 
 
-## edubasealldata20261021.csv
+## edubasealldataYYYYMMDD.csv
 
 - URN
 - LA (code)
@@ -166,7 +166,7 @@ This document lists the column names found in each CSV file. This is autogenerat
 - AccreditationExpiryDate
 
 
-## grouplinks_edubaseallacademiesandfree20261021.csv
+## grouplinks_edubaseallacademiesandfreeYYYYMMDD.csv
 
 - Group UID
 - Group ID
@@ -191,7 +191,7 @@ This document lists the column names found in each CSV file. This is autogenerat
 - UKPRN
 
 
-## links_edubasealldata20261021.csv
+## links_edubasealldataYYYYMMDD.csv
 
 - URN
 - LinkURN
