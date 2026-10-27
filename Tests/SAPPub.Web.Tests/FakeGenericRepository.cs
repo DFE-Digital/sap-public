@@ -424,6 +424,18 @@ public sealed class FakeGenericRepository<T> : IGenericRepository<T> where T : c
             AddressPostcode = "AB1 1AM",
             IsKS4 = true,
             IsKS5 = false,
+        },
+        ["138966"] = new Establishment
+        {
+            URN = "138966",
+            EstablishmentName = "Shooters Hill Sixth Form College",
+            LAId = "203",
+            EstablishmentNumber = "4717",
+            PhaseOfEducationId = "6",
+            PhaseOfEducationName = "16 plus",
+            AddressPostcode = "SE18 4LD",
+            IsKS4 = true,
+            IsKS5 = false
         }
     };
 
