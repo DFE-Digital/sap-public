@@ -36,24 +36,27 @@
         {
             <!-- Google Tag Manager -->
             <script type="text/javascript" nonce="@Html.ScriptNonce()">
-                (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-                j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-                'https://www.googletagmanager.com/gtm.js?id='+i+dl; var n=d.querySelector('[nonce]');
-                n&&j.setAttribute('nonce',n.nonce||n.getAttribute('nonce'));f.parentNode.insertBefore(j,f);
-                })(window,document,'script','dataLayer','@Html.Raw(gtmId)');</script>
+                    (function(w, d, s, l, i) {
+                        w[l] = w[l] || []; w[l].push({
+                            'gtm.start':
+                                new Date().getTime(), event: 'gtm.js'
+                        }); var f = d.getElementsByTagName(s)[0],
+                            j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                                'https://www.googletagmanager.com/gtm.js?id=' + i + dl; var n = d.querySelector('[nonce]');
+                            n&& j.setAttribute('nonce', n.nonce || n.getAttribute('nonce')); f.parentNode.insertBefore(j, f);
+                })(window, document, 'script', 'dataLayer', '@Html.Raw(gtmId)');</script>
                 <!-- End Google Tag Manager -->
                 <!-- Microsoft Clarity -->
                 <script type="text/javascript" nonce="@Html.ScriptNonce()">
-                (function(c,l,a,r,i,t,y){
-                    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-                    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-                    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-                        })(window, document, "clarity", "script", "@clarityId");
+                        (function(c, l, a, r, i, t, y) {
+                            c[a] = c[a] || function() { (c[a].q = c[a].q || []).push(arguments) };
+                                    t=l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+                                    y=l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+                           })(window, document, "clarity", "script", "@clarityId");
                         window.clarity('consentv2', {
-                            ad_Storage: "denied",
-                            analytics_Storage: "granted"
-                        });
+                                ad_Storage: "denied",
+                                    analytics_Storage: "granted"
+                                    });
                 </script>
                 <!-- Microsoft Clarity -->
             }
@@ -120,37 +123,32 @@
         @await RenderSectionAsync("SchoolProfileBanner", required: false)
 
         <div class="govuk-width-container app-width-container">
-            <section aria-label="Beta phase banner">
-                @await Html.PartialAsync("_PhaseBanner")
-            </section>
+            @await Html.PartialAsync("_PhaseBanner")
             @if (!string.IsNullOrWhiteSpace(ViewBag.BackUrl))
             {
-                <nav aria-label="Back">
-                    <govuk-back-link href="@ViewBag.BackUrl" />
-                </nav>
+                <govuk-back-link href="@ViewBag.BackUrl" />
             }
             <main class="govuk-main-wrapper app-main-class govuk-body" id="main-content" role="main">
                 @RenderBody()
             </main>
         </div>
-        <footer class="govuk-template__footer" aria-label="Footer">
-            <govuk-footer>
-                <govuk-footer-nav width="one-third">
-                    <govuk-footer-nav-title>Support and feedback</govuk-footer-nav-title>
-                    <govuk-footer-nav-items>
-                        <govuk-footer-nav-item href="mailto:school.profiles@education.gov.uk">Report a problem with this site</govuk-footer-nav-item>
-                    </govuk-footer-nav-items>
-                </govuk-footer-nav>
-                <govuk-footer-meta>
-                    <govuk-footer-meta-items>
-                        <govuk-footer-meta-item id="accessibility-link" href="https://accessibility-statements.education.gov.uk/s/76" link-rel="noreferrer noopener" link-target="_blank">Accessibility</govuk-footer-meta-item>
-                        <govuk-footer-meta-item id="cookies-link" href="@Url.Action("Preferences", "Cookies")">Cookies</govuk-footer-meta-item>
-                        <govuk-footer-meta-item id="privacy-link" href="https://www.gov.uk/government/organisations/department-for-education/about/personal-information-charter" link-rel="noreferrer noopener" link-target="_blank">Privacy</govuk-footer-meta-item>
-                        <govuk-footer-meta-item id="termsandconditions-link" href="@Url.Action("TermsAndConditions", "Help")">Terms and conditions</govuk-footer-meta-item>
-                    </govuk-footer-meta-items>
-                </govuk-footer-meta>
-            </govuk-footer>
-        </footer>
+        <govuk-footer>
+            <govuk-footer-nav width="one-third">
+                <govuk-footer-nav-title>Support and feedback</govuk-footer-nav-title>
+                <govuk-footer-nav-items>
+                    <govuk-footer-nav-item href="mailto:school.profiles@education.gov.uk">Report a problem with this site</govuk-footer-nav-item>
+                </govuk-footer-nav-items>
+            </govuk-footer-nav>
+            <govuk-footer-meta>
+                <govuk-footer-meta-items>
+                    <govuk-footer-meta-item id="accessibility-link" href="https://accessibility-statements.education.gov.uk/s/76" link-rel="noreferrer noopener" link-target="_blank">Accessibility</govuk-footer-meta-item>
+                    <govuk-footer-meta-item id="cookies-link" href="@Url.Action("Preferences", "Cookies")">Cookies</govuk-footer-meta-item>
+                    <govuk-footer-meta-item id="privacy-link" href="https://www.gov.uk/government/organisations/department-for-education/about/personal-information-charter" link-rel="noreferrer noopener" link-target="_blank">Privacy</govuk-footer-meta-item>
+                    <govuk-footer-meta-item id="termsandconditions-link" href="@Url.Action("TermsAndConditions", "Help")">Terms and conditions</govuk-footer-meta-item>
+                </govuk-footer-meta-items>
+            </govuk-footer-meta>
+        </govuk-footer>
+
         @Html.GovUkFrontendScriptImports(Html.ScriptNonce().ToString())
         <script src="~/js/leaflet.js" nonce="@Html.ScriptNonce().ToString()"></script>
         <script src="~/js/leaflet-gesture-handling.min.js" nonce="@Html.ScriptNonce().ToString()"></script>
