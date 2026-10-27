@@ -87,11 +87,7 @@
                     </button>
 
                     <div class="govuk-form-group">
-                        <fieldset class="govuk-fieldset app-filter__fieldset">
-                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                                School characteristics
-                            </legend>
-
+                        <div class="app-filter__fieldset">
                             <div class="app-filter-section" data-module="app-filter-section">
                                 <button type="button"
                                         class="app-filter-section__toggle"
@@ -106,25 +102,28 @@
                                 </button>
 
                                 <div class="app-filter-section__content" id="filter-phase">
-                                    <div class="govuk-checkboxes govuk-checkboxes--small">
-                                        @foreach (var phase in Model.PhasesOfEducation)
-                                        {
-                                            var isChecked = Model.Phase?.Contains(phase) == true;
-                                            var inputId = $"phase-{phase.Replace(" ", "-").Replace("(", "").Replace(")", "").ToLower()}";
-                                            <div class="govuk-checkboxes__item">
-                                                <input class="govuk-checkboxes__input"
-                                                       id="@inputId"
-                                                       name="phase"
-                                                       type="checkbox"
-                                                       value="@phase"
-                                                @(isChecked ? "checked" : "")
-                                                aria-label="@phase" @* aria-label explicitly needed for Android Talkback*@>
-                                                <label class="govuk-label govuk-checkboxes__label" for="@inputId">
-                                                    @phase
-                                                </label>
-                                            </div>
-                                        }
-                                    </div>
+                                    <fieldset class="govuk-fieldset">
+                                        <legend class="govuk-fieldset__legend govuk-visually-hidden">Phase of education</legend>
+                                        <div class="govuk-checkboxes govuk-checkboxes--small">
+                                            @foreach (var phase in Model.PhasesOfEducation)
+                                            {
+                                                var isChecked = Model.Phase?.Contains(phase) == true;
+                                                var inputId = $"phase-{phase.Replace(" ", "-").Replace("(", "").Replace(")", "").ToLower()}";
+                                                <div class="govuk-checkboxes__item">
+                                                    <input class="govuk-checkboxes__input"
+                                                           id="@inputId"
+                                                           name="phase"
+                                                           type="checkbox"
+                                                           value="@phase"
+                                                    @(isChecked ? "checked" : "")
+                                                           aria-label="@phase" @* aria-label explicitly needed for Android Talkback*@>
+                                                    <label class="govuk-label govuk-checkboxes__label" for="@inputId">
+                                                        @phase
+                                                    </label>
+                                                </div>
+                                            }
+                                        </div>
+                                    </fieldset>
                                 </div>
                             </div>
 
@@ -142,28 +141,31 @@
                                 </button>
 
                                 <div class="app-filter-section__content" id="filter-school-type">
-                                    <div class="govuk-checkboxes govuk-checkboxes--small">
-                                        @foreach (var schoolType in Model.TypesOfSchool)
-                                        {
-                                            var isChecked = Model.SchoolType?.Contains(schoolType) == true;
-                                            var inputId = $"schooltype-{schoolType.Replace(" ", "-").Replace("(", "").Replace(")", "").ToLower()}";
-                                            <div class="govuk-checkboxes__item">
-                                                <input class="govuk-checkboxes__input"
-                                                       id="@inputId"
-                                                       name="schoolType"
-                                                       type="checkbox"
-                                                       value="@schoolType"
-                                                @(isChecked ? "checked" : "")
-                                                    aria-label="@schoolType" @* aria-label explicitly needed for Android Talkback*@>
-                                                <label class="govuk-label govuk-checkboxes__label" for="@inputId">
-                                                    @schoolType
-                                                </label>
-                                            </div>
-                                        }
-                                    </div>
+                                    <fieldset class="govuk-fieldset">
+                                        <legend class="govuk-fieldset__legend govuk-visually-hidden">School type</legend>
+                                        <div class="govuk-checkboxes govuk-checkboxes--small">
+                                            @foreach (var schoolType in Model.TypesOfSchool)
+                                            {
+                                                var isChecked = Model.SchoolType?.Contains(schoolType) == true;
+                                                var inputId = $"schooltype-{schoolType.Replace(" ", "-").Replace("(", "").Replace(")", "").ToLower()}";
+                                                <div class="govuk-checkboxes__item">
+                                                    <input class="govuk-checkboxes__input"
+                                                           id="@inputId"
+                                                           name="schoolType"
+                                                           type="checkbox"
+                                                           value="@schoolType"
+                                                    @(isChecked ? "checked" : "")
+                                                           aria-label="@schoolType" @* aria-label explicitly needed for Android Talkback*@>
+                                                    <label class="govuk-label govuk-checkboxes__label" for="@inputId">
+                                                        @schoolType
+                                                    </label>
+                                                </div>
+                                            }
+                                        </div>
+                                    </fieldset>
                                 </div>
                             </div>
-                        </fieldset>
+                        </div>
                     </div>
 
                     <button type="submit" class="govuk-button app-filter__apply-button" data-module="govuk-button" id="filterSubmit2">

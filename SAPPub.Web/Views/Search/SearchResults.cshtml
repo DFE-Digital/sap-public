@@ -22,24 +22,20 @@
 
         <h1 class="govuk-heading-xl" data-testid="search-results-heading">@Model.Heading</h1>
 
-        <form method="post" asp-controller="Search" asp-action="Index">
+        <form method="post" role="search" asp-controller="Search" asp-action="Index">
             <div class="shaded-box">
-                <govuk-fieldset>
-                    <govuk-fieldset-legend is-page-heading="false" class="govuk-visually-hidden">Search input</govuk-fieldset-legend>
 
-                    <govuk-input input-class="govuk-input govuk-!-width-three-quarters" input-placeholder="Search by keyword" for=@Model.SearchParams.NameSearchTerm name="NameSearchTerm" data-testid="searchByNameInput">
-                        <govuk-input-label is-page-heading="false" class="govuk-label--s" id="school-name">School name</govuk-input-label>
-                        <govuk-input-hint>For example, St Joseph's secondary school</govuk-input-hint>
-                    </govuk-input>
+                <govuk-input input-class="govuk-input govuk-!-width-three-quarters" input-placeholder="Search by keyword" for=@Model.SearchParams.NameSearchTerm name="NameSearchTerm" data-testid="searchByNameInput">
+                    <govuk-input-label is-page-heading="false" class="govuk-label--s" id="school-name">School name</govuk-input-label>
+                    <govuk-input-hint>For example, St Joseph's secondary school</govuk-input-hint>
+                </govuk-input>
 
-                    <govuk-input input-class="govuk-input govuk-!-width-three-quarters" input-placeholder="Search by postcode" for=@Model.SearchParams.LocationSearchTerm name="LocationSearchTerm" data-testid="searchByLocationInput">
-                        <govuk-input-label is-page-heading="false" class="govuk-label--s" id="location">Your postcode</govuk-input-label>
-                        <govuk-input-hint>For example, LS28 8EU</govuk-input-hint>
-                    </govuk-input>
+                <govuk-input input-class="govuk-input govuk-!-width-three-quarters" input-placeholder="Search by postcode" for=@Model.SearchParams.LocationSearchTerm name="LocationSearchTerm" data-testid="searchByLocationInput">
+                    <govuk-input-label is-page-heading="false" class="govuk-label--s" id="location">Your postcode</govuk-input-label>
+                    <govuk-input-hint>For example, LS28 8EU</govuk-input-hint>
+                </govuk-input>
 
-                    <govuk-button id="search" type="submit">Search</govuk-button>
-
-                </govuk-fieldset>
+                <govuk-button id="search" type="submit">Search</govuk-button>
             </div>
             <input type="hidden" name="pageNumber" value="@Model.SearchParams.PageNumber" />
         </form>
@@ -50,29 +46,28 @@
     <form method="get" asp-fragment="filterSection">
         <div class="govuk-grid-column-full">
             <div class="govuk-!-padding-bottom-2">
-                <govuk-fieldset>
-                    <govuk-fieldset-legend is-page-heading="false" class="govuk-visually-hidden">Search ordering and filtering</govuk-fieldset-legend>
-                    @if (Model.SearchResultsCount != 0)
-                    {
-                        <p><strong>@(Model.SearchParams.LocationSearchTerm != null ? "Sorted by distance" : "Sorted alphabetically")</strong></p>
-                    }
-                    @if (Model.SearchParams.LocationSearchTerm is not null)
-                    {
-                        <div>
-                            <govuk-select for="@Model.SearchParams.Distance" name="Distance">
-                                <govuk-select-label class="govuk-label--s">
-                                    Change radius
-                                </govuk-select-label>
 
-                                <govuk-select-item value="3" selected="@(Model.SearchParams.Distance == 3)">3 miles</govuk-select-item>
-                                <govuk-select-item value="5" selected="@(Model.SearchParams.Distance == 5)">5 miles</govuk-select-item>
-                                <govuk-select-item value="10" selected="@(Model.SearchParams.Distance == 10)">10 miles</govuk-select-item>
-                            </govuk-select>
+                @if (Model.SearchResultsCount != 0)
+                {
+                    <p><strong>@(Model.SearchParams.LocationSearchTerm != null ? "Sorted by distance" : "Sorted alphabetically")</strong></p>
+                }
+                @if (Model.SearchParams.LocationSearchTerm is not null)
+                {
+                    <div>
+                        <govuk-select for="@Model.SearchParams.Distance" name="Distance">
+                            <govuk-select-label class="govuk-label--s">
+                                Change radius
+                            </govuk-select-label>
 
-                            <govuk-button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" id="show-results" type="submit">Show results</govuk-button>
-                        </div>
-                    }
-                </govuk-fieldset>
+                            <govuk-select-item value="3" selected="@(Model.SearchParams.Distance == 3)">3 miles</govuk-select-item>
+                            <govuk-select-item value="5" selected="@(Model.SearchParams.Distance == 5)">5 miles</govuk-select-item>
+                            <govuk-select-item value="10" selected="@(Model.SearchParams.Distance == 10)">10 miles</govuk-select-item>
+                        </govuk-select>
+
+                        <govuk-button class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" id="show-results" type="submit">Show results</govuk-button>
+                    </div>
+                }
+
             </div>
             @if (Model.SearchResultsCount != 0)
             {
