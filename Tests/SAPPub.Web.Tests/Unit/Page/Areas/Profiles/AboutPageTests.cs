@@ -1,4 +1,5 @@
-﻿using Microsoft.FeatureManagement;
+﻿using AngleSharp;
+using Microsoft.FeatureManagement;
 using Moq;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Extensions;
@@ -298,6 +299,7 @@ public class AboutPageTests : PageTestsBase
     {
         // Arrange
         var notAvailableContent = "Not available";
+        var notRecordedContent = "Not recorded";
         var aboutSchoolModel = new AboutSchoolModel()
         {
             Urn = "143034",
@@ -315,7 +317,7 @@ public class AboutPageTests : PageTestsBase
         // Assert
         Assert.Contains(notAvailableContent, doc.GetRowContentByIdAndKey("school-features-summary", "Headteacher"));
         Assert.Contains(notAvailableContent, doc.GetRowContentByIdAndKey("school-features-summary", "Age range"));
-        Assert.Contains(notAvailableContent, doc.GetRowContentByIdAndKey("school-features-summary", "Number of pupils"));
+        Assert.Contains(notRecordedContent, doc.GetRowContentByIdAndKey("school-features-summary", "Number of pupils"));
         Assert.Contains(notAvailableContent, doc.GetRowContentByIdAndKey("school-features-summary", "Pupil sex"));
         Assert.Contains(notAvailableContent, doc.GetRowContentByIdAndKey("school-features-summary", "Religious character"));
         Assert.Contains(notAvailableContent, doc.GetRowContentByIdAndKey("school-features-summary", "Sixth form"));
@@ -659,5 +661,29 @@ public class AboutPageTests : PageTestsBase
         Assert.Null(doc.GetElementById("primary-school-features-summary"));
     }
 
+    [Theory]
+    [InlineData("Number of pupils")]
+    [InlineData("Type of SEN provision")]
+    public async Task AboutPage_NoData_Displays_NotRecorded(string fieldName)
+    {
+        // Arrange
+        var notRecordedContent = "Not recorded";
+        var aboutSchoolModel = new AboutSchoolModel()
+        {
+            Urn = "138966",
+            SchoolName = "Shooters Hill Sixth Form College",
+            NumberOfPupils = "0"
+        };
+        _about
+            .Setup(service => service.GetAboutSchoolDetailsAsync(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(aboutSchoolModel);
 
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(aboutSchoolModel.Urn, aboutSchoolModel.SchoolName, _pageRoute));
+
+        // Assert
+        Assert.Contains(notRecordedContent, doc.GetRowContentByIdAndKey("school-features-summary", fieldName));
+    }
 }

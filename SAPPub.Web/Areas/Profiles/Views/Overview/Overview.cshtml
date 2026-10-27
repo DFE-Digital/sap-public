@@ -141,7 +141,12 @@
                         Number of pupils
                     </govuk-summary-list-row-key>
                     <govuk-summary-list-row-value>
-                        @Model.NumberOfPupils.DisplayText()
+                        @{
+                            var numberOfPupils = @Model.NumberOfPupils.DisplayText(notAvailableText: WebConstants.NotRecorded);
+                            if (numberOfPupils == "0")
+                                numberOfPupils = WebConstants.NotRecorded;
+                            @numberOfPupils
+                        }
                     </govuk-summary-list-row-value>
                 </govuk-summary-list-row>
 
@@ -150,7 +155,7 @@
                         Type of SEN provision
                     </govuk-summary-list-row-key>
                     <govuk-summary-list-row-value>
-                        @Model.SenTypes.DisplayText()
+                        @Model.SenTypes.DisplayText(notAvailableText: WebConstants.NotRecorded)
                     </govuk-summary-list-row-value>
                 </govuk-summary-list-row>
 
