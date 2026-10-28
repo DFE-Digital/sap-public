@@ -1,0 +1,13 @@
+{
+  "sdk": {
+    "version": "10.0.100",
+    "rollForward": "latestFeature"
+  },
+  "runner": {
+    "testModules": {
+      "dotnet-test": {
+        "enable": true
+      }
+    }
+  }
+}
