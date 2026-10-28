@@ -24,7 +24,7 @@ namespace SAPPub.Web.Tests.UI.Infrastructure
 
         public IServiceProvider Services => _factory?.Services ?? throw new InvalidOperationException("Test Server not started");
 
-        public Task InitializeAsync()
+        public ValueTask InitializeAsync()
         {
             _factory =
                 new TestWebApplicationFactory(
@@ -42,10 +42,10 @@ namespace SAPPub.Web.Tests.UI.Infrastructure
             Configuration =
                 _factory.Configuration;
 
-            return Task.CompletedTask;
+            return ValueTask.CompletedTask;
         }
 
-        public async Task DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
             await AccessibilityReportHelper.FlushReportAsync();
 
