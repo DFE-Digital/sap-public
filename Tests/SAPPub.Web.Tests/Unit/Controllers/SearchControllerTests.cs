@@ -115,14 +115,14 @@ public class SearchControllerTests
     public async Task Get_SearchResults_SchoolOnlySearch_RedirectsToIndexAndDoesNotSearch()
     {
         // act
-        var result = await _controller.SearchResults(new SearchParamsModel { NameSearchTerm = " school " });
+        var result = await _controller.SearchResults(new SearchParamsModel { NameSearchTerm = " school " }, CancellationToken.None);
 
         // assert
         var redirectResult = Assert.IsType<RedirectToActionResult>(result);
         Assert.Equal(nameof(SearchController.Index), redirectResult.ActionName);
         Assert.Equal("Enter a school name or search by postcode", _controller.TempData["BroadSearchError"]);
 
-        _mockSchoolSearchService.Verify(x => x.SearchAsync(It.IsAny<SchoolSearchServiceQuery>()), Times.Never);
+        _mockSchoolSearchService.Verify(x => x.SearchAsync(It.IsAny<SchoolSearchServiceQuery>(), CancellationToken.None), Times.Never);
     }
 
     [Fact]
@@ -146,7 +146,7 @@ public class SearchControllerTests
         // arrange
         var searchQuery = new SchoolSearchServiceQuery { Name = "secondary school" };
 
-        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
+        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery, CancellationToken.None)).ReturnsAsync(new SchoolSearchResultsServiceModel
         {
             Status = SchoolSearchStatus.Success,
             PagedResponse = new PagedResponse<SchoolSearchResultServiceModel>
@@ -158,11 +158,11 @@ public class SearchControllerTests
         });
 
         // act
-        var result = await _controller.SearchResults(new SearchParamsModel { NameSearchTerm = searchQuery.Name });
+        var result = await _controller.SearchResults(new SearchParamsModel { NameSearchTerm = searchQuery.Name }, CancellationToken.None);
 
         // assert
         Assert.IsType<ViewResult>(result);
-        _mockSchoolSearchService.Verify(s => s.SearchAsync(searchQuery), Times.Once);
+        _mockSchoolSearchService.Verify(s => s.SearchAsync(searchQuery, CancellationToken.None), Times.Once);
     }
 
     [Fact]
@@ -171,7 +171,7 @@ public class SearchControllerTests
         // arrange
         var searchQuery = new SchoolSearchServiceQuery { Name = "schools", Location = "LS28 8EU", Distance = 3 };
 
-        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
+        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery, CancellationToken.None)).ReturnsAsync(new SchoolSearchResultsServiceModel
         {
             Status = SchoolSearchStatus.Success,
             PagedResponse = new PagedResponse<SchoolSearchResultServiceModel>
@@ -188,11 +188,11 @@ public class SearchControllerTests
             NameSearchTerm = searchQuery.Name,
             LocationSearchTerm = searchQuery.Location,
             Distance = searchQuery.Distance!.Value
-        });
+        }, CancellationToken.None);
 
         // assert
         Assert.IsType<ViewResult>(result);
-        _mockSchoolSearchService.Verify(s => s.SearchAsync(searchQuery), Times.Once);
+        _mockSchoolSearchService.Verify(s => s.SearchAsync(searchQuery, CancellationToken.None), Times.Once);
     }
 
     [Fact]
@@ -200,7 +200,7 @@ public class SearchControllerTests
     {
         // arrange
         var searchQuery = new SchoolSearchServiceQuery() { Name = "test school" };
-        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
+        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery, CancellationToken.None)).ReturnsAsync(new SchoolSearchResultsServiceModel
         {
             PagedResponse = new PagedResponse<SchoolSearchResultServiceModel>
             {
@@ -217,7 +217,7 @@ public class SearchControllerTests
         var searchParamsModel = new SearchParamsModel() { NameSearchTerm = searchQuery.Name, LocationSearchTerm = searchQuery.Location };
 
         // act
-        var result = await _controller.SearchResults(searchParamsModel);
+        var result = await _controller.SearchResults(searchParamsModel, CancellationToken.None);
         var viewModel = ((ViewResult)result).Model as SearchResultsViewModel;
 
         // assert
@@ -270,7 +270,7 @@ public class SearchControllerTests
         // arrange
         var expectedSearchResults = CreateSearchResults(records);
         var searchQuery = new SchoolSearchServiceQuery() { Name = "test school" };
-        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
+        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery, CancellationToken.None)).ReturnsAsync(new SchoolSearchResultsServiceModel
         {
             PagedResponse = new PagedResponse<SchoolSearchResultServiceModel>
             {
@@ -283,7 +283,7 @@ public class SearchControllerTests
         var searchParamsModel = new SearchParamsModel() { NameSearchTerm = searchQuery.Name, LocationSearchTerm = searchQuery.Location };
 
         // act
-        var result = await _controller.SearchResults(searchParamsModel);
+        var result = await _controller.SearchResults(searchParamsModel, CancellationToken.None);
         var viewModel = ((ViewResult)result).Model as SearchResultsViewModel;
 
         // assert
@@ -321,7 +321,7 @@ public class SearchControllerTests
     {
         // arrange
         var searchQuery = new SchoolSearchServiceQuery() { Location = "NE2 1VF", Distance = 3 };
-        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
+        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery, CancellationToken.None)).ReturnsAsync(new SchoolSearchResultsServiceModel
         {
             PagedResponse = new PagedResponse<SchoolSearchResultServiceModel>
             {
@@ -338,7 +338,7 @@ public class SearchControllerTests
         var searchParamsModel = new SearchParamsModel() { NameSearchTerm = searchQuery.Name, LocationSearchTerm = searchQuery.Location };
 
         // act
-        var result = await _controller.SearchResults(searchParamsModel);
+        var result = await _controller.SearchResults(searchParamsModel, CancellationToken.None);
         var viewModel = ((ViewResult)result).Model as SearchResultsViewModel;
 
         // assert
@@ -384,7 +384,7 @@ public class SearchControllerTests
         // arrange
         var location = "invalid";
         var searchQuery = new SchoolSearchServiceQuery() { Location = location, Distance = 3 };
-        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
+        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery, CancellationToken.None)).ReturnsAsync(new SchoolSearchResultsServiceModel
         {
             PagedResponse = new PagedResponse<SchoolSearchResultServiceModel>
             {
@@ -396,7 +396,7 @@ public class SearchControllerTests
         });
 
         // act
-        var viewResult = await _controller.SearchResults(new SearchParamsModel() { NameSearchTerm = searchQuery.Name, LocationSearchTerm = searchQuery.Location }) as ViewResult;
+        var viewResult = await _controller.SearchResults(new SearchParamsModel() { NameSearchTerm = searchQuery.Name, LocationSearchTerm = searchQuery.Location }, CancellationToken.None) as ViewResult;
 
         // assert
         Assert.NotNull(viewResult);
@@ -408,7 +408,7 @@ public class SearchControllerTests
     {
         // arrange
         var searchQuery = new SchoolSearchServiceQuery() { Name = "test school" };
-        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
+        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery, CancellationToken.None)).ReturnsAsync(new SchoolSearchResultsServiceModel
         {
             PagedResponse = new PagedResponse<SchoolSearchResultServiceModel>
             {
@@ -431,7 +431,7 @@ public class SearchControllerTests
         var searchParamsModel = new SearchParamsModel() { NameSearchTerm = searchQuery.Name, LocationSearchTerm = searchQuery.Location };
 
         // act
-        var result = await _controller.SearchResults(searchParamsModel);
+        var result = await _controller.SearchResults(searchParamsModel, CancellationToken.None);
         var viewModel = ((ViewResult)result).Model as SearchResultsViewModel;
 
         // assert
@@ -462,7 +462,7 @@ public class SearchControllerTests
     {
         // arrange
         var searchQuery = new SchoolSearchServiceQuery() { Name = "no results term" };
-        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
+        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery, CancellationToken.None)).ReturnsAsync(new SchoolSearchResultsServiceModel
         {
             PagedResponse = new PagedResponse<SchoolSearchResultServiceModel>
             {
@@ -473,7 +473,7 @@ public class SearchControllerTests
         var searchParamsModel = new SearchParamsModel() { NameSearchTerm = searchQuery.Name, LocationSearchTerm = searchQuery.Location };
 
         // act
-        var result = await _controller.SearchResults(searchParamsModel);
+        var result = await _controller.SearchResults(searchParamsModel, CancellationToken.None);
         var viewModel = ((ViewResult)result).Model as SearchResultsViewModel;
 
         // assert
@@ -498,7 +498,7 @@ public class SearchControllerTests
     {
         // arrange
         var searchQuery = new SchoolSearchServiceQuery() { Name = "test school", EstablishmentTypes = new string[] { "Academy", "Maintained school" } };
-        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
+        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery, CancellationToken.None)).ReturnsAsync(new SchoolSearchResultsServiceModel
         {
             PagedResponse = new PagedResponse<SchoolSearchResultServiceModel>
             {
@@ -515,7 +515,7 @@ public class SearchControllerTests
         var searchParamsModel = new SearchParamsModel() { NameSearchTerm = searchQuery.Name, LocationSearchTerm = searchQuery.Location, SchoolType = searchQuery.EstablishmentTypes };
 
         // act
-        var result = await _controller.SearchResults(searchParamsModel);
+        var result = await _controller.SearchResults(searchParamsModel, CancellationToken.None);
         var viewModel = ((ViewResult)result).Model as SearchResultsViewModel;
 
         // assert
@@ -531,7 +531,7 @@ public class SearchControllerTests
     {
         // arrange
         var searchQuery = new SchoolSearchServiceQuery() { Name = "test school", EstablishmentPhases = new string[] { "Primary", "Secondary" } };
-        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery)).ReturnsAsync(new SchoolSearchResultsServiceModel
+        _mockSchoolSearchService.Setup(s => s.SearchAsync(searchQuery, CancellationToken.None)).ReturnsAsync(new SchoolSearchResultsServiceModel
         {
             PagedResponse = new PagedResponse<SchoolSearchResultServiceModel>
             {
@@ -548,7 +548,7 @@ public class SearchControllerTests
         var searchParamsModel = new SearchParamsModel() { NameSearchTerm = searchQuery.Name, LocationSearchTerm = searchQuery.Location, Phase = searchQuery.EstablishmentPhases };
 
         // act
-        var result = await _controller.SearchResults(searchParamsModel);
+        var result = await _controller.SearchResults(searchParamsModel, CancellationToken.None);
         var viewModel = ((ViewResult)result).Model as SearchResultsViewModel;
 
         // assert

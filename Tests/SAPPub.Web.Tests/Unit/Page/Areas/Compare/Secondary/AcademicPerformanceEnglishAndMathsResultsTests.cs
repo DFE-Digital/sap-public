@@ -1,11 +1,13 @@
 ﻿using AngleSharp.Dom;
 using Moq;
 using SAPPub.Core.Entities;
+using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
 using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.KS4.Performance;
 using SAPPub.Core.Tests.TestBuilders;
+using SAPPub.Web.Helpers;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
 
 namespace SAPPub.Web.Tests.Unit.Page.Areas.Compare.Secondary;
@@ -145,9 +147,9 @@ public class AcademicPerformanceEnglishAndMathsResultsTests : PageTestsBase
         Assert.Contains("80%", doc.GetTableCellContentByIdAndIndex("all-gcse-current-year-table", 2, 0));
 
         // Assert Gcse DataOverTime
-        Assert.Contains("2022 to 2023", doc.GetTableHeaderContentByIdAndIndex("all-gcse-data-overtime-table", 0, 1));
-        Assert.Contains("2023 to 2024", doc.GetTableHeaderContentByIdAndIndex("all-gcse-data-overtime-table", 0, 2));
-        Assert.Contains("2024 to 2025", doc.GetTableHeaderContentByIdAndIndex("all-gcse-data-overtime-table", 0, 3));
+        Assert.Contains(Ks4AcademicYearHelper.GetDisplayName(AcademicYearSelection.Previous2), doc.GetTableHeaderContentByIdAndIndex("all-gcse-data-overtime-table", 0, 1));
+        Assert.Contains(Ks4AcademicYearHelper.GetDisplayName(AcademicYearSelection.Previous), doc.GetTableHeaderContentByIdAndIndex("all-gcse-data-overtime-table", 0, 2));
+        Assert.Contains(Ks4AcademicYearHelper.GetDisplayName(AcademicYearSelection.Current), doc.GetTableHeaderContentByIdAndIndex("all-gcse-data-overtime-table", 0, 3));
 
         Assert.Contains(_establishmentList[0].EstablishmentName, doc.GetTableHeaderContentByIdAndIndex("all-gcse-data-overtime-table", 1, 0));
         Assert.Contains("78%", doc.GetTableCellContentByIdAndIndex("all-gcse-data-overtime-table", 1, 0));

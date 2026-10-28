@@ -12,89 +12,99 @@ public class ProgressAndAttainmentPageTests : BasePageTest
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceTotalsCurrentYearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_Total_Current_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_Total_Current_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceTotalsPreviousYearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_Total_Previous_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_Total_Previous_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceTotalsPrevious2YearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_Total_Previous2_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_Total_Previous2_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceGirlsCurrentYearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
     "KS4",
-    "202425_performance_tables_schools_final_Girls_Current_Year").ToDictionary(x => x.SchoolUrn);
+    "performance_tables_schools_final_Girls_Current_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceBoysCurrentYearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_Boys_Current_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_Boys_Current_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceDisadvantagedCurrentYearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_Disadvantaged_Current_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_Disadvantaged_Current_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceDisadvantagedPreviousYearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_Disadvantaged_Previous_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_Disadvantaged_Previous_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceDisadvantagedPrevious2YearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_Disadvantaged_Previous2_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_Disadvantaged_Previous2_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceEALCurrentYearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_EAL_Current_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_EAL_Current_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceNonMobileCurrentYearTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_NonMobile_Current_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_NonMobile_Current_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, AllStateFundedPupilsLaTestDataModel> _laPerformanceCurrentYearTestData = TestDataLoader.Load<AllStateFundedPupilsLaTestDataModel>(
         "KS4",
-        "202425_all_state_funded_pupils_characteristics_la_Total_Current").ToDictionary(x => x.Urn);
+        "all_state_funded_pupils_characteristics_la_Total_Current").ToDictionary(x => x.Urn);
 
     private static readonly IDictionary<string, AllStateFundedPupilsLaTestDataModel> _laPerformancePreviousYearTestData = TestDataLoader.Load<AllStateFundedPupilsLaTestDataModel>(
         "KS4",
-        "202425_all_state_funded_pupils_characteristics_la_Total_Previous").ToDictionary(x => x.Urn);
+        "all_state_funded_pupils_characteristics_la_Total_Previous").ToDictionary(x => x.Urn);
 
     private static readonly IDictionary<string, AllStateFundedPupilsLaTestDataModel> _laPerformancePrevious2YearTestData = TestDataLoader.Load<AllStateFundedPupilsLaTestDataModel>(
         "KS4",
-        "202425_all_state_funded_pupils_characteristics_la_Total_Previous2").ToDictionary(x => x.Urn);
+        "all_state_funded_pupils_characteristics_la_Total_Previous2").ToDictionary(x => x.Urn);
 
     private static readonly IDictionary<string, AllStateFundedPupilsLaTestDataModel> _laPerformanceGirlsCurrentYearTestData = TestDataLoader.Load<AllStateFundedPupilsLaTestDataModel>(
         "KS4",
-        "202425_all_state_funded_pupils_characteristics_la_Girls_Current").ToDictionary(x => x.Urn);
+        "all_state_funded_pupils_characteristics_la_Girls_Current").ToDictionary(x => x.Urn);
 
     private static readonly IDictionary<string, AllStateFundedPupilsLaTestDataModel> _laPerformanceBoysCurrentYearTestData = TestDataLoader.Load<AllStateFundedPupilsLaTestDataModel>(
         "KS4",
-        "202425_all_state_funded_pupils_characteristics_la_Boys_Current").ToDictionary(x => x.Urn);
+        "all_state_funded_pupils_characteristics_la_Boys_Current").ToDictionary(x => x.Urn);
 
     private static readonly IDictionary<string, AllStateFundedPupilsLaTestDataModel> _laPerformanceDisadvantagedCurrentYearTestData = TestDataLoader.Load<AllStateFundedPupilsLaTestDataModel>(
         "KS4",
-        "202425_all_state_funded_pupils_characteristics_la_Disadvantaged_Current").ToDictionary(x => x.Urn);
+        "all_state_funded_pupils_characteristics_la_Disadvantaged_Current").ToDictionary(x => x.Urn);
     private static readonly IDictionary<string, AllStateFundedPupilsLaTestDataModel> _laPerformanceDisadvantagedPreviousYearTestData = TestDataLoader.Load<AllStateFundedPupilsLaTestDataModel>(
         "KS4",
-        "202425_all_state_funded_pupils_characteristics_la_Disadvantaged_Previous").ToDictionary(x => x.Urn);
+        "all_state_funded_pupils_characteristics_la_Disadvantaged_Previous").ToDictionary(x => x.Urn);
     private static readonly IDictionary<string, AllStateFundedPupilsLaTestDataModel> _laPerformanceDisadvantagedPrevious2YearTestData = TestDataLoader.Load<AllStateFundedPupilsLaTestDataModel>(
         "KS4",
-        "202425_all_state_funded_pupils_characteristics_la_Disadvantaged_Previous2").ToDictionary(x => x.Urn);
+        "all_state_funded_pupils_characteristics_la_Disadvantaged_Previous2").ToDictionary(x => x.Urn);
 
     private static readonly IDictionary<string, AllStateFundedPupilsLaTestDataModel> _laPerformanceNonDisadvantagedCurrentYearTestData = TestDataLoader.Load<AllStateFundedPupilsLaTestDataModel>(
         "KS4",
-        "202425_all_state_funded_pupils_characteristics_la_NonDisadvantaged_Current").ToDictionary(x => x.Urn);
+        "all_state_funded_pupils_characteristics_la_NonDisadvantaged_Current").ToDictionary(x => x.Urn);
 
     private static readonly List<AllStateFundedPupilsTestDataModel> _englandPerformanceCurrentYearTestData = TestDataLoader.Load<AllStateFundedPupilsTestDataModel>(
         "KS4",
-        "202425_all_state_funded_pupils_characteristics_England_Total_Current");
+        "all_state_funded_pupils_characteristics_England_Total_Current");
 
     private static readonly List<AllStateFundedPupilsTestDataModel> _englandPerformancePreviousYearTestData = TestDataLoader.Load<AllStateFundedPupilsTestDataModel>(
         "KS4",
-        "202425_all_state_funded_pupils_characteristics_England_Total_Previous");
+        "all_state_funded_pupils_characteristics_England_Total_Previous");
 
     private static readonly List<AllStateFundedPupilsTestDataModel> _englandPerformancePrevious2YearTestData = TestDataLoader.Load<AllStateFundedPupilsTestDataModel>(
         "KS4",
-        "202425_all_state_funded_pupils_characteristics_England_Total_Previous2");
+        "all_state_funded_pupils_characteristics_England_Total_Previous2");
+
+    private static readonly IDictionary<string, InformationAboutSchoolsTestDataModel> _schoolAdditionalInfoCurrentYearTestData = TestDataLoader.Load<InformationAboutSchoolsTestDataModel>(
+        "KS4",
+        "information_about_schools_Current").ToDictionary(x => x.SchoolUrn);
+    private static readonly IDictionary<string, InformationAboutSchoolsTestDataModel> _schoolAdditionalInfoPreviousYearTestData = TestDataLoader.Load<InformationAboutSchoolsTestDataModel>(
+        "KS4",
+        "information_about_schools_Previous").ToDictionary(x => x.SchoolUrn);
+    private static readonly IDictionary<string, InformationAboutSchoolsTestDataModel> _schoolAdditionalInfoPrevious2YearTestData = TestDataLoader.Load<InformationAboutSchoolsTestDataModel>(
+        "KS4",
+        "information_about_schools_Previous2").ToDictionary(x => x.SchoolUrn);
 
     public record AttainmentTestCase(
         string Urn,
@@ -105,6 +115,9 @@ public class ProgressAndAttainmentPageTests : BasePageTest
     public record Performance3YearData
     {
         public required string SchoolUrn { get; init; } = string.Empty;
+        public required InformationAboutSchoolsTestDataModel AdditionalInfoCurrentYearData { get; init; }
+        public required InformationAboutSchoolsTestDataModel AdditionalInfoPreviousYearData { get; init; }
+        public required InformationAboutSchoolsTestDataModel AdditionalInfoPrevious2YearData { get; init; }
         public required PerformanceTablesTestDataModel CurrentYearData { get; init; }
         public required PerformanceTablesTestDataModel PreviousYearData { get; init; }
         public required PerformanceTablesTestDataModel Previous2YearData { get; init; }
@@ -135,8 +148,9 @@ public class ProgressAndAttainmentPageTests : BasePageTest
             .Intersect(_performanceTotalsPreviousYearTestData.Keys)
             .Intersect(_performanceTotalsPrevious2YearTestData.Keys)
             .Intersect(_laPerformancePreviousYearTestData.Keys)
-            .Intersect(_laPerformancePrevious2YearTestData.Keys);
-        if(!urns.Any())
+            .Intersect(_laPerformancePrevious2YearTestData.Keys)
+            .Intersect(_schoolAdditionalInfoPrevious2YearTestData.Keys);
+        if (!urns.Any())
         {
             throw new InvalidOperationException("No common urns found across the three years of test data.");
         }
@@ -144,6 +158,9 @@ public class ProgressAndAttainmentPageTests : BasePageTest
         return new TheoryData<Performance3YearData>(urns.Select(urn => new Performance3YearData()
         {
             SchoolUrn = urn,
+            AdditionalInfoCurrentYearData = _schoolAdditionalInfoCurrentYearTestData[urn],
+            AdditionalInfoPreviousYearData = _schoolAdditionalInfoPreviousYearTestData[urn],
+            AdditionalInfoPrevious2YearData = _schoolAdditionalInfoPrevious2YearTestData[urn],
             CurrentYearData = _performanceTotalsCurrentYearTestData[urn],
             PreviousYearData = _performanceTotalsPreviousYearTestData[urn],
             Previous2YearData = _performanceTotalsPrevious2YearTestData[urn],
@@ -296,34 +313,53 @@ public class ProgressAndAttainmentPageTests : BasePageTest
 
         // Assert
         // no current or previous year data ATM
-        //await AssertSchoolProgressData(Page, testData.PreviousYearData, "prev");
-        await AssertSchoolProgressData(Page, testData.Previous2YearData, "prev2");
+        //await AssertSchoolProgressData(Page, testData, "prev");
+        await AssertSchoolProgressData(Page, testData, "prev2");
         //await AssertLaProgressData(Page, testData.LaPreviousYearData, "prev");
         await AssertLaProgressData(Page, testData.LaPrevious2YearData, "prev2");
     }
 
     private static async Task AssertSchoolProgressData(
         IPage Page,
-        PerformanceTablesTestDataModel yearData,
+        Performance3YearData performanceData,
         string year)
     {
+        var performanceYearData = year switch
+        {
+            "current" => performanceData.CurrentYearData,
+            "prev" => performanceData.PreviousYearData,
+            "prev2" => performanceData.Previous2YearData,
+            _ => throw new ArgumentOutOfRangeException(nameof(year), year, null)
+        };
+
+        var schoolInformationYearData = year switch
+        {
+            "current" => performanceData.AdditionalInfoCurrentYearData,
+            "prev" => performanceData.AdditionalInfoPreviousYearData,
+            "prev2" => performanceData.AdditionalInfoPrevious2YearData,
+            _ => throw new ArgumentOutOfRangeException(nameof(year), year, null)
+        };
+
         var pupilDetailsProgress8Selector = $"pupil-details-prog8-scores-{year}";
         var prog8ScoreSelector = $"prog8-scores-{year}";
 
         var schoolProgress8 = await Page.GetScoreFromParagraphAsync(prog8ScoreSelector, "Pupils at this school score");
         Assert.NotNull(schoolProgress8);
-        Assert.Equal(yearData.Progress8Average, schoolProgress8.Last());
+        Assert.Equal(performanceYearData.Progress8Average, schoolProgress8.Last());
+
+        var schoolProgressbandingText = await Page.GetTextFromParagraphAsync(prog8ScoreSelector, "This is", "because the");
+        Assert.Equal(schoolInformationYearData.Progress8Banding.ToLower(), schoolProgressbandingText!.Trim().ToLower());
 
         var progress8Banding = await Page.GetScoreFromParagraphAsync(prog8ScoreSelector, "The confidence interval is");
         Assert.NotNull(progress8Banding);
-        AssertHelpers.AssertNumericEqual(yearData.Progress8Lower95Ci, progress8Banding.First());
-        AssertHelpers.AssertNumericEqual(yearData.Progress8Upper95Ci, progress8Banding.Last());
+        AssertHelpers.AssertNumericEqual(performanceYearData.Progress8Lower95Ci, progress8Banding.First());
+        AssertHelpers.AssertNumericEqual(performanceYearData.Progress8Upper95Ci, progress8Banding.Last());
 
         await Page.ExpandElement(pupilDetailsProgress8Selector);
         var pupilsInMeasure = await Page.GetScoreFromParagraphAsync(pupilDetailsProgress8Selector, "pupils were included");
         Assert.NotNull(pupilsInMeasure);
-        AssertHelpers.AssertNumericEqual(yearData.Progress8PupilCount, pupilsInMeasure.First());
-        AssertHelpers.AssertNumericEqual(yearData.PupilCount, pupilsInMeasure.Last());
+        AssertHelpers.AssertNumericEqual(performanceYearData.Progress8PupilCount, pupilsInMeasure.First());
+        AssertHelpers.AssertNumericEqual(performanceYearData.PupilCount, pupilsInMeasure.Last());
     }
 
     private static async Task AssertLaProgressData(IPage Page,

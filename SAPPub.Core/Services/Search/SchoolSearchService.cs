@@ -14,7 +14,7 @@ public class SchoolSearchService(ISchoolSearchIndexReader schoolSearchIndexReade
     private const string PostcodeValidationRegex = """^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))\s?[0-9][A-Za-z]{2})$""";
 
 
-    public async Task<SchoolSearchResultsServiceModel> SearchAsync(SchoolSearchServiceQuery query)
+    public async Task<SchoolSearchResultsServiceModel> SearchAsync(SchoolSearchServiceQuery query, CancellationToken cancellationToken)
     {
         var pageNumber = query.PageNumber ?? 1;
 
@@ -70,7 +70,7 @@ public class SchoolSearchService(ISchoolSearchIndexReader schoolSearchIndexReade
             EstablishmentTypes = query.EstablishmentTypes
         };
 
-        var results = await schoolSearchIndexReader.SearchAsync(searchQuery, Constants.PageSize);
+        var results = await schoolSearchIndexReader.SearchAsync(searchQuery, Constants.PageSize, cancellationToken);
 
         return new SchoolSearchResultsServiceModel
         {

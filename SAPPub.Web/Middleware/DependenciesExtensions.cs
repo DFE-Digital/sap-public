@@ -140,6 +140,7 @@ namespace SAPPub.Web.Middleware
 
             services.AddScoped<SecondaryComparisonQueryValidationFilter>();
             services.AddScoped<PrimaryQueryValidationFilter>();
+            services.AddScoped<FEQueryValidationFilter>();
             services.AddScoped<DfEAnalyticsAddPhaseTagFilter>();
 
             // School profile pagination (stateless config-driven resolver)

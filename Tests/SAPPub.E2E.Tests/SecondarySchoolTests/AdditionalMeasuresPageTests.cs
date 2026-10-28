@@ -12,31 +12,31 @@ public class AdditionalMeasuresPageTests : BasePageTest
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceTotalsTestData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_Total_Current_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_Total_Current_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceDisadvantagedData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_Disadvantaged_Current_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_Disadvantaged_Current_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceBoysData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_Boys_Current_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_Boys_Current_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceGirlsData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_Girls_Current_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_Girls_Current_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceEALData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_EAL_Current_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_EAL_Current_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, PerformanceTablesTestDataModel> _performanceNonMobileData = TestDataLoader.Load<PerformanceTablesTestDataModel>(
         "KS4",
-        "202425_performance_tables_schools_final_NonMobile_Current_Year").ToDictionary(x => x.SchoolUrn);
+        "performance_tables_schools_final_NonMobile_Current_Year").ToDictionary(x => x.SchoolUrn);
 
     private static readonly IDictionary<string, InformationAboutSchoolsTestDataModel> _wholeSchoolTestData = TestDataLoader.Load<InformationAboutSchoolsTestDataModel>(
         "KS4",
-        "information_about_schools").ToDictionary(x => x.SchoolUrn);
+        "information_about_schools_Current").ToDictionary(x => x.SchoolUrn);
 
     public record AdditionalMeasuresTestData
     {

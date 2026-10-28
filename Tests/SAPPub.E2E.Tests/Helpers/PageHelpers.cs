@@ -1,5 +1,7 @@
 ﻿using Microsoft.Playwright;
+using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SAPPub.E2E.Tests.Helpers;
 
@@ -20,6 +22,16 @@ public static class PageHelpers
         var j = urlstring.LastIndexOf('/');
         var previousYearPerformanceUrl = urlstring.Substring(i, j - i);
         return Page.GotoAsync($"{previousYearPerformanceUrl}/{year}");
+    }
+
+    public static async Task EnglishAndMathsEnsureDataTableOverTimeVisible(this IPage Page)
+    {
+        string tableId = "#all-gcse-data-overtime-table";
+        var element = Page.Locator(tableId);
+        if (await element.CountAsync() == 0)
+        {
+            await Page.ClickAsync("#all-gcse-show-data-over-time-btn");
+        }
     }
 
     public static async Task ExpandElement(this IPage Page, string dataTestid)
@@ -44,5 +56,30 @@ public static class PageHelpers
                  .Cast<Match>();
 
         return match.Select(m => m.Value);
+    }
+
+    public static async Task<string?> GetTextFromParagraphAsync(this IPage Page, string dataTestid, string beforeText, string afterText)
+    {
+        var section = Page.Locator($"[data-testid='{dataTestid}']");
+        if (await section.CountAsync() == 0)
+        {
+            section = Page.Locator($"#{dataTestid}");
+        }
+        var p = section.Locator("p.govuk-body").Filter(new() { HasTextString = beforeText }).Filter(new() { HasTextString = afterText });
+
+        var pCount = await p.CountAsync();
+        Assert.True(pCount == 1, $"Paragraph count mismatch looking for paragraph text: {beforeText} and {afterText}. Actual count: {pCount}, expected 1");
+        var input = await p.InnerTextAsync();
+        var start = input.IndexOf(beforeText, StringComparison.Ordinal);
+        if (start < 0)
+            return null;
+
+        start += beforeText.Length;
+
+        var end = input.IndexOf(afterText, start, StringComparison.Ordinal);
+        if (end < 0)
+            return null;
+
+        return input[start..end];
     }
 }

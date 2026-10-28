@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SAPPub.Core.Entities;
+using SAPPub.Core.Enums;
 using SAPPub.Core.Helpers;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
@@ -236,7 +237,7 @@ public class SecondaryControllerTests
 
         Assert.Equal(3, model.AllGcseOverTimeData.Datasets.Count);
 
-        Assert.Equal("2022 to 2023", model.AllGcseOverTimeData.Datasets[0].Label);
+        Assert.Equal(Ks4AcademicYearHelper.GetDisplayName(AcademicYearSelection.Previous2), model.AllGcseOverTimeData.Datasets[0].Label);
         Assert.Equal(
             [
                 expectedResult.Establishments[0].EstablishmentData.TwoYearsAgo!.Value,
@@ -246,7 +247,7 @@ public class SecondaryControllerTests
             model.AllGcseOverTimeData.Datasets[0].Data
         );
 
-        Assert.Equal("2023 to 2024", model.AllGcseOverTimeData.Datasets[1].Label);
+        Assert.Equal(Ks4AcademicYearHelper.GetDisplayName(AcademicYearSelection.Previous), model.AllGcseOverTimeData.Datasets[1].Label);
         Assert.Equal(
             [
                 expectedResult.Establishments[0].EstablishmentData.PreviousYear!.Value,
@@ -256,7 +257,7 @@ public class SecondaryControllerTests
             model.AllGcseOverTimeData.Datasets[1].Data
         );
 
-        Assert.Equal("2024 to 2025", model.AllGcseOverTimeData.Datasets[2].Label);
+        Assert.Equal(Ks4AcademicYearHelper.GetDisplayName(AcademicYearSelection.Current), model.AllGcseOverTimeData.Datasets[2].Label);
         Assert.Equal(
             [
                 expectedResult.Establishments[0].EstablishmentData.CurrentYear!.Value,
@@ -341,13 +342,13 @@ public class SecondaryControllerTests
 
         Assert.Equal(3, model.AllGcseOverTimeData.Datasets.Count);
 
-        Assert.Equal("2022 to 2023", model.AllGcseOverTimeData.Datasets[0].Label);
+        Assert.Equal(Ks4AcademicYearHelper.GetDisplayName(AcademicYearSelection.Previous2), model.AllGcseOverTimeData.Datasets[0].Label);
         Assert.Equal([null, null, null], model.AllGcseOverTimeData.Datasets[0].Data);
 
-        Assert.Equal("2023 to 2024", model.AllGcseOverTimeData.Datasets[1].Label);
+        Assert.Equal(Ks4AcademicYearHelper.GetDisplayName(AcademicYearSelection.Previous), model.AllGcseOverTimeData.Datasets[1].Label);
         Assert.Equal([null, null, null], model.AllGcseOverTimeData.Datasets[1].Data);
 
-        Assert.Equal("2024 to 2025", model.AllGcseOverTimeData.Datasets[2].Label);
+        Assert.Equal(Ks4AcademicYearHelper.GetDisplayName(AcademicYearSelection.Current), model.AllGcseOverTimeData.Datasets[2].Label);
         Assert.Equal([null, null, null], model.AllGcseOverTimeData.Datasets[2].Data);
     }
 

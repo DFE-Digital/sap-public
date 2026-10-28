@@ -11,9 +11,7 @@
 }
 
 <div class="govuk-grid-row">
-
     <div class="govuk-grid-column-full">
-
         @if (await FeatureManager.IsEnabledAsync(EstablishmentComparisonEnabled))
         {
             var headerContent = $"{MySchoolsListLimitExceeded} <a class=\"govuk-link\" href=\"{Url.RouteUrl(RouteConstants.MySchoolsView)}\">{EditYourSchoolsList}</a>";
@@ -45,11 +43,11 @@
             </div>
             <input type="hidden" name="pageNumber" value="@Model.SearchParams.PageNumber" />
         </form>
-
     </div>
 </div>
-<div class="govuk-grid-row">
-    <form method="get">
+
+<div id="filterSection" class="govuk-grid-row">
+    <form method="get" asp-fragment="filterSection">
         <div class="govuk-grid-column-full">
             <div class="govuk-!-padding-bottom-2">
                 <govuk-fieldset>
@@ -76,18 +74,19 @@
                     }
                 </govuk-fieldset>
             </div>
-        @if (Model.SearchResultsCount != 0)
-        {
+            @if (Model.SearchResultsCount != 0)
+            {
                 <p>Search for schools and colleges to explore their profiles.</p>
-        }
+            }
         </div>
+
         @if (Model.SearchResultsCount != 0)
         {
             @await Html.PartialAsync("_SchoolSearchFilter", Model.SearchParams)
         }
     </form>
-    <div class="govuk-grid-column-two-thirds">
 
+    <div class="govuk-grid-column-two-thirds">
         @foreach (var modelItem in Model.SearchResults)
         {
             <div class="school-search-result govuk-summary-card">
@@ -105,7 +104,6 @@
                     </p>
                     @* @await Component.InvokeAsync("AddSchoolButton", new { urn = modelItem.URN, isSearchPage = true, isKS4 = modelItem.IsKS4 }) *@
                 </div>
-
 
                 <div class="govuk-summary-card__content govuk-!-padding-top-1">
                     <govuk-summary-list>
@@ -125,6 +123,7 @@
                 </div>
             </div>
         }
+
         @if (Model.SearchResultsCount == 0)
         {
             <h2 class="govuk-heading-s govuk-!-font-weight-bold" data-testid="no-results-heading">Try another search</h2>

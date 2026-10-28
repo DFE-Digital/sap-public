@@ -47,9 +47,9 @@
                 </ul>
             </nav>
             <h2 class="govuk-heading-l">Progress scores in reading, writing and maths</h2>
-            <form method="get" asp-route="@RouteConstants.PrimaryAcademicPerformancePupilProgress" asp-all-route-data="@Model.RouteAttributes">
+            <form method="get" asp-route="@RouteConstants.PrimaryAcademicPerformancePupilProgress" asp-all-route-data="@Model.RouteAttributes" asp-fragment="filterSection">
                 <div id="filterSection" class="select-filter">
-                    <label for="academicYearSelector" class="govuk-label govuk-!-font-weight-bold">Choose the academic year you want to see results for</label>
+                    <label for="academicYearSelector" class="govuk-label govuk-!-font-weight-bold">Choose the academic year</label>
                     <select id="academicYearSelector" class="govuk-select" asp-for="SelectedAcademicYear" asp-items="Model.AcademicYearsSelectList"></select>
                     <govuk-button type="submit">Show results</govuk-button>
                 </div>

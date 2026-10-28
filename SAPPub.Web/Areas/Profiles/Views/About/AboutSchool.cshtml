@@ -150,7 +150,7 @@
                     </govuk-summary-list-row-value>
                 </govuk-summary-list-row>
                 <govuk-summary-list-row>
-                    <govuk-summary-list-row-key>Telephone</govuk-summary-list-row-key>
+                    <govuk-summary-list-row-key>Phone</govuk-summary-list-row-key>
                     <govuk-summary-list-row-value>
                         @if (Model.Telephone.IsAvailable)
                         {
@@ -300,7 +300,12 @@
                 <govuk-summary-list-row>
                     <govuk-summary-list-row-key>Number of pupils</govuk-summary-list-row-key>
                     <govuk-summary-list-row-value>
-                        @Model.NumberOfPupils.DisplayText()
+                        @{
+                            var numberOfPupils = @Model.NumberOfPupils.DisplayText(notAvailableText: NotRecorded);
+                            if (numberOfPupils == "0")
+                                numberOfPupils = NotRecorded;
+                            @numberOfPupils
+                        }
                     </govuk-summary-list-row-value>
                 </govuk-summary-list-row>
                 <govuk-summary-list-row>

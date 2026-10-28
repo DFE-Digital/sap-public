@@ -47,7 +47,7 @@
             <h2 class="govuk-heading-l">Pupils achieving grades in English and maths GCSEs for the previous academic year</h2>
 
             <p class="govuk-body">
-                Information in this section is for the 2024 to 2025 academic year.
+                @Model.AcademicYearInfoParagraph.
             </p>
 
             <govuk-details id="details-gcse-grades-explained">
@@ -172,7 +172,7 @@
                             <table id="all-gcse-data-overtime-table" class="govuk-table">
                                 <thead class="govuk-table__head">
                                     <tr class="govuk-table__row">
-                                        <th scope="col" class="govuk-table__header"></th>
+                                        <td scope="col" class="govuk-table__header"></td>
                                         @foreach (var dataset in Model.AllGcseOverTimeData.Datasets)
                                         {
                                             <th scope="col" class="govuk-table__header">@dataset.Label</th>
