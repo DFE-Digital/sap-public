@@ -293,7 +293,8 @@
                                 const label = this.getLabelForValue(value);
                                 return wrapLabel(label.toString(), CHART_CONFIG.defaults.labelWrapChars);
                             },
-                            padding: CHART_CONFIG.bar.labels.yTickPadding
+                            padding: CHART_CONFIG.bar.labels.yTickPadding,
+                            autoSkip: false
                         }
                     }
                 },

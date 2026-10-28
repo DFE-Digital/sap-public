@@ -512,9 +512,8 @@ SAPPub.Web/keys/*
 !SAPPub.Web/keys/.gitkeep
 
 #exclude data files as these are too large to keep in repo
-/SAPData/DataMap/CleanedFiles/*.csv
-/SAPData/DataMap/SourceFiles/*.csv
-/SAPData/Sql/tablemapping.csv
+/SAPData/DataMap/CleanedFiles
+/SAPData/DataMap/SourceFiles
 
 #exclude any reporting csvs
 /scripts/output/*.csv
@@ -522,3 +521,6 @@ SAPPub.Web/keys/*
 /Tests/accessibility-results
 /SAPPub.Web/wwwroot/js/map-schools.js
 /playwright.runsettings
+
+#exclude generated SQL
+/SAPData/Sql
