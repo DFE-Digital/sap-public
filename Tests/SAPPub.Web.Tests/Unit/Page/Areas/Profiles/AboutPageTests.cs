@@ -297,6 +297,7 @@ public class AboutPageTests : PageTestsBase
         Assert.NotNull(doc.GetRowContentByIdAndKey("school-features-summary", "Type of SEN provision"));
         Assert.NotNull(doc.GetRowContentByIdAndKey("school-features-summary", "SEN unit"));
         Assert.NotNull(doc.GetRowContentByIdAndKey("school-features-summary", "Resourced provision"));
+        Assert.NotNull(doc.GetElementById("details-sen"));
     }
 
     [Fact]
@@ -487,6 +488,8 @@ public class AboutPageTests : PageTestsBase
             doc.GetRowContentByIdAndKey(
                 "school-features-summary",
                 "Resourced provision"));
+
+        Assert.Null(doc.GetElementById("details-sen"));
 
         var h1 = doc
             .GetElementsByTagName("h1")
