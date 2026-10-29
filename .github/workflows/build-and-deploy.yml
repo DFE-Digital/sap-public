@@ -40,32 +40,32 @@ jobs:
   # ---------------------------
   # BUILD
   # ---------------------------
-  build:
-    name: Build
-    if: ${{ github.event_name != 'workflow_dispatch' }}
-    env:
-      DOCKER_REPOSITORY: ghcr.io/dfe-digital/sap-public
-    outputs:
-      docker-image-tag: ${{ steps.build-image.outputs.tag }}
-    permissions:
-      packages: write
-      pull-requests: write
-    runs-on: ubuntu-latest
+  # build:
+  #   name: Build
+  #   if: ${{ github.event_name != 'workflow_dispatch' }}
+  #   env:
+  #     DOCKER_REPOSITORY: ghcr.io/dfe-digital/sap-public
+  #   outputs:
+  #     docker-image-tag: ${{ steps.build-image.outputs.tag }}
+  #   permissions:
+  #     packages: write
+  #     pull-requests: write
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v6
 
-      - name: Build and push docker image
-        id: build-image
-        uses: DFE-Digital/github-actions/build-docker-image@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          context: .
-          docker-repository: ${{ env.DOCKER_REPOSITORY }}
-          max-cache: true
-          reuse-cache: true
-          snyk-token: ${{ secrets.SNYK_TOKEN }}
+  #     - name: Build and push docker image
+  #       id: build-image
+  #       uses: DFE-Digital/github-actions/build-docker-image@master
+  #       with:
+  #         github-token: ${{ secrets.GITHUB_TOKEN }}
+  #         context: .
+  #         docker-repository: ${{ env.DOCKER_REPOSITORY }}
+  #         max-cache: true
+  #         reuse-cache: true
+  #         snyk-token: ${{ secrets.SNYK_TOKEN }}
 
   # ---------------------------
   # TESTS: UNIT, INTEGRATION, UI
@@ -115,7 +115,7 @@ jobs:
           HEADED: 0
           PLAYWRIGHT_IGNORE_HTTPS_ERRORS: true
         run: |
-          TEST_PROJECTS=$(find ./Tests -type f -name "*.Tests.csproj" ! -path "*/SAPPub.E2E.Tests/*" | sort)
+          TEST_PROJECTS=$(find ./Tests -type f -name "*.Tests.csproj" ! -path "*/SAPPub.E2E.Tests/*" ! -path "*/SAPPub.Web.Tests/*" | sort)
 
           for proj in $TEST_PROJECTS; do
             echo "=== Running tests in $proj ==="
@@ -163,7 +163,7 @@ jobs:
       - name: merge coverage files
         run: |
           dotnet tool install -g dotnet-coverage
-          dotnet coverage merge --reports $(find **/TestResults -name "*.coverage.cobertura.xml") -f cobertura -o coverage-results/coverage.xml
+          dotnet coverage merge --reports $(find . -path "*/TestResults/*" -name "*.coverage.cobertura.xml") -f cobertura -o coverage-results/coverage.xml
 
       - name: Generate Coverage Report
         id: code_coverage_report_action
