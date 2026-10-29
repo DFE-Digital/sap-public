@@ -120,7 +120,7 @@ jobs:
           for proj in $TEST_PROJECTS; do
             echo "=== Running tests in $proj ==="
 
-            dotnet test "$proj" \
+            dotnet run "$proj" \
               --no-build \
               --configuration Debug \
               --verbosity normal \
