@@ -47,7 +47,9 @@ jobs:
             --no-build \
             --configuration Release \
             --results-directory "TestResults" \
-            --logger "trx;LogFileName=E2E-tests.trx"
+            -- \
+            --report-xunit-trx \
+            --report-xunit-trx-filename E2E-tests.trx
 
       - name: Upload E2E Test Result Files
         uses: actions/upload-artifact@v4

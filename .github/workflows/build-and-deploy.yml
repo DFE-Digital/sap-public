@@ -124,10 +124,13 @@ jobs:
               --no-build \
               --configuration Debug \
               --results-directory "TestResults" \
-              --logger "trx;LogFileName=$(basename "$proj" .csproj).trx" \
-              --collect:"XPlat Code Coverage" \
-              --settings ./coverlet.runsettings \
               --verbosity normal
+              -- \
+              --report-xunit-trx \
+              --report-xunit-trx-filename $(basename "$proj" .csproj).trx \
+              --coverage \
+              --coverage-output-format cobertura \
+              --coverage-settings ./coverlet.runsettings
           done
 
       - name: Upload Test Result Files
