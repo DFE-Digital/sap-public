@@ -46,7 +46,7 @@ jobs:
           dotnet test Tests/SAPPub.E2E.Tests/SAPPub.E2E.Tests.csproj \
             --no-build \
             --configuration Release \
-            --results-directory "TestResults" \
+            --show-test-results all \
             -- \
             --report-xunit-trx \
             --report-xunit-trx-filename E2E-tests.trx

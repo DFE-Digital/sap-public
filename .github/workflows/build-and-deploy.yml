@@ -123,8 +123,8 @@ jobs:
             dotnet test "$proj" \
               --no-build \
               --configuration Debug \
-              --results-directory "TestResults" \
               --verbosity normal \
+              --show-test-results all
               -- \
               --report-xunit-trx \
               --report-xunit-trx-filename $(basename "$proj" .csproj).trx \
