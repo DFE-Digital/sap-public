@@ -130,7 +130,8 @@ jobs:
               --report-xunit-trx-filename $(basename "$proj" .csproj).trx \
               --coverage \
               --coverage-output-format cobertura \
-              --coverage-settings ./coverlet.runsettings
+              --coverage-settings ./coverlet.runsettings \
+              --coverage-output coverage.cobertura.xml
           done
 
       - name: Upload Test Result Files
