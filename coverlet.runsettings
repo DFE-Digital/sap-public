@@ -8,24 +8,25 @@
 						<Format>cobertura</Format>
 
 						<ExcludeByFile>
-							<File>**/Migrations/**/*.cs</File>
-							<File>**/Views/**/*.cshtml.cs</File>
-							<File>**/obj/**/*.cs</File>
-							<File>**/Program.cs</File>
+							**/Migrations/**/*.cs,
+							**/Views/**/*.cshtml.cs,
+							**/obj/**/*.cs,
+							**/Program.cs
 						</ExcludeByFile>
 
 						<ExcludeByAttribute>
-							<Attribute>^System.ObsoleteAttribute$</Attribute>
-							<Attribute>^System.CodeDom.Compiler.GeneratedCodeAttribute$</Attribute>
-							<Attribute>^System.Runtime.CompilerServices.CompilerGeneratedAttribute$</Attribute>
-							<Attribute>^System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute$</Attribute>
+							Obsolete,
+							GeneratedCodeAttribute,
+							CompilerGeneratedAttribute,
+							ExcludeFromCodeCoverageAttribute
 						</ExcludeByAttribute>
 
 						<Exclude>
-							<ModulePath>.*\.Migrations\..*</ModulePath>
-							<ModulePath>.*AspNetCoreGeneratedDocument.*</ModulePath>
-							<ModulePath>.*ViewStart.*</ModulePath>
-							<ModulePath>.*GlobalUsings.*</ModulePath>
+							[*]*.Migrations.*,
+							[*]AspNetCoreGeneratedDocument.*,
+							[*]*ViewStart*,
+							[*]*GlobalUsings*,
+							[*.Tests]*
 						</Exclude>
 
 						<SkipAutoProps>true</SkipAutoProps>
