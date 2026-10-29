@@ -131,7 +131,7 @@ jobs:
               --coverage \
               --coverage-output-format cobertura \
               --coverage-settings ./coverlet.runsettings \
-              --coverage-output coverage.cobertura.xml
+              --coverage-output $(basename "$proj" .csproj).coverage.cobertura.xml
           done
 
       - name: Upload Test Result Files
@@ -163,7 +163,7 @@ jobs:
       - name: merge coverage files
         run: |
           dotnet tool install -g dotnet-coverage
-          dotnet coverage merge --reports $(find TestResults -name "coverage.cobertura.xml") -f cobertura -o coverage-results/coverage.xml
+          dotnet coverage merge --reports $(find TestResults -name "*.coverage.cobertura.xml") -f cobertura -o coverage-results/coverage.xml
 
       - name: Generate Coverage Report
         id: code_coverage_report_action
