@@ -292,6 +292,12 @@ public class AboutPageTests : PageTestsBase
         Assert.Contains(aboutSchoolModel.PupilSex, doc.GetRowContentByIdAndKey("school-features-summary", "Pupil sex"));
         Assert.Contains(aboutSchoolModel.ReligiousCharacter, doc.GetRowContentByIdAndKey("school-features-summary", "Religious character"));
         Assert.Contains(aboutSchoolModel.OfficialSixthFormId == "1" ? "Yes" : "No", doc.GetRowContentByIdAndKey("school-features-summary", "Sixth form"));
+
+        Assert.NotNull(doc.GetRowContentByIdAndKey("school-features-summary", "Sixth form"));
+        Assert.NotNull(doc.GetRowContentByIdAndKey("school-features-summary", "Type of SEN provision"));
+        Assert.NotNull(doc.GetRowContentByIdAndKey("school-features-summary", "SEN unit"));
+        Assert.NotNull(doc.GetRowContentByIdAndKey("school-features-summary", "Resourced provision"));
+        Assert.NotNull(doc.GetElementById("details-sen"));
     }
 
     [Fact]
@@ -462,6 +468,28 @@ public class AboutPageTests : PageTestsBase
             doc.GetRowContentByIdAndKey(
                 "school-features-summary",
                 "Headteacher, principal, or chief executive"));
+
+        Assert.Null(
+            doc.GetRowContentByIdAndKey(
+                "school-features-summary",
+                "Sixth form"));
+
+        Assert.Null(
+            doc.GetRowContentByIdAndKey(
+                "school-features-summary",
+                "Type of SEN provision"));
+
+        Assert.Null(
+            doc.GetRowContentByIdAndKey(
+                "school-features-summary",
+                "SEN unit"));
+
+        Assert.Null(
+            doc.GetRowContentByIdAndKey(
+                "school-features-summary",
+                "Resourced provision"));
+
+        Assert.Null(doc.GetElementById("details-sen"));
 
         var h1 = doc
             .GetElementsByTagName("h1")

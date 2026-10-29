@@ -1,9 +1,6 @@
 ﻿using AngleSharp;
-using AngleSharp.Dom;
 using Microsoft.Playwright;
-using SAPPub.Core.ServiceModels.KS4.AboutSchool;
 using SAPPub.Playwright.Testing;
-using SAPPub.Web.Tests;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 using System.Text.RegularExpressions;
@@ -580,6 +577,29 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
         await Expect(information).ToContainTextAsync("ASD - Autistic Spectrum Disorder");
         await Expect(information).ToContainTextAsync("Phone");
         await Expect(information).ToContainTextAsync("01424 424530");
+        await Expect(information).ToContainTextAsync("Website");
+        await Expect(information).ToContainTextAsync("Ofsted report");
+    }
+
+    [Fact]
+    public async Task OverviewPage_For_FE_DisplaysAvailableSchoolInformation()
+    {
+        await Page.GotoAsync(Ks5OnlyOverviewUrl);
+
+        var information = Page.Locator("#overview-school-information");
+        var sen = Page.Locator("#overview-sen");        
+
+        await Expect(information).ToBeVisibleAsync();
+        await Expect(sen).Not.ToBeVisibleAsync();
+        await Expect(information).ToContainTextAsync("Phase of education");
+        await Expect(information).ToContainTextAsync("16 to 19");
+        await Expect(information).ToContainTextAsync("Age range");
+        await Expect(information).ToContainTextAsync("11 to 18");
+        await Expect(information).ToContainTextAsync("Number of pupils");
+        await Expect(information).ToContainTextAsync("1,000");
+        await Expect(information).Not.ToContainTextAsync("Type of SEN provision");
+        await Expect(information).ToContainTextAsync("Phone");
+        await Expect(information).ToContainTextAsync("0121 555 1234");
         await Expect(information).ToContainTextAsync("Website");
         await Expect(information).ToContainTextAsync("Ofsted report");
     }
