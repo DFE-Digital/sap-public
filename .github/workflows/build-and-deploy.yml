@@ -124,7 +124,7 @@ jobs:
               --no-build \
               --configuration Debug \
               --verbosity normal \
-              --show-test-results all
+              --show-test-results all \
               -- \
               --report-xunit-trx \
               --report-xunit-trx-filename $(basename "$proj" .csproj).trx \
