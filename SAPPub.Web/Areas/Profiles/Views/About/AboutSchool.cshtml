@@ -150,7 +150,7 @@
                     </govuk-summary-list-row-value>
                 </govuk-summary-list-row>
                 <govuk-summary-list-row>
-                    <govuk-summary-list-row-key>Telephone</govuk-summary-list-row-key>
+                    <govuk-summary-list-row-key>Phone</govuk-summary-list-row-key>
                     <govuk-summary-list-row-value>
                         @if (Model.Telephone.IsAvailable)
                         {
@@ -327,47 +327,51 @@
                         <govuk-summary-list-row-value>
                             @Model.SixthForm.DisplayText()
                         </govuk-summary-list-row-value>
+                    </govuk-summary-list-row>                
+                    <govuk-summary-list-row>
+                        <govuk-summary-list-row-key>Type of SEN provision</govuk-summary-list-row-key>
+                        <govuk-summary-list-row-value>
+                            @Model.SenTypes.DisplayText(notAvailableText: NotRecorded)
+                        </govuk-summary-list-row-value>
+                    </govuk-summary-list-row>
+                    <govuk-summary-list-row>
+                        <govuk-summary-list-row-key>SEN unit</govuk-summary-list-row-key>
+                        <govuk-summary-list-row-value>
+                            @Model.SenUnit
+                        </govuk-summary-list-row-value>
+                    </govuk-summary-list-row>
+                    <govuk-summary-list-row>
+                        <govuk-summary-list-row-key>Resourced provision</govuk-summary-list-row-key>
+                        <govuk-summary-list-row-value>
+                            @Model.ResourcedProvision
+                        </govuk-summary-list-row-value>
                     </govuk-summary-list-row>
                 }
-                <govuk-summary-list-row>
-                    <govuk-summary-list-row-key>Type of SEN provision</govuk-summary-list-row-key>
-                    <govuk-summary-list-row-value>
-                        @Model.SenTypes.DisplayText(notAvailableText: NotRecorded)
-                    </govuk-summary-list-row-value>
-                </govuk-summary-list-row>
-                <govuk-summary-list-row>
-                    <govuk-summary-list-row-key>SEN unit</govuk-summary-list-row-key>
-                    <govuk-summary-list-row-value>
-                        @Model.SenUnit
-                    </govuk-summary-list-row-value>
-                </govuk-summary-list-row>
-                <govuk-summary-list-row>
-                    <govuk-summary-list-row-key>Resourced provision</govuk-summary-list-row-key>
-                    <govuk-summary-list-row-value>
-                        @Model.ResourcedProvision
-                    </govuk-summary-list-row-value>
-                </govuk-summary-list-row>
             </govuk-summary-list>
 
-            <govuk-details id="details-sen">
-                <govuk-details-summary>
-                    What is a SEN unit or a resourced provision?
-                </govuk-details-summary>
-                <govuk-details-text>
-                    <p class="govuk-body">
-                        Special educational needs (SEN) units and resourced provisions are specialist provisions in mainstream schools formally recognised by the local authority.
-                    </p>
-                    <p class="govuk-body">
-                        In SEN units pupils are taught within separate classes for at least half of their time.
-                    </p>
-                    <p class="govuk-body">
-                        In resourced provisions, pupils are taught within mainstream classes for at least half of their time, but have access to a base and specialist facilities around the school.
-                    </p>
-                    <p class="govuk-body">
-                        They are both for pupils with SEN, who typically have education, health, and care (EHC) plans.
-                    </p>
-                </govuk-details-text>
-            </govuk-details>
+            @if (!Model.IsExclusivelyKS5)
+            {
+                <govuk-details id="details-sen">
+                    <govuk-details-summary>
+                        What is a SEN unit or a resourced provision?
+                    </govuk-details-summary>
+                    <govuk-details-text>
+                        <p class="govuk-body">
+                            Special educational needs (SEN) units and resourced provisions are specialist provisions in mainstream schools formally recognised by the local authority.
+                        </p>
+                        <p class="govuk-body">
+                            In SEN units pupils are taught within separate classes for at least half of their time.
+                        </p>
+                        <p class="govuk-body">
+                            In resourced provisions, pupils are taught within mainstream classes for at least half of their time, but have access to a base and specialist facilities around the school.
+                        </p>
+                        <p class="govuk-body">
+                            They are both for pupils with SEN, who typically have education, health, and care (EHC) plans.
+                        </p>
+                    </govuk-details-text>
+                </govuk-details>
+            }
+
             <feature name="EnablePrimary">
                 @if (Model.IsKS2)
                 {

@@ -59,7 +59,7 @@ public sealed class FakeOverviewService : IOverviewService
                 senTypes: null,
                 isKS2: false,
                 isKS4: false,
-                isKS5: true)
+                isKS5: false)
 
             //["999001"] = CreateNoTopSubjectsOverview(),
         };

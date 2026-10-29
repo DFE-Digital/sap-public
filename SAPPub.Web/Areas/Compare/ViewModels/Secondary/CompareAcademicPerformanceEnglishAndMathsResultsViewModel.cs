@@ -1,5 +1,7 @@
-﻿using SAPPub.Core.ServiceModels;
+﻿using SAPPub.Core.Enums;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.KS4.Performance;
+using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.Charts;
 using static SAPPub.Web.Constants.Constants;
 
@@ -32,17 +34,17 @@ public class CompareAcademicPerformanceEnglishAndMathsResultsViewModel : Compare
                 [
                     new DatasetViewModel
                     {
-                        Label = "2022 to 2023",
+                        Label = Ks4AcademicYearHelper.GetDisplayName(AcademicYearSelection.Previous2),
                         Data = [.. orderedResults.Select(x => x.EstablishmentData.TwoYearsAgo).Append(englishAndMathsComparisionResultsModel.EnglandAverage.TwoYearsAgo)],
                     },
                     new DatasetViewModel
                     {
-                        Label = "2023 to 2024",
+                        Label = Ks4AcademicYearHelper.GetDisplayName(AcademicYearSelection.Previous),
                         Data = [.. orderedResults.Select(x => x.EstablishmentData.PreviousYear).Append(englishAndMathsComparisionResultsModel.EnglandAverage.PreviousYear)],
                     },
                     new DatasetViewModel
                     {
-                        Label = "2024 to 2025",
+                        Label = Ks4AcademicYearHelper.GetDisplayName(AcademicYearSelection.Current),
                         Data = [.. orderedResults.Select(x => x.EstablishmentData.CurrentYear).Append(englishAndMathsComparisionResultsModel.EnglandAverage.CurrentYear)],
                     }
                 ],
