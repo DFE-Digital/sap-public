@@ -86,7 +86,7 @@
                                            class="govuk-link"
                                            href="@Url.Action("Index", "School", new { urn = school.Urn })"
                                            rel="noreferrer noopener" target="_blank">
-                                            View @school.SchoolName's School Profile
+                                            View @school.SchoolName's school profile
                                             <span class="govuk-visually-hidden">(opens in a new tab)</span>
                                         </a>
                                     </govuk-summary-list-row-value>
@@ -132,7 +132,7 @@
             </div>
 
             <govuk-pagination id="about-the-school-pagination">
-                <govuk-pagination-next href="@Url.RouteUrl(RouteConstants.CompareSecondaryAcademicPerformancePupilAttainment, new { urns = Model.URNs })">Academic Performance</govuk-pagination-next>
+                <govuk-pagination-next href="@Url.RouteUrl(RouteConstants.CompareSecondaryAcademicPerformancePupilAttainment, new { urns = Model.URNs })">Academic performance</govuk-pagination-next>
             </govuk-pagination>
         </div>
     </div>
