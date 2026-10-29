@@ -43,7 +43,7 @@ jobs:
           BASE_URL: ${{ inputs.base_url }}
           TEST_DATA_VERSION: ${{ inputs.test_data_version }}
         run: |
-          dotnet run Tests/SAPPub.E2E.Tests/SAPPub.E2E.Tests.csproj \
+          dotnet run --project Tests/SAPPub.E2E.Tests/SAPPub.E2E.Tests.csproj \
             --no-build \
             --configuration Release \
             --show-test-results all \
