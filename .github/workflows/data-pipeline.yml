@@ -42,7 +42,7 @@ jobs:
 
   ingest:
     name: Ingest Raw Data & Build Warehouse
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [enable-maintenance]
     if: ${{ always() && (needs.enable-maintenance.result == 'success' || needs.enable-maintenance.result == 'skipped') }}
   
@@ -783,7 +783,7 @@ jobs:
 
   health-check:
     name: Health check via temp URL
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [ingest]
     if: ${{ always() && ((inputs.environment || 'test') == 'test' || inputs.environment == 'production') }}
     outputs:
