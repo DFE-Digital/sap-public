@@ -342,6 +342,7 @@
                     label: ds.label,
                     data: ds.data,
                     backgroundColor: colors[i] || CHART_CONFIG.defaultColors[i],
+                    hoverBackgroundColor: colors[i] || CHART_CONFIG.defaultColors[i], 
                     ...dataOptions
                 }));
             }
@@ -349,6 +350,7 @@
             return [{
                 data: chartData.data,
                 backgroundColor: colors.length ? colors : CHART_CONFIG.defaultColors,
+                hoverBackgroundColor: colors.length ? colors : CHART_CONFIG.defaultColors,
                 ...dataOptions               
             }];
         }
