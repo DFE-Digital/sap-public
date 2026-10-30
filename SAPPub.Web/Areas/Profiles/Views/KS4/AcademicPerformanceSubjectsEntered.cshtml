@@ -60,7 +60,7 @@
             </govuk-details>
 
             <partial name="_SubjectsEntered" model="Model.GcseSubjects" view-data='new ViewDataDictionary(ViewData) { ["Caption"] = "GCSE subjects entered" }' />
-            <partial name="_SubjectsEntered" model="Model.VocationalSubjects" view-data='new ViewDataDictionary(ViewData) { ["Caption"] = "Technical Award subjects entered" }' />
+            <partial name="_SubjectsEntered" model="Model.VocationalSubjects" view-data='new ViewDataDictionary(ViewData) { ["Caption"] = "Technical award subjects entered" }' />
             <partial name="_SubjectsEntered" model="Model.OtherSubjects" view-data='new ViewDataDictionary(ViewData) { ["Caption"] = "Other subjects entered" }' />
 
             @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.SecondaryAcademicPerformanceSubjectsEntered))
