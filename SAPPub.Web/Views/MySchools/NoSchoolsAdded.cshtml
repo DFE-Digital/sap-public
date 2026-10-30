@@ -1,9 +1,17 @@
-﻿@{
+﻿@using SAPPub.Web.Models.Banner
+@using static SAPPub.Web.Constants.Constants;
+
+@{
     ViewData["Title"] = "My schools list";
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        @if (TempData.Get<BannerViewModel?>(BannerModel) is BannerViewModel bannerModel)
+        {
+            @await Component.InvokeAsync("Banner", bannerModel)
+        }
+
         <h1 class="govuk-heading-l">
             <span class="govuk-caption-l">@ViewData["Title"]</span>
             Add schools to compare
