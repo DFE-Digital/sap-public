@@ -3,10 +3,8 @@ using Microsoft.FeatureManagement.Mvc;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.Interfaces.Services;
-using SAPPub.Core.Interfaces.Services.KS4.AboutSchool;
 using SAPPub.Core.Interfaces.Services.Performance;
-using SAPPub.Core.Services.Performance;
-using SAPPub.Core.Services;
+using SAPPub.Web.Areas.Profiles.Filters;
 using SAPPub.Web.Areas.Profiles.ViewModels.KS5;
 using SAPPub.Web.Constants;
 
@@ -14,6 +12,7 @@ namespace SAPPub.Web.Areas.Profiles.Controllers;
 
 [Area("Profiles")]
 [FeatureGate("Enable16to19")]
+[ServiceFilter(typeof(FEQueryValidationFilter))]
 public class KS5Controller(ILogger<KS5Controller> logger) : Controller
 {
     [Route("school/{urn}/{schoolName}/16-to-19-performance", Name = RouteConstants.KS5AcademicPerformanceRoot)]
@@ -39,12 +38,6 @@ public class KS5Controller(ILogger<KS5Controller> logger) : Controller
         var qualificationDetailsModel = await level3QualificationsService
             .GetLevel3QualificationDetailsAsync(urn, qualification, ct);
 
-        if (!qualificationDetailsModel.IsKS5)
-        {
-            logger.LogWarning("Attempted to view KS5 page with no KS5 data URN: {URN}", urn);
-            return View("Error");
-        }
-
         var model = Level3QualificationViewModel.Map(qualificationDetailsModel);
         return View(model);
     }
@@ -66,12 +59,6 @@ public class KS5Controller(ILogger<KS5Controller> logger) : Controller
         var qualificationDetailsModel = await level2QualificationsService
             .GetLevel2QualificationDetailsAsync(urn, qualification, ct);
 
-        if (!qualificationDetailsModel.IsKS5)
-        {
-            logger.LogWarning("Attempted to view KS5 page with no KS5 data URN: {URN}", urn);
-            return View("Error");
-        }
-
         var model = Level2QualificationViewModel.Map(qualificationDetailsModel);
         return View(model);
     }
@@ -87,12 +74,6 @@ public class KS5Controller(ILogger<KS5Controller> logger) : Controller
         if (string.IsNullOrWhiteSpace(englishMathsQualifications.Urn))
         {
             logger.LogWarning("No establishment details found for URN: {URN}", urn);
-            return View("Error");
-        }
-
-        if (!englishMathsQualifications.IsKS5)
-        {
-            logger.LogWarning("Attempted to view KS5 page with no KS5 data URN: {URN}", urn);
             return View("Error");
         }
 
@@ -136,12 +117,6 @@ public class KS5Controller(ILogger<KS5Controller> logger) : Controller
         if (string.IsNullOrWhiteSpace(schoolDetails.URN))
         {
             logger.LogWarning("No establishment details found for URN: {URN}", urn);
-            return View("Error");
-        }
-
-        if (!schoolDetails.IsKS5)
-        {
-            logger.LogWarning("Attempted to view KS5 page with no KS5 data URN: {URN}", urn);
             return View("Error");
         }
 

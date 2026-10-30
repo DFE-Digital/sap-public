@@ -7,7 +7,7 @@ public static class TestDataLoader
     public static List<List<JsonElement>> GetTestData(string folder, string fileName)
     {
         var testDataVersion =
-            Environment.GetEnvironmentVariable("TEST_DATA_VERSION") ?? "2425";
+            Environment.GetEnvironmentVariable("TEST_DATA_VERSION") ?? "2526";
 
         var testDataFilePath = Path.Combine(
             AppContext.BaseDirectory,
@@ -33,7 +33,7 @@ public static class TestDataLoader
     public static List<T> Load<T>(string folder, string fileName, JsonNamingPolicy? namingPolicy = null/* defaults to SnakeCaseLower */)
     {
         var testDataVersion =
-            Environment.GetEnvironmentVariable("TEST_DATA_VERSION") ?? "2425";
+            Environment.GetEnvironmentVariable("TEST_DATA_VERSION") ?? "2526";
 
         var path = Path.Combine(
             AppContext.BaseDirectory,

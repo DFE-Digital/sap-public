@@ -30,10 +30,6 @@
     <div class="govuk-grid-column-three-quarters">
         <div id="guide-contents">
             <h2 class="govuk-heading-xl">@ViewData["Header"]</h2>
-            <p class="govuk-body">
-                Looking at school performance data is one way to see how well a school is doing.
-                You should look at a range of information about a school before deciding if it’s the right fit for your child.
-            </p>
             <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
                 <ul class="moj-sub-navigation__list">
                     <li class="moj-sub-navigation__item">
@@ -84,10 +80,10 @@
                 </govuk-details-text>
             </govuk-details>
 
-            <div id="graphSection" class="govuk-grid-row">
-                <form method="get" asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults" asp-all-route-data="@Model.RouteAttributes">
+            <div id="filterSection" class="govuk-grid-row">
+                <form method="get" asp-route="@RouteConstants.SecondaryAcademicPerformanceEnglishAndMathsResults" asp-all-route-data="@Model.RouteAttributes" asp-fragment="filterSection">
                     <govuk-select for="@Model.SelectedGrade" class="govuk-grid-column-two-thirds govuk-input__wrapper" id="gradeSelector">
-                        <govuk-select-label class="govuk-label--s govuk-!-margin-right-2 select-inline-label">Choose the grade you want to see results for</govuk-select-label>
+                        <govuk-select-label class="govuk-label--s govuk-!-margin-right-2 select-inline-label">Choose grade</govuk-select-label>
                         <govuk-select-item value=@GcseGradeDataSelection.Grade4AndAbove selected="@Model.SelectedGrade == GcseGradeDataSelection.Grade4AndAbove">@GcseGradeDataSelection.Grade4AndAbove.GetDisplayName()</govuk-select-item>
                         <govuk-select-item value=@GcseGradeDataSelection.Grade5AndAbove selected="!@Model.SelectedGrade.HasValue || @Model.SelectedGrade == GcseGradeDataSelection.Grade5AndAbove">@GcseGradeDataSelection.Grade5AndAbove.GetDisplayName()</govuk-select-item>
                         @if (await FeatureManager.IsEnabledAsync(EnableSecondaryGrade7))
@@ -170,7 +166,7 @@
                         <table id="breakdown-gcse-current-year-table" class="govuk-table">
                             <thead class="govuk-table__head">
                                 <tr class="govuk-table__row">
-                                    <th scope="col" class="govuk-table__header"></th>
+                                    <td scope="col" class="govuk-table__header"></td>
                                     @foreach (var label in Model.BreakdownGcseData.Labels)
                                     {
                                         <th scope="col" class="govuk-table__header">@label</th>

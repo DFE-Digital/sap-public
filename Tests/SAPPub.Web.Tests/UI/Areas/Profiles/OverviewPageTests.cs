@@ -1,7 +1,6 @@
-﻿using AngleSharp.Dom;
+﻿using AngleSharp;
 using Microsoft.Playwright;
 using SAPPub.Playwright.Testing;
-using SAPPub.Web.Tests;
 using SAPPub.Web.Tests.UI.Helpers;
 using SAPPub.Web.Tests.UI.Infrastructure;
 using System.Text.RegularExpressions;
@@ -49,6 +48,10 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
 
     private const string Ks5OnlyOverviewUrl =
         "school/130499/holy-cross-college/overview";
+
+    private const string NumberPupilsOverviewUrl =
+    "school/138966/shooters-hill-sixth-form-college/overview";
+
 
     [Fact]
     public async Task OverviewPage_LoadsSuccessfully()
@@ -579,6 +582,29 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
     }
 
     [Fact]
+    public async Task OverviewPage_For_FE_DisplaysAvailableSchoolInformation()
+    {
+        await Page.GotoAsync(Ks5OnlyOverviewUrl);
+
+        var information = Page.Locator("#overview-school-information");
+        var sen = Page.Locator("#overview-sen");        
+
+        await Expect(information).ToBeVisibleAsync();
+        await Expect(sen).Not.ToBeVisibleAsync();
+        await Expect(information).ToContainTextAsync("Phase of education");
+        await Expect(information).ToContainTextAsync("16 to 19");
+        await Expect(information).ToContainTextAsync("Age range");
+        await Expect(information).ToContainTextAsync("11 to 18");
+        await Expect(information).ToContainTextAsync("Number of pupils");
+        await Expect(information).ToContainTextAsync("1,000");
+        await Expect(information).Not.ToContainTextAsync("Type of SEN provision");
+        await Expect(information).ToContainTextAsync("Phone");
+        await Expect(information).ToContainTextAsync("0121 555 1234");
+        await Expect(information).ToContainTextAsync("Website");
+        await Expect(information).ToContainTextAsync("Ofsted report");
+    }
+
+    [Fact]
     public async Task OverviewPage_DisplaysSchoolAddressBelowMap()
     {
         await GoToOverviewAsync();
@@ -801,11 +827,11 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
             "#overview-age-range",
             "Age range");
 
-        await AssertRowDisplaysNotAvailableAsync(
+        await AssertRowDisplaysNotRecordedAsync(
             "#overview-pupil-count",
             "Number of pupils");
 
-        await AssertRowDisplaysNotAvailableAsync(
+        await AssertRowDisplaysNotRecordedAsync(
             "#overview-sen",
             "Type of SEN provision");
 
@@ -963,6 +989,27 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
                         new Regex("Pupil progress")
                 }))
             .ToBeVisibleAsync();
+    }
+
+    [Theory]
+    [InlineData("Number of pupils")]
+    [InlineData("Type of SEN provision")]
+    public async Task OverviewPage_NoData_Displays_NotRecorded(string fieldName)
+    {
+        var response = await Page.GotoAsync(NumberPupilsOverviewUrl);
+        Assert.NotNull(response);
+        Assert.True(response.Ok, await GetFailureMessageAsync("Overview page failed to load", response));
+
+        var bodyHtml = await Page.EvaluateAsync<string>("() => document.body.innerHTML");
+        var context = BrowsingContext.New(Configuration.Default);
+        var doc = await context.OpenAsync(req => req.Content(bodyHtml));
+
+        var dt = doc.QuerySelector("dt.govuk-summary-list__key:contains('" + fieldName + "')");
+        var dd = dt?.NextElementSibling;
+        var totalPupils = dd?.TextContent.Trim();
+
+        // Assert
+        Assert.Equal("Not recorded", totalPupils);
     }
 
     [Fact]
@@ -2272,8 +2319,22 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
         await Expect(row)
             .ToContainTextAsync(label);
 
+        await Expect(row).ToContainTextAsync("Not available");
+    }
+
+    private async Task AssertRowDisplaysNotRecordedAsync(
+        string selector,
+        string label)
+    {
+        var row = Page.Locator(selector);
+
         await Expect(row)
-            .ToContainTextAsync("Not available");
+            .ToBeVisibleAsync();
+
+        await Expect(row)
+            .ToContainTextAsync(label);
+
+        await Expect(row).ToContainTextAsync("Not recorded");
     }
 
     private async Task<IResponse> GoToOverviewAsync()
@@ -3064,7 +3125,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
             .ToHaveCountAsync(1);
     }
 
-    
+
     [Fact]
     public async Task OverviewPage_SecondaryOnlySchool_DoesNotDisplayPrimaryExtraCurricularAccordion()
     {

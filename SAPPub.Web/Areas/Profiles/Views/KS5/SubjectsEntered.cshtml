@@ -68,7 +68,7 @@
                 </a>.
             </p>
 
-            <form method="get" asp-route="@RouteConstants.KS5AcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes">
+            <form method="get" asp-route="@RouteConstants.KS5AcademicPerformanceSubjectsEntered" asp-all-route-data="@Model.RouteAttributes" asp-fragment="filterSection">
                 <div id="filterSection" class="select-filter">
                     <label for="qualificationSelector" class="govuk-label govuk-!-font-weight-bold">Choose qualification</label>
                     <select id="qualificationSelector" asp-for="@Model.QualificationType" class="govuk-select" asp-items="Html.GetEnumSelectList<QualificationType>()"></select>

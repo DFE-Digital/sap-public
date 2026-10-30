@@ -51,6 +51,16 @@ public sealed class FakeOverviewService : IOverviewService
                 isKS4: false,
                 isKS5: true),
 
+            ["138966"] = CreateOverview(
+                urn: "138966",
+                schoolName: "Shooters Hill Sixth Form College",
+                localAuthorityName: "Greenwich",
+                totalPupils: "0",
+                senTypes: null,
+                isKS2: false,
+                isKS4: false,
+                isKS5: false)
+
             //["999001"] = CreateNoTopSubjectsOverview(),
         };
 
@@ -220,7 +230,9 @@ public sealed class FakeOverviewService : IOverviewService
         string localAuthorityName,
         bool isKS2,
         bool isKS4,
-        bool isKS5)
+        bool isKS5,
+        string totalPupils = "1000",
+        string? senTypes = "ASD - Autistic Spectrum Disorder")
     {
         return new OverviewModel
         {
@@ -239,10 +251,9 @@ public sealed class FakeOverviewService : IOverviewService
             AgeRangeLow = "11",
             AgeRangeHigh = "18",
 
-            NumberOfPupils = "1000",
+            NumberOfPupils = totalPupils,
 
-            SenProvision =
-                "ASD - Autistic Spectrum Disorder",
+            SenProvision = senTypes,
 
             Phone = "0121 555 1234",
 

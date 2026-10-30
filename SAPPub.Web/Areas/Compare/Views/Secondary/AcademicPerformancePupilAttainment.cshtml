@@ -28,11 +28,6 @@
                 @ViewData["Header"]
             </h1>
 
-            <p class="govuk-body">
-                Looking at school performance data is one way to see how well a school is doing.<br />
-                You should look at a range of information about a school before deciding if it's the right fit for your child.
-            </p>
-
             <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation" data-testid="sub-navigation-academic-performance">
                 <ul class="moj-sub-navigation__list">
                     <li class="moj-sub-navigation__item">
@@ -47,7 +42,7 @@
             <h2 class="govuk-heading-l">Attainment 8 for the previous academic year</h2>
 
             <p class="govuk-body">
-                Information in this section is for the 2024 to 2025 academic year.
+                @Model.AcademicYearInfoParagraph.
             </p>
 
         <p class="govuk-body">
@@ -68,10 +63,10 @@
                             English and maths, which are both double-weighted
                         </li>
                         <li>
-                            EBacc subjects are a group of GCSE subjects, including sciences, geography, history and languages, that help students gain a broad set of knowledge and skills.
+                            other subjects including sciences, geography, history and languages
                         </li>
                         <li>
-                            open group which includes any other approved GCSEs or vocational qualifications
+                            any other approved GCSEs or vocational qualifications
                         </li>
                     </ul>
 

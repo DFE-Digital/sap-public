@@ -141,19 +141,25 @@
                         Number of pupils
                     </govuk-summary-list-row-key>
                     <govuk-summary-list-row-value>
-                        @Model.NumberOfPupils.DisplayText()
+                        @{
+                            var numberOfPupils = @Model.NumberOfPupils.DisplayText(notAvailableText: WebConstants.NotRecorded);
+                            if (numberOfPupils == "0")
+                                numberOfPupils = WebConstants.NotRecorded;
+                            @numberOfPupils
+                        }
                     </govuk-summary-list-row-value>
                 </govuk-summary-list-row>
-
-                <govuk-summary-list-row id="overview-sen">
-                    <govuk-summary-list-row-key>
-                        Type of SEN provision
-                    </govuk-summary-list-row-key>
-                    <govuk-summary-list-row-value>
-                        @Model.SenTypes.DisplayText()
-                    </govuk-summary-list-row-value>
-                </govuk-summary-list-row>
-
+                @if (!Model.IsExclusivelyKS5)
+                {
+                    <govuk-summary-list-row id="overview-sen">
+                        <govuk-summary-list-row-key>
+                            Type of SEN provision
+                        </govuk-summary-list-row-key>
+                        <govuk-summary-list-row-value>
+                            @Model.SenTypes.DisplayText(notAvailableText: WebConstants.NotRecorded)
+                        </govuk-summary-list-row-value>
+                    </govuk-summary-list-row>
+                }
                 <govuk-summary-list-row id="overview-phone">
                     <govuk-summary-list-row-key>
                         Phone

@@ -28,11 +28,6 @@
                 @ViewData["Header"]
             </h1>
 
-            <p class="govuk-body">
-                Looking at school performance data is one way to see how well a school is doing.<br />
-                You should look at a range of information about a school before deciding if it's the right fit for your child.
-            </p>
-
             <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation" data-testid="sub-navigation-academic-performance">
                 <ul class="moj-sub-navigation__list">
                     <li class="moj-sub-navigation__item">
@@ -47,7 +42,7 @@
             <h2 class="govuk-heading-l">Pupils achieving grades in English and maths GCSEs for the previous academic year</h2>
 
             <p class="govuk-body">
-                Information in this section is for the 2024 to 2025 academic year.
+                @Model.AcademicYearInfoParagraph.
             </p>
 
             <govuk-details id="details-gcse-grades-explained">
@@ -172,7 +167,7 @@
                             <table id="all-gcse-data-overtime-table" class="govuk-table">
                                 <thead class="govuk-table__head">
                                     <tr class="govuk-table__row">
-                                        <th scope="col" class="govuk-table__header"></th>
+                                        <td scope="col" class="govuk-table__header"></td>
                                         @foreach (var dataset in Model.AllGcseOverTimeData.Datasets)
                                         {
                                             <th scope="col" class="govuk-table__header">@dataset.Label</th>
@@ -196,7 +191,7 @@
                     </div>
                 </div>
             </div>
-            <h3 class="govuk-heading-m">What you could ask schools about Key stage 4 results</h3>
+            <h3 class="govuk-heading-m">What you could ask schools about key stage 4 results</h3>
 
             <p class="govuk-body">
                 When researching, contacting or visiting a school, you may want to ask:

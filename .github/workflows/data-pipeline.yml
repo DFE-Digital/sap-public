@@ -42,7 +42,7 @@ jobs:
 
   ingest:
     name: Ingest Raw Data & Build Warehouse
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [enable-maintenance]
     if: ${{ always() && (needs.enable-maintenance.result == 'success' || needs.enable-maintenance.result == 'skipped') }}
   
@@ -101,13 +101,19 @@ jobs:
       # ==============================
       # 2. Install dependencies
       # ==============================
+      - name: Setup postgres client
+        uses: DFE-Digital/github-actions/install-postgres-client@master
+        with:
+          version: "18"
+
       - name: Install system dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-            postgresql-client \
             powershell \
             unzip
+          pg_dump --version | grep -q "pg_dump (PostgreSQL) 18\." \
+            || { echo "pg_dump is not version 18"; pg_dump --version; exit 1; }
       - name: Install .NET SDK
         uses: actions/setup-dotnet@v4
         with:
@@ -706,7 +712,7 @@ jobs:
       # ==============================
       - name: Create + upload review seed DB backup
         shell: bash
-        if: ${{ env.DEPLOY_ENV == 'test' || env.DEPLOY_ENV == 'production' }}
+        if: ${{ env.DEPLOY_ENV == 'test' }}
         run: |
           set -euo pipefail
 
@@ -783,7 +789,7 @@ jobs:
 
   health-check:
     name: Health check via temp URL
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [ingest]
     if: ${{ always() && ((inputs.environment || 'test') == 'test' || inputs.environment == 'production') }}
     outputs:

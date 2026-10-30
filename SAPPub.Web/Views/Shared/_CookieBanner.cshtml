@@ -17,12 +17,12 @@
     var returnUrl = Context?.Request?.Path + Context?.Request?.QueryString;
     var hideBanner = hasSelectedCookiePreference && hasSelectedHideBanner;
     string chosenOptionText = analyticsAllowed ? "accepted" : "rejected";
-    var cookiePageUrl = Url.Action("Preferences", "Cookies");
+    var cookiePageUrl = Url.Action("Preferences", "Cookies", new { Area = "" });
 }
 
 @if (!hasSelectedCookiePreference)
 {
-    <form asp-controller="Cookies" asp-action="CookieSettings" method="post">
+    <form asp-controller="Cookies" asp-action="CookieSettings" asp-area="" method="post">
         <input type="hidden" name="returnUrl" value="@returnUrl" />
         <govuk-cookie-banner id="full-cookie-banner" aria-label="Cookie on @ViewBag.ServiceName">
             <govuk-cookie-banner-message>
@@ -42,7 +42,7 @@
 }
 else if (!hideBanner)
 {
-    <form asp-controller="Cookies" asp-action="HideBanner" method="post">
+    <form asp-controller="Cookies" asp-action="HideBanner" asp-area="" method="post">
         <input type="hidden" name="returnUrl" value="@returnUrl" />
         <govuk-cookie-banner id="selection-made-cookie-banner" aria-label="Cookie on @ViewBag.ServiceName">
             <govuk-cookie-banner-message>

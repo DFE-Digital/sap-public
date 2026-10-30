@@ -254,6 +254,40 @@ public class MySchoolsTests(WebApplicationSetupFixture fixture) : BasePageTest(f
     }
 
     [Fact]
+    public async Task Page_RemoveLastSchool_ShowsBannerOnNoSchoolsPage_AndDoesNotShowAgain()
+    {
+        // Arrange
+        var cookieListOfUrns = new List<string> { "105574" };
+
+        await Page.Context.ClearCookiesAsync();
+        await Page.Context.AddCookiesAsync([new Cookie { Name = "MySchoolsList", Value = String.Join(",", cookieListOfUrns), Domain = "127.0.0.1", Path = "/", SameSite = SameSiteAttribute.Lax, Secure = true }]);
+
+        var response = await Page.GotoAsync(_pageUrl);
+        Assert.NotNull(response);
+
+        var checkbox = await Page.CheckboxStrictAsync("Secondary Schools", "Loreto High School Chorlton");
+        await checkbox.CheckAsync();
+
+        // Act
+        await Page.ClickButton("Remove selected schools");
+        await Page.ClickButton("Remove school from list");
+
+        // Assert
+        var successBanner = Page.Locator(".govuk-notification-banner");
+        Assert.True(await successBanner.IsVisibleAsync());
+
+        var bannerHeaderContent = await successBanner.Locator(".govuk-notification-banner__heading").TextContentAsync();
+        Assert.NotNull(bannerHeaderContent);
+        Assert.Equal("Saved school removed from your compare list", bannerHeaderContent.Trim());
+
+        // Act - revisit the page
+        await Page.GotoAsync(_pageUrl);
+
+        // Assert
+        Assert.False(await Page.Locator(".govuk-notification-banner").IsVisibleAsync());
+    }
+
+    [Fact]
     public async Task Page_SelectSchoolsToRemove_RedirectsToRemoveConfirm_CancelRemove_RedirectsToView()
     {
         // Arrange

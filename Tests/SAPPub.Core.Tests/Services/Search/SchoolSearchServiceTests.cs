@@ -85,7 +85,7 @@ public class SchoolSearchServiceTests
         var service = new SchoolSearchService(_mockSchoolSearchIndexReader.Object, _mockPostcodeLookupService.Object);
 
         // Act
-        var result = await service.SearchAsync(searchQuery);
+        var result = await service.SearchAsync(searchQuery, CancellationToken.None);
 
         // Assert
         Assert.Equal(SchoolSearchStatus.Success, result.Status);
@@ -136,7 +136,7 @@ public class SchoolSearchServiceTests
         var service = new SchoolSearchService(_mockSchoolSearchIndexReader.Object, _mockPostcodeLookupService.Object);
 
         // Act
-        var result = await service.SearchAsync(searchQuery);
+        var result = await service.SearchAsync(searchQuery, CancellationToken.None);
 
         // Assert
         Assert.Equal(SchoolSearchStatus.Success, result.Status);
@@ -180,7 +180,7 @@ public class SchoolSearchServiceTests
         var service = new SchoolSearchService(_mockSchoolSearchIndexReader.Object, _mockPostcodeLookupService.Object);
 
         // Act
-        var result = await service.SearchAsync(searchQuery);
+        var result = await service.SearchAsync(searchQuery, CancellationToken.None);
 
         // Assert
         Assert.Equal(SchoolSearchStatus.Success, result.Status);
@@ -208,7 +208,7 @@ public class SchoolSearchServiceTests
         var service = new SchoolSearchService(_mockSchoolSearchIndexReader.Object, _mockPostcodeLookupService.Object);
 
         // Act
-        var result = await service.SearchAsync(searchQuery);
+        var result = await service.SearchAsync(searchQuery, CancellationToken.None);
 
         // Assert
         Assert.Equal(SchoolSearchStatus.PostcodeNotFound, result.Status);
@@ -232,7 +232,7 @@ public class SchoolSearchServiceTests
         var service = new SchoolSearchService(_mockSchoolSearchIndexReader.Object, _mockPostcodeLookupService.Object);
 
         // Act
-        var result = await service.SearchAsync(searchQuery);
+        var result = await service.SearchAsync(searchQuery, CancellationToken.None);
 
         // Assert
         Assert.Equal(SchoolSearchStatus.InvalidPostcode, result.Status);
@@ -257,7 +257,7 @@ public class SchoolSearchServiceTests
         var service = new SchoolSearchService(_mockSchoolSearchIndexReader.Object, _mockPostcodeLookupService.Object);
 
         // Act
-        var result = await service.SearchAsync(searchQuery);
+        var result = await service.SearchAsync(searchQuery, CancellationToken.None);
 
         // Assert
         Assert.Equal(SchoolSearchStatus.Success, result.Status);
