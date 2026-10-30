@@ -1,5 +1,5 @@
 ARM_TEMPLATE_TAG=1.1.10
-RG_TAGS={"Product" : "Teacher services cloud"}
+RG_TAGS={"Product" : "School Profiles", "Service Offering" : "School Profiles"}
 REGION=UK South
 SERVICE_NAME=sap-public
 SERVICE_SHORT=sappub
@@ -11,6 +11,9 @@ help:
 .PHONY: test
 test: test-cluster
 	$(eval include global_config/test.sh)
+
+preapproval: production-cluster
+	$(eval include global_config/preapproval.sh)
 
 .PHONY: review
 review: test-cluster
