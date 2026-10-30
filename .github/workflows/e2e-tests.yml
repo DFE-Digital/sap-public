@@ -43,11 +43,13 @@ jobs:
           BASE_URL: ${{ inputs.base_url }}
           TEST_DATA_VERSION: ${{ inputs.test_data_version }}
         run: |
-          dotnet test Tests/SAPPub.E2E.Tests/SAPPub.E2E.Tests.csproj \
+          dotnet run --project Tests/SAPPub.E2E.Tests/SAPPub.E2E.Tests.csproj \
             --no-build \
             --configuration Release \
-            --results-directory "TestResults" \
-            --logger "trx;LogFileName=E2E-tests.trx"
+            --show-test-results all \
+            -- \
+            --report-xunit-trx \
+            --report-xunit-trx-filename E2E-tests.trx
 
       - name: Upload E2E Test Result Files
         uses: actions/upload-artifact@v4

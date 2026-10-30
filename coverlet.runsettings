@@ -1,42 +1,42 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <RunSettings>
-  <DataCollectionRunSettings>
-    <DataCollectors>
-      <DataCollector friendlyName="XPlat code coverage">
-        <Configuration>
-          <Format>cobertura</Format>
-                  
-          <!-- Exclude test assemblies and generated code -->
-			<ExcludeByFile>
-				**/Migrations/**/*.cs,
-				**/Views/**/*.cshtml.cs,
-				**/obj/**/*.cs,
-				**/Program.cs
-			</ExcludeByFile>
+	<DataCollectionRunSettings>
+		<DataCollectors>
+			<DataCollector friendlyName="Code Coverage">
+				<Configuration>
+					<CodeCoverage>
+						<Format>cobertura</Format>
 
-			<ExcludeByAttribute>
-				Obsolete,
-				GeneratedCodeAttribute,
-				CompilerGeneratedAttribute,
-				ExcludeFromCodeCoverageAttribute
-			</ExcludeByAttribute>
+						<ExcludeByFile>
+							**/Migrations/**/*.cs,
+							**/Views/**/*.cshtml.cs,
+							**/obj/**/*.cs,
+							**/Program.cs
+						</ExcludeByFile>
 
-			<Exclude>
-				[*]*.Migrations.*,
-				[*]AspNetCoreGeneratedDocument.*,
-				[*]*ViewStart*,
-				[*]*GlobalUsings*,
-				[*.Tests]*
-			</Exclude>
+						<ExcludeByAttribute>
+							Obsolete,
+							GeneratedCodeAttribute,
+							CompilerGeneratedAttribute,
+							ExcludeFromCodeCoverageAttribute
+						</ExcludeByAttribute>
 
-          <!-- Additional settings -->
-          <SkipAutoProps>true</SkipAutoProps>
-          <DeterministicReport>true</DeterministicReport>
-          <UseSourceLink>true</UseSourceLink>
-          <IncludeTestAssembly>false</IncludeTestAssembly>
-          <SingleHit>false</SingleHit>
-        </Configuration>
-      </DataCollector>
-    </DataCollectors>
-  </DataCollectionRunSettings>
+						<Exclude>
+							[*]*.Migrations.*,
+							[*]AspNetCoreGeneratedDocument.*,
+							[*]*ViewStart*,
+							[*]*GlobalUsings*,
+							[*.Tests]*
+						</Exclude>
+
+						<SkipAutoProps>true</SkipAutoProps>
+						<DeterministicReport>true</DeterministicReport>
+						<UseSourceLink>true</UseSourceLink>
+
+						<IncludeTestAssembly>false</IncludeTestAssembly>
+					</CodeCoverage>
+				</Configuration>
+			</DataCollector>
+		</DataCollectors>
+	</DataCollectionRunSettings>
 </RunSettings>
