@@ -138,6 +138,10 @@
         .govuk-service-navigation__service-name a,
         .govuk-service-navigation__link,
         .govuk-service-navigation__link:visited {
+            &:focus {
+                color: #000;
+            }
+
             color: #ffffff;
         }
     }
@@ -511,7 +515,7 @@
     }
 }
 
-// Next steps 
+// Next steps
 
 #overview-next-steps {
 
@@ -575,7 +579,7 @@
     background-color: #ffea8a;
 }
 
-// Next steps 
+// Next steps
 
 #overview-next-steps {
 
