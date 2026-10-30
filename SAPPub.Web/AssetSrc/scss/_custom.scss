@@ -279,21 +279,21 @@
     width: 100%;
 }
 
-    .map-address .map-container {
-        width: 100%;
-        box-sizing: border-box;
-    }
+.map-address .map-container {
+    width: 100%;
+    box-sizing: border-box;
+}
 
-    .map-address #map {
-        box-sizing: border-box;
-        height: 200px;
-        min-height: 200px;
-        width: 100%;
-        border-radius: 0px;
-        border-left: 1px solid #b1b4b6;
-        border-right: 1px solid #b1b4b6;
-        border-top: 1px solid #b1b4b6;
-    }
+.map-address #map {
+    box-sizing: border-box;
+    height: 200px;
+    min-height: 200px;
+    width: 100%;
+    border-radius: 0px;
+    border-left: 1px solid #b1b4b6;
+    border-right: 1px solid #b1b4b6;
+    border-top: 1px solid #b1b4b6;
+}
 
 .ataglance-address-row {
     display: grid;
@@ -323,13 +323,13 @@
     margin-bottom: 30px;
 }
 
-    .ataglance-card .govuk-summary-list {
-        margin-bottom: 0;
-    }
+.ataglance-card .govuk-summary-list {
+    margin-bottom: 0;
+}
 
-    .ataglance-card .govuk-summary-list__key {
-        width: 30%;
-    }
+.ataglance-card .govuk-summary-list__key {
+    width: 30%;
+}
 
 // Signposted About link
 
