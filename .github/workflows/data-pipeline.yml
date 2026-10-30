@@ -712,7 +712,7 @@ jobs:
       # ==============================
       - name: Create + upload review seed DB backup
         shell: bash
-        if: ${{ env.DEPLOY_ENV == 'test' || env.DEPLOY_ENV == 'production' }}
+        if: ${{ env.DEPLOY_ENV == 'test' }}
         run: |
           set -euo pipefail
 
