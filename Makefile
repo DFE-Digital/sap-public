@@ -1,5 +1,5 @@
 ARM_TEMPLATE_TAG=1.1.10
-RG_TAGS={"Product" : "Teacher services cloud"}
+RG_TAGS={"Product" : "School Profiles", "Service Offering" : "School Profiles"}
 REGION=UK South
 SERVICE_NAME=sap-public
 SERVICE_SHORT=sappub
@@ -8,15 +8,17 @@ DOCKER_REPOSITORY=ghcr.io/dfe-digital/sap-public
 help:
 	@grep -E '^[a-zA-Z\._\-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-.PHONY: test
-test: test-cluster
-	$(eval include global_config/test.sh)
-
 .PHONY: review
 review: test-cluster
 	$(if ${PR_NUMBER},,$(error Missing PR_NUMBER))
 	$(eval ENVIRONMENT=pr-${PR_NUMBER})
 	$(eval include global_config/review.sh)
+
+test: test-cluster
+	$(eval include global_config/test.sh)
+
+preapproval: production-cluster
+	$(eval include global_config/preapproval.sh)
 
 production: production-cluster
 	$(if $(or ${SKIP_CONFIRM}, ${CONFIRM_PRODUCTION}), , $(error Missing CONFIRM_PRODUCTION=yes))
