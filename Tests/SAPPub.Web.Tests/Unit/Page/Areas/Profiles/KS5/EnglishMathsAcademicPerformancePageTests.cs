@@ -6,6 +6,7 @@ using SAPPub.Core.ServiceModels.Common;
 using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Core.ValueObjects;
+using SAPPub.Web.Constants;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
 
 namespace SAPPub.Web.Tests.Unit.Page.Areas.Profiles;
@@ -132,47 +133,78 @@ public class EnglishMathsAcademicPerformancePageTests : PageTestsBase
         Assert.NotNull(techGuidanceLink);
         Assert.Contains("https://www.gov.uk/government/publications/16-to-19-accountability-headline-measures-technical-guide", techGuidanceLink.GetAttribute("href"));
         Assert.Contains("16 to 19 accountability technical guide", techGuidanceLink.InnerHtml.Trim());
-    }
+    }    
 
     [Fact]
-    public async Task EnglishMathsQualifications_Displays_ProgressScore()
+    public async Task English_Qualifications_Displays_ProgressScore()
     {
         var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, _pageRoute);
 
         // Act
         var doc = await Fixture.BrowseToPage(url);
 
-        Assert.Contains("Number of students", doc.GetTableHeaderContentByIdAndIndex("english-maths-scores-and-progress", 0, 1));
-        Assert.Contains("School or college", doc.GetTableHeaderContentByIdAndIndex("english-maths-scores-and-progress", 0, 2));
-        Assert.Contains($"{_laName} average", doc.GetTableHeaderContentByIdAndIndex("english-maths-scores-and-progress", 0, 3));
-        Assert.Contains("England average", doc.GetTableHeaderContentByIdAndIndex("english-maths-scores-and-progress", 0, 4));
+        // Assert - page headings are H3
+        var h3Elements = doc.GetElementsByTagName("h3");
+        Assert.Contains(h3Elements, x => x.TextContent.Trim() == "English");
 
         var expectedModel = GetEnglishMathsQualificationModel();
 
-        Assert.Equal("Average English progress", doc.GetTableHeaderContentByIdAndIndex("english-maths-scores-and-progress", 1, 0));
-        Assert.Equal(expectedModel.AverageEnglishProgress!.NumberOfStudents!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("english-maths-scores-and-progress", 1, 0));
-        Assert.Equal(expectedModel.AverageEnglishProgress!.SchoolOrCollege!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("english-maths-scores-and-progress", 1, 1));
-        Assert.Equal(expectedModel.AverageEnglishProgress!.LaAverage!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("english-maths-scores-and-progress", 1, 2));
-        Assert.Equal(expectedModel.AverageEnglishProgress!.EnglandAverage!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("english-maths-scores-and-progress", 1, 3));
+        // Assert no of students completed qualification
+        var noOfStudentsInfo = doc.QuerySelector("#no-of-students-included-for-english-info");
+        Assert.NotNull(noOfStudentsInfo);
+        Assert.Equal($"Number of students included for english: {expectedModel.AverageEnglishProgress.NumberOfStudents.Value.ToString()}", noOfStudentsInfo.TextContent.Trim());
 
-        Assert.Equal("Entered for English qualification", doc.GetTableHeaderContentByIdAndIndex("english-maths-scores-and-progress", 2, 0));
-        Assert.Equal(string.Empty, doc.GetTableCellContentByIdAndIndex("english-maths-scores-and-progress", 2, 0));
-        Assert.Equal(expectedModel.EnteredForEnglishQualification!.SchoolOrCollege!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("english-maths-scores-and-progress", 2, 1));
-        Assert.Equal(expectedModel.EnteredForEnglishQualification!.LaAverage!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("english-maths-scores-and-progress", 2, 2));
-        Assert.Equal(expectedModel.EnteredForEnglishQualification!.EnglandAverage!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("english-maths-scores-and-progress", 2, 3));
+        // Assert table contents
+        Assert.Contains("Progress score", doc.GetTableHeaderContentByIdAndIndex("english-scores-and-progres", 0, 1));
+        Assert.Contains("Students entered", doc.GetTableHeaderContentByIdAndIndex("english-scores-and-progres", 0, 2));
 
-        Assert.Equal("Average maths progress", doc.GetTableHeaderContentByIdAndIndex("english-maths-scores-and-progress", 3, 0));
-        Assert.Equal(expectedModel.AverageMathsProgress!.NumberOfStudents!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("english-maths-scores-and-progress", 3, 0));
-        Assert.Equal(expectedModel.AverageMathsProgress!.SchoolOrCollege!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("english-maths-scores-and-progress", 3, 1));
-        Assert.Equal(expectedModel.AverageMathsProgress!.LaAverage!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("english-maths-scores-and-progress", 3, 2));
-        Assert.Equal(expectedModel.AverageMathsProgress!.EnglandAverage!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("english-maths-scores-and-progress", 3, 3));
+        Assert.Equal("School or college", doc.GetTableHeaderContentByIdAndIndex("english-scores-and-progres", 1, 0));
+        Assert.Equal(expectedModel.AverageEnglishProgress.SchoolOrCollege.Value.ToString(), doc.GetTableCellContentByIdAndIndex("english-scores-and-progres", 1, 0));
+        Assert.Equal(expectedModel.EnteredForEnglishQualification.SchoolOrCollege.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("english-scores-and-progres", 1, 1));
 
-        Assert.Equal("Entered for maths qualification", doc.GetTableHeaderContentByIdAndIndex("english-maths-scores-and-progress", 4, 0));
-        Assert.Equal(string.Empty, doc.GetTableCellContentByIdAndIndex("english-maths-scores-and-progress", 4, 0));
-        Assert.Equal(expectedModel.EnteredForMathsQualification!.SchoolOrCollege!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("english-maths-scores-and-progress", 4, 1));
-        Assert.Equal(expectedModel.EnteredForMathsQualification!.LaAverage!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("english-maths-scores-and-progress", 4, 2));
-        Assert.Equal(expectedModel.EnteredForMathsQualification!.EnglandAverage!.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("english-maths-scores-and-progress", 4, 3));
+        Assert.Equal($"{_laName} average", doc.GetTableHeaderContentByIdAndIndex("english-scores-and-progres", 2, 0));
+        Assert.Equal(expectedModel.AverageEnglishProgress.LaAverage.Value.ToString(), doc.GetTableCellContentByIdAndIndex("english-scores-and-progres", 2, 0));
+        Assert.Equal(expectedModel.EnteredForEnglishQualification.LaAverage.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("english-scores-and-progres", 2, 1));
 
+        Assert.Equal("England average", doc.GetTableHeaderContentByIdAndIndex("english-scores-and-progres", 3, 0));
+        Assert.Equal(expectedModel.AverageEnglishProgress.EnglandAverage.Value.ToString(), doc.GetTableCellContentByIdAndIndex("english-scores-and-progres", 3, 0));
+        Assert.Equal(expectedModel.EnteredForEnglishQualification.EnglandAverage.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("english-scores-and-progres", 3, 1));
+    }
+
+    [Fact]
+    public async Task Maths_Qualifications_Displays_ProgressScore()
+    {
+        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert - page headings are H3
+        var h3Elements = doc.GetElementsByTagName("h3");
+        Assert.Contains(h3Elements, x => x.TextContent.Trim() == "Maths");
+
+        var expectedModel = GetEnglishMathsQualificationModel();
+
+        // Assert no of students completed qualification
+        var noOfStudentsInfo = doc.QuerySelector("#no-of-students-included-for-maths-info");
+        Assert.NotNull(noOfStudentsInfo);
+        Assert.Equal($"Number of students included for maths: {expectedModel.AverageMathsProgress.NumberOfStudents.Value.ToString()}", noOfStudentsInfo.TextContent.Trim());
+
+        // Assert table contents
+        Assert.Contains("Progress score", doc.GetTableHeaderContentByIdAndIndex("maths-scores-and-progres", 0, 1));
+        Assert.Contains("Students entered", doc.GetTableHeaderContentByIdAndIndex("maths-scores-and-progres", 0, 2));
+
+        Assert.Equal("School or college", doc.GetTableHeaderContentByIdAndIndex("maths-scores-and-progres", 1, 0));
+        Assert.Equal(expectedModel.AverageMathsProgress.SchoolOrCollege.Value.ToString(), doc.GetTableCellContentByIdAndIndex("maths-scores-and-progres", 1, 0));
+        Assert.Equal(expectedModel.EnteredForMathsQualification.SchoolOrCollege.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("maths-scores-and-progres", 1, 1));
+
+        Assert.Equal($"{_laName} average", doc.GetTableHeaderContentByIdAndIndex("maths-scores-and-progres", 2, 0));
+        Assert.Equal(expectedModel.AverageMathsProgress.LaAverage.Value.ToString(), doc.GetTableCellContentByIdAndIndex("maths-scores-and-progres", 2, 0));
+        Assert.Equal(expectedModel.EnteredForMathsQualification.LaAverage.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("maths-scores-and-progres", 2, 1));
+
+        Assert.Equal("England average", doc.GetTableHeaderContentByIdAndIndex("maths-scores-and-progres", 3, 0));
+        Assert.Equal(expectedModel.AverageMathsProgress.EnglandAverage!.Value.ToString(), doc.GetTableCellContentByIdAndIndex("maths-scores-and-progres", 3, 0));
+        Assert.Equal(expectedModel.EnteredForMathsQualification.EnglandAverage.Value.ToString() + "%", doc.GetTableCellContentByIdAndIndex("maths-scores-and-progres", 3, 1));
     }
 
     [Fact]
