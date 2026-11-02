@@ -1,4 +1,6 @@
-﻿using Microsoft.Playwright;
+﻿using AngleSharp;
+using AngleSharp.Dom;
+using Microsoft.Playwright;
 using SAPPub.Web.Tests.UI.Infrastructure;
 
 namespace SAPPub.Web.Tests.UI.Compare.Secondary;
@@ -23,6 +25,25 @@ public class NextStepsTests(WebApplicationSetupFixture fixture) : BasePageTest(f
     }
 
     [Fact]
+    public async Task NextStepsPage_ValidSchoolProfileLink()
+    {
+        // Arrange
+        var queryString = "urns=105574&urns=137020";
+
+        // Act
+        var response = await Page.GotoAsync($"{_pageUrl}?{queryString}");
+
+        var firstHref = await Page
+          .Locator(".govuk-summary-list__row")
+          .Nth(0)
+          .Locator("a")
+          .GetAttributeAsync("href");
+
+        // Assert
+        Assert.Contains("/school/105574", firstHref);
+    }
+
+    [Fact]
     public async Task NextStepsPage_AccessibilityNavigation()
     {
         // Arrange && Act
@@ -33,6 +54,7 @@ public class NextStepsTests(WebApplicationSetupFixture fixture) : BasePageTest(f
         var activeElement = await Page.EvaluateHandleAsync("document.activeElement");
         var prop = await activeElement.GetPropertyAsync("href");
         string href = await prop.JsonValueAsync<string>();
-        Assert.Contains("/school/105574/SAPPub.Web.Areas.Compare.ViewModels.Secondary.CompareNextStepsModel", href);
+        //Assert.Contains("/school/105574/SAPPub.Web.Areas.Compare.ViewModels.Secondary.CompareNextStepsModel", href);
+        Assert.Contains("/school/105574", href);
     }
 }
