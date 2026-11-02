@@ -5,9 +5,10 @@
 {
     return;
 }
+<h4 class="govuk-heading-m">@ViewData["Caption"]</h4>
 
 <table class="govuk-table">
-    <caption class="govuk-table__caption govuk-table__caption--m">@ViewData["Caption"]</caption>
+    <caption class="govuk-table__caption govuk-table__caption--m govuk-visually-hidden">@ViewData["Caption"]</caption>
     <thead class="govuk-table__head">
         <tr class="govuk-table__row">
             <th scope="col" class="govuk-table__header govuk-!-width-one-third">Subject</th>
