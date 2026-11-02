@@ -340,8 +340,8 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
                 ? "About the school or college"
                 : "About the school",
             model.IsKS5 && !model.IsKS2 && !model.IsKS4
-                ? "Find out more about the school or college, including policies on school uniform and SEN."
-                : "Find out more about the school, including policies on school uniform and SEN.",
+                ? "Find out more about the school or college, including location and contact details."
+                : "Find out more about the school, including location and contact details",
             RouteConstants.AboutTheSchool);
 
         // Admissions
