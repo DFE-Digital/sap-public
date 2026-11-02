@@ -139,6 +139,10 @@ $font-size-mobile: 16px;
         .govuk-service-navigation__service-name a,
         .govuk-service-navigation__link,
         .govuk-service-navigation__link:visited {
+            &:focus {
+                color: #000;
+            }
+
             color: #ffffff;
         }
     }
@@ -516,7 +520,7 @@ body:not(.js-enabled) .ataglance-address-row {
     }
 }
 
-// Next steps 
+// Next steps
 
 #overview-next-steps {
 
@@ -580,7 +584,7 @@ body:not(.js-enabled) .ataglance-address-row {
     background-color: #ffea8a;
 }
 
-// Next steps 
+// Next steps
 
 #overview-next-steps {
 
