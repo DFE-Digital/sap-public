@@ -146,39 +146,39 @@
                 </govuk-details-text>
             </govuk-details>
 
-        @if (Model.ShowProgress8NotAvailableInfo)
-        {
-            @await Html.PartialAsync("_Progress8NotAvailableMessage", null, new ViewDataDictionary(ViewData) { { "dataTestId", "prog8-custom-card-current" } })
-        }
-        else
-        {
-            @await Html.PartialAsync("_Progress8Scores", Model.YearValues.CurrentYear, new ViewDataDictionary(ViewData) { { "id", "prog8-scores-current" } })
-        }
+            @if (Model.ShowProgress8NotAvailableInfo)
+            {
+                @await Html.PartialAsync("_Progress8NotAvailableMessage", null, new ViewDataDictionary(ViewData) { { "dataTestId", "prog8-custom-card-current" } })
+            }
+            else
+            {
+                @await Html.PartialAsync("_Progress8Scores", Model.YearValues.CurrentYear, new ViewDataDictionary(ViewData) { { "id", "prog8-scores-current" } })
+            }
 
-            <govuk-accordion id="prog8-previous-years-accordion" heading-level="3" hide-all-sections-text="Hide all sections" show-all-sections-text="Show all sections" hide-section-text="Hide" show-section-text="Show more">
+            <govuk-accordion id="prog8-previous-years-accordion" heading-level="5" hide-all-sections-text="Hide all sections" show-all-sections-text="Show all sections" hide-section-text="Hide" show-section-text="Show more">
                 <govuk-accordion-item expanded="false">
                     <govuk-accordion-item-heading>Progress 8 for previous years</govuk-accordion-item-heading>
                     <govuk-accordion-item-content>
 
-                    <h4 class="govuk-heading-m">@SAPPub.Web.Helpers.Ks4AcademicYearHelper.GetDisplayName(Model.YearValues.PreviousYear!.AcademicYearSelection) academic year</h4>
-                    @if (Model.ShowProgress8NotAvailableInfoForPreviousYear)
-                    {
-                        @await Html.PartialAsync("_Progress8NotAvailableMessage", null, new ViewDataDictionary(ViewData) { { "dataTestId", "prog8-custom-card-prev" } })
-                    }
-                    else
-                    {
-                        @await Html.PartialAsync("_Progress8Scores", Model.YearValues.PreviousYear, new ViewDataDictionary(ViewData) { { "id", "prog8-scores-prev" } })
-                    }
+                        <h6 class="govuk-heading-m">@SAPPub.Web.Helpers.Ks4AcademicYearHelper.GetDisplayName(Model.YearValues.PreviousYear!.AcademicYearSelection) academic year</h6>
+                        @if (Model.ShowProgress8NotAvailableInfoForPreviousYear)
+                        {
+                            @await Html.PartialAsync("_Progress8NotAvailableMessage", null, new ViewDataDictionary(ViewData) { { "dataTestId", "prog8-custom-card-prev" } })
+                        }
+                        else
+                        {
+                            @await Html.PartialAsync("_Progress8Scores", Model.YearValues.PreviousYear, new ViewDataDictionary(ViewData) { { "id", "prog8-scores-prev" } })
+                        }
 
-                    <h4 class="govuk-heading-m">@SAPPub.Web.Helpers.Ks4AcademicYearHelper.GetDisplayName(Model.YearValues.TwoYearsAgo!.AcademicYearSelection) academic year</h4>
-                    @if (Model.ShowProgress8NotAvailableInfoForTwoYearsAgo)
-                    {
-                        @await Html.PartialAsync("_Progress8NotAvailableMessage", null, new ViewDataDictionary(ViewData) { { "dataTestId", "prog8-custom-card-prev2" } })
-                    }
-                    else
-                    {
-                        @await Html.PartialAsync("_Progress8Scores", Model.YearValues.TwoYearsAgo, new ViewDataDictionary(ViewData) { { "id", "prog8-scores-prev2" } })
-                    }
+                        <h6 class="govuk-heading-m">@SAPPub.Web.Helpers.Ks4AcademicYearHelper.GetDisplayName(Model.YearValues.TwoYearsAgo!.AcademicYearSelection) academic year</h6>
+                        @if (Model.ShowProgress8NotAvailableInfoForTwoYearsAgo)
+                        {
+                            @await Html.PartialAsync("_Progress8NotAvailableMessage", null, new ViewDataDictionary(ViewData) { { "dataTestId", "prog8-custom-card-prev2" } })
+                        }
+                        else
+                        {
+                            @await Html.PartialAsync("_Progress8Scores", Model.YearValues.TwoYearsAgo, new ViewDataDictionary(ViewData) { { "id", "prog8-scores-prev2" } })
+                        }
 
                     </govuk-accordion-item-content>
                 </govuk-accordion-item>
@@ -187,9 +187,9 @@
         
             <h4 class="govuk-heading-m">Attainment 8</h4>
 
-        <p class="govuk-body">
-            Attainment 8 is used to assess a pupil's average achievement across their 8 GCSE-level subjects.
-        </p>
+            <p class="govuk-body">
+                Attainment 8 is used to assess a pupil's average achievement across their 8 GCSE-level subjects.
+            </p>
 
             <govuk-details id="details-attainment8">
                 <govuk-details-summary>
@@ -212,10 +212,10 @@
                         </li>
                     </ul>
 
-                <p class="govuk-body">
-                    Each GCSE grade is given a point score (for example grade 9 = 9 points, grade 8 = 8 points, and so on).
-                    The scores from the 8 subjects (with English and maths counting twice) are added together to give the Attainment 8 score.
-                </p>
+                    <p class="govuk-body">
+                        Each GCSE grade is given a point score (for example grade 9 = 9 points, grade 8 = 8 points, and so on).
+                        The scores from the 8 subjects (with English and maths counting twice) are added together to give the Attainment 8 score.
+                    </p>
 
                     <p class="govuk-body">
                         If a student scores high grades across these subjects, their Attainment 8 score will be higher.  The maximum score a pupil can have is 90.
@@ -230,33 +230,33 @@
                     <govuk-accordion-item-heading>Attainment 8 for previous years</govuk-accordion-item-heading>
                     <govuk-accordion-item-content>
 
-                    <h4 class="govuk-heading-m">@SAPPub.Web.Helpers.Ks4AcademicYearHelper.GetDisplayName(Model.YearValues.PreviousYear!.AcademicYearSelection) academic year</h4>
-                    @await Html.PartialAsync("_Attainment8Scores", Model.YearValues.PreviousYear, new ViewDataDictionary(ViewData) { { "id", "attainment8-scores-prev" } })
-                    <h4 class="govuk-heading-m">@SAPPub.Web.Helpers.Ks4AcademicYearHelper.GetDisplayName(Model.YearValues.TwoYearsAgo!.AcademicYearSelection) academic year</h4>
-                    @await Html.PartialAsync("_Attainment8Scores", Model.YearValues.TwoYearsAgo, new ViewDataDictionary(ViewData) { { "id", "attainment8-scores-prev2" } })
+                        <h4 class="govuk-heading-m">@SAPPub.Web.Helpers.Ks4AcademicYearHelper.GetDisplayName(Model.YearValues.PreviousYear!.AcademicYearSelection) academic year</h4>
+                        @await Html.PartialAsync("_Attainment8Scores", Model.YearValues.PreviousYear, new ViewDataDictionary(ViewData) { { "id", "attainment8-scores-prev" } })
+                        <h4 class="govuk-heading-m">@SAPPub.Web.Helpers.Ks4AcademicYearHelper.GetDisplayName(Model.YearValues.TwoYearsAgo!.AcademicYearSelection) academic year</h4>
+                        @await Html.PartialAsync("_Attainment8Scores", Model.YearValues.TwoYearsAgo, new ViewDataDictionary(ViewData) { { "id", "attainment8-scores-prev2" } })
 
                     </govuk-accordion-item-content>
                 </govuk-accordion-item>
             </govuk-accordion>
 
            
-            <govuk-accordion heading-level="3" id="other-pupil-characteristics-accordion" hide-all-sections-text="Hide all sections" show-all-sections-text="Show all sections" hide-section-text="Hide" show-section-text="Show more">
+            <govuk-accordion heading-level="5" id="other-pupil-characteristics-accordion" hide-all-sections-text="Hide all sections" show-all-sections-text="Show all sections" hide-section-text="Hide" show-section-text="Show more">
                 <govuk-accordion-item>
                     <govuk-accordion-item-heading>Attainment 8 by pupil characteristic</govuk-accordion-item-heading>
 
 
                     <govuk-accordion-item-content>
-                        <h4 class="govuk-heading-m">Girls and boys</h4>
+                        <h6 class="govuk-heading-m">Girls and boys</h6>
                         @await Html.PartialAsync("_SeriesMeasureTableWithGradeContext", Model.BreakdownGirlsBoys)
 
-                        <h4 class="govuk-heading-m">English as an additional language (EAL)</h4>
+                        <h6 class="govuk-heading-m">English as an additional language (EAL)</h6>
                         <p class="govuk-body">
                             A child is recorded as having English as an additional language (EAL) if they hear or use a language other than English at home.
                             This does not show how well a child speaks English and does not mean they are new to the UK.
                         </p>
                         @await Html.PartialAsync("_SeriesMeasureTableWithGradeContext", Model.BreakdownEAL)
 
-                        <h4 class="govuk-heading-m">Non-mobile pupils</h4>
+                        <h6 class="govuk-heading-m">Non-mobile pupils</h6>
                         <p class="govuk-body">
                             Non‑mobile pupils are pupils who stayed at the same school for their final 2 years of secondary school, years 10 and 11.
                         </p>
@@ -269,25 +269,25 @@
                                 Compare state-funded local and national averages for non-disadvantaged pupils
                             </govuk-details-summary>
                             <govuk-details-text>
-                                <h4 class="govuk-heading-s">Non-disadvantaged pupils</h4>
+                                <h6 class="govuk-heading-s">Non-disadvantaged pupils</h6>
                                 @await Html.PartialAsync("_SeriesMeasureTableWithGradeContext", Model.BreakdownNonDisadvantaged)
                             </govuk-details-text>
                         </govuk-details>
 
-                    <govuk-details id="disadvantaged-previous-years-details">
-                        <govuk-details-summary>
-                            Show previous years data for disadvantaged pupils
-                        </govuk-details-summary>
-                        <govuk-details-text>
-                            <h4 class="govuk-heading-s">@SAPPub.Web.Helpers.Ks4AcademicYearHelper.GetDisplayName(Model.YearValues.PreviousYear!.AcademicYearSelection) academic year</h4>
-                            @await Html.PartialAsync("_SeriesMeasureTableWithGradeContext", Model.YearValues.PreviousYear?.BreakdownDisadvantaged)
-                            <h4 class="govuk-heading-s">@SAPPub.Web.Helpers.Ks4AcademicYearHelper.GetDisplayName(Model.YearValues.TwoYearsAgo!.AcademicYearSelection) academic year</h4>
-                            @await Html.PartialAsync("_SeriesMeasureTableWithGradeContext", Model.YearValues.TwoYearsAgo?.BreakdownDisadvantaged)
-                        </govuk-details-text>
-                    </govuk-details>
+                        <govuk-details id="disadvantaged-previous-years-details">
+                            <govuk-details-summary>
+                                Show previous years data for disadvantaged pupils
+                            </govuk-details-summary>
+                            <govuk-details-text>
+                                <h6 class="govuk-heading-s">@SAPPub.Web.Helpers.Ks4AcademicYearHelper.GetDisplayName(Model.YearValues.PreviousYear!.AcademicYearSelection) academic year</h6>
+                                @await Html.PartialAsync("_SeriesMeasureTableWithGradeContext", Model.YearValues.PreviousYear?.BreakdownDisadvantaged)
+                                <h6 class="govuk-heading-s">@SAPPub.Web.Helpers.Ks4AcademicYearHelper.GetDisplayName(Model.YearValues.TwoYearsAgo!.AcademicYearSelection) academic year</h6>
+                                @await Html.PartialAsync("_SeriesMeasureTableWithGradeContext", Model.YearValues.TwoYearsAgo?.BreakdownDisadvantaged)
+                            </govuk-details-text>
+                        </govuk-details>
 
 
-                        <h4 class="govuk-heading-m">Low, medium and high prior attainers</h4>
+                        <h6 class="govuk-heading-m">Low, medium and high prior attainers</h6>
                         <p class="govuk-body">
                             Prior attainment is based on a pupil's attainment in English reading and maths national curriculum tests at the end of KS2. At the end of key stage 1 (year 2), most pupils are assessed in English reading, English writing and maths.
                         </p>
@@ -318,7 +318,6 @@
                     </govuk-accordion-item-content>
                 </govuk-accordion-item>
             </govuk-accordion>
-
 
             @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.SecondaryAcademicPerformanceAttainmentAndProgress))
 
