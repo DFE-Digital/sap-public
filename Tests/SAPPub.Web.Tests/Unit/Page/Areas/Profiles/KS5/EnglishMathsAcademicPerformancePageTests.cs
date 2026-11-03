@@ -152,7 +152,7 @@ public class EnglishMathsAcademicPerformancePageTests : PageTestsBase
         // Assert no of students completed qualification
         var noOfStudentsInfo = doc.QuerySelector("#no-of-students-included-for-english-info");
         Assert.NotNull(noOfStudentsInfo);
-        Assert.Equal($"Number of students included for english: {expectedModel.AverageEnglishProgress.NumberOfStudents.Value.ToString()}", noOfStudentsInfo.TextContent.Trim());
+        Assert.Equal($"Number of students included for English: {expectedModel.AverageEnglishProgress.NumberOfStudents.Value.ToString()}", noOfStudentsInfo.TextContent.Trim());
 
         // Assert table contents
         Assert.Contains("Progress score", doc.GetTableHeaderContentByIdAndIndex("english-scores-and-progres", 0, 1));
