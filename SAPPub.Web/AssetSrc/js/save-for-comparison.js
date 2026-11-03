@@ -39,8 +39,7 @@
             toggleNotificationBanner(result.isLimitReached);
 
         }
-        catch
-        {
+        catch {
             // fallback to normal form submission
             form.submit();
         }
@@ -55,8 +54,10 @@
             return;
         }
 
-        button.innerHTML = `<span>${isSaved ? savedText : saveText}</span>`;
+        const text = isSaved ? savedText : saveText;
+        button.innerHTML = `<span>${text}</span>`;
         button.classList.toggle("saved", isSaved);
+        window.sapAnnounce(text);
     }
 
     function toggleNotificationBanner(showBanner) {

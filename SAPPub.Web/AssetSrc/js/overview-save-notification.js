@@ -1,29 +1,16 @@
 ﻿(function () {
     function init() {
-        const notification =
-            document.querySelector('.overview-save-notification');
+        const banner = document.querySelector('[id$="-add-success"], [id$="-remove-success]');
 
-        if (!notification) {
+        if (!banner) {
             return;
         }
 
-        notification.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-        });
+        banner.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-        const banner =
-            notification.querySelector('.govuk-notification-banner');
-
-        if (banner) {
-            banner.setAttribute('tabindex', '-1');
-            banner.focus({
-                preventScroll: true
-            });
-        }
+        banner.setAttribute('tabindex', '-1');
+        banner.focus({ preventScroll: true });
     }
 
-    document.addEventListener(
-        'DOMContentLoaded',
-        init);
+    document.addEventListener('DOMContentLoaded', init);
 })();

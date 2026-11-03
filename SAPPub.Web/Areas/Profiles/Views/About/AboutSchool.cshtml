@@ -523,5 +523,6 @@
     </div>
 </div>
 @section Scripts {
-    <script nonce="Html.ScriptNonce().ToString()" src="~/js/map-schools.js"></script>
+    <script nonce="@Html.ScriptNonce().ToString()" src="~/js/map-schools.js"></script>
+    <script nonce="@Html.ScriptNonce().ToString()" src="~/js/overview-save-notification.js"></script>
 }
