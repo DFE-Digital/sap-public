@@ -1,5 +1,5 @@
 ﻿using Microsoft.Playwright;
-using Microsoft.Playwright.Xunit;
+using Microsoft.Playwright.Xunit.v3;
 
 namespace SAPPub.E2E.Tests.Infrastructure;
 
@@ -26,7 +26,7 @@ public abstract class BasePageTest : PageTest
         };
     }
 
-    public override async Task InitializeAsync()
+    public override async ValueTask InitializeAsync()
     {
         await base.InitializeAsync();
 

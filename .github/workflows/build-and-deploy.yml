@@ -120,14 +120,18 @@ jobs:
           for proj in $TEST_PROJECTS; do
             echo "=== Running tests in $proj ==="
 
-            dotnet test "$proj" \
+            dotnet run --project "$proj" \
               --no-build \
               --configuration Debug \
-              --results-directory "TestResults" \
-              --logger "trx;LogFileName=$(basename "$proj" .csproj).trx" \
-              --collect:"XPlat Code Coverage" \
-              --settings ./coverlet.runsettings \
-              --verbosity normal
+              --verbosity normal \
+              --show-test-results all \
+              -- \
+              --report-xunit-trx \
+              --report-xunit-trx-filename $(basename "$proj" .csproj).trx \
+              --coverage \
+              --coverage-output-format cobertura \
+              --coverage-settings ./coverlet.runsettings \
+              --coverage-output $(basename "$proj" .csproj).coverage.cobertura.xml
           done
 
       - name: Upload Test Result Files
@@ -159,7 +163,7 @@ jobs:
       - name: merge coverage files
         run: |
           dotnet tool install -g dotnet-coverage
-          dotnet coverage merge --reports $(find TestResults -name "coverage.cobertura.xml") -f cobertura -o coverage-results/coverage.xml
+          dotnet coverage merge --reports $(find . -path "*/TestResults/*" -name "*.coverage.cobertura.xml") -f cobertura -o coverage-results/coverage.xml
 
       - name: Generate Coverage Report
         id: code_coverage_report_action

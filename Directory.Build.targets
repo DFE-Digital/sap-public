@@ -1,0 +1,6 @@
+<Project>
+  <ItemGroup Condition="'$(IsTestProject)' == 'true' Or '$(TestingPlatformEngine)' == 'true'">
+    <None Include="$(MSBuildThisFileDirectory)testconfig.json" Link="testconfig.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="$(MSBuildThisFileDirectory)coverlet.runsettings" Link="CodeCoverage.runsettings" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

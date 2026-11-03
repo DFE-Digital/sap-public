@@ -1,0 +1,7 @@
+{
+  "commandLineOptions": {
+    "coverage": true,
+    "coverage-output-format": "cobertura",
+    "coverage-settings": "coverlet.runsettings"
+  }
+}
