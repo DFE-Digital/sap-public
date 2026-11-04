@@ -50,13 +50,14 @@ public class Level2QualificationsPageTests : PageTestsBase
             .ReturnsAsync(fakeMinimumEstablishment);
     }
 
-    private void SetupMocks(Level2 qualification = Level2.TechCert)
+    private void SetupMocks(Level2 qualification = Level2.TechCert, bool hasProgressScore = true)
     {
         _qualificationType = qualification;
         _level2QualificationModel = new Level2QualificationsModelBuilder()
             .WithUrn(_urn)
             .WithEstablishmentName($"School{_urn}")
             .WithQualificationType(_qualificationType)
+            .WithProgressScore(hasProgressScore ? 83.29 : null)
             .WithKS5(true)
             .Build();
 
@@ -264,6 +265,47 @@ public class Level2QualificationsPageTests : PageTestsBase
 
     [Theory]
     [InlineData(Level2.TechCert)]
+    public async Task Level2QualificationsPage_Displays_No_ProgressScore_Text(Level2 qualification)
+    {
+        // Arrange
+        SetupMocks(qualification, false);
+        var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
+        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert no of students completed qualification
+
+        var noOfStudentsInfo = doc.QuerySelector("#no-of-students-completed-qulification-info");
+        Assert.Null(noOfStudentsInfo);
+
+        var noDataProgress8Score = doc.QuerySelector($"[data-testid='no-data-prog8-scores']");
+        Assert.NotNull(noDataProgress8Score);
+        Assert.Contains("No progress score data is available for this school or college.", noDataProgress8Score.TextContent);
+
+        // Assert progress score confidence level
+        var progressScoreConfidenceIntervalsDetails = doc.QuerySelector("#details-progress-score-confidence-intervals");
+        Assert.Null(progressScoreConfidenceIntervalsDetails);
+
+        // Assert progress data
+        var progresScoreCard = doc.QuerySelector("#progress-score-card");
+        Assert.Null(progresScoreCard);
+
+        // Assert progress england average
+        var averageProgresScoreNationalCard = doc.QuerySelector("#average-progress-score-national-card");
+        Assert.Null(averageProgresScoreNationalCard);
+
+        //Assert progress banding percentages
+        var details = doc.QuerySelector($"[data-testid='percentages-progress-score']");
+        Assert.Null(details);
+
+        var table = doc.QuerySelector($"[data-testid='percentages-progress-score-table']");
+        Assert.Null(table);
+    }
+
+    [Theory]
+    [InlineData(Level2.TechCert)]
     public async Task Level2QualificationsPage_Displays_ProgressScore(Level2 qualification)
     {
         // Arrange
@@ -322,7 +364,6 @@ public class Level2QualificationsPageTests : PageTestsBase
         Assert.Contains("Average", table.TextContent);
         Assert.Contains("Below average", table.TextContent);
         Assert.Contains("Well below average", table.TextContent);
-
     }
 
     [Theory]

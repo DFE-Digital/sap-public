@@ -21,6 +21,8 @@ public class ProgressScoreViewModel
 
     public required ProgressBandingPercentageTableViewModel ProgressBandingPercentages { get; init; }
 
+    public bool ShowProgress8Info { get; init; }
+
     public static ProgressScoreViewModel Map(ProgressScoreModel model)
     {
         return new ProgressScoreViewModel
@@ -31,7 +33,8 @@ public class ProgressScoreViewModel
             ConfidenceLevelLower = model.ConfidenceLevelLower.ToDisplayField(),
             EnglandAverageScore = model.EnglandAverageScore.ToDisplayField(),
             ProgressBandingContextDescription = AttainmentHelper.EstablishmentProgressBandingContextStatement(model.BandingRating.Value, model.BandingContextDescription),
-            ProgressBandingPercentages = ProgressBandingPercentageTableViewModel.Ks5Progress(model.ProgressBandingPercentages)
+            ProgressBandingPercentages = ProgressBandingPercentageTableViewModel.Ks5Progress(model.ProgressBandingPercentages),
+            ShowProgress8Info = model.Score.HasValue
         };        
     }
 }

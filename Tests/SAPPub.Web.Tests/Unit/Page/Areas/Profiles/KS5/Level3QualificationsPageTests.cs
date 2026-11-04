@@ -51,13 +51,14 @@ public class Level3QualificationsPageTests : PageTestsBase
             .ReturnsAsync(fakeMinimumEstablishment);
     }
 
-    private void SetupMocks(Level3 qualification = Level3.ALevel)
+    private void SetupMocks(Level3 qualification = Level3.ALevel, bool hasProgressScore = true)
     {
         _qualificationType = qualification;
         _level3QualificationModel = new Level3QualificationsModelBuilder()
             .WithUrn(_urn)
             .WithEstablishmentName($"School{_urn}")
             .WithQualificationType(_qualificationType)
+            .WithProgressScore(hasProgressScore ? 95.55 : null)
             .WithKS5(true)
             .Build();
 
@@ -347,6 +348,51 @@ public class Level3QualificationsPageTests : PageTestsBase
         {
             Assert.Null(techVocationalQualificationsLink);
         }
+    }
+
+    [Theory]
+    [InlineData(Level3.ALevel)]
+    [InlineData(Level3.Academic)]
+    [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
+    public async Task Level3QualificationsPage_Displays_No_ProgressScore_Text(Level3 qualification)
+    {
+        // Arrange
+        SetupMocks(qualification, false);
+        var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
+        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert no of students completed qualification
+
+        var noOfStudentsInfo = doc.QuerySelector("#no-of-students-completed-qulification-info");
+        Assert.Null(noOfStudentsInfo);
+
+        // Assert progress score no data content
+        var noDataProgress8Score = doc.QuerySelector($"[data-testid='no-data-prog8-scores']");
+        Assert.NotNull(noDataProgress8Score);
+        Assert.Contains("No progress score data is available for this school or college.", noDataProgress8Score.TextContent);
+
+        // Assert progress score confidence level
+        var progressScoreConfidenceIntervalsDetails = doc.QuerySelector("#details-progress-score-confidence-intervals");
+        Assert.Null(progressScoreConfidenceIntervalsDetails);
+
+        // Assert progress data
+        var progresScoreCard = doc.QuerySelector("#progress-score-card");
+        Assert.Null(progresScoreCard);
+
+        // Assert progress england average
+        var averageProgresScoreNationalCard = doc.QuerySelector("#average-progress-score-national-card");
+        Assert.Null(averageProgresScoreNationalCard);
+
+        //Assert progress banding percentages
+        var details = doc.QuerySelector($"[data-testid='percentages-progress-score']");
+        Assert.Null(details);
+
+        var table = doc.QuerySelector($"[data-testid='percentages-progress-score-table']");
+        Assert.Null(table);
     }
 
     [Theory]
