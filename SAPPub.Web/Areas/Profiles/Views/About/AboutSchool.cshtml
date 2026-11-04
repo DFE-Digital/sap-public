@@ -386,7 +386,7 @@
                         <govuk-summary-list-row>
                             <govuk-summary-list-row-key>Free breakfast club programme</govuk-summary-list-row-key>
                             <govuk-summary-list-row-value>
-                                @Model.FreeBreakfastClubProgramme.DisplayText(formatter: value => value ? Yes : NotAvailable)
+                                @Model.FreeBreakfastClubProgramme.DisplayText(formatter: value => value ? "This school has a government-funded free breakfast club" : "", notAvailableText: "This school does not have a government-funded free breakfast club")
                             </govuk-summary-list-row-value>
                         </govuk-summary-list-row>
                         <govuk-summary-list-row>
