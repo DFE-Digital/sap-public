@@ -52,7 +52,8 @@ namespace SAPPub.Web.Middleware
         public static void AddDependencies(this IServiceCollection services, IHostEnvironment env, IConfiguration cfg)
         {
             // Core repos/services
-            services.AddTransient(typeof(IGenericRepository<>), typeof(DapperRepository<>));
+            //services.AddTransient(typeof(IGenericRepository<>), typeof(DapperRepository<>));
+            services.AddTransient(typeof(IGenericRepository<>), typeof(JSONRepository<>));
 
             services.AddTransient<IOverviewRepository, OverviewRepository>();
             services.AddTransient<IOverviewService, OverviewService>();
