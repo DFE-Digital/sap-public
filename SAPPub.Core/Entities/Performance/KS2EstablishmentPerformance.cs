@@ -63,6 +63,7 @@ public class KS2EstablishmentPerformance
     public CodedDouble PSENELK_Est_Current_Pct_Coded { get; set; }
     public CodedDouble TEALGRP2_Est_Current_Num_Coded { get; set; }
     public CodedDouble TELIG_Est_Current_Num_Coded { get; set; }
+    public CodedDouble TPUPYEAR_Est_Current_Num_Coded { get; set; }
     public CodedDouble TFSM6CLA1A_Est_Current_Num_Coded { get; set; }
     public CodedDouble TMOBN_Est_Current_Num_Coded { get; set; }
 
