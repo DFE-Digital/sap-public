@@ -57,7 +57,7 @@
         const text = isSaved ? savedText : saveText;
         button.innerHTML = `<span>${text}</span>`;
         button.classList.toggle("saved", isSaved);
-        window.sapAnnounce(text);
+        window.sapAnnounce?.(text);
     }
 
     function toggleNotificationBanner(showBanner) {

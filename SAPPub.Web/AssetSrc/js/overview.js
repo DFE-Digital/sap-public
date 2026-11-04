@@ -40,7 +40,7 @@ function initialiseChartTableToggle(prefix) {
 
             button.textContent = 'Show as a table';
             button.setAttribute('aria-expanded', 'false');
-            window.sapAnnounce('Showing chart');
+            window.sapAnnounce?.('Showing chart');
         } else {
             // Chart -> table
             chartContainer.classList.add('govuk-!-display-none');
@@ -48,7 +48,7 @@ function initialiseChartTableToggle(prefix) {
 
             button.textContent = 'Show as a chart';
             button.setAttribute('aria-expanded', 'true');
-            window.sapAnnounce('Showing table');
+            window.sapAnnounce?.('Showing table');
         }
     });
 }

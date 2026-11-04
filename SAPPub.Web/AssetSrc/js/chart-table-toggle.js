@@ -5,7 +5,7 @@
 
     const viewAnnouncements = {
         'over-time': 'Showing data over time',
-        'current': 'Showing curren data'
+        'current': 'Showing current data'
     };
 
     function initChartTableToggle(root) {
@@ -17,7 +17,7 @@
             link.addEventListener('click', (event) => {
                 event.preventDefault();
                 showView(root, link.dataset.showView);
-                window.sapAnnounce(viewAnnouncements[link.dataset.showView] || '');
+                window.sapAnnounce?.(viewAnnouncements[link.dataset.showView] || '');
             });
         });
     }
@@ -40,8 +40,8 @@
                     btn.textContent = isTableVisible ? 'Show as a chart' : 'Show as a table';
                     btn.setAttribute('aria-expanded', String(isTableVisible));
                 });
+                window.sapAnnounce?.(isTableVisible ? 'Showing table' : 'Showing chart');
             });
-            window.sapAnnounce(isTableVisible ? 'Showing table' : 'Showing chart');
         });
     }
 
