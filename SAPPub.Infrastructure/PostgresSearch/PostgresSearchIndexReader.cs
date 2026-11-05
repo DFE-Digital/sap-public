@@ -9,9 +9,9 @@ namespace SAPPub.Infrastructure.PostgresSearch;
 
 public class PostgresSchoolSearchIndexReader : ISchoolSearchIndexReader
 {
-    private readonly IEstablishmentRepository _establishmentRepository;
+    private readonly IEstablishmentSearchRepository _establishmentRepository;
 
-    public PostgresSchoolSearchIndexReader(IEstablishmentRepository establishmentRepository)
+    public PostgresSchoolSearchIndexReader(IEstablishmentSearchRepository establishmentRepository)
     {
         _establishmentRepository = establishmentRepository;
     }
