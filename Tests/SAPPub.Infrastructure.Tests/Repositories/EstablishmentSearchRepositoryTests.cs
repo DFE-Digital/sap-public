@@ -1,0 +1,277 @@
+﻿using Moq;
+using Npgsql;
+using SAPPub.Core.Entities;
+using SAPPub.Core.Helpers;
+using SAPPub.Core.Interfaces.Repositories.Generic;
+using SAPPub.Core.Interfaces.Services.Search;
+using SAPPub.Core.ServiceModels.Search.InputModels;
+using SAPPub.Core.Specifications;
+using SAPPub.Infrastructure.Repositories;
+
+namespace SAPPub.Infrastructure.Tests.Repositories
+{
+    public class EstablishmentSearchRepositoryTests
+    {
+        private readonly Mock<ISearchVisibilityPolicy> _mockSearchVisibilityPolicy;
+        private readonly EstablishmentSearchRepository _sut;
+
+        private static NpgsqlDataSource CreateSafeDataSource()
+        {
+            return NpgsqlDataSource.Create("Host=127.0.0.1;Port=1;Username=x;Password=x;Database=x;Timeout=1;Command Timeout=1");
+        }
+
+        public EstablishmentSearchRepositoryTests()
+        {
+            _mockSearchVisibilityPolicy = new Mock<ISearchVisibilityPolicy>();
+            _sut = new EstablishmentSearchRepository(
+                CreateSafeDataSource(),
+                _mockSearchVisibilityPolicy.Object);
+        }
+
+        [Fact]
+        public void BuildSearchSqlParts_IncludeKs5True_DoesNotApplyKs5Filter()
+        {
+            var query = new SearchQuery { Name = "test" };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKS2: true);
+
+            var parts = EstablishmentSearchRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
+            var expectedPredicate = visibilitySpec.ToSqlPredicate();
+
+            // When both KS5 and KS2 are included, predicate should be "1=1" (no filtering)
+            Assert.Equal("1=1", expectedPredicate);
+            Assert.DoesNotContain("ISKS5", parts.WhereClause, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void BuildSearchSqlParts_IncludeKs5False_AppliesKs5Filter()
+        {
+            var query = new SearchQuery { Name = "test" };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: false, includeKS2: true);
+
+            var parts = EstablishmentSearchRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
+            var expectedPredicate = visibilitySpec.ToSqlPredicate();
+
+            // When KS5 is excluded, the predicate should filter KS5-only establishments
+            Assert.Contains(expectedPredicate, parts.WhereClause, StringComparison.Ordinal);
+            Assert.Contains("ISKS5", expectedPredicate, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void BuildSearchSqlParts_NameOnly_BuildsExpectedWhereAndOrder()
+        {
+            var query = new SearchQuery { Name = "academy" };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKS2: true);
+
+            var parts = EstablishmentSearchRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
+
+            Assert.Contains(@"""EstablishmentNameFTS"" @@ plainto_tsquery", parts.WhereClause, StringComparison.Ordinal);
+            Assert.DoesNotContain(@"""geom"" IS NOT NULL", parts.WhereClause, StringComparison.Ordinal);
+            Assert.Equal(@"""EstablishmentName"" ASC", parts.OrderBy);
+            Assert.DoesNotContain(@"AS ""Distance""", parts.SelectFields, StringComparison.Ordinal);
+            Assert.Contains(@"""ISKS4""", parts.SelectFields, StringComparison.Ordinal);
+
+            var names = parts.Parameters.ParameterNames.ToHashSet(StringComparer.Ordinal);
+            Assert.Contains("searchTerm", names);
+            Assert.DoesNotContain("lat", names);
+            Assert.DoesNotContain("lng", names);
+            Assert.DoesNotContain("distance", names);
+        }
+
+        [Fact]
+        public void BuildSearchSqlParts_LocationOnly_BuildsExpectedWhereOrderSelectAndParameters()
+        {
+            var query = new SearchQuery
+            {
+                Latitude = 51.5074f,
+                Longitude = -0.1278f,
+                Distance = 10
+            };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKS2: true);
+
+            var parts = EstablishmentSearchRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
+
+            Assert.Contains(@"""geom"" IS NOT NULL", parts.WhereClause, StringComparison.Ordinal);
+            Assert.Contains(@"ST_DWithin(""geom""", parts.WhereClause, StringComparison.Ordinal);
+            Assert.Equal(@"""Distance"" ASC, ""EstablishmentName"" ASC", parts.OrderBy);
+            Assert.Contains(@"AS ""Distance""", parts.SelectFields, StringComparison.Ordinal);
+            Assert.Contains(@"""ISKS4""", parts.SelectFields, StringComparison.Ordinal);
+
+            var names = parts.Parameters.ParameterNames.ToHashSet(StringComparer.Ordinal);
+            Assert.Contains("lat", names);
+            Assert.Contains("lng", names);
+            Assert.Contains("distance", names);
+
+            Assert.Equal(51.5074f, parts.Parameters.Get<float>("lat"), 6);
+            Assert.Equal(-0.1278f, parts.Parameters.Get<float>("lng"), 6);
+            Assert.Equal(MappingHelper.MilesToMeters(10), parts.Parameters.Get<double>("distance"), 6);
+        }
+
+        [Fact]
+        public void BuildSearchSqlParts_NameAndLocation_BuildsCombinedFilters()
+        {
+            var query = new SearchQuery
+            {
+                Name = "academy",
+                Latitude = 52.0f,
+                Longitude = -1.0f,
+                Distance = 5
+            };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: false, includeKS2: true);
+
+            var parts = EstablishmentSearchRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
+            var expectedPredicate = visibilitySpec.ToSqlPredicate();
+
+            Assert.Contains(@"""EstablishmentNameFTS"" @@ plainto_tsquery", parts.WhereClause, StringComparison.Ordinal);
+            Assert.Contains(@"""geom"" IS NOT NULL", parts.WhereClause, StringComparison.Ordinal);
+            Assert.Contains(@"ST_DWithin(""geom""", parts.WhereClause, StringComparison.Ordinal);
+            Assert.Contains(expectedPredicate, parts.WhereClause, StringComparison.Ordinal);
+            Assert.Equal(@"""Distance"" ASC, ""EstablishmentName"" ASC", parts.OrderBy);
+        }
+
+        [Fact]
+        public void BuildSearchSqlParts_IncludeKS2False_AppliesKS2Filter()
+        {
+            var query = new SearchQuery { Name = "test" };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKS2: false);
+
+            var parts = EstablishmentSearchRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
+            var expectedPredicate = visibilitySpec.ToSqlPredicate();
+
+            // When KS2 is excluded, the predicate should filter KS2-only establishments
+            Assert.Contains(expectedPredicate, parts.WhereClause, StringComparison.Ordinal);
+            Assert.Contains("ISKS2", expectedPredicate, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void BuildSearchSqlParts_IncludeKS2True_DoesNotApplyKS2Filter()
+        {
+            var query = new SearchQuery { Name = "test" };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: false, includeKS2: true);
+
+            var parts = EstablishmentSearchRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
+            var expectedPredicate = visibilitySpec.ToSqlPredicate();
+
+            // When KS2 is included but KS5 is not, predicate should only filter KS5
+            Assert.Contains(expectedPredicate, parts.WhereClause, StringComparison.Ordinal);
+            Assert.DoesNotContain("ISKS2", expectedPredicate, StringComparison.Ordinal);
+            Assert.Contains("ISKS5", expectedPredicate, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void BuildSearchSqlParts_BothKS2AndKs5False_AppliesBothFilters()
+        {
+            var query = new SearchQuery { Name = "test" };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: false, includeKS2: false);
+
+            var parts = EstablishmentSearchRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
+            var expectedPredicate = visibilitySpec.ToSqlPredicate();
+
+            // When both KS2 and KS5 are excluded, both predicates should be present
+            Assert.Contains(expectedPredicate, parts.WhereClause, StringComparison.Ordinal);
+            Assert.Contains("ISKS2", expectedPredicate, StringComparison.Ordinal);
+            Assert.Contains("ISKS5", expectedPredicate, StringComparison.Ordinal);
+            Assert.Contains(" AND ", expectedPredicate, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void BuildSearchSqlParts_PageSizeNull_UsesMaxResults_AndOffsetUsesResolvedPageSize()
+        {
+            var query = new SearchQuery { Page = 2, PageSize = null };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKS2: true);
+
+            var parts = EstablishmentSearchRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
+
+            Assert.Equal(10, parts.Parameters.Get<int>("pageSize"));
+            Assert.Equal(10, parts.Parameters.Get<int>("offset"));
+        }
+
+        [Fact]
+        public void BuildSearchSqlParts_PageSizeAboveMax_ClampsToMaxResults()
+        {
+            var query = new SearchQuery { Page = 1, PageSize = 999 };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKS2: true);
+
+            var parts = EstablishmentSearchRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
+
+            Assert.Equal(10, parts.Parameters.Get<int>("pageSize"));
+            Assert.Equal(0, parts.Parameters.Get<int>("offset"));
+        }
+
+        [Fact]
+        public void BuildSearchSqlParts_PageSizeBelowOne_ClampsToOne()
+        {
+            var query = new SearchQuery { Page = 3, PageSize = 0 };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKS2: true);
+
+            var parts = EstablishmentSearchRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
+
+            Assert.Equal(1, parts.Parameters.Get<int>("pageSize"));
+            Assert.Equal(2, parts.Parameters.Get<int>("offset"));
+        }
+
+        [Theory]
+        [InlineData(new string[] { "Maintained school" }, @"""TypeOfEstablishmentId"" IN (1,2,3,5)")]
+        [InlineData(new string[] { "Academy" }, @"""TypeOfEstablishmentId"" IN (28,34,35,40,41,45,46)")]
+        [InlineData(new string[] { "College" }, @"""TypeOfEstablishmentId"" IN (18,21,39,56)")]
+        [InlineData(new string[] { "Independent schools" }, @"""TypeOfEstablishmentId"" IN (6,11)")]
+        [InlineData(new string[] { "special school" }, @"""TypeOfEstablishmentId"" IN (7,8,10,12,33,36,44)")]
+        [InlineData(new string[] { "Maintained school", "Academy" }, @"""TypeOfEstablishmentId"" IN (1,2,3,5,28,34,35,40,41,45,46)")]
+        public void BuildSearchSqlParts_IncludeEstablishmentTypes(string[] establishmentTypes, string expectedResult)
+        {
+            var query = new SearchQuery { Name = "test", EstablishmentTypes = establishmentTypes };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKS2: true);
+
+            var parts = EstablishmentSearchRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
+            var expectedPredicate = visibilitySpec.ToSqlPredicate();
+
+            Assert.Contains(expectedPredicate, parts.WhereClause, StringComparison.Ordinal);
+            Assert.Contains(expectedResult, parts.WhereClause, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void BuildSearchSqlParts_IncludeEstablishmentTypes_NullCheck()
+        {
+            var query = new SearchQuery { Name = "test", EstablishmentTypes = new string[] { "" } };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKS2: true);
+
+            var parts = EstablishmentSearchRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
+            var expectedPredicate = visibilitySpec.ToSqlPredicate();
+
+            Assert.Contains(expectedPredicate, parts.WhereClause, StringComparison.Ordinal);
+            Assert.DoesNotContain("TypeOfEstablishmentId", parts.WhereClause, StringComparison.Ordinal);
+        }
+
+        [Theory]
+        [InlineData(new string[] { "all-through" }, @"(""ISKS2"" IS true AND ""ISKS4"" IS true AND ""ISKS5"" IS true)")]
+        [InlineData(new string[] { "primary" }, @"""ISKS2"" IS true")]
+        [InlineData(new string[] { "secondary" }, @"""ISKS4"" IS true")]
+        [InlineData(new string[] { "16" }, @"""ISKS5"" IS true")]
+        [InlineData(new string[] { "primary", "secondary" }, @"((""ISKS2"" IS true) OR (""ISKS4"" IS true))")]
+        public void BuildSearchSqlParts_IncludeEstablishmentPhases(string[] establishmentPhases, string expectedResult)
+        {
+            var query = new SearchQuery { Name = "test", EstablishmentPhases = establishmentPhases };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKS2: true);
+
+            var parts = EstablishmentSearchRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
+            var expectedPredicate = visibilitySpec.ToSqlPredicate();
+
+            Assert.Contains(expectedPredicate, parts.WhereClause, StringComparison.Ordinal);
+            Assert.Contains(expectedResult, parts.WhereClause, StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public void BuildSearchSqlParts_IncludeEstablishmentPhases_NullCheck()
+        {
+            var query = new SearchQuery { Name = "test", EstablishmentPhases = new string[] { "" } };
+            var visibilitySpec = new SearchVisibilitySpecification(includeKs5: true, includeKS2: true);
+
+            var parts = EstablishmentSearchRepository.BuildSearchSqlParts(query, maxResults: 10, visibilitySpec);
+            var expectedPredicate = visibilitySpec.ToSqlPredicate();
+
+            Assert.Contains(expectedPredicate, parts.WhereClause, StringComparison.Ordinal);
+            Assert.DoesNotContain("ISKS2", parts.WhereClause, StringComparison.Ordinal);
+            Assert.DoesNotContain("ISKS4", parts.WhereClause, StringComparison.Ordinal);
+            Assert.DoesNotContain("ISKS5", parts.WhereClause, StringComparison.Ordinal);
+        }
+    }
+}

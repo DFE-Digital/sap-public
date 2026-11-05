@@ -8,7 +8,7 @@ namespace SAPPub.Infrastructure.Tests.PostgresSearch
 {
     public class PostgresSearchIndexReaderTests
     {
-        private readonly Mock<IEstablishmentRepository> _mockRepo;
+        private readonly Mock<IEstablishmentSearchRepository> _mockRepo;
         private readonly PostgresSchoolSearchIndexReader _sut;
 
         private readonly Establishment FakeEstablishmentOne = new()
@@ -31,7 +31,7 @@ namespace SAPPub.Infrastructure.Tests.PostgresSearch
 
         public PostgresSearchIndexReaderTests()
         {
-            _mockRepo = new Mock<IEstablishmentRepository>();
+            _mockRepo = new Mock<IEstablishmentSearchRepository>();
             _sut = new PostgresSchoolSearchIndexReader(_mockRepo.Object);
         }
    

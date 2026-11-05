@@ -160,9 +160,52 @@ namespace SAPPub.Infrastructure.Repositories.Generic
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<T>> ReadManyAsync(object parameters, CancellationToken ct = default)
+        public async Task<IEnumerable<T>> ReadManyAsync(object parameters, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            if (parameters is null)
+                return Enumerable.Empty<T>();
+
+            try
+            {
+                var data = await ReadFileAsync(typeof(T).Name).ConfigureAwait(false);
+
+                var items = JsonConvert.DeserializeObject<IEnumerable<T>>(data ?? "[]", _jsonSettings) ?? Enumerable.Empty<T>();
+
+                var ids = new List<string>();
+
+                if (parameters != null)
+                {
+                    var type = parameters.GetType();
+
+                    var idsProperty = type.GetProperty("Ids");
+                    var urnProperty = type.GetProperty("Urn");
+
+                    if (idsProperty?.GetValue(parameters) is IEnumerable<string> values)
+                    {
+                        ids.AddRange(values);
+                    }
+                    else if (urnProperty?.GetValue(parameters) is string value)
+                    {
+                        ids.Add(value);
+                    }
+                }
+
+                var item = await FilterMany(typeof(T), items, ids.ToArray()).ConfigureAwait(false);
+
+                if (items.Count() > 0)
+                    _codedValueMapper.Apply(items);
+
+                return item;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed ReadManyAsync for {Type} paramsType={ParamsType}", typeof(T).Name, parameters.GetType().Name);
+                return Enumerable.Empty<T>();
+            }
         }
 
         private static async Task<T?> Filter(Type entityType, IEnumerable<T> items, object parameters)
@@ -193,6 +236,22 @@ namespace SAPPub.Infrastructure.Repositories.Generic
 
                 nameof(LaUrls) => items.FirstOrDefault(i => ((LaUrls)(object)i).Id == ((dynamic)parameters).Id),
                 _ => default(T)
+            };
+        }
+
+        private static async Task<IEnumerable<T>> FilterMany(Type entityType, IEnumerable<T> items, string[] parameters)
+        {
+            return entityType.Name switch
+            {
+                nameof(Establishment) => items.Where(i => parameters.Contains(((Establishment)(object)i).URN)),
+                nameof(EstablishmentPerformance) => items.Where(i => parameters.Contains(((EstablishmentPerformance)(object)i).Id)),
+                nameof(KS4EstablishmentDestinations) => items.Where(i => parameters.Contains(((KS4EstablishmentDestinations)(object)i).Id)),
+
+                nameof(KS4EstablishmentSubjectEntryRow) => items.Where(i => parameters.Contains(((KS4EstablishmentSubjectEntryRow)(object)i).school_urn)),
+                nameof(KS5EstablishmentSubjectEntryRow) => items.Where(i => parameters.Contains(((KS5EstablishmentSubjectEntryRow)(object)i).school_urn)),
+
+                nameof(LaUrls) => items.Where(i => parameters.Contains(((LaUrls)(object)i).Id)),
+                _ => []
             };
         }
     }

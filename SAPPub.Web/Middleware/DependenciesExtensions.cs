@@ -55,6 +55,9 @@ namespace SAPPub.Web.Middleware
             //services.AddTransient(typeof(IGenericRepository<>), typeof(DapperRepository<>));
             services.AddTransient(typeof(IGenericRepository<>), typeof(JSONRepository<>));
 
+            services.AddTransient<IEstablishmentSearchRepository, EstablishmentSimpleSearchRepository>();
+            //services.AddTransient<IEstablishmentSearchRepository, EstablishmentSearchRepository>();
+
             services.AddTransient<IOverviewRepository, OverviewRepository>();
             services.AddTransient<IOverviewService, OverviewService>();
 
