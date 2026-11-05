@@ -1,10 +1,17 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using SAPPub.Core.Entities;
+using SAPPub.Core.Entities.Destinations;
+using SAPPub.Core.Entities.Gateway;
+using SAPPub.Core.Entities.KS4.Absence;
+using SAPPub.Core.Entities.KS4.Performance;
+using SAPPub.Core.Entities.Performance;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Infrastructure.Mapping.ValueCodes;
 using SAPPub.Infrastructure.Repositories.Helpers;
 using System.Data.Common;
 using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SAPPub.Infrastructure.Repositories.Generic
 {
@@ -14,23 +21,35 @@ namespace SAPPub.Infrastructure.Repositories.Generic
         private readonly ILogger<JSONRepository<T>> _logger;
 
         private readonly ICodedValueMapper _codedValueMapper;
+        private readonly JsonSerializerSettings _jsonSettings;
 
         public JSONRepository(ILogger<JSONRepository<T>> logger,
-            ICodedValueMapper codedValueMapper)
+            ICodedValueMapper codedValueMapper,
+            IReasonCodeLookup reasonCodeLookup)
         {
             _logger = logger ?? throw new ArgumentNullException();
             var basePath = AppContext.BaseDirectory;
             _filePath = Path.Combine(basePath, "Data", "Files");
             _codedValueMapper = codedValueMapper ?? throw new ArgumentNullException(nameof(codedValueMapper));
+            if (reasonCodeLookup is null)
+                throw new ArgumentNullException(nameof(reasonCodeLookup));
+            _jsonSettings = new JsonSerializerSettings
+            {
+                Converters =
+                {
+                    new CodedDoubleJsonConverter(reasonCodeLookup),
+                    new CodedStringJsonConverter(reasonCodeLookup)
+                }
+            };
         }
 
-        private async Task<T?> ReadandParseFileAsync(string fileName)
+        private async Task<string?> ReadFileAsync(string fileName)
         {
             try
             {
                 var fullPath = Path.Combine(_filePath, $"{fileName}.json");
                 var fileContent = await File.ReadAllTextAsync(fullPath, Encoding.UTF8);
-                return JsonConvert.DeserializeObject<T>(fileContent);
+                return fileContent; 
             }
             catch (Exception ex)
             {
@@ -59,19 +78,11 @@ namespace SAPPub.Infrastructure.Repositories.Generic
         {
             try
             {
-                var sql = DapperHelpers.GetReadMultiple(typeof(T));
-                if (string.IsNullOrWhiteSpace(sql))
-                    throw new NotSupportedException($"No ReadMultiple query for {typeof(T).Name}");
+                var data = await ReadFileAsync(typeof(T).Name).ConfigureAwait(false);
 
-                using var conn = await _dataSource.OpenConnectionAsync(ct).ConfigureAwait(false);
+                var items = JsonConvert.DeserializeObject<IEnumerable<T>>(data ?? "[]", _jsonSettings) ?? Enumerable.Empty<T>();
 
-                var cmd = new DapperCommandBuilder()
-                    .WithCommandText(sql)
-                    .Build(ct);
-
-                var items = (await conn.QueryAsync<T>(cmd).ConfigureAwait(false)).ToList();
-
-                if (items.Count > 0)
+                if (items.Any())
                     _codedValueMapper.Apply(items); // map *_Coded -> numeric + _Reason
 
                 return items;
@@ -95,7 +106,11 @@ namespace SAPPub.Infrastructure.Repositories.Generic
 
             try
             {
-                var item = await ReadandParseFileAsync(typeof(T).Name).ConfigureAwait(false);
+                var data = await ReadFileAsync(typeof(T).Name).ConfigureAwait(false);
+
+                var items = JsonConvert.DeserializeObject<IEnumerable<T>>(data ?? "[]", _jsonSettings) ?? Enumerable.Empty<T>();
+
+                var item = await Filter(typeof(T), items, parameters).ConfigureAwait(false);
 
                 if (item is not null)
                     _codedValueMapper.Apply(item);
@@ -119,10 +134,12 @@ namespace SAPPub.Infrastructure.Repositories.Generic
         {
             try
             {
-                var fileData = await ReadandParseFileAsync(typeof(T).Name);
-                if (fileData != null)
+                var fileData = await ReadFileAsync(typeof(T).Name);
+                var items = JsonConvert.DeserializeObject<IEnumerable<T>>(fileData ?? "[]", _jsonSettings) ?? Enumerable.Empty<T>();
+
+                if (items != null)
                 {
-                    return [fileData];
+                    return items;
                 }
             }
             catch (Exception ex)
@@ -148,5 +165,35 @@ namespace SAPPub.Infrastructure.Repositories.Generic
             throw new NotImplementedException();
         }
 
+        private static async Task<T?> Filter(Type entityType, IEnumerable<T> items, object parameters)
+        {
+            return entityType.Name switch
+            {
+                nameof(Establishment) => items.FirstOrDefault(i => ((Establishment)(object)i).URN == ((dynamic)parameters).Id),
+                nameof(EstablishmentAbsence) => items.FirstOrDefault(i => ((EstablishmentAbsence)(object)i).Id == ((dynamic)parameters).Id),
+                nameof(KS4EstablishmentDestinations) => items.FirstOrDefault(i => ((KS4EstablishmentDestinations)(object)i).Id == ((dynamic)parameters).Id),
+                nameof(KS5EstablishmentDestinations) => items.FirstOrDefault(i => ((KS4EstablishmentDestinations)(object)i).Id == ((dynamic)parameters).Id),
+                nameof(KS2EstablishmentPerformance) => items.FirstOrDefault(i => ((KS2EstablishmentPerformance)(object)i).Id == ((dynamic)parameters).Id),
+                nameof(EstablishmentPerformance) => items.FirstOrDefault(i => ((EstablishmentPerformance)(object)i).Id == ((dynamic)parameters).Id),
+                nameof(KS5EstablishmentPerformance) => items.FirstOrDefault(i => ((KS5EstablishmentPerformance)(object)i).Id == ((dynamic)parameters).Id),
+
+                nameof(LAAbsence) => items.FirstOrDefault(i => ((LAAbsence)(object)i).Id == ((dynamic)parameters).Id),
+                nameof(KS2LAPerformance) => items.FirstOrDefault(i => ((KS2LAPerformance)(object)i).Id == ((dynamic)parameters).Id),
+                nameof(KS5LAPerformance) => items.FirstOrDefault(i => ((KS5LAPerformance)(object)i).Id == ((dynamic)parameters).Id),
+                nameof(KS4LADestinations) => items.FirstOrDefault(i => ((KS4LADestinations)(object)i).Id == ((dynamic)parameters).Id),
+                nameof(KS5LADestinations) => items.FirstOrDefault(i => ((KS5LADestinations)(object)i).Id == ((dynamic)parameters).Id),
+                nameof(LAPerformance) => items.FirstOrDefault(i => ((LAPerformance)(object)i).Id == ((dynamic)parameters).Id),
+
+                nameof(EnglandAbsence) => items.FirstOrDefault(),
+                nameof(KS4EnglandDestinations) => items.FirstOrDefault(),
+                nameof(KS5EnglandDestinations) => items.FirstOrDefault(),
+                nameof(KS2EnglandPerformance) => items.FirstOrDefault(),
+                nameof(KS5EnglandPerformance) => items.FirstOrDefault(),
+                nameof(EnglandPerformance) => items.FirstOrDefault(),
+
+                nameof(LaUrls) => items.FirstOrDefault(i => ((LaUrls)(object)i).Id == ((dynamic)parameters).Id),
+                _ => default(T)
+            };
+        }
     }
 }
