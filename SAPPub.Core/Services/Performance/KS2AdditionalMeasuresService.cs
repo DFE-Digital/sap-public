@@ -39,9 +39,9 @@ public class KS2AdditionalMeasuresService(IKS2PerformanceRepository ks2Performan
             EnglandEHCPPopulation = englandPerformance.PSENELE_Eng_Current_Pct_Coded,
             EnglandSENSupportPopulation = englandPerformance.PSENELK_Eng_Current_Pct_Coded,
 
-            EstablishmentNumPupilsEndOfKS2 = establishmentPerformance.TELIG_Est_Current_Num_Coded,
-            LANumPupilsEndOfKS2 = laPerformance.TELIG_LA_Current_Num_Coded,
-            EnglandNumPupilsEndOfKS2 = englandPerformance.TELIG_Eng_Current_Num_Coded,
+            EstablishmentNumPupilsEndOfKS2 = establishmentPerformance.TPUPYEAR_Est_Current_Num_Coded,
+            LANumPupilsEndOfKS2 = laPerformance.TPUPYEAR_LA_Current_Num_Coded,
+            EnglandNumPupilsEndOfKS2 = englandPerformance.TPUPYEAR_Eng_Current_Num_Coded,
             EstablishmentNumGirlsEndOfKS2 = establishmentPerformance.GELIG_Est_Current_Num_Coded,
             EstablishmentNumBoysEndOfKS2 = establishmentPerformance.BELIG_Est_Current_Num_Coded,
             EstablishmentNumEALEndOfKS2 = establishmentPerformance.TEALGRP2_Est_Current_Num_Coded,

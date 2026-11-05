@@ -32,16 +32,16 @@ public class AdditionalMeasuresPageTests : BasePageTest
     }
 
     [Theory]
-    [InlineData("100019", "46", "18", "28", "27", "40", "2", "17", "10")]
+    [InlineData("100019", "50", "18", "28", "27", "40", "2", "17", "10")]
     [InlineData("100241", "57", "30", "27", "28", "53", "5", "12", "26")]
-    [InlineData("100353", "57", "24", "33", "21", "57", "4", "12", "9")]
-    [InlineData("100448", "28", "12", "16", "6", "25", "4", "36", "20")]
+    [InlineData("100353", "56", "24", "33", "21", "57", "4", "12", "9")]
+    [InlineData("100448", "29", "12", "16", "6", "25", "4", "36", "20")]
     [InlineData("100500", "29", "14", "15", "16", "27", "10", "17", "13")]
     [InlineData("100674", "55", "27", "28", "10", "52", "5", "27", "18")]
-    [InlineData("100684", "87", "33", "54", "25", "85", "5", "16", "18")]
+    [InlineData("100684", "88", "33", "54", "25", "85", "5", "16", "18")]
     public async Task ShowPupilPopulationBreakdowns_Expected(
             string urn,
-            string telig,
+            string tpupyear,
             string belig,
             string gelig,
             string tealgrp2,
@@ -57,7 +57,7 @@ public class AdditionalMeasuresPageTests : BasePageTest
 
         // Assert
         var schoolNumberPupilsEndKS2Data = await Page.GetTableRowValuesAsync(PageConstants.PupilPopulationTableId, 0);
-        Assert.Equal(telig, schoolNumberPupilsEndKS2Data[0]);
+        Assert.Equal(tpupyear, schoolNumberPupilsEndKS2Data[0]);
 
         await Page.ExpandAccordionByIdAsync(PageConstants.PupilPopulationAccordionByCharacteristicsId);
 

@@ -40,6 +40,8 @@ public class KS2EnglandPerformance
     public CodedDouble PSENELK_Eng_Current_Pct_Coded { get; set; }
     public CodedDouble TELIG_Eng_Current_Num_Coded { get; set; }
     public CodedDouble TOTPUPS_Eng_Current_Num_Coded { get; set; }
+    public CodedDouble TPUPYEAR_Eng_Current_Num_Coded { get; set; }
+    
 
     // Progress banding - percentage of schools in each banding, and reasoning
     // description for each banding, per subject

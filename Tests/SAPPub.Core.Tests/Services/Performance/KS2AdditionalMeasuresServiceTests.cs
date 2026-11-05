@@ -74,7 +74,7 @@ public class KS2AdditionalMeasuresServiceTests : ServiceTestBase
                 PTGPS_HIGH_Est_Current_Pct_Coded = GetCodedDouble(2),
                 PSENELE_Est_Current_Pct_Coded = GetCodedDouble(3),
                 PSENELK_Est_Current_Pct_Coded = GetCodedDouble(4),
-                TELIG_Est_Current_Num_Coded = GetCodedDouble(11),
+                TPUPYEAR_Est_Current_Num_Coded = GetCodedDouble(11),
                 GELIG_Est_Current_Num_Coded = GetCodedDouble(12),
                 BELIG_Est_Current_Num_Coded = GetCodedDouble(13),
                 TEALGRP2_Est_Current_Num_Coded = GetCodedDouble(14),
@@ -90,7 +90,7 @@ public class KS2AdditionalMeasuresServiceTests : ServiceTestBase
                 PTGPS_HIGH_LA_Current_Pct_Coded = GetCodedDouble(6),
                 TFSM6CLA1A_LA_Current_Num_Coded = GetCodedDouble(17),
                 TNOTFSM6CLA1A_LA_Current_Num_Coded = GetCodedDouble(19),
-                TELIG_LA_Current_Num_Coded = GetCodedDouble(22)
+                TPUPYEAR_LA_Current_Num_Coded = GetCodedDouble(22)
             });
 
         _ks2PerformanceRepository
@@ -104,7 +104,7 @@ public class KS2AdditionalMeasuresServiceTests : ServiceTestBase
                 TFSM6CLA1A_Eng_Current_Num_Coded = GetCodedDouble(18),
                 TNOTFSM6CLA1A_Eng_Current_Num_Coded = GetCodedDouble(20),
                 TOTPUPS_Eng_Current_Num_Coded = GetCodedDouble(21),
-                TELIG_Eng_Current_Num_Coded = GetCodedDouble(23)
+                TPUPYEAR_Eng_Current_Num_Coded = GetCodedDouble(23)
             });
 
         // Act
