@@ -45,10 +45,19 @@ terraform-init: composed-variables set-azure-account
 	rm -rf terraform/application/vendor/modules/aks
 	git -c advice.detachedHead=false clone --depth=1 --single-branch --branch ${TERRAFORM_MODULES_TAG} https://github.com/DFE-Digital/terraform-modules.git terraform/application/vendor/modules/aks
 
-	terraform -chdir=terraform/application init -upgrade -reconfigure \
+	@attempt=1; \
+	while ! terraform -chdir=terraform/application init -upgrade -reconfigure \
 		-backend-config=resource_group_name=${RESOURCE_GROUP_NAME} \
 		-backend-config=storage_account_name=${STORAGE_ACCOUNT_NAME} \
-		-backend-config=key=${ENVIRONMENT}_kubernetes.tfstate
+		-backend-config=key=${ENVIRONMENT}_kubernetes.tfstate; do \
+		if [ "$$attempt" -ge 3 ]; then \
+			echo "Terraform init failed after $$attempt attempts" >&2; \
+			exit 1; \
+		fi; \
+		echo "Terraform init failed (attempt $$attempt/3); retrying in 10 seconds" >&2; \
+		sleep 10; \
+		attempt=$$((attempt + 1)); \
+	done
 
 	$(eval export TF_VAR_environment=${ENVIRONMENT})
 	$(eval export TF_VAR_azure_resource_prefix=${AZURE_RESOURCE_PREFIX})
