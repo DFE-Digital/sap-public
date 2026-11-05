@@ -72,6 +72,8 @@ WORKDIR /app
 
 RUN apt-get update && \
     apt-get upgrade -y --no-install-recommends \
+		apt  \
+		libapt-pkg6.0t64  \
         gnupg2 \
         gpgv \
         zlib1g \
