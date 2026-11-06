@@ -13,7 +13,7 @@ public static class MeasureExtensions
         }
 
         return measure.Unit == DataUnit.Percentage
-            ? measure.Value.Value!.Value.AsPercentage()
+            ? measure.Value.Value!.Value.AsPercentageRounded()
             : measure.Value.ToString();
     }
 }

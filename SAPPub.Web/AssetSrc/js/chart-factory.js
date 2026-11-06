@@ -47,6 +47,15 @@
 
     const charts = {};
 
+    function formatValue(value, decimalPlaces) {
+        return decimalPlaces === null || decimalPlaces === undefined ? `${value}` : value.toFixed(decimalPlaces);
+    }
+
+    function getChartDecimalPlaces(ctx) {
+        const raw = ctx.chart?.canvas?.dataset.decimalPlaces;
+        return raw === undefined || raw === '' ? null : Number(raw);
+    }
+
     function getChartAxisSuffix(ctx) {
         return ctx.chart?.canvas?.dataset.scaled == 'true' ? '' : CHART_CONFIG.defaults.axisSuffix;
     }
@@ -131,17 +140,18 @@
 
         canvasContext.save();
         canvasContext.font = font.string;
-        const labelWidth = canvasContext.measureText(getBarLabelText(value, axisSuffix)).width;
+        const labelWidth = canvasContext.measureText(getBarLabelText(value, axisSuffix, getChartDecimalPlaces(ctx))).width;
         canvasContext.restore();
 
         return barLength >= labelWidth + (CHART_CONFIG.bar.datalabels.offset * 2);
     }
 
-    function getBarLabelText(value, axisSuffix) {
+    function getBarLabelText(value, axisSuffix, decimalPlaces) {
         if (value === null || value === undefined || Number.isNaN(value)) {
             return '';
         }
-        return `${value}${axisSuffix}`;
+
+        return `${formatValue(value, decimalPlaces)}${axisSuffix}`;
     }
 
     function isLargeEnoughForInsideLabel(value, ctx) {
@@ -319,8 +329,8 @@
                             weight: CHART_CONFIG.bar.datalabels.fontWeight
                         },
                         display: CHART_CONFIG.bar.datalabels.showDataLabels,
-                        formatter: function (value) {
-                            return value === null ? notAvailableText : `${value}${axisSuffix}`;
+                        formatter: function (value, ctx) {
+                            return value === null ? notAvailableText : `${formatValue(value, getChartDecimalPlaces(ctx))}${axisSuffix}`;
                         },
                         clamp: true,
                         clip: false

@@ -6,4 +6,19 @@ public static class DoubleExtensions
     {
         return $"{value}%";
     }
+
+    public static string? AsRounded(this double? value, int decimalPlaces = 1)
+    {
+        if (!value.HasValue)
+        {
+            return null;
+        }
+
+        return Math.Round(value.Value, decimalPlaces).ToString($"N{decimalPlaces}");
+    }
+
+    public static string AsPercentageRounded(this double value, int decimalPlaces = 1)
+    {
+        return Math.Round(value, decimalPlaces).ToString($"N{decimalPlaces}") + "%";
+    }
 }

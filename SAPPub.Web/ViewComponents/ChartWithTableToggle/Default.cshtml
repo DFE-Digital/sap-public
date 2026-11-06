@@ -1,4 +1,5 @@
 ﻿@using SAPPub.Web.Helpers
+@using SAPPub.Core.Extensions
 @using SAPPub.Web.ViewComponents.ChartWithTableToggle
 @model ChartWithTableToggleModel
 @using SAPPub.Web.Constants;
@@ -46,6 +47,7 @@
                         role="img"
                         data-type="bar"
                         data-scaled="@Model.IsScaled.ToString().ToLower()"
+                        data-decimal-places="1"
                         data-max='@chartMax'
                         data-chart='@Html.Raw(Json.Serialize(Model.CurrentData))'
                         data-colors='@Html.Raw(Json.Serialize(Constants.ChartColours))'>
@@ -60,7 +62,7 @@
                             <tr class="govuk-table__row">
                                 <th scope="row" class="govuk-table__header">@label.value</th>
                                 <td class="govuk-table__cell">
-                                    @(Model.CurrentData.Data[label.i].HasValue ? $"{Model.CurrentData.Data[label.i]}{percentageSign}" : Constants.NotAvailable)
+                                    @(Model.CurrentData.Data[label.i].HasValue ? $"{Model.CurrentData.Data[label.i].AsRounded()}{percentageSign}" : Constants.NotAvailable)
                                 </td>
                             </tr>
                         }
@@ -103,6 +105,7 @@
                             aria-labelledby="@(idPrefix)-data-overtime-table"
                             role="img"
                             data-show-legend="true"
+                            data-decimal-places="1"
                             data-scaled="@Model.IsScaled.ToString().ToLower()"
                             data-max='@chartMax'
                             data-chart='@Html.Raw(Json.Serialize(Model.OverTimeData))'
@@ -129,7 +132,7 @@
                             <th scope="row" class="govuk-table__header">@dataset.value.Label</th>
                             @foreach (var data in dataset.value.Data)
                             {
-                                <td class="govuk-table__cell">@(data.HasValue ? data + percentageSign : Constants.NotAvailable)</td>
+                                <td class="govuk-table__cell">@(data.HasValue ? data.AsRounded() + percentageSign : Constants.NotAvailable)</td>
                             }
                         </tr>
                     }
@@ -151,6 +154,7 @@
                         class="js-chart"
                         data-type="bar"
                         aria-labelledby="@(idPrefix)-three-year-average-table"
+                        data-decimal-places="1"
                         role="img"
                         data-scaled="@Model.IsScaled.ToString().ToLower()"
                         data-max='@chartMax'
@@ -168,7 +172,7 @@
                             <tr class="govuk-table__row">
                                 <th scope="row" class="govuk-table__header">@label.value</th>
                                 <td class="govuk-table__cell">
-                                    @(Model.ThreeYearAverageData.Data[label.i].HasValue ? $"{Model.ThreeYearAverageData.Data[label.i]}{percentageSign}" : Constants.NotAvailable)
+                                    @(Model.ThreeYearAverageData.Data[label.i].HasValue ? $"{Model.ThreeYearAverageData.Data[label.i].AsRounded()}{percentageSign}" : Constants.NotAvailable)
                                 </td>
                             </tr>
                         }
