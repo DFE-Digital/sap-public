@@ -91,15 +91,15 @@ public class DestinationsPageTests : PageTestsBase
 
         // Assert
         Assert.Contains(
-            $"{destinationsDetails.SchoolAll.CurrentYear.Value}%",
+            $"{destinationsDetails.SchoolAll.CurrentYear.Value:F1}%",
             doc.GetTableCellContentByIdAndIndex("all-dest-current-year-table", 0, 0));
 
         Assert.Contains(
-            $"{destinationsDetails.LocalAuthorityAll.CurrentYear.Value}%",
+            $"{destinationsDetails.LocalAuthorityAll.CurrentYear.Value:F1}%",
             doc.GetTableCellContentByIdAndIndex("all-dest-current-year-table", 1, 0));
 
         Assert.Contains(
-            $"{destinationsDetails.EnglandAll.CurrentYear.Value}%",
+            $"{destinationsDetails.EnglandAll.CurrentYear.Value:F1}%",
             doc.GetTableCellContentByIdAndIndex("all-dest-current-year-table", 2, 0));
     }
 
@@ -137,13 +137,13 @@ public class DestinationsPageTests : PageTestsBase
         var table = doc.QuerySelector("#all-dest-disadvantaged-current-year-table");
         Assert.NotNull(table);
         Assert.Contains(
-            $"{destinationsDetails.SchoolDisadvantagedAll.CurrentYear.Value}%",
+            $"{destinationsDetails.SchoolDisadvantagedAll.CurrentYear.Value:F1}%",
             table!.GetTableCellContentByRowAndCellIndex(1, 0));
         Assert.Contains(
-            $"{destinationsDetails.LocalAuthorityDisadvantagedAll.CurrentYear.Value}%",
+            $"{destinationsDetails.LocalAuthorityDisadvantagedAll.CurrentYear.Value:F1}%",
             table.GetTableCellContentByRowAndCellIndex(2, 0));
         Assert.Contains(
-            $"{destinationsDetails.EnglandDisadvantagedAll.CurrentYear.Value}%",
+            $"{destinationsDetails.EnglandDisadvantagedAll.CurrentYear.Value:F1}%",
             table.GetTableCellContentByRowAndCellIndex(3, 0));
     }
 
@@ -165,10 +165,10 @@ public class DestinationsPageTests : PageTestsBase
 
         var nonDisadvantagedTable = tables[1];
         Assert.Contains(
-            $"{destinationsDetails.LocalAuthorityNonDisadvantagedAll.CurrentYear.Value}%",
+            $"{destinationsDetails.LocalAuthorityNonDisadvantagedAll.CurrentYear.Value:F1}%",
             nonDisadvantagedTable.GetTableCellContentByRowAndCellIndex(1, 0));
         Assert.Contains(
-            $"{destinationsDetails.EnglandNonDisadvantagedAll.CurrentYear.Value}%",
+            $"{destinationsDetails.EnglandNonDisadvantagedAll.CurrentYear.Value:F1}%",
             nonDisadvantagedTable.GetTableCellContentByRowAndCellIndex(2, 0));
     }
 
@@ -188,9 +188,9 @@ public class DestinationsPageTests : PageTestsBase
         var table = doc.QuerySelector("#stayed-in-education-table");
         Assert.NotNull(table);
         Assert.Contains("Pupils who stayed in education", table!.TextContent);
-        Assert.Contains($"{destinationsDetails.SchoolEducation.CurrentYear.Value}%", table.TextContent);
-        Assert.Contains($"{destinationsDetails.LocalAuthorityEducation.CurrentYear.Value}%", table.TextContent);
-        Assert.Contains($"{destinationsDetails.EnglandEducation.CurrentYear.Value}%", table.TextContent);
+        Assert.Contains($"{destinationsDetails.SchoolEducation.CurrentYear.Value:F1}%", table.TextContent);
+        Assert.Contains($"{destinationsDetails.LocalAuthorityEducation.CurrentYear.Value:F1}%", table.TextContent);
+        Assert.Contains($"{destinationsDetails.EnglandEducation.CurrentYear.Value:F1}%", table.TextContent);
     }
 
     [Fact]
@@ -289,5 +289,23 @@ public class DestinationsPageTests : PageTestsBase
         // Assert
         var chartContainer = doc.QuerySelector("#all-dest-current-year-data-container");
         Assert.Null(chartContainer);
+    }
+
+    [Fact]
+    public async Task Destinations_AllDestinations_Charts_RenderOneDecimalPlace()
+    {
+        // Arrange
+        var destinationsDetails = BuildDetails().Build();
+        _mockDestinationsService
+            .Setup(a => a.GetKS4DestinationsDetailsAsync(_urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(destinationsDetails);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(BuildUrl(_urn, _establishmentName, _pageRoute));
+
+        // Assert
+        var charts = doc.QuerySelectorAll("canvas.js-chart");
+        Assert.NotEmpty(charts);
+        Assert.All(charts, c => Assert.Equal("1", c.GetAttribute("data-decimal-places")));
     }
 }

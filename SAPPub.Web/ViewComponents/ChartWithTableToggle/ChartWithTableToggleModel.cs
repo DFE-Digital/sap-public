@@ -41,4 +41,10 @@ public class ChartWithTableToggleModel
     public required bool IsPercentageData { get; set; } = false;
 
     public bool ShowFullPercentageAxis { get; set; } = true;
+
+    /// <summary>
+    /// When set, values in the chart labels and tables are shown to this many decimal places.
+    /// Leave null to show value as supplied
+    /// </summary>
+    public int? DecimalPlaces { get; set;  }
 }

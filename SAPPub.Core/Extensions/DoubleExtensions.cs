@@ -1,4 +1,6 @@
-﻿namespace SAPPub.Core.Extensions;
+﻿using System.Globalization;
+
+namespace SAPPub.Core.Extensions;
 
 public static class DoubleExtensions
 {
@@ -14,11 +16,11 @@ public static class DoubleExtensions
             return null;
         }
 
-        return Math.Round(value.Value, decimalPlaces).ToString($"N{decimalPlaces}");
+        return Math.Round(value.Value, decimalPlaces).ToString($"F{decimalPlaces}", CultureInfo.InvariantCulture);
     }
 
     public static string AsPercentageRounded(this double value, int decimalPlaces = 1)
     {
-        return Math.Round(value, decimalPlaces).ToString($"N{decimalPlaces}") + "%";
+        return Math.Round(value, decimalPlaces).ToString($"F{decimalPlaces}", CultureInfo.InvariantCulture) + "%";
     }
 }

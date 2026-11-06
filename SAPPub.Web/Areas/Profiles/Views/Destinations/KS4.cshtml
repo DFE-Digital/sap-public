@@ -80,7 +80,8 @@
                     HasEstablishmentData = Model.HasEstablishmentData.IsAvailable,
                     IsScaled = false,
                     IsPercentageData = true,
-                    ShowFullPercentageAxis = false
+                    ShowFullPercentageAxis = false,
+                    DecimalPlaces = 1
                 })
             </div>
 
@@ -103,7 +104,7 @@
                                 {
                                     <tr class="govuk-table__row">
                                         <th scope="row" class="govuk-table__header">@label.value</th>
-                                        <td class="govuk-table__cell">@(Model.AllDestinationsDisadvantagedData.Data[label.i].HasValue ? Model.AllDestinationsDisadvantagedData.Data[label.i]!.Value.AsPercentage() : Constants.NotAvailable)</td>
+                                        <td class="govuk-table__cell">@(Model.AllDestinationsDisadvantagedData.Data[label.i].HasValue ? Model.AllDestinationsDisadvantagedData.Data[label.i]!.Value.AsPercentageRounded() : Constants.NotAvailable)</td>
                                     </tr>
                                 }
                             </tbody>
@@ -129,7 +130,7 @@
                                         {
                                             <tr class="govuk-table__row">
                                                 <th scope="row" class="govuk-table__header">@label.value</th>
-                                                <td class="govuk-table__cell">@(Model.AllDestinationsNonDisadvantagedData.Data[label.i].HasValue ? Model.AllDestinationsNonDisadvantagedData.Data[label.i]!.Value.AsPercentage() : Constants.NotAvailable)</td>
+                                                <td class="govuk-table__cell">@(Model.AllDestinationsNonDisadvantagedData.Data[label.i].HasValue ? Model.AllDestinationsNonDisadvantagedData.Data[label.i]!.Value.AsPercentageRounded() : Constants.NotAvailable)</td>
                                             </tr>
                                         }
                                     </tbody>

@@ -5,6 +5,7 @@
         public string TableId { get; init; } = string.Empty;
         public string? TableHeader { get; init; }
         public required List<string> Labels { get; init; }
+        public int? DecimalPlaces { get; init; }
 
         public required List<DatasetMeasureViewModel> Datasets { get; init; }
     }

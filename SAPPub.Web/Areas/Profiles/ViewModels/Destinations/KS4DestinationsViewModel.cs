@@ -1,5 +1,4 @@
 ﻿using SAPPub.Core.Enums;
-using SAPPub.Core.Extensions;
 using SAPPub.Core.ServiceModels.Destinations;
 using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Helpers;
@@ -91,6 +90,7 @@ public class KS4DestinationsViewModel : ProfileBaseViewModel
             StayedInEducationTable = new SeriesMeasureViewModel
             {
                 TableId = "stayed-in-education-table",
+                DecimalPlaces = 1,
                 Labels = ["School", laAverageLabel, "England average"],
                 Datasets =
                 [
@@ -109,6 +109,7 @@ public class KS4DestinationsViewModel : ProfileBaseViewModel
             WherePupilsStudiedTable = new SeriesMeasureViewModel
             {
                 TableId = "where-pupils-studied-table",
+                DecimalPlaces = 1,
                 Labels = ["School", laAverageLabel, "England average"],
                 Datasets =
                 [
@@ -157,6 +158,7 @@ public class KS4DestinationsViewModel : ProfileBaseViewModel
             ApprenticeshipsOrEmploymentTable = new SeriesMeasureViewModel
             {
                 TableId = "apprenticeships-or-employment-table",
+                DecimalPlaces = 1,
                 Labels = ["School", laAverageLabel, "England average"],
                 Datasets =
                 [
@@ -185,6 +187,7 @@ public class KS4DestinationsViewModel : ProfileBaseViewModel
             DidNotStayInEducationOrEmploymentTable = new SeriesMeasureViewModel
             {
                 TableId = "did-not-stay-in-education-or-employment-table",
+                DecimalPlaces = 1,
                 Labels = ["School", laAverageLabel, "England average"],
                 Datasets =
                 [
