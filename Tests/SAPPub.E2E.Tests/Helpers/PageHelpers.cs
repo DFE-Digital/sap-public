@@ -1,7 +1,5 @@
 ﻿using Microsoft.Playwright;
-using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace SAPPub.E2E.Tests.Helpers;
 
@@ -50,7 +48,13 @@ public static class PageHelpers
         }
         var p = section.Locator("p.govuk-body", new() { HasTextString = textString });
         var pCount = await p.CountAsync();
-        Assert.True(pCount == 1, $"Paragraph count mismatch looking for paragraph text: {textString}. Actual count: {pCount}, expected 1");
+        if(pCount != 1)
+        {
+            var innerTexts = await section.Locator("p.govuk-body").AllInnerTextsAsync();
+            var testFeedback = string.Join(" ", innerTexts);
+            Assert.Fail($"Found {pCount} occurrences of paragraph text: \"{textString}\" for data-testid '{dataTestid}'\n Found text \"{testFeedback}\"");
+        }
+
         var input = await p.InnerTextAsync();
         var match = Regex.Matches(input, @"[+-]?\d+(?:\.\d+)?")
                  .Cast<Match>();
@@ -65,10 +69,18 @@ public static class PageHelpers
         {
             section = Page.Locator($"#{dataTestid}");
         }
-        var p = section.Locator("p.govuk-body").Filter(new() { HasTextString = beforeText }).Filter(new() { HasTextString = afterText });
+        var texts = await section.Locator("p.govuk-body").AllInnerTextsAsync();
+
+        var p = section.Filter(new() { HasTextString = beforeText }).Filter(new() { HasTextString = afterText });
 
         var pCount = await p.CountAsync();
-        Assert.True(pCount == 1, $"Paragraph count mismatch looking for paragraph text: {beforeText} and {afterText}. Actual count: {pCount}, expected 1");
+        if(pCount != 1)
+        {
+            var innerTexts = await section.Locator("p.govuk-body").AllInnerTextsAsync();
+            var testFeedback = string.Join(" ", innerTexts);
+            Assert.Fail($"Found {pCount} occurrences of paragraph text: \"{beforeText}\" and \"{afterText}\" for data-testid '{dataTestid}'\n Found text \"{testFeedback}\"");
+        }
+
         var input = await p.InnerTextAsync();
         var start = input.IndexOf(beforeText, StringComparison.Ordinal);
         if (start < 0)

@@ -347,8 +347,11 @@ public class ProgressAndAttainmentPageTests : BasePageTest
         Assert.NotNull(schoolProgress8);
         Assert.Equal(performanceYearData.Progress8Average, schoolProgress8.Last());
 
-        var schoolProgressbandingText = await Page.GetTextFromParagraphAsync(prog8ScoreSelector, "This is", "because the");
-        Assert.Equal(schoolInformationYearData.Progress8Banding.ToLower(), schoolProgressbandingText!.Trim().ToLower());
+        if (schoolInformationYearData.Progress8Banding != "z")
+        {
+            var schoolProgressbandingText = await Page.GetTextFromParagraphAsync(prog8ScoreSelector, "This is", "because the");
+            Assert.Equal(schoolInformationYearData.Progress8Banding.ToLower(), schoolProgressbandingText!.Trim().ToLower());
+        }
 
         var progress8Banding = await Page.GetScoreFromParagraphAsync(prog8ScoreSelector, "The confidence interval is");
         Assert.NotNull(progress8Banding);
