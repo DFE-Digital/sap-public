@@ -136,5 +136,28 @@
     "qual_entries_average": "8.4",
     "gcse_entries_average": "7.3",
     "pupil_count": "85"
+  },
+  {
+    "school_urn": "140424",
+    "progress8_lower_95_ci": "z",
+    "progress8_upper_95_ci": "z",
+    "progress8_average": "z",
+    "attainment8_average": "52.6",
+    "attainment8ebacc_average": "15.4",
+    "attainment8eng_average": "11.1",
+    "attainment8mat_average": "9.9",
+    "attainment8open_average": "16.2",
+    "attainment8open_gcse_average": "13.1",
+    "attainment8open_nongcse_average": "3.1",
+    "progress8_pupil_count": "z",
+    "gcse_91_percent": "100",
+    "engmath_94_percent": "77.8",
+    "engmath_95_percent": "55.6",
+    "engmath_97_percent": "15.9",
+    "lan_multiple_entering_percent": "3.2",
+    "sci_triple_entering_percent": "33.3",
+    "qual_entries_average": "8.3",
+    "gcse_entries_average": "7.7",
+    "pupil_count": "63"
   }
 ]
