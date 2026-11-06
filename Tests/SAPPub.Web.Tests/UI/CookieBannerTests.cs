@@ -1,5 +1,4 @@
-﻿using Microsoft.Playwright.Xunit;
-using SAPPub.Web.Tests.UI.Infrastructure;
+﻿using SAPPub.Web.Tests.UI.Infrastructure;
 
 namespace SAPPub.Web.Tests.UI;
 
