@@ -19,10 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="Data\Files\EnglandAbsence.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -65,6 +61,9 @@
     <None Update="Data\Files\KS4EstablishmentSubjectEntryRow.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Data\Files\KS4LADestinations.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Data\Files\KS5EnglandDestinations.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -101,7 +100,7 @@
     <None Update="Data\Files\public_v_establishment_group_links.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Data\Files\Top3.json">
+    <None Update="Data\Files\TechnicalSubjectEntry.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

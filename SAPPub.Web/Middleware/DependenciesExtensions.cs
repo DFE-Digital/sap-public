@@ -58,7 +58,8 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<IEstablishmentSearchRepository, EstablishmentSimpleSearchRepository>();
             //services.AddTransient<IEstablishmentSearchRepository, EstablishmentSearchRepository>();
 
-            services.AddTransient<IOverviewRepository, OverviewRepository>();
+            services.AddTransient<IOverviewRepository, OverviewSimpleRepository>();
+            //services.AddTransient<IOverviewRepository, OverviewRepository>();
             services.AddTransient<IOverviewService, OverviewService>();
 
             services.AddTransient<IEstablishmentRepository, EstablishmentRepository>();
