@@ -1,4 +1,6 @@
 ﻿(function () {
+    const forcedColorsQuery = window.matchMedia('(forced-colors: active)');
+
     const CHART_CONFIG = {
         defaults: {
             axisSuffix: '%',
@@ -54,7 +56,7 @@
     function gdsVars(canvas) {
         const s = getComputedStyle(canvas);
 
-        return {
+        let styles = {
             fontFamily: s.getPropertyValue('--gds-font-family').trim(),
             fontSize: parseInt(s.getPropertyValue('--gds-font-size')),
             text: s.getPropertyValue('--gds-text'),
@@ -63,6 +65,12 @@
             labelBorder: s.getPropertyValue('--gds-label-border'),
             labelPadding: parseInt(s.getPropertyValue('--gds-label-padding'))
         };
+
+        if (forcedColorsQuery.matches) {
+            styles.text = 'CanvasText';
+        }
+
+        return styles;
     }
 
     function isMobileViewport() {
@@ -164,7 +172,7 @@
     function getBarLabelColor(ctx, gdsStyles) {
         const bg = Array.isArray(ctx.dataset.backgroundColor) ? ctx.dataset.backgroundColor[ctx.dataIndex] : ctx.dataset.backgroundColor;
         const align = getBarLabelAlignment(ctx, getChartAxisSuffix(ctx));
-        return align === CHART_CONFIG.bar.datalabels.defaultAlign && bg === '#12436D' ? '#ffffff' : gdsStyles.text;
+        return align === CHART_CONFIG.bar.datalabels.defaultAlign && bg === '#12436D' ? '#ffffff' : '#000000';
     }
 
     function wrapLabel(label, labelWrapChars) {
@@ -277,7 +285,7 @@
                         title: {
                             display: !!axisTitle,
                             text: axisTitle,
-                            color: gdsStyles.text,
+                            color: "#fff",
                             font: fonts
                         }
                     },
@@ -408,9 +416,16 @@
 
     function buildVerticalLegend(chart, container) {
 
+        if (container.querySelectorAll("ul.js-legend").length === 1) {
+            // If we call initCharts() multiple times (eg - a user swaps between windows themes), 
+            // multiple legends could get created. This clause ensures there is only ever 1 legend for the chart
+            return;
+        }
+
         const datasets = Array.isArray(chart.data.datasets) ? chart.data.datasets : [chart.data.datasets];
 
         const ul = document.createElement('ul');
+        ul.classList.add("js-legend");
 
         datasets.forEach(ds => {
             const li = document.createElement('li');
@@ -454,6 +469,23 @@
         });
     }
     document.addEventListener('DOMContentLoaded', initCharts);
-    
+
+    // Redraw when the user switches high contrast theme on/off when the page is loaded:
+    // Note, this cannot detect is a windows theme is switched from say Aquatic to Desert
+    const eleChecker = document.createElement("div");
+    eleChecker.style.cssText = 'color:CanvasText; background: Canvas; display:none';
+    document.body.appendChild(eleChecker);
+
+    let last = getComputedStyle(eleChecker).backgroundColor;
+    forcedColorsQuery.addEventListener('change', checkTheme);
+
+    function checkTheme() {
+        const now = getComputedStyle(eleChecker).backgroundColor;
+        if (now !== last) {
+            last = now;
+            initCharts();
+        }
+    }
+
     adjustChartResize();
 })();
