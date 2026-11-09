@@ -38,6 +38,7 @@ BEGIN;
 \ir 04_v_la_urls.sql
 \ir 05_indexes.sql
 \ir 06_gateway.sql
+\ir 07_export_json.sql
 --\ir 05_validation.sql
 
 COMMIT;

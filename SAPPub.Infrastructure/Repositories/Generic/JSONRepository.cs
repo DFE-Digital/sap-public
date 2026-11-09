@@ -5,6 +5,7 @@ using SAPPub.Core.Entities.Destinations;
 using SAPPub.Core.Entities.Gateway;
 using SAPPub.Core.Entities.KS4.Absence;
 using SAPPub.Core.Entities.KS4.Performance;
+using SAPPub.Core.Entities.Overview;
 using SAPPub.Core.Entities.Performance;
 using SAPPub.Core.Interfaces.Repositories.Generic;
 using SAPPub.Infrastructure.Mapping.ValueCodes;
@@ -215,7 +216,7 @@ namespace SAPPub.Infrastructure.Repositories.Generic
                 nameof(Establishment) => items.FirstOrDefault(i => ((Establishment)(object)i).URN == ((dynamic)parameters).Id),
                 nameof(EstablishmentAbsence) => items.FirstOrDefault(i => ((EstablishmentAbsence)(object)i).Id == ((dynamic)parameters).Id),
                 nameof(KS4EstablishmentDestinations) => items.FirstOrDefault(i => ((KS4EstablishmentDestinations)(object)i).Id == ((dynamic)parameters).Id),
-                nameof(KS5EstablishmentDestinations) => items.FirstOrDefault(i => ((KS4EstablishmentDestinations)(object)i).Id == ((dynamic)parameters).Id),
+                nameof(KS5EstablishmentDestinations) => items.FirstOrDefault(i => ((KS5EstablishmentDestinations)(object)i).Id == ((dynamic)parameters).Id),
                 nameof(KS2EstablishmentPerformance) => items.FirstOrDefault(i => ((KS2EstablishmentPerformance)(object)i).Id == ((dynamic)parameters).Id),
                 nameof(EstablishmentPerformance) => items.FirstOrDefault(i => ((EstablishmentPerformance)(object)i).Id == ((dynamic)parameters).Id),
                 nameof(KS5EstablishmentPerformance) => items.FirstOrDefault(i => ((KS5EstablishmentPerformance)(object)i).Id == ((dynamic)parameters).Id),
@@ -251,6 +252,8 @@ namespace SAPPub.Infrastructure.Repositories.Generic
                 nameof(KS5EstablishmentSubjectEntryRow) => items.Where(i => parameters.Contains(((KS5EstablishmentSubjectEntryRow)(object)i).school_urn)),
 
                 nameof(LaUrls) => items.Where(i => parameters.Contains(((LaUrls)(object)i).Id)),
+
+                nameof(TechnicalSubjectEntry) => items.Where(i => parameters.Contains(((TechnicalSubjectEntry)(object)i).URN)),
                 _ => []
             };
         }
