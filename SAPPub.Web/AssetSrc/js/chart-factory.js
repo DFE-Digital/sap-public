@@ -285,7 +285,7 @@
                         title: {
                             display: !!axisTitle,
                             text: axisTitle,
-                            color: "#fff",
+                            color: gdsStyles.text,
                             font: fonts
                         }
                     },
@@ -471,21 +471,21 @@
     document.addEventListener('DOMContentLoaded', initCharts);
 
     // Redraw when the user switches high contrast theme on/off when the page is loaded:
-    // Note, this cannot detect is a windows theme is switched from say Aquatic to Desert
-    const eleChecker = document.createElement("div");
-    eleChecker.style.cssText = 'color:CanvasText; background: Canvas; display:none';
-    document.body.appendChild(eleChecker);
+    // Note, this cannot detect is a windows theme is switched from say Aquatic to Desert,
+    // so, we add the focus event listener
+    let lastThemeColour = getComputedStyle(document.body).backgroundColor;
 
-    let last = getComputedStyle(eleChecker).backgroundColor;
-    forcedColorsQuery.addEventListener('change', checkTheme);
-
-    function checkTheme() {
-        const now = getComputedStyle(eleChecker).backgroundColor;
-        if (now !== last) {
-            last = now;
+    function redrawIfThemeChanged() {
+        const now = getComputedStyle(document.body).backgroundColor;
+        if (now !== lastThemeColour) {
+            lastThemeColour = now;
             initCharts();
         }
     }
+
+    window.addEventListener('focus', redrawIfThemeChanged);
+    document.addEventListener('visibilitychange', redrawIfThemeChanged);
+    forcedColorsQuery.addEventListener('change', redrawIfThemeChanged);
 
     adjustChartResize();
 })();
