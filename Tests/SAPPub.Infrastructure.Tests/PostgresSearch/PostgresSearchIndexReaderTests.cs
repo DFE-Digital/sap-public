@@ -45,7 +45,7 @@ namespace SAPPub.Infrastructure.Tests.PostgresSearch
             _mockRepo.Setup(r => r.SearchAsync(It.IsAny<SearchQuery>(), It.IsAny<int>(), default))
                 .ReturnsAsync((Enumerable.Empty<Establishment>(), 0));
 
-            var results = await _sut.SearchAsync(new SearchQuery { Name = input! });
+            var results = await _sut.SearchAsync(new SearchQuery { Name = input! }, cancellationToken: TestContext.Current.CancellationToken);
 
             Assert.Empty(results.Results);
         }
@@ -62,7 +62,7 @@ namespace SAPPub.Infrastructure.Tests.PostgresSearch
             _mockRepo.Setup(r => r.SearchAsync(It.IsAny<SearchQuery>(), It.IsAny<int>(), default))
                 .ReturnsAsync((establishments, establishments.Count));
 
-            var result = await _sut.SearchAsync(new SearchQuery { Name = "fa" });
+            var result = await _sut.SearchAsync(new SearchQuery { Name = "fa" }, cancellationToken: TestContext.Current.CancellationToken);
 
             Assert.Equal(2, result.Count);
         }
@@ -81,7 +81,7 @@ namespace SAPPub.Infrastructure.Tests.PostgresSearch
             _mockRepo.Setup(r => r.SearchAsync(It.Is<SearchQuery>(q => q.Distance == distance), It.IsAny<int>(), default))
                 .ReturnsAsync((establishments, establishments.Count));
 
-            var result = await _sut.SearchAsync(new SearchQuery { Distance = distance, Latitude = 54.979671f, Longitude = -1.611639f });
+            var result = await _sut.SearchAsync(new SearchQuery { Distance = distance, Latitude = 54.979671f, Longitude = -1.611639f }, cancellationToken: TestContext.Current.CancellationToken);
 
             Assert.Equal(expectedCount, result.Count);
         }
@@ -103,7 +103,7 @@ namespace SAPPub.Infrastructure.Tests.PostgresSearch
             _mockRepo.Setup(r => r.SearchAsync(It.Is<SearchQuery>(q => q.Name == searchName && q.Distance == distance), It.IsAny<int>(), default))
                 .ReturnsAsync((establishments, establishments.Count));
 
-            var result = await _sut.SearchAsync(new SearchQuery { Name = searchName, Distance = distance, Latitude = 54.979671f, Longitude = -1.611639f });
+            var result = await _sut.SearchAsync(new SearchQuery { Name = searchName, Distance = distance, Latitude = 54.979671f, Longitude = -1.611639f }, cancellationToken: TestContext.Current.CancellationToken);
 
             Assert.Equal(expectedCount, result.Count);
         }
