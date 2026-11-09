@@ -102,7 +102,8 @@ This repository is an internal artefact store and not a public interface.
 
 ## Getting Started
 
-See [documentation](docs/developers/002-dev-setup.md)
+- Quick start with local JSON data: [docs/developers/002a-json-data-quick-start.md](docs/developers/002a-json-data-quick-start.md)
+- Full local setup (Postgres + data pipeline): [docs/developers/002-dev-setup.md](docs/developers/002-dev-setup.md)
 
 <!-- CONTRIBUTING -->
 ## Contributing
