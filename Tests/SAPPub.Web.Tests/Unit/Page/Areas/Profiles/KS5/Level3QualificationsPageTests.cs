@@ -1,4 +1,7 @@
-﻿using Moq;
+﻿using GeoAPI.CoordinateSystems;
+using Microsoft.FeatureManagement;
+using Moq;
+using SAPPub.Core.Enums;
 using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Performance;
@@ -57,6 +60,7 @@ public class Level3QualificationsPageTests : PageTestsBase
         _level3QualificationModel = new Level3QualificationsModelBuilder()
             .WithUrn(_urn)
             .WithEstablishmentName($"School{_urn}")
+            .WithLAName("Durham")
             .WithQualificationType(_qualificationType)
             .WithProgressScore(hasProgressScore ? 95.55 : null)
             .WithKS5(true)
@@ -652,7 +656,18 @@ public class Level3QualificationsPageTests : PageTestsBase
     public async Task Level3QualificationsPage_Displays_StudentRetention_Info(Level3 qualification)
     {
         // Arrange
+        var featureManagerMock = UseMock<IFeatureManager>();
+
+        featureManagerMock
+            .Setup(f => f.IsEnabledAsync(Constants.Constants.Enable16to19))
+            .ReturnsAsync(true);
+
+        featureManagerMock
+            .Setup(f => f.IsEnabledAsync(Constants.Constants.EnableRetentionMeasure))
+            .ReturnsAsync(false);
+
         SetupMocks(qualification);
+
         var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
         var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
 
@@ -664,6 +679,64 @@ public class Level3QualificationsPageTests : PageTestsBase
 
         Assert.NotNull(studentRetentionInsetText);
         Assert.Equal("Measures on student retention will be available shortly in a future release.", studentRetentionInsetText.TextContent.Trim());
+    }
+
+    [Theory]
+    [InlineData(Level3.ALevel)]
+    public async Task Level3QualificationsPage_Displays_RetentionMeasure_Details(Level3 qualification)
+    {
+        // Arrange
+        var featureManagerMock = UseMock<IFeatureManager>();
+
+        featureManagerMock
+            .Setup(f => f.IsEnabledAsync(Constants.Constants.Enable16to19))
+            .ReturnsAsync(true);
+
+        featureManagerMock
+            .Setup(f => f.IsEnabledAsync(Constants.Constants.EnableRetentionMeasure))
+            .ReturnsAsync(true);
+
+        SetupMocks(qualification);
+
+        var pageRouteUrl = $"{_pageRoute}/{_qualificationType.ToString().ToLower()}";
+        var url = BuildUrl(_establishment.URN, _establishment.EstablishmentName, pageRouteUrl);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert no of students enrolled
+        var noOfStudentsInfo = doc.QuerySelector("#no-of-students-enrolled-info");
+        Assert.NotNull(noOfStudentsInfo);
+        Assert.Equal($"Number of students enrolled to study mainly {qualification.GetDisplayName()}: {_level3QualificationModel.RetainedAndAssessedData.NumberOfStudents.CurrentYear.Value}", noOfStudentsInfo.TextContent.Trim());
+
+        // Assert current year
+        Assert.Contains("School or college", doc.GetTableHeaderContentByIdAndIndex("all-retention-assessed-current-year-table", 0, 0));
+        Assert.Contains(_level3QualificationModel.LAName, doc.GetTableHeaderContentByIdAndIndex("all-retention-assessed-current-year-table", 1, 0));
+        Assert.Contains("England average", doc.GetTableHeaderContentByIdAndIndex("all-retention-assessed-current-year-table", 2, 0));
+
+        Assert.Contains($"{_level3QualificationModel.RetainedAndAssessedData.EstablishmentAll.CurrentYear.Value}%", doc.GetTableCellContentByIdAndIndex("all-retention-assessed-current-year-table", 0, 0));
+        Assert.Contains($"{_level3QualificationModel.RetainedAndAssessedData.LocalAuthorityAll.CurrentYear.Value}%", doc.GetTableCellContentByIdAndIndex("all-retention-assessed-current-year-table", 1, 0));
+        Assert.Contains($"{_level3QualificationModel.RetainedAndAssessedData.EnglandAll.CurrentYear.Value}%", doc.GetTableCellContentByIdAndIndex("all-retention-assessed-current-year-table", 2, 0));
+
+        // Assert DataOverTime
+        Assert.Contains(AcademicYearSelection.Previous2.GetDisplayName()!, doc.GetTableHeaderContentByIdAndIndex("all-retention-assessed-data-overtime-table", 0, 1));
+        Assert.Contains(AcademicYearSelection.Previous.GetDisplayName()!, doc.GetTableHeaderContentByIdAndIndex("all-retention-assessed-data-overtime-table", 0, 2));
+        Assert.Contains(AcademicYearSelection.Current.GetDisplayName()!, doc.GetTableHeaderContentByIdAndIndex("all-retention-assessed-data-overtime-table", 0, 3));
+
+        Assert.Contains("School or college", doc.GetTableHeaderContentByIdAndIndex("all-retention-assessed-data-overtime-table", 1, 0));
+        Assert.Contains($"{_level3QualificationModel.RetainedAndAssessedData.EstablishmentAll.TwoYearsAgo.Value}%", doc.GetTableCellContentByIdAndIndex("all-retention-assessed-data-overtime-table", 1, 0));
+        Assert.Contains($"{_level3QualificationModel.RetainedAndAssessedData.EstablishmentAll.PreviousYear.Value}%", doc.GetTableCellContentByIdAndIndex("all-retention-assessed-data-overtime-table", 1, 1));
+        Assert.Contains($"{_level3QualificationModel.RetainedAndAssessedData.EstablishmentAll.CurrentYear.Value}%", doc.GetTableCellContentByIdAndIndex("all-retention-assessed-data-overtime-table", 1, 2));
+
+        Assert.Contains(_level3QualificationModel.LAName, doc.GetTableHeaderContentByIdAndIndex("all-retention-assessed-data-overtime-table", 2, 0));
+        Assert.Contains($"{_level3QualificationModel.RetainedAndAssessedData.LocalAuthorityAll.TwoYearsAgo.Value}%", doc.GetTableCellContentByIdAndIndex("all-retention-assessed-data-overtime-table", 2, 0));
+        Assert.Contains($"{_level3QualificationModel.RetainedAndAssessedData.LocalAuthorityAll.PreviousYear.Value}%", doc.GetTableCellContentByIdAndIndex("all-retention-assessed-data-overtime-table", 2, 1));
+        Assert.Contains($"{_level3QualificationModel.RetainedAndAssessedData.LocalAuthorityAll.CurrentYear.Value}%", doc.GetTableCellContentByIdAndIndex("all-retention-assessed-data-overtime-table", 2, 2));
+
+        Assert.Contains("England average", doc.GetTableHeaderContentByIdAndIndex("all-retention-assessed-data-overtime-table", 3, 0));
+        Assert.Contains($"{_level3QualificationModel.RetainedAndAssessedData.EnglandAll.TwoYearsAgo.Value}%", doc.GetTableCellContentByIdAndIndex("all-retention-assessed-data-overtime-table", 3, 0));
+        Assert.Contains($"{_level3QualificationModel.RetainedAndAssessedData.EnglandAll.PreviousYear.Value}%", doc.GetTableCellContentByIdAndIndex("all-retention-assessed-data-overtime-table", 3, 1));
+        Assert.Contains($"{_level3QualificationModel.RetainedAndAssessedData.EnglandAll.CurrentYear.Value}%", doc.GetTableCellContentByIdAndIndex("all-retention-assessed-data-overtime-table", 3, 2));
     }
 
     [Fact]

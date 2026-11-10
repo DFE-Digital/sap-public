@@ -336,4 +336,15 @@ public class KS5LAPerformance
 
     // Points for LA - Non-Disadvantaged - Tech Certificates
     public CodedDouble TALLPPE_TECHCERT_NOTDIS_LA_Current_Num_Coded { get; set; }
+
+    // A Levels Retained and assessed measures
+
+    // Percentage of students retained and assessed - A Levels - Current
+    public CodedDouble PT_RET_ASSESSED_ALEV_LA_Current_Pct_Coded { get; set; }
+
+    // Percentage of students retained and assessed - A Levels - Previous
+    public CodedDouble PT_RET_ASSESSED_ALEV_LA_Previous_Pct_Coded { get; set; }
+
+    // Percentage of students retained and assessed - A Levels - Previous2
+    public CodedDouble PT_RET_ASSESSED_ALEV_LA_Previous2_Pct_Coded { get; set; }
 }

@@ -1,4 +1,5 @@
 ﻿using SAPPub.Core.Entities;
+using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.Performance;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Enums.KS5Qualifications;
@@ -46,7 +47,8 @@ public class Level3QualificationsService(
             AdditionalData = GetAdditionalData(level3Qualification, establishmentPerformance, laPerformance, englandPerformance),
             AdvancedLevelMathsQualificationData = AdvancedLevelMathsQualificationData(level3Qualification, establishmentPerformance, laPerformance, englandPerformance),
             DisadvantagedStudentsData = GetDisadvantagedStudentsData(level3Qualification, establishmentPerformance, laPerformance, englandPerformance),
-            NonDisadvantagedStudentsData = GetNonDisadvantagedStudentsData(level3Qualification, laPerformance, englandPerformance)
+            NonDisadvantagedStudentsData = GetNonDisadvantagedStudentsData(level3Qualification, laPerformance, englandPerformance),
+            RetainedAndAssessedData = GetRetainedAndAssessedMeasures(level3Qualification, establishmentPerformance, laPerformance, englandPerformance)
         };
     }
 
@@ -357,6 +359,81 @@ public class Level3QualificationsService(
             England = englandPerformance.L3M_PER_Eng_Current_Pct_Coded
         };
     }
+
+    public static RetainedAndAssessedModel GetRetainedAndAssessedMeasures(
+        Level3 level3Qualification,
+        KS5EstablishmentPerformance establishmentPerformance,
+        KS5LAPerformance laPerformance,
+        KS5EnglandPerformance englandPerformance)
+    {
+        return new RetainedAndAssessedModel
+        {
+            NumberOfStudents = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = level3Qualification switch
+                {
+                    Level3.ALevel => establishmentPerformance.T_INSCOPE_ALEV_RET_Est_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                PreviousYear = CodedDouble.Empty,
+                TwoYearsAgo = CodedDouble.Empty,
+            },
+            EstablishmentAll = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = level3Qualification switch
+                {
+                    Level3.ALevel => establishmentPerformance.PT_RET_ASSESSED_ALEV_Est_Current_Pct_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                PreviousYear = level3Qualification switch
+                {
+                    Level3.ALevel => establishmentPerformance.PT_RET_ASSESSED_ALEV_Est_Previous_Pct_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                TwoYearsAgo = level3Qualification switch
+                {
+                    Level3.ALevel => establishmentPerformance.PT_RET_ASSESSED_ALEV_Est_Previous2_Pct_Coded,
+                    _ => CodedDouble.Empty,
+                },
+            },
+            LocalAuthorityAll = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = level3Qualification switch
+                {
+                    Level3.ALevel => laPerformance.PT_RET_ASSESSED_ALEV_LA_Current_Pct_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                PreviousYear = level3Qualification switch
+                {
+                    Level3.ALevel => laPerformance.PT_RET_ASSESSED_ALEV_LA_Previous_Pct_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                TwoYearsAgo = level3Qualification switch
+                {
+                    Level3.ALevel => laPerformance.PT_RET_ASSESSED_ALEV_LA_Previous2_Pct_Coded,
+                    _ => CodedDouble.Empty,
+                },
+            },
+            EnglandAll = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = level3Qualification switch
+                {
+                    Level3.ALevel => englandPerformance.PT_RET_ASSESSED_ALEV_Eng_Current_Pct_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                PreviousYear = level3Qualification switch
+                {
+                    Level3.ALevel => englandPerformance.PT_RET_ASSESSED_ALEV_Eng_Previous_Pct_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                TwoYearsAgo = level3Qualification switch
+                {
+                    Level3.ALevel => englandPerformance.PT_RET_ASSESSED_ALEV_Eng_Previous2_Pct_Coded,
+                    _ => CodedDouble.Empty,
+                },
+            },
+        };
+    }    
 
     private static PerformanceSummaryModel GetDisadvantagedStudentsData(
         Level3 level3Qualification,

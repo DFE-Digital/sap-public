@@ -30,36 +30,36 @@
                 Choose the type of qualifications you want to see:
             </p>
 
-        <ul class="govuk-list govuk-list--bullet">
-            <li>
-                Level 2 qualifications include GCSEs, Technical certificates and other level 2 qualifications.
-            </li>
-            <li>
-                Level 3 qualifications include A levels, Tech levels, and other level 3 qualifications.
-            </li>
-        </ul>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>
+                    Level 2 qualifications include GCSEs, Technical certificates and other level 2 qualifications.
+                </li>
+                <li>
+                    Level 3 qualifications include A levels, Tech levels, and other level 3 qualifications.
+                </li>
+            </ul>
         
-        <p class="govuk-body">
-            Some establishments offer apprenticeships.
-            <br />
-            To view apprenticeship statistics, visit 
-            <a id="find-statistics-link"
-               class="govuk-link"
-               rel="noreferrer noopener"
-               target="_blank"
-               href="https://explore-education-statistics.service.gov.uk/find-statistics">
-                Find statistics and data <span class="govuk-visually-hidden">(opens in a new tab)</span>
-            </a>.
-            <br />
-            To find and apply for an apprenticeship, visit 
-            <a id="find-apprenticeship-link"
-               class="govuk-link"
-               rel="noreferrer noopener"
-               target="_blank"
-               href="https://www.gov.uk/apply-apprenticeship">
-                Find an apprenticeship <span class="govuk-visually-hidden">(opens in a new tab)</span>
-            </a>.
-        </p>
+            <p class="govuk-body">
+                Some establishments offer apprenticeships.
+                <br />
+                To view apprenticeship statistics, visit 
+                <a id="find-statistics-link"
+                   class="govuk-link"
+                   rel="noreferrer noopener"
+                   target="_blank"
+                   href="https://explore-education-statistics.service.gov.uk/find-statistics">
+                    Find statistics and data <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                </a>.
+                <br />
+                To find and apply for an apprenticeship, visit 
+                <a id="find-apprenticeship-link"
+                   class="govuk-link"
+                   rel="noreferrer noopener"
+                   target="_blank"
+                   href="https://www.gov.uk/apply-apprenticeship">
+                    Find an apprenticeship <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                </a>.
+            </p>
 
             <nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
                 <ul class="moj-sub-navigation__list">
@@ -104,11 +104,8 @@
             @* Average result *@
             <partial name="_AverageResult" model="@Model.AverageResult" view-data='new ViewDataDictionary(ViewData) { ["QualificationLevel"] = Model.Level3Qualification, ["LAName"] = Model.LAName }' />
 
-            @* Student retention *@
-            <h3 class="govuk-heading-m">Student retention</h3>
-            <div id="student-retention" class="govuk-inset-text">
-                Measures on student retention will be available shortly in a future release.
-            </div>
+            @* Retention measure*@
+            <partial name="_RetentionMeasures" model="@Model.RetainedAndAssessedData" view-data='new ViewDataDictionary(ViewData) { ["QualificationLevel"] = Model.Level3Qualification }' />
 
             @* Performance Summary *@
             <partial name="_PerformanceSummary" model="@Model.PerformanceGroupsData" view-data='new ViewDataDictionary(ViewData) { ["LAName"] = Model.LAName }' />
@@ -158,7 +155,9 @@
     </div>
 </div>
 
-@section Scripts
-{
+@section Scripts {
+    <script src="~/js/chart.umd.js"></script>
+    <script src="~/js/chartjs-plugin-datalabels.min.js"></script>
+    <script src="~/js/chart-factory.js"></script>
     <script src="~/js/chart-table-toggle.js"></script>
 }

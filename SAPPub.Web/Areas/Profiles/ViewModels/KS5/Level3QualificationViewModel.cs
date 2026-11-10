@@ -28,6 +28,8 @@ public class Level3QualificationViewModel : BaseViewModel
 
     public required PerformanceGroupsViewModel PerformanceGroupsData { get; init; }
 
+    public required RetainedAndAssessedViewModel RetainedAndAssessedData { get; init; }
+
     public static Level3QualificationViewModel Map(Level3QualificationModel model)
     {
         return new Level3QualificationViewModel
@@ -44,7 +46,8 @@ public class Level3QualificationViewModel : BaseViewModel
             AverageResult = AverageResultViewModel.Map(model.AverageResult),
             AdditionalData = model.AdditionalData != null ? AdditionalDataViewModel.Map(model.AdditionalData) : null,
             AdvancedLevelMathsQualificationData = model.AdvancedLevelMathsQualificationData != null ? SimpleCodedDoubleTableViewModel.Map(model.AdvancedLevelMathsQualificationData) : null,
-            PerformanceGroupsData = PerformanceGroupsViewModel.Map(model.DisadvantagedStudentsData, model.NonDisadvantagedStudentsData)
+            PerformanceGroupsData = PerformanceGroupsViewModel.Map(model.DisadvantagedStudentsData, model.NonDisadvantagedStudentsData),
+            RetainedAndAssessedData = RetainedAndAssessedViewModel.Map(model.RetainedAndAssessedData, model.LAName)
         };
     }
 }

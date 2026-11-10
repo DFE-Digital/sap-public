@@ -1,0 +1,81 @@
+﻿@using SAPPub.Core.Enums.KS5Qualifications
+@using SAPPub.Web.ViewComponents.ChartWithTableToggle
+@using static SAPPub.Web.Constants.Constants;
+@inject Microsoft.FeatureManagement.IFeatureManager FeatureManager
+@model SAPPub.Web.Areas.Profiles.ViewModels.KS5.RetainedAndAssessedViewModel
+
+@{
+    var qualification = ViewData["QualificationLevel"];
+    var qualificationName = qualification switch
+    {
+        Level2 level2 => level2.GetDisplayName(),
+        Level3 level3 => level3.GetDisplayName(),
+        _ => null
+    };
+}
+
+@if (Model is null)
+{
+    return;
+}
+
+@if (await FeatureManager.IsEnabledAsync(EnableRetentionMeasure) &&
+    (qualification is Level3 level3Qualification && level3Qualification == Level3.ALevel))
+{
+    <h3 class="govuk-heading-m">Student who completed their main course and were assessed</h3>
+
+    <p class="govuk-body">
+        Compare this school or college with state-funded local and national averages.
+    </p>
+
+    <govuk-details id="details-more-about-this-measure">
+        <govuk-details-summary>
+            Find out more about this measure
+        </govuk-details-summary>
+        <govuk-details-text>
+            <p class="govuk-body">
+                This measure shows whether a student completed the core aim of their study programme and assessment, which was an applied general qualification.
+            </p>
+            <p class="govuk-body">
+                Visit the
+                <a id="measures-tech-guidance-link"
+                   class="govuk-link"
+                   rel="noreferrer noopener"
+                   target="_blank"
+                   href="https://www.gov.uk/government/publications/16-to-19-accountability-headline-measures-technical-guide">
+                    16 to 19 Accountability Technical Guide <span class="govuk-visually-hidden">(opens in a new tab)</span>
+                </a>
+                for more details.
+            </p>
+        </govuk-details-text>
+    </govuk-details>
+
+    @if (Model.NumberOfStudents.Value.HasValue)
+    {
+        <p id="no-of-students-enrolled-info" class="govuk-tag govuk-tag--full-width govuk-tag--grey govuk-!-margin-bottom-4">
+            Number of students enrolled to study mainly @qualificationName: @Model.NumberOfStudents.DisplayText()
+        </p>
+    }
+
+    <div id="retained-assessed" class="data-container">
+        <br />
+        @await Component.InvokeAsync("ChartWithTableToggle", new ChartWithTableToggleModel
+        {
+            IdPrefix = "all-retention-assessed",
+            ChartPrefix = "all-retention-assessed",
+            CurrentData = Model.AllData,
+            OverTimeData = Model.AllOverTimeData,
+            HasEstablishmentData = true,
+            IsScaled = false,
+            IsPercentageData = true,
+            ShowFullPercentageAxis = true
+        })
+    </div>
+}
+else
+{
+    <h3 class="govuk-heading-m">Student retention</h3>
+    <div id="student-retention" class="govuk-inset-text">
+        Measures on student retention will be available shortly in a future release.
+    </div>
+}

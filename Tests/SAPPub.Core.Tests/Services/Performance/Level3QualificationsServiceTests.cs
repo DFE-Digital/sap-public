@@ -154,6 +154,19 @@ public class Level3QualificationsServiceTests
         Assert.Null(result.NonDisadvantagedStudentsData.England.ConfidenceLevelLower.Value);
         Assert.Null(result.NonDisadvantagedStudentsData.England.Result.Grade.Value);
         Assert.Null(result.NonDisadvantagedStudentsData.England.Result.Points.Value);
+
+        Assert.Null(result.RetainedAndAssessedData.NumberOfStudents.CurrentYear.Value);
+        Assert.Null(result.RetainedAndAssessedData.EstablishmentAll.CurrentYear.Value);
+        Assert.Null(result.RetainedAndAssessedData.EstablishmentAll.PreviousYear.Value);
+        Assert.Null(result.RetainedAndAssessedData.EstablishmentAll.TwoYearsAgo.Value);
+
+        Assert.Null(result.RetainedAndAssessedData.LocalAuthorityAll.CurrentYear.Value);
+        Assert.Null(result.RetainedAndAssessedData.LocalAuthorityAll.PreviousYear.Value);
+        Assert.Null(result.RetainedAndAssessedData.LocalAuthorityAll.TwoYearsAgo.Value);
+
+        Assert.Null(result.RetainedAndAssessedData.EnglandAll.CurrentYear.Value);
+        Assert.Null(result.RetainedAndAssessedData.EnglandAll.PreviousYear.Value);
+        Assert.Null(result.RetainedAndAssessedData.EnglandAll.TwoYearsAgo.Value);
     }
 
     [Theory]
@@ -275,6 +288,19 @@ public class Level3QualificationsServiceTests
             Assert.Equal(_englandPerformance.LCI_INS_ALEV_NOTDIS_Eng_Current_Num_Coded, result.NonDisadvantagedStudentsData.England.ConfidenceLevelLower);
             Assert.Equal(_englandPerformance.TALLPPE_ALEV_1618_NOTDIS_Eng_Current_Num_Coded, result.NonDisadvantagedStudentsData.England.Result.Points);
             Assert.Equal(_englandPerformance.TALLPPEGRD_ALEV_NOTDIS_Eng_Current, result.NonDisadvantagedStudentsData.England.Result.Grade);
+
+            Assert.Equal(_establishmentPerformance.T_INSCOPE_ALEV_RET_Est_Current_Num_Coded, result.RetainedAndAssessedData.NumberOfStudents.CurrentYear);
+            Assert.Equal(_establishmentPerformance.PT_RET_ASSESSED_ALEV_Est_Current_Pct_Coded, result.RetainedAndAssessedData.EstablishmentAll.CurrentYear);
+            Assert.Equal(_establishmentPerformance.PT_RET_ASSESSED_ALEV_Est_Previous_Pct_Coded, result.RetainedAndAssessedData.EstablishmentAll.PreviousYear);
+            Assert.Equal(_establishmentPerformance.PT_RET_ASSESSED_ALEV_Est_Previous2_Pct_Coded, result.RetainedAndAssessedData.EstablishmentAll.TwoYearsAgo);
+
+            Assert.Equal(_laPerformance.PT_RET_ASSESSED_ALEV_LA_Current_Pct_Coded, result.RetainedAndAssessedData.LocalAuthorityAll.CurrentYear);
+            Assert.Equal(_laPerformance.PT_RET_ASSESSED_ALEV_LA_Previous_Pct_Coded, result.RetainedAndAssessedData.LocalAuthorityAll.PreviousYear);
+            Assert.Equal(_laPerformance.PT_RET_ASSESSED_ALEV_LA_Previous2_Pct_Coded, result.RetainedAndAssessedData.LocalAuthorityAll.TwoYearsAgo);
+
+            Assert.Equal(_englandPerformance.PT_RET_ASSESSED_ALEV_Eng_Current_Pct_Coded, result.RetainedAndAssessedData.EnglandAll.CurrentYear);
+            Assert.Equal(_englandPerformance.PT_RET_ASSESSED_ALEV_Eng_Previous_Pct_Coded, result.RetainedAndAssessedData.EnglandAll.PreviousYear);
+            Assert.Equal(_englandPerformance.PT_RET_ASSESSED_ALEV_Eng_Previous2_Pct_Coded, result.RetainedAndAssessedData.EnglandAll.TwoYearsAgo);
         }
         else if (qualificationLevel == Level3.Academic)
         {
@@ -682,6 +708,14 @@ public class Level3QualificationsServiceTests
             LCI_INS_TLEV_DIS_Est_Current_Num_Coded = new CodedDouble(1, string.Empty, string.Empty),
             TALLPPE_TLEV_DIS_Est_Current_Num_Coded = new CodedDouble(12.56, string.Empty, string.Empty),
             TALLPPEGRD_TLEV_DIS_Est_Current = new CodedString("B", string.Empty, string.Empty),
+
+            // Retention measures
+            T_INSCOPE_ALEV_RET_Est_Current_Num_Coded = new CodedDouble(200, string.Empty, string.Empty),
+
+            // A Levels
+            PT_RET_ASSESSED_ALEV_Est_Current_Pct_Coded = new CodedDouble(55.19, string.Empty, string.Empty),
+            PT_RET_ASSESSED_ALEV_Est_Previous_Pct_Coded = new CodedDouble(65.89, string.Empty, string.Empty),
+            PT_RET_ASSESSED_ALEV_Est_Previous2_Pct_Coded = new CodedDouble(70.57, string.Empty, string.Empty),
         };
 
         _englandPerformance = new KS5EnglandPerformance
@@ -806,6 +840,11 @@ public class Level3QualificationsServiceTests
             LCI_INS_TLEV_NOTDIS_Eng_Current_Num_Coded = new CodedDouble(1, string.Empty, string.Empty),
             TALLPPE_TLEV_NOTDIS_Eng_Current_Num_Coded = new CodedDouble(35.11, string.Empty, string.Empty),
             TALLPPEGRD_TLEV_NOTDIS_Eng_Current = new CodedString("A", string.Empty, string.Empty),
+
+            // Retention measures - A Levels
+            PT_RET_ASSESSED_ALEV_Eng_Current_Pct_Coded = new CodedDouble(67.56, string.Empty, string.Empty),
+            PT_RET_ASSESSED_ALEV_Eng_Previous_Pct_Coded = new CodedDouble(53.47, string.Empty, string.Empty),
+            PT_RET_ASSESSED_ALEV_Eng_Previous2_Pct_Coded = new CodedDouble(85.12, string.Empty, string.Empty),
         };
 
         _laPerformance = new KS5LAPerformance
@@ -907,6 +946,11 @@ public class Level3QualificationsServiceTests
             LCI_INS_TLEV_NOTDIS_LA_Current_Num_Coded = new CodedDouble(1, string.Empty, string.Empty),
             TALLPPE_TLEV_NOTDIS_LA_Current_Num_Coded = new CodedDouble(11.79, string.Empty, string.Empty),
             TALLPPEGRD_TLEV_NOTDIS_LA_Current = new CodedString("A", string.Empty, string.Empty),
+
+            // Retention measures - A Levels
+            PT_RET_ASSESSED_ALEV_LA_Current_Pct_Coded = new CodedDouble(72.33, string.Empty, string.Empty),
+            PT_RET_ASSESSED_ALEV_LA_Previous_Pct_Coded = new CodedDouble(69.78, string.Empty, string.Empty),
+            PT_RET_ASSESSED_ALEV_LA_Previous2_Pct_Coded = new CodedDouble(55.29, string.Empty, string.Empty),
         };
 
         _mockKs5PerformanceRepository
