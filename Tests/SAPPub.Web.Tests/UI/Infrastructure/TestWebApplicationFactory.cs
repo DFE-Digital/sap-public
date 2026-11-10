@@ -61,11 +61,13 @@ public class TestWebApplicationFactory(bool enableOverview = true) : WebApplicat
             {
                 services.RemoveAll(typeof(IGenericRepository<>));
                 services.AddSingleton(typeof(IGenericRepository<>), typeof(FakeGenericRepository<>));
-                services.RemoveAll(typeof(IEstablishmentLinksRepository));
+                services.RemoveAll<IEstablishmentLinksRepository>();
                 services.AddSingleton<IEstablishmentLinksRepository, FakeEstablishmentLinksRepository>();
-                services.RemoveAll(typeof(IEstablishmentRepository));
+                services.RemoveAll<IEstablishmentRepository>();
                 services.AddSingleton<IEstablishmentRepository, FakeEstablishmentRepository>();
-                services.RemoveAll(typeof(IOverviewService));
+                services.RemoveAll<IEstablishmentSearchRepository>();
+                services.AddSingleton<IEstablishmentSearchRepository, FakeEstablishmentSearchRepository>();
+                services.RemoveAll<IOverviewService>();
                 services.AddSingleton<IOverviewService, FakeOverviewService>();
             });
 

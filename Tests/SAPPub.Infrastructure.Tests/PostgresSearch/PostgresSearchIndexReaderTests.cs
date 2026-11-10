@@ -42,7 +42,7 @@ namespace SAPPub.Infrastructure.Tests.PostgresSearch
         [InlineData("    ")]
         public async Task SearchAsync_ReturnsEmpty_ForNullOrWhiteSpace(string? input)
         {
-            _mockRepo.Setup(r => r.SearchAsync(It.IsAny<SearchQuery>(), It.IsAny<int>(), default))
+            _mockRepo.Setup(r => r.SearchAsync(It.IsAny<SearchQuery>(), It.IsAny<int>(), It.IsAny<System.Threading.CancellationToken>()))
                 .ReturnsAsync((Enumerable.Empty<Establishment>(), 0));
 
             var results = await _sut.SearchAsync(new SearchQuery { Name = input! }, cancellationToken: TestContext.Current.CancellationToken);
@@ -59,7 +59,7 @@ namespace SAPPub.Infrastructure.Tests.PostgresSearch
                 FakeEstablishmentTwo
             };
 
-            _mockRepo.Setup(r => r.SearchAsync(It.IsAny<SearchQuery>(), It.IsAny<int>(), default))
+            _mockRepo.Setup(r => r.SearchAsync(It.IsAny<SearchQuery>(), It.IsAny<int>(), It.IsAny<System.Threading.CancellationToken>()))
                 .ReturnsAsync((establishments, establishments.Count));
 
             var result = await _sut.SearchAsync(new SearchQuery { Name = "fa" }, cancellationToken: TestContext.Current.CancellationToken);
@@ -78,7 +78,7 @@ namespace SAPPub.Infrastructure.Tests.PostgresSearch
                 establishments.Add(new Establishment { URN = (1000 + i).ToString(), EstablishmentName = $"School {i}" });
             }
 
-            _mockRepo.Setup(r => r.SearchAsync(It.Is<SearchQuery>(q => q.Distance == distance), It.IsAny<int>(), default))
+            _mockRepo.Setup(r => r.SearchAsync(It.Is<SearchQuery>(q => q.Distance == distance), It.IsAny<int>(), It.IsAny<System.Threading.CancellationToken>()))
                 .ReturnsAsync((establishments, establishments.Count));
 
             var result = await _sut.SearchAsync(new SearchQuery { Distance = distance, Latitude = 54.979671f, Longitude = -1.611639f }, cancellationToken: TestContext.Current.CancellationToken);
@@ -100,7 +100,7 @@ namespace SAPPub.Infrastructure.Tests.PostgresSearch
                 establishments.Add(new Establishment { URN = (2000 + i).ToString(), EstablishmentName = $"{searchName} {i}" });
             }
 
-            _mockRepo.Setup(r => r.SearchAsync(It.Is<SearchQuery>(q => q.Name == searchName && q.Distance == distance), It.IsAny<int>(), default))
+            _mockRepo.Setup(r => r.SearchAsync(It.Is<SearchQuery>(q => q.Name == searchName && q.Distance == distance), It.IsAny<int>(), It.IsAny<System.Threading.CancellationToken>()))
                 .ReturnsAsync((establishments, establishments.Count));
 
             var result = await _sut.SearchAsync(new SearchQuery { Name = searchName, Distance = distance, Latitude = 54.979671f, Longitude = -1.611639f }, cancellationToken: TestContext.Current.CancellationToken);
