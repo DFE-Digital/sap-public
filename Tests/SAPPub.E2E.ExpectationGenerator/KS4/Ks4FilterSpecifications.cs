@@ -8,6 +8,15 @@ namespace SAPPub.E2E.TestDataExpectationGenerator.KS4;
 /// </summary>
 internal static class Ks4FilterSpecifications
 {
+    // using the same urns for every test file
+    private static readonly (string, string[]) SchoolUrns = 
+            ("school_urn", ["124856", "136489", "136791", "137205", "137252", "138765", "140424"]); 
+
+    private static readonly (string, string) ExamTotals = ("grade", "Total exam entries");
+    private static readonly (string, string) QualificationGcse = ("qualification_type", "GCSE");
+    private static readonly (string, string) QualificationVocational = ("qualification_type", "Vocational");
+    private static readonly (string, string) QualificationOther = ("qualification_type", "FSMQ");
+
     private static readonly (string, string) CurrentPeriod = ("time_period", "202526");
     private static readonly (string, string) PreviousPeriod = ("time_period", "202425");
     private static readonly (string, string) Previous2Period = ("time_period", "202324");
@@ -25,31 +34,46 @@ internal static class Ks4FilterSpecifications
     private static readonly (string, string) Eal = ("first_language", "Known or believed to be other than English");
     private static readonly (string, string) NonMobile = ("mobility", "Non mobile");
 
+    public static IReadOnlyList<FilterSpecification> CreateSubjectGcseEntries() =>
+    [
+        Create("SubjectsEntered", SchoolUrns, CurrentPeriod, ExamTotals, QualificationGcse),
+    ];
+
+    public static IReadOnlyList<FilterSpecification> CreateSubjectVocationalEntries() =>
+    [
+        Create("SubjectsEntered", SchoolUrns, CurrentPeriod, ExamTotals, QualificationVocational)
+    ];
+
+    public static IReadOnlyList<FilterSpecification> CreateSubjectOtherEntries() =>
+    [
+        Create("SubjectsEntered", SchoolUrns, CurrentPeriod, ExamTotals, QualificationOther)
+    ];
+
     public static IReadOnlyList<FilterSpecification> CreatePerformanceTables() =>
     [
-        Create("performance_tables_schools_final_Total_Current_Year", CurrentPeriod, Total),
-        Create("performance_tables_schools_final_Total_Previous_Year", PreviousPeriod, Total),
-        Create("performance_tables_schools_final_Total_Previous2_Year", Previous2Period, Total),
-        Create("performance_tables_schools_final_Boys_Current_Year", CurrentPeriod, SexTopic, Boys),
-        Create("performance_tables_schools_final_Girls_Current_Year", CurrentPeriod, SexTopic, Girls),
-        Create("performance_tables_schools_final_Disadvantaged_Current_Year", CurrentPeriod, DisadvantageTopic, Disadvantaged),
-        Create("performance_tables_schools_final_Disadvantaged_Previous_Year", PreviousPeriod, DisadvantageTopic, Disadvantaged),
-        Create("performance_tables_schools_final_Disadvantaged_Previous2_Year", Previous2Period, DisadvantageTopic, Disadvantaged),
-        Create("performance_tables_schools_final_EAL_Current_Year", CurrentPeriod, FirstLanguageTopic, Eal),
-        Create("performance_tables_schools_final_NonMobile_Current_Year", CurrentPeriod, MobilityTopic, NonMobile)
+        Create("performance_tables_schools_final_Total_Current_Year", SchoolUrns, CurrentPeriod, Total),
+        Create("performance_tables_schools_final_Total_Previous_Year", SchoolUrns, PreviousPeriod, Total),
+        Create("performance_tables_schools_final_Total_Previous2_Year", SchoolUrns, Previous2Period, Total),
+        Create("performance_tables_schools_final_Boys_Current_Year", SchoolUrns, CurrentPeriod, SexTopic, Boys),
+        Create("performance_tables_schools_final_Girls_Current_Year", SchoolUrns, CurrentPeriod, SexTopic, Girls),
+        Create("performance_tables_schools_final_Disadvantaged_Current_Year", SchoolUrns, CurrentPeriod, DisadvantageTopic, Disadvantaged),
+        Create("performance_tables_schools_final_Disadvantaged_Previous_Year", SchoolUrns, PreviousPeriod, DisadvantageTopic, Disadvantaged),
+        Create("performance_tables_schools_final_Disadvantaged_Previous2_Year", SchoolUrns, Previous2Period, DisadvantageTopic, Disadvantaged),
+        Create("performance_tables_schools_final_EAL_Current_Year", SchoolUrns, CurrentPeriod, FirstLanguageTopic, Eal),
+        Create("performance_tables_schools_final_NonMobile_Current_Year", SchoolUrns, CurrentPeriod, MobilityTopic, NonMobile)
     ];
 
     public static IReadOnlyList<FilterSpecification> CreateAllStateLa() =>
     [
-        Create("all_state_funded_pupils_characteristics_la_Total_Current", CurrentPeriod, Total),
-        Create("all_state_funded_pupils_characteristics_la_Total_Previous", PreviousPeriod, Total),
-        Create("all_state_funded_pupils_characteristics_la_Total_Previous2", Previous2Period, Total),
-        Create("all_state_funded_pupils_characteristics_la_Boys_Current", CurrentPeriod, SexTopic, Boys),
-        Create("all_state_funded_pupils_characteristics_la_Girls_Current", CurrentPeriod, SexTopic, Girls),
-        Create("all_state_funded_pupils_characteristics_la_Disadvantaged_Current", CurrentPeriod, DisadvantageTopic, Disadvantaged),
-        Create("all_state_funded_pupils_characteristics_la_Disadvantaged_Previous", PreviousPeriod, DisadvantageTopic, Disadvantaged),
-        Create("all_state_funded_pupils_characteristics_la_Disadvantaged_Previous2", Previous2Period, DisadvantageTopic, Disadvantaged),
-        Create("all_state_funded_pupils_characteristics_la_NonDisadvantaged_Current", CurrentPeriod, DisadvantageTopic, NonDisadvantaged)
+        Create("all_state_funded_pupils_characteristics_la_Total_Current", SchoolUrns, CurrentPeriod, Total),
+        Create("all_state_funded_pupils_characteristics_la_Total_Previous", SchoolUrns, PreviousPeriod, Total),
+        Create("all_state_funded_pupils_characteristics_la_Total_Previous2", SchoolUrns, Previous2Period, Total),
+        Create("all_state_funded_pupils_characteristics_la_Boys_Current", SchoolUrns, CurrentPeriod, SexTopic, Boys),
+        Create("all_state_funded_pupils_characteristics_la_Girls_Current", SchoolUrns, CurrentPeriod, SexTopic, Girls),
+        Create("all_state_funded_pupils_characteristics_la_Disadvantaged_Current", SchoolUrns, CurrentPeriod, DisadvantageTopic, Disadvantaged),
+        Create("all_state_funded_pupils_characteristics_la_Disadvantaged_Previous", SchoolUrns, PreviousPeriod, DisadvantageTopic, Disadvantaged),
+        Create("all_state_funded_pupils_characteristics_la_Disadvantaged_Previous2", SchoolUrns, Previous2Period, DisadvantageTopic, Disadvantaged),
+        Create("all_state_funded_pupils_characteristics_la_NonDisadvantaged_Current", SchoolUrns, CurrentPeriod, DisadvantageTopic, NonDisadvantaged)
     ];
 
     public static IReadOnlyList<FilterSpecification> CreateAllStateEngland() =>
@@ -63,8 +87,8 @@ internal static class Ks4FilterSpecifications
 
     public static IReadOnlyList<FilterSpecification> CreateInformationAboutSchools() =>
     [
-        Create("information_about_schools_Current", CurrentPeriod),
-        Create("information_about_schools_Previous", PreviousPeriod),
-        Create("information_about_schools_Previous2", Previous2Period)
+        Create("information_about_schools_Current", SchoolUrns, CurrentPeriod),
+        Create("information_about_schools_Previous", SchoolUrns, PreviousPeriod),
+        Create("information_about_schools_Previous2", SchoolUrns, Previous2Period)
     ];
 }

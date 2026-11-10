@@ -11,11 +11,9 @@ namespace SAPPub.E2E.TestDataExpectationGenerator.KS4;
 /// </summary>
 /// <param name="csvDirectory">Directory containing the cleaned CSV files.</param>
 /// <param name="outputDirectory">Directory the JSON files are written to.</param>
-/// <param name="schoolUrns">The schools to include, in the order they appear in the output.</param>
 internal sealed class Ks4ExpectationGenerator(
     string csvDirectory,
-    string outputDirectory,
-    IReadOnlyList<string> schoolUrns)
+    string outputDirectory)
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -32,8 +30,38 @@ internal sealed class Ks4ExpectationGenerator(
         written.AddRange(GenerateAllStateLa());
         written.AddRange(GenerateAllStateEngland());
         written.AddRange(GenerateInformationAboutSchools());
+        written.AddRange(GenerateSubjectEntries());
         return written;
     }
+
+    // SubjectsEntered.json holds, for each school, { urn, gcse, vocational, other } where each list is [subject, count] pairs.
+    private List<string> GenerateSubjectEntries()
+    {
+        var gcseSpec = Ks4FilterSpecifications.CreateSubjectGcseEntries().Single();
+        var vocationalSpec = Ks4FilterSpecifications.CreateSubjectVocationalEntries().Single();
+        var otherSpec = Ks4FilterSpecifications.CreateSubjectOtherEntries().Single();
+
+        var gcseBySchool = ToSubjectCounts(Ks4CsvMappings.SubjectsEntries.Read(csvDirectory, gcseSpec.Matches));
+        var vocationalBySchool = ToSubjectCounts(Ks4CsvMappings.SubjectsEntries.Read(csvDirectory, vocationalSpec.Matches));
+        var otherBySchool = ToSubjectCounts(Ks4CsvMappings.SubjectsEntries.Read(csvDirectory, otherSpec.Matches));
+
+        var schools = gcseSpec.SchoolUrns
+            .Select(urn => new
+            {
+                urn,
+                gcse = gcseBySchool[urn].ToList(),
+                vocational = vocationalBySchool[urn].ToList(),
+                other = otherBySchool[urn].ToList()
+            })
+            .ToList();
+
+        return [WriteJson(gcseSpec, schools)];
+    }
+
+    private static ILookup<string, object[]> ToSubjectCounts(List<SubjectEntriesInputDataModel> rows) =>
+        rows.ToLookup(
+            r => r.SchoolUrn,
+            r => new object[] { r.SubjectDiscountGroup, int.Parse(r.NumberAchieving, System.Globalization.CultureInfo.InvariantCulture) });
 
     private List<string> GeneratePerformanceTables()
     {
@@ -41,9 +69,9 @@ internal sealed class Ks4ExpectationGenerator(
         foreach (var spec in Ks4FilterSpecifications.CreatePerformanceTables())
         {
             var models = Ks4CsvMappings.PerformanceTables
-                .Read(csvDirectory, row => spec.Matches(row) && schoolUrns.Contains(row["school_urn"]));
+                .Read(csvDirectory, spec.Matches);
 
-            written.Add(WriteJson(spec, OrderByUrn(models, m => m.SchoolUrn, spec)));
+            written.Add(WriteJson(spec, OrderByUrn(models, m => m.SchoolUrn, spec.SchoolUrns, spec)));
         }
 
         return written;
@@ -54,11 +82,15 @@ internal sealed class Ks4ExpectationGenerator(
         var written = new List<string>();
         foreach (var spec in Ks4FilterSpecifications.CreateAllStateLa())
         {
-            var laCodeByUrn = GetOldLaCodeByUrn(spec.Criteria["time_period"]);
+            // use the urn filter to find the LA code for each school, then use that to find the LA row in the all-state CSV
+            var urns = spec.SchoolUrns;
+            var laCodeByUrn = GetOldLaCodeByUrn(spec.Criteria["time_period"].Single(), urns);
 
+            // The all-state CSV has no school URN column, so the URN criterion is not applied to its rows.
+            var csvSpec = spec.Without(FilterSpecification.SchoolUrnColumn);
             var laRows = Ks4CsvMappings.AllStateFundedPupilsLa
                 .ReadWithRows(csvDirectory, row =>
-                    spec.Matches(row)
+                    csvSpec.Matches(row)
                     && row["geographic_level"] == "Local authority"
                     && row["establishment_type_group"] == "All state-funded");
 
@@ -73,7 +105,7 @@ internal sealed class Ks4ExpectationGenerator(
             }
 
             var models = new List<AllStateFundedPupilsLaTestDataModel>();
-            foreach (var urn in schoolUrns)
+            foreach (var urn in urns)
             {
                 if (laCodeByUrn.TryGetValue(urn, out var laCode)
                     && laModelByCode.TryGetValue(laCode, out var laModel))
@@ -111,17 +143,17 @@ internal sealed class Ks4ExpectationGenerator(
         foreach (var spec in Ks4FilterSpecifications.CreateInformationAboutSchools())
         {
             var models = Ks4CsvMappings.InformationAboutSchools
-                .Read(csvDirectory, row => spec.Matches(row) && schoolUrns.Contains(row["school_urn"]));
+                .Read(csvDirectory, spec.Matches);
 
-            written.Add(WriteJson(spec, OrderByUrn(models, m => m.SchoolUrn, spec)));
+            written.Add(WriteJson(spec, OrderByUrn(models, m => m.SchoolUrn, spec.SchoolUrns, spec)));
         }
 
         return written;
     }
 
-    // The all-state CSV has no school URN, so each school is linked to its LA through the school's
+    // The all-state CSV
     // old_la_code in the performance tables CSV (Total/Total row for the same time period).
-    private Dictionary<string, string> GetOldLaCodeByUrn(string timePeriod)
+    private Dictionary<string, string> GetOldLaCodeByUrn(string timePeriod, IReadOnlyList<string> urns)
     {
         var path = Ks4CsvMappings.PerformanceTables.GetPath(csvDirectory);
 
@@ -129,11 +161,11 @@ internal sealed class Ks4ExpectationGenerator(
             .Where(row => row["time_period"] == timePeriod
                           && row["breakdown_topic"] == "Total"
                           && row["breakdown"] == "Total"
-                          && schoolUrns.Contains(row["school_urn"]))
+                          && urns.Contains(row["school_urn"]))
             .ToDictionary(row => row["school_urn"], row => row["old_la_code"], StringComparer.Ordinal);
     }
 
-    private List<T> OrderByUrn<T>(List<T> models, Func<T, string> getUrn, FilterSpecification spec)
+    private List<T> OrderByUrn<T>(List<T> models, Func<T, string> getUrn, IReadOnlyList<string> urnOrder, FilterSpecification spec)
     {
         var duplicate = models.GroupBy(getUrn).FirstOrDefault(g => g.Count() > 1);
         if (duplicate is not null)
@@ -142,7 +174,7 @@ internal sealed class Ks4ExpectationGenerator(
                 $"{spec.OutputFileName}: {duplicate.Count()} rows found for school URN '{duplicate.Key}'.");
         }
 
-        return models.OrderBy(m => schoolUrns.ToList().IndexOf(getUrn(m))).ToList();
+        return models.OrderBy(m => urnOrder.ToList().IndexOf(getUrn(m))).ToList();
     }
 
     private string WriteJson<T>(FilterSpecification spec, IReadOnlyList<T> models)

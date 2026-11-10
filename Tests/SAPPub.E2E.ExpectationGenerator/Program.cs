@@ -5,10 +5,7 @@ var csvDirectory = Path.Combine(repositoryRoot, "SAPData", "DataMap", "SourceFil
 var outputDirectory = GetArgument(args, "--output=")
     ?? Path.Combine(repositoryRoot, "Tests", "SAPPub.E2E.Tests", "TestData", "2526", "KS4");
 
-// CML TODO put the Urn list somewhere else
-string[] schoolUrns = ["124856", "136489", "136791", "137205", "137252", "138765", "140424"];
-
-var generator = new Ks4ExpectationGenerator(csvDirectory, outputDirectory, schoolUrns);
+var generator = new Ks4ExpectationGenerator(csvDirectory, outputDirectory);
 var written = generator.Generate();
 
 Console.WriteLine($"Wrote {written.Count} files to {outputDirectory}");

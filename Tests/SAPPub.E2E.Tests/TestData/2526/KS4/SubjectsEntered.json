@@ -1,112 +1,827 @@
 [
-  [
-    "124856",
-    [
-      [ "Religious Studies", 26 ],
-      [ "English Literature", 225 ],
-      [ "Media Studies", 17 ],
-      [ "Food Technology", 37 ],
-      [ "French", 34 ],
-      [ "Geography", 97 ],
-      [ "German", 11 ],
-      [ "History", 119 ],
-      [ "Mathematics", 229 ],
-      [ "Music Studies", 8 ],
-      [ "English Language", 227 ],
-      [ "Polish", 3 ],
-      [ "Sports Studies", 26 ],
-      [ "Psychology", 77 ],
-      [ "Sociology", 46 ],
-	    [ "Physics", 52 ],
-      [ "Spanish", 29 ],
-      [ "Combined Science", 177 ],
-      [ "Economics", 17 ],
-      [ "Speech and Drama", 16 ],
-      [ "Computer Science", 17 ],
-      [ "Chemistry", 52],
-      [ "Business Studies", 76 ],
-      [ "Biology", 52 ],
-      [ "Photography", 45 ],
-      [ "Art and Design", 53 ],
-      [ "Design and Technology", 38 ]
+  {
+    "urn": "124856",
+    "gcse": [
+      [
+        "Photography",
+        45
+      ],
+      [
+        "Art and Design",
+        53
+      ],
+      [
+        "Biology",
+        52
+      ],
+      [
+        "Business Studies",
+        76
+      ],
+      [
+        "Chemistry",
+        52
+      ],
+      [
+        "Computer Science",
+        17
+      ],
+      [
+        "Design and Technology",
+        38
+      ],
+      [
+        "Speech and Drama",
+        16
+      ],
+      [
+        "Economics",
+        17
+      ],
+      [
+        "English Language",
+        227
+      ],
+      [
+        "English Literature",
+        225
+      ],
+      [
+        "Media Studies",
+        17
+      ],
+      [
+        "Food Technology",
+        37
+      ],
+      [
+        "French",
+        34
+      ],
+      [
+        "Geography",
+        97
+      ],
+      [
+        "German",
+        11
+      ],
+      [
+        "History",
+        119
+      ],
+      [
+        "Mathematics",
+        229
+      ],
+      [
+        "Music Studies",
+        8
+      ],
+      [
+        "Polish",
+        3
+      ],
+      [
+        "Chinese",
+        1
+      ],
+      [
+        "Portuguese",
+        1
+      ],
+      [
+        "Sports Studies",
+        26
+      ],
+      [
+        "Physics",
+        52
+      ],
+      [
+        "Religious Studies",
+        26
+      ],
+      [
+        "Sociology",
+        46
+      ],
+      [
+        "Psychology",
+        77
+      ],
+      [
+        "Spanish",
+        29
+      ],
+      [
+        "Statistics",
+        3
+      ],
+      [
+        "Combined Science",
+        177
+      ]
     ],
-    [
-      [ "Engineering Studies", 36 ],
-      [ "Childcare Skills", 23 ],
-			[ "Sports Studies", 25 ]
+    "vocational": [
+      [
+        "Sports Studies",
+        25
+      ],
+      [
+        "Engineering Studies",
+        36
+      ],
+      [
+        "Childcare Skills",
+        23
+      ]
+    ],
+    "other": []
+  },
+  {
+    "urn": "136489",
+    "gcse": [
+      [
+        "Art and Design",
+        60
+      ],
+      [
+        "Photography",
+        20
+      ],
+      [
+        "Biology",
+        62
+      ],
+      [
+        "Business Studies",
+        95
+      ],
+      [
+        "Chemistry",
+        61
+      ],
+      [
+        "Computer Science",
+        11
+      ],
+      [
+        "Design and Technology",
+        41
+      ],
+      [
+        "Speech and Drama",
+        10
+      ],
+      [
+        "English Language",
+        225
+      ],
+      [
+        "English Literature",
+        222
+      ],
+      [
+        "Food Technology",
+        36
+      ],
+      [
+        "Geography",
+        98
+      ],
+      [
+        "German",
+        32
+      ],
+      [
+        "History",
+        134
+      ],
+      [
+        "Mathematics",
+        225
+      ],
+      [
+        "Music Studies",
+        10
+      ],
+      [
+        "Polish",
+        1
+      ],
+      [
+        "Russian",
+        1
+      ],
+      [
+        "Sports Studies",
+        24
+      ],
+      [
+        "Physics",
+        62
+      ],
+      [
+        "Religious Studies",
+        24
+      ],
+      [
+        "Spanish",
+        44
+      ],
+      [
+        "Combined Science",
+        157
+      ]
+    ],
+    "vocational": [
+      [
+        "Health Studies",
+        37
+      ],
+      [
+        "Multimedia",
+        42
+      ],
+      [
+        "Sports Studies",
+        40
+      ],
+      [
+        "Multimedia",
+        4
+      ]
+    ],
+    "other": []
+  },
+  {
+    "urn": "136791",
+    "gcse": [
+      [
+        "Photography",
+        46
+      ],
+      [
+        "Art and Design",
+        55
+      ],
+      [
+        "Biology",
+        26
+      ],
+      [
+        "Business Studies",
+        101
+      ],
+      [
+        "Chemistry",
+        26
+      ],
+      [
+        "Computer Science",
+        24
+      ],
+      [
+        "Design and Technology",
+        41
+      ],
+      [
+        "English Language",
+        173
+      ],
+      [
+        "English Literature",
+        173
+      ],
+      [
+        "French",
+        25
+      ],
+      [
+        "Geography",
+        81
+      ],
+      [
+        "History",
+        82
+      ],
+      [
+        "Mathematics",
+        173
+      ],
+      [
+        "Music Studies",
+        8
+      ],
+      [
+        "Russian",
+        1
+      ],
+      [
+        "Physics",
+        26
+      ],
+      [
+        "Spanish",
+        30
+      ],
+      [
+        "Combined Science",
+        147
+      ]
+    ],
+    "vocational": [
+      [
+        "Engineering Studies",
+        42
+      ],
+      [
+        "Hospitality and Catering",
+        61
+      ],
+      [
+        "Sports Studies",
+        47
+      ],
+      [
+        "Land Based Studies",
+        2
+      ]
+    ],
+    "other": []
+  },
+  {
+    "urn": "137205",
+    "gcse": [
+      [
+        "Art and Design",
+        37
+      ],
+      [
+        "Biology",
+        51
+      ],
+      [
+        "Business Studies",
+        28
+      ],
+      [
+        "Chemistry",
+        51
+      ],
+      [
+        "Computer Science",
+        20
+      ],
+      [
+        "Design and Technology",
+        43
+      ],
+      [
+        "Speech and Drama",
+        10
+      ],
+      [
+        "English Language",
+        156
+      ],
+      [
+        "English Literature",
+        156
+      ],
+      [
+        "French",
+        14
+      ],
+      [
+        "Geography",
+        55
+      ],
+      [
+        "German",
+        1
+      ],
+      [
+        "History",
+        82
+      ],
+      [
+        "Mathematics",
+        156
+      ],
+      [
+        "Music Studies",
+        16
+      ],
+      [
+        "Polish",
+        1
+      ],
+      [
+        "Chinese",
+        1
+      ],
+      [
+        "Modern Greek",
+        1
+      ],
+      [
+        "Physics",
+        51
+      ],
+      [
+        "Religious Studies",
+        25
+      ],
+      [
+        "Spanish",
+        38
+      ],
+      [
+        "Combined Science",
+        103
+      ]
+    ],
+    "vocational": [
+      [
+        "Business Studies",
+        44
+      ],
+      [
+        "Health Studies",
+        24
+      ],
+      [
+        "Multimedia",
+        24
+      ],
+      [
+        "Sports Studies",
+        44
+      ],
+      [
+        "Health Studies",
+        1
+      ],
+      [
+        "Hospitality and Catering",
+        38
+      ],
+      [
+        "Multimedia",
+        18
+      ]
+    ],
+    "other": [
+      [
+        "Mathematics (Additional)",
+        1
+      ]
     ]
-  ],
-  [
-    "136489",
-	[
-		[ "Art and Design", 60 ],
-		[ "Photography", 20 ],
-		[ "Biology", 62 ],
-		[ "Business Studies", 95 ],
-		[ "Chemistry", 61 ],
-		[ "Computer Science", 11 ],
-		[ "Design and Technology", 41 ],
-		[ "Speech and Drama", 10 ],
-		[ "English Language", 225 ],
-		[ "English Literature", 222 ],
-		[ "Food Technology", 36 ],
-		[ "Geography", 98 ],
-		[ "German", 32 ],
-		[ "History", 134 ],
-		[ "Mathematics", 225 ],
-		[ "Music Studies", 10 ],
-		[ "Polish", 1 ],
-		[ "Russian", 1 ],
-		[ "Sports Studies", 24 ],
-		[ "Physics", 62 ],
-		[ "Religious Studies", 24 ],
-		[ "Spanish", 44 ],
-		[ "Combined Science", 157 ]
+  },
+  {
+    "urn": "137252",
+    "gcse": [
+      [
+        "Art and Design",
+        17
+      ],
+      [
+        "Photography",
+        10
+      ],
+      [
+        "Biology",
+        49
+      ],
+      [
+        "Chemistry",
+        48
+      ],
+      [
+        "Computer Science",
+        6
+      ],
+      [
+        "Dance",
+        12
+      ],
+      [
+        "Design and Technology",
+        37
+      ],
+      [
+        "Speech and Drama",
+        12
+      ],
+      [
+        "English Language",
+        216
+      ],
+      [
+        "English Literature",
+        213
+      ],
+      [
+        "Food Technology",
+        31
+      ],
+      [
+        "French",
+        44
+      ],
+      [
+        "Geography",
+        118
+      ],
+      [
+        "History",
+        93
+      ],
+      [
+        "Mathematics",
+        216
+      ],
+      [
+        "Music Studies",
+        15
+      ],
+      [
+        "Turkish",
+        1
+      ],
+      [
+        "Sports Studies",
+        33
+      ],
+      [
+        "Physics",
+        49
+      ],
+      [
+        "Religious Studies",
+        20
+      ],
+      [
+        "Spanish",
+        56
+      ],
+      [
+        "Statistics",
+        27
+      ],
+      [
+        "Combined Science",
+        165
+      ]
     ],
-    [
-		["Health Studies", 37 ],
-		["Multimedia" , 42 ],
-		["Sports Studies", 40 ],
-		["Multimedia", 4 ]
-    ]
-  ],
-  [
-    "137205",
-    [
-		[ "Art and Design", 37 ],
-		[ "Biology", 51 ],
-		[ "Business Studies", 28 ],
-		[ "Chemistry", 51 ],
-		[ "Computer Science", 20 ],
-		[ "Design and Technology", 43 ],
-		[ "Speech and Drama", 10 ],
-		[ "English Language", 156 ],
-		[ "English Literature", 156 ],
-		[ "French", 14 ],
-		[ "Geography", 55 ],
-		[ "German", 1 ],
-		[ "History", 82 ],
-		[ "Mathematics", 156 ],
-		[ "Music Studies", 16 ],
-		[ "Polish", 1 ],
-		[ "Chinese", 1 ],
-		[ "Modern Greek", 1 ],
-		[ "Physics", 51 ],
-		[ "Religious Studies", 25 ],
-		[ "Spanish", 38 ],
-		[ "Combined Science", 103 ]
+    "vocational": [
+      [
+        "Childcare Skills",
+        45
+      ],
+      [
+        "Computer Appreciation (Introduction)",
+        4
+      ],
+      [
+        "Multimedia",
+        16
+      ],
+      [
+        "Sports Studies",
+        52
+      ]
     ],
-    [
-		[ "Business Studies",44],
-		[ "Health Studies",24],
-		[ "Multimedia",24],
-		[ "Sports Studies",44],
-		[ "Health Studies",1],
-		[ "Hospitality and Catering",38],
-		[ "Multimedia",18]
+    "other": []
+  },
+  {
+    "urn": "138765",
+    "gcse": [
+      [
+        "Art and Design",
+        66
+      ],
+      [
+        "Biology",
+        52
+      ],
+      [
+        "Business Studies",
+        50
+      ],
+      [
+        "Chemistry",
+        52
+      ],
+      [
+        "Computer Science",
+        19
+      ],
+      [
+        "English Language",
+        177
+      ],
+      [
+        "English Literature",
+        177
+      ],
+      [
+        "Food Technology",
+        62
+      ],
+      [
+        "French",
+        3
+      ],
+      [
+        "Geography",
+        103
+      ],
+      [
+        "History",
+        78
+      ],
+      [
+        "Mathematics",
+        177
+      ],
+      [
+        "Music Studies",
+        8
+      ],
+      [
+        "Polish",
+        5
+      ],
+      [
+        "Urdu",
+        3
+      ],
+      [
+        "Persian",
+        3
+      ],
+      [
+        "Portuguese",
+        2
+      ],
+      [
+        "Turkish",
+        1
+      ],
+      [
+        "Sports Studies",
+        22
+      ],
+      [
+        "Physics",
+        52
+      ],
+      [
+        "Religious Studies",
+        31
+      ],
+      [
+        "Spanish",
+        17
+      ],
+      [
+        "Statistics",
+        5
+      ],
+      [
+        "Combined Science",
+        125
+      ]
     ],
-	[
-		["Mathematics (Additional)",1]
-	]
-  ]
+    "vocational": [
+      [
+        "Animal Care",
+        22
+      ],
+      [
+        "Business Studies",
+        52
+      ],
+      [
+        "Health Studies",
+        47
+      ],
+      [
+        "Sports Studies",
+        36
+      ]
+    ],
+    "other": []
+  },
+  {
+    "urn": "140424",
+    "gcse": [
+      [
+        "Art and Design",
+        41
+      ],
+      [
+        "Biology",
+        59
+      ],
+      [
+        "Business Studies",
+        100
+      ],
+      [
+        "Chemistry",
+        56
+      ],
+      [
+        "Computer Science",
+        35
+      ],
+      [
+        "Design and Technology",
+        23
+      ],
+      [
+        "Speech and Drama",
+        20
+      ],
+      [
+        "English Language",
+        178
+      ],
+      [
+        "English Literature",
+        175
+      ],
+      [
+        "French",
+        64
+      ],
+      [
+        "Geography",
+        80
+      ],
+      [
+        "History",
+        88
+      ],
+      [
+        "Mathematics",
+        178
+      ],
+      [
+        "Music Studies",
+        16
+      ],
+      [
+        "Chinese",
+        24
+      ],
+      [
+        "Polish",
+        3
+      ],
+      [
+        "Portuguese",
+        1
+      ],
+      [
+        "Sports Studies",
+        42
+      ],
+      [
+        "Physics",
+        56
+      ],
+      [
+        "Religious Studies",
+        1
+      ],
+      [
+        "Statistics",
+        3
+      ],
+      [
+        "Combined Science",
+        117
+      ]
+    ],
+    "vocational": [
+      [
+        "Hospitality and Catering",
+        65
+      ],
+      [
+        "Multimedia",
+        17
+      ],
+      [
+        "Sports Studies",
+        15
+      ]
+    ],
+    "other": []
+  }
 ]
