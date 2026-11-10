@@ -1,6 +1,8 @@
-﻿using Microsoft.Playwright;
+﻿using System.Text.Json;
+using Microsoft.Playwright;
 using SAPPub.E2E.Tests.Helpers;
 using SAPPub.E2E.Tests.Infrastructure;
+using SAPPub.E2E.Tests.TestData.Models.KS4;
 using SAPPub.Playwright.Testing;
 
 namespace SAPPub.E2E.Tests.SecondarySchoolTests;
@@ -10,32 +12,32 @@ public class SubjectsEnteredPageTests : BasePageTest
     private string BasePageUrl(string urn) => $"/school/{urn}";
     private string pageUnderTest => "secondary-performance/subjects-entered";
 
-    public record SubjectsEnteredTestCase(
-        string Urn,
-        List<(string, int)> ExpectedGcseSubjects,
-        List<(string, int)> ExpectedTechLevelSubjects);
-
-
-    public static TheoryData<SubjectsEnteredTestCase> GetSubjectsEnteredTestData()
+    public static TheoryData<SubjectEntriesDataModel> GetSubjectsEnteredTestData()
     {
-        var testdata =  TestDataLoader.GetTestData("KS4", "SubjectsEntered");
-        var theoryData = new TheoryData<SubjectsEnteredTestCase>();
+        var testdata = TestDataLoader.Load<JsonElement>("KS4", "SubjectsEntered");
+        var theoryData = new TheoryData<SubjectEntriesDataModel>();
         if (testdata != null)
         {
             foreach (var row in testdata)
             {
-                var testCase = new SubjectsEnteredTestCase(row[0].GetString() ?? string.Empty, new List<(string, int)>(), new List<(string, int)>());
-                foreach (var subject in row[1].EnumerateArray())
+                var testCase = new SubjectEntriesDataModel { SchoolUrn = row.GetProperty("urn").GetString() ?? string.Empty };
+                foreach (var subject in row.GetProperty("gcse").EnumerateArray())
                 {
                     var subjectName = subject[0].GetString() ?? string.Empty;
                     var subjectCount = subject[1].GetInt32();
                     testCase.ExpectedGcseSubjects.Add((subjectName, subjectCount));
                 }
-                foreach (var subject in row[2].EnumerateArray())
+                foreach (var subject in row.GetProperty("vocational").EnumerateArray())
                 {
                     var subjectName = subject[0].GetString() ?? string.Empty;
                     var subjectCount = subject[1].GetInt32();
                     testCase.ExpectedTechLevelSubjects.Add((subjectName, subjectCount));
+                }
+                foreach (var subject in row.GetProperty("other").EnumerateArray())
+                {
+                    var subjectName = subject[0].GetString() ?? string.Empty;
+                    var subjectCount = subject[1].GetInt32();
+                    testCase.ExpectedOtherSubjects.Add((subjectName, subjectCount));
                 }
                 theoryData.Add(testCase);
             }
@@ -46,16 +48,17 @@ public class SubjectsEnteredPageTests : BasePageTest
     [Theory]
     [MemberData(nameof(GetSubjectsEnteredTestData))]
     public async Task CurrentYearSelected_ShowsExpectedSubjectsEntered(
-        SubjectsEnteredTestCase testCase)
+        SubjectEntriesDataModel testCase)
     {
         // Arrange && Act
-        var response = await Page.GotoAsync(BasePageUrl(testCase.Urn));
+        var response = await Page.GotoAsync(BasePageUrl(testCase.SchoolUrn));
         Assert.NotNull(response);
         var _ = await Page.GotoPage(response.Url, pageUnderTest);
 
         // Assert
         await AssertSchoolSubjectsEnteredData(Page, "GCSE subjects entered", testCase.ExpectedGcseSubjects);
         await AssertSchoolSubjectsEnteredData(Page, "Technical Award subjects entered", testCase.ExpectedTechLevelSubjects);
+        await AssertSchoolSubjectsEnteredData(Page, "Other subjects entered", testCase.ExpectedOtherSubjects);
     }
 
     private async Task AssertSchoolSubjectsEnteredData(IPage Page, string tableCaption, List<(string, int)> expectedSubjects)
