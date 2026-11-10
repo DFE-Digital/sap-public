@@ -161,15 +161,38 @@ $font-size-mobile: 16px;
 .chart-container {
     --gds-font-family: "GDS Transport", Arial, sans-serif;
     --gds-font-size: 19px;
-    --gds-text: govuk-colour("black");
-    --gds-grey: govuk-colour("black", $variant: "tint-80");
-    --gds-label-bg: govuk-colour("black", $variant: "tint-95");
-    --gds-label-border: govuk-colour("black", $variant: "tint-80");
+    --gds-text: #{govuk-colour("black")};
+    --gds-grey: #{govuk-colour("black", $variant: "tint-80")};
+    --gds-label-bg: #{govuk-colour("black", $variant: "tint-95")};
+    --gds-label-border: #{govuk-colour("black", $variant: "tint-80")};
     --gds-label-padding: 6;
     margin-bottom: 20px;
     font-family: "GDS Transport", Arial, sans-serif;
-}
 
+    /* Chart legend styles */
+    .chart-legend {
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .legend-box {
+            width: 14px;
+            height: 14px;
+            margin-right: 8px;
+            border-radius: 2px;
+            flex-shrink: 0;
+            forced-color-adjust: none;
+        }
+    }
+}
 
 .data-container {
     margin-top: 20px;
@@ -177,27 +200,6 @@ $font-size-mobile: 16px;
     padding-left: 20px;
     padding-right: 20px;
     border: 1px solid govuk-colour("black", $variant: "tint-80");
-}
-
-/* Chart legend styles */
-.chart-legend ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.chart-legend li {
-    display: flex;
-    align-items: center;
-    margin-bottom: 6px;
-}
-
-.legend-box {
-    width: 14px;
-    height: 14px;
-    margin-right: 8px;
-    border-radius: 2px;
-    flex-shrink: 0;
 }
 
 .shaded-box {
@@ -280,10 +282,10 @@ $font-size-mobile: 16px;
     width: 100%;
 }
 
-.map-address .map-container {
-    width: 100%;
-    box-sizing: border-box;
-}
+    .map-address .map-container {
+        width: 100%;
+        box-sizing: border-box;
+    }
 
     .map-address #map {
         box-sizing: border-box;
@@ -328,13 +330,13 @@ body:not(.js-enabled) .ataglance-address-row {
     margin-bottom: 30px;
 }
 
-.ataglance-card .govuk-summary-list {
-    margin-bottom: 0;
-}
+    .ataglance-card .govuk-summary-list {
+        margin-bottom: 0;
+    }
 
-.ataglance-card .govuk-summary-list__key {
-    width: 30%;
-}
+    .ataglance-card .govuk-summary-list__key {
+        width: 30%;
+    }
 
 // Signposted About link
 
