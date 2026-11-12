@@ -172,7 +172,7 @@ public class StatusAnnouncementTests(WebApplicationSetupFixture fixture) : BaseP
         await Page.GotoAsync(OverviewUrl);
 
         // Act
-        await Page.Locator(".compare-establishment-btn").ClickAsync();
+        await Page.Locator("#toggleSaveEstablishment").ClickAsync();
         
 
         // Assert
@@ -182,7 +182,7 @@ public class StatusAnnouncementTests(WebApplicationSetupFixture fixture) : BaseP
         await Expect(banner).ToBeFocusedAsync();
 
         // Act
-        await Page.Locator(".compare-establishment-btn").ClickAsync();
+        await Page.Locator("#toggleSaveEstablishment").ClickAsync();
 
         // Assert
         var removedBanner = Page.Locator("[id$='-remove-success']");

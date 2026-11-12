@@ -1,7 +1,6 @@
 ﻿@using SAPPub.Web.Models.MySchools
 @model AddSchoolButtonViewModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@addTagHelper *, GovUk.Frontend.AspNetCore
 
 @if (!Model.IsFeatureEnabled)
 {
@@ -22,24 +21,24 @@
 
     @if (Model.IsSearchPage)
     {
-        <govuk-button type="submit" class="govuk-heading-s @(Model.IsSaved ? "saved" : "")">
+        <button id="toggleSaveEstablishment" type="submit" class="compare-establishment-btn govuk-heading-s @(Model.IsSaved ? "saved" : "")">
             <span>@(Model.IsSaved ? Model.SavedText : Model.SaveText)</span>
-        </govuk-button>
+        </button>
     }
     else
     {
         @if (Model.IsListLimitReached && Model.IsSaved)
         {
-            <govuk-button type="submit" class="govuk-heading-s saved">
+            <button id="toggleSaveEstablishment" type="submit" class="compare-establishment-btn govuk-heading-s saved">
                 <span>@Model.SavedText</span>
-            </govuk-button>
+            </button>
         }
 
         @if (!Model.IsListLimitReached)
         {
-            <govuk-button type="submit" class="govuk-heading-s @(Model.IsSaved ? "saved" : "")">
+            <button id="toggleSaveEstablishment" type="submit" class="compare-establishment-btn govuk-heading-s @(Model.IsSaved ? "saved" : "")">
                 <span>@(Model.IsSaved ? Model.SavedText : Model.SaveText)</span>
-            </govuk-button>
+            </button>
         }
     }
 </form>
