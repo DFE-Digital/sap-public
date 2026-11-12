@@ -8,8 +8,8 @@
     var qualification = ViewData["QualificationLevel"];
     var qualificationName = qualification switch
     {
-        Level2 level2 => level2.GetDisplayName(),
-        Level3 level3 => level3.GetDisplayName(),
+        Level2 level2 => level2.GetSingularDisplayName(),
+        Level3 level3 => level3.GetSingularDisplayName(),
         _ => null
     };
 }
