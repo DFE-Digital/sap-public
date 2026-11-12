@@ -844,7 +844,7 @@ jobs:
     name: Disable maintenance mode
     needs: [enable-maintenance, ingest, health-check]
     if: ${{ always()
-      && (inputs.environment || 'test') == 'test'
+      && ((inputs.environment || 'test') == 'test' || inputs.environment == 'production')
       && needs.enable-maintenance.result == 'success'
       && needs.health-check.outputs.db-usable == 'true' }}
     uses: ./.github/workflows/maintenance.yml
