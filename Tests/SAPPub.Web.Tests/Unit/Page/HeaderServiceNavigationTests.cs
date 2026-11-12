@@ -5,7 +5,7 @@ namespace SAPPub.Web.Tests.Unit.Page;
 [Collection("WebAppCollection")]
 public class HeaderServiceNavigationTests(WebAppFixture fixture) : PageTestsBase(fixture)
 {
-    private readonly string _pageUrl = "/";
+    private readonly string _pageUrl = "terms-and-conditions";
 
     [Fact]
     public async Task ServiceTitle_IsCorrect_And_LinksToSearch()
