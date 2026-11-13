@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Design",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "dotnet run -e  UseLocalDataSource=\"true\"",
+            "cwd": "${workspaceFolder}/SAPPub.Web"
+        }
+    ]
+}
