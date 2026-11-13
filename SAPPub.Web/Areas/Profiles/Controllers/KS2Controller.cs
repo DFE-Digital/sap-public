@@ -30,7 +30,7 @@ public class KS2Controller(
         AcademicYearSelection selectedAcademicYear = AcademicYearSelection.Current)
     {
         var selectedYearName = AcademicYearSelectionExtensions.ToRouteSegment(selectedAcademicYear);
-        var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
         if (await featureManager.IsEnabledAsync(Constants.Constants.EnableKS2PupilCharacteristicDropdown))
         {
             return RedirectToRoute(RouteConstants.PrimaryPupilCharacteristicsAllPupils, new { urn, schoolName });
