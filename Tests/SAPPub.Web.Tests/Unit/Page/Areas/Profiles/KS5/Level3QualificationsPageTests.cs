@@ -707,7 +707,7 @@ public class Level3QualificationsPageTests : PageTestsBase
         // Assert no of students enrolled
         var noOfStudentsInfo = doc.QuerySelector("#no-of-students-enrolled-info");
         Assert.NotNull(noOfStudentsInfo);
-        Assert.Equal($"Number of students enrolled to study mainly {qualification.GetDisplayName()}: {_level3QualificationModel.RetainedAndAssessedData.NumberOfStudents.CurrentYear.Value}", noOfStudentsInfo.TextContent.Trim());
+        Assert.Equal($"Number of students enrolled to study mainly {qualification.GetSingularDisplayName()}: {_level3QualificationModel.RetainedAndAssessedData.NumberOfStudents.CurrentYear.Value}", noOfStudentsInfo.TextContent.Trim());
 
         // Assert current year
         Assert.Contains("School or college", doc.GetTableHeaderContentByIdAndIndex("all-retention-assessed-current-year-table", 0, 0));
