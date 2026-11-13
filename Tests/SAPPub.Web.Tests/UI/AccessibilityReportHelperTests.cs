@@ -34,7 +34,7 @@ namespace SAPPub.Web.Tests.UI
             await AccessibilityReportHelper.FlushReportAsync(_reportDirectory);
 
             // Act
-            var result = await File.ReadAllTextAsync(AccessibilityReportHelper.GetReportPath(_reportDirectory));
+            var result = await File.ReadAllTextAsync(AccessibilityReportHelper.GetReportPath(_reportDirectory), CancellationToken.None);
 
             // Assert
             var criticalIndex = result.IndexOf("**IMPACT**: Critical", StringComparison.Ordinal);
@@ -59,7 +59,7 @@ namespace SAPPub.Web.Tests.UI
             await AccessibilityReportHelper.FlushReportAsync(_reportDirectory);
 
             // Act
-            var result = await File.ReadAllTextAsync(AccessibilityReportHelper.GetReportPath(_reportDirectory));
+            var result = await File.ReadAllTextAsync(AccessibilityReportHelper.GetReportPath(_reportDirectory), CancellationToken.None);
 
             // Assert
             Assert.Equal("No critical or severe accessibility issues found", result);

@@ -1,0 +1,39 @@
+@model PupilCharacteristicPlaceholderViewModel;
+@using SAPPub.Web.Areas.Profiles.ViewModels.KS2
+@using SAPPub.Web.Constants
+@using SAPPub.Web.ViewComponents.VerticalNavigation
+
+@{
+    ViewData["Header"] = "Academic performance";
+    ViewData["SubHeader"] = Model.Heading;
+    ViewData["Title"] = $"{Model.SchoolName} - Primary {ViewData["SubHeader"]}";
+}
+
+<div class="govuk-grid-row">
+    @await Component.InvokeAsync("VerticalNavigation",
+    new VerticalNavigationModel
+    {
+        URN = Model.URN,
+        SchoolName = Model.SchoolName,
+        ActivePage = RouteConstants.PrimaryPupilCharacteristicsGirlsAndBoys,
+        IsKS2 = Model.IsKS2,
+        IsKS4 = Model.IsKS4,
+        IsKS5 = Model.IsKS5
+    })
+
+    <div class="govuk-grid-column-three-quarters">
+        <div id="guide-contents">
+            <h2 class="govuk-heading-xl">@ViewData["Header"]</h2>
+
+            @await Html.PartialAsync("_PupilCharacteristicDropdown", new PupilCharacteristicDropdownViewModel
+            {
+                SelectedPupilCharacteristic = Model.SelectedPupilCharacteristic,
+                RouteAttributes = Model.RouteAttributes
+            })
+
+            <h3 class="govuk-heading-l">@Model.Heading</h3>
+
+            <p class="govuk-body">This page is under construction.</p>
+        </div>
+    </div>
+</div>

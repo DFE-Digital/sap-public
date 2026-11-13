@@ -18,6 +18,15 @@ public static class RouteConstants
     public const string PrimaryAcademicPerformanceSubjectScaledScores = "PrimaryAcademicPerformanceSubjectScaledScores";
     public const string PrimaryAcademicPerformanceAdditionalMeasures = "PrimaryAcademicPerformanceAdditionalMeasures";
 
+    // Primary School - KS2 Pupil Characteristics (behind EnableKS2PupilCharacteristicDropdown feature flag)
+    public const string PrimaryPupilCharacteristicsAllPupils = "PrimaryPupilCharacteristicsAllPupils";
+    public const string PrimaryPupilCharacteristicsDisadvantagedPupils = "PrimaryPupilCharacteristicsDisadvantagedPupils";
+    public const string PrimaryPupilCharacteristicsEnglishAsAdditionalLanguage = "PrimaryPupilCharacteristicsEnglishAsAdditionalLanguage";
+    public const string PrimaryPupilCharacteristicsGirlsAndBoys = "PrimaryPupilCharacteristicsGirlsAndBoys";
+    public const string PrimaryPupilCharacteristicsDifferentStartingPoints = "PrimaryPupilCharacteristicsDifferentStartingPoints";
+    public const string PrimaryPupilCharacteristicsNonMobilePupils = "PrimaryPupilCharacteristicsNonMobilePupils";
+    public const string PrimaryPupilCharacteristicSelection = "PrimaryPupilCharacteristicSelection";
+
     // Secondary School
     public const string SecondaryAdmissions = "SecondaryAdmissions";
     public const string SecondaryCurriculumAndExtraCurricularActivities = "SecondaryCurriculumAndExtraCurricularActivities";

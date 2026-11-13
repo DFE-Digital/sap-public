@@ -17,7 +17,7 @@ public class PageTests : IClassFixture<CustomWebApplicationFactory>
     public async Task HomePage_ReturnsSuccess()
     {
         // Act
-        var response = await _client.GetAsync("/");
+        var response = await _client.GetAsync("/", CancellationToken.None);
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal("text/html", response.Content.Headers.ContentType?.MediaType);
@@ -29,7 +29,7 @@ public class PageTests : IClassFixture<CustomWebApplicationFactory>
     public async Task CommonPages_ReturnSuccess(string url)
     {
         // Act
-        var response = await _client.GetAsync(url);
+        var response = await _client.GetAsync(url, CancellationToken.None);
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
@@ -37,7 +37,7 @@ public class PageTests : IClassFixture<CustomWebApplicationFactory>
     public async Task Response_ContainsSecurityHeaders()
     {
         // Act
-        var response = await _client.GetAsync("/");
+        var response = await _client.GetAsync("/", CancellationToken.None);
         // Assert
         Assert.True(response.Headers.Contains("X-Content-Type-Options"));
         Assert.True(response.Headers.Contains("X-Frame-Options"));
@@ -49,7 +49,7 @@ public class PageTests : IClassFixture<CustomWebApplicationFactory>
     public async Task Response_ContainsContentSecurityPolicy()
     {
         // Act
-        var response = await _client.GetAsync("/");
+        var response = await _client.GetAsync("/", CancellationToken.None);
         // Assert
         Assert.True(response.Headers.Contains("Content-Security-Policy"));
         var csp = response.Headers.GetValues("Content-Security-Policy").First();

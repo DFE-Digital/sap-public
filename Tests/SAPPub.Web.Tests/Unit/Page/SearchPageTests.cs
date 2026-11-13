@@ -62,12 +62,12 @@ public class SearchPageTests : IDisposable
             .ReturnsAsync(expectedResults);
 
         // Act
-        var response = await _client.GetAsync("/search/results?NameSearchTerm=test");
-        var html = await response.Content.ReadAsStringAsync();
+        var response = await _client.GetAsync("/search/results?NameSearchTerm=test", CancellationToken.None);
+        var html = await response.Content.ReadAsStringAsync(CancellationToken.None);
 
         // Parse HTML with AngleSharp
         var context = BrowsingContext.New(Configuration.Default);
-        var document = await context.OpenAsync(req => req.Content(html));
+        var document = await context.OpenAsync(req => req.Content(html), CancellationToken.None);
 
         // Assert
         response.EnsureSuccessStatusCode();
@@ -110,12 +110,12 @@ public class SearchPageTests : IDisposable
             .ReturnsAsync(expectedResults);
 
         // Act
-        var response = await _client.GetAsync("/search/results?NameSearchTerm=secondary%20school");
-        var html = await response.Content.ReadAsStringAsync();
+        var response = await _client.GetAsync("/search/results?NameSearchTerm=secondary%20school", CancellationToken.None);
+        var html = await response.Content.ReadAsStringAsync(CancellationToken.None);
 
         // Parse HTML with AngleSharp
         var context = BrowsingContext.New(Configuration.Default);
-        var document = await context.OpenAsync(req => req.Content(html));
+        var document = await context.OpenAsync(req => req.Content(html), CancellationToken.None);
 
         // Assert
         response.EnsureSuccessStatusCode();
@@ -157,10 +157,10 @@ public class SearchPageTests : IDisposable
             .ReturnsAsync(expectedResults);
 
         // Act
-        var response = await _client.GetAsync("/search/results?NameSearchTerm=secondary%20school&PageNumber=1");
-        var html = await response.Content.ReadAsStringAsync();
+        var response = await _client.GetAsync("/search/results?NameSearchTerm=secondary%20school&PageNumber=1", CancellationToken.None);
+        var html = await response.Content.ReadAsStringAsync(CancellationToken.None);
         var context = BrowsingContext.New(Configuration.Default);
-        var document = await context.OpenAsync(req => req.Content(html));
+        var document = await context.OpenAsync(req => req.Content(html), CancellationToken.None);
 
         // Assert
         response.EnsureSuccessStatusCode();
@@ -208,10 +208,10 @@ public class SearchPageTests : IDisposable
             .ReturnsAsync(expectedResults);
 
         // Act
-        var response = await _client.GetAsync("/search/results?NameSearchTerm=secondary%20school&PageNumber=2");
-        var html = await response.Content.ReadAsStringAsync();
+        var response = await _client.GetAsync("/search/results?NameSearchTerm=secondary%20school&PageNumber=2", CancellationToken.None);
+        var html = await response.Content.ReadAsStringAsync(CancellationToken.None);
         var context = BrowsingContext.New(Configuration.Default);
-        var document = await context.OpenAsync(req => req.Content(html));
+        var document = await context.OpenAsync(req => req.Content(html), CancellationToken.None);
 
         // Assert
         response.EnsureSuccessStatusCode();
@@ -248,12 +248,12 @@ public class SearchPageTests : IDisposable
             .ReturnsAsync(expectedResults);
 
         // Act
-        var response = await _client.GetAsync("/search/results?NameSearchTerm=none");       
-        var html = await response.Content.ReadAsStringAsync();
+        var response = await _client.GetAsync("/search/results?NameSearchTerm=none", CancellationToken.None);       
+        var html = await response.Content.ReadAsStringAsync(CancellationToken.None);
 
         // Parse HTML with AngleSharp
         var context = BrowsingContext.New(Configuration.Default);
-        var document = await context.OpenAsync(req => req.Content(html));
+        var document = await context.OpenAsync(req => req.Content(html), CancellationToken.None);
 
         // Assert
         response.EnsureSuccessStatusCode();
@@ -291,12 +291,12 @@ public class SearchPageTests : IDisposable
             .ReturnsAsync(expectedResults);
 
         // Act
-        var response = await _client.GetAsync("/search/results?LocationSearchTerm=invalidpostcode");
-        var html = await response.Content.ReadAsStringAsync();
+        var response = await _client.GetAsync("/search/results?LocationSearchTerm=invalidpostcode", CancellationToken.None);
+        var html = await response.Content.ReadAsStringAsync(CancellationToken.None);
 
         // Parse HTML with AngleSharp
         var context = BrowsingContext.New(Configuration.Default);
-        var document = await context.OpenAsync(req => req.Content(html));
+        var document = await context.OpenAsync(req => req.Content(html), CancellationToken.None);
 
         // Assert
         response.EnsureSuccessStatusCode();
@@ -324,12 +324,12 @@ public class SearchPageTests : IDisposable
             .ReturnsAsync(expectedResults);
 
         // Act
-        var response = await _client.GetAsync("/search/results?LocationSearchTerm=validnotfoundpostcode");
-        var html = await response.Content.ReadAsStringAsync();
+        var response = await _client.GetAsync("/search/results?LocationSearchTerm=validnotfoundpostcode", CancellationToken.None);
+        var html = await response.Content.ReadAsStringAsync(CancellationToken.None);
 
         // Parse HTML with AngleSharp
         var context = BrowsingContext.New(Configuration.Default);
-        var document = await context.OpenAsync(req => req.Content(html));
+        var document = await context.OpenAsync(req => req.Content(html), CancellationToken.None);
 
         // Assert
         response.EnsureSuccessStatusCode();
