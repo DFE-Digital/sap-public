@@ -51,7 +51,7 @@ namespace SAPPub.Web.Tests.IntegrationTests
             var client = _factory.CreateClient();
 
             // Your Program.cs maps: app.MapHealthChecks("/healthcheck");
-            var response = await client.GetAsync("/healthcheck");
+            var response = await client.GetAsync("/healthcheck", CancellationToken.None);
 
             Assert.True(
                 response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.NoContent,

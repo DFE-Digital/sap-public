@@ -1002,7 +1002,7 @@ public class OverviewPageTests(WebApplicationSetupFixture fixture)
 
         var bodyHtml = await Page.EvaluateAsync<string>("() => document.body.innerHTML");
         var context = BrowsingContext.New(Configuration.Default);
-        var doc = await context.OpenAsync(req => req.Content(bodyHtml));
+        var doc = await context.OpenAsync(req => req.Content(bodyHtml), CancellationToken.None);
 
         var dt = doc.QuerySelector("dt.govuk-summary-list__key:contains('" + fieldName + "')");
         var dd = dt?.NextElementSibling;

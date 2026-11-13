@@ -53,6 +53,7 @@ public static class Constants
     public const string EnablePrimary = "EnablePrimary";
     public const string EnableSecondaryGrade7 = "EnableSecondaryGrade7";
     public const string EnableOverview = "EnableOverview";
+    public const string EnableKS2PupilCharacteristicDropdown = "EnableKS2PupilCharacteristicDropdown";
 
 
     // Accessibility

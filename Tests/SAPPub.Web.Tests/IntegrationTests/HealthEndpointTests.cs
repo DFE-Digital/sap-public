@@ -18,7 +18,7 @@ public class HealthEndpointTests : IClassFixture<CustomWebApplicationFactory>
     public async Task HealthEndpoint_ReturnsSuccess()
     {
         // Act
-        var response = await _client.GetAsync("/health");
+        var response = await _client.GetAsync("/health", CancellationToken.None);
 
         // Assert - Accept both 200 (healthy) and 500 (unhealthy but responding)
         Assert.True(
@@ -32,7 +32,7 @@ public class HealthEndpointTests : IClassFixture<CustomWebApplicationFactory>
     public async Task HealthCheckEndpoint_ReturnsOk()
     {
         // Act
-        var response = await _client.GetAsync("/healthcheck");
+        var response = await _client.GetAsync("/healthcheck", CancellationToken.None);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -42,7 +42,7 @@ public class HealthEndpointTests : IClassFixture<CustomWebApplicationFactory>
     public async Task HealthEndpoint_ReturnsJson()
     {
         // Act
-        var response = await _client.GetAsync("/health");
+        var response = await _client.GetAsync("/health", CancellationToken.None);
 
         // Assert
         Assert.NotNull(response.Content.Headers.ContentType);
@@ -53,7 +53,7 @@ public class HealthEndpointTests : IClassFixture<CustomWebApplicationFactory>
     public async Task HealthEndpoint_ReturnsValidHealthCheckResponse()
     {
         // Act
-        var response = await _client.GetAsync("/health");
+        var response = await _client.GetAsync("/health", CancellationToken.None);
 
         // Verify successful response first
         Assert.True(
@@ -62,7 +62,7 @@ public class HealthEndpointTests : IClassFixture<CustomWebApplicationFactory>
             $"Expected 200 or 500, got {response.StatusCode}"
         );
 
-        var healthResponse = await response.Content.ReadFromJsonAsync<HealthCheckResponse>();
+        var healthResponse = await response.Content.ReadFromJsonAsync<HealthCheckResponse>(cancellationToken: CancellationToken.None);
 
         // Assert
         Assert.NotNull(healthResponse);
@@ -78,8 +78,8 @@ public class HealthEndpointTests : IClassFixture<CustomWebApplicationFactory>
     public async Task HealthEndpoint_ReturnsExpectedChecks()
     {
         // Act
-        var response = await _client.GetAsync("/health");
-        var healthResponse = await response.Content.ReadFromJsonAsync<HealthCheckResponse>();
+        var response = await _client.GetAsync("/health", CancellationToken.None);
+        var healthResponse = await response.Content.ReadFromJsonAsync<HealthCheckResponse>(cancellationToken: CancellationToken.None);
 
         // Assert
         Assert.NotNull(healthResponse);
@@ -115,9 +115,9 @@ public class HealthEndpointTests : IClassFixture<CustomWebApplicationFactory>
     public async Task HealthEndpoint_CanBeCalledMultipleTimes()
     {
         // Act
-        var response1 = await _client.GetAsync("/health");
-        var response2 = await _client.GetAsync("/health");
-        var response3 = await _client.GetAsync("/health");
+        var response1 = await _client.GetAsync("/health", CancellationToken.None);
+        var response2 = await _client.GetAsync("/health", CancellationToken.None);
+        var response3 = await _client.GetAsync("/health", CancellationToken.None);
 
         // Assert - All should return the same status
         Assert.Equal(response1.StatusCode, response2.StatusCode);
@@ -128,8 +128,8 @@ public class HealthEndpointTests : IClassFixture<CustomWebApplicationFactory>
     public async Task HealthEndpoint_IncludesTimestamp()
     {
         // Act
-        var response = await _client.GetAsync("/health");
-        var healthResponse = await response.Content.ReadFromJsonAsync<HealthCheckResponse>();
+        var response = await _client.GetAsync("/health", CancellationToken.None);
+        var healthResponse = await response.Content.ReadFromJsonAsync<HealthCheckResponse>(cancellationToken: CancellationToken.None);
 
         // Assert
         Assert.NotNull(healthResponse);
@@ -140,7 +140,7 @@ public class HealthEndpointTests : IClassFixture<CustomWebApplicationFactory>
     public async Task HealthEndpoint_HasSecurityHeaders()
     {
         // Act
-        var response = await _client.GetAsync("/health");
+        var response = await _client.GetAsync("/health", CancellationToken.None);
 
         // Assert - Check that security headers are present
         Assert.True(response.Headers.Contains("X-Content-Type-Options"));

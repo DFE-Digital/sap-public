@@ -1,0 +1,10 @@
+@model SAPPub.Web.Areas.Profiles.ViewModels.KS2.PupilCharacteristicDropdownViewModel
+@using SAPPub.Web.Constants
+
+<form method="get" asp-route="@RouteConstants.PrimaryPupilCharacteristicSelection" asp-all-route-data="@Model.RouteAttributes" asp-fragment="filterSection">
+    <div id="filterSection" class="select-filter">
+        <label for="pupilCharacteristicSelector" class="govuk-label govuk-!-font-weight-bold">Choose pupil group</label>
+        <select id="pupilCharacteristicSelector" name="selectedPupilCharacteristic" class="govuk-select" asp-for="SelectedPupilCharacteristic" asp-items="Model.PupilCharacteristicSelectList"></select>
+        <govuk-button type="submit">Show results</govuk-button>
+    </div>
+</form>
