@@ -453,7 +453,7 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
-        var compareButton = Page.Locator(".compare-establishment-btn");
+        var compareButton = Page.Locator("#toggleSaveEstablishment");
 
         // Assert
         await Expect(compareButton).ToContainTextAsync("Saved to");
@@ -472,7 +472,7 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
-        var compareButton = await Page.Locator(".compare-establishment-btn").InnerTextAsync();
+        var compareButton = await Page.Locator("#toggleSaveEstablishment").InnerTextAsync();
 
         // Assert
         Assert.Contains("Save to", compareButton);
@@ -491,7 +491,7 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
-        var compareButton = await Page.Locator(".compare-establishment-btn").InnerTextAsync();
+        var compareButton = await Page.Locator("#toggleSaveEstablishment").InnerTextAsync();
 
         // Assert
         Assert.Contains("Saved to", compareButton);
@@ -511,10 +511,10 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
-        await Page.ClickAsync(".compare-establishment-btn");
+        await Page.ClickAsync("#toggleSaveEstablishment");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
-        var compareButtonText = await Page.Locator(".compare-establishment-btn").InnerTextAsync();
+        var compareButtonText = await Page.Locator("#toggleSaveEstablishment").InnerTextAsync();
         var comparisonAddSuccessBanner =  Page.Locator($"#establishment-comparison-{urn}-add-success");
         var comparisonRemoveSuccessBanner = Page.Locator($"#establishment-comparison-{urn}-remove-success");
 
@@ -538,10 +538,10 @@ public class AboutSchoolPageTests(WebApplicationSetupFixture fixture) : BasePage
         await Page.GotoAsync(_schoolUrnToUrlMap["105574"]);
 
         // Act
-        await Page.ClickAsync(".compare-establishment-btn");
+        await Page.ClickAsync("#toggleSaveEstablishment");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
-        var compareButton = await Page.Locator(".compare-establishment-btn").InnerTextAsync();
+        var compareButton = await Page.Locator("#toggleSaveEstablishment").InnerTextAsync();
         var comparisonAddSuccessBanner = Page.Locator($"#establishment-comparison-{urn}-add-success");
         var comparisonRemoveSuccessBanner = Page.Locator($"#establishment-comparison-{urn}-remove-success");
 
