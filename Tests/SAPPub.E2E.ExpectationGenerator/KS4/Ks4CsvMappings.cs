@@ -45,6 +45,9 @@ internal static class Ks4CsvMappings
     public static readonly Ks4CsvMapping<InformationAboutSchoolsTestDataModel> InformationAboutSchools =
         new("manual_202526_information_about_schools_provisional.csv");
 
+    public static readonly Ks4CsvMapping<KS4DestinationsInputDataModel> Destinations =
+        new("manual_ees_ks4_202324_api.csv");
+
     public static readonly Ks4CsvMapping<SubjectEntriesInputDataModel> SubjectsEntries =
         new("manual_202526_subject_school_all_exam_entriesgrades_provisional.csv");
 }

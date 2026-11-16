@@ -21,6 +21,10 @@ internal sealed class Ks4ExpectationGenerator(
         Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
     };
 
+    /// <summary>
+    /// Generate json files for the tests
+    /// </summary>
+    /// <returns></returns>
     public IReadOnlyList<string> Generate()
     {
         Directory.CreateDirectory(outputDirectory);
@@ -31,7 +35,118 @@ internal sealed class Ks4ExpectationGenerator(
         written.AddRange(GenerateAllStateEngland());
         written.AddRange(GenerateInformationAboutSchools());
         written.AddRange(GenerateSubjectEntries());
+        written.AddRange(GenerateDestinations());
         return written;
+    }
+
+    // School and LA destinations are keyed by URN; England is one grouped object.
+    private List<string> GenerateDestinations()
+    {
+        var written = new List<string>();
+
+        var establishmentSpecs = Ks4FilterSpecifications.CreateDestinationsEstablishment();
+        var urns = establishmentSpecs[0].SchoolUrns;
+        var establishmentRows = establishmentSpecs
+            .SelectMany(spec => Ks4CsvMappings.Destinations.Read(csvDirectory, spec.Matches))
+            .ToList();
+        var establishmentRowsByUrn = establishmentRows
+            .GroupBy(row => row.SchoolUrn)
+            .ToDictionary(
+                group => group.Key,
+                group => ToDestinationsModel(group, includeLaCode: true),
+                StringComparer.Ordinal);
+        var establishmentModels = urns
+            .Where(establishmentRowsByUrn.ContainsKey)
+            .ToDictionary(urn => urn, urn => establishmentRowsByUrn[urn], StringComparer.Ordinal);
+        written.Add(WriteJson(establishmentSpecs[0], establishmentModels));
+
+        var laCodeByUrn = establishmentRows
+            .GroupBy(m => m.SchoolUrn)
+            .ToDictionary(g => g.Key, g => g.First().OldLaCode, StringComparer.Ordinal);
+        var laSpecs = Ks4FilterSpecifications.CreateDestinationsLa();
+        var laRows = laSpecs
+            .Select(spec => Ks4CsvMappings.Destinations.Read(csvDirectory, row => spec.Without(FilterSpecification.SchoolUrnColumn).Matches(row)))
+            .ToList();
+        var laModels = urns
+            .Where(laCodeByUrn.ContainsKey)
+            .ToDictionary(
+                urn => urn,
+                urn => ToDestinationsModel(
+                    laRows.SelectMany(rows => rows
+                        .Where(row => row.OldLaCode == laCodeByUrn[urn])
+                        .Select(row => row with { SchoolUrn = urn })),
+                    includeLaCode: true),
+                StringComparer.Ordinal);
+        written.Add(WriteJson(laSpecs[0], laModels));
+
+        var englandSpecs = Ks4FilterSpecifications.CreateDestinationsEngland();
+        var englandRows = englandSpecs
+            .SelectMany(spec => Ks4CsvMappings.Destinations.Read(csvDirectory, spec.Matches))
+            .ToList();
+        written.Add(WriteJson(englandSpecs[0], ToDestinationsModel(englandRows, includeLaCode: false)));
+
+        return written;
+    }
+
+    private static KS4DestinationsTestDataModel ToDestinationsModel(
+        IEnumerable<KS4DestinationsInputDataModel> rows,
+        bool includeLaCode)
+    {
+        var rowList = rows.ToList();
+        if (rowList.Count == 0)
+        {
+            throw new InvalidOperationException("Cannot generate a destinations model without source rows.");
+        }
+
+        var periods = rowList
+            .GroupBy(row => row.TimePeriod)
+            .OrderByDescending(period => period.Key, StringComparer.Ordinal)
+            .ToDictionary(
+                period => period.Key,
+                period => ToPeriodModel(period.ToList(), includeLaCode));
+
+        return new KS4DestinationsTestDataModel
+        {
+            Periods = periods
+        };
+    }
+
+    private static KS4DestinationsPeriodTestDataModel ToPeriodModel(
+        List<KS4DestinationsInputDataModel> rows,
+        bool includeLaCode)
+    {
+        var oldLaCodes = rows
+            .Select(row => row.OldLaCode)
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
+        if (includeLaCode && oldLaCodes.Count != 1)
+        {
+            throw new InvalidOperationException(
+                $"Expected one old_la_code for {rows[0].TimePeriod} destinations data, found {oldLaCodes.Count}.");
+        }
+
+        return new KS4DestinationsPeriodTestDataModel
+        {
+            OldLaCode = includeLaCode ? oldLaCodes[0] : null,
+            DisadvantageStatuses = rows
+                .GroupBy(row => row.DisadvantageStatus)
+                .ToDictionary(
+                    status => status.Key,
+                    status => new KS4DestinationsGroupTestDataModel
+                    {
+                        CohortCount = status
+                            .Single(row => row.DestinationGroup == "Overall destination")
+                            .CohortCount,
+                        Destinations = status
+                            .Select(row => new KS4DestinationTestDataModel
+                            {
+                                DestinationGroup = row.DestinationGroup,
+                                DestinationDescription = row.DestinationDescription,
+                                PupilPercent = row.PupilPercent
+                            })
+                            .ToList()
+                    })
+        };
     }
 
     // SubjectsEntered.json holds, for each school, { urn, gcse, vocational, other } where each list is [subject, count] pairs.
@@ -177,10 +292,10 @@ internal sealed class Ks4ExpectationGenerator(
         return models.OrderBy(m => urnOrder.ToList().IndexOf(getUrn(m))).ToList();
     }
 
-    private string WriteJson<T>(FilterSpecification spec, IReadOnlyList<T> models)
+    private string WriteJson<T>(FilterSpecification spec, T model)
     {
         var path = Path.Combine(outputDirectory, $"{spec.OutputFileName}.json");
-        File.WriteAllText(path, JsonSerializer.Serialize(models, JsonOptions) + Environment.NewLine);
+        File.WriteAllText(path, JsonSerializer.Serialize(model, JsonOptions) + Environment.NewLine);
         return path;
     }
 }
