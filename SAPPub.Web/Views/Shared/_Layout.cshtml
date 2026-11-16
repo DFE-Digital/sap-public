@@ -9,6 +9,7 @@
     var gtmId = analyticsOptions.Value.GoogleTagManagerId;
     var clarityId = analyticsOptions.Value.ClarityId;
     var loadAnalytics = Context?.Request?.Cookies["analytics_preference"] == "true" ? true : false;
+    var isMySchoolsSection = string.Equals(ViewContext.RouteData.Values["Controller"]?.ToString(), "MySchools", StringComparison.OrdinalIgnoreCase);
 }
 <!DOCTYPE html>
 <html lang="en" class="govuk-template govuk-template--rebranded app-html-class">
@@ -112,7 +113,7 @@
             <govuk-service-navigation-nav>
                 @if (await FeatureManager.IsEnabledAsync(EstablishmentComparisonEnabled))
                 {
-                    <govuk-service-navigation-nav-item id="my-schools-view-link" href="@(Url.RouteUrl(RouteConstants.MySchoolsView))">My schools list</govuk-service-navigation-nav-item>
+                    <govuk-service-navigation-nav-item active="@isMySchoolsSection" id="my-schools-view-link" href="@(Url.RouteUrl(RouteConstants.MySchoolsView))">My schools list</govuk-service-navigation-nav-item>
                 }
             </govuk-service-navigation-nav>
         </govuk-service-navigation>
