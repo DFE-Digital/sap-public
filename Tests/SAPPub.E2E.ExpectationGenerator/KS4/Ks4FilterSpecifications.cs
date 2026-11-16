@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using static SAPPub.E2E.TestDataExpectationGenerator.KS4.FilterSpecification;
 
 namespace SAPPub.E2E.TestDataExpectationGenerator.KS4;
@@ -33,6 +34,43 @@ internal static class Ks4FilterSpecifications
     private static readonly (string, string) NonDisadvantaged = ("disadvantage_status", "Not known to be disadvantaged");
     private static readonly (string, string) Eal = ("first_language", "Known or believed to be other than English");
     private static readonly (string, string) NonMobile = ("mobility", "Non mobile");
+
+    private static readonly (string, string) DestinationsCurrent = ("time_period", "202324");
+    private static readonly (string, string) DestinationsPrevious = ("time_period", "202223");
+    private static readonly (string, string) DestinationsPrevious2 = ("time_period", "202122");
+    private static readonly (string, string[]) DestinationsPast = ("time_period", ["202223", "202122"]);
+    private static readonly (string, string) DestTotalTopic = ("breakdown_topic", "Total");
+    private static readonly (string, string) DestTotalBreakdown = ("breakdown", "Total");
+    private static readonly (string, string) DestTotalSex = ("sex", "Total");
+    private static readonly (string, string) DestTotalEthnicity = ("ethnicity_major", "Total");
+    private static readonly (string, string) DestDisadvantageTotal = ("disadvantage_status", "Total");
+    private static readonly (string, string[]) DestDisadvantageSplit = ("disadvantage_status", ["Disadvantaged", "Not known to be disadvantaged"]);
+    private static readonly (string, string) DestOverall = ("destination_group", "Overall destination");
+    private static readonly (string, string[]) DestAllGroups = ("destination_group", ["Overall destination", "Headline destinations", "Education destination breakdown"]);
+
+    private static IReadOnlyList<FilterSpecification> CreateDestinations(string outputFileName, params FilterCriterion[] level) =>
+    [
+        Create(outputFileName, [.. level, DestTotalTopic, DestTotalBreakdown, DestTotalSex, DestTotalEthnicity, DestinationsCurrent, DestDisadvantageTotal, DestAllGroups]),
+        Create(outputFileName, [.. level, DestTotalTopic, DestTotalBreakdown, DestTotalSex, DestTotalEthnicity, DestinationsCurrent, DestDisadvantageSplit, DestOverall]),
+        Create(outputFileName, [.. level, DestTotalTopic, DestTotalBreakdown, DestTotalSex, DestTotalEthnicity, DestinationsPrevious, DestDisadvantageTotal, DestOverall]),
+        Create(outputFileName, [.. level, DestTotalTopic, DestTotalBreakdown, DestTotalSex, DestTotalEthnicity, DestinationsPrevious2, DestDisadvantageTotal, DestOverall]),
+    ];
+
+    public static IReadOnlyList<FilterSpecification> CreateDestinationsEstablishment() =>
+        CreateDestinations("ees_ks4_202324_api_establishment", SchoolUrns, ("geographic_level", "School"));
+
+    public static IReadOnlyList<FilterSpecification> CreateDestinationsLa() =>
+        CreateDestinations(
+            "ees_ks4_202324_api_la",
+            SchoolUrns,
+            ("geographic_level", "Local authority"),
+            ("establishment_type_group", "State-funded mainstream and special"));
+
+    public static IReadOnlyList<FilterSpecification> CreateDestinationsEngland() =>
+        CreateDestinations(
+            "ees_ks4_202324_api_england",
+            ("geographic_level", "National"),
+            ("establishment_type_group", "Total state-funded mainstream and special"));
 
     public static IReadOnlyList<FilterSpecification> CreateSubjectGcseEntries() =>
     [

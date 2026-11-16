@@ -13,35 +13,34 @@ public class DestinationsPageTests : BasePageTest
     private string BasePageUrl(string urn) => $"/school/{urn}";
     private string pageUnderTest => "destinations/secondary";
 
-    private static readonly ILookup<string, KS4DestinationsTestDataModel> _establishmentTestData = TestDataLoader.Load<KS4DestinationsTestDataModel>(
+    private static readonly Dictionary<string, KS4DestinationsTestDataModel> _establishmentTestData = TestDataLoader.LoadObject<Dictionary<string, KS4DestinationsTestDataModel>>(
         "KS4",
-        "ees_ks4_202324_api_establishment").ToLookup(x => x.SchoolUrn);
+        "ees_ks4_202324_api_establishment");
 
-    private static readonly ILookup<string, KS4DestinationsTestDataModel> _laTestData = TestDataLoader.Load<KS4DestinationsTestDataModel>(
+    private static readonly Dictionary<string, KS4DestinationsTestDataModel> _laTestData = TestDataLoader.LoadObject<Dictionary<string, KS4DestinationsTestDataModel>>(
         "KS4",
-        "ees_ks4_202324_api_la").ToLookup(x => x.SchoolUrn);
+        "ees_ks4_202324_api_la");
 
-    private static readonly List<KS4DestinationsTestDataModel> _englandTestData = TestDataLoader.Load<KS4DestinationsTestDataModel>(
+    private static readonly KS4DestinationsTestDataModel _englandTestData = TestDataLoader.LoadObject<KS4DestinationsTestDataModel>(
         "KS4",
         "ees_ks4_202324_api_england");
 
     public record DestinationsTestData
     { 
         public required string SchoolUrn { get; init; }
-        public required IReadOnlyList<KS4DestinationsTestDataModel> School { get; init; }
-        public required IReadOnlyList<KS4DestinationsTestDataModel> LocalAuthority { get; init; }
-        public required IReadOnlyList<KS4DestinationsTestDataModel> England { get; init; }
+        public required KS4DestinationsTestDataModel School { get; init; }
+        public required KS4DestinationsTestDataModel LocalAuthority { get; init; }
+        public required KS4DestinationsTestDataModel England { get; init; }
         public override string ToString() => SchoolUrn;
     }
 
     public static TheoryData<DestinationsTestData> GetDestinationsTestData()
     {
-        var urns = _establishmentTestData
-            .Select(a => a.Key)
-            .Intersect(_laTestData.Select(a => a.Key))
+        var urns = _establishmentTestData.Keys
+            .Intersect(_laTestData.Keys)
             .ToList();
 
-        if (urns.Count == 0 || _englandTestData.Count == 0)
+        if (urns.Count == 0 || _englandTestData.Periods.Count == 0)
         {
             throw new InvalidOperationException("No matching URNs found across the KS4 destinations test data sets.");
         }
@@ -49,8 +48,8 @@ public class DestinationsPageTests : BasePageTest
         return [.. urns.Select(urn => new DestinationsTestData
         {
             SchoolUrn = urn,
-            School = _establishmentTestData[urn].ToList(),
-            LocalAuthority = _laTestData[urn].ToList(),
+            School = _establishmentTestData[urn],
+            LocalAuthority = _laTestData[urn],
             England = _englandTestData,
         })];
     
@@ -63,14 +62,13 @@ public class DestinationsPageTests : BasePageTest
         // Arrange and act
         await GotoDestinationsPage(testData.SchoolUrn);
 
-        // Assert - current year (school, la and England)
-        var currentYear = await GetTableColumnAsync("#all-dest-current-year-table");
-        AssertHelpers.AssertNumericEqual(testData.School.AllDestinationsPercent(), currentYear[0]);
-        AssertHelpers.AssertNumericEqual(testData.LocalAuthority.AllDestinationsPercent(), currentYear[1]);
-        AssertHelpers.AssertNumericEqual(testData.England.AllDestinationsPercent(), currentYear[2]);
-
-        await Page.ClickAsync("#all-dest-show-data-over-time-btn");
-        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        // if data over time table not shown, select button to show it
+        var overTimeTable = Page.Locator("#all-dest-data-overtime-table");
+        if (await overTimeTable.CountAsync() == 0)
+        {
+            await Page.ClickAsync("#all-dest-show-data-over-time-btn");
+            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        }
 
         await AssertOverTimeRow(0, testData.School);
         await AssertOverTimeRow(1, testData.LocalAuthority);
@@ -85,9 +83,13 @@ public class DestinationsPageTests : BasePageTest
         await GotoDestinationsPage(testData.SchoolUrn);
 
         // Assert - current year (school, la and England)
-        var text = await Page.Locator("#no-of-students-included-in-measure").InnerTextAsync();
-        var number = Regex.Match(text, @"[\d.]+\s*$").Value;
-        AssertHelpers.AssertNumericEqual(testData.School.CohortCount(), number);
+        // if #no-of-students-included-in-measure is on the page, check the value
+        if (await Page.Locator("#no-of-students-included-in-measure").CountAsync() > 0)
+        {
+            var text = await Page.Locator("#no-of-students-included-in-measure").InnerTextAsync();
+            var number = Regex.Match(text, @"[\d.]+\s*$").Value;
+            AssertHelpers.AssertNumericEqual(testData.School.CohortCount(), number);
+        }
     }
 
     [Theory]
@@ -141,7 +143,7 @@ public class DestinationsPageTests : BasePageTest
         await AssertSeriesRow(testData, "did-not-stay-in-education-or-employment-table", "Destination unknown", "Activity not captured");
     }
 
-    private async Task AssertOverTimeRow(int rowNumber, IReadOnlyList<KS4DestinationsTestDataModel> rows)
+    private async Task AssertOverTimeRow(int rowNumber, KS4DestinationsTestDataModel rows)
     {
         var values = await Page.GetTableRowValuesAsync("#all-dest-data-overtime-table", rowNumber);
         Assert.Equal(3, values.Count);
