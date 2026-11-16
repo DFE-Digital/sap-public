@@ -70,6 +70,7 @@ namespace SAPPub.E2E.Tests.Search
         //    Assert.Null(noResultsId.Description);
         //}
 
+
         [Theory]
         [InlineData("Academy")]
         [InlineData("Maintained school")]
