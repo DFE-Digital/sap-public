@@ -102,6 +102,6 @@ dotnet run --launch-profile http
 
 ## 5) Common checks
 
-- If styles/scripts are missing, rerun `npm install`.
+- If styles/scripts are missing, rerun `npm install` and `npm run build-fe`.
 - If pages are empty, ensure JSON files exist under `SAPPub.Infrastructure/Data/Files` and rebuild.
 - If you need live database-backed data, switch to the full setup guide: `002-dev-setup.md`.
