@@ -1,3 +1,4 @@
+using Microsoft.FeatureManagement;
 using Moq;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Services;
@@ -72,9 +73,7 @@ public class PupilProgressPageTests : PageTestsBase
         // Assert
         var h2Elements = doc.GetElementsByTagName("h2");
 
-        Assert.Contains(
-            h2Elements,
-            x => x.TextContent.Trim() == "Academic performance");
+        Assert.Contains(h2Elements, x => x.TextContent.Trim() == "Academic performance");
     }
 
     [Fact]
@@ -112,6 +111,8 @@ public class PupilProgressPageTests : PageTestsBase
     public async Task PupilProgressPage_Displays_AcademicYearSelector()
     {
         // Arrange
+        SetupFeatureMocks(false);
+
         var url = BuildUrl(_urn, _schoolName, _pageRoute);
 
         // Act
@@ -123,6 +124,46 @@ public class PupilProgressPageTests : PageTestsBase
 
         Assert.NotNull(academicYearSelector);
         Assert.NotNull(academicYearInfo);
+    }
+
+    [Fact]
+    public async Task PupilProgressPage_Displays_PupilCharacteristicDropdown_WhenFeatureFlagEnabled()
+    {
+        // Arrange
+        SetupFeatureMocks(true);
+
+        var url = BuildUrl(_urn, _schoolName, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        var pupilCharacteristicSelector = doc.QuerySelector("#pupilCharacteristicSelector");
+        Assert.NotNull(pupilCharacteristicSelector);
+        Assert.Equal(6, pupilCharacteristicSelector.QuerySelectorAll("option").Length);
+
+        Assert.Null(doc.QuerySelector("#academicYearSelector"));
+        Assert.Null(doc.QuerySelector("#academic-year-info"));
+
+        var form = pupilCharacteristicSelector.Closest("form");
+        Assert.NotNull(form);
+        Assert.Contains("/primary-performance/pupil-progress/pupil-characteristic", form.GetAttribute("action"));
+    }
+
+    [Fact]
+    public async Task PupilProgressPage_Displays_AcademicYearSelector_WhenFeatureFlagDisabled()
+    {
+        // Arrange
+        SetupFeatureMocks(false);
+
+        var url = BuildUrl(_urn, _schoolName, _pageRoute);
+
+        // Act
+        var doc = await Fixture.BrowseToPage(url);
+
+        // Assert
+        Assert.NotNull(doc.QuerySelector("#academicYearSelector"));
+        Assert.Null(doc.QuerySelector("#pupilCharacteristicSelector"));
     }
 
     [Fact]
@@ -282,5 +323,16 @@ public class PupilProgressPageTests : PageTestsBase
                 new CodedDouble(15, string.Empty, "15")
             ]
         };
+    }
+
+    private void SetupFeatureMocks(bool enableKS2PupilCharacteristicDropdown)
+    {
+        var featureManagerMock = UseMock<IFeatureManager>();
+        featureManagerMock
+            .Setup(f => f.IsEnabledAsync(It.IsAny<string>()))
+            .ReturnsAsync(true);
+        featureManagerMock
+            .Setup(f => f.IsEnabledAsync(Constants.Constants.EnableKS2PupilCharacteristicDropdown))
+            .ReturnsAsync(enableKS2PupilCharacteristicDropdown);
     }
 }

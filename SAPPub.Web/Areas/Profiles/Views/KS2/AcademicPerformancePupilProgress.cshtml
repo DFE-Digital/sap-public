@@ -3,12 +3,15 @@
 @using SAPPub.Web.Constants
 @using SAPPub.Web.ViewComponents.SchoolProfilePagination
 @using SAPPub.Web.ViewComponents.VerticalNavigation
+@using static SAPPub.Web.Constants.Constants
 @using static SAPPub.Web.Constants.PageTitleConstants
+@inject Microsoft.FeatureManagement.IFeatureManager FeatureManager
 
 @{
     ViewData["Header"] = "Academic performance";
     ViewData["SubHeader"] = PageTitleConstants.PrimarySchoolPageTitles.PupilProgress;
     ViewData["Title"] = $"{Model.SchoolName} - Primary {ViewData["SubHeader"]}";
+    var pupilCharacteristicsEnabled = await FeatureManager.IsEnabledAsync(EnableKS2PupilCharacteristicDropdown);
 }
 
 <div class="govuk-grid-row">
@@ -43,15 +46,29 @@
                 </ul>
             </nav>
             <h2 class="govuk-heading-l">Progress scores in reading, writing and maths</h2>
-            <form method="get" asp-route="@RouteConstants.PrimaryAcademicPerformancePupilProgress" asp-all-route-data="@Model.RouteAttributes" asp-fragment="filterSection">
-                <div id="filterSection" class="select-filter">
-                    <label for="academicYearSelector" class="govuk-label govuk-!-font-weight-bold">Choose the academic year</label>
-                    <select id="academicYearSelector" class="govuk-select" asp-for="SelectedAcademicYear" asp-items="Model.AcademicYearsSelectList"></select>
-                    <govuk-button type="submit">Show results</govuk-button>
-                </div>
-            </form>
+            @if (pupilCharacteristicsEnabled)
+            {
+                @await Html.PartialAsync("_PupilCharacteristicDropdown", new PupilCharacteristicDropdownViewModel
+                {
+                    SelectedPupilCharacteristic = Model.SelectedPupilCharacteristic,
+                    RouteAttributes = Model.RouteAttributes
+                })
+            }
+            else
+            {
+                <form method="get" asp-route="@RouteConstants.PrimaryAcademicPerformancePupilProgress" asp-all-route-data="@Model.RouteAttributes" asp-fragment="filterSection">
+                    <div id="filterSection" class="select-filter">
+                        <label for="academicYearSelector" class="govuk-label govuk-!-font-weight-bold">Choose the academic year</label>
+                        <select id="academicYearSelector" class="govuk-select" asp-for="SelectedAcademicYear" asp-items="Model.AcademicYearsSelectList"></select>
+                        <govuk-button type="submit">Show results</govuk-button>
+                    </div>
+                </form>
+            }
 
-            <p class="govuk-body" id="academic-year-info">@Model.AcademicYearInfoParagraph</p>
+            @if (!pupilCharacteristicsEnabled)
+            {
+                <p class="govuk-body" id="academic-year-info">@Model.AcademicYearInfoParagraph</p>
+            }
 
             <p class="govuk-body">
                 Progress scores in reading, writing, and maths show how much progress pupils have made between the end of key stage 1 (KS1) and the end of key stage 2 (KS2), compared to other pupils across England who had similar starting points.

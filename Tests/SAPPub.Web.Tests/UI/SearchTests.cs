@@ -114,7 +114,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     public async Task SearchPage_EnterValidPostcode_ShowsViewWithResults(string searchTerm)
     {
         // Arrange
-        FakeEstablishmentRepository.CurrentTestPostcode = searchTerm.Trim();
+        FakeEstablishmentSearchRepository.CurrentTestPostcode = searchTerm.Trim();
         var response = await Page.GotoAsync(_pageUrl);
 
         // Act
@@ -582,7 +582,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     {
         // Arrange
         var searchTerm = "M21 7SW";
-        FakeEstablishmentRepository.CurrentTestPostcode = searchTerm;
+        FakeEstablishmentSearchRepository.CurrentTestPostcode = searchTerm;
         var response = await Page.GotoAsync(_pageUrl);
 
         // Act
@@ -617,7 +617,7 @@ public class SearchTests(WebApplicationSetupFixture fixture) : BasePageTest(fixt
     {
         // Arrange
         var searchTerm = "M21 7SW";
-        FakeEstablishmentRepository.CurrentTestPostcode = searchTerm;
+        FakeEstablishmentSearchRepository.CurrentTestPostcode = searchTerm;
         var response = await Page.GotoAsync(_pageUrl);
 
         // Act

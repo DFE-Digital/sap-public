@@ -8,6 +8,7 @@ using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Areas.Profiles.Controllers;
 using SAPPub.Web.Areas.Profiles.ViewModels.KS2;
+using SAPPub.Web.Constants;
 using SAPPub.Web.Models.Config;
 
 namespace SAPPub.Web.Tests.Unit.Areas.Profiles.Controllers;
@@ -20,6 +21,7 @@ public class KS2ControllerTests : BaseProfilesTests
     private readonly Mock<IKS2PupilProgressService> _mockKS2PupilProgressService = new();
     private readonly Mock<IKS2ScaledScoreService> _mockKS2ScaledScoreService = new();
     private readonly Mock<IKS2MeetingOrExceedingStandardsService> _mockKS2MeetingOrExceedingStandardsService = new();
+    private readonly Mock<Microsoft.FeatureManagement.IFeatureManager> _mockFeatureManager = new();
     private readonly KS2Controller _controller;
 
     public KS2ControllerTests()
@@ -30,17 +32,40 @@ public class KS2ControllerTests : BaseProfilesTests
         });
 
         _mockKS2AdditionalMeasuresService = new Mock<IKS2AdditionalMeasuresService>();
-        _controller = new(opts) { Establishment = fakeMinimumEstablishment };
+        _controller = new(opts, _mockFeatureManager.Object) { Establishment = fakeMinimumEstablishment };
     }
 
     [Fact]
-    public void AcademicPerformancePupilProgress_RedirectsAsExpected()
+    public async Task AcademicPerformancePupilProgress_RedirectsToAllPupils_WhenFeatureEnabled()
+    {
+        // Arrange
+        _mockFeatureManager
+            .Setup(f => f.IsEnabledAsync(Constants.Constants.EnableKS2PupilCharacteristicDropdown))
+            .ReturnsAsync(true);
+
+        // Act
+        var result = await _controller.AcademicPerformancePupilProgress(
+            fakeEstablishment.URN,
+            fakeEstablishment.EstablishmentName) as RedirectToRouteResult;
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(RouteConstants.PrimaryPupilCharacteristicsAllPupils, result.RouteName);
+        Assert.Equal(fakeEstablishment.URN, result.RouteValues!["urn"]);
+        Assert.Equal(fakeEstablishment.EstablishmentName, result.RouteValues!["schoolName"]);
+    }
+
+    [Fact]
+    public async Task AcademicPerformancePupilProgress_RedirectsAsExpected()
     {
         // Arrange
         AcademicYearSelection selectedAcademicYear = AcademicYearSelection.Previous;
+        _mockFeatureManager
+            .Setup(f => f.IsEnabledAsync(Constants.Constants.EnableKS2PupilCharacteristicDropdown))
+            .ReturnsAsync(false);
 
         // Act
-        var result = _controller.AcademicPerformancePupilProgress(
+        var result = await _controller.AcademicPerformancePupilProgress(
             fakeEstablishment.URN,
             fakeEstablishment.EstablishmentName,
             selectedAcademicYear) as RedirectToActionResult;
@@ -430,6 +455,69 @@ public class KS2ControllerTests : BaseProfilesTests
         EstablishmentPupilTotal = "20",
         EnglandPupilTotal = CodedDouble.Empty
     };
+
+    public static IEnumerable<object[]> PupilCharacteristicRouteMappings =>
+    [
+        [PupilCharacteristic.AllPupils, RouteConstants.PrimaryPupilCharacteristicsAllPupils],
+        [PupilCharacteristic.DisadvantagedPupils, RouteConstants.PrimaryPupilCharacteristicsDisadvantagedPupils],
+        [PupilCharacteristic.PupilsWithEnglishAsAnAdditionalLanguage, RouteConstants.PrimaryPupilCharacteristicsEnglishAsAdditionalLanguage],
+        [PupilCharacteristic.GirlsAndBoys, RouteConstants.PrimaryPupilCharacteristicsGirlsAndBoys],
+        [PupilCharacteristic.PupilsWithDifferentStartingPoints, RouteConstants.PrimaryPupilCharacteristicsDifferentStartingPoints],
+        [PupilCharacteristic.NonMobilePupils, RouteConstants.PrimaryPupilCharacteristicsNonMobilePupils],
+    ];
+
+    [Theory]
+    [MemberData(nameof(PupilCharacteristicRouteMappings))]
+    public void PupilCharacteristicSelection_RedirectsToExpectedRoute(PupilCharacteristic characteristic, string expectedRouteName)
+    {
+        // Act
+        var result = _controller.PupilCharacteristicSelection(
+            fakeEstablishment.URN,
+            fakeEstablishment.EstablishmentName,
+            characteristic) as RedirectToRouteResult;
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(expectedRouteName, result.RouteName);
+        Assert.Equal(fakeEstablishment.URN, result.RouteValues!["urn"]);
+        Assert.Equal(fakeEstablishment.EstablishmentName, result.RouteValues!["schoolName"]);
+    }
+
+    [Fact]
+    public void PupilCharacteristicSelection_ReturnsNotFound_WhenCharacteristicIsInvalid()
+    {
+        // Act
+        var result = _controller.PupilCharacteristicSelection(
+            fakeEstablishment.URN,
+            fakeEstablishment.EstablishmentName,
+            (PupilCharacteristic)999) as NotFoundResult;
+
+        // Assert
+        Assert.NotNull(result);
+    }
+
+    [Theory]
+    [MemberData(nameof(PupilCharacteristicRouteMappings))]
+    public void PupilCharacteristicPlaceholderAction_ReturnsExpectedModel(PupilCharacteristic characteristic, string _)
+    {
+        // Act
+        IActionResult result = characteristic switch
+        {
+            PupilCharacteristic.AllPupils => _controller.PupilCharacteristicsAllPupils(fakeEstablishment.URN, fakeEstablishment.EstablishmentName),
+            PupilCharacteristic.DisadvantagedPupils => _controller.PupilCharacteristicsDisadvantagedPupils(fakeEstablishment.URN, fakeEstablishment.EstablishmentName),
+            PupilCharacteristic.PupilsWithEnglishAsAnAdditionalLanguage => _controller.PupilCharacteristicsEnglishAsAdditionalLanguage(fakeEstablishment.URN, fakeEstablishment.EstablishmentName),
+            PupilCharacteristic.GirlsAndBoys => _controller.PupilCharacteristicsGirlsAndBoys(fakeEstablishment.URN, fakeEstablishment.EstablishmentName),
+            PupilCharacteristic.PupilsWithDifferentStartingPoints => _controller.PupilCharacteristicsDifferentStartingPoints(fakeEstablishment.URN, fakeEstablishment.EstablishmentName),
+            PupilCharacteristic.NonMobilePupils => _controller.PupilCharacteristicsNonMobilePupils(fakeEstablishment.URN, fakeEstablishment.EstablishmentName),
+            _ => throw new ArgumentOutOfRangeException(nameof(characteristic))
+        };
+
+        // Assert
+        var viewResult = Assert.IsType<ViewResult>(result);
+        var model = Assert.IsType<PupilCharacteristicPlaceholderViewModel>(viewResult.Model);
+        Assert.Equal(characteristic, model.SelectedPupilCharacteristic);
+        Assert.Equal(fakeMinimumEstablishment.URN, model.URN);
+    }
 
     private KS2PupilPerformance GetKS2PupilPerformance() => new()
     {
