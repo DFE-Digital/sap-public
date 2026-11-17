@@ -6,7 +6,9 @@ namespace SAPPub.Web.Areas.Profiles.ViewModels.Overview;
 public class ProgressBandingSummaryViewModel
 {
     public required string Id { get; init; }
+
     public required string Subject { get; init; }
+
     public ProgressBanding? Banding { get; init; }
 
     public required string BandingLabel { get; init; }
@@ -15,9 +17,14 @@ public class ProgressBandingSummaryViewModel
 
     public required string Description { get; init; }
 
-    public static ProgressBandingSummaryViewModel Map(string subject, CodedString? codedProgressValue)
+    public bool IsNotStatisticallySignificant { get; init; }
+
+    public static ProgressBandingSummaryViewModel Map(
+        string subject, 
+        CodedString? codeBanding,
+        CodedString? codedSignificance = null)
     {
-        var banding = ParseBanding(codedProgressValue);
+        var banding = ParseBanding(codeBanding);
 
         return new ProgressBandingSummaryViewModel
         {
@@ -26,18 +33,22 @@ public class ProgressBandingSummaryViewModel
             Banding = banding,
             BandingLabel = GetLabel(banding),
             CssClass = GetCssClass(banding),
-            Description = GetDescription(banding)
+            Description = GetDescription(banding),
+            IsNotStatisticallySignificant = IsNotSignificant(codedSignificance)
         };
     }
 
-    private static ProgressBanding? ParseBanding(CodedString? codedProgressValue)
+    private static bool IsNotSignificant(CodedString? codedSignificance)=>
+        codedSignificance is { HasValue: true } significance && significance.Value!.Trim() == "0";
+
+    private static ProgressBanding? ParseBanding(CodedString? codeBanding)
     {
-        if (codedProgressValue is null)
+        if (codeBanding is null)
         {
             return null;
         }
 
-        var banding = codedProgressValue.Value.ToProgressBanding();
+        var banding = codeBanding.Value.ToProgressBanding();
 
         return banding.HasValue && Enum.IsDefined(banding.Value) ? banding : null;
     }
@@ -49,28 +60,27 @@ public class ProgressBandingSummaryViewModel
         ProgressBanding.Average => "Average",
         ProgressBanding.BelowAverage => "Below average",
         ProgressBanding.WellBelowAverage => "Well below average",
-        _ => Constants.Constants.NotAvailable
+        _ => Constants.Constants.NotApplicable
     };
 
 
     private static string GetDescription(ProgressBanding? banding) => banding switch
     {
-        ProgressBanding.WellAboveAverage => "This school's pupils made much more progress than pupils nationally",
-        ProgressBanding.AboveAverage => "This school's pupils made more progress than pupils nationally",
-        ProgressBanding.Average => "This school's pupils made similar progress to pupils nationally",
-        ProgressBanding.BelowAverage => "This school's pupils made less progress than pupils nationally",
-        ProgressBanding.WellBelowAverage => "This school's pupils made much less progress than pupils nationally",
-        _ => Constants.Constants.NotAvailable
+        ProgressBanding.WellAboveAverage => "This school's pupils made much more progress than pupils nationally.",
+        ProgressBanding.AboveAverage => "This school's pupils made more progress than pupils nationally.",
+        ProgressBanding.Average => "This school's pupils made similar progress to pupils nationally.",
+        ProgressBanding.BelowAverage => "This school's pupils made less progress than pupils nationally.",
+        ProgressBanding.WellBelowAverage => "This school's pupils made much less progress than pupils nationally.",
+        _ => "This school's data is 'Not applicable'"
     };
 
     private static string GetCssClass(ProgressBanding? banding) => banding switch
     {
         ProgressBanding.WellAboveAverage => "govuk-tag--green",
-        ProgressBanding.AboveAverage => "govuk-tag--light-green",
+        ProgressBanding.AboveAverage => "app-tag--above-average",
         ProgressBanding.Average => "govuk-tag--blue",
         ProgressBanding.BelowAverage => "govuk-tag--orange",
         ProgressBanding.WellBelowAverage => "govuk-tag--red",
-        _ => Constants.Constants.NotAvailable
+        _ => "govuk-tag--grey"
     };
-
 }

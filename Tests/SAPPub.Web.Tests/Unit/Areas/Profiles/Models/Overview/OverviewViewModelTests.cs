@@ -1,3 +1,4 @@
+using SAPPub.Core.Enums;
 using SAPPub.Core.ServiceModels.Overview;
 using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Areas.Profiles.ViewModels.Overview;
@@ -325,6 +326,84 @@ public class OverviewViewModelTests
         Assert.True(result.Attainment8England.IsNotAvailable);
     }
 
+    [Fact]
+    public void Map_Ks2Bandings_MapsReadingWritingAndMathsInOrder()
+    {
+        var result = OverviewViewModel.Map(CreateCompleteModel());
+
+        Assert.Equal(3, result.Ks2Bandings.Count);
+
+        Assert.Equal(["Reading", "Writing", "Maths"], result.Ks2Bandings.Select(b => b.Subject));
+        Assert.Equal(["reading", "writing", "maths"], result.Ks2Bandings.Select(b => b.Id));
+
+        Assert.Equal(ProgressBanding.AboveAverage, result.Ks2Bandings[0].Banding);
+        Assert.Equal(ProgressBanding.Average, result.Ks2Bandings[1].Banding);
+        Assert.Equal(ProgressBanding.BelowAverage, result.Ks2Bandings[2].Banding);
+    }
+
+    [Fact]
+    public void Map_Ks2Bandings_FlagsOnlyNonSignificantSubjects()
+    {
+        var result = OverviewViewModel.Map(CreateCompleteModel());
+
+        Assert.False(result.Ks2Bandings[0].IsNotStatisticallySignificant);
+        Assert.True(result.Ks2Bandings[1].IsNotStatisticallySignificant);
+        Assert.False(result.Ks2Bandings[2].IsNotStatisticallySignificant);
+    }
+
+    [Fact]
+    public void Map_Ks2Bandings_WhenNoKs2Data_ReturnsNotApplicableBandings()
+    {
+        var result = OverviewViewModel.Map(CreateMinimalModel());
+
+        Assert.Equal(3, result.Ks2Bandings.Count);
+        Assert.All(result.Ks2Bandings, b =>
+        {
+            Assert.Null(b.Banding);
+            Assert.False(b.IsNotStatisticallySignificant);
+        });
+        Assert.Null(result.Ks2SmallNumberOfPupilsWarning);
+    }
+
+    [Fact]
+    public void Map_Ks2SmallNumberOfPupilsWarning_ListsNonSignificantSubjects()
+    {
+        var result = OverviewViewModel.Map(CreateCompleteModel());
+
+        Assert.Equal("Writing results based on a small number of pupils", result.Ks2SmallNumberOfPupilsWarning);
+    }
+
+    [Fact]
+    public void Map_Ks2SmallNumberOfPupilsWarning_JoinsMultipleSubjectsWithAnd()
+    {
+        var result = OverviewViewModel.Map(CreateModelWithSignificance("0", "0", "0"));
+
+        Assert.Equal("Reading, writing and maths results based on a small number of pupils", result.Ks2SmallNumberOfPupilsWarning);
+    }
+
+    [Fact]
+    public void Map_Ks2SmallNumberOfPupilsWarning_IsNull_WhenAllSignificant()
+    {
+        var result = OverviewViewModel.Map(CreateModelWithSignificance("1", "1", "1"));
+
+        Assert.Null(result.Ks2SmallNumberOfPupilsWarning);
+    }
+
+    private static OverviewModel CreateModelWithSignificance(string reading, string writing, string maths) =>
+        new()
+        {
+            Urn = "123456",
+            SchoolName = "Test School",
+            ReadingProgressBanding = CodedText("3"),
+            WritingProgressBanding = CodedText("3"),
+            MathsProgressBanding = CodedText("3"),
+            ReadingProgressSignificance = CodedText(reading),
+            WritingProgressSignificance = CodedText(writing),
+            MathsProgressSignificance = CodedText(maths)
+        };
+
+    private static CodedString CodedText(string value) => new(value, string.Empty, value);
+
     private static OverviewModel CreateCompleteModel() => new()
     {
         Urn = "123456",
@@ -356,7 +435,13 @@ public class OverviewViewModelTests
         ReadingWritingMathsExpectedEngland = Coded(64.3),
         ReadingWritingMathsHigherEstablishment = Coded(12.1),
         ReadingWritingMathsHigherLA = Coded(11.2),
-        ReadingWritingMathsHigherEngland = Coded(10.3)
+        ReadingWritingMathsHigherEngland = Coded(10.3),
+        ReadingProgressBanding = CodedText("2"),
+        WritingProgressBanding = CodedText("3"),
+        MathsProgressBanding = CodedText("4"),
+        ReadingProgressSignificance = CodedText("1"),
+        WritingProgressSignificance = CodedText("0"),
+        MathsProgressSignificance = CodedText("1")
     };
 
     private static OverviewModel CreateMinimalModel(

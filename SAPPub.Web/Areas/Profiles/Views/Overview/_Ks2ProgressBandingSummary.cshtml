@@ -1,3 +1,4 @@
+@using SAPPub.Web.Areas.Profiles.ViewModels.Overview
 @model SAPPub.Web.Areas.Profiles.ViewModels.Overview.OverviewViewModel
 
 <div id="primary-at-a-glance-accordion-content-1" class="govuk-accordion__section-content">
@@ -16,18 +17,18 @@
                 </p>
 
                 <p class="govuk-body">
-                    Data for the @Model.CurrentAcademicYearDisplayName academic year.
+                    Data for the @Model.Ks2CurrentAcademicYearDisplayName academic year.
                 </p>
 
-                <h4>How pupils progressed</h4>
+                <h5 class="govuk-heading-s">How pupils progressed</h5>
 
                 <div class="ataglance-progress-bandings" id="primary-progress-bandings">
                     @foreach (var ks2Banding in Model.Ks2Bandings)
                     {
                         <div class="ataglance-progress-banding">
-                            <h5 class="govuk-heading-s govuk-accordion__section-heading ataglance-progress-banding__subject">
+                            <h6 class="govuk-heading-s ataglance-progress-banding__subject">
                                 @ks2Banding.Subject
-                            </h5>
+                            </h6>
 
                             <strong class="govuk-tag @ks2Banding.CssClass ataglance-progress-banding__tag">
                                 @ks2Banding.BandingLabel
@@ -39,6 +40,25 @@
                         </div>
                     }
                 </div>
+
+                @if (Model.Ks2SmallNumberOfPupilsWarning is { } warningHeading)
+                {
+                    <div class="ataglance-progress-warning" id="primary-progress-significance-warning">
+                        <div class="govuk-warning-text ataglance-progress-warning__heading">
+                            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                            <strong class="govuk-warning-text__text">
+                                <span class="govuk-visually-hidden">Warning</span>
+                                @warningHeading
+                            </strong>
+                        </div>
+                        <p class="govuk-body ataglance-progress-warning__text">
+                            @OverviewViewModel.Ks2SmallNumberOfPupilsWarningText
+                        </p>
+                    </div>
+
+                }
+
+                @await Html.PartialAsync("_Ks2PupilProgressLink")
             </div>
         </div>
     </div>

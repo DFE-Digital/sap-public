@@ -9,6 +9,8 @@ public static class Constants
     public const string EnglandAverage = "England average";
     public const string NotRecorded = "Not recorded";
     public const string NotAvailable = "Not available";
+
+    public const string NotApplicable = "Not applicable";
     public const string ActionCompare = "Compare";
     public const string ActionRemove = "Remove";
     public const string ThreeYearAverageHeading = "Three year average";

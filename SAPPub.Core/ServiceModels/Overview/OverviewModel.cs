@@ -49,7 +49,11 @@ public sealed class OverviewModel
     public CodedDouble? ReadingWritingMathsHigherLA { get; init; }
     public CodedDouble? ReadingWritingMathsHigherEngland { get; init; }
 
-    public CodedString? EstablishmentReadingProgress { get; init; }
-    public CodedString? EstablishmentWritingProgress { get; init; }
-    public CodedString? EstablishmentMathsProgress { get; init; }
+    public CodedString? ReadingProgressBanding { get; init; }
+    public CodedString? WritingProgressBanding { get; init; }
+    public CodedString? MathsProgressBanding { get; init; }
+
+    public CodedString? ReadingProgressSignificance { get; init; }
+    public CodedString? WritingProgressSignificance { get; init; }
+    public CodedString? MathsProgressSignificance { get; init; }
 }

@@ -80,11 +80,37 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
 
     public required IReadOnlyList<TechnicalSubjectModel> TopTechnicalSubjects { get; init; }
 
-    public string CurrentAcademicYearDisplayName => Ks4AcademicYearHelper.GetDisplayName(AcademicYearSelection.Current);
+    public string Ks4CurrentAcademicYearDisplayName => Ks4AcademicYearHelper.GetDisplayName(AcademicYearSelection.Current);
 
     public string Ks4DestinationsAcademicYearDisplayName => Ks4DestinationsAcademicYearHelper.GetDisplayName(AcademicYearSelection.Current);
 
+    public string Ks2CurrentAcademicYearDisplayName => Ks4AcademicYearHelper.GetDisplayName(AcademicYearSelection.Current);
+
     public required IReadOnlyList<ProgressBandingSummaryViewModel> Ks2Bandings { get; init; }
+
+    public const string Ks2SmallNumberOfPupilsWarningText = "These results are based on a small number of pupils. This means that a few pupils with particularly high or low results can have a greater impact on the overall result.";
+
+    public string? Ks2SmallNumberOfPupilsWarning
+    {
+        get
+        {
+            var subjects = Ks2Bandings
+                .Where(a => a.IsNotStatisticallySignificant)
+                .Select(a => a.Subject.ToLowerInvariant())
+                .ToList();
+
+            if(subjects.Count == 0)
+            {
+                return null;
+            }
+
+            var subjectList = subjects.Count == 1
+                ? subjects[0]
+                : $"{string.Join(", ", subjects.Take(subjects.Count - 1))} and {subjects[^1]}";
+
+            return $"{char.ToUpperInvariant(subjectList[0])}{subjectList[1..]} results based on a small number of pupils";
+        }
+    }
 
     public static OverviewViewModel Map(OverviewModel model)
     {
@@ -223,11 +249,11 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
                     ]
             },
 
-            Ks2Bandings = 
+            Ks2Bandings =
             [
-                ProgressBandingSummaryViewModel.Map("Reading", model.EstablishmentReadingProgress),
-                ProgressBandingSummaryViewModel.Map("Writing", model.EstablishmentWritingProgress),
-                ProgressBandingSummaryViewModel.Map("Maths", model.EstablishmentMathsProgress)
+                ProgressBandingSummaryViewModel.Map("Reading", model.ReadingProgressBanding, model.ReadingProgressSignificance),
+                ProgressBandingSummaryViewModel.Map("Writing", model.WritingProgressBanding, model.WritingProgressSignificance),
+                ProgressBandingSummaryViewModel.Map("Maths", model.MathsProgressBanding, model.MathsProgressSignificance)
             ]
         };
     }

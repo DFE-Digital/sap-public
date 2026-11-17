@@ -107,12 +107,7 @@ public class OverviewRepository(
 
             -- 8. KS2 establishment performance
             SELECT
-                p."Id",
-                p."PTRWM_EXP_Est_Current_Pct_Coded",
-                p."PTRWM_HIGH_Est_Current_Pct_Coded"
-                --, p."READPROG_Est_Current_Num_Coded",         TODO: These are not available currently
-                --, p."WRITPROG_Est_Current_Num_Coded",
-                --, p."MATPROG_Est_Current_Num_Coded"
+                p.*     -- TODO, select only the columns we need here, rather than all of them. Using * for now so nothing breaks for this ticket
             FROM public.v_establishment e
             LEFT JOIN public.v_establishment_ks2_attainment p
                 ON p."Id" = e."URN"
