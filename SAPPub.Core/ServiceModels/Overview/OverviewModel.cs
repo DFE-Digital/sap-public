@@ -1,4 +1,5 @@
 ﻿using SAPPub.Core.ValueObjects;
+using System.Security.Permissions;
 
 namespace SAPPub.Core.ServiceModels.Overview;
 
@@ -47,4 +48,8 @@ public sealed class OverviewModel
     public CodedDouble? ReadingWritingMathsHigherEstablishment { get; init; }
     public CodedDouble? ReadingWritingMathsHigherLA { get; init; }
     public CodedDouble? ReadingWritingMathsHigherEngland { get; init; }
+
+    public CodedString? EstablishmentReadingProgress { get; init; }
+    public CodedString? EstablishmentWritingProgress { get; init; }
+    public CodedString? EstablishmentMathsProgress { get; init; }
 }

@@ -110,6 +110,9 @@ public class OverviewRepository(
                 p."Id",
                 p."PTRWM_EXP_Est_Current_Pct_Coded",
                 p."PTRWM_HIGH_Est_Current_Pct_Coded"
+                --, p."READPROG_Est_Current_Num_Coded",         TODO: These are not available currently
+                --, p."WRITPROG_Est_Current_Num_Coded",
+                --, p."MATPROG_Est_Current_Num_Coded"
             FROM public.v_establishment e
             LEFT JOIN public.v_establishment_ks2_attainment p
                 ON p."Id" = e."URN"

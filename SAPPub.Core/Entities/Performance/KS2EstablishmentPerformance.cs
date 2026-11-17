@@ -7,6 +7,8 @@ namespace SAPPub.Core.Entities.Performance;
 public class KS2EstablishmentPerformance
 {
     public string Id { get; set; } = string.Empty;
+
+
     public CodedString MATPROG_DESCR_Est_Previous2_Num_Coded { get; set; }
     public CodedString READPROG_DESCR_Est_Previous2_Num_Coded { get; set; }
     public CodedString WRITPROG_DESCR_Est_Previous2_Num_Coded { get; set; }
@@ -19,6 +21,7 @@ public class KS2EstablishmentPerformance
     public CodedDouble MAT_AVERAGE_FSM6CLA1A_Est_Current_Num_Coded { get; set; }
     public CodedDouble MAT_AVERAGE_G_Est_Current_Num_Coded { get; set; }
     public CodedDouble MAT_AVERAGE_MOBN_Est_Current_Num_Coded { get; set; }
+    public CodedString? MATPROG_Est_Current_Num_Coded { get; set; }
     public CodedDouble MATPROG_Est_Previous2_Num_Coded { get; set; }
     public CodedDouble MATPROG_LOWER_Est_Previous2_Num_Coded { get; set; }
     public CodedDouble MATPROG_UPPER_Est_Previous2_Num_Coded { get; set; }
@@ -51,9 +54,11 @@ public class KS2EstablishmentPerformance
     public CodedDouble READ_AVERAGE_FSM6CLA1A_Est_Current_Num_Coded { get; set; }
     public CodedDouble READ_AVERAGE_G_Est_Current_Num_Coded { get; set; }
     public CodedDouble READ_AVERAGE_MOBN_Est_Current_Num_Coded { get; set; }
+    public CodedString? READPROG_Est_Current_Num_Coded { get; set; }
     public CodedDouble READPROG_Est_Previous2_Num_Coded { get; set; }
     public CodedDouble READPROG_LOWER_Est_Previous2_Num_Coded { get; set; }
     public CodedDouble READPROG_UPPER_Est_Previous2_Num_Coded { get; set; }
+    public CodedString? WRITPROG_Est_Current_Num_Coded { get; set; }
     public CodedDouble WRITPROG_Est_Previous2_Num_Coded { get; set; }
     public CodedDouble WRITPROG_LOWER_Est_Previous2_Num_Coded { get; set; }
     public CodedDouble WRITPROG_UPPER_Est_Previous2_Num_Coded { get; set; }

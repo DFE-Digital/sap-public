@@ -785,3 +785,10 @@ body:not(.js-enabled) .ataglance-address-row {
 .govuk-notification-banner__heading-override {
     max-width: 100%;
 }
+
+.app-tag {
+    &--above-average {
+        background-color: #E5EFD8;
+        color: #454F3A;
+    }
+}

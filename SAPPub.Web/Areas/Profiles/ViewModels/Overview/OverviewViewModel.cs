@@ -1,5 +1,4 @@
-﻿using Microsoft.DotNet.Scaffolding.Shared;
-using SAPPub.Core.Enums;
+﻿using SAPPub.Core.Enums;
 using SAPPub.Core.Extensions;
 using SAPPub.Core.Helpers;
 using SAPPub.Core.ServiceModels.Common;
@@ -81,9 +80,11 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
 
     public required IReadOnlyList<TechnicalSubjectModel> TopTechnicalSubjects { get; init; }
 
-    public string Ks4CurrentAcademicYearDisplayName => Ks4AcademicYearHelper.GetDisplayName(AcademicYearSelection.Current);
+    public string CurrentAcademicYearDisplayName => Ks4AcademicYearHelper.GetDisplayName(AcademicYearSelection.Current);
 
     public string Ks4DestinationsAcademicYearDisplayName => Ks4DestinationsAcademicYearHelper.GetDisplayName(AcademicYearSelection.Current);
+
+    public required IReadOnlyList<ProgressBandingSummaryViewModel> Ks2Bandings { get; init; }
 
     public static OverviewViewModel Map(OverviewModel model)
     {
@@ -163,14 +164,14 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
                 model.EnglishAndMathsGrade5England.ToDisplayField(),
 
             EnglishAndMathsGrade5Chart = new DataViewModel
-                {
-                    Labels =
+            {
+                Labels =
                 [
                     "School",
                     $"{model.LocalAuthorityName} average",
                     "England average"
                 ],
-                            Data =
+                Data =
                 [
                     model.EnglishAndMathsGrade5Establishment?.Value,
                     model.EnglishAndMathsGrade5LA?.Value,
@@ -188,15 +189,15 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
             DestinationsEngland =
                 model.DestinationsEngland.ToDisplayField(),
 
-                        DestinationsChart = new DataViewModel
-                        {
-                            Labels =
+            DestinationsChart = new DataViewModel
+            {
+                Labels =
                 [
                     "School",
                     $"{model.LocalAuthorityName} average",
                     "England average"
                 ],
-                            Data =
+                Data =
                 [
                     model.DestinationsEstablishment?.Value,
                     model.DestinationsLA?.Value,
@@ -214,13 +215,20 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
                         $"{model.LocalAuthorityName} average",
                         "England average"
                     ],
-                                Data =
+                Data =
                     [
                         model.ReadingWritingMathsExpectedEstablishment?.Value,
                         model.ReadingWritingMathsExpectedLA?.Value,
                         model.ReadingWritingMathsExpectedEngland?.Value
                     ]
             },
+
+            Ks2Bandings = 
+            [
+                ProgressBandingSummaryViewModel.Map("Reading", model.EstablishmentReadingProgress),
+                ProgressBandingSummaryViewModel.Map("Writing", model.EstablishmentWritingProgress),
+                ProgressBandingSummaryViewModel.Map("Maths", model.EstablishmentMathsProgress)
+            ]
         };
     }
 

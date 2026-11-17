@@ -1,11 +1,12 @@
 ﻿@model SAPPub.Web.Areas.Profiles.ViewModels.Overview.OverviewViewModel
 
 @using SAPPub.Web.Constants
-@using SAPPub.Web.Models.Banner
 @using SAPPub.Web.Helpers
+@using SAPPub.Web.Models.Banner
 @using SAPPub.Web.ViewComponents.SchoolProfilePagination
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 @using WebConstants = SAPPub.Web.Constants.Constants
+@inject Microsoft.FeatureManagement.IFeatureManager FeatureManager
 
 @{
     ViewData["Header"] = "Overview";
@@ -145,7 +146,8 @@
                             var numberOfPupils = @Model.NumberOfPupils.DisplayText(notAvailableText: WebConstants.NotRecorded);
                             if (numberOfPupils == "0")
                                 numberOfPupils = WebConstants.NotRecorded;
-                            @numberOfPupils
+
+                            <span>@numberOfPupils</span>
                         }
                     </govuk-summary-list-row-value>
                 </govuk-summary-list-row>
@@ -350,72 +352,17 @@
 
                     </div>
 
-                    <div id="primary-at-a-glance-accordion-content-1"
-                            class="govuk-accordion__section-content">
-
-                        <div class="govuk-body">
-
-                            <div class="ataglance-summary-card govuk-summary-card">
-
-                                <div class="govuk-summary-card__title-wrapper">
-
-                                    <h4 class="govuk-summary-card__title">
-                                        Pupil performance between the end of key stage 1 (year 2) and the end of key stage 2 (year 6)
-                                    </h4>
-
-                                </div>
-
-                                <div class="govuk-summary-card__content">
-
-                                    <p class="govuk-body">
-                                        Progress scores are not available for the academic years 2023 to 2024 and 2024 to 2025 due to COVID-19 disruption.
-                                    </p>
-
-                                    <p class="govuk-body">
-                                        You can view progress results from previous years on the school's full profile.
-                                    </p>
-
-                                    <div class="govuk-body">
-
-                                        <a asp-route="@RouteConstants.PrimaryAcademicPerformancePupilProgress"
-                                            asp-all-route-data="@Model.RouteAttributes"
-                                            class="ataglance-link__link govuk-!-font-weight-bold govuk-link govuk-link--no-visited-state">
-
-                                            <span class="ataglance-link__iconbox"
-                                                    aria-hidden="true">
-
-                                                <svg class="ataglance-link__icon"
-                                                        viewBox="0 0 32 32"
-                                                        focusable="false"
-                                                        aria-hidden="true">
-
-                                                    <circle cx="16"
-                                                            cy="16"
-                                                            r="14"
-                                                            fill="currentColor" />
-
-                                                    <path d="M9 15h9.5l-3.5-3.5 1.8-1.8L23 16l-6.2 6.3-1.8-1.8 3.5-3.5H9z"
-                                                            fill="#ffffff" />
-
-                                                </svg>
-
-                                            </span>
-
-                                            <span class="ataglance-link__text">
-                                                Find out more about the progress pupils make at this school for previous years
-                                            </span>
-
-                                        </a>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
+                        @{
+                            var pupilCharacteristicsEnabled = await FeatureManager.IsEnabledAsync(WebConstants.EnableKS2PupilCharacteristicDropdown);
+                        }
+                        @if(pupilCharacteristicsEnabled)
+                        {
+                            @await Html.PartialAsync("_Ks2ProgressBandingSummary", Model)
+                        }
+                        else
+                        {
+                            @await Html.PartialAsync("_Ks2PupilProgress", Model)
+                        }
 
                 </div>
 
@@ -873,7 +820,7 @@
                                         </p>
 
                                         <p class="govuk-body">
-                                            This data is for the @Model.Ks4CurrentAcademicYearDisplayName academic year.
+                                            This data is for the @Model.CurrentAcademicYearDisplayName academic year.
                                         </p>
 
 
@@ -1049,7 +996,7 @@
                                         </p>
 
                                         <p class="govuk-body">
-                                            This data is for the @Model.Ks4CurrentAcademicYearDisplayName academic year.
+                                            This data is for the @Model.CurrentAcademicYearDisplayName academic year.
                                         </p>
 
                                         <div id="overview-english-maths-current-year-data-container"
@@ -1218,7 +1165,7 @@
                                     <div class="govuk-summary-card__content">
 
                                         <p class="govuk-body">
-                                            This data is for the @Model.Ks4CurrentAcademicYearDisplayName academic year.
+                                            This data is for the @Model.CurrentAcademicYearDisplayName academic year.
                                         </p>
 
                                         <div class="overview-exam-subject-counts">

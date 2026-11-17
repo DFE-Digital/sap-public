@@ -1,0 +1,27 @@
+@import "variables";
+
+
+.ataglance-progress-bandings {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    column-gap:20px;
+    row-gap:15px;
+    margin-bottom: 20px;
+}
+
+.ataglance-progress-banding {
+    &__subject {
+        margin-bottom: 10px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid $grey-border;
+    }
+
+    &__tag {
+        margin-top:0;
+        margin-bottom: 10px;
+    }
+
+    &__description {
+        margin-bottom: 0;
+    }
+}

@@ -1,0 +1,45 @@
+@model SAPPub.Web.Areas.Profiles.ViewModels.Overview.OverviewViewModel
+
+<div id="primary-at-a-glance-accordion-content-1" class="govuk-accordion__section-content">
+    <div class="govuk-body">
+        <div class="ataglance-summary-card govuk-summary-card">
+            <div class="govuk-summary-card__title-wrapper">
+                <h4 class="govuk-summary-card__title">
+                    Progress made between year 2 and year 6
+                </h4>
+            </div>
+
+            <div class="govuk-summary-card__content">
+                <p class="govuk-body">
+                    This shows the progress pupils made at this school between year 2 (key stage 1) and year 6 (key stage 2).
+                    Their progress is compared with pupils across England who started at a similar level at the end of year 2.
+                </p>
+
+                <p class="govuk-body">
+                    Data for the @Model.CurrentAcademicYearDisplayName academic year.
+                </p>
+
+                <h4>How pupils progressed</h4>
+
+                <div class="ataglance-progress-bandings" id="primary-progress-bandings">
+                    @foreach (var ks2Banding in Model.Ks2Bandings)
+                    {
+                        <div class="ataglance-progress-banding">
+                            <h5 class="govuk-heading-s govuk-accordion__section-heading ataglance-progress-banding__subject">
+                                @ks2Banding.Subject
+                            </h5>
+
+                            <strong class="govuk-tag @ks2Banding.CssClass ataglance-progress-banding__tag">
+                                @ks2Banding.BandingLabel
+                            </strong>
+
+                            <p class="govuk-body ataglance-progress-banding__description">
+                                @ks2Banding.Description
+                            </p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

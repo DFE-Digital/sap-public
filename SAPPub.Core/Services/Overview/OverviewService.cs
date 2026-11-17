@@ -68,7 +68,10 @@ namespace SAPPub.Core.Services.Overview
                 ReadingWritingMathsExpectedEngland = overview.KS2EnglandPerformance?.PTRWM_EXP_Eng_Current_Pct_Coded,
                 ReadingWritingMathsHigherEstablishment = overview.KS2Performance?.PTRWM_HIGH_Est_Current_Pct_Coded,
                 ReadingWritingMathsHigherLA = overview.KS2LAPerformance?.PTRWM_HIGH_LA_Current_Pct_Coded,
-                ReadingWritingMathsHigherEngland = overview.KS2EnglandPerformance?.PTRWM_HIGH_Eng_Current_Pct_Coded
+                ReadingWritingMathsHigherEngland = overview.KS2EnglandPerformance?.PTRWM_HIGH_Eng_Current_Pct_Coded,
+                EstablishmentReadingProgress = overview.KS2Performance?.READPROG_Est_Current_Num_Coded,
+                EstablishmentWritingProgress = overview.KS2Performance?.WRITPROG_Est_Current_Num_Coded,
+                EstablishmentMathsProgress = overview.KS2Performance?.MATPROG_Est_Current_Num_Coded
             };
         }
     }
