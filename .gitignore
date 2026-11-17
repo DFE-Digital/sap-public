@@ -524,3 +524,7 @@ SAPPub.Web/keys/*
 
 #exclude generated SQL
 /SAPData/Sql
+
+#exclude load test reports
+**/load_testing/**/*.html
+**/load_testing/**/*.json

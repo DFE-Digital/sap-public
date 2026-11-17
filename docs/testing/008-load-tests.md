@@ -21,7 +21,7 @@ This was "borrowed" from https://github.com/DFE-Digital/publish-teacher-training
 
 ## Setup
 
-0. Navigate to `root/load_tests`
+0. Navigate to `/load_testing/profiles` in the repo root.
 
 1. **Install k6:**
 
@@ -33,25 +33,34 @@ This was "borrowed" from https://github.com/DFE-Digital/publish-teacher-training
 *Linux (Debian/Ubuntu)*
 
 ```
-  sudo apt install k6
+  sudo apt-get install k6
 ```
 
+If the above fails due to the k6 repo not existing in the installed distro, install k6 direct from their repo.
+
+```
+sudo mkdir -p /usr/share/keyrings
+curl -fsSL https://dl.k6.io/key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/k6-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+sudo apt-get update
+sudo apt-get install k6
+```
 ## Services
 
 #### Local/Development Runs
 
 **Super quick local test (5 users, 10s):**
 ```
-k6 run -e SESSION_ID=<gatewaycookieid> load-test.js
+k6 run load-test.js
 ```
 
 **Baseline, peak, and stress local:**
 ```
 
-k6 run -e SESSION_ID=<gatewaycookieid> --env SCENARIO=baseline load-test.js
-k6 run -e SESSION_ID=<gatewaycookieid> --env SCENARIO=peak-surge load-test.js
-k6 run -e SESSION_ID=<gatewaycookieid> --env SCENARIO=stress load-test.js
-k6 run -e SESSION_ID=<gatewaycookieid> --env SCENARIO=quick load-test.js
+k6 run --env SCENARIO=baseline load-test.js
+k6 run --env SCENARIO=peak-surge load-test.js
+k6 run --env SCENARIO=stress load-test.js
+k6 run --env SCENARIO=quick load-test.js
 ```
 
 ## Test Scenarios - TBC
