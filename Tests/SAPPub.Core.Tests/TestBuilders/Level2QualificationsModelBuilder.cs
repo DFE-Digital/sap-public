@@ -60,7 +60,7 @@ public class Level2QualificationsModelBuilder
         return this;
     }
 
-    public Level2QualificationsModelBuilder WithProgressScore(double progressScore)
+    public Level2QualificationsModelBuilder WithProgressScore(double? progressScore)
     {
         _progressScore = progressScore;
         return this;
@@ -80,7 +80,7 @@ public class Level2QualificationsModelBuilder
             TotalNoOfStudentCompletedQualification = new CodedDouble(Value: _totalNoOfStudentsCompletedQualification ?? 125, string.Empty, string.Empty),
             ProgressScore = new ProgressScoreModel()
             {
-                Score = new CodedDouble(Value: _progressScore ?? 83.29, string.Empty, string.Empty),
+                Score = new CodedDouble(Value: _progressScore, string.Empty, string.Empty),
                 BandingRating = new CodedString("Above Average", string.Empty, string.Empty),
                 ConfidenceLevelLower = new CodedDouble(0.1, string.Empty, string.Empty),
                 ConfidenceLevelUpper = new CodedDouble(2.7, string.Empty, string.Empty),

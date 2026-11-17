@@ -21,6 +21,7 @@
         var isTableVisible = tableContainer.style.display === 'block';
         setToggleText(btnShow, isTableVisible ? 'Show as a chart' : 'Show as a table')
         setAriaAttribute(btnShow, isChartVisible ? 'true' : 'false');
+        window.sapAnnounce?.(isTableVisible ? 'Showing table' : 'Showing chart');
     }
 
     function setToggleText(toggle, text) {
@@ -28,6 +29,6 @@
     }
 
     function setAriaAttribute(toggle, text) {
-        if (toggle) toggle.setAttribute('aria-expanded', text);
+        if (toggle) toggle.setAttribute?.('aria-expanded', text);
     }
 })();

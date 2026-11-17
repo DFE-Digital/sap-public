@@ -600,7 +600,7 @@ public class AboutPageTests : PageTestsBase
         var h3Elements = doc.GetElementsByTagName("h3");
         Assert.Equal("Primary school features", h3Elements[0].TextContent);
         Assert.Contains("Yes", doc.GetRowContentByIdAndKey("primary-school-features-summary", "Nursery"));
-        Assert.Contains("Yes", doc.GetRowContentByIdAndKey("primary-school-features-summary", "Free breakfast club programme"));
+        Assert.Contains("This school has a government-funded free breakfast club", doc.GetRowContentByIdAndKey("primary-school-features-summary", "Free breakfast club programme"));
         Assert.Contains("Wraparound care", doc.GetRowContentByIdAndKey("primary-school-features-summary", "Wraparound care"));
         var primaryFeaturesDetails = doc.QuerySelector("#details-primary-features");
         Assert.NotNull(primaryFeaturesDetails);
@@ -659,7 +659,7 @@ public class AboutPageTests : PageTestsBase
 
         // Assert
         Assert.Contains(notAvailableContent, doc.GetRowContentByIdAndKey("primary-school-features-summary", "Nursery"));
-        Assert.Contains(notAvailableContent, doc.GetRowContentByIdAndKey("primary-school-features-summary", "Free breakfast club programme"));
+        Assert.Contains("This school does not have a government-funded free breakfast club", doc.GetRowContentByIdAndKey("primary-school-features-summary", "Free breakfast club programme"));
         Assert.Contains(notRecordedContent, doc.GetRowContentByIdAndKey("primary-school-features-summary", "Wraparound care"));
     }
 

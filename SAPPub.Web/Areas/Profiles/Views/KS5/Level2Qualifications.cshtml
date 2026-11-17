@@ -105,12 +105,14 @@
                     An Occupational Certificate is a two-year level 2 qualification for students who know the type of work
                     they want to do and need job-focused preparation after GCSEs.
                 </p>
-
             </govuk-inset-text>
 
-            <p id="no-of-students-completed-qulification-info" class="govuk-tag govuk-tag--full-width govuk-tag--grey govuk-!-margin-bottom-4">
-                Number of students from this school or college included in the measure: @Model.TotalNoOfStudentCompletedQualification.DisplayText()
-            </p>
+            @if (Model.ProgressScore.ShowProgress8Info)
+            {
+                <p id="no-of-students-completed-qulification-info" class="govuk-tag govuk-tag--full-width govuk-tag--grey govuk-!-margin-bottom-4">
+                    Number of students from this school or college included in the measure: @Model.TotalNoOfStudentCompletedQualification.DisplayText()
+                </p>
+            }
 
             @* ProgressScore Info *@
             <partial name="_ProgressScore" model="@Model.ProgressScore" view-data='new ViewDataDictionary(ViewData) { ["QualificationLevel"] = Model.Level2Qualification }' />
