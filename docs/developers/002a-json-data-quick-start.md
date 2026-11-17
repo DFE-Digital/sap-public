@@ -40,6 +40,7 @@ From the web project:
 ```bash
 cd SAPPub.Web
 npm install
+npm run build-fe
 ```
 
 ---
