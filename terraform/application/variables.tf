@@ -161,6 +161,7 @@ variable "gcp_table_deletion_protection" {
 }
 
 variable "containers" {
-  description = "Map of containers for storage account"
-  default     = {}
+  type        = list(object({ name = string }))
+  description = "List of containers for storage account"
+  default     = []
 }
