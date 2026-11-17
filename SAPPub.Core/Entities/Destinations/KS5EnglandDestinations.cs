@@ -6,6 +6,7 @@ namespace SAPPub.Core.Entities.Destinations;
 [ExcludeFromCodeCoverage]
 public record KS5EnglandDestinations
 {
+    public string Id { get; set; } = string.Empty;
     //
     // Student Destinations average for England - KS5
     //
