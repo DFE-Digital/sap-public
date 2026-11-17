@@ -14,4 +14,10 @@ public static class EnumHelper
 
         return displayAttribute is null ? enumValue.ToString() : displayAttribute.GetName();
     }
+
+    public static string? GetSingularDisplayName(this Enum qualification)
+    {
+        var name = qualification.GetDisplayName();
+        return name?.EndsWith('s') == true ? name[..^1] : name;
+    }
 }

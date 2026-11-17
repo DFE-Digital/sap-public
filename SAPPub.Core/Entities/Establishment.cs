@@ -112,7 +112,7 @@ public class Establishment
 
     public string? NurseryProvisionName { get; set; }
 
-    [IgnoreDataMember]
+    [DbColumnName("IsKS2")]
     public bool IsKS2 { get; set; }
 
     [DbColumnName("ISKS4")]

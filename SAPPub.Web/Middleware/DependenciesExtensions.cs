@@ -51,10 +51,22 @@ namespace SAPPub.Web.Middleware
 
         public static void AddDependencies(this IServiceCollection services, IHostEnvironment env, IConfiguration cfg)
         {
-            // Core repos/services
-            services.AddTransient(typeof(IGenericRepository<>), typeof(DapperRepository<>));
+            var useLocal = cfg.GetValue<bool>("UseLocalDataSource");
 
-            services.AddTransient<IOverviewRepository, OverviewRepository>();
+            // Core repos/services
+            if (useLocal)
+            {
+                services.AddTransient(typeof(IGenericRepository<>), typeof(JSONRepository<>));
+                services.AddTransient<IEstablishmentSearchRepository, EstablishmentSimpleSearchRepository>();
+                services.AddTransient<IOverviewRepository, OverviewSimpleRepository>();
+            }
+            else
+            {
+                services.AddTransient(typeof(IGenericRepository<>), typeof(DapperRepository<>));
+                services.AddTransient<IEstablishmentSearchRepository, EstablishmentSearchRepository>();
+                services.AddTransient<IOverviewRepository, OverviewRepository>();
+            }
+
             services.AddTransient<IOverviewService, OverviewService>();
 
             services.AddTransient<IEstablishmentRepository, EstablishmentRepository>();
