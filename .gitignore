@@ -523,4 +523,4 @@ SAPPub.Web/keys/*
 /playwright.runsettings
 
 #exclude generated SQL
-/SAPData/Sql
+#/SAPData/Sql
