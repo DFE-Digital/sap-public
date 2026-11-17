@@ -1,0 +1,184 @@
+﻿using Dapper;
+using Npgsql;
+using SAPPub.Core.Entities;
+using SAPPub.Core.Helpers;
+using SAPPub.Core.Interfaces.Repositories;
+using SAPPub.Core.Interfaces.Repositories.Generic;
+using SAPPub.Core.Interfaces.Services.Search;
+using SAPPub.Core.ServiceModels.Search.InputModels;
+using SAPPub.Core.Specifications;
+using SAPPub.Infrastructure.Repositories.Generic;
+using System;
+using System.Collections.Generic;
+using System.Data.Common;
+using System.Text;
+using static SAPPub.Infrastructure.Repositories.EstablishmentRepository;
+
+namespace SAPPub.Infrastructure.Repositories
+{
+    public class EstablishmentSearchRepository : IEstablishmentSearchRepository
+    {
+        private readonly NpgsqlDataSource _dataSource;
+        private readonly ISearchVisibilityPolicy _searchVisibilityPolicy;
+        public EstablishmentSearchRepository(
+            NpgsqlDataSource dataSource,
+            ISearchVisibilityPolicy searchVisibilityPolicy)
+        {
+            _dataSource = dataSource ?? throw new ArgumentNullException(nameof(dataSource));
+            _searchVisibilityPolicy = searchVisibilityPolicy ?? throw new ArgumentNullException(nameof(searchVisibilityPolicy));
+        }
+
+        private static readonly TimeSpan SearchCommandTimeout = TimeSpan.FromSeconds(10);
+        internal static SearchSqlParts BuildSearchSqlParts(SearchQuery query, int maxResults, IEstablishmentSearchSpecification visibilitySpec)
+        {
+            ArgumentNullException.ThrowIfNull(query);
+            ArgumentNullException.ThrowIfNull(visibilitySpec);
+
+            var parameters = new DynamicParameters();
+            int requestedPageSize = query.PageSize ?? maxResults;
+            int pageSize = Math.Clamp(requestedPageSize, 1, maxResults);
+            int offset = ((query.Page ?? 1) - 1) * pageSize;
+            parameters.Add("pageSize", pageSize);
+            parameters.Add("offset", offset);
+
+            var whereClauses = new List<string>();
+            var phaseWhereClauses = new List<string>();
+            bool hasName = !string.IsNullOrWhiteSpace(query.Name);
+            bool hasLocation = query.Latitude.HasValue && query.Longitude.HasValue && query.Distance.HasValue;
+
+            if (hasName)
+            {
+                whereClauses.Add(@"""EstablishmentNameFTS"" @@ plainto_tsquery('english', normalize_text(@searchTerm))");
+                parameters.Add("searchTerm", query.Name);
+            }
+
+            if (hasLocation)
+            {
+                whereClauses.Add(@"""geom"" IS NOT NULL");
+                whereClauses.Add(@"ST_DWithin(""geom"", ST_SetSRID(ST_MakePoint(@lng, @lat), 4326)::geography, @distance)");
+                parameters.Add("lat", query.Latitude);
+                parameters.Add("lng", query.Longitude);
+                parameters.Add("distance", MappingHelper.MilesToMeters(query.Distance!.Value));
+            }
+
+            if (query.EstablishmentTypes is not null && query.EstablishmentTypes.Length != 0 && query.EstablishmentTypes.All(t => !string.IsNullOrWhiteSpace(t)))
+            {
+                var typesQueryList = query.EstablishmentTypes
+                .SelectMany(type => (type.ToLower() switch
+                {
+                    "maintained school" => "1,2,3,5",
+                    "academy" => "28,34,35,40,41,45,46",
+                    "college" => "18,21,39,56",
+                    "independent schools" => "6,11",
+                    "special school" => "7,8,10,12,33,36,44",
+                    _ => string.Empty
+                }).Split(',', StringSplitOptions.RemoveEmptyEntries))
+                .Distinct();
+
+                whereClauses.Add($@"""TypeOfEstablishmentId"" IN ({string.Join(",", typesQueryList)})");
+            }
+
+            if (query.EstablishmentPhases is not null && query.EstablishmentPhases.Length != 0 && query.EstablishmentPhases.All(t => !string.IsNullOrWhiteSpace(t)))
+            {
+                foreach (var phase in query.EstablishmentPhases)
+                {
+                    if (phase.Contains("all-through", StringComparison.OrdinalIgnoreCase))
+                    {
+                        phaseWhereClauses.Add(@"(""ISKS2"" IS true AND ""ISKS4"" IS true AND ""ISKS5"" IS true)");
+                    }
+                    if (phase.Contains("primary", StringComparison.OrdinalIgnoreCase))
+                    {
+                        phaseWhereClauses.Add(@"(""ISKS2"" IS true)");
+                    }
+                    if (phase.Contains("secondary", StringComparison.OrdinalIgnoreCase))
+                    {
+                        phaseWhereClauses.Add(@"(""ISKS4"" IS true)");
+                    }
+                    if (phase.Contains("16", StringComparison.OrdinalIgnoreCase))
+                    {
+                        phaseWhereClauses.Add(@"(""ISKS5"" IS true)");
+                    }
+                }
+                if (phaseWhereClauses.Count > 0)
+                {
+                    whereClauses.Add("(" + string.Join(" OR ", phaseWhereClauses) + ")");
+                }
+            }
+
+            whereClauses.Add(visibilitySpec.ToSqlPredicate());
+
+
+            string orderBy = hasLocation
+                ? @"""Distance"" ASC, ""EstablishmentName"" ASC"
+                : @"""EstablishmentName"" ASC";
+
+            string selectFields = @"""URN"", ""EstablishmentName"", ""AddressStreet"", ""AddressLocality"", ""AddressAddress3"", ""AddressTown"", ""AddressPostcode"", ""TypeOfEstablishmentId"", ""StatusCode"", ""ClosedDate"", ""ISKS2"", ""ISKS4"", ""ISKS5""";
+
+            if (hasLocation)
+            {
+                selectFields += @", ST_Distance(""geom"", ST_SetSRID(ST_MakePoint(@lng, @lat), 4326)::geography) AS ""Distance""";
+            }
+
+            string whereClause = whereClauses.Count > 0
+                ? "WHERE " + string.Join(" AND ", whereClauses)
+                : string.Empty;
+
+            return new SearchSqlParts(selectFields, whereClause, orderBy, parameters);
+        }
+
+        public async Task<(IEnumerable<Establishment> Results, int TotalCount)> SearchAsync(SearchQuery query, int maxResults = 10, CancellationToken ct = default)
+        {
+            var visibilitySpec = await _searchVisibilityPolicy.GetVisibilitySpecificationAsync(ct);
+            var parts = BuildSearchSqlParts(query, maxResults, visibilitySpec);
+
+            // Combine SELECT and COUNT into a single query using window function
+            // This eliminates: 1) duplicate WHERE clause evaluation, 2) extra database round-trip, 3) network latency for count query  
+            string sql = $@"
+                WITH filtered_results AS (
+                    SELECT {parts.SelectFields}, COUNT(*) OVER() AS ""TotalCount""
+                    FROM v_establishment
+                    {parts.WhereClause}
+                    ORDER BY {parts.OrderBy}
+                    LIMIT @pageSize OFFSET @offset
+                )
+                SELECT * FROM filtered_results;";
+
+            var cmd = new DapperCommandBuilder()
+                .WithCommandText(sql)
+                .WithParameters(parts.Parameters)
+                .WithTimeout(SearchCommandTimeout)
+                .Build(ct);
+
+            using var conn = await _dataSource.OpenConnectionAsync(ct);
+            var results = await conn.QueryAsync<dynamic>(cmd);
+            var resultList = results.ToList();
+
+            if (resultList.Count == 0)
+            {
+                return (Array.Empty<Establishment>(), 0);
+            }
+
+            var totalCount = (int)resultList.First().TotalCount;
+
+            // Map dynamic results back to Establishment entities
+            var establishments = resultList.Select(r => new Establishment
+            {
+                URN = r.URN,
+                EstablishmentName = r.EstablishmentName,
+                AddressStreet = r.AddressStreet,
+                AddressLocality = r.AddressLocality,
+                AddressAddress3 = r.AddressAddress3,
+                AddressTown = r.AddressTown,
+                AddressPostcode = r.AddressPostcode,
+                TypeOfEstablishmentId = r.TypeOfEstablishmentId,
+                StatusCode = r.StatusCode,
+                ClosedDate = r.ClosedDate,
+                IsKS2 = r.ISKS2,
+                IsKS4 = r.ISKS4,
+                IsKS5 = r.ISKS5
+            });
+
+            return (establishments, totalCount);
+        }
+    }
+}

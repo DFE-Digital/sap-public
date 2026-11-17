@@ -145,6 +145,13 @@ $font-size-mobile: 16px;
 
             color: #ffffff;
         }
+
+        .govuk-service-navigation__item {
+            &--active {
+                border-color: govuk-colour("white");
+                margin-bottom: 1px;
+            }
+        }
     }
 }
 

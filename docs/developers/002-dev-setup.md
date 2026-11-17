@@ -2,6 +2,8 @@
 
 This guide explains how to run the **SAPPub.Web** project locally.
 
+If you only need to run the app quickly using local JSON files, use [002a-json-data-quick-start.md](./002a-json-data-quick-start.md).
+
 ---
 
 ## Support Requests
