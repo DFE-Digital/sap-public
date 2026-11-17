@@ -22,7 +22,7 @@
 
     @if (Model.IsSearchPage)
     {
-        <button type="submit" id="toggleSaveEstablishment" class="govuk-heading-s @(Model.IsSaved ? "saved" : "")">
+        <button type="submit" id="toggleSaveEstablishment" class="govuk-button govuk-heading-s @(Model.IsSaved ? "saved" : "")">
             <span>@(Model.IsSaved? Model.SavedText: Model.SaveText)</span>
         </button>
     }
@@ -30,15 +30,15 @@
     {
         @if (Model.IsListLimitReached && Model.IsSaved)
         {
-            <button type="submit" id="toggleSaveEstablishment" class="govuk-heading-s saved">
+            <button type="submit" id="toggleSaveEstablishment" class="govuk-button govuk-heading-s saved">
                 <span>@Model.SavedText</span>
             </button>
         }
 
         @if (!Model.IsListLimitReached)
         {
-            <button type="submit" id="toggleSaveEstablishment" class="govuk-heading-s @(Model.IsSaved ? "saved" : "")">
-                <span>@(Model.IsSaved? Model.SavedText: Model.SaveText)</span>
+            <button type="submit" id="toggleSaveEstablishment" class="govuk-button govuk-heading-s @(Model.IsSaved ? "saved" : "")">
+                <span>@(Model.IsSaved ? Model.SavedText : Model.SaveText)</span>
             </button>
         }
     }
