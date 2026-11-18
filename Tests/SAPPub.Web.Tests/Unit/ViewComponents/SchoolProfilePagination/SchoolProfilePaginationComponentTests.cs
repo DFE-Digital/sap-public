@@ -10,7 +10,7 @@ public class SchoolProfilePaginationComponentTests
     private static SAPPub.Web.ViewComponents.SchoolProfilePagination.SchoolProfilePagination CreateComponent(
         ISchoolProfilePaginationResolver? resolver = null,
         IFeatureManager? featureManager = null) =>
-        new(resolver ?? new SchoolProfilePaginationResolver(new SchoolProfileSitemapProvider()), featureManager ?? new FakeFeatureManager(true, true));
+        new(resolver ?? new SchoolProfilePaginationResolver(new SchoolProfileSitemapProvider()), featureManager ?? new FakeFeatureManager(true, true, false));
 
     [Fact]
     public async Task InvokeAsync_ReturnsDefaultViewWithResolvedResult()
@@ -62,7 +62,7 @@ public class SchoolProfilePaginationComponentTests
             null);
 
         var fakeResolver = new FakeResolver(expected);
-        var fakeFeatureManager = new FakeFeatureManager(isPrimaryEnabled: true, is16To19Enabled: false);
+        var fakeFeatureManager = new FakeFeatureManager(isPrimaryEnabled: true, is16To19Enabled: false, isRetentionMeasureEnabled: false);
         var component = CreateComponent(fakeResolver, fakeFeatureManager);
 
         var model = new SchoolProfilePaginationModel
@@ -106,11 +106,13 @@ public class SchoolProfilePaginationComponentTests
     {
         private readonly bool _isPrimaryEnabled;
         private readonly bool _is16To19Enabled;
+        private readonly bool _isRetentionMeasureEnabled;
 
-        public FakeFeatureManager(bool isPrimaryEnabled, bool is16To19Enabled)
+        public FakeFeatureManager(bool isPrimaryEnabled, bool is16To19Enabled, bool isRetentionMeasureEnabled)
         {
             _isPrimaryEnabled = isPrimaryEnabled;
             _is16To19Enabled = is16To19Enabled;
+            _isRetentionMeasureEnabled = isRetentionMeasureEnabled;
         }
 
         public IAsyncEnumerable<string> GetFeatureNamesAsync() => throw new NotImplementedException();
@@ -119,6 +121,7 @@ public class SchoolProfilePaginationComponentTests
         {
             Constants.Constants.EnablePrimary => _isPrimaryEnabled,
             Constants.Constants.Enable16to19 => _is16To19Enabled,
+            Constants.Constants.EnableRetentionMeasure => _isRetentionMeasureEnabled,
             _ => false
         });
 

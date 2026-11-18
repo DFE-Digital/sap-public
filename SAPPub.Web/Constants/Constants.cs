@@ -7,6 +7,7 @@ public static class Constants
     public const string LocalCouncilAverage = "Local council average";
     public const string Average = "average";
     public const string EnglandAverage = "England average";
+    public const string SchoolOrCollege = "School or college";
     public const string NotRecorded = "Not recorded";
     public const string NotAvailable = "Not available";
 
@@ -56,6 +57,7 @@ public static class Constants
     public const string EnableSecondaryGrade7 = "EnableSecondaryGrade7";
     public const string EnableOverview = "EnableOverview";
     public const string EnableKS2PupilCharacteristicDropdown = "EnableKS2PupilCharacteristicDropdown";
+    public const string EnableRetentionMeasure = "EnableRetentionMeasure";
 
 
     // Accessibility
