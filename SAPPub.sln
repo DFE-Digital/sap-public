@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAPPub.Playwright.Testing",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAPPub.E2E.Tests", "Tests\SAPPub.E2E.Tests\SAPPub.E2E.Tests.csproj", "{C04F187E-1040-8C5E-E795-B4BA054335B2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAPPub.EESCodeGenerator", "SAPPub.EESCodeGenerator\SAPPub.EESCodeGenerator.csproj", "{981B0C45-D71F-4DEE-8493-8D5B77DD21CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,10 @@ Global
 		{C04F187E-1040-8C5E-E795-B4BA054335B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C04F187E-1040-8C5E-E795-B4BA054335B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C04F187E-1040-8C5E-E795-B4BA054335B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{981B0C45-D71F-4DEE-8493-8D5B77DD21CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{981B0C45-D71F-4DEE-8493-8D5B77DD21CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{981B0C45-D71F-4DEE-8493-8D5B77DD21CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{981B0C45-D71F-4DEE-8493-8D5B77DD21CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
