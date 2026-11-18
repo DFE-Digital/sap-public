@@ -1,5 +1,4 @@
 ﻿using SAPPub.Core.ValueObjects;
-using System.Security.Permissions;
 
 namespace SAPPub.Core.ServiceModels.Overview;
 

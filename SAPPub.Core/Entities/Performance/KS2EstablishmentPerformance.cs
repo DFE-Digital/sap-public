@@ -8,7 +8,6 @@ public class KS2EstablishmentPerformance
 {
     public string Id { get; set; } = string.Empty;
 
-
     public CodedString MATPROG_DESCR_Est_Previous2_Num_Coded { get; set; }
     public CodedString READPROG_DESCR_Est_Previous2_Num_Coded { get; set; }
     public CodedString WRITPROG_DESCR_Est_Previous2_Num_Coded { get; set; }

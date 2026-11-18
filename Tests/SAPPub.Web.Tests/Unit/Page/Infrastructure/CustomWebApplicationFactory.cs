@@ -13,6 +13,7 @@ using SAPPub.Core.Interfaces.Services.KS4.Admissions;
 using SAPPub.Core.Interfaces.Services.KS4.Attendance;
 using SAPPub.Core.Interfaces.Services.KS4.Destinations;
 using SAPPub.Core.Interfaces.Services.KS4.Performance;
+using SAPPub.Core.Interfaces.Services.Overview;
 using SAPPub.Core.Interfaces.Services.Performance;
 using SAPPub.Core.Interfaces.Services.Search;
 
@@ -63,6 +64,7 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.RemoveAll(typeof(IFeatureManager));
                 services.RemoveAll(typeof(IKS2MeetingOrExceedingStandardsService));
                 services.RemoveAll(typeof(ITimeService));
+                services.RemoveAll(typeof(IOverviewService));
 
                 services.AddSingleton<MockAccessor<IAboutSchoolService>>();
                 services.AddSingleton<MockAccessor<IAttainmentAndProgressService>>();
@@ -91,6 +93,7 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.AddSingleton<MockAccessor<IFeatureManager>>();
                 services.AddSingleton<MockAccessor<IKS2MeetingOrExceedingStandardsService>>();
                 services.AddSingleton<MockAccessor<ITimeService>>();
+                services.AddSingleton<MockAccessor<IOverviewService>>();
 
                 services.AddTransient(provider =>
                 {
@@ -212,6 +215,10 @@ public class CustomWebApplicationFactory<Program> : WebApplicationFactory<Progra
                 services.AddTransient(provider =>
                 {
                     return provider.GetRequiredService<MockAccessor<ITimeService>>().Get()?.Object!;
+                });
+                services.AddTransient(provider =>
+                {
+                    return provider.GetRequiredService<MockAccessor<IOverviewService>>().Get()?.Object!;
                 });
             });
     }
