@@ -15,5 +15,14 @@ namespace SAPPub.Infrastructure.EES.Config
         public const string NationalLocationLevel = "NAT";
 
         public const string YearIdentifier = "AY";
+
+
+    }
+
+    public static class EESYearConstants
+    {
+        public const string Year202425 = "2024/2025";
+        public const string Year202324 = "2023/2024";
+        public const string Year202223  = "2022/2023";
     }
 }

@@ -59,9 +59,14 @@ namespace SAPPub.Infrastructure.EES.Helpers
             {
                 using var requestMessage = new HttpRequestMessage(
                     HttpMethod.Post, $"/statistics/v1/data-sets/{dataSetId}/query?dataSetVersion={dataSetVersion}");
-                requestMessage.Headers.Add("Content-Type", "application/json");
-                requestMessage.Headers.Add("Accept", "application/json");
-                requestMessage.Content = JsonContent.Create(requestModel);
+
+                requestMessage.Content = new StringContent(
+                    JsonConvert.SerializeObject(requestModel, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }), 
+                    Encoding.UTF8, "application/json"
+                    );
+
+                requestMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
                 return await _httpClient.SendAsync(requestMessage, cancellationToken);
             }, cancellationToken);
 
@@ -88,14 +93,12 @@ namespace SAPPub.Infrastructure.EES.Helpers
             CancellationToken cancellationToken = default)
         {
 
-            //Logging
+            _logger.LogInformation("EES: Queried metadata with {0} and version {1}", dataSetId, dataSetVersion);
 
             var response = await ExecuteWithRetryAsync(async () =>
             {
                 using var requestMessage = new HttpRequestMessage(
                     HttpMethod.Get, $"/statistics/v1/data-sets/{dataSetId}/meta?dataSetVersion={dataSetVersion}");
-                requestMessage.Headers.Add("Content-Type", "application/json");
-                requestMessage.Headers.Add("Accept", "application/json");
                 return await _httpClient.SendAsync(requestMessage, cancellationToken);
             }, cancellationToken);
 

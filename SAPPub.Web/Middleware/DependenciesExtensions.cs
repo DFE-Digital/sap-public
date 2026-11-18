@@ -29,6 +29,9 @@ using SAPPub.Core.Services.KS4.Performance;
 using SAPPub.Core.Services.Overview;
 using SAPPub.Core.Services.Performance;
 using SAPPub.Core.Services.Search;
+using SAPPub.Infrastructure.EES.Helpers;
+using SAPPub.Infrastructure.EES.Repositories;
+using SAPPub.Infrastructure.EES.Service;
 using SAPPub.Infrastructure.Mapping.ValueCodes;
 using SAPPub.Infrastructure.PostgresSearch;
 using SAPPub.Infrastructure.Repositories;
@@ -66,6 +69,9 @@ namespace SAPPub.Web.Middleware
                 services.AddTransient<IEstablishmentSearchRepository, EstablishmentSearchRepository>();
                 services.AddTransient<IOverviewRepository, OverviewRepository>();
             }
+
+            services.AddHttpClient<IEESClient, EESClient>();
+            services.AddTransient<IEESAPIService, EESAPIService>();
 
             services.AddTransient<IOverviewService, OverviewService>();
 
@@ -141,7 +147,7 @@ namespace SAPPub.Web.Middleware
             services.AddTransient<ILevel2QualificationsService, Level2QualificationsService>();
             services.AddTransient<IEnglishAndMathsQualificationsService, EnglishAndMathsQualificationsService>();
 
-            services.AddTransient<IKS2PerformanceRepository, KS2PerformanceRepository>();
+            services.AddTransient<IKS2PerformanceRepository, KS2PerformanceEESRepository>();
             services.AddTransient<IKS2ScaledScoreService, KS2ScaledScoresService>();
 
             services.AddTransient<IKS2AdditionalMeasuresService,  KS2AdditionalMeasuresService>();
@@ -174,6 +180,7 @@ namespace SAPPub.Web.Middleware
                 ["low"] = "positive % less than 0.5"
             });
             services.AddSingleton<IReasonCodeLookup>(reasonLookup);
+            services.AddSingleton<CodedLightweightParser>();
 
             // Configure Dapper handlers once per process
             if (Interlocked.Exchange(ref _dapperConfigured, 1) == 0)

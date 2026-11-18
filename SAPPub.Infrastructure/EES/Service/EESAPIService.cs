@@ -9,11 +9,25 @@ using System.Text;
 
 namespace SAPPub.Infrastructure.EES.Service
 {
-    public class EESAPIService(EESClient client)
+    public interface IEESAPIService
     {
-        private readonly EESClient _client = client;
+        Task<T> GetData<T>(string id, CancellationToken ct = default) where T : class, new();
+        Task<IEnumerable<T>> GetData<T>(string[] ids, CancellationToken ct = default) where T : class, new();
+        Task<EESMetadataModel> GetMetadataModel(EESMappingType mappingType);
+    }
 
-        public async Task<IEnumerable<T>> GetData<T>(string[] ids) where T : class, new()
+    public class EESAPIService(IEESClient client) : IEESAPIService
+    {
+        private readonly IEESClient _client = client;
+
+        public async Task<T> GetData<T>(string id, CancellationToken ct = default) where T : class, new()
+        {
+            var result = await GetData<T>(id.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries), ct);
+            return result.FirstOrDefault() ?? new T();
+        }
+
+
+        public async Task<IEnumerable<T>> GetData<T>(string[] ids, CancellationToken ct = default) where T : class, new()
         {
             var configurationType = EESMapping.LookupFromModel(typeof(T));
 
@@ -55,7 +69,7 @@ namespace SAPPub.Infrastructure.EES.Service
                 }
             };
 
-            var doAction = await _client.GetDataQuery(configurationMapping.PublicationId, configurationMapping.CurrentMajorVersion, testModel);
+            var doAction = await _client.GetDataQuery(configurationMapping.PublicationId, configurationMapping.CurrentMajorVersion, testModel, ct);
 
             var flattenedValues = EESTransformations.ParseResponseValues(configurationMapping, doAction);
 
