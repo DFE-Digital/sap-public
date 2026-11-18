@@ -412,4 +412,15 @@ public class KS5EnglandPerformance
     public CodedString ProgBand_Techcert_Band4_Eng_Current_Desc { get; set; }
     public CodedDouble ProgBand_Techcert_Band5_Eng_Current_Pct_Coded { get; set; }
     public CodedString ProgBand_Techcert_Band5_Eng_Current_Desc { get; set; }
+
+    // A Levels Retained and assessed measures
+
+    // Percentage of students retained and assessed - A Levels - Current
+    public CodedDouble PT_RET_ASSESSED_ALEV_Eng_Current_Pct_Coded { get; set; }
+
+    // Percentage of students retained and assessed - A Levels - Previous
+    public CodedDouble PT_RET_ASSESSED_ALEV_Eng_Previous_Pct_Coded { get; set; }
+
+    // Percentage of students retained and assessed - A Levels - Previous2
+    public CodedDouble PT_RET_ASSESSED_ALEV_Eng_Previous2_Pct_Coded { get; set; }
 }

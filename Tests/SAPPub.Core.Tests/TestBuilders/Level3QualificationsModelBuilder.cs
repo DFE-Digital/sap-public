@@ -252,7 +252,34 @@ public class Level3QualificationsModelBuilder
                         Points = new CodedDouble(Math.Round(_faker.Random.Double(10, 100), 1), string.Empty, string.Empty)
                     }
                 }
-            }
+            },
+            RetainedAndAssessedData = new RetainedAndAssessedModel
+            {
+                NumberOfStudents = new RelativeYearValues<CodedDouble>
+                {
+                    CurrentYear = new CodedDouble(200, string.Empty, string.Empty),
+                    PreviousYear = new CodedDouble(150, string.Empty, string.Empty),
+                    TwoYearsAgo = new CodedDouble(250, string.Empty, string.Empty),
+                },
+                EstablishmentAll = new RelativeYearValues<CodedDouble>
+                {
+                    CurrentYear = new CodedDouble(85.55, string.Empty, string.Empty),
+                    PreviousYear = new CodedDouble(75.23, string.Empty, string.Empty),
+                    TwoYearsAgo = new CodedDouble(79.15, string.Empty, string.Empty),
+                },
+                LocalAuthorityAll = new RelativeYearValues<CodedDouble>
+                {
+                    CurrentYear = new CodedDouble(69.78, string.Empty, string.Empty),
+                    PreviousYear = new CodedDouble(74.15, string.Empty, string.Empty),
+                    TwoYearsAgo = new CodedDouble(55.19, string.Empty, string.Empty),
+                },
+                EnglandAll = new RelativeYearValues<CodedDouble>
+                {
+                    CurrentYear = new CodedDouble(65.45, string.Empty, string.Empty),
+                    PreviousYear = new CodedDouble(83.79, string.Empty, string.Empty),
+                    TwoYearsAgo = new CodedDouble(79.23, string.Empty, string.Empty),
+                },
+            },
         };
     }
 }
