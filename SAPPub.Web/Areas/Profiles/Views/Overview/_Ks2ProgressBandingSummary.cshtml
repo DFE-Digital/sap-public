@@ -1,4 +1,3 @@
-@using SAPPub.Web.Areas.Profiles.ViewModels.Overview
 @model SAPPub.Web.Areas.Profiles.ViewModels.Overview.OverviewViewModel
 
 <div id="primary-at-a-glance-accordion-content-1" class="govuk-accordion__section-content">
@@ -40,23 +39,7 @@
                         </div>
                     }
                 </div>
-
-                @if (Model.Ks2SmallNumberOfPupilsWarning is { } warningHeading)
-                {
-                    <div class="ataglance-progress-warning" id="primary-progress-significance-warning">
-                        <div class="govuk-warning-text ataglance-progress-warning__heading">
-                            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-                            <strong class="govuk-warning-text__text">
-                                <span class="govuk-visually-hidden">Warning</span>
-                                @warningHeading
-                            </strong>
-                        </div>
-                        <p class="govuk-body ataglance-progress-warning__text">
-                            @OverviewViewModel.Ks2SmallNumberOfPupilsWarningText
-                        </p>
-                    </div>
-
-                }
+                @await Html.PartialAsync("_KS2DataSignificance", (Model.Ks2SmallNumberOfPupilsWarning, string.Empty))
 
                 @await Html.PartialAsync("_Ks2PupilProgressLink")
             </div>

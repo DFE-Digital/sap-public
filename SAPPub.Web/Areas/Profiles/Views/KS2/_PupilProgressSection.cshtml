@@ -1,0 +1,70 @@
+﻿@using SAPPub.Core.ValueObjects
+@using SAPPub.Web.Areas.Profiles.ViewModels.KS2
+@using SAPPub.Web.Areas.Profiles.ViewModels.Overview
+@model (PupilCharacteristicBaseViewModel PupilCharacteristic, ProgressBandingSummaryViewModel KS2Banding, CodedDouble? Score, string Heading)
+
+<div class="data-container">
+    <h3 class="govuk-heading-m govuk-heading-m govuk-!-margin-top-3">
+        @Model.Heading
+    </h3>
+
+    <table id="attendance-table" class="govuk-table">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <td scope="col" class="govuk-table__header">School</td>
+                <th scope="col" class="govuk-table__header">Progress score</th>
+                <th scope="col" class="govuk-table__header">What it means</th>
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">@Model.PupilCharacteristic.SchoolName</td>
+                <td class="govuk-table__cell">@Model.Score</td>
+                <td class="govuk-table__cell">
+                    <strong class="govuk-tag @Model.KS2Banding.CssClass ataglance-progress-banding__tag">
+                        @Model.KS2Banding.BandingLabel
+                    </strong>
+                    <p class="govuk-body ataglance-progress-banding__description">
+                        @Model.KS2Banding.Description
+                    </p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    @await Html.PartialAsync("_KS2DataSignificance", (Model.PupilCharacteristic.Ks2SmallNumberOfPupilsWarning, Model.Heading))
+
+    <details class="govuk-details" id="details-progress-score-calculations">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+                How this school's @Model.Heading.ToLower() progress score was worked out
+            </span>
+        </summary>
+        <div class="govuk-details__text">
+            <p class="govuk-body">
+                TODO
+            </p>
+        </div>
+    </details>
+
+    <h3>Compare with local and national averages</h3>
+    <table id="attendance-table" class="govuk-table">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <td scope="col" class="govuk-table__header">Comparison group</td>
+                <th scope="col" class="govuk-table__header">Progress score</th>
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">@Model.PupilCharacteristic.LocalAuthorityName</td>
+                <td class="govuk-table__cell">@Model.PupilCharacteristic.LocalAuthorityReadingScore</td>
+            </tr>
+
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">England average</td>
+                <td class="govuk-table__cell">@Model.PupilCharacteristic.EnglandReadingScore</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

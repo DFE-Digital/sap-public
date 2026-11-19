@@ -83,7 +83,7 @@ public class KS2PupilProgressService(
 
         var readingProgressBandingPercentages = selectedYear switch
         {
-          
+
             AcademicYearSelection.Previous2 => new CodedDouble[]
             {
                 englandPerformance.ProgBand_Read_Band1_Eng_Previous2_Pct_Coded,
@@ -120,7 +120,7 @@ public class KS2PupilProgressService(
             },
             _ => []
         };
-            
+
 
         return new KS2PupilPerformance
         {
@@ -194,6 +194,54 @@ public class KS2PupilProgressService(
             ReadingProgressBandingPercentages = readingProgressBandingPercentages,
             WritingProgressBandingPercentages = writingProgressBandingPercentages,
             MathsProgressBandingPercentages = mathsProgressBandingPercentages,
+        };
+    }
+
+    public async Task<KS2PupilPerformanceBandings> GetPupilProgressAsync(string urn, CancellationToken ct = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(urn);
+        ct.ThrowIfCancellationRequested();
+
+        var establishment = await establishmentService.GetEstablishmentMinimumAsync(urn, ct);
+
+        if (string.IsNullOrWhiteSpace(establishment?.URN))
+        {
+            return new KS2PupilPerformanceBandings { Urn = urn };
+        }
+
+        var ks2EstablishPerformanceTask = ks2PerformanceRepository.GetEstablishmentPerformanceAsync(urn, ct);
+        var ks2LAPerformanceTask = ks2PerformanceRepository.GetLaPerformanceAsync(establishment.LAId, ct);
+        var ks2EnglandPerformanceTask = ks2PerformanceRepository.GetEnglandPerformanceAsync(ct);
+
+        await Task.WhenAll(ks2EstablishPerformanceTask, ks2LAPerformanceTask, ks2EnglandPerformanceTask);
+
+        var establishmentPerformance = await ks2EstablishPerformanceTask;
+        var laPerformance = await ks2LAPerformanceTask;
+        var englandPerformance = await ks2EnglandPerformanceTask;
+
+        return new KS2PupilPerformanceBandings
+        {
+            Urn = urn,
+            // TODO: Get the current year scores
+            EstablishmentReadingScore = establishmentPerformance?.READPROG_Est_Previous2_Num_Coded ?? CodedDouble.Empty,
+            EstablishmentWritingScore = establishmentPerformance?.WRITPROG_Est_Previous2_Num_Coded ?? CodedDouble.Empty,
+            EstablishmentMathsScore = establishmentPerformance?.MATPROG_Est_Previous2_Num_Coded ?? CodedDouble.Empty,
+            EstablishmentReadingProgressBanding = establishmentPerformance?.READPROG_DESCR_Est_Current_Num_Coded,
+            EstablishmentWritingProgressBanding = establishmentPerformance?.WRITPROG_DESCR_Est_Current_Num_Coded,
+            EstablishmentMathsProgressBanding = establishmentPerformance?.MATPROG_DESCR_Est_Current_Num_Coded,
+            EstablishmentReadingProgressSignificance = establishmentPerformance?.READPROG_SIGNIFICANCE_Est_Current_Num_Coded,
+            EstablishmentWritingProgressSignificance = establishmentPerformance?.WRITPROG_SIGNIFICANCE_Est_Current_Num_Coded,
+            EstablishmentMathsProgressSignificance = establishmentPerformance?.MATPROG_SIGNIFICANCE_Est_Current_Num_Coded,
+
+            // TODO: Get the current year scores
+            LocalAuthorityReadingScore = laPerformance?.READPROG_LA_Previous2_Num_Coded,
+            LocalAuthorityWritingScore = laPerformance?.WRITPROG_LA_Previous2_Num_Coded,  
+            LocalAuthorityMathsScore = laPerformance?.MATPROG_LA_Previous2_Num_Coded,
+
+            EnglandAverageReadingScore = englandPerformance?.READ_AVERAGE_Eng_Current_Num_Coded,
+            //EnglandAverageWritingScore = englandPerformance?.WRIT_AVERAGE_Eng_Current_Num_Coded,
+            EnglandAverageMathsScore = englandPerformance?.MAT_AVERAGE_Eng_Current_Num_Coded
+            
         };
     }
 }

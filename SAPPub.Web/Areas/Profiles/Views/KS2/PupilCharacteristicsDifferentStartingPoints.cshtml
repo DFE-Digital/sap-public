@@ -1,7 +1,8 @@
-@model PupilCharacteristicPlaceholderViewModel;
+@model PupilCharacteristicBaseViewModel;
 @using SAPPub.Web.Areas.Profiles.ViewModels.KS2
 @using SAPPub.Web.Constants
 @using SAPPub.Web.ViewComponents.VerticalNavigation
+@using static SAPPub.Web.Constants.PageTitleConstants
 
 @{
     ViewData["Header"] = "Academic performance";
@@ -24,6 +25,8 @@
     <div class="govuk-grid-column-three-quarters">
         <div id="guide-contents">
             <h2 class="govuk-heading-xl">@ViewData["Header"]</h2>
+
+            @await Html.PartialAsync("_PrimaryPerformanceSubNavigation", (Model.RouteAttributes, PrimarySchoolPageTitles.PupilProgress))
 
             @await Html.PartialAsync("_PupilCharacteristicDropdown", new PupilCharacteristicDropdownViewModel
             {

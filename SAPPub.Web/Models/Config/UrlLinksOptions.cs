@@ -5,4 +5,6 @@ public class UrlLinksOptions
     public UrlLinkOptions PrimarySchoolAccountability { get; set; } = new();
 
     public UrlLinkOptions SecondarySchoolAccountabilityPriorAttainment { get; set; } = new();
+
+    public UrlLinkOptions PrimaryAttainmentGroupingsTechnicalGuide { get; set; } = new();
 }

@@ -10,7 +10,7 @@ using SAPPub.Web.Models.Charts;
 
 namespace SAPPub.Web.Areas.Profiles.ViewModels.Overview;
 
-public sealed class OverviewViewModel : ProfileBaseViewModel
+public sealed class OverviewViewModel : KS2BandingsBaseViewModel
 {
     public required DisplayField<string> EducationPhase { get; init; }
 
@@ -85,32 +85,6 @@ public sealed class OverviewViewModel : ProfileBaseViewModel
     public string Ks4DestinationsAcademicYearDisplayName => Ks4DestinationsAcademicYearHelper.GetDisplayName(AcademicYearSelection.Current);
 
     public string Ks2CurrentAcademicYearDisplayName => Ks4AcademicYearHelper.GetDisplayName(AcademicYearSelection.Current);
-
-    public required IReadOnlyList<ProgressBandingSummaryViewModel> Ks2Bandings { get; init; }
-
-    public const string Ks2SmallNumberOfPupilsWarningText = "These results are based on a small number of pupils. This means that a few pupils with particularly high or low results can have a greater impact on the overall result.";
-
-    public string? Ks2SmallNumberOfPupilsWarning
-    {
-        get
-        {
-            var subjects = Ks2Bandings
-                .Where(a => a.IsNotStatisticallySignificant)
-                .Select(a => a.Subject.ToLowerInvariant())
-                .ToList();
-
-            if(subjects.Count == 0)
-            {
-                return null;
-            }
-
-            var subjectList = subjects.Count == 1
-                ? subjects[0]
-                : $"{string.Join(", ", subjects.Take(subjects.Count - 1))} and {subjects[^1]}";
-
-            return $"{char.ToUpperInvariant(subjectList[0])}{subjectList[1..]} results based on a small number of pupils";
-        }
-    }
 
     public static OverviewViewModel Map(OverviewModel model)
     {
