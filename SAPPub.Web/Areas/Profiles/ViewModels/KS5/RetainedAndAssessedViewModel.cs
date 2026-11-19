@@ -32,7 +32,6 @@ public class RetainedAndAssessedViewModel
 
         var allDataOverTimeData = new DataOverTimeViewModel
         {
-            //Labels = ["2022 to 2023", "2023 to 2024", "2024 to 2025"], // TODO - Need academic year to calculate current, previous and TwoYearsAgo
             Labels = 
             [
                 AcademicYearSelection.Previous2.GetDisplayName()!,

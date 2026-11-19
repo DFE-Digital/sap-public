@@ -453,7 +453,11 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "T_INSCOPE_ALEV_RET_Est_Current_Num_Coded",
           "PT_RET_ASSESSED_ALEV_Est_Current_Pct_Coded",
           "PT_RET_ASSESSED_ALEV_Est_Previous_Pct_Coded",
-          "PT_RET_ASSESSED_ALEV_Est_Previous2_Pct_Coded"
+          "PT_RET_ASSESSED_ALEV_Est_Previous2_Pct_Coded",
+          "T_INSCOPE_ACAD_RET_Est_Current_Num_Coded",
+          "PT_RET_ASSESSED_ACAD_Est_Current_Pct_Coded",
+          "PT_RET_ASSESSED_ACAD_Est_Previous_Pct_Coded",
+          "PT_RET_ASSESSED_ACAD_Est_Previous2_Pct_Coded"
           """;
 
         private const string KS5EnglandPerformanceColumns = """
@@ -620,7 +624,10 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "ProgBand_Techcert_Band5_Eng_Current_Desc",
           "PT_RET_ASSESSED_ALEV_Eng_Current_Pct_Coded",
           "PT_RET_ASSESSED_ALEV_Eng_Previous_Pct_Coded",
-          "PT_RET_ASSESSED_ALEV_Eng_Previous2_Pct_Coded"
+          "PT_RET_ASSESSED_ALEV_Eng_Previous2_Pct_Coded",
+          "PT_RET_ASSESSED_ACAD_Eng_Current_Pct_Coded",
+          "PT_RET_ASSESSED_ACAD_Eng_Previous_Pct_Coded",
+          "PT_RET_ASSESSED_ACAD_Eng_Previous2_Pct_Coded"
           """;
 
         private const string KS5LAPerformanceColumns = """
@@ -732,7 +739,10 @@ namespace SAPPub.Infrastructure.Repositories.Helpers
           "TALLPPE_TECHCERT_NOTDIS_LA_Current_Num_Coded",
           "PT_RET_ASSESSED_ALEV_LA_Current_Pct_Coded",
           "PT_RET_ASSESSED_ALEV_LA_Previous_Pct_Coded",
-          "PT_RET_ASSESSED_ALEV_LA_Previous2_Pct_Coded"
+          "PT_RET_ASSESSED_ALEV_LA_Previous2_Pct_Coded",
+          "PT_RET_ASSESSED_ACAD_LA_Current_Pct_Coded",
+          "PT_RET_ASSESSED_ACAD_LA_Previous_Pct_Coded",
+          "PT_RET_ASSESSED_ACAD_LA_Previous2_Pct_Coded"
           """;
 
         private const string GatewayLAColumns = """
