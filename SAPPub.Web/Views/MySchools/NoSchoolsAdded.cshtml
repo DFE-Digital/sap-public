@@ -14,13 +14,15 @@
 
         <h1 class="govuk-heading-l">
             <span class="govuk-caption-l">@ViewData["Title"]</span>
-            Add schools to compare
+            Save schools to compare
         </h1>
 
         <p class="govuk-body">
-            You can create a 'My schools' list of schools or colleges to compare.
-            Search for a school or college using a name or location, then use 'Add to My schools list' to add your first school or college to the list.
+            To save a secondary school, search for a school, click on its profile then select 'Save to my schools list'.
         </p>
-        <a asp-route="@RouteConstants.Search" role="button" draggable="false" class="govuk-button govuk-!-margin-top-6 govuk-!-margin-bottom-6" data-module="govuk-button">Search for schools and colleges to compare</a>
+        <p class="govuk-body">
+            You can currently only save and compare secondary schools. You'll be able to save and compare primary schools and colleges in the future.
+        </p>
+        <a asp-route="@RouteConstants.Search" role="button" draggable="false" class="govuk-button govuk-!-margin-top-6 govuk-!-margin-bottom-6" data-module="govuk-button">Search for schools to compare</a>
     </div>
 </div>
