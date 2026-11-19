@@ -42,6 +42,10 @@ namespace SAPPub.Infrastructure.EES.Service
 
             var distinctLocations = EESTransformations.FormatLocations(configurationMapping, ids);
 
+            var filterProperty = distinctFilters.Any() ? new EESRequestFilter { In = distinctFilters } : null;
+            var timePeriodProperty = distinctTimePeriods.Any() ? new EESRequestTimePeriods { In = distinctTimePeriods } : null;
+
+
             var testModel = new EESRequestModel
             {
                 Indicators = distinctIndicators,
@@ -52,15 +56,9 @@ namespace SAPPub.Infrastructure.EES.Service
             [
                 new EESRequestFacets
                     {
-                        Filters = new EESRequestFilter
-                        {
-                            In = distinctFilters
-                        },
+                        Filters = filterProperty,
                         Locations = distinctLocations,
-                        TimePeriods = new EESRequestTimePeriods
-                        {
-                            In = distinctTimePeriods
-                        },
+                        TimePeriods = timePeriodProperty,
                         GeographicLevels = new EESRequestFilter{
                             Equal = configurationMapping.FilterIdType
                         }

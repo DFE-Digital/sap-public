@@ -50,7 +50,7 @@ public class KS2LAPerformanceDTO
         KS2PerformanceLANAT.Identifiers.AverageScaledScore,
         CurrentTimePeriod,
         KS2PerformanceLANAT.Filters.Subjects.Maths,
-        KS2PerformanceLANAT.Filters.CharacteristicsOfEachGroup.Total,
+        KS2PerformanceLANAT.Filters.CharacteristicsOfEachGroup._3YearAverage,
         KS2PerformanceLANAT.Filters.TopicOfCharacteristics.Average2023To2025,
         KS2PerformanceLANAT.Filters.SchoolType.AllStateFunded
     )]
@@ -76,15 +76,7 @@ public class KS2LAPerformanceDTO
     )]
     public string? MAT_AVERAGE_NOTFSM6CLA1A_LA_Current_Num_Coded { get; set; }
 
-    [EESInput(
-        KS2PerformanceLANAT.Identifiers.ProgressMeasures,
-        Previous2TimePeriod,
-        KS2PerformanceLANAT.Filters.Subjects.Maths,
-        KS2PerformanceLANAT.Filters.CharacteristicsOfEachGroup.Total,
-        KS2PerformanceLANAT.Filters.TopicOfCharacteristics.AllPupils,
-        KS2PerformanceLANAT.Filters.SchoolType.AllStateFunded
-    )]
-    public string? MATPROG_LA_Previous2_Num_Coded { get; set; }
+
 
     [EESInput(
         KS2PerformanceLANAT.Identifiers.PercentageOfPupilsMeetingTheExpectedStandard,
@@ -140,7 +132,7 @@ public class KS2LAPerformanceDTO
         KS2PerformanceLANAT.Identifiers.PercentageOfPupilsMeetingTheExpectedStandard,
         CurrentTimePeriod,
         KS2PerformanceLANAT.Filters.Subjects.ReadingWritingAndMaths,
-        KS2PerformanceLANAT.Filters.CharacteristicsOfEachGroup.Total,
+        KS2PerformanceLANAT.Filters.CharacteristicsOfEachGroup._3YearAverage,
         KS2PerformanceLANAT.Filters.TopicOfCharacteristics.Average2023To2025,
         KS2PerformanceLANAT.Filters.SchoolType.AllStateFunded
     )]
@@ -200,7 +192,7 @@ public class KS2LAPerformanceDTO
         KS2PerformanceLANAT.Identifiers.PercentageOfPupilsMeetingTheHigherStandard,
         CurrentTimePeriod,
         KS2PerformanceLANAT.Filters.Subjects.ReadingWritingAndMaths,
-        KS2PerformanceLANAT.Filters.CharacteristicsOfEachGroup.Total,
+        KS2PerformanceLANAT.Filters.CharacteristicsOfEachGroup._3YearAverage,
         KS2PerformanceLANAT.Filters.TopicOfCharacteristics.Average2023To2025,
         KS2PerformanceLANAT.Filters.SchoolType.AllStateFunded
     )]
@@ -260,7 +252,7 @@ public class KS2LAPerformanceDTO
         KS2PerformanceLANAT.Identifiers.AverageScaledScore,
         CurrentTimePeriod,
         KS2PerformanceLANAT.Filters.Subjects.Reading,
-        KS2PerformanceLANAT.Filters.CharacteristicsOfEachGroup.Total,
+        KS2PerformanceLANAT.Filters.CharacteristicsOfEachGroup._3YearAverage,
         KS2PerformanceLANAT.Filters.TopicOfCharacteristics.Average2023To2025,
         KS2PerformanceLANAT.Filters.SchoolType.AllStateFunded
     )]
@@ -305,4 +297,14 @@ public class KS2LAPerformanceDTO
         KS2PerformanceLANAT.Filters.SchoolType.AllStateFunded
     )]
     public string? WRITPROG_LA_Previous2_Num_Coded { get; set; }
+
+    [EESInput(
+    KS2PerformanceLANAT.Identifiers.ProgressMeasures,
+    Previous2TimePeriod,
+    KS2PerformanceLANAT.Filters.Subjects.Maths,
+    KS2PerformanceLANAT.Filters.CharacteristicsOfEachGroup.Total,
+    KS2PerformanceLANAT.Filters.TopicOfCharacteristics.AllPupils,
+    KS2PerformanceLANAT.Filters.SchoolType.AllStateFunded
+)]
+    public string? MATPROG_LA_Previous2_Num_Coded { get; set; }
 }

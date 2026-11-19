@@ -1,4 +1,5 @@
-﻿using SAPPub.Infrastructure.EES.Config;
+﻿using EES.API.POC.KS2Information.v1_x;
+using SAPPub.Infrastructure.EES.Config;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -18,7 +19,7 @@ public class KS2EstablishmentInformationDTO
     [EESInput(
         Identifiers.EligibleBoysOnSchoolRollAtTimeOfTests,
         CurrentTimePeriod
-    )]
+        )]
     public string? BELIG_Est_Current_Num_Coded { get; set; }
 
     [EESInput(
@@ -28,7 +29,7 @@ public class KS2EstablishmentInformationDTO
     public string? GELIG_Est_Current_Num_Coded { get; set; }
 
     [EESInput(
-        Identifiers.PercentageOfEligiblePupilsWithSENEHCPlanOrSENSupport,
+        Identifiers.PercentageOfEligiblePupilsWithEHCPlan,
         CurrentTimePeriod
     )]
     public string? PSENELE_Est_Current_Pct_Coded { get; set; }

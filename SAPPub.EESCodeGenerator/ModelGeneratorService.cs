@@ -12,8 +12,8 @@ namespace SAPPub.EESCodeGenerator
         public static readonly string _outputPath = "C:\\Working\\sap-public\\SAPPub.EESCodeGenerator\\GeneratedModels\\";
         public static readonly string _namespaceName = "EES.API.POC";
 
-        public static readonly string[] _ignoredFilters = new[]
-        {
+        public static readonly string[] _ignoredFilters =
+        [
             "AgeRange",
             "ClosedFlag",
             "ConverterAcademyName",
@@ -23,7 +23,7 @@ namespace SAPPub.EESCodeGenerator
             "FullAddressOfTheSchool",
             "SchoolTelephoneNumber"
 
-        };
+        ];
 
         public static void GenerateModelFromMetadata(
             EESMetadataModel metadata,

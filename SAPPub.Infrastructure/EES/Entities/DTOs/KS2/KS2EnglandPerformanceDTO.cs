@@ -46,7 +46,7 @@ public class KS2EnglandPerformanceDTO
         KS2PerformanceLANAT.Identifiers.AverageScaledScore,
         CurrentTimePeriod,
         KS2PerformanceLANAT.Filters.Subjects.Maths,
-        KS2PerformanceLANAT.Filters.CharacteristicsOfEachGroup.Total,
+        KS2PerformanceLANAT.Filters.CharacteristicsOfEachGroup._3YearAverage,
         KS2PerformanceLANAT.Filters.TopicOfCharacteristics.Average2023To2025,
         KS2PerformanceLANAT.Filters.SchoolType.AllStateFunded
     )]
@@ -126,7 +126,7 @@ public class KS2EnglandPerformanceDTO
         KS2PerformanceLANAT.Identifiers.PercentageOfPupilsMeetingTheExpectedStandard,
         CurrentTimePeriod,
         KS2PerformanceLANAT.Filters.Subjects.ReadingWritingAndMaths,
-        KS2PerformanceLANAT.Filters.CharacteristicsOfEachGroup.Total,
+        KS2PerformanceLANAT.Filters.CharacteristicsOfEachGroup._3YearAverage,
         KS2PerformanceLANAT.Filters.TopicOfCharacteristics.Average2023To2025,
         KS2PerformanceLANAT.Filters.SchoolType.AllStateFunded
     )]
@@ -196,7 +196,7 @@ public class KS2EnglandPerformanceDTO
         KS2PerformanceLANAT.Identifiers.PercentageOfPupilsMeetingTheHigherStandard,
         CurrentTimePeriod,
         KS2PerformanceLANAT.Filters.Subjects.ReadingWritingAndMaths,
-        KS2PerformanceLANAT.Filters.CharacteristicsOfEachGroup.Total,
+        KS2PerformanceLANAT.Filters.CharacteristicsOfEachGroup._3YearAverage,
         KS2PerformanceLANAT.Filters.TopicOfCharacteristics.Average2023To2025,
         KS2PerformanceLANAT.Filters.SchoolType.AllStateFunded
     )]
@@ -246,7 +246,7 @@ public class KS2EnglandPerformanceDTO
         KS2PerformanceLANAT.Identifiers.AverageScaledScore,
         CurrentTimePeriod,
         KS2PerformanceLANAT.Filters.Subjects.Reading,
-        KS2PerformanceLANAT.Filters.CharacteristicsOfEachGroup.Total,
+        KS2PerformanceLANAT.Filters.CharacteristicsOfEachGroup._3YearAverage,
         KS2PerformanceLANAT.Filters.TopicOfCharacteristics.Average2023To2025,
         KS2PerformanceLANAT.Filters.SchoolType.AllStateFunded
     )]

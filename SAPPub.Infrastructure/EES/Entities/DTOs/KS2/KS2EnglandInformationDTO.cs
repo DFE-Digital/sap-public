@@ -30,7 +30,7 @@ public class KS2EnglandInformationDTO
     public string? TNOTFSM6CLA1A_Eng_Current_Num_Coded { get; set; }
 
     [EESInput(
-        KS2InformationLocalAuthorityNational.Identifiers.PercentageOfEligiblePupilsWithSENEHCPlanOrSENSupport,
+        KS2InformationLocalAuthorityNational.Identifiers.PercentageOfEligiblePupilsWithEHCPlan,
         CurrentTimePeriod,
         KS2InformationLocalAuthorityNational.Filters.EstablishmentTypeGroup.AllStateFunded
     )]
@@ -51,14 +51,14 @@ public class KS2EnglandInformationDTO
     public string? TELIG_Eng_Current_Num_Coded { get; set; }
 
     [EESInput(
-        KS2InformationLocalAuthorityNational.Identifiers.NumberOfPupilsAtTheEndOfKeyStage2OverThePastThreeYears,
+        KS2InformationLocalAuthorityNational.Identifiers.TotalNumberOfPupilsIncludingPartTimePupils,
         CurrentTimePeriod,
         KS2InformationLocalAuthorityNational.Filters.EstablishmentTypeGroup.AllStateFunded
     )]
     public string? TOTPUPS_Eng_Current_Num_Coded { get; set; }
 
     [EESInput(
-        KS2InformationLocalAuthorityNational.Identifiers.TotalNumberOfPupilsIncludingPartTimePupils,
+        KS2InformationLocalAuthorityNational.Identifiers.NumberOfPupilsAged11,
         CurrentTimePeriod,
         KS2InformationLocalAuthorityNational.Filters.EstablishmentTypeGroup.AllStateFunded
     )]

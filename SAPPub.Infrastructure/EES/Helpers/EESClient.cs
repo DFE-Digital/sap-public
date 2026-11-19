@@ -65,6 +65,8 @@ namespace SAPPub.Infrastructure.EES.Helpers
                     Encoding.UTF8, "application/json"
                     );
 
+                File.WriteAllText($"C:\\Working\\sap-public\\SAPPub.Infrastructure\\EES\\Data\\Request_{dataSetId}_{DateTime.Now.ToFileTimeUtc()}.json", JsonConvert.SerializeObject(requestModel, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+
                 requestMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
                 return await _httpClient.SendAsync(requestMessage, cancellationToken);

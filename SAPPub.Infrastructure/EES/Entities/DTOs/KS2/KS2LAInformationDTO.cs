@@ -39,7 +39,7 @@ public class KS2LAInformationDTO
     public string? TELIG_LA_Current_Num_Coded { get; set; }
 
     [EESInput(
-        KS2InformationLocalAuthorityNational.Identifiers.TotalNumberOfPupilsIncludingPartTimePupils,
+        KS2InformationLocalAuthorityNational.Identifiers.NumberOfPupilsAged11,
         CurrentTimePeriod,
         KS2InformationLocalAuthorityNational.Filters.EstablishmentTypeGroup.AllStateFunded
     )]

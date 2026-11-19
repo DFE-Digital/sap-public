@@ -17,7 +17,7 @@ public class KS2EstablishmentPerformanceDTO
     public string Id { get; set; } = string.Empty;
 
     [EESInput(
-        Identifiers.ProgressMeasureDescriptionNotPopulatedIn2024,
+        Identifiers.ProgressMeasures,
         Previous2TimePeriod,
         Filters.Subjects.Maths,
         Filters.CharacteristicsOfEachGroup.Total
@@ -27,7 +27,7 @@ public class KS2EstablishmentPerformanceDTO
 
 
     [EESInput(
-        Identifiers.ProgressMeasureDescriptionNotPopulatedIn2024,
+        Identifiers.ProgressMeasures,
         Previous2TimePeriod,
         Filters.Subjects.Reading,
         Filters.CharacteristicsOfEachGroup.Total
@@ -35,7 +35,7 @@ public class KS2EstablishmentPerformanceDTO
     public string? READPROG_DESCR_Est_Previous2_Num_Coded { get; set; }
 
     [EESInput(
-        Identifiers.ProgressMeasureDescriptionNotPopulatedIn2024,
+        Identifiers.ProgressMeasures,
         Previous2TimePeriod,
         Filters.Subjects.Writing,
         Filters.CharacteristicsOfEachGroup.Total
@@ -115,10 +115,11 @@ public class KS2EstablishmentPerformanceDTO
     public string? MAT_AVERAGE_MOBN_Est_Current_Num_Coded { get; set; }
 
     [EESInput(
-        Identifiers.ProgressMeasureDescriptionNotPopulatedIn2024,
+        Identifiers.ProgressMeasures,
         Previous2TimePeriod,
         Filters.Subjects.Maths,
-        Filters.CharacteristicsOfEachGroup.Total
+        Filters.CharacteristicsOfEachGroup.Total,
+        Filters.TopicOfCharacteristics.AllPupils
     )]
 
     public string? MATPROG_Est_Previous2_Num_Coded { get; set; }
@@ -182,7 +183,7 @@ public class KS2EstablishmentPerformanceDTO
 
     [EESInput(
         Identifiers.PercentageOfPupilsMeetingTheExpectedStandard,
-        PreviousTimePeriod,
+        CurrentTimePeriod,
         Filters.Subjects.ReadingWritingAndMaths,
         Filters.CharacteristicsOfEachGroup._3YearAverage
         )]
@@ -250,7 +251,7 @@ public class KS2EstablishmentPerformanceDTO
 
     [EESInput(
         Identifiers.PercentageOfPupilsMeetingTheHigherStandard,
-        Previous2TimePeriod,
+        CurrentTimePeriod,
         Filters.Subjects.ReadingWritingAndMaths,
         Filters.CharacteristicsOfEachGroup._3YearAverage
         )]
@@ -368,10 +369,11 @@ public class KS2EstablishmentPerformanceDTO
     public string? READ_AVERAGE_MOBN_Est_Current_Num_Coded { get; set; }
 
     [EESInput(
-        Identifiers.ProgressMeasureDescriptionNotPopulatedIn2024,
+        Identifiers.ProgressMeasures,
         Previous2TimePeriod,
         Filters.Subjects.Reading,
-        Filters.CharacteristicsOfEachGroup.Total
+        Filters.CharacteristicsOfEachGroup.Total,
+        Filters.TopicOfCharacteristics.AllPupils
         )]
     public string? READPROG_Est_Previous2_Num_Coded { get; set; }
 
@@ -392,10 +394,11 @@ public class KS2EstablishmentPerformanceDTO
     public string? READPROG_UPPER_Est_Previous2_Num_Coded { get; set; }
 
     [EESInput(
-        Identifiers.ProgressMeasureDescriptionNotPopulatedIn2024,
+        Identifiers.ProgressMeasures,
         Previous2TimePeriod,
         Filters.Subjects.Writing,
-        Filters.CharacteristicsOfEachGroup.Total
+        Filters.CharacteristicsOfEachGroup.Total,
+        Filters.TopicOfCharacteristics.AllPupils
         )]
     public string? WRITPROG_Est_Previous2_Num_Coded { get; set; }
 
