@@ -270,6 +270,12 @@ public class KS2ControllerTests : BaseProfilesTests
         Assert.Equal(expectedModel.EnglandNonDisadvantagedMeetingExpectedStandard.Value.ToString(), model.NonDisadvantagedPupils.Rows.Skip(1).First().MeetingStandard.Value.ToString());
         Assert.Equal(expectedModel.EnglandNonDisadvantagedExceedingExpectedStandard.Value.ToString(), model.NonDisadvantagedPupils.Rows.Skip(1).First().ExceedingStandard.Value.ToString());
 
+        Assert.Equal(expectedModel.PriorAttainmentReadingWritingMathsLowExpectedStandardPupilPct.Value.ToString(), model.PriorAttainment.Rows.First().MeetingStandard.Value.ToString());
+        Assert.Equal(expectedModel.PriorAttainmentReadingWritingMathsLowHigherStandardPupilPct.Value.ToString(), model.PriorAttainment.Rows.First().ExceedingStandard.Value.ToString());
+        Assert.Equal(expectedModel.PriorAttainmentReadingWritingMathsMedExpectedStandardPupilPct.Value.ToString(), model.PriorAttainment.Rows.Skip(1).First().MeetingStandard.Value.ToString());
+        Assert.Equal(expectedModel.PriorAttainmentReadingWritingMathsMedHigherStandardPupilPct.Value.ToString(), model.PriorAttainment.Rows.Skip(1).First().ExceedingStandard.Value.ToString());
+        Assert.Equal(expectedModel.PriorAttainmentReadingWritingMathsHighExpectedStandardPupilPct.Value.ToString(), model.PriorAttainment.Rows.Skip(2).First().MeetingStandard.Value.ToString());
+        Assert.Equal(expectedModel.PriorAttainmentReadingWritingMathsHighHigherStandardPupilPct.Value.ToString(), model.PriorAttainment.Rows.Skip(2).First().ExceedingStandard.Value.ToString());
 
         _mockKS2MeetingOrExceedingStandardsService
             .Verify(a => a.GetMeetingOrExceedingStandardsPercentages(fakeMinimumEstablishment.URN, fakeMinimumEstablishment.LAId, CancellationToken.None), Times.Once);
@@ -430,7 +436,6 @@ public class KS2ControllerTests : BaseProfilesTests
             PriorAttainmentReadingWritingMathsHighExpectedStandardPupilPct = GetCodedDouble(49),
             PriorAttainmentReadingWritingMathsHighHigherStandardPupilPct = GetCodedDouble(50)
         };
-
     }
 
     private static KS2AdditionalMeasuresModel GetKS2AdditionalMeasuresModel() => new()
