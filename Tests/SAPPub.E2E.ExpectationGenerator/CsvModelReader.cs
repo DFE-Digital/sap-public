@@ -1,3 +1,4 @@
+using CsvHelper;
 using System.Reflection;
 
 namespace SAPPub.E2E.TestDataExpectationGenerator;
@@ -8,6 +9,36 @@ namespace SAPPub.E2E.TestDataExpectationGenerator;
 /// </summary>
 internal static class CsvModelReader
 {
+    private static readonly CsvReaderOptions CsvOptions = CsvReaderOptions.Default with
+    {
+        Separator = ',',
+        HasHeader = true,
+        SkipEmptyLines = true
+    };
+
+    public static IEnumerable<IReadOnlyDictionary<string, string>> ReadRows(string csvPath)
+    {
+        using var reader = new StreamReader(csvPath);
+        using var csv = CsvReader.Create(reader, CsvOptions);
+
+        var headers = csv.Headers;
+        if (headers.Count == 0)
+        {
+            throw new InvalidOperationException($"CSV file is empty: {csvPath}");
+        }
+
+        while (csv.Read())
+        {
+            var row = new Dictionary<string, string>(headers.Count, StringComparer.Ordinal);
+            for (var i = 0; i < headers.Count; i++)
+            {
+                row[headers[i]] = csv.GetString(i);
+            }
+
+            yield return row;
+        }
+    }
+
     public static List<T> Read<T>(
         string csvPath,
         Func<IReadOnlyDictionary<string, string>, bool>? rowFilter = null,
@@ -30,7 +61,7 @@ internal static class CsvModelReader
             .ToList();
 
         var results = new List<(IReadOnlyDictionary<string, string> Row, T Model)>();
-        foreach (var row in CsvReader.ReadRows(csvPath))
+        foreach (var row in ReadRows(csvPath))
         {
             if (rowFilter is not null && !rowFilter(row))
             {

@@ -1,6 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="34.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SAPPub.E2E.Tests\SAPPub.E2E.Tests.csproj" />
   </ItemGroup>
 
