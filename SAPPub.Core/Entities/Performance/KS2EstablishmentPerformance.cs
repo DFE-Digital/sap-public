@@ -7,9 +7,19 @@ namespace SAPPub.Core.Entities.Performance;
 public class KS2EstablishmentPerformance
 {
     public string Id { get; set; } = string.Empty;
+
     public CodedString MATPROG_DESCR_Est_Previous2_Num_Coded { get; set; }
     public CodedString READPROG_DESCR_Est_Previous2_Num_Coded { get; set; }
     public CodedString WRITPROG_DESCR_Est_Previous2_Num_Coded { get; set; }
+    // Current year bandings (1-5)
+    public CodedString MATPROG_DESCR_Est_Current_Num_Coded { get; set; }
+    public CodedString READPROG_DESCR_Est_Current_Num_Coded { get; set; }
+    public CodedString WRITPROG_DESCR_Est_Current_Num_Coded { get; set; }
+    // Current year progress significance (1 = significant, 0 = not significant)
+    public CodedString MATPROG_SIGNIFICANCE_Est_Current_Num_Coded { get; set; }
+    public CodedString READPROG_SIGNIFICANCE_Est_Current_Num_Coded { get; set; }
+    public CodedString WRITPROG_SIGNIFICANCE_Est_Current_Num_Coded { get; set; }
+
     public CodedDouble MAT_AVERAGE_Est_Current_Num_Coded { get; set; }
     public CodedDouble MAT_AVERAGE_Est_Previous2_Num_Coded { get; set; }
     public CodedDouble MAT_AVERAGE_Est_Previous_Num_Coded { get; set; }

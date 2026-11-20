@@ -1,5 +1,4 @@
-﻿using SAPPub.Core.Entities;
-using SAPPub.Core.Enums;
+﻿using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Repositories.Performance;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Performance;
