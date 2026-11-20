@@ -358,4 +358,15 @@ public class KS5LAPerformance
 
     // Percentage of students retained and assessed - Academic qualifications - Previous2
     public CodedDouble PT_RET_ASSESSED_ACAD_LA_Previous2_Pct_Coded { get; set; }
+
+    // Applied general qualifications Retained and assessed measures
+
+    // Percentage of students retained and assessed - Applied general qualifications - Current
+    public CodedDouble PT_RET_ASSESSED_AGEN_LA_Current_Pct_Coded { get; set; }
+
+    // Percentage of students retained and assessed - Applied general qualifications - Previous
+    public CodedDouble PT_RET_ASSESSED_AGEN_LA_Previous_Pct_Coded { get; set; }
+
+    // Percentage of students retained and assessed - Applied general qualifications - Previous2
+    public CodedDouble PT_RET_ASSESSED_AGEN_LA_Previous2_Pct_Coded { get; set; }
 }

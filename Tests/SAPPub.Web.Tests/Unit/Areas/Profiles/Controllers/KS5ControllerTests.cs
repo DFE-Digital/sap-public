@@ -166,7 +166,8 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.Equal(expectedResult.NonDisadvantagedStudentsData.England.Result.Grade, model.PerformanceGroupsData.NonDisadvantagedStudents.England.Grade.Value);
 
         if (qualification == Level3.ALevel ||
-            qualification == Level3.Academic)
+            qualification == Level3.Academic ||
+            qualification == Level3.AppliedGeneral)
         {
             // Retained measure
             Assert.Equal(["School or college", $"{fakeEstablishment.LAName} average", "England average"], model.RetainedAndAssessedData.AllData.Labels);
