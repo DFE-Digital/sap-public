@@ -370,7 +370,7 @@ public class OverviewViewModelTests
     {
         var result = OverviewViewModel.Map(CreateCompleteModel());
 
-        Assert.Equal("Writing results based on a small number of pupils", result.Ks2SmallNumberOfPupilsWarning);
+        Assert.Equal("Writing", result.Ks2SmallNumberOfPupilsWarning);
     }
 
     [Fact]
@@ -378,7 +378,7 @@ public class OverviewViewModelTests
     {
         var result = OverviewViewModel.Map(CreateModelWithSignificance("0", "0", "0"));
 
-        Assert.Equal("Reading, writing and maths results based on a small number of pupils", result.Ks2SmallNumberOfPupilsWarning);
+        Assert.Equal("Reading, writing and maths", result.Ks2SmallNumberOfPupilsWarning);
     }
 
     [Fact]

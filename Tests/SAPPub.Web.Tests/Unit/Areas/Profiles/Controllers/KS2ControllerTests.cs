@@ -500,6 +500,11 @@ public class KS2ControllerTests : BaseProfilesTests
     [MemberData(nameof(PupilCharacteristicRouteMappings))]
     public async Task PupilCharacteristicPlaceholderAction_ReturnsExpectedModel(PupilCharacteristic characteristic, string _)
     {
+        // Arrange
+        _mockKS2PupilProgressService
+            .Setup(a => a.GetPupilProgressAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new KS2PupilPerformanceBandings { Urn = fakeEstablishment.URN });
+
         // Act
         IActionResult result = characteristic switch
         {
