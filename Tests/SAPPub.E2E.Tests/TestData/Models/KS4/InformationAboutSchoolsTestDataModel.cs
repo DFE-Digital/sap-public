@@ -11,6 +11,7 @@ public class InformationAboutSchoolsTestDataModel
     public string Progress8Banding { get; set; } = string.Empty;
 
     [JsonPropertyName("attainment8_diffn")]
+    [CsvColumn("attainment8_diff_national")]
     public string Attainment8Diffn { get; set; } = string.Empty;
 
     [JsonPropertyName("sen_with_ehcp_pupil_percent")]

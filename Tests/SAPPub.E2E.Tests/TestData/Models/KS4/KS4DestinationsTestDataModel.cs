@@ -1,11 +1,9 @@
-﻿using Microsoft.Playwright;
-using System.Numerics;
-using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace SAPPub.E2E.Tests.TestData.Models.KS4;
 
-public record KS4DestinationsTestDataModel
+public record KS4DestinationsInputDataModel
 {
     [JsonPropertyName("school_urn")]
     public string SchoolUrn { get; init; } = string.Empty;
@@ -28,13 +26,92 @@ public record KS4DestinationsTestDataModel
     [JsonPropertyName("cohort_count")]
     public string CohortCount { get; init; } = string.Empty;
 
-    [JsonPropertyName("cohort_group")]
-    public string CohortGroup { get; init; } = string.Empty;
+    [JsonPropertyName("pupil_percent")]
+    public string PupilPercent { get; init; } = string.Empty;
+}
+
+public record KS4DestinationsTestDataModel
+{
+    [JsonPropertyName("periods")]
+    public Dictionary<string, KS4DestinationsPeriodTestDataModel> Periods { get; init; } = [];
+}
+
+// Serialised as one object: "old_la_code" (when present) sits alongside the disadvantage status keys.
+[JsonConverter(typeof(KS4DestinationsPeriodJsonConverter))]
+public record KS4DestinationsPeriodTestDataModel
+{
+    public string? OldLaCode { get; init; }
+
+    public Dictionary<string, KS4DestinationsGroupTestDataModel> DisadvantageStatuses { get; init; } = [];
+}
+
+public sealed class KS4DestinationsPeriodJsonConverter : JsonConverter<KS4DestinationsPeriodTestDataModel>
+{
+    private const string OldLaCodePropertyName = "old_la_code";
+
+    public override KS4DestinationsPeriodTestDataModel Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        using var document = JsonDocument.ParseValue(ref reader);
+        string? oldLaCode = null;
+        var statuses = new Dictionary<string, KS4DestinationsGroupTestDataModel>(StringComparer.Ordinal);
+
+        foreach (var property in document.RootElement.EnumerateObject())
+        {
+            if (property.NameEquals(OldLaCodePropertyName))
+            {
+                oldLaCode = property.Value.GetString();
+            }
+            else
+            {
+                statuses[property.Name] = property.Value.Deserialize<KS4DestinationsGroupTestDataModel>(options)!;
+            }
+        }
+
+        return new KS4DestinationsPeriodTestDataModel
+        {
+            OldLaCode = oldLaCode,
+            DisadvantageStatuses = statuses
+        };
+    }
+
+    public override void Write(Utf8JsonWriter writer, KS4DestinationsPeriodTestDataModel value, JsonSerializerOptions options)
+    {
+        writer.WriteStartObject();
+
+        if (value.OldLaCode is not null)
+        {
+            writer.WriteString(OldLaCodePropertyName, value.OldLaCode);
+        }
+
+        foreach (var (status, group) in value.DisadvantageStatuses)
+        {
+            writer.WritePropertyName(status);
+            JsonSerializer.Serialize(writer, group, options);
+        }
+
+        writer.WriteEndObject();
+    }
+}
+
+public record KS4DestinationsGroupTestDataModel
+{
+    [JsonPropertyName("cohort_count")]
+    public string CohortCount { get; init; } = string.Empty;
+
+    [JsonPropertyName("destinations")]
+    public List<KS4DestinationTestDataModel> Destinations { get; init; } = [];
+}
+
+public record KS4DestinationTestDataModel
+{
+    [JsonPropertyName("destination_group")]
+    public string DestinationGroup { get; init; } = string.Empty;
+
+    [JsonPropertyName("destination_description")]
+    public string DestinationDescription { get; init; } = string.Empty;
 
     [JsonPropertyName("pupil_percent")]
     public string PupilPercent { get; init; } = string.Empty;
-
-
 }
 
 public static class Ks4DestinationsTestDataExtensions
@@ -44,40 +121,49 @@ public static class Ks4DestinationsTestDataExtensions
     public const string Previous2Year = "202122";
 
     public static string AllDestinationsPercent(
-        this IEnumerable<KS4DestinationsTestDataModel> rows,
+        this KS4DestinationsTestDataModel data,
         string timePeriod = CurrentYear,
         string disadvantageStatus = "Total") =>
-            rows.Single(a => a.DestinationGroup == "Overall destination", timePeriod, disadvantageStatus, "Overall destination").PupilPercent;
+            data.Single(timePeriod, disadvantageStatus, a => a.DestinationGroup == "Overall destination", "Overall destination").PupilPercent;
 
     public static string DestinationPercent(
-        this IEnumerable<KS4DestinationsTestDataModel> rows,
+        this KS4DestinationsTestDataModel data,
         string destinationDescription,
         string timePeriod = CurrentYear,
         string disadvantageStatus = "Total") =>
-            rows.Single(a => a.DestinationDescription == destinationDescription, timePeriod, disadvantageStatus, destinationDescription).PupilPercent;
-
+            data.Single(timePeriod, disadvantageStatus, a => a.DestinationDescription == destinationDescription, destinationDescription).PupilPercent;
 
     public static string CohortCount(
-        this IEnumerable<KS4DestinationsTestDataModel> rows,
+        this KS4DestinationsTestDataModel data,
         string timePeriod = CurrentYear,
         string disadvantageStatus = "Total") =>
-            rows.Single(static a => a.DestinationGroup == "Overall destination", timePeriod, disadvantageStatus, "cohort").CohortCount;
+            data.Group(timePeriod, disadvantageStatus).CohortCount;
 
-    private static KS4DestinationsTestDataModel Single(
-        this IEnumerable<KS4DestinationsTestDataModel> rows,
-        Func<KS4DestinationsTestDataModel, bool> predicate,
+    private static KS4DestinationsGroupTestDataModel Group(
+        this KS4DestinationsTestDataModel data,
+        string timePeriod,
+        string disadvantageStatus)
+    {
+        if (!data.Periods.TryGetValue(timePeriod, out var period)
+            || !period.DisadvantageStatuses.TryGetValue(disadvantageStatus, out var group))
+        {
+            throw new InvalidOperationException($"No destinations test data for {timePeriod} / {disadvantageStatus}.");
+        }
+
+        return group;
+    }
+
+    private static KS4DestinationTestDataModel Single(
+        this KS4DestinationsTestDataModel data,
         string timePeriod,
         string disadvantageStatus,
-        string description
-        )
+        Func<KS4DestinationTestDataModel, bool> predicate,
+        string description)
     {
-        var matches = rows
-            .Where(a => a.TimePeriod == timePeriod & a.DisadvantageStatus == disadvantageStatus)
-            .Where(predicate)
-            .ToList();
-    
+        var group = data.Group(timePeriod, disadvantageStatus);
+        var matches = group.Destinations.Where(predicate).ToList();
         return matches.Count == 1
             ? matches[0]
-            : throw new InvalidOperationException($"Expected 1 destinations test data row for {description}");
+            : throw new InvalidOperationException($"Expected 1 destinations test data row for {description}.");
     }
 }
