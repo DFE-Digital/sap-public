@@ -295,6 +295,7 @@ internal sealed class Ks4ExpectationGenerator(
     {
         var path = Path.Combine(outputDirectory, $"{spec.OutputFileName}.json");
         File.WriteAllText(path, JsonSerializer.Serialize(model, JsonOptions) + Environment.NewLine);
+        Console.WriteLine($"Wrote {spec.OutputFileName}.json");
         return path;
     }
 }
