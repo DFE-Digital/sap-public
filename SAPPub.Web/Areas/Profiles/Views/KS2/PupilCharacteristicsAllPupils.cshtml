@@ -33,8 +33,7 @@
             RouteAttributes = Model.RouteAttributes
         })
 
-        <!-- todo: dynamic year-->
-        <p class="govuk-body">Information in this section is for the 2025 to 2026 academic year. </p>
+        <p class="govuk-body">Information in this section is for the @Model.CurrentAcademicYearDisplayName academic year.</p>
 
         <h3 class="govuk-heading-l">Progress made between year 2 and year 6</h3>
 
@@ -67,11 +66,10 @@
                 </p>
 
                 <p class="govuk-body">
-                    
-                    Go to the 
-                    <a class="govuk-link govuk-link--no-visited-state" href="@Model.TechnicalGuideLinkUrl" rel="nofollow noreferrer" target="@(Model.TechnicalGuideLinkNewTab ? "_blank" : "_self")">
-                        primary accountability measures guidance <span class="govuk-visually-hidden">(opens in a new tab)</span>
-                    </a> for more details.
+                    Go to the
+                    <a class="govuk-link govuk-link--no-visited-state" href="@Model.TechnicalGuideLinkUrl" rel="nofollow noreferrer noopener" target="@(Model.TechnicalGuideLinkNewTab ? "_blank" : "_self")">
+                        primary accountability measures guidance@if (Model.TechnicalGuideLinkNewTab) {<span class="govuk-visually-hidden"> (opens in a new tab)</span>}</a>
+                    for more details.
                 </p>
                 <h4 class="govuk-heading-m">How the number of pupils affects the score</h4>
                 <p class="govuk-body">
@@ -81,9 +79,10 @@
             </div>
         </details>
 
-        @await Html.PartialAsync("_PupilProgressSection", (Model, Model.Ks2Bandings.First(), Model.EstablishmentReadingScore, "Reading"))
-        @await Html.PartialAsync("_PupilProgressSection", (Model, Model.Ks2Bandings.Skip(1).First(), Model.EstablishmentWritingScore, "Writing"))
-        @await Html.PartialAsync("_PupilProgressSection", (Model, Model.Ks2Bandings.Skip(2).First(), Model.EstablishmentMathsScore, "Maths"))
+        @foreach (var section in Model.Sections)
+        {
+            @await Html.PartialAsync("_PupilProgressSection", section)
+        }
 
         <h3 class="govuk-heading-m">Progress for previous academic years</h3>
         <div class="custom-card">

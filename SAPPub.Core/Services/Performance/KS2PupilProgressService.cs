@@ -11,6 +11,16 @@ public class KS2PupilProgressService(
     IEstablishmentService establishmentService,
     IKS2PerformanceRepository ks2PerformanceRepository) : IKS2PupilProgressService
 {
+    private const AcademicYearSelection ScoreYear = AcademicYearSelection.Current;
+
+    private static CodedDouble SelectScore(AcademicYearSelection year, CodedDouble? current, CodedDouble? previous, CodedDouble? previous2) => year switch
+    {
+        AcademicYearSelection.Current => current ?? CodedDouble.Empty,
+        AcademicYearSelection.Previous => previous ?? CodedDouble.Empty,
+        AcademicYearSelection.Previous2 => previous2 ?? CodedDouble.Empty,
+        _ => CodedDouble.Empty
+    };
+
     public async Task<KS2PupilPerformance> GetPupilProgressAsync(string urn, AcademicYearSelection selectedYear, CancellationToken ct = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(urn);
@@ -222,10 +232,9 @@ public class KS2PupilProgressService(
         return new KS2PupilPerformanceBandings
         {
             Urn = urn,
-            // TODO: Get the current year scores
-            EstablishmentReadingScore = establishmentPerformance?.READPROG_Est_Previous2_Num_Coded ?? CodedDouble.Empty,
-            EstablishmentWritingScore = establishmentPerformance?.WRITPROG_Est_Previous2_Num_Coded ?? CodedDouble.Empty,
-            EstablishmentMathsScore = establishmentPerformance?.MATPROG_Est_Previous2_Num_Coded ?? CodedDouble.Empty,
+            EstablishmentReadingScore = SelectScore(ScoreYear, establishmentPerformance?.READPROG_Est_Current_Num_Coded, establishmentPerformance?.READPROG_Est_Previous_Num_Coded, establishmentPerformance?.READPROG_Est_Previous2_Num_Coded),
+            EstablishmentWritingScore = SelectScore(ScoreYear, establishmentPerformance?.WRITPROG_Est_Current_Num_Coded, establishmentPerformance?.WRITPROG_Est_Previous_Num_Coded, establishmentPerformance?.WRITPROG_Est_Previous2_Num_Coded),
+            EstablishmentMathsScore = SelectScore(ScoreYear, establishmentPerformance?.MATPROG_Est_Current_Num_Coded, establishmentPerformance?.MATPROG_Est_Previous_Num_Coded, establishmentPerformance?.MATPROG_Est_Previous2_Num_Coded),
             EstablishmentReadingProgressBanding = establishmentPerformance?.READPROG_DESCR_Est_Current_Num_Coded,
             EstablishmentWritingProgressBanding = establishmentPerformance?.WRITPROG_DESCR_Est_Current_Num_Coded,
             EstablishmentMathsProgressBanding = establishmentPerformance?.MATPROG_DESCR_Est_Current_Num_Coded,
@@ -233,15 +242,13 @@ public class KS2PupilProgressService(
             EstablishmentWritingProgressSignificance = establishmentPerformance?.WRITPROG_SIGNIFICANCE_Est_Current_Num_Coded,
             EstablishmentMathsProgressSignificance = establishmentPerformance?.MATPROG_SIGNIFICANCE_Est_Current_Num_Coded,
 
-            // TODO: Get the current year scores
-            LocalAuthorityReadingScore = laPerformance?.READPROG_LA_Previous2_Num_Coded,
-            LocalAuthorityWritingScore = laPerformance?.WRITPROG_LA_Previous2_Num_Coded,  
-            LocalAuthorityMathsScore = laPerformance?.MATPROG_LA_Previous2_Num_Coded,
+            LocalAuthorityReadingScore = SelectScore(ScoreYear, laPerformance?.READPROG_LA_Current_Num_Coded, laPerformance?.READPROG_LA_Previous_Num_Coded, laPerformance?.READPROG_LA_Previous2_Num_Coded),
+            LocalAuthorityWritingScore = SelectScore(ScoreYear, laPerformance?.WRITPROG_LA_Current_Num_Coded, laPerformance?.WRITPROG_LA_Previous_Num_Coded, laPerformance?.WRITPROG_LA_Previous2_Num_Coded),
+            LocalAuthorityMathsScore = SelectScore(ScoreYear, laPerformance?.MATPROG_LA_Current_Num_Coded, laPerformance?.MATPROG_LA_Previous_Num_Coded, laPerformance?.MATPROG_LA_Previous2_Num_Coded),
 
-            EnglandAverageReadingScore = englandPerformance?.READ_AVERAGE_Eng_Current_Num_Coded,
-            //EnglandAverageWritingScore = englandPerformance?.WRIT_AVERAGE_Eng_Current_Num_Coded,
-            EnglandAverageMathsScore = englandPerformance?.MAT_AVERAGE_Eng_Current_Num_Coded
-            
+            EnglandAverageReadingScore = englandPerformance?.READPROG_Eng_Current_Num_Coded,
+            EnglandAverageWritingScore = englandPerformance?.WRITPROG_Eng_Current_Num_Coded,
+            EnglandAverageMathsScore = englandPerformance?.MATPROG_Eng_Current_Num_Coded
         };
     }
 }

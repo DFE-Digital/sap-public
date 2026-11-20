@@ -8,15 +8,14 @@ using SAPPub.Web.Models.Config;
 
 namespace SAPPub.Web.Areas.Profiles.ViewModels.KS2;
 
-/// <summary>
-/// This model is currently used as a placeholder to display the correct heading for the pupil characteristic pages, but will be expanded to include the data required for each page in future tickets.
-/// </summary>
 public class PupilCharacteristicBaseViewModel : KS2BandingsBaseViewModel
 {
     public PupilCharacteristic SelectedPupilCharacteristic { get; set; }
 
     public string? TechnicalGuideLinkUrl { get; set; }
     public bool TechnicalGuideLinkNewTab { get; set; }
+
+    public string CurrentAcademicYearDisplayName => Ks4AcademicYearHelper.GetDisplayName(AcademicYearSelection.Current);
 
     public string Heading => SelectedPupilCharacteristic.GetDisplayName() ?? string.Empty;
 
@@ -33,6 +32,30 @@ public class PupilCharacteristicBaseViewModel : KS2BandingsBaseViewModel
     public CodedDouble? EnglandReadingScore { get; init; }
     public CodedDouble? EnglandWritingScore { get; init; }
     public CodedDouble? EnglandMathsScore { get; init; }
+
+    public IReadOnlyList<PupilProgressSectionViewModel> Sections =>
+    [
+        CreateSection("Reading", 0, EstablishmentReadingScore, LocalAuthorityReadingScore, EnglandReadingScore),
+        CreateSection("Writing", 1, EstablishmentWritingScore, LocalAuthorityWritingScore, EnglandWritingScore),
+        CreateSection("Maths", 2, EstablishmentMathsScore, LocalAuthorityMathsScore, EnglandMathsScore)
+    ];
+
+    private PupilProgressSectionViewModel CreateSection(
+        string subject,
+        int bandingIndex,
+        CodedDouble? score,
+        CodedDouble? localAuthorityScore,
+        CodedDouble? englandScore) => new()
+        {
+            Subject = subject,
+            SchoolName = SchoolName,
+            LocalAuthorityName = LocalAuthorityName,
+            Banding = Ks2Bandings[bandingIndex],
+            Score = score.ToDisplayField(),
+            LocalAuthorityScore = localAuthorityScore.ToDisplayField(),
+            EnglandScore = englandScore.ToDisplayField(),
+            SmallNumberOfPupilsWarning = Ks2SmallNumberOfPupilsWarning
+        };
 
     public static PupilCharacteristicBaseViewModel Map(
         KS2PupilPerformanceBandings kS2PupilPerformanceBandings, 
