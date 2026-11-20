@@ -1,5 +1,4 @@
 ﻿using Moq;
-using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.Performance;
 using SAPPub.Core.Enums.KS5Qualifications;
 using SAPPub.Core.Interfaces.Repositories.Performance;
@@ -289,6 +288,7 @@ public class Level3QualificationsServiceTests
             Assert.Equal(_englandPerformance.TALLPPE_ALEV_1618_NOTDIS_Eng_Current_Num_Coded, result.NonDisadvantagedStudentsData.England.Result.Points);
             Assert.Equal(_englandPerformance.TALLPPEGRD_ALEV_NOTDIS_Eng_Current, result.NonDisadvantagedStudentsData.England.Result.Grade);
 
+            // Retention measures - A Levels
             Assert.Equal(_establishmentPerformance.T_INSCOPE_ALEV_RET_Est_Current_Num_Coded, result.RetainedAndAssessedData.NumberOfStudents.CurrentYear);
             Assert.Equal(_establishmentPerformance.PT_RET_ASSESSED_ALEV_Est_Current_Pct_Coded, result.RetainedAndAssessedData.EstablishmentAll.CurrentYear);
             Assert.Equal(_establishmentPerformance.PT_RET_ASSESSED_ALEV_Est_Previous_Pct_Coded, result.RetainedAndAssessedData.EstablishmentAll.PreviousYear);
@@ -400,6 +400,20 @@ public class Level3QualificationsServiceTests
             Assert.Equal(_englandPerformance.LCI_INS_ACAD_NOTDIS_Eng_Current_Num_Coded, result.NonDisadvantagedStudentsData.England.ConfidenceLevelLower);
             Assert.Equal(_englandPerformance.TALLPPE_ACAD_1618_NOTDIS_Eng_Current_Num_Coded, result.NonDisadvantagedStudentsData.England.Result.Points);
             Assert.Equal(_englandPerformance.TALLPPEGRD_ACAD_NOTDIS_Eng_Current, result.NonDisadvantagedStudentsData.England.Result.Grade);
+
+            // Retention measures - Academic qualifications
+            Assert.Equal(_establishmentPerformance.T_INSCOPE_ACAD_RET_Est_Current_Num_Coded, result.RetainedAndAssessedData.NumberOfStudents.CurrentYear);
+            Assert.Equal(_establishmentPerformance.PT_RET_ASSESSED_ACAD_Est_Current_Pct_Coded, result.RetainedAndAssessedData.EstablishmentAll.CurrentYear);
+            Assert.Equal(_establishmentPerformance.PT_RET_ASSESSED_ACAD_Est_Previous_Pct_Coded, result.RetainedAndAssessedData.EstablishmentAll.PreviousYear);
+            Assert.Equal(_establishmentPerformance.PT_RET_ASSESSED_ACAD_Est_Previous2_Pct_Coded, result.RetainedAndAssessedData.EstablishmentAll.TwoYearsAgo);
+
+            Assert.Equal(_laPerformance.PT_RET_ASSESSED_ACAD_LA_Current_Pct_Coded, result.RetainedAndAssessedData.LocalAuthorityAll.CurrentYear);
+            Assert.Equal(_laPerformance.PT_RET_ASSESSED_ACAD_LA_Previous_Pct_Coded, result.RetainedAndAssessedData.LocalAuthorityAll.PreviousYear);
+            Assert.Equal(_laPerformance.PT_RET_ASSESSED_ACAD_LA_Previous2_Pct_Coded, result.RetainedAndAssessedData.LocalAuthorityAll.TwoYearsAgo);
+
+            Assert.Equal(_englandPerformance.PT_RET_ASSESSED_ACAD_Eng_Current_Pct_Coded, result.RetainedAndAssessedData.EnglandAll.CurrentYear);
+            Assert.Equal(_englandPerformance.PT_RET_ASSESSED_ACAD_Eng_Previous_Pct_Coded, result.RetainedAndAssessedData.EnglandAll.PreviousYear);
+            Assert.Equal(_englandPerformance.PT_RET_ASSESSED_ACAD_Eng_Previous2_Pct_Coded, result.RetainedAndAssessedData.EnglandAll.TwoYearsAgo);
         }
         else if (qualificationLevel == Level3.AppliedGeneral)
         {
@@ -710,12 +724,17 @@ public class Level3QualificationsServiceTests
             TALLPPEGRD_TLEV_DIS_Est_Current = new CodedString("B", string.Empty, string.Empty),
 
             // Retention measures
-            T_INSCOPE_ALEV_RET_Est_Current_Num_Coded = new CodedDouble(200, string.Empty, string.Empty),
-
             // A Levels
+            T_INSCOPE_ALEV_RET_Est_Current_Num_Coded = new CodedDouble(200, string.Empty, string.Empty),
             PT_RET_ASSESSED_ALEV_Est_Current_Pct_Coded = new CodedDouble(55.19, string.Empty, string.Empty),
             PT_RET_ASSESSED_ALEV_Est_Previous_Pct_Coded = new CodedDouble(65.89, string.Empty, string.Empty),
             PT_RET_ASSESSED_ALEV_Est_Previous2_Pct_Coded = new CodedDouble(70.57, string.Empty, string.Empty),
+
+            // Academic qualifications
+            T_INSCOPE_ACAD_RET_Est_Current_Num_Coded = new CodedDouble(150, string.Empty, string.Empty),
+            PT_RET_ASSESSED_ACAD_Est_Current_Pct_Coded = new CodedDouble(66.59, string.Empty, string.Empty),
+            PT_RET_ASSESSED_ACAD_Est_Previous_Pct_Coded = new CodedDouble(61.13, string.Empty, string.Empty),
+            PT_RET_ASSESSED_ACAD_Est_Previous2_Pct_Coded = new CodedDouble(55.79, string.Empty, string.Empty),
         };
 
         _englandPerformance = new KS5EnglandPerformance
@@ -845,6 +864,11 @@ public class Level3QualificationsServiceTests
             PT_RET_ASSESSED_ALEV_Eng_Current_Pct_Coded = new CodedDouble(67.56, string.Empty, string.Empty),
             PT_RET_ASSESSED_ALEV_Eng_Previous_Pct_Coded = new CodedDouble(53.47, string.Empty, string.Empty),
             PT_RET_ASSESSED_ALEV_Eng_Previous2_Pct_Coded = new CodedDouble(85.12, string.Empty, string.Empty),
+
+            // Retention measures - Academic qualifications
+            PT_RET_ASSESSED_ACAD_Eng_Current_Pct_Coded = new CodedDouble(51.55, string.Empty, string.Empty),
+            PT_RET_ASSESSED_ACAD_Eng_Previous_Pct_Coded = new CodedDouble(57.13, string.Empty, string.Empty),
+            PT_RET_ASSESSED_ACAD_Eng_Previous2_Pct_Coded = new CodedDouble(67.36, string.Empty, string.Empty),
         };
 
         _laPerformance = new KS5LAPerformance
@@ -951,6 +975,11 @@ public class Level3QualificationsServiceTests
             PT_RET_ASSESSED_ALEV_LA_Current_Pct_Coded = new CodedDouble(72.33, string.Empty, string.Empty),
             PT_RET_ASSESSED_ALEV_LA_Previous_Pct_Coded = new CodedDouble(69.78, string.Empty, string.Empty),
             PT_RET_ASSESSED_ALEV_LA_Previous2_Pct_Coded = new CodedDouble(55.29, string.Empty, string.Empty),
+
+            // Retention measures - Academic qualifications
+            PT_RET_ASSESSED_ACAD_LA_Current_Pct_Coded = new CodedDouble(81.77, string.Empty, string.Empty),
+            PT_RET_ASSESSED_ACAD_LA_Previous_Pct_Coded = new CodedDouble(77.15, string.Empty, string.Empty),
+            PT_RET_ASSESSED_ACAD_LA_Previous2_Pct_Coded = new CodedDouble(61.45, string.Empty, string.Empty),
         };
 
         _mockKs5PerformanceRepository

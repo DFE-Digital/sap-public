@@ -345,7 +345,7 @@ public class KS5EstablishmentPerformance
 
     // A Levels Retained and assessed measures
 
-    // Number of students enrolled
+    // Number of students enrolled - A Levels
     public CodedDouble T_INSCOPE_ALEV_RET_Est_Current_Num_Coded { get; set; }
 
     // Percentage of students retained and assessed - A Levels - Current
@@ -356,4 +356,18 @@ public class KS5EstablishmentPerformance
 
     // Percentage of students retained and assessed - A Levels - Previous2
     public CodedDouble PT_RET_ASSESSED_ALEV_Est_Previous2_Pct_Coded { get; set; }
+
+    // Academic qualifications Retained and assessed measures
+
+    // Number of students enrolled - Academic qualifications
+    public CodedDouble T_INSCOPE_ACAD_RET_Est_Current_Num_Coded { get; set; }
+
+    // Percentage of students retained and assessed - Academic qualifications - Current
+    public CodedDouble PT_RET_ASSESSED_ACAD_Est_Current_Pct_Coded { get; set; }
+
+    // Percentage of students retained and assessed - Academic qualifications - Previous
+    public CodedDouble PT_RET_ASSESSED_ACAD_Est_Previous_Pct_Coded { get; set; }
+
+    // Percentage of students retained and assessed - Academic qualifications - Previous2
+    public CodedDouble PT_RET_ASSESSED_ACAD_Est_Previous2_Pct_Coded { get; set; }
 }
