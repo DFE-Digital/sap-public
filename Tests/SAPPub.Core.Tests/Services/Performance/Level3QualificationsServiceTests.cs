@@ -513,6 +513,20 @@ public class Level3QualificationsServiceTests
             Assert.Equal(_englandPerformance.LCI_INS_AGEN_NOTDIS_Eng_Current_Num_Coded, result.NonDisadvantagedStudentsData.England.ConfidenceLevelLower);
             Assert.Equal(_englandPerformance.TALLPPE_AGEN_NOTDIS_Eng_Current_Num_Coded, result.NonDisadvantagedStudentsData.England.Result.Points);
             Assert.Equal(_englandPerformance.TALLPPEGRD_AGEN_NOTDIS_Eng_Current, result.NonDisadvantagedStudentsData.England.Result.Grade);
+
+            // Retention measures
+            Assert.Equal(_establishmentPerformance.T_INSCOPE_AGEN_RET_Est_Current_Num_Coded, result.RetainedAndAssessedData.NumberOfStudents.CurrentYear);
+            Assert.Equal(_establishmentPerformance.PT_RET_ASSESSED_AGEN_Est_Current_Pct_Coded, result.RetainedAndAssessedData.EstablishmentAll.CurrentYear);
+            Assert.Equal(_establishmentPerformance.PT_RET_ASSESSED_AGEN_Est_Previous_Pct_Coded, result.RetainedAndAssessedData.EstablishmentAll.PreviousYear);
+            Assert.Equal(_establishmentPerformance.PT_RET_ASSESSED_AGEN_Est_Previous2_Pct_Coded, result.RetainedAndAssessedData.EstablishmentAll.TwoYearsAgo);
+
+            Assert.Equal(_laPerformance.PT_RET_ASSESSED_AGEN_LA_Current_Pct_Coded, result.RetainedAndAssessedData.LocalAuthorityAll.CurrentYear);
+            Assert.Equal(_laPerformance.PT_RET_ASSESSED_AGEN_LA_Previous_Pct_Coded, result.RetainedAndAssessedData.LocalAuthorityAll.PreviousYear);
+            Assert.Equal(_laPerformance.PT_RET_ASSESSED_AGEN_LA_Previous2_Pct_Coded, result.RetainedAndAssessedData.LocalAuthorityAll.TwoYearsAgo);
+
+            Assert.Equal(_englandPerformance.PT_RET_ASSESSED_AGEN_Eng_Current_Pct_Coded, result.RetainedAndAssessedData.EnglandAll.CurrentYear);
+            Assert.Equal(_englandPerformance.PT_RET_ASSESSED_AGEN_Eng_Previous_Pct_Coded, result.RetainedAndAssessedData.EnglandAll.PreviousYear);
+            Assert.Equal(_englandPerformance.PT_RET_ASSESSED_AGEN_Eng_Previous2_Pct_Coded, result.RetainedAndAssessedData.EnglandAll.TwoYearsAgo);
         }
         else if (qualificationLevel == Level3.TechLevel)
         {
@@ -735,6 +749,12 @@ public class Level3QualificationsServiceTests
             PT_RET_ASSESSED_ACAD_Est_Current_Pct_Coded = new CodedDouble(66.59, string.Empty, string.Empty),
             PT_RET_ASSESSED_ACAD_Est_Previous_Pct_Coded = new CodedDouble(61.13, string.Empty, string.Empty),
             PT_RET_ASSESSED_ACAD_Est_Previous2_Pct_Coded = new CodedDouble(55.79, string.Empty, string.Empty),
+
+            // Applied general qualifications
+            T_INSCOPE_AGEN_RET_Est_Current_Num_Coded = new CodedDouble(175, string.Empty, string.Empty),
+            PT_RET_ASSESSED_AGEN_Est_Current_Pct_Coded = new CodedDouble(61.33, string.Empty, string.Empty),
+            PT_RET_ASSESSED_AGEN_Est_Previous_Pct_Coded = new CodedDouble(63.19, string.Empty, string.Empty),
+            PT_RET_ASSESSED_AGEN_Est_Previous2_Pct_Coded = new CodedDouble(59.55, string.Empty, string.Empty),
         };
 
         _englandPerformance = new KS5EnglandPerformance
@@ -869,6 +889,11 @@ public class Level3QualificationsServiceTests
             PT_RET_ASSESSED_ACAD_Eng_Current_Pct_Coded = new CodedDouble(51.55, string.Empty, string.Empty),
             PT_RET_ASSESSED_ACAD_Eng_Previous_Pct_Coded = new CodedDouble(57.13, string.Empty, string.Empty),
             PT_RET_ASSESSED_ACAD_Eng_Previous2_Pct_Coded = new CodedDouble(67.36, string.Empty, string.Empty),
+
+            // Retention measures - Applied general qualifications
+            PT_RET_ASSESSED_AGEN_Eng_Current_Pct_Coded = new CodedDouble(53.11, string.Empty, string.Empty),
+            PT_RET_ASSESSED_AGEN_Eng_Previous_Pct_Coded = new CodedDouble(55.56, string.Empty, string.Empty),
+            PT_RET_ASSESSED_AGEN_Eng_Previous2_Pct_Coded = new CodedDouble(63.78, string.Empty, string.Empty),
         };
 
         _laPerformance = new KS5LAPerformance
@@ -980,6 +1005,11 @@ public class Level3QualificationsServiceTests
             PT_RET_ASSESSED_ACAD_LA_Current_Pct_Coded = new CodedDouble(81.77, string.Empty, string.Empty),
             PT_RET_ASSESSED_ACAD_LA_Previous_Pct_Coded = new CodedDouble(77.15, string.Empty, string.Empty),
             PT_RET_ASSESSED_ACAD_LA_Previous2_Pct_Coded = new CodedDouble(61.45, string.Empty, string.Empty),
+
+            // Retention measures - Applied general qualifications
+            PT_RET_ASSESSED_AGEN_LA_Current_Pct_Coded = new CodedDouble(85.89, string.Empty, string.Empty),
+            PT_RET_ASSESSED_AGEN_LA_Previous_Pct_Coded = new CodedDouble(75.37, string.Empty, string.Empty),
+            PT_RET_ASSESSED_AGEN_LA_Previous2_Pct_Coded = new CodedDouble(63.27, string.Empty, string.Empty),
         };
 
         _mockKs5PerformanceRepository

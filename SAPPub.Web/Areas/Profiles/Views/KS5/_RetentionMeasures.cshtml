@@ -20,7 +20,9 @@
 }
 
 @if (await FeatureManager.IsEnabledAsync(EnableRetentionMeasure) &&
-    (qualification is Level3 level3Qualification && (level3Qualification == Level3.ALevel || level3Qualification == Level3.Academic)))
+    (qualification is Level3 level3Qualification && 
+    (level3Qualification == Level3.ALevel || level3Qualification == Level3.Academic ||
+     level3Qualification == Level3.AppliedGeneral)))
 {
     <h3 class="govuk-heading-m">Student who completed their main course and were assessed</h3>
 
