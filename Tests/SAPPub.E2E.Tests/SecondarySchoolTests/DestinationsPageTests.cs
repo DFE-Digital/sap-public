@@ -4,7 +4,6 @@ using SAPPub.E2E.Tests.Infrastructure;
 using SAPPub.E2E.Tests.TestData.Models.KS4;
 using SAPPub.Playwright.Testing;
 using System.Text.RegularExpressions;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SAPPub.E2E.Tests.SecondarySchoolTests;
 

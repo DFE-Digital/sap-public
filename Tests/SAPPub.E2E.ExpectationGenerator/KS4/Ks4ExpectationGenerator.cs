@@ -1,7 +1,6 @@
+using SAPPub.E2E.Tests.TestData.Models.KS4;
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using SAPPub.E2E.TestDataExpectationGenerator;
-using SAPPub.E2E.Tests.TestData.Models.KS4;
 
 namespace SAPPub.E2E.TestDataExpectationGenerator.KS4;
 
@@ -272,7 +271,7 @@ internal sealed class Ks4ExpectationGenerator(
     {
         var path = Ks4CsvMappings.PerformanceTables.GetPath(csvDirectory);
 
-        return CsvReader.ReadRows(path)
+        return CsvModelReader.ReadRows(path)
             .Where(row => row["time_period"] == timePeriod
                           && row["breakdown_topic"] == "Total"
                           && row["breakdown"] == "Total"
