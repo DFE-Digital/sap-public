@@ -58,6 +58,9 @@ public class DestinationsPageTests : BasePageTest
     [MemberData(nameof(GetDestinationsTestData))]
     public async Task AllDestinations_ShowsExpectedCurrentYearAndDataOverTime(DestinationsTestData testData)
     {
+        // temporarily add a warning to the test log about a known bug, until it is fixed
+        string[] failingUrns = ["137205", "137252"];
+
         // Arrange and act
         await GotoDestinationsPage(testData.SchoolUrn);
 
@@ -68,6 +71,10 @@ public class DestinationsPageTests : BasePageTest
             await Page.ClickAsync("#all-dest-show-data-over-time-btn");
             await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         }
+
+        var schoolValues = await Page.GetTableRowValuesAsync("#all-dest-data-overtime-table", 0);
+        var laValues = await Page.GetTableRowValuesAsync("#all-dest-data-overtime-table", 1);
+        var englandValues = await Page.GetTableRowValuesAsync("#all-dest-data-overtime-table", 2);
 
         await AssertOverTimeRow(0, testData.School);
         await AssertOverTimeRow(1, testData.LocalAuthority);
