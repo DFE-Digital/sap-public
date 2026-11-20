@@ -422,7 +422,13 @@ public class KS2ControllerTests : BaseProfilesTests
             EnglandPercentageMeetingOrExceedingThreeYearAverage = GetCodedDouble(41),
             EstablishmentPercentageExceedingThreeYearAverage = GetCodedDouble(42),
             LocalAuthorityPercentageExceedingThreeYearAverage = GetCodedDouble(43),
-            EnglandPercentageExceedingThreeYearAverage = GetCodedDouble(44)
+            EnglandPercentageExceedingThreeYearAverage = GetCodedDouble(44),
+            PriorAttainmentReadingWritingMathsLowExpectedStandardPupilPct = GetCodedDouble(45),
+            PriorAttainmentReadingWritingMathsLowHigherStandardPupilPct = GetCodedDouble(46),
+            PriorAttainmentReadingWritingMathsMedExpectedStandardPupilPct = GetCodedDouble(47),
+            PriorAttainmentReadingWritingMathsMedHigherStandardPupilPct = GetCodedDouble(48),
+            PriorAttainmentReadingWritingMathsHighExpectedStandardPupilPct = GetCodedDouble(49),
+            PriorAttainmentReadingWritingMathsHighHigherStandardPupilPct = GetCodedDouble(50)
         };
 
     }

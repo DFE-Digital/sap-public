@@ -374,6 +374,12 @@ public class MeetingOrExceedingStandardsPageTests : PageTestsBase
         EstablishmentPercentageExceedingThreeYearAverage = GetCodedDouble(30),
         LocalAuthorityPercentageExceedingThreeYearAverage = GetCodedDouble(31),
         EnglandPercentageExceedingThreeYearAverage = GetCodedDouble(32),
+        PriorAttainmentReadingWritingMathsLowExpectedStandardPupilPct = GetCodedDouble(33),
+        PriorAttainmentReadingWritingMathsLowHigherStandardPupilPct = GetCodedDouble(34),
+        PriorAttainmentReadingWritingMathsMedExpectedStandardPupilPct = GetCodedDouble(35),
+        PriorAttainmentReadingWritingMathsMedHigherStandardPupilPct = GetCodedDouble(36),
+        PriorAttainmentReadingWritingMathsHighExpectedStandardPupilPct = GetCodedDouble(37),
+        PriorAttainmentReadingWritingMathsHighHigherStandardPupilPct = GetCodedDouble(38)
     };
 
     private static CodedDouble GetCodedDouble(double val)
