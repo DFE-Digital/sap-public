@@ -25,6 +25,16 @@ public class PupilCharacteristicsPageTests : PageTestsBase
         ["/primary-performance/pupil-progress/non-mobile-pupils", "Non-mobile pupils"],
     ];
 
+    public static IEnumerable<object[]> SelectedDropdownOptions =>
+ [
+     ["/primary-performance/pupil-progress/all-pupils", "All pupils"],
+        ["/primary-performance/pupil-progress/disadvantaged-pupils", "Disadvantaged pupils"],
+        ["/primary-performance/pupil-progress/english-as-additional-language", "Pupils with English as an additional language"],
+        ["/primary-performance/pupil-progress/girls-and-boys", "Girls and boys"],
+        ["/primary-performance/pupil-progress/different-starting-points", "Pupils with different starting points"],
+        ["/primary-performance/pupil-progress/non-mobile-pupils", "Non-mobile pupils"],
+    ];
+
     public PupilCharacteristicsPageTests(WebAppFixture fixture) : base(fixture)
     {
         _mockEstablishmentService = UseMock<IEstablishmentService>();
@@ -69,8 +79,8 @@ public class PupilCharacteristicsPageTests : PageTestsBase
     }
 
     [Theory]
-    [MemberData(nameof(PageHeadings))]
-    public async Task PupilCharacteristicPage_Displays_PupilCharacteristicDropdown_WithSelectedOption(string pageRoute, string expectedHeading)
+    [MemberData(nameof(SelectedDropdownOptions))]
+    public async Task PupilCharacteristicPage_Displays_PupilCharacteristicDropdown_WithSelectedOption(string pageRoute, string expectedSelectedOption)
     {
         // Arrange
         var url = BuildUrl(_urn, _schoolName, pageRoute);
@@ -86,7 +96,7 @@ public class PupilCharacteristicsPageTests : PageTestsBase
 
         var selectedOption = selector.QuerySelector("option[selected]");
         Assert.NotNull(selectedOption);
-        Assert.Equal(expectedHeading, selectedOption.TextContent.Trim());
+        Assert.Equal(expectedSelectedOption, selectedOption.TextContent.Trim());
     }
 
     [Theory]
