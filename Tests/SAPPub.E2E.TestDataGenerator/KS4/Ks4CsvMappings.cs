@@ -1,6 +1,6 @@
 using SAPPub.E2E.Tests.TestData.Models.KS4;
 
-namespace SAPPub.E2E.TestDataExpectationGenerator.KS4;
+namespace SAPPub.E2E.TestDataGenerator.KS4;
 
 /// <summary>
 /// Maps one CSV file to the E2E test data model that its rows populate.

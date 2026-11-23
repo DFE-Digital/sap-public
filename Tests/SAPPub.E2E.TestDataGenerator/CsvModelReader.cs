@@ -1,7 +1,7 @@
 using CsvHelper;
 using System.Reflection;
 
-namespace SAPPub.E2E.TestDataExpectationGenerator;
+namespace SAPPub.E2E.TestDataGenerator;
 
 /// <summary>
 /// Populates model objects from CSV rows, matching each string property to a CSV header

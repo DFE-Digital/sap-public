@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Http;
-using static SAPPub.E2E.TestDataExpectationGenerator.KS4.FilterSpecification;
+using static SAPPub.E2E.TestDataGenerator.KS4.FilterSpecification;
 
-namespace SAPPub.E2E.TestDataExpectationGenerator.KS4;
+namespace SAPPub.E2E.TestDataGenerator.KS4;
 
 /// <summary>
 /// The filters behind each existing KS4 expectation JSON file in TestData/2526/KS4.
@@ -38,7 +38,6 @@ internal static class Ks4FilterSpecifications
     private static readonly (string, string) DestinationsCurrent = ("time_period", "202324");
     private static readonly (string, string) DestinationsPrevious = ("time_period", "202223");
     private static readonly (string, string) DestinationsPrevious2 = ("time_period", "202122");
-    private static readonly (string, string[]) DestinationsPast = ("time_period", ["202223", "202122"]);
     private static readonly (string, string) DestTotalTopic = ("breakdown_topic", "Total");
     private static readonly (string, string) DestTotalBreakdown = ("breakdown", "Total");
     private static readonly (string, string) DestTotalSex = ("sex", "Total");

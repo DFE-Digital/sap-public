@@ -1,11 +1,11 @@
-﻿using SAPPub.E2E.TestDataExpectationGenerator.KS4;
+﻿using SAPPub.E2E.TestDataGenerator.KS4;
 
 var repositoryRoot = ResolveRepositoryRoot(args);
 var csvDirectory = Path.Combine(repositoryRoot, "SAPData", "DataMap", "SourceFiles");
 var outputDirectory = GetArgument(args, "--output=")
     ?? Path.Combine(repositoryRoot, "Tests", "SAPPub.E2E.Tests", "TestData", "2526", "KS4");
 
-var generator = new Ks4ExpectationGenerator(csvDirectory, outputDirectory);
+var generator = new Ks4TestDataGenerator(csvDirectory, outputDirectory);
 var written = generator.Generate();
 
 Console.WriteLine($"Wrote {written.Count} files to {outputDirectory}");

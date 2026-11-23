@@ -1,4 +1,4 @@
-namespace SAPPub.E2E.TestDataExpectationGenerator.KS4;
+namespace SAPPub.E2E.TestDataGenerator.KS4;
 
 /// <summary>
 /// Describes one expectation JSON file to generate: its output file name and the CSV column values (filter criteria)

@@ -59,6 +59,7 @@ public class DestinationsPageTests(ITestOutputHelper output) : BasePageTest
     public async Task AllDestinations_ShowsExpectedCurrentYearAndDataOverTime(DestinationsTestData testData)
     {
         // temporarily add a warning to the test log about a known bug, until it is fixed
+        // https://dfedigital.atlassian.net/browse/SIP2PUBLIC-382
         string[] failingUrns = ["137205", "137252"];
 
         // Arrange and act

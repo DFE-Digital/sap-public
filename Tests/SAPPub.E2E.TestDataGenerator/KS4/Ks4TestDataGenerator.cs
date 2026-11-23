@@ -2,7 +2,7 @@ using SAPPub.E2E.Tests.TestData.Models.KS4;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 
-namespace SAPPub.E2E.TestDataExpectationGenerator.KS4;
+namespace SAPPub.E2E.TestDataGenerator.KS4;
 
 /// <summary>
 /// Reads the KS4 CSV files into the E2E test data models and writes one JSON expectation file
@@ -10,7 +10,7 @@ namespace SAPPub.E2E.TestDataExpectationGenerator.KS4;
 /// </summary>
 /// <param name="csvDirectory">Directory containing the cleaned CSV files.</param>
 /// <param name="outputDirectory">Directory the JSON files are written to.</param>
-internal sealed class Ks4ExpectationGenerator(
+internal sealed class Ks4TestDataGenerator(
     string csvDirectory,
     string outputDirectory)
 {
