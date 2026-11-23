@@ -1,20 +1,20 @@
 [
     {
     "school_urn": "100019",
-    "reading_score": "4.4", "reading_banding": "Not applicable", "la_reading_score": "1.9", "england_reading_score": "0.035",
-    "writing_score": "3.5", "writing_banding": "Not applicable", "la_writing_score": "2.0", "england_writing_score": "0.036",
-    "maths_score": "1.9", "maths_banding": "Not applicable", "la_maths_score": "1.5", "england_maths_score": "0.037"
+    "reading_score": "-4.3", "reading_banding": "Above average", "la_reading_score": "1.9", "england_reading_score": "0.1",
+    "writing_score": "4.4", "writing_banding": "Below average", "la_writing_score": "2.0", "england_writing_score": "0.2",
+    "maths_score": "-1.1", "maths_banding": "Below average", "la_maths_score": "1.5", "england_maths_score": "0.3"
   },
   {
     "school_urn": "100241",
-    "reading_score": "-0.3", "reading_banding": "Not applicable", "la_reading_score": "0.6", "england_reading_score": "0.035",
-    "writing_score": "1.2", "writing_banding": "Not applicable", "la_writing_score": "1.6", "england_writing_score": "0.036",
-    "maths_score": "-0.1", "maths_banding": "Not applicable", "la_maths_score": "0.8", "england_maths_score": "0.037"
+    "reading_score": "2.9", "reading_banding": "Well above average", "la_reading_score": "-0.8", "england_reading_score": "0.1",
+    "writing_score": "-1.4", "writing_banding": "Above average", "la_writing_score": "-4.2", "england_writing_score": "0.2",
+    "maths_score": "2.3", "maths_banding": "Above average", "la_maths_score": "1.6", "england_maths_score": "0.3"
   },
   {
     "school_urn": "100353",
-    "reading_score": "6.8", "reading_banding": "Not applicable", "la_reading_score": "2.0", "england_reading_score": "0.035",
-    "writing_score": "3.4", "writing_banding": "Not applicable", "la_writing_score": "2.1", "england_writing_score": "0.036",
-    "maths_score": "4.2", "maths_banding": "Not applicable", "la_maths_score": "2.3", "england_maths_score": "0.037"
+    "reading_score": "-0.6", "reading_banding": "Below average", "la_reading_score": "2.4", "england_reading_score": "0.1",
+    "writing_score": "3.0", "writing_banding": "Well below average", "la_writing_score": "3.5", "england_writing_score": "0.2",
+    "maths_score": "0.3", "maths_banding": "Average", "la_maths_score": "2.1", "england_maths_score": "0.3"
   }
 ]
