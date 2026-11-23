@@ -1,11 +1,23 @@
-﻿using SAPPub.E2E.TestDataGenerator.KS4;
+﻿using SAPPub.E2E.TestDataGenerator;
+
+var keyStageArgument = GetArgument(args, "--key-stage=");
+var keyStage = KeyStages.Find(keyStageArgument);
+if (keyStage is null)
+{
+    Console.Error.WriteLine(string.IsNullOrWhiteSpace(keyStageArgument)
+        ? "--key-stage is required."
+        : $"Unsupported key stage '{keyStageArgument}'.");
+    Console.Error.WriteLine($"Supported values: {KeyStages.SupportedValues}");
+    Console.Error.WriteLine("Usage: dotnet run --project Tests/SAPPub.E2E.TestDataGenerator -- --key-stage=<value> [--output=<path>] [--repo-root=<path>]");
+    return 1;
+}
 
 var repositoryRoot = ResolveRepositoryRoot(args);
 var csvDirectory = Path.Combine(repositoryRoot, "SAPData", "DataMap", "SourceFiles");
 var outputDirectory = GetArgument(args, "--output=")
-    ?? Path.Combine(repositoryRoot, "Tests", "SAPPub.E2E.Tests", "TestData", "2526", "KS4");
+    ?? Path.Combine(repositoryRoot, "Tests", "SAPPub.E2E.Tests", keyStage.DefaultOutputSubPath);
 
-var generator = new Ks4TestDataGenerator(csvDirectory, outputDirectory);
+var generator = keyStage.Create(csvDirectory, outputDirectory);
 var written = generator.Generate();
 
 Console.WriteLine($"Wrote {written.Count} files to {outputDirectory}");

@@ -12,7 +12,7 @@ namespace SAPPub.E2E.TestDataGenerator.KS4;
 /// <param name="outputDirectory">Directory the JSON files are written to.</param>
 internal sealed class Ks4TestDataGenerator(
     string csvDirectory,
-    string outputDirectory)
+    string outputDirectory) : ITestDataGenerator
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
