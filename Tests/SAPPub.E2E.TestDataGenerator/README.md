@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Use this project to regenerate test data files for the E2E tests after any source csv files have been updated.
+Use this console app to regenerate test data files for the E2E tests after any source csv files have been updated.
 
 It reads the source csv files from the SAPData/SourceFiles folder and generates
 the JSON test data files.
