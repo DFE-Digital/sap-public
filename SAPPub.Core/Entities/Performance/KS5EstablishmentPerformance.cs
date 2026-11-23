@@ -342,4 +342,46 @@ public class KS5EstablishmentPerformance
 
     // Points for establishment - Disadvantaged - Tech Certificates
     public CodedDouble TALLPPE_TECHCERT_DIS_Est_Current_Num_Coded { get; set; }
+
+    // A Levels Retained and assessed measures
+
+    // Number of students enrolled - A Levels
+    public CodedDouble T_INSCOPE_ALEV_RET_Est_Current_Num_Coded { get; set; }
+
+    // Percentage of students retained and assessed - A Levels - Current
+    public CodedDouble PT_RET_ASSESSED_ALEV_Est_Current_Pct_Coded { get; set; }
+
+    // Percentage of students retained and assessed - A Levels - Previous
+    public CodedDouble PT_RET_ASSESSED_ALEV_Est_Previous_Pct_Coded { get; set; }
+
+    // Percentage of students retained and assessed - A Levels - Previous2
+    public CodedDouble PT_RET_ASSESSED_ALEV_Est_Previous2_Pct_Coded { get; set; }
+
+    // Academic qualifications Retained and assessed measures
+
+    // Number of students enrolled - Academic qualifications
+    public CodedDouble T_INSCOPE_ACAD_RET_Est_Current_Num_Coded { get; set; }
+
+    // Percentage of students retained and assessed - Academic qualifications - Current
+    public CodedDouble PT_RET_ASSESSED_ACAD_Est_Current_Pct_Coded { get; set; }
+
+    // Percentage of students retained and assessed - Academic qualifications - Previous
+    public CodedDouble PT_RET_ASSESSED_ACAD_Est_Previous_Pct_Coded { get; set; }
+
+    // Percentage of students retained and assessed - Academic qualifications - Previous2
+    public CodedDouble PT_RET_ASSESSED_ACAD_Est_Previous2_Pct_Coded { get; set; }
+
+    // Applied general qualifications Retained and assessed measures
+
+    // Number of students enrolled - Applied general qualifications
+    public CodedDouble T_INSCOPE_AGEN_RET_Est_Current_Num_Coded { get; set; }
+
+    // Percentage of students retained and assessed - Applied general qualifications - Current
+    public CodedDouble PT_RET_ASSESSED_AGEN_Est_Current_Pct_Coded { get; set; }
+
+    // Percentage of students retained and assessed - Applied general qualifications - Previous
+    public CodedDouble PT_RET_ASSESSED_AGEN_Est_Previous_Pct_Coded { get; set; }
+
+    // Percentage of students retained and assessed - Applied general qualifications - Previous2
+    public CodedDouble PT_RET_ASSESSED_AGEN_Est_Previous2_Pct_Coded { get; set; }
 }

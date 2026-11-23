@@ -336,4 +336,37 @@ public class KS5LAPerformance
 
     // Points for LA - Non-Disadvantaged - Tech Certificates
     public CodedDouble TALLPPE_TECHCERT_NOTDIS_LA_Current_Num_Coded { get; set; }
+
+    // A Levels Retained and assessed measures
+
+    // Percentage of students retained and assessed - A Levels - Current
+    public CodedDouble PT_RET_ASSESSED_ALEV_LA_Current_Pct_Coded { get; set; }
+
+    // Percentage of students retained and assessed - A Levels - Previous
+    public CodedDouble PT_RET_ASSESSED_ALEV_LA_Previous_Pct_Coded { get; set; }
+
+    // Percentage of students retained and assessed - A Levels - Previous2
+    public CodedDouble PT_RET_ASSESSED_ALEV_LA_Previous2_Pct_Coded { get; set; }
+
+    // Academic qualifications Retained and assessed measures
+
+    // Percentage of students retained and assessed - Academic qualifications - Current
+    public CodedDouble PT_RET_ASSESSED_ACAD_LA_Current_Pct_Coded { get; set; }
+
+    // Percentage of students retained and assessed - Academic qualifications - Previous
+    public CodedDouble PT_RET_ASSESSED_ACAD_LA_Previous_Pct_Coded { get; set; }
+
+    // Percentage of students retained and assessed - Academic qualifications - Previous2
+    public CodedDouble PT_RET_ASSESSED_ACAD_LA_Previous2_Pct_Coded { get; set; }
+
+    // Applied general qualifications Retained and assessed measures
+
+    // Percentage of students retained and assessed - Applied general qualifications - Current
+    public CodedDouble PT_RET_ASSESSED_AGEN_LA_Current_Pct_Coded { get; set; }
+
+    // Percentage of students retained and assessed - Applied general qualifications - Previous
+    public CodedDouble PT_RET_ASSESSED_AGEN_LA_Previous_Pct_Coded { get; set; }
+
+    // Percentage of students retained and assessed - Applied general qualifications - Previous2
+    public CodedDouble PT_RET_ASSESSED_AGEN_LA_Previous2_Pct_Coded { get; set; }
 }
