@@ -17,32 +17,6 @@ public class KS2EstablishmentPerformanceDTO
     public string Id { get; set; } = string.Empty;
 
     [EESInput(
-        Identifiers.ProgressMeasures,
-        Previous2TimePeriod,
-        Filters.Subjects.Maths,
-        Filters.CharacteristicsOfEachGroup.Total
-    )]
-
-    public string? MATPROG_DESCR_Est_Previous2_Num_Coded { get; set; }
-
-
-    [EESInput(
-        Identifiers.ProgressMeasures,
-        Previous2TimePeriod,
-        Filters.Subjects.Reading,
-        Filters.CharacteristicsOfEachGroup.Total
-    )]
-    public string? READPROG_DESCR_Est_Previous2_Num_Coded { get; set; }
-
-    [EESInput(
-        Identifiers.ProgressMeasures,
-        Previous2TimePeriod,
-        Filters.Subjects.Writing,
-        Filters.CharacteristicsOfEachGroup.Total
-    )]
-    public string? WRITPROG_DESCR_Est_Previous2_Num_Coded { get; set; }
-
-    [EESInput(
         Identifiers.AverageScaledScore,
         CurrentTimePeriod,
         Filters.Subjects.Maths,

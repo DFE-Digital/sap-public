@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.Performance;
 using SAPPub.Infrastructure.EES.Entities.DTOs.KS2;
 using System;
@@ -107,7 +108,7 @@ namespace SAPPub.Infrastructure.EES.Config
                     EESMapId = EESMappingType.KS4PerformanceEstablishment,
                     PublicationId = new Guid("19e39901-a96c-be76-b9c2-6af54ae076d2"),
                     Name = "Key stage 4 institution level - Performance",
-                    CurrentMajorVersion = "1.0.3",
+                    CurrentMajorVersion = "2.*",
                     AutoClassName = "KS4PerformanceEstablishment",
                     AutoClassRoot = "KS4Performance",
                     URL = "https://explore-education-statistics.service.gov.uk/data-catalogue/data-set/19e39901-a96c-be76-b9c2-6af54ae076d2",
@@ -131,6 +132,7 @@ namespace SAPPub.Infrastructure.EES.Config
                 nameof(KS2EstablishmentInformationDTO) => EESMappingType.KS2InformationEstablishment,
                 nameof(KS2LAInformationDTO) => EESMappingType.KS2InformationLocalAuthority,
                 nameof(KS2EnglandInformationDTO) => EESMappingType.KS2InformationEngland,
+                nameof(EstablishmentPerformance) => EESMappingType.KS4PerformanceEstablishment,
                 _ => throw new NotSupportedException($"No EESMappingType mapping configured for model type '{modelType.FullName}'."),
             };
         }

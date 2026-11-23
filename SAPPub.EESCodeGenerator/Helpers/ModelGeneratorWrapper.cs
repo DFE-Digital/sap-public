@@ -25,6 +25,7 @@ namespace SAPPub.EESCodeGenerator.Helpers
             await GenerateModelFromMetadata(EESMappingType.KS2InformationLocalAuthority);
             await GenerateModelFromMetadata(EESMappingType.KS2PerformanceEngland);
             await GenerateModelFromMetadata(EESMappingType.KS2InformationEngland);
+            await GenerateModelFromMetadata(EESMappingType.KS4PerformanceEstablishment);
         }
 
 

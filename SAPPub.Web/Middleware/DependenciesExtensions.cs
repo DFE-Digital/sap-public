@@ -30,6 +30,7 @@ using SAPPub.Core.Services.Overview;
 using SAPPub.Core.Services.Performance;
 using SAPPub.Core.Services.Search;
 using SAPPub.Infrastructure.EES.Helpers;
+using SAPPub.Infrastructure.EES.NonEES.Helpers;
 using SAPPub.Infrastructure.EES.Repositories;
 using SAPPub.Infrastructure.EES.Service;
 using SAPPub.Infrastructure.Mapping.ValueCodes;
@@ -72,6 +73,7 @@ namespace SAPPub.Web.Middleware
 
             services.AddHttpClient<IEESClient, EESClient>();
             services.AddTransient<IEESAPIService, EESAPIService>();
+            services.AddTransient<IFileHelper, FileHelper>();
 
             services.AddTransient<IOverviewService, OverviewService>();
 

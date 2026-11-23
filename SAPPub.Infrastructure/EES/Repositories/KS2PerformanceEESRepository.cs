@@ -8,6 +8,8 @@ using SAPPub.Core.ValueObjects;
 using SAPPub.Infrastructure.EES.Entities.DTOs;
 using SAPPub.Infrastructure.EES.Entities.DTOs.KS2;
 using SAPPub.Infrastructure.EES.Mapping.KS2;
+using SAPPub.Infrastructure.EES.NonEES.DTOs;
+using SAPPub.Infrastructure.EES.NonEES.Helpers;
 using SAPPub.Infrastructure.EES.Service;
 using SAPPub.Infrastructure.Mapping.ValueCodes;
 using System;
@@ -21,12 +23,15 @@ namespace SAPPub.Infrastructure.EES.Repositories
         IEESAPIService service,
         ILogger<KS2PerformanceEESRepository> logger,
         ICodedValueMapper codedValueMapper,
-        CodedLightweightParser lightweightParser) : IKS2PerformanceRepository
+        CodedLightweightParser lightweightParser,
+        IFileHelper fileHelper) : IKS2PerformanceRepository
     {
         private readonly IEESAPIService _service = service;
         private readonly ILogger<KS2PerformanceEESRepository> _logger = logger;
         private readonly ICodedValueMapper _codedValueMapper = codedValueMapper;
         private readonly CodedLightweightParser _lightweightParser = lightweightParser;
+
+        private readonly IFileHelper _fileHelper = fileHelper;
 
 
         public async Task<KS2EnglandPerformance> GetEnglandPerformanceAsync(CancellationToken ct = default)
@@ -41,7 +46,6 @@ namespace SAPPub.Infrastructure.EES.Repositories
             }
 
             var mapped = KS2PerformanceMapper.Map(_lightweightParser, engInformation, engPerformance);
-            File.WriteAllText($"C:\\Working\\sap-public\\SAPPub.Infrastructure\\EES\\Data\\Request_engperformance.json", JsonConvert.SerializeObject(mapped, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             return mapped;
         }
 
@@ -56,9 +60,10 @@ namespace SAPPub.Infrastructure.EES.Repositories
                 throw new Exception($"Failed to retrieve establishment performance or information for URN: {urn}");
             }
 
-            var mapped = KS2PerformanceMapper.Map(_lightweightParser, establishmentInformation, establishmentPerformance);
+            //mapping non-EES data -- This should be accepted or moved away from ASAP
+            var cscpBandingsMapped = _fileHelper.ReadCSV<CSCPProgKS2>();
 
-            File.WriteAllText($"C:\\Working\\sap-public\\SAPPub.Infrastructure\\EES\\Data\\Request_estperformance.json", JsonConvert.SerializeObject(mapped, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+            var mapped = KS2PerformanceMapper.Map(_lightweightParser, establishmentInformation, establishmentPerformance, cscpBandingsMapped);
             return mapped;
         }
 
@@ -73,7 +78,6 @@ namespace SAPPub.Infrastructure.EES.Repositories
                 throw new Exception($"Failed to retrieve LA performance or information for LA Code: {laCode}");
             }
             var mapped = KS2PerformanceMapper.Map(_lightweightParser, laInformation, laPerformance);
-            File.WriteAllText($"C:\\Working\\sap-public\\SAPPub.Infrastructure\\EES\\Data\\Request_laperformance.json", JsonConvert.SerializeObject(mapped, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
             return mapped;
         }
     }

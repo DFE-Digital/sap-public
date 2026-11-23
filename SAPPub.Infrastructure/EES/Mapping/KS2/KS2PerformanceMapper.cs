@@ -1,6 +1,8 @@
 ﻿using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.Performance;
 using SAPPub.Infrastructure.EES.Entities.DTOs.KS2;
+using SAPPub.Infrastructure.EES.NonEES.DTOs;
+using SAPPub.Infrastructure.EES.NonEES.Helpers;
 using SAPPub.Infrastructure.Mapping.ValueCodes;
 using System;
 using System.Collections.Generic;
@@ -13,8 +15,11 @@ namespace SAPPub.Infrastructure.EES.Mapping.KS2
         public static KS2EstablishmentPerformance Map(
             CodedLightweightParser _lightweightParser,
             KS2EstablishmentInformationDTO establishmentInformation,
-            KS2EstablishmentPerformanceDTO establishmentPerformance)
+            KS2EstablishmentPerformanceDTO establishmentPerformance,
+            IEnumerable<CSCPProgKS2> mappedProgressBandings)
         {
+            
+
             return new KS2EstablishmentPerformance
             {
                 Id = establishmentInformation.Id,
@@ -28,9 +33,16 @@ namespace SAPPub.Infrastructure.EES.Mapping.KS2
                 TFSM6CLA1A_Est_Current_Num_Coded = _lightweightParser.ParseDouble(establishmentInformation.TFSM6CLA1A_Est_Current_Num_Coded),
                 TMOBN_Est_Current_Num_Coded = _lightweightParser.ParseDouble(establishmentInformation.TMOBN_Est_Current_Num_Coded),
 
-                MATPROG_DESCR_Est_Previous2_Num_Coded = _lightweightParser.ParseString(establishmentPerformance.MATPROG_DESCR_Est_Previous2_Num_Coded),
-                READPROG_DESCR_Est_Previous2_Num_Coded = _lightweightParser.ParseString(establishmentPerformance.READPROG_DESCR_Est_Previous2_Num_Coded),
-                WRITPROG_DESCR_Est_Previous2_Num_Coded = _lightweightParser.ParseString(establishmentPerformance.WRITPROG_DESCR_Est_Previous2_Num_Coded),
+                MATPROG_Est_Previous2_Num_Coded = _lightweightParser.ParseDouble(establishmentPerformance.MATPROG_Est_Previous2_Num_Coded),
+                READPROG_Est_Previous2_Num_Coded = _lightweightParser.ParseDouble(establishmentPerformance.READPROG_Est_Previous2_Num_Coded),
+                WRITPROG_Est_Previous2_Num_Coded = _lightweightParser.ParseDouble(establishmentPerformance.WRITPROG_Est_Previous2_Num_Coded),
+
+                MATPROG_DESCR_Est_Previous2_Num_Coded = _lightweightParser.ParseString(
+                        mappedProgressBandings.Where(x => x.URN == establishmentInformation.Id).FirstOrDefault()?.MATPROG_DESCR),
+                READPROG_DESCR_Est_Previous2_Num_Coded = _lightweightParser.ParseString(
+                    mappedProgressBandings.Where(x => x.URN == establishmentInformation.Id).FirstOrDefault()?.READPROG_DESCR),
+                WRITPROG_DESCR_Est_Previous2_Num_Coded = _lightweightParser.ParseString(
+                    mappedProgressBandings.Where(x => x.URN == establishmentInformation.Id).FirstOrDefault()?.WRITPROG_DESCR),
 
                 MAT_AVERAGE_Est_Current_Num_Coded = _lightweightParser.ParseDouble(establishmentPerformance.MAT_AVERAGE_Est_Current_Num_Coded),
                 MAT_AVERAGE_Est_Previous2_Num_Coded = _lightweightParser.ParseDouble(establishmentPerformance.MAT_AVERAGE_Est_Previous2_Num_Coded),
@@ -41,7 +53,6 @@ namespace SAPPub.Infrastructure.EES.Mapping.KS2
                 MAT_AVERAGE_FSM6CLA1A_Est_Current_Num_Coded = _lightweightParser.ParseDouble(establishmentPerformance.MAT_AVERAGE_FSM6CLA1A_Est_Current_Num_Coded),
                 MAT_AVERAGE_G_Est_Current_Num_Coded = _lightweightParser.ParseDouble(establishmentPerformance.MAT_AVERAGE_G_Est_Current_Num_Coded),
                 MAT_AVERAGE_MOBN_Est_Current_Num_Coded = _lightweightParser.ParseDouble(establishmentPerformance.MAT_AVERAGE_MOBN_Est_Current_Num_Coded),
-                MATPROG_Est_Previous2_Num_Coded = _lightweightParser.ParseDouble(establishmentPerformance.MATPROG_Est_Previous2_Num_Coded),
                 MATPROG_LOWER_Est_Previous2_Num_Coded = _lightweightParser.ParseDouble(establishmentPerformance.MATPROG_LOWER_Est_Previous2_Num_Coded),
                 MATPROG_UPPER_Est_Previous2_Num_Coded = _lightweightParser.ParseDouble(establishmentPerformance.MATPROG_UPPER_Est_Previous2_Num_Coded),
                 PTGPS_EXP_Est_Current_Pct_Coded = _lightweightParser.ParseDouble(establishmentPerformance.PTGPS_EXP_Est_Current_Pct_Coded),
@@ -73,10 +84,8 @@ namespace SAPPub.Infrastructure.EES.Mapping.KS2
                 READ_AVERAGE_FSM6CLA1A_Est_Current_Num_Coded = _lightweightParser.ParseDouble(establishmentPerformance.READ_AVERAGE_FSM6CLA1A_Est_Current_Num_Coded),
                 READ_AVERAGE_G_Est_Current_Num_Coded = _lightweightParser.ParseDouble(establishmentPerformance.READ_AVERAGE_G_Est_Current_Num_Coded),
                 READ_AVERAGE_MOBN_Est_Current_Num_Coded = _lightweightParser.ParseDouble(establishmentPerformance.READ_AVERAGE_MOBN_Est_Current_Num_Coded),
-                READPROG_Est_Previous2_Num_Coded = _lightweightParser.ParseDouble(establishmentPerformance.READPROG_Est_Previous2_Num_Coded),
                 READPROG_LOWER_Est_Previous2_Num_Coded = _lightweightParser.ParseDouble(establishmentPerformance.READPROG_LOWER_Est_Previous2_Num_Coded),
                 READPROG_UPPER_Est_Previous2_Num_Coded = _lightweightParser.ParseDouble(establishmentPerformance.READPROG_UPPER_Est_Previous2_Num_Coded),
-                WRITPROG_Est_Previous2_Num_Coded = _lightweightParser.ParseDouble(establishmentPerformance.WRITPROG_Est_Previous2_Num_Coded),
                 WRITPROG_LOWER_Est_Previous2_Num_Coded = _lightweightParser.ParseDouble(establishmentPerformance.WRITPROG_LOWER_Est_Previous2_Num_Coded),
                 WRITPROG_UPPER_Est_Previous2_Num_Coded = _lightweightParser.ParseDouble(establishmentPerformance.WRITPROG_UPPER_Est_Previous2_Num_Coded)
 
