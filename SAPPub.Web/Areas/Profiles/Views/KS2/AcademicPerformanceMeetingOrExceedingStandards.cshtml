@@ -1,9 +1,12 @@
 ﻿@model SAPPub.Web.Areas.Profiles.ViewModels.KS2.AcademicPerformanceMeetingOrExceedingStandardsViewModel
+@using Microsoft.FeatureManagement
 @using SAPPub.Web.Constants
 @using SAPPub.Web.ViewComponents.ChartWithTableToggle
 @using SAPPub.Web.ViewComponents.SchoolProfilePagination
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 @using static SAPPub.Web.Constants.PageTitleConstants
+@using static SAPPub.Web.Constants.Constants;
+@inject Microsoft.FeatureManagement.IFeatureManager FeatureManager
 
 @{
     ViewData["Header"] = "Academic performance";
@@ -152,12 +155,36 @@
                             </div>
                         </details>
 
+                        @if (await FeatureManager.IsEnabledAsync(EnableKS2PupilCharacteristicDropdown))
+                        {
+                            <h4 class="govuk-heading-m">Prior attainment</h4>
+                            <p class="govuk-body">
+                                Pupils are grouped into low, middle and high prior attainers based on their results at the end of KS1. Pupils without KS1 results are not included.
+                            </p>
+                            <p class="govuk-body">
+                                These figures show how each group performed at the end of KS2, helping you understand how well the school supports pupils with different starting points.
+                            </p>
+
+                            <a class="govuk-link govuk-link--no-visited-state"
+                               href="https://www.gov.uk/government/publications/primary-school-accountability/primary-school-accountability-in-2026-technical-guide#ks1-prior-attainment-groupings"
+                               target="_blank"
+                               rel="noreferrer noopener">
+
+                                Find out more about prior attainment
+
+                                <span class="govuk-visually-hidden">
+                                    (opens in a new tab)
+                                </span>
+                            </a>
+
+                            @await Html.PartialAsync("_MeetingExceedingStandardsTable", Model.PriorAttainment, new ViewDataDictionary(ViewData) { { "id", "pa-table" } })
+                        }
+ 
                         @await Html.PartialAsync("_LowMediumHighPriorAttainers")
 
                     </govuk-accordion-item-content>
                 </govuk-accordion-item>
             </govuk-accordion>
-
    
             @await Component.InvokeAsync("SchoolProfilePagination", SchoolProfilePaginationModel.From(Model, RouteConstants.PrimaryAcademicPerformanceMeetingOrExceedingStandards))
 
