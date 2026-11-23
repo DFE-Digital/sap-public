@@ -155,9 +155,9 @@
                             </div>
                         </details>
 
-@*                         @if (await FeatureManager.IsEnabledAsync(EnableKS2PupilCharacteristicDropdown))
+                        @if (await FeatureManager.IsEnabledAsync(EnableKS2PupilCharacteristicDropdown))
                         {
- *@                            <h4 class="govuk-heading-m">Prior attainment</h4>
+                            <h4 class="govuk-heading-m">Prior attainment</h4>
                             <p class="govuk-body">
                                 Pupils are grouped into low, middle and high prior attainers based on their results at the end of KS1. Pupils without KS1 results are not included.
                             </p>
@@ -178,8 +178,8 @@
                             </a>
 
                             @await Html.PartialAsync("_MeetingExceedingStandardsTable", Model.PriorAttainment, new ViewDataDictionary(ViewData) { { "id", "pa-table" } })
-@*                         }
- *@ 
+                        }
+ 
                         @await Html.PartialAsync("_LowMediumHighPriorAttainers")
 
                     </govuk-accordion-item-content>
