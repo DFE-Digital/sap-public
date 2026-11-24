@@ -1,4 +1,4 @@
-﻿@using SAPPub.Core.Enums.KS5Qualifications
+@using SAPPub.Core.Enums.KS5Qualifications
 @model SAPPub.Web.Areas.Profiles.ViewModels.KS5.AverageResultViewModel
 
 @if (Model is null)
@@ -20,6 +20,16 @@
         <p class="govuk-body">
             This shows the average grade and points per @level3Qualification.GetDisplayName() entry.
         </p>
+              <p class="govuk-body">
+            Applied general qualification grades, from highest to lowest are:
+        </p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>distinction*</li>
+            <li>distinction</li>
+            <li>merit</li>
+            <li>pass</li>
+            <li>U</li>
+        </ul>
 
         <p class="govuk-body">
             We use points to compare different qualifications fairly, even if they have different sizes
@@ -38,6 +48,17 @@
         </p>
 
         <p class="govuk-body">
+            Tech level grades, from highest to lowest are:
+        </p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>distinction*</li>
+            <li>distinction</li>
+            <li>merit</li>
+            <li>pass</li>
+            <li>U</li>
+        </ul>
+
+        <p class="govuk-body">
             We use points to compare different qualifications fairly, even if they have different sizes
             or grading systems.
         </p>
@@ -47,24 +68,6 @@
             the same amount of study as an A level.
         </p>
 
-        <p class="govuk-body">
-            T level performance measures are not yet included here. Find out more details in the
-            <a id="measures-tech-guidance-link"
-               class="govuk-link"
-               rel="noreferrer noopener"
-               target="_blank"
-               href="https://www.gov.uk/government/publications/16-to-19-accountability-headline-measures-technical-guide">
-                16 to 19 technical guide <span class="govuk-visually-hidden">(opens in a new tab)</span>
-            </a>
-            and
-            <a id="intro-t-levels-link"
-               class="govuk-link"
-               rel="noreferrer noopener"
-               target="_blank"
-               href="https://www.gov.uk/government/publications/introduction-of-t-levels/introduction-of-t-levels">
-                introduction of T levels. <span class="govuk-visually-hidden">(opens in a new tab)</span>
-            </a>
-        </p>
     }
     else
     {
@@ -73,20 +76,24 @@
         </p>
 
         <p class="govuk-body">
+            Grades range from A* to U, with A* being the highest grade.
+        </p>
+
+        <p class="govuk-body">
             We use points to compare different qualifications fairly, even if they have different sizes or grading systems.
             For example, an A* at A level is worth up to 60 points.
         </p>
     }
+        <p class="govuk-body">
+        <a id="performance-points-link" class="govuk-link" rel="noreferrer noopener" target="_blank" href="https://assets.publishing.service.gov.uk/media/6a8d7938f5b35599aec18d04/16-19_accountability_measures_technical_guidance_September_2026.pdf">
+            Find out more about grades and how points are awarded <span class="govuk-visually-hidden">(opens in a new tab)</span>
+        </a>
+    </p>
 
     <p class="govuk-body">
         Compare this school or college with state-funded local and national averages.
     </p>
 
-    <p class="govuk-body">
-        <a id="performance-points-link" class="govuk-link" rel="noreferrer noopener" target="_blank" href="https://www.gov.uk/government/publications/performance-points-a-practical-guide-to-key-stage-4-and-5-points">
-            Find out how performance points work <span class="govuk-visually-hidden">(opens in a new tab)</span>
-        </a>
-    </p>
 }
 else if (qualification is Level2 level2Qualification)
 {
@@ -97,19 +104,33 @@ else if (qualification is Level2 level2Qualification)
         </p>
 
         <p class="govuk-body">
+            Technical certificates are awarded at level 2 (L2) or level 1 (L1). The grades, from highest to lowest, are:
+        </p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>L2 distinction*</li>
+            <li>L2 distinction</li>
+            <li>L2 merit</li>
+            <li>L2 pass</li>
+            <li>L1 distinction</li>
+            <li>L1 merit</li>
+            <li>L1 pass</li>
+            <li>U</li>
+        </ul>
+
+        <p class="govuk-body">
             A points system is used to make different qualifications easier to compare. Each qualification gets
             a points value based on how challenging it is and how big it is. Level 2 and level 3 qualifications
             use different points scales, so you cannot compare them directly.
         </p>
 
         <p class="govuk-body">
-            Compare this school or college with state-funded local and national averages.
+            <a id="performance-points-link" class="govuk-link" rel="noreferrer noopener" target="_blank" href="https://assets.publishing.service.gov.uk/media/6a8d7938f5b35599aec18d04/16-19_accountability_measures_technical_guidance_September_2026.pdf">
+                Find out more about grades and how points are awarded <span class="govuk-visually-hidden">(opens in a new tab)</span>
+            </a>
         </p>
 
         <p class="govuk-body">
-            <a id="performance-points-link" class="govuk-link" rel="noreferrer noopener" target="_blank" href="https://www.gov.uk/government/publications/performance-points-a-practical-guide-to-key-stage-4-and-5-points">
-                Find out how performance points work <span class="govuk-visually-hidden">(opens in a new tab)</span>
-            </a>
+            Compare this school or college with state-funded local and national averages.
         </p>
     }
 }
