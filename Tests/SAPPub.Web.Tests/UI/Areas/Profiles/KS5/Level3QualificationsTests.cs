@@ -107,6 +107,7 @@ public class Level3QualificationsTests(WebApplicationSetupFixture fixture) : Bas
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
     [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
     public async Task Level3Qualifications_Displays_RetentionMeasure_CurrentYear_Chart(Level3 level3Qualification)
     {
         // Arrange
@@ -139,6 +140,7 @@ public class Level3QualificationsTests(WebApplicationSetupFixture fixture) : Bas
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
     [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
     public async Task Level3Qualifications_Displays_RetentionMeasure_CurrentYear_Table(Level3 level3Qualification)
     {
         // Arrange
@@ -171,6 +173,7 @@ public class Level3QualificationsTests(WebApplicationSetupFixture fixture) : Bas
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
     [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
     public async Task Level3Qualifications_Displays_RetentionMeasure_DataOverTime_Chart(Level3 level3Qualification)
     {
         // Arrange
@@ -212,6 +215,7 @@ public class Level3QualificationsTests(WebApplicationSetupFixture fixture) : Bas
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
     [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
     public async Task Level3Qualifications_Displays_RetentionMeasure_DataOverTime_Table(Level3 level3Qualification)
     {
         // Arrange
@@ -253,6 +257,7 @@ public class Level3QualificationsTests(WebApplicationSetupFixture fixture) : Bas
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
     [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
     public async Task EnglishAndMathsResultsPage_Displays_RetentionMeasure_DataOverTime_Table_Click_On_ShowCurrentData(Level3 level3Qualification)
     {
         // Arrange
