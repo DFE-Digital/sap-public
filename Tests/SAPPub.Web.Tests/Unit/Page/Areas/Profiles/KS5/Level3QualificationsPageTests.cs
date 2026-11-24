@@ -685,6 +685,7 @@ public class Level3QualificationsPageTests : PageTestsBase
     [InlineData(Level3.ALevel)]
     [InlineData(Level3.Academic)]
     [InlineData(Level3.AppliedGeneral)]
+    [InlineData(Level3.TechLevel)]
     public async Task Level3QualificationsPage_Displays_RetentionMeasure_Details(Level3 qualification)
     {
         // Arrange
