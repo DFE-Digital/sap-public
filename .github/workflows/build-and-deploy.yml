@@ -12,10 +12,11 @@ on:
         options:
           - review
           - test
+          - preapproval
           - production
       docker-image-tag:
-        description: "Docker image tag to deploy"
-        required: true
+        description: "Docker image tag to deploy (defaults to the image built in this run)"
+        required: false
         type: string
       pull-request-number:
         description: "Pull request number (required for review environment)"
@@ -42,7 +43,7 @@ jobs:
   # ---------------------------
   build:
     name: Build
-    if: ${{ github.event_name != 'workflow_dispatch' }}
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.docker-image-tag == '' }}
     env:
       DOCKER_REPOSITORY: ghcr.io/dfe-digital/sap-public
     outputs:
@@ -115,30 +116,23 @@ jobs:
           HEADED: 0
           PLAYWRIGHT_IGNORE_HTTPS_ERRORS: true
         run: |
-          set -euo pipefail
-
           TEST_PROJECTS=$(find ./Tests -type f -name "*.Tests.csproj" ! -path "*/SAPPub.E2E.Tests/*" | sort)
 
           for proj in $TEST_PROJECTS; do
-            base_name="$(basename "$proj" .csproj)"
             echo "=== Running tests in $proj ==="
 
             dotnet run --project "$proj" \
               --no-build \
               --configuration Debug \
+              --verbosity normal \
               --show-test-results all \
-              --output Detailed \
-              --diagnostic \
-              --diagnostic-verbosity Trace \
-              --xunit-diagnostics on \
-              --xunit-internal-diagnostics on \
               -- \
               --report-xunit-trx \
-              --report-xunit-trx-filename "${base_name}.trx" \
+              --report-xunit-trx-filename $(basename "$proj" .csproj).trx \
               --coverage \
               --coverage-output-format cobertura \
               --coverage-settings ./coverlet.runsettings \
-              --coverage-output "${base_name}.coverage.cobertura.xml"
+              --coverage-output $(basename "$proj" .csproj).coverage.cobertura.xml
           done
 
       - name: Upload Test Result Files
@@ -166,7 +160,6 @@ jobs:
           reporter: 'dotnet-trx'
           path: "**/TestResults/**/*.trx"
           name: 'Test Results'
-          fail-on-error: false
 
       - name: merge coverage files
         run: |
@@ -197,7 +190,7 @@ jobs:
           path: ./Tests/accessibility-results/accessibility-violations.md
 
   # ---------------------------
-  # REFRESH DATA - Run after environment set up via deploying app. Without prior deployment, this will fail. 
+  # REFRESH DATA - Run after environment set up via deploying app. Without prior deployment, this will fail.
   # ---------------------------
   refresh-data:
     name: Refresh data (School Data Ingestion Pipeline)
@@ -454,12 +447,90 @@ jobs:
           gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
 
   # ---------------------------
+  # PREAPPROVAL DEPLOYMENT (AUTO ON MAIN IS GATED; MANUAL ALWAYS DEPLOYS)
+  # ---------------------------
+  check-preapproval:
+    name: Check preapproval environment owner
+    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: read
+    outputs:
+      deploy_preapproval: ${{ steps.check.outputs.deploy_preapproval }}
+
+    steps:
+      - name: Check preapproval deployment owner
+        id: check
+        uses: actions/github-script@v8
+        with:
+          script: |
+            // If the latest successful preapproval deployment has not come from main,
+            // we want to leave it alone (unless the deployment branch no longer exists)
+
+            const { owner, repo } = context.repo;
+            const environmentName = "preapproval";
+            const deployments = await github.rest.repos.listDeployments({ owner, repo, environment: environmentName, per_page: 20 });
+
+            // If there are no deployments, we can safely deploy to preapproval
+            if (deployments.data.length === 0) {
+              core.setOutput("deploy_preapproval", true);
+              return;
+            }
+
+            // If there are deployments, we find the latest successful one
+            let latestSuccessfulDeployment = null;
+            for (const deployment of deployments.data) {
+              const statuses = await github.rest.repos.listDeploymentStatuses({ owner, repo, deployment_id: deployment.id, per_page: 1 });
+              const latestStatus = statuses.data[0];
+              core.info(`Deployment ${deployment.id} ref=${deployment.ref} status=${latestStatus?.state}`);
+              if (latestStatus?.state === "success") {
+                latestSuccessfulDeployment = deployment;
+                break;
+              }
+            }
+
+            // If we didn't find a successful deployment, we can safely deploy to preapproval
+            if (!latestSuccessfulDeployment) {
+              core.info("No successful preapproval deployments found, allowing deployment");
+              core.setOutput("deploy_preapproval", true);
+              return;
+            }
+
+            // If we did find a successful deployment, deploy to preapproval only if
+            //   - it was from main; or
+            //   - the branch no longer exists
+            const deployedRef = latestSuccessfulDeployment.ref;
+            core.info(`Latest successful preapproval deployment ref: ${deployedRef}`);
+            let deployPreapproval = true;
+            if (deployedRef === "main") {
+              core.info("Latest successful deployment was from main, allowing deployment");
+            } else {
+              let branchExists = true;
+              try {
+                await github.rest.repos.getBranch({ owner, repo, branch: deployedRef });
+              } catch (error) {
+                if (error.status !== 404) throw error;
+                branchExists = false;
+              }
+              if (branchExists) {
+                deployPreapproval = false;
+                core.info(`Preapproval environment is in use by existing branch '${deployedRef}'`);
+              } else {
+                core.info(`Branch '${deployedRef}' no longer exists, allowing deployment`);
+              }
+            }
+
+            core.setOutput("deploy_preapproval", deployPreapproval);
+            core.notice(deployPreapproval ? "Preapproval deployment allowed" : "Preapproval deployment blocked: environment in use by existing branch");
+
+  # ---------------------------
   # DEPLOY TO TEST (AUTO)
   # ---------------------------
   deploy-test:
     name: Deploy to Test
     if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
-    needs: [build, test]
+    needs: [build, test, check-preapproval]
     outputs:
       environment_url: ${{ steps.deploy_app.outputs.environment_url }}
     runs-on: ubuntu-latest
@@ -546,18 +617,73 @@ jobs:
       actions: read
       packages: write
 
+  # ---------------------------
+  # DEPLOY TO PREAPPROVAL (AUTO - IF CHECK PASSES)
+  # ---------------------------
+  deploy-preapproval:
+    name: Deploy to Preapproval
+    if: ${{ !cancelled()
+      && needs.check-preapproval.outputs.deploy_preapproval == 'true'
+      && needs.deploy-test.result == 'success'
+      && needs.detect-refresh-data-on-merge.result == 'success'
+      && (needs.refresh-data-test-after-merge.result == 'success' || needs.refresh-data-test-after-merge.result == 'skipped')
+      }}
+    needs:
+      [
+        build,
+        check-preapproval,
+        deploy-test,
+        detect-refresh-data-on-merge,
+        refresh-data-test-after-merge
+      ]
+    outputs:
+      environment_url: ${{ steps.deploy_app.outputs.environment_url }}
+    environment:
+      name: preapproval
+      url: ${{ steps.deploy_app.outputs.environment_url }}
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      pull-requests: write
+
+    steps:
+      - name: Deploy app to preapproval
+        id: deploy_app
+        uses: DFE-Digital/github-actions/deploy-to-aks@master
+        with:
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          environment: preapproval
+          sha: ${{ needs.build.outputs.docker-image-tag }}
+          terraform-base: ${{ env.TERRAFORM_BASE }}
+          # healthcheck: ${{ env.HEALTHCHECK_CMD }}
+          teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
+          service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
+          smoke-test: false
+          db-seed: false
+          gcp-wip: ${{ vars.GCP_WIP }}
+          gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
+
   # ----------------------------------------
   # DEPLOY TO PRODUCTION (AUTO - AFTER TEST)
   # ----------------------------------------
   deploy-production:
     name: Deploy to Production
-    if: ${{ always() 
-      && github.ref == 'refs/heads/main' && github.event_name == 'push'
-      && needs.deploy-test.result == 'success'
+    if: ${{ !cancelled()
+      && needs.check-preapproval.result == 'success'
+      && (needs.deploy-preapproval.result == 'success' || needs.deploy-preapproval.result == 'skipped')
       && needs.detect-refresh-data-on-merge.result == 'success'
       && (needs.refresh-data-test-after-merge.result == 'success' || needs.refresh-data-test-after-merge.result == 'skipped')
       }}
-    needs: [build, deploy-test, detect-refresh-data-on-merge, refresh-data-test-after-merge]
+    needs:
+      [
+        build,
+        check-preapproval,
+        deploy-preapproval,
+        detect-refresh-data-on-merge,
+        refresh-data-test-after-merge
+      ]
     outputs:
       environment_url: ${{ steps.deploy_app.outputs.environment_url }}
     runs-on: ubuntu-latest
@@ -611,7 +737,8 @@ jobs:
   # ---------------------------
   manual_deploy:
     name: Manual deploy
-    if: ${{ github.event_name == 'workflow_dispatch' }}
+    needs: [build]
+    if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && (needs.build.result == 'success' || needs.build.result == 'skipped') }}
     outputs:
       environment_url: ${{ steps.deploy_manual.outputs.environment_url }}
     environment:
@@ -632,7 +759,7 @@ jobs:
           azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           environment: ${{ inputs.environment }}
           pr-number: ${{ inputs.pull-request-number }}
-          sha: ${{ inputs.docker-image-tag }}
+          sha: ${{ inputs.docker-image-tag || needs.build.outputs.docker-image-tag }}
           terraform-base: ${{ env.TERRAFORM_BASE }}
           # healthcheck: ${{ env.HEALTHCHECK_CMD }}
           teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
@@ -726,7 +853,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        domain_environment: [test, production]
+        domain_environment: [test, preapproval, production]
     
     if: 
       ${{
