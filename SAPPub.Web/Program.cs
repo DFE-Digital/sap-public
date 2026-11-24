@@ -146,26 +146,6 @@ public partial class Program
 
         var app = builder.Build();
 
-        app.Use(async (context, next) =>
-        {
-            try
-            {
-                await next();
-            }
-            catch (Exception ex)
-            {
-                app.Logger.LogError(
-                    ex,
-                    "Unhandled exception processing {Method} {Path}{QueryString}",
-                    context.Request.Method,
-                    context.Request.Path,
-                    context.Request.QueryString);
-
-                throw;
-            }
-        });
-
-
         app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
         //Configure the HTTP request pipeline.

@@ -115,23 +115,30 @@ jobs:
           HEADED: 0
           PLAYWRIGHT_IGNORE_HTTPS_ERRORS: true
         run: |
+          set -euo pipefail
+
           TEST_PROJECTS=$(find ./Tests -type f -name "*.Tests.csproj" ! -path "*/SAPPub.E2E.Tests/*" | sort)
 
           for proj in $TEST_PROJECTS; do
+            base_name="$(basename "$proj" .csproj)"
             echo "=== Running tests in $proj ==="
 
             dotnet run --project "$proj" \
               --no-build \
               --configuration Debug \
-              --verbosity normal \
               --show-test-results all \
+              --output Detailed \
+              --diagnostic \
+              --diagnostic-verbosity Trace \
+              --xunit-diagnostics on \
+              --xunit-internal-diagnostics on \
               -- \
               --report-xunit-trx \
-              --report-xunit-trx-filename $(basename "$proj" .csproj).trx \
+              --report-xunit-trx-filename "${base_name}.trx" \
               --coverage \
               --coverage-output-format cobertura \
               --coverage-settings ./coverlet.runsettings \
-              --coverage-output $(basename "$proj" .csproj).coverage.cobertura.xml
+              --coverage-output "${base_name}.coverage.cobertura.xml"
           done
 
       - name: Upload Test Result Files

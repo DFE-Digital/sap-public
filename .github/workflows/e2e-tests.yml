@@ -43,10 +43,17 @@ jobs:
           BASE_URL: ${{ inputs.base_url }}
           TEST_DATA_VERSION: ${{ inputs.test_data_version }}
         run: |
+          set -euo pipefail
+
           dotnet run --project Tests/SAPPub.E2E.Tests/SAPPub.E2E.Tests.csproj \
             --no-build \
             --configuration Release \
             --show-test-results all \
+            --output Detailed \
+            --diagnostic \
+            --diagnostic-verbosity Trace \
+            --xunit-diagnostics on \
+            --xunit-internal-diagnostics on \
             -- \
             --report-xunit-trx \
             --report-xunit-trx-filename E2E-tests.trx
