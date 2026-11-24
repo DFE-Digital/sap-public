@@ -509,23 +509,28 @@ public class KS2ControllerTests : BaseProfilesTests
 
     [Theory]
     [MemberData(nameof(PupilCharacteristicRouteMappings))]
-    public void PupilCharacteristicPlaceholderAction_ReturnsExpectedModel(PupilCharacteristic characteristic, string _)
+    public async Task PupilCharacteristicPlaceholderAction_ReturnsExpectedModel(PupilCharacteristic characteristic, string _)
     {
+        // Arrange
+        _mockKS2PupilProgressService
+            .Setup(a => a.GetPupilProgressAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new KS2PupilPerformanceBandings { Urn = fakeEstablishment.URN });
+
         // Act
         IActionResult result = characteristic switch
         {
-            PupilCharacteristic.AllPupils => _controller.PupilCharacteristicsAllPupils(fakeEstablishment.URN, fakeEstablishment.EstablishmentName),
-            PupilCharacteristic.DisadvantagedPupils => _controller.PupilCharacteristicsDisadvantagedPupils(fakeEstablishment.URN, fakeEstablishment.EstablishmentName),
-            PupilCharacteristic.PupilsWithEnglishAsAnAdditionalLanguage => _controller.PupilCharacteristicsEnglishAsAdditionalLanguage(fakeEstablishment.URN, fakeEstablishment.EstablishmentName),
-            PupilCharacteristic.GirlsAndBoys => _controller.PupilCharacteristicsGirlsAndBoys(fakeEstablishment.URN, fakeEstablishment.EstablishmentName),
-            PupilCharacteristic.PupilsWithDifferentStartingPoints => _controller.PupilCharacteristicsDifferentStartingPoints(fakeEstablishment.URN, fakeEstablishment.EstablishmentName),
-            PupilCharacteristic.NonMobilePupils => _controller.PupilCharacteristicsNonMobilePupils(fakeEstablishment.URN, fakeEstablishment.EstablishmentName),
+            PupilCharacteristic.AllPupils => await _controller.PupilCharacteristicsAllPupils(_mockKS2PupilProgressService.Object, fakeEstablishment.URN, fakeEstablishment.EstablishmentName, CancellationToken.None),
+            PupilCharacteristic.DisadvantagedPupils => await _controller.PupilCharacteristicsDisadvantagedPupils(_mockKS2PupilProgressService.Object, fakeEstablishment.URN, fakeEstablishment.EstablishmentName, CancellationToken.None),
+            PupilCharacteristic.PupilsWithEnglishAsAnAdditionalLanguage => await _controller.PupilCharacteristicsEnglishAsAdditionalLanguage(_mockKS2PupilProgressService.Object, fakeEstablishment.URN, fakeEstablishment.EstablishmentName, CancellationToken.None),
+            PupilCharacteristic.GirlsAndBoys => await _controller.PupilCharacteristicsGirlsAndBoys(_mockKS2PupilProgressService.Object, fakeEstablishment.URN, fakeEstablishment.EstablishmentName, CancellationToken.None),
+            PupilCharacteristic.PupilsWithDifferentStartingPoints => await _controller.PupilCharacteristicsDifferentStartingPoints(_mockKS2PupilProgressService.Object, fakeEstablishment.URN, fakeEstablishment.EstablishmentName, CancellationToken.None),
+            PupilCharacteristic.NonMobilePupils => await _controller.PupilCharacteristicsNonMobilePupils(_mockKS2PupilProgressService.Object, fakeEstablishment.URN, fakeEstablishment.EstablishmentName, CancellationToken.None),
             _ => throw new ArgumentOutOfRangeException(nameof(characteristic))
         };
 
         // Assert
         var viewResult = Assert.IsType<ViewResult>(result);
-        var model = Assert.IsType<PupilCharacteristicPlaceholderViewModel>(viewResult.Model);
+        var model = Assert.IsType<PupilCharacteristicBaseViewModel>(viewResult.Model);
         Assert.Equal(characteristic, model.SelectedPupilCharacteristic);
         Assert.Equal(fakeMinimumEstablishment.URN, model.URN);
     }

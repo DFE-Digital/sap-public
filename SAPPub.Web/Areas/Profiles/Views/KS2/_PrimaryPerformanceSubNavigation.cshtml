@@ -1,0 +1,32 @@
+﻿@using SAPPub.Web.Constants
+@using static SAPPub.Web.Constants.PageTitleConstants
+@model (Dictionary<string, string> RouteValues, string CurrentPage)
+
+<nav id="sub-navigation-academic-performance" class="moj-sub-navigation" aria-label="Sub navigation">
+    <ul class="moj-sub-navigation__list">
+        <li class="moj-sub-navigation__item">
+            <a class="moj-sub-navigation__link"
+               aria-current="@(Model.CurrentPage == PrimarySchoolPageTitles.PupilProgress ? "page" : null)"
+               asp-route="@RouteConstants.PrimaryAcademicPerformancePupilProgress"
+               asp-all-route-data="@Model.RouteValues">@PrimarySchoolPageTitles.PupilProgress</a>
+        </li>
+        <li class="moj-sub-navigation__item">
+            <a class="moj-sub-navigation__link"
+               aria-current="@(Model.CurrentPage == PrimarySchoolPageTitles.MeetingOrExceedingStandards ? "page" : null)"
+               asp-route="@RouteConstants.PrimaryAcademicPerformanceMeetingOrExceedingStandards"
+               asp-all-route-data="@Model.RouteValues">@PrimarySchoolPageTitles.MeetingOrExceedingStandards</a>
+        </li>
+        <li class="moj-sub-navigation__item">
+            <a class="moj-sub-navigation__link"
+               aria-current="@(Model.CurrentPage == PrimarySchoolPageTitles.SubjectScaledScores ? "page" : null)"
+               asp-route="@RouteConstants.PrimaryAcademicPerformanceSubjectScaledScores"
+               asp-all-route-data="@Model.RouteValues">@PrimarySchoolPageTitles.SubjectScaledScores</a>
+        </li>
+        <li class="moj-sub-navigation__item">
+            <a class="moj-sub-navigation__link"
+               aria-current="@(Model.CurrentPage == PrimarySchoolPageTitles.AdditionalMeasures ? "page" : null)"
+               asp-route="@RouteConstants.PrimaryAcademicPerformanceAdditionalMeasures"
+               asp-all-route-data="@Model.RouteValues">@PrimarySchoolPageTitles.AdditionalMeasures</a>
+        </li>
+    </ul>
+</nav>

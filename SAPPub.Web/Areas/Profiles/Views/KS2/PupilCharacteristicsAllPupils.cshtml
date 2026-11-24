@@ -1,7 +1,8 @@
-@model PupilCharacteristicPlaceholderViewModel;
+@model PupilCharacteristicBaseViewModel
 @using SAPPub.Web.Areas.Profiles.ViewModels.KS2
 @using SAPPub.Web.Constants
 @using SAPPub.Web.ViewComponents.VerticalNavigation
+@using static SAPPub.Web.Constants.PageTitleConstants
 
 @{
     ViewData["Header"] = "Academic performance";
@@ -22,18 +23,76 @@
     })
 
     <div class="govuk-grid-column-three-quarters">
-        <div id="guide-contents">
-            <h2 class="govuk-heading-xl">@ViewData["Header"]</h2>
+        <h2 class="govuk-heading-xl">@ViewData["Header"]</h2>
 
-            @await Html.PartialAsync("_PupilCharacteristicDropdown", new PupilCharacteristicDropdownViewModel
-            {
-                SelectedPupilCharacteristic = Model.SelectedPupilCharacteristic,
-                RouteAttributes = Model.RouteAttributes
-            })
+        @await Html.PartialAsync("_PrimaryPerformanceSubNavigation", (Model.RouteAttributes, PrimarySchoolPageTitles.PupilProgress))
 
-            <h3 class="govuk-heading-l">@Model.Heading</h3>
+        @await Html.PartialAsync("_PupilCharacteristicDropdown", new PupilCharacteristicDropdownViewModel
+        {
+            SelectedPupilCharacteristic = Model.SelectedPupilCharacteristic,
+            RouteAttributes = Model.RouteAttributes
+        })
 
-            <p class="govuk-body">Temporary content. TODO: populate </p>
+        <p class="govuk-body">Information in this section is for the @Model.CurrentAcademicYearDisplayName academic year.</p>
+
+        <h3 class="govuk-heading-l">Progress made between year 2 and year 6</h3>
+
+        <p class="govuk-body">
+            This shows the progress pupils made at this school between year 2 (key stage 1) and year 6 (key stage 2). Their progress is compared with pupils across England who started at a similar level at the end of year 2.
+        </p>
+        <p class="govuk-body">
+            These scores help show how well a school supports all pupils in making progress during their time in primary school.
+        </p>
+
+        <details class="govuk-details" id="details-progress-score">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    What the progress score means and how it's worked out
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                <p class="govuk-body">
+                    The progress score shows how much progress pupils at this school made compared with similar pupils across England.
+                </p>
+
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>0 means pupils made about the same progress as similar pupils across England.</li>
+                    <li>A positive score means pupils made more progress.</li>
+                    <li>A negative score means pupils made less progress.</li>
+                </ul>
+
+                <p class="govuk-body">
+                    To work out the progress score, we compare pupils' results with the results pupils with similar starting points typically achieve.
+                </p>
+
+                <p class="govuk-body">
+                    Go to the
+                    <a class="govuk-link govuk-link--no-visited-state" href="@Model.TechnicalGuideLinkUrl" rel="nofollow noreferrer noopener" target="@(Model.TechnicalGuideLinkNewTab ? "_blank" : "_self")">
+                        primary accountability measures guidance @if (Model.TechnicalGuideLinkNewTab) {<span class="govuk-visually-hidden"> (opens in a new tab)</span>}</a>
+                    for more details.
+                </p>
+                <h4 class="govuk-heading-m">How the number of pupils affects the score</h4>
+                <p class="govuk-body">
+                    Progress scores based on larger numbers of pupils are usually more reliable. When there are fewer pupils, the score can be more affected by the results of individual pupils.
+                </p>
+
+            </div>
+        </details>
+
+        @foreach (var section in Model.Sections)
+        {
+            @await Html.PartialAsync("_PupilProgressSection", section)
+        }
+
+        <h3 class="govuk-heading-m">Progress for previous academic years</h3>
+        <div class="custom-card">
+            <div class="info__icon"></div>
+            <div class="custom-card__content">
+                <p class="govuk-body">
+                    There are no progress scores available in reading, writing and maths for academic years 2023 to 2024 and 2024 to 2025.
+                    This is because there is no KS1 baseline available to calculate progress measures for these years due to disruption caused by COVID-19.
+                </p>
+            </div>
         </div>
     </div>
 </div>

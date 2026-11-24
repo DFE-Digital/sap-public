@@ -1,0 +1,59 @@
+@using SAPPub.Web.Areas.Profiles.ViewModels.KS2
+@model PupilProgressSectionViewModel
+
+@{
+    var subjectId = Model.Subject.ToLowerInvariant();
+}
+
+<div class="data-container">
+    <h3 class="govuk-heading-m govuk-!-margin-top-3">
+        @Model.Subject
+    </h3>
+
+    <table id="@(subjectId)-progress-table" class="govuk-table">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">School</th>
+                <th scope="col" class="govuk-table__header">Progress score</th>
+                <th scope="col" class="govuk-table__header">What it means</th>
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">@Model.SchoolName</td>
+                <td class="govuk-table__cell">@Model.Score.DisplayNumber(format: "N1")</td>
+                <td class="govuk-table__cell">
+                    <strong class="govuk-tag @Model.Banding.CssClass ataglance-progress-banding__tag">
+                        @Model.Banding.BandingLabel
+                    </strong>
+                    <p class="govuk-body ataglance-progress-banding__description">
+                        @Model.Banding.Description
+                    </p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    @await Html.PartialAsync("_KS2DataSignificance", (Model.SmallNumberOfPupilsWarning, Model.Subject))
+
+    <h4 class="govuk-heading-s">Compare with local and national averages</h4>
+    <table id="@(subjectId)-comparison-table" class="govuk-table">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Comparison group</th>
+                <th scope="col" class="govuk-table__header">Progress score</th>
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">@Model.LocalAuthorityName</td>
+                <td class="govuk-table__cell">@Model.LocalAuthorityScore.DisplayNumber(format: "N1")</td>
+            </tr>
+
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">England average</td>
+                <td class="govuk-table__cell">@Model.EnglandScore.DisplayNumber()</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

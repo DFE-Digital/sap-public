@@ -135,6 +135,9 @@
     <None Update="TestData\2526\KS4\performance_tables_schools_final_Total_Previous2_Year.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="TestData\2526\KS2\PupilProgress.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="TestData\2526\KS4\SubjectsEntered.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -1,6 +1,8 @@
 using Microsoft.FeatureManagement;
 using Moq;
 using SAPPub.Core.Interfaces.Services;
+using SAPPub.Core.Interfaces.Services.Performance;
+using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
 
@@ -13,9 +15,19 @@ public class PupilCharacteristicsPageTests : PageTestsBase
     private readonly string _schoolName = "St Paul's Church of England Academy";
     private readonly Mock<IEstablishmentService> _mockEstablishmentService;
 
-    public static IEnumerable<object[]> PlaceholderPageRoutes =>
+    public static IEnumerable<object[]> PageHeadings =>
     [
-        ["/primary-performance/pupil-progress/all-pupils", "All pupils"],
+        ["/primary-performance/pupil-progress/all-pupils", "Progress made between year 2 and year 6"],
+        ["/primary-performance/pupil-progress/disadvantaged-pupils", "Disadvantaged pupils"],
+        ["/primary-performance/pupil-progress/english-as-additional-language", "Pupils with English as an additional language"],
+        ["/primary-performance/pupil-progress/girls-and-boys", "Girls and boys"],
+        ["/primary-performance/pupil-progress/different-starting-points", "Pupils with different starting points"],
+        ["/primary-performance/pupil-progress/non-mobile-pupils", "Non-mobile pupils"],
+    ];
+
+    public static IEnumerable<object[]> SelectedDropdownOptions =>
+ [
+     ["/primary-performance/pupil-progress/all-pupils", "All pupils"],
         ["/primary-performance/pupil-progress/disadvantaged-pupils", "Disadvantaged pupils"],
         ["/primary-performance/pupil-progress/english-as-additional-language", "Pupils with English as an additional language"],
         ["/primary-performance/pupil-progress/girls-and-boys", "Girls and boys"],
@@ -26,6 +38,10 @@ public class PupilCharacteristicsPageTests : PageTestsBase
     public PupilCharacteristicsPageTests(WebAppFixture fixture) : base(fixture)
     {
         _mockEstablishmentService = UseMock<IEstablishmentService>();
+
+        UseMock<IKS2PupilProgressService>()
+            .Setup(a=>a.GetPupilProgressAsync(_urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new KS2PupilPerformanceBandings { Urn = _urn });
 
         var establishment = new EstablishmentMinimumTestBuilder()
             .WithURN(_urn)
@@ -48,7 +64,7 @@ public class PupilCharacteristicsPageTests : PageTestsBase
     }
 
     [Theory]
-    [MemberData(nameof(PlaceholderPageRoutes))]
+    [MemberData(nameof(PageHeadings))]
     public async Task PupilCharacteristicPage_ReturnsSuccess_AndDisplaysHeading(string pageRoute, string expectedHeading)
     {
         // Arrange
@@ -63,8 +79,8 @@ public class PupilCharacteristicsPageTests : PageTestsBase
     }
 
     [Theory]
-    [MemberData(nameof(PlaceholderPageRoutes))]
-    public async Task PupilCharacteristicPage_Displays_PupilCharacteristicDropdown_WithSelectedOption(string pageRoute, string expectedHeading)
+    [MemberData(nameof(SelectedDropdownOptions))]
+    public async Task PupilCharacteristicPage_Displays_PupilCharacteristicDropdown_WithSelectedOption(string pageRoute, string expectedSelectedOption)
     {
         // Arrange
         var url = BuildUrl(_urn, _schoolName, pageRoute);
@@ -80,11 +96,11 @@ public class PupilCharacteristicsPageTests : PageTestsBase
 
         var selectedOption = selector.QuerySelector("option[selected]");
         Assert.NotNull(selectedOption);
-        Assert.Equal(expectedHeading, selectedOption.TextContent.Trim());
+        Assert.Equal(expectedSelectedOption, selectedOption.TextContent.Trim());
     }
 
     [Theory]
-    [MemberData(nameof(PlaceholderPageRoutes))]
+    [MemberData(nameof(PageHeadings))]
     public async Task PupilCharacteristicPage_Displays_SinglePrimaryAcademicPerformance_ActiveNavItem(string pageRoute, string _)
     {
         // Arrange

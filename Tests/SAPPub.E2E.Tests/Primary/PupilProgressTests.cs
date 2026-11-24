@@ -1,85 +1,78 @@
-﻿using Microsoft.Playwright;
+using Microsoft.Playwright;
 using SAPPub.E2E.Tests.Helpers;
 using SAPPub.E2E.Tests.Infrastructure;
+using SAPPub.E2E.Tests.TestData.Models.KS2;
+using SAPPub.Playwright.Testing;
 
 namespace SAPPub.E2E.Tests.Primary;
+
+/// <summary>
+/// TODO: The test data in sap-public\Tests\SAPPub.E2E.Tests\TestData\2526\KS2\PupilProgress.json is currently out of date and needs to be updated when the new file is available.
+/// </summary>
 
 [Collection("Integration Tests")]
 public class PupilProgressTests() : BasePageTest()
 {
     private string PageUrl(string urn) => $"/school/{urn}";
-    private string pageUnderTest => "primary-performance/pupil-progress";
+
+    // Requires the EnableKS2PupilCharacteristicDropdown feature flag to be on
+    private string pageUnderTest => "primary-performance/pupil-progress/all-pupils";
+
+    private static readonly TheoryData<PupilProgressTestDataModel> _pupilProgressTestData =
+        TestDataLoader.LoadTheoryData<PupilProgressTestDataModel>("KS2", "PupilProgress");
+
+    public static TheoryData<PupilProgressTestDataModel> GetPupilProgressTestData() => _pupilProgressTestData;
 
     [Theory]
-    [InlineData("100019", "1.9", "-0.4", "4.3", "4.4", "1.9", "6.8", "3.5", "1.2", "5.9")]
-    [InlineData("100241", "-0.1", "-1.7", "1.5", "-0.3", "-2", "1.4", "1.2", "-0.4", "2.8")]
-    [InlineData("100353", "4.2", "2.5", "5.8", "6.8", "5.1", "8.5", "3.4", "1.8", "5.1")]
-    [InlineData("100448", "-5.5", "-7.7", "-3.4", "-5.1", "-7.3", "-2.8", "-2.9", "-5", "-0.7")]
-    [InlineData("100500", "4", "1.5", "6.5", "4.1", "1.4", "6.8", "2", "-0.6", "4.5")]
-    [InlineData("100674", "0.8", "-0.9", "2.5", "0.9", "-0.9", "2.7", "0.3", "-1.4", "2.1")]
-    [InlineData("100684", "1.8", "0.5", "3.1", "2.7", "1.4", "4.1", "1.4", "0.1", "2.8")]
-    public async Task SecondaryAcademicPerformanceProgressAndAttainment_Previous2_ShowsExpectedAttainmentData(
-        string urn, 
-        string expectedMathsScore, string expectedMathsLowerBand, string expectedMathsHigherBand,
-        string expectedReadingScore, string expectedReadingLowerBand, string expectedReadingHigherBand,
-        string expectedWritingScore, string expectedWritingLowerBand, string expectedWritingHigherBand)
+    [MemberData(nameof(GetPupilProgressTestData))]
+    public async Task AllPupils_ShowsExpectedSchoolProgressData(PupilProgressTestDataModel testData)
     {
         // Arrange && Act
-        var response = await Page.GotoAsync(PageUrl(urn));
-        Assert.NotNull(response);
-        response = await Page.GotoPage(response.Url, pageUnderTest);
-
-        _ = await Page.GotoAcademicPerformanceSelectedYearLink(response!.Url, "previous2");
+        await GotoAllPupilsPage(testData.SchoolUrn);
 
         // Assert
-        await AssertSchoolProgressData(Page, "maths-establishment-card", expectedMathsScore, expectedMathsLowerBand, expectedMathsHigherBand);
-        await AssertSchoolProgressData(Page, "reading-establishment-card", expectedReadingScore, expectedReadingLowerBand, expectedReadingHigherBand);
-        await AssertSchoolProgressData(Page, "writing-establishment-card", expectedWritingScore, expectedWritingLowerBand, expectedWritingHigherBand);
+        await AssertSchoolProgressData(Page, "reading", testData.ReadingScore, testData.ReadingBanding);
+        await AssertSchoolProgressData(Page, "writing", testData.WritingScore, testData.WritingBanding);
+        await AssertSchoolProgressData(Page, "maths", testData.MathsScore, testData.MathsBanding);
     }
 
     [Theory]
-    [InlineData("100019", "1.9", "2", "1.5")]
-    [InlineData("100241", "0.6", "1.6", "0.8")]
-    [InlineData("100353", "2", "2.1", "2.3")]
-    [InlineData("100448", "0", "0.7", "0.5")]
-    [InlineData("100500", "1.5", "1.8", "2.4")]
-    [InlineData("100674", "0.3", "-0.4", "0.3")]
-    [InlineData("100684", "0.3", "-0.4", "0.3")]
-    public async Task LaProgressData_Expected(
-        string urn,
-        string readScore,
-        string writeScore,
-        string mathsScore)
+    [MemberData(nameof(GetPupilProgressTestData))]
+    public async Task AllPupils_ShowsExpectedLocalAuthorityAndEnglandComparisons(PupilProgressTestDataModel testData)
     {
         // Arrange && Act
-        var response = await Page.GotoAsync(PageUrl(urn));
-        Assert.NotNull(response);
-        response = await Page.GotoPage(response.Url, pageUnderTest);
-
-        _ = await Page.GotoAcademicPerformanceSelectedYearLink(response!.Url, "previous2");
+        await GotoAllPupilsPage(testData.SchoolUrn);
 
         // Assert
-        await AssertLaProgressData(Page, "maths-localauthority-card", mathsScore);
-        await AssertLaProgressData(Page, "reading-localauthority-card", readScore);
-        await AssertLaProgressData(Page, "writing-localauthority-card", writeScore);
+        await AssertComparisonData(Page, "reading", testData.LaReadingScore, testData.EnglandReadingScore);
+        await AssertComparisonData(Page, "writing", testData.LaWritingScore, testData.EnglandWritingScore);
+        await AssertComparisonData(Page, "maths", testData.LaMathsScore, testData.EnglandMathsScore);
     }
 
-    private async Task AssertSchoolProgressData(IPage Page, string cardId, string expectedSchoolScore, string expectedLowerBanding, string expectedUpperBanding)
+    private async Task GotoAllPupilsPage(string urn)
     {
-        var schoolScore = await Page.GetScoreFromParagraphAsync(cardId, "Pupils at this school score");
-        Assert.NotNull(schoolScore);
-        Assert.Equal(expectedSchoolScore, schoolScore.First());
-
-        var banding = await Page.GetScoreFromParagraphAsync(cardId, "The confidence interval is");
-        Assert.NotNull(banding);
-        Assert.Equal(expectedLowerBanding, banding.First());
-        Assert.Equal(expectedUpperBanding, banding.Last());
+        var response = await Page.GotoAsync(PageUrl(urn));
+        Assert.NotNull(response);
+        await Page.GotoPage(response.Url, pageUnderTest);
     }
 
-    private async Task AssertLaProgressData(IPage Page, string cardId, string expectedScore)
+    private static async Task AssertSchoolProgressData(IPage page, string subject, string expectedScore, string expectedBanding)
     {
-        var score = await Page.GetScoreFromParagraphAsync(cardId, "The local authority average is");
-        Assert.NotNull(score);
-        Assert.Equal(expectedScore, score.First());
+        // columns: school name, progress score, banding tag and description
+        var row = await page.GetTableRowValuesAsync($"{subject}-progress-table", 0);
+
+        AssertHelpers.AssertNumericEqual(expectedScore, row[1]);
+        Assert.Contains(expectedBanding, row[2], StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static async Task AssertComparisonData(IPage page, string subject, string expectedLaScore, string expectedEnglandScore)
+    {
+        var tableId = $"{subject}-comparison-table";
+
+        var laRow = await page.GetTableRowValuesAsync(tableId, 0);
+        AssertHelpers.AssertNumericEqual(expectedLaScore, laRow[1]);
+
+        var englandRow = await page.GetTableRowValuesAsync(tableId, "England average");
+        AssertHelpers.AssertNumericEqual(expectedEnglandScore, englandRow[1]);
     }
 }

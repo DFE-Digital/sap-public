@@ -121,54 +121,70 @@ public class KS2Controller(
     [HttpGet]
     [FeatureGate(Constants.Constants.EnableKS2PupilCharacteristicDropdown)]
     [Route("school/{urn}/{schoolName}/primary-performance/pupil-progress/all-pupils", Name = RouteConstants.PrimaryPupilCharacteristicsAllPupils)]
-    public IActionResult PupilCharacteristicsAllPupils(string urn, string schoolName)
+    public async Task<IActionResult> PupilCharacteristicsAllPupils(
+        [FromServices] IKS2PupilProgressService ks2PupilProgressService, 
+        string urn, 
+        string schoolName,
+        CancellationToken ct)
     {
-        var model = PupilCharacteristicPlaceholderViewModel.Map(Establishment, PupilCharacteristic.AllPupils);
+        var ks2PupilPerformance = await ks2PupilProgressService.GetPupilProgressAsync(urn, ct);
+
+        var model = PupilCharacteristicBaseViewModel.Map(ks2PupilPerformance, Establishment, PupilCharacteristic.AllPupils, urlLinksOptions.Value);
         return View(model);
     }
 
     [HttpGet]
     [FeatureGate(Constants.Constants.EnableKS2PupilCharacteristicDropdown)]
     [Route("school/{urn}/{schoolName}/primary-performance/pupil-progress/disadvantaged-pupils", Name = RouteConstants.PrimaryPupilCharacteristicsDisadvantagedPupils)]
-    public IActionResult PupilCharacteristicsDisadvantagedPupils(string urn, string schoolName)
+    public async Task<IActionResult> PupilCharacteristicsDisadvantagedPupils([FromServices] IKS2PupilProgressService ks2PupilProgressService, string urn, string schoolName, CancellationToken ct)
     {
-        var model = PupilCharacteristicPlaceholderViewModel.Map(Establishment, PupilCharacteristic.DisadvantagedPupils);
+        var ks2PupilPerformance = await ks2PupilProgressService.GetPupilProgressAsync(urn, ct);
+
+        var model = PupilCharacteristicBaseViewModel.Map(ks2PupilPerformance, Establishment, PupilCharacteristic.DisadvantagedPupils, urlLinksOptions.Value);
         return View(model);
     }
 
     [HttpGet]
     [FeatureGate(Constants.Constants.EnableKS2PupilCharacteristicDropdown)]
     [Route("school/{urn}/{schoolName}/primary-performance/pupil-progress/english-as-additional-language", Name = RouteConstants.PrimaryPupilCharacteristicsEnglishAsAdditionalLanguage)]
-    public IActionResult PupilCharacteristicsEnglishAsAdditionalLanguage(string urn, string schoolName)
+    public async Task<IActionResult> PupilCharacteristicsEnglishAsAdditionalLanguage([FromServices] IKS2PupilProgressService ks2PupilProgressService, string urn, string schoolName, CancellationToken ct)
     {
-        var model = PupilCharacteristicPlaceholderViewModel.Map(Establishment, PupilCharacteristic.PupilsWithEnglishAsAnAdditionalLanguage);
+        var ks2PupilPerformance = await ks2PupilProgressService.GetPupilProgressAsync(urn, ct);
+
+        var model = PupilCharacteristicBaseViewModel.Map(ks2PupilPerformance, Establishment, PupilCharacteristic.PupilsWithEnglishAsAnAdditionalLanguage, urlLinksOptions.Value);
         return View(model);
     }
 
     [HttpGet]
     [FeatureGate(Constants.Constants.EnableKS2PupilCharacteristicDropdown)]
     [Route("school/{urn}/{schoolName}/primary-performance/pupil-progress/girls-and-boys", Name = RouteConstants.PrimaryPupilCharacteristicsGirlsAndBoys)]
-    public IActionResult PupilCharacteristicsGirlsAndBoys(string urn, string schoolName)
+    public async Task<IActionResult> PupilCharacteristicsGirlsAndBoys([FromServices] IKS2PupilProgressService ks2PupilProgressService, string urn, string schoolName, CancellationToken ct)
     {
-        var model = PupilCharacteristicPlaceholderViewModel.Map(Establishment, PupilCharacteristic.GirlsAndBoys);
+        var ks2PupilPerformance = await ks2PupilProgressService.GetPupilProgressAsync(urn, ct);
+
+        var model = PupilCharacteristicBaseViewModel.Map(ks2PupilPerformance, Establishment, PupilCharacteristic.GirlsAndBoys, urlLinksOptions.Value);
         return View(model);
     }
 
     [HttpGet]
     [FeatureGate(Constants.Constants.EnableKS2PupilCharacteristicDropdown)]
     [Route("school/{urn}/{schoolName}/primary-performance/pupil-progress/different-starting-points", Name = RouteConstants.PrimaryPupilCharacteristicsDifferentStartingPoints)]
-    public IActionResult PupilCharacteristicsDifferentStartingPoints(string urn, string schoolName)
+    public async Task<IActionResult> PupilCharacteristicsDifferentStartingPoints([FromServices] IKS2PupilProgressService ks2PupilProgressService, string urn, string schoolName, CancellationToken ct)
     {
-        var model = PupilCharacteristicPlaceholderViewModel.Map(Establishment, PupilCharacteristic.PupilsWithDifferentStartingPoints);
+        var ks2PupilPerformance = await ks2PupilProgressService.GetPupilProgressAsync(urn, ct);
+
+        var model = PupilCharacteristicBaseViewModel.Map(ks2PupilPerformance, Establishment, PupilCharacteristic.PupilsWithDifferentStartingPoints, urlLinksOptions.Value);
         return View(model);
     }
 
     [HttpGet]
     [FeatureGate(Constants.Constants.EnableKS2PupilCharacteristicDropdown)]
     [Route("school/{urn}/{schoolName}/primary-performance/pupil-progress/non-mobile-pupils", Name = RouteConstants.PrimaryPupilCharacteristicsNonMobilePupils)]
-    public IActionResult PupilCharacteristicsNonMobilePupils(string urn, string schoolName)
+    public async Task<IActionResult> PupilCharacteristicsNonMobilePupils([FromServices] IKS2PupilProgressService ks2PupilProgressService, string urn, string schoolName, CancellationToken ct)
     {
-        var model = PupilCharacteristicPlaceholderViewModel.Map(Establishment, PupilCharacteristic.NonMobilePupils);
+        var ks2PupilPerformance = await ks2PupilProgressService.GetPupilProgressAsync(urn, ct);
+
+        var model = PupilCharacteristicBaseViewModel.Map(ks2PupilPerformance, Establishment, PupilCharacteristic.NonMobilePupils, urlLinksOptions.Value);
         return View(model);
     }
 }

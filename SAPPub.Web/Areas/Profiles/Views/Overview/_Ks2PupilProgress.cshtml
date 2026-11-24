@@ -1,0 +1,26 @@
+@model SAPPub.Web.Areas.Profiles.ViewModels.Overview.OverviewViewModel
+
+<div id="primary-at-a-glance-accordion-content-1" class="govuk-accordion__section-content">
+    <div class="govuk-body">
+        <div class="ataglance-summary-card govuk-summary-card">
+            <div class="govuk-summary-card__title-wrapper">
+                <h4 class="govuk-summary-card__title">
+                    Pupil performance between the end of key stage 1 (year 2) and the end of key stage 2 (year 6)
+                </h4>
+            </div>
+
+            <div class="govuk-summary-card__content">
+
+                <p class="govuk-body">
+                    Progress scores are not available for the academic years 2023 to 2024 and 2024 to 2025 due to COVID-19 disruption.
+                </p>
+
+                <p class="govuk-body">
+                    You can view progress results from previous years on the school's full profile.
+                </p>
+
+                @await Html.PartialAsync("_Ks2PupilProgressLink")
+            </div>
+        </div>
+    </div>
+</div>
