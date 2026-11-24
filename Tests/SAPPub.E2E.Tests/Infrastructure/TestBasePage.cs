@@ -30,7 +30,7 @@ public abstract class BasePageTest : PageTest
     {
         await base.InitializeAsync();
 
-        Page.SetDefaultTimeout((float)TimeSpan.FromSeconds(60).TotalMilliseconds);
+        Page.SetDefaultTimeout((float)TimeSpan.FromSeconds(20).TotalMilliseconds);
         Page.SetDefaultNavigationTimeout((float)TimeSpan.FromSeconds(100).TotalMilliseconds);
     }
 
