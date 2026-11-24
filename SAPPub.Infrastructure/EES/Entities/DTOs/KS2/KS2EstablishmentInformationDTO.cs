@@ -14,6 +14,7 @@ public class KS2EstablishmentInformationDTO
     private const string CurrentTimePeriod = EESYearConstants.Year202425;
 
     public string Id { get; set; } = string.Empty;
+    public string LAESTAB { get; set; } = string.Empty;
 
 
     [EESInput(

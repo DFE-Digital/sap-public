@@ -38,11 +38,11 @@ namespace SAPPub.Infrastructure.EES.Mapping.KS2
                 WRITPROG_Est_Previous2_Num_Coded = _lightweightParser.ParseDouble(establishmentPerformance.WRITPROG_Est_Previous2_Num_Coded),
 
                 MATPROG_DESCR_Est_Previous2_Num_Coded = _lightweightParser.ParseString(
-                        mappedProgressBandings.Where(x => x.URN == establishmentInformation.Id).FirstOrDefault()?.MATPROG_DESCR),
+                        mappedProgressBandings.Where(x => x.LAESTAB == establishmentInformation.LAESTAB).FirstOrDefault()?.MATPROG_DESCR),
                 READPROG_DESCR_Est_Previous2_Num_Coded = _lightweightParser.ParseString(
-                    mappedProgressBandings.Where(x => x.URN == establishmentInformation.Id).FirstOrDefault()?.READPROG_DESCR),
+                    mappedProgressBandings.Where(x => x.LAESTAB == establishmentInformation.LAESTAB).FirstOrDefault()?.READPROG_DESCR),
                 WRITPROG_DESCR_Est_Previous2_Num_Coded = _lightweightParser.ParseString(
-                    mappedProgressBandings.Where(x => x.URN == establishmentInformation.Id).FirstOrDefault()?.WRITPROG_DESCR),
+                    mappedProgressBandings.Where(x => x.LAESTAB == establishmentInformation.LAESTAB).FirstOrDefault()?.WRITPROG_DESCR),
 
                 MAT_AVERAGE_Est_Current_Num_Coded = _lightweightParser.ParseDouble(establishmentPerformance.MAT_AVERAGE_Est_Current_Num_Coded),
                 MAT_AVERAGE_Est_Previous2_Num_Coded = _lightweightParser.ParseDouble(establishmentPerformance.MAT_AVERAGE_Est_Previous2_Num_Coded),

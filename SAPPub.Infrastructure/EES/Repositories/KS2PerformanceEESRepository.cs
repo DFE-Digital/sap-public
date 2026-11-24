@@ -4,6 +4,8 @@ using Newtonsoft.Json;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.Performance;
 using SAPPub.Core.Interfaces.Repositories.Performance;
+using SAPPub.Core.Interfaces.Services;
+using SAPPub.Core.Services;
 using SAPPub.Core.ValueObjects;
 using SAPPub.Infrastructure.EES.Entities.DTOs;
 using SAPPub.Infrastructure.EES.Entities.DTOs.KS2;
@@ -22,13 +24,12 @@ namespace SAPPub.Infrastructure.EES.Repositories
     public class KS2PerformanceEESRepository(
         IEESAPIService service,
         ILogger<KS2PerformanceEESRepository> logger,
-        ICodedValueMapper codedValueMapper,
         CodedLightweightParser lightweightParser,
+        IEstablishmentService establishmentService,
         IFileHelper fileHelper) : IKS2PerformanceRepository
     {
         private readonly IEESAPIService _service = service;
         private readonly ILogger<KS2PerformanceEESRepository> _logger = logger;
-        private readonly ICodedValueMapper _codedValueMapper = codedValueMapper;
         private readonly CodedLightweightParser _lightweightParser = lightweightParser;
 
         private readonly IFileHelper _fileHelper = fileHelper;
@@ -61,6 +62,8 @@ namespace SAPPub.Infrastructure.EES.Repositories
             }
 
             //mapping non-EES data -- This should be accepted or moved away from ASAP
+            var est = await establishmentService.GetEstablishmentMinimumAsync(urn, ct);
+            establishmentInformation.LAESTAB = est.LAESTAB;
             var cscpBandingsMapped = _fileHelper.ReadCSV<CSCPProgKS2>();
 
             var mapped = KS2PerformanceMapper.Map(_lightweightParser, establishmentInformation, establishmentPerformance, cscpBandingsMapped);
