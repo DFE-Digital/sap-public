@@ -33,7 +33,13 @@ namespace SAPPub.Infrastructure.EES.Service
 
             var configurationMapping = EESMapping.GetMapping(configurationType) ?? throw new ArgumentException("No mapping found for {configurationType}", nameof(configurationType));
 
-            var lookupService = new EESIdLookupService($"C:\\Working\\sap-public\\SAPPub.Infrastructure\\EES\\Data\\LookupList_{configurationMapping.FilterIdType}.json");
+            var lookupFilePath = Path.Combine(
+                AppContext.BaseDirectory,
+                "EES",
+                "Data",
+                $"LookupList_{configurationMapping.FilterIdType}.json");
+
+            var lookupService = new EESIdLookupService(lookupFilePath);
             var inputMapped = EESTransformations.GetInputMap<T>();
 
             var distinctIndicators = inputMapped.Select(x => x.IndicatorId).Distinct();
