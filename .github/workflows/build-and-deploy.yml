@@ -26,6 +26,7 @@ on:
   push:
     branches:
       - main
+      - 3149-konduit-sql
   pull_request:
     branches:
       - main
@@ -307,7 +308,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          curl -fsSL https://raw.githubusercontent.com/DFE-Digital/teacher-services-cloud/main/scripts/konduit.sh \
+          curl -fsSL https://raw.githubusercontent.com/DFE-Digital/teacher-services-cloud/3149-konduit-sql/scripts/konduit.sh \
             -o "$GITHUB_WORKSPACE/konduit.sh"
           chmod +x "$GITHUB_WORKSPACE/konduit.sh"
           ls -la "$GITHUB_WORKSPACE/konduit.sh"
@@ -446,445 +447,445 @@ jobs:
           gcp-wip: ${{ vars.GCP_WIP }}
           gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
 
-  # ---------------------------
-  # PREAPPROVAL DEPLOYMENT (AUTO ON MAIN IS GATED; MANUAL ALWAYS DEPLOYS)
-  # ---------------------------
-  check-preapproval:
-    name: Check preapproval environment owner
-    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      deployments: read
-    outputs:
-      deploy_preapproval: ${{ steps.check.outputs.deploy_preapproval }}
+  # # ---------------------------
+  # # PREAPPROVAL DEPLOYMENT (AUTO ON MAIN IS GATED; MANUAL ALWAYS DEPLOYS)
+  # # ---------------------------
+  # check-preapproval:
+  #   name: Check preapproval environment owner
+  #   if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: read
+  #     deployments: read
+  #   outputs:
+  #     deploy_preapproval: ${{ steps.check.outputs.deploy_preapproval }}
 
-    steps:
-      - name: Check preapproval deployment owner
-        id: check
-        uses: actions/github-script@v8
-        with:
-          script: |
-            // If the latest successful preapproval deployment has not come from main,
-            // we want to leave it alone (unless the deployment branch no longer exists)
+  #   steps:
+  #     - name: Check preapproval deployment owner
+  #       id: check
+  #       uses: actions/github-script@v8
+  #       with:
+  #         script: |
+  #           // If the latest successful preapproval deployment has not come from main,
+  #           // we want to leave it alone (unless the deployment branch no longer exists)
 
-            const { owner, repo } = context.repo;
-            const environmentName = "preapproval";
-            const deployments = await github.rest.repos.listDeployments({ owner, repo, environment: environmentName, per_page: 20 });
+  #           const { owner, repo } = context.repo;
+  #           const environmentName = "preapproval";
+  #           const deployments = await github.rest.repos.listDeployments({ owner, repo, environment: environmentName, per_page: 20 });
 
-            // If there are no deployments, we can safely deploy to preapproval
-            if (deployments.data.length === 0) {
-              core.setOutput("deploy_preapproval", true);
-              return;
-            }
+  #           // If there are no deployments, we can safely deploy to preapproval
+  #           if (deployments.data.length === 0) {
+  #             core.setOutput("deploy_preapproval", true);
+  #             return;
+  #           }
 
-            // If there are deployments, we find the latest successful one
-            let latestSuccessfulDeployment = null;
-            for (const deployment of deployments.data) {
-              const statuses = await github.rest.repos.listDeploymentStatuses({ owner, repo, deployment_id: deployment.id, per_page: 1 });
-              const latestStatus = statuses.data[0];
-              core.info(`Deployment ${deployment.id} ref=${deployment.ref} status=${latestStatus?.state}`);
-              if (latestStatus?.state === "success") {
-                latestSuccessfulDeployment = deployment;
-                break;
-              }
-            }
+  #           // If there are deployments, we find the latest successful one
+  #           let latestSuccessfulDeployment = null;
+  #           for (const deployment of deployments.data) {
+  #             const statuses = await github.rest.repos.listDeploymentStatuses({ owner, repo, deployment_id: deployment.id, per_page: 1 });
+  #             const latestStatus = statuses.data[0];
+  #             core.info(`Deployment ${deployment.id} ref=${deployment.ref} status=${latestStatus?.state}`);
+  #             if (latestStatus?.state === "success") {
+  #               latestSuccessfulDeployment = deployment;
+  #               break;
+  #             }
+  #           }
 
-            // If we didn't find a successful deployment, we can safely deploy to preapproval
-            if (!latestSuccessfulDeployment) {
-              core.info("No successful preapproval deployments found, allowing deployment");
-              core.setOutput("deploy_preapproval", true);
-              return;
-            }
+  #           // If we didn't find a successful deployment, we can safely deploy to preapproval
+  #           if (!latestSuccessfulDeployment) {
+  #             core.info("No successful preapproval deployments found, allowing deployment");
+  #             core.setOutput("deploy_preapproval", true);
+  #             return;
+  #           }
 
-            // If we did find a successful deployment, deploy to preapproval only if
-            //   - it was from main; or
-            //   - the branch no longer exists
-            const deployedRef = latestSuccessfulDeployment.ref;
-            core.info(`Latest successful preapproval deployment ref: ${deployedRef}`);
-            let deployPreapproval = true;
-            if (deployedRef === "main") {
-              core.info("Latest successful deployment was from main, allowing deployment");
-            } else {
-              let branchExists = true;
-              try {
-                await github.rest.repos.getBranch({ owner, repo, branch: deployedRef });
-              } catch (error) {
-                if (error.status !== 404) throw error;
-                branchExists = false;
-              }
-              if (branchExists) {
-                deployPreapproval = false;
-                core.info(`Preapproval environment is in use by existing branch '${deployedRef}'`);
-              } else {
-                core.info(`Branch '${deployedRef}' no longer exists, allowing deployment`);
-              }
-            }
+  #           // If we did find a successful deployment, deploy to preapproval only if
+  #           //   - it was from main; or
+  #           //   - the branch no longer exists
+  #           const deployedRef = latestSuccessfulDeployment.ref;
+  #           core.info(`Latest successful preapproval deployment ref: ${deployedRef}`);
+  #           let deployPreapproval = true;
+  #           if (deployedRef === "main") {
+  #             core.info("Latest successful deployment was from main, allowing deployment");
+  #           } else {
+  #             let branchExists = true;
+  #             try {
+  #               await github.rest.repos.getBranch({ owner, repo, branch: deployedRef });
+  #             } catch (error) {
+  #               if (error.status !== 404) throw error;
+  #               branchExists = false;
+  #             }
+  #             if (branchExists) {
+  #               deployPreapproval = false;
+  #               core.info(`Preapproval environment is in use by existing branch '${deployedRef}'`);
+  #             } else {
+  #               core.info(`Branch '${deployedRef}' no longer exists, allowing deployment`);
+  #             }
+  #           }
 
-            core.setOutput("deploy_preapproval", deployPreapproval);
-            core.notice(deployPreapproval ? "Preapproval deployment allowed" : "Preapproval deployment blocked: environment in use by existing branch");
+  #           core.setOutput("deploy_preapproval", deployPreapproval);
+  #           core.notice(deployPreapproval ? "Preapproval deployment allowed" : "Preapproval deployment blocked: environment in use by existing branch");
 
-  # ---------------------------
-  # DEPLOY TO TEST (AUTO)
-  # ---------------------------
-  deploy-test:
-    name: Deploy to Test
-    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
-    needs: [build, test, check-preapproval]
-    outputs:
-      environment_url: ${{ steps.deploy_app.outputs.environment_url }}
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      pull-requests: write
+  # # ---------------------------
+  # # DEPLOY TO TEST (AUTO)
+  # # ---------------------------
+  # deploy-test:
+  #   name: Deploy to Test
+  #   if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+  #   needs: [build, test, check-preapproval]
+  #   outputs:
+  #     environment_url: ${{ steps.deploy_app.outputs.environment_url }}
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     id-token: write
+  #     pull-requests: write
 
-    environment:
-      name: test
-      url: ${{ steps.deploy_app.outputs.environment_url }}
+  #   environment:
+  #     name: test
+  #     url: ${{ steps.deploy_app.outputs.environment_url }}
 
-    steps:
-      - name: Deploy app to test
-        id: deploy_app
-        uses: DFE-Digital/github-actions/deploy-to-aks@master
-        with:
-          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          environment: test
-          sha: ${{ needs.build.outputs.docker-image-tag }}
-          terraform-base: ${{ env.TERRAFORM_BASE }}
-          # healthcheck: ${{ env.HEALTHCHECK_CMD }}
-          teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
-          smoke-test: false
-          service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
-          gcp-wip: ${{ vars.GCP_WIP }}
-          gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
+  #   steps:
+  #     - name: Deploy app to test
+  #       id: deploy_app
+  #       uses: DFE-Digital/github-actions/deploy-to-aks@master
+  #       with:
+  #         azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+  #         azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  #         azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+  #         environment: test
+  #         sha: ${{ needs.build.outputs.docker-image-tag }}
+  #         terraform-base: ${{ env.TERRAFORM_BASE }}
+  #         # healthcheck: ${{ env.HEALTHCHECK_CMD }}
+  #         teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
+  #         smoke-test: false
+  #         service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
+  #         gcp-wip: ${{ vars.GCP_WIP }}
+  #         gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
 
-  # ---------------------------
-  # REFRESH TEST DATABASE (AUTO - IF REQUIRED)
-  # ---------------------------
-  detect-refresh-data-on-merge:
-    name: Detect refresh-data label on merged PR
-    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
-    needs: [deploy-test]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: read
-    outputs:
-      should-refresh: ${{ steps.detect.outputs.should_refresh }}
+  # # ---------------------------
+  # # REFRESH TEST DATABASE (AUTO - IF REQUIRED)
+  # # ---------------------------
+  # detect-refresh-data-on-merge:
+  #   name: Detect refresh-data label on merged PR
+  #   if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+  #   needs: [deploy-test]
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: read
+  #     pull-requests: read
+  #   outputs:
+  #     should-refresh: ${{ steps.detect.outputs.should_refresh }}
 
-    steps:
-      - name: Check labels on PR associated with merge commit
-        id: detect
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const { owner, repo } = context.repo;
-            const commit_sha = context.sha;
+  #   steps:
+  #     - name: Check labels on PR associated with merge commit
+  #       id: detect
+  #       uses: actions/github-script@v8
+  #       with:
+  #         script: |
+  #           const { owner, repo } = context.repo;
+  #           const commit_sha = context.sha;
 
-            const prs = await github.rest.repos.listPullRequestsAssociatedWithCommit({
-              owner,
-              repo,
-              commit_sha
-            });
+  #           const prs = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+  #             owner,
+  #             repo,
+  #             commit_sha
+  #           });
 
-            const mergedPr = prs.data.find(pr => pr.merged_at && pr.base?.ref === "main");
+  #           const mergedPr = prs.data.find(pr => pr.merged_at && pr.base?.ref === "main");
 
-            if (!mergedPr) {
-              core.info(`No merged PR found for commit ${commit_sha}.`);
-              core.setOutput("should_refresh", "false");
-              return;
-            }
+  #           if (!mergedPr) {
+  #             core.info(`No merged PR found for commit ${commit_sha}.`);
+  #             core.setOutput("should_refresh", "false");
+  #             return;
+  #           }
 
-            const hasRefreshDataLabel = (mergedPr.labels || [])
-              .some(label => label.name === "refresh data");
+  #           const hasRefreshDataLabel = (mergedPr.labels || [])
+  #             .some(label => label.name === "refresh data");
 
-            core.info(`PR ${mergedPr.number} has 'refresh data' label: ${hasRefreshDataLabel}`);
-            core.setOutput("should_refresh", hasRefreshDataLabel ? "true" : "false");
+  #           core.info(`PR ${mergedPr.number} has 'refresh data' label: ${hasRefreshDataLabel}`);
+  #           core.setOutput("should_refresh", hasRefreshDataLabel ? "true" : "false");
 
-  refresh-data-test-after-merge:
-    name: Refresh data in test after merge
-    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' && needs.detect-refresh-data-on-merge.outputs.should-refresh == 'true' }}
-    needs: [deploy-test, detect-refresh-data-on-merge]
-    uses: ./.github/workflows/data-pipeline.yml
-    secrets: inherit
-    with:
-      environment: test
-    permissions:
-      contents: write
-      id-token: write
-      actions: read
-      packages: write
-
-  # ---------------------------
-  # DEPLOY TO PREAPPROVAL (AUTO - IF CHECK PASSES)
-  # ---------------------------
-  deploy-preapproval:
-    name: Deploy to Preapproval
-    if: ${{ !cancelled()
-      && needs.check-preapproval.outputs.deploy_preapproval == 'true'
-      && needs.deploy-test.result == 'success'
-      && needs.detect-refresh-data-on-merge.result == 'success'
-      && (needs.refresh-data-test-after-merge.result == 'success' || needs.refresh-data-test-after-merge.result == 'skipped')
-      }}
-    needs:
-      [
-        build,
-        check-preapproval,
-        deploy-test,
-        detect-refresh-data-on-merge,
-        refresh-data-test-after-merge
-      ]
-    outputs:
-      environment_url: ${{ steps.deploy_app.outputs.environment_url }}
-    environment:
-      name: preapproval
-      url: ${{ steps.deploy_app.outputs.environment_url }}
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      pull-requests: write
-
-    steps:
-      - name: Deploy app to preapproval
-        id: deploy_app
-        uses: DFE-Digital/github-actions/deploy-to-aks@master
-        with:
-          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          environment: preapproval
-          sha: ${{ needs.build.outputs.docker-image-tag }}
-          terraform-base: ${{ env.TERRAFORM_BASE }}
-          # healthcheck: ${{ env.HEALTHCHECK_CMD }}
-          teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
-          service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
-          smoke-test: false
-          db-seed: false
-          gcp-wip: ${{ vars.GCP_WIP }}
-          gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
-
-  # ----------------------------------------
-  # DEPLOY TO PRODUCTION (AUTO - AFTER TEST)
-  # ----------------------------------------
-  deploy-production:
-    name: Deploy to Production
-    if: ${{ !cancelled()
-      && needs.check-preapproval.result == 'success'
-      && (needs.deploy-preapproval.result == 'success' || needs.deploy-preapproval.result == 'skipped')
-      && needs.detect-refresh-data-on-merge.result == 'success'
-      && (needs.refresh-data-test-after-merge.result == 'success' || needs.refresh-data-test-after-merge.result == 'skipped')
-      }}
-    needs:
-      [
-        build,
-        check-preapproval,
-        deploy-preapproval,
-        detect-refresh-data-on-merge,
-        refresh-data-test-after-merge
-      ]
-    outputs:
-      environment_url: ${{ steps.deploy_app.outputs.environment_url }}
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      pull-requests: write
-
-    environment:
-      name: production
-      url: ${{ steps.deploy_app.outputs.environment_url }}
-
-    steps:
-      - name: Deploy app to production
-        id: deploy_app
-        uses: DFE-Digital/github-actions/deploy-to-aks@master
-        with:
-          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          environment: production
-          sha: ${{ needs.build.outputs.docker-image-tag }}
-          terraform-base: ${{ env.TERRAFORM_BASE }}
-          # healthcheck: ${{ env.HEALTHCHECK_CMD }}
-          teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
-          smoke-test: false
-          service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
-          gcp-wip: ${{ vars.GCP_WIP }}
-          gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
-
-  # ------------------------------------------------
-  # REFRESH PRODUCTION DATABASE (AUTO - IF REQUIRED)
-  # Uses the same 'refresh data' label as test, and only runs once the test refresh has succeeded.
-  # Pulls from the production Blob container. Maintenance mode is left enabled afterwards.
-  # ------------------------------------------------
-  refresh-data-production-after-merge:
-    name: Refresh data in production after merge
-    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' && needs.detect-refresh-data-on-merge.outputs.should-refresh == 'true' }}
-    needs: [deploy-production, detect-refresh-data-on-merge]
-    uses: ./.github/workflows/data-pipeline.yml
-    secrets: inherit
-    with:
-      environment: production
-    permissions:
-      contents: write
-      id-token: write
-      actions: read
-      packages: write
-
-  # ---------------------------
-  # MANUAL DEPLOY
-  # ---------------------------
-  manual_deploy:
-    name: Manual deploy
-    needs: [build]
-    if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && (needs.build.result == 'success' || needs.build.result == 'skipped') }}
-    outputs:
-      environment_url: ${{ steps.deploy_manual.outputs.environment_url }}
-    environment:
-      name: ${{ inputs.environment }}
-      url: ${{ steps.deploy_manual.outputs.environment_url }}
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      pull-requests: write
-
-    steps:
-      - name: Deploy app to ${{ inputs.environment }}
-        id: deploy_manual
-        uses: DFE-Digital/github-actions/deploy-to-aks@master
-        with:
-          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          environment: ${{ inputs.environment }}
-          pr-number: ${{ inputs.pull-request-number }}
-          sha: ${{ inputs.docker-image-tag || needs.build.outputs.docker-image-tag }}
-          terraform-base: ${{ env.TERRAFORM_BASE }}
-          # healthcheck: ${{ env.HEALTHCHECK_CMD }}
-          teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
-          service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
-          smoke-test: false
-          db-seed: false
-          gcp-wip: ${{ vars.GCP_WIP }}
-          gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
-
-  # ---------------------------
-  # INTEGRATION TESTS (POST DEPLOYMENT)
-  # ---------------------------  
-  # on Test environnment
-  # E2E-tests-no-refresh:
-  #   name: E2E Tests (Post Deployment)
+  # refresh-data-test-after-merge:
+  #   name: Refresh data in test after merge
+  #   if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' && needs.detect-refresh-data-on-merge.outputs.should-refresh == 'true' }}
   #   needs: [deploy-test, detect-refresh-data-on-merge]
-  #   if: ${{ needs.detect-refresh-data-on-merge.outputs.should-refresh != 'true' }}
-  #   uses: ./.github/workflows/e2e-tests.yml
+  #   uses: ./.github/workflows/data-pipeline.yml
+  #   secrets: inherit
   #   with:
   #     environment: test
-  #     base_url: ${{ needs.deploy-test.outputs.environment_url }}
-  
-  # E2E-tests-after-refresh:
+  #   permissions:
+  #     contents: write
+  #     id-token: write
+  #     actions: read
+  #     packages: write
+
+  # # ---------------------------
+  # # DEPLOY TO PREAPPROVAL (AUTO - IF CHECK PASSES)
+  # # ---------------------------
+  # deploy-preapproval:
+  #   name: Deploy to Preapproval
+  #   if: ${{ !cancelled()
+  #     && needs.check-preapproval.outputs.deploy_preapproval == 'true'
+  #     && needs.deploy-test.result == 'success'
+  #     && needs.detect-refresh-data-on-merge.result == 'success'
+  #     && (needs.refresh-data-test-after-merge.result == 'success' || needs.refresh-data-test-after-merge.result == 'skipped')
+  #     }}
+  #   needs:
+  #     [
+  #       build,
+  #       check-preapproval,
+  #       deploy-test,
+  #       detect-refresh-data-on-merge,
+  #       refresh-data-test-after-merge
+  #     ]
+  #   outputs:
+  #     environment_url: ${{ steps.deploy_app.outputs.environment_url }}
+  #   environment:
+  #     name: preapproval
+  #     url: ${{ steps.deploy_app.outputs.environment_url }}
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     id-token: write
+  #     pull-requests: write
+
+  #   steps:
+  #     - name: Deploy app to preapproval
+  #       id: deploy_app
+  #       uses: DFE-Digital/github-actions/deploy-to-aks@master
+  #       with:
+  #         azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+  #         azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  #         azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+  #         environment: preapproval
+  #         sha: ${{ needs.build.outputs.docker-image-tag }}
+  #         terraform-base: ${{ env.TERRAFORM_BASE }}
+  #         # healthcheck: ${{ env.HEALTHCHECK_CMD }}
+  #         teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
+  #         service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
+  #         smoke-test: false
+  #         db-seed: false
+  #         gcp-wip: ${{ vars.GCP_WIP }}
+  #         gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
+
+  # # ----------------------------------------
+  # # DEPLOY TO PRODUCTION (AUTO - AFTER TEST)
+  # # ----------------------------------------
+  # deploy-production:
+  #   name: Deploy to Production
+  #   if: ${{ !cancelled()
+  #     && needs.check-preapproval.result == 'success'
+  #     && (needs.deploy-preapproval.result == 'success' || needs.deploy-preapproval.result == 'skipped')
+  #     && needs.detect-refresh-data-on-merge.result == 'success'
+  #     && (needs.refresh-data-test-after-merge.result == 'success' || needs.refresh-data-test-after-merge.result == 'skipped')
+  #     }}
+  #   needs:
+  #     [
+  #       build,
+  #       check-preapproval,
+  #       deploy-preapproval,
+  #       detect-refresh-data-on-merge,
+  #       refresh-data-test-after-merge
+  #     ]
+  #   outputs:
+  #     environment_url: ${{ steps.deploy_app.outputs.environment_url }}
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     id-token: write
+  #     pull-requests: write
+
+  #   environment:
+  #     name: production
+  #     url: ${{ steps.deploy_app.outputs.environment_url }}
+
+  #   steps:
+  #     - name: Deploy app to production
+  #       id: deploy_app
+  #       uses: DFE-Digital/github-actions/deploy-to-aks@master
+  #       with:
+  #         azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+  #         azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  #         azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+  #         environment: production
+  #         sha: ${{ needs.build.outputs.docker-image-tag }}
+  #         terraform-base: ${{ env.TERRAFORM_BASE }}
+  #         # healthcheck: ${{ env.HEALTHCHECK_CMD }}
+  #         teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
+  #         smoke-test: false
+  #         service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
+  #         gcp-wip: ${{ vars.GCP_WIP }}
+  #         gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
+
+  # # ------------------------------------------------
+  # # REFRESH PRODUCTION DATABASE (AUTO - IF REQUIRED)
+  # # Uses the same 'refresh data' label as test, and only runs once the test refresh has succeeded.
+  # # Pulls from the production Blob container. Maintenance mode is left enabled afterwards.
+  # # ------------------------------------------------
+  # refresh-data-production-after-merge:
+  #   name: Refresh data in production after merge
+  #   if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' && needs.detect-refresh-data-on-merge.outputs.should-refresh == 'true' }}
+  #   needs: [deploy-production, detect-refresh-data-on-merge]
+  #   uses: ./.github/workflows/data-pipeline.yml
+  #   secrets: inherit
+  #   with:
+  #     environment: production
+  #   permissions:
+  #     contents: write
+  #     id-token: write
+  #     actions: read
+  #     packages: write
+
+  # # ---------------------------
+  # # MANUAL DEPLOY
+  # # ---------------------------
+  # manual_deploy:
+  #   name: Manual deploy
+  #   needs: [build]
+  #   if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && (needs.build.result == 'success' || needs.build.result == 'skipped') }}
+  #   outputs:
+  #     environment_url: ${{ steps.deploy_manual.outputs.environment_url }}
+  #   environment:
+  #     name: ${{ inputs.environment }}
+  #     url: ${{ steps.deploy_manual.outputs.environment_url }}
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     id-token: write
+  #     pull-requests: write
+
+  #   steps:
+  #     - name: Deploy app to ${{ inputs.environment }}
+  #       id: deploy_manual
+  #       uses: DFE-Digital/github-actions/deploy-to-aks@master
+  #       with:
+  #         azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+  #         azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  #         azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+  #         environment: ${{ inputs.environment }}
+  #         pr-number: ${{ inputs.pull-request-number }}
+  #         sha: ${{ inputs.docker-image-tag || needs.build.outputs.docker-image-tag }}
+  #         terraform-base: ${{ env.TERRAFORM_BASE }}
+  #         # healthcheck: ${{ env.HEALTHCHECK_CMD }}
+  #         teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
+  #         service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
+  #         smoke-test: false
+  #         db-seed: false
+  #         gcp-wip: ${{ vars.GCP_WIP }}
+  #         gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
+
+  # # ---------------------------
+  # # INTEGRATION TESTS (POST DEPLOYMENT)
+  # # ---------------------------
+  # # on Test environnment
+  # # E2E-tests-no-refresh:
+  # #   name: E2E Tests (Post Deployment)
+  # #   needs: [deploy-test, detect-refresh-data-on-merge]
+  # #   if: ${{ needs.detect-refresh-data-on-merge.outputs.should-refresh != 'true' }}
+  # #   uses: ./.github/workflows/e2e-tests.yml
+  # #   with:
+  # #     environment: test
+  # #     base_url: ${{ needs.deploy-test.outputs.environment_url }}
+
+  # # E2E-tests-after-refresh:
+  # #   name: E2E Tests (Post Deployment)
+  # #   needs: [deploy-test, refresh-data-test-after-merge]
+  # #   if: ${{ needs.refresh-data-test-after-merge.result == 'success' }}
+  # #   uses: ./.github/workflows/e2e-tests.yml
+  # #   with:
+  # #     environment: test
+  # #     base_url: ${{ needs.deploy-test.outputs.environment_url }}
+
+  # E2E-tests-manual:
+  #   name: E2E Tests (Manual Deployment)
+  #   needs: [manual_deploy]
+  #   if: ${{ inputs.environment == 'review' || inputs.environment == 'test' }}
+  #   uses: ./.github/workflows/e2e-tests.yml
+  #   with:
+  #     environment: ${{ inputs.environment }}
+  #     base_url: ${{ needs.manual_deploy.outputs.environment_url }}
+  #     test_data_version: '2526'
+
+  # # on review app environment (no refresh)
+  # E2E-tests-review-app:
   #   name: E2E Tests (Post Deployment)
-  #   needs: [deploy-test, refresh-data-test-after-merge]
-  #   if: ${{ needs.refresh-data-test-after-merge.result == 'success' }}
+  #   needs: [deploy-review-app]
   #   uses: ./.github/workflows/e2e-tests.yml
   #   with:
-  #     environment: test
-  #     base_url: ${{ needs.deploy-test.outputs.environment_url }}
+  #     environment: review
+  #     base_url: ${{ needs.deploy-review-app.outputs.environment_url }}
+  #     test_data_version: '2526'
 
-  E2E-tests-manual:
-    name: E2E Tests (Manual Deployment)
-    needs: [manual_deploy]
-    if: ${{ inputs.environment == 'review' || inputs.environment == 'test' }}
-    uses: ./.github/workflows/e2e-tests.yml
-    with:
-      environment: ${{ inputs.environment }}
-      base_url: ${{ needs.manual_deploy.outputs.environment_url }}
-      test_data_version: '2526'
+  # # on review app environment (with refresh)
+  # E2E-tests_with_refresh:
+  #   name: E2E Tests (Post Deployment)
+  #   needs: [deploy-review-app-with-refresh, refresh-data]
+  #   if: ${{ needs.refresh-data.result == 'success' }}
+  #   uses: ./.github/workflows/e2e-tests.yml
+  #   with:
+  #     environment: review
+  #     base_url: ${{ needs.deploy-review-app-with-refresh.outputs.environment_url }}
+  #     test_data_version: '2526'
 
-  # on review app environment (no refresh)
-  E2E-tests-review-app:
-    name: E2E Tests (Post Deployment)
-    needs: [deploy-review-app]
-    uses: ./.github/workflows/e2e-tests.yml
-    with:
-      environment: review
-      base_url: ${{ needs.deploy-review-app.outputs.environment_url }}
-      test_data_version: '2526'
+  # # ---------------------------
+  # # INFRA TEAM DEPLOYMENTS -  NOT DEPENDENT ON WHETHER WE DEPLOY THE APP OR NOT.
+  # # These are infrastructure changes that need to be deployed regardless of whether the app is deployed or not.
+  # # ---------------------------
+  # deploy_domains_infra:
+  #   name: Deploy Domains Infrastructure
+  #   runs-on: ubuntu-latest
+  #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+  #   concurrency: deploy_domains_infra
+  #   needs: [deploy-production]
+  #   environment:
+  #     name: production
+  #   permissions:
+  #     id-token: write
 
-  # on review app environment (with refresh)
-  E2E-tests_with_refresh:
-    name: E2E Tests (Post Deployment)
-    needs: [deploy-review-app-with-refresh, refresh-data]
-    if: ${{ needs.refresh-data.result == 'success' }}
-    uses: ./.github/workflows/e2e-tests.yml
-    with:
-      environment: review
-      base_url: ${{ needs.deploy-review-app-with-refresh.outputs.environment_url }}
-      test_data_version: '2526'
+  #   steps:
+  #     - name: Deploy Domains Infrastructure
+  #       uses: DFE-Digital/github-actions/deploy-domains-infra@master
+  #       with:
+  #         azure-client-id:  ${{ secrets.AZURE_CLIENT_ID  }}
+  #         azure-tenant-id:  ${{ secrets.AZURE_TENANT_ID   }}
+  #         azure-subscription-id:  ${{ secrets.AZURE_SUBSCRIPTION_ID   }}
+  #         teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
+  #         service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
 
-  # ---------------------------
-  # INFRA TEAM DEPLOYMENTS -  NOT DEPENDENT ON WHETHER WE DEPLOY THE APP OR NOT.
-  # These are infrastructure changes that need to be deployed regardless of whether the app is deployed or not.
-  # ---------------------------        
-  deploy_domains_infra:
-    name: Deploy Domains Infrastructure
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    concurrency: deploy_domains_infra
-    needs: [deploy-production]
-    environment:
-      name: production
-    permissions:
-      id-token: write
+  # deploy_domains_env:
+  #   name: Deploy Domains to ${{ matrix.domain_environment }} environment
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     max-parallel: 1
+  #     matrix:
+  #       domain_environment: [test, preapproval, production]
 
-    steps:
-      - name: Deploy Domains Infrastructure
-        uses: DFE-Digital/github-actions/deploy-domains-infra@master
-        with:
-          azure-client-id:  ${{ secrets.AZURE_CLIENT_ID  }}
-          azure-tenant-id:  ${{ secrets.AZURE_TENANT_ID   }}
-          azure-subscription-id:  ${{ secrets.AZURE_SUBSCRIPTION_ID   }}
-          teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
-          service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
+  #   if:
+  #     ${{
+  #       always() &&
+  #       github.ref == 'refs/heads/main' &&
+  #       github.event_name == 'push'
+  #     }}
 
-  deploy_domains_env:
-    name: Deploy Domains to ${{ matrix.domain_environment }} environment
-    runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 1
-      matrix:
-        domain_environment: [test, preapproval, production]
-    
-    if: 
-      ${{
-        always() &&
-        github.ref == 'refs/heads/main' &&
-        github.event_name == 'push'
-      }}
+  #   concurrency: deploy_domains_env_${{ matrix.domain_environment }}
+  #   needs: [deploy_domains_infra, detect-refresh-data-on-merge, refresh-data-test-after-merge]
+  #   environment:
+  #     name: production
+  #   permissions:
+  #     id-token: write
 
-    concurrency: deploy_domains_env_${{ matrix.domain_environment }}
-    needs: [deploy_domains_infra, detect-refresh-data-on-merge, refresh-data-test-after-merge]   
-    environment:
-      name: production
-    permissions:
-      id-token: write
-
-    steps:
-      - name: Deploy Domains Environment
-        id: deploy_domains_env
-        # Production currently stays in maintenance mode after a data refresh, so its healthcheck would fail - skip it for now.
-        if: 
-            ${{
-              needs.detect-refresh-data-on-merge.outputs.should-refresh != 'true' ||
-              (matrix.domain_environment == 'test' && needs.refresh-data-test-after-merge.result == 'success')
-            }}
-        uses: DFE-Digital/github-actions/deploy-domains-env@master
-        with:
-          azure-client-id: ${{ secrets.AZURE_CLIENT_ID  }}
-          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID   }}
-          azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID   }}
-          environment: ${{ matrix.domain_environment }}
-          healthcheck: healthcheck
-          teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
-          service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
-          terraform-base: terraform/domains/environment_domains
+  #   steps:
+  #     - name: Deploy Domains Environment
+  #       id: deploy_domains_env
+  #       # Production currently stays in maintenance mode after a data refresh, so its healthcheck would fail - skip it for now.
+  #       if:
+  #           ${{
+  #             needs.detect-refresh-data-on-merge.outputs.should-refresh != 'true' ||
+  #             (matrix.domain_environment == 'test' && needs.refresh-data-test-after-merge.result == 'success')
+  #           }}
+  #       uses: DFE-Digital/github-actions/deploy-domains-env@master
+  #       with:
+  #         azure-client-id: ${{ secrets.AZURE_CLIENT_ID  }}
+  #         azure-tenant-id: ${{ secrets.AZURE_TENANT_ID   }}
+  #         azure-subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID   }}
+  #         environment: ${{ matrix.domain_environment }}
+  #         healthcheck: healthcheck
+  #         teams-webhook-url: ${{ secrets.TEAMS_WEBHOOK_URL }}
+  #         service: ${{ vars.TEAMS_MSG_SERVICE_NAME }}
+  #         terraform-base: terraform/domains/environment_domains
