@@ -49,4 +49,10 @@ public class KS2MeetingOrExceedingStandardsModel
     public required CodedDouble LocalAuthorityNonDisadvantagedExceedingExpectedStandard { get; init; }
     public required CodedDouble EnglandNonDisadvantagedMeetingExpectedStandard { get; init; }
     public required CodedDouble EnglandNonDisadvantagedExceedingExpectedStandard { get; init; }
+    public required CodedDouble PriorAttainmentReadingWritingMathsLowExpectedStandardPupilPct { get; init; }
+    public required CodedDouble PriorAttainmentReadingWritingMathsLowHigherStandardPupilPct { get; init; }
+    public required CodedDouble PriorAttainmentReadingWritingMathsMedExpectedStandardPupilPct { get; init; }
+    public required CodedDouble PriorAttainmentReadingWritingMathsMedHigherStandardPupilPct { get; init; }
+    public required CodedDouble PriorAttainmentReadingWritingMathsHighExpectedStandardPupilPct { get; init; }
+    public required CodedDouble PriorAttainmentReadingWritingMathsHighHigherStandardPupilPct { get; init; }
 }

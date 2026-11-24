@@ -82,5 +82,10 @@ public class KS2EstablishmentPerformance
     public CodedDouble TPUPYEAR_Est_Current_Num_Coded { get; set; }
     public CodedDouble TFSM6CLA1A_Est_Current_Num_Coded { get; set; }
     public CodedDouble TMOBN_Est_Current_Num_Coded { get; set; }
-
+    public CodedDouble PTRWM_Low_Exp_St_Pup_Pct_Coded { get; set; }
+    public CodedDouble PTRWM_Low_Hgr_St_Pup_Pct_Coded { get; set; }
+    public CodedDouble PTRWM_Med_Exp_St_Pup_Pct_Coded { get; set; }
+    public CodedDouble PTRWM_Med_Hgr_St_Pup_Pct_Coded { get; set; }
+    public CodedDouble PTRWM_High_Exp_St_Pup_Pct_Coded { get; set; }
+    public CodedDouble PTRWM_High_Hgr_St_Pup_Pct_Coded { get; set; }
 }
