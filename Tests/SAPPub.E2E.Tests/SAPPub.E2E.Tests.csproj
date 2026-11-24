@@ -138,6 +138,9 @@
     <None Update="TestData\2526\KS2\PupilProgress.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="TestData\2526\KS2\PupilProgressDisadvantaged.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="TestData\2526\KS4\SubjectsEntered.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
