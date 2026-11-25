@@ -57,7 +57,7 @@ public class DisadvantagedPupilsPageTests : PageTestsBase
         Assert.Contains("academic year.", body);
         Assert.Contains(doc.GetElementsByTagName("h3"), x => x.TextContent.Trim() == "Progress made by disadvantaged pupils");
         Assert.Contains("This shows the progress disadvantaged pupils made at this school between year 2 (key stage 1) and year 6 (key stage 2).", body);
-        Assert.Contains("These scores help show how well the school supports disadvantaged pupils in making progress during their time in primary school.", body);
+        Assert.Contains("These scores help show how well the school supports pupils in making progress during their time in primary school.", body);
     }
 
     [Fact]
@@ -76,7 +76,7 @@ public class DisadvantagedPupilsPageTests : PageTestsBase
         Assert.False(groupDetails.HasAttribute("open"));
 
         Assert.Equal("What the progress score means and how it's worked out", scoreDetails.QuerySelector(".govuk-details__summary-text")!.TextContent.Trim());
-        Assert.Contains("The progress score shows how much progress disadvantaged pupils at this school made compared with similar pupils across England.", scoreDetails.TextContent);
+        Assert.Contains("The progress score shows how much progress pupils at this school made compared with similar pupils across England.", scoreDetails.TextContent);
         Assert.Contains("How the number of pupils affects the score", scoreDetails.TextContent);
 
         Assert.Equal("Who is included in the disadvantaged pupils group", groupDetails.QuerySelector(".govuk-details__summary-text")!.TextContent.Trim());
