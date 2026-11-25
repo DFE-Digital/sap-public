@@ -606,7 +606,14 @@ public class KS2ControllerTests : BaseProfilesTests
         NonDisadvantagedAverageReadingLA = GetCodedDouble(31),
         NonDisadvantagedAverageMathsLA = GetCodedDouble(32),
         NonDisadvantagedAverageReadingEngland = GetCodedDouble(33),
-        NonDisadvantagedAverageMathsEngland = GetCodedDouble(34)
-    };
+        NonDisadvantagedAverageMathsEngland = GetCodedDouble(34),
 
+        /* Prior attainment */
+        PriorAttainmentReadingLowAvgScorePct = GetCodedDouble(35),
+        PriorAttainmentMathsLowAvgScorePct = GetCodedDouble(36),
+        PriorAttainmentReadingMidAvgScorePct = GetCodedDouble(37),
+        PriorAttainmentMathsMidAvgScorePct = GetCodedDouble(38),
+        PriorAttainmentReadingHighAvgScorePct = GetCodedDouble(39),
+        PriorAttainmentMathsHighAvgScorePct = GetCodedDouble(40)
+    };
 }
