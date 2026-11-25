@@ -353,6 +353,12 @@ public class KS2ControllerTests : BaseProfilesTests
         Assert.Equal(expectedModel.NonDisadvantagedAverageMathsEngland, model.NonDisadvantagedPupils.Rows.ToList()[1].AverageMathsScore.Value);
         Assert.Equal(expectedModel.NonDisadvantagedAverageReadingEngland, model.NonDisadvantagedPupils.Rows.ToList()[1].AverageReadingScore.Value);
 
+        Assert.Equal(expectedModel.PriorAttainmentReadingLowAvgScorePct, model.PriorAttainment.Rows.ToList()[0].AverageReadingScore.Value);
+        Assert.Equal(expectedModel.PriorAttainmentMathsLowAvgScorePct, model.PriorAttainment.Rows.ToList()[0].AverageMathsScore.Value);
+        Assert.Equal(expectedModel.PriorAttainmentReadingMidAvgScorePct, model.PriorAttainment.Rows.ToList()[1].AverageReadingScore.Value);
+        Assert.Equal(expectedModel.PriorAttainmentMathsMidAvgScorePct, model.PriorAttainment.Rows.ToList()[1].AverageMathsScore.Value);
+        Assert.Equal(expectedModel.PriorAttainmentReadingHighAvgScorePct, model.PriorAttainment.Rows.ToList()[2].AverageReadingScore.Value);
+        Assert.Equal(expectedModel.PriorAttainmentMathsHighAvgScorePct, model.PriorAttainment.Rows.ToList()[2].AverageMathsScore.Value);
 
         _mockKS2ScaledScoreService
             .Verify(a => a.GetScaledScoreModel(fakeMinimumEstablishment.URN,It.IsAny<CancellationToken>()), Times.Once);
