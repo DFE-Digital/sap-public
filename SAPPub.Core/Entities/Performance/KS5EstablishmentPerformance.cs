@@ -398,4 +398,18 @@ public class KS5EstablishmentPerformance
 
     // Percentage of students retained and assessed - Tech Levels - Previous2
     public CodedDouble PT_RET_ASSESSED_TLEV_Est_Previous2_Pct_Coded { get; set; }
+
+    // Technical Certificates Retained and assessed measures
+
+    // Number of students enrolled - Technical Certificates
+    public CodedDouble T_INSCOPE_TECHCERT_RET_Est_Current_Num_Coded { get; set; }
+
+    // Percentage of students retained and assessed - Technical Certificates - Current
+    public CodedDouble PT_RET_ASSESSED_TECHCERT_Est_Current_Pct_Coded { get; set; }
+
+    // Percentage of students retained and assessed - Technical Certificates - Previous
+    public CodedDouble PT_RET_ASSESSED_TECHCERT_Est_Previous_Pct_Coded { get; set; }
+
+    // Percentage of students retained and assessed - Technical Certificates - Previous2
+    public CodedDouble PT_RET_ASSESSED_TECHCERT_Est_Previous2_Pct_Coded { get; set; }
 }

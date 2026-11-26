@@ -456,4 +456,15 @@ public class KS5EnglandPerformance
 
     // Percentage of students retained and assessed - Tech Levels - Previous2
     public CodedDouble PT_RET_ASSESSED_TLEV_Eng_Previous2_Pct_Coded { get; set; }
+
+    // Technical Certificates Retained and assessed measures
+
+    // Percentage of students retained and assessed - Technical Certificates - Current
+    public CodedDouble PT_RET_ASSESSED_TECHCERT_Eng_Current_Pct_Coded { get; set; }
+
+    // Percentage of students retained and assessed - Technical Certificates - Previous
+    public CodedDouble PT_RET_ASSESSED_TECHCERT_Eng_Previous_Pct_Coded { get; set; }
+
+    // Percentage of students retained and assessed - Technical Certificates - Previous2
+    public CodedDouble PT_RET_ASSESSED_TECHCERT_Eng_Previous2_Pct_Coded { get; set; }
 }

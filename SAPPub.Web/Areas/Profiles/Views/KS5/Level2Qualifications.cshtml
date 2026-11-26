@@ -120,11 +120,8 @@
             @* Average result *@
             <partial name="_AverageResult" model="@Model.AverageResult" view-data='new ViewDataDictionary(ViewData) { ["QualificationLevel"] = Model.Level2Qualification, ["LAName"] = Model.LAName }' />
 
-            @* Student retention *@
-            <h3 class="govuk-heading-m">Student retention</h3>
-            <div id="student-retention" class="govuk-inset-text">
-                Measures on student retention will be available shortly in a future release.
-            </div>
+            @* Retention measure*@
+            <partial name="_RetentionMeasures" model="@Model.RetainedAndAssessedData" view-data='new ViewDataDictionary(ViewData) { ["QualificationLevel"] = Model.Level2Qualification }' />
 
             @* Performance Summary *@
             <partial name="_PerformanceSummary" model="@Model.PerformanceGroupsData" view-data='new ViewDataDictionary(ViewData) { ["LAName"] = Model.LAName }' />
@@ -136,5 +133,8 @@
 </div>
 
 @section Scripts {
+    <script src="~/js/chart.umd.js"></script>
+    <script src="~/js/chartjs-plugin-datalabels.min.js"></script>
+    <script src="~/js/chart-factory.js"></script>
     <script src="~/js/chart-table-toggle.js"></script>
 }

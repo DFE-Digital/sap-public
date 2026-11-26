@@ -28,4 +28,6 @@ public class Level2QualificationModel
     public required PerformanceSummaryModel DisadvantagedStudentsData { get; init; }
 
     public required PerformanceSummaryModel NonDisadvantagedStudentsData { get; init; }
+
+    public required RetainedAndAssessedModel RetainedAndAssessedData { get; init; }
 }

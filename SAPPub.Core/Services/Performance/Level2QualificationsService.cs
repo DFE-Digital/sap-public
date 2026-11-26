@@ -43,7 +43,8 @@ public class Level2QualificationsService(
             ProgressScore = GetProgressScoreModel(level2Qualification, establishmentPerformance, englandPerformance),
             AverageResult = GetAverageResultModel(level2Qualification, establishmentPerformance, englandPerformance, laPerformance),
             DisadvantagedStudentsData = GetDisadvantagedStudentsData(level2Qualification, establishmentPerformance, laPerformance, englandPerformance),
-            NonDisadvantagedStudentsData = GetNonDisadvantagedStudentsData(level2Qualification, laPerformance, englandPerformance)
+            NonDisadvantagedStudentsData = GetNonDisadvantagedStudentsData(level2Qualification, laPerformance, englandPerformance),
+            RetainedAndAssessedData = GetRetainedAndAssessedMeasures(level2Qualification, establishmentPerformance, laPerformance, englandPerformance)
         };
     }
 
@@ -200,6 +201,81 @@ public class Level2QualificationsService(
                     _ => MapPerformanceResult(CodedString.Empty, CodedDouble.Empty)
                 }
             }
+        };
+    }
+
+    public static RetainedAndAssessedModel GetRetainedAndAssessedMeasures(
+        Level2 level2Qualification,
+        KS5EstablishmentPerformance establishmentPerformance,
+        KS5LAPerformance laPerformance,
+        KS5EnglandPerformance englandPerformance)
+    {
+        return new RetainedAndAssessedModel
+        {
+            NumberOfStudents = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = level2Qualification switch
+                {
+                    Level2.TechCert => establishmentPerformance.T_INSCOPE_TECHCERT_RET_Est_Current_Num_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                PreviousYear = CodedDouble.Empty,
+                TwoYearsAgo = CodedDouble.Empty,
+            },
+            EstablishmentAll = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = level2Qualification switch
+                {
+                    Level2.TechCert => establishmentPerformance.PT_RET_ASSESSED_TECHCERT_Est_Current_Pct_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                PreviousYear = level2Qualification switch
+                {
+                    Level2.TechCert => establishmentPerformance.PT_RET_ASSESSED_TECHCERT_Est_Previous_Pct_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                TwoYearsAgo = level2Qualification switch
+                {
+                    Level2.TechCert => establishmentPerformance.PT_RET_ASSESSED_TECHCERT_Est_Previous2_Pct_Coded,
+                    _ => CodedDouble.Empty,
+                },
+            },
+            LocalAuthorityAll = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = level2Qualification switch
+                {
+                    Level2.TechCert => laPerformance.PT_RET_ASSESSED_TECHCERT_LA_Current_Pct_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                PreviousYear = level2Qualification switch
+                {
+                    Level2.TechCert => laPerformance.PT_RET_ASSESSED_TECHCERT_LA_Previous_Pct_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                TwoYearsAgo = level2Qualification switch
+                {
+                    Level2.TechCert => laPerformance.PT_RET_ASSESSED_TECHCERT_LA_Previous2_Pct_Coded,
+                    _ => CodedDouble.Empty,
+                },
+            },
+            EnglandAll = new RelativeYearValues<CodedDouble>
+            {
+                CurrentYear = level2Qualification switch
+                {
+                    Level2.TechCert => englandPerformance.PT_RET_ASSESSED_TECHCERT_Eng_Current_Pct_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                PreviousYear = level2Qualification switch
+                {
+                    Level2.TechCert => englandPerformance.PT_RET_ASSESSED_TECHCERT_Eng_Previous_Pct_Coded,
+                    _ => CodedDouble.Empty,
+                },
+                TwoYearsAgo = level2Qualification switch
+                {
+                    Level2.TechCert => englandPerformance.PT_RET_ASSESSED_TECHCERT_Eng_Previous2_Pct_Coded,
+                    _ => CodedDouble.Empty,
+                },
+            },
         };
     }
 

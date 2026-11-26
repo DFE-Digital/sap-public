@@ -130,6 +130,19 @@ public class Level2QualificationsServiceTests
         Assert.Null(result.NonDisadvantagedStudentsData.England.ConfidenceLevelLower.Value);
         Assert.Null(result.NonDisadvantagedStudentsData.England.Result.Grade.Value);
         Assert.Null(result.NonDisadvantagedStudentsData.England.Result.Points.Value);
+
+        Assert.Null(result.RetainedAndAssessedData.NumberOfStudents.CurrentYear.Value);
+        Assert.Null(result.RetainedAndAssessedData.EstablishmentAll.CurrentYear.Value);
+        Assert.Null(result.RetainedAndAssessedData.EstablishmentAll.PreviousYear.Value);
+        Assert.Null(result.RetainedAndAssessedData.EstablishmentAll.TwoYearsAgo.Value);
+
+        Assert.Null(result.RetainedAndAssessedData.LocalAuthorityAll.CurrentYear.Value);
+        Assert.Null(result.RetainedAndAssessedData.LocalAuthorityAll.PreviousYear.Value);
+        Assert.Null(result.RetainedAndAssessedData.LocalAuthorityAll.TwoYearsAgo.Value);
+
+        Assert.Null(result.RetainedAndAssessedData.EnglandAll.CurrentYear.Value);
+        Assert.Null(result.RetainedAndAssessedData.EnglandAll.PreviousYear.Value);
+        Assert.Null(result.RetainedAndAssessedData.EnglandAll.TwoYearsAgo.Value);
     }
 
     [Theory]
@@ -165,6 +178,12 @@ public class Level2QualificationsServiceTests
             LCI_INS_TECHCERT_DIS_Est_Current_Num_Coded = new CodedDouble(0.5, string.Empty, string.Empty),
             TALLPPE_TECHCERT_DIS_Est_Current_Num_Coded = new CodedDouble(13.79, string.Empty, string.Empty),
             TALLPPEGRD_TECHCERT_DIS_Est_Current = new CodedString("B", string.Empty, string.Empty),
+
+            // Retention measures - Technical Certificates
+            T_INSCOPE_TECHCERT_RET_Est_Current_Num_Coded = new CodedDouble(200, string.Empty, string.Empty),
+            PT_RET_ASSESSED_TECHCERT_Est_Current_Pct_Coded = new CodedDouble(65.12, string.Empty, string.Empty),
+            PT_RET_ASSESSED_TECHCERT_Est_Previous_Pct_Coded = new CodedDouble(63.97, string.Empty, string.Empty),
+            PT_RET_ASSESSED_TECHCERT_Est_Previous2_Pct_Coded = new CodedDouble(68.34, string.Empty, string.Empty),
         };
 
         var englandPerformance = new KS5EnglandPerformance
@@ -199,6 +218,11 @@ public class Level2QualificationsServiceTests
             LCI_INS_TECHCERT_NOTDIS_Eng_Current_Num_Coded = new CodedDouble(1, string.Empty, string.Empty),
             TALLPPE_TECHCERT_NOTDIS_Eng_Current_Num_Coded = new CodedDouble(37.53, string.Empty, string.Empty),
             TALLPPEGRD_TECHCERT_NOTDIS_Eng_Current = new CodedString("A", string.Empty, string.Empty),
+
+            // Retention measures - Technical Certificates
+            PT_RET_ASSESSED_TLEV_Eng_Current_Pct_Coded = new CodedDouble(73.48, string.Empty, string.Empty),
+            PT_RET_ASSESSED_TLEV_Eng_Previous_Pct_Coded = new CodedDouble(67.49, string.Empty, string.Empty),
+            PT_RET_ASSESSED_TLEV_Eng_Previous2_Pct_Coded = new CodedDouble(65.37, string.Empty, string.Empty),
         };
 
         var laPerformance = new KS5LAPerformance
@@ -225,6 +249,11 @@ public class Level2QualificationsServiceTests
             LCI_INS_TECHCERT_NOTDIS_LA_Current_Num_Coded = new CodedDouble(2, string.Empty, string.Empty),
             TALLPPE_TECHCERT_NOTDIS_LA_Current_Num_Coded = new CodedDouble(13.45, string.Empty, string.Empty),
             TALLPPEGRD_TECHCERT_NOTDIS_LA_Current = new CodedString("A", string.Empty, string.Empty),
+
+            // Retention measures - Technical Certificates
+            PT_RET_ASSESSED_TLEV_LA_Current_Pct_Coded = new CodedDouble(71.45, string.Empty, string.Empty),
+            PT_RET_ASSESSED_TLEV_LA_Previous_Pct_Coded = new CodedDouble(75.31, string.Empty, string.Empty),
+            PT_RET_ASSESSED_TLEV_LA_Previous2_Pct_Coded = new CodedDouble(63.75, string.Empty, string.Empty),
         };
 
         _mockKs5PerformanceRepository
@@ -326,6 +355,20 @@ public class Level2QualificationsServiceTests
             Assert.Equal(englandPerformance.LCI_INS_TECHCERT_NOTDIS_Eng_Current_Num_Coded, result.NonDisadvantagedStudentsData.England.ConfidenceLevelLower);
             Assert.Equal(englandPerformance.TALLPPE_TECHCERT_NOTDIS_Eng_Current_Num_Coded, result.NonDisadvantagedStudentsData.England.Result.Points);
             Assert.Equal(englandPerformance.TALLPPEGRD_TECHCERT_NOTDIS_Eng_Current, result.NonDisadvantagedStudentsData.England.Result.Grade);
+
+            // Retention measures
+            Assert.Equal(establishmentPerformance.T_INSCOPE_TECHCERT_RET_Est_Current_Num_Coded, result.RetainedAndAssessedData.NumberOfStudents.CurrentYear);
+            Assert.Equal(establishmentPerformance.PT_RET_ASSESSED_TECHCERT_Est_Current_Pct_Coded, result.RetainedAndAssessedData.EstablishmentAll.CurrentYear);
+            Assert.Equal(establishmentPerformance.PT_RET_ASSESSED_TECHCERT_Est_Previous_Pct_Coded, result.RetainedAndAssessedData.EstablishmentAll.PreviousYear);
+            Assert.Equal(establishmentPerformance.PT_RET_ASSESSED_TECHCERT_Est_Previous2_Pct_Coded, result.RetainedAndAssessedData.EstablishmentAll.TwoYearsAgo);
+
+            Assert.Equal(laPerformance.PT_RET_ASSESSED_TECHCERT_LA_Current_Pct_Coded, result.RetainedAndAssessedData.LocalAuthorityAll.CurrentYear);
+            Assert.Equal(laPerformance.PT_RET_ASSESSED_TECHCERT_LA_Previous_Pct_Coded, result.RetainedAndAssessedData.LocalAuthorityAll.PreviousYear);
+            Assert.Equal(laPerformance.PT_RET_ASSESSED_TECHCERT_LA_Previous2_Pct_Coded, result.RetainedAndAssessedData.LocalAuthorityAll.TwoYearsAgo);
+
+            Assert.Equal(englandPerformance.PT_RET_ASSESSED_TECHCERT_Eng_Current_Pct_Coded, result.RetainedAndAssessedData.EnglandAll.CurrentYear);
+            Assert.Equal(englandPerformance.PT_RET_ASSESSED_TECHCERT_Eng_Previous_Pct_Coded, result.RetainedAndAssessedData.EnglandAll.PreviousYear);
+            Assert.Equal(englandPerformance.PT_RET_ASSESSED_TECHCERT_Eng_Previous2_Pct_Coded, result.RetainedAndAssessedData.EnglandAll.TwoYearsAgo);
         }
     }
 }

@@ -627,7 +627,7 @@ public class Level3QualificationsServiceTests
             Assert.Equal(_englandPerformance.TALLPPE_TLEV_NOTDIS_Eng_Current_Num_Coded, result.NonDisadvantagedStudentsData.England.Result.Points);
             Assert.Equal(_englandPerformance.TALLPPEGRD_TLEV_NOTDIS_Eng_Current, result.NonDisadvantagedStudentsData.England.Result.Grade);
 
-            // Retention measures - A Levels
+            // Retention measures - Tech Levels
             Assert.Equal(_establishmentPerformance.T_INSCOPE_TLEV_RET_Est_Current_Num_Coded, result.RetainedAndAssessedData.NumberOfStudents.CurrentYear);
             Assert.Equal(_establishmentPerformance.PT_RET_ASSESSED_TLEV_Est_Current_Pct_Coded, result.RetainedAndAssessedData.EstablishmentAll.CurrentYear);
             Assert.Equal(_establishmentPerformance.PT_RET_ASSESSED_TLEV_Est_Previous_Pct_Coded, result.RetainedAndAssessedData.EstablishmentAll.PreviousYear);
