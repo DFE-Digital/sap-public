@@ -26,7 +26,7 @@ on:
   push:
     branches:
       - main
-      - 3149-konduit-sql
+      - 3149-konduit-pg-improvement
   pull_request:
     branches:
       - main
@@ -308,7 +308,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          curl -fsSL https://raw.githubusercontent.com/DFE-Digital/teacher-services-cloud/3149-konduit-sql/scripts/konduit.sh \
+          curl -fsSL https://raw.githubusercontent.com/DFE-Digital/teacher-services-cloud/3149-konduit-pg-improvement/scripts/konduit.sh \
             -o "$GITHUB_WORKSPACE/konduit.sh"
           chmod +x "$GITHUB_WORKSPACE/konduit.sh"
           ls -la "$GITHUB_WORKSPACE/konduit.sh"
