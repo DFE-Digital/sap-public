@@ -285,6 +285,49 @@ public class KS2PupilProgressService(
         };
     }
 
+    public async Task<KS2PupilPerformanceBandings[]> GetGirlBoyPupilProgressAsync(string urn, CancellationToken ct = default)
+    {
+        var performance = await GetPerformanceAsync(urn, ct);
+
+        if (performance is null)
+        {
+            return [new() { Urn = urn }];
+        }
+
+        var (establishmentPerformance, laPerformance, englandPerformance) = performance.Value;
+
+        return [
+            new ()
+            {
+                Urn = urn,
+                CharacteristicName = "Girls",
+                EstablishmentReadingScore = establishmentPerformance?.READPROG_G_Est_Current_Num_Coded ?? CodedDouble.Empty,
+                EstablishmentWritingScore = establishmentPerformance?.WRITPROG_G_Est_Current_Num_Coded ?? CodedDouble.Empty,
+                EstablishmentMathsScore = establishmentPerformance?.MATPROG_G_Est_Current_Num_Coded ?? CodedDouble.Empty,
+                LocalAuthorityReadingScore = laPerformance?.READPROG_G_LA_Current_Num_Coded ?? CodedDouble.Empty,
+                LocalAuthorityWritingScore = laPerformance?.WRITPROG_G_LA_Current_Num_Coded ?? CodedDouble.Empty,
+                LocalAuthorityMathsScore = laPerformance?.MATPROG_G_LA_Current_Num_Coded ?? CodedDouble.Empty,
+                EnglandAverageReadingScore = englandPerformance?.READPROG_G_Eng_Current_Num_Coded,
+                EnglandAverageWritingScore = englandPerformance?.WRITPROG_G_Eng_Current_Num_Coded,
+                EnglandAverageMathsScore = englandPerformance?.MATPROG_G_Eng_Current_Num_Coded
+            },
+            new()
+            {
+                Urn = urn,
+                CharacteristicName = "Boys",
+                EstablishmentReadingScore = establishmentPerformance?.READPROG_B_Est_Current_Num_Coded ?? CodedDouble.Empty,
+                EstablishmentWritingScore = establishmentPerformance?.WRITPROG_B_Est_Current_Num_Coded ?? CodedDouble.Empty,
+                EstablishmentMathsScore = establishmentPerformance?.MATPROG_B_Est_Current_Num_Coded ?? CodedDouble.Empty,
+                LocalAuthorityReadingScore = laPerformance?.READPROG_B_LA_Current_Num_Coded ?? CodedDouble.Empty,
+                LocalAuthorityWritingScore = laPerformance?.WRITPROG_B_LA_Current_Num_Coded ?? CodedDouble.Empty,
+                LocalAuthorityMathsScore = laPerformance?.MATPROG_B_LA_Current_Num_Coded ?? CodedDouble.Empty,
+                EnglandAverageReadingScore = englandPerformance?.READPROG_B_Eng_Current_Num_Coded,
+                EnglandAverageWritingScore = englandPerformance?.WRITPROG_B_Eng_Current_Num_Coded,
+                EnglandAverageMathsScore = englandPerformance?.MATPROG_B_Eng_Current_Num_Coded
+            }
+        ];
+    }
+
     private async Task<(KS2EstablishmentPerformance? Establishment, KS2LAPerformance? LocalAuthority, KS2EnglandPerformance? England)?> GetPerformanceAsync(string urn, CancellationToken ct)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(urn);
@@ -305,5 +348,6 @@ public class KS2PupilProgressService(
 
         return (await ks2EstablishPerformanceTask, await ks2LAPerformanceTask, await ks2EnglandPerformanceTask);
     }
+
 
 }

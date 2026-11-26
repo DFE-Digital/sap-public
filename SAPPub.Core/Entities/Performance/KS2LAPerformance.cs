@@ -18,14 +18,20 @@ public class KS2LAPerformance
     public CodedDouble MATPROG_LA_Current_Num_Coded { get; set; }
     public CodedDouble MATPROG_FSM6CLA1A_LA_Current_Num_Coded { get; set; }
     public CodedDouble MATPROG_EAL_LA_Current_Num_Coded { get; set; }
+    public CodedDouble MATPROG_G_LA_Current_Num_Coded { get; set; }
+    public CodedDouble MATPROG_B_LA_Current_Num_Coded { get; set; }
     public CodedDouble READPROG_LA_Previous_Num_Coded { get; set; }
     public CodedDouble READPROG_LA_Current_Num_Coded { get; set; }
     public CodedDouble READPROG_FSM6CLA1A_LA_Current_Num_Coded { get; set; }
     public CodedDouble READPROG_EAL_LA_Current_Num_Coded { get; set; }
+    public CodedDouble READPROG_B_LA_Current_Num_Coded { get; set; }
+    public CodedDouble READPROG_G_LA_Current_Num_Coded { get; set; }
     public CodedDouble WRITPROG_LA_Previous_Num_Coded { get; set; }
     public CodedDouble WRITPROG_LA_Current_Num_Coded { get; set; }
     public CodedDouble WRITPROG_FSM6CLA1A_LA_Current_Num_Coded { get; set; }
     public CodedDouble WRITPROG_EAL_LA_Current_Num_Coded { get; set; }
+    public CodedDouble WRITPROG_B_LA_Current_Num_Coded { get; set; }
+    public CodedDouble WRITPROG_G_LA_Current_Num_Coded { get; set; }
     public CodedDouble PTGPS_EXP_LA_Current_Pct_Coded { get; set; }
     public CodedDouble PTGPS_HIGH_LA_Current_Pct_Coded { get; set; }
     public CodedDouble PTRWM_EXP_LA_Current_Pct_Coded { get; set; }

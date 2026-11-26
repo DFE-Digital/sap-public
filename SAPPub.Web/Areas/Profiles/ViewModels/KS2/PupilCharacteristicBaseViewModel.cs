@@ -91,4 +91,39 @@ public class PupilCharacteristicBaseViewModel : KS2BandingsBaseViewModel
             TechnicalGuideLinkNewTab = urlLinksOptions.PrimaryAttainmentGroupingsTechnicalGuide.NewTab
         };
     }
+
+    public static PupilCharacteristicBaseViewModel[] MapCollectionWithoutBandings(
+        KS2PupilPerformanceBandings[] kS2PupilPerformanceBandings,
+        EstablishmentMinimumServiceModel establishment,
+        PupilCharacteristic characteristic,
+        UrlLinksOptions urlLinksOptions)
+    {
+        return [
+            new()
+            {
+            
+            }
+
+            ];
+        {
+            URN = establishment.URN,
+            SchoolName = establishment.EstablishmentName,
+            IsKS2 = establishment.IsKS2,
+            IsKS4 = establishment.IsKS4,
+            IsKS5 = establishment.IsKS5,
+            SelectedPupilCharacteristic = characteristic,
+            EstablishmentReadingScore = kS2PupilPerformanceBandings.EstablishmentReadingScore,
+            EstablishmentWritingScore = kS2PupilPerformanceBandings.EstablishmentWritingScore,
+            EstablishmentMathsScore = kS2PupilPerformanceBandings.EstablishmentMathsScore,
+            LocalAuthorityReadingScore = kS2PupilPerformanceBandings.LocalAuthorityReadingScore,
+            LocalAuthorityWritingScore = kS2PupilPerformanceBandings.LocalAuthorityWritingScore,
+            LocalAuthorityMathsScore = kS2PupilPerformanceBandings.LocalAuthorityMathsScore,
+            EnglandReadingScore = kS2PupilPerformanceBandings.EnglandAverageReadingScore,
+            EnglandWritingScore = kS2PupilPerformanceBandings.EnglandAverageWritingScore,
+            EnglandMathsScore = kS2PupilPerformanceBandings.EnglandAverageMathsScore,
+            LocalAuthorityName = CommonHelper.GetLocalAuthorityDisplayName(establishment.LAName),
+            TechnicalGuideLinkUrl = urlLinksOptions.PrimaryAttainmentGroupingsTechnicalGuide.Url,
+            TechnicalGuideLinkNewTab = urlLinksOptions.PrimaryAttainmentGroupingsTechnicalGuide.NewTab
+        };
+    }
 }

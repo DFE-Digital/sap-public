@@ -5,6 +5,11 @@ namespace SAPPub.Core.ServiceModels.Performance;
 public class KS2PupilPerformanceBandings
 {
     public required string Urn { get; init; }
+
+    /// <summary>
+    /// Gets the name of the characteristic used to group the performance bandings (eg, Girls/Boys, Disadvantaged/Non-disadvantaged, EAL/Non-EAL).
+    /// </summary>
+    public string CharacteristicName { get; init; } = string.Empty;
     public CodedDouble EstablishmentReadingScore { get; init; }
     public CodedString? EstablishmentReadingProgressBanding { get; init; }
 

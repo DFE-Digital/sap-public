@@ -91,4 +91,11 @@ public class KS2EnglandPerformance
     public CodedDouble READPROG_EAL_Eng_Current_Num_Coded { get; set; }
     public CodedDouble WRITPROG_EAL_Eng_Current_Num_Coded { get; set; }
     public CodedDouble MATPROG_EAL_Eng_Current_Num_Coded { get; set; }
+
+    public CodedDouble READPROG_B_Eng_Current_Num_Coded { get; set; }
+    public CodedDouble WRITPROG_B_Eng_Current_Num_Coded { get; set; }
+    public CodedDouble MATPROG_B_Eng_Current_Num_Coded { get; set; }
+    public CodedDouble READPROG_G_Eng_Current_Num_Coded { get; set; }
+    public CodedDouble WRITPROG_G_Eng_Current_Num_Coded { get; set; }
+    public CodedDouble MATPROG_G_Eng_Current_Num_Coded { get; set; }
 }

@@ -160,7 +160,7 @@ public class KS2Controller(
     [Route("school/{urn}/{schoolName}/primary-performance/pupil-progress/girls-and-boys", Name = RouteConstants.PrimaryPupilCharacteristicsGirlsAndBoys)]
     public async Task<IActionResult> PupilCharacteristicsGirlsAndBoys([FromServices] IKS2PupilProgressService ks2PupilProgressService, string urn, string schoolName, CancellationToken ct)
     {
-        var ks2PupilPerformance = await ks2PupilProgressService.GetPupilProgressAsync(urn, ct);
+        var ks2PupilPerformance = await ks2PupilProgressService.GetGirlBoyPupilProgressAsync(urn, ct);
 
         var model = PupilCharacteristicBaseViewModel.Map(ks2PupilPerformance, Establishment, PupilCharacteristic.GirlsAndBoys, urlLinksOptions.Value);
         return View(model);
