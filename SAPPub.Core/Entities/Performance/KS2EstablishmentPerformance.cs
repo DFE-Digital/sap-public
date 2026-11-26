@@ -91,4 +91,10 @@ public class KS2EstablishmentPerformance
     public CodedDouble PTRWM_Med_Hgr_St_Pup_Pct_Coded { get; set; }
     public CodedDouble PTRWM_High_Exp_St_Pup_Pct_Coded { get; set; }
     public CodedDouble PTRWM_High_Hgr_St_Pup_Pct_Coded { get; set; }
+    public CodedDouble PTR_Low_Avg_Scr_Pct_Coded { get; set; }
+    public CodedDouble PTM_Low_Avg_Scr_Pct_Coded { get; set; }
+    public CodedDouble PTR_Mid_Avg_Scr_Pct_Coded { get; set; }
+    public CodedDouble PTM_Mid_Avg_Scr_Pct_Coded { get; set; }
+    public CodedDouble PTR_High_Avg_Scr_Pct_Coded { get; set; }
+    public CodedDouble PTM_High_Avg_Scr_Pct_Coded { get; set; }
 }

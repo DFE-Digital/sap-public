@@ -4,6 +4,8 @@
 @using SAPPub.Web.ViewComponents.SchoolProfilePagination
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 @using static SAPPub.Web.Constants.PageTitleConstants
+@using static SAPPub.Web.Constants.Constants;
+@inject Microsoft.FeatureManagement.IFeatureManager FeatureManager
 
 @{
     ViewData["Header"] = "Academic performance";
@@ -144,7 +146,34 @@
                             </div>
                         </details>
 
-                        @await Html.PartialAsync("_LowMediumHighPriorAttainers")
+                        @if (await FeatureManager.IsEnabledAsync(EnableKS2PupilCharacteristicDropdown))
+                        {
+                            <h4 class="govuk-heading-m">Prior attainment</h4>
+                            <p class="govuk-body">
+                                Pupils are grouped into low, middle and high prior attainers based on their results at the end of KS1.
+                            </p>
+                            <p class="govuk-body">
+                                These figures show how each group performance at the end of KS2, helping you understand how well the school supports pupils with diffrent starting points. Pupils without KS1 results are not included.
+                            </p>
+
+                            <a class="govuk-link govuk-link--no-visited-state"
+                               href="https://www.gov.uk/government/publications/primary-school-accountability/primary-school-accountability-in-2026-technical-guide#ks1-prior-attainment-groupings"
+                               target="_blank"
+                               rel="noreferrer noopener">
+
+                                Find out more about prior attainment
+
+                                <span class="govuk-visually-hidden">
+                                    (opens in a new tab)
+                                </span>
+                            </a>
+
+                            @await Html.PartialAsync("_AverageScaledScoresTable", Model.PriorAttainment, new ViewDataDictionary(ViewData) { { "id", "pa-table" } })
+                        }
+                        else
+                        {
+                            @await Html.PartialAsync("_LowMediumHighPriorAttainers")
+                        }
 
                     </govuk-accordion-item-content>
                 </govuk-accordion-item>

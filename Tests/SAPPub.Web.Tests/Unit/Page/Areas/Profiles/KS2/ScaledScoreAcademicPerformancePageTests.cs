@@ -238,6 +238,22 @@ public class ScaledScoresAcademicPerformacePageTests : PageTestsBase
         Assert.Contains("England average", doc.GetTableHeaderContentByIdAndIndex("non-disadvantaged-pupils-table", 2, 0));
         Assert.Contains("37", doc.GetTableCellContentByIdAndIndex("non-disadvantaged-pupils-table", 2, 0));
         Assert.Contains("34", doc.GetTableCellContentByIdAndIndex("non-disadvantaged-pupils-table", 2, 1));
+
+        Assert.Contains("Pupil group (Prior Attainment)", doc.GetTableHeaderContentByIdAndIndex("pa-table", 0, 0));
+        Assert.Contains("Average score in reading", doc.GetTableHeaderContentByIdAndIndex("pa-table", 0, 1));
+        Assert.Contains("Average score in maths", doc.GetTableHeaderContentByIdAndIndex("pa-table", 0, 2));
+        Assert.Contains("Low", doc.GetTableHeaderContentByIdAndIndex("pa-table", 1, 0));
+        Assert.Contains("47", doc.GetTableCellContentByIdAndIndex("pa-table", 1, 0));
+        Assert.Contains("48", doc.GetTableCellContentByIdAndIndex("pa-table", 1, 1));
+        Assert.Contains("Middle", doc.GetTableHeaderContentByIdAndIndex("pa-table", 2, 0));
+        Assert.Contains("49", doc.GetTableCellContentByIdAndIndex("pa-table", 2, 0));
+        Assert.Contains("50", doc.GetTableCellContentByIdAndIndex("pa-table", 2, 1));
+        Assert.Contains("High", doc.GetTableHeaderContentByIdAndIndex("pa-table", 3, 0));
+        Assert.Contains("51", doc.GetTableCellContentByIdAndIndex("pa-table", 3, 0));
+        Assert.Contains("52", doc.GetTableCellContentByIdAndIndex("pa-table", 3, 1));
+        Assert.Contains("All pupils at the school", doc.GetTableHeaderContentByIdAndIndex("pa-table", 4, 0));
+        Assert.Contains("35", doc.GetTableCellContentByIdAndIndex("pa-table", 4, 0));
+        Assert.Contains("19", doc.GetTableCellContentByIdAndIndex("pa-table", 4, 1));
     }
 
     [Fact]
@@ -355,6 +371,12 @@ public class ScaledScoresAcademicPerformacePageTests : PageTestsBase
             LocalAuthorityReadThreeYearAverage = new CodedDouble(44, string.Empty, "44"),
             EnglandMathsThreeYearAverage = new CodedDouble(45, string.Empty, "45"),
             EnglandReadThreeYearAverage = new CodedDouble(46, string.Empty, "46"),
+            PriorAttainmentReadingLowAvgScorePct = new CodedDouble(47, string.Empty, "47"),
+            PriorAttainmentMathsLowAvgScorePct = new CodedDouble(48, string.Empty, "48"),
+            PriorAttainmentReadingMidAvgScorePct = new CodedDouble(49, string.Empty, "49"),
+            PriorAttainmentMathsMidAvgScorePct = new CodedDouble(50, string.Empty, "50"),
+            PriorAttainmentReadingHighAvgScorePct = new CodedDouble(51, string.Empty, "51"),
+            PriorAttainmentMathsHighAvgScorePct = new CodedDouble(52, string.Empty, "52")
         };
     }
 }
