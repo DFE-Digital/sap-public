@@ -1,9 +1,9 @@
 [
     {
     "school_urn": "100019",
-    "reading_score": "-4.3", "reading_banding": "Above average", "la_reading_score": "1.9", "england_reading_score": "0.1",
-    "writing_score": "4.4", "writing_banding": "Below average", "la_writing_score": "2.0", "england_writing_score": "0.2",
-    "maths_score": "-1.1", "maths_banding": "Below average", "la_maths_score": "1.5", "england_maths_score": "0.3"
+    "reading_score": "-4.3", "reading_banding": "Above average", "la_reading_score": "z", "england_reading_score": "0.1",
+    "writing_score": "4.4", "writing_banding": "Below average", "la_writing_score": "z", "england_writing_score": "0.2",
+    "maths_score": "-1.1", "maths_banding": "Below average", "la_maths_score": "z", "england_maths_score": "0.3"
   },
   {
     "school_urn": "100241",

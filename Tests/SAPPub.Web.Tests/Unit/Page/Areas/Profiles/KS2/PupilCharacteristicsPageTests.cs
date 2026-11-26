@@ -18,7 +18,7 @@ public class PupilCharacteristicsPageTests : PageTestsBase
     public static IEnumerable<object[]> PageHeadings =>
     [
         ["/primary-performance/pupil-progress/all-pupils", "Progress made between year 2 and year 6"],
-        ["/primary-performance/pupil-progress/disadvantaged-pupils", "Disadvantaged pupils"],
+        ["/primary-performance/pupil-progress/disadvantaged-pupils", "Progress made by disadvantaged pupils"],
         ["/primary-performance/pupil-progress/english-as-additional-language", "Pupils with English as an additional language"],
         ["/primary-performance/pupil-progress/girls-and-boys", "Girls and boys"],
         ["/primary-performance/pupil-progress/different-starting-points", "Pupils with different starting points"],
@@ -39,8 +39,13 @@ public class PupilCharacteristicsPageTests : PageTestsBase
     {
         _mockEstablishmentService = UseMock<IEstablishmentService>();
 
-        UseMock<IKS2PupilProgressService>()
+        var progressServiceMock = UseMock<IKS2PupilProgressService>();
+        progressServiceMock
             .Setup(a=>a.GetPupilProgressAsync(_urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new KS2PupilPerformanceBandings { Urn = _urn });
+
+        progressServiceMock
+            .Setup(a => a.GetDisadvantagedPupilProgressAsync(_urn, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new KS2PupilPerformanceBandings { Urn = _urn });
 
         var establishment = new EstablishmentMinimumTestBuilder()

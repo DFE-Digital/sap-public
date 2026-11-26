@@ -515,6 +515,9 @@ public class KS2ControllerTests : BaseProfilesTests
         _mockKS2PupilProgressService
             .Setup(a => a.GetPupilProgressAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new KS2PupilPerformanceBandings { Urn = fakeEstablishment.URN });
+        _mockKS2PupilProgressService
+            .Setup(a=>a.GetDisadvantagedPupilProgressAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new KS2PupilPerformanceBandings { Urn = fakeEstablishment.URN });
 
         // Act
         IActionResult result = characteristic switch
