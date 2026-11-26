@@ -867,6 +867,47 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.Equal($"{expectedResult.NonDisadvantagedStudentsData.England.ConfidenceLevelLower.Value} to {expectedResult.NonDisadvantagedStudentsData.England.ConfidenceLevelUpper.Value}", model.PerformanceGroupsData.NonDisadvantagedStudents.England.ConfidenceInterval.Value);
         Assert.Equal(expectedResult.NonDisadvantagedStudentsData.England.Result.Points, model.PerformanceGroupsData.NonDisadvantagedStudents.England.Points.Value);
         Assert.Equal(expectedResult.NonDisadvantagedStudentsData.England.Result.Grade, model.PerformanceGroupsData.NonDisadvantagedStudents.England.Grade.Value);
+
+        // Retained measure
+        Assert.Equal(["School or college", $"{fakeEstablishment.LAName} average", "England average"], model.RetainedAndAssessedData.AllData.Labels);
+        Assert.Equal(
+            [
+                expectedResult.RetainedAndAssessedData.EstablishmentAll.CurrentYear!.Value,
+                expectedResult.RetainedAndAssessedData.LocalAuthorityAll.CurrentYear!.Value,
+                expectedResult.RetainedAndAssessedData.EnglandAll.CurrentYear!.Value
+            ],
+            model.RetainedAndAssessedData.AllData.Data
+        );
+
+        Assert.Equal(3, model.RetainedAndAssessedData.AllOverTimeData.Datasets.Count);
+
+        Assert.Equal("School or college", model.RetainedAndAssessedData.AllOverTimeData.Datasets[0].Label);
+        Assert.Equal(
+            [
+                expectedResult.RetainedAndAssessedData.EstablishmentAll.TwoYearsAgo!.Value,
+                expectedResult.RetainedAndAssessedData.EstablishmentAll.PreviousYear!.Value,
+                expectedResult.RetainedAndAssessedData.EstablishmentAll.CurrentYear!.Value
+            ],
+            model.RetainedAndAssessedData.AllOverTimeData.Datasets[0].Data
+        );
+
+        Assert.Equal($"{fakeEstablishment.LAName} average", model.RetainedAndAssessedData.AllOverTimeData.Datasets[1].Label);
+        Assert.Equal(
+            [
+                expectedResult.RetainedAndAssessedData.LocalAuthorityAll.TwoYearsAgo!.Value,
+                expectedResult.RetainedAndAssessedData.LocalAuthorityAll.PreviousYear!.Value,
+                expectedResult.RetainedAndAssessedData.LocalAuthorityAll.CurrentYear!.Value
+            ],
+            model.RetainedAndAssessedData.AllOverTimeData.Datasets[1].Data
+        );
+
+        Assert.Equal("England average", model.RetainedAndAssessedData.AllOverTimeData.Datasets[2].Label);
+        Assert.Equal(
+            [
+                expectedResult.RetainedAndAssessedData.EnglandAll.TwoYearsAgo!.Value,
+                expectedResult.RetainedAndAssessedData.EnglandAll.PreviousYear!.Value,
+                expectedResult.RetainedAndAssessedData.EnglandAll.CurrentYear!.Value],
+            model.RetainedAndAssessedData.AllOverTimeData.Datasets[2].Data);
     }
 
     [Theory]
@@ -1019,7 +1060,34 @@ public class KS5ControllerTests : BaseProfilesTests
                         Points = new CodedDouble(null, "Redacted for confidentiality", "c")
                     }
                 }
-            }
+            },
+            RetainedAndAssessedData = new RetainedAndAssessedModel
+            {
+                NumberOfStudents = new RelativeYearValues<CodedDouble>()
+                {
+                    CurrentYear = new CodedDouble(null, "Not available", "x"),
+                    PreviousYear = new CodedDouble(null, "Not available", "x"),
+                    TwoYearsAgo = new CodedDouble(null, "Not available", "x"),
+                },
+                EstablishmentAll = new RelativeYearValues<CodedDouble>()
+                {
+                    CurrentYear = new CodedDouble(null, "Not available", "x"),
+                    PreviousYear = new CodedDouble(null, "Not available", "x"),
+                    TwoYearsAgo = new CodedDouble(null, "Not available", "x"),
+                },
+                LocalAuthorityAll = new RelativeYearValues<CodedDouble>()
+                {
+                    CurrentYear = new CodedDouble(null, "Redacted for confidentiality", "c"),
+                    PreviousYear = new CodedDouble(null, "Redacted for confidentiality", "c"),
+                    TwoYearsAgo = new CodedDouble(null, "Redacted for confidentiality", "c"),
+                },
+                EnglandAll = new RelativeYearValues<CodedDouble>()
+                {
+                    CurrentYear = new CodedDouble(null, "Not applicable", "z"),
+                    PreviousYear = new CodedDouble(null, "Not applicable", "z"),
+                    TwoYearsAgo = new CodedDouble(null, "Not applicable", "z"),
+                },
+            },
         };
 
         _mockLevel2QualificationsService
@@ -1106,6 +1174,22 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.England.ConfidenceInterval.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.England.Points.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.England.Grade.DisplayText());
+
+        // Retained measure
+        Assert.Equal(NotAvailable, model.RetainedAndAssessedData.NumberOfStudents.DisplayText());
+
+        Assert.Equal(["School or college", $"{fakeEstablishment.LAName} average", "England average"], model.RetainedAndAssessedData.AllData.Labels);
+        Assert.Equal([null, null, null], model.RetainedAndAssessedData.AllData.Data);
+
+        Assert.Equal(3, model.RetainedAndAssessedData.AllOverTimeData.Datasets.Count);
+        Assert.Equal("School or college", model.RetainedAndAssessedData.AllOverTimeData.Datasets[0].Label);
+        Assert.Equal([null, null, null], model.RetainedAndAssessedData.AllOverTimeData.Datasets[0].Data);
+
+        Assert.Equal($"{fakeEstablishment.LAName} average", model.RetainedAndAssessedData.AllOverTimeData.Datasets[1].Label);
+        Assert.Equal([null, null, null], model.RetainedAndAssessedData.AllOverTimeData.Datasets[1].Data);
+
+        Assert.Equal("England average", model.RetainedAndAssessedData.AllOverTimeData.Datasets[2].Label);
+        Assert.Equal(new double?[] { null, null, null }, model.RetainedAndAssessedData.AllOverTimeData.Datasets[2].Data);
     }
 
     [Theory]
@@ -1194,7 +1278,34 @@ public class KS5ControllerTests : BaseProfilesTests
                     ConfidenceLevelLower = new(),
                     Result = new PerformanceResult()
                 }
-            }
+            },
+            RetainedAndAssessedData = new RetainedAndAssessedModel
+            {
+                NumberOfStudents = new RelativeYearValues<CodedDouble>()
+                {
+                    CurrentYear = new(),
+                    PreviousYear = new(),
+                    TwoYearsAgo = new()
+                },
+                EstablishmentAll = new RelativeYearValues<CodedDouble>()
+                {
+                    CurrentYear = new(),
+                    PreviousYear = new(),
+                    TwoYearsAgo = new()
+                },
+                LocalAuthorityAll = new RelativeYearValues<CodedDouble>()
+                {
+                    CurrentYear = new(),
+                    PreviousYear = new(),
+                    TwoYearsAgo = new()
+                },
+                EnglandAll = new RelativeYearValues<CodedDouble>()
+                {
+                    CurrentYear = new(),
+                    PreviousYear = new(),
+                    TwoYearsAgo = new()
+                },
+            },
         };
 
         _mockLevel2QualificationsService
@@ -1281,6 +1392,22 @@ public class KS5ControllerTests : BaseProfilesTests
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.England.ConfidenceInterval.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.England.Points.DisplayText());
         Assert.Equal(NotAvailable, model.PerformanceGroupsData.NonDisadvantagedStudents.England.Grade.DisplayText());
+
+        // Retained measure
+        Assert.Equal(NotAvailable, model.RetainedAndAssessedData.NumberOfStudents.DisplayText());
+
+        Assert.Equal(["School or college", $"{fakeEstablishment.LAName} average", "England average"], model.RetainedAndAssessedData.AllData.Labels);
+        Assert.Equal([null, null, null], model.RetainedAndAssessedData.AllData.Data);
+
+        Assert.Equal(3, model.RetainedAndAssessedData.AllOverTimeData.Datasets.Count);
+        Assert.Equal("School or college", model.RetainedAndAssessedData.AllOverTimeData.Datasets[0].Label);
+        Assert.Equal([null, null, null], model.RetainedAndAssessedData.AllOverTimeData.Datasets[0].Data);
+
+        Assert.Equal($"{fakeEstablishment.LAName} average", model.RetainedAndAssessedData.AllOverTimeData.Datasets[1].Label);
+        Assert.Equal([null, null, null], model.RetainedAndAssessedData.AllOverTimeData.Datasets[1].Data);
+
+        Assert.Equal("England average", model.RetainedAndAssessedData.AllOverTimeData.Datasets[2].Label);
+        Assert.Equal(new double?[] { null, null, null }, model.RetainedAndAssessedData.AllOverTimeData.Datasets[2].Data);
     }
 
     [Fact]
@@ -1925,7 +2052,34 @@ public class KS5ControllerTests : BaseProfilesTests
                         Points = GetCodedDouble(67.23)
                     }
                 }
-            }
+            },
+            RetainedAndAssessedData = new RetainedAndAssessedModel
+            {
+                NumberOfStudents = new RelativeYearValues<CodedDouble>
+                {
+                    CurrentYear = new CodedDouble(150, string.Empty, string.Empty),
+                    PreviousYear = new CodedDouble(170, string.Empty, string.Empty),
+                    TwoYearsAgo = new CodedDouble(230, string.Empty, string.Empty),
+                },
+                EstablishmentAll = new RelativeYearValues<CodedDouble>
+                {
+                    CurrentYear = new CodedDouble(81.33, string.Empty, string.Empty),
+                    PreviousYear = new CodedDouble(77.54, string.Empty, string.Empty),
+                    TwoYearsAgo = new CodedDouble(80.36, string.Empty, string.Empty),
+                },
+                LocalAuthorityAll = new RelativeYearValues<CodedDouble>
+                {
+                    CurrentYear = new CodedDouble(67.74, string.Empty, string.Empty),
+                    PreviousYear = new CodedDouble(75.46, string.Empty, string.Empty),
+                    TwoYearsAgo = new CodedDouble(59.12, string.Empty, string.Empty),
+                },
+                EnglandAll = new RelativeYearValues<CodedDouble>
+                {
+                    CurrentYear = new CodedDouble(71.59, string.Empty, string.Empty),
+                    PreviousYear = new CodedDouble(82.77, string.Empty, string.Empty),
+                    TwoYearsAgo = new CodedDouble(81.79, string.Empty, string.Empty),
+                },
+            },
         };
     }
 }
