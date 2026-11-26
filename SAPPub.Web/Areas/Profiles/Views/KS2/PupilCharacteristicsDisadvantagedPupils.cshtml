@@ -1,4 +1,4 @@
-@model PupilCharacteristicBaseViewModel;
+@model PupilCharacteristicBaseViewModel
 @using SAPPub.Web.Areas.Profiles.ViewModels.KS2
 @using SAPPub.Web.Constants
 @using SAPPub.Web.ViewComponents.VerticalNavigation
@@ -34,9 +34,45 @@
                 RouteAttributes = Model.RouteAttributes
             })
 
-            <h3 class="govuk-heading-l">@Model.Heading</h3>
+            <p class="govuk-body">Information in this section is for the @Model.CurrentAcademicYearDisplayName academic year.</p>
 
-            <p class="govuk-body">This page is under construction.</p>
+            <h3 class="govuk-heading-l">Progress made by disadvantaged pupils</h3>
+
+            <p class="govuk-body">
+                This shows the progress disadvantaged pupils made at this school between year 2 (key stage 1) and year 6 (key stage 2).
+                Their progress is compared with pupils across England who started at a similar level at the end of year 2.
+            </p>
+            <p class="govuk-body">
+                These scores help show how well the school supports pupils in making progress during their time in primary school.
+            </p>
+
+            @await Html.PartialAsync("_ProgressScoreDetails", (Model.TechnicalGuideLinkUrl, Model.TechnicalGuideLinkNewTab, "pupils"))
+
+            
+            <details class="govuk-details" id="details-disadvantaged-pupils-group">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Who is included in the disadvantaged pupils group
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">
+                        Pupils identified as disadvantaged are those who either:
+                    </p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>were eligible for free school meals at any time during the last 6 years</li>
+                        <li>have been in the care of the local council for a day or more</li>
+                        <li>have been adopted from care</li>
+                    </ul>
+
+                </div>
+            </details>
+
+            @foreach (var section in Model.Sections)
+            {
+                @await Html.PartialAsync("_PupilProgressSectionWithoutBanding", section)
+            }
+
         </div>
     </div>
 </div>

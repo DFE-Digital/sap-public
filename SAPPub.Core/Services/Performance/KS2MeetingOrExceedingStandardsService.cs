@@ -73,8 +73,8 @@ public class KS2MeetingOrExceedingStandardsService(
             /* Prior Attainment */
             PriorAttainmentReadingWritingMathsLowExpectedStandardPupilPct = establishmentPerformance.PTRWM_Low_Exp_St_Pup_Pct_Coded,
             PriorAttainmentReadingWritingMathsLowHigherStandardPupilPct = establishmentPerformance.PTRWM_Low_Hgr_St_Pup_Pct_Coded,
-            PriorAttainmentReadingWritingMathsMedExpectedStandardPupilPct = establishmentPerformance.PTRWM_Med_Exp_St_Pup_Pct_Coded,
-            PriorAttainmentReadingWritingMathsMedHigherStandardPupilPct = establishmentPerformance.PTRWM_Med_Hgr_St_Pup_Pct_Coded,
+            PriorAttainmentReadingWritingMathsMidExpectedStandardPupilPct = establishmentPerformance.PTRWM_Med_Exp_St_Pup_Pct_Coded,
+            PriorAttainmentReadingWritingMathsMidHigherStandardPupilPct = establishmentPerformance.PTRWM_Med_Hgr_St_Pup_Pct_Coded,
             PriorAttainmentReadingWritingMathsHighExpectedStandardPupilPct = establishmentPerformance.PTRWM_High_Exp_St_Pup_Pct_Coded,
             PriorAttainmentReadingWritingMathsHighHigherStandardPupilPct = establishmentPerformance.PTRWM_High_Hgr_St_Pup_Pct_Coded
         };

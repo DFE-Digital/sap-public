@@ -53,8 +53,8 @@ public class KS2MeetingOrExceedingStandardsModel
     /* Prior Attainment */
     public required CodedDouble PriorAttainmentReadingWritingMathsLowExpectedStandardPupilPct { get; init; }
     public required CodedDouble PriorAttainmentReadingWritingMathsLowHigherStandardPupilPct { get; init; }
-    public required CodedDouble PriorAttainmentReadingWritingMathsMedExpectedStandardPupilPct { get; init; }
-    public required CodedDouble PriorAttainmentReadingWritingMathsMedHigherStandardPupilPct { get; init; }
+    public required CodedDouble PriorAttainmentReadingWritingMathsMidExpectedStandardPupilPct { get; init; }
+    public required CodedDouble PriorAttainmentReadingWritingMathsMidHigherStandardPupilPct { get; init; }
     public required CodedDouble PriorAttainmentReadingWritingMathsHighExpectedStandardPupilPct { get; init; }
     public required CodedDouble PriorAttainmentReadingWritingMathsHighHigherStandardPupilPct { get; init; }
 }

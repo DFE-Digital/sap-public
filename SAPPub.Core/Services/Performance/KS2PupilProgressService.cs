@@ -1,4 +1,5 @@
-﻿using SAPPub.Core.Enums;
+﻿using SAPPub.Core.Entities.Performance;
+using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Repositories.Performance;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Performance;
@@ -199,25 +200,14 @@ public class KS2PupilProgressService(
 
     public async Task<KS2PupilPerformanceBandings> GetPupilProgressAsync(string urn, CancellationToken ct = default)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(urn);
-        ct.ThrowIfCancellationRequested();
+        var performance = await GetPerformanceAsync(urn, ct);
 
-        var establishment = await establishmentService.GetEstablishmentMinimumAsync(urn, ct);
-
-        if (string.IsNullOrWhiteSpace(establishment?.URN))
+        if (performance is null)
         {
             return new KS2PupilPerformanceBandings { Urn = urn };
         }
 
-        var ks2EstablishPerformanceTask = ks2PerformanceRepository.GetEstablishmentPerformanceAsync(urn, ct);
-        var ks2LAPerformanceTask = ks2PerformanceRepository.GetLaPerformanceAsync(establishment.LAId, ct);
-        var ks2EnglandPerformanceTask = ks2PerformanceRepository.GetEnglandPerformanceAsync(ct);
-
-        await Task.WhenAll(ks2EstablishPerformanceTask, ks2LAPerformanceTask, ks2EnglandPerformanceTask);
-
-        var establishmentPerformance = await ks2EstablishPerformanceTask;
-        var laPerformance = await ks2LAPerformanceTask;
-        var englandPerformance = await ks2EnglandPerformanceTask;
+        var (establishmentPerformance, laPerformance, englandPerformance) = performance.Value;
 
         return new KS2PupilPerformanceBandings
         {
@@ -240,5 +230,52 @@ public class KS2PupilProgressService(
             EnglandAverageWritingScore = englandPerformance?.WRITPROG_Eng_Current_Num_Coded,
             EnglandAverageMathsScore = englandPerformance?.MATPROG_Eng_Current_Num_Coded
         };
+    }
+
+    public async Task<KS2PupilPerformanceBandings> GetDisadvantagedPupilProgressAsync(string urn, CancellationToken ct = default)
+    {
+        var performance = await GetPerformanceAsync(urn, ct);
+
+        if (performance is null)
+        {
+            return new KS2PupilPerformanceBandings { Urn = urn };
+        }
+
+        var (establishmentPerformance, laPerformance, englandPerformance) = performance.Value;
+
+        return new KS2PupilPerformanceBandings
+        {
+            Urn = urn,
+            EstablishmentReadingScore = establishmentPerformance?.READPROG_FSM6CLA1A_Est_Current_Num_Coded ?? CodedDouble.Empty,
+            EstablishmentWritingScore = establishmentPerformance?.WRITPROG_FSM6CLA1A_Est_Current_Num_Coded ?? CodedDouble.Empty,
+            EstablishmentMathsScore = establishmentPerformance?.MATPROG_FSM6CLA1A_Est_Current_Num_Coded ?? CodedDouble.Empty,
+            LocalAuthorityReadingScore = laPerformance?.READPROG_FSM6CLA1A_LA_Current_Num_Coded ?? CodedDouble.Empty,
+            LocalAuthorityWritingScore = laPerformance?.WRITPROG_FSM6CLA1A_LA_Current_Num_Coded ?? CodedDouble.Empty,
+            LocalAuthorityMathsScore = laPerformance?.MATPROG_FSM6CLA1A_LA_Current_Num_Coded ?? CodedDouble.Empty,
+            EnglandAverageReadingScore = englandPerformance?.READPROG_FSM6CLA1A_Eng_Current_Num_Coded,
+            EnglandAverageWritingScore = englandPerformance?.WRITPROG_FSM6CLA1A_Eng_Current_Num_Coded,
+            EnglandAverageMathsScore = englandPerformance?.MATPROG_FSM6CLA1A_Eng_Current_Num_Coded
+        };
+    }
+
+    private async Task<(KS2EstablishmentPerformance? Establishment, KS2LAPerformance? LocalAuthority, KS2EnglandPerformance? England)?> GetPerformanceAsync(string urn, CancellationToken ct)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(urn);
+        ct.ThrowIfCancellationRequested();
+
+        var establishment = await establishmentService.GetEstablishmentMinimumAsync(urn, ct);
+
+        if (string.IsNullOrWhiteSpace(establishment?.URN))
+        {
+            return null;
+        }
+
+        var ks2EstablishPerformanceTask = ks2PerformanceRepository.GetEstablishmentPerformanceAsync(urn, ct);
+        var ks2LAPerformanceTask = ks2PerformanceRepository.GetLaPerformanceAsync(establishment.LAId, ct);
+        var ks2EnglandPerformanceTask = ks2PerformanceRepository.GetEnglandPerformanceAsync(ct);
+
+        await Task.WhenAll(ks2EstablishPerformanceTask, ks2LAPerformanceTask, ks2EnglandPerformanceTask);
+
+        return (await ks2EstablishPerformanceTask, await ks2LAPerformanceTask, await ks2EnglandPerformanceTask);
     }
 }

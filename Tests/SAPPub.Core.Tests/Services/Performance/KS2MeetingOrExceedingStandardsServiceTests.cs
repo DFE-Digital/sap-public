@@ -186,8 +186,8 @@ public class KS2MeetingOrExceedingStandardsServiceTests : ServiceTestBase
 
         Assert.Equal(GetCodedDouble(43), result.PriorAttainmentReadingWritingMathsLowExpectedStandardPupilPct);
         Assert.Equal(GetCodedDouble(44), result.PriorAttainmentReadingWritingMathsLowHigherStandardPupilPct);
-        Assert.Equal(GetCodedDouble(45), result.PriorAttainmentReadingWritingMathsMedExpectedStandardPupilPct);
-        Assert.Equal(GetCodedDouble(46), result.PriorAttainmentReadingWritingMathsMedHigherStandardPupilPct);
+        Assert.Equal(GetCodedDouble(45), result.PriorAttainmentReadingWritingMathsMidExpectedStandardPupilPct);
+        Assert.Equal(GetCodedDouble(46), result.PriorAttainmentReadingWritingMathsMidHigherStandardPupilPct);
         Assert.Equal(GetCodedDouble(47), result.PriorAttainmentReadingWritingMathsHighExpectedStandardPupilPct);
         Assert.Equal(GetCodedDouble(48), result.PriorAttainmentReadingWritingMathsHighHigherStandardPupilPct);
     }

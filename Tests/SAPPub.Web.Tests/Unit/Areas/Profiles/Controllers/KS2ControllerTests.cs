@@ -272,8 +272,8 @@ public class KS2ControllerTests : BaseProfilesTests
 
         Assert.Equal(expectedModel.PriorAttainmentReadingWritingMathsLowExpectedStandardPupilPct.Value.ToString(), model.PriorAttainment.Rows.First().MeetingStandard.Value.ToString());
         Assert.Equal(expectedModel.PriorAttainmentReadingWritingMathsLowHigherStandardPupilPct.Value.ToString(), model.PriorAttainment.Rows.First().ExceedingStandard.Value.ToString());
-        Assert.Equal(expectedModel.PriorAttainmentReadingWritingMathsMedExpectedStandardPupilPct.Value.ToString(), model.PriorAttainment.Rows.Skip(1).First().MeetingStandard.Value.ToString());
-        Assert.Equal(expectedModel.PriorAttainmentReadingWritingMathsMedHigherStandardPupilPct.Value.ToString(), model.PriorAttainment.Rows.Skip(1).First().ExceedingStandard.Value.ToString());
+        Assert.Equal(expectedModel.PriorAttainmentReadingWritingMathsMidExpectedStandardPupilPct.Value.ToString(), model.PriorAttainment.Rows.Skip(1).First().MeetingStandard.Value.ToString());
+        Assert.Equal(expectedModel.PriorAttainmentReadingWritingMathsMidHigherStandardPupilPct.Value.ToString(), model.PriorAttainment.Rows.Skip(1).First().ExceedingStandard.Value.ToString());
         Assert.Equal(expectedModel.PriorAttainmentReadingWritingMathsHighExpectedStandardPupilPct.Value.ToString(), model.PriorAttainment.Rows.Skip(2).First().MeetingStandard.Value.ToString());
         Assert.Equal(expectedModel.PriorAttainmentReadingWritingMathsHighHigherStandardPupilPct.Value.ToString(), model.PriorAttainment.Rows.Skip(2).First().ExceedingStandard.Value.ToString());
 
@@ -437,8 +437,8 @@ public class KS2ControllerTests : BaseProfilesTests
             EnglandPercentageExceedingThreeYearAverage = GetCodedDouble(44),
             PriorAttainmentReadingWritingMathsLowExpectedStandardPupilPct = GetCodedDouble(45),
             PriorAttainmentReadingWritingMathsLowHigherStandardPupilPct = GetCodedDouble(46),
-            PriorAttainmentReadingWritingMathsMedExpectedStandardPupilPct = GetCodedDouble(47),
-            PriorAttainmentReadingWritingMathsMedHigherStandardPupilPct = GetCodedDouble(48),
+            PriorAttainmentReadingWritingMathsMidExpectedStandardPupilPct = GetCodedDouble(47),
+            PriorAttainmentReadingWritingMathsMidHigherStandardPupilPct = GetCodedDouble(48),
             PriorAttainmentReadingWritingMathsHighExpectedStandardPupilPct = GetCodedDouble(49),
             PriorAttainmentReadingWritingMathsHighHigherStandardPupilPct = GetCodedDouble(50)
         };
@@ -520,6 +520,9 @@ public class KS2ControllerTests : BaseProfilesTests
         // Arrange
         _mockKS2PupilProgressService
             .Setup(a => a.GetPupilProgressAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new KS2PupilPerformanceBandings { Urn = fakeEstablishment.URN });
+        _mockKS2PupilProgressService
+            .Setup(a=>a.GetDisadvantagedPupilProgressAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new KS2PupilPerformanceBandings { Urn = fakeEstablishment.URN });
 
         // Act

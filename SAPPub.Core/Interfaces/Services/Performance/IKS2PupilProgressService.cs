@@ -9,4 +9,6 @@ public interface IKS2PupilProgressService
     Task<KS2PupilPerformance> GetPupilProgressAsync(string urn, AcademicYearSelection selectedYear, CancellationToken ct = default);
 
     Task<KS2PupilPerformanceBandings> GetPupilProgressAsync(string urn, CancellationToken ct = default);
+
+    Task<KS2PupilPerformanceBandings> GetDisadvantagedPupilProgressAsync(string urn, CancellationToken ct = default);
 }
