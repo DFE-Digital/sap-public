@@ -149,7 +149,7 @@ public class KS2Controller(
     [Route("school/{urn}/{schoolName}/primary-performance/pupil-progress/english-as-additional-language", Name = RouteConstants.PrimaryPupilCharacteristicsEnglishAsAdditionalLanguage)]
     public async Task<IActionResult> PupilCharacteristicsEnglishAsAdditionalLanguage([FromServices] IKS2PupilProgressService ks2PupilProgressService, string urn, string schoolName, CancellationToken ct)
     {
-        var ks2PupilPerformance = await ks2PupilProgressService.GetPupilProgressAsync(urn, ct);
+        var ks2PupilPerformance = await ks2PupilProgressService.GetEalPupilProgressAsync(urn, ct);
 
         var model = PupilCharacteristicBaseViewModel.Map(ks2PupilPerformance, Establishment, PupilCharacteristic.PupilsWithEnglishAsAnAdditionalLanguage, urlLinksOptions.Value);
         return View(model);

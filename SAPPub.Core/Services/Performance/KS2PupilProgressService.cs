@@ -258,6 +258,33 @@ public class KS2PupilProgressService(
         };
     }
 
+    /// <inheritdoc/>
+    public async Task<KS2PupilPerformanceBandings> GetEalPupilProgressAsync(string urn, CancellationToken ct = default)
+    {
+        var performance = await GetPerformanceAsync(urn, ct);
+
+        if (performance is null)
+        {
+            return new KS2PupilPerformanceBandings { Urn = urn };
+        }
+
+        var (establishmentPerformance, laPerformance, englandPerformance) = performance.Value;
+
+        return new KS2PupilPerformanceBandings
+        {
+            Urn = urn,
+            EstablishmentReadingScore = establishmentPerformance?.READPROG_EAL_Est_Current_Num_Coded ?? CodedDouble.Empty,
+            EstablishmentWritingScore = establishmentPerformance?.WRITPROG_EAL_Est_Current_Num_Coded ?? CodedDouble.Empty,
+            EstablishmentMathsScore = establishmentPerformance?.MATPROG_EAL_Est_Current_Num_Coded ?? CodedDouble.Empty,
+            LocalAuthorityReadingScore = laPerformance?.READPROG_EAL_LA_Current_Num_Coded ?? CodedDouble.Empty,
+            LocalAuthorityWritingScore = laPerformance?.WRITPROG_EAL_LA_Current_Num_Coded ?? CodedDouble.Empty,
+            LocalAuthorityMathsScore = laPerformance?.MATPROG_EAL_LA_Current_Num_Coded ?? CodedDouble.Empty,
+            EnglandAverageReadingScore = englandPerformance?.READPROG_EAL_Eng_Current_Num_Coded,
+            EnglandAverageWritingScore = englandPerformance?.WRITPROG_EAL_Eng_Current_Num_Coded,
+            EnglandAverageMathsScore = englandPerformance?.MATPROG_EAL_Eng_Current_Num_Coded
+        };
+    }
+
     private async Task<(KS2EstablishmentPerformance? Establishment, KS2LAPerformance? LocalAuthority, KS2EnglandPerformance? England)?> GetPerformanceAsync(string urn, CancellationToken ct)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(urn);
@@ -278,4 +305,5 @@ public class KS2PupilProgressService(
 
         return (await ks2EstablishPerformanceTask, await ks2LAPerformanceTask, await ks2EnglandPerformanceTask);
     }
+
 }

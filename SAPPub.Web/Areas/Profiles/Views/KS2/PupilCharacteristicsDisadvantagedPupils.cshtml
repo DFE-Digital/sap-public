@@ -70,7 +70,7 @@
 
             @foreach (var section in Model.Sections)
             {
-                @await Html.PartialAsync("_PupilProgressSectionWithoutBanding", section)
+                @await Html.PartialAsync("_PupilProgressSectionWithoutBanding", (section, "Disadvantaged pupils at"))
             }
 
         </div>

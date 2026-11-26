@@ -87,4 +87,8 @@ public class KS2EnglandPerformance
     public CodedDouble READPROG_FSM6CLA1A_Eng_Current_Num_Coded { get; set; }
     public CodedDouble WRITPROG_FSM6CLA1A_Eng_Current_Num_Coded { get; set; }
     public CodedDouble MATPROG_FSM6CLA1A_Eng_Current_Num_Coded { get; set; }
+
+    public CodedDouble READPROG_EAL_Eng_Current_Num_Coded { get; set; }
+    public CodedDouble WRITPROG_EAL_Eng_Current_Num_Coded { get; set; }
+    public CodedDouble MATPROG_EAL_Eng_Current_Num_Coded { get; set; }
 }

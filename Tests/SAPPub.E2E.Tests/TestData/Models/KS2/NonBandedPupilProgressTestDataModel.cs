@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace SAPPub.E2E.Tests.TestData.Models.KS2;
 
-public record DisadvantagedPupilProgressTestDataModel
+public record NonBandedPupilProgressTestDataModel
 {
     [JsonPropertyName("school_urn")]
     public string SchoolUrn { get; init; } = string.Empty;
