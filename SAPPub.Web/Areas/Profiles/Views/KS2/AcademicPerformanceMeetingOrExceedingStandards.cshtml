@@ -164,9 +164,11 @@
 
                             @await Html.PartialAsync("_MeetingExceedingStandardsTable", Model.PriorAttainment, new ViewDataDictionary(ViewData) { { "id", "pa-table" } })
                         }
+                        else
+                        {
+                            @await Html.PartialAsync("_LowMediumHighPriorAttainers")
+                        }
  
-                        @await Html.PartialAsync("_LowMediumHighPriorAttainers")
-
                     </govuk-accordion-item-content>
                 </govuk-accordion-item>
             </govuk-accordion>

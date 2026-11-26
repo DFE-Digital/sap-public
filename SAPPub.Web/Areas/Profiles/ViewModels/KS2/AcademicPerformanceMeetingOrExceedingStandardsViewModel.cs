@@ -134,7 +134,7 @@ public class AcademicPerformanceMeetingOrExceedingStandardsViewModel : BaseViewM
             PriorAttainment = GetMeetingExceedingStandardsViewModel($"{PupilGroup} (Prior Attainment)",
                 [
                     new() { RowTitle = "Low", MeetingStandard = ks2MESModel.PriorAttainmentReadingWritingMathsLowExpectedStandardPupilPct.ToDisplayField(), ExceedingStandard = ks2MESModel.PriorAttainmentReadingWritingMathsLowHigherStandardPupilPct.ToDisplayField() },
-                    new() { RowTitle = "Middle", MeetingStandard = ks2MESModel.PriorAttainmentReadingWritingMathsMedExpectedStandardPupilPct.ToDisplayField(), ExceedingStandard = ks2MESModel.PriorAttainmentReadingWritingMathsMedHigherStandardPupilPct.ToDisplayField() },
+                    new() { RowTitle = "Middle", MeetingStandard = ks2MESModel.PriorAttainmentReadingWritingMathsMidExpectedStandardPupilPct.ToDisplayField(), ExceedingStandard = ks2MESModel.PriorAttainmentReadingWritingMathsMidHigherStandardPupilPct.ToDisplayField() },
                     new() { RowTitle = "High", MeetingStandard = ks2MESModel.PriorAttainmentReadingWritingMathsHighExpectedStandardPupilPct.ToDisplayField(), ExceedingStandard = ks2MESModel.PriorAttainmentReadingWritingMathsHighHigherStandardPupilPct.ToDisplayField() },
                     new() { RowTitle = Constants.Constants.AllPupils, MeetingStandard = ks2MESModel.AllPupilsMeetingExpectedStandard.ToDisplayField(), ExceedingStandard = ks2MESModel.AllPupilsExceedingExpectedStandard.ToDisplayField() },
                 ])
