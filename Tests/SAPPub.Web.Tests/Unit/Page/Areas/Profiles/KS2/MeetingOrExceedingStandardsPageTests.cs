@@ -393,8 +393,8 @@ public class MeetingOrExceedingStandardsPageTests : PageTestsBase
         EnglandPercentageExceedingThreeYearAverage = GetCodedDouble(32),
         PriorAttainmentReadingWritingMathsLowExpectedStandardPupilPct = GetCodedDouble(33),
         PriorAttainmentReadingWritingMathsLowHigherStandardPupilPct = GetCodedDouble(34),
-        PriorAttainmentReadingWritingMathsMedExpectedStandardPupilPct = GetCodedDouble(35),
-        PriorAttainmentReadingWritingMathsMedHigherStandardPupilPct = GetCodedDouble(36),
+        PriorAttainmentReadingWritingMathsMidExpectedStandardPupilPct = GetCodedDouble(35),
+        PriorAttainmentReadingWritingMathsMidHigherStandardPupilPct = GetCodedDouble(36),
         PriorAttainmentReadingWritingMathsHighExpectedStandardPupilPct = GetCodedDouble(37),
         PriorAttainmentReadingWritingMathsHighHigherStandardPupilPct = GetCodedDouble(38)
     };
