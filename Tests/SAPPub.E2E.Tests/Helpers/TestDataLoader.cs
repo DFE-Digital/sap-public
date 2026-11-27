@@ -60,6 +60,36 @@ public static class TestDataLoader
                ?? [];
     }
 
+    public static T LoadObject<T>(string folder, string fileName, JsonNamingPolicy? namingPolicy = null/* defaults to SnakeCaseLower */)
+    {
+        var testDataVersion =
+            Environment.GetEnvironmentVariable("TEST_DATA_VERSION") ?? "2526";
+
+        var path = Path.Combine(
+            AppContext.BaseDirectory,
+            "TestData",
+            testDataVersion,
+            folder,
+            $"{fileName}.json");
+
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException(
+                $"Test data file not found: {path}");
+        }
+
+        var json = File.ReadAllText(path);
+
+        return JsonSerializer.Deserialize<T>(
+                   json,
+                   new JsonSerializerOptions
+                   {
+                       PropertyNameCaseInsensitive = true,
+                       PropertyNamingPolicy = namingPolicy ?? JsonNamingPolicy.SnakeCaseLower
+                   })
+               ?? throw new InvalidOperationException($"Test data file is empty: {path}");
+    }
+
     public static TheoryData<T> ConvertToTheoryData<T>(List<T> items)
     {
         var theoryData = new TheoryData<T>();
