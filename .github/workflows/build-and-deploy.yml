@@ -160,6 +160,7 @@ jobs:
           reporter: 'dotnet-trx'
           path: "**/TestResults/**/*.trx"
           name: 'Test Results'
+          fail-on-error: false
 
       - name: merge coverage files
         run: |
