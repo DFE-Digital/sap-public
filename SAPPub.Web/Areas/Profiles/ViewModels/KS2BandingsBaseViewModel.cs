@@ -12,6 +12,11 @@ public class KS2BandingsBaseViewModel : ProfileBaseViewModel
     {
         get
         {
+            if (Ks2Bandings is null)
+            {
+                return null;
+            }
+
             var subjects = Ks2Bandings
                 .Where(a => a.IsNotStatisticallySignificant)
                 .Select(a => a.Subject.ToLowerInvariant())

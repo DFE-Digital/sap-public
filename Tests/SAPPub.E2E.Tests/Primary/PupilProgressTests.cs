@@ -24,6 +24,16 @@ public class PupilProgressTests() : BasePageTest()
     private static readonly TheoryData<NonBandedPupilProgressTestDataModel> _ealPupilProgressTestData =
     TestDataLoader.LoadTheoryData<NonBandedPupilProgressTestDataModel>("KS2", "PupilProgressEAL");
 
+    private static readonly TheoryData<NonBandedPupilProgressTestDataModel> _girlsPupilProgressTestData =
+        TestDataLoader.LoadTheoryData<NonBandedPupilProgressTestDataModel>("KS2", "PupilProgressGirls");
+
+    private static readonly TheoryData<NonBandedPupilProgressTestDataModel> _boysPupilProgressTestData =
+        TestDataLoader.LoadTheoryData<NonBandedPupilProgressTestDataModel>("KS2", "PupilProgressBoys");
+
+    public static TheoryData<NonBandedPupilProgressTestDataModel> GetGirlsPupilProgressTestData() => _girlsPupilProgressTestData;
+
+    public static TheoryData<NonBandedPupilProgressTestDataModel> GetBoysPupilProgressTestData() => _boysPupilProgressTestData;
+
     public static TheoryData<PupilProgressTestDataModel> GetPupilProgressTestData() => _pupilProgressTestData;
 
     public static TheoryData<NonBandedPupilProgressTestDataModel> GetDisadvantagedPupilProgressTestData() => _disadvantagedPupilProgressTestData;
@@ -114,6 +124,42 @@ public class PupilProgressTests() : BasePageTest()
         await AssertNonBandedProgressRow(Page, "maths", 2, testData.EnglandMathsScore);
     }
 
+    [Theory]
+    [MemberData(nameof(GetGirlsPupilProgressTestData))]
+    public async Task GirlsAndBoys_ShowsExpectedGirlsProgressData(NonBandedPupilProgressTestDataModel testData)
+    {
+        await GotoPupilProgressPage(testData.SchoolUrn, "girls-and-boys");
+
+        await AssertGroupProgressTable(Page, "reading", "girls", testData.ReadingScore, testData.LaReadingScore, testData.EnglandReadingScore);
+        await AssertGroupProgressTable(Page, "writing", "girls", testData.WritingScore, testData.LaWritingScore, testData.EnglandWritingScore);
+        await AssertGroupProgressTable(Page, "maths", "girls", testData.MathsScore, testData.LaMathsScore, testData.EnglandMathsScore);
+    }
+
+    [Theory]
+    [MemberData(nameof(GetBoysPupilProgressTestData))]
+    public async Task GirlsAndBoys_ShowsExpectedBoysProgressData(NonBandedPupilProgressTestDataModel testData)
+    {
+        await GotoPupilProgressPage(testData.SchoolUrn, "girls-and-boys");
+
+        await AssertGroupProgressTable(Page, "reading", "boys", testData.ReadingScore, testData.LaReadingScore, testData.EnglandReadingScore);
+        await AssertGroupProgressTable(Page, "writing", "boys", testData.WritingScore, testData.LaWritingScore, testData.EnglandWritingScore);
+        await AssertGroupProgressTable(Page, "maths", "boys", testData.MathsScore, testData.LaMathsScore, testData.EnglandMathsScore);
+    }
+
+    [Theory]
+    [MemberData(nameof(GetGirlsPupilProgressTestData))]
+    public async Task GirlsAndBoys_ShowsExpectedHeadingAndBothGroupsPerSubject(NonBandedPupilProgressTestDataModel testData)
+    {
+        await GotoPupilProgressPage(testData.SchoolUrn, "girls-and-boys");
+
+        await Assertions.Expect(Page.Locator("#guide-contents h3")).ToHaveTextAsync("Progress made by girls and boys");
+        foreach (var subject in new[] { "reading", "writing", "maths" })
+        {
+            await Assertions.Expect(Page.Locator($"#{subject}-girls-progress-table")).ToBeVisibleAsync();
+            await Assertions.Expect(Page.Locator($"#{subject}-boys-progress-table")).ToBeVisibleAsync();
+        }
+    }
+
     private async Task GotoPupilProgressPage(string urn, string pupilCharacteristic)
     {
         var response = await Page.GotoAsync(PageUrl(urn));
@@ -136,6 +182,16 @@ public class PupilProgressTests() : BasePageTest()
         var row = await page.GetTableRowValuesAsync($"{subject}-progress-table", rowIndex);
 
         AssertHelpers.AssertNumericEqual(expectedScore, row[1]);
+    }
+
+    // Rows: group at school, local authority, England average
+    private static async Task AssertGroupProgressTable(IPage page, string subject, string group, string expectedSchoolScore, string expectedLaScore, string expectedEnglandScore)
+    {
+        var tableId = $"{subject}-{group}-progress-table";
+
+        AssertHelpers.AssertNumericEqual(expectedSchoolScore, (await page.GetTableRowValuesAsync(tableId, 0))[1]);
+        AssertHelpers.AssertNumericEqual(expectedLaScore, (await page.GetTableRowValuesAsync(tableId, 1))[1]);
+        AssertHelpers.AssertNumericEqual(expectedEnglandScore, (await page.GetTableRowValuesAsync(tableId, 2))[1]);
     }
 
     private static async Task AssertComparisonData(IPage page, string subject, string expectedLaScore, string expectedEnglandScore)

@@ -19,6 +19,8 @@ public class PupilCharacteristicBaseViewModel : KS2BandingsBaseViewModel
 
     public string Heading => SelectedPupilCharacteristic.GetDisplayName() ?? string.Empty;
 
+    public string CharacteristicName { get; set; } = string.Empty;
+
     public string LocalAuthorityName { get; set; } = string.Empty;
 
     public CodedDouble? EstablishmentReadingScore { get; init; }
@@ -99,14 +101,14 @@ public class PupilCharacteristicBaseViewModel : KS2BandingsBaseViewModel
         };
     }
 
-    public static IEnumerable<PupilCharacteristicBaseViewModel> MapCollectionWithoutBandings(
+    public static IReadOnlyList<PupilCharacteristicBaseViewModel> MapCollectionWithoutBandings(
         KS2PupilPerformanceBandings[] kS2PupilPerformanceBandings,
         EstablishmentMinimumServiceModel establishment,
         PupilCharacteristic characteristic,
         UrlLinksOptions urlLinksOptions)
     {
         return
-            kS2PupilPerformanceBandings.Select(pupilPerformance => new PupilCharacteristicBaseViewModel() {
+            [.. kS2PupilPerformanceBandings.Select(pupilPerformance => new PupilCharacteristicBaseViewModel() {
                 URN = establishment.URN,
                 SchoolName = establishment.EstablishmentName,
                 IsKS2 = establishment.IsKS2,
@@ -114,6 +116,7 @@ public class PupilCharacteristicBaseViewModel : KS2BandingsBaseViewModel
                 IsKS5 = establishment.IsKS5,
                 Ks2Bandings = null,
                 SelectedPupilCharacteristic = characteristic,
+                CharacteristicName = pupilPerformance.CharacteristicName,
                 EstablishmentReadingScore = pupilPerformance.EstablishmentReadingScore,
                 EstablishmentWritingScore = pupilPerformance.EstablishmentWritingScore,
                 EstablishmentMathsScore = pupilPerformance.EstablishmentMathsScore,
@@ -126,6 +129,6 @@ public class PupilCharacteristicBaseViewModel : KS2BandingsBaseViewModel
                 LocalAuthorityName = CommonHelper.GetLocalAuthorityDisplayName(establishment.LAName),
                 TechnicalGuideLinkUrl = urlLinksOptions.PrimaryAttainmentGroupingsTechnicalGuide.Url,
                 TechnicalGuideLinkNewTab = urlLinksOptions.PrimaryAttainmentGroupingsTechnicalGuide.NewTab
-            });
+            })];
     }
 }

@@ -1,43 +1,67 @@
-@model IEnumerable<PupilCharacteristicBaseViewModel>
-@using SAPPub.Core.Enums
+@model PupilCharacteristicGroupsViewModel
 @using SAPPub.Web.Areas.Profiles.ViewModels.KS2
 @using SAPPub.Web.Constants
 @using SAPPub.Web.ViewComponents.VerticalNavigation
 @using static SAPPub.Web.Constants.PageTitleConstants
 
 @{
+    var pageDetails = Model.Groups[0];
+    var subjects = pageDetails.Sections.Select(s => s.Subject).ToList();
+
     ViewData["Header"] = "Academic performance";
-    ViewData["SubHeader"] = Model.FirstOrDefault()?.Heading;
-    ViewData["Title"] = $"{Model.FirstOrDefault()?.SchoolName} - Primary {ViewData["SubHeader"]}";
+    ViewData["SubHeader"] = pageDetails.Heading;
+    ViewData["Title"] = $"{pageDetails.SchoolName} - Primary {ViewData["SubHeader"]}";
 }
 
 <div class="govuk-grid-row">
     @await Component.InvokeAsync("VerticalNavigation",
     new VerticalNavigationModel
     {
-        URN = Model.FirstOrDefault()?.URN,
-        SchoolName = Model.FirstOrDefault()?.SchoolName,
+        URN = pageDetails.URN,
+        SchoolName = pageDetails.SchoolName,
         ActivePage = RouteConstants.PrimaryPupilCharacteristicsGirlsAndBoys,
-        IsKS2 = Model.FirstOrDefault().IsKS2,
-        IsKS4 = Model.FirstOrDefault().IsKS4,
-        IsKS5 = Model.FirstOrDefault().IsKS5
+        IsKS2 = pageDetails.IsKS2,
+        IsKS4 = pageDetails.IsKS4,
+        IsKS5 = pageDetails.IsKS5
     })
 
     <div class="govuk-grid-column-three-quarters">
         <div id="guide-contents">
             <h2 class="govuk-heading-xl">@ViewData["Header"]</h2>
 
-            @await Html.PartialAsync("_PrimaryPerformanceSubNavigation", (Model.FirstOrDefault()?.RouteAttributes, PrimarySchoolPageTitles.PupilProgress))
+            @await Html.PartialAsync("_PrimaryPerformanceSubNavigation", (pageDetails.RouteAttributes, PrimarySchoolPageTitles.PupilProgress))
 
             @await Html.PartialAsync("_PupilCharacteristicDropdown", new PupilCharacteristicDropdownViewModel
             {
-                SelectedPupilCharacteristic = (PupilCharacteristic)Model.FirstOrDefault()?.SelectedPupilCharacteristic,
-                RouteAttributes = Model.FirstOrDefault()?.RouteAttributes
+                SelectedPupilCharacteristic = pageDetails.SelectedPupilCharacteristic,
+                RouteAttributes = pageDetails.RouteAttributes
             })
 
-            <h3 class="govuk-heading-l">@Model.FirstOrDefault()?.Heading</h3>
+            <p class="govuk-body">Information in this section is for the @pageDetails.CurrentAcademicYearDisplayName academic year.</p>
 
-            <p class="govuk-body">This page is under construction.</p>
+            <h3 class="govuk-heading-l">Progress made by girls and boys</h3>
+
+            <p class="govuk-body">
+                This shows the progress made by girls and boys at this school between year 2 (key stage 1) and year 6 (key stage 2). 
+                Their progress is compared with pupils across England who started at a similar level at the end of year 2.
+            </p>
+            <p class="govuk-body">
+                These scores help show how well the school supports pupils in making progress during their time in primary school.
+            </p>
+
+            @await Html.PartialAsync("_ProgressScoreDetails", (pageDetails.TechnicalGuideLinkUrl, pageDetails.TechnicalGuideLinkNewTab, "pupils"))
+
+            @for (var i = 0; i < subjects.Count; i++)
+            {
+                <div class="data-container">
+                    <h4 class="govuk-heading-m govuk-!-margin-top-3">@subjects[i]</h4>
+                
+                    @foreach (var group in Model.Groups)
+                    {   
+                        @await Html.PartialAsync("_PupilProgressSubSection", (group.Sections[i], group.CharacteristicName))
+                    }
+                </div>
+            }
         </div>
     </div>
 </div>

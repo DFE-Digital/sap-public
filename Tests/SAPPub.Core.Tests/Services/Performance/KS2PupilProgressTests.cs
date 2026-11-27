@@ -4,7 +4,6 @@ using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Repositories.Performance;
 using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.ServiceModels;
-using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.Services.Performance;
 using SAPPub.Core.ValueObjects;
 
@@ -246,6 +245,86 @@ public class KS2PupilProgressTests
 
     }
 
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" ")]
+    public async Task GetGirlBoyPupilProgressAsync_ThrowsForInvalidUrn(string? urn)
+    {
+        var ex = await Assert.ThrowsAnyAsync<ArgumentException>(() =>
+            _service.GetGirlBoyPupilProgressAsync(urn!, It.IsAny<CancellationToken>()));
+
+        Assert.Equal("urn", ex.ParamName);
+    }
+
+    [Fact]
+    public async Task GetGirlBoyPupilProgressAsync_ReturnsEmptyGirlsAndBoys_WhenEstablishmentNotFound()
+    {
+        // Arrange
+        var urn = "123456";
+
+        _establishmentService
+            .Setup(a => a.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EstablishmentServiceModel());
+
+        // Act
+        var result = await _service.GetGirlBoyPupilProgressAsync(urn, CancellationToken.None);
+
+        // Assert
+        Assert.Equal(["Girls", "Boys"], result.Select(a=>a.CharacteristicName));
+        Assert.All(result, a => 
+        {
+            Assert.Equal(urn, a.Urn);
+            Assert.Null(a.LocalAuthorityReadingScore);
+            Assert.Null(a.EnglandAverageReadingScore);
+
+        });
+        
+        _ks2PerformanceRepository.Verify(a => a.GetEstablishmentPerformanceAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task GetGirlBoyPupilProgressAsync_ReturnsAll_DataCorrectly()
+    {
+        // Arrange
+        var urn = "123456";
+        var laId = "TST123";
+
+        SetupAllPerformanceData(urn, laId);
+
+        // Act
+        var result = await _service.GetGirlBoyPupilProgressAsync(urn, CancellationToken.None);
+
+        // Assert
+        Assert.Equal(2, result.Length);
+        var girls = result[0];
+        var boys = result[1];   
+        Assert.Equal("Girls", girls.CharacteristicName);
+        Assert.Equal(urn, girls.Urn);
+        Assert.Equal(20, girls.EstablishmentReadingScore.Value);
+        Assert.Equal(21, girls.EstablishmentWritingScore.Value);
+        Assert.Equal(22, girls.EstablishmentMathsScore.Value);
+        Assert.Equal(26, girls.LocalAuthorityReadingScore!.Value.Value);
+        Assert.Equal(27, girls.LocalAuthorityWritingScore!.Value.Value);
+        Assert.Equal(28, girls.LocalAuthorityMathsScore!.Value.Value);
+        Assert.Equal(32, girls.EnglandAverageReadingScore!.Value.Value);
+        Assert.Equal(33, girls.EnglandAverageWritingScore!.Value.Value);
+        Assert.Equal(34, girls.EnglandAverageMathsScore!.Value.Value);
+
+        Assert.Equal("Boys", boys.CharacteristicName);
+        Assert.Equal(urn, boys.Urn);
+        Assert.Equal(23, boys.EstablishmentReadingScore.Value);
+        Assert.Equal(24, boys.EstablishmentWritingScore.Value);
+        Assert.Equal(25, boys.EstablishmentMathsScore.Value);
+        Assert.Equal(29, boys.LocalAuthorityReadingScore!.Value.Value);
+        Assert.Equal(30, boys.LocalAuthorityWritingScore!.Value.Value);
+        Assert.Equal(31, boys.LocalAuthorityMathsScore!.Value.Value);
+        Assert.Equal(35, boys.EnglandAverageReadingScore!.Value.Value);
+        Assert.Equal(36, boys.EnglandAverageWritingScore!.Value.Value);
+        Assert.Equal(37, boys.EnglandAverageMathsScore!.Value.Value);
+    }
+
+
     private void SetupAllPerformanceData(string urn, string laId)
     {
         _establishmentService
@@ -263,6 +342,12 @@ public class KS2PupilProgressTests
                 READPROG_FSM6CLA1A_Est_Current_Num_Coded = GetCodedDouble(5),
                 WRITPROG_FSM6CLA1A_Est_Current_Num_Coded = GetCodedDouble(6),
                 MATPROG_FSM6CLA1A_Est_Current_Num_Coded = GetCodedDouble(7),
+                READPROG_G_Est_Current_Num_Coded = GetCodedDouble(20),
+                WRITPROG_G_Est_Current_Num_Coded = GetCodedDouble(21),
+                MATPROG_G_Est_Current_Num_Coded = GetCodedDouble(22),
+                READPROG_B_Est_Current_Num_Coded = GetCodedDouble(23),
+                WRITPROG_B_Est_Current_Num_Coded = GetCodedDouble(24),
+                MATPROG_B_Est_Current_Num_Coded = GetCodedDouble(25),
             });
 
         _ks2PerformanceRepository
@@ -275,6 +360,12 @@ public class KS2PupilProgressTests
                 READPROG_FSM6CLA1A_LA_Current_Num_Coded = GetCodedDouble(11),
                 WRITPROG_FSM6CLA1A_LA_Current_Num_Coded = GetCodedDouble(12),
                 MATPROG_FSM6CLA1A_LA_Current_Num_Coded = GetCodedDouble(13),
+                READPROG_G_LA_Current_Num_Coded = GetCodedDouble(26),
+                WRITPROG_G_LA_Current_Num_Coded = GetCodedDouble(27),
+                MATPROG_G_LA_Current_Num_Coded = GetCodedDouble(28),
+                READPROG_B_LA_Current_Num_Coded = GetCodedDouble(29),
+                WRITPROG_B_LA_Current_Num_Coded = GetCodedDouble(30),
+                MATPROG_B_LA_Current_Num_Coded = GetCodedDouble(31),
             });
 
         _ks2PerformanceRepository
@@ -287,6 +378,12 @@ public class KS2PupilProgressTests
                 READPROG_FSM6CLA1A_Eng_Current_Num_Coded = GetCodedDouble(17),
                 WRITPROG_FSM6CLA1A_Eng_Current_Num_Coded = GetCodedDouble(18),
                 MATPROG_FSM6CLA1A_Eng_Current_Num_Coded = GetCodedDouble(19),
+                READPROG_G_Eng_Current_Num_Coded = GetCodedDouble(32),
+                WRITPROG_G_Eng_Current_Num_Coded = GetCodedDouble(33),
+                MATPROG_G_Eng_Current_Num_Coded = GetCodedDouble(34),
+                READPROG_B_Eng_Current_Num_Coded = GetCodedDouble(35),
+                WRITPROG_B_Eng_Current_Num_Coded = GetCodedDouble(36),
+                MATPROG_B_Eng_Current_Num_Coded = GetCodedDouble(37),
             });
 
     }

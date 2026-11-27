@@ -1,0 +1,20 @@
+[
+  {
+    "school_urn": "100019",
+    "reading_score": "-3.6", "la_reading_score": "z", "england_reading_score": "4.4",
+    "writing_score": "-0.4", "la_writing_score": "z", "england_writing_score": "-3.5",
+    "maths_score": "-2.9", "la_maths_score": "z", "england_maths_score": "-4.9"
+  },
+  {
+    "school_urn": "100241",
+    "reading_score": "3.4", "la_reading_score": "-3.9", "england_reading_score": "4.4",
+    "writing_score": "3.3", "la_writing_score": "-1.5", "england_writing_score": "-3.5",
+    "maths_score": "2.2", "la_maths_score": "-0.4", "england_maths_score": "-4.9"
+  },
+  {
+    "school_urn": "100353",
+    "reading_score": "-4.7", "la_reading_score": "-2.1", "england_reading_score": "4.4",
+    "writing_score": "4.3", "la_writing_score": "-3.4", "england_writing_score": "-3.5",
+    "maths_score": "1.2", "la_maths_score": "4.7", "england_maths_score": "-4.9"
+  }
+]

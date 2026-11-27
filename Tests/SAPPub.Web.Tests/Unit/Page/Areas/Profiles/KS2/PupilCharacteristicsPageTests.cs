@@ -20,7 +20,7 @@ public class PupilCharacteristicsPageTests : PageTestsBase
         ["/primary-performance/pupil-progress/all-pupils", "Progress made between year 2 and year 6"],
         ["/primary-performance/pupil-progress/disadvantaged-pupils", "Progress made by disadvantaged pupils"],
         ["/primary-performance/pupil-progress/english-as-additional-language", "Progress made by pupils with English as an additional language"],
-        ["/primary-performance/pupil-progress/girls-and-boys", "Girls and boys"],
+        ["/primary-performance/pupil-progress/girls-and-boys", "Progress made by girls and boys"],
         ["/primary-performance/pupil-progress/different-starting-points", "Pupils with different starting points"],
         ["/primary-performance/pupil-progress/non-mobile-pupils", "Non-mobile pupils"],
     ];
@@ -51,6 +51,14 @@ public class PupilCharacteristicsPageTests : PageTestsBase
         progressServiceMock
             .Setup(a => a.GetEalPupilProgressAsync(_urn, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new KS2PupilPerformanceBandings { Urn = _urn });
+
+        progressServiceMock
+            .Setup(a => a.GetGirlBoyPupilProgressAsync(_urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+                [
+                    new KS2PupilPerformanceBandings { Urn = _urn, CharacteristicName = "Girls" },
+                    new KS2PupilPerformanceBandings { Urn = _urn, CharacteristicName = "Boys" }
+                ]);
 
         var establishment = new EstablishmentMinimumTestBuilder()
             .WithURN(_urn)

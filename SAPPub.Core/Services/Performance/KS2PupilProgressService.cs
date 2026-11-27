@@ -291,7 +291,11 @@ public class KS2PupilProgressService(
 
         if (performance is null)
         {
-            return [new() { Urn = urn }];
+            return 
+                [
+                    new() { Urn = urn, CharacteristicName = "Girls" },
+                    new() { Urn = urn, CharacteristicName = "Boys" }
+                ];
         }
 
         var (establishmentPerformance, laPerformance, englandPerformance) = performance.Value;

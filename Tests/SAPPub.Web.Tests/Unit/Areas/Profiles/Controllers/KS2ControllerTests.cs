@@ -527,9 +527,16 @@ public class KS2ControllerTests : BaseProfilesTests
         _mockKS2PupilProgressService
             .Setup(a => a.GetEalPupilProgressAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new KS2PupilPerformanceBandings { Urn = fakeEstablishment.URN });
+        _mockKS2PupilProgressService
+            .Setup(a => a.GetGirlBoyPupilProgressAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+                [
+                    new KS2PupilPerformanceBandings { Urn = fakeEstablishment.URN, CharacteristicName = "Girls" },
+                    new KS2PupilPerformanceBandings { Urn = fakeEstablishment.URN, CharacteristicName = "Boys" }
+                ]);
 
         // Act
-        IActionResult result = characteristic switch
+        var result = characteristic switch
         {
             PupilCharacteristic.AllPupils => await _controller.PupilCharacteristicsAllPupils(_mockKS2PupilProgressService.Object, fakeEstablishment.URN, fakeEstablishment.EstablishmentName, CancellationToken.None),
             PupilCharacteristic.DisadvantagedPupils => await _controller.PupilCharacteristicsDisadvantagedPupils(_mockKS2PupilProgressService.Object, fakeEstablishment.URN, fakeEstablishment.EstablishmentName, CancellationToken.None),
@@ -542,9 +549,71 @@ public class KS2ControllerTests : BaseProfilesTests
 
         // Assert
         var viewResult = Assert.IsType<ViewResult>(result);
-        var model = Assert.IsType<PupilCharacteristicBaseViewModel>(viewResult.Model);
-        Assert.Equal(characteristic, model.SelectedPupilCharacteristic);
-        Assert.Equal(fakeMinimumEstablishment.URN, model.URN);
+
+        var models = viewResult.Model is PupilCharacteristicGroupsViewModel groupsModel
+            ? groupsModel.Groups
+            : [Assert.IsType<PupilCharacteristicBaseViewModel>(viewResult.Model)];
+
+        Assert.NotEmpty(models);
+        Assert.All(models, model =>
+        {
+            Assert.Equal(characteristic, model.SelectedPupilCharacteristic);
+            Assert.Equal(fakeMinimumEstablishment.URN, model.URN);
+        });
+    }
+
+    [Fact]
+    public async Task PupilCharacteristicsGirlsAndBoys_ReturnsOneModelPerGroup_WithGroupScores()
+    {
+        // Arrange
+        _mockKS2PupilProgressService
+            .Setup(a => a.GetGirlBoyPupilProgressAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+                [
+                    new KS2PupilPerformanceBandings { 
+                        Urn = fakeEstablishment.URN, 
+                        CharacteristicName = "Girls", 
+                        EstablishmentReadingScore = GetCodedDouble(1), 
+                        LocalAuthorityReadingScore = GetCodedDouble(2),
+                        EnglandAverageReadingScore = GetCodedDouble(3)
+                    },
+                    new KS2PupilPerformanceBandings {
+                        Urn = fakeEstablishment.URN,
+                        CharacteristicName = "Boys",
+                        EstablishmentReadingScore = GetCodedDouble(4),
+                        LocalAuthorityReadingScore = GetCodedDouble(5),
+                        EnglandAverageReadingScore = GetCodedDouble(6)
+                    },
+                ]);
+
+        // Act
+        var result = await _controller.PupilCharacteristicsGirlsAndBoys(_mockKS2PupilProgressService.Object, fakeEstablishment.URN, fakeEstablishment.EstablishmentName, CancellationToken.None);
+
+        // Assert
+        var viewResult = Assert.IsType<ViewResult>(result);
+        var model = Assert.IsType<PupilCharacteristicGroupsViewModel>(viewResult.Model);
+        Assert.Equal(fakeMinimumEstablishment.EstablishmentName, model.SchoolName);
+
+        var models = model.Groups;
+        Assert.Equal(["Girls", "Boys"], models.Select(m => m.CharacteristicName));
+
+        Assert.All(models, model => 
+        {
+            Assert.Null(model.Ks2Bandings);
+            Assert.Null(model.Ks2SmallNumberOfPupilsWarning);
+            Assert.Equal(["Reading", "Writing", "Maths"], model.Sections.Select(a=>a.Subject));
+        });
+
+        var girlsReading = models[0].Sections[0];
+        Assert.Equal(1, girlsReading.Score.Value.Value);
+        Assert.Equal(2, girlsReading.LocalAuthorityScore.Value.Value);
+        Assert.Equal(3, girlsReading.EnglandScore.Value.Value);
+
+        var boysReading = models[1].Sections[0];
+        Assert.Equal(4, boysReading.Score.Value.Value);
+        Assert.Equal(5, boysReading.LocalAuthorityScore.Value.Value);
+        Assert.Equal(6, boysReading.EnglandScore.Value.Value);
+
     }
 
     private KS2PupilPerformance GetKS2PupilPerformance() => new()
