@@ -80,4 +80,15 @@ public class KS2EnglandPerformance
     public CodedDouble ProgBand_Math_Band5_Eng_Previous2_Pct_Coded { get; set; }
     public CodedString ProgBand_Math_Band5_Eng_Previous2_Desc { get; set; }
 
+    public CodedDouble READPROG_Eng_Current_Num_Coded { get; set; }
+    public CodedDouble WRITPROG_Eng_Current_Num_Coded { get; set; }
+    public CodedDouble MATPROG_Eng_Current_Num_Coded { get; set; }
+
+    public CodedDouble READPROG_FSM6CLA1A_Eng_Current_Num_Coded { get; set; }
+    public CodedDouble WRITPROG_FSM6CLA1A_Eng_Current_Num_Coded { get; set; }
+    public CodedDouble MATPROG_FSM6CLA1A_Eng_Current_Num_Coded { get; set; }
+
+    public CodedDouble READPROG_EAL_Eng_Current_Num_Coded { get; set; }
+    public CodedDouble WRITPROG_EAL_Eng_Current_Num_Coded { get; set; }
+    public CodedDouble MATPROG_EAL_Eng_Current_Num_Coded { get; set; }
 }

@@ -1,13 +1,7 @@
-﻿using SAPPub.Core.Entities;
+﻿using SAPPub.Core.Helpers;
 using SAPPub.Core.Interfaces.Repositories.Overview;
 using SAPPub.Core.Interfaces.Services.Overview;
 using SAPPub.Core.ServiceModels.Overview;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SAPPub.Core.Helpers;
 
 namespace SAPPub.Core.Services.Overview
 {
@@ -68,7 +62,13 @@ namespace SAPPub.Core.Services.Overview
                 ReadingWritingMathsExpectedEngland = overview.KS2EnglandPerformance?.PTRWM_EXP_Eng_Current_Pct_Coded,
                 ReadingWritingMathsHigherEstablishment = overview.KS2Performance?.PTRWM_HIGH_Est_Current_Pct_Coded,
                 ReadingWritingMathsHigherLA = overview.KS2LAPerformance?.PTRWM_HIGH_LA_Current_Pct_Coded,
-                ReadingWritingMathsHigherEngland = overview.KS2EnglandPerformance?.PTRWM_HIGH_Eng_Current_Pct_Coded
+                ReadingWritingMathsHigherEngland = overview.KS2EnglandPerformance?.PTRWM_HIGH_Eng_Current_Pct_Coded,
+                ReadingProgressBanding = overview.KS2Performance?.READPROG_DESCR_Est_Current_Num_Coded,
+                WritingProgressBanding = overview.KS2Performance?.WRITPROG_DESCR_Est_Current_Num_Coded,
+                MathsProgressBanding = overview.KS2Performance?.MATPROG_DESCR_Est_Current_Num_Coded,
+                ReadingProgressSignificance = overview.KS2Performance?.READPROG_SIGNIFICANCE_Est_Current_Num_Coded,
+                WritingProgressSignificance = overview.KS2Performance?.WRITPROG_SIGNIFICANCE_Est_Current_Num_Coded,
+                MathsProgressSignificance = overview.KS2Performance?.MATPROG_SIGNIFICANCE_Est_Current_Num_Coded
             };
         }
     }

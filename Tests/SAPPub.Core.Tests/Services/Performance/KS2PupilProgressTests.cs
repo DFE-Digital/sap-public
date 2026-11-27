@@ -64,7 +64,7 @@ public class KS2PupilProgressTests
 
         _ks2PerformanceRepository
             .Setup(a => a.GetEstablishmentPerformanceAsync(urn, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new KS2EstablishmentPerformance 
+            .ReturnsAsync(new KS2EstablishmentPerformance
             {
                 READPROG_Est_Previous2_Num_Coded = new CodedDouble(1, string.Empty, "1"),
                 READPROG_DESCR_Est_Previous2_Num_Coded = new CodedString("1", string.Empty, "1"),
@@ -82,7 +82,7 @@ public class KS2PupilProgressTests
 
         _ks2PerformanceRepository
             .Setup(a => a.GetLaPerformanceAsync(laId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new KS2LAPerformance 
+            .ReturnsAsync(new KS2LAPerformance
             {
                 READPROG_LA_Previous2_Num_Coded = new CodedDouble(30, string.Empty, "30"),
                 WRITPROG_LA_Previous2_Num_Coded = new CodedDouble(31, string.Empty, "31"),
@@ -147,7 +147,7 @@ public class KS2PupilProgressTests
         Assert.All(
             result.WritingProgressBandingPercentages,
             x => Assert.Equal(6, x.Value));
-        Assert.Equal(5, result.MathsProgressBandingPercentages.Length); 
+        Assert.Equal(5, result.MathsProgressBandingPercentages.Length);
         Assert.All(
             result.MathsProgressBandingPercentages,
             x => Assert.Equal(7, x.Value));
@@ -161,4 +161,139 @@ public class KS2PupilProgressTests
         _ks2PerformanceRepository
             .Verify(a => a.GetLaPerformanceAsync(laId, It.IsAny<CancellationToken>()), Times.Once);
     }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" ")]
+    public async Task GetDisadvantagedPupilProgressAsync_ThrowsForInvalidUrn(string? urn)
+    {
+        var ex = await Assert.ThrowsAnyAsync<ArgumentException>(() =>
+            _service.GetDisadvantagedPupilProgressAsync(urn!, It.IsAny<CancellationToken>()));
+
+        Assert.Equal("urn", ex.ParamName);
+    }
+
+    [Fact]
+    public async Task GetDisadvantagedPupilProgressAsync_ReturnsUrnOnly_WhenEstablishmentNotFound()
+    {
+        // Arrange
+        var urn = "123456";
+
+        _establishmentService
+            .Setup(a => a.GetEstablishmentAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EstablishmentServiceModel());
+        
+        // Act
+        var result = await _service.GetDisadvantagedPupilProgressAsync(urn, CancellationToken.None);
+        
+        // Assert
+        Assert.Equal(urn, result.Urn);
+        Assert.Null(result.LocalAuthorityReadingScore);
+        Assert.Null(result.EnglandAverageReadingScore);
+        _ks2PerformanceRepository.Verify(a => a.GetEstablishmentPerformanceAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task GetDisadvantagedPupilProgressAsync_ReturnsAll_DataCorrectly()
+    {
+        // Arrange
+        var urn = "123456";
+        var laId = "TST123";
+
+        SetupAllPerformanceData(urn, laId);
+
+        // Act
+        var result = await _service.GetDisadvantagedPupilProgressAsync(urn, CancellationToken.None);
+
+        // Assert
+        Assert.Equal(urn, result.Urn);
+        Assert.Equal(5, result.EstablishmentReadingScore.Value);
+        Assert.Equal(6, result.EstablishmentWritingScore.Value);
+        Assert.Equal(7, result.EstablishmentMathsScore.Value);
+        Assert.Equal(11, result.LocalAuthorityReadingScore!.Value.Value);
+        Assert.Equal(12, result.LocalAuthorityWritingScore!.Value.Value);
+        Assert.Equal(13, result.LocalAuthorityMathsScore!.Value.Value);
+        Assert.Equal(17, result.EnglandAverageReadingScore!.Value.Value);
+        Assert.Equal(18, result.EnglandAverageWritingScore!.Value.Value);
+        Assert.Equal(19, result.EnglandAverageMathsScore!.Value.Value);
+    }
+
+    [Fact]
+    public async Task GetPupilProgressAsync_Bandings_ReturnsAllPupilsScores()
+    {
+        // Arrange
+        var urn = "123456";
+        var laId = "TST123";
+
+        SetupAllPerformanceData(urn, laId);
+
+        // Act  
+        var result = await _service.GetPupilProgressAsync(urn, CancellationToken.None);
+
+        // Assert
+        Assert.Equal(urn, result.Urn);
+        Assert.Equal(1, result.EstablishmentReadingScore.Value);
+        Assert.Equal(2, result.EstablishmentWritingScore.Value);
+        Assert.Equal(3, result.EstablishmentMathsScore.Value);
+        Assert.Equal("4", result.EstablishmentReadingProgressBanding!.Value.Value);
+        Assert.Equal(8, result.LocalAuthorityReadingScore!.Value.Value);
+        Assert.Equal(9, result.LocalAuthorityWritingScore!.Value.Value);
+        Assert.Equal(10, result.LocalAuthorityMathsScore!.Value.Value);
+        Assert.Equal(14, result.EnglandAverageReadingScore!.Value.Value);
+        Assert.Equal(15, result.EnglandAverageWritingScore!.Value.Value);
+        Assert.Equal(16, result.EnglandAverageMathsScore!.Value.Value);
+
+    }
+
+    private void SetupAllPerformanceData(string urn, string laId)
+    {
+        _establishmentService
+            .Setup(a => a.GetEstablishmentMinimumAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new EstablishmentMinimumServiceModel { URN = urn, LAId = laId });
+
+        _ks2PerformanceRepository
+            .Setup(a => a.GetEstablishmentPerformanceAsync(urn, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new KS2EstablishmentPerformance
+            {
+                READPROG_Est_Current_Num_Coded = GetCodedDouble(1),
+                WRITPROG_Est_Current_Num_Coded = GetCodedDouble(2),
+                MATPROG_Est_Current_Num_Coded = GetCodedDouble(3),
+                READPROG_DESCR_Est_Current_Num_Coded = new CodedString("4", string.Empty, "4"),
+                READPROG_FSM6CLA1A_Est_Current_Num_Coded = GetCodedDouble(5),
+                WRITPROG_FSM6CLA1A_Est_Current_Num_Coded = GetCodedDouble(6),
+                MATPROG_FSM6CLA1A_Est_Current_Num_Coded = GetCodedDouble(7),
+            });
+
+        _ks2PerformanceRepository
+            .Setup(a=>a.GetLaPerformanceAsync(laId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new KS2LAPerformance
+            {
+                READPROG_LA_Current_Num_Coded = GetCodedDouble(8),
+                WRITPROG_LA_Current_Num_Coded = GetCodedDouble(9),
+                MATPROG_LA_Current_Num_Coded = GetCodedDouble(10),
+                READPROG_FSM6CLA1A_LA_Current_Num_Coded = GetCodedDouble(11),
+                WRITPROG_FSM6CLA1A_LA_Current_Num_Coded = GetCodedDouble(12),
+                MATPROG_FSM6CLA1A_LA_Current_Num_Coded = GetCodedDouble(13),
+            });
+
+        _ks2PerformanceRepository
+            .Setup(a => a.GetEnglandPerformanceAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new KS2EnglandPerformance
+            {
+                READPROG_Eng_Current_Num_Coded = GetCodedDouble(14),
+                WRITPROG_Eng_Current_Num_Coded = GetCodedDouble(15),
+                MATPROG_Eng_Current_Num_Coded = GetCodedDouble(16),
+                READPROG_FSM6CLA1A_Eng_Current_Num_Coded = GetCodedDouble(17),
+                WRITPROG_FSM6CLA1A_Eng_Current_Num_Coded = GetCodedDouble(18),
+                MATPROG_FSM6CLA1A_Eng_Current_Num_Coded = GetCodedDouble(19),
+            });
+
+    }
+
+    private static CodedDouble GetCodedDouble(double? val)
+    {
+        return new CodedDouble(val!, string.Empty, val is null ? null! : val.ToString()!);
+    }
+
 }

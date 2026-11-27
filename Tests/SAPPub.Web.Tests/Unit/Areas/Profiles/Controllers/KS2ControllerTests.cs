@@ -270,6 +270,12 @@ public class KS2ControllerTests : BaseProfilesTests
         Assert.Equal(expectedModel.EnglandNonDisadvantagedMeetingExpectedStandard.Value.ToString(), model.NonDisadvantagedPupils.Rows.Skip(1).First().MeetingStandard.Value.ToString());
         Assert.Equal(expectedModel.EnglandNonDisadvantagedExceedingExpectedStandard.Value.ToString(), model.NonDisadvantagedPupils.Rows.Skip(1).First().ExceedingStandard.Value.ToString());
 
+        Assert.Equal(expectedModel.PriorAttainmentReadingWritingMathsLowExpectedStandardPupilPct.Value.ToString(), model.PriorAttainment.Rows.First().MeetingStandard.Value.ToString());
+        Assert.Equal(expectedModel.PriorAttainmentReadingWritingMathsLowHigherStandardPupilPct.Value.ToString(), model.PriorAttainment.Rows.First().ExceedingStandard.Value.ToString());
+        Assert.Equal(expectedModel.PriorAttainmentReadingWritingMathsMidExpectedStandardPupilPct.Value.ToString(), model.PriorAttainment.Rows.Skip(1).First().MeetingStandard.Value.ToString());
+        Assert.Equal(expectedModel.PriorAttainmentReadingWritingMathsMidHigherStandardPupilPct.Value.ToString(), model.PriorAttainment.Rows.Skip(1).First().ExceedingStandard.Value.ToString());
+        Assert.Equal(expectedModel.PriorAttainmentReadingWritingMathsHighExpectedStandardPupilPct.Value.ToString(), model.PriorAttainment.Rows.Skip(2).First().MeetingStandard.Value.ToString());
+        Assert.Equal(expectedModel.PriorAttainmentReadingWritingMathsHighHigherStandardPupilPct.Value.ToString(), model.PriorAttainment.Rows.Skip(2).First().ExceedingStandard.Value.ToString());
 
         _mockKS2MeetingOrExceedingStandardsService
             .Verify(a => a.GetMeetingOrExceedingStandardsPercentages(fakeMinimumEstablishment.URN, fakeMinimumEstablishment.LAId, CancellationToken.None), Times.Once);
@@ -347,6 +353,12 @@ public class KS2ControllerTests : BaseProfilesTests
         Assert.Equal(expectedModel.NonDisadvantagedAverageMathsEngland, model.NonDisadvantagedPupils.Rows.ToList()[1].AverageMathsScore.Value);
         Assert.Equal(expectedModel.NonDisadvantagedAverageReadingEngland, model.NonDisadvantagedPupils.Rows.ToList()[1].AverageReadingScore.Value);
 
+        Assert.Equal(expectedModel.PriorAttainmentReadingLowAvgScorePct, model.PriorAttainment.Rows.ToList()[0].AverageReadingScore.Value);
+        Assert.Equal(expectedModel.PriorAttainmentMathsLowAvgScorePct, model.PriorAttainment.Rows.ToList()[0].AverageMathsScore.Value);
+        Assert.Equal(expectedModel.PriorAttainmentReadingMidAvgScorePct, model.PriorAttainment.Rows.ToList()[1].AverageReadingScore.Value);
+        Assert.Equal(expectedModel.PriorAttainmentMathsMidAvgScorePct, model.PriorAttainment.Rows.ToList()[1].AverageMathsScore.Value);
+        Assert.Equal(expectedModel.PriorAttainmentReadingHighAvgScorePct, model.PriorAttainment.Rows.ToList()[2].AverageReadingScore.Value);
+        Assert.Equal(expectedModel.PriorAttainmentMathsHighAvgScorePct, model.PriorAttainment.Rows.ToList()[2].AverageMathsScore.Value);
 
         _mockKS2ScaledScoreService
             .Verify(a => a.GetScaledScoreModel(fakeMinimumEstablishment.URN,It.IsAny<CancellationToken>()), Times.Once);
@@ -422,9 +434,14 @@ public class KS2ControllerTests : BaseProfilesTests
             EnglandPercentageMeetingOrExceedingThreeYearAverage = GetCodedDouble(41),
             EstablishmentPercentageExceedingThreeYearAverage = GetCodedDouble(42),
             LocalAuthorityPercentageExceedingThreeYearAverage = GetCodedDouble(43),
-            EnglandPercentageExceedingThreeYearAverage = GetCodedDouble(44)
+            EnglandPercentageExceedingThreeYearAverage = GetCodedDouble(44),
+            PriorAttainmentReadingWritingMathsLowExpectedStandardPupilPct = GetCodedDouble(45),
+            PriorAttainmentReadingWritingMathsLowHigherStandardPupilPct = GetCodedDouble(46),
+            PriorAttainmentReadingWritingMathsMidExpectedStandardPupilPct = GetCodedDouble(47),
+            PriorAttainmentReadingWritingMathsMidHigherStandardPupilPct = GetCodedDouble(48),
+            PriorAttainmentReadingWritingMathsHighExpectedStandardPupilPct = GetCodedDouble(49),
+            PriorAttainmentReadingWritingMathsHighHigherStandardPupilPct = GetCodedDouble(50)
         };
-
     }
 
     private static KS2AdditionalMeasuresModel GetKS2AdditionalMeasuresModel() => new()
@@ -498,23 +515,34 @@ public class KS2ControllerTests : BaseProfilesTests
 
     [Theory]
     [MemberData(nameof(PupilCharacteristicRouteMappings))]
-    public void PupilCharacteristicPlaceholderAction_ReturnsExpectedModel(PupilCharacteristic characteristic, string _)
+    public async Task PupilCharacteristicPlaceholderAction_ReturnsExpectedModel(PupilCharacteristic characteristic, string _)
     {
+        // Arrange
+        _mockKS2PupilProgressService
+            .Setup(a => a.GetPupilProgressAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new KS2PupilPerformanceBandings { Urn = fakeEstablishment.URN });
+        _mockKS2PupilProgressService
+            .Setup(a=>a.GetDisadvantagedPupilProgressAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new KS2PupilPerformanceBandings { Urn = fakeEstablishment.URN });
+        _mockKS2PupilProgressService
+            .Setup(a => a.GetEalPupilProgressAsync(fakeEstablishment.URN, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new KS2PupilPerformanceBandings { Urn = fakeEstablishment.URN });
+
         // Act
         IActionResult result = characteristic switch
         {
-            PupilCharacteristic.AllPupils => _controller.PupilCharacteristicsAllPupils(fakeEstablishment.URN, fakeEstablishment.EstablishmentName),
-            PupilCharacteristic.DisadvantagedPupils => _controller.PupilCharacteristicsDisadvantagedPupils(fakeEstablishment.URN, fakeEstablishment.EstablishmentName),
-            PupilCharacteristic.PupilsWithEnglishAsAnAdditionalLanguage => _controller.PupilCharacteristicsEnglishAsAdditionalLanguage(fakeEstablishment.URN, fakeEstablishment.EstablishmentName),
-            PupilCharacteristic.GirlsAndBoys => _controller.PupilCharacteristicsGirlsAndBoys(fakeEstablishment.URN, fakeEstablishment.EstablishmentName),
-            PupilCharacteristic.PupilsWithDifferentStartingPoints => _controller.PupilCharacteristicsDifferentStartingPoints(fakeEstablishment.URN, fakeEstablishment.EstablishmentName),
-            PupilCharacteristic.NonMobilePupils => _controller.PupilCharacteristicsNonMobilePupils(fakeEstablishment.URN, fakeEstablishment.EstablishmentName),
+            PupilCharacteristic.AllPupils => await _controller.PupilCharacteristicsAllPupils(_mockKS2PupilProgressService.Object, fakeEstablishment.URN, fakeEstablishment.EstablishmentName, CancellationToken.None),
+            PupilCharacteristic.DisadvantagedPupils => await _controller.PupilCharacteristicsDisadvantagedPupils(_mockKS2PupilProgressService.Object, fakeEstablishment.URN, fakeEstablishment.EstablishmentName, CancellationToken.None),
+            PupilCharacteristic.PupilsWithEnglishAsAnAdditionalLanguage => await _controller.PupilCharacteristicsEnglishAsAdditionalLanguage(_mockKS2PupilProgressService.Object, fakeEstablishment.URN, fakeEstablishment.EstablishmentName, CancellationToken.None),
+            PupilCharacteristic.GirlsAndBoys => await _controller.PupilCharacteristicsGirlsAndBoys(_mockKS2PupilProgressService.Object, fakeEstablishment.URN, fakeEstablishment.EstablishmentName, CancellationToken.None),
+            PupilCharacteristic.PupilsWithDifferentStartingPoints => await _controller.PupilCharacteristicsDifferentStartingPoints(_mockKS2PupilProgressService.Object, fakeEstablishment.URN, fakeEstablishment.EstablishmentName, CancellationToken.None),
+            PupilCharacteristic.NonMobilePupils => await _controller.PupilCharacteristicsNonMobilePupils(_mockKS2PupilProgressService.Object, fakeEstablishment.URN, fakeEstablishment.EstablishmentName, CancellationToken.None),
             _ => throw new ArgumentOutOfRangeException(nameof(characteristic))
         };
 
         // Assert
         var viewResult = Assert.IsType<ViewResult>(result);
-        var model = Assert.IsType<PupilCharacteristicPlaceholderViewModel>(viewResult.Model);
+        var model = Assert.IsType<PupilCharacteristicBaseViewModel>(viewResult.Model);
         Assert.Equal(characteristic, model.SelectedPupilCharacteristic);
         Assert.Equal(fakeMinimumEstablishment.URN, model.URN);
     }
@@ -590,7 +618,14 @@ public class KS2ControllerTests : BaseProfilesTests
         NonDisadvantagedAverageReadingLA = GetCodedDouble(31),
         NonDisadvantagedAverageMathsLA = GetCodedDouble(32),
         NonDisadvantagedAverageReadingEngland = GetCodedDouble(33),
-        NonDisadvantagedAverageMathsEngland = GetCodedDouble(34)
-    };
+        NonDisadvantagedAverageMathsEngland = GetCodedDouble(34),
 
+        /* Prior attainment */
+        PriorAttainmentReadingLowAvgScorePct = GetCodedDouble(35),
+        PriorAttainmentMathsLowAvgScorePct = GetCodedDouble(36),
+        PriorAttainmentReadingMidAvgScorePct = GetCodedDouble(37),
+        PriorAttainmentMathsMidAvgScorePct = GetCodedDouble(38),
+        PriorAttainmentReadingHighAvgScorePct = GetCodedDouble(39),
+        PriorAttainmentMathsHighAvgScorePct = GetCodedDouble(40)
+    };
 }

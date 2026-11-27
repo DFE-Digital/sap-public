@@ -26,6 +26,7 @@ public class AcademicPerformanceMeetingOrExceedingStandardsViewModel : BaseViewM
     public required MeetingExceedingStandardsViewModel NonMobilePupils { get; set; }
     public required MeetingExceedingStandardsViewModel DisadvantagedPupils { get; set; }
     public required MeetingExceedingStandardsViewModel NonDisadvantagedPupils { get; set; }
+    public required MeetingExceedingStandardsViewModel PriorAttainment { get; set; }
 
     public static AcademicPerformanceMeetingOrExceedingStandardsViewModel Map(
         EstablishmentMinimumServiceModel establishment,
@@ -129,6 +130,13 @@ public class AcademicPerformanceMeetingOrExceedingStandardsViewModel : BaseViewM
                 [
                     new() { RowTitle = $"{establishment.LAName} average", MeetingStandard = ks2MESModel.LocalAuthorityNonDisadvantagedMeetingExpectedStandard.ToDisplayField(), ExceedingStandard = ks2MESModel.LocalAuthorityNonDisadvantagedExceedingExpectedStandard.ToDisplayField() },
                     new() { RowTitle = Constants.Constants.EnglandAverage, MeetingStandard = ks2MESModel.EnglandNonDisadvantagedMeetingExpectedStandard.ToDisplayField(), ExceedingStandard = ks2MESModel.EnglandNonDisadvantagedExceedingExpectedStandard.ToDisplayField() },
+                ]),
+            PriorAttainment = GetMeetingExceedingStandardsViewModel($"{PupilGroup} (Prior Attainment)",
+                [
+                    new() { RowTitle = "Low", MeetingStandard = ks2MESModel.PriorAttainmentReadingWritingMathsLowExpectedStandardPupilPct.ToDisplayField(), ExceedingStandard = ks2MESModel.PriorAttainmentReadingWritingMathsLowHigherStandardPupilPct.ToDisplayField() },
+                    new() { RowTitle = "Middle", MeetingStandard = ks2MESModel.PriorAttainmentReadingWritingMathsMidExpectedStandardPupilPct.ToDisplayField(), ExceedingStandard = ks2MESModel.PriorAttainmentReadingWritingMathsMidHigherStandardPupilPct.ToDisplayField() },
+                    new() { RowTitle = "High", MeetingStandard = ks2MESModel.PriorAttainmentReadingWritingMathsHighExpectedStandardPupilPct.ToDisplayField(), ExceedingStandard = ks2MESModel.PriorAttainmentReadingWritingMathsHighHigherStandardPupilPct.ToDisplayField() },
+                    new() { RowTitle = Constants.Constants.AllPupils, MeetingStandard = ks2MESModel.AllPupilsMeetingExpectedStandard.ToDisplayField(), ExceedingStandard = ks2MESModel.AllPupilsExceedingExpectedStandard.ToDisplayField() },
                 ])
         };
     }

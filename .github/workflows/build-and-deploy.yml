@@ -30,6 +30,7 @@ on:
     branches:
       - main
       - hotfix/**
+      - feature/ks2-dec26
     types: [opened, reopened, synchronize, labeled]
 
 env:

@@ -1,0 +1,35 @@
+@using SAPPub.Web.Areas.Profiles.ViewModels.KS2
+@model (PupilProgressSectionViewModel PupilProgressSectionViewModel, string? PupilGroup)
+
+@{
+    var subjectId = Model.PupilProgressSectionViewModel.Subject.ToLowerInvariant();
+}
+
+<div class="data-container">
+    <h4 class="govuk-heading-m govuk-!-margin-top-3">
+        @Model.PupilProgressSectionViewModel.Subject
+    </h4>
+
+    <table id="@(subjectId)-progress-table" class="govuk-table">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Comparison group</th>
+                <th scope="col" class="govuk-table__header">Progress score</th>
+            </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">@($"{Model.PupilGroup} {Model.PupilProgressSectionViewModel.SchoolName}".Trim())</td>
+                <td class="govuk-table__cell">@Model.PupilProgressSectionViewModel.Score.DisplayNumber(format: "N1")</td>
+            </tr>
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">@Model.PupilProgressSectionViewModel.LocalAuthorityName</td>
+                <td class="govuk-table__cell">@Model.PupilProgressSectionViewModel.LocalAuthorityScore.DisplayNumber(format: "N1")</td>
+            </tr>
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">England average</td>
+                <td class="govuk-table__cell">@Model.PupilProgressSectionViewModel.EnglandScore.DisplayNumber(format: "N1")</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

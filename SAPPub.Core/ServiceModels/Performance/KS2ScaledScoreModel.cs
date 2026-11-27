@@ -54,4 +54,12 @@ public class KS2ScaledScoreModel
     public required CodedDouble NonDisadvantagedAverageMathsLA { get; init; }
     public required CodedDouble NonDisadvantagedAverageReadingEngland { get; init; }
     public required CodedDouble NonDisadvantagedAverageMathsEngland { get; init; }
+
+    /* Prior Attainment */
+    public required CodedDouble PriorAttainmentReadingLowAvgScorePct { get; init; }
+    public required CodedDouble PriorAttainmentMathsLowAvgScorePct { get; init; }
+    public required CodedDouble PriorAttainmentReadingMidAvgScorePct { get; init; }
+    public required CodedDouble PriorAttainmentMathsMidAvgScorePct { get; init; }
+    public required CodedDouble PriorAttainmentReadingHighAvgScorePct { get; init; }
+    public required CodedDouble PriorAttainmentMathsHighAvgScorePct { get; init; }
 }

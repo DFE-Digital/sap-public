@@ -83,7 +83,13 @@ public class KS2MeetingOrExceedingStandardsServiceTests : ServiceTestBase
                 PTRWM_EXP_FSM6CLA1A_Est_Current_Pct_Coded = GetCodedDouble(27),
                 PTRWM_HIGH_FSM6CLA1A_Est_Current_Pct_Coded = GetCodedDouble(28),
                 PTRWM_EXP_3YR_Est_Current_Pct_Coded = GetCodedDouble(37),
-                PTRWM_HIGH_3YR_Est_Current_Pct_Coded = GetCodedDouble(38)
+                PTRWM_HIGH_3YR_Est_Current_Pct_Coded = GetCodedDouble(38),
+                PTRWM_Low_Exp_St_Pup_Pct_Coded = GetCodedDouble(43),
+                PTRWM_Low_Hgr_St_Pup_Pct_Coded = GetCodedDouble(44),
+                PTRWM_Med_Exp_St_Pup_Pct_Coded = GetCodedDouble(45),
+                PTRWM_Med_Hgr_St_Pup_Pct_Coded = GetCodedDouble(46),
+                PTRWM_High_Exp_St_Pup_Pct_Coded = GetCodedDouble(47),
+                PTRWM_High_Hgr_St_Pup_Pct_Coded = GetCodedDouble(48)
             });
 
         _ks2PerformanceRepository
@@ -177,5 +183,12 @@ public class KS2MeetingOrExceedingStandardsServiceTests : ServiceTestBase
         Assert.Equal(GetCodedDouble(40), result.LocalAuthorityPercentageExceedingThreeYearAverage);
         Assert.Equal(GetCodedDouble(41), result.EnglandPercentageMeetingOrExceedingThreeYearAverage);
         Assert.Equal(GetCodedDouble(42), result.EnglandPercentageExceedingThreeYearAverage);
+
+        Assert.Equal(GetCodedDouble(43), result.PriorAttainmentReadingWritingMathsLowExpectedStandardPupilPct);
+        Assert.Equal(GetCodedDouble(44), result.PriorAttainmentReadingWritingMathsLowHigherStandardPupilPct);
+        Assert.Equal(GetCodedDouble(45), result.PriorAttainmentReadingWritingMathsMidExpectedStandardPupilPct);
+        Assert.Equal(GetCodedDouble(46), result.PriorAttainmentReadingWritingMathsMidHigherStandardPupilPct);
+        Assert.Equal(GetCodedDouble(47), result.PriorAttainmentReadingWritingMathsHighExpectedStandardPupilPct);
+        Assert.Equal(GetCodedDouble(48), result.PriorAttainmentReadingWritingMathsHighHigherStandardPupilPct);
     }
 }

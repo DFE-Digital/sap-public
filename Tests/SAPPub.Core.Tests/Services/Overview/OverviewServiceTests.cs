@@ -87,6 +87,13 @@ public class OverviewServiceTests
         AssertCodedDouble(result.ReadingWritingMathsHigherEstablishment, 12.1);
         AssertCodedDouble(result.ReadingWritingMathsHigherLA, 11.2);
         AssertCodedDouble(result.ReadingWritingMathsHigherEngland, 10.3);
+
+        Assert.Equal("Above average", result.ReadingProgressBanding?.Value);
+        Assert.Equal("Average", result.WritingProgressBanding?.Value);
+        Assert.Equal("Below average", result.MathsProgressBanding?.Value);
+        Assert.Equal("Significant", result.ReadingProgressSignificance?.Value);
+        Assert.Equal("Not significant", result.WritingProgressSignificance?.Value);
+        Assert.Equal("Significant", result.MathsProgressSignificance?.Value);
     }
 
     [Fact]
@@ -122,6 +129,12 @@ public class OverviewServiceTests
         Assert.Null(result.ReadingWritingMathsHigherEstablishment);
         Assert.Null(result.ReadingWritingMathsHigherLA);
         Assert.Null(result.ReadingWritingMathsHigherEngland);
+        Assert.Null(result.ReadingProgressBanding);
+        Assert.Null(result.WritingProgressBanding);
+        Assert.Null(result.MathsProgressBanding);
+        Assert.Null(result.ReadingProgressSignificance);
+        Assert.Null(result.WritingProgressSignificance);
+        Assert.Null(result.MathsProgressSignificance);
     }
 
     [Fact]
@@ -380,7 +393,13 @@ public class OverviewServiceTests
             KS2Performance = new KS2EstablishmentPerformance
             {
                 PTRWM_EXP_Est_Current_Pct_Coded = Coded(67.1),
-                PTRWM_HIGH_Est_Current_Pct_Coded = Coded(12.1)
+                PTRWM_HIGH_Est_Current_Pct_Coded = Coded(12.1),
+                READPROG_DESCR_Est_Current_Num_Coded = new CodedString("Above average", string.Empty, "Above average"),
+                WRITPROG_DESCR_Est_Current_Num_Coded = new CodedString("Average", string.Empty, "Average"),
+                MATPROG_DESCR_Est_Current_Num_Coded = new CodedString("Below average", string.Empty, "Below average"),
+                READPROG_SIGNIFICANCE_Est_Current_Num_Coded = new CodedString("Significant", string.Empty, "Significant"),
+                WRITPROG_SIGNIFICANCE_Est_Current_Num_Coded = new CodedString("Not significant", string.Empty, "Not significant"),
+                MATPROG_SIGNIFICANCE_Est_Current_Num_Coded = new CodedString("Significant", string.Empty, "Significant")
             },
             KS2LAPerformance = new KS2LAPerformance
             {

@@ -1,4 +1,4 @@
-﻿using SAPPub.Core.Entities;
+﻿using SAPPub.Core.Entities.Performance;
 using SAPPub.Core.Enums;
 using SAPPub.Core.Interfaces.Repositories.Performance;
 using SAPPub.Core.Interfaces.Services;
@@ -84,7 +84,7 @@ public class KS2PupilProgressService(
 
         var readingProgressBandingPercentages = selectedYear switch
         {
-          
+
             AcademicYearSelection.Previous2 => new CodedDouble[]
             {
                 englandPerformance.ProgBand_Read_Band1_Eng_Previous2_Pct_Coded,
@@ -121,7 +121,7 @@ public class KS2PupilProgressService(
             },
             _ => []
         };
-            
+
 
         return new KS2PupilPerformance
         {
@@ -197,4 +197,113 @@ public class KS2PupilProgressService(
             MathsProgressBandingPercentages = mathsProgressBandingPercentages,
         };
     }
+
+    public async Task<KS2PupilPerformanceBandings> GetPupilProgressAsync(string urn, CancellationToken ct = default)
+    {
+        var performance = await GetPerformanceAsync(urn, ct);
+
+        if (performance is null)
+        {
+            return new KS2PupilPerformanceBandings { Urn = urn };
+        }
+
+        var (establishmentPerformance, laPerformance, englandPerformance) = performance.Value;
+
+        return new KS2PupilPerformanceBandings
+        {
+            Urn = urn,
+            EstablishmentReadingScore = establishmentPerformance?.READPROG_Est_Current_Num_Coded ?? CodedDouble.Empty,
+            EstablishmentWritingScore = establishmentPerformance?.WRITPROG_Est_Current_Num_Coded ?? CodedDouble.Empty,
+            EstablishmentMathsScore = establishmentPerformance?.MATPROG_Est_Current_Num_Coded ?? CodedDouble.Empty,
+            EstablishmentReadingProgressBanding = establishmentPerformance?.READPROG_DESCR_Est_Current_Num_Coded,
+            EstablishmentWritingProgressBanding = establishmentPerformance?.WRITPROG_DESCR_Est_Current_Num_Coded,
+            EstablishmentMathsProgressBanding = establishmentPerformance?.MATPROG_DESCR_Est_Current_Num_Coded,
+            EstablishmentReadingProgressSignificance = establishmentPerformance?.READPROG_SIGNIFICANCE_Est_Current_Num_Coded,
+            EstablishmentWritingProgressSignificance = establishmentPerformance?.WRITPROG_SIGNIFICANCE_Est_Current_Num_Coded,
+            EstablishmentMathsProgressSignificance = establishmentPerformance?.MATPROG_SIGNIFICANCE_Est_Current_Num_Coded,
+
+            LocalAuthorityReadingScore = laPerformance?.READPROG_LA_Current_Num_Coded ?? CodedDouble.Empty,
+            LocalAuthorityWritingScore = laPerformance?.WRITPROG_LA_Current_Num_Coded ?? CodedDouble.Empty,
+            LocalAuthorityMathsScore = laPerformance?.MATPROG_LA_Current_Num_Coded ?? CodedDouble.Empty,
+
+            EnglandAverageReadingScore = englandPerformance?.READPROG_Eng_Current_Num_Coded,
+            EnglandAverageWritingScore = englandPerformance?.WRITPROG_Eng_Current_Num_Coded,
+            EnglandAverageMathsScore = englandPerformance?.MATPROG_Eng_Current_Num_Coded
+        };
+    }
+
+    public async Task<KS2PupilPerformanceBandings> GetDisadvantagedPupilProgressAsync(string urn, CancellationToken ct = default)
+    {
+        var performance = await GetPerformanceAsync(urn, ct);
+
+        if (performance is null)
+        {
+            return new KS2PupilPerformanceBandings { Urn = urn };
+        }
+
+        var (establishmentPerformance, laPerformance, englandPerformance) = performance.Value;
+
+        return new KS2PupilPerformanceBandings
+        {
+            Urn = urn,
+            EstablishmentReadingScore = establishmentPerformance?.READPROG_FSM6CLA1A_Est_Current_Num_Coded ?? CodedDouble.Empty,
+            EstablishmentWritingScore = establishmentPerformance?.WRITPROG_FSM6CLA1A_Est_Current_Num_Coded ?? CodedDouble.Empty,
+            EstablishmentMathsScore = establishmentPerformance?.MATPROG_FSM6CLA1A_Est_Current_Num_Coded ?? CodedDouble.Empty,
+            LocalAuthorityReadingScore = laPerformance?.READPROG_FSM6CLA1A_LA_Current_Num_Coded ?? CodedDouble.Empty,
+            LocalAuthorityWritingScore = laPerformance?.WRITPROG_FSM6CLA1A_LA_Current_Num_Coded ?? CodedDouble.Empty,
+            LocalAuthorityMathsScore = laPerformance?.MATPROG_FSM6CLA1A_LA_Current_Num_Coded ?? CodedDouble.Empty,
+            EnglandAverageReadingScore = englandPerformance?.READPROG_FSM6CLA1A_Eng_Current_Num_Coded,
+            EnglandAverageWritingScore = englandPerformance?.WRITPROG_FSM6CLA1A_Eng_Current_Num_Coded,
+            EnglandAverageMathsScore = englandPerformance?.MATPROG_FSM6CLA1A_Eng_Current_Num_Coded
+        };
+    }
+
+    /// <inheritdoc/>
+    public async Task<KS2PupilPerformanceBandings> GetEalPupilProgressAsync(string urn, CancellationToken ct = default)
+    {
+        var performance = await GetPerformanceAsync(urn, ct);
+
+        if (performance is null)
+        {
+            return new KS2PupilPerformanceBandings { Urn = urn };
+        }
+
+        var (establishmentPerformance, laPerformance, englandPerformance) = performance.Value;
+
+        return new KS2PupilPerformanceBandings
+        {
+            Urn = urn,
+            EstablishmentReadingScore = establishmentPerformance?.READPROG_EAL_Est_Current_Num_Coded ?? CodedDouble.Empty,
+            EstablishmentWritingScore = establishmentPerformance?.WRITPROG_EAL_Est_Current_Num_Coded ?? CodedDouble.Empty,
+            EstablishmentMathsScore = establishmentPerformance?.MATPROG_EAL_Est_Current_Num_Coded ?? CodedDouble.Empty,
+            LocalAuthorityReadingScore = laPerformance?.READPROG_EAL_LA_Current_Num_Coded ?? CodedDouble.Empty,
+            LocalAuthorityWritingScore = laPerformance?.WRITPROG_EAL_LA_Current_Num_Coded ?? CodedDouble.Empty,
+            LocalAuthorityMathsScore = laPerformance?.MATPROG_EAL_LA_Current_Num_Coded ?? CodedDouble.Empty,
+            EnglandAverageReadingScore = englandPerformance?.READPROG_EAL_Eng_Current_Num_Coded,
+            EnglandAverageWritingScore = englandPerformance?.WRITPROG_EAL_Eng_Current_Num_Coded,
+            EnglandAverageMathsScore = englandPerformance?.MATPROG_EAL_Eng_Current_Num_Coded
+        };
+    }
+
+    private async Task<(KS2EstablishmentPerformance? Establishment, KS2LAPerformance? LocalAuthority, KS2EnglandPerformance? England)?> GetPerformanceAsync(string urn, CancellationToken ct)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(urn);
+        ct.ThrowIfCancellationRequested();
+
+        var establishment = await establishmentService.GetEstablishmentMinimumAsync(urn, ct);
+
+        if (string.IsNullOrWhiteSpace(establishment?.URN))
+        {
+            return null;
+        }
+
+        var ks2EstablishPerformanceTask = ks2PerformanceRepository.GetEstablishmentPerformanceAsync(urn, ct);
+        var ks2LAPerformanceTask = ks2PerformanceRepository.GetLaPerformanceAsync(establishment.LAId, ct);
+        var ks2EnglandPerformanceTask = ks2PerformanceRepository.GetEnglandPerformanceAsync(ct);
+
+        await Task.WhenAll(ks2EstablishPerformanceTask, ks2LAPerformanceTask, ks2EnglandPerformanceTask);
+
+        return (await ks2EstablishPerformanceTask, await ks2LAPerformanceTask, await ks2EnglandPerformanceTask);
+    }
+
 }

@@ -220,6 +220,7 @@ public class MeetingOrExceedingStandardsPageTests : PageTestsBase
         Assert.Contains("Non-mobile pupils", accordionSectionHeaders[2].TextContent);
         Assert.Contains("Disadvantaged pupils", accordionSectionHeaders[3].TextContent);
         Assert.Contains("Non-disadvantaged pupils", accordionSectionHeaders[4].TextContent);
+        Assert.Contains("Prior attainment", accordionSectionHeaders[5].TextContent);
 
         Assert.Contains("Pupil group", doc.GetTableHeaderContentByIdAndIndex("girls-boys-table", 0, 0));
         Assert.Contains("Meeting the expected standard in reading, writing and maths", doc.GetTableHeaderContentByIdAndIndex("girls-boys-table", 0, 1));
@@ -276,6 +277,22 @@ public class MeetingOrExceedingStandardsPageTests : PageTestsBase
         Assert.Contains("England average", doc.GetTableHeaderContentByIdAndIndex("non-disadvantaged-pupils-table", 2, 0));
         Assert.Contains("25%", doc.GetTableCellContentByIdAndIndex("non-disadvantaged-pupils-table", 2, 0));
         Assert.Contains("26%", doc.GetTableCellContentByIdAndIndex("non-disadvantaged-pupils-table", 2, 1));
+
+        Assert.Contains("Pupil group (Prior Attainment)", doc.GetTableHeaderContentByIdAndIndex("pa-table", 0, 0));
+        Assert.Contains("Meeting the expected standard in reading, writing and maths", doc.GetTableHeaderContentByIdAndIndex("pa-table", 0, 1));
+        Assert.Contains("Achieving at a higher standard in reading, writing and maths", doc.GetTableHeaderContentByIdAndIndex("pa-table", 0, 2));
+        Assert.Contains("Low", doc.GetTableHeaderContentByIdAndIndex("pa-table", 1, 0));
+        Assert.Contains("33%", doc.GetTableCellContentByIdAndIndex("pa-table", 1, 0));
+        Assert.Contains("34%", doc.GetTableCellContentByIdAndIndex("pa-table", 1, 1));
+        Assert.Contains("Middle", doc.GetTableHeaderContentByIdAndIndex("pa-table", 2, 0));
+        Assert.Contains("35%", doc.GetTableCellContentByIdAndIndex("pa-table", 2, 0));
+        Assert.Contains("36%", doc.GetTableCellContentByIdAndIndex("pa-table", 2, 1));
+        Assert.Contains("High", doc.GetTableHeaderContentByIdAndIndex("pa-table", 3, 0));
+        Assert.Contains("37%", doc.GetTableCellContentByIdAndIndex("pa-table", 3, 0));
+        Assert.Contains("38%", doc.GetTableCellContentByIdAndIndex("pa-table", 3, 1));
+        Assert.Contains("All pupils at the school", doc.GetTableHeaderContentByIdAndIndex("pa-table", 4, 0));
+        Assert.Contains("11%", doc.GetTableCellContentByIdAndIndex("pa-table", 4, 0));
+        Assert.Contains("12%", doc.GetTableCellContentByIdAndIndex("pa-table", 4, 1));
     }
 
     [Fact]
@@ -374,6 +391,12 @@ public class MeetingOrExceedingStandardsPageTests : PageTestsBase
         EstablishmentPercentageExceedingThreeYearAverage = GetCodedDouble(30),
         LocalAuthorityPercentageExceedingThreeYearAverage = GetCodedDouble(31),
         EnglandPercentageExceedingThreeYearAverage = GetCodedDouble(32),
+        PriorAttainmentReadingWritingMathsLowExpectedStandardPupilPct = GetCodedDouble(33),
+        PriorAttainmentReadingWritingMathsLowHigherStandardPupilPct = GetCodedDouble(34),
+        PriorAttainmentReadingWritingMathsMidExpectedStandardPupilPct = GetCodedDouble(35),
+        PriorAttainmentReadingWritingMathsMidHigherStandardPupilPct = GetCodedDouble(36),
+        PriorAttainmentReadingWritingMathsHighExpectedStandardPupilPct = GetCodedDouble(37),
+        PriorAttainmentReadingWritingMathsHighHigherStandardPupilPct = GetCodedDouble(38)
     };
 
     private static CodedDouble GetCodedDouble(double val)

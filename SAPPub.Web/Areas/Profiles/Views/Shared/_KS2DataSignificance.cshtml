@@ -1,0 +1,33 @@
+﻿@using SAPPub.Web.Areas.Profiles.ViewModels
+@model (string? Ks2SmallNumberOfPupilsWarning, string? Heading)
+
+@if (Model!.Ks2SmallNumberOfPupilsWarning is null)
+{
+    return;    
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.Heading) && !Model!.Ks2SmallNumberOfPupilsWarning!.Contains(Model.Heading, StringComparison.OrdinalIgnoreCase))
+{
+    return;
+}
+
+@if (Model.Ks2SmallNumberOfPupilsWarning is { } warningHeading)
+{
+    if (!string.IsNullOrWhiteSpace(Model.Heading))
+    {
+        warningHeading = Model.Heading;
+    }
+
+    <div class="ataglance-progress-warning" id="primary-progress-significance-warning">
+        <div class="govuk-warning-text ataglance-progress-warning__heading">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <strong class="govuk-warning-text__text">
+                <span class="govuk-visually-hidden">Warning</span>
+                @warningHeading results based on a small number of pupils
+            </strong>
+        </div>
+        <p class="govuk-body ataglance-progress-warning__text">
+            @KS2BandingsBaseViewModel.Ks2SmallNumberOfPupilsWarningText
+        </p>
+    </div>
+}
