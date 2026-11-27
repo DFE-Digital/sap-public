@@ -15,8 +15,5 @@ public class PupilProgressSectionViewModel
     public required DisplayField<CodedDouble> EnglandScore { get; init; }
     public string? SmallNumberOfPupilsWarning { get; init; }
 
-    public List<PupilProgressSectionViewModel> SubSections
-    { 
-    
-    }
+    public List<PupilProgressSectionViewModel> SubSections { get; init; } = [];
 }

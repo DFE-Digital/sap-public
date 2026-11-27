@@ -40,6 +40,13 @@ public class PupilCharacteristicBaseViewModel : KS2BandingsBaseViewModel
         CreateSection("Maths", 2, EstablishmentMathsScore, LocalAuthorityMathsScore, EnglandMathsScore)
     ];
 
+    public IReadOnlyList<PupilProgressSectionViewModel> SectionsWithSubsections =>
+    [
+        CreateSection("Reading", 0, EstablishmentReadingScore, LocalAuthorityReadingScore, EnglandReadingScore),
+        CreateSection("Writing", 1, EstablishmentWritingScore, LocalAuthorityWritingScore, EnglandWritingScore),
+        CreateSection("Maths", 2, EstablishmentMathsScore, LocalAuthorityMathsScore, EnglandMathsScore)
+    ];
+
     private PupilProgressSectionViewModel CreateSection(
         string subject,
         int bandingIndex,
