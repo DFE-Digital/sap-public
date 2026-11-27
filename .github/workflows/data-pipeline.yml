@@ -2,6 +2,22 @@ name: School Data Ingestion Pipeline
 
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment to refresh data in.
+        required: true
+        default: test
+        type: choice
+        options:
+          - test
+          - preapproval
+          - production
+          - review
+      pr-number:
+        description: The pull request number (required when environment is review).
+        required: false
+        default: ""
+        type: string
   workflow_call:
     inputs:
       environment:
@@ -28,9 +44,23 @@ env:
   TF_VARS_PATH: terraform/application/config
 
 jobs:
+  check-review-pr-number:
+    name: Check pr-number for review
+    if: ${{ inputs.environment == 'review' }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check pr-number is provided for review
+        env:
+          PR_NUMBER: ${{ inputs.pr-number || '' }}
+        run: |
+          if [[ ! "$PR_NUMBER" =~ ^[0-9]+$ ]]; then
+            echo "::error::pr-number must be a pull request number when environment is review"
+            exit 1
+          fi
+
   enable-maintenance:
     name: Enable maintenance mode
-    if: ${{ (inputs.environment || 'test') == 'test' || inputs.environment == 'production' }}
+    if: ${{ inputs.environment != 'review' }}
     uses: ./.github/workflows/maintenance.yml
     with:
       environment: ${{ inputs.environment || 'test' }}
@@ -43,8 +73,11 @@ jobs:
   ingest:
     name: Ingest Raw Data & Build Warehouse
     runs-on: ubuntu-24.04
-    needs: [enable-maintenance]
-    if: ${{ always() && (needs.enable-maintenance.result == 'success' || needs.enable-maintenance.result == 'skipped') }}
+    needs: [check-review-pr-number, enable-maintenance]
+    if: ${{ always()
+      && (needs.check-review-pr-number.result == 'success' || needs.check-review-pr-number.result == 'skipped')
+      && (needs.enable-maintenance.result == 'success' || needs.enable-maintenance.result == 'skipped')
+      }}
   
     environment:
       name: ${{ inputs.environment || 'test' }}
@@ -791,7 +824,7 @@ jobs:
     name: Health check via temp URL
     runs-on: ubuntu-24.04
     needs: [ingest]
-    if: ${{ always() && ((inputs.environment || 'test') == 'test' || inputs.environment == 'production') }}
+    if: ${{ always() && inputs.environment != 'review' }}
     outputs:
       db-usable: ${{ steps.apphealth.outputs.db_usable }}
     steps:
@@ -838,13 +871,11 @@ jobs:
             exit 1
           fi
 
-  # Production is left in maintenance mode for now. To revert, see github history for 2nd condition of if below:
-  # && ((inputs.environment || 'test') == 'test' || inputs.environment == 'production')
   disable-maintenance:
     name: Disable maintenance mode
     needs: [enable-maintenance, ingest, health-check]
     if: ${{ always()
-      && ((inputs.environment || 'test') == 'test' || inputs.environment == 'production')
+      && inputs.environment != 'review'
       && needs.enable-maintenance.result == 'success'
       && needs.health-check.outputs.db-usable == 'true' }}
     uses: ./.github/workflows/maintenance.yml

@@ -8,6 +8,7 @@ on:
         type: choice
         options:
         - test
+        - preapproval
         - production
       mode:
         required: true
