@@ -8,6 +8,8 @@ public class EstablishmentMinimumServiceModel : EstablishmentServiceModelBase
 
     public string EstablishmentName { get; set; } = string.Empty;
 
+    public string LAESTAB { get; set; } = string.Empty;
+
     public string EstablishmentNameClean => TextHelpers.CleanForUrl(EstablishmentName);
 
     public string LAId { get; set; } = string.Empty;
