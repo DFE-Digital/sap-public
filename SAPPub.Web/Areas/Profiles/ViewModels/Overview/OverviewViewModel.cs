@@ -7,11 +7,25 @@ using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Constants;
 using SAPPub.Web.Helpers;
 using SAPPub.Web.Models.Charts;
+using SAPPub.Web.Models.SecondarySchool;
 
 namespace SAPPub.Web.Areas.Profiles.ViewModels.Overview;
 
 public sealed class OverviewViewModel : KS2BandingsBaseViewModel
 {
+    private const int AcademyOpenReasonId = 10;
+
+    public required DisplayField<DateOnly> ClosedDate { get; set; }
+    public DateOnly? OpenDate { get; set; }
+    public EstablishmentStatus? StatusCode { get; set; }
+    public bool IsSchoolClosed => StatusCode == EstablishmentStatus.Closed;
+    public int? OpenReasonId { get; set; }
+    public required DisplayField<string> RecentlyOpenedSchoolMessage { get; set; }
+    public bool HasPredecessors => Predecessors != null && Predecessors.Count > 0;
+    public bool HasSuccessors => Successors != null;
+    public List<SuccessorOrPredecessorDetailsModel>? Predecessors { get; set; }
+    public List<SuccessorOrPredecessorDetailsModel>? Successors { get; set; }
+
     public required DisplayField<string> EducationPhase { get; init; }
 
     public required DisplayField<string> AgeRange { get; init; }
@@ -94,6 +108,14 @@ public sealed class OverviewViewModel : KS2BandingsBaseViewModel
 
         return new OverviewViewModel
         {
+            StatusCode = model.Status,
+            ClosedDate = model.ClosedDate.ToDisplayField(),
+            OpenDate = model.OpenDate,
+            OpenReasonId = model.OpenReasonId,
+            RecentlyOpenedSchoolMessage = GetRecentlyOpenedSchoolMessage(model.OpenReasonId, model.OpenDate),
+            Predecessors = model.Predecessors?.Select(p => SuccessorOrPredecessorDetailsModel.Map(p)).ToList(),
+            Successors = model.Successors?.Select(s => SuccessorOrPredecessorDetailsModel.Map(s)).ToList(),
+
             URN = model.Urn,
             SchoolName = model.SchoolName,
             LocalAuthorityName = model.LocalAuthorityName,
@@ -294,6 +316,19 @@ public sealed class OverviewViewModel : KS2BandingsBaseViewModel
         return int.TryParse(numberOfPupils, out var pupils)
             ? pupils.ToString("N0")
             : numberOfPupils;
+    }
+
+    private static DisplayField<string> GetRecentlyOpenedSchoolMessage(int? openReasonId, DateOnly? openDate)
+    {
+        if (!openDate.HasValue || !AcademicYearsHelper.IsWithinLastThreeAcademicYears(openDate.Value))
+            return DisplayField<string>.NotAvailable();
+
+        var date = $" on {openDate.Value:d MMMM yyyy}";
+        return openReasonId switch
+        {
+            AcademyOpenReasonId => $"Opened as an academy{date}".ToDisplayField(),
+            _ => $"This school opened{date}".ToDisplayField()
+        };
     }
 
     private static SimpleCodedDoubleTableViewModel? MapComparison(

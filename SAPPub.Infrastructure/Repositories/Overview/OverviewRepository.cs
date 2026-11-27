@@ -45,7 +45,11 @@ public class OverviewRepository(
                 e."Northing",
                 e."ISKS2",
                 e."ISKS4",
-                e."ISKS5"
+                e."ISKS5",
+                e."StatusCode",
+                e."ClosedDate",
+                e."OpenDate",
+                e."OpenReasonId"
             FROM public.v_establishment e
             WHERE e."URN" = @Urn;
 

@@ -3,7 +3,9 @@ using SAPPub.Core.Entities;
 using SAPPub.Core.Entities.Destinations;
 using SAPPub.Core.Entities.KS4.Performance;
 using SAPPub.Core.Entities.Performance;
+using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Repositories.Overview;
+using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Services.Overview;
 using SAPPub.Core.ValueObjects;
 using OverviewEntity = SAPPub.Core.Entities.Overview.Overview;
@@ -13,11 +15,16 @@ namespace SAPPub.Core.Tests.Services.Overview;
 public class OverviewServiceTests
 {
     private readonly Mock<IOverviewRepository> _repository = new();
+    private readonly Mock<IEstablishmentService> _mockEstablishmentService;
+    private readonly Mock<IEstablishmentLinksRepository> _mockEstablishmentLinksRepository;
     private readonly OverviewService _sut;
 
     public OverviewServiceTests()
     {
-        _sut = new OverviewService(_repository.Object);
+        _mockEstablishmentService = new();
+        _mockEstablishmentLinksRepository = new();
+
+        _sut = new OverviewService(_repository.Object, _mockEstablishmentService.Object, _mockEstablishmentLinksRepository.Object);
     }
 
     [Fact]

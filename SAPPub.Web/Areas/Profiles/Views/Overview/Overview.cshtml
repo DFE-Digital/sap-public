@@ -1,5 +1,6 @@
 ﻿@model SAPPub.Web.Areas.Profiles.ViewModels.Overview.OverviewViewModel
 
+@using SAPPub.Core.Helpers
 @using SAPPub.Web.Constants
 @using SAPPub.Web.Helpers
 @using SAPPub.Web.Models.Banner
@@ -73,6 +74,60 @@
         <h2 class="govuk-heading-xl govuk-!-margin-bottom-4">
             Overview
         </h2>
+
+            @if (Model.IsSchoolClosed)
+            {
+                <div class="custom-card govuk-!-margin-top-0" data-testid="school-closed-custom-card">
+                    <div class="error__icon"></div>
+                    <div class="custom-card__content">
+                        <p class="govuk-body">
+                            @(Model.ClosedDate.IsAvailable ? $"This school closed on {Model.ClosedDate.DisplayText(d => d.ToString("dd MMMM yyyy"))}." : "Closed")
+                            @if (Model.HasSuccessors)
+                            {
+                                @($" It is now {string.Join(" and ", Model.Successors!.Select(s => s.Name))}.")
+                            }
+                        </p>
+                        @if (Model.HasSuccessors)
+                        {
+                            foreach (var successor in Model.Successors!)
+                            {
+                                <p class="govuk-body">
+                                    <a asp-route="@RouteConstants.AboutTheSchool"
+                                       asp-route-urn="@successor.Urn"
+                                       asp-route-schoolName="@TextHelpers.CleanForUrl(successor.Name)"
+                                       class="govuk-link">
+                                        @($"View {successor.Name}'s profile")
+                                    </a>
+                                </p>
+                            }
+                        }
+                    </div>
+                </div>
+            }
+
+            @if (Model.HasPredecessors)
+            {
+                <div class="custom-card govuk-!-margin-top-0" data-testid="school-predecessors-custom-card">
+                    <div class="custom-card__content">
+                        <p class="govuk-body">
+                            @($"This school opened on {Model.OpenDate?.ToString("d MMMM yyyy")}. It was previously " +
+                                                string.Join(" and ", Model.Predecessors!.Select(p => p.Name)) + ".")
+                        </p>
+
+                        @foreach (var predecessor in Model.Predecessors!)
+                        {
+                            <p class="govuk-body">
+                                <a asp-route="@RouteConstants.AboutTheSchool"
+                                   asp-route-urn="@predecessor.Urn"
+                                   asp-route-schoolName="@TextHelpers.CleanForUrl(predecessor.Name)"
+                                   class="govuk-link">
+                                    @($"View {predecessor.Name}'s profile")
+                                </a>
+                            </p>
+                        }
+                    </div>
+                </div>
+            }
 
         @*
             Map and address.

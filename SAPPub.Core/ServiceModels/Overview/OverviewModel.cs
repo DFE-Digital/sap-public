@@ -1,4 +1,5 @@
-﻿using SAPPub.Core.ValueObjects;
+﻿using SAPPub.Core.Enums;
+using SAPPub.Core.ValueObjects;
 
 namespace SAPPub.Core.ServiceModels.Overview;
 
@@ -7,6 +8,11 @@ public sealed class OverviewModel
     public required string Urn { get; init; }
     public required string SchoolName { get; init; }
     public string LocalAuthorityName { get; init; } = string.Empty;
+
+    public DateOnly? ClosedDate { get; set; }
+    public DateOnly? OpenDate { get; set; }
+    public EstablishmentStatus? Status { get; set; }
+    public int? OpenReasonId { get; set; }
 
     public string PhaseOfEducation { get; init; } = string.Empty;
     public string AgeRangeLow { get; init; } = string.Empty;
@@ -55,4 +61,7 @@ public sealed class OverviewModel
     public CodedString? ReadingProgressSignificance { get; init; }
     public CodedString? WritingProgressSignificance { get; init; }
     public CodedString? MathsProgressSignificance { get; init; }
+
+    public IList<EstablishmentLinkModel>? Predecessors { get; set; }
+    public IList<EstablishmentLinkModel>? Successors { get; set; }
 }

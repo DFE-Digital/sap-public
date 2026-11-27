@@ -1,11 +1,19 @@
-﻿using SAPPub.Core.Helpers;
+﻿using SAPPub.Core.Entities;
+using SAPPub.Core.Enums;
+using SAPPub.Core.Extensions;
+using SAPPub.Core.Helpers;
+using SAPPub.Core.Interfaces.Repositories;
 using SAPPub.Core.Interfaces.Repositories.Overview;
+using SAPPub.Core.Interfaces.Services;
 using SAPPub.Core.Interfaces.Services.Overview;
+using SAPPub.Core.ServiceModels;
 using SAPPub.Core.ServiceModels.Overview;
 
 namespace SAPPub.Core.Services.Overview
 {
-    public class OverviewService(IOverviewRepository overviewRepository) : IOverviewService
+    public class OverviewService(IOverviewRepository overviewRepository,
+            IEstablishmentService establishmentService,
+            IEstablishmentLinksRepository establishmentLinksRepository) : IOverviewService
     {
         public async Task<OverviewModel?> GetOverviewAsync(
             string urn,
@@ -17,12 +25,50 @@ namespace SAPPub.Core.Services.Overview
             if (overview?.Establishment is null)
                 return null;
 
+            var openDate = overview.Establishment.OpenDate.ToDateOnly();
+
+            bool findSuccessorLinks = overview.Establishment.StatusCode.ToStatus() == EstablishmentStatus.Closed;
+            bool findPredecessorLinks = openDate is not null && AcademicYearsHelper.IsWithinLastThreeAcademicYears(openDate.Value);
+
+            var links = findPredecessorLinks || findSuccessorLinks
+                 ? await establishmentLinksRepository.GetLinksAsync(urn, ct)
+                 : null;
+
+            var predecessorLinks = (findPredecessorLinks && links != null && links.Any())
+                ? links?
+                    .Where(l => l.Urn is not null && l.LinkType is not null && l.LinkType.Contains("Predecessor"))
+                    .Select(l => new EstablishmentLinkModel
+                    {
+                        Urn = l.LinkUrn!,
+                        Name = l.LinkName!,
+                    })
+                    .ToList()
+                : null;
+            var sucessorLinks = (findSuccessorLinks && links != null && links.Any())
+                ? links?
+                    .Where(l => l.Urn is not null && l.LinkType is not null && l.LinkType.Contains("Successor"))
+                    .Select(l => new EstablishmentLinkModel
+                    {
+                        Urn = l.LinkUrn!,
+                        Name = l.LinkName!,
+                    })
+                    .ToList()
+                : null;
+
             return new OverviewModel
             {
                 Urn = overview.Establishment.URN,
                 SchoolName = overview.Establishment.EstablishmentName,
                 LocalAuthorityName = overview.Establishment.LAName,
                 PhaseOfEducation = overview.Establishment.PhaseOfEducationName,
+
+                ClosedDate = overview.Establishment.ClosedDate.ToDateOnly(),
+                Status = overview.Establishment.StatusCode.ToStatus(),
+                OpenDate = overview.Establishment.OpenDate.ToDateOnly(),
+                OpenReasonId = overview.Establishment.OpenReasonId,
+                Predecessors = predecessorLinks,
+                Successors = sucessorLinks,
+
                 AgeRangeLow = overview.Establishment.AgeRangeLow,
                 AgeRangeHigh = overview.Establishment.AgeRangeHigh,
                 NumberOfPupils = overview.Establishment.TotalPupils,
