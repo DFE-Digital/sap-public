@@ -492,7 +492,7 @@ public class Level3QualificationsPageTests : PageTestsBase
         // Assert performance points link
         var performancePointsLink = doc.QuerySelector("#performance-points-link");
         Assert.NotNull(performancePointsLink);
-        Assert.Equal("https://www.gov.uk/government/publications/performance-points-a-practical-guide-to-key-stage-4-and-5-points", performancePointsLink.GetAttribute("href"));
+        Assert.Equal("https://assets.publishing.service.gov.uk/media/6a8d7938f5b35599aec18d04/16-19_accountability_measures_technical_guidance_September_2026.pdf", performancePointsLink.GetAttribute("href"));
 
         if (qualification == Level3.TechLevel)
         {

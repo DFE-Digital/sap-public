@@ -393,7 +393,7 @@ public class Level2QualificationsPageTests : PageTestsBase
         // Assert performance points link
         var performancePointsLink = doc.QuerySelector("#performance-points-link");
         Assert.NotNull(performancePointsLink);
-        Assert.Equal("https://www.gov.uk/government/publications/performance-points-a-practical-guide-to-key-stage-4-and-5-points", performancePointsLink.GetAttribute("href"));
+        Assert.Equal("https://assets.publishing.service.gov.uk/media/6a8d7938f5b35599aec18d04/16-19_accountability_measures_technical_guidance_September_2026.pdf", performancePointsLink.GetAttribute("href"));
 
         Assert.Contains("School or college", doc.GetTableHeaderContentByIdAndIndex("average-result-current-year-table", 1, 0));
         Assert.Contains(_level2QualificationModel.AverageResult.Establishment.CurrentYear.Grade.ToString(), doc.GetTableCellContentByIdAndIndex("average-result-current-year-table", 1, 0));
