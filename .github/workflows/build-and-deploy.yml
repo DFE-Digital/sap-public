@@ -567,7 +567,6 @@ jobs:
   detect-refresh-data-on-merge:
     name: Detect refresh-data label on merged PR
     if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
-    needs: [deploy-test]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -666,6 +665,25 @@ jobs:
           gcp-wip: ${{ vars.GCP_WIP }}
           gcp-project-id: ${{ vars.GCP_PROJECT_ID }}
 
+  # ---------------------------------------------
+  # REFRESH PREAPPROVAL DATABASE (AUTO - IF REQUIRED)
+  # Uses the same 'refresh data' label as test and production, and only runs once preapproval has deployed.
+  # Production deploy waits for this job (or skips it).
+  # ---------------------------------------------
+  refresh-data-preapproval-after-merge:
+    name: Refresh data in preapproval after merge
+    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' && needs.detect-refresh-data-on-merge.outputs.should-refresh == 'true' }}
+    needs: [deploy-preapproval, detect-refresh-data-on-merge]
+    uses: ./.github/workflows/data-pipeline.yml
+    secrets: inherit
+    with:
+      environment: preapproval
+    permissions:
+      contents: write
+      id-token: write
+      actions: read
+      packages: write
+
   # ----------------------------------------
   # DEPLOY TO PRODUCTION (AUTO - AFTER TEST)
   # ----------------------------------------
@@ -676,6 +694,7 @@ jobs:
       && (needs.deploy-preapproval.result == 'success' || needs.deploy-preapproval.result == 'skipped')
       && needs.detect-refresh-data-on-merge.result == 'success'
       && (needs.refresh-data-test-after-merge.result == 'success' || needs.refresh-data-test-after-merge.result == 'skipped')
+      && (needs.refresh-data-preapproval-after-merge.result == 'success' || needs.refresh-data-preapproval-after-merge.result == 'skipped')
       }}
     needs:
       [
@@ -683,7 +702,8 @@ jobs:
         check-preapproval,
         deploy-preapproval,
         detect-refresh-data-on-merge,
-        refresh-data-test-after-merge
+        refresh-data-test-after-merge,
+        refresh-data-preapproval-after-merge
       ]
     outputs:
       environment_url: ${{ steps.deploy_app.outputs.environment_url }}
@@ -716,8 +736,8 @@ jobs:
 
   # ------------------------------------------------
   # REFRESH PRODUCTION DATABASE (AUTO - IF REQUIRED)
-  # Uses the same 'refresh data' label as test, and only runs once the test refresh has succeeded.
-  # Pulls from the production Blob container. Maintenance mode is left enabled afterwards.
+  # Uses the same 'refresh data' label as other environments.
+  # Pulls from the production Blob container.
   # ------------------------------------------------
   refresh-data-production-after-merge:
     name: Refresh data in production after merge
@@ -873,7 +893,6 @@ jobs:
     steps:
       - name: Deploy Domains Environment
         id: deploy_domains_env
-        # Production currently stays in maintenance mode after a data refresh, so its healthcheck would fail - skip it for now.
         if: 
             ${{
               needs.detect-refresh-data-on-merge.outputs.should-refresh != 'true' ||
