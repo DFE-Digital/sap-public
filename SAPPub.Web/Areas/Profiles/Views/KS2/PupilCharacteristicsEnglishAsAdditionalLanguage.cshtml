@@ -34,9 +34,43 @@
                 RouteAttributes = Model.RouteAttributes
             })
 
-            <h3 class="govuk-heading-l">@Model.Heading</h3>
+            <p class="govuk-body">Information in this section is for the @Model.CurrentAcademicYearDisplayName academic year.</p>
 
-            <p class="govuk-body">This page is under construction.</p>
+            <h3 class="govuk-heading-l">Progress made by pupils with English as an additional language</h3>
+
+            <p class="govuk-body">
+                This shows the progress pupils who speak English as an additional language made at this school between year 2 (key stage 1) and year 6 (key stage 2). 
+                Their progress is compared with pupils across England who started at a similar level at the end of year 2.
+
+            </p>
+            <p class="govuk-body">
+                These scores help show how well the school supports pupils in making progress during their time in primary school.
+            </p>
+
+            @await Html.PartialAsync("_ProgressScoreDetails", (Model.TechnicalGuideLinkUrl, Model.TechnicalGuideLinkNewTab, "pupils"))
+
+            
+            <details class="govuk-details" id="details-eal-pupils-group">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        What we mean by English as an additional language
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <h4 class="govuk-heading-s"> English as an additional language (EAL)</h4>
+                    <p class="govuk-body">
+                        A child is recorded as having English as an additional language (EAL) if they hear or use a language other than English at home. 
+                        This does not show how well a child speaks English and does not mean they are new to the UK.
+                    </p>
+
+                </div>
+            </details>
+
+            @foreach (var section in Model.Sections)
+            {
+                @await Html.PartialAsync("_PupilProgressSectionWithoutBanding", (section, ""))
+            }
+
         </div>
     </div>
 </div>

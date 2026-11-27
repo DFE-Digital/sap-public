@@ -7,7 +7,7 @@ using SAPPub.Playwright.Testing;
 namespace SAPPub.E2E.Tests.Primary;
 
 /// <summary>
-/// TODO: The test data in sap-public\Tests\SAPPub.E2E.Tests\TestData\2526\KS2\PupilProgress.json is currently out of date and needs to be updated when the new file is available.
+/// TODO: The test data in sap-public\Tests\SAPPub.E2E.Tests\TestData\2526\KS2\PupilProgress*.json is currently out of date and needs to be updated when the new file is available.
 /// </summary>
 
 [Collection("Integration Tests")]
@@ -15,18 +15,20 @@ public class PupilProgressTests() : BasePageTest()
 {
     private string PageUrl(string urn) => $"/school/{urn}";
 
-    // Requires the EnableKS2PupilCharacteristicDropdown feature flag to be on
-    private string pageUnderTest => "primary-performance/pupil-progress/all-pupils";
-
     private static readonly TheoryData<PupilProgressTestDataModel> _pupilProgressTestData =
         TestDataLoader.LoadTheoryData<PupilProgressTestDataModel>("KS2", "PupilProgress");
 
-    private static readonly TheoryData<DisadvantagedPupilProgressTestDataModel> _disadvantagedPupilProgressTestData =
-        TestDataLoader.LoadTheoryData<DisadvantagedPupilProgressTestDataModel>("KS2", "PupilProgressDisadvantaged");
+    private static readonly TheoryData<NonBandedPupilProgressTestDataModel> _disadvantagedPupilProgressTestData =
+        TestDataLoader.LoadTheoryData<NonBandedPupilProgressTestDataModel>("KS2", "PupilProgressDisadvantaged");
+
+    private static readonly TheoryData<NonBandedPupilProgressTestDataModel> _ealPupilProgressTestData =
+    TestDataLoader.LoadTheoryData<NonBandedPupilProgressTestDataModel>("KS2", "PupilProgressEAL");
 
     public static TheoryData<PupilProgressTestDataModel> GetPupilProgressTestData() => _pupilProgressTestData;
 
-    public static TheoryData<DisadvantagedPupilProgressTestDataModel> GetDisadvantagedPupilProgressTestData() => _disadvantagedPupilProgressTestData;
+    public static TheoryData<NonBandedPupilProgressTestDataModel> GetDisadvantagedPupilProgressTestData() => _disadvantagedPupilProgressTestData;
+
+    public static TheoryData<NonBandedPupilProgressTestDataModel> GetEalPupilProgressTestData() => _ealPupilProgressTestData;
 
     [Theory]
     [MemberData(nameof(GetPupilProgressTestData))]
@@ -56,31 +58,60 @@ public class PupilProgressTests() : BasePageTest()
 
     [Theory]
     [MemberData(nameof(GetDisadvantagedPupilProgressTestData))]
-    public async Task DisadvantagedPupils_ShowsExpectedSchoolProgressData(DisadvantagedPupilProgressTestDataModel testData)
+    public async Task DisadvantagedPupil_ShowsExpectedSchoolProgressData(NonBandedPupilProgressTestDataModel testData)
     {
         // Arrange && Act
         await GotoPupilProgressPage(testData.SchoolUrn, "disadvantaged-pupils");
 
         // Assert
-        await AssertDisadvantagedProgressRow(Page, "reading", 0, testData.ReadingScore);
-        await AssertDisadvantagedProgressRow(Page, "writing", 0, testData.WritingScore);
-        await AssertDisadvantagedProgressRow(Page, "maths", 0, testData.MathsScore);
+        await AssertNonBandedProgressRow(Page, "reading", 0, testData.ReadingScore);
+        await AssertNonBandedProgressRow(Page, "writing", 0, testData.WritingScore);
+        await AssertNonBandedProgressRow(Page, "maths", 0, testData.MathsScore);
     }
 
     [Theory]
     [MemberData(nameof(GetDisadvantagedPupilProgressTestData))]
-    public async Task DisadvantagedPupils_ShowsExpectedLocalAuthorityAndEnglandComparisons(DisadvantagedPupilProgressTestDataModel testData)
+    public async Task DisadvantagedPupil_ShowsExpectedLocalAuthorityAndEnglandComparisons(NonBandedPupilProgressTestDataModel testData)
     {
         // Arrange && Act
         await GotoPupilProgressPage(testData.SchoolUrn, "disadvantaged-pupils");
 
         // Assert
-        await AssertDisadvantagedProgressRow(Page, "reading", 1, testData.LaReadingScore);
-        await AssertDisadvantagedProgressRow(Page, "reading", 2, testData.EnglandReadingScore);
-        await AssertDisadvantagedProgressRow(Page, "writing", 1, testData.LaWritingScore);
-        await AssertDisadvantagedProgressRow(Page, "writing", 2, testData.EnglandWritingScore);
-        await AssertDisadvantagedProgressRow(Page, "maths", 1, testData.LaMathsScore);
-        await AssertDisadvantagedProgressRow(Page, "maths", 2, testData.EnglandMathsScore);
+        await AssertNonBandedProgressRow(Page, "reading", 1, testData.LaReadingScore);
+        await AssertNonBandedProgressRow(Page, "reading", 2, testData.EnglandReadingScore);
+        await AssertNonBandedProgressRow(Page, "writing", 1, testData.LaWritingScore);
+        await AssertNonBandedProgressRow(Page, "writing", 2, testData.EnglandWritingScore);
+        await AssertNonBandedProgressRow(Page, "maths", 1, testData.LaMathsScore);
+        await AssertNonBandedProgressRow(Page, "maths", 2, testData.EnglandMathsScore);
+    }
+
+    [Theory]
+    [MemberData(nameof(GetEalPupilProgressTestData))]
+    public async Task EalPupils_ShowsExpectedSchoolProgressData(NonBandedPupilProgressTestDataModel testData)
+    {
+        // Arrange && Act
+        await GotoPupilProgressPage(testData.SchoolUrn, "english-as-additional-language");
+
+        // Assert
+        await AssertNonBandedProgressRow(Page, "reading", 0, testData.ReadingScore);
+        await AssertNonBandedProgressRow(Page, "writing", 0, testData.WritingScore);
+        await AssertNonBandedProgressRow(Page, "maths", 0, testData.MathsScore);
+    }
+
+    [Theory]
+    [MemberData(nameof(GetEalPupilProgressTestData))]
+    public async Task EalPupils_ShowsExpectedLocalAuthorityAndEnglandComparisons(NonBandedPupilProgressTestDataModel testData)
+    {
+        // Arrange && Act
+        await GotoPupilProgressPage(testData.SchoolUrn, "english-as-additional-language");
+
+        // Assert
+        await AssertNonBandedProgressRow(Page, "reading", 1, testData.LaReadingScore);
+        await AssertNonBandedProgressRow(Page, "reading", 2, testData.EnglandReadingScore);
+        await AssertNonBandedProgressRow(Page, "writing", 1, testData.LaWritingScore);
+        await AssertNonBandedProgressRow(Page, "writing", 2, testData.EnglandWritingScore);
+        await AssertNonBandedProgressRow(Page, "maths", 1, testData.LaMathsScore);
+        await AssertNonBandedProgressRow(Page, "maths", 2, testData.EnglandMathsScore);
     }
 
     private async Task GotoPupilProgressPage(string urn, string pupilCharacteristic)
@@ -100,7 +131,7 @@ public class PupilProgressTests() : BasePageTest()
     }
 
     // Single table with no banding column; rows: disadvantaged pupils at school, local authority, England average
-    private static async Task AssertDisadvantagedProgressRow(IPage page, string subject, int rowIndex, string expectedScore)
+    private static async Task AssertNonBandedProgressRow(IPage page, string subject, int rowIndex, string expectedScore)
     {
         var row = await page.GetTableRowValuesAsync($"{subject}-progress-table", rowIndex);
 
