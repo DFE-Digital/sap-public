@@ -181,7 +181,7 @@ public class PupilProgressTests() : BasePageTest()
     {
         var row = await page.GetTableRowValuesAsync($"{subject}-progress-table", rowIndex);
 
-        AssertHelpers.AssertNumericEqual(expectedScore, row[1]);
+        AssertHelpers.AssertNumericEqual(expectedScore, row[0]);
     }
 
     // Rows: group at school, local authority, England average
@@ -189,9 +189,9 @@ public class PupilProgressTests() : BasePageTest()
     {
         var tableId = $"{subject}-{group}-progress-table";
 
-        AssertHelpers.AssertNumericEqual(expectedSchoolScore, (await page.GetTableRowValuesAsync(tableId, 0))[1]);
-        AssertHelpers.AssertNumericEqual(expectedLaScore, (await page.GetTableRowValuesAsync(tableId, 1))[1]);
-        AssertHelpers.AssertNumericEqual(expectedEnglandScore, (await page.GetTableRowValuesAsync(tableId, 2))[1]);
+        AssertHelpers.AssertNumericEqual(expectedSchoolScore, (await page.GetTableRowValuesAsync(tableId, 0))[0]);
+        AssertHelpers.AssertNumericEqual(expectedLaScore, (await page.GetTableRowValuesAsync(tableId, 1))[0]);
+        AssertHelpers.AssertNumericEqual(expectedEnglandScore, (await page.GetTableRowValuesAsync(tableId, 2))[0]);
     }
 
     private static async Task AssertComparisonData(IPage page, string subject, string expectedLaScore, string expectedEnglandScore)
@@ -199,9 +199,9 @@ public class PupilProgressTests() : BasePageTest()
         var tableId = $"{subject}-comparison-table";
 
         var laRow = await page.GetTableRowValuesAsync(tableId, 0);
-        AssertHelpers.AssertNumericEqual(expectedLaScore, laRow[1]);
+        AssertHelpers.AssertNumericEqual(expectedLaScore, laRow[0]);
 
         var englandRow = await page.GetTableRowValuesAsync(tableId, "England average");
-        AssertHelpers.AssertNumericEqual(expectedEnglandScore, englandRow[1]);
+        AssertHelpers.AssertNumericEqual(expectedEnglandScore, englandRow[0]);
     }
 }

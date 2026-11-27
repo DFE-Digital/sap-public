@@ -46,12 +46,12 @@
         </thead>
         <tbody class="govuk-table__body">
             <tr class="govuk-table__row">
-                <td class="govuk-table__cell">@Model.LocalAuthorityName</td>
+                <th scope="row" class="govuk-table__header govuk-!-font-weight-regular">@Model.LocalAuthorityName</th>
                 <td class="govuk-table__cell">@Model.LocalAuthorityScore.DisplayNumber(format: "N1")</td>
             </tr>
 
             <tr class="govuk-table__row">
-                <td class="govuk-table__cell">England average</td>
+                <th scope="row" class="govuk-table__header govuk-!-font-weight-regular">England average</th>
                 <td class="govuk-table__cell">@Model.EnglandScore.DisplayNumber()</td>
             </tr>
         </tbody>

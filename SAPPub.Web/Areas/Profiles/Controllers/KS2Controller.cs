@@ -162,12 +162,8 @@ public class KS2Controller(
     {
         var ks2PupilPerformance = await ks2PupilProgressService.GetGirlBoyPupilProgressAsync(urn, ct);
 
-        var model = new PupilCharacteristicGroupsViewModel
-        {
-            SchoolName = Establishment.EstablishmentName,
-            Groups = PupilCharacteristicBaseViewModel.MapCollectionWithoutBandings(ks2PupilPerformance, Establishment, PupilCharacteristic.GirlsAndBoys, urlLinksOptions.Value) 
-        };
-        
+        var model = PupilCharacteristicGroupsViewModel.Map(ks2PupilPerformance, Establishment, urlLinksOptions.Value);
+
         return View(model);
     }
 

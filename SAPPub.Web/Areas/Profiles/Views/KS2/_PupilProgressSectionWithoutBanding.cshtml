@@ -19,15 +19,15 @@
         </thead>
         <tbody class="govuk-table__body">
             <tr class="govuk-table__row">
-                <td class="govuk-table__cell">@($"{Model.PupilGroup} {Model.PupilProgressSectionViewModel.SchoolName}".Trim())</td>
+                <th scope="row" class="govuk-table__header govuk-!-font-weight-regular">@($"{Model.PupilGroup} {Model.PupilProgressSectionViewModel.SchoolName}".Trim())</th>
                 <td class="govuk-table__cell">@Model.PupilProgressSectionViewModel.Score.DisplayNumber(format: "N1")</td>
             </tr>
             <tr class="govuk-table__row">
-                <td class="govuk-table__cell">@Model.PupilProgressSectionViewModel.LocalAuthorityName</td>
+                <th scope="row" class="govuk-table__header govuk-!-font-weight-regular">@Model.PupilProgressSectionViewModel.LocalAuthorityName</th>
                 <td class="govuk-table__cell">@Model.PupilProgressSectionViewModel.LocalAuthorityScore.DisplayNumber(format: "N1")</td>
             </tr>
             <tr class="govuk-table__row">
-                <td class="govuk-table__cell">England average</td>
+                <th scope="row" class="govuk-table__header govuk-!-font-weight-regular">England average</th>
                 <td class="govuk-table__cell">@Model.PupilProgressSectionViewModel.EnglandScore.DisplayNumber(format: "N1")</td>
             </tr>
         </tbody>

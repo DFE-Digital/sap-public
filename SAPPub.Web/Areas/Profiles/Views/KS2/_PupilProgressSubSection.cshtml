@@ -9,6 +9,7 @@
 <h5 class="govuk-heading-s">@Model.PupilGroup</h5>
 
 <table id="@tableId" class="govuk-table">
+    <caption class="govuk-visually-hidden">@subSection.Subject progress scores for @Model.PupilGroup.ToLowerInvariant()</caption>
     <thead class="govuk-table__head">
         <tr class="govuk-table__row">
             <th scope="col" class="govuk-table__header">Comparison group</th>
@@ -17,17 +18,17 @@
     </thead>
     <tbody class="govuk-table__body">
         <tr class="govuk-table__row">
-            <td class="govuk-table__cell">@Model.PupilGroup at @subSection.SchoolName</td>
+            <th scope="row" class="govuk-table__header govuk-!-font-weight-regular">@Model.PupilGroup at @subSection.SchoolName</th>
             <td class="govuk-table__cell">@subSection.Score.DisplayNumber(format: "N1")</td>
         </tr>
         <tr class="govuk-table__row">
-            <td class="govuk-table__cell">@subSection.LocalAuthorityName</td>
+            <th scope="row" class="govuk-table__header govuk-!-font-weight-regular">@subSection.LocalAuthorityName</th>
             <td class="govuk-table__cell">@subSection.LocalAuthorityScore.DisplayNumber(format: "N1")</td>
         </tr>
 
         <tr class="govuk-table__row">
-            <td class="govuk-table__cell">England average</td>
-            <td class="govuk-table__cell">@subSection.EnglandScore.DisplayNumber()</td>
+            <th scope="row" class="govuk-table__header govuk-!-font-weight-regular">England average</th>
+            <td class="govuk-table__cell">@subSection.EnglandScore.DisplayNumber(format: "N1")</td>
         </tr>
     </tbody>
 </table>

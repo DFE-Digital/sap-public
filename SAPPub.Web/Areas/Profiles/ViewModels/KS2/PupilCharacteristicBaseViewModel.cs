@@ -95,7 +95,7 @@ public class PupilCharacteristicBaseViewModel : KS2BandingsBaseViewModel
             EnglandReadingScore = kS2PupilPerformanceBandings.EnglandAverageReadingScore,
             EnglandWritingScore = kS2PupilPerformanceBandings.EnglandAverageWritingScore,
             EnglandMathsScore = kS2PupilPerformanceBandings.EnglandAverageMathsScore,
-            LocalAuthorityName = CommonHelper.GetLocalAuthorityDisplayName(establishment.LAName),
+            LocalAuthorityName = GetLaName(establishment),
             TechnicalGuideLinkUrl = urlLinksOptions.PrimaryAttainmentGroupingsTechnicalGuide.Url,
             TechnicalGuideLinkNewTab = urlLinksOptions.PrimaryAttainmentGroupingsTechnicalGuide.NewTab
         };
@@ -126,9 +126,16 @@ public class PupilCharacteristicBaseViewModel : KS2BandingsBaseViewModel
                 EnglandReadingScore = pupilPerformance.EnglandAverageReadingScore,
                 EnglandWritingScore = pupilPerformance.EnglandAverageWritingScore,
                 EnglandMathsScore = pupilPerformance.EnglandAverageMathsScore,
-                LocalAuthorityName = CommonHelper.GetLocalAuthorityDisplayName(establishment.LAName),
+                LocalAuthorityName = GetLaName(establishment),
                 TechnicalGuideLinkUrl = urlLinksOptions.PrimaryAttainmentGroupingsTechnicalGuide.Url,
                 TechnicalGuideLinkNewTab = urlLinksOptions.PrimaryAttainmentGroupingsTechnicalGuide.NewTab
             })];
+    }
+
+    static string GetLaName(EstablishmentMinimumServiceModel establishment)
+    {
+        return string.IsNullOrWhiteSpace(establishment.LAName)
+                            ? "Not available"
+                            : $"{establishment.LAName} average";
     }
 }

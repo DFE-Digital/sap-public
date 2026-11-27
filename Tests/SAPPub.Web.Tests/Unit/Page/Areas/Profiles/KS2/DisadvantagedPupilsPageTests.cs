@@ -116,11 +116,11 @@ public class DisadvantagedPupilsPageTests : PageTestsBase
             var tableId = $"{subject}-progress-table";
             Assert.Equal("Comparison group", doc.GetTableHeaderContentByIdAndIndex(tableId, 0, 0));
             Assert.Equal("Progress score", doc.GetTableHeaderContentByIdAndIndex(tableId, 0, 1));
-            Assert.Equal($"Disadvantaged pupils at {_schoolName}", doc.GetTableCellContentByIdAndIndex(tableId, 1, 0));
-            Assert.Equal(scores[0], doc.GetTableCellContentByIdAndIndex(tableId, 1, 1));
-            Assert.Equal(scores[1], doc.GetTableCellContentByIdAndIndex(tableId, 2, 1));
-            Assert.Equal("England average", doc.GetTableCellContentByIdAndIndex(tableId, 3, 0));
-            Assert.Equal(scores[2], doc.GetTableCellContentByIdAndIndex(tableId, 3, 1));
+            Assert.Equal($"Disadvantaged pupils at {_schoolName}", doc.GetTableHeaderContentByIdAndIndex(tableId, 1, 0));
+            Assert.Equal(scores[0], doc.GetTableCellContentByIdAndIndex(tableId, 1, 0));
+            Assert.Equal(scores[1], doc.GetTableCellContentByIdAndIndex(tableId, 2, 0));
+            Assert.Equal("England average", doc.GetTableHeaderContentByIdAndIndex(tableId, 3, 0));
+            Assert.Equal(scores[2], doc.GetTableCellContentByIdAndIndex(tableId, 3, 0));
         }
 
         var headings = doc.GetElementsByTagName("h4").Select(h => h.TextContent.Trim()).ToList();
@@ -141,7 +141,7 @@ public class DisadvantagedPupilsPageTests : PageTestsBase
             var tableId = $"{subject}-progress-table";
             for (var row = 1; row <= 3; row++)
             {
-                Assert.Equal("Not available", doc.GetTableCellContentByIdAndIndex(tableId, row, 1));
+                Assert.Equal("Not available", doc.GetTableCellContentByIdAndIndex(tableId, row, 0));
             }
         }
     }

@@ -1,5 +1,5 @@
 using AngleSharp.Dom;
-using Google.Apis.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.FeatureManagement;
 using Moq;
 using SAPPub.Core.Interfaces.Services;
@@ -8,7 +8,6 @@ using SAPPub.Core.ServiceModels.Performance;
 using SAPPub.Core.Tests.TestBuilders;
 using SAPPub.Core.ValueObjects;
 using SAPPub.Web.Tests.Unit.Page.Infrastructure;
-using Xunit.Runner.Common;
 
 namespace SAPPub.Web.Tests.Unit.Page.Areas.Profiles.KS2;
 
@@ -16,6 +15,7 @@ namespace SAPPub.Web.Tests.Unit.Page.Areas.Profiles.KS2;
 public class GirlsAndBoysPupilsPageTests : PageTestsBase
 {
     private const string Route = "/primary-performance/pupil-progress/girls-and-boys";
+    private const string LocalAuthorityName = "Hammersmith and Fulham";
     private readonly string _urn = "143034";
     private readonly string _schoolName = "St Paul's Church of England Academy";
     private readonly Mock<IKS2PupilProgressService> _mockProgressService;
@@ -27,6 +27,7 @@ public class GirlsAndBoysPupilsPageTests : PageTestsBase
         var establishment = new EstablishmentMinimumTestBuilder()
             .WithURN(_urn)
             .WithEstablishmentName(_schoolName)
+            .WithLAName(LocalAuthorityName)
             .WithIsKeyStage2(true)
             .WithIsKeyStage4(false)
             .BuildServiceModel();
@@ -70,7 +71,7 @@ public class GirlsAndBoysPupilsPageTests : PageTestsBase
     }
 
     [Fact]
-    public async Task Page_Displays_BothDetailsComponents_Collapsed()
+    public async Task Page_Displays_BothGroupsPerSubject_WithAccessibleTables()
     {
         SetupEmptyProgress();
 
@@ -83,6 +84,14 @@ public class GirlsAndBoysPupilsPageTests : PageTestsBase
         {
             Assert.Equal(["Girls", "Boys"], container.QuerySelectorAll("h5").Select(h => h.TextContent.Trim()));
             Assert.Equal(2, container.QuerySelectorAll("table").Length);
+            var subject = container.QuerySelector("h4")!.TextContent.Trim();
+            foreach (var group in new[] { "girls", "boys" })
+            {
+                var table = container.QuerySelector($"#{subject.ToLowerInvariant()}-{group}-progress-table")!;
+                Assert.Equal($"{subject} progress scores for {group}", table.QuerySelector("caption")!.TextContent.Trim());
+                Assert.Equal(2, table.QuerySelectorAll("thead th[scope='col']").Length);
+                Assert.Equal(3, table.QuerySelectorAll("tbody th[scope='row']").Length);
+            }
         });
     }
 
@@ -145,10 +154,43 @@ public class GirlsAndBoysPupilsPageTests : PageTestsBase
                 var tableId = $"{subject}-{group}-progress-table".ToLowerInvariant();
                 for (var row = 1; row <= 3; row++)
                 {
-                    Assert.Equal("Not available", doc.GetTableCellContentByIdAndIndex(tableId, row, 1));
+                    Assert.Equal("Not available", doc.GetTableCellContentByIdAndIndex(tableId, row, 0));
                 }
             }
         }
+    }
+
+    [Theory]
+    [InlineData("c")]
+    [InlineData("z")]
+    [InlineData("x")]
+    public async Task Page_Displays_NotAvailableForCodedScores_AndPreservesZeroAndAvailableScores(string code)
+    {
+        SetupProgress(
+        [
+            new()
+            {
+                Urn = _urn,
+                CharacteristicName = "Girls",
+                EstablishmentReadingScore = new CodedDouble(null, "Suppressed", code),
+                LocalAuthorityReadingScore = Score(0),
+                EnglandAverageReadingScore = Score(1.26)
+            },
+            new()
+            {
+                Urn = _urn,
+                CharacteristicName = "Boys",
+                EstablishmentReadingScore = Score(-1.1),
+                LocalAuthorityReadingScore = new CodedDouble(null, "Suppressed", code),
+                EnglandAverageReadingScore = Score(0)
+            }
+        ]);
+
+        var doc = await Fixture.BrowseToPage(BuildUrl(_urn, _schoolName, Route));
+
+        AssertProgressTable(doc, "reading", "Girls", "Not available", "0.0", "1.3");
+        AssertProgressTable(doc, "reading", "Boys", "-1.1", "Not available", "0.0");
+        Assert.Equal(6, doc.QuerySelectorAll("#guide-contents table").Length);
     }
 
     private void AssertProgressTable(IDocument doc,
@@ -162,12 +204,12 @@ public class GirlsAndBoysPupilsPageTests : PageTestsBase
 
         Assert.Equal("Comparison group", doc.GetTableHeaderContentByIdAndIndex(tableId, 0, 0));
         Assert.Equal("Progress score", doc.GetTableHeaderContentByIdAndIndex(tableId, 0, 1));
-        Assert.Equal($"{group} at {_schoolName}", doc.GetTableCellContentByIdAndIndex(tableId, 1, 0));
-        Assert.Equal(expectedSchoolScore, doc.GetTableCellContentByIdAndIndex(tableId, 1, 1));
-        Assert.Equal(expectedLocalAuthorityScore, doc.GetTableCellContentByIdAndIndex(tableId, 2, 1));
-        Assert.Equal("England average", doc.GetTableCellContentByIdAndIndex(tableId, 3, 0));
-        Assert.Equal(expectedEnglandScore, doc.GetTableCellContentByIdAndIndex(tableId, 3, 1));
+        Assert.Equal($"{group} at {_schoolName}", doc.GetTableHeaderContentByIdAndIndex(tableId, 1, 0));
+        Assert.Equal(expectedSchoolScore, doc.GetTableCellContentByIdAndIndex(tableId, 1, 0));
+        Assert.Equal($"{LocalAuthorityName} average", doc.GetTableHeaderContentByIdAndIndex(tableId, 2, 0));
+        Assert.Equal(expectedLocalAuthorityScore, doc.GetTableCellContentByIdAndIndex(tableId, 2, 0));
+        Assert.Equal("England average", doc.GetTableHeaderContentByIdAndIndex(tableId, 3, 0));
+        Assert.Equal(expectedEnglandScore, doc.GetTableCellContentByIdAndIndex(tableId, 3, 0));
 
     }
-
 }
