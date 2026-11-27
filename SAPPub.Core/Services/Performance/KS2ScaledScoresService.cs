@@ -70,6 +70,14 @@ public class KS2ScaledScoresService(
             NonDisadvantagedAverageMathsLA = laPerformance.MAT_AVERAGE_NOTFSM6CLA1A_LA_Current_Num_Coded,
             NonDisadvantagedAverageReadingEngland = englandPerformance.READ_AVERAGE_NOTFSM6CLA1A_Eng_Current_Num_Coded,
             NonDisadvantagedAverageMathsEngland = englandPerformance.MAT_AVERAGE_NOTFSM6CLA1A_Eng_Current_Num_Coded,
+
+            /* Prior Attainment */
+            PriorAttainmentReadingLowAvgScorePct = establishmentPerformance.PTR_Low_Avg_Scr_Pct_Coded,
+            PriorAttainmentMathsLowAvgScorePct = establishmentPerformance.PTM_Low_Avg_Scr_Pct_Coded,
+            PriorAttainmentReadingMidAvgScorePct = establishmentPerformance.PTR_Mid_Avg_Scr_Pct_Coded,
+            PriorAttainmentMathsMidAvgScorePct = establishmentPerformance.PTM_Mid_Avg_Scr_Pct_Coded,
+            PriorAttainmentReadingHighAvgScorePct = establishmentPerformance.PTR_High_Avg_Scr_Pct_Coded,
+            PriorAttainmentMathsHighAvgScorePct = establishmentPerformance.PTM_High_Avg_Scr_Pct_Coded,
         };
     }
 
