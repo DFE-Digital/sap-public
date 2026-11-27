@@ -57,7 +57,7 @@ public class PupilCharacteristicBaseViewModel : KS2BandingsBaseViewModel
             Subject = subject,
             SchoolName = SchoolName,
             LocalAuthorityName = LocalAuthorityName,
-            Banding = Ks2Bandings[bandingIndex],
+            Banding = Ks2Bandings is null ? null : Ks2Bandings![bandingIndex],
             Score = score.ToDisplayField(),
             LocalAuthorityScore = localAuthorityScore.ToDisplayField(),
             EnglandScore = englandScore.ToDisplayField(),
@@ -99,38 +99,33 @@ public class PupilCharacteristicBaseViewModel : KS2BandingsBaseViewModel
         };
     }
 
-    public static PupilCharacteristicBaseViewModel[] MapCollectionWithoutBandings(
+    public static IEnumerable<PupilCharacteristicBaseViewModel> MapCollectionWithoutBandings(
         KS2PupilPerformanceBandings[] kS2PupilPerformanceBandings,
         EstablishmentMinimumServiceModel establishment,
         PupilCharacteristic characteristic,
         UrlLinksOptions urlLinksOptions)
     {
-        return [
-            new()
-            {
-            
-            }
-
-            ];
-        {
-            URN = establishment.URN,
-            SchoolName = establishment.EstablishmentName,
-            IsKS2 = establishment.IsKS2,
-            IsKS4 = establishment.IsKS4,
-            IsKS5 = establishment.IsKS5,
-            SelectedPupilCharacteristic = characteristic,
-            EstablishmentReadingScore = kS2PupilPerformanceBandings.EstablishmentReadingScore,
-            EstablishmentWritingScore = kS2PupilPerformanceBandings.EstablishmentWritingScore,
-            EstablishmentMathsScore = kS2PupilPerformanceBandings.EstablishmentMathsScore,
-            LocalAuthorityReadingScore = kS2PupilPerformanceBandings.LocalAuthorityReadingScore,
-            LocalAuthorityWritingScore = kS2PupilPerformanceBandings.LocalAuthorityWritingScore,
-            LocalAuthorityMathsScore = kS2PupilPerformanceBandings.LocalAuthorityMathsScore,
-            EnglandReadingScore = kS2PupilPerformanceBandings.EnglandAverageReadingScore,
-            EnglandWritingScore = kS2PupilPerformanceBandings.EnglandAverageWritingScore,
-            EnglandMathsScore = kS2PupilPerformanceBandings.EnglandAverageMathsScore,
-            LocalAuthorityName = CommonHelper.GetLocalAuthorityDisplayName(establishment.LAName),
-            TechnicalGuideLinkUrl = urlLinksOptions.PrimaryAttainmentGroupingsTechnicalGuide.Url,
-            TechnicalGuideLinkNewTab = urlLinksOptions.PrimaryAttainmentGroupingsTechnicalGuide.NewTab
-        };
+        return
+            kS2PupilPerformanceBandings.Select(pupilPerformance => new PupilCharacteristicBaseViewModel() {
+                URN = establishment.URN,
+                SchoolName = establishment.EstablishmentName,
+                IsKS2 = establishment.IsKS2,
+                IsKS4 = establishment.IsKS4,
+                IsKS5 = establishment.IsKS5,
+                Ks2Bandings = null,
+                SelectedPupilCharacteristic = characteristic,
+                EstablishmentReadingScore = pupilPerformance.EstablishmentReadingScore,
+                EstablishmentWritingScore = pupilPerformance.EstablishmentWritingScore,
+                EstablishmentMathsScore = pupilPerformance.EstablishmentMathsScore,
+                LocalAuthorityReadingScore = pupilPerformance.LocalAuthorityReadingScore,
+                LocalAuthorityWritingScore = pupilPerformance.LocalAuthorityWritingScore,
+                LocalAuthorityMathsScore = pupilPerformance.LocalAuthorityMathsScore,
+                EnglandReadingScore = pupilPerformance.EnglandAverageReadingScore,
+                EnglandWritingScore = pupilPerformance.EnglandAverageWritingScore,
+                EnglandMathsScore = pupilPerformance.EnglandAverageMathsScore,
+                LocalAuthorityName = CommonHelper.GetLocalAuthorityDisplayName(establishment.LAName),
+                TechnicalGuideLinkUrl = urlLinksOptions.PrimaryAttainmentGroupingsTechnicalGuide.Url,
+                TechnicalGuideLinkNewTab = urlLinksOptions.PrimaryAttainmentGroupingsTechnicalGuide.NewTab
+            });
     }
 }

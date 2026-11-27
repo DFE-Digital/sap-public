@@ -6,7 +6,7 @@ public class KS2BandingsBaseViewModel : ProfileBaseViewModel
 {
     public readonly static string Ks2SmallNumberOfPupilsWarningText = "These results are based on a small number of pupils. This means that a few pupils with particularly high or low results can have a greater impact on the overall result.";
 
-    public required IReadOnlyList<ProgressBandingSummaryViewModel> Ks2Bandings { get; init; }
+    public required IReadOnlyList<ProgressBandingSummaryViewModel>? Ks2Bandings { get; init; }
 
     public string? Ks2SmallNumberOfPupilsWarning
     {
