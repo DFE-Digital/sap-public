@@ -32,6 +32,7 @@ public class AcademicPerformanceSubjectScaledScoresViewModel : BaseViewModel
     public required ScaledScoresViewModel NonMobilePupils { get; set; }
     public required ScaledScoresViewModel DisadvantagedPupils { get; set; }
     public required ScaledScoresViewModel NonDisadvantagedPupils { get; set; }
+    public required ScaledScoresViewModel PriorAttainment { get; set; }
 
     public static AcademicPerformanceSubjectScaledScoresViewModel Map(EstablishmentMinimumServiceModel establishment, KS2ScaledScoreModel scaledScoreModel)
     {
@@ -141,7 +142,14 @@ public class AcademicPerformanceSubjectScaledScoresViewModel : BaseViewModel
                     new() { RowTitle = $"{scaledScoreModel.LAName} average", AverageMathsScore =  scaledScoreModel.NonDisadvantagedAverageMathsLA.ToDisplayField(), AverageReadingScore =  scaledScoreModel.NonDisadvantagedAverageReadingLA.ToDisplayField() },
                     new() { RowTitle = Constants.Constants.EnglandAverage, AverageMathsScore =  scaledScoreModel.NonDisadvantagedAverageMathsEngland.ToDisplayField(), AverageReadingScore =  scaledScoreModel.NonDisadvantagedAverageReadingEngland.ToDisplayField() },
                 ]),
-         };
+            PriorAttainment = GetScaledScoresViewModel($"{PupilGroup} (Prior Attainment)",
+                [
+                    new() { RowTitle = "Low", AverageReadingScore = scaledScoreModel.PriorAttainmentReadingLowAvgScorePct.ToDisplayField(), AverageMathsScore = scaledScoreModel.PriorAttainmentMathsLowAvgScorePct.ToDisplayField() },
+                    new() { RowTitle = "Middle", AverageReadingScore = scaledScoreModel.PriorAttainmentReadingMidAvgScorePct.ToDisplayField(), AverageMathsScore = scaledScoreModel.PriorAttainmentMathsMidAvgScorePct.ToDisplayField() },
+                    new() { RowTitle = "High", AverageReadingScore = scaledScoreModel.PriorAttainmentReadingHighAvgScorePct.ToDisplayField(), AverageMathsScore = scaledScoreModel.PriorAttainmentMathsHighAvgScorePct.ToDisplayField() },
+                    new() { RowTitle = Constants.Constants.AllPupils, AverageReadingScore = scaledScoreModel.AllPupilsAverageReading.ToDisplayField(), AverageMathsScore = scaledScoreModel.AllPupilsAverageMaths.ToDisplayField() }
+                ])
+        };
     }
 
     private static ScaledScoresViewModel GetScaledScoresViewModel(string column1Title, List<ScaledScoresDetailViewModel> scaledScoresDetailViewModels)
